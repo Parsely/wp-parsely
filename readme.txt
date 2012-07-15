@@ -21,7 +21,7 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 
 == Installation ==
 
-1. Upload the entire `parsely` folder to your `/wp-content/plugins` directory
+1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress (look for "Parse.ly - Dash")
 1. Head to the settings page for the plugin (should be /wp-admin/options-general.php?page=parsely-dash)
 1. Add a your API key and choose a tracker implementation method
