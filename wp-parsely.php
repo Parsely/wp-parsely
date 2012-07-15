@@ -5,11 +5,11 @@ Plugin URI: http://www.parsely.com/
 Description: This plugin makes it snap to add Parse.ly tracking code to your WordPress blog.
 Author: Mike Sukmanowsky (mike@parsely.com)
 Version: 0.0.1
-Requires at least:
+Requires at least: 3.0.0
 Author URI: http://www.parsely.com/
 License: GPL2
 
-Copyright 2012  Mike Sukmanowsky  (email : mike@parsely.com)
+Copyright 2012  Parsely Incorporated  (email : mike@parsely.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as 
