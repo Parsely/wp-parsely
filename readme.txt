@@ -51,7 +51,7 @@ Screenshots are on the way soon!
 
 == Changelog ==
 
-= 0.0.1 =
+= 1.0 =
 * Initial version
 * Support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag)
 
