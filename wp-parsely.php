@@ -35,6 +35,7 @@ Authors: Mike Sukmanowsky (mike@parsely.com)
  * Add dependancies (e.g. which wordpress version supported)
  * Allow the user to map get_post_types() to Parse.ly post types
  * Option to not track logged in users
+ * Add unit/functional tests
 */
 
 if (class_exists('Parsely')) {
