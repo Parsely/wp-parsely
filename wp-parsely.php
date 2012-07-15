@@ -4,7 +4,7 @@ Plugin Name: Parse.ly - Dash
 Plugin URI: http://www.parsely.com/
 Description: This plugin makes it snap to add Parse.ly tracking code to your WordPress blog.
 Author: Mike Sukmanowsky (mike@parsely.com)
-Version: 0.0.1
+Version: 1.0
 Requires at least: 3.0.0
 Author URI: http://www.parsely.com/
 License: GPL2
@@ -46,7 +46,7 @@ if (class_exists('Parsely')) {
 }
 
 class Parsely {
-    public static $VERSION      = "0.0.1";
+    public static $VERSION      = "1.0";
     
     private $NAME;
     private $MENU_SLUG          = "parsely-dash";               // Defines the page param passed to options-general.php
