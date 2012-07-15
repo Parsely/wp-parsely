@@ -177,7 +177,6 @@ class Parsely {
             $parselyPage["link"]        = get_category_link($category->cat_ID);
         } elseif (is_date()) {
             $parselyPage["type"]        = "sectionpage";
-            $parselyPage["link"]        = $_SERVER['REQUEST_URI'];
             if (is_year()) {
                 $parselyPage["title"]   = "Yearly Archive - " . get_the_time('Y');
             } elseif(is_month()) {
