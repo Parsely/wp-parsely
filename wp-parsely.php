@@ -36,6 +36,10 @@ Authors: Mike Sukmanowsky (mike@parsely.com)
  * Allow the user to map get_post_types() to Parse.ly post types
  * Option to not track logged in users
  * Add unit/functional tests
+ * Support: is_search(), is_404(), 
+ * Test pagination
+ * Figure out if pages should be "posts" or stay the way they are
+ * Figure out how to deal with hierarchical categories
 */
 
 if (class_exists('Parsely')) {
@@ -124,12 +128,19 @@ class Parsely {
     }
     
     /**
-    * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> of a single post
+    * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
     */
     public function insertParselyPage() {
+        $parselyOptions = get_option($this->OPTIONS_KEY);
+        // If we don't have an API key, there's no need to proceed.
+        if (!isset($parselyOptions['apikey']) || empty($parselyOptions['apikey'])) {
+            return "";
+        }
+        
+        global $wp_query;
         global $post;
         $parselyPage = array();
-        $parselyOptions = get_option($this->OPTIONS_KEY);
+        
         if (is_single() && $post->post_status == "publish") {
             $author     = get_user_meta($post->post_author, 'first_name', true) . " " . get_user_meta($post->post_author, 'last_name', true);
             $category   = get_the_category();
@@ -154,29 +165,62 @@ class Parsely {
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_the_title());
             $parselyPage["link"]        = get_permalink();
-        }
-        elseif (is_front_page()) {
+        } elseif (is_author()) {
+            // TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions
+            $author = (get_query_var('author_name')) ? get_user_by('slug', get_query_var('author_name')) : get_userdata(get_query_var('author'));
+            $parselyPage["type"]        = "sectionpage";
+            $parselyPage["title"]       = $this->getCleanParselyPageValue("Author - ".$author->data->display_name);
+            $parselyPage["link"]        = get_author_posts_url($author->ID);
+        } elseif (is_category()) {
+            $category = get_the_category();
+            $category = $category[0];
+            $parselyPage["type"]        = "sectionpage";
+            $parselyPage["title"]       = $this->getCleanParselyPageValue($category->name);
+            $parselyPage["link"]        = get_category_link($category->cat_ID);
+        } elseif (is_date()) {
+            $parselyPage["type"]        = "sectionpage";
+            $parselyPage["link"]        = $_SERVER['REQUEST_URI'];
+            if (is_year()) {
+                $parselyPage["title"]   = "Yearly Archive - " . get_the_time('Y');
+            } elseif(is_month()) {
+                $parselyPage["title"]   = "Monthly Archive - " . get_the_time('F, Y');
+            } elseif (is_day()) {
+                $parselyPage["title"]   = "Daily Archive - " . get_the_time('F jS, Y');
+            } elseif (is_time()) {
+                $parselyPage["title"]   = "Hourly, Minutely, or Secondly Archive - " . get_the_time('F jS g:i:s A');
+            }
+            $parselyPage["link"]        = $this->getCurrentURL();
+        } elseif (is_tag()) {
+            $tag = single_tag_title('', FALSE);
+            if (empty($tag)) {
+                $tag = single_term_title('', FALSE);
+            }
+            $parselyPage["type"]        = "sectionpage";
+            $parselyPage["title"]       = $this->getCleanParselyPageValue("Tagged - ".$tag);
+            $parselyPage["link"]        = get_tag_link(get_query_var('tag_id'));
+        } elseif (is_front_page()) {
             $parselyPage["type"]        = "frontpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_bloginfo("name", "raw"));
             $parselyPage["link"]        = home_url(); // site_url();?
         }
         
-        if (isset($parselyOptions['apikey']) && !empty($parselyOptions['apikey'])) {
-            ?><meta name='parsely-page' value='<? echo json_encode($parselyPage); ?>' /><?
-        }
-        
+        ?><meta name='parsely-page' value='<? echo json_encode($parselyPage); ?>' /><?
     }
     
     /** 
     * Inserts the JavaScript code required to send off beacon requests
     */
     public function insertParselyJS() {
+        $parselyOptions = get_option($this->OPTIONS_KEY);
+        // If we don't have an API key, there's no need to proceed.
+        if (!isset($parselyOptions['apikey']) || empty($parselyOptions['apikey'])) {
+            return "";
+        }
+        
         global $post;
         $display = TRUE;
-        $parselyOptions = get_option($this->OPTIONS_KEY);
         
         if (is_single() && $post->post_status != "publish") { $display = FALSE; }
-        if (!isset($parselyOptions['apikey']) || empty($parselyOptions['apikey'])) { $display = FALSE; }
         if ($display) {
             include("parsely-javascript.php");
         }
@@ -198,8 +242,27 @@ class Parsely {
         }
     }
     
+    /**
+    * Get the URL of the plugin settings page.
+    */
     private function getSettingsURL() {
         return admin_url('options-general.php?page='.$this->MENU_SLUG);
+    }
+    
+    /**
+    * Gets the URL of the current PHP script.  This is a backup which is used in special cases where Wordpress doesn't let
+    * us ask for a "permalink" of some kind.
+    */
+    private function getCurrentURL() {
+        $pageURL = 'http';
+        if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+        $pageURL .= "://";
+        if ($_SERVER["SERVER_PORT"] != "80") {
+         $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+        } else {
+         $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+        }
+        return $pageURL;
     }
 }
 ?>
