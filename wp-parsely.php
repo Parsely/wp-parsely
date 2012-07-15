@@ -31,12 +31,10 @@ Authors: Mike Sukmanowsky (mike@parsely.com)
  * Wordpress Network support
  * register_activation_hook(), register_deactivation_hook(), register_uninstall_hook()
  * Add proper URL for updates and such
- * Add readme.txt
- * Add dependancies (e.g. which wordpress version supported)
  * Allow the user to map get_post_types() to Parse.ly post types
  * Option to not track logged in users
  * Add unit/functional tests
- * Support: is_search(), is_404(), 
+ * Support: is_search(), is_404()
  * Test pagination
  * Figure out if pages should be "posts" or stay the way they are
  * Figure out how to deal with hierarchical categories

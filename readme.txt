@@ -55,6 +55,6 @@ the directory of the stable readme.txt, so in this case, `/tags/4.3/screenshot-1
 
 = 0.0.1 =
 * Initial version
-* Support for parsely-page and JavaScript on home page and published pages and posts
+* Support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag)
 
 == Upgrade Notice ==
