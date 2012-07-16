@@ -7,7 +7,7 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The Parse.ly - Dash WordPress plugin makes it a snap to add the required tracking code to enable Dash on your WordPress site.
+Parse.ly's Dash is the world's first analytics tool designed and built for digital publishers.  The wp-parsely WordPress plugin makes it a snap to add the required tracking code to enable Dash on your WordPress site.
 
 == Description ==
 
@@ -21,10 +21,12 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 
 == Installation ==
 
+1. If you haven't already done so, [sign up for your free trial of Dash](http://www.parsely.com/try/)
+1. Download the plugin
 1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress (look for "Parse.ly - Dash")
 1. Head to the settings page for the plugin (should be /wp-admin/options-general.php?page=parsely-dash)
-1. Add a your API key and choose a tracker implementation method
+1. Add a your API key and choose a tracker implementation method (your API key can be found in the "Setup" settings screen of your Parse.ly account `/mysite.com/settings/code`.)
 1. Save your changes and enjoy your data!
 
 Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com](mailto:support@parsely.com) we always want to hear from you.
@@ -33,13 +35,13 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 
 = Where do I find my API key? =
 
-In [the Setup settings screen for your account](https://dash.parsely.com/settings/code) you'll see a snippet of tracking code.  On the
+In the "Setup" settings screen for your account (`/mysite.com/settings/code`) you'll see a snippet of tracking code.  On the
 third line of this code look for `data-parsely-site="[API KEY]"`, you want to take the value in between the quotations (usually 
 something like mysite.com) and use that for the API key.
 
 = What tracker implementation should I use? =
 
-It's really up to you and your requirements, but [this article in our documentation](http://www.parsely.com/api/tracker.html#javascript-tracker) should help you make a decision.
+It's really up to you and your requirements, but [this article in our documentation](http://www.parsely.com/api/tracker.html#javascript-tracker) should help you make a decision.  If you still have questions then reach out to us at [support@parsely.com](mailto:support@parsely.com).
 
 = Why can't I see Dash code on my post when I preview? =
 
