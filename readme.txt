@@ -14,6 +14,7 @@ Parse.ly's Dash is the world's first analytics tool designed and built for digit
 [Parse.ly's Dash](http://www.parsely.com/ "Parse.ly - Dash") is an analytics tool designed and made for content publishers.   Tired of trying to figure out Google Analytics reports when all you really want to know is what's working and what isn't?  Then Dash was made for you.  It doesn't matter if you're CNN attracting millions of people per month or trying to build a following on a niche blog covering fashion and style, Dash will help you understand your audience and how your content is performing.
 
 **Features**
+
 * Inserts the required parsely-page <meta> tag as well as JavaScript on all your published pages and posts.
 * Allows you to specify the JavaScript implementation to use: standard, DOM free or asynchronous.
 
