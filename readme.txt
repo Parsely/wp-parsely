@@ -22,7 +22,7 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 
 == Installation ==
 
-1. If you haven't already done so, [sign up for your free trial of Dash](http://www.parsely.com/try/)
+1. If you haven't already done so, [sign up for your free trial of Dash](http://dash.parsely.com/try/)
 1. Download the plugin
 1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress (look for "Parse.ly - Dash")
