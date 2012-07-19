@@ -97,21 +97,27 @@ class Parsely {
     	}
     	
     	$errors = array();
+    	$valuesSaved = false;
     	$options = get_option($this->OPTIONS_KEY);
     	
     	if (isset($_POST["isParselySettings"]) && $_POST["isParselySettings"] == 'Y') {
-    	    $options["apikey"]                  = sanitize_text_field($_POST["apikey"]);
+    	    if (empty($_POST["apikey"])) {
+    	        array_push($errors, "API Key cannot be blank.  Please specify a value.");
+    	    } else {
+    	        $options["apikey"] = sanitize_text_field($_POST["apikey"]);
+    	    }
 
-    	    if (!in_array($options["tracker_implementation"], array_keys($this->IMPLEMENTATION_OPTS))) {
-    	        array_push($errors, "Invalid tracker implementation value specified " . $options["tracker_implementation"] . ". Must be one of: " . join(array_keys(", ",$this->IMPLEMENTATION_OPTS)));
+    	    if (!in_array($_POST["tracker_implementation"], array_keys($this->IMPLEMENTATION_OPTS))) {
+    	        array_push($errors, "Invalid tracker implementation value specified " . $options["tracker_implementation"] . ". Must be one of: " . join(", ", array_keys($this->IMPLEMENTATION_OPTS))). ".";
     	    } else {
     	        $options["tracker_implementation"] = sanitize_text_field($_POST["tracker_implementation"]);
     	    }
 
-    	    $options["content_id_prefix"]       = sanitize_text_field($_POST["content_id_prefix"]);
+    	    $options["content_id_prefix"] = sanitize_text_field($_POST["content_id_prefix"]);
     	    
     	    if (empty($errors)) {
     	        update_option($this->OPTIONS_KEY, $options);
+    	        $valuesSaved = true;
     	    }
     	}
     	include("parsely-settings.php");
@@ -239,6 +245,17 @@ class Parsely {
         if ($display) {
             include("parsely-javascript.php");
         }
+    }
+    
+    /** 
+    * TODO: figure out the actual classes to use for this or just create our own CSS for a green success message
+    */
+    public function printSuccessMessage($message) {
+        ?>
+        <div class='success'>
+            <p><strong><?php esc_html_e($message); ?></strong></p>
+        </div>
+        <?php
     }
     
     public function printErrorMessage($message) {

@@ -1,3 +1,8 @@
+<style type="text/css">
+    .success {padding:0.8em;margin-bottom:1em;border:2px solid #ddd;background:#e6efc2;color:#264409;border-color:#c6d880;}
+    .success a {color:#264409;}
+    .success p {margin: 0;}
+</style>
 <div class="wrap">
     <?php
     if (!empty($errors)) {
@@ -7,6 +12,11 @@
     }
     ?>
     <h2>Parse.ly - Dash Settings</h2>
+    <?php
+    if ($valuesSaved) {
+        $this->printSuccessMessage("Settings saved successfully.");
+    }
+    ?>
     <p>Thanks again for using Parse.ly's Dash!  Don't forget if you have any questions regarding the plugin you can e-mail us at <a href="mailto:support@parsely.com">support@parsely.com</a></p>
     <form name="parsely" method="post" action="">
         <input type="hidden" name="isParselySettings" value="Y" />
@@ -18,8 +28,8 @@
                     <?php $this->printTextTag("apikey", $options["apikey"], array("size" => "20", "placeholder" => "test.com")); ?>
                     <p class="description">
                         This is the API key that you would've received during setup.  Can't remember yours?
-                        You can always get this from your <a href="https://dash.parsely.com/settings/code" target="_blank">tracking-code screen within Parse.ly Dash</a>.
-                        Just look for the value set for data-parsely-site.
+                        You can always get this from within your account.  When <a href="http://dash.parsely.com/" target="_blank">logged into Dash</a>, just head to Settings and then select Setup.
+                        Once on this screen, look for the value of data-parsely-site which should be something like test.com.
                     </p>
                     <p class="description">
                         Don't have a Parse.ly account yet? Never fear because you can <a href="http://dash.parsely.com/try" target="_blank">sign up for one here</a>!
