@@ -50,12 +50,28 @@ Dash code will only be placed on pages and posts which have been published in Wo
 
 == Screenshots ==
 
-Screenshots are on the way soon!
+1. The main settings screen of the wp-parsely plugin
+2. The standard JavaScript include being inserted before </body>
+3. A sample `parsely-page` meta tag for a home page
+4. A sample `parsely-page` meta tag for an article or post
 
 == Changelog ==
+
+= 1.1 =
+* Added ability to add prefix to content IDs
+* Ensured plugin only uses long tags `<?php` instead of `<?`
+* Security updates to prevent HTML/JavaScript injection attacks (values are now sanitized)
+* Better error checking of values for API key / implementation method
+* Bug fixes
 
 = 1.0 =
 * Initial version
 * Support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag)
 
 == Upgrade Notice ==
+
+= 1.1 =
+This version adds the ability to add a prefix to content IDs and fixes a number of security issues, please upgrade immediately.
+
+= 1.0 =
+Initial version.
