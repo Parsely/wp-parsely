@@ -4,7 +4,7 @@ Plugin Name: Parse.ly - Dash
 Plugin URI: http://www.parsely.com/
 Description: This plugin makes it snap to add Parse.ly tracking code to your WordPress blog.
 Author: Mike Sukmanowsky (mike@parsely.com)
-Version: 1.0
+Version: 1.1
 Requires at least: 3.0.0
 Author URI: http://www.parsely.com/
 License: GPL2
@@ -46,14 +46,16 @@ if (class_exists('Parsely')) {
 }
 
 class Parsely {
-    public static $VERSION      = "1.0";
+    public static $VERSION      = "1.1";
     
     private $NAME;
-    private $MENU_SLUG          = "parsely-dash";               // Defines the page param passed to options-general.php
-    private $MENU_TITLE         = "Parse.ly - Dash";            // Text to be used for the menu as seen in Settings sub-menu
-    private $MENU_PAGE_TITLE    = "Parse.ly - Dash > Settings"; // Text shown in <title></title> when the settings screen is viewed
-    private $OPTIONS_KEY        = "parsely";                    // Defines the key used to store options in the WP database
-    private $CAPABILITY         = "manage_options";             // The capability required for the user to administer settings
+    private $MENU_SLUG              = "parsely-dash";               // Defines the page param passed to options-general.php
+    private $MENU_TITLE             = "Parse.ly - Dash";            // Text to be used for the menu as seen in Settings sub-menu
+    private $MENU_PAGE_TITLE        = "Parse.ly - Dash > Settings"; // Text shown in <title></title> when the settings screen is viewed
+    private $OPTIONS_KEY            = "parsely";                    // Defines the key used to store options in the WP database
+    private $CAPABILITY             = "manage_options";             // The capability required for the user to administer settings
+
+    public $IMPLEMENTATION_OPTS     = array("standard" => "Standard", "dom_free" => "DOM-Free", "async" => "Asynchronous");
     
     /**
     * PHP4 Constructor
@@ -94,13 +96,23 @@ class Parsely {
     		wp_die(__('You do not have sufficient permissions to access this page.'));
     	}
     	
+    	$errors = array();
     	$options = get_option($this->OPTIONS_KEY);
     	
     	if (isset($_POST["isParselySettings"]) && $_POST["isParselySettings"] == 'Y') {
-    	    $options["apikey"]                  = $_POST["apikey"];
-    	    $options["tracker_implementation"]  = $_POST["tracker_implementation"]; 
-    	    $options["content_id_prefix"]       = $_POST["content_id_prefix"];
-    	    update_option($this->OPTIONS_KEY, $options);
+    	    $options["apikey"]                  = sanitize_text_field($_POST["apikey"]);
+
+    	    if (!in_array($options["tracker_implementation"], array_keys($this->IMPLEMENTATION_OPTS))) {
+    	        array_push($errors, "Invalid tracker implementation value specified " . $options["tracker_implementation"] . ". Must be one of: " . join(array_keys(", ",$this->IMPLEMENTATION_OPTS)));
+    	    } else {
+    	        $options["tracker_implementation"] = sanitize_text_field($_POST["tracker_implementation"]);
+    	    }
+
+    	    $options["content_id_prefix"]       = sanitize_text_field($_POST["content_id_prefix"]);
+    	    
+    	    if (empty($errors)) {
+    	        update_option($this->OPTIONS_KEY, $options);
+    	    }
     	}
     	include("parsely-settings.php");
     }
@@ -163,8 +175,8 @@ class Parsely {
             $parselyPage["type"]        = "post";
             $parselyPage["post_id"]     = $parselyOptions["content_id_prefix"] . (string)get_the_ID();
             $parselyPage["pub_date"]    = gmdate("Y-m-d\TH:i:s\Z", get_post_time('U', true));
-            $parselyPage["section"]     = $category->name;
-            $parselyPage["author"]      = $author;
+            $parselyPage["section"]     = $this->getCleanParselyPageValue($category->name);
+            $parselyPage["author"]      = $this->getCleanParselyPageValue($author);
         } elseif (is_page() && $post->post_status == "publish") {
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_the_title());
@@ -229,6 +241,34 @@ class Parsely {
         }
     }
     
+    public function printErrorMessage($message) {
+        ?>
+        <div id='message' class='error'>
+            <p><strong><?php esc_html_e($message); ?></strong></p>
+        </div>
+        <?php
+    }
+    
+    public function printSelectTag($name, $options, $selectedOption="") {
+        $tag = '<select name="'.esc_attr($name).'" id="'.esc_attr($name).'">';
+        foreach ($options as $key => $val) {
+            $tag .= '<option value="'.esc_attr($key).'"';            
+            if ($selectedOption == $key) { $tag .= ' selected="selected"'; }
+            $tag .= '>'.esc_html($val).'</option>';
+        }
+        $tag .= '</select>';
+        echo $tag;
+    }
+    
+    public function printTextTag($name, $value, $options=array()) {
+        $tag = '<input type="text" name="' . esc_attr($name). '" id="' . esc_attr($name) . '" value="' . esc_attr($value) . '"';
+        foreach ($options as $key => $val) {
+            $tag .= ' ' . esc_attr($key) . '="' . esc_attr($val) . '"';
+        }
+        $tag .= ' />';
+        echo $tag;
+    }
+        
     /**
     * Attempts to clean up some of the typical caveats with values in the parsely-page JSON document.
     * Namely, newlines and quotes are properly converted.
@@ -265,7 +305,7 @@ class Parsely {
         } else {
          $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
         }
-        return $pageURL;
+        return esc_url($pageURL);
     }
 }
 ?>

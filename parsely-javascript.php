@@ -2,7 +2,7 @@
 
 <!-- START Parse.ly Include: Standard -->
 <div id="parsely-root" style="display: none">
-  <div id="parsely-cfg" data-parsely-site="<?php echo htmlentities($parselyOptions["apikey"]); ?>"></div>
+  <div id="parsely-cfg" data-parsely-site="<?php esc_html_e($parselyOptions["apikey"]); ?>"></div>
 </div>
 <script>
 (function(s, p, d) {
@@ -22,7 +22,7 @@
 <!-- START Parse.ly Include: DOM-Free -->
 <script>
 (function(d) {
-  var site = "<?php echo htmlentities($parselyOptions["apikey"]); ?>",
+  var site = "<?php esc_html_e($parselyOptions["apikey"]); ?>",
       b = d.body,
       e = d.createElement("div");
   e.innerHTML = '<span id="parsely-cfg" data-parsely-site="'+site+'"></span>';
@@ -46,7 +46,7 @@
 
 <!-- START Parse.ly Include: Async -->
 <div id="parsely-root" style="display: none">
-  <div id="parsely-cfg" data-parsely-site="<?php echo htmlentities($parselyOptions["apikey"]); ?>"></div>
+  <div id="parsely-cfg" data-parsely-site="<?php esc_html_e($parselyOptions["apikey"]); ?>"></div>
   <script>
   $LAB.script(document.location.protocol==="https:"?
     "https://d1z2jf7jlzjs58.cloudfront.net/p.js":
