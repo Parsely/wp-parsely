@@ -236,7 +236,7 @@ class Parsely {
     private function getCleanParselyPageValue($val) {
         if (is_string($val)) {
             $val = str_replace("\n", "", $val);
-            $val = str_replace("\r\n", "", $val);
+            $val = str_replace("\r", "", $val);
             $val = str_replace("\"", "&#34;", $val);
             $val = str_replace("\'", "&#39;", $val);
             return $val;
