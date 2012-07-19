@@ -1,4 +1,4 @@
-<?phpphp
+<?php
 /*
 Plugin Name: Parse.ly - Dash
 Plugin URI: http://www.parsely.com/
@@ -97,8 +97,9 @@ class Parsely {
     	$options = get_option($this->OPTIONS_KEY);
     	
     	if (isset($_POST["isParselySettings"]) && $_POST["isParselySettings"] == 'Y') {
-    	    $options["apikey"]                 = $_POST["apikey"];
-    	    $options["tracker_implementation"] = $_POST["tracker_implementation"]; 
+    	    $options["apikey"]                  = $_POST["apikey"];
+    	    $options["tracker_implementation"]  = $_POST["tracker_implementation"]; 
+    	    $options["content_id_prefix"]       = $_POST["content_id_prefix"];
     	    update_option($this->OPTIONS_KEY, $options);
     	}
     	include("parsely-settings.php");
@@ -143,6 +144,11 @@ class Parsely {
             $author     = get_user_meta($post->post_author, 'first_name', true) . " " . get_user_meta($post->post_author, 'last_name', true);
             $category   = get_the_category();
             $category   = $category[0];
+            $postId     = (string)get_the_ID();
+            
+            if (isset($parselyOptions["content_id_prefix"]) && !empty($parselyOptions["content_id_prefix"])) {
+                $postId = $parselyOptions["content_id_prefix"] . $postId;
+            }
             
             $image_url = "";
             if (has_post_thumbnail()) {
@@ -155,7 +161,7 @@ class Parsely {
             $parselyPage["link"]        = get_permalink();
             $parselyPage["image_url"]   = $image_url;
             $parselyPage["type"]        = "post";
-            $parselyPage["post_id"]     = (string)get_the_ID();
+            $parselyPage["post_id"]     = $parselyOptions["content_id_prefix"] . (string)get_the_ID();
             $parselyPage["pub_date"]    = gmdate("Y-m-d\TH:i:s\Z", get_post_time('U', true));
             $parselyPage["section"]     = $category->name;
             $parselyPage["author"]      = $author;

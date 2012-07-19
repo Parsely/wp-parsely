@@ -3,6 +3,7 @@
     <p>Thanks again for using Parse.ly's Dash!  Don't forget if you have any questions regarding the plugin you can e-mail us at <a href="mailto:support@parsely.com">support@parsely.com</a></p>
     <form name="parsely" method="post" action="">
         <input type="hidden" name="isParselySettings" value="Y" />
+        <h3>Required Settings</h3>
         <table class="form-table">
             <tr valign="top">
                 <th scope="row"><label for="apikey"><?php _e('API Key / Parse.ly Site:'); ?></label></th>
@@ -32,8 +33,24 @@
                     </p>
                 </td>
         </table>
+        <h3>Optional Settings</h3>
+        <table class="form-table">
+            <tr valign="top">
+                <th scope="row"><label for="content_id_prefix"><?php _e('Content ID Prefix:'); ?></label></th>
+                <td>
+                    <input type="text" name="content_id_prefix" id="content_id_prefix" value="<?php echo $options["content_id_prefix"]; ?>" size="20" placeholder="WP-"/>
+                    <p class="description">
+                        In the event that your site uses more than one content management system (e.g. WordPress and Drupal), there is the possibility
+                        that you'll end up with duplicate content IDs.  For example, WordPress will have a post with ID 1 and so will Drupal which causes
+                        a conflict for parsely-page.  Adding a <strong>Content ID Prefix</strong> will ensure the content IDs from WordPress will not
+                        conflict with those in another content management system.  We recommend you use something like "WP-" for your prefix but any value
+                        will work.
+                    </p>
+                </td>
+            </tr>
+        </table>
         <p class="submit">
-            <input type="submit" name="Submit" class="button-primary" value="<?phpphp esc_attr_e('Save Changes') ?>" />
+            <input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes') ?>" />
         </p>
     </form>
 </div>
