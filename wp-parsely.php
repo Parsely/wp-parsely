@@ -1,4 +1,4 @@
-<?php
+<?phpphp
 /*
 Plugin Name: Parse.ly - Dash
 Plugin URI: http://www.parsely.com/
@@ -117,11 +117,11 @@ class Parsely {
         if (!isset($options['apikey']) || empty($options['apikey'])) {
             ?>
             <div id='message' class='error'>
-                <p><strong>Parse.ly - Dash is not active.</strong> You need to <a href='<? echo $this->getSettingsURL(); ?>'>provide 
+                <p><strong>Parse.ly - Dash is not active.</strong> You need to <a href='<?php echo $this->getSettingsURL(); ?>'>provide 
                     your Parse.ly Dash API key</a> before things get cooking.
                 </p>
             </div>
-            <?
+            <?php
         }
     }
     
@@ -201,7 +201,7 @@ class Parsely {
             $parselyPage["link"]        = home_url(); // site_url();?
         }
         
-        ?><meta name='parsely-page' value='<? echo json_encode($parselyPage); ?>' /><?
+        ?><meta name='parsely-page' value='<?php echo json_encode($parselyPage); ?>' /><?php
     }
     
     /** 

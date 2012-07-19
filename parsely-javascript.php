@@ -1,8 +1,8 @@
-<? if (!isset($parselyOptions['tracker_implementation']) || empty($parselyOptions['tracker_implementation']) || $parselyOptions['tracker_implementation'] == 'standard') { ?>
+<?php if (!isset($parselyOptions['tracker_implementation']) || empty($parselyOptions['tracker_implementation']) || $parselyOptions['tracker_implementation'] == 'standard') { ?>
 
 <!-- START Parse.ly Include: Standard -->
 <div id="parsely-root" style="display: none">
-  <div id="parsely-cfg" data-parsely-site="<? echo $parselyOptions["apikey"]; ?>"></div>
+  <div id="parsely-cfg" data-parsely-site="<?php echo $parselyOptions["apikey"]; ?>"></div>
 </div>
 <script>
 (function(s, p, d) {
@@ -17,12 +17,12 @@
 </script>
 <!-- END Parse.ly Include: Standard -->
 
-<? } elseif ($parselyOptions['tracker_implementation'] == 'dom_free') { ?>
+<?php } elseif ($parselyOptions['tracker_implementation'] == 'dom_free') { ?>
 
 <!-- START Parse.ly Include: DOM-Free -->
 <script>
 (function(d) {
-  var site = "<? echo $parselyOptions["apikey"]; ?>",
+  var site = "<?php echo $parselyOptions["apikey"]; ?>",
       b = d.body,
       e = d.createElement("div");
   e.innerHTML = '<span id="parsely-cfg" data-parsely-site="'+site+'"></span>';
@@ -42,11 +42,11 @@
 </script>
 <!-- END Parse.ly Include: DOM-Free -->
 
-<? } else { ?>
+<?php } else { ?>
 
 <!-- START Parse.ly Include: Async -->
 <div id="parsely-root" style="display: none">
-  <div id="parsely-cfg" data-parsely-site="<? echo $parselyOptions["apikey"]; ?>"></div>
+  <div id="parsely-cfg" data-parsely-site="<?php echo $parselyOptions["apikey"]; ?>"></div>
   <script>
   $LAB.script(document.location.protocol==="https:"?
     "https://d1z2jf7jlzjs58.cloudfront.net/p.js":
@@ -55,4 +55,4 @@
 </div>
 <!-- END Parse.ly Include: Async -->
     
-<? } ?>
+<?php } ?>
