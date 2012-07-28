@@ -253,7 +253,7 @@ class Parsely {
     public function printSuccessMessage($message) {
         ?>
         <div class='success'>
-            <p><strong><?php esc_html_e($message); ?></strong></p>
+            <p><strong><?php echo esc_html($message); ?></strong></p>
         </div>
         <?php
     }
@@ -261,7 +261,7 @@ class Parsely {
     public function printErrorMessage($message) {
         ?>
         <div id='message' class='error'>
-            <p><strong><?php esc_html_e($message); ?></strong></p>
+            <p><strong><?php echo esc_html($message); ?></strong></p>
         </div>
         <?php
     }
