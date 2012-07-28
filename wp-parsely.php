@@ -46,7 +46,7 @@ if (class_exists('Parsely')) {
 }
 
 class Parsely {
-    public static $VERSION      = "1.1";
+    public static $VERSION          = "1.1";
     
     private $NAME;
     private $MENU_SLUG              = "parsely-dash";               // Defines the page param passed to options-general.php
@@ -149,6 +149,7 @@ class Parsely {
     */
     public function insertParselyPage() {
         $parselyOptions = get_option($this->OPTIONS_KEY);
+        
         // If we don't have an API key, there's no need to proceed.
         if (!isset($parselyOptions['apikey']) || empty($parselyOptions['apikey'])) {
             return "";
@@ -157,9 +158,8 @@ class Parsely {
         global $wp_query;
         global $post;
         $parselyPage = array();
-        
         if (is_single() && $post->post_status == "publish") {
-            $author     = get_user_meta($post->post_author, 'first_name', true) . " " . get_user_meta($post->post_author, 'last_name', true);
+            $author     = $this->getAuthorName($post);
             $category   = get_the_category();
             $category   = $category[0];
             $postId     = (string)get_the_ID();
@@ -179,7 +179,7 @@ class Parsely {
             $parselyPage["link"]        = get_permalink();
             $parselyPage["image_url"]   = $image_url;
             $parselyPage["type"]        = "post";
-            $parselyPage["post_id"]     = $parselyOptions["content_id_prefix"] . (string)get_the_ID();
+            $parselyPage["post_id"]     = $postId;
             $parselyPage["pub_date"]    = gmdate("Y-m-d\TH:i:s\Z", get_post_time('U', true));
             $parselyPage["section"]     = $this->getCleanParselyPageValue($category->name);
             $parselyPage["author"]      = $this->getCleanParselyPageValue($author);
@@ -193,6 +193,7 @@ class Parsely {
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue("Author - ".$author->data->display_name);
             $parselyPage["link"]        = get_author_posts_url($author->ID);
+            $this->shouldOutput = true;
         } elseif (is_category()) {
             $category = get_the_category();
             $category = $category[0];
@@ -225,7 +226,9 @@ class Parsely {
             $parselyPage["link"]        = home_url(); // site_url();?
         }
         
-        ?><meta name='parsely-page' value='<?php echo json_encode($parselyPage); ?>' /><?php
+        if (!empty($parselyPage)) {
+            ?><meta name='parsely-page' value='<?php echo json_encode($parselyPage); ?>' /><?php
+        }
     }
     
     /** 
@@ -284,6 +287,26 @@ class Parsely {
         }
         $tag .= ' />';
         echo $tag;
+    }
+    
+    /**
+    * Safe way to retrieve an author name given that not all pubs fill out a first and last name.
+    */
+    private function getAuthorName($postObj) {
+        $author = get_user_meta($postObj->post_author, 'display_name', true);
+        if (!empty($author)) {
+            return $author;
+        }
+        
+        $author = get_user_meta($postObj->post_author, 'first_name', true) . " " . get_user_meta($postObj->post_author, 'last_name', true);
+        if ($author != " ") {
+            return $author;
+        }
+        
+        // This is the fall back as all users have to have nickname even if they don't have a display name
+        // nickname will be their username by default
+        $author = get_user_meta($postObj->post_author, 'nickname', true);
+        return $author;
     }
         
     /**
