@@ -290,7 +290,7 @@ class Parsely {
     }
     
     /**
-    * Safe way to retrieve an author name given that not all pubs fill out a first and last name.
+    * Determine author name from display name, falling back to firstname + lastname, and finally to nickname.
     */
     private function getAuthorName($postObj) {
         $author = get_user_meta($postObj->post_author, 'display_name', true);
