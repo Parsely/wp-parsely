@@ -54,6 +54,12 @@ class Parsely {
     private $MENU_PAGE_TITLE        = "Parse.ly - Dash > Settings"; // Text shown in <title></title> when the settings screen is viewed
     private $OPTIONS_KEY            = "parsely";                    // Defines the key used to store options in the WP database
     private $CAPABILITY             = "manage_options";             // The capability required for the user to administer settings
+    private $OPTION_DEFAULTS        = array(
+                                            "apikey" => "",
+                                            "tracker_implementation" => "standard",
+                                            "content_id_prefix" => "",
+                                            "use_top_level_cats" => false
+                                            );
 
     public $IMPLEMENTATION_OPTS     = array("standard" => "Standard", "dom_free" => "DOM-Free", "async" => "Asynchronous");
     
@@ -98,7 +104,9 @@ class Parsely {
     	
     	$errors = array();
     	$valuesSaved = false;
-    	$options = get_option($this->OPTIONS_KEY);
+    	
+    	// Pull our options and merge with defaults to avoid any nasty PHP warnings about array indexes that don't exist
+    	$options = $this->getOptions();
     	
     	if (isset($_POST["isParselySettings"]) && $_POST["isParselySettings"] == 'Y') {
     	    if (empty($_POST["apikey"])) {
@@ -114,6 +122,12 @@ class Parsely {
     	    }
 
     	    $options["content_id_prefix"] = sanitize_text_field($_POST["content_id_prefix"]);
+    	    
+    	    if ($_POST["use_top_level_cats"] !== "true" && $_POST["use_top_level_cats"] !== "false") {
+    	        array_push($errors, "Value passed for use_top_level_cats must be either 'true' or 'false'.");
+    	    } else {
+    	        $options["use_top_level_cats"] = $_POST["use_top_level_cats"] === "true" ? true : false;
+    	    }
     	    
     	    if (empty($errors)) {
     	        update_option($this->OPTIONS_KEY, $options);
@@ -132,7 +146,7 @@ class Parsely {
     }
     
     public function displayAdminWarning() {
-        $options = get_option($this->OPTIONS_KEY);
+        $options = $this->getOptions();
         if (!isset($options['apikey']) || empty($options['apikey'])) {
             ?>
             <div id='message' class='error'>
@@ -148,10 +162,10 @@ class Parsely {
     * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
     */
     public function insertParselyPage() {
-        $parselyOptions = get_option($this->OPTIONS_KEY);
+        $parselyOptions = $this->getOptions();
         
         // If we don't have an API key, there's no need to proceed.
-        if (!isset($parselyOptions['apikey']) || empty($parselyOptions['apikey'])) {
+        if (empty($parselyOptions['apikey'])) {
             return "";
         }
         
@@ -161,10 +175,10 @@ class Parsely {
         if (is_single() && $post->post_status == "publish") {
             $author     = $this->getAuthorName($post);
             $category   = get_the_category();
-            $category   = $category[0];
+            $category   = $parselyOptions["use_top_level_cats"] ? $this->getTopLevelCategory($category[0]->cat_ID) : $category[0]->name;
             $postId     = (string)get_the_ID();
             
-            if (isset($parselyOptions["content_id_prefix"]) && !empty($parselyOptions["content_id_prefix"])) {
+            if (!empty($parselyOptions["content_id_prefix"])) {
                 $postId = $parselyOptions["content_id_prefix"] . $postId;
             }
             
@@ -181,7 +195,7 @@ class Parsely {
             $parselyPage["type"]        = "post";
             $parselyPage["post_id"]     = $postId;
             $parselyPage["pub_date"]    = gmdate("Y-m-d\TH:i:s\Z", get_post_time('U', true));
-            $parselyPage["section"]     = $this->getCleanParselyPageValue($category->name);
+            $parselyPage["section"]     = $this->getCleanParselyPageValue($category);
             $parselyPage["author"]      = $this->getCleanParselyPageValue($author);
         } elseif (is_page() && $post->post_status == "publish") {
             $parselyPage["type"]        = "sectionpage";
@@ -235,9 +249,9 @@ class Parsely {
     * Inserts the JavaScript code required to send off beacon requests
     */
     public function insertParselyJS() {
-        $parselyOptions = get_option($this->OPTIONS_KEY);
+        $parselyOptions = $this->getOptions();
         // If we don't have an API key, there's no need to proceed.
-        if (!isset($parselyOptions['apikey']) || empty($parselyOptions['apikey'])) {
+        if (empty($parselyOptions['apikey'])) {
             return "";
         }
         
@@ -287,6 +301,47 @@ class Parsely {
         }
         $tag .= ' />';
         echo $tag;
+    }
+        
+    /**
+    * Outputs a checkbox tag to the page.
+    */
+    public function printCheckboxTag($name, $value, $options=array()) {
+        $value = $value === true ? "true" : "false";
+        $tag = '<input type="checkbox" name="' . esc_attr($name) . '" id="' . esc_attr($name) . '" value="' . esc_attr($value) .'"';
+        foreach ($options as $key => $val) {
+            if ($key == "checked" && ($val === false || empty($val))) {
+                continue;
+            }
+            $tag .= ' ' . esc_attr($key) . '="' . esc_attr($val) . '"';
+        }
+        $tag .= ' />';
+        echo $tag;
+    }
+    
+    /**
+    * Safely returns options for the plugin by assigning defaults contained in OPTION_DEFAULTS.  As soon as actual
+    * options are saved, they override the defaults.  This prevents us from having to do a lot of isset() checking
+    * on variables.
+    */
+    private function getOptions() {
+        $options = get_option($this->OPTIONS_KEY);
+    	if ($options === false) {
+    	    $options = $this->OPTION_DEFAULTS;
+    	} else {
+    	    $options = array_merge($this->OPTION_DEFAULTS, $options);
+    	}
+    	return $options;
+    }
+        
+    /**
+    * Returns the top most category in the hierarchy given a category ID.
+    */
+    private function getTopLevelCategory($categoryId) {
+        $categories = get_category_parents($categoryId, FALSE, ",");
+        $categories = split(",", $categories);
+        $topLevel = $categories[0];
+        return $topLevel;
     }
     
     /**

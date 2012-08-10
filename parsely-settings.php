@@ -58,8 +58,29 @@
                         a conflict for parsely-page.  Adding a <strong>Content ID Prefix</strong> will ensure the content IDs from WordPress will not
                         conflict with those in another content management system.  We recommend you use something like "WP-" for your prefix but any value
                         will work.
+                        <br/><br/>
+                        <strong style="color: red">Important:</strong> changing this value on a live site currently tracked with Parse.ly will require a recrawl 
+                        and potentially a rebuild of your Parse.ly data. Once you have changed this value, please contact <a href="mailto:support@parsely.com?subject=Please recrawl <?php echo esc_attr($options["apikey"]); ?>">support@parsely.com</a> 
+                        to kick off a recrawl / rebuild of your data.
                     </p>
                 </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row"><label><?php _e('Use Top-Level Categories'); ?></label></th>
+                <td>
+                    <input type="radio" name="use_top_level_cats" id="use_top_level_cats_true" value="true" <?php if ($options["use_top_level_cats"]) { echo 'checked="checked"'; } ?>/> <label for="use_top_level_cats_true">Yes</label>
+                    <input type="radio" name="use_top_level_cats" id="use_top_level_cats_false" value="false" <?php if (!$options["use_top_level_cats"]) { echo 'checked="checked"'; } ?> /> <label for="use_top_level_cats_false">No</label>
+                    <p class="description">
+                        By default, wp-parsely will use the first category assigned to a post that it finds.  If you are using a hierarchy of categories,
+                        this may not be the one you hope to see in Parse.ly Dash.  For example, if you post a story to your Florida category which is actually
+                        a sub-category of News &gt; National &gt; Florida, you perhaps want to see <strong>News</strong> as the category instead of
+                        <strong>Florida</strong>.  Enabling this field will ensure Parse.ly always uses the top-level category to categorize your content.
+                        Enabling this option will apply it to all posts for this WordPress site.
+                        <br/><br/>
+                        <strong style="color: red">Important:</strong> changing this value on a live site currently tracked with Parse.ly will require a recrawl 
+                        and potentially a rebuild of your Parse.ly data. Once you have changed this value, please contact <a href="mailto:support@parsely.com?subject=Please recrawl <?php echo esc_attr($options["apikey"]); ?>">support@parsely.com</a> 
+                        to kick off a recrawl / rebuild of your data.
+                    </p>
             </tr>
         </table>
         <p class="submit">
