@@ -57,6 +57,11 @@ Dash code will only be placed on pages and posts which have been published in Wo
 
 == Changelog ==
 
+= 1.2 =
+* Support for using top-level categories for posts instead of the first active post the plugin finds
+* parsely-page meta tag now outputs it's value using 'content' attribute instead of 'value'
+* Minor fixes to outputting to use proper WordPress functions
+
 = 1.1 =
 * Added ability to add prefix to content IDs
 * Ensured plugin only uses long tags `<?php` instead of `<?`
@@ -69,6 +74,9 @@ Dash code will only be placed on pages and posts which have been published in Wo
 * Support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag)
 
 == Upgrade Notice ==
+
+= 1.2 =
+This version adds the ability to use the top-level category for posts instead of the first active post found.  It also outputs attributes using a more HTML-valid way. Please upgrade.
 
 = 1.1 =
 This version adds the ability to add a prefix to content IDs and fixes a number of security issues, please upgrade immediately.
