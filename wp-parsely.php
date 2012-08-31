@@ -96,43 +96,43 @@ class Parsely {
     /* Dash settings screen (options-general.php?page=[MENU_SLUG]) */
     public function displaySettings() {
         if (!current_user_can($this->CAPABILITY)) {
-    		wp_die(__('You do not have sufficient permissions to access this page.'));
-    	}
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
 
-    	$errors = array();
-    	$valuesSaved = false;
+        $errors = array();
+        $valuesSaved = false;
 
-    	// Pull our options and merge with defaults to avoid PHP warnings
+        // Pull our options and merge with defaults to avoid PHP warnings
         // about array indexes that don't exist
-    	$options = $this->getOptions();
+        $options = $this->getOptions();
 
-    	if (isset($_POST["isParselySettings"]) && $_POST["isParselySettings"] == 'Y') {
-    	    if (empty($_POST["apikey"])) {
-    	        array_push($errors, "Please specify the API key");
-    	    } else {
-    	        $options["apikey"] = sanitize_text_field($_POST["apikey"]);
-    	    }
+        if (isset($_POST["isParselySettings"]) && $_POST["isParselySettings"] == 'Y') {
+            if (empty($_POST["apikey"])) {
+                array_push($errors, "Please specify the API key");
+            } else {
+                $options["apikey"] = sanitize_text_field($_POST["apikey"]);
+            }
 
-    	    if (!in_array($_POST["tracker_implementation"], array_keys($this->IMPLEMENTATION_OPTS))) {
-    	        array_push($errors, "Invalid tracker implementation value specified " . $options["tracker_implementation"] . ". Must be one of: " . join(", ", array_keys($this->IMPLEMENTATION_OPTS))). ".";
-    	    } else {
-    	        $options["tracker_implementation"] = sanitize_text_field($_POST["tracker_implementation"]);
-    	    }
+            if (!in_array($_POST["tracker_implementation"], array_keys($this->IMPLEMENTATION_OPTS))) {
+                array_push($errors, "Invalid tracker implementation value specified " . $options["tracker_implementation"] . ". Must be one of: " . join(", ", array_keys($this->IMPLEMENTATION_OPTS))). ".";
+            } else {
+                $options["tracker_implementation"] = sanitize_text_field($_POST["tracker_implementation"]);
+            }
 
-    	    $options["content_id_prefix"] = sanitize_text_field($_POST["content_id_prefix"]);
+            $options["content_id_prefix"] = sanitize_text_field($_POST["content_id_prefix"]);
 
-    	    if ($_POST["use_top_level_cats"] !== "true" && $_POST["use_top_level_cats"] !== "false") {
-    	        array_push($errors, "Value passed for use_top_level_cats must be either 'true' or 'false'.");
-    	    } else {
-    	        $options["use_top_level_cats"] = $_POST["use_top_level_cats"] === "true" ? true : false;
-    	    }
+            if ($_POST["use_top_level_cats"] !== "true" && $_POST["use_top_level_cats"] !== "false") {
+                array_push($errors, "Value passed for use_top_level_cats must be either 'true' or 'false'.");
+            } else {
+                $options["use_top_level_cats"] = $_POST["use_top_level_cats"] === "true" ? true : false;
+            }
 
-    	    if (empty($errors)) {
-    	        update_option($this->OPTIONS_KEY, $options);
-    	        $valuesSaved = true;
-    	    }
-    	}
-    	include("parsely-settings.php");
+            if (empty($errors)) {
+                update_option($this->OPTIONS_KEY, $options);
+                $valuesSaved = true;
+            }
+        }
+        include("parsely-settings.php");
     }
 
     /**
@@ -242,7 +242,7 @@ class Parsely {
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue("Tagged - ".$tag);
             $parselyPage["link"]        = get_tag_link(get_query_var('tag_id'));
-            
+
         } elseif (is_front_page()) {
             $parselyPage["type"]        = "frontpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_bloginfo("name", "raw"));
@@ -337,12 +337,12 @@ class Parsely {
     */
     private function getOptions() {
         $options = get_option($this->OPTIONS_KEY);
-    	if ($options === false) {
-    	    $options = $this->OPTION_DEFAULTS;
-    	} else {
-    	    $options = array_merge($this->OPTION_DEFAULTS, $options);
-    	}
-    	return $options;
+        if ($options === false) {
+            $options = $this->OPTION_DEFAULTS;
+        } else {
+            $options = array_merge($this->OPTION_DEFAULTS, $options);
+        }
+        return $options;
     }
 
     /**
