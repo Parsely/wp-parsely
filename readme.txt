@@ -7,7 +7,7 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Parse.ly's Dash is the world's first analytics tool designed and built for digital publishers.  The wp-parsely WordPress plugin makes it a snap to add the required tracking code to enable Dash on your WordPress site.
+Parse.ly's Dash is the world's first analytics tool designed and built for digital publishers.  The plugin simplifies integration.
 
 == Description ==
 
@@ -37,7 +37,7 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 = Where do I find my API key? =
 
 In the "Setup" settings screen for your account (`/mysite.com/settings/code`) you'll see a snippet of tracking code.  On the
-third line of this code look for `data-parsely-site="[API KEY]"`, you want to take the value in between the quotations (usually 
+third line of this code look for `data-parsely-site="[API KEY]"`, you want to take the value in between the quotations (usually
 something like mysite.com) and use that for the API key.
 
 = What tracker implementation should I use? =
