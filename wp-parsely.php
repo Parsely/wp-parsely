@@ -36,8 +36,6 @@ Authors: Mike Sukmanowsky (mike@parsely.com)
  * Add unit/functional tests
  * Support: is_search(), is_404()
  * Test pagination
- * Figure out if pages should be "posts" or stay the way they are
- * Figure out how to deal with hierarchical categories
 */
 
 if (class_exists('Parsely')) {
