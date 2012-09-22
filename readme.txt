@@ -36,9 +36,7 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 
 = Where do I find my API key? =
 
-In the "Setup" settings screen for your account (`/mysite.com/settings/code`) you'll see a snippet of tracking code.  On the
-third line of this code look for `data-parsely-site="[API KEY]"`, you want to take the value in between the quotations (usually
-something like mysite.com) and use that for the API key.
+Head to [your API settings screen](http://www.parsely.com/settings/api) and copy the value for API key.  Ensure you don't copy the value for secret, please use API key.
 
 = What tracker implementation should I use? =
 
@@ -56,6 +54,13 @@ Dash code will only be placed on pages and posts which have been published in Wo
 4. A sample `parsely-page` meta tag for an article or post
 
 == Changelog ==
+
+= 1.3 =
+* Added option to not track or not track authenticated users (default is to not track authenticated users)
+* Removed async implementation option
+* Updated API key retrieval instructions
+* Added activation/deactivation hooks
+* null categories are now set to "Uncategorized"
 
 = 1.2 =
 * Support for using top-level categories for posts instead of the first active post the plugin finds

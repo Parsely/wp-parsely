@@ -1,4 +1,7 @@
-<?php if (!isset($parselyOptions['tracker_implementation']) || empty($parselyOptions['tracker_implementation']) || $parselyOptions['tracker_implementation'] == 'standard') { ?>
+<?php if(!$parselyOptions["track_authenticated_users"] && is_user_logged_in()) { exit; } ?>
+<?php if(!isset($parselyOptions["tracker_implementation"]) || empty($parselyOptions["tracker_implementation"])) { exit; } ?>
+
+<?php if ($parselyOptions['tracker_implementation'] == 'standard') { ?>
 
 <!-- START Parse.ly Include: Standard -->
 <div id="parsely-root" style="display: none">
@@ -42,17 +45,4 @@
 </script>
 <!-- END Parse.ly Include: DOM-Free -->
 
-<?php } else { ?>
-
-<!-- START Parse.ly Include: Async -->
-<div id="parsely-root" style="display: none">
-  <div id="parsely-cfg" data-parsely-site="<?php esc_html_e($parselyOptions["apikey"]); ?>"></div>
-  <script>
-  $LAB.script(document.location.protocol==="https:"?
-    "https://d1z2jf7jlzjs58.cloudfront.net/p.js":
-    "http://static.parsely.com/p.js");
-  </script>
-</div>
-<!-- END Parse.ly Include: Async -->
-    
 <?php } ?>

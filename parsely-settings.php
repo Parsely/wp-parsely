@@ -27,9 +27,8 @@
                 <td>
                     <?php $this->printTextTag("apikey", $options["apikey"], array("size" => "20", "placeholder" => "test.com")); ?>
                     <p class="description">
-                        This is the API key that you would've received during setup.  Can't remember yours?
-                        You can always get this from within your account.  When <a href="http://dash.parsely.com/" target="_blank">logged into Dash</a>, just head to Settings and then select Setup.
-                        Once on this screen, look for the value of data-parsely-site which should be something like test.com.
+                        You can grab your API key by heading to <a href="http://dash.parsely.com/settings/api" target="_blank">your API settings page</a>
+                        and look for the API Key field.
                     </p>
                     <p class="description">
                         Don't have a Parse.ly account yet? Never fear because you can <a href="http://dash.parsely.com/try" target="_blank">sign up for one here</a>!
@@ -80,6 +79,16 @@
                         <strong style="color: red">Important:</strong> changing this value on a live site currently tracked with Parse.ly will require a recrawl 
                         and potentially a rebuild of your Parse.ly data. Once you have changed this value, please contact <a href="mailto:support@parsely.com?subject=Please recrawl <?php echo esc_attr($options["apikey"]); ?>">support@parsely.com</a> 
                         to kick off a recrawl / rebuild of your data.
+                    </p>
+            </tr>
+            <tr valign="top">
+                <th scope="row"><label><?php _e('Track Logged-in Users'); ?></label></th>
+                <td>
+                    <input type="radio" name="track_authenticated_users" id="track_authenticated_users_true" value="true" <?php if($options["track_authenticated_users"]) { echo 'checked="checked"'; } ?>/> <label for="track_authenticated_users_true">Yes</label>
+                    <input type="radio" name="track_authenticated_users" id="track_authenticated_users_false" value="false" <?php if(!$options["track_authenticated_users"]) { echo 'checked="checked"'; } ?>/> <label for="track_authenticated_users_false">No</label>
+                    <p class="description">
+                        By default, wp-parsley will not track any activity of users that are logged into this site or blog.  You can change this setting here
+                        and send Parse.ly activity of both logged in and anonymous users.
                     </p>
             </tr>
         </table>

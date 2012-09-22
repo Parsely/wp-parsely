@@ -4,7 +4,7 @@ Plugin Name: Parse.ly - Dash
 Plugin URI: http://www.parsely.com/
 Description: This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
 Author: Mike Sukmanowsky (mike@parsely.com)
-Version: 1.2
+Version: 1.3
 Requires at least: 3.0.0
 Author URI: http://www.parsely.com/
 License: GPL2
@@ -28,23 +28,14 @@ Authors: Mike Sukmanowsky (mike@parsely.com)
 */
 
 /* TODO List:
- * Wordpress Network support
- * register_activation_hook(), register_deactivation_hook(), register_uninstall_hook()
- * Add proper URL for updates and such
+ * Wordpress Network support - going to hold off on any specific support here as content id prefix should work ok for now
  * Allow the user to map get_post_types() to Parse.ly post types
- * Option to not track logged in users
  * Add unit/functional tests
  * Support: is_search(), is_404()
- * Test pagination
 */
 
-if (class_exists('Parsely')) {
-    define('PARSELY_VERSION', Parsely::$VERSION);
-    $parsely = new Parsely();
-}
-
 class Parsely {
-    public static $VERSION          = "1.2";
+    public static $VERSION          = "1.3";
 
     private $NAME;
     private $MENU_SLUG              = "parsely-dash";               // Defines the page param passed to options-general.php
@@ -52,14 +43,15 @@ class Parsely {
     private $MENU_PAGE_TITLE        = "Parse.ly - Dash > Settings"; // Text shown in <title></title> when the settings screen is viewed
     private $OPTIONS_KEY            = "parsely";                    // Defines the key used to store options in the WP database
     private $CAPABILITY             = "manage_options";             // The capability required for the user to administer settings
+    private $GA_ACCOUNT             = "UA-5989141-8";
     private $OPTION_DEFAULTS        = array("apikey" => "",
                                             "tracker_implementation" => "standard",
                                             "content_id_prefix" => "",
-                                            "use_top_level_cats" => false);
+                                            "use_top_level_cats" => false,
+                                            "track_authenticated_users" => false);
 
     public $IMPLEMENTATION_OPTS     = array("standard" => "Standard",
-                                            "dom_free" => "DOM-Free",
-                                            "async" => "Asynchronous");
+                                            "dom_free" => "DOM-Free");
 
     /* PHP4 Constructor */
     function Parsely() {
@@ -69,6 +61,25 @@ class Parsely {
     /* PHP5 Constructor */
     function __construct() {
         $this->NAME = plugin_basename(__FILE__);
+
+        // Register activation function upon plugin first time install
+        register_activation_hook(__FILE__, array(&$this, 'onActivatePlugin'));
+
+        // Also register deactivation function when we are removed
+        register_deactivation_hook(__FILE__, array(&$this, 'onDeactivatePlugin'));
+        
+        // Run upgrade options if they exist for the version currently defined
+        $options = $this->getOptions();
+        if (empty($options["plugin_version"]) || $options["plugin_version"] != Parsely::$VERSION) {
+            $method = "upgradePluginToVersion" . str_replace(".", "_", Parsely::$VERSION);
+            if (method_exists($this, $method)) {
+                call_user_func_array(array($this, $method), array($options));
+            }
+            // Update our version info
+            $options["plugin_version"] = Parsely::$VERSION;
+            update_option($this->OPTIONS_KEY, $options);
+        }
+        
         // admin_menu and a settings link
         add_action('admin_menu', array(&$this, 'addSettingsSubMenu'));
         add_filter('plugin_action_links_' . $this->NAME,
@@ -80,6 +91,68 @@ class Parsely {
         // inserting parsely code
         add_action('wp_head', array(&$this, 'insertParselyPage'));
         add_action('wp_footer', array(&$this, 'insertParselyJS'));
+    }
+
+    /**
+    * Activation function to send some info to GA upon a site activating the plugin.
+    */
+    public function onActivatePlugin() {
+        $siteUrl = get_bloginfo('wpurl');
+        $siteHost = $this->getHostFromUrl($siteUrl);
+        
+        try {
+            $this->sendGAEvent($this->GA_ACCOUNT, 
+                               "/wp-parsely/plugin_activated?site=".$siteUrl,
+                               "wp-parsely - Plugin Activated for ".$siteHost,
+                               "wp-parsely",
+                               "Plugin_Activated",
+                               $siteUrl);
+        } catch (Exception $e) { }
+    }
+
+    /**
+    * Deactivation function to send some info to GA upon a site deactivating the plugin.
+    */
+    public function onDeactivatePlugin() {
+        $siteUrl = get_bloginfo('wpurl');
+        $siteHost = $this->getHostFromUrl($siteUrl);
+        
+        try {
+            $this->sendGAEvent($this->GA_ACCOUNT,
+                               "/wp-parsely/plugin_deactivated?site=".$siteUrl,
+                               "wp-parsely - Plugin Deactivated for ".$siteHost,
+                               "wp-parsely",
+                               "Plugin_Deactivated",
+                               $siteUrl);
+        } catch (Exception $e) { }
+    }
+
+    /**
+    * Send an event to a Google Analytics account
+    */
+    public function sendGAEvent($account, $path, $title, $category, $action, $label) {
+        $visitorId = md5(uniqid(rand(0, 0x7fffffff)));
+        $visitorId = "0x" . substr($visitorId, 0, 16);
+        $userAgent = $_SERVER["HTTP_USER_AGENT"];
+        $visitorIp = $_SERVER["REMOTE_ADDR"];
+        if (empty($userAgent)) {
+            $userAgent = "";
+        }
+
+        $gaUrl = "http://www.google-analytics.com/__utm.gif?" .
+            "utmwv=4.4sh" .
+            "&utmt=event" .
+            "&utmr=-" .
+            "&utmcc=__utma%3D999.999.999.999.999.1%3B" .
+            "&utmn="    . (string)rand(0, 0x7fffffff) .
+            "&utmac="   . urlencode($account) .
+            "&utmhn="   . urlencode("wp-parsely.parsely.com") .
+            "&utmp="    . urlencode($path) .
+            "&utmdt="   . urlencode($title) .
+            "&utme="    . urlencode("5(".$category."*".$action."*".$label.")") .
+            "&utmip="   . urlencode($visitorIp) .
+            "&utmvid="  . urlencode($visitorId);
+        file_get_contents($gaUrl, false);
     }
 
     /* Parsely settings page in Wordpress settings menu. */
@@ -124,6 +197,12 @@ class Parsely {
             } else {
                 $options["use_top_level_cats"] = $_POST["use_top_level_cats"] === "true" ? true : false;
             }
+            
+            if ($_POST["track_authenticated_users"] !== "true" && $_POST["track_authenticated_users"] !== "false") {
+                array_push($errors, "Value passed for track_authenticated_users must be either 'true' or 'false'.");
+            } else {
+                $options["track_authenticated_users"] = $_POST["track_authenticated_users"] === "true" ? true : false;
+            }
 
             if (empty($errors)) {
                 update_option($this->OPTIONS_KEY, $options);
@@ -165,8 +244,8 @@ class Parsely {
     public function insertParselyPage() {
         $parselyOptions = $this->getOptions();
 
-        // If we don't have an API key, there's no need to proceed.
-        if (empty($parselyOptions['apikey'])) {
+        // If we don't have an API key or if we aren't supposed to show to logged in users, there's no need to proceed.
+        if (empty($parselyOptions['apikey']) || (!$parselyOptions['track_authenticated_users'] && is_user_logged_in())) {
             return "";
         }
 
@@ -175,13 +254,8 @@ class Parsely {
         $parselyPage = array();
         if (is_single() && $post->post_status == "publish") {
             $author     = $this->getAuthorName($post);
-            $category   = get_the_category();
-            $category   = $parselyOptions["use_top_level_cats"] ? $this->getTopLevelCategory($category[0]->cat_ID) : $category[0]->name;
+            $category   = $this->getCategoryName($post, $parselyOptions);
             $postId     = (string)get_the_ID();
-
-            if (!empty($parselyOptions["content_id_prefix"])) {
-                $postId = $parselyOptions["content_id_prefix"] . $postId;
-            }
 
             $image_url = "";
             if (has_post_thumbnail()) {
@@ -196,14 +270,12 @@ class Parsely {
             $parselyPage["type"]        = "post";
             $parselyPage["post_id"]     = $postId;
             $parselyPage["pub_date"]    = gmdate("Y-m-d\TH:i:s\Z", get_post_time('U', true));
-            $parselyPage["section"]     = $this->getCleanParselyPageValue($category);
-            $parselyPage["author"]      = $this->getCleanParselyPageValue($author);
-
+            $parselyPage["section"]     = $category;
+            $parselyPage["author"]      = $author;
         } elseif (is_page() && $post->post_status == "publish") {
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_the_title());
             $parselyPage["link"]        = get_permalink();
-
         } elseif (is_author()) {
             // TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions
             $author = (get_query_var('author_name')) ? get_user_by('slug', get_query_var('author_name')) : get_userdata(get_query_var('author'));
@@ -211,14 +283,12 @@ class Parsely {
             $parselyPage["title"]       = $this->getCleanParselyPageValue("Author - ".$author->data->display_name);
             $parselyPage["link"]        = get_author_posts_url($author->ID);
             $this->shouldOutput = true;
-
         } elseif (is_category()) {
             $category = get_the_category();
             $category = $category[0];
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue($category->name);
             $parselyPage["link"]        = get_category_link($category->cat_ID);
-
         } elseif (is_date()) {
             $parselyPage["type"]        = "sectionpage";
             if (is_year()) {
@@ -231,7 +301,6 @@ class Parsely {
                 $parselyPage["title"]   = "Hourly, Minutely, or Secondly Archive - " . get_the_time('F jS g:i:s A');
             }
             $parselyPage["link"]        = $this->getCurrentURL();
-
         } elseif (is_tag()) {
             $tag = single_tag_title('', FALSE);
             if (empty($tag)) {
@@ -240,7 +309,6 @@ class Parsely {
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue("Tagged - ".$tag);
             $parselyPage["link"]        = get_tag_link(get_query_var('tag_id'));
-
         } elseif (is_front_page()) {
             $parselyPage["type"]        = "frontpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_bloginfo("name", "raw"));
@@ -313,6 +381,16 @@ class Parsely {
     }
 
     /**
+    * Extracts a host (not TLD) from a URL
+    */
+    private function getHostFromUrl($url) {
+        if (preg_match("/^https?:\/\/([^\/]+)\/.*$/", $url, $matches)) {
+            return $matches[1];
+        } else {
+            return $url;
+        }
+    }
+    /**
     * Outputs a checkbox tag to the page.
     */
     public function printCheckboxTag($name, $value, $options=array()) {
@@ -344,6 +422,21 @@ class Parsely {
     }
 
     /**
+    * Returns a properly cleaned category name and will optionally use the top-level category name if so instructed
+    * to via the `use_top_level_cats` option.
+    */
+    private function getCategoryName($postObj, $parselyOptions) {
+        $category   = get_the_category($postObj->ID);
+        $category   = $parselyOptions["use_top_level_cats"] ? $this->getTopLevelCategory($category[0]->cat_ID) : $category[0]->name;
+        // For some odd reason we apparently can still get nulls for a category
+        // so we add this last check and assign a WordPress appropriate default
+        if (is_null($category)) {
+            $category = "Uncategorized";
+        }
+        return $this->getCleanParselyPageValue($category);
+    }
+
+    /**
     * Returns the top most category in the hierarchy given a category ID.
     */
     private function getTopLevelCategory($categoryId) {
@@ -360,20 +453,19 @@ class Parsely {
     private function getAuthorName($postObj) {
         $author = get_user_meta($postObj->post_author, 'display_name', true);
         if (!empty($author)) {
-            return $author;
+            return $this->getCleanParselyPageValue($author);
         }
 
         $author = get_user_meta($postObj->post_author, 'first_name', true) . " " . get_user_meta($postObj->post_author, 'last_name', true);
         if ($author != " ") {
-            return $author;
+            return $this->getCleanParselyPageValue($author);
         }
 
         // This is the fall back as all users have to have nickname even if they don't have a display name
         // nickname will be their username by default
         $author = get_user_meta($postObj->post_author, 'nickname', true);
-        return $author;
+        return $this->getCleanParselyPageValue($author);
     }
-
 
     /* sanitize content so it
     */
@@ -383,6 +475,8 @@ class Parsely {
             $val = str_replace("\r", "", $val);
             $val = str_replace("\"", "&#34;", $val);
             $val = str_replace("\'", "&#39;", $val);
+            $val = strip_tags($val);
+            $val = trim($val);
             return $val;
         } else {
             return $val;
@@ -414,5 +508,17 @@ class Parsely {
         }
         return esc_url($pageURL);
     }
+    
+    private function upgradePluginToVersion1_3($options) {
+        if ($options["tracker_implementation"] == "async") {
+            $options["tracker_implementation"] = $this->OPTION_DEFAULTS["tracker_implementation"];
+        }
+        update_option($this->OPTIONS_KEY, $options);
+    }
+}
+
+if (class_exists('Parsely')) {
+    define('PARSELY_VERSION', Parsely::$VERSION);
+    $parsely = new Parsely();
 }
 ?>
