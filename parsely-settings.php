@@ -87,8 +87,9 @@
                     <input type="radio" name="track_authenticated_users" id="track_authenticated_users_true" value="true" <?php if($options["track_authenticated_users"]) { echo 'checked="checked"'; } ?>/> <label for="track_authenticated_users_true">Yes</label>
                     <input type="radio" name="track_authenticated_users" id="track_authenticated_users_false" value="false" <?php if(!$options["track_authenticated_users"]) { echo 'checked="checked"'; } ?>/> <label for="track_authenticated_users_false">No</label>
                     <p class="description">
-                        By default, wp-parsley will not track any activity of users that are logged into this site or blog.  You can change this setting here
-                        and send Parse.ly activity of both logged in and anonymous users.
+                        By default, wp-parsley will track the activity of users that are logged into this site or blog.  You can change this setting here
+                        and only track the activity of anonymous visitors (note that you will no longer see the Parse.ly Dash tracking code on your site
+                        if you browse while logged in).
                     </p>
             </tr>
         </table>

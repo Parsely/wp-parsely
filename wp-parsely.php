@@ -48,7 +48,7 @@ class Parsely {
                                             "tracker_implementation" => "standard",
                                             "content_id_prefix" => "",
                                             "use_top_level_cats" => false,
-                                            "track_authenticated_users" => false);
+                                            "track_authenticated_users" => true);
 
     public $IMPLEMENTATION_OPTS     = array("standard" => "Standard",
                                             "dom_free" => "DOM-Free");
@@ -467,14 +467,14 @@ class Parsely {
         return $this->getCleanParselyPageValue($author);
     }
 
-    /* sanitize content so it
+    /* sanitize content
     */
     private function getCleanParselyPageValue($val) {
         if (is_string($val)) {
             $val = str_replace("\n", "", $val);
             $val = str_replace("\r", "", $val);
             $val = str_replace("\"", "&#34;", $val);
-            $val = str_replace("\'", "&#39;", $val);
+            $val = str_replace("'", "&#39;", $val);
             $val = strip_tags($val);
             $val = trim($val);
             return $val;
