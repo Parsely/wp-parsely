@@ -179,7 +179,7 @@ class Parsely {
 
         if (isset($_POST["isParselySettings"]) && $_POST["isParselySettings"] == 'Y') {
             if (empty($_POST["apikey"])) {
-                array_push($errors, "Please specify the API key");
+                array_push($errors, "Please specify the Site ID");
             } else {
                 $options["apikey"] = sanitize_text_field($_POST["apikey"]);
             }
@@ -229,7 +229,7 @@ class Parsely {
                     <strong>Parse.ly - Dash plugin is not active.</strong>
                     You need to
                     <a href='<?php echo $this->getSettingsURL(); ?>'>
-                        provide your Parse.ly Dash API key
+                        provide your Parse.ly Dash Site ID
                     </a>
                     before things get cooking.
                 </p>

@@ -23,12 +23,12 @@
         <h3>Required Settings</h3>
         <table class="form-table">
             <tr valign="top">
-                <th scope="row"><label for="apikey"><?php _e('API Key / Parse.ly Site'); ?></label></th>
+                <th scope="row"><label for="apikey"><?php _e('Parse.ly Site ID'); ?></label></th>
                 <td>
                     <?php $this->printTextTag("apikey", $options["apikey"], array("size" => "20", "placeholder" => "test.com")); ?>
                     <p class="description">
-                        You can grab your API key by heading to <a href="http://dash.parsely.com/settings/api" target="_blank">your API settings page</a>
-                        and look for the API Key field.
+                        You can grab your Site ID by heading to <a href="http://dash.parsely.com/settings/api" target="_blank">your API settings page</a>
+                        and look for the Site ID field.
                     </p>
                     <p class="description">
                         Don't have a Parse.ly account yet? Never fear because you can <a href="http://dash.parsely.com/try" target="_blank">sign up for one here</a>!

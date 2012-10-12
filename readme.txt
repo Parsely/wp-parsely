@@ -27,16 +27,16 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress (look for "Parse.ly - Dash")
 1. Head to the settings page for the plugin (should be /wp-admin/options-general.php?page=parsely-dash)
-1. Add a your API key and choose a tracker implementation method (your API key can be found in [your API settings screen](http://dash.parsely.com/settings/api).
+1. Add a your Site ID and choose a tracker implementation method (your Site ID can be found in [your settings screen](http://dash.parsely.com/settings/api).
 1. Save your changes and enjoy your data!
 
 Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com](mailto:support@parsely.com) we always want to hear from you.
 
 == Frequently Asked Questions ==
 
-= Where do I find my API key? =
+= Where do I find my Site ID? =
 
-Head to [your API settings screen](http://dash.parsely.com/settings/api) and copy the value for API key.  Ensure you don't copy the value for secret, please use API key.
+Head to [your settings screen](http://dash.parsely.com/settings/api) and copy the value for Site ID.
 
 = What tracker implementation should I use? =
 
