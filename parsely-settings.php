@@ -2,6 +2,7 @@
     .success {padding:0.8em;margin-bottom:1em;border:2px solid #ddd;background:#e6efc2;color:#264409;border-color:#c6d880;}
     .success a {color:#264409;}
     .success p {margin: 0;}
+    #wp-parsely_version {color: #777; font-size: 12px; margin-left: 1em;}
 </style>
 <div class="wrap">
     <?php
@@ -11,7 +12,7 @@
         }
     }
     ?>
-    <h2>Parse.ly - Dash Settings</h2>
+    <h2>Parse.ly - Dash Settings <span id="wp-parsely_version">Version <?php echo Parsely::$VERSION; ?></span></h2>
     <?php
     if ($valuesSaved) {
         $this->printSuccessMessage("Settings saved successfully.");

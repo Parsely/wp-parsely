@@ -67,7 +67,7 @@ class Parsely {
 
         // Also register deactivation function when we are removed
         register_deactivation_hook(__FILE__, array(&$this, 'onDeactivatePlugin'));
-        
+
         // Run upgrade options if they exist for the version currently defined
         $options = $this->getOptions();
         if (empty($options["plugin_version"]) || $options["plugin_version"] != Parsely::$VERSION) {
@@ -79,7 +79,7 @@ class Parsely {
             $options["plugin_version"] = Parsely::$VERSION;
             update_option($this->OPTIONS_KEY, $options);
         }
-        
+
         // admin_menu and a settings link
         add_action('admin_menu', array(&$this, 'addSettingsSubMenu'));
         add_filter('plugin_action_links_' . $this->NAME,
@@ -99,7 +99,7 @@ class Parsely {
     public function onActivatePlugin() {
         $siteUrl = get_bloginfo('wpurl');
         $siteHost = $this->getHostFromUrl($siteUrl);
-        
+
         try {
             $this->sendGAEvent($this->GA_ACCOUNT, 
                                "/wp-parsely/plugin_activated?site=".$siteUrl,
@@ -116,7 +116,7 @@ class Parsely {
     public function onDeactivatePlugin() {
         $siteUrl = get_bloginfo('wpurl');
         $siteHost = $this->getHostFromUrl($siteUrl);
-        
+
         try {
             $this->sendGAEvent($this->GA_ACCOUNT,
                                "/wp-parsely/plugin_deactivated?site=".$siteUrl,
@@ -197,7 +197,7 @@ class Parsely {
             } else {
                 $options["use_top_level_cats"] = $_POST["use_top_level_cats"] === "true" ? true : false;
             }
-            
+
             if ($_POST["track_authenticated_users"] !== "true" && $_POST["track_authenticated_users"] !== "false") {
                 array_push($errors, "Value passed for track_authenticated_users must be either 'true' or 'false'.");
             } else {
@@ -314,7 +314,8 @@ class Parsely {
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_bloginfo("name", "raw"));
             $parselyPage["link"]        = home_url(); // site_url();?
         }
-
+        ?><!-- wp-parsely Plugin Version <?php echo Parsely::$VERSION; ?> --><?php echo "\n";
+        ?><meta name='wp-parsely_version' id='wp-parsely_version' content='<?php echo Parsely::$VERSION; ?>' /><?php echo "\n";
         if (!empty($parselyPage)) {
             ?><meta name='parsely-page' content='<?php echo json_encode($parselyPage); ?>' /><?php
         }
@@ -508,7 +509,7 @@ class Parsely {
         }
         return esc_url($pageURL);
     }
-    
+
     private function upgradePluginToVersion1_3($options) {
         if ($options["tracker_implementation"] == "async") {
             $options["tracker_implementation"] = $this->OPTION_DEFAULTS["tracker_implementation"];
