@@ -252,6 +252,7 @@ class Parsely {
         global $wp_query;
         global $post;
         $parselyPage = array();
+        $currentURL = $this->getCurrentURL();
         if (is_single() && $post->post_status == "publish") {
             $author     = $this->getAuthorName($post);
             $category   = $this->getCategoryName($post, $parselyOptions);
@@ -281,14 +282,13 @@ class Parsely {
             $author = (get_query_var('author_name')) ? get_user_by('slug', get_query_var('author_name')) : get_userdata(get_query_var('author'));
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue("Author - ".$author->data->display_name);
-            $parselyPage["link"]        = get_author_posts_url($author->ID);
-            $this->shouldOutput = true;
+            $parselyPage["link"]        = $currentURL;
         } elseif (is_category()) {
             $category = get_the_category();
             $category = $category[0];
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue($category->name);
-            $parselyPage["link"]        = get_category_link($category->cat_ID);
+            $parselyPage["link"]        = $currentURL;
         } elseif (is_date()) {
             $parselyPage["type"]        = "sectionpage";
             if (is_year()) {
@@ -300,7 +300,7 @@ class Parsely {
             } elseif (is_time()) {
                 $parselyPage["title"]   = "Hourly, Minutely, or Secondly Archive - " . get_the_time('F jS g:i:s A');
             }
-            $parselyPage["link"]        = $this->getCurrentURL();
+            $parselyPage["link"]        = $currentURL;
         } elseif (is_tag()) {
             $tag = single_tag_title('', FALSE);
             if (empty($tag)) {
@@ -308,17 +308,13 @@ class Parsely {
             }
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue("Tagged - ".$tag);
-            $parselyPage["link"]        = get_tag_link(get_query_var('tag_id'));
+            $parselyPage["link"]        = $currentURL; // get_tag_link(get_query_var('tag_id'));
         } elseif (is_front_page()) {
             $parselyPage["type"]        = "frontpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_bloginfo("name", "raw"));
             $parselyPage["link"]        = home_url(); // site_url();?
         }
-        ?><!-- wp-parsely Plugin Version <?php echo Parsely::$VERSION; ?> --><?php echo "\n";
-        ?><meta name='wp-parsely_version' id='wp-parsely_version' content='<?php echo Parsely::$VERSION; ?>' /><?php echo "\n";
-        if (!empty($parselyPage)) {
-            ?><meta name='parsely-page' content='<?php echo json_encode($parselyPage); ?>' /><?php
-        }
+        include("parsely-parsely-page.php");
     }
 
     /**
@@ -496,17 +492,12 @@ class Parsely {
     * A fall-back implementation to determine permalink
     */
     private function getCurrentURL() {
-        $pageURL = 'http';
-        if ($_SERVER["HTTPS"] == "on") {
-            $pageURL .= "s";
-        }
-
-        $pageURL .= "://";
+        $pageURL = (is_ssl() ? "https://" : "http://");
+        $pageURL .= $_SERVER['HTTP_HOST'];
         if ($_SERVER["SERVER_PORT"] != "80") {
-            $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
-        } else {
-            $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+            $pageURL .= ":".$_SERVER["SERVER_PORT"];
         }
+        $pageURL .= $_SERVER["REQUEST_URI"];
         return esc_url($pageURL);
     }
 
