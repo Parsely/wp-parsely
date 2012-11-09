@@ -93,6 +93,21 @@
                         if you browse while logged in).
                     </p>
             </tr>
+            <tr valign="top">
+                <th scope="row"><label><?php _e('Lowercase All Tags'); ?></label></th>
+                <td>
+                    <input type="radio" name="lowercase_tags" id="lowercase_tags_true" value="true" <?php if ($options["lowercase_tags"]) { echo 'checked="checked"'; } ?>/> <label for="lowercase_tags_true">Yes</label>
+                    <input type="radio" name="lowercase_tags" id="lowercase_tags_false" value="false" <?php if (!$options["lowercase_tags"]) { echo 'checked="checked"'; } ?>/> <label for="lowercase_tags_false">No</label>
+                    <p class="description">
+                        By default, wp-parsely will convert all tags on your articles to lowercase versions to correct for potential misspellings.  You can
+                        change this setting here to ensure that tag names are used directly as they are created.
+                        <br/><br/>
+                        <strong style="color: red">Important:</strong> changing this value on a live site currently tracked with Parse.ly will require a recrawl 
+                        and potentially a rebuild of your Parse.ly data. Once you have changed this value, please contact <a href="mailto:support@parsely.com?subject=Please recrawl <?php echo esc_attr($options["apikey"]); ?>">support@parsely.com</a> 
+                        to kick off a recrawl / rebuild of your data.
+                    </p>
+                </td>
+            </tr>
         </table>
         <p class="submit">
             <input type="submit" name="Submit" class="button-primary" value="<?php esc_attr_e('Save Changes') ?>" />

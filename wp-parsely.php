@@ -48,7 +48,8 @@ class Parsely {
                                             "tracker_implementation" => "standard",
                                             "content_id_prefix" => "",
                                             "use_top_level_cats" => false,
-                                            "track_authenticated_users" => true);
+                                            "track_authenticated_users" => true,
+                                            "lowercase_tags" => true);
 
     public $IMPLEMENTATION_OPTS     = array("standard" => "Standard",
                                             "dom_free" => "DOM-Free");
@@ -61,12 +62,6 @@ class Parsely {
     /* PHP5 Constructor */
     function __construct() {
         $this->NAME = plugin_basename(__FILE__);
-
-        // Register activation function upon plugin first time install
-        register_activation_hook(__FILE__, array(&$this, 'onActivatePlugin'));
-
-        // Also register deactivation function when we are removed
-        register_deactivation_hook(__FILE__, array(&$this, 'onDeactivatePlugin'));
 
         // Run upgrade options if they exist for the version currently defined
         $options = $this->getOptions();
@@ -91,68 +86,6 @@ class Parsely {
         // inserting parsely code
         add_action('wp_head', array(&$this, 'insertParselyPage'));
         add_action('wp_footer', array(&$this, 'insertParselyJS'));
-    }
-
-    /**
-    * Activation function to send some info to GA upon a site activating the plugin.
-    */
-    public function onActivatePlugin() {
-        $siteUrl = get_bloginfo('wpurl');
-        $siteHost = $this->getHostFromUrl($siteUrl);
-
-        try {
-            $this->sendGAEvent($this->GA_ACCOUNT, 
-                               "/wp-parsely/plugin_activated?site=".$siteUrl,
-                               "wp-parsely - Plugin Activated for ".$siteHost,
-                               "wp-parsely",
-                               "Plugin_Activated",
-                               $siteUrl);
-        } catch (Exception $e) { }
-    }
-
-    /**
-    * Deactivation function to send some info to GA upon a site deactivating the plugin.
-    */
-    public function onDeactivatePlugin() {
-        $siteUrl = get_bloginfo('wpurl');
-        $siteHost = $this->getHostFromUrl($siteUrl);
-
-        try {
-            $this->sendGAEvent($this->GA_ACCOUNT,
-                               "/wp-parsely/plugin_deactivated?site=".$siteUrl,
-                               "wp-parsely - Plugin Deactivated for ".$siteHost,
-                               "wp-parsely",
-                               "Plugin_Deactivated",
-                               $siteUrl);
-        } catch (Exception $e) { }
-    }
-
-    /**
-    * Send an event to a Google Analytics account
-    */
-    public function sendGAEvent($account, $path, $title, $category, $action, $label) {
-        $visitorId = md5(uniqid(rand(0, 0x7fffffff)));
-        $visitorId = "0x" . substr($visitorId, 0, 16);
-        $userAgent = $_SERVER["HTTP_USER_AGENT"];
-        $visitorIp = $_SERVER["REMOTE_ADDR"];
-        if (empty($userAgent)) {
-            $userAgent = "";
-        }
-
-        $gaUrl = "http://www.google-analytics.com/__utm.gif?" .
-            "utmwv=4.4sh" .
-            "&utmt=event" .
-            "&utmr=-" .
-            "&utmcc=__utma%3D999.999.999.999.999.1%3B" .
-            "&utmn="    . (string)rand(0, 0x7fffffff) .
-            "&utmac="   . urlencode($account) .
-            "&utmhn="   . urlencode("wp-parsely.parsely.com") .
-            "&utmp="    . urlencode($path) .
-            "&utmdt="   . urlencode($title) .
-            "&utme="    . urlencode("5(".$category."*".$action."*".$label.")") .
-            "&utmip="   . urlencode($visitorIp) .
-            "&utmvid="  . urlencode($visitorId);
-        file_get_contents($gaUrl, false);
     }
 
     /* Parsely settings page in Wordpress settings menu. */
@@ -202,6 +135,12 @@ class Parsely {
                 array_push($errors, "Value passed for track_authenticated_users must be either 'true' or 'false'.");
             } else {
                 $options["track_authenticated_users"] = $_POST["track_authenticated_users"] === "true" ? true : false;
+            }
+
+            if ($_POST["lowercase_tags"] !== "true" && $_POST["lowercase_tags"] !== "false") {
+                array_push($errors, "Value passed for lowercase_tags must be either 'true' or 'false'.");
+            } else {
+                $options["lowercase_tags"] = $_POST["lowercase_tags"] === "true" ? true : false;
             }
 
             if (empty($errors)) {
@@ -273,6 +212,7 @@ class Parsely {
             $parselyPage["pub_date"]    = gmdate("Y-m-d\TH:i:s\Z", get_post_time('U', true));
             $parselyPage["section"]     = $category;
             $parselyPage["author"]      = $author;
+            $parselyPage["tags"]        = $this->getTagsAsString($post->ID);
         } elseif (is_page() && $post->post_status == "publish") {
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_the_title());
@@ -401,6 +341,22 @@ class Parsely {
         }
         $tag .= ' />';
         echo $tag;
+    }
+
+    /**
+    * Returns an array of strings associated with this page or post
+    */
+    private function getTagsAsString($postId) {
+        $options = $this->getOptions();
+        $wpTags = wp_get_post_tags($postId);
+        $tags = array();
+        foreach ($wpTags as $wpTag) :
+            if ($options["lowercase_tags"] === true) :
+                $wpTag->name = strtolower($wpTag->name);
+            endif;
+            array_push($tags, $this->getCleanParselyPageValue($wpTag->name));
+        endforeach;
+        return $tags;
     }
 
     /**
