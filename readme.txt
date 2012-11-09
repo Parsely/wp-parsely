@@ -55,6 +55,12 @@ Dash code will only be placed on pages and posts which have been published in Wo
 
 == Changelog ==
 
+= 1.4 =
+* Added early support for post tags
+* Fixed permalink errors on category/author/tag pages
+* Added version output to both templates and settings pages
+* Renamed API key to Site ID to avoid confusion
+
 = 1.3 =
 * Added option to not track or not track authenticated users (default is to not track authenticated users)
 * Removed async implementation option
@@ -79,6 +85,14 @@ Dash code will only be placed on pages and posts which have been published in Wo
 * Support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag)
 
 == Upgrade Notice ==
+
+= 1.4 =
+This version adds:
+
+* Added early support for post tags
+* Fixed permalink errors on category/author/tag pages
+* Added version output to both templates and settings pages
+* Renamed API key to Site ID to avoid confusion
 
 = 1.2 =
 This version adds the ability to use the top-level category for posts instead of the first active post found.  It also outputs attributes using a more HTML-valid way. Please upgrade.
