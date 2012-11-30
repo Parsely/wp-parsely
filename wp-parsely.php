@@ -195,7 +195,7 @@ class Parsely {
         if (is_single() && $post->post_status == "publish") {
             $author     = $this->getAuthorName($post);
             $category   = $this->getCategoryName($post, $parselyOptions);
-            $postId     = (string)get_the_ID();
+            $postId     = $parselyOptions["content_id_prefix"] . (string)get_the_ID();
 
             $image_url = "";
             if (has_post_thumbnail()) {
