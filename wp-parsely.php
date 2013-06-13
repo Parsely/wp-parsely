@@ -441,7 +441,7 @@ class Parsely {
     */
     private function getTopLevelCategory($categoryId) {
         $categories = get_category_parents($categoryId, FALSE, ",");
-        $categories = split(",", $categories);
+        $categories = explode(",", $categories);
         $topLevel = $categories[0];
         return $topLevel;
     }
