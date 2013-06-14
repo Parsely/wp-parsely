@@ -434,7 +434,6 @@ class Parsely {
         return $this->getCleanParselyPageValue($category);
     }
 
-
     /**
     * Returns the top most category in the hierarchy given a category ID.
     */
