@@ -426,10 +426,9 @@ class Parsely {
     */
     private function getCategoryName($postObj, $parselyOptions) {
         $category   = get_the_category($postObj->ID);
-        $category   = $parselyOptions["use_top_level_cats"] ? $this->getTopLevelCategory($category[0]->cat_ID) : $category[0]->name;
-        // For some odd reason we apparently can still get nulls for a category
-        // so we add this last check and assign a WordPress appropriate default
-        if (is_null($category)) {
+        if ( !empty( $category ) ) {
+            $category   = $parselyOptions["use_top_level_cats"] ? $this->getTopLevelCategory($category[0]->cat_ID) : $category[0]->name;    
+        } else {
             $category = "Uncategorized";
         }
         return $this->getCleanParselyPageValue($category);
