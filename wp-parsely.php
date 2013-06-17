@@ -409,6 +409,9 @@ class Parsely {
                 continue;
             }
             $hierarchy = join("/", $hierarchy);
+            if ($parselyOptions["lowercase_tags"] === true) {
+                $hierarchy = strtolower($hierarchy);
+            }
 
             array_push($tags, $this->getCleanParselyPageValue($hierarchy));
         }
