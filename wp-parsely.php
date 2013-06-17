@@ -394,7 +394,7 @@ class Parsely {
         $categories = get_the_category($postObj->ID);
         $sectionName = $this->getCategoryName($postObj, $parselyOptions);
 
-        if (!$categories) {
+        if (empty($categories)) {
             return $tags;
         }
         foreach($categories as $category) {
