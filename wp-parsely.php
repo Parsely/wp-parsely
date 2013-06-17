@@ -50,6 +50,7 @@ class Parsely {
                                             "child_cats_as_tags" => false,
                                             "track_authenticated_users" => true,
                                             "lowercase_tags" => true);
+    private $CATEGORY_DELIMITER     = "~-|@|!{-~";
 
     public $IMPLEMENTATION_OPTS     = array("standard" => "Standard",
                                             "dom_free" => "DOM-Free");
@@ -397,9 +398,8 @@ class Parsely {
             return $tags;
         }
         foreach($categories as $category) {
-            $delimiter = "--||--";
-            $hierarchy = get_category_parents($category, FALSE, $delimiter);
-            $hierarchy = explode($delimiter, $hierarchy);
+            $hierarchy = get_category_parents($category, FALSE, $this->CATEGORY_DELIMITER);
+            $hierarchy = explode($this->CATEGORY_DELIMITER, $hierarchy);
             $hierarchy = array_filter($hierarchy, function ($val) {
                 return $val != '';
             });
@@ -439,8 +439,8 @@ class Parsely {
     * Returns the top most category in the hierarchy given a category ID.
     */
     private function getTopLevelCategory($categoryId) {
-        $categories = get_category_parents($categoryId, FALSE, ",");
-        $categories = explode(",", $categories);
+        $categories = get_category_parents($categoryId, FALSE, $this->CATEGORY_DELIMITER);
+        $categories = explode($this->CATEGORY_DELIMITER, $categories);
         $topLevel = $categories[0];
         return $topLevel;
     }
