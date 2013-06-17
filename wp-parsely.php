@@ -403,15 +403,12 @@ class Parsely {
             $hierarchy = array_filter($hierarchy, function ($val) {
                 return $val != '';
             });
-            if (sizeof($hierarchy) == 1) {
-                // Don't take top level categories
+            if (sizeof($hierarchy) == 1 && $hierarchy[0] == $sectionName) {
+                // Don't take top level categories if we're already tracking
+                // using a section
                 continue;
             }
             $hierarchy = join("/", $hierarchy);
-            if ($hierarchy == $sectionName) {
-                // Don't take the main section name
-                continue;
-            }
 
             array_push($tags, $this->getCleanParselyPageValue($hierarchy));
         }
