@@ -83,6 +83,23 @@
                     </p>
             </tr>
             <tr valign="top">
+                <th scope="row"><label><?php _e('Use Child Categories As Tags'); ?></label></th>
+                <td>
+                    <input type="radio" name="child_cats_as_tags" id="child_cats_as_tags_true" value="true" <?php if ($options["child_cats_as_tags"]) { echo 'checked="checked"'; } ?>/> <label for="child_cats_as_tags_true">Yes</label>
+                    <input type="radio" name="child_cats_as_tags" id="child_cats_as_tags_false" value="false" <?php if (!$options["child_cats_as_tags"]) { echo 'checked="checked"'; } ?> /> <label for="child_cats_as_tags_false">No</label>
+                    <p class="description">
+                        When assigning one or more categories to a post that are children of a parent category, you can use this option to ensure
+                        the child categories are outputted as tags.<br/>
+                        If you had a post for example assigned to the categories: Business/Tech, Business/Social (where Business is the parent and
+                        Tech and Social are child categories of Business), your parsely-page tags attribute would include the tags: "Business/Tech",
+                        "Business/Social".
+                        <br/><br/>
+                        <strong style="color: red">Important:</strong> changing this value on a live site currently tracked with Parse.ly will require a recrawl 
+                        and potentially a rebuild of your Parse.ly data. Once you have changed this value, please contact <a href="mailto:support@parsely.com?subject=Please recrawl <?php echo esc_attr($options["apikey"]); ?>">support@parsely.com</a> 
+                        to kick off a recrawl / rebuild of your data.
+                    </p>
+            </tr>
+            <tr valign="top">
                 <th scope="row"><label><?php _e('Track Logged-in Users'); ?></label></th>
                 <td>
                     <input type="radio" name="track_authenticated_users" id="track_authenticated_users_true" value="true" <?php if($options["track_authenticated_users"]) { echo 'checked="checked"'; } ?>/> <label for="track_authenticated_users_true">Yes</label>
