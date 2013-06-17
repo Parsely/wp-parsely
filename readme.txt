@@ -55,6 +55,11 @@ Dash code will only be placed on pages and posts which have been published in Wo
 
 == Changelog ==
 
+= 1.5 =
+* Added support for new option - "Use Categories as Tags"
+* Fixed bug that caused wp-admin bar to be hidden when "Do not track authenticated in users" was selected
+* Fixed WP category logic bug that failed on users with custom post types
+
 = 1.4 =
 * Added early support for post tags
 * Fixed permalink errors on category/author/tag pages
@@ -85,6 +90,12 @@ Dash code will only be placed on pages and posts which have been published in Wo
 * Support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag)
 
 == Upgrade Notice ==
+
+= 1.5 =
+This version adds:
+* Support for new option - "Use Categories as Tags" which allows you to track your other categories assigned to posts as tags (since you can only assign one section to a post, but many tags)
+* Fixed bug that caused wp-admin bar to be hidden when "Do not track authenticated in users" was selected
+* Fixed WP category logic bug that failed on users with custom post types
 
 = 1.4 =
 This version adds:
