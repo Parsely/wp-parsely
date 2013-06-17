@@ -213,30 +213,30 @@ class Parsely {
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_the_title());
             $parselyPage["link"]        = get_permalink();
             $parselyPage["image_url"]   = $image_url;
-            $parselyPage["type"]        = "post";
+            $parselyPage["type"]        = get_post_type();
             $parselyPage["post_id"]     = $postId;
             $parselyPage["pub_date"]    = gmdate("Y-m-d\TH:i:s\Z", get_post_time('U', true));
             $parselyPage["section"]     = $category;
             $parselyPage["author"]      = $author;
             $parselyPage["tags"]        = array_merge($this->getTagsAsString($post->ID), $this->getCategoriesAsTags($post, $parselyOptions));
         } elseif (is_page() && $post->post_status == "publish") {
-            $parselyPage["type"]        = "sectionpage";
+            $parselyPage["type"]        = get_post_type();
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_the_title());
             $parselyPage["link"]        = get_permalink();
         } elseif (is_author()) {
             // TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions
             $author = (get_query_var('author_name')) ? get_user_by('slug', get_query_var('author_name')) : get_userdata(get_query_var('author'));
-            $parselyPage["type"]        = "sectionpage";
+            $parselyPage["type"]        = get_post_type();
             $parselyPage["title"]       = $this->getCleanParselyPageValue("Author - ".$author->data->display_name);
             $parselyPage["link"]        = $currentURL;
         } elseif (is_category()) {
             $category = get_the_category();
             $category = $category[0];
-            $parselyPage["type"]        = "sectionpage";
+            $parselyPage["type"]        = get_post_type();
             $parselyPage["title"]       = $this->getCleanParselyPageValue($category->name);
             $parselyPage["link"]        = $currentURL;
         } elseif (is_date()) {
-            $parselyPage["type"]        = "sectionpage";
+            $parselyPage["type"]        = get_post_type();
             if (is_year()) {
                 $parselyPage["title"]   = "Yearly Archive - " . get_the_time('Y');
             } elseif(is_month()) {
@@ -252,7 +252,7 @@ class Parsely {
             if (empty($tag)) {
                 $tag = single_term_title('', FALSE);
             }
-            $parselyPage["type"]        = "sectionpage";
+            $parselyPage["type"]        = get_post_type();
             $parselyPage["title"]       = $this->getCleanParselyPageValue("Tagged - ".$tag);
             $parselyPage["link"]        = $currentURL; // get_tag_link(get_query_var('tag_id'));
         } elseif (is_front_page()) {
@@ -426,10 +426,9 @@ class Parsely {
     */
     private function getCategoryName($postObj, $parselyOptions) {
         $category   = get_the_category($postObj->ID);
-        $category   = $parselyOptions["use_top_level_cats"] ? $this->getTopLevelCategory($category[0]->cat_ID) : $category[0]->name;
-        // For some odd reason we apparently can still get nulls for a category
-        // so we add this last check and assign a WordPress appropriate default
-        if (is_null($category)) {
+        if ( !empty( $category ) ) {
+            $category   = $parselyOptions["use_top_level_cats"] ? $this->getTopLevelCategory($category[0]->cat_ID) : $category[0]->name;    
+        } else {
             $category = "Uncategorized";
         }
         return $this->getCleanParselyPageValue($category);
