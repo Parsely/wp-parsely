@@ -219,7 +219,8 @@ class Parsely {
             $parselyPage["pub_date"]    = gmdate("Y-m-d\TH:i:s\Z", get_post_time('U', true));
             $parselyPage["section"]     = $category;
             $parselyPage["author"]      = $author;
-            $parselyPage["tags"]        = array_merge($this->getTagsAsString($post->ID), $this->getCategoriesAsTags($post, $parselyOptions));
+            $parselyPage["tags"]        = array_merge($this->getTagsAsString($post->ID, $parselyOptions),
+                                                      $this->getCategoriesAsTags($post, $parselyOptions));
         } elseif (is_page() && $post->post_status == "publish") {
             $parselyPage["type"]        = "sectionpage";
             $parselyPage["title"]       = $this->getCleanParselyPageValue(get_the_title());
@@ -353,12 +354,11 @@ class Parsely {
     /**
     * Returns an array of strings associated with this page or post
     */
-    private function getTagsAsString($postId) {
-        $options = $this->getOptions();
+    private function getTagsAsString($postId, $parselyOptions) {
         $wpTags = wp_get_post_tags($postId);
         $tags = array();
         foreach ($wpTags as $wpTag) :
-            if ($options["lowercase_tags"] === true) :
+            if ($parselyOptions["lowercase_tags"] === true) :
                 $wpTag->name = strtolower($wpTag->name);
             endif;
             array_push($tags, $this->getCleanParselyPageValue($wpTag->name));
