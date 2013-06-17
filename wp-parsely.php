@@ -43,7 +43,6 @@ class Parsely {
     private $MENU_PAGE_TITLE        = "Parse.ly - Dash > Settings"; // Text shown in <title></title> when the settings screen is viewed
     private $OPTIONS_KEY            = "parsely";                    // Defines the key used to store options in the WP database
     private $CAPABILITY             = "manage_options";             // The capability required for the user to administer settings
-    private $GA_ACCOUNT             = "UA-5989141-8";
     private $OPTION_DEFAULTS        = array("apikey" => "",
                                             "tracker_implementation" => "standard",
                                             "content_id_prefix" => "",
