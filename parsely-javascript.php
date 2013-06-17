@@ -1,5 +1,5 @@
-<?php if(!$parselyOptions["track_authenticated_users"] && is_user_logged_in()) { exit; } ?>
-<?php if(!isset($parselyOptions["tracker_implementation"]) || empty($parselyOptions["tracker_implementation"])) { exit; } ?>
+<?php if(!$parselyOptions["track_authenticated_users"] && is_user_logged_in()) { return; } ?>
+<?php if(!isset($parselyOptions["tracker_implementation"]) || empty($parselyOptions["tracker_implementation"])) { return; } ?>
 
 <?php if ($parselyOptions['tracker_implementation'] == 'standard') { ?>
 
