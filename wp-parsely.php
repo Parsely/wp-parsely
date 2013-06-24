@@ -400,9 +400,7 @@ class Parsely {
         foreach($categories as $category) {
             $hierarchy = get_category_parents($category, FALSE, $this->CATEGORY_DELIMITER);
             $hierarchy = explode($this->CATEGORY_DELIMITER, $hierarchy);
-            $hierarchy = array_filter($hierarchy, function ($val) {
-                return $val != '';
-            });
+            $hierarchy = array_filter($hierarchy);
             if (sizeof($hierarchy) == 1 && $hierarchy[0] == $sectionName) {
                 // Don't take top level categories if we're already tracking
                 // using a section
