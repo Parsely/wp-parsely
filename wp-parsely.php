@@ -55,13 +55,8 @@ class Parsely {
     public $IMPLEMENTATION_OPTS     = array("standard" => "Standard",
                                             "dom_free" => "DOM-Free");
 
-    /* PHP4 Constructor */
+    /* PHP4 Compatible Constructor */
     function Parsely() {
-        $this->__construct();
-    }
-
-    /* PHP5 Constructor */
-    function __construct() {
         $this->NAME = plugin_basename(__FILE__);
 
         // Run upgrade options if they exist for the version currently defined
