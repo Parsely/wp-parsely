@@ -576,18 +576,36 @@ class Parsely {
     * to via the `use_top_level_cats` option.
     */
     private function get_category_name($postObj, $parselyOptions) {
-        $category   = get_the_category($postObj->ID);
 
-        // Customers with different post types may not have categories
-        if ( !empty($category) ) {
-            $category   = $parselyOptions['use_top_level_cats'] ? $this->get_top_level_category($category[0]->cat_ID) : $category[0]->name;
+        if ($parselyOptions["use_top_level_cats"]) {
+            $primaryCategoryId = get_post_meta($postObj->ID, "primary_category", true);
+            if (empty($primaryCategoryId)) {
+                $categoryName = "Uncategorized";
+            } else {
+                $primaryCategory = get_term_by('id', $primaryCategoryId, 'category');
+                if (empty($primaryCategory)) {
+                    $categoryName = "Uncategorized";
+                } else {
+                    $parentCategory = get_term_by('id', $primaryCategory->parent, 'category');
+                    if ($parentCategory !== false) {
+                        $categoryName = $parentCategory->name;
+                    } else {
+                        $categoryName = $primaryCategory->name;
+                    }
+                }
+            }
         } else {
-            $category = 'Uncategorized';
+            $category = get_the_category($postObj->ID);
+            if (!empty($category)) {
+                $categoryName = $category[0]->name;
+            } else {
+                $categoryName = "Uncategorized";
+            }
         }
 
-        $category = apply_filters( 'wp_parsely_post_category', $category, $postObj, $parselyOptions );
-        $category = $this->get_clean_parsely_page_value( $category );
-        return $category;
+        $categoryName = apply_filters( 'wp_parsely_post_category', $categoryName, $postObj, $parselyOptions );
+        $categoryName = $this->get_clean_parsely_page_value( $categoryName );
+        return $categoryName;
     }
 
     /**
