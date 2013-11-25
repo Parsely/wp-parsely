@@ -442,22 +442,27 @@ class Parsely {
 
     /**
     * Determine author name from display name, falling back to
-    * firstname + lastname, and finally the nickname.
+    * firstname + lastname, then nickname and finally the nicename.
     */
     private function getAuthorName($postObj) {
-        $author = get_user_meta($postObj->post_author, 'display_name', true);
+        $userData = get_user_by('id', $postObj->post_author);
+
+        $author = $userData->display_name;
         if (!empty($author)) {
             return $this->getCleanParselyPageValue($author);
         }
 
-        $author = get_user_meta($postObj->post_author, 'first_name', true) . " " . get_user_meta($postObj->post_author, 'last_name', true);
+        $author = $userData->user_firstname . " " . $userData->user_lastname;
         if ($author != " ") {
             return $this->getCleanParselyPageValue($author);
         }
 
-        // This is the fall back as all users have to have nickname even if they don't have a display name
-        // nickname will be their username by default
-        $author = get_user_meta($postObj->post_author, 'nickname', true);
+        $author = $userData->nickname;
+        if (!empty($author)) {
+            return $this->getCleanParselyPageValue($author);
+        }
+
+        $author = $userData->user_nicename;
         return $this->getCleanParselyPageValue($author);
     }
 
