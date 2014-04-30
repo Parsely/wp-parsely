@@ -1,33 +1,39 @@
-=== Parse.ly - Dash ===
+=== Parse.ly ===
 Contributors: parsely_mike
 Tags: analytics, post, page
 Requires at least: 3.0
-Tested up to: 3.6
+Tested up to: 3.9
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Parse.ly's Dash is the world's first analytics tool designed and built for digital publishers.  The plugin simplifies integration.
+Parse.ly partners with digital publishers by providing clear audience insights through an intuitive analytics platform.  The plugin simplifies integration for Wordpress users.
 
 == Description ==
 
-[Parse.ly's Dash](http://www.parsely.com/ "Parse.ly - Dash") is an analytics tool designed and made for content publishers.   Tired of trying to figure out Google Analytics reports when all you really want to know is what's working and what isn't?  Then Dash was made for you.  It doesn't matter if you're CNN attracting millions of people per month or trying to build a following on a niche blog covering fashion and style, Dash will help you understand your audience and how your content is performing.
+See your audience clearly.
+
+Parse.ly partners with digital publishers to provide clear audience insights through an intuitive analytics platform.
+
+Thousands of writers, editors, site managers, and technologists already use Parse.ly to understand what content draws in website visitors, and why. Using our powerful dashboards and APIs, customers build successful digital strategies that allow them to grow and engage a loyal audience.
+
+Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who already use Parse.ly to bring clarity to content, audience, and analytics.
 
 **Features**
 
 * Inserts the required parsely-page <meta> tag as well as JavaScript on all your published pages and posts.
-* Allows you to specify the JavaScript implementation to use: standard, DOM free or asynchronous.
+* Powerful customization features to provide rich article data to Parse.ly without any additional coding
 
 Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com](mailto:support@parsely.com) we always want to hear from you.
 
 == Installation ==
 
-1. If you haven't already done so, [sign up for your free trial of Dash](http://dash.parsely.com/try/)
+1. If you haven't already done so, [sign up for a trial of Parse.ly](http://www.parsely.com/trial.html?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely)
 1. Download the plugin
 1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress (look for "Parse.ly - Dash")
-1. Head to the settings page for the plugin (should be /wp-admin/options-general.php?page=parsely-dash)
-1. Add a your Site ID and choose a tracker implementation method (your Site ID can be found in [your settings screen](http://dash.parsely.com/settings/api).
+1. Activate the plugin through the 'Plugins' menu in WordPress (look for "Parse.ly")
+1. Head to the settings page for the plugin (should be /wp-admin/options-general.php?page=parsely)
+1. Set your Site ID which can be found in [your settings screen](http://dash.parsely.com/to/settings/api?highlight=apikey)
 1. Save your changes and enjoy your data!
 
 Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com](mailto:support@parsely.com) we always want to hear from you.
@@ -36,11 +42,7 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 
 = Where do I find my Site ID? =
 
-Head to [your settings screen](http://dash.parsely.com/settings/api) and copy the value for Site ID.
-
-= What tracker implementation should I use? =
-
-It's really up to you and your requirements, but [this article in our documentation](http://www.parsely.com/api/tracker.html#javascript-tracker) should help you make a decision.  If you still have questions then reach out to us at [support@parsely.com](mailto:support@parsely.com).
+Head to [your settings screen](http://dash.parsely.com/to/settings/api?highlight=apikey) and copy the value for Site ID.
 
 = Why can't I see Dash code on my post when I preview? =
 
