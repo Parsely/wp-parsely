@@ -455,12 +455,12 @@ class Parsely {
         }
         $tag .= '>';
 
-        $tag .= "<input type='radio' name='$name' id='$id'.'_true' value='true' " .
+        $tag .= "<input type='radio' name='$name' id='$id"."_true' value='true' " .
                 checked($value == true, true, false) . ' />' .
-                "<label for='$id'.'_true'>Yes</label> " .
-                "<input type='radio' name='$name' id='$id'.'_false' value='false' " .
+                "<label for='$id"."_true'>Yes</label> " .
+                "<input type='radio' name='$name' id='$id"."_false' value='false' " .
                 checked($value != true, true, false) . ' />' .
-                "<label for='$id'.'_false'>No</label>";
+                "<label for='$id"."_false'>No</label>";
 
         if ( isset($args['help_text']) ) {
             $tag .= '<div class="help-text">'.
