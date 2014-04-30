@@ -55,9 +55,9 @@ class Parsely {
 
     public function __construct() {
         // Run upgrade options if they exist for the version currently defined
-        $options = $this->getOptions();
+        $options = $this->get_options();
         if ( empty($options['plugin_version']) || $options['plugin_version'] != Parsely::VERSION ) {
-            $method = 'upgradePluginToVersion' . str_replace('.', '_', Parsely::VERSION);
+            $method = 'upgrade_plugin_to_version_' . str_replace('.', '_', Parsely::VERSION);
             if ( method_exists($this, $method) ) {
                 call_user_func_array(array($this, $method), array($options));
             }
@@ -67,36 +67,36 @@ class Parsely {
         }
 
         // admin_menu and a settings link
-        add_action('admin_head', array($this, 'addAdminHeader'));
-        add_action('admin_menu', array($this, 'addSettingsSubMenu'));
-        add_action('admin_init', array($this, 'initializeSettings'));
+        add_action('admin_head', array($this, 'add_admin_header'));
+        add_action('admin_menu', array($this, 'add_settings_sub_menu'));
+        add_action('admin_init', array($this, 'initialize_settings'));
         // display warning when plugin hasn't been configured
-        add_action('admin_footer', array($this, 'displayAdminWarning'));
+        add_action('admin_footer', array($this, 'display_admin_warning'));
 
         $basename = plugin_basename(__FILE__);
         add_filter('plugin_action_links_' . $basename,
-                   array($this, 'addPluginMetaLinks'));
+                   array($this, 'add_plugin_meta_links'));
 
         // inserting parsely code
-        add_action('wp_head', array($this, 'insertParselyPage'));
-        add_action('wp_footer', array($this, 'insertParselyJS'));
+        add_action('wp_head', array($this, 'insert_parsely_page'));
+        add_action('wp_footer', array($this, 'insert_parsely_javascript'));
     }
 
-    public function addAdminHeader() {
+    public function add_admin_header() {
         include('parsely-admin-header.php');
     }
 
     /* Parsely settings page in Wordpress settings menu. */
-    public function addSettingsSubMenu() {
+    public function add_settings_sub_menu() {
         add_options_page(Parsely::MENU_PAGE_TITLE,
                          Parsely::MENU_TITLE,
                          Parsely::CAPABILITY,
                          Parsely::MENU_SLUG,
-                         array($this, 'displaySettings'));
+                         array($this, 'display_settings'));
     }
 
     /* Parse.ly settings screen (options-general.php?page=[MENU_SLUG]) */
-    public function displaySettings() {
+    public function display_settings() {
         if ( !current_user_can(Parsely::CAPABILITY) ) {
             wp_die(__('You do not have sufficient permissions to access this page.'));
         }
@@ -104,15 +104,15 @@ class Parsely {
         include('parsely-settings.php');
     }
 
-    public function initializeSettings() {
+    public function initialize_settings() {
         // All our options are actually stored in one single array to reduce
         // DB queries
         register_setting(Parsely::OPTIONS_KEY, Parsely::OPTIONS_KEY,
-                         array($this, 'validateOptions'));
+                         array($this, 'validate_options'));
 
         // Required Settings
         add_settings_section('required_settings', 'Required Settings',
-                             array($this, 'printRequiredSettings'),
+                             array($this, 'print_required_settings'),
                              Parsely::MENU_SLUG);
 
         // API Key
@@ -125,7 +125,7 @@ class Parsely {
         );
         add_settings_field('apikey',
                            'Parse.ly Site ID <div class="help-icons"></div>',
-                           array($this, 'printTextTag'),
+                           array($this, 'print_text_tag'),
                            Parsely::MENU_SLUG, 'required_settings',
                            $field_args);
         // Tracker implementation
@@ -140,7 +140,7 @@ class Parsely {
         );
         add_settings_field('tracker_implementation',
                            'Tracker Implementation <div class="help-icons"></div>',
-                           array($this, 'printSelectTag'),
+                           array($this, 'print_select_tag'),
                            Parsely::MENU_SLUG, 'required_settings',
                            $field_args);
 
@@ -149,7 +149,7 @@ class Parsely {
 
         // Optional Settings
         add_settings_section('optional_settings', 'Optional Settings',
-                             array($this, 'printOptionalSettings'),
+                             array($this, 'print_optional_settings'),
                              Parsely::MENU_SLUG);
         // Content ID Prefix
         $h = 'In the event that your site uses more than one content ' .
@@ -170,7 +170,7 @@ class Parsely {
         );
         add_settings_field('content_id_prefix',
                            'Content ID Prefix <div class="help-icons"></div>',
-                           array($this, 'printTextTag'),
+                           array($this, 'print_text_tag'),
                            Parsely::MENU_SLUG, 'optional_settings',
                            $field_args);
 
@@ -187,7 +187,7 @@ class Parsely {
              'all posts for this WordPress site.';
         add_settings_field('use_top_level_cats',
                            'Use Top-Level Categories <div class="help-icons"></div>',
-                           array($this, 'printBinaryRadioTag'),
+                           array($this, 'print_binary_radio_tag'),
                            Parsely::MENU_SLUG, 'optional_settings',
                            array('option_key' => 'use_top_level_cats',
                                  'help_text' => $h,
@@ -204,7 +204,7 @@ class Parsely {
              "'Business/Tech', 'Business/Social'.";
         add_settings_field('child_cats_as_tags',
                            'Use Child Categories as Tags <div class="help-icons"></div>',
-                           array($this, 'printBinaryRadioTag'),
+                           array($this, 'print_binary_radio_tag'),
                            Parsely::MENU_SLUG, 'optional_settings',
                            array('option_key' => 'child_cats_as_tags',
                                  'help_text' => $h,
@@ -217,7 +217,7 @@ class Parsely {
              'your site if you browse while logged in).';
         add_settings_field('track_authenticated_users',
                            'Track Logged-in Users <div class="help-icons"></div>',
-                           array($this, 'printBinaryRadioTag'),
+                           array($this, 'print_binary_radio_tag'),
                            Parsely::MENU_SLUG, 'optional_settings',
                            array('option_key' => 'track_authenticated_users',
                                  'help_text' => $h,
@@ -230,7 +230,7 @@ class Parsely {
              'used directly as they are created.';
         add_settings_field('lowercase_tags',
                            'Lowercase All Tags <div class="help-icons"></div>',
-                           array($this, 'printBinaryRadioTag'),
+                           array($this, 'print_binary_radio_tag'),
                            Parsely::MENU_SLUG, 'optional_settings',
                            array('option_key' => 'lowercase_tags',
                                  'help_text' => $h,
@@ -238,7 +238,7 @@ class Parsely {
 
     }
 
-    public function validateOptions($input) {
+    public function validate_options($input) {
         if ( empty($input['apikey']) ) {
             add_settings_error(Parsely::OPTIONS_KEY, 'apikey',
                                'Please specify the Site ID');
@@ -294,13 +294,13 @@ class Parsely {
         return $input;
     }
 
-    public function printRequiredSettings() {
+    public function print_required_settings() {
         // We can optionally print some text here in the future, but we don't
         // need to now
         return;
     }
 
-    public function printOptionalSettings() {
+    public function print_optional_settings() {
         // We can optionally print some text here in the future, but we don't
         // need to now
         return;
@@ -309,20 +309,20 @@ class Parsely {
     /**
     * Adds a 'Settings' link to the Plugins screen in WP admin
     */
-    public function addPluginMetaLinks($links) {
-        array_unshift($links, '<a href="'. $this->getSettingsURL() . '">' . __('Settings'). '</a>');
+    public function add_plugin_meta_links($links) {
+        array_unshift($links, '<a href="'. $this->get_settings_url() . '">' . __('Settings'). '</a>');
         return $links;
     }
 
-    public function displayAdminWarning() {
-        $options = $this->getOptions();
+    public function display_admin_warning() {
+        $options = $this->get_options();
         if ( !isset($options['apikey']) || empty($options['apikey']) ) {
             ?>
             <div id='message' class='error'>
                 <p>
                     <strong>Parse.ly - Dash plugin is not active.</strong>
                     You need to
-                    <a href='<?php echo esc_html($this->getSettingsURL()); ?>'>
+                    <a href='<?php echo esc_html($this->get_settings_url()); ?>'>
                         provide your Parse.ly Dash Site ID
                     </a>
                     before things get cooking.
@@ -335,8 +335,8 @@ class Parsely {
     /**
     * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
     */
-    public function insertParselyPage() {
-        $parselyOptions = $this->getOptions();
+    public function insert_parsely_page() {
+        $parselyOptions = $this->get_options();
 
         // If we don't have an API key or if we aren't supposed to show to logged in users, there's no need to proceed.
         if ( empty($parselyOptions['apikey']) || (!$parselyOptions['track_authenticated_users'] && is_user_logged_in()) ) {
@@ -346,10 +346,10 @@ class Parsely {
         global $wp_query;
         global $post;
         $parselyPage = array();
-        $currentURL = $this->getCurrentURL();
+        $currentURL = $this->get_current_url();
         if ( is_single() && $post->post_status == 'publish' ) {
-            $author     = $this->getAuthorName($post);
-            $category   = $this->getCategoryName($post, $parselyOptions);
+            $author     = $this->get_author_name($post);
+            $category   = $this->get_category_name($post, $parselyOptions);
             $postId     = $parselyOptions['content_id_prefix'] . (string)get_the_ID();
 
             $image_url = '';
@@ -359,7 +359,7 @@ class Parsely {
                 $image_url = $image_url[0];
             }
             // TODO: Maping of an install's post types to Parse.ly post types (namely page/post)
-            $parselyPage['title']       = $this->getCleanParselyPageValue(get_the_title());
+            $parselyPage['title']       = $this->get_clean_parsely_page_value(get_the_title());
             $parselyPage['link']        = get_permalink();
             $parselyPage['image_url']   = $image_url;
             $parselyPage['type']        = 'post';
@@ -367,23 +367,23 @@ class Parsely {
             $parselyPage['pub_date']    = gmdate('Y-m-d\TH:i:s\Z', get_post_time('U', true));
             $parselyPage['section']     = $category;
             $parselyPage['author']      = $author;
-            $parselyPage['tags']        = array_merge($this->getTagsAsString($post->ID, $parselyOptions),
-                                                      $this->getCategoriesAsTags($post, $parselyOptions));
+            $parselyPage['tags']        = array_merge($this->get_tags_as_string($post->ID, $parselyOptions),
+                                                      $this->get_categories_as_tags($post, $parselyOptions));
         } elseif ( is_page() && $post->post_status == 'publish' ) {
             $parselyPage['type']        = 'sectionpage';
-            $parselyPage['title']       = $this->getCleanParselyPageValue(get_the_title());
+            $parselyPage['title']       = $this->get_clean_parsely_page_value(get_the_title());
             $parselyPage['link']        = get_permalink();
         } elseif ( is_author() ) {
             // TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions
             $author = (get_query_var('author_name')) ? get_user_by('slug', get_query_var('author_name')) : get_userdata(get_query_var('author'));
             $parselyPage['type']        = 'sectionpage';
-            $parselyPage['title']       = $this->getCleanParselyPageValue('Author - '.$author->data->display_name);
+            $parselyPage['title']       = $this->get_clean_parsely_page_value('Author - '.$author->data->display_name);
             $parselyPage['link']        = $currentURL;
         } elseif ( is_category() ) {
             $category = get_the_category();
             $category = $category[0];
             $parselyPage['type']        = 'sectionpage';
-            $parselyPage['title']       = $this->getCleanParselyPageValue($category->name);
+            $parselyPage['title']       = $this->get_clean_parsely_page_value($category->name);
             $parselyPage['link']        = $currentURL;
         } elseif ( is_date() ) {
             $parselyPage['type']        = 'sectionpage';
@@ -403,11 +403,11 @@ class Parsely {
                 $tag = single_term_title('', FALSE);
             }
             $parselyPage['type']        = 'sectionpage';
-            $parselyPage['title']       = $this->getCleanParselyPageValue('Tagged - '.$tag);
+            $parselyPage['title']       = $this->get_clean_parsely_page_value('Tagged - '.$tag);
             $parselyPage['link']        = $currentURL; // get_tag_link(get_query_var('tag_id'));
         } elseif ( is_front_page() ) {
             $parselyPage['type']        = 'frontpage';
-            $parselyPage['title']       = $this->getCleanParselyPageValue(get_bloginfo('name', 'raw'));
+            $parselyPage['title']       = $this->get_clean_parsely_page_value(get_bloginfo('name', 'raw'));
             $parselyPage['link']        = home_url(); // site_url();?
         }
         include('parsely-parsely-page.php');
@@ -416,8 +416,8 @@ class Parsely {
     /**
     * Inserts the JavaScript code required to send off beacon requests
     */
-    public function insertParselyJS() {
-        $parselyOptions = $this->getOptions();
+    public function insert_parsely_javascript() {
+        $parselyOptions = $this->get_options();
         // If we don't have an API key, there's no need to proceed.
         if ( empty($parselyOptions['apikey']) ) {
             return '';
@@ -434,27 +434,8 @@ class Parsely {
         }
     }
 
-    /**
-    * TODO: figure out the actual classes to use for this or just create our own CSS for a green success message
-    */
-    public function printSuccessMessage($message) {
-        ?>
-        <div class='success'>
-            <p><strong><?php echo esc_html($message); ?></strong></p>
-        </div>
-        <?php
-    }
-
-    public function printErrorMessage($message) {
-        ?>
-        <div id='message' class='error'>
-            <p><strong><?php echo esc_html($message); ?></strong></p>
-        </div>
-        <?php
-    }
-
-    public function printSelectTag($args) {
-        $options = $this->getOptions();
+    public function print_select_tag($args) {
+        $options = $this->get_options();
         $name = $args['option_key'];
         $select_options = $args['select_options'];
         $selected = isset($options[$name]) ? $options[$name] : NULL;
@@ -495,8 +476,8 @@ class Parsely {
         echo $tag;
     }
 
-    public function printBinaryRadioTag($args) {
-        $options = $this->getOptions();
+    public function print_binary_radio_tag($args) {
+        $options = $this->get_options();
         $name = $args['option_key'];
         $value = $options[$name];
         $id = esc_attr($name);
@@ -528,8 +509,8 @@ class Parsely {
         echo $tag;
     }
 
-    public function printTextTag($args) {
-        $options = $this->getOptions();
+    public function print_text_tag($args) {
+        $options = $this->get_options();
         $name = $args['option_key'];
         $value = isset($options[$name]) ? $options[$name] : '';
         $optional_args = isset($args['optional_args']) ? $args['optional_args'] : array();
@@ -567,7 +548,7 @@ class Parsely {
     /**
     * Extracts a host (not TLD) from a URL
     */
-    private function getHostFromUrl($url) {
+    private function get_host_from_url($url) {
         if ( preg_match('/^https?:\/\/([^\/]+)\/.*$/', $url, $matches) ) {
             return $matches[1];
         } else {
@@ -578,14 +559,14 @@ class Parsely {
     /**
     * Returns an array of strings associated with this page or post
     */
-    private function getTagsAsString($postId, $parselyOptions) {
+    private function get_tags_as_string($postId, $parselyOptions) {
         $wpTags = wp_get_post_tags($postId);
         $tags = array();
         foreach ( $wpTags as $wpTag ) {
             if ( $parselyOptions['lowercase_tags'] === true ) {
                 $wpTag->name = strtolower($wpTag->name);
             }
-            array_push($tags, $this->getCleanParselyPageValue($wpTag->name));
+            array_push($tags, $this->get_clean_parsely_page_value($wpTag->name));
         }
         return $tags;
     }
@@ -595,7 +576,7 @@ class Parsely {
     * options are saved, they override the defaults.  This prevents us from having to do a lot of isset() checking
     * on variables.
     */
-    private function getOptions() {
+    private function get_options() {
         $options = get_option(Parsely::OPTIONS_KEY);
         if ( $options === false ) {
             $options = $this->optionDefaults;
@@ -609,14 +590,14 @@ class Parsely {
      * Returns an array of all the child categories for the current post delimited by a '/' if instructed
      * to do so via the `child_cats_as_tags` option.
      */
-    private function getCategoriesAsTags($postObj, $parselyOptions) {
+    private function get_categories_as_tags($postObj, $parselyOptions) {
         $tags = array();
         if ( !$parselyOptions['child_cats_as_tags'] ) {
             return $tags;
         }
 
         $categories = get_the_category($postObj->ID);
-        $sectionName = $this->getCategoryName($postObj, $parselyOptions);
+        $sectionName = $this->get_category_name($postObj, $parselyOptions);
 
         if ( empty($categories) ) {
             return $tags;
@@ -635,7 +616,7 @@ class Parsely {
                 $hierarchy = strtolower($hierarchy);
             }
 
-            array_push($tags, $this->getCleanParselyPageValue($hierarchy));
+            array_push($tags, $this->get_clean_parsely_page_value($hierarchy));
         }
         $tags = array_unique($tags);
 
@@ -646,23 +627,23 @@ class Parsely {
     * Returns a properly cleaned category name and will optionally use the top-level category name if so instructed
     * to via the `use_top_level_cats` option.
     */
-    private function getCategoryName($postObj, $parselyOptions) {
+    private function get_category_name($postObj, $parselyOptions) {
         $category   = get_the_category($postObj->ID);
 
         // Customers with different post types may not have categories
         if ( !empty($category) ) {
-            $category   = $parselyOptions['use_top_level_cats'] ? $this->getTopLevelCategory($category[0]->cat_ID) : $category[0]->name;
+            $category   = $parselyOptions['use_top_level_cats'] ? $this->get_top_level_category($category[0]->cat_ID) : $category[0]->name;
         } else {
             $category = 'Uncategorized';
         }
 
-        return $this->getCleanParselyPageValue($category);
+        return $this->get_clean_parsely_page_value($category);
     }
 
     /**
     * Returns the top most category in the hierarchy given a category ID.
     */
-    private function getTopLevelCategory($categoryId) {
+    private function get_top_level_category($categoryId) {
         $categories = get_category_parents($categoryId, FALSE, Parsely::CATEGORY_DELIMITER);
         $categories = explode(Parsely::CATEGORY_DELIMITER, $categories);
         $topLevel = $categories[0];
@@ -673,31 +654,31 @@ class Parsely {
     * Determine author name from display name, falling back to
     * firstname + lastname, then nickname and finally the nicename.
     */
-    private function getAuthorName($postObj) {
+    private function get_author_name($postObj) {
         $userData = get_user_by('id', $postObj->post_author);
 
         $author = $userData->display_name;
         if ( !empty($author) ) {
-            return $this->getCleanParselyPageValue($author);
+            return $this->get_clean_parsely_page_value($author);
         }
 
         $author = $userData->user_firstname . ' ' . $userData->user_lastname;
         if ( $author != ' ' ) {
-            return $this->getCleanParselyPageValue($author);
+            return $this->get_clean_parsely_page_value($author);
         }
 
         $author = $userData->nickname;
         if ( !empty($author) ) {
-            return $this->getCleanParselyPageValue($author);
+            return $this->get_clean_parsely_page_value($author);
         }
 
         $author = $userData->user_nicename;
-        return $this->getCleanParselyPageValue($author);
+        return $this->get_clean_parsely_page_value($author);
     }
 
     /* sanitize content
     */
-    private function getCleanParselyPageValue($val) {
+    private function get_clean_parsely_page_value($val) {
         if ( is_string($val) ) {
 
             $val = str_replace("\n", '', $val);
@@ -714,7 +695,7 @@ class Parsely {
 
 
     /* Get the URL of the plugin settings page */
-    private function getSettingsURL() {
+    private function get_settings_url() {
         return admin_url('options-general.php?page='.Parsely::MENU_SLUG);
     }
 
@@ -723,7 +704,7 @@ class Parsely {
     * Get the URL of the current PHP script.
     * A fall-back implementation to determine permalink
     */
-    private function getCurrentURL() {
+    private function get_current_url() {
         $pageURL = (is_ssl() ? 'https://' : 'http://');
         $pageURL .= $_SERVER['HTTP_HOST'];
         if ( $_SERVER['SERVER_PORT'] != '80' ) {
@@ -733,19 +714,19 @@ class Parsely {
         return $pageURL;
     }
 
-    private function upgradePluginToVersion1_3($options) {
+    private function upgrade_plugin_to_version_1_3($options) {
         if ( $options['tracker_implementation'] == 'async' ) {
             $options['tracker_implementation'] = $this->optionDefaults['tracker_implementation'];
         }
         update_option(Parsely::OPTIONS_KEY, $options);
     }
 
-    private function upgradePluginToVersion1_4($options) {
-        $this->upgradePluginToVersion1_3($options);
+    private function upgrade_plugin_to_version_1_4($options) {
+        $this->upgrade_plugin_to_version_1_3($options);
     }
 
-    private function upgradePluginToVersion1_5($options) {
-        $this->upgradePluginToVersion1_4($options);
+    private function upgrade_plugin_to_version_1_5($options) {
+        $this->upgrade_plugin_to_version_1_4($options);
     }
 }
 
