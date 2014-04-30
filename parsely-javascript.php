@@ -5,7 +5,7 @@
 
 <!-- START Parse.ly Include: Standard -->
 <div id="parsely-root" style="display: none">
-  <div id="parsely-cfg" data-parsely-site="<?php esc_html_e($parselyOptions["apikey"]); ?>"></div>
+  <div id="parsely-cfg" data-parsely-site="<?php echo esc_html($parselyOptions["apikey"]); ?>"></div>
 </div>
 <script>
 (function(s, p, d) {
@@ -25,7 +25,7 @@
 <!-- START Parse.ly Include: DOM-Free -->
 <script>
 (function(d) {
-  var site = "<?php esc_html_e($parselyOptions["apikey"]); ?>",
+  var site = "<?php echo esc_js($parselyOptions["apikey"]); ?>",
       b = d.body,
       e = d.createElement("div");
   e.innerHTML = '<span id="parsely-cfg" data-parsely-site="'+site+'"></span>';
