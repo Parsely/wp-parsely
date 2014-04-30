@@ -44,7 +44,6 @@ class Parsely {
     const CATEGORY_DELIMITER  = '~-|@|!{-~';
 
     private $optionDefaults     = array('apikey' => '',
-                                        'tracker_implementation' => 'standard',
                                         'content_id_prefix' => '',
                                         'use_top_level_cats' => false,
                                         'child_cats_as_tags' => false,
@@ -116,7 +115,7 @@ class Parsely {
                              Parsely::MENU_SLUG);
 
         // API Key
-        $h = 'You can grab your Site ID by heading to ' .
+        $h = 'You can find your Site ID on your ' .
              '<a href="http://dash.parsely.com/to/settings/api" target="_blank">' .
              'your API settings page</a>.';
         $field_args = array(
@@ -128,23 +127,6 @@ class Parsely {
                            array($this, 'print_text_tag'),
                            Parsely::MENU_SLUG, 'required_settings',
                            $field_args);
-        // Tracker implementation
-        $h = 'Parse.ly allows you to choose a few different ways to deploy ' .
-             'our tracking code on your site.  In most cases Standard will be '.
-             " fine, but if you'd like to learn more about the other options ".
-             '<a href="http://www.parsely.com/docs/integration/tracking/alternative.html#dom-free-version" target="_blank">check out our documentation</a>.';
-        $field_args = array(
-            'option_key' => 'tracker_implementation',
-            'select_options' => $this->implementationOpts,
-            'help_text' => $h
-        );
-        add_settings_field('tracker_implementation',
-                           'Tracker Implementation <div class="help-icons"></div>',
-                           array($this, 'print_select_tag'),
-                           Parsely::MENU_SLUG, 'required_settings',
-                           $field_args);
-
-
 
 
         // Optional Settings
@@ -249,11 +231,6 @@ class Parsely {
                 add_settings_error(Parsely::OPTIONS_KEY, 'apikey',
                                    'Your Parse.ly Site ID looks incorrect, it should look like "example.com".  You can verify your Site ID <a href="http://dash.parsely.com/to/settings/api" target="_blank">here</a>.');
 
-        }
-
-        if ( !in_array($input['tracker_implementation'], array_keys($this->implementationOpts)) ) {
-            add_settings_error(Parsely::OPTIONS_KEY, 'tracker_implementation',
-                               'Invalid tracker implementation value specified');
         }
 
         // Content ID prefix
@@ -715,7 +692,7 @@ class Parsely {
     }
 
     private function upgrade_plugin_to_version_1_3($options) {
-        if ( $options['tracker_implementation'] == 'async' ) {
+        if ( isset($options['tracker_implementation']) && $options['tracker_implementation'] == 'async' ) {
             $options['tracker_implementation'] = $this->optionDefaults['tracker_implementation'];
         }
         update_option(Parsely::OPTIONS_KEY, $options);
@@ -727,6 +704,15 @@ class Parsely {
 
     private function upgrade_plugin_to_version_1_5($options) {
         $this->upgrade_plugin_to_version_1_4($options);
+    }
+
+    private function upgrade_plugin_to_version_1_6($options) {
+        // As of version 1.6, we no longer offer tracker_implementation as a
+        // setting so we'll delete it
+        if ( isset($options['tracker_implementation']) ) {
+            unset($options['tracker_implementation']);
+        }
+        update_option(Parsely::OPTIONS_KEY, $options);
     }
 }
 
