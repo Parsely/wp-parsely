@@ -116,7 +116,7 @@ class Parsely {
 
         // API Key
         $h = 'You can find your Site ID on your ' .
-             '<a href="http://dash.parsely.com/to/settings/api" target="_blank">' .
+             '<a href="http://dash.parsely.com/to/settings/api?highlight=apikey" target="_blank">' .
              'your API settings page</a>.';
         $field_args = array(
             'option_key' => 'apikey',
@@ -134,15 +134,11 @@ class Parsely {
                              array($this, 'print_optional_settings'),
                              Parsely::MENU_SLUG);
         // Content ID Prefix
-        $h = 'In the event that your site uses more than one content ' .
-             'management system (e.g. WordPress and Drupal), there is ' .
-             "the possibility that you'll end up with duplicate content IDs. " .
-             'For example, WordPress will have a post with ID 1 and so will ' .
-             'Drupal which causes a conflict for parsely-page.  Adding a ' .
-             '<strong>Content ID Prefix</strong> will ensure the content IDs ' .
-             'from WordPress will not conflict with those in another content ' .
-             "management system.  We recommend you use something like 'WP-' ".
-             'for your prefix but any value will work.';
+        $h = 'If you use more than one content management system (e.g. ' .
+             'WordPress and Drupal), you may end up with duplicate content ' .
+             'IDs. Adding a Content ID Prefix will ensure the content IDs ' .
+             'from WordPress will not conflict with other content management ' .
+             'systems. We recommend using "WP-" for your prefix.';
         $field_args = array(
             'option_key' => 'content_id_prefix',
             'optional_args' => array(
@@ -157,16 +153,10 @@ class Parsely {
                            $field_args);
 
         // Use top-level cats
-        $h = 'By default, wp-parsely will use the first category assigned to '.
-             'a post that it finds.  If you are using a hierarchy of '.
-             'categories, this may not be the one you hope to see in Parse.ly.'.
-             'For example, if you post a story to your Florida category which '.
-             'is actually a sub-category of News &gt; National &gt; Florida, '.
-             'you perhaps want to see <strong>News</strong> as the category '.
-             'instead of <strong>Florida</strong>.  Enabling this field will '.
-             'ensure Parse.ly always uses the top-level category to '.
-             'categorize your content. Enabling this option will apply it to '.
-             'all posts for this WordPress site.';
+        $h = 'wp-parsely will use the first category assigned to a post. ' .
+             'With this option selected, if you post a story to News > ' .
+             'National > Florida, wp-parsely will use the "News" for the ' .
+             'section name instead of "Florida".';
         add_settings_field('use_top_level_cats',
                            'Use Top-Level Categories <div class="help-icons"></div>',
                            array($this, 'print_binary_radio_tag'),
@@ -176,14 +166,11 @@ class Parsely {
                                  'requires_recrawl' => true));
 
         // Use child-categories as tags
-        $h = 'When assigning one or more categories to a post that are '.
-             'children of a parent category, you can use this option to '.
-             'ensure the child categories are outputted as tags.<br/>'.
-             'If you had a post for example assigned to the categories: '.
-             'Business/Tech, Business/Social (where Business is the parent '.
-             'and Tech and Social are child categories of Business), your '.
-             'parsely-page tags attribute would include the tags: '.
-             "'Business/Tech', 'Business/Social'.";
+        $h = 'You can use this option to ensure all assigned categories will ' .
+             'be used as tags.  For example, if you had a post assigned to ' .
+             'the categories: "Business/Tech", "Business/Social", your ' .
+             'parsely-page tags attribute would include the tags: ' .
+             '"Business/Tech", "Business/Social".';
         add_settings_field('child_cats_as_tags',
                            'Use Child Categories as Tags <div class="help-icons"></div>',
                            array($this, 'print_binary_radio_tag'),
@@ -192,11 +179,11 @@ class Parsely {
                                  'help_text' => $h,
                                  'requires_recrawl' => true));
         // Track logged-in users
-        $h = 'By default, wp-parsely will track the activity of users that '.
-             'are logged into this site or blog.  You can change this setting '.
-             'here and only track the activity of anonymous visitors (note '.
-             'that you will no longer see the Parse.ly Dash tracking code on '.
-             'your site if you browse while logged in).';
+        $h = 'By default, wp-parsely will track the activity of users that ' .
+             'are logged into this site. You can change this setting to only ' .
+             'track the activity of anonymous visitors. Note: You will no ' .
+             'longer see the Parse.ly tracking code on your site if you ' .
+             'browse while logged in.';
         add_settings_field('track_authenticated_users',
                            'Track Logged-in Users <div class="help-icons"></div>',
                            array($this, 'print_binary_radio_tag'),
@@ -206,10 +193,9 @@ class Parsely {
                                  'requires_recrawl' => true));
 
         // Lowercase all tags
-        $h = 'By default, wp-parsely will convert all tags on your articles '.
-             'to lowercase versions to correct for potential misspellings. '.
-             'You can change this setting here to ensure that tag names are '.
-             'used directly as they are created.';
+        $h = 'By default, wp-parsely will use lowercase versions of your ' .
+             'tags to correct for potential misspellings. You can change this '.
+             'setting to ensure that tag names are used verbatim.';
         add_settings_field('lowercase_tags',
                            'Lowercase All Tags <div class="help-icons"></div>',
                            array($this, 'print_binary_radio_tag'),
@@ -229,7 +215,7 @@ class Parsely {
             if ( strpos($input['apikey'], '.') === false ||
                 strpos($input['apikey'], ' ') !== false)
                 add_settings_error(Parsely::OPTIONS_KEY, 'apikey',
-                                   'Your Parse.ly Site ID looks incorrect, it should look like "example.com".  You can verify your Site ID <a href="http://dash.parsely.com/to/settings/api" target="_blank">here</a>.');
+                                   'Your Parse.ly Site ID looks incorrect, it should look like "example.com".  You can verify your Site ID <a href="http://dash.parsely.com/to/settings/api?highlight=apikey" target="_blank">here</a>.');
 
         }
 
