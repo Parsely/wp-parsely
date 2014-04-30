@@ -4,4 +4,4 @@
 <meta name='parsely-page' id='parsely-page' content='<?php echo json_encode($parselyPage); ?>' />
 <?php else: ?>
 <!-- parsleyPage is not defined / has no attributes.  What kind of page are you loading? -->
-<?php endif; ?>
+<?php endif;

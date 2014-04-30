@@ -739,4 +739,4 @@ if (class_exists('Parsely')) {
     define('PARSELY_VERSION', Parsely::VERSION);
     $parsely = new Parsely();
 }
-?>
+
