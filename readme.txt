@@ -57,6 +57,14 @@ Dash code will only be placed on pages and posts which have been published in Wo
 
 == Changelog ==
 
+= 1.6 =
+* Maintenance release with multiple changes needed for WordPress VIP inclusion
+* Migrated to WP Settings API
+* Various syntax changes in line with Automattic's guidelines
+* Removed the tracker_implementation option, plugin now uses Standard implementation for all installs
+* Updated much of the copy in settings page
+* Updated screenshots
+
 = 1.5 =
 * Added support for new option - "Use Categories as Tags"
 * Fixed bug that caused wp-admin bar to be hidden when "Do not track authenticated in users" was selected
