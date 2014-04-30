@@ -1,5 +1,5 @@
-<!-- wp-parsely Plugin Version <?php echo Parsely::$VERSION; ?> -->
-<meta name='wp-parsely_version' id='wp-parsely_version' content='<?php echo Parsely::$VERSION; ?>' />
+<!-- wp-parsely Plugin Version <?php echo esc_html(Parsely::VERSION); ?> -->
+<meta name='wp-parsely_version' id='wp-parsely_version' content='<?php echo esc_html(Parsely::VERSION); ?>' />
 <?php if (!empty($parselyPage)) : ?>
 <meta name='parsely-page' id='parsely-page' content='<?php echo json_encode($parselyPage); ?>' />
 <?php else: ?>
