@@ -643,11 +643,8 @@ class Parsely {
     */
     private function get_clean_parsely_page_value($val) {
         if ( is_string($val) ) {
-
             $val = str_replace("\n", '', $val);
             $val = str_replace("\r", '', $val);
-            $val = str_replace('"', "&#34;", $val);
-            $val = str_replace("'", "&#39;", $val);
             $val = strip_tags($val);
             $val = trim($val);
             return $val;
