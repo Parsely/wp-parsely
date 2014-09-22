@@ -55,6 +55,12 @@ class Parsely {
     public function __construct() {
         // Run upgrade options if they exist for the version currently defined
         $options = $this->get_options();
+
+        $should_parsely_track = (
+            !isset($options['explicit_domain_accepted']) || 
+            (isset($options['explicit_domain_accepted']) && $options['explicit_domain_accepted'] == $_SERVER['HTTP_HOST'])
+        );
+
         if ( empty($options['plugin_version']) || $options['plugin_version'] != Parsely::VERSION ) {
             $method = 'upgrade_plugin_to_version_' . str_replace('.', '_', Parsely::VERSION);
             if ( method_exists($this, $method) ) {
@@ -76,8 +82,11 @@ class Parsely {
         add_filter('plugin_action_links_' . $basename,
                    array($this, 'add_plugin_meta_links'));
 
-        // inserting parsely code
-        add_action('wp_head', array($this, 'insert_parsely_page'));
+        // Condition to check for host name
+        if($should_parsely_track){
+            // inserting parsely code
+            add_action('wp_head', array($this, 'insert_parsely_page'));
+        }
         add_action('wp_footer', array($this, 'insert_parsely_javascript'));
     }
 
@@ -204,6 +213,27 @@ class Parsely {
                                  'help_text' => $h,
                                  'requires_recrawl' => true));
 
+        // Explicit domain accepted
+        $h = 'By default, wp-parsely crawls all domains running this plugin. ' .
+             'Many production grade websites use multiple environments. To prevent '.
+             'development environments from being crawled, you can explicitly '.
+             'declare your crawlable domains. <br>'. 
+             'Include the complete host name to track. <br>'.
+             'Do not include the `http://` <br>'.
+             'Example: `www.parsely.com` or `parsely.com`';
+         $field_args = array(
+            'option_key' => 'explicit_domain_accepted',
+            'optional_args' => array(
+                'placeholder' => $_SERVER['HTTP_HOST']),
+            'help_text' => $h,
+            'requires_recrawl' => true
+        );
+        add_settings_field('explicit_domain_accepted',
+                           'Domain Accepted <div class="help-icons"></div>',
+                           array($this, 'print_text_tag'),
+                           Parsely::MENU_SLUG, 'optional_settings',
+                           $field_args);
+
     }
 
     public function validate_options($input) {
@@ -253,6 +283,9 @@ class Parsely {
         } else {
             $input['lowercase_tags'] = $input['lowercase_tags'] === 'true' ? true : false;
         }
+
+        // Explicit Hostname Accepted
+        $input['explicit_domain_accepted'] = sanitize_text_field($input['explicit_domain_accepted']);
 
         return $input;
     }
