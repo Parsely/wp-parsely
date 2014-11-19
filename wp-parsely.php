@@ -308,7 +308,12 @@ class Parsely {
 
         global $wp_query;
         global $post;
-        $parselyPage = array();
+        // Assign default values for LD+JSON
+        // TODO: Maping of an install's post types to Parse.ly post types (namely page/post)
+        $parselyPage = array(
+            "@context" => "http://schema.org",
+            "@type" => "WebPage"
+        );
         $currentURL = $this->get_current_url();
         if ( is_single() && $post->post_status == 'publish' ) {
             $author     = $this->get_author_name($post);
@@ -321,57 +326,51 @@ class Parsely {
                 $image_url = wp_get_attachment_image_src($image_id);
                 $image_url = $image_url[0];
             }
-            // TODO: Maping of an install's post types to Parse.ly post types (namely page/post)
-            $parselyPage['title']       = $this->get_clean_parsely_page_value(get_the_title());
-            $parselyPage['link']        = get_permalink();
-            $parselyPage['image_url']   = $image_url;
-            $parselyPage['type']        = 'post';
-            $parselyPage['post_id']     = $postId;
-            $parselyPage['pub_date']    = gmdate('Y-m-d\TH:i:s\Z', get_post_time('U', true));
-            $parselyPage['section']     = $category;
-            $parselyPage['author']      = $author;
-            $parselyPage['tags']        = array_merge($this->get_tags_as_string($post->ID, $parselyOptions),
-                                                      $this->get_categories_as_tags($post, $parselyOptions));
+
+            $parselyPage['@type']          = 'NewsArticle';
+            $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
+            $parselyPage['url']            = get_permalink();
+            $parselyPage['thumbnailUrl']   = $image_url;
+            $parselyPage['articleId']      = $postId;
+            $parselyPage['dateCreated']    = gmdate('Y-m-d\TH:i:s\Z', get_post_time('U', true));
+            $parselyPage['articleSection'] = $category;
+            $parselyPage['creator']        = $author;
+            $parselyPage['keywords']       = array_merge($this->get_tags_as_string($post->ID, $parselyOptions),
+                                                         $this->get_categories_as_tags($post, $parselyOptions));
         } elseif ( is_page() && $post->post_status == 'publish' ) {
-            $parselyPage['type']        = 'sectionpage';
-            $parselyPage['title']       = $this->get_clean_parsely_page_value(get_the_title());
-            $parselyPage['link']        = get_permalink();
+            $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
+            $parselyPage['url']            = get_permalink();
         } elseif ( is_author() ) {
             // TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions
             $author = (get_query_var('author_name')) ? get_user_by('slug', get_query_var('author_name')) : get_userdata(get_query_var('author'));
-            $parselyPage['type']        = 'sectionpage';
-            $parselyPage['title']       = $this->get_clean_parsely_page_value('Author - '.$author->data->display_name);
-            $parselyPage['link']        = $currentURL;
+            $parselyPage['headline']       = $this->get_clean_parsely_page_value('Author - '.$author->data->display_name);
+            $parselyPage['url']            = $currentURL;
         } elseif ( is_category() ) {
             $category = get_the_category();
             $category = $category[0];
-            $parselyPage['type']        = 'sectionpage';
-            $parselyPage['title']       = $this->get_clean_parsely_page_value($category->name);
-            $parselyPage['link']        = $currentURL;
+            $parselyPage['headline']       = $this->get_clean_parsely_page_value($category->name);
+            $parselyPage['url']            = $currentURL;
         } elseif ( is_date() ) {
-            $parselyPage['type']        = 'sectionpage';
             if ( is_year() ) {
-                $parselyPage['title']   = 'Yearly Archive - ' . get_the_time('Y');
+                $parselyPage['headline']   = 'Yearly Archive - ' . get_the_time('Y');
             } elseif(is_month() ) {
-                $parselyPage['title']   = 'Monthly Archive - ' . get_the_time('F, Y');
+                $parselyPage['headline']   = 'Monthly Archive - ' . get_the_time('F, Y');
             } elseif ( is_day() ) {
-                $parselyPage['title']   = 'Daily Archive - ' . get_the_time('F jS, Y');
+                $parselyPage['headline']   = 'Daily Archive - ' . get_the_time('F jS, Y');
             } elseif ( is_time() ) {
-                $parselyPage['title']   = 'Hourly, Minutely, or Secondly Archive - ' . get_the_time('F jS g:i:s A');
+                $parselyPage['headline']   = 'Hourly, Minutely, or Secondly Archive - ' . get_the_time('F jS g:i:s A');
             }
-            $parselyPage['link']        = $currentURL;
+            $parselyPage['url']            = $currentURL;
         } elseif ( is_tag() ) {
             $tag = single_tag_title('', FALSE);
             if ( empty($tag) ) {
                 $tag = single_term_title('', FALSE);
             }
-            $parselyPage['type']        = 'sectionpage';
-            $parselyPage['title']       = $this->get_clean_parsely_page_value('Tagged - '.$tag);
-            $parselyPage['link']        = $currentURL; // get_tag_link(get_query_var('tag_id'));
+            $parselyPage['headline']       = $this->get_clean_parsely_page_value('Tagged - '.$tag);
+            $parselyPage['url']            = $currentURL; // get_tag_link(get_query_var('tag_id'));
         } elseif ( is_front_page() ) {
-            $parselyPage['type']        = 'frontpage';
-            $parselyPage['title']       = $this->get_clean_parsely_page_value(get_bloginfo('name', 'raw'));
-            $parselyPage['link']        = home_url(); // site_url();?
+            $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_bloginfo('name', 'raw'));
+            $parselyPage['url']            = home_url(); // site_url();?
         }
         include('parsely-parsely-page.php');
     }
