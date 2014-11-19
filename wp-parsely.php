@@ -316,7 +316,7 @@ class Parsely {
         );
         $currentURL = $this->get_current_url();
         if ( is_single() && $post->post_status == 'publish' ) {
-            $author     = $this->get_author_name($post);
+            $authors    = $this->get_author_names($post);
             $category   = $this->get_category_name($post, $parselyOptions);
             $postId     = $parselyOptions['content_id_prefix'] . (string)get_the_ID();
 
@@ -334,7 +334,7 @@ class Parsely {
             $parselyPage['articleId']      = $postId;
             $parselyPage['dateCreated']    = gmdate('Y-m-d\TH:i:s\Z', get_post_time('U', true));
             $parselyPage['articleSection'] = $category;
-            $parselyPage['creator']        = $author;
+            $parselyPage['creator']        = $authors;
             $parselyPage['keywords']       = array_merge($this->get_tags_as_string($post->ID, $parselyOptions),
                                                          $this->get_categories_as_tags($post, $parselyOptions));
         } elseif ( is_page() && $post->post_status == 'publish' ) {
@@ -613,29 +613,81 @@ class Parsely {
     }
 
     /**
-    * Determine author name from display name, falling back to
-    * firstname + lastname, then nickname and finally the nicename.
+     * Returns a list of coauthors for a post assuming the coauthors plugin is
+     * installed. Borrowed from
+     * https://github.com/Automattic/Co-Authors-Plus/blob/master/template-tags.php#L3-35
+     */
+    private function get_coauthor_names($post_id) {
+        $coauthors = array();
+        if (class_exists('coauthors_plus')) {
+            global $post, $post_ID, $coauthors_plus, $wpdb;
+
+            $post_id = (int)$post_id;
+            if ( !$post_id && $post_ID )
+                $post_id = $post_ID;
+            if ( !$post_id && $post )
+                $post_id = $post->ID;
+
+            if ( $post_id ) {
+                $coauthor_terms = get_the_terms( $post_id, $coauthors_plus->coauthor_taxonomy );
+
+                if ( is_array( $coauthor_terms ) && !empty( $coauthor_terms ) ) {
+                    foreach( $coauthor_terms as $coauthor ) {
+                        $coauthor_slug = preg_replace( '#^cap\-#', '', $coauthor->slug );
+                        $post_author =  $coauthors_plus->get_coauthor_by( 'user_nicename', $coauthor_slug );
+                        // In case the user has been deleted while plugin was deactivated
+                        if ( !empty( $post_author ) )
+                            $coauthors[] = $post_author;
+                    }
+                } else if ( !$coauthors_plus->force_guest_authors ) {
+                    if ( $post && $post_id == $post->ID ) {
+                        $post_author = get_userdata( $post->post_author );
+                    } else {
+                        $post_author = get_userdata( $wpdb->get_var( $wpdb->prepare("SELECT post_author FROM $wpdb->posts WHERE ID = %d", $post_id ) ) );
+                    }
+                    if ( !empty( $post_author ) )
+                        $coauthors[] = $post_author;
+                } // the empty else case is because if we force guest authors, we don't ever care what value wp_posts.post_author has.
+            }
+        }
+        return $coauthors;
+    }
+
+    /**
+    * Determine author name from display name, falling back to firstname +
+    * lastname, then nickname and finally the nicename.
     */
-    private function get_author_name($postObj) {
-        $userData = get_user_by('id', $postObj->post_author);
-
-        $author = $userData->display_name;
-        if ( !empty($author) ) {
-            return $this->get_clean_parsely_page_value($author);
+    private function get_author_name($author) {
+        $author_name = $author->display_name;
+        if ( !empty($author_name) ) {
+            return $author_name;
         }
 
-        $author = $userData->user_firstname . ' ' . $userData->user_lastname;
-        if ( $author != ' ' ) {
-            return $this->get_clean_parsely_page_value($author);
+        $author_name = $author->user_firstname . ' ' . $author->user_lastname;
+        if ( $author_name != ' ' ) {
+            return $author_name;
         }
 
-        $author = $userData->nickname;
-        if ( !empty($author) ) {
-            return $this->get_clean_parsely_page_value($author);
+        $author_name = $author->nickname;
+        if ( !empty($author_name) ) {
+            return $author_name;
         }
 
-        $author = $userData->user_nicename;
-        return $this->get_clean_parsely_page_value($author);
+        return $author->user_nicename;
+    }
+
+    /**
+     * Retrieve all the authors for a post as an array. Can include multiple
+     * authors if coauthors plugin is in use.
+     */
+    private function get_author_names($post) {
+        $authors = $this->get_coauthor_names($post->ID);
+        if ( empty($authors) ) {
+            $authors = array(get_user_by('id', $post->post_author));
+        }
+        $authors = array_map(array($this, 'get_author_name'), $authors);
+        $authors = array_map(array($this, 'get_clean_parsely_page_value'), $authors);
+        return $authors;
     }
 
     /* sanitize content
