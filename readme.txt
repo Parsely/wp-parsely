@@ -2,7 +2,7 @@
 Contributors: parsely_mike
 Tags: analytics, post, page
 Requires at least: 3.0
-Tested up to: 3.9
+Tested up to: 4.0
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -57,6 +57,10 @@ Dash code will only be placed on pages and posts which have been published in Wo
 
 == Changelog ==
 
+= 1.7 =
+* Use JSON-LD / schema.org for parsely-page data instead of proprietary format
+* Added support for multiple authors if using the Co-Authors Plus plugin https://wordpress.org/plugins/co-authors-plus/
+
 = 1.6 =
 * Maintenance release with multiple changes needed for WordPress VIP inclusion
 * Migrated to WP Settings API
@@ -100,6 +104,12 @@ Dash code will only be placed on pages and posts which have been published in Wo
 * Support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag)
 
 == Upgrade Notice ==
+
+= 1.7 =
+This version adds:
+
+* Support for multiple authors if using the Co-Authors Plus plugin
+* JSON-LD / schema.org for parsely-page data instead of proprietary format
 
 = 1.5 =
 This version adds:
