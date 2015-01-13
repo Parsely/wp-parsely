@@ -687,7 +687,7 @@ class Parsely {
         }
         $authors = array_map(array($this, 'get_author_name'), $authors);
         $authors = array_map(array($this, 'get_clean_parsely_page_value'), $authors);
-        return $authors;
+        return apply_filters( 'parsely_post_authors', $authors, $post );
     }
 
     /* sanitize content
