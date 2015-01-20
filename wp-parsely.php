@@ -600,7 +600,7 @@ class Parsely {
         }
 
         $category = $this->get_clean_parsely_page_value( $category );
-        return apply_filter( 'wp_parsely_post_category', $category, $postObj, $parselyOptions );
+        return apply_filters( 'wp_parsely_post_category', $category, $postObj, $parselyOptions );
     }
 
     /**
