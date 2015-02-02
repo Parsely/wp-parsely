@@ -523,6 +523,7 @@ class Parsely {
     */
     private function get_tags_as_string($postId, $parselyOptions) {
         $wpTags = wp_get_post_tags($postId);
+        $wpTags = apply_filters( 'wp_parsely_post_tags', $wpTags, $postId );
         $tags = array();
         foreach ( $wpTags as $wpTag ) {
             if ( $parselyOptions['lowercase_tags'] === true ) {
