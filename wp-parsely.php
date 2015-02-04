@@ -686,7 +686,6 @@ class Parsely {
             $authors = array(get_user_by('id', $post->post_author));
         }
         $authors = array_map(array($this, 'get_author_name'), $authors);
-        $authors = array_map(array($this, 'get_author_name'), $authors);
         $authors = apply_filters( 'wp_parsely_post_authors', $authors, $post );
         $authors = array_map(array($this, 'get_clean_parsely_page_value'), $authors);
         return $authors;
