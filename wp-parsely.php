@@ -599,8 +599,9 @@ class Parsely {
             $category = 'Uncategorized';
         }
 
+        $category = apply_filters( 'wp_parsely_post_category', $category, $postObj, $parselyOptions );
         $category = $this->get_clean_parsely_page_value( $category );
-        return apply_filters( 'wp_parsely_post_category', $category, $postObj, $parselyOptions );
+        return $category;
     }
 
     /**
