@@ -46,7 +46,7 @@ class Parsely {
     private $optionDefaults     = array('apikey' => '',
                                         'content_id_prefix' => '',
                                         'use_top_level_cats' => false,
-                                        'child_cats_as_tags' => false,
+                                        'cats_as_tags' => false,
                                         'track_authenticated_users' => true,
                                         'lowercase_tags' => true);
     private $implementationOpts = array('standard' => 'Standard',
@@ -165,17 +165,16 @@ class Parsely {
                                  'help_text' => $h,
                                  'requires_recrawl' => true));
 
-        // Use child-categories as tags
+        // Use categories as tags
         $h = 'You can use this option to ensure all assigned categories will ' .
              'be used as tags.  For example, if you had a post assigned to ' .
              'the categories: "Business/Tech", "Business/Social", your ' .
-             'parsely-page tags attribute would include the tags: ' .
-             '"Business/Tech", "Business/Social".';
-        add_settings_field('child_cats_as_tags',
-                           'Use Child Categories as Tags <div class="help-icons"></div>',
+             'tags would include: "Business/Tech", "Business/Social".';
+        add_settings_field('cats_as_tags',
+                           'Use Categories as Tags <div class="help-icons"></div>',
                            array($this, 'print_binary_radio_tag'),
                            Parsely::MENU_SLUG, 'optional_settings',
-                           array('option_key' => 'child_cats_as_tags',
+                           array('option_key' => 'cats_as_tags',
                                  'help_text' => $h,
                                  'requires_recrawl' => true));
         // Track logged-in users
@@ -231,11 +230,11 @@ class Parsely {
         }
 
         // Child categories as tags
-        if ( $input['child_cats_as_tags'] !== 'true' && $input['child_cats_as_tags'] !== 'false' ) {
-            add_settings_error(Parsely::OPTIONS_KEY, 'child_cats_as_tags',
-                               'Value passed for child_cats_as_tags must be either "true" or "false".');
+        if ( $input['cats_as_tags'] !== 'true' && $input['cats_as_tags'] !== 'false' ) {
+            add_settings_error(Parsely::OPTIONS_KEY, 'cats_as_tags',
+                               'Value passed for cats_as_tags must be either "true" or "false".');
         } else {
-            $input['child_cats_as_tags'] = $input['child_cats_as_tags'] === 'true' ? true : false;
+            $input['cats_as_tags'] = $input['cats_as_tags'] === 'true' ? true : false;
         }
 
         // Track authenticated users
@@ -327,6 +326,17 @@ class Parsely {
                 $image_url = $image_url[0];
             }
 
+            $tags = $this->get_tags($post->ID);
+            if ( $parselyOptions['cats_as_tags'] ) {
+                $tags = array_merge($tags, $this->get_categories($post->ID));
+            }
+            if ( $parselyOptions['lowercase_tags'] ) {
+                $tags = array_map(strtolower, $tags);
+            }
+            $tags = apply_filters('wp_parsely_post_tags', $tags, $post->ID);
+            $tags = array_map(array($this, 'get_clean_parsely_page_value'), $tags);
+            $tags = array_unique($tags);
+
             $parselyPage['@type']          = 'NewsArticle';
             $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
             $parselyPage['url']            = get_permalink();
@@ -335,8 +345,7 @@ class Parsely {
             $parselyPage['dateCreated']    = gmdate('Y-m-d\TH:i:s\Z', get_post_time('U', true));
             $parselyPage['articleSection'] = $category;
             $parselyPage['creator']        = $authors;
-            $parselyPage['keywords']       = array_merge($this->get_tags_as_string($post->ID, $parselyOptions),
-                                                         $this->get_categories_as_tags($post, $parselyOptions));
+            $parselyPage['keywords']       = $tags;
         } elseif ( is_page() && $post->post_status == 'publish' ) {
             $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
             $parselyPage['url']            = get_permalink();
@@ -519,18 +528,30 @@ class Parsely {
     }
 
     /**
-    * Returns an array of strings associated with this page or post
+    * Returns the tags associated with this page or post
     */
-    private function get_tags_as_string($postId, $parselyOptions) {
-        $wpTags = wp_get_post_tags($postId);
-        $wpTags = apply_filters( 'wp_parsely_post_tags', $wpTags, $postId );
+    private function get_tags($postId) {
         $tags = array();
+        $wpTags = wp_get_post_tags($postId);
         foreach ( $wpTags as $wpTag ) {
-            if ( $parselyOptions['lowercase_tags'] === true ) {
-                $wpTag->name = strtolower($wpTag->name);
-            }
-            array_push($tags, $this->get_clean_parsely_page_value($wpTag->name));
+            array_push($tags, $wpTag->name);
         }
+
+        return $tags;
+    }
+
+    /**
+     * Returns an array of all the child categories for the current post delimited by a '/'
+     */
+    private function get_categories($postObj, $delimiter='/') {
+        $tags = array();
+        $categories = get_the_category($postObj->ID);
+        foreach( $categories as $category ) {
+            $hierarchy = get_category_parents($category, FALSE, $delimiter);
+            $hierarchy = rtrim($hierarchy, '/');
+            array_push($tags, $hierarchy);
+        }
+
         return $tags;
     }
 
@@ -547,43 +568,6 @@ class Parsely {
             $options = array_merge($this->optionDefaults, $options);
         }
         return $options;
-    }
-
-    /**
-     * Returns an array of all the child categories for the current post delimited by a '/' if instructed
-     * to do so via the `child_cats_as_tags` option.
-     */
-    private function get_categories_as_tags($postObj, $parselyOptions) {
-        $tags = array();
-        if ( !$parselyOptions['child_cats_as_tags'] ) {
-            return $tags;
-        }
-
-        $categories = get_the_category($postObj->ID);
-        $sectionName = $this->get_category_name($postObj, $parselyOptions);
-
-        if ( empty($categories) ) {
-            return $tags;
-        }
-        foreach( $categories as $category ) {
-            $hierarchy = get_category_parents($category, FALSE, Parsely::CATEGORY_DELIMITER);
-            $hierarchy = explode(Parsely::CATEGORY_DELIMITER, $hierarchy);
-            $hierarchy = array_filter($hierarchy);
-            if ( sizeof($hierarchy) == 1 && $hierarchy[0] == $sectionName ) {
-                // Don't take top level categories if we're already tracking
-                // using a section
-                continue;
-            }
-            $hierarchy = join('/', $hierarchy);
-            if ( $parselyOptions['lowercase_tags'] === true ) {
-                $hierarchy = strtolower($hierarchy);
-            }
-
-            array_push($tags, $this->get_clean_parsely_page_value($hierarchy));
-        }
-        $tags = array_unique($tags);
-
-        return $tags;
     }
 
     /**
@@ -751,6 +735,15 @@ class Parsely {
             unset($options['tracker_implementation']);
         }
         update_option(Parsely::OPTIONS_KEY, $options);
+    }
+
+    private function upgrade_plugin_to_version_1_8($options) {
+        // child_cats_as_tags was renamed to just cats_as_tags so we can delete
+        // the unneeded option
+        if ( isset($options['child_cats_as_tags']) ) {
+            unset($options['child_cats_as_tags']);
+            update_option(Parsely::OPTIONS_KEY, $options);
+        }
     }
 }
 
