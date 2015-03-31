@@ -44,8 +44,8 @@ Dash code will only be placed on pages and posts which have been published in Wo
 #### 1. The main settings screen of the wp-parsely plugin ####
 ![1. The main settings screen of the wp-parsely plugin](https://s.w.org/plugins/wp-parsely/screenshot-1.png)
 
-#### 2. The standard JavaScript include being inserted before </body> ####
-![2. The standard JavaScript include being inserted before </body>](https://s.w.org/plugins/wp-parsely/screenshot-2.png)
+#### 2. The standard JavaScript include being inserted before `</body>` ####
+![2. The standard JavaScript include being inserted before body tag](https://s.w.org/plugins/wp-parsely/screenshot-2.png)
 
 #### 3. A sample `parsely-page` meta tag for a home page ####
 ![3. A sample `parsely-page` meta tag for a home page](https://s.w.org/plugins/wp-parsely/screenshot-3.png)
