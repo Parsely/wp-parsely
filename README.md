@@ -39,6 +39,10 @@ Head to [your settings screen](http://dash.parsely.com/to/settings/api?highlight
 
 Dash code will only be placed on pages and posts which have been published in WordPress to ensure we don't track traffic generated while you're still writing a post/page.
 
+### How do I create a local dev environment to make changes to the `wp-parsely` code? ###
+
+See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin-development-environment).
+
 ## Screenshots ##
 
 #### 1. The main settings screen of the wp-parsely plugin ####
@@ -52,6 +56,8 @@ Dash code will only be placed on pages and posts which have been published in Wo
 
 #### 4. A sample `parsely-page` meta tag for an article or post ####
 ![4. A sample `parsely-page` meta tag for an article or post](https://s.w.org/plugins/wp-parsely/screenshot-4.png)
+
+## CReating 
 
 ## Changelog ##
 
