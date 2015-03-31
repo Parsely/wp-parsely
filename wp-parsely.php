@@ -331,7 +331,7 @@ class Parsely {
                 $tags = array_merge($tags, $this->get_categories($post->ID));
             }
             if ( $parselyOptions['lowercase_tags'] ) {
-                $tags = array_map(strtolower, $tags);
+                $tags = array_map('mb_strtolower', $tags);
             }
             $tags = apply_filters('wp_parsely_post_tags', $tags, $post->ID);
             $tags = array_map(array($this, 'get_clean_parsely_page_value'), $tags);
