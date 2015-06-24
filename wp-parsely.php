@@ -210,6 +210,7 @@ class Parsely {
             add_settings_error(Parsely::OPTIONS_KEY, 'apikey',
                                'Please specify the Site ID');
         } else {
+            $input['apikey'] = strtolower($input['apikey']);
             $input['apikey'] = sanitize_text_field($input['apikey']);
             if ( strpos($input['apikey'], '.') === false ||
                 strpos($input['apikey'], ' ') !== false)
