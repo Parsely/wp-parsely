@@ -33,7 +33,7 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress (look for "Parse.ly")
 1. Head to the settings page for the plugin (should be /wp-admin/options-general.php?page=parsely)
-1. Set your Site ID which can be found in [your settings screen](http://dash.parsely.com/to/settings/api?highlight=apikey)
+1. Set your Site ID, which is your own site domain name (e.g., `mysite.com`)
 1. Save your changes and enjoy your data!
 
 Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com](mailto:support@parsely.com) we always want to hear from you.
@@ -42,7 +42,7 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 
 = Where do I find my Site ID? =
 
-Head to [your settings screen](http://dash.parsely.com/to/settings/api?highlight=apikey) and copy the value for Site ID.
+Head to [your settings screen](http://dash.parsely.com/to/settings/api?highlight=apikey) and copy the value for Site ID, which is your own site domain name (e.g., `mysite.com`).
 
 = Why can't I see Dash code on my post when I preview? =
 
