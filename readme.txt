@@ -57,6 +57,11 @@ Dash code will only be placed on pages and posts which have been published in Wo
 
 == Changelog ==
 
+= 1.8 =
+* Updated documentation for installation
+* Allow developers to adjust the tag list and the category reported for a post
+* Added support for themes to extend the reported authors
+
 = 1.7 =
 * Use JSON-LD / schema.org for parsely-page data instead of proprietary format
 * Added support for multiple authors if using the Co-Authors Plus plugin https://wordpress.org/plugins/co-authors-plus/
@@ -104,6 +109,13 @@ Dash code will only be placed on pages and posts which have been published in Wo
 * Support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag)
 
 == Upgrade Notice ==
+
+= 1.8 =
+This version adds:
+
+* Documentation edits for installation
+* Ability for developers to adjust the tag list and the category reported for a post
+* Support for themes to extend the reported authors
 
 = 1.7 =
 This version adds:

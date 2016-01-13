@@ -57,9 +57,12 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 #### 4. A sample `parsely-page` meta tag for an article or post ####
 ![4. A sample `parsely-page` meta tag for an article or post](https://s.w.org/plugins/wp-parsely/screenshot-4.png)
 
-## CReating 
-
 ## Changelog ##
+
+### 1.8 ###
+* Updated documentation for installation and local development
+* Allow developers to adjust the tag list and the category reported for a post
+* Added support for themes to extend the reported authors
 
 ### 1.7 ###
 * Use JSON-LD / schema.org for parsely-page data instead of proprietary format
