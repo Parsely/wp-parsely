@@ -17,12 +17,18 @@ wordpress.org.
 
 # Making Changes
 
+If you hit merge conflicts when you try to `dcommit`, you can try creating a
+local tracking branch of `svn/trunk`, rebasing your local working branch with
+it, and then merging that back onto local `trunk` before trying to `dcommit`
+again. Otherwise, you may end up taking over every conflict and wrecking the
+commit history.
+
 1. Make changes and commit locally to master branch
 2. Test all changes and ensure no bugs have been introduced
-3. Validate readme.txt with https://wordpress.org/plugins/about/validator/
-4. Run git svn dcommit to push changes to WordPress.org SVN repo
-5. Tag any releases as needed git tag -a vx.x <commit hash>
-6. git push -f origin master to update GitHub repo
+3. Validate `readme.txt` with https://wordpress.org/plugins/about/validator/
+4. Run `git svn dcommit` to push changes to WordPress.org SVN repo
+5. Tag any releases as needed `git tag -a vx.x <commit hash>`
+6. `git push -f origin master` to update GitHub repo
 
 **WARNING**: Unfortunately, `git push -f origin master` is required because
 running `git svn dcommit` will usually modify commit history to change the
