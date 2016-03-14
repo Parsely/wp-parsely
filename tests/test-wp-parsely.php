@@ -5,6 +5,7 @@
  * @package 
  */
 
+
 /**
  * Sample test case.
  */
@@ -29,11 +30,29 @@ class SampleTest extends WP_UnitTestCase {
         return $category;
     }
 
+    function create_test_taxonomy($taxonomy, $taxonomy_value) {
+        register_taxonomy(
+            $taxonomy,
+            'post',
+            array(
+                'label' => $taxonomy,
+                'hierarchical' => true,
+            )
+        );
+        $custom_taxonomy = $this->factory->term->create(array(
+            'name' => $taxonomy_value,
+            'taxonomy' => $taxonomy
+        ));
+        return $custom_taxonomy;
+    }
+
     protected static $post;
     protected static $news;
     protected static $local;
     protected static $example_county;
     protected static $parsely;
+    protected static $custom_taxonomy;
+    protected static $taxonomy_factory;
 
     public static function setUpBeforeClass() {
     }
@@ -47,6 +66,7 @@ class SampleTest extends WP_UnitTestCase {
             'use_top_level_cats' => false,
             'cats_as_tags' => false,
             'track_authenticated_users' => true,
+            'custom_taxonomy_section' => 'category',
             'lowercase_tags' => true);
         update_option('parsely', $optionDefaults);
     }
@@ -87,12 +107,12 @@ class SampleTest extends WP_UnitTestCase {
     function test_parsely_categories()
     {
         $post_array = $this->create_test_post_array();
-        $cat = $this->create_test_category('News');
+        $cat = $this->create_test_category('Newssss');
         $post_array['post_category'] = array($cat);
         $post = $this->factory->post->create($post_array);
         $this->go_to('/?p=' . $post);
         $ppage = self::$parsely->insert_parsely_page();
-        $this->assertTrue($ppage['articleSection'] == 'News');
+        $this->assertTrue($ppage['articleSection'] == 'Newssss');
     }
 
     function test_parsely_tags_lowercase() {
@@ -128,8 +148,8 @@ class SampleTest extends WP_UnitTestCase {
         $this->go_to('/?p=' . $post);
         $ppage = self::$parsely->insert_parsely_page();
         $this->assertContains('news', $ppage['keywords']);
-        $this->assertContains('news/local', $ppage['keywords']);
-        $this->assertContains('news/local/sample county', $ppage['keywords']);
+        $this->assertContains('local', $ppage['keywords']);
+        $this->assertContains('sample county', $ppage['keywords']);
     }
     
     function test_use_top_level_cats() {
@@ -151,6 +171,47 @@ class SampleTest extends WP_UnitTestCase {
         $this->go_to('/?p=' . $post);
         $ppage = self::$parsely->insert_parsely_page();
         $this->assertTrue($ppage['articleSection'] == 'news');
+    }
+
+    function test_custom_taxonomy_as_section() {
+        $options = get_option('parsely');
+        $options['custom_taxonomy_section'] = 'sports';
+        update_option('parsely', $options);
+        $post_array = $this->create_test_post_array();
+        $cat = $this->create_test_category('news');
+        $post_array['post_category'] = array($cat);
+        $post = $this->factory->post->create($post_array);
+        $parent_taxonomy = $this->create_test_taxonomy('sports', 'basketball');
+        $child_taxonomy = $this->factory->term->create(array(
+            'name' => 'lebron',
+            'taxonomy' => 'sports',
+            'parent' => $parent_taxonomy
+        ));
+        wp_set_post_terms($post, array($parent_taxonomy, $child_taxonomy), 'sports');
+        $this->go_to('/?p=' . $post);
+        $ppage = self::$parsely->insert_parsely_page();
+        $this->assertTrue($ppage['articleSection'] == 'lebron');
+    }
+
+    function test_top_level_taxonomy_as_section() {
+        $options = get_option('parsely');
+        $options['custom_taxonomy_section'] = 'sports';
+        $options['use_top_level_cats'] = true;
+        update_option('parsely', $options);
+        $post_array = $this->create_test_post_array();
+        $cat = $this->create_test_category('news');
+        $post_array['post_category'] = array($cat);
+        $post = $this->factory->post->create($post_array);
+        $parent_taxonomy = $this->create_test_taxonomy('sports', 'basketball');
+        $child_taxonomy = $this->factory->term->create(array(
+            'name' => 'lebron',
+            'taxonomy' => 'sports',
+            'parent' => $parent_taxonomy
+        ));
+        wp_set_post_terms($post, array($parent_taxonomy, $child_taxonomy), 'sports');
+        $this->go_to('/?p=' . $post);
+        $ppage = self::$parsely->insert_parsely_page();
+        $this->assertTrue($ppage['articleSection'] == 'basketball');
     }
 
 }

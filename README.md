@@ -29,6 +29,16 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 
 Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com](mailto:support@parsely.com) we always want to hear from you.
 
+## Tests ##
+
+1. Follow the steps to install VirtualBox, Vagrant and `vagrant-hostsupdater` at [http://vccw.cc/](http://vccw.cc/).
+1. Navigate to the directory on your host machine to which you downloaded vccw.
+1. Within that directory, navigate to `www/wordpress/wp-content/plugins` and clone this repo -- `git clone https://github.com/Parsely/wp-parsely.git`
+1. Checkout the branch on which you've been working
+1. Navigate back up to the root of the `vccw` directory and run `vagrant up`
+1. Ssh into the Vagrant machine with `vagrant ssh`
+1. Navigate to `/var/www/wordpress/wp-content/plugins/wp-parsely` and run the test suite with the command `phpunit`
+
 ## Frequently Asked Questions ##
 
 ### Where do I find my Site ID? ###
