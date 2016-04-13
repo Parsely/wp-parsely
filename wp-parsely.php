@@ -35,6 +35,9 @@ Authors: Mike Sukmanowsky (mike@parsely.com)
 */
 
 class Parsely {
+    /**
+     * @codeCoverageIgnoreStart
+     */
     const VERSION             = '1.8';
     const MENU_SLUG           = 'parsely';             // Defines the page param passed to options-general.php
     const MENU_TITLE          = 'Parse.ly';            // Text to be used for the menu as seen in Settings sub-menu
@@ -295,6 +298,11 @@ class Parsely {
         }
     }
 
+
+    /**
+     * @codeCoverageIgnoreEnd
+     */
+
     /**
     * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
     */
@@ -383,6 +391,8 @@ class Parsely {
             $parselyPage['url']            = home_url(); // site_url();?
         }
         include('parsely-parsely-page.php');
+        // return this for ease of use testing
+        return $parselyPage;
     }
 
     /**
@@ -544,9 +554,9 @@ class Parsely {
     /**
      * Returns an array of all the child categories for the current post delimited by a '/'
      */
-    private function get_categories($postObj, $delimiter='/') {
+    private function get_categories($postID, $delimiter='/') {
         $tags = array();
-        $categories = get_the_category($postObj->ID);
+        $categories = get_the_category($postID);
         foreach( $categories as $category ) {
             $hierarchy = get_category_parents($category, FALSE, $delimiter);
             $hierarchy = rtrim($hierarchy, '/');
@@ -712,39 +722,6 @@ class Parsely {
         }
         $pageURL .= $_SERVER['REQUEST_URI'];
         return $pageURL;
-    }
-
-    private function upgrade_plugin_to_version_1_3($options) {
-        if ( isset($options['tracker_implementation']) && $options['tracker_implementation'] == 'async' ) {
-            $options['tracker_implementation'] = $this->optionDefaults['tracker_implementation'];
-        }
-        update_option(Parsely::OPTIONS_KEY, $options);
-    }
-
-    private function upgrade_plugin_to_version_1_4($options) {
-        $this->upgrade_plugin_to_version_1_3($options);
-    }
-
-    private function upgrade_plugin_to_version_1_5($options) {
-        $this->upgrade_plugin_to_version_1_4($options);
-    }
-
-    private function upgrade_plugin_to_version_1_6($options) {
-        // As of version 1.6, we no longer offer tracker_implementation as a
-        // setting so we'll delete it
-        if ( isset($options['tracker_implementation']) ) {
-            unset($options['tracker_implementation']);
-        }
-        update_option(Parsely::OPTIONS_KEY, $options);
-    }
-
-    private function upgrade_plugin_to_version_1_8($options) {
-        // child_cats_as_tags was renamed to just cats_as_tags so we can delete
-        // the unneeded option
-        if ( isset($options['child_cats_as_tags']) ) {
-            unset($options['child_cats_as_tags']);
-            update_option(Parsely::OPTIONS_KEY, $options);
-        }
     }
 }
 
