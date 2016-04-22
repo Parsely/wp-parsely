@@ -392,11 +392,21 @@ class Parsely {
         $parselyOptions = $this->get_options();
         // If we don't have an API key, there's no need to proceed.
         if ( empty($parselyOptions['apikey']) ) {
-            return '';
+            //return '';
         }
 
         global $post;
         $display = TRUE;
+
+        $referrer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "";
+        include_once('parsely-referrer-blacklist.php');
+        $blacklisted = false;
+
+        foreach ( $blacklist as $str ) {
+          $blacklisted = true && strpos($referrer, $str) !== false;
+        }
+
+        $display = !$blacklisted;
 
         if ( is_single() && $post->post_status != 'publish' ) {
             $display = FALSE;
@@ -770,4 +780,3 @@ if ( class_exists('Parsely') ) {
     define('PARSELY_VERSION', Parsely::VERSION);
     $parsely = new Parsely();
 }
-
