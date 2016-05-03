@@ -42,7 +42,7 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 
 = Where do I find my Site ID? =
 
-Head to [your settings screen](http://dash.parsely.com/to/settings/api?highlight=apikey) and copy the value for Site ID, which is your own site domain name (e.g., `mysite.com`).
+Your Site ID is your own site domain name (e.g., `mysite.com`).
 
 = Why can't I see Dash code on my post when I preview? =
 

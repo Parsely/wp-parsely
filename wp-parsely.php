@@ -118,9 +118,7 @@ class Parsely {
                              Parsely::MENU_SLUG);
 
         // API Key
-        $h = 'You can find your Site ID on your ' .
-             '<a href="http://dash.parsely.com/to/settings/api?highlight=apikey" target="_blank">' .
-             'your API settings page</a>.';
+        $h = 'Your Site ID is your own site domain (e.g. `mydomain.com`)';
         $field_args = array(
             'option_key' => 'apikey',
             'help_text' => $h
@@ -232,7 +230,7 @@ class Parsely {
             if ( strpos($input['apikey'], '.') === false ||
                 strpos($input['apikey'], ' ') !== false)
                 add_settings_error(Parsely::OPTIONS_KEY, 'apikey',
-                                   'Your Parse.ly Site ID looks incorrect, it should look like "example.com".  You can verify your Site ID <a href="http://dash.parsely.com/to/settings/api?highlight=apikey" target="_blank">here</a>.');
+                                   'Your Parse.ly Site ID looks incorrect, it should look like "example.com".');  
 
         }
 
