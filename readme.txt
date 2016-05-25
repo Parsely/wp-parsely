@@ -57,6 +57,10 @@ Dash code will only be placed on pages and posts which have been published in Wo
 
 == Changelog ==
 
+= 1.9 =
+* Adds ability to assign custom taxonomies as section
+* Fixes bug related to add section to tag field
+
 = 1.8 =
 * Updated documentation for installation
 * Allow developers to adjust the tag list and the category reported for a post
@@ -109,6 +113,12 @@ Dash code will only be placed on pages and posts which have been published in Wo
 * Support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag)
 
 == Upgrade Notice ==
+
+= 1.9 =
+This version adds:
+
+* Ability to assign custom taxonomies as section
+* Bug fix related to adding section to tag field
 
 = 1.8 =
 This version adds:
