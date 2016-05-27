@@ -69,6 +69,11 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 
 ## Changelog ##
 
+### 1.9 ###
+
+* Ability to assign custom taxonomies as section
+* Bug fix related to adding section to tag field
+
 ### 1.8 ###
 * Updated documentation for installation and local development
 * Allow developers to adjust the tag list and the category reported for a post
