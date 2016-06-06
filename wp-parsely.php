@@ -341,6 +341,7 @@ class Parsely {
             $authors    = $this->get_author_names($post);
             $category   = $this->get_category_name($post, $parselyOptions);
             $postId     = $parselyOptions['content_id_prefix'] . (string)get_the_ID();
+            $title      = apply_filters('wp_parsely_post_title', get_the_title(), $post->ID );
 
             $image_url = '';
             if ( has_post_thumbnail() ) {
@@ -376,7 +377,7 @@ class Parsely {
                 '@type' => 'WebPage',
                 '@id' => get_permalink()
             );
-            $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
+            $parselyPage['headline']       = $this->get_clean_parsely_page_value($title);
             $parselyPage['url']            = get_permalink();
             $parselyPage['thumbnailUrl']   = $image_url;
             $parselyPage['image']          = array(
@@ -403,7 +404,7 @@ class Parsely {
             ); 
             $parselyPage['keywords']       = $tags;
         } elseif ( is_page() && $post->post_status == 'publish' ) {
-            $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
+            $parselyPage['headline']       = $this->get_clean_parsely_page_value($title);
             $parselyPage['url']            = get_permalink();
         } elseif ( is_author() ) {
             // TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions
