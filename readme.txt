@@ -36,6 +36,8 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 1. Set your Site ID, which is your own site domain name (e.g., `mysite.com`)
 1. Save your changes and enjoy your data!
 
+**NOTE:** This plugin does not currently support dynamic tracking (the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above the standard Parse.ly include (http://www.parsely.com/help/integration/basic/) that the plugin injects into your page source. Please consult the Parse.ly documentation on dynamic tracking (https://www.parsely.com/help/integration/dynamic/) for instructions on implementing dynamic tracking, or contact Parse.ly support for additional assistance.
+
 Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com](mailto:support@parsely.com) we always want to hear from you.
 
 == Frequently Asked Questions ==
