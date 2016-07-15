@@ -52,7 +52,7 @@ class Parsely {
                                         'cats_as_tags' => false,
                                         'track_authenticated_users' => true,
                                         'lowercase_tags' => true,
-                                        'force_https_canonicals' => true);
+                                        'force_https_canonicals' => false);
     private $implementationOpts = array('standard' => 'Standard',
                                         'dom_free' => 'DOM-Free');
 
