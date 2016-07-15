@@ -854,8 +854,8 @@ class Parsely {
     function get_first_image($post) {
         ob_start();
         ob_end_clean();
-        if(preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches)){
-            $first_img = $matches [1] [0];
+        if (preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches)) {
+            $first_img = $matches[1][0];
             return $first_img;
         }
         return '';
