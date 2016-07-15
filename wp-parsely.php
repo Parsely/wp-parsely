@@ -833,7 +833,7 @@ class Parsely {
     */
     private function get_current_url() {
         $options = $this->get_options();
-        $scheme = ( $options['force_https_canonical'] ? 'https://' : 'http://');
+        $scheme = ( $options['force_https_canonicals'] ? 'https://' : 'http://');
         $permalink = get_permalink();
         if ($permalink != false) {
             $parsed_canonical = parse_url($permalink);
