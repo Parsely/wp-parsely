@@ -395,10 +395,10 @@ class Parsely {
             $parselyPage['@type']          = 'NewsArticle';
             $parselyPage['mainEntityOfPage'] = array(
                 '@type' => 'WebPage',
-                '@id' => get_permalink()
+                '@id' => $this->get_current_url()
             );
             $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
-            $parselyPage['url']            = get_permalink();
+            $parselyPage['url']            = $this->get_current_url();
             $parselyPage['thumbnailUrl']   = $image_url;
             $parselyPage['image']          = array(
                 '@type' => 'ImageObject',
@@ -425,7 +425,7 @@ class Parsely {
             $parselyPage['keywords']       = $tags;
         } elseif ( is_page() && $post->post_status == 'publish' ) {
             $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
-            $parselyPage['url']            = get_permalink();
+            $parselyPage['url']            = $this->get_current_url();
         } elseif ( is_author() ) {
             // TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions
             $author = (get_query_var('author_name')) ? get_user_by('slug', get_query_var('author_name')) : get_userdata(get_query_var('author'));
@@ -832,8 +832,15 @@ class Parsely {
     * A fall-back implementation to determine permalink
     */
     private function get_current_url() {
-        $pageURL = (is_ssl() ? 'https://' : 'http://');
-        $pageURL .= $_SERVER['HTTP_HOST'];
+        $options = $this->get_options();
+        $scheme = ( $options['force_https_canonical'] ? 'https://' : 'http://');
+        $permalink = get_permalink();
+        if ($permalink != false) {
+            $parsed_canonical = parse_url($permalink);
+            $canonical = $scheme . $parsed_canonical['host'] . $parsed_canonical['path'];
+            return $canonical;
+        }
+        $pageURL = $scheme . $_SERVER['HTTP_HOST'];
         if ( $_SERVER['SERVER_PORT'] != '80' ) {
             $pageURL .= ':'.$_SERVER['SERVER_PORT'];
         }
