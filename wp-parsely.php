@@ -219,14 +219,9 @@ class Parsely {
                                  'help_text' => $h,
                                  'requires_recrawl' => true));
 
-        // Dynamic tracking note
-        add_settings_field('dynamic_tracking_note', 'Note: ',
-                            array($this, 'print_dynamic_tracking_note'),
-                            Parsely::MENU_SLUG, 'optional_settings');
-
         $h = 'wp-parsely uses http canonical URLs by default. If this needs to be forced to use https, set this option ' .
-        ' to true. Note: the default is fine for almost all publishers, it\'s unlikely you\'ll have to change this unless' .
-        ' directed to do so by a Parsely support rep.';
+            ' to true. Note: the default is fine for almost all publishers, it\'s unlikely you\'ll have to change this unless' .
+            ' directed to do so by a Parsely support rep.';
         add_settings_field('force_https_canonicals',
             'Force HTTPS canonicals <div class="help-icons"></div>',
             array($this, 'print_binary_radio_tag'),
@@ -234,6 +229,11 @@ class Parsely {
             array('option_key' => 'force_https_canonicals',
                 'help_text' => $h,
                 'requires_recrawl' => true));
+
+        // Dynamic tracking note
+        add_settings_field('dynamic_tracking_note', 'Note: ',
+                            array($this, 'print_dynamic_tracking_note'),
+                            Parsely::MENU_SLUG, 'optional_settings');
 
     }
 
@@ -395,10 +395,10 @@ class Parsely {
             $parselyPage['@type']          = 'NewsArticle';
             $parselyPage['mainEntityOfPage'] = array(
                 '@type' => 'WebPage',
-                '@id' => $this->get_current_url()
+                '@id' => $this->get_current_url('post')
             );
             $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
-            $parselyPage['url']            = $this->get_current_url();
+            $parselyPage['url']            = $this->get_current_url('post');
             $parselyPage['thumbnailUrl']   = $image_url;
             $parselyPage['image']          = array(
                 '@type' => 'ImageObject',
@@ -425,7 +425,7 @@ class Parsely {
             $parselyPage['keywords']       = $tags;
         } elseif ( is_page() && $post->post_status == 'publish' ) {
             $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
-            $parselyPage['url']            = $this->get_current_url();
+            $parselyPage['url']            = $this->get_current_url('post');
         } elseif ( is_author() ) {
             // TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions
             $author = (get_query_var('author_name')) ? get_user_by('slug', get_query_var('author_name')) : get_userdata(get_query_var('author'));
@@ -831,11 +831,11 @@ class Parsely {
     * Get the URL of the current PHP script.
     * A fall-back implementation to determine permalink
     */
-    private function get_current_url() {
+    private function get_current_url($post = 'nonpost') {
         $options = $this->get_options();
         $scheme = ( $options['force_https_canonicals'] ? 'https://' : 'http://');
-        $permalink = get_permalink();
-        if ($permalink != false) {
+        if ($post == 'post') {
+            $permalink = get_permalink();
             $parsed_canonical = parse_url($permalink);
             $canonical = $scheme . $parsed_canonical['host'] . $parsed_canonical['path'];
             return $canonical;
