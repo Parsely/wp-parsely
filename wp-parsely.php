@@ -223,6 +223,17 @@ class Parsely {
                             array($this, 'print_dynamic_tracking_note'),
                             Parsely::MENU_SLUG, 'optional_settings');
 
+        $h = 'wp-parsely uses http canonical URLs by default. If this needs to be forced to use https, set this option ' .
+        ' to true. Note: the default is fine for almost all publishers, it\'s unlikely you\'ll have to change this unless' .
+        ' directed to do so by a Parsely support rep.';
+        add_settings_field('force_https_canonicals',
+            'Force HTTPS canonicals <div class="help-icons"></div>',
+            array($this, 'print_binary_radio_tag'),
+            Parsely::MENU_SLUG, 'optional_settings',
+            array('option_key' => 'force_https_canonicals',
+                'help_text' => $h,
+                'requires_recrawl' => true));
+
     }
 
     public function validate_options($input) {
