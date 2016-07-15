@@ -363,11 +363,13 @@ class Parsely {
             $category   = $this->get_category_name($post, $parselyOptions);
             $postId     = $parselyOptions['content_id_prefix'] . (string)get_the_ID();
 
-            $image_url = '';
             if ( has_post_thumbnail() ) {
                 $image_id = get_post_thumbnail_id();
                 $image_url = wp_get_attachment_image_src($image_id);
                 $image_url = $image_url[0];
+            }
+            else {
+                $image_url = $this->get_first_image($post);
             }
 
             $tags = $this->get_tags($post->ID);
@@ -846,6 +848,17 @@ class Parsely {
         }
         $pageURL .= $_SERVER['REQUEST_URI'];
         return $pageURL;
+    }
+
+    /* https://css-tricks.com/snippets/wordpress/get-the-first-image-from-a-post/ */
+    function get_first_image($post) {
+        ob_start();
+        ob_end_clean();
+        if(preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches)){
+            $first_img = $matches [1] [0];
+            return $first_img;
+        }
+        return '';
     }
 }
 
