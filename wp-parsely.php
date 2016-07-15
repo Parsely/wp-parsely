@@ -51,7 +51,8 @@ class Parsely {
                                         'custom_taxonomy_section' => 'category',
                                         'cats_as_tags' => false,
                                         'track_authenticated_users' => true,
-                                        'lowercase_tags' => true);
+                                        'lowercase_tags' => true,
+                                        'force_https_canonicals' => true);
     private $implementationOpts = array('standard' => 'Standard',
                                         'dom_free' => 'DOM-Free');
 
