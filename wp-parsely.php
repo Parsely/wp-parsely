@@ -598,11 +598,10 @@ class Parsely {
     */
     private function get_tags($postId) {
         $tags = array();
-        $wpTags = get_the_terms( $postId, 'post_tag' );
-        if ( ! empty( $wpTags ) ) {
-            $tags = wp_list_pluck( 'name', $wpTags );
+        $wpTags = wp_get_post_tags($postId);
+        foreach ( $wpTags as $wpTag ) {
+            array_push($tags, $wpTag->name);
         }
-        return $tags;
     }
 
     /**
