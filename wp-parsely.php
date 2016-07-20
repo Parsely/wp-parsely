@@ -681,9 +681,9 @@ class Parsely {
     * (Wordpress calls taxonomy values 'terms').
     */
     private function get_top_level_term($term_id, $taxonomy_name) {
-        $parent = get_term_by( 'id', $term_id, $taxonomy_name );
+        $parent = $this->parsely_get_term_by( 'id', $term_id, $taxonomy_name );
         while ( $parent->parent != 0 ){
-            $parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
+            $parent = $this->parsely_get_term_by( 'id', $parent->parent, $taxonomy_name );
         }
         return $parent->name;
     }
@@ -711,14 +711,14 @@ class Parsely {
         $custom_taxonomy_values = array();
         foreach ( $custom_taxonomy_objects as $custom_taxonomy_object ) {
             array_push($custom_taxonomy_values, $custom_taxonomy_object->name);
-            $parent = get_term_by( 'id', $custom_taxonomy_object->parent, $parselyOptions['custom_taxonomy_section'] );
+            $parent = $this->parsely_get_term_by( 'id', $custom_taxonomy_object->parent, $parselyOptions['custom_taxonomy_section'] );
             // get all of a custom taxonomy value's parents and add them to tags array
             if ($parent) {
                 while ( $parent->parent != 0){
                     if (!in_array($parent->name, $custom_taxonomy_values)) {
                         array_push($custom_taxonomy_values, $parent->name);
                     }
-                    $parent = get_term_by( 'id', $parent->parent, $parselyOptions['custom_taxonomy_section'] );
+                    $parent = $this->parsely_get_term_by( 'id', $parent->parent, $parselyOptions['custom_taxonomy_section'] );
                 }
             }
         }
@@ -859,6 +859,16 @@ class Parsely {
             return $first_img;
         }
         return '';
+    }
+
+    private function parsely_get_term_by() {
+        $args = func_get_args();
+        if( function_exists('wpcom_vip_get_term_by') ) {
+           return call_user_func_array('wpcom_vip_get_term_by', $args);
+        }
+        else {
+            return call_user_func_array('get_term_by', $args);
+        }
     }
 }
 
