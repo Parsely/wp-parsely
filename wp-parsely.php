@@ -602,6 +602,7 @@ class Parsely {
         foreach ( $wpTags as $wpTag ) {
             array_push($tags, $wpTag->name);
         }
+        return $tags;
     }
 
     /**
