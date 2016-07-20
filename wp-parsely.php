@@ -598,7 +598,7 @@ class Parsely {
     */
     private function get_tags($postId) {
         $tags = array();
-        $wpTags = wp_get_post_tags($postId);
+        $wpTags = get_the_terms( $postId, 'post_tag' );
         foreach ( $wpTags as $wpTag ) {
             array_push($tags, $wpTag->name);
         }
