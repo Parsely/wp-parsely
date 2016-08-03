@@ -193,6 +193,27 @@ class SampleTest extends WP_UnitTestCase {
         $this->assertTrue($ppage['articleSection'] == 'lebron');
     }
 
+    function test_custom_taxonomy_tags() {
+        $options = get_option('parsely');
+        $options['custom_taxonomy_tags'] = true;
+        update_option('parsely', $options);
+        $post_array = $this->create_test_post_array();
+        $post_array['tags_input'] = array("Sample", "Tag");
+        $post = $this->factory->post->create($post_array);
+        $parent_taxonomy = $this->create_test_taxonomy('sports', 'hockey');
+        $child_taxonomy = $this->factory->term->create(array(
+            'name' => 'gretzky',
+            'taxonomy' => 'sports',
+            'parent' => $parent_taxonomy
+        ));
+        wp_set_post_terms($post, array($parent_taxonomy, $child_taxonomy), 'sports');
+        $this->go_to('/?p=' . $post);
+        $ppage = self::$parsely->insert_parsely_page();
+        $this->assertContains('sample', $ppage['keywords']);
+        $this->assertContains('tag', $ppage['keywords']);
+        $this->assertContains('gretzky', $ppage['keywords']); 
+    }
+
     function test_top_level_taxonomy_as_section() {
         $options = get_option('parsely');
         $options['custom_taxonomy_section'] = 'sports';
