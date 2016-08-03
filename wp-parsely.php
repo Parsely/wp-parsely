@@ -52,7 +52,8 @@ class Parsely {
                                         'cats_as_tags' => false,
                                         // 'custom_taxonomy_tags' => false,
                                         'track_authenticated_users' => true,
-                                        'lowercase_tags' => true);
+                                        'lowercase_tags' => true,
+                                        'force_https_canonicals' => false);
     private $implementationOpts = array('standard' => 'Standard',
                                         'dom_free' => 'DOM-Free');
 
@@ -233,6 +234,17 @@ class Parsely {
                                  'help_text' => $h,
                                  'requires_recrawl' => true));
 
+        $h = 'wp-parsely uses http canonical URLs by default. If this needs to be forced to use https, set this option ' .
+            ' to true. Note: the default is fine for almost all publishers, it\'s unlikely you\'ll have to change this unless' .
+            ' directed to do so by a Parsely support rep.';
+        add_settings_field('force_https_canonicals',
+            'Force HTTPS canonicals <div class="help-icons"></div>',
+            array($this, 'print_binary_radio_tag'),
+            Parsely::MENU_SLUG, 'optional_settings',
+            array('option_key' => 'force_https_canonicals',
+                'help_text' => $h,
+                'requires_recrawl' => true));
+
         // Dynamic tracking note
         add_settings_field('dynamic_tracking_note', 'Note: ',
                             array($this, 'print_dynamic_tracking_note'),
@@ -366,11 +378,13 @@ class Parsely {
             $category   = $this->get_category_name($post, $parselyOptions);
             $postId     = $parselyOptions['content_id_prefix'] . (string)get_the_ID();
 
-            $image_url = '';
             if ( has_post_thumbnail() ) {
                 $image_id = get_post_thumbnail_id();
                 $image_url = wp_get_attachment_image_src($image_id);
                 $image_url = $image_url[0];
+            }
+            else {
+                $image_url = $this->get_first_image($post);
             }
 
             $tags = $this->get_tags($post->ID);
@@ -398,10 +412,10 @@ class Parsely {
             $parselyPage['@type']          = 'NewsArticle';
             $parselyPage['mainEntityOfPage'] = array(
                 '@type' => 'WebPage',
-                '@id' => get_permalink()
+                '@id' => $this->get_current_url('post')
             );
             $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
-            $parselyPage['url']            = get_permalink();
+            $parselyPage['url']            = $this->get_current_url('post');
             $parselyPage['thumbnailUrl']   = $image_url;
             $parselyPage['image']          = array(
                 '@type' => 'ImageObject',
@@ -428,7 +442,7 @@ class Parsely {
             $parselyPage['keywords']       = $tags;
         } elseif ( is_page() && $post->post_status == 'publish' ) {
             $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
-            $parselyPage['url']            = get_permalink();
+            $parselyPage['url']            = $this->get_current_url('post');
         } elseif ( is_author() ) {
             // TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions
             $author = (get_query_var('author_name')) ? get_user_by('slug', get_query_var('author_name')) : get_userdata(get_query_var('author'));
@@ -682,9 +696,9 @@ class Parsely {
     * (Wordpress calls taxonomy values 'terms').
     */
     private function get_top_level_term($term_id, $taxonomy_name) {
-        $parent = get_term_by( 'id', $term_id, $taxonomy_name );
+        $parent = $this->parsely_get_term_by( 'id', $term_id, $taxonomy_name );
         while ( $parent->parent != 0 ){
-            $parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
+            $parent = $this->parsely_get_term_by( 'id', $parent->parent, $taxonomy_name );
         }
         return $parent->name;
     }
@@ -712,14 +726,14 @@ class Parsely {
         $custom_taxonomy_values = array();
         foreach ( $custom_taxonomy_objects as $custom_taxonomy_object ) {
             array_push($custom_taxonomy_values, $custom_taxonomy_object->name);
-            $parent = get_term_by( 'id', $custom_taxonomy_object->parent, $parselyOptions['custom_taxonomy_section'] );
+            $parent = $this->parsely_get_term_by( 'id', $custom_taxonomy_object->parent, $parselyOptions['custom_taxonomy_section'] );
             // get all of a custom taxonomy value's parents and add them to tags array
             if ($parent) {
                 while ( $parent->parent != 0){
                     if (!in_array($parent->name, $custom_taxonomy_values)) {
                         array_push($custom_taxonomy_values, $parent->name);
                     }
-                    $parent = get_term_by( 'id', $parent->parent, $parselyOptions['custom_taxonomy_section'] );
+                    $parent = $this->parsely_get_term_by( 'id', $parent->parent, $parselyOptions['custom_taxonomy_section'] );
                 }
             }
         }
@@ -834,14 +848,42 @@ class Parsely {
     * Get the URL of the current PHP script.
     * A fall-back implementation to determine permalink
     */
-    private function get_current_url() {
-        $pageURL = (is_ssl() ? 'https://' : 'http://');
-        $pageURL .= $_SERVER['HTTP_HOST'];
+    private function get_current_url($post = 'nonpost') {
+        $options = $this->get_options();
+        $scheme = ( $options['force_https_canonicals'] ? 'https://' : 'http://');
+        if ($post == 'post') {
+            $permalink = get_permalink();
+            $parsed_canonical = parse_url($permalink);
+            $canonical = $scheme . $parsed_canonical['host'] . $parsed_canonical['path'];
+            return $canonical;
+        }
+        $pageURL = $scheme . $_SERVER['HTTP_HOST'];
         if ( $_SERVER['SERVER_PORT'] != '80' ) {
             $pageURL .= ':'.$_SERVER['SERVER_PORT'];
         }
         $pageURL .= $_SERVER['REQUEST_URI'];
         return $pageURL;
+    }
+
+    /* https://css-tricks.com/snippets/wordpress/get-the-first-image-from-a-post/ */
+    function get_first_image($post) {
+        ob_start();
+        ob_end_clean();
+        if (preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $post->post_content, $matches)) {
+            $first_img = $matches[1][0];
+            return $first_img;
+        }
+        return '';
+    }
+
+    private function parsely_get_term_by() {
+        $args = func_get_args();
+        if( function_exists('wpcom_vip_get_term_by') ) {
+           return call_user_func_array('wpcom_vip_get_term_by', $args);
+        }
+        else {
+            return call_user_func_array('get_term_by', $args);
+        }
     }
 }
 

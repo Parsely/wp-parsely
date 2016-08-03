@@ -236,6 +236,21 @@ class SampleTest extends WP_UnitTestCase {
         $this->assertTrue($ppage['articleSection'] == 'basketball');
     }
 
+    function test_http_canonicals()
+    {
+        $options = get_option('parsely');
+        $post_array = $this->create_test_post_array();
+        $post = $this->factory->post->create($post_array);
+        $this->go_to('/?p=' . $post);
+        $ppage = self::$parsely->insert_parsely_page();
+        $this->assertTrue(strpos($ppage['url'], 'http', 0) == 0);
+        $this->assertFalse(strpos($ppage['url'], 'https', 0));
+        $options['force_https_canonicals'] = true;
+        update_option('parsely', $options);
+        $ppage = self::$parsely->insert_parsely_page();
+        $this->assertTrue(strpos($ppage['url'], 'https', 0) == 0);
+    }
+
 }
 
 
