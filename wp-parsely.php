@@ -50,7 +50,7 @@ class Parsely {
                                         'use_top_level_cats' => false,
                                         'custom_taxonomy_section' => 'category',
                                         'cats_as_tags' => false,
-                                        'custom_taxonomy_tags' => false,
+                                        // 'custom_taxonomy_tags' => false,
                                         'track_authenticated_users' => true,
                                         'lowercase_tags' => true);
     private $implementationOpts = array('standard' => 'Standard',
@@ -181,8 +181,8 @@ class Parsely {
                                  'select_options' => array_diff(get_taxonomies(), array('post_tag', 'nav_menu', 'author', 'link_category', 'post_format')),
                                  'requires_recrawl' => true));
 
-        // Use categories as tags
-        $h = 'You can use this option to ensure all assigned categories will ' .
+        // Use categories and custom taxonomies as tags
+        $h = 'You can use this option to ensure all assigned categories and taxonomies will ' .
              'be used as tags.  For example, if you had a post assigned to ' .
              'the categories: "Business/Tech", "Business/Social", your ' .
              'tags would include: "Business/Tech", "Business/Social".';
@@ -194,18 +194,18 @@ class Parsely {
                                  'help_text' => $h,
                                  'requires_recrawl' => true));
 
-        // Append custom taxonomy values in parselyPage tags field; disabled by default
-        $h = 'Use this option to append custom taxonomy values to your tags field.<br>';
-        add_settings_field('custom_taxonomy_tags',
-                           'Use Custom Taxonomy for Section  <div class="help-icons"></div>',
-                           array($this, 'print_select_tag'),
-                           Parsely::MENU_SLUG, 'print_binary_radio_tag',
-                           array('option_key' => 'custom_taxonomy_tags',
-                                 'help_text' => $h,
-                                 // filter Wordpress taxonomies under the hood that should not appear in dropdown
-                                 //TODO: pull the values below from the array of taxonomies that gets added to tags
-                                 //'select_options' => array_diff(get_taxonomies(), array('post_tag', 'nav_menu', 'author', 'link_category', 'post_format')),
-                                 'requires_recrawl' => true));
+        // // Append custom taxonomy values in parselyPage tags field; disabled by default
+        // $h = 'Use this option to append custom taxonomy values to your tags field.<br>';
+        // add_settings_field('custom_taxonomy_tags',
+        //                    'Use Custom Taxonomies as Section  <div class="help-icons"></div>',
+        //                    array($this, 'print_select_tag'),
+        //                    Parsely::MENU_SLUG, 'print_binary_radio_tag',
+        //                    array('option_key' => 'custom_taxonomy_tags',
+        //                          'help_text' => $h,
+        //                          // filter Wordpress taxonomies under the hood that should not appear in dropdown
+        //                          //TODO: pull the values below from the array of taxonomies that gets added to tags
+        //                          //'select_options' => array_diff(get_taxonomies(), array('post_tag', 'nav_menu', 'author', 'link_category', 'post_format')),
+        //                          'requires_recrawl' => true));
 
         // Track logged-in users
         $h = 'By default, wp-parsely will track the activity of users that ' .
