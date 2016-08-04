@@ -745,6 +745,7 @@ class Parsely {
             array_merge($all_values, $custom_taxonomy_values);
         }
         return $all_values;
+        error_log('cool');
     }
 
     /**
