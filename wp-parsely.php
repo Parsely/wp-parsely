@@ -50,7 +50,6 @@ class Parsely {
                                         'use_top_level_cats' => false,
                                         'custom_taxonomy_section' => 'category',
                                         'cats_as_tags' => false,
-                                        // 'custom_taxonomy_tags' => false,
                                         'track_authenticated_users' => true,
                                         'lowercase_tags' => true,
                                         'force_https_canonicals' => false);
@@ -390,10 +389,8 @@ class Parsely {
             $tags = $this->get_tags($post->ID);
             if ( $parselyOptions['cats_as_tags'] ) {
                 $tags = array_merge($tags, $this->get_categories($post->ID));
-                // add custom taxonomy values if those are populating section instead of category
-                if ( $parselyOptions['custom_taxonomy_section'] != 'category') {
-                    $tags = array_merge($tags, $this->get_custom_taxonomy_values($post, $parselyOptions));
-                }
+                // add custom taxonomy values
+                $tags = array_merge($tags, $this->get_custom_taxonomy_values($post, $parselyOptions));
             }
             // the function 'mb_strtolower' is not enabled by default in php, so this check
             // falls back to the native php function 'strtolower' if necessary
@@ -720,28 +717,34 @@ class Parsely {
         return $terms_not_parents_cleaned[0]->name;
     }
 
-    // Get all term values in a custom taxonomy hierarchy
+    // Get all term values from custom taxonomies
     private function get_custom_taxonomy_values($postObj, $parselyOptions) {
-        $custom_taxonomy_objects = get_the_terms($postObj->ID, $parselyOptions['custom_taxonomy_section']);
-        $custom_taxonomy_values = array();
-        foreach ( $custom_taxonomy_objects as $custom_taxonomy_object ) {
-            array_push($custom_taxonomy_values, $custom_taxonomy_object->name);
-            $parent = $this->parsely_get_term_by( 'id', $custom_taxonomy_object->parent, $parselyOptions['custom_taxonomy_section'] );
-            // get all of a custom taxonomy value's parents and add them to tags array
-            if ($parent) {
-                while ( $parent->parent != 0){
-                    if (!in_array($parent->name, $custom_taxonomy_values)) {
-                        array_push($custom_taxonomy_values, $parent->name);
+        // filter out default WordPress taxonomies
+        $all_taxonomies = array_diff(get_taxonomies(), array('post_tag', 'nav_menu', 'author', 'link_category', 'post_format'));
+        $all_values = array();
+        foreach ( $all_taxonomies as $taxonomy ) {
+            $custom_taxonomy_objects = get_the_terms($postObj->ID, $taxonomy);
+            $custom_taxonomy_values = array();
+            foreach ( $custom_taxonomy_objects as $custom_taxonomy_object ) {
+                array_push($custom_taxonomy_values, $custom_taxonomy_object->name);
+                $parent = $this->parsely_get_term_by( 'id', $custom_taxonomy_object->parent, $taxonomy );
+                // get all of a custom taxonomy value's parents and add them to tags array
+                if ($parent) {
+                    while ( $parent->parent != 0){
+                        if (!in_array($parent->name, $custom_taxonomy_values)) {
+                            array_push($custom_taxonomy_values, $parent->name);
+                        }
+                        $parent = $this->parsely_get_term_by( 'id', $parent->parent, $taxonomy );
                     }
-                    $parent = $this->parsely_get_term_by( 'id', $parent->parent, $parselyOptions['custom_taxonomy_section'] );
                 }
             }
+            // add top-level parent taxonomy to tags array if it exists
+            if ($parent) {
+                array_push($custom_taxonomy_values, $parent->name);
+            }
+            array_merge($all_values, $custom_taxonomy_values);
         }
-        // add top-level parent taxonomy to tags array if it exists
-        if ($parent) {
-            array_push($custom_taxonomy_values, $parent->name);
-        }
-        return $custom_taxonomy_values;
+        return $all_values;
     }
 
     /**
