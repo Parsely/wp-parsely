@@ -404,7 +404,7 @@ class Parsely {
             }
             $tags = apply_filters('wp_parsely_post_tags', $tags, $post->ID);
             $tags = array_map(array($this, 'get_clean_parsely_page_value'), $tags);
-            $tags = array_unique($tags);
+            $tags = array_values(array_unique($tags));
 
             $parselyPage['@type']          = 'NewsArticle';
             $parselyPage['mainEntityOfPage'] = array(
@@ -724,28 +724,11 @@ class Parsely {
         $all_values = array();
         foreach ( $all_taxonomies as $taxonomy ) {
             $custom_taxonomy_objects = get_the_terms($postObj->ID, $taxonomy);
-            $custom_taxonomy_values = array();
             foreach ( $custom_taxonomy_objects as $custom_taxonomy_object ) {
-                array_push($custom_taxonomy_values, $custom_taxonomy_object->name);
-                $parent = $this->parsely_get_term_by( 'id', $custom_taxonomy_object->parent, $taxonomy );
-                // get all of a custom taxonomy value's parents and add them to tags array
-                if ($parent) {
-                    while ( $parent->parent != 0){
-                        if (!in_array($parent->name, $custom_taxonomy_values)) {
-                            array_push($custom_taxonomy_values, $parent->name);
-                        }
-                        $parent = $this->parsely_get_term_by( 'id', $parent->parent, $taxonomy );
-                    }
-                }
+                array_push($all_values, $custom_taxonomy_object->name);
             }
-            // add top-level parent taxonomy to tags array if it exists
-            if ($parent) {
-                array_push($custom_taxonomy_values, $parent->name);
-            }
-            array_merge($all_values, $custom_taxonomy_values);
         }
         return $all_values;
-        error_log('cool');
     }
 
     /**

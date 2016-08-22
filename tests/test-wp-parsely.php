@@ -152,12 +152,11 @@ class SampleTest extends WP_UnitTestCase {
         $this->assertContains('sample county', $ppage['keywords']);
     }
 
-    function test_custom_taxonomy_tags() {
+    function test_custom_taxonomies_as_tags() {
         $options = get_option('parsely');
         $options['cats_as_tags'] = true;
         update_option('parsely', $options);
         $post_array = $this->create_test_post_array();
-        $post_array['tags_input'] = array("Sample", "Tag");
         $post = $this->factory->post->create($post_array);
         $parent_taxonomy = $this->create_test_taxonomy('sports', 'hockey');
         $child_taxonomy = $this->factory->term->create(array(
@@ -168,8 +167,6 @@ class SampleTest extends WP_UnitTestCase {
         wp_set_post_terms($post, array($parent_taxonomy, $child_taxonomy), 'sports');
         $this->go_to('/?p=' . $post);
         $ppage = self::$parsely->insert_parsely_page();
-        $this->assertContains('sample', $ppage['keywords']);
-        $this->assertContains('tag', $ppage['keywords']);
         $this->assertContains('gretzky', $ppage['keywords']); 
     }
 
