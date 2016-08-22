@@ -63,11 +63,11 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 #### 2. The standard JavaScript include being inserted before `</body>` ####
 ![2. The standard JavaScript include being inserted before body tag](https://s.w.org/plugins/wp-parsely/screenshot-2.png)
 
-#### 3. A sample `parsely-page` meta tag for a home page ####
-![3. A sample `parsely-page` meta tag for a home page](https://s.w.org/plugins/wp-parsely/screenshot-3.png)
+#### 3. A sample `ld+json` meta tag for a home page or section page ####
+![3. A sample `parsely-page` meta tag for a home page or section page](https://s.w.org/plugins/wp-parsely/json-ld-section-screenshot.png)
 
-#### 4. A sample `parsely-page` meta tag for an article or post ####
-![4. A sample `parsely-page` meta tag for an article or post](https://s.w.org/plugins/wp-parsely/screenshot-4.png)
+#### 4. A sample `ld+json` meta tag for an article or post ####
+![4. A sample `ld+json` meta tag for an article or post](https://s.w.org/plugins/wp-parsely/json-ld-screenshot.png)
 
 ## Changelog ##
 
