@@ -79,10 +79,18 @@ class Parsely {
         $basename = plugin_basename(__FILE__);
         add_filter('plugin_action_links_' . $basename,
                    array($this, 'add_plugin_meta_links'));
-
-        // inserting parsely code
-        add_action('wp_head', array($this, 'insert_parsely_page'));
-        add_action('wp_footer', array($this, 'insert_parsely_javascript'));
+		
+		// Add AMP tracking if this is an AMP page 
+		$currentURL = $this->get_current_url();
+	  	if ((strpos($currentURL, '/amp') !== false) || (strpos($currentURL,'amp=1') !== false)) {
+			// This is an AMP page; add AMP tracking
+		  	insert_parsely_amp_tracking();
+		} else {
+			// This is not an AMP page; do not add AMP tracking
+        	// inserting parsely code
+        	add_action('wp_head', array($this, 'insert_parsely_page'));
+        	add_action('wp_footer', array($this, 'insert_parsely_javascript'));
+        }
     }
 
     public function add_admin_header() {
@@ -248,6 +256,12 @@ class Parsely {
         add_settings_field('dynamic_tracking_note', 'Note: ',
                             array($this, 'print_dynamic_tracking_note'),
                             Parsely::MENU_SLUG, 'optional_settings');
+            
+                            
+        // AMP tracking note
+        add_settings_field('amp_tracking_note', 'Note: ',
+                            array($this, 'print_amp_tracking_note'),
+                            Parsely::MENU_SLUG, 'optional_settings');
 
     }
 
@@ -345,6 +359,11 @@ class Parsely {
 
     public function print_dynamic_tracking_note() {
         $note = "This plugin does not currently support dynamic tracking (the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href='http://www.parsely.com/help/integration/basic/'>the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href='https://www.parsely.com/help/integration/dynamic/'>the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href='support@parsely.com'>support@parsely.com</a>) for additional assistance.";
+        echo $note;
+    }
+    
+    public function print_amp_tracking_note() {
+        $note = "This plugin automatically tracks <a href='https://www.ampproject.org/'>AMP articles</a>, provided that <a href='https://wordpress.org/plugins/amp/'>the official AMP plugin</a> has been enabled. For more information on Parse.ly AMP tracking, please view <a href='https://www.parsely.com/help/integration/google-amp/'>Parse.ly's AMP documentation</a> , or email Parse.ly support at <a href='mailto:support@parsely.com'>support@parsely.com</a> for additional assistance.";
         echo $note;
     }
 
@@ -474,6 +493,25 @@ class Parsely {
         }
         include('parsely-parsely-page.php');
         return $parselyPage;
+    }
+
+	/**
+    * Add Google AMP tracking code
+    */
+    public function insert_parsely_amp_tracking() {
+        $parselyOptions = $this->get_options();
+        // If we don't have an API key, there's no need to proceed.
+        if ( empty($parselyOptions['apikey']) ) {
+		  return;
+        }
+        global $post;
+        $display = TRUE;
+        if ( is_single() && $post->post_status != 'publish' ) {
+            $display = FALSE;
+        }
+        if ( $display ) {
+            include('parsely-amp-tracking.php');
+        }
     }
 
     /**
