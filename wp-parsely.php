@@ -909,6 +909,8 @@ class Parsely {
             'name' => $display_name,
             'payload' => $embed_code
         );
+
+        return $embed_code;
     }
 }
 
