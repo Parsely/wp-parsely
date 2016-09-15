@@ -83,6 +83,7 @@ class Parsely {
         // inserting parsely code
         add_action('wp_head', array($this, 'insert_parsely_page'));
         add_action('wp_footer', array($this, 'insert_parsely_javascript'));
+        add_action('instant_articles_compat_registry_analytics', array($this, 'insert_parsely_tracking_fbia'));
     }
 
     public function add_admin_header() {
@@ -873,6 +874,46 @@ class Parsely {
         }
     }
 }
+
+    function insert_parsely_tracking_fbia(&$registry) {
+        $display_name = 'Parsely Analytics';
+        $identifier = 'paresly-analytics-for-wordpress';
+        $embed_code = '<figure class="op-tracker">
+    <iframe>
+        <script>
+            PARSELY = {
+                autotrack: false,
+                onload: function() {
+                    PARSELY.beacon.trackPageView({
+                        urlref: \'http://facebook.com/instantarticles\'
+                    });
+                    return true;
+                }
+            }
+        </script>
+        <div id="parsely-root" style="display: none">
+            <span id="parsely-cfg" data-parsely-site="elevatedtoday.com"></span>
+        </div>
+        <script>
+            (function(s, p, d) {
+            var h=d.location.protocol, i=p+"-"+s,
+            e=d.getElementById(i), r=d.getElementById(p+"-root"),
+            u=h==="https:"?"d1z2jf7jlzjs58.cloudfront.net"
+            :"static."+p+".com";
+            if (e) return;
+            e = d.createElement(s); e.id = i; e.async = true;
+            e.src = h+"//"+u+"/p.js"; r.appendChild(e);
+            })("script", "parsely", document);
+        </script>
+        <!-- END Parse.ly Include: Standard -->
+    </iframe>
+</figure>';
+
+        $registry[$identifier] = array(
+            'name' => $display_name,
+            'payload' => $embed_code
+        );
+    }
 
 if ( class_exists('Parsely') ) {
     define('PARSELY_VERSION', Parsely::VERSION);
