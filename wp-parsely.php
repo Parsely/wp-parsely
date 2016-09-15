@@ -873,14 +873,12 @@ class Parsely {
             return call_user_func_array('get_term_by', $args);
         }
     }
-}
 
-    function insert_parsely_tracking_fbia(&$registry) {
+    public function insert_parsely_tracking_fbia(&$registry) {
+        $options = $this->get_options();
         $display_name = 'Parsely Analytics';
-        $identifier = 'paresly-analytics-for-wordpress';
-        $embed_code = '<figure class="op-tracker">
-    <iframe>
-        <script>
+        $identifier = 'parsely-analytics-for-wordpress';
+        $embed_code = '<script>
             PARSELY = {
                 autotrack: false,
                 onload: function() {
@@ -892,7 +890,7 @@ class Parsely {
             }
         </script>
         <div id="parsely-root" style="display: none">
-            <span id="parsely-cfg" data-parsely-site="elevatedtoday.com"></span>
+            <span id="parsely-cfg" data-parsely-site="'. $options['apikey'] .'"></span>
         </div>
         <script>
             (function(s, p, d) {
@@ -905,15 +903,15 @@ class Parsely {
             e.src = h+"//"+u+"/p.js"; r.appendChild(e);
             })("script", "parsely", document);
         </script>
-        <!-- END Parse.ly Include: Standard -->
-    </iframe>
-</figure>';
+        <!-- END Parse.ly Include: Standard -->';
 
         $registry[$identifier] = array(
             'name' => $display_name,
             'payload' => $embed_code
         );
     }
+}
+
 
 if ( class_exists('Parsely') ) {
     define('PARSELY_VERSION', Parsely::VERSION);
