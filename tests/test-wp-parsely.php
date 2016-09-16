@@ -251,6 +251,13 @@ class SampleTest extends WP_UnitTestCase {
         $this->assertTrue(strpos($ppage['url'], 'https', 0) == 0);
     }
 
+    function test_fbia_integration() {
+        $options = get_option('parsely');
+        $output = self::$parsely->insert_parsely_tracking_fbia($registry);
+        $this->assertTrue(strpos($output, 'facebook.com/instantarticles') > 0);
+        $this->assertTrue(strpos($output, 'blog.parsely.com') > 0);
+    }
+
 }
 
 
