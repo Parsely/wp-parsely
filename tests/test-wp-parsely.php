@@ -258,6 +258,12 @@ class SampleTest extends WP_UnitTestCase {
         $this->assertTrue(strpos($output, 'blog.parsely.com') > 0);
     }
 
+    function test_amp_integration() {
+        $options = get_option('parsely');
+        $analytics = array();
+        $output = self::$parsely->parsely_add_amp_analytics($analytics);
+        $this->assertTrue($output['parsely']['type'] == 'parsely');
+        $this->assertTrue($output['parsely']['config_data']['vars']['apikey'] == 'blog.parsely.com');
+    }
+
 }
-
-

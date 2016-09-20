@@ -4,7 +4,7 @@ Plugin Name: Parse.ly
 Plugin URI: http://www.parsely.com/
 Description: This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
 Author: Mike Sukmanowsky (mike@parsely.com)
-Version: 1.9
+Version: 1.10
 Requires at least: 4.0.0
 Author URI: http://www.parsely.com/
 License: GPL2
@@ -24,13 +24,12 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-Authors: Mike Sukmanowsky (mike@parsely.com)
+Authors: Mike Sukmanowsky (mike@parsely.com), Xand Lourenco (xand@parsely.com), James O'Toole (james.otoole@parsely.com)
 */
 
 /* TODO List:
  * Wordpress Network support - going to hold off on any specific support here as content id prefix should work ok for now
  * Allow the user to map get_post_types() to Parse.ly post types
- * Add unit/functional tests
  * Support: is_search(), is_404()
 */
 
@@ -38,7 +37,7 @@ class Parsely {
     /**
      * @codeCoverageIgnoreStart
      */
-    const VERSION             = '1.9';
+    const VERSION             = '1.10';
     const MENU_SLUG           = 'parsely';             // Defines the page param passed to options-general.php
     const MENU_TITLE          = 'Parse.ly';            // Text to be used for the menu as seen in Settings sub-menu
     const MENU_PAGE_TITLE     = 'Parse.ly > Settings'; // Text shown in <title></title> when the settings screen is viewed
@@ -84,6 +83,7 @@ class Parsely {
         add_action('wp_head', array($this, 'insert_parsely_page'));
         add_action('wp_footer', array($this, 'insert_parsely_javascript'));
         add_action('instant_articles_compat_registry_analytics', array($this, 'insert_parsely_tracking_fbia'));
+        add_action('pre_amp_render_post', array($this, 'parsely_add_amp_actions'));
     }
 
     public function add_admin_header() {
@@ -911,6 +911,30 @@ class Parsely {
         );
 
         return $embed_code;
+    }
+
+    public function parsely_add_amp_actions() {
+        add_filter('amp_post_template_analytics', array($this, 'parsely_add_amp_analytics'));
+    }
+
+    public function parsely_add_amp_analytics( $analytics ) {
+        $options = $this->get_options();
+
+        if ( empty( $options['apikey'] ) ) {
+            return $analytics;
+        }
+
+        $analytics['parsely'] = array(
+            'type' => 'parsely',
+            'attributes' => array(),
+            'config_data' => array(
+                'vars' => array(
+                    'apikey' => $options['apikey'],
+                )
+            ),
+        );
+
+        return $analytics;
     }
 }
 
