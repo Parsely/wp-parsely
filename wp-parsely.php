@@ -473,6 +473,7 @@ class Parsely {
             $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_bloginfo('name', 'raw'));
             $parselyPage['url']            = home_url(); // site_url();?
         }
+        $parselyPage = apply_filters('after_set_parsely_page', $parselyPage, $post, $parselyOptions);
         include('parsely-parsely-page.php');
         return $parselyPage;
     }

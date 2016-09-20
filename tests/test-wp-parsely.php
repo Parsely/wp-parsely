@@ -258,6 +258,7 @@ class SampleTest extends WP_UnitTestCase {
         $this->assertTrue(strpos($output, 'blog.parsely.com') > 0);
     }
 
+
     function test_amp_integration() {
         $options = get_option('parsely');
         $analytics = array();
@@ -266,4 +267,18 @@ class SampleTest extends WP_UnitTestCase {
         $this->assertTrue($output['parsely']['config_data']['vars']['apikey'] == 'blog.parsely.com');
     }
 
+    function test_parsely_page_filter() {
+        $options = get_option('parsely');
+        $post_array = $this->create_test_post_array();
+        $post = $this->factory->post->create($post_array);
+        $this->go_to('/?p=' . $post);
+        function filter_ppage($original_ppage, $ppage_post, $p_options) {
+            $new_vals = $original_ppage;
+            $new_vals['headline'] = 'Completely New And Original Filtered Headline';
+            return $new_vals;
+        }
+        add_filter('after_set_parsely_page', 'filter_ppage', 10, 3);
+        $ppage = self::$parsely->insert_parsely_page();
+        $this->assertTrue(strpos($ppage['headline'], 'Completely New And Original Filtered Headline') == 0);
+    }
 }
