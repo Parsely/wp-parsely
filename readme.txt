@@ -56,6 +56,15 @@ You can use the 'after_set_parsely_page' filter which sends 3 arguments: the arr
 
         $parselyPage = apply_filters('after_set_parsely_page', $parselyPage, $post, $parselyOptions);
 
+= Is the plugin Google AMP / Facebook Instant ready?
+
+It is! We are hooked into Automattic's official plugins for AMP and Facebook Instant. AMP support is enabled automatically if the Automattic AMP plugin is installed, and for Facebook Instant you just have to enable "Parsely Analytics" in the "Advanced Settings" menu of the Facebook Instant Articles plugin.
+
+= Automattic official plugins:
+
+https://wordpress.org/plugins/amp/
+https://wordpress.org/plugins/fb-instant-articles/
+
 == Screenshots ==
 
 1. The main settings screen of the wp-parsely plugin
