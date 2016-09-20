@@ -65,6 +65,13 @@ You can use the 'after_set_parsely_page' filter which sends 3 arguments: the arr
 
 == Changelog ==
 
+= 1.10 =
+* Adds ability to filter final JSON-LD output
+* Adds the ability to use a custom taxonomy as tags
+* Adds AMP / Facebook Instant integration with official AMP / FBIA plugins from Automattic
+* Fixes bug related to HTTPS canonicals
+
+
 = 1.9 =
 * Adds ability to assign custom taxonomies as section
 * Fixes bug related to add section to tag field
