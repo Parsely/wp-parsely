@@ -2,7 +2,7 @@
 Contributors: parsely_mike
 Tags: analytics, post, page
 Requires at least: 4.0
-Tested up to: 4.5
+Tested up to: 4.6
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -50,6 +50,21 @@ Your Site ID is your own site domain name (e.g., `mysite.com`).
 
 Dash code will only be placed on pages and posts which have been published in WordPress to ensure we don't track traffic generated while you're still writing a post/page.
 
+= How can I edit the values passed to the JSON-LD metadata?
+
+You can use the 'after_set_parsely_page' filter which sends 3 arguments: the array of metadata, the post object, and the parselyOptions array:
+
+        $parselyPage = apply_filters('after_set_parsely_page', $parselyPage, $post, $parselyOptions);
+
+= Is the plugin Google AMP / Facebook Instant ready?
+
+It is! We are hooked into Automattic's official plugins for AMP and Facebook Instant. AMP support is enabled automatically if the Automattic AMP plugin is installed, and for Facebook Instant you just have to enable "Parsely Analytics" in the "Advanced Settings" menu of the Facebook Instant Articles plugin.
+
+= Automattic official plugins:
+
+https://wordpress.org/plugins/amp/
+https://wordpress.org/plugins/fb-instant-articles/
+
 == Screenshots ==
 
 1. The main settings screen of the wp-parsely plugin
@@ -58,6 +73,13 @@ Dash code will only be placed on pages and posts which have been published in Wo
 4. A sample `parsely-page` meta tag for an article or post
 
 == Changelog ==
+
+= 1.10 =
+* Adds ability to filter final JSON-LD output
+* Adds the ability to use a custom taxonomy as tags
+* Adds AMP / Facebook Instant integration with official AMP / FBIA plugins from Automattic
+* Fixes bug related to HTTPS canonicals
+
 
 = 1.9 =
 * Adds ability to assign custom taxonomies as section

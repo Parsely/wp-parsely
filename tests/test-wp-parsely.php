@@ -151,6 +151,28 @@ class SampleTest extends WP_UnitTestCase {
         $this->assertContains('local', $ppage['keywords']);
         $this->assertContains('sample county', $ppage['keywords']);
     }
+
+    function test_custom_taxonomy_tags() {
+        $options = get_option('parsely');
+        $options['cats_as_tags'] = true;
+        update_option('parsely', $options);
+        $post_array = $this->create_test_post_array();
+        $post_array['tags_input'] = array("Sample", "Tag");
+        $post = $this->factory->post->create($post_array);
+        $parent_taxonomy = $this->create_test_taxonomy('sports', 'hockey');
+        $child_taxonomy = $this->factory->term->create(array(
+            'name' => 'gretzky',
+            'taxonomy' => 'sports',
+            'parent' => $parent_taxonomy
+        ));
+        wp_set_post_terms($post, array($parent_taxonomy, $child_taxonomy), 'sports');
+        $this->go_to('/?p=' . $post);
+        $ppage = self::$parsely->insert_parsely_page();
+        $this->assertContains('sample', $ppage['keywords']);
+        $this->assertContains('tag', $ppage['keywords']);
+        $this->assertContains('gretzky', $ppage['keywords']); 
+    }
+
     
     function test_use_top_level_cats() {
         $options = get_option('parsely');
@@ -214,6 +236,49 @@ class SampleTest extends WP_UnitTestCase {
         $this->assertTrue($ppage['articleSection'] == 'basketball');
     }
 
+    function test_http_canonicals()
+    {
+        $options = get_option('parsely');
+        $post_array = $this->create_test_post_array();
+        $post = $this->factory->post->create($post_array);
+        $this->go_to('/?p=' . $post);
+        $ppage = self::$parsely->insert_parsely_page();
+        $this->assertTrue(strpos($ppage['url'], 'http', 0) == 0);
+        $this->assertFalse(strpos($ppage['url'], 'https', 0));
+        $options['force_https_canonicals'] = true;
+        update_option('parsely', $options);
+        $ppage = self::$parsely->insert_parsely_page();
+        $this->assertTrue(strpos($ppage['url'], 'https', 0) == 0);
+    }
+
+    function test_fbia_integration() {
+        $options = get_option('parsely');
+        $output = self::$parsely->insert_parsely_tracking_fbia($registry);
+        $this->assertTrue(strpos($output, 'facebook.com/instantarticles') > 0);
+        $this->assertTrue(strpos($output, 'blog.parsely.com') > 0);
+    }
+
+
+    function test_amp_integration() {
+        $options = get_option('parsely');
+        $analytics = array();
+        $output = self::$parsely->parsely_add_amp_analytics($analytics);
+        $this->assertTrue($output['parsely']['type'] == 'parsely');
+        $this->assertTrue($output['parsely']['config_data']['vars']['apikey'] == 'blog.parsely.com');
+    }
+
+    function test_parsely_page_filter() {
+        $options = get_option('parsely');
+        $post_array = $this->create_test_post_array();
+        $post = $this->factory->post->create($post_array);
+        $this->go_to('/?p=' . $post);
+        function filter_ppage($original_ppage, $ppage_post, $p_options) {
+            $new_vals = $original_ppage;
+            $new_vals['headline'] = 'Completely New And Original Filtered Headline';
+            return $new_vals;
+        }
+        add_filter('after_set_parsely_page', 'filter_ppage', 10, 3);
+        $ppage = self::$parsely->insert_parsely_page();
+        $this->assertTrue(strpos($ppage['headline'], 'Completely New And Original Filtered Headline') == 0);
+    }
 }
-
-
