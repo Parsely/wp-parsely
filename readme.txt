@@ -76,7 +76,7 @@ https://wordpress.org/plugins/fb-instant-articles/
 
 = 1.10 =
 * Adds ability to filter final JSON-LD output
-* Adds the ability to use a custom taxonomy as tags
+* Adds the ability to include custom taxonomies in tags
 * Adds AMP / Facebook Instant integration with official AMP / FBIA plugins from Automattic
 * Fixes bug related to HTTPS canonicals
 
