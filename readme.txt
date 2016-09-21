@@ -69,17 +69,16 @@ https://wordpress.org/plugins/fb-instant-articles/
 
 1. The main settings screen of the wp-parsely plugin
 2. The standard JavaScript include being inserted before </body>
-3. A sample `parsely-page` meta tag for a home page
-4. A sample `parsely-page` meta tag for an article or post
+3. A sample `JSON-LD` meta tag for a home page
+4. A sample `JSON-LD` meta tag for an article or post
 
 == Changelog ==
 
 = 1.10 =
 * Adds ability to filter final JSON-LD output
-* Adds the ability to use a custom taxonomy as tags
+* Adds the ability to include custom taxonomies in tags
 * Adds AMP / Facebook Instant integration with official AMP / FBIA plugins from Automattic
 * Fixes bug related to HTTPS canonicals
-
 
 = 1.9 =
 * Adds ability to assign custom taxonomies as section

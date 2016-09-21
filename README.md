@@ -11,7 +11,7 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 
 **Features**
 
-* Get started with Parse.ly right away: the plug-in automatically inserts the required parsely-page tag and JavaScript on all your published pages and posts.
+* Get started with Parse.ly right away: the plugin automatically inserts the required parsely-page tag and JavaScript on all your published pages and posts.
 * Allows you to specify the JavaScript implementation to use: standard, DOM free or asynchronous.
 
 Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com](mailto:support@parsely.com) we always want to hear from you.
@@ -51,6 +51,21 @@ Your Site ID is your own site domain name (e.g., `mysite.com`).
 
 Dash code will only be placed on pages and posts which have been published in WordPress to ensure we don't track traffic generated while you're still writing a post/page.
 
+### How can I edit the values passed to the JSON-LD metadata? ###
+
+You can use the `after_set_parsely_page` filter, which sends three arguments: the array of metadata, the post object, and the `parselyOptions` array:
+
+```
+$parselyPage = apply_filters('after_set_parsely_page', $parselyPage, $post, $parselyOptions);
+```
+
+### Is the plugin Google AMP/Facebook Instant ready?
+
+It is! We are hooked into Automattic's official plugins for AMP and Facebook Instant. AMP support is enabled automatically if the Automattic AMP plugin is installed, and for Facebook Instant you just have to enable "Parsely Analytics" in the "Advanced Settings" menu of the Facebook Instant Articles plugin.
+
+Official AMP plugin: https://wordpress.org/plugins/amp/  
+Official FB Instant plugin: https://wordpress.org/plugins/fb-instant-articles/
+
 ### How do I create a local dev environment to make changes to the `wp-parsely` code? ###
 
 See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin-development-environment).
@@ -63,16 +78,21 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 #### 2. The standard JavaScript include being inserted before `</body>` ####
 ![2. The standard JavaScript include being inserted before body tag](https://s.w.org/plugins/wp-parsely/screenshot-2.png)
 
-#### 3. A sample `ld+json` meta tag for a home page or section page ####
-![3. A sample `parsely-page` meta tag for a home page or section page](https://s.w.org/plugins/wp-parsely/json-ld-section-screenshot.png)
+#### 3. A sample `JSON-LD` meta tag for a home page or section page ####
+![3. A sample `JSON-LD` meta tag for a home page or section page](https://s.w.org/plugins/wp-parsely/screenshot-3.png)
 
-#### 4. A sample `ld+json` meta tag for an article or post ####
-![4. A sample `ld+json` meta tag for an article or post](https://s.w.org/plugins/wp-parsely/json-ld-screenshot.png)
+#### 4. A sample `JSON-LD` meta tag for an article or post ####
+![4. A sample `JSON-LD` meta tag for an article or post](https://s.w.org/plugins/wp-parsely/screenshot-4.png)
 
 ## Changelog ##
 
-### 1.9 ###
+### 1.10 ###
+* Adds ability to filter final JSON-LD output
+* Adds the ability to use a custom taxonomy as tags
+* Adds AMP / Facebook Instant integration with official AMP / FBIA plugins from Automattic
+* Fixes bug related to HTTPS canonicals
 
+### 1.9 ###
 * Ability to assign custom taxonomies as section
 * Bug fix related to adding section to tag field
 
