@@ -724,10 +724,10 @@ class Parsely {
         // filter out default WordPress taxonomies
         $all_taxonomies = array_diff(get_taxonomies(), array('post_tag', 'nav_menu', 'author', 'link_category', 'post_format'));
         $all_values = array();
-        if ($all_taxonomies) {
+        if (is_array($all_taxonomies)) {
             foreach ( $all_taxonomies as $taxonomy ) {
                 $custom_taxonomy_objects = get_the_terms($postObj->ID, $taxonomy);
-                if ($custom_taxonomy_objects) {
+                if (is_array($custom_taxonomy_objects)) {
                     foreach ( $custom_taxonomy_objects as $custom_taxonomy_object ) {
                         array_push($all_values, $custom_taxonomy_object->name);
                     }
