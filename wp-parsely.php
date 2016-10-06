@@ -895,7 +895,7 @@ class Parsely {
             }
         </script>
         <div id="parsely-root" style="display: none">
-            <span id="parsely-cfg" data-parsely-site="'. $options['apikey'] .'"></span>
+            <span id="parsely-cfg" data-parsely-site="'. esc_attr( $options['apikey'] ) .'"></span>
         </div>
         <script>
             (function(s, p, d) {
