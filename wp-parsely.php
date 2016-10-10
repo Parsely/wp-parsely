@@ -183,12 +183,12 @@ class Parsely {
                                  'requires_recrawl' => true));
 
         // Use categories and custom taxonomies as tags
-        $h = 'You can use this option to ensure all assigned categories and taxonomies will ' .
-             'be used as tags.  For example, if you had a post assigned to ' .
-             'the categories: "Business/Tech", "Business/Social", your ' .
-             'tags would include: "Business/Tech", "Business/Social".';
+        $h = 'You can use this option to add all assigned categories and taxonomies to ' .
+             'your tags.  For example, if you had a post assigned to ' .
+             'the categories: "Business/Tech", "Business/Social", your tags would include ' .
+             '"Business/Tech" and "Business/Social" in addition to your other tags.';
         add_settings_field('cats_as_tags',
-                           'Use Categories as Tags <div class="help-icons"></div>',
+                           'Add Categories to Tags <div class="help-icons"></div>',
                            array($this, 'print_binary_radio_tag'),
                            Parsely::MENU_SLUG, 'optional_settings',
                            array('option_key' => 'cats_as_tags',
