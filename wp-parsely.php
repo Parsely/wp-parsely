@@ -4,7 +4,7 @@ Plugin Name: Parse.ly
 Plugin URI: http://www.parsely.com/
 Description: This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
 Author: Mike Sukmanowsky (mike@parsely.com)
-Version: 1.10.1
+Version: 1.10.2
 Requires at least: 4.0.0
 Author URI: http://www.parsely.com/
 License: GPL2
@@ -37,7 +37,7 @@ class Parsely {
     /**
      * @codeCoverageIgnoreStart
      */
-    const VERSION             = '1.10.1';
+    const VERSION             = '1.10.2';
     const MENU_SLUG           = 'parsely';             // Defines the page param passed to options-general.php
     const MENU_TITLE          = 'Parse.ly';            // Text to be used for the menu as seen in Settings sub-menu
     const MENU_PAGE_TITLE     = 'Parse.ly > Settings'; // Text shown in <title></title> when the settings screen is viewed
@@ -302,6 +302,13 @@ class Parsely {
                                'Value passed for lowercase_tags must be either "true" or "false".');
         } else {
             $input['lowercase_tags'] = $input['lowercase_tags'] === 'true' ? true : false;
+        }
+
+        if ( $input['force_https_canonicals'] !== 'true' && $input['force_https_canonicals'] !== 'false' ) {
+            add_settings_error(Parsely::OPTIONS_KEY, 'force_https_canonicals',
+                'Value passed for force_https_canonicals must be either "true" or "false".');
+        } else {
+            $input['force_https_canonicals'] = $input['force_https_canonicals'] === 'true' ? true : false;
         }
 
         return $input;
