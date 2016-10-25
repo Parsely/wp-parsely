@@ -304,6 +304,13 @@ class Parsely {
             $input['lowercase_tags'] = $input['lowercase_tags'] === 'true' ? true : false;
         }
 
+        if ( $input['force_https_canonicals'] !== 'true' && $input['force_https_canonicals'] !== 'false' ) {
+            add_settings_error(Parsely::OPTIONS_KEY, 'force_https_canonicals',
+                'Value passed for force_https_canonicals must be either "true" or "false".');
+        } else {
+            $input['force_https_canonicals'] = $input['force_https_canonicals'] === 'true' ? true : false;
+        }
+
         return $input;
     }
 
