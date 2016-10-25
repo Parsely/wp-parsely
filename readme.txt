@@ -50,13 +50,13 @@ Your Site ID is your own site domain name (e.g., `mysite.com`).
 
 Dash code will only be placed on pages and posts which have been published in WordPress to ensure we don't track traffic generated while you're still writing a post/page.
 
-= How can I edit the values passed to the JSON-LD metadata?
+= How can I edit the values passed to the JSON-LD metadata? =
 
 You can use the 'after_set_parsely_page' filter which sends 3 arguments: the array of metadata, the post object, and the parselyOptions array:
 
         $parselyPage = apply_filters('after_set_parsely_page', $parselyPage, $post, $parselyOptions);
 
-= Is the plugin Google AMP / Facebook Instant ready?
+= Is the plugin Google AMP / Facebook Instant ready? =
 
 It is! We are hooked into Automattic's official plugins for AMP and Facebook Instant. AMP support is enabled automatically if the Automattic AMP plugin is installed, and for Facebook Instant you just have to enable "Parsely Analytics" in the "Advanced Settings" menu of the Facebook Instant Articles plugin.
 
