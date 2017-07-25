@@ -75,16 +75,16 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 ## Screenshots ##
 
 #### 1. The main settings screen of the wp-parsely plugin ####
-![1. The main settings screen of the wp-parsely plugin](https://s.w.org/plugins/wp-parsely/screenshot-1.png)
+![1. The main settings screen of the wp-parsely plugin](https://raw.githubusercontent.com/Parsely/wp-parsely/master/screenshot-1.png)
 
 #### 2. The standard JavaScript include being inserted before `</body>` ####
-![2. The standard JavaScript include being inserted before body tag](https://s.w.org/plugins/wp-parsely/screenshot-2.png)
+![2. The standard JavaScript include being inserted before body tag](https://raw.githubusercontent.com/Parsely/wp-parsely/master/screenshot-2.png)
 
 #### 3. A sample `JSON-LD` meta tag for a home page or section page ####
-![3. A sample `JSON-LD` meta tag for a home page or section page](https://s.w.org/plugins/wp-parsely/screenshot-3.png)
+![3. A sample `JSON-LD` meta tag for a home page or section page](https://raw.githubusercontent.com/Parsely/wp-parsely/master/json-ld-section-screenshot.png)
 
 #### 4. A sample `JSON-LD` meta tag for an article or post ####
-![4. A sample `JSON-LD` meta tag for an article or post](https://s.w.org/plugins/wp-parsely/screenshot-4.png)
+![4. A sample `JSON-LD` meta tag for an article or post](https://raw.githubusercontent.com/Parsely/wp-parsely/master/json-ld-screenshot.png)
 
 ## Changelog ##
 
