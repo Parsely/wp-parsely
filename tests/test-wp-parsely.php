@@ -30,6 +30,11 @@ class SampleTest extends WP_UnitTestCase {
         return $category;
     }
 
+    function create_test_user($name) {
+        $user = $this->factory->user->create(array( 'user_login' => $name ));
+        return $user;
+    }
+
     function create_test_taxonomy($taxonomy, $taxonomy_value) {
         register_taxonomy(
             $taxonomy,
@@ -280,5 +285,30 @@ class SampleTest extends WP_UnitTestCase {
         add_filter('after_set_parsely_page', 'filter_ppage', 10, 3);
         $ppage = self::$parsely->insert_parsely_page();
         $this->assertTrue(strpos($ppage['headline'], 'Completely New And Original Filtered Headline') == 0);
+    }
+
+    function test_user_logged_in() {
+        $options = get_option('parsely');
+        $options['track_authenticated_users'] = FALSE;
+        update_option('parsely', $options);
+        $new_user = $this->create_test_user('bill_brasky');
+        wp_set_current_user($new_user->id);
+        ob_start();
+        echo self::$parsely->insert_parsely_javascript();
+        $output = ob_get_clean();
+        $html = "<div id=\"parsely-root\" style=\"display: none\">
+          <div id=\"parsely-cfg\" data-parsely-site=\"blog.parsely.com\"></div>
+        </div>
+        <script data-cfasync=\"false\">
+        (function(s, p, d) {
+          var h=d.location.protocol, i=p+\"-\"+s,
+              e=d.getElementById(i), r=d.getElementById(p+\"-root\"),
+              u=h===\"https:\"?\"d1z2jf7jlzjs58.cloudfront.net\"
+              :\"static.\"+p+\".com\";
+          if (e) return;
+          e = d.createElement(s); e.id = i; e.async = true;
+          e.setAttribute('data-cfasync', 'false'); e.src = h+\"//\"+u+\"/p.js\"; r.appendChild(e);
+        })(\"script\", \"parsely\", document);";
+                $this->assertTrue(strpos($output, $html) == false);
     }
 }
