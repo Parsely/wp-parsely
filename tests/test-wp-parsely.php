@@ -292,7 +292,7 @@ class SampleTest extends WP_UnitTestCase {
         $options['track_authenticated_users'] = FALSE;
         update_option('parsely', $options);
         $new_user = $this->create_test_user('bill_brasky');
-        wp_set_current_user($new_user->id);
+        wp_set_current_user($new_user);
         ob_start();
         echo self::$parsely->insert_parsely_javascript();
         $output = ob_get_clean();
