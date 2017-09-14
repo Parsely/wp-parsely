@@ -367,7 +367,7 @@ class Parsely {
         $parselyOptions = $this->get_options();
 
         // If we don't have an API key or if we aren't supposed to show to logged in users, there's no need to proceed.
-        if ( empty($parselyOptions['apikey']) || (!$parselyOptions['track_authenticated_users'] && is_user_logged_in()) ) {
+        if ( empty($parselyOptions['apikey']) || (!$parselyOptions['track_authenticated_users'] && $this->parsely_is_user_logged_in()) ) {
             return '';
         }
 
@@ -499,6 +499,9 @@ class Parsely {
         $display = TRUE;
 
         if ( is_single() && $post->post_status != 'publish' ) {
+            $display = FALSE;
+        }
+        if (!$parselyOptions['track_authenticated_users'] && $this->parsely_is_user_logged_in()) {
             $display = FALSE;
         }
         if ( $display ) {
