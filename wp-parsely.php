@@ -949,8 +949,11 @@ class Parsely {
         return $analytics;
     }
 
-    public function parsely_is_user_logged_in($user) {
-
+    public function parsely_is_user_logged_in() {
+        // can't use $blog_id here because it futzes with the global $blog_id
+        $blog = get_current_blog_id();
+        $user = get_current_user_id();
+        return is_user_member_of_blog($user, $blog);
     }
 }
 
