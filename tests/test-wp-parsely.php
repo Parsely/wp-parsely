@@ -35,6 +35,12 @@ class SampleTest extends WP_UnitTestCase {
         return $user;
     }
 
+    function create_test_blog($name, $user_id) {
+        $blog = $this->factory->blog->create(array('domain' => 'http://' . $name . 'com',
+                                                   'user_id' => $user_id));
+        return $blog;
+    }
+
     function create_test_taxonomy($taxonomy, $taxonomy_value) {
         register_taxonomy(
             $taxonomy,
@@ -95,7 +101,7 @@ class SampleTest extends WP_UnitTestCase {
         ob_start();
         echo self::$parsely->insert_parsely_javascript();
         $output = ob_get_clean();
-        $this->assertTrue(strpos($output, self::$parsely_html) > 0);
+        $this->assertContains(self::$parsely_html, $output);
     }
 
 
@@ -297,6 +303,45 @@ class SampleTest extends WP_UnitTestCase {
         ob_start();
         echo self::$parsely->insert_parsely_javascript();
         $output = ob_get_clean();
-        $this->assertFalse(strpos($output, self::$parsely_html) > 0);
+        $this->assertNotContains(self::$parsely_html, $output);
+    }
+
+    function test_user_logged_in_multisite() {
+        if (!is_multisite()) {
+            $this->markTestSkipped("this test can't run without multisite");
+        }
+
+        $new_user = $this->create_test_user('optimus_prime');
+        $second_user = $this->create_test_user('megatron');
+        $first_blog = $this->create_test_blog('autobots', $new_user);
+        $second_blog = $this->create_test_blog('decepticons', $second_user);
+
+        wp_set_current_user($new_user);
+        switch_to_blog($first_blog);
+
+        $options = get_option('parsely');
+        $options['track_authenticated_users'] = FALSE;
+        $options['apikey'] = 'blog.parsely.com';
+        // update both blog options
+        update_option('parsely', $options);
+        update_blog_option($second_blog, 'parsely', $options);
+
+        $this->assertEquals(get_current_blog_id(), $first_blog);
+        $this->assertTrue(is_user_member_of_blog($new_user, $first_blog));
+        $this->assertFalse(is_user_member_of_blog($new_user, $second_blog));
+
+        ob_start();
+        echo self::$parsely->insert_parsely_javascript();
+        $output = ob_get_clean();
+        $this->assertNotContains(self::$parsely_html, $output);
+
+        switch_to_blog($second_blog);
+        $this->assertEquals(get_current_blog_id(), $second_blog);
+        $this->assertFalse(is_user_member_of_blog($new_user, get_current_blog_id()));
+
+        ob_start();
+        echo self::$parsely->insert_parsely_javascript();
+        $output = ob_get_clean();
+        $this->assertContains(self::$parsely_html, $output);
     }
 }
