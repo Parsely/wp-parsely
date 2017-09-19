@@ -58,6 +58,7 @@ class SampleTest extends WP_UnitTestCase {
     protected static $parsely;
     protected static $custom_taxonomy;
     protected static $taxonomy_factory;
+    protected static $parsely_html;
 
     public static function setUpBeforeClass() {
     }
@@ -74,14 +75,7 @@ class SampleTest extends WP_UnitTestCase {
             'custom_taxonomy_section' => 'category',
             'lowercase_tags' => true);
         update_option('parsely', $optionDefaults);
-    }
-
-
-    function test_parsely_tag() {
-        ob_start();
-        echo self::$parsely->insert_parsely_javascript();
-        $output = ob_get_clean();
-        $html = "<div id=\"parsely-root\" style=\"display: none\">
+        self::$parsely_html = "<div id=\"parsely-root\" style=\"display: none\">
   <div id=\"parsely-cfg\" data-parsely-site=\"blog.parsely.com\"></div>
 </div>
 <script data-cfasync=\"false\">
@@ -94,7 +88,14 @@ class SampleTest extends WP_UnitTestCase {
   e = d.createElement(s); e.id = i; e.async = true;
   e.setAttribute('data-cfasync', 'false'); e.src = h+\"//\"+u+\"/p.js\"; r.appendChild(e);
 })(\"script\", \"parsely\", document);";
-        $this->assertTrue(strpos($output, $html) > 0);
+    }
+
+
+    function test_parsely_tag() {
+        ob_start();
+        echo self::$parsely->insert_parsely_javascript();
+        $output = ob_get_clean();
+        $this->assertTrue(strpos($output, self::$parsely_html) > 0);
     }
 
 
@@ -296,19 +297,6 @@ class SampleTest extends WP_UnitTestCase {
         ob_start();
         echo self::$parsely->insert_parsely_javascript();
         $output = ob_get_clean();
-        $html = "<div id=\"parsely-root\" style=\"display: none\">
-          <div id=\"parsely-cfg\" data-parsely-site=\"blog.parsely.com\"></div>
-        </div>
-        <script data-cfasync=\"false\">
-        (function(s, p, d) {
-          var h=d.location.protocol, i=p+\"-\"+s,
-              e=d.getElementById(i), r=d.getElementById(p+\"-root\"),
-              u=h===\"https:\"?\"d1z2jf7jlzjs58.cloudfront.net\"
-              :\"static.\"+p+\".com\";
-          if (e) return;
-          e = d.createElement(s); e.id = i; e.async = true;
-          e.setAttribute('data-cfasync', 'false'); e.src = h+\"//\"+u+\"/p.js\"; r.appendChild(e);
-        })(\"script\", \"parsely\", document);";
-                $this->assertTrue(strpos($output, $html) == false);
+        $this->assertFalse(strpos($output, self::$parsely_html) > 0);
     }
 }
