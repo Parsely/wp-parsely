@@ -954,9 +954,9 @@ class Parsely {
 
     public function parsely_is_user_logged_in() {
         // can't use $blog_id here because it futzes with the global $blog_id
-        $blog = get_current_blog_id();
-        $user = get_current_user_id();
-        return is_user_member_of_blog($user, $blog);
+        $current_blog_id = get_current_blog_id();
+        $current_user_id = get_current_user_id();
+        return is_user_member_of_blog($current_user_id, $current_blog_id);
     }
 }
 
