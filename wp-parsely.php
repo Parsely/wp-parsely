@@ -367,7 +367,7 @@ class Parsely {
         $parselyOptions = $this->get_options();
 
         // If we don't have an API key or if we aren't supposed to show to logged in users, there's no need to proceed.
-        if ( empty($parselyOptions['apikey']) || (!$parselyOptions['track_authenticated_users'] && is_user_logged_in()) ) {
+        if ( empty($parselyOptions['apikey']) || (!$parselyOptions['track_authenticated_users'] && $this->parsely_is_user_logged_in()) ) {
             return '';
         }
 
@@ -499,6 +499,9 @@ class Parsely {
         $display = TRUE;
 
         if ( is_single() && $post->post_status != 'publish' ) {
+            $display = FALSE;
+        }
+        if (!$parselyOptions['track_authenticated_users'] && $this->parsely_is_user_logged_in()) {
             $display = FALSE;
         }
         if ( $display ) {
@@ -947,6 +950,13 @@ class Parsely {
         );
 
         return $analytics;
+    }
+
+    public function parsely_is_user_logged_in() {
+        // can't use $blog_id here because it futzes with the global $blog_id
+        $current_blog_id = get_current_blog_id();
+        $current_user_id = get_current_user_id();
+        return is_user_member_of_blog($current_user_id, $current_blog_id);
     }
 }
 

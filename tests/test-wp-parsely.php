@@ -30,6 +30,17 @@ class SampleTest extends WP_UnitTestCase {
         return $category;
     }
 
+    function create_test_user($name) {
+        $user = $this->factory->user->create(array( 'user_login' => $name ));
+        return $user;
+    }
+
+    function create_test_blog($name, $user_id) {
+        $blog = $this->factory->blog->create(array('domain' => 'http://' . $name . 'com',
+                                                   'user_id' => $user_id));
+        return $blog;
+    }
+
     function create_test_taxonomy($taxonomy, $taxonomy_value) {
         register_taxonomy(
             $taxonomy,
@@ -53,6 +64,7 @@ class SampleTest extends WP_UnitTestCase {
     protected static $parsely;
     protected static $custom_taxonomy;
     protected static $taxonomy_factory;
+    protected static $parsely_html;
 
     public static function setUpBeforeClass() {
     }
@@ -69,14 +81,7 @@ class SampleTest extends WP_UnitTestCase {
             'custom_taxonomy_section' => 'category',
             'lowercase_tags' => true);
         update_option('parsely', $optionDefaults);
-    }
-
-
-    function test_parsely_tag() {
-        ob_start();
-        echo self::$parsely->insert_parsely_javascript();
-        $output = ob_get_clean();
-        $html = "<div id=\"parsely-root\" style=\"display: none\">
+        self::$parsely_html = "<div id=\"parsely-root\" style=\"display: none\">
   <div id=\"parsely-cfg\" data-parsely-site=\"blog.parsely.com\"></div>
 </div>
 <script data-cfasync=\"false\">
@@ -89,7 +94,14 @@ class SampleTest extends WP_UnitTestCase {
   e = d.createElement(s); e.id = i; e.async = true;
   e.setAttribute('data-cfasync', 'false'); e.src = h+\"//\"+u+\"/p.js\"; r.appendChild(e);
 })(\"script\", \"parsely\", document);";
-        $this->assertTrue(strpos($output, $html) > 0);
+    }
+
+
+    function test_parsely_tag() {
+        ob_start();
+        echo self::$parsely->insert_parsely_javascript();
+        $output = ob_get_clean();
+        $this->assertContains(self::$parsely_html, $output);
     }
 
 
@@ -280,5 +292,56 @@ class SampleTest extends WP_UnitTestCase {
         add_filter('after_set_parsely_page', 'filter_ppage', 10, 3);
         $ppage = self::$parsely->insert_parsely_page();
         $this->assertTrue(strpos($ppage['headline'], 'Completely New And Original Filtered Headline') == 0);
+    }
+
+    function test_user_logged_in() {
+        $options = get_option('parsely');
+        $options['track_authenticated_users'] = FALSE;
+        update_option('parsely', $options);
+        $new_user = $this->create_test_user('bill_brasky');
+        wp_set_current_user($new_user);
+        ob_start();
+        echo self::$parsely->insert_parsely_javascript();
+        $output = ob_get_clean();
+        $this->assertNotContains(self::$parsely_html, $output);
+    }
+
+    function test_user_logged_in_multisite() {
+        if (!is_multisite()) {
+            $this->markTestSkipped("this test can't run without multisite");
+        }
+
+        $new_user = $this->create_test_user('optimus_prime');
+        $second_user = $this->create_test_user('megatron');
+        $first_blog = $this->create_test_blog('autobots', $new_user);
+        $second_blog = $this->create_test_blog('decepticons', $second_user);
+
+        wp_set_current_user($new_user);
+        switch_to_blog($first_blog);
+
+        $options = get_option('parsely');
+        $options['track_authenticated_users'] = FALSE;
+        $options['apikey'] = 'blog.parsely.com';
+        // update both blog options
+        update_option('parsely', $options);
+        update_blog_option($second_blog, 'parsely', $options);
+
+        $this->assertEquals(get_current_blog_id(), $first_blog);
+        $this->assertTrue(is_user_member_of_blog($new_user, $first_blog));
+        $this->assertFalse(is_user_member_of_blog($new_user, $second_blog));
+
+        ob_start();
+        echo self::$parsely->insert_parsely_javascript();
+        $output = ob_get_clean();
+        $this->assertNotContains(self::$parsely_html, $output);
+
+        switch_to_blog($second_blog);
+        $this->assertEquals(get_current_blog_id(), $second_blog);
+        $this->assertFalse(is_user_member_of_blog($new_user, get_current_blog_id()));
+
+        ob_start();
+        echo self::$parsely->insert_parsely_javascript();
+        $output = ob_get_clean();
+        $this->assertContains(self::$parsely_html, $output);
     }
 }

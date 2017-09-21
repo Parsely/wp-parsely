@@ -1,5 +1,4 @@
 <?php if(!isset($parselyOptions['apikey']) || empty($parselyOptions['apikey'])) { return; } ?>
-<?php if(!$parselyOptions['track_authenticated_users'] && is_user_logged_in()) { return; } ?>
 
 <!-- START Parse.ly Include: Standard -->
 <div id="parsely-root" style="display: none">
