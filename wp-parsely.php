@@ -33,8 +33,6 @@ Authors: Mike Sukmanowsky (mike@parsely.com), Xand Lourenco (xand@parsely.com), 
  * Support: is_search(), is_404()
 */
 
-include "recommended_widget.php";
-
 class Parsely {
     /**
      * @codeCoverageIgnoreStart
@@ -982,3 +980,5 @@ if ( class_exists('Parsely') ) {
     define('PARSELY_VERSION', Parsely::VERSION);
     $parsely = new Parsely();
 }
+
+include "recommended_widget.php";

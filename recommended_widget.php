@@ -17,8 +17,41 @@ class parsely_recommended_widget extends WP_Widget
         $tagline = get_bloginfo( 'description' );
         echo $args['before_widget'] . $args['before_title'] . $title . $args['after_title']; ?>
 
-        <p><strong>Site Name:</strong> <?php echo $blog_title ?></p>
-        <p><strong>Tagline:</strong> <?php echo $tagline ?></p>
+        <?php
+        // set up variables
+        $options = get_option('parsely');
+        if (array_key_exists($options, 'apikey') && array_key_exists($options, 'api_secret') && !empty($options['api_secret']))
+        {
+            $root_url = 'https://api.parsely.com/v2/related?apikey=' . $options['apikey'] . '&secret=' . $options['api_secret'];
+            $pub_date_start = '&pub_date_start=' . $instance['published_within'] . 'd';
+            $sort = '&sort=' . $instance['sort'];
+            $boost = '&boost=' . $instance['boost'];
+            $limit = '&limit=' . $instance['return_limit'];
+            $url = '&url=' . get_permalink();
+            $full_url = $root_url . $pub_date_start . $sort . $boost . $limit . $url;
+            $response = wp_remote_get($full_url);
+            $body = wp_remote_retrieve_body($response);
+            $data = json_decode($body);
+            $data = $data['data'];
+
+            // if themes want to handle the raw data themselves, let them go for it
+            ?>
+            <div class="parsely-recommendation-widget">
+
+            </div>
+        }
+        else
+        {
+            ?>
+            <p>
+            you must set the Parsely API Secret for this widget to work!
+            </p>
+            <?php
+        }
+
+
+        ?>
+
 
         <?php echo $args['after_widget'];
     }
