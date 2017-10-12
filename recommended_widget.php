@@ -6,7 +6,7 @@ class parsely_recommended_widget extends WP_Widget
     {
         $widget_options = array(
             'classname' => 'parsely_recommended_widget',
-            'description' => 'Parsely content widget',
+            'description' => 'Parsely recommendation widget',
         );
         parent::__construct('parsely_recommended_widget', 'Parsely Recommended Widget', $widget_options);
     }

@@ -48,6 +48,7 @@ class Parsely {
 
     private $optionDefaults     = array('apikey' => '',
                                         'content_id_prefix' => '',
+                                        'api_secret' => '',
                                         'use_top_level_cats' => false,
                                         'custom_taxonomy_section' => 'category',
                                         'cats_as_tags' => false,
@@ -138,6 +139,19 @@ class Parsely {
         add_settings_section('optional_settings', 'Optional Settings',
                              array($this, 'print_optional_settings'),
                              Parsely::MENU_SLUG);
+
+        $h = 'Your API secret is your secret code to access our API. It can be found at dash.parsely.com/yoursitedomain/settings/api .
+         (replace yoursitedown with your domain name, e.g. `mydomain.com`) If you don\'t access to our API, email your account manager .
+          or support@parsely.com!';
+        $field_args = array(
+            'option_key' => 'api_secret',
+            'help_text' => $h
+        );
+        add_settings_field('api_secret',
+            'Parse.ly API Secret <div class="help-icons"></div>',
+            array($this, 'print_text_tag'),
+            Parsely::MENU_SLUG, 'optional_settings',
+            $field_args);
         // Content ID Prefix
         $h = 'If you use more than one content management system (e.g. ' .
              'WordPress and Drupal), you may end up with duplicate content ' .
@@ -268,6 +282,7 @@ class Parsely {
 
         }
 
+        $input['api_secret'] = sanitize_text_field($input['api_secret']);
         // Content ID prefix
         $input['content_id_prefix'] = sanitize_text_field($input['content_id_prefix']);
         $input['custom_taxonomy_section'] = sanitize_text_field($input['custom_taxonomy_section']);
