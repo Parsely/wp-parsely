@@ -33,7 +33,7 @@ Authors: Mike Sukmanowsky (mike@parsely.com), Xand Lourenco (xand@parsely.com), 
  * Support: is_search(), is_404()
 */
 
-include "content_widget.php";
+include "recommended_widget.php";
 
 class Parsely {
     /**
