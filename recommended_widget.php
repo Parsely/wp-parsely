@@ -11,6 +11,17 @@ class parsely_recommended_widget extends WP_Widget
         parent::__construct('parsely_recommended_widget', 'Parsely Recommended Widget', $widget_options);
     }
 
+    function get_user_id_by_display_name( $display_name ) {
+        global $wpdb;
+
+        if ( ! $user = $wpdb->get_row( $wpdb->prepare(
+            "SELECT `ID` FROM $wpdb->users WHERE `display_name` = %s", $display_name
+        ) ) )
+            return false;
+
+        return $user->ID;
+    }
+
     public function widget( $args, $instance ) {
         $title = apply_filters( 'widget_title', $instance[ 'title' ] );
         $blog_title = get_bloginfo( 'name' );
@@ -20,7 +31,7 @@ class parsely_recommended_widget extends WP_Widget
         <?php
         // set up variables
         $options = get_option('parsely');
-        if (array_key_exists($options, 'apikey') && array_key_exists($options, 'api_secret') && !empty($options['api_secret']))
+        if (array_key_exists('apikey', $options) && array_key_exists('api_secret', $options) && !empty($options['api_secret']))
         {
             $root_url = 'https://api.parsely.com/v2/related?apikey=' . $options['apikey'] . '&secret=' . $options['api_secret'];
             $pub_date_start = '&pub_date_start=' . $instance['published_within'] . 'd';
@@ -28,17 +39,47 @@ class parsely_recommended_widget extends WP_Widget
             $boost = '&boost=' . $instance['boost'];
             $limit = '&limit=' . $instance['return_limit'];
             $url = '&url=' . get_permalink();
-            $full_url = $root_url . $pub_date_start . $sort . $boost . $limit . $url;
+            $full_url = $root_url . $sort . $boost . $limit . $url;
+            if ((int) $instance['published_within'] != 0) {
+                $full_url .= $pub_date_start;
+            }
             $response = wp_remote_get($full_url);
             $body = wp_remote_retrieve_body($response);
             $data = json_decode($body);
-            $data = $data['data'];
+            if (!$data->success) {
+                ?>
+                <p>
+                    looks like your API secret is incorrect- please double check your API secret in your Parsely wordpress settings!
+                </p>
+                <?php
+            }
+            $data = $data->data;
 
-            // if themes want to handle the raw data themselves, let them go for it
+            // TODO: if themes want to handle the raw data themselves, let them go for it
             ?>
             <div class="parsely-recommendation-widget">
-
+                <ul class="parsely-recommended-widget-1">
+                    <?php foreach ($data as $index=>$post) { ?>
+                        <li class="parsely-recommended-widget-entry" id="parsely-recommended-widget-item-<?php echo $index?>">
+                            <img src="<?php echo $post->thumb_url_medium;?>"/>
+                            <a href="<?php echo $post->url;?>"><?php echo $post->title;?></a><br/>
+                            <?php
+                            // Try to get a link to the author via their name. This doesn't always work- worst case, just
+                            // link to the post.
+                            $author_id = self::get_user_id_by_display_name($post->author);
+                            if ($author_id) {
+                                $author_url = get_author_posts_url($author_id);
+                            }
+                            else {
+                                $author_url = $post->url;
+                            }
+                            ?>
+                            <a href="<?php echo $author_url;?>"><?php echo $post->author; ?></a><br><br>
+                        </li>
+                    <?php } ?>
+                </ul>
             </div>
+            <?php
         }
         else
         {
@@ -68,6 +109,7 @@ class parsely_recommended_widget extends WP_Widget
         $instance['published_within'] = $published_within;
         $instance['sort'] = $sort;
         $instance['boost'] = $boost;
+        var_dump($instance['display_options']);
         $boost_params = array('views', 'mobile_views', 'tablet_views', 'desktop_views', 'visitors', 'visitors_new',
             'visitors_returning', 'engaged_minutes', 'avg_engaged', 'avg_engaged_new', 'avg_engaged_returning',
             'social_interactions', 'fb_interactions', 'tw_interactions', 'li_interactions', 'pi_interactions',
@@ -104,6 +146,16 @@ class parsely_recommended_widget extends WP_Widget
                 <option <?php selected( $instance['boost'], $boost_param); ?> value="<?php echo $boost_param;?>"><?php echo $boost_param;?></option>
             <?php } ?>
             </select>
+
+        </p>
+        <p>
+            <label for="<?php echo $this->get_field_id( 'display_options' ); ?>">Display Options</label>
+            <br>
+            <select multiple="multiple" id="<?php echo $this->get_field_id('display_options'); ?>" name="<?php echo $this->get_field_name('display_options'); ?>[]" class="widefat" style="width:33%;">
+                <option value="display_author">Display Author</option>
+                <option value="display_thumbnail">Display Thumbnail</option>
+                <option value="display_category">Display Category</option>
+            </select>
         </p>
 
 
@@ -116,9 +168,10 @@ class parsely_recommended_widget extends WP_Widget
         $instance = $old_instance;
         $instance[ 'title' ] = strip_tags( $new_instance[ 'title' ] );
         $instance['published_within'] = (int) $new_instance['published_within'];
-        $instance['return_limit'] = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] <= 20 : '20';
+        $instance['return_limit'] = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
         $instance['sort'] = $new_instance['sort'];
         $instance['boost'] = $new_instance['boost'];
+        $instance['display_options'] = esc_sql($new_instance['display_options']);
         return $instance;
     }
 }
