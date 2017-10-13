@@ -25,8 +25,6 @@ class parsely_recommended_widget extends WP_Widget
     public function widget( $args, $instance ) {
         $title = apply_filters( 'widget_title', $instance[ 'title' ] );
         $instance['display_options'] = !empty($instance['display_options']) ? $instance['display_options'] : array();
-        $blog_title = get_bloginfo( 'name' );
-        $tagline = get_bloginfo( 'description' );
         echo $args['before_widget'] . $args['before_title'] . $title . $args['after_title']; ?>
 
         <?php
