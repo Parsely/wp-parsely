@@ -82,7 +82,7 @@ class Parsely {
 
         // inserting parsely code
         function wp_parsely_style_init() {
-            wp_enqueue_style('wp-parsely-style', plugins_url('wp-parsely.css', __FILE__), array(), null);
+            wp_enqueue_style('wp-parsely-style', plugins_url('wp-parsely.css', __FILE__), array(), filemtime(get_stylesheet_directory()));
         }
         add_action('wp_head', array($this, 'insert_parsely_page'));
         add_action('wp_footer', array($this, 'insert_parsely_javascript'));
