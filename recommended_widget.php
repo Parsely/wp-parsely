@@ -116,7 +116,6 @@ class parsely_recommended_widget extends WP_Widget
         $instance['sort'] = $sort;
         $instance['boost'] = $boost;
         $instance['display_options'] = !empty($instance['display_options']) ? $instance['display_options'] : array();
-        var_dump($instance['display_options']);
         $boost_params = array('views', 'mobile_views', 'tablet_views', 'desktop_views', 'visitors', 'visitors_new',
             'visitors_returning', 'engaged_minutes', 'avg_engaged', 'avg_engaged_new', 'avg_engaged_returning',
             'social_interactions', 'fb_interactions', 'tw_interactions', 'li_interactions', 'pi_interactions',
