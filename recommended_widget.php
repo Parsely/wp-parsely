@@ -137,7 +137,6 @@ class parsely_recommended_widget extends WP_Widget
             'visitors_returning', 'engaged_minutes', 'avg_engaged', 'avg_engaged_new', 'avg_engaged_returning',
             'social_interactions', 'fb_interactions', 'tw_interactions', 'li_interactions', 'pi_interactions',
             'social_referrals', 'fb_referrals', 'tw_referrals', 'li_referrals', 'pi_referrals');
-        var_dump($instance);
         ?>
         <p>
             <label for="<?php echo $this->get_field_id( 'title' ); ?>">Title:</label>
