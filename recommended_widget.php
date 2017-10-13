@@ -44,9 +44,15 @@ class parsely_recommended_widget extends WP_Widget
                 // to transmit a variable back from JS to Wordpress. What we're going to do is set a POST variable in
                 // the javascript, and try to read from it. This feels absolutely gross, but unless a better way is
                 // presented it seems to be what we've got.
-                    if(isset($_POST['parsely_uuid'])){
-                    echo $_POST['parsely_uuid'];
-                        $full_url .= $_POST['parsely_uuid'];
+                    if(isset($_COOKIE['_parsely_visitor'])){
+                        $parsely_visitor = json_decode(stripslashes($_COOKIE['_parsely_visitor']));
+                        if ($parsely_visitor->id) {
+                            $uuid_string = '&uuid=' . $parsely_visitor->id;
+                            $full_url .= $uuid_string;
+                        }
+                        else {
+                            $full_url .= $url;
+                        }
                     }
                     else {
                         $full_url .= $url;
