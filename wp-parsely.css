@@ -26,7 +26,7 @@
 
 .parsely-author {
     display: block;
-    margin-top: 15px;
+    margin-top: 5px;
 }
 
 
@@ -50,6 +50,7 @@
         display: grid;
         grid-template-columns: 1fr 2fr;
         grid-column-gap: 15px;
+        margin-bottom: 15px;
     }
 
     .parsely-recommendation-widget li img {
