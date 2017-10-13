@@ -74,7 +74,7 @@ class parsely_recommended_widget extends WP_Widget
             // TODO: if themes want to handle the raw data themselves, let them go for it
             ?>
             <div class="parsely-recommendation-widget">
-                <ul class="parsely-recommended-widget-1">
+                <ul class="parsely-recommended-widget">
                     <?php foreach ($data as $index=>$post) { ?>
                         <li class="parsely-recommended-widget-entry" id="parsely-recommended-widget-item-<?php echo $index?>">
                             <?php if (in_array('display_thumbnail', $instance['display_options'])) { ?>

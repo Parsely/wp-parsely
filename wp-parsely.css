@@ -1,21 +1,25 @@
-.parsely_recommended_widget,
-.parsely_recommended_widget * {
+.parsely-recommended-widget,
+.parsely-recommended-widget * {
     box-sizing: border-box;
 }
 
-.parsely_recommended_widget {
+.parsely-recommended-widget {
     display: block;
     width: 100%;
 }
 
 .parsely-recommendation-widget li img {
     float: left;
-    max-width: 40%;
     margin-right: 15px;
 }
 
 .parsely-recommendation-widget li a {
     padding: 0;
+}
+
+parsely-recommendation-widget li 
+{
+    
 }
 
 .parsely-recommendation-widget li:after {
@@ -32,13 +36,13 @@
 
 @supports(display: grid){
 
-    .parsely_recommended_widget {
+    .parsely-recommended-widget {
         display: grid;
         grid-template-columns: 1fr 2fr;
         grid-template-rows: auto;
     }
 
-    .parsely_recommended_widget .block-title {
+    .parsely-recommended-widget .block-title {
         grid-column: 1 / 3;
     }
 
