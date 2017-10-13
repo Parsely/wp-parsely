@@ -159,9 +159,8 @@ class parsely_recommended_widget extends WP_Widget
             <label for="<?php echo $this->get_field_id( 'display_options' ); ?>">Display Options</label>
             <br>
             <select multiple="multiple" id="<?php echo $this->get_field_id('display_options'); ?>" name="<?php echo $this->get_field_name('display_options'); ?>[]" class="widefat" style="width:33%;">
-                <option value="display_author">Display Author</option>
-                <option value="display_thumbnail">Display Thumbnail</option>
-                <option value="display_category">Display Category</option>
+                <option <?php if (in_array('display_author', $instance['display_options'])) { echo 'selected="selected"'; };?> value="display_author">Display Author</option>
+                <option <?php if (in_array('display_thumbnail', $instance['display_options'])) { echo 'selected="selected"'; };?> value="display_thumbnail">Display Thumbnail</option>
             </select>
         </p>
 
