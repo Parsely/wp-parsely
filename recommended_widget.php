@@ -80,23 +80,26 @@ class parsely_recommended_widget extends WP_Widget
                             <?php if (in_array('display_thumbnail', $instance['display_options'])) { ?>
                             <img src="<?php echo $post->thumb_url_medium;?>"/>
                             <?php } ?>
-                            <a href="<?php echo $post->url;?>"><?php echo $post->title;?></a><br/>
-                            <?php
-                            // Try to get a link to the author via their name. This doesn't always work- worst case, just
-                            // link to the post.
-                            if (in_array('display_author', $instance['display_options'])) {
-                                $author_id = self::get_user_id_by_display_name($post->author);
-                                if ($author_id) {
-                                    $author_url = get_author_posts_url($author_id);
-                                }
-                                else {
-                                    $author_url = $post->url;
-                                }
-                                ?>
-                                <a href="<?php echo $author_url;?>"><?php echo $post->author; ?></a><br><br>
-                            <?php } ?>
+                            <div class="parsely-title-author-wrapper">
+                                <a href="<?php echo $post->url;?>"><?php echo $post->title;?></a>
+                                <?php
+                                // Try to get a link to the author via their name. This doesn't always work- worst case, just
+                                // link to the post.
+                                if (in_array('display_author', $instance['display_options'])) {
+                                    $author_id = self::get_user_id_by_display_name($post->author);
+                                    if ($author_id) {
+                                        $author_url = get_author_posts_url($author_id);
+                                    }
+                                    else {
+                                        $author_url = $post->url;
+                                    }
+                                    ?>
+                                    <a class="parsely-author" href="<?php echo $author_url;?>"><?php echo $post->author; ?></a>
+                                <?php } ?>
+                            </div>
 
-                        </li><br/>
+
+                        </li>
                     <?php } ?>
                 </ul>
             </div>
