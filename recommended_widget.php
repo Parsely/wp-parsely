@@ -109,15 +109,18 @@ class parsely_recommended_widget extends WP_Widget
         $published_within = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
         $sort = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
         $boost = ! empty( $instance['boost'] ) ? $instance['boost'] : 'views';
+        $personalize_results = ! empty( $instance['personalize_results'] ) ? $instance['personalize_results'] : false;
         $instance['return_limit'] = $return_limit;
         $instance['published_within'] = $published_within;
         $instance['sort'] = $sort;
         $instance['boost'] = $boost;
+        $instance['personalize_results'] = $personalize_results;
         $instance['display_options'] = !empty($instance['display_options']) ? $instance['display_options'] : array();
         $boost_params = array('views', 'mobile_views', 'tablet_views', 'desktop_views', 'visitors', 'visitors_new',
             'visitors_returning', 'engaged_minutes', 'avg_engaged', 'avg_engaged_new', 'avg_engaged_returning',
             'social_interactions', 'fb_interactions', 'tw_interactions', 'li_interactions', 'pi_interactions',
             'social_referrals', 'fb_referrals', 'tw_referrals', 'li_referrals', 'pi_referrals');
+        var_dump($instance);
         ?>
         <p>
             <label for="<?php echo $this->get_field_id( 'title' ); ?>">Title:</label>
@@ -160,6 +163,11 @@ class parsely_recommended_widget extends WP_Widget
                 <option <?php if (in_array('display_thumbnail', $instance['display_options'])) { echo 'selected="selected"'; };?> value="display_thumbnail">Display Thumbnail</option>
             </select>
         </p>
+        <p>
+            <label for="<?php echo $this->get_field_id( 'personalize_results' ); ?>">Personalize Recommended Results:</label>
+            <br>
+            <input type="checkbox" id="<?php echo $this->get_field_id('personalize_results'); ?>" name="<?php echo $this->get_field_name('personalize_results')?>" value="personalize_results" <?php checked($instance['personalize_results'], 'personalize_results') ?> />
+        </p>
 
 
 
@@ -175,6 +183,7 @@ class parsely_recommended_widget extends WP_Widget
         $instance['sort'] = $new_instance['sort'];
         $instance['boost'] = $new_instance['boost'];
         $instance['display_options'] = esc_sql($new_instance['display_options']);
+        $instance['personalize_results'] = $new_instance['personalize_results'];
         return $instance;
     }
 }
