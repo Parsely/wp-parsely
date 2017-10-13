@@ -38,7 +38,6 @@ parsely-recommendation-widget li
 
     .parsely-recommended-widget {
         display: grid;
-        grid-template-columns: 1fr 2fr;
         grid-template-rows: auto;
     }
 
