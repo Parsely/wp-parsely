@@ -24,6 +24,7 @@ class parsely_recommended_widget extends WP_Widget
 
     public function widget( $args, $instance ) {
         $title = apply_filters( 'widget_title', $instance[ 'title' ] );
+        $instance['display_options'] = !empty($instance['display_options']) ? $instance['display_options'] : array();
         $blog_title = get_bloginfo( 'name' );
         $tagline = get_bloginfo( 'description' );
         echo $args['before_widget'] . $args['before_title'] . $title . $args['after_title']; ?>
@@ -61,21 +62,26 @@ class parsely_recommended_widget extends WP_Widget
                 <ul class="parsely-recommended-widget-1">
                     <?php foreach ($data as $index=>$post) { ?>
                         <li class="parsely-recommended-widget-entry" id="parsely-recommended-widget-item-<?php echo $index?>">
+                            <?php if (in_array('display_thumbnail', $instance['display_options'])) { ?>
                             <img src="<?php echo $post->thumb_url_medium;?>"/>
+                            <?php } ?>
                             <a href="<?php echo $post->url;?>"><?php echo $post->title;?></a><br/>
                             <?php
                             // Try to get a link to the author via their name. This doesn't always work- worst case, just
                             // link to the post.
-                            $author_id = self::get_user_id_by_display_name($post->author);
-                            if ($author_id) {
-                                $author_url = get_author_posts_url($author_id);
-                            }
-                            else {
-                                $author_url = $post->url;
-                            }
-                            ?>
-                            <a href="<?php echo $author_url;?>"><?php echo $post->author; ?></a><br><br>
-                        </li>
+                            if (in_array('display_author', $instance['display_options'])) {
+                                $author_id = self::get_user_id_by_display_name($post->author);
+                                if ($author_id) {
+                                    $author_url = get_author_posts_url($author_id);
+                                }
+                                else {
+                                    $author_url = $post->url;
+                                }
+                                ?>
+                                <a href="<?php echo $author_url;?>"><?php echo $post->author; ?></a><br><br>
+                            <?php } ?>
+
+                        </li><br/>
                     <?php } ?>
                 </ul>
             </div>
@@ -109,6 +115,7 @@ class parsely_recommended_widget extends WP_Widget
         $instance['published_within'] = $published_within;
         $instance['sort'] = $sort;
         $instance['boost'] = $boost;
+        $instance['display_options'] = !empty($instance['display_options']) ? $instance['display_options'] : array();
         var_dump($instance['display_options']);
         $boost_params = array('views', 'mobile_views', 'tablet_views', 'desktop_views', 'visitors', 'visitors_new',
             'visitors_returning', 'engaged_minutes', 'avg_engaged', 'avg_engaged_new', 'avg_engaged_returning',
