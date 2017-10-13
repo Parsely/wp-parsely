@@ -38,7 +38,24 @@ class parsely_recommended_widget extends WP_Widget
             $boost = '&boost=' . $instance['boost'];
             $limit = '&limit=' . $instance['return_limit'];
             $url = '&url=' . get_permalink();
-            $full_url = $root_url . $sort . $boost . $limit . $url;
+            $full_url = $root_url . $sort . $boost . $limit;
+            if ($instance['personalize_results']) {
+                // this gets pretty gross: we need to get the uuid from the javascript tracker, but it's not super easy
+                // to transmit a variable back from JS to Wordpress. What we're going to do is set a POST variable in
+                // the javascript, and try to read from it. This feels absolutely gross, but unless a better way is
+                // presented it seems to be what we've got.
+                    if(isset($_POST['parsely_uuid'])){
+                    echo $_POST['parsely_uuid'];
+                        $full_url .= $_POST['parsely_uuid'];
+                    }
+                    else {
+                        $full_url .= $url;
+                    }
+
+            }
+            else {
+                $full_url .= $url;
+            }
             if ((int) $instance['published_within'] != 0) {
                 $full_url .= $pub_date_start;
             }
