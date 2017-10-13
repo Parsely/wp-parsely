@@ -81,11 +81,14 @@ class Parsely {
                    array($this, 'add_plugin_meta_links'));
 
         // inserting parsely code
-        wp_register_style('wp-parsely-style', plugins_url('wp-parsely.css', __FILE__));
+        function wp_parsely_style_init() {
+            wp_enqueue_style('wp-parsely-style', plugins_url('wp-parsely.css', __FILE__));
+        }
         add_action('wp_head', array($this, 'insert_parsely_page'));
         add_action('wp_footer', array($this, 'insert_parsely_javascript'));
         add_action('instant_articles_compat_registry_analytics', array($this, 'insert_parsely_tracking_fbia'));
         add_action('pre_amp_render_post', array($this, 'parsely_add_amp_actions'));
+        add_action('wp_enqueue_scripts', 'wp_parsely_style_init');
     }
 
     public function add_admin_header() {
