@@ -71,7 +71,10 @@ class parsely_recommended_widget extends WP_Widget
             if (!$data->success) {
                 ?>
                 <p>
-                    looks like your API secret is incorrect- please double check your API secret in your Parsely wordpress settings!
+                    looks like your API secret is incorrect- please double check your API secret in your Parsely wordpress settings
+                    against the value in <a href="http://dash.parsely.com/<?php echo $options['apikey']?>/settings/api/">
+                        http://dash.parsely.com/<?php echo $options['apikey']?>/settings/api/!
+                    </a>
                 </p>
                 <?php
             }

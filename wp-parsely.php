@@ -142,9 +142,10 @@ class Parsely {
                              array($this, 'print_optional_settings'),
                              Parsely::MENU_SLUG);
 
-        $h = 'Your API secret is your secret code to access our API. It can be found at dash.parsely.com/yoursitedomain/settings/api .
-         (replace yoursitedown with your domain name, e.g. `mydomain.com`) If you don\'t access to our API, email your account manager .
-          or support@parsely.com!';
+        $h = 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API.</a>
+            It can be found at dash.parsely.com/yoursitedomain/settings/api
+         (replace yoursitedown with your domain name, e.g. `mydomain.com`) If you haven\'t purchased access to the API, and would
+          like to do so, email your account manager or support@parsely.com!';
         $field_args = array(
             'option_key' => 'api_secret',
             'help_text' => $h
