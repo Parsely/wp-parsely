@@ -10,7 +10,7 @@
             console.log(requestUrl);
             jQuery.ajax({
                 url: requestUrl,
-                dataType: "jsonp",
+                dataType: "jsonp"
             });
         }
     }
