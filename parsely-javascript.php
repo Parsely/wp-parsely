@@ -7,7 +7,6 @@
             var rootUrl = 'https://api.parsely.com/v2/profile?apikey=<?php echo esc_html($parselyOptions["apikey"]); ?>';
             var uuid = '&uuid=' + PARSELY.config.parsely_site_uuid;
             var requestUrl = rootUrl + uuid + '&url=' + window.location.href;
-            console.log(requestUrl);
             jQuery.ajax({
                 url: requestUrl,
                 dataType: "jsonp"
