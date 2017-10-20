@@ -46,6 +46,7 @@ class Parsely {
 
     private $optionDefaults     = array('apikey' => '',
                                         'content_id_prefix' => '',
+                                        'api_secret' => '',
                                         'use_top_level_cats' => false,
                                         'custom_taxonomy_section' => 'category',
                                         'cats_as_tags' => false,
@@ -84,6 +85,14 @@ class Parsely {
         add_action('wp_footer', array($this, 'insert_parsely_javascript'));
         add_action('instant_articles_compat_registry_analytics', array($this, 'insert_parsely_tracking_fbia'));
         add_action('pre_amp_render_post', array($this, 'parsely_add_amp_actions'));
+        if (!defined('WP_PARSELY_TESTING'))
+        {
+            function wp_parsely_style_init() {
+                wp_enqueue_style('wp-parsely-style', plugins_url('wp-parsely.css', __FILE__), array(), filemtime(get_stylesheet_directory()));
+            }
+            add_action('wp_enqueue_scripts', 'wp_parsely_style_init');
+        }
+
     }
 
     public function add_admin_header() {
@@ -136,6 +145,20 @@ class Parsely {
         add_settings_section('optional_settings', 'Optional Settings',
                              array($this, 'print_optional_settings'),
                              Parsely::MENU_SLUG);
+
+        $h = 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API.</a>
+            It can be found at dash.parsely.com/yoursitedomain/settings/api
+         (replace yoursitedown with your domain name, e.g. `mydomain.com`) If you haven\'t purchased access to the API, and would
+          like to do so, email your account manager or support@parsely.com!';
+        $field_args = array(
+            'option_key' => 'api_secret',
+            'help_text' => $h
+        );
+        add_settings_field('api_secret',
+            'Parse.ly API Secret <div class="help-icons"></div>',
+            array($this, 'print_text_tag'),
+            Parsely::MENU_SLUG, 'optional_settings',
+            $field_args);
         // Content ID Prefix
         $h = 'If you use more than one content management system (e.g. ' .
              'WordPress and Drupal), you may end up with duplicate content ' .
@@ -266,6 +289,7 @@ class Parsely {
 
         }
 
+        $input['api_secret'] = sanitize_text_field($input['api_secret']);
         // Content ID prefix
         $input['content_id_prefix'] = sanitize_text_field($input['content_id_prefix']);
         $input['custom_taxonomy_section'] = sanitize_text_field($input['custom_taxonomy_section']);
@@ -965,3 +989,5 @@ if ( class_exists('Parsely') ) {
     define('PARSELY_VERSION', Parsely::VERSION);
     $parsely = new Parsely();
 }
+
+include "recommended_widget.php";
