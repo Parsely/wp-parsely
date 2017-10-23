@@ -52,7 +52,8 @@ class Parsely {
                                         'cats_as_tags' => false,
                                         'track_authenticated_users' => true,
                                         'lowercase_tags' => true,
-                                        'force_https_canonicals' => false);
+                                        'force_https_canonicals' => false,
+                                        'track_types' => ['post']);
     private $implementationOpts = array('standard' => 'Standard',
                                         'dom_free' => 'DOM-Free');
 
