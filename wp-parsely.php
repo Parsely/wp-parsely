@@ -53,7 +53,8 @@ class Parsely {
                                         'track_authenticated_users' => true,
                                         'lowercase_tags' => true,
                                         'force_https_canonicals' => false,
-                                        'track_types' => ['post']);
+                                        'track_post_types' => ['post'],
+                                        'track_page_types' => ['page']);
     private $implementationOpts = array('standard' => 'Standard',
                                         'dom_free' => 'DOM-Free');
 
