@@ -270,6 +270,32 @@ class Parsely {
                 'help_text' => $h,
                 'requires_recrawl' => true));
 
+        // Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category
+        $h = 'By default, Parsely only tracks the default post type as a post page. ' .
+                'If you want to track custom post types, select them here!<br>';
+        add_settings_field('track_post_types',
+            'Post Types To Track  <div class="help-icons"></div>',
+            array($this, 'print_select_tag'),
+            Parsely::MENU_SLUG, 'optional_settings',
+            array('option_key' => 'track_post_types',
+                'help_text' => $h,
+                // filter Wordpress taxonomies under the hood that should not appear in dropdown
+                'select_options' => get_post_types(),
+                'requires_recrawl' => true));
+
+        // Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category
+        $h = 'By default, Parsely only tracks the default page type as a non-post page. ' .
+            'If you want to track custom post types as non-post pages, select them here!<br>';
+        add_settings_field('track_page_types',
+            'Post Types To Track  <div class="help-icons"></div>',
+            array($this, 'print_select_tag'),
+            Parsely::MENU_SLUG, 'optional_settings',
+            array('option_key' => 'track_page_types',
+                'help_text' => $h,
+                // filter Wordpress taxonomies under the hood that should not appear in dropdown
+                'select_options' => get_post_types(),
+                'requires_recrawl' => true));
+
         // Dynamic tracking note
         add_settings_field('dynamic_tracking_note', 'Note: ',
                             array($this, 'print_dynamic_tracking_note'),
