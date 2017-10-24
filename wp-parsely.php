@@ -453,7 +453,7 @@ class Parsely {
             "@type" => "WebPage"
         );
         $currentURL = $this->get_current_url();
-        if ( is_single() && $post->post_status == 'publish' ) {
+        if ( in_array(get_post_type(), $parselyOptions['track_post_types']) && $post->post_status == 'publish') {
             $authors    = $this->get_author_names($post);
             $category   = $this->get_category_name($post, $parselyOptions);
             $postId     = $parselyOptions['content_id_prefix'] . (string)get_the_ID();
@@ -518,7 +518,7 @@ class Parsely {
                 'name' => get_bloginfo('name')
             ); 
             $parselyPage['keywords']       = $tags;
-        } elseif ( is_page() && $post->post_status == 'publish' ) {
+        } elseif ( in_array(get_post_type(), $parselyOptions['track_page_types']) && $post->post_status == 'publish' ) {
             $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
             $parselyPage['url']            = $this->get_current_url('post');
         } elseif ( is_author() ) {
@@ -571,7 +571,7 @@ class Parsely {
         global $post;
         $display = TRUE;
 
-        if ( is_single() && $post->post_status != 'publish' ) {
+        if ( in_array(get_post_type(), $parselyOptions['track_post_types']) && $post->post_status != 'publish' ) {
             $display = FALSE;
         }
         if (!$parselyOptions['track_authenticated_users'] && $this->parsely_is_user_logged_in()) {
