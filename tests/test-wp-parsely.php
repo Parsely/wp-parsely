@@ -11,12 +11,13 @@
  */
 class SampleTest extends WP_UnitTestCase {
 
-    function create_test_post_array() {
+    function create_test_post_array($post_type = 'post') {
         $post_array = array(
             'post_title' => 'Sample Parsely Post',
             'post_author' => 1,
             'post_content' => 'Some sample content just to have here',
-            'post_status' => 'publish');
+            'post_status' => 'publish',
+            'post_type' => $post_type);
         return $post_array;
     }
 
@@ -102,6 +103,9 @@ PARSELYJS;
 
     function test_parsely_tag() {
         ob_start();
+        $post_array = $this->create_test_post_array();
+        $post = $this->factory->post->create($post_array);
+        $this->go_to('/?p=' . $post);
         echo self::$parsely->insert_parsely_javascript();
         $output = ob_get_clean();
         $this->assertContains(self::$parsely_html, $output);
