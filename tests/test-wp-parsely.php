@@ -72,6 +72,7 @@ class SampleTest extends WP_UnitTestCase {
 
     public function setUp() {
         parent::setUp();
+        register_post_type('thinkpiece');
         self::$parsely = new Parsely();
         $optionDefaults = array(
             'apikey' => 'blog.parsely.com',
@@ -123,6 +124,19 @@ PARSELYJS;
         $this->go_to('/?p=' . $post);
         $ppage = self::$parsely->insert_parsely_page();
         $this->assertTrue($ppage['@type'] == 'NewsArticle');
+    }
+
+    function test_parsely_tag_custom_post() {
+        $post_array = $this->create_test_post_array('thinkpiece');
+        $post = $this->factory->post->create($post_array);
+        $options = get_option('parsely');
+        $options['track_post_types'] = array('thinkpiece');
+        $this->go_to('/?p=' . $post);
+        ob_start();
+        echo self::$parsely->insert_parsely_javascript();
+        $output = ob_get_clean();
+        $this->assertContains(self::$parsely_html, $output);
+
     }
 
     function test_parsely_categories()
