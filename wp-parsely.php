@@ -569,6 +569,9 @@ class Parsely {
         if (!$parselyOptions['track_authenticated_users'] && $this->parsely_is_user_logged_in()) {
             $display = FALSE;
         }
+        if (!in_array(get_post_type(), $parselyOptions['track_post_types']) || !in_array(get_post_type(), $parselyOptions['track_page_types'])) {
+            $display = FALSE;
+        }
         if ( $display ) {
             include('parsely-javascript.php');
         }
