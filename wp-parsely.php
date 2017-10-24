@@ -326,6 +326,12 @@ class Parsely {
                                    'Your Parse.ly Site ID looks incorrect, it should look like "example.com".');  
 
         }
+        // these can't be null, if somebody accidentally deselected them just reset to default
+        if (!isset( $input['track_post_types']) || !isset($input['track_page_types'])) {
+            $input['track_post_types'] = array('post');
+            $input['track_page_types'] = array('page');
+
+        }
         $input['track_post_types'] = $this->validate_option_array($input['track_post_types'], 'track_post_types');
         $input['track_page_types'] = $this->validate_option_array($input['track_page_types'], 'track_page_types');
 
