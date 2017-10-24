@@ -80,7 +80,9 @@ class SampleTest extends WP_UnitTestCase {
             'cats_as_tags' => false,
             'track_authenticated_users' => true,
             'custom_taxonomy_section' => 'category',
-            'lowercase_tags' => true);
+            'lowercase_tags' => true,
+            'track_post_types' => array('post'),
+            'track_page_types' => array('page'));
         update_option('parsely', $optionDefaults);
         self::$parsely_html = <<<PARSELYJS
 <div id="parsely-root" style="display: none">
