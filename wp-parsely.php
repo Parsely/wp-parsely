@@ -288,7 +288,7 @@ class Parsely {
         $h = 'By default, Parsely only tracks the default page type as a non-post page. ' .
             'If you want to track custom post types as non-post pages, select them here!<br>';
         add_settings_field('track_page_types',
-            'Post Types To Track  <div class="help-icons"></div>',
+            'Page Types To Track  <div class="help-icons"></div>',
             array($this, 'print_select_tag'),
             Parsely::MENU_SLUG, 'optional_settings',
             array('option_key' => 'track_page_types',
