@@ -178,6 +178,18 @@ class Parsely {
                            Parsely::MENU_SLUG, 'optional_settings',
                            $field_args);
 
+        // Disable javascript
+        $h = 'If you use a separate system for Javascript tracking (Tealium / Segment / other tag manager solution) ' .
+            'you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option ' .
+            'will also disable the "Personalize Results" section of the recommended widget!';
+        add_settings_field('disable_javascript',
+            'Disable Javascript <div class="help-icons"></div>',
+            array($this, 'print_binary_radio_tag'),
+            Parsely::MENU_SLUG, 'optional_settings',
+            array('option_key' => 'disable_javascript',
+                'help_text' => $h,
+                'requires_recrawl' => false));
+
          // Use top-level cats
         $h = 'wp-parsely will use the first category assigned to a post. ' .
              'With this option selected, if you post a story to News > ' .
@@ -333,6 +345,13 @@ class Parsely {
                 'Value passed for force_https_canonicals must be either "true" or "false".');
         } else {
             $input['force_https_canonicals'] = $input['force_https_canonicals'] === 'true' ? true : false;
+        }
+
+        if ( $input['disable_javascript'] !== 'true' && $input['disable_javascript'] !== 'false' ) {
+            add_settings_error(Parsely::OPTIONS_KEY, 'disable_javascript',
+                'Value passed for disable_javascript must be either "true" or "false".');
+        } else {
+            $input['disable_javascript'] = $input['disable_javascript'] === 'true' ? true : false;
         }
 
         return $input;
