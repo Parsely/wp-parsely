@@ -621,7 +621,7 @@ class Parsely {
 
             if ($multiple) {
                 $selected = in_array($val, $options[$args['option_key']]);
-                $tag .= selected($selected) . '>';
+                $tag .= selected($selected, true, false) . '>';
             }
             else {
                 $tag .= selected($selected, $key, false) . '>';
