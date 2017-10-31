@@ -334,6 +334,9 @@ PARSELYJS;
         // update both blog options
         update_option('parsely', $options);
         update_blog_option($second_blog, 'parsely', $options);
+        $post_array = $this->create_test_post_array();
+        $post = $this->factory->post->create($post_array);
+        $this->go_to('/?p=' . $post);
 
         $this->assertEquals(get_current_blog_id(), $first_blog);
         $this->assertTrue(is_user_member_of_blog($new_user, $first_blog));
