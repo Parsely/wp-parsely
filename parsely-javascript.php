@@ -1,6 +1,7 @@
 <?php if(!isset($parselyOptions['apikey']) || empty($parselyOptions['apikey'])) { return; } ?>
 
 <!-- START Parse.ly Include: Standard -->
+<?php if (!empty($parselyOptions['api_secret'])) : ?>
 <script data-cfasync="false">
 
     function uuidProfileCall() {
@@ -37,6 +38,7 @@
         }
     }
 </script>
+<?php endif; ?>
 
 <div id="parsely-root" style="display: none">
     <div id="parsely-cfg" data-parsely-site="<?php echo esc_html($parselyOptions["apikey"]); ?>"></div>

@@ -536,7 +536,7 @@ class Parsely {
     public function insert_parsely_javascript() {
         $parselyOptions = $this->get_options();
         // If we don't have an API key, there's no need to proceed.
-        if ( empty($parselyOptions['apikey']) ) {
+        if ( empty($parselyOptions['apikey']) || $parselyOptions['disable_javascript'] ) {
             return '';
         }
 
