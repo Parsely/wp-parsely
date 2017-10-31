@@ -52,7 +52,8 @@ class Parsely {
                                         'cats_as_tags' => false,
                                         'track_authenticated_users' => true,
                                         'lowercase_tags' => true,
-                                        'force_https_canonicals' => false);
+                                        'force_https_canonicals' => false,
+                                        'disable_javascript' => false);
     private $implementationOpts = array('standard' => 'Standard',
                                         'dom_free' => 'DOM-Free');
 
@@ -181,7 +182,8 @@ class Parsely {
         // Disable javascript
         $h = 'If you use a separate system for Javascript tracking (Tealium / Segment / other tag manager solution) ' .
             'you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option ' .
-            'will also disable the "Personalize Results" section of the recommended widget!';
+            'will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving ' .
+            'this option on!';
         add_settings_field('disable_javascript',
             'Disable Javascript <div class="help-icons"></div>',
             array($this, 'print_binary_radio_tag'),
