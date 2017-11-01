@@ -750,9 +750,9 @@ class Parsely {
     * (Wordpress calls taxonomy values 'terms').
     */
     private function get_top_level_term($term_id, $taxonomy_name) {
-        $parent = $this->parsely_get_term_by( 'id', $term_id, $taxonomy_name );
+        $parent = get_term_by( 'id', $term_id, $taxonomy_name );
         while ( $parent->parent != 0 ){
-            $parent = $this->parsely_get_term_by( 'id', $parent->parent, $taxonomy_name );
+            $parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
         }
         return $parent->name;
     }
@@ -922,16 +922,6 @@ class Parsely {
             return $first_img;
         }
         return '';
-    }
-
-    private function parsely_get_term_by() {
-        $args = func_get_args();
-        if( function_exists('wpcom_vip_get_term_by') ) {
-           return call_user_func_array('wpcom_vip_get_term_by', $args);
-        }
-        else {
-            return call_user_func_array('get_term_by', $args);
-        }
     }
 
     public function insert_parsely_tracking_fbia(&$registry) {
