@@ -473,7 +473,13 @@ class Parsely {
             );
             $parselyPage['dateCreated']    = gmdate('Y-m-d\TH:i:s\Z', get_post_time('U', true));
             $parselyPage['datePublished']  = gmdate('Y-m-d\TH:i:s\Z', get_post_time('U', true));
-            $parselyPage['dateModified']   = gmdate('Y-m-d\TH:i:s\Z', get_the_modified_date('U', true));
+            if (get_the_modified_date('U', true) >= get_post_time('U', true)) {
+                $parselyPage['dateModified']   = gmdate('Y-m-d\TH:i:s\Z', get_the_modified_date('U', true));
+            }
+            else {
+                // Use the post time as the earliest possible modification date
+                $parselyPage['dateModified']   = gmdate('Y-m-d\TH:i:s\Z', get_post_time('U', true));
+            }
             $parselyPage['articleSection'] = $category;
             $author_objects                = array();
             foreach ($authors as $author) {
