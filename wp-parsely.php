@@ -54,7 +54,7 @@ class Parsely {
                                         'lowercase_tags' => true,
                                         'force_https_canonicals' => false,
                                         'track_post_types' => array('post'),
-                                        'track_page_types' => array('page'));
+                                        'track_page_types' => array('page'),
                                         'disable_javascript' => false);
 
     private $implementationOpts = array('standard' => 'Standard',
