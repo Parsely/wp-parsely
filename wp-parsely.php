@@ -53,7 +53,10 @@ class Parsely {
                                         'track_authenticated_users' => true,
                                         'lowercase_tags' => true,
                                         'force_https_canonicals' => false,
+                                        'track_post_types' => array('post'),
+                                        'track_page_types' => array('page'),
                                         'disable_javascript' => false);
+
     private $implementationOpts = array('standard' => 'Standard',
                                         'dom_free' => 'DOM-Free');
 
@@ -282,11 +285,47 @@ class Parsely {
                 'help_text' => $h,
                 'requires_recrawl' => true));
 
+        // Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category
+        $h = 'By default, Parsely only tracks the default post type as a post page. ' .
+                'If you want to track custom post types, select them here!<br>';
+        add_settings_field('track_post_types',
+            'Post Types To Track  <div class="help-icons"></div>',
+            array($this, 'print_select_tag'),
+            Parsely::MENU_SLUG, 'optional_settings',
+            array('option_key' => 'track_post_types',
+                'help_text' => $h,
+                // filter Wordpress taxonomies under the hood that should not appear in dropdown
+                'select_options' => get_post_types(),
+                'requires_recrawl' => true,
+                'multiple' => true));
+
+        // Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category
+        $h = 'By default, Parsely only tracks the default page type as a non-post page. ' .
+            'If you want to track custom post types as non-post pages, select them here!<br>';
+        add_settings_field('track_page_types',
+            'Page Types To Track  <div class="help-icons"></div>',
+            array($this, 'print_select_tag'),
+            Parsely::MENU_SLUG, 'optional_settings',
+            array('option_key' => 'track_page_types',
+                'help_text' => $h,
+                // filter Wordpress taxonomies under the hood that should not appear in dropdown
+                'select_options' => get_post_types(),
+                'requires_recrawl' => true,
+                'multiple' => true));
+
         // Dynamic tracking note
         add_settings_field('dynamic_tracking_note', 'Note: ',
                             array($this, 'print_dynamic_tracking_note'),
                             Parsely::MENU_SLUG, 'optional_settings');
 
+    }
+
+    public function validate_option_array($array, $name) {
+        $new_array = $array;
+        foreach ($array as $key => $val) {
+            $new_array[$key] = sanitize_text_field($val);
+        }
+        return $new_array;
     }
 
     public function validate_options($input) {
@@ -302,6 +341,17 @@ class Parsely {
                                    'Your Parse.ly Site ID looks incorrect, it should look like "example.com".');  
 
         }
+        // these can't be null, if somebody accidentally deselected them just reset to default
+        if (!isset( $input['track_post_types'])) {
+            $input['track_post_types'] = array('post');
+
+        }
+        if (!isset( $input['track_page_types'])){
+            $input['track_page_types'] = array('page');
+        }
+        $input['track_post_types'] = $this->validate_option_array($input['track_post_types'], 'track_post_types');
+        $input['track_page_types'] = $this->validate_option_array($input['track_page_types'], 'track_page_types');
+
 
         $input['api_secret'] = sanitize_text_field($input['api_secret']);
         // Content ID prefix
@@ -425,7 +475,7 @@ class Parsely {
             "@type" => "WebPage"
         );
         $currentURL = $this->get_current_url();
-        if ( is_single() && $post->post_status == 'publish' ) {
+        if ( in_array(get_post_type(), $parselyOptions['track_post_types']) && $post->post_status == 'publish') {
             $authors    = $this->get_author_names($post);
             $category   = $this->get_category_name($post, $parselyOptions);
             $postId     = $parselyOptions['content_id_prefix'] . (string)get_the_ID();
@@ -496,7 +546,7 @@ class Parsely {
                 'name' => get_bloginfo('name')
             ); 
             $parselyPage['keywords']       = $tags;
-        } elseif ( is_page() && $post->post_status == 'publish' ) {
+        } elseif ( in_array(get_post_type(), $parselyOptions['track_page_types']) && $post->post_status == 'publish' ) {
             $parselyPage['headline']       = $this->get_clean_parsely_page_value(get_the_title());
             $parselyPage['url']            = $this->get_current_url('post');
         } elseif ( is_author() ) {
@@ -548,11 +598,14 @@ class Parsely {
 
         global $post;
         $display = TRUE;
-
-        if ( is_single() && $post->post_status != 'publish' ) {
+        echo var_dump($post);
+        if ( in_array(get_post_type(), $parselyOptions['track_post_types']) && $post->post_status != 'publish' ) {
             $display = FALSE;
         }
         if (!$parselyOptions['track_authenticated_users'] && $this->parsely_is_user_logged_in()) {
+            $display = FALSE;
+        }
+        if (!in_array(get_post_type(), $parselyOptions['track_post_types']) && !in_array(get_post_type(), $parselyOptions['track_page_types'])) {
             $display = FALSE;
         }
         if ( $display ) {
@@ -564,6 +617,7 @@ class Parsely {
         $options = $this->get_options();
         $name = $args['option_key'];
         $select_options = $args['select_options'];
+        $multiple = isset($args['multiple']);
         $selected = isset($options[$name]) ? $options[$name] : NULL;
         $optional_args = isset($args['optional_args']) ? $args['optional_args'] : array();
         $id = esc_attr($name);
@@ -578,7 +632,13 @@ class Parsely {
         }
         $tag .= '>';
 
-        $tag .= "<select name='$name' id='$name'";
+        if ($multiple) {
+            $tag .= "<select multiple='multiple' name='$name" . "[]'" .  "id='$name'";
+        }
+        else {
+            $tag .= "<select name='$name' id='$name'";
+        }
+
         foreach ( $optional_args as $key => $val ) {
             $tag .= ' ' . esc_attr($key) . '="' . esc_attr($val) . '"';
         }
@@ -586,7 +646,14 @@ class Parsely {
 
         foreach ( $select_options as $key => $val ) {
             $tag .= '<option value="' . esc_attr($key) . '" ';
-            $tag .= selected($selected, $key, false) . '>';
+
+            if ($multiple) {
+                $selected = in_array($val, $options[$args['option_key']]);
+                $tag .= selected($selected, true, false) . '>';
+            }
+            else {
+                $tag .= selected($selected, $key, false) . '>';
+            }
             $tag .= esc_html($val);
             $tag .= '</option>';
         }

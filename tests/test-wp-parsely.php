@@ -11,12 +11,13 @@
  */
 class SampleTest extends WP_UnitTestCase {
 
-    function create_test_post_array() {
+    function create_test_post_array($post_type = 'post') {
         $post_array = array(
             'post_title' => 'Sample Parsely Post',
             'post_author' => 1,
             'post_content' => 'Some sample content just to have here',
-            'post_status' => 'publish');
+            'post_status' => 'publish',
+            'post_type' => $post_type);
         return $post_array;
     }
 
@@ -79,7 +80,9 @@ class SampleTest extends WP_UnitTestCase {
             'cats_as_tags' => false,
             'track_authenticated_users' => true,
             'custom_taxonomy_section' => 'category',
-            'lowercase_tags' => true);
+            'lowercase_tags' => true,
+            'track_post_types' => array('post'),
+            'track_page_types' => array('page'));
         update_option('parsely', $optionDefaults);
         self::$parsely_html = <<<PARSELYJS
 <div id="parsely-root" style="display: none">
@@ -102,6 +105,9 @@ PARSELYJS;
 
     function test_parsely_tag() {
         ob_start();
+        $post_array = $this->create_test_post_array();
+        $post = $this->factory->post->create($post_array);
+        $this->go_to('/?p=' . $post);
         echo self::$parsely->insert_parsely_javascript();
         $output = ob_get_clean();
         $this->assertContains(self::$parsely_html, $output);
@@ -328,6 +334,9 @@ PARSELYJS;
         // update both blog options
         update_option('parsely', $options);
         update_blog_option($second_blog, 'parsely', $options);
+        $post_array = $this->create_test_post_array();
+        $post = $this->factory->post->create($post_array);
+        $this->go_to('/?p=' . $post);
 
         $this->assertEquals(get_current_blog_id(), $first_blog);
         $this->assertTrue(is_user_member_of_blog($new_user, $first_blog));
