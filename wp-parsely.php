@@ -55,6 +55,8 @@ class Parsely {
                                         'force_https_canonicals' => false,
                                         'track_post_types' => array('post'),
                                         'track_page_types' => array('page'));
+                                        'disable_javascript' => false);
+
     private $implementationOpts = array('standard' => 'Standard',
                                         'dom_free' => 'DOM-Free');
 
@@ -179,6 +181,19 @@ class Parsely {
                            array($this, 'print_text_tag'),
                            Parsely::MENU_SLUG, 'optional_settings',
                            $field_args);
+
+        // Disable javascript
+        $h = 'If you use a separate system for Javascript tracking (Tealium / Segment / other tag manager solution) ' .
+            'you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option ' .
+            'will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving ' .
+            'this option on!';
+        add_settings_field('disable_javascript',
+            'Disable Javascript <div class="help-icons"></div>',
+            array($this, 'print_binary_radio_tag'),
+            Parsely::MENU_SLUG, 'optional_settings',
+            array('option_key' => 'disable_javascript',
+                'help_text' => $h,
+                'requires_recrawl' => false));
 
          // Use top-level cats
         $h = 'wp-parsely will use the first category assigned to a post. ' .
@@ -384,6 +399,13 @@ class Parsely {
             $input['force_https_canonicals'] = $input['force_https_canonicals'] === 'true' ? true : false;
         }
 
+        if ( $input['disable_javascript'] !== 'true' && $input['disable_javascript'] !== 'false' ) {
+            add_settings_error(Parsely::OPTIONS_KEY, 'disable_javascript',
+                'Value passed for disable_javascript must be either "true" or "false".');
+        } else {
+            $input['disable_javascript'] = $input['disable_javascript'] === 'true' ? true : false;
+        }
+
         return $input;
     }
 
@@ -501,7 +523,13 @@ class Parsely {
             );
             $parselyPage['dateCreated']    = gmdate('Y-m-d\TH:i:s\Z', get_post_time('U', true));
             $parselyPage['datePublished']  = gmdate('Y-m-d\TH:i:s\Z', get_post_time('U', true));
-            $parselyPage['dateModified']   = gmdate('Y-m-d\TH:i:s\Z', get_the_modified_date('U', true));
+            if (get_the_modified_date('U', true) >= get_post_time('U', true)) {
+                $parselyPage['dateModified']   = gmdate('Y-m-d\TH:i:s\Z', get_the_modified_date('U', true));
+            }
+            else {
+                // Use the post time as the earliest possible modification date
+                $parselyPage['dateModified']   = gmdate('Y-m-d\TH:i:s\Z', get_post_time('U', true));
+            }
             $parselyPage['articleSection'] = $category;
             $author_objects                = array();
             foreach ($authors as $author) {
@@ -564,7 +592,7 @@ class Parsely {
     public function insert_parsely_javascript() {
         $parselyOptions = $this->get_options();
         // If we don't have an API key, there's no need to proceed.
-        if ( empty($parselyOptions['apikey']) ) {
+        if ( empty($parselyOptions['apikey']) || $parselyOptions['disable_javascript'] ) {
             return '';
         }
 
@@ -795,9 +823,9 @@ class Parsely {
     * (Wordpress calls taxonomy values 'terms').
     */
     private function get_top_level_term($term_id, $taxonomy_name) {
-        $parent = $this->parsely_get_term_by( 'id', $term_id, $taxonomy_name );
+        $parent = get_term_by( 'id', $term_id, $taxonomy_name );
         while ( $parent->parent != 0 ){
-            $parent = $this->parsely_get_term_by( 'id', $parent->parent, $taxonomy_name );
+            $parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
         }
         return $parent->name;
     }
@@ -967,16 +995,6 @@ class Parsely {
             return $first_img;
         }
         return '';
-    }
-
-    private function parsely_get_term_by() {
-        $args = func_get_args();
-        if( function_exists('wpcom_vip_get_term_by') ) {
-           return call_user_func_array('wpcom_vip_get_term_by', $args);
-        }
-        else {
-            return call_user_func_array('get_term_by', $args);
-        }
     }
 
     public function insert_parsely_tracking_fbia(&$registry) {
