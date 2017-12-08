@@ -598,7 +598,6 @@ class Parsely {
 
         global $post;
         $display = TRUE;
-        echo var_dump($post);
         if ( in_array(get_post_type(), $parselyOptions['track_post_types']) && $post->post_status != 'publish' ) {
             $display = FALSE;
         }
