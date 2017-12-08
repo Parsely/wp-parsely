@@ -2,7 +2,7 @@
 Contributors: parsely_mike
 Tags: analytics, post, page
 Requires at least: 4.0
-Tested up to: 4.8
+Tested up to: 4.9
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -75,6 +75,12 @@ https://wordpress.org/plugins/fb-instant-articles/
 4. A sample `JSON-LD` meta tag for an article or post
 
 == Changelog ==
+
+= 1.11 =
+* adds ability to use Parsely API with widget
+* Adds ability to track or not track custom page and post types
+* adds ability to disable Javascript tracking
+* minor bugfixes
 
 = 1.10 =
 * Adds ability to filter final JSON-LD output
