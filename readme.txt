@@ -21,6 +21,7 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 
 * Get started with Parse.ly right away: the plug-in automatically inserts the required parsely-page tag and JavaScript on all your published pages and posts.
 * Allows you to specify the JavaScript implementation to use: standard, DOM free or asynchronous.
+* If you've purchased access to the Parse.ly API, add a widget to your site with story recommendations personalized to indvidual users.
 
 Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com](mailto:support@parsely.com) we always want to hear from you.
 
