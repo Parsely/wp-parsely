@@ -88,6 +88,12 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 
 ## Changelog ##
 
+### 1.11 ###
+* adds ability to use Parsely API with widget
+* Adds ability to track or not track custom page and post types
+* adds ability to disable Javascript tracking
+* minor bugfixes
+
 ### 1.10 ###
 * Adds ability to filter final JSON-LD output
 * Adds the ability to use a custom taxonomy as tags
