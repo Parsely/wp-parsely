@@ -1,7 +1,7 @@
 <?php
 
 class Parsely_Recommended_Widget extends WP_Widget {
-	public function __construct(  ) {
+	public function __construct() {
 		$widget_options = array(
 			'classname'   => 'Parsely_Recommended_Widget',
 			'description' => 'Parsely recommendation widget',
@@ -12,7 +12,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	public function widget( $args, $instance ) {
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
-		$instance['display_options'] = ! empty( $instance['display_options'] ) ? $instance['display_options'] : array(  );
+		$instance['display_options'] = ! empty( $instance['display_options'] ) ? $instance['display_options'] : array();
 		echo esc_html( $args['before_widget'] . $args['before_title'] . $title . $args['after_title'] ); ?>
 
 		<?php
