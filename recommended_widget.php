@@ -25,29 +25,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			$limit = '&limit=' . $instance['return_limit'];
 			$url = '&url=' . get_permalink();
 			$full_url = $root_url . $sort . $boost . $limit;
-			if ( $instance['personalize_results'] ) {
-				// this gets pretty gross: we need to get the uuid from the javascript tracker, but it's not super easy
-				// to transmit a variable back from JS to Wordpress. What we're going to do is set a POST variable in
-				// the javascript, and try to read from it. This feels absolutely gross, but unless a better way is
-				// presented it seems to be what we've got
-				if ( isset( $_COOKIE['parsely_visitor'] ) ) {
-						$parsely_visitor = json_decode( stripslashes($_COOKIE['_parsely_visitor']) );
-						if ($parsely_visitor->id) {
-							$uuid_string = '&uuid=' . $parsely_visitor->id;
-							$full_url .= $uuid_string;
-						}
-						else {
-							$full_url .= $url;
-						}
-					}
-					else {
-						$full_url .= $url;
-					}
+			$full_url .= $url;
 
-			}
-			else {
-				$full_url .= $url;
-			}
 			if ( 0 != (int) $instance['published_within'] ) {
 				$full_url .= $pub_date_start;
 			}
@@ -102,25 +81,44 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		echo esc_html( $args['after_widget'] );
 	}
 
-	public function form( $instance )
-	{
+	public function form( $instance ) {
 		// editable fields: title
-		$title = ! empty( $instance['title'] ) ? $instance['title'] : '';
-		$return_limit = ! empty( $instance['return_limit'] ) ? $instance['return_limit'] : 5;
-		$published_within = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
-		$sort = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
-		$boost = ! empty( $instance['boost'] ) ? $instance['boost'] : 'views';
-		$personalize_results = ! empty( $instance['personalize_results'] ) ? $instance['personalize_results'] : false;
-		$instance['return_limit'] = $return_limit;
-		$instance['published_within'] = $published_within;
-		$instance['sort'] = $sort;
-		$instance['boost'] = $boost;
+		$title                           = ! empty( $instance['title'] ) ? $instance['title'] : '';
+		$return_limit                    = ! empty( $instance['return_limit'] ) ? $instance['return_limit'] : 5;
+		$published_within                = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
+		$sort                            = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
+		$boost                           = ! empty( $instance['boost'] ) ? $instance['boost'] : 'views';
+		$personalize_results             = ! empty( $instance['personalize_results'] ) ? $instance['personalize_results'] : false;
+		$instance['return_limit']        = $return_limit;
+		$instance['published_within']    = $published_within;
+		$instance['sort']                = $sort;
+		$instance['boost']               = $boost;
 		$instance['personalize_results'] = $personalize_results;
-		$instance['display_options'] = !empty($instance['display_options']) ? $instance['display_options'] : array();
-		$boost_params = array('views', 'mobile_views', 'tablet_views', 'desktop_views', 'visitors', 'visitors_new',
-			'visitors_returning', 'engaged_minutes', 'avg_engaged', 'avg_engaged_new', 'avg_engaged_returning',
-			'social_interactions', 'fb_interactions', 'tw_interactions', 'li_interactions', 'pi_interactions',
-			'social_referrals', 'fb_referrals', 'tw_referrals', 'li_referrals', 'pi_referrals');
+		$instance['display_options']     = ! empty( $instance['display_options'] ) ? $instance['display_options'] : array();
+
+		$boost_params = array(
+			'views',
+			'mobile_views',
+			'tablet_views',
+			'desktop_views',
+			'visitors',
+			'visitors_new',
+			'visitors_returning',
+			'engaged_minutes',
+			'avg_engaged',
+			'avg_engaged_new',
+			'avg_engaged_returning',
+			'social_interactions',
+			'fb_interactions',
+			'tw_interactions',
+			'li_interactions',
+			'pi_interactions',
+			'social_referrals',
+			'fb_referrals',
+			'tw_referrals',
+			'li_referrals',
+			'pi_referrals',
+		);
 		?>
 		<p>
 			<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>">Title:</label>
