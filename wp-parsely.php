@@ -139,19 +139,21 @@ class Parsely {
 		$h = 'Your Site ID is your own site domain ( e.g. `mydomain.com` )';
 		$field_args = array(
 			'option_key' => 'apikey',
-			'help_text' => $h
+			'help_text' => $h,
 		);
 		add_settings_field('apikey',
-						   'Parse.ly Site ID <div class="help-icons"></div>',
-						   array( $this, 'print_text_tag' ),
-						   Parsely::MENU_SLUG, 'required_settings',
-						   $field_args);
+			'Parse.ly Site ID <div class="help-icons"></div>',
+			array( $this, 'print_text_tag' ),
+			Parsely::MENU_SLUG, 'required_settings',
+			$field_args
+		);
 
 
 		// Optional Settings
 		add_settings_section('optional_settings', 'Optional Settings',
-							 array( $this, 'print_optional_settings' ),
-							 Parsely::MENU_SLUG);
+			array( $this, 'print_optional_settings' ),
+			Parsely::MENU_SLUG
+		);
 
 		$h = 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API.</a>
 			It can be found at dash.parsely.com/yoursitedomain/settings/api
@@ -159,13 +161,14 @@ class Parsely {
 		  like to do so, email your account manager or support@parsely.com!';
 		$field_args = array(
 			'option_key' => 'api_secret',
-			'help_text' => $h
+			'help_text'  => $h,
 		);
 		add_settings_field('api_secret',
 			'Parse.ly API Secret <div class="help-icons"></div>',
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG, 'optional_settings',
-			$field_args);
+			$field_args
+		);
 		// Content ID Prefix
 		$h = 'If you use more than one content management system (e.g. ' .
 			 'WordPress and Drupal), you may end up with duplicate content ' .
@@ -175,15 +178,17 @@ class Parsely {
 		$field_args = array(
 			'option_key' => 'content_id_prefix',
 			'optional_args' => array(
-				'placeholder' => 'WP-'),
+				'placeholder' => 'WP-',
+			),
 			'help_text' => $h,
-			'requires_recrawl' => true
+			'requires_recrawl' => true,
 		);
 		add_settings_field('content_id_prefix',
-						   'Content ID Prefix <div class="help-icons"></div>',
-						   array( $this, 'print_text_tag' ),
-						   Parsely::MENU_SLUG, 'optional_settings',
-						   $field_args);
+			'Content ID Prefix <div class="help-icons"></div>',
+			array( $this, 'print_text_tag' ),
+			Parsely::MENU_SLUG, 'optional_settings',
+			$field_args
+		);
 
 		// Disable javascript
 		$h = 'If you use a separate system for Javascript tracking ( Tealium / Segment / other tag manager solution ) ' .
@@ -194,9 +199,12 @@ class Parsely {
 			'Disable Javascript <div class="help-icons"></div>',
 			array( $this, 'print_binary_radio_tag' ),
 			Parsely::MENU_SLUG, 'optional_settings',
-			array('option_key' => 'disable_javascript',
+			array(
+				'option_key' => 'disable_javascript',
 				'help_text' => $h,
-				'requires_recrawl' => false));
+				'requires_recrawl' => false,
+			)
+		);
 
 		 // Use top-level cats
 		$h = 'wp-parsely will use the first category assigned to a post. ' .
@@ -204,26 +212,32 @@ class Parsely {
 			 'National > Florida, wp-parsely will use the "News" for the ' .
 			 'section name in your dashboard instead of "Florida".';
 		add_settings_field('use_top_level_cats',
-						   'Use Top-Level Categories for Section <div class="help-icons"></div>',
-						   array( $this, 'print_binary_radio_tag' ),
-						   Parsely::MENU_SLUG, 'optional_settings',
-						   array('option_key' => 'use_top_level_cats',
-								 'help_text' => $h,
-								 'requires_recrawl' => true));
+			'Use Top-Level Categories for Section <div class="help-icons"></div>',
+			array( $this, 'print_binary_radio_tag' ),
+			Parsely::MENU_SLUG, 'optional_settings',
+			array(
+				'option_key' => 'use_top_level_cats',
+				'help_text' => $h,
+				'requires_recrawl' => true,
+			)
+		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category
 		$h = 'By default, the section value in your Parse.ly dashboard maps to a post\'s category. ' .
 			 'You can optionally choose a custom taxonomy, if you\'ve created one, to ' .
 			 'populate the section value instead. <br>';
 		add_settings_field('custom_taxonomy_section',
-						   'Use Custom Taxonomy for Section  <div class="help-icons"></div>',
-						   array( $this, 'print_select_tag' ),
-						   Parsely::MENU_SLUG, 'optional_settings',
-						   array('option_key' => 'custom_taxonomy_section',
-								 'help_text' => $h,
-								 // filter Wordpress taxonomies under the hood that should not appear in dropdown
-								 'select_options' => array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) ),
-								 'requires_recrawl' => true));
+			'Use Custom Taxonomy for Section  <div class="help-icons"></div>',
+			array( $this, 'print_select_tag' ),
+			Parsely::MENU_SLUG, 'optional_settings',
+			array(
+				'option_key' => 'custom_taxonomy_section',
+				'help_text' => $h,
+				// filter Wordpress taxonomies under the hood that should not appear in dropdown
+				'select_options' => array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) ),
+				'requires_recrawl' => true
+			)
+		);
 
 		// Use categories and custom taxonomies as tags
 		$h = 'You can use this option to add all assigned categories and taxonomies to ' .
