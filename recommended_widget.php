@@ -72,7 +72,7 @@ class parsely_recommended_widget extends WP_Widget
                 ?>
                 <p>
                     looks like your API secret is incorrect- please double check your API secret in your Parsely wordpress settings
-                    against the value in <a href="http://dash.parsely.com/<?php echo $options['apikey']?>/settings/api/">
+                    against the value in <a href="http://dash.parsely.com/<?php echo esc_attr($options['apikey'])?>/settings/api/">
                         http://dash.parsely.com/<?php echo $options['apikey']?>/settings/api/!
                     </a>
                 </p>
@@ -85,12 +85,12 @@ class parsely_recommended_widget extends WP_Widget
             <div class="parsely-recommendation-widget">
                 <ul class="parsely-recommended-widget">
                     <?php foreach ($data as $index=>$post) { ?>
-                        <li class="parsely-recommended-widget-entry" id="parsely-recommended-widget-item-<?php echo $index?>">
+                        <li class="parsely-recommended-widget-entry" id="parsely-recommended-widget-item-<?php echo esc_attr($index)?>">
                             <?php if (in_array('display_thumbnail', $instance['display_options'])) { ?>
-                            <img src="<?php echo $post->thumb_url_medium;?>"/>
+                            <img src="<?php echo esc_attr($post->thumb_url_medium);?>"/>
                             <?php } ?>
                             <div class="parsely-title-author-wrapper">
-                                <a href="<?php echo $post->url;?>"><?php echo $post->title;?></a>
+                                <a href="<?php echo esc_attr($post->url);?>"><?php echo esc_attr($post->title);?></a>
                                 <?php
                                 // Try to get a link to the author via their name. This doesn't always work- worst case, just
                                 // link to the post.
@@ -103,7 +103,7 @@ class parsely_recommended_widget extends WP_Widget
                                         $author_url = $post->url;
                                     }
                                     ?>
-                                    <a class="parsely-author" href="<?php echo $author_url;?>"><?php echo $post->author; ?></a>
+                                    <a class="parsely-author" href="<?php echo esc_attr($author_url);?>"><?php echo esc_attr($post->author); ?></a>
                                 <?php } ?>
                             </div>
 
@@ -127,7 +127,7 @@ class parsely_recommended_widget extends WP_Widget
         ?>
 
 
-        <?php echo $args['after_widget'];
+        <?php echo esc_html($args['after_widget']);
     }
 
     public function form( $instance )
@@ -151,50 +151,50 @@ class parsely_recommended_widget extends WP_Widget
             'social_referrals', 'fb_referrals', 'tw_referrals', 'li_referrals', 'pi_referrals');
         ?>
         <p>
-            <label for="<?php echo $this->get_field_id( 'title' ); ?>">Title:</label>
+            <label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>">Title:</label>
             <br>
-            <input type="text" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo esc_attr( $title ); ?>" />
+            <input type="text" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" value="<?php echo esc_attr( $title ); ?>" />
         </p>
         <p>
             <label for="<?php echo $this->get_field_id( 'published_within' ); ?>">Published Within (0 for no limit):</label>
             <br>
-            <input type="number" id="<?php echo $this->get_field_id('published_within'); ?>" name="<?php echo $this->get_field_name('published_within')?>" value="<?php echo (string) $instance['published_within'];?>" min="0" max="30"/>
+            <input type="number" id="<?php echo esc_attr($this->get_field_id('published_within')); ?>" name="<?php echo esc_attr($this->get_field_name('published_within'));?>" value="<?php echo (string) $instance['published_within'];?>" min="0" max="30"/>
         </p>
         <p>
             <label for="<?php echo $this->get_field_id( 'return_limit' ); ?>">Number of entries to return (Max 20): </label>
             <br>
-            <input type="number" id="<?php echo $this->get_field_id('return_limit'); ?>" name="<?php echo $this->get_field_name('return_limit'); ?>" value="<?php echo (string) $instance['return_limit'];?>" min="1" max="20"/>
+            <input type="number" id="<?php echo esc_attr($this->get_field_id('return_limit')); ?>" name="<?php echo esc_attr($this->get_field_name('return_limit')); ?>" value="<?php echo (string) $instance['return_limit'];?>" min="1" max="20"/>
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id( 'sort' ); ?>">Sort By: </label>
+            <label for="<?php echo esc_attr($this->get_field_id( 'sort' )); ?>">Sort By: </label>
             <br>
-            <select id="<?php echo $this->get_field_id('sort'); ?>" name="<?php echo $this->get_field_name('sort'); ?>" class="widefat" style="width:33%;">
+            <select id="<?php echo esc_attr($this->get_field_id('sort')); ?>" name="<?php echo esc_attr($this->get_field_name('sort')); ?>" class="widefat" style="width:33%;">
                 <option <?php selected( $instance['sort'], 'score'); ?> value="score">score</option>
                 <option <?php selected( $instance['sort'], 'pub_date'); ?> value="pub_date">pub_date</option>
             </select>
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id( 'boost' ); ?>">Boost By: </label>
+            <label for="<?php echo esc_attr($this->get_field_id( 'boost' )); ?>">Boost By: </label>
             <br>
-            <select id="<?php echo $this->get_field_id('boost'); ?>" name="<?php echo $this->get_field_name('boost'); ?>" class="widefat" style="width:50%;">
+            <select id="<?php echo esc_attr($this->get_field_id('boost')); ?>" name="<?php echo esc_attr($this->get_field_name('boost')); ?>" class="widefat" style="width:50%;">
                 <?php foreach($boost_params as $boost_param) { ?>
-                <option <?php selected( $instance['boost'], $boost_param); ?> value="<?php echo $boost_param;?>"><?php echo $boost_param;?></option>
+                <option <?php selected( $instance['boost'], $boost_param); ?> value="<?php echo esc_attr($boost_param);?>"><?php echo esc_attr($boost_param);?></option>
             <?php } ?>
             </select>
 
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id( 'display_options' ); ?>">Display Options</label>
+            <label for="<?php echo esc_attr($this->get_field_id( 'display_options' )); ?>">Display Options</label>
             <br>
-            <select multiple="multiple" id="<?php echo $this->get_field_id('display_options'); ?>" name="<?php echo $this->get_field_name('display_options'); ?>[]" class="widefat" style="width:33%;">
+            <select multiple="multiple" id="<?php echo esc_attr($this->get_field_id('display_options')); ?>" name="<?php echo esc_attr($this->get_field_name('display_options')); ?>[]" class="widefat" style="width:33%;">
                 <option <?php if (in_array('display_author', $instance['display_options'])) { echo 'selected="selected"'; };?> value="display_author">Display Author</option>
                 <option <?php if (in_array('display_thumbnail', $instance['display_options'])) { echo 'selected="selected"'; };?> value="display_thumbnail">Display Thumbnail</option>
             </select>
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id( 'personalize_results' ); ?>">Personalize Recommended Results:</label>
+            <label for="<?php echo esc_attr($this->get_field_id( 'personalize_results' )); ?>">Personalize Recommended Results:</label>
             <br>
-            <input type="checkbox" id="<?php echo $this->get_field_id('personalize_results'); ?>" name="<?php echo $this->get_field_name('personalize_results')?>" value="personalize_results" <?php checked($instance['personalize_results'], 'personalize_results') ?> />
+            <input type="checkbox" id="<?php echo esc_attr($this->get_field_id('personalize_results')); ?>" name="<?php echo esc_attr($this->get_field_name('personalize_results'))?>" value="personalize_results" <?php checked($instance['personalize_results'], 'personalize_results') ?> />
         </p>
 
 
