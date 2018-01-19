@@ -11,6 +11,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 	public function widget( $args, $instance ) {
 		$title = apply_filters( 'widget_title', $instance['title'] );
+
 		$instance['display_options'] = ! empty( $instance['display_options'] ) ? $instance['display_options'] : array();
 		echo esc_html( $args['before_widget'] . $args['before_title'] . $title . $args['after_title'] ); ?>
 
@@ -18,21 +19,22 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		// set up variables
 		$options = get_option( 'parsely' );
 		if ( array_key_exists( 'apikey', $options ) && array_key_exists( 'api_secret', $options ) && ! empty( $options['api_secret'] ) ) {
-			$root_url = 'https://api.parsely.com/v2/related?apikey=' . $options['apikey'] . '&secret=' . $options['api_secret'];
+			$root_url       = 'https://api.parsely.com/v2/related?apikey=' . $options['apikey'] . '&secret=' . $options['api_secret'];
 			$pub_date_start = '&pub_date_start=' . $instance['published_within'] . 'd';
-			$sort = '&sort=' . $instance['sort'];
-			$boost = '&boost=' . $instance['boost'];
-			$limit = '&limit=' . $instance['return_limit'];
-			$url = '&url=' . get_permalink();
-			$full_url = $root_url . $sort . $boost . $limit;
+			$sort           = '&sort=' . $instance['sort'];
+			$boost          = '&boost=' . $instance['boost'];
+			$limit          = '&limit=' . $instance['return_limit'];
+			$url            = '&url=' . get_permalink();
+			$full_url       = $root_url . $sort . $boost . $limit;
+
 			$full_url .= $url;
 
-			if ( 0 != (int) $instance['published_within'] ) {
+			if ( 0 !== (int) $instance['published_within'] ) {
 				$full_url .= $pub_date_start;
 			}
 			$response = wp_remote_get( $full_url );
-			$body = wp_remote_retrieve_body( $response );
-			$data = json_decode( $body );
+			$body     = wp_remote_retrieve_body( $response );
+			$data     = json_decode( $body );
 			if ( ! $data->success ) {
 				?>
 				<p>
@@ -51,7 +53,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 				<ul class="parsely-recommended-widget">
 					<?php foreach ( $data as $index => $post ) { ?>
 						<li class="parsely-recommended-widget-entry" id="parsely-recommended-widget-item-<?php echo esc_attr( $index ); ?>">
-							<?php if ( in_array( 'display_thumbnail', $instance['display_options'] ) ) { ?>
+							<?php if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) { ?>
 							<img src="<?php echo esc_attr( $post->thumb_url_medium ); ?>"/>
 							<?php } ?>
 							<div class="parsely-title-author-wrapper">
@@ -83,12 +85,13 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 	public function form( $instance ) {
 		// editable fields: title
-		$title                           = ! empty( $instance['title'] ) ? $instance['title'] : '';
-		$return_limit                    = ! empty( $instance['return_limit'] ) ? $instance['return_limit'] : 5;
-		$published_within                = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
-		$sort                            = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
-		$boost                           = ! empty( $instance['boost'] ) ? $instance['boost'] : 'views';
-		$personalize_results             = ! empty( $instance['personalize_results'] ) ? $instance['personalize_results'] : false;
+		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
+		$return_limit        = ! empty( $instance['return_limit'] ) ? $instance['return_limit'] : 5;
+		$published_within    = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
+		$sort                = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
+		$boost               = ! empty( $instance['boost'] ) ? $instance['boost'] : 'views';
+		$personalize_results = ! empty( $instance['personalize_results'] ) ? $instance['personalize_results'] : false;
+
 		$instance['return_limit']        = $return_limit;
 		$instance['published_within']    = $published_within;
 		$instance['sort']                = $sort;
