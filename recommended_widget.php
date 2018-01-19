@@ -179,7 +179,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>">Personalize Recommended Results:</label>
 			<br>
-			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id('personalize_results')); ?>" name="<?php echo esc_attr($this->get_field_name('personalize_results'))?>" value="personalize_results" <?php checked($instance['personalize_results'], 'personalize_results' ) ?> />
+			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'personalize_results' ) ); ?>" value="personalize_results" <?php checked( $instance['personalize_results'], 'personalize_results' ); ?> />
 		</p>
 
 
@@ -187,22 +187,20 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		<?php
 	}
 
-	public function update( $new_instance, $old_instance )
-	{
-		$instance = $old_instance;
-		$instance[ 'title' ] = strip_tags( $new_instance[ 'title' ] );
-		$instance['published_within'] = ( int ) $new_instance['published_within'];
-		$instance['return_limit'] = ( int ) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
-		$instance['sort'] = $new_instance['sort'];
-		$instance['boost'] = $new_instance['boost'];
-		$instance['display_options'] = esc_sql( $new_instance['display_options'] );
+	public function update( $new_instance, $old_instance ) {
+		$instance                        = $old_instance;
+		$instance['title']               = strip_tags( $new_instance['title'] );
+		$instance['published_within']    = (int) $new_instance['published_within'];
+		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
+		$instance['sort']                = $new_instance['sort'];
+		$instance['boost']               = $new_instance['boost'];
+		$instance['display_options']     = esc_sql( $new_instance['display_options'] );
 		$instance['personalize_results'] = $new_instance['personalize_results'];
 		return $instance;
 	}
 }
 
-function parsely_recommended_widget_register(  )
-{
+function parsely_recommended_widget_register() {
 	register_widget( 'Parsely_Recommended_Widget' );
 }
 
