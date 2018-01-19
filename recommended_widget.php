@@ -1,7 +1,7 @@
 <?php
 
 class Parsely_Recommended_Widget extends WP_Widget {
-	public function __construct() {
+	public function __construct(  ) {
 		$widget_options = array(
 			'classname'   => 'Parsely_Recommended_Widget',
 			'description' => 'Parsely recommendation widget',
@@ -12,7 +12,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	public function widget( $args, $instance ) {
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
-		$instance['display_options'] = ! empty( $instance['display_options'] ) ? $instance['display_options'] : array();
+		$instance['display_options'] = ! empty( $instance['display_options'] ) ? $instance['display_options'] : array(  );
 		echo esc_html( $args['before_widget'] . $args['before_title'] . $title . $args['after_title'] ); ?>
 
 		<?php
@@ -129,12 +129,12 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			<input type="text" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>">Published Within (0 for no limit):</label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>">Published Within ( 0 for no limit ):</label>
 			<br>
 			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'published_within' ) ); ?>" value="<?php echo esc_attr( (string) $instance['published_within'] ); ?>" min="0" max="30"/>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>">Number of entries to return (Max 20): </label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>">Number of entries to return ( Max 20 ): </label>
 			<br>
 			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( (string) $instance['return_limit'] ); ?>" min="1" max="20"/>
 		</p>
@@ -149,25 +149,37 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'boost' ) ); ?>">Boost By: </label>
 			<br>
-			<select id="<?php echo esc_attr( $this->get_field_id('boost' ) ); ?>" name="<?php echo esc_attr($this->get_field_name('boost')); ?>" class="widefat" style="width:50%;">
-				<?php foreach($boost_params as $boost_param) { ?>
-				<option <?php selected( $instance['boost'], $boost_param); ?> value="<?php echo esc_attr($boost_param);?>"><?php echo esc_attr($boost_param);?></option>
+			<select id="<?php echo esc_attr( $this->get_field_id( 'boost' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'boost' ) ); ?>" class="widefat" style="width:50%;">
+				<?php foreach ( $boost_params as $boost_param ) { ?>
+				<option <?php selected( $instance['boost'], $boost_param ); ?> value=" <?php echo esc_attr( $boost_param ); ?>"><?php echo esc_attr( $boost_param ); ?></option>
 			<?php } ?>
 			</select>
 
 		</p>
 		<p>
-			<label for="<?php echo esc_attr($this->get_field_id( 'display_options' )); ?>">Display Options</label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'display_options' ) ); ?>">Display Options</label>
 			<br>
-			<select multiple="multiple" id="<?php echo esc_attr($this->get_field_id('display_options')); ?>" name="<?php echo esc_attr($this->get_field_name('display_options')); ?>[]" class="widefat" style="width:33%;">
-				<option <?php if (in_array('display_author', $instance['display_options'])) { echo 'selected="selected"'; };?> value="display_author">Display Author</option>
-				<option <?php if (in_array('display_thumbnail', $instance['display_options'])) { echo 'selected="selected"'; };?> value="display_thumbnail">Display Thumbnail</option>
+			<select multiple="multiple" id="<?php echo esc_attr( $this->get_field_id( 'display_options' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_options' ) ); ?>[]" class="widefat" style="width:33%;">
+				<option
+					<?php
+					if ( in_array( 'display_author', $instance['display_options'], true ) ) {
+						echo 'selected="selected"';
+					};
+				?>
+						value="display_author">Display Author</option>
+				<option
+					<?php
+					if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
+						echo 'selected="selected"';
+					};
+					?>
+						value="display_thumbnail">Display Thumbnail</option>
 			</select>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr($this->get_field_id( 'personalize_results' )); ?>">Personalize Recommended Results:</label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>">Personalize Recommended Results:</label>
 			<br>
-			<input type="checkbox" id="<?php echo esc_attr($this->get_field_id('personalize_results')); ?>" name="<?php echo esc_attr($this->get_field_name('personalize_results'))?>" value="personalize_results" <?php checked($instance['personalize_results'], 'personalize_results') ?> />
+			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id('personalize_results')); ?>" name="<?php echo esc_attr($this->get_field_name('personalize_results'))?>" value="personalize_results" <?php checked($instance['personalize_results'], 'personalize_results' ) ?> />
 		</p>
 
 
@@ -175,23 +187,23 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		<?php
 	}
 
-	public function update($new_instance, $old_instance)
+	public function update( $new_instance, $old_instance )
 	{
 		$instance = $old_instance;
 		$instance[ 'title' ] = strip_tags( $new_instance[ 'title' ] );
-		$instance['published_within'] = (int) $new_instance['published_within'];
-		$instance['return_limit'] = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
+		$instance['published_within'] = ( int ) $new_instance['published_within'];
+		$instance['return_limit'] = ( int ) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
 		$instance['sort'] = $new_instance['sort'];
 		$instance['boost'] = $new_instance['boost'];
-		$instance['display_options'] = esc_sql($new_instance['display_options']);
+		$instance['display_options'] = esc_sql( $new_instance['display_options'] );
 		$instance['personalize_results'] = $new_instance['personalize_results'];
 		return $instance;
 	}
 }
 
-function parsely_recommended_widget_register()
+function parsely_recommended_widget_register(  )
 {
-	register_widget('Parsely_Recommended_Widget');
+	register_widget( 'Parsely_Recommended_Widget' );
 }
 
-add_action('widgets_init', 'parsely_recommended_widget_register');
+add_action( 'widgets_init', 'parsely_recommended_widget_register' );
