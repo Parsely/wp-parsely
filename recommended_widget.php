@@ -124,32 +124,32 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		);
 		?>
 		<p>
-			<label for="<?php echo esc_attr($this->get_field_id( 'title' )); ?>">Title:</label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>">Title:</label>
 			<br>
-			<input type="text" id="<?php echo esc_attr($this->get_field_id( 'title' )); ?>" name="<?php echo esc_attr($this->get_field_name( 'title' )); ?>" value="<?php echo esc_attr( $title ); ?>" />
+			<input type="text" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'published_within' ); ?>">Published Within (0 for no limit):</label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>">Published Within (0 for no limit):</label>
 			<br>
-			<input type="number" id="<?php echo esc_attr($this->get_field_id('published_within')); ?>" name="<?php echo esc_attr($this->get_field_name('published_within'));?>" value="<?php echo (string) $instance['published_within'];?>" min="0" max="30"/>
+			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'published_within' ) ); ?>" value="<?php echo esc_attr( (string) $instance['published_within'] ); ?>" min="0" max="30"/>
 		</p>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'return_limit' ); ?>">Number of entries to return (Max 20): </label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>">Number of entries to return (Max 20): </label>
 			<br>
-			<input type="number" id="<?php echo esc_attr($this->get_field_id('return_limit')); ?>" name="<?php echo esc_attr($this->get_field_name('return_limit')); ?>" value="<?php echo (string) $instance['return_limit'];?>" min="1" max="20"/>
+			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( (string) $instance['return_limit'] ); ?>" min="1" max="20"/>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr($this->get_field_id( 'sort' )); ?>">Sort By: </label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>">Sort By: </label>
 			<br>
-			<select id="<?php echo esc_attr($this->get_field_id('sort')); ?>" name="<?php echo esc_attr($this->get_field_name('sort')); ?>" class="widefat" style="width:33%;">
-				<option <?php selected( $instance['sort'], 'score'); ?> value="score">score</option>
-				<option <?php selected( $instance['sort'], 'pub_date'); ?> value="pub_date">pub_date</option>
+			<select id="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sort' ) ); ?>" class="widefat" style="width:33%;">
+				<option <?php selected( $instance['sort'], 'score' ); ?> value="score">score</option>
+				<option <?php selected( $instance['sort'], 'pub_date' ); ?> value="pub_date">pub_date</option>
 			</select>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr($this->get_field_id( 'boost' )); ?>">Boost By: </label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'boost' ) ); ?>">Boost By: </label>
 			<br>
-			<select id="<?php echo esc_attr($this->get_field_id('boost')); ?>" name="<?php echo esc_attr($this->get_field_name('boost')); ?>" class="widefat" style="width:50%;">
+			<select id="<?php echo esc_attr( $this->get_field_id('boost' ) ); ?>" name="<?php echo esc_attr($this->get_field_name('boost')); ?>" class="widefat" style="width:50%;">
 				<?php foreach($boost_params as $boost_param) { ?>
 				<option <?php selected( $instance['boost'], $boost_param); ?> value="<?php echo esc_attr($boost_param);?>"><?php echo esc_attr($boost_param);?></option>
 			<?php } ?>
