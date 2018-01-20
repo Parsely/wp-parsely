@@ -34,22 +34,6 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			if ( 0 !== (int) $instance['published_within'] ) {
 				$full_url .= $pub_date_start;
 			}
-			$response = wp_remote_get( $full_url );
-			$body     = wp_remote_retrieve_body( $response );
-			$data     = json_decode( $body );
-			if ( ! $data->success ) {
-				?>
-				<p>
-					looks like your API secret is incorrect- please double check your API secret in your Parsely wordpress settings
-					against the value in <a href="http://dash.parsely.com/<?php echo esc_attr( $options['apikey'] ); ?>/settings/api/">
-						http://dash.parsely.com/<?php echo esc_attr( $options['apikey'] ); ?>/settings/api/!
-					</a>
-				</p>
-				<?php
-			}
-			$data = $data->data;
-
-
 			?>
 			<script>
 				var parsely_results = [];
@@ -67,34 +51,36 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					full_url += <?php echo esc_attr( $url ); ?>;
 
 				}
-				outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget');
-				outerList = jQuery('<ul>').addClass('parsely-recommended-widget');
+				var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget');
+				var outerList = jQuery('<ul>').addClass('parsely-recommended-widget');
 				jQuery.getJSON( full_url, function (data) {
 					jQuery.each(data, function(key, value) {
-					})
+						var widgetEntry = jQuery('<li>')
+							.addClass(parsely-recommended-widget-entry)
+							.attr('id', 'parsely-recommended-widget-item' + key);
+						<?php
+						if ( in_array( 'display_thumbnail', $instance['display_options'] ) ) {
+						?>
+						var thumbnailImage = jQuery('<img>').attr('src', value['thumb_url_medium']);
+						<?php
+						}
+						?>
+						var authorDiv = jQuery('<div>').addClass('parsely-title-author-wrapper');
+						var postLink = jQuery('<a>').attr('href', value['url']).text(value['title']);
+						var authorLink = jQuery('<a>').attr('href', value['url']).text(value['author']);
+
+						// set up the rest of entry
+						authorDiv.append(postLink);
+						authorDiv.append(authorLink);
+						widgetEntry.append(thumbnailImage);
+						widgetEntry.append(authorDiv);
+						outerList.append(widgetEntry);
+					});
+					outerDiv.append(outerList);
 				});
 
 
 			</script>
-			// TODO: if themes want to handle the raw data themselves, let them go for it
-//			?>
-<!--			<div class="parsely-recommendation-widget">-->
-<!--				<ul class="parsely-recommended-widget">-->
-<!--					--><?php //foreach ( $data as $index => $post ) { ?>
-<!--						<li class="parsely-recommended-widget-entry" id="parsely-recommended-widget-item---><?php //echo esc_attr( $index ); ?><!--">-->
-<!--							--><?php //if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) { ?>
-<!--							<img src="--><?php //echo esc_attr( $post->thumb_url_medium ); ?><!--"/>-->
-<!--							--><?php //} ?>
-<!--							<div class="parsely-title-author-wrapper">-->
-<!--								<a href="--><?php //echo esc_attr( $post->url ); ?><!--">--><?php //echo esc_attr( $post->title ); ?><!--</a>-->
-<!--									<a class="parsely-author" href="--><?php //echo esc_attr( $post->url ); ?><!-- ">--><?php //echo esc_attr( $post->author ); ?><!-- </a>-->
-<!--							</div>-->
-<!---->
-<!---->
-<!--						</li>-->
-<!--					--><?php //} ?>
-<!--				</ul>-->
-<!--			</div>-->
 			<?php
 		} else {
 			?>
