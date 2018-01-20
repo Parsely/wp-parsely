@@ -99,6 +99,7 @@ class Parsely {
 			}
 
 			add_action( 'wp_enqueue_scripts', 'wp_parsely_style_init' );
+			wp_enqueue_script( 'jquery' );
 		}
 
 	}
