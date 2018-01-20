@@ -94,14 +94,18 @@ class SampleTest extends WP_UnitTestCase {
 	<div id="parsely-cfg" data-parsely-site="blog.parsely.com"></div>
 </div>
 <script data-cfasync="false">
-	(function(s, p, d) {
-		var h=d.location.protocol, i=p+"-"+s,
-			e=d.getElementById(i), r=d.getElementById(p+"-root"),
-			u=h==="https:"?"d1z2jf7jlzjs58.cloudfront.net"
-				:"static."+p+".com";
+	(function (s, p, d) {
+		var h = d.location.protocol, i = p + "-" + s,
+			e = d.getElementById(i), r = d.getElementById(p + "-root"),
+			u = h === "https:" ? "d1z2jf7jlzjs58.cloudfront.net"
+				: "static." + p + ".com";
 		if (e) return;
-		e = d.createElement(s); e.id = i; e.async = true;
-		e.setAttribute('data-cfasync', 'false'); e.src = h+"//"+u+"/p.js"; r.appendChild(e);
+		e = d.createElement(s);
+		e.id = i;
+		e.async = true;
+		e.setAttribute('data-cfasync', 'false');
+		e.src = h + "//" + u + "/p.js";
+		r.appendChild(e);
 	})("script", "parsely", document);
 </script>
 PARSELYJS;
@@ -109,12 +113,14 @@ PARSELYJS;
 
 
 	function test_parsely_tag() {
+		echo "NOW IT BEGINS";
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
 		echo esc_html( self::$parsely->insert_parsely_javascript() );
 		$output = ob_get_clean();
+		echo $output;
 		$this->assertContains( self::$parsely_html, $output );
 	}
 
