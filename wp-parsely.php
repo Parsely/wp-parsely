@@ -150,7 +150,6 @@ class Parsely {
 			$field_args
 		);
 
-
 		// Optional Settings
 		add_settings_section( 'optional_settings', 'Optional Settings',
 			array( $this, 'print_optional_settings' ),
@@ -258,7 +257,6 @@ class Parsely {
 				'requires_recrawl' => true,
 			)
 		);
-
 
 		// Track logged-in users
 		$h = 'By default, wp-parsely will track the activity of users that ' .
@@ -377,7 +375,6 @@ class Parsely {
 		}
 		$input['track_post_types'] = $this->validate_option_array( $input['track_post_types'], 'track_post_types' );
 		$input['track_page_types'] = $this->validate_option_array( $input['track_page_types'], 'track_page_types' );
-
 
 		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
 		// Content ID prefix
@@ -558,7 +555,6 @@ class Parsely {
 				$parsely_page['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
 			}
 
-
 			$author_objects = array();
 			foreach ( $authors as $author ) {
 				$author_tag = array(
@@ -577,7 +573,6 @@ class Parsely {
 				'@type' => 'Organization',
 				'name'  => get_bloginfo( 'name' ),
 			);
-
 
 		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title() );
@@ -688,7 +683,6 @@ class Parsely {
 			$tag .= '</option>';
 		}
 		$tag .= '</select>';
-
 
 		if ( isset( $args['help_text'] ) ) {
 			$tag .= '<div class="help-text">' .
@@ -915,7 +909,6 @@ class Parsely {
 			if ( ! $post_id && $post ) {
 				$post_id = $post->ID;
 			}
-
 
 			if ( $post_id ) {
 				$coauthor_terms = get_the_terms( $post_id, $coauthors_plus->coauthor_taxonomy );
