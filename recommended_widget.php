@@ -19,7 +19,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		// set up variables
 		$options = get_option( 'parsely' );
 		if ( array_key_exists( 'apikey', $options ) && array_key_exists( 'api_secret', $options ) && ! empty( $options['api_secret'] ) ) {
-			$root_url       = 'https://api.parsely.com/v2/related?apikey=' . $options['apikey'] . '&secret=' . $options['api_secret'];
+			$root_url       = 'https://api.parsely.com/v2/related?apikey=' . $options['apikey'];
 			$pub_date_start = '&pub_date_start=' . $instance['published_within'] . 'd';
 			$sort           = '&sort=' . $instance['sort'];
 			$boost          = '&boost=' . $instance['boost'];
@@ -27,7 +27,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			$url            = '&url=' . get_permalink();
 			$full_url       = $root_url . $sort . $boost . $limit;
 
-			$full_url .= $url;
+			if ( ! $instance['personalize_results'] ) {
+				$full_url .= $url;
+			}
 
 			if ( 0 !== (int) $instance['published_within'] ) {
 				$full_url .= $pub_date_start;
@@ -47,25 +49,50 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			}
 			$data = $data->data;
 
-			// TODO: if themes want to handle the raw data themselves, let them go for it
+
 			?>
-			<div class="parsely-recommendation-widget">
-				<ul class="parsely-recommended-widget">
-					<?php foreach ( $data as $index => $post ) { ?>
-						<li class="parsely-recommended-widget-entry" id="parsely-recommended-widget-item-<?php echo esc_attr( $index ); ?>">
-							<?php if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) { ?>
-							<img src="<?php echo esc_attr( $post->thumb_url_medium ); ?>"/>
-							<?php } ?>
-							<div class="parsely-title-author-wrapper">
-								<a href="<?php echo esc_attr( $post->url ); ?>"><?php echo esc_attr( $post->title ); ?></a>
-									<a class="parsely-author" href="<?php echo esc_attr( $post->url ); ?> "><?php echo esc_attr( $post->author ); ?> </a>
-							</div>
+			<script>
+				var parsely_results = [];
+				// regex stolen from Mozilla's docs
+				var uuid = document.cookie.replace(/(?:(?:^|.*;\s*)_parsely_visitor\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+				var full_url = <?php echo esc_attr( $full_url ); ?>;
+
+				if ( JSON.parse(<?php echo esc_attr( $instance['personalize_results'] ); ?> ) && uuid ) {
+					full_url += '&uuid=';
+					full_url += uuid;
+
+				}
+				else {
+					full_url += '&url=';
+					full_url += <?php echo esc_attr( $url ); ?>;
+
+				}
+
+				jQuery.getJSON( full_url, function (data) {
+					parsely_results = data;
+				});
 
 
-						</li>
-					<?php } ?>
-				</ul>
-			</div>
+			</script>
+			// TODO: if themes want to handle the raw data themselves, let them go for it
+//			?>
+<!--			<div class="parsely-recommendation-widget">-->
+<!--				<ul class="parsely-recommended-widget">-->
+<!--					--><?php //foreach ( $data as $index => $post ) { ?>
+<!--						<li class="parsely-recommended-widget-entry" id="parsely-recommended-widget-item---><?php //echo esc_attr( $index ); ?><!--">-->
+<!--							--><?php //if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) { ?>
+<!--							<img src="--><?php //echo esc_attr( $post->thumb_url_medium ); ?><!--"/>-->
+<!--							--><?php //} ?>
+<!--							<div class="parsely-title-author-wrapper">-->
+<!--								<a href="--><?php //echo esc_attr( $post->url ); ?><!--">--><?php //echo esc_attr( $post->title ); ?><!--</a>-->
+<!--									<a class="parsely-author" href="--><?php //echo esc_attr( $post->url ); ?><!-- ">--><?php //echo esc_attr( $post->author ); ?><!-- </a>-->
+<!--							</div>-->
+<!---->
+<!---->
+<!--						</li>-->
+<!--					--><?php //} ?>
+<!--				</ul>-->
+<!--			</div>-->
 			<?php
 		} else {
 			?>
@@ -199,6 +226,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		return $instance;
 	}
 }
+
+
 
 function parsely_recommended_widget_register() {
 	register_widget( 'Parsely_Recommended_Widget' );

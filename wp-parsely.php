@@ -1096,7 +1096,13 @@ class Parsely {
 		$current_user_id = get_current_user_id();
 		return is_user_member_of_blog( $current_user_id, $current_blog_id );
 	}
+
+	function return_personalized_json() {
+
+	}
 }
+
+
 
 
 if ( class_exists( 'Parsely' ) ) {
