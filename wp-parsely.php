@@ -1008,9 +1008,9 @@ class Parsely {
 			$canonical        = $scheme . $parsed_canonical['host'] . $parsed_canonical['path'];
 			return $canonical;
 		}
-		$page_url = $scheme . get_site_url();
+		$page_url = site_url( null, $scheme );
 		if ( 80 !== intval( $_SERVER['SERVER_PORT'] ) || 443 !== intval( $_SERVER['SERVER_PORT'] ) ) {
-			$page_url .= ':' . $_SERVER['SERVER_PORT'];
+			$page_url .= ':' . esc_url( wp_unslash( $_SERVER['SERVER_PORT'] ) );
 		}
 		$page_url .= esc_url( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 		return $page_url;
