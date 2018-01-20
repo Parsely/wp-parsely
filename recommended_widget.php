@@ -67,9 +67,11 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					full_url += <?php echo esc_attr( $url ); ?>;
 
 				}
-
+				outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget');
+				outerList = jQuery('<ul>').addClass('parsely-recommended-widget');
 				jQuery.getJSON( full_url, function (data) {
-					parsely_results = data;
+					jQuery.each(data, function(key, value) {
+					})
 				});
 
 
