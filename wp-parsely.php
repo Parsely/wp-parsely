@@ -98,7 +98,11 @@ class Parsely {
 				wp_enqueue_style( 'wp-parsely-style', plugins_url( 'wp-parsely.css', __FILE__ ), array(), filemtime( get_stylesheet_directory() ) );
 			}
 
+			function ensure_jquery_exists() {
+				wp_enqueue_script( 'jquery' );
+			}
 			add_action( 'wp_enqueue_scripts', 'wp_parsely_style_init' );
+			add_action( 'wp_enqueue_scripts', 'ensure_jquery_exists' );
 		}
 
 	}
