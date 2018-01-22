@@ -32,7 +32,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 				$full_url .= $pub_date_start;
 			}
 			?>
-			<script>
+			<script data-cfasync="false">
 				// adapted from https://stackoverflow.com/questions/7486309/how-to-make-script-execution-wait-until-jquery-is-loaded
 
 				function defer(method) {
