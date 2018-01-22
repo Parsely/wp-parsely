@@ -33,62 +33,79 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			?>
 			<script>
 				var parsely_results = [];
-				// regex stolen from Mozilla's docs
-				uuid = false;
-				var cookieVal = document.cookie.replace(/(?:(?:^|.*;\s*)_parsely_visitor\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-				if ( cookieVal ) {
-					var uuid = JSON.parse(unescape(cookieVal))['id'];
-				}
-				var full_url = '<?php echo $full_url; ?>';
-				var personalized = new Boolean(<?php echo esc_attr( $instance['personalize_results'] ); ?>);
-				if ( personalized && uuid ) {
-					full_url += '&uuid=';
-					full_url += uuid;
+				// for un-cached pages and slow network times, jQuery might not be loaded yet- give it a second
+				function defer(method) {
+                    if (window.jQuery) {
+                        method();
+                    } else {
+                        setTimeout(function () {
+                            defer(method)
+                        }, 50);
+                    }
+                }
 
-				}
-				else {
-					full_url += '&url=';
-					full_url += '<?php echo  esc_url( get_permalink() ); ?>';
+				function widgetLoad() {
+					uuid = false;
+                    // regex stolen from Mozilla's docs
+					var cookieVal = document.cookie.replace(/(?:(?:^|.*;\s*)_parsely_visitor\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+					if ( cookieVal ) {
+						var uuid = JSON.parse(unescape(cookieVal))['id'];
+					}
+					var full_url = '<?php echo $full_url; ?>';
 
-				}
-				var parentDivClass = '<?php echo esc_attr( $this->id ); ?>';
-				var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo('#' + parentDivClass);
-				var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
-				jQuery.getJSON( full_url, function (data) {
-					jQuery.each(data.data, function(key, value) {
-						jQuery('#parent').html('<li class="parsely-recommended-widget-entry" ')
-						var widgetEntry = jQuery('<li>')
-							.addClass('parsely-recommended-widget-entry')
-							.attr('id', 'parsely-recommended-widget-item' + key);
-						<?php
-						if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
-						?>
-						var thumbnailImage = jQuery('<img>').attr('src', value['thumb_url_medium']).appendTo(widgetEntry);
-						<?php
-						}
-						?>
-						var postLink = jQuery('<a>').attr('href', value['url']).text(value['title']);
-						widgetEntry.append(postLink);
 
-						<?php
-						if ( in_array( 'display_author', $instance['display_options'], true ) ) {
+
+					var personalized = new Boolean(<?php echo esc_attr( $instance['personalize_results'] ); ?>);
+					if ( personalized && uuid ) {
+						full_url += '&uuid=';
+						full_url += uuid;
+
+					}
+					else {
+						full_url += '&url=';
+						full_url += '<?php echo  esc_url( get_permalink() ); ?>';
+
+					}
+					var parentDivClass = '<?php echo esc_attr( $this->id ); ?>';
+					var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo('#' + parentDivClass);
+					var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
+					jQuery.getJSON( full_url, function (data) {
+						jQuery.each(data.data, function(key, value) {
+							jQuery('#parent').html('<li class="parsely-recommended-widget-entry" ')
+							var widgetEntry = jQuery('<li>')
+								.addClass('parsely-recommended-widget-entry')
+								.attr('id', 'parsely-recommended-widget-item' + key);
+							<?php
+							if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
 							?>
-							console.log('is this firing');
+							var thumbnailImage = jQuery('<img>').attr('src', value['thumb_url_medium']).appendTo(widgetEntry);
+							<?php
+							}
+							?>
+							var postLink = jQuery('<a>').attr('href', value['url']).text(value['title']);
+							widgetEntry.append(postLink);
+
+							<?php
+							if ( in_array( 'display_author', $instance['display_options'], true ) ) {
+							?>
 							var authorDiv = jQuery('<div>').addClass('parsely-title-author-wrapper');
 							var authorLink = jQuery('<a>').attr('href', value['url']).text(value['author']);
 							authorDiv.append(authorLink);
 							widgetEntry.append(authorDiv);
 							<?php
-						}
+							}
 							?>
 
 
 
-						// set up the rest of entry
-						outerList.append(widgetEntry);
+							// set up the rest of entry
+							outerList.append(widgetEntry);
+						});
+						outerDiv.append(outerList);
 					});
-					outerDiv.append(outerList);
-				});
+				}
+                defer(widgetLoad);
+
 
 
 			</script>
