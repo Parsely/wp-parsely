@@ -41,7 +41,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 				if ( cookieVal ) {
 					var uuid = JSON.parse(unescape(cookieVal))['id'];
 				}
-				var full_url = '<?php echo $full_url; ?>';
+				var full_url = '<?php echo esc_url( $full_url ); ?>';
 
 
 				var personalized = '<?php echo esc_attr( boolval( $instance['personalize_results'] ) ); ?>';
@@ -63,7 +63,6 @@ class Parsely_Recommended_Widget extends WP_Widget {
 				var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
 				jQuery.getJSON( full_url, function (data) {
 					jQuery.each(data.data, function(key, value) {
-						jQuery('#parent').html('<li class="parsely-recommended-widget-entry" ')
 						var widgetEntry = jQuery('<li>')
 							.addClass('parsely-recommended-widget-entry')
 							.attr('id', 'parsely-recommended-widget-item' + key);
