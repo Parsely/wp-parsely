@@ -25,7 +25,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			// Trimming here too to avoid it ruining the query
 			$boost          = '&boost=' . trim( $instance['boost'] );
 			$limit          = '&limit=' . $instance['return_limit'];
-			$url            = '&url=' . 'http://elevatedtoday.com/2016/03/16/7-things-er-doctors-will-not-allow-in-their-house/';
+			$url            = '&url=' . get_permalink();
 			$full_url       = $root_url . $sort . $boost . $limit;
 
 			if ( ! $instance['personalize_results'] ) {
