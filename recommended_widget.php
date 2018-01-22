@@ -25,12 +25,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			// Trimming here too to avoid it ruining the query
 			$boost          = '&boost=' . trim( $instance['boost'] );
 			$limit          = '&limit=' . $instance['return_limit'];
-			$url            = '&url=' . get_permalink();
 			$full_url       = $root_url . $sort . $boost . $limit;
-
-			if ( ! $instance['personalize_results'] ) {
-				$full_url .= $url;
-			}
 
 			if ( 0 !== (int) $instance['published_within'] ) {
 				$full_url .= $pub_date_start;
@@ -39,10 +34,13 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			<script>
 				var parsely_results = [];
 				// regex stolen from Mozilla's docs
+				uuid = false;
 				var cookieVal = document.cookie.replace(/(?:(?:^|.*;\s*)_parsely_visitor\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-				var uuid = JSON.parse(unescape(cookieVal))['id'];
-				var full_url = '<?php echo esc_url( $full_url ); ?>';
-				var personalized = new Boolean(<?php echo esc_url( $instance['personalize_results'] ); ?>);
+				if ( cookieVal ) {
+					var uuid = JSON.parse(unescape(cookieVal))['id'];
+				}
+				var full_url = '<?php echo $full_url; ?>';
+				var personalized = new Boolean(<?php echo esc_attr( $instance['personalize_results'] ); ?>);
 				if ( personalized && uuid ) {
 					full_url += '&uuid=';
 					full_url += uuid;
@@ -50,7 +48,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 				}
 				else {
 					full_url += '&url=';
-					full_url += '<?php echo esc_url( $url ); ?>';
+					full_url += '<?php echo  esc_url( get_permalink() ); ?>';
 
 				}
 				var parentDivClass = '<?php echo esc_attr( $this->id ); ?>';
