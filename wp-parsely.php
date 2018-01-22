@@ -99,7 +99,6 @@ class Parsely {
 			}
 
 			add_action( 'wp_enqueue_scripts', 'wp_parsely_style_init' );
-			wp_enqueue_script( 'jquery' );
 		}
 
 	}
@@ -691,7 +690,7 @@ class Parsely {
 				'</div>';
 		}
 		$tag .= '</div>';
-		echo esc_attr( $tag );
+		echo $tag;
 	}
 
 	public function print_binary_radio_tag( $args ) {
@@ -724,7 +723,7 @@ class Parsely {
 		}
 		$tag .= '</div>';
 
-		echo esc_attr( $tag );
+		echo $tag;
 	}
 
 	public function print_text_tag( $args ) {
@@ -760,7 +759,7 @@ class Parsely {
 				'<p class="description">' . $args['help_text'] . '</p>' .
 				'</div>';
 		}
-		echo esc_attr( $tag );
+		echo $tag;
 	}
 
 	/**
