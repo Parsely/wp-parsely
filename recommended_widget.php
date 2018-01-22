@@ -33,68 +33,81 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			}
 			?>
 			<script>
-				var parsely_results = [];
+				// adapted from https://stackoverflow.com/questions/7486309/how-to-make-script-execution-wait-until-jquery-is-loaded
 
-				uuid = false;
-				// regex stolen from Mozilla's docs
-				var cookieVal = document.cookie.replace(/(?:(?:^|.*;\s*)_parsely_visitor\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-				if ( cookieVal ) {
-					var uuid = JSON.parse(unescape(cookieVal))['id'];
+				function defer(method) {
+					if (window.jQuery) {
+						method();
+					} else {
+						setTimeout(function() { defer(method) }, 50);
+					}
 				}
-				var full_url = '<?php echo esc_url( $full_url ); ?>';
+
+				function widgetLoad() {
+					var parsely_results = [];
+
+					uuid = false;
+					// regex stolen from Mozilla's docs
+					var cookieVal = document.cookie.replace(/(?:(?:^|.*;\s*)_parsely_visitor\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+					if ( cookieVal ) {
+						var uuid = JSON.parse(unescape(cookieVal))['id'];
+					}
+					var full_url = '<?php echo esc_url( $full_url ); ?>';
 
 
-				var personalized = '<?php echo esc_attr( boolval( $instance['personalize_results'] ) ); ?>';
-				if ( personalized && uuid ) {
-					full_url += '&uuid=';
-					full_url += uuid;
+					var personalized = '<?php echo esc_attr( boolval( $instance['personalize_results'] ) ); ?>';
+					if ( personalized && uuid ) {
+						full_url += '&uuid=';
+						full_url += uuid;
 
-				}
-				else {
-					full_url += '&url=';
-					full_url += '<?php echo  esc_url( get_permalink() ); ?>';
+					}
+					else {
+						full_url += '&url=';
+						full_url += '<?php echo  esc_url( get_permalink() ); ?>';
 
-				}
-				var parentDiv = jQuery.find('#<?php echo esc_attr( $this->id ); ?>');
-				if (!parentDiv) {
-					parentDiv = jQuery.find('.Parsely_Recommended_Widget');
-				}
-				var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
-				var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
-				jQuery.getJSON( full_url, function (data) {
-					jQuery.each(data.data, function(key, value) {
-						var widgetEntry = jQuery('<li>')
-							.addClass('parsely-recommended-widget-entry')
-							.attr('id', 'parsely-recommended-widget-item' + key);
-						<?php
-						if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
-						?>
-						var thumbnailImage = jQuery('<img>').attr('src', value['thumb_url_medium']).appendTo(widgetEntry);
-						<?php
-						}
-						?>
-						var postLink = jQuery('<a>').attr('href', value['url']).text(value['title']);
-						widgetEntry.append(postLink);
+					}
+					var parentDiv = jQuery.find('#<?php echo esc_attr( $this->id ); ?>');
+					if (!parentDiv) {
+						parentDiv = jQuery.find('.Parsely_Recommended_Widget');
+					}
+					var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
+					var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
+					jQuery.getJSON( full_url, function (data) {
+						jQuery.each(data.data, function(key, value) {
+							var widgetEntry = jQuery('<li>')
+								.addClass('parsely-recommended-widget-entry')
+								.attr('id', 'parsely-recommended-widget-item' + key);
+							<?php
+							if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
+							?>
+							var thumbnailImage = jQuery('<img>').attr('src', value['thumb_url_medium']).appendTo(widgetEntry);
+							<?php
+							}
+							?>
+							var postLink = jQuery('<a>').attr('href', value['url']).text(value['title']);
+							widgetEntry.append(postLink);
 
-						<?php
-						if ( in_array( 'display_author', $instance['display_options'], true ) ) {
-						?>
-						var authorDiv = jQuery('<div>').addClass('parsely-title-author-wrapper');
-						var authorLink = jQuery('<a>').attr('href', value['url']).text(value['author']);
-						authorDiv.append(authorLink);
-						widgetEntry.append(authorDiv);
-						<?php
-						}
-						?>
+							<?php
+							if ( in_array( 'display_author', $instance['display_options'], true ) ) {
+							?>
+							var authorDiv = jQuery('<div>').addClass('parsely-title-author-wrapper');
+							var authorLink = jQuery('<a>').attr('href', value['url']).text(value['author']);
+							authorDiv.append(authorLink);
+							widgetEntry.append(authorDiv);
+							<?php
+							}
+							?>
 
 
 
-						// set up the rest of entry
-						outerList.append(widgetEntry);
+							// set up the rest of entry
+							outerList.append(widgetEntry);
+						});
+						outerDiv.append(outerList);
 					});
-					outerDiv.append(outerList);
-				});
 
+				}
+				defer(widgetLoad);
 
 
 			</script>
