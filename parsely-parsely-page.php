@@ -15,27 +15,27 @@ if ( 'json-ld' == $parsely_options['meta_type'] ) {
 else {
 		$post_type = 'NewsArticle' == $parsely_page['@type'] ? 'post' : 'sectionpage';
 	?>
-		<meta name="parsely-title" content=<?php echo json_encode( $parsely_page['headline'] ); ?> />
-		<meta name="parsely-link" content=<?php echo json_encode( $parsely_page['url'] ); ?> />
-		<meta name="parsely-type" content=<?php echo json_encode( $post_type ); ?> />
-		<meta name="parsely-image-url" content=<?php echo json_encode( $parsely_page['thumbnailUrl'] ); ?> />
-		<meta name="parsely-pub-date" content=<?php echo json_encode( $parsely_page['datePublished'] ); ?> />
-		<meta name="parsely-section" content=<?php echo json_encode( $parsely_page['articleSection'] ); ?> />
+		<meta name="parsely-title" content=<?php echo json_encode( $parsely_page['headline'] ); ?>/>
+		<meta name="parsely-link" content=<?php echo json_encode( $parsely_page['url'] ); ?>/>
+		<meta name="parsely-type" content=<?php echo json_encode( $post_type ); ?>/>
+		<meta name="parsely-image-url" content=<?php echo json_encode( $parsely_page['thumbnailUrl'] ); ?>/>
+		<meta name="parsely-pub-date" content=<?php echo json_encode( $parsely_page['datePublished'] ); ?>/>
+		<meta name="parsely-section" content=<?php echo json_encode( $parsely_page['articleSection'] ); ?>/>
 	<?php
 	foreach ( $parsely_page['author'] as $author ) {
 	?>
-	<meta name="parsely-author" content=<?php echo json_encode( $author['name'] ); ?> />
+	<meta name="parsely-author" content=<?php echo json_encode( $author['name'] ); ?>/>
 		<?php
 	}
 	?>
-<meta name="parsely-tags" content=<?php echo json_encode( $parsely_page['keywords'] ); ?> />
+<meta name="parsely-tags" content="<?php echo json_encode( $parsely_page['keywords'] ); ?>"/>
 
 	<?php
 
 }
 if ( isset( $parsely_page['custom_metadata'] ) ) :
 	?>
-		<meta name='parsely-metadata' content='<?php echo json_encode( $parsely_page['custom_metadata'] ); ?>'>
+		<meta name='parsely-metadata' content='<?php echo json_encode( $parsely_page['custom_metadata'] ); ?>'/>
 	<?php endif; ?>
 <?php else : ?>
 	<!-- parsleyPage is not defined / has no attributes.  What kind of page are you loading? -->
