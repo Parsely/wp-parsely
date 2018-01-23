@@ -1032,9 +1032,10 @@ class Parsely {
 	}
 
 	public function insert_parsely_tracking_fbia( &$registry ) {
-		$options = $this->get_options();
+		$options      = $this->get_options();
 		$display_name = 'Parsely Analytics';
-		$identifier = 'parsely-analytics-for-wordpress';
+		$identifier   = 'parsely-analytics-for-wordpress';
+
 		$embed_code = '<script>
 			PARSELY = {
 				autotrack: false,
@@ -1063,7 +1064,7 @@ class Parsely {
 		<!-- END Parse.ly Include: Standard -->';
 
 		$registry[ $identifier ] = array(
-			'name' => $display_name,
+			'name'    => $display_name,
 			'payload' => $embed_code,
 		);
 
@@ -1082,8 +1083,8 @@ class Parsely {
 		}
 
 		$analytics['parsely'] = array(
-			'type' => 'parsely',
-			'attributes' => array(),
+			'type'        => 'parsely',
+			'attributes'  => array(),
 			'config_data' => array(
 				'vars' => array(
 					'apikey' => $options['apikey'],

@@ -53,10 +53,10 @@ class Parsely_Recommended_Widget extends WP_Widget {
 						var uuid = JSON.parse(unescape(cookieVal))['id'];
 					}
 
-					var full_url = '<?php echo $full_url; ?>';
+					var full_url = '<?php echo esc_js( $full_url ); ?>';
 
 
-					var personalized = '<?php echo esc_attr( boolval( $instance['personalize_results'] ) ); ?>';
+					var personalized = '<?php echo esc_js( boolval( $instance['personalize_results'] ) ); ?>';
 					if ( personalized && uuid ) {
 						full_url += '&uuid=';
 						full_url += uuid;
@@ -64,7 +64,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					}
 					else {
 						full_url += '&url=';
-						full_url += '<?php echo get_permalink(); ?>';
+						full_url += '<?php echo esc_js( get_permalink() ); ?>';
 
 					}
 					var parentDiv = jQuery.find('#<?php echo esc_attr( $this->id ); ?>');
