@@ -2,7 +2,7 @@
 <meta name='wp-parsely_version' id='wp-parsely_version' content='<?php echo esc_html( Parsely::VERSION ); ?>'/>
 <?php if ( ! empty( $parsely_page ) && isset( $parsely_page['headline'] ) ) : ?>
 <?php
-if ( 'json-ld' == $parsely_options['meta_type'] ) {
+if ( 'json_ld' == $parsely_options['meta_type'] ) {
 ?>
 	<script type="application/ld+json">
 	<?php echo json_encode( $parsely_page ); ?>

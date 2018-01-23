@@ -57,6 +57,7 @@ class Parsely {
 		'track_post_types'          => array( 'post' ),
 		'track_page_types'          => array( 'page' ),
 		'disable_javascript'        => false,
+		'meta_type'                 => 'json_ld',
 	);
 
 	private $implementation_opts = array(
@@ -175,6 +176,25 @@ class Parsely {
 			Parsely::MENU_SLUG, 'optional_settings',
 			$field_args
 		);
+
+		$h = 'Choose the metadata format for our crawlers to access .
+		(<a href="https://www.parse.ly/help/integration/jsonld/">https://www.parse.ly/help/integration/jsonld/</a> ' .
+			'Most publishers are fine with JSON-LD, but if you prefer to use our proprietary metadata format <br>' .
+			'then you can do so here.';
+		add_settings_field( 'meta_type',
+			'Metadata Format  <div class="help-icons"></div>',
+			array( $this, 'print_select_tag' ),
+			Parsely::MENU_SLUG, 'optional_settings',
+			array(
+				'option_key'       => 'meta_type',
+				'help_text'        => $h,
+				// filter Wordpress taxonomies under the hood that should not appear in dropdown
+				'select_options'   => array( 'json_ld' => 'json_ld', 'repeated_metas' => 'repeated_metas' ),
+				'requires_recrawl' => true,
+				'multiple'         => false,
+			)
+		);
+
 		// Content ID Prefix
 		$h = 'If you use more than one content management system (e.g. ' .
 			'WordPress and Drupal), you may end up with duplicate content ' .
@@ -648,11 +668,15 @@ class Parsely {
 		$options        = $this->get_options();
 		$name           = $args['option_key'];
 		$select_options = $args['select_options'];
-		$multiple       = isset( $args['multiple'] );
-		$selected       = isset( $options[ $name ] ) ? $options[ $name ] : null;
-		$optional_args  = isset( $args['optional_args'] ) ? $args['optional_args'] : array();
-		$id             = esc_attr( $name );
-		$name           = Parsely::OPTIONS_KEY . "[$id]";
+		if ( isset( $args['multiple'] ) ) {
+			$multiple = $args['multiple'];
+		} else {
+			$multiple = false;
+		}
+		$selected      = isset( $options[ $name ] ) ? $options[ $name ] : null;
+		$optional_args = isset( $args['optional_args'] ) ? $args['optional_args'] : array();
+		$id            = esc_attr( $name );
+		$name          = Parsely::OPTIONS_KEY . "[$id]";
 
 		$tag = '<div class="parsely-form-controls"';
 		if ( isset( $args['help_text'] ) ) {
