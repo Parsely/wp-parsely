@@ -28,7 +28,7 @@ else {
 		<?php
 	}
 	?>
-<meta name="parsely-tags" content="<?php echo json_encode( $parsely_page['keywords'] ); ?>"/>
+<meta name="parsely-tags" content=<?php echo json_encode( implode( $parsely_page['keywords'] ) ); ?>/>
 
 	<?php
 
