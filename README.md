@@ -89,11 +89,16 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 
 ## Changelog ##
 
+### 1.12 ###
+* Adds ability to use repeated meta tags instead of ld+json tags for metadata
+* Code cleanup to conform to WordPress VIP standards
+* Minor bugfixes
+
 ### 1.11 ###
-* adds ability to use Parsely API with widget
+* Adds ability to use Parsely API with widget
 * Adds ability to track or not track custom page and post types
-* adds ability to disable Javascript tracking
-* minor bugfixes
+* Adds ability to disable Javascript tracking
+* Minor bugfixes
 
 ### 1.10 ###
 * Adds ability to filter final JSON-LD output
