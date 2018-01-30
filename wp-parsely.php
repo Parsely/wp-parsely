@@ -601,38 +601,22 @@ class Parsely {
 		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title() );
 			$parsely_page['url']      = $this->get_current_url( 'post' );
-		} elseif ( is_author() ) {
-			// TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions
-			$author                   = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
-			$parsely_page['url']      = $current_url;
-		} elseif ( is_category() ) {
-			$category                 = get_the_category();
-			$category                 = $category[0];
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( $category->name );
-			$parsely_page['url']      = $current_url;
-		} elseif ( is_date() ) {
-			if ( is_year() ) {
-				$parsely_page['headline'] = 'Yearly Archive - ' . get_the_time( 'Y' );
-			} elseif ( is_month() ) {
-				$parsely_page['headline'] = 'Monthly Archive - ' . get_the_time( 'F, Y' );
-			} elseif ( is_day() ) {
-				$parsely_page['headline'] = 'Daily Archive - ' . get_the_time( 'F jS, Y' );
-			} elseif ( is_time() ) {
-				$parsely_page['headline'] = 'Hourly, Minutely, or Secondly Archive - ' . get_the_time( 'F jS g:i:s A' );
-			}
-			$parsely_page['url'] = $current_url;
-		} elseif ( is_tag() ) {
-			$tag = single_tag_title( '', false );
-			if ( empty( $tag ) ) {
-				$tag = single_term_title( '', false );
-			}
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Tagged - ' . $tag );
-			$parsely_page['url']      = $current_url;
-		} elseif ( is_front_page() ) {
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
-			$parsely_page['url']      = home_url();
 		}
+		if ( is_front_page() ) {
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
+			$parsely_page['url']      = get_home_url();
+			$parsely_page['@type']    = 'WebPage';
+		}
+		if ( is_archive() ) {
+			$parsely_page['@type'] = 'WebPage';
+			$parsely_page['url']   = $this->get_current_url();
+			if ( is_author() ) {
+				$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
+			} else {
+				$parsely_page['headline'] = get_the_archive_title();
+			}
+		}
+
 		$parsely_page = apply_filters( 'after_set_parsely_page', $parsely_page, $post, $parsely_options );
 		include( 'parsely-parsely-page.php' );
 		return $parsely_page;
@@ -1037,10 +1021,12 @@ class Parsely {
 			return $canonical;
 		}
 		$page_url = site_url( null, $scheme );
-		if ( 80 !== intval( $_SERVER['SERVER_PORT'] ) || 443 !== intval( $_SERVER['SERVER_PORT'] ) ) {
-			$page_url .= ':' . esc_url( wp_unslash( $_SERVER['SERVER_PORT'] ) );
+
+		$port_number = intval( $_SERVER['SERVER_PORT'] );
+		if ( 80 !== $port_number && 443 !== $port_number ) {
+			$page_url .= ':' . $port_number;
 		}
-		$page_url .= esc_url( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+		$page_url .= esc_html( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 		return $page_url;
 	}
 
