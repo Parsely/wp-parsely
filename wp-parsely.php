@@ -189,7 +189,10 @@ class Parsely {
 				'option_key'       => 'meta_type',
 				'help_text'        => $h,
 				// filter Wordpress taxonomies under the hood that should not appear in dropdown
-				'select_options'   => array( 'json_ld' => 'json_ld', 'repeated_metas' => 'repeated_metas' ),
+				'select_options'   => array(
+					'json_ld'        => 'json_ld',
+					'repeated_metas' => 'repeated_metas',
+				),
 				'requires_recrawl' => true,
 				'multiple'         => false,
 			)
