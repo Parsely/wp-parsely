@@ -567,11 +567,13 @@ class Parsely {
 			);
 			$parsely_page['headline']         = $this->get_clean_parsely_page_value( get_the_title() );
 			$parsely_page['url']              = $this->get_current_url( 'post' );
-			$parsely_page['thumbnailUrl']     = $image_url;
-			$parsely_page['image']            = array(
-				'@type' => 'ImageObject',
-				'url'   => $image_url,
-			);
+			if ( ! empty( $image_url ) ) {
+				$parsely_page['thumbnailUrl']     = $image_url;
+				$parsely_page['image']            = array(
+					'@type' => 'ImageObject',
+					'url'   => $image_url,
+				);
+			}
 			$parsely_page['dateCreated']      = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
 			$parsely_page['datePublished']    = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
 
