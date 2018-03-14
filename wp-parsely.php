@@ -497,8 +497,12 @@ class Parsely {
 	}
 
 	public function print_dynamic_tracking_note() {
-		$note = "This plugin does not currently support dynamic tracking ( the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href='http://www.parsely.com/help/integration/basic/'>the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href='https://www.parsely.com/help/integration/dynamic/'>the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href='support@parsely.com'>support@parsely.com</a> ) for additional assistance.";
-		echo esc_html( $note );
+		printf(
+			'This plugin does not currently support dynamic tracking ( the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href="%s">the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href="%s">the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href="%s">support@parsely.com</a> ) for additional assistance.',
+				esc_url( 'http://www.parsely.com/help/integration/basic/' ),
+				esc_url( 'https://www.parsely.com/help/integration/dynamic/' ),
+				esc_url( 'mailto:support@parsely.com' )
+		);
 	}
 
 	/**
