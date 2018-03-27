@@ -620,7 +620,8 @@ class Parsely {
 			$parsely_page['@type'] = 'WebPage';
 			$parsely_page['url']   = $this->get_current_url();
 			if ( is_author() ) {
-				$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
+				$author = get_user_by( 'slug', get_query_var( 'author_name' ) );
+				$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->display_name );
 			} else {
 				$parsely_page['headline'] = get_the_archive_title();
 			}
