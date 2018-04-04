@@ -227,14 +227,16 @@ class Parsely {
 			Parsely::MENU_SLUG
 		);
 
-		$h = 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API.</a>
+		$h      = 'Your API secret is your secret code to %s%s%saccess our API.%s
 			It can be found at dash.parsely.com/yoursitedomain/settings/api
 		 ( replace yoursitedown with your domain name, e.g. `mydomain.com` ) If you haven\'t purchased access to the API, and would
 		  like to do so, email your account manager or support@parsely.com!';
+		$h_link = 'https://www.parse.ly/help/api/analytics/';
 
 		$field_args = array(
 			'option_key' => 'api_secret',
 			'help_text'  => $h,
+			'help_link'  => $h_link,
 		);
 		add_settings_field(
 			'api_secret',
@@ -244,10 +246,11 @@ class Parsely {
 			$field_args
 		);
 
-		$h = 'Choose the metadata format for our crawlers to access .
-		(<a href="https://www.parse.ly/help/integration/jsonld/">https://www.parse.ly/help/integration/jsonld/</a> ' .
-			'Most publishers are fine with JSON-LD, but if you prefer to use our proprietary metadata format <br>' .
-			'then you can do so here.';
+		$h      = 'Choose the metadata format for our crawlers to access. ' .
+			'Most publishers are fine with JSON-LD ( %s%s%shttps://www.parse.ly/help/integration/jsonld/%s ), ' .
+			'but if you prefer to use our proprietary metadata format then you can do so here.';
+		$h_link = 'https://www.parse.ly/help/integration/jsonld/';
+
 		add_settings_field(
 			'meta_type',
 			'Metadata Format  <div class="help-icons"></div>',
@@ -256,6 +259,7 @@ class Parsely {
 			array(
 				'option_key'       => 'meta_type',
 				'help_text'        => $h,
+				'help_link'        => $h_link,
 				// filter WordPress taxonomies under the hood that should not appear in dropdown.
 				'select_options'   => array(
 					'json_ld'        => 'json_ld',
@@ -326,7 +330,7 @@ class Parsely {
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
 		$h = 'By default, the section value in your Parse.ly dashboard maps to a post\'s category. ' .
 			'You can optionally choose a custom taxonomy, if you\'ve created one, to ' .
-			'populate the section value instead. <br>';
+			'populate the section value instead. ';
 		add_settings_field(
 			'custom_taxonomy_section',
 			'Use Custom Taxonomy for Section  <div class="help-icons"></div>',
@@ -409,7 +413,7 @@ class Parsely {
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
 		$h = 'By default, Parsely only tracks the default post type as a post page. ' .
-			'If you want to track custom post types, select them here!<br>';
+			'If you want to track custom post types, select them here!';
 		add_settings_field(
 			'track_post_types',
 			'Post Types To Track  <div class="help-icons"></div>',
@@ -427,7 +431,7 @@ class Parsely {
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
 		$h = 'By default, Parsely only tracks the default page type as a non-post page. ' .
-			'If you want to track custom post types as non-post pages, select them here!<br>';
+			'If you want to track custom post types as non-post pages, select them here!';
 		add_settings_field(
 			'track_page_types',
 			'Page Types To Track  <div class="help-icons"></div>',
@@ -849,7 +853,13 @@ class Parsely {
 		echo '</select>';
 
 		if ( isset( $args['help_text'] ) ) {
-			echo '<div class="help-text"> <p class="description">' . $args['help_text'] . '</p></div>';
+			if ( isset( $args['help_link'] ) ) {
+				echo '<div class="help-text"> <p class="description">' .
+				sprintf( esc_html( $args['help_text'] ), '<a href="', esc_url( $args['help_link'] ), '">', '</a>' ) .
+				'</p></div>';
+			} else {
+				echo '<div class="help-text"> <p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
+			}
 		}
 		echo '</div>';
 	}
@@ -880,7 +890,7 @@ class Parsely {
 		echo sprintf( " /> <label for='%s_false'>No</label>", esc_attr( $id ) );
 
 		if ( isset( $args['help_text'] ) ) {
-			echo '<div class="help-text"><p class="description">' . $args['help_text'] . '</p></div>';
+			echo '<div class="help-text"><p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
 		}
 		echo '</div>';
 
@@ -917,11 +927,20 @@ class Parsely {
 		echo ' />';
 
 		if ( isset( $args['help_text'] ) ) {
-			echo ' <div class="help-text" id="' .
-				esc_attr( $args['option_key'] ) .
-				'_help_text"><p class="description">' .
-				$args['help_text'] . '</p>' .
-				'</div>';
+			if ( isset( $args['help_link'] ) ) {
+				echo ' <div class="help-text" id="' .
+					esc_attr( $args['option_key'] ) .
+					'_help_text"><p class="description">' .
+					sprintf( esc_html( $args['help_text'] ), '<a href="', esc_url( $args['help_link'] ), '">', '</a>' ) .
+					'</p>' .
+					'</div>';
+			} else {
+				echo ' <div class="help-text" id="' .
+					esc_attr( $args['option_key'] ) .
+					'_help_text"><p class="description">' .
+					esc_html( $args['help_text'] ) . '</p>' .
+					'</div>';
+			}
 		}
 	}
 
