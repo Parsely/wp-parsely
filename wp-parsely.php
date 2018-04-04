@@ -849,7 +849,7 @@ class Parsely {
 		echo '</select>';
 
 		if ( isset( $args['help_text'] ) ) {
-			echo '<div class="help-text"> <p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
+			echo '<div class="help-text"> <p class="description">' . $args['help_text'] . '</p></div>';
 		}
 		echo '</div>';
 	}
@@ -880,7 +880,7 @@ class Parsely {
 		echo sprintf( " /> <label for='%s_false'>No</label>", esc_attr( $id ) );
 
 		if ( isset( $args['help_text'] ) ) {
-			echo '<div class="help-text"><p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
+			echo '<div class="help-text"><p class="description">' . $args['help_text'] . '</p></div>';
 		}
 		echo '</div>';
 
@@ -920,7 +920,7 @@ class Parsely {
 			echo ' <div class="help-text" id="' .
 				esc_attr( $args['option_key'] ) .
 				'_help_text"><p class="description">' .
-				esc_html( $args['help_text'] ) . '</p>' .
+				$args['help_text'] . '</p>' .
 				'</div>';
 		}
 	}
