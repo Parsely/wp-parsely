@@ -1,67 +1,67 @@
 .parsely-recommended-widget,
 .parsely-recommended-widget * {
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .parsely-recommended-widget {
-    display: block;
-    width: 100%;
+	display: block;
+	width: 100%;
 }
 
 .parsely-recommendation-widget li img {
-    float: left;
-    margin-right: 15px;
+	float: left;
+	margin-right: 15px;
 }
 
 .parsely-recommendation-widget li a {
-    padding: 0;
+	padding: 0;
 }
 
-parsely-recommendation-widget li 
+parsely-recommendation-widget li
 {
-    
+
 }
 
 .parsely-recommendation-widget li:after {
-    content: "";
-    display: table;
-    clear: both;
+	content: "";
+	display: table;
+	clear: both;
 }
 
 .parsely-author {
-    display: block;
-    margin-top: 5px;
+	display: block;
+	margin-top: 5px;
 }
 
 
 @supports(display: grid){
 
-    .parsely-recommended-widget {
-        display: grid;
-        grid-template-rows: auto;
-    }
+	.parsely-recommended-widget {
+		display: grid;
+		grid-template-rows: auto;
+	}
 
-    .parsely-recommended-widget .block-title {
-        grid-column: 1 / 3;
-    }
+	.parsely-recommended-widget .block-title {
+		grid-column: 1 / 3;
+	}
 
-    .parsely-recommendation-widget {
-        grid-column: 1 / 3;
-    }
+	.parsely-recommendation-widget {
+		grid-column: 1 / 3;
+	}
 
-    .parsely-recommendation-widget li {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        grid-column-gap: 15px;
-        margin-bottom: 15px;
-    }
+	.parsely-recommendation-widget li {
+		display: grid;
+		grid-template-columns: 1fr 2fr;
+		grid-column-gap: 15px;
+		margin-bottom: 15px;
+	}
 
-    .parsely-recommendation-widget li img {
-        grid-column: 1 / 2;
-        float: none;
-    }
+	.parsely-recommendation-widget li img {
+		grid-column: 1 / 2;
+		float: none;
+	}
 
-    .parsely-recommendation-widget .parsely-title-author-wrapper {
-        grid-column: 2 / 3;
-    }
+	.parsely-recommendation-widget .parsely-title-author-wrapper {
+		grid-column: 2 / 3;
+	}
 }
