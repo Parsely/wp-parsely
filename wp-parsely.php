@@ -1230,11 +1230,15 @@ class Parsely {
 		}
 		$page_url = site_url( null, $scheme );
 
-		$port_number = intval( $_SERVER['SERVER_PORT'] );
+		if ( isset( $_SERVER['SERVER_PORT'] ) ) { // Input var okay.
+			$port_number = intval( $_SERVER['SERVER_PORT'] ); // Input var okay.
+		}
 		if ( 80 !== $port_number && 443 !== $port_number ) {
 			$page_url .= ':' . $port_number;
 		}
-		$page_url .= esc_html( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+		if ( isset( $_SERVER['REQUEST_URI'] ) ) { // Input var okay.
+			$page_url .= sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ); // Input var okay.
+		}
 		return $page_url;
 	}
 
