@@ -47,7 +47,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
 		$instance['display_options'] = ! empty( $instance['display_options'] ) ? $instance['display_options'] : array();
-		echo esc_html( $args['before_widget'] . $args['before_title'] . $title . $args['after_title'] );
+		$allowed_tags                = wp_kses_allowed_html( 'post' );
+		$title_html                  = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
+		echo wp_kses( $title_html, $allowed_tags );
 
 		// Set up the variables.
 		$options = get_option( 'parsely' );
@@ -158,7 +160,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 
 		<?php
-		echo esc_html( $args['after_widget'] );
+		echo wp_kses( $args['after_widget'], $allowed_tags );
 	}
 
 
