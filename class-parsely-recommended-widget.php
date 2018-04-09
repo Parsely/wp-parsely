@@ -107,6 +107,13 @@ class Parsely_Recommended_Widget extends WP_Widget {
 						parentDiv = jQuery.find('.Parsely_Recommended_Widget');
 					}
 					var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
+					<?php
+					if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
+					?>
+					outerDiv.addClass('display-thumbnail');
+					<?php
+					}
+					?>
 					var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
 					jQuery.getJSON( full_url, function (data) {
 						jQuery.each(data.data, function(key, value) {

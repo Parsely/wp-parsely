@@ -17,11 +17,6 @@
 	padding: 0;
 }
 
-parsely-recommendation-widget li
-{
-
-}
-
 .parsely-recommendation-widget li:after {
 	content: "";
 	display: table;
@@ -41,24 +36,24 @@ parsely-recommendation-widget li
 		grid-template-rows: auto;
 	}
 
-	.parsely-recommended-widget .block-title {
-		grid-column: 1 / 3;
-	}
-
 	.parsely-recommendation-widget {
 		grid-column: 1 / 3;
 	}
 
 	.parsely-recommendation-widget li {
+		margin-bottom: 15px;
+	}
+
+	.parsely-recommendation-widget.display-thumbnail li {
 		display: grid;
 		grid-template-columns: 1fr 2fr;
 		grid-column-gap: 15px;
-		margin-bottom: 15px;
 	}
 
 	.parsely-recommendation-widget li img {
 		grid-column: 1 / 2;
 		float: none;
+		margin-right: 0;
 	}
 
 	.parsely-recommendation-widget .parsely-title-author-wrapper {
