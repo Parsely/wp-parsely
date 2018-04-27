@@ -1,6 +1,31 @@
 <?php
+/**
+ * Recommended Widget file
+ *
+ * This provides a widget to put on a page, will have parsely recommended articles
+ *
+ * @category   Components
+ * @package    WordPress
+ * @subpackage Parse.ly
+ */
 
+?>
+
+<?php
+/**
+ * This is the class for the recommended widget
+ *
+ * @category   Class
+ * @package    Parsely_Recommended_Widget
+ */
 class Parsely_Recommended_Widget extends WP_Widget {
+	/**
+	 * This is the constructor function
+	 *
+	 * @category   Function
+	 * @package    WordPress
+	 * @subpackage Parse.ly
+	 */
 	public function __construct() {
 		$widget_options = array(
 			'classname'   => 'Parsely_Recommended_Widget',
@@ -9,24 +34,34 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		parent::__construct( 'Parsely_Recommended_Widget', 'Parsely Recommended Widget', $widget_options );
 	}
 
+	/**
+	 * This is the widget function
+	 *
+	 * @category   Function
+	 * @package    WordPress
+	 * @subpackage Parse.ly
+	 * @param array $args Widget Arguments.
+	 * @param array $instance Values saved to the db.
+	 */
 	public function widget( $args, $instance ) {
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
 		$instance['display_options'] = ! empty( $instance['display_options'] ) ? $instance['display_options'] : array();
-		echo $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
+		$allowed_tags                = wp_kses_allowed_html( 'post' );
+		$title_html                  = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
+		echo wp_kses( $title_html, $allowed_tags );
 
-		// set up variables
+		// Set up the variables.
 		$options = get_option( 'parsely' );
 		if ( array_key_exists( 'apikey', $options ) && array_key_exists( 'api_secret', $options ) && ! empty( $options['api_secret'] ) ) {
 			$root_url       = 'https://api.parsely.com/v2/related?apikey=' . $options['apikey'];
 			$pub_date_start = '&pub_date_start=' . $instance['published_within'] . 'd';
 			$sort           = '&sort=' . trim( $instance['sort'] );
-			// No idea why boost is coming back with a space prepended: I've trimmed it everywhere I possibly could
-			// Trimming here too to avoid it ruining the query
-			$boost          = '&boost=' . trim( $instance['boost'] );
-			$limit          = '&limit=' . $instance['return_limit'];
-			$full_url       = $root_url . $sort . $boost . $limit;
-
+			// No idea why boost is coming back with a space prepended: I've trimmed it everywhere I possibly could.
+			// Trimming here too to avoid it ruining the query.
+			$boost    = '&boost=' . trim( $instance['boost'] );
+			$limit    = '&limit=' . $instance['return_limit'];
+			$full_url = $root_url . $sort . $boost . $limit;
 
 			if ( 0 !== (int) $instance['published_within'] ) {
 				$full_url .= $pub_date_start;
@@ -72,6 +107,13 @@ class Parsely_Recommended_Widget extends WP_Widget {
 						parentDiv = jQuery.find('.Parsely_Recommended_Widget');
 					}
 					var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
+					<?php
+					if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
+					?>
+					outerDiv.addClass('display-thumbnail');
+					<?php
+					}
+					?>
 					var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
 					jQuery.getJSON( full_url, function (data) {
 						jQuery.each(data.data, function(key, value) {
@@ -121,16 +163,24 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			<?php
 		}
 
-
 		?>
 
 
 		<?php
-		echo $args['after_widget'];
+		echo wp_kses( $args['after_widget'], $allowed_tags );
 	}
 
+
+	/**
+	 * This is the form function
+	 *
+	 * @category   Function
+	 * @package    WordPress
+	 * @subpackage Parse.ly
+	 * @param array $instance Values saved to the db.
+	 */
 	public function form( $instance ) {
-		// editable fields: title
+		// editable fields: title.
 		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
 		$return_limit        = ! empty( $instance['return_limit'] ) ? $instance['return_limit'] : 5;
 		$published_within    = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
@@ -233,6 +283,15 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		<?php
 	}
 
+	/**
+	 * This is the update function
+	 *
+	 * @category   Function
+	 * @package    WordPress
+	 * @subpackage Parse.ly
+	 * @param array $new_instance The new values for the db.
+	 * @param array $old_instance Values saved to the db.
+	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance                        = $old_instance;
 		$instance['title']               = trim( strip_tags( $new_instance['title'] ) );
@@ -247,7 +306,13 @@ class Parsely_Recommended_Widget extends WP_Widget {
 }
 
 
-
+/**
+ * This is the registration function
+ *
+ * @category   Function
+ * @package    WordPress
+ * @subpackage Parse.ly
+ */
 function parsely_recommended_widget_register() {
 	register_widget( 'Parsely_Recommended_Widget' );
 }

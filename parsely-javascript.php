@@ -1,6 +1,21 @@
-<?php if ( ! isset( $parsely_options['apikey'] ) || empty( $parsely_options['apikey'] ) ) {
+<?php
+/**
+ * JavaScript file
+ *
+ * Main javascript file for plugin
+ *
+ * @category   Components
+ * @package    WordPress
+ * @subpackage Parse.ly
+ */
+
+?>
+
+<?php
+if ( ! isset( $parsely_options['apikey'] ) || empty( $parsely_options['apikey'] ) ) {
 	return;
-} ?>
+}
+?>
 
 <!-- START Parse.ly Include: Standard -->
 <?php if ( ! empty( $parsely_options['api_secret'] ) ) : ?>
