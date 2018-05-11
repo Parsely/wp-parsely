@@ -603,7 +603,7 @@ class Parsely {
 	 * @param array $links The links to add.
 	 */
 	public function add_plugin_meta_links( $links ) {
-		array_unshift( $links, '<a href="' . $this->get_settings_url() . '">' . __( 'Settings' ) . '</a>' );
+		array_unshift( $links, '<a href="' . esc_url($this->get_settings_url()) . '">' . __( 'Settings' ) . '</a>' );
 		return $links;
 	}
 
@@ -621,7 +621,7 @@ class Parsely {
 				<p>
 					<strong>Parse.ly - Dash plugin is not active.</strong>
 					You need to
-					<a href='<?php echo esc_html( $this->get_settings_url() ); ?>'>
+					<a href='<?php echo esc_url( $this->get_settings_url() ); ?>'>
 						provide your Parse.ly Dash Site ID
 					</a>
 					before things get cooking.

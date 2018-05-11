@@ -22,17 +22,29 @@
 (function($) {
 	$(document).ready(function onDOMReady() {
 		var apikey = $('#apikey').val();
-		var recrawlRequiredMessage = '<strong style="color: red">Important:' +
-			'</strong> changing this value on a site currently tracked with ' +
-			'Parse.ly will require reprocessing of your Parse.ly data. Once ' +
-			'you have changed this value, please contact ' +
-			'<a href="mailto:support@parsely.com?subject=Please reprocess ' +
-			apikey + '">support@parsely.com</a> to kick off reprocessing of ' +
-			'your data.';
+		var recrawlRequiredMessage = $('<p>')
+			.addClass('description');
 
-		$('<p class="description"></p>')
-			.appendTo("div.parsely-form-controls[data-requires-recrawl='true'] .help-text")
-			.html(recrawlRequiredMessage);
+		recrawlRequiredMessage.append('<strong>')
+			.attr('style', 'color:red;')
+			.text('Important:');
+
+		recrawlRequiredMessage
+			.text('changing this value on a site currently tracked with ' +
+			'Parse.ly will require reprocessing of your Parse.ly data. Once ' +
+			'you have changed this value, please contact ' );
+
+		recrawlRequiredMessage.append('<a>')
+			.attr('href', 'mailto:support@parsely.com?subject=Please reprocess ' +
+			apikey)
+			.text('support@parsely.com');
+
+		recrawlRequiredMessage
+			.text(' to kick off reprocessing of ' +
+			'your data.');
+
+		recrawlRequiredMessage
+			.appendTo("div.parsely-form-controls[data-requires-recrawl='true'] .help-text");
 	});
 })(jQuery);
 </script>
