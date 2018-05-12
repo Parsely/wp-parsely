@@ -32,7 +32,8 @@
 			'Parse.ly will require reprocessing of your Parse.ly data. Once ' +
 			'you have changed this value, please contact ' );
 
-		recrawlRequiredMessage.append('<a href="mailto:support@parsely.com?subject=Please reprocess ' + apikey + '">support@parsely.com</a>.');
+		recrawlRequiredMessage.append('<a href="mailto:support@parsely.com?subject=Please reprocess ' + 
+			apikey + '">support@parsely.com</a>.');
 
 		recrawlRequiredMessage
 			.appendTo("div.parsely-form-controls[data-requires-recrawl='true'] .help-text");
