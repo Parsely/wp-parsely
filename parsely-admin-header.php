@@ -25,23 +25,14 @@
 		var recrawlRequiredMessage = $('<p>')
 			.addClass('description');
 
-		recrawlRequiredMessage.append('<strong>')
-			.attr('style', 'color:red;')
-			.text('Important:');
+		recrawlRequiredMessage.append('<strong style="color:red;">Important:</strong>');
 
 		recrawlRequiredMessage
-			.text('changing this value on a site currently tracked with ' +
+			.append(' changing this value on a site currently tracked with ' +
 			'Parse.ly will require reprocessing of your Parse.ly data. Once ' +
 			'you have changed this value, please contact ' );
 
-		recrawlRequiredMessage.append('<a>')
-			.attr('href', 'mailto:support@parsely.com?subject=Please reprocess ' +
-			apikey)
-			.text('support@parsely.com');
-
-		recrawlRequiredMessage
-			.text(' to kick off reprocessing of ' +
-			'your data.');
+		recrawlRequiredMessage.append('<a href="mailto:support@parsely.com?subject=Please reprocess ' + apikey + '">support@parsely.com</a>.');
 
 		recrawlRequiredMessage
 			.appendTo("div.parsely-form-controls[data-requires-recrawl='true'] .help-text");
