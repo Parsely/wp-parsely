@@ -816,7 +816,6 @@ class Parsely {
 			$multiple = false;
 		}
 		$selected      = isset( $options[ $name ] ) ? $options[ $name ] : null;
-		$optional_args = isset( $args['optional_args'] ) ? $args['optional_args'] : array();
 		$id            = esc_attr( $name );
 		$name          = Parsely::OPTIONS_KEY . "[$id]";
 
@@ -832,11 +831,6 @@ class Parsely {
 		} else {
 			echo sprintf( "<select name='%s' id='%s'", esc_attr( $name ), esc_attr( $name ) );
 		}
-
-		foreach ( $optional_args as $key => $val ) {
-			echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
-		}
-		echo '>';
 
 		foreach ( $select_options as $key => $val ) {
 			echo '<option value="' . esc_attr( $key ) . '" ';
