@@ -903,6 +903,7 @@ class Parsely {
 		$id            = esc_attr( $name );
 		$name          = Parsely::OPTIONS_KEY . "[$id]";
 		$value         = esc_attr( $value );
+		$accepted_args = array( 'placeholder' );
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
@@ -913,7 +914,9 @@ class Parsely {
 
 		echo sprintf( "<input type='text' name='%s' id='%s' value='%s'", esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
 		foreach ( $optional_args as $key => $val ) {
-			echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
+			if ( in_array($key, $accepted_args) ) {
+				echo ' ' . $key . '="' . esc_attr( $val ) . '"';
+			}
 		}
 		if ( isset( $args['requires_recrawl'] ) ) {
 			echo ' data-requires-recrawl="true"';
