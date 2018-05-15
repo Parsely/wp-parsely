@@ -600,7 +600,7 @@ class Parsely {
 	 * @param array $links The links to add.
 	 */
 	public function add_plugin_meta_links( $links ) {
-		array_unshift( $links, '<a href="' . $this->get_settings_url() . '">' . __( 'Settings' ) . '</a>' );
+		array_unshift( $links, '<a href="' . esc_url($this->get_settings_url()) . '">' . __( 'Settings' ) . '</a>' );
 		return $links;
 	}
 
@@ -618,7 +618,7 @@ class Parsely {
 				<p>
 					<strong>Parse.ly - Dash plugin is not active.</strong>
 					You need to
-					<a href='<?php echo esc_html( $this->get_settings_url() ); ?>'>
+					<a href='<?php echo esc_url( $this->get_settings_url() ); ?>'>
 						provide your Parse.ly Dash Site ID
 					</a>
 					before things get cooking.
@@ -813,7 +813,6 @@ class Parsely {
 			$multiple = false;
 		}
 		$selected      = isset( $options[ $name ] ) ? $options[ $name ] : null;
-		$optional_args = isset( $args['optional_args'] ) ? $args['optional_args'] : array();
 		$id            = esc_attr( $name );
 		$name          = Parsely::OPTIONS_KEY . "[$id]";
 
@@ -829,11 +828,6 @@ class Parsely {
 		} else {
 			echo sprintf( "<select name='%s' id='%s'", esc_attr( $name ), esc_attr( $name ) );
 		}
-
-		foreach ( $optional_args as $key => $val ) {
-			echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
-		}
-		echo '>';
 
 		foreach ( $select_options as $key => $val ) {
 			echo '<option value="' . esc_attr( $key ) . '" ';
@@ -906,6 +900,7 @@ class Parsely {
 		$id            = esc_attr( $name );
 		$name          = Parsely::OPTIONS_KEY . "[$id]";
 		$value         = esc_attr( $value );
+		$accepted_args = array( 'placeholder' );
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
@@ -916,7 +911,9 @@ class Parsely {
 
 		echo sprintf( "<input type='text' name='%s' id='%s' value='%s'", esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
 		foreach ( $optional_args as $key => $val ) {
-			echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
+			if ( in_array($key, $accepted_args) ) {
+				echo ' ' . $key . '="' . esc_attr( $val ) . '"';
+			}
 		}
 		if ( isset( $args['requires_recrawl'] ) ) {
 			echo ' data-requires-recrawl="true"';
