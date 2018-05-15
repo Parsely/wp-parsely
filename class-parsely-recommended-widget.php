@@ -9,9 +9,6 @@
  * @subpackage Parse.ly
  */
 
-?>
-
-<?php
 /**
  * This is the class for the recommended widget
  *
