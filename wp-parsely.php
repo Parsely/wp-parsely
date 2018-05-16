@@ -829,6 +829,8 @@ class Parsely {
 			echo sprintf( "<select name='%s' id='%s'", esc_attr( $name ), esc_attr( $name ) );
 		}
 
+		echo '>';
+
 		foreach ( $select_options as $key => $val ) {
 			echo '<option value="' . esc_attr( $key ) . '" ';
 
