@@ -473,9 +473,15 @@ PARSELYJS;
 	public function test_amp_integration() {
 		$options   = get_option( 'parsely' );
 		$analytics = array();
+		$filter    = self::$parsely->parsely_add_amp_actions();
 		$output    = self::$parsely->parsely_add_amp_analytics( $analytics );
+		$this->assertNull( $filter );
 		$this->assertTrue( 'parsely' === $output['parsely']['type'] );
 		$this->assertTrue( 'blog.parsely.com' === $output['parsely']['config_data']['vars']['apikey'] );
+		$options['disable_amp'] = true;
+		update_option( 'parsely', $options );
+		$filter    = self::$parsely->parsely_add_amp_actions();
+		$this->assertTrue( '' === $filter );
 	}
 
 	/**
