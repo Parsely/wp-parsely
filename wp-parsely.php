@@ -72,6 +72,7 @@ class Parsely {
 		'track_page_types'          => array( 'page' ),
 		'disable_javascript'        => false,
 		'meta_type'                 => 'json_ld',
+		'logo'						=> '',
 	);
 
 	/**
@@ -265,6 +266,23 @@ class Parsely {
 				'requires_recrawl' => true,
 				'multiple'         => false,
 			)
+		);
+
+		$h = 'If you want to specify the url for your logo, you can do so here.';
+
+		$option_defaults['logo'] = $this->get_logo_default();
+
+		$field_args = array(
+			'option_key' => 'logo',
+			'help_text' => $h,
+		);
+
+		add_settings_field(
+			'logo',
+			'Logo <div class="help-icons"></div>',
+			array( $this, 'print_text_tag' ),
+			Parsely::MENU_SLUG, 'optional_settings',
+			$field_args
 		);
 
 		// Content ID Prefix.
@@ -500,6 +518,11 @@ class Parsely {
 		if ( ! isset( $input['track_page_types'] ) ) {
 			$input['track_page_types'] = array( 'page' );
 		}
+
+		if ( empty( $input['logo'] ) ) {
+			$input['logo'] = $this->get_logo_default();
+		}
+
 		$input['track_post_types'] = $this->validate_option_array( $input['track_post_types'], 'track_post_types' );
 		$input['track_page_types'] = $this->validate_option_array( $input['track_page_types'], 'track_page_types' );
 
@@ -745,6 +768,10 @@ class Parsely {
 			$parsely_page['publisher'] = array(
 				'@type' => 'Organization',
 				'name'  => get_bloginfo( 'name' ),
+				'logo'	=> array(
+					'@type'	=> 'ImageObject',
+					'url'	=> $parsely_options['logo'],
+				),
 			);
 
 		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
@@ -938,6 +965,25 @@ class Parsely {
 					'</div>';
 			}
 		}
+	}
+
+	/**
+	* Returns default logo if one can be found
+	*
+	*/
+	private function get_logo_default() {
+		$custom_logo_id = get_theme_mod( 'custom_logo' );
+		if ( $custom_logo_id ) {
+			$logo_attrs = wp_get_attachment_image_src( $custom_logo_id , 'full' );
+			if ( $logo_attrs ) {
+				return $logo_attrs[0];
+			}
+		}
+
+		// get_site_icon_url returns an empty string if one isn't found,
+		// which is what we want to use as the default anyway
+		$site_icon_url = get_site_icon_url();
+		return $site_icon_url;
 	}
 
 	/**
