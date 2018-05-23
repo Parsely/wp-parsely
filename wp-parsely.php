@@ -71,6 +71,7 @@ class Parsely {
 		'track_post_types'          => array( 'post' ),
 		'track_page_types'          => array( 'page' ),
 		'disable_javascript'        => false,
+		'disable_amp'               => false,
 		'meta_type'                 => 'json_ld',
 		'logo'                      => '',
 	);
@@ -309,7 +310,7 @@ class Parsely {
 		);
 
 		// Disable javascript.
-		$h = 'If you use a separate system for Javascript tracking ( Tealium / Segment / other tag manager solution ) ' .
+		$h = 'If you use a separate system for Javascript tracking ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
 			'you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option ' .
 			'will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving ' .
 			'this option set to "No"!';
@@ -320,6 +321,21 @@ class Parsely {
 			Parsely::MENU_SLUG, 'optional_settings',
 			array(
 				'option_key'       => 'disable_javascript',
+				'help_text'        => $h,
+				'requires_recrawl' => false,
+			)
+		);
+
+		// Disable amp tracking.
+		$h = 'If you use a separate system for Javascript tracking on AMP pages ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
+			'you may want to use that instead of having the plugin load the tracker.';
+		add_settings_field(
+			'disable_amp',
+			'Disable Amp Tracking <div class="help-icons"></div>',
+			array( $this, 'print_binary_radio_tag' ),
+			Parsely::MENU_SLUG, 'optional_settings',
+			array(
+				'option_key'       => 'disable_amp',
 				'help_text'        => $h,
 				'requires_recrawl' => false,
 			)
@@ -588,6 +604,15 @@ class Parsely {
 			);
 		} else {
 			$input['disable_javascript'] = 'true' === $input['disable_javascript'] ? true : false;
+		}
+
+		if ( 'true' !== $input['disable_amp'] && 'false' !== $input['disable_amp'] ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY, 'disable_amp',
+				'Value passed for disable_amp must be either "true" or "false".'
+			);
+		} else {
+			$input['disable_amp'] = 'true' === $input['disable_amp'] ? true : false;
 		}
 
 		return $input;
@@ -1349,6 +1374,12 @@ class Parsely {
 	 * Add amp actions.
 	 */
 	public function parsely_add_amp_actions() {
+		$options = $this->get_options();
+
+		if ( $options['disable_amp'] ) {
+			return '';
+		}
+
 		add_filter( 'amp_post_template_analytics', array( $this, 'parsely_add_amp_analytics' ) );
 	}
 
