@@ -1,5 +1,5 @@
 <?php
-/*
+/**
 Plugin Name: Parse.ly
 Plugin URI: http://www.parsely.com/
 Description: This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
@@ -8,6 +8,8 @@ Version: 1.13.0
 Requires at least: 4.0.0
 Author URI: http://www.parsely.com/
 License: GPL2
+
+@package WordPress
 
 Copyright 2012  Parsely Incorporated
 
@@ -25,7 +27,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 Authors: Mike Sukmanowsky ( mike@parsely.com), Xand Lourenco ( xand@parsely.com ), James O'Toole (james.otoole@parsely.com )
-*/
+ */
 
 /*
 TODO List:
@@ -47,11 +49,11 @@ class Parsely {
 	 * @codeCoverageIgnoreStart
 	 */
 	const VERSION         = '1.13.0';
-	const MENU_SLUG       = 'parsely';             // Defines the page param passed to options-general.php
-	const MENU_TITLE      = 'Parse.ly';            // Text to be used for the menu as seen in Settings sub-menu
-	const MENU_PAGE_TITLE = 'Parse.ly > Settings'; // Text shown in <title></title> when the settings screen is viewed
-	const OPTIONS_KEY     = 'parsely';             // Defines the key used to store options in the WP database
-	const CAPABILITY      = 'manage_options';      // The capability required for the user to administer settings
+	const MENU_SLUG       = 'parsely';             // Defines the page param passed to options-general.php.
+	const MENU_TITLE      = 'Parse.ly';            // Text to be used for the menu as seen in Settings sub-menu.
+	const MENU_PAGE_TITLE = 'Parse.ly > Settings'; // Text shown in <title></title> when the settings screen is viewed.
+	const OPTIONS_KEY     = 'parsely';             // Defines the key used to store options in the WP database.
+	const CAPABILITY      = 'manage_options';      // The capability required for the user to administer settings.
 
 	/**
 	 * Declare some class propeties
@@ -965,8 +967,8 @@ class Parsely {
 
 		echo sprintf( "<input type='text' name='%s' id='%s' value='%s'", esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
 		foreach ( $optional_args as $key => $val ) {
-			if ( in_array( $key, $accepted_args ) ) {
-				echo ' ' . $key . '="' . esc_attr( $val ) . '"';
+			if ( in_array( $key, $accepted_args, true ) ) {
+				echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
 			}
 		}
 		if ( isset( $args['requires_recrawl'] ) ) {
@@ -994,7 +996,6 @@ class Parsely {
 
 	/**
 	 * Returns default logo if one can be found
-	 *
 	 */
 	private function get_logo_default() {
 		$custom_logo_id = get_theme_mod( 'custom_logo' );
@@ -1006,7 +1007,7 @@ class Parsely {
 		}
 
 		// get_site_icon_url returns an empty string if one isn't found,
-		// which is what we want to use as the default anyway
+		// which is what we want to use as the default anyway.
 		$site_icon_url = get_site_icon_url();
 		return $site_icon_url;
 	}
