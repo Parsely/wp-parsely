@@ -1,13 +1,15 @@
 <?php
-/*
+/**
 Plugin Name: Parse.ly
 Plugin URI: http://www.parsely.com/
 Description: This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
 Author: Mike Sukmanowsky ( mike@parsely.com )
-Version: 1.12.5
+Version: 1.13.0
 Requires at least: 4.0.0
 Author URI: http://www.parsely.com/
 License: GPL2
+
+@package WordPress
 
 Copyright 2012  Parsely Incorporated
 
@@ -25,7 +27,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 Authors: Mike Sukmanowsky ( mike@parsely.com), Xand Lourenco ( xand@parsely.com ), James O'Toole (james.otoole@parsely.com )
-*/
+ */
 
 /*
 TODO List:
@@ -46,12 +48,12 @@ class Parsely {
 	 *
 	 * @codeCoverageIgnoreStart
 	 */
-	const VERSION         = '1.12.5';
-	const MENU_SLUG       = 'parsely';             // Defines the page param passed to options-general.php
-	const MENU_TITLE      = 'Parse.ly';            // Text to be used for the menu as seen in Settings sub-menu
-	const MENU_PAGE_TITLE = 'Parse.ly > Settings'; // Text shown in <title></title> when the settings screen is viewed
-	const OPTIONS_KEY     = 'parsely';             // Defines the key used to store options in the WP database
-	const CAPABILITY      = 'manage_options';      // The capability required for the user to administer settings
+	const VERSION         = '1.13.0';
+	const MENU_SLUG       = 'parsely';             // Defines the page param passed to options-general.php.
+	const MENU_TITLE      = 'Parse.ly';            // Text to be used for the menu as seen in Settings sub-menu.
+	const MENU_PAGE_TITLE = 'Parse.ly > Settings'; // Text shown in <title></title> when the settings screen is viewed.
+	const OPTIONS_KEY     = 'parsely';             // Defines the key used to store options in the WP database.
+	const CAPABILITY      = 'manage_options';      // The capability required for the user to administer settings.
 
 	/**
 	 * Declare some class propeties
@@ -71,7 +73,9 @@ class Parsely {
 		'track_post_types'          => array( 'post' ),
 		'track_page_types'          => array( 'page' ),
 		'disable_javascript'        => false,
+		'disable_amp'               => false,
 		'meta_type'                 => 'json_ld',
+		'logo'                      => '',
 	);
 
 	/**
@@ -267,6 +271,23 @@ class Parsely {
 			)
 		);
 
+		$h = 'If you want to specify the url for your logo, you can do so here.';
+
+		$option_defaults['logo'] = $this->get_logo_default();
+
+		$field_args = array(
+			'option_key' => 'logo',
+			'help_text'  => $h,
+		);
+
+		add_settings_field(
+			'logo',
+			'Logo <div class="help-icons"></div>',
+			array( $this, 'print_text_tag' ),
+			Parsely::MENU_SLUG, 'optional_settings',
+			$field_args
+		);
+
 		// Content ID Prefix.
 		$h = 'If you use more than one content management system (e.g. ' .
 			'WordPress and Drupal), you may end up with duplicate content ' .
@@ -291,7 +312,7 @@ class Parsely {
 		);
 
 		// Disable javascript.
-		$h = 'If you use a separate system for Javascript tracking ( Tealium / Segment / other tag manager solution ) ' .
+		$h = 'If you use a separate system for Javascript tracking ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
 			'you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option ' .
 			'will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving ' .
 			'this option set to "No"!';
@@ -302,6 +323,21 @@ class Parsely {
 			Parsely::MENU_SLUG, 'optional_settings',
 			array(
 				'option_key'       => 'disable_javascript',
+				'help_text'        => $h,
+				'requires_recrawl' => false,
+			)
+		);
+
+		// Disable amp tracking.
+		$h = 'If you use a separate system for Javascript tracking on AMP pages ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
+			'you may want to use that instead of having the plugin load the tracker.';
+		add_settings_field(
+			'disable_amp',
+			'Disable Amp Tracking <div class="help-icons"></div>',
+			array( $this, 'print_binary_radio_tag' ),
+			Parsely::MENU_SLUG, 'optional_settings',
+			array(
+				'option_key'       => 'disable_amp',
 				'help_text'        => $h,
 				'requires_recrawl' => false,
 			)
@@ -500,6 +536,11 @@ class Parsely {
 		if ( ! isset( $input['track_page_types'] ) ) {
 			$input['track_page_types'] = array( 'page' );
 		}
+
+		if ( empty( $input['logo'] ) ) {
+			$input['logo'] = $this->get_logo_default();
+		}
+
 		$input['track_post_types'] = $this->validate_option_array( $input['track_post_types'], 'track_post_types' );
 		$input['track_page_types'] = $this->validate_option_array( $input['track_page_types'], 'track_page_types' );
 
@@ -567,6 +608,15 @@ class Parsely {
 			$input['disable_javascript'] = 'true' === $input['disable_javascript'] ? true : false;
 		}
 
+		if ( 'true' !== $input['disable_amp'] && 'false' !== $input['disable_amp'] ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY, 'disable_amp',
+				'Value passed for disable_amp must be either "true" or "false".'
+			);
+		} else {
+			$input['disable_amp'] = 'true' === $input['disable_amp'] ? true : false;
+		}
+
 		return $input;
 	}
 
@@ -600,7 +650,7 @@ class Parsely {
 	 * @param array $links The links to add.
 	 */
 	public function add_plugin_meta_links( $links ) {
-		array_unshift( $links, '<a href="' . esc_url($this->get_settings_url()) . '">' . __( 'Settings' ) . '</a>' );
+		array_unshift( $links, '<a href="' . esc_url( $this->get_settings_url() ) . '">' . __( 'Settings' ) . '</a>' );
 		return $links;
 	}
 
@@ -745,6 +795,10 @@ class Parsely {
 			$parsely_page['publisher'] = array(
 				'@type' => 'Organization',
 				'name'  => get_bloginfo( 'name' ),
+				'logo'  => array(
+					'@type' => 'ImageObject',
+					'url'   => $parsely_options['logo'],
+				),
 			);
 
 		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
@@ -812,9 +866,9 @@ class Parsely {
 		} else {
 			$multiple = false;
 		}
-		$selected      = isset( $options[ $name ] ) ? $options[ $name ] : null;
-		$id            = esc_attr( $name );
-		$name          = Parsely::OPTIONS_KEY . "[$id]";
+		$selected = isset( $options[ $name ] ) ? $options[ $name ] : null;
+		$id       = esc_attr( $name );
+		$name     = Parsely::OPTIONS_KEY . "[$id]";
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
@@ -913,8 +967,8 @@ class Parsely {
 
 		echo sprintf( "<input type='text' name='%s' id='%s' value='%s'", esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
 		foreach ( $optional_args as $key => $val ) {
-			if ( in_array($key, $accepted_args) ) {
-				echo ' ' . $key . '="' . esc_attr( $val ) . '"';
+			if ( in_array( $key, $accepted_args, true ) ) {
+				echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
 			}
 		}
 		if ( isset( $args['requires_recrawl'] ) ) {
@@ -938,6 +992,24 @@ class Parsely {
 					'</div>';
 			}
 		}
+	}
+
+	/**
+	 * Returns default logo if one can be found
+	 */
+	private function get_logo_default() {
+		$custom_logo_id = get_theme_mod( 'custom_logo' );
+		if ( $custom_logo_id ) {
+			$logo_attrs = wp_get_attachment_image_src( $custom_logo_id, 'full' );
+			if ( $logo_attrs ) {
+				return $logo_attrs[0];
+			}
+		}
+
+		// get_site_icon_url returns an empty string if one isn't found,
+		// which is what we want to use as the default anyway.
+		$site_icon_url = get_site_icon_url();
+		return $site_icon_url;
 	}
 
 	/**
@@ -1303,6 +1375,12 @@ class Parsely {
 	 * Add amp actions.
 	 */
 	public function parsely_add_amp_actions() {
+		$options = $this->get_options();
+
+		if ( $options['disable_amp'] ) {
+			return '';
+		}
+
 		add_filter( 'amp_post_template_analytics', array( $this, 'parsely_add_amp_analytics' ) );
 	}
 
