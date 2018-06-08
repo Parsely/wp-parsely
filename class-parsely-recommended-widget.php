@@ -291,7 +291,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance                        = $old_instance;
-		$instance['title']               = trim( strip_tags( $new_instance['title'] ) );
+		$instance['title']               = trim( wp_strip_all_tags( $new_instance['title'] ) );
 		$instance['published_within']    = (int) trim( $new_instance['published_within'] );
 		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
 		$instance['sort']                = trim( $new_instance['sort'] );

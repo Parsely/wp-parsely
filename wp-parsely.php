@@ -1263,7 +1263,7 @@ class Parsely {
 		if ( is_string( $val ) ) {
 			$val = str_replace( "\n", '', $val );
 			$val = str_replace( "\r", '', $val );
-			$val = strip_tags( $val );
+			$val = wp_strip_all_tags( $val );
 			$val = trim( $val );
 			return $val;
 		} else {
