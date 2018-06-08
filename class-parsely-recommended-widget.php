@@ -71,7 +71,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					if (window.jQuery) {
 						method();
 					} else {
-						setTimeout(function() { defer(method) }, 50);
+						setTimeout(function() { defer(method); }, 50);
 					}
 				}
 
@@ -106,9 +106,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
 					<?php
 					if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
-					?>
+						?>
 					outerDiv.addClass('display-thumbnail');
-					<?php
+						<?php
 					}
 					?>
 					var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
@@ -119,9 +119,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 								.attr('id', 'parsely-recommended-widget-item' + key);
 							<?php
 							if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
-							?>
+								?>
 							var thumbnailImage = jQuery('<img>').attr('src', value['thumb_url_medium']).appendTo(widgetEntry);
-							<?php
+								<?php
 							}
 							?>
 							var postLink = jQuery('<a>').attr('href', value['url']).text(value['title']);
@@ -129,12 +129,12 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 							<?php
 							if ( in_array( 'display_author', $instance['display_options'], true ) ) {
-							?>
+								?>
 							var authorDiv = jQuery('<div>').addClass('parsely-title-author-wrapper');
 							var authorLink = jQuery('<a>').attr('href', value['url']).text(value['author']);
 							authorDiv.append(authorLink);
 							widgetEntry.append(authorDiv);
-							<?php
+								<?php
 							}
 							?>
 
@@ -258,7 +258,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					if ( in_array( 'display_author', $instance['display_options'], true ) ) {
 						echo 'selected="selected"';
 					};
-				?>
+					?>
 						value="display_author">Display Author</option>
 				<option
 					<?php

@@ -24,6 +24,10 @@
 		var apikey = $('#apikey').val();
 		var recrawlRequiredMessage = $('<p>')
 			.addClass('description');
+		var supportLink = $('<a>',{
+			href: 'mailto:support@parsely.com?subject=Please reprocess ' + apikey,
+			text: 'support@parsely.com'
+		});
 
 		recrawlRequiredMessage.append('<strong style="color:red;">Important:</strong>');
 
@@ -32,8 +36,7 @@
 			'Parse.ly will require reprocessing of your Parse.ly data. Once ' +
 			'you have changed this value, please contact ' );
 
-		recrawlRequiredMessage.append('<a href="mailto:support@parsely.com?subject=Please reprocess ' + 
-			apikey + '">support@parsely.com</a>.');
+		recrawlRequiredMessage.append(supportLink);
 
 		recrawlRequiredMessage
 			.appendTo("div.parsely-form-controls[data-requires-recrawl='true'] .help-text");
