@@ -515,6 +515,23 @@ PARSELYJS;
 		$this->assertTrue( strpos( $ppage['headline'], 'Completely New And Original Filtered Headline' ) === 0 );
 	}
 
+    /**
+    *
+    * Supply correct metadata for posts pages (listing multiple posts like on a home page)
+    *
+    * @category     Function
+    * @package      SampleTest
+    */
+    public function test_home_posts_pages() {
+        $post_array = $this->create_test_post_array();
+        $page_for_posts = $this->factory->post->create( $post_array );
+        update_option("show_on_front", "page");
+        update_option("page_for_posts", $page_for_posts);
+        $this->go_to('/');
+        $ppage = self::$parsely->insert_parsely_page();
+        $this->assertTrue( 'WebPage' === $ppage['@type'] );        
+    }
+
 	/**
 	 * Make sure users can log in.
 	 *
