@@ -1113,7 +1113,7 @@ class Parsely {
 		$parent = get_term_by( 'id', $term_id, $taxonomy_name );
 		while ( 0 !== $parent->parent ) {
 			if ( false === $parent ) {
-				break;
+				return false;
 			}
 			$parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
 		}
