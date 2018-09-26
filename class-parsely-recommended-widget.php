@@ -75,7 +75,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					}
 				}
 
+
 				function widgetLoad() {
+
 					var parsely_results = [];
 
 					uuid = false;
@@ -102,6 +104,11 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					var parentDiv = jQuery.find('#<?php echo esc_attr( $this->id ); ?>');
 					if (parentDiv.length === 0) {
 						parentDiv = jQuery.find('.Parsely_Recommended_Widget');
+					}
+					
+					// make sure widget is not already on page
+					if (jQuery.find("div.parsely-recommendation-widget").length != 0) {
+						return;
 					}
 					var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
 					<?php
