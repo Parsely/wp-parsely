@@ -75,9 +75,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					}
 				}
 
-
 				function widgetLoad() {
-
 					var parsely_results = [];
 
 					uuid = false;
