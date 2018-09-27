@@ -103,6 +103,12 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					if (parentDiv.length === 0) {
 						parentDiv = jQuery.find('.Parsely_Recommended_Widget');
 					}
+					
+					// make sure page is not attempting to load widget twice in the same spot
+					if (jQuery(parentDiv).find("div.parsely-recommendation-widget").length != 0) {
+						return;
+					}
+
 					var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
 					<?php
 					if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
