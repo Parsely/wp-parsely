@@ -124,7 +124,7 @@ class Parsely {
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'wp_footer', array( $this, 'insert_parsely_javascript' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
-		add_action( 'pre_amp_render_post', array( $this, 'parsely_add_amp_actions' ) );
+		add_filter( 'amp_analytics_entries', array( $this, 'parsely_add_amp_analytics' ) );
 		if ( ! defined( 'WP_PARSELY_TESTING' ) ) {
 			/**
 			 * Initialize parsely WordPress style
@@ -1372,19 +1372,6 @@ class Parsely {
 	}
 
 	/**
-	 * Add amp actions.
-	 */
-	public function parsely_add_amp_actions() {
-		$options = $this->get_options();
-
-		if ( $options['disable_amp'] ) {
-			return '';
-		}
-
-		add_filter( 'amp_post_template_analytics', array( $this, 'parsely_add_amp_analytics' ) );
-	}
-
-	/**
 	 * Add amp analytics.
 	 *
 	 * @param type $analytics The analytics object you want to add.
@@ -1392,14 +1379,18 @@ class Parsely {
 	public function parsely_add_amp_analytics( $analytics ) {
 		$options = $this->get_options();
 
+		if ( ! empty( $options['disable_amp'] ) && true === $options['disable_amp'] ) {
+			return;
+		}
+
 		if ( empty( $options['apikey'] ) ) {
 			return $analytics;
 		}
 
 		$analytics['parsely'] = array(
-			'type'        => 'parsely',
-			'attributes'  => array(),
-			'config_data' => array(
+			'type'       => 'parsely',
+			'attributes' => array(),
+			'config'     => array(
 				'vars' => array(
 					'apikey' => $options['apikey'],
 				),
