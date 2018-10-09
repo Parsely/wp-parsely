@@ -1378,7 +1378,7 @@ class Parsely {
 		$options = $this->get_options();
 
 		if ( ! empty( $options['disable_amp'] ) && true === $options['disable_amp'] ) {
-			return;
+			return '';
 		}
 
 		add_filter( 'amp_post_template_analytics', array( $this, 'parsely_add_amp_analytics' ) );
