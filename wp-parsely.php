@@ -124,7 +124,7 @@ class Parsely {
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'wp_footer', array( $this, 'insert_parsely_javascript' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
-		add_action( 'pre_amp_render_post', array( $this, 'parsely_add_amp_actions' ) );
+		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
 		if ( ! defined( 'WP_PARSELY_TESTING' ) ) {
 			/**
 			 * Initialize parsely WordPress style
@@ -1377,19 +1377,30 @@ class Parsely {
 	public function parsely_add_amp_actions() {
 		$options = $this->get_options();
 
-		if ( $options['disable_amp'] ) {
-			return '';
+		if ( ! empty( $options['disable_amp'] ) && true === $options['disable_amp'] ) {
+			return;
 		}
 
 		add_filter( 'amp_post_template_analytics', array( $this, 'parsely_add_amp_analytics' ) );
+		add_filter( 'amp_analytics_entries', array( $this, 'parsely_add_amp_analytics_native' ) );
+	}
+
+	/**
+	 * Add amp analytics to native template.
+	 *
+	 * @param type $analytics The analytics object you want to add.
+	 */
+	public function parsely_add_amp_analytics_native( $analytics ) {
+		return $this->parsely_add_amp_analytics( $analytics, 'config' );
 	}
 
 	/**
 	 * Add amp analytics.
 	 *
-	 * @param type $analytics The analytics object you want to add.
+	 * @param object $analytics The analytics object you want to add.
+	 * @param string $key The key to use for config filtering.
 	 */
-	public function parsely_add_amp_analytics( $analytics ) {
+	public function parsely_add_amp_analytics( $analytics, $key = 'config_data' ) {
 		$options = $this->get_options();
 
 		if ( empty( $options['apikey'] ) ) {
@@ -1397,9 +1408,9 @@ class Parsely {
 		}
 
 		$analytics['parsely'] = array(
-			'type'        => 'parsely',
-			'attributes'  => array(),
-			'config_data' => array(
+			'type'       => 'parsely',
+			'attributes' => array(),
+			"{$key}"     => array(
 				'vars' => array(
 					'apikey' => $options['apikey'],
 				),
