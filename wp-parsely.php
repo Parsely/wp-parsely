@@ -1386,7 +1386,7 @@ class Parsely {
 		}
 
 		add_filter( 'amp_post_template_analytics', array( $this, 'parsely_add_amp_analytics' ) );
-		 add_filter( 'amp_analytics_entries', array( $this, 'parsely_add_amp_native_analytics' ) );	
+		add_filter( 'amp_analytics_entries', array( $this, 'parsely_add_amp_native_analytics' ) );	
 	}
 
 	/**
