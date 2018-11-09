@@ -124,7 +124,7 @@ class Parsely {
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'wp_footer', array( $this, 'insert_parsely_javascript' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
-		add_action( 'pre_amp_render_post', array( $this, 'parsely_add_amp_actions' ) );
+		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
 		if ( ! defined( 'WP_PARSELY_TESTING' ) ) {
 			/**
 			 * Initialize parsely WordPress style
@@ -1375,6 +1375,10 @@ class Parsely {
 	 * Add amp actions.
 	 */
 	public function parsely_add_amp_actions() {
+		if ( ! function_exists( 'is_amp_endpoint' ) || ! is_amp_endpoint() ) {
+			return '';
+		}
+
 		$options = $this->get_options();
 
 		if ( $options['disable_amp'] ) {
@@ -1382,6 +1386,7 @@ class Parsely {
 		}
 
 		add_filter( 'amp_post_template_analytics', array( $this, 'parsely_add_amp_analytics' ) );
+		 add_filter( 'amp_analytics_entries', array( $this, 'parsely_add_amp_native_analytics' ) );	
 	}
 
 	/**
@@ -1408,6 +1413,26 @@ class Parsely {
 
 		return $analytics;
 	}
+
+	public function parsely_add_amp_native_analytics( $analytics ) {
+		$options = $this->get_options();
+		if ( ! empty( $options['disable_amp'] ) && true === $options['disable_amp'] ) {
+			return;
+		}
+		if ( empty( $options['apikey'] ) ) {
+			return $analytics;
+		}
+		$analytics['parsely'] = array(
+			'type'       => 'parsely',
+			'attributes' => array(),
+			'config'     => wp_json_encode( array(
+				'vars' => array(
+					'apikey' => $options['apikey'],
+				),
+			) )
+ 		);
+ 		return $analytics;
+	 }
 
 	/**
 	 * Check to see if parsely user is logged in
