@@ -50,7 +50,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		// Set up the variables.
 		$options = get_option( 'parsely' );
-		if ( array_key_exists( 'apikey', $options ) && array_key_exists( 'api_secret', $options ) && ! empty( $options['api_secret'] ) ) {
+		if ( is_array($options) && array_key_exists( 'apikey', $options ) && array_key_exists( 'api_secret', $options ) && ! empty( $options['api_secret'] ) ) {
 			$root_url       = 'https://api.parsely.com/v2/related?apikey=' . $options['apikey'];
 			$pub_date_start = '&pub_date_start=' . $instance['published_within'] . 'd';
 			$sort           = '&sort=' . trim( $instance['sort'] );
