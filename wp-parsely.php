@@ -152,7 +152,7 @@ class Parsely {
 	 * @package    Parsely
 	 */
 	public function add_admin_header() {
-		include plugin_dir_path('parsely-admin-header.php');
+		include 'parsely-admin-header.php';
 	}
 
 	/**
@@ -182,7 +182,7 @@ class Parsely {
 			wp_die( esc_attr( 'You do not have sufficient permissions to access this page.' ) );
 		}
 
-		include plugin_dir_path('parsely-settings.php');
+		include 'parsely-settings.php';
 	}
 
 	/**
@@ -822,7 +822,7 @@ class Parsely {
 		}
 
 		$parsely_page = apply_filters( 'after_set_parsely_page', $parsely_page, $post, $parsely_options );
-		include plugin_dir_path('parsely-parsely-page.php');
+		include 'parsely-parsely-page.php';
 		return $parsely_page;
 	}
 
@@ -848,7 +848,7 @@ class Parsely {
 			$display = false;
 		}
 		if ( $display ) {
-			include plugin_dir_path('parsely-javascript.php');
+			include 'parsely-javascript.php';
 		}
 	}
 
@@ -1435,4 +1435,4 @@ if ( class_exists( 'Parsely' ) ) {
 	$parsely = new Parsely();
 }
 
-require plugin_dir_path('class-parsely-recommended-widget.php');
+require 'class-parsely-recommended-widget.php';
