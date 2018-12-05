@@ -1126,7 +1126,7 @@ class Parsely {
 	 */
 	private function get_bottom_level_term( $post_id, $taxonomy_name ) {
 		$terms    = get_the_terms( $post_id, $taxonomy_name );
-		$term_ids = wp_list_pluck( $terms, 'term_id' );
+		$term_ids = is_array($terms) ? wp_list_pluck( $terms, 'term_id' ) : null;
 		$parents  = array_filter( wp_list_pluck( $terms, 'parent' ) );
 
 		// Get array of IDs of terms which are not parents.
