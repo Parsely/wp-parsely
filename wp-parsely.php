@@ -1219,6 +1219,10 @@ class Parsely {
 	 * @param string $author The author of the post.
 	 */
 	private function get_author_name( $author ) {
+		//gracefully handle situation where no author is available
+		if( empty( $author ) || ! is_object( $author ) ){
+			return '';
+		}
 		$author_name = $author->display_name;
 		if ( ! empty( $author_name ) ) {
 			return $author_name;
@@ -1293,7 +1297,13 @@ class Parsely {
 		if ( 'post' === $post ) {
 			$permalink        = get_permalink();
 			$parsed_canonical = wp_parse_url( $permalink );
-			$canonical        = $scheme . $parsed_canonical['host'] . $parsed_canonical['path'];
+			//handle issue if wp_parse_url doesn't return good host & path data, fallback to page url as a last resort
+			if( isset( $parsed_canonical['host'] ) && isset( $parsed_canonical['path'] ) ){
+				$canonical        = $scheme . $parsed_canonical['host'] . $parsed_canonical['path'];
+			}elseif( isset( $_SERVER["HTTP_HOST"] ) && isset( $_SERVER["REQUEST_URI"] ) ){
+				$canonical        = $scheme . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+			}
+
 			return $canonical;
 		}
 		$page_url = site_url( null, $scheme );
