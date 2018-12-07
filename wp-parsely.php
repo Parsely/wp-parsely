@@ -1252,6 +1252,7 @@ class Parsely {
 		if ( empty( $authors ) ) {
 			$authors = array( get_user_by( 'id', $post->post_author ) );
 		}
+		$authors = apply_filters( 'wp_parsely_pre_authors', $authors, $post );
 		$authors = array_map( array( $this, 'get_author_name' ), $authors );
 		$authors = apply_filters( 'wp_parsely_post_authors', $authors, $post );
 		$authors = array_map( array( $this, 'get_clean_parsely_page_value' ), $authors );
@@ -1296,6 +1297,7 @@ class Parsely {
 
 		if ( 'post' === $post ) {
 			$permalink        = get_permalink();
+			$permalink = apply_filters( 'wp_parsely_permalink', $permalink, $post );
 			$parsed_canonical = wp_parse_url( $permalink );
 			//handle issue if wp_parse_url doesn't return good host & path data, fallback to page url as a last resort
 			if( isset( $parsed_canonical['host'] ) && isset( $parsed_canonical['path'] ) ){
