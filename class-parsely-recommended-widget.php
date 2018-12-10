@@ -190,12 +190,14 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$sort                = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
 		$boost               = ! empty( $instance['boost'] ) ? $instance['boost'] : 'views';
 		$personalize_results = ! empty( $instance['personalize_results'] ) ? $instance['personalize_results'] : false;
+		$img_src             = ! empty( $instance['img_src'] ) ? $instance['img_src'] : 'parsely_thumb';
 
 		$instance['return_limit']        = $return_limit;
 		$instance['published_within']    = $published_within;
 		$instance['sort']                = $sort;
 		$instance['boost']               = $boost;
 		$instance['personalize_results'] = $personalize_results;
+		$instance['img_src']             = $img_src;
 		$instance['display_options']     = ! empty( $instance['display_options'] ) ? $instance['display_options'] : array();
 
 		$boost_params = array(
@@ -254,6 +256,15 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			<?php } ?>
 			</select>
 
+		</p>
+		<p>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>">Image Source: </label>
+			<br>
+			<select id="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sort' ) ); ?>" class="widefat" style="width:70%;">
+				<option <?php selected( $instance['img_src'], 'parsely_thumb' ); ?> value="parsely_thumb">Parse.ly generated thumbnail (85x85px)</option>
+				<option <?php selected( $instance['img_src'], 'original' ); ?> value="original">Original image</option>
+				<option <?php selected( $instance['img_src'], 'none' ); ?> value="none">No image</option>
+			</select>
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'display_options' ) ); ?>">Display Options</label>
