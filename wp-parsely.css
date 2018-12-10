@@ -28,6 +28,11 @@
 	margin-top: 5px;
 }
 
+.parsely-recommended-widget-title {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
 
 @supports(display: grid){
 
@@ -56,7 +61,7 @@
 		margin-right: 0;
 	}
 
-	.parsely-recommendation-widget .parsely-title-author-wrapper {
+	.parsely-recommendation-widget .parsely-text-wrapper {
 		grid-column: 2 / 3;
 	}
 }

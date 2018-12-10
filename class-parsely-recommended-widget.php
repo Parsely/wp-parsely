@@ -43,7 +43,6 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	public function widget( $args, $instance ) {
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
-		$instance['display_options'] = ! empty( $instance['display_options'] ) ? $instance['display_options'] : array();
 		$allowed_tags                = wp_kses_allowed_html( 'post' );
 		$title_html                  = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
 		echo wp_kses( $title_html, $allowed_tags );
@@ -87,7 +86,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 					var full_url = '<?php echo esc_js( $full_url ); ?>';
 
-					var img_src = '<?php echo esc_js( $instance["img_src"] ); ?>';
+					var img_src = '<?php echo ( isset($instance["img_src"]) ? esc_js( $instance["img_src"] ) : null ); ?>';
+
+					var display_author = '<?php echo ( isset($instance["display_author"]) ? esc_js( boolval( $instance["display_author"] ) ) : false ); ?>';
 
 					var personalized = '<?php echo esc_js( boolval( $instance["personalize_results"] ) ); ?>';
 					if ( personalized && uuid ) {
@@ -122,6 +123,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 								.addClass('parsely-recommended-widget-entry')
 								.attr('id', 'parsely-recommended-widget-item' + key);
 
+							var textDiv = jQuery('<div>').addClass('parsely-text-wrapper');
+
 							if (img_src === 'parsely_thumb') {
 								jQuery('<img>').attr('src', value['thumb_url_medium']).appendTo(widgetEntry);
 							}
@@ -129,19 +132,17 @@ class Parsely_Recommended_Widget extends WP_Widget {
 								jQuery('<img>').attr('src', value['image_url']).appendTo(widgetEntry);
 							}
 
+							var postTitle = jQuery('<div>').attr('class', 'parsely-recommended-widget-title');
 							var postLink = jQuery('<a>').attr('href', value['url']).text(value['title']);
-							widgetEntry.append(postLink);
+							postTitle.append(postLink);
+							textDiv.append(postTitle);
 
-							<?php
-							if ( in_array( 'display_author', $instance['display_options'], true ) ) {
-								?>
-							var authorDiv = jQuery('<div>').addClass('parsely-title-author-wrapper');
-							var authorLink = jQuery('<a>').attr('href', value['url']).text(value['author']);
-							authorDiv.append(authorLink);
-							widgetEntry.append(authorDiv);
-								<?php
+							if ( display_author ) {
+								var authorLink = jQuery('<div>').attr('class', 'parsely-recommended-widget-author').text(value['author']);
+								textDiv.append(authorLink);
 							}
-							?>
+
+							widgetEntry.append(textDiv);
 
 
 
@@ -190,6 +191,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$boost               = ! empty( $instance['boost'] ) ? $instance['boost'] : 'views';
 		$personalize_results = ! empty( $instance['personalize_results'] ) ? $instance['personalize_results'] : false;
 		$img_src             = ! empty( $instance['img_src'] ) ? $instance['img_src'] : 'parsely_thumb';
+		$display_author      = ! empty( $instance['display_author'] ) ? $instance['display_author'] : false;
 
 		$instance['return_limit']        = $return_limit;
 		$instance['published_within']    = $published_within;
@@ -197,7 +199,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$instance['boost']               = $boost;
 		$instance['personalize_results'] = $personalize_results;
 		$instance['img_src']             = $img_src;
-		$instance['display_options']     = ! empty( $instance['display_options'] ) ? $instance['display_options'] : array();
+		$instance['display_author']      = $display_author;
 
 		$boost_params = array(
 			'views',
@@ -266,24 +268,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			</select>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'display_options' ) ); ?>">Display Options</label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'display_author' ) ); ?>">Display Author:</label>
 			<br>
-			<select multiple="multiple" id="<?php echo esc_attr( $this->get_field_id( 'display_options' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_options' ) ); ?>[]" class="widefat" style="width:33%;">
-				<option
-					<?php
-					if ( in_array( 'display_author', $instance['display_options'], true ) ) {
-						echo 'selected="selected"';
-					};
-					?>
-						value="display_author">Display Author</option>
-				<option
-					<?php
-					if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
-						echo 'selected="selected"';
-					};
-					?>
-						value="display_thumbnail">Display Thumbnail</option>
-			</select>
+			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'display_author' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_author' ) ); ?>" value="display_author" <?php checked( $instance['display_author'], 'display_author' ); ?> />
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>">Personalize Recommended Results:</label>
@@ -312,7 +299,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
 		$instance['sort']                = trim( $new_instance['sort'] );
 		$instance['boost']               = trim( $new_instance['boost'] );
-		$instance['display_options']     = esc_sql( $new_instance['display_options'] );
+		$instance['display_author']      = $new_instance['display_author'];
 		$instance['personalize_results'] = $new_instance['personalize_results'];
 		$instance['img_src']             = trim( $new_instance['img_src'] );
 		return $instance;
