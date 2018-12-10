@@ -87,8 +87,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 					var full_url = '<?php echo esc_js( $full_url ); ?>';
 
+					var img_src = '<?php echo esc_js( $instance["img_src"] ); ?>';
 
-					var personalized = '<?php echo esc_js( boolval( $instance['personalize_results'] ) ); ?>';
+					var personalized = '<?php echo esc_js( boolval( $instance["personalize_results"] ) ); ?>';
 					if ( personalized && uuid ) {
 						full_url += '&uuid=';
 						full_url += uuid;
@@ -110,26 +111,24 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					}
 
 					var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
-					<?php
-					if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
-						?>
-					outerDiv.addClass('display-thumbnail');
-						<?php
+					if (img_src !== 'none') {
+						outerDiv.addClass('display-thumbnail');
 					}
-					?>
+
 					var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
 					jQuery.getJSON( full_url, function (data) {
 						jQuery.each(data.data, function(key, value) {
 							var widgetEntry = jQuery('<li>')
 								.addClass('parsely-recommended-widget-entry')
 								.attr('id', 'parsely-recommended-widget-item' + key);
-							<?php
-							if ( in_array( 'display_thumbnail', $instance['display_options'], true ) ) {
-								?>
-							var thumbnailImage = jQuery('<img>').attr('src', value['thumb_url_medium']).appendTo(widgetEntry);
-								<?php
+
+							if (img_src === 'parsely_thumb') {
+								jQuery('<img>').attr('src', value['thumb_url_medium']).appendTo(widgetEntry);
 							}
-							?>
+							else if (img_src === 'original') {
+								jQuery('<img>').attr('src', value['image_url']).appendTo(widgetEntry);
+							}
+
 							var postLink = jQuery('<a>').attr('href', value['url']).text(value['title']);
 							widgetEntry.append(postLink);
 
@@ -260,7 +259,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>">Image Source: </label>
 			<br>
-			<select id="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sort' ) ); ?>" class="widefat" style="width:70%;">
+			<select id="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'img_src' ) ); ?>" class="widefat" style="width:70%;">
 				<option <?php selected( $instance['img_src'], 'parsely_thumb' ); ?> value="parsely_thumb">Parse.ly generated thumbnail (85x85px)</option>
 				<option <?php selected( $instance['img_src'], 'original' ); ?> value="original">Original image</option>
 				<option <?php selected( $instance['img_src'], 'none' ); ?> value="none">No image</option>
@@ -315,6 +314,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$instance['boost']               = trim( $new_instance['boost'] );
 		$instance['display_options']     = esc_sql( $new_instance['display_options'] );
 		$instance['personalize_results'] = $new_instance['personalize_results'];
+		$instance['img_src']             = trim( $new_instance['img_src'] );
 		return $instance;
 	}
 }
