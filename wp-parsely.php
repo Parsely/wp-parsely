@@ -1089,13 +1089,18 @@ class Parsely {
 		// Get top-level taxonomy name for chosen taxonomy and assign to $parent_name; it will be used
 		// as the category value if 'use_top_level_cats' option is checked.
 		// Assign as "Uncategorized" if no value is checked for the chosen taxonomy.
+		$category = 'Uncategorized';
 		if ( ! empty( $taxonomy_dropdown_choice ) ) {
-			$first_term  = array_shift( $taxonomy_dropdown_choice );
-			$parent_name = $this->get_top_level_term( $first_term->term_id, $first_term->taxonomy );
-			$child_name  = $this->get_bottom_level_term( $post_obj->ID, $parsely_options['custom_taxonomy_section'] );
-			$category    = $parsely_options['use_top_level_cats'] ? $parent_name : $child_name;
-		} else {
-			$category = 'Uncategorized';
+			if ( $parsely_options['use_top_level_cats'] ) {
+				$first_term  = array_shift( $taxonomy_dropdown_choice );
+				$term_name = $this->get_top_level_term( $first_term->term_id, $first_term->taxonomy );
+			} else {
+				$term_name = $this->get_bottom_level_term( $post_obj->ID, $parsely_options['custom_taxonomy_section'] );
+			}
+			
+			if ( $term_name ) {
+				$category = $term_name;
+			}
 		}
 		$category = apply_filters( 'wp_parsely_post_category', $category, $post_obj, $parsely_options );
 		$category = $this->get_clean_parsely_page_value( $category );
@@ -1111,13 +1116,10 @@ class Parsely {
 	 */
 	private function get_top_level_term( $term_id, $taxonomy_name ) {
 		$parent = get_term_by( 'id', $term_id, $taxonomy_name );
-		while ( 0 !== $parent->parent ) {
-			if ( false === $parent ) {
-				return false;
-			}
+		while ( false !== $parent && 0 !== $parent->parent ) {
 			$parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
 		}
-		return $parent->name;
+		return $parent ? $parent->name : false;
 	}
 
 	/**
