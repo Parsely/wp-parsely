@@ -1112,6 +1112,9 @@ class Parsely {
 	private function get_top_level_term( $term_id, $taxonomy_name ) {
 		$parent = get_term_by( 'id', $term_id, $taxonomy_name );
 		while ( 0 !== $parent->parent ) {
+			if ( false === $parent ) {
+				return false;
+			}
 			$parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
 		}
 		return $parent->name;
