@@ -727,9 +727,10 @@ class Parsely {
 		 * @param bool $is_public Flag if the post status is public.
 		 * @param WP_Post $post Post object.
 		 */
-		$is_public_post_status = apply_filters( 'wp_parsely_is_public_status', get_post_status_object( $post->post_status )->public, $post );
-
-		if ( in_array( get_post_type(), $parsely_options['track_post_types'], true ) && $is_public_post_status ) {
+		if (
+			in_array( get_post_type(), $parsely_options['track_post_types'], true )
+			&& apply_filters( 'wp_parsely_is_public_status', get_post_status_object( $post->post_status )->public, $post )
+		) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
 			$post_id  = $parsely_options['content_id_prefix'] . (string) get_the_ID();
