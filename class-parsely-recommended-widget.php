@@ -173,6 +173,26 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		echo wp_kses( $args['after_widget'], $allowed_tags );
 	}
 
+	/**
+	 * Migrates previous display_options settings
+	 *
+	 * @category   Function
+	 * @package    WordPress
+	 * @subpackage Parse.ly
+	 * @param array $instance Values saved to the db.
+	 */
+	private function migrate_old_fields( $instance ) {
+		if ( ! empty( $instance['display_options'] ) && is_array( $instance['display_options'] ) ) {
+			if ( empty( $instance['img_src'] ) ) {
+				$instance['img_src'] = in_array( 'display_thumbnail', $instance['display_options'], true ) ? 'parsely_thumb' : 'none';
+			}
+
+			if ( empty( $instance['display_author'] ) ) {
+				$instance['display_author'] = in_array( 'display_author', $instance['display_options'], true );
+			}
+		}
+	}
+
 
 	/**
 	 * This is the form function
@@ -183,6 +203,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @param array $instance Values saved to the db.
 	 */
 	public function form( $instance ) {
+		migrate_old_fields( $instance );
+
 		// editable fields: title.
 		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
 		$return_limit        = ! empty( $instance['return_limit'] ) ? $instance['return_limit'] : 5;
