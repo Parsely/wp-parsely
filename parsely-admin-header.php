@@ -25,7 +25,7 @@
 		var recrawlRequiredMessage = $('<p>')
 			.addClass('description');
 		var supportLink = $('<a>',{
-			href: 'mailto:support@parsely.com?subject=Please reprocess ' + encodeURIComponent(apikey),
+			href: 'mailto:support@parsely.com?subject=Please reprocess ' + apikey,
 			text: 'support@parsely.com'
 		});
 
