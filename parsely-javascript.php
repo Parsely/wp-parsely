@@ -55,7 +55,7 @@ if ( ! isset( $parsely_options['apikey'] ) || empty( $parsely_options['apikey'] 
 <?php endif; ?>
 
 <div id="parsely-root" style="display: none">
-	<div id="parsely-cfg" data-parsely-site="<?php echo esc_html( $parsely_options['apikey'] ); ?>"></div>
+	<div id="parsely-cfg" data-parsely-site="<?php echo esc_attr( $parsely_options['apikey'] ); ?>"></div>
 </div>
 <script data-cfasync="false">
 	(function (s, p, d) {
