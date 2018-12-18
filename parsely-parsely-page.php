@@ -24,11 +24,11 @@ if ( 'json_ld' === $parsely_options['meta_type'] ) {
 
 	<?php
 } else {
-		$post_type = 'NewsArticle' === $parsely_page['@type'] ? 'post' : 'sectionpage';
+		$parsely_post_type = 'NewsArticle' === $parsely_page['@type'] ? 'post' : 'sectionpage';
 	?>
 		<meta name="parsely-title" content="<?php echo esc_attr( $parsely_page['headline'] ); ?>"/>
 		<meta name="parsely-link" content="<?php echo esc_attr( $parsely_page['url'] ); ?>"/>
-		<meta name="parsely-type" content="<?php echo esc_attr( $post_type ); ?>"/>
+		<meta name="parsely-type" content="<?php echo esc_attr( $parsely_post_type ); ?>"/>
 		<meta name="parsely-image-url" content="<?php echo esc_attr( $parsely_page['thumbnailUrl'] ); ?>"/>
 		<meta name="parsely-pub-date" content="<?php echo esc_attr( $parsely_page['datePublished'] ); ?>"/>
 		<meta name="parsely-section" content="<?php echo esc_attr( $parsely_page['articleSection'] ); ?>"/>
