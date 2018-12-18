@@ -1302,7 +1302,7 @@ class Parsely {
 
 		if ( 'post' === $post ) {
 			$permalink        = get_permalink();
-			$permalink = apply_filters( 'wp_parsely_permalink', $permalink, $post );
+			$permalink        = apply_filters( 'wp_parsely_permalink', $permalink, $post );
 			$parsed_canonical = wp_parse_url( $permalink );
 			//handle issue if wp_parse_url doesn't return good host & path data, fallback to page url as a last resort
 			if( isset( $parsed_canonical['host'] ) && isset( $parsed_canonical['path'] ) ){

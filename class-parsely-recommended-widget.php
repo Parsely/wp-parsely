@@ -43,14 +43,14 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	public function widget( $args, $instance ) {
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
-		$allowed_tags                = wp_kses_allowed_html( 'post' );
-		$title_html                  = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
+		$allowed_tags = wp_kses_allowed_html( 'post' );
+		$title_html   = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
 		echo wp_kses( $title_html, $allowed_tags );
 
 		// Set up the variables.
 		$options = get_option( 'parsely' );
-		if ( is_array($options) && array_key_exists( 'apikey', $options ) && array_key_exists( 'api_secret', $options ) && ! empty( $options['api_secret'] ) ) {
-			$root_url       = 'https://api.parsely.com/v2/related?apikey=' . encodeURIComponent($options['apikey']);
+		if ( is_array( $options ) && array_key_exists( 'apikey', $options ) && array_key_exists( 'api_secret', $options ) && ! empty( $options['api_secret'] ) ) {
+			$root_url       = 'https://api.parsely.com/v2/related?apikey=' . encodeURIComponent( $options['apikey'] );
 			$pub_date_start = '&pub_date_start=' . $instance['published_within'] . 'd';
 			$sort           = '&sort=' . trim( $instance['sort'] );
 			// No idea why boost is coming back with a space prepended: I've trimmed it everywhere I possibly could.
