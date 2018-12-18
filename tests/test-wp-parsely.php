@@ -475,7 +475,7 @@ PARSELYJS;
 		$analytics = array();
 		$filter    = self::$parsely->parsely_add_amp_actions();
 		$output    = self::$parsely->parsely_add_amp_analytics( $analytics );
-		$this->assertNull( $filter );
+		$this->assertEmpty( $filter );
 		$this->assertTrue( 'parsely' === $output['parsely']['type'] );
 		$this->assertTrue( 'blog.parsely.com' === $output['parsely']['config_data']['vars']['apikey'] );
 		$options['disable_amp'] = true;
