@@ -1092,12 +1092,12 @@ class Parsely {
 		$category = 'Uncategorized';
 		if ( ! empty( $taxonomy_dropdown_choice ) ) {
 			if ( $parsely_options['use_top_level_cats'] ) {
-				$first_term  = array_shift( $taxonomy_dropdown_choice );
-				$term_name = $this->get_top_level_term( $first_term->term_id, $first_term->taxonomy );
+				$first_term = array_shift( $taxonomy_dropdown_choice );
+				$term_name  = $this->get_top_level_term( $first_term->term_id, $first_term->taxonomy );
 			} else {
 				$term_name = $this->get_bottom_level_term( $post_obj->ID, $parsely_options['custom_taxonomy_section'] );
 			}
-			
+
 			if ( $term_name ) {
 				$category = $term_name;
 			}
@@ -1131,8 +1131,8 @@ class Parsely {
 	 */
 	private function get_bottom_level_term( $post_id, $taxonomy_name ) {
 		$terms    = get_the_terms( $post_id, $taxonomy_name );
-		$term_ids = is_array($terms) ? wp_list_pluck( $terms, 'term_id' ) : null;
-		$parents  = is_array($terms) ? array_filter( wp_list_pluck( $terms, 'parent' ) ) : null;
+		$term_ids = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : null;
+		$parents  = is_array( $terms ) ? array_filter( wp_list_pluck( $terms, 'parent' ) ) : null;
 
 		// Get array of IDs of terms which are not parents.
 		$term_ids_not_parents = array_diff( $term_ids, $parents );
