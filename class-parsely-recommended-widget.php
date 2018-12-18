@@ -50,7 +50,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		// Set up the variables.
 		$options = get_option( 'parsely' );
 		if ( is_array( $options ) && array_key_exists( 'apikey', $options ) && array_key_exists( 'api_secret', $options ) && ! empty( $options['api_secret'] ) ) {
-			$root_url       = 'https://api.parsely.com/v2/related?apikey=' . encodeURIComponent( $options['apikey'] );
+			$root_url       = 'https://api.parsely.com/v2/related?apikey=' . esc_attr( $options['apikey'] );
 			$pub_date_start = '&pub_date_start=' . $instance['published_within'] . 'd';
 			$sort           = '&sort=' . trim( $instance['sort'] );
 			// No idea why boost is coming back with a space prepended: I've trimmed it everywhere I possibly could.
@@ -84,13 +84,13 @@ class Parsely_Recommended_Widget extends WP_Widget {
 						var uuid = JSON.parse(unescape(cookieVal))['id'];
 					}
 
-					var full_url = '<?php echo wp_json_encode( esc_url_raw( $full_url ) ); ?>';
+					var full_url = '<?php echo esc_js( esc_url_raw( $full_url ) ); ?>';
 
-					var img_src = '<?php echo ( isset( $instance["img_src"] ) ? wp_json_encode( $instance["img_src"] ) : null ); ?>';
+					var img_src = "<?php echo ( isset( $instance['img_src'] ) ? esc_js( $instance['img_src'] ) : null ); ?>";
 
-					var display_author = '<?php echo ( isset( $instance["display_author"] ) ? wp_json_encode( boolval( $instance["display_author"] ) ) : false ); ?>';
+					var display_author = "<?php echo ( isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false ); ?>";
 
-					var personalized = '<?php echo wp_json_encode( boolval( $instance["personalize_results"] ) ); ?>';
+					var personalized = "<?php echo wp_json_encode( boolval( $instance['personalize_results'] ) ); ?>";
 					if ( personalized && uuid ) {
 						full_url += '&uuid=';
 						full_url += uuid;
@@ -98,14 +98,13 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					}
 					else {
 						full_url += '&url=';
-						full_url += '<?php echo wp_json_encode( get_permalink() ); ?>';
+						full_url += '<?php echo wp_json_encode( esc_url_raw( get_permalink() ) ); ?>';
 
 					}
-					var parentDiv = jQuery.find('#<?php echo wp_json_encode( $this->id ); ?>');
+					var parentDiv = jQuery.find('#<?php echo esc_attr( $this->id ); ?>');
 					if (parentDiv.length === 0) {
 						parentDiv = jQuery.find('.Parsely_Recommended_Widget');
 					}
-					
 					// make sure page is not attempting to load widget twice in the same spot
 					if (jQuery(parentDiv).find("div.parsely-recommendation-widget").length != 0) {
 						return;
@@ -203,7 +202,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @param array $instance Values saved to the db.
 	 */
 	public function form( $instance ) {
-		migrate_old_fields( $instance );
+		$this->migrate_old_fields( $instance );
 
 		// editable fields: title.
 		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
