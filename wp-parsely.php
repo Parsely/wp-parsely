@@ -1403,7 +1403,7 @@ class Parsely {
 		}
 
 		add_filter( 'amp_post_template_analytics', array( $this, 'parsely_add_amp_analytics' ) );
-		add_filter( 'amp_analytics_entries', array( $this, 'parsely_add_amp_native_analytics' ) );	
+		add_filter( 'amp_analytics_entries', array( $this, 'parsely_add_amp_native_analytics' ) );
 	}
 
 	/**
@@ -1431,14 +1431,22 @@ class Parsely {
 		return $analytics;
 	}
 
+	/**
+	 * Add amp native analytics.
+	 *
+	 * @param type $analytics The analytics object you want to add.
+	 */
 	public function parsely_add_amp_native_analytics( $analytics ) {
 		$options = $this->get_options();
+
 		if ( ! empty( $options['disable_amp'] ) && true === $options['disable_amp'] ) {
-			return;
+			return '';
 		}
+
 		if ( empty( $options['apikey'] ) ) {
 			return $analytics;
 		}
+
 		$analytics['parsely'] = array(
 			'type'       => 'parsely',
 			'attributes' => array(),
@@ -1446,10 +1454,11 @@ class Parsely {
 				'vars' => array(
 					'apikey' => $options['apikey'],
 				),
-			) )
- 		);
- 		return $analytics;
-	 }
+			) ),
+		);
+
+		return $analytics;
+	}
 
 	/**
 	 * Check to see if parsely user is logged in
