@@ -729,7 +729,7 @@ class Parsely {
 		 */
 		if (
 			in_array( get_post_type(), $parsely_options['track_post_types'], true )
-			&& apply_filters( 'wp_parsely_is_public_status', 'publish' === get_post_status(), $post )
+			&& apply_filters( 'wp_parsely_is_public_status', 'publish' === $post->post_status, $post )
 		) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
