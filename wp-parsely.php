@@ -723,13 +723,13 @@ class Parsely {
 
 		/**
 		 * Check if the post is a trackable post status.
-		 * 
+		 *
 		 * @param bool $is_public Flag if the post status is public.
 		 * @param WP_Post $post Post object.
 		 */
 		if (
 			in_array( get_post_type(), $parsely_options['track_post_types'], true )
-			&& apply_filters( 'wp_parsely_is_public_status', get_post_status_object( $post->post_status )->public, $post )
+			&& apply_filters( 'wp_parsely_is_public_status', 'publish' === get_post_status(), $post )
 		) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
