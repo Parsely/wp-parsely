@@ -37,13 +37,13 @@
 .list-horizontal .parsely-recommended-widget-entry {
 	border: none;
 	display: inline-block;
-    min-width: 142.5px;
-    margin-bottom: 15px;
-    margin-right: 15px;
-    max-width: 215px;
-    padding: 0;
-    vertical-align: text-top;
-    width: 45%;
+	min-width: 142.5px;
+	margin-bottom: 15px;
+	margin-right: 15px;
+	max-width: 215px;
+	padding: 0;
+	vertical-align: text-top;
+	width: 45%;
 }
 
 .list-horizontal .parsely-recommended-widget-entry img {
