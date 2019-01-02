@@ -90,6 +90,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 					var display_author = "<?php echo ( isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false ); ?>";
 
+					var display_direction = "<?php echo ( isset( $instance['display_direction'] ) ? esc_js( $instance['display_direction'] ) : null ); ?>";
+
 					var personalized = "<?php echo wp_json_encode( boolval( $instance['personalize_results'] ) ); ?>";
 					if ( personalized && uuid ) {
 						full_url += '&uuid=';
@@ -113,6 +115,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
 					if (img_src !== 'none') {
 						outerDiv.addClass('display-thumbnail');
+					}
+					if (display_direction) {
+						outerDiv.addClass('list-' + display_direction);
 					}
 
 					var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
