@@ -274,7 +274,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>" <?php checked( $instance['display_direction'], 'horizontal' ); ?> value="horizontal" />
 			<label for="horizontal">horizontally</label>
 			<br>
-			<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>" <?php checked ( $instance['display_direction'], 'vertical' ); ?> value="vertical" />
+			<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>" <?php checked( $instance['display_direction'], 'vertical' ); ?> value="vertical" />
 			<label for="vertical">vertically</label>
 		</p>
 		<p>
