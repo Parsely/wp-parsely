@@ -90,6 +90,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 					var display_author = "<?php echo ( isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false ); ?>";
 
+					var itm_medium = "site_widget";
+					var itm_source = "parsely_recommended_widget";
+
 					var personalized = "<?php echo wp_json_encode( boolval( $instance['personalize_results'] ) ); ?>";
 					if ( personalized && uuid ) {
 						full_url += '&uuid=';
@@ -131,8 +134,14 @@ class Parsely_Recommended_Widget extends WP_Widget {
 								jQuery('<img>').attr('src', value['image_url']).appendTo(widgetEntry);
 							}
 
+							var cmp_cmp = '?itm_campaign=<?php echo esc_attr( $this->id ); ?>';
+							var cmp_med = '&itm_medium=' + itm_medium;
+							var cmp_src = '&itm_source=' + itm_source;
+							var cmp_con = '&itm_content=widget_item-' + key;
+							var itm_link = value['url'] + cmp_cmp + cmp_med + cmp_src + cmp_con;
+
 							var postTitle = jQuery('<div>').attr('class', 'parsely-recommended-widget-title');
-							var postLink = jQuery('<a>').attr('href', value['url']).text(value['title']);
+							var postLink = jQuery('<a>').attr('href', itm_link).text(value['title']);
 							postTitle.append(postLink);
 							textDiv.append(postTitle);
 
