@@ -90,6 +90,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 					var display_author = "<?php echo ( isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false ); ?>";
 
+					var display_direction = "<?php echo ( isset( $instance['display_direction'] ) ? esc_js( $instance['display_direction'] ) : null ); ?>";
+
 					var itm_medium = "site_widget";
 					var itm_source = "parsely_recommended_widget";
 
@@ -116,6 +118,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 					var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
 					if (img_src !== 'none') {
 						outerDiv.addClass('display-thumbnail');
+					}
+					if (display_direction) {
+						outerDiv.addClass('list-' + display_direction);
 					}
 
 					var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
@@ -216,6 +221,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		// editable fields: title.
 		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
 		$return_limit        = ! empty( $instance['return_limit'] ) ? $instance['return_limit'] : 5;
+		$display_direction   = ! empty( $instance['display_direction'] ) ? $instance['display_direction'] : 'vertical';
 		$published_within    = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
 		$sort                = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
 		$boost               = ! empty( $instance['boost'] ) ? $instance['boost'] : 'views';
@@ -224,6 +230,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$display_author      = ! empty( $instance['display_author'] ) ? $instance['display_author'] : false;
 
 		$instance['return_limit']        = $return_limit;
+		$instance['display_direction']   = $display_direction;
 		$instance['published_within']    = $published_within;
 		$instance['sort']                = $sort;
 		$instance['boost']               = $boost;
@@ -269,6 +276,15 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			<label for="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>">Number of entries to return ( Max 20 ): </label>
 			<br>
 			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( (string) $instance['return_limit'] ); ?>" min="1" max="20"/>
+		</p>
+		<p>
+			<label>List Entries: </label>
+			<br>
+			<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>" <?php checked( $instance['display_direction'], 'horizontal' ); ?> value="horizontal" />
+			<label for="horizontal">horizontally</label>
+			<br>
+			<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>" <?php checked( $instance['display_direction'], 'vertical' ); ?> value="vertical" />
+			<label for="vertical">vertically</label>
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>">Sort By: </label>
@@ -327,6 +343,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$instance['title']               = trim( wp_strip_all_tags( $new_instance['title'] ) );
 		$instance['published_within']    = (int) trim( $new_instance['published_within'] );
 		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
+		$instance['display_direction']   = trim( $new_instance['display_direction'] );
 		$instance['sort']                = trim( $new_instance['sort'] );
 		$instance['boost']               = trim( $new_instance['boost'] );
 		$instance['display_author']      = $new_instance['display_author'];
