@@ -77,6 +77,20 @@ https://wordpress.org/plugins/fb-instant-articles/
 
 == Changelog ==
 
+= 1.14 =
+* Updates AMP analytics implementation
+* Adds ability to use a horizontal layout of the widget (for page footers)
+* Adds itm campaign parameters to widget links for tracking performance
+* Adds option to use original or resized thumbnail in widget
+* Improves handling of missing taxonomy terms and other data
+* Improves post status check
+* Code cleanup to conform to WordPress VIP standards
+
+= 1.13 =
+* Makes AMP integration optional
+* Adds support for publisher logo information
+* Minor bugfixes
+
 = 1.12 =
 * Adds ability to use repeated meta tags instead of ld+json tags for metadata
 * Code cleanup to conform to WordPress VIP standards
@@ -86,7 +100,7 @@ https://wordpress.org/plugins/fb-instant-articles/
 * Adds ability to use Parsely API with widget
 * Adds ability to track or not track custom page and post types
 * Adds ability to disable Javascript tracking
-* <inor bugfixes
+* Minor bugfixes
 
 = 1.10 =
 * Adds ability to filter final JSON-LD output

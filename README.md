@@ -89,6 +89,20 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 
 ## Changelog ##
 
+### 1.14 ###
+* Updates AMP analytics implementation
+* Adds ability to use a horizontal layout of the widget (for page footers)
+* Adds itm campaign parameters to widget links for tracking performance
+* Adds option to use original or resized thumbnail in widget
+* Improves handling of missing taxonomy terms and other data
+* Improves post status check
+* Code cleanup to conform to WordPress VIP standards
+
+### 1.13 ###
+* Makes AMP integration optional
+* Adds support for publisher logo information
+* Minor bugfixes
+
 ### 1.12 ###
 * Adds ability to use repeated meta tags instead of ld+json tags for metadata
 * Code cleanup to conform to WordPress VIP standards
