@@ -77,6 +77,9 @@ https://wordpress.org/plugins/fb-instant-articles/
 
 == Changelog ==
 
+= 2.0 =
+* Changes JavaScript integration to directly load tracker bundles that are customized for your specific site ID: https://www.parse.ly/help/integration/basic/. NOTE: Sites that have custom Parse.ly video tracking configured (outside of the Parse.ly WordPress plugin) for a player listed at https://www.parse.ly/help/integration/video_v2/#supported-players should contact support@parsely.com before upgrading.
+
 = 1.14 =
 * Updates AMP analytics implementation
 * Adds ability to use a horizontal layout of the widget (for page footers)
