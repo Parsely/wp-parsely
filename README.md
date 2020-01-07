@@ -57,7 +57,12 @@ Dash code will only be placed on pages and posts which have been published in Wo
 You can use the `after_set_parsely_page` filter, which sends three arguments: the array of metadata, the post object, and the `parselyOptions` array:
 
 ```
-$parselyPage = apply_filters('after_set_parsely_page', $parselyPage, $post, $parselyOptions);
+function filter_parsely_page($parselyPage, $post, $parselyOptions ) {
+  $parselyPage['articleSection'] = ; // whatever values you want Parse.ly's Section to be
+  return $parselyPage;
+}
+
+add_filter( 'after_set_parsely_page', 'filter_parsely_page', 10, 3);
 ```
 
 This filter can go anywhere in your codebase, provided it always gets loaded. We recommend putting it in your header file, so that it gets loaded with wp_head.
