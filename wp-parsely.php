@@ -834,6 +834,48 @@ class Parsely {
 		return $parselyPage;
 	}
 
+	public function update_metadata_endpoint($post_id, $post, $update) {
+		$parsely_options = $this->get_options();
+
+		if ( empty( $parsely_options['apikey'] ) || empty( $parsely_options['metadata_secret'] ) ) {
+			return '';
+		}
+
+		$metadata = $this->construct_parsely_metadata( $parsely_options, $post );
+		$page_type_mapping = array(
+		        "NewsArticle" => "post",
+        "WebPage" => "index"
+        );
+
+        $endpoint_metadata = array(
+                "canonical_url" => $metadata["url"],
+            "page_type" => $page_type_mapping[$metadata['@type']],
+            "title" => $metadata['headline'],
+            "image_url" => $metadata['thumbnailUrl'],
+            "pub_date_tmsp" => $metadata["datePublished"],
+            "section" => $metadata["articleSection"],
+            "authors" => $metadata["creator"],
+            "tags" => $metadata['keywords']
+        );
+
+		$parsely_api_endpoint    = 'https://api.parsely.com/v2/metadata/posts';
+		$parsely_metadata_secret = $parsely_options['metadata_secret'];
+		$headers = array(
+		        'Content-Type' => 'application/json',
+        );
+
+		$response = wp_remote_post($parsely_api_endpoint,
+            array(
+                    'method' => 'POST',
+                'headers' => $headers,
+                'body' => array(
+                        'secret' => $parsely_metadata_secret,
+                        'metadata' => $endpoint_metadata
+                )
+            )
+        );
+	}
+
 	/**
 	 * Inserts the JavaScript code required to send off beacon requests
 	 */
