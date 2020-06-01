@@ -252,6 +252,23 @@ class Parsely {
 			$field_args
 		);
 
+		$h      = 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!';
+		$h_link = 'https://www.parse.ly/help/api/analytics/';
+
+		$field_args = array(
+			'option_key' => 'metadata_secret',
+			'help_text'  => $h,
+			'help_link'  => $h_link,
+		);
+		add_settings_field(
+			'metadata_secret',
+			'Parse.ly Metadata Secret <div class="help-icons"></div>',
+			array( $this, 'print_text_tag' ),
+			self::MENU_SLUG,
+			'optional_settings',
+			$field_args
+		);
+
 		$h      = 'Choose the metadata format for our crawlers to access. ' .
 			'Most publishers are fine with JSON-LD ( %s%s%shttps://www.parse.ly/help/integration/jsonld/%s ), ' .
 			'but if you prefer to use our proprietary metadata format then you can do so here.';
@@ -643,6 +660,16 @@ class Parsely {
 			);
 		} else {
 			$input['disable_amp'] = 'true' === $input['disable_amp'] ? true : false;
+		}
+
+		if ( ! empty( $input['metadata_secret'] ) ) {
+			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
+				add_settings_error(
+					self::OPTIONS_KEY,
+					'metadata_secret',
+					'Metadata secret is incorrect. Please contact Parse.ly support!'
+				);
+			}
 		}
 
 		return $input;
