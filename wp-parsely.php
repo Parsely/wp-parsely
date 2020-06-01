@@ -506,7 +506,6 @@ class Parsely {
 			self::MENU_SLUG,
 			'optional_settings'
 		);
-
 	}
 
 	/**
@@ -895,10 +894,12 @@ class Parsely {
 		$response = wp_remote_post(
 			$parsely_api_endpoint,
 			array(
-				'method'  => 'POST',
-				'headers' => $headers,
-				'body'    => array(
+				'method'   => 'POST',
+				'headers'  => $headers,
+				'blocking' => false,
+				'body'     => array(
 					'secret'   => $parsely_metadata_secret,
+					'apikey'   => $parsely_options['apikey'],
 					'metadata' => $endpoint_metadata,
 				),
 			)
