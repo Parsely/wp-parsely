@@ -123,6 +123,7 @@ class Parsely {
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'wp_footer', array( $this, 'insert_parsely_javascript' ) );
+		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
 		if ( ! defined( 'WP_PARSELY_TESTING' ) ) {
@@ -918,7 +919,7 @@ class Parsely {
 			'Content-Type' => 'application/json',
 		);
 
-		$response = wp_remote_post(
+		$response          = wp_remote_post(
 			$parsely_api_endpoint,
 			array(
 				'method'   => 'POST',
@@ -931,6 +932,31 @@ class Parsely {
 				),
 			)
 		);
+		$current_timestamp = time();
+		update_post_meta( $post_id, 'parsely_metadata_last_updated', $current_timestamp );
+	}
+
+
+	public function bulk_update_posts() {
+		global $wpdb;
+		$parsely_options = $this->get_options();
+		$allowed_types   = array_merge( $parsely_options['track_post_types'], $parsely_options['track_page_types'] );
+		$ids             = wp_cache_get( 'parsely_post_ids_need_meta_updating' );
+		if ( false === $ids ) {
+			$ids = $wpdb->get_results(
+				"SELECT DISTINCT(id) FROM {$wpdb->posts} WHERE post_type IN {$allowed_types} AND id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'parsely_metadata_last_updated');"
+			);
+			wp_cache_set( 'parsely_post_ids_need_meta_updating', $ids, '', 86400 );
+		}
+
+		for ( $i = 0; $i < 50; $i++ ) {
+			$post_id = array_pop( $ids );
+			if ( is_null( $post_id ) ) {
+				break;
+			}
+			$post_to_update = get_post( $post_id );
+			$this->update_metadata_endpoint( $post_id, $post_to_update, true );
+		}
 	}
 
 	/**
