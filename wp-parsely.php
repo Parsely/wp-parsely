@@ -120,6 +120,15 @@ class Parsely {
 			array( $this, 'add_plugin_meta_links' )
 		);
 
+		function wpparsely_add_cron_interval( $schedules ) {
+			$schedules['everytenminutes'] = array(
+				'interval' => 600, // time in seconds
+				'display'  => 'Every 10 Minutes',
+			);
+			return $schedules;
+		}
+
+		add_filter( 'cron_schedules', 'wpparsely_add_cron_interval' );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'wp_footer', array( $this, 'insert_parsely_javascript' ) );
@@ -268,6 +277,22 @@ class Parsely {
 			self::MENU_SLUG,
 			'optional_settings',
 			$field_args
+		);
+
+		// Clear metadata
+		$h = 'Check this radio button and hit "Save Changes" to clear all metadata information for Parsely posts and re-send all metadata
+		to Parsely. WARNING: do not do this unless explicitly instructed by Parse.ly Staff!';
+		add_settings_field(
+			'parsely_wipe_metadata_cache',
+			'Disable Amp Tracking <div class="help-icons"></div>',
+			array( $this, 'print_checkbox_tag' ),
+			self::MENU_SLUG,
+			'optional_settings',
+			array(
+				'option_key'       => 'parsely_wipe_metadata_cache',
+				'help_text'        => $h,
+				'requires_recrawl' => false,
+			)
 		);
 
 		$h      = 'Choose the metadata format for our crawlers to access. ' .
@@ -670,6 +695,10 @@ class Parsely {
 					'metadata_secret',
 					'Metadata secret is incorrect. Please contact Parse.ly support!'
 				);
+			} else {
+				if ( 'true' === $input['parsely_wipe_metadata_cache'] ) {
+					delete_post_meta_by_key( 'parsely_metadata_last_updated' );
+				}
 			}
 		}
 
@@ -1068,6 +1097,31 @@ class Parsely {
 		echo sprintf( " /> <label for='%s_true'>Yes</label> <input type='radio' name='%s' id='%s_false' value='false' ", esc_attr( $id ), esc_attr( $name ), esc_attr( $id ) );
 		echo checked( true !== $value, true, false );
 		echo sprintf( " /> <label for='%s_false'>No</label>", esc_attr( $id ) );
+
+		if ( isset( $args['help_text'] ) ) {
+			echo '<div class="help-text"><p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
+		}
+		echo '</div>';
+
+	}
+
+	public function print_checkbox_tag( $args ) {
+		$options = $this->get_options();
+		$name    = $args['option_key'];
+		$value   = $options[ $name ];
+		$id      = esc_attr( $name );
+		$name    = self::OPTIONS_KEY . "[$id]";
+
+		if ( isset( $args['help_text'] ) ) {
+			echo '<div class="parsely-form-controls" data-has-help-text="true">';
+		}
+		if ( isset( $args['requires_recrawl'] ) ) {
+			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
+		}
+
+		echo sprintf( "<input type='checkbox' name='%s' id='%s_true' value='true' ", esc_attr( $name ), esc_attr( $id ) );
+		echo checked( true === $value, true, false );
+		echo sprintf( " /> <label for='%s_true'>Yes</label>" );
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="help-text"><p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
