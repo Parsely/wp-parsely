@@ -285,7 +285,7 @@ class Parsely {
 		to Parsely. WARNING: do not do this unless explicitly instructed by Parse.ly Staff!';
 		add_settings_field(
 			'parsely_wipe_metadata_cache',
-			'Disable Amp Tracking <div class="help-icons"></div>',
+			'Wipe Parsely Metadata Info <div class="help-icons"></div>',
 			array( $this, 'print_checkbox_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -697,10 +697,12 @@ class Parsely {
 					'Metadata secret is incorrect. Please contact Parse.ly support!'
 				);
 			} else {
+
 				if ( 'true' === $input['parsely_wipe_metadata_cache'] ) {
 					delete_post_meta_by_key( 'parsely_metadata_last_updated' );
 
 					wp_schedule_event( time(), 'everytenminutes', 'parsely_bulk_metas_update' );
+					$input['parsely_wipe_metadata_cache'] = false;
 				}
 			}
 		}
@@ -921,13 +923,14 @@ class Parsely {
 		return $parselyPage;
 	}
 
-	public function update_metadata_endpoint( $post_id, $post, $update ) {
+	public function update_metadata_endpoint( $post_id ) {
 		$parsely_options = $this->get_options();
 
 		if ( empty( $parsely_options['apikey'] ) || empty( $parsely_options['metadata_secret'] ) ) {
 			return '';
 		}
 
+		$post              = get_post( $post_id );
 		$metadata          = $this->construct_parsely_metadata( $parsely_options, $post );
 		$page_type_mapping = array(
 			'NewsArticle' => 'post',
@@ -950,22 +953,26 @@ class Parsely {
 		$headers                 = array(
 			'Content-Type' => 'application/json',
 		);
-
-		$response          = wp_remote_post(
-			$parsely_api_endpoint,
+		$body                    = wp_json_encode(
 			array(
-				'method'   => 'POST',
-				'headers'  => $headers,
-				'blocking' => false,
-				'body'     => array(
-					'secret'   => $parsely_metadata_secret,
-					'apikey'   => $parsely_options['apikey'],
-					'metadata' => $endpoint_metadata,
-				),
+				'secret'   => $parsely_metadata_secret,
+				'apikey'   => $parsely_options['apikey'],
+				'metadata' => $endpoint_metadata,
 			)
 		);
-		$current_timestamp = time();
-		update_post_meta( $post_id, 'parsely_metadata_last_updated', $current_timestamp );
+		$response                = wp_remote_post(
+			$parsely_api_endpoint,
+			array(
+				'method'      => 'POST',
+				'headers'     => $headers,
+				'blocking'    => false,
+				'body'        => $body,
+				'data_format' => 'body',
+			)
+		);
+		$current_timestamp       = time();
+		$meta_update             = update_post_meta( $post_id, 'parsely_metadata_last_updated', $current_timestamp );
+
 	}
 
 
@@ -987,8 +994,7 @@ class Parsely {
 				wp_clear_scheduled_hook( 'parsely_bulk_metas_update' );
 				break;
 			}
-			$post_to_update = get_post( $post_id );
-			$this->update_metadata_endpoint( $post_id, $post_to_update, true );
+			$this->update_metadata_endpoint( $post_id );
 		}
 	}
 
@@ -1125,7 +1131,7 @@ class Parsely {
 
 		echo sprintf( "<input type='checkbox' name='%s' id='%s_true' value='true' ", esc_attr( $name ), esc_attr( $id ) );
 		echo checked( true === $value, true, false );
-		echo sprintf( " /> <label for='%s_true'>Yes</label>" );
+		echo sprintf( " /> <label for='%s_true'>Yes</label>", esc_attr( $id ) );
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="help-text"><p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
