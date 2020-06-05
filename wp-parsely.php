@@ -129,6 +129,7 @@ class Parsely {
 		}
 
 		add_filter( 'cron_schedules', 'wpparsely_add_cron_interval' );
+		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'wp_footer', array( $this, 'insert_parsely_javascript' ) );
@@ -698,6 +699,8 @@ class Parsely {
 			} else {
 				if ( 'true' === $input['parsely_wipe_metadata_cache'] ) {
 					delete_post_meta_by_key( 'parsely_metadata_last_updated' );
+
+					wp_schedule_event( time(), 'everytenminutes', 'parsely_bulk_metas_update' );
 				}
 			}
 		}
@@ -981,6 +984,7 @@ class Parsely {
 		for ( $i = 0; $i < 50; $i++ ) {
 			$post_id = array_pop( $ids );
 			if ( is_null( $post_id ) ) {
+				wp_clear_scheduled_hook( 'parsely_bulk_metas_update' );
 				break;
 			}
 			$post_to_update = get_post( $post_id );
