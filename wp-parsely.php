@@ -978,17 +978,26 @@ class Parsely {
 
 	public function bulk_update_posts() {
 		global $wpdb;
-		$parsely_options = $this->get_options();
-		$allowed_types   = array_merge( $parsely_options['track_post_types'], $parsely_options['track_page_types'] );
-		$ids             = wp_cache_get( 'parsely_post_ids_need_meta_updating' );
+		$parsely_options      = $this->get_options();
+		$allowed_types        = array_merge( $parsely_options['track_post_types'], $parsely_options['track_page_types'] );
+		$allowed_types_string = implode(
+			', ',
+			array_map(
+				function( $v ) {
+					return "'" . esc_sql( $v ) . "'";
+				},
+				$allowed_types
+			)
+		);
+		$ids                  = wp_cache_get( 'parsely_post_ids_need_meta_updating' );
 		if ( false === $ids ) {
 			$ids = $wpdb->get_results(
-				"SELECT DISTINCT(id) FROM {$wpdb->posts} WHERE post_type IN {$allowed_types} AND id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'parsely_metadata_last_updated');"
+				"SELECT DISTINCT(id) FROM {$wpdb->posts} WHERE post_type IN (" . $allowed_types_string . ") AND id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'parsely_metadata_last_updated');"
 			);
 			wp_cache_set( 'parsely_post_ids_need_meta_updating', $ids, '', 86400 );
 		}
 
-		for ( $i = 0; $i < 50; $i++ ) {
+		for ( $i = 0; $i < 100; $i++ ) {
 			$post_id = array_pop( $ids );
 			if ( is_null( $post_id ) ) {
 				wp_clear_scheduled_hook( 'parsely_bulk_metas_update' );
