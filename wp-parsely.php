@@ -804,9 +804,9 @@ class Parsely {
 		global $post;
 		// Assign default values for LD+JSON
 		// TODO: Maping of an install's post types to Parse.ly post types (namely page/post)
-		$parselyPage = $this->construct_parsely_metadata( $parselyOptions, $post );
+		$parsely_page = $this->construct_parsely_metadata( $parselyOptions, $post );
 		include 'parsely-parsely-page.php';
-		return $parselyPage;
+		return $parsely_page;
 	}
 
 	public function construct_parsely_metadata( array $parselyOptions, $post ) {
