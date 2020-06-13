@@ -79,16 +79,6 @@ class Parsely {
 	);
 
 	/**
-	 * Declare some class propeties
-	 *
-	 * @var array $implementation_opts The implementation options for the class.
-	 */
-	private $implementation_opts = array(
-		'standard' => 'Standard',
-		'dom_free' => 'DOM-Free',
-	);
-
-	/**
 	 * The constructor
 	 *
 	 * @category   Function
@@ -120,9 +110,14 @@ class Parsely {
 			array( $this, 'add_plugin_meta_links' )
 		);
 
+		/**
+		 * Adds 10 minute cron interval
+		 *
+		 * @param array $schedules WP schedules array.
+		 */
 		function wpparsely_add_cron_interval( $schedules ) {
 			$schedules['everytenminutes'] = array(
-				'interval' => 600, // time in seconds
+				'interval' => 600, // time in seconds.
 				'display'  => 'Every 10 Minutes',
 			);
 			return $schedules;
@@ -280,7 +275,7 @@ class Parsely {
 			$field_args
 		);
 
-		// Clear metadata
+		// Clear metadata.
 		$h = 'Check this radio button and hit "Save Changes" to clear all metadata information for Parsely posts and re-send all metadata
 		to Parsely. WARNING: do not do this unless explicitly instructed by Parse.ly Staff!';
 		add_settings_field(
@@ -574,6 +569,7 @@ class Parsely {
 	 * @category   Function
 	 * @package    Parsely
 	 * @param array $input Options from the settings page.
+	 * @return array $input list of validated input settings.
 	 */
 	public function validate_options( $input ) {
 		if ( empty( $input['apikey'] ) ) {
@@ -793,32 +789,39 @@ class Parsely {
 	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 */
 	public function insert_parsely_page() {
-		$parselyOptions = $this->get_options();
+		$parsely_options = $this->get_options();
 
 		// If we don't have an API key or if we aren't supposed to show to logged in users, there's no need to proceed.
-		if ( empty( $parselyOptions['apikey'] ) || ( ! $parselyOptions['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ) {
+		if ( empty( $parsely_options['apikey'] ) || ( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ) {
 			return '';
 		}
 
-		global $wp_query;
 		global $post;
 		// Assign default values for LD+JSON
-		// TODO: Maping of an install's post types to Parse.ly post types (namely page/post)
-		$parsely_page = $this->construct_parsely_metadata( $parselyOptions, $post );
+		// TODO: Maping of an install's post types to Parse.ly post types (namely page/post).
+		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $post );
 		include 'parsely-parsely-page.php';
 		return $parsely_page;
 	}
 
-	public function construct_parsely_metadata( array $parselyOptions, $post ) {
-		$parselyPage = array(
+
+	/**
+	 * Creates parsely metadata object from post metadata.
+	 *
+	 * @param array   $parsely_options parsely_options array.
+	 * @param WP_Post $post object.
+	 * @return mixed|void
+	 */
+	public function construct_parsely_metadata( array $parsely_options, $post ) {
+		$parsely_page = array(
 			'@context' => 'http://schema.org',
 			'@type'    => 'WebPage',
 		);
-		$currentURL  = $this->get_current_url();
-		if ( in_array( get_post_type(), $parselyOptions['track_post_types'] ) && $post->post_status == 'publish' ) {
+		$current_url  = $this->get_current_url();
+		if ( in_array( get_post_type(), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
 			$authors  = $this->get_author_names( $post );
-			$category = $this->get_category_name( $post, $parselyOptions );
-			$postId   = $parselyOptions['content_id_prefix'] . (string) get_the_ID();
+			$category = $this->get_category_name( $post, $parsely_options );
+			$post_id  = $parsely_options['content_id_prefix'] . (string) get_the_ID();
 
 			if ( has_post_thumbnail() ) {
 				$image_id  = get_post_thumbnail_id();
@@ -829,47 +832,47 @@ class Parsely {
 			}
 
 			$tags = $this->get_tags( $post->ID );
-			if ( $parselyOptions['cats_as_tags'] ) {
+			if ( $parsely_options['cats_as_tags'] ) {
 				$tags = array_merge( $tags, $this->get_categories( $post->ID ) );
-				// add custom taxonomy values
-				$tags = array_merge( $tags, $this->get_custom_taxonomy_values( $post, $parselyOptions ) );
+				// add custom taxonomy values.
+				$tags = array_merge( $tags, $this->get_custom_taxonomy_values( $post, $parsely_options ) );
 			}
 			// the function 'mb_strtolower' is not enabled by default in php, so this check
-			// falls back to the native php function 'strtolower' if necessary
+			// falls back to the native php function 'strtolower' if necessary.
 			if ( function_exists( 'mb_strtolower' ) ) {
 				$lowercase_callback = 'mb_strtolower';
 			} else {
 				$lowercase_callback = 'strtolower';
 			}
-			if ( $parselyOptions['lowercase_tags'] ) {
+			if ( $parsely_options['lowercase_tags'] ) {
 				$tags = array_map( $lowercase_callback, $tags );
 			}
 			$tags = apply_filters( 'wp_parsely_post_tags', $tags, $post->ID );
 			$tags = array_map( array( $this, 'get_clean_parsely_page_value' ), $tags );
 			$tags = array_values( array_unique( $tags ) );
 
-			$parselyPage['@type']            = 'NewsArticle';
-			$parselyPage['mainEntityOfPage'] = array(
+			$parsely_page['@type']            = 'NewsArticle';
+			$parsely_page['mainEntityOfPage'] = array(
 				'@type' => 'WebPage',
 				'@id'   => $this->get_current_url( 'post' ),
 			);
-			$parselyPage['headline']         = $this->get_clean_parsely_page_value( get_the_title() );
-			$parselyPage['url']              = $this->get_current_url( 'post' );
-			$parselyPage['thumbnailUrl']     = $image_url;
-			$parselyPage['image']            = array(
+			$parsely_page['headline']         = $this->get_clean_parsely_page_value( get_the_title() );
+			$parsely_page['url']              = $this->get_current_url( 'post' );
+			$parsely_page['thumbnailUrl']     = $image_url;
+			$parsely_page['image']            = array(
 				'@type' => 'ImageObject',
 				'url'   => $image_url,
 			);
-			$parselyPage['dateCreated']      = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
-			$parselyPage['datePublished']    = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
+			$parsely_page['dateCreated']      = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
+			$parsely_page['datePublished']    = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
 			if ( get_the_modified_date( 'U', true ) >= get_post_time( 'U', true ) ) {
-				$parselyPage['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_the_modified_date( 'U', true ) );
+				$parsely_page['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_the_modified_date( 'U', true ) );
 			} else {
-				// Use the post time as the earliest possible modification date
-				$parselyPage['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
+				// Use the post time as the earliest possible modification date.
+				$parsely_page['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
 			}
-			$parselyPage['articleSection'] = $category;
-			$author_objects                = array();
+			$parsely_page['articleSection'] = $category;
+			$author_objects                 = array();
 			foreach ( $authors as $author ) {
 				$author_tag = array(
 					'@type' => 'Person',
@@ -877,52 +880,59 @@ class Parsely {
 				);
 				array_push( $author_objects, $author_tag );
 			}
-			$parselyPage['author']    = $author_objects;
-			$parselyPage['creator']   = $authors;
-			$parselyPage['publisher'] = array(
+			$parsely_page['author']    = $author_objects;
+			$parsely_page['creator']   = $authors;
+			$parsely_page['publisher'] = array(
 				'@type' => 'Organization',
 				'name'  => get_bloginfo( 'name' ),
 			);
-			$parselyPage['keywords']  = $tags;
-		} elseif ( in_array( get_post_type(), $parselyOptions['track_page_types'] ) && $post->post_status == 'publish' ) {
-			$parselyPage['headline'] = $this->get_clean_parsely_page_value( get_the_title() );
-			$parselyPage['url']      = $this->get_current_url( 'post' );
+			$parsely_page['keywords']  = $tags;
+		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title() );
+			$parsely_page['url']      = $this->get_current_url( 'post' );
 		} elseif ( is_author() ) {
-			// TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions
-			$author                  = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
-			$parselyPage['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
-			$parselyPage['url']      = $currentURL;
+			// TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions.
+			$author                   = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
+			$parsely_page['url']      = $current_url;
 		} elseif ( is_category() ) {
-			$category                = get_the_category();
-			$category                = $category[0];
-			$parselyPage['headline'] = $this->get_clean_parsely_page_value( $category->name );
-			$parselyPage['url']      = $currentURL;
+			$category                 = get_the_category();
+			$category                 = $category[0];
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( $category->name );
+			$parsely_page['url']      = $current_url;
 		} elseif ( is_date() ) {
 			if ( is_year() ) {
-				$parselyPage['headline'] = 'Yearly Archive - ' . get_the_time( 'Y' );
+				$parsely_page['headline'] = 'Yearly Archive - ' . get_the_time( 'Y' );
 			} elseif ( is_month() ) {
-				$parselyPage['headline'] = 'Monthly Archive - ' . get_the_time( 'F, Y' );
+				$parsely_page['headline'] = 'Monthly Archive - ' . get_the_time( 'F, Y' );
 			} elseif ( is_day() ) {
-				$parselyPage['headline'] = 'Daily Archive - ' . get_the_time( 'F jS, Y' );
+				$parsely_page['headline'] = 'Daily Archive - ' . get_the_time( 'F jS, Y' );
 			} elseif ( is_time() ) {
-				$parselyPage['headline'] = 'Hourly, Minutely, or Secondly Archive - ' . get_the_time( 'F jS g:i:s A' );
+				$parsely_page['headline'] = 'Hourly, Minutely, or Secondly Archive - ' . get_the_time( 'F jS g:i:s A' );
 			}
-			$parselyPage['url'] = $currentURL;
+			$parsely_page['url'] = $current_url;
 		} elseif ( is_tag() ) {
 			$tag = single_tag_title( '', false );
 			if ( empty( $tag ) ) {
 				$tag = single_term_title( '', false );
 			}
-			$parselyPage['headline'] = $this->get_clean_parsely_page_value( 'Tagged - ' . $tag );
-			$parselyPage['url']      = $currentURL; // get_tag_link(get_query_var('tag_id'));
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Tagged - ' . $tag );
+			$parsely_page['url']      = $current_url;
 		} elseif ( is_front_page() ) {
-			$parselyPage['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
-			$parselyPage['url']      = home_url(); // site_url();?
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
+			$parsely_page['url']      = home_url();
 		}
-		$parselyPage = apply_filters( 'after_set_parsely_page', $parselyPage, $post, $parselyOptions );
-		return $parselyPage;
+		$parsely_page = apply_filters( 'after_set_parsely_page', $parsely_page, $post, $parsely_options );
+		return $parsely_page;
 	}
 
+
+	/**
+	 * Updates the Parsely metadata endpoint with the new metadata of the post.
+	 *
+	 * @param int $post_id id of the post to update.
+	 * @return string
+	 */
 	public function update_metadata_endpoint( $post_id ) {
 		$parsely_options = $this->get_options();
 
@@ -976,6 +986,9 @@ class Parsely {
 	}
 
 
+	/**
+	 * Updates posts with Parsely metadata api in bulk.
+	 */
 	public function bulk_update_posts() {
 		global $wpdb;
 		$parsely_options      = $this->get_options();
@@ -993,8 +1006,9 @@ class Parsely {
 		if ( false === $ids ) {
 			$ids     = array();
 			$results = $wpdb->get_results(
-				"SELECT DISTINCT(id) FROM {$wpdb->posts} WHERE post_type IN (" . $allowed_types_string . ") AND id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'parsely_metadata_last_updated');"
-			, ARRAY_N);
+				$wpdb->prepare( "SELECT DISTINCT(id) FROM {$wpdb->posts} WHERE post_type IN (\" . %s . \") AND id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'parsely_metadata_last_updated');", $allowed_types_string ),
+				ARRAY_N
+			);
 			foreach ( $results as $result ) {
 				array_push( $ids, $result[0] );
 			}
@@ -1128,6 +1142,9 @@ class Parsely {
 
 	}
 
+	/**
+	 * @param array $args Arguments to print to checkbox tag.
+	 */
 	public function print_checkbox_tag( $args ) {
 		$options = $this->get_options();
 		$name    = $args['option_key'];
@@ -1226,6 +1243,7 @@ class Parsely {
 	 * Extracts a host ( not TLD ) from a URL
 	 *
 	 * @param string $url The url of the host.
+	 * @return string $url The host of the url…
 	 */
 	private function get_host_from_url( $url ) {
 		if ( preg_match( '/^https?:\/\/( [^\/]+ )\/.*$/', $url, $matches ) ) {
@@ -1239,6 +1257,7 @@ class Parsely {
 	 * Returns the tags associated with this page or post
 	 *
 	 * @param string $post_id The id of the post you're trying to get tags for.
+	 * @return array $tags The tags of the post represented by the post id.
 	 */
 	private function get_tags( $post_id ) {
 		$tags    = array();
@@ -1255,6 +1274,7 @@ class Parsely {
 	 *
 	 * @param string $post_id The id of the post you're trying to get categories for.
 	 * @param string $delimiter What character will delimit the categories.
+	 * @return array $tags all the child categories of the current post.
 	 */
 	private function get_categories( $post_id, $delimiter = '/' ) {
 		$tags       = array();
@@ -1291,8 +1311,9 @@ class Parsely {
 	 * Returns a properly cleaned category/taxonomy value and will optionally use the top-level category/taxonomy value
 	 * if so instructed via the `use_top_level_cats` option.
 	 *
-	 * @param Parsely $post_obj The object for the post.
+	 * @param WP_Post $post_obj The object for the post.
 	 * @param array   $parsely_options The parsely options.
+	 * @return string $category Cleaned category name for for post in question.
 	 */
 	private function get_category_name( $post_obj, $parsely_options ) {
 		$taxonomy_dropdown_choice = get_the_terms( $post_obj->ID, $parsely_options['custom_taxonomy_section'] );
@@ -1323,6 +1344,7 @@ class Parsely {
 	 *
 	 * @param string $term_id The id of the top level term.
 	 * @param string $taxonomy_name The name of the taxonomy.
+	 * @return string $parent The top level name of the category / taxonomy.
 	 */
 	private function get_top_level_term( $term_id, $taxonomy_name ) {
 		$parent = get_term_by( 'id', $term_id, $taxonomy_name );
@@ -1338,6 +1360,7 @@ class Parsely {
 	 *
 	 * @param string $post_id The post id you're interested in.
 	 * @param string $taxonomy_name The name of the taxonomy.
+	 * @
 	 */
 	private function get_bottom_level_term( $post_id, $taxonomy_name ) {
 		$terms    = get_the_terms( $post_id, $taxonomy_name );
@@ -1360,8 +1383,8 @@ class Parsely {
 	/**
 	 * Get all term values from custom taxonomies.
 	 *
-	 * @param Parsely $post_obj The post object.
-	 * @param Parsely $parsely_options The pparsely options.
+	 * @param WP_Post $post_obj The post object.
+	 * @param array $parsely_options The pparsely options.
 	 */
 	private function get_custom_taxonomy_values( $post_obj, $parsely_options ) {
 		// filter out default WordPress taxonomies.
@@ -1431,7 +1454,7 @@ class Parsely {
 	 * Determine author name from display name, falling back to firstname
 	 * lastname, then nickname and finally the nicename.
 	 *
-	 * @param string $author The author of the post.
+	 * @param WP_User $author The author of the post.
 	 */
 	private function get_author_name( $author ) {
 		// gracefully handle situation where no author is available.
@@ -1460,7 +1483,8 @@ class Parsely {
 	 * Retrieve all the authors for a post as an array. Can include multiple
 	 * authors if coauthors plugin is in use.
 	 *
-	 * @param Parsely $post The post object.
+	 * @param WP_Post $post The post object.
+	 * @return array
 	 */
 	private function get_author_names( $post ) {
 		$authors = $this->get_coauthor_names( $post->ID );
@@ -1478,6 +1502,7 @@ class Parsely {
 	 * Sanitize content
 	 *
 	 * @param string $val The content you'd like sanitized.
+	 * @return string
 	 */
 	private function get_clean_parsely_page_value( $val ) {
 		if ( is_string( $val ) ) {
@@ -1505,6 +1530,7 @@ class Parsely {
 	 * A fall-back implementation to determine permalink
 	 *
 	 * @param string $post The post object you're interested in.
+	 * @return string|void
 	 */
 	private function get_current_url( $post = 'nonpost' ) {
 		$options = $this->get_options();
@@ -1541,7 +1567,8 @@ class Parsely {
 	 * Get the first image from a post
 	 * https://css-tricks.com/snippets/wordpress/get-the-first-image-from-a-post/
 	 *
-	 * @param Parsely $post The post object you're interested in.
+	 * @param WP_Post $post The post object you're interested in.
+	 * @return mixed|string
 	 */
 	public function get_first_image( $post ) {
 		ob_start();
@@ -1557,6 +1584,7 @@ class Parsely {
 	 * Add parsely tracking to facebook instant articles
 	 *
 	 * @param type $registry The registry info for fbia.
+	 * @return string
 	 */
 	public function insert_parsely_tracking_fbia( &$registry ) {
 		$options      = $this->get_options();
@@ -1607,6 +1635,7 @@ class Parsely {
 	 * Add amp analytics.
 	 *
 	 * @param type $analytics The analytics object you want to add.
+	 * @return type
 	 */
 	public function parsely_add_amp_analytics( $analytics ) {
 		$options = $this->get_options();
@@ -1632,6 +1661,7 @@ class Parsely {
 	 * Add amp native analytics.
 	 *
 	 * @param type $analytics The analytics object you want to add.
+	 * @return string|type
 	 */
 	public function parsely_add_amp_native_analytics( $analytics ) {
 		$options = $this->get_options();
