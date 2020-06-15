@@ -1143,6 +1143,8 @@ class Parsely {
 	}
 
 	/**
+	 * Prints a checkbox tag in the settings page.
+	 *
 	 * @param array $args Arguments to print to checkbox tag.
 	 */
 	public function print_checkbox_tag( $args ) {
@@ -1360,7 +1362,7 @@ class Parsely {
 	 *
 	 * @param string $post_id The post id you're interested in.
 	 * @param string $taxonomy_name The name of the taxonomy.
-	 * @
+	 * @return string name of the custom taxonomy.
 	 */
 	private function get_bottom_level_term( $post_id, $taxonomy_name ) {
 		$terms    = get_the_terms( $post_id, $taxonomy_name );
@@ -1384,7 +1386,7 @@ class Parsely {
 	 * Get all term values from custom taxonomies.
 	 *
 	 * @param WP_Post $post_obj The post object.
-	 * @param array $parsely_options The pparsely options.
+	 * @param array   $parsely_options The pparsely options.
 	 */
 	private function get_custom_taxonomy_values( $post_obj, $parsely_options ) {
 		// filter out default WordPress taxonomies.
