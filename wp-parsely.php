@@ -818,13 +818,13 @@ class Parsely {
 			'@type'    => 'WebPage',
 		);
 		$current_url  = $this->get_current_url();
-		if ( in_array( get_post_type(), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
+		if ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
 			$post_id  = $parsely_options['content_id_prefix'] . (string) get_the_ID();
 
-			if ( has_post_thumbnail() ) {
-				$image_id  = get_post_thumbnail_id();
+			if ( has_post_thumbnail( $post ) ) {
+				$image_id  = get_post_thumbnail_id( $post );
 				$image_url = wp_get_attachment_image_src( $image_id );
 				$image_url = $image_url[0];
 			} else {
@@ -856,20 +856,20 @@ class Parsely {
 				'@type' => 'WebPage',
 				'@id'   => $this->get_current_url( 'post' ),
 			);
-			$parsely_page['headline']         = $this->get_clean_parsely_page_value( get_the_title() );
-			$parsely_page['url']              = $this->get_current_url( 'post' );
+			$parsely_page['headline']         = $this->get_clean_parsely_page_value( get_the_title( $post ) );
+			$parsely_page['url']              = $this->get_current_url( 'post', $post->ID );
 			$parsely_page['thumbnailUrl']     = $image_url;
 			$parsely_page['image']            = array(
 				'@type' => 'ImageObject',
 				'url'   => $image_url,
 			);
-			$parsely_page['dateCreated']      = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
-			$parsely_page['datePublished']    = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
-			if ( get_the_modified_date( 'U', true ) >= get_post_time( 'U', true ) ) {
+			$parsely_page['dateCreated']      = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
+			$parsely_page['datePublished']    = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
+			if ( get_the_modified_date( 'U', true ) >= get_post_time( 'U', true, $post ) ) {
 				$parsely_page['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_the_modified_date( 'U', true ) );
 			} else {
 				// Use the post time as the earliest possible modification date.
-				$parsely_page['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true ) );
+				$parsely_page['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
 			}
 			$parsely_page['articleSection'] = $category;
 			$author_objects                 = array();
@@ -888,7 +888,7 @@ class Parsely {
 			);
 			$parsely_page['keywords']  = $tags;
 		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title() );
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title( $post ) );
 			$parsely_page['url']      = $this->get_current_url( 'post' );
 		} elseif ( is_author() ) {
 			// TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions.
@@ -1532,14 +1532,15 @@ class Parsely {
 	 * A fall-back implementation to determine permalink
 	 *
 	 * @param string $post The post object you're interested in.
+     * @param int $post_id id of the post you want to get the url for. Optional.
 	 * @return string|void
 	 */
-	private function get_current_url( $post = 'nonpost' ) {
+	private function get_current_url( $post = 'nonpost', $post_id = 0 ) {
 		$options = $this->get_options();
 		$scheme  = ( $options['force_https_canonicals'] ? 'https://' : 'http://' );
 
 		if ( 'post' === $post ) {
-			$permalink        = get_permalink();
+			$permalink        = get_permalink( $post_id );
 			$permalink        = apply_filters( 'wp_parsely_permalink', $permalink, $post );
 			$parsed_canonical = wp_parse_url( $permalink );
 			// handle issue if wp_parse_url doesn't return good host & path data, fallback to page url as a last resort.
