@@ -61,21 +61,23 @@ class Parsely {
 	 * @var array $option_defaults The defaults we need for the class.
 	 */
 	private $option_defaults = array(
-		'apikey'                    => '',
-		'content_id_prefix'         => '',
-		'api_secret'                => '',
-		'use_top_level_cats'        => false,
-		'custom_taxonomy_section'   => 'category',
-		'cats_as_tags'              => false,
-		'track_authenticated_users' => true,
-		'lowercase_tags'            => true,
-		'force_https_canonicals'    => false,
-		'track_post_types'          => array( 'post' ),
-		'track_page_types'          => array( 'page' ),
-		'disable_javascript'        => false,
-		'disable_amp'               => false,
-		'meta_type'                 => 'json_ld',
-		'logo'                      => '',
+		'apikey'                      => '',
+		'content_id_prefix'           => '',
+		'api_secret'                  => '',
+		'use_top_level_cats'          => false,
+		'custom_taxonomy_section'     => 'category',
+		'cats_as_tags'                => false,
+		'track_authenticated_users'   => true,
+		'lowercase_tags'              => true,
+		'force_https_canonicals'      => false,
+		'track_post_types'            => array( 'post' ),
+		'track_page_types'            => array( 'page' ),
+		'disable_javascript'          => false,
+		'disable_amp'                 => false,
+		'meta_type'                   => 'json_ld',
+		'logo'                        => '',
+		'metadata_secret'             => '',
+		'parsely_wipe_metadata_cache' => false,
 	);
 
 	/**
@@ -148,7 +150,6 @@ class Parsely {
 			add_action( 'wp_enqueue_scripts', 'wp_parsely_style_init' );
 			add_action( 'wp_enqueue_scripts', 'ensure_jquery_exists' );
 		}
-
 	}
 
 	/**
@@ -697,7 +698,7 @@ class Parsely {
 				if ( 'true' === $input['parsely_wipe_metadata_cache'] ) {
 					delete_post_meta_by_key( 'parsely_metadata_last_updated' );
 
-					wp_schedule_event( time(), 'everytenminutes', 'parsely_bulk_metas_update' );
+					wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
 					$input['parsely_wipe_metadata_cache'] = false;
 				}
 			}
@@ -1532,7 +1533,7 @@ class Parsely {
 	 * A fall-back implementation to determine permalink
 	 *
 	 * @param string $post The post object you're interested in.
-     * @param int $post_id id of the post you want to get the url for. Optional.
+	 * @param int    $post_id id of the post you want to get the url for. Optional.
 	 * @return string|void
 	 */
 	private function get_current_url( $post = 'nonpost', $post_id = 0 ) {
