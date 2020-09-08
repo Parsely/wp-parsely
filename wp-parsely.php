@@ -856,8 +856,8 @@ class Parsely {
 		if ( ! in_array( get_post_type(), $parsely_options['track_post_types'], true ) && ! in_array( get_post_type(), $parsely_options['track_page_types'], true ) ) {
 			$display = false;
 		}
-		if ( $display ) {
-			include 'parsely-javascript.php';
+		if ( apply_filters( 'parsely_filter_insert_javascript', $display ) ) {
+			include( 'parsely-javascript.php' );
 		}
 	}
 
