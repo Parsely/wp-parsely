@@ -857,7 +857,7 @@ class Parsely {
 			$display = false;
 		}
 		if ( apply_filters( 'parsely_filter_insert_javascript', $display ) ) {
-			include( 'parsely-javascript.php' );
+			include 'parsely-javascript.php';
 		}
 	}
 
