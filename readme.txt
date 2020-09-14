@@ -77,6 +77,10 @@ https://wordpress.org/plugins/fb-instant-articles/
 
 == Changelog ==
 
+= 2.2 =
+* adds page filter
+* prevents tracking of 404 pages leading to excess database queries
+
 = 2.1 =
 * adds metadata endpoint for headless WP installs
 
