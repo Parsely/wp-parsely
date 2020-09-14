@@ -94,6 +94,13 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 
 ## Changelog ##
 
+### 2.2 ###
+* Add filter to specify tracking or not tracking a page
+* Prevent tracking 404 pages
+
+### 2.1 ###
+* adds support for metadata endpoint
+
 ### 2.0 ###
 * Changes JavaScript integration to directly load tracker bundles that are customized for your specific site ID: https://www.parse.ly/help/integration/basic/. NOTE: Sites that have custom Parse.ly video tracking configured (outside of the Parse.ly WordPress plugin) for a player listed at https://www.parse.ly/help/integration/video_v2/#supported-players should contact support@parsely.com before upgrading.
 
