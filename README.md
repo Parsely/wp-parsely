@@ -40,7 +40,10 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 1. Checkout the branch on which you've been working
 1. Navigate back up to the root of the `vccw` directory and run `vagrant up`
 1. Ssh into the Vagrant machine with `vagrant ssh`
+1. Delete extra wordpress files in /tmp with `rm -rf /tmp/wordpress*` (see this issue for context: https://github.com/wp-cli/wp-cli/issues/1938)
+1. Run the test init script, if you haven't already: `bash bin/install-wp-tests.sh wptest root <db password>`
 1. Navigate to `/var/www/wordpress/wp-content/plugins/wp-parsely` and run the test suite with the command `phpunit`
+
 
 ## Frequently Asked Questions ##
 
