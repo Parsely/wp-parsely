@@ -817,7 +817,6 @@ class Parsely {
 		$parsely_page = array(
 			'@context' => 'http://schema.org',
 			'@type'    => 'WebPage',
-			'logo'     => $parsely_options['logo']
 		);
 		$current_url  = $this->get_current_url();
 		if ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
@@ -887,6 +886,7 @@ class Parsely {
 			$parsely_page['publisher'] = array(
 				'@type' => 'Organization',
 				'name'  => get_bloginfo( 'name' ),
+				'logo'     => $parsely_options['logo'],
 			);
 			$parsely_page['keywords']  = $tags;
 		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
