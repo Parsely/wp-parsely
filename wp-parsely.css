@@ -48,7 +48,7 @@
 
 .list-horizontal .parsely-recommended-widget-entry img {
 	float: none;
-	margin-right: none;
+	margin-right: 0;
 	max-width: 100%;
 }
 
