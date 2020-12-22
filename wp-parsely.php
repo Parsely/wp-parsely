@@ -1019,7 +1019,7 @@ class Parsely {
 
 		for ( $i = 0; $i < 100; $i++ ) {
 			$post_id = array_pop( $ids );
-			if ( is_null( $post_id ) ) {
+			if ( null === $post_id ) {
 				wp_clear_scheduled_hook( 'parsely_bulk_metas_update' );
 				break;
 			}
