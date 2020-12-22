@@ -112,20 +112,7 @@ class Parsely {
 			array( $this, 'add_plugin_meta_links' )
 		);
 
-		/**
-		 * Adds 10 minute cron interval
-		 *
-		 * @param array $schedules WP schedules array.
-		 */
-		function wpparsely_add_cron_interval( $schedules ) {
-			$schedules['everytenminutes'] = array(
-				'interval' => 600, // time in seconds.
-				'display'  => 'Every 10 Minutes',
-			);
-			return $schedules;
-		}
-
-		add_filter( 'cron_schedules', 'wpparsely_add_cron_interval' );
+		add_filter( 'cron_schedules', [ $this, 'wpparsely_add_cron_interval' ] );
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
@@ -134,22 +121,36 @@ class Parsely {
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
 		if ( ! defined( 'WP_PARSELY_TESTING' ) ) {
-			/**
-			 * Initialize parsely WordPress style
-			 */
-			function wp_parsely_style_init() {
-				wp_enqueue_style( 'wp-parsely-style', plugins_url( 'wp-parsely.css', __FILE__ ), array(), filemtime( get_stylesheet_directory() ) );
-			}
-
-			/**
-			 * Make sure that jquery exists
-			 */
-			function ensure_jquery_exists() {
-				wp_enqueue_script( 'jquery' );
-			}
-			add_action( 'wp_enqueue_scripts', 'wp_parsely_style_init' );
-			add_action( 'wp_enqueue_scripts', 'ensure_jquery_exists' );
+			add_action( 'wp_enqueue_scripts', [ $this, 'wp_parsely_style_init' ] );
+			add_action( 'wp_enqueue_scripts', [ $this, 'ensure_jquery_exists' ] );
 		}
+	}
+
+	/**
+	 * Adds 10 minute cron interval
+	 *
+	 * @param array $schedules WP schedules array.
+	 */
+	public function wpparsely_add_cron_interval( $schedules ) {
+		$schedules['everytenminutes'] = array(
+			'interval' => 600, // time in seconds.
+			'display'  => 'Every 10 Minutes',
+		);
+		return $schedules;
+	}
+
+	/**
+	 * Initialize parsely WordPress style
+	 */
+	public function wp_parsely_style_init() {
+		wp_enqueue_style( 'wp-parsely-style', plugins_url( 'wp-parsely.css', __FILE__ ), array(), filemtime( get_stylesheet_directory() ) );
+	}
+
+	/**
+	 * Make sure that jquery exists
+	 */
+	public function ensure_jquery_exists() {
+		wp_enqueue_script( 'jquery' );
 	}
 
 	/**
