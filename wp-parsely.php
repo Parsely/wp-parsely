@@ -1237,8 +1237,7 @@ class Parsely {
 
 		// get_site_icon_url returns an empty string if one isn't found,
 		// which is what we want to use as the default anyway.
-		$site_icon_url = get_site_icon_url();
-		return $site_icon_url;
+		return get_site_icon_url();
 	}
 
 	/**
@@ -1577,8 +1576,7 @@ class Parsely {
 		ob_start();
 		ob_end_clean();
 		if ( preg_match_all( '/<img.+src=[\'"]( [^\'"]+ )[\'"].*>/i', $post->post_content, $matches ) ) {
-			$first_img = $matches[1][0];
-			return $first_img;
+			return $matches[1][0];
 		}
 		return '';
 	}
