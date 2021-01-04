@@ -823,7 +823,7 @@ class Parsely {
 		if ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
-			$post_id  = $parsely_options['content_id_prefix'] . (string) get_the_ID();
+			$post_id  = $parsely_options['content_id_prefix'] . get_the_ID();
 
 			if ( has_post_thumbnail( $post ) ) {
 				$image_id  = get_post_thumbnail_id( $post );
