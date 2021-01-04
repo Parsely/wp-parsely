@@ -621,7 +621,7 @@ class Parsely {
 				'Value passed for use_top_level_cats must be either "true" or "false".'
 			);
 		} else {
-			$input['use_top_level_cats'] = 'true' === $input['use_top_level_cats'] ? true : false;
+			$input['use_top_level_cats'] = 'true' === $input['use_top_level_cats'];
 		}
 
 		// Child categories as tags.
@@ -632,7 +632,7 @@ class Parsely {
 				'Value passed for cats_as_tags must be either "true" or "false".'
 			);
 		} else {
-			$input['cats_as_tags'] = 'true' === $input['cats_as_tags'] ? true : false;
+			$input['cats_as_tags'] = 'true' === $input['cats_as_tags'];
 		}
 
 		// Track authenticated users.
@@ -643,7 +643,7 @@ class Parsely {
 				'Value passed for track_authenticated_users must be either "true" or "false".'
 			);
 		} else {
-			$input['track_authenticated_users'] = 'true' === $input['track_authenticated_users'] ? true : false;
+			$input['track_authenticated_users'] = 'true' === $input['track_authenticated_users'];
 		}
 
 		// Lowercase tags.
@@ -654,7 +654,7 @@ class Parsely {
 				'Value passed for lowercase_tags must be either "true" or "false".'
 			);
 		} else {
-			$input['lowercase_tags'] = 'true' === $input['lowercase_tags'] ? true : false;
+			$input['lowercase_tags'] = 'true' === $input['lowercase_tags'];
 		}
 
 		if ( 'true' !== $input['force_https_canonicals'] && 'false' !== $input['force_https_canonicals'] ) {
@@ -664,7 +664,7 @@ class Parsely {
 				'Value passed for force_https_canonicals must be either "true" or "false".'
 			);
 		} else {
-			$input['force_https_canonicals'] = 'true' === $input['force_https_canonicals'] ? true : false;
+			$input['force_https_canonicals'] = 'true' === $input['force_https_canonicals'];
 		}
 
 		if ( 'true' !== $input['disable_javascript'] && 'false' !== $input['disable_javascript'] ) {
@@ -674,7 +674,7 @@ class Parsely {
 				'Value passed for disable_javascript must be either "true" or "false".'
 			);
 		} else {
-			$input['disable_javascript'] = 'true' === $input['disable_javascript'] ? true : false;
+			$input['disable_javascript'] = 'true' === $input['disable_javascript'];
 		}
 
 		if ( 'true' !== $input['disable_amp'] && 'false' !== $input['disable_amp'] ) {
@@ -684,7 +684,7 @@ class Parsely {
 				'Value passed for disable_amp must be either "true" or "false".'
 			);
 		} else {
-			$input['disable_amp'] = 'true' === $input['disable_amp'] ? true : false;
+			$input['disable_amp'] = 'true' === $input['disable_amp'];
 		}
 
 		if ( ! empty( $input['metadata_secret'] ) ) {
