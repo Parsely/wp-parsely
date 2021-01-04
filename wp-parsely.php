@@ -694,14 +694,11 @@ class Parsely {
 					'metadata_secret',
 					'Metadata secret is incorrect. Please contact Parse.ly support!'
 				);
-			} else {
+			} elseif ( 'true' === $input['parsely_wipe_metadata_cache'] ) {
+				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
 
-				if ( 'true' === $input['parsely_wipe_metadata_cache'] ) {
-					delete_post_meta_by_key( 'parsely_metadata_last_updated' );
-
-					wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
-					$input['parsely_wipe_metadata_cache'] = false;
-				}
+				wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
+				$input['parsely_wipe_metadata_cache'] = false;
 			}
 		}
 
@@ -1253,9 +1250,9 @@ class Parsely {
 	private function get_host_from_url( $url ) {
 		if ( preg_match( '/^https?:\/\/( [^\/]+ )\/.*$/', $url, $matches ) ) {
 			return $matches[1];
-		} else {
-			return $url;
 		}
+
+		return $url;
 	}
 
 	/**
@@ -1516,9 +1513,9 @@ class Parsely {
 			$val = wp_strip_all_tags( $val );
 			$val = trim( $val );
 			return $val;
-		} else {
-			return $val;
 		}
+
+		return $val;
 	}
 
 
