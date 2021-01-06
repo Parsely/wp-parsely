@@ -388,25 +388,23 @@ PARSELYJS;
 		$options    = get_option( 'parsely' );
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
+		$headline   = 'Completely New And Original Filtered Headline';
 		$this->go_to( '/?p=' . $post );
-		/**
-		 * Check out page filtering.
-		 *
-		 * @category   Function
-		 * @package    SampleTest
-		 * @param string $original_ppage The original parsely page.
-		 * @param string $ppage_post The parsely post.
-		 * @param string $p_options Any options.
-		 */
-		function filter_ppage( $original_ppage, $ppage_post, $p_options ) {
-			$new_vals             = $original_ppage;
-			$new_vals['headline'] = 'Completely New And Original Filtered Headline';
-			return $new_vals;
-		}
+		
+		// Apply page filtering.
+		add_filter(
+			'after_set_parsely_page',
+			function( $args ) use ( $headline ) {
+				$args['headline'] = $headline;
 
-		add_filter( 'after_set_parsely_page', 'filter_ppage', 10, 3 );
+				return $args;
+			},
+			10,
+			3
+		);
+
 		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( strpos( $ppage['headline'], 'Completely New And Original Filtered Headline' ), 0 );
+		self::assertTrue( strpos( $ppage['headline'], $headline ) === 0 );
 	}
 
 	/**
