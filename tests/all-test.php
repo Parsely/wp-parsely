@@ -5,102 +5,17 @@
  * @package WordPress
  */
 
+namespace Parsely\Tests;
+
+use Parsely\Tests\TestCase as ParselyTestCase;
+
 /**
  * Sample test case.
  *
  * @category   Class
  * @package    SampleTest
  */
-class SampleTest extends WP_UnitTestCase {
-
-	/**
-	 * Create a sample post.
-	 *
-	 * @category   Function
-	 * @package    SampleTest
-	 * @param string $post_type You can pass in a post type.
-	 */
-	public function create_test_post_array( $post_type = 'post' ) {
-		return array(
-			'post_title'   => 'Sample Parsely Post',
-			'post_author'  => 1,
-			'post_content' => 'Some sample content just to have here',
-			'post_status'  => 'publish',
-			'post_type'    => $post_type,
-		);
-	}
-
-	/**
-	 * Create a sample category.
-	 *
-	 * @category   Function
-	 * @package    SampleTest
-	 * @param string $name You can pass in a category name.
-	 */
-	public function create_test_category( $name ) {
-		return $this->factory->category->create(
-			array(
-				'name'                 => $name,
-				'category_description' => $name,
-				'category_nicename'    => 'category-' . $name,
-				'taxonomy'             => 'category',
-			)
-		);
-	}
-
-	/**
-	 * Create a sample user
-	 *
-	 * @category   Function
-	 * @package    SampleTest
-	 * @param string $name You can pass in a user name.
-	 */
-	public function create_test_user( $name ) {
-		return $this->factory->user->create( array( 'user_login' => $name ) );
-	}
-
-	/**
-	 * Create a test blog.
-	 *
-	 * @category   Function
-	 * @package    SampleTest
-	 * @param string $name You can pass in a user name.
-	 * @param string $user_id You can pass in a user id.
-	 */
-	public function create_test_blog( $name, $user_id ) {
-		return $this->factory->blog->create(
-			array(
-				'domain'  => 'http://' . $name . 'com',
-				'user_id' => $user_id,
-			)
-		);
-	}
-
-	/**
-	 * Create a sample taxonomy.
-	 *
-	 * @category   Function
-	 * @package    SampleTest
-	 * @param string $taxonomy You can pass in a taxonomy.
-	 * @param string $taxonomy_value The name of the taxonomy.
-	 */
-	public function create_test_taxonomy( $taxonomy, $taxonomy_value ) {
-		register_taxonomy(
-			$taxonomy,
-			'post',
-			array(
-				'label'        => $taxonomy,
-				'hierarchical' => true,
-			)
-		);
-
-		return $this->factory->term->create(
-			array(
-				'name'     => $taxonomy_value,
-				'taxonomy' => $taxonomy,
-			)
-		);
-	}
+class SampleTest extends ParselyTestCase {
 
 	/**
 	 * Internal variables
@@ -175,7 +90,7 @@ class SampleTest extends WP_UnitTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
-		self::$parsely   = new Parsely();
+		self::$parsely   = new \Parsely();
 		$option_defaults = array(
 			'apikey'                    => 'blog.parsely.com',
 			'content_id_prefix'         => '',

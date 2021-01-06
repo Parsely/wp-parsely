@@ -23,3 +23,6 @@ tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 // Start up the WP testing environment.
 require $_tests_dir . '/includes/bootstrap.php';
+
+// Include the Parsely custom test case.
+require_once __DIR__ . '/TestCase.php';
