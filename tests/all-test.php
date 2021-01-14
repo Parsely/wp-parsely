@@ -21,14 +21,13 @@ class SampleTest extends WP_UnitTestCase {
 	 * @param string $post_type You can pass in a post type.
 	 */
 	public function create_test_post_array( $post_type = 'post' ) {
-		$post_array = array(
+		return array(
 			'post_title'   => 'Sample Parsely Post',
 			'post_author'  => 1,
 			'post_content' => 'Some sample content just to have here',
 			'post_status'  => 'publish',
 			'post_type'    => $post_type,
 		);
-		return $post_array;
 	}
 
 	/**
@@ -39,7 +38,7 @@ class SampleTest extends WP_UnitTestCase {
 	 * @param string $name You can pass in a category name.
 	 */
 	public function create_test_category( $name ) {
-		$category = $this->factory->category->create(
+		return $this->factory->category->create(
 			array(
 				'name'                 => $name,
 				'category_description' => $name,
@@ -47,7 +46,6 @@ class SampleTest extends WP_UnitTestCase {
 				'taxonomy'             => 'category',
 			)
 		);
-		return $category;
 	}
 
 	/**
@@ -58,8 +56,7 @@ class SampleTest extends WP_UnitTestCase {
 	 * @param string $name You can pass in a user name.
 	 */
 	public function create_test_user( $name ) {
-		$user = $this->factory->user->create( array( 'user_login' => $name ) );
-		return $user;
+		return $this->factory->user->create( array( 'user_login' => $name ) );
 	}
 
 	/**
@@ -71,13 +68,12 @@ class SampleTest extends WP_UnitTestCase {
 	 * @param string $user_id You can pass in a user id.
 	 */
 	public function create_test_blog( $name, $user_id ) {
-		$blog = $this->factory->blog->create(
+		return $this->factory->blog->create(
 			array(
 				'domain'  => 'http://' . $name . 'com',
 				'user_id' => $user_id,
 			)
 		);
-		return $blog;
 	}
 
 	/**
@@ -97,13 +93,13 @@ class SampleTest extends WP_UnitTestCase {
 				'hierarchical' => true,
 			)
 		);
-		$custom_taxonomy = $this->factory->term->create(
+
+		return $this->factory->term->create(
 			array(
 				'name'     => $taxonomy_value,
 				'taxonomy' => $taxonomy,
 			)
 		);
-		return $custom_taxonomy;
 	}
 
 	/**
