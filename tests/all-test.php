@@ -213,7 +213,7 @@ PARSELYJS;
 		echo esc_html( self::$parsely->insert_parsely_javascript() );
 		$output = ob_get_clean();
 		echo esc_html( $output );
-		$this->assertContains( self::$parsely_html, $output );
+		self::assertContains( self::$parsely_html, $output );
 	}
 
 
@@ -226,12 +226,12 @@ PARSELYJS;
 	public function test_parsely_ppage_output() {
 		$this->go_to( '/' );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertTrue( 'WebPage' === $ppage['@type'] );
+		self::assertSame( 'WebPage', $ppage['@type'] );
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertTrue( 'NewsArticle' === $ppage['@type'] );
+		self::assertSame( 'NewsArticle', $ppage['@type'] );
 	}
 
 	/**
@@ -247,7 +247,7 @@ PARSELYJS;
 		$post                        = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertTrue( 'Newssss' === $ppage['articleSection'] );
+		self::assertSame( 'Newssss', $ppage['articleSection'] );
 	}
 
 	/**
@@ -265,8 +265,8 @@ PARSELYJS;
 		update_option( 'parsely', $options );
 		$this->go_to( '/?p=' . $post );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertContains( 'sample', $ppage['keywords'] );
-		$this->assertContains( 'tag', $ppage['keywords'] );
+		self::assertContains( 'sample', $ppage['keywords'] );
+		self::assertContains( 'tag', $ppage['keywords'] );
 	}
 
 	/**
@@ -294,9 +294,9 @@ PARSELYJS;
 		$post                        = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertContains( 'news', $ppage['keywords'] );
-		$this->assertContains( 'local', $ppage['keywords'] );
-		$this->assertContains( 'sample county', $ppage['keywords'] );
+		self::assertContains( 'news', $ppage['keywords'] );
+		self::assertContains( 'local', $ppage['keywords'] );
+		self::assertContains( 'sample county', $ppage['keywords'] );
 	}
 
 	/**
@@ -323,9 +323,9 @@ PARSELYJS;
 		wp_set_post_terms( $post, array( $parent_taxonomy, $child_taxonomy ), 'sports' );
 		$this->go_to( '/?p=' . $post );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertContains( 'sample', $ppage['keywords'] );
-		$this->assertContains( 'tag', $ppage['keywords'] );
-		$this->assertContains( 'gretzky', $ppage['keywords'] );
+		self::assertContains( 'sample', $ppage['keywords'] );
+		self::assertContains( 'tag', $ppage['keywords'] );
+		self::assertContains( 'gretzky', $ppage['keywords'] );
 	}
 
 
@@ -353,7 +353,7 @@ PARSELYJS;
 		$post                        = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertTrue( 'news' === $ppage['articleSection'] );
+		self::assertSame( 'news', $ppage['articleSection'] );
 	}
 
 	/**
@@ -381,7 +381,7 @@ PARSELYJS;
 		wp_set_post_terms( $post, array( $parent_taxonomy, $child_taxonomy ), 'sports' );
 		$this->go_to( '/?p=' . $post );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertTrue( 'lebron' === $ppage['articleSection'] );
+		self::assertSame( 'lebron', $ppage['articleSection'] );
 	}
 
 	/**
@@ -410,7 +410,7 @@ PARSELYJS;
 		wp_set_post_terms( $post, array( $parent_taxonomy, $child_taxonomy ), 'sports' );
 		$this->go_to( '/?p=' . $post );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertTrue( 'basketball' === $ppage['articleSection'] );
+		self::assertSame( 'basketball', $ppage['articleSection'] );
 	}
 
 	/**
@@ -425,12 +425,12 @@ PARSELYJS;
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertTrue( strpos( $ppage['url'], 'http', 0 ) === 0 );
-		$this->assertFalse( strpos( $ppage['url'], 'https', 0 ) );
+		self::assertSame( strpos( $ppage['url'], 'http', 0 ), 0 );
+		self::assertFalse( strpos( $ppage['url'], 'https', 0 ) );
 		$options['force_https_canonicals'] = true;
 		update_option( 'parsely', $options );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertTrue( strpos( $ppage['url'], 'https', 0 ) === 0 );
+		self::assertSame( strpos( $ppage['url'], 'https', 0 ), 0 );
 	}
 
 	/**
@@ -442,8 +442,8 @@ PARSELYJS;
 	public function test_fbia_integration() {
 		$options = get_option( 'parsely' );
 		$output  = self::$parsely->insert_parsely_tracking_fbia( $registry );
-		$this->assertTrue( strpos( $output, 'facebook.com/instantarticles' ) > 0 );
-		$this->assertTrue( strpos( $output, 'blog.parsely.com' ) > 0 );
+		self::assertTrue( strpos( $output, 'facebook.com/instantarticles' ) > 0 );
+		self::assertTrue( strpos( $output, 'blog.parsely.com' ) > 0 );
 	}
 
 
@@ -458,13 +458,13 @@ PARSELYJS;
 		$analytics = array();
 		$filter    = self::$parsely->parsely_add_amp_actions();
 		$output    = self::$parsely->parsely_add_amp_analytics( $analytics );
-		$this->assertEmpty( $filter );
-		$this->assertTrue( 'parsely' === $output['parsely']['type'] );
-		$this->assertTrue( 'blog.parsely.com' === $output['parsely']['config_data']['vars']['apikey'] );
+		self::assertEmpty( $filter );
+		self::assertSame( 'parsely', $output['parsely']['type'] );
+		self::assertSame( 'blog.parsely.com', $output['parsely']['config_data']['vars']['apikey'] );
 		$options['disable_amp'] = true;
 		update_option( 'parsely', $options );
 		$filter = self::$parsely->parsely_add_amp_actions();
-		$this->assertTrue( '' === $filter );
+		self::assertSame( '', $filter );
 	}
 
 	/**
@@ -495,7 +495,7 @@ PARSELYJS;
 
 		add_filter( 'after_set_parsely_page', 'filter_ppage', 10, 3 );
 		$ppage = self::$parsely->insert_parsely_page();
-		$this->assertTrue( strpos( $ppage['headline'], 'Completely New And Original Filtered Headline' ) === 0 );
+		self::assertSame( strpos( $ppage['headline'], 'Completely New And Original Filtered Headline' ), 0 );
 	}
 
 	/**
@@ -513,7 +513,7 @@ PARSELYJS;
 		ob_start();
 		echo esc_html( self::$parsely->insert_parsely_javascript() );
 		$output = ob_get_clean();
-		$this->assertNotContains( self::$parsely_html, $output );
+		self::assertNotContains( self::$parsely_html, $output );
 	}
 
 	/**
@@ -524,7 +524,7 @@ PARSELYJS;
 	 */
 	public function test_user_logged_in_multisite() {
 		if ( ! is_multisite() ) {
-			$this->markTestSkipped( "this test can't run without multisite" );
+			self::markTestSkipped( "this test can't run without multisite" );
 		}
 
 		$new_user    = $this->create_test_user( 'optimus_prime' );
@@ -545,22 +545,22 @@ PARSELYJS;
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
 
-		$this->assertEquals( get_current_blog_id(), $first_blog );
-		$this->assertTrue( is_user_member_of_blog( $new_user, $first_blog ) );
-		$this->assertFalse( is_user_member_of_blog( $new_user, $second_blog ) );
+		self::assertEquals( get_current_blog_id(), $first_blog );
+		self::assertTrue( is_user_member_of_blog( $new_user, $first_blog ) );
+		self::assertFalse( is_user_member_of_blog( $new_user, $second_blog ) );
 
 		ob_start();
 		echo esc_html( self::$parsely->insert_parsely_javascript() );
 		$output = ob_get_clean();
-		$this->assertNotContains( self::$parsely_html, $output );
+		self::assertNotContains( self::$parsely_html, $output );
 
 		switch_to_blog( $second_blog );
-		$this->assertEquals( get_current_blog_id(), $second_blog );
-		$this->assertFalse( is_user_member_of_blog( $new_user, get_current_blog_id() ) );
+		self::assertEquals( get_current_blog_id(), $second_blog );
+		self::assertFalse( is_user_member_of_blog( $new_user, get_current_blog_id() ) );
 
 		ob_start();
 		echo esc_html( self::$parsely->insert_parsely_javascript() );
 		$output = ob_get_clean();
-		$this->assertContains( self::$parsely_html, $output );
+		self::assertContains( self::$parsely_html, $output );
 	}
 }
