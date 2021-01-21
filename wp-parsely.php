@@ -1,13 +1,15 @@
 <?php
 /**
-Plugin Name: Parse.ly
-Plugin URI: http://www.parsely.com/
-Description: This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
-Author: Mike Sukmanowsky ( mike@parsely.com )
-Version: 2.2.1
-Requires at least: 4.0.0
-Author URI: http://www.parsely.com/
-License: GPL2
+ * Plugin Name: Parse.ly
+ * Plugin URI: http://www.parsely.com/
+ * Description: This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
+ * Author: Mike Sukmanowsky ( mike@parsely.com )
+ * Version: 2.3
+ * Requires at least: 4.0.0
+ * Author: Parse.ly
+ * Author URI: http://www.parsely.com/
+ * License: GPL2
+ * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
 @package WordPress
 
@@ -25,6 +27,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+or visit https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
 Authors: Mike Sukmanowsky ( mike@parsely.com), Xand Lourenco ( xand@parsely.com ), James O'Toole (james.otoole@parsely.com )
  */
