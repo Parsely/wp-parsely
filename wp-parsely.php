@@ -51,7 +51,7 @@ class Parsely {
 	 *
 	 * @codeCoverageIgnoreStart
 	 */
-	const VERSION         = '2.2.1';
+	const VERSION         = '2.3';
 	const MENU_SLUG       = 'parsely';             // Defines the page param passed to options-general.php.
 	const MENU_TITLE      = 'Parse.ly';            // Text to be used for the menu as seen in Settings sub-menu.
 	const MENU_PAGE_TITLE = 'Parse.ly > Settings'; // Text shown in <title></title> when the settings screen is viewed.
