@@ -817,7 +817,10 @@ class Parsely {
 			'@type'    => 'WebPage',
 		);
 		$current_url  = $this->get_current_url();
-		if ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
+		if ( is_front_page() || ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) ) {
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
+			$parsely_page['url']      = home_url();
+		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
 			$post_id  = $parsely_options['content_id_prefix'] . get_the_ID();
@@ -918,9 +921,6 @@ class Parsely {
 			}
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Tagged - ' . $tag );
 			$parsely_page['url']      = $current_url;
-		} elseif ( is_front_page() ) {
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
-			$parsely_page['url']      = home_url();
 		}
 		$parsely_page = apply_filters( 'after_set_parsely_page', $parsely_page, $post, $parsely_options );
 		return $parsely_page;
