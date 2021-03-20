@@ -299,9 +299,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			</select>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'display_author' ) ); ?>">Display Author:</label>
-			<br>
-			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'display_author' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_author' ) ); ?>" value="display_author" <?php checked( $instance['display_author'], 'display_author' ); ?> />
+			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'display_author' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_author' ) ); ?>" value="display_author"<?php checked( $instance['display_author'], 'display_author' ); ?> />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'display_author' ) ); ?>">Display author</label>
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>">Personalize Recommended Results:</label>
