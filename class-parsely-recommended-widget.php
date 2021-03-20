@@ -290,12 +290,12 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>">Image Source: </label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>">Image source:</label>
 			<br>
-			<select id="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'img_src' ) ); ?>" class="widefat" style="width:70%;">
-				<option <?php selected( $instance['img_src'], 'parsely_thumb' ); ?> value="parsely_thumb">Parse.ly generated thumbnail (85x85px)</option>
-				<option <?php selected( $instance['img_src'], 'original' ); ?> value="original">Original image</option>
-				<option <?php selected( $instance['img_src'], 'none' ); ?> value="none">No image</option>
+			<select id="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'img_src' ) ); ?>" class="widefat">
+				<option<?php selected( $instance['img_src'], 'parsely_thumb' ); ?> value="parsely_thumb">Parse.ly generated thumbnail (85x85px)</option>
+				<option<?php selected( $instance['img_src'], 'original' ); ?> value="original">Original image</option>
+				<option<?php selected( $instance['img_src'], 'none' ); ?> value="none">No image</option>
 			</select>
 		</p>
 		<p>
