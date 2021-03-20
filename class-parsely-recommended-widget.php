@@ -294,11 +294,11 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			</fieldset>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>">Sort By: </label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>">Sort by:</label>
 			<br>
-			<select id="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sort' ) ); ?>" class="widefat" style="width:33%;">
-				<option <?php selected( $instance['sort'], 'score' ); ?> value="score">score</option>
-				<option <?php selected( $instance['sort'], 'pub_date' ); ?> value="pub_date">pub_date</option>
+			<select id="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sort' ) ); ?>" class="widefat">
+				<option<?php selected( $instance['sort'], 'score' ); ?> value="score">Score (relevancy, boostable)</option>
+				<option<?php selected( $instance['sort'], 'pub_date' ); ?> value="pub_date">Publish date (not boostable)</option>
 			</select>
 		</p>
 		<p>
