@@ -1717,3 +1717,11 @@ if ( class_exists( 'Parsely' ) ) {
 }
 
 require 'class-parsely-recommended-widget.php';
+
+add_action( 'widgets_init', 'parsely_recommended_widget_register' );
+/**
+ * Register the Parse.ly Recommended widget.
+ */
+function parsely_recommended_widget_register() {
+	register_widget( 'Parsely_Recommended_Widget' );
+}
