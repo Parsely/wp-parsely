@@ -242,29 +242,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$instance['img_src']             = $img_src;
 		$instance['display_author']      = $display_author;
 
-		$boost_params = array(
-			'views',
-			'mobile_views',
-			'tablet_views',
-			'desktop_views',
-			'visitors',
-			'visitors_new',
-			'visitors_returning',
-			'engaged_minutes',
-			'avg_engaged',
-			'avg_engaged_new',
-			'avg_engaged_returning',
-			'social_interactions',
-			'fb_interactions',
-			'tw_interactions',
-			'li_interactions',
-			'pi_interactions',
-			'social_referrals',
-			'fb_referrals',
-			'tw_referrals',
-			'li_referrals',
-			'pi_referrals',
-		);
+		$boost_params = $this->get_boost_params();
 		?>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>">Title:</label>
@@ -302,11 +280,11 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			</select>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'boost' ) ); ?>">Boost By: </label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'boost' ) ); ?>">Boost by:</label>
 			<br>
-			<select id="<?php echo esc_attr( $this->get_field_id( 'boost' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'boost' ) ); ?>" class="widefat" style="width:50%;">
-				<?php foreach ( $boost_params as $boost_param ) { ?>
-				<option <?php selected( $instance['boost'], $boost_param ); ?> value="<?php echo esc_attr( $boost_param ); ?>"><?php echo esc_attr( $boost_param ); ?></option>
+			<select id="<?php echo esc_attr( $this->get_field_id( 'boost' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'boost' ) ); ?>" class="widefat">
+				<?php foreach ( $boost_params as $boost_param => $description ) { ?>
+				<option<?php selected( $instance['boost'], $boost_param ); ?> value="<?php echo esc_attr( $boost_param ); ?>"><?php echo esc_html( $description ); ?></option>
 			<?php } ?>
 			</select>
 
@@ -357,5 +335,31 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$instance['personalize_results'] = $new_instance['personalize_results'];
 		$instance['img_src']             = trim( $new_instance['img_src'] );
 		return $instance;
+	}
+
+	private function get_boost_params() {
+		return array(
+			'views'                 => __( 'Page views', 'wp-parsely' ),
+			'mobile_views'          => __( 'Page views on mobile devices', 'wp-parsely' ),
+			'tablet_views'          => __( 'Page views on tablet devices', 'wp-parsely' ),
+			'desktop_views'         => __( 'Page views on desktop devices', 'wp-parsely' ),
+			'visitors'              => __( 'Unique page visitors, total', 'wp-parsely' ),
+			'visitors_new'          => __( 'New visitors', 'wp-parsely' ),
+			'visitors_returning'    => __( 'Returning visitors', 'wp-parsely' ),
+			'engaged_minutes'       => __( 'Total engagement time in minutes', 'wp-parsely' ),
+			'avg_engaged'           => __( 'Engaged minutes spent by total visitors', 'wp-parsely' ),
+			'avg_engaged_new'       => __( 'Average engaged minutes spent by new visitors', 'wp-parsely' ),
+			'avg_engaged_returning' => __( 'Average engaged minutes spent by returning visitors', 'wp-parsely' ),
+			'social_interactions'   => __( 'Total for Facebook, Twitter, LinkedIn, and Pinterest', 'wp-parsely' ),
+			'fb_interactions'       => __( 'Count of Facebook shares, likes, and comments', 'wp-parsely' ),
+			'tw_interactions'       => __( 'Count of Twitter tweets and retweets', 'wp-parsely' ),
+			'li_interactions'       => __( 'Count of LinkedIn social interactions', 'wp-parsely' ),
+			'pi_interactions'       => __( 'Count of Pinterest pins', 'wp-parsely' ),
+			'social_referrals'      => __( 'Page views where the referrer was any social network', 'wp-parsely' ),
+			'fb_referrals'          => __( 'Page views where the referrer was facebook.com', 'wp-parsely' ),
+			'tw_referrals'          => __( 'Page views where the referrer was twitter.com', 'wp-parsely' ),
+			'li_referrals'          => __( 'Page views where the referrer was linkedin.com', 'wp-parsely' ),
+			'pi_referrals'          => __( 'Page views where the referrer was pinterest.com', 'wp-parsely' ),
+		);
 	}
 }
