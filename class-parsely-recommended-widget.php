@@ -278,9 +278,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			<span id="<?php echo esc_attr( $this->get_field_id( 'published_within_unit' ) ); ?>"> days (0 for no limit).</span>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>">Number of entries to return ( Max 20 ): </label>
-			<br>
-			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( (string) $instance['return_limit'] ); ?>" min="1" max="20"/>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>">Number of posts to show (max 20): </label>
+			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( (string) $instance['return_limit'] ); ?>" min="1" max="20" class="tiny-text" />
 		</p>
 		<p>
 			<label>List Entries: </label>
