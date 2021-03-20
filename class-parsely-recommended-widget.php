@@ -282,13 +282,16 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( (string) $instance['return_limit'] ); ?>" min="1" max="20" class="tiny-text" />
 		</p>
 		<p>
-			<label>List Entries: </label>
-			<br>
-			<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>" <?php checked( $instance['display_direction'], 'horizontal' ); ?> value="horizontal" />
-			<label for="horizontal">horizontally</label>
-			<br>
-			<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>" <?php checked( $instance['display_direction'], 'vertical' ); ?> value="vertical" />
-			<label for="vertical">vertically</label>
+			<fieldset>
+				<legend>Display entries: </legend>
+				<p>
+					<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction_horizontal' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>"<?php checked( $instance['display_direction'], 'horizontal' ); ?> value="horizontal" />
+					<label for="<?php echo esc_attr( $this->get_field_id( 'display_direction_horizontal' ) ); ?>">Horizontally</label>
+					<br />
+					<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction_vertical' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>"<?php checked( $instance['display_direction'], 'vertical' ); ?> value="vertical" />
+					<label for="<?php echo esc_attr( $this->get_field_id( 'display_direction_vertical' ) ); ?>">Vertically</label>
+				</p>
+			</fieldset>
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>">Sort By: </label>
