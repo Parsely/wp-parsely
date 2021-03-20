@@ -24,11 +24,14 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @subpackage Parse.ly
 	 */
 	public function __construct() {
-		$widget_options = array(
-			'classname'   => 'Parsely_Recommended_Widget',
-			'description' => 'Parsely recommendation widget',
+		parent::__construct(
+			'Parsely_Recommended_Widget',
+			__( 'Parse.ly Recommended Widget', 'wp-parsely' ),
+			array(
+				'classname'   => 'Parsely_Recommended_Widget',
+				'description' => __( 'Display a list of post recommendations, personalized for a visitor or the current post.', 'wp-parsely' ),
+			)
 		);
-		parent::__construct( 'Parsely_Recommended_Widget', 'Parsely Recommended Widget', $widget_options );
 	}
 
 	/**
