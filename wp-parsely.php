@@ -849,6 +849,15 @@ class Parsely {
 			if ( $parsely_options['lowercase_tags'] ) {
 				$tags = array_map( $lowercase_callback, $tags );
 			}
+
+			/**
+			 * Filters the post tags that are used as metadata keywords.
+			 *
+			 * @since 1.8.0
+			 *
+			 * @param string[] $tags Post tags.
+			 * @param int      $ID   Post ID.
+			 */
 			$tags = apply_filters( 'wp_parsely_post_tags', $tags, $post->ID );
 			$tags = array_map( array( $this, 'get_clean_parsely_page_value' ), $tags );
 			$tags = array_values( array_unique( $tags ) );
@@ -925,6 +934,16 @@ class Parsely {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
 			$parsely_page['url']      = home_url();
 		}
+
+		/**
+		 * Filters the structured metadata.
+		 *
+		 * @since 1.10.0
+		 *
+		 * @param array   $parsely_page    Existing structured metadata for a page.
+		 * @param WP_Post $post            Post object.
+		 * @param array   $parsely_options The Parsely options.
+		 */
 		$parsely_page = apply_filters( 'after_set_parsely_page', $parsely_page, $post, $parsely_options );
 		return $parsely_page;
 	}
@@ -1049,6 +1068,16 @@ class Parsely {
 		if ( ! in_array( get_post_type(), $parsely_options['track_post_types'], true ) && ! in_array( get_post_type(), $parsely_options['track_page_types'], true ) ) {
 			$display = false;
 		}
+
+		/**
+		 * Filters whether to include the Parsely JavaScript file.
+		 *
+		 * If true, the file is included.
+		 *
+		 * @since 2.2.0
+		 *
+		 * @param bool $display True if the JavaScript file should be included. False if not.
+		 */
 		if ( apply_filters( 'parsely_filter_insert_javascript', $display ) ) {
 			include 'parsely-javascript.php';
 		}
@@ -1337,6 +1366,16 @@ class Parsely {
 				$category = $term_name;
 			}
 		}
+
+		/**
+		 * Filters the constructed category name that are used as metadata keywords.
+		 *
+		 * @since 1.8.0
+		 *
+		 * @param string  $category        Category name.
+		 * @param WP_Post $post_obj        Post object.
+		 * @param array   $parsely_options The Parsely options.
+		 */
 		$category = apply_filters( 'wp_parsely_post_category', $category, $post_obj, $parsely_options );
 		$category = $this->get_clean_parsely_page_value( $category );
 		return $category;
@@ -1495,8 +1534,27 @@ class Parsely {
 		if ( empty( $authors ) ) {
 			$authors = array( get_user_by( 'id', $post->post_author ) );
 		}
+
+		/**
+		 * Filters the list of author WP_User objects for a post.
+		 *
+		 * @since 1.14.0
+		 *
+		 * @param array   $authors One or more authors as WP_User objects (may also be `false`).
+		 * @param WP_Post $post    Post object.
+		 */
 		$authors = apply_filters( 'wp_parsely_pre_authors', $authors, $post );
+
 		$authors = array_map( array( $this, 'get_author_name' ), $authors );
+
+		/**
+		 * Filters the list of author names for a post.
+		 *
+		 * @since 1.14.0
+		 *
+		 * @param string[] $authors One or more author names.
+		 * @param WP_Post  $post    Post object.
+		 */
 		$authors = apply_filters( 'wp_parsely_post_authors', $authors, $post );
 		$authors = array_map( array( $this, 'get_clean_parsely_page_value' ), $authors );
 		return $authors;
@@ -1543,6 +1601,15 @@ class Parsely {
 
 		if ( 'post' === $post ) {
 			$permalink        = get_permalink( $post_id );
+
+			/**
+			 * Filters the list of author names for a post.
+			 *
+			 * @since 1.14.0
+			 *
+			 * @param string $permalink The permalink URL or false if post does not exist.
+			 * @param string $post      Post object type group ("post" or "nonpost").
+			 */
 			$permalink        = apply_filters( 'wp_parsely_permalink', $permalink, $post );
 			$parsed_canonical = wp_parse_url( $permalink );
 			// handle issue if wp_parse_url doesn't return good host & path data, fallback to page url as a last resort.
