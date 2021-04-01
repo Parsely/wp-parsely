@@ -1,9 +1,12 @@
 {
+  "name": "parsely/wp-parsely",
+  "description": "The Parse.ly WordPress plugin.",
+  "license": "GPL-2.0-or-later",
   "authors": [
     {
       "name": "Parsely",
       "email": "hello@parsely.com",
-      "homepage": "http://www.parse.ly",
+      "homepage": "https://www.parse.ly",
       "role": "Developer"
     }
   ],
