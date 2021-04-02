@@ -24,11 +24,9 @@ if ( ! isset( $parsely_options['apikey'] ) || empty( $parsely_options['apikey'] 
 		function uuidProfileCall() {
 			var rootUrl = 'https://api.parsely.com/v2/profile?apikey=<?php echo esc_html( $parsely_options['apikey'] ); ?>';
 			var uuid = '&uuid=' + PARSELY.config.parsely_site_uuid;
-			var requestUrl = rootUrl + uuid + '&url=' + window.location.href;
-			jQuery.ajax({
-				url: requestUrl,
-				dataType: "jsonp"
-			});
+			var profileScript = document.createElement('script');
+			profileScript.src = rootUrl + uuid + '&url=' + window.location.href;
+			document.querySelector( 'head' ).appendChild( profileScript );
 		}
 
 		if (typeof PARSELY == 'object') {
