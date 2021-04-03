@@ -16,7 +16,7 @@
     "url": "git+https://github.com/Parsely/wp-parsely.git"
   },
   "author": "",
-  "license": "GPL-2.0-only",
+  "license": "GPL-2.0-or-later",
   "bugs": {
     "url": "https://github.com/Parsely/wp-parsely/issues"
   },
