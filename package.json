@@ -1,0 +1,29 @@
+{
+  "name": "wp-parsely",
+  "version": "2.4.0",
+  "description": "The official WordPress plugin for Parse.ly - makes it a snap to add the required tracking code to enable Parse.ly on your WordPress site.",
+  "main": "build/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Parsely/wp-parsely.git"
+  },
+  "author": "",
+  "license": "GPL-2.0-only",
+  "bugs": {
+    "url": "https://github.com/Parsely/wp-parsely/issues"
+  },
+  "homepage": "https://github.com/Parsely/wp-parsely#readme",
+  "devDependencies": {
+    "@wordpress/eslint-plugin": "^9.0.1",
+    "@wordpress/scripts": "14.0.1",
+    "prettier": "^2.2.1"
+  }
+}
