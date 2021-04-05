@@ -1064,24 +1064,7 @@ class Parsely {
 			]
 		);
 
-		// TODO: Pull this out to a named function so it's able to be unhooked by another plugin
-		add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) use ( $parsely_options ) {
-			if ( in_array( $handle, [ 'wp-parsely', 'wp-parsely-dotcom' ] ) ) {
-				// Have ClouldFlare Rocket Loader ignore these scripts:
-				// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-
-				$tag = preg_replace( '/^<script src=/', '<script data-cfasync="false" src=', $tag );
-			}
-
-			if ( $handle === 'wp-parsely-dotcom' ) {
-				$tag = preg_replace( '/ id=(\"|\')wp-parsely-dotcom-js\1/', ' id="parsely-cfg"', $tag );
-				$tag = preg_replace(
-					'/ src=/',
-					' data-parsely-site="' . esc_attr( $parsely_options['apikey'] ) . '" src=',
-					$tag
-				);
-			}
-			return $tag;
-		}, 10, 3 );
+		add_filter( 'script_loader_tag', [ $this, 'script_loader_tag' ], 10, 3 );
 
 		wp_enqueue_script(
 			'wp-parsely-dotcom',
@@ -1090,6 +1073,25 @@ class Parsely {
 			null, // Should we introduce a cache buster param here?
 			true
 		);
+	}
+
+	public function script_loader_tag( $tag, $handle, $src ) {
+		$parsely_options = $this->get_options();
+		if ( in_array( $handle, [ 'wp-parsely', 'wp-parsely-dotcom' ] ) ) {
+			// Have ClouldFlare Rocket Loader ignore these scripts:
+			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-
+			$tag = preg_replace( '/^<script src=/', '<script data-cfasync="false" src=', $tag );
+		}
+
+		if ( $handle === 'wp-parsely-dotcom' ) {
+			$tag = preg_replace( '/ id=(\"|\')wp-parsely-dotcom-js\1/', ' id="parsely-cfg"', $tag );
+			$tag = preg_replace(
+				'/ src=/',
+				' data-parsely-site="' . esc_attr( $parsely_options['apikey'] ) . '" src=',
+				$tag
+			);
+		}
+		return $tag;
 	}
 
 	/**
