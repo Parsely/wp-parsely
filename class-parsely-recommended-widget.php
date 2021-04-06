@@ -41,6 +41,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @param array $instance Values saved to the db.
 	 */
 	public function widget( $args, $instance ) {
+		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
 		$allowed_tags = wp_kses_allowed_html( 'post' );
