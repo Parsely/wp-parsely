@@ -25,7 +25,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 */
 	public function __construct() {
 		$widget_options = array(
-			'classname'   => 'Parsely_Recommended_Widget wpparsely_hidden',
+			'classname'   => 'Parsely_Recommended_Widget parsely-recommended-widget-hidden',
 			'description' => 'Parsely recommendation widget',
 		);
 		parent::__construct( 'Parsely_Recommended_Widget', 'Parsely Recommended Widget', $widget_options );
@@ -166,7 +166,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 						outerDiv.append(outerList);
 					}).done( function () {
 						if ( hasRecos ) {
-							jQuery( parentDiv ).removeClass( 'wpparsely_hidden' );
+							jQuery( parentDiv ).removeClass( 'parsely-recommended-widget-hidden' );
 						}
 					} );
 
