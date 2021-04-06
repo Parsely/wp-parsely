@@ -52,6 +52,9 @@
 	max-width: 100%;
 }
 
+.wpparsely_hidden {
+	display: none;
+}
 
 @supports(display: grid){
 	.parsely-recommended-widget-entry:after {
