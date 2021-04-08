@@ -1,43 +1,26 @@
 <?php
 /**
- * Plugin Name: Parse.ly
- * Plugin URI: http://www.parsely.com/
- * Description: This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
- * Author: Mike Sukmanowsky ( mike@parsely.com )
- * Version: 2.3
- * Requires at least: 4.0.0
- * Author: Parse.ly
- * Author URI: http://www.parsely.com/
- * License: GPL2
- * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
-
-@package WordPress
-
-Copyright 2012  Parsely Incorporated
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License, version 2, as
-published by the Free Software Foundation.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-or visit https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
-
-Authors: Mike Sukmanowsky ( mike@parsely.com), Xand Lourenco ( xand@parsely.com ), James O'Toole (james.otoole@parsely.com )
+ * Parse.ly
+ *
+ * @package      Parsely\wp-parsely
+ * @author       Parse.ly
+ * @copyright    2012 Parse.ly
+ * @license      GPL-2.0-or-later
+ *
+ * @wordpress-plugin
+ * Plugin Name:       Parse.ly
+ * Plugin URI:        https://www.parse.ly/help/integration/wordpress
+ * Description:       This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
+ * Version:           2.3.0
+ * Author:            Parse.ly
+ * Author URI:        https://www.parse.ly
+ * Text Domain:       wp-parsely
+ * License:           GPL-2.0-or-later
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * GitHub Plugin URI: https://github.com/Parsely/wp-parsely
+ * Requires PHP:      5.6
+ * Requires WP:       4.0.0
  */
-
-/*
-TODO List:
- * WordPress Network support - going to hold off on any specific support here as content id prefix should work ok for now
- * Allow the user to map get_post_types() to Parse.ly post types
- * Support: is_search(), is_404()
-*/
 
 /**
  * This is the main class for Parsely
