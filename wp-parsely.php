@@ -136,7 +136,20 @@ class Parsely {
 	 * @package    Parsely
 	 */
 	public function add_admin_header() {
-		include 'parsely-admin-header.php';
+		echo '
+<style>
+#wp-parsely_version { color: #777; font-size: 12px; margin-left: 1em; }
+.help-text { width: 75%; }
+</style>
+';
+
+		wp_enqueue_script(
+			'wp-parsely-admin',
+			plugin_dir_url( __FILE__ ) . 'build/admin-page.js',
+			[],
+			defined( 'WP_DEBUG' ) ? mt_rand() : Parsely::VERSION,
+			true
+		);
 	}
 
 	/**
