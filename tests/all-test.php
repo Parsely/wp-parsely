@@ -390,7 +390,7 @@ PARSELYJS;
 		$post       = $this->factory->post->create( $post_array );
 		$headline   = 'Completely New And Original Filtered Headline';
 		$this->go_to( '/?p=' . $post );
-		
+
 		// Apply page filtering.
 		add_filter(
 			'after_set_parsely_page',

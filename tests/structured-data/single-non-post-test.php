@@ -31,13 +31,19 @@ final class Single_Non_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Single Page', 'post_name' => 'foo' ] );
+		$page_id = $this->factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Single Page',
+				'post_name'  => 'foo',
+			)
+		);
 		$page    = get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151
 		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure('/%postname%/');
+		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
 		// Make a request to that page to set the global $wp_query object.
 		$this->go_to( get_permalink( $page_id ) );
@@ -54,7 +60,7 @@ final class Single_Non_Post_Test extends TestCase {
 		self::assertQueryTrue( 'is_page', 'is_singular' );
 
 		// Reset permalinks to Plain.
-		$wp_rewrite->set_permalink_structure('');
+		$wp_rewrite->set_permalink_structure( '' );
 	}
 
 	/**
@@ -66,7 +72,12 @@ final class Single_Non_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts' ] );
+		$page_id = $this->factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Page for Posts',
+			)
+		);
 		$page    = get_post( $page_id );
 
 		// Make a request to the root of the site to set the global $wp_query object.
@@ -92,18 +103,24 @@ final class Single_Non_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a page for blog posts and insert another post.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts', 'post_name' => 'page-for-posts' ] );
+		$page_id = $this->factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Page for Posts',
+				'post_name'  => 'page-for-posts',
+			)
+		);
 		$this->factory()->post->create();
-		$page    = get_post( $page_id );
+		$page = get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151
 		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure('/%postname%/');
+		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
 		// Set a static page to the homepage, set the newly created page to show the posts
 		update_option( 'show_on_front', 'page' );
-		update_option('page_on_front', 1 );
+		update_option( 'page_on_front', 1 );
 		update_option( 'page_for_posts', $page_id );
 
 		// Make a request to the root of the site to set the global $wp_query object.
@@ -129,7 +146,12 @@ final class Single_Non_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Home' ] );
+		$page_id = $this->factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Home',
+			)
+		);
 		$page    = get_post( $page_id );
 
 		// Set that page as the homepage Page.
@@ -159,7 +181,12 @@ final class Single_Non_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Home' ] );
+		$page_id = $this->factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Home',
+			)
+		);
 		$page    = get_post( $page_id );
 
 		// Set that page as the homepage Page.
