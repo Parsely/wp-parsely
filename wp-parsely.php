@@ -84,7 +84,7 @@ class Parsely {
 		}
 
 		// admin_menu and a settings link.
-		add_action( 'admin_head', array( $this, 'add_admin_header' ) );
+		add_action( 'admin_head-settings_page_parsely', array( $this, 'add_admin_header' ) );
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
 		// display warning when plugin hasn't been configured.
