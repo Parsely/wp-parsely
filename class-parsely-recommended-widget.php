@@ -353,17 +353,3 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		return $instance;
 	}
 }
-
-
-/**
- * This is the registration function
- *
- * @category   Function
- * @package    WordPress
- * @subpackage Parse.ly
- */
-function parsely_recommended_widget_register() {
-	register_widget( 'Parsely_Recommended_Widget' );
-}
-
-add_action( 'widgets_init', 'parsely_recommended_widget_register' );
