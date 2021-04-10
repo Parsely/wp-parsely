@@ -3,6 +3,7 @@
 Stable tag: trunk  
 Requires at least: 4.0  
 Tested up to: 5.6  
+Requires PHP: 5.6  
 License: GPLv2 or later  
 Tags: analytics, post, page  
 Contributors: parsely_mike
