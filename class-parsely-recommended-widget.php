@@ -242,90 +242,68 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$instance['img_src']             = $img_src;
 		$instance['display_author']      = $display_author;
 
-		$boost_params = array(
-			'views',
-			'mobile_views',
-			'tablet_views',
-			'desktop_views',
-			'visitors',
-			'visitors_new',
-			'visitors_returning',
-			'engaged_minutes',
-			'avg_engaged',
-			'avg_engaged_new',
-			'avg_engaged_returning',
-			'social_interactions',
-			'fb_interactions',
-			'tw_interactions',
-			'li_interactions',
-			'pi_interactions',
-			'social_referrals',
-			'fb_referrals',
-			'tw_referrals',
-			'li_referrals',
-			'pi_referrals',
-		);
+		$boost_params = $this->get_boost_params();
 		?>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>">Title:</label>
 			<br>
-			<input type="text" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" value="<?php echo esc_attr( $title ); ?>" />
+			<input type="text" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" value="<?php echo esc_attr( $title ); ?>" class="widefat" />
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>">Published Within ( 0 for no limit ):</label>
-			<br>
-			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'published_within' ) ); ?>" value="<?php echo esc_attr( (string) $instance['published_within'] ); ?>" min="0" max="30"/>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'published_within_label' ) ); ?>">Published within</label>
+			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'published_within' ) ); ?>" value="<?php echo esc_attr( (string) $instance['published_within'] ); ?>" min="0" max="30"
+			       class="tiny-text" aria-labelledby="<?php echo esc_attr( $this->get_field_id( 'published_within_label' ) ); ?> <?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?> <?php echo esc_attr( $this->get_field_id( 'published_within_unit' ) ); ?>" />
+			<span id="<?php echo esc_attr( $this->get_field_id( 'published_within_unit' ) ); ?>"> days (0 for no limit).</span>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>">Number of entries to return ( Max 20 ): </label>
-			<br>
-			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( (string) $instance['return_limit'] ); ?>" min="1" max="20"/>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>">Number of posts to show (max 20): </label>
+			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( (string) $instance['return_limit'] ); ?>" min="1" max="20" class="tiny-text" />
 		</p>
 		<p>
-			<label>List Entries: </label>
-			<br>
-			<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>" <?php checked( $instance['display_direction'], 'horizontal' ); ?> value="horizontal" />
-			<label for="horizontal">horizontally</label>
-			<br>
-			<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>" <?php checked( $instance['display_direction'], 'vertical' ); ?> value="vertical" />
-			<label for="vertical">vertically</label>
+			<fieldset>
+				<legend>Display entries: </legend>
+				<p>
+					<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction_horizontal' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>"<?php checked( $instance['display_direction'], 'horizontal' ); ?> value="horizontal" />
+					<label for="<?php echo esc_attr( $this->get_field_id( 'display_direction_horizontal' ) ); ?>">Horizontally</label>
+					<br />
+					<input type="radio" id="<?php echo esc_attr( $this->get_field_id( 'display_direction_vertical' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_direction' ) ); ?>"<?php checked( $instance['display_direction'], 'vertical' ); ?> value="vertical" />
+					<label for="<?php echo esc_attr( $this->get_field_id( 'display_direction_vertical' ) ); ?>">Vertically</label>
+				</p>
+			</fieldset>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>">Sort By: </label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>">Sort by:</label>
 			<br>
-			<select id="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sort' ) ); ?>" class="widefat" style="width:33%;">
-				<option <?php selected( $instance['sort'], 'score' ); ?> value="score">score</option>
-				<option <?php selected( $instance['sort'], 'pub_date' ); ?> value="pub_date">pub_date</option>
+			<select id="<?php echo esc_attr( $this->get_field_id( 'sort' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'sort' ) ); ?>" class="widefat">
+				<option<?php selected( $instance['sort'], 'score' ); ?> value="score">Score (relevancy, boostable)</option>
+				<option<?php selected( $instance['sort'], 'pub_date' ); ?> value="pub_date">Publish date (not boostable)</option>
 			</select>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'boost' ) ); ?>">Boost By: </label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'boost' ) ); ?>">Boost by:</label>
 			<br>
-			<select id="<?php echo esc_attr( $this->get_field_id( 'boost' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'boost' ) ); ?>" class="widefat" style="width:50%;">
-				<?php foreach ( $boost_params as $boost_param ) { ?>
-				<option <?php selected( $instance['boost'], $boost_param ); ?> value="<?php echo esc_attr( $boost_param ); ?>"><?php echo esc_attr( $boost_param ); ?></option>
+			<select id="<?php echo esc_attr( $this->get_field_id( 'boost' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'boost' ) ); ?>" class="widefat">
+				<?php foreach ( $boost_params as $boost_param => $description ) { ?>
+				<option<?php selected( $instance['boost'], $boost_param ); ?> value="<?php echo esc_attr( $boost_param ); ?>"><?php echo esc_html( $description ); ?></option>
 			<?php } ?>
 			</select>
 
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>">Image Source: </label>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>">Image source:</label>
 			<br>
-			<select id="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'img_src' ) ); ?>" class="widefat" style="width:70%;">
-				<option <?php selected( $instance['img_src'], 'parsely_thumb' ); ?> value="parsely_thumb">Parse.ly generated thumbnail (85x85px)</option>
-				<option <?php selected( $instance['img_src'], 'original' ); ?> value="original">Original image</option>
-				<option <?php selected( $instance['img_src'], 'none' ); ?> value="none">No image</option>
+			<select id="<?php echo esc_attr( $this->get_field_id( 'img_src' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'img_src' ) ); ?>" class="widefat">
+				<option<?php selected( $instance['img_src'], 'parsely_thumb' ); ?> value="parsely_thumb">Parse.ly generated thumbnail (85x85px)</option>
+				<option<?php selected( $instance['img_src'], 'original' ); ?> value="original">Original image</option>
+				<option<?php selected( $instance['img_src'], 'none' ); ?> value="none">No image</option>
 			</select>
 		</p>
 		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'display_author' ) ); ?>">Display Author:</label>
-			<br>
-			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'display_author' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_author' ) ); ?>" value="display_author" <?php checked( $instance['display_author'], 'display_author' ); ?> />
-		</p>
-		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>">Personalize Recommended Results:</label>
-			<br>
-			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'personalize_results' ) ); ?>" value="personalize_results" <?php checked( $instance['personalize_results'], 'personalize_results' ); ?> />
+			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'display_author' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'display_author' ) ); ?>" value="display_author"<?php checked( $instance['display_author'], 'display_author' ); ?> />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'display_author' ) ); ?>">Display author</label>
+			<br />
+			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'personalize_results' ) ); ?>" value="personalize_results"<?php checked( $instance['personalize_results'], 'personalize_results' ); ?> />
+			<label for="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>">Personalize recommended results</label>
 		</p>
 
 
@@ -354,5 +332,31 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$instance['personalize_results'] = $new_instance['personalize_results'];
 		$instance['img_src']             = trim( $new_instance['img_src'] );
 		return $instance;
+	}
+
+	private function get_boost_params() {
+		return array(
+			'views'                 => __( 'Page views', 'wp-parsely' ),
+			'mobile_views'          => __( 'Page views on mobile devices', 'wp-parsely' ),
+			'tablet_views'          => __( 'Page views on tablet devices', 'wp-parsely' ),
+			'desktop_views'         => __( 'Page views on desktop devices', 'wp-parsely' ),
+			'visitors'              => __( 'Unique page visitors, total', 'wp-parsely' ),
+			'visitors_new'          => __( 'New visitors', 'wp-parsely' ),
+			'visitors_returning'    => __( 'Returning visitors', 'wp-parsely' ),
+			'engaged_minutes'       => __( 'Total engagement time in minutes', 'wp-parsely' ),
+			'avg_engaged'           => __( 'Engaged minutes spent by total visitors', 'wp-parsely' ),
+			'avg_engaged_new'       => __( 'Average engaged minutes spent by new visitors', 'wp-parsely' ),
+			'avg_engaged_returning' => __( 'Average engaged minutes spent by returning visitors', 'wp-parsely' ),
+			'social_interactions'   => __( 'Total for Facebook, Twitter, LinkedIn, and Pinterest', 'wp-parsely' ),
+			'fb_interactions'       => __( 'Count of Facebook shares, likes, and comments', 'wp-parsely' ),
+			'tw_interactions'       => __( 'Count of Twitter tweets and retweets', 'wp-parsely' ),
+			'li_interactions'       => __( 'Count of LinkedIn social interactions', 'wp-parsely' ),
+			'pi_interactions'       => __( 'Count of Pinterest pins', 'wp-parsely' ),
+			'social_referrals'      => __( 'Page views where the referrer was any social network', 'wp-parsely' ),
+			'fb_referrals'          => __( 'Page views where the referrer was facebook.com', 'wp-parsely' ),
+			'tw_referrals'          => __( 'Page views where the referrer was twitter.com', 'wp-parsely' ),
+			'li_referrals'          => __( 'Page views where the referrer was linkedin.com', 'wp-parsely' ),
+			'pi_referrals'          => __( 'Page views where the referrer was pinterest.com', 'wp-parsely' ),
+		);
 	}
 }
