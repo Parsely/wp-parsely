@@ -34,6 +34,10 @@
     ],
     "integration": [
       "@php ./vendor/bin/phpunit --testsuite WP_Tests"
+    ],
+    "integration-ms": [
+      "@putenv WP_MULTISITE=1",
+      "@composer integration"
     ]
   }
 }
