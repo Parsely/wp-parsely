@@ -55,21 +55,20 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @return string API URL.
 	 */
 	public function get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) {
-		$root_url       = 'https://api.parsely.com/v2/related?apikey=' . esc_attr( $api_key );
-		$pub_date_start = '&pub_date_start=' . $published_within . 'd';
-		$sort           = '&sort=' . trim( $sort );
-		// No idea why boost is coming back with a space prepended: I've trimmed it everywhere I possibly could.
-		// Trimming here too to avoid it ruining the query.
-		$boost    = '&boost=' . trim( $boost );
-		$limit    = '&limit=' . $return_limit;
+		$related_api_endpoint = 'https://api.parsely.com/v2/related';
 
-		$full_url = $root_url . $sort . $boost . $limit;
+		$query_args = array(
+			'apikey' => $api_key,
+			'sort'   => $sort,
+			'boost'  => $boost,
+			'limit'  => $return_limit,
+		);
 
 		if ( 0 !== (int) $published_within ) {
-			$full_url .= $pub_date_start;
+			$query_args['pub_date_start'] = $published_within . 'd';
 		}
 
-		return $full_url;
+		return add_query_arg( $query_args, $related_api_endpoint );
 	}
 
 	/**
