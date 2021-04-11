@@ -63,7 +63,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			'limit'  => $return_limit,
 		);
 
-		if ( 'score' === $sort ) {
+		if ( 'score' === $sort && $boost !== 'no-boost' ) {
 			$query_args['boost'] = $boost;
 		}
 
@@ -371,6 +371,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 	private function get_boost_params() {
 		return array(
+			'no-boost'              => __( 'No boost', 'wp-parsely' ),
 			'views'                 => __( 'Page views', 'wp-parsely' ),
 			'mobile_views'          => __( 'Page views on mobile devices', 'wp-parsely' ),
 			'tablet_views'          => __( 'Page views on tablet devices', 'wp-parsely' ),

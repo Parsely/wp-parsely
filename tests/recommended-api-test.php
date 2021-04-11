@@ -39,6 +39,14 @@ final class Recommended_API_Test extends TestCase {
 				5,
 				'https://api.parsely.com/v2/related?apikey=my-key&sort=pub_date&limit=5',
 			),
+			'Rank by relevance only (no boost param)' => array(
+				'my-key',
+				0,
+				'score',
+				'no-boost',
+				5,
+				'https://api.parsely.com/v2/related?apikey=my-key&sort=score&limit=5',
+			),
 		);
 	}
 
