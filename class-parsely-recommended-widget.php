@@ -222,6 +222,19 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	public function form( $instance ) {
 		$this->migrate_old_fields( $instance );
 
+		if ( ! $this->api_key_and_secret_are_populated() ) {
+			$settings_page_url = add_query_arg( 'page', 'parsely', get_admin_url() . 'options-general.php' );
+
+			$message = sprintf(
+				__( 'The <i>Parse.ly Site ID</i> and <i>Parse.ly API Secret</i> fields need to be populated on the <a href="%s">Parse.ly settings page</a> for this widget to work.', 'wp-parsely' ),
+				esc_url( $settings_page_url )
+			);
+
+			echo '<p>', wp_kses_post( $message ), '</p>';
+
+			return;
+		}
+
 		// editable fields: title.
 		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
 		$return_limit        = ! empty( $instance['return_limit'] ) ? $instance['return_limit'] : 5;
@@ -358,5 +371,26 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			'li_referrals'          => __( 'Page views where the referrer was linkedin.com', 'wp-parsely' ),
 			'pi_referrals'          => __( 'Page views where the referrer was pinterest.com', 'wp-parsely' ),
 		);
+	}
+
+	private function api_key_and_secret_are_populated() {
+		$options = get_option( 'parsely' );
+
+		// No options are saved, so API key is not available.
+		if ( ! is_array( $options ) ) {
+			return false;
+		}
+
+		// Parse.ly Site ID settings field is not populated.
+		if ( ! array_key_exists( 'apikey', $options ) || $options['apikey'] === '' ) {
+			return false;
+		}
+
+		// Parse.ly API Secret settings field is not populated.
+		if ( ! array_key_exists( 'api_secret', $options ) || $options['api_secret'] === '' ) {
+			return false;
+		}
+
+		return true;
 	}
 }
