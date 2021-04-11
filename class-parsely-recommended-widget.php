@@ -60,9 +60,12 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$query_args = array(
 			'apikey' => $api_key,
 			'sort'   => $sort,
-			'boost'  => $boost,
 			'limit'  => $return_limit,
 		);
+
+		if ( 'score' === $sort ) {
+			$query_args['boost'] = $boost;
+		}
 
 		if ( 0 !== (int) $published_within ) {
 			$query_args['pub_date_start'] = $published_within . 'd';
