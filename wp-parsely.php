@@ -776,8 +776,19 @@ class Parsely {
 	public function insert_parsely_page() {
 		$parsely_options = $this->get_options();
 
-		// If we don't have an API key or if we aren't supposed to show to logged in users, there's no need to proceed.
-		if ( empty( $parsely_options['apikey'] ) || ( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) || is_404() ) {
+		if (
+			// No API key.
+			empty( $parsely_options['apikey'] ) ||
+
+			// Chosen not to track logged in users.
+			( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
+
+			// 404 pages are not tracked.
+			is_404() ||
+
+			// Search pages are not tracked.
+			is_search()
+		) {
 			return '';
 		}
 
