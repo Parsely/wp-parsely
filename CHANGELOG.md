@@ -11,15 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - License, `.editorconfig`, `.gitattributes`, `CODEOWNERS`, `CHANGELOG.md`, and other development files.
 - Documentation for hooks.
 - Coding standards and other linting checks.
+- JS Build environment entrypoint.
 
 ### Changed
 - Improve WordPress.org assets (screenshots, icons, readme).
 - Switch to using GitHub Actions workflow for CI and WordPress.org deployment.
 - Update scaffolded integration test files.
+- Improve plugin header (support DocBlock format, add textdomain, update information, clarify license, remove to-do's).
+- Separate multisite and single-site tests in CI workflow.
 
 ### Fixed
 - Fix metadata for home pages, including pages of older posts.
-- Fix metadata for category archives.
+- Fix metadata for category archives. 
+
+### Removed
+- Remove Parse.ly metadata from search result pages.
 
 ## [2.3.0] - 2021-03-24
 - Fix and improve Travis configuration.
