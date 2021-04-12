@@ -22,7 +22,7 @@ final class Single_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single post and set as global post.
-		$post_id = $this->factory()->post->create();
+		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
 		// Make a request to the root of the site to set the global $wp_query object.

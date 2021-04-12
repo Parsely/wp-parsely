@@ -31,8 +31,8 @@ final class Archive_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert 2 posts.
-		$page_id = $this->factory()->post->create();
-		$this->factory()->post->create();
+		$page_id = self::factory()->post->create();
+		self::factory()->post->create();
 		$page = get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
@@ -67,11 +67,11 @@ final class Archive_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a page for the blog posts.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts', 'post_name' => 'page-for-posts' ] );
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts', 'post_name' => 'page-for-posts' ] );
 
 		// Create 2 posts so that posts page has pagination
-		$this->factory()->post->create();
-		$this->factory()->post->create();
+		self::factory()->post->create();
+		self::factory()->post->create();
 		$page    = get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
@@ -110,7 +110,7 @@ final class Archive_Post_Test extends TestCase {
 
 		// Insert a single user, and a Post assigned to them.
 		$user = self::factory()->user->create( [ 'user_login' => 'parsely' ] );
-		$this->factory()->post->create( [ 'post_author' => $user ] );
+		self::factory()->post->create( [ 'post_author' => $user ] );
 
 		// Make a request to that page to set the global $wp_query object.
 		$author_posts_url = get_author_posts_url( $user );
