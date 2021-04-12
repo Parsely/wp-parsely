@@ -814,6 +814,7 @@ class Parsely {
 			'@type'    => 'WebPage',
 		);
 		$current_url  = $this->get_current_url();
+
 		if ( is_front_page() && ! is_paged() || ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
 			$parsely_page['url']      = home_url();
@@ -822,6 +823,34 @@ class Parsely {
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_home() ) {
 			$parsely_page['headline'] = get_the_title( get_option('page_for_posts', true) );
+			$parsely_page['url']      = $current_url;
+		} elseif ( is_author() ) {
+			// TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions.
+			$author                   = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
+			$parsely_page['url']      = $current_url;
+		} elseif ( is_category() ) {
+			$category                 = get_the_category();
+			$category                 = $category[0];
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( $category->name );
+			$parsely_page['url']      = $current_url;
+		} elseif ( is_date() ) {
+			if ( is_year() ) {
+				$parsely_page['headline'] = 'Yearly Archive - ' . get_the_time( 'Y' );
+			} elseif ( is_month() ) {
+				$parsely_page['headline'] = 'Monthly Archive - ' . get_the_time( 'F, Y' );
+			} elseif ( is_day() ) {
+				$parsely_page['headline'] = 'Daily Archive - ' . get_the_time( 'F jS, Y' );
+			} elseif ( is_time() ) {
+				$parsely_page['headline'] = 'Hourly, Minutely, or Secondly Archive - ' . get_the_time( 'F jS g:i:s A' );
+			}
+			$parsely_page['url'] = $current_url;
+		} elseif ( is_tag() ) {
+			$tag = single_tag_title( '', false );
+			if ( empty( $tag ) ) {
+				$tag = single_term_title( '', false );
+			}
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Tagged - ' . $tag );
 			$parsely_page['url']      = $current_url;
 		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
 			$authors  = $this->get_author_names( $post );
@@ -905,34 +934,6 @@ class Parsely {
 		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title( $post ) );
 			$parsely_page['url']      = $this->get_current_url( 'post' );
-		} elseif ( is_author() ) {
-			// TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions.
-			$author                   = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
-			$parsely_page['url']      = $current_url;
-		} elseif ( is_category() ) {
-			$category                 = get_the_category();
-			$category                 = $category[0];
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( $category->name );
-			$parsely_page['url']      = $current_url;
-		} elseif ( is_date() ) {
-			if ( is_year() ) {
-				$parsely_page['headline'] = 'Yearly Archive - ' . get_the_time( 'Y' );
-			} elseif ( is_month() ) {
-				$parsely_page['headline'] = 'Monthly Archive - ' . get_the_time( 'F, Y' );
-			} elseif ( is_day() ) {
-				$parsely_page['headline'] = 'Daily Archive - ' . get_the_time( 'F jS, Y' );
-			} elseif ( is_time() ) {
-				$parsely_page['headline'] = 'Hourly, Minutely, or Secondly Archive - ' . get_the_time( 'F jS g:i:s A' );
-			}
-			$parsely_page['url'] = $current_url;
-		} elseif ( is_tag() ) {
-			$tag = single_tag_title( '', false );
-			if ( empty( $tag ) ) {
-				$tag = single_term_title( '', false );
-			}
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Tagged - ' . $tag );
-			$parsely_page['url']      = $current_url;
 		}
 
 		/**
