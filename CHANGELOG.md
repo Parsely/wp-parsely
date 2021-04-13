@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2021-04-14
+
+### Added
+- Structured data integration tests for posts, pages, category and author archives, and home/front pages.
+- License, `.editorconfig`, `.gitattributes`, `CODEOWNERS`, `CHANGELOG.md`, and other development files.
+- Documentation for hooks.
+- Coding standards and other linting checks.
+- JS Build environment entrypoint.
+
+### Changed
+- Improve WordPress.org assets (screenshots, icons, readme).
+- Switch to using GitHub Actions workflow for CI and WordPress.org deployment.
+- Update scaffolded integration test files.
+- Improve plugin header (support DocBlock format, add textdomain, update information, clarify license, remove to-do's).
+- Separate multisite and single-site tests in CI workflow.
+
+### Fixed
+- Fix metadata for home pages, including pages of older posts.
+- Fix metadata for category archives. 
+
+### Removed
+- Remove Parse.ly metadata from search result pages.
+
 ## [2.3.0] - 2021-03-24
 - Fix and improve Travis configuration.
 - Small maintenance items: merge isset() calls, remove unnecessary typecasting, remove is_null() in favour of null comparison, un-nest nested functions, simplify ternary operators, remove unnecessary local variable, etc.
@@ -165,6 +188,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial version.
 - Add sSupport for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
+[2.4.0]: https://github.com/Parsely/wp-parsely/compare/2.3.0...2.4.0
 [2.3.0]: https://github.com/Parsely/wp-parsely/compare/2.2.1...2.3.0
 [2.2.1]: https://github.com/Parsely/wp-parsely/compare/2.2...2.2.1
 [2.2]: https://github.com/Parsely/wp-parsely/compare/2.1.3...2.2
