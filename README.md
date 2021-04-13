@@ -1,11 +1,12 @@
 # Parse.ly
 
-Stable tag: trunk  
+Stable tag: 2.4.0  
 Requires at least: 4.0  
 Tested up to: 5.6  
+Requires PHP: 5.6  
 License: GPLv2 or later  
 Tags: analytics, post, page  
-Contributors: parsely_mike
+Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike
 
 The Parse.ly plugin real-time and historical analytics to your content through a platform designed and built for digital publishing.
 

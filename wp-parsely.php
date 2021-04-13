@@ -1,43 +1,26 @@
 <?php
 /**
- * Plugin Name: Parse.ly
- * Plugin URI: http://www.parsely.com/
- * Description: This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
- * Author: Mike Sukmanowsky ( mike@parsely.com )
- * Version: 2.3
- * Requires at least: 4.0.0
- * Author: Parse.ly
- * Author URI: http://www.parsely.com/
- * License: GPL2
- * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
-
-@package WordPress
-
-Copyright 2012  Parsely Incorporated
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License, version 2, as
-published by the Free Software Foundation.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-or visit https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
-
-Authors: Mike Sukmanowsky ( mike@parsely.com), Xand Lourenco ( xand@parsely.com ), James O'Toole (james.otoole@parsely.com )
+ * Parse.ly
+ *
+ * @package      Parsely\wp-parsely
+ * @author       Parse.ly
+ * @copyright    2012 Parse.ly
+ * @license      GPL-2.0-or-later
+ *
+ * @wordpress-plugin
+ * Plugin Name:       Parse.ly
+ * Plugin URI:        https://www.parse.ly/help/integration/wordpress
+ * Description:       This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
+ * Version:           2.4.0
+ * Author:            Parse.ly
+ * Author URI:        https://www.parse.ly
+ * Text Domain:       wp-parsely
+ * License:           GPL-2.0-or-later
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * GitHub Plugin URI: https://github.com/Parsely/wp-parsely
+ * Requires PHP:      5.6
+ * Requires WP:       4.0.0
  */
-
-/*
-TODO List:
- * WordPress Network support - going to hold off on any specific support here as content id prefix should work ok for now
- * Allow the user to map get_post_types() to Parse.ly post types
- * Support: is_search(), is_404()
-*/
 
 /**
  * This is the main class for Parsely
@@ -793,8 +776,19 @@ class Parsely {
 	public function insert_parsely_page() {
 		$parsely_options = $this->get_options();
 
-		// If we don't have an API key or if we aren't supposed to show to logged in users, there's no need to proceed.
-		if ( empty( $parsely_options['apikey'] ) || ( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) || is_404() ) {
+		if (
+			// No API key.
+			empty( $parsely_options['apikey'] ) ||
+
+			// Chosen not to track logged in users.
+			( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
+
+			// 404 pages are not tracked.
+			is_404() ||
+
+			// Search pages are not tracked.
+			is_search()
+		) {
 			return '';
 		}
 
@@ -820,7 +814,45 @@ class Parsely {
 			'@type'    => 'WebPage',
 		);
 		$current_url  = $this->get_current_url();
-		if ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
+
+		if ( is_front_page() && ! is_paged() || ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) ) {
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
+			$parsely_page['url']      = home_url();
+		} elseif ( is_front_page() && is_paged() ) {
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
+			$parsely_page['url']      = $current_url;
+		} elseif ( is_home() ) {
+			$parsely_page['headline'] = get_the_title( get_option('page_for_posts', true) );
+			$parsely_page['url']      = $current_url;
+		} elseif ( is_author() ) {
+			// TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions.
+			$author                   = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
+			$parsely_page['url']      = $current_url;
+		} elseif ( is_category() ) {
+			$category                 = get_the_category();
+			$category                 = $category[0];
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( $category->name );
+			$parsely_page['url']      = $current_url;
+		} elseif ( is_date() ) {
+			if ( is_year() ) {
+				$parsely_page['headline'] = 'Yearly Archive - ' . get_the_time( 'Y' );
+			} elseif ( is_month() ) {
+				$parsely_page['headline'] = 'Monthly Archive - ' . get_the_time( 'F, Y' );
+			} elseif ( is_day() ) {
+				$parsely_page['headline'] = 'Daily Archive - ' . get_the_time( 'F jS, Y' );
+			} elseif ( is_time() ) {
+				$parsely_page['headline'] = 'Hourly, Minutely, or Secondly Archive - ' . get_the_time( 'F jS g:i:s A' );
+			}
+			$parsely_page['url'] = $current_url;
+		} elseif ( is_tag() ) {
+			$tag = single_tag_title( '', false );
+			if ( empty( $tag ) ) {
+				$tag = single_term_title( '', false );
+			}
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Tagged - ' . $tag );
+			$parsely_page['url']      = $current_url;
+		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
 			$post_id  = $parsely_options['content_id_prefix'] . get_the_ID();
@@ -902,37 +934,6 @@ class Parsely {
 		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title( $post ) );
 			$parsely_page['url']      = $this->get_current_url( 'post' );
-		} elseif ( is_author() ) {
-			// TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions.
-			$author                   = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
-			$parsely_page['url']      = $current_url;
-		} elseif ( is_category() ) {
-			$category                 = get_the_category();
-			$category                 = $category[0];
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( $category->name );
-			$parsely_page['url']      = $current_url;
-		} elseif ( is_date() ) {
-			if ( is_year() ) {
-				$parsely_page['headline'] = 'Yearly Archive - ' . get_the_time( 'Y' );
-			} elseif ( is_month() ) {
-				$parsely_page['headline'] = 'Monthly Archive - ' . get_the_time( 'F, Y' );
-			} elseif ( is_day() ) {
-				$parsely_page['headline'] = 'Daily Archive - ' . get_the_time( 'F jS, Y' );
-			} elseif ( is_time() ) {
-				$parsely_page['headline'] = 'Hourly, Minutely, or Secondly Archive - ' . get_the_time( 'F jS g:i:s A' );
-			}
-			$parsely_page['url'] = $current_url;
-		} elseif ( is_tag() ) {
-			$tag = single_tag_title( '', false );
-			if ( empty( $tag ) ) {
-				$tag = single_term_title( '', false );
-			}
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Tagged - ' . $tag );
-			$parsely_page['url']      = $current_url;
-		} elseif ( is_front_page() ) {
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
-			$parsely_page['url']      = home_url();
 		}
 
 		/**
