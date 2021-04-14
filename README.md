@@ -85,6 +85,31 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 
 3. The Parsely Dashboard Overview  
 ![The Parsely Dashboard Overview](.wordpress-org/screenshot-3.png)
+   
+## Sample Parse.ly metadata
+
+The standard Parse.ly JavaScript tracker inserted before `</body>`
+
+    <!-- START Parse.ly Include: Standard -->
+
+       <script data-cfasync="false" id="parsely-cfg" data-parsely-site="wpvip.com" src="//cdn.parsely.com/keys/wpvip.com/p.js"></script>
+
+    <!-- END Parse.ly Include: Standard -->
+
+A sample `JSON-LD` meta tag for a home page or section page
+
+    <!-- BEGIN wp-parsely Plugin Version 2.3 -->
+        <meta name="wp-parsely_version" id="wp-parsely_version" content="2.3"/>
+            <script type="application/ld+json">
+                {"@context":"http:\/\/schema.org","@type":"WebPage","headline":"WordPress VIP","url":"http:\/\/wpvip.com\/"}
+            </script>
+    <!-- END wp-parsely Plugin Version 2.3 -->
+
+A sample `JSON-LD` meta tag for an article or post
+
+    <script type="application/ld+json">
+        {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
+    </script>
 
 ## Changelog
 
