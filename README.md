@@ -80,14 +80,11 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 1. The main settings screen of the wp-parsely plugin  
 ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-1.png)
 
-2. The standard JavaScript include being inserted before the closing `body` tag.
-![2. The standard JavaScript include being inserted before body tag](.wordpress-org/screenshot-2.png)
+2. The settings for the Parsely Recommended Widget  
+![The settings for the Parsely Recommended Widget](.wordpress-org/screenshot-2.png)
 
-3. A sample `JSON-LD` meta tag for a home page or section page
-![3. A sample `JSON-LD` meta tag for a home page or section page](.wordpress-org/screenshot-3.png)
-
-4. A sample `JSON-LD` meta tag for an article or post
-![4. A sample `JSON-LD` meta tag for an article or post](.wordpress-org/screenshot-4.png)
+3. The Parsely Dashboard Overview  
+![The Parsely Dashboard Overview](.wordpress-org/screenshot-3.png)
 
 ## Changelog
 
