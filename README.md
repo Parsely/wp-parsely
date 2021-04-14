@@ -29,7 +29,6 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 ## Installation
 
 1. This plug-in requires an active version of Parse.ly. We offer a free trial, [sign up here](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely)
-1. If you haven't already done so, [sign up for a trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely)
 1. Download the plugin
 1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress (look for "Parse.ly")
