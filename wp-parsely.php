@@ -224,10 +224,7 @@ class Parsely {
 			self::MENU_SLUG
 		);
 
-		$h      = __( 'Your API secret is your secret code to %s%s%saccess our API.%s
-			It can be found at dash.parsely.com/yoursitedomain/settings/api
-		 ( replace yoursitedomain with your domain name, e.g. `mydomain.com` ) If you haven\'t purchased access to the API, and would
-		  like to do so, email your account manager or support@parsely.com!', 'wp-parsely' );
+		$h      = __( 'Your API secret is your secret code to %s%s%saccess our API.%s It can be found at dash.parsely.com/yoursitedomain/settings/api ( replace yoursitedomain with your domain name, e.g. `mydomain.com` ) If you haven\'t purchased access to the API, and would like to do so, email your account manager or support@parsely.com!', 'wp-parsely' );
 		$h_link = 'https://www.parse.ly/help/api/analytics/';
 
 		$field_args = array(
@@ -262,8 +259,7 @@ class Parsely {
 		);
 
 		// Clear metadata.
-		$h = __( 'Check this radio button and hit "Save Changes" to clear all metadata information for Parse.ly posts and re-send all metadata
-		to Parse.ly. WARNING: do not do this unless explicitly instructed by Parse.ly Staff!', 'wp-parsely' );
+		$h = __( 'Check this radio button and hit "Save Changes" to clear all metadata information for Parse.ly posts and re-send all metadata to Parse.ly. WARNING: do not do this unless explicitly instructed by Parse.ly Staff!', 'wp-parsely' );
 		add_settings_field(
 			'parsely_wipe_metadata_cache',
 			__( 'Wipe Parse.ly Metadata Info', 'wp-parsely' ),
@@ -277,9 +273,7 @@ class Parsely {
 			)
 		);
 
-		$h      = __( 'Choose the metadata format for our crawlers to access. ' .
-			'Most publishers are fine with JSON-LD ( %s%s%shttps://www.parse.ly/help/integration/jsonld/%s ), ' .
-			'but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' );
+		$h      = __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with JSON-LD ( %s%s%shttps://www.parse.ly/help/integration/jsonld/%s ), but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' );
 		$h_link = 'https://www.parse.ly/help/integration/jsonld/';
 
 		add_settings_field(
@@ -321,11 +315,7 @@ class Parsely {
 		);
 
 		// Content ID Prefix.
-		$h = __( 'If you use more than one content management system (e.g. ' .
-			'WordPress and Drupal), you may end up with duplicate content ' .
-			'IDs. Adding a Content ID Prefix will ensure the content IDs ' .
-			'from WordPress will not conflict with other content management ' .
-			'systems. We recommend using "WP-" for your prefix.', 'wp-parsely' );
+		$h = __( 'If you use more than one content management system (e.g. WordPress and Drupal), you may end up with duplicate content IDs. Adding a Content ID Prefix will ensure the content IDs from WordPress will not conflict with other content management systems. We recommend using "WP-" for your prefix.', 'wp-parsely' );
 
 		$field_args = array(
 			'option_key'       => 'content_id_prefix',
@@ -345,10 +335,7 @@ class Parsely {
 		);
 
 		// Disable javascript.
-		$h = __( 'If you use a separate system for JavaScript tracking ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
-			'you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option ' .
-			'will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving ' .
-			'this option set to "No"!', 'wp-parsely' );
+		$h = __( 'If you use a separate system for JavaScript tracking ( Tealium / Segment / Google Tag Manager / other tag manager solution ) you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving this option set to "No"!', 'wp-parsely' );
 		add_settings_field(
 			'disable_javascript',
 			__( 'Disable JavaScript', 'wp-parsely' ),
@@ -363,8 +350,7 @@ class Parsely {
 		);
 
 		// Disable amp tracking.
-		$h = __( 'If you use a separate system for JavaScript tracking on AMP pages ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
-			'you may want to use that instead of having the plugin load the tracker.', 'wp-parsely' );
+		$h = __( 'If you use a separate system for JavaScript tracking on AMP pages ( Tealium / Segment / Google Tag Manager / other tag manager solution ) you may want to use that instead of having the plugin load the tracker.', 'wp-parsely' );
 		add_settings_field(
 			'disable_amp',
 			__( 'Disable AMP Tracking', 'wp-parsely' ),
@@ -379,10 +365,7 @@ class Parsely {
 		);
 
 		// Use top-level categories.
-		$h = __( 'The plugin will use the first category assigned to a post. ' .
-			'With this option selected, if you post a story to News > ' .
-			'National > Florida, the plugin will use the "News" for the ' .
-			'section name in your dashboard instead of "Florida".', 'wp-parsely' );
+		$h = __( 'The plugin will use the first category assigned to a post. With this option selected, if you post a story to News > National > Florida, the plugin will use the "News" for the section name in your dashboard instead of "Florida".', 'wp-parsely' );
 		add_settings_field(
 			'use_top_level_cats',
 			__( 'Use Top-Level Categories for Section', 'wp-parsely' ),
@@ -397,9 +380,7 @@ class Parsely {
 		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h = __( 'By default, the section value in your Parse.ly dashboard maps to a post\'s category. ' .
-			'You can optionally choose a custom taxonomy, if you\'ve created one, to ' .
-			'populate the section value instead.', 'wp-parsely' );
+		$h = __( 'By default, the section value in your Parse.ly dashboard maps to a post\'s category. You can optionally choose a custom taxonomy, if you\'ve created one, to populate the section value instead.', 'wp-parsely' );
 		add_settings_field(
 			'custom_taxonomy_section',
 			__( 'Use Custom Taxonomy for Section', 'wp-parsely' ),
@@ -416,10 +397,7 @@ class Parsely {
 		);
 
 		// Use categories and custom taxonomies as tags.
-		$h = __( 'You can use this option to add all assigned categories and taxonomies to ' .
-			'your tags.  For example, if you had a post assigned to ' .
-			'the categories: "Business/Tech", "Business/Social", your tags would include ' .
-			'"Business/Tech" and "Business/Social" in addition to your other tags.', 'wp-parsely' );
+		$h = __( 'You can use this option to add all assigned categories and taxonomies to your tags.  For example, if you had a post assigned to the categories: "Business/Tech", "Business/Social", your tags would include "Business/Tech" and "Business/Social" in addition to your other tags.', 'wp-parsely' );
 		add_settings_field(
 			'cats_as_tags',
 			__( 'Add Categories to Tags', 'wp-parsely' ),
@@ -434,11 +412,7 @@ class Parsely {
 		);
 
 		// Track logged-in users.
-		$h = __( 'By default, the plugin will track the activity of users that ' .
-			'are logged into this site. You can change this setting to only ' .
-			'track the activity of anonymous visitors. Note: You will no ' .
-			'longer see the Parse.ly tracking code on your site if you ' .
-			'browse while logged in.', 'wp-parsely' );
+		$h = __( 'By default, the plugin will track the activity of users that are logged into this site. You can change this setting to only track the activity of anonymous visitors. Note: You will no longer see the Parse.ly tracking code on your site if you browse while logged in.', 'wp-parsely' );
 		add_settings_field(
 			'track_authenticated_users',
 			__( 'Track Logged-in Users', 'wp-parsely' ),
@@ -453,9 +427,7 @@ class Parsely {
 		);
 
 		// Lowercase all tags.
-		$h = __( 'By default, the plugin will use lowercase versions of your ' .
-			'tags to correct for potential misspellings. You can change this ' .
-			'setting to ensure that tag names are used verbatim.', 'wp-parsely' );
+		$h = __( 'By default, the plugin will use lowercase versions of your tags to correct for potential misspellings. You can change this setting to ensure that tag names are used verbatim.', 'wp-parsely' );
 		add_settings_field(
 			'lowercase_tags',
 			__( 'Lowercase All Tags', 'wp-parsely' ),
@@ -469,9 +441,7 @@ class Parsely {
 			)
 		);
 
-		$h = __( 'The plugin uses http canonical URLs by default. If this needs to be forced to use https, set this option ' .
-			' to true. Note: the default is fine for almost all publishers, it\'s unlikely you\'ll have to change this unless' .
-			' directed to do so by a Parse.ly support rep.', 'wp-parsely' );
+		$h = __( 'The plugin uses http canonical URLs by default. If this needs to be forced to use https, set this option to true. Note: the default is fine for almost all publishers, it\'s unlikely you\'ll have to change this unless directed to do so by a Parse.ly support rep.', 'wp-parsely' );
 		add_settings_field(
 			'force_https_canonicals',
 			__( 'Force HTTPS canonicals', 'wp-parsely' ),
@@ -486,8 +456,7 @@ class Parsely {
 		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h = __( 'By default, Parse.ly only tracks the default post type as a post page. ' .
-			'If you want to track custom post types, select them here!', 'wp-parsely' );
+		$h = __( 'By default, Parse.ly only tracks the default post type as a post page. If you want to track custom post types, select them here!', 'wp-parsely' );
 		add_settings_field(
 			'track_post_types',
 			__( 'Post Types To Track', 'wp-parsely' ),
@@ -505,8 +474,7 @@ class Parsely {
 		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h = __( 'By default, Parse.ly only tracks the default page type as a non-post page. ' .
-			'If you want to track custom post types as non-post pages, select them here!', 'wp-parsely' );
+		$h = __( 'By default, Parse.ly only tracks the default page type as a non-post page. If you want to track custom post types as non-post pages, select them here!', 'wp-parsely' );
 		add_settings_field(
 			'track_page_types',
 			__( 'Page Types To Track', 'wp-parsely' ),
