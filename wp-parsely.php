@@ -346,14 +346,14 @@ class Parsely {
 			$field_args
 		);
 
-		// Disable javascript.
-		$h = 'If you use a separate system for Javascript tracking ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
+		// Disable JavaScript.
+		$h = 'If you use a separate system for JavaScript tracking ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
 			'you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option ' .
 			'will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving ' .
 			'this option set to "No"!';
 		add_settings_field(
 			'disable_javascript',
-			'Disable Javascript <div class="help-icons"></div>',
+			'Disable JavaScript <div class="help-icons"></div>',
 			array( $this, 'print_binary_radio_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -365,7 +365,7 @@ class Parsely {
 		);
 
 		// Disable amp tracking.
-		$h = 'If you use a separate system for Javascript tracking on AMP pages ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
+		$h = 'If you use a separate system for JavaScript tracking on AMP pages ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
 			'you may want to use that instead of having the plugin load the tracker.';
 		add_settings_field(
 			'disable_amp',
