@@ -96,7 +96,7 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
    
 ## Sample Parse.ly metadata
 
-The standard Parse.ly JavaScript tracker inserted before `</body>`
+The standard Parse.ly JavaScript tracker inserted before the closing `body` tag:
 
     <!-- START Parse.ly Include: Standard -->
 
@@ -104,16 +104,16 @@ The standard Parse.ly JavaScript tracker inserted before `</body>`
 
     <!-- END Parse.ly Include: Standard -->
 
-A sample `JSON-LD` meta tag for a home page or section page
+A sample `JSON-LD` meta tag for a home page or section page:
 
-    <!-- BEGIN wp-parsely Plugin Version 2.3 -->
+    <!-- BEGIN wp-parsely Plugin Version 2.5.0 -->
         <meta name="wp-parsely_version" id="wp-parsely_version" content="2.3"/>
             <script type="application/ld+json">
                 {"@context":"http:\/\/schema.org","@type":"WebPage","headline":"WordPress VIP","url":"http:\/\/wpvip.com\/"}
             </script>
-    <!-- END wp-parsely Plugin Version 2.3 -->
+    <!-- END wp-parsely Plugin Version 2.5.0 -->
 
-A sample `JSON-LD` meta tag for an article or post
+A sample `JSON-LD` meta tag for an article or post:
 
     <script type="application/ld+json">
         {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
