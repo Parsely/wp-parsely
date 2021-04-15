@@ -1271,9 +1271,6 @@ class Parsely {
 				echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
 			}
 		}
-		if ( isset( $args['requires_recrawl'] ) ) {
-			echo ' data-requires-recrawl="true"';
-		}
 		echo ' />';
 
 		if ( isset( $args['help_text'] ) ) {
