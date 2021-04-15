@@ -28,13 +28,22 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 
 ## Installation
 
-1. This plug-in requires an active version of Parse.ly. We offer a free trial, [sign up here](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely)
-1. Download the plugin
-1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress (look for "Parse.ly")
-1. Head to the settings page for the plugin (should be /wp-admin/options-general.php?page=parsely)
-1. Set your Site ID, which is your own site domain name (e.g., `mysite.com`)
-1. Save your changes and enjoy your data!
+The WP-Parsely plugin requires an active Parse.ly account. Parse.ly gives creators, marketers and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results.
+[Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely)
+
+### Install WP-Parsely from within WordPress
+1. Visit the Plugins page from your WordPress dashboard and click "Add New" at the top of the page.
+1. Search for "parse.ly" using the search bar on the right side.
+1. Click "Install Now" to install the plugin.
+1. After it's installed, click "Activate" to activate the plugin on your site. 
+
+### Install WP-Parsely manually
+
+1. Download the plugin from WordPress.org or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
+1. Unzip the downloaded archive.
+1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
+1. Visit the the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
+1. Click "Activate" to activate the plugin on your site.
 
 **NOTE:** This plugin does not currently support dynamic tracking (the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above [the standard Parse.ly include](http://www.parsely.com/help/integration/basic/) that the plugin injects into your page source. Please consult [the Parse.ly documentation on dynamic tracking](https://www.parsely.com/help/integration/dynamic/) for instructions on implementing dynamic tracking, or contact Parse.ly support for additional assistance.
 
