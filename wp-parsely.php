@@ -429,7 +429,7 @@ class Parsely {
 				'title'            => __( 'Track Logged-in Users', 'wp-parsely' ), // Passed for legend element.
 				'option_key'       => 'track_authenticated_users',
 				'help_text'        => $h,
-				'requires_recrawl' => true,
+				'requires_recrawl' => false,
 			)
 		);
 
