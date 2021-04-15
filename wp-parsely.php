@@ -224,6 +224,7 @@ class Parsely {
 			self::MENU_SLUG
 		);
 
+		/* translators: 1: Opening anchor tag markup, 2: Documentation URL, 3: Opening anchor tag markup continued, 4: Closing anchor tag */
 		$h      = __( 'Your API secret is your secret code to %1$s%2$s%3$saccess our API.%4$s It can be found at dash.parsely.com/yoursitedomain/settings/api ( replace yoursitedomain with your domain name, e.g. `mydomain.com` ) If you haven\'t purchased access to the API, and would like to do so, email your account manager or support@parsely.com!', 'wp-parsely' );
 		$h_link = 'https://www.parse.ly/help/api/analytics/';
 
@@ -273,6 +274,7 @@ class Parsely {
 			)
 		);
 
+		/* translators: 1: Opening anchor tag markup, 2: Documentation URL, 3: Opening anchor tag markup continued, 4: Closing anchor tag */
 		$h      = __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with JSON-LD ( %1$s%2$s%3$shttps://www.parse.ly/help/integration/jsonld/%4$s ), but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' );
 		$h_link = 'https://www.parse.ly/help/integration/jsonld/';
 
@@ -722,6 +724,7 @@ class Parsely {
 	 */
 	public function print_dynamic_tracking_note() {
 		printf(
+			/* translators: 1: Documentation URL 2: Documentation URL */
 			wp_kses_post( __( 'This plugin does not currently support dynamic tracking ( the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href="%1$s">the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href="%2$s">the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href="%3$s">support@parsely.com</a> ) for additional assistance.', 'wp-parsely' ) ),
 			esc_url( 'http://www.parsely.com/help/integration/basic/' ),
 			esc_url( 'https://www.parsely.com/help/integration/dynamic/' ),
