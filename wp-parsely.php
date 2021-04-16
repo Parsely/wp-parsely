@@ -336,7 +336,7 @@ class Parsely {
 			$field_args
 		);
 
-		// Disable javascript.
+		// Disable JavaScript.
 		$h = __( 'If you use a separate system for JavaScript tracking ( Tealium / Segment / Google Tag Manager / other tag manager solution ) you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving this option set to "No"!', 'wp-parsely' );
 		add_settings_field(
 			'disable_javascript',
