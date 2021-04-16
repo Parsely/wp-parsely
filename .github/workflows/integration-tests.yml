@@ -58,6 +58,11 @@ jobs:
       - name: Start MySQL Service
         run: sudo systemctl start mysql.service
 
+      - name: Switch to use mysql_native_password for PHP < 7.4
+        if: ${{ matrix.php < 7.4 }}
+        # Info https://www.php.net/manual/en/mysqli.requirements.php
+        run: mysql -u root -p"root" -e "ALTER USER 'root'@localhost IDENTIFIED WITH mysql_native_password BY 'root'";  
+
       - name: Prepare environment for integration tests
         run: composer prepare
 
