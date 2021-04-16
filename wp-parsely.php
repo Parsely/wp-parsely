@@ -107,6 +107,7 @@ class Parsely {
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
 		if ( ! defined( 'WP_PARSELY_TESTING' ) ) {
+			add_action( 'wp_enqueue_scripts', [ $this, 'wp_parsely_style_init' ] );
 			add_action( 'wp_enqueue_scripts', [ $this, 'ensure_jquery_exists' ] );
 		}
 	}
@@ -122,6 +123,13 @@ class Parsely {
 			'display'  => 'Every 10 Minutes',
 		);
 		return $schedules;
+	}
+
+	/**
+	 * Initialize parsely WordPress style
+	 */
+	public function wp_parsely_style_init() {
+		wp_register_style( 'wp-parsely-style', plugins_url( 'wp-parsely.css', __FILE__ ), array(), Parsely::VERSION );
 	}
 
 	/**
