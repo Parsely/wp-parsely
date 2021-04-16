@@ -47,6 +47,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
+		wp_enqueue_style( 'wp-parsely-style', plugins_url( 'wp-parsely.css', __FILE__ ), array(), Parsely::VERSION );
+
 		$allowed_tags = wp_kses_allowed_html( 'post' );
 		$title_html   = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
 		echo wp_kses( $title_html, $allowed_tags );
