@@ -10,6 +10,9 @@
       "role": "Developer"
     }
   ],
+  "require": {
+    "php": ">=5.6"
+  },
   "require-dev": {
     "automattic/vipwpcs": "^2.2",
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4.1 || ^0.5 || ^0.6.2 || ^0.7",
@@ -34,6 +37,10 @@
     ],
     "integration": [
       "@php ./vendor/bin/phpunit --testsuite WP_Tests"
+    ],
+    "integration-ms": [
+      "@putenv WP_MULTISITE=1",
+      "@composer integration"
     ]
   }
 }
