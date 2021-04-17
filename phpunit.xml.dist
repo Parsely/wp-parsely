@@ -18,4 +18,11 @@
 			<directory suffix="-test.php">./tests/</directory>
 		</testsuite>
 	</testsuites>
+
+	<filter>
+		<whitelist>
+			<file>wp-parsely.php</file>
+			<file>class-parsely-recommended-widget.php</file>
+		</whitelist>
+	</filter>
 </phpunit>

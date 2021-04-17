@@ -39,10 +39,21 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: pcov
+          ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
           coverage: pcov
 
       - name: Setup problem matchers for PHP
         run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+
+      # Setup PCOV since we're using PHPUnit < 8 which has it integrated. Requires PHP 7.1.
+      # Ignore platform reqs to make it install on PHP 8.
+      # https://github.com/krakjoe/pcov-clobber
+      - name: Setup PCOV
+        if: ${{ matrix.php == 8.0 }}
+        run: |
+          composer require pcov/clobber --ignore-platform-reqs
+          vendor/bin/pcov clobber
 
       - name: Setup Problem Matchers for PHPUnit
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
@@ -62,6 +73,10 @@ jobs:
         run: composer prepare
 
       - name: Run integration tests (single site)
+        if: ${{ matrix.php != 8.0 }}
         run: composer integration
+      - name: Run integration tests (single site with code coverage)
+        if: ${{ matrix.php == 8.0 }}
+        run: ./vendor/bin/phpunit --testsuite WP_Tests --coverage-text
       - name: Run integration tests (multisite)
         run: composer integration-ms
