@@ -44,6 +44,10 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @param array $instance Values saved to the db.
 	 */
 	public function widget( $args, $instance ) {
+		if ( ! $this->api_key_and_secret_are_populated() ) {
+			return;
+		}
+
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
@@ -53,140 +57,129 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		// Set up the variables.
 		$options = get_option( 'parsely' );
-		if ( is_array( $options ) && array_key_exists( 'apikey', $options ) && array_key_exists( 'api_secret', $options ) && ! empty( $options['api_secret'] ) ) {
-			$root_url       = 'https://api.parsely.com/v2/related?apikey=' . esc_attr( $options['apikey'] );
-			$pub_date_start = '&pub_date_start=' . $instance['published_within'] . 'd';
-			$sort           = '&sort=' . trim( $instance['sort'] );
-			// No idea why boost is coming back with a space prepended: I've trimmed it everywhere I possibly could.
-			// Trimming here too to avoid it ruining the query.
-			$boost    = '&boost=' . trim( $instance['boost'] );
-			$limit    = '&limit=' . $instance['return_limit'];
-			$full_url = $root_url . $sort . $boost . $limit;
 
-			if ( 0 !== (int) $instance['published_within'] ) {
-				$full_url .= $pub_date_start;
-			}
-			?>
-			<script data-cfasync="false">
-				// adapted from https://stackoverflow.com/questions/7486309/how-to-make-script-execution-wait-until-jquery-is-loaded
+		$root_url       = 'https://api.parsely.com/v2/related?apikey=' . esc_attr( $options['apikey'] );
+		$pub_date_start = '&pub_date_start=' . $instance['published_within'] . 'd';
+		$sort           = '&sort=' . trim( $instance['sort'] );
+		// No idea why boost is coming back with a space prepended: I've trimmed it everywhere I possibly could.
+		// Trimming here too to avoid it ruining the query.
+		$boost    = '&boost=' . trim( $instance['boost'] );
+		$limit    = '&limit=' . $instance['return_limit'];
+		$full_url = $root_url . $sort . $boost . $limit;
 
-				function defer(method) {
-					if (window.jQuery) {
-						method();
-					} else {
-						setTimeout(function() { defer(method); }, 50);
-					}
-				}
-
-				function widgetLoad() {
-					var parsely_results = [];
-
-					uuid = false;
-					// regex stolen from Mozilla's docs
-					var cookieVal = document.cookie.replace(/(?:(?:^|.*;\s*)_parsely_visitor\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-					if ( cookieVal ) {
-						var uuid = JSON.parse(unescape(cookieVal))['id'];
-					}
-
-					var full_url = '<?php echo esc_js( esc_url_raw( $full_url ) ); ?>';
-
-					var img_src = "<?php echo ( isset( $instance['img_src'] ) ? esc_js( $instance['img_src'] ) : null ); ?>";
-
-					var display_author = "<?php echo ( isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false ); ?>";
-
-					var display_direction = "<?php echo ( isset( $instance['display_direction'] ) ? esc_js( $instance['display_direction'] ) : null ); ?>";
-
-					var itm_medium = "site_widget";
-					var itm_source = "parsely_recommended_widget";
-
-					var personalized = "<?php echo wp_json_encode( boolval( $instance['personalize_results'] ) ); ?>";
-					if ( personalized && uuid ) {
-						full_url += '&uuid=';
-						full_url += uuid;
-
-					}
-					else {
-						full_url += '&url=';
-						full_url += '<?php echo wp_json_encode( esc_url_raw( get_permalink() ) ); ?>';
-
-					}
-					var parentDiv = jQuery.find('#<?php echo esc_attr( $this->id ); ?>');
-					if (parentDiv.length === 0) {
-						parentDiv = jQuery.find('.Parsely_Recommended_Widget');
-					}
-					// make sure page is not attempting to load widget twice in the same spot
-					if (jQuery(parentDiv).find("div.parsely-recommendation-widget").length != 0) {
-						return;
-					}
-
-					var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
-					if (img_src !== 'none') {
-						outerDiv.addClass('display-thumbnail');
-					}
-					if (display_direction) {
-						outerDiv.addClass('list-' + display_direction);
-					}
-
-					var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
-					jQuery.getJSON( full_url, function (data) {
-						jQuery.each(data.data, function(key, value) {
-							var widgetEntry = jQuery('<li>')
-								.addClass('parsely-recommended-widget-entry')
-								.attr('id', 'parsely-recommended-widget-item' + key);
-
-							var textDiv = jQuery('<div>').addClass('parsely-text-wrapper');
-
-							if (img_src === 'parsely_thumb') {
-								jQuery('<img>').attr('src', value['thumb_url_medium']).appendTo(widgetEntry);
-							}
-							else if (img_src === 'original') {
-								jQuery('<img>').attr('src', value['image_url']).appendTo(widgetEntry);
-							}
-
-							var cmp_cmp = '?itm_campaign=<?php echo esc_attr( $this->id ); ?>';
-							var cmp_med = '&itm_medium=' + itm_medium;
-							var cmp_src = '&itm_source=' + itm_source;
-							var cmp_con = '&itm_content=widget_item-' + key;
-							var itm_link = value['url'] + cmp_cmp + cmp_med + cmp_src + cmp_con;
-
-							var postTitle = jQuery('<div>').attr('class', 'parsely-recommended-widget-title');
-							var postLink = jQuery('<a>').attr('href', itm_link).text(value['title']);
-							postTitle.append(postLink);
-							textDiv.append(postTitle);
-
-							if ( display_author ) {
-								var authorLink = jQuery('<div>').attr('class', 'parsely-recommended-widget-author').text(value['author']);
-								textDiv.append(authorLink);
-							}
-
-							widgetEntry.append(textDiv);
-
-
-
-							// set up the rest of entry
-							outerList.append(widgetEntry);
-						});
-						outerDiv.append(outerList);
-					});
-
-				}
-				defer(widgetLoad);
-
-
-			</script>
-			<?php
-		} else {
-			?>
-			<p>
-			you must set the Parsely API Secret for this widget to work!
-			</p>
-			<?php
+		if ( 0 !== (int) $instance['published_within'] ) {
+			$full_url .= $pub_date_start;
 		}
-
 		?>
+		<script data-cfasync="false">
+			// adapted from https://stackoverflow.com/questions/7486309/how-to-make-script-execution-wait-until-jquery-is-loaded
+
+			function defer(method) {
+				if (window.jQuery) {
+					method();
+				} else {
+					setTimeout(function() { defer(method); }, 50);
+				}
+			}
+
+			function widgetLoad() {
+				var parsely_results = [];
+
+				uuid = false;
+				// regex stolen from Mozilla's docs
+				var cookieVal = document.cookie.replace(/(?:(?:^|.*;\s*)_parsely_visitor\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+				if ( cookieVal ) {
+					var uuid = JSON.parse(unescape(cookieVal))['id'];
+				}
+
+				var full_url = '<?php echo esc_js( esc_url_raw( $full_url ) ); ?>';
+
+				var img_src = "<?php echo ( isset( $instance['img_src'] ) ? esc_js( $instance['img_src'] ) : null ); ?>";
+
+				var display_author = "<?php echo ( isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false ); ?>";
+
+				var display_direction = "<?php echo ( isset( $instance['display_direction'] ) ? esc_js( $instance['display_direction'] ) : null ); ?>";
+
+				var itm_medium = "site_widget";
+				var itm_source = "parsely_recommended_widget";
+
+				var personalized = "<?php echo wp_json_encode( boolval( $instance['personalize_results'] ) ); ?>";
+				if ( personalized && uuid ) {
+					full_url += '&uuid=';
+					full_url += uuid;
+
+				}
+				else {
+					full_url += '&url=';
+					full_url += '<?php echo wp_json_encode( esc_url_raw( get_permalink() ) ); ?>';
+
+				}
+				var parentDiv = jQuery.find('#<?php echo esc_attr( $this->id ); ?>');
+				if (parentDiv.length === 0) {
+					parentDiv = jQuery.find('.Parsely_Recommended_Widget');
+				}
+				// make sure page is not attempting to load widget twice in the same spot
+				if (jQuery(parentDiv).find("div.parsely-recommendation-widget").length != 0) {
+					return;
+				}
+
+				var outerDiv = jQuery('<div>').addClass('parsely-recommendation-widget').appendTo(parentDiv);
+				if (img_src !== 'none') {
+					outerDiv.addClass('display-thumbnail');
+				}
+				if (display_direction) {
+					outerDiv.addClass('list-' + display_direction);
+				}
+
+				var outerList = jQuery('<ul>').addClass('parsely-recommended-widget').appendTo(outerDiv);
+				jQuery.getJSON( full_url, function (data) {
+					jQuery.each(data.data, function(key, value) {
+						var widgetEntry = jQuery('<li>')
+							.addClass('parsely-recommended-widget-entry')
+							.attr('id', 'parsely-recommended-widget-item' + key);
+
+						var textDiv = jQuery('<div>').addClass('parsely-text-wrapper');
+
+						if (img_src === 'parsely_thumb') {
+							jQuery('<img>').attr('src', value['thumb_url_medium']).appendTo(widgetEntry);
+						}
+						else if (img_src === 'original') {
+							jQuery('<img>').attr('src', value['image_url']).appendTo(widgetEntry);
+						}
+
+						var cmp_cmp = '?itm_campaign=<?php echo esc_attr( $this->id ); ?>';
+						var cmp_med = '&itm_medium=' + itm_medium;
+						var cmp_src = '&itm_source=' + itm_source;
+						var cmp_con = '&itm_content=widget_item-' + key;
+						var itm_link = value['url'] + cmp_cmp + cmp_med + cmp_src + cmp_con;
+
+						var postTitle = jQuery('<div>').attr('class', 'parsely-recommended-widget-title');
+						var postLink = jQuery('<a>').attr('href', itm_link).text(value['title']);
+						postTitle.append(postLink);
+						textDiv.append(postTitle);
+
+						if ( display_author ) {
+							var authorLink = jQuery('<div>').attr('class', 'parsely-recommended-widget-author').text(value['author']);
+							textDiv.append(authorLink);
+						}
+
+						widgetEntry.append(textDiv);
 
 
+
+						// set up the rest of entry
+						outerList.append(widgetEntry);
+					});
+					outerDiv.append(outerList);
+				});
+
+			}
+			defer(widgetLoad);
+
+
+		</script>
 		<?php
+
 		echo wp_kses( $args['after_widget'], $allowed_tags );
 	}
 
@@ -221,6 +214,19 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		$this->migrate_old_fields( $instance );
+
+		if ( ! $this->api_key_and_secret_are_populated() ) {
+			$settings_page_url = add_query_arg( 'page', 'parsely', get_admin_url() . 'options-general.php' );
+
+			$message = sprintf(
+				__( 'The <i>Parse.ly Site ID</i> and <i>Parse.ly API Secret</i> fields need to be populated on the <a href="%s">Parse.ly settings page</a> for this widget to work.', 'wp-parsely' ),
+				esc_url( $settings_page_url )
+			);
+
+			echo '<p>', wp_kses_post( $message ), '</p>';
+
+			return;
+		}
 
 		// editable fields: title.
 		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
@@ -358,5 +364,26 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			'li_referrals'          => __( 'Page views where the referrer was linkedin.com', 'wp-parsely' ),
 			'pi_referrals'          => __( 'Page views where the referrer was pinterest.com', 'wp-parsely' ),
 		);
+	}
+
+	private function api_key_and_secret_are_populated() {
+		$options = get_option( 'parsely' );
+
+		// No options are saved, so API key is not available.
+		if ( ! is_array( $options ) ) {
+			return false;
+		}
+
+		// Parse.ly Site ID settings field is not populated.
+		if ( ! array_key_exists( 'apikey', $options ) || $options['apikey'] === '' ) {
+			return false;
+		}
+
+		// Parse.ly API Secret settings field is not populated.
+		if ( ! array_key_exists( 'api_secret', $options ) || $options['api_secret'] === '' ) {
+			return false;
+		}
+
+		return true;
 	}
 }
