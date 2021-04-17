@@ -36,8 +36,6 @@ class Parsely {
 	 */
 	const VERSION         = '2.4.1';
 	const MENU_SLUG       = 'parsely';             // Defines the page param passed to options-general.php.
-	const MENU_TITLE      = 'Parse.ly';            // Text to be used for the menu as seen in Settings sub-menu.
-	const MENU_PAGE_TITLE = 'Parse.ly > Settings'; // Text shown in <title></title> when the settings screen is viewed.
 	const OPTIONS_KEY     = 'parsely';             // Defines the key used to store options in the WP database.
 	const CAPABILITY      = 'manage_options';      // The capability required for the user to administer settings.
 
@@ -120,7 +118,7 @@ class Parsely {
 	public function wpparsely_add_cron_interval( $schedules ) {
 		$schedules['everytenminutes'] = array(
 			'interval' => 600, // time in seconds.
-			'display'  => 'Every 10 Minutes',
+			'display'  => __( 'Every 10 Minutes', 'wp-parsely' ),
 		);
 		return $schedules;
 	}
@@ -157,8 +155,8 @@ class Parsely {
 	 */
 	public function add_settings_sub_menu() {
 		add_options_page(
-			self::MENU_PAGE_TITLE,
-			self::MENU_TITLE,
+				__( 'Parse.ly Settings', 'wp-parsely' ),
+				__( 'Parse.ly', 'wp-parsely' ),
 			self::CAPABILITY,
 			self::MENU_SLUG,
 			array( $this, 'display_settings' )
@@ -173,7 +171,7 @@ class Parsely {
 	 */
 	public function display_settings() {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
-			wp_die( esc_attr( 'You do not have sufficient permissions to access this page.' ) );
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
 
 		include 'parsely-settings.php';
@@ -197,13 +195,13 @@ class Parsely {
 		// These are the Required Settings.
 		add_settings_section(
 			'required_settings',
-			'Required Settings',
+			__( 'Required Settings', 'wp-parsely' ),
 			array( $this, 'print_required_settings' ),
 			self::MENU_SLUG
 		);
 
 		// Get the API Key.
-		$h = 'Your Site ID is your own site domain ( e.g. `mydomain.com` )';
+		$h = __( 'Your Site ID is your own site domain ( e.g. `mydomain.com` )', 'wp-parsely' );
 
 		$field_args = array(
 			'option_key' => 'apikey',
@@ -211,7 +209,7 @@ class Parsely {
 		);
 		add_settings_field(
 			'apikey',
-			'Parse.ly Site ID <div class="help-icons"></div>',
+			__( 'Parse.ly Site ID', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			self::MENU_SLUG,
 			'required_settings',
@@ -221,15 +219,13 @@ class Parsely {
 		// These are the Optional Settings.
 		add_settings_section(
 			'optional_settings',
-			'Optional Settings',
+			__( 'Optional Settings', 'wp-parsely' ),
 			array( $this, 'print_optional_settings' ),
 			self::MENU_SLUG
 		);
 
-		$h      = 'Your API secret is your secret code to %s%s%saccess our API.%s
-			It can be found at dash.parsely.com/yoursitedomain/settings/api
-		 ( replace yoursitedown with your domain name, e.g. `mydomain.com` ) If you haven\'t purchased access to the API, and would
-		  like to do so, email your account manager or support@parsely.com!';
+		/* translators: 1: Opening anchor tag markup, 2: Documentation URL, 3: Opening anchor tag markup continued, 4: Closing anchor tag */
+		$h      = __( 'Your API secret is your secret code to %1$s%2$s%3$saccess our API.%4$s It can be found at dash.parsely.com/yoursitedomain/settings/api ( replace yoursitedomain with your domain name, e.g. `mydomain.com` ) If you haven\'t purchased access to the API, and would like to do so, email your account manager or support@parsely.com!', 'wp-parsely' );
 		$h_link = 'https://www.parse.ly/help/api/analytics/';
 
 		$field_args = array(
@@ -239,14 +235,14 @@ class Parsely {
 		);
 		add_settings_field(
 			'api_secret',
-			'Parse.ly API Secret <div class="help-icons"></div>',
+			__( 'Parse.ly API Secret', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
 			$field_args
 		);
 
-		$h      = 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!';
+		$h      = __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' );
 		$h_link = 'https://www.parse.ly/help/api/analytics/';
 
 		$field_args = array(
@@ -256,7 +252,7 @@ class Parsely {
 		);
 		add_settings_field(
 			'metadata_secret',
-			'Parse.ly Metadata Secret <div class="help-icons"></div>',
+			__( 'Parse.ly Metadata Secret', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -264,11 +260,10 @@ class Parsely {
 		);
 
 		// Clear metadata.
-		$h = 'Check this radio button and hit "Save Changes" to clear all metadata information for Parsely posts and re-send all metadata
-		to Parsely. WARNING: do not do this unless explicitly instructed by Parse.ly Staff!';
+		$h = __( 'Check this radio button and hit "Save Changes" to clear all metadata information for Parse.ly posts and re-send all metadata to Parse.ly. WARNING: do not do this unless explicitly instructed by Parse.ly Staff!', 'wp-parsely' );
 		add_settings_field(
 			'parsely_wipe_metadata_cache',
-			'Wipe Parsely Metadata Info <div class="help-icons"></div>',
+			__( 'Wipe Parse.ly Metadata Info', 'wp-parsely' ),
 			array( $this, 'print_checkbox_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -279,14 +274,13 @@ class Parsely {
 			)
 		);
 
-		$h      = 'Choose the metadata format for our crawlers to access. ' .
-			'Most publishers are fine with JSON-LD ( %s%s%shttps://www.parse.ly/help/integration/jsonld/%s ), ' .
-			'but if you prefer to use our proprietary metadata format then you can do so here.';
+		/* translators: 1: Opening anchor tag markup, 2: Documentation URL, 3: Opening anchor tag markup continued, 4: Closing anchor tag */
+		$h      = __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with JSON-LD ( %1$s%2$s%3$shttps://www.parse.ly/help/integration/jsonld/%4$s ), but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' );
 		$h_link = 'https://www.parse.ly/help/integration/jsonld/';
 
 		add_settings_field(
 			'meta_type',
-			'Metadata Format  <div class="help-icons"></div>',
+			__( 'Metadata Format', 'wp-parsely' ),
 			array( $this, 'print_select_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -304,7 +298,7 @@ class Parsely {
 			)
 		);
 
-		$h = 'If you want to specify the url for your logo, you can do so here.';
+		$h = __( 'If you want to specify the url for your logo, you can do so here.', 'wp-parsely' );
 
 		$option_defaults['logo'] = $this->get_logo_default();
 
@@ -315,7 +309,7 @@ class Parsely {
 
 		add_settings_field(
 			'logo',
-			'Logo <div class="help-icons"></div>',
+			__( 'Logo', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -323,11 +317,7 @@ class Parsely {
 		);
 
 		// Content ID Prefix.
-		$h = 'If you use more than one content management system (e.g. ' .
-			'WordPress and Drupal), you may end up with duplicate content ' .
-			'IDs. Adding a Content ID Prefix will ensure the content IDs ' .
-			'from WordPress will not conflict with other content management ' .
-			'systems. We recommend using "WP-" for your prefix.';
+		$h = __( 'If you use more than one content management system (e.g. WordPress and Drupal), you may end up with duplicate content IDs. Adding a Content ID Prefix will ensure the content IDs from WordPress will not conflict with other content management systems. We recommend using "WP-" for your prefix.', 'wp-parsely' );
 
 		$field_args = array(
 			'option_key'       => 'content_id_prefix',
@@ -339,21 +329,18 @@ class Parsely {
 		);
 		add_settings_field(
 			'content_id_prefix',
-			'Content ID Prefix <div class="help-icons"></div>',
+			__( 'Content ID Prefix', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
 			$field_args
 		);
 
-		// Disable javascript.
-		$h = 'If you use a separate system for Javascript tracking ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
-			'you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option ' .
-			'will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving ' .
-			'this option set to "No"!';
+		// Disable JavaScript.
+		$h = __( 'If you use a separate system for JavaScript tracking ( Tealium / Segment / Google Tag Manager / other tag manager solution ) you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving this option set to "No"!', 'wp-parsely' );
 		add_settings_field(
 			'disable_javascript',
-			'Disable Javascript <div class="help-icons"></div>',
+			__( 'Disable JavaScript', 'wp-parsely' ),
 			array( $this, 'print_binary_radio_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -365,11 +352,10 @@ class Parsely {
 		);
 
 		// Disable amp tracking.
-		$h = 'If you use a separate system for Javascript tracking on AMP pages ( Tealium / Segment / Google Tag Manager / other tag manager solution ) ' .
-			'you may want to use that instead of having the plugin load the tracker.';
+		$h = __( 'If you use a separate system for JavaScript tracking on AMP pages ( Tealium / Segment / Google Tag Manager / other tag manager solution ) you may want to use that instead of having the plugin load the tracker.', 'wp-parsely' );
 		add_settings_field(
 			'disable_amp',
-			'Disable Amp Tracking <div class="help-icons"></div>',
+			__( 'Disable AMP Tracking', 'wp-parsely' ),
 			array( $this, 'print_binary_radio_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -381,13 +367,10 @@ class Parsely {
 		);
 
 		// Use top-level categories.
-		$h = 'wp-parsely will use the first category assigned to a post. ' .
-			'With this option selected, if you post a story to News > ' .
-			'National > Florida, wp-parsely will use the "News" for the ' .
-			'section name in your dashboard instead of "Florida".';
+		$h = __( 'The plugin will use the first category assigned to a post. With this option selected, if you post a story to News > National > Florida, the plugin will use the "News" for the section name in your dashboard instead of "Florida".', 'wp-parsely' );
 		add_settings_field(
 			'use_top_level_cats',
-			'Use Top-Level Categories for Section <div class="help-icons"></div>',
+			__( 'Use Top-Level Categories for Section', 'wp-parsely' ),
 			array( $this, 'print_binary_radio_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -399,12 +382,10 @@ class Parsely {
 		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h = 'By default, the section value in your Parse.ly dashboard maps to a post\'s category. ' .
-			'You can optionally choose a custom taxonomy, if you\'ve created one, to ' .
-			'populate the section value instead. ';
+		$h = __( 'By default, the section value in your Parse.ly dashboard maps to a post\'s category. You can optionally choose a custom taxonomy, if you\'ve created one, to populate the section value instead.', 'wp-parsely' );
 		add_settings_field(
 			'custom_taxonomy_section',
-			'Use Custom Taxonomy for Section  <div class="help-icons"></div>',
+			__( 'Use Custom Taxonomy for Section', 'wp-parsely' ),
 			array( $this, 'print_select_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -418,13 +399,10 @@ class Parsely {
 		);
 
 		// Use categories and custom taxonomies as tags.
-		$h = 'You can use this option to add all assigned categories and taxonomies to ' .
-			'your tags.  For example, if you had a post assigned to ' .
-			'the categories: "Business/Tech", "Business/Social", your tags would include ' .
-			'"Business/Tech" and "Business/Social" in addition to your other tags.';
+		$h = __( 'You can use this option to add all assigned categories and taxonomies to your tags.  For example, if you had a post assigned to the categories: "Business/Tech", "Business/Social", your tags would include "Business/Tech" and "Business/Social" in addition to your other tags.', 'wp-parsely' );
 		add_settings_field(
 			'cats_as_tags',
-			'Add Categories to Tags <div class="help-icons"></div>',
+			__( 'Add Categories to Tags', 'wp-parsely' ),
 			array( $this, 'print_binary_radio_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -436,14 +414,10 @@ class Parsely {
 		);
 
 		// Track logged-in users.
-		$h = 'By default, wp-parsely will track the activity of users that ' .
-			'are logged into this site. You can change this setting to only ' .
-			'track the activity of anonymous visitors. Note: You will no ' .
-			'longer see the Parse.ly tracking code on your site if you ' .
-			'browse while logged in.';
+		$h = __( 'By default, the plugin will track the activity of users that are logged into this site. You can change this setting to only track the activity of anonymous visitors. Note: You will no longer see the Parse.ly tracking code on your site if you browse while logged in.', 'wp-parsely' );
 		add_settings_field(
 			'track_authenticated_users',
-			'Track Logged-in Users <div class="help-icons"></div>',
+			__( 'Track Logged-in Users', 'wp-parsely' ),
 			array( $this, 'print_binary_radio_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -455,12 +429,10 @@ class Parsely {
 		);
 
 		// Lowercase all tags.
-		$h = 'By default, wp-parsely will use lowercase versions of your ' .
-			'tags to correct for potential misspellings. You can change this ' .
-			'setting to ensure that tag names are used verbatim.';
+		$h = __( 'By default, the plugin will use lowercase versions of your tags to correct for potential misspellings. You can change this setting to ensure that tag names are used verbatim.', 'wp-parsely' );
 		add_settings_field(
 			'lowercase_tags',
-			'Lowercase All Tags <div class="help-icons"></div>',
+			__( 'Lowercase All Tags', 'wp-parsely' ),
 			array( $this, 'print_binary_radio_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -471,12 +443,10 @@ class Parsely {
 			)
 		);
 
-		$h = 'wp-parsely uses http canonical URLs by default. If this needs to be forced to use https, set this option ' .
-			' to true. Note: the default is fine for almost all publishers, it\'s unlikely you\'ll have to change this unless' .
-			' directed to do so by a Parsely support rep.';
+		$h = __( 'The plugin uses http canonical URLs by default. If this needs to be forced to use https, set this option to true. Note: the default is fine for almost all publishers, it\'s unlikely you\'ll have to change this unless directed to do so by a Parse.ly support rep.', 'wp-parsely' );
 		add_settings_field(
 			'force_https_canonicals',
-			'Force HTTPS canonicals <div class="help-icons"></div>',
+			__( 'Force HTTPS canonicals', 'wp-parsely' ),
 			array( $this, 'print_binary_radio_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -488,11 +458,10 @@ class Parsely {
 		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h = 'By default, Parsely only tracks the default post type as a post page. ' .
-			'If you want to track custom post types, select them here!';
+		$h = __( 'By default, Parse.ly only tracks the default post type as a post page. If you want to track custom post types, select them here!', 'wp-parsely' );
 		add_settings_field(
 			'track_post_types',
-			'Post Types To Track  <div class="help-icons"></div>',
+			__( 'Post Types To Track', 'wp-parsely' ),
 			array( $this, 'print_select_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -507,11 +476,10 @@ class Parsely {
 		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h = 'By default, Parsely only tracks the default page type as a non-post page. ' .
-			'If you want to track custom post types as non-post pages, select them here!';
+		$h = __( 'By default, Parse.ly only tracks the default page type as a non-post page. If you want to track custom post types as non-post pages, select them here!', 'wp-parsely' );
 		add_settings_field(
 			'track_page_types',
-			'Page Types To Track  <div class="help-icons"></div>',
+			__( 'Page Types To Track', 'wp-parsely' ),
 			array( $this, 'print_select_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
@@ -528,7 +496,7 @@ class Parsely {
 		// Dynamic tracking note.
 		add_settings_field(
 			'dynamic_tracking_note',
-			'Note: ',
+			__( 'Note: ', 'wp-parsely' ),
 			array( $this, 'print_dynamic_tracking_note' ),
 			self::MENU_SLUG,
 			'optional_settings'
@@ -564,7 +532,7 @@ class Parsely {
 			add_settings_error(
 				self::OPTIONS_KEY,
 				'apikey',
-				'Please specify the Site ID'
+				__( 'Please specify the Site ID', 'wp-parsely' )
 			);
 		} else {
 			$input['apikey'] = strtolower( $input['apikey'] );
@@ -573,7 +541,7 @@ class Parsely {
 				add_settings_error(
 					self::OPTIONS_KEY,
 					'apikey',
-					'Your Parse.ly Site ID looks incorrect, it should look like "example.com".'
+					__( 'Your Parse.ly Site ID looks incorrect, it should look like "example.com".', 'wp-parsely' )
 				);
 			}
 		}
@@ -604,7 +572,7 @@ class Parsely {
 			add_settings_error(
 				self::OPTIONS_KEY,
 				'use_top_level_cats',
-				'Value passed for use_top_level_cats must be either "true" or "false".'
+				__( 'Value passed for use_top_level_cats must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['use_top_level_cats'] = 'true' === $input['use_top_level_cats'];
@@ -615,7 +583,7 @@ class Parsely {
 			add_settings_error(
 				self::OPTIONS_KEY,
 				'cats_as_tags',
-				'Value passed for cats_as_tags must be either "true" or "false".'
+				__( 'Value passed for cats_as_tags must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['cats_as_tags'] = 'true' === $input['cats_as_tags'];
@@ -626,7 +594,7 @@ class Parsely {
 			add_settings_error(
 				self::OPTIONS_KEY,
 				'track_authenticated_users',
-				'Value passed for track_authenticated_users must be either "true" or "false".'
+				__( 'Value passed for track_authenticated_users must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['track_authenticated_users'] = 'true' === $input['track_authenticated_users'];
@@ -637,7 +605,7 @@ class Parsely {
 			add_settings_error(
 				self::OPTIONS_KEY,
 				'lowercase_tags',
-				'Value passed for lowercase_tags must be either "true" or "false".'
+				__( 'Value passed for lowercase_tags must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['lowercase_tags'] = 'true' === $input['lowercase_tags'];
@@ -647,7 +615,7 @@ class Parsely {
 			add_settings_error(
 				self::OPTIONS_KEY,
 				'force_https_canonicals',
-				'Value passed for force_https_canonicals must be either "true" or "false".'
+				__( 'Value passed for force_https_canonicals must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['force_https_canonicals'] = 'true' === $input['force_https_canonicals'];
@@ -657,7 +625,7 @@ class Parsely {
 			add_settings_error(
 				self::OPTIONS_KEY,
 				'disable_javascript',
-				'Value passed for disable_javascript must be either "true" or "false".'
+				__( 'Value passed for disable_javascript must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['disable_javascript'] = 'true' === $input['disable_javascript'];
@@ -667,7 +635,7 @@ class Parsely {
 			add_settings_error(
 				self::OPTIONS_KEY,
 				'disable_amp',
-				'Value passed for disable_amp must be either "true" or "false".'
+				__( 'Value passed for disable_amp must be either "true" or "false".', 'wp-parsely' )
 			);
 		} else {
 			$input['disable_amp'] = 'true' === $input['disable_amp'];
@@ -678,7 +646,7 @@ class Parsely {
 				add_settings_error(
 					self::OPTIONS_KEY,
 					'metadata_secret',
-					'Metadata secret is incorrect. Please contact Parse.ly support!'
+					__( 'Metadata secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
 				);
 			} elseif ( 'true' === $input['parsely_wipe_metadata_cache'] ) {
 				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
@@ -721,7 +689,7 @@ class Parsely {
 	 * @param array $links The links to add.
 	 */
 	public function add_plugin_meta_links( $links ) {
-		array_unshift( $links, '<a href="' . esc_url( $this->get_settings_url() ) . '">' . __( 'Settings' ) . '</a>' );
+		array_unshift( $links, '<a href="' . esc_url( $this->get_settings_url() ) . '">' . __( 'Settings', 'wp-parsely' ) . '</a>' );
 		return $links;
 	}
 
@@ -733,20 +701,19 @@ class Parsely {
 	 */
 	public function display_admin_warning() {
 		$options = $this->get_options();
-		if ( ! isset( $options['apikey'] ) || empty( $options['apikey'] ) ) {
-			?>
-			<div id='message' class='error'>
-				<p>
-					<strong>Parse.ly - Dash plugin is not active.</strong>
-					You need to
-					<a href='<?php echo esc_url( $this->get_settings_url() ); ?>'>
-						provide your Parse.ly Dash Site ID
-					</a>
-					before things get cooking.
-				</p>
-			</div>
-			<?php
+
+		if ( isset( $options['apikey'] ) && ! empty( $options['apikey'] ) ) {
+			return;
 		}
+
+		$message = sprintf(
+				/* translators: %s: Plugin settings page URL */
+				__( '<strong>The Parse.ly plugin is not active.</strong> You need to <a href="%s">provide your Parse.ly Dash Site ID</a> before things get cooking.', 'wp-parsley' ),
+				 esc_url( $this->get_settings_url() )
+		);
+		?>
+		<div id="message" class="error"><p><?php echo wp_kses_post( $message ); ?></p></div>
+		<?php
 	}
 
 	/**
@@ -757,7 +724,8 @@ class Parsely {
 	 */
 	public function print_dynamic_tracking_note() {
 		printf(
-			'This plugin does not currently support dynamic tracking ( the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href="%s">the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href="%s">the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href="%s">support@parsely.com</a> ) for additional assistance.',
+			/* translators: 1: Documentation URL 2: Documentation URL */
+			wp_kses_post( __( 'This plugin does not currently support dynamic tracking ( the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href="%1$s">the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href="%2$s">the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href="%3$s">support@parsely.com</a> ) for additional assistance.', 'wp-parsely' ) ),
 			esc_url( 'http://www.parsely.com/help/integration/basic/' ),
 			esc_url( 'https://www.parsely.com/help/integration/dynamic/' ),
 			esc_url( 'mailto:support@parsely.com' )
@@ -836,13 +804,17 @@ class Parsely {
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_date() ) {
 			if ( is_year() ) {
-				$parsely_page['headline'] = 'Yearly Archive - ' . get_the_time( 'Y' );
+				/* translators: %s: Archive year */
+				$parsely_page['headline'] = sprintf( __( 'Yearly Archive - %s', 'wp-parsely' ), get_the_time( 'Y' ) );
 			} elseif ( is_month() ) {
-				$parsely_page['headline'] = 'Monthly Archive - ' . get_the_time( 'F, Y' );
+				/* translators: %s: Archive month, formatted as F, Y */
+				$parsely_page['headline'] = sprintf( __( 'Monthly Archive - %s', 'wp-parsely' ), get_the_time( 'F, Y' ) );
 			} elseif ( is_day() ) {
-				$parsely_page['headline'] = 'Daily Archive - ' . get_the_time( 'F jS, Y' );
+				/* translators: %s: Archive day, formatted as F jS, Y */
+				$parsely_page['headline'] = sprintf( __( 'Daily Archive - %s', 'wp-parsely' ), get_the_time( 'F jS, Y' ) );
 			} elseif ( is_time() ) {
-				$parsely_page['headline'] = 'Hourly, Minutely, or Secondly Archive - ' . get_the_time( 'F jS g:i:s A' );
+				/* translators: %s: Archive time, formatted as F jS g:i:s A */
+				$parsely_page['headline'] = sprintf( __( 'Hourly, Minutely, or Secondly Archive - %s', 'wp-parsely' ), get_the_time( 'F jS g:i:s A' ) );
 			}
 			$parsely_page['url'] = $current_url;
 		} elseif ( is_tag() ) {
@@ -850,7 +822,8 @@ class Parsely {
 			if ( empty( $tag ) ) {
 				$tag = single_term_title( '', false );
 			}
-			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Tagged - ' . $tag );
+			/* translators: %s: Tag name */
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( sprintf( __( 'Tagged - %s', 'wp-parsely' ), $tag ) );
 			$parsely_page['url']      = $current_url;
 		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
 			$authors  = $this->get_author_names( $post );
@@ -1660,7 +1633,7 @@ class Parsely {
 	 */
 	public function insert_parsely_tracking_fbia( &$registry ) {
 		$options      = $this->get_options();
-		$display_name = 'Parsely Analytics';
+		$display_name = 'Parsely Analytics'; // Do not translate at this time.
 		$identifier   = 'parsely-analytics-for-wordpress';
 
 		$embed_code = '<script>
