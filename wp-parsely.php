@@ -127,7 +127,7 @@ class Parsely {
 	 * Initialize parsely WordPress style
 	 */
 	public function wp_parsely_style_init() {
-		wp_enqueue_style( 'wp-parsely-style', plugins_url( 'wp-parsely.css', __FILE__ ), array(), filemtime( get_stylesheet_directory() ) );
+		wp_register_style( 'wp-parsely-style', plugins_url( 'wp-parsely.css', __FILE__ ), array(), Parsely::VERSION );
 	}
 
 	/**
