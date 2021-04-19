@@ -150,7 +150,7 @@ class Parsely {
 		wp_enqueue_script(
 			'wp-parsely-admin',
 			plugin_dir_url( __FILE__ ) . 'build/admin-page.js',
-			[],
+			[ 'wp-dom-ready' ],
 			self::get_asset_cache_buster(),
 			true
 		);
