@@ -2,6 +2,8 @@ import domReady from '@wordpress/dom-ready';
 import { __, sprintf } from '@wordpress/i18n';
 
 domReady( () => {
+	wp.element.render( <h3>¡Hola mundo!</h3>, document.getElementById( 'wp-parsely-react-entrypoint' ) );
+
 	const keyEl = document.querySelector( '#apikey' );
 	const requiresRecrawlNotice = document.querySelectorAll(
 		'.parsely-form-controls[data-requires-recrawl="true"] .help-text'
