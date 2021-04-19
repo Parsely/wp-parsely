@@ -1835,6 +1835,7 @@ class Parsely {
 
 if ( class_exists( 'Parsely' ) ) {
 	define( 'PARSELY_VERSION', Parsely::VERSION );
+	define( 'PARSELY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 	$parsely = new Parsely();
 }
 
