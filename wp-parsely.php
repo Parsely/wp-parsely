@@ -1647,7 +1647,7 @@ class Parsely {
 				}
 			}
 		</script>
-		<script data-cfasync="false" id="parsely-cfg" data-parsely-site="' . esc_attr( $options['apikey'] ) . '" src="//cdn.parsely.com/keys/' . esc_attr( $options['apikey'] ) . '/p.js"></script>
+		<script data-cfasync="false" id="parsely-cfg" data-parsely-site="' . esc_attr( $options['apikey'] ) . '" src="https://cdn.parsely.com/keys/' . esc_attr( $options['apikey'] ) . '/p.js"></script>
 		<!-- END Parse.ly Include: Standard -->';
 
 		$registry[ $identifier ] = array(

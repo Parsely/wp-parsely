@@ -54,6 +54,6 @@ if ( ! isset( $parsely_options['apikey'] ) || empty( $parsely_options['apikey'] 
 	</script>
 <?php endif; ?>
 
-<script data-cfasync="false" id="parsely-cfg" data-parsely-site="<?php echo esc_attr( $parsely_options['apikey'] ); ?>" src="//cdn.parsely.com/keys/<?php echo esc_attr( $parsely_options['apikey'] ); ?>/p.js"></script>
+<script data-cfasync="false" id="parsely-cfg" data-parsely-site="<?php echo esc_attr( $parsely_options['apikey'] ); ?>" src="https://cdn.parsely.com/keys/<?php echo esc_attr( $parsely_options['apikey'] ); ?>/p.js"></script>
 
 <!-- END Parse.ly Include: Standard -->
