@@ -1304,7 +1304,7 @@ class Parsely {
 	 * options are saved, they override the defaults.  This prevents us from having to do a lot of isset() checking
 	 * on variables.
 	 */
-	private function get_options() {
+	public function get_options() { // TODO reconsider the method visibility and how to refactor this if we want to keep the method private
 		$options = get_option( self::OPTIONS_KEY );
 		if ( false === $options ) {
 			$options = $this->option_defaults;
@@ -1769,3 +1769,5 @@ add_action( 'widgets_init', 'parsely_recommended_widget_register' );
 function parsely_recommended_widget_register() {
 	register_widget( 'Parsely_Recommended_Widget' );
 }
+
+require_once 'settings-api.php';
