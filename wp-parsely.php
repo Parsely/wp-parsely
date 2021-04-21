@@ -72,3 +72,5 @@ add_action( 'init', 'parsely_load_textdomain' );
 function parsely_load_textdomain() {
 	load_plugin_textdomain( 'wp-parsely' );
 }
+
+require 'settings-api.php';

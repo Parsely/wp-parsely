@@ -1545,7 +1545,7 @@ class Parsely {
 	 * options are saved, they override the defaults.  This prevents us from having to do a lot of isset() checking
 	 * on variables.
 	 */
-	private function get_options() {
+	public function get_options() {
 		$options = get_option( self::OPTIONS_KEY );
 		if ( false === $options ) {
 			$options = $this->option_defaults;
