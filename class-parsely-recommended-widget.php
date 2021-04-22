@@ -35,6 +35,46 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	}
 
 	/**
+	 * Get the URL for the Recommendation API (GET /related).
+	 *
+	 * @see https://www.parse.ly/help/api/recommendations#get-related
+	 *
+	 * @internal While this is a public method now, this should be moved to a new class.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param string $api_key          Publisher Site ID (API key).
+	 * @param int    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
+	 *                                 formatting details. No restriction by default.
+	 * @param string $sort             What to sort the results by. There are currently 2 valid options: `score`, which
+	 *                                 will sort articles by overall relevance and `pub_date` which will sort results by
+	 *                                 their publication date. The default is `score`.
+	 * @param string $boost            Available for sort=score only. Sub-sort value to re-rank relevant posts that
+	 *                                 received high e.g. views; default is undefined.
+	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
+	 * @return string API URL.
+	 */
+	public function get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) {
+		$related_api_endpoint = 'https://api.parsely.com/v2/related';
+
+		$query_args = array(
+			'apikey' => $api_key,
+			'sort'   => $sort,
+			'limit'  => $return_limit,
+		);
+
+		if ( 'score' === $sort && $boost !== 'no-boost' ) {
+			$query_args['boost'] = $boost;
+		}
+
+		if ( 0 !== (int) $published_within ) {
+			$query_args['pub_date_start'] = $published_within . 'd';
+		}
+
+		return add_query_arg( $query_args, $related_api_endpoint );
+	}
+
+	/**
 	 * This is the widget function
 	 *
 	 * @category   Function
@@ -59,19 +99,14 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		// Set up the variables.
 		$options = get_option( 'parsely' );
+		$full_url = $this->get_api_url(
+				$options['apikey'],
+				$instance['published_within'],
+				$instance['sort'],
+				$instance['boost'],
+				$instance['return_limit']
+		);
 
-		$root_url       = 'https://api.parsely.com/v2/related?apikey=' . esc_attr( $options['apikey'] );
-		$pub_date_start = '&pub_date_start=' . $instance['published_within'] . 'd';
-		$sort           = '&sort=' . trim( $instance['sort'] );
-		// No idea why boost is coming back with a space prepended: I've trimmed it everywhere I possibly could.
-		// Trimming here too to avoid it ruining the query.
-		$boost    = '&boost=' . trim( $instance['boost'] );
-		$limit    = '&limit=' . $instance['return_limit'];
-		$full_url = $root_url . $sort . $boost . $limit;
-
-		if ( 0 !== (int) $instance['published_within'] ) {
-			$full_url .= $pub_date_start;
-		}
 		?>
 		<script data-cfasync="false">
 			// adapted from https://stackoverflow.com/questions/7486309/how-to-make-script-execution-wait-until-jquery-is-loaded
@@ -344,6 +379,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 	private function get_boost_params() {
 		return array(
+			'no-boost'              => __( 'No boost', 'wp-parsely' ),
 			'views'                 => __( 'Page views', 'wp-parsely' ),
 			'mobile_views'          => __( 'Page views on mobile devices', 'wp-parsely' ),
 			'tablet_views'          => __( 'Page views on tablet devices', 'wp-parsely' ),

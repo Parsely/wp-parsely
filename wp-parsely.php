@@ -1580,11 +1580,14 @@ class Parsely {
 			 * Filters the list of author names for a post.
 			 *
 			 * @since 1.14.0
+			 * @since 2.5.0  Added $post_id.
 			 *
 			 * @param string $permalink The permalink URL or false if post does not exist.
 			 * @param string $post      Post object type group ("post" or "nonpost").
+			 * @param int    $post_id   ID of the post you want to get the URL for. May be 0, so $permalink will be
+			 *                          for the global $post.
 			 */
-			$permalink        = apply_filters( 'wp_parsely_permalink', $permalink, $post );
+			$permalink        = apply_filters( 'wp_parsely_permalink', $permalink, $post, $post_id );
 			$parsed_canonical = wp_parse_url( $permalink );
 			// handle issue if wp_parse_url doesn't return good host & path data, fallback to page url as a last resort.
 			if ( isset( $parsed_canonical['host'], $parsed_canonical['path'] ) ) {
@@ -1647,7 +1650,7 @@ class Parsely {
 				}
 			}
 		</script>
-		<script data-cfasync="false" id="parsely-cfg" data-parsely-site="' . esc_attr( $options['apikey'] ) . '" src="//cdn.parsely.com/keys/' . esc_attr( $options['apikey'] ) . '/p.js"></script>
+		<script data-cfasync="false" id="parsely-cfg" data-parsely-site="' . esc_attr( $options['apikey'] ) . '" src="https://cdn.parsely.com/keys/' . esc_attr( $options['apikey'] ) . '/p.js"></script>
 		<!-- END Parse.ly Include: Standard -->';
 
 		$registry[ $identifier ] = array(
