@@ -23,7 +23,7 @@
   "homepage": "https://github.com/Parsely/wp-parsely#readme",
   "devDependencies": {
     "@wordpress/eslint-plugin": "^9.0.1",
-    "@wordpress/scripts": "14.0.1",
+    "@wordpress/scripts": "14.1.1",
     "prettier": "^2.2.1"
   }
 }
