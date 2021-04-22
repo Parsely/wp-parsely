@@ -36,3 +36,5 @@ export function initApi() {
 		onload: uuidProfileCall,
 	};
 }
+
+initApi();

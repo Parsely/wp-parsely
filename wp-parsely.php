@@ -1038,7 +1038,7 @@ class Parsely {
 		/**
 		 * Filters whether to include the Parsely JavaScript file.
 		 *
-		 * If true, the file is included.
+		 * If true, the JavaScript files are sourced.
 		 *
 		 * @since 2.2.0
 		 *
@@ -1050,7 +1050,7 @@ class Parsely {
 
 		wp_register_script(
 			'wp-parsely',
-			plugin_dir_url( __FILE__ ) . 'build/index.js',
+			plugin_dir_url( __FILE__ ) . 'build/init-api.js',
 			[ 'wp-polyfill-fetch' ],
 			defined( 'WP_DEBUG' ) ? mt_rand() : Parsely::VERSION,
 			true
@@ -1066,10 +1066,15 @@ class Parsely {
 
 		add_filter( 'script_loader_tag', [ $this, 'script_loader_tag' ], 10, 3 );
 
+		$dependencies = array();
+		if ( ! empty( $parsely_options['api_secret'] ) ) {
+			$dependencies[] = 'wp-parsely';
+		}
+
 		wp_enqueue_script(
 			'wp-parsely-dotcom',
 			'https://cdn.parsely.com/keys/' . esc_url( $parsely_options['apikey'] ) . '/p.js',
-			[ 'wp-parsely' ],
+			$dependencies,
 			null, // Should we introduce a cache buster param here?
 			true
 		);

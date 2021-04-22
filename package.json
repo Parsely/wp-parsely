@@ -7,8 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "wp-scripts build",
-    "start": "wp-scripts start",
+    "build": "wp-scripts build src/lib/init-api",
+    "start": "wp-scripts start src/lib/init-api",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
