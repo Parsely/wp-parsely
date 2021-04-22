@@ -776,13 +776,12 @@ class Parsely {
 	}
 
 	/**
-	 * Compare the post_status key against an allowed list (by default, only 'publish'ed content includes tracking data)
+	 * Compare the post_status key against an allowed list (by default, only 'publish'ed content includes tracking data).
 	 *
-	 * @param  int|WP_Post $post  Which post object or id to check.
-	 * @return bool               Should the post status be tracked for the provided post's post_type. By default, only 'publish' is allowed.
-	 *
-	 * @see wp_parsely_track_status_slugs
 	 * @since 2.5.0
+	 *
+	 * @param int|WP_Post $post Which post object or ID to check.
+	 * @return bool Should the post status be tracked for the provided post's post_type. By default, only 'publish' is allowed.
 	 */
 	public static function post_has_trackable_status( $post ) {
 		/**
