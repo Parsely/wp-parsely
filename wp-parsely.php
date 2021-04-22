@@ -785,8 +785,9 @@ class Parsely {
 	 */
 	public static function post_has_trackable_status( $post ) {
 		/**
-		 * Filters the status slugs that are permitted to be tracked.
-		 * By default, the only slug allowed is 'publish'. Override this list if your post type necessitates.
+		 * Filters the statuses that are permitted to be tracked.
+		 *
+		 * By default, the only status tracked is 'publish'. Use this filter if you have other published content that has a different (custom) status.
 		 *
 		 * @since 2.5.0
 		 *
