@@ -791,11 +791,11 @@ class Parsely {
 		 *
 		 * @since 2.5.0
 		 *
-		 * @param string[]    $status_slugs The list of post_status slugs that are allowed to be tracked.
-		 * @param int|WP_Post $post         Which post object or id is being checked.
+		 * @param string[]    $trackable_statuses The list of post statuses that are allowed to be tracked.
+		 * @param int|WP_Post $post               Which post object or ID is being checked.
 		 */
-		$status_slugs = apply_filters( 'wp_parsely_track_status_slugs', array( 'publish' ), $post );
-		return in_array( get_post_status( $post ), $status_slugs, true );
+		$statuses = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
+		return in_array( get_post_status( $post ), $statuses, true );
 	}
 
 	/**
