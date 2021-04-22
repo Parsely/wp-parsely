@@ -1062,30 +1062,30 @@ class Parsely {
 		}
 
 		wp_register_script(
-			'wp-parsely',
+			'wp-parsely-api',
 			plugin_dir_url( __FILE__ ) . 'build/init-api.js',
 			[ 'wp-polyfill-fetch' ],
 			defined( 'WP_DEBUG' ) ? mt_rand() : Parsely::VERSION,
 			true
 		);
 
-		wp_localize_script(
-			'wp-parsely',
-			'wpParsely', // This globally-scoped object will hold our initialization variables
-			[
-				'apikey' => empty( $parsely_options['apikey'] ) ? '' : $parsely_options['apikey'],
-			]
-		);
-
 		add_filter( 'script_loader_tag', [ $this, 'script_loader_tag' ], 10, 3 );
 
 		$dependencies = array();
+
 		if ( ! empty( $parsely_options['api_secret'] ) ) {
-			$dependencies[] = 'wp-parsely';
+			$dependencies[] = 'wp-parsely-api';
+			wp_localize_script(
+				'wp-parsely-api',
+				'wpParsely', // This globally-scoped object will hold our initialization variables
+				array(
+					'apikey' => $parsely_options['apikey'],
+				)
+			);
 		}
 
 		wp_enqueue_script(
-			'wp-parsely-dotcom',
+			'wp-parsely-tracker',
 			'https://cdn.parsely.com/keys/' . esc_url( $parsely_options['apikey'] ) . '/p.js',
 			$dependencies,
 			null, // Should we introduce a cache buster param here?
@@ -1095,14 +1095,14 @@ class Parsely {
 
 	public function script_loader_tag( $tag, $handle, $src ) {
 		$parsely_options = $this->get_options();
-		if ( in_array( $handle, [ 'wp-parsely', 'wp-parsely-dotcom' ] ) ) {
+		if ( in_array( $handle, [ 'wp-parsely', 'wp-parsely-tracker' ] ) ) {
 			// Have ClouldFlare Rocket Loader ignore these scripts:
 			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-
 			$tag = preg_replace( '/^<script src=/', '<script data-cfasync="false" src=', $tag );
 		}
 
-		if ( $handle === 'wp-parsely-dotcom' ) {
-			$tag = preg_replace( '/ id=(\"|\')wp-parsely-dotcom-js\1/', ' id="parsely-cfg"', $tag );
+		if ( $handle === 'wp-parsely-tracker' ) {
+			$tag = preg_replace( '/ id=(\"|\')wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
 			$tag = preg_replace(
 				'/ src=/',
 				' data-parsely-site="' . esc_attr( $parsely_options['apikey'] ) . '" src=',
