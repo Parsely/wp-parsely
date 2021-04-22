@@ -133,8 +133,6 @@ class Parsely {
 		add_action( 'wp_footer', array( $this, 'load_js_tracker' ) );
 
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
-		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
-		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'wp_parsely_style_init' ) );
 	}
 
@@ -2017,126 +2015,6 @@ class Parsely {
 			return $matches[1][0];
 		}
 		return '';
-	}
-
-	/**
-	 * Add Parse.ly tracking to Facebook Instant Articles.
-	 *
-	 * No returned value as Facebook passes the $registry by reference.
-	 *
-	 * @see https://github.com/Automattic/facebook-instant-articles-wp/blob/b8a0d4e44dc26578234e32d281b5560256abf5f3/class-instant-articles-post.php#L840
-	 * @see https://github.com/Automattic/facebook-instant-articles-wp/blob/b8a0d4e44dc26578234e32d281b5560256abf5f3/wizard/class-instant-articles-option.php#L143-L146
-	 *
-	 * @param array $registry The registry info for FBIA.
-	 */
-	public function insert_parsely_tracking_fbia( &$registry ) {
-		$options      = $this->get_options();
-		$display_name = 'Parsely Analytics'; // Do not translate at this time.
-		$identifier   = 'parsely-analytics-for-wordpress';
-
-		$embed_code = '<script>
-			PARSELY = {
-				autotrack: false,
-				onload: function() {
-					PARSELY.beacon.trackPageView({
-						urlref: \'http://facebook.com/instantarticles\'
-					});
-					return true;
-				}
-			}
-		</script>
-		<script data-cfasync="false" id="parsely-cfg" data-parsely-site="' . esc_attr( $options['apikey'] ) . '" src="https://cdn.parsely.com/keys/' . esc_attr( $options['apikey'] ) . '/p.js"></script>
-		<!-- END Parse.ly Include: Standard -->';
-
-		$registry[ $identifier ] = array(
-			'name'    => $display_name,
-			'payload' => $embed_code,
-		);
-	}
-
-	/**
-	 * Verify if request is an AMP request.
-	 *
-	 * @return bool True is an AMP request, false otherwise.
-	 */
-	public function is_amp_request() {
-		return function_exists( 'amp_is_request' ) && amp_is_request();
-	}
-
-	/**
-	 * Add AMP actions.
-	 */
-	public function parsely_add_amp_actions() {
-		if ( ! $this->is_amp_request() ) {
-			return '';
-		}
-
-		$options = $this->get_options();
-
-		if ( $options['disable_amp'] ) {
-			return '';
-		}
-
-		add_filter( 'amp_post_template_analytics', array( $this, 'parsely_add_amp_analytics' ) );
-		add_filter( 'amp_analytics_entries', array( $this, 'parsely_add_amp_native_analytics' ) );
-	}
-
-	/**
-	 * Add amp analytics.
-	 *
-	 * @param array $analytics The analytics object you want to add.
-	 * @return array
-	 */
-	public function parsely_add_amp_analytics( $analytics ) {
-		$options = $this->get_options();
-
-		if ( empty( $options['apikey'] ) ) {
-			return $analytics;
-		}
-
-		$analytics['parsely'] = array(
-			'type'        => 'parsely',
-			'attributes'  => array(),
-			'config_data' => array(
-				'vars' => array(
-					'apikey' => $options['apikey'],
-				),
-			),
-		);
-
-		return $analytics;
-	}
-
-	/**
-	 * Add amp native analytics.
-	 *
-	 * @param type $analytics The analytics object you want to add.
-	 * @return string|type
-	 */
-	public function parsely_add_amp_native_analytics( $analytics ) {
-		$options = $this->get_options();
-
-		if ( ! empty( $options['disable_amp'] ) && true === $options['disable_amp'] ) {
-			return '';
-		}
-
-		if ( empty( $options['apikey'] ) ) {
-			return $analytics;
-		}
-
-		$analytics['parsely'] = array(
-			'type'       => 'parsely',
-			'attributes' => array(),
-			'config'     => wp_json_encode(
-				array(
-					'vars' => array(
-						'apikey' => $options['apikey'],
-					),
-				)
-			),
-		);
-
-		return $analytics;
 	}
 
 	/**
