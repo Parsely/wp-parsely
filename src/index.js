@@ -1,1 +1,3 @@
-console.log( 'hello from the entry file!' );
+import { initApi } from './init';
+
+initApi();
