@@ -1,8 +1,10 @@
 import domReady from '@wordpress/dom-ready';
 import { __, sprintf } from '@wordpress/i18n';
 
+import App from './components/App';
+
 domReady( () => {
-	wp.element.render( <h3>¡Hola mundo!</h3>, document.getElementById( 'wp-parsely-react-entrypoint' ) );
+	wp.element.render( <App />, document.getElementById( 'wp-parsely-react-entrypoint' ) );
 
 	const keyEl = document.querySelector( '#apikey' );
 	const requiresRecrawlNotice = document.querySelectorAll(
