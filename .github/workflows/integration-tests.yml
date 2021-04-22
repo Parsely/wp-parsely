@@ -13,7 +13,9 @@ on:
 jobs:
   test:
     name: PHP ${{ matrix.php }}
-    runs-on: ubuntu-latest
+    # ubuntu-20.04 / ubuntu-latest includes MySQL 8, which has issues with older versions of PHP.
+    # ubuntu-16.04 includes PHP versions 5.6-8.0
+    runs-on: ubuntu-16.04
 
     env:
       WP_VERSION: latest
@@ -33,10 +35,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@master
 
-      - name: Setup PHP 7.4
+      - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: ${{ matrix.php }}
           coverage: pcov
 
       - name: Setup problem matchers for PHP
