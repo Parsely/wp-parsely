@@ -6,6 +6,10 @@
   "directories": {
     "test": "tests"
   },
+  "engines": {
+    "node": "^14.16.1",
+    "npm": "^7.10.0"
+  },
   "scripts": {
     "build": "wp-scripts build src/lib/init-api src/lib/admin-page",
     "start": "wp-scripts start src/lib/init-api src/lib/admin-page",
