@@ -129,7 +129,7 @@ PARSELYJS;
 
 
 	/**
-	 * Check the parsely page output
+	 * Check the context `@type` field for a Post and the Homepage.
 	 *
 	 * @category   Function
 	 * @package    SampleTest
