@@ -29,5 +29,9 @@
     "@wordpress/eslint-plugin": "^9.0.1",
     "@wordpress/scripts": "^14.1.1",
     "prettier": "^2.2.1"
+  },
+  "dependencies": {
+    "@wordpress/dom-ready": "^2.13.2",
+    "@wordpress/i18n": "^3.19.2"
   }
 }

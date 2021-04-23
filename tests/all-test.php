@@ -194,10 +194,8 @@ class SampleTest extends ParselyTestCase {
 		wp_print_scripts();
 		$output = ob_get_clean();
 
-		self::assertSame(
-"<script type='text/javascript' src='http://example.org/wp-includes/js/dist/vendor/wp-polyfill-fetch.min.js?ver=3.0.0' id='wp-polyfill-fetch-js'></script>
-<script type='text/javascript' id='wp-parsely-api-js-extra'>
-/* <![CDATA[ */
+		self::assertContains(
+"/* <![CDATA[ */
 var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 /* ]]> */
 </script>

@@ -1,5 +1,7 @@
-wp.domReady( () => {
-	const { sprintf } = wp.i18n;
+import domReady from '@wordpress/dom-ready';
+import { sprintf } from '@wordpress/i18n';
+
+domReady( () => {
 	const keyEl = document.querySelector( '#apikey' );
 	const requiresRecrawlNotice = document.querySelectorAll(
 		'div.parsely-form-controls[data-requires-recrawl="true"] .help-text'
