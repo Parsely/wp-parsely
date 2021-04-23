@@ -190,16 +190,29 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_parsely_tags_lowercase() {
-		$post_array                = $this->create_test_post_array();
-		$post_array['tags_input']  = array( 'Sample', 'Tag' );
-		$post                      = $this->factory->post->create( $post_array );
-		$options                   = get_option( 'parsely' );
-		$options['lowercase_tags'] = true;
-		update_option( 'parsely', $options );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertContains( 'sample', $ppage['keywords'] );
-		self::assertContains( 'tag', $ppage['keywords'] );
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Create two tags with uppercase names and a single post.
+		$tag1 = self::factory()->tag->create( [ 'name' => 'Sample' ] );
+		$tag2 = self::factory()->tag->create( [ 'name' => 'Tag' ] );
+		$post_id = self::factory()->post->create();
+		$post    = get_post( $post_id );
+
+		// Assign the Tags to the Post.
+		wp_set_object_terms( $post_id, array( $tag1, $tag2 ), 'post_tag' );
+
+		// Set the Parsely plugin to use Lowercase tags.
+		$parsely_options['lowercase_tags'] = true;
+		update_option( 'parsely', $parsely_options );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The structured data should contain both tags in lowercase form.
+		self::assertContains( 'sample', $structured_data['keywords'] );
+		self::assertContains( 'tag', $structured_data['keywords'] );
 	}
 
 	/**
