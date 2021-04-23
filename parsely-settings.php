@@ -14,7 +14,7 @@ $version_string = sprintf( __( 'Version %s', 'wp-parsely' ), $this::VERSION );
 ?>
 
 <div class="wrap">
-	<h2><?php echo esc_html( get_admin_page_title() ); ?> <span id="wp-parsely_version"><?php echo esc_html( $version_string ); ?></span></h2>
+	<h1><?php echo esc_html( get_admin_page_title() ); ?> <span id="wp-parsely_version"><?php echo esc_html( $version_string ); ?></span></h1>
 	<form name="parsely" method="post" action="options.php">
 		<?php settings_fields( $this::OPTIONS_KEY ); ?>
 		<?php do_settings_sections( $this::OPTIONS_KEY ); ?>
