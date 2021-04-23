@@ -12,7 +12,6 @@
 ?>
 
 <!-- BEGIN wp-parsely Plugin Version <?php echo esc_html( Parsely::VERSION ); ?> -->
-<meta name="wp-parsely_version" id="wp-parsely_version" content="<?php echo esc_attr( Parsely::VERSION ); ?>"/>
 <?php if ( ! empty( $parsely_page ) && isset( $parsely_page['headline'] ) ) : ?>
 	<?php
 	if ( 'json_ld' === $parsely_options['meta_type'] ) {
