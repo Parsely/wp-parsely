@@ -222,27 +222,29 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_parsely_cats_as_tags() {
-		$options                 = get_option( 'parsely' );
-		$options['cats_as_tags'] = true;
-		update_option( 'parsely', $options );
-		$post_array                  = $this->create_test_post_array();
-		$cat_1                       = $this->create_test_category( 'news' );
-		$cat_array                   = array(
-			'name'   => 'local',
-			'parent' => $cat_1,
-		);
-		$cat_2                       = $this->factory->category->create( $cat_array );
-		$cat_array['parent']         = $cat_2;
-		$cat_array['name']           = 'sample county';
-		$cat_3                       = $this->factory->category->create( $cat_array );
-		$post_array['post_category'] = array( $cat_1, $cat_2, $cat_3 );
-		$post_array['tags_input']    = array( 'test' );
-		$post                        = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertContains( 'news', $ppage['keywords'] );
-		self::assertContains( 'local', $ppage['keywords'] );
-		self::assertContains( 'sample county', $ppage['keywords'] );
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Set the Categories as Tags option to true.
+		$parsely_options['cats_as_tags'] = true;
+		$parsely_options['lowercase_tags'] = false;
+		update_option( 'parsely', $parsely_options );
+
+		// Create 3 categories and a single post with those categories.
+		$cat1 = self::factory()->category->create( [ 'name' => 'Test Category' ] );
+		$cat2 = self::factory()->category->create( [ 'name' => 'Test Category 2' ] );
+		$cat3 = self::factory()->category->create( [ 'name' => 'Test Category 3' ] );
+		$post_id = self::factory()->post->create( [ 'post_category' => [ $cat1, $cat2, $cat3 ] ] );
+		$post    = get_post( $post_id );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The structured data should contain all three categories as keywords.
+		self::assertContains( 'Test Category', $structured_data['keywords'] );
+		self::assertContains( 'Test Category 2', $structured_data['keywords'] );
+		self::assertContains( 'Test Category 3', $structured_data['keywords'] );
 	}
 
 	/**
