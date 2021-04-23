@@ -221,7 +221,7 @@ PARSELYJS;
 	 * @category   Function
 	 * @package    SampleTest
 	 */
-	public function test_parsely_cats_as_tags() {
+	public function test_parsely_categories_as_tags() {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
