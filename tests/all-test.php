@@ -254,26 +254,36 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_custom_taxonomy_tags() {
-		$options                 = get_option( 'parsely' );
-		$options['cats_as_tags'] = true;
-		update_option( 'parsely', $options );
-		$post_array               = $this->create_test_post_array();
-		$post_array['tags_input'] = array( 'Sample', 'Tag' );
-		$post                     = $this->factory->post->create( $post_array );
-		$parent_taxonomy          = $this->create_test_taxonomy( 'sports', 'hockey' );
-		$child_taxonomy           = $this->factory->term->create(
-			array(
-				'name'     => 'gretzky',
-				'taxonomy' => 'sports',
-				'parent'   => $parent_taxonomy,
-			)
-		);
-		wp_set_post_terms( $post, array( $parent_taxonomy, $child_taxonomy ), 'sports' );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertContains( 'sample', $ppage['keywords'] );
-		self::assertContains( 'tag', $ppage['keywords'] );
-		self::assertContains( 'gretzky', $ppage['keywords'] );
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Set up the options to force lowercase tags.
+		$parsely_options['cats_as_tags'] = true;
+		update_option( 'parsely', $parsely_options );
+
+		// Create a custom taxonomy and add a tag for it.
+		register_taxonomy( 'hockey', 'post' );
+		$custom_tax_tag = self::factory()->tag->create( [ 'name' => 'Gretzky', 'taxonomy' => 'hockey' ] );
+
+		// Create a tag and a category and a signle post and assign the category to the post.
+		$tag = self::factory()->tag->create( [ 'name' => 'Tag' ] );
+		$cat = self::factory()->category->create( [ 'name' => 'Category' ] );
+		$post_id = self::factory()->post->create( [ 'post_category' => [ $cat ] ]);
+
+		$post = get_post( $post_id );
+
+		// Assign the tag and custom taxonomy to the post.
+		wp_set_object_terms( $post_id, array( $custom_tax_tag ), 'hockey' );
+		wp_set_object_terms( $post_id, array( $tag ), 'post_tag' );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The structrued data should contain the category, the post tag, and the custom taxonomy term.
+		self::assertContains( 'category', $structured_data['keywords'] );
+		self::assertContains( 'tag', $structured_data['keywords'] );
+		self::assertContains( 'gretzky', $structured_data['keywords'] );
 	}
 
 
