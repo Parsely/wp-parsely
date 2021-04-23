@@ -134,7 +134,7 @@ PARSELYJS;
 	 * @category   Function
 	 * @package    SampleTest
 	 */
-	public function test_parsely_ppage_output() {
+	public function test_parsely_metadata_context_output() {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
