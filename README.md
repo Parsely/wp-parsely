@@ -28,7 +28,7 @@ Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com]
 
 ## Installation
 
-The WP-Parsely plugin requires an active Parse.ly account. Parse.ly gives creators, marketers and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results.
+The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results.
 [Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely)
 
 ### Install WP-Parsely from within WordPress
