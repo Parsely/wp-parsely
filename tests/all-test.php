@@ -135,14 +135,29 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_parsely_ppage_output() {
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Create a single post
+		$post_id = self::factory()->post->create( [ 'post_type' => 'post', 'post_title' => 'Home' ] );
+		$post    = get_post( $post_id );
+
+		// Go to the homepage
 		$this->go_to( '/' );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( 'WebPage', $ppage['@type'] );
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( 'NewsArticle', $ppage['@type'] );
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The metadata '@type' for the context should be 'WebPage' for the homepage.
+		self::assertSame( 'WebPage', $structured_data['@type'] );
+
+		// Go to a single post page
+		$this->go_to( '/?p=' . $post_id );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The metadata '@type' for the context should be 'NewsArticle' for a single post page.
+		self::assertSame( 'NewsArticle', $structured_data['@type'] );
 	}
 
 	/**
