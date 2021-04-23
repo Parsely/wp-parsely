@@ -130,7 +130,7 @@ class SampleTest extends ParselyTestCase {
 		echo self::$parsely->insert_parsely_javascript();
 
 		$intermediate_output = ob_get_contents();
-		self::assertEquals(
+		self::assertSame(
 			'',
 			$intermediate_output,
 			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
@@ -153,7 +153,7 @@ class SampleTest extends ParselyTestCase {
 		wp_print_scripts();
 		$output = ob_get_clean();
 
-		self::assertEquals(
+		self::assertSame(
 			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/http://blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tags were printed correctly'
@@ -175,7 +175,7 @@ class SampleTest extends ParselyTestCase {
 		echo self::$parsely->insert_parsely_javascript();
 
 		$intermediate_output = ob_get_contents();
-		self::assertEquals(
+		self::assertSame(
 			'',
 			$intermediate_output,
 			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
@@ -194,7 +194,7 @@ class SampleTest extends ParselyTestCase {
 		wp_print_scripts();
 		$output = ob_get_clean();
 
-		self::assertEquals(
+		self::assertSame(
 "<script type='text/javascript' src='http://example.org/wp-includes/js/dist/vendor/wp-polyfill-fetch.min.js?ver=3.0.0' id='wp-polyfill-fetch-js'></script>
 <script type='text/javascript' id='wp-parsely-api-js-extra'>
 /* <![CDATA[ */
@@ -505,7 +505,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		echo self::$parsely->insert_parsely_javascript();
 
 		$intermediate_output = ob_get_contents();
-		self::assertEquals(
+		self::assertSame(
 			'',
 			$intermediate_output,
 			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
@@ -534,7 +534,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		wp_print_scripts();
 		$output = ob_get_clean();
 
-		self::assertEquals(
+		self::assertSame(
 			'',
 			$output,
 			'Failed to confirm script tags were not printed'
@@ -578,7 +578,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		echo self::$parsely->insert_parsely_javascript();
 
 		$intermediate_output = ob_get_contents();
-		self::assertEquals(
+		self::assertSame(
 			'',
 			$intermediate_output,
 			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
@@ -607,7 +607,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		wp_print_scripts();
 		$output = ob_get_clean();
 
-		self::assertEquals(
+		self::assertSame(
 			'',
 			$output,
 			'Failed to confirm script tags were not printed'
@@ -621,7 +621,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		echo self::$parsely->insert_parsely_javascript();
 
 		$intermediate_output = ob_get_contents();
-		self::assertEquals(
+		self::assertSame(
 			'',
 			$intermediate_output,
 			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
@@ -644,7 +644,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		wp_print_scripts();
 		$output = ob_get_clean();
 
-		self::assertEquals(
+		self::assertSame(
 			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/http://blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tags were printed correctly'
