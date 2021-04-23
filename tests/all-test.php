@@ -248,7 +248,7 @@ PARSELYJS;
 	}
 
 	/**
-	 * Check out taxonomy tags.
+	 * Test custom taxonomy terms, categories, and tags in the metadata.
 	 *
 	 * @category   Function
 	 * @package    SampleTest
