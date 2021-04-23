@@ -167,13 +167,20 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_parsely_categories() {
-		$post_array                  = $this->create_test_post_array();
-		$cat                         = $this->create_test_category( 'Newssss' );
-		$post_array['post_category'] = array( $cat );
-		$post                        = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( 'Newssss', $ppage['articleSection'] );
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Insert a single category term, and a Post with that category.
+		$category = self::factory()->category->create( [ 'name' => 'Test Category' ] );
+		$post_id = self::factory()->post->create( [ 'post_category' => [ $category ] ] );
+		$post    = get_post( $post_id );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The category in the structured data should match the category of the post.
+		self::assertSame( 'Test Category', $structured_data['articleSection'] );
 	}
 
 	/**
