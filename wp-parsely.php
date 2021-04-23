@@ -1106,7 +1106,7 @@ class Parsely {
 
 		wp_enqueue_script(
 			'wp-parsely-tracker',
-			'https://cdn.parsely.com/keys/' . esc_url( $parsely_options['apikey'] ) . '/p.js',
+			'https://cdn.parsely.com/keys/' . $parsely_options['apikey'] . '/p.js',
 			$dependencies,
 			self::get_asset_cache_buster(),
 			true
