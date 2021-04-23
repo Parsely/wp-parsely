@@ -85,7 +85,7 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 
 ## Screenshots
 
-1. The main settings screen of the WP-Parsely plugin  
+1. The main settings screen of the Parse.ly plugin.  
 ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-1.png)
 
 2. The settings for the Parse.ly Recommended Widget.  Engage your visitors with predictive and personalized recommendations from Parse.ly.  
