@@ -11,7 +11,7 @@
 
 ?>
 
-<!-- BEGIN wp-parsely Plugin Version <?php echo esc_html( Parsely::VERSION ); ?> -->
+<!-- BEGIN Parse.ly <?php echo esc_html( Parsely::VERSION ); ?> -->
 <?php if ( ! empty( $parsely_page ) && isset( $parsely_page['headline'] ) ) : ?>
 	<?php
 	if ( 'json_ld' === $parsely_options['meta_type'] ) {
@@ -50,5 +50,5 @@
 	<?php else : ?>
 		<!-- parsleyPage is not defined / has no attributes.  What kind of page are you loading? -->
 	<?php endif; ?>
-<!-- END wp-parsely Plugin Version <?php echo esc_html( Parsely::VERSION ); ?> -->
+<!-- END Parse.ly -->
 <?php
