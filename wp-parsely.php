@@ -764,7 +764,33 @@ class Parsely {
 		// Assign default values for LD+JSON
 		// TODO: Maping of an install's post types to Parse.ly post types (namely page/post).
 		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $post );
-		include 'parsely-parsely-page.php';
+
+		// Something went wrong - abort.
+		if ( empty( $parsely_page ) || ! isset( $parsely_page['headline'] ) ) {
+			return;
+		}
+
+		echo "\n" . '<!-- BEGIN Parse.ly ' . esc_html( Parsely::VERSION ) . ' -->' . "\n";
+
+		// Insert JSON-LD or repeated metas.
+		if ( 'json_ld' === $parsely_options['meta_type'] ) {
+			include __DIR__ . '/views/json-ld.php';
+		} else {
+			$parsely_post_type = 'NewsArticle' === $parsely_page['@type'] ? 'post' : 'sectionpage';
+			if ( is_array( $parsely_page['keywords'] ) ) {
+				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
+			}
+
+			include __DIR__ . '/views/repeated-metas.php';
+		}
+
+		// Add any custom metadata.
+		if ( isset( $parsely_page['custom_metadata'] ) ) {
+			include __DIR__ . '/views/custom-metadata.php';
+		}
+
+		echo '<!-- END Parse.ly -->' . "\n\n";
+
 		return $parsely_page;
 	}
 
