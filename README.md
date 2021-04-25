@@ -82,7 +82,7 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 1. The main settings screen of the wp-parsely plugin  
 ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-1.png)
 
-2. The standard JavaScript include being inserted before `</body>`
+2. The standard JavaScript include being inserted before the closing `body` tag.
 ![2. The standard JavaScript include being inserted before body tag](.wordpress-org/screenshot-2.png)
 
 3. A sample `JSON-LD` meta tag for a home page or section page
