@@ -39,7 +39,7 @@
 		recrawlRequiredMessage.append(supportLink);
 
 		recrawlRequiredMessage
-			.appendTo("div.parsely-form-controls[data-requires-recrawl='true'] .help-text");
+			.appendTo(".parsely-form-controls[data-requires-recrawl='true'] .help-text");
 	});
 })(jQuery);
 </script>

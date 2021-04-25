@@ -104,7 +104,7 @@ class SampleTest extends ParselyTestCase {
 		);
 		update_option( 'parsely', $option_defaults );
 		self::$parsely_html = <<<PARSELYJS
-<script data-cfasync="false" id="parsely-cfg" data-parsely-site="blog.parsely.com" src="//cdn.parsely.com/keys/blog.parsely.com/p.js"></script>
+<script data-cfasync="false" id="parsely-cfg" data-parsely-site="blog.parsely.com" src="https://cdn.parsely.com/keys/blog.parsely.com/p.js"></script>
 PARSELYJS;
 	}
 
