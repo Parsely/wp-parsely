@@ -460,13 +460,17 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_parsely_page_filter() {
-		$options    = get_option( 'parsely' );
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$headline   = 'Completely New And Original Filtered Headline';
-		$this->go_to( '/?p=' . $post );
-		
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Create a single post.
+		$post_id       = $this->factory->post->create();
+		$post          = get_post( $post_id );
+
+
 		// Apply page filtering.
+		$headline   = 'Completely New And Original Filtered Headline';
 		add_filter(
 			'after_set_parsely_page',
 			function( $args ) use ( $headline ) {
@@ -478,8 +482,11 @@ PARSELYJS;
 			3
 		);
 
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertTrue( strpos( $ppage['headline'], $headline ) === 0 );
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The structured data should contain the headline from the filter.
+		self::assertTrue( strpos( $structured_data['headline'], $headline ) === 0 );
 	}
 
 	/**
