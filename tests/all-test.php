@@ -322,25 +322,30 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_custom_taxonomy_as_section() {
-		$options                            = get_option( 'parsely' );
-		$options['custom_taxonomy_section'] = 'sports';
-		update_option( 'parsely', $options );
-		$post_array                  = $this->create_test_post_array();
-		$cat                         = $this->create_test_category( 'news' );
-		$post_array['post_category'] = array( $cat );
-		$post                        = $this->factory->post->create( $post_array );
-		$parent_taxonomy             = $this->create_test_taxonomy( 'sports', 'basketball' );
-		$child_taxonomy              = $this->factory->term->create(
-			array(
-				'name'     => 'lebron',
-				'taxonomy' => 'sports',
-				'parent'   => $parent_taxonomy,
-			)
-		);
-		wp_set_post_terms( $post, array( $parent_taxonomy, $child_taxonomy ), 'sports' );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( 'lebron', $ppage['articleSection'] );
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Set Parsely to use 'sports' as custom taxonomy for section.
+		$parsely_options['custom_taxonomy_section'] = 'sports';
+
+		// Make sure top-level categories are not set to be used.
+		$parsely_options['use_top_level_cats'] = false;
+		update_option( 'parsely', $parsely_options );
+
+		// Create a custom taxonomy, add a term and child term to it, and add them to a post.
+		register_taxonomy( 'sports', 'post' );
+		$custom_tax_tag = self::factory()->term->create( [ 'name' => 'football', 'taxonomy' => 'sports' ] );
+		$custom_tax_tag_child = self::factory()->term->create( [ 'name' => 'premiere league', 'taxonomy' => 'sports', 'parent' =>  $custom_tax_tag ] );
+		$post_id = self::factory()->post->create();
+		$post    = get_post( $post_id );
+
+		// Set the custom taxonomy terms to the post.
+		wp_set_object_terms( $post_id, array( $custom_tax_tag, $custom_tax_tag_child ), 'sports' );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		self::assertSame( 'premiere league', $structured_data['articleSection'] );
 	}
 
 	/**
