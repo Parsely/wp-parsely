@@ -4,7 +4,7 @@ import { sprintf } from '@wordpress/i18n';
 domReady( () => {
 	const keyEl = document.querySelector( '#apikey' );
 	const requiresRecrawlNotice = document.querySelectorAll(
-		'div.parsely-form-controls[data-requires-recrawl="true"] .help-text'
+		'.parsely-form-controls[data-requires-recrawl="true"] .help-text'
 	);
 	if ( ! ( keyEl && requiresRecrawlNotice.length ) ) {
 		return;
