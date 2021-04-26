@@ -100,7 +100,7 @@ The standard Parse.ly JavaScript tracker inserted before the closing `body` tag:
 
     <!-- START Parse.ly Include: Standard -->
 
-       <script data-cfasync="false" id="parsely-cfg" data-parsely-site="wpvip.com" src="//cdn.parsely.com/keys/wpvip.com/p.js"></script>
+       <script data-cfasync="false" id="parsely-cfg" data-parsely-site="example.com" src="https://cdn.parsely.com/keys/example.com/p.js"></script>
 
     <!-- END Parse.ly Include: Standard -->
 
