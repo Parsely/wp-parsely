@@ -388,17 +388,35 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_http_canonicals() {
-		$options    = get_option( 'parsely' );
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( strpos( $ppage['url'], 'http', 0 ), 0 );
-		self::assertFalse( strpos( $ppage['url'], 'https', 0 ) );
-		$options['force_https_canonicals'] = true;
-		update_option( 'parsely', $options );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( strpos( $ppage['url'], 'https', 0 ), 0 );
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Set Parsely to not force https canonicals.
+		$parsely_options['force_https_canonicals'] = false;
+		update_option( 'parsely', $parsely_options );
+
+		// Create a single post.
+		$post_id = self::factory()->post->create();
+		$post    = get_post( $post_id );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The url scheme should be 'http'.
+		$url = wp_parse_url($structured_data['url']);
+		self::assertSame('http', $url['scheme']);
+
+		// Set Parsely to force https canonicals.
+		$parsely_options['force_https_canonicals'] = true;
+		update_option( 'parsely', $parsely_options );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The url scheme should be 'https'.
+		$url = wp_parse_url($structured_data['url']);
+		self::assertSame('https', $url['scheme']);
 	}
 
 	/**
