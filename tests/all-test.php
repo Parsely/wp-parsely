@@ -294,24 +294,25 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_use_top_level_cats() {
-		$options                       = get_option( 'parsely' );
-		$options['use_top_level_cats'] = true;
-		update_option( 'parsely', $options );
-		$post_array                  = $this->create_test_post_array();
-		$cat_1                       = $this->create_test_category( 'news' );
-		$cat_array                   = array(
-			'name'   => 'local',
-			'parent' => $cat_1,
-		);
-		$cat_2                       = $this->factory->category->create( $cat_array );
-		$cat_array['parent']         = $cat_2;
-		$cat_array['name']           = 'sample county';
-		$cat_3                       = $this->factory->category->create( $cat_array );
-		$post_array['post_category'] = array( $cat_1, $cat_2, $cat_3 );
-		$post                        = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( 'news', $ppage['articleSection'] );
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Set Parsely to use top-level categories.
+		$parsely_options['use_top_level_cats'] = true;
+		update_option( 'parsely', $parsely_options );
+
+		// Create 3 categories and a single post with those categories.
+		$cat1 = self::factory()->category->create( [ 'name' => 'Parent Category' ] );
+		$cat2 = self::factory()->category->create( [ 'name' => 'Child Category', 'parent' => $cat1 ] );
+		$post_id = self::factory()->post->create( [ 'post_category' => [ $cat1, $cat2 ] ] );
+		$post    = get_post( $post_id );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The structrued data should contain the parent category.
+		self::assertSame( 'Parent Category', $structured_data['articleSection'] );
 	}
 
 	/**
