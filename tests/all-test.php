@@ -140,7 +140,12 @@ PARSELYJS;
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Create a single post
-		$post_id = self::factory()->post->create( [ 'post_type' => 'post', 'post_title' => 'Home' ] );
+		$post_id = self::factory()->post->create(
+			array(
+				'post_type'  => 'post',
+				'post_title' => 'Home',
+			) 
+		);
 		$post    = get_post( $post_id );
 
 		// Go to the homepage
@@ -172,9 +177,9 @@ PARSELYJS;
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single category term, and a Post with that category.
-		$category = self::factory()->category->create( [ 'name' => 'Test Category' ] );
-		$post_id = self::factory()->post->create( [ 'post_category' => [ $category ] ] );
-		$post    = get_post( $post_id );
+		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
+		$post_id  = self::factory()->post->create( array( 'post_category' => array( $category ) ) );
+		$post     = get_post( $post_id );
 
 		// Create the structured data for that post.
 		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
@@ -195,8 +200,8 @@ PARSELYJS;
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Create two tags with uppercase names and a single post.
-		$tag1 = self::factory()->tag->create( [ 'name' => 'Sample' ] );
-		$tag2 = self::factory()->tag->create( [ 'name' => 'Tag' ] );
+		$tag1    = self::factory()->tag->create( array( 'name' => 'Sample' ) );
+		$tag2    = self::factory()->tag->create( array( 'name' => 'Tag' ) );
 		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
@@ -227,15 +232,15 @@ PARSELYJS;
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Set the Categories as Tags option to true.
-		$parsely_options['cats_as_tags'] = true;
+		$parsely_options['cats_as_tags']   = true;
 		$parsely_options['lowercase_tags'] = false;
 		update_option( 'parsely', $parsely_options );
 
 		// Create 3 categories and a single post with those categories.
-		$cat1 = self::factory()->category->create( [ 'name' => 'Test Category' ] );
-		$cat2 = self::factory()->category->create( [ 'name' => 'Test Category 2' ] );
-		$cat3 = self::factory()->category->create( [ 'name' => 'Test Category 3' ] );
-		$post_id = self::factory()->post->create( [ 'post_category' => [ $cat1, $cat2, $cat3 ] ] );
+		$cat1    = self::factory()->category->create( array( 'name' => 'Test Category' ) );
+		$cat2    = self::factory()->category->create( array( 'name' => 'Test Category 2' ) );
+		$cat3    = self::factory()->category->create( array( 'name' => 'Test Category 3' ) );
+		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2, $cat3 ) ) );
 		$post    = get_post( $post_id );
 
 		// Create the structured data for that post.
@@ -264,12 +269,17 @@ PARSELYJS;
 
 		// Create a custom taxonomy and add a tag for it.
 		register_taxonomy( 'hockey', 'post' );
-		$custom_tax_tag = self::factory()->tag->create( [ 'name' => 'Gretzky', 'taxonomy' => 'hockey' ] );
+		$custom_tax_tag = self::factory()->tag->create(
+			array(
+				'name'     => 'Gretzky',
+				'taxonomy' => 'hockey',
+			) 
+		);
 
 		// Create a tag and a category and a signle post and assign the category to the post.
-		$tag = self::factory()->tag->create( [ 'name' => 'Tag' ] );
-		$cat = self::factory()->category->create( [ 'name' => 'Category' ] );
-		$post_id = self::factory()->post->create( [ 'post_category' => [ $cat ] ]);
+		$tag     = self::factory()->tag->create( array( 'name' => 'Tag' ) );
+		$cat     = self::factory()->category->create( array( 'name' => 'Category' ) );
+		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat ) ) );
 
 		$post = get_post( $post_id );
 
@@ -303,9 +313,14 @@ PARSELYJS;
 		update_option( 'parsely', $parsely_options );
 
 		// Create 3 categories and a single post with those categories.
-		$cat1 = self::factory()->category->create( [ 'name' => 'Parent Category' ] );
-		$cat2 = self::factory()->category->create( [ 'name' => 'Child Category', 'parent' => $cat1 ] );
-		$post_id = self::factory()->post->create( [ 'post_category' => [ $cat1, $cat2 ] ] );
+		$cat1    = self::factory()->category->create( array( 'name' => 'Parent Category' ) );
+		$cat2    = self::factory()->category->create(
+			array(
+				'name'   => 'Child Category',
+				'parent' => $cat1,
+			) 
+		);
+		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2 ) ) );
 		$post    = get_post( $post_id );
 
 		// Create the structured data for that post.
@@ -335,10 +350,21 @@ PARSELYJS;
 
 		// Create a custom taxonomy, add a term and child term to it, and add them to a post.
 		register_taxonomy( 'sports', 'post' );
-		$custom_tax_tag = self::factory()->term->create( [ 'name' => 'football', 'taxonomy' => 'sports' ] );
-		$custom_tax_tag_child = self::factory()->term->create( [ 'name' => 'premiere league', 'taxonomy' => 'sports', 'parent' =>  $custom_tax_tag ] );
-		$post_id = self::factory()->post->create();
-		$post    = get_post( $post_id );
+		$custom_tax_tag       = self::factory()->term->create(
+			array(
+				'name'     => 'football',
+				'taxonomy' => 'sports',
+			) 
+		);
+		$custom_tax_tag_child = self::factory()->term->create(
+			array(
+				'name'     => 'premiere league',
+				'taxonomy' => 'sports',
+				'parent'   => $custom_tax_tag,
+			) 
+		);
+		$post_id              = self::factory()->post->create();
+		$post                 = get_post( $post_id );
 
 		// Set the custom taxonomy terms to the post.
 		wp_set_object_terms( $post_id, array( $custom_tax_tag, $custom_tax_tag_child ), 'sports' );
@@ -368,10 +394,21 @@ PARSELYJS;
 
 		// Create a custom taxonomy, add a term and child term to it, and add them to a post.
 		register_taxonomy( 'sports', 'post' );
-		$custom_tax_tag = self::factory()->term->create( [ 'name' => 'football', 'taxonomy' => 'sports' ] );
-		$custom_tax_tag_child = self::factory()->term->create( [ 'name' => 'premiere league', 'taxonomy' => 'sports', 'parent' =>  $custom_tax_tag ] );
-		$post_id = self::factory()->post->create();
-		$post    = get_post( $post_id );
+		$custom_tax_tag       = self::factory()->term->create(
+			array(
+				'name'     => 'football',
+				'taxonomy' => 'sports',
+			) 
+		);
+		$custom_tax_tag_child = self::factory()->term->create(
+			array(
+				'name'     => 'premiere league',
+				'taxonomy' => 'sports',
+				'parent'   => $custom_tax_tag,
+			) 
+		);
+		$post_id              = self::factory()->post->create();
+		$post                 = get_post( $post_id );
 
 		// Set the custom taxonomy terms to the post.
 		wp_set_object_terms( $post_id, array( $custom_tax_tag, $custom_tax_tag_child ), 'sports' );
@@ -404,8 +441,8 @@ PARSELYJS;
 		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
 
 		// The url scheme should be 'http'.
-		$url = wp_parse_url($structured_data['url']);
-		self::assertSame('http', $url['scheme']);
+		$url = wp_parse_url( $structured_data['url'] );
+		self::assertSame( 'http', $url['scheme'] );
 
 		// Set Parsely to force https canonicals.
 		$parsely_options['force_https_canonicals'] = true;
@@ -415,8 +452,8 @@ PARSELYJS;
 		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
 
 		// The url scheme should be 'https'.
-		$url = wp_parse_url($structured_data['url']);
-		self::assertSame('https', $url['scheme']);
+		$url = wp_parse_url( $structured_data['url'] );
+		self::assertSame( 'https', $url['scheme'] );
 	}
 
 	/**
@@ -465,12 +502,12 @@ PARSELYJS;
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Create a single post.
-		$post_id       = $this->factory->post->create();
-		$post          = get_post( $post_id );
+		$post_id = $this->factory->post->create();
+		$post    = get_post( $post_id );
 
 
 		// Apply page filtering.
-		$headline   = 'Completely New And Original Filtered Headline';
+		$headline = 'Completely New And Original Filtered Headline';
 		add_filter(
 			'after_set_parsely_page',
 			function( $args ) use ( $headline ) {
