@@ -7,8 +7,8 @@
     "test": "tests"
   },
   "engines": {
-    "node": "^14.16.1",
-    "npm": "^7.10.0"
+    "node": "^14",
+    "npm": "^7"
   },
   "scripts": {
     "build": "wp-scripts build src/lib/init-api src/lib/admin-page",
