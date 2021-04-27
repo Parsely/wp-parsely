@@ -1,3 +1,3 @@
-const Input = (props) => (<input type={props.type} checked={props.checked} value={props.value} />);
+const Input = ( { type, checked, value } ) => ( <input type={ type } checked={ checked } value={ value } /> );
 
-export default Input
+export default Input;

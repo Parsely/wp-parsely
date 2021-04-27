@@ -1,4 +1,5 @@
 import Input from './Input';
+import Select from './Select';
 
 const Setting = ( setting ) => {
 	let inputType;
@@ -9,10 +10,10 @@ const Setting = ( setting ) => {
 		inputType = <Input type="checkbox" checked={setting[ Object.keys( setting )[ 0 ] ]} />;
 	} else if ( typeof ( setting[ Object.keys( setting )[ 0 ] ] ) === 'object' ) {
 		// figure out select/option stuff
-		inputType = 'select';
+		inputType = <Select values={setting[ Object.keys( setting )[ 0 ] ]} />;
 	}
 
-	return <li>{ Object.keys( setting )[ 0 ] }: {inputType}</li>
+	return <li>{ Object.keys( setting )[ 0 ] }: { inputType }</li>;
 };
 export default Setting;
 // <input type={ inputType } value={ setting[ Object.keys( setting )[ 0 ] ] }
