@@ -785,10 +785,9 @@ class Parsely {
 	 */
 	public static function post_has_trackable_status( $post ) {
 		static $cache = array();
-
-		$post_status = get_post_status( $post );
-		if ( isset( $cache[ $post_status ] ) ) {
-			return $cache[ $post_status ];
+		$post_id = is_int( $post ) ? $post : $post->ID;
+		if ( isset( $cache[ $post_id ] ) ) {
+			return $cache[ $post_id ];
 		}
 
 		/**
@@ -802,8 +801,8 @@ class Parsely {
 		 * @param int|WP_Post $post               Which post object or ID is being checked.
 		 */
 		$statuses = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
-		$cache[ $post_status ] = in_array( $post_status, $statuses, true );
-		return $cache[ $post_status ];
+		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true );
+		return $cache[ $post_id ];
 	}
 
 	/**
