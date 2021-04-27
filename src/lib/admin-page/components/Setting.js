@@ -1,13 +1,18 @@
+import Input from './Input';
+
 const Setting = ( setting ) => {
 	let inputType;
 	if ( typeof ( setting[ Object.keys( setting )[ 0 ] ] ) === 'string' ) {
-		inputType = 'text';
-	} else if ( typeof ( setting[ Object.keys( setting )[ 0] ] ) === 'boolean' ) {
-		inputType = 'radio';
+		inputType = <Input type="text" value={setting[ Object.keys( setting )[ 0 ] ]} checked="" />;
+	} else if ( typeof ( setting[ Object.keys( setting )[ 0 ] ] ) === 'boolean' ) {
+		// figure out true/false logic
+		inputType = <Input type="checkbox" checked={setting[ Object.keys( setting )[ 0 ] ]} />;
 	} else if ( typeof ( setting[ Object.keys( setting )[ 0 ] ] ) === 'object' ) {
-		inputType = 'textarea';
+		// figure out select/option stuff
+		inputType = 'select';
 	}
 
-	return <li>{ Object.keys( setting )[ 0 ] }: <input type={ inputType } value={ setting[ Object.keys( setting )[ 0 ] ] } /></li>
+	return <li>{ Object.keys( setting )[ 0 ] }: {inputType}</li>
 };
 export default Setting;
+// <input type={ inputType } value={ setting[ Object.keys( setting )[ 0 ] ] }
