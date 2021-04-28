@@ -55,14 +55,12 @@ Dash code will only be placed on pages and posts which have been published in Wo
 
 You can use the `after_set_parsely_page` filter, which sends three arguments: the array of metadata, the post object, and the `parselyOptions` array:
 
-```
-function filter_parsely_page($parselyPage, $post, $parselyOptions ) {
-  $parselyPage['articleSection'] = ; // whatever values you want Parse.ly's Section to be
-  return $parselyPage;
-}
-
-add_filter( 'after_set_parsely_page', 'filter_parsely_page', 10, 3);
-```
+    add_filter( 'after_set_parsely_page', 'filter_parsely_page', 10, 3 );
+    function filter_parsely_page( $parselyPage, $post, $parselyOptions ) {
+        $parselyPage['articleSection'] = '...'; // Whatever values you want Parse.ly's Section to be.
+				
+        return $parselyPage;
+    }
 
 This filter can go anywhere in your codebase, provided it always gets loaded. We recommend putting it in your header file, so that it gets loaded with wp_head.
 
@@ -82,7 +80,7 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 1. The main settings screen of the wp-parsely plugin  
 ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-1.png)
 
-2. The standard JavaScript include being inserted before `</body>`
+2. The standard JavaScript include being inserted before the closing `body` tag.
 ![2. The standard JavaScript include being inserted before body tag](.wordpress-org/screenshot-2.png)
 
 3. A sample `JSON-LD` meta tag for a home page or section page

@@ -345,6 +345,7 @@ class Parsely {
 			self::MENU_SLUG,
 			'optional_settings',
 			array(
+				'title'            => __( 'Disable JavaScript', 'wp-parsely' ), // Passed for legend element.
 				'option_key'       => 'disable_javascript',
 				'help_text'        => $h,
 				'requires_recrawl' => false,
@@ -360,6 +361,7 @@ class Parsely {
 			self::MENU_SLUG,
 			'optional_settings',
 			array(
+				'title'            => __( 'Disable AMP Tracking', 'wp-parsely' ), // Passed for legend element.
 				'option_key'       => 'disable_amp',
 				'help_text'        => $h,
 				'requires_recrawl' => false,
@@ -375,6 +377,7 @@ class Parsely {
 			self::MENU_SLUG,
 			'optional_settings',
 			array(
+				'title'            => __( 'Use Top-Level Categories for Section', 'wp-parsely' ), // Passed for legend element.
 				'option_key'       => 'use_top_level_cats',
 				'help_text'        => $h,
 				'requires_recrawl' => true,
@@ -407,6 +410,7 @@ class Parsely {
 			self::MENU_SLUG,
 			'optional_settings',
 			array(
+				'title'            => __( 'Add Categories to Tags', 'wp-parsely' ), // Passed for legend element.
 				'option_key'       => 'cats_as_tags',
 				'help_text'        => $h,
 				'requires_recrawl' => true,
@@ -422,6 +426,7 @@ class Parsely {
 			self::MENU_SLUG,
 			'optional_settings',
 			array(
+				'title'            => __( 'Track Logged-in Users', 'wp-parsely' ), // Passed for legend element.
 				'option_key'       => 'track_authenticated_users',
 				'help_text'        => $h,
 				'requires_recrawl' => true,
@@ -437,6 +442,7 @@ class Parsely {
 			self::MENU_SLUG,
 			'optional_settings',
 			array(
+				'title'            => __( 'Lowercase All Tags', 'wp-parsely' ), // Passed for legend element.
 				'option_key'       => 'lowercase_tags',
 				'help_text'        => $h,
 				'requires_recrawl' => true,
@@ -451,6 +457,7 @@ class Parsely {
 			self::MENU_SLUG,
 			'optional_settings',
 			array(
+				'title'            => __( 'Force HTTPS canonicals', 'wp-parsely' ), // Passed for legend element.
 				'option_key'       => 'force_https_canonicals',
 				'help_text'        => $h,
 				'requires_recrawl' => true,
@@ -794,6 +801,35 @@ class Parsely {
 		return $parsely_page;
 	}
 
+	/**
+	 * Compare the post_status key against an allowed list (by default, only 'publish'ed content includes tracking data).
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param int|WP_Post $post Which post object or ID to check.
+	 * @return bool Should the post status be tracked for the provided post's post_type. By default, only 'publish' is allowed.
+	 */
+	public static function post_has_trackable_status( $post ) {
+		static $cache = array();
+		$post_id = is_int( $post ) ? $post : $post->ID;
+		if ( isset( $cache[ $post_id ] ) ) {
+			return $cache[ $post_id ];
+		}
+
+		/**
+		 * Filters the statuses that are permitted to be tracked.
+		 *
+		 * By default, the only status tracked is 'publish'. Use this filter if you have other published content that has a different (custom) status.
+		 *
+		 * @since 2.5.0
+		 *
+		 * @param string[]    $trackable_statuses The list of post statuses that are allowed to be tracked.
+		 * @param int|WP_Post $post               Which post object or ID is being checked.
+		 */
+		$statuses = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
+		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true );
+		return $cache[ $post_id ];
+	}
 
 	/**
 	 * Creates parsely metadata object from post metadata.
@@ -851,7 +887,7 @@ class Parsely {
 			/* translators: %s: Tag name */
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( sprintf( __( 'Tagged - %s', 'wp-parsely' ), $tag ) );
 			$parsely_page['url']      = $current_url;
-		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
+		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && self::post_has_trackable_status( $post ) ) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
 			$post_id  = $parsely_options['content_id_prefix'] . get_the_ID();
@@ -930,7 +966,7 @@ class Parsely {
 				'logo'     => $parsely_options['logo'],
 			);
 			$parsely_page['keywords']  = $tags;
-		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
+		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && self::post_has_trackable_status( $post ) ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title( $post ) );
 			$parsely_page['url']      = $this->get_current_url( 'post' );
 		}
@@ -1059,7 +1095,7 @@ class Parsely {
 
 		global $post;
 		$display = true;
-		if ( in_array( get_post_type(), $parsely_options['track_post_types'], true ) && 'publish' !== $post->post_status ) {
+		if ( in_array( get_post_type(), $parsely_options['track_post_types'], true ) && ! self::post_has_trackable_status( $post ) ) {
 			$display = false;
 		}
 		if ( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) {
@@ -1154,24 +1190,27 @@ class Parsely {
 		$id      = esc_attr( $name );
 		$name    = self::OPTIONS_KEY . "[$id]";
 
+		$has_help_text = isset( $args['help_text'] ) ? ' data-has-help-text="true"' : '';
+		$requires_recrawl = isset( $args['requires_recrawl'] ) && $args['requires_recrawl'] ? ' data-requires-recrawl="true"' : '';
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static text attribute key-value. ?>
+		<fieldset class="parsely-form-controls" <?php echo $has_help_text . $requires_recrawl; ?>>
+			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
+			<p>
+				<label for="<?php echo esc_attr( "{$id}_true" ); ?>">
+					<input type="radio" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( "{$id}_true" ); ?>" value="true"<?php checked( $value ); ?> />Yes
+				</label>
+				<br />
+				<label for="<?php echo esc_attr( "{$id}_false" ); ?>">
+					<input type="radio" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( "{$id}_false" ); ?>" value="false"<?php checked( $value, false ); ?> />No
+				</label>
+			</p>
+		<?php
 		if ( isset( $args['help_text'] ) ) {
-			echo '<div class="parsely-form-controls" data-has-help-text="true">';
+			?><div class="help-text"><p class="description .help-text"><?php echo esc_html( $args['help_text'] ); ?></p></div><?php
 		}
-		if ( isset( $args['requires_recrawl'] ) ) {
-			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
-		}
-
-		echo sprintf( "<input type='radio' name='%s' id='%s_true' value='true' ", esc_attr( $name ), esc_attr( $id ) );
-		echo checked( true === $value, true, false );
-		echo sprintf( " /> <label for='%s_true'>Yes</label> <input type='radio' name='%s' id='%s_false' value='false' ", esc_attr( $id ), esc_attr( $name ), esc_attr( $id ) );
-		echo checked( true !== $value, true, false );
-		echo sprintf( " /> <label for='%s_false'>No</label>", esc_attr( $id ) );
-
-		if ( isset( $args['help_text'] ) ) {
-			echo '<div class="help-text"><p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
-		}
-		echo '</div>';
-
+		?>
+		</fieldset>
+		<?php
 	}
 
 	/**
