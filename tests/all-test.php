@@ -129,20 +129,40 @@ PARSELYJS;
 
 
 	/**
-	 * Check the parsely page output
+	 * Check the context `@type` field for a Post and the Homepage.
 	 *
 	 * @category   Function
 	 * @package    SampleTest
 	 */
-	public function test_parsely_ppage_output() {
+	public function test_parsely_metadata_context_output() {
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Create a single post
+		$post_id = self::factory()->post->create(
+			array(
+				'post_type'  => 'post',
+				'post_title' => 'Home',
+			) 
+		);
+		$post    = get_post( $post_id );
+
+		// Go to the homepage
 		$this->go_to( '/' );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( 'WebPage', $ppage['@type'] );
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( 'NewsArticle', $ppage['@type'] );
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The metadata '@type' for the context should be 'WebPage' for the homepage.
+		self::assertSame( 'WebPage', $structured_data['@type'] );
+
+		// Go to a single post page
+		$this->go_to( '/?p=' . $post_id );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The metadata '@type' for the context should be 'NewsArticle' for a single post page.
+		self::assertSame( 'NewsArticle', $structured_data['@type'] );
 	}
 
 	/**
@@ -152,13 +172,20 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_parsely_categories() {
-		$post_array                  = $this->create_test_post_array();
-		$cat                         = $this->create_test_category( 'Newssss' );
-		$post_array['post_category'] = array( $cat );
-		$post                        = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( 'Newssss', $ppage['articleSection'] );
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Insert a single category term, and a Post with that category.
+		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
+		$post_id  = self::factory()->post->create( array( 'post_category' => array( $category ) ) );
+		$post     = get_post( $post_id );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The category in the structured data should match the category of the post.
+		self::assertSame( 'Test Category', $structured_data['articleSection'] );
 	}
 
 	/**
@@ -168,16 +195,29 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_parsely_tags_lowercase() {
-		$post_array                = $this->create_test_post_array();
-		$post_array['tags_input']  = array( 'Sample', 'Tag' );
-		$post                      = $this->factory->post->create( $post_array );
-		$options                   = get_option( 'parsely' );
-		$options['lowercase_tags'] = true;
-		update_option( 'parsely', $options );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertContains( 'sample', $ppage['keywords'] );
-		self::assertContains( 'tag', $ppage['keywords'] );
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Create two tags with uppercase names and a single post.
+		$tag1    = self::factory()->tag->create( array( 'name' => 'Sample' ) );
+		$tag2    = self::factory()->tag->create( array( 'name' => 'Tag' ) );
+		$post_id = self::factory()->post->create();
+		$post    = get_post( $post_id );
+
+		// Assign the Tags to the Post.
+		wp_set_object_terms( $post_id, array( $tag1, $tag2 ), 'post_tag' );
+
+		// Set the Parsely plugin to use Lowercase tags.
+		$parsely_options['lowercase_tags'] = true;
+		update_option( 'parsely', $parsely_options );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The structured data should contain both tags in lowercase form.
+		self::assertContains( 'sample', $structured_data['keywords'] );
+		self::assertContains( 'tag', $structured_data['keywords'] );
 	}
 
 	/**
@@ -186,57 +226,74 @@ PARSELYJS;
 	 * @category   Function
 	 * @package    SampleTest
 	 */
-	public function test_parsely_cats_as_tags() {
-		$options                 = get_option( 'parsely' );
-		$options['cats_as_tags'] = true;
-		update_option( 'parsely', $options );
-		$post_array                  = $this->create_test_post_array();
-		$cat_1                       = $this->create_test_category( 'news' );
-		$cat_array                   = array(
-			'name'   => 'local',
-			'parent' => $cat_1,
-		);
-		$cat_2                       = $this->factory->category->create( $cat_array );
-		$cat_array['parent']         = $cat_2;
-		$cat_array['name']           = 'sample county';
-		$cat_3                       = $this->factory->category->create( $cat_array );
-		$post_array['post_category'] = array( $cat_1, $cat_2, $cat_3 );
-		$post_array['tags_input']    = array( 'test' );
-		$post                        = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertContains( 'news', $ppage['keywords'] );
-		self::assertContains( 'local', $ppage['keywords'] );
-		self::assertContains( 'sample county', $ppage['keywords'] );
+	public function test_parsely_categories_as_tags() {
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Set the Categories as Tags option to true.
+		$parsely_options['cats_as_tags']   = true;
+		$parsely_options['lowercase_tags'] = false;
+		update_option( 'parsely', $parsely_options );
+
+		// Create 3 categories and a single post with those categories.
+		$cat1    = self::factory()->category->create( array( 'name' => 'Test Category' ) );
+		$cat2    = self::factory()->category->create( array( 'name' => 'Test Category 2' ) );
+		$cat3    = self::factory()->category->create( array( 'name' => 'Test Category 3' ) );
+		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2, $cat3 ) ) );
+		$post    = get_post( $post_id );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The structured data should contain all three categories as keywords.
+		self::assertContains( 'Test Category', $structured_data['keywords'] );
+		self::assertContains( 'Test Category 2', $structured_data['keywords'] );
+		self::assertContains( 'Test Category 3', $structured_data['keywords'] );
 	}
 
 	/**
-	 * Check out taxonomy tags.
+	 * Test custom taxonomy terms, categories, and tags in the metadata.
 	 *
 	 * @category   Function
 	 * @package    SampleTest
 	 */
 	public function test_custom_taxonomy_tags() {
-		$options                 = get_option( 'parsely' );
-		$options['cats_as_tags'] = true;
-		update_option( 'parsely', $options );
-		$post_array               = $this->create_test_post_array();
-		$post_array['tags_input'] = array( 'Sample', 'Tag' );
-		$post                     = $this->factory->post->create( $post_array );
-		$parent_taxonomy          = $this->create_test_taxonomy( 'sports', 'hockey' );
-		$child_taxonomy           = $this->factory->term->create(
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Set up the options to force lowercase tags.
+		$parsely_options['cats_as_tags'] = true;
+		update_option( 'parsely', $parsely_options );
+
+		// Create a custom taxonomy and add a tag for it.
+		register_taxonomy( 'hockey', 'post' );
+		$custom_tax_tag = self::factory()->tag->create(
 			array(
-				'name'     => 'gretzky',
-				'taxonomy' => 'sports',
-				'parent'   => $parent_taxonomy,
-			)
+				'name'     => 'Gretzky',
+				'taxonomy' => 'hockey',
+			) 
 		);
-		wp_set_post_terms( $post, array( $parent_taxonomy, $child_taxonomy ), 'sports' );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertContains( 'sample', $ppage['keywords'] );
-		self::assertContains( 'tag', $ppage['keywords'] );
-		self::assertContains( 'gretzky', $ppage['keywords'] );
+
+		// Create a tag and a category and a signle post and assign the category to the post.
+		$tag     = self::factory()->tag->create( array( 'name' => 'Tag' ) );
+		$cat     = self::factory()->category->create( array( 'name' => 'Category' ) );
+		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat ) ) );
+
+		$post = get_post( $post_id );
+
+		// Assign the tag and custom taxonomy to the post.
+		wp_set_object_terms( $post_id, array( $custom_tax_tag ), 'hockey' );
+		wp_set_object_terms( $post_id, array( $tag ), 'post_tag' );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The structrued data should contain the category, the post tag, and the custom taxonomy term.
+		self::assertContains( 'category', $structured_data['keywords'] );
+		self::assertContains( 'tag', $structured_data['keywords'] );
+		self::assertContains( 'gretzky', $structured_data['keywords'] );
 	}
 
 
@@ -247,24 +304,30 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_use_top_level_cats() {
-		$options                       = get_option( 'parsely' );
-		$options['use_top_level_cats'] = true;
-		update_option( 'parsely', $options );
-		$post_array                  = $this->create_test_post_array();
-		$cat_1                       = $this->create_test_category( 'news' );
-		$cat_array                   = array(
-			'name'   => 'local',
-			'parent' => $cat_1,
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Set Parsely to use top-level categories.
+		$parsely_options['use_top_level_cats'] = true;
+		update_option( 'parsely', $parsely_options );
+
+		// Create 3 categories and a single post with those categories.
+		$cat1    = self::factory()->category->create( array( 'name' => 'Parent Category' ) );
+		$cat2    = self::factory()->category->create(
+			array(
+				'name'   => 'Child Category',
+				'parent' => $cat1,
+			) 
 		);
-		$cat_2                       = $this->factory->category->create( $cat_array );
-		$cat_array['parent']         = $cat_2;
-		$cat_array['name']           = 'sample county';
-		$cat_3                       = $this->factory->category->create( $cat_array );
-		$post_array['post_category'] = array( $cat_1, $cat_2, $cat_3 );
-		$post                        = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( 'news', $ppage['articleSection'] );
+		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2 ) ) );
+		$post    = get_post( $post_id );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The structrued data should contain the parent category.
+		self::assertSame( 'Parent Category', $structured_data['articleSection'] );
 	}
 
 	/**
@@ -274,25 +337,41 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_custom_taxonomy_as_section() {
-		$options                            = get_option( 'parsely' );
-		$options['custom_taxonomy_section'] = 'sports';
-		update_option( 'parsely', $options );
-		$post_array                  = $this->create_test_post_array();
-		$cat                         = $this->create_test_category( 'news' );
-		$post_array['post_category'] = array( $cat );
-		$post                        = $this->factory->post->create( $post_array );
-		$parent_taxonomy             = $this->create_test_taxonomy( 'sports', 'basketball' );
-		$child_taxonomy              = $this->factory->term->create(
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Set Parsely to use 'sports' as custom taxonomy for section.
+		$parsely_options['custom_taxonomy_section'] = 'sports';
+
+		// Make sure top-level categories are not set to be used.
+		$parsely_options['use_top_level_cats'] = false;
+		update_option( 'parsely', $parsely_options );
+
+		// Create a custom taxonomy, add a term and child term to it, and add them to a post.
+		register_taxonomy( 'sports', 'post' );
+		$custom_tax_tag       = self::factory()->term->create(
 			array(
-				'name'     => 'lebron',
+				'name'     => 'football',
 				'taxonomy' => 'sports',
-				'parent'   => $parent_taxonomy,
-			)
+			) 
 		);
-		wp_set_post_terms( $post, array( $parent_taxonomy, $child_taxonomy ), 'sports' );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( 'lebron', $ppage['articleSection'] );
+		$custom_tax_tag_child = self::factory()->term->create(
+			array(
+				'name'     => 'premiere league',
+				'taxonomy' => 'sports',
+				'parent'   => $custom_tax_tag,
+			) 
+		);
+		$post_id              = self::factory()->post->create();
+		$post                 = get_post( $post_id );
+
+		// Set the custom taxonomy terms to the post.
+		wp_set_object_terms( $post_id, array( $custom_tax_tag, $custom_tax_tag_child ), 'sports' );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		self::assertSame( 'premiere league', $structured_data['articleSection'] );
 	}
 
 	/**
@@ -302,26 +381,41 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_top_level_taxonomy_as_section() {
-		$options                            = get_option( 'parsely' );
-		$options['custom_taxonomy_section'] = 'sports';
-		$options['use_top_level_cats']      = true;
-		update_option( 'parsely', $options );
-		$post_array                  = $this->create_test_post_array();
-		$cat                         = $this->create_test_category( 'news' );
-		$post_array['post_category'] = array( $cat );
-		$post                        = $this->factory->post->create( $post_array );
-		$parent_taxonomy             = $this->create_test_taxonomy( 'sports', 'basketball' );
-		$child_taxonomy              = $this->factory->term->create(
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Set Parsely to use 'sports' as custom taxonomy for section.
+		$parsely_options['custom_taxonomy_section'] = 'sports';
+
+		// Make sure top-level categories are not set to be used.
+		$parsely_options['use_top_level_cats'] = true;
+		update_option( 'parsely', $parsely_options );
+
+		// Create a custom taxonomy, add a term and child term to it, and add them to a post.
+		register_taxonomy( 'sports', 'post' );
+		$custom_tax_tag       = self::factory()->term->create(
 			array(
-				'name'     => 'lebron',
+				'name'     => 'football',
 				'taxonomy' => 'sports',
-				'parent'   => $parent_taxonomy,
-			)
+			) 
 		);
-		wp_set_post_terms( $post, array( $parent_taxonomy, $child_taxonomy ), 'sports' );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( 'basketball', $ppage['articleSection'] );
+		$custom_tax_tag_child = self::factory()->term->create(
+			array(
+				'name'     => 'premiere league',
+				'taxonomy' => 'sports',
+				'parent'   => $custom_tax_tag,
+			) 
+		);
+		$post_id              = self::factory()->post->create();
+		$post                 = get_post( $post_id );
+
+		// Set the custom taxonomy terms to the post.
+		wp_set_object_terms( $post_id, array( $custom_tax_tag, $custom_tax_tag_child ), 'sports' );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		self::assertSame( 'football', $structured_data['articleSection'] );
 	}
 
 	/**
@@ -331,17 +425,35 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_http_canonicals() {
-		$options    = get_option( 'parsely' );
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( strpos( $ppage['url'], 'http', 0 ), 0 );
-		self::assertFalse( strpos( $ppage['url'], 'https', 0 ) );
-		$options['force_https_canonicals'] = true;
-		update_option( 'parsely', $options );
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertSame( strpos( $ppage['url'], 'https', 0 ), 0 );
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Set Parsely to not force https canonicals.
+		$parsely_options['force_https_canonicals'] = false;
+		update_option( 'parsely', $parsely_options );
+
+		// Create a single post.
+		$post_id = self::factory()->post->create();
+		$post    = get_post( $post_id );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The url scheme should be 'http'.
+		$url = wp_parse_url( $structured_data['url'] );
+		self::assertSame( 'http', $url['scheme'] );
+
+		// Set Parsely to force https canonicals.
+		$parsely_options['force_https_canonicals'] = true;
+		update_option( 'parsely', $parsely_options );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The url scheme should be 'https'.
+		$url = wp_parse_url( $structured_data['url'] );
+		self::assertSame( 'https', $url['scheme'] );
 	}
 
 	/**
@@ -385,13 +497,17 @@ PARSELYJS;
 	 * @package    SampleTest
 	 */
 	public function test_parsely_page_filter() {
-		$options    = get_option( 'parsely' );
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$headline   = 'Completely New And Original Filtered Headline';
-		$this->go_to( '/?p=' . $post );
-		
+		// Setup Parsley object.
+		$parsely         = new \Parsely();
+		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+
+		// Create a single post.
+		$post_id = $this->factory->post->create();
+		$post    = get_post( $post_id );
+
+
 		// Apply page filtering.
+		$headline = 'Completely New And Original Filtered Headline';
 		add_filter(
 			'after_set_parsely_page',
 			function( $args ) use ( $headline ) {
@@ -403,8 +519,11 @@ PARSELYJS;
 			3
 		);
 
-		$ppage = self::$parsely->insert_parsely_page();
-		self::assertTrue( strpos( $ppage['headline'], $headline ) === 0 );
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// The structured data should contain the headline from the filter.
+		self::assertTrue( strpos( $structured_data['headline'], $headline ) === 0 );
 	}
 
 	/**
