@@ -429,7 +429,7 @@ class Parsely {
 				'title'            => __( 'Track Logged-in Users', 'wp-parsely' ), // Passed for legend element.
 				'option_key'       => 'track_authenticated_users',
 				'help_text'        => $h,
-				'requires_recrawl' => true,
+				'requires_recrawl' => false,
 			)
 		);
 
@@ -1140,7 +1140,7 @@ class Parsely {
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
 		}
-		if ( isset( $args['requires_recrawl'] ) ) {
+		if ( isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ) {
 			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
 		}
 
@@ -1191,7 +1191,7 @@ class Parsely {
 		$name    = self::OPTIONS_KEY . "[$id]";
 
 		$has_help_text = isset( $args['help_text'] ) ? ' data-has-help-text="true"' : '';
-		$requires_recrawl = isset( $args['requires_recrawl'] ) && $args['requires_recrawl'] ? ' data-requires-recrawl="true"' : '';
+		$requires_recrawl = isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ? ' data-requires-recrawl="true"' : '';
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static text attribute key-value. ?>
 		<fieldset class="parsely-form-controls" <?php echo $has_help_text . $requires_recrawl; ?>>
 			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
@@ -1228,7 +1228,7 @@ class Parsely {
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
 		}
-		if ( isset( $args['requires_recrawl'] ) ) {
+		if ( isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ) {
 			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
 		}
 
@@ -1261,7 +1261,7 @@ class Parsely {
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
 		}
-		if ( isset( $args['requires_recrawl'] ) ) {
+		if ( isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ) {
 			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
 		}
 
@@ -1270,9 +1270,6 @@ class Parsely {
 			if ( in_array( $key, $accepted_args, true ) ) {
 				echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
 			}
-		}
-		if ( isset( $args['requires_recrawl'] ) ) {
-			echo ' data-requires-recrawl="true"';
 		}
 		echo ' />';
 
