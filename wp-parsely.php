@@ -775,6 +775,35 @@ class Parsely {
 		return $parsely_page;
 	}
 
+	/**
+	 * Compare the post_status key against an allowed list (by default, only 'publish'ed content includes tracking data).
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param int|WP_Post $post Which post object or ID to check.
+	 * @return bool Should the post status be tracked for the provided post's post_type. By default, only 'publish' is allowed.
+	 */
+	public static function post_has_trackable_status( $post ) {
+		static $cache = array();
+		$post_id = is_int( $post ) ? $post : $post->ID;
+		if ( isset( $cache[ $post_id ] ) ) {
+			return $cache[ $post_id ];
+		}
+
+		/**
+		 * Filters the statuses that are permitted to be tracked.
+		 *
+		 * By default, the only status tracked is 'publish'. Use this filter if you have other published content that has a different (custom) status.
+		 *
+		 * @since 2.5.0
+		 *
+		 * @param string[]    $trackable_statuses The list of post statuses that are allowed to be tracked.
+		 * @param int|WP_Post $post               Which post object or ID is being checked.
+		 */
+		$statuses = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
+		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true );
+		return $cache[ $post_id ];
+	}
 
 	/**
 	 * Creates parsely metadata object from post metadata.
@@ -832,7 +861,7 @@ class Parsely {
 			/* translators: %s: Tag name */
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( sprintf( __( 'Tagged - %s', 'wp-parsely' ), $tag ) );
 			$parsely_page['url']      = $current_url;
-		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
+		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && self::post_has_trackable_status( $post ) ) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
 			$post_id  = $parsely_options['content_id_prefix'] . get_the_ID();
@@ -911,7 +940,7 @@ class Parsely {
 				'logo'     => $parsely_options['logo'],
 			);
 			$parsely_page['keywords']  = $tags;
-		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
+		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && self::post_has_trackable_status( $post ) ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title( $post ) );
 			$parsely_page['url']      = $this->get_current_url( 'post' );
 		}
@@ -1040,7 +1069,7 @@ class Parsely {
 
 		global $post;
 		$display = true;
-		if ( in_array( get_post_type(), $parsely_options['track_post_types'], true ) && 'publish' !== $post->post_status ) {
+		if ( in_array( get_post_type(), $parsely_options['track_post_types'], true ) && ! self::post_has_trackable_status( $post ) ) {
 			$display = false;
 		}
 		if ( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) {
