@@ -104,13 +104,7 @@ class Parsely {
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
-		if ( ! self::is_test_env() ) {
-			add_action( 'wp_enqueue_scripts', [ $this, 'wp_parsely_style_init' ] );
-		}
-	}
-
-	static function is_test_env() {
-		return defined( 'WP_PARSELY_TESTING' );
+		add_action( 'wp_enqueue_scripts', [ $this, 'wp_parsely_style_init' ] );
 	}
 
 	/**
@@ -1044,14 +1038,14 @@ class Parsely {
 			return $cache_buster;
 		}
 
-		$cb = null;
-		if ( defined( 'WP_DEBUG' ) && ! self::is_test_env() ) {
-			$cb = mt_rand();
-		} else {
-			$cb = PARSELY_VERSION;
-		}
-		$cache_buster = apply_filters( 'wp_parsely_cache_buster', $cb );
-		return $cache_buster;
+		$cache_buster = defined( 'WP_DEBUG' ) && WP_DEBUG && empty( 'WP_TESTS_DOMAIN' ) ? wp_rand() : PARSELY_VERSION;
+
+		/**
+		 * Filters the cache buster value for linked scripts and styles.
+		 *
+		 * @param string $cache_buster Plugin version, unless WP_DEBUG is defined and truthy, and tests are not running.
+		 */
+		return apply_filters( 'wp_parsely_cache_buster', $cache_buster );
 	}
 
 	/**

@@ -11,7 +11,6 @@
 		<server name="SERVER_PORT" value="80"/>
 		<server name="HTTP_HOST" value="localhost"/>
 		<server name="REMOTE_ADDR" value="127.0.0.1"/>
-		<const name="WP_PARSELY_TESTING" value="true"/>
 	</php>
 	<testsuites>
 		<testsuite name="WP_Tests">
