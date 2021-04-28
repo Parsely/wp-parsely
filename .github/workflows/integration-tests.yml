@@ -27,6 +27,9 @@ jobs:
           - php: '8.0'
             # Ignore platform requirements, so that PHPUnit 7.5 can be installed on PHP 8.0 (and above).
             composer-options: "--ignore-platform-reqs"
+            extensions: pcov
+            ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
+            coverage: pcov
           # There is no PHP nightly. Due to https://github.com/sebastianbergmann/phpunit/issues/4575 this is never
           # going to succeed as WordPress is hard-coded to only support PHPUnit 7.5, and then fix only appears
           # in PHPUnit 8.5.14.
@@ -39,9 +42,9 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: pcov
-          ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
-          coverage: pcov
+          extensions: ${{ matrix.extensions }}
+          ini-values: ${{ matrix.ini-values }}
+          coverage: ${{ matrix.coverage }}
 
       - name: Setup problem matchers for PHP
         run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
