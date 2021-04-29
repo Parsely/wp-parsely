@@ -21,7 +21,7 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 ### Features
 
 - Get started with Parse.ly right away: the plugin automatically inserts the required metadata and JavaScript on all your published pages and posts.
-- Allows you to specify the JavaScript implementation to use: standard, DOM free or asynchronous.
+- Choose what format the metadata takes, and whether logged-in users should be included in the analytics.
 - If you've purchased access to the Parse.ly API, add a widget to your site with article recommendations personalized to individual users.
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
