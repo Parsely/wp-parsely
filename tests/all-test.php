@@ -144,7 +144,7 @@ PARSELYJS;
 			array(
 				'post_type'  => 'post',
 				'post_title' => 'Home',
-			) 
+			)
 		);
 		$post    = get_post( $post_id );
 
@@ -273,7 +273,7 @@ PARSELYJS;
 			array(
 				'name'     => 'Gretzky',
 				'taxonomy' => 'hockey',
-			) 
+			)
 		);
 
 		// Create a tag and a category and a signle post and assign the category to the post.
@@ -318,7 +318,7 @@ PARSELYJS;
 			array(
 				'name'   => 'Child Category',
 				'parent' => $cat1,
-			) 
+			)
 		);
 		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2 ) ) );
 		$post    = get_post( $post_id );
@@ -354,14 +354,14 @@ PARSELYJS;
 			array(
 				'name'     => 'football',
 				'taxonomy' => 'sports',
-			) 
+			)
 		);
 		$custom_tax_tag_child = self::factory()->term->create(
 			array(
 				'name'     => 'premiere league',
 				'taxonomy' => 'sports',
 				'parent'   => $custom_tax_tag,
-			) 
+			)
 		);
 		$post_id              = self::factory()->post->create();
 		$post                 = get_post( $post_id );
@@ -398,14 +398,14 @@ PARSELYJS;
 			array(
 				'name'     => 'football',
 				'taxonomy' => 'sports',
-			) 
+			)
 		);
 		$custom_tax_tag_child = self::factory()->term->create(
 			array(
 				'name'     => 'premiere league',
 				'taxonomy' => 'sports',
 				'parent'   => $custom_tax_tag,
-			) 
+			)
 		);
 		$post_id              = self::factory()->post->create();
 		$post                 = get_post( $post_id );
@@ -590,5 +590,88 @@ PARSELYJS;
 		echo esc_html( self::$parsely->insert_parsely_javascript() );
 		$output = ob_get_clean();
 		self::assertContains( self::$parsely_html, $output );
+	}
+
+	/**
+	 * Data provider for test_get_current_url
+	 *
+	 * @return array[]
+	 */
+	public function data_for_test_get_current_url() {
+		return array(
+			// Start cases with 'force_https_canonicals' = true
+			array(
+				true,
+				'http://example.com',
+				'https://example.com',
+			),
+			array(
+				true,
+				'https://example.com',
+				'https://example.com',
+			),
+			array(
+				true,
+				'http://example.com:1234',
+				'https://example.com:1234',
+			),
+			array(
+				true,
+				'https://example.com:1234',
+				'https://example.com:1234',
+			),
+			// Start cases with 'force_https_canonicals' = false
+			array(
+				false,
+				'http://example.com',
+				'http://example.com',
+			),
+			array(
+				false,
+				'https://example.com',
+				'http://example.com',
+			),
+			array(
+				false,
+				'http://example.com:1234',
+				'http://example.com:1234',
+			),
+			array(
+				false,
+				'https://example.com:1234',
+				'http://example.com:1234',
+			),
+		);
+	}
+
+	/**
+	 * @category   Function
+	 * @package    SampleTest
+	 * @dataProvider data_for_test_get_current_url
+	 * @covers Parsely::get_current_url
+	 */
+	public function test_get_current_url( $force_https, $url, $expected ) {
+		$options                           = get_option( \Parsely::OPTIONS_KEY );
+		$options['force_https_canonicals'] = $force_https;
+		update_option( \Parsely::OPTIONS_KEY, $options );
+
+		update_option( 'siteurl', $url );
+
+		// Test homepage
+		$this->go_to( '/' );
+		$res = self::$parsely->get_current_url();
+		self::assertSame( strpos( $res, $expected, 0 ), 0 );
+
+		// Test a specific post
+		$post_array = $this->create_test_post_array();
+		$post       = $this->factory->post->create( $post_array );
+		$this->go_to( '/?p=' . $post );
+		$res = self::$parsely->get_current_url();
+		self::assertSame( strpos( $res, $expected, 0 ), 0 );
+
+		// Test a random URL
+		$this->go_to( '/random-url' );
+		$res = self::$parsely->get_current_url();
+		self::assertSame( strpos( $res, $expected, 0 ), 0 );
 	}
 }

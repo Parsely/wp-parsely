@@ -1631,12 +1631,11 @@ class Parsely {
 	 * @param int    $post_id id of the post you want to get the url for. Optional.
 	 * @return string|void
 	 */
-	private function get_current_url( $post = 'nonpost', $post_id = 0 ) {
-		$options = $this->get_options();
-		$scheme  = ( $options['force_https_canonicals'] ? 'https://' : 'http://' );
+	public function get_current_url( $post = 'nonpost', $post_id = 0 ) {
+		$url = '';
 
 		if ( 'post' === $post ) {
-			$permalink        = get_permalink( $post_id );
+			$permalink = get_permalink( $post_id );
 
 			/**
 			 * Filters the list of author names for a post.
@@ -1649,29 +1648,19 @@ class Parsely {
 			 * @param int    $post_id   ID of the post you want to get the URL for. May be 0, so $permalink will be
 			 *                          for the global $post.
 			 */
-			$permalink        = apply_filters( 'wp_parsely_permalink', $permalink, $post, $post_id );
-			$parsed_canonical = wp_parse_url( $permalink );
-			// handle issue if wp_parse_url doesn't return good host & path data, fallback to page url as a last resort.
-			if ( isset( $parsed_canonical['host'], $parsed_canonical['path'] ) ) {
-				$canonical = $scheme . $parsed_canonical['host'] . $parsed_canonical['path'];
-			} elseif ( isset( $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'] ) ) { // Input var okay.
-				$canonical = $scheme . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) . sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ); // Input var okay.
-			}
+			$url = apply_filters( 'wp_parsely_permalink', $permalink, $post, $post_id );
+		} else {
+			$request_uri = isset( $_SERVER['REQUEST_URI'] )
+					? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) )
+					: '';
 
-			return $canonical;
+			$url = site_url( $request_uri ); // Input var okay.
 		}
-		$page_url = site_url( null, $scheme );
 
-		if ( isset( $_SERVER['SERVER_PORT'] ) ) { // Input var okay.
-			$port_number = intval( $_SERVER['SERVER_PORT'] ); // Input var okay.
-		}
-		if ( 80 !== $port_number && 443 !== $port_number ) {
-			$page_url .= ':' . $port_number;
-		}
-		if ( isset( $_SERVER['REQUEST_URI'] ) ) { // Input var okay.
-			$page_url .= sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ); // Input var okay.
-		}
-		return $page_url;
+		$options = $this->get_options();
+		return $options['force_https_canonicals']
+				? str_replace( 'http://', 'https://', $url )
+				: str_replace( 'https://', 'http://', $url );
 	}
 
 	/**
