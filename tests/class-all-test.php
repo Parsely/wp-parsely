@@ -10,12 +10,13 @@ namespace Parsely\Tests;
 use Parsely\Tests\TestCase as ParselyTestCase;
 
 /**
- * Sample test case.
+ * Catch-all class for testing.
+ * TODO: Break this into multiple targeted files
  *
  * @category   Class
- * @package    SampleTest
+ * @package    All_Test
  */
-class SampleTest extends ParselyTestCase {
+class All_Test extends ParselyTestCase {
 
 	/**
 	 * Internal variables
