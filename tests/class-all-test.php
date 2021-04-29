@@ -145,7 +145,7 @@ PARSELYJS;
 			array(
 				'post_type'  => 'post',
 				'post_title' => 'Home',
-			) 
+			)
 		);
 		$post    = get_post( $post_id );
 
@@ -274,7 +274,7 @@ PARSELYJS;
 			array(
 				'name'     => 'Gretzky',
 				'taxonomy' => 'hockey',
-			) 
+			)
 		);
 
 		// Create a tag and a category and a signle post and assign the category to the post.
@@ -319,7 +319,7 @@ PARSELYJS;
 			array(
 				'name'   => 'Child Category',
 				'parent' => $cat1,
-			) 
+			)
 		);
 		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2 ) ) );
 		$post    = get_post( $post_id );
@@ -355,14 +355,14 @@ PARSELYJS;
 			array(
 				'name'     => 'football',
 				'taxonomy' => 'sports',
-			) 
+			)
 		);
 		$custom_tax_tag_child = self::factory()->term->create(
 			array(
 				'name'     => 'premiere league',
 				'taxonomy' => 'sports',
 				'parent'   => $custom_tax_tag,
-			) 
+			)
 		);
 		$post_id              = self::factory()->post->create();
 		$post                 = get_post( $post_id );
@@ -399,14 +399,14 @@ PARSELYJS;
 			array(
 				'name'     => 'football',
 				'taxonomy' => 'sports',
-			) 
+			)
 		);
 		$custom_tax_tag_child = self::factory()->term->create(
 			array(
 				'name'     => 'premiere league',
 				'taxonomy' => 'sports',
 				'parent'   => $custom_tax_tag,
-			) 
+			)
 		);
 		$post_id              = self::factory()->post->create();
 		$post                 = get_post( $post_id );
