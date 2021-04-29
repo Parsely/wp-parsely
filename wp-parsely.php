@@ -22,14 +22,14 @@
  * Requires WP:       4.0.0
  */
 
-require 'class-parsely.php';
+require 'src/class-parsely.php';
 
 if ( class_exists( 'Parsely' ) ) {
 	define( 'PARSELY_VERSION', Parsely::VERSION );
 	$parsely = new Parsely();
 }
 
-require 'class-parsely-recommended-widget.php';
+require 'src/class-parsely-recommended-widget.php';
 
 add_action( 'widgets_init', 'parsely_recommended_widget_register' );
 /**
