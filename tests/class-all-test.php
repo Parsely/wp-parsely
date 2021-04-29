@@ -10,12 +10,13 @@ namespace Parsely\Tests;
 use Parsely\Tests\TestCase as ParselyTestCase;
 
 /**
- * Sample test case.
+ * Catch-all class for testing.
+ * TODO: Break this into multiple targeted files
  *
  * @category   Class
- * @package    SampleTest
+ * @package    All_Test
  */
-class SampleTest extends ParselyTestCase {
+class All_Test extends ParselyTestCase {
 
 	/**
 	 * Internal variables
@@ -144,7 +145,7 @@ PARSELYJS;
 			array(
 				'post_type'  => 'post',
 				'post_title' => 'Home',
-			) 
+			)
 		);
 		$post    = get_post( $post_id );
 
@@ -273,7 +274,7 @@ PARSELYJS;
 			array(
 				'name'     => 'Gretzky',
 				'taxonomy' => 'hockey',
-			) 
+			)
 		);
 
 		// Create a tag and a category and a signle post and assign the category to the post.
@@ -318,7 +319,7 @@ PARSELYJS;
 			array(
 				'name'   => 'Child Category',
 				'parent' => $cat1,
-			) 
+			)
 		);
 		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2 ) ) );
 		$post    = get_post( $post_id );
@@ -354,14 +355,14 @@ PARSELYJS;
 			array(
 				'name'     => 'football',
 				'taxonomy' => 'sports',
-			) 
+			)
 		);
 		$custom_tax_tag_child = self::factory()->term->create(
 			array(
 				'name'     => 'premiere league',
 				'taxonomy' => 'sports',
 				'parent'   => $custom_tax_tag,
-			) 
+			)
 		);
 		$post_id              = self::factory()->post->create();
 		$post                 = get_post( $post_id );
@@ -398,14 +399,14 @@ PARSELYJS;
 			array(
 				'name'     => 'football',
 				'taxonomy' => 'sports',
-			) 
+			)
 		);
 		$custom_tax_tag_child = self::factory()->term->create(
 			array(
 				'name'     => 'premiere league',
 				'taxonomy' => 'sports',
 				'parent'   => $custom_tax_tag,
-			) 
+			)
 		);
 		$post_id              = self::factory()->post->create();
 		$post                 = get_post( $post_id );
