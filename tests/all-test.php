@@ -660,18 +660,18 @@ PARSELYJS;
 		// Test homepage
 		$this->go_to( '/' );
 		$res = self::$parsely->get_current_url();
-		self::assertSame( strpos( $res, $expected, 0 ), 0 );
+		self::assertStringStartsWith( $expected, $res );
 
 		// Test a specific post
 		$post_array = $this->create_test_post_array();
 		$post_id    = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post_id );
 		$res = self::$parsely->get_current_url( 'post', $post_id );
-		self::assertSame( strpos( $res, $expected, 0 ), 0 );
+		self::assertStringStartsWith( $expected, $res );
 
 		// Test a random URL
 		$this->go_to( '/random-url' );
 		$res = self::$parsely->get_current_url();
-		self::assertSame( strpos( $res, $expected, 0 ), 0 );
+		self::assertStringStartsWith( $expected, $res );
 	}
 }
