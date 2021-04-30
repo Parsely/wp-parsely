@@ -2,10 +2,12 @@
 <phpunit
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.5/phpunit.xsd"
-	backupGlobals="false"
 	bootstrap="./tests/bootstrap.php"
+	backupGlobals="false"
+	beStrictAboutCoversAnnotation="true"
 	beStrictAboutTestsThatDoNotTestAnything="false"
 	colors="true"
+	forceCoversAnnotation="true"
 	>
 	<php>
 		<server name="SERVER_PORT" value="80"/>
@@ -21,8 +23,9 @@
 
 	<filter>
 		<whitelist>
+			<directory suffix=".php">src</directory>
+			<directory suffix=".php">views</directory>
 			<file>wp-parsely.php</file>
-			<file>class-parsely-recommended-widget.php</file>
 		</whitelist>
 	</filter>
 </phpunit>
