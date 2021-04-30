@@ -620,6 +620,16 @@ PARSELYJS;
 				'https://example.com:1234',
 				'https://example.com:1234',
 			),
+			array(
+				true,
+				'http://example.com:1234/foo/bar',
+				'https://example.com:1234/foo/bar',
+			),
+			array(
+				true,
+				'https://example.com:1234/foo/bar',
+				'https://example.com:1234/foo/bar',
+			),
 			// Start cases with 'force_https_canonicals' = false
 			array(
 				false,
@@ -640,6 +650,16 @@ PARSELYJS;
 				false,
 				'https://example.com:1234',
 				'http://example.com:1234',
+			),
+			array(
+				false,
+				'http://example.com:1234/foo/bar',
+				'http://example.com:1234/foo/bar',
+			),
+			array(
+				false,
+				'https://example.com:1234/foo/bar',
+				'http://example.com:1234/foo/bar',
 			),
 		);
 	}
