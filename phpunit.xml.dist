@@ -24,8 +24,11 @@
 	<filter>
 		<whitelist>
 			<directory suffix=".php">src</directory>
-			<directory suffix=".php">views</directory>
 			<file>wp-parsely.php</file>
 		</whitelist>
 	</filter>
+
+	<logging>
+		<log type="coverage-clover" target="build/logs/clover.xml"/>
+	</logging>
 </phpunit>

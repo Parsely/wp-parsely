@@ -77,9 +77,9 @@ jobs:
 
       - name: Run integration tests (single site)
         if: ${{ matrix.php != 8.0 }}
-        run: composer integration
+        run: composer test
       - name: Run integration tests (single site with code coverage)
         if: ${{ matrix.php == 8.0 }}
-        run: ./vendor/bin/phpunit --testsuite WP_Tests --coverage-text
+        run: composer coverage
       - name: Run integration tests (multisite)
-        run: composer integration-ms
+        run: composer test-ms
