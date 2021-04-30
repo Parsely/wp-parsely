@@ -1,9 +1,18 @@
 <?php
 /**
- * This is the main class for Parsely
+ * Parsely class
  *
- * @category   Class
- * @package    Parsely
+ * @package Parsely
+ * @since 2.5.0
+ */
+
+/**
+ * Holds most of the logic for the plugin.
+ *
+ * @internal This needs splitting up in the future.
+ *
+ * @since 1.0.0
+ * @since 2.5.0 Moved from plugin root file to this file.
  */
 class Parsely {
 	/**
