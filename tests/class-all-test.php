@@ -8,6 +8,7 @@
 namespace Parsely\Tests;
 
 use Parsely\Tests\TestCase as ParselyTestCase;
+use Parsely\Tests\TestUtils as ParselyTestUtils;
 
 /**
  * Catch-all class for testing.
@@ -36,18 +37,8 @@ class All_Test extends ParselyTestCase {
 		$wp_scripts = new \WP_Scripts();
 		self::$parsely   = new \Parsely();
 
-		$option_defaults = array(
-			'apikey'                    => 'blog.parsely.com',
-			'content_id_prefix'         => '',
-			'use_top_level_cats'        => false,
-			'cats_as_tags'              => false,
-			'track_authenticated_users' => true,
-			'custom_taxonomy_section'   => 'category',
-			'lowercase_tags'            => true,
-			'track_post_types'          => array( 'post' ),
-			'track_page_types'          => array( 'page' ),
-		);
-		update_option( 'parsely', $option_defaults );
+		// Set the default options prior to each test
+		ParselyTestUtils::set_options();
 	}
 
 	public function test_class_version() {
@@ -117,9 +108,7 @@ class All_Test extends ParselyTestCase {
 	 * @group insert-js
 	 */
 	public function test_parsely_api_enabled_scripts() {
-		$options = get_option( 'parsely' );
-		$options['api_secret'] = 'hunter2';
-		update_option( 'parsely', $options );
+		ParselyTestUtils::set_options( array( 'api_secret' => 'hunter2' ) );
 
 		ob_start();
 		$post_array = $this->create_test_post_array();
@@ -717,9 +706,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @group settings
 	 */
 	public function test_user_logged_in() {
-		$options = get_option( 'parsely' );
-		$options['track_authenticated_users'] = false;
-		update_option( 'parsely', $options );
+		ParselyTestUtils::set_options( array( 'track_authenticated_users' => false ) );
 		$new_user = $this->create_test_user( 'bill_brasky' );
 		wp_set_current_user( $new_user );
 
@@ -783,12 +770,13 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		wp_set_current_user( $new_user );
 		switch_to_blog( $first_blog );
 
-		$options                              = get_option( 'parsely' );
-		$options['track_authenticated_users'] = false;
-		$options['apikey']                    = 'blog.parsely.com';
-		// Update both blog options.
-		update_option( 'parsely', $options );
-		update_blog_option( $second_blog, 'parsely', $options );
+		// These custom options will be used for both blog_ids.
+		$custom_options = array(
+			'track_authenticated_users' => false,
+			'apikey' => 'blog.parsely.com',
+		);
+		ParselyTestUtils::set_options( $custom_options );
+
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
@@ -837,6 +825,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 
 		switch_to_blog( $second_blog );
+		ParselyTestUtils::set_options( $custom_options );
+
 		self::assertEquals( get_current_blog_id(), $second_blog );
 		self::assertFalse( is_user_member_of_blog( $new_user, get_current_blog_id() ) );
 
