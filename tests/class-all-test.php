@@ -21,51 +21,9 @@ class All_Test extends ParselyTestCase {
 	/**
 	 * Internal variables
 	 *
-	 * @var string $post Name of the post to test.
-	 */
-	protected static $post;
-
-	/**
-	 * Internal variables
-	 *
-	 * @var string $news Unused?
-	 */
-	protected static $news;
-
-	/**
-	 * Internal variables
-	 *
-	 * @var string $local Unused?
-	 */
-	protected static $local;
-
-	/**
-	 * Internal variables
-	 *
-	 * @var string $example_county Unused?
-	 */
-	protected static $example_county;
-
-	/**
-	 * Internal variables
-	 *
 	 * @var string $parsely Holds the Parsely object.
 	 */
 	protected static $parsely;
-
-	/**
-	 * Internal variables
-	 *
-	 * @var string $custom_taxonomy Custom taxonomy for testing.
-	 */
-	protected static $custom_taxonomy;
-
-	/**
-	 * Internal variables
-	 *
-	 * @var string $taxonomy_factory Unused?
-	 */
-	protected static $taxonomy_factory;
 
 	/**
 	 * Internal variables
@@ -75,19 +33,7 @@ class All_Test extends ParselyTestCase {
 	protected static $parsely_html;
 
 	/**
-	 * The setUp before the entire class
-	 *
-	 * @category   Function
-	 * @package    SampleTest
-	 */
-	public static function setUpBeforeClass() {
-	}
-
-	/**
 	 * The setUp run before each test
-	 *
-	 * @category   Function
-	 * @package    SampleTest
 	 */
 	public function setUp() {
 		parent::setUp();
@@ -113,8 +59,13 @@ PARSELYJS;
 	/**
 	 * Test the parsely tag.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::insert_parsely_javascript
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::parsely_is_user_logged_in
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group insert-js
 	 */
 	public function test_parsely_tag() {
 		echo 'NOW IT BEGINS';
@@ -132,8 +83,21 @@ PARSELYJS;
 	/**
 	 * Check the context `@type` field for a Post and the Homepage.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_parsely_metadata_context_output() {
 		// Setup Parsley object.
@@ -169,8 +133,21 @@ PARSELYJS;
 	/**
 	 *  Check the category
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_parsely_categories() {
 		// Setup Parsley object.
@@ -192,8 +169,22 @@ PARSELYJS;
 	/**
 	 * Check that the tags are lowercase
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 * @group settings
 	 */
 	public function test_parsely_tags_lowercase() {
 		// Setup Parsley object.
@@ -224,8 +215,24 @@ PARSELYJS;
 	/**
 	 * Check the categories as tags.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_categories
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_custom_taxonomy_values
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 * @group settings
 	 */
 	public function test_parsely_categories_as_tags() {
 		// Setup Parsley object.
@@ -256,8 +263,24 @@ PARSELYJS;
 	/**
 	 * Test custom taxonomy terms, categories, and tags in the metadata.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_categories
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_custom_taxonomy_values
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 * @group settings
 	 */
 	public function test_custom_taxonomy_tags() {
 		// Setup Parsley object.
@@ -301,8 +324,23 @@ PARSELYJS;
 	/**
 	 * Are the top level categories what we expect?
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::get_top_level_term
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 * @group settings
 	 */
 	public function test_use_top_level_cats() {
 		// Setup Parsley object.
@@ -334,8 +372,23 @@ PARSELYJS;
 	/**
 	 * Check out the custom taxonomy as section.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::get_top_level_term
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 * @group settings
 	 */
 	public function test_custom_taxonomy_as_section() {
 		// Setup Parsley object.
@@ -378,8 +431,23 @@ PARSELYJS;
 	/**
 	 * Check out the top level taxonomy as a section.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::get_top_level_term
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 * @group settings
 	 */
 	public function test_top_level_taxonomy_as_section() {
 		// Setup Parsley object.
@@ -422,8 +490,22 @@ PARSELYJS;
 	/**
 	 * Check the canonicals.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 * @group settings
 	 */
 	public function test_http_canonicals() {
 		// Setup Parsley object.
@@ -460,8 +542,10 @@ PARSELYJS;
 	/**
 	 * Check the facebook instant articles integration.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::insert_parsely_tracking_fbia
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_options()
+	 * @group fbia
 	 */
 	public function test_fbia_integration() {
 		$options = get_option( 'parsely' );
@@ -474,8 +558,12 @@ PARSELYJS;
 	/**
 	 * Check the AMP integration.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::parsely_add_amp_actions
+	 * @covers \Parsely::parsely_add_amp_analytics
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_options()
+	 * @group amp
+	 * @group settings
 	 */
 	public function test_amp_integration() {
 		$options   = get_option( 'parsely' );
@@ -494,8 +582,22 @@ PARSELYJS;
 	/**
 	 * Check out page filtering.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 * @group filters
 	 */
 	public function test_parsely_page_filter() {
 		// Setup Parsley object.
@@ -530,8 +632,14 @@ PARSELYJS;
 	/**
 	 * Make sure users can log in.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::insert_parsely_javascript
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::parsely_is_user_logged_in
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group insert-js
+	 * @group settings
 	 */
 	public function test_user_logged_in() {
 		$options                              = get_option( 'parsely' );
@@ -548,8 +656,14 @@ PARSELYJS;
 	/**
 	 * Make sure users can log in to more than one site.
 	 *
-	 * @category   Function
-	 * @package    SampleTest
+	 * @covers \Parsely::insert_parsely_javascript
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::parsely_is_user_logged_in
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group insert-js
+	 * @group settings
 	 */
 	public function test_user_logged_in_multisite() {
 		if ( ! is_multisite() ) {
@@ -666,10 +780,14 @@ PARSELYJS;
 	}
 
 	/**
-	 * @category   Function
-	 * @package    SampleTest
+	 * Test the get_current_url() method.
+	 *
 	 * @dataProvider data_for_test_get_current_url
-	 * @covers Parsely::get_current_url
+	 * @covers \Parsely::get_current_url
+	 * @uses \Parsely::__construct()
+	 * @uses \Parsely::get_options()
+	 * @uses \Parsely::update_metadata_endpoint()
+	 * @group get-current-url
 	 */
 	public function test_get_current_url( $force_https, $url, $expected ) {
 		$options                           = get_option( \Parsely::OPTIONS_KEY );

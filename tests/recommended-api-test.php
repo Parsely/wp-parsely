@@ -54,6 +54,9 @@ final class Recommended_API_Test extends TestCase {
 	 * Test the basic generation of the API URL.
 	 *
 	 * @dataProvider data_recommended_api_url
+	 * @covers \Parsely_Recommended_Widget::get_api_url
+	 * @uses \Parsely_Recommended_Widget::__construct
+	 * @group widgets
 	 */
 	public function test_recommended_api_url( $api_key, $published_within, $sort, $boost, $return_limit, $url ) {
 		$recommended_widget = new Parsely_Recommended_Widget();
