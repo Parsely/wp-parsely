@@ -127,7 +127,7 @@ class Parsely {
 </style>
 ';
 
-		$admin_script_asset = require( 'build/admin-page.asset.php' );
+		$admin_script_asset = require PARSELY_PLUGIN_DIR . 'build/admin-page.asset.php';
 		wp_enqueue_script(
 			'wp-parsely-admin',
 			PARSELY_PLUGIN_URL . 'build/admin-page.js',
@@ -164,7 +164,7 @@ class Parsely {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
 
-		include 'parsely-settings.php';
+		include PARSELY_PLUGIN_DIR . 'parsely-settings.php';
 	}
 
 	/**
@@ -771,19 +771,19 @@ class Parsely {
 
 		// Insert JSON-LD or repeated metas.
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
-			include __DIR__ . '/views/json-ld.php';
+			include PARSELY_PLUGIN_DIR . '/views/json-ld.php';
 		} else {
 			$parsely_post_type = 'NewsArticle' === $parsely_page['@type'] ? 'post' : 'sectionpage';
 			if ( is_array( $parsely_page['keywords'] ) ) {
 				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
 			}
 
-			include __DIR__ . '/views/repeated-metas.php';
+			include PARSELY_PLUGIN_DIR . '/views/repeated-metas.php';
 		}
 
 		// Add any custom metadata.
 		if ( isset( $parsely_page['custom_metadata'] ) ) {
-			include __DIR__ . '/views/custom-metadata.php';
+			include PARSELY_PLUGIN_DIR . '/views/custom-metadata.php';
 		}
 
 		echo '<!-- END Parse.ly -->' . "\n\n";
@@ -1124,7 +1124,7 @@ class Parsely {
 			return;
 		}
 
-		$api_script_asset = require( 'build/init-api.asset.php' );
+		$api_script_asset = require PARSELY_PLUGIN_DIR . 'build/init-api.asset.php' ;
 		wp_register_script(
 			'wp-parsely-api',
 			PARSELY_PLUGIN_URL . 'build/init-api.js',
