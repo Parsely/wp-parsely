@@ -1,32 +1,18 @@
 <?php
 /**
- * Parse.ly
+ * Parsely class
  *
- * @package      Parsely\wp-parsely
- * @author       Parse.ly
- * @copyright    2012 Parse.ly
- * @license      GPL-2.0-or-later
- *
- * @wordpress-plugin
- * Plugin Name:       Parse.ly
- * Plugin URI:        https://www.parse.ly/help/integration/wordpress
- * Description:       This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
- * Version:           2.4.1
- * Author:            Parse.ly
- * Author URI:        https://www.parse.ly
- * Text Domain:       wp-parsely
- * License:           GPL-2.0-or-later
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * GitHub Plugin URI: https://github.com/Parsely/wp-parsely
- * Requires PHP:      5.6
- * Requires WP:       4.0.0
+ * @package Parsely
+ * @since 2.5.0
  */
 
 /**
- * This is the main class for Parsely
+ * Holds most of the logic for the plugin.
  *
- * @category   Class
- * @package    Parsely
+ * @internal This needs splitting up in the future.
+ *
+ * @since 1.0.0
+ * @since 2.5.0 Moved from plugin root file to this file.
  */
 class Parsely {
 	/**
@@ -433,7 +419,7 @@ class Parsely {
 				'title'            => __( 'Track Logged-in Users', 'wp-parsely' ), // Passed for legend element.
 				'option_key'       => 'track_authenticated_users',
 				'help_text'        => $h,
-				'requires_recrawl' => true,
+				'requires_recrawl' => false,
 			)
 		);
 
@@ -775,10 +761,65 @@ class Parsely {
 		// Assign default values for LD+JSON
 		// TODO: Maping of an install's post types to Parse.ly post types (namely page/post).
 		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $post );
-		include 'parsely-parsely-page.php';
+
+		// Something went wrong - abort.
+		if ( empty( $parsely_page ) || ! isset( $parsely_page['headline'] ) ) {
+			return;
+		}
+
+		echo "\n" . '<!-- BEGIN Parse.ly ' . esc_html( Parsely::VERSION ) . ' -->' . "\n";
+
+		// Insert JSON-LD or repeated metas.
+		if ( 'json_ld' === $parsely_options['meta_type'] ) {
+			include __DIR__ . '/views/json-ld.php';
+		} else {
+			$parsely_post_type = 'NewsArticle' === $parsely_page['@type'] ? 'post' : 'sectionpage';
+			if ( is_array( $parsely_page['keywords'] ) ) {
+				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
+			}
+
+			include __DIR__ . '/views/repeated-metas.php';
+		}
+
+		// Add any custom metadata.
+		if ( isset( $parsely_page['custom_metadata'] ) ) {
+			include __DIR__ . '/views/custom-metadata.php';
+		}
+
+		echo '<!-- END Parse.ly -->' . "\n\n";
+
 		return $parsely_page;
 	}
 
+	/**
+	 * Compare the post_status key against an allowed list (by default, only 'publish'ed content includes tracking data).
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param int|WP_Post $post Which post object or ID to check.
+	 * @return bool Should the post status be tracked for the provided post's post_type. By default, only 'publish' is allowed.
+	 */
+	public static function post_has_trackable_status( $post ) {
+		static $cache = array();
+		$post_id = is_int( $post ) ? $post : $post->ID;
+		if ( isset( $cache[ $post_id ] ) ) {
+			return $cache[ $post_id ];
+		}
+
+		/**
+		 * Filters the statuses that are permitted to be tracked.
+		 *
+		 * By default, the only status tracked is 'publish'. Use this filter if you have other published content that has a different (custom) status.
+		 *
+		 * @since 2.5.0
+		 *
+		 * @param string[]    $trackable_statuses The list of post statuses that are allowed to be tracked.
+		 * @param int|WP_Post $post               Which post object or ID is being checked.
+		 */
+		$statuses = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
+		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true );
+		return $cache[ $post_id ];
+	}
 
 	/**
 	 * Creates parsely metadata object from post metadata.
@@ -836,7 +877,7 @@ class Parsely {
 			/* translators: %s: Tag name */
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( sprintf( __( 'Tagged - %s', 'wp-parsely' ), $tag ) );
 			$parsely_page['url']      = $current_url;
-		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && 'publish' === $post->post_status ) {
+		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && self::post_has_trackable_status( $post ) ) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
 			$post_id  = $parsely_options['content_id_prefix'] . get_the_ID();
@@ -915,7 +956,7 @@ class Parsely {
 				'logo'     => $parsely_options['logo'],
 			);
 			$parsely_page['keywords']  = $tags;
-		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && 'publish' === $post->post_status ) {
+		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && self::post_has_trackable_status( $post ) ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title( $post ) );
 			$parsely_page['url']      = $this->get_current_url( 'post' );
 		}
@@ -1060,7 +1101,7 @@ class Parsely {
 
 		global $post;
 		$display = true;
-		if ( in_array( get_post_type(), $parsely_options['track_post_types'], true ) && 'publish' !== $post->post_status ) {
+		if ( in_array( get_post_type(), $parsely_options['track_post_types'], true ) && ! self::post_has_trackable_status( $post ) ) {
 			$display = false;
 		}
 		if ( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) {
@@ -1156,7 +1197,7 @@ class Parsely {
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
 		}
-		if ( isset( $args['requires_recrawl'] ) ) {
+		if ( isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ) {
 			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
 		}
 
@@ -1207,7 +1248,7 @@ class Parsely {
 		$name    = self::OPTIONS_KEY . "[$id]";
 
 		$has_help_text = isset( $args['help_text'] ) ? ' data-has-help-text="true"' : '';
-		$requires_recrawl = isset( $args['requires_recrawl'] ) && $args['requires_recrawl'] ? ' data-requires-recrawl="true"' : '';
+		$requires_recrawl = isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ? ' data-requires-recrawl="true"' : '';
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static text attribute key-value. ?>
 		<fieldset class="parsely-form-controls" <?php echo $has_help_text . $requires_recrawl; ?>>
 			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
@@ -1244,7 +1285,7 @@ class Parsely {
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
 		}
-		if ( isset( $args['requires_recrawl'] ) ) {
+		if ( isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ) {
 			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
 		}
 
@@ -1277,7 +1318,7 @@ class Parsely {
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
 		}
-		if ( isset( $args['requires_recrawl'] ) ) {
+		if ( isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ) {
 			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
 		}
 
@@ -1286,9 +1327,6 @@ class Parsely {
 			if ( in_array( $key, $accepted_args, true ) ) {
 				echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
 			}
-		}
-		if ( isset( $args['requires_recrawl'] ) ) {
-			echo ' data-requires-recrawl="true"';
 		}
 		echo ' />';
 
@@ -1650,12 +1688,9 @@ class Parsely {
 	 * @param int    $post_id id of the post you want to get the url for. Optional.
 	 * @return string|void
 	 */
-	private function get_current_url( $post = 'nonpost', $post_id = 0 ) {
-		$options = $this->get_options();
-		$scheme  = ( $options['force_https_canonicals'] ? 'https://' : 'http://' );
-
+	public function get_current_url( $post = 'nonpost', $post_id = 0 ) {
 		if ( 'post' === $post ) {
-			$permalink        = get_permalink( $post_id );
+			$permalink = get_permalink( $post_id );
 
 			/**
 			 * Filters the list of author names for a post.
@@ -1668,29 +1703,19 @@ class Parsely {
 			 * @param int    $post_id   ID of the post you want to get the URL for. May be 0, so $permalink will be
 			 *                          for the global $post.
 			 */
-			$permalink        = apply_filters( 'wp_parsely_permalink', $permalink, $post, $post_id );
-			$parsed_canonical = wp_parse_url( $permalink );
-			// handle issue if wp_parse_url doesn't return good host & path data, fallback to page url as a last resort.
-			if ( isset( $parsed_canonical['host'], $parsed_canonical['path'] ) ) {
-				$canonical = $scheme . $parsed_canonical['host'] . $parsed_canonical['path'];
-			} elseif ( isset( $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'] ) ) { // Input var okay.
-				$canonical = $scheme . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) . sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ); // Input var okay.
-			}
+			$url = apply_filters( 'wp_parsely_permalink', $permalink, $post, $post_id );
+		} else {
+			$request_uri = isset( $_SERVER['REQUEST_URI'] )
+					? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) )
+					: '';
 
-			return $canonical;
+			$url = home_url( $request_uri );
 		}
-		$page_url = site_url( null, $scheme );
 
-		if ( isset( $_SERVER['SERVER_PORT'] ) ) { // Input var okay.
-			$port_number = intval( $_SERVER['SERVER_PORT'] ); // Input var okay.
-		}
-		if ( 80 !== $port_number && 443 !== $port_number ) {
-			$page_url .= ':' . $port_number;
-		}
-		if ( isset( $_SERVER['REQUEST_URI'] ) ) { // Input var okay.
-			$page_url .= sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ); // Input var okay.
-		}
-		return $page_url;
+		$options = $this->get_options();
+		return $options['force_https_canonicals']
+				? str_replace( 'http://', 'https://', $url )
+				: str_replace( 'https://', 'http://', $url );
 	}
 
 	/**

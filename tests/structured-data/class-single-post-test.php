@@ -15,6 +15,22 @@ namespace Parsely\Tests;
 final class Single_Post_Test extends TestCase {
 	/**
 	 * Create a single post, and test the structured data.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_single_post() {
 		// Setup Parsley object.

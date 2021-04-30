@@ -1,14 +1,14 @@
 # Parse.ly
 
-Stable tag: 2.4.1
+Stable tag: 2.4.1  
 Requires at least: 4.0  
 Tested up to: 5.6  
 Requires PHP: 5.6  
 License: GPLv2 or later  
-Tags: analytics, post, page  
+Tags: analytics, parse.ly, parsely, parsley  
 Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike
 
-The Parse.ly plugin real-time and historical analytics to your content through a platform designed and built for digital publishing.
+The Parse.ly plugin facilitates real-time and historical analytics to your content through a platform designed and built for digital publishing.
 
 ## Description
 
@@ -20,36 +20,42 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 
 ### Features
 
-- Get started with Parse.ly right away: the plugin automatically inserts the required parsely-page tag and JavaScript on all your published pages and posts.
-- Allows you to specify the JavaScript implementation to use: standard, DOM free or asynchronous.
-- If you've purchased access to the Parse.ly API, add a widget to your site with story recommendations personalized to individual users.
+- Get started with Parse.ly right away: the plugin automatically inserts the required metadata and JavaScript on all your published pages and posts.
+- Choose what format the metadata takes, and whether logged-in users should be included in the analytics.
+- If you've purchased access to the Parse.ly API, add a widget to your site with article recommendations personalized to individual users.
 
-Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com](mailto:support@parsely.com) we always want to hear from you.
+Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
 
 ## Installation
 
-1. This plug-in requires an active version of Parse.ly. We offer a free trial, [sign up here](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely)
-1. If you haven't already done so, [sign up for a trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely)
-1. Download the plugin
-1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress (look for "Parse.ly")
-1. Head to the settings page for the plugin (should be /wp-admin/options-general.php?page=parsely)
-1. Set your Site ID, which is your own site domain name (e.g., `mysite.com`)
-1. Save your changes and enjoy your data!
+The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results.
+[Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
-**NOTE:** This plugin does not currently support dynamic tracking (the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above [the standard Parse.ly include](http://www.parsely.com/help/integration/basic/) that the plugin injects into your page source. Please consult [the Parse.ly documentation on dynamic tracking](https://www.parsely.com/help/integration/dynamic/) for instructions on implementing dynamic tracking, or contact Parse.ly support for additional assistance.
+### Install the plugin from within WordPress
+1. Visit the Plugins page from your WordPress dashboard and click "Add New" at the top of the page.
+1. Search for "parse.ly" using the search bar on the right side.
+1. Click "Install Now" to install the plugin.
+1. After it's installed, click "Activate" to activate the plugin on your site. 
 
-Feedback, suggestions, questions or concerns? E-mail us at [support@parsely.com](mailto:support@parsely.com) -- we always want to hear from you.
+### Install the plugin manually
+
+1. Download the plugin from WordPress.org or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
+1. Unzip the downloaded archive.
+1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
+1. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
+1. Click "Activate" to activate the plugin on your site.
 
 ## Frequently Asked Questions
 
 ### Where do I find my Site ID?
 
-Your Site ID is your own site domain name (e.g., `mysite.com`).
+Your Site ID is likely your own site domain name (e.g., `mysite.com`). You can find this in your Parse.ly account.
 
-### Why can't I see Dash code on my post when I preview?
+### Why can't I see Parse.ly code on my post when I preview?
 
-Dash code will only be placed on pages and posts which have been published in WordPress to ensure we don't track traffic generated while you're still writing a post/page.
+The code will only be placed on posts and pages which have been published in WordPress to ensure we don't track traffic generated while you're still writing a post or page.
+
+You may also be not tracking logged-in users, via one of the settings.
 
 ### How can I edit the values passed to the JSON-LD metadata?
 
@@ -58,18 +64,27 @@ You can use the `after_set_parsely_page` filter, which sends three arguments: th
     add_filter( 'after_set_parsely_page', 'filter_parsely_page', 10, 3 );
     function filter_parsely_page( $parselyPage, $post, $parselyOptions ) {
         $parselyPage['articleSection'] = '...'; // Whatever values you want Parse.ly's Section to be.
-				
+    
         return $parselyPage;
     }
 
-This filter can go anywhere in your codebase, provided it always gets loaded. We recommend putting it in your header file, so that it gets loaded with wp_head.
+This filter can go anywhere in your codebase, provided it always gets loaded.
 
-### Is the plugin Google AMP/Facebook Instant ready?
+### Is the plugin compatible with AMP and Facebook Instant Articles?
 
-It is! We are hooked into Automattic's official plugins for AMP and Facebook Instant. AMP support is enabled automatically if the Automattic AMP plugin is installed, and for Facebook Instant you just have to enable "Parsely Analytics" in the "Advanced Settings" menu of the Facebook Instant Articles plugin.
+It is! The plugin hooks into Automattic's official plugins for [AMP](https://wordpress.org/plugins/amp/) and [Facebook Instant Articles](https://wordpress.org/plugins/fb-instant-articles/).
 
-Official AMP plugin: https://wordpress.org/plugins/amp/  
-Official FB Instant plugin: https://wordpress.org/plugins/fb-instant-articles/
+AMP support is enabled automatically if the Automattic AMP plugin is installed
+
+For Facebook Instant Articles support, enable "Parsely Analytics" in the "Advanced Settings" menu of the Facebook Instant Articles plugin.
+
+### Does the plugin support dynamic tracking?
+
+This plugin does not currently support dynamic tracking (the tracking of multiple pageviews on a single page).
+
+Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh.
+
+Tracking these events requires manually implementing additional JavaScript above [the standard Parse.ly include](http://www.parsely.com/help/integration/basic/) that the plugin injects into your page source. Please consult [the Parse.ly documentation on dynamic tracking](https://www.parsely.com/help/integration/dynamic/) for instructions on implementing dynamic tracking, or contact Parse.ly support for additional assistance.
 
 ### How do I create a local dev environment to make changes to the `wp-parsely` code?
 
@@ -77,17 +92,40 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 
 ## Screenshots
 
-1. The main settings screen of the wp-parsely plugin  
+1. The main admin screen of the Parse.ly plugin, showing some of the settings.  
 ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-1.png)
 
-2. The standard JavaScript include being inserted before the closing `body` tag.
-![2. The standard JavaScript include being inserted before body tag](.wordpress-org/screenshot-2.png)
+2. The settings for the Parse.ly Recommended Widget.  Engage your visitors with predictive and personalized recommendations from Parse.ly.  
+![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-2.png)
+   
+3. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.  
+![The Parsely Dashboard Overview](.wordpress-org/screenshot-3.png)
+   
+## Sample Parse.ly metadata
 
-3. A sample `JSON-LD` meta tag for a home page or section page
-![3. A sample `JSON-LD` meta tag for a home page or section page](.wordpress-org/screenshot-3.png)
+The standard Parse.ly JavaScript tracker inserted before the closing `body` tag:
 
-4. A sample `JSON-LD` meta tag for an article or post
-![4. A sample `JSON-LD` meta tag for an article or post](.wordpress-org/screenshot-4.png)
+    <!-- START Parse.ly Include: Standard -->
+
+       <script data-cfasync="false" id="parsely-cfg" data-parsely-site="example.com" src="https://cdn.parsely.com/keys/example.com/p.js"></script>
+
+    <!-- END Parse.ly Include: Standard -->
+
+A sample `JSON-LD` structured data for a home page or section page:
+
+    <!-- BEGIN Parse.ly 2.5.0 -->
+    <script type="application/ld+json">
+    {"@context":"http:\/\/schema.org","@type":"WebPage","headline":"WordPress VIP","url":"http:\/\/wpvip.com\/"}
+    </script>
+    <!-- END Parse.ly -->
+
+A sample `JSON-LD` meta tag and structured data for an article or post:
+
+    <!-- BEGIN Parse.ly 2.5.0 -->
+    <script type="application/ld+json">
+        {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
+    </script>
+    <!-- END Parse.ly -->
 
 ## Changelog
 
