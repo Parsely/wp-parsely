@@ -1654,7 +1654,7 @@ class Parsely {
 					? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) )
 					: '';
 
-			$url = site_url( $request_uri ); // Input var okay.
+			$url = home_url( $request_uri ); // Input var okay.
 		}
 
 		$options = $this->get_options();

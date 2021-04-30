@@ -655,7 +655,7 @@ PARSELYJS;
 		$options['force_https_canonicals'] = $force_https;
 		update_option( \Parsely::OPTIONS_KEY, $options );
 
-		update_option( 'siteurl', $url );
+		update_option( 'home', $url );
 
 		// Test homepage
 		$this->go_to( '/' );
@@ -664,9 +664,9 @@ PARSELYJS;
 
 		// Test a specific post
 		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		$res = self::$parsely->get_current_url();
+		$post_id    = $this->factory->post->create( $post_array );
+		$this->go_to( '/?p=' . $post_id );
+		$res = self::$parsely->get_current_url( 'post', $post_id );
 		self::assertSame( strpos( $res, $expected, 0 ), 0 );
 
 		// Test a random URL
