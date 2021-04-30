@@ -1632,8 +1632,6 @@ class Parsely {
 	 * @return string|void
 	 */
 	public function get_current_url( $post = 'nonpost', $post_id = 0 ) {
-		$url = '';
-
 		if ( 'post' === $post ) {
 			$permalink = get_permalink( $post_id );
 
