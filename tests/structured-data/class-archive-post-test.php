@@ -24,6 +24,22 @@ final class Archive_Post_Test extends TestCase {
 
 	/**
 	 * Create 2 posts, set posts per page to 1, navigate to page 2 and test the structured data.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_home_page_for_posts_paged() {
 		// Setup Parsley object.
@@ -60,6 +76,22 @@ final class Archive_Post_Test extends TestCase {
 
 	/**
 	 * Create a single page, set as the posts page (blog archive) but not the home page, go to Page 2, and test the structured data.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_blog_page_for_posts_paged() {
 		// Setup Parsley object.
@@ -99,6 +131,25 @@ final class Archive_Post_Test extends TestCase {
 		self::assertEquals( get_permalink( $page_id ) . 'page/2', $structured_data['url'] );
 	}
 
+	/**
+	 * Check metadata for author archive.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 */
 	public function test_author_archive() {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151
@@ -131,6 +182,25 @@ final class Archive_Post_Test extends TestCase {
 		self::assertEquals( $author_posts_url, $structured_data['url'] );
 	}
 
+	/**
+	 * Check metadata for term archive.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 */
 	public function test_term_archive() {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151
