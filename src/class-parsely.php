@@ -164,7 +164,7 @@ class Parsely {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
 
-		include PARSELY_PLUGIN_DIR . 'parsely-settings.php';
+		include PARSELY_PLUGIN_DIR . 'src/parsely-settings.php';
 	}
 
 	/**
