@@ -92,6 +92,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
 		wp_enqueue_style( 'wp-parsely-style' );
+		wp_enqueue_script( 'jquery' );
 
 		$allowed_tags = wp_kses_allowed_html( 'post' );
 		$title_html   = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
@@ -256,6 +257,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			$settings_page_url = add_query_arg( 'page', 'parsely', get_admin_url() . 'options-general.php' );
 
 			$message = sprintf(
+				/* translators: %s: Plugin settings page URL */
 				__( 'The <i>Parse.ly Site ID</i> and <i>Parse.ly API Secret</i> fields need to be populated on the <a href="%s">Parse.ly settings page</a> for this widget to work.', 'wp-parsely' ),
 				esc_url( $settings_page_url )
 			);
