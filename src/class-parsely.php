@@ -1613,7 +1613,7 @@ class Parsely {
 	 * Get the URL of the current PHP script.
 	 * A fall-back implementation to determine permalink
 	 *
-	 * @param string $parsely_type Parsely post type you're interested in, either "post" or "nonpost"
+	 * @param string $parsely_type Optional. Parse.ly post type you're interested in, either 'post' or 'nonpost'. Default is 'nonpost'.
 	 * @param int    $post_id      Optional. ID of the post you want to get the URL for. Default is 0, which means the global `$post` is used.
 	 * @return string|void
 	 */
