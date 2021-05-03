@@ -6,9 +6,13 @@
   "directories": {
     "test": "tests"
   },
+  "engines": {
+    "node": "^14",
+    "npm": "^7"
+  },
   "scripts": {
-    "build": "wp-scripts build",
-    "start": "wp-scripts start",
+    "build": "wp-scripts build src/js/lib/init-api src/js/lib/admin-page",
+    "start": "wp-scripts start src/js/lib/init-api src/js/lib/admin-page",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,5 +29,9 @@
     "@wordpress/eslint-plugin": "^9.0.1",
     "@wordpress/scripts": "^15.0.1",
     "prettier": "^2.2.1"
+  },
+  "dependencies": {
+    "@wordpress/dom-ready": "^2.13.2",
+    "@wordpress/i18n": "^3.19.2"
   }
 }
