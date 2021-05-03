@@ -70,7 +70,7 @@ class Parsely {
 		}
 
 		// admin_menu and a settings link.
-		add_action( 'admin_head', array( $this, 'add_admin_header' ) );
+		add_action( 'admin_head-settings_page_parsely', array( $this, 'add_admin_header' ) );
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
 		// display warning when plugin hasn't been configured.
@@ -90,10 +90,7 @@ class Parsely {
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
-		if ( ! defined( 'WP_PARSELY_TESTING' ) ) {
-			add_action( 'wp_enqueue_scripts', [ $this, 'wp_parsely_style_init' ] );
-			add_action( 'wp_enqueue_scripts', [ $this, 'ensure_jquery_exists' ] );
-		}
+		add_action( 'wp_enqueue_scripts', [ $this, 'wp_parsely_style_init' ] );
 	}
 
 	/**
@@ -117,20 +114,27 @@ class Parsely {
 	}
 
 	/**
-	 * Make sure that jquery exists
-	 */
-	public function ensure_jquery_exists() {
-		wp_enqueue_script( 'jquery' );
-	}
-
-	/**
 	 * Include the parsely admin header
 	 *
 	 * @category   Function
 	 * @package    Parsely
 	 */
 	public function add_admin_header() {
-		include 'parsely-admin-header.php';
+		echo '
+<style>
+#wp-parsely_version { color: #777; font-size: 12px; margin-left: 1em; }
+.help-text { width: 75%; }
+</style>
+';
+
+		$admin_script_asset = require PARSELY_PLUGIN_DIR . 'build/admin-page.asset.php';
+		wp_enqueue_script(
+			'wp-parsely-admin',
+			PARSELY_PLUGIN_URL . 'build/admin-page.js',
+			$admin_script_asset[ 'dependencies' ],
+			self::get_asset_cache_buster(),
+			true
+		);
 	}
 
 	/**
@@ -160,7 +164,7 @@ class Parsely {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
 
-		include 'parsely-settings.php';
+		include PARSELY_PLUGIN_DIR . 'src/parsely-settings.php';
 	}
 
 	/**
@@ -767,19 +771,19 @@ class Parsely {
 
 		// Insert JSON-LD or repeated metas.
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
-			include __DIR__ . '/views/json-ld.php';
+			include PARSELY_PLUGIN_DIR . '/views/json-ld.php';
 		} else {
 			$parsely_post_type = 'NewsArticle' === $parsely_page['@type'] ? 'post' : 'sectionpage';
 			if ( is_array( $parsely_page['keywords'] ) ) {
 				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
 			}
 
-			include __DIR__ . '/views/repeated-metas.php';
+			include PARSELY_PLUGIN_DIR . '/views/repeated-metas.php';
 		}
 
 		// Add any custom metadata.
 		if ( isset( $parsely_page['custom_metadata'] ) ) {
-			include __DIR__ . '/views/custom-metadata.php';
+			include PARSELY_PLUGIN_DIR . '/views/custom-metadata.php';
 		}
 
 		echo '<!-- END Parse.ly -->' . "\n\n";
@@ -1069,6 +1073,24 @@ class Parsely {
 		}
 	}
 
+	public static function get_asset_cache_buster() {
+		static $cache_buster;
+		if ( isset( $cache_buster ) ) {
+			return $cache_buster;
+		}
+
+		$cache_buster = defined( 'WP_DEBUG' ) && WP_DEBUG && empty( 'WP_TESTS_DOMAIN' ) ? wp_rand() : PARSELY_VERSION;
+
+		/**
+		 * Filters the cache buster value for linked scripts and styles.
+		 *
+		 * @since 2.5.0
+		 *
+		 * @param string $cache_buster Plugin version, unless WP_DEBUG is defined and truthy, and tests are not running.
+		 */
+		return apply_filters( 'wp_parsely_cache_buster', $cache_buster );
+	}
+
 	/**
 	 * Inserts the JavaScript code required to send off beacon requests
 	 */
@@ -1094,15 +1116,66 @@ class Parsely {
 		/**
 		 * Filters whether to include the Parsely JavaScript file.
 		 *
-		 * If true, the file is included.
+		 * If true, the JavaScript files are sourced.
 		 *
 		 * @since 2.2.0
 		 *
 		 * @param bool $display True if the JavaScript file should be included. False if not.
 		 */
-		if ( apply_filters( 'parsely_filter_insert_javascript', $display ) ) {
-			include 'parsely-javascript.php';
+		if ( ! apply_filters( 'parsely_filter_insert_javascript', $display ) ) {
+			return;
 		}
+
+		$api_script_asset = require PARSELY_PLUGIN_DIR . 'build/init-api.asset.php' ;
+		wp_register_script(
+			'wp-parsely-api',
+			PARSELY_PLUGIN_URL . 'build/init-api.js',
+			$api_script_asset[ 'dependencies' ],
+			self::get_asset_cache_buster(),
+			true
+		);
+
+		add_filter( 'script_loader_tag', [ $this, 'script_loader_tag' ], 10, 3 );
+
+		$dependencies = array();
+
+		if ( ! empty( $parsely_options['api_secret'] ) ) {
+			$dependencies[] = 'wp-parsely-api';
+			wp_localize_script(
+				'wp-parsely-api',
+				'wpParsely', // This globally-scoped object will hold our initialization variables
+				array(
+					'apikey' => $parsely_options['apikey'],
+				)
+			);
+		}
+
+		wp_enqueue_script(
+			'wp-parsely-tracker',
+			'https://cdn.parsely.com/keys/' . $parsely_options['apikey'] . '/p.js',
+			$dependencies,
+			self::get_asset_cache_buster(),
+			true
+		);
+	}
+
+	public function script_loader_tag( $tag, $handle, $src ) {
+		$parsely_options = $this->get_options();
+		if ( in_array( $handle, [ 'wp-parsely', 'wp-parsely-tracker' ] ) ) {
+			// Have ClouldFlare Rocket Loader ignore these scripts:
+			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-
+			$tag = preg_replace( '/^<script src=/', '<script data-cfasync="false" src=', $tag );
+		}
+
+		if ( $handle === 'wp-parsely-tracker' ) {
+			$tag = preg_replace( '/ id=(\"|\')wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
+			$tag = preg_replace(
+				'/ src=/',
+				' data-parsely-site="' . esc_attr( $parsely_options['apikey'] ) . '" src=',
+				$tag
+			);
+		}
+		return $tag;
 	}
 
 	/**

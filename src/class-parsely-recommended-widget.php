@@ -92,6 +92,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
 		wp_enqueue_style( 'wp-parsely-style' );
+		wp_enqueue_script( 'jquery' );
 
 		$allowed_tags = wp_kses_allowed_html( 'post' );
 		$title_html   = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
