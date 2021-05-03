@@ -8,6 +8,7 @@
 namespace Parsely\Tests;
 
 use Parsely\Tests\TestCase as ParselyTestCase;
+use PHPUnit\Framework\Error\Warning as PHPUnit_Warning;
 
 /**
  * Catch-all class for testing.
@@ -48,6 +49,7 @@ class All_Test extends ParselyTestCase {
 			'lowercase_tags'            => true,
 			'track_post_types'          => array( 'post' ),
 			'track_page_types'          => array( 'page' ),
+			'logo'                      => '',
 		);
 		update_option( 'parsely', $option_defaults );
 		self::$parsely_html = <<<PARSELYJS
@@ -812,5 +814,39 @@ PARSELYJS;
 		$this->go_to( '/random-url' );
 		$res = self::$parsely->get_current_url();
 		self::assertStringStartsWith( $expected, $res );
+	}
+
+	/**
+	 * Test the wp_parsely_post_type filtter
+	 */
+	public function test_filter_wp_parsely_post_type() {
+		$options = get_option( \Parsely::OPTIONS_KEY );
+
+		$post_array = $this->create_test_post_array();
+		$post_id    = $this->factory->post->create( $post_array );
+		$post_obj   = get_post( $post_id );
+		$this->go_to( '/?p=' . $post_id );
+
+		// Try to change the post type to an allowed value - BlogPosting
+		add_filter('wp_parsely_post_type', function() {
+			return 'BlogPosting';
+		});
+
+		$metadata = self::$parsely->construct_parsely_metadata( $options, $post_obj );
+		self::assertSame( 'BlogPosting', $metadata['@type'] );
+
+		// Try to change the post type to a non-allowed value - Not_Allowed
+		add_filter('wp_parsely_post_type', function() {
+			return 'Not_Allowed_Type';
+		});
+
+		/**
+		 * Ideally we use two methods expectWarning and expectWarningMessageMatches to test this error
+		 * But they're not available until PHPUnit 8.4 while here we're still running PHPUnit 7.x
+		 * @see 7.5 https://phpunit.readthedocs.io/en/7.5/writing-tests-for-phpunit.html#testing-php-errors
+		 * @see 8.4 https://phpunit.readthedocs.io/en/8.4/writing-tests-for-phpunit.html#testing-php-errors-warnings-and-notices
+		 */
+		self::expectException( PHPUnit_Warning::class );
+		self::$parsely->construct_parsely_metadata( $options, $post_obj );
 	}
 }
