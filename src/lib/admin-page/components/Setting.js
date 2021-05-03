@@ -1,16 +1,27 @@
 import Input from './Input';
 import Select from './Select';
 
-const Setting = ( setting ) => {
+const Setting = ( { setting, onChange } ) => {
+
 	let input;
 	if ( typeof ( setting[ Object.keys( setting )[ 0 ] ] ) === 'string' ) {
-		input = <Input type="text" value={setting[ Object.keys( setting )[ 0 ] ]} checked="" />;
+		input = <Input type="text"
+					   name={Object.keys( setting )[ 0 ]}
+					   value={setting[ Object.keys( setting )[ 0 ] ]}
+					   onChange={onChange}
+				/>;
 	} else if ( typeof ( setting[ Object.keys( setting )[ 0 ] ] ) === 'boolean' ) {
-		input = <Input type="checkbox" checked={setting[ Object.keys( setting )[ 0 ] ]} />;
+		input = <Input type="checkbox"
+					   name={Object.keys( setting )[ 0 ] }
+					   checked={setting[ Object.keys( setting )[ 0 ] ]}
+					   onChange={onChange}
+				/>;
 	} else if ( typeof ( setting[ Object.keys( setting )[ 0 ] ] ) === 'object' ) {
-		input = <Select values={ setting[ Object.keys( setting )[ 0 ] ] } />;
+		input = <Select
+					values={ setting[ Object.keys( setting )[ 0 ] ] }
+				/>;
 	}
 
-	return <li>{ Object.keys( setting )[ 0 ] }: { input }</li>;
+	return <div><label>{ Object.keys( setting )[ 0 ] }</label> { input }</div>;
 };
 export default Setting;

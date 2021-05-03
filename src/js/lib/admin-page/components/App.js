@@ -10,12 +10,20 @@ const App = () => {
 		fetchSettings( setSettings );
 	}
 
+	const handleInputChange = e => {
+		const oldSetting = settings[e.target.name];
+		console.log(oldSetting)
+		const newValue = e.target.type === "checkbox" ? !oldSetting : e.target.value;
+		setSettings({...settings, [e.target.name]: newValue})
+	}
+
 	return (
-		<ul>
+		<form>
 			{
-				settings ? settings.map(setting => <Setting { ...setting } /> ) : <h1>Salut Monde!</h1>
+				settings ? Object.keys(settings).map(setting =>
+					<Setting setting={{[setting]: settings[setting]}} onChange={handleInputChange} /> ) : <h1>Salut Monde!</h1>
 			}
-		</ul>
+		</form>
 	)
 };
 
