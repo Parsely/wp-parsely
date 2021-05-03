@@ -51,6 +51,39 @@ class Parsely {
 	);
 
 	/**
+	 * Declare post types that Parsely will process as posts
+	 *
+	 * @see https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages
+	 * @since 2.5.0
+	 * @var string[]
+	 */
+	private $allowed_jsonld_post_types = array(
+		'NewsArticle',
+		'Article',
+		'TechArticle',
+		'BlogPosting',
+		'LiveBlogPosting',
+		'Report',
+		'Review',
+		'CreativeWork',
+	);
+
+	/**
+	 * Declare post types that Parsely will process as non-post pages
+	 *
+	 * @see https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages
+	 * @since 2.5.0
+	 * @var string[]
+	 */
+	private $allowed_jsonld_non_post_types = array(
+		'WebPage',
+		'Event',
+		'Hotel',
+		'Restaurant',
+		'Movie',
+	);
+
+	/**
 	 * The constructor
 	 *
 	 * @category   Function
@@ -769,7 +802,7 @@ class Parsely {
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
 			include __DIR__ . '/views/json-ld.php';
 		} else {
-			$parsely_post_type = 'NewsArticle' === $parsely_page['@type'] ? 'post' : 'sectionpage';
+			$parsely_post_type = $this->convert_jsonld_to_parsely_type( $parsely_page['@type'] );
 			if ( is_array( $parsely_page['keywords'] ) ) {
 				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
 			}
@@ -915,7 +948,31 @@ class Parsely {
 			$tags = array_map( array( $this, 'get_clean_parsely_page_value' ), $tags );
 			$tags = array_values( array_unique( $tags ) );
 
-			$parsely_page['@type']            = 'NewsArticle';
+			/**
+			 * Filters the JSON-LD @type.
+			 *
+			 * @since 2.5.0
+			 *
+			 * @param array   $jsonld_type  JSON-LD @type value, default is NewsArticle
+			 * @param integer $id           Post ID
+			 * @param string  $post_type    Post type in WordPress
+			 */
+			$type          = apply_filters( 'wp_parsely_post_type', 'NewsArticle', $post->ID, $post->post_type );
+			$allowed_types = array_merge( $this->allowed_jsonld_post_types, $this->allowed_jsonld_non_post_types );
+
+			// Validate type before passing it further
+			// as an valid type will not be recognized by Parsely
+			if ( ! in_array( $type, $allowed_types ) ) {
+				$error = sprintf(
+					__( '@type %1$s is not supported by Parsely. Please use a type mentioned in %2$s', 'wp-parsely' ),
+					$type,
+					'https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages'
+				);
+				trigger_error( $error, E_USER_WARNING );
+				$type = 'NewsArticle';
+			}
+
+			$parsely_page['@type']            = $type;
 			$parsely_page['mainEntityOfPage'] = array(
 				'@type' => 'WebPage',
 				'@id'   => $this->get_current_url( 'post' ),
@@ -986,14 +1043,10 @@ class Parsely {
 
 		$post              = get_post( $post_id );
 		$metadata          = $this->construct_parsely_metadata( $parsely_options, $post );
-		$page_type_mapping = array(
-			'NewsArticle' => 'post',
-			'WebPage'     => 'index',
-		);
 
 		$endpoint_metadata = array(
 			'canonical_url' => $metadata['url'],
-			'page_type'     => $page_type_mapping[ $metadata['@type'] ],
+			'page_type'     => $this->convert_jsonld_to_parsely_type( $metadata['@type'] ),
 			'title'         => $metadata['headline'],
 			'image_url'     => $metadata['thumbnailUrl'],
 			'pub_date_tmsp' => $metadata['datePublished'],
@@ -1787,5 +1840,27 @@ class Parsely {
 	 */
 	public function return_personalized_json() {
 
+	}
+
+	/**
+	 * Convert JSON-LD types to respective Parsely page types
+	 *
+	 * @see https://www.parse.ly/help/integration/metatags#field-description
+	 * @since 2.5.0
+	 *
+	 * @param  $type string
+	 * @return string
+	 */
+	public function convert_jsonld_to_parsely_type( $type ) {
+		if ( in_array( $type, $this->allowed_jsonld_post_types ) ) {
+			return 'post';
+		}
+
+		if ( in_array( $type, $this->allowed_jsonld_non_post_types ) ) {
+			return 'index';
+		}
+
+		// Fall-back when
+		return 'index';
 	}
 }
