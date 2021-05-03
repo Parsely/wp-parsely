@@ -800,19 +800,19 @@ class Parsely {
 
 		// Insert JSON-LD or repeated metas.
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
-			include __DIR__ . '/views/json-ld.php';
+			include plugin_dir_path( __DIR__ ) . '/views/json-ld.php';
 		} else {
 			$parsely_post_type = $this->convert_jsonld_to_parsely_type( $parsely_page['@type'] );
 			if ( is_array( $parsely_page['keywords'] ) ) {
 				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
 			}
 
-			include __DIR__ . '/views/repeated-metas.php';
+			include plugin_dir_path( __DIR__ ) . '/views/repeated-metas.php';
 		}
 
 		// Add any custom metadata.
 		if ( isset( $parsely_page['custom_metadata'] ) ) {
-			include __DIR__ . '/views/custom-metadata.php';
+			include plugin_dir_path( __DIR__ ) . '/views/custom-metadata.php';
 		}
 
 		echo '<!-- END Parse.ly -->' . "\n\n";
