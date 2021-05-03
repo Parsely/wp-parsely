@@ -2,12 +2,7 @@ export const fetchSettings = ( callback ) => {
 	fetch( '/wp-json/wp-parsely/v1/settings' )
 		.then( res => res.json() )
 		.then( settings => {
-			const holderArray = [];
-			// transform json object into array of k/v pairs for component mapping
-			Object.keys( settings ).forEach(setting => {
-				holderArray.push( { [ setting ]: settings[ setting ] } );
-			});
-			callback( holderArray );
+			callback( settings );
 		} )
 		.catch( err => callback( err ) );
 };
