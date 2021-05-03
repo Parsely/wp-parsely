@@ -26,6 +26,9 @@ require 'src/class-parsely.php';
 
 if ( class_exists( 'Parsely' ) ) {
 	define( 'PARSELY_VERSION', Parsely::VERSION );
+	if ( ! defined( 'PARSELY_PLUGIN_DIR' ) ) {
+		define( 'PARSELY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+	}
 	$parsely = new Parsely();
 }
 
