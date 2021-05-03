@@ -1628,7 +1628,7 @@ class Parsely {
 			 * @since 2.5.0  Added $post_id.
 			 *
 			 * @param string $permalink         The permalink URL or false if post does not exist.
-			 * @param string $parsely_type      Parsely type ("post" or "nonpost").
+			 * @param string $parsely_type      Parse.ly type ("post" or "nonpost").
 			 * @param int    $post_id           ID of the post you want to get the URL for. May be 0, so $permalink will be
 			 *                                  for the global $post.
 			 */
