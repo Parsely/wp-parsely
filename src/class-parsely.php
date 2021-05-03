@@ -1084,6 +1084,8 @@ class Parsely {
 		/**
 		 * Filters the cache buster value for linked scripts and styles.
 		 *
+		 * @since 2.5.0
+		 *
 		 * @param string $cache_buster Plugin version, unless WP_DEBUG is defined and truthy, and tests are not running.
 		 */
 		return apply_filters( 'wp_parsely_cache_buster', $cache_buster );
