@@ -18,11 +18,12 @@ const App = () => {
 	}
 
 	return (
-		<form>
+		<form >
 			{
 				settings ? Object.keys(settings).map(setting =>
 					<Setting setting={{[setting]: settings[setting]}} onChange={handleInputChange} /> ) : <h1>Salut Monde!</h1>
 			}
+			<input type="submit" value="do the thing!" />
 		</form>
 	)
 };
