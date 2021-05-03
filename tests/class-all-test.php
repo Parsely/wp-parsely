@@ -8,7 +8,6 @@
 namespace Parsely\Tests;
 
 use Parsely\Tests\TestCase as ParselyTestCase;
-use Parsely\Tests\TestUtils as ParselyTestUtils;
 
 /**
  * Catch-all class for testing.
@@ -38,7 +37,7 @@ class All_Test extends ParselyTestCase {
 		self::$parsely   = new \Parsely();
 
 		// Set the default options prior to each test
-		ParselyTestUtils::set_options();
+		ParselyTestCase::set_options();
 	}
 
 	public function test_class_version() {
@@ -108,7 +107,7 @@ class All_Test extends ParselyTestCase {
 	 * @group insert-js
 	 */
 	public function test_parsely_api_enabled_scripts() {
-		ParselyTestUtils::set_options( array( 'api_secret' => 'hunter2' ) );
+		ParselyTestCase::set_options( array( 'api_secret' => 'hunter2' ) );
 
 		ob_start();
 		$post_array = $this->create_test_post_array();
@@ -706,7 +705,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @group settings
 	 */
 	public function test_user_logged_in() {
-		ParselyTestUtils::set_options( array( 'track_authenticated_users' => false ) );
+		ParselyTestCase::set_options( array( 'track_authenticated_users' => false ) );
 		$new_user = $this->create_test_user( 'bill_brasky' );
 		wp_set_current_user( $new_user );
 
@@ -775,7 +774,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 			'track_authenticated_users' => false,
 			'apikey' => 'blog.parsely.com',
 		);
-		ParselyTestUtils::set_options( $custom_options );
+		ParselyTestCase::set_options( $custom_options );
 
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
@@ -825,7 +824,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 
 		switch_to_blog( $second_blog );
-		ParselyTestUtils::set_options( $custom_options );
+		ParselyTestCase::set_options( $custom_options );
 
 		self::assertEquals( get_current_blog_id(), $second_blog );
 		self::assertFalse( is_user_member_of_blog( $new_user, get_current_blog_id() ) );

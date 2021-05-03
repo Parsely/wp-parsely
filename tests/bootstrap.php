@@ -32,6 +32,3 @@ require $_tests_dir . '/includes/bootstrap.php';
 
 // Include the Parsely custom test case.
 require_once __DIR__ . '/testcase.php';
-
-// Include the Parsely test utils class.
-require __DIR__ . '/class-testutils.php';
