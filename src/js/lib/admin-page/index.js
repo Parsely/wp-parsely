@@ -11,7 +11,7 @@ domReady( () => {
 	}
 
 	const notice = sprintf(
-		// translators: %s: The API Key that will be used to request a "recrawl"
+		/* translators: %s: The API Key that will be used to request a recrawl */
 		__(
 			'<p class="description"><strong style="color:red;">Important:</strong> changing this value on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data. Once you have changed this value, please contact <a href="mailto:support@parsely.com?subject=Please reprocess %s">support@parsely.com</a></p>'
 		),
