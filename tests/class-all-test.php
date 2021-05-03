@@ -835,6 +835,11 @@ PARSELYJS;
 		$metadata = self::$parsely->construct_parsely_metadata( $options, $post_obj );
 		self::assertSame( 'BlogPosting', $metadata['@type'] );
 
+		// Do not run the following assertion for PHP 5.6
+		if ( version_compare( PHP_VERSION, '7.0.0', '<' ) ) {
+			return;
+		}
+
 		// Try to change the post type to a non-allowed value - Not_Allowed
 		add_filter('wp_parsely_post_type', function() {
 			return 'Not_Allowed_Type';
