@@ -1613,26 +1613,26 @@ class Parsely {
 	 * Get the URL of the current PHP script.
 	 * A fall-back implementation to determine permalink
 	 *
-	 * @param string $post The post object you're interested in.
-	 * @param int    $post_id id of the post you want to get the url for. Optional.
+	 * @param string $parsely_type Parsely post type you're interested in, either "post" or "nonpost"
+	 * @param int    $post_id      id of the post you want to get the url for. Optional.
 	 * @return string|void
 	 */
-	public function get_current_url( $post = 'nonpost', $post_id = 0 ) {
-		if ( 'post' === $post ) {
+	public function get_current_url( $parsely_type = 'nonpost', $post_id = 0 ) {
+		if ( 'post' === $parsely_type ) {
 			$permalink = get_permalink( $post_id );
 
 			/**
-			 * Filters the list of author names for a post.
+			 * Filters the permalink for a post.
 			 *
 			 * @since 1.14.0
 			 * @since 2.5.0  Added $post_id.
 			 *
-			 * @param string $permalink The permalink URL or false if post does not exist.
-			 * @param string $post      Post object type group ("post" or "nonpost").
-			 * @param int    $post_id   ID of the post you want to get the URL for. May be 0, so $permalink will be
-			 *                          for the global $post.
+			 * @param string $permalink         The permalink URL or false if post does not exist.
+			 * @param string $parsely_type      Parsely type ("post" or "nonpost").
+			 * @param int    $post_id           ID of the post you want to get the URL for. May be 0, so $permalink will be
+			 *                                  for the global $post.
 			 */
-			$url = apply_filters( 'wp_parsely_permalink', $permalink, $post, $post_id );
+			$url = apply_filters( 'wp_parsely_permalink', $permalink, $parsely_type, $post_id );
 		} else {
 			$request_uri = isset( $_SERVER['REQUEST_URI'] )
 					? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) )
