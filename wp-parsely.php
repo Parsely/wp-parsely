@@ -29,6 +29,9 @@ if ( class_exists( 'Parsely' ) ) {
 	if ( ! defined( 'PARSELY_PLUGIN_DIR' ) ) {
 		define( 'PARSELY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 	}
+	if ( ! defined( 'PARSELY_PLUGIN_URL' ) ) {
+		define( 'PARSELY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+	}
 	$parsely = new Parsely();
 }
 
