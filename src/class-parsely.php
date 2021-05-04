@@ -1137,11 +1137,30 @@ class Parsely {
 		 * If true, the JavaScript files are sourced.
 		 *
 		 * @since 2.2.0
+		 * @deprecated deprecated since version 2.5.0
 		 *
 		 * @param bool $display True if the JavaScript file should be included. False if not.
 		 */
-		if ( ! apply_filters( 'parsely_filter_insert_javascript', $display ) ) {
+		if ( ! apply_filters_deprecated(
+			'parsely_filter_insert_javascript',
+			array( $display ),
+			'2.5.0',
+			'wp_parsely_insert_javascript',
+		) ) {
 			return;
+		}
+
+		/**
+		 * Filters whether to include the Parsely JavaScript file.
+		 *
+		 * If true, the JavaScript files are sourced.
+		 *
+		 * @since 2.5.0
+		 *
+		 * @param bool $display True if the JavaScript file should be included. False if not.
+		 */
+		if ( ! apply_filters( 'wp_parsely_insert_javascript', $display ) ) {
+				return;
 		}
 
 		$api_script_asset = require PARSELY_PLUGIN_DIR . 'build/init-api.asset.php' ;

@@ -983,4 +983,70 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$res = self::$parsely->get_current_url();
 		self::assertStringStartsWith( $expected, $res );
 	}
+
+	/**
+	 * Test the wp_parsely_insert_javascript filter
+	 * When it returns false, no scripts should be enqueued.
+	 *
+	 * @covers \Parsely::insert_parsely_javascript
+	 */
+	public function test_insert_javascript_filter() {
+		add_filter( 'wp_parsely_insert_javascript', '__return_false' );
+
+		ob_start();
+		$post_array = $this->create_test_post_array();
+		$post = $this->factory->post->create( $post_array );
+		$this->go_to( '/?p=' . $post );
+		echo self::$parsely->insert_parsely_javascript();
+		$intermediate_output = ob_get_contents();
+
+		self::assertSame(
+			'',
+			$intermediate_output,
+			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
+		);
+
+		wp_print_scripts();
+
+		$output = ob_get_clean();
+		self::assertSame(
+			'',
+			$output,
+			'Failed to confirm filter prevented enqueued scripts'
+		);
+	}
+
+	/**
+	 * Test the parsely_filter_insert_javascript filter
+	 * When it returns false, no scripts should be enqueued.
+	 *
+	 * @deprecated deprecated since 2.5.0. This test can be removed when the filter is removed.
+	 *
+	 * @expectedDeprecated parsely_filter_insert_javascript
+	 */
+	public function test_deprecated_insert_javascript_filter() {
+		add_filter( 'parsely_filter_insert_javascript', '__return_false' );
+
+		ob_start();
+		$post_array = $this->create_test_post_array();
+		$post = $this->factory->post->create( $post_array );
+		$this->go_to( '/?p=' . $post );
+		echo self::$parsely->insert_parsely_javascript();
+		$intermediate_output = ob_get_contents();
+
+		self::assertSame(
+			'',
+			$intermediate_output,
+			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
+		);
+
+		wp_print_scripts();
+
+		$output = ob_get_clean();
+		self::assertSame(
+			'',
+			$output,
+			'Failed to confirm filter prevented enqueued scripts'
+		);
+	}
 }
