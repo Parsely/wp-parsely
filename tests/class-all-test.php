@@ -40,8 +40,20 @@ class All_Test extends ParselyTestCase {
 		ParselyTestCase::set_options();
 	}
 
+	/**
+	 * Make sure the version is semver-compliant
+	 *
+	 * @see https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+	 * @see https://regex101.com/r/Ly7O1x/3/
+	 */
 	public function test_class_version() {
-		self::assertEquals( '2.5.0-alpha', \Parsely::VERSION );
+		self::assertSame(
+			1,
+			preg_match(
+				'/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/',
+				\Parsely::VERSION
+			)
+		);
 	}
 
 	public function test_constant_version() {
