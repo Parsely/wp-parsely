@@ -1,5 +1,22 @@
 import domReady from '@wordpress/dom-ready';
 
+/**
+ * Get the value of a particular cookie
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+ * @todo pull this into a lib and add tests
+ * @param {String} key Which cookie value to get
+ * @returns {String|undefined} The value of the specified key, or `undefined` if it's not set.
+ */
+function getCookieValue( key ) {
+	return document.cookie
+		?.split( '; ' )
+		?.find( ( row ) => row.startsWith( `${ key }=` ) )
+		?.split( '=' )[ 1 ];
+}
+
+const VISITOR_COOKIE_KEY_NAME = '_parsely_visitor';
+
 function widgetLoad( {
 	displayAuthor,
 	displayDirection,
@@ -11,16 +28,12 @@ function widgetLoad( {
 	widgetId,
 } ) {
 	let uuid = false;
-
-	// TODO: If this code requires or merits attribution, add it.  If not, take this comment out.
-	// regex stolen from Mozilla's docs
-	const cookieVal = document.cookie.replace(
-		/(?:(?:^|.*;\s*)_parsely_visitor\s*\=\s*([^;]*).*$)|^.*$/,
-		'$1'
-	);
+	const cookieVal = getCookieValue( VISITOR_COOKIE_KEY_NAME );
 
 	if ( cookieVal ) {
-		uuid = JSON.parse( unescape( cookieVal ) ).id;
+		try {
+			uuid = JSON.parse( unescape( cookieVal ) ).id;
+		} catch ( e ) {}
 	}
 
 	if ( personalized && uuid ) {
