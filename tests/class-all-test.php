@@ -41,7 +41,7 @@ class All_Test extends ParselyTestCase {
 	}
 
 	public function test_class_version() {
-		self::assertEquals( '2.4.1', \Parsely::VERSION );
+		self::assertEquals( '2.5.0-alpha', \Parsely::VERSION );
 	}
 
 	public function test_constant_version() {
