@@ -1842,7 +1842,7 @@ class Parsely {
 	}
 
 	/**
-	 * Convert JSON-LD types to respective Parsely page types
+	 * Convert JSON-LD types to respective Parse.ly page types
 	 *
 	 * @see https://www.parse.ly/help/integration/metatags#field-description
 	 * @since 2.5.0
@@ -1855,11 +1855,7 @@ class Parsely {
 			return 'post';
 		}
 
-		if ( in_array( $type, $this->allowed_jsonld_non_post_types ) ) {
-			return 'index';
-		}
-
-		// Fall-back when
+		// Fall back to this value for all other types including ones defined $this->allowed_jsonld_non_post_types
 		return 'index';
 	}
 }
