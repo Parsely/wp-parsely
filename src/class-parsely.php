@@ -953,18 +953,17 @@ class Parsely {
 			 *
 			 * @since 2.5.0
 			 *
-			 * @param array   $jsonld_type  JSON-LD @type value, default is NewsArticle
-			 * @param integer $id           Post ID
-			 * @param string  $post_type    Post type in WordPress
+			 * @param array   $jsonld_type  JSON-LD @type value, default is NewsArticle.
+			 * @param integer $id           Post ID.
+			 * @param string  $post_type    Post type in WordPress.
 			 */
 			$type          = apply_filters( 'wp_parsely_post_type', 'NewsArticle', $post->ID, $post->post_type );
 			$allowed_types = array_merge( $this->allowed_jsonld_post_types, $this->allowed_jsonld_non_post_types );
 
-			// Validate type before passing it further
-			// as an valid type will not be recognized by Parsely
+			// Validate type before passing it further as an invalid type will not be recognized by Parse.ly.
 			if ( ! in_array( $type, $allowed_types ) ) {
 				$error = sprintf(
-					__( '@type %1$s is not supported by Parsely. Please use a type mentioned in %2$s', 'wp-parsely' ),
+					__( '@type %1$s is not supported by Parse.ly. Please use a type mentioned in %2$s', 'wp-parsely' ),
 					$type,
 					'https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages'
 				);
