@@ -651,6 +651,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Check out page filtering.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
+	 * @expectedDeprecated after_set_parsely_page
 	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
@@ -676,7 +677,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$post_id = $this->factory->post->create();
 		$post    = get_post( $post_id );
 
-
 		// Apply page filtering.
 		$headline = 'Completely New And Original Filtered Headline';
 		add_filter(
@@ -690,11 +690,25 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 			3
 		);
 
+		$thumbnail_url = 'http://example.com/image.png';
+		add_filter(
+			'wp_parsely_metadata',
+			function( $args ) use ( $thumbnail_url ) {
+				$args['thumbnailUrl'] = $thumbnail_url;
+				return $args;
+			},
+			10,
+			3
+		);
+
 		// Create the structured data for that post.
 		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
 
-		// The structured data should contain the headline from the filter.
-		self::assertTrue( strpos( $structured_data['headline'], $headline ) === 0 );
+		// The structured data should contain the headline from the deprecated filter.
+		self::assertSame( $structured_data['headline'], $headline );
+
+		// The structured data should contain the thumbnailUrl from the filter.
+		self::assertSame( $structured_data['thumbnailUrl'], $thumbnail_url );
 	}
 
 	/**
