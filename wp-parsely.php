@@ -22,20 +22,29 @@
  * Requires WP:       4.0.0
  */
 
-require 'src/class-parsely.php';
-
-if ( class_exists( 'Parsely' ) ) {
-	define( 'PARSELY_VERSION', Parsely::VERSION );
-	if ( ! defined( 'PARSELY_PLUGIN_DIR' ) ) {
-		define( 'PARSELY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-	}
-	if ( ! defined( 'PARSELY_PLUGIN_URL' ) ) {
-		define( 'PARSELY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-	}
-	$parsely = new Parsely();
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+	die;
 }
 
-require 'src/class-parsely-recommended-widget.php';
+if ( class_exists( 'Parsely' ) ) {
+	return;
+}
+
+if ( ! defined( 'PARSELY_PLUGIN_DIR' ) ) {
+	define( 'PARSELY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+}
+if ( ! defined( 'PARSELY_PLUGIN_URL' ) ) {
+	define( 'PARSELY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+}
+
+require PARSELY_PLUGIN_DIR . 'src/class-parsely.php';
+
+define( 'PARSELY_VERSION', Parsely::VERSION );
+
+$GLOBALS['parsely'] = new Parsely();
+
+require PARSELY_PLUGIN_DIR . 'src/class-parsely-recommended-widget.php';
 
 add_action( 'widgets_init', 'parsely_recommended_widget_register' );
 /**
