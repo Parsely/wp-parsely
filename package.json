@@ -1,6 +1,6 @@
 {
   "name": "wp-parsely",
-  "version": "2.5.0-develop",
+  "version": "2.5.0-alpha",
   "description": "The official WordPress plugin for Parse.ly - makes it a snap to add the required tracking code to enable Parse.ly on your WordPress site.",
   "main": "build/index.js",
   "directories": {
