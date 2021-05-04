@@ -31,6 +31,9 @@ if ( class_exists( 'Parsely' ) ) {
 	return;
 }
 
+if ( ! defined( 'PARSELY_PLUGIN_BASENAME' ) ) {
+	define( 'PARSELY_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+}
 if ( ! defined( 'PARSELY_PLUGIN_DIR' ) ) {
 	define( 'PARSELY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 }

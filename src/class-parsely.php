@@ -76,9 +76,8 @@ class Parsely {
 		// display warning when plugin hasn't been configured.
 		add_action( 'admin_footer', array( $this, 'display_admin_warning' ) );
 
-		$basename = plugin_basename( __FILE__ );
 		add_filter(
-			'plugin_action_links_' . $basename,
+			'plugin_action_links_' . PARSELY_PLUGIN_BASENAME,
 			array( $this, 'add_plugin_meta_links' )
 		);
 
