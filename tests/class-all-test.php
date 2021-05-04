@@ -817,7 +817,7 @@ PARSELYJS;
 	}
 
 	/**
-	 * Test the wp_parsely_post_type filtter
+	 * Test the wp_parsely_post_type filter
 	 */
 	public function test_filter_wp_parsely_post_type() {
 		$options = get_option( \Parsely::OPTIONS_KEY );
@@ -827,27 +827,34 @@ PARSELYJS;
 		$post_obj   = get_post( $post_id );
 		$this->go_to( '/?p=' . $post_id );
 
-		// Try to change the post type to an allowed value - BlogPosting
-		add_filter('wp_parsely_post_type', function() {
-			return 'BlogPosting';
-		});
+		// Try to change the post type to an allowed value - BlogPosting.
+		add_filter(
+			'wp_parsely_post_type',
+			function() {
+				return 'BlogPosting';
+			}
+		);
 
 		$metadata = self::$parsely->construct_parsely_metadata( $options, $post_obj );
 		self::assertSame( 'BlogPosting', $metadata['@type'] );
 
-		// Do not run the following assertion for PHP 5.6
+		// Do not run the following assertion for PHP 5.6.
 		if ( version_compare( PHP_VERSION, '7.0.0', '<' ) ) {
 			return;
 		}
 
-		// Try to change the post type to a non-allowed value - Not_Allowed
-		add_filter('wp_parsely_post_type', function() {
-			return 'Not_Allowed_Type';
-		});
+		// Try to change the post type to a non-allowed value - Not_Allowed.
+		add_filter(
+			'wp_parsely_post_type',
+			function() {
+				return 'Not_Allowed_Type';
+			}
+		);
 
 		/**
 		 * Ideally we use two methods expectWarning and expectWarningMessageMatches to test this error
 		 * But they're not available until PHPUnit 8.4 while here we're still running PHPUnit 7.x
+		 *
 		 * @see 7.5 https://phpunit.readthedocs.io/en/7.5/writing-tests-for-phpunit.html#testing-php-errors
 		 * @see 8.4 https://phpunit.readthedocs.io/en/8.4/writing-tests-for-phpunit.html#testing-php-errors-warnings-and-notices
 		 */
