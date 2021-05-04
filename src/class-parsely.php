@@ -1145,7 +1145,7 @@ class Parsely {
 			'parsely_filter_insert_javascript',
 			array( $display ),
 			'2.5.0',
-			'wp_parsely_insert_javascript',
+			'wp_parsely_insert_javascript'
 		) ) {
 			return;
 		}
