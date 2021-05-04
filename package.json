@@ -11,8 +11,8 @@
     "npm": "^7"
   },
   "scripts": {
-    "build": "wp-scripts build src/js/lib/init-api src/js/lib/admin-page",
-    "start": "wp-scripts start src/js/lib/init-api src/js/lib/admin-page",
+    "build": "wp-scripts build src/js/lib/init-api src/js/lib/admin-page src/js/recommended-widget",
+    "start": "wp-scripts start src/js/lib/init-api src/js/lib/admin-page src/js/recommended-widget",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
