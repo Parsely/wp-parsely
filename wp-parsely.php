@@ -31,6 +31,8 @@ if ( class_exists( 'Parsely' ) ) {
 	return;
 }
 
+define( 'PARSELY_VERSION', '2.5.0-alpha' );
+
 if ( ! defined( 'PARSELY_PLUGIN_DIR' ) ) {
 	define( 'PARSELY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 }
@@ -39,8 +41,6 @@ if ( ! defined( 'PARSELY_PLUGIN_URL' ) ) {
 }
 
 require PARSELY_PLUGIN_DIR . 'src/class-parsely.php';
-
-define( 'PARSELY_VERSION', Parsely::VERSION );
 
 $GLOBALS['parsely'] = new Parsely();
 

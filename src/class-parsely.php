@@ -20,7 +20,7 @@ class Parsely {
 	 *
 	 * @codeCoverageIgnoreStart
 	 */
-	const VERSION         = '2.5.0-alpha';
+	const VERSION         = PARSELY_VERSION;
 	const MENU_SLUG       = 'parsely';             // Defines the page param passed to options-general.php.
 	const OPTIONS_KEY     = 'parsely';             // Defines the key used to store options in the WP database.
 	const CAPABILITY      = 'manage_options';      // The capability required for the user to administer settings.

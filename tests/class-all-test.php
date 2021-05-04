@@ -46,22 +46,22 @@ class All_Test extends ParselyTestCase {
 	 * @see https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 	 * @see https://regex101.com/r/Ly7O1x/3/
 	 */
-	public function test_class_version() {
+	public function test_constant_version() {
 		self::assertSame(
 			1,
 			preg_match(
 				'/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/',
-				\Parsely::VERSION
+				PARSELY_VERSION
 			)
 		);
 	}
 
-	public function test_constant_version() {
-		self::assertEquals( \Parsely::VERSION, PARSELY_VERSION );
+	public function test_class_version() {
+		self::assertSame( PARSELY_VERSION, \Parsely::VERSION );
 	}
 
 	public function test_cache_buster() {
-		self::assertEquals( PARSELY_VERSION, \Parsely::get_asset_cache_buster() );
+		self::assertSame( PARSELY_VERSION, \Parsely::get_asset_cache_buster() );
 	}
 
 	public function test_plugin_url_constant() {
