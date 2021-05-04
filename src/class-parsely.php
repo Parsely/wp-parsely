@@ -771,19 +771,19 @@ class Parsely {
 
 		// Insert JSON-LD or repeated metas.
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
-			include PARSELY_PLUGIN_DIR . '/views/json-ld.php';
+			include PARSELY_PLUGIN_DIR . 'views/json-ld.php';
 		} else {
 			$parsely_post_type = 'NewsArticle' === $parsely_page['@type'] ? 'post' : 'sectionpage';
 			if ( is_array( $parsely_page['keywords'] ) ) {
 				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
 			}
 
-			include PARSELY_PLUGIN_DIR . '/views/repeated-metas.php';
+			include PARSELY_PLUGIN_DIR . 'views/repeated-metas.php';
 		}
 
 		// Add any custom metadata.
 		if ( isset( $parsely_page['custom_metadata'] ) ) {
-			include PARSELY_PLUGIN_DIR . '/views/custom-metadata.php';
+			include PARSELY_PLUGIN_DIR . 'views/custom-metadata.php';
 		}
 
 		echo '<!-- END Parse.ly -->' . "\n\n";
