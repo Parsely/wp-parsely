@@ -12,13 +12,17 @@ const App = () => {
 
 	const handleInputChange = e => {
 		const oldSetting = settings[e.target.name];
-		console.log(oldSetting)
 		const newValue = e.target.type === "checkbox" ? !oldSetting : e.target.value;
 		setSettings({...settings, [e.target.name]: newValue})
 	}
 
+	const handleFormSubmit = e => {
+		e.preventDefault();
+		// send form data to php somehow
+	}
+
 	return (
-		<form >
+		<form onSubmit={e => handleFormSubmit(e)}>
 			{
 				settings ? Object.keys(settings).map(setting =>
 					<Setting setting={{[setting]: settings[setting]}} onChange={handleInputChange} /> ) : <h1>Salut Monde!</h1>
