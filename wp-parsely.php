@@ -44,3 +44,19 @@ add_action( 'widgets_init', 'parsely_recommended_widget_register' );
 function parsely_recommended_widget_register() {
 	register_widget( 'Parsely_Recommended_Widget' );
 }
+
+add_action( 'init', 'parsely_load_textdomain' );
+/**
+ * Load plugin textdomain.
+ *
+ * Only look for WP_LANG_DIR . '/plugins/wp-parsely-' . $locale . '.mo'.
+ * WP_LANG_DIR is usually WP_CONTENT_DIR . '/languages/'.
+ * No other fallback location is supported.
+ *
+ * This can be removed once minimum supported WordPress is 4.6 or later.
+ *
+ * @since 2.5.0
+ */
+function parsely_load_textdomain() {
+	load_plugin_textdomain( 'wp-parsely' );
+}
