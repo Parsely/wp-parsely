@@ -51,9 +51,10 @@ class Parsely {
 	);
 
 	/**
-	 * Declare post types that Parsely will process as posts
+	 * Declare post types that Parse.ly will process as "posts".
 	 *
-	 * @see https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages
+	 * @link https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages
+	 *
 	 * @since 2.5.0
 	 * @var string[]
 	 */
@@ -69,9 +70,10 @@ class Parsely {
 	);
 
 	/**
-	 * Declare post types that Parsely will process as non-post pages
+	 * Declare post types that Parse.ly will process as "non-posts".
 	 *
-	 * @see https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages
+	 * @link https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages
+	 *
 	 * @since 2.5.0
 	 * @var string[]
 	 */
@@ -960,7 +962,7 @@ class Parsely {
 			 * @param integer $id           Post ID.
 			 * @param string  $post_type    Post type in WordPress.
 			 */
-			$type          = apply_filters( 'wp_parsely_post_type', 'NewsArticle', $post->ID, $post->post_type );
+			$type          = (string) apply_filters( 'wp_parsely_post_type', 'NewsArticle', $post->ID, $post->post_type );
 			$allowed_types = array_merge( $this->allowed_jsonld_post_types, $this->allowed_jsonld_non_post_types );
 
 			// Validate type before passing it further as an invalid type will not be recognized by Parse.ly.
@@ -1914,20 +1916,19 @@ class Parsely {
 	}
 
 	/**
-	 * Convert JSON-LD types to respective Parse.ly page types
+	 * Convert JSON-LD type to respective Parse.ly page type.
 	 *
-	 * @see https://www.parse.ly/help/integration/metatags#field-description
+	 * If the JSON-LD type is one of the types Parse.ly supports as a "post", then "post" will be returned.
+	 * Otherwise, for "non-posts" and unknown types, "index" is returned.
+	 *
 	 * @since 2.5.0
 	 *
-	 * @param  $type string
-	 * @return string
+	 * @see https://www.parse.ly/help/integration/metatags#field-description
+	 *
+	 * @param $type string JSON-LD type.
+	 * @return string "post" or "index".
 	 */
 	public function convert_jsonld_to_parsely_type( $type ) {
-		if ( in_array( $type, $this->allowed_jsonld_post_types ) ) {
-			return 'post';
-		}
-
-		// Fall back to this value for all other types including ones defined $this->allowed_jsonld_non_post_types
-		return 'index';
+		return in_array( $type, $this->allowed_jsonld_post_types ) ? 'post' : 'index';
 	}
 }
