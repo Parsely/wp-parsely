@@ -123,12 +123,12 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			'wpParselyRecommended',
 			array(
 				'displayAuthor' => isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false,
-				'displayDirection' => isset( $instance['display_direction'] ) ? esc_js( $instance['display_direction'] ) : null,
-				'fullUrl' => esc_js( esc_url_raw( $full_url ) ),
-				'imgSrc' => isset( $instance['img_src'] ) ? esc_js( $instance['img_src'] ) : null,
-				'permalink' => wp_json_encode( esc_url_raw( get_permalink() ) ),
-				'personalized' => wp_json_encode( boolval( $instance['personalize_results'] ) ),
-				'widgetId' => esc_attr( $this->id ),
+				'displayDirection' => isset( $instance['display_direction'] ) ? $instance['display_direction'] : null,
+				'fullUrl' => esc_url_raw( $full_url ),
+				'imgSrc' => isset( $instance['img_src'] ) ? $instance['img_src'] : null,
+				'permalink' => esc_url_raw( get_permalink() ),
+				'personalized' => boolval( $instance['personalize_results'] ),
+				'widgetId' => $this->id,
 			)
 		);
 
