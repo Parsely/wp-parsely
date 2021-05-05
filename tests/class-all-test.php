@@ -973,6 +973,9 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 
 	/**
 	 * Test the wp_parsely_post_type filter
+	 *
+	 * @uses \Parsely::get_options()
+	 * @uses \Parsely::construct_parsely_metadata()
 	 */
 	public function test_filter_wp_parsely_post_type() {
 		$options = get_option( \Parsely::OPTIONS_KEY );
