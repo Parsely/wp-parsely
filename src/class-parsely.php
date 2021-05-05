@@ -1167,7 +1167,7 @@ class Parsely {
 		) ) ) {
 			// Have ClouldFlare Rocket Loader ignore these scripts:
 			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-
-			$tag = preg_replace( '/^<script src=/', '<script data-cfasync="false" src=', $tag );
+			$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
 		}
 
 		if ( $handle === 'wp-parsely-tracker' ) {
