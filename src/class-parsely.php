@@ -1134,7 +1134,7 @@ class Parsely {
 			true
 		);
 
-		add_filter( 'script_loader_tag', [ $this, 'script_loader_tag' ], 10, 3 );
+		add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
 
 		$dependencies = array();
 
