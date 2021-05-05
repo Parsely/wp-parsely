@@ -94,9 +94,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		wp_enqueue_style( 'wp-parsely-style' );
 		wp_enqueue_script( 'jquery' );
 
-		$allowed_tags = wp_kses_allowed_html( 'post' );
 		$title_html   = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
-		echo wp_kses( $title_html, $allowed_tags );
+		echo wp_kses_post( $title_html );
 
 		// Set up the variables.
 		$options = get_option( 'parsely' );
@@ -218,7 +217,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		</script>
 		<?php
 
-		echo wp_kses( $args['after_widget'], $allowed_tags );
+		echo wp_kses_post( $args['after_widget'] );
 	}
 
 	/**
