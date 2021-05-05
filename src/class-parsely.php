@@ -440,9 +440,9 @@ class Parsely {
 
 		$parsely_options = $this->get_options();
 		if ( $parsely_options['force_https_canonicals'] === $this->is_home_url_with_https() ) {
-			$h = __( 'This option is being consistent with the protocol of your site address address. It\'s unlikely you\'ll have to change this unless directed to do so by a Parse.ly support rep.', 'wp-parsely' );
+			$h = __( 'This option is being consistent with the protocol of your site address. It\'s unlikely you\'ll have to change this unless directed to do so by a Parse.ly support rep.', 'wp-parsely' );
 		} else {
-			$h = __( 'This option is not being consistent with the protocol of your site address address. You can keep it as-is without affecting your Parse.ly data. However, if you\'re forced to change this value, please reach out to Parse.ly support', 'wp-parsely' );
+			$h = __( 'This option is not being consistent with the protocol of your site address. You can keep it as-is without affecting your Parse.ly data. However, if you\'re forced to change this value, please reach out to Parse.ly support', 'wp-parsely' );
 		}
 
 		add_settings_field(
