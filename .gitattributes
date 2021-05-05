@@ -28,4 +28,5 @@
 /CONTRIBUTING.md     export-ignore
 /composer.json       export-ignore
 /composer.lock       export-ignore
+/package-lock.json   export-ignore
 /phpunit.xml.dist    export-ignore
