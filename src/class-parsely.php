@@ -58,7 +58,7 @@ class Parsely {
 	 * @since 2.5.0
 	 * @var string[]
 	 */
-	private $allowed_jsonld_post_types = array(
+	private $supported_jsonld_post_types = array(
 		'NewsArticle',
 		'Article',
 		'TechArticle',
@@ -77,7 +77,7 @@ class Parsely {
 	 * @since 2.5.0
 	 * @var string[]
 	 */
-	private $allowed_jsonld_non_post_types = array(
+	private $supported_jsonld_non_post_types = array(
 		'WebPage',
 		'Event',
 		'Hotel',
@@ -963,10 +963,10 @@ class Parsely {
 			 * @param string  $post_type    Post type in WordPress.
 			 */
 			$type          = (string) apply_filters( 'wp_parsely_post_type', 'NewsArticle', $post->ID, $post->post_type );
-			$allowed_types = array_merge( $this->allowed_jsonld_post_types, $this->allowed_jsonld_non_post_types );
+			$supported_types = array_merge( $this->supported_jsonld_post_types, $this->supported_jsonld_non_post_types );
 
 			// Validate type before passing it further as an invalid type will not be recognized by Parse.ly.
-			if ( ! in_array( $type, $allowed_types ) ) {
+			if ( ! in_array( $type, $supported_types ) ) {
 				$error = sprintf(
 					__( '@type %1$s is not supported by Parse.ly. Please use a type mentioned in %2$s', 'wp-parsely' ),
 					$type,
@@ -1929,6 +1929,6 @@ class Parsely {
 	 * @return string "post" or "index".
 	 */
 	public function convert_jsonld_to_parsely_type( $type ) {
-		return in_array( $type, $this->allowed_jsonld_post_types ) ? 'post' : 'index';
+		return in_array( $type, $this->supported_jsonld_post_types ) ? 'post' : 'index';
 	}
 }

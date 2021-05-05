@@ -985,7 +985,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$post_obj   = get_post( $post_id );
 		$this->go_to( '/?p=' . $post_id );
 
-		// Try to change the post type to an allowed value - BlogPosting.
+		// Try to change the post type to a supported value - BlogPosting.
 		add_filter(
 			'wp_parsely_post_type',
 			function() {
@@ -1001,11 +1001,11 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 			return;
 		}
 
-		// Try to change the post type to a non-allowed value - Not_Allowed.
+		// Try to change the post type to a non-supported value - Not_Supported.
 		add_filter(
 			'wp_parsely_post_type',
 			function() {
-				return 'Not_Allowed_Type';
+				return 'Not_Supported_Type';
 			}
 		);
 
