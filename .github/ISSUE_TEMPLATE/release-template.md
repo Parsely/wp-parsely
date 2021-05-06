@@ -9,7 +9,7 @@ assignees: jblz, GaryJones, mikeyarce, hbbtstar
 
 :warning: DO NOT MERGE (YET) :warning:
 
-[Remaining work for this Milestone]``(https://github.com/Parsely/wp-parsely/milestone/14)
+[Remaining work for this Milestone](https://github.com/Parsely/wp-parsely/milestone/14)
 
 PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM YYYY.
 
