@@ -127,7 +127,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 				'fullUrl' => esc_url_raw( $full_url ),
 				'imgSrc' => isset( $instance['img_src'] ) ? $instance['img_src'] : null,
 				'permalink' => esc_url_raw( get_permalink() ),
-				'personalized' => boolval( $instance['personalize_results'] ),
+				'personalized' => isset( $instance['personalize_results'] ) ? boolval( $instance['personalize_results'] ): false,
 				'widgetId' => $this->id,
 			)
 		);
