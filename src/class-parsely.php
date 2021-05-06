@@ -94,6 +94,9 @@ class Parsely {
 	}
 
 	function add_parsely_link( $actions, $post ) {
+		if ( ! self::post_has_trackable_status( $post ) ) {
+			return $actions;
+		}
 		$options = $this->get_options();
 		$apikey = $options['apikey'];
 		$post_url = get_permalink($post);
