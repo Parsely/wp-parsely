@@ -40,16 +40,28 @@ class All_Test extends ParselyTestCase {
 		ParselyTestCase::set_options();
 	}
 
-	public function test_class_version() {
-		self::assertEquals( '2.4.1', \Parsely::VERSION );
+	/**
+	 * Make sure the version is semver-compliant
+	 *
+	 * @see https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+	 * @see https://regex101.com/r/Ly7O1x/3/
+	 */
+	public function test_constant_version() {
+		self::assertSame(
+			1,
+			preg_match(
+				'/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/',
+				PARSELY_VERSION
+			)
+		);
 	}
 
-	public function test_constant_version() {
-		self::assertEquals( \Parsely::VERSION, PARSELY_VERSION );
+	public function test_class_version() {
+		self::assertSame( PARSELY_VERSION, \Parsely::VERSION );
 	}
 
 	public function test_cache_buster() {
-		self::assertEquals( PARSELY_VERSION, \Parsely::get_asset_cache_buster() );
+		self::assertSame( PARSELY_VERSION, \Parsely::get_asset_cache_buster() );
 	}
 
 	public function test_plugin_url_constant() {
@@ -94,7 +106,7 @@ class All_Test extends ParselyTestCase {
 		$output = ob_get_clean();
 
 		self::assertSame(
-			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
+			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tags were printed correctly'
 		);
@@ -134,14 +146,13 @@ class All_Test extends ParselyTestCase {
 
 		wp_print_scripts();
 		$output = ob_get_clean();
-
 		self::assertContains(
 "/* <![CDATA[ */
 var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 /* ]]> */
 </script>
-<script type='text/javascript' src='" . esc_url( PARSELY_PLUGIN_URL ) . "build/init-api.js?ver=" . PARSELY_VERSION . "' id='wp-parsely-api-js'></script>
-<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>
+<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( PARSELY_PLUGIN_URL ) . "build/init-api.js?ver=" . PARSELY_VERSION . "' id='wp-parsely-api-js'></script>
+<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>
 ",
 			$output,
 			'Failed to confirm script tags were printed correctly'
@@ -871,7 +882,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$output = ob_get_clean();
 
 		self::assertSame(
-			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
+			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tags were printed correctly'
 		);

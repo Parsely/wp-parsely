@@ -20,7 +20,7 @@ class Parsely {
 	 *
 	 * @codeCoverageIgnoreStart
 	 */
-	const VERSION         = '2.4.1';
+	const VERSION         = PARSELY_VERSION;
 	const MENU_SLUG       = 'parsely';             // Defines the page param passed to options-general.php.
 	const OPTIONS_KEY     = 'parsely';             // Defines the key used to store options in the WP database.
 	const CAPABILITY      = 'manage_options';      // The capability required for the user to administer settings.
@@ -76,9 +76,8 @@ class Parsely {
 		// display warning when plugin hasn't been configured.
 		add_action( 'admin_footer', array( $this, 'display_admin_warning' ) );
 
-		$basename = plugin_basename( __FILE__ );
 		add_filter(
-			'plugin_action_links_' . $basename,
+			'plugin_action_links_' . PARSELY_PLUGIN_BASENAME,
 			array( $this, 'add_plugin_meta_links' )
 		);
 
@@ -1172,7 +1171,7 @@ class Parsely {
 			true
 		);
 
-		add_filter( 'script_loader_tag', [ $this, 'script_loader_tag' ], 10, 3 );
+		add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
 
 		$dependencies = array();
 
@@ -1198,10 +1197,14 @@ class Parsely {
 
 	public function script_loader_tag( $tag, $handle, $src ) {
 		$parsely_options = $this->get_options();
-		if ( in_array( $handle, [ 'wp-parsely', 'wp-parsely-tracker' ] ) ) {
+		if ( in_array( $handle, array(
+			'wp-parsely',
+			'wp-parsely-api',
+			'wp-parsely-tracker',
+		) ) ) {
 			// Have ClouldFlare Rocket Loader ignore these scripts:
 			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-
-			$tag = preg_replace( '/^<script src=/', '<script data-cfasync="false" src=', $tag );
+			$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
 		}
 
 		if ( $handle === 'wp-parsely-tracker' ) {
