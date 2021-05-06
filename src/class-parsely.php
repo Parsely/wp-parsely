@@ -1210,7 +1210,6 @@ class Parsely {
 	}
 
 	public function script_loader_tag( $tag, $handle, $src ) {
-		$parsely_options = $this->get_options();
 		if ( in_array( $handle, array(
 			'wp-parsely',
 			'wp-parsely-api',
@@ -1222,6 +1221,7 @@ class Parsely {
 		}
 
 		if ( $handle === 'wp-parsely-beacon' ) {
+			$parsely_options = $this->get_options();
 			$tag = preg_replace( '/ id=(\"|\')wp-parsely-beacon-js\1/', ' id="parsely-cfg"', $tag );
 			$tag = preg_replace(
 				'/ src=/',
