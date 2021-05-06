@@ -99,7 +99,7 @@ class Parsely {
 		}
 		$options = $this->get_options();
 		$apikey = $options['apikey'];
-		$post_url = get_permalink($post);
+		$post_url = get_permalink( $post );
 		$parsely_url = 'https://dash.parsely.com/' . $apikey . '/find?url=' . $post_url;
 		$actions = array_merge( $actions, array(
 			'find_in_parsely' => sprintf(
