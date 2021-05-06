@@ -964,7 +964,7 @@ class Parsely {
 		/**
 		 * Filters the structured metadata.
 		 *
-		 * @deprecated deprecated since version 2.5.0
+		 * @deprecated 2.5.0 Use `wp_parsely_metadata` filter instead.
 		 * @since 1.10.0
 		 *
 		 * @param array   $parsely_page    Existing structured metadata for a page.
