@@ -105,7 +105,7 @@ class Parsely {
 			'find_in_parsely' => sprintf(
 				'<img style="padding-right: 4px; transform: translateY(2px);" width="16px" height="16px" src="https://www.parse.ly/favicon-32x32.png?v=f82f85b2b9b3e85c26fc141c6c44b638"/><a href="%1$s">%2$s</a>',
 				esc_url( $parsely_url ),
-				'View In Parse.ly'
+				__( 'View In Parse.ly', 'wp-parsely' )
 			)
 		) );
 		return $actions;
