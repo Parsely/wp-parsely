@@ -1210,11 +1210,7 @@ class Parsely {
 	}
 
 	public function script_loader_tag( $tag, $handle, $src ) {
-		if ( in_array( $handle, array(
-			'wp-parsely',
-			'wp-parsely-api',
-			'wp-parsely-beacon',
-		) ) ) {
+		if ( in_array( $handle, array( 'wp-parsely-api', 'wp-parsely-beacon' ) ) ) {
 			// Have ClouldFlare Rocket Loader ignore these scripts:
 			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-
 			$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
