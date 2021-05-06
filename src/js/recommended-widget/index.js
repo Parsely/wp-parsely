@@ -1,19 +1,12 @@
+/**
+ * External dependencies
+ */
 import domReady from '@wordpress/dom-ready';
 
 /**
- * Get the value of a particular cookie
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
- * @todo pull this into a lib and add tests
- * @param {String} key Which cookie value to get
- * @returns {String|undefined} The value of the specified key, or `undefined` if it's not set.
+ * Internal dependencies
  */
-function getCookieValue( key ) {
-	return document.cookie
-		?.split( '; ' )
-		?.find( ( row ) => row.startsWith( `${ key }=` ) )
-		?.split( '=' )[ 1 ];
-}
+import { getCookieValue } from '../lib/cookies';
 
 const VISITOR_COOKIE_KEY_NAME = '_parsely_visitor';
 
