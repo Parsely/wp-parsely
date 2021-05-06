@@ -129,4 +129,4 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
 
 ## Changelog
 
-See the [change log](https://github.com/parsely/wp-parsely/blob/master/CHANGELOG.md).
+See the [change log](https://github.com/parsely/wp-parsely/blob/trunk/CHANGELOG.md).
