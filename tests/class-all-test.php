@@ -8,6 +8,7 @@
 namespace Parsely\Tests;
 
 use Parsely\Tests\TestCase as ParselyTestCase;
+use PHPUnit\Framework\Error\Warning as PHPUnit_Warning;
 
 /**
  * Catch-all class for testing.
@@ -979,5 +980,54 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$this->go_to( '/random-url' );
 		$res = self::$parsely->get_current_url();
 		self::assertStringStartsWith( $expected, $res );
+	}
+
+	/**
+	 * Test the wp_parsely_post_type filter
+	 *
+	 * @uses \Parsely::get_options()
+	 * @uses \Parsely::construct_parsely_metadata()
+	 */
+	public function test_filter_wp_parsely_post_type() {
+		$options = get_option( \Parsely::OPTIONS_KEY );
+
+		$post_array = $this->create_test_post_array();
+		$post_id    = $this->factory->post->create( $post_array );
+		$post_obj   = get_post( $post_id );
+		$this->go_to( '/?p=' . $post_id );
+
+		// Try to change the post type to a supported value - BlogPosting.
+		add_filter(
+			'wp_parsely_post_type',
+			function() {
+				return 'BlogPosting';
+			}
+		);
+
+		$metadata = self::$parsely->construct_parsely_metadata( $options, $post_obj );
+		self::assertSame( 'BlogPosting', $metadata['@type'] );
+
+		// Do not run the following assertion for PHP 5.6.
+		if ( version_compare( PHP_VERSION, '7.0.0', '<' ) ) {
+			return;
+		}
+
+		// Try to change the post type to a non-supported value - Not_Supported.
+		add_filter(
+			'wp_parsely_post_type',
+			function() {
+				return 'Not_Supported_Type';
+			}
+		);
+
+		/**
+		 * Ideally we use two methods expectWarning and expectWarningMessageMatches to test this error
+		 * But they're not available until PHPUnit 8.4 while here we're still running PHPUnit 7.x
+		 *
+		 * @see 7.5 https://phpunit.readthedocs.io/en/7.5/writing-tests-for-phpunit.html#testing-php-errors
+		 * @see 8.4 https://phpunit.readthedocs.io/en/8.4/writing-tests-for-phpunit.html#testing-php-errors-warnings-and-notices
+		 */
+		self::expectException( PHPUnit_Warning::class );
+		self::$parsely->construct_parsely_metadata( $options, $post_obj );
 	}
 }
