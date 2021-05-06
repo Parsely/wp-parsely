@@ -1,8 +1,5 @@
 {
-  "name": "wp-parsely",
-  "version": "2.4.1",
-  "description": "The official WordPress plugin for Parse.ly - makes it a snap to add the required tracking code to enable Parse.ly on your WordPress site.",
-  "main": "build/index.js",
+  "private": true,
   "directories": {
     "test": "tests"
   },
@@ -19,7 +16,6 @@
     "type": "git",
     "url": "git+https://github.com/Parsely/wp-parsely.git"
   },
-  "author": "",
   "license": "GPL-2.0-or-later",
   "bugs": {
     "url": "https://github.com/Parsely/wp-parsely/issues"
