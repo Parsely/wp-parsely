@@ -1,5 +1,5 @@
 {
-  "main": "build/index.js",
+  "private": true,
   "directories": {
     "test": "tests"
   },
@@ -16,7 +16,6 @@
     "type": "git",
     "url": "git+https://github.com/Parsely/wp-parsely.git"
   },
-  "author": "",
   "license": "GPL-2.0-or-later",
   "bugs": {
     "url": "https://github.com/Parsely/wp-parsely/issues"
