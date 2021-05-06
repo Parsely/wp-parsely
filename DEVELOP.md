@@ -37,21 +37,3 @@ that author does not match that of `git config --get user.name`).
 
 Be very careful to not overwrite commits that you have not yet pulled from
 github.
-
-## Building Included Assets
-
-JavaScript files which are included in the released plugin are built with the
-[wp-scripts tool](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/).
-
-Here's how to get started making changes to them:
-
-- Install the LTS release of node (if you don't have it already)
-- Update to the latest version of npm
-- Install the dependencies: `npm i`
-- Start the build tool: `npm run start`
-- Make and test your changes -- assets are rebuilt automatically
-- Create a branch / PR with all applicable changes to:
-  - Source files (in the `src` directory)
-  - Build tooling (including an updated `package-lock.json` if you've altered dependencies)
-  - Built files (in the `build` directory)
-    - When you're ready to do this, stop your `start` script and run `npm run build` instead
