@@ -41,7 +41,7 @@ function widgetLoad( {
 		parentDiv = jQuery.find( '.Parsely_Recommended_Widget' );
 	}
 	// make sure page is not attempting to load widget twice in the same spot
-	if ( jQuery( parentDiv ).find( 'div.parsely-recommendation-widget' ).length != 0 ) {
+	if ( jQuery( parentDiv ).find( 'div.parsely-recommendation-widget' ).length > 0 ) {
 		return;
 	}
 
