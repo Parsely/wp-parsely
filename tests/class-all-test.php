@@ -8,6 +8,7 @@
 namespace Parsely\Tests;
 
 use Parsely\Tests\TestCase as ParselyTestCase;
+use PHPUnit\Framework\Error\Warning as PHPUnit_Warning;
 
 /**
  * Catch-all class for testing.
@@ -40,16 +41,28 @@ class All_Test extends ParselyTestCase {
 		ParselyTestCase::set_options();
 	}
 
-	public function test_class_version() {
-		self::assertEquals( '2.4.1', \Parsely::VERSION );
+	/**
+	 * Make sure the version is semver-compliant
+	 *
+	 * @see https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
+	 * @see https://regex101.com/r/Ly7O1x/3/
+	 */
+	public function test_constant_version() {
+		self::assertSame(
+			1,
+			preg_match(
+				'/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/',
+				PARSELY_VERSION
+			)
+		);
 	}
 
-	public function test_constant_version() {
-		self::assertEquals( \Parsely::VERSION, PARSELY_VERSION );
+	public function test_class_version() {
+		self::assertSame( PARSELY_VERSION, \Parsely::VERSION );
 	}
 
 	public function test_cache_buster() {
-		self::assertEquals( PARSELY_VERSION, \Parsely::get_asset_cache_buster() );
+		self::assertSame( PARSELY_VERSION, \Parsely::get_asset_cache_buster() );
 	}
 
 	public function test_plugin_url_constant() {
@@ -94,7 +107,7 @@ class All_Test extends ParselyTestCase {
 		$output = ob_get_clean();
 
 		self::assertSame(
-			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
+			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tags were printed correctly'
 		);
@@ -134,14 +147,13 @@ class All_Test extends ParselyTestCase {
 
 		wp_print_scripts();
 		$output = ob_get_clean();
-
 		self::assertContains(
 "/* <![CDATA[ */
 var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 /* ]]> */
 </script>
-<script type='text/javascript' src='" . esc_url( PARSELY_PLUGIN_URL ) . "build/init-api.js?ver=" . PARSELY_VERSION . "' id='wp-parsely-api-js'></script>
-<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>
+<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( PARSELY_PLUGIN_URL ) . "build/init-api.js?ver=" . PARSELY_VERSION . "' id='wp-parsely-api-js'></script>
+<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>
 ",
 			$output,
 			'Failed to confirm script tags were printed correctly'
@@ -857,7 +869,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$output = ob_get_clean();
 
 		self::assertSame(
-			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
+			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tags were printed correctly'
 		);
@@ -968,5 +980,54 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$this->go_to( '/random-url' );
 		$res = self::$parsely->get_current_url();
 		self::assertStringStartsWith( $expected, $res );
+	}
+
+	/**
+	 * Test the wp_parsely_post_type filter
+	 *
+	 * @uses \Parsely::get_options()
+	 * @uses \Parsely::construct_parsely_metadata()
+	 */
+	public function test_filter_wp_parsely_post_type() {
+		$options = get_option( \Parsely::OPTIONS_KEY );
+
+		$post_array = $this->create_test_post_array();
+		$post_id    = $this->factory->post->create( $post_array );
+		$post_obj   = get_post( $post_id );
+		$this->go_to( '/?p=' . $post_id );
+
+		// Try to change the post type to a supported value - BlogPosting.
+		add_filter(
+			'wp_parsely_post_type',
+			function() {
+				return 'BlogPosting';
+			}
+		);
+
+		$metadata = self::$parsely->construct_parsely_metadata( $options, $post_obj );
+		self::assertSame( 'BlogPosting', $metadata['@type'] );
+
+		// Do not run the following assertion for PHP 5.6.
+		if ( version_compare( PHP_VERSION, '7.0.0', '<' ) ) {
+			return;
+		}
+
+		// Try to change the post type to a non-supported value - Not_Supported.
+		add_filter(
+			'wp_parsely_post_type',
+			function() {
+				return 'Not_Supported_Type';
+			}
+		);
+
+		/**
+		 * Ideally we use two methods expectWarning and expectWarningMessageMatches to test this error
+		 * But they're not available until PHPUnit 8.4 while here we're still running PHPUnit 7.x
+		 *
+		 * @see 7.5 https://phpunit.readthedocs.io/en/7.5/writing-tests-for-phpunit.html#testing-php-errors
+		 * @see 8.4 https://phpunit.readthedocs.io/en/8.4/writing-tests-for-phpunit.html#testing-php-errors-warnings-and-notices
+		 */
+		self::expectException( PHPUnit_Warning::class );
+		self::$parsely->construct_parsely_metadata( $options, $post_obj );
 	}
 }

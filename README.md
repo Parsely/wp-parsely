@@ -1,6 +1,6 @@
 # Parse.ly
 
-Stable tag: 2.4.1  
+Stable tag: 2.5.0-alpha
 Requires at least: 4.0  
 Tested up to: 5.6  
 Requires PHP: 5.6  
@@ -129,4 +129,4 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
 
 ## Changelog
 
-See the [change log](https://github.com/parsely/wp-parsely/blob/master/CHANGELOG.md).
+See the [change log](https://github.com/parsely/wp-parsely/blob/trunk/CHANGELOG.md).
