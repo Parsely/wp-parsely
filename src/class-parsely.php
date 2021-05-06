@@ -85,7 +85,7 @@ class Parsely {
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
-		add_action( 'wp_footer', array( $this, 'insert_parsely_javascript' ) );
+		add_action( 'init', array( $this, 'insert_parsely_javascript' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
@@ -1112,6 +1112,10 @@ class Parsely {
 	 * Inserts the JavaScript code required to send off beacon requests
 	 */
 	public function insert_parsely_javascript() {
+		if ( is_admin() ) {
+			return;
+		}
+
 		$parsely_options = $this->get_options();
 		// If we don't have an API key, there's no need to proceed.
 		if ( empty( $parsely_options['apikey'] ) || $parsely_options['disable_javascript'] ) {
