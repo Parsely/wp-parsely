@@ -1110,6 +1110,16 @@ class Parsely {
 
 	/**
 	 * Registers and optionally enqueues the JavaScript code required to send off beacon requests
+	 * @deprecated 2.5.0 Use the `enqueue_beacon_script` method instead
+	 */
+	public function insert_parsely_javascript() {
+		_deprecated_function( __FUNCTION__, '2.5.0', 'enqueue_beacon_script' );
+		$this->enqueue_beacon_script();
+	}
+
+	/**
+	 * Registers and optionally enqueues the JavaScript code required to send off beacon requests
+	 * @since 2.5.0
 	 */
 	public function enqueue_beacon_script() {
 		if ( is_admin() ) {
