@@ -100,7 +100,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		// Set up the variables.
 		$options = get_option( 'parsely' );
-		$full_url = $this->get_api_url(
+		$api_url = $this->get_api_url(
 				$options['apikey'],
 				$instance['published_within'],
 				$instance['sort'],
@@ -124,9 +124,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			array(
 				'displayAuthor' => isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false,
 				'displayDirection' => isset( $instance['display_direction'] ) ? $instance['display_direction'] : null,
-				'fullUrl' => esc_url_raw( $full_url ),
+				'apiUrl' => $api_url,
 				'imgSrc' => isset( $instance['img_src'] ) ? $instance['img_src'] : null,
-				'permalink' => esc_url_raw( get_permalink() ),
+				'permalink' => get_permalink(),
 				'personalized' => isset( $instance['personalize_results'] ) ? boolval( $instance['personalize_results'] ): false,
 				'widgetId' => $this->id,
 			)

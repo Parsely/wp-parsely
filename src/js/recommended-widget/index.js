@@ -13,7 +13,7 @@ const VISITOR_COOKIE_KEY_NAME = '_parsely_visitor';
 function widgetLoad( {
 	displayAuthor,
 	displayDirection,
-	fullUrl,
+	apiUrl,
 	imgSrc,
 	permalink,
 	personalized,
@@ -29,10 +29,12 @@ function widgetLoad( {
 		} catch ( e ) {}
 	}
 
+	let fullUrl = apiUrl;
+
 	if ( personalized && uuid ) {
 		fullUrl += `&uuid=${ uuid }`;
 	} else {
-		fullUrl += `&url=${ permalink }`;
+		fullUrl += `&url=${ encodeURIComponent( permalink ) }`;
 	}
 	let parentDiv = jQuery.find( `#${ widgetId }` );
 	if ( parentDiv.length === 0 ) {
