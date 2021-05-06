@@ -1,6 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: 'npm'
+    reviewers: 'Parsely/wp-parsely'
     directory: '/'
     schedule:
       interval: 'daily'
