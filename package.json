@@ -32,6 +32,6 @@
   },
   "dependencies": {
     "@wordpress/dom-ready": "^2.13.2",
-    "@wordpress/i18n": "^3.19.2"
+    "@wordpress/i18n": "^3.20.0"
   }
 }
