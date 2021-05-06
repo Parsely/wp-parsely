@@ -3,7 +3,6 @@ name: Release template
 about: Internally used for new releases
 title: Release x.y.z
 labels: 'Type: Maintenance'
-assignees: jblz, GaryJones, mikeyarce, hbbtstar
 
 ---
 
