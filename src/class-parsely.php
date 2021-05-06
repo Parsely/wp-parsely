@@ -81,9 +81,8 @@ class Parsely {
 			array( $this, 'add_plugin_meta_links' )
 		);
 
-
 		add_filter( 'cron_schedules', [ $this, 'wpparsely_add_cron_interval' ] );
-		add_filter('post_row_actions', array($this, 'add_parsely_link'), 10, 2);
+		add_filter( 'post_row_actions', array( $this, 'add_parsely_link' ), 10, 2 );
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
@@ -99,9 +98,9 @@ class Parsely {
 		$apikey = $options['apikey'];
 		$post_url = get_permalink($post);
 		$parsely_url = 'https://dash.parsely.com/' . $apikey . '/find?url=' . $post_url;
-		$actions = array_merge($actions, array(
+		$actions = array_merge( $actions, array(
 				'find_in_parsely' => sprintf('<img style="padding-right: 4px; transform: translateY(2px);" width="16px" height="16px" src="https://www.parse.ly/favicon-32x32.png?v=f82f85b2b9b3e85c26fc141c6c44b638"/><a href="%1$s">%2$s</a>', esc_url( $parsely_url ), 'View In Parse.ly'
-		)));
+		) ) );
 		return $actions;
 	}
 
