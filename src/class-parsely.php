@@ -85,7 +85,7 @@ class Parsely {
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
-		add_action( 'init', array( $this, 'insert_parsely_javascript' ) );
+		add_action( 'init', array( $this, 'enqueue_beacon_script' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
@@ -326,7 +326,7 @@ class Parsely {
 		);
 
 		// Disable JavaScript.
-		$h = __( 'If you use a separate system for JavaScript tracking ( Tealium / Segment / Google Tag Manager / other tag manager solution ) you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving this option set to "No"!', 'wp-parsely' );
+		$h = __( 'If you use a separate system for JavaScript tracking ( Tealium / Segment / Google Tag Manager / other tag manager solution ) you may want to use that instead of having the plugin load the beacon script. WARNING: disabling this option will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving this option set to "No"!', 'wp-parsely' );
 		add_settings_field(
 			'disable_javascript',
 			__( 'Disable JavaScript', 'wp-parsely' ),
@@ -342,7 +342,7 @@ class Parsely {
 		);
 
 		// Disable amp tracking.
-		$h = __( 'If you use a separate system for JavaScript tracking on AMP pages ( Tealium / Segment / Google Tag Manager / other tag manager solution ) you may want to use that instead of having the plugin load the tracker.', 'wp-parsely' );
+		$h = __( 'If you use a separate system for JavaScript tracking on AMP pages ( Tealium / Segment / Google Tag Manager / other tag manager solution ) you may want to use that instead of having the plugin load the beacon script.', 'wp-parsely' );
 		add_settings_field(
 			'disable_amp',
 			__( 'Disable AMP Tracking', 'wp-parsely' ),
@@ -1109,9 +1109,9 @@ class Parsely {
 	}
 
 	/**
-	 * Inserts the JavaScript code required to send off beacon requests
+	 * Registers and optionally enqueues the JavaScript code required to send off beacon requests
 	 */
-	public function insert_parsely_javascript() {
+	public function enqueue_beacon_script() {
 		if ( is_admin() ) {
 			return;
 		}
@@ -1191,7 +1191,7 @@ class Parsely {
 		}
 
 		wp_enqueue_script(
-			'wp-parsely-tracker',
+			'wp-parsely-beacon',
 			'https://cdn.parsely.com/keys/' . $parsely_options['apikey'] . '/p.js',
 			$dependencies,
 			self::get_asset_cache_buster(),
@@ -1204,15 +1204,15 @@ class Parsely {
 		if ( in_array( $handle, array(
 			'wp-parsely',
 			'wp-parsely-api',
-			'wp-parsely-tracker',
+			'wp-parsely-beacon',
 		) ) ) {
 			// Have ClouldFlare Rocket Loader ignore these scripts:
 			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-
 			$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
 		}
 
-		if ( $handle === 'wp-parsely-tracker' ) {
-			$tag = preg_replace( '/ id=(\"|\')wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
+		if ( $handle === 'wp-parsely-beacon' ) {
+			$tag = preg_replace( '/ id=(\"|\')wp-parsely-beacon-js\1/', ' id="parsely-cfg"', $tag );
 			$tag = preg_replace(
 				'/ src=/',
 				' data-parsely-site="' . esc_attr( $parsely_options['apikey'] ) . '" src=',

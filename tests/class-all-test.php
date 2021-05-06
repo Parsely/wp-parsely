@@ -71,7 +71,7 @@ class All_Test extends ParselyTestCase {
 	/**
 	 * Test the default parsely script enqueues.
 	 *
-	 * @covers \Parsely::insert_parsely_javascript
+	 * @covers \Parsely::enqueue_beacon_script
 	 * @group insert-js
 	 */
 	public function test_parsely_default_scripts() {
@@ -79,13 +79,13 @@ class All_Test extends ParselyTestCase {
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		echo self::$parsely->insert_parsely_javascript();
+		echo self::$parsely->enqueue_beacon_script();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
+			'Failed to confirm scripts were not printed by enqueue_beacon_script()'
 		);
 
 		self::assertTrue(
@@ -98,8 +98,8 @@ class All_Test extends ParselyTestCase {
 		);
 
 		self::assertTrue(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm tracker script was enqueued'
+			wp_script_is( 'wp-parsely-beacon', 'enqueued' ),
+			'Failed to confirm beacon script was enqueued'
 		);
 
 		wp_print_scripts();
@@ -115,7 +115,7 @@ class All_Test extends ParselyTestCase {
 	/**
 	 * Test the parsely script enqueues when an api secret is set.
 	 *
-	 * @covers \Parsely::insert_parsely_javascript
+	 * @covers \Parsely::enqueue_beacon_script
 	 * @group insert-js
 	 */
 	public function test_parsely_api_enabled_scripts() {
@@ -125,13 +125,13 @@ class All_Test extends ParselyTestCase {
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		echo self::$parsely->insert_parsely_javascript();
+		echo self::$parsely->enqueue_beacon_script();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
+			'Failed to confirm scripts were not printed by enqueue_beacon_script()'
 		);
 
 		self::assertTrue(
@@ -140,8 +140,8 @@ class All_Test extends ParselyTestCase {
 		);
 
 		self::assertTrue(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm tracker script was enqueued'
+			wp_script_is( 'wp-parsely-beacon', 'enqueued' ),
+			'Failed to confirm beacon script was enqueued'
 		);
 
 		wp_print_scripts();
@@ -725,7 +725,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	/**
 	 * Make sure users can log in.
 	 *
-	 * @covers \Parsely::insert_parsely_javascript
+	 * @covers \Parsely::enqueue_beacon_script
 	 * @group insert-js
 	 * @group settings
 	 */
@@ -735,13 +735,13 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		wp_set_current_user( $new_user );
 
 		ob_start();
-		echo self::$parsely->insert_parsely_javascript();
+		echo self::$parsely->enqueue_beacon_script();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
+			'Failed to confirm scripts were not printed by enqueue_beacon_script()'
 		);
 
 		self::assertFalse(
@@ -755,13 +755,13 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 
 		self::assertFalse(
-			wp_script_is( 'wp-parsely-tracker', 'registered' ),
-			'Failed to confirm tracker script was not registered'
+			wp_script_is( 'wp-parsely-beacon', 'registered' ),
+			'Failed to confirm beacon script was not registered'
 		);
 
 		self::assertFalse(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm tracker script was not enqueued'
+			wp_script_is( 'wp-parsely-beacon', 'enqueued' ),
+			'Failed to confirm beacon script was not enqueued'
 		);
 
 		wp_print_scripts();
@@ -777,7 +777,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	/**
 	 * Make sure users can log in to more than one site.
 	 *
-	 * @covers \Parsely::insert_parsely_javascript
+	 * @covers \Parsely::enqueue_beacon_script
 	 * @group insert-js
 	 * @group settings
 	 */
@@ -810,13 +810,13 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		self::assertFalse( is_user_member_of_blog( $new_user, $second_blog ) );
 
 		ob_start();
-		echo self::$parsely->insert_parsely_javascript();
+		echo self::$parsely->enqueue_beacon_script();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
+			'Failed to confirm scripts were not printed by enqueue_beacon_script()'
 		);
 
 		self::assertFalse(
@@ -830,13 +830,13 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 
 		self::assertFalse(
-			wp_script_is( 'wp-parsely-tracker', 'registered' ),
-			'Failed to confirm tracker script was not registered'
+			wp_script_is( 'wp-parsely-beacon', 'registered' ),
+			'Failed to confirm beacon script was not registered'
 		);
 
 		self::assertFalse(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm tracker script was not enqueued'
+			wp_script_is( 'wp-parsely-beacon', 'enqueued' ),
+			'Failed to confirm beacon script was not enqueued'
 		);
 
 		wp_print_scripts();
@@ -855,13 +855,13 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		self::assertFalse( is_user_member_of_blog( $new_user, get_current_blog_id() ) );
 
 		ob_start();
-		echo self::$parsely->insert_parsely_javascript();
+		echo self::$parsely->enqueue_beacon_script();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
+			'Failed to confirm scripts were not printed by enqueue_beacon_script()'
 		);
 
 		self::assertTrue(
@@ -874,8 +874,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 
 		self::assertTrue(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm tracker script was enqueued'
+			wp_script_is( 'wp-parsely-beacon', 'enqueued' ),
+			'Failed to confirm beacon script was enqueued'
 		);
 
 		wp_print_scripts();
@@ -999,7 +999,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Test the wp_parsely_insert_javascript filter
 	 * When it returns false, no scripts should be enqueued.
 	 *
-	 * @covers \Parsely::insert_parsely_javascript
+	 * @covers \Parsely::enqueue_beacon_script
 	 */
 	public function test_insert_javascript_filter() {
 		add_filter( 'wp_parsely_insert_javascript', '__return_false' );
@@ -1008,13 +1008,13 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$post_array = $this->create_test_post_array();
 		$post = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		echo self::$parsely->insert_parsely_javascript();
+		echo self::$parsely->enqueue_beacon_script();
 		$intermediate_output = ob_get_contents();
 
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
+			'Failed to confirm scripts were not printed by enqueue_beacon_script()'
 		);
 
 		wp_print_scripts();
@@ -1042,13 +1042,13 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$post_array = $this->create_test_post_array();
 		$post = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		echo self::$parsely->insert_parsely_javascript();
+		echo self::$parsely->enqueue_beacon_script();
 		$intermediate_output = ob_get_contents();
 
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by insert_parsely_javascript()'
+			'Failed to confirm scripts were not printed by enqueue_beacon_script()'
 		);
 
 		wp_print_scripts();
