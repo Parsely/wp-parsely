@@ -8,8 +8,8 @@
     "npm": "^7"
   },
   "scripts": {
-    "build": "wp-scripts build src/js/lib/init-api src/js/lib/admin-page src/js/recommended-widget",
-    "start": "wp-scripts start src/js/lib/init-api src/js/lib/admin-page src/js/recommended-widget",
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
