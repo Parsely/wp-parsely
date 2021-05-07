@@ -88,15 +88,21 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			return;
 		}
 
+		$removed_title_esc = remove_filter( 'widget_title', 'esc_html' );
+
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $instance['title'] );
+		$title_html = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
+
+		if ( $removed_title_esc ) {
+			add_filter( 'widget_title', 'esc_html' );
+		}
 
 		wp_enqueue_style( 'wp-parsely-style' );
 		wp_enqueue_script( 'jquery' );
 
-		$allowed_tags = wp_kses_allowed_html( 'post' );
 		$title_html   = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
-		echo wp_kses( $title_html, $allowed_tags );
+		echo wp_kses_post( $title_html );
 
 		// Set up the variables.
 		$options = get_option( 'parsely' );
@@ -134,7 +140,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		wp_enqueue_script( 'wp-parsely-recommended-widget' );
 
-		echo wp_kses( $args['after_widget'], $allowed_tags );
+		echo wp_kses_post( $args['after_widget'] );
 	}
 
 	/**
@@ -283,7 +289,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance                        = $old_instance;
-		$instance['title']               = trim( wp_strip_all_tags( $new_instance['title'] ) );
+		$instance['title']               = trim( wp_kses_post( $new_instance['title'] ) );
 		$instance['published_within']    = (int) trim( $new_instance['published_within'] );
 		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
 		$instance['display_direction']   = trim( $new_instance['display_direction'] );
