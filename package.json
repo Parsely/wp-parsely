@@ -10,7 +10,11 @@
   "scripts": {
     "build": "wp-scripts build src/js/lib/init-api src/js/lib/admin-page src/js/recommended-widget",
     "start": "wp-scripts start src/js/lib/init-api src/js/lib/admin-page src/js/recommended-widget",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run test:unit",
+    "test:unit": "wp-scripts test-unit-js",
+    "test:unit:help": "wp-scripts test-unit-js --help",
+    "test:unit:watch": "wp-scripts test-unit-js --watch",
+    "test:unit:debug": "wp-scripts --inspect-brk test-unit-js --runInBand --no-cache"
   },
   "repository": {
     "type": "git",
