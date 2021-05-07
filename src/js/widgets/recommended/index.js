@@ -6,7 +6,7 @@ import domReady from '@wordpress/dom-ready';
 /**
  * Internal dependencies
  */
-import { getCookieValue } from '../lib/cookies';
+import { getCookieValue } from '../../lib/cookies';
 
 const VISITOR_COOKIE_KEY_NAME = '_parsely_visitor';
 
