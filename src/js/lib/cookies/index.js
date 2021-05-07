@@ -1,6 +1,7 @@
-export const Cookies = {
-	get: () => document.cookie,
-}
+/**
+ * Internal dependencies
+ */
+import { documentCookieWrapper } from './utils';
 
 /**
  * Get the value of a particular cookie
@@ -9,7 +10,9 @@ export const Cookies = {
  * @param {string} key Which cookie value to get
  * @return {string | undefined} The value of the specified key, or `undefined` if it's not set.
  */
-export const getCookieValue = ( key ) => Cookies.get()
-		?.split( '; ' )
-		?.find( ( row ) => row.startsWith( `${ key }=` ) )
-		?.split( '=' )[ 1 ];
+export const getCookieValue = ( key ) => {
+	const row = documentCookieWrapper()
+		.split( '; ' )
+		.find( ( r ) => r.startsWith( `${ key }=` ) );
+	return row?.split( '=' )[ 1 ];
+};
