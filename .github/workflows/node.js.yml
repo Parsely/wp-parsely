@@ -26,7 +26,20 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install js dependencies
+      # See: https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: "${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}"
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: 'Install js dependencies'
         run: npm ci
 
       - name: Build application
