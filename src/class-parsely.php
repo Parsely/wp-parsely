@@ -1218,6 +1218,7 @@ class Parsely {
 			'wp-parsely',
 			'wp-parsely-api',
 			'wp-parsely-tracker',
+			'wp-parsely-recommended-widget',
 		) ) ) {
 			// Have ClouldFlare Rocket Loader ignore these scripts:
 			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-
