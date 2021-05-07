@@ -12,13 +12,33 @@ When creating a new issue, please add specific steps to reproduce the problem, u
 
 ### Minimum required versions
 
-* Node.js - LTS
-	Node.js is used in the build process of the Parse.ly plugin. If it's not already installed on your system, you can [visit the Node.js website and install the latest Long Term Support (LTS) version.](https://nodejs.org/)
+* Node.js - 14 (LTS)
+
+    Node.js is used in the build process of the Parse.ly plugin. If it's not already installed on your system, you can [visit the Node.js website and install the latest Long Term Support (LTS) version.](https://nodejs.org/).
+    
+    If you use [nvm](https://github.com/nvm-sh/nvm) to manage node versions, you can run:
+    ```
+    nvm install
+    ```
+
+* npm - 7
+
+    Node 14 ships with npm version 6, so you will need to update your version of npm. Once node is installed, update it with:
+    ```
+    npm i -g npm
+    ```
+    
+    This is important to maintain the integrity of the `package-lock.json` file (we use [`lockfileVersion` 2](https://docs.npmjs.com/cli/v7/configuring-npm/package-lock-json#lockfileversion)).
+
 * PHP - 5.6–8.0
-	  There are multiple ways to install PHP on your operating system. You can check out the [official installation instructions from the PHP project's website.](https://www.php.net/manual/en/install.php)
+
+    There are multiple ways to install PHP on your operating system. You can check out the [official installation instructions from the PHP project's website.](https://www.php.net/manual/en/install.php)
 
 * Composer - 1.x (but 2.x recommended).
-	The Parse.ly plugin includes several packages that require Composer, the PHP package manager. You can view the [composer.json](https://github.com/Parsely/wp-parsely/blob/develop/composer.json) file for a full list of packages. You can install Composer through Homebrew on macOS: `brew install composer`. If you don't have access to Homebrew you can view instructions for how to install Composer on the [Composer website](https://getcomposer.org/download/).
+
+    The Parse.ly plugin includes several packages that require Composer, the PHP package manager. You can view the [composer.json](https://github.com/Parsely/wp-parsely/blob/develop/composer.json) file for a full list of packages. You can install Composer through Homebrew on macOS: `brew install composer`. If you don't have access to Homebrew you can view instructions for how to install Composer on the [Composer website](https://getcomposer.org/download/).
+
+* WordPress - 4.0
 
 ### Installing Dependencies
 Once you have Node.js, PHP, and Composer installed locally, you will need to run `composer install` in the main plugin directory to install the dependencies of the plugin needed to run tests and check coding standards.
