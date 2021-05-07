@@ -32,10 +32,11 @@ The plugin requires an active Parse.ly account. Parse.ly gives creators, markete
 [Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
 ### Install the plugin from within WordPress
+
 1. Visit the Plugins page from your WordPress dashboard and click "Add New" at the top of the page.
 1. Search for "parse.ly" using the search bar on the right side.
 1. Click "Install Now" to install the plugin.
-1. After it's installed, click "Activate" to activate the plugin on your site. 
+1. After it's installed, click "Activate" to activate the plugin on your site.
 
 ### Install the plugin manually
 
@@ -64,7 +65,7 @@ You can use the `after_set_parsely_page` filter, which sends three arguments: th
     add_filter( 'after_set_parsely_page', 'filter_parsely_page', 10, 3 );
     function filter_parsely_page( $parselyPage, $post, $parselyOptions ) {
         $parselyPage['articleSection'] = '...'; // Whatever values you want Parse.ly's Section to be.
-    
+
         return $parselyPage;
     }
 
@@ -93,14 +94,13 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 ## Screenshots
 
 1. The main admin screen of the Parse.ly plugin, showing some of the settings.  
-![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-1.png)
+   ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-1.png)
 
-2. The settings for the Parse.ly Recommended Widget.  Engage your visitors with predictive and personalized recommendations from Parse.ly.  
-![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-2.png)
-   
+2. The settings for the Parse.ly Recommended Widget. Engage your visitors with predictive and personalized recommendations from Parse.ly.  
+   ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-2.png)
 3. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.  
-![The Parsely Dashboard Overview](.wordpress-org/screenshot-3.png)
-   
+   ![The Parsely Dashboard Overview](.wordpress-org/screenshot-3.png)
+
 ## Sample Parse.ly metadata
 
 The standard Parse.ly JavaScript tracker inserted before the closing `body` tag:
