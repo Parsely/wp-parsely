@@ -4,10 +4,18 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: [develop]
   pull_request:
-    branches: [develop]
+    paths:
+      - .github/workflows/*.js.yml
+      - src/js/**/*[tj]sx?
+      - tests/js/**/*.[tj]s
+      - package.json
+      - '*.js'
+  push:
+    branches:
+      - develop
+      - trunk
+      - release/**
 
 jobs:
   build:
