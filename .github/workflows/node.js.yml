@@ -16,6 +16,8 @@ on:
       - develop
       - trunk
       - release/**
+  # Allow manually triggering the workflow.
+  workflow_dispatch:
 
 jobs:
   build:
