@@ -49,7 +49,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - name: 'Install js dependencies'
+      - name: Install JavaScript dependencies
         run: npm ci
 
       - name: Build application
