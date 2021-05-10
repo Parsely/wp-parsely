@@ -122,7 +122,7 @@ class Parsely {
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'init', array( $this, 'register_js' ) );
 		add_action( 'wp_footer', array( $this, 'load_js_tracker' ) );
-		add_action( 'wp_footer', array( $this, 'load_api_js' ) );
+		add_action( 'wp_footer', array( $this, 'load_js_api' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
@@ -1259,7 +1259,7 @@ class Parsely {
 		wp_enqueue_script( 'wp-parsely-tracker' );
 	}
 
-	public function load_api_js() {
+	public function load_js_api() {
 		$parsely_options = $this->get_options();
 
 		// If we don't have an API secret, there's no need to proceed.

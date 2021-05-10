@@ -148,21 +148,21 @@ class All_Test extends ParselyTestCase {
 	/**
 	 * Test the API init script enqueue.
 	 *
-	 * @covers \Parsely::load_api_js
+	 * @covers \Parsely::load_js_api
 	 * @group insert-js
 	 */
-	public function test_load_api_js_no_secret() {
+	public function test_load_js_api_no_secret() {
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
 		self::$parsely->register_js();
-		echo self::$parsely->load_api_js();
+		echo self::$parsely->load_js_api();
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by load_api_js()'
+			'Failed to confirm scripts were not printed by load_js_api()'
 		);
 
 		self::assertFalse(
@@ -183,10 +183,10 @@ class All_Test extends ParselyTestCase {
 	/**
 	 * Test the API init script enqueue.
 	 *
-	 * @covers \Parsely::load_api_js
+	 * @covers \Parsely::load_js_api
 	 * @group insert-js
 	 */
-	public function test_load_api_js_with_secret() {
+	public function test_load_js_api_with_secret() {
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
@@ -195,12 +195,12 @@ class All_Test extends ParselyTestCase {
 
 		self::set_options( array( 'api_secret' => 'hunter2' ) );
 
-		echo self::$parsely->load_api_js();
+		echo self::$parsely->load_js_api();
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by load_api_js()'
+			'Failed to confirm scripts were not printed by load_js_api()'
 		);
 
 		self::assertTrue(
