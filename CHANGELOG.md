@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Consolidated & renovated documentation into a new [CONTRIBUTING.md](CONTRIBUTING.md) file.
-- Introduced a build step for front-end and admin page JavaScript assets which leverages the [`@wordpress/scripts` package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/). Scripts are now separately enqueued and browser-cachable.
+- Introduced a build step for front-end and admin page JavaScript assets which leverages the [`@wordpress/scripts` package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/). Scripts are now separately enqueued and browser-cacheable.
 - Allowed for select HTML tags and attributes in the Recommended Content Widget Title.
 - Added filter `wp_parsely_post_type` to override the [type of content Parse.ly attributes to an article](https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages).
 - Added support for custom post status slugs via the `wp_parsely_trackable_statuses` filter (to allow for those other than `publish` to be tracked).
