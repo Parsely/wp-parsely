@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adjusted HTML Heading levels for improved usability and accessibility.
 - Improved accessibility of radio inputs on the admin page.
 - Prevented printing of admin page CSS outside the specific admin page for this plugin.
+- Switched to XHRs for /profile calls (instead of using JSONP)
+- Removed jQuery dependency from the API and Admin scripts
 - Fixed the "requires a recrawl" notices to limit to specific admin page settings.
 - Fixed inconsistent ports in canonical URLs
 
