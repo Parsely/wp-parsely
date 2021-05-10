@@ -60,13 +60,12 @@ You may also be not tracking logged-in users, via one of the settings.
 
 ### How can I edit the values passed to the JSON-LD metadata?
 
-You can use the `after_set_parsely_page` filter, which sends three arguments: the array of metadata, the post object, and the `parselyOptions` array:
+You can use the `wp_parsely_metadata` filter, which sends three arguments: the array of metadata, the post object, and the `parsely_options` array:
 
-    add_filter( 'after_set_parsely_page', 'filter_parsely_page', 10, 3 );
-    function filter_parsely_page( $parselyPage, $post, $parselyOptions ) {
-        $parselyPage['articleSection'] = '...'; // Whatever values you want Parse.ly's Section to be.
-
-        return $parselyPage;
+    add_filter( 'wp_parsely_metadata', 'filter_parsely_metadata', 10, 3 );
+    function filter_parsely_page( $parsely_metadata, $post, $parsely_options ) {
+        $parsely_metadata['articleSection'] = '...'; // Whatever values you want Parse.ly's Section to be.
+        return $parsely_metadata;
     }
 
 This filter can go anywhere in your codebase, provided it always gets loaded.
