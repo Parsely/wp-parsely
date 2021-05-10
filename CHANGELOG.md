@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2021-05-TODO
+
+- Improved docs in a new [CONTRIBUTING.md](CONTRIBUTING.md) file.
+- Introduced a build step for front-end and admin page JavaScript assets which leverages the [`@wordpress/scripts` package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/).
+- Refactored printed markup into template "views."
+- Refactored plugin entry file to perform minimal initialization and separately load the `Parsely` class file.
+- Improved the README file (which populates the copy in the plugin repository page).
+- Expanded test coverage (PHP and JavaScript).
+- Allowed for select markup in the Recommended Content Widget Title.
+- Expanded string localization and consolidated into a single text domain.
+- Added filter wp_parsely_post_type for NewsArticle.
+
 ## [2.4.1] - 2021-04-13
 
 ### Fixed
@@ -231,6 +243,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial version.
 - Add sSupport for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
+[2.5.0]: https://github.com/Parsely/wp-parsely/compare/2.4.1...2.5.0
 [2.4.1]: https://github.com/Parsely/wp-parsely/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/Parsely/wp-parsely/compare/2.3.0...2.4.0
 [2.3.0]: https://github.com/Parsely/wp-parsely/compare/2.2.1...2.3.0
