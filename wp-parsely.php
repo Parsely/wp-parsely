@@ -22,6 +22,8 @@
  * Requires WP:       4.0.0
  */
 
+// testing123
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
