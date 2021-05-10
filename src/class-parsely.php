@@ -120,7 +120,9 @@ class Parsely {
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
-		add_action( 'wp_footer', array( $this, 'insert_parsely_javascript' ) );
+		add_action( 'init', array( $this, 'register_js' ) );
+		add_action( 'wp_footer', array( $this, 'load_js_tracker' ) );
+		add_action( 'wp_footer', array( $this, 'load_api_js' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
@@ -1162,14 +1164,48 @@ class Parsely {
 		return apply_filters( 'wp_parsely_cache_buster', $cache_buster );
 	}
 
+	public function register_js() {
+		$parsely_options = $this->get_options();
+
+		// If we don't have an API key, there's no need to proceed.
+		if ( empty( $parsely_options['apikey'] ) ) {
+			return '';
+		}
+
+		wp_register_script(
+			'wp-parsely-tracker',
+			'https://cdn.parsely.com/keys/' . $parsely_options['apikey'] . '/p.js',
+			array(),
+			self::get_asset_cache_buster(),
+			true
+		);
+
+		$api_script_asset = require PARSELY_PLUGIN_DIR . 'build/init-api.asset.php' ;
+		wp_register_script(
+			'wp-parsely-api',
+			PARSELY_PLUGIN_URL . 'build/init-api.js',
+			$api_script_asset[ 'dependencies' ],
+			self::get_asset_cache_buster(),
+			true
+		);
+
+		wp_localize_script(
+			'wp-parsely-api',
+			'wpParsely', // This globally-scoped object holds variables used to interact with the API
+			array(
+				'apikey' => $parsely_options['apikey'],
+			)
+		);
+	}
+
 	/**
-	 * Inserts the JavaScript code required to send off beacon requests
+	 * Enqueues the JavaScript code required to send off beacon requests
 	 */
-	public function insert_parsely_javascript() {
+	public function load_js_tracker() {
 		$parsely_options = $this->get_options();
 		// If we don't have an API key, there's no need to proceed.
 		if ( empty( $parsely_options['apikey'] ) || $parsely_options['disable_javascript'] ) {
-			return '';
+			return;
 		}
 
 		global $post;
@@ -1204,9 +1240,9 @@ class Parsely {
 		}
 
 		/**
-		 * Filters whether to include the Parsely JavaScript file.
+		 * Filters whether to enqueue the Parsely JavaScript tracking script from the CDN.
 		 *
-		 * If true, the JavaScript files are sourced.
+		 * If true, the script is enqueued.
 		 *
 		 * @since 2.5.0
 		 *
@@ -1216,37 +1252,26 @@ class Parsely {
 				return;
 		}
 
-		$api_script_asset = require PARSELY_PLUGIN_DIR . 'build/init-api.asset.php' ;
-		wp_register_script(
-			'wp-parsely-api',
-			PARSELY_PLUGIN_URL . 'build/init-api.js',
-			$api_script_asset[ 'dependencies' ],
-			self::get_asset_cache_buster(),
-			true
-		);
-
-		add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
-
-		$dependencies = array();
-
-		if ( ! empty( $parsely_options['api_secret'] ) ) {
-			$dependencies[] = 'wp-parsely-api';
-			wp_localize_script(
-				'wp-parsely-api',
-				'wpParsely', // This globally-scoped object will hold our initialization variables
-				array(
-					'apikey' => $parsely_options['apikey'],
-				)
-			);
+		if ( ! has_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ) ) ) {
+			add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
 		}
 
-		wp_enqueue_script(
-			'wp-parsely-tracker',
-			'https://cdn.parsely.com/keys/' . $parsely_options['apikey'] . '/p.js',
-			$dependencies,
-			self::get_asset_cache_buster(),
-			true
-		);
+		wp_enqueue_script( 'wp-parsely-tracker' );
+	}
+
+	public function load_api_js() {
+		$parsely_options = $this->get_options();
+
+		// If we don't have an API secret, there's no need to proceed.
+		if ( empty( $parsely_options['api_secret'] ) ) {
+			return;
+		}
+
+		if ( ! has_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ) ) ) {
+			add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
+		}
+
+		wp_enqueue_script( 'wp-parsely-api' );
 	}
 
 	public function script_loader_tag( $tag, $handle, $src ) {
