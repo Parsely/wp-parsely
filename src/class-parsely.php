@@ -1198,7 +1198,7 @@ class Parsely {
 			'parsely_filter_insert_javascript',
 			array( $display ),
 			'2.5.0',
-			'wp_parsely_insert_javascript'
+			'wp_parsely_load_js_tracker'
 		) ) {
 			return;
 		}
@@ -1212,7 +1212,7 @@ class Parsely {
 		 *
 		 * @param bool $display True if the JavaScript file should be included. False if not.
 		 */
-		if ( ! apply_filters( 'wp_parsely_insert_javascript', $display ) ) {
+		if ( ! apply_filters( 'wp_parsely_load_js_tracker', $display ) ) {
 				return;
 		}
 

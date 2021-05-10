@@ -997,13 +997,13 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	}
 
 	/**
-	 * Test the wp_parsely_insert_javascript filter
-	 * When it returns false, no scripts should be enqueued.
+	 * Test the wp_parsely_load_js_tracker filter
+	 * When it returns false, the tracking script should not be enqueued.
 	 *
 	 * @covers \Parsely::insert_parsely_javascript
 	 */
-	public function test_insert_javascript_filter() {
-		add_filter( 'wp_parsely_insert_javascript', '__return_false' );
+	public function test_load_js_tracker_filter() {
+		add_filter( 'wp_parsely_load_js_tracker', '__return_false' );
 
 		ob_start();
 		$post_array = $this->create_test_post_array();
@@ -1030,7 +1030,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 
 	/**
 	 * Test the parsely_filter_insert_javascript filter
-	 * When it returns false, no scripts should be enqueued.
+	 * When it returns false, the tracking script should not be enqueued.
 	 *
 	 * @deprecated deprecated since 2.5.0. This test can be removed when the filter is removed.
 	 *
