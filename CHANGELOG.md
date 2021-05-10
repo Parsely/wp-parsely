@@ -7,15 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.5.0] - 2021-05-TODO
 
-- Improved docs in a new [CONTRIBUTING.md](CONTRIBUTING.md) file.
-- Introduced a build step for front-end and admin page JavaScript assets which leverages the [`@wordpress/scripts` package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/).
+### Added
+
+- Consolidated & renovated documentation into a new [CONTRIBUTING.md](CONTRIBUTING.md) file.
+- Introduced a build step for front-end and admin page JavaScript assets which leverages the [`@wordpress/scripts` package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/). Scripts are now separately enqueued and browser-cachable.
+- Allowed for select HTML tags and attributes in the Recommended Content Widget Title.
+- Added filter `wp_parsely_post_type` to override the [type of content Parse.ly attributes to an article](https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages).
+- Added support for custom post status slugs via the `wp_parsely_trackable_statuses` filter (to allow for those other than `publish` to be tracked).
+
+### Changed
+
 - Refactored printed markup into template "views."
 - Refactored plugin entry file to perform minimal initialization and separately load the `Parsely` class file.
 - Improved the README file (which populates the copy in the plugin repository page).
 - Expanded test coverage (PHP and JavaScript).
-- Allowed for select markup in the Recommended Content Widget Title.
-- Expanded string localization and consolidated into a single text domain.
-- Added filter wp_parsely_post_type for NewsArticle.
+- i18n Improvements: Expanded string localization and consolidated into a single text domain.
+- Adjusted HTML Heading levels for improved usability and accessibility.
+- Improved accessibility of radio inputs on the admin page.
+- Prevented printing of admin page CSS outside the specific admin page for this plugin.
+- Fixed the "requires a recrawl" notices to limit to specific admin page settings.
+- Fixed inconsistent ports in canonical URLs
+
+### Removed
+
+- Deprecated filter `after_set_parsely_page` -- use new name `wp_parsely_metadata` instead.
+- Deprecated filter `parsely_filter_insert_javascript` -- use new name `wp_parsely_load_js_tracker` instead.
 
 ## [2.4.1] - 2021-04-13
 
