@@ -1226,7 +1226,7 @@ class Parsely {
 		 * If true, the JavaScript files are sourced.
 		 *
 		 * @since 2.2.0
-		 * @deprecated 2.5.0 Use `wp_parsely_insert_javascript` filter instead.
+		 * @deprecated 2.5.0 Use `wp_parsely_load_js_tracker` filter instead.
 		 *
 		 * @param bool $display True if the JavaScript file should be included. False if not.
 		 */
