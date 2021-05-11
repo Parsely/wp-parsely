@@ -4,18 +4,13 @@
 name: Node.js CI
 
 on:
-  pull_request:
+  push:
     paths:
       - .github/workflows/*.js.yml
       - src/js/**/*[tj]sx?
       - tests/js/**/*.[tj]s
       - package.json
       - '*.js'
-  push:
-    branches:
-      - develop
-      - trunk
-      - release/**
   # Allow manually triggering the workflow.
   workflow_dispatch:
 
