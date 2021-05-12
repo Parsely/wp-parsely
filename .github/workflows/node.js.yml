@@ -7,15 +7,13 @@ on:
   pull_request:
     paths:
       - .github/workflows/*.js.yml
-      - src/js/**/*[tj]sx?
-      - tests/js/**/*.[tj]s
-      - package.json
-      - '*.js'
+      - '**/*[tj]sx?'
+      - package*.json
   push:
-    branches:
-      - develop
-      - trunk
-      - release/**
+    paths:
+      - .github/workflows/*.js.yml
+      - '**/*[tj]sx?'
+      - package*.json
   # Allow manually triggering the workflow.
   workflow_dispatch:
 
@@ -25,7 +23,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 15.x]
+        node-version: [14.x, 16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:

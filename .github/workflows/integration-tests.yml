@@ -22,11 +22,11 @@ jobs:
 
     strategy:
       matrix:
-        php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4' ]
+        php: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
         include:
           - php: '8.0'
             # Ignore platform requirements, so that PHPUnit 7.5 can be installed on PHP 8.0 (and above).
-            composer-options: "--ignore-platform-reqs"
+            composer-options: '--ignore-platform-reqs'
             extensions: pcov
             ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
             coverage: pcov
@@ -64,10 +64,8 @@ jobs:
       - name: Install Composer dependencies
         uses: ramsey/composer-install@v1
         with:
-          composer-options: "${{ matrix.composer-options }}"
+          composer-options: '${{ matrix.composer-options }}'
 
-#      - name: Run unit tests
-#        run: composer unit
 
       - name: Start MySQL Service
         run: sudo systemctl start mysql.service
