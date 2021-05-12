@@ -66,8 +66,6 @@ jobs:
         with:
           composer-options: '${{ matrix.composer-options }}'
 
-      #      - name: Run unit tests
-      #        run: composer unit
 
       - name: Start MySQL Service
         run: sudo systemctl start mysql.service
