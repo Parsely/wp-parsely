@@ -23,7 +23,7 @@ if [ ! -w "$OUTPUT_DIRECTORY" ]; then
 fi
 
 BRANCH=$(git branch --show-current)
-REMOTE=$(git config branch."$BRANCH".remote)
+REMOTE="origin"
 REMOTEBRANCH="$REMOTE/$BRANCH"
 LOCALHASH=$(git rev-parse --short $BRANCH)
 
@@ -39,7 +39,7 @@ if [[ "$(git status -sb | wc -l | xargs)" != "1" && -z "$DEBUG" ]]; then
 fi
 
 echo "Fetching remote branch: $REMOTE $BRANCH..."
-git fetch $REMOTE $BRANCH
+git fetch "$REMOTE" "$BRANCH"
 
 if [[ "$?" != "0" && -z "$DEBUG" ]]; then
 	echo "Unable to continue without remote branch: $REMOTEBRANCH"
