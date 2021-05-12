@@ -7,15 +7,13 @@ on:
   pull_request:
     paths:
       - .github/workflows/*.js.yml
-      - src/js/**/*[tj]sx?
-      - tests/js/**/*.[tj]s
-      - package.json
-      - '*.js'
+      - '**/*[tj]sx?'
+      - package*.json
   push:
-    branches:
-      - develop
-      - trunk
-      - release/**
+    paths:
+      - .github/workflows/*.js.yml
+      - '**/*[tj]sx?'
+      - package*.json
   # Allow manually triggering the workflow.
   workflow_dispatch:
 
