@@ -78,7 +78,7 @@ confirm() {
 }
 
 writezip() {
-	TIDYBRANCH=$(echo $BRANCH | sed 's/[^a-zA-Z0-9_]/-/g')
+	TIDYBRANCH=$(echo $BRANCH | sed 's/[^a-zA-Z0-9_.]/-/g')
 	OUTFILE="$OUTPUT_DIRECTORY/wp-parsely-$LOCALHASH-$TIDYBRANCH.zip"
 	echo "Preparing to export plugin to: $OUTFILE"
 
