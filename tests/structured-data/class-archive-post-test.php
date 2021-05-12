@@ -24,6 +24,22 @@ final class Archive_Post_Test extends TestCase {
 
 	/**
 	 * Create 2 posts, set posts per page to 1, navigate to page 2 and test the structured data.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_home_page_for_posts_paged() {
 		// Setup Parsley object.
@@ -31,8 +47,8 @@ final class Archive_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert 2 posts.
-		$page_id = $this->factory()->post->create();
-		$this->factory()->post->create();
+		$page_id = self::factory()->post->create();
+		self::factory()->post->create();
 		$page = get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
@@ -60,6 +76,22 @@ final class Archive_Post_Test extends TestCase {
 
 	/**
 	 * Create a single page, set as the posts page (blog archive) but not the home page, go to Page 2, and test the structured data.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_blog_page_for_posts_paged() {
 		// Setup Parsley object.
@@ -67,11 +99,11 @@ final class Archive_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a page for the blog posts.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts', 'post_name' => 'page-for-posts' ] );
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts', 'post_name' => 'page-for-posts' ] );
 
 		// Create 2 posts so that posts page has pagination
-		$this->factory()->post->create();
-		$this->factory()->post->create();
+		self::factory()->post->create();
+		self::factory()->post->create();
 		$page    = get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
@@ -99,6 +131,25 @@ final class Archive_Post_Test extends TestCase {
 		self::assertEquals( get_permalink( $page_id ) . 'page/2', $structured_data['url'] );
 	}
 
+	/**
+	 * Check metadata for author archive.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 */
 	public function test_author_archive() {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151
@@ -110,7 +161,7 @@ final class Archive_Post_Test extends TestCase {
 
 		// Insert a single user, and a Post assigned to them.
 		$user = self::factory()->user->create( [ 'user_login' => 'parsely' ] );
-		$this->factory()->post->create( [ 'post_author' => $user ] );
+		self::factory()->post->create( [ 'post_author' => $user ] );
 
 		// Make a request to that page to set the global $wp_query object.
 		$author_posts_url = get_author_posts_url( $user );
@@ -131,6 +182,25 @@ final class Archive_Post_Test extends TestCase {
 		self::assertEquals( $author_posts_url, $structured_data['url'] );
 	}
 
+	/**
+	 * Check metadata for term archive.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
+	 */
 	public function test_term_archive() {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151

@@ -9,16 +9,18 @@
  * @subpackage Parse.ly
  */
 
+/* translators: %s: Plugin version */
+$version_string = sprintf( __( 'Version %s', 'wp-parsely' ), $this::VERSION );
 ?>
 
 <div class="wrap">
-	<h2>Parse.ly - Settings <span id="wp-parsely_version">Version <?php echo esc_html( $this::VERSION ); ?></span></h2>
+	<h1 class="wp-heading-inline"><?php echo esc_html( get_admin_page_title() ); ?></h1> <span id="wp-parsely_version"><?php echo esc_html( $version_string ); ?></span>
 	<form name="parsely" method="post" action="options.php">
 		<?php settings_fields( $this::OPTIONS_KEY ); ?>
 		<?php do_settings_sections( $this::OPTIONS_KEY ); ?>
 		<p class="submit">
 			<input name="submit" type="submit" class="button-primary"
-				value="<?php esc_attr_e( 'Save Changes' ); ?>"/>
+				value="<?php esc_attr_e( 'Save Changes', 'wp-parsely' ); ?>"/>
 		</p>
 	</form>
 </div>
