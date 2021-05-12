@@ -73,4 +73,4 @@ function parsely_load_textdomain() {
 	load_plugin_textdomain( 'wp-parsely' );
 }
 
-require 'settings-api.php';
+require 'src/settings-api.php';
