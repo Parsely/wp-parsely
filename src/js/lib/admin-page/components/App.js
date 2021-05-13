@@ -30,7 +30,7 @@ const App = () => {
 			) : (
 				<h1>Salut Monde!</h1>
 			) }
-			<input type="submit" value="do the thing!" />
+			<input type="submit" className="button-primary" value="do the thing!" />
 		</form>
 	);
 };
