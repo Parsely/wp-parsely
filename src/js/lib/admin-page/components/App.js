@@ -10,26 +10,29 @@ const App = () => {
 		fetchSettings( setSettings );
 	}
 
-	const handleInputChange = e => {
-		const oldSetting = settings[e.target.name];
-		const newValue = e.target.type === "checkbox" ? !oldSetting : e.target.value;
-		setSettings({...settings, [e.target.name]: newValue})
-	}
+	const handleInputChange = ( e ) => {
+		const oldSetting = settings[ e.target.name ];
+		const newValue = e.target.type === 'checkbox' ? ! oldSetting : e.target.value;
+		setSettings( { ...settings, [ e.target.name ]: newValue } );
+	};
 
-	const handleFormSubmit = e => {
+	const handleFormSubmit = ( e ) => {
 		e.preventDefault();
 		// send form data to php somehow
-	}
+	};
 
 	return (
-		<form onSubmit={e => handleFormSubmit(e)}>
-			{
-				settings ? Object.keys(settings).map(setting =>
-					<Setting setting={{[setting]: settings[setting]}} onChange={handleInputChange} /> ) : <h1>Salut Monde!</h1>
-			}
+		<form onSubmit={ ( e ) => handleFormSubmit( e ) }>
+			{ settings ? (
+				Object.keys( settings ).map( ( setting ) => (
+					<Setting setting={ { [ setting ]: settings[ setting ] } } onChange={ handleInputChange } />
+				) )
+			) : (
+				<h1>Salut Monde!</h1>
+			) }
 			<input type="submit" value="do the thing!" />
 		</form>
-	)
+	);
 };
 
 export default App;

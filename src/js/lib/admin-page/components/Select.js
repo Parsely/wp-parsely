@@ -2,7 +2,9 @@ import Option from './Option';
 
 const Select = ( { values } ) => (
 	<select>
-		{ values.map( option => <Option option={ option } /> ) }
+		{ values.map( ( option ) => (
+			<Option option={ option } />
+		) ) }
 	</select>
 );
 
