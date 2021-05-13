@@ -1,0 +1,45 @@
+/**
+ * External dependencies
+ */
+import { Card, CardBody, CardMedia } from '@wordpress/components';
+
+const getImageForLink = ( { imagestyle, imageUrl, thumbUrlMedium } ) => {
+	if ( imagestyle === 'original' ) {
+		return imageUrl;
+	}
+	return thumbUrlMedium;
+};
+
+const ParselyRecommendationsListItem = ( {
+	imageAlt,
+	imagestyle,
+	recommendation: {
+		title: linkTitle,
+		url: linkUrl,
+		image_url: imageUrl,
+		thumb_url_medium: thumbUrlMedium,
+	},
+	showimages,
+} ) => {
+	const imageForLink = showimages && getImageForLink( { imagestyle, imageUrl, thumbUrlMedium } );
+
+	return (
+		<li>
+			<a href={ linkUrl } className="parsely-recommendations__link">
+				<Card className="parsely-recommendations__card" size="custom">
+					{ imageForLink && (
+						<CardMedia className="parsely-recommendations__cardmedia">
+							<img
+								className="parsely-recommendations__list-img"
+								src={ imageForLink }
+								alt={ imageAlt }
+							/>
+						</CardMedia>
+					) }
+					<CardBody className="parsely-recommendations__cardbody">{ linkTitle }</CardBody>
+				</Card>
+			</a>
+		</li>
+	);
+};
+export default ParselyRecommendationsListItem;

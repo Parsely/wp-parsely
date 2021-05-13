@@ -30,8 +30,17 @@
 		"defaults"
 	],
 	"dependencies": {
+		"@wordpress/api-fetch": "^5.2.6",
+		"@wordpress/block-editor": "^6.2.0",
+		"@wordpress/blocks": "^9.1.8",
+		"@wordpress/components": "^14.2.0",
+		"@wordpress/compose": "^4.2.0",
 		"@wordpress/dom-ready": "^2.13.2",
+		"@wordpress/editor": "^10.2.0",
+		"@wordpress/element": "^3.2.0",
 		"@wordpress/i18n": "^3.20.0",
+		"@wordpress/url": "^3.3.1",
+		"classnames": "^2.3.1",
 		"js-cookie": "^3.0.0"
 	},
 	"devDependencies": {
@@ -39,9 +48,10 @@
 		"@wordpress/e2e-test-utils": "^5.4.10",
 		"@wordpress/env": "^4.1.3",
 		"@wordpress/eslint-plugin": "^9.3.0",
-		"@wordpress/scripts": "^19.2.2",
+		"@wordpress/scripts": "^15.0.1",
 		"concurrently": "^7.0.0",
 		"husky": "^7.0.4",
+		"postcss": "^8.3.4",
 		"prettier": "^2.5.1"
 	},
 	"scripts": {

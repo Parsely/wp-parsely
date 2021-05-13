@@ -686,6 +686,7 @@ class Parsely {
 	 * options are saved, they override the defaults. This prevents us from having to do a lot of isset() checking
 	 * on variables.
 	 *
+	 * @since 2.6.0
 	 * @return array
 	 */
 	public function get_options(): array {

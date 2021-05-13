@@ -97,6 +97,8 @@ function parsely_admin_menu_register(): void {
 	$settings_page->run();
 }
 
+require __DIR__ . '/src/class-recommended-content.php';
+require __DIR__ . '/src/blocks/recommendations/index.php';
 require __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
