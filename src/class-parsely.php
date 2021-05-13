@@ -1555,6 +1555,12 @@ class Parsely {
 		return $options;
 	}
 
+	public function get_nonsecet_options() {
+		$options = $this->get_options();
+		unset( $options['api_secret'] );
+		return $options;
+	}
+
 	/**
 	 * Returns a properly cleaned category/taxonomy value and will optionally use the top-level category/taxonomy value
 	 * if so instructed via the `use_top_level_cats` option.

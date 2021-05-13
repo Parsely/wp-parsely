@@ -7,5 +7,7 @@ module.exports = {
 		'init-api': path.resolve( __dirname, 'src', 'js', 'lib', 'init-api' ),
 		'admin-page': path.resolve( __dirname, 'src', 'js', 'lib', 'admin-page' ),
 		'recommended-widget': path.resolve( __dirname, 'src', 'js', 'widgets', 'recommended' ),
+		'recommendations-edit': path.resolve( __dirname, 'src', 'blocks', 'recommendations', 'edit' ),
+		recommendations: path.resolve( __dirname, 'src', 'blocks', 'recommendations' ),
 	},
 };

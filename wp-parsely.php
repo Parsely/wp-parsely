@@ -47,7 +47,9 @@ require PARSELY_PLUGIN_DIR . 'src/class-parsely.php';
 
 $GLOBALS['parsely'] = new Parsely();
 
+require PARSELY_PLUGIN_DIR . 'src/class-parsely-recommended-content.php';
 require PARSELY_PLUGIN_DIR . 'src/class-parsely-recommended-widget.php';
+require PARSELY_PLUGIN_DIR . 'src/blocks/recommendations/index.php';
 
 add_action( 'widgets_init', 'parsely_recommended_widget_register' );
 /**

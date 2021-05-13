@@ -31,7 +31,13 @@
     "prettier": "^2.3.0"
   },
   "dependencies": {
+    "@wordpress/block-editor": "^5.3.3",
+    "@wordpress/blocks": "^8.0.3",
+    "@wordpress/components": "^13.0.3",
     "@wordpress/dom-ready": "^2.13.2",
-    "@wordpress/i18n": "^3.20.0"
+    "@wordpress/editor": "^9.26.3",
+    "@wordpress/element": "^2.20.3",
+    "@wordpress/i18n": "^3.20.0",
+    "@wordpress/url": "^2.22.2"
   }
 }
