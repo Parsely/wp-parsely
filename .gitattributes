@@ -9,6 +9,8 @@
 # They are also used when pushing to WordPress.org SVN using the
 # https://github.com/10up/action-wordpress-plugin-deploy GitHub Action.
 
+# Likewise, anything marked `export-ignore` will be excluded by `bin/export-plugin.sh`
+
 # Directories
 /.github             export-ignore
 /.wordpress-org      export-ignore
