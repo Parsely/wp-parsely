@@ -1,7 +1,7 @@
 import Input from './Input';
 import Select from './Select';
 
-const Setting = ( { setting, onChange } ) => {
+const Setting = ( { note, setting, onChange } ) => {
 	let input;
 	if ( typeof setting[ Object.keys( setting )[ 0 ] ] === 'string' ) {
 		console.log("new setting", setting)
@@ -9,7 +9,7 @@ const Setting = ( { setting, onChange } ) => {
 			<Input
 				type="text"
 				name={ Object.keys( setting ) }
-				value={ setting }
+				value={ setting[ Object.keys( setting )[ 0 ] ] }
 				onChange={ onChange }
 			/>
 		);
@@ -33,6 +33,7 @@ const Setting = ( { setting, onChange } ) => {
 	return (
 		<div>
 			<label>{ Object.keys( setting ) }</label> { input }
+			<p>{note}</p>
 		</div>
 	);
 };

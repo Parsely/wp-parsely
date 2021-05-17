@@ -43,26 +43,86 @@ const App = () => {
 			<form onSubmit={ ( e ) => handleFormSubmit( e ) }>
 				{ settings ? (
 					<div className="settings-holder">
-						<div className="general" style={{display:displayDiv("general", currentTab)}}>
-							<Setting setting={{apikey: settings["apikey"]}} onChange={handleInputChange} />
-							<Setting setting={{apiSecret: "no secret given"}} onChange={handleInputChange} />
-							<Setting setting={{logo: settings["logo"]}} onChange={handleInputChange} />
+						<div className="tab-body general" style={{display:displayDiv("general", currentTab)}}>
+							<Setting
+								setting={{apikey: settings["apikey"]}}
+								onChange={handleInputChange}
+								note="Your SiteID is your own site domain"
+							/>
+							<Setting
+								setting={{apiSecret: "no secret given"}}
+								onChange={handleInputChange}
+								note="Your API Secret is your secret code to access our API"
+							/>
+							<Setting
+								setting={{logo: settings["logo"]}}
+								onChange={handleInputChange}
+								note="You can pass a URL to set your site's logo"
+							/>
 						</div>
-						<div className="advanced" style={{display:displayDiv("advanced", currentTab)}}>
-							<Setting setting={{meta_type: settings["meta_type"]}} onChange={handleInputChange} />
-							<Setting setting={{custom_taxonomy_section: settings["custom_taxonomy_section"]}} onChange={handleInputChange} />
-							<Setting setting={{content_id_prefix: settings["content_id_prefix"]}} onChange={handleInputChange} />
-							<Setting setting={{disable_javascript: settings["disable_javascript"]}} onChange={handleInputChange} />
-							<Setting setting={{disable_amp: settings["disable_amp"]}} onChange={handleInputChange} />
-							<Setting setting={{use_top_level_cats: settings["use_top_level_cats"]}} onChange={handleInputChange} />
-							<Setting setting={{cats_as_tags: settings["cats_as_tags"]}} onChange={handleInputChange} />
-							<Setting setting={{track_authenticated_users: settings["track_authenticated_users"]}} onChange={handleInputChange} />
-							<Setting setting={{lowercase_tags: settings["lowercase_tags"]}} onChange={handleInputChange} />
-							<Setting setting={{force_https_canonicals: settings["force_https_canonicals"]}} onChange={handleInputChange} />
+						<div className="tab-body advanced" style={{display:displayDiv("advanced", currentTab)}}>
+							<Setting
+								setting={{meta_type: settings["meta_type"]}}
+								onChange={handleInputChange}
+								note="Choose the metadata format for us to track"
+							/>
+							<Setting
+								setting={{custom_taxonomy_section: settings["custom_taxonomy_section"]}}
+								onChange={handleInputChange}
+								note="Default: Category. Choose the default taxonomy to map to Parse.ly sections"
+							/>
+							<Setting
+								setting={{content_id_prefix: settings["content_id_prefix"]}}
+								onChange={handleInputChange}
+								note="Choose a custom prefix for your content"
+							/>
+							<Setting
+								setting={{disable_javascript: settings["disable_javascript"]}}
+								onChange={handleInputChange}
+								note="Default: On. Disable our javascript tracking if you use a separate system for JS tracking"
+							/>
+							<Setting
+								setting={{disable_amp: settings["disable_amp"]}}
+								onChange={handleInputChange}
+								note="Default: On. Disable our AMP tracking if you use a separate system to track AMP content"
+							/>
+							<Setting
+								setting={{use_top_level_cats: settings["use_top_level_cats"]}}
+								onChange={handleInputChange}
+								note="Default: On. Choose if you want the first top-level category to be mapped to Parse.ly"
+							/>
+							<Setting
+								setting={{cats_as_tags: settings["cats_as_tags"]}}
+								onChange={handleInputChange}
+								note="Default: On. Choose if you want your non-primary categories to appear as tags"
+							/>
+							<Setting
+								setting={{track_authenticated_users: settings["track_authenticated_users"]}}
+								onChange={handleInputChange}
+								note="Default: On"
+							/>
+							<Setting
+								setting={{lowercase_tags: settings["lowercase_tags"]}}
+								onChange={handleInputChange}
+								note="Default: On. Choose if you want your tags to be converted to lower case"
+							/>
+							<Setting
+								setting={{force_https_canonicals: settings["force_https_canonicals"]}}
+								onChange={handleInputChange}
+								note="Default: Off. Choose if you want your canonicals to use the HTTPS scheme"
+							/>
 						</div>
-						<div className="debug" style={{display:displayDiv("debug", currentTab)}}>
-							<Setting setting={{metadata_secret: settings["metadata_secret"]}} onChange={handleInputChange} />
-							<Setting setting={{parsely_wipe_metadata_cache: settings["parsely_wipe_metadata_cache"]}} onChange={handleInputChange} />
+						<div className="tab-body debug" style={{display:displayDiv("debug", currentTab)}}>
+							<Setting
+								setting={{metadata_secret: settings["metadata_secret"]}}
+								onChange={handleInputChange}
+								note="The metadata secret provided to you by Parse.ly"
+							/>
+							<Setting
+								setting={{parsely_wipe_metadata_cache: settings["parsely_wipe_metadata_cache"]}}
+								onChange={handleInputChange}
+								note="This will wipe all of your site's metadata and resend all metadata to Parse.ly"
+							/>
 						</div>
 					</div>
 				) : (
