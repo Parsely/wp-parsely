@@ -28,17 +28,15 @@ const App = () => {
 	return (
 		<div className="settings-container">
 			<nav className="controls">
-				<ul>
-					<li onClick={() => setCurrentTab("general")}>
+					<span style={{cursor: "pointer"}} className="nav-control" onClick={() => setCurrentTab("general")}>
 						General
-					</li>
-					<li onClick={() => setCurrentTab("advanced")}>
+					</span>
+					<span style={{cursor: "pointer"}} className="nav-control" onClick={() => setCurrentTab("advanced")}>
 						Advanced
-					</li>
-					<li onClick={() => setCurrentTab("debug")}>
+					</span>
+					<span style={{cursor: "pointer"}} className="nav-control" onClick={() => setCurrentTab("debug")}>
 						Debug
-					</li>
-				</ul>
+					</span>
 			</nav>
 			<form onSubmit={ ( e ) => handleFormSubmit( e ) }>
 				{ settings ? (
@@ -99,7 +97,7 @@ const App = () => {
 							<Setting
 								setting={{track_authenticated_users: settings["track_authenticated_users"]}}
 								onChange={handleInputChange}
-								note="Default: On"
+								note="Default: On."
 							/>
 							<Setting
 								setting={{lowercase_tags: settings["lowercase_tags"]}}
@@ -126,7 +124,7 @@ const App = () => {
 						</div>
 					</div>
 				) : (
-					<h1>Salut Monde!</h1>
+					<h1>Loading Settings...</h1>
 				) }
 				<input type="submit" className="button-primary" value="do the thing!" />
 			</form>
