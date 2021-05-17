@@ -352,26 +352,38 @@ var App = function App() {
     className: "settings-container"
   }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("nav", {
     className: "controls"
-  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("ul", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("li", {
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("span", {
+    style: {
+      cursor: "pointer"
+    },
+    className: "nav-control",
     onClick: function onClick() {
       return setCurrentTab("general");
     }
-  }, "General"), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("li", {
+  }, "General"), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("span", {
+    style: {
+      cursor: "pointer"
+    },
+    className: "nav-control",
     onClick: function onClick() {
       return setCurrentTab("advanced");
     }
-  }, "Advanced"), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("li", {
+  }, "Advanced"), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("span", {
+    style: {
+      cursor: "pointer"
+    },
+    className: "nav-control",
     onClick: function onClick() {
       return setCurrentTab("debug");
     }
-  }, "Debug"))), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("form", {
+  }, "Debug")), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("form", {
     onSubmit: function onSubmit(e) {
       return handleFormSubmit(e);
     }
   }, settings ? Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("div", {
     className: "settings-holder"
   }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("div", {
-    className: "general",
+    className: "tab-body general",
     style: {
       display: displayDiv("general", currentTab)
     }
@@ -379,19 +391,22 @@ var App = function App() {
     setting: {
       apikey: settings["apikey"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Your SiteID is your own site domain"
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       apiSecret: "no secret given"
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Your API Secret is your secret code to access our API"
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       logo: settings["logo"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "You can pass a URL to set your site's logo"
   })), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("div", {
-    className: "advanced",
+    className: "tab-body advanced",
     style: {
       display: displayDiv("advanced", currentTab)
     }
@@ -399,54 +414,64 @@ var App = function App() {
     setting: {
       meta_type: settings["meta_type"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Choose the metadata format for us to track"
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       custom_taxonomy_section: settings["custom_taxonomy_section"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Default: Category. Choose the default taxonomy to map to Parse.ly sections"
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       content_id_prefix: settings["content_id_prefix"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Choose a custom prefix for your content"
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       disable_javascript: settings["disable_javascript"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Default: On. Disable our javascript tracking if you use a separate system for JS tracking"
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       disable_amp: settings["disable_amp"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Default: On. Disable our AMP tracking if you use a separate system to track AMP content"
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       use_top_level_cats: settings["use_top_level_cats"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Default: On. Choose if you want the first top-level category to be mapped to Parse.ly"
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       cats_as_tags: settings["cats_as_tags"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Default: On. Choose if you want your non-primary categories to appear as tags"
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       track_authenticated_users: settings["track_authenticated_users"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Default: On."
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       lowercase_tags: settings["lowercase_tags"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Default: On. Choose if you want your tags to be converted to lower case"
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       force_https_canonicals: settings["force_https_canonicals"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "Default: Off. Choose if you want your canonicals to use the HTTPS scheme"
   })), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("div", {
-    className: "debug",
+    className: "tab-body debug",
     style: {
       display: displayDiv("debug", currentTab)
     }
@@ -454,13 +479,15 @@ var App = function App() {
     setting: {
       metadata_secret: settings["metadata_secret"]
     },
-    onChange: handleInputChange
+    onChange: handleInputChange,
+    note: "The metadata secret provided to you by Parse.ly"
   }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_Setting__WEBPACK_IMPORTED_MODULE_4__["default"], {
     setting: {
       parsely_wipe_metadata_cache: settings["parsely_wipe_metadata_cache"]
     },
-    onChange: handleInputChange
-  }))) : Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("h1", null, "Salut Monde!"), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("input", {
+    onChange: handleInputChange,
+    note: "This will wipe all of your site's metadata and resend all metadata to Parse.ly"
+  }))) : Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("h1", null, "Loading Settings..."), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])("input", {
     type: "submit",
     className: "button-primary",
     value: "do the thing!"
@@ -582,7 +609,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var Setting = function Setting(_ref) {
-  var setting = _ref.setting,
+  var note = _ref.note,
+      setting = _ref.setting,
       onChange = _ref.onChange;
   var input;
 
@@ -591,7 +619,7 @@ var Setting = function Setting(_ref) {
     input = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__["createElement"])(_Input__WEBPACK_IMPORTED_MODULE_2__["default"], {
       type: "text",
       name: Object.keys(setting),
-      value: setting,
+      value: setting[Object.keys(setting)[0]],
       onChange: onChange
     });
   } else if (typeof setting[Object.keys(setting)[0]] === 'boolean') {
@@ -609,7 +637,7 @@ var Setting = function Setting(_ref) {
     });
   }
 
-  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__["createElement"])("div", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__["createElement"])("label", null, Object.keys(setting)), " ", input);
+  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__["createElement"])("div", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__["createElement"])("label", null, Object.keys(setting)), " ", input, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__["createElement"])("p", null, note));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (Setting);
