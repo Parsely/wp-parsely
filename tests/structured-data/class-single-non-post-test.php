@@ -24,6 +24,22 @@ final class Single_Non_Post_Test extends TestCase {
 
 	/**
 	 * Create a single page, and test the structured data.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_single_page() {
 		// Setup Parsley object.
@@ -31,7 +47,7 @@ final class Single_Non_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Single Page', 'post_name' => 'foo' ] );
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Single Page', 'post_name' => 'foo' ] );
 		$page    = get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
@@ -59,6 +75,22 @@ final class Single_Non_Post_Test extends TestCase {
 
 	/**
 	 * Create a single page, set as homepage (blog archive), and test the structured data.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_home_page_for_posts() {
 		// Setup Parsley object.
@@ -66,7 +98,7 @@ final class Single_Non_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts' ] );
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts' ] );
 		$page    = get_post( $page_id );
 
 		// Make a request to the root of the site to set the global $wp_query object.
@@ -85,6 +117,22 @@ final class Single_Non_Post_Test extends TestCase {
 
 	/**
 	 * Create a single page, set as the posts page (blog archive) but not the home page, and test the structured data.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_blog_page_for_posts() {
 		// Setup Parsley object.
@@ -92,8 +140,8 @@ final class Single_Non_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a page for blog posts and insert another post.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts', 'post_name' => 'page-for-posts' ] );
-		$this->factory()->post->create();
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts', 'post_name' => 'page-for-posts' ] );
+		self::factory()->post->create();
 		$page    = get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
@@ -122,6 +170,22 @@ final class Single_Non_Post_Test extends TestCase {
 
 	/**
 	 * Create a single page, set as homepage (page on front), and test the structured data.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_home_page_on_front() {
 		// Setup Parsley object.
@@ -129,7 +193,7 @@ final class Single_Non_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Home' ] );
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Home' ] );
 		$page    = get_post( $page_id );
 
 		// Set that page as the homepage Page.
@@ -152,6 +216,22 @@ final class Single_Non_Post_Test extends TestCase {
 
 	/**
 	 * Check for the case when the show_on_front setting is Page, but no Page has been selected.
+	 *
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group metadata
 	 */
 	public function test_home_for_misconfigured_settings() {
 		// Setup Parsley object.
@@ -159,7 +239,7 @@ final class Single_Non_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = $this->factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Home' ] );
+		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Home' ] );
 		$page    = get_post( $page_id );
 
 		// Set that page as the homepage Page.
