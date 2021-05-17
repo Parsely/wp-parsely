@@ -31,7 +31,7 @@
     "prettier": "^2.3.0"
   },
   "dependencies": {
-    "@wordpress/dom-ready": "^2.13.2",
+    "@wordpress/dom-ready": "^3.0.0",
     "@wordpress/i18n": "^3.20.0"
   }
 }
