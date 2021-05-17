@@ -1,6 +1,6 @@
 import { useState } from '@wordpress/element';
 
-import { fetchSettings } from '../static/services';
+import { fetchSettings } from '../static/js/services';
 import Setting from './Setting';
 
 const App = () => {
