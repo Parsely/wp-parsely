@@ -303,7 +303,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _static_services__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../static/services */ "./src/js/lib/admin-page/static/services.js");
+/* harmony import */ var _static_js_services__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../static/js/services */ "./src/js/lib/admin-page/static/js/services.js");
 /* harmony import */ var _Setting__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Setting */ "./src/js/lib/admin-page/components/Setting.js");
 
 
@@ -329,7 +329,7 @@ var App = function App() {
       setCurrentTab = _useState4[1];
 
   if (!settings) {
-    Object(_static_services__WEBPACK_IMPORTED_MODULE_3__["fetchSettings"])(setSettings);
+    Object(_static_js_services__WEBPACK_IMPORTED_MODULE_3__["fetchSettings"])(setSettings);
   }
 
   var handleInputChange = function handleInputChange(e) {
@@ -686,10 +686,10 @@ _wordpress_dom_ready__WEBPACK_IMPORTED_MODULE_1___default()(function () {
 
 /***/ }),
 
-/***/ "./src/js/lib/admin-page/static/services.js":
-/*!**************************************************!*\
-  !*** ./src/js/lib/admin-page/static/services.js ***!
-  \**************************************************/
+/***/ "./src/js/lib/admin-page/static/js/services.js":
+/*!*****************************************************!*\
+  !*** ./src/js/lib/admin-page/static/js/services.js ***!
+  \*****************************************************/
 /*! exports provided: fetchSettings */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
