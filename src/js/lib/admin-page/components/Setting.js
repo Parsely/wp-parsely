@@ -4,7 +4,6 @@ import Select from './Select';
 const Setting = ( { note, setting, onChange } ) => {
 	let input;
 	if ( typeof setting[ Object.keys( setting )[ 0 ] ] === 'string' ) {
-		console.log("new setting", setting)
 		input = (
 			<Input
 				type="text"
