@@ -160,6 +160,11 @@ class Parsely {
 <style>
 #wp-parsely_version { color: #777; font-size: 12px; margin-left: 1em; }
 .help-text { width: 75%; }
+/* stylesheet: src/js/lib/admin-page/static/css/settings.css */
+.nav-control {
+	cursor: pointer;
+}
+
 </style>
 ';
 
