@@ -3,6 +3,8 @@ import { __, sprintf } from '@wordpress/i18n';
 
 import App from './components/App';
 
+import './style.scss';
+
 domReady( () => {
 	wp.element.render( <App />, document.getElementById( 'wp-parsely-react-entrypoint' ) );
 
