@@ -17,7 +17,7 @@ const App = () => {
 		setSettings( { ...settings, [ e.target.name ]: newValue } );
 	};
 
-	const displayDiv = (divClass, currentState) => divClass == currentState ? '':'none';
+	const displayDiv = (divClass, currentState) => divClass == currentState ? '':'inactive';
 
 	const handleFormSubmit = ( e ) => {
 		e.preventDefault();
@@ -28,20 +28,20 @@ const App = () => {
 	return (
 		<div className="settings-container">
 			<nav className="controls">
-					<span style={{cursor: "pointer"}} className="nav-control" onClick={() => setCurrentTab("general")}>
+					<span className="nav-control" onClick={() => setCurrentTab("general")}>
 						General
 					</span>
-					<span style={{cursor: "pointer"}} className="nav-control" onClick={() => setCurrentTab("advanced")}>
+					<span className="nav-control" onClick={() => setCurrentTab("advanced")}>
 						Advanced
 					</span>
-					<span style={{cursor: "pointer"}} className="nav-control" onClick={() => setCurrentTab("debug")}>
+					<span className="nav-control" onClick={() => setCurrentTab("debug")}>
 						Debug
 					</span>
 			</nav>
 			<form onSubmit={ ( e ) => handleFormSubmit( e ) }>
 				{ settings ? (
 					<div className="settings-holder">
-						<div className="tab-body general" style={{display:displayDiv("general", currentTab)}}>
+						<div className={`tab - body general ${displayDiv("general", currentTab)}`}>
 							<Setting
 								setting={{siteID: settings["apikey"]}}
 								onChange={handleInputChange}
@@ -68,7 +68,7 @@ const App = () => {
 								note="You can pass a URL to set your site's logo"
 							/>
 						</div>
-						<div className="tab-body advanced" style={{display:displayDiv("advanced", currentTab)}}>
+						<div className={`tab-body advanced ${displayDiv("advanced", currentTab)}`}>
 							<Setting
 								setting={{metaType: settings["meta_type"]}}
 								onChange={handleInputChange}
@@ -120,7 +120,7 @@ const App = () => {
 								note="Default: Off. Choose if you want your canonicals to use the HTTPS scheme"
 							/>
 						</div>
-						<div className="tab-body debug" style={{display:displayDiv("debug", currentTab)}}>
+						<div className={`tab - body debug ${displayDiv("debug", currentTab)}`}>
 							<Setting
 								setting={{metadataSecret: settings["metadata_secret"]}}
 								onChange={handleInputChange}
