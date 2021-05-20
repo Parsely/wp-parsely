@@ -1,1 +1,1 @@
-#wp-parsely_version{color:#777;font-size:12px;margin-left:1em}.help-text{width:75%}.nav-control{cursor:pointer}.inactive{display:none}
+#wp-parsely_version{color:#777;font-size:12px;margin-left:1em}.help-text{width:75%}.controls{display:flex;flex-direction:row}.nav-control{cursor:pointer;justify-content:space-between;margin:0 1%}.inactive{display:none}

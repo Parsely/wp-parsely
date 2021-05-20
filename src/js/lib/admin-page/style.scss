@@ -10,8 +10,15 @@ $gray: #777;
 	width: 75%;
 }
 
+.controls {
+  display: flex;
+  flex-direction: row;
+}
+
 .nav-control {
-	cursor: pointer;
+  cursor: pointer;
+  justify-content: space-between;
+  margin: 0 1%;
 }
 
 .inactive {
