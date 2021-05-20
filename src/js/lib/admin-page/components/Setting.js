@@ -6,6 +6,7 @@ const Setting = ( { note, setting, onChange } ) => {
 	if ( typeof setting[ Object.keys( setting )[ 0 ] ] === 'string' ) {
 		input = (
 			<Input
+				className="text-input"
 				type="text"
 				name={ Object.keys( setting ) }
 				value={ setting[ Object.keys( setting )[ 0 ] ] }
@@ -15,6 +16,7 @@ const Setting = ( { note, setting, onChange } ) => {
 	} else if ( typeof setting[ Object.keys( setting )[ 0 ] ] === 'boolean' ) {
 		input = (
 			<Input
+				className="checkbox-input"
 				type="checkbox"
 				name={ Object.keys( setting ) }
 				checked={ setting[ Object.keys( setting )[ 0 ] ] }
@@ -30,9 +32,16 @@ const Setting = ( { note, setting, onChange } ) => {
 	}
 
 	return (
-		<div>
-			<label>{ Object.keys( setting ) }</label> { input }
-			<p>{note}</p>
+		<div className="setting-item--container">
+			<div className="setting-item">
+				<div className="setting-item--label">
+					<label>{ Object.keys( setting ) }</label>
+				</div>
+				<div className="setting-item--control">
+					{ input }
+					<p>{note}</p>
+				</div>
+			</div>
 		</div>
 	);
 };

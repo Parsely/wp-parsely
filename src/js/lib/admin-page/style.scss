@@ -18,9 +18,31 @@ $gray: #777;
 .nav-control {
   cursor: pointer;
   justify-content: space-between;
+  font-size: larger;
   margin: 0 1%;
 }
 
 .inactive {
   display: none;
+}
+
+.setting-item--container {
+  width: 75%;
+  margin-left: 2%;
+}
+
+.setting-item {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 1% 1% 0 0;
+  width: 50%;
+}
+
+.setting-item--label {
+  width: 50%;
+}
+
+.setting-item--control {
+  width: 50%;
 }
