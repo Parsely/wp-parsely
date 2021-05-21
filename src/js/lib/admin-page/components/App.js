@@ -17,7 +17,7 @@ const App = () => {
 		setSettings( { ...settings, [ e.target.name ]: newValue } );
 	};
 
-	const displayDiv = (divClass, currentState) => divClass == currentState ? '':'inactive';
+	const displayDiv = (divClass, currentState) => divClass === currentState ? '':'inactive';
 
 	const handleFormSubmit = ( e ) => {
 		e.preventDefault();
@@ -28,15 +28,22 @@ const App = () => {
 	return (
 		<div className="settings-container">
 			<nav className="controls">
-					<span className="nav-control" onClick={() => setCurrentTab("general")}>
+				<div className="nav-control"  onClick={() => setCurrentTab("general")}>
+					<span className={`${currentTab === "general" ? "active": ''}`}>
 						General
 					</span>
-					<span className="nav-control" onClick={() => setCurrentTab("advanced")}>
+				</div>
+				<div className="nav-control" onClick={() => setCurrentTab("advanced")}>
+					<span className={`${currentTab === "advanced" ? "active": ''}`}>
 						Advanced
 					</span>
-					<span className="nav-control" onClick={() => setCurrentTab("debug")}>
+				</div>
+				<div className="nav-control" onClick={() => setCurrentTab("debug")}>
+					<span className={`${currentTab === "debug" ? "active": ''}`}>
 						Debug
 					</span>
+				</div>
+
 			</nav>
 			<form onSubmit={ ( e ) => handleFormSubmit( e ) }>
 				{ settings ? (

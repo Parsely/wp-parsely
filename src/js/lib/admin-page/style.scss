@@ -18,12 +18,18 @@ $gray: #777;
 .nav-control {
   cursor: pointer;
   justify-content: space-between;
+  height: 10%;
   font-size: larger;
-  margin: 0 1%;
+  margin: 1% 1%;
 }
 
 .inactive {
   display: none;
+}
+
+span.active {
+  font-weight: bolder;
+  text-decoration: underline;
 }
 
 .setting-item--container {
