@@ -1,7 +1,7 @@
 import Input from './Input';
 import Select from './Select';
 
-const Setting = ( { note, setting, onChange } ) => {
+const Setting = ( { note, setting, onChange, label } ) => {
 	let input;
 	if ( typeof setting[ Object.keys( setting )[ 0 ] ] === 'string' ) {
 		input = (
@@ -35,7 +35,7 @@ const Setting = ( { note, setting, onChange } ) => {
 		<div className="setting-item--container">
 			<div className="setting-item">
 				<div className="setting-item--label">
-					<label>{ Object.keys( setting ) }</label>
+					<label>{ label }</label>
 				</div>
 				<div className="setting-item--control">
 					{ input }
