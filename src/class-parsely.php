@@ -118,6 +118,7 @@ class Parsely {
 
 		add_filter( 'cron_schedules', [ $this, 'wpparsely_add_cron_interval' ] );
 		add_filter( 'post_row_actions', array( $this, 'add_parsely_link' ), 10, 2 );
+		add_filter( 'page_row_actions', array( $this, 'add_parsely_link' ), 10, 2 );
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
