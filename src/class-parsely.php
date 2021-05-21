@@ -155,10 +155,8 @@ class Parsely {
 		$parsely_url = trailingslashit( 'https://dash.parsely.com/' . $apikey );
 
 		if (
-			'page' === get_option( 'show_on_front' ) && (
-				(int) get_option( 'page_on_front' ) === $post->ID ||
-				(int) get_option( 'page_for_posts' ) === $post->ID
-			)
+			'page' === get_option( 'show_on_front' ) &&
+			(int) get_option( 'page_on_front' ) === $post->ID
 		) {
 			// This is the "front page." Link to the dashboard.
 			$actions[ 'parsely_dash' ] = sprintf(
