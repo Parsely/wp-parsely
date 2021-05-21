@@ -132,7 +132,8 @@ class Parsely {
 	}
 
 	/**
-	 * Include a link to the statistics page for an article in the wp-admin Posts List
+	 * Include a link to the statistics page for an article in the wp-admin Posts List.
+	 * If the post object is the "front page," this will include the main dashboard link instead.
 	 *
 	 * @see https://developer.wordpress.org/reference/hooks/page_row_actions/
 	 * @see https://developer.wordpress.org/reference/hooks/post_row_actions/
