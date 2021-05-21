@@ -141,20 +141,40 @@ class Parsely {
 	 * @return $actions            The filtered list of actions
 	 */
 	public function row_actions_add_parsely_link( $actions, $post ) {
+		if ( ! is_array( $actions ) ) {
+			return $actions;
+		}
+
 		if ( ! self::post_has_trackable_status( $post ) ) {
 			return $actions;
 		}
+
 		$options = $this->get_options();
 		$apikey = $options['apikey'];
-		$post_url = get_permalink( $post );
-		$parsely_url = 'https://dash.parsely.com/' . $apikey . '/find?url=' . $post_url;
-		$actions = array_merge( $actions, array(
-			'find_in_parsely' => sprintf(
-				'<img style="padding-right: 4px; transform: translateY(2px);" width="16px" height="16px" src="https://www.parse.ly/favicon-32x32.png?v=f82f85b2b9b3e85c26fc141c6c44b638"/><a href="%1$s">%2$s</a>',
-				esc_url( $parsely_url ),
-				__( 'View In Parse.ly', 'wp-parsely' )
+		$parsely_url = trailingslashit( 'https://dash.parsely.com/' . $apikey );
+
+		if (
+			'page' === get_option( 'show_on_front' ) && (
+				(int) get_option( 'page_on_front' ) === $post->ID ||
+				(int) get_option( 'page_for_posts' ) === $post->ID
 			)
-		) );
+		) {
+			// This is the "front page." Link to the dashboard.
+			$actions[ 'parsely_dash' ] = sprintf(
+				'<a href="%1$s">%2$s</a>',
+				esc_url( $parsely_url ),
+				esc_html__( 'Parse.ly Dashboard', 'wp-parsely' )
+			);
+			return $actions;
+		}
+
+		$post_url = get_permalink( $post );
+		$parsely_url .=  'find?url=' . urlencode( $post_url );
+		$actions['find_in_parsely'] = sprintf(
+			'<a href="%1$s">%2$s</a>',
+			esc_url( $parsely_url ),
+			esc_html__( 'Parse.ly Stats', 'wp-parsely' )
+		);
 		return $actions;
 	}
 
