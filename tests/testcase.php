@@ -24,6 +24,7 @@ abstract class TestCase extends \WP_UnitTestCase {
 		'lowercase_tags'            => true,
 		'track_post_types'          => array( 'post' ),
 		'track_page_types'          => array( 'page' ),
+		'logo'                      => '',
 	);
 
 	public static function set_options( $custom_options = array() ) {
