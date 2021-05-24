@@ -137,8 +137,8 @@ class Parsely {
 	 *
 	 * @see https://developer.wordpress.org/reference/hooks/page_row_actions/
 	 * @see https://developer.wordpress.org/reference/hooks/post_row_actions/
-	 * @param [string[]] $actions  The list of actions to which this function will append
-	 * @param [WP_Post]  $post     The individual post object in the list
+	 * @param array<string, string> $actions The existing list of actions.
+	 * @param WP_Post               $post    The individual post object the actions apply to.
 	 * @return $actions            The filtered list of actions
 	 */
 	public function row_actions_add_parsely_link( $actions, $post ) {
