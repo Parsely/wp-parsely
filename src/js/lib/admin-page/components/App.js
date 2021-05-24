@@ -47,7 +47,7 @@ const App = () => {
 			<form onSubmit={ ( e ) => handleFormSubmit( e ) }>
 				{ settings ? (
 					<div className="settings-holder">
-						<div className={`tab - body general ${displayDiv("general", currentTab)}`}>
+						<div className={`tab-body general ${displayDiv("general", currentTab)}`}>
 							<Setting
 								setting={{apikey: settings["apikey"]}}
 								label="Site ID"
@@ -141,7 +141,7 @@ const App = () => {
 								note="Default: Off. Choose if you want your canonicals to use the HTTPS scheme"
 							/>
 						</div>
-						<div className={`tab - body debug ${displayDiv("debug", currentTab)}`}>
+						<div className={`tab-body debug ${displayDiv("debug", currentTab)}`}>
 							<Setting
 								setting={{metadata_secret: settings["metadata_secret"]}}
 								label="Metadata Secret"
