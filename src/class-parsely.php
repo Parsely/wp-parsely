@@ -151,8 +151,15 @@ class Parsely {
 		}
 
 		$options = $this->get_options();
-		$apikey = $options['apikey'];
-		$parsely_url = trailingslashit( 'https://dash.parsely.com/' . $apikey );
+		if ( ! (
+			isset( $options['apikey'] ) &&
+			is_string( $options['apikey'] ) &&
+			strlen( $options['apikey'] ) > 0
+		) ) {
+			return $actions;
+		}
+
+		$parsely_url = trailingslashit( 'https://dash.parsely.com/' . $options['apikey'] );
 
 		if (
 			'page' === get_option( 'show_on_front' ) &&
