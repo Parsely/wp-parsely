@@ -39,7 +39,7 @@ const Setting = ( { note, setting, onChange, label } ) => {
 				</div>
 				<div className="setting-item--control">
 					{ input }
-					<p>{note}</p>
+					<p className="subtext">{note}</p>
 				</div>
 			</div>
 		</div>

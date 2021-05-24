@@ -50,31 +50,31 @@ const App = () => {
 						<div className={`tab - body general ${displayDiv("general", currentTab)}`}>
 							<Setting
 								setting={{apikey: settings["apikey"]}}
-								label="siteID"
+								label="Site ID"
 								onChange={handleInputChange}
 								note="Your SiteID is your own site domain"
 							/>
 							<Setting
 								setting={{apiSecret: "no secret given"}}
-								label="apiSecret"
+								label="API Secret"
 								onChange={handleInputChange}
 								note="Your API Secret is your secret code to access our API"
 							/>
 							<Setting
 								setting={{logo: settings["logo"]}}
-								label="logo"
+								label="Logo"
 								onChange={handleInputChange}
 								note="You can pass a URL to set your site's logo"
 							/>
 							<Setting
 								setting={{track_post_types: settings["track_post_types"]}}
-								label="trackPostTypes"
+								label="Track Post Types"
 								onChange={handleInputChange}
 								note="You can pass a URL to set your site's logo"
 							/>
 							<Setting
 								setting={{track_page_types: settings["track_page_types"]}}
-								label="trackPageTypes"
+								label="Track Page Types"
 								onChange={handleInputChange}
 								note="You can pass a URL to set your site's logo"
 							/>
@@ -88,55 +88,55 @@ const App = () => {
 							/>
 							<Setting
 								setting={{custom_taxonomy_section: settings["custom_taxonomy_section"]}}
-								label="customTaxonomySection"
+								label="Custom Taxonomy Section"
 								onChange={handleInputChange}
 								note="Default: Category. Choose the default taxonomy to map to Parse.ly sections"
 							/>
 							<Setting
 								setting={{content_id_prefix: settings["content_id_prefix"]}}
-								label="contentIDPrefix"
+								label="Content ID Prefix"
 								onChange={handleInputChange}
 								note="Choose a custom prefix for your content"
 							/>
 							<Setting
 								setting={{disable_javascript: settings["disable_javascript"]}}
-								label="disableJavascript"
+								label="Disable Javascript"
 								onChange={handleInputChange}
 								note="Default: Off. Disable our javascript tracking if you use a separate system for JS tracking"
 							/>
 							<Setting
 								setting={{disable_amp: settings["disable_amp"]}}
-								label="disableAMP"
+								label="Disable AMP"
 								onChange={handleInputChange}
 								note="Default: On. Disable our AMP tracking if you use a separate system to track AMP content"
 							/>
 							<Setting
 								setting={{use_top_level_cats: settings["use_top_level_cats"]}}
-								label="useTopLevelCategories"
+								label="Use Top-Level Categories"
 								onChange={handleInputChange}
 								note="Default: On. Choose if you want the first top-level category to be mapped to Parse.ly"
 							/>
 							<Setting
 								setting={{cats_as_tags: settings["cats_as_tags"]}}
-								label="catsAsTags"
+								label="Categories as Tags"
 								onChange={handleInputChange}
 								note="Default: On. Choose if you want your non-primary categories to appear as tags"
 							/>
 							<Setting
 								setting={{track_authenticated_users: settings["track_authenticated_users"]}}
-								label="trackAuthenticatedUsers"
+								label="Track Authenticated Users"
 								onChange={handleInputChange}
 								note="Default: On."
 							/>
 							<Setting
 								setting={{lowercase_tags: settings["lowercase_tags"]}}
-								label="lowercaseTags"
+								label="Lowercase Tags"
 								onChange={handleInputChange}
 								note="Default: On. Choose if you want your tags to be converted to lower case"
 							/>
 							<Setting
 								setting={{force_https_canonicals: settings["force_https_canonicals"]}}
-								label="forceHTTPSCanonicals"
+								label="Force HTTPS Canonical URLs"
 								onChange={handleInputChange}
 								note="Default: Off. Choose if you want your canonicals to use the HTTPS scheme"
 							/>
@@ -144,13 +144,13 @@ const App = () => {
 						<div className={`tab - body debug ${displayDiv("debug", currentTab)}`}>
 							<Setting
 								setting={{metadata_secret: settings["metadata_secret"]}}
-								label="metadataSecret"
+								label="Metadata Secret"
 								onChange={handleInputChange}
 								note="The metadata secret provided to you by Parse.ly"
 							/>
 							<Setting
 								setting={{parsely_wipe_metadata_cache: settings["parsely_wipe_metadata_cache"]}}
-								label="parselyWipeMetadataCache"
+								label="Wipe Metadata Cache"
 								onChange={handleInputChange}
 								note="This will wipe all of your site's metadata and resend all metadata to Parse.ly"
 							/>
