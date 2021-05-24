@@ -139,7 +139,7 @@ class Parsely {
 	 * @see https://developer.wordpress.org/reference/hooks/post_row_actions/
 	 * @param array<string, string> $actions The existing list of actions.
 	 * @param WP_Post               $post    The individual post object the actions apply to.
-	 * @return $actions            The filtered list of actions
+	 * @return array<string, string> The amended list of actions.
 	 */
 	public function row_actions_add_parsely_link( $actions, $post ) {
 		if ( ! is_array( $actions ) ) {
