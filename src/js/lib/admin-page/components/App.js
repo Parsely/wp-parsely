@@ -5,7 +5,7 @@ import Setting from './Setting';
 
 const App = () => {
 	const [ settings, setSettings ] = useState( null );
-	const [currentTab, setCurrentTab] = useState( "general" )
+	const [currentTab, setCurrentTab] = useState( "advanced" )
 
 	if ( ! settings ) {
 		fetchSettings( setSettings );

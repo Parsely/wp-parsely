@@ -35,7 +35,7 @@ const Setting = ( { note, setting, onChange, label } ) => {
 		<div className="setting-item--container">
 			<div className="setting-item">
 				<div className="setting-item--label">
-					<label>{ label }</label>
+					{ label }
 				</div>
 				<div className="setting-item--control">
 					{ input }
