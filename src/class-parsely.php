@@ -159,23 +159,13 @@ class Parsely {
 			return $actions;
 		}
 
-		$parsely_url = trailingslashit( 'https://dash.parsely.com/' . $options['apikey'] );
+		$parsely_url = add_query_arg(
+			array(
+				'url' => rawurlencode( get_permalink( $post ) ),
+			),
+			trailingslashit( 'https://dash.parsely.com/' . $options['apikey'] ) . 'find'
+		);
 
-		if (
-			'page' === get_option( 'show_on_front' ) &&
-			(int) get_option( 'page_on_front' ) === $post->ID
-		) {
-			// This is the "front page." Link to the dashboard.
-			$actions[ 'parsely_dash' ] = sprintf(
-				'<a href="%1$s">%2$s</a>',
-				esc_url( $parsely_url ),
-				esc_html__( 'Parse.ly Dashboard', 'wp-parsely' )
-			);
-			return $actions;
-		}
-
-		$post_url = get_permalink( $post );
-		$parsely_url .=  'find?url=' . urlencode( $post_url );
 		$actions['find_in_parsely'] = sprintf(
 			'<a href="%1$s">%2$s</a>',
 			esc_url( $parsely_url ),
