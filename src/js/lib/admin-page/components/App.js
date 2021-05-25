@@ -82,7 +82,7 @@ const App = () => {
 						<div className={`tab-body advanced ${displayDiv("advanced", currentTab)}`}>
 							<Setting
 								setting={{meta_type: settings["meta_type"]}}
-								label="metaType"
+								label="Metadata Type"
 								onChange={handleInputChange}
 								note="Choose the metadata format for us to track"
 							/>
