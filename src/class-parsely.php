@@ -170,11 +170,19 @@ class Parsely {
 			trailingslashit( 'https://dash.parsely.com/' . $options['apikey'] ) . 'find'
 		);
 
-		$actions['find_in_parsely'] = sprintf(
-			'<a href="%1$s">%2$s</a>',
-			esc_url( $parsely_url ),
-			esc_html__( 'Parse.ly Stats', 'wp-parsely' )
+		$aria_label = sprintf(
+				/* translators: Post title */
+				__( 'Go to Parse.ly stats for "%s"', 'wp-parsely' ),
+				$post->post_title
 		);
+
+		$actions['find_in_parsely'] = sprintf(
+			'<a href="%1$s" aria-label="%2$s">%3$s</a>',
+			esc_url( $parsely_url ),
+			esc_attr( $aria_label ),
+			esc_html__( 'Parse.ly&nbsp;Stats', 'wp-parsely' )
+		);
+
 		return $actions;
 	}
 
