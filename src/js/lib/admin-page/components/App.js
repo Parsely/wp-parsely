@@ -2,6 +2,7 @@ import { useState } from '@wordpress/element';
 
 import { fetchSettings } from '../static/js/services';
 import Setting from './Setting';
+import SiteDetails from './SiteDetails';
 
 const App = () => {
 	const [ settings, setSettings ] = useState( null );
@@ -23,6 +24,15 @@ const App = () => {
 		e.preventDefault();
 		// send form data to php somehow
 	};
+
+	//TODO:
+	// what do we use "logo" for (functionality AND structure)
+	// where does it go?
+	// where is it used?
+	// need the POST endpoint sooner rather than later
+	// change flow of Wipe Metadata option to a button that confirms, and sets state separately
+	// copy/paste site details component
+	// find inspiration from the blog to align styles
 
 	return (
 		<div className="settings-container">
@@ -153,6 +163,13 @@ const App = () => {
 								label="Wipe Metadata Cache"
 								onChange={handleInputChange}
 								note="This will wipe all of your site's metadata and resend all metadata to Parse.ly"
+							/>
+							<SiteDetails
+								apikey={settings["apikey"]}
+								postsToTrack={settings["track_post_types"]}
+								pagesToTrack={settings["track_page_types"]}
+								pluginVersion="2.5"
+								phpVersion="7.4.1"
 							/>
 						</div>
 					</div>
