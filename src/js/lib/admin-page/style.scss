@@ -41,7 +41,7 @@ span.active {
   display: inline-flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 1% 1% 0 0;
+  margin: 1% 1% 1% 3%;
   width: 50%;
 }
 
@@ -55,9 +55,6 @@ span.active {
 }
 
 input.checkbox-input {
-  opacity: 0;
-  width: 0;
-  height: 0;
   display: none;
 }
 
@@ -110,4 +107,30 @@ input.checkbox-input:checked + div .slider:before {
 
 p.subtext {
   font-size: small;
+}
+
+.site-details-container {
+  width: 100%;
+  margin-left: 2%;
+}
+
+.site-detail {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 1% 1% 0 0;
+  width: 40%;
+}
+
+.details-info {
+  display:flex;
+  flex-direction:column;
+  border: 1px solid #ccc;
+  width: 50%;
+  padding: 5% 20% 5% 5%;
+}
+
+.details-label {
+  width: 50%;
+  font-size: large;
 }
