@@ -1,25 +1,27 @@
 const SiteDetails = ({ apikey, postsToTrack, pagesToTrack, phpVersion, pluginVersion }) => (
 	<div className="site-details-container">
-		<div className="details-label">
-			<h2>Site Details</h2>
-		</div>
-		<div className="details-info">
-			<p>
-				Parsely Site ID: {apikey}
-			</p>
-			<p>
-				PHP Version: {phpVersion}
-			</p>
-			<p>
-				Post Types to Track: {postsToTrack}
-			</p>
-			<p>
-				Page Types to Track: {pagesToTrack}
-			</p>
-			<p>
-				Plugin Version: {pluginVersion}
-			</p>
-			<span>Copy to Clipboard</span>
+		<div className="site-detail">
+			<div className="details-label">
+				<div>Site Details</div>
+			</div>
+			<div className="details-info">
+				<span className="details-info-item">
+					Parsely Site ID: {apikey}
+				</span>
+				<span className="details-info-item">
+					PHP Version: {phpVersion}
+				</span>
+				<span className="details-info-item">
+					Post Types to Track: {postsToTrack}
+				</span>
+				<span className="details-info-item">
+					Page Types to Track: {pagesToTrack}
+				</span>
+				<span className="details-info-item">
+					Plugin Version: {pluginVersion}
+				</span>
+				<p className="copy-cta">Copy to Clipboard</p>
+			</div>
 		</div>
 	</div>
 );

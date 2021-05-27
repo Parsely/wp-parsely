@@ -6,7 +6,7 @@ import SiteDetails from './SiteDetails';
 
 const App = () => {
 	const [ settings, setSettings ] = useState( null );
-	const [currentTab, setCurrentTab] = useState( "advanced" )
+	const [currentTab, setCurrentTab] = useState( "debug" )
 
 	if ( ! settings ) {
 		fetchSettings( setSettings );
@@ -54,7 +54,7 @@ const App = () => {
 				</div>
 
 			</nav>
-			<form onSubmit={ ( e ) => handleFormSubmit( e ) }>
+			<form className="settings-form" onSubmit={ ( e ) => handleFormSubmit( e ) }>
 				{ settings ? (
 					<div className="settings-holder">
 						<div className={`tab-body general ${displayDiv("general", currentTab)}`}>
