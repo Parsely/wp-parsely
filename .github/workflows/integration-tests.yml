@@ -14,19 +14,20 @@ jobs:
   test:
     name: PHP ${{ matrix.php }}
     # ubuntu-20.04 / ubuntu-latest includes MySQL 8, which has issues with older versions of PHP.
-    # ubuntu-16.04 includes PHP versions 5.6-8.0
-    runs-on: ubuntu-16.04
+    # ubuntu-18.04 includes PHP versions 7.1-8.0, but 5.6-7.1 are cached, so setup is about 5 seconds.
+    # See https://setup-php.com/i/452
+    runs-on: ubuntu-18.04
 
     env:
       WP_VERSION: latest
 
     strategy:
       matrix:
-        php: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4' ]
+        php: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
         include:
           - php: '8.0'
             # Ignore platform requirements, so that PHPUnit 7.5 can be installed on PHP 8.0 (and above).
-            composer-options: "--ignore-platform-reqs"
+            composer-options: '--ignore-platform-reqs'
             extensions: pcov
             ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
             coverage: pcov
@@ -36,7 +37,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
@@ -64,10 +65,7 @@ jobs:
       - name: Install Composer dependencies
         uses: ramsey/composer-install@v1
         with:
-          composer-options: "${{ matrix.composer-options }}"
-
-#      - name: Run unit tests
-#        run: composer unit
+          composer-options: '${{ matrix.composer-options }}'
 
       - name: Start MySQL Service
         run: sudo systemctl start mysql.service
