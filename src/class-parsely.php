@@ -117,6 +117,8 @@ class Parsely {
 		);
 
 		add_filter( 'cron_schedules', [ $this, 'wpparsely_add_cron_interval' ] );
+		add_filter( 'post_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
+		add_filter( 'page_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
@@ -127,6 +129,61 @@ class Parsely {
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
 		add_action( 'wp_enqueue_scripts', [ $this, 'wp_parsely_style_init' ] );
+	}
+
+	/**
+	 * Include a link to the statistics page for an article in the wp-admin Posts List.
+	 * If the post object is the "front page," this will include the main dashboard link instead.
+	 *
+	 * @see https://developer.wordpress.org/reference/hooks/page_row_actions/
+	 * @see https://developer.wordpress.org/reference/hooks/post_row_actions/
+	 * @param array<string, string> $actions The existing list of actions.
+	 * @param WP_Post               $post    The individual post object the actions apply to.
+	 * @return array<string, string> The amended list of actions.
+	 */
+	public function row_actions_add_parsely_link( $actions, $post ) {
+		if ( ! is_array( $actions ) ) {
+			return $actions;
+		}
+
+		if ( ! self::post_has_trackable_status( $post ) ) {
+			return $actions;
+		}
+
+		if ( ! self::post_has_viewable_type( $post ) ) {
+			return $actions;
+		}
+
+		$options = $this->get_options();
+		if ( ! (
+			isset( $options['apikey'] ) &&
+			is_string( $options['apikey'] ) &&
+			strlen( $options['apikey'] ) > 0
+		) ) {
+			return $actions;
+		}
+
+		$parsely_url = add_query_arg(
+			array(
+				'url' => rawurlencode( get_permalink( $post ) ),
+			),
+			trailingslashit( 'https://dash.parsely.com/' . $options['apikey'] ) . 'find'
+		);
+
+		$aria_label = sprintf(
+				/* translators: Post title */
+				__( 'Go to Parse.ly stats for "%s"', 'wp-parsely' ),
+				$post->post_title
+		);
+
+		$actions['find_in_parsely'] = sprintf(
+			'<a href="%1$s" aria-label="%2$s">%3$s</a>',
+			esc_url( $parsely_url ),
+			esc_attr( $aria_label ),
+			esc_html__( 'Parse.ly&nbsp;Stats', 'wp-parsely' )
+		);
+
+		return $actions;
 	}
 
 	/**
@@ -855,6 +912,27 @@ class Parsely {
 		$statuses = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
 		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true );
 		return $cache[ $post_id ];
+	}
+
+	/**
+	 * Check if the post's type is "publicly queryable."
+	 *
+	 * @since 2.6.0
+	 *
+	 * @param int|WP_Post $post Which post object or ID to check.
+	 * @return bool Is the provided post's type considered "public."
+	 */
+	public static function post_has_viewable_type( $post ) {
+		if ( function_exists( 'is_post_type_viewable' ) ) {
+			return is_post_type_viewable( $post->post_type );
+		}
+
+		/**
+		 * `is_post_type_viewable` was added in WordPress 4.4
+		 * The rest of this function approximates it until we bump the plugin min. version above it.
+		 */
+		$post_type = get_post_type_object( $post->post_type );
+		return $post_type->publicly_queryable || ( $post_type->_builtin && $post_type->public );
 	}
 
 	/**
