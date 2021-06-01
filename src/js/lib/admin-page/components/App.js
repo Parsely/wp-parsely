@@ -3,10 +3,13 @@ import { useState } from '@wordpress/element';
 import { fetchSettings } from '../static/js/services';
 import Setting from './Setting';
 import SiteDetails from './SiteDetails';
+import WipeMetadataCache from "./WipeMetadataCache";
+import WipeMetadataModal from "./WipeMetadataModal";
 
 const App = () => {
 	const [ settings, setSettings ] = useState( null );
-	const [currentTab, setCurrentTab] = useState( "debug" )
+	const [currentTab, setCurrentTab] = useState( "debug" );
+	const [displayModal, setDisplayModal] = useState(false);
 
 	if ( ! settings ) {
 		fetchSettings( setSettings );
@@ -20,19 +23,16 @@ const App = () => {
 
 	const displayDiv = (divClass, currentState) => divClass === currentState ? '':'inactive';
 
+	const showModal = (val) => {
+		setDisplayModal(val);
+	}
+
+	const setMetadataFlag = (val) => setSettings({...settings, parsely_wipe_metadata_cache: val})
+
 	const handleFormSubmit = ( e ) => {
 		e.preventDefault();
 		// send form data to php somehow
 	};
-
-	//TODO:
-	// what do we use "logo" for (functionality AND structure)
-	// where does it go?
-	// where is it used?
-	// need the POST endpoint sooner rather than later
-	// change flow of Wipe Metadata option to a button that confirms, and sets state separately
-	// copy/paste site details component
-	// find inspiration from the blog to align styles
 
 	return (
 		<div className="settings-container">
@@ -158,12 +158,17 @@ const App = () => {
 								onChange={handleInputChange}
 								note="The metadata secret provided to you by Parse.ly"
 							/>
-							<Setting
+							<WipeMetadataCache
 								setting={{parsely_wipe_metadata_cache: settings["parsely_wipe_metadata_cache"]}}
 								label="Wipe Metadata Cache"
-								onChange={handleInputChange}
+								onClick={showModal}
 								note="This will wipe all of your site's metadata and resend all metadata to Parse.ly"
 							/>
+							{ displayModal ? <WipeMetadataModal
+							onConfirm={setMetadataFlag}
+							modalControl={showModal}
+							setting={{parsely_wipe_metadata_cache: settings["parsely_wipe_metadata_cache"]}}
+							/> : ''}
 							<SiteDetails
 								apikey={settings["apikey"]}
 								postsToTrack={settings["track_post_types"]}

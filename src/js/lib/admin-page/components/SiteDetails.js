@@ -2,7 +2,7 @@ const SiteDetails = ({ apikey, postsToTrack, pagesToTrack, phpVersion, pluginVer
 	<div className="site-details-container">
 		<div className="site-detail">
 			<div className="details-label">
-				<div>Site Details</div>
+				<span>Site Details</span>
 			</div>
 			<div className="details-info">
 				<span className="details-info-item">
