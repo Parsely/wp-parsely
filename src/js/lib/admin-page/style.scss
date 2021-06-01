@@ -110,23 +110,23 @@ p.subtext {
 }
 
 .site-details-container {
-  width: 100%;
-  margin-left: 2%;
+  width: 75%;
+  margin-left: 4%;
+  display: flex;
+  flex-direction: row;
 }
 
 .site-detail {
-  display: inline-flex;
+  display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  margin: 1% 1% 0 0;
-  width: 40%;
+  width: 60%;
 }
 
 .details-info {
   display:flex;
   flex-direction:column;
   border: 1px solid #ccc;
-  width: 50%;
+  width: 100%;
   padding: 5% 20% 5% 5%;
 }
 
