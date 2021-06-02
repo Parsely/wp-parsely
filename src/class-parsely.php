@@ -383,8 +383,6 @@ class Parsely {
 
 		$h = __( 'If you want to specify the url for your logo, you can do so here.', 'wp-parsely' );
 
-		$option_defaults['logo'] = $this->get_logo_default();
-
 		$field_args = array(
 			'option_key' => 'logo',
 			'help_text'  => $h,
