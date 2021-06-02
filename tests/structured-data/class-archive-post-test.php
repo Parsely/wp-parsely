@@ -262,21 +262,27 @@ final class Archive_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Register Post Type with specific archive URL.
-		register_post_type( 'custom_post_type',  array( 'public' => true, 'has_archive' => 'cpt-tax-archive' ) );
+		register_post_type(
+			'custom_post_type',
+			array(
+				'public'      => true,
+				'has_archive' => 'cpt-tax-archive',
+			) 
+		);
 
 		// Add post to custom post type.
 		self::factory()->post->create(
-			[
-				'title' => 'Post Title',
-			    'post_type' => 'custom_post_type'
-			]
+			array(
+				'title'     => 'Post Title',
+				'post_type' => 'custom_post_type',
+			)
 		);
 
 		// Flush rewrite rules after creating new post type with archive.
 		flush_rewrite_rules();
 
 		// Go to the custom post type archive page.
-		$this->go_to( home_url('/cpt-tax-archive' ) );
+		$this->go_to( home_url( '/cpt-tax-archive' ) );
 
 		// The query should be for a custom post type archive.
 		self::assertQueryTrue( 'is_archive', 'is_post_type_archive' );
@@ -290,7 +296,7 @@ final class Archive_Post_Test extends TestCase {
 
 		// The headline should be the category name.
 		self::assertEquals( 'custom_post_type', $structured_data['headline'] );
-		self::assertEquals( home_url('/cpt-tax-archive' ), $structured_data['url'] );
+		self::assertEquals( home_url( '/cpt-tax-archive' ), $structured_data['url'] );
 	}
 
 	/**
@@ -322,22 +328,22 @@ final class Archive_Post_Test extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Register custom post type and custom taxonomy for that post type.
-		register_post_type( 'custom_post_type',  array( 'public' => true ) );
+		register_post_type( 'custom_post_type', array( 'public' => true ) );
 		register_taxonomy( 'custom_tax', array( 'custom_post_type' ) );
 
 		// Insert a single term, and a Post in that custom post type with the custom term.
-		$term = self::factory()->term->create(
-			[
+		$term    = self::factory()->term->create(
+			array(
 				'taxonomy' => 'custom_tax',
-				'slug' => 'term',
-				'name' => 'Custom Taxonomy'
-			]
+				'slug'     => 'term',
+				'name'     => 'Custom Taxonomy',
+			)
 		);
 		$post_id = self::factory()->post->create(
-			[
-				'title' => 'Post Title',
-				'post_type' => 'custom_post_type'
-			]
+			array(
+				'title'     => 'Post Title',
+				'post_type' => 'custom_post_type',
+			)
 		);
 		wp_set_post_terms( $post_id, $term, 'custom_tax' );
 
