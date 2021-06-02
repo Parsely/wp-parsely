@@ -224,7 +224,7 @@ class Parsely {
 		wp_enqueue_script(
 			'wp-parsely-admin',
 			PARSELY_PLUGIN_URL . 'build/admin-page.js',
-			$admin_script_asset[ 'dependencies' ],
+			$admin_script_asset['dependencies'],
 			self::get_asset_cache_buster(),
 			true
 		);
@@ -238,8 +238,8 @@ class Parsely {
 	 */
 	public function add_settings_sub_menu() {
 		add_options_page(
-				__( 'Parse.ly Settings', 'wp-parsely' ),
-				__( 'Parse.ly', 'wp-parsely' ),
+			__( 'Parse.ly Settings', 'wp-parsely' ),
+			__( 'Parse.ly', 'wp-parsely' ),
 			self::CAPABILITY,
 			self::MENU_SLUG,
 			array( $this, 'display_settings' )
@@ -797,9 +797,9 @@ class Parsely {
 		}
 
 		$message = sprintf(
-				/* translators: %s: Plugin settings page URL */
-				__( '<strong>The Parse.ly plugin is not active.</strong> You need to <a href="%s">provide your Parse.ly Dash Site ID</a> before things get cooking.', 'wp-parsely' ),
-				 esc_url( $this->get_settings_url() )
+			/* translators: %s: Plugin settings page URL */
+			__( '<strong>The Parse.ly plugin is not active.</strong> You need to <a href="%s">provide your Parse.ly Dash Site ID</a> before things get cooking.', 'wp-parsely' ),
+			 esc_url( $this->get_settings_url() )
 		);
 		?>
 		<div id="message" class="error"><p><?php echo wp_kses_post( $message ); ?></p></div>
@@ -956,7 +956,7 @@ class Parsely {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_home() ) {
-			$parsely_page['headline'] = get_the_title( get_option('page_for_posts', true) );
+			$parsely_page['headline'] = get_the_title( get_option( 'page_for_posts', true ) );
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_author() ) {
 			// TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions.
@@ -1258,11 +1258,11 @@ class Parsely {
 			true
 		);
 
-		$api_script_asset = require PARSELY_PLUGIN_DIR . 'build/init-api.asset.php' ;
+		$api_script_asset = require PARSELY_PLUGIN_DIR . 'build/init-api.asset.php';
 		wp_register_script(
 			'wp-parsely-api',
 			PARSELY_PLUGIN_URL . 'build/init-api.js',
-			$api_script_asset[ 'dependencies' ],
+			$api_script_asset['dependencies'],
 			self::get_asset_cache_buster(),
 			true
 		);
@@ -1354,12 +1354,17 @@ class Parsely {
 
 	public function script_loader_tag( $tag, $handle, $src ) {
 		$parsely_options = $this->get_options();
-		if ( in_array( $handle, array(
-			'wp-parsely',
-			'wp-parsely-api',
-			'wp-parsely-tracker',
-			'wp-parsely-recommended-widget',
-		) ) ) {
+		if (
+			in_array(
+				$handle,
+				array(
+					'wp-parsely',
+					'wp-parsely-api',
+					'wp-parsely-tracker',
+					'wp-parsely-recommended-widget',
+				)
+			)
+		) {
 			// Have ClouldFlare Rocket Loader ignore these scripts:
 			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-
 			$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
