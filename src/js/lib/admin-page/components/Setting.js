@@ -1,6 +1,6 @@
 import Input from './Input';
 import Select from './Select';
-import { FormToggle } from '@wordpress/components'
+import { FormToggle } from '@wordpress/components';
 
 const Setting = ( { note, setting, onChange, label } ) => {
 	let input;
@@ -17,9 +17,9 @@ const Setting = ( { note, setting, onChange, label } ) => {
 	} else if ( typeof setting[ Object.keys( setting )[ 0 ] ] === 'boolean' ) {
 		input = (
 			<FormToggle
-				name={Object.keys( setting )[ 0 ] }
-				onChange={onChange}
-				checked={setting[ Object.keys( setting )[ 0 ] ]}
+				name={ Object.keys( setting )[ 0 ] }
+				onChange={ onChange }
+				checked={ setting[ Object.keys( setting )[ 0 ] ] }
 			/>
 		);
 	} else if ( typeof setting[ Object.keys( setting )[ 0 ] ] === 'object' ) {
@@ -38,7 +38,7 @@ const Setting = ( { note, setting, onChange, label } ) => {
 				</div>
 				<div className="setting-item--control">
 					{ input }
-					<p className="subtext">{note}</p>
+					<p className="subtext">{ note }</p>
 				</div>
 			</div>
 		</div>
