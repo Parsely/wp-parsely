@@ -266,8 +266,8 @@ final class Archive_Post_Test extends TestCase {
 			'custom_post_type',
 			array(
 				'public'      => true,
-				'has_archive' => 'cpt-tax-archive',
-			) 
+				'has_archive' => 'cpt-archive',
+			)
 		);
 
 		// Add post to custom post type.
@@ -282,7 +282,7 @@ final class Archive_Post_Test extends TestCase {
 		flush_rewrite_rules();
 
 		// Go to the custom post type archive page.
-		$this->go_to( home_url( '/cpt-tax-archive' ) );
+		$this->go_to( home_url( '/cpt-archive' ) );
 
 		// The query should be for a custom post type archive.
 		self::assertQueryTrue( 'is_archive', 'is_post_type_archive' );
@@ -296,7 +296,7 @@ final class Archive_Post_Test extends TestCase {
 
 		// The headline should be the category name.
 		self::assertEquals( 'custom_post_type', $structured_data['headline'] );
-		self::assertEquals( home_url( '/cpt-tax-archive' ), $structured_data['url'] );
+		self::assertEquals( home_url( '/cpt-archive' ), $structured_data['url'] );
 	}
 
 	/**
