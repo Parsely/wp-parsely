@@ -1,6 +1,6 @@
 import { useState } from '@wordpress/element';
 
-import { fetchSettings } from '../static/js/services';
+import { fetchSettings } from '../../settings-api-client';
 import Setting from './Setting';
 import SiteDetails from './SiteDetails';
 import WipeMetadataCache from "./WipeMetadataCache";
