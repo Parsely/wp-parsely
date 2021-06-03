@@ -1,6 +1,6 @@
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 
-import { fetchSettings } from '../static/js/services';
+import { fetchSettings, saveSettingsToServer } from '../../settings-api-client';
 import Setting from './Setting';
 import SiteDetails from './SiteDetails';
 import WipeMetadataCache from "./WipeMetadataCache";
@@ -11,9 +11,14 @@ const App = () => {
 	const [currentTab, setCurrentTab] = useState( "advanced" );
 	const [displayModal, setDisplayModal] = useState(false);
 
-	if ( ! settings ) {
-		fetchSettings( setSettings );
-	}
+	useEffect( () => {
+		fetchSettings()
+			.then( ( settingsFromServer ) => setSettings( settingsFromServer ) )
+			.catch( ( readError ) => {
+				// TODO: Handle fetch error
+				console.error( { readError } );
+			} );
+	}, [] );
 
 	const handleInputChange = ( e ) => {
 		const oldSetting = settings[ e.target.name ];
@@ -29,9 +34,15 @@ const App = () => {
 
 	const setMetadataFlag = (val) => setSettings({...settings, parsely_wipe_metadata_cache: val})
 
-	const handleFormSubmit = ( e ) => {
+	const handleFormSubmit = async ( e ) => {
 		e.preventDefault();
-		// send form data to php somehow
+
+		try {
+			await saveSettingsToServer( settings );
+		} catch ( writeError ) {
+			// TODO: Handle error updating settings
+			console.error( { writeError } );
+		}
 	};
 
 	return (
@@ -185,7 +196,6 @@ const App = () => {
 				<input type="submit" className="button-primary" value="do the thing!" />
 			</form>
 		</div>
-
 	);
 };
 
