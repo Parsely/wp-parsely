@@ -42,6 +42,8 @@ function wp_parsely_settings_api_write_settings( WP_REST_Request $request ) {
 		return new WP_REST_Response( array( 'errors' => $wp_settings_errors ), 400 );
 	}
 
+	update_option( Parsely::OPTIONS_KEY, $validated_settings );
+
 	return new WP_REST_Response( $validated_settings, 200 );
 }
 
