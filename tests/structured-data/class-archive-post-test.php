@@ -335,7 +335,7 @@ final class Archive_Post_Test extends TestCase {
 			array(
 				'taxonomy' => 'custom_tax',
 				'slug'     => 'term',
-				'name'     => 'Custom Taxonomy',
+				'name'     => 'Custom Taxonomy Term',
 			)
 		);
 		$post_id = self::factory()->post->create();
@@ -360,8 +360,8 @@ final class Archive_Post_Test extends TestCase {
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
-		self::assertEquals( 'Custom Taxonomy', $structured_data['headline'] );
 		// The headline should be the term name.
+		self::assertEquals( 'Custom Taxonomy Term', $structured_data['headline'] );
 		self::assertEquals( $term_link, $structured_data['url'] );
 	}
 
