@@ -9,3 +9,15 @@ export const fetchSettings = ( callback ) => {
 		} )
 		.catch( ( err ) => callback( err ) );
 };
+
+export const saveSettingsToServer = ( settings, callback ) => {
+	apiFetch( {
+		path: SETTINGS_PATH,
+		method: 'POST',
+		data: { settings },
+	} )
+		.then( ( savedSettings ) => {
+			callback( savedSettings );
+		} )
+		.catch( ( err ) => callback( err ) );
+};

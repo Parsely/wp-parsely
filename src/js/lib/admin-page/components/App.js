@@ -1,6 +1,6 @@
 import { useState } from '@wordpress/element';
 
-import { fetchSettings } from '../../settings-api-client';
+import { fetchSettings, saveSettingsToServer } from '../../settings-api-client';
 import Setting from './Setting';
 import SiteDetails from './SiteDetails';
 import WipeMetadataCache from "./WipeMetadataCache";
@@ -31,7 +31,8 @@ const App = () => {
 
 	const handleFormSubmit = ( e ) => {
 		e.preventDefault();
-		// send form data to php somehow
+
+		saveSettingsToServer( settings );
 	};
 
 	return (
@@ -184,7 +185,6 @@ const App = () => {
 				<input type="submit" className="button-primary" value="do the thing!" />
 			</form>
 		</div>
-
 	);
 };
 

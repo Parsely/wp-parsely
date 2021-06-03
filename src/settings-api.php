@@ -6,13 +6,43 @@
  * @param WP_REST_Request $request Full data about the request.
  * @return bool
  */
-function wp_parsely_settings_api_permissions_check( $request ) {
+function wp_parsely_settings_api_permissions_check( WP_REST_Request $request ) {
 	return current_user_can( Parsely::CAPABILITY );
 }
 
-function wp_parsely_settings_api_get_settings() {
+/**
+ * Getter
+ *
+ * @param WP_REST_Request $request Full data about the request.
+ * @return WP_REST_Response
+ */
+function wp_parsely_settings_api_read_settings( WP_REST_Request $request ) {
 	global $parsely;
 	return new WP_REST_Response( $parsely->get_options(), 200 );
+}
+
+/**
+ * Setter
+ *
+ * @param WP_REST_Request $request Full data about the request.
+ * @return WP_REST_Response
+ */
+function wp_parsely_settings_api_write_settings( WP_REST_Request $request ) {
+	global $parsely, $wp_settings_errors;
+
+	// `$parsely->validate_options` uses `add_settings_error`
+	// TODO: Decouple!
+	require_once ABSPATH . 'wp-admin/includes/template.php';
+
+	$new_settings = $request->get_param( 'settings' );
+
+	$validated_settings = $parsely->validate_options( $new_settings );
+
+	if ( ! empty( $wp_settings_errors ) ) {
+		wp_send_json_error( $wp_settings_errors );
+	}
+
+	wp_send_json_success( $validated_settings );
 }
 
 function wp_parsely_settings_api_init() {
@@ -22,9 +52,15 @@ function wp_parsely_settings_api_init() {
 		array(
 			array(
 				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => 'wp_parsely_settings_api_get_settings',
+				'callback'            => 'wp_parsely_settings_api_read_settings',
 				'permission_callback' => 'wp_parsely_settings_api_permissions_check',
 				'args'                => array(),
+			),
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => 'wp_parsely_settings_api_write_settings',
+				'permission_callback' => 'wp_parsely_settings_api_permissions_check',
+				'args'                => array( 'settings' ),
 			),
 		)
 	);
