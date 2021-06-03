@@ -8,7 +8,7 @@ import WipeMetadataModal from "./WipeMetadataModal";
 
 const App = () => {
 	const [ settings, setSettings ] = useState( null );
-	const [currentTab, setCurrentTab] = useState( "debug" );
+	const [currentTab, setCurrentTab] = useState( "advanced" );
 	const [displayModal, setDisplayModal] = useState(false);
 
 	useEffect( () => {
@@ -177,6 +177,7 @@ const App = () => {
 							/>
 							{ displayModal ? <WipeMetadataModal
 							onConfirm={setMetadataFlag}
+							apikey={settings["apikey"]}
 							modalControl={showModal}
 							setting={{parsely_wipe_metadata_cache: settings["parsely_wipe_metadata_cache"]}}
 							/> : ''}

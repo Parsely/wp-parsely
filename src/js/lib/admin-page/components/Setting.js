@@ -1,5 +1,6 @@
 import Input from './Input';
 import Select from './Select';
+import { FormToggle } from '@wordpress/components'
 
 const Setting = ( { note, setting, onChange, label } ) => {
 	let input;
@@ -15,12 +16,10 @@ const Setting = ( { note, setting, onChange, label } ) => {
 		);
 	} else if ( typeof setting[ Object.keys( setting )[ 0 ] ] === 'boolean' ) {
 		input = (
-			<Input
-				className="checkbox-input"
-				type="checkbox"
-				name={ Object.keys( setting ) }
-				checked={ setting[ Object.keys( setting )[ 0 ] ] }
-				onChange={ onChange }
+			<FormToggle
+				name={Object.keys( setting )[ 0 ] }
+				onChange={onChange}
+				checked={setting[ Object.keys( setting )[ 0 ] ]}
 			/>
 		);
 	} else if ( typeof setting[ Object.keys( setting )[ 0 ] ] === 'object' ) {
