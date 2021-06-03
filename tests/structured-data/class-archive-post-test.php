@@ -318,7 +318,7 @@ final class Archive_Post_Test extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_term_archive_custom_post_type() {
+	public function test_custom_term_archive() {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151
 		$this->set_permalink_structure( '/%postname%/' );
@@ -327,11 +327,10 @@ final class Archive_Post_Test extends TestCase {
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
-		// Register custom post type and custom taxonomy for that post type.
-		register_post_type( 'custom_post_type', array( 'public' => true ) );
-		register_taxonomy( 'custom_tax', array( 'custom_post_type' ) );
+		// Register custom taxonomy.
+		register_taxonomy( 'custom_tax', array( 'post' ) );
 
-		// Insert a single term, and a Post in that custom post type with the custom term.
+		// Insert a single term, and a post with the custom term.
 		$term    = self::factory()->term->create(
 			array(
 				'taxonomy' => 'custom_tax',
@@ -339,12 +338,8 @@ final class Archive_Post_Test extends TestCase {
 				'name'     => 'Custom Taxonomy',
 			)
 		);
-		$post_id = self::factory()->post->create(
-			array(
-				'title'     => 'Post Title',
-				'post_type' => 'custom_post_type',
-			)
-		);
+		$post_id = self::factory()->post->create();
+		
 		wp_set_post_terms( $post_id, $term, 'custom_tax' );
 
 		$term_link = get_term_link( $term );
