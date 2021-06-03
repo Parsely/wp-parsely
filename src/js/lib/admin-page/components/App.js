@@ -166,6 +166,7 @@ const App = () => {
 							/>
 							{ displayModal ? <WipeMetadataModal
 							onConfirm={setMetadataFlag}
+							apikey={settings["apikey"]}
 							modalControl={showModal}
 							setting={{parsely_wipe_metadata_cache: settings["parsely_wipe_metadata_cache"]}}
 							/> : ''}
