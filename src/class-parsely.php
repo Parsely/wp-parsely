@@ -161,7 +161,7 @@ class Parsely {
 		wp_enqueue_style(
 			'wp-parsely-admin',
 			PARSELY_PLUGIN_URL . 'build/style-admin-page.css',
-			array(),
+			array('wp-components'),
 			$cache_buster
 		);
 
