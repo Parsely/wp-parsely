@@ -1,4 +1,4 @@
-import { useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 
 import { fetchSettings, saveSettingsToServer } from '../../settings-api-client';
 import Setting from './Setting';
@@ -11,9 +11,14 @@ const App = () => {
 	const [currentTab, setCurrentTab] = useState( "debug" );
 	const [displayModal, setDisplayModal] = useState(false);
 
-	if ( ! settings ) {
-		fetchSettings( setSettings );
-	}
+	useEffect( () => {
+		fetchSettings()
+			.then( ( settingsFromServer ) => setSettings( settingsFromServer ) )
+			.catch( ( readError ) => {
+				// TODO: Handle fetch error
+				console.error( { readError } );
+			} );
+	}, [] );
 
 	const handleInputChange = ( e ) => {
 		const oldSetting = settings[ e.target.name ];
@@ -29,10 +34,15 @@ const App = () => {
 
 	const setMetadataFlag = (val) => setSettings({...settings, parsely_wipe_metadata_cache: val})
 
-	const handleFormSubmit = ( e ) => {
+	const handleFormSubmit = async ( e ) => {
 		e.preventDefault();
 
-		saveSettingsToServer( settings );
+		try {
+			await saveSettingsToServer( settings );
+		} catch ( writeError ) {
+			// TODO: Handle error updating settings
+			console.error( { writeError } );
+		}
 	};
 
 	return (
