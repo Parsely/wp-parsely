@@ -353,15 +353,15 @@ final class Archive_Post_Test extends TestCase {
 		// The query should be for a taxonomy archive.
 		self::assertQueryTrue( 'is_archive', 'is_tax' );
 
-		// Create the structured data for that category.
-		// The category metadata doesn't use the post data, but the construction method requires it for now.
+		// Create the structured data for that term archive.
+		// The term archive metadata doesn't use the post data, but the construction method requires it for now.
 		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, get_post() );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
-		// The headline should be the category name.
 		self::assertEquals( 'Custom Taxonomy', $structured_data['headline'] );
+		// The headline should be the term name.
 		self::assertEquals( $term_link, $structured_data['url'] );
 	}
 
