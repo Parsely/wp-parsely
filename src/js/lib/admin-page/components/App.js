@@ -8,7 +8,7 @@ import WipeMetadataModal from "./WipeMetadataModal";
 
 const App = () => {
 	const [ settings, setSettings ] = useState( null );
-	const [currentTab, setCurrentTab] = useState( "debug" );
+	const [currentTab, setCurrentTab] = useState( "advanced" );
 	const [displayModal, setDisplayModal] = useState(false);
 
 	if ( ! settings ) {
