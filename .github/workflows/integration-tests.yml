@@ -67,7 +67,6 @@ jobs:
         with:
           composer-options: '${{ matrix.composer-options }}'
 
-
       - name: Start MySQL Service
         run: sudo systemctl start mysql.service
 
