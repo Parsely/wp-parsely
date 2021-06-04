@@ -106,9 +106,7 @@ class Parsely_Recommendations_Block {
 			</div>
 		</section>
 		<?php
-		$output = ob_get_contents();
-		ob_end_clean();
-		return $output;
+		return ob_get_clean();
 	}
 }
 
