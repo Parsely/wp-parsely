@@ -5,6 +5,7 @@ import {
 	ToggleControl,
 	PanelBody,
 	PanelRow,
+	RadioControl,
 	RangeControl,
 	SelectControl,
 	TextControl,
@@ -12,7 +13,7 @@ import {
 import { ServerSideRender } from '@wordpress/editor';
 
 const ParselyRecommendationsEdit = ( {
-	attributes: { boost, personalized, pubStart, sortRecs, tag },
+	attributes: { boost, displayDirection, personalized, pubStart, sortRecs, tag },
 	setAttributes,
 } ) => (
 	<div>
@@ -26,6 +27,25 @@ const ParselyRecommendationsEdit = ( {
 						}
 						checked={ personalized }
 						onChange={ () => setAttributes( { personalized: ! personalized } ) }
+					/>
+				</PanelRow>
+				<PanelRow>
+					<RadioControl
+						label={ __( 'Display Direction', 'wp-parsely' ) }
+						help={ __(
+							'Show the list of recommended content horizontally or vertically',
+							'wp-parsely'
+						) }
+						selected={ displayDirection }
+						options={ [
+							{ label: __( 'Horizontal', 'wp-parsely' ), value: 'horizontal' },
+							{ label: __( 'Vertical', 'wp-parsely' ), value: 'vertical' },
+						] }
+						onChange={ ( newval ) =>
+							setAttributes( {
+								displayDirection: newval === 'vertical' ? 'vertical' : 'horizontal',
+							} )
+						}
 					/>
 				</PanelRow>
 				<PanelRow>
@@ -159,6 +179,10 @@ registerBlockType( 'wp-parsely/recommendations', {
 	icon: 'smiley',
 	category: 'widgets',
 	attributes: {
+		displayDirection: {
+			type: 'string',
+			default: 'horizontal',
+		},
 		title: {
 			type: 'string',
 		},

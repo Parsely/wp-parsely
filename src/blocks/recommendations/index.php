@@ -36,9 +36,13 @@ class Parsely_Reccomendations_Block {
 				'editor_script'   => 'wp-parsely-recommendations-block-editor',
 				'render_callback' => 'Parsely_Reccomendations_Block::server_side_render',
 				'attributes'      => array(
-					'personzlied'    => array(
+					'personalized'    => array(
 						'type'    => 'boolean',
 						'default' => false,
+					),
+					'displayDirection' => array(
+						'type'    => 'string',
+						'default' => 'horizontal',
 					),
 					'title'    => array(
 						'type'    => 'string',
