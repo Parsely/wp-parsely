@@ -1,3 +1,6 @@
+/**
+ * External dependencies
+ */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls } from '@wordpress/block-editor';
@@ -11,6 +14,11 @@ import {
 	TextControl,
 } from '@wordpress/components';
 import { ServerSideRender } from '@wordpress/editor';
+
+/**
+ * Internal dependencies
+ */
+import { ReactComponent as leafIcon } from './Parsely-Logo-sRGB-Leaf-Green.svg';
 
 const ParselyRecommendationsEdit = ( {
 	attributes: { boost, displayDirection, personalized, pubStart, sortRecs, tag },
@@ -176,7 +184,7 @@ const ParselyRecommendationsEdit = ( {
 
 registerBlockType( 'wp-parsely/recommendations', {
 	title: __( 'Parse.ly Recommendations', 'wp-parsely' ),
-	icon: 'smiley',
+	icon: leafIcon,
 	category: 'widgets',
 	attributes: {
 		displayDirection: {
