@@ -318,7 +318,7 @@ final class Archive_Post_Test extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_custom_term_archive() {
+	public function test_custom_taxonomy_term_archive() {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151
 		$this->set_permalink_structure( '/%postname%/' );
