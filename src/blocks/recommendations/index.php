@@ -1,8 +1,8 @@
 <?php
 
-class Parsely_Reccomendations_Block {
+class Parsely_Recommendations_Block {
 	public static function init() {
-		add_action( 'init', 'Parsely_Reccomendations_Block::register_block_and_assets' );
+		add_action( 'init', 'Parsely_Recommendations_Block::register_block_and_assets' );
 	}
 
 	/**
@@ -34,7 +34,7 @@ class Parsely_Reccomendations_Block {
 			array(
 				'script'          => 'wp-parsely-recommendations-block',
 				'editor_script'   => 'wp-parsely-recommendations-block-editor',
-				'render_callback' => 'Parsely_Reccomendations_Block::server_side_render',
+				'render_callback' => 'Parsely_Recommendations_Block::server_side_render',
 				'attributes'      => array(
 					'personalized'    => array(
 						'type'    => 'boolean',
@@ -112,4 +112,4 @@ class Parsely_Reccomendations_Block {
 	}
 }
 
-Parsely_Reccomendations_Block::init();
+Parsely_Recommendations_Block::init();
