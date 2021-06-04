@@ -36,6 +36,10 @@ class Parsely_Reccomendations_Block {
 				'editor_script'   => 'wp-parsely-recommendations-block-editor',
 				'render_callback' => 'Parsely_Reccomendations_Block::server_side_render',
 				'attributes'      => array(
+					'personzlied'    => array(
+						'type'    => 'boolean',
+						'default' => false,
+					),
 					'title'    => array(
 						'type'    => 'string',
 						'default' => 'Related Content',

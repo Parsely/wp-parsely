@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { InspectorControls } from '@wordpress/block-editor';
 import {
+	ToggleControl,
 	PanelBody,
 	PanelRow,
 	RangeControl,
@@ -10,25 +11,38 @@ import {
 } from '@wordpress/components';
 import { ServerSideRender } from '@wordpress/editor';
 
-const ParselyRecommendationsEdit = ( { attributes, setAttributes } ) => (
+const ParselyRecommendationsEdit = ( {
+	attributes: { boost, personalized, pubStart, sortRecs, tag },
+	setAttributes,
+} ) => (
 	<div>
 		<InspectorControls>
 			<PanelBody title="Settings" initialOpen={ true }>
 				<PanelRow>
+					<ToggleControl
+						label={ __( 'Personalize to Visitor', 'wp-parsely' ) }
+						help={
+							personalized ? __( 'Personalized', 'wp-parsely' ) : __( 'Not Personalized', 'wp-parsely' )
+						}
+						checked={ personalized }
+						onChange={ () => setAttributes( { personalized: ! personalized } ) }
+					/>
+				</PanelRow>
+				<PanelRow>
 					<TextControl
-						label="Tag"
-						value={ attributes.tag }
+						label={ __( 'Tag' ) }
+						value={ tag }
 						onChange={ ( newval ) => setAttributes( { tag: newval } ) }
 					/>
 				</PanelRow>
 				<PanelRow>
 					<SelectControl
-						label="Sort Recommendations"
-						value={ attributes.sortRecs }
+						label={ __( 'Sort Recommendations', 'wp-parsely' ) }
+						value={ sortRecs }
 						options={ [
 							{ label: 'Score', value: 'score' },
 							{
-								label: 'Publication Date',
+								label: __( 'Publication Date', 'wp-parsely' ),
 								value: 'pub_date',
 							},
 						] }
@@ -37,97 +51,97 @@ const ParselyRecommendationsEdit = ( { attributes, setAttributes } ) => (
 				</PanelRow>
 				<PanelRow>
 					<RangeControl
-						label="Publication Start"
+						label={ __( 'Publication Start', 'wp-parsely' ) }
 						min="7"
 						max="365"
 						onChange={ ( newnumber ) => setAttributes( { pubStart: newnumber } ) }
-						value={ attributes.pubStart }
+						value={ pubStart }
 					/>
 				</PanelRow>
 				<PanelRow>
 					<SelectControl
-						label="Boost"
-						value={ attributes.boost }
+						label={ __( 'Boost' ) }
+						value={ boost }
 						options={ [
-							{ label: 'Views', value: 'views' },
+							{ label: __( 'Views' ), value: 'views' },
 							{
-								label: 'Mobile Views',
+								label: __( 'Mobile Views', 'wp-parsely' ),
 								value: 'mobile_views',
 							},
 							{
-								label: 'Tablet Views',
+								label: __( 'Tablet Views', 'wp-parsely' ),
 								value: 'tablet_views',
 							},
 							{
-								label: 'Desktop Views',
+								label: __( 'Desktop Views', 'wp-parsely' ),
 								value: 'desktop_views',
 							},
 							{
-								label: 'Tablet Views',
+								label: __( 'Tablet Views', 'wp-parsely' ),
 								value: 'tablet_views',
 							},
 							{
-								label: 'Visitors',
+								label: __( 'Visitors', 'wp-parsely' ),
 								value: 'visitors',
 							},
 							{
-								label: 'Visitors New',
+								label: __( 'Visitors New', 'wp-parsely' ),
 								value: 'visitors_new',
 							},
 							{
-								label: 'Visitors Returning',
+								label: __( 'Visitors Returning', 'wp-parsely' ),
 								value: 'visitors_returning',
 							},
 							{
-								label: 'Engaged Minutes',
+								label: __( 'Engaged Minutes', 'wp-parsely' ),
 								value: 'engaged_minutes',
 							},
 							{
-								label: 'Avergae Engaged',
+								label: __( 'Avergae Engaged', 'wp-parsely' ),
 								value: 'avg_engaged',
 							},
 							{
-								label: 'Avergae Engaged New',
+								label: __( 'Avergae Engaged New', 'wp-parsely' ),
 								value: 'avg_engaged_new',
 							},
 							{
-								label: 'Avergae Engaged Returning',
+								label: __( 'Avergae Engaged Returning', 'wp-parsely' ),
 								value: 'avg_engaged_returning',
 							},
 							{
-								label: 'Social Interactions',
+								label: __( 'Social Interactions', 'wp-parsely' ),
 								value: 'social_interactions',
 							},
 							{
-								label: 'Facebook Interactions',
+								label: __( 'Facebook Interactions', 'wp-parsely' ),
 								value: 'fb_interactions',
 							},
 							{
-								label: 'Twitter Interactions',
+								label: __( 'Twitter Interactions', 'wp-parsely' ),
 								value: 'tw_interactions',
 							},
 							{
-								label: 'LinkedIn Interactions',
+								label: __( 'LinkedIn Interactions', 'wp-parsely' ),
 								value: 'li_interactions',
 							},
 							{
-								label: 'Pinterest Interactions',
+								label: __( 'Pinterest Interactions', 'wp-parsely' ),
 								value: 'pi_interactions',
 							},
 							{
-								label: 'Facebook Referrals',
+								label: __( 'Facebook Referrals', 'wp-parsely' ),
 								value: 'fb_referrals',
 							},
 							{
-								label: 'Twitter Referrals',
+								label: __( 'Twitter Referrals', 'wp-parsely' ),
 								value: 'tw_referrals',
 							},
 							{
-								label: 'LinkedIn Referrals',
+								label: __( 'LinkedIn Referrals', 'wp-parsely' ),
 								value: 'li_referrals',
 							},
 							{
-								label: 'Pinterest Referrals',
+								label: __( 'Pinterest Referrals', 'wp-parsely' ),
 								value: 'pi_referrals',
 							},
 						] }
@@ -147,6 +161,10 @@ registerBlockType( 'wp-parsely/recommendations', {
 	attributes: {
 		title: {
 			type: 'string',
+		},
+		personalized: {
+			type: 'boolean',
+			default: false,
 		},
 		tag: {
 			type: 'string',
