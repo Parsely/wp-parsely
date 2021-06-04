@@ -18,7 +18,7 @@ import { ServerSideRender } from '@wordpress/editor';
 /**
  * Internal dependencies
  */
-import { ReactComponent as leafIcon } from './Parsely-Logo-sRGB-Leaf-Green.svg';
+import { ReactComponent as LeafIcon } from './Parsely-Logo-sRGB-Leaf-Green.svg';
 
 const ParselyRecommendationsEdit = ( {
 	attributes: { boost, displayDirection, personalized, pubStart, sortRecs, tag },
@@ -184,7 +184,7 @@ const ParselyRecommendationsEdit = ( {
 
 registerBlockType( 'wp-parsely/recommendations', {
 	title: __( 'Parse.ly Recommendations', 'wp-parsely' ),
-	icon: leafIcon,
+	icon: LeafIcon,
 	category: 'widgets',
 	attributes: {
 		displayDirection: {
