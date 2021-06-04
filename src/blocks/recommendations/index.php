@@ -1,16 +1,71 @@
 <?php
 
-if ( ! defined( 'ABSPATH' )  ) {
-	exit;
-}
+class Parsely_Reccomendations_Block {
+	public static function init() {
+		add_action( 'init', 'Parsely_Reccomendations_Block::register_block_and_assets' );
+	}
 
-if ( ! function_exists( 'wp_parsely_recommendations_block_render' ) ) {
+	/**
+	 * Registers all block assets so that they can be enqueued through Gutenberg in
+	 * the corresponding context.
+	 */
+	public static function register_block_and_assets() {
+		$editor_asset_file = require PARSELY_PLUGIN_DIR . 'build/recommendations-edit.asset.php';
+
+		wp_register_script(
+			'wp-parsely-recommendations-block-editor',
+			PARSELY_PLUGIN_URL . 'build/recommendations-edit.js',
+			$editor_asset_file['dependencies'],
+			$editor_asset_file['version'],
+			true
+		);
+
+		$script_asset_file = require PARSELY_PLUGIN_DIR . 'build/recommendations.asset.php';
+		wp_register_script(
+			'wp-parsely-recommendations-block',
+			PARSELY_PLUGIN_URL . 'build/recommendations.js',
+			array_merge( $script_asset_file['dependencies'], array( 'wp-parsely-api' ) ),
+			$script_asset_file['version'],
+			true
+		);
+
+		register_block_type(
+			'wp-parsely/recommendations',
+			array(
+				'script'          => 'wp-parsely-recommendations-block',
+				'editor_script'   => 'wp-parsely-recommendations-block-editor',
+				'render_callback' => 'Parsely_Reccomendations_Block::server_side_render',
+				'attributes'      => array(
+					'title'    => array(
+						'type'    => 'string',
+						'default' => 'Related Content',
+					),
+					'tag'      => array(
+						'type' => 'string',
+					),
+					'sortRecs' => array(
+						'type'    => 'string',
+						'default' => 'score',
+					),
+					'pubStart' => array(
+						'type'    => 'number',
+						'default' => '7',
+					),
+					'boost'    => array(
+						'type'    => 'string',
+						'default' => 'views',
+					),
+				),
+			)
+		);
+	}
+
 	/**
 	 * Server-side render of Parse.ly Recommendation block
 	 *
 	 * @param array $attr Block attributes.
 	 */
-	function wp_parsely_recommendations_block_render( $attr ) {
+	public static function server_side_render( $attr ) {
 		ob_start();
 		?>
 		<section id="wp-parsely-related-posts" class="related-posts mt-36 mb-96">
@@ -49,61 +104,4 @@ if ( ! function_exists( 'wp_parsely_recommendations_block_render' ) ) {
 	}
 }
 
-if ( ! function_exists( 'wp_parsely_recommendations_block' ) ) {
-	/**
-	 * Registers all block assets so that they can be enqueued through Gutenberg in
-	 * the corresponding context.
-	 */
-	function wp_parsely_recommendations_block() {
-		$editor_asset_file = require PARSELY_PLUGIN_DIR . 'build/recommendations-edit.asset.php';
-
-		wp_register_script(
-			'wp-parsely-recommendations-block-editor',
-			PARSELY_PLUGIN_URL . 'build/recommendations-edit.js',
-			$editor_asset_file['dependencies'],
-			$editor_asset_file['version'],
-			true
-		);
-
-		$script_asset_file = require PARSELY_PLUGIN_DIR . 'build/recommendations.asset.php';
-		wp_register_script(
-			'wp-parsely-recommendations-block',
-			PARSELY_PLUGIN_URL . 'build/recommendations.js',
-			array_merge( $script_asset_file['dependencies'], array( 'wp-parsely-api' ) ),
-			$script_asset_file['version'],
-			true
-		);
-
-		register_block_type(
-			'wp-parsely/recommendations',
-			[
-				'script'          => 'wp-parsely-recommendations-block',
-				'editor_script'   => 'wp-parsely-recommendations-block-editor',
-				'render_callback' => 'wp_parsely_recommendations_block_render',
-				'attributes'      => [
-					'title'    => [
-						'type'    => 'string',
-						'default' => 'Related Content',
-					],
-					'tag'      => [
-						'type' => 'string',
-					],
-					'sortRecs' => [
-						'type'    => 'string',
-						'default' => 'score',
-					],
-					'pubStart' => [
-						'type'    => 'number',
-						'default' => '7',
-					],
-					'boost'    => [
-						'type'    => 'string',
-						'default' => 'views',
-					],
-				],
-			]
-		);
-	}
-
-	add_action( 'init', 'wp_parsely_recommendations_block' );
-}
+Parsely_Reccomendations_Block::init();
