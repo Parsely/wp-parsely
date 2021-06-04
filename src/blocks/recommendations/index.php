@@ -57,7 +57,7 @@ class Parsely_Reccomendations_Block {
 					),
 					'pubStart' => array(
 						'type'    => 'number',
-						'default' => '7',
+						'default' => 7,
 					),
 					'boost'    => array(
 						'type'    => 'string',
