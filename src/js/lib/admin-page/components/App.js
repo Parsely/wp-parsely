@@ -12,12 +12,13 @@ const App = () => {
 	const [ displayModal, setDisplayModal ] = useState( false );
 
 	useEffect( () => {
-		fetchSettings()
-			.then( ( settingsFromServer ) => setSettings( settingsFromServer ) )
-			.catch( ( readError ) => {
+		fetchSettings().then(
+			( settingsFromServer ) => setSettings( settingsFromServer ),
+			( readError ) => {
 				// TODO: Handle fetch error
 				console.error( { readError } );
-			} );
+			}
+		);
 	}, [] );
 
 	const handleInputChange = ( e ) => {
