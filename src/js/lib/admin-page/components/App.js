@@ -12,19 +12,16 @@ const App = () => {
 	const [ displayModal, setDisplayModal ] = useState( false );
 
 	useEffect( () => {
-		fetchSettings()
-			.then( ( settingsFromServer ) => setSettings( settingsFromServer ) )
-			.catch( ( readError ) => {
+		fetchSettings().then(
+			( settingsFromServer ) => setSettings( settingsFromServer ),
+			( readError ) => {
 				// TODO: Handle fetch error
 				console.error( { readError } );
-			} );
+			}
+		);
 	}, [] );
 
-	const handleInputChange = ( e ) => {
-		const oldSetting = settings[ e.target.name ];
-		const newValue = e.target.type === 'checkbox' ? ! oldSetting : e.target.value;
-		setSettings( { ...settings, [ e.target.name ]: newValue } );
-	};
+	const handleInputChange = ( [ name, value ] ) => setSettings( { ...settings, [ name ]: value } );
 
 	const displayDiv = ( divClass, currentState ) => ( divClass === currentState ? '' : 'inactive' );
 
@@ -63,93 +60,108 @@ const App = () => {
 					<div className="settings-holder">
 						<div className={ `tab-body general ${ displayDiv( 'general', currentTab ) }` }>
 							<Setting
-								setting={ { apikey: settings.apikey } }
+								name="apikey"
+								value={ settings.apikey }
 								label="Site ID"
 								onChange={ handleInputChange }
 								note="Your SiteID is your own site domain"
 							/>
 							<Setting
-								setting={ { apiSecret: 'no secret given' } }
+								name="apiSecret"
+								value={ 'no secret given' }
 								label="API Secret"
 								onChange={ handleInputChange }
 								note="Your API Secret is your secret code to access our API"
 							/>
 							<Setting
-								setting={ { logo: settings.logo } }
+								name="logo"
+								value={ settings.logo }
 								label="Logo"
 								onChange={ handleInputChange }
 								note="You can pass a URL to set your site's logo"
 							/>
 							<Setting
-								setting={ { track_post_types: settings.track_post_types } }
+								name="track_post_types"
+								value={ settings.track_post_types }
 								label="Track Post Types"
 								onChange={ handleInputChange }
-								note="You can pass a URL to set your site's logo"
+								note="...."
 							/>
 							<Setting
-								setting={ { track_page_types: settings.track_page_types } }
+								name="track_page_types"
+								value={ settings.track_page_types }
 								label="Track Page Types"
 								onChange={ handleInputChange }
-								note="You can pass a URL to set your site's logo"
+								note="...."
 							/>
 						</div>
 						<div className={ `tab-body advanced ${ displayDiv( 'advanced', currentTab ) }` }>
 							<Setting
-								setting={ { meta_type: settings.meta_type } }
+								name="meta_type"
+								value={ settings.meta_type }
 								label="Metadata Type"
 								onChange={ handleInputChange }
 								note="Choose the metadata format for us to track"
 							/>
 							<Setting
-								setting={ { custom_taxonomy_section: settings.custom_taxonomy_section } }
+								name="custom_taxonomy_section"
+								value={ settings.custom_taxonomy_section }
 								label="Custom Taxonomy Section"
 								onChange={ handleInputChange }
 								note="Default: Category. Choose the default taxonomy to map to Parse.ly sections"
 							/>
 							<Setting
-								setting={ { content_id_prefix: settings.content_id_prefix } }
+								name="content_id_prefix"
+								value={ settings.content_id_prefix }
 								label="Content ID Prefix"
 								onChange={ handleInputChange }
 								note="Choose a custom prefix for your content"
 							/>
 							<Setting
-								setting={ { disable_javascript: settings.disable_javascript } }
+								name="disable_javascript"
+								value={ settings.disable_javascript }
 								label="Disable Javascript"
 								onChange={ handleInputChange }
 								note="Default: Off. Disable our javascript tracking if you use a separate system for JS tracking"
 							/>
 							<Setting
-								setting={ { disable_amp: settings.disable_amp } }
+								name="disable_amp"
+								value={ settings.disable_amp }
 								label="Disable AMP"
 								onChange={ handleInputChange }
 								note="Default: On. Disable our AMP tracking if you use a separate system to track AMP content"
 							/>
 							<Setting
-								setting={ { use_top_level_cats: settings.use_top_level_cats } }
+								name="use_top_level_cats"
+								value={ settings.use_top_level_cats }
 								label="Use Top-Level Categories"
 								onChange={ handleInputChange }
 								note="Default: On. Choose if you want the first top-level category to be mapped to Parse.ly"
 							/>
 							<Setting
-								setting={ { cats_as_tags: settings.cats_as_tags } }
+								name="cats_as_tags"
+								value={ settings.cats_as_tags }
 								label="Categories as Tags"
 								onChange={ handleInputChange }
 								note="Default: On. Choose if you want your non-primary categories to appear as tags"
 							/>
 							<Setting
-								setting={ { track_authenticated_users: settings.track_authenticated_users } }
+								name="track_authenticated_users"
+								value={ settings.track_authenticated_users }
 								label="Track Authenticated Users"
 								onChange={ handleInputChange }
 								note="Default: On."
 							/>
 							<Setting
-								setting={ { lowercase_tags: settings.lowercase_tags } }
+								name="lowercase_tags"
+								value={ settings.lowercase_tags }
 								label="Lowercase Tags"
 								onChange={ handleInputChange }
 								note="Default: On. Choose if you want your tags to be converted to lower case"
 							/>
 							<Setting
-								setting={ { force_https_canonicals: settings.force_https_canonicals } }
+								name="force_https_canonicals"
+								value={ settings.force_https_canonicals }
 								label="Force HTTPS Canonical URLs"
 								onChange={ handleInputChange }
 								note="Default: Off. Choose if you want your canonicals to use the HTTPS scheme"
@@ -157,7 +169,8 @@ const App = () => {
 						</div>
 						<div className={ `tab-body debug ${ displayDiv( 'debug', currentTab ) }` }>
 							<Setting
-								setting={ { metadata_secret: settings.metadata_secret } }
+								name="metadata_secret"
+								value={ settings.metadata_secret }
 								label="Metadata Secret"
 								onChange={ handleInputChange }
 								note="The metadata secret provided to you by Parse.ly"
