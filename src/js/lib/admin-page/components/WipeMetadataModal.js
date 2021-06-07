@@ -1,4 +1,5 @@
 import { useState } from '@wordpress/element';
+import { TextControl } from '@wordpress/components';
 
 const WipeMetadataModal = ( { setting, apikey, onConfirm, modalControl } ) => {
 	const [ message, setMessage ] = useState( '' );
@@ -21,11 +22,15 @@ const WipeMetadataModal = ( { setting, apikey, onConfirm, modalControl } ) => {
 	};
 
 	return (
-		<div>
-			Type <span className="code">{ apikey }</span> below if you really want to delete all stored metadata
-			<input type="text" onChange={ ( e ) => setMessage( e.target.value ) } />
+		<div className="modal">
+			<strong>Type <span className="code">{ apikey }</span> below if you really want to delete all stored metadata. This action cannot be undone</strong>
+			<TextControl
+				className="text-input"
+				label="Wipe Metadata Cache"
+				onChange={ setMessage }
+			/>
 			<button onClick={ () => setFlag( false ) }>Cancel</button>
-			<button onClick={ () => setFlag( true ) }>Confirm</button>
+			<button className="button-primary" onClick={ () => setFlag( true ) }>Confirm</button>
 			{ flagSet ? <button onClick={ () => setFlag( false ) }>Undo</button> : '' }
 		</div>
 	);
