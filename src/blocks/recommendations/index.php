@@ -2,6 +2,13 @@
 
 class Parsely_Recommendations_Block {
 	public static function init() {
+		global $wp_version;
+
+		if ( version_compare( $wp_version, '5.6' ) < 0 ) {
+			// WordPress is not recent enough to run this block
+			return;
+		}
+
 		add_action( 'init', 'Parsely_Recommendations_Block::register_block_and_assets' );
 	}
 
@@ -32,8 +39,8 @@ class Parsely_Recommendations_Block {
 		register_block_type(
 			'wp-parsely/recommendations',
 			array(
-				'script'          => 'wp-parsely-recommendations-block',
 				'editor_script'   => 'wp-parsely-recommendations-block-editor',
+				'script'          => 'wp-parsely-recommendations-block',
 				'render_callback' => 'Parsely_Recommendations_Block::server_side_render',
 				'attributes'      => array(
 					'personalized'    => array(
@@ -69,41 +76,22 @@ class Parsely_Recommendations_Block {
 	}
 
 	/**
-	 * Server-side render of Parse.ly Recommendation block
-	 *
-	 * @param array $attr Block attributes.
-	 */
+	* Server-side render of Parse.ly Recommendation block
+	*
+	* @param array $attr Block attributes.
+	*/
 	public static function server_side_render( $attr ) {
 		ob_start();
 		?>
-		<section id="wp-parsely-related-posts" class="related-posts mt-36 mb-96">
-			<div class="container">
-				<div class="related-posts__heading heading-02">
-					<p><?php echo( esc_attr( $attr['title'] ) ); ?></p>
-				</div>
-				<div class="related-posts__grid grid grid-cols-3 gap-12 mt-12">
-				<?php for ( $i = 0; $i < 3; $i++ ) : ?>
-					<div class="card">
-						<div class="card__img h-full">
-							<?php /*<img
-								src="<?php echo esc_url( strtok( $data[ $i ]['image_url'], '?' ) ); ?>"
-								alt="<?php echo( esc_attr( $data[ $i ]['title'] ) ); ?>"
-								class="w-full" /> */ ?>
-						</div>
-						<div class="card__text">
-							<div class="card__post-type">
-								<p class="helper-01-caps"><?php esc_html_e( 'Example', 'wp-parsely' ) ?></p>
-							</div>
-							<div class="card__title">
-								<a class="text-gray-90" href="#" disabled="disabled">
-									<p class="heading-02"><?php esc_html_e( 'Title', 'wp-parsely' ); ?></p>
-								</a>
-							</div>
-						</div>
-					</div>
-				<?php endfor; ?>
-				</div>
-			</div>
+		<section id="wp-parsely-related-posts-block">
+			<div class="container"
+				data-personalized="<?php echo esc_attr( $attr['personalized'] ) ?>"
+				data-displayDirection="<?php echo esc_attr( $attr['displayDirection'] ) ?>"
+				data-title="<?php echo esc_attr( $attr['title'] ) ?>"
+				data-sortRecs="<?php echo esc_attr( $attr['sortRecs'] ) ?>"
+				data-pubStart="<?php echo esc_attr( $attr['pubStart'] ) ?>"
+				data-boost="<?php echo esc_attr( $attr['boost'] ) ?>"
+			></div>
 		</section>
 		<?php
 		return ob_get_clean();
