@@ -12,11 +12,11 @@ import { ReactComponent as LeafIcon } from './Parsely-Logo-sRGB-Leaf-Green.svg';
 import ParselyRecommendations from './components/parsely-recommendations';
 import ParselyRecommendationsBlockControls from './components/parsely-recommendations-block-controls';
 
-function ParselyRecommendationsEdit( props ) {
+function ParselyRecommendationsEdit( editProps ) {
 	return (
 		<div { ...useBlockProps() }>
-			<ParselyRecommendationsBlockControls { ...props } />
-			<ParselyRecommendations { ...props } />
+			<ParselyRecommendationsBlockControls { ...editProps } />
+			<ParselyRecommendations { ...editProps.attributes } />
 		</div>
 	);
 }

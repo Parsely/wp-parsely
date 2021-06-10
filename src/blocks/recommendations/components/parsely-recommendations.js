@@ -10,17 +10,31 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { fetchRelated } from '../../../js/lib/parsely-api';
 
-export default function ParselyRecommendations( props ) {
+export default function ParselyRecommendations( {
+	boost,
+	displaydirection,
+	// personalized,
+	pubstart,
+	sortrecs,
+	title,
+} ) {
 	const [ error, setError ] = useState( null );
 	const [ isLoaded, setIsLoaded ] = useState( false );
 	const [ recommendations, setRecommendations ] = useState( [] );
 
-	// TODO: use props to adjust API calls
-	// TODO: use props to adjust class names
+	const url = window.location.href;
+	const apiQueryArgs = {
+		boost,
+		displaydirection,
+		pub_start_date: pubstart,
+		sort: sortrecs,
+		url,
+	};
+	// TODO: when personalized is true -- include uuid
 
 	async function fetchRecosFromWpApi() {
 		return apiFetch( {
-			path: addQueryArgs( '/wp-parsely/v1/recommendations', { url: window.location.href } ),
+			path: addQueryArgs( '/wp-parsely/v1/recommendations', apiQueryArgs ),
 		} );
 	}
 
@@ -28,7 +42,7 @@ export default function ParselyRecommendations( props ) {
 		let response;
 		try {
 			//throw 'skip';
-			response = await fetchRelated();
+			response = await fetchRelated( apiQueryArgs );
 		} catch ( parselyError ) {
 			try {
 				response = await fetchRecosFromWpApi();
