@@ -72,7 +72,7 @@ class Parsely_Recommendations_Block {
 	public static function server_side_render( $attr ) {
 		ob_start();
 		?>
-		<section id="wp-parsely-related-posts-block">
+		<section id="wp-parsely-related-posts-block" class=<?php echo esc_attr( $attr['className'] ) ?>>
 			<div class="container"
 				data-personalized="<?php echo esc_attr( $attr['personalized'] ) ?>"
 				data-displayDirection="<?php echo esc_attr( $attr['displayDirection'] ) ?>"
