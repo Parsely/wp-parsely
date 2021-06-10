@@ -6,9 +6,10 @@ export const apiUrl = ( path, queryArgs ) => addQueryArgs( `${ PARSELY_API_BASE 
 
 export const fetchApi = async ( path, queryArgs = {}, fetchInit ) => {
 	const apikey = global.wpParsely?.apikey;
-	const url = apiUrl( path, { url: window.location.href, ...queryArgs, apikey } );
+	const url = apiUrl( path, { apikey, ...queryArgs } );
 	const response = await fetch( url, fetchInit );
 	return response.json();
 };
 
-export const fetchRelated = async ( queryArgs = {} ) => fetchApi( 'related', queryArgs );
+export const fetchRelated = async ( queryArgs = {} ) =>
+	fetchApi( 'related', { url: window.location.href, ...queryArgs } );

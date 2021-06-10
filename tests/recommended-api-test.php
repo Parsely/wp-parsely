@@ -8,6 +8,7 @@
 namespace Parsely\Tests;
 
 use Parsely_Recommended_Widget;
+use Parsely_Recommended_Content;
 
 /**
  * Recommended Widget tests.

@@ -2,25 +2,42 @@
  * External dependencies
  */
 import { useEffect, useState } from '@wordpress/element';
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
  */
 import { fetchRelated } from '../../../js/lib/parsely-api';
 
-export default function ParselyRecommendations() {
+export default function ParselyRecommendations( props ) {
 	const [ error, setError ] = useState( null );
 	const [ isLoaded, setIsLoaded ] = useState( false );
 	const [ recommendations, setRecommendations ] = useState( [] );
 
+	// TODO: use props to adjust API calls
+	// TODO: use props to adjust class names
+
+	async function fetchRecosFromWpApi() {
+		return apiFetch( {
+			path: addQueryArgs( '/wp-parsely/v1/recommendations', { url: window.location.href } ),
+		} );
+	}
+
 	async function fetchRecos() {
-		let data = [];
+		let response;
 		try {
-			const response = await fetchRelated();
-			data = response?.data;
-		} catch ( e ) {
-			setError( e );
+			//throw 'skip';
+			response = await fetchRelated();
+		} catch ( parselyError ) {
+			try {
+				response = await fetchRecosFromWpApi();
+			} catch ( wpError ) {
+				setError( [ parselyError, wpError ] );
+			}
 		}
+
+		const data = response?.data || [];
 		setIsLoaded( true );
 		setRecommendations( data );
 	}
