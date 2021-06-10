@@ -42,7 +42,7 @@ class Parsely_Recommendations_Block {
 					),
 					'title'    => array(
 						'type'    => 'string',
-						'default' => 'Related Content',
+						'default' => __( 'Related Content' ),
 					),
 					'tag'      => array(
 						'type' => 'string',

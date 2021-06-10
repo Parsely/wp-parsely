@@ -26,33 +26,5 @@ registerBlockType( 'wp-parsely/recommendations', {
 	title: __( 'Parse.ly Recommendations', 'wp-parsely' ),
 	icon: LeafIcon,
 	category: 'widgets',
-	attributes: {
-		displayDirection: {
-			type: 'string',
-			default: 'horizontal',
-		},
-		title: {
-			type: 'string',
-		},
-		personalized: {
-			type: 'boolean',
-			default: false,
-		},
-		tag: {
-			type: 'string',
-		},
-		sortRecs: {
-			type: 'string',
-			default: 'score',
-		},
-		pubStart: {
-			type: 'number',
-			default: 7,
-		},
-		boost: {
-			type: 'string',
-			default: 'views',
-		},
-	},
 	edit: ParselyRecommendationsEdit,
 } );
