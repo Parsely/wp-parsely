@@ -14,11 +14,18 @@ import {
 } from '@wordpress/components';
 
 const ParselyRecommendationsBlockControls = ( {
-	attributes: { boost, displayDirection, personalized, pubStart, sortRecs, tag },
+	attributes: { boost, displayDirection, personalized, pubStart, sortRecs, tag, title },
 	setAttributes,
 } ) => (
 	<InspectorControls>
 		<PanelBody title="Settings" initialOpen={ true }>
+			<PanelRow>
+				<TextControl
+					label={ __( 'Title' ) }
+					value={ title }
+					onChange={ ( newval ) => setAttributes( { title: newval } ) }
+				/>
+			</PanelRow>
 			<PanelRow>
 				<ToggleControl
 					label={ __( 'Personalize to Visitor', 'wp-parsely' ) }

@@ -57,12 +57,15 @@ export default function ParselyRecommendations( props ) {
 	}
 
 	return (
-		<ul className="parsely-recommendations__linklist">
-			{ recommendations.map( ( { title, url }, index ) => (
-				<li key={ index }>
-					<a href={ url }>{ title }</a>
-				</li>
-			) ) }
-		</ul>
+		<>
+			{ title && <p className="parsely-recommendations__list-title">{ title }</p> }
+			<ul className="parsely-recommendations__linklist">
+				{ recommendations.map( ( { title: linkTitle, url: linkUrl }, index ) => (
+					<li key={ index }>
+						<a href={ linkUrl }>{ linkTitle }</a>
+					</li>
+				) ) }
+			</ul>
+		</>
 	);
 }
