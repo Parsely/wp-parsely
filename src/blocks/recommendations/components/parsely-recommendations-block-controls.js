@@ -14,7 +14,7 @@ import {
 } from '@wordpress/components';
 
 const ParselyRecommendationsBlockControls = ( {
-	attributes: { boost, displayDirection, personalized, pubStart, sortRecs, tag, title },
+	attributes: { boost, displaydirection, limit, personalized, pubstart, sortrecs, tag, title },
 	setAttributes,
 } ) => (
 	<InspectorControls>
@@ -40,14 +40,14 @@ const ParselyRecommendationsBlockControls = ( {
 				<RadioControl
 					label={ __( 'Display Direction', 'wp-parsely' ) }
 					help={ __( 'Show the list of recommended content horizontally or vertically', 'wp-parsely' ) }
-					selected={ displayDirection }
+					selected={ displaydirection }
 					options={ [
 						{ label: __( 'Horizontal', 'wp-parsely' ), value: 'horizontal' },
 						{ label: __( 'Vertical', 'wp-parsely' ), value: 'vertical' },
 					] }
 					onChange={ ( newval ) =>
 						setAttributes( {
-							displayDirection: newval === 'vertical' ? 'vertical' : 'horizontal',
+							displaydirection: newval === 'vertical' ? 'vertical' : 'horizontal',
 						} )
 					}
 				/>
@@ -60,9 +60,18 @@ const ParselyRecommendationsBlockControls = ( {
 				/>
 			</PanelRow>
 			<PanelRow>
+				<RangeControl
+					label={ __( 'Maximum Results', 'wp-parsely' ) }
+					min="1"
+					max="99"
+					onChange={ ( newval ) => setAttributes( { limit: newval } ) }
+					value={ limit }
+				/>
+			</PanelRow>
+			<PanelRow>
 				<SelectControl
 					label={ __( 'Sort Recommendations', 'wp-parsely' ) }
-					value={ sortRecs }
+					value={ sortrecs }
 					options={ [
 						{ label: 'Score', value: 'score' },
 						{
@@ -70,7 +79,7 @@ const ParselyRecommendationsBlockControls = ( {
 							value: 'pub_date',
 						},
 					] }
-					onChange={ ( newval ) => setAttributes( { sortRecs: newval } ) }
+					onChange={ ( newval ) => setAttributes( { sortrecs: newval } ) }
 				/>
 			</PanelRow>
 			<PanelRow>
@@ -78,8 +87,8 @@ const ParselyRecommendationsBlockControls = ( {
 					label={ __( 'Publication Start', 'wp-parsely' ) }
 					min="7"
 					max="365"
-					onChange={ ( newnumber ) => setAttributes( { pubStart: newnumber } ) }
-					value={ pubStart }
+					onChange={ ( newval ) => setAttributes( { pubstart: newval } ) }
+					value={ pubstart }
 				/>
 			</PanelRow>
 			<PanelRow>

@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { useDebounce } from '@wordpress/compose';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
@@ -13,7 +14,8 @@ import { fetchRelated } from '../../../js/lib/parsely-api';
 export default function ParselyRecommendations( {
 	boost,
 	displaydirection,
-	// personalized,
+	limit,
+	personalized,
 	pubstart,
 	sortrecs,
 	title,
@@ -26,6 +28,7 @@ export default function ParselyRecommendations( {
 	const apiQueryArgs = {
 		boost,
 		displaydirection,
+		limit,
 		pub_start_date: pubstart,
 		sort: sortrecs,
 		url,
@@ -39,15 +42,15 @@ export default function ParselyRecommendations( {
 	}
 
 	async function fetchRecos() {
+		// TODO before landing: Attempt to cache in localStorage keyed on attributes
 		let response;
 		try {
-			//throw 'skip';
 			response = await fetchRelated( apiQueryArgs );
 		} catch ( parselyError ) {
 			try {
 				response = await fetchRecosFromWpApi();
 			} catch ( wpError ) {
-				setError( [ parselyError, wpError ] );
+				setError( wpError );
 			}
 		}
 
@@ -56,7 +59,24 @@ export default function ParselyRecommendations( {
 		setRecommendations( data );
 	}
 
+	// Fetch recommendations on mount (useEffect w/ an empty dependency array ~ `componentDidMount`).
 	useEffect( fetchRecos, [] );
+
+	const debouncedUpdate = useDebounce( async () => {
+		await setIsLoaded( false );
+		await fetchRecos();
+	}, 250 );
+
+	/**
+	 * Fetch recommendations when an attribute changes that affects the API call.
+	 * This happens in the Editor context when someone changes a setting.
+	 */
+	useEffect( () => {
+		if ( ! isLoaded ) {
+			return;
+		}
+		debouncedUpdate();
+	}, [ boost, displaydirection, limit, personalized, pubstart, sortrecs, url ] );
 
 	if ( ! isLoaded ) {
 		return <>Loading...</>; // TODO improve

@@ -36,7 +36,7 @@ class Parsely_Recommendations_Block {
 						'type'    => 'boolean',
 						'default' => false,
 					),
-					'displayDirection' => array(
+					'displaydirection' => array(
 						'type'    => 'string',
 						'default' => 'horizontal',
 					),
@@ -44,14 +44,18 @@ class Parsely_Recommendations_Block {
 						'type'    => 'string',
 						'default' => __( 'Related Content' ),
 					),
+					'limit'    => array(
+						'type'    => 'number',
+						'default' => 10,
+					),
 					'tag'      => array(
 						'type' => 'string',
 					),
-					'sortRecs' => array(
+					'sortrecs' => array(
 						'type'    => 'string',
 						'default' => 'score',
 					),
-					'pubStart' => array(
+					'pubstart' => array(
 						'type'    => 'number',
 						'default' => 7,
 					),
@@ -75,12 +79,13 @@ class Parsely_Recommendations_Block {
 		?>
 		<section id="wp-parsely-related-posts-block" class="<?php echo esc_attr( $class_names ) ?>">
 			<div class="container"
-				data-personalized="<?php echo esc_attr( $attr['personalized'] ) ?>"
-				data-displayDirection="<?php echo esc_attr( $attr['displayDirection'] ) ?>"
-				data-title="<?php echo esc_attr( $attr['title'] ) ?>"
-				data-sortRecs="<?php echo esc_attr( $attr['sortRecs'] ) ?>"
-				data-pubStart="<?php echo esc_attr( $attr['pubStart'] ) ?>"
 				data-boost="<?php echo esc_attr( $attr['boost'] ) ?>"
+				data-displaydirection="<?php echo esc_attr( $attr['displaydirection'] ) ?>"
+				data-limit="<?php echo esc_attr( $attr['limit'] ) ?>"
+				data-personalized="<?php echo esc_attr( $attr['personalized'] ) ?>"
+				data-pubstart="<?php echo esc_attr( $attr['pubstart'] ) ?>"
+				data-sortrecs="<?php echo esc_attr( $attr['sortrecs'] ) ?>"
+				data-title="<?php echo esc_attr( $attr['title'] ) ?>"
 			></div>
 		</section>
 		<?php
