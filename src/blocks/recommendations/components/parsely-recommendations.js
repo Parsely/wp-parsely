@@ -27,12 +27,11 @@ export default function ParselyRecommendations( {
 	const url = window.location.href;
 	const apiQueryArgs = {
 		boost,
-		displaydirection,
 		limit,
-		pub_start_date: pubstart,
 		sort: sortrecs,
 		url,
 	};
+
 	// TODO: when personalized is true -- include uuid
 
 	async function fetchRecosFromWpApi() {
@@ -76,7 +75,7 @@ export default function ParselyRecommendations( {
 			return;
 		}
 		debouncedUpdate();
-	}, [ boost, displaydirection, limit, personalized, pubstart, sortrecs, url ] );
+	}, [ boost, limit, personalized, pubstart, sortrecs, url ] );
 
 	if ( ! isLoaded ) {
 		return <>Loading...</>; // TODO improve
@@ -90,10 +89,14 @@ export default function ParselyRecommendations( {
 		return <>No recommendations :(</>; // TODO improve
 	}
 
+	const classNames = `parsely-recommendations__linklist ${
+		displaydirection === 'horizontal' ? 'horizontal' : 'vertical'
+	}`;
+
 	return (
 		<>
 			{ title && <p className="parsely-recommendations__list-title">{ title }</p> }
-			<ul className="parsely-recommendations__linklist">
+			<ul className={ classNames }>
 				{ recommendations.map( ( { title: linkTitle, url: linkUrl }, index ) => (
 					<li key={ index }>
 						<a href={ linkUrl }>{ linkTitle }</a>

@@ -39,7 +39,7 @@ class Parsely_Recommendations_Block_API {
 		$links = self::fetch_related_links(
 			$apikey,
 			$params['url'],
-			0,//$params['pub_start_date'], // not working for some reason...?
+			$params['pub_date_start'],
 			$params['sort'],
 			$params['limit'],
 			$params['boost']

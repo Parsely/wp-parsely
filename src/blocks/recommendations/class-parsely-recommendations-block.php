@@ -32,36 +32,32 @@ class Parsely_Recommendations_Block {
 				'script'          => 'wp-parsely-recommendations-block',
 				'render_callback' => 'Parsely_Recommendations_Block::server_side_render',
 				'attributes'      => array(
-					'personalized'    => array(
-						'type'    => 'boolean',
-						'default' => false,
+					'boost'    => array(
+						'type'    => 'string',
+						'default' => 'views',
 					),
 					'displaydirection' => array(
 						'type'    => 'string',
 						'default' => 'horizontal',
 					),
-					'title'    => array(
-						'type'    => 'string',
-						'default' => __( 'Related Content' ),
-					),
 					'limit'    => array(
 						'type'    => 'number',
 						'default' => 10,
 					),
-					'tag'      => array(
-						'type' => 'string',
+					'personalized'    => array(
+						'type'    => 'boolean',
+						'default' => false,
+					),
+					'title'    => array(
+						'type'    => 'string',
+						'default' => __( 'Related Content' ),
 					),
 					'sortrecs' => array(
 						'type'    => 'string',
 						'default' => 'score',
 					),
-					'pubstart' => array(
-						'type'    => 'number',
-						'default' => 7,
-					),
-					'boost'    => array(
-						'type'    => 'string',
-						'default' => 'views',
+					'tag'      => array(
+						'type' => 'string',
 					),
 				),
 			)
@@ -83,7 +79,6 @@ class Parsely_Recommendations_Block {
 				data-displaydirection="<?php echo esc_attr( $attr['displaydirection'] ) ?>"
 				data-limit="<?php echo esc_attr( $attr['limit'] ) ?>"
 				data-personalized="<?php echo esc_attr( $attr['personalized'] ) ?>"
-				data-pubstart="<?php echo esc_attr( $attr['pubstart'] ) ?>"
 				data-sortrecs="<?php echo esc_attr( $attr['sortrecs'] ) ?>"
 				data-title="<?php echo esc_attr( $attr['title'] ) ?>"
 			></div>

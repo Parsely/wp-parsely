@@ -83,15 +83,6 @@ const ParselyRecommendationsBlockControls = ( {
 				/>
 			</PanelRow>
 			<PanelRow>
-				<RangeControl
-					label={ __( 'Publication Start', 'wp-parsely' ) }
-					min="7"
-					max="365"
-					onChange={ ( newval ) => setAttributes( { pubstart: newval } ) }
-					value={ pubstart }
-				/>
-			</PanelRow>
-			<PanelRow>
 				<SelectControl
 					label={ __( 'Boost' ) }
 					value={ boost }
