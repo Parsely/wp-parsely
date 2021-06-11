@@ -1,5 +1,5 @@
 const SiteDetails = ( { apikey, postsToTrack, pagesToTrack, phpVersion, pluginVersion } ) => (
-	<div className="site-details-container container">
+	<div className="site-details-container">
 		<div className="site-detail">
 			<div className="details-label">
 				<span>Site Details</span>
