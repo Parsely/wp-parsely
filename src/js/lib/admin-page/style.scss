@@ -46,8 +46,9 @@ span.active {
 
 .site-detail {
   display: flex;
-  flex-direction: row;
-  width: 60%;
+  flex-direction: column;
+  width: 100%;
+  max-width: 300px;
 }
 
 .details-info {
@@ -88,12 +89,37 @@ span.active {
 .wipe-metadata-button {
   margin-top: 1%;
   margin-bottom: 1%;
+  width: 100%;
+  max-width: 300px;
+  height: 30px;
+  color: #b0443f;
+}
+
+.wipe-metadata-button:hover {
+  color: #FFFFFF;
+  background-color: #b0443f;
+}
+
+.wipe-metadata-label {
+  padding-top: 1em;
 }
 
 .container {
   width: 75%;
   display: flex;
   flex-direction: row;
+}
+
+.site-details-container {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.wipe-metadata-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1em;
 }
 
 .wipe-metadata-controls {

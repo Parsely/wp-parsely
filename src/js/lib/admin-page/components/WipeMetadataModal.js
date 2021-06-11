@@ -20,7 +20,7 @@ const WipeMetadataModal = ( { setting, apikey, onConfirm, modalControl } ) => {
 		modalControl( false );
 		onConfirm( val );
 	};
-	
+
 	return (
 		<div className="modal-container">
 			<div onClick={ () => setFlag( false ) } className="modal-background">
