@@ -29,11 +29,10 @@ const App = () => {
 		setDisplayModal( val );
 	};
 
-	const setMetadataFlag = ( val ) => setSettings( { ...settings, parsely_wipe_metadata_cache: val } );
-
 	const handleFormSubmit = async ( e ) => {
 		e.preventDefault();
-
+		// this debugger gets called
+		// debugger;
 		try {
 			await saveSettingsToServer( settings );
 		} catch ( writeError ) {
@@ -41,6 +40,8 @@ const App = () => {
 			console.error( { writeError } );
 		}
 	};
+
+	const setMetadataFlag = ( val ) => setSettings( { ...settings, parsely_wipe_metadata_cache: val } );
 
 	return (
 		<div className="settings-container">
@@ -168,6 +169,16 @@ const App = () => {
 							/>
 						</div>
 						<div className={ `tab-body debug ${ displayDiv( 'debug', currentTab ) }` }>
+							{ displayModal ? (
+								<WipeMetadataModal
+									onConfirm={ setMetadataFlag }
+									apikey={ settings.apikey }
+									modalControl={ showModal }
+									setting={ { parsely_wipe_metadata_cache: settings.parsely_wipe_metadata_cache } }
+								/>
+							) : (
+								''
+							) }
 							<Setting
 								name="metadata_secret"
 								value={ settings.metadata_secret }
@@ -181,16 +192,6 @@ const App = () => {
 								onClick={ showModal }
 								note="This will wipe all of your site's metadata and resend all metadata to Parse.ly"
 							/>
-							{ displayModal ? (
-								<WipeMetadataModal
-									onConfirm={ setMetadataFlag }
-									apikey={ settings.apikey }
-									modalControl={ showModal }
-									setting={ { parsely_wipe_metadata_cache: settings.parsely_wipe_metadata_cache } }
-								/>
-							) : (
-								''
-							) }
 							<SiteDetails
 								apikey={ settings.apikey }
 								postsToTrack={ settings.track_post_types }
