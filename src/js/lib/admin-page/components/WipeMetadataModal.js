@@ -20,18 +20,22 @@ const WipeMetadataModal = ( { setting, apikey, onConfirm, modalControl } ) => {
 		modalControl( false );
 		onConfirm( val );
 	};
-
+	
 	return (
-		<div className="modal">
-			<strong>Type <span className="code">{ apikey }</span> below if you really want to delete all stored metadata. This action cannot be undone</strong>
-			<TextControl
-				className="text-input"
-				label="Wipe Metadata Cache"
-				onChange={ setMessage }
-			/>
-			<button onClick={ () => setFlag( false ) }>Cancel</button>
-			<button className="button-primary" onClick={ () => setFlag( true ) }>Confirm</button>
-			{ flagSet ? <button onClick={ () => setFlag( false ) }>Undo</button> : '' }
+		<div className="modal-container">
+			<div onClick={ () => setFlag( false ) } className="modal-background">
+			</div>
+			<div className="modal">
+				<strong>Type <span className="code">{ apikey }</span> below if you really want to delete all stored metadata. This action cannot be undone</strong>
+				<TextControl
+					className="text-input"
+					label="Wipe Metadata Cache"
+					onChange={ setMessage }
+				/>
+				<button type="button" onClick={ () => setFlag( false ) }>Cancel</button>
+				<button type="button" className="button-primary" onClick={ () => setFlag( true ) }>Confirm</button>
+				{ flagSet ? <button onClick={ () => setFlag( false ) }>Undo</button> : '' }
+			</div>
 		</div>
 	);
 };
