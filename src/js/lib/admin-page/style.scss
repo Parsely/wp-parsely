@@ -18,9 +18,9 @@ $gray: #777;
 .nav-control {
   cursor: pointer;
   justify-content: space-between;
-  height: 10%;
+  height: 2vh;
   font-size: larger;
-  margin: 1% 1%;
+  padding: 1em;
 }
 
 .inactive {
@@ -32,57 +32,16 @@ span.active {
   text-decoration: underline;
 }
 
-.setting-item--container {
-  width: 75%;
-  margin-left: 2%;
-}
-
 .setting-item {
   display: inline-flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 1% 1% 1% 3%;
   width: 50%;
-}
-
-.setting-item--label {
-  width: 75%;
-  font-size: large;
 }
 
 .setting-item--control {
   width: 100%;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 34px;
-}
-
-p.subtext {
-  font-size: small;
-}
-
-.site-details-container {
-  width: 75%;
-  margin-left: 4%;
-  display: flex;
-  flex-direction: row;
+  max-width: 300px;
 }
 
 .site-detail {
@@ -111,12 +70,53 @@ p.subtext {
 
 .modal {
   width: 500px;
+  left: 50%;
+  top: 50%;
+  position: absolute;
   background: white;
   border: 1px solid #ccc;
   transition: 1.1s ease-out;
-  box-shadow: -2rem 2rem 2rem rgba(black, 0.2);
+  transform: translate(-50%, -50%);
+  box-shadow: -2rem 2rem 2rem rgb(0 0 0 / 20%);
+  padding: 2em;
   filter: blur(0);
-  transform: scale(1);
   opacity: 1;
   visibility: visible;
+  z-index:9999;
+}
+
+.wipe-metadata-button {
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+.container {
+  width: 75%;
+  display: flex;
+  flex-direction: row;
+}
+
+.wipe-metadata-controls {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.modal-background {
+  background-color: rgba(black, 0.4);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  margin-right: 2em;
+  animation: metadata-fade-in 150ms linear;
+}
+
+@-webkit-keyframes metadata-fade-in {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
 }
