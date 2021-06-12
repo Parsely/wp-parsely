@@ -141,6 +141,10 @@ span.active {
 	animation: metadata-fade-in 150ms linear;
 }
 
+.copy-cta {
+  cursor: pointer;
+}
+
 @-webkit-keyframes metadata-fade-in {
 	0% {
 		opacity: 0;
