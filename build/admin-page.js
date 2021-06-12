@@ -777,6 +777,19 @@ var SiteDetails = function SiteDetails(_ref) {
       pagesToTrack = _ref.pagesToTrack,
       phpVersion = _ref.phpVersion,
       pluginVersion = _ref.pluginVersion;
+
+  var copyToClipboard = function copyToClipboard() {
+    var el = document.createElement('textarea');
+    el.value = "Site ID: ".concat(apikey, ", PHP Version: ").concat(phpVersion, ", Post Types to track: ").concat(postsToTrack, ", Pages to Track: ").concat(pagesToTrack, ", Plugin Version: ").concat(pluginVersion);
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  };
+
   return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
     className: "site-details-container"
   }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
@@ -796,6 +809,9 @@ var SiteDetails = function SiteDetails(_ref) {
   }, "Page Types to Track: ", pagesToTrack), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("span", {
     className: "details-info-item"
   }, "Plugin Version: ", pluginVersion), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
+    onClick: function onClick() {
+      return copyToClipboard();
+    },
     className: "copy-cta"
   }, "Copy to Clipboard"))));
 };
