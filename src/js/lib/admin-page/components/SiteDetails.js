@@ -1,4 +1,7 @@
+import { useState } from '@wordpress/element';
+
 const SiteDetails = ( { apikey, postsToTrack, pagesToTrack, phpVersion, pluginVersion } ) => {
+	const [ isCopied, setIsCopied ] = useState( false );
 	const copyToClipboard = () => {
 		const el = document.createElement( 'textarea' );
 		el.value = `Site ID: ${ apikey }, PHP Version: ${ phpVersion }, Post Types to track: ${ postsToTrack }, Pages to Track: ${ pagesToTrack }, Plugin Version: ${ pluginVersion }`;
@@ -9,6 +12,7 @@ const SiteDetails = ( { apikey, postsToTrack, pagesToTrack, phpVersion, pluginVe
 		el.select();
 		document.execCommand( 'copy' );
 		document.body.removeChild( el );
+		setIsCopied( true );
 	};
 	return (
 		<div className="site-details-container">
@@ -32,7 +36,10 @@ const SiteDetails = ( { apikey, postsToTrack, pagesToTrack, phpVersion, pluginVe
 					<span className="details-info-item">
 						Plugin Version: { pluginVersion }
 					</span>
-					<p onClick={ () => copyToClipboard() } className="copy-cta">Copy to Clipboard</p>
+					{
+						isCopied ? ( <p>Copied!</p> )
+							: ( <p onClick={ () => copyToClipboard() } className="copy-cta">Copy to Clipboard</p> )
+					}
 				</div>
 			</div>
 		</div>
