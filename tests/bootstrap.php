@@ -36,5 +36,6 @@ if ( ! defined( 'WP_PLUGIN_DIR' ) || file_exists( WP_PLUGIN_DIR . '/wp-parsely/w
 	exit( 1 );
 }
 
-// Include the Parsely custom test case.
-require_once __DIR__ . '/testcase.php';
+// Include the Parsely custom test cases.
+require_once __DIR__ . '/TestCase.php';
+require_once __DIR__ . '/StructuredData/NonPostTestCase.php';
