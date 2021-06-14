@@ -6,19 +6,15 @@ const WipeMetadataModal = ( { setting, apikey, onConfirm, modalControl } ) => {
 	const [ flagSet, setFlagSet ] = useState( setting.parsely_wipe_metadata_cache );
 
 	const setFlag = ( val ) => {
-		if ( val ) {
-			if ( message !== apikey ) {
-				alert( 'Your text does not match the prompt. Please try again.' );
-			} else {
-				alert( 'Deleting all metadata' );
-				setFlagSet( true );
-			}
-		} else {
+		if ( ! val ) {
 			setMessage( '' );
 			setFlagSet( false );
+			onConfirm( val );
+		}
+		if ( val && message === apikey ) {
+			onConfirm( val );
 		}
 		modalControl( false );
-		onConfirm( val );
 	};
 
 	return (
@@ -26,14 +22,14 @@ const WipeMetadataModal = ( { setting, apikey, onConfirm, modalControl } ) => {
 			<div onClick={ () => setFlag( false ) } className="modal-background">
 			</div>
 			<div className="modal">
-				<strong>Type <span className="code">{ apikey }</span> below if you really want to delete all stored metadata. This action cannot be undone</strong>
+				<strong>Type <span className="code">{ apikey }</span> below and then click Confirm if you really want to delete all stored metadata. This action cannot be undone</strong>
 				<TextControl
 					className="text-input"
 					label="Wipe Metadata Cache"
 					onChange={ setMessage }
 				/>
-				<button type="button" onClick={ () => setFlag( false ) }>Cancel</button>
-				<button type="button" className="button-primary" onClick={ () => setFlag( true ) }>Confirm</button>
+				<button className="button-secondary" type="button" onClick={ () => setFlag( false ) }>Cancel</button>
+				<button type="button" className={ `button-primary ${ message !== apikey ? 'disabled' : '' }` } onClick={ () => setFlag( true ) }>Confirm</button>
 				{ flagSet ? <button onClick={ () => setFlag( false ) }>Undo</button> : '' }
 			</div>
 		</div>
