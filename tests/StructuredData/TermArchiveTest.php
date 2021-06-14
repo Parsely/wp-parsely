@@ -1,27 +1,19 @@
 <?php
 /**
- * Structured Data Tests for non-posts.
+ * Structured Data Tests for the term archives.
  *
  * @package Parsely\Tests
  */
 
-namespace Parsely\Tests;
+namespace Parsely\Tests\StructuredData;
 
 /**
- * Structured Data Tests for non-posts.
+ * Structured Data Tests for the term archives.
  *
  * @see https://www.parse.ly/help/integration/jsonld
  * @covers \Parsely::construct_parsely_metadata
  */
-final class Archive_Post_Test extends TestCase {
-	public function setUp() {
-		parent::setUp();
-
-		update_option( 'show_on_front', 'posts' );
-		delete_option( 'page_for_posts' );
-		delete_option( 'page_on_front' );
-	}
-
+final class TermArchiveTest extends NonPostTestCase {
 	/**
 	 * Check metadata for term archive.
 	 *
@@ -71,23 +63,5 @@ final class Archive_Post_Test extends TestCase {
 		// The headline should be the category name.
 		self::assertEquals( 'Test Category', $structured_data['headline'] );
 		self::assertEquals( $cat_link, $structured_data['url'] );
-	}
-
-	public function assert_data_has_required_properties( $structured_data ) {
-		$required_properties = $this->get_required_properties();
-		array_walk(
-			$required_properties,
-			static function( $property, $index ) use ( $structured_data ) {
-				self::assertArrayHasKey( $property, $structured_data, 'Data does not have required property: ' . $property );
-			}
-		);
-	}
-	private function get_required_properties() {
-		return array(
-			'@context',
-			'@type',
-			'headline',
-			'url',
-		);
 	}
 }
