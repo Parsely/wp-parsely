@@ -11,11 +11,13 @@ import { useBlockProps } from '@wordpress/block-editor';
 import { ReactComponent as LeafIcon } from './Parsely-Logo-sRGB-Leaf-Green.svg';
 import ParselyRecommendations from './components/parsely-recommendations';
 import ParselyRecommendationsBlockControls from './components/parsely-recommendations-block-controls';
+import ParselyRecommendationsInspectorControls from './components/parsely-recommendations-inspector-controls';
 
 function ParselyRecommendationsEdit( editProps ) {
 	return (
 		<div { ...useBlockProps() }>
 			<ParselyRecommendationsBlockControls { ...editProps } />
+			<ParselyRecommendationsInspectorControls { ...editProps } />
 			<ParselyRecommendations { ...editProps.attributes } />
 		</div>
 	);

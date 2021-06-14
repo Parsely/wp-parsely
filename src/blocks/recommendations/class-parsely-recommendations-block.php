@@ -44,6 +44,10 @@ class Parsely_Recommendations_Block {
 						'type'    => 'number',
 						'default' => 10,
 					),
+					'layoutstyle' => array(
+						'type'    => 'string',
+						'default' => 'grid',
+					),
 					'personalized'    => array(
 						'type'    => 'boolean',
 						'default' => false,

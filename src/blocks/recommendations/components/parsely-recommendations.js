@@ -14,6 +14,7 @@ import { fetchRelated } from '../../../js/lib/parsely-api';
 export default function ParselyRecommendations( {
 	boost,
 	displaydirection,
+	layoutstyle,
 	limit,
 	personalized,
 	pubstart,
@@ -93,7 +94,7 @@ export default function ParselyRecommendations( {
 
 	const classNames = `parsely-recommendations__linklist ${
 		displaydirection === 'horizontal' ? 'horizontal' : 'vertical'
-	}`;
+	} ${ layoutstyle === 'grid' ? 'grid' : 'list' }`;
 
 	return (
 		<>
