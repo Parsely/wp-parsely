@@ -703,31 +703,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		self::assertTrue( strpos( $output, 'blog.parsely.com' ) > 0 );
 	}
 
-
-	/**
-	 * Check the AMP integration.
-	 *
-	 * @covers \Parsely::parsely_add_amp_actions
-	 * @covers \Parsely::parsely_add_amp_analytics
-	 * @uses \Parsely::__construct
-	 * @uses \Parsely::get_options()
-	 * @group amp
-	 * @group settings
-	 */
-	public function test_amp_integration() {
-		$options   = get_option( 'parsely' );
-		$analytics = array();
-		$filter    = self::$parsely->parsely_add_amp_actions();
-		$output    = self::$parsely->parsely_add_amp_analytics( $analytics );
-		self::assertEmpty( $filter );
-		self::assertSame( 'parsely', $output['parsely']['type'] );
-		self::assertSame( 'blog.parsely.com', $output['parsely']['config_data']['vars']['apikey'] );
-		$options['disable_amp'] = true;
-		update_option( 'parsely', $options );
-		$filter = self::$parsely->parsely_add_amp_actions();
-		self::assertSame( '', $filter );
-	}
-
 	/**
 	 * Check out page filtering.
 	 *

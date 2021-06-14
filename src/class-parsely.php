@@ -1968,10 +1968,19 @@ class Parsely {
 	}
 
 	/**
-	 * Add amp actions.
+	 * Verify if request is an AMP request.
+	 *
+	 * @return bool True is an AMP request, false otherwise.
+	 */
+	public function is_amp_request() {
+		return function_exists( 'amp_is_request' ) && amp_is_request();
+	}
+
+	/**
+	 * Add AMP actions.
 	 */
 	public function parsely_add_amp_actions() {
-		if ( ! function_exists( 'is_amp_endpoint' ) || ! is_amp_endpoint() ) {
+		if ( ! $this->is_amp_request() ) {
 			return '';
 		}
 
@@ -1988,8 +1997,8 @@ class Parsely {
 	/**
 	 * Add amp analytics.
 	 *
-	 * @param type $analytics The analytics object you want to add.
-	 * @return type
+	 * @param array $analytics The analytics object you want to add.
+	 * @return array
 	 */
 	public function parsely_add_amp_analytics( $analytics ) {
 		$options = $this->get_options();
