@@ -18,6 +18,7 @@ const App = () => {
 	const [ currentTab, setCurrentTab ] = useState( 'general' );
 	const [ displayModal, setDisplayModal ] = useState( false );
 	const [ submitSuccessful, setSubmitSuccessful ] = useState( false );
+	const [ submitFailure, setSubmitFailure ] = useState( false );
 
 	useEffect( () => {
 		fetchSettings().then(
@@ -44,8 +45,7 @@ const App = () => {
 			setSubmitSuccessful( true );
 			setCurrentTab( 'general' );
 		} catch ( writeError ) {
-			// TODO: Handle error updating settings
-			console.error( { writeError } );
+			setSubmitFailure( true );
 		}
 	};
 
@@ -64,8 +64,14 @@ const App = () => {
 					<span className={ `${ currentTab === 'debug' ? 'active' : '' }` }>Debug</span>
 				</div>
 			</nav>
-			{submitSuccessful ?
-				<Notice status="success" onRemove={ () => setSubmitSuccessful( false ) }>Settings Successfully Updated!</Notice> : ''
+			{ submitSuccessful
+				? <Notice status="success" onRemove={ () => setSubmitSuccessful( false ) }>Settings Successfully Updated!</Notice>
+				: ''
+			}
+			{submitFailure
+				? <Notice status="error" onRemove={ () => setSubmitFailure( false ) }>Something went wrong! Please review your
+					settings and try again</Notice>
+				: ''
 			}
 			<form className="settings-form" onSubmit={ ( e ) => handleFormSubmit( e ) }>
 				{ settings ? (
