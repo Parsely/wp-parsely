@@ -68,7 +68,7 @@ const App = () => {
 				? <Notice status="success" onRemove={ () => setSubmitSuccessful( false ) }>Settings Successfully Updated!</Notice>
 				: ''
 			}
-			{submitFailure
+			{ submitFailure
 				? <Notice status="error" onRemove={ () => setSubmitFailure( false ) }>Something went wrong! Please review your
 					settings and try again</Notice>
 				: ''
