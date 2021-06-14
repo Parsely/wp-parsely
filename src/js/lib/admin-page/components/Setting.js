@@ -1,20 +1,18 @@
+/**
+ * External dependencies
+ */
 import { SelectControl, TextControl, ToggleControl } from '@wordpress/components';
+
+/**
+ * Internal dependencies
+ */
+import { PSEUDO_BOOLEAN_SETTINGS } from '../constants';
 
 const Setting = ( { name, note, value, onChange, label } ) => {
 	const _onChange = ( newValue ) => onChange( [ name, newValue ] );
 	let input;
 
-	if (
-		[
-			'disable_javascript',
-			'disable_amp',
-			'use_top_level_cats',
-			'cats_as_tags',
-			'track_authenticated_users',
-			'lowercase_tags',
-			'force_https_canonicals',
-		].includes( name )
-	) {
+	if ( PSEUDO_BOOLEAN_SETTINGS.includes( name ) ) {
 		input = <ToggleControl name={ name } label={ label } onChange={ _onChange } checked={ value } />;
 	} else if ( [ 'track_post_types', 'track_page_types' ].includes( name ) ) {
 		input = (

@@ -1,5 +1,11 @@
+/**
+ * External dependencies
+ */
 import { useEffect, useState } from '@wordpress/element';
 
+/**
+ * Internal dependencies
+ */
 import { fetchSettings, saveSettingsToServer } from '../../settings-api-client';
 import Setting from './Setting';
 import SiteDetails from './SiteDetails';
