@@ -230,7 +230,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	}
 
 	/**
-	 * Check the context `@type` field for a Post and the Homepage.
+	 * Check the context `@type` field for a Post.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
 	 * @uses \Parsely::__construct
@@ -261,13 +261,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 			)
 		);
 		$post    = get_post( $post_id );
-
-		// Go to the homepage
-		$this->go_to( '/' );
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
-
-		// The metadata '@type' for the context should be 'WebPage' for the homepage.
-		self::assertSame( 'WebPage', $structured_data['@type'] );
 
 		// Go to a single post page
 		$this->go_to( '/?p=' . $post_id );
