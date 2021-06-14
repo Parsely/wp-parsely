@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { useEffect, useState } from '@wordpress/element';
+import { Notice } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -16,6 +17,7 @@ const App = () => {
 	const [ settings, setSettings ] = useState( null );
 	const [ currentTab, setCurrentTab ] = useState( 'general' );
 	const [ displayModal, setDisplayModal ] = useState( false );
+	const [ submitSuccessful, setSubmitSuccessful ] = useState( false );
 
 	useEffect( () => {
 		fetchSettings().then(
@@ -37,10 +39,10 @@ const App = () => {
 
 	const handleFormSubmit = async ( e ) => {
 		e.preventDefault();
-		// this debugger gets called
-		// debugger;
 		try {
 			await saveSettingsToServer( settings );
+			setSubmitSuccessful( true );
+			setCurrentTab( 'general' );
 		} catch ( writeError ) {
 			// TODO: Handle error updating settings
 			console.error( { writeError } );
@@ -62,6 +64,9 @@ const App = () => {
 					<span className={ `${ currentTab === 'debug' ? 'active' : '' }` }>Debug</span>
 				</div>
 			</nav>
+			{submitSuccessful ?
+				<Notice status="success" onRemove={ () => setSubmitSuccessful( false ) }>Settings Successfully Updated!</Notice> : ''
+			}
 			<form className="settings-form" onSubmit={ ( e ) => handleFormSubmit( e ) }>
 				{ settings ? (
 					<div className="settings-holder">
