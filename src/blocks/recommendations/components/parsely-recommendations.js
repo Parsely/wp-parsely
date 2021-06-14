@@ -59,7 +59,9 @@ export default function ParselyRecommendations( {
 	}
 
 	// Fetch recommendations on mount (useEffect w/ an empty dependency array ~ `componentDidMount`).
-	useEffect( fetchRecos, [] );
+	useEffect( () => {
+		fetchRecos();
+	}, [] );
 
 	const debouncedUpdate = useDebounce( async () => {
 		await setIsLoaded( false );
