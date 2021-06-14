@@ -49,6 +49,7 @@ span.active {
 	flex-direction: column;
 	width: 100%;
 	max-width: 300px;
+  	padding-bottom: 1em;
 }
 
 .details-info {
@@ -62,6 +63,7 @@ span.active {
 .details-label {
 	width: 50%;
 	font-size: large;
+  	padding-bottom: 1em;
 }
 
 .code {
