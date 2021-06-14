@@ -689,21 +689,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	}
 
 	/**
-	 * Check the facebook instant articles integration.
-	 *
-	 * @covers \Parsely::insert_parsely_tracking_fbia
-	 * @uses \Parsely::__construct
-	 * @uses \Parsely::get_options()
-	 * @group fbia
-	 */
-	public function test_fbia_integration() {
-		$options = get_option( 'parsely' );
-		$output  = self::$parsely->insert_parsely_tracking_fbia( $registry );
-		self::assertTrue( strpos( $output, 'facebook.com/instantarticles' ) > 0 );
-		self::assertTrue( strpos( $output, 'blog.parsely.com' ) > 0 );
-	}
-
-	/**
 	 * Check out page filtering.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata

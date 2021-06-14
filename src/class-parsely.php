@@ -1935,10 +1935,14 @@ class Parsely {
 	}
 
 	/**
-	 * Add parsely tracking to facebook instant articles
+	 * Add Parse.ly tracking to Facebook Instant Articles.
 	 *
-	 * @param type $registry The registry info for fbia.
-	 * @return string
+	 * No returned value as Facebook passes the $registry by reference.
+	 *
+	 * @see https://github.com/Automattic/facebook-instant-articles-wp/blob/b8a0d4e44dc26578234e32d281b5560256abf5f3/class-instant-articles-post.php#L840
+	 * @see https://github.com/Automattic/facebook-instant-articles-wp/blob/b8a0d4e44dc26578234e32d281b5560256abf5f3/wizard/class-instant-articles-option.php#L143-L146
+	 *
+	 * @param array $registry The registry info for FBIA.
 	 */
 	public function insert_parsely_tracking_fbia( &$registry ) {
 		$options      = $this->get_options();
@@ -1963,8 +1967,6 @@ class Parsely {
 			'name'    => $display_name,
 			'payload' => $embed_code,
 		);
-
-		return $embed_code;
 	}
 
 	/**
