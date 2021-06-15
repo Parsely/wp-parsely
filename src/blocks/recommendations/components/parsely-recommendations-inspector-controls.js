@@ -4,17 +4,28 @@
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
 import {
-	ToggleControl,
+	//Dashicon,
 	PanelBody,
 	PanelRow,
 	RadioControl,
 	RangeControl,
 	SelectControl,
 	TextControl,
+	ToggleControl,
 } from '@wordpress/components';
 
 const ParselyRecommendationsInspectorControls = ( {
-	attributes: { boost, displaydirection, limit, personalized, pubstart, sortrecs, tag, title },
+	attributes: {
+		boost,
+		imagestyle,
+		layoutstyle,
+		limit,
+		personalized,
+		showimages,
+		sortrecs,
+		tag,
+		title,
+	},
 	setAttributes,
 } ) => (
 	<InspectorControls>
@@ -28,6 +39,34 @@ const ParselyRecommendationsInspectorControls = ( {
 			</PanelRow>
 			<PanelRow>
 				<ToggleControl
+					label={ __( 'Show Images', 'wp-parsely' ) }
+					help={
+						showimages ? __( 'Showing images', 'wp-parsely' ) : __( 'Not showing images', 'wp-parsely' )
+					}
+					checked={ showimages }
+					onChange={ () => setAttributes( { showimages: ! showimages } ) }
+				/>
+			</PanelRow>
+			{ showimages && (
+				<PanelRow>
+					<RadioControl
+						label={ __( 'Image style', 'wp-parsely' ) }
+						help={ null /* TODO */ }
+						selected={ imagestyle }
+						options={ [
+							{ label: __( 'Original image', 'wp-parsely' ), value: 'original' },
+							{ label: __( 'Thumbnail from Parse.ly', 'wp-parsely' ), value: 'thumbnail' },
+						] }
+						onChange={ ( newval ) =>
+							setAttributes( {
+								imagestyle: newval === 'original' ? 'original' : 'thumbnail',
+							} )
+						}
+					/>
+				</PanelRow>
+			) }
+			<PanelRow>
+				<ToggleControl
 					label={ __( 'Personalize to Visitor', 'wp-parsely' ) }
 					help={
 						personalized ? __( 'Personalized', 'wp-parsely' ) : __( 'Not Personalized', 'wp-parsely' )
@@ -38,16 +77,16 @@ const ParselyRecommendationsInspectorControls = ( {
 			</PanelRow>
 			<PanelRow>
 				<RadioControl
-					label={ __( 'Display Direction', 'wp-parsely' ) }
-					help={ __( 'Show the list of recommended content horizontally or vertically', 'wp-parsely' ) }
-					selected={ displaydirection }
+					label={ __( 'Display style', 'wp-parsely' ) }
+					help={ __( 'Show the list of recommended links in a grid or list', 'wp-parsely' ) }
+					selected={ layoutstyle }
 					options={ [
-						{ label: __( 'Horizontal', 'wp-parsely' ), value: 'horizontal' },
-						{ label: __( 'Vertical', 'wp-parsely' ), value: 'vertical' },
+						{ label: __( 'Grid', 'wp-parsely' ), value: 'grid' },
+						{ label: __( 'List', 'wp-parsely' ), value: 'list' },
 					] }
 					onChange={ ( newval ) =>
 						setAttributes( {
-							displaydirection: newval === 'vertical' ? 'vertical' : 'horizontal',
+							layoutstyle: newval === 'list' ? 'list' : 'grid',
 						} )
 					}
 				/>

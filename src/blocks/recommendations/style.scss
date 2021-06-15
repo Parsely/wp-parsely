@@ -1,0 +1,52 @@
+.block-editor .parsely-recommendations__ul .parsely-recommendations__link {
+	// Disable clicking on links (probably just during dev)
+	pointer-events: none;
+}
+
+.parsely-recommendations__ul {
+	list-style: none !important; // Not sure why, but the !important is needed in the editor. TODO: avoid.
+}
+
+.parsely-recommendations__cardbody {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-height: 150px;
+}
+
+.parsely-recommendations__ul-list {
+	.parsely-recommendations__cardbody {
+		font-size: 0.8vw;
+	}
+	.parsely-recommendations__card {
+		display: inline-flex;
+	}
+	.parsely-recommendations__cardmedia {
+		min-width: 150px;
+		max-width: 150px;
+	}
+
+	.parsely-recommendations__list-img {
+		max-height: 100px;
+	}
+}
+
+.parsely-recommendations__ul-grid {
+	.parsely-recommendations__cardmedia {
+		min-height: 100px;
+		max-height: 100px;
+	}
+	.parsely-recommendations__cardbody {
+		font-size: 0.8vw;
+	}
+
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	//grid-template-rows: repeat(auto-fill, 120px);
+	row-gap: 0.5em;
+	column-gap: 1em;
+	a {
+		display: inline;
+		text-align: center;
+		vertical-align: middle;
+	}
+}

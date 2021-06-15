@@ -1,9 +1,11 @@
 /**
  * External dependencies
  */
+import apiFetch from '@wordpress/api-fetch';
+import { Card, CardBody, CardDivider, CardHeader, CardMedia } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 import { useEffect, useState } from '@wordpress/element';
-import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
@@ -11,13 +13,21 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { fetchRelated } from '../../../js/lib/parsely-api';
 
+const getImageForLink = ( { imagestyle, imageUrl, thumbUrlMedium } ) => {
+	if ( imagestyle === 'original' ) {
+		return imageUrl;
+	}
+	return thumbUrlMedium;
+};
+
 export default function ParselyRecommendations( {
 	boost,
-	displaydirection,
 	layoutstyle,
 	limit,
+	imagestyle,
 	personalized,
 	pubstart,
+	showimages,
 	sortrecs,
 	title,
 } ) {
@@ -92,19 +102,45 @@ export default function ParselyRecommendations( {
 		return <>No recommendations :(</>; // TODO improve
 	}
 
-	const classNames = `parsely-recommendations__linklist ${
-		displaydirection === 'horizontal' ? 'horizontal' : 'vertical'
-	} ${ layoutstyle === 'grid' ? 'grid' : 'list' }`;
+	const classNames = `parsely-recommendations__ul parsely-recommendations__ul-${ layoutstyle }`;
 
 	return (
 		<>
 			{ title && <p className="parsely-recommendations__list-title">{ title }</p> }
 			<ul className={ classNames }>
-				{ recommendations.map( ( { title: linkTitle, url: linkUrl }, index ) => (
-					<li key={ index }>
-						<a href={ linkUrl }>{ linkTitle }</a>
-					</li>
-				) ) }
+				{ recommendations.map(
+					(
+						{
+							title: linkTitle,
+							url: linkUrl,
+							image_url: imageUrl,
+							thumb_url_medium: thumbUrlMedium,
+						},
+						index
+					) => {
+						const imageForLink =
+							showimages && getImageForLink( { imagestyle, imageUrl, thumbUrlMedium } );
+
+						return (
+							<li key={ index }>
+								<a href={ linkUrl } className="parsely-recommendations__link">
+									<Card className="parsely-recommendations__card" size="small">
+										{ imageForLink && (
+											<CardMedia className="parsely-recommendations__cardmedia">
+												<img
+													className="parsely-recommendations__list-img"
+													src={ imageForLink }
+													alt={ __( 'Image for link', 'wp-parsely' ) }
+												/>
+											</CardMedia>
+										) }
+										<CardBody className="parsely-recommendations__cardbody">{ linkTitle }</CardBody>
+									</Card>
+								</a>
+							</li>
+						);
+					}
+				) }
 			</ul>
 		</>
 	);

@@ -3,25 +3,24 @@
  */
 import { __ } from '@wordpress/i18n';
 import { BlockControls } from '@wordpress/block-editor';
-import { ToolbarGroup } from '@wordpress/components';
-import { layout, grid, formatListBullets } from '@wordpress/icons';
+import { Dashicon, ToolbarGroup } from '@wordpress/components';
 
 const ParselyRecommendationsBlockControls = ( { attributes: { layoutstyle }, setAttributes } ) => {
 	return (
 		<BlockControls group="block">
 			<ToolbarGroup
-				icon={ layout }
+				icon={ <Dashicon icon="grid-view" /> }
 				label={ __( 'Layout' ) }
 				controls={ [
 					{
 						title: __( 'Grid' ),
-						icon: grid,
+						icon: <Dashicon icon="grid-view" />,
 						onClick: () => setAttributes( { layoutstyle: 'grid' } ),
 						disabled: layoutstyle === 'grid',
 					},
 					{
 						title: __( 'List' ),
-						icon: formatListBullets,
+						icon: <Dashicon icon="list-view" />,
 						onClick: () => setAttributes( { layoutstyle: 'list' } ),
 						disabled: layoutstyle === 'list',
 					},

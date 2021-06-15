@@ -44,25 +44,25 @@ class Parsely_Recommendations_Block {
 						'type'    => 'string',
 						'default' => 'views',
 					),
-					'displaydirection' => array(
+					'imagestyle' => array(
 						'type'    => 'string',
-						'default' => 'horizontal',
-					),
-					'limit'    => array(
-						'type'    => 'number',
-						'default' => 10,
+						'default' => 'original',
 					),
 					'layoutstyle' => array(
 						'type'    => 'string',
 						'default' => 'grid',
 					),
+					'limit'    => array(
+						'type'    => 'number',
+						'default' => 10,
+					),
 					'personalized'    => array(
 						'type'    => 'boolean',
 						'default' => false,
 					),
-					'title'    => array(
-						'type'    => 'string',
-						'default' => __( 'Related Content' ),
+					'showimages'    => array(
+						'type'    => 'boolean',
+						'default' => true,
 					),
 					'sortrecs' => array(
 						'type'    => 'string',
@@ -70,6 +70,10 @@ class Parsely_Recommendations_Block {
 					),
 					'tag'      => array(
 						'type' => 'string',
+					),
+					'title'    => array(
+						'type'    => 'string',
+						'default' => __( 'Related Content' ),
 					),
 				),
 			)
@@ -88,10 +92,11 @@ class Parsely_Recommendations_Block {
 		<section id="wp-parsely-related-posts-block" class="<?php echo esc_attr( $class_names ) ?>">
 			<div class="container"
 				data-boost="<?php echo esc_attr( $attr['boost'] ) ?>"
-				data-displaydirection="<?php echo esc_attr( $attr['displaydirection'] ) ?>"
 				data-layoutstyle="<?php echo esc_attr( $attr['layoutstyle'] ) ?>"
+				data-imagestyle="<?php echo esc_attr( $attr['imagestyle'] ) ?>"
 				data-limit="<?php echo esc_attr( $attr['limit'] ) ?>"
 				data-personalized="<?php echo esc_attr( $attr['personalized'] ) ?>"
+				data-showimages="<?php echo esc_attr( $attr['showimages'] ) ?>"
 				data-sortrecs="<?php echo esc_attr( $attr['sortrecs'] ) ?>"
 				data-title="<?php echo esc_attr( $attr['title'] ) ?>"
 			></div>
