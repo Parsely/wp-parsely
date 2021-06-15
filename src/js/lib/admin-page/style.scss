@@ -49,7 +49,7 @@ span.active {
 	flex-direction: column;
 	width: 100%;
 	max-width: 300px;
-  	padding-bottom: 1em;
+	padding-bottom: 1em;
 }
 
 .details-info {
@@ -63,7 +63,7 @@ span.active {
 .details-label {
 	width: 50%;
 	font-size: large;
-  	padding-bottom: 1em;
+	padding-bottom: 1em;
 }
 
 .code {
@@ -144,7 +144,16 @@ span.active {
 }
 
 .copy-cta {
-  cursor: pointer;
+	cursor: pointer;
+}
+
+#wp-parsely-react-entrypoint {
+	.components-snackbar {
+		border-left: 5px solid green;
+		&.settings-error {
+			border-left: 5px solid red;
+		}
+	}
 }
 
 @-webkit-keyframes metadata-fade-in {
