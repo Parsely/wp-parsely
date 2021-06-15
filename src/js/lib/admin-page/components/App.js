@@ -59,6 +59,7 @@ const App = () => {
 			const settingsFromServer = await saveSettingsToServer( settings );
 			setSettings( settingsFromServer );
 			setNotice( { content: 'Settings Successfully Updated!' } );
+			setCurrentTab( 'general' );
 		} catch ( writeError ) {
 			setNotice( {
 				content: 'Something went wrong! Please review your settings and try again.',
@@ -249,12 +250,6 @@ const App = () => {
 
 	return (
 		<div className="settings-container">
-			{ ! loaded && isError && ! notice.isDismissible && (
-				<Notice status="error" isDismissible={ false }>
-					{ notice.content }
-				</Notice>
-			) }
-			{ ! loaded && ! isError && <h2>Loading...</h2> }
 			{ loaded && notice && (
 				<SnackbarList
 					onRemove={ removeNotice }
@@ -266,6 +261,12 @@ const App = () => {
 					] }
 				/>
 			) }
+			{ ! loaded && isError && ! notice.isDismissible && (
+				<Notice status="error" isDismissible={ false }>
+					{ notice.content }
+				</Notice>
+			) }
+			{ ! loaded && ! isError && <h2>Loading...</h2> }
 			{ loaded && nav }
 			{ loaded && form }
 		</div>
