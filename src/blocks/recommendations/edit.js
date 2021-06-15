@@ -13,6 +13,8 @@ import ParselyRecommendations from './components/parsely-recommendations';
 import ParselyRecommendationsBlockControls from './components/parsely-recommendations-block-controls';
 import ParselyRecommendationsInspectorControls from './components/parsely-recommendations-inspector-controls';
 
+import './style.scss';
+
 function ParselyRecommendationsEdit( editProps ) {
 	return (
 		<div { ...useBlockProps() }>

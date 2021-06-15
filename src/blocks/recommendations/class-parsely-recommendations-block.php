@@ -25,11 +25,19 @@ class Parsely_Recommendations_Block {
 			true
 		);
 
+		wp_register_style(
+			'wp-parsely-recommendations-block',
+			PARSELY_PLUGIN_URL . 'build/style-recommendations-edit.css', // TODO: adjust this file name (not sure why I had to do the import in the edit file)
+			array(),
+			Parsely::get_asset_cache_buster()
+		);
+
 		register_block_type(
 			'wp-parsely/recommendations',
 			array(
 				'editor_script'   => 'wp-parsely-recommendations-block-editor',
 				'script'          => 'wp-parsely-recommendations-block',
+				'style'           => 'wp-parsely-recommendations-block',
 				'render_callback' => 'Parsely_Recommendations_Block::server_side_render',
 				'attributes'      => array(
 					'boost'    => array(
@@ -81,6 +89,7 @@ class Parsely_Recommendations_Block {
 			<div class="container"
 				data-boost="<?php echo esc_attr( $attr['boost'] ) ?>"
 				data-displaydirection="<?php echo esc_attr( $attr['displaydirection'] ) ?>"
+				data-layoutstyle="<?php echo esc_attr( $attr['layoutstyle'] ) ?>"
 				data-limit="<?php echo esc_attr( $attr['limit'] ) ?>"
 				data-personalized="<?php echo esc_attr( $attr['personalized'] ) ?>"
 				data-sortrecs="<?php echo esc_attr( $attr['sortrecs'] ) ?>"

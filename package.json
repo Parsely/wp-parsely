@@ -28,6 +28,7 @@
   "devDependencies": {
     "@wordpress/eslint-plugin": "^9.0.5",
     "@wordpress/scripts": "^15.0.1",
+    "postcss": "^8.3.4",
     "prettier": "^2.3.0"
   },
   "dependencies": {
