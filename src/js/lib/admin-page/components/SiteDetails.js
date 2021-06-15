@@ -1,4 +1,5 @@
 import { useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 const SiteDetails = ( { apikey, postsToTrack, pagesToTrack, phpVersion, pluginVersion } ) => {
 	const [ isCopied, setIsCopied ] = useState( false );
@@ -18,27 +19,27 @@ const SiteDetails = ( { apikey, postsToTrack, pagesToTrack, phpVersion, pluginVe
 		<div className="site-details-container">
 			<div className="site-detail">
 				<div className="details-label">
-					<span>Site Details</span>
+					<span>{ __( 'Site Details', 'wp-parsely' ) }</span>
 				</div>
 				<div className="details-info">
 					<span className="details-info-item">
-						Parsely Site ID: { apikey }
+						{ __( 'Parsely Site ID: ', 'wp-parsely' ) } { apikey }
 					</span>
 					<span className="details-info-item">
-						PHP Version: { phpVersion }
+						{ __( 'PHP Version: ', 'wp-parsely' ) } { phpVersion }
 					</span>
 					<span className="details-info-item">
-						Post Types to Track: { postsToTrack }
+						{ __( 'Post Types to Track: ', 'wp-parsely' ) } { postsToTrack }
 					</span>
 					<span className="details-info-item">
-						Page Types to Track: { pagesToTrack }
+						{ __( 'Page Types to Track: ', 'wp-parsely' ) } { pagesToTrack }
 					</span>
 					<span className="details-info-item">
-						Plugin Version: { pluginVersion }
+						{ __( 'Plugin Version: ', 'wp-parsely' ) } { pluginVersion }
 					</span>
 					{
-						isCopied ? ( <p>Copied!</p> )
-							: ( <p onClick={ () => copyToClipboard() } className="copy-cta">Copy to Clipboard</p> )
+						isCopied ? ( <p>{ __( 'Copied!', 'wp-parsely' ) }</p> )
+							: ( <p onClick={ () => copyToClipboard() } className="copy-cta">{ __( 'Copy to Clipboard', 'wp-parsely' ) }</p> )
 					}
 				</div>
 			</div>

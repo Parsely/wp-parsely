@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { SelectControl, TextControl, ToggleControl } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -42,7 +43,7 @@ const Setting = ( { name, note, value, onChange, label } ) => {
 			<div className="setting-item">
 				<div className="setting-item--control">
 					{ input }
-					<p className="subtext">{ note }</p>
+					<p className="subtext">{ __( note, 'wp-parsely' ) }</p>
 				</div>
 			</div>
 		</div>
