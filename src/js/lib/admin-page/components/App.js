@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { useEffect, useState } from '@wordpress/element';
-import { Notice, SnackbarList } from '@wordpress/components';
+import { Notice } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -250,23 +250,20 @@ const App = () => {
 
 	return (
 		<div className="settings-container">
-			{ loaded && notice && (
-				<SnackbarList
-					onRemove={ removeNotice }
-					notices={ [
-						{
-							content: notice.content,
-							className: isError && 'settings-error',
-						},
-					] }
-				/>
-			) }
 			{ ! loaded && isError && ! notice.isDismissible && (
 				<Notice status="error" isDismissible={ false }>
 					{ notice.content }
 				</Notice>
 			) }
 			{ ! loaded && ! isError && <h2>Loading...</h2> }
+			{ loaded && notice && ! isError && (
+				<Notice
+					onRemove={ removeNotice }
+					status="success"
+				>
+					{ notice.content }
+				</Notice>
+			) }
 			{ loaded && nav }
 			{ loaded && form }
 		</div>
