@@ -30,7 +30,7 @@ const WipeMetadataModal = ( { setting, apikey, onConfirm, modalControl } ) => {
 				/>
 				<button className="button-secondary" type="button" onClick={ () => setFlag( false ) }>Cancel</button>
 				<button type="button" className={ `button-primary ${ message !== apikey ? 'disabled' : '' }` } onClick={ () => setFlag( true ) }>Confirm</button>
-				{ flagSet ? <button onClick={ () => setFlag( false ) }>Undo</button> : '' }
+				{ flagSet ? <button className="button-secondary" onClick={ () => setFlag( false ) }>Undo</button> : '' }
 			</div>
 		</div>
 	);
