@@ -1,12 +1,12 @@
 import domReady from '@wordpress/dom-ready';
 import { __, sprintf } from '@wordpress/i18n';
 
-import App from './components/App';
+import ParselySettings from './components/ParselySettings';
 
 import './style.scss';
 
 domReady( () => {
-	wp.element.render( <App />, document.getElementById( 'wp-parsely-react-entrypoint' ) );
+	wp.element.render( <ParselySettings />, document.getElementById( 'wp-parsely-react-entrypoint' ) );
 
 	const keyEl = document.querySelector( '#apikey' );
 	const requiresRecrawlNotice = document.querySelectorAll(
