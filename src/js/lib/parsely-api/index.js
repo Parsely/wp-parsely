@@ -11,5 +11,4 @@ export const fetchApi = async ( path, queryArgs = {}, fetchInit ) => {
 	return response.json();
 };
 
-export const fetchRelated = async ( queryArgs = {} ) =>
-	fetchApi( 'related', { url: window.location.href, ...queryArgs } );
+export const fetchRelated = async ( queryArgs = {} ) => fetchApi( 'related', queryArgs );

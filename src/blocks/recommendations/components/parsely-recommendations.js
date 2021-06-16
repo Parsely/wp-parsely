@@ -2,7 +2,7 @@
  * External dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
-import { Card, CardBody, CardDivider, CardHeader, CardMedia } from '@wordpress/components';
+import { Card, CardBody, CardMedia } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -26,7 +26,6 @@ export default function ParselyRecommendations( {
 	limit,
 	imagestyle,
 	personalized,
-	pubstart,
 	showimages,
 	sortrecs,
 	title,
@@ -35,15 +34,18 @@ export default function ParselyRecommendations( {
 	const [ isLoaded, setIsLoaded ] = useState( false );
 	const [ recommendations, setRecommendations ] = useState( [] );
 
-	const url = window.location.href;
+	const uuid = window.PARSELY?.config?.uuid;
 	const apiQueryArgs = {
 		boost,
 		limit,
 		sort: sortrecs,
-		url,
 	};
 
-	// TODO: when personalized is true -- include uuid
+	if ( personalized && uuid ) {
+		apiQueryArgs.uuid = uuid;
+	} else {
+		apiQueryArgs.url = window.location.href;
+	}
 
 	async function fetchRecosFromWpApi() {
 		return apiFetch( {
@@ -88,7 +90,7 @@ export default function ParselyRecommendations( {
 			return;
 		}
 		debouncedUpdate();
-	}, [ boost, limit, personalized, pubstart, sortrecs, url ] );
+	}, [ boost, limit, personalized, sortrecs ] );
 
 	if ( ! isLoaded ) {
 		return <>Loading...</>; // TODO improve
