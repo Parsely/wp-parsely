@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { useEffect, useState } from '@wordpress/element';
-import { Notice, SnackbarList } from '@wordpress/components';
+import { Notice } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -105,11 +105,11 @@ const ParselySettings = () => {
 						note={ __( 'Your SiteID is your own site domain', 'wp-parsely' ) }
 					/>
 					<Setting
-						name="apiSecret"
+						name="api_secret"
 						value={ 'no secret given' }
 						label={ __( 'API Secret', 'wp-parsely' ) }
 						onChange={ handleInputChange }
-						note="Your API Secret is your secret code to access our API"
+						note={ __( 'Your API Secret is your secret code to access our API', 'wp-parsely' ) }
 					/>
 					<Setting
 						name="logo"
@@ -128,9 +128,9 @@ const ParselySettings = () => {
 					<Setting
 						name="track_page_types"
 						value={ settings.track_page_types }
-						label="Track Page Types"
+						label={ __( 'Track Page Types', 'wp-parsely' ) }
 						onChange={ handleInputChange }
-						note="...."
+						note={ __( '....', 'wp-parsely')}
 					/>
 				</div>
 				<div className={ `tab-body advanced ${ displayDiv( 'advanced', currentTab ) }` }>
@@ -139,7 +139,7 @@ const ParselySettings = () => {
 						value={ settings.meta_type }
 						label={ __( 'Metadata Type', 'wp-parsely' ) }
 						onChange={ handleInputChange }
-						note={ __( 'Choose the metadata format for us to track', 'wp-parsely')}
+						note={ __( 'Choose the metadata format for us to track', 'wp-parsely') }
 					/>
 					<Setting
 						name="custom_taxonomy_section"
@@ -158,9 +158,9 @@ const ParselySettings = () => {
 					<Setting
 						name="disable_javascript"
 						value={ settings.disable_javascript }
-						label={ __( 'Disable Javascript', 'wp-parsely' ) }
+						label={ __( 'Disable JavaScript', 'wp-parsely' ) }
 						onChange={ handleInputChange }
-						note={ __( 'Default: Off. Disable our javascript tracking if you use a separate system for JS tracking', 'wp-parsely' ) }
+						note={ __( 'Default: Off. Disable the Parse.ly plugin JavaScript tracking if you use a separate system for JavaScript tracking', 'wp-parsely' ) }
 					/>
 					<Setting
 						name="disable_amp"
@@ -242,7 +242,7 @@ const ParselySettings = () => {
 				disabled={ updatingSettings }
 				type="submit"
 				className="button-primary"
-				value={ __( 'do the thing!', 'wp-parsely' ) }
+				value={ __( 'Save Settings', 'wp-parsely' ) }
 			/>
 		</form>
 	);
