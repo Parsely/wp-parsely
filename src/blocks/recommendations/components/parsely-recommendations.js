@@ -124,7 +124,7 @@ export default function ParselyRecommendations( {
 						return (
 							<li key={ index }>
 								<a href={ linkUrl } className="parsely-recommendations__link">
-									<Card className="parsely-recommendations__card" size="small">
+									<Card className="parsely-recommendations__card" size="custom">
 										{ imageForLink && (
 											<CardMedia className="parsely-recommendations__cardmedia">
 												<img

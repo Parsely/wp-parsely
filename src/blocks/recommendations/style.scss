@@ -11,39 +11,42 @@
 	text-overflow: ellipsis;
 	overflow: hidden;
 	max-height: 150px;
+	padding: 5px;
+}
+
+.parsely-recommendations__cardmedia {
+	min-height: 100px;
+	max-height: 100px;
+	img {
+		min-height: 100px;
+		max-height: 100px;
+	}
 }
 
 .parsely-recommendations__ul-list {
 	.parsely-recommendations__cardbody {
+		text-decoration: underline;
 		font-size: 0.8vw;
 	}
 	.parsely-recommendations__card {
 		display: inline-flex;
+		min-width: 100%;
 	}
 	.parsely-recommendations__cardmedia {
 		min-width: 150px;
 		max-width: 150px;
 	}
-
-	.parsely-recommendations__list-img {
-		max-height: 100px;
-	}
 }
 
 .parsely-recommendations__ul-grid {
-	.parsely-recommendations__cardmedia {
-		min-height: 100px;
-		max-height: 100px;
-	}
 	.parsely-recommendations__cardbody {
 		font-size: 0.8vw;
 	}
 
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	//grid-template-rows: repeat(auto-fill, 120px);
+	grid-template-columns: repeat(auto-fill, 13ch);
 	row-gap: 0.5em;
-	column-gap: 1em;
+	column-gap: 0.8em;
 	a {
 		display: inline;
 		text-align: center;
