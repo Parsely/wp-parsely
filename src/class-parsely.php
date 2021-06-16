@@ -20,10 +20,10 @@ class Parsely {
 	 *
 	 * @codeCoverageIgnoreStart
 	 */
-	const VERSION         = PARSELY_VERSION;
-	const MENU_SLUG       = 'parsely';             // Defines the page param passed to options-general.php.
-	const OPTIONS_KEY     = 'parsely';             // Defines the key used to store options in the WP database.
-	const CAPABILITY      = 'manage_options';      // The capability required for the user to administer settings.
+	const VERSION     = PARSELY_VERSION;
+	const MENU_SLUG   = 'parsely';             // Defines the page param passed to options-general.php.
+	const OPTIONS_KEY = 'parsely';             // Defines the key used to store options in the WP database.
+	const CAPABILITY  = 'manage_options';      // The capability required for the user to administer settings.
 
 	/**
 	 * Declare some class propeties
@@ -116,7 +116,8 @@ class Parsely {
 			array( $this, 'add_plugin_meta_links' )
 		);
 
-		add_filter( 'cron_schedules', [ $this, 'wpparsely_add_cron_interval' ] );
+		// phpcs:ignore WordPress.WP.CronInterval.CronSchedulesInterval
+		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 		add_filter( 'post_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
 		add_filter( 'page_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
@@ -128,7 +129,7 @@ class Parsely {
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
-		add_action( 'wp_enqueue_scripts', [ $this, 'wp_parsely_style_init' ] );
+		add_action( 'wp_enqueue_scripts', array( $this, 'wp_parsely_style_init' ) );
 	}
 
 	/**
@@ -172,8 +173,8 @@ class Parsely {
 
 		$aria_label = sprintf(
 				/* translators: Post title */
-				__( 'Go to Parse.ly stats for "%s"', 'wp-parsely' ),
-				$post->post_title
+			__( 'Go to Parse.ly stats for "%s"', 'wp-parsely' ),
+			$post->post_title
 		);
 
 		$actions['find_in_parsely'] = sprintf(
@@ -203,7 +204,7 @@ class Parsely {
 	 * Initialize parsely WordPress style
 	 */
 	public function wp_parsely_style_init() {
-		wp_register_style( 'wp-parsely-style', PARSELY_PLUGIN_URL . 'wp-parsely.css', array(), Parsely::VERSION );
+		wp_register_style( 'wp-parsely-style', PARSELY_PLUGIN_URL . 'wp-parsely.css', array(), self::VERSION );
 	}
 
 	/**
@@ -224,7 +225,7 @@ class Parsely {
 		wp_enqueue_script(
 			'wp-parsely-admin',
 			PARSELY_PLUGIN_URL . 'build/admin-page.js',
-			$admin_script_asset[ 'dependencies' ],
+			$admin_script_asset['dependencies'],
 			self::get_asset_cache_buster(),
 			true
 		);
@@ -238,8 +239,8 @@ class Parsely {
 	 */
 	public function add_settings_sub_menu() {
 		add_options_page(
-				__( 'Parse.ly Settings', 'wp-parsely' ),
-				__( 'Parse.ly', 'wp-parsely' ),
+			__( 'Parse.ly Settings', 'wp-parsely' ),
+			__( 'Parse.ly', 'wp-parsely' ),
 			self::CAPABILITY,
 			self::MENU_SLUG,
 			array( $this, 'display_settings' )
@@ -638,7 +639,6 @@ class Parsely {
 		// these can't be null, if somebody accidentally deselected them just reset to default.
 		if ( ! isset( $input['track_post_types'] ) ) {
 			$input['track_post_types'] = array( 'post' );
-
 		}
 		if ( ! isset( $input['track_page_types'] ) ) {
 			$input['track_page_types'] = array( 'page' );
@@ -798,8 +798,8 @@ class Parsely {
 
 		$message = sprintf(
 				/* translators: %s: Plugin settings page URL */
-				__( '<strong>The Parse.ly plugin is not active.</strong> You need to <a href="%s">provide your Parse.ly Dash Site ID</a> before things get cooking.', 'wp-parsely' ),
-				 esc_url( $this->get_settings_url() )
+			__( '<strong>The Parse.ly plugin is not active.</strong> You need to <a href="%s">provide your Parse.ly Dash Site ID</a> before things get cooking.', 'wp-parsely' ),
+			esc_url( $this->get_settings_url() )
 		);
 		?>
 		<div id="message" class="error"><p><?php echo wp_kses_post( $message ); ?></p></div>
@@ -860,7 +860,7 @@ class Parsely {
 			return;
 		}
 
-		echo "\n" . '<!-- BEGIN Parse.ly ' . esc_html( Parsely::VERSION ) . ' -->' . "\n";
+		echo "\n" . '<!-- BEGIN Parse.ly ' . esc_html( self::VERSION ) . ' -->' . "\n";
 
 		// Insert JSON-LD or repeated metas.
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
@@ -894,7 +894,7 @@ class Parsely {
 	 */
 	public static function post_has_trackable_status( $post ) {
 		static $cache = array();
-		$post_id = is_int( $post ) ? $post : $post->ID;
+		$post_id      = is_int( $post ) ? $post : $post->ID;
 		if ( isset( $cache[ $post_id ] ) ) {
 			return $cache[ $post_id ];
 		}
@@ -909,7 +909,7 @@ class Parsely {
 		 * @param string[]    $trackable_statuses The list of post statuses that are allowed to be tracked.
 		 * @param int|WP_Post $post               Which post object or ID is being checked.
 		 */
-		$statuses = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
+		$statuses          = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
 		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true );
 		return $cache[ $post_id ];
 	}
@@ -956,7 +956,7 @@ class Parsely {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_home() ) {
-			$parsely_page['headline'] = get_the_title( get_option('page_for_posts', true) );
+			$parsely_page['headline'] = get_the_title( get_option( 'page_for_posts', true ) );
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_author() ) {
 			// TODO: why can't we have something like a WP_User object for all the other cases? Much nicer to deal with than functions.
@@ -1042,17 +1042,19 @@ class Parsely {
 			 * @param integer $id           Post ID.
 			 * @param string  $post_type    Post type in WordPress.
 			 */
-			$type          = (string) apply_filters( 'wp_parsely_post_type', 'NewsArticle', $post->ID, $post->post_type );
+			$type            = (string) apply_filters( 'wp_parsely_post_type', 'NewsArticle', $post->ID, $post->post_type );
 			$supported_types = array_merge( $this->supported_jsonld_post_types, $this->supported_jsonld_non_post_types );
 
 			// Validate type before passing it further as an invalid type will not be recognized by Parse.ly.
 			if ( ! in_array( $type, $supported_types ) ) {
 				$error = sprintf(
+					/* translators: 1: JSON @type like NewsArticle, 2: URL */
 					__( '@type %1$s is not supported by Parse.ly. Please use a type mentioned in %2$s', 'wp-parsely' ),
 					$type,
 					'https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages'
 				);
-				trigger_error( $error, E_USER_WARNING );
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+				trigger_error( esc_html( $error ), E_USER_WARNING );
 				$type = 'NewsArticle';
 			}
 
@@ -1090,7 +1092,7 @@ class Parsely {
 			$parsely_page['publisher'] = array(
 				'@type' => 'Organization',
 				'name'  => get_bloginfo( 'name' ),
-				'logo'     => $parsely_options['logo'],
+				'logo'  => $parsely_options['logo'],
 			);
 			$parsely_page['keywords']  = $tags;
 		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && self::post_has_trackable_status( $post ) ) {
@@ -1143,8 +1145,8 @@ class Parsely {
 			return '';
 		}
 
-		$post              = get_post( $post_id );
-		$metadata          = $this->construct_parsely_metadata( $parsely_options, $post );
+		$post     = get_post( $post_id );
+		$metadata = $this->construct_parsely_metadata( $parsely_options, $post );
 
 		$endpoint_metadata = array(
 			'canonical_url' => $metadata['url'],
@@ -1181,7 +1183,6 @@ class Parsely {
 		);
 		$current_timestamp       = time();
 		$meta_update             = update_post_meta( $post_id, 'parsely_metadata_last_updated', $current_timestamp );
-
 	}
 
 
@@ -1203,7 +1204,8 @@ class Parsely {
 		);
 		$ids                  = wp_cache_get( 'parsely_post_ids_need_meta_updating' );
 		if ( false === $ids ) {
-			$ids     = array();
+			$ids = array();
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			$results = $wpdb->get_results(
 				$wpdb->prepare( "SELECT DISTINCT(id) FROM {$wpdb->posts} WHERE post_type IN (\" . %s . \") AND id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'parsely_metadata_last_updated');", $allowed_types_string ),
 				ARRAY_N
@@ -1224,6 +1226,16 @@ class Parsely {
 		}
 	}
 
+	/**
+	 * Get the cache buster value for script and styles.
+	 *
+	 * If WP_DEBUG is defined and truthy and we're not running tests, then use a random number.
+	 * Otherwise, use the plugin version.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @return int|string Random number or plugin version string.
+	 */
 	public static function get_asset_cache_buster() {
 		static $cache_buster;
 		if ( isset( $cache_buster ) ) {
@@ -1242,12 +1254,19 @@ class Parsely {
 		return apply_filters( 'wp_parsely_cache_buster', $cache_buster );
 	}
 
+	/**
+	 * Register JavaScripts, if there's an API key value saved.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @return void
+	 */
 	public function register_js() {
 		$parsely_options = $this->get_options();
 
 		// If we don't have an API key, there's no need to proceed.
 		if ( empty( $parsely_options['apikey'] ) ) {
-			return '';
+			return;
 		}
 
 		wp_register_script(
@@ -1258,18 +1277,18 @@ class Parsely {
 			true
 		);
 
-		$api_script_asset = require PARSELY_PLUGIN_DIR . 'build/init-api.asset.php' ;
+		$api_script_asset = require PARSELY_PLUGIN_DIR . 'build/init-api.asset.php';
 		wp_register_script(
 			'wp-parsely-api',
 			PARSELY_PLUGIN_URL . 'build/init-api.js',
-			$api_script_asset[ 'dependencies' ],
+			$api_script_asset['dependencies'],
 			self::get_asset_cache_buster(),
 			true
 		);
 
 		wp_localize_script(
 			'wp-parsely-api',
-			'wpParsely', // This globally-scoped object holds variables used to interact with the API
+			'wpParsely', // This globally-scoped object holds variables used to interact with the API.
 			array(
 				'apikey' => $parsely_options['apikey'],
 			)
@@ -1277,7 +1296,9 @@ class Parsely {
 	}
 
 	/**
-	 * Enqueues the JavaScript code required to send off beacon requests
+	 * Enqueues the JavaScript code required to send off beacon requests.
+	 *
+	 * @since 2.5.0 Rename from insert_parsely_javascript
 	 */
 	public function load_js_tracker() {
 		$parsely_options = $this->get_options();
@@ -1337,6 +1358,11 @@ class Parsely {
 		wp_enqueue_script( 'wp-parsely-tracker' );
 	}
 
+	/**
+	 * Load JavaScript for Parse.ly API.
+	 *
+	 * @since 2.5.0
+	 */
 	public function load_js_api() {
 		$parsely_options = $this->get_options();
 
@@ -1352,20 +1378,33 @@ class Parsely {
 		wp_enqueue_script( 'wp-parsely-api' );
 	}
 
+	/**
+	 * Filter the script tag for certain scripts to add needed attributes.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param string $tag    The `script` tag for the enqueued script.
+	 * @param string $handle The script's registered handle.
+	 * @param string $src    The script's source URL.
+	 * @return string Amended `script` tag.
+	 */
 	public function script_loader_tag( $tag, $handle, $src ) {
 		$parsely_options = $this->get_options();
-		if ( in_array( $handle, array(
-			'wp-parsely',
-			'wp-parsely-api',
-			'wp-parsely-tracker',
-			'wp-parsely-recommended-widget',
-		) ) ) {
-			// Have ClouldFlare Rocket Loader ignore these scripts:
-			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-
+		if ( in_array(
+			$handle,
+			array(
+				'wp-parsely',
+				'wp-parsely-api',
+				'wp-parsely-tracker',
+				'wp-parsely-recommended-widget',
+			)
+		) ) {
+			// Have CloudFlare Rocket Loader ignore these scripts:
+			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-.
 			$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
 		}
 
-		if ( $handle === 'wp-parsely-tracker' ) {
+		if ( 'wp-parsely-tracker' === $handle ) {
 			$tag = preg_replace( '/ id=(\"|\')wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
 			$tag = preg_replace(
 				'/ src=/',
@@ -1447,7 +1486,7 @@ class Parsely {
 		$id      = esc_attr( $name );
 		$name    = self::OPTIONS_KEY . "[$id]";
 
-		$has_help_text = isset( $args['help_text'] ) ? ' data-has-help-text="true"' : '';
+		$has_help_text    = isset( $args['help_text'] ) ? ' data-has-help-text="true"' : '';
 		$requires_recrawl = isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ? ' data-requires-recrawl="true"' : '';
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static text attribute key-value. ?>
 		<fieldset class="parsely-form-controls" <?php echo $has_help_text . $requires_recrawl; ?>>
@@ -1463,7 +1502,9 @@ class Parsely {
 			</p>
 		<?php
 		if ( isset( $args['help_text'] ) ) {
-			?><div class="help-text"><p class="description .help-text"><?php echo esc_html( $args['help_text'] ); ?></p></div><?php
+			?>
+			<div class="help-text"><p class="description .help-text"><?php echo esc_html( $args['help_text'] ); ?></p></div>
+			<?php
 		}
 		?>
 		</fieldset>
@@ -1497,7 +1538,6 @@ class Parsely {
 			echo '<div class="help-text"><p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
 		}
 		echo '</div>';
-
 	}
 
 	/**
@@ -1622,15 +1662,16 @@ class Parsely {
 	 * Safely returns options for the plugin by assigning defaults contained in optionDefaults.  As soon as actual
 	 * options are saved, they override the defaults.  This prevents us from having to do a lot of isset() checking
 	 * on variables.
+	 *
+	 * @return array
 	 */
 	private function get_options() {
 		$options = get_option( self::OPTIONS_KEY );
 		if ( false === $options ) {
-			$options = $this->option_defaults;
-		} else {
-			$options = array_merge( $this->option_defaults, $options );
+			return $this->option_defaults;
 		}
-		return $options;
+
+		return array_merge( $this->option_defaults, $options );
 	}
 
 	/**
@@ -2068,7 +2109,6 @@ class Parsely {
 	 * Why is this here?
 	 */
 	public function return_personalized_json() {
-
 	}
 
 	/**
@@ -2081,7 +2121,7 @@ class Parsely {
 	 *
 	 * @see https://www.parse.ly/help/integration/metatags#field-description
 	 *
-	 * @param $type string JSON-LD type.
+	 * @param string $type JSON-LD type.
 	 * @return string "post" or "index".
 	 */
 	public function convert_jsonld_to_parsely_type( $type ) {
