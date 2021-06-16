@@ -37,10 +37,15 @@ const SiteDetails = ( { apikey, postsToTrack, pagesToTrack, phpVersion, pluginVe
 					<span className="details-info-item">
 						{ __( 'Plugin Version: ', 'wp-parsely' ) } { pluginVersion }
 					</span>
-					{
-						isCopied ? ( <p>{ __( 'Copied!', 'wp-parsely' ) }</p> )
-							: ( <p onClick={ () => copyToClipboard() } className="copy-cta">{ __( 'Copy to Clipboard', 'wp-parsely' ) }</p> )
-					}
+					<div className="site-details-controls">
+						<button type="button" onClick={ () => copyToClipboard() } className="copy-cta">
+							{ __( 'Copy to Clipboard', 'wp-parsely' ) }
+						</button>
+						{
+							isCopied ? ( <span className="copy-confirmation">{ __( 'Copied!', 'wp-parsely' ) }</span> )
+								: ''
+						}
+					</div>
 				</div>
 			</div>
 		</div>
