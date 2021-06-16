@@ -23,7 +23,7 @@ const WipeMetadataModal = ( { setting, apikey, onConfirm, modalControl } ) => {
 			<div onClick={ () => setFlag( false ) } className="modal-background">
 			</div>
 			<div className="modal">
-				<strong>{ __( 'Type', 'wp-parsely' ) } <span className="code">{ apikey }</span> { __( 'below and then click Confirm if you really want to delete all stored metadata. This action cannot be undone', 'wp-parsely' ) }</strong>
+				<strong>{ __( 'Type', 'wp-parsely' ) } <code>{ apikey }</code> { __( 'below and then click Confirm if you really want to delete all stored metadata. This action cannot be undone', 'wp-parsely' ) }</strong>
 				<TextControl
 					className="text-input"
 					label={ __( 'Wipe Metadata Cache', 'wp-parsely' ) }
