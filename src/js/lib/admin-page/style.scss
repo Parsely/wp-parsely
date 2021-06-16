@@ -26,8 +26,28 @@ $gray: #777;
 		cursor: pointer;
 		justify-content: space-between;
 		height: 2vh;
-		font-size: larger;
 		padding: 1em;
+	  	border-top: 1px solid #cecece;
+	  	border-left: 1px solid #cecece;
+	  	border-right: 1px solid #cecece;
+	  	border-radius: 5px;
+	  	margin: 0.5em 0.5em 2em 0;
+	}
+
+  	.components-base-control__label {
+	  font-weight: bold;
+	}
+
+  	.components-toggle-control__label {
+	  font-weight: bold;
+	}
+
+  	.components-input-control__label {
+	  font-weight: bold;
+	}
+
+  	.components-select-control__input {
+	  min-height: 4rem;
 	}
 
 	.inactive {
@@ -35,7 +55,6 @@ $gray: #777;
 	}
 
 	span.active {
-		font-weight: bolder;
 		text-decoration: underline;
 	}
 
@@ -55,7 +74,7 @@ $gray: #777;
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		max-width: 300px;
+		max-width: 260px;
 		padding-bottom: 1em;
 	}
 
@@ -64,17 +83,12 @@ $gray: #777;
 		flex-direction: column;
 		border: 1px solid #ccc;
 		width: 100%;
-		padding: 5% 20% 5% 5%;
+		padding: 5% 10% 5% 5%;
 	}
 
 	.details-label {
-		width: 50%;
-		font-size: large;
+		font-weight: bold;
 		padding-bottom: 1em;
-	}
-
-	.code {
-		font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 	}
 
 	.modal {
@@ -110,6 +124,7 @@ $gray: #777;
 
 	.wipe-metadata-label {
 		padding-top: 1em;
+	  	font-weight: bold;
 	}
 
 	.container {
@@ -151,7 +166,20 @@ $gray: #777;
 	}
 
 	.copy-cta {
+		width: 100%;
+		max-width: 300px;
+		height: 30px;
 		cursor: pointer;
+	}
+
+  	.site-details-controls {
+	  display: flex;
+	  flex-direction: row;
+	}
+
+  	.copy-confirmation {
+	  padding-top: 5px;
+	  padding-left: 5px;
 	}
 }
 
