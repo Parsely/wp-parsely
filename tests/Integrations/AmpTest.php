@@ -83,13 +83,18 @@ final class AmpTest extends TestCase {
 	 * @group settings
 	 */
 	public function test_amp_integration_registration() {
-		$parsely           = new Parsely();
-		$options           = get_option( 'parsely' );
+		$parsely   = new Parsely();
+		$options   = get_option( 'parsely' );
+		$analytics = array();
+
+		// If apikey is empty, $analytics are returned.
+		self::assertSame( $analytics, $parsely->parsely_add_amp_analytics( $analytics ) );
+
+		// Now set the key and test for changes.
 		$options['apikey'] = 'my-api-key.com';
 		update_option( 'parsely', $options );
 
-		$analytics = array();
-		$output    = $parsely->parsely_add_amp_analytics( $analytics );
+		$output = $parsely->parsely_add_amp_analytics( $analytics );
 
 		self::assertSame( 'parsely', $output['parsely']['type'] );
 		self::assertSame( 'my-api-key.com', $output['parsely']['config_data']['vars']['apikey'] );
