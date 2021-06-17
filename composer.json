@@ -25,6 +25,11 @@
 		"wp-coding-standards/wpcs": "^2.3.0",
 		"yoast/wp-test-utils": "dev-develop#c0d9edd2"
 	},
+	"autoload-dev": {
+		"psr-4": {
+			"Parsely\\Tests\\": "tests/"
+		}
+	},
 	"scripts": {
 		"coverage": [
 			"@php ./vendor/bin/phpunit --coverage-html ./build/coverage-html"
