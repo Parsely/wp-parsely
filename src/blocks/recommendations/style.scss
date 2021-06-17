@@ -3,6 +3,10 @@
 	pointer-events: none;
 }
 
+.parsely-recommendations__list-title {
+	font-size: 1.75ch;
+}
+
 .parsely-recommendations__ul {
 	list-style: none !important; // Not sure why, but the !important is needed in the editor. TODO: avoid.
 }
