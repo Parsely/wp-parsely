@@ -532,7 +532,13 @@ class Parsely {
 			)
 		);
 
-		$h = __( 'The plugin uses http canonical URLs by default. If this needs to be forced to use https, set this option to true. Note: the default is fine for almost all publishers, it\'s unlikely you\'ll have to change this unless directed to do so by a Parse.ly support rep.', 'wp-parsely' );
+		$parsely_options = $this->get_options();
+		if ( $parsely_options['force_https_canonicals'] === $this->is_home_url_with_https() ) {
+			$h = __( 'This option is being consistent with the protocol of your site address. It\'s unlikely you\'ll have to change this unless directed to do so by a Parse.ly support rep.', 'wp-parsely' );
+		} else {
+			$h = __( 'This option is not being consistent with the protocol of your site address. You can keep it as-is without affecting your Parse.ly data. However, if you\'re forced to change this value, please reach out to Parse.ly support', 'wp-parsely' );
+		}
+
 		add_settings_field(
 			'force_https_canonicals',
 			__( 'Force HTTPS canonicals', 'wp-parsely' ),
@@ -1627,6 +1633,14 @@ class Parsely {
 		$options = get_option( self::OPTIONS_KEY );
 		if ( false === $options ) {
 			$options = $this->option_defaults;
+
+			/**
+			 * Set the default value of `Force HTTPS canonicals` to reflect the current protocol
+			 * true for https, and false for http
+			 *
+			 * @since 2.6.0
+			 */
+			$options['force_https_canonicals'] = $this->is_home_url_with_https();
 		} else {
 			$options = array_merge( $this->option_defaults, $options );
 		}
@@ -2086,5 +2100,15 @@ class Parsely {
 	 */
 	public function convert_jsonld_to_parsely_type( $type ) {
 		return in_array( $type, $this->supported_jsonld_post_types ) ? 'post' : 'index';
+	}
+
+	/**
+	 * Check if home_url is using the HTTPS protocol
+	 *
+	 * @since 2.6.0
+	 * @return bool
+	 */
+	public function is_home_url_with_https() {
+		return substr( home_url(), 0, 5 ) === 'https';
 	}
 }
