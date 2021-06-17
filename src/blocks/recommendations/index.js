@@ -10,8 +10,8 @@ import domReady from '@wordpress/dom-ready';
 import ParselyRecommendations from './components/parsely-recommendations';
 
 domReady( () => {
-	const el = document.getElementById( 'wp-parsely-related-posts-block' )?.querySelector( '.container' );
-	if ( el ) {
-		render( <ParselyRecommendations { ...el.dataset } />, el );
-	}
+	const blocks = document.querySelectorAll( '.wp-parsely-related-posts-block .container' );
+	blocks.forEach( ( block, i ) =>
+		render( <ParselyRecommendations { ...block.dataset } key={ i } />, block )
+	);
 } );
