@@ -23,8 +23,8 @@ final class FbiaTest extends TestCase {
 	 * @group fbia
 	 */
 	public function test_fbia_integration() {
-		$parsely  = new Parsely();
-		$options  = get_option( $parsely::OPTIONS_KEY );
+		$parsely           = new Parsely();
+		$options           = get_option( $parsely::OPTIONS_KEY );
 		$options['apikey'] = 'my-api-key.com';
 		update_option( 'parsely', $options );
 		$registry = array();

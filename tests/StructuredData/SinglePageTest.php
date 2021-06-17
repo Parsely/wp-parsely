@@ -40,13 +40,19 @@ final class SinglePageTest extends NonPostTestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Single Page', 'post_name' => 'foo' ] );
+		$page_id = self::factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Single Page',
+				'post_name'  => 'foo',
+			)
+		);
 		$page    = get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
-		// See https://github.com/Parsely/wp-parsely/issues/151
+		// See https://github.com/Parsely/wp-parsely/issues/151.
 		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure('/%postname%/');
+		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
 		// Make a request to that page to set the global $wp_query object.
 		$this->go_to( get_permalink( $page_id ) );
@@ -63,6 +69,6 @@ final class SinglePageTest extends NonPostTestCase {
 		self::assertQueryTrue( 'is_page', 'is_singular' );
 
 		// Reset permalinks to Plain.
-		$wp_rewrite->set_permalink_structure('');
+		$wp_rewrite->set_permalink_structure( '' );
 	}
 }

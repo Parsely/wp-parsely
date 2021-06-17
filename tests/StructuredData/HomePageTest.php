@@ -14,6 +14,9 @@ namespace Parsely\Tests\StructuredData;
  * @covers \Parsely::construct_parsely_metadata
  */
 final class HomePageTest extends NonPostTestCase {
+	/**
+	 * Runs the routine before each test is executed.
+	 */
 	public function setUp() {
 		parent::setUp();
 
@@ -47,7 +50,12 @@ final class HomePageTest extends NonPostTestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts' ] );
+		$page_id = self::factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Page for Posts',
+			)
+		);
 		$page    = get_post( $page_id );
 
 		// Make a request to the root of the site to set the global $wp_query object.
@@ -94,15 +102,15 @@ final class HomePageTest extends NonPostTestCase {
 		$page = get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
-		// See https://github.com/Parsely/wp-parsely/issues/151
+		// See https://github.com/Parsely/wp-parsely/issues/151.
 		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure('/%postname%/');
+		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
 		// Set the homepage to show 1 post per page.
 		update_option( 'posts_per_page', 1 );
 
 		// Go to Page 2 of posts.
-		$this->go_to( home_url('/page/2' ) );
+		$this->go_to( home_url( '/page/2' ) );
 
 		// Create the structured data for that post.
 		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $page );
@@ -113,7 +121,7 @@ final class HomePageTest extends NonPostTestCase {
 		// The headline should be the name of the site, not the post_title of the latest post.
 		self::assertEquals( 'Test Blog', $structured_data['headline'] );
 		// The URL should be the current page, not the home url.
-		self::assertEquals( home_url('/page/2'), $structured_data['url'] );
+		self::assertEquals( home_url( '/page/2' ), $structured_data['url'] );
 	}
 
 	/**
@@ -141,7 +149,12 @@ final class HomePageTest extends NonPostTestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Home' ] );
+		$page_id = self::factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Home',
+			)
+		);
 		$page    = get_post( $page_id );
 
 		// Set that page as the homepage Page.
@@ -189,7 +202,12 @@ final class HomePageTest extends NonPostTestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
-		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Home' ] );
+		$page_id = self::factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Home',
+			)
+		);
 		$page    = get_post( $page_id );
 
 		// Set that page as the homepage Page.

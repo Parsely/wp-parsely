@@ -34,10 +34,11 @@ class All_Test extends ParselyTestCase {
 
 		parent::setUp();
 
-		$wp_scripts = new \WP_Scripts();
-		self::$parsely   = new \Parsely();
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$wp_scripts    = new \WP_Scripts();
+		self::$parsely = new \Parsely();
 
-		// Set the default options prior to each test
+		// Set the default options prior to each test.
 		ParselyTestCase::set_options();
 	}
 
@@ -57,14 +58,25 @@ class All_Test extends ParselyTestCase {
 		);
 	}
 
+	/**
+	 * Test class version.
+	 */
 	public function test_class_version() {
 		self::assertSame( PARSELY_VERSION, \Parsely::VERSION );
 	}
 
+	/**
+	 * Test cache buster string.
+	 *
+	 * During tests, this should only return the version constant.
+	 */
 	public function test_cache_buster() {
 		self::assertSame( PARSELY_VERSION, \Parsely::get_asset_cache_buster() );
 	}
 
+	/**
+	 * Test plugin URL constant is defined and populated.
+	 */
 	public function test_plugin_url_constant() {
 		self::assertTrue( defined( 'PARSELY_PLUGIN_URL' ) && is_string( PARSELY_PLUGIN_URL ) && strlen( PARSELY_PLUGIN_URL ) > 0 );
 	}
@@ -122,7 +134,7 @@ class All_Test extends ParselyTestCase {
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
 		self::$parsely->register_js();
-		echo self::$parsely->load_js_tracker();
+		self::$parsely->load_js_tracker();
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
@@ -157,7 +169,7 @@ class All_Test extends ParselyTestCase {
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
 		self::$parsely->register_js();
-		echo self::$parsely->load_js_api();
+		self::$parsely->load_js_api();
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
@@ -195,7 +207,7 @@ class All_Test extends ParselyTestCase {
 
 		self::set_options( array( 'api_secret' => 'hunter2' ) );
 
-		echo self::$parsely->load_js_api();
+		self::$parsely->load_js_api();
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
@@ -223,7 +235,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 
 		self::assertContains(
-			"<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( PARSELY_PLUGIN_URL ) . "build/init-api.js?ver=" . PARSELY_VERSION . "' id='wp-parsely-api-js'></script>",
+			"<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( PARSELY_PLUGIN_URL ) . 'build/init-api.js?ver=' . PARSELY_VERSION . "' id='wp-parsely-api-js'></script>",
 			$output,
 			'Failed to confirm script tag was printed correctly'
 		);
@@ -292,7 +304,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		wp_set_current_user( $new_user );
 
 		ob_start();
-		echo self::$parsely->load_js_tracker();
+		self::$parsely->load_js_tracker();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
@@ -354,7 +366,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		// These custom options will be used for both blog_ids.
 		$custom_options = array(
 			'track_authenticated_users' => false,
-			'apikey' => 'blog.parsely.com',
+			'apikey'                    => 'blog.parsely.com',
 		);
 		ParselyTestCase::set_options( $custom_options );
 
@@ -368,7 +380,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 
 		ob_start();
 		self::$parsely->register_js();
-		echo self::$parsely->load_js_tracker();
+		self::$parsely->load_js_tracker();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
@@ -399,7 +411,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 
 		ob_start();
 		self::$parsely->register_js();
-		echo self::$parsely->load_js_tracker();
+		self::$parsely->load_js_tracker();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
@@ -434,9 +446,9 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 
 		ob_start();
 		$post_array = $this->create_test_post_array();
-		$post = $this->factory->post->create( $post_array );
+		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		echo self::$parsely->load_js_tracker();
+		self::$parsely->load_js_tracker();
 		$intermediate_output = ob_get_contents();
 
 		self::assertSame(
@@ -468,9 +480,9 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 
 		ob_start();
 		$post_array = $this->create_test_post_array();
-		$post = $this->factory->post->create( $post_array );
+		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		echo self::$parsely->load_js_tracker();
+		self::$parsely->load_js_tracker();
 		$intermediate_output = ob_get_contents();
 
 		self::assertSame(
@@ -489,7 +501,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 	}
 
-	/*
+	/**
 	 * Test the wp_parsely_post_type filter
 	 *
 	 * @uses \Parsely::get_options()

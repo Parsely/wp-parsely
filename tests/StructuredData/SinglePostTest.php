@@ -424,6 +424,11 @@ final class SinglePostTest extends TestCase {
 		self::assertSame( 'https', $url['scheme'] );
 	}
 
+	/**
+	 * Utility method to check metadata properties correctly set.
+	 *
+	 * @param array $structured_data Array of metadata to check.
+	 */
 	public function assert_data_has_required_properties( $structured_data ) {
 		$required_properties = $this->get_required_properties();
 
@@ -435,6 +440,11 @@ final class SinglePostTest extends TestCase {
 		);
 	}
 
+	/**
+	 * These are the required properties for posts.
+	 *
+	 * @return string[]
+	 */
 	private function get_required_properties() {
 		return array(
 			'@context',
