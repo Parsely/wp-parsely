@@ -213,19 +213,21 @@ class Parsely {
 	 * @package    Parsely
 	 */
 	public function add_admin_header() {
-		echo '
-<style>
-#wp-parsely_version { color: #777; font-size: 12px; margin-left: 1em; }
-.help-text { width: 75%; }
-</style>
-';
+		$cache_buster = self::get_asset_cache_buster();
+
+		wp_enqueue_style(
+			'wp-parsely-admin',
+			PARSELY_PLUGIN_URL . 'build/style-admin-page.css',
+			array('wp-components'),
+			$cache_buster
+		);
 
 		$admin_script_asset = require PARSELY_PLUGIN_DIR . 'build/admin-page.asset.php';
 		wp_enqueue_script(
 			'wp-parsely-admin',
 			PARSELY_PLUGIN_URL . 'build/admin-page.js',
 			$admin_script_asset[ 'dependencies' ],
-			self::get_asset_cache_buster(),
+			$cache_buster,
 			true
 		);
 	}
@@ -1623,7 +1625,7 @@ class Parsely {
 	 * options are saved, they override the defaults.  This prevents us from having to do a lot of isset() checking
 	 * on variables.
 	 */
-	private function get_options() {
+	public function get_options() {
 		$options = get_option( self::OPTIONS_KEY );
 		if ( false === $options ) {
 			$options = $this->option_defaults;

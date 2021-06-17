@@ -1,7 +1,13 @@
 import domReady from '@wordpress/dom-ready';
 import { __, sprintf } from '@wordpress/i18n';
 
+import ParselySettings from './components/ParselySettings';
+
+import './style.scss';
+
 domReady( () => {
+	wp.element.render( <ParselySettings />, document.getElementById( 'wp-parsely-react-entrypoint' ) );
+
 	const keyEl = document.querySelector( '#apikey' );
 	const requiresRecrawlNotice = document.querySelectorAll(
 		'.parsely-form-controls[data-requires-recrawl="true"] .help-text'
