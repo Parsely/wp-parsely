@@ -15,15 +15,41 @@ import ParselyRecommendationsInspectorControls from './components/parsely-recomm
 
 import './style.scss';
 
-function ParselyRecommendationsEdit( editProps ) {
-	return (
-		<div { ...useBlockProps() }>
-			<ParselyRecommendationsBlockControls { ...editProps } />
-			<ParselyRecommendationsInspectorControls { ...editProps } />
-			<ParselyRecommendations { ...editProps.attributes } />
-		</div>
-	);
-}
+export const ParselyRecommendationsEdit = ( editProps ) => (
+	<div { ...useBlockProps() }>
+		<ParselyRecommendationsBlockControls { ...editProps } />
+		<ParselyRecommendationsInspectorControls { ...editProps } />
+		<ParselyRecommendations { ...editProps.attributes } />
+	</div>
+);
+
+export const ParselyRecommendationsSave = ( {
+	attributes: {
+		boost,
+		className,
+		layoutstyle,
+		imagestyle,
+		limit,
+		personalized,
+		showimages,
+		sortrecs,
+		title,
+	},
+} ) => (
+	<section className={ `wp-parsely-related-posts-block ${ className }` }>
+		<div
+			className="container"
+			data-boost={ boost }
+			data-layoutstyle={ layoutstyle }
+			data-imagestyle={ imagestyle }
+			data-limit={ limit }
+			data-personalized={ personalized }
+			data-showimages={ showimages }
+			data-sortrecs={ sortrecs }
+			data-title={ title }
+		></div>
+	</section>
+);
 
 registerBlockType( 'wp-parsely/recommendations', {
 	apiVersion: 2,
@@ -31,4 +57,5 @@ registerBlockType( 'wp-parsely/recommendations', {
 	icon: LeafIcon,
 	category: 'widgets',
 	edit: ParselyRecommendationsEdit,
+	save: ParselyRecommendationsSave,
 } );

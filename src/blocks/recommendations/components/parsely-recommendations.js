@@ -2,7 +2,6 @@
  * External dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
-import { Card, CardBody, CardMedia } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -12,13 +11,7 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { fetchRelated } from '../../../js/lib/parsely-api';
-
-const getImageForLink = ( { imagestyle, imageUrl, thumbUrlMedium } ) => {
-	if ( imagestyle === 'original' ) {
-		return imageUrl;
-	}
-	return thumbUrlMedium;
-};
+import ParselyRecommendationsListItem from './parsely-recommendations-list-item';
 
 export default function ParselyRecommendations( {
 	boost,
@@ -119,29 +112,18 @@ export default function ParselyRecommendations( {
 							thumb_url_medium: thumbUrlMedium,
 						},
 						index
-					) => {
-						const imageForLink =
-							showimages && getImageForLink( { imagestyle, imageUrl, thumbUrlMedium } );
-
-						return (
-							<li key={ index }>
-								<a href={ linkUrl } className="parsely-recommendations__link">
-									<Card className="parsely-recommendations__card" size="custom">
-										{ imageForLink && (
-											<CardMedia className="parsely-recommendations__cardmedia">
-												<img
-													className="parsely-recommendations__list-img"
-													src={ imageForLink }
-													alt={ __( 'Image for link', 'wp-parsely' ) }
-												/>
-											</CardMedia>
-										) }
-										<CardBody className="parsely-recommendations__cardbody">{ linkTitle }</CardBody>
-									</Card>
-								</a>
-							</li>
-						);
-					}
+					) => (
+						<ParselyRecommendationsListItem
+							imagestyle={ imagestyle }
+							imageUrl={ imageUrl }
+							thumbUrlMedium={ thumbUrlMedium }
+							imageAlt={ __( 'Image for link', 'wp-parsely' ) }
+							key={ index }
+							linkTitle={ linkTitle }
+							linkUrl={ linkUrl }
+							showimages={ showimages }
+						/>
+					)
 				) }
 			</ul>
 		</>
