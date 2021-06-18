@@ -32,7 +32,7 @@ const ParselyRecommendationsInspectorControls = ( {
 		<PanelBody title="Settings" initialOpen={ true }>
 			<PanelRow>
 				<TextControl
-					label={ __( 'Title' ) }
+					label={ __( 'Title', 'wp-parsely' ) }
 					value={ title }
 					onChange={ ( newval ) => setAttributes( { title: newval } ) }
 				/>
@@ -93,7 +93,7 @@ const ParselyRecommendationsInspectorControls = ( {
 			</PanelRow>
 			<PanelRow>
 				<TextControl
-					label={ __( 'Tag' ) }
+					label={ __( 'Tag', 'wp-parsely' ) }
 					value={ tag }
 					onChange={ ( newval ) => setAttributes( { tag: newval } ) }
 				/>
@@ -123,10 +123,10 @@ const ParselyRecommendationsInspectorControls = ( {
 			</PanelRow>
 			<PanelRow>
 				<SelectControl
-					label={ __( 'Boost' ) }
+					label={ __( 'Boost', 'wp-parsely' ) }
 					value={ boost }
 					options={ [
-						{ label: __( 'Views' ), value: 'views' },
+						{ label: __( 'Views', 'wp-parsely' ), value: 'views' },
 						{
 							label: __( 'Mobile Views', 'wp-parsely' ),
 							value: 'mobile_views',

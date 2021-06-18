@@ -10,16 +10,16 @@ const ParselyRecommendationsBlockControls = ( { attributes: { layoutstyle }, set
 		<BlockControls group="block">
 			<ToolbarGroup
 				icon={ <Dashicon icon="grid-view" /> }
-				label={ __( 'Layout' ) }
+				label={ __( 'Layout', 'wp-parsely' ) }
 				controls={ [
 					{
-						title: __( 'Grid' ),
+						title: __( 'Grid', 'wp-parsely' ),
 						icon: <Dashicon icon="grid-view" />,
 						onClick: () => setAttributes( { layoutstyle: 'grid' } ),
 						disabled: layoutstyle === 'grid',
 					},
 					{
-						title: __( 'List' ),
+						title: __( 'List', 'wp-parsely' ),
 						icon: <Dashicon icon="list-view" />,
 						onClick: () => setAttributes( { layoutstyle: 'list' } ),
 						disabled: layoutstyle === 'list',
