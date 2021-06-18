@@ -86,15 +86,16 @@ export default function ParselyRecommendations( {
 	}, [ boost, limit, personalized, sortrecs ] );
 
 	if ( ! isLoaded ) {
-		return <>Loading...</>; // TODO improve
+		// TODO improve
+		return <span className="parsely-recommendations__loading">{ __( 'Loading…', 'wp-parsely' ) }</span>;
 	}
 
 	if ( error ) {
-		return <>{ error }</>; // TODO improve
+		return false;
 	}
 
 	if ( ! recommendations.length ) {
-		return <>No recommendations :(</>; // TODO improve
+		return false;
 	}
 
 	const classNames = `parsely-recommendations__ul parsely-recommendations__ul-${ layoutstyle }`;
