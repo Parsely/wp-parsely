@@ -29,6 +29,11 @@ abstract class TestCase extends WPIntegrationTestCase {
 		'logo'                      => '',
 	);
 
+	/**
+	 * Utility function to update Parse.ly options with a merge of default values and custom values.
+	 *
+	 * @param array $custom_options Associative array of option keys and values that should be saved.
+	 */
 	public static function set_options( $custom_options = array() ) {
 		update_option( \Parsely::OPTIONS_KEY, array_merge( self::DEFAULT_OPTIONS, $custom_options ) );
 	}

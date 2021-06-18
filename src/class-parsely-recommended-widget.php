@@ -75,7 +75,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$removed_title_esc = remove_filter( 'widget_title', 'esc_html' );
 
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
-		$title = apply_filters( 'widget_title', $instance['title'] );
+		$title      = apply_filters( 'widget_title', $instance['title'] );
 		$title_html = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
 
 		if ( $removed_title_esc ) {
@@ -85,7 +85,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		wp_enqueue_style( 'wp-parsely-style' );
 		wp_enqueue_script( 'jquery' );
 
-		$title_html   = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
+		$title_html = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
 		echo wp_kses_post( $title_html );
 
 		// Set up the variables.
@@ -103,7 +103,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		wp_register_script(
 			'wp-parsely-recommended-widget',
 			PARSELY_PLUGIN_URL . 'build/recommended-widget.js',
-			$reco_widget_script_asset[ 'dependencies' ],
+			$reco_widget_script_asset['dependencies'],
 			PARSELY::get_asset_cache_buster(),
 			true
 		);
@@ -112,13 +112,13 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			'wp-parsely-recommended-widget',
 			'wpParselyRecommended',
 			array(
-				'displayAuthor' => isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false,
+				'displayAuthor'    => isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false,
 				'displayDirection' => isset( $instance['display_direction'] ) ? $instance['display_direction'] : null,
-				'apiUrl' => $api_url,
-				'imgSrc' => isset( $instance['img_src'] ) ? $instance['img_src'] : null,
-				'permalink' => get_permalink(),
-				'personalized' => isset( $instance['personalize_results'] ) ? boolval( $instance['personalize_results'] ): false,
-				'widgetId' => $this->id,
+				'apiUrl'           => $api_url,
+				'imgSrc'           => isset( $instance['img_src'] ) ? $instance['img_src'] : null,
+				'permalink'        => get_permalink(),
+				'personalized'     => isset( $instance['personalize_results'] ) ? boolval( $instance['personalize_results'] ) : false,
+				'widgetId'         => $this->id,
 			)
 		);
 
@@ -203,7 +203,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'published_within_label' ) ); ?>"><?php esc_html_e( 'Published within', 'wp-parsely' ); ?></label>
 			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'published_within' ) ); ?>" value="<?php echo esc_attr( (string) $instance['published_within'] ); ?>" min="0" max="30"
-			       class="tiny-text" aria-labelledby="<?php echo esc_attr( $this->get_field_id( 'published_within_label' ) ); ?> <?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?> <?php echo esc_attr( $this->get_field_id( 'published_within_unit' ) ); ?>" />
+				class="tiny-text" aria-labelledby="<?php echo esc_attr( $this->get_field_id( 'published_within_label' ) ); ?> <?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?> <?php echo esc_attr( $this->get_field_id( 'published_within_unit' ) ); ?>" />
 			<span id="<?php echo esc_attr( $this->get_field_id( 'published_within_unit' ) ); ?>"> <?php esc_html_e( 'days (0 for no limit).', 'wp-parsely' ); ?></span>
 		</p>
 		<p>
