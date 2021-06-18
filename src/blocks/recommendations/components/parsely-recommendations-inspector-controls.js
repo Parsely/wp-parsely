@@ -15,17 +15,7 @@ import {
 } from '@wordpress/components';
 
 const ParselyRecommendationsInspectorControls = ( {
-	attributes: {
-		boost,
-		imagestyle,
-		layoutstyle,
-		limit,
-		personalized,
-		showimages,
-		sortrecs,
-		tag,
-		title,
-	},
+	attributes: { boost, imagestyle, layoutstyle, limit, personalized, showimages, sort, tag, title },
 	setAttributes,
 } ) => (
 	<InspectorControls>
@@ -110,7 +100,7 @@ const ParselyRecommendationsInspectorControls = ( {
 			<PanelRow>
 				<SelectControl
 					label={ __( 'Sort Recommendations', 'wp-parsely' ) }
-					value={ sortrecs }
+					value={ sort }
 					options={ [
 						{ label: 'Score', value: 'score' },
 						{
@@ -118,7 +108,7 @@ const ParselyRecommendationsInspectorControls = ( {
 							value: 'pub_date',
 						},
 					] }
-					onChange={ ( newval ) => setAttributes( { sortrecs: newval } ) }
+					onChange={ ( newval ) => setAttributes( { sort: newval } ) }
 				/>
 			</PanelRow>
 			<PanelRow>

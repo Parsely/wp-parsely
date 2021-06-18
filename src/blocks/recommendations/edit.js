@@ -33,7 +33,7 @@ export const ParselyRecommendationsSave = ( {
 		limit,
 		personalized,
 		showimages,
-		sortrecs,
+		sort,
 		title,
 	},
 } ) => (
@@ -46,7 +46,7 @@ export const ParselyRecommendationsSave = ( {
 			data-limit={ limit }
 			data-personalized={ personalized }
 			data-showimages={ showimages }
-			data-sortrecs={ sortrecs }
+			data-sort={ sort }
 			data-title={ title }
 		></div>
 	</section>

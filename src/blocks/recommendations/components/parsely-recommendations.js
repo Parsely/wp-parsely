@@ -3,7 +3,7 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 import { useDebounce } from '@wordpress/compose';
-import { useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
@@ -20,7 +20,7 @@ export default function ParselyRecommendations( {
 	imagestyle,
 	personalized,
 	showimages,
-	sortrecs,
+	sort,
 	title,
 } ) {
 	const [ error, setError ] = useState( null );
@@ -31,7 +31,7 @@ export default function ParselyRecommendations( {
 	const apiQueryArgs = {
 		boost,
 		limit,
-		sort: sortrecs,
+		sort,
 	};
 
 	if ( personalized && uuid ) {
@@ -39,6 +39,8 @@ export default function ParselyRecommendations( {
 	} else {
 		apiQueryArgs.url = window.location.href;
 	}
+
+	const apiMemoProps = [ ...Object.values( apiQueryArgs ), error ];
 
 	async function fetchRecosFromWpApi() {
 		return apiFetch( {
@@ -69,10 +71,9 @@ export default function ParselyRecommendations( {
 		fetchRecos();
 	}, [] );
 
-	const debouncedUpdate = useDebounce( async () => {
-		await setIsLoaded( false );
-		await fetchRecos();
-	}, 250 );
+	const updateRecosWhenPropsChange = useCallback( fetchRecos, apiMemoProps );
+
+	const debouncedUpdate = useDebounce( updateRecosWhenPropsChange, 300 );
 
 	/**
 	 * Fetch recommendations when an attribute changes that affects the API call.
@@ -83,7 +84,7 @@ export default function ParselyRecommendations( {
 			return;
 		}
 		debouncedUpdate();
-	}, [ boost, limit, personalized, sortrecs ] );
+	}, apiMemoProps );
 
 	if ( ! isLoaded ) {
 		// TODO improve

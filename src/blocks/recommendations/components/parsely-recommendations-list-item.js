@@ -15,7 +15,6 @@ const ParselyRecommendationsListItem = ( {
 	imagestyle,
 	imageUrl,
 	linkTitle,
-	key,
 	linkUrl,
 	showimages,
 	thumbUrlMedium,
@@ -23,7 +22,7 @@ const ParselyRecommendationsListItem = ( {
 	const imageForLink = showimages && getImageForLink( { imagestyle, imageUrl, thumbUrlMedium } );
 
 	return (
-		<li key={ key }>
+		<li>
 			<a href={ linkUrl } className="parsely-recommendations__link">
 				<Card className="parsely-recommendations__card" size="custom">
 					{ imageForLink && (
