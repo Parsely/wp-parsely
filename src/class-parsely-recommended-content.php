@@ -39,7 +39,14 @@ class Parsely_Recommended_Content {
 		return add_query_arg( $query_args, self::RELATED_API_ENDPOINT );
 	}
 
-	static function api_key_and_secret_are_populated() {
+	/**
+	 * Check if both the API key and API secret settings are populated with non-empty values.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @return bool True if apikey and api_secret settings are not empty strings. False otherwise.
+	 */
+	public static function api_key_and_secret_are_populated() {
 		$options = get_option( 'parsely' ); // TODO: Use the API instead of directly getting the option
 
 		// No options are saved, so API key is not available.
@@ -60,6 +67,13 @@ class Parsely_Recommended_Content {
 		return true;
 	}
 
+	/**
+	 * Return the list of boost parameters, values and labels.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @return array Boost parameters values and labels.
+	 */
 	static function get_boost_params() {
 		return array(
 			'no-boost'              => __( 'No boost', 'wp-parsely' ),
