@@ -61,6 +61,12 @@ jobs:
           xml-file: ./phpunit.xml.dist
           xml-schema-file: ./vendor/phpunit/phpunit/phpunit.xsd
 
+      - name: Lint .phpcs.xml.dist
+        uses: ChristophWurst/xmllint-action@v1
+        with:
+          xml-file: ./.phpcs.xml.dist
+          xml-schema-file: ./vendor/squizlabs/php_codesniffer/phpcs.xsd
+
       # Check the code-style consistency of the PHP files.
       - name: Check PHP code style
         run: vendor/bin/phpcs --report-full --report-checkstyle=./phpcs-report.xml
