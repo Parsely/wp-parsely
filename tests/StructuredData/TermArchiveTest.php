@@ -35,7 +35,7 @@ final class TermArchiveTest extends NonPostTestCase {
 	 */
 	public function test_term_archive() {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
-		// See https://github.com/Parsely/wp-parsely/issues/151
+		// See https://github.com/Parsely/wp-parsely/issues/151.
 		$this->set_permalink_structure( '/%postname%/' );
 
 		// Setup Parsley object.
@@ -43,8 +43,8 @@ final class TermArchiveTest extends NonPostTestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single category term, and a Post with that category.
-		$category = self::factory()->category->create( [ 'name' => 'Test Category' ] );
-		self::factory()->post->create( [ 'post_category' => [ $category ] ] );
+		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
+		self::factory()->post->create( array( 'post_category' => array( $category ) ) );
 
 		// Make a request to that page to set the global $wp_query object.
 		$cat_link = get_category_link( $category );

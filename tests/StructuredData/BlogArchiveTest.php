@@ -39,26 +39,32 @@ final class BlogArchiveTest extends NonPostTestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a page for the blog posts.
-		$page_id = self::factory()->post->create( [ 'post_type' => 'page', 'post_title' => 'Page for Posts', 'post_name' => 'page-for-posts' ] );
+		$page_id = self::factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'Page for Posts',
+				'post_name'  => 'page-for-posts',
+			)
+		);
 
-		// Create 2 posts so that posts page has pagination
+		// Create 2 posts so that posts page has pagination.
 		self::factory()->post->create();
 		self::factory()->post->create();
-		$page    = get_post( $page_id );
+		$page = get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
-		// See https://github.com/Parsely/wp-parsely/issues/151
+		// See https://github.com/Parsely/wp-parsely/issues/151.
 		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure('/%postname%/');
+		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
-		// Set a static page to the homepage, set the newly created page to show the posts, add pagination to posts page
+		// Set a static page to the homepage, set the newly created page to show the posts, add pagination to posts page.
 		update_option( 'show_on_front', 'page' );
-		update_option('page_on_front', 1 );
+		update_option( 'page_on_front', 1 );
 		update_option( 'page_for_posts', $page_id );
 		update_option( 'posts_per_page', 1 );
 
 		// Make a request to the root of the site to set the global $wp_query object.
-		$this->go_to( get_permalink( $page_id ) . 'page/2');
+		$this->go_to( get_permalink( $page_id ) . 'page/2' );
 
 		// Create the structured data for that post.
 		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $page );

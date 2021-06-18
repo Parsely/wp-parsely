@@ -14,6 +14,8 @@ use Parsely\Tests\TestCase;
  */
 abstract class NonPostTestCase extends TestCase {
 	/**
+	 * Utility method to check metadata properties correctly set.
+	 *
 	 * @param array $structured_data Array of metadata to check.
 	 */
 	public function assert_data_has_required_properties( $structured_data ) {

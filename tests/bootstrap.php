@@ -7,10 +7,14 @@
 
 use Yoast\WPTestUtils\WPIntegration;
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 if ( ! $_tests_dir ) {
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 	$_tests_dir = rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress-tests-lib';
+	// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv
 	putenv( 'WP_TESTS_DIR=' . $_tests_dir );
 }
 
@@ -20,9 +24,10 @@ if ( getenv( 'WP_PLUGIN_DIR' ) !== false ) {
 	define( 'WP_PLUGIN_DIR', dirname( dirname( __DIR__ ) ) );
 }
 
-$GLOBALS['wp_tests_options'] = [
-	'active_plugins' => [ 'wp-parsely/wp-parsely.php' ],
-];
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+$GLOBALS['wp_tests_options'] = array(
+	'active_plugins' => array( 'wp-parsely/wp-parsely.php' ),
+);
 
 require_once dirname( __DIR__ ) . '/vendor/yoast/wp-test-utils/src/WPIntegration/bootstrap-functions.php';
 

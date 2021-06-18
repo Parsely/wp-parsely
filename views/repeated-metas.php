@@ -16,6 +16,7 @@
 <meta name="parsely-pub-date" content="<?php echo esc_attr( $parsely_page['datePublished'] ); ?>" />
 <meta name="parsely-section" content="<?php echo esc_attr( $parsely_page['articleSection'] ); ?>" />
 <meta name="parsely-tags" content="<?php echo esc_attr( $parsely_page['keywords'] ); ?>" />
-<?php foreach ( (array) $parsely_page['author'] as $author ) { ?>
-<meta name="parsely-author" content="<?php echo esc_attr( $author['name'] ); ?>" />
-<?php }
+<?php foreach ( (array) $parsely_page['author'] as $parsely_author ) { ?>
+<meta name="parsely-author" content="<?php echo esc_attr( $parsely_author['name'] ); ?>" />
+	<?php
+}
