@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import classNames from 'classnames';
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 import { useBlockProps } from '@wordpress/block-editor';
@@ -36,7 +37,7 @@ export const ParselyRecommendationsSave = ( {
 		title,
 	},
 } ) => (
-	<section className={ `wp-parsely-related-posts-block ${ className }` }>
+	<section className={ classNames( 'wp-parsely-related-posts-block', className ) }>
 		<div
 			className="container"
 			data-boost={ boost }
