@@ -8,10 +8,16 @@ import domReady from '@wordpress/dom-ready';
  * Internal dependencies
  */
 import ParselyRecommendations from './components/parsely-recommendations';
+import RecommendationsStore from './recommendations-store';
 
 domReady( () => {
-	const blocks = document.querySelectorAll( '.wp-parsely-related-posts-block .container' );
+	const blocks = document.querySelectorAll( '.wp-block-wp-parsely-recommendations' );
 	blocks.forEach( ( block, i ) =>
-		render( <ParselyRecommendations { ...block.dataset } key={ i } />, block )
+		render(
+			<RecommendationsStore>
+				<ParselyRecommendations { ...block.dataset } key={ i } />
+			</RecommendationsStore>,
+			block
+		)
 	);
 } );

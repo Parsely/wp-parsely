@@ -13,11 +13,13 @@ const getImageForLink = ( { imagestyle, imageUrl, thumbUrlMedium } ) => {
 const ParselyRecommendationsListItem = ( {
 	imageAlt,
 	imagestyle,
-	imageUrl,
-	linkTitle,
-	linkUrl,
+	recommendation: {
+		title: linkTitle,
+		url: linkUrl,
+		image_url: imageUrl,
+		thumb_url_medium: thumbUrlMedium,
+	},
 	showimages,
-	thumbUrlMedium,
 } ) => {
 	const imageForLink = showimages && getImageForLink( { imagestyle, imageUrl, thumbUrlMedium } );
 

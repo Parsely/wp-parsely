@@ -36,6 +36,7 @@ class Parsely_Recommendations_Block {
 			'wp-parsely/recommendations',
 			array(
 				'editor_script'   => 'wp-parsely-recommendations-block-editor',
+				'render_callback' => 'Parsely_Recommendations_Block::server_side_render',
 				'script'          => 'wp-parsely-recommendations-block',
 				'style'           => 'wp-parsely-recommendations-block',
 				'attributes'      => array(
@@ -63,7 +64,10 @@ class Parsely_Recommendations_Block {
 						'type'    => 'boolean',
 						'default' => true,
 					),
-					'sortrecs' => array(
+					'savedresults' => array(
+						'type'    => 'array',
+					),
+					'sort' => array(
 						'type'    => 'string',
 						'default' => 'score',
 					),
@@ -77,5 +81,38 @@ class Parsely_Recommendations_Block {
 				),
 			)
 		);
+	}
+
+	public static function server_side_render( $attributes, $content ) {
+		$escaped_saved_results = array();
+		if ( is_array( $attributes['savedresults'] ) ) {
+			$escaped_saved_results = array_map( function ( $result ) {
+				return array(
+					'title'            => esc_html( $result['title'] ),
+					'url'              => esc_url( $result['url'] ),
+					'image_url'        => esc_url( $result['image_url'] ),
+					'thumb_url_medium' => esc_url( $result['thumb_url_medium'] ),
+				);
+			}, $attributes['savedresults'] );
+		}
+		ob_start();
+		?>
+<section <?php echo get_block_wrapper_attributes() ?>
+
+	data-boost="<?php echo esc_attr( $attributes['boost'] ) ?>"
+	data-layoutstyle="<?php echo esc_attr( $attributes['layoutstyle'] ) ?>"
+	data-imagestyle="<?php echo esc_attr( $attributes['imagestyle'] ) ?>"
+	data-limit="<?php echo esc_attr( $attributes['limit'] ) ?>"
+	data-personalized="<?php echo esc_attr( $attributes['personalized'] ) ?>"
+	data-savedresults="<?php
+		// TODO: does any other sanitization need to be done here?
+		echo htmlspecialchars( json_encode( $escaped_saved_results ), ENT_QUOTES, 'UTF-8' );
+	?>"
+	data-showimages="<?php echo esc_attr( $attributes['showimages'] ) ?>"
+	data-sort="<?php echo esc_attr( $attributes['sort'] ) ?>"
+	data-title="<?php echo esc_attr( $attributes['title'] ) ?>"
+></section>
+		<?php
+		return ob_get_clean();
 	}
 }

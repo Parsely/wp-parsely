@@ -1,9 +1,10 @@
 /**
  * External dependencies
  */
+import classNames from 'classnames';
 import apiFetch from '@wordpress/api-fetch';
 import { useDebounce } from '@wordpress/compose';
-import { useCallback, useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
@@ -12,6 +13,7 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { fetchRelated } from '../../../js/lib/parsely-api';
 import ParselyRecommendationsListItem from './parsely-recommendations-list-item';
+import { useRecommendationsStore } from '../recommendations-store';
 
 export default function ParselyRecommendations( {
 	boost,
@@ -19,15 +21,30 @@ export default function ParselyRecommendations( {
 	limit,
 	imagestyle,
 	personalized,
+	savedresults,
 	showimages,
 	sort,
 	title,
 } ) {
-	const [ error, setError ] = useState( null );
-	const [ isLoaded, setIsLoaded ] = useState( false );
-	const [ recommendations, setRecommendations ] = useState( [] );
+	const {
+		state: { error, isLoaded, recommendations, uuid },
+		dispatch,
+	} = useRecommendationsStore();
 
-	const uuid = window.PARSELY?.config?.uuid;
+	let decodedSavedResults = [];
+	if ( 'string' === typeof savedresults ) {
+		try {
+			if ( savedresults?.length ) {
+				decodedSavedResults = JSON.parse( savedresults );
+			}
+		} catch ( e ) {}
+	} else {
+		decodedSavedResults = savedresults;
+	}
+
+	// TODO: if decodedSavedResults?.length, render those instead of fetching etc.
+	console.log( { decodedSavedResults } );
+
 	const apiQueryArgs = {
 		boost,
 		limit,
@@ -57,13 +74,12 @@ export default function ParselyRecommendations( {
 			try {
 				response = await fetchRecosFromWpApi();
 			} catch ( wpError ) {
-				setError( wpError );
+				dispatch( 'ERROR', { error: wpError } );
 			}
 		}
 
 		const data = response?.data || [];
-		setIsLoaded( true );
-		setRecommendations( data );
+		dispatch( { type: 'RECOMMENDATIONS', recommendations: data } );
 	}
 
 	// Fetch recommendations on mount (useEffect w/ an empty dependency array ~ `componentDidMount`).
@@ -99,34 +115,24 @@ export default function ParselyRecommendations( {
 		return false;
 	}
 
-	const classNames = `parsely-recommendations__ul parsely-recommendations__ul-${ layoutstyle }`;
-
 	return (
 		<>
 			{ title && <p className="parsely-recommendations__list-title">{ title }</p> }
-			<ul className={ classNames }>
-				{ recommendations.map(
-					(
-						{
-							title: linkTitle,
-							url: linkUrl,
-							image_url: imageUrl,
-							thumb_url_medium: thumbUrlMedium,
-						},
-						index
-					) => (
-						<ParselyRecommendationsListItem
-							imagestyle={ imagestyle }
-							imageUrl={ imageUrl }
-							thumbUrlMedium={ thumbUrlMedium }
-							imageAlt={ __( 'Image for link', 'wp-parsely' ) }
-							key={ index }
-							linkTitle={ linkTitle }
-							linkUrl={ linkUrl }
-							showimages={ showimages }
-						/>
-					)
+			<ul
+				className={ classNames(
+					'parsely-recommendations__ul',
+					layoutstyle && `parsely-recommendations__ul-${ layoutstyle }`
 				) }
+			>
+				{ recommendations.map( ( recommendation, index ) => (
+					<ParselyRecommendationsListItem
+						imagestyle={ imagestyle }
+						imageAlt={ __( 'Image for link', 'wp-parsely' ) }
+						key={ index }
+						recommendation={ recommendation }
+						showimages={ showimages }
+					/>
+				) ) }
 			</ul>
 		</>
 	);
