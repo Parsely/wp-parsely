@@ -39,6 +39,9 @@ class Parsely_Recommendations_Block {
 				'render_callback' => 'Parsely_Recommendations_Block::server_side_render',
 				'script'          => 'wp-parsely-recommendations-block',
 				'style'           => 'wp-parsely-recommendations-block',
+				'supports'        => array(
+					'html' => false,
+				),
 				'attributes'      => array(
 					'boost'    => array(
 						'type'    => 'string',
