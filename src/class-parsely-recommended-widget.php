@@ -91,11 +91,11 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		// Set up the variables.
 		$options = get_option( 'parsely' );
 		$api_url = Parsely_Recommended_Content::get_api_url(
-				$options['apikey'],
-				$instance['published_within'],
-				$instance['sort'],
-				$instance['boost'],
-				$instance['return_limit']
+			$options['apikey'],
+			$instance['published_within'],
+			$instance['sort'],
+			$instance['boost'],
+			$instance['return_limit']
 		);
 
 		$reco_widget_script_asset = require PARSELY_PLUGIN_DIR . 'build/admin-page.asset.php';

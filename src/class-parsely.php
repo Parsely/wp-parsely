@@ -1676,6 +1676,7 @@ class Parsely {
 
 	/**
 	 * Return the apikey value from the saved options (or the default value if none is set).
+	 *
 	 * @since 2.6.0
 	 * @return string $apikey The value of the 'apikey' option setting.
 	 */
