@@ -69,6 +69,7 @@ class Parsely_Recommendations_Block {
 					),
 					'savedresults' => array(
 						'type'    => 'array',
+						'default' => array(),
 					),
 					'sort' => array(
 						'type'    => 'string',
@@ -88,16 +89,14 @@ class Parsely_Recommendations_Block {
 
 	public static function server_side_render( $attributes, $content ) {
 		$escaped_saved_results = array();
-		if ( is_array( $attributes['savedresults'] ) ) {
-			$escaped_saved_results = array_map( function ( $result ) {
-				return array(
-					'title'            => esc_html( $result['title'] ),
-					'url'              => esc_url( $result['url'] ),
-					'image_url'        => esc_url( $result['image_url'] ),
-					'thumb_url_medium' => esc_url( $result['thumb_url_medium'] ),
-				);
-			}, $attributes['savedresults'] );
-		}
+		$escaped_saved_results = array_map( function ( $result ) {
+			return array(
+				'title'            => esc_html( $result['title'] ),
+				'url'              => esc_url( $result['url'] ),
+				'image_url'        => esc_url( $result['image_url'] ),
+				'thumb_url_medium' => esc_url( $result['thumb_url_medium'] ),
+			);
+		}, $attributes['savedresults'] );
 		ob_start();
 		?>
 <section <?php echo get_block_wrapper_attributes() ?>

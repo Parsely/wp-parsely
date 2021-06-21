@@ -105,7 +105,7 @@ const ParselyRecommendationsInspectorControls = ( {
 							personalized ? __( 'Personalized', 'wp-parsely' ) : __( 'Not Personalized', 'wp-parsely' )
 						}
 						checked={ personalized }
-						onChange={ () => setAttributes( { personalized: ! personalized } ) }
+						onChange={ () => setAttributes( { personalized: ! personalized, savedresults: [] } ) }
 					/>
 				</PanelRow>
 				{ canSaveResults && (
@@ -113,9 +113,7 @@ const ParselyRecommendationsInspectorControls = ( {
 						<ToggleControl
 							label={ __( 'Save Results to block', 'wp-parsely' ) }
 							checked={ !! savedresults?.length }
-							onChange={ ( saving ) =>
-								setAttributes( { savedresults: saving ? recommendations : undefined } )
-							}
+							onChange={ ( saving ) => setAttributes( { savedresults: saving ? recommendations : [] } ) }
 						/>
 						{ false }
 					</PanelRow>
@@ -132,7 +130,7 @@ const ParselyRecommendationsInspectorControls = ( {
 						label={ __( 'Maximum Results', 'wp-parsely' ) }
 						min="1"
 						max="99"
-						onChange={ ( newval ) => setAttributes( { limit: newval } ) }
+						onChange={ ( newval ) => setAttributes( { limit: newval, savedresults: [] } ) }
 						value={ limit }
 					/>
 				</PanelRow>
