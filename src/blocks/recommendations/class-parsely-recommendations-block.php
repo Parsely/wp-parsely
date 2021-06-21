@@ -43,27 +43,27 @@ class Parsely_Recommendations_Block {
 					'html' => false,
 				),
 				'attributes'      => array(
-					'boost'    => array(
+					'boost'        => array(
 						'type'    => 'string',
 						'default' => 'views',
 					),
-					'imagestyle' => array(
+					'imagestyle'   => array(
 						'type'    => 'string',
 						'default' => 'original',
 					),
-					'layoutstyle' => array(
+					'layoutstyle'  => array(
 						'type'    => 'string',
 						'default' => 'grid',
 					),
-					'limit'    => array(
+					'limit'        => array(
 						'type'    => 'number',
 						'default' => 3,
 					),
-					'personalized'    => array(
+					'personalized' => array(
 						'type'    => 'boolean',
 						'default' => true,
 					),
-					'showimages'    => array(
+					'showimages'   => array(
 						'type'    => 'boolean',
 						'default' => true,
 					),
@@ -71,14 +71,14 @@ class Parsely_Recommendations_Block {
 						'type'    => 'array',
 						'default' => array(),
 					),
-					'sort' => array(
+					'sort'         => array(
 						'type'    => 'string',
 						'default' => 'score',
 					),
-					'tag'      => array(
+					'tag'          => array(
 						'type' => 'string',
 					),
-					'title'    => array(
+					'title'        => array(
 						'type'    => 'string',
 						'default' => __( 'Related Content' ),
 					),
@@ -89,30 +89,35 @@ class Parsely_Recommendations_Block {
 
 	public static function server_side_render( $attributes, $content ) {
 		$escaped_saved_results = array();
-		$escaped_saved_results = array_map( function ( $result ) {
-			return array(
-				'title'            => esc_html( $result['title'] ),
-				'url'              => esc_url( $result['url'] ),
-				'image_url'        => esc_url( $result['image_url'] ),
-				'thumb_url_medium' => esc_url( $result['thumb_url_medium'] ),
-			);
-		}, $attributes['savedresults'] );
+		$escaped_saved_results = array_map(
+			function ( $result ) {
+				return array(
+					'title'            => esc_html( $result['title'] ),
+					'url'              => esc_url( $result['url'] ),
+					'image_url'        => esc_url( $result['image_url'] ),
+					'thumb_url_medium' => esc_url( $result['thumb_url_medium'] ),
+				);
+			},
+			$attributes['savedresults']
+		);
 		ob_start();
 		?>
-<section <?php echo get_block_wrapper_attributes() ?>
+<section <?php echo get_block_wrapper_attributes(); ?>
 
-	data-boost="<?php echo esc_attr( $attributes['boost'] ) ?>"
-	data-layoutstyle="<?php echo esc_attr( $attributes['layoutstyle'] ) ?>"
-	data-imagestyle="<?php echo esc_attr( $attributes['imagestyle'] ) ?>"
-	data-limit="<?php echo esc_attr( $attributes['limit'] ) ?>"
-	data-personalized="<?php echo esc_attr( $attributes['personalized'] ) ?>"
-	data-savedresults="<?php
+	data-boost="<?php echo esc_attr( $attributes['boost'] ); ?>"
+	data-layoutstyle="<?php echo esc_attr( $attributes['layoutstyle'] ); ?>"
+	data-imagestyle="<?php echo esc_attr( $attributes['imagestyle'] ); ?>"
+	data-limit="<?php echo esc_attr( $attributes['limit'] ); ?>"
+	data-personalized="<?php echo esc_attr( $attributes['personalized'] ); ?>"
+	data-savedresults="
+		<?php
 		// TODO: does any other sanitization need to be done here?
 		echo htmlspecialchars( json_encode( $escaped_saved_results ), ENT_QUOTES, 'UTF-8' );
-	?>"
-	data-showimages="<?php echo esc_attr( $attributes['showimages'] ) ?>"
-	data-sort="<?php echo esc_attr( $attributes['sort'] ) ?>"
-	data-title="<?php echo esc_attr( $attributes['title'] ) ?>"
+		?>
+	"
+	data-showimages="<?php echo esc_attr( $attributes['showimages'] ); ?>"
+	data-sort="<?php echo esc_attr( $attributes['sort'] ); ?>"
+	data-title="<?php echo esc_attr( $attributes['title'] ); ?>"
 ></section>
 		<?php
 		return ob_get_clean();

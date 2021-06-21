@@ -26,10 +26,10 @@ class Parsely_Recommendations_Block_API {
 		$params = $request->get_params();
 
 		$cache_key = 'block_recos-' . md5( json_encode( compact( 'apikey', 'params' ) ) );
-		$cached = wp_cache_get( $cache_key, 'wp-parsely' );
+		$cached    = wp_cache_get( $cache_key, 'wp-parsely' );
 		if ( is_array( $cached ) ) {
 			return array(
-				'data' => $cached,
+				'data'   => $cached,
 				'cached' => 1,
 			);
 		}
@@ -52,8 +52,8 @@ class Parsely_Recommendations_Block_API {
 			function( $link ) {
 				return (object) array(
 					'image_url' => $link->image_url,
-					'title' => $link->title,
-					'url' => $link->url,
+					'title'     => $link->title,
+					'url'       => $link->url,
 				);
 			},
 			$links
@@ -86,7 +86,7 @@ class Parsely_Recommendations_Block_API {
 			return $response;
 		}
 
-		$body = wp_remote_retrieve_body( $response );
+		$body    = wp_remote_retrieve_body( $response );
 		$decoded = json_decode( $body );
 
 		if ( is_null( $decoded ) ) {
