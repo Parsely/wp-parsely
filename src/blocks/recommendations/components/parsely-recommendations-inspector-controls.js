@@ -53,15 +53,12 @@ const ParselyRecommendationsInspectorControls = ( {
 					/>
 				</PanelRow>
 				<PanelRow>
-					<ToggleControl
-						label={ __( 'Show Images', 'wp-parsely' ) }
-						help={
-							showimages
-								? __( 'Showing images', 'wp-parsely' )
-								: __( 'Not showing images', 'wp-parsely' )
-						}
-						checked={ showimages }
-						onChange={ () => setAttributes( { showimages: ! showimages } ) }
+					<RangeControl
+						label={ __( 'Maximum Results', 'wp-parsely' ) }
+						min="1"
+						max="99"
+						onChange={ ( newval ) => setAttributes( { limit: newval, savedresults: [] } ) }
+						value={ limit }
 					/>
 				</PanelRow>
 				{ showimages && (
@@ -82,6 +79,18 @@ const ParselyRecommendationsInspectorControls = ( {
 						/>
 					</PanelRow>
 				) }
+				<PanelRow>
+					<ToggleControl
+						label={ __( 'Show Images', 'wp-parsely' ) }
+						help={
+							showimages
+								? __( 'Showing images', 'wp-parsely' )
+								: __( 'Not showing images', 'wp-parsely' )
+						}
+						checked={ showimages }
+						onChange={ () => setAttributes( { showimages: ! showimages } ) }
+					/>
+				</PanelRow>
 				<PanelRow>
 					<RadioControl
 						label={ __( 'Display style', 'wp-parsely' ) }
@@ -123,15 +132,6 @@ const ParselyRecommendationsInspectorControls = ( {
 						label={ __( 'Tag', 'wp-parsely' ) }
 						value={ tag }
 						onChange={ ( newval ) => setAttributes( { tag: newval } ) }
-					/>
-				</PanelRow>
-				<PanelRow>
-					<RangeControl
-						label={ __( 'Maximum Results', 'wp-parsely' ) }
-						min="1"
-						max="99"
-						onChange={ ( newval ) => setAttributes( { limit: newval, savedresults: [] } ) }
-						value={ limit }
 					/>
 				</PanelRow>
 				<PanelRow>

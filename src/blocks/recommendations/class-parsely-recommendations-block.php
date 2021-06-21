@@ -61,7 +61,7 @@ class Parsely_Recommendations_Block {
 					),
 					'personalized'    => array(
 						'type'    => 'boolean',
-						'default' => false,
+						'default' => true,
 					),
 					'showimages'    => array(
 						'type'    => 'boolean',
