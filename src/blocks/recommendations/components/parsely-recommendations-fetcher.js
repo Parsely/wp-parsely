@@ -9,6 +9,7 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * Internal dependencies
  */
+import { setError, setRecommendations } from '../actions';
 import { fetchRelated } from '../../../js/lib/parsely-api';
 import { useRecommendationsStore } from '../recommendations-store';
 
@@ -47,12 +48,12 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) =
 			try {
 				response = await fetchRecosFromWpApi();
 			} catch ( wpError ) {
-				dispatch( 'ERROR', { error: wpError } );
+				dispatch( setError( { error: wpError } ) );
 			}
 		}
 
 		const data = response?.data || [];
-		dispatch( { type: 'RECOMMENDATIONS', recommendations: data } );
+		dispatch( setRecommendations( { recommendations: data } ) );
 	}
 
 	const updateRecosWhenPropsChange = useCallback( fetchRecos, apiMemoProps );

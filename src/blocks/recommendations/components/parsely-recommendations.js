@@ -10,6 +10,7 @@ import { __ } from '@wordpress/i18n';
 import ParselyRecommendationsFetcher from './parsely-recommendations-fetcher';
 import ParselyRecommendationsList from './parsely-recommendations-list';
 import ParselyRecommendationsTitle from './parsely-recommendations-title';
+import { setRecommendations } from '../actions';
 import { useRecommendationsStore } from '../recommendations-store';
 import { maybeDecodeJSON } from '../utils';
 
@@ -35,7 +36,7 @@ export default function ParselyRecommendations( {
 		if ( ! decodedSavedResults.length ) {
 			return;
 		}
-		dispatch( { type: 'RECOMMENDATIONS', recommendations: decodedSavedResults } );
+		dispatch( setRecommendations( { recommendations: decodedSavedResults } ) );
 	}, [ savedresults ] );
 
 	if ( error ) {
