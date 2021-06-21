@@ -1,6 +1,19 @@
 <?php
+/**
+ * Parsely Recommendations Block API
+ *
+ * @package Parsely_Recommendations
+ */
 
+/**
+ * A "namespace" class with functions that power REST API endpoints for use by the Recommendations Block
+ */
 class Parsely_Recommendations_Block_API {
+	/**
+	 * Registers the REST API Routes and backing functionality
+	 *
+	 * @return void
+	 */
 	public static function rest_api_init() {
 		register_rest_route(
 			'wp-parsely/v1',
@@ -16,10 +29,22 @@ class Parsely_Recommendations_Block_API {
 		);
 	}
 
-	public static function permission_callback( $request ) {
+	/**
+	 * Determine if the endpoint can be called. Applies `read` permissions.
+	 *
+	 * @return boolean
+	 */
+	public static function permission_callback() {
 		return current_user_can( 'read' );
 	}
 
+	/**
+	 * Cached "proxy" to the Parsely `/related` endpoint
+	 *
+	 * @uses Parsely_Recommendations_Block_API::fetch_related_links
+	 * @param WP_Rest_Request $request The request object.
+	 * @return StdClass
+	 */
 	public static function get_items( $request ) {
 		global $parsely;
 		$apikey = $parsely->get_apikey();
@@ -66,6 +91,19 @@ class Parsely_Recommendations_Block_API {
 		);
 	}
 
+	/**
+	 * Call the Parsely `/related` endpoint to get recommendations
+	 *
+	 * @param string  $apikey The Parsely API key.
+	 * @param string  $url The current URL to get related content.
+	 * @param integer $pub_start Publication filter start date (`pub_date_start`).
+	 * @param string  $sort_recs What to sort the results by (`sort`).
+	 * @param integer $limit Number of records to retrieve.
+	 * @param string  $boost Sub-sort value to re-rank relevant posts.
+	 *
+	 * @see https://www.parse.ly/help/api/recommendations#get-related
+	 * @return array
+	 */
 	public static function fetch_related_links( $apikey, $url, $pub_start = 0, $sort_recs = 'score', $limit = 5, $boost = 'views' ) {
 		$full_api_url = add_query_arg(
 			array(
