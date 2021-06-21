@@ -68,7 +68,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @param array $instance Values saved to the db.
 	 */
 	public function widget( $args, $instance ) {
-		if ( ! Parsely_Recommended_Content::api_key_and_secret_are_populated() ) {
+		if ( ! $this->api_key_and_secret_are_populated() ) {
 			return;
 		}
 
@@ -159,7 +159,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	public function form( $instance ) {
 		$this->migrate_old_fields( $instance );
 
-		if ( ! Parsely_Recommended_Content::api_key_and_secret_are_populated() ) {
+		if ( ! $this->api_key_and_secret_are_populated() ) {
 			$settings_page_url = add_query_arg( 'page', 'parsely', get_admin_url() . 'options-general.php' );
 
 			$message = sprintf(
@@ -193,7 +193,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$instance['img_src']             = $img_src;
 		$instance['display_author']      = $display_author;
 
-		$boost_params = Parsely_Recommended_Content::get_boost_params();
+		$boost_params = $this->get_boost_params();
 		?>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Title:', 'wp-parsely' ); ?></label>
@@ -283,5 +283,67 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$instance['personalize_results'] = $new_instance['personalize_results'];
 		$instance['img_src']             = trim( $new_instance['img_src'] );
 		return $instance;
+	}
+
+	/**
+	 * Return the list of boost parameters, values and labels.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @return array Boost parameters values and labels.
+	 */
+	private function get_boost_params() {
+		return array(
+			'no-boost'              => __( 'No boost', 'wp-parsely' ),
+			'views'                 => __( 'Page views', 'wp-parsely' ),
+			'mobile_views'          => __( 'Page views on mobile devices', 'wp-parsely' ),
+			'tablet_views'          => __( 'Page views on tablet devices', 'wp-parsely' ),
+			'desktop_views'         => __( 'Page views on desktop devices', 'wp-parsely' ),
+			'visitors'              => __( 'Unique page visitors, total', 'wp-parsely' ),
+			'visitors_new'          => __( 'New visitors', 'wp-parsely' ),
+			'visitors_returning'    => __( 'Returning visitors', 'wp-parsely' ),
+			'engaged_minutes'       => __( 'Total engagement time in minutes', 'wp-parsely' ),
+			'avg_engaged'           => __( 'Engaged minutes spent by total visitors', 'wp-parsely' ),
+			'avg_engaged_new'       => __( 'Average engaged minutes spent by new visitors', 'wp-parsely' ),
+			'avg_engaged_returning' => __( 'Average engaged minutes spent by returning visitors', 'wp-parsely' ),
+			'social_interactions'   => __( 'Total for Facebook, Twitter, LinkedIn, and Pinterest', 'wp-parsely' ),
+			'fb_interactions'       => __( 'Count of Facebook shares, likes, and comments', 'wp-parsely' ),
+			'tw_interactions'       => __( 'Count of Twitter tweets and retweets', 'wp-parsely' ),
+			'li_interactions'       => __( 'Count of LinkedIn social interactions', 'wp-parsely' ),
+			'pi_interactions'       => __( 'Count of Pinterest pins', 'wp-parsely' ),
+			'social_referrals'      => __( 'Page views where the referrer was any social network', 'wp-parsely' ),
+			'fb_referrals'          => __( 'Page views where the referrer was facebook.com', 'wp-parsely' ),
+			'tw_referrals'          => __( 'Page views where the referrer was twitter.com', 'wp-parsely' ),
+			'li_referrals'          => __( 'Page views where the referrer was linkedin.com', 'wp-parsely' ),
+			'pi_referrals'          => __( 'Page views where the referrer was pinterest.com', 'wp-parsely' ),
+		);
+	}
+
+	/**
+	 * Check if both the API key and API secret settings are populated with non-empty values.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @return bool True if apikey and api_secret settings are not empty strings. False otherwise.
+	 */
+	private function api_key_and_secret_are_populated() {
+		$options = get_option( 'parsely' );
+
+		// No options are saved, so API key is not available.
+		if ( ! is_array( $options ) ) {
+			return false;
+		}
+
+		// Parse.ly Site ID settings field is not populated.
+		if ( ! array_key_exists( 'apikey', $options ) || '' === $options['apikey'] ) {
+			return false;
+		}
+
+		// Parse.ly API Secret settings field is not populated.
+		if ( ! array_key_exists( 'api_secret', $options ) || '' === $options['api_secret'] ) {
+			return false;
+		}
+
+		return true;
 	}
 }
