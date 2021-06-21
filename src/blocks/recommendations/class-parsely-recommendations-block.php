@@ -1,5 +1,13 @@
 <?php
+/**
+ * Parsely_Recommendations_Block class file
+ *
+ * @package Parsely
+ */
 
+/**
+ * Parsely_Recommendations_Block
+ */
 class Parsely_Recommendations_Block {
 	/**
 	 * Registers all block assets so that they can be enqueued through Gutenberg in
@@ -27,7 +35,7 @@ class Parsely_Recommendations_Block {
 
 		wp_register_style(
 			'wp-parsely-recommendations-block',
-			PARSELY_PLUGIN_URL . 'build/style-recommendations-edit.css', // TODO: adjust this file name (not sure why I had to do the import in the edit file)
+			PARSELY_PLUGIN_URL . 'build/style-recommendations-edit.css',
 			array(),
 			Parsely::get_asset_cache_buster()
 		);
@@ -36,7 +44,7 @@ class Parsely_Recommendations_Block {
 			'wp-parsely/recommendations',
 			array(
 				'editor_script'   => 'wp-parsely-recommendations-block-editor',
-				'render_callback' => 'Parsely_Recommendations_Block::server_side_render',
+				'render_callback' => 'Parsely_Recommendations_Block::render_callback',
 				'script'          => 'wp-parsely-recommendations-block',
 				'style'           => 'wp-parsely-recommendations-block',
 				'supports'        => array(
@@ -80,14 +88,20 @@ class Parsely_Recommendations_Block {
 					),
 					'title'        => array(
 						'type'    => 'string',
-						'default' => __( 'Related Content' ),
+						'default' => __( 'Related Content', 'wp-parsely' ),
 					),
 				),
 			)
 		);
 	}
 
-	public static function server_side_render( $attributes, $content ) {
+	/**
+	 * The Server-side render_callback for the wp-parsely/recommendations block.
+	 *
+	 * @param array $attributes The user-controlled settings for this block.
+	 * @return string
+	 */
+	public static function render_callback( $attributes ) {
 		$escaped_saved_results = array();
 		$escaped_saved_results = array_map(
 			function ( $result ) {
@@ -102,7 +116,10 @@ class Parsely_Recommendations_Block {
 		);
 		ob_start();
 		?>
-<section <?php echo get_block_wrapper_attributes(); ?>
+<section
+		<?php
+		echo wp_kses_post( get_block_wrapper_attributes() );
+		?>
 
 	data-boost="<?php echo esc_attr( $attributes['boost'] ); ?>"
 	data-layoutstyle="<?php echo esc_attr( $attributes['layoutstyle'] ); ?>"
@@ -111,8 +128,8 @@ class Parsely_Recommendations_Block {
 	data-personalized="<?php echo esc_attr( $attributes['personalized'] ); ?>"
 	data-savedresults="
 		<?php
-		// TODO: does any other sanitization need to be done here?
-		echo htmlspecialchars( json_encode( $escaped_saved_results ), ENT_QUOTES, 'UTF-8' );
+		// TODO: only allow links that pass wp_validate_redirect...?
+		echo esc_attr( htmlspecialchars( json_encode( $escaped_saved_results ), ENT_QUOTES, 'UTF-8' ) );
 		?>
 	"
 	data-showimages="<?php echo esc_attr( $attributes['showimages'] ); ?>"

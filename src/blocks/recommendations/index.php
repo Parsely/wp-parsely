@@ -1,10 +1,20 @@
 <?php
+/**
+ * The wp-parsely Recommendations Block entry file.
+ *
+ * @package Parsely
+ */
 
+/**
+ * Wrapper function to kick off the plugin. Sources & hooks initialization functions for the block & API classes.
+ *
+ * @return void
+ */
 function wp_parsely_recommendations_block_init() {
 	global $wp_version;
 
 	if ( version_compare( $wp_version, '5.6' ) < 0 ) {
-		// WordPress is not recent enough to run this block
+		// WordPress is not recent enough to run this block.
 		return;
 	}
 

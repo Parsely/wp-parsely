@@ -2,7 +2,7 @@
 /**
  * Parsely Recommendations Block API
  *
- * @package Parsely_Recommendations
+ * @package Parsely
  */
 
 /**
