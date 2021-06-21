@@ -98,21 +98,26 @@ class Parsely_Recommendations_Block {
 	/**
 	 * The Server-side render_callback for the wp-parsely/recommendations block.
 	 *
+	 * @uses wp_validate_redirect If the stored results aren't considered "safe" by this function, they're skipped.
 	 * @param array $attributes The user-controlled settings for this block.
 	 * @return string
 	 */
 	public static function render_callback( $attributes ) {
-		$escaped_saved_results = array();
-		$escaped_saved_results = array_map(
-			function ( $result ) {
-				return array(
-					'title'            => esc_html( $result['title'] ),
-					'url'              => esc_url( $result['url'] ),
-					'image_url'        => esc_url( $result['image_url'] ),
-					'thumb_url_medium' => esc_url( $result['thumb_url_medium'] ),
-				);
-			},
-			$attributes['savedresults']
+		$validated_saved_results = array_filter(
+			array_map(
+				function ( $result ) {
+					if ( ! wp_validate_redirect( $result['url'] ) ) {
+						return false;
+					}
+					return array(
+						'title'            => $result['title'],
+						'url'              => $result['url'],
+						'image_url'        => $result['image_url'],
+						'thumb_url_medium' => $result['thumb_url_medium'],
+					);
+				},
+				$attributes['savedresults']
+			)
 		);
 		ob_start();
 		?>
@@ -129,7 +134,7 @@ class Parsely_Recommendations_Block {
 	data-savedresults="
 		<?php
 		// TODO: only allow links that pass wp_validate_redirect...?
-		echo esc_attr( htmlspecialchars( json_encode( $escaped_saved_results ), ENT_QUOTES, 'UTF-8' ) );
+		echo esc_attr( htmlspecialchars( json_encode( $validated_saved_results ), ENT_QUOTES, 'UTF-8' ) );
 		?>
 	"
 	data-showimages="<?php echo esc_attr( $attributes['showimages'] ); ?>"
