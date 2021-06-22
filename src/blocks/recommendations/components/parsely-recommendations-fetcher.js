@@ -13,9 +13,9 @@ import { setError, setRecommendations } from '../actions';
 import { fetchRelated } from '../../../js/lib/parsely-api';
 import { useRecommendationsStore } from '../recommendations-store';
 
-const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) => {
+const ParselyRecommendationsFetcher = ( { boost, limit, personalized, saveresults, sort } ) => {
 	const {
-		state: { error, uuid },
+		state: { error, isLoaded, uuid },
 		dispatch,
 	} = useRecommendationsStore();
 
@@ -31,8 +31,6 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) =
 		apiQueryArgs.url = window.location.href;
 	}
 
-	const apiMemoProps = [ ...Object.values( apiQueryArgs ), error ];
-
 	async function fetchRecosFromWpApi() {
 		return apiFetch( {
 			path: addQueryArgs( '/wp-parsely/v1/recommendations', apiQueryArgs ),
@@ -40,7 +38,10 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) =
 	}
 
 	async function fetchRecos() {
-		// TODO before landing: Attempt to cache in localStorage keyed on attributes
+		if ( saveresults && ! isLoaded ) {
+			return;
+		}
+
 		let response;
 		try {
 			response = await fetchRelated( apiQueryArgs );
@@ -56,6 +57,8 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) =
 		dispatch( setRecommendations( { recommendations: data } ) );
 	}
 
+	const apiMemoProps = [ ...Object.values( apiQueryArgs ), error, saveresults ];
+
 	const updateRecosWhenPropsChange = useCallback( fetchRecos, apiMemoProps );
 
 	const debouncedUpdate = useDebounce( updateRecosWhenPropsChange, 300 );
@@ -65,6 +68,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) =
 	 * - On component mount
 	 * - When an attribute changes that affects the API call.
 	 *   (This happens in the Editor context when someone changes a setting.)
+	 * - When the `saveresults` attribute changes.
 	 */
 	useEffect( debouncedUpdate, apiMemoProps );
 

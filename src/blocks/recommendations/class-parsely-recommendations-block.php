@@ -75,6 +75,10 @@ class Parsely_Recommendations_Block {
 						'type'    => 'boolean',
 						'default' => true,
 					),
+					'saveresults' => array(
+						'type'    => 'boolean',
+						'default' => false,
+					),
 					'savedresults' => array(
 						'type'    => 'array',
 						'default' => array(),
@@ -116,7 +120,7 @@ class Parsely_Recommendations_Block {
 						'thumb_url_medium' => $result['thumb_url_medium'],
 					);
 				},
-				$attributes['savedresults']
+				$attributes['saveresults'] ? $attributes['savedresults'] : array()
 			)
 		);
 		ob_start();
@@ -131,6 +135,7 @@ class Parsely_Recommendations_Block {
 	data-imagestyle="<?php echo esc_attr( $attributes['imagestyle'] ); ?>"
 	data-limit="<?php echo esc_attr( $attributes['limit'] ); ?>"
 	data-personalized="<?php echo esc_attr( $attributes['personalized'] ); ?>"
+	data-saveresults="<?php echo esc_attr( $attributes['saveresults'] ); ?>"
 	data-savedresults="
 		<?php
 		// TODO: only allow links that pass wp_validate_redirect...?

@@ -10,7 +10,7 @@ import { __ } from '@wordpress/i18n';
 import ParselyRecommendationsFetcher from './parsely-recommendations-fetcher';
 import ParselyRecommendationsList from './parsely-recommendations-list';
 import ParselyRecommendationsTitle from './parsely-recommendations-title';
-import { setRecommendations } from '../actions';
+import { setLoaded } from '../actions';
 import { useRecommendationsStore } from '../recommendations-store';
 import { maybeDecodeJSON } from '../utils';
 
@@ -20,6 +20,7 @@ export default function ParselyRecommendations( {
 	limit,
 	imagestyle,
 	personalized,
+	saveresults,
 	savedresults,
 	showimages,
 	sort,
@@ -33,36 +34,36 @@ export default function ParselyRecommendations( {
 	const decodedSavedResults = maybeDecodeJSON( savedresults ) || [];
 
 	useEffect( () => {
-		if ( ! decodedSavedResults.length ) {
-			return;
+		if ( saveresults && savedresults?.length ) {
+			dispatch( setLoaded() );
 		}
-		dispatch( setRecommendations( { recommendations: decodedSavedResults } ) );
-	}, [ savedresults ] );
+	}, [ saveresults, savedresults ] );
 
 	if ( error ) {
 		return false;
 	}
 
+	const _recommendations = saveresults ? decodedSavedResults : recommendations;
+
 	return (
 		<>
-			{ ! decodedSavedResults.length && (
-				<ParselyRecommendationsFetcher
-					boost={ boost }
-					limit={ limit }
-					personalized={ personalized }
-					sort={ sort }
-				/>
-			) }
+			<ParselyRecommendationsFetcher
+				boost={ boost }
+				limit={ limit }
+				personalized={ personalized }
+				saveresults={ saveresults }
+				sort={ sort }
+			/>
 			{ ! isLoaded && (
 				<span className="parsely-recommendations__loading">{ __( 'Loading…', 'wp-parsely' ) }</span>
 			) }
-			{ isLoaded && recommendations.length && (
+			{ isLoaded && !! _recommendations?.length && (
 				<>
 					<ParselyRecommendationsTitle title={ title } />
 					<ParselyRecommendationsList
 						imagestyle={ imagestyle }
 						layoutstyle={ layoutstyle }
-						recommendations={ recommendations }
+						recommendations={ saveresults ? decodedSavedResults : recommendations }
 						showimages={ showimages }
 					/>
 				</>

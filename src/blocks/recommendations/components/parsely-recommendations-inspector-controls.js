@@ -12,6 +12,7 @@ import {
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -25,19 +26,28 @@ const ParselyRecommendationsInspectorControls = ( {
 		layoutstyle,
 		limit,
 		personalized,
+		saveresults,
 		savedresults,
 		showimages,
 		sort,
 		tag,
 		title,
-		...rest
 	},
 	setAttributes,
 } ) => {
 	const {
 		state: { error, isLoaded, recommendations },
-		dispatch,
 	} = useRecommendationsStore();
+
+	useEffect( () => {
+		if ( error || ! isLoaded ) {
+			return;
+		}
+		if ( saveresults && typeof recommendations === 'undefined' ) {
+			return;
+		}
+		setAttributes( { savedresults: saveresults ? recommendations : undefined } );
+	}, [ error, isLoaded, recommendations, saveresults ] );
 
 	const hasRecos = ! error && isLoaded && recommendations?.length;
 	const canSaveResults = ! personalized && ( hasRecos || savedresults?.length );
@@ -57,7 +67,7 @@ const ParselyRecommendationsInspectorControls = ( {
 						label={ __( 'Maximum Results', 'wp-parsely' ) }
 						min="1"
 						max="99"
-						onChange={ ( newval ) => setAttributes( { limit: newval, savedresults: [] } ) }
+						onChange={ ( newval ) => setAttributes( { limit: newval, savedresults: undefined } ) }
 						value={ limit }
 					/>
 				</PanelRow>
@@ -114,15 +124,21 @@ const ParselyRecommendationsInspectorControls = ( {
 							personalized ? __( 'Personalized', 'wp-parsely' ) : __( 'Not Personalized', 'wp-parsely' )
 						}
 						checked={ personalized }
-						onChange={ () => setAttributes( { personalized: ! personalized, savedresults: [] } ) }
+						onChange={ () =>
+							setAttributes( {
+								personalized: ! personalized,
+								saveresults: false,
+								savedresults: [],
+							} )
+						}
 					/>
 				</PanelRow>
 				{ canSaveResults && (
 					<PanelRow>
 						<ToggleControl
 							label={ __( 'Save Results to block', 'wp-parsely' ) }
-							checked={ !! savedresults?.length }
-							onChange={ ( saving ) => setAttributes( { savedresults: saving ? recommendations : [] } ) }
+							checked={ saveresults }
+							onChange={ () => setAttributes( { saveresults: ! saveresults } ) }
 						/>
 						{ false }
 					</PanelRow>
