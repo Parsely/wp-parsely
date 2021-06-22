@@ -1,5 +1,13 @@
 <?php
+/**
+ * Parsely_Recommended_Content class file.
+ *
+ * @package Parsely
+ */
 
+/**
+ * Parsely_Recommended_Content
+ */
 class Parsely_Recommended_Content {
 	const RELATED_API_ENDPOINT = 'https://api.parsely.com/v2/related';
 
@@ -8,7 +16,7 @@ class Parsely_Recommended_Content {
 	 *
 	 * @see https://www.parse.ly/help/api/recommendations#get-related
 	 *
-	 * @since 2.5.0
+	 * @since 2.6.0
 	 *
 	 * @param string $api_key          Publisher Site ID (API key).
 	 * @param int    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
@@ -21,14 +29,14 @@ class Parsely_Recommended_Content {
 	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
 	 * @return string API URL.
 	 */
-	static function get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) {
+	public static function get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) {
 		$query_args = array(
 			'apikey' => $api_key,
 			'sort'   => $sort,
 			'limit'  => $return_limit,
 		);
 
-		if ( 'score' === $sort && $boost !== 'no-boost' ) {
+		if ( 'score' === $sort && 'no-boost' !== $boost ) {
 			$query_args['boost'] = $boost;
 		}
 
