@@ -71,11 +71,22 @@ const ParselyRecommendationsInspectorControls = ( {
 						value={ limit }
 					/>
 				</PanelRow>
+				<PanelRow>
+					<ToggleControl
+						label={ __( 'Show Images', 'wp-parsely' ) }
+						help={
+							showimages
+								? __( 'Showing images', 'wp-parsely' )
+								: __( 'Not showing images', 'wp-parsely' )
+						}
+						checked={ showimages }
+						onChange={ () => setAttributes( { showimages: ! showimages } ) }
+					/>
+				</PanelRow>
 				{ showimages && (
 					<PanelRow>
 						<RadioControl
 							label={ __( 'Image style', 'wp-parsely' ) }
-							help={ null /* TODO */ }
 							selected={ imagestyle }
 							options={ [
 								{ label: __( 'Original image', 'wp-parsely' ), value: 'original' },
@@ -89,18 +100,6 @@ const ParselyRecommendationsInspectorControls = ( {
 						/>
 					</PanelRow>
 				) }
-				<PanelRow>
-					<ToggleControl
-						label={ __( 'Show Images', 'wp-parsely' ) }
-						help={
-							showimages
-								? __( 'Showing images', 'wp-parsely' )
-								: __( 'Not showing images', 'wp-parsely' )
-						}
-						checked={ showimages }
-						onChange={ () => setAttributes( { showimages: ! showimages } ) }
-					/>
-				</PanelRow>
 				<PanelRow>
 					<RadioControl
 						label={ __( 'Display style', 'wp-parsely' ) }
