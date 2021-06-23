@@ -7,18 +7,11 @@
 
 namespace Parsely\Tests;
 
-use Parsely\Tests\TestCase as ParselyTestCase;
-use PHPUnit\Framework\Error\Warning as PHPUnit_Warning;
-
 /**
  * Catch-all class for testing.
- * TODO: Break this into multiple targeted files
- *
- * @category   Class
- * @package    All_Test
+ * TODO: Break this into multiple targeted files.
  */
-class All_Test extends ParselyTestCase {
-
+final class OtherTest extends TestCase {
 	/**
 	 * Internal variables
 	 *
@@ -39,7 +32,7 @@ class All_Test extends ParselyTestCase {
 		self::$parsely = new \Parsely();
 
 		// Set the default options prior to each test.
-		ParselyTestCase::set_options();
+		TestCase::set_options();
 	}
 
 	/**
@@ -47,19 +40,20 @@ class All_Test extends ParselyTestCase {
 	 *
 	 * @see https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 	 * @see https://regex101.com/r/Ly7O1x/3/
+	 *
+	 * @coversNothing
 	 */
-	public function test_constant_version() {
-		self::assertSame(
-			1,
-			preg_match(
-				'/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/',
-				PARSELY_VERSION
-			)
+	public function test_version_constant_is_a_semantic_version_string() {
+		self::assertRegExp(
+			'/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/',
+			PARSELY_VERSION
 		);
 	}
 
 	/**
 	 * Test class version.
+	 *
+	 * @coversNothing
 	 */
 	public function test_class_version() {
 		self::assertSame( PARSELY_VERSION, \Parsely::VERSION );
@@ -69,6 +63,10 @@ class All_Test extends ParselyTestCase {
 	 * Test cache buster string.
 	 *
 	 * During tests, this should only return the version constant.
+	 *
+	 * @covers \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_options
 	 */
 	public function test_cache_buster() {
 		self::assertSame( PARSELY_VERSION, \Parsely::get_asset_cache_buster() );
@@ -76,15 +74,21 @@ class All_Test extends ParselyTestCase {
 
 	/**
 	 * Test plugin URL constant is defined and populated.
+	 *
+	 * @coversNothing
 	 */
 	public function test_plugin_url_constant() {
-		self::assertTrue( defined( 'PARSELY_PLUGIN_URL' ) && is_string( PARSELY_PLUGIN_URL ) && strlen( PARSELY_PLUGIN_URL ) > 0 );
+		self::assertTrue( defined( 'PARSELY_PLUGIN_URL' ) && is_string( PARSELY_PLUGIN_URL ) && PARSELY_PLUGIN_URL !== '' );
 	}
 
 	/**
 	 * Test JavaScript registrations.
 	 *
 	 * @covers \Parsely::register_js
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::update_metadata_endpoint
 	 * @group insert-js
 	 */
 	public function test_parsely_register_js() {
@@ -126,6 +130,13 @@ class All_Test extends ParselyTestCase {
 	 * Test the tracker script enqueue.
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::register_js
+	 * @uses \Parsely::script_loader_tag
+	 * @uses \Parsely::update_metadata_endpoint
 	 * @group insert-js
 	 */
 	public function test_load_js_tracker() {
@@ -161,6 +172,11 @@ class All_Test extends ParselyTestCase {
 	 * Test the API init script enqueue.
 	 *
 	 * @covers \Parsely::load_js_api
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::register_js
+	 * @uses \Parsely::update_metadata_endpoint
 	 * @group insert-js
 	 */
 	public function test_load_js_api_no_secret() {
@@ -196,6 +212,12 @@ class All_Test extends ParselyTestCase {
 	 * Test the API init script enqueue.
 	 *
 	 * @covers \Parsely::load_js_api
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::register_js
+	 * @uses \Parsely::script_loader_tag
+	 * @uses \Parsely::update_metadata_endpoint
 	 * @group insert-js
 	 */
 	public function test_load_js_api_with_secret() {
@@ -295,11 +317,14 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Make sure users can log in.
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::parsely_is_user_logged_in
 	 * @group insert-js
 	 * @group settings
 	 */
 	public function test_user_logged_in() {
-		ParselyTestCase::set_options( array( 'track_authenticated_users' => false ) );
+		TestCase::set_options( array( 'track_authenticated_users' => false ) );
 		$new_user = $this->create_test_user( 'bill_brasky' );
 		wp_set_current_user( $new_user );
 
@@ -347,6 +372,14 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Make sure users can log in to more than one site.
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::parsely_is_user_logged_in
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::register_js
+	 * @uses \Parsely::script_loader_tag
+	 * @uses \Parsely::update_metadata_endpoint
 	 * @group insert-js
 	 * @group settings
 	 */
@@ -368,7 +401,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 			'track_authenticated_users' => false,
 			'apikey'                    => 'blog.parsely.com',
 		);
-		ParselyTestCase::set_options( $custom_options );
+		TestCase::set_options( $custom_options );
 
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
@@ -404,7 +437,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 
 		switch_to_blog( $second_blog );
-		ParselyTestCase::set_options( $custom_options );
+		TestCase::set_options( $custom_options );
 
 		self::assertEquals( get_current_blog_id(), $second_blog );
 		self::assertFalse( is_user_member_of_blog( $new_user, get_current_blog_id() ) );
@@ -440,6 +473,10 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * When it returns false, the tracking script should not be enqueued.
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
 	 */
 	public function test_load_js_tracker_filter() {
 		add_filter( 'wp_parsely_load_js_tracker', '__return_false' );
@@ -474,6 +511,12 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @deprecated deprecated since 2.5.0. This test can be removed when the filter is removed.
 	 *
 	 * @expectedDeprecated parsely_filter_insert_javascript
+	 *
+	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
 	 */
 	public function test_deprecated_insert_javascript_filter() {
 		add_filter( 'parsely_filter_insert_javascript', '__return_false' );
@@ -504,8 +547,20 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	/**
 	 * Test the wp_parsely_post_type filter
 	 *
-	 * @uses \Parsely::get_options()
-	 * @uses \Parsely::construct_parsely_metadata()
+	 * @covers \Parsely::construct_parsely_metadata
+	 * @uses \Parsely::__construct
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::get_author_name
+	 * @uses \Parsely::get_author_names
+	 * @uses \Parsely::get_bottom_level_term
+	 * @uses \Parsely::get_category_name
+	 * @uses \Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely::get_coauthor_names
+	 * @uses \Parsely::get_current_url
+	 * @uses \Parsely::get_first_image
+	 * @uses \Parsely::get_tags
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::update_metadata_endpoint
 	 */
 	public function test_filter_wp_parsely_post_type() {
 		$options = get_option( \Parsely::OPTIONS_KEY );
@@ -526,11 +581,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$metadata = self::$parsely->construct_parsely_metadata( $options, $post_obj );
 		self::assertSame( 'BlogPosting', $metadata['@type'] );
 
-		// Do not run the following assertion for PHP 5.6.
-		if ( version_compare( PHP_VERSION, '7.0.0', '<' ) ) {
-			return;
-		}
-
 		// Try to change the post type to a non-supported value - Not_Supported.
 		add_filter(
 			'wp_parsely_post_type',
@@ -539,14 +589,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 			}
 		);
 
-		/**
-		 * Ideally we use two methods expectWarning and expectWarningMessageMatches to test this error
-		 * But they're not available until PHPUnit 8.4 while here we're still running PHPUnit 7.x
-		 *
-		 * @see 7.5 https://phpunit.readthedocs.io/en/7.5/writing-tests-for-phpunit.html#testing-php-errors
-		 * @see 8.4 https://phpunit.readthedocs.io/en/8.4/writing-tests-for-phpunit.html#testing-php-errors-warnings-and-notices
-		 */
-		self::expectException( PHPUnit_Warning::class );
+		$this->expectWarning();
+		$this->expectWarningMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages' );
 		self::$parsely->construct_parsely_metadata( $options, $post_obj );
 	}
 }
