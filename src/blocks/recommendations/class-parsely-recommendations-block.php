@@ -75,7 +75,7 @@ class Parsely_Recommendations_Block {
 						'type'    => 'boolean',
 						'default' => true,
 					),
-					'saveresults' => array(
+					'saveresults'  => array(
 						'type'    => 'boolean',
 						'default' => false,
 					),
