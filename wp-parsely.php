@@ -46,6 +46,7 @@ if ( ! defined( 'PARSELY_PLUGIN_URL' ) ) {
 require PARSELY_PLUGIN_DIR . 'src/class-parsely.php';
 
 $GLOBALS['parsely'] = new Parsely();
+$GLOBALS['parsely']->run();
 
 require PARSELY_PLUGIN_DIR . 'src/class-parsely-recommended-widget.php';
 

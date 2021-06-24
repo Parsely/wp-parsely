@@ -65,7 +65,6 @@ final class OtherTest extends TestCase {
 	 * During tests, this should only return the version constant.
 	 *
 	 * @covers \Parsely::get_asset_cache_buster
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_options
 	 */
 	public function test_cache_buster() {
@@ -85,7 +84,6 @@ final class OtherTest extends TestCase {
 	 * Test JavaScript registrations.
 	 *
 	 * @covers \Parsely::register_js
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::update_metadata_endpoint
@@ -130,7 +128,6 @@ final class OtherTest extends TestCase {
 	 * Test the tracker script enqueue.
 	 *
 	 * @covers \Parsely::load_js_tracker
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
@@ -172,7 +169,6 @@ final class OtherTest extends TestCase {
 	 * Test the API init script enqueue.
 	 *
 	 * @covers \Parsely::load_js_api
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::register_js
@@ -212,7 +208,6 @@ final class OtherTest extends TestCase {
 	 * Test the API init script enqueue.
 	 *
 	 * @covers \Parsely::load_js_api
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::register_js
@@ -268,7 +263,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 *
 	 * @expectedDeprecated after_set_parsely_page
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
@@ -317,7 +311,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Make sure users can log in.
 	 *
 	 * @covers \Parsely::load_js_tracker
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::parsely_is_user_logged_in
 	 * @group insert-js
@@ -372,7 +365,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Make sure users can log in to more than one site.
 	 *
 	 * @covers \Parsely::load_js_tracker
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::parsely_is_user_logged_in
@@ -473,7 +465,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * When it returns false, the tracking script should not be enqueued.
 	 *
 	 * @covers \Parsely::load_js_tracker
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
 	 * @uses \Parsely::update_metadata_endpoint
@@ -513,7 +504,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @expectedDeprecated parsely_filter_insert_javascript
 	 *
 	 * @covers \Parsely::load_js_tracker
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
 	 * @uses \Parsely::update_metadata_endpoint
@@ -548,7 +538,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Test the wp_parsely_post_type filter
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names

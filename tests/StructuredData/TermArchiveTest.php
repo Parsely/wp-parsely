@@ -18,7 +18,6 @@ final class TermArchiveTest extends NonPostTestCase {
 	 * Check metadata for term archive.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
