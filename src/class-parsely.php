@@ -86,12 +86,11 @@ class Parsely {
 	);
 
 	/**
-	 * The constructor
+	 * Register action and filter hook callbacks.
 	 *
-	 * @category   Function
-	 * @package    Parsely
+	 * Also immediately upgrade options if needed.
 	 */
-	public function __construct() {
+	public function run() {
 		// Run upgrade options if they exist for the version currently defined.
 		$options = $this->get_options();
 		if ( empty( $options['plugin_version'] ) || self::VERSION !== $options['plugin_version'] ) {

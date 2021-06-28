@@ -18,7 +18,6 @@ final class FbiaTest extends TestCase {
 	 * Check the Facebook Instant Articles integration.
 	 *
 	 * @covers \Parsely::insert_parsely_tracking_fbia
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_options()
 	 * @group fbia
 	 */

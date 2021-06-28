@@ -19,7 +19,6 @@ final class SinglePostTest extends TestCase {
 	 * Create a single post, and test the structured data.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
@@ -59,7 +58,6 @@ final class SinglePostTest extends TestCase {
 	 * Check the category.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
@@ -95,7 +93,6 @@ final class SinglePostTest extends TestCase {
 	 * Check that the tags assigned to a post are lowercase.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
@@ -141,7 +138,6 @@ final class SinglePostTest extends TestCase {
 	 * Check the categories as tags.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
@@ -189,7 +185,6 @@ final class SinglePostTest extends TestCase {
 	 * Test custom taxonomy terms, categories, and tags in the metadata.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
@@ -249,7 +244,6 @@ final class SinglePostTest extends TestCase {
 	 * Are the top level categories what we expect?
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
@@ -307,7 +301,6 @@ final class SinglePostTest extends TestCase {
 	 * Check out the custom taxonomy as section.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
@@ -376,7 +369,6 @@ final class SinglePostTest extends TestCase {
 	 * Check the canonicals.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term

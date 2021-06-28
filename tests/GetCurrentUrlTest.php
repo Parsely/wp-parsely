@@ -90,9 +90,8 @@ final class GetCurrentUrlTest extends TestCase {
 	 *
 	 * @dataProvider data_for_test_get_current_url
 	 * @covers \Parsely::get_current_url
-	 * @uses \Parsely::__construct()
-	 * @uses \Parsely::get_options()
-	 * @uses \Parsely::update_metadata_endpoint()
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::update_metadata_endpoint
 	 *
 	 * @param bool   $force_https Force HTTPS Canonical setting value.
 	 * @param string $home        Home URL.

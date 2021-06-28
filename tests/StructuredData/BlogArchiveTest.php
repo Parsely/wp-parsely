@@ -18,7 +18,6 @@ final class BlogArchiveTest extends NonPostTestCase {
 	 * Create a single page, set as the posts page (blog archive) but not the home page, go to Page 2, and test the structured data.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term

@@ -29,7 +29,6 @@ final class HomePageTest extends NonPostTestCase {
 	 * Create a single page, set as homepage (blog archive), and test the structured data.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
@@ -76,7 +75,6 @@ final class HomePageTest extends NonPostTestCase {
 	 * Create 2 posts, set posts per page to 1, navigate to page 2 and test the structured data.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
@@ -128,7 +126,6 @@ final class HomePageTest extends NonPostTestCase {
 	 * Create a single page, set as homepage (page on front), and test the structured data.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
@@ -181,7 +178,6 @@ final class HomePageTest extends NonPostTestCase {
 	 * Check for the case when the show_on_front setting is Page, but no Page has been selected.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
 	 * @uses \Parsely::get_bottom_level_term
