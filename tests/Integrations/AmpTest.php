@@ -18,7 +18,6 @@ final class AmpTest extends TestCase {
 	 * Check the AMP integration when plugin is not active or request is not an AMP request.
 	 *
 	 * @covers \Parsely::parsely_add_amp_actions
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_options()
 	 * @uses \Parsely::is_amp_request()
 	 * @group amp
@@ -39,7 +38,6 @@ final class AmpTest extends TestCase {
 	 * Check the AMP integration when plugin is active and a request is an AMP request.
 	 *
 	 * @covers \Parsely::parsely_add_amp_actions
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_options()
 	 * @uses \Parsely::is_amp_request()
 	 * @group amp
@@ -76,7 +74,6 @@ final class AmpTest extends TestCase {
 	 *
 	 * @covers \Parsely::parsely_add_amp_actions
 	 * @covers \Parsely::parsely_add_amp_analytics
-	 * @uses \Parsely::__construct
 	 * @uses \Parsely::get_options()
 	 * @uses \Parsely::is_amp_request()
 	 * @group amp
