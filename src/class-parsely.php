@@ -165,7 +165,10 @@ class Parsely {
 
 		$parsely_url = add_query_arg(
 			array(
-				'url' => rawurlencode( get_permalink( $post ) ),
+				'url'          => rawurlencode( get_permalink( $post ) ),
+				'utm_campaign' => 'wp-admin-posts-list',
+				'utm_medium'   => 'wp-parsely',
+				'utm_source'   => 'wp-admin',
 			),
 			trailingslashit( 'https://dash.parsely.com/' . $options['apikey'] ) . 'find'
 		);
