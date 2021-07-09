@@ -9,6 +9,31 @@
  * Parsely_Recommendations_Block
  */
 class Parsely_Recommendations_Block {
+	const MINIMUM_WORDPRESS_VERSION = '5.6';
+
+	/**
+	 * Hooked into `init` in the main block entry file.
+	 * That gives ample opportunity for themes and other plugins to hook and unhook functionality.
+	 */
+	public static function init() {
+		global $wp_version;
+
+		if ( ! apply_filters( 'wp_parsely_recommendations_block_enabled', false ) ) {
+			// This block is behind a "feature flag" and it's not enabled. Bail.
+			return;
+		}
+
+		if ( version_compare( $wp_version, self::MINIMUM_WORDPRESS_VERSION ) < 0 ) {
+			// WordPress is not recent enough to run this block.
+			return;
+		}
+
+		self::register_block_and_assets();
+
+		require __DIR__ . '/class-parsely-recommendations-block-api.php';
+		add_action( 'rest_api_init', array( 'Parsely_Recommendations_Block_API', 'rest_api_init' ) );
+	}
+
 	/**
 	 * Registers all block assets so that they can be enqueued through Gutenberg in
 	 * the corresponding context.
