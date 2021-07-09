@@ -1,12 +1,12 @@
-# Parsely Recommendations Block
+# Parse.ly Recommendations Block
 
-This block is designed to showcase links to content on your site as provided by the [Parsely `/related` API endpoint](https://www.parse.ly/help/api/recommendations#get-related).
+This block is designed to showcase links to content on your site as provided by the [Parse.ly `/related` API endpoint](https://www.parse.ly/help/api/recommendations#get-related).
 
-You can use the Parsely Recommendations Block wherever you use the WordPress Block Editor ("Gutenberg") to build your site. That means that not only can leverage this feature in a single `Post`'s content (or `Page` or nearly any `Custom Post Type`), you can also leverage it in the Full Site Editor's template editor [slated to debut with WordPress version 5.8](https://make.wordpress.org/core/2021/06/16/introducing-the-template-editor-in-wordpress-5-8/) to add it to various layout elements (e.g. a Header, Footer, or Sidebar).
+You can use the Parse.ly Recommendations Block wherever you use the WordPress Block Editor ("Gutenberg") to build your site. That means that not only can leverage this feature in single `Post`'s content (or `Page` or nearly any custom post type), you can also leverage it in the Full Site Editor's template editor [slated to debut with WordPress version 5.8](https://make.wordpress.org/core/2021/06/16/introducing-the-template-editor-in-wordpress-5-8/) to add it to various layout elements (e.g. a Header, Footer, or Sidebar).
 
 ## How to Use
 
-- Inside the Block Editor, add the `Parse.ly Related` block via the [standard block controls](https://wordpress.com/support/wordpress-editor/#add-a-block).
+- Inside the Block Editor, add the `Parse.ly Related` block via the [standard block controls](https://wordpress.org/support/article/adding-a-new-block/).
 - Use the Block and Inspector Controls to configure the [block attributes](#block-attributes)
 
 ## Block Attributes
@@ -31,7 +31,7 @@ Default: `original`
 
 - `list`
 
-  Display the results in a vertically-oriented list
+  Display the results in a vertically-oriented list.
 
 Default: `grid`
 
