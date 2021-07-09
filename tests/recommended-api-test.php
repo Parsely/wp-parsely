@@ -76,8 +76,6 @@ final class Recommended_API_Test extends TestCase {
 	 * @param string $url              Expected generated URL.
 	 */
 	public function test_recommended_api_url( $api_key, $published_within, $sort, $boost, $return_limit, $url ) {
-		$recommended_widget = new Parsely_Recommended_Widget();
-
 		self::assertEquals( $url, Parsely_Recommended_Content::get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) );
 	}
 }
