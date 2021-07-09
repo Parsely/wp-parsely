@@ -1662,26 +1662,16 @@ class Parsely {
 	 * options are saved, they override the defaults.  This prevents us from having to do a lot of isset() checking
 	 * on variables.
 	 *
+	 * @since 2.6.0
 	 * @return array
 	 */
-	private function get_options() {
+	public function get_options() {
 		$options = get_option( self::OPTIONS_KEY );
 		if ( false === $options ) {
 			return $this->option_defaults;
 		}
 
 		return array_merge( $this->option_defaults, $options );
-	}
-
-	/**
-	 * Return the apikey value from the saved options (or the default value if none is set).
-	 *
-	 * @since 2.6.0
-	 * @return string $apikey The value of the 'apikey' option setting.
-	 */
-	public function get_apikey() {
-		$options = $this->get_options();
-		return $options['apikey'];
 	}
 
 	/**

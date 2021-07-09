@@ -47,7 +47,8 @@ class Parsely_Recommendations_Block_API {
 	 */
 	public static function get_items( $request ) {
 		global $parsely;
-		$apikey = $parsely->get_apikey();
+		$options = $parsely->get_options();
+		$apikey = $options['apikey'];
 		$params = $request->get_params();
 
 		$cache_key = 'block_recos-' . md5( json_encode( compact( 'apikey', 'params' ) ) );
