@@ -39,8 +39,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 *
 	 * @see https://www.parse.ly/help/api/recommendations#get-related
 	 *
-	 * @internal While this is a public method now, this should be moved to a new class.
-	 *
+	 * @deprecated 2.6.0               Use Parsely_Recommended_Widget::get_api_url instead
 	 * @since 2.5.0
 	 *
 	 * @param string $api_key          Publisher Site ID (API key).
@@ -55,23 +54,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @return string API URL.
 	 */
 	public function get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) {
-		$related_api_endpoint = 'https://api.parsely.com/v2/related';
-
-		$query_args = array(
-			'apikey' => $api_key,
-			'sort'   => $sort,
-			'limit'  => $return_limit,
-		);
-
-		if ( 'score' === $sort && 'no-boost' !== $boost ) {
-			$query_args['boost'] = $boost;
-		}
-
-		if ( 0 !== (int) $published_within ) {
-			$query_args['pub_date_start'] = $published_within . 'd';
-		}
-
-		return add_query_arg( $query_args, $related_api_endpoint );
+		_deprecated_function( 'Parsely_Recommended_Widget::get_api_url', '2.6.0', 'Parsely_Recommended_Content::get_api_url' );
+		return Parsely_Recommended_Content::get_api_url( $api_key, $published_within, $sort, $boost, $return_limit );
 	}
 
 	/**
@@ -106,7 +90,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		// Set up the variables.
 		$options = get_option( 'parsely' );
-		$api_url = $this->get_api_url(
+		$api_url = Parsely_Recommended_Content::get_api_url(
 			$options['apikey'],
 			$instance['published_within'],
 			$instance['sort'],
