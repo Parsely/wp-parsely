@@ -2,7 +2,7 @@
 
 Stable tag: 2.6.0-alpha  
 Requires at least: 4.0  
-Tested up to: 5.6  
+Tested up to: 5.7  
 Requires PHP: 5.6  
 License: GPLv2 or later  
 Tags: analytics, parse.ly, parsely, parsley  
