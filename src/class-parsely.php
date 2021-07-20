@@ -1902,10 +1902,12 @@ class Parsely {
 	/**
 	 * Sanitize content
 	 *
+	 * @since 2.6.0
+	 *
 	 * @param string $val The content you'd like sanitized.
 	 * @return string
 	 */
-	private function get_clean_parsely_page_value( $val ) {
+	public function get_clean_parsely_page_value( $val ) {
 		if ( is_string( $val ) ) {
 			$val = str_replace( "\n", '', $val );
 			$val = str_replace( "\r", '', $val );
