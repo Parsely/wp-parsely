@@ -951,7 +951,7 @@ class Parsely {
 		);
 		$current_url  = $this->get_current_url();
 
-		if ( is_front_page() && ! is_paged() || ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) ) {
+		if ( is_front_page() && ! is_paged() ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
 			$parsely_page['url']      = home_url();
 		} elseif ( is_front_page() && is_paged() ) {
@@ -1100,6 +1100,9 @@ class Parsely {
 		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && self::post_has_trackable_status( $post ) ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title( $post ) );
 			$parsely_page['url']      = $this->get_current_url( 'post' );
+		} elseif ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) {
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
+			$parsely_page['url']      = home_url();
 		}
 
 		/**
