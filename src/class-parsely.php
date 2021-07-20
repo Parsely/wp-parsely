@@ -945,19 +945,25 @@ class Parsely {
 	 * @return mixed|void
 	 */
 	public function construct_parsely_metadata( array $parsely_options, $post ) {
-		$parsely_page = array(
+		$parsely_page      = array(
 			'@context' => 'http://schema.org',
 			'@type'    => 'WebPage',
 		);
-		$current_url  = $this->get_current_url();
+		$current_url       = $this->get_current_url();
+		$queried_object_id = get_queried_object_id();
 
-		if ( is_front_page() && ! is_paged() || ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) ) {
+		if ( is_front_page() && ! is_paged() ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
 			$parsely_page['url']      = home_url();
 		} elseif ( is_front_page() && is_paged() ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
 			$parsely_page['url']      = $current_url;
-		} elseif ( is_home() ) {
+		} elseif (
+			is_home() && (
+				! ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) ||
+				$queried_object_id && (int) get_option( 'page_for_posts' ) === $queried_object_id
+			)
+		) {
 			$parsely_page['headline'] = get_the_title( get_option( 'page_for_posts', true ) );
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_author() ) {
@@ -1100,6 +1106,9 @@ class Parsely {
 		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && self::post_has_trackable_status( $post ) ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title( $post ) );
 			$parsely_page['url']      = $this->get_current_url( 'post' );
+		} elseif ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) {
+			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
+			$parsely_page['url']      = home_url();
 		}
 
 		/**
@@ -1899,10 +1908,12 @@ class Parsely {
 	/**
 	 * Sanitize content
 	 *
+	 * @since 2.6.0
+	 *
 	 * @param string $val The content you'd like sanitized.
 	 * @return string
 	 */
-	private function get_clean_parsely_page_value( $val ) {
+	public function get_clean_parsely_page_value( $val ) {
 		if ( is_string( $val ) ) {
 			$val = str_replace( "\n", '', $val );
 			$val = str_replace( "\r", '', $val );
