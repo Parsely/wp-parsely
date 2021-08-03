@@ -123,8 +123,8 @@ class Parsely {
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'init', array( $this, 'register_js' ) );
+		add_action( 'wp_footer', array( $this, 'load_js_api' ), 9 );
 		add_action( 'wp_footer', array( $this, 'load_js_tracker' ) );
-		add_action( 'wp_footer', array( $this, 'load_js_api' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
 		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
 		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
