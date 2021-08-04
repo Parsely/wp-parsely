@@ -124,7 +124,7 @@ class Parsely {
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'init', array( $this, 'register_js' ) );
 
-		// load_js_api should be called prior to load_js_tracker so the relevant scripts are enqueued in order
+		// load_js_api should be called prior to load_js_tracker so the relevant scripts are enqueued in order.
 		add_action( 'wp_footer', array( $this, 'load_js_api' ) );
 		add_action( 'wp_footer', array( $this, 'load_js_tracker' ) );
 
