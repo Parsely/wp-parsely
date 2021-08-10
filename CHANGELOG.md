@@ -5,12 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.5.1] - 2021-08-04
+## [2.5.1] - 2021-08-10
 
 ### Fixed
 
-- Load the api init script before the tracker so values are populated.
-- Encode the current URL in the uuidProfileCall URL
+- Load the API init script before the tracker so values are populated.
+- Encode the current URL in the `uuidProfileCall` URL.
 
 ## [2.5.0] - 2021-05-17
 
