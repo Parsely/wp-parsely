@@ -45,6 +45,9 @@ jobs:
       - name: Prepare environment for integration tests
         run: composer prepare-ci
 
+      - name: Update npm to latest
+        run: npm i -g npm
+
       - name: Installing dependencies
         run: npm i
 
