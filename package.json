@@ -11,6 +11,9 @@
     "build": "wp-scripts build",
     "start": "wp-scripts start",
     "test": "npm run test:unit",
+    "test:e2e": "wp-scripts test-e2e",
+    "test:e2e:help": "wp-scripts test-e2e --help",
+    "test:e2e:debug": "wp-scripts --inspect-brk test-e2e --puppeteer-devtools",
     "test:unit": "wp-scripts test-unit-js",
     "test:unit:help": "wp-scripts test-unit-js --help",
     "test:unit:watch": "wp-scripts test-unit-js --watch",
@@ -26,6 +29,7 @@
   },
   "homepage": "https://github.com/Parsely/wp-parsely#readme",
   "devDependencies": {
+    "@wordpress/e2e-test-utils": "^5.4.1",
     "@wordpress/eslint-plugin": "^9.0.6",
     "@wordpress/scripts": "^17.1.0",
     "prettier": "^2.3.2"

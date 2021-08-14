@@ -1,3 +1,4 @@
+/artifacts/
 /composer.lock
 /vendor
 /build/*.map
