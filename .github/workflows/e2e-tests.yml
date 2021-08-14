@@ -1,4 +1,4 @@
-name: End-to-end (e2e) tests
+name: End-to-end (e2e) Tests
 
 on:
   # Run on all pushes and on all pull requests.
@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['14.x']
+        node-version: ['lts/*']
         php-version: ['7.4']
 
     steps:
