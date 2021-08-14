@@ -1,0 +1,55 @@
+name: End-to-end (e2e) tests
+
+on:
+  # Run on all pushes and on all pull requests.
+  # Prevent the "push" build from running when there are only irrelevant changes.
+  push:
+    paths-ignore:
+      - '**.md'
+  pull_request:
+  # Allow manually triggering the workflow.
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: PHP ${{ matrix.php-version }} + Node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # LTS, next LTS, current
+        node-version: ['14.x', '16.x', '17.x']
+
+        # Include all major versions of PHP that WordPress officially supports up to nightly
+        php-version: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+
+      - name: Use node ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v1
+        with:
+          composer-options: '${{ matrix.composer-options }}'
+
+      - name: Start MySQL Service
+        run: sudo systemctl start mysql.service
+
+      - name: Prepare environment for integration tests
+        run: composer prepare-ci
+
+      - name: Installing dependencies
+        run: npm i
+
+      - name: Run e2e tests
+        run: npm run test:e2e
