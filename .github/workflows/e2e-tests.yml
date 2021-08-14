@@ -17,11 +17,8 @@ jobs:
 
     strategy:
       matrix:
-        # LTS, next LTS, current
-        node-version: ['14.x', '16.x', '17.x']
-
-        # Include all major versions of PHP that WordPress officially supports up to nightly
-        php-version: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
+        node-version: ['14.x']
+        php-version: ['7.4']
 
     steps:
       - name: Checkout code
