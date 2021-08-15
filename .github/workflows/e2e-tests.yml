@@ -24,27 +24,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup PHP ${{ matrix.php }}
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-version }}
+      - name: Spin up WordPress
+        run: docker compose -f tests/e2e/docker-compose.yml up
 
       - name: Use node ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-
-      - name: Install Composer dependencies
-        uses: ramsey/composer-install@v1
-        with:
-          composer-options: '${{ matrix.composer-options }}'
-
-      - name: Start MySQL Service
-        run: sudo systemctl start mysql.service
-
-      - name: Prepare environment for integration tests
-        run: composer prepare-ci
 
       - name: Update npm to latest
         run: npm i -g npm
