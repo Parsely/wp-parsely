@@ -5,16 +5,29 @@ import {
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
-describe( 'hola mundo', () => {
-	jest.setTimeout( 30000 );
-	it( 'should work', async () => {
+const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
+
+describe( 'Activation flow', () => {
+	it( 'Should progress as intended', async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
-		await visitAdminPage( '/options-general.php?page=parsely' );
+		await visitAdminPage( '/options-general.php', '?page=parsely' );
 
-		const nagDiv = await page.$( '#message.error' );
-		expect( nagDiv.innerText ).toBe(
+		await waitForWpAdmin();
+
+		const versionText = await page.$eval( '#wp-parsely_version', ( el ) => el.innerText );
+		expect( versionText ).toMatch( /^Version \d+.\d+/ );
+
+		const errorMessage = await page.$eval( '#message.error', ( el ) => el.innerText );
+		expect( errorMessage ).toBe(
 			'The Parse.ly plugin is not active. You need to provide your Parse.ly Dash Site ID before things get cooking.'
 		);
+
+		await page.focus( '#apikey' );
+		await page.keyboard.type( 'wp-parsely.plugin.e2etest.example.com' );
+		await page.keyboard.press( 'Enter' );
+
+		await waitForWpAdmin();
+		expect( await page.$( '#message.error' ) ).toBe( null );
 	} );
 } );

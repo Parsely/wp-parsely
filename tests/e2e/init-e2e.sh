@@ -9,4 +9,4 @@ done
 
 >&2 echo "mysqld is up - configuring wp install"
 
-wp core install --url="http://localhost:8889" --title="wp-parsely e2e test" --admin_user="wordpress" --admin_password="wordpress" --admin_email="nobody@example.com"
+wp core install --url="http://localhost:8889" --title="wp-parsely e2e test" --admin_user="admin" --admin_password="password" --admin_email="nobody@example.com"

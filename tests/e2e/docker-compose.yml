@@ -3,8 +3,6 @@ version: "3.9"
 services:
   db:
     image: mysql:5.7
-    volumes:
-      - db_data:/var/lib/mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: somewordpress
@@ -43,6 +41,5 @@ services:
     command: /var/www/html/wp-content/plugins/wp-parsely/tests/e2e/init-e2e.sh
 
 volumes:
-  db_data: {}
   wordpress_data: {}
 
