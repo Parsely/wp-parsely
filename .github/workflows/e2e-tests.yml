@@ -40,7 +40,7 @@ jobs:
         run: npm i
 
       - name: Wait for WP
-        run: until [[ "done" == `docker-compose run cli cat /tmp/init-e2e.txt` ]]; do >&2 echo "Waiting for the back end to provision..."; sleep 2; done;
+        run: until docker-compose -f tests/e2e/docker-compose.yml run cli wp db check &> /dev/null; do >&2 echo "Waiting for the back end to provision..."; sleep 2; done; >&2 echo "WordPress is ready!"
         shell: bash
 
       - name: Run e2e tests
