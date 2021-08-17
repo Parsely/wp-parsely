@@ -32,7 +32,7 @@ jobs:
         run: npm i -g npm
 
       - name: Installing dependencies
-        run: npm i
+        run: npm ci
 
       - name: Wait for WP
         run: until docker-compose -f tests/e2e/docker-compose.yml run cli wp db check &> /dev/null; do >&2 echo "Waiting for the back end to provision..."; sleep 2; done; >&2 echo "WordPress is ready!"
