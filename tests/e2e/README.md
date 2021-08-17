@@ -1,0 +1,52 @@
+# End-to-end (e2e) Tests for the wp-parsely Plugin
+
+This suite is meant to simulate actual user actions as they interact with this plugin. Tests are run against a "real" WordPress instance and activities are performed in a "real" browser. The idea is that we can provide confidence that changes going forward have the intended effect on the DOM and rendered content that plugin users and site visitors will see under various specific conditions.
+
+## How it Works
+
+In order for the tests to do their job, they need a back end that simulates a WordPress instance. To that end, we spin up a bare-bones containerized site and configure it to the default values for the WordPress `e2e-tests` helper.
+
+Once there's a functioning back end, we leverage the `@wordpress/scripts` utility's [built-in functionality](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#test-e2e) to launch a browser via [puppeteer](https://pptr.dev/). The tests use the using the [jest framework](https://jestjs.io/) & the [puppeteer API](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md) to drive a user flow and assert on expected outcomes.
+
+See this post for more infomation: https://developer.wordpress.org/block-editor/reference-guides/packages/packages-e2e-test-utils/
+
+## How to Run
+
+- Provision the back end
+
+  - Make sure [`docker-compose` is installed](https://docs.docker.com/compose/install/).
+  - From the top-level directory, run:
+
+    `docker-compose -f tests/e2e/docker-compose.yml up`
+
+    (Or, you can simply run `docker-compose up` from this directory)
+
+  - Once you see a line that says:
+
+    `Success: WordPress installed successfully.`
+
+    ..and a tailing HTTP server log, you may proceed.
+
+- Run the tests:
+
+  - `npm run test:e2e`
+
+- Repeat
+
+  - The tests currently expect a "pristine" WordPress environment, so if you want to run them multiple times, you'll need to recreate the WordPress environment like so:
+
+    `docker-compose down -v; docker-compose up`
+
+    In the future, this will likely be built into the test suite set up to enable easier test development.
+
+- Finish Up
+
+When you're finished testing, the back end containers and storage can be dispatched with like so:
+
+`docker-compose down -v`
+
+Please note: the **mysql database storage is not persisted** to a docker volume, so its contents will be lost even if you omit the `-v` flag.
+
+### CI / Automated Testing
+
+These tests are hooked in to a Github workflow called [End-to-end (e2e) Tests](../../.github/workflows/e2e-tests.yml). It uses the same The [docker-compose configuration](./docker-compose.yml) mentioned above to spin up a WordPress environment to test against.
