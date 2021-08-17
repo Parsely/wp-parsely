@@ -12,13 +12,12 @@ on:
 
 jobs:
   test:
-    name: PHP ${{ matrix.php-version }} + Node ${{ matrix.node-version }}
+    name: e2e against WordPress latest
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: ['lts/*']
-        php-version: ['7.4']
 
     steps:
       - name: Checkout code
