@@ -15,10 +15,6 @@ jobs:
     name: e2e against WordPress latest
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: ['lts/*']
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -26,10 +22,10 @@ jobs:
       - name: Spin up WordPress
         run: docker-compose -f tests/e2e/docker-compose.yml up &
 
-      - name: Use node ${{ matrix.node-version }}
+      - name: Use node lts/*
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: lts/*
           cache: 'npm'
 
       - name: Update npm to latest
