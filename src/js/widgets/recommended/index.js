@@ -1,12 +1,8 @@
 /**
  * External dependencies
  */
+import { get as getCookie } from 'js-cookie';
 import domReady from '@wordpress/dom-ready';
-
-/**
- * Internal dependencies
- */
-import { getCookieValue } from '../../lib/cookies';
 
 const VISITOR_COOKIE_KEY_NAME = '_parsely_visitor';
 
@@ -21,7 +17,7 @@ function widgetLoad( {
 	widgetId,
 } ) {
 	let uuid = false;
-	const cookieVal = getCookieValue( VISITOR_COOKIE_KEY_NAME );
+	const cookieVal = getCookie( VISITOR_COOKIE_KEY_NAME );
 
 	if ( cookieVal ) {
 		try {
