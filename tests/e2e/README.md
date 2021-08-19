@@ -19,7 +19,7 @@ See this post for more infomation: https://developer.wordpress.org/block-editor/
 
     `docker-compose -f tests/e2e/docker-compose.yml up`
 
-    (Or, you can simply run `docker-compose up` from this directory)
+    Tip: if you cd into this directory, you can simply run `docker-compose` & omit the `-f tests/e2e/docker-compose.yml` from these commands
 
   - Once you see a line that says:
 
@@ -35,7 +35,7 @@ See this post for more infomation: https://developer.wordpress.org/block-editor/
 
   - The tests currently expect a "pristine" WordPress environment, so if you want to run them multiple times, you'll need to recreate the WordPress environment like so:
 
-    `docker-compose down -v; docker-compose up`
+    `docker-compose -f tests/e2e/docker-compose.yml run cli /var/www/html/wp-content/plugins/wp-parsely/tests/e2e/init-e2e.sh reset`
 
     In the future, this will likely be built into the test suite set up to enable easier test development.
 
