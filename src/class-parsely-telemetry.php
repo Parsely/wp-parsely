@@ -1,5 +1,19 @@
 <?php
 
+class A8c_Tracks_Record {
+	const TRACKS_RECORD_URL = 'https://public-api.wordpress.com/rest/v1.1/tracks/record';
+
+	public static function record( array $events, array $common_props = array(), bool $blocking = true ) {
+		return wp_remote_post( self::TRACKS_RECORD_URL, array(
+			'blocking' => $blocking,
+			'body'     => array(
+				'events' => $events,
+				'commonProps' => $common_props,
+			),
+		) );
+	}
+}
+
 class Parsely_Telemetry {
 	public static function init() {
 		add_action( 'rest_api_init', array( __CLASS__, 'rest_api_init' ) );
