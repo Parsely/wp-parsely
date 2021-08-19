@@ -103,6 +103,8 @@ class Parsely {
 			update_option( self::OPTIONS_KEY, $options );
 		}
 
+		Parsely_Telemetry::init();
+
 		// admin_menu and a settings link.
 		add_action( 'admin_head-settings_page_parsely', array( $this, 'add_admin_header' ) );
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );

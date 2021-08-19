@@ -44,6 +44,7 @@ if ( ! defined( 'PARSELY_PLUGIN_URL' ) ) {
 }
 
 require PARSELY_PLUGIN_DIR . 'src/class-parsely.php';
+require PARSELY_PLUGIN_DIR . 'src/class-parsely-telemetry.php';
 
 $GLOBALS['parsely'] = new Parsely();
 $GLOBALS['parsely']->run();
