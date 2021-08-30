@@ -25,6 +25,9 @@
     "url": "https://github.com/Parsely/wp-parsely/issues"
   },
   "homepage": "https://github.com/Parsely/wp-parsely#readme",
+  "browserslist": [
+    "defaults"
+  ],
   "devDependencies": {
     "@wordpress/eslint-plugin": "^9.1.1",
     "@wordpress/scripts": "^17.1.0",
