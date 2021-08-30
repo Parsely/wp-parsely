@@ -28,7 +28,7 @@ function widgetLoad( {
 	let fullUrl = apiUrl;
 
 	if ( personalized && uuid ) {
-		fullUrl += `&uuid=${ uuid }`;
+		fullUrl += `&uuid=${ encodeURIComponent( uuid ) }`;
 	} else {
 		fullUrl += `&url=${ encodeURIComponent( permalink ) }`;
 	}
