@@ -1,10 +1,12 @@
 /**
  * External dependencies
  */
-import { get as getCookie } from 'js-cookie';
 import domReady from '@wordpress/dom-ready';
 
-const VISITOR_COOKIE_KEY_NAME = '_parsely_visitor';
+/**
+ * Internal dependencies
+ */
+import { getUuidFromVisitorCookie } from '../../lib/personalization';
 
 function widgetLoad( {
 	displayAuthor,
@@ -16,18 +18,10 @@ function widgetLoad( {
 	jQuery,
 	widgetId,
 } ) {
-	let uuid = false;
-	const cookieVal = getCookie( VISITOR_COOKIE_KEY_NAME );
-
-	if ( cookieVal ) {
-		try {
-			uuid = JSON.parse( unescape( cookieVal ) ).id;
-		} catch ( e ) {}
-	}
-
 	let fullUrl = apiUrl;
+	const uuid = personalized ? getUuidFromVisitorCookie() : undefined;
 
-	if ( personalized && uuid ) {
+	if ( uuid ) {
 		fullUrl += `&uuid=${ encodeURIComponent( uuid ) }`;
 	} else {
 		fullUrl += `&url=${ encodeURIComponent( permalink ) }`;
