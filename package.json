@@ -30,7 +30,7 @@
   ],
   "devDependencies": {
     "@wordpress/eslint-plugin": "^9.1.1",
-    "@wordpress/scripts": "^17.1.0",
+    "@wordpress/scripts": "^18.0.0",
     "prettier": "^2.3.2"
   },
   "dependencies": {
