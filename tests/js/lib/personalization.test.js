@@ -18,7 +18,7 @@ describe( 'lib/personalization', () => {
 	} );
 
 	describe( 'getVisitorCookieRaw', () => {
-		test( 'no set cookies should return undefined', () => {
+		test( 'no cookies are set, so should return undefined', () => {
 			expect( getVisitorCookieRaw() ).toBeUndefined();
 		} );
 
