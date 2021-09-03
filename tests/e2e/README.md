@@ -8,7 +8,7 @@ In order for the tests to do their job, they need a back end that simulates a Wo
 
 Once there's a functioning back end, we leverage the `@wordpress/scripts` utility's [built-in functionality](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#test-e2e) to launch a browser via [puppeteer](https://pptr.dev/).
 
-The tests use the using the [jest framework](https://jestjs.io/) to drive a user flow and assert on expected outcomes. In addition to the [puppeteer API](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md), there are a number of helpers to accomplish frequently performed tasks in the [`@wordpress/e2e-test-utils` package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-e2e-test-utils/).
+The tests use the [Jest framework](https://jestjs.io/) to drive a user flow and assert on expected outcomes. In addition to the [Puppeteer API](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md), there are a number of helpers to accomplish frequently performed tasks in the [`@wordpress/e2e-test-utils` package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-e2e-test-utils/).
 
 See this post for more infomation: https://make.wordpress.org/core/2019/06/27/introducing-the-wordpress-e2e-tests/
 
