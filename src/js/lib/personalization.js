@@ -1,12 +1,12 @@
 /**
- * Internal dependencies
+ * External dependencies
  */
-import { getCookieValue } from './cookies';
+import { get as getCookie } from 'js-cookie';
 
 const VISITOR_COOKIE_KEY_NAME = '_parsely_visitor';
 
 export function getVisitorCookieRaw() {
-	return getCookieValue( VISITOR_COOKIE_KEY_NAME );
+	return getCookie( VISITOR_COOKIE_KEY_NAME );
 }
 
 export function getVisitorCookie() {
