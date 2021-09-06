@@ -91,6 +91,8 @@ class Parsely {
 	 * Also immediately upgrade options if needed.
 	 */
 	public function run() {
+		$this->telmetry = new Parsely_A8c_Tracks();
+
 		// Run upgrade options if they exist for the version currently defined.
 		$options = $this->get_options();
 		if ( empty( $options['plugin_version'] ) || self::VERSION !== $options['plugin_version'] ) {
