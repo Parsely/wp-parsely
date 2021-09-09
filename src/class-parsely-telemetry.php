@@ -54,7 +54,7 @@ class Parsely_Telemetry {
 			if ( ! count( $updated_keys ) ) {
 				return;
 			}
-			$this->tracks->record_event( 'vip_wpparsely_updated_parsely_option', compact( 'updated_keys' ) );
+			$this->tracks->record_event( 'vip_wpparsely_option_updated', compact( 'updated_keys' ) );
 		}, 10, 2 );
 	}
 }
