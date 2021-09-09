@@ -46,7 +46,7 @@ if ( ! defined( 'PARSELY_PLUGIN_URL' ) ) {
 require PARSELY_PLUGIN_DIR . 'src/class-parsely.php';
 require PARSELY_PLUGIN_DIR . 'src/class-parsely-telemetry.php';
 require PARSELY_PLUGIN_DIR . 'src/class-parsely-a8c-tracks.php';
-require PARSELY_PLUGIN_DIR . 'src/class-parsely-tracks-event.php';
+require PARSELY_PLUGIN_DIR . 'src/class-parsely-a8c-tracks-event.php';
 
 $GLOBALS['parsely'] = new Parsely();
 $GLOBALS['parsely']->telemetry = new Parsely_Telemetry();

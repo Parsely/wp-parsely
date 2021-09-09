@@ -1,8 +1,20 @@
 <?php
+/**
+ * Parsely_A8c_Tracks_Event class
+ *
+ * @package Parsely
+ * @since 2.6.0
+ */
 
-class Parsely_Tracks_Event {
+/**
+ * Instances of this class are fit for recording to the Automattic Tracks system (unless an error occurs during instantiation).
+ */
+class Parsely_A8c_Tracks_Event {
 	/**
 	 * Tracks Event Error.
+	 * If this is set to a `WP_Error` instance, the event will not be tracked.
+	 *
+	 * @see Parsely_A8c_Tracks::record_event
 	 *
 	 * @var mixed Error.
 	 */
@@ -25,6 +37,12 @@ class Parsely_Tracks_Event {
 		}
 	}
 
+	/**
+	 * Determine the user id and type from the environment.
+	 *
+	 * @param [object] $event The "midput" event object that needs identity information.
+	 * @return [object] The "midput" event object including identity information (if present)
+	 */
 	protected static function annotate_with_id_and_type( $event ) {
 		$wp_user_id = get_current_user_id();
 		if ( ! $wp_user_id ) {
@@ -33,8 +51,10 @@ class Parsely_Tracks_Event {
 		}
 
 		if ( defined( 'VIP_GO_APP_ID' ) && VIP_GO_APP_ID ) {
+			// phpcs:ignore WordPress.NamingConventions.ValidVariableName.InterpolatedVariableNotSnakeCase
 			$event->_ui = "${VIP_GO_APP_ID}_$wp_user_id";
-			// TODO: _ut needs to be in the allowed list
+
+			// TODO: _ut needs to be in the allowed list.
 			$event->_ut = 'vip_go_app_wp_user';
 			return $event;
 		}
@@ -44,12 +64,18 @@ class Parsely_Tracks_Event {
 			return $event;
 		}
 
-		// TODO: This probably needs some improvement as well
+		// TODO: This probably needs some improvement as well.
 		$event->_ui = 'wpparsely:' . md5( "$home_option|$wp_user_id" );
 		$event->_ut = 'anon';
 		return $event;
 	}
 
+	/**
+	 * Determine environment-specific props and include them in the event.
+	 *
+	 * @param [object] $event The "midput" event object that needs environment information.
+	 * @return [object] The "midput" event object including identity environment (if present)
+	 */
 	protected static function annotate_with_env_props( $event ) {
 		if ( defined( 'VIP_GO_ENV' ) && VIP_GO_ENV ) {
 			$event->vipgo_env = VIP_GO_ENV;
@@ -64,24 +90,18 @@ class Parsely_Tracks_Event {
 	 * @return mixed        The transformed event array or WP_Error on failure.
 	 */
 	protected static function validate_and_sanitize( $event ) {
-		$event = (object) $event;
+		// The rest of this process expects an object. Cast it!
+		$_event = (object) $event;
 
 		// Required.
-		if ( ! $event->_en ) {
+		if ( ! $_event->_en ) {
 			return new WP_Error( 'invalid_event', 'A valid event must be specified via `_en`', 400 );
 		}
 
 		// delete non-routable addresses otherwise geoip will discard the record entirely.
-		if ( property_exists( $event, '_via_ip' ) && preg_match( '/^192\.168|^10\./', $event->_via_ip ) ) {
-			unset( $event->_via_ip );
+		if ( property_exists( $_event, '_via_ip' ) && preg_match( '/^192\.168|^10\./', $_event->_via_ip ) ) {
+			unset( $_event->_via_ip );
 		}
-
-		$validated = array(
-			// 'browser_type' => Jetpack_Tracks_Client::BROWSER_TYPE,
-			// '_aua'         => Jetpack_Tracks_Client::get_user_agent(),
-		);
-
-		$_event = (object) array_merge( (array) $event, $validated );
 
 		// Make sure we have an event timestamp.
 		if ( ! isset( $_event->_ts ) ) {

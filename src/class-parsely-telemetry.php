@@ -1,5 +1,16 @@
 <?php
+/**
+ * Parsely_Telemetry class
+ *
+ * @package Parsely
+ * @since 2.6.0
+ */
 
+/**
+ * This class comprises the mechanics of setting up the back end tracking instance(s).
+ * Currently, the only supported back end is Automattic Tracks.
+ * This is intended to wrap the internals such that adding / changing back ends has minimal impact on the event hooks we're interested in.
+ */
 class Parsely_Telemetry {
 	/**
 	 * This is determined by our value passed to the `WP_Widget` constructor.
@@ -8,8 +19,16 @@ class Parsely_Telemetry {
 	 */
 	const RECOMMENDED_WIDGET_BASE_ID = 'parsely_recommended_widget';
 
+	/**
+	 * Holds an instance of the class comprising the Automattic Tracks mechanics.
+	 *
+	 * @var Parsely_A8c_Tracks
+	 */
 	private $tracks;
 
+	/**
+	 * Parsely_Telemetry constructor.
+	 */
 	public function __construct() {
 		$this->tracks = new Parsely_A8c_Tracks();
 
@@ -22,13 +41,26 @@ class Parsely_Telemetry {
 		$this->add_event_tracking();
 	}
 
+	/**
+	 * Determine from the environment if tracking should be enabled for this request.
+	 *
+	 * @todo Implement this! It's only returning true right now :P .
+	 *
+	 * @return boolean
+	 */
 	protected function should_enable_tracking() {
-		// TODO: Implement
 		return true;
 	}
 
+	/**
+	 * Hook functions into WordPress actions and / filters for which we want to record events.
+	 *
+	 * @todo Move this to a dedicated file or some other organization scheme.
+	 * @todo Use named functions so they can be (conceivably) unhooked if desired.
+	 *
+	 * @return void
+	 */
 	protected function add_event_tracking() {
-		// TODO: Move this to a dedicated file or some other organization scheme.
 		add_action(
 			'load-settings_page_parsely',
 			function () {
@@ -36,7 +68,7 @@ class Parsely_Telemetry {
 					return;
 				}
 				$this->tracks->record_event( 'vip_wpparsely_settings_page_loaded' );
-			} 
+			}
 		);
 
 		add_action(
@@ -64,7 +96,7 @@ class Parsely_Telemetry {
 						$carry[] = $key;
 						return $carry;
 					},
-					array() 
+					array()
 				);
 
 				if ( ! count( $updated_keys ) ) {
@@ -73,7 +105,7 @@ class Parsely_Telemetry {
 				$this->tracks->record_event( 'vip_wpparsely_option_updated', compact( 'updated_keys' ) );
 			},
 			10,
-			2 
+			2
 		);
 
 		add_action(
@@ -85,7 +117,7 @@ class Parsely_Telemetry {
 				$this->tracks->record_event( 'vip_wpparsely_delete_widget', compact( 'id_base' ) );
 			},
 			10,
-			3 
+			3
 		);
 
 		add_filter(
@@ -109,7 +141,7 @@ class Parsely_Telemetry {
 						$carry[] = $key;
 						return $carry;
 					},
-					array() 
+					array()
 				);
 
 				if ( count( $updated_keys ) ) {
@@ -119,7 +151,7 @@ class Parsely_Telemetry {
 				return $instance;
 			},
 			10,
-			4 
+			4
 		);
 	}
 }
