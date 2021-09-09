@@ -5,10 +5,25 @@ class Parsely_Telemetry {
 
 	public function __construct() {
 		$this->tracks = new Parsely_A8c_Tracks();
+
+		if ( ! $this->should_enable_tracking() ) {
+			return;
+		}
+
 		$this->tracks->setup();
+
+		$this->add_event_tracking();
 	}
 
-	public function record_event( string $event_name, array $event_props = array(), bool $blocking = false) {
-		$this->tracks->record_event( $event_name, $event_props, $blocking );
+	protected function should_enable_tracking() {
+		// TODO: Implement
+		return true;
+	}
+
+	protected function add_event_tracking() {
+		// TODO: Move this to a dedicated file or some other organization scheme.
+		add_action( 'load-settings_page_parsely', function () {
+			$this->tracks->record_event( 'vip_wpparsely_settings_page_loaded' );
+		} );
 	}
 }

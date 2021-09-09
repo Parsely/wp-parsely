@@ -34,6 +34,7 @@ class Parsely_Tracks_Event {
 
 		if ( defined( 'VIP_GO_APP_ID' ) && VIP_GO_APP_ID ) {
 			$event->_ui = "${VIP_GO_APP_ID}_$wp_user_id";
+			// TODO: _ut needs to be in the allowed list
 			$event->_ut = 'vip_go_app_wp_user';
 			return $event;
 		}
@@ -43,8 +44,9 @@ class Parsely_Tracks_Event {
 			return $event;
 		}
 
-		$event->_ui = md5( "$home_option|$wp_user_id" );
-		$event->_ut = 'vip_home_option_wp_user';
+		// TODO: This probably needs some improvement as well
+		$event->_ui = 'wpparsely:' . md5( "$home_option|$wp_user_id" );
+		$event->_ut = 'anon';
 		return $event;
 	}
 

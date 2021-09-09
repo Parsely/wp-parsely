@@ -58,8 +58,8 @@ class Parsely_A8c_Tracks {
 	}
 
 	public static function normalize_event_name( string $event_name ) {
-		// validate
-		return self::EVENT_NAME_PREFIX . ltrim( $event_name, self::EVENT_NAME_PREFIX );
+		// Ensure all events have our prefix
+		return preg_replace( '/^(?:' . self::EVENT_NAME_PREFIX . ')?(.*)/', self::EVENT_NAME_PREFIX . '\1', $event_name );
 	}
 
 	public static function send_events_to_api( array $events, array $common_props = array(), bool $blocking = true ) {
