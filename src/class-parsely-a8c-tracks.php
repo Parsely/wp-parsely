@@ -50,7 +50,16 @@ class Parsely_A8c_Tracks {
 	 * @return Parsely_Tracks_Event The normalized event materialized as a Parsely_Tracks_Event object
 	 */
 	public static function normalize_event( string $event_name, array $event_props = array() ) {
-		$event = array_merge( $event_props, array(
+		$_event_props = array();
+		foreach ( $event_props as $key => $value ) {
+			if ( is_string( $value ) ) {
+				$_event_props[$key] = $value;
+				continue;
+			}
+			$_event_props[$key] = json_encode( $value );
+		}
+
+		$event = array_merge( $_event_props, array(
 			'_en' => self::normalize_event_name( $event_name ),
 		) );
 
