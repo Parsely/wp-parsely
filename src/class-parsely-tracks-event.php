@@ -77,8 +77,8 @@ class Parsely_Tracks_Event {
 		}
 
 		$validated = array(
-			//'browser_type' => Jetpack_Tracks_Client::BROWSER_TYPE,
-			//'_aua'         => Jetpack_Tracks_Client::get_user_agent(),
+			// 'browser_type' => Jetpack_Tracks_Client::BROWSER_TYPE,
+			// '_aua'         => Jetpack_Tracks_Client::get_user_agent(),
 		);
 
 		$_event = (object) array_merge( (array) $event, $validated );
