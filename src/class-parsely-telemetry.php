@@ -23,6 +23,9 @@ class Parsely_Telemetry {
 	protected function add_event_tracking() {
 		// TODO: Move this to a dedicated file or some other organization scheme.
 		add_action( 'load-settings_page_parsely', function () {
+			if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'GET' !== $_SERVER['REQUEST_METHOD'] ) {
+				return;
+			}
 			$this->tracks->record_event( 'vip_wpparsely_settings_page_loaded' );
 		} );
 	}
