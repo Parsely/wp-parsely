@@ -123,8 +123,21 @@ class Parsely_Telemetry {
 		add_filter(
 			'widget_update_callback',
 			function ( $instance, $new_instance, $old_instance, $widget_obj ) {
+				global $wp;
 				$id_base = $widget_obj->id_base;
 				if ( self::RECOMMENDED_WIDGET_BASE_ID !== $id_base ) {
+					return $instance;
+				}
+
+				if (
+					isset( $wp->query_vars['rest_route'] ) &&
+					'/wp/v2/widget-types/parsely_recommended_widget/encode' === $wp->query_vars['rest_route']
+				) {
+					/**
+					 * This is an "encode" call to preview the widget in the admin.
+					 * Track this event seperately.
+					 */
+					$this->tracks->record_event( 'vip_wpparsely_widget_prepublish_change', compact( 'id_base' ) );
 					return $instance;
 				}
 
