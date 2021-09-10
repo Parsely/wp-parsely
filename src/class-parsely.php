@@ -871,8 +871,9 @@ class Parsely {
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
 			include PARSELY_PLUGIN_DIR . 'views/json-ld.php';
 		} else {
+			// Assume `meta_type` is `repeated_metas`.
 			$parsely_post_type = $this->convert_jsonld_to_parsely_type( $parsely_page['@type'] );
-			if ( is_array( $parsely_page['keywords'] ) ) {
+			if ( isset( $parsely_page['keywords'] ) && is_array( $parsely_page['keywords'] ) ) {
 				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
 			}
 
