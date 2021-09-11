@@ -66,7 +66,9 @@ class Parsely_Telemetry {
 			function () {
 				if (
 					! ( isset( $_SERVER['REQUEST_METHOD'] ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) ||
-					( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] )
+					// phpcs:disable WordPress.Security.NonceVerification.Recommended
+					( isset( $_GET['settings-updated'] ) && 'true' === $_GET['settings-updated'] )
+					// phpcs:enable
 				) {
 					return;
 				}
