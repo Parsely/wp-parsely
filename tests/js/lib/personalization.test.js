@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { get as getCookie, remove as removeCookie } from 'js-cookie';
+import Cookies from 'js-cookie';
 
 /**
  * Internal dependencies
@@ -14,7 +14,7 @@ import {
 
 describe( 'lib/personalization', () => {
 	beforeEach( () => {
-		Object.keys( getCookie() ).forEach( ( cookieName ) => removeCookie( cookieName ) );
+		Object.keys( Cookies.get() ).forEach( ( cookieName ) => Cookies.remove( cookieName ) );
 	} );
 
 	describe( 'getVisitorCookieRaw', () => {
