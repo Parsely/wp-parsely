@@ -91,7 +91,9 @@ class Parsely {
 	 * Also immediately upgrade options if needed.
 	 */
 	public function run() {
-		$this->telmetry = new Parsely_A8c_Tracks();
+		if ( apply_filters( 'wp_parsely_enable_telemetry_backend', false ) ) {
+			$this->telemetry = new Parsely_Telemetry();
+		}
 
 		// Run upgrade options if they exist for the version currently defined.
 		$options = $this->get_options();
