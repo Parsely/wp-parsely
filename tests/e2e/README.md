@@ -31,7 +31,19 @@ See this post for more infomation: https://make.wordpress.org/core/2019/06/27/in
 
 - Run the tests:
 
-  - `npm run test:e2e`
+  - Once your environment is ready, you can launch the e2e tests suite by running:
+
+    `npm run test:e2e`
+
+    This will run the test suite using a headless browser.
+
+  - For debugging purpose, you might want to follow the test visually. You can do so by running the tests in an interactive mode:
+
+    `npm run test:e2e -- --puppeteer-interactive`
+
+  - You can also run a given test file separately:
+
+    `npm run test:e2e tests/e2e/specs/activation-flow.spec.js`
 
 - Repeat
 
