@@ -64,7 +64,10 @@ class Parsely_Telemetry {
 		add_action(
 			'load-settings_page_parsely',
 			function () {
-				if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'GET' !== $_SERVER['REQUEST_METHOD'] ) {
+				if (
+					! ( isset( $_SERVER['REQUEST_METHOD'] ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) ||
+					( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] )
+				) {
 					return;
 				}
 				$this->tracks->record_event( 'vip_wpparsely_settings_page_loaded' );
