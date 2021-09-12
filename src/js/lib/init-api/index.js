@@ -1,5 +1,3 @@
-export function noop() {}
-
 async function uuidProfileCall() {
 	const apikey = global.wpParsely?.apikey;
 	const uuid = global.PARSELY?.config?.parsely_site_uuid;
