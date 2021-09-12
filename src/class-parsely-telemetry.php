@@ -84,8 +84,8 @@ class Parsely_Telemetry {
 					$all_keys,
 					function( $carry, $key ) use ( $old_value, $value ) {
 						if (
-						isset( $old_value[ $key ] ) === isset( $value[ $key ] ) &&
-						json_encode( $old_value[ $key ] ) === json_encode( $value[ $key ] )
+							isset( $old_value[ $key ] ) === isset( $value[ $key ] ) &&
+							json_encode( $old_value[ $key ] ) === json_encode( $value[ $key ] )
 						) {
 							return $carry;
 						}
