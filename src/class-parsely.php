@@ -877,6 +877,16 @@ class Parsely {
 				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
 			}
 
+			$metas = array(
+				"title" => isset( $parsely_page['headline'] ) ? $parsely_page['headline'] : null,
+				"link" => isset( $parsely_page['url'] ) ? $parsely_page['url'] : null,
+				"type" => $parsely_post_type,
+				"image-url" => isset( $parsely_page['thumbnailUrl'] ) ? $parsely_page['thumbnailUrl'] : null,
+				"pub-date" => isset( $parsely_page['datePublished'] ) ? $parsely_page['datePublished'] : null,
+				"section" => isset( $parsely_page['articleSection'] ) ? $parsely_page['articleSection'] : null,
+				"tags" => isset( $parsely_page['keywords'] ) ? $parsely_page['keywords'] : null,
+			);
+
 			include PARSELY_PLUGIN_DIR . 'views/repeated-metas.php';
 		}
 
