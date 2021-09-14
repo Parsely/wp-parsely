@@ -8,9 +8,9 @@
  * @license      GPL-2.0-or-later
  */
 
-foreach ($metas as $key => $val) {
-	if ( ! empty( $val ) && is_string( $val ) ) {
-		echo '<meta name="parsely-' . $key . '" content="' . esc_attr( $val ) .'" />' . "\n";
+foreach ( $parsely_metas as $parsely_meta_key => $parsely_meta_val ) {
+	if ( ! empty( $parsely_meta_val ) && is_string( $parsely_meta_val ) ) {
+		echo '<meta name="parsely-' . esc_attr( $parsely_meta_key ) . '" content="' . esc_attr( $parsely_meta_val ) . '" />' . "\n";
 	}
 }
 
@@ -19,8 +19,8 @@ if ( isset( $parsely_page['author'] ) ) {
 		if ( empty( $parsely_author['name'] ) || ! is_string( $parsely_author['name'] ) ) {
 			continue;
 		}
-?>
+		?>
 <meta name="parsely-author" content="<?php echo esc_attr( $parsely_author['name'] ); ?>" />
-<?php
+		<?php
 	}
 }
