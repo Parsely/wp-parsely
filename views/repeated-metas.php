@@ -9,13 +9,12 @@
  */
 
 foreach ( $parsely_metas as $parsely_meta_key => $parsely_meta_val ) {
-	if ( ! empty( $parsely_meta_val ) && is_string( $parsely_meta_val ) ) {
-		printf(
-			'<meta name="%s" content="%s" />',
-			esc_attr( 'parsely-' . $parsely_meta_key ),
-			esc_attr( $parsely_meta_val )
-		) . "\n";
-	}
+	printf(
+		'<meta name="%s" content="%s" />%s',
+		esc_attr( 'parsely-' . $parsely_meta_key ),
+		esc_attr( $parsely_meta_val ),
+		PHP_EOL
+	);
 }
 
 if ( isset( $parsely_page['author'] ) ) {

@@ -891,6 +891,8 @@ class Parsely {
 				'tags'      => isset( $parsely_page['keywords'] ) ? $parsely_page['keywords'] : null,
 			);
 
+			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
+
 			include PARSELY_PLUGIN_DIR . 'views/repeated-metas.php';
 		}
 
@@ -902,6 +904,16 @@ class Parsely {
 		echo '<!-- END Parse.ly -->' . "\n\n";
 
 		return $parsely_page;
+	}
+
+	/**
+	 * Function to be used in `array_filter` to clean up repeated metas
+	 *
+	 * @param $var mixed Value to filter from the array
+	 * @return bool Returns true if the variable is not empty, and it's a string
+	 */
+	private static function filter_empty_and_not_string_from_array( $var ) {
+		return ! empty( $var ) && is_string( $var );
 	}
 
 	/**
