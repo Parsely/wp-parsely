@@ -17,13 +17,13 @@ foreach ( $parsely_metas as $parsely_meta_key => $parsely_meta_val ) {
 	);
 }
 
-if ( isset( $parsely_page['author'] ) ) {
-	foreach ( (array) $parsely_page['author'] as $parsely_author ) {
-		if ( empty( $parsely_author['name'] ) || ! is_string( $parsely_author['name'] ) ) {
-			continue;
-		}
-		?>
-<meta name="parsely-author" content="<?php echo esc_attr( $parsely_author['name'] ); ?>" />
-		<?php
+if ( isset( $parsely_page_authors ) ) {
+	foreach ( $parsely_page_authors as $parsely_author_name ) {
+		printf(
+			'<meta name="parsely-author" content="%s" />%s',
+			esc_attr( $parsely_author_name ),
+			PHP_EOL
+		);
 	}
 }
+

@@ -889,9 +889,14 @@ class Parsely {
 				'pub-date'  => isset( $parsely_page['datePublished'] ) ? $parsely_page['datePublished'] : null,
 				'section'   => isset( $parsely_page['articleSection'] ) ? $parsely_page['articleSection'] : null,
 				'tags'      => isset( $parsely_page['keywords'] ) ? $parsely_page['keywords'] : null,
+				'author'    => isset( $parsely_page['author'] ),
 			);
-
 			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
+
+			if ( isset( $parsely_page['author'] ) ) {
+				$parsely_page_authors = array_map( array( $this, 'map_extract_author_name' ), $parsely_page['author'] );
+				$parsely_page_authors = array_filter( $parsely_page_authors, array( $this, 'filter_empty_and_not_string_from_array' ) );
+			}
 
 			include PARSELY_PLUGIN_DIR . 'views/repeated-metas.php';
 		}
@@ -904,6 +909,16 @@ class Parsely {
 		echo '<!-- END Parse.ly -->' . "\n\n";
 
 		return $parsely_page;
+	}
+
+	/**
+	 * Getter function to be used with `array_filter` to fetch the `name` property
+	 *
+	 * @param mixed $var Value to filter from the array.
+	 * @return mixed Value of the name property
+	 */
+	private static function map_extract_author_name( $var ) {
+		return $var['name'];
 	}
 
 	/**
