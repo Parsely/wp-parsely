@@ -909,7 +909,7 @@ class Parsely {
 	/**
 	 * Function to be used in `array_filter` to clean up repeated metas
 	 *
-	 * @param $var mixed Value to filter from the array
+	 * @param mixed $var Value to filter from the array.
 	 * @return bool Returns true if the variable is not empty, and it's a string
 	 */
 	private static function filter_empty_and_not_string_from_array( $var ) {
