@@ -894,7 +894,7 @@ class Parsely {
 			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
 
 			if ( isset( $parsely_page['author'] ) ) {
-				$parsely_page_authors = array_map( array( $this, 'map_extract_author_name' ), $parsely_page['author'] );
+				$parsely_page_authors = wp_list_pluck( $parsely_page['author'], 'name' );
 				$parsely_page_authors = array_filter( $parsely_page_authors, array( $this, 'filter_empty_and_not_string_from_array' ) );
 			}
 
@@ -909,16 +909,6 @@ class Parsely {
 		echo '<!-- END Parse.ly -->' . "\n\n";
 
 		return $parsely_page;
-	}
-
-	/**
-	 * Getter function to be used with `array_filter` to fetch the `name` property
-	 *
-	 * @param mixed $var Value to filter from the array.
-	 * @return mixed Value of the name property
-	 */
-	private static function map_extract_author_name( $var ) {
-		return $var['name'];
 	}
 
 	/**
