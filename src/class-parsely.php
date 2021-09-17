@@ -1706,17 +1706,13 @@ class Parsely {
 
 	/**
 	 * Safely returns options for the plugin by assigning defaults contained in optionDefaults.  As soon as actual
-	 * options are saved, they override the defaults.  This prevents us from having to do a lot of isset() checking
+	 * options are saved, they override the defaults. This prevents us from having to do a lot of isset() checking
 	 * on variables.
 	 *
 	 * @return array
 	 */
 	private function get_options() {
-		$options = get_option( self::OPTIONS_KEY );
-		if ( false === $options ) {
-			return $this->option_defaults;
-		}
-
+		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
 		return array_merge( $this->option_defaults, $options );
 	}
 
