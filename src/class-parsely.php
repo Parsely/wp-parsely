@@ -117,8 +117,12 @@ class Parsely {
 
 		// phpcs:ignore WordPress.WP.CronInterval.CronSchedulesInterval
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
-		add_filter( 'post_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
-		add_filter( 'page_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
+
+		if ( apply_filters( 'wp_parsely_enable_row_action_links', false ) ) {
+			add_filter( 'post_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
+			add_filter( 'page_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
+		}
+
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
@@ -871,9 +875,27 @@ class Parsely {
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
 			include PARSELY_PLUGIN_DIR . 'views/json-ld.php';
 		} else {
+			// Assume `meta_type` is `repeated_metas`.
 			$parsely_post_type = $this->convert_jsonld_to_parsely_type( $parsely_page['@type'] );
-			if ( is_array( $parsely_page['keywords'] ) ) {
+			if ( isset( $parsely_page['keywords'] ) && is_array( $parsely_page['keywords'] ) ) {
 				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
+			}
+
+			$parsely_metas = array(
+				'title'     => isset( $parsely_page['headline'] ) ? $parsely_page['headline'] : null,
+				'link'      => isset( $parsely_page['url'] ) ? $parsely_page['url'] : null,
+				'type'      => $parsely_post_type,
+				'image-url' => isset( $parsely_page['thumbnailUrl'] ) ? $parsely_page['thumbnailUrl'] : null,
+				'pub-date'  => isset( $parsely_page['datePublished'] ) ? $parsely_page['datePublished'] : null,
+				'section'   => isset( $parsely_page['articleSection'] ) ? $parsely_page['articleSection'] : null,
+				'tags'      => isset( $parsely_page['keywords'] ) ? $parsely_page['keywords'] : null,
+				'author'    => isset( $parsely_page['author'] ),
+			);
+			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
+
+			if ( isset( $parsely_page['author'] ) ) {
+				$parsely_page_authors = wp_list_pluck( $parsely_page['author'], 'name' );
+				$parsely_page_authors = array_filter( $parsely_page_authors, array( $this, 'filter_empty_and_not_string_from_array' ) );
 			}
 
 			include PARSELY_PLUGIN_DIR . 'views/repeated-metas.php';
@@ -887,6 +909,16 @@ class Parsely {
 		echo '<!-- END Parse.ly -->' . "\n\n";
 
 		return $parsely_page;
+	}
+
+	/**
+	 * Function to be used in `array_filter` to clean up repeated metas
+	 *
+	 * @param mixed $var Value to filter from the array.
+	 * @return bool Returns true if the variable is not empty, and it's a string
+	 */
+	private static function filter_empty_and_not_string_from_array( $var ) {
+		return ! empty( $var ) && is_string( $var );
 	}
 
 	/**
@@ -1674,17 +1706,13 @@ class Parsely {
 
 	/**
 	 * Safely returns options for the plugin by assigning defaults contained in optionDefaults.  As soon as actual
-	 * options are saved, they override the defaults.  This prevents us from having to do a lot of isset() checking
+	 * options are saved, they override the defaults. This prevents us from having to do a lot of isset() checking
 	 * on variables.
 	 *
 	 * @return array
 	 */
 	private function get_options() {
-		$options = get_option( self::OPTIONS_KEY );
-		if ( false === $options ) {
-			return $this->option_defaults;
-		}
-
+		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
 		return array_merge( $this->option_defaults, $options );
 	}
 
