@@ -16,78 +16,87 @@ final class GetCurrentUrlTest extends TestCase {
 	/**
 	 * Data provider for test_get_current_url
 	 *
-	 * @return array[]
+	 * @return iterable
 	 */
 	public function data_for_test_get_current_url() {
-		return array(
-			// Start cases with 'force_https_canonicals' = true.
-			array(
-				true,
-				'http://example.com',
-				'https://example.com',
-			),
-			array(
-				true,
-				'https://example.com',
-				'https://example.com',
-			),
-			array(
-				true,
-				'http://example.com:1234',
-				'https://example.com:1234',
-			),
-			array(
-				true,
-				'https://example.com:1234',
-				'https://example.com:1234',
-			),
-			array(
-				true,
-				'http://example.com:1234/foo/bar',
-				'https://example.com:1234/foo/bar',
-			),
-			array(
-				true,
-				'https://example.com:1234/foo/bar',
-				'https://example.com:1234/foo/bar',
-			),
-			// Start cases with 'force_https_canonicals' = false.
-			array(
-				false,
-				'http://example.com',
-				'http://example.com',
-			),
-			array(
-				false,
-				'https://example.com',
-				'http://example.com',
-			),
-			array(
-				false,
-				'http://example.com:1234',
-				'http://example.com:1234',
-			),
-			array(
-				false,
-				'https://example.com:1234',
-				'http://example.com:1234',
-			),
-			array(
-				false,
-				'http://example.com:1234/foo/bar',
-				'http://example.com:1234/foo/bar',
-			),
-			array(
-				false,
-				'https://example.com:1234/foo/bar',
-				'http://example.com:1234/foo/bar',
-			),
+		yield 'Home is http with force HTTPS true' => array(
+			'force_https' => true,
+			'home'        => 'http://example.com',
+			'expected'    => 'https://example.com',
+		);
+
+		yield 'Home is https with force HTTPS true' => array(
+			'force_https' => true,
+			'home'        => 'https://example.com',
+			'expected'    => 'https://example.com',
+		);
+
+		yield 'Home is http with port with force HTTPS true' => array(
+			'force_https' => true,
+			'home'        => 'http://example.com:1234',
+			'expected'    => 'https://example.com:1234',
+		);
+
+		yield 'Home is https with port with force HTTPS true' => array(
+			'force_https' => true,
+			'home'        => 'https://example.com:1234',
+			'expected'    => 'https://example.com:1234',
+		);
+
+		yield 'Home is http with port and path with force HTTPS true' => array(
+			'force_https' => true,
+			'home'        => 'http://example.com:1234/foo/bar',
+			'expected'    => 'https://example.com:1234/foo/bar',
+		);
+
+		yield 'Home is https with port and path with force HTTPS true' => array(
+			'force_https' => true,
+			'home'        => 'https://example.com:1234/foo/bar',
+			'expected'    => 'https://example.com:1234/foo/bar',
+		);
+
+		// Start cases with 'force_https_canonicals' = false.
+		yield 'Home is http with force HTTPS false' => array(
+			'force_https' => false,
+			'home'        => 'http://example.com',
+			'expected'    => 'http://example.com',
+		);
+
+		yield 'Home is https with force HTTPS false' => array(
+			'force_https' => false,
+			'home'        => 'https://example.com',
+			'expected'    => 'http://example.com',
+		);
+
+		yield 'Home is http with port with force HTTPS false' => array(
+			'force_https' => false,
+			'home'        => 'http://example.com:1234',
+			'expected'    => 'http://example.com:1234',
+		);
+
+		yield 'Home is https with port with force HTTPS false' => array(
+			'force_https' => false,
+			'home'        => 'https://example.com:1234',
+			'expected'    => 'http://example.com:1234',
+		);
+
+		yield 'Home is http with port and path with force HTTPS false' => array(
+			'force_https' => false,
+			'home'        => 'http://example.com:1234/foo/bar',
+			'expected'    => 'http://example.com:1234/foo/bar',
+		);
+
+		yield 'Home is https with port and path with force HTTPS false' => array(
+			'force_https' => false,
+			'home'        => 'https://example.com:1234/foo/bar',
+			'expected'    => 'http://example.com:1234/foo/bar',
 		);
 	}
 
 	/**
 	 * Test the get_current_url() method.
 	 *
+	 * @testdox Given Force HTTPS is $force_https, when home is $home, then expect $expected.
 	 * @dataProvider data_for_test_get_current_url
 	 * @covers \Parsely::get_current_url
 	 * @uses \Parsely::get_options
