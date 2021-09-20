@@ -27,7 +27,7 @@ See this post for more infomation: https://make.wordpress.org/core/2019/06/27/in
 
     `Success: WordPress installed successfully.`
 
-    ..and a tailing HTTP server log, you may proceed.
+    ...and a tailing HTTP server log, you may proceed.
 
 - Run the tests:
 
