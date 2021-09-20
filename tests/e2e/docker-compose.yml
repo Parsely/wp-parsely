@@ -38,7 +38,7 @@ services:
     volumes:
       - wordpress_data:/var/www/html
       - ../..:/var/www/html/wp-content/plugins/wp-parsely
-    command: /var/www/html/wp-content/plugins/wp-parsely/tests/e2e/init-e2e.sh reset
+    command: /var/www/html/wp-content/plugins/wp-parsely/tests/e2e/init-e2e.sh
 
 volumes:
   wordpress_data: {}

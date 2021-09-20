@@ -6,12 +6,21 @@ import {
 
 const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
 
+const clearApiKey = async () => {
+	await page.focus( '#apikey' );
+	await page.evaluate( () => document.getElementById( 'apikey' ).value = '' );
+	await page.keyboard.press( 'Enter' );
+	await waitForWpAdmin();
+};
+
 describe( 'Activation flow', () => {
 	jest.setTimeout( 30000 );
 	it( 'Should progress as intended', async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
+
+		await clearApiKey();
 
 		await waitForWpAdmin();
 
