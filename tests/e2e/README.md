@@ -21,7 +21,7 @@ See this post for more infomation: https://make.wordpress.org/core/2019/06/27/in
 
     `docker-compose -f tests/e2e/docker-compose.yml up`
 
-    Tip: if you cd into this directory, you can simply run `docker-compose` & omit the `-f tests/e2e/docker-compose.yml` from these commands
+    Tip: if you `cd` into this directory, you can simply run `docker-compose` and omit the `-f tests/e2e/docker-compose.yml` from these commands
 
   - Once you see a line that says:
 
