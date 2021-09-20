@@ -6,7 +6,7 @@ This suite is meant to simulate actual user actions as they interact with this p
 
 In order for the tests to do their job, they need a back end that simulates a WordPress instance. To that end, we spin up a bare-bones containerized site and configure it to the default values for the WordPress `e2e-tests` helper.
 
-Once there's a functioning back end, we leverage the `@wordpress/scripts` utility's [built-in functionality](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#test-e2e) to launch a browser via [puppeteer](https://pptr.dev/).
+Once there's a functioning back end, we leverage the `@wordpress/scripts` utility's [built-in functionality](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/#test-e2e) to launch a browser via [Puppeteer](https://pptr.dev/).
 
 The tests use the [Jest framework](https://jestjs.io/) to drive a user flow and assert on expected outcomes. In addition to the [Puppeteer API](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md), there are a number of helpers to accomplish frequently performed tasks in the [`@wordpress/e2e-test-utils` package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-e2e-test-utils/).
 
