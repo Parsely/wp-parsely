@@ -31,6 +31,14 @@ $GLOBALS['wp_tests_options'] = array(
 
 require_once dirname( __DIR__ ) . '/vendor/yoast/wp-test-utils/src/WPIntegration/bootstrap-functions.php';
 
+// These two classes needed to satisfy code coverage checks with PHP 8.
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound,Squiz.Commenting.ClassComment.Missing
+class PHP_Token_NAME_QUALIFIED extends PHP_Token {
+}
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound,Squiz.Commenting.ClassComment.Missing,Generic.Files.OneObjectStructurePerFile.MultipleFound
+class PHP_Token_NAME_FULLY_QUALIFIED extends PHP_Token {
+}
+
 /*
  * Load WordPress, which will load the Composer autoload file, and load the MockObject autoloader after that.
  */
