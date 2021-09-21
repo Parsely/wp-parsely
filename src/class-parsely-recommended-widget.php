@@ -99,7 +99,6 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		}
 
 		wp_enqueue_style( 'wp-parsely-style' );
-		wp_enqueue_script( 'jquery' );
 
 		$title_html = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
 		echo wp_kses_post( $title_html );

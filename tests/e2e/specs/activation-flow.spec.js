@@ -1,6 +1,5 @@
 import {
 	activatePlugin,
-	createNewPost,
 	loginUser,
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
