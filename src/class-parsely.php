@@ -2148,12 +2148,6 @@ class Parsely {
 	}
 
 	/**
-	 * Why is this here?
-	 */
-	public function return_personalized_json() {
-	}
-
-	/**
 	 * Convert JSON-LD type to respective Parse.ly page type.
 	 *
 	 * If the JSON-LD type is one of the types Parse.ly supports as a "post", then "post" will be returned.
