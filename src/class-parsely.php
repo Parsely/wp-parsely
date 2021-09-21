@@ -393,8 +393,6 @@ class Parsely {
 
 		$h = __( 'If you want to specify the url for your logo, you can do so here.', 'wp-parsely' );
 
-		$option_defaults['logo'] = $this->get_logo_default();
-
 		$field_args = array(
 			'option_key' => 'logo',
 			'help_text'  => $h,
@@ -2147,12 +2145,6 @@ class Parsely {
 		$current_blog_id = get_current_blog_id();
 		$current_user_id = get_current_user_id();
 		return is_user_member_of_blog( $current_user_id, $current_blog_id );
-	}
-
-	/**
-	 * Why is this here?
-	 */
-	public function return_personalized_json() {
 	}
 
 	/**
