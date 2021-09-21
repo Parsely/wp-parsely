@@ -22,6 +22,10 @@
  * Requires WP:       4.0.0
  */
 
+use Parsely\Integrations\Amp;
+use Parsely\Integrations\Facebook_Instant_Articles;
+use Parsely\Integrations\Integrations;
+
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
@@ -72,4 +76,25 @@ add_action( 'init', 'parsely_load_textdomain' );
  */
 function parsely_load_textdomain() {
 	load_plugin_textdomain( 'wp-parsely' );
+}
+
+require __DIR__ . '/src/Integrations/class-integration.php';
+require __DIR__ . '/src/Integrations/class-integrations.php';
+require __DIR__ . '/src/Integrations/class-amp.php';
+require __DIR__ . '/src/Integrations/class-facebook-instant-articles.php';
+
+add_action( 'init', 'parsely_integrations' );
+/**
+ * Instantiate Integrations collection and register built-in integrations.
+ *
+ * @since 2.6.0
+ */
+function parsely_integrations() {
+	$parsely_integrations = new Integrations();
+	$parsely_integrations->register( 'amp', Amp::class );
+	$parsely_integrations->register( 'fbia', Facebook_Instant_Articles::class );
+	$parsely_integrations = apply_filters( 'wp_parsely_add_integration', $parsely_integrations );
+	$parsely_integrations->integrate();
+
+	return $parsely_integrations;
 }
