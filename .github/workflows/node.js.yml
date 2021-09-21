@@ -49,7 +49,7 @@ jobs:
             echo "$REPOSTATUS";
             exit 1;
           else
-            echo The repo file system is clean (build files are present and up to date).;
+            echo "The repo file system is clean (build files are present and up to date).";
           fi
 
       - name: Run tests
