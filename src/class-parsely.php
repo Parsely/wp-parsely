@@ -26,7 +26,7 @@ class Parsely {
 	const CAPABILITY  = 'manage_options';      // The capability required for the user to administer settings.
 
 	/**
-	 * Declare some class propeties
+	 * Declare some class properties
 	 *
 	 * @var array $option_defaults The defaults we need for the class.
 	 */
