@@ -121,8 +121,12 @@ class Parsely {
 
 		// phpcs:ignore WordPress.WP.CronInterval.CronSchedulesInterval
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
-		add_filter( 'post_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
-		add_filter( 'page_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
+
+		if ( apply_filters( 'wp_parsely_enable_row_action_links', false ) ) {
+			add_filter( 'post_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
+			add_filter( 'page_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
+		}
+
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
@@ -133,8 +137,6 @@ class Parsely {
 		add_action( 'wp_footer', array( $this, 'load_js_tracker' ) );
 
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
-		add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking_fbia' ) );
-		add_action( 'template_redirect', array( $this, 'parsely_add_amp_actions' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'wp_parsely_style_init' ) );
 	}
 
@@ -392,8 +394,6 @@ class Parsely {
 		);
 
 		$h = __( 'If you want to specify the url for your logo, you can do so here.', 'wp-parsely' );
-
-		$option_defaults['logo'] = $this->get_logo_default();
 
 		$field_args = array(
 			'option_key' => 'logo',
@@ -875,9 +875,27 @@ class Parsely {
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
 			include PARSELY_PLUGIN_DIR . 'views/json-ld.php';
 		} else {
+			// Assume `meta_type` is `repeated_metas`.
 			$parsely_post_type = $this->convert_jsonld_to_parsely_type( $parsely_page['@type'] );
-			if ( is_array( $parsely_page['keywords'] ) ) {
+			if ( isset( $parsely_page['keywords'] ) && is_array( $parsely_page['keywords'] ) ) {
 				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
+			}
+
+			$parsely_metas = array(
+				'title'     => isset( $parsely_page['headline'] ) ? $parsely_page['headline'] : null,
+				'link'      => isset( $parsely_page['url'] ) ? $parsely_page['url'] : null,
+				'type'      => $parsely_post_type,
+				'image-url' => isset( $parsely_page['thumbnailUrl'] ) ? $parsely_page['thumbnailUrl'] : null,
+				'pub-date'  => isset( $parsely_page['datePublished'] ) ? $parsely_page['datePublished'] : null,
+				'section'   => isset( $parsely_page['articleSection'] ) ? $parsely_page['articleSection'] : null,
+				'tags'      => isset( $parsely_page['keywords'] ) ? $parsely_page['keywords'] : null,
+				'author'    => isset( $parsely_page['author'] ),
+			);
+			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
+
+			if ( isset( $parsely_page['author'] ) ) {
+				$parsely_page_authors = wp_list_pluck( $parsely_page['author'], 'name' );
+				$parsely_page_authors = array_filter( $parsely_page_authors, array( $this, 'filter_empty_and_not_string_from_array' ) );
 			}
 
 			include PARSELY_PLUGIN_DIR . 'views/repeated-metas.php';
@@ -891,6 +909,16 @@ class Parsely {
 		echo '<!-- END Parse.ly -->' . "\n\n";
 
 		return $parsely_page;
+	}
+
+	/**
+	 * Function to be used in `array_filter` to clean up repeated metas
+	 *
+	 * @param mixed $var Value to filter from the array.
+	 * @return bool Returns true if the variable is not empty, and it's a string
+	 */
+	private static function filter_empty_and_not_string_from_array( $var ) {
+		return ! empty( $var ) && is_string( $var );
 	}
 
 	/**
@@ -1678,17 +1706,13 @@ class Parsely {
 
 	/**
 	 * Safely returns options for the plugin by assigning defaults contained in optionDefaults.  As soon as actual
-	 * options are saved, they override the defaults.  This prevents us from having to do a lot of isset() checking
+	 * options are saved, they override the defaults. This prevents us from having to do a lot of isset() checking
 	 * on variables.
 	 *
 	 * @return array
 	 */
 	private function get_options() {
-		$options = get_option( self::OPTIONS_KEY );
-		if ( false === $options ) {
-			return $this->option_defaults;
-		}
-
+		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
 		return array_merge( $this->option_defaults, $options );
 	}
 
@@ -1996,126 +2020,6 @@ class Parsely {
 	}
 
 	/**
-	 * Add Parse.ly tracking to Facebook Instant Articles.
-	 *
-	 * No returned value as Facebook passes the $registry by reference.
-	 *
-	 * @see https://github.com/Automattic/facebook-instant-articles-wp/blob/b8a0d4e44dc26578234e32d281b5560256abf5f3/class-instant-articles-post.php#L840
-	 * @see https://github.com/Automattic/facebook-instant-articles-wp/blob/b8a0d4e44dc26578234e32d281b5560256abf5f3/wizard/class-instant-articles-option.php#L143-L146
-	 *
-	 * @param array $registry The registry info for FBIA.
-	 */
-	public function insert_parsely_tracking_fbia( &$registry ) {
-		$options      = $this->get_options();
-		$display_name = 'Parsely Analytics'; // Do not translate at this time.
-		$identifier   = 'parsely-analytics-for-wordpress';
-
-		$embed_code = '<script>
-			PARSELY = {
-				autotrack: false,
-				onload: function() {
-					PARSELY.beacon.trackPageView({
-						urlref: \'http://facebook.com/instantarticles\'
-					});
-					return true;
-				}
-			}
-		</script>
-		<script data-cfasync="false" id="parsely-cfg" data-parsely-site="' . esc_attr( $options['apikey'] ) . '" src="https://cdn.parsely.com/keys/' . esc_attr( $options['apikey'] ) . '/p.js"></script>
-		<!-- END Parse.ly Include: Standard -->';
-
-		$registry[ $identifier ] = array(
-			'name'    => $display_name,
-			'payload' => $embed_code,
-		);
-	}
-
-	/**
-	 * Verify if request is an AMP request.
-	 *
-	 * @return bool True is an AMP request, false otherwise.
-	 */
-	public function is_amp_request() {
-		return function_exists( 'amp_is_request' ) && amp_is_request();
-	}
-
-	/**
-	 * Add AMP actions.
-	 */
-	public function parsely_add_amp_actions() {
-		if ( ! $this->is_amp_request() ) {
-			return '';
-		}
-
-		$options = $this->get_options();
-
-		if ( $options['disable_amp'] ) {
-			return '';
-		}
-
-		add_filter( 'amp_post_template_analytics', array( $this, 'parsely_add_amp_analytics' ) );
-		add_filter( 'amp_analytics_entries', array( $this, 'parsely_add_amp_native_analytics' ) );
-	}
-
-	/**
-	 * Add amp analytics.
-	 *
-	 * @param array $analytics The analytics object you want to add.
-	 * @return array
-	 */
-	public function parsely_add_amp_analytics( $analytics ) {
-		$options = $this->get_options();
-
-		if ( empty( $options['apikey'] ) ) {
-			return $analytics;
-		}
-
-		$analytics['parsely'] = array(
-			'type'        => 'parsely',
-			'attributes'  => array(),
-			'config_data' => array(
-				'vars' => array(
-					'apikey' => $options['apikey'],
-				),
-			),
-		);
-
-		return $analytics;
-	}
-
-	/**
-	 * Add amp native analytics.
-	 *
-	 * @param type $analytics The analytics object you want to add.
-	 * @return string|type
-	 */
-	public function parsely_add_amp_native_analytics( $analytics ) {
-		$options = $this->get_options();
-
-		if ( ! empty( $options['disable_amp'] ) && true === $options['disable_amp'] ) {
-			return '';
-		}
-
-		if ( empty( $options['apikey'] ) ) {
-			return $analytics;
-		}
-
-		$analytics['parsely'] = array(
-			'type'       => 'parsely',
-			'attributes' => array(),
-			'config'     => wp_json_encode(
-				array(
-					'vars' => array(
-						'apikey' => $options['apikey'],
-					),
-				)
-			),
-		);
-
-		return $analytics;
-	}
-
-	/**
 	 * Check to see if parsely user is logged in
 	 */
 	public function parsely_is_user_logged_in() {
@@ -2123,12 +2027,6 @@ class Parsely {
 		$current_blog_id = get_current_blog_id();
 		$current_user_id = get_current_user_id();
 		return is_user_member_of_blog( $current_user_id, $current_blog_id );
-	}
-
-	/**
-	 * Why is this here?
-	 */
-	public function return_personalized_json() {
 	}
 
 	/**
