@@ -586,20 +586,14 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	/**
 	 * Test that test_display_admin_warning action returns a warning when there is no key
 	 *
-	 * @covers \Parsely::display_admin_warning
+	 * @covers \Parsely::should_display_admin_warning
 	 */
 	public function test_display_admin_warning_without_key() {
+		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
 		$this->set_options( array( 'apikey' => '' ) );
 
-		ob_start();
-		self::$parsely->display_admin_warning();
-		$output = trim( ob_get_contents() );
-		ob_end_clean();
-
-		self::assertSame(
-			'<div id="message" class="error"><p><strong>The Parse.ly plugin is not active.</strong> You need to <a href="http://example.org/wp-admin/options-general.php?page=parsely">provide your Parse.ly Dash Site ID</a> before things get cooking.</p></div>',
-			$output
-		);
+		$response = $should_display_admin_warning->invoke( self::$parsely );
+		self::assertTrue( $response );
 	}
 
 	/**
@@ -608,16 +602,12 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @covers \Parsely::display_admin_warning
 	 */
 	public function test_display_admin_warning_network_admin() {
+		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
 		$this->set_options( array( 'apikey' => '' ) );
-
 		set_current_screen( 'dashboard-network' );
 
-		ob_start();
-		self::$parsely->display_admin_warning();
-		$output = trim( ob_get_contents() );
-		ob_end_clean();
-
-		self::assertEmpty( $output );
+		$response = $should_display_admin_warning->invoke( self::$parsely );
+		self::assertFalse( $response );
 	}
 
 	/**
@@ -626,13 +616,10 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @covers \Parsely::display_admin_warning
 	 */
 	public function test_display_admin_warning_with_key() {
+		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
 		$this->set_options( array( 'apikey' => 'somekey' ) );
 
-		ob_start();
-		self::$parsely->display_admin_warning();
-		$output = trim( ob_get_contents() );
-		ob_end_clean();
-
-		self::assertEmpty( $output );
+		$response = $should_display_admin_warning->invoke( self::$parsely );
+		self::assertFalse( $response );
 	}
 }

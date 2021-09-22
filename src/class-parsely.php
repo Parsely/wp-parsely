@@ -798,15 +798,7 @@ class Parsely {
 	 * @package    Parsely
 	 */
 	public function display_admin_warning() {
-		// To avoid confusion, not showing up the warning on the network admin -- it would
-		// only change settings for the root site, not all the network.
-		if ( is_network_admin() ) {
-			return;
-		}
-
-		$options = $this->get_options();
-
-		if ( isset( $options['apikey'] ) && ! empty( $options['apikey'] ) ) {
+		if ( ! $this->should_display_admin_warning() ) {
 			return;
 		}
 
@@ -818,6 +810,27 @@ class Parsely {
 		?>
 		<div id="message" class="error"><p><?php echo wp_kses_post( $message ); ?></p></div>
 		<?php
+	}
+
+	/**
+	 * Decide wheter the admin display warning should be displayed
+	 *
+	 * @category Function
+	 * @package Parsely
+	 *
+	 * @return bool True if the admin warning should be displayed
+	 */
+	private function should_display_admin_warning() {
+		if ( is_network_admin() ) {
+			return false;
+		}
+
+		$options = $this->get_options();
+		if ( isset( $options['apikey'] ) && ! empty( $options['apikey'] ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
