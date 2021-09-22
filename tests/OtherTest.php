@@ -599,7 +599,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	/**
 	 * Test that test_display_admin_warning action returns a warning when there is no key
 	 *
-	 * @covers \Parsely::display_admin_warning
+	 * @covers \Parsely::should_display_admin_warning
 	 */
 	public function test_display_admin_warning_network_admin() {
 		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
@@ -613,7 +613,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	/**
 	 * Test that test_display_admin_warning action doesn't return a warning when there is a key
 	 *
-	 * @covers \Parsely::display_admin_warning
+	 * @covers \Parsely::should_display_admin_warning
 	 */
 	public function test_display_admin_warning_with_key() {
 		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
