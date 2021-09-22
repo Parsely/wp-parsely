@@ -41,5 +41,16 @@ jobs:
       - name: Build application
         run: npm run build
 
+      - name: Confirm the build is up-to-date
+        run: |
+          REPOSTATUS=`git status --porcelain 2>/dev/null`;
+          if [[ -n "$REPOSTATUS" ]]; then
+            echo "Repo is not clean. Did you forget to commit changes to the /build dir?";
+            echo "$REPOSTATUS";
+            exit 1;
+          else
+            echo "The repo file system is clean (build files are present and up to date).";
+          fi
+
       - name: Run tests
         run: npm test
