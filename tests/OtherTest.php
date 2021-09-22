@@ -589,9 +589,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @covers \Parsely::display_admin_warning
 	 */
 	public function test_display_admin_warning_without_key() {
-		$options           = get_option( \Parsely::OPTIONS_KEY );
-		$options['apikey'] = '';
-		$this->set_options( $options );
+		$this->set_options( array( 'apikey' => '' ) );
 
 		ob_start();
 		self::$parsely->display_admin_warning();
@@ -610,9 +608,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @covers \Parsely::display_admin_warning
 	 */
 	public function test_display_admin_warning_network_admin() {
-		$options           = get_option( \Parsely::OPTIONS_KEY );
-		$options['apikey'] = '';
-		$this->set_options( $options );
+		$this->set_options( array( 'apikey' => '' ) );
 
 		set_current_screen( 'dashboard-network' );
 
@@ -630,9 +626,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @covers \Parsely::display_admin_warning
 	 */
 	public function test_display_admin_warning_with_key() {
-		$options           = get_option( \Parsely::OPTIONS_KEY );
-		$options['apikey'] = 'somekey';
-		$this->set_options( $options );
+		$this->set_options( array( 'apikey' => 'somekey' ) );
 
 		ob_start();
 		self::$parsely->display_admin_warning();
