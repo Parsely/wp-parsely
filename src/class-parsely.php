@@ -811,7 +811,7 @@ class Parsely {
 	}
 
 	/**
-	 * Decide wheter the admin display warning should be displayed
+	 * Decide whether the admin display warning should be displayed
 	 *
 	 * @category Function
 	 * @package Parsely
@@ -824,11 +824,7 @@ class Parsely {
 		}
 
 		$options = $this->get_options();
-		if ( isset( $options['apikey'] ) && ! empty( $options['apikey'] ) ) {
-			return false;
-		}
-
-		return true;
+		return empty( $options['apikey'] );
 	}
 
 	/**
