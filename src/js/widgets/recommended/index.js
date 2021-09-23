@@ -8,7 +8,7 @@ import domReady from '@wordpress/dom-ready';
  */
 import { getUuidFromVisitorCookie } from '../../lib/personalization';
 
-function widgetLoad( {
+function widgetLoad( outerDiv, {
 	displayAuthor,
 	displayDirection,
 	apiUrl,
@@ -26,22 +26,10 @@ function widgetLoad( {
 		fullUrl += `&url=${ encodeURIComponent( permalink ) }`;
 	}
 
-	let parentDiv = document.querySelector( `#${ widgetId }` );
-	if ( parentDiv.length === 0 ) {
-		parentDiv = document.querySelector( '.Parsely_Recommended_Widget' );
-	}
-	// make sure page is not attempting to load widget twice in the same spot
-	if ( parentDiv.querySelectorAll( 'div.parsely-recommendation-widget' ).length > 0 ) {
-		return;
-	}
-
-	const outerDiv = document.createElement( 'div' );
-	outerDiv.className = 'parsely-recommendation-widget';
-	parentDiv.appendChild( outerDiv );
-
 	if ( imgSrc !== 'none' ) {
 		outerDiv.classList.add( 'display-thumbnail' );
 	}
+
 	if ( displayDirection ) {
 		outerDiv.classList.add( 'list-' + displayDirection );
 	}
@@ -102,6 +90,17 @@ function widgetLoad( {
 }
 
 domReady( () => {
-	const { wpParselyRecommended } = global;
-	widgetLoad( { ...wpParselyRecommended } );
+	const widgets = document.querySelectorAll( '.parsely-recommended-widget' );
+
+	widgets.forEach( ( widget ) => {
+		widgetLoad( widget, {
+			displayAuthor: widget.getAttribute( 'data-parsely-recommendation-widget-display-author' ),
+			displayDirection: widget.getAttribute( 'data-parsely-recommendation-widget-display-direction' ),
+			apiUrl: widget.getAttribute( 'data-parsely-recommendation-widget-api-url' ),
+			imgSrc: widget.getAttribute( 'data-parsely-recommendation-widget-img-src' ),
+			permalink: widget.getAttribute( 'data-parsely-recommendation-widget-permalink' ),
+			personalized: widget.getAttribute( 'data-parsely-recommendation-widget-personalized' ),
+			widgetId: widget.getAttribute( 'data-parsely-recommendation-widget-id' ),
+		} );
+	} );
 } );

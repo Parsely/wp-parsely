@@ -115,26 +115,26 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		$reco_widget_script_asset = require PARSELY_PLUGIN_DIR . 'build/admin-page.asset.php';
 
+		?>
+
+		<div class="parsely-recommended-widget"
+			 data-parsely-recommendation-widget-display-author="<?php echo isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false ?>"
+			 data-parsely-recommendation-widget-display-direction="<?php echo isset( $instance['display_direction'] ) ? $instance['display_direction'] : null ?>"
+			 data-parsely-recommendation-widget-api-url="<?php echo $api_url ?>"
+			 data-parsely-recommendation-widget-img-src="<?php echo isset( $instance['img_src'] ) ? $instance['img_src'] : null ?>"
+			 data-parsely-recommendation-widget-permalink="<?php echo get_permalink() ?>"
+			 data-parsely-recommendation-widget-personalized="<?php echo isset( $instance['personalize_results'] ) ? boolval( $instance['personalize_results'] ) : false ?>"
+			 data-parsely-recommendation-widget-id="<?php echo $this->id ?>"
+		></div>
+
+		<?php
+
 		wp_register_script(
 			'wp-parsely-recommended-widget',
 			PARSELY_PLUGIN_URL . 'build/recommended-widget.js',
 			$reco_widget_script_asset['dependencies'],
 			PARSELY::get_asset_cache_buster(),
 			true
-		);
-
-		wp_localize_script(
-			'wp-parsely-recommended-widget',
-			'wpParselyRecommended',
-			array(
-				'displayAuthor'    => isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false,
-				'displayDirection' => isset( $instance['display_direction'] ) ? $instance['display_direction'] : null,
-				'apiUrl'           => $api_url,
-				'imgSrc'           => isset( $instance['img_src'] ) ? $instance['img_src'] : null,
-				'permalink'        => get_permalink(),
-				'personalized'     => isset( $instance['personalize_results'] ) ? boolval( $instance['personalize_results'] ) : false,
-				'widgetId'         => $this->id,
-			)
 		);
 
 		wp_enqueue_script( 'wp-parsely-recommended-widget' );
@@ -161,7 +161,6 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			}
 		}
 	}
-
 
 	/**
 	 * This is the form function
@@ -271,9 +270,6 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'personalize_results' ) ); ?>" value="personalize_results"<?php checked( $instance['personalize_results'], 'personalize_results' ); ?> />
 			<label for="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>"><?php esc_html_e( 'Personalize recommended results', 'wp-parsely' ); ?></label>
 		</p>
-
-
-
 		<?php
 	}
 
