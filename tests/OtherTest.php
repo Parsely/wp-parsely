@@ -582,4 +582,44 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$this->expectWarningMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages' );
 		self::$parsely->construct_parsely_metadata( $options, $post_obj );
 	}
+
+	/**
+	 * Test that test_display_admin_warning action returns a warning when there is no key
+	 *
+	 * @covers \Parsely::should_display_admin_warning
+	 */
+	public function test_display_admin_warning_without_key() {
+		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
+		$this->set_options( array( 'apikey' => '' ) );
+
+		$response = $should_display_admin_warning->invoke( self::$parsely );
+		self::assertTrue( $response );
+	}
+
+	/**
+	 * Test that test_display_admin_warning action returns a warning when there is no key
+	 *
+	 * @covers \Parsely::should_display_admin_warning
+	 */
+	public function test_display_admin_warning_network_admin() {
+		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
+		$this->set_options( array( 'apikey' => '' ) );
+		set_current_screen( 'dashboard-network' );
+
+		$response = $should_display_admin_warning->invoke( self::$parsely );
+		self::assertFalse( $response );
+	}
+
+	/**
+	 * Test that test_display_admin_warning action doesn't return a warning when there is a key
+	 *
+	 * @covers \Parsely::should_display_admin_warning
+	 */
+	public function test_display_admin_warning_with_key() {
+		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
+		$this->set_options( array( 'apikey' => 'somekey' ) );
+
+		$response = $should_display_admin_warning->invoke( self::$parsely );
+		self::assertFalse( $response );
+	}
 }
