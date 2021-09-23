@@ -26,7 +26,7 @@ class Parsely {
 	const CAPABILITY  = 'manage_options';      // The capability required for the user to administer settings.
 
 	/**
-	 * Declare some class propeties
+	 * Declare some class properties
 	 *
 	 * @var array $option_defaults The defaults we need for the class.
 	 */
@@ -107,6 +107,7 @@ class Parsely {
 		add_action( 'admin_head-settings_page_parsely', array( $this, 'add_admin_header' ) );
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
+
 		// display warning when plugin hasn't been configured.
 		add_action( 'admin_footer', array( $this, 'display_admin_warning' ) );
 
@@ -795,9 +796,7 @@ class Parsely {
 	 * @package    Parsely
 	 */
 	public function display_admin_warning() {
-		$options = $this->get_options();
-
-		if ( isset( $options['apikey'] ) && ! empty( $options['apikey'] ) ) {
+		if ( ! $this->should_display_admin_warning() ) {
 			return;
 		}
 
@@ -809,6 +808,23 @@ class Parsely {
 		?>
 		<div id="message" class="error"><p><?php echo wp_kses_post( $message ); ?></p></div>
 		<?php
+	}
+
+	/**
+	 * Decide whether the admin display warning should be displayed
+	 *
+	 * @category Function
+	 * @package Parsely
+	 *
+	 * @return bool True if the admin warning should be displayed
+	 */
+	private function should_display_admin_warning() {
+		if ( is_network_admin() ) {
+			return false;
+		}
+
+		$options = $this->get_options();
+		return empty( $options['apikey'] );
 	}
 
 	/**
