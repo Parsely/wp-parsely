@@ -118,13 +118,13 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		?>
 
 		<div class="parsely-recommended-widget"
-			 data-parsely-recommendation-widget-display-author="<?php echo isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false ?>"
-			 data-parsely-recommendation-widget-display-direction="<?php echo isset( $instance['display_direction'] ) ? $instance['display_direction'] : null ?>"
-			 data-parsely-recommendation-widget-api-url="<?php echo $api_url ?>"
-			 data-parsely-recommendation-widget-img-src="<?php echo isset( $instance['img_src'] ) ? $instance['img_src'] : null ?>"
-			 data-parsely-recommendation-widget-permalink="<?php echo get_permalink() ?>"
-			 data-parsely-recommendation-widget-personalized="<?php echo isset( $instance['personalize_results'] ) ? boolval( $instance['personalize_results'] ) : false ?>"
-			 data-parsely-recommendation-widget-id="<?php echo $this->id ?>"
+			data-parsely-recommendation-widget-display-author="<?php echo esc_attr( isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false ); ?>"
+			data-parsely-recommendation-widget-display-direction="<?php echo esc_attr( isset( $instance['display_direction'] ) ? $instance['display_direction'] : null ); ?>"
+			data-parsely-recommendation-widget-api-url="<?php echo esc_url( $api_url ); ?>"
+			data-parsely-recommendation-widget-img-src="<?php echo esc_url( isset( $instance['img_src'] ) ? $instance['img_src'] : null ); ?>"
+			data-parsely-recommendation-widget-permalink="<?php echo esc_url( get_permalink() ); ?>"
+			data-parsely-recommendation-widget-personalized="<?php echo esc_attr( isset( $instance['personalize_results'] ) ? boolval( $instance['personalize_results'] ) : false ); ?>"
+			data-parsely-recommendation-widget-id="<?php echo esc_attr( $this->id ); ?>"
 		></div>
 
 		<?php
