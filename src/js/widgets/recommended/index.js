@@ -8,11 +8,11 @@ import domReady from '@wordpress/dom-ready';
  */
 import { getUuidFromVisitorCookie } from '../../lib/personalization';
 
-function widgetLoad( {
+function widgetLoad( outerDiv, {
 	displayAuthor,
 	displayDirection,
 	apiUrl,
-	imgSrc,
+	imgDisplay,
 	permalink,
 	personalized,
 	widgetId,
@@ -26,22 +26,10 @@ function widgetLoad( {
 		fullUrl += `&url=${ encodeURIComponent( permalink ) }`;
 	}
 
-	let parentDiv = document.querySelector( `#${ widgetId }` );
-	if ( parentDiv.length === 0 ) {
-		parentDiv = document.querySelector( '.Parsely_Recommended_Widget' );
-	}
-	// make sure page is not attempting to load widget twice in the same spot
-	if ( parentDiv.querySelectorAll( 'div.parsely-recommendation-widget' ).length > 0 ) {
-		return;
-	}
-
-	const outerDiv = document.createElement( 'div' );
-	outerDiv.className = 'parsely-recommendation-widget';
-	parentDiv.appendChild( outerDiv );
-
-	if ( imgSrc !== 'none' ) {
+	if ( imgDisplay !== 'none' ) {
 		outerDiv.classList.add( 'display-thumbnail' );
 	}
+
 	if ( displayDirection ) {
 		outerDiv.classList.add( 'list-' + displayDirection );
 	}
@@ -62,9 +50,9 @@ function widgetLoad( {
 				textDiv.className = 'parsely-text-wrapper';
 
 				const thumbnailImg = document.createElement( 'img' );
-				if ( imgSrc === 'parsely_thumb' ) {
+				if ( imgDisplay === 'parsely_thumb' ) {
 					thumbnailImg.setAttribute( 'src', value.thumb_url_medium );
-				} else if ( imgSrc === 'original' ) {
+				} else if ( imgDisplay === 'original' ) {
 					thumbnailImg.setAttribute( 'src', value.image_url );
 				}
 				widgetEntry.appendChild( thumbnailImg );
@@ -102,6 +90,17 @@ function widgetLoad( {
 }
 
 domReady( () => {
-	const { wpParselyRecommended } = global;
-	widgetLoad( { ...wpParselyRecommended } );
+	const widgets = document.querySelectorAll( '.parsely-recommended-widget' );
+
+	widgets.forEach( ( widget ) => {
+		widgetLoad( widget, {
+			displayAuthor: widget.getAttribute( 'data-parsely-widget-display-author' ),
+			displayDirection: widget.getAttribute( 'data-parsely-widget-display-direction' ),
+			apiUrl: widget.getAttribute( 'data-parsely-widget-api-url' ),
+			imgDisplay: widget.getAttribute( 'data-parsely-widget-img-display' ),
+			permalink: widget.getAttribute( 'data-parsely-widget-permalink' ),
+			personalized: widget.getAttribute( 'data-parsely-widget-personalized' ),
+			widgetId: widget.getAttribute( 'data-parsely-widget-id' ),
+		} );
+	} );
 } );
