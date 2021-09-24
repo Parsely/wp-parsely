@@ -11,6 +11,10 @@
     "build": "wp-scripts build",
     "start": "wp-scripts start",
     "test": "npm run test:unit",
+    "test:e2e": "wp-scripts test-e2e",
+    "test:e2e:debug": "wp-scripts --inspect-brk test-e2e --puppeteer-devtools",
+    "test:e2e:help": "wp-scripts test-e2e --help",
+    "test:e2e:watch": "npm run test-e2e -- --watch",
     "test:unit": "wp-scripts test-unit-js",
     "test:unit:help": "wp-scripts test-unit-js --help",
     "test:unit:watch": "wp-scripts test-unit-js --watch",
@@ -25,13 +29,18 @@
     "url": "https://github.com/Parsely/wp-parsely/issues"
   },
   "homepage": "https://github.com/Parsely/wp-parsely#readme",
+  "browserslist": [
+    "defaults"
+  ],
   "devDependencies": {
-    "@wordpress/eslint-plugin": "^9.0.5",
-    "@wordpress/scripts": "^15.0.1",
-    "prettier": "^2.3.0"
+    "@wordpress/e2e-test-utils": "^5.4.1",
+    "@wordpress/eslint-plugin": "^9.1.2",
+    "@wordpress/scripts": "^18.0.1",
+    "prettier": "^2.4.1"
   },
   "dependencies": {
     "@wordpress/dom-ready": "^2.13.2",
-    "@wordpress/i18n": "^3.20.0"
+    "@wordpress/i18n": "^3.20.0",
+    "js-cookie": "^3.0.0"
   }
 }

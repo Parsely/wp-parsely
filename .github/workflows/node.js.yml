@@ -33,25 +33,24 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-
-      # See: https://docs.github.com/en/actions/guides/caching-dependencies-to-speed-up-workflows
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: "${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}"
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          cache: npm
 
       - name: Install JavaScript dependencies
         run: npm ci
 
       - name: Build application
         run: npm run build
+
+      - name: Confirm the build is up-to-date
+        run: |
+          REPOSTATUS=`git status --porcelain 2>/dev/null`;
+          if [[ -n "$REPOSTATUS" ]]; then
+            echo "Repo is not clean. Did you forget to commit changes to the /build dir?";
+            echo "$REPOSTATUS";
+            exit 1;
+          else
+            echo "The repo file system is clean (build files are present and up to date).";
+          fi
 
       - name: Run tests
         run: npm test

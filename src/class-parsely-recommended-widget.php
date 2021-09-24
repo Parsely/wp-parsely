@@ -63,7 +63,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			'limit'  => $return_limit,
 		);
 
-		if ( 'score' === $sort && $boost !== 'no-boost' ) {
+		if ( 'score' === $sort && 'no-boost' !== $boost ) {
 			$query_args['boost'] = $boost;
 		}
 
@@ -91,7 +91,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$removed_title_esc = remove_filter( 'widget_title', 'esc_html' );
 
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
-		$title = apply_filters( 'widget_title', $instance['title'] );
+		$title      = apply_filters( 'widget_title', $instance['title'] );
 		$title_html = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
 
 		if ( $removed_title_esc ) {
@@ -99,43 +99,42 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		}
 
 		wp_enqueue_style( 'wp-parsely-style' );
-		wp_enqueue_script( 'jquery' );
 
-		$title_html   = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
+		$title_html = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
 		echo wp_kses_post( $title_html );
 
 		// Set up the variables.
 		$options = get_option( 'parsely' );
 		$api_url = $this->get_api_url(
-				$options['apikey'],
-				$instance['published_within'],
-				$instance['sort'],
-				$instance['boost'],
-				$instance['return_limit']
+			$options['apikey'],
+			$instance['published_within'],
+			$instance['sort'],
+			$instance['boost'],
+			$instance['return_limit']
 		);
 
 		$reco_widget_script_asset = require PARSELY_PLUGIN_DIR . 'build/admin-page.asset.php';
 
+		?>
+
+		<div class="parsely-recommended-widget"
+			data-parsely-widget-display-author="<?php echo esc_attr( wp_json_encode( isset( $instance['display_author'] ) && $instance['display_author'] ) ); ?>"
+			data-parsely-widget-display-direction="<?php echo esc_attr( isset( $instance['display_direction'] ) ? $instance['display_direction'] : '' ); ?>"
+			data-parsely-widget-api-url="<?php echo esc_url( $api_url ); ?>"
+			data-parsely-widget-img-display="<?php echo esc_attr( isset( $instance['img_src'] ) ? $instance['img_src'] : '' ); ?>"
+			data-parsely-widget-permalink="<?php echo esc_url( get_permalink() ); ?>"
+			data-parsely-widget-personalized="<?php echo esc_attr( wp_json_encode( isset( $instance['personalize_results'] ) && $instance['personalize_results'] ) ); ?>"
+			data-parsely-widget-id="<?php echo esc_attr( $this->id ); ?>"
+		></div>
+
+		<?php
+
 		wp_register_script(
 			'wp-parsely-recommended-widget',
 			PARSELY_PLUGIN_URL . 'build/recommended-widget.js',
-			$reco_widget_script_asset[ 'dependencies' ],
+			$reco_widget_script_asset['dependencies'],
 			PARSELY::get_asset_cache_buster(),
 			true
-		);
-
-		wp_localize_script(
-			'wp-parsely-recommended-widget',
-			'wpParselyRecommended',
-			array(
-				'displayAuthor' => isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false,
-				'displayDirection' => isset( $instance['display_direction'] ) ? $instance['display_direction'] : null,
-				'apiUrl' => $api_url,
-				'imgSrc' => isset( $instance['img_src'] ) ? $instance['img_src'] : null,
-				'permalink' => get_permalink(),
-				'personalized' => isset( $instance['personalize_results'] ) ? boolval( $instance['personalize_results'] ): false,
-				'widgetId' => $this->id,
-			)
 		);
 
 		wp_enqueue_script( 'wp-parsely-recommended-widget' );
@@ -162,7 +161,6 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			}
 		}
 	}
-
 
 	/**
 	 * This is the form function
@@ -219,7 +217,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'published_within_label' ) ); ?>"><?php esc_html_e( 'Published within', 'wp-parsely' ); ?></label>
 			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'published_within' ) ); ?>" value="<?php echo esc_attr( (string) $instance['published_within'] ); ?>" min="0" max="30"
-			       class="tiny-text" aria-labelledby="<?php echo esc_attr( $this->get_field_id( 'published_within_label' ) ); ?> <?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?> <?php echo esc_attr( $this->get_field_id( 'published_within_unit' ) ); ?>" />
+				class="tiny-text" aria-labelledby="<?php echo esc_attr( $this->get_field_id( 'published_within_label' ) ); ?> <?php echo esc_attr( $this->get_field_id( 'published_within' ) ); ?> <?php echo esc_attr( $this->get_field_id( 'published_within_unit' ) ); ?>" />
 			<span id="<?php echo esc_attr( $this->get_field_id( 'published_within_unit' ) ); ?>"> <?php esc_html_e( 'days (0 for no limit).', 'wp-parsely' ); ?></span>
 		</p>
 		<p>
@@ -272,9 +270,6 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			<input type="checkbox" id="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'personalize_results' ) ); ?>" value="personalize_results"<?php checked( $instance['personalize_results'], 'personalize_results' ); ?> />
 			<label for="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>"><?php esc_html_e( 'Personalize recommended results', 'wp-parsely' ); ?></label>
 		</p>
-
-
-
 		<?php
 	}
 
@@ -301,6 +296,13 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		return $instance;
 	}
 
+	/**
+	 * Return the list of boost parameters, values and labels.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @return array Boost parameters values and labels.
+	 */
 	private function get_boost_params() {
 		return array(
 			'no-boost'              => __( 'No boost', 'wp-parsely' ),
@@ -328,6 +330,13 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		);
 	}
 
+	/**
+	 * Check if both the API key and API secret settings are populated with non-empty values.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @return bool True if apikey and api_secret settings are not empty strings. False otherwise.
+	 */
 	private function api_key_and_secret_are_populated() {
 		$options = get_option( 'parsely' );
 
@@ -337,12 +346,12 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		}
 
 		// Parse.ly Site ID settings field is not populated.
-		if ( ! array_key_exists( 'apikey', $options ) || $options['apikey'] === '' ) {
+		if ( ! array_key_exists( 'apikey', $options ) || '' === $options['apikey'] ) {
 			return false;
 		}
 
 		// Parse.ly API Secret settings field is not populated.
-		if ( ! array_key_exists( 'api_secret', $options ) || $options['api_secret'] === '' ) {
+		if ( ! array_key_exists( 'api_secret', $options ) || '' === $options['api_secret'] ) {
 			return false;
 		}
 

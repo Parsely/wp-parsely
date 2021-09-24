@@ -6,96 +6,101 @@ import domReady from '@wordpress/dom-ready';
 /**
  * Internal dependencies
  */
-import { getCookieValue } from '../../lib/cookies';
+import { getUuidFromVisitorCookie } from '../../lib/personalization';
 
-const VISITOR_COOKIE_KEY_NAME = '_parsely_visitor';
-
-function widgetLoad( {
+function widgetLoad( outerDiv, {
 	displayAuthor,
 	displayDirection,
 	apiUrl,
-	imgSrc,
+	imgDisplay,
 	permalink,
 	personalized,
-	jQuery,
 	widgetId,
 } ) {
-	let uuid = false;
-	const cookieVal = getCookieValue( VISITOR_COOKIE_KEY_NAME );
-
-	if ( cookieVal ) {
-		try {
-			uuid = JSON.parse( unescape( cookieVal ) ).id;
-		} catch ( e ) {}
-	}
-
 	let fullUrl = apiUrl;
+	const uuid = personalized ? getUuidFromVisitorCookie() : undefined;
 
-	if ( personalized && uuid ) {
-		fullUrl += `&uuid=${ uuid }`;
+	if ( uuid ) {
+		fullUrl += `&uuid=${ encodeURIComponent( uuid ) }`;
 	} else {
 		fullUrl += `&url=${ encodeURIComponent( permalink ) }`;
 	}
-	let parentDiv = jQuery.find( `#${ widgetId }` );
-	if ( parentDiv.length === 0 ) {
-		parentDiv = jQuery.find( '.Parsely_Recommended_Widget' );
-	}
-	// make sure page is not attempting to load widget twice in the same spot
-	if ( jQuery( parentDiv ).find( 'div.parsely-recommendation-widget' ).length > 0 ) {
-		return;
+
+	if ( imgDisplay !== 'none' ) {
+		outerDiv.classList.add( 'display-thumbnail' );
 	}
 
-	const outerDiv = jQuery( '<div>' ).addClass( 'parsely-recommendation-widget' ).appendTo( parentDiv );
-	if ( imgSrc !== 'none' ) {
-		outerDiv.addClass( 'display-thumbnail' );
-	}
 	if ( displayDirection ) {
-		outerDiv.addClass( 'list-' + displayDirection );
+		outerDiv.classList.add( 'list-' + displayDirection );
 	}
 
-	const outerList = jQuery( '<ul>' ).addClass( 'parsely-recommended-widget' ).appendTo( outerDiv );
-	jQuery.getJSON( fullUrl, function( data ) {
-		jQuery.each( data.data, function( key, value ) {
-			const widgetEntry = jQuery( '<li>' )
-				.addClass( 'parsely-recommended-widget-entry' )
-				.attr( 'id', 'parsely-recommended-widget-item' + key );
+	const outerList = document.createElement( 'ul' );
+	outerList.className = 'parsely-recommended-widget';
+	outerDiv.appendChild( outerList );
 
-			const textDiv = jQuery( '<div>' ).addClass( 'parsely-text-wrapper' );
+	fetch( fullUrl )
+		.then( ( response ) => response.json() )
+		.then( ( data ) => {
+			for ( const [ key, value ] of Object.entries( data.data ) ) {
+				const widgetEntry = document.createElement( 'li' );
+				widgetEntry.className = 'parsely-recommended-widget-entry';
+				widgetEntry.setAttribute( 'id', 'parsely-recommended-widget-item' + key );
 
-			if ( imgSrc === 'parsely_thumb' ) {
-				jQuery( '<img>' ).attr( 'src', value.thumb_url_medium ).appendTo( widgetEntry );
-			} else if ( imgSrc === 'original' ) {
-				jQuery( '<img>' ).attr( 'src', value.image_url ).appendTo( widgetEntry );
+				const textDiv = document.createElement( 'div' );
+				textDiv.className = 'parsely-text-wrapper';
+
+				const thumbnailImg = document.createElement( 'img' );
+				if ( imgDisplay === 'parsely_thumb' ) {
+					thumbnailImg.setAttribute( 'src', value.thumb_url_medium );
+				} else if ( imgDisplay === 'original' ) {
+					thumbnailImg.setAttribute( 'src', value.image_url );
+				}
+				widgetEntry.appendChild( thumbnailImg );
+
+				const itmId = `?itm_campaign=${ widgetId }`;
+				const itmMedium = '&itmMedium=site_widget';
+				const itmSource = '&itmSource=parsely_recommended_widget';
+				const itmContent = '&itm_content=widget_item-' + key;
+				const itmLink = value.url + itmId + itmMedium + itmSource + itmContent;
+
+				const postTitle = document.createElement( 'div' );
+				postTitle.className = 'parsely-recommended-widget-title';
+
+				const postLink = document.createElement( 'a' );
+				postLink.setAttribute( 'href', itmLink );
+				postLink.textContent = value.title;
+
+				postTitle.appendChild( postLink );
+				textDiv.appendChild( postTitle );
+
+				if ( displayAuthor ) {
+					const authorLink = document.createElement( 'div' );
+					authorLink.className = 'parsely-recommended-widget-author';
+					authorLink.textContent = value.author;
+
+					textDiv.appendChild( authorLink );
+				}
+
+				widgetEntry.appendChild( textDiv );
+				outerList.appendChild( widgetEntry );
 			}
 
-			const itmId = `?itm_campaign=${ widgetId }`;
-			const itmMedium = '&itmMedium=site_widget';
-			const itmSource = '&itmSource=parsely_recommended_widget';
-			const itmContent = '&itm_content=widget_item-' + key;
-			const itmLink = value.url + itmId + itmMedium + itmSource + itmContent;
-
-			const postTitle = jQuery( '<div>' ).attr( 'class', 'parsely-recommended-widget-title' );
-			const postLink = jQuery( '<a>' ).attr( 'href', itmLink ).text( value.title );
-			postTitle.append( postLink );
-			textDiv.append( postTitle );
-
-			if ( displayAuthor ) {
-				const authorLink = jQuery( '<div>' )
-					.attr( 'class', 'parsely-recommended-widget-author' )
-					.text( value.author );
-				textDiv.append( authorLink );
-			}
-
-			widgetEntry.append( textDiv );
-
-			// set up the rest of entry
-			outerList.append( widgetEntry );
+			outerDiv.appendChild( outerList );
 		} );
-		outerDiv.append( outerList );
-	} );
 }
 
 domReady( () => {
-	const { jQuery, wpParselyRecommended } = global;
-	widgetLoad( { ...wpParselyRecommended, jQuery } );
+	const widgets = document.querySelectorAll( '.parsely-recommended-widget' );
+
+	widgets.forEach( ( widget ) => {
+		widgetLoad( widget, {
+			displayAuthor: widget.getAttribute( 'data-parsely-widget-display-author' ),
+			displayDirection: widget.getAttribute( 'data-parsely-widget-display-direction' ),
+			apiUrl: widget.getAttribute( 'data-parsely-widget-api-url' ),
+			imgDisplay: widget.getAttribute( 'data-parsely-widget-img-display' ),
+			permalink: widget.getAttribute( 'data-parsely-widget-permalink' ),
+			personalized: widget.getAttribute( 'data-parsely-widget-personalized' ),
+			widgetId: widget.getAttribute( 'data-parsely-widget-id' ),
+		} );
+	} );
 } );
