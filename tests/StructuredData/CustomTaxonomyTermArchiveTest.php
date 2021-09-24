@@ -35,7 +35,7 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 	 */
 	public function test_custom_taxonomy_term_archive() {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
-		// See https://github.com/Parsely/wp-parsely/issues/151
+		// See https://github.com/Parsely/wp-parsely/issues/151.
 		$this->set_permalink_structure( '/%postname%/' );
 
 		// Setup Parsley object.
@@ -60,6 +60,7 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		$term_link = get_term_link( $term );
 
 		// Flush rewrite rules after creating new post type with archive.
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.flush_rewrite_rules_flush_rewrite_rules
 		flush_rewrite_rules();
 
 		// Go to the term archive page.

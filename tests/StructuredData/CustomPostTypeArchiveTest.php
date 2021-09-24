@@ -35,7 +35,7 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 	 */
 	public function test_archive_custom_post_type() {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
-		// See https://github.com/Parsely/wp-parsely/issues/151
+		// See https://github.com/Parsely/wp-parsely/issues/151.
 		$this->set_permalink_structure( '/%postname%/' );
 
 		// Setup Parsley object.
@@ -60,6 +60,7 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 		);
 
 		// Flush rewrite rules after creating new post type with archive.
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.flush_rewrite_rules_flush_rewrite_rules
 		flush_rewrite_rules();
 
 		// Go to the custom post type archive page.

@@ -1019,7 +1019,7 @@ class Parsely {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_category() || is_post_type_archive() || is_tax() ) {
-			$category = get_queried_object();
+			$category                 = get_queried_object();
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( $category->name );
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_date() ) {
