@@ -22,74 +22,74 @@ final class GetCurrentUrlTest extends TestCase {
 		yield 'Home is http with force HTTPS true' => array(
 			'force_https' => true,
 			'home'        => 'http://example.com',
-			'expected'    => 'https://example.com',
+			'expected'    => 'https://example.com/',
 		);
 
 		yield 'Home is https with force HTTPS true' => array(
 			'force_https' => true,
 			'home'        => 'https://example.com',
-			'expected'    => 'https://example.com',
+			'expected'    => 'https://example.com/',
 		);
 
 		yield 'Home is http with port with force HTTPS true' => array(
 			'force_https' => true,
 			'home'        => 'http://example.com:1234',
-			'expected'    => 'https://example.com:1234',
+			'expected'    => 'https://example.com:1234/',
 		);
 
 		yield 'Home is https with port with force HTTPS true' => array(
 			'force_https' => true,
 			'home'        => 'https://example.com:1234',
-			'expected'    => 'https://example.com:1234',
+			'expected'    => 'https://example.com:1234/',
 		);
 
 		yield 'Home is http with port and path with force HTTPS true' => array(
 			'force_https' => true,
 			'home'        => 'http://example.com:1234/foo/bar',
-			'expected'    => 'https://example.com:1234/foo/bar',
+			'expected'    => 'https://example.com:1234/foo/bar/',
 		);
 
 		yield 'Home is https with port and path with force HTTPS true' => array(
 			'force_https' => true,
 			'home'        => 'https://example.com:1234/foo/bar',
-			'expected'    => 'https://example.com:1234/foo/bar',
+			'expected'    => 'https://example.com:1234/foo/bar/',
 		);
 
 		// Start cases with 'force_https_canonicals' = false.
 		yield 'Home is http with force HTTPS false' => array(
 			'force_https' => false,
 			'home'        => 'http://example.com',
-			'expected'    => 'http://example.com',
+			'expected'    => 'http://example.com/',
 		);
 
 		yield 'Home is https with force HTTPS false' => array(
 			'force_https' => false,
 			'home'        => 'https://example.com',
-			'expected'    => 'http://example.com',
+			'expected'    => 'http://example.com/',
 		);
 
 		yield 'Home is http with port with force HTTPS false' => array(
 			'force_https' => false,
 			'home'        => 'http://example.com:1234',
-			'expected'    => 'http://example.com:1234',
+			'expected'    => 'http://example.com:1234/',
 		);
 
 		yield 'Home is https with port with force HTTPS false' => array(
 			'force_https' => false,
 			'home'        => 'https://example.com:1234',
-			'expected'    => 'http://example.com:1234',
+			'expected'    => 'http://example.com:1234/',
 		);
 
 		yield 'Home is http with port and path with force HTTPS false' => array(
 			'force_https' => false,
 			'home'        => 'http://example.com:1234/foo/bar',
-			'expected'    => 'http://example.com:1234/foo/bar',
+			'expected'    => 'http://example.com:1234/foo/bar/',
 		);
 
 		yield 'Home is https with port and path with force HTTPS false' => array(
 			'force_https' => false,
 			'home'        => 'https://example.com:1234/foo/bar',
-			'expected'    => 'http://example.com:1234/foo/bar',
+			'expected'    => 'http://example.com:1234/foo/bar/',
 		);
 	}
 
@@ -117,7 +117,7 @@ final class GetCurrentUrlTest extends TestCase {
 		// Test homepage.
 		$this->go_to( '/' );
 		$res = $parsely->get_current_url();
-		self::assertStringStartsWith( $expected, $res );
+		self::assertEquals( $expected, $res );
 
 		// Test a specific post.
 		$post_array = $this->create_test_post_array();
