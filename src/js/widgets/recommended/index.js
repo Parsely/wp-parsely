@@ -12,7 +12,7 @@ function widgetLoad( outerDiv, {
 	displayAuthor,
 	displayDirection,
 	apiUrl,
-	imgSrc,
+	imgDisplay,
 	permalink,
 	personalized,
 	widgetId,
@@ -26,7 +26,7 @@ function widgetLoad( outerDiv, {
 		fullUrl += `&url=${ encodeURIComponent( permalink ) }`;
 	}
 
-	if ( imgSrc !== 'none' ) {
+	if ( imgDisplay !== 'none' ) {
 		outerDiv.classList.add( 'display-thumbnail' );
 	}
 
@@ -50,9 +50,9 @@ function widgetLoad( outerDiv, {
 				textDiv.className = 'parsely-text-wrapper';
 
 				const thumbnailImg = document.createElement( 'img' );
-				if ( imgSrc === 'parsely_thumb' ) {
+				if ( imgDisplay === 'parsely_thumb' ) {
 					thumbnailImg.setAttribute( 'src', value.thumb_url_medium );
-				} else if ( imgSrc === 'original' ) {
+				} else if ( imgDisplay === 'original' ) {
 					thumbnailImg.setAttribute( 'src', value.image_url );
 				}
 				widgetEntry.appendChild( thumbnailImg );
@@ -94,13 +94,13 @@ domReady( () => {
 
 	widgets.forEach( ( widget ) => {
 		widgetLoad( widget, {
-			displayAuthor: widget.getAttribute( 'data-parsely-recommendation-widget-display-author' ),
-			displayDirection: widget.getAttribute( 'data-parsely-recommendation-widget-display-direction' ),
-			apiUrl: widget.getAttribute( 'data-parsely-recommendation-widget-api-url' ),
-			imgSrc: widget.getAttribute( 'data-parsely-recommendation-widget-img-src' ),
-			permalink: widget.getAttribute( 'data-parsely-recommendation-widget-permalink' ),
-			personalized: widget.getAttribute( 'data-parsely-recommendation-widget-personalized' ),
-			widgetId: widget.getAttribute( 'data-parsely-recommendation-widget-id' ),
+			displayAuthor: widget.getAttribute( 'data-parsely-widget-display-author' ),
+			displayDirection: widget.getAttribute( 'data-parsely-widget-display-direction' ),
+			apiUrl: widget.getAttribute( 'data-parsely-widget-api-url' ),
+			imgDisplay: widget.getAttribute( 'data-parsely-widget-img-display' ),
+			permalink: widget.getAttribute( 'data-parsely-widget-permalink' ),
+			personalized: widget.getAttribute( 'data-parsely-widget-personalized' ),
+			widgetId: widget.getAttribute( 'data-parsely-widget-id' ),
 		} );
 	} );
 } );
