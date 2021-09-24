@@ -118,17 +118,65 @@ final class GetCurrentUrlTest extends TestCase {
 		$this->go_to( '/' );
 		$res = $parsely->get_current_url();
 		self::assertEquals( $expected, $res );
+	}
+
+	/**
+	 * Test the get_current_url() method with a specific post (query parameter).
+	 *
+	 * @testdox Given Force HTTPS is $force_https, when home is $home, then expect $expected.
+	 * @dataProvider data_for_test_get_current_url
+	 * @covers \Parsely::get_current_url
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::update_metadata_endpoint
+	 *
+	 * @param bool   $force_https Force HTTPS Canonical setting value.
+	 * @param string $home        Home URL.
+	 * @param string $expected    Expected current URL.
+	 */
+	public function test_get_current_url_specific_post( $force_https, $home, $expected ) {
+		$parsely                           = new Parsely();
+		$options                           = get_option( Parsely::OPTIONS_KEY );
+		$options['force_https_canonicals'] = $force_https;
+		update_option( Parsely::OPTIONS_KEY, $options );
+
+		update_option( 'home', $home );
 
 		// Test a specific post.
 		$post_array = $this->create_test_post_array();
 		$post_id    = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post_id );
 		$res = $parsely->get_current_url( 'post', $post_id );
-		self::assertStringStartsWith( $expected, $res );
+
+		$constructed_expected = $expected . '?p=' . $post_id;
+		self::assertEquals( $constructed_expected, $res );
+	}
+
+	/**
+	 * Test the get_current_url() method with a random URL.
+	 *
+	 * @testdox Given Force HTTPS is $force_https, when home is $home, then expect $expected.
+	 * @dataProvider data_for_test_get_current_url
+	 * @covers \Parsely::get_current_url
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::update_metadata_endpoint
+	 *
+	 * @param bool   $force_https Force HTTPS Canonical setting value.
+	 * @param string $home        Home URL.
+	 * @param string $expected    Expected current URL.
+	 */
+	public function test_get_current_url_random( $force_https, $home, $expected ) {
+		$parsely                           = new Parsely();
+		$options                           = get_option( Parsely::OPTIONS_KEY );
+		$options['force_https_canonicals'] = $force_https;
+		update_option( Parsely::OPTIONS_KEY, $options );
+
+		update_option( 'home', $home );
 
 		// Test a random URL.
 		$this->go_to( '/random-url' );
 		$res = $parsely->get_current_url();
-		self::assertStringStartsWith( $expected, $res );
+
+		$constructed_expected = $expected . 'random-url';
+		self::assertEquals( $constructed_expected, $res );
 	}
 }
