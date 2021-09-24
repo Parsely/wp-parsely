@@ -118,12 +118,12 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		?>
 
 		<div class="parsely-recommended-widget"
-			data-parsely-widget-display-author="<?php echo esc_attr( isset( $instance['display_author'] ) ? wp_json_encode( boolval( $instance['display_author'] ) ) : false ); ?>"
-			data-parsely-widget-display-direction="<?php echo esc_attr( isset( $instance['display_direction'] ) ? $instance['display_direction'] : null ); ?>"
+			data-parsely-widget-display-author="<?php echo esc_attr( wp_json_encode( isset( $instance['display_author'] ) && $instance['display_author'] ) ); ?>"
+			data-parsely-widget-display-direction="<?php echo esc_attr( isset( $instance['display_direction'] ) ? $instance['display_direction'] : '' ); ?>"
 			data-parsely-widget-api-url="<?php echo esc_url( $api_url ); ?>"
-			data-parsely-widget-img-display="<?php echo esc_attr( isset( $instance['img_src'] ) ? $instance['img_src'] : null ); ?>"
+			data-parsely-widget-img-display="<?php echo esc_attr( isset( $instance['img_src'] ) ? $instance['img_src'] : '' ); ?>"
 			data-parsely-widget-permalink="<?php echo esc_url( get_permalink() ); ?>"
-			data-parsely-widget-personalized="<?php echo esc_attr( isset( $instance['personalize_results'] ) && $instance['personalize_results'] ); ?>"
+			data-parsely-widget-personalized="<?php echo esc_attr( wp_json_encode(isset( $instance['personalize_results'] ) && $instance['personalize_results'] )); ?>"
 			data-parsely-widget-id="<?php echo esc_attr( $this->id ); ?>"
 		></div>
 
