@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<checkstyle version="3.6.0">
-<file name="src/class-parsely-recommended-widget.php">
- <error line="126" column="68" severity="error" message="Expected 1 spaces after opening parenthesis; 0 found" source="PEAR.Functions.FunctionCallSignature.SpaceAfterOpenBracket"/>
-</file>
-</checkstyle>
-
