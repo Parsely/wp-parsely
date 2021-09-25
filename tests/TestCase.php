@@ -127,12 +127,13 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Get a method from the Parsely class. This should be used when trying to access a private method for testing.
 	 *
 	 * @param string $method_name Name of the method to get.
+	 * @param string $class       Name of the class the method is in. Can be passed as Foo::class.
 	 *
 	 * @return \ReflectionMethod
 	 * @throws \ReflectionException The method does not exist in the class.
 	 */
-	public static function getMethod( $method_name ) {
-		$class  = new \ReflectionClass( 'Parsely' );
+	public static function getMethod( $method_name, $class = 'Parsely' ) {
+		$class  = new \ReflectionClass( $class );
 		$method = $class->getMethod( $method_name );
 		$method->setAccessible( true );
 		return $method;
