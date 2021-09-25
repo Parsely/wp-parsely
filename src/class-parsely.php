@@ -2085,4 +2085,17 @@ class Parsely {
 	public function api_key_is_missing() {
 		return ! $this->api_key_is_set();
 	}
+
+	/**
+	 * Get the API key if set.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @return string API key if set, or empty string if not.
+	 */
+	public function get_api_key() {
+		$options = $this->get_options();
+
+		return $this->api_key_is_set() ? $options['apikey'] : '';
+	}
 }
