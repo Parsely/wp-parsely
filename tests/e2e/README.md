@@ -16,12 +16,12 @@ See this post for more infomation: https://make.wordpress.org/core/2019/06/27/in
 
 - Provision the back end
 
-  - Make sure [`docker-compose` is installed](https://docs.docker.com/compose/install/).
-  - From the top-level directory, run:
+  - Make sure [`docker` is installed](https://docs.docker.com/engine/install/).
+  - From the `wp-content/plugins/wp-parsely` directory, run:
 
-    `docker-compose -f tests/e2e/docker-compose.yml up`
+    `docker compose -f tests/e2e/docker-compose.yml up`
 
-    Tip: if you `cd` into this directory, you can simply run `docker-compose` and omit the `-f tests/e2e/docker-compose.yml` from these commands
+    Tip: if you `cd` into this directory, you can simply run `docker compose` and omit the `-f tests/e2e/docker-compose.yml` from these commands.
 
   - Once you see a line that says:
 
@@ -35,7 +35,7 @@ See this post for more infomation: https://make.wordpress.org/core/2019/06/27/in
 
     `npm run test:e2e`
 
-    This will run the test suite using a headless browser.
+    ...in a different terminal window. This will run the test suite using a headless browser.
 
   - For debugging purpose, you might want to follow the test visually. You can do so by running the tests in an interactive mode:
 
@@ -49,7 +49,7 @@ See this post for more infomation: https://make.wordpress.org/core/2019/06/27/in
 
   - The tests currently expect a "pristine" WordPress environment, so if you want to run them multiple times, you'll need to recreate the WordPress environment like so:
 
-    `docker-compose -f tests/e2e/docker-compose.yml run cli /var/www/html/wp-content/plugins/wp-parsely/tests/e2e/init-e2e.sh reset`
+    `docker compose -f tests/e2e/docker-compose.yml run cli /var/www/html/wp-content/plugins/wp-parsely/tests/e2e/init-e2e.sh reset`
 
     In the future, this will likely be built into the test suite set up to enable easier test development.
 
