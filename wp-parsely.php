@@ -52,6 +52,16 @@ require PARSELY_PLUGIN_DIR . 'src/class-parsely.php';
 $GLOBALS['parsely'] = new Parsely();
 $GLOBALS['parsely']->run();
 
+// Until auto-loading happens, we need to include this file for tests as well.
+require PARSELY_PLUGIN_DIR . 'src/UI/class-plugins-actions.php';
+add_action(
+	'admin_init',
+	function() {
+		$GLOBALS['parsely_ui_plugins_actions'] = new Parsely\UI\Plugins_Actions();
+		$GLOBALS['parsely_ui_plugins_actions']->run();
+	}
+);
+
 require PARSELY_PLUGIN_DIR . 'src/class-parsely-recommended-widget.php';
 
 add_action( 'widgets_init', 'parsely_recommended_widget_register' );
