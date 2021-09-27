@@ -1,4 +1,4 @@
-name: Integration Tests
+name: Unit Tests
 
 on:
   # Run on all pushes and on all pull requests.
@@ -70,17 +70,6 @@ jobs:
         with:
           composer-options: '${{ matrix.composer-options }}'
 
-      - name: Start MySQL Service
-        run: sudo systemctl start mysql.service
-
-      - name: Prepare environment for integration tests
-        run: composer prepare-ci
-
-      - name: Run integration tests (single site)
+      - name: Run unit tests
         if: ${{ matrix.php != 8.0 }}
-        run: composer testwp
-      - name: Run integration tests (single site with code coverage)
-        if: ${{ matrix.php == 8.0 }}
-        run: composer coverage-ci
-      - name: Run integration tests (multisite)
-        run: composer testwp-ms
+        run: composer test
