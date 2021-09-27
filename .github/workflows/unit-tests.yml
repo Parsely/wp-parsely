@@ -71,5 +71,4 @@ jobs:
           composer-options: '${{ matrix.composer-options }}'
 
       - name: Run unit tests
-        if: ${{ matrix.php != 8.0 }}
         run: composer test
