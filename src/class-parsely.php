@@ -113,12 +113,8 @@ class Parsely {
 
 		// phpcs:ignore WordPress.WP.CronInterval.CronSchedulesInterval
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
-
-		if ( apply_filters( 'wp_parsely_enable_row_action_links', false ) ) {
-			add_filter( 'post_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
-			add_filter( 'page_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
-		}
-
+		add_filter( 'post_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
+		add_filter( 'page_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
