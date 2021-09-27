@@ -805,7 +805,7 @@ class Parsely {
 	 */
 	public function display_admin_upgrade_warning() {
 		global $wp_version;
-		if ( version_compare( phpversion(), '7.1', '>=' ) && version_compare( $wp_version, '5.0', '>=' ) ) {
+		if ( version_compare( PHP_VERSION, '7.1.0', '>=' ) && version_compare( $wp_version, '5.0', '>=' ) ) {
 			return;
 		}
 
