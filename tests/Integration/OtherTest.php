@@ -67,6 +67,8 @@ final class OtherTest extends TestCase {
 	 *
 	 * @covers \Parsely::register_js
 	 * @uses \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group insert-js
@@ -111,6 +113,8 @@ final class OtherTest extends TestCase {
 	 *
 	 * @covers \Parsely::load_js_tracker
 	 * @uses \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
 	 * @uses \Parsely::register_js
@@ -151,6 +155,8 @@ final class OtherTest extends TestCase {
 	 * Test the API init script enqueue.
 	 *
 	 * @covers \Parsely::load_js_api
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::register_js
@@ -190,6 +196,8 @@ final class OtherTest extends TestCase {
 	 * Test the API init script enqueue.
 	 *
 	 * @covers \Parsely::load_js_api
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::register_js
@@ -293,6 +301,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Make sure users can log in.
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::parsely_is_user_logged_in
 	 * @group insert-js
@@ -447,6 +457,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * When it returns false, the tracking script should not be enqueued.
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
 	 * @uses \Parsely::update_metadata_endpoint
@@ -486,6 +498,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @expectedDeprecated parsely_filter_insert_javascript
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
 	 * @uses \Parsely::update_metadata_endpoint
@@ -597,6 +611,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Test that test_display_admin_warning action doesn't return a warning when there is a key
 	 *
 	 * @covers \Parsely::should_display_admin_warning
+	 * @uses \Parsely::get_options
 	 */
 	public function test_display_admin_warning_with_key() {
 		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );

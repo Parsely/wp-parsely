@@ -7,10 +7,9 @@
 
 namespace Parsely\Tests\Integration\Integrations;
 
-use Parsely\Integrations\Integration;
 use Parsely\Integrations\Integrations;
+use Parsely\Tests\Integration\TestCase;
 use ReflectionClass;
-use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
 /**
  * Test plugin integrations collection class.

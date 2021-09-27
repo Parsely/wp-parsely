@@ -37,14 +37,14 @@ final class Facebook_Instant_Articles implements Integration {
 	 * @return void
 	 */
 	public function insert_parsely_tracking( &$registry ) {
-		$options = get_option( \Parsely::OPTIONS_KEY );
-		if ( ! ( $options['apikey'] ) ) {
+		$parsely = new \Parsely();
+		if ( $parsely->api_key_is_missing() ) {
 			return;
 		}
 
 		$registry[ self::REGISTRY_IDENTIFIER ] = array(
 			'name'    => self::REGISTRY_DISPLAY_NAME,
-			'payload' => $this->get_embed_code( $options['apikey'] ),
+			'payload' => $this->get_embed_code( $parsely->get_api_key() ),
 		);
 	}
 
