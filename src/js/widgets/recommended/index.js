@@ -86,6 +86,7 @@ function widgetLoad( outerDiv, {
 			}
 
 			outerDiv.appendChild( outerList );
+			outerDiv.parentElement.classList.remove( 'parsely-recommended-widget-hidden' );
 		} );
 }
 
