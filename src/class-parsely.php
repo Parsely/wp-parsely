@@ -111,11 +111,6 @@ class Parsely {
 		// display warning when plugin hasn't been configured.
 		add_action( 'admin_footer', array( $this, 'display_admin_warning' ) );
 
-		add_filter(
-			'plugin_action_links_' . PARSELY_PLUGIN_BASENAME,
-			array( $this, 'add_plugin_meta_links' )
-		);
-
 		// phpcs:ignore WordPress.WP.CronInterval.CronSchedulesInterval
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 
@@ -778,18 +773,6 @@ class Parsely {
 	}
 
 	/**
-	 * Adds a 'Settings' link to the Plugins screen in WP admin
-	 *
-	 * @category   Function
-	 * @package    Parsely
-	 * @param array $links The links to add.
-	 */
-	public function add_plugin_meta_links( $links ) {
-		array_unshift( $links, '<a href="' . esc_url( $this->get_settings_url() ) . '">' . __( 'Settings', 'wp-parsely' ) . '</a>' );
-		return $links;
-	}
-
-	/**
 	 * Display the admin warning if needed
 	 *
 	 * @category   Function
@@ -803,7 +786,7 @@ class Parsely {
 		$message = sprintf(
 				/* translators: %s: Plugin settings page URL */
 			__( '<strong>The Parse.ly plugin is not active.</strong> You need to <a href="%s">provide your Parse.ly Dash Site ID</a> before things get cooking.', 'wp-parsely' ),
-			esc_url( $this->get_settings_url() )
+			esc_url( self::get_settings_url() )
 		);
 		?>
 		<div id="message" class="error"><p><?php echo wp_kses_post( $message ); ?></p></div>
@@ -1018,9 +1001,8 @@ class Parsely {
 			$author                   = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
 			$parsely_page['url']      = $current_url;
-		} elseif ( is_category() ) {
-			$category                 = get_the_category();
-			$category                 = $category[0];
+		} elseif ( is_category() || is_post_type_archive() || is_tax() ) {
+			$category                 = get_queried_object();
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( $category->name );
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_date() ) {
@@ -1972,7 +1954,7 @@ class Parsely {
 	/**
 	 * Get the URL of the plugin settings page
 	 */
-	private function get_settings_url() {
+	public static function get_settings_url() {
 		return admin_url( 'options-general.php?page=' . self::MENU_SLUG );
 	}
 
