@@ -24,7 +24,7 @@ final class PluginsActionsTest extends TestCase {
 		$plugins_screen = new Plugins_Actions();
 		$plugins_screen->run();
 
-		self::assertNotFalse( has_filter( 'plugin_action_links_' . PARSELY_PLUGIN_BASENAME, array( $plugins_screen, 'add_plugin_meta_links' ) ) );
+		self::assertNotFalse( has_filter( 'plugin_action_links_' . plugin_dir_path( PARSELY_FILE ) , array( $plugins_screen, 'add_plugin_meta_links' ) ) );
 	}
 
 	/**

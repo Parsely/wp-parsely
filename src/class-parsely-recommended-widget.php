@@ -113,7 +113,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			$instance['return_limit']
 		);
 
-		$reco_widget_script_asset = require PARSELY_PLUGIN_DIR . 'build/admin-page.asset.php';
+		$reco_widget_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';
 
 		?>
 
@@ -131,7 +131,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		wp_register_script(
 			'wp-parsely-recommended-widget',
-			PARSELY_PLUGIN_URL . 'build/recommended-widget.js',
+			plugin_dir_url( PARSELY_FILE ) . 'build/recommended-widget.js',
 			$reco_widget_script_asset['dependencies'],
 			PARSELY::get_asset_cache_buster(),
 			true

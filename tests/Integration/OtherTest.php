@@ -63,15 +63,6 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Test plugin URL constant is defined and populated.
-	 *
-	 * @coversNothing
-	 */
-	public function test_plugin_url_constant() {
-		self::assertTrue( defined( 'PARSELY_PLUGIN_URL' ) && is_string( PARSELY_PLUGIN_URL ) && PARSELY_PLUGIN_URL !== '' );
-	}
-
-	/**
 	 * Test JavaScript registrations.
 	 *
 	 * @covers \Parsely::register_js
@@ -243,7 +234,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 
 		self::assertStringContainsString(
-			"<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( PARSELY_PLUGIN_URL ) . 'build/init-api.js?ver=' . \Parsely::VERSION . "' id='wp-parsely-api-js'></script>",
+			"<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( plugin_dir_url( PARSELY_FILE ) ) . 'build/init-api.js?ver=' . \Parsely::VERSION . "' id='wp-parsely-api-js'></script>",
 			$output,
 			'Failed to confirm script tag was printed correctly'
 		);
