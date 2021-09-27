@@ -5,7 +5,7 @@
  * @package Parsely\Tests
  */
 
-namespace Parsely\Tests\StructuredData;
+namespace Parsely\Tests\Integration\StructuredData;
 
 /**
  * Structured Data Tests for the home page.

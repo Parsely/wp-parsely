@@ -5,7 +5,7 @@
  * @package WordPress
  */
 
-namespace Parsely\Tests;
+namespace Parsely\Tests\Integration;
 
 /**
  * Catch-all class for testing.
@@ -46,17 +46,8 @@ final class OtherTest extends TestCase {
 	public function test_version_constant_is_a_semantic_version_string() {
 		self::assertMatchesRegularExpression(
 			'/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/',
-			PARSELY_VERSION
+			\Parsely::VERSION
 		);
-	}
-
-	/**
-	 * Test class version.
-	 *
-	 * @coversNothing
-	 */
-	public function test_class_version() {
-		self::assertSame( PARSELY_VERSION, \Parsely::VERSION );
 	}
 
 	/**
@@ -68,7 +59,7 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely::get_options
 	 */
 	public function test_cache_buster() {
-		self::assertSame( PARSELY_VERSION, \Parsely::get_asset_cache_buster() );
+		self::assertSame( \Parsely::VERSION, \Parsely::get_asset_cache_buster() );
 	}
 
 	/**
@@ -159,7 +150,7 @@ final class OtherTest extends TestCase {
 		$output = ob_get_clean();
 
 		self::assertSame(
-			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
+			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . \Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tag was printed correctly'
 		);
@@ -252,7 +243,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 
 		self::assertStringContainsString(
-			"<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( PARSELY_PLUGIN_URL ) . 'build/init-api.js?ver=' . PARSELY_VERSION . "' id='wp-parsely-api-js'></script>",
+			"<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( PARSELY_PLUGIN_URL ) . 'build/init-api.js?ver=' . \Parsely::VERSION . "' id='wp-parsely-api-js'></script>",
 			$output,
 			'Failed to confirm script tag was printed correctly'
 		);
@@ -454,7 +445,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$output = ob_get_clean();
 
 		self::assertSame(
-			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
+			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . \Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tags were printed correctly'
 		);

@@ -2,10 +2,10 @@
 /**
  * Integrations collection tests.
  *
- * @package Parsely\Tests\Integrations
+ * @package Parsely\Tests\Unit
  */
 
-namespace Parsely\Tests\Integrations;
+namespace Parsely\Tests\Unit\Integrations;
 
 use Parsely\Integrations\Integration;
 use Parsely\Integrations\Integrations;
@@ -13,12 +13,9 @@ use ReflectionClass;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
 /**
- * Test integrations collection class.
- *
- * Despite the name, this is a Unit test!
+ * Test plugin integrations collection class.
  *
  * todo: Instantiate and then try to register something that doesn't implement the Integration interface.
- * todo: Check calling integrate will call integrate on all registered integrations.
  */
 final class IntegrationsTest extends TestCase {
 	/**
@@ -26,7 +23,7 @@ final class IntegrationsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Integrations\Integrations::register
 	 */
-	public function test_an_integration_can_be_registered_to_new_integrations_object() {
+	public function test_an_integration_can_be_registered_to_a_new_Integrations_object() {
 		$integrations = new Integrations();
 
 		$integrations->register( 'class', FakeIntegration::class );
@@ -46,49 +43,6 @@ final class IntegrationsTest extends TestCase {
 
 		self::assertCount( 2, $registered_integrations );
 		self::assertSame( array( 'class', 'object' ), array_keys( $registered_integrations ) );
-	}
-
-	/**
-	 * Check an integration can be added via a filter.
-	 *
-	 * @covers ::parsely_integrations
-	 * @uses \Parsely\Integrations\Amp::integrate
-	 * @uses \Parsely\Integrations\Facebook_Instant_Articles::integrate
-	 * @uses \Parsely\Integrations\Integrations::integrate
-	 * @uses \Parsely\Integrations\Integrations::register
-	 */
-	public function test_an_integration_can_be_registered_via_the_filter() {
-		add_action(
-			'wp_parsely_add_integration',
-			function( $integrations ) {
-				$integrations->register( 'fake', new FakeIntegration2() );
-
-				return $integrations;
-			}
-		);
-
-		$integrations = parsely_integrations();
-
-		// Use Reflection to look inside the collection.
-		$reflector_property = ( new ReflectionClass( $integrations ) )->getProperty( 'integrations' );
-		$reflector_property->setAccessible( true );
-		$registered_integrations = $reflector_property->getValue( $integrations );
-
-		self::assertCount( 3, $registered_integrations );
-		self::assertSame( array( 'amp', 'fbia', 'fake' ), array_keys( $registered_integrations ) );
-
-		// Use filter to override existing key.
-		add_action(
-			'wp_parsely_add_integration',
-			function( $integrations ) {
-				$integrations->register( 'amp', new FakeIntegration2() );
-
-				return $integrations;
-			}
-		);
-
-		self::assertCount( 3, $registered_integrations );
-		self::assertSame( array( 'amp', 'fbia', 'fake' ), array_keys( $registered_integrations ) );
 	}
 
 	/**
@@ -112,7 +66,7 @@ final class IntegrationsTest extends TestCase {
 /**
  * Class FakeIntegration
  *
- * @package Parsely\Tests\Integrations
+ * @package Parsely\Tests\Unit
  */
 class FakeIntegration {
 }
@@ -120,7 +74,7 @@ class FakeIntegration {
 /**
  * Class FakeIntegration2
  *
- * @package Parsely\Tests\Integrations
+ * @package Parsely\Tests\Unit
  */
 class FakeIntegration2 {
 	/**

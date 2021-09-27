@@ -5,11 +5,11 @@
  * @package Parsely\Tests\Integrations
  */
 
-namespace Parsely\Tests\Integrations;
+namespace Parsely\Tests\Integration\Integrations;
 
 use Parsely;
 use Parsely\Integrations\Facebook_Instant_Articles;
-use Parsely\Tests\TestCase;
+use Parsely\Tests\Integration\TestCase;
 
 /**
  * Test Facebook Instant Articles integration.

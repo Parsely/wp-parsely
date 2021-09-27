@@ -24,6 +24,14 @@
 		"wp-coding-standards/wpcs": "^2.3.0",
 		"yoast/wp-test-utils": "^1"
 	},
+	"autoload": {
+		"classmap": [
+			"src/"
+		],
+		"files": [
+			"wp-parsely.php"
+		]
+	},
 	"autoload-dev": {
 		"psr-4": {
 			"Parsely\\Tests\\": "tests/"

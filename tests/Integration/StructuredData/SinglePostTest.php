@@ -5,9 +5,9 @@
  * @package Parsely\Tests
  */
 
-namespace Parsely\Tests\StructuredData;
+namespace Parsely\Tests\Integration\StructuredData;
 
-use Parsely\Tests\TestCase;
+use Parsely\Tests\Integration\TestCase;
 
 /**
  * Structured Data Tests for posts.
@@ -15,6 +15,16 @@ use Parsely\Tests\TestCase;
  * @see https://www.parse.ly/help/integration/jsonld
  */
 final class SinglePostTest extends TestCase {
+	/**
+	 * The setUp run before each test
+	 */
+	public function set_up() {
+		parent::set_up();
+
+		// Set the default options prior to each test.
+		TestCase::set_options();
+	}
+
 	/**
 	 * Create a single post, and test the structured data.
 	 *
