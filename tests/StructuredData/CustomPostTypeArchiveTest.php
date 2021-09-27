@@ -33,7 +33,7 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_archive_custom_post_type() {
+	public function test_metadata_is_correctly_constructed_for_custom_post_type_archive() {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151.
 		$this->set_permalink_structure( '/%postname%/' );
@@ -69,14 +69,14 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 		// The query should be for a custom post type archive.
 		self::assertQueryTrue( 'is_archive', 'is_post_type_archive' );
 
-		// Create the structured data for that category.
-		// The category metadata doesn't use the post data, but the construction method requires it for now.
+		// Create the structured data for that CPT.
+		// The CPT archive metadata doesn't use the post data, but the construction method requires it for now.
 		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, get_post() );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
-		// The headline should be the category name.
+		// The headline should be the CPT name.
 		self::assertEquals( 'custom_post_type', $structured_data['headline'] );
 		self::assertEquals( home_url( '/cpt-archive' ), $structured_data['url'] );
 	}
