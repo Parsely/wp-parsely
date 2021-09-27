@@ -28,7 +28,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			'Parsely_Recommended_Widget',
 			__( 'Parse.ly Recommended Widget', 'wp-parsely' ),
 			array(
-				'classname'   => 'Parsely_Recommended_Widget',
+				'classname'   => 'Parsely_Recommended_Widget parsely-recommended-widget-hidden',
 				'description' => __( 'Display a list of post recommendations, personalized for a visitor or the current post.', 'wp-parsely' ),
 			)
 		);
