@@ -22,10 +22,10 @@ final class OtherTest extends TestCase {
 	/**
 	 * The setUp run before each test
 	 */
-	public function setUp() {
+	public function set_up() {
 		global $wp_scripts;
 
-		parent::setUp();
+		parent::set_up();
 
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		$wp_scripts    = new \WP_Scripts();
@@ -44,7 +44,7 @@ final class OtherTest extends TestCase {
 	 * @coversNothing
 	 */
 	public function test_version_constant_is_a_semantic_version_string() {
-		self::assertRegExp(
+		self::assertMatchesRegularExpression(
 			'/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/',
 			PARSELY_VERSION
 		);
@@ -241,7 +241,7 @@ final class OtherTest extends TestCase {
 		$output = ob_get_clean();
 
 
-		self::assertContains(
+		self::assertStringContainsString(
 			"<script type='text/javascript' id='wp-parsely-api-js-extra'>
 /* <![CDATA[ */
 var wpParsely = {\"apikey\":\"blog.parsely.com\"};
@@ -251,7 +251,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 			'Failed to confirm "localized" data were embedded'
 		);
 
-		self::assertContains(
+		self::assertStringContainsString(
 			"<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( PARSELY_PLUGIN_URL ) . 'build/init-api.js?ver=' . PARSELY_VERSION . "' id='wp-parsely-api-js'></script>",
 			$output,
 			'Failed to confirm script tag was printed correctly'

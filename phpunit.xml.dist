@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/7.5/phpunit.xsd"
+	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
 	bootstrap="./tests/bootstrap.php"
 	backupGlobals="false"
 	beStrictAboutCoversAnnotation="true"
 	beStrictAboutTestsThatDoNotTestAnything="false"
 	colors="true"
 	forceCoversAnnotation="true"
+	testdox="true"
 	>
 	<php>
 		<server name="SERVER_PORT" value="80"/>
@@ -19,15 +20,10 @@
 			<directory>./tests/</directory>
 		</testsuite>
 	</testsuites>
-
-	<filter>
-		<whitelist>
+	<coverage>
+		<include>
 			<directory suffix=".php">src</directory>
 			<file>wp-parsely.php</file>
-		</whitelist>
-	</filter>
-
-	<logging>
-		<log type="coverage-clover" target="build/logs/clover.xml"/>
-	</logging>
+		</include>
+	</coverage>
 </phpunit>
