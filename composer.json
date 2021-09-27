@@ -40,10 +40,17 @@
 	"scripts": {
 		"coverage": [
 			"@putenv WP_MULTISITE=1",
-			"@php ./vendor/bin/phpunit --coverage-html ./build/coverage-html"
+			"@php ./vendor/bin/phpunit --coverage-html ./build/coverage-html/unit -v"
+		],
+		"coveragewp": [
+			"@putenv WP_MULTISITE=1",
+			"@php ./vendor/bin/phpunit --coverage-html ./build/coverage-html/integration -c phpunit-integration.xml.dist -v"
 		],
 		"coverage-ci": [
-			"@php ./vendor/bin/phpunit"
+			"@php ./vendor/bin/phpunit -v"
+		],
+		"coveragewp-ci": [
+			"@php ./vendor/bin/phpunit -c phpunit-integration.xml.dist -v"
 		],
 		"cs": [
 			"@php ./vendor/bin/phpcs"

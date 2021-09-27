@@ -14,7 +14,7 @@ use Parsely_Recommended_Widget;
  */
 final class RecommendedApiTest extends TestCase {
 	/**
-	 * Dataprovider for test_recommended_api_url().
+	 * Data provider for test_recommended_api_url().
 	 *
 	 * @return array[]
 	 */

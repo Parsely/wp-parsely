@@ -357,6 +357,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Make sure users can log in to more than one site.
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::parsely_is_user_logged_in
