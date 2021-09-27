@@ -22,12 +22,20 @@ jobs:
       WP_VERSION: latest
 
     strategy:
+      # PHP 5.6 uses PHPUnit 5.7.27
+      # PHP 7.0 uses PHPUnit 6.5.14
+      # PHP 7.1 uses PHPUnit 7.5.20
+      # PHP 7.2 uses PHPUnit 8.5.21
+      # PHP 7.3 uses PHPUnit 9.5.10
+      # PHP 7.4 uses PHPUnit 9.5.10
+      # PHP 8.0 uses PHPUnit 9.5.10
+      # PHP 8.1 uses PHPUnit 9.5.10
       matrix:
         php: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
         include:
           - php: '8.0'
             # Ignore platform requirements, so that PHPUnit 7.5 can be installed on PHP 8.0 (and above).
-            composer-options: '--ignore-platform-reqs'
+#            composer-options: '--ignore-platform-reqs'
             extensions: pcov
             ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
             coverage: pcov
@@ -53,11 +61,11 @@ jobs:
       # Setup PCOV since we're using PHPUnit < 8 which has it integrated. Requires PHP 7.1.
       # Ignore platform reqs to make it install on PHP 8.
       # https://github.com/krakjoe/pcov-clobber
-      - name: Setup PCOV
-        if: ${{ matrix.php == 8.0 }}
-        run: |
-          composer require pcov/clobber --ignore-platform-reqs
-          vendor/bin/pcov clobber
+#      - name: Setup PCOV
+#        if: ${{ matrix.php == 8.0 }}
+#        run: |
+#          composer require pcov/clobber --ignore-platform-reqs
+##          vendor/bin/pcov clobber
 
       - name: Setup Problem Matchers for PHPUnit
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
