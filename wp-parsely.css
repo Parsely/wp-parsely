@@ -15,7 +15,6 @@
 .parsely-recommended-widget-entry img {
 	float: left;
 	margin-right: 15px;
-	max-width: 50%;
 }
 
 .parsely-recommended-widget-entry:after {
@@ -50,10 +49,6 @@
 	float: none;
 	margin-right: 0;
 	max-width: 100%;
-}
-
-.wpparsely_hidden {
-	display: none;
 }
 
 @supports(display: grid){
