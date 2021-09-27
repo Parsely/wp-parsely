@@ -2065,4 +2065,45 @@ class Parsely {
 	public function convert_jsonld_to_parsely_type( $type ) {
 		return in_array( $type, $this->supported_jsonld_post_types ) ? 'post' : 'index';
 	}
+
+	/**
+	 * Determine if an API key is saved in the options.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @return bool True is API key is set, false if it is missing.
+	 */
+	public function api_key_is_set() {
+		$options = $this->get_options();
+
+		return (
+				isset( $options['apikey'] ) &&
+				is_string( $options['apikey'] ) &&
+				'' !== $options['apikey']
+		);
+	}
+
+	/**
+	 * Determine if an API key is not saved in the options.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @return bool True if API key is missing, false if it is set.
+	 */
+	public function api_key_is_missing() {
+		return ! $this->api_key_is_set();
+	}
+
+	/**
+	 * Get the API key if set.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @return string API key if set, or empty string if not.
+	 */
+	public function get_api_key() {
+		$options = $this->get_options();
+
+		return $this->api_key_is_set() ? $options['apikey'] : '';
+	}
 }
