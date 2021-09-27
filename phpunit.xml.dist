@@ -25,5 +25,8 @@
 			<directory suffix=".php">src</directory>
 			<file>wp-parsely.php</file>
 		</include>
+		<report>
+			<clover outputFile="build/logs/clover.xml"/>
+		</report>
 	</coverage>
 </phpunit>
