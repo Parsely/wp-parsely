@@ -587,6 +587,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Test that test_display_admin_warning action returns a warning when there is no key
 	 *
 	 * @covers \Parsely::should_display_admin_warning
+	 * @uses \Parsely::get_options
 	 */
 	public function test_display_admin_warning_without_key() {
 		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
@@ -621,5 +622,40 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 
 		$response = $should_display_admin_warning->invoke( self::$parsely );
 		self::assertFalse( $response );
+	}
+
+	/**
+	 * Check that utility methods for checking if the API key is set work correctly.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @covers \Parsely::api_key_is_set
+	 * @covers \Parsely::api_key_is_missing
+	 * @uses \Parsely::get_options
+	 */
+	public function test_checking_API_key_is_set_or_not() {
+		self::set_options( array( 'apikey' => '' ) );
+		self::assertFalse( self::$parsely->api_key_is_set() );
+		self::assertTrue( self::$parsely->api_key_is_missing() );
+
+		self::set_options( array( 'apikey' => 'somekey' ) );
+		self::assertTrue( self::$parsely->api_key_is_set() );
+		self::assertFalse( self::$parsely->api_key_is_missing() );
+	}
+
+	/**
+	 * Test the utility methods for retrieving the API key.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @covers \Parsely::get_api_key
+	 * @uses \Parsely::api_key_is_set
+	 * @uses \Parsely::get_options
+	 */
+	public function test_can_retrieve_API_key() {
+		self::set_options( array( 'apikey' => 'somekey' ) );
+		self::assertSame( 'somekey', self::$parsely->get_api_key() );
+		self::set_options( array( 'apikey' => '' ) );
+		self::assertSame( '', self::$parsely->get_api_key() );
 	}
 }
