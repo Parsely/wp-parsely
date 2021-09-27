@@ -5,7 +5,7 @@
  * @package Parsely\Tests\Integrations
  */
 
-namespace Parsely\Tests\Unit\Integrations;
+namespace Parsely\Tests\Integration\Integrations;
 
 use Parsely\Integrations\Integration;
 use Parsely\Integrations\Integrations;
