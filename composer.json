@@ -47,9 +47,11 @@
 			"@php ./vendor/bin/phpunit --coverage-html ./build/coverage-html/integration -c phpunit-integration.xml.dist -v"
 		],
 		"coverage-ci": [
+			"@putenv WP_MULTISITE=1",
 			"@php ./vendor/bin/phpunit -v"
 		],
 		"coveragewp-ci": [
+			"@putenv WP_MULTISITE=1",
 			"@php ./vendor/bin/phpunit -c phpunit-integration.xml.dist -v"
 		],
 		"cs": [

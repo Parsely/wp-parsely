@@ -86,8 +86,6 @@ jobs:
       - name: Run integration tests (single site)
         if: ${{ matrix.php != 8.0 }}
         run: composer testwp
-      - name: Run integration tests (single site with code coverage)
+      - name: Run integration tests (multisite site with code coverage)
         if: ${{ matrix.php == 8.0 }}
         run: composer coveragewp-ci
-      - name: Run integration tests (multisite)
-        run: composer testwp-ms
