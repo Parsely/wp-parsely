@@ -810,7 +810,7 @@ class Parsely {
 		}
 
 		$message = sprintf(
-		/* translators: %s: Plugin settings page URL */
+			/* translators: %s: Plugin settings page URL */
 			__( '<strong>The next version of the Parse.ly plugin will not work with the current setup.</strong> WordPress 5.0 and PHP 7.1 will be the <a href="%s">new required minimum versions</a>.', 'wp-parsely' ),
 			esc_url( 'https://github.com/Parsely/wp-parsely/issues/390' )
 		);
