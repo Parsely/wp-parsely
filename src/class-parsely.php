@@ -835,7 +835,6 @@ class Parsely {
 		$parsely_options = $this->get_options();
 
 		if (
-			// No API key.
 			$this->api_key_is_missing() ||
 
 			// Chosen not to track logged in users.
@@ -1300,7 +1299,6 @@ class Parsely {
 	public function register_js() {
 		$parsely_options = $this->get_options();
 
-		// If we don't have an API key, there's no need to proceed.
 		if ( $this->api_key_is_missing() ) {
 			return;
 		}
@@ -1338,7 +1336,6 @@ class Parsely {
 	 */
 	public function load_js_tracker() {
 		$parsely_options = $this->get_options();
-		// If we don't have an API key, there's no need to proceed.
 		if ( $this->api_key_is_missing() || $parsely_options['disable_javascript'] ) {
 			return;
 		}
