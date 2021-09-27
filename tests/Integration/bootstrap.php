@@ -2,7 +2,7 @@
 /**
  * PHPUnit bootstrap file
  *
- * @package wp-parsely
+ * @package Parsely
  */
 
 use Yoast\WPTestUtils\WPIntegration;

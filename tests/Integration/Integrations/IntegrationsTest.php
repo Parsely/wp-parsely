@@ -15,7 +15,7 @@ use Yoast\WPTestUtils\BrainMonkey\TestCase;
 /**
  * Test plugin integrations collection class.
  *
- * todo: Instantiate and then try to register something that doesn't implement the Integration interface.
+ * @todo: Instantiate and then try to register something that doesn't implement the Integration interface.
  */
 final class IntegrationsTest extends TestCase {
 	/**
