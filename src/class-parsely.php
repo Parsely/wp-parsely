@@ -1001,9 +1001,8 @@ class Parsely {
 			$author                   = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
 			$parsely_page['url']      = $current_url;
-		} elseif ( is_category() ) {
-			$category                 = get_the_category();
-			$category                 = $category[0];
+		} elseif ( is_category() || is_post_type_archive() || is_tax() ) {
+			$category                 = get_queried_object();
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( $category->name );
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_date() ) {
