@@ -159,11 +159,7 @@ class Parsely {
 		}
 
 		$options = $this->get_options();
-		if ( ! (
-			isset( $options['apikey'] ) &&
-			is_string( $options['apikey'] ) &&
-			strlen( $options['apikey'] ) > 0
-		) ) {
+		if ( $this->api_key_is_missing() ) {
 			return $actions;
 		}
 
@@ -864,8 +860,7 @@ class Parsely {
 		$parsely_options = $this->get_options();
 
 		if (
-			// No API key.
-			empty( $parsely_options['apikey'] ) ||
+			$this->api_key_is_missing() ||
 
 			// Chosen not to track logged in users.
 			( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
@@ -1206,7 +1201,7 @@ class Parsely {
 	public function update_metadata_endpoint( $post_id ) {
 		$parsely_options = $this->get_options();
 
-		if ( empty( $parsely_options['apikey'] ) || empty( $parsely_options['metadata_secret'] ) ) {
+		if ( $this->api_key_is_missing() || empty( $parsely_options['metadata_secret'] ) ) {
 			return '';
 		}
 
@@ -1329,8 +1324,7 @@ class Parsely {
 	public function register_js() {
 		$parsely_options = $this->get_options();
 
-		// If we don't have an API key, there's no need to proceed.
-		if ( empty( $parsely_options['apikey'] ) ) {
+		if ( $this->api_key_is_missing() ) {
 			return;
 		}
 
@@ -1367,8 +1361,7 @@ class Parsely {
 	 */
 	public function load_js_tracker() {
 		$parsely_options = $this->get_options();
-		// If we don't have an API key, there's no need to proceed.
-		if ( empty( $parsely_options['apikey'] ) || $parsely_options['disable_javascript'] ) {
+		if ( $this->api_key_is_missing() || $parsely_options['disable_javascript'] ) {
 			return;
 		}
 
