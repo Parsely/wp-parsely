@@ -799,9 +799,8 @@ class Parsely {
 	/**
 	 * Display a dismissible admin warning if the current WordPress or PHP versions are below the required minimum for the 3.0 release of wp-parsely
 	 * We should get rid of this warning when we release 3.0
-	 *
-	 * @category Function
-	 * @package Parsely
+	 * 
+	 * @since 2.6.0
 	 */
 	public function display_admin_upgrade_warning() {
 		global $wp_version;
