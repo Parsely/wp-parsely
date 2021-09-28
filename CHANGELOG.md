@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Using npm caching on GitHub Actions #388
 - Add e2e test for the plugin action link #403
 - API Key: Add utility method for checking it is set #404
+- Adding 3.0 upgrade notice on README #400
+- Add admin warning for minimum requirements in 3.0 #408
 
 ### Changed
 
@@ -40,10 +42,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove unused default logo variable #387
 - Remove unused return_personalized_json function #391
 
-### Deprecated
-
-- Adding 3.0 upgrade notice on README #400
-- Add admin warning for minimum requirements in 3.0 #408
 
 ## [2.5.2] - 2021-09-17
 
