@@ -5,7 +5,7 @@
  * @package WordPress
  */
 
-namespace Parsely\Tests;
+namespace Parsely\Tests\Integration;
 
 /**
  * Catch-all class for testing.
@@ -22,10 +22,10 @@ final class OtherTest extends TestCase {
 	/**
 	 * The setUp run before each test
 	 */
-	public function setUp() {
+	public function set_up() {
 		global $wp_scripts;
 
-		parent::setUp();
+		parent::set_up();
 
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		$wp_scripts    = new \WP_Scripts();
@@ -44,19 +44,10 @@ final class OtherTest extends TestCase {
 	 * @coversNothing
 	 */
 	public function test_version_constant_is_a_semantic_version_string() {
-		self::assertRegExp(
+		self::assertMatchesRegularExpression(
 			'/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/',
-			PARSELY_VERSION
+			\Parsely::VERSION
 		);
-	}
-
-	/**
-	 * Test class version.
-	 *
-	 * @coversNothing
-	 */
-	public function test_class_version() {
-		self::assertSame( PARSELY_VERSION, \Parsely::VERSION );
 	}
 
 	/**
@@ -68,16 +59,7 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely::get_options
 	 */
 	public function test_cache_buster() {
-		self::assertSame( PARSELY_VERSION, \Parsely::get_asset_cache_buster() );
-	}
-
-	/**
-	 * Test plugin URL constant is defined and populated.
-	 *
-	 * @coversNothing
-	 */
-	public function test_plugin_url_constant() {
-		self::assertTrue( defined( 'PARSELY_PLUGIN_URL' ) && is_string( PARSELY_PLUGIN_URL ) && PARSELY_PLUGIN_URL !== '' );
+		self::assertSame( \Parsely::VERSION, \Parsely::get_asset_cache_buster() );
 	}
 
 	/**
@@ -85,6 +67,8 @@ final class OtherTest extends TestCase {
 	 *
 	 * @covers \Parsely::register_js
 	 * @uses \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group insert-js
@@ -129,6 +113,8 @@ final class OtherTest extends TestCase {
 	 *
 	 * @covers \Parsely::load_js_tracker
 	 * @uses \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
 	 * @uses \Parsely::register_js
@@ -159,7 +145,7 @@ final class OtherTest extends TestCase {
 		$output = ob_get_clean();
 
 		self::assertSame(
-			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
+			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . \Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tag was printed correctly'
 		);
@@ -169,6 +155,8 @@ final class OtherTest extends TestCase {
 	 * Test the API init script enqueue.
 	 *
 	 * @covers \Parsely::load_js_api
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::register_js
@@ -208,6 +196,8 @@ final class OtherTest extends TestCase {
 	 * Test the API init script enqueue.
 	 *
 	 * @covers \Parsely::load_js_api
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::register_js
@@ -241,7 +231,7 @@ final class OtherTest extends TestCase {
 		$output = ob_get_clean();
 
 
-		self::assertContains(
+		self::assertStringContainsString(
 			"<script type='text/javascript' id='wp-parsely-api-js-extra'>
 /* <![CDATA[ */
 var wpParsely = {\"apikey\":\"blog.parsely.com\"};
@@ -251,8 +241,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 			'Failed to confirm "localized" data were embedded'
 		);
 
-		self::assertContains(
-			"<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( PARSELY_PLUGIN_URL ) . 'build/init-api.js?ver=' . PARSELY_VERSION . "' id='wp-parsely-api-js'></script>",
+		self::assertStringContainsString(
+			"<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( plugin_dir_url( PARSELY_FILE ) ) . 'build/init-api.js?ver=' . \Parsely::VERSION . "' id='wp-parsely-api-js'></script>",
 			$output,
 			'Failed to confirm script tag was printed correctly'
 		);
@@ -311,6 +301,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Make sure users can log in.
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::parsely_is_user_logged_in
 	 * @group insert-js
@@ -365,6 +357,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Make sure users can log in to more than one site.
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::parsely_is_user_logged_in
@@ -454,7 +448,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$output = ob_get_clean();
 
 		self::assertSame(
-			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . PARSELY_VERSION . "' id=\"parsely-cfg\"></script>\n",
+			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . \Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tags were printed correctly'
 		);
@@ -465,6 +459,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * When it returns false, the tracking script should not be enqueued.
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
 	 * @uses \Parsely::update_metadata_endpoint
@@ -504,6 +500,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @expectedDeprecated parsely_filter_insert_javascript
 	 *
 	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
 	 * @uses \Parsely::update_metadata_endpoint
@@ -615,6 +613,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Test that test_display_admin_warning action doesn't return a warning when there is a key
 	 *
 	 * @covers \Parsely::should_display_admin_warning
+	 * @uses \Parsely::get_options
 	 */
 	public function test_display_admin_warning_with_key() {
 		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );

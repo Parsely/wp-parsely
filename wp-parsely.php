@@ -26,34 +26,24 @@ use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;
 
-// If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
-}
-
 if ( class_exists( 'Parsely' ) ) {
 	return;
 }
 
 define( 'PARSELY_VERSION', '2.6.0-alpha' );
+define( 'PARSELY_FILE', __FILE__ );
 
-if ( ! defined( 'PARSELY_PLUGIN_BASENAME' ) ) {
-	define( 'PARSELY_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-}
-if ( ! defined( 'PARSELY_PLUGIN_DIR' ) ) {
-	define( 'PARSELY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-}
-if ( ! defined( 'PARSELY_PLUGIN_URL' ) ) {
-	define( 'PARSELY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-}
-
-require PARSELY_PLUGIN_DIR . 'src/class-parsely.php';
-
-$GLOBALS['parsely'] = new Parsely();
-$GLOBALS['parsely']->run();
+require __DIR__ . '/src/class-parsely.php';
+add_action(
+	'plugins_loaded',
+	function() {
+		$GLOBALS['parsely'] = new Parsely();
+		$GLOBALS['parsely']->run();
+	}
+);
 
 // Until auto-loading happens, we need to include this file for tests as well.
-require PARSELY_PLUGIN_DIR . 'src/UI/class-plugins-actions.php';
+require __DIR__ . '/src/UI/class-plugins-actions.php';
 add_action(
 	'admin_init',
 	function() {
@@ -62,7 +52,7 @@ add_action(
 	}
 );
 
-require PARSELY_PLUGIN_DIR . 'src/class-parsely-recommended-widget.php';
+require __DIR__ . '/src/class-parsely-recommended-widget.php';
 
 add_action( 'widgets_init', 'parsely_recommended_widget_register' );
 /**

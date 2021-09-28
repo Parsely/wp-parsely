@@ -5,7 +5,7 @@
  * @package Parsely\Tests
  */
 
-namespace Parsely\Tests\StructuredData;
+namespace Parsely\Tests\Integration\StructuredData;
 
 /**
  * Structured Data Tests for the home page.
@@ -17,8 +17,8 @@ final class HomePageTest extends NonPostTestCase {
 	/**
 	 * Runs the routine before each test is executed.
 	 */
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		update_option( 'show_on_front', 'posts' );
 		delete_option( 'page_for_posts' );

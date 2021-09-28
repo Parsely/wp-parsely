@@ -21,7 +21,7 @@ class Plugins_Actions {
 	 * Register action and filter hook callbacks.
 	 */
 	public function run() {
-		add_filter( 'plugin_action_links_' . PARSELY_PLUGIN_BASENAME, array( $this, 'add_plugin_meta_links' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( PARSELY_FILE ), array( $this, 'add_plugin_meta_links' ) );
 	}
 
 	/**

@@ -206,7 +206,7 @@ class Parsely {
 	 * Initialize parsely WordPress style
 	 */
 	public function wp_parsely_style_init() {
-		wp_register_style( 'wp-parsely-style', PARSELY_PLUGIN_URL . 'wp-parsely.css', array(), self::VERSION );
+		wp_register_style( 'wp-parsely-style', plugin_dir_url( PARSELY_FILE ) . 'wp-parsely.css', array(), self::VERSION );
 	}
 
 	/**
@@ -223,10 +223,10 @@ class Parsely {
 </style>
 ';
 
-		$admin_script_asset = require PARSELY_PLUGIN_DIR . 'build/admin-page.asset.php';
+		$admin_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';
 		wp_enqueue_script(
 			'wp-parsely-admin',
-			PARSELY_PLUGIN_URL . 'build/admin-page.js',
+			plugin_dir_url( PARSELY_FILE ) . 'build/admin-page.js',
 			$admin_script_asset['dependencies'],
 			self::get_asset_cache_buster(),
 			true
@@ -260,7 +260,7 @@ class Parsely {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
 
-		include PARSELY_PLUGIN_DIR . 'src/parsely-settings.php';
+		include plugin_dir_path( PARSELY_FILE ) . 'src/parsely-settings.php';
 	}
 
 	/**
@@ -888,7 +888,7 @@ class Parsely {
 
 		// Insert JSON-LD or repeated metas.
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
-			include PARSELY_PLUGIN_DIR . 'views/json-ld.php';
+			include plugin_dir_path( PARSELY_FILE ) . 'views/json-ld.php';
 		} else {
 			// Assume `meta_type` is `repeated_metas`.
 			$parsely_post_type = $this->convert_jsonld_to_parsely_type( $parsely_page['@type'] );
@@ -913,12 +913,12 @@ class Parsely {
 				$parsely_page_authors = array_filter( $parsely_page_authors, array( $this, 'filter_empty_and_not_string_from_array' ) );
 			}
 
-			include PARSELY_PLUGIN_DIR . 'views/repeated-metas.php';
+			include plugin_dir_path( PARSELY_FILE ) . 'views/repeated-metas.php';
 		}
 
 		// Add any custom metadata.
 		if ( isset( $parsely_page['custom_metadata'] ) ) {
-			include PARSELY_PLUGIN_DIR . 'views/custom-metadata.php';
+			include plugin_dir_path( PARSELY_FILE ) . 'views/custom-metadata.php';
 		}
 
 		echo '<!-- END Parse.ly -->' . "\n\n";
@@ -1336,10 +1336,10 @@ class Parsely {
 			true
 		);
 
-		$api_script_asset = require PARSELY_PLUGIN_DIR . 'build/init-api.asset.php';
+		$api_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/init-api.asset.php';
 		wp_register_script(
 			'wp-parsely-api',
-			PARSELY_PLUGIN_URL . 'build/init-api.js',
+			plugin_dir_url( PARSELY_FILE ) . 'build/init-api.js',
 			$api_script_asset['dependencies'],
 			self::get_asset_cache_buster(),
 			true
