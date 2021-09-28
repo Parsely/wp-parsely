@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2021-09-29
+
+### Added
+
+- Feature/improve test environment #411
+- Leverage the WordPress e2e testing framework to run end-to-end tests against the plugin #360
+- Add a step to the node CI test to confirm built scripts are included in the change #374
+- Using npm caching on GitHub Actions #388
+- Add e2e test for the plugin action link #403
+- API Key: Add utility method for checking it is set #404
+
+### Changed
+
+- Split out row action link logic #406
+- Split out plugin actions links logic #401
+- Integrations: Extract into separate classes #345
+- Simplifying get_options function #382
+- Tests: Rename final *-test.php file to *Test.php #384
+- Tests: Improve the get_current_url data provider #383
+- Improving reliability of get_current_url tests #398
+- Testcase: Allow getMethod() to use different class #405
+- Bump prettier from 2.3.2 to 2.4.1 #376
+- Bump @wordpress/scripts from 17.1.0 to 18.0.1 #366
+
+### Fixed 
+
+- Widget: Hide the recommendation widget until the element is populated #193
+- Add conditional for CPT archives and CPT term archives #328
+- Fix rendering errors when rendering multiple recommendation widgets #397
+- Hide admin warning on network admin #392
+- Remove jQuery from Recommended Widget #385
+- Change red color in admin to match wp-admin styles #386
+- Remove unused default logo variable #387
+- Remove unused return_personalized_json function #391
+
+### Deprecated
+
+- Adding 3.0 upgrade notice on README #400
+- Add admin warning for minimum requirements in 3.0 #408
+
 ## [2.5.2] - 2021-09-17
 
 ### Changed
@@ -290,6 +330,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial version.
 - Add sSupport for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
+[2.6.0]: https://github.com/Parsely/wp-parsely/compare/2.5.2...2.6.0
 [2.5.2]: https://github.com/Parsely/wp-parsely/compare/2.5.1...2.5.2
 [2.5.1]: https://github.com/Parsely/wp-parsely/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/Parsely/wp-parsely/compare/2.4.1...2.5.0
