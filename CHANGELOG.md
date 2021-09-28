@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Feature/improve test environment #411
+- Improve the test environment #411
 - Leverage the WordPress e2e testing framework to run end-to-end tests against the plugin #360
 - Add a step to the node CI test to confirm built scripts are included in the change #374
 - Using npm caching on GitHub Actions #388
