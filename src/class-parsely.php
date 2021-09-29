@@ -908,27 +908,6 @@ class Parsely {
 	}
 
 	/**
-	 * Check if the post's type is "publicly queryable."
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param int|WP_Post $post Which post object or ID to check.
-	 * @return bool Is the provided post's type considered "public."
-	 */
-	public static function post_has_viewable_type( $post ) {
-		if ( function_exists( 'is_post_type_viewable' ) ) {
-			return is_post_type_viewable( $post->post_type );
-		}
-
-		/**
-		 * `is_post_type_viewable` was added in WordPress 4.4
-		 * The rest of this function approximates it until we bump the plugin min. version above it.
-		 */
-		$post_type = get_post_type_object( $post->post_type );
-		return $post_type->publicly_queryable || ( $post_type->_builtin && $post_type->public );
-	}
-
-	/**
 	 * Creates parsely metadata object from post metadata.
 	 *
 	 * @param array   $parsely_options parsely_options array.

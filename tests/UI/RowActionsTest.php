@@ -78,7 +78,6 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::api_key_is_missing
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::post_has_viewable_type
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
@@ -104,7 +103,6 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::api_key_is_missing
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::post_has_viewable_type
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
@@ -133,7 +131,6 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::api_key_is_missing
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::post_has_viewable_type
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
@@ -162,7 +159,6 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::api_key_is_missing
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::post_has_viewable_type
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
@@ -198,7 +194,6 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::get_api_key
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::post_has_viewable_type
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
@@ -235,7 +230,6 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::get_api_key
 	 * @uses \Parsely::get_options
 	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::post_has_viewable_type
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */

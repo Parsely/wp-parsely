@@ -89,7 +89,7 @@ final class Row_Actions {
 	private function cannot_show_parsely_link( $actions, WP_Post $post ) {
 		return ! is_array( $actions ) ||
 			! Parsely::post_has_trackable_status( $post ) ||
-			! Parsely::post_has_viewable_type( $post ) ||
+			! is_post_type_viewable( $post->post_type ) ||
 			$this->parsely->api_key_is_missing();
 	}
 
