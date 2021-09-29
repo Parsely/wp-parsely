@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://www.parse.ly/help/integration/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
- * Version:           2.5.2
+ * Version:           2.6.0
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -22,33 +22,42 @@
  * Requires WP:       4.0.0
  */
 
-// If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
-}
+use Parsely\Integrations\Amp;
+use Parsely\Integrations\Facebook_Instant_Articles;
+use Parsely\Integrations\Integrations;
+use Parsely\UI\Row_Actions;
 
 if ( class_exists( 'Parsely' ) ) {
 	return;
 }
 
-define( 'PARSELY_VERSION', '2.5.2' );
+define( 'PARSELY_VERSION', '2.6.0' );
+define( 'PARSELY_FILE', __FILE__ );
 
-if ( ! defined( 'PARSELY_PLUGIN_BASENAME' ) ) {
-	define( 'PARSELY_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-}
-if ( ! defined( 'PARSELY_PLUGIN_DIR' ) ) {
-	define( 'PARSELY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-}
-if ( ! defined( 'PARSELY_PLUGIN_URL' ) ) {
-	define( 'PARSELY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-}
+require __DIR__ . '/src/class-parsely.php';
+add_action(
+	'plugins_loaded',
+	function() {
+		$GLOBALS['parsely'] = new Parsely();
+		$GLOBALS['parsely']->run();
+	}
+);
 
-require PARSELY_PLUGIN_DIR . 'src/class-parsely.php';
+// Until auto-loading happens, we need to include this file for tests as well.
+require __DIR__ . '/src/UI/class-plugins-actions.php';
+require __DIR__ . '/src/UI/class-row-actions.php';
+add_action(
+	'admin_init',
+	function() {
+		$GLOBALS['parsely_ui_plugins_actions'] = new Parsely\UI\Plugins_Actions();
+		$GLOBALS['parsely_ui_plugins_actions']->run();
 
-$GLOBALS['parsely'] = new Parsely();
-$GLOBALS['parsely']->run();
+		$row_actions = new Row_Actions( $GLOBALS['parsely'] );
+		$row_actions->run();
+	}
+);
 
-require PARSELY_PLUGIN_DIR . 'src/class-parsely-recommended-widget.php';
+require __DIR__ . '/src/class-parsely-recommended-widget.php';
 
 add_action( 'widgets_init', 'parsely_recommended_widget_register' );
 /**
@@ -72,4 +81,25 @@ add_action( 'init', 'parsely_load_textdomain' );
  */
 function parsely_load_textdomain() {
 	load_plugin_textdomain( 'wp-parsely' );
+}
+
+require __DIR__ . '/src/Integrations/class-integration.php';
+require __DIR__ . '/src/Integrations/class-integrations.php';
+require __DIR__ . '/src/Integrations/class-amp.php';
+require __DIR__ . '/src/Integrations/class-facebook-instant-articles.php';
+
+add_action( 'init', 'parsely_integrations' );
+/**
+ * Instantiate Integrations collection and register built-in integrations.
+ *
+ * @since 2.6.0
+ */
+function parsely_integrations() {
+	$parsely_integrations = new Integrations();
+	$parsely_integrations->register( 'amp', Amp::class );
+	$parsely_integrations->register( 'fbia', Facebook_Instant_Articles::class );
+	$parsely_integrations = apply_filters( 'wp_parsely_add_integration', $parsely_integrations );
+	$parsely_integrations->integrate();
+
+	return $parsely_integrations;
 }
