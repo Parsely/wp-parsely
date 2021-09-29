@@ -18,8 +18,8 @@
  * License:           GPL-2.0-or-later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * GitHub Plugin URI: https://github.com/Parsely/wp-parsely
- * Requires PHP:      5.6
- * Requires WP:       4.0.0
+ * Requires PHP:      7.1
+ * Requires WP:       5.0.0
  */
 
 use Parsely\Integrations\Amp;

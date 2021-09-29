@@ -32,7 +32,7 @@ When creating a new issue, please add specific steps to reproduce the problem, u
 
   This is important to maintain the integrity of the `package-lock.json` file (we use [`lockfileVersion` 2](https://docs.npmjs.com/cli/v7/configuring-npm/package-lock-json#lockfileversion)).
 
-- PHP - 5.6–8.0
+- PHP - 7.1–8.0
 
   There are multiple ways to install PHP on your operating system. You can check out the [official installation instructions from the PHP project's website.](https://www.php.net/manual/en/install.php)
 
@@ -40,7 +40,7 @@ When creating a new issue, please add specific steps to reproduce the problem, u
 
   The Parse.ly plugin includes several packages that require Composer, the PHP package manager. You can view the [composer.json](https://github.com/Parsely/wp-parsely/blob/develop/composer.json) file for a full list of packages. You can install Composer through Homebrew on macOS: `brew install composer`. If you don't have access to Homebrew you can view instructions for how to install Composer on the [Composer website](https://getcomposer.org/download/).
 
-- WordPress - 4.0
+- WordPress - 5.0
 
 ### Installing Dependencies
 
