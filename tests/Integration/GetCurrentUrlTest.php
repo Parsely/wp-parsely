@@ -5,6 +5,8 @@
  * @package Parsely\Tests
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Tests\Integration;
 
 use Parsely;

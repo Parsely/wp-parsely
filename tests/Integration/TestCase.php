@@ -6,6 +6,8 @@
  * @license GPL-2.0-or-later
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Tests\Integration;
 
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;

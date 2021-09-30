@@ -6,6 +6,8 @@
  * @since 2.6.0
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Integrations;
 
 /**
