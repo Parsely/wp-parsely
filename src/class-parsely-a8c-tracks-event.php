@@ -3,8 +3,10 @@
  * Parsely_A8c_Tracks_Event class
  *
  * @package Parsely
- * @since 2.6.0
+ * @since 3.0.0
  */
+
+declare(strict_types=1);
 
 /**
  * Instances of this class are fit for recording to the Automattic Tracks system (unless an error occurs during instantiation).

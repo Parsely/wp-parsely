@@ -3,8 +3,10 @@
  * Parsely_Telemetry class
  *
  * @package Parsely
- * @since 2.6.0
+ * @since 3.0.0
  */
+
+declare(strict_types=1);
 
 /**
  * This class comprises the mechanics of setting up the back end tracking instance(s).

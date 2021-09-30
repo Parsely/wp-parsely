@@ -3,8 +3,10 @@
  * Parsely_A8c_Tracks class
  *
  * @package Parsely
- * @since 2.6.0
+ * @since 3.0.0
  */
+
+declare(strict_types=1);
 
 /**
  * This class comprises the mechanics of sending events to the Automattic Tracks system.
