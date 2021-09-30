@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\StructuredData;
+namespace Parsely\Tests\Integration\StructuredData;
 
 /**
  * Structured Data Tests for the custom taxonomy term (archive).

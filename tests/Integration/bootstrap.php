@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+namespace Parsely\Tests\Integration;
+
 use Yoast\WPTestUtils\WPIntegration;
 
 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound

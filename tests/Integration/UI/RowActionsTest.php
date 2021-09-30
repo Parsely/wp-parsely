@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\UI;
+namespace Parsely\Tests\Integration\UI;
 
 use Parsely;
-use Parsely\Tests\TestCase;
+use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Row_Actions;
 
 /**

@@ -12,10 +12,7 @@
 declare(strict_types=1);
 
 /**
- * This is the class for the recommended widget
- *
- * @category   Class
- * @package    Parsely_Recommended_Widget
+ * This is the class for the recommended widget.
  */
 class Parsely_Recommended_Widget extends WP_Widget {
 	/**
