@@ -6,6 +6,8 @@
  * @since 2.5.0
  */
 
+declare(strict_types=1);
+
 /**
  * Holds most of the logic for the plugin.
  *

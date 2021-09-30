@@ -5,6 +5,8 @@
  * @package Parsely
  */
 
+declare(strict_types=1);
+
 use Yoast\WPTestUtils\WPIntegration;
 
 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
