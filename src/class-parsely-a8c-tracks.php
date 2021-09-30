@@ -82,7 +82,7 @@ class Parsely_A8c_Tracks {
 				$_event_props[ $key ] = $value;
 				continue;
 			}
-			$_event_props[ $key ] = json_encode( $value );
+			$_event_props[ $key ] = wp_json_encode( $value );
 		}
 
 		$event = array_merge(

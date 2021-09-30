@@ -87,7 +87,7 @@ class Parsely_Telemetry {
 					function( $carry, $key ) use ( $old_value, $value ) {
 						if (
 							isset( $old_value[ $key ] ) === isset( $value[ $key ] ) &&
-							json_encode( $old_value[ $key ] ) === json_encode( $value[ $key ] )
+							wp_json_encode( $old_value[ $key ] ) === wp_json_encode( $value[ $key ] )
 						) {
 							return $carry;
 						}
@@ -154,7 +154,7 @@ class Parsely_Telemetry {
 					function( $carry, $key ) use ( $old_instance, $instance ) {
 						if (
 						isset( $old_instance[ $key ] ) === isset( $instance[ $key ] ) &&
-						json_encode( $old_instance[ $key ] ) === json_encode( $instance[ $key ] )
+						wp_json_encode( $old_instance[ $key ] ) === wp_json_encode( $instance[ $key ] )
 						) {
 							return $carry;
 						}
