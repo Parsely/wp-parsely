@@ -9,6 +9,8 @@
  * @subpackage Parse.ly
  */
 
+declare(strict_types=1);
+
 /**
  * This is the class for the recommended widget
  *
