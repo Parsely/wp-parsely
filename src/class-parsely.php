@@ -1424,9 +1424,9 @@ class Parsely {
 		$name           = $args['option_key'];
 		$select_options = $args['select_options'];
 		$multiple       = $args['multiple'] ?? false;
-		$selected = $options[ $name ] ?? null;
-		$id       = esc_attr( $name );
-		$name     = self::OPTIONS_KEY . "[$id]";
+		$selected       = $options[ $name ] ?? null;
+		$id             = esc_attr( $name );
+		$name           = self::OPTIONS_KEY . "[$id]";
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
