@@ -5,7 +5,9 @@
  * @package Parsely\Tests
  */
 
-namespace Parsely\Tests;
+declare(strict_types=1);
+
+namespace Parsely\Tests\Integration;
 
 use Parsely;
 
@@ -96,7 +98,9 @@ final class GetCurrentUrlTest extends TestCase {
 	/**
 	 * Test the get_current_url() method.
 	 *
-	 * @testdox Given Force HTTPS is $force_https, when home is $home, then expect $expected.
+	 * Assert that homepage, a specific page, and a random URL return the expected URL.
+	 *
+	 * @testdox Given Force HTTPS is $force_https, when home is $home, then expect URLs starting with $expected.
 	 * @dataProvider data_for_test_get_current_url
 	 * @covers \Parsely::get_current_url
 	 * @uses \Parsely::get_options
@@ -107,28 +111,55 @@ final class GetCurrentUrlTest extends TestCase {
 	 * @param string $expected    Expected current URL.
 	 */
 	public function test_get_current_url( $force_https, $home, $expected ) {
-		$parsely                           = new Parsely();
-		$options                           = get_option( Parsely::OPTIONS_KEY );
-		$options['force_https_canonicals'] = $force_https;
-		update_option( Parsely::OPTIONS_KEY, $options );
-
+		$this->set_options( array( 'force_https_canonicals' => $force_https ) );
 		update_option( 'home', $home );
 
-		// Test homepage.
-		$this->go_to( '/' );
-		$res = $parsely->get_current_url();
-		self::assertStringStartsWith( $expected, $res );
+		$this->assertCurrentUrlForHomepage( $expected );
+		$this->assertCurrentUrlForSpecificPostWithId( $expected );
+		$this->assertCurrentUrlForRandomUrl( $expected );
+	}
 
-		// Test a specific post.
+	/**
+	 * Assert the correct current URL for the homepage.
+	 *
+	 * @param string $expected Expected start of the URL.
+	 */
+	private function assertCurrentUrlForHomepage( $expected ) {
+		$this->go_to( '/' );
+
+		$parsely = new Parsely();
+		$res     = $parsely->get_current_url();
+
+		self::assertEquals( $expected . '/', $res, 'Homepage page does not match.' );
+	}
+
+	/**
+	 * Assert the correct current URL for a post by ID.
+	 *
+	 * @param string $expected Expected start of the URL.
+	 */
+	private function assertCurrentUrlForSpecificPostWithId( $expected ) {
 		$post_array = $this->create_test_post_array();
 		$post_id    = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post_id );
-		$res = $parsely->get_current_url( 'post', $post_id );
-		self::assertStringStartsWith( $expected, $res );
 
-		// Test a random URL.
-		$this->go_to( '/random-url' );
+		$parsely = new Parsely();
+		$res     = $parsely->get_current_url( 'post', $post_id );
+
+		self::assertEquals( $expected . '/?p=' . $post_id, $res, 'Specific post by ID does not match.' );
+	}
+
+	/**
+	 * Assert the correct current URL for a random URL with trailing slash.
+	 *
+	 * @param string $expected Expected start of the URL.
+	 */
+	private function assertCurrentUrlForRandomUrl( $expected ) {
+		$parsely = new Parsely();
+		$this->go_to( '/random/url/' );
 		$res = $parsely->get_current_url();
-		self::assertStringStartsWith( $expected, $res );
+
+		$constructed_expected = $expected . '/random/url/';
+		self::assertEquals( $constructed_expected, $res, 'Random URL does not match.' );
 	}
 }

@@ -5,11 +5,13 @@
  * @package Parsely\Tests\Integrations
  */
 
-namespace Parsely\Tests\Integrations;
+declare(strict_types=1);
+
+namespace Parsely\Tests\Integration\Integrations;
 
 use Parsely;
-use Parsely\Tests\TestCase;
 use Parsely\Integrations\Amp;
+use Parsely\Tests\Integration\TestCase;
 
 /**
  * Test AMP integration.

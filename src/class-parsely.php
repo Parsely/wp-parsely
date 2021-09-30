@@ -6,6 +6,8 @@
  * @since 2.5.0
  */
 
+declare(strict_types=1);
+
 /**
  * Holds most of the logic for the plugin.
  *
@@ -26,7 +28,7 @@ class Parsely {
 	const CAPABILITY  = 'manage_options';      // The capability required for the user to administer settings.
 
 	/**
-	 * Declare some class propeties
+	 * Declare some class properties
 	 *
 	 * @var array $option_defaults The defaults we need for the class.
 	 */
@@ -111,21 +113,12 @@ class Parsely {
 		add_action( 'admin_head-settings_page_parsely', array( $this, 'add_admin_header' ) );
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
+
 		// display warning when plugin hasn't been configured.
 		add_action( 'admin_footer', array( $this, 'display_admin_warning' ) );
 
-		add_filter(
-			'plugin_action_links_' . PARSELY_PLUGIN_BASENAME,
-			array( $this, 'add_plugin_meta_links' )
-		);
-
 		// phpcs:ignore WordPress.WP.CronInterval.CronSchedulesInterval
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
-
-		if ( apply_filters( 'wp_parsely_enable_row_action_links', false ) ) {
-			add_filter( 'post_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
-			add_filter( 'page_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
-		}
 
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		// inserting parsely code.
@@ -141,65 +134,7 @@ class Parsely {
 	}
 
 	/**
-	 * Include a link to the statistics page for an article in the wp-admin Posts List.
-	 * If the post object is the "front page," this will include the main dashboard link instead.
-	 *
-	 * @see https://developer.wordpress.org/reference/hooks/page_row_actions/
-	 * @see https://developer.wordpress.org/reference/hooks/post_row_actions/
-	 * @param array<string, string> $actions The existing list of actions.
-	 * @param WP_Post               $post    The individual post object the actions apply to.
-	 * @return array<string, string> The amended list of actions.
-	 */
-	public function row_actions_add_parsely_link( $actions, $post ) {
-		if ( ! is_array( $actions ) ) {
-			return $actions;
-		}
-
-		if ( ! self::post_has_trackable_status( $post ) ) {
-			return $actions;
-		}
-
-		if ( ! self::post_has_viewable_type( $post ) ) {
-			return $actions;
-		}
-
-		$options = $this->get_options();
-		if ( ! (
-			isset( $options['apikey'] ) &&
-			is_string( $options['apikey'] ) &&
-			strlen( $options['apikey'] ) > 0
-		) ) {
-			return $actions;
-		}
-
-		$parsely_url = add_query_arg(
-			array(
-				'url'          => rawurlencode( get_permalink( $post ) ),
-				'utm_campaign' => 'wp-admin-posts-list',
-				'utm_medium'   => 'wp-parsely',
-				'utm_source'   => 'wp-admin',
-			),
-			trailingslashit( 'https://dash.parsely.com/' . $options['apikey'] ) . 'find'
-		);
-
-		$aria_label = sprintf(
-				/* translators: Post title */
-			__( 'Go to Parse.ly stats for "%s"', 'wp-parsely' ),
-			$post->post_title
-		);
-
-		$actions['find_in_parsely'] = sprintf(
-			'<a href="%1$s" aria-label="%2$s">%3$s</a>',
-			esc_url( $parsely_url ),
-			esc_attr( $aria_label ),
-			esc_html__( 'Parse.ly&nbsp;Stats', 'wp-parsely' )
-		);
-
-		return $actions;
-	}
-
-	/**
-	 * Adds 10 minute cron interval
+	 * Adds 10 minute cron interval.
 	 *
 	 * @param array $schedules WP schedules array.
 	 */
@@ -215,7 +150,7 @@ class Parsely {
 	 * Initialize parsely WordPress style
 	 */
 	public function wp_parsely_style_init() {
-		wp_register_style( 'wp-parsely-style', PARSELY_PLUGIN_URL . 'wp-parsely.css', array(), self::VERSION );
+		wp_register_style( 'wp-parsely-style', plugin_dir_url( PARSELY_FILE ) . 'wp-parsely.css', array(), self::VERSION );
 	}
 
 	/**
@@ -232,10 +167,10 @@ class Parsely {
 </style>
 ';
 
-		$admin_script_asset = require PARSELY_PLUGIN_DIR . 'build/admin-page.asset.php';
+		$admin_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';
 		wp_enqueue_script(
 			'wp-parsely-admin',
-			PARSELY_PLUGIN_URL . 'build/admin-page.js',
+			plugin_dir_url( PARSELY_FILE ) . 'build/admin-page.js',
 			$admin_script_asset['dependencies'],
 			self::get_asset_cache_buster(),
 			true
@@ -269,7 +204,7 @@ class Parsely {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
 
-		include PARSELY_PLUGIN_DIR . 'src/parsely-settings.php';
+		include plugin_dir_path( PARSELY_FILE ) . 'src/parsely-settings.php';
 	}
 
 	/**
@@ -781,38 +716,41 @@ class Parsely {
 	}
 
 	/**
-	 * Adds a 'Settings' link to the Plugins screen in WP admin
-	 *
-	 * @category   Function
-	 * @package    Parsely
-	 * @param array $links The links to add.
-	 */
-	public function add_plugin_meta_links( $links ) {
-		array_unshift( $links, '<a href="' . esc_url( $this->get_settings_url() ) . '">' . __( 'Settings', 'wp-parsely' ) . '</a>' );
-		return $links;
-	}
-
-	/**
 	 * Display the admin warning if needed
 	 *
 	 * @category   Function
 	 * @package    Parsely
 	 */
 	public function display_admin_warning() {
-		$options = $this->get_options();
-
-		if ( isset( $options['apikey'] ) && ! empty( $options['apikey'] ) ) {
+		if ( ! $this->should_display_admin_warning() ) {
 			return;
 		}
 
 		$message = sprintf(
-				/* translators: %s: Plugin settings page URL */
+			/* translators: %s: Plugin settings page URL */
 			__( '<strong>The Parse.ly plugin is not active.</strong> You need to <a href="%s">provide your Parse.ly Dash Site ID</a> before things get cooking.', 'wp-parsely' ),
-			esc_url( $this->get_settings_url() )
+			esc_url( self::get_settings_url() )
 		);
 		?>
 		<div id="message" class="error"><p><?php echo wp_kses_post( $message ); ?></p></div>
 		<?php
+	}
+
+	/**
+	 * Decide whether the admin display warning should be displayed
+	 *
+	 * @category Function
+	 * @package Parsely
+	 *
+	 * @return bool True if the admin warning should be displayed
+	 */
+	private function should_display_admin_warning() {
+		if ( is_network_admin() ) {
+			return false;
+		}
+
+		$options = $this->get_options();
+		return empty( $options['apikey'] );
 	}
 
 	/**
@@ -844,8 +782,7 @@ class Parsely {
 		$parsely_options = $this->get_options();
 
 		if (
-			// No API key.
-			empty( $parsely_options['apikey'] ) ||
+			$this->api_key_is_missing() ||
 
 			// Chosen not to track logged in users.
 			( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
@@ -873,7 +810,7 @@ class Parsely {
 
 		// Insert JSON-LD or repeated metas.
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
-			include PARSELY_PLUGIN_DIR . 'views/json-ld.php';
+			include plugin_dir_path( PARSELY_FILE ) . 'views/json-ld.php';
 		} else {
 			// Assume `meta_type` is `repeated_metas`.
 			$parsely_post_type = $this->convert_jsonld_to_parsely_type( $parsely_page['@type'] );
@@ -882,13 +819,13 @@ class Parsely {
 			}
 
 			$parsely_metas = array(
-				'title'     => isset( $parsely_page['headline'] ) ? $parsely_page['headline'] : null,
-				'link'      => isset( $parsely_page['url'] ) ? $parsely_page['url'] : null,
+				'title'     => $parsely_page['headline'] ?? null,
+				'link'      => $parsely_page['url'] ?? null,
 				'type'      => $parsely_post_type,
-				'image-url' => isset( $parsely_page['thumbnailUrl'] ) ? $parsely_page['thumbnailUrl'] : null,
-				'pub-date'  => isset( $parsely_page['datePublished'] ) ? $parsely_page['datePublished'] : null,
-				'section'   => isset( $parsely_page['articleSection'] ) ? $parsely_page['articleSection'] : null,
-				'tags'      => isset( $parsely_page['keywords'] ) ? $parsely_page['keywords'] : null,
+				'image-url' => $parsely_page['thumbnailUrl'] ?? null,
+				'pub-date'  => $parsely_page['datePublished'] ?? null,
+				'section'   => $parsely_page['articleSection'] ?? null,
+				'tags'      => $parsely_page['keywords'] ?? null,
 				'author'    => isset( $parsely_page['author'] ),
 			);
 			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
@@ -898,12 +835,12 @@ class Parsely {
 				$parsely_page_authors = array_filter( $parsely_page_authors, array( $this, 'filter_empty_and_not_string_from_array' ) );
 			}
 
-			include PARSELY_PLUGIN_DIR . 'views/repeated-metas.php';
+			include plugin_dir_path( PARSELY_FILE ) . 'views/repeated-metas.php';
 		}
 
 		// Add any custom metadata.
 		if ( isset( $parsely_page['custom_metadata'] ) ) {
-			include PARSELY_PLUGIN_DIR . 'views/custom-metadata.php';
+			include plugin_dir_path( PARSELY_FILE ) . 'views/custom-metadata.php';
 		}
 
 		echo '<!-- END Parse.ly -->' . "\n\n";
@@ -952,27 +889,6 @@ class Parsely {
 	}
 
 	/**
-	 * Check if the post's type is "publicly queryable."
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param int|WP_Post $post Which post object or ID to check.
-	 * @return bool Is the provided post's type considered "public."
-	 */
-	public static function post_has_viewable_type( $post ) {
-		if ( function_exists( 'is_post_type_viewable' ) ) {
-			return is_post_type_viewable( $post->post_type );
-		}
-
-		/**
-		 * `is_post_type_viewable` was added in WordPress 4.4
-		 * The rest of this function approximates it until we bump the plugin min. version above it.
-		 */
-		$post_type = get_post_type_object( $post->post_type );
-		return $post_type->publicly_queryable || ( $post_type->_builtin && $post_type->public );
-	}
-
-	/**
 	 * Creates parsely metadata object from post metadata.
 	 *
 	 * @param array   $parsely_options parsely_options array.
@@ -1006,9 +922,8 @@ class Parsely {
 			$author                   = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( 'Author - ' . $author->data->display_name );
 			$parsely_page['url']      = $current_url;
-		} elseif ( is_category() ) {
-			$category                 = get_the_category();
-			$category                 = $category[0];
+		} elseif ( is_category() || is_post_type_archive() || is_tax() ) {
+			$category                 = get_queried_object();
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( $category->name );
 			$parsely_page['url']      = $current_url;
 		} elseif ( is_date() ) {
@@ -1187,7 +1102,7 @@ class Parsely {
 	public function update_metadata_endpoint( $post_id ) {
 		$parsely_options = $this->get_options();
 
-		if ( empty( $parsely_options['apikey'] ) || empty( $parsely_options['metadata_secret'] ) ) {
+		if ( $this->api_key_is_missing() || empty( $parsely_options['metadata_secret'] ) ) {
 			return '';
 		}
 
@@ -1310,8 +1225,7 @@ class Parsely {
 	public function register_js() {
 		$parsely_options = $this->get_options();
 
-		// If we don't have an API key, there's no need to proceed.
-		if ( empty( $parsely_options['apikey'] ) ) {
+		if ( $this->api_key_is_missing() ) {
 			return;
 		}
 
@@ -1323,10 +1237,10 @@ class Parsely {
 			true
 		);
 
-		$api_script_asset = require PARSELY_PLUGIN_DIR . 'build/init-api.asset.php';
+		$api_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/init-api.asset.php';
 		wp_register_script(
 			'wp-parsely-api',
-			PARSELY_PLUGIN_URL . 'build/init-api.js',
+			plugin_dir_url( PARSELY_FILE ) . 'build/init-api.js',
 			$api_script_asset['dependencies'],
 			self::get_asset_cache_buster(),
 			true
@@ -1348,8 +1262,7 @@ class Parsely {
 	 */
 	public function load_js_tracker() {
 		$parsely_options = $this->get_options();
-		// If we don't have an API key, there's no need to proceed.
-		if ( empty( $parsely_options['apikey'] ) || $parsely_options['disable_javascript'] ) {
+		if ( $this->api_key_is_missing() || $parsely_options['disable_javascript'] ) {
 			return;
 		}
 
@@ -1470,14 +1383,10 @@ class Parsely {
 		$options        = $this->get_options();
 		$name           = $args['option_key'];
 		$select_options = $args['select_options'];
-		if ( isset( $args['multiple'] ) ) {
-			$multiple = $args['multiple'];
-		} else {
-			$multiple = false;
-		}
-		$selected = isset( $options[ $name ] ) ? $options[ $name ] : null;
-		$id       = esc_attr( $name );
-		$name     = self::OPTIONS_KEY . "[$id]";
+		$multiple       = $args['multiple'] ?? false;
+		$selected       = $options[ $name ] ?? null;
+		$id             = esc_attr( $name );
+		$name           = self::OPTIONS_KEY . "[$id]";
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
@@ -1594,8 +1503,8 @@ class Parsely {
 	public function print_text_tag( $args ) {
 		$options       = $this->get_options();
 		$name          = $args['option_key'];
-		$value         = isset( $options[ $name ] ) ? $options[ $name ] : '';
-		$optional_args = isset( $args['optional_args'] ) ? $args['optional_args'] : array();
+		$value         = $options[ $name ] ?? '';
+		$optional_args = $args['optional_args'] ?? array();
 		$id            = esc_attr( $name );
 		$name          = self::OPTIONS_KEY . "[$id]";
 		$value         = esc_attr( $value );
@@ -1960,7 +1869,7 @@ class Parsely {
 	/**
 	 * Get the URL of the plugin settings page
 	 */
-	private function get_settings_url() {
+	public static function get_settings_url() {
 		return admin_url( 'options-general.php?page=' . self::MENU_SLUG );
 	}
 
@@ -1975,7 +1884,7 @@ class Parsely {
 	 */
 	public function get_current_url( $parsely_type = 'nonpost', $post_id = 0 ) {
 		if ( 'post' === $parsely_type ) {
-			$permalink = get_permalink( $post_id );
+			$permalink = (string) get_permalink( $post_id );
 
 			/**
 			 * Filters the permalink for a post.
@@ -2044,5 +1953,46 @@ class Parsely {
 	 */
 	public function convert_jsonld_to_parsely_type( $type ) {
 		return in_array( $type, $this->supported_jsonld_post_types ) ? 'post' : 'index';
+	}
+
+	/**
+	 * Determine if an API key is saved in the options.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @return bool True is API key is set, false if it is missing.
+	 */
+	public function api_key_is_set() {
+		$options = $this->get_options();
+
+		return (
+				isset( $options['apikey'] ) &&
+				is_string( $options['apikey'] ) &&
+				'' !== $options['apikey']
+		);
+	}
+
+	/**
+	 * Determine if an API key is not saved in the options.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @return bool True if API key is missing, false if it is set.
+	 */
+	public function api_key_is_missing() {
+		return ! $this->api_key_is_set();
+	}
+
+	/**
+	 * Get the API key if set.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @return string API key if set, or empty string if not.
+	 */
+	public function get_api_key() {
+		$options = $this->get_options();
+
+		return $this->api_key_is_set() ? $options['apikey'] : '';
 	}
 }

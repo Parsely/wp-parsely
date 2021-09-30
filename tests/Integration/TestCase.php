@@ -6,7 +6,9 @@
  * @license GPL-2.0-or-later
  */
 
-namespace Parsely\Tests;
+declare(strict_types=1);
+
+namespace Parsely\Tests\Integration;
 
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
 
@@ -121,5 +123,21 @@ abstract class TestCase extends WPIntegrationTestCase {
 				'taxonomy' => $taxonomy_key,
 			)
 		);
+	}
+
+	/**
+	 * Get a method from the Parsely class. This should be used when trying to access a private method for testing.
+	 *
+	 * @param string $method_name Name of the method to get.
+	 * @param string $class_name  Name of the class the method is in. Can be passed as Foo::class.
+	 *
+	 * @return \ReflectionMethod
+	 * @throws \ReflectionException The method does not exist in the class.
+	 */
+	public static function getMethod( $method_name, $class_name = 'Parsely' ) {
+		$class  = new \ReflectionClass( $class_name );
+		$method = $class->getMethod( $method_name );
+		$method->setAccessible( true );
+		return $method;
 	}
 }

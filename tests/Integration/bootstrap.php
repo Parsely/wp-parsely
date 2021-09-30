@@ -2,8 +2,10 @@
 /**
  * PHPUnit bootstrap file
  *
- * @package wp-parsely
+ * @package Parsely
  */
+
+declare(strict_types=1);
 
 use Yoast\WPTestUtils\WPIntegration;
 
@@ -21,7 +23,7 @@ if ( ! $_tests_dir ) {
 if ( getenv( 'WP_PLUGIN_DIR' ) !== false ) {
 	define( 'WP_PLUGIN_DIR', getenv( 'WP_PLUGIN_DIR' ) );
 } else {
-	define( 'WP_PLUGIN_DIR', dirname( dirname( __DIR__ ) ) );
+	define( 'WP_PLUGIN_DIR', dirname( dirname( dirname( __DIR__ ) ) ) );
 }
 
 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
@@ -29,15 +31,7 @@ $GLOBALS['wp_tests_options'] = array(
 	'active_plugins' => array( 'wp-parsely/wp-parsely.php' ),
 );
 
-require_once dirname( __DIR__ ) . '/vendor/yoast/wp-test-utils/src/WPIntegration/bootstrap-functions.php';
-
-// These two classes needed to satisfy code coverage checks with PHP 8.
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound,Squiz.Commenting.ClassComment.Missing
-class PHP_Token_NAME_QUALIFIED extends PHP_Token {
-}
-// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound,Squiz.Commenting.ClassComment.Missing,Generic.Files.OneObjectStructurePerFile.MultipleFound
-class PHP_Token_NAME_FULLY_QUALIFIED extends PHP_Token {
-}
+require_once dirname( __DIR__ ) . '/../vendor/yoast/wp-test-utils/src/WPIntegration/bootstrap-functions.php';
 
 /*
  * Load WordPress, which will load the Composer autoload file, and load the MockObject autoloader after that.
@@ -52,3 +46,6 @@ if ( ! defined( 'WP_PLUGIN_DIR' ) || file_exists( WP_PLUGIN_DIR . '/wp-parsely/w
 // Include the Parsely custom test cases.
 require_once __DIR__ . '/TestCase.php';
 require_once __DIR__ . '/StructuredData/NonPostTestCase.php';
+
+define( 'PARSELY_VERSION', '123456.78.9' );
+define( 'PARSELY_FILE', __DIR__ . '/../../wp-parsely.php' );

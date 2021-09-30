@@ -5,16 +5,18 @@
  * @package Parsely\Tests
  */
 
-namespace Parsely\Tests;
+declare(strict_types=1);
+
+namespace Parsely\Tests\Integration;
 
 use Parsely_Recommended_Widget;
 
 /**
  * Recommended Widget tests.
  */
-final class Recommended_API_Test extends TestCase {
+final class RecommendedApiTest extends TestCase {
 	/**
-	 * Dataprovider for test_recommended_api_url().
+	 * Data provider for test_recommended_api_url().
 	 *
 	 * @return array[]
 	 */

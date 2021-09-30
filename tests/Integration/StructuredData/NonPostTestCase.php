@@ -5,14 +5,26 @@
  * @package Parsely\Tests
  */
 
-namespace Parsely\Tests\StructuredData;
+declare(strict_types=1);
 
-use Parsely\Tests\TestCase;
+namespace Parsely\Tests\Integration\StructuredData;
+
+use Parsely\Tests\Integration\TestCase;
 
 /**
  * Create a base class that all Structured Data Tests for non-posts should extend.
  */
 abstract class NonPostTestCase extends TestCase {
+	/**
+	 * The setUp run before each test
+	 */
+	public function set_up() {
+		parent::set_up();
+
+		// Set the default options prior to each test.
+		TestCase::set_options();
+	}
+
 	/**
 	 * Utility method to check metadata properties correctly set.
 	 *

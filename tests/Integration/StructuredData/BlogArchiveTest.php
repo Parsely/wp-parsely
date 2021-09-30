@@ -5,7 +5,9 @@
  * @package Parsely\Tests
  */
 
-namespace Parsely\Tests\StructuredData;
+declare(strict_types=1);
+
+namespace Parsely\Tests\Integration\StructuredData;
 
 /**
  * Structured Data Tests for the blog page (archive).

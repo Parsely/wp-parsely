@@ -11,51 +11,58 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://www.parse.ly/help/integration/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
- * Version:           2.6.0-alpha
+ * Version:           3.0.0-alpha
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
  * License:           GPL-2.0-or-later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * GitHub Plugin URI: https://github.com/Parsely/wp-parsely
- * Requires PHP:      5.6
- * Requires WP:       4.0.0
+ * Requires PHP:      7.1
+ * Requires WP:       5.0.0
  */
+
+declare(strict_types=1);
 
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;
-
-// If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
-}
+use Parsely\UI\Row_Actions;
 
 if ( class_exists( 'Parsely' ) ) {
 	return;
 }
 
-define( 'PARSELY_VERSION', '2.6.0-alpha' );
+define( 'PARSELY_VERSION', '3.0.0-alpha' );
+define( 'PARSELY_FILE', __FILE__ );
 
-if ( ! defined( 'PARSELY_PLUGIN_BASENAME' ) ) {
-	define( 'PARSELY_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-}
-if ( ! defined( 'PARSELY_PLUGIN_DIR' ) ) {
-	define( 'PARSELY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-}
-if ( ! defined( 'PARSELY_PLUGIN_URL' ) ) {
-	define( 'PARSELY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-}
+require __DIR__ . '/src/class-parsely.php';
+add_action(
+	'plugins_loaded',
+	function() {
+		$GLOBALS['parsely'] = new Parsely();
+		$GLOBALS['parsely']->run();
+	}
+);
 
-require PARSELY_PLUGIN_DIR . 'src/class-parsely.php';
-require PARSELY_PLUGIN_DIR . 'src/class-parsely-telemetry.php';
-require PARSELY_PLUGIN_DIR . 'src/class-parsely-a8c-tracks.php';
-require PARSELY_PLUGIN_DIR . 'src/class-parsely-a8c-tracks-event.php';
+// Until auto-loading happens, we need to include this file for tests as well.
+require __DIR__ . '/src/class-parsely-telemetry.php';
+require __DIR__ . '/src/class-parsely-a8c-tracks.php';
+require __DIR__ . '/src/class-parsely-a8c-tracks-event.php';
+require __DIR__ . '/src/UI/class-plugins-actions.php';
+require __DIR__ . '/src/UI/class-row-actions.php';
+add_action(
+	'admin_init',
+	function() {
+		$GLOBALS['parsely_ui_plugins_actions'] = new Parsely\UI\Plugins_Actions();
+		$GLOBALS['parsely_ui_plugins_actions']->run();
 
-$GLOBALS['parsely'] = new Parsely();
-$GLOBALS['parsely']->run();
+		$row_actions = new Row_Actions( $GLOBALS['parsely'] );
+		$row_actions->run();
+	}
+);
 
-require PARSELY_PLUGIN_DIR . 'src/class-parsely-recommended-widget.php';
+require __DIR__ . '/src/class-parsely-recommended-widget.php';
 
 add_action( 'widgets_init', 'parsely_recommended_widget_register' );
 /**

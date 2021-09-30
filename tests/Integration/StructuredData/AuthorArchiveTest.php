@@ -1,21 +1,23 @@
 <?php
 /**
- * Structured Data Tests for the term archives.
+ * Structured Data Tests for author archives.
  *
  * @package Parsely\Tests
  */
 
-namespace Parsely\Tests\StructuredData;
+declare(strict_types=1);
+
+namespace Parsely\Tests\Integration\StructuredData;
 
 /**
- * Structured Data Tests for the term archives.
+ * Structured Data Tests for author archives.
  *
  * @see https://www.parse.ly/help/integration/jsonld
  * @covers \Parsely::construct_parsely_metadata
  */
-final class TermArchiveTest extends NonPostTestCase {
+final class AuthorArchiveTest extends NonPostTestCase {
 	/**
-	 * Check metadata for term archive.
+	 * Check metadata for author archive.
 	 *
 	 * @covers \Parsely::construct_parsely_metadata
 	 * @uses \Parsely::get_author_name
@@ -32,7 +34,7 @@ final class TermArchiveTest extends NonPostTestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_term_archive() {
+	public function test_author_archive() {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151.
 		$this->set_permalink_structure( '/%postname%/' );
@@ -41,26 +43,26 @@ final class TermArchiveTest extends NonPostTestCase {
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
-		// Insert a single category term, and a Post with that category.
-		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
-		self::factory()->post->create( array( 'post_category' => array( $category ) ) );
+		// Insert a single user, and a Post assigned to them.
+		$user = self::factory()->user->create( array( 'user_login' => 'parsely' ) );
+		self::factory()->post->create( array( 'post_author' => $user ) );
 
 		// Make a request to that page to set the global $wp_query object.
-		$cat_link = get_category_link( $category );
-		$this->go_to( $cat_link );
+		$author_posts_url = get_author_posts_url( $user );
+		$this->go_to( $author_posts_url );
 
 		// Reset permalinks to default.
 		$this->set_permalink_structure( '' );
 
 		// Create the structured data for that category.
-		// The category metadata doesn't use the post data, but the construction method requires it for now.
+		// The author archive metadata doesn't use the post data, but the construction method requires it for now.
 		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, get_post() );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the category name.
-		self::assertEquals( 'Test Category', $structured_data['headline'] );
-		self::assertEquals( $cat_link, $structured_data['url'] );
+		self::assertEquals( 'Author - parsely', $structured_data['headline'] );
+		self::assertEquals( $author_posts_url, $structured_data['url'] );
 	}
 }

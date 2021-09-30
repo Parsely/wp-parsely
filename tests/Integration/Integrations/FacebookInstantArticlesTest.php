@@ -5,11 +5,13 @@
  * @package Parsely\Tests\Integrations
  */
 
-namespace Parsely\Tests\Integrations;
+declare(strict_types=1);
+
+namespace Parsely\Tests\Integration\Integrations;
 
 use Parsely;
 use Parsely\Integrations\Facebook_Instant_Articles;
-use Parsely\Tests\TestCase;
+use Parsely\Tests\Integration\TestCase;
 
 /**
  * Test Facebook Instant Articles integration.
@@ -51,7 +53,10 @@ final class FacebookInstantArticlesTest extends TestCase {
 	 *
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::insert_parsely_tracking
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::get_embed_code
-	 * @uses \Parsely::get_options()
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
+	 * @uses \Parsely::get_api_key
+	 * @uses \Parsely::get_options
 	 * @group fbia
 	 */
 	public function test_parsely_is_added_to_FBIA_registry() {
