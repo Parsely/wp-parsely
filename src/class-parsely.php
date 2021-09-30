@@ -840,13 +840,13 @@ class Parsely {
 			}
 
 			$parsely_metas = array(
-				'title'     => isset( $parsely_page['headline'] ) ? $parsely_page['headline'] : null,
-				'link'      => isset( $parsely_page['url'] ) ? $parsely_page['url'] : null,
+				'title'     => $parsely_page['headline'] ?? null,
+				'link'      => $parsely_page['url'] ?? null,
 				'type'      => $parsely_post_type,
-				'image-url' => isset( $parsely_page['thumbnailUrl'] ) ? $parsely_page['thumbnailUrl'] : null,
-				'pub-date'  => isset( $parsely_page['datePublished'] ) ? $parsely_page['datePublished'] : null,
-				'section'   => isset( $parsely_page['articleSection'] ) ? $parsely_page['articleSection'] : null,
-				'tags'      => isset( $parsely_page['keywords'] ) ? $parsely_page['keywords'] : null,
+				'image-url' => $parsely_page['thumbnailUrl'] ?? null,
+				'pub-date'  => $parsely_page['datePublished'] ?? null,
+				'section'   => $parsely_page['articleSection'] ?? null,
+				'tags'      => $parsely_page['keywords'] ?? null,
 				'author'    => isset( $parsely_page['author'] ),
 			);
 			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
@@ -1404,14 +1404,10 @@ class Parsely {
 		$options        = $this->get_options();
 		$name           = $args['option_key'];
 		$select_options = $args['select_options'];
-		if ( isset( $args['multiple'] ) ) {
-			$multiple = $args['multiple'];
-		} else {
-			$multiple = false;
-		}
-		$selected = isset( $options[ $name ] ) ? $options[ $name ] : null;
-		$id       = esc_attr( $name );
-		$name     = self::OPTIONS_KEY . "[$id]";
+		$multiple       = $args['multiple'] ?? false;
+		$selected       = $options[ $name ] ?? null;
+		$id             = esc_attr( $name );
+		$name           = self::OPTIONS_KEY . "[$id]";
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
@@ -1528,8 +1524,8 @@ class Parsely {
 	public function print_text_tag( $args ) {
 		$options       = $this->get_options();
 		$name          = $args['option_key'];
-		$value         = isset( $options[ $name ] ) ? $options[ $name ] : '';
-		$optional_args = isset( $args['optional_args'] ) ? $args['optional_args'] : array();
+		$value         = $options[ $name ] ?? '';
+		$optional_args = $args['optional_args'] ?? array();
 		$id            = esc_attr( $name );
 		$name          = self::OPTIONS_KEY . "[$id]";
 		$value         = esc_attr( $value );
