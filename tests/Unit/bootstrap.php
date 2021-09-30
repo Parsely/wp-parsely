@@ -5,6 +5,8 @@
  * @package Parsely
  */
 
+declare(strict_types=1);
+
 /**
  * Require BrainMonkey files and autoload the plugin code.
  */

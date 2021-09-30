@@ -6,6 +6,8 @@
  * @since 2.5.0
  */
 
+declare(strict_types=1);
+
 /**
  * Holds most of the logic for the plugin.
  *
@@ -1907,7 +1909,7 @@ class Parsely {
 	 */
 	public function get_current_url( $parsely_type = 'nonpost', $post_id = 0 ) {
 		if ( 'post' === $parsely_type ) {
-			$permalink = get_permalink( $post_id );
+			$permalink = (string) get_permalink( $post_id );
 
 			/**
 			 * Filters the permalink for a post.

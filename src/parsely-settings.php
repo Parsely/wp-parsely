@@ -9,6 +9,8 @@
  * @subpackage Parse.ly
  */
 
+declare(strict_types=1);
+
 /* translators: %s: Plugin version */
 $parsely_version_string = sprintf( __( 'Version %s', 'wp-parsely' ), $this::VERSION );
 ?>
