@@ -113,9 +113,6 @@ class Parsely {
 		// display warning when plugin hasn't been configured.
 		add_action( 'admin_footer', array( $this, 'display_admin_warning' ) );
 
-		// TODO: Remove this warning when version 3.0 is released.
-		add_action( 'admin_notices', array( $this, 'display_admin_upgrade_warning' ) );
-
 		// phpcs:ignore WordPress.WP.CronInterval.CronSchedulesInterval
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 
@@ -726,34 +723,12 @@ class Parsely {
 		}
 
 		$message = sprintf(
-			/* translators: %s: Plugin settings page URL */
+				/* translators: %s: Plugin settings page URL */
 			__( '<strong>The Parse.ly plugin is not active.</strong> You need to <a href="%s">provide your Parse.ly Dash Site ID</a> before things get cooking.', 'wp-parsely' ),
 			esc_url( self::get_settings_url() )
 		);
 		?>
 		<div id="message" class="error"><p><?php echo wp_kses_post( $message ); ?></p></div>
-		<?php
-	}
-
-	/**
-	 * Display a dismissible admin warning if the current WordPress or PHP versions are below the required minimum for the 3.0 release of wp-parsely
-	 * We should get rid of this warning when we release 3.0
-	 *
-	 * @since 2.6.0
-	 */
-	public function display_admin_upgrade_warning() {
-		global $wp_version;
-		if ( version_compare( PHP_VERSION, '7.1.0', '>=' ) && version_compare( $wp_version, '5.0', '>=' ) ) {
-			return;
-		}
-
-		$message = sprintf(
-			/* translators: %s: Plugin settings page URL */
-			__( '<strong>The next version of the Parse.ly plugin will not work with the current setup.</strong> WordPress 5.0 and PHP 7.1 will be the <a href="%s">new required minimum versions</a>.', 'wp-parsely' ),
-			esc_url( 'https://github.com/Parsely/wp-parsely/issues/390' )
-		);
-		?>
-		<div id="message" class="notice notice-error is-dismissible"><p><?php echo wp_kses_post( $message ); ?></p></div>
 		<?php
 	}
 
