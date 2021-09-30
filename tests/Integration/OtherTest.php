@@ -24,7 +24,7 @@ final class OtherTest extends TestCase {
 	/**
 	 * The setUp run before each test
 	 */
-	public function set_up() {
+	public function set_up(): void {
 		global $wp_scripts;
 
 		parent::set_up();
@@ -45,7 +45,7 @@ final class OtherTest extends TestCase {
 	 *
 	 * @coversNothing
 	 */
-	public function test_version_constant_is_a_semantic_version_string() {
+	public function test_version_constant_is_a_semantic_version_string(): void {
 		self::assertMatchesRegularExpression(
 			'/^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)(?:-(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/',
 			\Parsely::VERSION
@@ -60,7 +60,7 @@ final class OtherTest extends TestCase {
 	 * @covers \Parsely::get_asset_cache_buster
 	 * @uses \Parsely::get_options
 	 */
-	public function test_cache_buster() {
+	public function test_cache_buster(): void {
 		self::assertSame( \Parsely::VERSION, \Parsely::get_asset_cache_buster() );
 	}
 
@@ -75,7 +75,7 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group insert-js
 	 */
-	public function test_parsely_register_js() {
+	public function test_parsely_register_js(): void {
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
@@ -124,7 +124,7 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group insert-js
 	 */
-	public function test_load_js_tracker() {
+	public function test_load_js_tracker(): void {
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
@@ -165,7 +165,7 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group insert-js
 	 */
-	public function test_load_js_api_no_secret() {
+	public function test_load_js_api_no_secret(): void {
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
@@ -207,7 +207,7 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group insert-js
 	 */
-	public function test_load_js_api_with_secret() {
+	public function test_load_js_api_with_secret(): void {
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
@@ -270,7 +270,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @group metadata
 	 * @group filters
 	 */
-	public function test_parsely_page_filter() {
+	public function test_parsely_page_filter(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -310,7 +310,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @group insert-js
 	 * @group settings
 	 */
-	public function test_user_logged_in() {
+	public function test_user_logged_in(): void {
 		TestCase::set_options( array( 'track_authenticated_users' => false ) );
 		$new_user = $this->create_test_user( 'bill_brasky' );
 		wp_set_current_user( $new_user );
@@ -371,7 +371,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @group insert-js
 	 * @group settings
 	 */
-	public function test_user_logged_in_multisite() {
+	public function test_user_logged_in_multisite(): void {
 		if ( ! is_multisite() ) {
 			self::markTestSkipped( "this test can't run without multisite" );
 		}
@@ -467,7 +467,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @uses \Parsely::post_has_trackable_status
 	 * @uses \Parsely::update_metadata_endpoint
 	 */
-	public function test_load_js_tracker_filter() {
+	public function test_load_js_tracker_filter(): void {
 		add_filter( 'wp_parsely_load_js_tracker', '__return_false' );
 
 		ob_start();
@@ -508,7 +508,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @uses \Parsely::post_has_trackable_status
 	 * @uses \Parsely::update_metadata_endpoint
 	 */
-	public function test_deprecated_insert_javascript_filter() {
+	public function test_deprecated_insert_javascript_filter(): void {
 		add_filter( 'parsely_filter_insert_javascript', '__return_false' );
 
 		ob_start();
@@ -551,7 +551,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @uses \Parsely::post_has_trackable_status
 	 * @uses \Parsely::update_metadata_endpoint
 	 */
-	public function test_filter_wp_parsely_post_type() {
+	public function test_filter_wp_parsely_post_type(): void {
 		$options = get_option( \Parsely::OPTIONS_KEY );
 
 		$post_array = $this->create_test_post_array();
@@ -589,7 +589,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @covers \Parsely::should_display_admin_warning
 	 * @uses \Parsely::get_options
 	 */
-	public function test_display_admin_warning_without_key() {
+	public function test_display_admin_warning_without_key(): void {
 		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
 		$this->set_options( array( 'apikey' => '' ) );
 
@@ -602,7 +602,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 *
 	 * @covers \Parsely::should_display_admin_warning
 	 */
-	public function test_display_admin_warning_network_admin() {
+	public function test_display_admin_warning_network_admin(): void {
 		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
 		$this->set_options( array( 'apikey' => '' ) );
 		set_current_screen( 'dashboard-network' );
@@ -617,7 +617,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @covers \Parsely::should_display_admin_warning
 	 * @uses \Parsely::get_options
 	 */
-	public function test_display_admin_warning_with_key() {
+	public function test_display_admin_warning_with_key(): void {
 		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
 		$this->set_options( array( 'apikey' => 'somekey' ) );
 
@@ -634,7 +634,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @covers \Parsely::api_key_is_missing
 	 * @uses \Parsely::get_options
 	 */
-	public function test_checking_API_key_is_set_or_not() {
+	public function test_checking_API_key_is_set_or_not(): void {
 		self::set_options( array( 'apikey' => '' ) );
 		self::assertFalse( self::$parsely->api_key_is_set() );
 		self::assertTrue( self::$parsely->api_key_is_missing() );
@@ -653,7 +653,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @uses \Parsely::api_key_is_set
 	 * @uses \Parsely::get_options
 	 */
-	public function test_can_retrieve_API_key() {
+	public function test_can_retrieve_API_key(): void {
 		self::set_options( array( 'apikey' => 'somekey' ) );
 		self::assertSame( 'somekey', self::$parsely->get_api_key() );
 		self::set_options( array( 'apikey' => '' ) );
