@@ -723,7 +723,7 @@ class Parsely {
 		}
 
 		$message = sprintf(
-				/* translators: %s: Plugin settings page URL */
+			/* translators: %s: Plugin settings page URL */
 			__( '<strong>The Parse.ly plugin is not active.</strong> You need to <a href="%s">provide your Parse.ly Dash Site ID</a> before things get cooking.', 'wp-parsely' ),
 			esc_url( self::get_settings_url() )
 		);
