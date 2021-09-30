@@ -5,6 +5,8 @@
  * @package Parsely\Tests\Unit
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Tests\Unit\Integrations;
 
 use Parsely\Integrations\Integration;

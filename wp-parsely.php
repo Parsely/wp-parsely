@@ -22,6 +22,8 @@
  * Requires WP:       5.0.0
  */
 
+declare(strict_types=1);
+
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;

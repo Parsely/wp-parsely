@@ -5,6 +5,8 @@
  * @package Parsely\Tests\UI
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Tests\UI;
 
 use Parsely\Tests\TestCase;
