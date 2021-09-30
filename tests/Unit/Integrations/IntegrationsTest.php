@@ -52,7 +52,13 @@ final class IntegrationsTest extends TestCase {
 	 * @uses \Parsely\Integrations\Integrations::register
 	 */
 	public function test_registered_integrations_have_their_integrate_method_called(): void {
-		$mock_integration = $this->getMockBuilder( Integration::class )->onlyMethods( array( 'integrate' ) )->getMock();
+		$mock_builder = $this->getMockBuilder( Integration::class );
+		// See https://github.com/Parsely/wp-parsely/issues/426.
+		if ( method_exists( $mock_builder, 'onlyMethods' ) ) {
+			$mock_integration = $mock_builder->onlyMethods( array( 'integrate' ) )->getMock();
+		} else {
+			$mock_integration = $mock_builder->setMethods( array( 'integrate' ) )->getMock();
+		}
 		$mock_integration->expects( $this->once() )->method( 'integrate' );
 
 		$integrations = new Integrations();
