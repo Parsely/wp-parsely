@@ -90,9 +90,11 @@ class Parsely {
 	/**
 	 * Register action and filter hook callbacks.
 	 *
-	 * Also immediately upgrade options if needed.
+	 * Also, immediately upgrade options if needed.
+	 *
+	 * @return void
 	 */
-	public function run() {
+	public function run(): void {
 		// Run upgrade options if they exist for the version currently defined.
 		$options = $this->get_options();
 		if ( empty( $options['plugin_version'] ) || self::VERSION !== $options['plugin_version'] ) {
@@ -133,8 +135,9 @@ class Parsely {
 	 * Adds 10 minute cron interval.
 	 *
 	 * @param array $schedules WP schedules array.
+	 * @return array
 	 */
-	public function wpparsely_add_cron_interval( $schedules ) {
+	public function wpparsely_add_cron_interval( array $schedules ): array {
 		$schedules['everytenminutes'] = array(
 			'interval' => 600, // time in seconds.
 			'display'  => __( 'Every 10 Minutes', 'wp-parsely' ),
@@ -143,19 +146,20 @@ class Parsely {
 	}
 
 	/**
-	 * Initialize parsely WordPress style
+	 * Initialize Parse.ly WordPress style.
+	 *
+	 * @return void
 	 */
-	public function wp_parsely_style_init() {
+	public function wp_parsely_style_init(): void {
 		wp_register_style( 'wp-parsely-style', plugin_dir_url( PARSELY_FILE ) . 'wp-parsely.css', array(), self::VERSION );
 	}
 
 	/**
-	 * Include the parsely admin header
+	 * Include the Parse.ly admin header.
 	 *
-	 * @category   Function
-	 * @package    Parsely
+	 * @return void
 	 */
-	public function add_admin_header() {
+	public function add_admin_header(): void {
 		echo '
 <style>
 #wp-parsely_version { color: #777; font-size: 12px; margin-left: 1em; }
@@ -174,12 +178,11 @@ class Parsely {
 	}
 
 	/**
-	 * Parsely settings page in WordPress settings menu.
+	 * Parse.ly settings page in WordPress settings menu.
 	 *
-	 * @category   Function
-	 * @package    Parsely
+	 * @return void
 	 */
-	public function add_settings_sub_menu() {
+	public function add_settings_sub_menu(): void {
 		add_options_page(
 			__( 'Parse.ly Settings', 'wp-parsely' ),
 			__( 'Parse.ly', 'wp-parsely' ),
@@ -190,12 +193,11 @@ class Parsely {
 	}
 
 	/**
-	 * Parse.ly settings screen ( options-general.php?page=[MENU_SLUG] )
+	 * Parse.ly settings screen ( options-general.php?page=[MENU_SLUG] ).
 	 *
-	 * @category   Function
-	 * @package    Parsely
+	 * @return void
 	 */
-	public function display_settings() {
+	public function display_settings(): void {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
@@ -204,12 +206,11 @@ class Parsely {
 	}
 
 	/**
-	 * Initialize the settings for Parsely
+	 * Initialize the settings for Parsely.
 	 *
-	 * @category   Function
-	 * @package    Parsely
+	 * @return void
 	 */
-	public function initialize_settings() {
+	public function initialize_settings(): void {
 		// All our options are actually stored in one single array to reduce
 		// DB queries.
 		register_setting(
@@ -535,14 +536,13 @@ class Parsely {
 	}
 
 	/**
-	 * Validate options from an array
+	 * Validate options from an array.
 	 *
-	 * @category   Function
-	 * @package    Parsely
 	 * @param array  $array Array of options to be sanitized.
-	 * @param string $name Unused?.
+	 * @param string $name  Unused?.
+	 * @return array
 	 */
-	public function validate_option_array( $array, $name ) {
+	public function validate_option_array( $array, $name ): array {
 		$new_array = $array;
 		foreach ( $array as $key => $val ) {
 			$new_array[ $key ] = sanitize_text_field( $val );
@@ -556,9 +556,9 @@ class Parsely {
 	 * @category   Function
 	 * @package    Parsely
 	 * @param array $input Options from the settings page.
-	 * @return array $input list of validated input settings.
+	 * @return array List of validated input settings.
 	 */
-	public function validate_options( $input ) {
+	public function validate_options( $input ): array {
 		if ( empty( $input['apikey'] ) ) {
 			add_settings_error(
 				self::OPTIONS_KEY,
@@ -690,34 +690,31 @@ class Parsely {
 	}
 
 	/**
-	 * Not doing anything here
+	 * Not doing anything here.
 	 *
-	 * @category   Function
-	 * @package    Parsely
+	 * @return void
 	 */
-	public function print_required_settings() {
+	public function print_required_settings(): void {
 		// We can optionally print some text here in the future, but we don't
 		// need to now.
 	}
 
 	/**
-	 * Not doing anything here
+	 * Not doing anything here.
 	 *
-	 * @category   Function
-	 * @package    Parsely
+	 * @return void
 	 */
-	public function print_optional_settings() {
+	public function print_optional_settings(): void {
 		// We can optionally print some text here in the future, but we don't
 		// need to now.
 	}
 
 	/**
-	 * Display the admin warning if needed
+	 * Display the admin warning if needed.
 	 *
-	 * @category   Function
-	 * @package    Parsely
+	 * @return void
 	 */
-	public function display_admin_warning() {
+	public function display_admin_warning(): void {
 		if ( ! $this->should_display_admin_warning() ) {
 			return;
 		}
@@ -735,12 +732,11 @@ class Parsely {
 	/**
 	 * Decide whether the admin display warning should be displayed
 	 *
-	 * @category Function
-	 * @package Parsely
+	 * @since 2.6.0
 	 *
 	 * @return bool True if the admin warning should be displayed
 	 */
-	private function should_display_admin_warning() {
+	private function should_display_admin_warning(): bool {
 		if ( is_network_admin() ) {
 			return false;
 		}
@@ -750,12 +746,11 @@ class Parsely {
 	}
 
 	/**
-	 * Show our note about dynamic tracking
+	 * Show our note about dynamic tracking.
 	 *
-	 * @category   Function
-	 * @package    Parsely
+	 * @return void
 	 */
-	public function print_dynamic_tracking_note() {
+	public function print_dynamic_tracking_note(): void {
 		printf(
 			/* translators: 1: Documentation URL 2: Documentation URL */
 			wp_kses_post( __( 'This plugin does not currently support dynamic tracking ( the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href="%1$s">the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href="%2$s">the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href="%3$s">support@parsely.com</a> ) for additional assistance.', 'wp-parsely' ) ),
@@ -766,13 +761,15 @@ class Parsely {
 	}
 
 	/**
-	 * End the code coverage ignore
+	 * End the code coverage ignore.
 	 *
 	 * @codeCoverageIgnoreEnd
 	 */
 
 	/**
 	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 *
+	 * @return string|null|array
 	 */
 	public function insert_parsely_page() {
 		$parsely_options = $this->get_options();
@@ -850,7 +847,7 @@ class Parsely {
 	 * @param mixed $var Value to filter from the array.
 	 * @return bool Returns true if the variable is not empty, and it's a string
 	 */
-	private static function filter_empty_and_not_string_from_array( $var ) {
+	private static function filter_empty_and_not_string_from_array( $var ): bool {
 		return ! empty( $var ) && is_string( $var );
 	}
 
@@ -862,7 +859,7 @@ class Parsely {
 	 * @param int|WP_Post $post Which post object or ID to check.
 	 * @return bool Should the post status be tracked for the provided post's post_type. By default, only 'publish' is allowed.
 	 */
-	public static function post_has_trackable_status( $post ) {
+	public static function post_has_trackable_status( $post ): bool {
 		static $cache = array();
 		$post_id      = is_int( $post ) ? $post : $post->ID;
 		if ( isset( $cache[ $post_id ] ) ) {
@@ -885,13 +882,14 @@ class Parsely {
 	}
 
 	/**
+
 	 * Creates parsely metadata object from post metadata.
 	 *
 	 * @param array   $parsely_options parsely_options array.
 	 * @param WP_Post $post object.
-	 * @return mixed|void
+	 * @return array
 	 */
-	public function construct_parsely_metadata( array $parsely_options, $post ) {
+	public function construct_parsely_metadata( array $parsely_options, $post ): array {
 		$parsely_page      = array(
 			'@context' => 'http://schema.org',
 			'@type'    => 'WebPage',
@@ -1083,9 +1081,7 @@ class Parsely {
 		 * @param WP_Post $post            Post object.
 		 * @param array   $parsely_options The Parsely options.
 		 */
-		$parsely_page = apply_filters( 'wp_parsely_metadata', $parsely_page, $post, $parsely_options );
-
-		return $parsely_page;
+		return apply_filters( 'wp_parsely_metadata', $parsely_page, $post, $parsely_options );
 	}
 
 
@@ -1095,7 +1091,7 @@ class Parsely {
 	 * @param int $post_id id of the post to update.
 	 * @return string
 	 */
-	public function update_metadata_endpoint( $post_id ) {
+	public function update_metadata_endpoint( $post_id ): string {
 		$parsely_options = $this->get_options();
 
 		if ( $this->api_key_is_missing() || empty( $parsely_options['metadata_secret'] ) ) {
@@ -1145,8 +1141,10 @@ class Parsely {
 
 	/**
 	 * Updates posts with Parsely metadata api in bulk.
+	 *
+	 * @return void
 	 */
-	public function bulk_update_posts() {
+	public function bulk_update_posts(): void {
 		global $wpdb;
 		$parsely_options      = $this->get_options();
 		$allowed_types        = array_merge( $parsely_options['track_post_types'], $parsely_options['track_page_types'] );
@@ -1191,9 +1189,9 @@ class Parsely {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return int|string Random number or plugin version string.
+	 * @return string Random number string or plugin version string.
 	 */
-	public static function get_asset_cache_buster() {
+	public static function get_asset_cache_buster(): string {
 		static $cache_buster;
 		if ( isset( $cache_buster ) ) {
 			return $cache_buster;
@@ -1208,7 +1206,7 @@ class Parsely {
 		 *
 		 * @param string $cache_buster Plugin version, unless WP_DEBUG is defined and truthy, and tests are not running.
 		 */
-		return apply_filters( 'wp_parsely_cache_buster', $cache_buster );
+		return apply_filters( 'wp_parsely_cache_buster', (string) $cache_buster );
 	}
 
 	/**
@@ -1218,7 +1216,7 @@ class Parsely {
 	 *
 	 * @return void
 	 */
-	public function register_js() {
+	public function register_js(): void {
 		$parsely_options = $this->get_options();
 
 		if ( $this->api_key_is_missing() ) {
@@ -1255,8 +1253,10 @@ class Parsely {
 	 * Enqueues the JavaScript code required to send off beacon requests.
 	 *
 	 * @since 2.5.0 Rename from insert_parsely_javascript
+	 *
+	 * @return void
 	 */
-	public function load_js_tracker() {
+	public function load_js_tracker(): void {
 		$parsely_options = $this->get_options();
 		if ( $this->api_key_is_missing() || $parsely_options['disable_javascript'] ) {
 			return;
@@ -1317,8 +1317,10 @@ class Parsely {
 	 * Load JavaScript for Parse.ly API.
 	 *
 	 * @since 2.5.0
+	 *
+	 * @return void
 	 */
-	public function load_js_api() {
+	public function load_js_api(): void {
 		$parsely_options = $this->get_options();
 
 		// If we don't have an API secret, there's no need to proceed.
@@ -1343,7 +1345,7 @@ class Parsely {
 	 * @param string $src    The script's source URL.
 	 * @return string Amended `script` tag.
 	 */
-	public function script_loader_tag( $tag, $handle, $src ) {
+	public function script_loader_tag( $tag, $handle, $src ): string {
 		$parsely_options = $this->get_options();
 		if ( in_array(
 			$handle,
@@ -1374,8 +1376,9 @@ class Parsely {
 	 * Print out the select tags
 	 *
 	 * @param array $args The arguments for the select drop downs.
+	 * @return void
 	 */
-	public function print_select_tag( $args ) {
+	public function print_select_tag( $args ): void {
 		$options        = $this->get_options();
 		$name           = $args['option_key'];
 		$select_options = $args['select_options'];
@@ -1429,8 +1432,9 @@ class Parsely {
 	 * Print out the radio buttons
 	 *
 	 * @param array $args The arguments for the radio buttons.
+	 * @return void
 	 */
-	public function print_binary_radio_tag( $args ) {
+	public function print_binary_radio_tag( $args ): void {
 		$options = $this->get_options();
 		$name    = $args['option_key'];
 		$value   = $options[ $name ];
@@ -1466,8 +1470,9 @@ class Parsely {
 	 * Prints a checkbox tag in the settings page.
 	 *
 	 * @param array $args Arguments to print to checkbox tag.
+	 * @return void
 	 */
-	public function print_checkbox_tag( $args ) {
+	public function print_checkbox_tag( $args ): void {
 		$options = $this->get_options();
 		$name    = $args['option_key'];
 		$value   = $options[ $name ];
@@ -1492,11 +1497,12 @@ class Parsely {
 	}
 
 	/**
-	 * Print out the radio buttons
+	 * Print out the radio buttons.
 	 *
 	 * @param array $args The arguments for text tags.
+	 * @return void
 	 */
-	public function print_text_tag( $args ) {
+	public function print_text_tag( $args ): void {
 		$options       = $this->get_options();
 		$name          = $args['option_key'];
 		$value         = $options[ $name ] ?? '';
@@ -1540,9 +1546,11 @@ class Parsely {
 	}
 
 	/**
-	 * Returns default logo if one can be found
+	 * Returns default logo if one can be found.
+	 *
+	 * @return string
 	 */
-	private function get_logo_default() {
+	private function get_logo_default(): string {
 		$custom_logo_id = get_theme_mod( 'custom_logo' );
 		if ( $custom_logo_id ) {
 			$logo_attrs = wp_get_attachment_image_src( $custom_logo_id, 'full' );
@@ -1562,7 +1570,7 @@ class Parsely {
 	 * @param string $url The url of the host.
 	 * @return string $url The host of the url…
 	 */
-	private function get_host_from_url( $url ) {
+	private function get_host_from_url( $url ): string {
 		if ( preg_match( '/^https?:\/\/( [^\/]+ )\/.*$/', $url, $matches ) ) {
 			return $matches[1];
 		}
@@ -1574,9 +1582,9 @@ class Parsely {
 	 * Returns the tags associated with this page or post
 	 *
 	 * @param string $post_id The id of the post you're trying to get tags for.
-	 * @return array $tags The tags of the post represented by the post id.
+	 * @return array The tags of the post represented by the post id.
 	 */
-	private function get_tags( $post_id ) {
+	private function get_tags( $post_id ): array {
 		$tags    = array();
 		$wp_tags = wp_get_post_tags( $post_id );
 		foreach ( $wp_tags as $wp_tag ) {
@@ -1591,9 +1599,9 @@ class Parsely {
 	 *
 	 * @param string $post_id The id of the post you're trying to get categories for.
 	 * @param string $delimiter What character will delimit the categories.
-	 * @return array $tags all the child categories of the current post.
+	 * @return array All the child categories of the current post.
 	 */
-	private function get_categories( $post_id, $delimiter = '/' ) {
+	private function get_categories( $post_id, $delimiter = '/' ): array {
 		$tags       = array();
 		$categories = get_the_category( $post_id );
 		foreach ( $categories as $category ) {
@@ -1616,7 +1624,7 @@ class Parsely {
 	 *
 	 * @return array
 	 */
-	private function get_options() {
+	private function get_options(): array {
 		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
 		return array_merge( $this->option_defaults, $options );
 	}
@@ -1627,9 +1635,9 @@ class Parsely {
 	 *
 	 * @param WP_Post $post_obj The object for the post.
 	 * @param array   $parsely_options The parsely options.
-	 * @return string $category Cleaned category name for for post in question.
+	 * @return string Cleaned category name for the post in question.
 	 */
-	private function get_category_name( $post_obj, $parsely_options ) {
+	private function get_category_name( $post_obj, $parsely_options ): string {
 		$taxonomy_dropdown_choice = get_the_terms( $post_obj->ID, $parsely_options['custom_taxonomy_section'] );
 		// Get top-level taxonomy name for chosen taxonomy and assign to $parent_name; it will be used
 		// as the category value if 'use_top_level_cats' option is checked.
@@ -1658,8 +1666,8 @@ class Parsely {
 		 * @param array   $parsely_options The Parsely options.
 		 */
 		$category = apply_filters( 'wp_parsely_post_category', $category, $post_obj, $parsely_options );
-		$category = $this->get_clean_parsely_page_value( $category );
-		return $category;
+
+		return $this->get_clean_parsely_page_value( $category );
 	}
 
 	/**
@@ -1670,7 +1678,7 @@ class Parsely {
 	 * @param string $taxonomy_name The name of the taxonomy.
 	 * @return string $parent The top level name of the category / taxonomy.
 	 */
-	private function get_top_level_term( $term_id, $taxonomy_name ) {
+	private function get_top_level_term( $term_id, $taxonomy_name ): string {
 		$parent = get_term_by( 'id', $term_id, $taxonomy_name );
 		while ( false !== $parent && 0 !== $parent->parent ) {
 			$parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
@@ -1684,9 +1692,9 @@ class Parsely {
 	 *
 	 * @param string $post_id The post id you're interested in.
 	 * @param string $taxonomy_name The name of the taxonomy.
-	 * @return string name of the custom taxonomy.
+	 * @return string Name of the custom taxonomy.
 	 */
-	private function get_bottom_level_term( $post_id, $taxonomy_name ) {
+	private function get_bottom_level_term( $post_id, $taxonomy_name ): string {
 		$terms    = get_the_terms( $post_id, $taxonomy_name );
 		$term_ids = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : null;
 		$parents  = is_array( $terms ) ? array_filter( wp_list_pluck( $terms, 'parent' ) ) : null;
@@ -1709,8 +1717,9 @@ class Parsely {
 	 *
 	 * @param WP_Post $post_obj The post object.
 	 * @param array   $parsely_options The pparsely options.
+	 * @return array
 	 */
-	private function get_custom_taxonomy_values( $post_obj, $parsely_options ) {
+	private function get_custom_taxonomy_values( $post_obj, $parsely_options ): array {
 		// filter out default WordPress taxonomies.
 		$all_taxonomies = array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) );
 		$all_values     = array();
@@ -1734,8 +1743,9 @@ class Parsely {
 	 * https://github.com/Automattic/Co-Authors-Plus/blob/master/template-tags.php#L3-35
 	 *
 	 * @param string $post_id The id of the post.
+	 * @return array
 	 */
-	private function get_coauthor_names( $post_id ) {
+	private function get_coauthor_names( $post_id ): array {
 		$coauthors = array();
 		if ( class_exists( 'coauthors_plus' ) ) {
 			global $post, $post_ID, $coauthors_plus, $wpdb;
@@ -1779,8 +1789,9 @@ class Parsely {
 	 * lastname, then nickname and finally the nicename.
 	 *
 	 * @param WP_User $author The author of the post.
+	 * @return string
 	 */
-	private function get_author_name( $author ) {
+	private function get_author_name( $author ): string {
 		// gracefully handle situation where no author is available.
 		if ( empty( $author ) || ! is_object( $author ) ) {
 			return '';
@@ -1810,7 +1821,7 @@ class Parsely {
 	 * @param WP_Post $post The post object.
 	 * @return array
 	 */
-	private function get_author_names( $post ) {
+	private function get_author_names( $post ): array {
 		$authors = $this->get_coauthor_names( $post->ID );
 		if ( empty( $authors ) ) {
 			$authors = array( get_user_by( 'id', $post->post_author ) );
@@ -1849,7 +1860,7 @@ class Parsely {
 	 * @param string $val The content you'd like sanitized.
 	 * @return string
 	 */
-	public function get_clean_parsely_page_value( $val ) {
+	public function get_clean_parsely_page_value( $val ): string {
 		if ( is_string( $val ) ) {
 			$val = str_replace( "\n", '', $val );
 			$val = str_replace( "\r", '', $val );
@@ -1863,9 +1874,11 @@ class Parsely {
 
 
 	/**
-	 * Get the URL of the plugin settings page
+	 * Get the URL of the plugin settings page.
+	 *
+	 * @return string
 	 */
-	public static function get_settings_url() {
+	public static function get_settings_url(): string {
 		return admin_url( 'options-general.php?page=' . self::MENU_SLUG );
 	}
 
@@ -1876,9 +1889,9 @@ class Parsely {
 	 *
 	 * @param string $parsely_type Optional. Parse.ly post type you're interested in, either 'post' or 'nonpost'. Default is 'nonpost'.
 	 * @param int    $post_id      Optional. ID of the post you want to get the URL for. Default is 0, which means the global `$post` is used.
-	 * @return string|void
+	 * @return string
 	 */
-	public function get_current_url( $parsely_type = 'nonpost', $post_id = 0 ) {
+	public function get_current_url( $parsely_type = 'nonpost', $post_id = 0 ): string {
 		if ( 'post' === $parsely_type ) {
 			$permalink = (string) get_permalink( $post_id );
 
@@ -1913,9 +1926,9 @@ class Parsely {
 	 * https://css-tricks.com/snippets/wordpress/get-the-first-image-from-a-post/
 	 *
 	 * @param WP_Post $post The post object you're interested in.
-	 * @return mixed|string
+	 * @return string
 	 */
-	public function get_first_image( $post ) {
+	public function get_first_image( $post ): string {
 		ob_start();
 		ob_end_clean();
 		if ( preg_match_all( '/<img.+src=[\'"]( [^\'"]+ )[\'"].*>/i', $post->post_content, $matches ) ) {
@@ -1925,9 +1938,11 @@ class Parsely {
 	}
 
 	/**
-	 * Check to see if parsely user is logged in
+	 * Check to see if parsely user is logged in.
+	 *
+	 * @return bool
 	 */
-	public function parsely_is_user_logged_in() {
+	public function parsely_is_user_logged_in(): bool {
 		// can't use $blog_id here because it futzes with the global $blog_id.
 		$current_blog_id = get_current_blog_id();
 		$current_user_id = get_current_user_id();
@@ -1947,7 +1962,7 @@ class Parsely {
 	 * @param string $type JSON-LD type.
 	 * @return string "post" or "index".
 	 */
-	public function convert_jsonld_to_parsely_type( $type ) {
+	public function convert_jsonld_to_parsely_type( $type ): string {
 		return in_array( $type, $this->supported_jsonld_post_types ) ? 'post' : 'index';
 	}
 
@@ -1958,7 +1973,7 @@ class Parsely {
 	 *
 	 * @return bool True is API key is set, false if it is missing.
 	 */
-	public function api_key_is_set() {
+	public function api_key_is_set(): bool {
 		$options = $this->get_options();
 
 		return (
@@ -1975,7 +1990,7 @@ class Parsely {
 	 *
 	 * @return bool True if API key is missing, false if it is set.
 	 */
-	public function api_key_is_missing() {
+	public function api_key_is_missing(): bool {
 		return ! $this->api_key_is_set();
 	}
 
@@ -1986,7 +2001,7 @@ class Parsely {
 	 *
 	 * @return string API key if set, or empty string if not.
 	 */
-	public function get_api_key() {
+	public function get_api_key(): string {
 		$options = $this->get_options();
 
 		return $this->api_key_is_set() ? $options['apikey'] : '';
