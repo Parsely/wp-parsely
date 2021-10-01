@@ -23,7 +23,7 @@ if ( ! $_tests_dir ) {
 if ( getenv( 'WP_PLUGIN_DIR' ) !== false ) {
 	define( 'WP_PLUGIN_DIR', getenv( 'WP_PLUGIN_DIR' ) );
 } else {
-	define( 'WP_PLUGIN_DIR', dirname( dirname( dirname( __DIR__ ) ) ) );
+	define( 'WP_PLUGIN_DIR', dirname( __DIR__, 3 ) );
 }
 
 // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
