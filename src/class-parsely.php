@@ -1586,8 +1586,7 @@ class Parsely {
 	 */
 	private function get_tags( $post_id ): array {
 		$tags    = array();
-		$wp_tags = wp_get_post_tags( $post_id );
-		foreach ( $wp_tags as $wp_tag ) {
+		foreach ( wp_get_post_tags( $post_id ) as $wp_tag ) {
 			array_push( $tags, $wp_tag->name );
 		}
 
@@ -1603,8 +1602,7 @@ class Parsely {
 	 */
 	private function get_categories( $post_id, $delimiter = '/' ): array {
 		$tags       = array();
-		$categories = get_the_category( $post_id );
-		foreach ( $categories as $category ) {
+		foreach ( get_the_category( $post_id ) as $category ) {
 			$hierarchy = get_category_parents( $category, false, $delimiter );
 			$hierarchy = rtrim( $hierarchy, '/' );
 			array_push( $tags, $hierarchy );
