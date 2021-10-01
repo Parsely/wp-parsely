@@ -42,7 +42,7 @@ final class Facebook_Instant_Articles implements Integration {
 	 * @param array $registry The registry info for fbia.
 	 * @return void
 	 */
-	public function insert_parsely_tracking( &$registry ) {
+	public function insert_parsely_tracking( &$registry ): void {
 		$parsely = new Parsely();
 		if ( $parsely->api_key_is_missing() ) {
 			return;
@@ -62,7 +62,7 @@ final class Facebook_Instant_Articles implements Integration {
 	 * @param string $api_key API key.
 	 * @return string Embedded code.
 	 */
-	public function get_embed_code( $api_key ) {
+	public function get_embed_code( $api_key ): string {
 		return '<script>
 			PARSELY = {
 				autotrack: false,
