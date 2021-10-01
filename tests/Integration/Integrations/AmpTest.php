@@ -22,7 +22,7 @@ final class AmpTest extends TestCase {
 	 *
 	 * @covers \Parsely\Integrations\Amp::integrate
 	 */
-	public function test_integration_only_runs_when_AMP_plugin_is_active() {
+	public function test_integration_only_runs_when_AMP_plugin_is_active(): void {
 		$amp = new Amp();
 
 		// By default, the integration will not happen if the condition has not been met.
@@ -43,7 +43,7 @@ final class AmpTest extends TestCase {
 	 * @uses \Parsely::get_options()
 	 * @group amp
 	 */
-	public function test_integration_only_runs_if_we_can_handle_an_AMP_request() {
+	public function test_integration_only_runs_if_we_can_handle_an_AMP_request(): void {
 		// Mock the Amp class, but only the can_handle_amp_request() method. This leaves
 		// the other methods unmocked, and therefore testable.
 
@@ -68,7 +68,7 @@ final class AmpTest extends TestCase {
 	 * @uses \Parsely::get_options()
 	 * @group amp
 	 */
-	public function test_AMP_request_is_not_handled_when_support_is_disabled() {
+	public function test_AMP_request_is_not_handled_when_support_is_disabled(): void {
 		// Mock the Amp class, but only the is_amp_request() method. This leaves
 		// the other methods unmocked, and therefore testable.
 
@@ -97,7 +97,7 @@ final class AmpTest extends TestCase {
 	 * @group amp
 	 * @group settings
 	 */
-	public function test_can_register_Parsely_for_AMP_analytics() {
+	public function test_can_register_Parsely_for_AMP_analytics(): void {
 		$amp       = new Parsely\Integrations\Amp();
 		$analytics = array();
 
@@ -122,7 +122,7 @@ final class AmpTest extends TestCase {
 	 * @group amp
 	 * @group settings
 	 */
-	public function test_can_register_Parsely_for_AMP_native_analytics() {
+	public function test_can_register_Parsely_for_AMP_native_analytics(): void {
 		$amp       = new Parsely\Integrations\Amp();
 		$analytics = array();
 

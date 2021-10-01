@@ -28,7 +28,7 @@ final class IntegrationsTest extends TestCase {
 	 * @uses \Parsely\Integrations\Integrations::integrate
 	 * @uses \Parsely\Integrations\Integrations::register
 	 */
-	public function test_an_integration_can_be_registered_via_the_filter() {
+	public function test_an_integration_can_be_registered_via_the_filter(): void {
 		add_action(
 			'wp_parsely_add_integration',
 			function( $integrations ) {
@@ -73,7 +73,7 @@ class FakeIntegration2 {
 	/**
 	 * Stub this method to avoid a fatal error.
 	 */
-	public function integrate() {
+	public function integrate(): void {
 	}
 }
 

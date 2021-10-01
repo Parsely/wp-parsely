@@ -19,11 +19,7 @@ declare(strict_types=1);
  */
 class Parsely_Recommended_Widget extends WP_Widget {
 	/**
-	 * This is the constructor function
-	 *
-	 * @category   Function
-	 * @package    WordPress
-	 * @subpackage Parse.ly
+	 * This is the constructor function.
 	 */
 	public function __construct() {
 		parent::__construct(
@@ -56,7 +52,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
 	 * @return string API URL.
 	 */
-	public function get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) {
+	public function get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ): string {
 		$related_api_endpoint = 'https://api.parsely.com/v2/related';
 
 		$query_args = array(
@@ -79,13 +75,11 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the widget function
 	 *
-	 * @category   Function
-	 * @package    WordPress
-	 * @subpackage Parse.ly
 	 * @param array $args Widget Arguments.
 	 * @param array $instance Values saved to the db.
+	 * @return void
 	 */
-	public function widget( $args, $instance ) {
+	public function widget( $args, $instance ): void {
 		if ( ! $this->api_key_and_secret_are_populated() ) {
 			return;
 		}
@@ -147,12 +141,10 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	/**
 	 * Migrates previous display_options settings
 	 *
-	 * @category   Function
-	 * @package    WordPress
-	 * @subpackage Parse.ly
 	 * @param array $instance Values saved to the db.
+	 * @return void
 	 */
-	private function migrate_old_fields( $instance ) {
+	private function migrate_old_fields( $instance ): void {
 		if ( ! empty( $instance['display_options'] ) && is_array( $instance['display_options'] ) ) {
 			if ( empty( $instance['img_src'] ) ) {
 				$instance['img_src'] = in_array( 'display_thumbnail', $instance['display_options'], true ) ? 'parsely_thumb' : 'none';
@@ -167,12 +159,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the form function
 	 *
-	 * @category   Function
-	 * @package    WordPress
-	 * @subpackage Parse.ly
 	 * @param array $instance Values saved to the db.
 	 */
-	public function form( $instance ) {
+	public function form( $instance ): void {
 		$this->migrate_old_fields( $instance );
 
 		if ( ! $this->api_key_and_secret_are_populated() ) {
@@ -278,13 +267,11 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the update function
 	 *
-	 * @category   Function
-	 * @package    WordPress
-	 * @subpackage Parse.ly
 	 * @param array $new_instance The new values for the db.
 	 * @param array $old_instance Values saved to the db.
+	 * @return array
 	 */
-	public function update( $new_instance, $old_instance ) {
+	public function update( $new_instance, $old_instance ): array {
 		$instance                        = $old_instance;
 		$instance['title']               = trim( wp_kses_post( $new_instance['title'] ) );
 		$instance['published_within']    = (int) trim( $new_instance['published_within'] );
@@ -305,7 +292,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 *
 	 * @return array Boost parameters values and labels.
 	 */
-	private function get_boost_params() {
+	private function get_boost_params(): array {
 		return array(
 			'no-boost'              => __( 'No boost', 'wp-parsely' ),
 			'views'                 => __( 'Page views', 'wp-parsely' ),
@@ -339,7 +326,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 *
 	 * @return bool True if apikey and api_secret settings are not empty strings. False otherwise.
 	 */
-	private function api_key_and_secret_are_populated() {
+	private function api_key_and_secret_are_populated(): bool {
 		$options = get_option( 'parsely' );
 
 		// No options are saved, so API key is not available.

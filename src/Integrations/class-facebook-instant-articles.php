@@ -23,8 +23,10 @@ final class Facebook_Instant_Articles implements Integration {
 	 * Apply the hooks that integrate the plugin or theme with the Parse.ly plugin.
 	 *
 	 * @since 2.6.0
+	 *
+	 * @return void
 	 */
-	public function integrate() {
+	public function integrate(): void {
 		if ( defined( 'IA_PLUGIN_VERSION' ) ) {
 			add_action( 'instant_articles_compat_registry_analytics', array( $this, 'insert_parsely_tracking' ) );
 		}
