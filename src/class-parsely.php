@@ -1674,9 +1674,9 @@ class Parsely {
 	 *
 	 * @param string $term_id The id of the top level term.
 	 * @param string $taxonomy_name The name of the taxonomy.
-	 * @return string $parent The top level name of the category / taxonomy.
+	 * @return string|false $parent The top level name of the category / taxonomy.
 	 */
-	private function get_top_level_term( $term_id, $taxonomy_name ): string {
+	private function get_top_level_term( $term_id, $taxonomy_name ) {
 		$parent = get_term_by( 'id', $term_id, $taxonomy_name );
 		while ( false !== $parent && 0 !== $parent->parent ) {
 			$parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
