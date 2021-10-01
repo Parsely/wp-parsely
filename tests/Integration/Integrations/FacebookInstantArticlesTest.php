@@ -17,7 +17,7 @@ use Parsely\Tests\Integration\TestCase;
  * Test Facebook Instant Articles integration.
  */
 final class FacebookInstantArticlesTest extends TestCase {
-	const REGISTRY_KEY = 'parsely-analytics-for-wordpress';
+	public const REGISTRY_KEY = 'parsely-analytics-for-wordpress';
 
 	/**
 	 * Check the integration only happens when a condition is met.

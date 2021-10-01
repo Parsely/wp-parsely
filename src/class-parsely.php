@@ -22,10 +22,10 @@ class Parsely {
 	 *
 	 * @codeCoverageIgnoreStart
 	 */
-	const VERSION     = PARSELY_VERSION;
-	const MENU_SLUG   = 'parsely';             // Defines the page param passed to options-general.php.
-	const OPTIONS_KEY = 'parsely';             // Defines the key used to store options in the WP database.
-	const CAPABILITY  = 'manage_options';      // The capability required for the user to administer settings.
+	public const VERSION = PARSELY_VERSION;
+	public const MENU_SLUG = 'parsely';             // Defines the page param passed to options-general.php.
+	public const OPTIONS_KEY = 'parsely';             // Defines the key used to store options in the WP database.
+	public const CAPABILITY = 'manage_options';      // The capability required for the user to administer settings.
 
 	/**
 	 * Declare some class properties

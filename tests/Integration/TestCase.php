@@ -19,7 +19,7 @@ use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
  * @package Parsely\Tests
  */
 abstract class TestCase extends WPIntegrationTestCase {
-	const DEFAULT_OPTIONS = array(
+	public const DEFAULT_OPTIONS = array(
 		'apikey'                    => 'blog.parsely.com',
 		'content_id_prefix'         => '',
 		'use_top_level_cats'        => false,

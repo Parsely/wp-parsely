@@ -16,8 +16,8 @@ namespace Parsely\Integrations;
  * @since 2.6.0 Moved from Parsely class to this file.
  */
 final class Facebook_Instant_Articles implements Integration {
-	const REGISTRY_IDENTIFIER   = 'parsely-analytics-for-wordpress';
-	const REGISTRY_DISPLAY_NAME = 'Parse.ly Analytics';
+	public const REGISTRY_IDENTIFIER = 'parsely-analytics-for-wordpress';
+	public const REGISTRY_DISPLAY_NAME = 'Parse.ly Analytics';
 
 	/**
 	 * Apply the hooks that integrate the plugin or theme with the Parse.ly plugin.
