@@ -777,7 +777,7 @@ class Parsely {
 		if (
 			$this->api_key_is_missing() ||
 
-			// Chosen not to track logged in users.
+			// Chosen not to track logged-in users.
 			( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
 
 			// 404 pages are not tracked.
@@ -791,7 +791,7 @@ class Parsely {
 
 		global $post;
 		// Assign default values for LD+JSON
-		// TODO: Maping of an install's post types to Parse.ly post types (namely page/post).
+		// TODO: Mapping of an install's post types to Parse.ly post types (namely page/post).
 		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $post );
 
 		// Something went wrong - abort.
@@ -992,7 +992,7 @@ class Parsely {
 			 *
 			 * @param array  $jsonld_type JSON-LD @type value, default is NewsArticle.
 			 * @param int    $id          Post ID.
-			 * @param string $post_type   Post type in WordPress.
+			 * @param string $post_type   The Post type in WordPress.
 			 */
 			$type            = (string) apply_filters( 'wp_parsely_post_type', 'NewsArticle', $post->ID, $post->post_type );
 			$supported_types = array_merge( $this->supported_jsonld_post_types, $this->supported_jsonld_non_post_types );
@@ -1184,7 +1184,7 @@ class Parsely {
 	/**
 	 * Get the cache buster value for script and styles.
 	 *
-	 * If WP_DEBUG is defined and truthy and we're not running tests, then use a random number.
+	 * If WP_DEBUG is defined and truthy, and we're not running tests, then use a random number.
 	 * Otherwise, use the plugin version.
 	 *
 	 * @since 2.5.0
@@ -1375,7 +1375,7 @@ class Parsely {
 	/**
 	 * Print out the select tags
 	 *
-	 * @param array $args The arguments for the select drop downs.
+	 * @param array $args The arguments for the select dropdowns.
 	 * @return void
 	 */
 	public function print_select_tag( $args ): void {
@@ -1499,7 +1499,7 @@ class Parsely {
 	/**
 	 * Print out the radio buttons.
 	 *
-	 * @param array $args The arguments for text tags.
+	 * @param array $args The arguments for text tag.
 	 * @return void
 	 */
 	public function print_text_tag( $args ): void {
@@ -1736,7 +1736,7 @@ class Parsely {
 	}
 
 	/**
-	 * Returns a list of coauthors for a post assuming the coauthors plugin is
+	 * Returns a list of coauthors for a post assuming the Co-Authors Plus plugin is
 	 * installed. Borrowed from
 	 * https://github.com/Automattic/Co-Authors-Plus/blob/master/template-tags.php#L3-35
 	 *

@@ -39,7 +39,7 @@ final class Facebook_Instant_Articles implements Integration {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array $registry The registry info for fbia.
+	 * @param array $registry The registry info for Facebook Instant Articles.
 	 * @return void
 	 */
 	public function insert_parsely_tracking( &$registry ): void {
