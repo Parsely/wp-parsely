@@ -990,9 +990,9 @@ class Parsely {
 			 *
 			 * @since 2.5.0
 			 *
-			 * @param array   $jsonld_type  JSON-LD @type value, default is NewsArticle.
-			 * @param integer $id           Post ID.
-			 * @param string  $post_type    Post type in WordPress.
+			 * @param array  $jsonld_type JSON-LD @type value, default is NewsArticle.
+			 * @param int    $id          Post ID.
+			 * @param string $post_type   Post type in WordPress.
 			 */
 			$type            = (string) apply_filters( 'wp_parsely_post_type', 'NewsArticle', $post->ID, $post->post_type );
 			$supported_types = array_merge( $this->supported_jsonld_post_types, $this->supported_jsonld_non_post_types );
