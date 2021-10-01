@@ -48,4 +48,4 @@ require_once __DIR__ . '/TestCase.php';
 require_once __DIR__ . '/StructuredData/NonPostTestCase.php';
 
 const PARSELY_VERSION = '123456.78.9';
-const PARSELY_FILE = __DIR__ . '/../../wp-parsely.php';
+const PARSELY_FILE    = __DIR__ . '/../../wp-parsely.php';

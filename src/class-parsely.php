@@ -22,10 +22,10 @@ class Parsely {
 	 *
 	 * @codeCoverageIgnoreStart
 	 */
-	public const VERSION = PARSELY_VERSION;
-	public const MENU_SLUG = 'parsely';             // Defines the page param passed to options-general.php.
+	public const VERSION     = PARSELY_VERSION;
+	public const MENU_SLUG   = 'parsely';             // Defines the page param passed to options-general.php.
 	public const OPTIONS_KEY = 'parsely';             // Defines the key used to store options in the WP database.
-	public const CAPABILITY = 'manage_options';      // The capability required for the user to administer settings.
+	public const CAPABILITY  = 'manage_options';      // The capability required for the user to administer settings.
 
 	/**
 	 * Declare some class properties
@@ -1585,7 +1585,7 @@ class Parsely {
 	 * @return array The tags of the post represented by the post id.
 	 */
 	private function get_tags( $post_id ): array {
-		$tags    = array();
+		$tags = array();
 		foreach ( wp_get_post_tags( $post_id ) as $wp_tag ) {
 			array_push( $tags, $wp_tag->name );
 		}
@@ -1601,7 +1601,7 @@ class Parsely {
 	 * @return array All the child categories of the current post.
 	 */
 	private function get_categories( $post_id, $delimiter = '/' ): array {
-		$tags       = array();
+		$tags = array();
 		foreach ( get_the_category( $post_id ) as $category ) {
 			$hierarchy = get_category_parents( $category, false, $delimiter );
 			$hierarchy = rtrim( $hierarchy, '/' );
