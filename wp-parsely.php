@@ -33,8 +33,8 @@ if ( class_exists( 'Parsely' ) ) {
 	return;
 }
 
-define( 'PARSELY_VERSION', '3.0.0-alpha' );
-define( 'PARSELY_FILE', __FILE__ );
+const PARSELY_VERSION = '3.0.0-alpha';
+const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
 add_action(

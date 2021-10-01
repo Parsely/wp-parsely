@@ -47,5 +47,5 @@ if ( ! defined( 'WP_PLUGIN_DIR' ) || file_exists( WP_PLUGIN_DIR . '/wp-parsely/w
 require_once __DIR__ . '/TestCase.php';
 require_once __DIR__ . '/StructuredData/NonPostTestCase.php';
 
-define( 'PARSELY_VERSION', '123456.78.9' );
-define( 'PARSELY_FILE', __DIR__ . '/../../wp-parsely.php' );
+const PARSELY_VERSION = '123456.78.9';
+const PARSELY_FILE = __DIR__ . '/../../wp-parsely.php';
