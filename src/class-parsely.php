@@ -118,6 +118,7 @@ class Parsely {
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
+
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'init', array( $this, 'register_js' ) );
@@ -798,6 +799,18 @@ class Parsely {
 	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 */
 	public function insert_parsely_page() {
+		/**
+		 * Filters whether the Parse.ly meta tags should be inserted in the page.
+		 *
+		 * By default, the tags are inserted.
+		 *
+		 * @since 2.6.1
+		 *
+		 */
+		if ( ! apply_filters( 'wp_parsely_should_insert_parsely_page', true ) ) {
+			return;
+		}
+
 		$parsely_options = $this->get_options();
 
 		if (
@@ -1263,6 +1276,18 @@ class Parsely {
 	 * @return void
 	 */
 	public function register_js() {
+		/**
+		 * Filters whether the Parse.ly scripts should be registered (loaded).
+		 *
+		 * By default, scripts are loaded.
+		 *
+		 * @since 2.6.1
+		 *
+		 */
+		if ( ! apply_filters( 'wp_parsely_should_register_js', true ) ) {
+			return;
+		}
+
 		$parsely_options = $this->get_options();
 
 		if ( $this->api_key_is_missing() ) {
