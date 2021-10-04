@@ -1275,17 +1275,6 @@ class Parsely {
 	 * @return void
 	 */
 	public function register_js() {
-		/**
-		 * Filters whether the Parse.ly scripts should be registered (loaded).
-		 *
-		 * By default, scripts are loaded.
-		 *
-		 * @since 2.6.1
-		 */
-		if ( ! apply_filters( 'wp_parsely_should_register_js', true ) ) {
-			return;
-		}
-
 		$parsely_options = $this->get_options();
 
 		if ( $this->api_key_is_missing() ) {
