@@ -805,7 +805,6 @@ class Parsely {
 		 * By default, the tags are inserted.
 		 *
 		 * @since 2.6.1
-		 *
 		 */
 		if ( ! apply_filters( 'wp_parsely_should_insert_parsely_page', true ) ) {
 			return;
@@ -1282,7 +1281,6 @@ class Parsely {
 		 * By default, scripts are loaded.
 		 *
 		 * @since 2.6.1
-		 *
 		 */
 		if ( ! apply_filters( 'wp_parsely_should_register_js', true ) ) {
 			return;
