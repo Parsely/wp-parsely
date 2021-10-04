@@ -22,10 +22,10 @@ class Parsely {
 	 *
 	 * @codeCoverageIgnoreStart
 	 */
-	const VERSION     = PARSELY_VERSION;
-	const MENU_SLUG   = 'parsely';             // Defines the page param passed to options-general.php.
-	const OPTIONS_KEY = 'parsely';             // Defines the key used to store options in the WP database.
-	const CAPABILITY  = 'manage_options';      // The capability required for the user to administer settings.
+	public const VERSION     = PARSELY_VERSION;
+	public const MENU_SLUG   = 'parsely';             // Defines the page param passed to options-general.php.
+	public const OPTIONS_KEY = 'parsely';             // Defines the key used to store options in the WP database.
+	public const CAPABILITY  = 'manage_options';      // The capability required for the user to administer settings.
 
 	/**
 	 * Declare some class properties
@@ -777,7 +777,7 @@ class Parsely {
 		if (
 			$this->api_key_is_missing() ||
 
-			// Chosen not to track logged in users.
+			// Chosen not to track logged-in users.
 			( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
 
 			// 404 pages are not tracked.
@@ -791,7 +791,7 @@ class Parsely {
 
 		global $post;
 		// Assign default values for LD+JSON
-		// TODO: Maping of an install's post types to Parse.ly post types (namely page/post).
+		// TODO: Mapping of an install's post types to Parse.ly post types (namely page/post).
 		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $post );
 
 		// Something went wrong - abort.
@@ -990,9 +990,9 @@ class Parsely {
 			 *
 			 * @since 2.5.0
 			 *
-			 * @param array   $jsonld_type  JSON-LD @type value, default is NewsArticle.
-			 * @param integer $id           Post ID.
-			 * @param string  $post_type    Post type in WordPress.
+			 * @param array  $jsonld_type JSON-LD @type value, default is NewsArticle.
+			 * @param int    $id          Post ID.
+			 * @param string $post_type   The Post type in WordPress.
 			 */
 			$type            = (string) apply_filters( 'wp_parsely_post_type', 'NewsArticle', $post->ID, $post->post_type );
 			$supported_types = array_merge( $this->supported_jsonld_post_types, $this->supported_jsonld_non_post_types );
@@ -1184,7 +1184,7 @@ class Parsely {
 	/**
 	 * Get the cache buster value for script and styles.
 	 *
-	 * If WP_DEBUG is defined and truthy and we're not running tests, then use a random number.
+	 * If WP_DEBUG is defined and truthy, and we're not running tests, then use a random number.
 	 * Otherwise, use the plugin version.
 	 *
 	 * @since 2.5.0
@@ -1362,7 +1362,7 @@ class Parsely {
 		}
 
 		if ( 'wp-parsely-tracker' === $handle ) {
-			$tag = preg_replace( '/ id=(\"|\')wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
+			$tag = preg_replace( '/ id=(["\'])wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
 			$tag = preg_replace(
 				'/ src=/',
 				' data-parsely-site="' . esc_attr( $parsely_options['apikey'] ) . '" src=',
@@ -1375,7 +1375,7 @@ class Parsely {
 	/**
 	 * Print out the select tags
 	 *
-	 * @param array $args The arguments for the select drop downs.
+	 * @param array $args The arguments for the select dropdowns.
 	 * @return void
 	 */
 	public function print_select_tag( $args ): void {
@@ -1499,7 +1499,7 @@ class Parsely {
 	/**
 	 * Print out the radio buttons.
 	 *
-	 * @param array $args The arguments for text tags.
+	 * @param array $args The arguments for text tag.
 	 * @return void
 	 */
 	public function print_text_tag( $args ): void {
@@ -1585,9 +1585,8 @@ class Parsely {
 	 * @return array The tags of the post represented by the post id.
 	 */
 	private function get_tags( $post_id ): array {
-		$tags    = array();
-		$wp_tags = wp_get_post_tags( $post_id );
-		foreach ( $wp_tags as $wp_tag ) {
+		$tags = array();
+		foreach ( wp_get_post_tags( $post_id ) as $wp_tag ) {
 			array_push( $tags, $wp_tag->name );
 		}
 
@@ -1602,9 +1601,8 @@ class Parsely {
 	 * @return array All the child categories of the current post.
 	 */
 	private function get_categories( $post_id, $delimiter = '/' ): array {
-		$tags       = array();
-		$categories = get_the_category( $post_id );
-		foreach ( $categories as $category ) {
+		$tags = array();
+		foreach ( get_the_category( $post_id ) as $category ) {
 			$hierarchy = get_category_parents( $category, false, $delimiter );
 			$hierarchy = rtrim( $hierarchy, '/' );
 			array_push( $tags, $hierarchy );
@@ -1676,9 +1674,9 @@ class Parsely {
 	 *
 	 * @param string $term_id The id of the top level term.
 	 * @param string $taxonomy_name The name of the taxonomy.
-	 * @return string $parent The top level name of the category / taxonomy.
+	 * @return string|false $parent The top level name of the category / taxonomy.
 	 */
-	private function get_top_level_term( $term_id, $taxonomy_name ): string {
+	private function get_top_level_term( $term_id, $taxonomy_name ) {
 		$parent = get_term_by( 'id', $term_id, $taxonomy_name );
 		while ( false !== $parent && 0 !== $parent->parent ) {
 			$parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
@@ -1738,7 +1736,7 @@ class Parsely {
 	}
 
 	/**
-	 * Returns a list of coauthors for a post assuming the coauthors plugin is
+	 * Returns a list of coauthors for a post assuming the Co-Authors Plus plugin is
 	 * installed. Borrowed from
 	 * https://github.com/Automattic/Co-Authors-Plus/blob/master/template-tags.php#L3-35
 	 *
@@ -1764,7 +1762,7 @@ class Parsely {
 
 				if ( is_array( $coauthor_terms ) && ! empty( $coauthor_terms ) ) {
 					foreach ( $coauthor_terms as $coauthor ) {
-						$coauthor_slug = preg_replace( '#^cap\-#', '', $coauthor->slug );
+						$coauthor_slug = preg_replace( '#^cap-#', '', $coauthor->slug );
 						$post_author   = $coauthors_plus->get_coauthor_by( 'user_nicename', $coauthor_slug );
 						// In case the user has been deleted while plugin was deactivated.
 						if ( ! empty( $post_author ) ) {

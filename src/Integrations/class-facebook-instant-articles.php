@@ -10,14 +10,16 @@ declare(strict_types=1);
 
 namespace Parsely\Integrations;
 
+use Parsely;
+
 /**
  * Integrates Parse.ly tracking with the Facebook Instant Articles plugin.
  *
  * @since 2.6.0 Moved from Parsely class to this file.
  */
 final class Facebook_Instant_Articles implements Integration {
-	const REGISTRY_IDENTIFIER   = 'parsely-analytics-for-wordpress';
-	const REGISTRY_DISPLAY_NAME = 'Parse.ly Analytics';
+	public const REGISTRY_IDENTIFIER   = 'parsely-analytics-for-wordpress';
+	public const REGISTRY_DISPLAY_NAME = 'Parse.ly Analytics';
 
 	/**
 	 * Apply the hooks that integrate the plugin or theme with the Parse.ly plugin.
@@ -37,11 +39,11 @@ final class Facebook_Instant_Articles implements Integration {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array $registry The registry info for fbia.
+	 * @param array $registry The registry info for Facebook Instant Articles.
 	 * @return void
 	 */
-	public function insert_parsely_tracking( &$registry ) {
-		$parsely = new \Parsely();
+	public function insert_parsely_tracking( &$registry ): void {
+		$parsely = new Parsely();
 		if ( $parsely->api_key_is_missing() ) {
 			return;
 		}
@@ -60,7 +62,7 @@ final class Facebook_Instant_Articles implements Integration {
 	 * @param string $api_key API key.
 	 * @return string Embedded code.
 	 */
-	public function get_embed_code( $api_key ) {
+	public function get_embed_code( $api_key ): string {
 		return '<script>
 			PARSELY = {
 				autotrack: false,
