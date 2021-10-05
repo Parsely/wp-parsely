@@ -48,7 +48,7 @@ final class Row_Actions {
 		 *
 		 * @param bool $enabled True if enabled, false if not.
 		 */
-		if ( apply_filters( 'wp_parsely_enable_row_action_links', false ) ) {
+		if ( apply_filters( 'wp_parsely_enable_row_action_links', true ) ) {
 			add_filter( 'post_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
 			add_filter( 'page_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
 		}
