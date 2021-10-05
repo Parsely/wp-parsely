@@ -35,7 +35,7 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_metadata_is_correctly_constructed_for_custom_post_type_archive() {
+	public function test_metadata_is_correctly_constructed_for_custom_post_type_archive(): void {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151.
 		$this->set_permalink_structure( '/%postname%/' );

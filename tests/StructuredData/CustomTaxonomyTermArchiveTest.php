@@ -35,7 +35,7 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_metadata_is_correctly_constructed_for_custom_taxonomy_term_archive() {
+	public function test_metadata_is_correctly_constructed_for_custom_taxonomy_term_archive(): void {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151.
 		$this->set_permalink_structure( '/%postname%/' );

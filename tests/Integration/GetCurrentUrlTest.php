@@ -110,7 +110,7 @@ final class GetCurrentUrlTest extends TestCase {
 	 * @param string $home        Home URL.
 	 * @param string $expected    Expected current URL.
 	 */
-	public function test_get_current_url( $force_https, $home, $expected ) {
+	public function test_get_current_url( $force_https, $home, $expected ): void {
 		$this->set_options( array( 'force_https_canonicals' => $force_https ) );
 		update_option( 'home', $home );
 
@@ -124,7 +124,7 @@ final class GetCurrentUrlTest extends TestCase {
 	 *
 	 * @param string $expected Expected start of the URL.
 	 */
-	private function assertCurrentUrlForHomepage( $expected ) {
+	private function assertCurrentUrlForHomepage( $expected ): void {
 		$this->go_to( '/' );
 
 		$parsely = new Parsely();
@@ -138,7 +138,7 @@ final class GetCurrentUrlTest extends TestCase {
 	 *
 	 * @param string $expected Expected start of the URL.
 	 */
-	private function assertCurrentUrlForSpecificPostWithId( $expected ) {
+	private function assertCurrentUrlForSpecificPostWithId( $expected ): void {
 		$post_array = $this->create_test_post_array();
 		$post_id    = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post_id );
@@ -154,7 +154,7 @@ final class GetCurrentUrlTest extends TestCase {
 	 *
 	 * @param string $expected Expected start of the URL.
 	 */
-	private function assertCurrentUrlForRandomUrl( $expected ) {
+	private function assertCurrentUrlForRandomUrl( $expected ): void {
 		$parsely = new Parsely();
 		$this->go_to( '/random/url/' );
 		$res = $parsely->get_current_url();

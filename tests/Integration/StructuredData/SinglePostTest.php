@@ -20,7 +20,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * The setUp run before each test
 	 */
-	public function set_up() {
+	public function set_up(): void {
 		parent::set_up();
 
 		// Set the default options prior to each test.
@@ -45,7 +45,7 @@ final class SinglePostTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_single_post() {
+	public function test_single_post(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -84,7 +84,7 @@ final class SinglePostTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_category_data_for_single_post() {
+	public function test_category_data_for_single_post(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -120,7 +120,7 @@ final class SinglePostTest extends TestCase {
 	 * @group metadata
 	 * @group settings
 	 */
-	public function test_tag_data_assigned_to_a_post_are_lowercase() {
+	public function test_tag_data_assigned_to_a_post_are_lowercase(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -167,7 +167,7 @@ final class SinglePostTest extends TestCase {
 	 * @group metadata
 	 * @group settings
 	 */
-	public function test_parsely_categories_as_tags_in_single_post() {
+	public function test_parsely_categories_as_tags_in_single_post(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -214,7 +214,7 @@ final class SinglePostTest extends TestCase {
 	 * @group metadata
 	 * @group settings
 	 */
-	public function test_custom_taxonomy_as_tags_in_single_post() {
+	public function test_custom_taxonomy_as_tags_in_single_post(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -272,7 +272,7 @@ final class SinglePostTest extends TestCase {
 	 * @group metadata
 	 * @group settings
 	 */
-	public function test_use_top_level_cats_in_single_post() {
+	public function test_use_top_level_cats_in_single_post(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -329,7 +329,7 @@ final class SinglePostTest extends TestCase {
 	 * @group metadata
 	 * @group settings
 	 */
-	public function test_custom_taxonomy_as_section_in_single_post() {
+	public function test_custom_taxonomy_as_section_in_single_post(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -396,7 +396,7 @@ final class SinglePostTest extends TestCase {
 	 * @group metadata
 	 * @group settings
 	 */
-	public function test_http_canonicals_for_single_post() {
+	public function test_http_canonicals_for_single_post(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -433,7 +433,7 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @param array $structured_data Array of metadata to check.
 	 */
-	public function assert_data_has_required_properties( $structured_data ) {
+	public function assert_data_has_required_properties( $structured_data ): void {
 		$required_properties = $this->get_required_properties();
 
 		array_walk(
@@ -449,7 +449,7 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @return string[]
 	 */
-	private function get_required_properties() {
+	private function get_required_properties(): array {
 		return array(
 			'@context',
 			'@type',

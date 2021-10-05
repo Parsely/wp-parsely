@@ -20,7 +20,7 @@ final class RecommendedApiTest extends TestCase {
 	 *
 	 * @return array[]
 	 */
-	public function data_recommended_api_url() {
+	public function data_recommended_api_url(): array {
 		return array(
 			'Basic (Expected data)'                   => array(
 				'my-key',
@@ -76,7 +76,7 @@ final class RecommendedApiTest extends TestCase {
 	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
 	 * @param string $url              Expected generated URL.
 	 */
-	public function test_recommended_api_url( $api_key, $published_within, $sort, $boost, $return_limit, $url ) {
+	public function test_recommended_api_url( $api_key, $published_within, $sort, $boost, $return_limit, $url ): void {
 		$recommended_widget = new Parsely_Recommended_Widget();
 
 		self::assertEquals( $url, $recommended_widget->get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) );

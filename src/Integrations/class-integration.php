@@ -21,5 +21,5 @@ interface Integration {
 	 *
 	 * @since 2.6.0
 	 */
-	public function integrate();
+	public function integrate(): void;
 }

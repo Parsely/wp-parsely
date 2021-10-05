@@ -19,7 +19,7 @@ final class HomePageTest extends NonPostTestCase {
 	/**
 	 * Runs the routine before each test is executed.
 	 */
-	public function set_up() {
+	public function set_up(): void {
 		parent::set_up();
 
 		update_option( 'show_on_front', 'posts' );
@@ -45,7 +45,7 @@ final class HomePageTest extends NonPostTestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_home_page_for_posts() {
+	public function test_home_page_for_posts(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -91,7 +91,7 @@ final class HomePageTest extends NonPostTestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_home_page_for_posts_paged() {
+	public function test_home_page_for_posts_paged(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -142,7 +142,7 @@ final class HomePageTest extends NonPostTestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_home_page_on_front() {
+	public function test_home_page_on_front(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
@@ -194,7 +194,7 @@ final class HomePageTest extends NonPostTestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_home_for_misconfigured_settings() {
+	public function test_home_for_misconfigured_settings(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
