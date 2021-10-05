@@ -1,10 +1,16 @@
+/**
+ * External dependencies
+ */
 import {
 	activatePlugin,
 	loginUser,
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
-const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
+/**
+ * Internal dependencies
+ */
+import { waitForWpAdmin } from '../utils';
 
 describe( 'Plugin action link', () => {
 	jest.setTimeout( 30000 );
@@ -15,7 +21,7 @@ describe( 'Plugin action link', () => {
 
 		await waitForWpAdmin();
 
-		await expect(page).toClick( '[data-slug=wp-parsely] .settings>a', { text: 'Settings' } );
+		await expect( page ).toClick( '[data-slug=wp-parsely] .settings>a', { text: 'Settings' } );
 		await waitForWpAdmin();
 
 		const versionText = await page.$eval( '#wp-parsely_version', ( el ) => el.innerText );
