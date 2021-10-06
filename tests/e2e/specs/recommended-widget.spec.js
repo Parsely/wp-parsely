@@ -17,7 +17,7 @@ const closeWidgetScreenModal = () => page.keyboard.press( 'Escape' );
 const searchForParselyWidget = async () => {
 	await page.click( '.block-list-appender' );
 	await page.focus( '#block-editor-inserter__search-0' );
-	page.keyboard.type( 'parse.ly recommended widget' );
+	await page.keyboard.type( 'parse.ly recommended widget' );
 };
 
 describe( 'Recommended widget', () => {
