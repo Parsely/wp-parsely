@@ -88,7 +88,6 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 		$title      = apply_filters( 'widget_title', $instance['title'] );
-		$title_html = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
 
 		if ( $removed_title_esc ) {
 			add_filter( 'widget_title', 'esc_html' );
