@@ -1057,23 +1057,6 @@ class Parsely {
 		/**
 		 * Filters the structured metadata.
 		 *
-		 * @deprecated 2.5.0 Use `wp_parsely_metadata` filter instead.
-		 * @since 1.10.0
-		 *
-		 * @param array   $parsely_page    Existing structured metadata for a page.
-		 * @param WP_Post $post            Post object.
-		 * @param array   $parsely_options The Parsely options.
-		 */
-		$parsely_page = apply_filters_deprecated(
-			'after_set_parsely_page',
-			array( $parsely_page, $post, $parsely_options ),
-			'2.5.0',
-			'wp_parsely_metadata'
-		);
-
-		/**
-		 * Filters the structured metadata.
-		 *
 		 * @since 2.5.0
 		 *
 		 * @param array   $parsely_page    Existing structured metadata for a page.
@@ -1271,25 +1254,6 @@ class Parsely {
 		}
 		if ( ! in_array( get_post_type(), $parsely_options['track_post_types'], true ) && ! in_array( get_post_type(), $parsely_options['track_page_types'], true ) ) {
 			$display = false;
-		}
-
-		/**
-		 * Filters whether to include the Parsely JavaScript file.
-		 *
-		 * If true, the JavaScript files are sourced.
-		 *
-		 * @since 2.2.0
-		 * @deprecated 2.5.0 Use `wp_parsely_load_js_tracker` filter instead.
-		 *
-		 * @param bool $display True if the JavaScript file should be included. False if not.
-		 */
-		if ( ! apply_filters_deprecated(
-			'parsely_filter_insert_javascript',
-			array( $display ),
-			'2.5.0',
-			'wp_parsely_load_js_tracker'
-		) ) {
-			return;
 		}
 
 		/**
