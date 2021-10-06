@@ -12,6 +12,14 @@ import {
  */
 import { waitForWpAdmin } from '../utils';
 
+const closeWidgetScreenModal = () => page.keyboard.press( 'Escape' );
+
+const searchForParselyWidget = async () => {
+	await page.click( '.block-list-appender' );
+	await page.focus( '#block-editor-inserter__search-0' );
+	page.keyboard.type( 'parse.ly recommended widget' );
+};
+
 describe( 'Recommended widget', () => {
 	jest.setTimeout( 30000 );
 	it( 'Widget should be available', async () => {
@@ -21,11 +29,8 @@ describe( 'Recommended widget', () => {
 
 		await waitForWpAdmin();
 
-		await page.keyboard.press( 'Escape' );
-
-		await page.click( '.block-list-appender' );
-		await page.focus( '#block-editor-inserter__search-0' );
-		await page.keyboard.type( 'parse.ly recommended widget' );
+		await closeWidgetScreenModal();
+		await searchForParselyWidget();
 
 		const [ button ] = await page.$x( "//button[contains(., 'Parse.ly Recommended Widget')]" );
 		await button.click();
