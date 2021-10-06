@@ -1258,25 +1258,6 @@ class Parsely {
 		}
 
 		/**
-		 * Filters whether to include the Parsely JavaScript file.
-		 *
-		 * If true, the JavaScript files are sourced.
-		 *
-		 * @since 2.2.0
-		 * @deprecated 2.5.0 Use `wp_parsely_load_js_tracker` filter instead.
-		 *
-		 * @param bool $display True if the JavaScript file should be included. False if not.
-		 */
-		if ( ! apply_filters_deprecated(
-			'parsely_filter_insert_javascript',
-			array( $display ),
-			'2.5.0',
-			'wp_parsely_load_js_tracker'
-		) ) {
-			return;
-		}
-
-		/**
 		 * Filters whether to enqueue the Parsely JavaScript tracking script from the CDN.
 		 *
 		 * If true, the script is enqueued.
