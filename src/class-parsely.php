@@ -1058,23 +1058,6 @@ class Parsely {
 		/**
 		 * Filters the structured metadata.
 		 *
-		 * @deprecated 2.5.0 Use `wp_parsely_metadata` filter instead.
-		 * @since 1.10.0
-		 *
-		 * @param array   $parsely_page    Existing structured metadata for a page.
-		 * @param WP_Post $post            Post object.
-		 * @param array   $parsely_options The Parsely options.
-		 */
-		$parsely_page = apply_filters_deprecated(
-			'after_set_parsely_page',
-			array( $parsely_page, $post, $parsely_options ),
-			'2.5.0',
-			'wp_parsely_metadata'
-		);
-
-		/**
-		 * Filters the structured metadata.
-		 *
 		 * @since 2.5.0
 		 *
 		 * @param array   $parsely_page    Existing structured metadata for a page.

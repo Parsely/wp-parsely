@@ -253,7 +253,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	/**
 	 * Check out page filtering.
 	 *
-	 * @expectedDeprecated after_set_parsely_page
 	 * @covers \Parsely::construct_parsely_metadata
 	 * @uses \Parsely::get_author_name
 	 * @uses \Parsely::get_author_names
@@ -282,7 +281,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		// Apply page filtering.
 		$headline = 'Completely New And Original Filtered Headline';
 		add_filter(
-			'after_set_parsely_page',
+			'wp_parsely_metadata',
 			function( $args ) use ( $headline ) {
 				$args['headline'] = $headline;
 
