@@ -946,7 +946,6 @@ class Parsely {
 		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && self::post_has_trackable_status( $post ) ) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
-			$post_id  = $parsely_options['content_id_prefix'] . get_the_ID();
 
 			if ( has_post_thumbnail( $post ) ) {
 				$image_id  = get_post_thumbnail_id( $post );
@@ -1054,23 +1053,6 @@ class Parsely {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_bloginfo( 'name', 'raw' ) );
 			$parsely_page['url']      = home_url();
 		}
-
-		/**
-		 * Filters the structured metadata.
-		 *
-		 * @deprecated 2.5.0 Use `wp_parsely_metadata` filter instead.
-		 * @since 1.10.0
-		 *
-		 * @param array   $parsely_page    Existing structured metadata for a page.
-		 * @param WP_Post $post            Post object.
-		 * @param array   $parsely_options The Parsely options.
-		 */
-		$parsely_page = apply_filters_deprecated(
-			'after_set_parsely_page',
-			array( $parsely_page, $post, $parsely_options ),
-			'2.5.0',
-			'wp_parsely_metadata'
-		);
 
 		/**
 		 * Filters the structured metadata.
@@ -1272,25 +1254,6 @@ class Parsely {
 		}
 		if ( ! in_array( get_post_type(), $parsely_options['track_post_types'], true ) && ! in_array( get_post_type(), $parsely_options['track_page_types'], true ) ) {
 			$display = false;
-		}
-
-		/**
-		 * Filters whether to include the Parsely JavaScript file.
-		 *
-		 * If true, the JavaScript files are sourced.
-		 *
-		 * @since 2.2.0
-		 * @deprecated 2.5.0 Use `wp_parsely_load_js_tracker` filter instead.
-		 *
-		 * @param bool $display True if the JavaScript file should be included. False if not.
-		 */
-		if ( ! apply_filters_deprecated(
-			'parsely_filter_insert_javascript',
-			array( $display ),
-			'2.5.0',
-			'wp_parsely_load_js_tracker'
-		) ) {
-			return;
 		}
 
 		/**
@@ -1562,20 +1525,6 @@ class Parsely {
 		// get_site_icon_url returns an empty string if one isn't found,
 		// which is what we want to use as the default anyway.
 		return get_site_icon_url();
-	}
-
-	/**
-	 * Extracts a host ( not TLD ) from a URL
-	 *
-	 * @param string $url The url of the host.
-	 * @return string $url The host of the url…
-	 */
-	private function get_host_from_url( $url ): string {
-		if ( preg_match( '/^https?:\/\/( [^\/]+ )\/.*$/', $url, $matches ) ) {
-			return $matches[1];
-		}
-
-		return $url;
 	}
 
 	/**
