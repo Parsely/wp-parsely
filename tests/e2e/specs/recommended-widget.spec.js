@@ -20,6 +20,11 @@ const searchForParselyWidget = async () => {
 	await page.keyboard.type( 'parse.ly recommended widget' );
 };
 
+const selectParselyWidgetFromWidgetSearch = async () => {
+	const [ button ] = await page.$x( "//button[contains(., 'Parse.ly Recommended Widget')]" );
+	await button.click();
+};
+
 describe( 'Recommended widget', () => {
 	jest.setTimeout( 30000 );
 	it( 'Widget should be available', async () => {
@@ -31,14 +36,12 @@ describe( 'Recommended widget', () => {
 
 		await closeWidgetScreenModal();
 		await searchForParselyWidget();
+		await selectParselyWidgetFromWidgetSearch();
 
-		const [ button ] = await page.$x( "//button[contains(., 'Parse.ly Recommended Widget')]" );
-		await button.click();
-
+		// Checking if Parse.ly widget is present in the widgets list
 		await page.waitForSelector( '.wp-block-legacy-widget__edit-form-title', {
 			visible: true,
 		} );
-
 		const [ h3 ] = await page.$x( "//h3[contains(., 'Parse.ly Recommended Widget')]" );
 		expect( h3 ).toBeTruthy();
 	} );
