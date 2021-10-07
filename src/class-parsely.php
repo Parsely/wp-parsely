@@ -946,7 +946,6 @@ class Parsely {
 		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && self::post_has_trackable_status( $post ) ) {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
-			$post_id  = $parsely_options['content_id_prefix'] . get_the_ID();
 
 			if ( has_post_thumbnail( $post ) ) {
 				$image_id  = get_post_thumbnail_id( $post );
@@ -1526,20 +1525,6 @@ class Parsely {
 		// get_site_icon_url returns an empty string if one isn't found,
 		// which is what we want to use as the default anyway.
 		return get_site_icon_url();
-	}
-
-	/**
-	 * Extracts a host ( not TLD ) from a URL
-	 *
-	 * @param string $url The url of the host.
-	 * @return string $url The host of the url…
-	 */
-	private function get_host_from_url( $url ): string {
-		if ( preg_match( '/^https?:\/\/( [^\/]+ )\/.*$/', $url, $matches ) ) {
-			return $matches[1];
-		}
-
-		return $url;
 	}
 
 	/**
