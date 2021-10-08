@@ -32,12 +32,11 @@ class Parsely_Telemetry {
 	 * Parsely_Telemetry constructor.
 	 */
 	public function __construct() {
-		$this->tracks = new Parsely_A8c_Tracks();
-
 		if ( ! $this->should_enable_tracking() ) {
 			return;
 		}
 
+		$this->tracks = new Parsely_A8c_Tracks();
 		$this->tracks->setup();
 
 		$this->add_event_tracking();
