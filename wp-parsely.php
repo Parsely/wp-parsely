@@ -46,9 +46,9 @@ add_action(
 );
 
 // Until auto-loading happens, we need to include this file for tests as well.
-require __DIR__ . '/src/class-parsely-telemetry.php';
-require __DIR__ . '/src/class-parsely-a8c-tracks.php';
-require __DIR__ . '/src/class-parsely-a8c-tracks-event.php';
+require __DIR__ . '/src/telemetry/class-parsely-telemetry.php';
+require __DIR__ . '/src/telemetry/class-parsely-a8c-tracks.php';
+require __DIR__ . '/src/telemetry/class-parsely-a8c-tracks-event.php';
 require __DIR__ . '/src/UI/class-plugins-actions.php';
 require __DIR__ . '/src/UI/class-row-actions.php';
 add_action(
