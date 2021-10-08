@@ -28,7 +28,7 @@ Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://
 
 ## wp-parsely 3.0 upgrade notice
 
-The `2.6` branch will be the last one of the wp-parsely plugin to have PHP `5.6` and WordPress `4.0` as a minium requirement. **When the next major version is released, `3.0`, the minimum requirements will be bumped to PHP `7.1` and WordPress `5.0`.**
+The `2.6` branch will be the last one of the wp-parsely plugin to have PHP `5.6` and WordPress `4.0` as a minimum requirement. **When the next major version is released, `3.0`, the minimum requirements will be bumped to PHP `7.1` and WordPress `5.0`.**
 
 Once `3.0` gets released, the `2.6` branch will not be supported and will not receive any updates, including new features and security issues. Therefore, we strongly recommend all `wp-parsely` users to upgrade to PHP 7.1 or higher and WordPress 5.0 or higher. It is important to point out that those are *minimum* requirements, so newer versions of PHP and WordPress are encouraged. 
 
