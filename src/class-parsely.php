@@ -808,7 +808,7 @@ class Parsely {
 
 		// Something went wrong - abort.
 		if ( empty( $parsely_page ) || ! isset( $parsely_page['headline'] ) ) {
-			return null;
+			return;
 		}
 
 		echo "\n" . '<!-- BEGIN Parse.ly ' . esc_html( self::VERSION ) . ' -->' . "\n";
