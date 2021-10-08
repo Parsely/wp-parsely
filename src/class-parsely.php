@@ -779,6 +779,8 @@ class Parsely {
 		 * By default, the tags are inserted.
 		 *
 		 * @since 3.0.0
+		 *
+		 * @param bool $insert_metadata True to insert the metadata, false otherwise.
 		 */
 		if ( ! apply_filters( 'wp_parsely_should_insert_metadata', true ) ) {
 			return;
