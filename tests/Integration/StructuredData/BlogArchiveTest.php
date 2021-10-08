@@ -34,7 +34,7 @@ final class BlogArchiveTest extends NonPostTestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_blog_page_for_posts_paged() {
+	public function test_blog_page_for_posts_paged(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );

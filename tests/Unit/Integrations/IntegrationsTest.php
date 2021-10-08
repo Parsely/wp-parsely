@@ -23,7 +23,7 @@ final class IntegrationsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Integrations\Integrations::register
 	 */
-	public function test_an_integration_can_be_registered_to_a_new_Integrations_object() {
+	public function test_an_integration_can_be_registered_to_a_new_Integrations_object(): void {
 		$integrations = new Integrations();
 
 		$integrations->register( 'class', FakeIntegration::class );
@@ -51,8 +51,14 @@ final class IntegrationsTest extends TestCase {
 	 * @covers \Parsely\Integrations\Integrations::integrate
 	 * @uses \Parsely\Integrations\Integrations::register
 	 */
-	public function test_registered_integrations_have_their_integrate_method_called() {
-		$mock_integration = $this->getMockBuilder( Integration::class )->setMethods( array( 'integrate' ) )->getMock();
+	public function test_registered_integrations_have_their_integrate_method_called(): void {
+		$mock_builder = $this->getMockBuilder( Integration::class );
+		// See https://github.com/Parsely/wp-parsely/issues/426.
+		if ( method_exists( $mock_builder, 'onlyMethods' ) ) {
+			$mock_integration = $mock_builder->onlyMethods( array( 'integrate' ) )->getMock();
+		} else {
+			$mock_integration = $mock_builder->setMethods( array( 'integrate' ) )->getMock();
+		}
 		$mock_integration->expects( $this->once() )->method( 'integrate' );
 
 		$integrations = new Integrations();
@@ -80,7 +86,7 @@ class FakeIntegration2 {
 	/**
 	 * Stub this method to avoid a fatal error.
 	 */
-	public function integrate() {
+	public function integrate(): void {
 	}
 }
 

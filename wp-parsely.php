@@ -33,13 +33,13 @@ if ( class_exists( 'Parsely' ) ) {
 	return;
 }
 
-define( 'PARSELY_VERSION', '3.0.0-alpha' );
-define( 'PARSELY_FILE', __FILE__ );
+const PARSELY_VERSION = '3.0.0-alpha';
+const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
 add_action(
 	'plugins_loaded',
-	function() {
+	function(): void {
 		$GLOBALS['parsely'] = new Parsely();
 		$GLOBALS['parsely']->run();
 	}
@@ -53,7 +53,7 @@ require __DIR__ . '/src/UI/class-plugins-actions.php';
 require __DIR__ . '/src/UI/class-row-actions.php';
 add_action(
 	'admin_init',
-	function() {
+	function(): void {
 		$GLOBALS['parsely_ui_plugins_actions'] = new Parsely\UI\Plugins_Actions();
 		$GLOBALS['parsely_ui_plugins_actions']->run();
 
@@ -67,8 +67,10 @@ require __DIR__ . '/src/class-parsely-recommended-widget.php';
 add_action( 'widgets_init', 'parsely_recommended_widget_register' );
 /**
  * Register the Parse.ly Recommended widget.
+ *
+ * @return void
  */
-function parsely_recommended_widget_register() {
+function parsely_recommended_widget_register(): void {
 	register_widget( 'Parsely_Recommended_Widget' );
 }
 
@@ -83,8 +85,10 @@ add_action( 'init', 'parsely_load_textdomain' );
  * This can be removed once minimum supported WordPress is 4.6 or later.
  *
  * @since 2.5.0
+ *
+ * @return void
  */
-function parsely_load_textdomain() {
+function parsely_load_textdomain(): void {
 	load_plugin_textdomain( 'wp-parsely' );
 }
 
@@ -98,8 +102,10 @@ add_action( 'init', 'parsely_integrations' );
  * Instantiate Integrations collection and register built-in integrations.
  *
  * @since 2.6.0
+ *
+ * @return Integrations
  */
-function parsely_integrations() {
+function parsely_integrations(): Integrations {
 	$parsely_integrations = new Integrations();
 	$parsely_integrations->register( 'amp', Amp::class );
 	$parsely_integrations->register( 'fbia', Facebook_Instant_Articles::class );

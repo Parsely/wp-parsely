@@ -29,8 +29,8 @@ final class RowActionsTest extends TestCase {
 	/**
 	 * The setUp run before each test
 	 */
-	public function setUp() {
-		parent::setUp();
+	public function set_up(): void {
+		parent::set_up();
 
 		self::$row_actions = new Row_Actions( new Parsely() );
 	}
@@ -44,7 +44,7 @@ final class RowActionsTest extends TestCase {
 	 * @covers \Parsely\UI\Row_Actions::run
 	 * @group ui
 	 */
-	public function test_row_actions_class_will_not_add_row_actions_filter_when_enabling_filter_returns_false() {
+	public function test_row_actions_class_will_not_add_row_actions_filter_when_enabling_filter_returns_false(): void {
 		// wp_parsely_enable_row_action_links is false by default.
 		self::$row_actions->run();
 
@@ -61,7 +61,7 @@ final class RowActionsTest extends TestCase {
 	 * @covers \Parsely\UI\Row_Actions::run
 	 * @group ui
 	 */
-	public function test_row_actions_class_will_add_row_actions_filter_when_enabling_filter_returns_true() {
+	public function test_row_actions_class_will_add_row_actions_filter_when_enabling_filter_returns_true(): void {
 		add_filter( 'wp_parsely_enable_row_action_links', '__return_true' );
 		self::$row_actions->run();
 
@@ -83,7 +83,7 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_actions_are_an_array_or_not() {
+	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_actions_are_an_array_or_not(): void {
 		$cannot_show_parsely_link = self::getMethod( 'cannot_show_parsely_link', Row_Actions::class );
 
 		$published_post = self::factory()->post->create_and_get();
@@ -108,7 +108,7 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_has_trackable_status_or_not() {
+	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_has_trackable_status_or_not(): void {
 		$cannot_show_parsely_link = self::getMethod( 'cannot_show_parsely_link', Row_Actions::class );
 
 		$draft_post     = self::factory()->post->create_and_get( array( 'post_status' => 'draft' ) );
@@ -136,7 +136,7 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_is_viewable_or_not() {
+	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_is_viewable_or_not(): void {
 		$cannot_show_parsely_link = self::getMethod( 'cannot_show_parsely_link', Row_Actions::class );
 
 		$non_publicly_queryable_post = self::factory()->post->create_and_get( array( 'post_type' => 'parsely_tests_pt' ) );
@@ -164,7 +164,7 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_api_key_is_set_or_missing() {
+	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_api_key_is_set_or_missing(): void {
 		$cannot_show_parsely_link = self::getMethod( 'cannot_show_parsely_link', Row_Actions::class );
 
 		$published_post = self::factory()->post->create_and_get();
@@ -199,7 +199,7 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
-	public function test_link_to_Parsely_is_not_added_to_row_actions_when_conditions_fail() {
+	public function test_link_to_Parsely_is_not_added_to_row_actions_when_conditions_fail(): void {
 		// Insert a single post and set as global post.
 		// This post is a viewable type, with a trackable status (published).
 		$post_id = self::factory()->post->create( array( 'post_title' => 'Foo1' ) );
@@ -235,7 +235,7 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
-	public function test_link_to_Parsely_is_added_to_row_actions() {
+	public function test_link_to_Parsely_is_added_to_row_actions(): void {
 		// Insert a single post and set as global post.
 		// This post is a viewable type, with a trackable status (published).
 		$post_id = self::factory()->post->create( array( 'post_title' => 'Foo2' ) );

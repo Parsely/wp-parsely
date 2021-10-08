@@ -1,10 +1,16 @@
+/**
+ * External dependencies
+ */
 import {
 	activatePlugin,
 	loginUser,
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
-const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
+/**
+ * Internal dependencies
+ */
+import { waitForWpAdmin } from '../utils';
 
 describe( 'Activation flow', () => {
 	jest.setTimeout( 30000 );
