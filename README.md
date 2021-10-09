@@ -6,7 +6,7 @@ Tested up to: 5.8
 Requires PHP: 7.1  
 License: GPLv2 or later  
 Tags: analytics, parse.ly, parsely, parsley  
-Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauarge
+Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauargelaguet
 
 The Parse.ly plugin facilitates real-time and historical analytics to your content through a platform designed and built for digital publishing.
 
@@ -69,7 +69,7 @@ You may also be not tracking logged-in users, via one of the settings.
 You can use the `wp_parsely_metadata` filter, which sends three arguments: the array of metadata, the post object, and the `parsely_options` array:
 
     add_filter( 'wp_parsely_metadata', 'filter_parsely_metadata', 10, 3 );
-    function filter_parsely_page( $parsely_metadata, $post, $parsely_options ) {
+    function filter_parsely_metadata( $parsely_metadata, $post, $parsely_options ) {
         $parsely_metadata['articleSection'] = '...'; // Whatever values you want Parse.ly's Section to be.
         return $parsely_metadata;
     }
