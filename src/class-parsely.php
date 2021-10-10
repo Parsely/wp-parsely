@@ -119,6 +119,7 @@ class Parsely {
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
+
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'init', array( $this, 'register_js' ) );
@@ -772,6 +773,19 @@ class Parsely {
 	 * @return string|null|array
 	 */
 	public function insert_parsely_page() {
+		/**
+		 * Filters whether the Parse.ly meta tags should be inserted in the page.
+		 *
+		 * By default, the tags are inserted.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param bool $insert_metadata True to insert the metadata, false otherwise.
+		 */
+		if ( ! apply_filters( 'wp_parsely_should_insert_metadata', true ) ) {
+			return;
+		}
+
 		$parsely_options = $this->get_options();
 
 		if (
