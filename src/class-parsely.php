@@ -828,14 +828,14 @@ class Parsely {
 			}
 
 			$parsely_metas = array(
-					'title'     => $parsely_page['headline'] ?? null,
-					'link'      => $parsely_page['url'] ?? null,
-					'type'      => $parsely_post_type,
-					'image-url' => $parsely_page['thumbnailUrl'] ?? null,
-					'pub-date'  => $parsely_page['datePublished'] ?? null,
-					'section'   => $parsely_page['articleSection'] ?? null,
-					'tags'      => $parsely_page['keywords'] ?? null,
-					'author'    => isset( $parsely_page['author'] ),
+				'title'     => $parsely_page['headline'] ?? null,
+				'link'      => $parsely_page['url'] ?? null,
+				'type'      => $parsely_post_type,
+				'image-url' => $parsely_page['thumbnailUrl'] ?? null,
+				'pub-date'  => $parsely_page['datePublished'] ?? null,
+				'section'   => $parsely_page['articleSection'] ?? null,
+				'tags'      => $parsely_page['keywords'] ?? null,
+				'author'    => isset( $parsely_page['author'] ),
 			);
 			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
 
@@ -864,7 +864,7 @@ class Parsely {
 	 * @return array
 	 */
 	public function insert_parsely_page(): array {
-		_deprecated_function( __FUNCTION__, '3.0', 'construct_parsely_metadata()');
+		_deprecated_function( __FUNCTION__, '3.0', 'construct_parsely_metadata()' );
 		$this->insert_page_header_metadata();
 		return $this->get_options();
 	}
