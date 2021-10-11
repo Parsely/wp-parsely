@@ -770,9 +770,9 @@ class Parsely {
 	/**
 	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 *
-	 * @return string|null|array
+	 * @return void
 	 */
-	public function insert_parsely_page() {
+	public function insert_parsely_page(): void {
 		/**
 		 * Filters whether the Parse.ly meta tags should be inserted in the page.
 		 *
@@ -800,7 +800,7 @@ class Parsely {
 			// Search pages are not tracked.
 			is_search()
 		) {
-			return '';
+			return;
 		}
 
 		global $post;
@@ -851,8 +851,6 @@ class Parsely {
 		}
 
 		echo '<!-- END Parse.ly -->' . "\n\n";
-
-		return $parsely_page;
 	}
 
 	/**
