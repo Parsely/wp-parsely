@@ -32,25 +32,9 @@ class Parsely_Telemetry {
 	 * Parsely_Telemetry constructor.
 	 */
 	public function __construct() {
-		if ( ! $this->should_enable_tracking() ) {
-			return;
-		}
-
 		$this->tracks = new Parsely_A8c_Tracks();
 		$this->tracks->setup();
-
 		$this->add_event_tracking();
-	}
-
-	/**
-	 * Determine from the environment if tracking should be enabled for this request.
-	 *
-	 * @todo Implement this! It's only returning true right now :P .
-	 *
-	 * @return boolean
-	 */
-	protected function should_enable_tracking() {
-		return true;
 	}
 
 	/**
@@ -61,7 +45,7 @@ class Parsely_Telemetry {
 	 *
 	 * @return void
 	 */
-	protected function add_event_tracking() {
+	protected function add_event_tracking(): void {
 		add_action(
 			'load-settings_page_parsely',
 			function () {

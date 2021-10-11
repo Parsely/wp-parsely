@@ -128,7 +128,7 @@ class Parsely_A8c_Tracks_Event {
 	 *
 	 * @return string
 	 */
-	protected static function build_timestamp() {
+	protected static function build_timestamp(): string {
 		$ts = round( microtime( true ) * 1000 );
 		return number_format( $ts, 0, '', '' );
 	}
