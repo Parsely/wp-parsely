@@ -49,8 +49,9 @@ add_action(
 
 // Until auto-loading happens, we need to include this file for tests as well.
 require __DIR__ . '/src/Telemetry/class-telemetry.php';
-require __DIR__ . '/src/Telemetry/class-tracks.php';
-require __DIR__ . '/src/Telemetry/class-tracks-event.php';
+require __DIR__ . '/src/Telemetry/class-telemetry-system.php';
+require __DIR__ . '/src/Telemetry/Tracks/class-tracks.php';
+require __DIR__ . '/src/Telemetry/Tracks/class-tracks-event.php';
 add_action(
 	'admin_init',
 	function(): void {
