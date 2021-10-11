@@ -123,6 +123,7 @@ class Parsely {
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
+
 		// inserting parsely code.
 		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
 		add_action( 'init', array( $this, 'register_js' ) );
@@ -776,6 +777,19 @@ class Parsely {
 	 * @return string|null|array
 	 */
 	public function insert_parsely_page() {
+		/**
+		 * Filters whether the Parse.ly meta tags should be inserted in the page.
+		 *
+		 * By default, the tags are inserted.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param bool $insert_metadata True to insert the metadata, false otherwise.
+		 */
+		if ( ! apply_filters( 'wp_parsely_should_insert_metadata', true ) ) {
+			return;
+		}
+
 		$parsely_options = $this->get_options();
 
 		if (
@@ -1647,8 +1661,8 @@ class Parsely {
 	 */
 	private function get_bottom_level_term( $post_id, $taxonomy_name ): string {
 		$terms    = get_the_terms( $post_id, $taxonomy_name );
-		$term_ids = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : null;
-		$parents  = is_array( $terms ) ? array_filter( wp_list_pluck( $terms, 'parent' ) ) : null;
+		$term_ids = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
+		$parents  = is_array( $terms ) ? array_filter( wp_list_pluck( $terms, 'parent' ) ) : array();
 
 		// Get array of IDs of terms which are not parents.
 		$term_ids_not_parents = array_diff( $term_ids, $parents );
