@@ -8,6 +8,8 @@
 
 declare(strict_types=1);
 
+namespace Parsely\Telemetry;
+
 /**
  * This class comprises the mechanics of setting up the back end tracking instance(s).
  * Currently, the only supported back end is Automattic Tracks.

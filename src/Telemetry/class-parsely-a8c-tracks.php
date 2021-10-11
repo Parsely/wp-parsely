@@ -8,6 +8,8 @@
 
 declare(strict_types=1);
 
+namespace Parsely\Telemetry;
+
 /**
  * This class comprises the mechanics of sending events to the Automattic Tracks system.
  */

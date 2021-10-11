@@ -8,6 +8,8 @@
 
 declare(strict_types=1);
 
+use Parsely\Telemetry\Parsely_Telemetry;
+
 /**
  * Holds most of the logic for the plugin.
  *
@@ -86,6 +88,10 @@ class Parsely {
 		'Restaurant',
 		'Movie',
 	);
+	/**
+	 * @var Parsely_Telemetry
+	 */
+	private $telemetry;
 
 	/**
 	 * Register action and filter hook callbacks.

@@ -8,6 +8,8 @@
 
 declare(strict_types=1);
 
+namespace Parsely\Telemetry;
+
 /**
  * Instances of this class are fit for recording to the Automattic Tracks system (unless an error occurs during instantiation).
  */
