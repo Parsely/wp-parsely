@@ -56,9 +56,16 @@ add_action(
 	'admin_init',
 	function(): void {
 		// If enabled, instantiating Telemetry with Automattic's Tracks backend
-		if ( apply_filters( 'wp_parsely_enable_telemetry_backend', false ) ) {
+		if ( apply_filters( 'wp_parsely_enable_telemetry_backend', true ) ) {
 			$tracks    = new Tracks();
 			$telemetry = new Telemetry( $tracks );
+
+			require_once __DIR__ . '/src/Telemetry/Events/vip_wpparsely_settings_page_loaded.php';
+			$telemetry->register_event( array(
+				"action_hook" => 'load-settings_page_parsely',
+				"callable" => 'Parsely\Telemetry\track_vip_wpparsely_settings_page_loaded' )
+			);
+
 			$telemetry->run();
 		}
 	}

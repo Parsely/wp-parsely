@@ -31,6 +31,13 @@ class Telemetry {
 	private $telemetry_system;
 
 	/**
+	 * Holds the list of events that are registered to WordPress hooks.
+	 *
+	 * @var array
+	 */
+	private $events;
+
+	/**
 	 * Parsely_Telemetry constructor.
 	 */
 	public function __construct( Telemetry_System $telemetry_system ) {
@@ -38,6 +45,7 @@ class Telemetry {
 	}
 
 	/**
+	 *  Initializes the telemetry system and registers the events into WordPress hooks.
 	 *
 	 * @return void
 	 */
@@ -47,123 +55,28 @@ class Telemetry {
 	}
 
 	/**
-	 * Hook functions into WordPress actions and / filters for which we want to record events.
+	 * Adds an event to the list of supported events. In order to have it registered, it must be
+	 * added before calling `run`.
 	 *
-	 * @todo Move this to a dedicated file or some other organization scheme.
-	 * @todo Use named functions so they can be (conceivably) unhooked if desired.
+	 * @param array $event
+	 * @return void
+	 */
+	public function register_event( array $event ): void {
+		$this->events[] = $event;
+	}
+
+	/**
+	 * Hook functions into WordPress actions and / filters for which we want to record events.
 	 *
 	 * @return void
 	 */
-	protected function add_event_tracking(): void {
-		add_action(
-			'load-settings_page_parsely',
-			function () {
-				if (
-					! ( isset( $_SERVER['REQUEST_METHOD'] ) && 'GET' === $_SERVER['REQUEST_METHOD'] ) ||
-					// phpcs:disable WordPress.Security.NonceVerification.Recommended
-					( isset( $_GET['settings-updated'] ) && 'true' === $_GET['settings-updated'] )
-					// phpcs:enable
-				) {
-					return;
-				}
-				$this->telemetry_system->record_event( 'vip_wpparsely_settings_page_loaded' );
+	private function add_event_tracking(): void {
+		foreach ( $this->events as $event ) {
+			if ( is_callable( $event["callable"] ) ) {
+				add_action( "load-settings_page_parsely", function() use ( $event ) {
+					$event["callable"]( $this->telemetry_system );
+				} );
 			}
-		);
-
-		add_action(
-			'update_option_parsely',
-			function ( $old_value, $value ) {
-				$all_keys     = array_unique( array_merge( array_keys( $old_value ), array_keys( $value ) ) );
-				$updated_keys = array_reduce(
-					$all_keys,
-					function( $carry, $key ) use ( $old_value, $value ) {
-						if (
-							isset( $old_value[ $key ] ) === isset( $value[ $key ] ) &&
-							wp_json_encode( $old_value[ $key ] ) === wp_json_encode( $value[ $key ] )
-						) {
-							return $carry;
-						}
-
-						if ( 'parsely_wipe_metadata_cache' === $key && ! ( isset( $value[ $key ] ) && $value[ $key ] ) ) {
-							return $carry;
-						}
-
-						if ( 'plugin_version' === $key ) {
-							return $carry;
-						}
-
-						$carry[] = $key;
-						return $carry;
-					},
-					array()
-				);
-
-				if ( ! count( $updated_keys ) ) {
-					return;
-				}
-				$this->telemetry_system->record_event( 'vip_wpparsely_option_updated', compact( 'updated_keys' ) );
-			},
-			10,
-			2
-		);
-
-		add_action(
-			'delete_widget',
-			function ( $widget_id, $sidebar_id, $id_base ) {
-				if ( self::RECOMMENDED_WIDGET_BASE_ID !== $id_base ) {
-					return;
-				}
-				$this->telemetry_system->record_event( 'vip_wpparsely_delete_widget', compact( 'id_base' ) );
-			},
-			10,
-			3
-		);
-
-		add_filter(
-			'widget_update_callback',
-			function ( $instance, $new_instance, $old_instance, $widget_obj ) {
-				global $wp;
-				$id_base = $widget_obj->id_base;
-				if ( self::RECOMMENDED_WIDGET_BASE_ID !== $id_base ) {
-					return $instance;
-				}
-
-				if (
-					isset( $wp->query_vars['rest_route'] ) &&
-					'/wp/v2/widget-types/parsely_recommended_widget/encode' === $wp->query_vars['rest_route']
-				) {
-					/**
-					 * This is an "encode" call to preview the widget in the admin.
-					 * Track this event seperately.
-					 */
-					$this->telemetry_system->record_event( 'vip_wpparsely_widget_prepublish_change', compact( 'id_base' ) );
-					return $instance;
-				}
-
-				$all_keys     = array_unique( array_merge( array_keys( $old_instance ), array_keys( $instance ) ) );
-				$updated_keys = array_reduce(
-					$all_keys,
-					function( $carry, $key ) use ( $old_instance, $instance ) {
-						if (
-						isset( $old_instance[ $key ] ) === isset( $instance[ $key ] ) &&
-						wp_json_encode( $old_instance[ $key ] ) === wp_json_encode( $instance[ $key ] )
-						) {
-							return $carry;
-						}
-						$carry[] = $key;
-						return $carry;
-					},
-					array()
-				);
-
-				if ( count( $updated_keys ) ) {
-					$this->telemetry_system->record_event( 'vip_wpparsely_widget_updated', compact( 'id_base', 'updated_keys' ) );
-				}
-
-				return $instance;
-			},
-			10,
-			4
-		);
+		}
 	}
 }
