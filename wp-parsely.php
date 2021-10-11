@@ -71,10 +71,28 @@ add_action(
 			require_once __DIR__ . '/src/Telemetry/Events/wpparsely-option-updated.php';
 			$telemetry->register_event(
 				array(
-					'action_hook' => 'update_option_parsely',
-					'callable' => 'Parsely\Telemetry\track_wpparsely_option_updated',
-					'priority' => 10,
+					'action_hook'   => 'update_option_parsely',
+					'callable'      => 'Parsely\Telemetry\track_wpparsely_option_updated',
 					'accepted_args' => 2,
+				)
+			);
+
+			require_once __DIR__ . '/src/Telemetry/Events/wpparsely-delete-widget.php';
+			$telemetry->register_event(
+				array(
+					'action_hook'   => 'delete_widget',
+					'callable'      => 'Parsely\Telemetry\track_wpparsely_delete_widget',
+					'accepted_args' => 3,
+				)
+			);
+
+			require_once __DIR__ . '/src/Telemetry/Events/wpparsely-widget-updated.php';
+			$telemetry->register_event(
+				array(
+					'action_hook'   => 'widget_update_callback',
+					'callable'      => 'Parsely\Telemetry\track_wpparsely_widget_updated',
+					'accepted_args' => 4,
+					'is_filter'     => true,
 				)
 			);
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Parsely\Telemetry;
 
-function track_wpparsely_option_updated( $old_value, $value, $telemetry_system ) {
+function track_wpparsely_option_updated( $old_value, $value, Telemetry_System $telemetry_system ): void {
 	$all_keys     = array_unique( array_merge( array_keys( $old_value ), array_keys( $value ) ) );
 	$updated_keys = array_reduce(
 		$all_keys,

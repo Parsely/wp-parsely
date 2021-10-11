@@ -17,13 +17,6 @@ namespace Parsely\Telemetry;
  */
 class Telemetry {
 	/**
-	 * This is determined by our value passed to the `WP_Widget` constructor.
-	 *
-	 * @see https://github.com/Parsely/wp-parsely/blob/e9f1b8cd1a94743e068681a8106176d23857992d/src/class-parsely-recommended-widget.php#L28
-	 */
-	const RECOMMENDED_WIDGET_BASE_ID = 'parsely_recommended_widget';
-
-	/**
 	 * Holds an instance of the class comprising the active telemetry system.
 	 *
 	 * @var Telemetry_System
@@ -73,24 +66,23 @@ class Telemetry {
 	private function add_event_tracking(): void {
 		foreach ( $this->events as $event ) {
 			if ( is_string( $event['action_hook'] ) && is_callable( $event['callable'] ) ) {
-				$priority = $event['priority'] ?? 10;
 				$accepted_args = $event['accepted_args'] ?? 1;
+				$f             = function() use ( $accepted_args, $event ) {
+					if ( $accepted_args > 1 ) {
+						$args   = func_get_args();
+						$args[] = $this->telemetry_system;
+					} else {
+						$args = array( $this->telemetry_system );
+					}
 
-				add_action(
-					$event['action_hook'],
-					function() use ( $accepted_args, $event ) {
-						if ( $accepted_args > 1) {
-							$args = func_get_args();
-							$args[] = $this->telemetry_system;
-						} else {
-							$args = array($this->telemetry_system);
-						}
+					call_user_func_array( $event['callable'], $args );
+				};
 
-						call_user_func_array( $event['callable'], $args );
-					},
-					$priority,
-					$accepted_args
-				);
+				if ( isset( $event['is_filter'] ) && $event['is_filter'] ) {
+					add_filter( $event['action_hook'], $f, 10, $accepted_args );
+				} else {
+					add_action( $event['action_hook'], $f, 10, $accepted_args );
+				}
 			}
 		}
 	}
