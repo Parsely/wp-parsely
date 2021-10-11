@@ -60,10 +60,12 @@ add_action(
 			$tracks    = new Tracks();
 			$telemetry = new Telemetry( $tracks );
 
-			require_once __DIR__ . '/src/Telemetry/Events/vip_wpparsely_settings_page_loaded.php';
-			$telemetry->register_event( array(
-				"action_hook" => 'load-settings_page_parsely',
-				"callable" => 'Parsely\Telemetry\track_vip_wpparsely_settings_page_loaded' )
+			require_once __DIR__ . '/src/Telemetry/Events/wpparsely-settings-page-loaded.php';
+			$telemetry->register_event(
+				array(
+					'action_hook' => 'load-settings_page_parsely',
+					'callable'    => 'Parsely\Telemetry\track_wpparsely_settings_page_loaded',
+				)
 			);
 
 			$telemetry->run();

@@ -72,10 +72,13 @@ class Telemetry {
 	 */
 	private function add_event_tracking(): void {
 		foreach ( $this->events as $event ) {
-			if ( is_callable( $event["callable"] ) ) {
-				add_action( "load-settings_page_parsely", function() use ( $event ) {
-					$event["callable"]( $this->telemetry_system );
-				} );
+			if ( is_callable( $event['callable'] ) ) {
+				add_action(
+					'load-settings_page_parsely',
+					function() use ( $event ) {
+						$event['callable']( $this->telemetry_system );
+					} 
+				);
 			}
 		}
 	}
