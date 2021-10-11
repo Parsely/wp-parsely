@@ -1,8 +1,8 @@
 <?php
 /**
- * Parsely_Telemetry class
+ * Telemetry class
  *
- * @package Parsely
+ * @package Parsely\Telemetry
  * @since 3.0.0
  */
 

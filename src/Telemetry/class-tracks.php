@@ -1,8 +1,8 @@
 <?php
 /**
- * Parsely_A8c_Tracks class
+ * Tracks class
  *
- * @package Parsely
+ * @package Parsely\Telemetry
  * @since 3.0.0
  */
 
