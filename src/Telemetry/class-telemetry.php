@@ -72,12 +72,24 @@ class Telemetry {
 	 */
 	private function add_event_tracking(): void {
 		foreach ( $this->events as $event ) {
-			if ( is_callable( $event['callable'] ) ) {
+			if ( is_string( $event['action_hook'] ) && is_callable( $event['callable'] ) ) {
+				$priority = $event['priority'] ?? 10;
+				$accepted_args = $event['accepted_args'] ?? 1;
+
 				add_action(
-					'load-settings_page_parsely',
-					function() use ( $event ) {
-						$event['callable']( $this->telemetry_system );
-					} 
+					$event['action_hook'],
+					function() use ( $accepted_args, $event ) {
+						if ( $accepted_args > 1) {
+							$args = func_get_args();
+							$args[] = $this->telemetry_system;
+						} else {
+							$args = array($this->telemetry_system);
+						}
+
+						call_user_func_array( $event['callable'], $args );
+					},
+					$priority,
+					$accepted_args
 				);
 			}
 		}

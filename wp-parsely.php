@@ -68,6 +68,16 @@ add_action(
 				)
 			);
 
+			require_once __DIR__ . '/src/Telemetry/Events/wpparsely-option-updated.php';
+			$telemetry->register_event(
+				array(
+					'action_hook' => 'update_option_parsely',
+					'callable' => 'Parsely\Telemetry\track_wpparsely_option_updated',
+					'priority' => 10,
+					'accepted_args' => 2,
+				)
+			);
+
 			$telemetry->run();
 		}
 	}
