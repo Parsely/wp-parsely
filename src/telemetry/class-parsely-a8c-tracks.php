@@ -50,9 +50,9 @@ class Parsely_A8c_Tracks {
 	 *
 	 * NOTE: If the event name and / or property names don't pass validation, they'll be silently discarded.
 	 *
-	 * @param string  $event_name The event name. Must be snake_case.
-	 * @param array   $event_props Any additional properties to include with the event. Key names must be valid (start with a lower-case letter and "snake case").
-	 * @param bool    $blocking Should the event be sent to the backend immediately? Default: false.
+	 * @param string $event_name The event name. Must be snake_case.
+	 * @param array  $event_props Any additional properties to include with the event. Key names must be valid (start with a lower-case letter and "snake case").
+	 * @param bool   $blocking Should the event be sent to the backend immediately? Default: false.
 	 * @return void
 	 */
 	public function record_event( string $event_name, array $event_props = array(), bool $blocking = false ): void {
