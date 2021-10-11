@@ -8,8 +8,6 @@
 
 declare(strict_types=1);
 
-use Parsely\Telemetry\Parsely_Telemetry;
-
 /**
  * Holds most of the logic for the plugin.
  *
@@ -88,10 +86,6 @@ class Parsely {
 		'Restaurant',
 		'Movie',
 	);
-	/**
-	 * @var Parsely_Telemetry
-	 */
-	private $telemetry;
 
 	/**
 	 * Register action and filter hook callbacks.
@@ -101,10 +95,6 @@ class Parsely {
 	 * @return void
 	 */
 	public function run(): void {
-		if ( apply_filters( 'wp_parsely_enable_telemetry_backend', false ) ) {
-			$this->telemetry = new Parsely_Telemetry();
-		}
-
 		// Run upgrade options if they exist for the version currently defined.
 		$options = $this->get_options();
 		if ( empty( $options['plugin_version'] ) || self::VERSION !== $options['plugin_version'] ) {

@@ -27,6 +27,8 @@ declare(strict_types=1);
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;
+use Parsely\Telemetry\Telemetry;
+use Parsely\Telemetry\Tracks;
 use Parsely\UI\Row_Actions;
 
 if ( class_exists( 'Parsely' ) ) {
@@ -46,9 +48,21 @@ add_action(
 );
 
 // Until auto-loading happens, we need to include this file for tests as well.
-require __DIR__ . '/src/Telemetry/class-parsely-telemetry.php';
-require __DIR__ . '/src/Telemetry/class-parsely-a8c-tracks.php';
-require __DIR__ . '/src/Telemetry/class-parsely-a8c-tracks-event.php';
+require __DIR__ . '/src/Telemetry/class-telemetry.php';
+require __DIR__ . '/src/Telemetry/class-tracks.php';
+require __DIR__ . '/src/Telemetry/class-tracks-event.php';
+add_action(
+	'admin_init',
+	function(): void {
+		// If enabled, instantiating Telemetry with Automattic's Tracks backend
+		if ( apply_filters( 'wp_parsely_enable_telemetry_backend', false ) ) {
+			$tracks    = new Tracks();
+			$telemetry = new Telemetry( $tracks );
+			$telemetry->run();
+		}
+	}
+);
+
 require __DIR__ . '/src/UI/class-plugins-actions.php';
 require __DIR__ . '/src/UI/class-row-actions.php';
 add_action(

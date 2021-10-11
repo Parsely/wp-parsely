@@ -15,7 +15,7 @@ namespace Parsely\Telemetry;
  * Currently, the only supported back end is Automattic Tracks.
  * This is intended to wrap the internals such that adding / changing back ends has minimal impact on the event hooks we're interested in.
  */
-class Parsely_Telemetry {
+class Telemetry {
 	/**
 	 * This is determined by our value passed to the `WP_Widget` constructor.
 	 *
@@ -24,18 +24,25 @@ class Parsely_Telemetry {
 	const RECOMMENDED_WIDGET_BASE_ID = 'parsely_recommended_widget';
 
 	/**
-	 * Holds an instance of the class comprising the Automattic Tracks mechanics.
+	 * Holds an instance of the class comprising the active telemetry system.
 	 *
-	 * @var Parsely_A8c_Tracks
+	 * @var Telemetry_System
 	 */
-	private $tracks;
+	private $telemetry_system;
 
 	/**
 	 * Parsely_Telemetry constructor.
 	 */
-	public function __construct() {
-		$this->tracks = new Parsely_A8c_Tracks();
-		$this->tracks->setup();
+	public function __construct( Telemetry_System $telemetry_system ) {
+		$this->telemetry_system = $telemetry_system;
+	}
+
+	/**
+	 *
+	 * @return void
+	 */
+	public function run(): void {
+		$this->telemetry_system->setup();
 		$this->add_event_tracking();
 	}
 
@@ -59,7 +66,7 @@ class Parsely_Telemetry {
 				) {
 					return;
 				}
-				$this->tracks->record_event( 'vip_wpparsely_settings_page_loaded' );
+				$this->telemetry_system->record_event( 'vip_wpparsely_settings_page_loaded' );
 			}
 		);
 
@@ -94,7 +101,7 @@ class Parsely_Telemetry {
 				if ( ! count( $updated_keys ) ) {
 					return;
 				}
-				$this->tracks->record_event( 'vip_wpparsely_option_updated', compact( 'updated_keys' ) );
+				$this->telemetry_system->record_event( 'vip_wpparsely_option_updated', compact( 'updated_keys' ) );
 			},
 			10,
 			2
@@ -106,7 +113,7 @@ class Parsely_Telemetry {
 				if ( self::RECOMMENDED_WIDGET_BASE_ID !== $id_base ) {
 					return;
 				}
-				$this->tracks->record_event( 'vip_wpparsely_delete_widget', compact( 'id_base' ) );
+				$this->telemetry_system->record_event( 'vip_wpparsely_delete_widget', compact( 'id_base' ) );
 			},
 			10,
 			3
@@ -129,7 +136,7 @@ class Parsely_Telemetry {
 					 * This is an "encode" call to preview the widget in the admin.
 					 * Track this event seperately.
 					 */
-					$this->tracks->record_event( 'vip_wpparsely_widget_prepublish_change', compact( 'id_base' ) );
+					$this->telemetry_system->record_event( 'vip_wpparsely_widget_prepublish_change', compact( 'id_base' ) );
 					return $instance;
 				}
 
@@ -150,7 +157,7 @@ class Parsely_Telemetry {
 				);
 
 				if ( count( $updated_keys ) ) {
-					$this->tracks->record_event( 'vip_wpparsely_widget_updated', compact( 'id_base', 'updated_keys' ) );
+					$this->telemetry_system->record_event( 'vip_wpparsely_widget_updated', compact( 'id_base', 'updated_keys' ) );
 				}
 
 				return $instance;

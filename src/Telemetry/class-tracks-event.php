@@ -13,12 +13,12 @@ namespace Parsely\Telemetry;
 /**
  * Instances of this class are fit for recording to the Automattic Tracks system (unless an error occurs during instantiation).
  */
-class Parsely_A8c_Tracks_Event {
+class Tracks_Event {
 	/**
 	 * Tracks Event Error.
 	 * If this is set to a `WP_Error` instance, the event will not be tracked.
 	 *
-	 * @see Parsely_A8c_Tracks::record_event
+	 * @see Tracks::record_event
 	 *
 	 * @var mixed Error.
 	 */
