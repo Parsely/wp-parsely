@@ -866,7 +866,9 @@ class Parsely {
 	public function insert_parsely_page(): array {
 		_deprecated_function( __FUNCTION__, '3.0', 'construct_parsely_metadata()' );
 		$this->insert_page_header_metadata();
-		return $this->get_options();
+
+		global $post;
+		return $this->construct_parsely_metadata( $this->get_options(), $post );
 	}
 
 	/**
