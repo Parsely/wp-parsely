@@ -1131,7 +1131,7 @@ class Parsely {
 		);
 
 		if ( ! is_wp_error( $response ) ) {
-			$current_timestamp       = time();
+			$current_timestamp = time();
 			update_post_meta( $post_id, 'parsely_metadata_last_updated', $current_timestamp );
 		}
 	}
