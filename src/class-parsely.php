@@ -1080,18 +1080,17 @@ class Parsely {
 		return apply_filters( 'wp_parsely_metadata', $parsely_page, $post, $parsely_options );
 	}
 
-
 	/**
 	 * Updates the Parsely metadata endpoint with the new metadata of the post.
 	 *
 	 * @param int $post_id id of the post to update.
-	 * @return string
+	 * @return void
 	 */
-	public function update_metadata_endpoint( $post_id ): string {
+	public function update_metadata_endpoint( int $post_id ): void {
 		$parsely_options = $this->get_options();
 
 		if ( $this->api_key_is_missing() || empty( $parsely_options['metadata_secret'] ) ) {
-			return '';
+			return;
 		}
 
 		$post     = get_post( $post_id );
@@ -1130,8 +1129,11 @@ class Parsely {
 				'data_format' => 'body',
 			)
 		);
-		$current_timestamp       = time();
-		$meta_update             = update_post_meta( $post_id, 'parsely_metadata_last_updated', $current_timestamp );
+
+		if ( ! is_wp_error( $response ) ) {
+			$current_timestamp       = time();
+			update_post_meta( $post_id, 'parsely_metadata_last_updated', $current_timestamp );
+		}
 	}
 
 
