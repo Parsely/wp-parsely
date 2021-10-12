@@ -1848,11 +1848,12 @@ class Parsely {
 	 * Get the URL of the current PHP script.
 	 * A fall-back implementation to determine permalink
 	 *
-	 * @param string $parsely_type Optional. Parse.ly post type you're interested in, either 'post' or 'nonpost'. Default is 'nonpost'.
+	 *
+	 * @param string $parsely_type Optional. Parse.ly post type you're interested in, either 'post' or 'non-post'. Default is 'non-post'.
 	 * @param int    $post_id      Optional. ID of the post you want to get the URL for. Default is 0, which means the global `$post` is used.
 	 * @return string
 	 */
-	public function get_current_url( $parsely_type = 'nonpost', $post_id = 0 ): string {
+	public function get_current_url( string $parsely_type = 'non-post', int $post_id = 0 ): string {
 		if ( 'post' === $parsely_type ) {
 			$permalink = (string) get_permalink( $post_id );
 
@@ -1863,7 +1864,7 @@ class Parsely {
 			 * @since 2.5.0  Added $post_id.
 			 *
 			 * @param string $permalink         The permalink URL or false if post does not exist.
-			 * @param string $parsely_type      Parse.ly type ("post" or "nonpost").
+			 * @param string $parsely_type      Parse.ly type ("post" or "non-post").
 			 * @param int    $post_id           ID of the post you want to get the URL for. May be 0, so $permalink will be
 			 *                                  for the global $post.
 			 */
