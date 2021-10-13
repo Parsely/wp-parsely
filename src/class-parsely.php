@@ -856,7 +856,10 @@ class Parsely {
 	}
 
 	/**
-	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 * Deprecated. Echoes the metadata into the page, and returns the inserted values.
+	 *
+	 * To just echo the metadata, use the `insert_page_header_metadata()` method.
+	 * To get the metadata to be inserted, use the `construct_parsely_metadata()` method.
 	 *
 	 * @deprecated 3.0.0
 	 * @see construct_parsely_metadata()
