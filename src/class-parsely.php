@@ -121,7 +121,7 @@ class Parsely {
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 
 		// inserting parsely code.
-		add_action( 'wp_head', array( $this, 'insert_parsely_page' ) );
+		add_action( 'wp_head', array( $this, 'insert_page_header_metadata' ) );
 		add_action( 'init', array( $this, 'register_js' ) );
 
 		// load_js_api should be called prior to load_js_tracker so the relevant scripts are enqueued in order.
@@ -770,9 +770,11 @@ class Parsely {
 	/**
 	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 *
-	 * @return string|null|array
+	 * @since 3.0.0
+	 *
+	 * @return void
 	 */
-	public function insert_parsely_page() {
+	public function insert_page_header_metadata(): void {
 		/**
 		 * Filters whether the Parse.ly meta tags should be inserted in the page.
 		 *
@@ -789,18 +791,18 @@ class Parsely {
 		$parsely_options = $this->get_options();
 
 		if (
-			$this->api_key_is_missing() ||
+				$this->api_key_is_missing() ||
 
-			// Chosen not to track logged-in users.
-			( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
+				// Chosen not to track logged-in users.
+				( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
 
-			// 404 pages are not tracked.
-			is_404() ||
+				// 404 pages are not tracked.
+				is_404() ||
 
-			// Search pages are not tracked.
-			is_search()
+				// Search pages are not tracked.
+				is_search()
 		) {
-			return '';
+			return;
 		}
 
 		global $post;
@@ -851,8 +853,25 @@ class Parsely {
 		}
 
 		echo '<!-- END Parse.ly -->' . "\n\n";
+	}
 
-		return $parsely_page;
+	/**
+	 * Deprecated. Echoes the metadata into the page, and returns the inserted values.
+	 *
+	 * To just echo the metadata, use the `insert_page_header_metadata()` method.
+	 * To get the metadata to be inserted, use the `construct_parsely_metadata()` method.
+	 *
+	 * @deprecated 3.0.0
+	 * @see construct_parsely_metadata()
+	 *
+	 * @return array
+	 */
+	public function insert_parsely_page(): array {
+		_deprecated_function( __FUNCTION__, '3.0', 'construct_parsely_metadata()' );
+		$this->insert_page_header_metadata();
+
+		global $post;
+		return $this->construct_parsely_metadata( $this->get_options(), $post );
 	}
 
 	/**
