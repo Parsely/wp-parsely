@@ -73,7 +73,6 @@ function widgetLoad( outerDiv, {
 				postTitle.appendChild( postLink );
 				textDiv.appendChild( postTitle );
 
-				console.log( displayAuthor );
 				if ( displayAuthor ) {
 					const authorLink = document.createElement( 'div' );
 					authorLink.className = 'parsely-recommended-widget-author';
