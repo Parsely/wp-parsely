@@ -65,7 +65,7 @@ add_action(
 	}
 );
 
-require __DIR__ . '/src/Widgets/class-parsely-recommended-widget.php';
+require __DIR__ . '/src/class-parsely-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
