@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely;
+use const Parsely\PARSELY_FILE;
 
 /**
  * User Interface changes for the plugins actions.

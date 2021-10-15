@@ -11,6 +11,8 @@
 
 declare(strict_types=1);
 
+use const Parsely\PARSELY_FILE;
+
 /**
  * This is the class for the recommended widget.
  */

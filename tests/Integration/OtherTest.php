@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use const Parsely\PARSELY_FILE;
+
 /**
  * Catch-all class for testing.
  * TODO: Break this into multiple targeted files.
