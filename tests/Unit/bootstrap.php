@@ -7,6 +7,8 @@
 
 declare(strict_types=1);
 
+namespace Parsely\Tests\Unit;
+
 /**
  * Require BrainMonkey files and autoload the plugin code.
  */

@@ -61,8 +61,8 @@ final class RecommendedApiTest extends TestCase {
 	 * Test the basic generation of the API URL.
 	 *
 	 * @dataProvider data_recommended_api_url
-	 * @covers \Parsely_Recommended_Widget::get_api_url
-	 * @uses \Parsely_Recommended_Widget::__construct
+	 * @covers \Parsely\Widgets\Recommended_Widget::get_api_url
+	 * @uses \Parsely\Widgets\Recommended_Widget::__construct
 	 * @group widgets
 	 *
 	 * @param string $api_key          Publisher Site ID (API key).

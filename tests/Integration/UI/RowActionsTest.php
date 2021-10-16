@@ -7,10 +7,10 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\UI;
+namespace Parsely\Tests\Integration\UI;
 
 use Parsely;
-use Parsely\Tests\TestCase;
+use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Row_Actions;
 
 /**
@@ -22,7 +22,7 @@ final class RowActionsTest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var string $row_actions Holds the Row_Actions object.
+	 * @var Row_Actions $row_actions Holds the Row_Actions object.
 	 */
 	private static $row_actions;
 
@@ -45,7 +45,7 @@ final class RowActionsTest extends TestCase {
 	 * @group ui
 	 */
 	public function test_row_actions_class_will_not_add_row_actions_filter_when_enabling_filter_returns_false(): void {
-		// wp_parsely_enable_row_action_links is false by default.
+		add_filter( 'wp_parsely_enable_row_action_links', '__return_false' );
 		self::$row_actions->run();
 
 		self::assertFalse( has_filter( 'post_row_actions', array( self::$row_actions, 'row_actions_add_parsely_link' ) ) );

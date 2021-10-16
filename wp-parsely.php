@@ -24,12 +24,17 @@
 
 declare(strict_types=1);
 
+namespace Parsely;
+
+use Parsely;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;
+use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Row_Actions;
+use Parsely_Recommended_Widget;
 
-if ( class_exists( 'Parsely' ) ) {
+if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
@@ -51,7 +56,8 @@ require __DIR__ . '/src/UI/class-row-actions.php';
 add_action(
 	'admin_init',
 	function(): void {
-		$GLOBALS['parsely_ui_plugins_actions'] = new Parsely\UI\Plugins_Actions();
+		$GLOBALS['parsely_ui_plugins_actions'] = new Plugins_Actions();
+
 		$GLOBALS['parsely_ui_plugins_actions']->run();
 
 		$row_actions = new Row_Actions( $GLOBALS['parsely'] );
@@ -61,17 +67,17 @@ add_action(
 
 require __DIR__ . '/src/class-parsely-recommended-widget.php';
 
-add_action( 'widgets_init', 'parsely_recommended_widget_register' );
+add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
  * Register the Parse.ly Recommended widget.
  *
  * @return void
  */
 function parsely_recommended_widget_register(): void {
-	register_widget( 'Parsely_Recommended_Widget' );
+	register_widget( Parsely_Recommended_Widget::class );
 }
 
-add_action( 'init', 'parsely_load_textdomain' );
+add_action( 'init', __NAMESPACE__ . '\\parsely_load_textdomain' );
 /**
  * Load plugin textdomain.
  *
@@ -94,7 +100,7 @@ require __DIR__ . '/src/Integrations/class-integrations.php';
 require __DIR__ . '/src/Integrations/class-amp.php';
 require __DIR__ . '/src/Integrations/class-facebook-instant-articles.php';
 
-add_action( 'init', 'parsely_integrations' );
+add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
 /**
  * Instantiate Integrations collection and register built-in integrations.
  *

@@ -12,6 +12,7 @@ namespace Parsely\Tests\Integration\Integrations;
 use Parsely\Integrations\Integrations;
 use Parsely\Tests\Integration\TestCase;
 use ReflectionClass;
+use function Parsely\parsely_integrations;
 
 /**
  * Test plugin integrations collection class.
@@ -38,7 +39,7 @@ final class IntegrationsTest extends TestCase {
 			}
 		);
 
-		$integrations = \parsely_integrations();
+		$integrations = parsely_integrations();
 
 		// Use Reflection to look inside the collection.
 		$reflector_property = ( new ReflectionClass( $integrations ) )->getProperty( 'integrations' );
