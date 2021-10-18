@@ -51,7 +51,8 @@ final class SinglePostTest extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Insert a single post and set as global post.
-		$post_id = self::factory()->post->create();
+		$post_array = $this->create_test_post_array();
+		$post_id    = $this->factory->post->create( $post_array );
 		$post    = get_post( $post_id );
 
 		// Make a request to the root of the site to set the global $wp_query object.
@@ -91,7 +92,7 @@ final class SinglePostTest extends TestCase {
 
 		// Insert a single category term, and a Post with that category.
 		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
-		$post_id  = self::factory()->post->create( array( 'post_category' => array( $category ) ) );
+		$post_id  = self::factory()->post->create( array( 'post_category' => array( $category ), 'post_author' => 1 ) );
 		$post     = get_post( $post_id );
 
 		// Create the structured data for that post.
@@ -128,7 +129,8 @@ final class SinglePostTest extends TestCase {
 		// Create two tags with uppercase names and a single post.
 		$tag1    = self::factory()->tag->create( array( 'name' => 'Sample' ) );
 		$tag2    = self::factory()->tag->create( array( 'name' => 'Tag' ) );
-		$post_id = self::factory()->post->create();
+		$post_array = $this->create_test_post_array();
+		$post_id    = $this->factory->post->create( $post_array );
 		$post    = get_post( $post_id );
 
 		// Assign the Tags to the Post.
@@ -181,7 +183,7 @@ final class SinglePostTest extends TestCase {
 		$cat1    = self::factory()->category->create( array( 'name' => 'Test Category' ) );
 		$cat2    = self::factory()->category->create( array( 'name' => 'Test Category 2' ) );
 		$cat3    = self::factory()->category->create( array( 'name' => 'Test Category 3' ) );
-		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2, $cat3 ) ) );
+		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2, $cat3 ), 'post_author' => 1 ) );
 		$post    = get_post( $post_id );
 
 		// Create the structured data for that post.
@@ -235,7 +237,7 @@ final class SinglePostTest extends TestCase {
 		// Create a tag and a category and a single post and assign the category to the post.
 		$tag     = self::factory()->tag->create( array( 'name' => 'My Tag' ) );
 		$cat     = self::factory()->category->create( array( 'name' => 'My Category' ) );
-		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat ) ) );
+		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat ), 'post_author' => 1 ) );
 
 		$post = get_post( $post_id );
 
@@ -289,7 +291,7 @@ final class SinglePostTest extends TestCase {
 				'parent' => $cat1,
 			)
 		);
-		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2 ) ) );
+		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2 ), 'post_author' => 1 ) );
 		$post    = get_post( $post_id );
 
 		// Create the structured data for that post.
@@ -352,7 +354,9 @@ final class SinglePostTest extends TestCase {
 				'parent'   => $custom_tax_tag,
 			)
 		);
-		$post_id              = self::factory()->post->create();
+		// Create a single post.
+		$post_array = $this->create_test_post_array();
+		$post_id    = $this->factory->post->create( $post_array );
 		$post                 = get_post( $post_id );
 
 		// Set the custom taxonomy terms to the post.
@@ -402,7 +406,8 @@ final class SinglePostTest extends TestCase {
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
 
 		// Create a single post.
-		$post_id = self::factory()->post->create();
+		$post_array = $this->create_test_post_array();
+		$post_id    = $this->factory->post->create( $post_array );
 		$post    = get_post( $post_id );
 
 		// Set Parsely to not force https canonicals.

@@ -89,8 +89,6 @@ final class RowActionsTest extends TestCase {
 		$published_post = self::factory()->post->create_and_get();
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
-		// Test if $actions are not an array.
-		self::assertTrue( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( 'not_on_array', $published_post ) ) );
 		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( array(), $published_post ) ) );
 	}
 
