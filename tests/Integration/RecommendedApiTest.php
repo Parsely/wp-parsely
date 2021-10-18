@@ -62,12 +62,10 @@ final class RecommendedApiTest extends TestCase {
 	 *
 	 * @dataProvider data_recommended_api_url
 	 * @covers \Parsely\Widgets\Recommended_Widget::get_api_url
-	 * @uses \Parsely\Widgets\Recommended_Widget::__construct
-	 * @group widgets
 	 *
 	 * @param string $api_key          Publisher Site ID (API key).
 	 * @param int    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
-	 *                                 formatting details. No restriction by default.
+	 *                                    formatting details. No restriction by default.
 	 * @param string $sort             What to sort the results by. There are currently 2 valid options: `score`, which
 	 *                                 will sort articles by overall relevance and `pub_date` which will sort results by
 	 *                                 their publication date. The default is `score`.
@@ -75,8 +73,11 @@ final class RecommendedApiTest extends TestCase {
 	 *                                 received high e.g. views; default is undefined.
 	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
 	 * @param string $url              Expected generated URL.
+	 *
+	 * @uses \Parsely\Widgets\Recommended_Widget::__construct
+	 * @group widgets
 	 */
-	public function test_recommended_api_url( $api_key, $published_within, $sort, $boost, $return_limit, $url ): void {
+	public function test_recommended_api_url( string $api_key, int $published_within, string $sort, string $boost, int $return_limit, string $url ): void {
 		$recommended_widget = new Parsely_Recommended_Widget();
 
 		self::assertEquals( $url, $recommended_widget->get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) );
