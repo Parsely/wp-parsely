@@ -1323,7 +1323,7 @@ class Parsely {
 	 *
 	 * @param string $tag    The `script` tag for the enqueued script.
 	 * @param string $handle The script's registered handle.
-	 * @param string $src    The script's source URL. Unused?
+	 * @param string $src    Unused? The script's source URL.
 	 * @return string Amended `script` tag.
 	 */
 	public function script_loader_tag( string $tag, string $handle, string $src ): string {
@@ -1563,7 +1563,7 @@ class Parsely {
 	/**
 	 * Returns an array of all the child categories for the current post
 	 *
-	 * @param int $post_id The id of the post you're trying to get categories for.
+	 * @param int    $post_id The id of the post you're trying to get categories for.
 	 * @param string $delimiter What character will delimit the categories.
 	 * @return array All the child categories of the current post.
 	 */
@@ -1638,7 +1638,7 @@ class Parsely {
 	 * Return the top-most category/taxonomy value in a hierarcy given a taxonomy value's ID
 	 * ( WordPress calls taxonomy values 'terms' ).
 	 *
-	 * @param int $term_id The id of the top level term.
+	 * @param int    $term_id The id of the top level term.
 	 * @param string $taxonomy_name The name of the taxonomy.
 	 * @return string|false $parent The top level name of the category / taxonomy.
 	 */
@@ -1654,7 +1654,7 @@ class Parsely {
 	 * Return the bottom-most category/taxonomy value in a hierarcy given a post ID
 	 * ( WordPress calls taxonomy values 'terms' ).
 	 *
-	 * @param int $post_id The post id you're interested in.
+	 * @param int    $post_id The post id you're interested in.
 	 * @param string $taxonomy_name The name of the taxonomy.
 	 * @return string Name of the custom taxonomy.
 	 */
@@ -1680,7 +1680,7 @@ class Parsely {
 	 * Get all term values from custom taxonomies.
 	 *
 	 * @param WP_Post $post_obj The post object.
-	 * @param array   $parsely_options The parsely options. Unused?
+	 * @param array   $parsely_options Unused? The parsely options.
 	 * @return array
 	 */
 	private function get_custom_taxonomy_values( WP_Post $post_obj, array $parsely_options ): array {

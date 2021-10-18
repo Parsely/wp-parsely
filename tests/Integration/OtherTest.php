@@ -279,7 +279,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		// Create a single post.
 		$post_array = $this->create_test_post_array();
 		$post_id    = $this->factory->post->create( $post_array );
-		$post    = get_post( $post_id );
+		$post       = get_post( $post_id );
 
 		// Apply page filtering.
 		$headline = 'Completely New And Original Filtered Headline';
