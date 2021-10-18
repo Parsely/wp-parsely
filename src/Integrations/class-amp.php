@@ -6,7 +6,11 @@
  * @since 2.6.0
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Integrations;
+
+use Parsely;
 
 /**
  * Integrates Parse.ly tracking with the AMP plugin.
@@ -18,8 +22,10 @@ class Amp implements Integration {
 	 * Apply the hooks that integrate the plugin or theme with the Parse.ly plugin.
 	 *
 	 * @since 2.6.0
+	 *
+	 * @return void
 	 */
-	public function integrate() {
+	public function integrate(): void {
 		if ( defined( 'AMP__VERSION' ) ) {
 			add_action( 'template_redirect', array( $this, 'add_actions' ) );
 		}
@@ -36,7 +42,7 @@ class Amp implements Integration {
 	 *
 	 * @return bool True is an AMP request, false otherwise.
 	 */
-	public function is_amp_request() {
+	public function is_amp_request(): bool {
 		return function_exists( 'amp_is_request' ) && amp_is_request();
 	}
 
@@ -47,8 +53,8 @@ class Amp implements Integration {
 	 *
 	 * @return bool True is an AMP request and not disabled, false otherwise.
 	 */
-	public function can_handle_amp_request() {
-		$options = get_option( \Parsely::OPTIONS_KEY );
+	public function can_handle_amp_request(): bool {
+		$options = get_option( Parsely::OPTIONS_KEY );
 
 		return $this->is_amp_request() && is_array( $options ) && ! $options['disable_amp'];
 	}
@@ -57,8 +63,10 @@ class Amp implements Integration {
 	 * Add AMP actions.
 	 *
 	 * @since 2.6.0
+	 *
+	 * @return void
 	 */
-	public function add_actions() {
+	public function add_actions(): void {
 		if ( $this->can_handle_amp_request() ) {
 			add_filter( 'amp_post_template_analytics', array( $this, 'register_parsely_for_amp_analytics' ) );
 			add_filter( 'amp_analytics_entries', array( $this, 'register_parsely_for_amp_native_analytics' ) );
@@ -73,8 +81,8 @@ class Amp implements Integration {
 	 * @param array $analytics The analytics registry.
 	 * @return array The analytics registry.
 	 */
-	public function register_parsely_for_amp_analytics( $analytics ) {
-		$options = get_option( \Parsely::OPTIONS_KEY );
+	public function register_parsely_for_amp_analytics( $analytics ): array {
+		$options = get_option( Parsely::OPTIONS_KEY );
 
 		if ( empty( $options['apikey'] ) ) {
 			return $analytics;
@@ -101,8 +109,8 @@ class Amp implements Integration {
 	 * @param array $analytics The analytics registry.
 	 * @return array The analytics registry.
 	 */
-	public function register_parsely_for_amp_native_analytics( $analytics ) {
-		$options = get_option( \Parsely::OPTIONS_KEY );
+	public function register_parsely_for_amp_native_analytics( $analytics ): array {
+		$options = get_option( Parsely::OPTIONS_KEY );
 
 		if ( ! empty( $options['disable_amp'] ) && true === $options['disable_amp'] ) {
 			return $analytics;

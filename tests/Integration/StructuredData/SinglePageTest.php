@@ -5,6 +5,8 @@
  * @package Parsely\Tests
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Tests\Integration\StructuredData;
 
 /**
@@ -33,7 +35,7 @@ final class SinglePageTest extends NonPostTestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_single_page() {
+	public function test_single_page(): void {
 		// Setup Parsley object.
 		$parsely         = new \Parsely();
 		$parsely_options = get_option( \Parsely::OPTIONS_KEY );

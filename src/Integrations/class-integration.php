@@ -6,6 +6,8 @@
  * @since 2.6.0
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Integrations;
 
 /**
@@ -19,5 +21,5 @@ interface Integration {
 	 *
 	 * @since 2.6.0
 	 */
-	public function integrate();
+	public function integrate(): void;
 }

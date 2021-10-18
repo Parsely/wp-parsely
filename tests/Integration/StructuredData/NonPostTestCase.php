@@ -5,6 +5,8 @@
  * @package Parsely\Tests
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Tests\Integration\StructuredData;
 
 use Parsely\Tests\Integration\TestCase;
@@ -16,7 +18,7 @@ abstract class NonPostTestCase extends TestCase {
 	/**
 	 * The setUp run before each test
 	 */
-	public function set_up() {
+	public function set_up(): void {
 		parent::set_up();
 
 		// Set the default options prior to each test.
@@ -28,7 +30,7 @@ abstract class NonPostTestCase extends TestCase {
 	 *
 	 * @param array $structured_data Array of metadata to check.
 	 */
-	public function assert_data_has_required_properties( $structured_data ) {
+	public function assert_data_has_required_properties( $structured_data ): void {
 		$required_properties = $this->get_required_properties();
 
 		array_walk(
@@ -44,7 +46,7 @@ abstract class NonPostTestCase extends TestCase {
 	 *
 	 * @return string[]
 	 */
-	private function get_required_properties() {
+	private function get_required_properties(): array {
 		return array(
 			'@context',
 			'@type',

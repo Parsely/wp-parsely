@@ -5,6 +5,8 @@
  * @package Parsely\Tests
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Tests\Integration\StructuredData;
 
 /**
@@ -32,7 +34,7 @@ final class TermArchiveTest extends NonPostTestCase {
 	 * @uses \Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
-	public function test_term_archive() {
+	public function test_term_archive(): void {
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
 		// See https://github.com/Parsely/wp-parsely/issues/151.
 		$this->set_permalink_structure( '/%postname%/' );

@@ -11,33 +11,40 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://www.parse.ly/help/integration/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
- * Version:           2.6.1
+ * Version:           3.0.0-alpha
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
  * License:           GPL-2.0-or-later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * GitHub Plugin URI: https://github.com/Parsely/wp-parsely
- * Requires PHP:      5.6
- * Requires WP:       4.0.0
+ * Requires PHP:      7.1
+ * Requires WP:       5.0.0
  */
 
+declare(strict_types=1);
+
+namespace Parsely;
+
+use Parsely;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;
+use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Row_Actions;
+use Parsely_Recommended_Widget;
 
-if ( class_exists( 'Parsely' ) ) {
+if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-define( 'PARSELY_VERSION', '2.6.1' );
-define( 'PARSELY_FILE', __FILE__ );
+const PARSELY_VERSION = '3.0.0-alpha';
+const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
 add_action(
 	'plugins_loaded',
-	function() {
+	function(): void {
 		$GLOBALS['parsely'] = new Parsely();
 		$GLOBALS['parsely']->run();
 	}
@@ -48,8 +55,9 @@ require __DIR__ . '/src/UI/class-plugins-actions.php';
 require __DIR__ . '/src/UI/class-row-actions.php';
 add_action(
 	'admin_init',
-	function() {
-		$GLOBALS['parsely_ui_plugins_actions'] = new Parsely\UI\Plugins_Actions();
+	function(): void {
+		$GLOBALS['parsely_ui_plugins_actions'] = new Plugins_Actions();
+
 		$GLOBALS['parsely_ui_plugins_actions']->run();
 
 		$row_actions = new Row_Actions( $GLOBALS['parsely'] );
@@ -59,15 +67,17 @@ add_action(
 
 require __DIR__ . '/src/class-parsely-recommended-widget.php';
 
-add_action( 'widgets_init', 'parsely_recommended_widget_register' );
+add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
  * Register the Parse.ly Recommended widget.
+ *
+ * @return void
  */
-function parsely_recommended_widget_register() {
-	register_widget( 'Parsely_Recommended_Widget' );
+function parsely_recommended_widget_register(): void {
+	register_widget( Parsely_Recommended_Widget::class );
 }
 
-add_action( 'init', 'parsely_load_textdomain' );
+add_action( 'init', __NAMESPACE__ . '\\parsely_load_textdomain' );
 /**
  * Load plugin textdomain.
  *
@@ -78,8 +88,10 @@ add_action( 'init', 'parsely_load_textdomain' );
  * This can be removed once minimum supported WordPress is 4.6 or later.
  *
  * @since 2.5.0
+ *
+ * @return void
  */
-function parsely_load_textdomain() {
+function parsely_load_textdomain(): void {
 	load_plugin_textdomain( 'wp-parsely' );
 }
 
@@ -88,13 +100,15 @@ require __DIR__ . '/src/Integrations/class-integrations.php';
 require __DIR__ . '/src/Integrations/class-amp.php';
 require __DIR__ . '/src/Integrations/class-facebook-instant-articles.php';
 
-add_action( 'init', 'parsely_integrations' );
+add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
 /**
  * Instantiate Integrations collection and register built-in integrations.
  *
  * @since 2.6.0
+ *
+ * @return Integrations
  */
-function parsely_integrations() {
+function parsely_integrations(): Integrations {
 	$parsely_integrations = new Integrations();
 	$parsely_integrations->register( 'amp', Amp::class );
 	$parsely_integrations->register( 'fbia', Facebook_Instant_Articles::class );

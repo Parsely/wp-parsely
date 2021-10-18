@@ -6,8 +6,11 @@
  * @license GPL-2.0-or-later
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Tests\Integration;
 
+use WP_Error;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
 
 /**
@@ -16,7 +19,7 @@ use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
  * @package Parsely\Tests
  */
 abstract class TestCase extends WPIntegrationTestCase {
-	const DEFAULT_OPTIONS = array(
+	public const DEFAULT_OPTIONS = array(
 		'apikey'                    => 'blog.parsely.com',
 		'content_id_prefix'         => '',
 		'use_top_level_cats'        => false,
@@ -34,7 +37,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param array $custom_options Associative array of option keys and values that should be saved.
 	 */
-	public static function set_options( $custom_options = array() ) {
+	public static function set_options( $custom_options = array() ): void {
 		update_option( \Parsely::OPTIONS_KEY, array_merge( self::DEFAULT_OPTIONS, $custom_options ) );
 	}
 
@@ -44,7 +47,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $post_type Optional. Post type. Default is 'post'.
 	 * @return array An array of WP_Post fields.
 	 */
-	public function create_test_post_array( $post_type = 'post' ) {
+	public function create_test_post_array( $post_type = 'post' ): array {
 		return array(
 			'post_title'   => 'Sample Parsely Post',
 			'post_author'  => 1,
@@ -132,7 +135,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @return \ReflectionMethod
 	 * @throws \ReflectionException The method does not exist in the class.
 	 */
-	public static function getMethod( $method_name, $class_name = 'Parsely' ) {
+	public static function getMethod( $method_name, $class_name = 'Parsely' ): \ReflectionMethod {
 		$class  = new \ReflectionClass( $class_name );
 		$method = $class->getMethod( $method_name );
 		$method->setAccessible( true );

@@ -6,6 +6,8 @@
  * @since 2.6.0
  */
 
+declare(strict_types=1);
+
 namespace Parsely\UI;
 
 use Parsely;
@@ -37,8 +39,10 @@ final class Row_Actions {
 	 * Register action and filter hook callbacks.
 	 *
 	 * @since 2.6.0
+	 *
+	 * @return void
 	 */
-	public function run() {
+	public function run(): void {
 		/**
 		 * Filter whether row action links are enabled or not.
 		 *
@@ -46,7 +50,7 @@ final class Row_Actions {
 		 *
 		 * @param bool $enabled True if enabled, false if not.
 		 */
-		if ( apply_filters( 'wp_parsely_enable_row_action_links', false ) ) {
+		if ( apply_filters( 'wp_parsely_enable_row_action_links', true ) ) {
 			add_filter( 'post_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
 			add_filter( 'page_row_actions', array( $this, 'row_actions_add_parsely_link' ), 10, 2 );
 		}
@@ -67,7 +71,7 @@ final class Row_Actions {
 	 *
 	 * @return array<string, string> The amended list of actions.
 	 */
-	public function row_actions_add_parsely_link( $actions, WP_Post $post ) {
+	public function row_actions_add_parsely_link( $actions, WP_Post $post ): array {
 		if ( $this->cannot_show_parsely_link( $actions, $post ) ) {
 			return $actions;
 		}
@@ -86,10 +90,10 @@ final class Row_Actions {
 	 * @param WP_Post $post    Which post object or ID to check.
 	 * @return bool True if the link cannot be shown, false if the link can be shown.
 	 */
-	private function cannot_show_parsely_link( $actions, WP_Post $post ) {
+	private function cannot_show_parsely_link( $actions, WP_Post $post ): bool {
 		return ! is_array( $actions ) ||
 			! Parsely::post_has_trackable_status( $post ) ||
-			! Parsely::post_has_viewable_type( $post ) ||
+			! is_post_type_viewable( $post->post_type ) ||
 			$this->parsely->api_key_is_missing();
 	}
 
@@ -101,7 +105,7 @@ final class Row_Actions {
 	 * @param WP_Post $post Which post object or ID to add link to.
 	 * @return string The HTML for the link to Parse.ly.
 	 */
-	private function generate_link_to_parsely( WP_Post $post ) {
+	private function generate_link_to_parsely( WP_Post $post ): string {
 		return sprintf(
 			'<a href="%1$s" aria-label="%2$s">%3$s</a>',
 			esc_url( $this->generate_url( $post, $this->parsely->get_api_key() ) ),
@@ -119,7 +123,7 @@ final class Row_Actions {
 	 * @param string  $apikey API key or empty string.
 	 * @return string
 	 */
-	private function generate_url( WP_Post $post, $apikey ) {
+	private function generate_url( WP_Post $post, $apikey ): string {
 		$query_args = array(
 			'url'          => rawurlencode( get_permalink( $post ) ),
 			'utm_campaign' => 'wp-admin-posts-list',
@@ -140,7 +144,7 @@ final class Row_Actions {
 	 * @param WP_Post $post Which post object or ID to generate the ARIA label for.
 	 * @return string ARIA label content.
 	 */
-	private function generate_aria_label_for_post( $post ) {
+	private function generate_aria_label_for_post( $post ): string {
 		return sprintf(
 			/* translators: Post title */
 			__( 'Go to Parse.ly stats for "%s"', 'wp-parsely' ),

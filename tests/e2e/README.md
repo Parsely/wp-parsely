@@ -61,6 +61,14 @@ When you're finished testing, the back end containers and storage can be dispatc
 
 Please note: the **mysql database storage is not persisted** to a docker volume, so its contents will be lost even if you omit the `-v` flag.
 
+### E2E test utilities
+
+Some utilities for the end-to-end tests are available in the [utils.js](utils.js) file. The purpose of that file is to implement some common functionalities used in the tests. 
+
+We currently have:
+
+- `waitForWpAdmin`. Halts the execution of the test until wp-admin is fully loaded.
+
 ### CI / Automated Testing
 
 These tests are hooked in to a Github workflow called [End-to-end (e2e) Tests](../../.github/workflows/e2e-tests.yml). It uses the same The [docker-compose configuration](./docker-compose.yml) mentioned above to spin up a WordPress environment to test against.

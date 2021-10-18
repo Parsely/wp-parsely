@@ -5,6 +5,8 @@
  * @package Parsely\Tests
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Tests\Integration;
 
 use Parsely_Recommended_Widget;
@@ -18,7 +20,7 @@ final class RecommendedApiTest extends TestCase {
 	 *
 	 * @return array[]
 	 */
-	public function data_recommended_api_url() {
+	public function data_recommended_api_url(): array {
 		return array(
 			'Basic (Expected data)'                   => array(
 				'my-key',
@@ -59,8 +61,8 @@ final class RecommendedApiTest extends TestCase {
 	 * Test the basic generation of the API URL.
 	 *
 	 * @dataProvider data_recommended_api_url
-	 * @covers \Parsely_Recommended_Widget::get_api_url
-	 * @uses \Parsely_Recommended_Widget::__construct
+	 * @covers \Parsely\Widgets\Recommended_Widget::get_api_url
+	 * @uses \Parsely\Widgets\Recommended_Widget::__construct
 	 * @group widgets
 	 *
 	 * @param string $api_key          Publisher Site ID (API key).
@@ -74,7 +76,7 @@ final class RecommendedApiTest extends TestCase {
 	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
 	 * @param string $url              Expected generated URL.
 	 */
-	public function test_recommended_api_url( $api_key, $published_within, $sort, $boost, $return_limit, $url ) {
+	public function test_recommended_api_url( $api_key, $published_within, $sort, $boost, $return_limit, $url ): void {
 		$recommended_widget = new Parsely_Recommended_Widget();
 
 		self::assertEquals( $url, $recommended_widget->get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) );

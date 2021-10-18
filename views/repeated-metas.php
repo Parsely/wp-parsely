@@ -8,6 +8,8 @@
  * @license      GPL-2.0-or-later
  */
 
+declare(strict_types=1);
+
 foreach ( $parsely_metas as $parsely_meta_key => $parsely_meta_val ) {
 	printf(
 		'<meta name="%s" content="%s" />%s',
