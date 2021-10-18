@@ -37,7 +37,7 @@ class Plugins_Actions {
 	 *                       'network_active' and 'network_only' items.
 	 * @return array
 	 */
-	public function add_plugin_meta_links( $actions ): array {
+	public function add_plugin_meta_links( array $actions ): array {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
 			esc_url( Parsely::get_settings_url() ),

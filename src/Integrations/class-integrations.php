@@ -35,7 +35,7 @@ class Integrations {
 	 *                             If a class name is passed, it will be instantiated.
 	 * @return void
 	 */
-	public function register( $key, $class_or_object ): void {
+	public function register( string $key, $class_or_object ): void {
 		// If a Foo::class or other fully qualified class name is passed, instantiate it.
 		if ( ! is_object( $class_or_object ) ) {
 			$class_or_object = new $class_or_object();
