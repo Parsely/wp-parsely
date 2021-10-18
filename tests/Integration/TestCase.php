@@ -92,11 +92,11 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string $domain  Site second-level domain without a .com TLD e.g. 'example' will
 	 *                        result in a new subsite of 'http://example.com'.
-	 * @param string $user_id User ID for the site administrator.
+	 * @param int    $user_id User ID for the site administrator.
 	 *
 	 * @return int|WP_Error The site ID on success, WP_Error object on failure.
 	 */
-	public function create_test_blog( string $domain, string $user_id ) {
+	public function create_test_blog( string $domain, int $user_id ) {
 		return $this->factory->blog->create(
 			array(
 				'domain'  => 'http://' . $domain . 'com',
