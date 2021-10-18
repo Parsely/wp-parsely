@@ -227,7 +227,7 @@ class Parsely {
 		add_settings_section(
 			'required_settings',
 			__( 'Required Settings', 'wp-parsely' ),
-			array( $this, 'print_required_settings' ),
+			'__return_null',
 			self::MENU_SLUG
 		);
 
@@ -251,7 +251,7 @@ class Parsely {
 		add_settings_section(
 			'optional_settings',
 			__( 'Optional Settings', 'wp-parsely' ),
-			array( $this, 'print_optional_settings' ),
+			'__return_null',
 			self::MENU_SLUG
 		);
 
@@ -691,26 +691,6 @@ class Parsely {
 		}
 
 		return $input;
-	}
-
-	/**
-	 * Not doing anything here.
-	 *
-	 * @return void
-	 */
-	public function print_required_settings(): void {
-		// We can optionally print some text here in the future, but we don't
-		// need to now.
-	}
-
-	/**
-	 * Not doing anything here.
-	 *
-	 * @return void
-	 */
-	public function print_optional_settings(): void {
-		// We can optionally print some text here in the future, but we don't
-		// need to now.
 	}
 
 	/**
