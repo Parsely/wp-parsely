@@ -1751,14 +1751,15 @@ class Parsely {
 	 * Determine author name from display name, falling back to firstname
 	 * lastname, then nickname and finally the nicename.
 	 *
-	 * @param WP_User $author The author of the post.
+	 * @param ?WP_User $author The author of the post.
 	 * @return string
 	 */
-	private function get_author_name( WP_User $author ): string {
+	private function get_author_name( ?WP_User $author ): string {
 		// gracefully handle situation where no author is available.
 		if ( empty( $author ) || ! is_object( $author ) ) {
 			return '';
 		}
+
 		$author_name = $author->display_name;
 		if ( ! empty( $author_name ) ) {
 			return $author_name;
@@ -1824,16 +1825,11 @@ class Parsely {
 	 * @return string
 	 */
 	public function get_clean_parsely_page_value( string $val ): string {
-		if ( is_string( $val ) ) {
-			$val = str_replace( "\n", '', $val );
-			$val = str_replace( "\r", '', $val );
-			$val = wp_strip_all_tags( $val );
-			return trim( $val );
-		}
-
-		return $val;
+		$val = str_replace( "\n", '', $val );
+		$val = str_replace( "\r", '', $val );
+		$val = wp_strip_all_tags( $val );
+		return trim( $val );
 	}
-
 
 	/**
 	 * Get the URL of the plugin settings page.
@@ -1843,7 +1839,6 @@ class Parsely {
 	public static function get_settings_url(): string {
 		return admin_url( 'options-general.php?page=' . self::MENU_SLUG );
 	}
-
 
 	/**
 	 * Get the URL of the current PHP script.

@@ -64,7 +64,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			$query_args['boost'] = $boost;
 		}
 
-		if ( 0 !== (int) $published_within ) {
+		if ( 0 !== $published_within ) {
 			$query_args['pub_date_start'] = $published_within . 'd';
 		}
 

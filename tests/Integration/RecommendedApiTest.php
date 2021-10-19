@@ -65,7 +65,7 @@ final class RecommendedApiTest extends TestCase {
 	 *
 	 * @param string $api_key          Publisher Site ID (API key).
 	 * @param int    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
-	 *                                    formatting details. No restriction by default.
+	 *                                 formatting details. No restriction by default.
 	 * @param string $sort             What to sort the results by. There are currently 2 valid options: `score`, which
 	 *                                 will sort articles by overall relevance and `pub_date` which will sort results by
 	 *                                 their publication date. The default is `score`.

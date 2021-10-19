@@ -72,7 +72,7 @@ final class Row_Actions {
 	 * @return array<string, string> The amended list of actions.
 	 */
 	public function row_actions_add_parsely_link( array $actions, WP_Post $post ): array {
-		if ( $this->cannot_show_parsely_link( $actions, $post ) ) {
+		if ( $this->cannot_show_parsely_link( $post ) ) {
 			return $actions;
 		}
 
@@ -86,13 +86,11 @@ final class Row_Actions {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array   $actions Existing row actions.
 	 * @param WP_Post $post    Which post object or ID to check.
 	 * @return bool True if the link cannot be shown, false if the link can be shown.
 	 */
-	private function cannot_show_parsely_link( array $actions, WP_Post $post ): bool {
-		return ! is_array( $actions ) ||
-			! Parsely::post_has_trackable_status( $post ) ||
+	private function cannot_show_parsely_link( WP_Post $post ): bool {
+		return ! Parsely::post_has_trackable_status( $post ) ||
 			! is_post_type_viewable( $post->post_type ) ||
 			$this->parsely->api_key_is_missing();
 	}
