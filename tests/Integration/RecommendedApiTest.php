@@ -73,7 +73,6 @@ final class RecommendedApiTest extends TestCase {
 	 *                                 received high e.g. views; default is undefined.
 	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
 	 * @param string $url              Expected generated URL.
-	 *
 	 * @uses \Parsely\Widgets\Recommended_Widget::__construct
 	 * @group widgets
 	 */

@@ -62,7 +62,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Create a test category.
 	 *
 	 * @param string $name Category name.
-	 *
 	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
 	 */
 	public function create_test_category( string $name ) {
@@ -80,7 +79,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Create a test user.
 	 *
 	 * @param string $user_login The user's login username.
-	 *
 	 * @return int|WP_Error The newly created user's ID or a WP_Error object if the user could not be created.
 	 */
 	public function create_test_user( string $user_login ) {
@@ -93,7 +91,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $domain  Site second-level domain without a .com TLD e.g. 'example' will
 	 *                        result in a new subsite of 'http://example.com'.
 	 * @param int    $user_id User ID for the site administrator.
-	 *
 	 * @return int|WP_Error The site ID on success, WP_Error object on failure.
 	 */
 	public function create_test_blog( string $domain, int $user_id ) {
@@ -110,7 +107,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string $taxonomy_key Taxonomy key, must not exceed 32 characters.
 	 * @param string $term_name    The term name to add.
-	 *
 	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
 	 */
 	public function create_test_taxonomy( string $taxonomy_key, string $term_name ) {
