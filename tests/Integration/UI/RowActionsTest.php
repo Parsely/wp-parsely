@@ -165,15 +165,13 @@ final class RowActionsTest extends TestCase {
 
 		$published_post = self::factory()->post->create_and_get();
 
-		$actions = array();
-
 		// Test if API key is not set.
 		self::set_options( array( 'apikey' => '' ) );
-		self::assertTrue( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $actions, $published_post ) ) );
+		self::assertTrue( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $published_post ) ) );
 
 		// Test with API key set.
 		self::set_options( array( 'apikey' => 'somekey' ) );
-		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $actions, $published_post ) ) );
+		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $published_post ) ) );
 	}
 
 	/**
