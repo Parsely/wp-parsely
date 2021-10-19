@@ -89,7 +89,7 @@ final class RowActionsTest extends TestCase {
 		$published_post = self::factory()->post->create_and_get();
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
-		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( array(), $published_post ) ) );
+		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $published_post ) ) );
 	}
 
 	/**
@@ -112,12 +112,11 @@ final class RowActionsTest extends TestCase {
 		$draft_post     = self::factory()->post->create_and_get( array( 'post_status' => 'draft' ) );
 		$published_post = self::factory()->post->create_and_get();
 
-		$actions = array();
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		// Test if post does not have trackable status - only published posts are tracked by default.
-		self::assertTrue( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $actions, $draft_post ) ) );
-		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $actions, $published_post ) ) );
+		self::assertTrue( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $draft_post ) ) );
+		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $published_post ) ) );
 	}
 
 	/**
