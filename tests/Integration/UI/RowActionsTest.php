@@ -139,12 +139,11 @@ final class RowActionsTest extends TestCase {
 		$non_publicly_queryable_post = self::factory()->post->create_and_get( array( 'post_type' => 'parsely_tests_pt' ) );
 		$published_post              = self::factory()->post->create_and_get();
 
-		$actions = array();
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		// Test if post is not viewable status.
-		self::assertTrue( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $actions, $non_publicly_queryable_post ) ) );
-		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $actions, $published_post ) ) );
+		self::assertTrue( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $non_publicly_queryable_post ) ) );
+		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $published_post ) ) );
 	}
 
 	/**
