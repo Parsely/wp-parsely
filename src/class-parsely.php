@@ -127,11 +127,11 @@ class Parsely {
 		add_action( 'wp_head', array( $this, 'insert_page_header_metadata' ) );
 		add_action( 'init', array( $this, 'register_js' ) );
 
-		// load_js_api should be called prior to load_js_tracker so the relevant scripts are enqueued in order.
-		add_action( 'wp_footer', array( $this, 'load_js_api' ) );
-		add_action( 'wp_footer', array( $this, 'load_js_tracker' ) );
-
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
+
+		// load_js_api should be called prior to load_js_tracker so the relevant scripts are enqueued in order.
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_js_api' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_js_tracker' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'wp_parsely_style_init' ) );
 	}
 
@@ -206,7 +206,7 @@ class Parsely {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
 
-		include plugin_dir_path( PARSELY_FILE ) . 'src/parsely-settings.php';
+		include plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings.php';
 	}
 
 	/**
