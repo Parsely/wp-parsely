@@ -9,16 +9,14 @@ import domReady from '@wordpress/dom-ready';
 import { getUuidFromVisitorCookie } from '../../lib/personalization';
 
 function constructUrl( apiUrl, permalink, personalized ) {
-	let fullUrl = apiUrl;
-	const uuid = personalized ? getUuidFromVisitorCookie() : undefined;
-
-	if ( uuid ) {
-		fullUrl += `&uuid=${ encodeURIComponent( uuid ) }`;
-	} else {
-		fullUrl += `&url=${ encodeURIComponent( permalink ) }`;
+	if ( personalized ) {
+		const uuid = getUuidFromVisitorCookie();
+		if ( uuid ) {
+			return `${ apiUrl }&uuid=${ encodeURIComponent( uuid ) }`;
+		}
 	}
 
-	return fullUrl;
+	return `${ apiUrl }&url=${ encodeURIComponent( permalink ) }`;
 }
 
 function constructWidget( widget ) {
