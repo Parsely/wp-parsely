@@ -272,8 +272,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	public function update( $new_instance, $old_instance ): array {
 		$instance                        = $old_instance;
 		$instance['title']               = trim( wp_kses_post( $new_instance['title'] ) );
-		$instance['published_within']    = (int) trim( $new_instance['published_within'] );
-		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
+		$instance['published_within']    = is_int( $new_instance['published_within'] ) ? $new_instance['published_within'] : (int) trim( $new_instance['published_within'] );
+		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : 20;
 		$instance['display_direction']   = trim( $new_instance['display_direction'] );
 		$instance['sort']                = trim( $new_instance['sort'] );
 		$instance['boost']               = trim( $new_instance['boost'] );
