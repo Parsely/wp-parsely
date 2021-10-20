@@ -4,9 +4,10 @@
  *
  * Create the settings page for parse.ly
  *
- * @category   Components
- * @package    WordPress
- * @subpackage Parse.ly
+ * @package      Parsely\wp-parsely
+ * @author       Parse.ly
+ * @copyright    2012 Parse.ly
+ * @license      GPL-2.0-or-later
  */
 
 declare(strict_types=1);
