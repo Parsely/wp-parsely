@@ -179,6 +179,8 @@ class Parsely {
 			self::get_asset_cache_buster(),
 			true
 		);
+
+		wp_set_script_translations( 'wp-parsely-admin', 'wp-parsely' );
 	}
 
 	/**
