@@ -1792,7 +1792,7 @@ class Parsely {
 		if ( empty( $authors ) ) {
 			$post_author = get_user_by( 'id', $post->post_author );
 			if ( $post_author ) {
-				$authors = array( get_user_by( 'id', $post->post_author ) );
+				$authors = array( $post_author );
 			}
 		}
 
