@@ -1788,7 +1788,10 @@ class Parsely {
 	private function get_author_names( WP_Post $post ): array {
 		$authors = $this->get_coauthor_names( $post->ID );
 		if ( empty( $authors ) ) {
-			$authors = array( get_user_by( 'id', $post->post_author ) );
+			$post_author = get_user_by( 'id', $post->post_author );
+			if ( $post_author ) {
+				$authors = array( get_user_by( 'id', $post->post_author ) );
+			}
 		}
 
 		/**
