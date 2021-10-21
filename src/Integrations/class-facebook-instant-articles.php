@@ -62,7 +62,7 @@ final class Facebook_Instant_Articles implements Integration {
 	 * @param string $api_key API key.
 	 * @return string Embedded code.
 	 */
-	public function get_embed_code( $api_key ): string {
+	public function get_embed_code( string $api_key ): string {
 		return '<script>
 			PARSELY = {
 				autotrack: false,

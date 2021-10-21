@@ -28,4 +28,3 @@ if ( isset( $parsely_page_authors ) ) {
 		);
 	}
 }
-

@@ -548,7 +548,7 @@ class Parsely {
 	 * @param string $name  Unused?.
 	 * @return array
 	 */
-	public function validate_option_array( $array, $name ): array {
+	public function validate_option_array( array $array, string $name ): array {
 		$new_array = $array;
 		foreach ( $array as $key => $val ) {
 			$new_array[ $key ] = sanitize_text_field( $val );
@@ -564,7 +564,7 @@ class Parsely {
 	 * @param array $input Options from the settings page.
 	 * @return array List of validated input settings.
 	 */
-	public function validate_options( $input ): array {
+	public function validate_options( array $input ): array {
 		if ( empty( $input['apikey'] ) ) {
 			add_settings_error(
 				self::OPTIONS_KEY,
@@ -907,7 +907,7 @@ class Parsely {
 	 * @param WP_Post $post object.
 	 * @return array
 	 */
-	public function construct_parsely_metadata( array $parsely_options, $post ): array {
+	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ): array {
 		$parsely_page      = array(
 			'@context' => 'http://schema.org',
 			'@type'    => 'WebPage',
@@ -1325,10 +1325,10 @@ class Parsely {
 	 *
 	 * @param string $tag    The `script` tag for the enqueued script.
 	 * @param string $handle The script's registered handle.
-	 * @param string $src    The script's source URL.
+	 * @param string $src    Unused? The script's source URL.
 	 * @return string Amended `script` tag.
 	 */
-	public function script_loader_tag( $tag, $handle, $src ): string {
+	public function script_loader_tag( string $tag, string $handle, string $src ): string {
 		$parsely_options = $this->get_options();
 		if ( in_array(
 			$handle,
@@ -1361,7 +1361,7 @@ class Parsely {
 	 * @param array $args The arguments for the select dropdowns.
 	 * @return void
 	 */
-	public function print_select_tag( $args ): void {
+	public function print_select_tag( array $args ): void {
 		$options        = $this->get_options();
 		$name           = $args['option_key'];
 		$select_options = $args['select_options'];
@@ -1417,7 +1417,7 @@ class Parsely {
 	 * @param array $args The arguments for the radio buttons.
 	 * @return void
 	 */
-	public function print_binary_radio_tag( $args ): void {
+	public function print_binary_radio_tag( array $args ): void {
 		$options = $this->get_options();
 		$name    = $args['option_key'];
 		$value   = $options[ $name ];
@@ -1455,7 +1455,7 @@ class Parsely {
 	 * @param array $args Arguments to print to checkbox tag.
 	 * @return void
 	 */
-	public function print_checkbox_tag( $args ): void {
+	public function print_checkbox_tag( array $args ): void {
 		$options = $this->get_options();
 		$name    = $args['option_key'];
 		$value   = $options[ $name ];
@@ -1485,7 +1485,7 @@ class Parsely {
 	 * @param array $args The arguments for text tag.
 	 * @return void
 	 */
-	public function print_text_tag( $args ): void {
+	public function print_text_tag( array $args ): void {
 		$options       = $this->get_options();
 		$name          = $args['option_key'];
 		$value         = $options[ $name ] ?? '';
@@ -1550,10 +1550,10 @@ class Parsely {
 	/**
 	 * Returns the tags associated with this page or post
 	 *
-	 * @param string $post_id The id of the post you're trying to get tags for.
+	 * @param int $post_id The id of the post you're trying to get tags for.
 	 * @return array The tags of the post represented by the post id.
 	 */
-	private function get_tags( $post_id ): array {
+	private function get_tags( int $post_id ): array {
 		$tags = array();
 		foreach ( wp_get_post_tags( $post_id ) as $wp_tag ) {
 			array_push( $tags, $wp_tag->name );
@@ -1565,11 +1565,11 @@ class Parsely {
 	/**
 	 * Returns an array of all the child categories for the current post
 	 *
-	 * @param string $post_id The id of the post you're trying to get categories for.
+	 * @param int    $post_id The id of the post you're trying to get categories for.
 	 * @param string $delimiter What character will delimit the categories.
 	 * @return array All the child categories of the current post.
 	 */
-	private function get_categories( $post_id, $delimiter = '/' ): array {
+	private function get_categories( int $post_id, string $delimiter = '/' ): array {
 		$tags = array();
 		foreach ( get_the_category( $post_id ) as $category ) {
 			$hierarchy = get_category_parents( $category, false, $delimiter );
@@ -1580,8 +1580,7 @@ class Parsely {
 		// and split it into individual category names.
 		$tags = explode( '/', end( $tags ) );
 		// remove uncategorized value from tags.
-		$tags = array_diff( $tags, array( 'Uncategorized' ) );
-		return $tags;
+		return array_diff( $tags, array( 'Uncategorized' ) );
 	}
 
 	/**
@@ -1604,7 +1603,7 @@ class Parsely {
 	 * @param array   $parsely_options The parsely options.
 	 * @return string Cleaned category name for the post in question.
 	 */
-	private function get_category_name( $post_obj, $parsely_options ): string {
+	private function get_category_name( WP_Post $post_obj, array $parsely_options ): string {
 		$taxonomy_dropdown_choice = get_the_terms( $post_obj->ID, $parsely_options['custom_taxonomy_section'] );
 		// Get top-level taxonomy name for chosen taxonomy and assign to $parent_name; it will be used
 		// as the category value if 'use_top_level_cats' option is checked.
@@ -1641,11 +1640,11 @@ class Parsely {
 	 * Return the top-most category/taxonomy value in a hierarcy given a taxonomy value's ID
 	 * ( WordPress calls taxonomy values 'terms' ).
 	 *
-	 * @param string $term_id The id of the top level term.
+	 * @param int    $term_id The id of the top level term.
 	 * @param string $taxonomy_name The name of the taxonomy.
 	 * @return string|false $parent The top level name of the category / taxonomy.
 	 */
-	private function get_top_level_term( $term_id, $taxonomy_name ) {
+	private function get_top_level_term( int $term_id, string $taxonomy_name ) {
 		$parent = get_term_by( 'id', $term_id, $taxonomy_name );
 		while ( false !== $parent && 0 !== $parent->parent ) {
 			$parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
@@ -1657,11 +1656,11 @@ class Parsely {
 	 * Return the bottom-most category/taxonomy value in a hierarcy given a post ID
 	 * ( WordPress calls taxonomy values 'terms' ).
 	 *
-	 * @param string $post_id The post id you're interested in.
+	 * @param int    $post_id The post id you're interested in.
 	 * @param string $taxonomy_name The name of the taxonomy.
 	 * @return string Name of the custom taxonomy.
 	 */
-	private function get_bottom_level_term( $post_id, $taxonomy_name ): string {
+	private function get_bottom_level_term( int $post_id, string $taxonomy_name ): string {
 		$terms    = get_the_terms( $post_id, $taxonomy_name );
 		$term_ids = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
 		$parents  = is_array( $terms ) ? array_filter( wp_list_pluck( $terms, 'parent' ) ) : array();
@@ -1683,10 +1682,10 @@ class Parsely {
 	 * Get all term values from custom taxonomies.
 	 *
 	 * @param WP_Post $post_obj The post object.
-	 * @param array   $parsely_options The pparsely options.
+	 * @param array   $parsely_options Unused? The parsely options.
 	 * @return array
 	 */
-	private function get_custom_taxonomy_values( $post_obj, $parsely_options ): array {
+	private function get_custom_taxonomy_values( WP_Post $post_obj, array $parsely_options ): array {
 		// filter out default WordPress taxonomies.
 		$all_taxonomies = array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) );
 		$all_values     = array();
@@ -1709,15 +1708,14 @@ class Parsely {
 	 * installed. Borrowed from
 	 * https://github.com/Automattic/Co-Authors-Plus/blob/master/template-tags.php#L3-35
 	 *
-	 * @param string $post_id The id of the post.
+	 * @param int $post_id The id of the post.
 	 * @return array
 	 */
-	private function get_coauthor_names( $post_id ): array {
+	private function get_coauthor_names( int $post_id ): array {
 		$coauthors = array();
 		if ( class_exists( 'coauthors_plus' ) ) {
-			global $post, $post_ID, $coauthors_plus, $wpdb;
+			global $post, $post_ID, $coauthors_plus;
 
-			$post_id = (int) $post_id;
 			if ( ! $post_id && $post_ID ) {
 				$post_id = $post_ID;
 			}
@@ -1755,14 +1753,15 @@ class Parsely {
 	 * Determine author name from display name, falling back to firstname
 	 * lastname, then nickname and finally the nicename.
 	 *
-	 * @param WP_User $author The author of the post.
+	 * @param ?WP_User $author The author of the post.
 	 * @return string
 	 */
-	private function get_author_name( $author ): string {
+	private function get_author_name( ?WP_User $author ): string {
 		// gracefully handle situation where no author is available.
 		if ( empty( $author ) || ! is_object( $author ) ) {
 			return '';
 		}
+
 		$author_name = $author->display_name;
 		if ( ! empty( $author_name ) ) {
 			return $author_name;
@@ -1788,10 +1787,13 @@ class Parsely {
 	 * @param WP_Post $post The post object.
 	 * @return array
 	 */
-	private function get_author_names( $post ): array {
+	private function get_author_names( WP_Post $post ): array {
 		$authors = $this->get_coauthor_names( $post->ID );
 		if ( empty( $authors ) ) {
-			$authors = array( get_user_by( 'id', $post->post_author ) );
+			$post_author = get_user_by( 'id', $post->post_author );
+			if ( $post_author ) {
+				$authors = array( $post_author );
+			}
 		}
 
 		/**
@@ -1827,18 +1829,12 @@ class Parsely {
 	 * @param string $val The content you'd like sanitized.
 	 * @return string
 	 */
-	public function get_clean_parsely_page_value( $val ): string {
-		if ( is_string( $val ) ) {
-			$val = str_replace( "\n", '', $val );
-			$val = str_replace( "\r", '', $val );
-			$val = wp_strip_all_tags( $val );
-			$val = trim( $val );
-			return $val;
-		}
-
-		return $val;
+	public function get_clean_parsely_page_value( string $val ): string {
+		$val = str_replace( "\n", '', $val );
+		$val = str_replace( "\r", '', $val );
+		$val = wp_strip_all_tags( $val );
+		return trim( $val );
 	}
-
 
 	/**
 	 * Get the URL of the plugin settings page.
@@ -1848,7 +1844,6 @@ class Parsely {
 	public static function get_settings_url(): string {
 		return admin_url( 'options-general.php?page=' . self::MENU_SLUG );
 	}
-
 
 	/**
 	 * Get the URL of the current PHP script.
@@ -1897,7 +1892,7 @@ class Parsely {
 	 * @param WP_Post $post The post object you're interested in.
 	 * @return string
 	 */
-	public function get_first_image( $post ): string {
+	public function get_first_image( WP_Post $post ): string {
 		ob_start();
 		ob_end_clean();
 		if ( preg_match_all( '/<img.+src=[\'"]( [^\'"]+ )[\'"].*>/i', $post->post_content, $matches ) ) {
@@ -1931,7 +1926,7 @@ class Parsely {
 	 * @param string $type JSON-LD type.
 	 * @return string "post" or "index".
 	 */
-	public function convert_jsonld_to_parsely_type( $type ): string {
+	public function convert_jsonld_to_parsely_type( string $type ): string {
 		return in_array( $type, $this->supported_jsonld_post_types ) ? 'post' : 'index';
 	}
 
