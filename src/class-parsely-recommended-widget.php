@@ -51,7 +51,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
 	 * @return string API URL.
 	 */
-	public function get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ): string {
+	public function get_api_url( string $api_key, int $published_within, string $sort, string $boost, int $return_limit ): string {
 		$related_api_endpoint = 'https://api.parsely.com/v2/related';
 
 		$query_args = array(
@@ -64,7 +64,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			$query_args['boost'] = $boost;
 		}
 
-		if ( 0 !== (int) $published_within ) {
+		if ( 0 !== $published_within ) {
 			$query_args['pub_date_start'] = $published_within . 'd';
 		}
 
@@ -142,7 +142,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @param array $instance Values saved to the db.
 	 * @return void
 	 */
-	private function migrate_old_fields( $instance ): void {
+	private function migrate_old_fields( array $instance ): void {
 		if ( ! empty( $instance['display_options'] ) && is_array( $instance['display_options'] ) ) {
 			if ( empty( $instance['img_src'] ) ) {
 				$instance['img_src'] = in_array( 'display_thumbnail', $instance['display_options'], true ) ? 'parsely_thumb' : 'none';

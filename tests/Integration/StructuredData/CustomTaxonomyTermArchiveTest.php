@@ -73,7 +73,7 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 
 		// Create the structured data for that term archive.
 		// The term archive metadata doesn't use the post data, but the construction method requires it for now.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, get_post() );
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, get_post( $post_id ) );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
