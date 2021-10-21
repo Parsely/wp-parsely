@@ -907,7 +907,7 @@ class Parsely {
 	 * @param WP_Post $post object.
 	 * @return array
 	 */
-	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ): array {
+	public function construct_parsely_metadata( array $parsely_options, ?WP_Post $post ): array {
 		$parsely_page      = array(
 			'@context' => 'http://schema.org',
 			'@type'    => 'WebPage',

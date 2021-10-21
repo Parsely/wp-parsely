@@ -104,7 +104,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			$instance['published_within'],
 			$instance['sort'],
 			$instance['boost'],
-			$instance['return_limit']
+			(int) $instance['return_limit']
 		);
 
 		$recommended_widget_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';
@@ -178,7 +178,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		// editable fields: title.
 		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
-		$return_limit        = ! empty( $instance['return_limit'] ) ? $instance['return_limit'] : 5;
+		$return_limit        = ! empty( $instance['return_limit'] ) ? (int) $instance['return_limit'] : 5;
 		$display_direction   = ! empty( $instance['display_direction'] ) ? $instance['display_direction'] : 'vertical';
 		$published_within    = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
 		$sort                = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
