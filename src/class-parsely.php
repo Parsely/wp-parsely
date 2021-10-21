@@ -1471,7 +1471,7 @@ class Parsely {
 
 		echo sprintf( "<input type='checkbox' name='%s' id='%s_true' value='true' ", esc_attr( $name ), esc_attr( $id ) );
 		echo checked( true === $value, true, false );
-		echo sprintf( " /> <label for='%s_true'>%s</label>", esc_attr( $id ), esc_attr__( 'Yes', 'wp-parsely' ) );
+		echo sprintf( " /> <label for='%s_true'>%s</label>", esc_attr( $id ), esc_html__( 'Yes', 'wp-parsely' ) );
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="help-text"><p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
