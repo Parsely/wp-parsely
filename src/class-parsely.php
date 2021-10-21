@@ -1431,11 +1431,11 @@ class Parsely {
 			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
 			<p>
 				<label for="<?php echo esc_attr( "{$id}_true" ); ?>">
-					<input type="radio" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( "{$id}_true" ); ?>" value="true"<?php checked( $value ); ?> />Yes
+					<input type="radio" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( "{$id}_true" ); ?>" value="true"<?php checked( $value ); ?> /><?php echo __('Yes', 'wp-parsely'); ?>
 				</label>
 				<br />
 				<label for="<?php echo esc_attr( "{$id}_false" ); ?>">
-					<input type="radio" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( "{$id}_false" ); ?>" value="false"<?php checked( $value, false ); ?> />No
+					<input type="radio" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( "{$id}_false" ); ?>" value="false"<?php checked( $value, false ); ?> /><?php echo __('No', 'wp-parsely'); ?>
 				</label>
 			</p>
 		<?php
@@ -1471,7 +1471,7 @@ class Parsely {
 
 		echo sprintf( "<input type='checkbox' name='%s' id='%s_true' value='true' ", esc_attr( $name ), esc_attr( $id ) );
 		echo checked( true === $value, true, false );
-		echo sprintf( " /> <label for='%s_true'>Yes</label>", esc_attr( $id ) );
+		echo sprintf( " /> <label for='%s_true'>%s</label>", esc_attr( $id ), __('Yes', 'wp-parsely') );
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="help-text"><p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
