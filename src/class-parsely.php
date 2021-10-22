@@ -315,17 +315,17 @@ class Parsely {
 		$h_link     = 'https://www.parse.ly/help/integration/jsonld/';
 		$field_id   = 'meta_type';
 		$field_args = array(
-			'option_key'         => $field_id,
-			'help_text'          => $h,
-			'help_link'          => $h_link,
+			'option_key'       => $field_id,
+			'help_text'        => $h,
+			'help_link'        => $h_link,
 			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-				'select_options' => array(
-					'json_ld'        => 'json_ld',
-					'repeated_metas' => 'repeated_metas',
-				),
-			'requires_recrawl'   => true,
-			'multiple'           => false,
-			'label_for'          => self::OPTIONS_KEY . "[$field_id]",
+			'select_options'   => array(
+				'json_ld'        => 'json_ld',
+				'repeated_metas' => 'repeated_metas',
+			),
+			'requires_recrawl' => true,
+			'multiple'         => false,
+			'label_for'        => self::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
 			$field_id,
@@ -425,12 +425,12 @@ class Parsely {
 		$h          = __( 'By default, the section value in your Parse.ly dashboard maps to a post\'s category. You can optionally choose a custom taxonomy, if you\'ve created one, to populate the section value instead.', 'wp-parsely' );
 		$field_id   = 'custom_taxonomy_section';
 		$field_args = array(
-			'option_key'         => $field_id,
-			'help_text'          => $h,
+			'option_key'       => $field_id,
+			'help_text'        => $h,
 			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-				'select_options' => array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) ),
-			'requires_recrawl'   => true,
-			'label_for'          => self::OPTIONS_KEY . "[$field_id]",
+			'select_options'   => array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) ),
+			'requires_recrawl' => true,
+			'label_for'        => self::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
 			$field_id,
@@ -508,13 +508,13 @@ class Parsely {
 		$h          = __( 'By default, Parse.ly only tracks the default post type as a post page. If you want to track custom post types, select them here!', 'wp-parsely' );
 		$field_id   = 'track_post_types';
 		$field_args = array(
-			'option_key'         => $field_id,
-			'help_text'          => $h,
+			'option_key'       => $field_id,
+			'help_text'        => $h,
 			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-				'select_options' => get_post_types(),
-			'requires_recrawl'   => true,
-			'multiple'           => true,
-			'label_for'          => self::OPTIONS_KEY . "[$field_id]",
+			'select_options'   => get_post_types(),
+			'requires_recrawl' => true,
+			'multiple'         => true,
+			'label_for'        => self::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
 			$field_id,
@@ -529,13 +529,13 @@ class Parsely {
 		$h          = __( 'By default, Parse.ly only tracks the default page type as a non-post page. If you want to track custom post types as non-post pages, select them here!', 'wp-parsely' );
 		$field_id   = 'track_page_types';
 		$field_args = array(
-			'option_key'         => 'track_page_types',
-			'help_text'          => $h,
+			'option_key'       => 'track_page_types',
+			'help_text'        => $h,
 			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-				'select_options' => get_post_types(),
-			'requires_recrawl'   => true,
-			'multiple'           => true,
-			'label_for'          => self::OPTIONS_KEY . "[$field_id]",
+			'select_options'   => get_post_types(),
+			'requires_recrawl' => true,
+			'multiple'         => true,
+			'label_for'        => self::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
 			'track_page_types',
