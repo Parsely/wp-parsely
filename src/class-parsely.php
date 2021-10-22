@@ -234,14 +234,15 @@ class Parsely {
 		);
 
 		// Get the API Key.
-		$h = __( 'Your Site ID is your own site domain ( e.g. `mydomain.com` )', 'wp-parsely' );
-
+		$h          = __( 'Your Site ID is your own site domain ( e.g. `mydomain.com` )', 'wp-parsely' );
+		$field_id   = 'apikey';
 		$field_args = array(
-			'option_key' => 'apikey',
+			'option_key' => $field_id,
 			'help_text'  => $h,
+			'label_for'  => $field_id,
 		);
 		add_settings_field(
-			'apikey',
+			$field_id,
 			__( 'Parse.ly Site ID', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			self::MENU_SLUG,
@@ -258,16 +259,17 @@ class Parsely {
 		);
 
 		/* translators: 1: Opening anchor tag markup, 2: Documentation URL, 3: Opening anchor tag markup continued, 4: Closing anchor tag */
-		$h      = __( 'Your API secret is your secret code to %1$s%2$s%3$saccess our API.%4$s It can be found at dash.parsely.com/yoursitedomain/settings/api ( replace yoursitedomain with your domain name, e.g. `mydomain.com` ) If you haven\'t purchased access to the API, and would like to do so, email your account manager or support@parsely.com!', 'wp-parsely' );
-		$h_link = 'https://www.parse.ly/help/api/analytics/';
-
+		$h          = __( 'Your API secret is your secret code to %1$s%2$s%3$saccess our API.%4$s It can be found at dash.parsely.com/yoursitedomain/settings/api ( replace yoursitedomain with your domain name, e.g. `mydomain.com` ) If you haven\'t purchased access to the API, and would like to do so, email your account manager or support@parsely.com!', 'wp-parsely' );
+		$h_link     = 'https://www.parse.ly/help/api/analytics/';
+		$field_id   = 'api_secret';
 		$field_args = array(
-			'option_key' => 'api_secret',
+			'option_key' => $field_id,
 			'help_text'  => $h,
 			'help_link'  => $h_link,
+			'label_for'  => $field_id,
 		);
 		add_settings_field(
-			'api_secret',
+			$field_id,
 			__( 'Parse.ly API Secret', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			self::MENU_SLUG,
@@ -275,16 +277,17 @@ class Parsely {
 			$field_args
 		);
 
-		$h      = __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' );
-		$h_link = 'https://www.parse.ly/help/api/analytics/';
-
+		$h          = __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' );
+		$h_link     = 'https://www.parse.ly/help/api/analytics/';
+		$field_id   = 'metadata_secret';
 		$field_args = array(
-			'option_key' => 'metadata_secret',
+			'option_key' => $field_id,
 			'help_text'  => $h,
 			'help_link'  => $h_link,
+			'label_for'  => $field_id,
 		);
 		add_settings_field(
-			'metadata_secret',
+			$field_id,
 			__( 'Parse.ly Metadata Secret', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			self::MENU_SLUG,
@@ -308,38 +311,40 @@ class Parsely {
 		);
 
 		/* translators: 1: Opening anchor tag markup, 2: Documentation URL, 3: Opening anchor tag markup continued, 4: Closing anchor tag */
-		$h      = __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with JSON-LD ( %1$s%2$s%3$shttps://www.parse.ly/help/integration/jsonld/%4$s ), but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' );
-		$h_link = 'https://www.parse.ly/help/integration/jsonld/';
-
+		$h          = __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with JSON-LD ( %1$s%2$s%3$shttps://www.parse.ly/help/integration/jsonld/%4$s ), but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' );
+		$h_link     = 'https://www.parse.ly/help/integration/jsonld/';
+		$field_id   = 'meta_type';
+		$field_args = array(
+			'option_key'       => $field_id,
+			'help_text'        => $h,
+			'help_link'        => $h_link,
+			// filter WordPress taxonomies under the hood that should not appear in dropdown.
+			'select_options'   => array(
+				'json_ld'        => 'json_ld',
+				'repeated_metas' => 'repeated_metas',
+			),
+			'requires_recrawl' => true,
+			'multiple'         => false,
+			'label_for'        => self::OPTIONS_KEY . "[$field_id]",
+		);
 		add_settings_field(
-			'meta_type',
+			$field_id,
 			__( 'Metadata Format', 'wp-parsely' ),
 			array( $this, 'print_select_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
-			array(
-				'option_key'       => 'meta_type',
-				'help_text'        => $h,
-				'help_link'        => $h_link,
-				// filter WordPress taxonomies under the hood that should not appear in dropdown.
-				'select_options'   => array(
-					'json_ld'        => 'json_ld',
-					'repeated_metas' => 'repeated_metas',
-				),
-				'requires_recrawl' => true,
-				'multiple'         => false,
-			)
+			$field_args
 		);
 
-		$h = __( 'If you want to specify the url for your logo, you can do so here.', 'wp-parsely' );
-
+		$h          = __( 'If you want to specify the url for your logo, you can do so here.', 'wp-parsely' );
+		$field_id   = 'logo';
 		$field_args = array(
-			'option_key' => 'logo',
+			'option_key' => $field_id,
 			'help_text'  => $h,
+			'label_for'  => $field_id,
 		);
-
 		add_settings_field(
-			'logo',
+			$field_id,
 			__( 'Logo', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			self::MENU_SLUG,
@@ -348,18 +353,19 @@ class Parsely {
 		);
 
 		// Content ID Prefix.
-		$h = __( 'If you use more than one content management system (e.g. WordPress and Drupal), you may end up with duplicate content IDs. Adding a Content ID Prefix will ensure the content IDs from WordPress will not conflict with other content management systems. We recommend using "WP-" for your prefix.', 'wp-parsely' );
-
+		$h          = __( 'If you use more than one content management system (e.g. WordPress and Drupal), you may end up with duplicate content IDs. Adding a Content ID Prefix will ensure the content IDs from WordPress will not conflict with other content management systems. We recommend using "WP-" for your prefix.', 'wp-parsely' );
+		$field_id   = 'content_id_prefix';
 		$field_args = array(
-			'option_key'       => 'content_id_prefix',
+			'option_key'       => $field_id,
 			'optional_args'    => array(
 				'placeholder' => 'WP-',
 			),
 			'help_text'        => $h,
 			'requires_recrawl' => true,
+			'label_for'        => $field_id,
 		);
 		add_settings_field(
-			'content_id_prefix',
+			$field_id,
 			__( 'Content ID Prefix', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			self::MENU_SLUG,
@@ -416,20 +422,23 @@ class Parsely {
 		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h = __( 'By default, the section value in your Parse.ly dashboard maps to a post\'s category. You can optionally choose a custom taxonomy, if you\'ve created one, to populate the section value instead.', 'wp-parsely' );
+		$h          = __( 'By default, the section value in your Parse.ly dashboard maps to a post\'s category. You can optionally choose a custom taxonomy, if you\'ve created one, to populate the section value instead.', 'wp-parsely' );
+		$field_id   = 'custom_taxonomy_section';
+		$field_args = array(
+			'option_key'       => $field_id,
+			'help_text'        => $h,
+			// filter WordPress taxonomies under the hood that should not appear in dropdown.
+			'select_options'   => array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) ),
+			'requires_recrawl' => true,
+			'label_for'        => self::OPTIONS_KEY . "[$field_id]",
+		);
 		add_settings_field(
-			'custom_taxonomy_section',
+			$field_id,
 			__( 'Use Custom Taxonomy for Section', 'wp-parsely' ),
 			array( $this, 'print_select_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
-			array(
-				'option_key'       => 'custom_taxonomy_section',
-				'help_text'        => $h,
-				// filter WordPress taxonomies under the hood that should not appear in dropdown.
-				'select_options'   => array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) ),
-				'requires_recrawl' => true,
-			)
+			$field_args
 		);
 
 		// Use categories and custom taxonomies as tags.
@@ -496,39 +505,45 @@ class Parsely {
 		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h = __( 'By default, Parse.ly only tracks the default post type as a post page. If you want to track custom post types, select them here!', 'wp-parsely' );
+		$h          = __( 'By default, Parse.ly only tracks the default post type as a post page. If you want to track custom post types, select them here!', 'wp-parsely' );
+		$field_id   = 'track_post_types';
+		$field_args = array(
+			'option_key'       => $field_id,
+			'help_text'        => $h,
+			// filter WordPress taxonomies under the hood that should not appear in dropdown.
+			'select_options'   => get_post_types(),
+			'requires_recrawl' => true,
+			'multiple'         => true,
+			'label_for'        => self::OPTIONS_KEY . "[$field_id]",
+		);
 		add_settings_field(
-			'track_post_types',
+			$field_id,
 			__( 'Post Types To Track', 'wp-parsely' ),
 			array( $this, 'print_select_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
-			array(
-				'option_key'       => 'track_post_types',
-				'help_text'        => $h,
-				// filter WordPress taxonomies under the hood that should not appear in dropdown.
-				'select_options'   => get_post_types(),
-				'requires_recrawl' => true,
-				'multiple'         => true,
-			)
+			$field_args
 		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h = __( 'By default, Parse.ly only tracks the default page type as a non-post page. If you want to track custom post types as non-post pages, select them here!', 'wp-parsely' );
+		$h          = __( 'By default, Parse.ly only tracks the default page type as a non-post page. If you want to track custom post types as non-post pages, select them here!', 'wp-parsely' );
+		$field_id   = 'track_page_types';
+		$field_args = array(
+			'option_key'       => 'track_page_types',
+			'help_text'        => $h,
+			// filter WordPress taxonomies under the hood that should not appear in dropdown.
+			'select_options'   => get_post_types(),
+			'requires_recrawl' => true,
+			'multiple'         => true,
+			'label_for'        => self::OPTIONS_KEY . "[$field_id]",
+		);
 		add_settings_field(
 			'track_page_types',
 			__( 'Page Types To Track', 'wp-parsely' ),
 			array( $this, 'print_select_tag' ),
 			self::MENU_SLUG,
 			'optional_settings',
-			array(
-				'option_key'       => 'track_page_types',
-				'help_text'        => $h,
-				// filter WordPress taxonomies under the hood that should not appear in dropdown.
-				'select_options'   => get_post_types(),
-				'requires_recrawl' => true,
-				'multiple'         => true,
-			)
+			$field_args
 		);
 
 		// Dynamic tracking note.
