@@ -54,7 +54,7 @@ final class Settings_Page {
 	 * @return void
 	 */
 	public function add_admin_header(): void {
-		// TODO: Extract style to CSS file
+		// TODO: Extract style to CSS file.
 		echo '
 <style>
 #wp-parsely_version { color: #777; font-size: 12px; margin-left: 1em; }
@@ -617,17 +617,17 @@ final class Settings_Page {
 		if ( isset( $args['help_text'] ) ) {
 			if ( isset( $args['help_link'] ) ) {
 				echo ' <div class="help-text" id="' .
-					 esc_attr( $args['option_key'] ) .
-					 '_help_text"><p class="description">' .
-					 sprintf( esc_html( $args['help_text'] ), '<a href="', esc_url( $args['help_link'] ), '">', '</a>' ) .
-					 '</p>' .
-					 '</div>';
+					esc_attr( $args['option_key'] ) .
+					'_help_text"><p class="description">' .
+					sprintf( esc_html( $args['help_text'] ), '<a href="', esc_url( $args['help_link'] ), '">', '</a>' ) .
+					'</p>' .
+					'</div>';
 			} else {
 				echo ' <div class="help-text" id="' .
-					 esc_attr( $args['option_key'] ) .
-					 '_help_text"><p class="description">' .
-					 esc_html( $args['help_text'] ) . '</p>' .
-					 '</div>';
+					esc_attr( $args['option_key'] ) .
+					'_help_text"><p class="description">' .
+					esc_html( $args['help_text'] ) . '</p>' .
+					'</div>';
 			}
 		}
 	}
@@ -709,8 +709,8 @@ final class Settings_Page {
 		if ( isset( $args['help_text'] ) ) {
 			if ( isset( $args['help_link'] ) ) {
 				echo '<div class="help-text"> <p class="description">' .
-					 sprintf( esc_html( $args['help_text'] ), '<a href="', esc_url( $args['help_link'] ), '">', '</a>' ) .
-					 '</p></div>';
+					sprintf( esc_html( $args['help_text'] ), '<a href="', esc_url( $args['help_link'] ), '">', '</a>' ) .
+					'</p></div>';
 			} else {
 				echo '<div class="help-text"> <p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
 			}
