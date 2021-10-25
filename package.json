@@ -33,7 +33,7 @@
     "defaults"
   ],
   "devDependencies": {
-    "@wordpress/e2e-test-utils": "^5.4.4",
+    "@wordpress/e2e-test-utils": "^5.4.5",
     "@wordpress/eslint-plugin": "^9.1.2",
     "@wordpress/scripts": "^18.1.0",
     "prettier": "^2.4.1"
