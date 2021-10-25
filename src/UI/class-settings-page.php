@@ -64,11 +64,11 @@ final class Settings_Page {
 
 		$admin_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';
 		wp_enqueue_script(
-				'wp-parsely-admin',
-				plugin_dir_url( PARSELY_FILE ) . 'build/admin-page.js',
-				$admin_script_asset['dependencies'],
-				Parsely::get_asset_cache_buster(),
-				true
+			'wp-parsely-admin',
+			plugin_dir_url( PARSELY_FILE ) . 'build/admin-page.js',
+			$admin_script_asset['dependencies'],
+			Parsely::get_asset_cache_buster(),
+			true
 		);
 
 		wp_set_script_translations( 'wp-parsely-admin', 'wp-parsely' );
@@ -617,17 +617,17 @@ final class Settings_Page {
 		if ( isset( $args['help_text'] ) ) {
 			if ( isset( $args['help_link'] ) ) {
 				echo ' <div class="help-text" id="' .
-				     esc_attr( $args['option_key'] ) .
-				     '_help_text"><p class="description">' .
-				     sprintf( esc_html( $args['help_text'] ), '<a href="', esc_url( $args['help_link'] ), '">', '</a>' ) .
-				     '</p>' .
-				     '</div>';
+					 esc_attr( $args['option_key'] ) .
+					 '_help_text"><p class="description">' .
+					 sprintf( esc_html( $args['help_text'] ), '<a href="', esc_url( $args['help_link'] ), '">', '</a>' ) .
+					 '</p>' .
+					 '</div>';
 			} else {
 				echo ' <div class="help-text" id="' .
-				     esc_attr( $args['option_key'] ) .
-				     '_help_text"><p class="description">' .
-				     esc_html( $args['help_text'] ) . '</p>' .
-				     '</div>';
+					 esc_attr( $args['option_key'] ) .
+					 '_help_text"><p class="description">' .
+					 esc_html( $args['help_text'] ) . '</p>' .
+					 '</div>';
 			}
 		}
 	}
@@ -709,8 +709,8 @@ final class Settings_Page {
 		if ( isset( $args['help_text'] ) ) {
 			if ( isset( $args['help_link'] ) ) {
 				echo '<div class="help-text"> <p class="description">' .
-				     sprintf( esc_html( $args['help_text'] ), '<a href="', esc_url( $args['help_link'] ), '">', '</a>' ) .
-				     '</p></div>';
+					 sprintf( esc_html( $args['help_text'] ), '<a href="', esc_url( $args['help_link'] ), '">', '</a>' ) .
+					 '</p></div>';
 			} else {
 				echo '<div class="help-text"> <p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
 			}
@@ -793,7 +793,7 @@ final class Settings_Page {
 	/**
 	 * Validate options from an array.
 	 *
-	 * @param array  $array Array of options to be sanitized.
+	 * @param array $array Array of options to be sanitized.
 	 * @return array
 	 */
 	private static function validate_option_array( array $array ): array {
