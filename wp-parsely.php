@@ -32,6 +32,7 @@ use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;
 use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Row_Actions;
+use Parsely\UI\Settings_Page;
 use Parsely_Recommended_Widget;
 
 if ( class_exists( Parsely::class ) ) {
@@ -53,6 +54,7 @@ add_action(
 // Until auto-loading happens, we need to include this file for tests as well.
 require __DIR__ . '/src/UI/class-plugins-actions.php';
 require __DIR__ . '/src/UI/class-row-actions.php';
+require __DIR__ . '/src/UI/class-settings-page.php';
 add_action(
 	'admin_init',
 	function(): void {
@@ -62,6 +64,9 @@ add_action(
 
 		$row_actions = new Row_Actions( $GLOBALS['parsely'] );
 		$row_actions->run();
+
+		$settings_page = new Settings_Page( $GLOBALS['parsely'] );
+		$settings_page->run();
 	}
 );
 

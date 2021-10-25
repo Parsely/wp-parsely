@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely class
+ * Parsely plugins actions class
  *
  * @package Parsely
  * @since 2.6.0
@@ -18,7 +18,7 @@ use const Parsely\PARSELY_FILE;
  *
  * @since 2.6.0
  */
-class Plugins_Actions {
+final class Plugins_Actions {
 
 	/**
 	 * Register action and filter hook callbacks.
