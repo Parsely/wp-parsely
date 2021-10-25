@@ -54,7 +54,6 @@ add_action(
 // Until auto-loading happens, we need to include this file for tests as well.
 require __DIR__ . '/src/UI/class-plugins-actions.php';
 require __DIR__ . '/src/UI/class-row-actions.php';
-require __DIR__ . '/src/UI/class-settings-page.php';
 add_action(
 	'admin_init',
 	function(): void {
@@ -64,7 +63,13 @@ add_action(
 
 		$row_actions = new Row_Actions( $GLOBALS['parsely'] );
 		$row_actions->run();
+	}
+);
 
+require __DIR__ . '/src/UI/class-settings-page.php';
+add_action(
+	'init',
+	function(): void {
 		$settings_page = new Settings_Page( $GLOBALS['parsely'] );
 		$settings_page->run();
 	}

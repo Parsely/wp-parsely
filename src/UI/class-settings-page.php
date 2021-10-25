@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely;
+use const Parsely\PARSELY_FILE;
 
 /**
  * Render the wp-admin Parse.ly plugin settings page
@@ -42,7 +43,63 @@ final class Settings_Page {
 	 * @return void
 	 */
 	public function run(): void {
+		add_action( 'admin_head-settings_page_parsely', array( $this, 'add_admin_header' ) );
+		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
+	}
+
+	/**
+	 * Include the Parse.ly admin header.
+	 *
+	 * @return void
+	 */
+	public function add_admin_header(): void {
+		// TODO: Extract style to CSS file
+		echo '
+<style>
+#wp-parsely_version { color: #777; font-size: 12px; margin-left: 1em; }
+.help-text { width: 75%; }
+</style>
+';
+
+		$admin_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';
+		wp_enqueue_script(
+				'wp-parsely-admin',
+				plugin_dir_url( PARSELY_FILE ) . 'build/admin-page.js',
+				$admin_script_asset['dependencies'],
+				Parsely::get_asset_cache_buster(),
+				true
+		);
+
+		wp_set_script_translations( 'wp-parsely-admin', 'wp-parsely' );
+	}
+
+	/**
+	 * Parse.ly settings page in WordPress settings menu.
+	 *
+	 * @return void
+	 */
+	public function add_settings_sub_menu(): void {
+		add_options_page(
+			__( 'Parse.ly Settings', 'wp-parsely' ),
+			__( 'Parse.ly', 'wp-parsely' ),
+			Parsely::CAPABILITY,
+			Parsely::MENU_SLUG,
+			array( $this, 'display_settings' )
+		);
+	}
+
+	/**
+	 * Parse.ly settings screen ( options-general.php?page=[MENU_SLUG] ).
+	 *
+	 * @return void
+	 */
+	public function display_settings(): void {
+		if ( ! current_user_can( Parsely::CAPABILITY ) ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
+		}
+
+		include plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings.php';
 	}
 
 	/**
