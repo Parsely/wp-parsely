@@ -383,7 +383,7 @@ final class Settings_Page {
 		add_settings_field(
 			'dynamic_tracking_note',
 			__( 'Note: ', 'wp-parsely' ),
-			array( 'Settings_Page', 'print_dynamic_tracking_note' ),
+			array( $this, 'print_dynamic_tracking_note' ),
 			Parsely::MENU_SLUG,
 			'optional_settings'
 		);
@@ -697,6 +697,21 @@ final class Settings_Page {
 			?>
 		</fieldset>
 		<?php
+	}
+
+	/**
+	 * Show our note about dynamic tracking.
+	 *
+	 * @return void
+	 */
+	public function print_dynamic_tracking_note(): void {
+		printf(
+		/* translators: 1: Documentation URL 2: Documentation URL */
+			wp_kses_post( __( 'This plugin does not currently support dynamic tracking ( the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href="%1$s">the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href="%2$s">the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href="%3$s">support@parsely.com</a> ) for additional assistance.', 'wp-parsely' ) ),
+			esc_url( 'http://www.parsely.com/help/integration/basic/' ),
+			esc_url( 'https://www.parsely.com/help/integration/dynamic/' ),
+			esc_url( 'mailto:support@parsely.com' )
+		);
 	}
 
 	/**
