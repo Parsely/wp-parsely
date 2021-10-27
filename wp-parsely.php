@@ -68,7 +68,7 @@ add_action(
 
 require __DIR__ . '/src/UI/class-settings-page.php';
 add_action(
-	'init',
+	'_admin_menu',
 	function(): void {
 		$settings_page = new Settings_Page( $GLOBALS['parsely'] );
 		$settings_page->run();
