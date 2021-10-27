@@ -104,7 +104,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			$instance['published_within'],
 			$instance['sort'],
 			$instance['boost'],
-			$instance['return_limit']
+			(int) $instance['return_limit']
 		);
 
 		$recommended_widget_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';

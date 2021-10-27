@@ -1353,7 +1353,7 @@ class Parsely {
 
 		if ( 'wp-parsely-tracker' === $handle ) {
 			$tag = preg_replace( '/ id=(["\'])wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
-			$tag = preg_replace(
+			$tag = str_replace(
 				'/ src=/',
 				' data-parsely-site="' . esc_attr( $parsely_options['apikey'] ) . '" src=',
 				$tag
