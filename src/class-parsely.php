@@ -22,8 +22,6 @@ use const Parsely\PARSELY_VERSION;
 class Parsely {
 	/**
 	 * Declare our constants
-	 *
-	 * @codeCoverageIgnoreStart
 	 */
 	public const VERSION     = PARSELY_VERSION;
 	public const MENU_SLUG   = 'parsely';             // Defines the page param passed to options-general.php.
