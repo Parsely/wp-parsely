@@ -22,8 +22,6 @@ use const Parsely\PARSELY_VERSION;
 class Parsely {
 	/**
 	 * Declare our constants
-	 *
-	 * @codeCoverageIgnoreStart
 	 */
 	public const VERSION     = PARSELY_VERSION;
 	public const MENU_SLUG   = 'parsely';             // Defines the page param passed to options-general.php.
@@ -760,12 +758,6 @@ class Parsely {
 			esc_url( 'mailto:support@parsely.com' )
 		);
 	}
-
-	/**
-	 * End the code coverage ignore.
-	 *
-	 * @codeCoverageIgnoreEnd
-	 */
 
 	/**
 	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
