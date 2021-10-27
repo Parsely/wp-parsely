@@ -26,12 +26,6 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
 
-## wp-parsely 3.0 upgrade notice
-
-The `2.6` branch will be the last one of the wp-parsely plugin to have PHP `5.6` and WordPress `4.0` as a minium requirement. **When the next major version is released, `3.0`, the minimum requirements will be bumped to PHP `7.1` and WordPress `5.0`.**
-
-Once `3.0` gets released, the `2.6` branch will not be supported and will not receive any updates, including new features and security issues. Therefore, we strongly recommend all `wp-parsely` users to upgrade to PHP 7.1 or higher and WordPress 5.0 or higher. It is important to point out that those are *minimum* requirements, so newer versions of PHP and WordPress are encouraged. 
-
 ## Installation
 
 The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results.
