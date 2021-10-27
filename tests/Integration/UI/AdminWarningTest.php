@@ -42,7 +42,7 @@ final class AdminWarningTest extends TestCase {
 	 * @uses \Parsely::get_options
 	 */
 	public function test_display_admin_warning_without_key(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning', 'Admin_Warning' );
+		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning', Admin_Warning::class );
 		$this->set_options( array( 'apikey' => '' ) );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
@@ -55,7 +55,7 @@ final class AdminWarningTest extends TestCase {
 	 * @covers \Parsely::should_display_admin_warning
 	 */
 	public function test_display_admin_warning_network_admin(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
+		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning', Admin_Warning::class );
 		$this->set_options( array( 'apikey' => '' ) );
 		set_current_screen( 'dashboard-network' );
 
@@ -70,7 +70,7 @@ final class AdminWarningTest extends TestCase {
 	 * @uses \Parsely::get_options
 	 */
 	public function test_display_admin_warning_with_key(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
+		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning', Admin_Warning::class );
 		$this->set_options( array( 'apikey' => 'somekey' ) );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
