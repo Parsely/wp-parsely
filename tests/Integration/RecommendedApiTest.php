@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
-use Recommended_Widget;
+use Parsely\UI\Recommended_Widget;
 
 /**
  * Recommended Widget tests.
