@@ -149,6 +149,51 @@ final class OtherTest extends TestCase {
 		$output = ob_get_clean();
 
 		self::assertSame(
+			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . \Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
+			$output,
+			'Failed to confirm script tag was printed correctly'
+		);
+	}
+
+	/**
+	 * Test the tracker script enqueue.
+	 *
+	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::register_js
+	 * @uses \Parsely::script_loader_tag
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group insert-js
+	 */
+	public function test_load_js_tracker_with_cloudflare(): void {
+		add_filter( 'wp_parsely_enable_cfasync_tag', '__return_true' );
+
+		ob_start();
+		$post_array = $this->create_test_post_array();
+		$post       = $this->factory->post->create( $post_array );
+		$this->go_to( '/?p=' . $post );
+		self::$parsely->register_js();
+		self::$parsely->load_js_tracker();
+		$intermediate_output = ob_get_contents();
+		self::assertSame(
+			'',
+			$intermediate_output,
+			'Failed to confirm scripts were not printed by load_js_tracker()'
+		);
+
+		self::assertTrue(
+			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
+			'Failed to confirm tracker script was enqueued'
+		);
+
+		wp_print_scripts();
+		$output = ob_get_clean();
+
+		self::assertSame(
 			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . \Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tag was printed correctly'

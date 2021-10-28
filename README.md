@@ -86,6 +86,10 @@ Some common use-cases for dynamic tracking are slideshows or articles loaded via
 
 Tracking these events requires manually implementing additional JavaScript above [the standard Parse.ly include](http://www.parsely.com/help/integration/basic/) that the plugin injects into your page source. Please consult [the Parse.ly documentation on dynamic tracking](https://www.parsely.com/help/integration/dynamic/) for instructions on implementing dynamic tracking, or contact Parse.ly support for additional assistance.
 
+### CloudFlare support
+
+
+
 ### How do I create a local dev environment to make changes to the `wp-parsely` code?
 
 See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin-development-environment).
