@@ -799,8 +799,8 @@ class Parsely {
 
 		global $post;
 
-		// We can't construct the metadata without a valid post object
-		if ( empty ( $post ) ) {
+		// We can't construct the metadata without a valid post object.
+		if ( empty( $post ) ) {
 			return;
 		}
 
