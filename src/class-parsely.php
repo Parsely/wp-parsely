@@ -798,6 +798,12 @@ class Parsely {
 		}
 
 		global $post;
+
+		// We can't construct the metadata without a valid post object.
+		if ( empty( $post ) ) {
+			return;
+		}
+
 		// Assign default values for LD+JSON
 		// TODO: Mapping of an install's post types to Parse.ly post types (namely page/post).
 		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $post );
