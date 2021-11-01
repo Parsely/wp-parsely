@@ -31,8 +31,9 @@ use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;
 use Parsely\UI\Plugins_Actions;
+use Parsely\UI\Recommended_Widget;
 use Parsely\UI\Row_Actions;
-use Parsely_Recommended_Widget;
+use Parsely\UI\Settings_Page;
 
 if ( class_exists( Parsely::class ) ) {
 	return;
@@ -65,7 +66,16 @@ add_action(
 	}
 );
 
-require __DIR__ . '/src/class-parsely-recommended-widget.php';
+require __DIR__ . '/src/UI/class-settings-page.php';
+add_action(
+	'_admin_menu',
+	function(): void {
+		$settings_page = new Settings_Page( $GLOBALS['parsely'] );
+		$settings_page->run();
+	}
+);
+
+require __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
@@ -74,7 +84,7 @@ add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_regist
  * @return void
  */
 function parsely_recommended_widget_register(): void {
-	register_widget( Parsely_Recommended_Widget::class );
+	register_widget( Recommended_Widget::class );
 }
 
 require __DIR__ . '/src/Integrations/class-integration.php';

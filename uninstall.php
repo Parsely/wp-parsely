@@ -8,6 +8,8 @@
 
 declare(strict_types=1);
 
+namespace Parsely;
+
 // If uninstall.php is not called by WordPress, die.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	die;
