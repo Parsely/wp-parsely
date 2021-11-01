@@ -90,7 +90,7 @@ Tracking these events requires manually implementing additional JavaScript above
 
 If the site is running behind a Cloudflare DNS, their Rocket Loader technology will alter how JavaScript files are loaded. [A JavaScript file can be ignored by Rocket Loader](https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts) by using `data-cfasync="false"`.
 
-Previous versions of the plugin would mark all scripts with that tag by default. Starting in version 3, that behavior has become optional and scripts won't be annotated with `data-cfasync="false"`. The previous behavior can be restored by adding the following filter:
+Previous versions of this plugin would mark all scripts with that tag by default. Starting in version 3.0, that behavior has become optional and scripts won't be annotated with `data-cfasync="false"`. The previous behavior can be restored by adding the following filter:
 
 ```
 add_filter( 'wp_parsely_enable_cfasync_tag', '__return_true' );
