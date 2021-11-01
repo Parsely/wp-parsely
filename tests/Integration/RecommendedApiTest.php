@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
-use Parsely_Recommended_Widget;
+use Parsely\UI\Recommended_Widget;
 
 /**
  * Recommended Widget tests.
@@ -77,7 +77,7 @@ final class RecommendedApiTest extends TestCase {
 	 * @group widgets
 	 */
 	public function test_recommended_api_url( string $api_key, int $published_within, string $sort, string $boost, int $return_limit, string $url ): void {
-		$recommended_widget = new Parsely_Recommended_Widget();
+		$recommended_widget = new Recommended_Widget();
 
 		self::assertEquals( $url, $recommended_widget->get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) );
 	}
