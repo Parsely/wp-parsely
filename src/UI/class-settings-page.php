@@ -430,7 +430,7 @@ final class Settings_Page {
 		add_settings_field(
 			'track_page_types',
 			__( 'Page Types To Track', 'wp-parsely' ),
-			array( $this, 'print_select_tag' ),
+			array( $this, 'print_multiple_checkboxes' ),
 			Parsely::MENU_SLUG,
 			'optional_settings',
 			$field_args
@@ -673,6 +673,7 @@ final class Settings_Page {
 		$name           = $args['option_key'];
 		$select_options = $args['select_options'];
 		$multiple       = $args['multiple'] ?? false;
+		// Maybe we can remove it
 		$selected       = $options[ $name ] ?? null;
 		$id             = esc_attr( $name );
 		$name           = Parsely::OPTIONS_KEY . "[$id]";
@@ -733,7 +734,7 @@ final class Settings_Page {
 
 		$has_help_text    = isset( $args['help_text'] ) ? ' data-has-help-text="true"' : '';
 		$requires_recrawl = isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ? ' data-requires-recrawl="true"' : '';
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static text attribute key-value. ?>
+		?>
 		<fieldset class="parsely-form-controls" <?php echo $has_help_text . $requires_recrawl; ?>>
 			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
 			<p>
@@ -754,6 +755,33 @@ final class Settings_Page {
 			?>
 		</fieldset>
 		<?php
+	}
+
+	public function print_multiple_checkboxes( array $args ): void {
+		$options = $this->parsely->get_options();
+		$name    = $args['option_key'];
+		$select_options = $args['select_options'];
+		$id      = esc_attr( $name );
+		$name    = Parsely::OPTIONS_KEY . "[$id]";
+
+		if ( isset( $args['help_text'] ) ) {
+			echo '<div class="parsely-form-controls" data-has-help-text="true">';
+		}
+		if ( isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ) {
+			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
+		}
+
+		foreach ( $select_options as $key => $val ) {
+			$selected = in_array( $val, $options[ $args['option_key'] ], true );
+			echo sprintf( "<input type='checkbox' name='%s' id='%s_%s' value='%s' ", esc_attr( $name ), esc_attr( $id ), esc_attr( $key ), esc_attr( $key ) );
+			echo checked( true === $selected, true, false );
+			echo sprintf( " /> <label for='%s_%s'>%s</label><br />", esc_attr( $id ), esc_attr($key), esc_html__( $val, 'wp-parsely' ) );
+		}
+
+		if ( isset( $args['help_text'] ) ) {
+			echo '<div class="help-text"><p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
+		}
+		echo '</div>';
 	}
 
 	/**
