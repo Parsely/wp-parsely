@@ -794,6 +794,7 @@ class Parsely {
 			 * @since 3.0.0
 			 *
 			 * @param bool $enabled True if enabled, false if not.
+			 * @param string $handle The script's registered handle.
 			 */
 			if ( apply_filters( 'wp_parsely_enable_cfasync_tag', false, $handle ) ) {
 				$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
