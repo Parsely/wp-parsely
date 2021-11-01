@@ -787,8 +787,8 @@ class Parsely {
 			)
 		) ) {
 			/**
-			 * Filter whether to include the CloudFlare Rocket Loader tag (`data-cfasync=false`) in the script. Only
-			 * needed if the site being served is behind Cloudflare. Should return false otherwise.
+			 * Filter whether to include the CloudFlare Rocket Loader attribute (`data-cfasync=false`) in the script.
+			 * Only needed if the site being served is behind Cloudflare. Should return false otherwise.
 			 * https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts
 			 *
 			 * @since 3.0.0
@@ -796,7 +796,7 @@ class Parsely {
 			 * @param bool $enabled True if enabled, false if not.
 			 * @param string $handle The script's registered handle.
 			 */
-			if ( apply_filters( 'wp_parsely_enable_cfasync_tag', false, $handle ) ) {
+			if ( apply_filters( 'wp_parsely_enable_cfasync_attribute', false, $handle ) ) {
 				$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
 			}
 		}

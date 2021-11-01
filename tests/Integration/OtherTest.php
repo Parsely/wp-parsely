@@ -170,7 +170,7 @@ final class OtherTest extends TestCase {
 	 * @group insert-js
 	 */
 	public function test_load_js_tracker_with_cloudflare(): void {
-		add_filter( 'wp_parsely_enable_cfasync_tag', '__return_true' );
+		add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 
 		ob_start();
 		$post_array = $this->create_test_post_array();

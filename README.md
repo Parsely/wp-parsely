@@ -93,7 +93,7 @@ If the site is running behind a Cloudflare DNS, their Rocket Loader technology w
 Previous versions of this plugin would mark all scripts with that tag by default. Starting in version 3.0, that behavior has become optional and scripts won't be annotated with `data-cfasync="false"`. The previous behavior can be restored by adding the following filter:
 
 ```
-add_filter( 'wp_parsely_enable_cfasync_tag', '__return_true' );
+add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 ```
 
 ### How do I create a local dev environment to make changes to the `wp-parsely` code?
