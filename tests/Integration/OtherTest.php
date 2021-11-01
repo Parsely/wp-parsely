@@ -178,17 +178,6 @@ final class OtherTest extends TestCase {
 		$this->go_to( '/?p=' . $post );
 		self::$parsely->register_js();
 		self::$parsely->load_js_tracker();
-		$intermediate_output = ob_get_contents();
-		self::assertSame(
-			'',
-			$intermediate_output,
-			'Failed to confirm scripts were not printed by load_js_tracker()'
-		);
-
-		self::assertTrue(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm tracker script was enqueued'
-		);
 
 		wp_print_scripts();
 		$output = ob_get_clean();
