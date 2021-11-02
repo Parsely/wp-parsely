@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely;
 
 use WP_Post;
+use WP_User;
 
 /**
  * Holds most of the logic for the plugin.
