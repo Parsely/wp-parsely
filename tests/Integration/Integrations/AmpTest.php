@@ -20,7 +20,7 @@ final class AmpTest extends TestCase {
 	/**
 	 * Check the integration only happens when a condition is met.
 	 *
-	 * @covers \Parsely\Integrations\Amp::integrate
+	 * @covers Parsely\Integrations\Amp::integrate
 	 */
 	public function test_integration_only_runs_when_AMP_plugin_is_active(): void {
 		$amp = new Amp();
@@ -39,8 +39,8 @@ final class AmpTest extends TestCase {
 	/**
 	 * Check the AMP integration when plugin is not active or request is not an AMP request.
 	 *
-	 * @covers \Parsely\Integrations\Amp::add_actions
-	 * @uses \Parsely::get_options()
+	 * @covers Parsely\Integrations\Amp::add_actions
+	 * @uses Parsely::get_options()
 	 * @group amp
 	 */
 	public function test_integration_only_runs_if_we_can_handle_an_AMP_request(): void {
@@ -64,8 +64,8 @@ final class AmpTest extends TestCase {
 	/**
 	 * Check the AMP request is not handled when support is disabled.
 	 *
-	 * @covers \Parsely\Integrations\Amp::can_handle_amp_request
-	 * @uses \Parsely::get_options()
+	 * @covers Parsely\Integrations\Amp::can_handle_amp_request
+	 * @uses Parsely::get_options()
 	 * @group amp
 	 */
 	public function test_AMP_request_is_not_handled_when_support_is_disabled(): void {
@@ -91,9 +91,9 @@ final class AmpTest extends TestCase {
 	/**
 	 * Check the registration of Parse.ly with AMP.
 	 *
-	 * @covers \Parsely\Integrations\Amp::add_actions
-	 * @covers \Parsely\Integrations\Amp::register_parsely_for_amp_analytics
-	 * @uses \Parsely::get_options()
+	 * @covers Parsely\Integrations\Amp::add_actions
+	 * @covers Parsely\Integrations\Amp::register_parsely_for_amp_analytics
+	 * @uses Parsely::get_options()
 	 * @group amp
 	 * @group settings
 	 */
@@ -116,9 +116,9 @@ final class AmpTest extends TestCase {
 	/**
 	 * Check the registration of Parse.ly with AMP Native.
 	 *
-	 * @covers \Parsely\Integrations\Amp::add_actions
-	 * @covers \Parsely\Integrations\Amp::register_parsely_for_amp_native_analytics
-	 * @uses \Parsely::get_options()
+	 * @covers Parsely\Integrations\Amp::add_actions
+	 * @covers Parsely\Integrations\Amp::register_parsely_for_amp_native_analytics
+	 * @uses Parsely::get_options()
 	 * @group amp
 	 * @group settings
 	 */

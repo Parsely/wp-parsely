@@ -93,5 +93,4 @@ final class FacebookInstantArticlesTest extends TestCase {
 		self::assertStringContainsString( '<script>', $registry[ Facebook_Instant_Articles::REGISTRY_IDENTIFIER ]['payload'] );
 		self::assertStringContainsString( $api_key, $registry[ Facebook_Instant_Articles::REGISTRY_IDENTIFIER ]['payload'] );
 	}
-
 }

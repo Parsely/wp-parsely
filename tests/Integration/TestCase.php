@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use Parsely\Parsely;
 use WP_Error;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
 
@@ -38,7 +39,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param array $custom_options Associative array of option keys and values that should be saved.
 	 */
 	public static function set_options( array $custom_options = array() ): void {
-		update_option( \Parsely::OPTIONS_KEY, array_merge( self::DEFAULT_OPTIONS, $custom_options ) );
+		update_option( Parsely::OPTIONS_KEY, array_merge( self::DEFAULT_OPTIONS, $custom_options ) );
 	}
 
 	/**
@@ -136,7 +137,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @return \ReflectionMethod
 	 * @throws \ReflectionException The method does not exist in the class.
 	 */
-	public static function getMethod( string $method_name, string $class_name = 'Parsely' ): \ReflectionMethod {
+	public static function getMethod( string $method_name, string $class_name = Parsely::class ): \ReflectionMethod {
 		$class  = new \ReflectionClass( $class_name );
 		$method = $class->getMethod( $method_name );
 		$method->setAccessible( true );

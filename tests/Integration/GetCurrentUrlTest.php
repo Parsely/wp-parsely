@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
-use Parsely;
+use Parsely\Parsely;
 
 /**
  * \Parsely::get_current_url() tests.

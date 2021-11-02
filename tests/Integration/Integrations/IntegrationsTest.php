@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\Integrations;
 
-use Parsely\Integrations\Integrations;
 use Parsely\Tests\Integration\TestCase;
 use ReflectionClass;
+
 use function Parsely\parsely_integrations;
 
 /**
