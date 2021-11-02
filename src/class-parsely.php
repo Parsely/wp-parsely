@@ -149,12 +149,6 @@ class Parsely {
 	}
 
 	/**
-	 * End the code coverage ignore.
-	 *
-	 * @codeCoverageIgnoreEnd
-	 */
-
-	/**
 	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 *
 	 * @since 3.0.0
@@ -178,16 +172,16 @@ class Parsely {
 		$parsely_options = $this->get_options();
 
 		if (
-				$this->api_key_is_missing() ||
+			$this->api_key_is_missing() ||
 
-				// Chosen not to track logged-in users.
-				( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
+			// Chosen not to track logged-in users.
+			( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
 
-				// 404 pages are not tracked.
-				is_404() ||
+			// 404 pages are not tracked.
+			is_404() ||
 
-				// Search pages are not tracked.
-				is_search()
+			// Search pages are not tracked.
+			is_search()
 		) {
 			return;
 		}
@@ -308,7 +302,6 @@ class Parsely {
 	}
 
 	/**
-
 	 * Creates parsely metadata object from post metadata.
 	 *
 	 * @param array   $parsely_options parsely_options array.
@@ -547,7 +540,6 @@ class Parsely {
 			update_post_meta( $post_id, 'parsely_metadata_last_updated', $current_timestamp );
 		}
 	}
-
 
 	/**
 	 * Updates posts with Parsely metadata api in bulk.
