@@ -578,48 +578,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	}
 
 	/**
-	 * Test that test_display_admin_warning action returns a warning when there is no key
-	 *
-	 * @covers \Parsely::should_display_admin_warning
-	 * @uses \Parsely::get_options
-	 */
-	public function test_display_admin_warning_without_key(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
-		$this->set_options( array( 'apikey' => '' ) );
-
-		$response = $should_display_admin_warning->invoke( self::$parsely );
-		self::assertTrue( $response );
-	}
-
-	/**
-	 * Test that test_display_admin_warning action returns a warning when there is no key
-	 *
-	 * @covers \Parsely::should_display_admin_warning
-	 */
-	public function test_display_admin_warning_network_admin(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
-		$this->set_options( array( 'apikey' => '' ) );
-		set_current_screen( 'dashboard-network' );
-
-		$response = $should_display_admin_warning->invoke( self::$parsely );
-		self::assertFalse( $response );
-	}
-
-	/**
-	 * Test that test_display_admin_warning action doesn't return a warning when there is a key
-	 *
-	 * @covers \Parsely::should_display_admin_warning
-	 * @uses \Parsely::get_options
-	 */
-	public function test_display_admin_warning_with_key(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
-		$this->set_options( array( 'apikey' => 'somekey' ) );
-
-		$response = $should_display_admin_warning->invoke( self::$parsely );
-		self::assertFalse( $response );
-	}
-
-	/**
 	 * Check that utility methods for checking if the API key is set work correctly.
 	 *
 	 * @since 2.6.0
