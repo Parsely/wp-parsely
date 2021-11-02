@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace Parsely;
 
-use Parsely;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;

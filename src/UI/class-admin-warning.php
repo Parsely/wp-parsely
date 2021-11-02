@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\UI;
 
-use Parsely;
+use Parsely\Parsely;
 
 /**
  * Conditionally render a warning message on wp-admin

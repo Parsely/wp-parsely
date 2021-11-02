@@ -8,8 +8,9 @@
 
 declare(strict_types=1);
 
-use const Parsely\PARSELY_FILE;
-use const Parsely\PARSELY_VERSION;
+namespace Parsely;
+
+use WP_Post;
 
 /**
  * Holds most of the logic for the plugin.

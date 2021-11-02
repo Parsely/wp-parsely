@@ -12,6 +12,8 @@
 
 declare(strict_types=1);
 
+namespace Parsely;
+
 /* translators: %s: Plugin version */
 $parsely_version_string = sprintf( __( 'Version %s', 'wp-parsely' ), Parsely::VERSION );
 ?>
