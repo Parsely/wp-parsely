@@ -9,11 +9,13 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
+use Parsely\Parsely;
+
 /**
  * Structured Data Tests for the home page.
  *
  * @see https://www.parse.ly/help/integration/jsonld
- * @covers \Parsely::construct_parsely_metadata
+ * @covers Parsely::construct_parsely_metadata
  */
 final class HomePageTest extends NonPostTestCase {
 	/**
@@ -30,25 +32,25 @@ final class HomePageTest extends NonPostTestCase {
 	/**
 	 * Create a single page, set as homepage (blog archive), and test the structured data.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_home_page_for_posts(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
 		$page_id = self::factory()->post->create(
@@ -76,25 +78,25 @@ final class HomePageTest extends NonPostTestCase {
 	/**
 	 * Create 2 posts, set posts per page to 1, navigate to page 2 and test the structured data.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_home_page_for_posts_paged(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Insert 2 posts.
 		$page_id = self::factory()->post->create();
@@ -127,25 +129,25 @@ final class HomePageTest extends NonPostTestCase {
 	/**
 	 * Create a single page, set as homepage (page on front), and test the structured data.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_home_page_on_front(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
 		$page_id = self::factory()->post->create(
@@ -179,25 +181,25 @@ final class HomePageTest extends NonPostTestCase {
 	/**
 	 * Check for the case when the show_on_front setting is Page, but no Page has been selected.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_home_for_misconfigured_settings(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Insert a single page.
 		$page_id = self::factory()->post->create(

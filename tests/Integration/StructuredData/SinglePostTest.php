@@ -11,6 +11,8 @@ namespace Parsely\Tests\Integration\StructuredData;
 
 use Parsely\Tests\Integration\TestCase;
 
+use Parsely\Parsely;
+
 /**
  * Structured Data Tests for posts.
  *
@@ -30,25 +32,25 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Create a single post, and test the structured data.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_single_post(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Insert a single post and set as global post.
 		$post_id = self::factory()->post->create();
@@ -69,25 +71,25 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the category.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_category_data_for_single_post(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Insert a single category term, and a Post with that category.
 		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
@@ -104,26 +106,26 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that the tags assigned to a post are lowercase.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
 	public function test_tag_data_assigned_to_a_post_are_lowercase(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Create two tags with uppercase names and a single post.
 		$tag1    = self::factory()->tag->create( array( 'name' => 'Sample' ) );
@@ -149,28 +151,28 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the categories as tags.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_categories
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_custom_taxonomy_values
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_categories
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_custom_taxonomy_values
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
 	public function test_parsely_categories_as_tags_in_single_post(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Set the Categories as Tags option to true.
 		$parsely_options['cats_as_tags']   = true;
@@ -196,28 +198,28 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Test custom taxonomy terms, categories, and tags in the metadata.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_categories
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_custom_taxonomy_values
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_categories
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_custom_taxonomy_values
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
 	public function test_custom_taxonomy_as_tags_in_single_post(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Set up the options to force lowercase tags.
 		$parsely_options['cats_as_tags'] = true;
@@ -255,27 +257,27 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Are the top level categories what we expect?
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::get_top_level_term
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::get_top_level_term
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
 	public function test_use_top_level_cats_in_single_post(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Set Parsely to use top-level categories.
 		$parsely_options['use_top_level_cats'] = true;
@@ -312,27 +314,27 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check out the custom taxonomy as section.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::get_top_level_term
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::get_top_level_term
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
 	public function test_custom_taxonomy_as_section_in_single_post(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Set Parsely to use 'sports' as custom taxonomy for section.
 		$parsely_options['custom_taxonomy_section'] = 'sports';
@@ -380,26 +382,26 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the canonicals.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
 	public function test_http_canonicals_for_single_post(): void {
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Create a single post.
 		$post_id = self::factory()->post->create();

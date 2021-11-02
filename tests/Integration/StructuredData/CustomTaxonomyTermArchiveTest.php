@@ -9,30 +9,32 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
+use Parsely\Parsely;
+
 /**
  * Structured Data Tests for the custom taxonomy term (archive).
  *
  * @see https://www.parse.ly/help/integration/jsonld
- * @covers \Parsely::construct_parsely_metadata
+ * @covers Parsely::construct_parsely_metadata
  */
 class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 	/**
 	 * Check metadata for custom post type term archive.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers Parsely::construct_parsely_metadata
+	 * @uses Parsely::__construct
+	 * @uses Parsely::get_author_name
+	 * @uses Parsely::get_author_names
+	 * @uses Parsely::get_bottom_level_term
+	 * @uses Parsely::get_category_name
+	 * @uses Parsely::get_clean_parsely_page_value
+	 * @uses Parsely::get_coauthor_names
+	 * @uses Parsely::get_current_url
+	 * @uses Parsely::get_first_image
+	 * @uses Parsely::get_options
+	 * @uses Parsely::get_tags
+	 * @uses Parsely::post_has_trackable_status
+	 * @uses Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_metadata_is_correctly_constructed_for_custom_taxonomy_term_archive(): void {
@@ -41,8 +43,8 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		$this->set_permalink_structure( '/%postname%/' );
 
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Register custom taxonomy.
 		register_taxonomy( 'custom_tax', array( 'post' ) );
