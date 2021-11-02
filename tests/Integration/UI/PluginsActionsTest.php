@@ -11,6 +11,7 @@ namespace Parsely\Tests\Integration\UI;
 
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Plugins_Actions;
+
 use const Parsely\PARSELY_FILE;
 
 /**

@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\UI;
 
-use Parsely;
+use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Warning;
 
