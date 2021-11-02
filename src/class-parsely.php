@@ -108,9 +108,6 @@ class Parsely {
 			update_option( self::OPTIONS_KEY, $options );
 		}
 
-		// display warning when plugin hasn't been configured.
-		add_action( 'admin_footer', array( $this, 'display_admin_warning' ) );
-
 		// phpcs:ignore WordPress.WP.CronInterval.CronSchedulesInterval
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 
@@ -149,42 +146,6 @@ class Parsely {
 	 */
 	public function wp_parsely_style_init(): void {
 		wp_register_style( 'wp-parsely-style', plugin_dir_url( PARSELY_FILE ) . 'wp-parsely.css', array(), self::VERSION );
-	}
-
-	/**
-	 * Display the admin warning if needed.
-	 *
-	 * @return void
-	 */
-	public function display_admin_warning(): void {
-		if ( ! $this->should_display_admin_warning() ) {
-			return;
-		}
-
-		$message = sprintf(
-			/* translators: %s: Plugin settings page URL */
-			__( '<strong>The Parse.ly plugin is not active.</strong> You need to <a href="%s">provide your Parse.ly Dash Site ID</a> before things get cooking.', 'wp-parsely' ),
-			esc_url( self::get_settings_url() )
-		);
-		?>
-		<div id="message" class="error"><p><?php echo wp_kses_post( $message ); ?></p></div>
-		<?php
-	}
-
-	/**
-	 * Decide whether the admin display warning should be displayed
-	 *
-	 * @since 2.6.0
-	 *
-	 * @return bool True if the admin warning should be displayed
-	 */
-	private function should_display_admin_warning(): bool {
-		if ( is_network_admin() ) {
-			return false;
-		}
-
-		$options = $this->get_options();
-		return empty( $options['apikey'] );
 	}
 
 	/**
@@ -786,9 +747,19 @@ class Parsely {
 				'wp-parsely-recommended-widget',
 			)
 		) ) {
-			// Have CloudFlare Rocket Loader ignore these scripts:
-			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-.
-			$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
+			/**
+			 * Filter whether to include the CloudFlare Rocket Loader attribute (`data-cfasync=false`) in the script.
+			 * Only needed if the site being served is behind Cloudflare. Should return false otherwise.
+			 * https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param bool $enabled True if enabled, false if not.
+			 * @param string $handle The script's registered handle.
+			 */
+			if ( apply_filters( 'wp_parsely_enable_cfasync_attribute', false, $handle ) ) {
+				$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
+			}
 		}
 
 		if ( 'wp-parsely-tracker' === $handle ) {

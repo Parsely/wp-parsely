@@ -149,6 +149,40 @@ final class OtherTest extends TestCase {
 		$output = ob_get_clean();
 
 		self::assertSame(
+			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . \Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
+			$output,
+			'Failed to confirm script tag was printed correctly'
+		);
+	}
+
+	/**
+	 * Test the tracker script enqueue.
+	 *
+	 * @covers \Parsely::load_js_tracker
+	 * @uses \Parsely::get_asset_cache_buster
+	 * @uses \Parsely::api_key_is_missing
+	 * @uses \Parsely::api_key_is_set
+	 * @uses \Parsely::get_options
+	 * @uses \Parsely::post_has_trackable_status
+	 * @uses \Parsely::register_js
+	 * @uses \Parsely::script_loader_tag
+	 * @uses \Parsely::update_metadata_endpoint
+	 * @group insert-js
+	 */
+	public function test_load_js_tracker_with_cloudflare(): void {
+		add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
+
+		ob_start();
+		$post_array = $this->create_test_post_array();
+		$post       = $this->factory->post->create( $post_array );
+		$this->go_to( '/?p=' . $post );
+		self::$parsely->register_js();
+		self::$parsely->load_js_tracker();
+
+		wp_print_scripts();
+		$output = ob_get_clean();
+
+		self::assertSame(
 			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . \Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tag was printed correctly'
@@ -246,7 +280,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 
 		self::assertStringContainsString(
-			"<script data-cfasync=\"false\" type='text/javascript' src='" . esc_url( plugin_dir_url( PARSELY_FILE ) ) . 'build/init-api.js?ver=' . \Parsely::VERSION . "' id='wp-parsely-api-js'></script>",
+			"<script type='text/javascript' src='" . esc_url( plugin_dir_url( PARSELY_FILE ) ) . 'build/init-api.js?ver=' . \Parsely::VERSION . "' id='wp-parsely-api-js'></script>",
 			$output,
 			'Failed to confirm script tag was printed correctly'
 		);
@@ -451,7 +485,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$output = ob_get_clean();
 
 		self::assertSame(
-			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . \Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
+			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . \Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tags were printed correctly'
 		);
@@ -541,48 +575,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$this->expectWarning();
 		$this->expectWarningMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages' );
 		self::$parsely->construct_parsely_metadata( $options, $post_obj );
-	}
-
-	/**
-	 * Test that test_display_admin_warning action returns a warning when there is no key
-	 *
-	 * @covers \Parsely::should_display_admin_warning
-	 * @uses \Parsely::get_options
-	 */
-	public function test_display_admin_warning_without_key(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
-		$this->set_options( array( 'apikey' => '' ) );
-
-		$response = $should_display_admin_warning->invoke( self::$parsely );
-		self::assertTrue( $response );
-	}
-
-	/**
-	 * Test that test_display_admin_warning action returns a warning when there is no key
-	 *
-	 * @covers \Parsely::should_display_admin_warning
-	 */
-	public function test_display_admin_warning_network_admin(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
-		$this->set_options( array( 'apikey' => '' ) );
-		set_current_screen( 'dashboard-network' );
-
-		$response = $should_display_admin_warning->invoke( self::$parsely );
-		self::assertFalse( $response );
-	}
-
-	/**
-	 * Test that test_display_admin_warning action doesn't return a warning when there is a key
-	 *
-	 * @covers \Parsely::should_display_admin_warning
-	 * @uses \Parsely::get_options
-	 */
-	public function test_display_admin_warning_with_key(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning' );
-		$this->set_options( array( 'apikey' => 'somekey' ) );
-
-		$response = $should_display_admin_warning->invoke( self::$parsely );
-		self::assertFalse( $response );
 	}
 
 	/**
