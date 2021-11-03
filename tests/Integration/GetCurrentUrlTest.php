@@ -1,6 +1,6 @@
 <?php
 /**
- * \Parsely::get_current_url() tests.
+ * \Parsely\Parsely::get_current_url() tests.
  *
  * @package Parsely\Tests
  */
@@ -12,7 +12,7 @@ namespace Parsely\Tests\Integration;
 use Parsely\Parsely;
 
 /**
- * \Parsely::get_current_url() tests.
+ * \Parsely\Parsely::get_current_url() tests.
  */
 final class GetCurrentUrlTest extends TestCase {
 	/**
@@ -102,9 +102,9 @@ final class GetCurrentUrlTest extends TestCase {
 	 *
 	 * @testdox Given Force HTTPS is $force_https, when home is $home, then expect URLs starting with $expected.
 	 * @dataProvider data_for_test_get_current_url
-	 * @covers \Parsely::get_current_url
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 *
 	 * @param bool   $force_https Force HTTPS Canonical setting value.
 	 * @param string $home        Home URL.

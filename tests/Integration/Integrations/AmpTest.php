@@ -65,7 +65,7 @@ final class AmpTest extends TestCase {
 	 * Check the AMP request is not handled when support is disabled.
 	 *
 	 * @covers Parsely\Integrations\Amp::can_handle_amp_request
-	 * @uses Parsely::get_options()
+	 * @uses \Parsely\Parsely::get_options()
 	 * @group amp
 	 */
 	public function test_AMP_request_is_not_handled_when_support_is_disabled(): void {
