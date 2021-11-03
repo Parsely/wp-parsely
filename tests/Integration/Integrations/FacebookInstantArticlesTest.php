@@ -53,10 +53,10 @@ final class FacebookInstantArticlesTest extends TestCase {
 	 *
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::insert_parsely_tracking
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::get_embed_code
-	 * @uses \Parsely::api_key_is_missing
-	 * @uses \Parsely::api_key_is_set
-	 * @uses \Parsely::get_api_key
-	 * @uses \Parsely::get_options
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_options
 	 * @group fbia
 	 */
 	public function test_parsely_is_added_to_FBIA_registry(): void {
