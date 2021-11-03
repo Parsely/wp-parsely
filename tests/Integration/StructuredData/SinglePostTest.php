@@ -32,19 +32,19 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Create a single post, and test the structured data.
 	 *
-	 * @covers Parsely::construct_parsely_metadata
-	 * @uses Parsely::get_author_name
-	 * @uses Parsely::get_author_names
-	 * @uses Parsely::get_bottom_level_term
-	 * @uses Parsely::get_category_name
-	 * @uses Parsely::get_clean_parsely_page_value
-	 * @uses Parsely::get_coauthor_names
-	 * @uses Parsely::get_current_url
-	 * @uses Parsely::get_first_image
-	 * @uses Parsely::get_options
-	 * @uses Parsely::get_tags
-	 * @uses Parsely::post_has_trackable_status
-	 * @uses Parsely::update_metadata_endpoint
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::get_author_name
+	 * @uses \Parsely\Parsely::get_author_names
+	 * @uses \Parsely\Parsely::get_bottom_level_term
+	 * @uses \Parsely\Parsely::get_category_name
+	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely\Parsely::get_coauthor_names
+	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Parsely::get_first_image
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_single_post(): void {
@@ -71,19 +71,19 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the category.
 	 *
-	 * @covers Parsely::construct_parsely_metadata
-	 * @uses Parsely::get_author_name
-	 * @uses Parsely::get_author_names
-	 * @uses Parsely::get_bottom_level_term
-	 * @uses Parsely::get_category_name
-	 * @uses Parsely::get_clean_parsely_page_value
-	 * @uses Parsely::get_coauthor_names
-	 * @uses Parsely::get_current_url
-	 * @uses Parsely::get_first_image
-	 * @uses Parsely::get_options
-	 * @uses Parsely::get_tags
-	 * @uses Parsely::post_has_trackable_status
-	 * @uses Parsely::update_metadata_endpoint
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::get_author_name
+	 * @uses \Parsely\Parsely::get_author_names
+	 * @uses \Parsely\Parsely::get_bottom_level_term
+	 * @uses \Parsely\Parsely::get_category_name
+	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely\Parsely::get_coauthor_names
+	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Parsely::get_first_image
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_category_data_for_single_post(): void {
@@ -106,19 +106,19 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that the tags assigned to a post are lowercase.
 	 *
-	 * @covers Parsely::construct_parsely_metadata
-	 * @uses Parsely::get_author_name
-	 * @uses Parsely::get_author_names
-	 * @uses Parsely::get_bottom_level_term
-	 * @uses Parsely::get_category_name
-	 * @uses Parsely::get_clean_parsely_page_value
-	 * @uses Parsely::get_coauthor_names
-	 * @uses Parsely::get_current_url
-	 * @uses Parsely::get_first_image
-	 * @uses Parsely::get_options
-	 * @uses Parsely::get_tags
-	 * @uses Parsely::post_has_trackable_status
-	 * @uses Parsely::update_metadata_endpoint
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::get_author_name
+	 * @uses \Parsely\Parsely::get_author_names
+	 * @uses \Parsely\Parsely::get_bottom_level_term
+	 * @uses \Parsely\Parsely::get_category_name
+	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely\Parsely::get_coauthor_names
+	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Parsely::get_first_image
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
@@ -151,21 +151,21 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the categories as tags.
 	 *
-	 * @covers Parsely::construct_parsely_metadata
-	 * @uses Parsely::get_author_name
-	 * @uses Parsely::get_author_names
-	 * @uses Parsely::get_bottom_level_term
-	 * @uses Parsely::get_categories
-	 * @uses Parsely::get_category_name
-	 * @uses Parsely::get_clean_parsely_page_value
-	 * @uses Parsely::get_coauthor_names
-	 * @uses Parsely::get_current_url
-	 * @uses Parsely::get_custom_taxonomy_values
-	 * @uses Parsely::get_first_image
-	 * @uses Parsely::get_options
-	 * @uses Parsely::get_tags
-	 * @uses Parsely::post_has_trackable_status
-	 * @uses Parsely::update_metadata_endpoint
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::get_author_name
+	 * @uses \Parsely\Parsely::get_author_names
+	 * @uses \Parsely\Parsely::get_bottom_level_term
+	 * @uses \Parsely\Parsely::get_categories
+	 * @uses \Parsely\Parsely::get_category_name
+	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely\Parsely::get_coauthor_names
+	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Parsely::get_custom_taxonomy_values
+	 * @uses \Parsely\Parsely::get_first_image
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
@@ -198,21 +198,21 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Test custom taxonomy terms, categories, and tags in the metadata.
 	 *
-	 * @covers Parsely::construct_parsely_metadata
-	 * @uses Parsely::get_author_name
-	 * @uses Parsely::get_author_names
-	 * @uses Parsely::get_bottom_level_term
-	 * @uses Parsely::get_categories
-	 * @uses Parsely::get_category_name
-	 * @uses Parsely::get_clean_parsely_page_value
-	 * @uses Parsely::get_coauthor_names
-	 * @uses Parsely::get_current_url
-	 * @uses Parsely::get_custom_taxonomy_values
-	 * @uses Parsely::get_first_image
-	 * @uses Parsely::get_options
-	 * @uses Parsely::get_tags
-	 * @uses Parsely::post_has_trackable_status
-	 * @uses Parsely::update_metadata_endpoint
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::get_author_name
+	 * @uses \Parsely\Parsely::get_author_names
+	 * @uses \Parsely\Parsely::get_bottom_level_term
+	 * @uses \Parsely\Parsely::get_categories
+	 * @uses \Parsely\Parsely::get_category_name
+	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely\Parsely::get_coauthor_names
+	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Parsely::get_custom_taxonomy_values
+	 * @uses \Parsely\Parsely::get_first_image
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
@@ -257,20 +257,20 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Are the top level categories what we expect?
 	 *
-	 * @covers Parsely::construct_parsely_metadata
-	 * @uses Parsely::get_author_name
-	 * @uses Parsely::get_author_names
-	 * @uses Parsely::get_bottom_level_term
-	 * @uses Parsely::get_category_name
-	 * @uses Parsely::get_clean_parsely_page_value
-	 * @uses Parsely::get_coauthor_names
-	 * @uses Parsely::get_current_url
-	 * @uses Parsely::get_first_image
-	 * @uses Parsely::get_options
-	 * @uses Parsely::get_tags
-	 * @uses Parsely::get_top_level_term
-	 * @uses Parsely::post_has_trackable_status
-	 * @uses Parsely::update_metadata_endpoint
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::get_author_name
+	 * @uses \Parsely\Parsely::get_author_names
+	 * @uses \Parsely\Parsely::get_bottom_level_term
+	 * @uses \Parsely\Parsely::get_category_name
+	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely\Parsely::get_coauthor_names
+	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Parsely::get_first_image
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Parsely::get_top_level_term
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
@@ -314,20 +314,20 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check out the custom taxonomy as section.
 	 *
-	 * @covers Parsely::construct_parsely_metadata
-	 * @uses Parsely::get_author_name
-	 * @uses Parsely::get_author_names
-	 * @uses Parsely::get_bottom_level_term
-	 * @uses Parsely::get_category_name
-	 * @uses Parsely::get_clean_parsely_page_value
-	 * @uses Parsely::get_coauthor_names
-	 * @uses Parsely::get_current_url
-	 * @uses Parsely::get_first_image
-	 * @uses Parsely::get_options
-	 * @uses Parsely::get_tags
-	 * @uses Parsely::get_top_level_term
-	 * @uses Parsely::post_has_trackable_status
-	 * @uses Parsely::update_metadata_endpoint
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::get_author_name
+	 * @uses \Parsely\Parsely::get_author_names
+	 * @uses \Parsely\Parsely::get_bottom_level_term
+	 * @uses \Parsely\Parsely::get_category_name
+	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely\Parsely::get_coauthor_names
+	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Parsely::get_first_image
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Parsely::get_top_level_term
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
@@ -382,19 +382,19 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the canonicals.
 	 *
-	 * @covers Parsely::construct_parsely_metadata
-	 * @uses Parsely::get_author_name
-	 * @uses Parsely::get_author_names
-	 * @uses Parsely::get_bottom_level_term
-	 * @uses Parsely::get_category_name
-	 * @uses Parsely::get_clean_parsely_page_value
-	 * @uses Parsely::get_coauthor_names
-	 * @uses Parsely::get_current_url
-	 * @uses Parsely::get_first_image
-	 * @uses Parsely::get_options
-	 * @uses Parsely::get_tags
-	 * @uses Parsely::post_has_trackable_status
-	 * @uses Parsely::update_metadata_endpoint
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::get_author_name
+	 * @uses \Parsely\Parsely::get_author_names
+	 * @uses \Parsely\Parsely::get_bottom_level_term
+	 * @uses \Parsely\Parsely::get_category_name
+	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely\Parsely::get_coauthor_names
+	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Parsely::get_first_image
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 * @group settings
 	 */
