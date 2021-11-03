@@ -39,6 +39,7 @@ final class AdminWarningTest extends TestCase {
 	 * Test that test_display_admin_warning action returns a warning when there is no key
 	 *
 	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
+	 * @uses \Parsely\UI\Admin_Warning::__construct
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_display_admin_warning_without_key(): void {
@@ -53,6 +54,7 @@ final class AdminWarningTest extends TestCase {
 	 * Test that test_display_admin_warning action returns a warning when there is no key
 	 *
 	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
+	 * @uses \Parsely\UI\Admin_Warning::__construct
 	 */
 	public function test_display_admin_warning_network_admin(): void {
 		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning', Admin_Warning::class );
@@ -67,6 +69,7 @@ final class AdminWarningTest extends TestCase {
 	 * Test that test_display_admin_warning action doesn't return a warning when there is a key
 	 *
 	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
+	 * @uses \Parsely\UI\Admin_Warning::__construct
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_display_admin_warning_with_key(): void {
