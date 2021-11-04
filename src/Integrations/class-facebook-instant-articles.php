@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Integrations;
 
-use Parsely;
+use Parsely\Parsely;
 
 /**
  * Integrates Parse.ly tracking with the Facebook Instant Articles plugin.

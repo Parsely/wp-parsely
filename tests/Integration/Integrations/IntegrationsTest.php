@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\Integrations;
 
-use Parsely\Integrations\Integrations;
 use Parsely\Tests\Integration\TestCase;
 use ReflectionClass;
+
 use function Parsely\parsely_integrations;
 
 /**
@@ -23,7 +23,7 @@ final class IntegrationsTest extends TestCase {
 	/**
 	 * Check an integration can be added via a filter.
 	 *
-	 * @covers ::parsely_integrations
+	 * @covers \Parsely\parsely_integrations
 	 * @uses \Parsely\Integrations\Amp::integrate
 	 * @uses \Parsely\Integrations\Facebook_Instant_Articles::integrate
 	 * @uses \Parsely\Integrations\Integrations::integrate

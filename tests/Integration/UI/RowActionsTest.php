@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\UI;
 
-use Parsely;
+use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Row_Actions;
 
@@ -76,11 +76,11 @@ final class RowActionsTest extends TestCase {
 	 *
 	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
 	 * @uses \Parsely\UI\Row_Actions::__construct
-	 * @uses \Parsely::api_key_is_set
-	 * @uses \Parsely::api_key_is_missing
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_actions_are_an_array_or_not(): void {
@@ -99,11 +99,11 @@ final class RowActionsTest extends TestCase {
 	 *
 	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
 	 * @uses \Parsely\UI\Row_Actions::__construct
-	 * @uses \Parsely::api_key_is_set
-	 * @uses \Parsely::api_key_is_missing
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_has_trackable_status_or_not(): void {
@@ -126,11 +126,11 @@ final class RowActionsTest extends TestCase {
 	 *
 	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
 	 * @uses \Parsely\UI\Row_Actions::__construct
-	 * @uses \Parsely::api_key_is_set
-	 * @uses \Parsely::api_key_is_missing
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_is_viewable_or_not(): void {
@@ -153,11 +153,11 @@ final class RowActionsTest extends TestCase {
 	 *
 	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
 	 * @uses \Parsely\UI\Row_Actions::__construct
-	 * @uses \Parsely::api_key_is_set
-	 * @uses \Parsely::api_key_is_missing
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_api_key_is_set_or_missing(): void {
@@ -185,12 +185,12 @@ final class RowActionsTest extends TestCase {
 	 * @covers \Parsely\UI\Row_Actions::generate_link_to_parsely
 	 * @covers \Parsely\UI\Row_Actions::generate_url
 	 * @uses \Parsely\UI\Row_Actions::cannot_show_parsely_link
-	 * @uses \Parsely::api_key_is_set
-	 * @uses \Parsely::api_key_is_missing
-	 * @uses \Parsely::get_api_key
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
 	public function test_link_to_Parsely_is_not_added_to_row_actions_when_conditions_fail(): void {
@@ -221,12 +221,12 @@ final class RowActionsTest extends TestCase {
 	 * @covers \Parsely\UI\Row_Actions::generate_link_to_parsely
 	 * @covers \Parsely\UI\Row_Actions::generate_url
 	 * @uses \Parsely\UI\Row_Actions::cannot_show_parsely_link
-	 * @uses \Parsely::api_key_is_set
-	 * @uses \Parsely::api_key_is_missing
-	 * @uses \Parsely::get_api_key
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
 	public function test_link_to_Parsely_is_added_to_row_actions(): void {
