@@ -39,7 +39,7 @@ final class AmpTest extends TestCase {
 	/**
 	 * Check the AMP integration when plugin is not active or request is not an AMP request.
 	 *
-	 * @covers Parsely\Integrations\Amp::add_actions
+	 * @covers \Parsely\Integrations\Amp::add_actions
 	 * @uses \Parsely\Parsely::get_options
 	 * @group amp
 	 */
