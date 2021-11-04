@@ -116,8 +116,8 @@ final class AmpTest extends TestCase {
 	/**
 	 * Check the registration of Parse.ly with AMP Native.
 	 *
-	 * @covers Parsely\Integrations\Amp::add_actions
-	 * @covers Parsely\Integrations\Amp::register_parsely_for_amp_native_analytics
+	 * @covers \Parsely\Integrations\Amp::add_actions
+	 * @covers \Parsely\Integrations\Amp::register_parsely_for_amp_native_analytics
 	 * @uses \Parsely\Parsely::get_options
 	 * @group amp
 	 * @group settings
