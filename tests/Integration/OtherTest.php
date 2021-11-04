@@ -16,7 +16,6 @@ use const Parsely\PARSELY_FILE;
 
 /**
  * Catch-all class for testing.
- * TODO: Break this into multiple targeted files.
  */
 final class OtherTest extends TestCase {
 	/**
@@ -67,52 +66,6 @@ final class OtherTest extends TestCase {
 	 */
 	public function test_cache_buster(): void {
 		self::assertSame( Parsely::VERSION, Parsely::get_asset_cache_buster() );
-	}
-
-	/**
-	 * Test JavaScript registrations.
-	 *
-	 * @covers \Parsely\Parsely::register_js
-	 * @uses \Parsely\Parsely::get_asset_cache_buster
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @group insert-js
-	 */
-	public function test_parsely_register_js(): void {
-		ob_start();
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		self::$parsely->register_js();
-		$output = ob_get_clean();
-
-		self::assertSame(
-			'',
-			$output,
-			'Failed to confirm nothing was printed by register_js()'
-		);
-
-		self::assertTrue(
-			wp_script_is( 'wp-parsely-api', 'registered' ),
-			'Failed to confirm API script was registered'
-		);
-
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-api', 'enqueued' ),
-			'Failed to confirm API script was not enqueued'
-		);
-
-		self::assertTrue(
-			wp_script_is( 'wp-parsely-tracker', 'registered' ),
-			'Failed to confirm API script was registered'
-		);
-
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm API script was not enqueued'
-		);
 	}
 
 	/**
