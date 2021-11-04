@@ -20,7 +20,7 @@ final class AmpTest extends TestCase {
 	/**
 	 * Check the integration only happens when a condition is met.
 	 *
-	 * @covers Parsely\Integrations\Amp::integrate
+	 * @covers \Parsely\Integrations\Amp::integrate
 	 */
 	public function test_integration_only_runs_when_AMP_plugin_is_active(): void {
 		$amp = new Amp();
