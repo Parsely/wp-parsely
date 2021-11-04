@@ -12,8 +12,6 @@ namespace Parsely\Tests\Integration;
 use Parsely\Parsely;
 use WP_Scripts;
 
-use const Parsely\PARSELY_FILE;
-
 /**
  * Catch-all class for testing.
  */

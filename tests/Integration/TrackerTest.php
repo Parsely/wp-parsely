@@ -12,6 +12,8 @@ namespace Parsely\Tests\Integration;
 use Parsely\Parsely;
 use Parsely\Tracker;
 
+use const Parsely\PARSELY_FILE;
+
 /**
  * Parsely Tracker tests.
  */
