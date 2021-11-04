@@ -11,6 +11,7 @@ namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
 use Parsely\Tracker;
+use WP_Scripts;
 
 use const Parsely\PARSELY_FILE;
 
@@ -29,8 +30,12 @@ final class TrackerTest extends TestCase {
 	 * The setUp run before each test
 	 */
 	public function set_up(): void {
+		global $wp_scripts;
+
 		parent::set_up();
 
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$wp_scripts    = new WP_Scripts();
 		self::$tracker = new Tracker( new Parsely() );
 
 		// Set the default options prior to each test.
