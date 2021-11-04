@@ -15,7 +15,7 @@
     "test:e2e:debug": "wp-scripts --inspect-brk test-e2e --puppeteer-devtools",
     "test:e2e:help": "wp-scripts test-e2e --help",
     "test:e2e:watch": "npm run test:e2e -- --watch",
-	"test:e2e:interactive": "npm run test:e2e -- --puppeteer-interactive",
+    "test:e2e:interactive": "npm run test:e2e -- --puppeteer-interactive",
     "test:unit": "wp-scripts test-unit-js",
     "test:unit:help": "wp-scripts test-unit-js --help",
     "test:unit:watch": "wp-scripts test-unit-js --watch",
