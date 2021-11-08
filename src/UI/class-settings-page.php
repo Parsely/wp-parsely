@@ -400,8 +400,7 @@ final class Settings_Page {
 		$field_args = array(
 			'option_key'       => $field_id,
 			'help_text'        => $h,
-			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-			'select_options'   => get_post_types(),
+			'select_options'   => get_post_types( array( 'public' => true ) ),
 			'requires_recrawl' => true,
 			'label_for'        => Parsely::OPTIONS_KEY . "[$field_id]",
 		);
@@ -420,8 +419,7 @@ final class Settings_Page {
 		$field_args = array(
 			'option_key'       => 'track_page_types',
 			'help_text'        => $h,
-			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-			'select_options'   => get_post_types(),
+			'select_options'   => get_post_types( array( 'public' => true ) ),
 			'requires_recrawl' => true,
 			'label_for'        => Parsely::OPTIONS_KEY . "[$field_id]",
 		);
