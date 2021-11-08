@@ -215,7 +215,6 @@ final class Settings_Page {
 				'repeated_metas' => 'repeated_metas',
 			),
 			'requires_recrawl' => true,
-			'multiple'         => false,
 			'label_for'        => Parsely::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
