@@ -11,12 +11,17 @@
 
 declare(strict_types=1);
 
+namespace Parsely\UI;
+
+use Parsely\Parsely;
+use WP_Widget;
+
 use const Parsely\PARSELY_FILE;
 
 /**
  * This is the class for the recommended widget.
  */
-class Parsely_Recommended_Widget extends WP_Widget {
+class Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the constructor function.
 	 */
@@ -25,7 +30,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			'Parsely_Recommended_Widget',
 			__( 'Parse.ly Recommended Widget', 'wp-parsely' ),
 			array(
-				'classname'   => 'Parsely_Recommended_Widget parsely-recommended-widget-hidden',
+				'classname'   => 'Recommended_Widget parsely-recommended-widget-hidden',
 				'description' => __( 'Display a list of post recommendations, personalized for a visitor or the current post.', 'wp-parsely' ),
 			)
 		);
@@ -104,7 +109,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			$instance['published_within'],
 			$instance['sort'],
 			$instance['boost'],
-			$instance['return_limit']
+			(int) $instance['return_limit']
 		);
 
 		$recommended_widget_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';
@@ -178,7 +183,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		// editable fields: title.
 		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
-		$return_limit        = ! empty( $instance['return_limit'] ) ? $instance['return_limit'] : 5;
+		$return_limit        = ! empty( $instance['return_limit'] ) ? (int) $instance['return_limit'] : 5;
 		$display_direction   = ! empty( $instance['display_direction'] ) ? $instance['display_direction'] : 'vertical';
 		$published_within    = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
 		$sort                = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
@@ -211,7 +216,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>"><?php esc_html_e( 'Number of posts to show (max 20):', 'wp-parsely' ); ?></label>
-			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( (string) $instance['return_limit'] ); ?>" min="1" max="20" class="tiny-text" />
+			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( $instance['return_limit'] ); ?>" min="1" max="20" class="tiny-text" />
 		</p>
 		<p>
 			<fieldset>
@@ -272,8 +277,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	public function update( $new_instance, $old_instance ): array {
 		$instance                        = $old_instance;
 		$instance['title']               = trim( wp_kses_post( $new_instance['title'] ) );
-		$instance['published_within']    = (int) trim( $new_instance['published_within'] );
-		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
+		$instance['published_within']    = is_int( $new_instance['published_within'] ) ? $new_instance['published_within'] : (int) trim( $new_instance['published_within'] );
+		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? (int) $new_instance['return_limit'] : 20;
 		$instance['display_direction']   = trim( $new_instance['display_direction'] );
 		$instance['sort']                = trim( $new_instance['sort'] );
 		$instance['boost']               = trim( $new_instance['boost'] );

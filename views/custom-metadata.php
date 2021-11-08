@@ -9,5 +9,8 @@
  */
 
 declare(strict_types=1);
+
+namespace Parsely;
+
 ?>
 <meta name="parsely-metadata" content="<?php echo esc_attr( $parsely_page['custom_metadata'] ); ?>" />

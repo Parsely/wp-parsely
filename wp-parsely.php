@@ -26,14 +26,14 @@ declare(strict_types=1);
 
 namespace Parsely;
 
-use Parsely;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;
+use Parsely\UI\Admin_Warning;
 use Parsely\UI\Plugins_Actions;
+use Parsely\UI\Recommended_Widget;
 use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
-use Parsely_Recommended_Widget;
 
 if ( class_exists( Parsely::class ) ) {
 	return;
@@ -52,13 +52,16 @@ add_action(
 );
 
 // Until auto-loading happens, we need to include this file for tests as well.
+require __DIR__ . '/src/UI/class-admin-warning.php';
 require __DIR__ . '/src/UI/class-plugins-actions.php';
 require __DIR__ . '/src/UI/class-row-actions.php';
 add_action(
 	'admin_init',
 	function(): void {
-		$GLOBALS['parsely_ui_plugins_actions'] = new Plugins_Actions();
+		$admin_warning = new Admin_Warning( $GLOBALS['parsely'] );
+		$admin_warning->run();
 
+		$GLOBALS['parsely_ui_plugins_actions'] = new Plugins_Actions();
 		$GLOBALS['parsely_ui_plugins_actions']->run();
 
 		$row_actions = new Row_Actions( $GLOBALS['parsely'] );
@@ -75,7 +78,7 @@ add_action(
 	}
 );
 
-require __DIR__ . '/src/class-parsely-recommended-widget.php';
+require __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
@@ -84,7 +87,7 @@ add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_regist
  * @return void
  */
 function parsely_recommended_widget_register(): void {
-	register_widget( Parsely_Recommended_Widget::class );
+	register_widget( Recommended_Widget::class );
 }
 
 require __DIR__ . '/src/Integrations/class-integration.php';

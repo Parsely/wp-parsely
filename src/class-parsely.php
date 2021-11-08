@@ -8,8 +8,10 @@
 
 declare(strict_types=1);
 
-use const Parsely\PARSELY_FILE;
-use const Parsely\PARSELY_VERSION;
+namespace Parsely;
+
+use WP_Post;
+use WP_User;
 
 /**
  * Holds most of the logic for the plugin.
@@ -108,9 +110,6 @@ class Parsely {
 			update_option( self::OPTIONS_KEY, $options );
 		}
 
-		// display warning when plugin hasn't been configured.
-		add_action( 'admin_footer', array( $this, 'display_admin_warning' ) );
-
 		// phpcs:ignore WordPress.WP.CronInterval.CronSchedulesInterval
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 
@@ -152,48 +151,6 @@ class Parsely {
 	}
 
 	/**
-	 * Display the admin warning if needed.
-	 *
-	 * @return void
-	 */
-	public function display_admin_warning(): void {
-		if ( ! $this->should_display_admin_warning() ) {
-			return;
-		}
-
-		$message = sprintf(
-			/* translators: %s: Plugin settings page URL */
-			__( '<strong>The Parse.ly plugin is not active.</strong> You need to <a href="%s">provide your Parse.ly Dash Site ID</a> before things get cooking.', 'wp-parsely' ),
-			esc_url( self::get_settings_url() )
-		);
-		?>
-		<div id="message" class="error"><p><?php echo wp_kses_post( $message ); ?></p></div>
-		<?php
-	}
-
-	/**
-	 * Decide whether the admin display warning should be displayed
-	 *
-	 * @since 2.6.0
-	 *
-	 * @return bool True if the admin warning should be displayed
-	 */
-	private function should_display_admin_warning(): bool {
-		if ( is_network_admin() ) {
-			return false;
-		}
-
-		$options = $this->get_options();
-		return empty( $options['apikey'] );
-	}
-
-	/**
-	 * End the code coverage ignore.
-	 *
-	 * @codeCoverageIgnoreEnd
-	 */
-
-	/**
 	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 *
 	 * @since 3.0.0
@@ -217,21 +174,27 @@ class Parsely {
 		$parsely_options = $this->get_options();
 
 		if (
-				$this->api_key_is_missing() ||
+			$this->api_key_is_missing() ||
 
-				// Chosen not to track logged-in users.
-				( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
+			// Chosen not to track logged-in users.
+			( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
 
-				// 404 pages are not tracked.
-				is_404() ||
+			// 404 pages are not tracked.
+			is_404() ||
 
-				// Search pages are not tracked.
-				is_search()
+			// Search pages are not tracked.
+			is_search()
 		) {
 			return;
 		}
 
 		global $post;
+
+		// We can't construct the metadata without a valid post object.
+		if ( empty( $post ) ) {
+			return;
+		}
+
 		// Assign default values for LD+JSON
 		// TODO: Mapping of an install's post types to Parse.ly post types (namely page/post).
 		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $post );
@@ -341,7 +304,6 @@ class Parsely {
 	}
 
 	/**
-
 	 * Creates parsely metadata object from post metadata.
 	 *
 	 * @param array   $parsely_options parsely_options array.
@@ -581,7 +543,6 @@ class Parsely {
 		}
 	}
 
-
 	/**
 	 * Updates posts with Parsely metadata api in bulk.
 	 *
@@ -780,9 +741,19 @@ class Parsely {
 				'wp-parsely-recommended-widget',
 			)
 		) ) {
-			// Have CloudFlare Rocket Loader ignore these scripts:
-			// https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts-.
-			$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
+			/**
+			 * Filter whether to include the CloudFlare Rocket Loader attribute (`data-cfasync=false`) in the script.
+			 * Only needed if the site being served is behind Cloudflare. Should return false otherwise.
+			 * https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param bool $enabled True if enabled, false if not.
+			 * @param string $handle The script's registered handle.
+			 */
+			if ( apply_filters( 'wp_parsely_enable_cfasync_attribute', false, $handle ) ) {
+				$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
+			}
 		}
 
 		if ( 'wp-parsely-tracker' === $handle ) {
