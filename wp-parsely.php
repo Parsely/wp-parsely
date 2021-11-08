@@ -43,15 +43,15 @@ const PARSELY_VERSION = '3.0.0-alpha';
 const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
-require __DIR__ . '/src/class-tracker.php';
+require __DIR__ . '/src/class-scripts.php';
 add_action(
 	'plugins_loaded',
 	function(): void {
 		$GLOBALS['parsely'] = new Parsely();
 		$GLOBALS['parsely']->run();
 
-		$tracker = new Tracker( $GLOBALS['parsely'] );
-		$tracker->run();
+		$scripts = new Scripts( $GLOBALS['parsely'] );
+		$scripts->run();
 	}
 );
 
