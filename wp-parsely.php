@@ -50,8 +50,8 @@ add_action(
 		$GLOBALS['parsely'] = new Parsely();
 		$GLOBALS['parsely']->run();
 
-		$tracker = new Tracker( $GLOBALS['parsely'] );
-		$tracker->run();
+		$scripts = new Scripts( $GLOBALS['parsely'] );
+		$scripts->run();
 	}
 );
 

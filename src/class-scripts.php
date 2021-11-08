@@ -15,7 +15,7 @@ namespace Parsely;
  * @since 1.0.0
  * @since 3.0.0 Moved from class-parsely to separate file
  */
-class Tracker {
+class Scripts {
 	/**
 	 * Instance of Parsely class.
 	 *

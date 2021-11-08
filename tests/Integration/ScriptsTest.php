@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
-use Parsely\Tracker;
+use Parsely\Scripts;
 use WP_Scripts;
 
 use const Parsely\PARSELY_FILE;
@@ -18,13 +18,13 @@ use const Parsely\PARSELY_FILE;
 /**
  * Parsely Tracker tests.
  */
-final class TrackerTest extends TestCase {
+final class ScriptsTest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var Tracker $tracker Holds the Tracker object
+	 * @var Scripts $scripts Holds the Tracker object
 	 */
-	private static $tracker;
+	private static $scripts;
 
 	/**
 	 * The setUp run before each test
@@ -36,7 +36,7 @@ final class TrackerTest extends TestCase {
 
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		$wp_scripts    = new WP_Scripts();
-		self::$tracker = new Tracker( new Parsely() );
+		self::$scripts = new Scripts( new Parsely() );
 
 		// Set the default options prior to each test.
 		TestCase::set_options();
@@ -45,7 +45,7 @@ final class TrackerTest extends TestCase {
 	/**
 	 * Test JavaScript registrations.
 	 *
-	 * @covers \Parsely\Tracker::register_js
+	 * @covers \Parsely\Scripts::register_js
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
@@ -58,7 +58,7 @@ final class TrackerTest extends TestCase {
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$tracker->register_js();
+		self::$scripts->register_js();
 		$output = ob_get_clean();
 
 		self::assertSame(
@@ -91,15 +91,15 @@ final class TrackerTest extends TestCase {
 	/**
 	 * Test the tracker script enqueue.
 	 *
-	 * @covers \Parsely\Tracker::load_js_tracker
+	 * @covers \Parsely\Scripts::load_js_tracker
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Tracker::register_js
-	 * @uses \Parsely\Tracker::script_loader_tag
+	 * @uses \Parsely\Scripts::register_js
+	 * @uses \Parsely\Scripts::script_loader_tag
 	 * @group insert-js
 	 */
 	public function test_load_js_tracker(): void {
@@ -107,8 +107,8 @@ final class TrackerTest extends TestCase {
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$tracker->register_js();
-		self::$tracker->load_js_tracker();
+		self::$scripts->register_js();
+		self::$scripts->load_js_tracker();
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
@@ -134,15 +134,15 @@ final class TrackerTest extends TestCase {
 	/**
 	 * Test the tracker script enqueue.
 	 *
-	 * @covers \Parsely\Tracker::load_js_tracker
+	 * @covers \Parsely\Scripts::load_js_tracker
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Tracker::register_js
-	 * @uses \Parsely\Tracker::script_loader_tag
+	 * @uses \Parsely\Scripts::register_js
+	 * @uses \Parsely\Scripts::script_loader_tag
 	 * @group insert-js
 	 */
 	public function test_load_js_tracker_with_cloudflare(): void {
@@ -152,8 +152,8 @@ final class TrackerTest extends TestCase {
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$tracker->register_js();
-		self::$tracker->load_js_tracker();
+		self::$scripts->register_js();
+		self::$scripts->load_js_tracker();
 
 		wp_print_scripts();
 		$output = ob_get_clean();
@@ -168,13 +168,13 @@ final class TrackerTest extends TestCase {
 	/**
 	 * Test the API init script enqueue.
 	 *
-	 * @covers \Parsely\Tracker::load_js_api
+	 * @covers \Parsely\Scripts::load_js_api
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Tracker::register_js
+	 * @uses \Parsely\Scripts::register_js
 	 * @group insert-js
 	 */
 	public function test_load_js_api_no_secret(): void {
@@ -182,8 +182,8 @@ final class TrackerTest extends TestCase {
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$tracker->register_js();
-		self::$tracker->load_js_api();
+		self::$scripts->register_js();
+		self::$scripts->load_js_api();
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
@@ -209,14 +209,14 @@ final class TrackerTest extends TestCase {
 	/**
 	 * Test the API init script enqueue.
 	 *
-	 * @covers \Parsely\Tracker::load_js_api
+	 * @covers \Parsely\Scripts::load_js_api
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Tracker::register_js
-	 * @uses \Parsely\Tracker::script_loader_tag
+	 * @uses \Parsely\Scripts::register_js
+	 * @uses \Parsely\Scripts::script_loader_tag
 	 * @group insert-js
 	 */
 	public function test_load_js_api_with_secret(): void {
@@ -224,11 +224,11 @@ final class TrackerTest extends TestCase {
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$tracker->register_js();
+		self::$scripts->register_js();
 
 		self::set_options( array( 'api_secret' => 'hunter2' ) );
 
-		self::$tracker->load_js_api();
+		self::$scripts->load_js_api();
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
@@ -265,7 +265,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	/**
 	 * Make sure users can log in.
 	 *
-	 * @covers \Parsely\Tracker::load_js_tracker
+	 * @covers \Parsely\Scripts::load_js_tracker
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -279,7 +279,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		wp_set_current_user( $new_user );
 
 		ob_start();
-		self::$tracker->load_js_tracker();
+		self::$scripts->load_js_tracker();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
@@ -321,7 +321,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	/**
 	 * Make sure users can log in to more than one site.
 	 *
-	 * @covers \Parsely\Tracker::load_js_tracker
+	 * @covers \Parsely\Scripts::load_js_tracker
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
@@ -329,8 +329,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @uses \Parsely\Parsely::parsely_is_user_logged_in
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Tracker::register_js
-	 * @uses \Parsely\Tracker::script_loader_tag
+	 * @uses \Parsely\Scripts::register_js
+	 * @uses \Parsely\Scripts::script_loader_tag
 	 * @group insert-js
 	 * @group settings
 	 */
@@ -363,8 +363,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		self::assertFalse( is_user_member_of_blog( $new_user, $second_blog ) );
 
 		ob_start();
-		self::$tracker->register_js();
-		self::$tracker->load_js_tracker();
+		self::$scripts->register_js();
+		self::$scripts->load_js_tracker();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
@@ -394,8 +394,8 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		self::assertFalse( is_user_member_of_blog( $new_user, get_current_blog_id() ) );
 
 		ob_start();
-		self::$tracker->register_js();
-		self::$tracker->load_js_tracker();
+		self::$scripts->register_js();
+		self::$scripts->load_js_tracker();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
@@ -423,7 +423,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * Test the wp_parsely_load_js_tracker filter
 	 * When it returns false, the tracking script should not be enqueued.
 	 *
-	 * @covers \Parsely\Tracker::load_js_tracker
+	 * @covers \Parsely\Scripts::load_js_tracker
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -437,7 +437,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$tracker->load_js_tracker();
+		self::$scripts->load_js_tracker();
 		$intermediate_output = ob_get_contents();
 
 		self::assertSame(
