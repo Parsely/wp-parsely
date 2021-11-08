@@ -672,10 +672,8 @@ final class Settings_Page {
 		$name           = $args['option_key'];
 		$select_options = $args['select_options'];
 		$multiple       = $args['multiple'] ?? false;
-		// Maybe we can remove it
-		$selected = $options[ $name ] ?? null;
-		$id       = esc_attr( $name );
-		$name     = Parsely::OPTIONS_KEY . "[$id]";
+		$id             = esc_attr( $name );
+		$name           = Parsely::OPTIONS_KEY . "[$id]";
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
@@ -733,7 +731,7 @@ final class Settings_Page {
 
 		$has_help_text    = isset( $args['help_text'] ) ? ' data-has-help-text="true"' : '';
 		$requires_recrawl = isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ? ' data-requires-recrawl="true"' : '';
-		?>
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static text attribute key-value. ?>
 		<fieldset class="parsely-form-controls" <?php echo $has_help_text . $requires_recrawl; ?>>
 			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
 			<p>
@@ -756,6 +754,12 @@ final class Settings_Page {
 		<?php
 	}
 
+	/**
+	 * Prints out multiple selection in the form of checkboxes
+	 *
+	 * @param array $args The arguments for the checkboxes.
+	 * @return void
+	 */
 	public function print_multiple_checkboxes( array $args ): void {
 		$options        = $this->parsely->get_options();
 		$select_options = $args['select_options'];
@@ -773,7 +777,7 @@ final class Settings_Page {
 			$selected = in_array( $val, $options[ $args['option_key'] ], true );
 			echo sprintf( "<p><input type='checkbox' name='%s[]' id='%s[]' value='%s' ", esc_attr( $name ), esc_attr( $name ), esc_attr( $key ) );
 			echo checked( true === $selected, true, false );
-			echo sprintf( " /> <label for='%s_%s'>%s</label></p>", esc_attr( $id ), esc_attr( $key ), esc_html__( $val, 'wp-parsely' ) );
+			echo sprintf( " /> <label for='%s_%s'>%s</label></p>", esc_attr( $id ), esc_attr( $key ), esc_html( $val ) );
 		}
 
 		if ( isset( $args['help_text'] ) ) {
