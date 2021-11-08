@@ -1,6 +1,6 @@
 <?php
 /**
- * Tracker class
+ * Scripts class
  *
  * @package 3.0.0
  */
@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Parsely;
 
 /**
- * Inserts the tracking code into the site's front-end
+ * Inserts the scripts and tracking code into the site's front-end
  *
  * @since 1.0.0
  * @since 3.0.0 Moved from class-parsely to separate file
@@ -33,7 +33,7 @@ class Scripts {
 	}
 
 	/**
-	 * Register js trackers.
+	 * Register js scripts.
 	 *
 	 * @since 3.0.0
 	 *

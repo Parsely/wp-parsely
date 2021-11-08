@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely Tracker tests.
+ * Parsely Scripts tests.
  *
  * @package Parsely\Tests
  */
