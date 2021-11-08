@@ -424,7 +424,7 @@ final class Settings_Page {
 			// filter WordPress taxonomies under the hood that should not appear in dropdown.
 			'select_options'   => get_post_types(),
 			'requires_recrawl' => true,
-			'label_for'        => Parsely::OPTIONS_KEY . "[$field_id][]",
+			'label_for'        => Parsely::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
 			'track_page_types',
