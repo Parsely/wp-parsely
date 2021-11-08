@@ -671,7 +671,7 @@ final class Settings_Page {
 		$options        = $this->parsely->get_options();
 		$name           = $args['option_key'];
 		$select_options = $args['select_options'];
-		$multiple       = $args['multiple'] ?? false;
+		$selected       = $options[ $name ] ?? null;
 		$id             = esc_attr( $name );
 		$name           = Parsely::OPTIONS_KEY . "[$id]";
 
@@ -682,23 +682,11 @@ final class Settings_Page {
 			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
 		}
 
-		if ( $multiple ) {
-			echo sprintf( "<select multiple='multiple' name='%s[]'id='%s'", esc_attr( $name ), esc_attr( $name ) );
-		} else {
-			echo sprintf( "<select name='%s' id='%s'", esc_attr( $name ), esc_attr( $name ) );
-		}
-
-		echo '>';
+		echo sprintf( "<select name='%s' id='%s'>", esc_attr( $name ), esc_attr( $name ) );
 
 		foreach ( $select_options as $key => $val ) {
 			echo '<option value="' . esc_attr( $key ) . '" ';
-
-			if ( $multiple ) {
-				$selected = in_array( $val, $options[ $args['option_key'] ], true );
-				echo selected( $selected, true, false ) . '>';
-			} else {
-				echo selected( $selected, $key, false ) . '>';
-			}
+			echo selected( $selected, $key, false ) . '>';
 			echo esc_html( $val );
 			echo '</option>';
 		}
