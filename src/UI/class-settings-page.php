@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\UI;
 
-use Parsely;
+use Parsely\Parsely;
 use const Parsely\PARSELY_FILE;
 
 /**
@@ -403,13 +403,12 @@ final class Settings_Page {
 			// filter WordPress taxonomies under the hood that should not appear in dropdown.
 			'select_options'   => get_post_types(),
 			'requires_recrawl' => true,
-			'multiple'         => true,
 			'label_for'        => Parsely::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
 			$field_id,
 			__( 'Post Types To Track', 'wp-parsely' ),
-			array( $this, 'print_select_tag' ),
+			array( $this, 'print_multiple_checkboxes' ),
 			Parsely::MENU_SLUG,
 			'optional_settings',
 			$field_args
@@ -424,8 +423,7 @@ final class Settings_Page {
 			// filter WordPress taxonomies under the hood that should not appear in dropdown.
 			'select_options'   => get_post_types(),
 			'requires_recrawl' => true,
-			'multiple'         => true,
-			'label_for'        => Parsely::OPTIONS_KEY . "[$field_id]",
+			'label_for'        => Parsely::OPTIONS_KEY . "[$field_id][]",
 		);
 		add_settings_field(
 			'track_page_types',
@@ -759,9 +757,8 @@ final class Settings_Page {
 
 	public function print_multiple_checkboxes( array $args ): void {
 		$options = $this->parsely->get_options();
-		$name    = $args['option_key'];
 		$select_options = $args['select_options'];
-		$id      = esc_attr( $name );
+		$id      = esc_attr( $args['option_key'] );
 		$name    = Parsely::OPTIONS_KEY . "[$id]";
 
 		if ( isset( $args['help_text'] ) ) {
@@ -773,9 +770,9 @@ final class Settings_Page {
 
 		foreach ( $select_options as $key => $val ) {
 			$selected = in_array( $val, $options[ $args['option_key'] ], true );
-			echo sprintf( "<input type='checkbox' name='%s' id='%s_%s' value='%s' ", esc_attr( $name ), esc_attr( $id ), esc_attr( $key ), esc_attr( $key ) );
+			echo sprintf( "<p><input type='checkbox' name='%s[]' id='%s[]' value='%s' ", esc_attr( $name ), esc_attr( $name ), esc_attr( $key ) );
 			echo checked( true === $selected, true, false );
-			echo sprintf( " /> <label for='%s_%s'>%s</label><br />", esc_attr( $id ), esc_attr($key), esc_html__( $val, 'wp-parsely' ) );
+			echo sprintf( " /> <label for='%s_%s'>%s</label></p>", esc_attr( $id ), esc_attr($key), esc_html__( $val, 'wp-parsely' ) );
 		}
 
 		if ( isset( $args['help_text'] ) ) {
