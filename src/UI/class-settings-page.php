@@ -673,9 +673,9 @@ final class Settings_Page {
 		$select_options = $args['select_options'];
 		$multiple       = $args['multiple'] ?? false;
 		// Maybe we can remove it
-		$selected       = $options[ $name ] ?? null;
-		$id             = esc_attr( $name );
-		$name           = Parsely::OPTIONS_KEY . "[$id]";
+		$selected = $options[ $name ] ?? null;
+		$id       = esc_attr( $name );
+		$name     = Parsely::OPTIONS_KEY . "[$id]";
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
@@ -757,10 +757,10 @@ final class Settings_Page {
 	}
 
 	public function print_multiple_checkboxes( array $args ): void {
-		$options = $this->parsely->get_options();
+		$options        = $this->parsely->get_options();
 		$select_options = $args['select_options'];
-		$id      = esc_attr( $args['option_key'] );
-		$name    = Parsely::OPTIONS_KEY . "[$id]";
+		$id             = esc_attr( $args['option_key'] );
+		$name           = Parsely::OPTIONS_KEY . "[$id]";
 
 		if ( isset( $args['help_text'] ) ) {
 			echo '<div class="parsely-form-controls" data-has-help-text="true">';
@@ -773,7 +773,7 @@ final class Settings_Page {
 			$selected = in_array( $val, $options[ $args['option_key'] ], true );
 			echo sprintf( "<p><input type='checkbox' name='%s[]' id='%s[]' value='%s' ", esc_attr( $name ), esc_attr( $name ), esc_attr( $key ) );
 			echo checked( true === $selected, true, false );
-			echo sprintf( " /> <label for='%s_%s'>%s</label></p>", esc_attr( $id ), esc_attr($key), esc_html__( $val, 'wp-parsely' ) );
+			echo sprintf( " /> <label for='%s_%s'>%s</label></p>", esc_attr( $id ), esc_attr( $key ), esc_html__( $val, 'wp-parsely' ) );
 		}
 
 		if ( isset( $args['help_text'] ) ) {
