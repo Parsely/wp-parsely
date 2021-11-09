@@ -60,7 +60,7 @@ class Scripts {
 		}
 
 		$tracker_url = 'https://cdn.parsely.com/keys/' . $parsely_options['apikey'] . '/p.js';
-		$tracker_url = esc_url($tracker_url);
+		$tracker_url = esc_url( $tracker_url );
 
 		wp_register_script(
 			'wp-parsely-tracker',
