@@ -36,13 +36,11 @@ class Amp implements Integration {
 	 *
 	 * This is needed to make it easier to mock whether the function exists ot not during tests.
 	 *
-	 * @codeCoverageIgnore
-	 *
 	 * @since 2.6.0
 	 *
 	 * @return bool True is an AMP request, false otherwise.
 	 */
-	public function is_amp_request(): bool {
+	private function is_amp_request(): bool {
 		return function_exists( 'amp_is_request' ) && amp_is_request();
 	}
 
@@ -53,7 +51,7 @@ class Amp implements Integration {
 	 *
 	 * @return bool True is an AMP request and not disabled, false otherwise.
 	 */
-	public function can_handle_amp_request(): bool {
+	private function can_handle_amp_request(): bool {
 		$options = get_option( Parsely::OPTIONS_KEY );
 
 		return $this->is_amp_request() && is_array( $options ) && ! $options['disable_amp'];
