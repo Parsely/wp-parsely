@@ -16,13 +16,13 @@ use WP_Scripts;
 use const Parsely\PARSELY_FILE;
 
 /**
- * Parsely Tracker tests.
+ * Parsely Scripts tests.
  */
 final class ScriptsTest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var Scripts $scripts Holds the Tracker object
+	 * @var Scripts $scripts Holds the Scripts object
 	 */
 	private static $scripts;
 
