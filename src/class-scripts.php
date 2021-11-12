@@ -2,7 +2,8 @@
 /**
  * Scripts class
  *
- * @package 3.0.0
+ * @package Parsely
+ * @since 3.0.0
  */
 
 declare(strict_types=1);
