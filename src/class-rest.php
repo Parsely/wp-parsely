@@ -44,7 +44,16 @@ class Rest {
 	 * @return void
 	 */
 	public function run(): void {
-		add_action( 'rest_api_init', array( $this, 'register_parsely_meta' ) );
+		/**
+		 * Filter whether REST API support is enabled or not.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param bool $enabled True if enabled, false if not.
+		 */
+		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) ) {
+			add_action( 'rest_api_init', array( $this, 'register_parsely_meta' ) );
+		}
 	}
 
 	/**

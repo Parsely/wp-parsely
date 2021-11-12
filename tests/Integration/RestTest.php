@@ -45,4 +45,18 @@ final class RestTest extends TestCase {
 			has_action( 'rest_api_init', array( self::$rest, 'register_parsely_meta' ) )
 		);
 	}
+
+	/**
+	 * Test whether the logic has been enqueued in the `rest_api_init` hook with a filter that disables it.
+	 *
+	 * @covers \Parsely\Rest\run;
+	 */
+	public function test_register_enqueued_rest_init_filter() {
+		add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
+		self::$rest->run();
+		$this->assertSame(
+			false,
+			has_action( 'rest_api_init', array( self::$rest, 'register_parsely_meta' ) )
+		);
+	}
 }
