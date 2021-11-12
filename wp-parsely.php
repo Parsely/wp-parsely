@@ -43,11 +43,15 @@ const PARSELY_VERSION = '3.0.0-alpha';
 const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
+require __DIR__ . '/src/class-rest.php';
 add_action(
 	'plugins_loaded',
 	function(): void {
 		$GLOBALS['parsely'] = new Parsely();
 		$GLOBALS['parsely']->run();
+
+		$rest = new Rest( $GLOBALS['parsely'] );
+		$rest->run();
 	}
 );
 
