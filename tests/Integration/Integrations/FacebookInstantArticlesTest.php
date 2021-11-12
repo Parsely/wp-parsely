@@ -17,7 +17,9 @@ use Parsely\Tests\Integration\TestCase;
  * Test Facebook Instant Articles integration.
  */
 final class FacebookInstantArticlesTest extends TestCase {
-	public const REGISTRY_KEY = 'parsely-analytics-for-wordpress';
+	// This values should mirror the values in `class-facebook-instant-articles.php`
+	private const REGISTRY_IDENTIFIER   = 'parsely-analytics-for-wordpress';
+	private const REGISTRY_DISPLAY_NAME = 'Parse.ly Analytics';
 
 	/**
 	 * Check the integration only happens when a condition is met.
@@ -67,12 +69,11 @@ final class FacebookInstantArticlesTest extends TestCase {
 		// Check for no registration when there is no API key saved.
 		$fbia->insert_parsely_tracking( $registry );
 
-		self::assertArrayNotHasKey( Facebook_Instant_Articles::REGISTRY_IDENTIFIER, $registry );
+		self::assertArrayNotHasKey( self::REGISTRY_IDENTIFIER, $registry );
 
 		// Now set API key.
 		$fake_api_key = 'my-api-key.com';
 		self::set_options( array( 'apikey' => $fake_api_key ) );
-
 
 		$fbia->insert_parsely_tracking( $registry );
 
@@ -82,15 +83,15 @@ final class FacebookInstantArticlesTest extends TestCase {
 	/**
 	 * Check registry has the integration identifier as a key, that display name is correct, and payload is correct.
 	 *
-	 * @param array  $registry Representation of Facebook Instant Articles registry.
+	 * @param array $registry Representation of Facebook Instant Articles registry.
 	 * @param string $api_key  API key.
 	 */
-	public static function assertParselyWasAddedToRegistryCorrectly( $registry, $api_key ): void {
-		self::assertArrayHasKey( Facebook_Instant_Articles::REGISTRY_IDENTIFIER, $registry );
-		self::assertSame( Facebook_Instant_Articles::REGISTRY_DISPLAY_NAME, $registry[ Facebook_Instant_Articles::REGISTRY_IDENTIFIER ]['name'] );
+	public static function assertParselyWasAddedToRegistryCorrectly( array $registry, string $api_key ): void {
+		self::assertArrayHasKey( self::REGISTRY_IDENTIFIER, $registry );
+		self::assertSame( self::REGISTRY_DISPLAY_NAME, $registry[ self::REGISTRY_IDENTIFIER ]['name'] );
 
 		// Check embed code contains a script (don't test for specifics), and the API key.
-		self::assertStringContainsString( '<script>', $registry[ Facebook_Instant_Articles::REGISTRY_IDENTIFIER ]['payload'] );
-		self::assertStringContainsString( $api_key, $registry[ Facebook_Instant_Articles::REGISTRY_IDENTIFIER ]['payload'] );
+		self::assertStringContainsString( '<script>', $registry[ self::REGISTRY_IDENTIFIER ]['payload'] );
+		self::assertStringContainsString( $api_key, $registry[ self::REGISTRY_IDENTIFIER ]['payload'] );
 	}
 }
