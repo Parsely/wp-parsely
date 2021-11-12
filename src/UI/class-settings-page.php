@@ -215,7 +215,6 @@ final class Settings_Page {
 				'repeated_metas' => 'repeated_metas',
 			),
 			'requires_recrawl' => true,
-			'multiple'         => false,
 			'label_for'        => Parsely::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
@@ -401,16 +400,14 @@ final class Settings_Page {
 		$field_args = array(
 			'option_key'       => $field_id,
 			'help_text'        => $h,
-			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-			'select_options'   => get_post_types(),
+			'select_options'   => get_post_types( array( 'public' => true ) ),
 			'requires_recrawl' => true,
-			'multiple'         => true,
 			'label_for'        => Parsely::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
 			$field_id,
 			__( 'Post Types To Track', 'wp-parsely' ),
-			array( $this, 'print_select_tag' ),
+			array( $this, 'print_multiple_checkboxes' ),
 			Parsely::MENU_SLUG,
 			'optional_settings',
 			$field_args
@@ -422,16 +419,14 @@ final class Settings_Page {
 		$field_args = array(
 			'option_key'       => 'track_page_types',
 			'help_text'        => $h,
-			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-			'select_options'   => get_post_types(),
+			'select_options'   => get_post_types( array( 'public' => true ) ),
 			'requires_recrawl' => true,
-			'multiple'         => true,
 			'label_for'        => Parsely::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
 			'track_page_types',
 			__( 'Page Types To Track', 'wp-parsely' ),
-			array( $this, 'print_select_tag' ),
+			array( $this, 'print_multiple_checkboxes' ),
 			Parsely::MENU_SLUG,
 			'optional_settings',
 			$field_args
@@ -673,7 +668,6 @@ final class Settings_Page {
 		$options        = $this->parsely->get_options();
 		$name           = $args['option_key'];
 		$select_options = $args['select_options'];
-		$multiple       = $args['multiple'] ?? false;
 		$selected       = $options[ $name ] ?? null;
 		$id             = esc_attr( $name );
 		$name           = Parsely::OPTIONS_KEY . "[$id]";
@@ -685,23 +679,11 @@ final class Settings_Page {
 			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
 		}
 
-		if ( $multiple ) {
-			echo sprintf( "<select multiple='multiple' name='%s[]'id='%s'", esc_attr( $name ), esc_attr( $name ) );
-		} else {
-			echo sprintf( "<select name='%s' id='%s'", esc_attr( $name ), esc_attr( $name ) );
-		}
-
-		echo '>';
+		echo sprintf( "<select name='%s' id='%s'>", esc_attr( $name ), esc_attr( $name ) );
 
 		foreach ( $select_options as $key => $val ) {
 			echo '<option value="' . esc_attr( $key ) . '" ';
-
-			if ( $multiple ) {
-				$selected = in_array( $val, $options[ $args['option_key'] ], true );
-				echo selected( $selected, true, false ) . '>';
-			} else {
-				echo selected( $selected, $key, false ) . '>';
-			}
+			echo selected( $selected, $key, false ) . '>';
 			echo esc_html( $val );
 			echo '</option>';
 		}
@@ -755,6 +737,38 @@ final class Settings_Page {
 			?>
 		</fieldset>
 		<?php
+	}
+
+	/**
+	 * Prints out multiple selection in the form of checkboxes
+	 *
+	 * @param array $args The arguments for the checkboxes.
+	 * @return void
+	 */
+	public function print_multiple_checkboxes( array $args ): void {
+		$options        = $this->parsely->get_options();
+		$select_options = $args['select_options'];
+		$id             = esc_attr( $args['option_key'] );
+		$name           = Parsely::OPTIONS_KEY . "[$id]";
+
+		if ( isset( $args['help_text'] ) ) {
+			echo '<div class="parsely-form-controls" data-has-help-text="true">';
+		}
+		if ( isset( $args['requires_recrawl'] ) && true === $args['requires_recrawl'] ) {
+			echo '<div class="parsely-form-controls" data-requires-recrawl="true">';
+		}
+
+		foreach ( $select_options as $key => $val ) {
+			$selected = in_array( $val, $options[ $args['option_key'] ], true );
+			echo sprintf( "<p><input type='checkbox' name='%s[]' id='%s' value='%s' ", esc_attr( $name ), esc_attr( $name ), esc_attr( $key ) );
+			echo checked( true === $selected, true, false );
+			echo sprintf( " /> <label for='%s'>%s</label></p>", esc_attr( $name ), esc_attr( $val ) );
+		}
+
+		if ( isset( $args['help_text'] ) ) {
+			echo '<div class="help-text"><p class="description">' . esc_html( $args['help_text'] ) . '</p></div>';
+		}
+		echo '</div>';
 	}
 
 	/**

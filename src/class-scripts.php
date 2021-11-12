@@ -2,7 +2,8 @@
 /**
  * Scripts class
  *
- * @package 3.0.0
+ * @package Parsely
+ * @since 3.0.0
  */
 
 declare(strict_types=1);
@@ -60,9 +61,12 @@ class Scripts {
 			return;
 		}
 
+		$tracker_url = 'https://cdn.parsely.com/keys/' . $parsely_options['apikey'] . '/p.js';
+		$tracker_url = esc_url( $tracker_url );
+
 		wp_register_script(
 			'wp-parsely-tracker',
-			'https://cdn.parsely.com/keys/' . $parsely_options['apikey'] . '/p.js',
+			$tracker_url,
 			array(),
 			Parsely::get_asset_cache_buster(),
 			true
