@@ -64,6 +64,8 @@ npm run dev:stop
 
 This will start up an environment in `localhost:8888`, running in the background.
 
+To develop for WordPress VIP sites, we recommend using [the WordPress VIP dev-env](https://docs.wpvip.com/technical-references/vip-local-development-environment/).
+
 ## Frequently Asked Questions
 
 ### Where do I find my Site ID?
