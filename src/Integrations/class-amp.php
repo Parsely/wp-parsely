@@ -40,7 +40,7 @@ class Amp implements Integration {
 	 *
 	 * @return bool True is an AMP request, false otherwise.
 	 */
-	private function is_amp_request(): bool {
+	public function is_amp_request(): bool {
 		return function_exists( 'amp_is_request' ) && amp_is_request();
 	}
 
@@ -51,7 +51,7 @@ class Amp implements Integration {
 	 *
 	 * @return bool True is an AMP request and not disabled, false otherwise.
 	 */
-	private function can_handle_amp_request(): bool {
+	public function can_handle_amp_request(): bool {
 		$options = get_option( Parsely::OPTIONS_KEY );
 
 		return $this->is_amp_request() && is_array( $options ) && ! $options['disable_amp'];
