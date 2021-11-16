@@ -17,7 +17,7 @@ use Parsely\Tests\Integration\TestCase;
  * Test Facebook Instant Articles integration.
  */
 final class FacebookInstantArticlesTest extends TestCase {
-	// This values should mirror the values in `class-facebook-instant-articles.php`
+	// This values should mirror the values in `class-facebook-instant-articles.php`.
 	private const REGISTRY_IDENTIFIER   = 'parsely-analytics-for-wordpress';
 	private const REGISTRY_DISPLAY_NAME = 'Parse.ly Analytics';
 
@@ -83,7 +83,7 @@ final class FacebookInstantArticlesTest extends TestCase {
 	/**
 	 * Check registry has the integration identifier as a key, that display name is correct, and payload is correct.
 	 *
-	 * @param array $registry Representation of Facebook Instant Articles registry.
+	 * @param array  $registry Representation of Facebook Instant Articles registry.
 	 * @param string $api_key  API key.
 	 */
 	public static function assertParselyWasAddedToRegistryCorrectly( array $registry, string $api_key ): void {
