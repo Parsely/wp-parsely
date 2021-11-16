@@ -44,6 +44,7 @@ const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
 require __DIR__ . '/src/class-rest.php';
+require __DIR__ . '/src/class-scripts.php';
 add_action(
 	'plugins_loaded',
 	function(): void {
@@ -52,6 +53,9 @@ add_action(
 
 		$rest = new Rest( $GLOBALS['parsely'] );
 		$rest->run();
+
+		$scripts = new Scripts( $GLOBALS['parsely'] );
+		$scripts->run();
 	}
 );
 
