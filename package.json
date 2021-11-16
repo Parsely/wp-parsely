@@ -4,12 +4,14 @@
     "test": "tests"
   },
   "engines": {
-    "node": ">=14",
+    "node": ">=16",
     "npm": ">=7"
   },
   "scripts": {
     "build": "wp-scripts build",
     "start": "wp-scripts start",
+	"dev:start": "wp-env start",
+	"dev:stop": "wp-env stop",
     "test": "npm run test:unit",
     "test:e2e": "wp-scripts test-e2e",
     "test:e2e:debug": "wp-scripts --inspect-brk test-e2e --puppeteer-devtools",
@@ -35,6 +37,7 @@
   ],
   "devDependencies": {
     "@wordpress/e2e-test-utils": "^5.4.8",
+    "@wordpress/env": "^4.1.3",
     "@wordpress/eslint-plugin": "^9.3.0",
     "@wordpress/scripts": "^19.2.1",
     "prettier": "^2.4.1"
