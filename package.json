@@ -10,8 +10,8 @@
   "scripts": {
     "build": "wp-scripts build",
     "start": "wp-scripts start",
-	"dev:start": "wp-env start",
-	"dev:stop": "wp-env stop",
+    "dev:start": "wp-env start",
+    "dev:stop": "wp-env stop",
     "test": "npm run test:unit",
     "test:e2e": "wp-scripts test-e2e",
     "test:e2e:debug": "wp-scripts --inspect-brk test-e2e --puppeteer-devtools",
