@@ -70,7 +70,15 @@ final class RestTest extends TestCase {
 
 		self::$rest->register_parsely_meta();
 
-		$this->assertEquals( array( 'get_callback' ), array_keys( $wp_rest_additional_fields['post']['parsely-meta'] ) );
-		$this->assertEquals( array( 'get_callback' ), array_keys( $wp_rest_additional_fields['page']['parsely-meta'] ) );
+		$expected_fields = array( 'get_callback', 'update_callback', 'schema' );
+
+		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['post']['parsely-meta'] ) );
+		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['page']['parsely-meta'] ) );
+
+		$this->assertNull( $wp_rest_additional_fields['post']['parsely-meta']['update_callback'] );
+		$this->assertNull( $wp_rest_additional_fields['page']['parsely-meta']['update_callback'] );
+
+		$this->assertNull( $wp_rest_additional_fields['post']['parsely-meta']['schema'] );
+		$this->assertNull( $wp_rest_additional_fields['page']['parsely-meta']['schema'] );
 	}
 }
