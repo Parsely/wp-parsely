@@ -59,4 +59,18 @@ final class RestTest extends TestCase {
 			has_action( 'rest_api_init', array( self::$rest, 'register_parsely_meta' ) )
 		);
 	}
+
+	/**
+	 * Test that the REST fields are registered to WordPress REST API.
+	 *
+	 * @covers \Parsely\Rest\register_parsely_meta
+	 */
+	public function test_register_parsely_meta_registers_fields() {
+		global $wp_rest_additional_fields;
+
+		self::$rest->register_parsely_meta();
+
+		$this->assertTrue( isset( $wp_rest_additional_fields['post']['parsely-meta'] ) );
+		$this->assertTrue( isset( $wp_rest_additional_fields['page']['parsely-meta'] ) );
+	}
 }
