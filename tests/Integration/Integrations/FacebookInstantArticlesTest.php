@@ -48,8 +48,8 @@ final class FacebookInstantArticlesTest extends TestCase {
 		self::$fbia = new Facebook_Instant_Articles();
 		$reflect    = new ReflectionClass( self::$fbia );
 
-		self::$registry_identifier   = $reflect->getReflectionConstant( 'REGISTRY_IDENTIFIER' );
-		self::$registry_display_name = $reflect->getReflectionConstant( 'REGISTRY_DISPLAY_NAME' );
+		self::$registry_identifier   = $reflect->getReflectionConstant( 'REGISTRY_IDENTIFIER' )->getValue();
+		self::$registry_display_name = $reflect->getReflectionConstant( 'REGISTRY_DISPLAY_NAME' )->getValue();
 	}
 
 	/**
@@ -97,7 +97,7 @@ final class FacebookInstantArticlesTest extends TestCase {
 		// Check for no registration when there is no API key saved.
 		self::$fbia->insert_parsely_tracking( $registry );
 
-		self::assertArrayNotHasKey( 'parsely-analytics-for-wordpress', $registry );
+		self::assertArrayNotHasKey( self::$registry_identifier, $registry );
 
 		// Now set API key.
 		$fake_api_key = 'my-api-key.com';
