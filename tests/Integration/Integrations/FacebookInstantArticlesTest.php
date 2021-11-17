@@ -97,7 +97,7 @@ final class FacebookInstantArticlesTest extends TestCase {
 		// Check for no registration when there is no API key saved.
 		self::$fbia->insert_parsely_tracking( $registry );
 
-		self::assertArrayNotHasKey( self::$registry_identifier, $registry );
+		self::assertArrayNotHasKey( 'parsely-analytics-for-wordpress', $registry );
 
 		// Now set API key.
 		$fake_api_key = 'my-api-key.com';
