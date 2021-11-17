@@ -45,7 +45,7 @@ final class ScriptsTest extends TestCase {
 	/**
 	 * Test JavaScript registrations.
 	 *
-	 * @covers \Parsely\Scripts::register_js
+	 * @covers \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
@@ -53,18 +53,18 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group insert-js
 	 */
-	public function test_parsely_register_js(): void {
+	public function test_parsely_register_scripts(): void {
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$scripts->register_js();
+		self::$scripts->register_scripts();
 		$output = ob_get_clean();
 
 		self::assertSame(
 			'',
 			$output,
-			'Failed to confirm nothing was printed by register_js()'
+			'Failed to confirm nothing was printed by register_scripts()'
 		);
 
 		self::assertTrue(
@@ -91,29 +91,29 @@ final class ScriptsTest extends TestCase {
 	/**
 	 * Test the tracker script enqueue.
 	 *
-	 * @covers \Parsely\Scripts::load_js_tracker
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Scripts::register_js
+	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
 	 * @group insert-js
 	 */
-	public function test_load_js_tracker(): void {
+	public function test_enqueue_js_tracker(): void {
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$scripts->register_js();
-		self::$scripts->load_js_tracker();
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by load_js_tracker()'
+			'Failed to confirm scripts were not printed by enqueue_js_tracker()'
 		);
 
 		self::assertTrue(
@@ -134,26 +134,26 @@ final class ScriptsTest extends TestCase {
 	/**
 	 * Test the tracker script enqueue.
 	 *
-	 * @covers \Parsely\Scripts::load_js_tracker
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Scripts::register_js
+	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
 	 * @group insert-js
 	 */
-	public function test_load_js_tracker_with_cloudflare(): void {
+	public function test_enqueue_js_tracker_with_cloudflare(): void {
 		add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$scripts->register_js();
-		self::$scripts->load_js_tracker();
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
 
 		wp_print_scripts();
 		$output = ob_get_clean();
@@ -168,27 +168,27 @@ final class ScriptsTest extends TestCase {
 	/**
 	 * Test the API init script enqueue.
 	 *
-	 * @covers \Parsely\Scripts::load_js_api
+	 * @covers \Parsely\Scripts::enqueue_js_api
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Scripts::register_js
+	 * @uses \Parsely\Scripts::register_scripts
 	 * @group insert-js
 	 */
-	public function test_load_js_api_no_secret(): void {
+	public function test_enqueue_js_api_no_secret(): void {
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$scripts->register_js();
-		self::$scripts->load_js_api();
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_api();
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by load_js_api()'
+			'Failed to confirm scripts were not printed by enqueue_js_api()'
 		);
 
 		self::assertFalse(
@@ -209,31 +209,31 @@ final class ScriptsTest extends TestCase {
 	/**
 	 * Test the API init script enqueue.
 	 *
-	 * @covers \Parsely\Scripts::load_js_api
+	 * @covers \Parsely\Scripts::enqueue_js_api
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Scripts::register_js
+	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
 	 * @group insert-js
 	 */
-	public function test_load_js_api_with_secret(): void {
+	public function test_enqueue_js_api_with_secret(): void {
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$scripts->register_js();
+		self::$scripts->register_scripts();
 
 		self::set_options( array( 'api_secret' => 'hunter2' ) );
 
-		self::$scripts->load_js_api();
+		self::$scripts->enqueue_js_api();
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by load_js_api()'
+			'Failed to confirm scripts were not printed by enqueue_js_api()'
 		);
 
 		self::assertTrue(
@@ -265,7 +265,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	/**
 	 * Make sure users can log in.
 	 *
-	 * @covers \Parsely\Scripts::load_js_tracker
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -279,13 +279,13 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		wp_set_current_user( $new_user );
 
 		ob_start();
-		self::$scripts->load_js_tracker();
+		self::$scripts->enqueue_js_tracker();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by load_js_tracker()'
+			'Failed to confirm scripts were not printed by enqueue_js_tracker()'
 		);
 
 		self::assertFalse(
@@ -321,7 +321,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	/**
 	 * Make sure users can log in to more than one site.
 	 *
-	 * @covers \Parsely\Scripts::load_js_tracker
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
@@ -329,7 +329,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @uses \Parsely\Parsely::parsely_is_user_logged_in
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Scripts::register_js
+	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
 	 * @group insert-js
 	 * @group settings
@@ -363,14 +363,14 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		self::assertFalse( is_user_member_of_blog( $new_user, $second_blog ) );
 
 		ob_start();
-		self::$scripts->register_js();
-		self::$scripts->load_js_tracker();
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by load_js_tracker()'
+			'Failed to confirm scripts were not printed by enqueue_js_tracker()'
 		);
 
 		self::assertFalse(
@@ -394,14 +394,14 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		self::assertFalse( is_user_member_of_blog( $new_user, get_current_blog_id() ) );
 
 		ob_start();
-		self::$scripts->register_js();
-		self::$scripts->load_js_tracker();
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
 
 		$intermediate_output = ob_get_contents();
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by load_js_tracker()'
+			'Failed to confirm scripts were not printed by enqueue_js_tracker()'
 		);
 
 		self::assertTrue(
@@ -420,30 +420,30 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	}
 
 	/**
-	 * Test the wp_parsely_load_js_tracker filter
+	 * Test the wp_parsely_enqueue_js_tracker filter
 	 * When it returns false, the tracking script should not be enqueued.
 	 *
-	 * @covers \Parsely\Scripts::load_js_tracker
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 */
-	public function test_load_js_tracker_filter(): void {
-		add_filter( 'wp_parsely_load_js_tracker', '__return_false' );
+	public function test_enqueue_js_tracker_filter(): void {
+		add_filter( 'wp_parsely_enqueue_js_tracker', '__return_false' );
 
 		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
-		self::$scripts->load_js_tracker();
+		self::$scripts->enqueue_js_tracker();
 		$intermediate_output = ob_get_contents();
 
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by load_js_tracker()'
+			'Failed to confirm scripts were not printed by enqueue_js_tracker()'
 		);
 
 		wp_print_scripts();

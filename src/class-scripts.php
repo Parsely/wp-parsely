@@ -41,19 +41,20 @@ class Scripts {
 	 * @return void
 	 */
 	public function run(): void {
-		add_action( 'init', array( $this, 'register_js' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'load_js_api' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'load_js_tracker' ) );
+		add_action( 'init', array( $this, 'register_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_api' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_tracker' ) );
 	}
 
 	/**
 	 * Register JavaScripts, if there's an API key value saved.
 	 *
 	 * @since 2.5.0
+	 * @since 3.0.0 Rename from register_js
 	 *
 	 * @return void
 	 */
-	public function register_js(): void {
+	public function register_scripts(): void {
 		$parsely_options = $this->parsely->get_options();
 
 		if ( $this->parsely->api_key_is_missing() ) {
@@ -93,10 +94,11 @@ class Scripts {
 	 * Enqueues the JavaScript code required to send off beacon requests.
 	 *
 	 * @since 2.5.0 Rename from insert_parsely_javascript
+	 * @since 3.0.0 Rename from load_js_tracker
 	 *
 	 * @return void
 	 */
-	public function load_js_tracker(): void {
+	public function enqueue_js_tracker(): void {
 		$parsely_options = $this->parsely->get_options();
 		if ( $this->parsely->api_key_is_missing() || $parsely_options['disable_javascript'] ) {
 			return;
@@ -138,10 +140,11 @@ class Scripts {
 	 * Load JavaScript for Parse.ly API.
 	 *
 	 * @since 2.5.0
+	 * @since 3.0.0 Rename from load_js_api
 	 *
 	 * @return void
 	 */
-	public function load_js_api(): void {
+	public function enqueue_js_api(): void {
 		$parsely_options = $this->parsely->get_options();
 
 		// If we don't have an API secret, there's no need to proceed.
@@ -171,7 +174,6 @@ class Scripts {
 		if ( in_array(
 			$handle,
 			array(
-				'wp-parsely',
 				'wp-parsely-api',
 				'wp-parsely-tracker',
 				'wp-parsely-recommended-widget',
