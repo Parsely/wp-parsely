@@ -28,9 +28,6 @@ jobs:
           node-version: lts/*
           cache: 'npm'
 
-      - name: Update npm to latest
-        run: npm i -g npm
-
       - name: Installing dependencies
         run: npm ci
 
