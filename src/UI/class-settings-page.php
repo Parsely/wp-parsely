@@ -55,14 +55,6 @@ final class Settings_Page {
 	 * @return void
 	 */
 	public function add_admin_header(): void {
-		// TODO: Extract style to CSS file.
-		echo '
-<style>
-#wp-parsely_version { color: #777; font-size: 12px; margin-left: 1em; }
-.help-text { width: 75%; }
-</style>
-';
-
 		$admin_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';
 		wp_enqueue_script(
 			'wp-parsely-admin',
