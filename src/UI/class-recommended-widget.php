@@ -56,7 +56,7 @@ class Recommended_Widget extends WP_Widget {
 	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
 	 * @return string API URL.
 	 */
-	public function get_api_url( string $api_key, int $published_within, string $sort, string $boost, int $return_limit ): string {
+	private function get_api_url( string $api_key, int $published_within, string $sort, string $boost, int $return_limit ): string {
 		$related_api_endpoint = 'https://api.parsely.com/v2/related';
 
 		$query_args = array(

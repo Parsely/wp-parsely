@@ -78,7 +78,9 @@ final class RecommendedApiTest extends TestCase {
 	 */
 	public function test_recommended_api_url( string $api_key, int $published_within, string $sort, string $boost, int $return_limit, string $url ): void {
 		$recommended_widget = new Recommended_Widget();
+		$get_api_url        = self::getMethod( 'get_api_url', Recommended_Widget::class );
+		$response           = $get_api_url->invoke( $recommended_widget, $api_key, $published_within, $sort, $boost, $return_limit );
 
-		self::assertEquals( $url, $recommended_widget->get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) );
+		self::assertEquals( $url, $response );
 	}
 }

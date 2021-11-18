@@ -36,8 +36,6 @@ class Amp implements Integration {
 	 *
 	 * This is needed to make it easier to mock whether the function exists ot not during tests.
 	 *
-	 * @codeCoverageIgnore
-	 *
 	 * @since 2.6.0
 	 *
 	 * @return bool True is an AMP request, false otherwise.
