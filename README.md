@@ -46,6 +46,26 @@ The plugin requires an active Parse.ly account. Parse.ly gives creators, markete
 1. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
 1. Click "Activate" to activate the plugin on your site.
 
+## Local development
+
+The easiest way to develop this plugin locally is by using the `wp-env` package. [It is an official WP.org package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) that spins up a Docker-based WordPress environment for plugin development.
+
+Having Docker running,
+
+```
+npm install
+
+# Start the environment
+npm run dev:start
+
+# Stop the environment
+npm run dev:stop
+```
+
+This will start up an environment in `localhost:8888`, running in the background.
+
+To develop for WordPress VIP sites, we recommend using [the WordPress VIP dev-env](https://docs.wpvip.com/technical-references/vip-local-development-environment/).
+
 ## Frequently Asked Questions
 
 ### Where do I find my Site ID?
@@ -95,10 +115,6 @@ Previous versions of this plugin would mark all scripts with that tag by default
 ```
 add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 ```
-
-### How do I create a local dev environment to make changes to the `wp-parsely` code?
-
-See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin-development-environment).
 
 ## Screenshots
 
