@@ -28,7 +28,7 @@ final class FacebookInstantArticlesTest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var string $registry_identifier Hols the same value as the private constant in the class.
+	 * @var string $registry_identifier Holds the same value as the private constant in the class.
 	 */
 	private static $registry_identifier;
 
