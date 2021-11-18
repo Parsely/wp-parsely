@@ -5,7 +5,72 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2021-11-19
+
+### Added
+
+- Use checkboxes for multiple selects in settings page #482
+- Add return type declarations #429
+- Add namespaces to files #430
+- Adding namespace to Recommended Widget #475
+- Adding namespace to root class #477
+- Renaming functions on Scripts class #481
+- Adding argument types to functions #455
+- Adding translation support for Yes and No fields #463
+- Displaying Open on Parse.ly links by default #433
+- Add wp_parsely_should_insert_metadata filter #440
+- Adding wp_parsely_enable_cfasync_tag filter to display Cloudflare links #473
+- Adding uninstall script #444
+- Adding E2E test to check for available recommended widget #434
+- Adding a cannonical way of running the plugin locally #493
+- Setup JavaScript code-scanning #453
+
+### Changed 
+
+- Increase minimum PHP and WP versions to 7.1 and 5.0 #416
+- Add strict_types=1 declaration #420
+- Change get_current_url default type to non-post #447
+- Enqueue scripts with theme independent hook #458
+- Using PHP 7 null coalescing operator #421
+- Move Parse.ly settings to views folder #459
+- Move tracker logic to separate file #478
+- Extract settings page from Parsely class #467
+- Extract admin warning from class-parsely #468
+- CI: Specify coverage: none where it is not needed #419
+- Bump @wordpress/e2e-test-utils from 5.4.3 to 5.4.8 #449 #466 #479 #488 #492
+- Bump @wordpress/scripts from 18.0.1 to 19.1.0 #450 #480
+- Bump @wordpress/eslint-plugin from 9.2.0 to 9.3.0 #490
+
+### Fixed
+
+- Avoid making duplicate calls on Recommended Widget #460
+- i18n: Fix JS string translation #462
+- Fixing return types of update_metadata_endpoint #446
+- Constant return type on insert_parsely_page #443
+- Fix type errors #474
+- Fixing some code smells #435
+- Minor code fixes #431
+- Tests: Stop using deprecated setMethods method #427
+- e2e tests: fix watch command #476
+- Fix non-working README code sample #439
+
+### Deprecated
+
+### Removed
+
+- Remove deprecated filter after_set_parsely_page #436
+- Remove deprecated filter parsely_filter_insert_javascript #437
+- Remove post_has_viewable_type #417
+- Removing empty functions for admin settings #456
+- Removing Parse.ly load text domain #457
+- Removing redundant code coverage annotations #469
+- Removing old init Python script #441
+- Revert "Add admin warning for minimum requirements in 3.0 (#408)" #424
+- Removing upgrade README notice #470
+
 ## [2.6.1] - 2021-10-15
+
+### Fixed
 
 - Fix recommended widget not following configuration #451
 
@@ -332,6 +397,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial version.
 - Add sSupport for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
+[3.0.0]: https://github.com/Parsely/wp-parsely/compare/2.6.1...3.0.0
 [2.6.1]: https://github.com/Parsely/wp-parsely/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/Parsely/wp-parsely/compare/2.5.2...2.6.0
 [2.5.2]: https://github.com/Parsely/wp-parsely/compare/2.5.1...2.5.2
