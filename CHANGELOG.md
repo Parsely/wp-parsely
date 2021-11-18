@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move tracker logic to separate file #478
 - Extract settings page from Parsely class #467
 - Extract admin warning from class-parsely #468
+- Making class members private #486
 - CI: Specify coverage: none where it is not needed #419
 - Bump @wordpress/e2e-test-utils from 5.4.3 to 5.4.8 #449 #466 #479 #488 #492
 - Bump @wordpress/scripts from 18.0.1 to 19.1.0 #450 #480
@@ -53,8 +54,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tests: Stop using deprecated setMethods method #427
 - e2e tests: fix watch command #476
 - Fix non-working README code sample #439
-
-### Deprecated
 
 ### Removed
 
