@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move tracker logic to separate file #478
 - Extract settings page from Parsely class #467
 - Extract admin warning from class-parsely #468
+- Renamed Parsely_Recommended_Widget to Recommended_Widget
 - Making class members private #486
 - CI: Specify coverage: none where it is not needed #419
 - Bump @wordpress/e2e-test-utils from 5.4.3 to 5.4.8 #449 #466 #479 #488 #492
