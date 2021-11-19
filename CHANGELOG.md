@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed 
 
 - Increase minimum PHP and WP versions to 7.1 and 5.0 #416
+- Upgraded the development Node version from 14 to 16
 - Add strict_types=1 declaration #420
 - Change get_current_url default type to non-post #447
 - Enqueue scripts with theme independent hook #458
