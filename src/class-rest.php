@@ -19,6 +19,7 @@ use WP_Post;
  */
 class Rest {
 	private const PARSELY_META_REST_FIELD_NAME = 'parsely-meta';
+	private const PARSELY_META_JSON_STRING_REST_FIELD_NAME = 'parsely-meta-json-string';
 
 	/**
 	 * Instance of Parsely class.
@@ -53,6 +54,7 @@ class Rest {
 		 */
 		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) ) {
 			add_action( 'rest_api_init', array( $this, 'register_parsely_meta' ) );
+			add_action( 'rest_api_init', array( $this, 'register_parsely_meta_json_string' ) );
 		}
 	}
 
@@ -74,5 +76,26 @@ class Rest {
 		$args = array( 'get_callback' => $callback );
 		register_rest_field( 'post', self::PARSELY_META_REST_FIELD_NAME, $args );
 		register_rest_field( 'page', self::PARSELY_META_REST_FIELD_NAME, $args );
+	}
+
+	/**
+	 *
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return void
+	 */
+	public function register_parsely_meta_json_string(): void {
+		$callback = function( array $object ): string {
+			$post_id = $object['id'];
+			$options = $this->parsely->get_options();
+
+			ob_start();
+			$this->parsely->insert_page_header_metadata();
+			return ob_get_clean();
+		};
+
+		$args = array( 'get_callback' => $callback );
+		register_rest_field( 'post', self::PARSELY_META_JSON_STRING_REST_FIELD_NAME, $args );
 	}
 }
