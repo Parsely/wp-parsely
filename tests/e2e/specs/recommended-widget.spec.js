@@ -11,9 +11,7 @@ import {
  * Internal dependencies
  */
 import {
-	activatePluginApiKey,
-	deactivatePluginApiKey,
-	deactivatePluginApiSecret,
+	changeKeysState,
 	waitForWpAdmin,
 } from '../utils';
 
@@ -63,8 +61,7 @@ describe( 'Recommended widget', () => {
 	it( 'Widget should be available but inactive without api key and secret', async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
-		await deactivatePluginApiKey();
-		await deactivatePluginApiSecret();
+		await changeKeysState( false, false );
 
 		await visitAdminPage( '/widgets.php', '' );
 		await waitForWpAdmin();
@@ -79,8 +76,7 @@ describe( 'Recommended widget', () => {
 	it( 'Widget should be available but inactive without api secret', async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
-		await activatePluginApiKey();
-		await deactivatePluginApiSecret();
+		await changeKeysState( true, false );
 
 		await visitAdminPage( '/widgets.php', '' );
 		await waitForWpAdmin();

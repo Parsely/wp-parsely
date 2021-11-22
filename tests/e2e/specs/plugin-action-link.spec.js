@@ -17,7 +17,7 @@ describe( 'Plugin action link', () => {
 	it( 'Should link to plugin settings page', async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
-		await visitAdminPage( '/plugins.php' );
+		await visitAdminPage( '/plugins.php', '' );
 
 		await waitForWpAdmin();
 
