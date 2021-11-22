@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 wp-parsely 3.0.0 is a major release of the Parse.ly WordPress plugin. The major version bump is because we are introducing a number of breaking changes that have allowed us to modernize the codebase and make future features easier to implement.
 
-The biggest breaking change is the new minimum requirements for running the plugin. If now need PHP 7.1 or newer and WordPress 5.0 or newer. If you are running one of those old versions, you shouldn't get the update option on your WordPress admin.
+The biggest breaking change is the new minimum requirements for running the plugin. You now need PHP 7.1 or newer and WordPress 5.0 or newer. If you are running one of those old versions, you shouldn't get the update option on your WordPress admin.
 
 If you are using the plugin without any code-level customizations (for instance, calling the plugin's routines or hooking in the plugin's WordPress hooks), this update should be seamless and everything should keep operating normally. The plugin's way of working is still fundamentally the same. If you are using those customizations, we recommend you going through the detailed changelog to see if they affect you. In most of the cases, only trivial changes will be required to make your code work.
 
