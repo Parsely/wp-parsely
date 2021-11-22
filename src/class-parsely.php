@@ -234,25 +234,6 @@ class Parsely {
 	}
 
 	/**
-	 * Deprecated. Echoes the metadata into the page, and returns the inserted values.
-	 *
-	 * To just echo the metadata, use the `insert_page_header_metadata()` method.
-	 * To get the metadata to be inserted, use the `construct_parsely_metadata()` method.
-	 *
-	 * @deprecated 3.0.0
-	 * @see construct_parsely_metadata()
-	 *
-	 * @return array
-	 */
-	public function insert_parsely_page(): array {
-		_deprecated_function( __FUNCTION__, '3.0', 'construct_parsely_metadata()' );
-		$this->insert_page_header_metadata();
-
-		global $post;
-		return $this->construct_parsely_metadata( $this->get_options(), $post );
-	}
-
-	/**
 	 * Function to be used in `array_filter` to clean up repeated metas
 	 *
 	 * @param mixed $var Value to filter from the array.
