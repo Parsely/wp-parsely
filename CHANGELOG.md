@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.0] - 2021-11-22
+## [3.0.0] - 2021-11-23
 
 ## Important information about this release
 
@@ -65,15 +65,15 @@ If you are using the plugin without any code-level customizations (for instance,
 
 ### Removed
 
-- Remove deprecated filter after_set_parsely_page #436
-- Remove deprecated filter parsely_filter_insert_javascript #437
-- Remove post_has_viewable_type #417
-- Removing empty functions for admin settings #456
-- Removing Parse.ly load text domain #457
-- Removing redundant code coverage annotations #469
-- Removing old init Python script #441
-- Revert "Add admin warning for minimum requirements in 3.0 (#408)" #424
-- Removing upgrade README notice #470
+- Deprecated filter `after_set_parsely_page`. [#436](https://github.com/Parsely/wp-parsely/pull/436) Use `wp_parsely_metadata` instead.
+- Deprecated filter `parsely_filter_insert_javascript`. [#437](https://github.com/Parsely/wp-parsely/pull/437) Use `wp_parsely_load_js_tracker` instead.
+- `post_has_viewable_type` function. [#417](https://github.com/Parsely/wp-parsely/pull/417) Use `is_post_viewable` instead.
+- Custom Parse.ly load text domain. [#457](https://github.com/Parsely/wp-parsely/pull/457)
+- Empty functions for admin settings. [#456](https://github.com/Parsely/wp-parsely/pull/456)
+- Redundant code coverage annotations. [#469](https://github.com/Parsely/wp-parsely/pull/469)
+- Old init Python script. [#441](https://github.com/Parsely/wp-parsely/pull/441)
+- "Add admin warning for minimum requirements in 3.0" notice. [#424](https://github.com/Parsely/wp-parsely/pull/424)
+- Upgrade README notice. [#470](https://github.com/Parsely/wp-parsely/pull/470)
 
 ## [2.6.1] - 2021-10-15
 
