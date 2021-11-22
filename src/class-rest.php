@@ -64,7 +64,7 @@ class Rest {
 	 * @return void
 	 */
 	public function register_parsely_meta(): void {
-		$callback = function( array $object ) {
+		$callback = function( array $object ): array {
 			$post_id = $object['id'];
 			$options = $this->parsely->get_options();
 			$post    = WP_Post::get_instance( $post_id );
