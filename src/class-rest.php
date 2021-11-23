@@ -54,7 +54,17 @@ class Rest {
 		 */
 		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) ) {
 			add_action( 'rest_api_init', array( $this, 'register_parsely_meta' ) );
-			add_action( 'rest_api_init', array( $this, 'register_parsely_meta_string' ) );
+		}
+
+		/**
+		 * Filter whether REST API support in string format is enabled or not.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param bool $enabled True if enabled, false if not.
+		 */
+		if ( apply_filters( 'wp_parsely_enable_rest_api_string_support', true ) ) {
+			add_action( 'rest_api_init', array( $this, 'register_parsely_meta' ) );
 		}
 	}
 
