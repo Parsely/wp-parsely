@@ -94,5 +94,6 @@ class Rest {
 
 		$args = array( 'get_callback' => $callback );
 		register_rest_field( 'post', self::PARSELY_META_STRING_REST_FIELD_NAME, $args );
+		register_rest_field( 'page', self::PARSELY_META_STRING_REST_FIELD_NAME, $args );
 	}
 }
