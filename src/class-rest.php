@@ -18,7 +18,7 @@ use WP_Post;
  * @since 3.1.0
  */
 class Rest {
-	private const PARSELY_META_REST_FIELD_NAME = 'parsely-meta';
+	private const PARSELY_META_REST_FIELD_NAME        = 'parsely-meta';
 	private const PARSELY_META_STRING_REST_FIELD_NAME = 'parsely-meta-string';
 
 	/**
