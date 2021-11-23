@@ -64,7 +64,7 @@ class Rest {
 		 * @param bool $enabled True if enabled, false if not.
 		 */
 		if ( apply_filters( 'wp_parsely_enable_rest_api_string_support', true ) ) {
-			add_action( 'rest_api_init', array( $this, 'register_parsely_meta' ) );
+			add_action( 'rest_api_init', array( $this, 'register_parsely_meta_string' ) );
 		}
 	}
 
