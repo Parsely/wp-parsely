@@ -36,13 +36,16 @@ final class RestTest extends TestCase {
 	/**
 	 * Test whether the logic has been enqueued in the `rest_api_init` hook.
 	 *
+	 * @dataProvider rest_api_field_names
 	 * @covers \Parsely\Rest\run;
+	 *
+	 * @param string $field_name Name of the REST field.
 	 */
-	public function test_register_enqueued_rest_init() {
+	public function test_register_enqueued_rest_init( string $field_name ) {
 		self::$rest->run();
 		$this->assertSame(
 			10,
-			has_action( 'rest_api_init', array( self::$rest, 'register_parsely_meta' ) )
+			has_action( 'rest_api_init', array( self::$rest, $field_name ) )
 		);
 	}
 
@@ -80,5 +83,19 @@ final class RestTest extends TestCase {
 
 		$this->assertNull( $wp_rest_additional_fields['post']['parsely-meta']['schema'] );
 		$this->assertNull( $wp_rest_additional_fields['page']['parsely-meta']['schema'] );
+	}
+
+	/**
+	 * Data provider for test_get_current_url
+	 *
+	 * @return iterable
+	 */
+	public function rest_api_field_names() {
+		yield 'Parsely Meta' => array(
+			'name' => 'parsely-meta',
+		);
+		yield 'Parsely Meta String' => array(
+			'name' => 'parsely-meta-string',
+		);
 	}
 }
