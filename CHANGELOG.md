@@ -30,7 +30,7 @@ If you are using the plugin without any code-level customizations (for instance,
 
 ### Changed 
 
-- Minimum PHP and WP versions required to run the plguin are now 7.1 (from 5.6) and 5.0 from (4.0), respectively. [#416](https://github.com/Parsely/wp-parsely/pull/416)
+- Minimum PHP and WP versions required to run the plugin are now 7.1 (from 5.6) and 5.0 from (4.0), respectively. [#416](https://github.com/Parsely/wp-parsely/pull/416)
 - The development Node JS version has been bumped from 14 to 16.
 - Renaming functions on `Scripts` class [#481](https://github.com/Parsely/wp-parsely/pull/481):
   - `register_js` to `register_scripts`.
