@@ -5,8 +5,11 @@
  * @package Parsely\Tests\Integrations
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Tests\Integration\Integrations;
 
+use ReflectionClass;
 use Parsely;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Tests\Integration\TestCase;
@@ -15,33 +18,63 @@ use Parsely\Tests\Integration\TestCase;
  * Test Facebook Instant Articles integration.
  */
 final class FacebookInstantArticlesTest extends TestCase {
-	const REGISTRY_KEY = 'parsely-analytics-for-wordpress';
+	/**
+	 * Internal variable.
+	 *
+	 * @var Facebook_Instant_Articles $fbia Holds the Facebook_Instant_Articles object.
+	 */
+	private static $fbia;
+
+	/**
+	 * Internal variable.
+	 *
+	 * @var string $registry_identifier Holds the same value as the private constant in the class.
+	 */
+	private static $registry_identifier;
+
+	/**
+	 * Internal variable.
+	 *
+	 * @var string $registry_display_name Hols the same value as the private constant in the class.
+	 */
+	private static $registry_display_name;
+
+	/**
+	 * The setUp run before each test
+	 */
+	public function set_up(): void {
+		parent::set_up();
+
+		self::$fbia = new Facebook_Instant_Articles();
+		$reflect    = new ReflectionClass( self::$fbia );
+
+		self::$registry_identifier   = $reflect->getReflectionConstant( 'REGISTRY_IDENTIFIER' )->getValue();
+		self::$registry_display_name = $reflect->getReflectionConstant( 'REGISTRY_DISPLAY_NAME' )->getValue();
+	}
 
 	/**
 	 * Check the integration only happens when a condition is met.
 	 *
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::integrate
 	 */
-	public function test_integration_only_runs_when_FBIA_plugin_is_active() {
-		$fbia = new Facebook_Instant_Articles();
-
+	public function test_integration_only_runs_when_FBIA_plugin_is_active(): void {
 		// By default, the integration will not happen if the condition has not been met.
-		$fbia->integrate();
+		self::$fbia->integrate();
 		self::assertFalse(
 			has_action(
 				'instant_articles_compat_registry_analytics',
-				array( $fbia, 'insert_parsely_tracking' )
+				array( self::$fbia, 'insert_parsely_tracking' )
 			)
 		);
 
 		// Meet the condition, and check again.
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- can't prefix this.
 		define( 'IA_PLUGIN_VERSION', '1.2.3' );
-		$fbia->integrate();
+		self::$fbia->integrate();
 		self::assertNotFalse(
 			has_action(
 				'instant_articles_compat_registry_analytics',
-				array( $fbia, 'insert_parsely_tracking' )
+				array( self::$fbia, 'insert_parsely_tracking' )
 			)
 		);
 	}
@@ -51,28 +84,26 @@ final class FacebookInstantArticlesTest extends TestCase {
 	 *
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::insert_parsely_tracking
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::get_embed_code
-	 * @uses \Parsely::api_key_is_missing
-	 * @uses \Parsely::api_key_is_set
-	 * @uses \Parsely::get_api_key
-	 * @uses \Parsely::get_options
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_options
 	 * @group fbia
 	 */
-	public function test_parsely_is_added_to_FBIA_registry() {
+	public function test_parsely_is_added_to_FBIA_registry(): void {
 		// We use our own registry here, but the integration with the FBIA plugin provides its own.
 		$registry = array();
-		$fbia     = new Facebook_Instant_Articles();
 
 		// Check for no registration when there is no API key saved.
-		$fbia->insert_parsely_tracking( $registry );
+		self::$fbia->insert_parsely_tracking( $registry );
 
-		self::assertArrayNotHasKey( Facebook_Instant_Articles::REGISTRY_IDENTIFIER, $registry );
+		self::assertArrayNotHasKey( self::$registry_identifier, $registry );
 
 		// Now set API key.
 		$fake_api_key = 'my-api-key.com';
 		self::set_options( array( 'apikey' => $fake_api_key ) );
 
-
-		$fbia->insert_parsely_tracking( $registry );
+		self::$fbia->insert_parsely_tracking( $registry );
 
 		self::assertParselyWasAddedToRegistryCorrectly( $registry, $fake_api_key );
 	}
@@ -83,13 +114,12 @@ final class FacebookInstantArticlesTest extends TestCase {
 	 * @param array  $registry Representation of Facebook Instant Articles registry.
 	 * @param string $api_key  API key.
 	 */
-	public static function assertParselyWasAddedToRegistryCorrectly( $registry, $api_key ) {
-		self::assertArrayHasKey( Facebook_Instant_Articles::REGISTRY_IDENTIFIER, $registry );
-		self::assertSame( Facebook_Instant_Articles::REGISTRY_DISPLAY_NAME, $registry[ Facebook_Instant_Articles::REGISTRY_IDENTIFIER ]['name'] );
+	public static function assertParselyWasAddedToRegistryCorrectly( array $registry, string $api_key ): void {
+		self::assertArrayHasKey( self::$registry_identifier, $registry );
+		self::assertSame( self::$registry_display_name, $registry[ self::$registry_identifier ]['name'] );
 
 		// Check embed code contains a script (don't test for specifics), and the API key.
-		self::assertStringContainsString( '<script>', $registry[ Facebook_Instant_Articles::REGISTRY_IDENTIFIER ]['payload'] );
-		self::assertStringContainsString( $api_key, $registry[ Facebook_Instant_Articles::REGISTRY_IDENTIFIER ]['payload'] );
+		self::assertStringContainsString( '<script>', $registry[ self::$registry_identifier ]['payload'] );
+		self::assertStringContainsString( $api_key, $registry[ self::$registry_identifier ]['payload'] );
 	}
-
 }

@@ -9,26 +9,28 @@
  * @subpackage Parse.ly
  */
 
+declare(strict_types=1);
+
+namespace Parsely\UI;
+
+use Parsely\Parsely;
+use WP_Widget;
+
+use const Parsely\PARSELY_FILE;
+
 /**
- * This is the class for the recommended widget
- *
- * @category   Class
- * @package    Parsely_Recommended_Widget
+ * This is the class for the recommended widget.
  */
-class Parsely_Recommended_Widget extends WP_Widget {
+final class Recommended_Widget extends WP_Widget {
 	/**
-	 * This is the constructor function
-	 *
-	 * @category   Function
-	 * @package    WordPress
-	 * @subpackage Parse.ly
+	 * This is the constructor function.
 	 */
 	public function __construct() {
 		parent::__construct(
 			'Parsely_Recommended_Widget',
 			__( 'Parse.ly Recommended Widget', 'wp-parsely' ),
 			array(
-				'classname'   => 'Parsely_Recommended_Widget parsely-recommended-widget-hidden',
+				'classname'   => 'Recommended_Widget parsely-recommended-widget-hidden',
 				'description' => __( 'Display a list of post recommendations, personalized for a visitor or the current post.', 'wp-parsely' ),
 			)
 		);
@@ -54,7 +56,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
 	 * @return string API URL.
 	 */
-	public function get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) {
+	private function get_api_url( string $api_key, int $published_within, string $sort, string $boost, int $return_limit ): string {
 		$related_api_endpoint = 'https://api.parsely.com/v2/related';
 
 		$query_args = array(
@@ -67,7 +69,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			$query_args['boost'] = $boost;
 		}
 
-		if ( 0 !== (int) $published_within ) {
+		if ( 0 !== $published_within ) {
 			$query_args['pub_date_start'] = $published_within . 'd';
 		}
 
@@ -77,13 +79,11 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the widget function
 	 *
-	 * @category   Function
-	 * @package    WordPress
-	 * @subpackage Parse.ly
 	 * @param array $args Widget Arguments.
 	 * @param array $instance Values saved to the db.
+	 * @return void
 	 */
-	public function widget( $args, $instance ) {
+	public function widget( $args, $instance ): void {
 		if ( ! $this->api_key_and_secret_are_populated() ) {
 			return;
 		}
@@ -91,8 +91,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		$removed_title_esc = remove_filter( 'widget_title', 'esc_html' );
 
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
-		$title      = apply_filters( 'widget_title', $instance['title'] );
-		$title_html = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
+		$title = apply_filters( 'widget_title', $instance['title'] );
 
 		if ( $removed_title_esc ) {
 			add_filter( 'widget_title', 'esc_html' );
@@ -110,18 +109,18 @@ class Parsely_Recommended_Widget extends WP_Widget {
 			$instance['published_within'],
 			$instance['sort'],
 			$instance['boost'],
-			$instance['return_limit']
+			(int) $instance['return_limit']
 		);
 
-		$reco_widget_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';
+		$recommended_widget_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';
 
 		?>
 
 		<div class="parsely-recommended-widget"
 			data-parsely-widget-display-author="<?php echo esc_attr( wp_json_encode( isset( $instance['display_author'] ) && $instance['display_author'] ) ); ?>"
-			data-parsely-widget-display-direction="<?php echo esc_attr( isset( $instance['display_direction'] ) ? $instance['display_direction'] : '' ); ?>"
+			data-parsely-widget-display-direction="<?php echo esc_attr( $instance['display_direction'] ?? '' ); ?>"
 			data-parsely-widget-api-url="<?php echo esc_url( $api_url ); ?>"
-			data-parsely-widget-img-display="<?php echo esc_attr( isset( $instance['img_src'] ) ? $instance['img_src'] : '' ); ?>"
+			data-parsely-widget-img-display="<?php echo esc_attr( $instance['img_src'] ?? '' ); ?>"
 			data-parsely-widget-permalink="<?php echo esc_url( get_permalink() ); ?>"
 			data-parsely-widget-personalized="<?php echo esc_attr( wp_json_encode( isset( $instance['personalize_results'] ) && $instance['personalize_results'] ) ); ?>"
 			data-parsely-widget-id="<?php echo esc_attr( $this->id ); ?>"
@@ -132,8 +131,8 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		wp_register_script(
 			'wp-parsely-recommended-widget',
 			plugin_dir_url( PARSELY_FILE ) . 'build/recommended-widget.js',
-			$reco_widget_script_asset['dependencies'],
-			PARSELY::get_asset_cache_buster(),
+			$recommended_widget_script_asset['dependencies'],
+			Parsely::get_asset_cache_buster(),
 			true
 		);
 
@@ -145,12 +144,10 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	/**
 	 * Migrates previous display_options settings
 	 *
-	 * @category   Function
-	 * @package    WordPress
-	 * @subpackage Parse.ly
 	 * @param array $instance Values saved to the db.
+	 * @return void
 	 */
-	private function migrate_old_fields( $instance ) {
+	private function migrate_old_fields( array $instance ): void {
 		if ( ! empty( $instance['display_options'] ) && is_array( $instance['display_options'] ) ) {
 			if ( empty( $instance['img_src'] ) ) {
 				$instance['img_src'] = in_array( 'display_thumbnail', $instance['display_options'], true ) ? 'parsely_thumb' : 'none';
@@ -165,12 +162,9 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the form function
 	 *
-	 * @category   Function
-	 * @package    WordPress
-	 * @subpackage Parse.ly
 	 * @param array $instance Values saved to the db.
 	 */
-	public function form( $instance ) {
+	public function form( $instance ): void {
 		$this->migrate_old_fields( $instance );
 
 		if ( ! $this->api_key_and_secret_are_populated() ) {
@@ -189,7 +183,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 
 		// editable fields: title.
 		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
-		$return_limit        = ! empty( $instance['return_limit'] ) ? $instance['return_limit'] : 5;
+		$return_limit        = ! empty( $instance['return_limit'] ) ? (int) $instance['return_limit'] : 5;
 		$display_direction   = ! empty( $instance['display_direction'] ) ? $instance['display_direction'] : 'vertical';
 		$published_within    = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
 		$sort                = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
@@ -222,7 +216,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>"><?php esc_html_e( 'Number of posts to show (max 20):', 'wp-parsely' ); ?></label>
-			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( (string) $instance['return_limit'] ); ?>" min="1" max="20" class="tiny-text" />
+			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( $instance['return_limit'] ); ?>" min="1" max="20" class="tiny-text" />
 		</p>
 		<p>
 			<fieldset>
@@ -276,17 +270,15 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the update function
 	 *
-	 * @category   Function
-	 * @package    WordPress
-	 * @subpackage Parse.ly
 	 * @param array $new_instance The new values for the db.
 	 * @param array $old_instance Values saved to the db.
+	 * @return array
 	 */
-	public function update( $new_instance, $old_instance ) {
+	public function update( $new_instance, $old_instance ): array {
 		$instance                        = $old_instance;
 		$instance['title']               = trim( wp_kses_post( $new_instance['title'] ) );
-		$instance['published_within']    = (int) trim( $new_instance['published_within'] );
-		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : '20';
+		$instance['published_within']    = is_int( $new_instance['published_within'] ) ? $new_instance['published_within'] : (int) trim( $new_instance['published_within'] );
+		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? (int) $new_instance['return_limit'] : 20;
 		$instance['display_direction']   = trim( $new_instance['display_direction'] );
 		$instance['sort']                = trim( $new_instance['sort'] );
 		$instance['boost']               = trim( $new_instance['boost'] );
@@ -303,7 +295,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 *
 	 * @return array Boost parameters values and labels.
 	 */
-	private function get_boost_params() {
+	private function get_boost_params(): array {
 		return array(
 			'no-boost'              => __( 'No boost', 'wp-parsely' ),
 			'views'                 => __( 'Page views', 'wp-parsely' ),
@@ -337,7 +329,7 @@ class Parsely_Recommended_Widget extends WP_Widget {
 	 *
 	 * @return bool True if apikey and api_secret settings are not empty strings. False otherwise.
 	 */
-	private function api_key_and_secret_are_populated() {
+	private function api_key_and_secret_are_populated(): bool {
 		$options = get_option( 'parsely' );
 
 		// No options are saved, so API key is not available.

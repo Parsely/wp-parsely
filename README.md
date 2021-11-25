@@ -1,12 +1,12 @@
 # Parse.ly
 
-Stable tag: 2.6.1
-Requires at least: 4.0  
+Stable tag: 3.0.0
+Requires at least: 5.0  
 Tested up to: 5.8  
-Requires PHP: 5.6  
+Requires PHP: 7.1  
 License: GPLv2 or later  
 Tags: analytics, parse.ly, parsely, parsley  
-Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauarge
+Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauargelaguet
 
 The Parse.ly plugin facilitates real-time and historical analytics to your content through a platform designed and built for digital publishing.
 
@@ -25,12 +25,6 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 - If you've purchased access to the Parse.ly API, add a widget to your site with article recommendations personalized to individual users.
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
-
-## wp-parsely 3.0 upgrade notice
-
-The `2.6` branch will be the last one of the wp-parsely plugin to have PHP `5.6` and WordPress `4.0` as a minium requirement. **When the next major version is released, `3.0`, the minimum requirements will be bumped to PHP `7.1` and WordPress `5.0`.**
-
-Once `3.0` gets released, the `2.6` branch will not be supported and will not receive any updates, including new features and security issues. Therefore, we strongly recommend all `wp-parsely` users to upgrade to PHP 7.1 or higher and WordPress 5.0 or higher. It is important to point out that those are *minimum* requirements, so newer versions of PHP and WordPress are encouraged. 
 
 ## Installation
 
@@ -52,6 +46,26 @@ The plugin requires an active Parse.ly account. Parse.ly gives creators, markete
 1. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
 1. Click "Activate" to activate the plugin on your site.
 
+## Local development
+
+The easiest way to develop this plugin locally is by using the `wp-env` package. [It is an official WP.org package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) that spins up a Docker-based WordPress environment for plugin development.
+
+Having Docker running,
+
+```
+npm install
+
+# Start the environment
+npm run dev:start
+
+# Stop the environment
+npm run dev:stop
+```
+
+This will start up an environment in `localhost:8888`, running in the background.
+
+To develop for WordPress VIP sites, we recommend using [the WordPress VIP dev-env](https://docs.wpvip.com/technical-references/vip-local-development-environment/).
+
 ## Frequently Asked Questions
 
 ### Where do I find my Site ID?
@@ -69,7 +83,7 @@ You may also be not tracking logged-in users, via one of the settings.
 You can use the `wp_parsely_metadata` filter, which sends three arguments: the array of metadata, the post object, and the `parsely_options` array:
 
     add_filter( 'wp_parsely_metadata', 'filter_parsely_metadata', 10, 3 );
-    function filter_parsely_page( $parsely_metadata, $post, $parsely_options ) {
+    function filter_parsely_metadata( $parsely_metadata, $post, $parsely_options ) {
         $parsely_metadata['articleSection'] = '...'; // Whatever values you want Parse.ly's Section to be.
         return $parsely_metadata;
     }
@@ -92,9 +106,15 @@ Some common use-cases for dynamic tracking are slideshows or articles loaded via
 
 Tracking these events requires manually implementing additional JavaScript above [the standard Parse.ly include](http://www.parsely.com/help/integration/basic/) that the plugin injects into your page source. Please consult [the Parse.ly documentation on dynamic tracking](https://www.parsely.com/help/integration/dynamic/) for instructions on implementing dynamic tracking, or contact Parse.ly support for additional assistance.
 
-### How do I create a local dev environment to make changes to the `wp-parsely` code?
+### Cloudflare support
 
-See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin-development-environment).
+If the site is running behind a Cloudflare DNS, their Rocket Loader technology will alter how JavaScript files are loaded. [A JavaScript file can be ignored by Rocket Loader](https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts) by using `data-cfasync="false"`.
+
+Previous versions of this plugin would mark all scripts with that tag by default. Starting in version 3.0, that behavior has become optional and scripts won't be annotated with `data-cfasync="false"`. The previous behavior can be restored by adding the following filter:
+
+```
+add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
+```
 
 ## Screenshots
 
