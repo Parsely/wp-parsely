@@ -21,7 +21,7 @@ use const Parsely\PARSELY_FILE;
 /**
  * This is the class for the recommended widget.
  */
-class Recommended_Widget extends WP_Widget {
+final class Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the constructor function.
 	 */
