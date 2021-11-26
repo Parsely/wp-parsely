@@ -856,8 +856,8 @@ class Parsely {
 		 *
 		 * @since 1.14.0
 		 *
-		 * @param array   $authors One or more authors as WP_User objects (may also be `false`).
-		 * @param WP_Post $post    Post object.
+		 * @param WP_User[] $authors One or more authors as WP_User objects.
+		 * @param WP_Post   $post    Post object.
 		 */
 		$authors = apply_filters( 'wp_parsely_pre_authors', $authors, $post );
 
