@@ -861,14 +861,6 @@ class Parsely {
 		 */
 		$authors = apply_filters( 'wp_parsely_pre_authors', $authors, $post );
 
-		// Filtering falsy values from the array.
-		$authors = array_filter(
-			$authors,
-			function( $x ) {
-				return ! ( is_null( $x ) || false === $x );
-			}
-		);
-
 		// Getting the author name for each author.
 		$authors = array_map( array( $this, 'get_author_name' ), $authors );
 
