@@ -230,20 +230,22 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 			)
 		);
 
-		// Disable AMP tracking.
-		$h = __( 'If you use a separate system for JavaScript tracking on AMP pages (Tealium / Segment / Google Tag Manager / other tag manager solution) you may want to use that instead of having the plugin load the tracker.', 'wp-parsely' );
-		add_settings_field(
-			'disable_amp',
-			__( 'Disable AMP Tracking', 'wp-parsely' ),
-			array( $this, 'print_binary_radio_tag' ),
-			Parsely::MENU_SLUG,
-			'basic_settings',
-			array(
-				'title'      => __( 'Disable AMP Tracking', 'wp-parsely' ), // Passed for legend element.
-				'option_key' => 'disable_amp',
-				'help_text'  => $h,
-			)
-		);
+		if ( defined( 'AMP__VERSION' ) ) {
+			// Disable AMP tracking.
+			$h = __( 'If you use a separate system for JavaScript tracking on AMP pages (Tealium / Segment / Google Tag Manager / other tag manager solution) you may want to use that instead of having the plugin load the tracker.', 'wp-parsely' );
+			add_settings_field(
+				'disable_amp',
+				__( 'Disable AMP Tracking', 'wp-parsely' ),
+				array( $this, 'print_binary_radio_tag' ),
+				Parsely::MENU_SLUG,
+				'basic_settings',
+				array(
+					'title'      => __( 'Disable AMP Tracking', 'wp-parsely' ), // Passed for legend element.
+					'option_key' => 'disable_amp',
+					'help_text'  => $h,
+				)
+			);
+		}
 
 		// These are the Requires Recrawl Settings.
 		add_settings_section(
@@ -703,6 +705,16 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 			);
 		} else {
 			$input['disable_javascript'] = 'true' === $input['disable_javascript'];
+		}
+
+		// Allow for Disable AMP setting to be conditionally included on the page.
+		// If it's not shown, then set the value as what was previously saved.
+		if ( null === $input['disable_amp'] ) {
+			$options              = $this->parsely->get_options();
+			$input['disable_amp'] = 'true';
+			if ( false === $options['disable_amp'] ) {
+				$input['disable_amp'] = 'false';
+			}
 		}
 
 		if ( 'true' !== $input['disable_amp'] && 'false' !== $input['disable_amp'] ) {
