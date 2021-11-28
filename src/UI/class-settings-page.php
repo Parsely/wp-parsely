@@ -450,7 +450,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 	 * @param array $args The arguments for the form field. May contain 'help_text'.
 	 */
 	public function print_description_text( $args ) {
-		echo isset( $args['help_text'] ) ? '<p class="description">' . wp_kses_post( $args['help_text'] ) . '</p>' : '';
+		echo isset( $args['help_text'] ) ? '<p class="description" id="' . esc_attr( $args['option_key'] ) . '-description">' . wp_kses_post( $args['help_text'] ) . '</p>' : '';
 	}
 
 	/**
@@ -470,6 +470,9 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		$accepted_args = array( 'placeholder', 'required' );
 
 		echo sprintf( "<input type='text' name='%s' id='%s' value='%s'", esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
+		if ( $args['help_text'] ) {
+			echo ' aria-describedby="' . esc_attr( $id ) . '-description"';
+		}
 		foreach ( $optional_args as $key => $val ) {
 			if ( \in_array( $key, $accepted_args, true ) ) {
 				echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
@@ -494,6 +497,9 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		$name    = Parsely::OPTIONS_KEY . "[$id]";
 
 		echo sprintf( "<input type='checkbox' name='%s' id='%s_true' value='true' ", esc_attr( $name ), esc_attr( $id ) );
+		if ( $args['help_text'] ) {
+			echo ' aria-describedby="' . esc_attr( $id ) . '-description"';
+		}
 		echo checked( true === $value, true, false );
 		echo sprintf( " /> <label for='%s_true'>%s</label>", esc_attr( $id ), esc_html__( 'Yes', 'wp-parsely' ) );
 
@@ -514,7 +520,11 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		$id             = esc_attr( $name );
 		$name           = Parsely::OPTIONS_KEY . "[$id]";
 
-		echo sprintf( "<select name='%s' id='%s'>", esc_attr( $name ), esc_attr( $name ) );
+		echo sprintf( "<select name='%s' id='%s'", esc_attr( $name ), esc_attr( $name ) );
+		if ( $args['help_text'] ) {
+			echo ' aria-describedby="' . esc_attr( $id ) . '-description"';
+		}
+		echo '>';
 
 		foreach ( $select_options as $key => $val ) {
 			echo '<option value="' . esc_attr( $key ) . '" ';
