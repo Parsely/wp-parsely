@@ -1,6 +1,7 @@
 name: End-to-end (e2e) Tests
 
 on:
+  # Run on all pull requests.
   pull_request:
   push:
     branches:
@@ -19,29 +20,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f # v2.3.4
+      - name: Checkout code
+      - uses: actions/checkout@v2
 
       - name: Use desired version of NodeJS
-        uses: actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f # v2.2.2
+        uses: actions/setup-node@v2
         with:
           node-version: 16
           cache: npm
 
-      - name: Npm install and build
+      - name: Npm install
         run: |
           npm ci
           npm install -g @wordpress/env
+
       - name: Install WordPress
         run: |
           wp-env start
+
       - name: Running the tests
         run: |
           $( npm bin )/wp-scripts test-e2e --listTests > ~/.jest-e2e-tests
           $( npm bin )/wp-scripts test-e2e --cacheDirectory="$HOME/.jest-cache"
-      - name: Archive debug artifacts (screenshots, HTML snapshots)
-        uses: actions/upload-artifact@e448a9b857ee2131e752b06002bf0e093c65e571 # v2.2.2
-        if: always()
-        with:
-          name: failures-artifacts
-          path: artifacts
-          if-no-files-found: ignore
