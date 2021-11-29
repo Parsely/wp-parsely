@@ -50,7 +50,6 @@ const checkForNonActiveWidgetText = async () => {
 };
 
 describe( 'Recommended widget', () => {
-	jest.setTimeout(60000);
 	beforeAll( () => {
 		page.once( 'dialog', async function( dialog ) {
 			await dialog.accept();

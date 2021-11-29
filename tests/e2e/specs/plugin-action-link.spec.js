@@ -13,7 +13,6 @@ import {
 import { waitForWpAdmin } from '../utils';
 
 describe( 'Plugin action link', () => {
-	jest.setTimeout(60000);
 	it( 'Should link to plugin settings page', async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
