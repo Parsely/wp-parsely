@@ -45,9 +45,9 @@ jobs:
           - php: '8.1'
             coverage: none
             experimental: false
-          - php: '8.2'
-            coverage: none
-            experimental: true
+          # - php: '8.2'
+          #  coverage: none
+          #  experimental: true
       fail-fast: false
     continue-on-error: ${{ matrix.experimental }}
     steps:
@@ -68,15 +68,14 @@ jobs:
       - name: Setup Problem Matchers for PHPUnit
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-      - name: Install Composer dependencies for PHP < 8.2
-        if: ${{ matrix.php < 8.2 }}
+      - name: Install Composer dependencies
         uses: ramsey/composer-install@v1
 
-      - name: Install Composer dependencies for PHP >= 8.2
-        if: ${{ matrix.php >= 8.2 }}
-        uses: ramsey/composer-install@v1
-        with:
-          composer-options: --ignore-platform-reqs
+      # - name: Install Composer dependencies for PHP >= 8.2
+      #  if: ${{ matrix.php >= 8.2 }}
+      #  uses: ramsey/composer-install@v1
+      #  with:
+      #    composer-options: --ignore-platform-reqs
 
       - name: Start MySQL Service
         run: sudo systemctl start mysql.service
