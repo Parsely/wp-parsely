@@ -71,18 +71,18 @@ describe( 'Recommended widget', () => {
 		await checkForNonActiveWidgetText();
 	} );
 
-	it( 'Widget should be available but inactive without api secret', async () => {
-		await loginUser();
-		await activatePlugin( 'wp-parsely' );
-		await changeKeysState( true, false );
-
-		await visitAdminPage( '/widgets.php', '' );
-		await waitForWpAdmin();
-
-		await closeWidgetScreenModal();
-		await searchForParselyWidget();
-		await selectParselyWidgetFromWidgetSearch();
-
-		await checkForNonActiveWidgetText();
-	} );
+	// it( 'Widget should be available but inactive without api secret', async () => {
+	// 	await loginUser();
+	// 	await activatePlugin( 'wp-parsely' );
+	// 	await changeKeysState( true, false );
+	//
+	// 	await visitAdminPage( '/widgets.php', '' );
+	// 	await waitForWpAdmin();
+	//
+	// 	await closeWidgetScreenModal();
+	// 	await searchForParselyWidget();
+	// 	await selectParselyWidgetFromWidgetSearch();
+	//
+	// 	await checkForNonActiveWidgetText();
+	// } );
 } );
