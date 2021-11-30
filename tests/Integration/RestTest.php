@@ -72,13 +72,13 @@ final class RestTest extends TestCase {
 
 		$expected_fields = array( 'get_callback', 'update_callback', 'schema' );
 
-		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['post']['parsely-meta'] ) );
-		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['page']['parsely-meta'] ) );
+		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['post']['parsely'] ) );
+		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['page']['parsely'] ) );
 
-		$this->assertNull( $wp_rest_additional_fields['post']['parsely-meta']['update_callback'] );
-		$this->assertNull( $wp_rest_additional_fields['page']['parsely-meta']['update_callback'] );
+		$this->assertNull( $wp_rest_additional_fields['post']['parsely']['update_callback'] );
+		$this->assertNull( $wp_rest_additional_fields['page']['parsely']['update_callback'] );
 
-		$this->assertNull( $wp_rest_additional_fields['post']['parsely-meta']['schema'] );
-		$this->assertNull( $wp_rest_additional_fields['page']['parsely-meta']['schema'] );
+		$this->assertNull( $wp_rest_additional_fields['post']['parsely']['schema'] );
+		$this->assertNull( $wp_rest_additional_fields['page']['parsely']['schema'] );
 	}
 }

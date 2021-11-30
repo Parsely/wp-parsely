@@ -77,7 +77,10 @@ class Rest {
 			);
 		};
 
-		$args = array( 'get_callback' => $callback );
-		register_rest_field( array( 'post', 'page' ), self::PARSELY_META_REST_FIELD_NAME, $args );
+		$options     = $this->parsely->get_options();
+		$object_type = array_merge( $options['track_post_types'], $options['track_page_types'] );
+		$args        = array( 'get_callback' => $callback );
+
+		register_rest_field( $object_type, self::PARSELY_META_REST_FIELD_NAME, $args );
 	}
 }
