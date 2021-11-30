@@ -18,7 +18,8 @@ use WP_Post;
  * @since 3.1.0
  */
 class Rest {
-	private const PARSELY_META_REST_FIELD_NAME = 'parsely-meta';
+	private const PARSELY_REST_VERSION         = '1.0.0';
+	private const PARSELY_META_REST_FIELD_NAME = 'parsely';
 
 	/**
 	 * Instance of Parsely class.
@@ -68,11 +69,15 @@ class Rest {
 			$post_id = $object['id'];
 			$options = $this->parsely->get_options();
 			$post    = WP_Post::get_instance( $post_id );
-			return $this->parsely->construct_parsely_metadata( $options, $post );
+			$meta    = $this->parsely->construct_parsely_metadata( $options, $post );
+
+			return array(
+				'version' => self::PARSELY_REST_VERSION,
+				'meta'    => $meta,
+			);
 		};
 
 		$args = array( 'get_callback' => $callback );
-		register_rest_field( 'post', self::PARSELY_META_REST_FIELD_NAME, $args );
-		register_rest_field( 'page', self::PARSELY_META_REST_FIELD_NAME, $args );
+		register_rest_field( array( 'post', 'page' ), self::PARSELY_META_REST_FIELD_NAME, $args );
 	}
 }
