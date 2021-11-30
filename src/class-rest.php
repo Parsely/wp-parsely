@@ -18,8 +18,8 @@ use WP_Post;
  * @since 3.1.0
  */
 class Rest {
-	private const PARSELY_REST_VERSION         = '1.0.0';
-	private const PARSELY_META_REST_FIELD_NAME = 'parsely';
+	private const PARSELY_REST_VERSION    = '1.0.0';
+	private const PARSELY_REST_FIELD_NAME = 'parsely';
 
 	/**
 	 * Instance of Parsely class.
@@ -78,9 +78,9 @@ class Rest {
 		};
 
 		$options     = $this->parsely->get_options();
-		$object_type = array_merge( $options['track_post_types'], $options['track_page_types'] );
+		$object_type = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 		$args        = array( 'get_callback' => $callback );
 
-		register_rest_field( $object_type, self::PARSELY_META_REST_FIELD_NAME, $args );
+		register_rest_field( $object_type, self::PARSELY_REST_FIELD_NAME, $args );
 	}
 }
