@@ -28,43 +28,26 @@ Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://
 
 ## Installation
 
-The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results.
-[Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
+The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results. [Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
 ### Install the plugin from within WordPress
 
 1. Visit the Plugins page from your WordPress dashboard and click "Add New" at the top of the page.
-1. Search for "parse.ly" using the search bar on the right side.
-1. Click "Install Now" to install the plugin.
-1. After it's installed, click "Activate" to activate the plugin on your site.
+1. Search for _parse.ly_ using the search bar on the right side.
+1. Click _Install Now_ to install the plugin.
+1. After it's installed, click _Activate_ to activate the plugin on your site.
 
 ### Install the plugin manually
 
-1. Download the plugin from WordPress.org or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
+1. Download the plugin from [WordPress.org](https://wordpress.org/plugins/wp-parsely/) or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
 1. Unzip the downloaded archive.
 1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
 1. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
-1. Click "Activate" to activate the plugin on your site.
+1. Click _Activate_ to activate the plugin on your site.
 
 ## Local development
 
-The easiest way to develop this plugin locally is by using the `wp-env` package. [It is an official WP.org package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) that spins up a Docker-based WordPress environment for plugin development.
-
-Having Docker running,
-
-```
-npm install
-
-# Start the environment
-npm run dev:start
-
-# Stop the environment
-npm run dev:stop
-```
-
-This will start up an environment in `localhost:8888`, running in the background.
-
-To develop for WordPress VIP sites, we recommend using [the WordPress VIP dev-env](https://docs.wpvip.com/technical-references/vip-local-development-environment/).
+To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING.md] file.
 
 ## Frequently Asked Questions
 
