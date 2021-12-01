@@ -21,7 +21,7 @@
 	margin-right: 15px;
 }
 
-.parsely-recommended-widget-entry:after {
+.parsely-recommended-widget-entry::after {
 	content: "";
 	display: table;
 	clear: both;
@@ -55,8 +55,9 @@
 	max-width: 100%;
 }
 
-@supports(display: grid){
-	.parsely-recommended-widget-entry:after {
+@supports (display: grid) {
+
+	.parsely-recommended-widget-entry::after {
 		display: none;
 		clear: initial;
 	}
