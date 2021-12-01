@@ -34,7 +34,7 @@
 
 .parsely-recommended-widget-title {
 	font-size: 1.1em;
-	font-weight: bold;
+	font-weight: 700; /* Bold */
 }
 
 .list-horizontal .parsely-recommended-widget-entry {
@@ -69,6 +69,17 @@
 		grid-template-columns: minmax(85px, auto) minmax(50%, auto);
 	}
 
+	.list-horizontal .parsely-recommended-widget-entry {
+		border: none;
+		display: block;
+		min-width: initial;
+		max-width: initial;
+		margin: 0;
+		padding: 0;
+		vertical-align: initial;
+		width: initial;
+	}
+
 	.display-thumbnail:not(.list-horizontal) .parsely-recommended-widget-entry {
 		display: contents;
 	}
@@ -84,16 +95,5 @@
 		grid-template-rows: auto;
 		grid-gap: 15px;
 		grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-	}
-
-	.list-horizontal .parsely-recommended-widget-entry {
-		border: none;
-		display: block;
-		min-width: initial;
-		max-width: initial;
-		margin: 0;
-		padding: 0;
-		vertical-align: initial;
-		width: initial;
 	}
 }
