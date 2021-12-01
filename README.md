@@ -28,31 +28,44 @@ Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://
 
 ## Installation
 
-The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results.
-[Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
+The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results. [Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
 ### Install the plugin from within WordPress
 
 1. Visit the Plugins page from your WordPress dashboard and click "Add New" at the top of the page.
-1. Search for "parse.ly" using the search bar on the right side.
-1. Click "Install Now" to install the plugin.
-1. After it's installed, click "Activate" to activate the plugin on your site.
+1. Search for _parse.ly_ using the search bar on the right side.
+1. Click _Install Now_ to install the plugin.
+1. After it's installed, click _Activate_ to activate the plugin on your site.
 
 ### Install the plugin manually
 
-1. Download the plugin from WordPress.org or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
+1. Download the plugin from [WordPress.org](https://wordpress.org/plugins/wp-parsely/) or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
 1. Unzip the downloaded archive.
 1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
 1. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
-1. Click "Activate" to activate the plugin on your site.
+1. Click _Activate_ to activate the plugin on your site.
 
 ## Local development
 
-The easiest way to develop this plugin locally is by using the `wp-env` package. [It is an official WP.org package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) that spins up a Docker-based WordPress environment for plugin development.
+To develop locally, you need to have installed in your system:
+
+- PHP 7.1 or later.
+- [Composer](https://getcomposer.org/).
+- Node JS 16 and NPM 7+. We recommend the use of [nvm](https://github.com/nvm-sh/nvm) as a version manager.
+- Docker.
+
+This plugin uses the `wp-env` package for local development and testing. [It is an official WP.org package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) that spins up a Docker-based WordPress environment for plugin development.
 
 Having Docker running,
 
 ```
+# Install PHP dependencies
+composer install
+
+# Use the correct Node version
+nvm use
+
+# Install JS dependencies
 npm install
 
 # Start the environment
@@ -62,9 +75,49 @@ npm run dev:start
 npm run dev:stop
 ```
 
-This will start up an environment in `localhost:8888`, running in the background.
+This will start up an environment in `localhost:8888`, running in the background. If you have any issue running the above commands, we recommend checking that you are running an up-to-date version of Docker on your system and that you don't have any other services running on ports 8888 and 8889.
+
+By default, WordPress will use the production built Javascript and CSS assets in the `build/` folder. That is OK if you don't plan on modifying those files. If you do, you can start a Node server that will compile them on the fly. Once you've done, we ask you to generate the production-ready (compressed) ones.
+
+```
+# Start development server
+npm start
+
+# Generate production files
+npm run build
+```
 
 To develop for WordPress VIP sites, we recommend using [the WordPress VIP dev-env](https://docs.wpvip.com/technical-references/vip-local-development-environment/).
+
+### Testing
+
+This plugin has multiple testing components, that have to be run individually. They all run automatically in CI.
+
+```
+# Front-end Javascript tests
+npm run test
+
+# PHP Unit Tests
+composer test
+
+# PHP Integration tests (you'll need a local instance of MySQL running)
+composer prepare-ci
+composer testwp
+```
+
+To run end-to-end tests, [please refer to their separate instructions](tests/e2e/README.md).
+
+### Linting
+
+This plugin is being linted using PHPCS. Pull Requests that are not compliant with the coding standards are rejected by CI. 
+
+```
+# Check for linting issues
+vendor/bin/phpcs
+
+# Fix automatically fixable issues
+vendor/bin/phpcbf
+```
 
 ## Frequently Asked Questions
 
