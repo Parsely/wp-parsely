@@ -31,6 +31,15 @@ jobs:
       - name: Install JavaScript dependencies
         run: npm ci
 
+      - name: Lint CSS code
+        run: npm run lint:css
+
+      - name: Lint package.json file
+        run: npm run lint:pkg-json
+
+      - name: Lint JS code
+        run: npm run lint:js
+
       - name: Build application
         run: npm run build
 
