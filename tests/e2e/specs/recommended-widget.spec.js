@@ -33,7 +33,7 @@ const selectParselyWidgetFromWidgetSearch = async () => {
 	await button.click();
 };
 
-const checkForNonActiveWidgetText = async () => {
+const getNonActiveWidgetText = async () => {
 	// Checking if Parse.ly widget is present in the widgets list
 	await page.waitForSelector( '.wp-block-legacy-widget__edit-form', {
 		visible: true,
@@ -44,9 +44,7 @@ const checkForNonActiveWidgetText = async () => {
 	await h3.click();
 
 	const widgetContent = await page.evaluateHandle( ( el ) => el.nextElementSibling, h3 );
-	const textContent = await page.evaluate( ( el ) => el.textContent, widgetContent );
-
-	expect( textContent ).toContain( deactivatedPluginWidgetText );
+	return page.evaluate( ( el ) => el.textContent, widgetContent );
 };
 
 describe( 'Recommended widget', () => {
@@ -68,7 +66,7 @@ describe( 'Recommended widget', () => {
 		await searchForParselyWidget();
 		await selectParselyWidgetFromWidgetSearch();
 
-		await checkForNonActiveWidgetText();
+		expect( getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
 	} );
 
 	it( 'Widget should be available but inactive without api secret', async () => {
@@ -83,6 +81,6 @@ describe( 'Recommended widget', () => {
 		await searchForParselyWidget();
 		await selectParselyWidgetFromWidgetSearch();
 
-		await checkForNonActiveWidgetText();
+		expect( getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
 	} );
 } );
