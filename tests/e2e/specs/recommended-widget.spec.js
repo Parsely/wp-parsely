@@ -66,7 +66,7 @@ describe( 'Recommended widget', () => {
 		await searchForParselyWidget();
 		await selectParselyWidgetFromWidgetSearch();
 
-		expect( getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
+		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
 	} );
 
 	it( 'Widget should be available but inactive without api secret', async () => {
@@ -81,6 +81,6 @@ describe( 'Recommended widget', () => {
 		await searchForParselyWidget();
 		await selectParselyWidgetFromWidgetSearch();
 
-		expect( getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
+		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
 	} );
 } );
