@@ -47,77 +47,7 @@ The plugin requires an active Parse.ly account. Parse.ly gives creators, markete
 
 ## Local development
 
-To develop locally, you need to have installed in your system:
-
-- PHP 7.1 or later.
-- [Composer](https://getcomposer.org/).
-- Node JS 16 and NPM 7+. We recommend the use of [nvm](https://github.com/nvm-sh/nvm) as a version manager.
-- Docker.
-
-This plugin uses the `wp-env` package for local development and testing. [It is an official WP.org package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) that spins up a Docker-based WordPress environment for plugin development.
-
-Having Docker running,
-
-```
-# Install PHP dependencies
-composer install
-
-# Use the correct Node version
-nvm use
-
-# Install JS dependencies
-npm install
-
-# Start the environment
-npm run dev:start
-
-# Stop the environment
-npm run dev:stop
-```
-
-This will start up an environment in `localhost:8888`, running in the background. If you have any issue running the above commands, we recommend checking that you are running an up-to-date version of Docker on your system and that you don't have any other services running on ports 8888 and 8889.
-
-By default, WordPress will use the production built JavaScript and CSS assets in the `build/` folder. That is OK if you don't plan on modifying those files. If you do, you can start a Node server that will compile them on the fly. Once you've done, we ask you to generate the production-ready (compressed) ones.
-
-```
-# Start development server
-npm start
-
-# Generate production files
-npm run build
-```
-
-To develop for WordPress VIP sites, we recommend using [the WordPress VIP dev-env](https://docs.wpvip.com/technical-references/vip-local-development-environment/).
-
-### Testing
-
-This plugin has multiple testing components, that have to be run individually. They all run automatically in CI.
-
-```
-# Front-end JavaScript tests
-npm run test
-
-# PHP Unit Tests
-composer test
-
-# PHP Integration tests (you'll need a local instance of MySQL running)
-composer prepare-ci
-composer testwp
-```
-
-To run end-to-end tests, [please refer to their separate instructions](tests/e2e/README.md).
-
-### Linting
-
-This plugin is being linted using PHPCS. Pull Requests that are not compliant with the coding standards are rejected by CI. 
-
-```
-# Check for linting issues
-vendor/bin/phpcs
-
-# Fix automatically fixable issues
-vendor/bin/phpcbf
-```
+To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING.md] file.
 
 ## Frequently Asked Questions
 
