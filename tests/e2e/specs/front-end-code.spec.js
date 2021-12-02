@@ -6,11 +6,11 @@ import {
 	createURL,
 	loginUser,
 } from '@wordpress/e2e-test-utils';
-import { changeKeysState, PLUGIN_VERSION } from '../utils';
 
 /**
  * Internal dependencies
  */
+import { changeKeysState, PLUGIN_VERSION } from '../utils';
 
 
 describe( 'Front end code insertion', () => {
