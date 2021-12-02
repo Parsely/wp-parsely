@@ -16,7 +16,7 @@ export const changeKeysState = async (activateApiKey, activateApiSecret ) => {
 	await page.evaluate( () => document.getElementById( 'api_secret' ).value = '' );
 	if ( activateApiSecret ) {
 		await page.focus( '#api_secret' );
-		await page.keyboad.type( 'somesecret' );
+		await page.keyboard.type( 'somesecret' );
 	}
 
 	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input' );
