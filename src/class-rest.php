@@ -78,18 +78,18 @@ class Rest {
 		};
 
 		$options     = $this->parsely->get_options();
-		$object_type = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
+		$object_types = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 
 		/**
 		 * Filters the list of author object types that the Parse.ly REST API is hooked into.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param string[] $object_type Array of strings containing the object types, i.e. `page`, `post`, `term`.
+		 * @param string[] $object_types Array of strings containing the object types, i.e. `page`, `post`, `term`.
 		 */
-		$object_type = apply_filters( 'wp_parsely_rest_object_type', $object_type );
+		$object_types = apply_filters( 'wp_parsely_rest_object_types', $object_types );
 
 		$args = array( 'get_callback' => $callback );
-		register_rest_field( $object_type, self::PARSELY_REST_FIELD_NAME, $args );
+		register_rest_field( $object_types, self::PARSELY_REST_FIELD_NAME, $args );
 	}
 }
