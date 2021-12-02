@@ -77,7 +77,7 @@ class Rest {
 			);
 		};
 
-		$options     = $this->parsely->get_options();
+		$options      = $this->parsely->get_options();
 		$object_types = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 
 		/**
