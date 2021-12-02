@@ -1,6 +1,6 @@
 # Getting Started
 
-Thank you for your interest in contributing to the Parse.ly plugin! We hope this document helps you get set up with everything you need to contribute and we look forward to working with you!
+Thank you for your interest in contributing to the Parse.ly plugin! We hope this document helps you get set up with everything you need to contribute, and we look forward to working with you!
 
 ## Reporting Bugs
 
@@ -12,7 +12,7 @@ When creating a new issue, please add specific steps to reproduce the problem, u
 
 ### Minimum required versions
 
-- Node.js - 14 (LTS)
+- Node.js - 16 (LTS)
 
   Node.js is used in the build process of the Parse.ly plugin. If it's not already installed on your system, you can [visit the Node.js website and install the latest Long Term Support (LTS) version.](https://nodejs.org/).
 
@@ -20,11 +20,12 @@ When creating a new issue, please add specific steps to reproduce the problem, u
 
   ```
   nvm install
+  nvm use
   ```
 
 - npm - 7
 
-  Node 14 ships with npm version 6, so you will need to update your version of npm. Once node is installed, update it with:
+  Node 16 ships with npm version 7, so you don't need to update it manually. In case you don't have the latest version, you can run:
 
   ```
   npm i -g npm
@@ -42,9 +43,54 @@ When creating a new issue, please add specific steps to reproduce the problem, u
 
 - WordPress - 5.0
 
+  You don't need to explicitely install WordPress if you use the provided, Docker-based wp-env.
+
+- Docker 
+
+  Docker installation depends on your OS. [Please follow their official instructions](https://docs.docker.com/get-docker/).
+
 ### Installing Dependencies
 
-Once you have Node.js, PHP, and Composer installed locally, you will need to run `composer install` in the main plugin directory to install the dependencies of the plugin needed to run tests and check coding standards.
+Once you have Node.js, PHP, and Composer installed locally, you will need to install dependencies in the main plugin directory to install the dependencies of the plugin needed to run tests and check coding standards.
+
+```
+# Install PHP dependencies
+composer install
+
+# Use the correct Node version
+nvm use
+
+# Install JS dependencies
+npm install
+```
+
+### Developing locally
+
+This plugin uses the `wp-env` package for local development and testing. [It is an official WP.org package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) that spins up a Docker-based WordPress environment for plugin development.
+
+Having Docker running,
+
+```
+# Start the environment
+npm run dev:start
+
+# Stop the environment
+npm run dev:stop
+```
+
+This will start up an environment in `localhost:8888`, running in the background. If you have any issue running the above commands, we recommend checking that you are running an up-to-date version of Docker on your system and that you don't have any other services running on ports 8888 and 8889.
+
+By default, WordPress will use the production built JavaScript and CSS assets in the `build/` folder. That is OK if you don't plan on modifying those files. If you do, you can start a Node server that will compile them on the fly. Once you've done, we ask you to generate the production-ready (compressed) ones.
+
+```
+# Start development server
+npm start
+
+# Generate production files
+npm run build
+```
+
+To develop for WordPress VIP sites, we recommend using [the WordPress VIP dev-env](https://docs.wpvip.com/technical-references/vip-local-development-environment/).
 
 ## Contributing Patches and New Features
 
@@ -108,6 +154,14 @@ To run with code coverage:
 ```
 composer coverage
 ```
+
+To run JavaScript front-end tests:
+
+```
+npm run test
+```
+
+To run end-to-end tests, [please refer to their separate instructions](tests/e2e/README.md).
 
 ## Building Included Assets
 

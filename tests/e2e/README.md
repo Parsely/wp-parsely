@@ -14,6 +14,8 @@ See this post for more information: https://make.wordpress.org/core/2019/06/27/i
 
 ## How to Run
 
+- Make sure you have the dependencies up to date by running `npm install`.
+
 - Provision the back end
 
   - Make sure [`docker` is installed](https://docs.docker.com/engine/install/).
