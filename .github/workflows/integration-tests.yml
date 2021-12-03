@@ -74,7 +74,7 @@ jobs:
 
       - name: Start MySQL Service for PHP <= 7.3
         if: ${{ matrix.php <= 7.3 }}
-        run: echo -e "default_authentication_plugin=mysql_native_password" >> "$HOME/.my.cnf"
+        run: echo -e "[mysqld]\n default_authentication_plugin=mysql_native_password" >> "$HOME/.my.cnf"
 
       - name: Start MySQL Service
         run: sudo systemctl start mysql.service
