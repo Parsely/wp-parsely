@@ -4,7 +4,7 @@ export const PLUGIN_VERSION = '3.1.0-alpha';
 
 export const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
 
-export const changeKeysState = async (activateApiKey, activateApiSecret ) => {
+export const changeKeysState = async ( activateApiKey, activateApiSecret ) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
 
 	await page.evaluate( () => document.getElementById( 'apikey' ).value = '' );
