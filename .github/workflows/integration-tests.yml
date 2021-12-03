@@ -13,18 +13,6 @@ jobs:
     name: PHP ${{ matrix.php }}
     runs-on: ubuntu-20.04
 
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_DATABASE: wordpress_test
-          MYSQL_USER: root
-          MYSQL_PASSWORD: root
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - 33306:3306
-        # options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
     env:
       WP_VERSION: latest
 
@@ -56,9 +44,7 @@ jobs:
           #  coverage: none
           #  experimental: true
       fail-fast: false
-
     continue-on-error: ${{ matrix.experimental }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -85,6 +71,13 @@ jobs:
       #  uses: ramsey/composer-install@v1
       #  with:
       #    composer-options: --ignore-platform-reqs
+
+      - name: Start MySQL Service
+        run: sudo systemctl start mysql.service
+
+      - name: Start MySQL Service for PHP <= 7.3
+        if: ${{ matrix.php <= 7.3 }}
+        run: mysql -e "ALTER USER root IDENTIFIED WITH mysql_native_password BY 'mypassword';"
 
       - name: Prepare environment for integration tests
         run: composer prepare-ci
