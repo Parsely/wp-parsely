@@ -14,20 +14,20 @@ See this post for more information: https://make.wordpress.org/core/2019/06/27/i
 
 ## How to Run
 
+- Make sure you have the dependencies up to date by running `npm install`.
+
 - Provision the back end
 
   - Make sure [`docker` is installed](https://docs.docker.com/engine/install/).
   - From the `wp-content/plugins/wp-parsely` directory, run:
 
-    `docker compose -f tests/e2e/docker-compose.yml up`
-
-    Tip: if you `cd` into this directory, you can simply run `docker compose` and omit the `-f tests/e2e/docker-compose.yml` from these commands.
-
+    `npm run dev:start`
+  
   - Once you see a line that says:
 
-    `Success: WordPress installed successfully.`
+    `✔ Done! (in XXXs YYYms)`
 
-    ...and a tailing HTTP server log, you may proceed.
+    ...you may proceed.
 
 - Run the tests:
 
@@ -35,31 +35,21 @@ See this post for more information: https://make.wordpress.org/core/2019/06/27/i
 
     `npm run test:e2e`
 
-    ...in a different terminal window. This will run the test suite using a headless browser.
+    This will run the test suite using a headless browser.
 
   - For debugging purpose, you might want to follow the test visually. You can do so by running the tests in an interactive mode:
 
-    `npm run test:e2e -- --puppeteer-interactive`
+    `npm run test:e2e:interactive`
 
   - You can also run a given test file separately:
 
     `npm run test:e2e tests/e2e/specs/activation-flow.spec.js`
 
-- Repeat
-
-  - The tests currently expect a "pristine" WordPress environment, so if you want to run them multiple times, you'll need to recreate the WordPress environment like so:
-
-    `docker compose -f tests/e2e/docker-compose.yml run cli /var/www/html/wp-content/plugins/wp-parsely/tests/e2e/init-e2e.sh reset`
-
-    In the future, this will likely be built into the test suite set up to enable easier test development.
-
 - Finish Up
 
 When you're finished testing, the back end containers and storage can be dispatched with like so:
 
-`docker-compose down -v`
-
-Please note: the **mysql database storage is not persisted** to a docker volume, so its contents will be lost even if you omit the `-v` flag.
+	`npm run dev:stop`
 
 ### E2E test utilities
 
@@ -71,4 +61,4 @@ We currently have:
 
 ### CI / Automated Testing
 
-These tests are hooked in to a Github workflow called [End-to-end (e2e) Tests](../../.github/workflows/e2e-tests.yml). It uses the same The [docker-compose configuration](./docker-compose.yml) mentioned above to spin up a WordPress environment to test against.
+These tests are hooked in to a GitHub workflow called [End-to-end (e2e) Tests](../../.github/workflows/e2e-tests.yml). It uses the same environment mentioned above to spin up a WordPress environment to test against.
