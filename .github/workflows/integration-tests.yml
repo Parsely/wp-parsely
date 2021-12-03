@@ -7,16 +7,11 @@ on:
     paths-ignore:
       - '**.md'
   pull_request:
-  # Allow manually triggering the workflow.
-  workflow_dispatch:
 
 jobs:
   test:
     name: PHP ${{ matrix.php }}
-    # ubuntu-20.04 / ubuntu-latest includes MySQL 8, which has issues with PHP < 7.4. Has PHP 7.4-8.0
-    # ubuntu-18.04 includes PHP versions 7.1-8.0.
-    # See https://setup-php.com/i/452
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     env:
       WP_VERSION: latest
@@ -80,12 +75,17 @@ jobs:
       - name: Start MySQL Service
         run: sudo systemctl start mysql.service
 
+      - name: Setting mysql_native_password for PHP <= 7.3
+        if: ${{ matrix.php <= 7.3 }}
+        run: mysql -u root -proot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+
       - name: Prepare environment for integration tests
         run: composer prepare-ci
 
       - name: Run integration tests (single site)
         if: ${{ matrix.php != 8.0 }}
         run: composer testwp
+
       - name: Run integration tests (multisite site with code coverage)
         if: ${{ matrix.php == 8.0 }}
         run: composer coveragewp-ci
