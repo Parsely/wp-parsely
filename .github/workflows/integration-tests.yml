@@ -7,13 +7,16 @@ on:
     paths-ignore:
       - '**.md'
   pull_request:
-  # Allow manually triggering the workflow.
-  workflow_dispatch:
 
 jobs:
   test:
     name: PHP ${{ matrix.php }}
     runs-on: ubuntu-20.04
+
+    services:
+      mysql:
+        image: mysql:8
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5 -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=root -e MYSQL_PASSWORD=root -e MYSQL_DATABASE=wordpress_test --entrypoint sh mysql:8 -c "exec docker-entrypoint.sh mysqld --default-authentication-plugin=mysql_native_password"
 
     env:
       WP_VERSION: latest
@@ -46,7 +49,9 @@ jobs:
           #  coverage: none
           #  experimental: true
       fail-fast: false
+
     continue-on-error: ${{ matrix.experimental }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -74,20 +79,13 @@ jobs:
       #  with:
       #    composer-options: --ignore-platform-reqs
 
-      - name: Start MySQL Service
-        if: ${{ matrix.php > 7.3 }}
-        run: sudo systemctl start mysql.service
-
-      - name: Start MySQL Service for PHP <= 7.3
-        if: ${{ matrix.php <= 7.3 }}
-        run: sudo systemctl start mysql.service --default-authentication-plugin=mysql_native_password
-
       - name: Prepare environment for integration tests
         run: composer prepare-ci
 
       - name: Run integration tests (single site)
         if: ${{ matrix.php != 8.0 }}
         run: composer testwp
+
       - name: Run integration tests (multisite site with code coverage)
         if: ${{ matrix.php == 8.0 }}
         run: composer coveragewp-ci
