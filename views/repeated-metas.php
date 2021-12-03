@@ -10,6 +10,8 @@
 
 declare(strict_types=1);
 
+namespace Parsely;
+
 foreach ( $parsely_metas as $parsely_meta_key => $parsely_meta_val ) {
 	printf(
 		'<meta name="%s" content="%s" />%s',
@@ -28,4 +30,3 @@ if ( isset( $parsely_page_authors ) ) {
 		);
 	}
 }
-

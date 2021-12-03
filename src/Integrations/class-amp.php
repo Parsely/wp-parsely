@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Integrations;
 
-use Parsely;
+use Parsely\Parsely;
 
 /**
  * Integrates Parse.ly tracking with the AMP plugin.
@@ -35,8 +35,6 @@ class Amp implements Integration {
 	 * Verify if request is an AMP request.
 	 *
 	 * This is needed to make it easier to mock whether the function exists ot not during tests.
-	 *
-	 * @codeCoverageIgnore
 	 *
 	 * @since 2.6.0
 	 *
@@ -81,7 +79,7 @@ class Amp implements Integration {
 	 * @param array $analytics The analytics registry.
 	 * @return array The analytics registry.
 	 */
-	public function register_parsely_for_amp_analytics( $analytics ): array {
+	public function register_parsely_for_amp_analytics( array $analytics ): array {
 		$options = get_option( Parsely::OPTIONS_KEY );
 
 		if ( empty( $options['apikey'] ) ) {
@@ -109,7 +107,7 @@ class Amp implements Integration {
 	 * @param array $analytics The analytics registry.
 	 * @return array The analytics registry.
 	 */
-	public function register_parsely_for_amp_native_analytics( $analytics ): array {
+	public function register_parsely_for_amp_native_analytics( array $analytics ): array {
 		$options = get_option( Parsely::OPTIONS_KEY );
 
 		if ( ! empty( $options['disable_amp'] ) && true === $options['disable_amp'] ) {

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use Parsely\Parsely;
 use WP_Error;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
 
@@ -37,17 +38,18 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param array $custom_options Associative array of option keys and values that should be saved.
 	 */
-	public static function set_options( $custom_options = array() ): void {
-		update_option( \Parsely::OPTIONS_KEY, array_merge( self::DEFAULT_OPTIONS, $custom_options ) );
+	public static function set_options( array $custom_options = array() ): void {
+		update_option( Parsely::OPTIONS_KEY, array_merge( self::DEFAULT_OPTIONS, $custom_options ) );
 	}
 
 	/**
 	 * Create a test post.
 	 *
 	 * @param string $post_type Optional. Post type. Default is 'post'.
+	 *
 	 * @return array An array of WP_Post fields.
 	 */
-	public function create_test_post_array( $post_type = 'post' ): array {
+	public function create_test_post_array( string $post_type = 'post' ): array {
 		return array(
 			'post_title'   => 'Sample Parsely Post',
 			'post_author'  => 1,
@@ -63,7 +65,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $name Category name.
 	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
 	 */
-	public function create_test_category( $name ) {
+	public function create_test_category( string $name ) {
 		return $this->factory->category->create(
 			array(
 				'name'                 => $name,
@@ -80,7 +82,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $user_login The user's login username.
 	 * @return int|WP_Error The newly created user's ID or a WP_Error object if the user could not be created.
 	 */
-	public function create_test_user( $user_login ) {
+	public function create_test_user( string $user_login ) {
 		return $this->factory->user->create( array( 'user_login' => $user_login ) );
 	}
 
@@ -89,10 +91,10 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string $domain  Site second-level domain without a .com TLD e.g. 'example' will
 	 *                        result in a new subsite of 'http://example.com'.
-	 * @param string $user_id User ID for the site administrator.
+	 * @param int    $user_id User ID for the site administrator.
 	 * @return int|WP_Error The site ID on success, WP_Error object on failure.
 	 */
-	public function create_test_blog( $domain, $user_id ) {
+	public function create_test_blog( string $domain, int $user_id ) {
 		return $this->factory->blog->create(
 			array(
 				'domain'  => 'http://' . $domain . 'com',
@@ -108,7 +110,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $term_name    The term name to add.
 	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
 	 */
-	public function create_test_taxonomy( $taxonomy_key, $term_name ) {
+	public function create_test_taxonomy( string $taxonomy_key, string $term_name ) {
 		register_taxonomy(
 			$taxonomy_key,
 			'post',
@@ -135,7 +137,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @return \ReflectionMethod
 	 * @throws \ReflectionException The method does not exist in the class.
 	 */
-	public static function getMethod( $method_name, $class_name = 'Parsely' ): \ReflectionMethod {
+	public static function getMethod( string $method_name, string $class_name = Parsely::class ): \ReflectionMethod {
 		$class  = new \ReflectionClass( $class_name );
 		$method = $class->getMethod( $method_name );
 		$method->setAccessible( true );

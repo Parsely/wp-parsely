@@ -7,32 +7,34 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\StructuredData;
+namespace Parsely\Tests\Integration\StructuredData;
+
+use Parsely\Parsely;
 
 /**
  * Structured Data Tests for the custom post type (archive).
  *
  * @see https://www.parse.ly/help/integration/jsonld
- * @covers \Parsely::construct_parsely_metadata
+ * @covers \Parsely\Parsely::construct_parsely_metadata
  */
 final class CustomPostTypeArchiveTest extends NonPostTestCase {
 	/**
 	 * Check metadata for custom post type archive.
 	 *
-	 * @covers \Parsely::construct_parsely_metadata
-	 * @uses \Parsely::__construct
-	 * @uses \Parsely::get_author_name
-	 * @uses \Parsely::get_author_names
-	 * @uses \Parsely::get_bottom_level_term
-	 * @uses \Parsely::get_category_name
-	 * @uses \Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely::get_coauthor_names
-	 * @uses \Parsely::get_current_url
-	 * @uses \Parsely::get_first_image
-	 * @uses \Parsely::get_options
-	 * @uses \Parsely::get_tags
-	 * @uses \Parsely::post_has_trackable_status
-	 * @uses \Parsely::update_metadata_endpoint
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::get_author_name
+	 * @uses \Parsely\Parsely::get_author_names
+	 * @uses \Parsely\Parsely::get_bottom_level_term
+	 * @uses \Parsely\Parsely::get_category_name
+	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely\Parsely::get_coauthor_names
+	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Parsely::get_first_image
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_metadata_is_correctly_constructed_for_custom_post_type_archive(): void {
@@ -41,8 +43,8 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 		$this->set_permalink_structure( '/%postname%/' );
 
 		// Setup Parsley object.
-		$parsely         = new \Parsely();
-		$parsely_options = get_option( \Parsely::OPTIONS_KEY );
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
 		// Register Post Type with specific archive URL.
 		register_post_type(

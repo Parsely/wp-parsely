@@ -1,6 +1,6 @@
 # Parse.ly
 
-Stable tag: 3.0.0-alpha
+Stable tag: 3.1.0-alpha  
 Requires at least: 5.0  
 Tested up to: 5.8  
 Requires PHP: 7.1  
@@ -26,31 +26,28 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
 
-## wp-parsely 3.0 upgrade notice
-
-The `2.6` branch will be the last one of the wp-parsely plugin to have PHP `5.6` and WordPress `4.0` as a minium requirement. **When the next major version is released, `3.0`, the minimum requirements will be bumped to PHP `7.1` and WordPress `5.0`.**
-
-Once `3.0` gets released, the `2.6` branch will not be supported and will not receive any updates, including new features and security issues. Therefore, we strongly recommend all `wp-parsely` users to upgrade to PHP 7.1 or higher and WordPress 5.0 or higher. It is important to point out that those are *minimum* requirements, so newer versions of PHP and WordPress are encouraged. 
-
 ## Installation
 
-The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results.
-[Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
+The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results. [Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
 ### Install the plugin from within WordPress
 
 1. Visit the Plugins page from your WordPress dashboard and click "Add New" at the top of the page.
-1. Search for "parse.ly" using the search bar on the right side.
-1. Click "Install Now" to install the plugin.
-1. After it's installed, click "Activate" to activate the plugin on your site.
+1. Search for _parse.ly_ using the search bar on the right side.
+1. Click _Install Now_ to install the plugin.
+1. After it's installed, click _Activate_ to activate the plugin on your site.
 
 ### Install the plugin manually
 
-1. Download the plugin from WordPress.org or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
+1. Download the plugin from [WordPress.org](https://wordpress.org/plugins/wp-parsely/) or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
 1. Unzip the downloaded archive.
 1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
 1. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
-1. Click "Activate" to activate the plugin on your site.
+1. Click _Activate_ to activate the plugin on your site.
+
+## Local development
+
+To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING.md] file.
 
 ## Frequently Asked Questions
 
@@ -80,7 +77,7 @@ This filter can go anywhere in your codebase, provided it always gets loaded.
 
 It is! The plugin hooks into Automattic's official plugins for [AMP](https://wordpress.org/plugins/amp/) and [Facebook Instant Articles](https://wordpress.org/plugins/fb-instant-articles/).
 
-AMP support is enabled automatically if the Automattic AMP plugin is installed
+AMP support is enabled automatically if the Automattic AMP plugin is installed.
 
 For Facebook Instant Articles support, enable "Parsely Analytics" in the "Advanced Settings" menu of the Facebook Instant Articles plugin.
 
@@ -92,9 +89,15 @@ Some common use-cases for dynamic tracking are slideshows or articles loaded via
 
 Tracking these events requires manually implementing additional JavaScript above [the standard Parse.ly include](http://www.parsely.com/help/integration/basic/) that the plugin injects into your page source. Please consult [the Parse.ly documentation on dynamic tracking](https://www.parsely.com/help/integration/dynamic/) for instructions on implementing dynamic tracking, or contact Parse.ly support for additional assistance.
 
-### How do I create a local dev environment to make changes to the `wp-parsely` code?
+### Cloudflare support
 
-See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin-development-environment).
+If the site is running behind a Cloudflare DNS, their Rocket Loader technology will alter how JavaScript files are loaded. [A JavaScript file can be ignored by Rocket Loader](https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts) by using `data-cfasync="false"`.
+
+Previous versions of this plugin would mark all scripts with that tag by default. Starting in version 3.0, that behavior has become optional and scripts won't be annotated with `data-cfasync="false"`. The previous behavior can be restored by adding the following filter:
+
+```
+add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
+```
 
 ## Screenshots
 
@@ -110,27 +113,19 @@ See [the wiki](https://github.com/Parsely/wp-parsely/wiki/Setting-up-a-WP-plugin
 
 The standard Parse.ly JavaScript tracker inserted before the closing `body` tag:
 
-    <!-- START Parse.ly Include: Standard -->
-
-       <script data-cfasync="false" id="parsely-cfg" data-parsely-site="example.com" src="https://cdn.parsely.com/keys/example.com/p.js"></script>
-
-    <!-- END Parse.ly Include: Standard -->
+    <script id="parsely-cfg" data-parsely-site="example.com" src="https://cdn.parsely.com/keys/example.com/p.js"></script>
 
 A sample `JSON-LD` structured data for a home page or section page:
 
-    <!-- BEGIN Parse.ly 2.5.0 -->
     <script type="application/ld+json">
     {"@context":"http:\/\/schema.org","@type":"WebPage","headline":"WordPress VIP","url":"http:\/\/wpvip.com\/"}
     </script>
-    <!-- END Parse.ly -->
 
 A sample `JSON-LD` meta tag and structured data for an article or post:
 
-    <!-- BEGIN Parse.ly 2.5.0 -->
     <script type="application/ld+json">
-        {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
+    {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
     </script>
-    <!-- END Parse.ly -->
 
 ## Changelog
 

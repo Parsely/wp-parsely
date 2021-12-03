@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely class
+ * Parsely plugins actions class
  *
  * @package Parsely
  * @since 2.6.0
@@ -10,14 +10,16 @@ declare(strict_types=1);
 
 namespace Parsely\UI;
 
-use Parsely;
+use Parsely\Parsely;
+
+use const Parsely\PARSELY_FILE;
 
 /**
  * User Interface changes for the plugins actions.
  *
  * @since 2.6.0
  */
-class Plugins_Actions {
+final class Plugins_Actions {
 
 	/**
 	 * Register action and filter hook callbacks.
@@ -36,7 +38,7 @@ class Plugins_Actions {
 	 *                       'network_active' and 'network_only' items.
 	 * @return array
 	 */
-	public function add_plugin_meta_links( $actions ): array {
+	public function add_plugin_meta_links( array $actions ): array {
 		$settings_link = sprintf(
 			'<a href="%s">%s</a>',
 			esc_url( Parsely::get_settings_url() ),
