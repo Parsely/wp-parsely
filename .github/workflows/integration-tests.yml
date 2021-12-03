@@ -75,7 +75,12 @@ jobs:
       #    composer-options: --ignore-platform-reqs
 
       - name: Start MySQL Service
+        if: ${{ matrix.php > 7.3 }}
         run: sudo systemctl start mysql.service
+
+      - name: Start MySQL Service for PHP <= 7.3
+        if: ${{ matrix.php <= 7.3 }}
+        run: sudo systemctl start mysql.service --default-authentication-plugin=mysql_native_password
 
       - name: Prepare environment for integration tests
         run: composer prepare-ci
