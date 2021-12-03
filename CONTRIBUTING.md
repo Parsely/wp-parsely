@@ -112,6 +112,30 @@ For JavaScript we recommend installing ESLint. This plugin includes a [.eslintrc
 
 If you haven't installed Composer, you will need to do that first.
 
+To lint your JS code:
+
+```
+npm run lint:js
+
+# Fix automatically fixable issues
+npm run lint:js -- --fix
+```
+
+To lint your CSS code:
+
+```
+npm run lint:css
+
+# Fix automatically fixable issues
+npm run lint:css -- --fix
+```
+
+To lint package.json:
+
+```
+npm run lint:pkg-json
+```
+
 To lint your PHP code:
 
 ```

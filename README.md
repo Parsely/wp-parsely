@@ -47,7 +47,7 @@ The plugin requires an active Parse.ly account. Parse.ly gives creators, markete
 
 ## Local development
 
-To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING.md] file.
+To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](CONTRIBUTING.md) file.
 
 ## Frequently Asked Questions
 
