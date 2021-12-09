@@ -81,4 +81,23 @@ final class RestTest extends TestCase {
 		$this->assertNull( $wp_rest_additional_fields['post']['parsely']['schema'] );
 		$this->assertNull( $wp_rest_additional_fields['page']['parsely']['schema'] );
 	}
+
+	/**
+	 * Test that the REST fields are can be modified using the `wp_parsely_rest_object_types` filter.
+	 *
+	 * @covers \Parsely\Rest\register_parsely_meta
+	 */
+	public function test_register_parsely_meta_with_filter() {
+		global $wp_rest_additional_fields;
+
+		add_filter( 'wp_parsely_rest_object_types', function($object_types) {
+			return array('term');
+		});
+
+		self::$rest->register_parsely_meta();
+
+		$expected_fields = array( 'get_callback', 'update_callback', 'schema' );
+
+		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['post']['parsely'] ) );
+	}
 }
