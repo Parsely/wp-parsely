@@ -90,9 +90,12 @@ final class RestTest extends TestCase {
 	public function test_register_parsely_meta_with_filter() {
 		global $wp_rest_additional_fields;
 
-		add_filter( 'wp_parsely_rest_object_types', function($object_types) {
-			return array('term');
-		});
+		add_filter(
+			'wp_parsely_rest_object_types',
+			function( $object_types ) {
+				return array( 'term' );
+			}
+		);
 
 		self::$rest->register_parsely_meta();
 
