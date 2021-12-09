@@ -98,6 +98,6 @@ final class RestTest extends TestCase {
 
 		$expected_fields = array( 'get_callback', 'update_callback', 'schema' );
 
-		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['post']['parsely'] ) );
+		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['term']['parsely'] ) );
 	}
 }
