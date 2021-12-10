@@ -75,11 +75,18 @@ final class RestTest extends TestCase {
 		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['post']['parsely'] ) );
 		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['page']['parsely'] ) );
 
+		$this->assertNotNull( $wp_rest_additional_fields['post']['parsely']['get_callback'] );
+		$this->assertNotNull( $wp_rest_additional_fields['page']['parsely']['get_callback'] );
+
 		$this->assertNull( $wp_rest_additional_fields['post']['parsely']['update_callback'] );
 		$this->assertNull( $wp_rest_additional_fields['page']['parsely']['update_callback'] );
 
 		$this->assertNull( $wp_rest_additional_fields['post']['parsely']['schema'] );
 		$this->assertNull( $wp_rest_additional_fields['page']['parsely']['schema'] );
+
+		// Cleaning up the registered fields.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+		$wp_rest_additional_fields = array();
 	}
 
 	/**
@@ -102,5 +109,17 @@ final class RestTest extends TestCase {
 		$expected_fields = array( 'get_callback', 'update_callback', 'schema' );
 
 		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['term']['parsely'] ) );
+
+		$this->assertNotNull( $wp_rest_additional_fields['term']['parsely']['get_callback'] );
+
+		$this->assertNull( $wp_rest_additional_fields['term']['parsely']['update_callback'] );
+		$this->assertNull( $wp_rest_additional_fields['term']['parsely']['schema'] );
+
+		// Should only be 1, including term. Post and page should be left out by the filter.
+		$this->assertEquals( 1, count( $wp_rest_additional_fields ) );
+
+		// Cleaning up the registered fields.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+		$wp_rest_additional_fields = array();
 	}
 }
