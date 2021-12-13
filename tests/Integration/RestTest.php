@@ -36,11 +36,11 @@ final class RestTest extends TestCase {
 	/**
 	 * Test whether the logic has been enqueued in the `rest_api_init` hook.
 	 *
-	 * @covers \Parsely\Rest\run;
+	 * @covers \Parsely\Rest::run;
 	 */
-	public function test_register_enqueued_rest_init() {
+	public function test_register_enqueued_rest_init(): void {
 		self::$rest->run();
-		$this->assertSame(
+		self::assertSame(
 			10,
 			has_action( 'rest_api_init', array( self::$rest, 'register_parsely_meta' ) )
 		);
@@ -49,40 +49,26 @@ final class RestTest extends TestCase {
 	/**
 	 * Test whether the logic has been enqueued in the `rest_api_init` hook with a filter that disables it.
 	 *
-	 * @covers \Parsely\Rest\run;
+	 * @covers \Parsely\Rest::run;
 	 */
-	public function test_register_enqueued_rest_init_filter() {
+	public function test_register_enqueued_rest_init_filter(): void {
 		add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
 		self::$rest->run();
-		$this->assertSame(
-			false,
-			has_action( 'rest_api_init', array( self::$rest, 'register_parsely_meta' ) )
-		);
+		self::assertFalse( has_action( 'rest_api_init', array( self::$rest, 'register_parsely_meta' ) ) );
 	}
 
 	/**
 	 * Test that the REST fields are registered to WordPress REST API.
 	 *
-	 * @covers \Parsely\Rest\register_parsely_meta
+	 * @covers \Parsely\Rest::register_parsely_meta
 	 */
-	public function test_register_parsely_meta_registers_fields() {
+	public function test_register_parsely_meta_registers_fields(): void {
 		global $wp_rest_additional_fields;
 
 		self::$rest->register_parsely_meta();
 
-		$expected_fields = array( 'get_callback', 'update_callback', 'schema' );
-
-		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['post']['parsely'] ) );
-		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['page']['parsely'] ) );
-
-		$this->assertNotNull( $wp_rest_additional_fields['post']['parsely']['get_callback'] );
-		$this->assertNotNull( $wp_rest_additional_fields['page']['parsely']['get_callback'] );
-
-		$this->assertNull( $wp_rest_additional_fields['post']['parsely']['update_callback'] );
-		$this->assertNull( $wp_rest_additional_fields['page']['parsely']['update_callback'] );
-
-		$this->assertNull( $wp_rest_additional_fields['post']['parsely']['schema'] );
-		$this->assertNull( $wp_rest_additional_fields['page']['parsely']['schema'] );
+		$this->assertParselyRestFieldIsConstructedCorrectly( 'post', $wp_rest_additional_fields );
+		$this->assertParselyRestFieldIsConstructedCorrectly( 'page', $wp_rest_additional_fields );
 
 		// Cleaning up the registered fields.
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
@@ -92,9 +78,9 @@ final class RestTest extends TestCase {
 	/**
 	 * Test that the REST fields are can be modified using the `wp_parsely_rest_object_types` filter.
 	 *
-	 * @covers \Parsely\Rest\register_parsely_meta
+	 * @covers \Parsely\Rest::register_parsely_meta
 	 */
-	public function test_register_parsely_meta_with_filter() {
+	public function test_register_parsely_meta_with_filter(): void {
 		global $wp_rest_additional_fields;
 
 		add_filter(
@@ -106,20 +92,32 @@ final class RestTest extends TestCase {
 
 		self::$rest->register_parsely_meta();
 
-		$expected_fields = array( 'get_callback', 'update_callback', 'schema' );
-
-		$this->assertEquals( $expected_fields, array_keys( $wp_rest_additional_fields['term']['parsely'] ) );
-
-		$this->assertNotNull( $wp_rest_additional_fields['term']['parsely']['get_callback'] );
-
-		$this->assertNull( $wp_rest_additional_fields['term']['parsely']['update_callback'] );
-		$this->assertNull( $wp_rest_additional_fields['term']['parsely']['schema'] );
-
 		// Should only be 1, including term. Post and page should be left out by the filter.
-		$this->assertEquals( 1, count( $wp_rest_additional_fields ) );
+		self::assertCount( 1, $wp_rest_additional_fields );
+
+		$this->assertParselyRestFieldIsConstructedCorrectly( 'term', $wp_rest_additional_fields );
 
 		// Cleaning up the registered fields.
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$wp_rest_additional_fields = array();
+	}
+
+	/**
+	 * Assert that the Parsely REST field is constructed correctly.
+	 * This is a helper function for the tests above.
+	 *
+	 * @param string $post_type                 Post type.
+	 * @param array  $wp_rest_additional_fields Global variable.
+	 * @return void
+	 */
+	private function assertParselyRestFieldIsConstructedCorrectly( string $post_type, array $wp_rest_additional_fields ): void {
+		self::assertArrayHasKey( $post_type, $wp_rest_additional_fields );
+		self::assertArrayHasKey( 'parsely', $wp_rest_additional_fields[ $post_type ] );
+		self::assertIsArray( $wp_rest_additional_fields[ $post_type ]['parsely'] );
+		self::assertArrayHasKey( 'version', $wp_rest_additional_fields[ $post_type ]['parsely']['get_callback'] );
+		self::assertIsString( $wp_rest_additional_fields[ $post_type ]['parsely']['get_callback']['version'] );
+		self::assertArrayHasKey( 'meta', $wp_rest_additional_fields[ $post_type ]['parsely']['get_callback'] );
+		self::assertNull( $wp_rest_additional_fields[ $post_type ]['parsely']['update_callback'] );
+		self::assertNull( $wp_rest_additional_fields[ $post_type ]['parsely']['schema'] );
 	}
 }
