@@ -46,7 +46,7 @@
 	},
 	"scripts": {
 		"build": "wp-scripts build",
-	  	"dev:logs": "wp-env logs",
+		"dev:logs": "wp-env logs",
 		"dev:start": "wp-env start",
 		"dev:stop": "wp-env stop",
 		"lint": "concurrently \"npm:lint:*\"",
