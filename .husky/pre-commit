@@ -2,4 +2,4 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npm run lint
-composer cs -- -n
+composer cs -- --runtime-set ignore_warnings_on_exit 1
