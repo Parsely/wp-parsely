@@ -145,7 +145,7 @@ composer lint
 To check your code with our code standards:
 
 ```
-compose cs
+composer cs
 ```
 
 ### Testing
