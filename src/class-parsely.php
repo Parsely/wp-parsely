@@ -648,7 +648,7 @@ class Parsely {
 	public function get_options(): array {
 		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
 
-		if ( "array" != gettype( $options ) ) {
+		if ( 'array' != gettype( $options ) ) {
 			return $this->option_defaults;
 		}
 
