@@ -1,5 +1,4 @@
 /artifacts/
-/composer.lock
 /vendor
 /build/*.map
 .DS_Store
@@ -8,4 +7,3 @@
 node_modules
 /build/logs/
 /build/coverage-html/
-
