@@ -65,18 +65,6 @@ class Rest {
 	 * @return void
 	 */
 	public function register_parsely_meta(): void {
-		$callback = function( array $object ): array {
-			$post_id = $object['id'];
-			$options = $this->parsely->get_options();
-			$post    = WP_Post::get_instance( $post_id );
-			$meta    = $this->parsely->construct_parsely_metadata( $options, $post );
-
-			return array(
-				'version' => self::PARSELY_REST_VERSION,
-				'meta'    => $meta,
-			);
-		};
-
 		$options      = $this->parsely->get_options();
 		$object_types = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 
@@ -89,7 +77,28 @@ class Rest {
 		 */
 		$object_types = apply_filters( 'wp_parsely_rest_object_types', $object_types );
 
-		$args = array( 'get_callback' => $callback );
+		$args = array( 'get_callback' => array( $this, 'parsely_rest_get_callback' ) );
 		register_rest_field( $object_types, self::PARSELY_REST_FIELD_NAME, $args );
+	}
+
+	/**
+	 * Function to get hooked into the `get_callback` property of the `parsely` REST API field. It generates
+	 * the `parsely` object in the REST API.
+	 *
+	 * @param array $object The WordPress object to extract to render the metadata for, usually a post or a page.
+	 *
+	 * @return array The `parsely` object to be rendered in the REST API. Contains a version number describing the
+	 * response and the `meta` object containing the actual metadata.
+	 */
+	public function parsely_rest_get_callback( array $object ): array {
+		$post_id = $object['id'];
+		$options = $this->parsely->get_options();
+		$post    = WP_Post::get_instance( $post_id );
+		$meta    = $this->parsely->construct_parsely_metadata( $options, $post );
+
+		return array(
+			'version' => self::PARSELY_REST_VERSION,
+			'meta'    => $meta,
+		);
 	}
 }
