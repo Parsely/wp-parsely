@@ -637,6 +637,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		$input['track_post_types'] = self::validate_option_array( $input['track_post_types'] );
 		$input['track_page_types'] = self::validate_option_array( $input['track_page_types'] );
 
+		// Detect and prevent duplicate tracking.
 		$duplicate_tracking_found = ! empty( array_intersect( $input['track_post_types'], $input['track_page_types'] ) );
 		if ( $duplicate_tracking_found ) {
 			add_settings_error(
