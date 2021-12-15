@@ -112,7 +112,7 @@ final class Recommended_Widget extends WP_Widget {
 			(int) $instance['return_limit']
 		);
 
-		$recommended_widget_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-page.asset.php';
+		$recommended_widget_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/recommended-widget.asset.php';
 
 		?>
 
