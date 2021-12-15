@@ -77,7 +77,7 @@ final class RestTest extends TestCase {
 
 		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id, 'ARRAY_A' );
-		$this->assertParselyRestFieldIsConstructedCorrectly( 'post', $post, $wp_rest_additional_fields );
+		$this->assertParselyRestFieldIsConstructedCorrectly( 'post', $wp_rest_additional_fields );
 
 		$page_id = self::factory()->post->create(
 			array(
@@ -85,7 +85,7 @@ final class RestTest extends TestCase {
 			)
 		);
 		$page    = get_post( $page_id, 'ARRAY_A' );
-		$this->assertParselyRestFieldIsConstructedCorrectly( 'page', $page, $wp_rest_additional_fields );
+		$this->assertParselyRestFieldIsConstructedCorrectly( 'page', $wp_rest_additional_fields );
 
 		// Cleaning up the registered fields.
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
@@ -115,7 +115,7 @@ final class RestTest extends TestCase {
 		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
 		self::factory()->post->create( array( 'post_category' => array( $category ) ) );
 		$term = get_term( $category, 'post_category', 'ARRAY_A' );
-		$this->assertParselyRestFieldIsConstructedCorrectly( 'term', $term, $wp_rest_additional_fields );
+		$this->assertParselyRestFieldIsConstructedCorrectly( 'term', $wp_rest_additional_fields );
 
 		// Cleaning up the registered fields.
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
@@ -144,11 +144,10 @@ final class RestTest extends TestCase {
 	 * This is a helper function for the tests above.
 	 *
 	 * @param string $post_type                 Post type.
-	 * @param object $object                    The object to test.
 	 * @param array  $wp_rest_additional_fields Global variable.
 	 * @return void
 	 */
-	private function assertParselyRestFieldIsConstructedCorrectly( string $post_type, $object, array $wp_rest_additional_fields ): void {
+	private function assertParselyRestFieldIsConstructedCorrectly( string $post_type, array $wp_rest_additional_fields ): void {
 		self::assertArrayHasKey( $post_type, $wp_rest_additional_fields );
 		self::assertArrayHasKey( 'parsely', $wp_rest_additional_fields[ $post_type ] );
 		self::assertIsArray( $wp_rest_additional_fields[ $post_type ]['parsely'] );
