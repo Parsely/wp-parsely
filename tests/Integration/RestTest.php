@@ -75,16 +75,6 @@ final class RestTest extends TestCase {
 
 		self::$rest->register_parsely_meta();
 
-		$post_id = self::factory()->post->create();
-		$post    = get_post( $post_id, 'ARRAY_A' );
-		$this->assertParselyRestFieldIsConstructedCorrectly( 'post', $wp_rest_additional_fields );
-
-		$page_id = self::factory()->post->create(
-			array(
-				'post_type' => 'page',
-			)
-		);
-		$page    = get_post( $page_id, 'ARRAY_A' );
 		$this->assertParselyRestFieldIsConstructedCorrectly( 'page', $wp_rest_additional_fields );
 
 		// Cleaning up the registered fields.
@@ -112,9 +102,6 @@ final class RestTest extends TestCase {
 		// Should only be 1, including term. Post and page should be left out by the filter.
 		self::assertCount( 1, $wp_rest_additional_fields );
 
-		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
-		self::factory()->post->create( array( 'post_category' => array( $category ) ) );
-		$term = get_term( $category, 'post_category', 'ARRAY_A' );
 		$this->assertParselyRestFieldIsConstructedCorrectly( 'term', $wp_rest_additional_fields );
 
 		// Cleaning up the registered fields.
