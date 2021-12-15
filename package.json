@@ -54,6 +54,7 @@
 		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
 		"lint:pkg-json": "wp-scripts lint-pkg-json",
+		"prepare": "husky install",
 		"start": "wp-scripts start",
 		"test": "npm run test:unit",
 		"test:e2e": "wp-scripts test-e2e",
@@ -64,7 +65,6 @@
 		"test:unit": "wp-scripts test-unit-js",
 		"test:unit:debug": "wp-scripts --inspect-brk test-unit-js --runInBand --no-cache",
 		"test:unit:help": "wp-scripts test-unit-js --help",
-		"test:unit:watch": "wp-scripts test-unit-js --watch",
-		"prepare": "husky install"
+		"test:unit:watch": "wp-scripts test-unit-js --watch"
 	}
 }
