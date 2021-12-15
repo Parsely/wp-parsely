@@ -25,18 +25,26 @@ final class RestTest extends TestCase {
 	private static $rest;
 
 	/**
+	 * Internal Parsely variable
+	 *
+	 * @var Parsely $parsely Holds the Parsely object
+	 */
+	private static $parsely;
+
+	/**
 	 * The setUp run before each test
 	 */
 	public function set_up(): void {
 		parent::set_up();
 
-		self::$rest = new Rest( new Parsely() );
+		self::$parsely = new Parsely();
+		self::$rest    = new Rest( self::$parsely );
 	}
 
 	/**
 	 * Test whether the logic has been enqueued in the `rest_api_init` hook.
 	 *
-	 * @covers \Parsely\Rest::run;
+	 * @covers \Parsely\Rest::run
 	 */
 	public function test_register_enqueued_rest_init(): void {
 		self::$rest->run();
@@ -49,7 +57,7 @@ final class RestTest extends TestCase {
 	/**
 	 * Test whether the logic has been enqueued in the `rest_api_init` hook with a filter that disables it.
 	 *
-	 * @covers \Parsely\Rest::run;
+	 * @covers \Parsely\Rest::run
 	 */
 	public function test_register_enqueued_rest_init_filter(): void {
 		add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
@@ -115,6 +123,23 @@ final class RestTest extends TestCase {
 	}
 
 	/**
+	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
+	 *
+	 * @covers \Parsely\Rest::parsely_rest_get_callback
+	 */
+	public function test_get_rest_callback(): void {
+		$post_id = self::factory()->post->create();
+
+		$meta_object = self::$rest->parsely_rest_get_callback( get_post( $post_id, 'ARRAY_A' ) );
+		$expected    = array(
+			'version' => '1.0.0',
+			'meta'    => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
+		);
+
+		self::assertEquals( $expected, $meta_object );
+	}
+
+	/**
 	 * Assert that the Parsely REST field is constructed correctly.
 	 * This is a helper function for the tests above.
 	 *
@@ -127,11 +152,6 @@ final class RestTest extends TestCase {
 		self::assertArrayHasKey( $post_type, $wp_rest_additional_fields );
 		self::assertArrayHasKey( 'parsely', $wp_rest_additional_fields[ $post_type ] );
 		self::assertIsArray( $wp_rest_additional_fields[ $post_type ]['parsely'] );
-		/*
-		self::assertArrayHasKey( 'version', $wp_rest_additional_fields[ $post_type ]['parsely']['get_callback']( $object ) );
-		self::assertIsString( $wp_rest_additional_fields[ $post_type ]['parsely']['get_callback']['version'] );
-		self::assertArrayHasKey( 'meta', $wp_rest_additional_fields[ $post_type ]['parsely']['get_callback']( $object ) );
-		*/
 		self::assertNull( $wp_rest_additional_fields[ $post_type ]['parsely']['update_callback'] );
 		self::assertNull( $wp_rest_additional_fields[ $post_type ]['parsely']['schema'] );
 	}

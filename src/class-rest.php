@@ -100,5 +100,4 @@ class Rest {
 			'meta'    => $meta,
 		);
 	}
-
 }
