@@ -125,6 +125,7 @@ final class ScriptsTest extends TestCase {
 		$output = ob_get_clean();
 
 		self::assertSame(
+			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tag was printed correctly'
@@ -159,6 +160,7 @@ final class ScriptsTest extends TestCase {
 		$output = ob_get_clean();
 
 		self::assertSame(
+			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tag was printed correctly'
@@ -256,6 +258,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		);
 
 		self::assertStringContainsString(
+			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 			"<script type='text/javascript' src='" . esc_url( plugin_dir_url( PARSELY_FILE ) ) . 'build/init-api.js?ver=' . Parsely::VERSION . "' id='wp-parsely-api-js'></script>",
 			$output,
 			'Failed to confirm script tag was printed correctly'
@@ -345,6 +348,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$second_blog = $this->create_test_blog( 'decepticons', $second_user );
 
 		wp_set_current_user( $new_user );
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
 		switch_to_blog( $first_blog );
 
 		// These custom options will be used for both blog_ids.
@@ -387,6 +391,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 			'Failed to confirm script tags were not printed'
 		);
 
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
 		switch_to_blog( $second_blog );
 		TestCase::set_options( $custom_options );
 
@@ -413,6 +418,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$output = ob_get_clean();
 
 		self::assertSame(
+			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Failed to confirm script tags were printed correctly'
