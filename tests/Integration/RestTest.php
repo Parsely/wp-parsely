@@ -92,7 +92,7 @@ final class RestTest extends TestCase {
 
 		add_filter(
 			'wp_parsely_rest_object_types',
-			function( $object_types ) {
+			function() {
 				return array( 'term' );
 			}
 		);
