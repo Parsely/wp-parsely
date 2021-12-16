@@ -77,7 +77,7 @@ class Rest {
 		 */
 		$object_types = apply_filters( 'wp_parsely_rest_object_types', $object_types );
 
-		$args = array( 'get_callback' => array( $this, 'parsely_rest_get_callback' ) );
+		$args = array( 'get_callback' => array( $this, 'get_callback' ) );
 		register_rest_field( $object_types, self::PARSELY_REST_FIELD_NAME, $args );
 	}
 
@@ -89,7 +89,7 @@ class Rest {
 	 * @return array The `parsely` object to be rendered in the REST API. Contains a version number describing the
 	 * response and the `meta` object containing the actual metadata.
 	 */
-	public function parsely_rest_get_callback( array $object ): array {
+	public function get_callback( array $object ): array {
 		$post_id = $object['ID'] ?? $object['id'];
 		$options = $this->parsely->get_options();
 		$post    = WP_Post::get_instance( $post_id );

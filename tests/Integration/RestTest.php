@@ -112,12 +112,12 @@ final class RestTest extends TestCase {
 	/**
 	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
 	 *
-	 * @covers \Parsely\Rest::parsely_rest_get_callback
+	 * @covers \Parsely\Rest::get_callback
 	 */
-	public function test_get_rest_callback(): void {
+	public function test_get_callback(): void {
 		$post_id = self::factory()->post->create();
 
-		$meta_object = self::$rest->parsely_rest_get_callback( get_post( $post_id, 'ARRAY_A' ) );
+		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
 		$expected    = array(
 			'version' => '1.0.0',
 			'meta'    => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
