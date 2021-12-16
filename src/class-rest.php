@@ -58,7 +58,7 @@ class Rest {
 	}
 
 	/**
-	 * Registers the `parsely-meta` field in the REST API.
+	 * Registers the meta field on the appropriate resource types in the REST API.
 	 *
 	 * @since 3.1.0
 	 *
