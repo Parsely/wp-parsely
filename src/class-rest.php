@@ -53,7 +53,7 @@ class Rest {
 		 * @param bool $enabled True if enabled, false if not.
 		 */
 		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) ) {
-			add_action( 'rest_api_init', array( $this, 'register_parsely_meta' ) );
+			add_action( 'rest_api_init', array( $this, 'register_meta' ) );
 		}
 	}
 
@@ -64,7 +64,7 @@ class Rest {
 	 *
 	 * @return void
 	 */
-	public function register_parsely_meta(): void {
+	public function register_meta(): void {
 		$options      = $this->parsely->get_options();
 		$object_types = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 

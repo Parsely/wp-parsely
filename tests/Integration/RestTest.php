@@ -50,7 +50,7 @@ final class RestTest extends TestCase {
 		self::$rest->run();
 		self::assertSame(
 			10,
-			has_action( 'rest_api_init', array( self::$rest, 'register_parsely_meta' ) )
+			has_action( 'rest_api_init', array( self::$rest, 'register_meta' ) )
 		);
 	}
 
@@ -62,18 +62,18 @@ final class RestTest extends TestCase {
 	public function test_register_enqueued_rest_init_filter(): void {
 		add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
 		self::$rest->run();
-		self::assertFalse( has_action( 'rest_api_init', array( self::$rest, 'register_parsely_meta' ) ) );
+		self::assertFalse( has_action( 'rest_api_init', array( self::$rest, 'register_meta' ) ) );
 	}
 
 	/**
 	 * Test that the REST fields are registered to WordPress REST API.
 	 *
-	 * @covers \Parsely\Rest::register_parsely_meta
+	 * @covers \Parsely\Rest::register_meta
 	 */
-	public function test_register_parsely_meta_registers_fields(): void {
+	public function test_register_meta_registers_fields(): void {
 		global $wp_rest_additional_fields;
 
-		self::$rest->register_parsely_meta();
+		self::$rest->register_meta();
 
 		$this->assertParselyRestFieldIsConstructedCorrectly( 'page', $wp_rest_additional_fields );
 
@@ -85,9 +85,9 @@ final class RestTest extends TestCase {
 	/**
 	 * Test that the REST fields are can be modified using the `wp_parsely_rest_object_types` filter.
 	 *
-	 * @covers \Parsely\Rest::register_parsely_meta
+	 * @covers \Parsely\Rest::register_meta
 	 */
-	public function test_register_parsely_meta_with_filter(): void {
+	public function test_register_meta_with_filter(): void {
 		global $wp_rest_additional_fields;
 
 		add_filter(
@@ -97,7 +97,7 @@ final class RestTest extends TestCase {
 			}
 		);
 
-		self::$rest->register_parsely_meta();
+		self::$rest->register_meta();
 
 		// Should only be 1, including term. Post and page should be left out by the filter.
 		self::assertCount( 1, $wp_rest_additional_fields );
