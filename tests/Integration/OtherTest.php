@@ -237,14 +237,7 @@ final class OtherTest extends TestCase {
 	 * @covers \Parsely\Parsely::post_has_trackable_status
 	 */
 	public function test_post_has_trackable_status_password_protected_with_filter(): void {
-		add_filter(
-			'wp_parsely_skip_post_password_check',
-			function( bool $skip, $post ): bool {
-				return true;
-			},
-			10,
-			2
-		);
+		add_filter( 'wp_parsely_skip_post_password_check', '__return_true' );
 
 		$post_id = $this->factory->post->create();
 		$post    = get_post( $post_id );
