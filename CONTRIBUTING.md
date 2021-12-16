@@ -148,6 +148,12 @@ To check your code with our code standards:
 composer cs
 ```
 
+### Git Hooks
+
+We're leveraging [husky](https://typicode.github.io/husky) to automate some tasks around things like code and commit message quality. You can browse the configured hooks in [this directory](.husky/).
+
+For example, the [coding standards](#coding-standards) and [lint rules](#linting) are applied [prior to commit](.husky/pre-commit). If violations are encountered, the commit is rejected.
+
 ### Testing
 
 First, you'll need to install the tests by running the install script:
