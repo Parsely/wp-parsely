@@ -211,4 +211,21 @@ final class OtherTest extends TestCase {
 		$options = self::$parsely->get_options();
 		self::assertSame( self::EMPTY_DEFAULT_OPTIONS, $options );
 	}
+
+	/**
+	 * Test if post is trackable when it is password protected.
+	 *
+	 * @since 3.0.1
+	 *
+	 * @covers \Parsely\Parsely::post_has_trackable_status
+	 */
+	public function test_post_has_trackable_status_password_protected(): void {
+		$post_id = $this->factory->post->create();
+		$post    = get_post( $post_id );
+
+		$post->post_password = 'somepassword';
+
+		$result = Parsely::post_has_trackable_status( $post );
+		self::assertFalse( $result );
+	}
 }

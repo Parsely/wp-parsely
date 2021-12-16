@@ -288,7 +288,8 @@ class Parsely {
 		 * @param int|WP_Post $post               Which post object or ID is being checked.
 		 */
 		$statuses          = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
-		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true );
+
+		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true ) && ! post_password_required( $post );
 		return $cache[ $post_id ];
 	}
 
@@ -442,11 +443,11 @@ class Parsely {
 			$parsely_page['articleSection'] = $category;
 			$author_objects                 = array();
 			foreach ( $authors as $author ) {
-				$author_tag = array(
+				$author_tag       = array(
 					'@type' => 'Person',
 					'name'  => $author,
 				);
-				array_push( $author_objects, $author_tag );
+				$author_objects[] = $author_tag;
 			}
 			$parsely_page['author']    = $author_objects;
 			$parsely_page['creator']   = $authors;
