@@ -391,7 +391,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 			'Failed to confirm script tags were not printed'
 		);
 
-		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
 		switch_to_blog( $second_blog );
 		TestCase::set_options( $custom_options );
 
