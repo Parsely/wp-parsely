@@ -287,7 +287,7 @@ class Parsely {
 		 * @param string[]    $trackable_statuses The list of post statuses that are allowed to be tracked.
 		 * @param int|WP_Post $post               Which post object or ID is being checked.
 		 */
-		$statuses          = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
+		$statuses = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
 
 		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true ) && ! post_password_required( $post );
 		return $cache[ $post_id ];
