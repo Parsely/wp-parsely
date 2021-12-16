@@ -228,4 +228,30 @@ final class OtherTest extends TestCase {
 		$result = Parsely::post_has_trackable_status( $post );
 		self::assertFalse( $result );
 	}
+
+	/**
+	 * Test if post is trackable when it is password protected and a filter disables it.
+	 *
+	 * @since 3.0.1
+	 *
+	 * @covers \Parsely\Parsely::post_has_trackable_status
+	 */
+	public function test_post_has_trackable_status_password_protected_with_filter(): void {
+		add_filter(
+			'wp_parsely_skip_post_password_check',
+			function( bool $skip, $post ): bool {
+				return true;
+			},
+			10,
+			2
+		);
+
+		$post_id = $this->factory->post->create();
+		$post    = get_post( $post_id );
+
+		$post->post_password = 'somepassword';
+
+		$result = Parsely::post_has_trackable_status( $post );
+		self::assertTrue( $result );
+	}
 }

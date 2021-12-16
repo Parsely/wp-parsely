@@ -278,6 +278,22 @@ class Parsely {
 		}
 
 		/**
+		 * Filters whether the post password check should be skipped when getting the post trackable status.
+		 *
+		 * @since 3.0.1
+		 *
+		 * @param bool $skip True if the password check should be skipped.
+		 * @param int|WP_Post $post Which post object or ID is being checked.
+		 *
+		 * @returns bool
+		 */
+		$skip_password_check = apply_filters( 'wp_parsely_skip_post_password_check', false, $post );
+		if ( ! $skip_password_check && post_password_required( $post ) ) {
+			$cache[ $post_id ] = false;
+			return false;
+		}
+
+		/**
 		 * Filters the statuses that are permitted to be tracked.
 		 *
 		 * By default, the only status tracked is 'publish'. Use this filter if you have other published content that has a different (custom) status.
@@ -287,9 +303,8 @@ class Parsely {
 		 * @param string[]    $trackable_statuses The list of post statuses that are allowed to be tracked.
 		 * @param int|WP_Post $post               Which post object or ID is being checked.
 		 */
-		$statuses = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
-
-		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true ) && ! post_password_required( $post );
+		$statuses          = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
+		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true );
 		return $cache[ $post_id ];
 	}
 
