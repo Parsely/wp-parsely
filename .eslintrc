@@ -6,5 +6,9 @@
 	},
 	"rules": {
 		"@wordpress/i18n-text-domain": [ "error", { "allowedTextDomain": [ "wp-parsely" ] } ]
+	},
+	"globals": {
+		// Page variable for Puppeteer tests
+		"page": true
 	}
 }

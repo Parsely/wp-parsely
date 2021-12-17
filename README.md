@@ -1,6 +1,6 @@
 # Parse.ly
 
-Stable tag: 3.0.1
+Stable tag: 3.1.0-alpha  
 Requires at least: 5.0  
 Tested up to: 5.8  
 Requires PHP: 7.1  
@@ -28,43 +28,26 @@ Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://
 
 ## Installation
 
-The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results.
-[Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
+The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results. [Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
 ### Install the plugin from within WordPress
 
 1. Visit the Plugins page from your WordPress dashboard and click "Add New" at the top of the page.
-1. Search for "parse.ly" using the search bar on the right side.
-1. Click "Install Now" to install the plugin.
-1. After it's installed, click "Activate" to activate the plugin on your site.
+1. Search for _parse.ly_ using the search bar on the right side.
+1. Click _Install Now_ to install the plugin.
+1. After it's installed, click _Activate_ to activate the plugin on your site.
 
 ### Install the plugin manually
 
-1. Download the plugin from WordPress.org or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
+1. Download the plugin from [WordPress.org](https://wordpress.org/plugins/wp-parsely/) or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
 1. Unzip the downloaded archive.
 1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
 1. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
-1. Click "Activate" to activate the plugin on your site.
+1. Click _Activate_ to activate the plugin on your site.
 
 ## Local development
 
-The easiest way to develop this plugin locally is by using the `wp-env` package. [It is an official WP.org package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) that spins up a Docker-based WordPress environment for plugin development.
-
-Having Docker running,
-
-```
-npm install
-
-# Start the environment
-npm run dev:start
-
-# Stop the environment
-npm run dev:stop
-```
-
-This will start up an environment in `localhost:8888`, running in the background.
-
-To develop for WordPress VIP sites, we recommend using [the WordPress VIP dev-env](https://docs.wpvip.com/technical-references/vip-local-development-environment/).
+To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](CONTRIBUTING.md) file.
 
 ## Frequently Asked Questions
 
@@ -94,7 +77,7 @@ This filter can go anywhere in your codebase, provided it always gets loaded.
 
 It is! The plugin hooks into Automattic's official plugins for [AMP](https://wordpress.org/plugins/amp/) and [Facebook Instant Articles](https://wordpress.org/plugins/fb-instant-articles/).
 
-AMP support is enabled automatically if the Automattic AMP plugin is installed
+AMP support is enabled automatically if the Automattic AMP plugin is installed.
 
 For Facebook Instant Articles support, enable "Parsely Analytics" in the "Advanced Settings" menu of the Facebook Instant Articles plugin.
 
@@ -130,27 +113,19 @@ add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 
 The standard Parse.ly JavaScript tracker inserted before the closing `body` tag:
 
-    <!-- START Parse.ly Include: Standard -->
-
-       <script data-cfasync="false" id="parsely-cfg" data-parsely-site="example.com" src="https://cdn.parsely.com/keys/example.com/p.js"></script>
-
-    <!-- END Parse.ly Include: Standard -->
+    <script id="parsely-cfg" data-parsely-site="example.com" src="https://cdn.parsely.com/keys/example.com/p.js"></script>
 
 A sample `JSON-LD` structured data for a home page or section page:
 
-    <!-- BEGIN Parse.ly 2.5.0 -->
     <script type="application/ld+json">
     {"@context":"http:\/\/schema.org","@type":"WebPage","headline":"WordPress VIP","url":"http:\/\/wpvip.com\/"}
     </script>
-    <!-- END Parse.ly -->
 
 A sample `JSON-LD` meta tag and structured data for an article or post:
 
-    <!-- BEGIN Parse.ly 2.5.0 -->
     <script type="application/ld+json">
-        {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
+    {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
     </script>
-    <!-- END Parse.ly -->
 
 ## Changelog
 
