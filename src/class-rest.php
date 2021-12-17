@@ -94,11 +94,23 @@ class Rest {
 		$options = $this->parsely->get_options();
 		$post    = WP_Post::get_instance( $post_id );
 
-		return array(
-			'version'  => self::REST_VERSION,
-			'meta'     => $this->parsely->construct_parsely_metadata( $options, $post ),
-			'rendered' => $this->get_rendered_meta(),
+		$response = array(
+			'version' => self::REST_VERSION,
+			'meta'    => $this->parsely->construct_parsely_metadata( $options, $post ),
 		);
+
+		/**
+		 * Filter whether REST API support in rendered string format is enabled or not.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param bool $enabled True if enabled, false if not.
+		 */
+		if ( apply_filters( 'wp_parsely_enable_rest_rendered_support', true ) ) {
+			$response['rendered'] = $this->get_rendered_meta();
+		}
+
+		return $response;
 	}
 
 	/**

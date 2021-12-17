@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+// Explicit require as the `Rest` class could not be found in some environments.
+require_once __DIR__ . '/../../src/class-rest.php';
+
 use Parsely\Parsely;
 use Parsely\Rest;
 
@@ -122,6 +125,25 @@ final class RestTest extends TestCase {
 			'version'  => '1.0.0',
 			'meta'     => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
 			'rendered' => self::$rest->get_rendered_meta(),
+		);
+
+		self::assertEquals( $expected, $meta_object );
+	}
+
+	/**
+	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
+	 *
+	 * @covers \Parsely\Rest::get_callback
+	 */
+	public function test_get_callback_with_filter(): void {
+		add_filter( 'wp_parsely_enable_rest_rendered_support', '__return_false' );
+
+		$post_id = self::factory()->post->create();
+
+		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
+		$expected    = array(
+			'version' => '1.0.0',
+			'meta'    => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
 		);
 
 		self::assertEquals( $expected, $meta_object );
