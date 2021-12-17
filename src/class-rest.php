@@ -95,9 +95,9 @@ class Rest {
 		$post    = WP_Post::get_instance( $post_id );
 
 		return array(
-			'version' => self::REST_VERSION,
-			'meta'    => $this->parsely->construct_parsely_metadata( $options, $post ),
-			'string'  => $this->get_meta_string(),
+			'version'  => self::REST_VERSION,
+			'meta'     => $this->parsely->construct_parsely_metadata( $options, $post ),
+			'rendered' => $this->get_rendered_meta(),
 		);
 	}
 
@@ -106,7 +106,7 @@ class Rest {
 	 *
 	 * @return string String containing the metadata as HTML code that can be directly inserted in into the page.
 	 */
-	public function get_meta_string(): string {
+	public function get_rendered_meta(): string {
 		ob_start();
 		$this->parsely->insert_page_header_metadata();
 		return ob_get_clean();

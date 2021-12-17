@@ -119,8 +119,9 @@ final class RestTest extends TestCase {
 
 		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
 		$expected    = array(
-			'version' => '1.0.0',
-			'meta'    => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
+			'version'  => '1.0.0',
+			'meta'     => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
+			'rendered' => self::$rest->get_rendered_meta(),
 		);
 
 		self::assertEquals( $expected, $meta_object );
