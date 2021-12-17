@@ -172,7 +172,6 @@ final class RestTest extends TestCase {
 </script>
 
 ';
-
 		self::assertEquals( $expected, $meta_string );
 	}
 
@@ -203,7 +202,6 @@ final class RestTest extends TestCase {
 <meta name="parsely-section" content="Uncategorized" />
 
 ';
-
 		self::assertEquals( $expected, $meta_string );
 	}
 
