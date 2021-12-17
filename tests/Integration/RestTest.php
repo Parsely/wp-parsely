@@ -42,9 +42,6 @@ final class RestTest extends TestCase {
 
 		self::$parsely = new Parsely();
 		self::$rest    = new Rest( self::$parsely );
-
-		// Set the default options prior to each test.
-		TestCase::set_options();
 	}
 
 	/**
@@ -153,11 +150,14 @@ final class RestTest extends TestCase {
 	}
 
 	/**
-	 * Test that the rendered meta function returns the meta HTML string.
+	 * Test that the rendered meta function returns the meta HTML string with json ld.
 	 *
 	 * @covers \Parsely\Rest::get_rendered_meta
 	 */
-	public function test_get_rendered_meta(): void {
+	public function test_get_rendered_meta_json_ld(): void {
+		// Set the default options prior to each test.
+		TestCase::set_options();
+
 		global $post;
 		$post_id = self::factory()->post->create();
 
@@ -170,6 +170,37 @@ final class RestTest extends TestCase {
 <script type="application/ld+json">
 {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=22"},"headline":"Post title 0000054","url":"http:\/\/example.org\/?p=22","thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '","articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[]}
 </script>
+
+';
+
+		self::assertEquals( $expected, $meta_string );
+	}
+
+	/**
+	 * Test that the rendered meta function returns the meta HTML string with json ld.
+	 *
+	 * @covers \Parsely\Rest::get_rendered_meta
+	 */
+	public function test_get_rendered_repeated_metas(): void {
+		// Set the default options prior to each test.
+		TestCase::set_options(
+			array( 'meta_type' => 'repeated_metas' )
+		);
+
+		global $post;
+		$post_id = self::factory()->post->create();
+
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$post = get_post( $post_id );
+		$date = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
+
+		$meta_string = self::$rest->get_rendered_meta();
+		$expected    = '
+<meta name="parsely-title" content="Post title 0000055" />
+<meta name="parsely-link" content="http://example.org/?p=23" />
+<meta name="parsely-type" content="post" />
+<meta name="parsely-pub-date" content="' . $date . '" />
+<meta name="parsely-section" content="Uncategorized" />
 
 ';
 
