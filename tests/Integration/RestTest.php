@@ -42,6 +42,9 @@ final class RestTest extends TestCase {
 
 		self::$parsely = new Parsely();
 		self::$rest    = new Rest( self::$parsely );
+
+		// Set the default options prior to each test.
+		TestCase::set_options();
 	}
 
 	/**
@@ -147,6 +150,30 @@ final class RestTest extends TestCase {
 		);
 
 		self::assertEquals( $expected, $meta_object );
+	}
+
+	/**
+	 * Test that the rendered meta function returns the meta HTML string.
+	 *
+	 * @covers \Parsely\Rest::get_rendered_meta
+	 */
+	public function test_get_rendered_meta(): void {
+		global $post;
+		$post_id = self::factory()->post->create();
+
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$post = get_post( $post_id );
+		$date = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
+
+		$meta_string = self::$rest->get_rendered_meta();
+		$expected    = '
+<script type="application/ld+json">
+{"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=22"},"headline":"Post title 0000054","url":"http:\/\/example.org\/?p=22","thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '","articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[]}
+</script>
+
+';
+
+		self::assertEquals( $expected, $meta_string );
 	}
 
 	/**
