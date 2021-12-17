@@ -18,8 +18,8 @@ use WP_Post;
  * @since 3.1.0
  */
 class Rest {
-	private const PARSELY_META_REST_FIELD_NAME        = 'parsely-meta';
-	private const PARSELY_META_STRING_REST_FIELD_NAME = 'parsely-meta-string';
+	private const REST_VERSION    = '1.0.0';
+	private const REST_FIELD_NAME = 'parsely';
 
 	/**
 	 * Instance of Parsely class.
@@ -53,57 +53,62 @@ class Rest {
 		 * @param bool $enabled True if enabled, false if not.
 		 */
 		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) ) {
-			add_action( 'rest_api_init', array( $this, 'register_parsely_meta' ) );
+			add_action( 'rest_api_init', array( $this, 'register_meta' ) );
 		}
+	}
+
+	/**
+	 * Registers the meta field on the appropriate resource types in the REST API.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return void
+	 */
+	public function register_meta(): void {
+		$options      = $this->parsely->get_options();
+		$object_types = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 
 		/**
-		 * Filter whether REST API support in string format is enabled or not.
+		 * Filters the list of author object types that the Parse.ly REST API is hooked into.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param bool $enabled True if enabled, false if not.
+		 * @param string[] $object_types Array of strings containing the object types, i.e. `page`, `post`, `term`.
 		 */
-		if ( apply_filters( 'wp_parsely_enable_rest_api_string_support', true ) ) {
-			add_action( 'rest_api_init', array( $this, 'register_parsely_meta_string' ) );
-		}
+		$object_types = apply_filters( 'wp_parsely_rest_object_types', $object_types );
+
+		$args = array( 'get_callback' => array( $this, 'get_callback' ) );
+		register_rest_field( $object_types, self::REST_FIELD_NAME, $args );
 	}
 
 	/**
-	 * Registers the `parsely-meta` field in the REST API.
+	 * Function to get hooked into the `get_callback` property of the `parsely` REST API field. It generates
+	 * the `parsely` object in the REST API.
 	 *
-	 * @since 3.1.0
-	 *
-	 * @return void
+	 * @param array $object The WordPress object to extract to render the metadata for, usually a post or a page.
+	 * @return array The `parsely` object to be rendered in the REST API. Contains a version number describing the
+	 * response and the `meta` object containing the actual metadata.
 	 */
-	public function register_parsely_meta(): void {
-		$callback = function( array $object ): array {
-			$post_id = $object['id'];
-			$options = $this->parsely->get_options();
-			$post    = WP_Post::get_instance( $post_id );
-			return $this->parsely->construct_parsely_metadata( $options, $post );
-		};
+	public function get_callback( array $object ): array {
+		$post_id = $object['ID'] ?? $object['id'];
+		$options = $this->parsely->get_options();
+		$post    = WP_Post::get_instance( $post_id );
 
-		$args = array( 'get_callback' => $callback );
-		register_rest_field( 'post', self::PARSELY_META_REST_FIELD_NAME, $args );
-		register_rest_field( 'page', self::PARSELY_META_REST_FIELD_NAME, $args );
+		return array(
+			'version' => self::REST_VERSION,
+			'meta'    => $this->parsely->construct_parsely_metadata( $options, $post ),
+			'string'  => $this->get_meta_string(),
+		);
 	}
 
 	/**
-	 * Registers the `parsely-meta-string` field in the REST API.
+	 * Get the metadata in string format.
 	 *
-	 * @since 3.1.0
-	 *
-	 * @return void
+	 * @return string String containing the metadata as HTML code that can be directly inserted in into the page.
 	 */
-	public function register_parsely_meta_string(): void {
-		$callback = function(): string {
-			ob_start();
-			$this->parsely->insert_page_header_metadata();
-			return ob_get_clean();
-		};
-
-		$args = array( 'get_callback' => $callback );
-		register_rest_field( 'post', self::PARSELY_META_STRING_REST_FIELD_NAME, $args );
-		register_rest_field( 'page', self::PARSELY_META_STRING_REST_FIELD_NAME, $args );
+	public function get_meta_string(): string {
+		ob_start();
+		$this->parsely->insert_page_header_metadata();
+		return ob_get_clean();
 	}
 }

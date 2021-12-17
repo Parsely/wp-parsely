@@ -256,7 +256,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 				printf(
 					/* translators: Mailto link  */
 					esc_html__( 'Once you have changed a value and and saved, please contact %s to request a recrawl.', 'wp-parsely' ),
-					wp_kses_post( '<a href="mailto:support@parsely.com?subject=' . urlencode( 'Please reprocess ' . $this->parsely->get_api_key() ) . '">support@parsely.com</a>' )
+					wp_kses_post( '<a href="mailto:support@parsely.com?subject=' . rawurlencode( 'Please reprocess ' . $this->parsely->get_api_key() ) . '">support@parsely.com</a>' )
 				);
 			},
 			Parsely::MENU_SLUG
@@ -709,7 +709,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 
 		// Allow for Disable AMP setting to be conditionally included on the page.
 		// If it's not shown, then set the value as what was previously saved.
-		if ( null === $input['disable_amp'] ) {
+		if ( ! isset( $input['disable_amp'] ) || null === $input['disable_amp'] ) {
 			$options              = $this->parsely->get_options();
 			$input['disable_amp'] = 'true';
 			if ( false === $options['disable_amp'] ) {

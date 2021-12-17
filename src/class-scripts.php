@@ -177,7 +177,8 @@ class Scripts {
 				'wp-parsely-api',
 				'wp-parsely-tracker',
 				'wp-parsely-recommended-widget',
-			)
+			),
+			true
 		) ) {
 			/**
 			 * Filter whether to include the CloudFlare Rocket Loader attribute (`data-cfasync=false`) in the script.
