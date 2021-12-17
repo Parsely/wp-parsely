@@ -278,6 +278,22 @@ class Parsely {
 		}
 
 		/**
+		 * Filters whether the post password check should be skipped when getting the post trackable status.
+		 *
+		 * @since 3.0.1
+		 *
+		 * @param bool $skip True if the password check should be skipped.
+		 * @param int|WP_Post $post Which post object or ID is being checked.
+		 *
+		 * @returns bool
+		 */
+		$skip_password_check = apply_filters( 'wp_parsely_skip_post_password_check', false, $post );
+		if ( ! $skip_password_check && post_password_required( $post ) ) {
+			$cache[ $post_id ] = false;
+			return false;
+		}
+
+		/**
 		 * Filters the statuses that are permitted to be tracked.
 		 *
 		 * By default, the only status tracked is 'publish'. Use this filter if you have other published content that has a different (custom) status.
@@ -407,7 +423,7 @@ class Parsely {
 			$supported_types = array_merge( $this->supported_jsonld_post_types, $this->supported_jsonld_non_post_types );
 
 			// Validate type before passing it further as an invalid type will not be recognized by Parse.ly.
-			if ( ! in_array( $type, $supported_types ) ) {
+			if ( ! in_array( $type, $supported_types, true ) ) {
 				$error = sprintf(
 					/* translators: 1: JSON @type like NewsArticle, 2: URL */
 					__( '@type %1$s is not supported by Parse.ly. Please use a type mentioned in %2$s', 'wp-parsely' ),
@@ -442,11 +458,11 @@ class Parsely {
 			$parsely_page['articleSection'] = $category;
 			$author_objects                 = array();
 			foreach ( $authors as $author ) {
-				$author_tag = array(
+				$author_tag       = array(
 					'@type' => 'Person',
 					'name'  => $author,
 				);
-				array_push( $author_objects, $author_tag );
+				$author_objects[] = $author_tag;
 			}
 			$parsely_page['author']    = $author_objects;
 			$parsely_page['creator']   = $authors;
@@ -988,7 +1004,7 @@ class Parsely {
 	 * @return string "post" or "index".
 	 */
 	public function convert_jsonld_to_parsely_type( string $type ): string {
-		return in_array( $type, $this->supported_jsonld_post_types ) ? 'post' : 'index';
+		return in_array( $type, $this->supported_jsonld_post_types, true ) ? 'post' : 'index';
 	}
 
 	/**
