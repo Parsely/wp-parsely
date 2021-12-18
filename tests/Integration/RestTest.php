@@ -159,7 +159,11 @@ final class RestTest extends TestCase {
 		TestCase::set_options();
 
 		global $post;
-		$post_id = self::factory()->post->create();
+		$post_id = self::factory()->post->create(
+			array(
+				'post_title' => 'My test_get_rendered_meta_json_ld title',
+			)
+		);
 
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		$post = get_post( $post_id );
@@ -168,7 +172,7 @@ final class RestTest extends TestCase {
 		$meta_string = self::$rest->get_rendered_meta();
 		$expected    = '
 <script type="application/ld+json">
-{"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=22"},"headline":"Post title 0000054","url":"http:\/\/example.org\/?p=22","thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '","articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[]}
+{"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=' . $post_id . '"},"headline":"My test_get_rendered_meta_json_ld title","url":"http:\/\/example.org\/?p=' . $post_id . '","thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '","articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[]}
 </script>
 
 ';
@@ -187,7 +191,11 @@ final class RestTest extends TestCase {
 		);
 
 		global $post;
-		$post_id = self::factory()->post->create();
+		$post_id = self::factory()->post->create(
+			array(
+				'post_title' => 'My test_get_rendered_repeated_metas title',
+			)
+		);
 
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		$post = get_post( $post_id );
@@ -195,8 +203,8 @@ final class RestTest extends TestCase {
 
 		$meta_string = self::$rest->get_rendered_meta();
 		$expected    = '
-<meta name="parsely-title" content="Post title 0000055" />
-<meta name="parsely-link" content="http://example.org/?p=23" />
+<meta name="parsely-title" content="My test_get_rendered_repeated_metas title" />
+<meta name="parsely-link" content="http://example.org/?p=' . $post_id . '" />
 <meta name="parsely-type" content="post" />
 <meta name="parsely-pub-date" content="' . $date . '" />
 <meta name="parsely-section" content="Uncategorized" />
