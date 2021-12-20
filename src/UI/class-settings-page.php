@@ -638,12 +638,19 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		$input['track_page_types'] = self::validate_option_array( $input['track_page_types'] );
 
 		// Detect and prevent duplicate tracking.
-		$duplicate_tracking_found = ! empty( array_intersect( $input['track_post_types'], $input['track_page_types'] ) );
-		if ( $duplicate_tracking_found ) {
+		$duplicate_items = array_intersect( $input['track_post_types'], $input['track_page_types'] );
+		if ( ! empty( $duplicate_items ) ) {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'track_page_types',
-				__( 'An element is selected twice in post and page types to track. Each element can be selected only once.', 'wp-parsely' )
+				sprintf(
+					/* translators: %s: Item(s) being tracked both as posts and pages. */
+					__(
+						'%s cannot be tracked as both posts and pages. Please select every element only once.',
+						'wp-parsely'
+					),
+					implode( ', ', $duplicate_items )
+				)
 			);
 		}
 
