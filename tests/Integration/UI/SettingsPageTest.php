@@ -50,12 +50,14 @@ final class SettingsPageTest extends TestCase {
 	 * @group ui
 	 */
 	public function test_validate_unique_tracking_values_succeeds(): void {
-		$options = self::get_plugin_options();
+		// Initializations.
+		$expected = self::$parsely->get_options();
+		$options  = self::$parsely->get_options();
 
+		// Default tracking values.
 		$options['track_post_types'] = array( 'post' );
 		$options['track_page_types'] = array( 'page' );
-
-		self::assertEmpty( self::get_setting_errors_array( $options ) );
+		self::assertSame( self::$settings_page->validate_options( $options ), $expected );
 	}
 
 	/**
@@ -67,60 +69,23 @@ final class SettingsPageTest extends TestCase {
 	 * @group ui
 	 */
 	public function test_validate_duplicate_tracking_values_returns_errors(): void {
-		$options = self::get_plugin_options();
+		// Initializations.
+		$expected = self::$parsely->get_options();
+		$options  = self::$parsely->get_options();
 
 		// Duplicate selection in Post Types.
 		$options['track_post_types'] = array( 'post', 'page' );
 		$options['track_page_types'] = array( 'page' );
-		self::assertNotEmpty( self::get_setting_errors_array( $options ) );
+		self::assertSame( self::$settings_page->validate_options( $options ), $expected );
 
 		// Duplicate selection in Page Types.
 		$options['track_post_types'] = array( 'post' );
 		$options['track_page_types'] = array( 'post', 'page' );
-		self::assertNotEmpty( self::get_setting_errors_array( $options ) );
+		self::assertSame( self::$settings_page->validate_options( $options ), $expected );
 
 		// Duplicate selection in Page Types (different order of array items).
 		$options['track_post_types'] = array( 'post' );
 		$options['track_page_types'] = array( 'page', 'post' );
-		self::assertNotEmpty( self::get_setting_errors_array( $options ) );
+		self::assertSame( self::$settings_page->validate_options( $options ), $expected );
 	}
-
-
-	/**
-	 * Return the plugin's options in a way that tests can be executed.
-	 *
-	 * @return array The plugin's options.
-	 */
-	public static function get_plugin_options(): array {
-		$options = self::$parsely->get_options();
-
-		// Set any required options.
-		$options['apikey'] = 'php-integration-test.com';
-
-		// Convert any boolean settings to string equivalents.
-		foreach ( $options as $key => $value ) {
-			if ( is_bool( $value ) ) {
-				$options[ $key ] = $value ? 'true' : 'false';
-			}
-		}
-
-		return $options;
-	}
-
-	/**
-	 * Validate the passed options and return any errors.
-	 *
-	 * @param array $options Plugin options to be tested.
-	 * @return array Any errors found during the validation process.
-	 */
-	public static function get_setting_errors_array( $options ): array {
-		// Remove any pre-existing errors.
-		global $wp_settings_errors;
-		$wp_settings_errors = array();
-
-		self::$settings_page->validate_options( $options );
-
-		return get_settings_errors();
-	}
-
 }
