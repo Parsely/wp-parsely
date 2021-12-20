@@ -641,7 +641,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 
 		// Detect and prevent duplicate tracking.
 		$duplicate_items = array_intersect( $input['track_post_types'], $input['track_page_types'] );
-		if ( ! 0 === count( $duplicate_items ) ) {
+		if ( 0 !== count( $duplicate_items ) ) {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'track_page_types',
