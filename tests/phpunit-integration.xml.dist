@@ -2,7 +2,7 @@
 <phpunit
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
-	bootstrap="./tests/Integration/bootstrap.php"
+	bootstrap="./Integration/bootstrap.php"
 	backupGlobals="false"
 	beStrictAboutCoversAnnotation="true"
 	beStrictAboutTestsThatDoNotTestAnything="false"
@@ -18,13 +18,13 @@
 	</php>
 	<testsuites>
 		<testsuite name="integration">
-			<directory>./tests/Integration</directory>
+			<directory>./Integration</directory>
 		</testsuite>
 	</testsuites>
 	<coverage>
 		<include>
 			<directory suffix=".php">src</directory>
-			<file>wp-parsely.php</file>
+			<file>../wp-parsely.php</file>
 		</include>
 		<report>
 			<text outputFile="php://stdout"/>
