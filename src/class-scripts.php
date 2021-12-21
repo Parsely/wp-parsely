@@ -44,6 +44,15 @@ class Scripts {
 		add_action( 'init', array( $this, 'register_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_api' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_tracker' ) );
+
+		/**
+		 * "Feature flag" filter to enable development of editor UI in the main branches
+		 *
+		 * @since 3.1.0
+		 */
+		if ( apply_filters( 'wp_parsely_enable_block_editor_integration', false ) ) {
+			add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
+		}
 	}
 
 	/**
@@ -88,6 +97,26 @@ class Scripts {
 				'apikey' => $parsely_options['apikey'],
 			)
 		);
+
+		$block_editor_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/block-editor.asset.php';
+		wp_register_script(
+			'wp_parsely_block_editor',
+			plugin_dir_url( PARSELY_FILE ) . 'build/block-editor.js',
+			$block_editor_asset['dependencies'],
+			Parsely::get_asset_cache_buster(),
+			true
+		);
+	}
+
+	/**
+	 * Loads the Block Editor / Gutenberg experience enhancements.
+	 * Hooked into the `enqueue_block_editor_assets` action in `$this->run()`
+	 *
+	 * @see: https://developer.wordpress.org/block-editor/how-to-guides/plugin-sidebar-0/
+	 * @return void
+	 */
+	public static function enqueue_block_editor_assets(): void {
+		wp_enqueue_script( 'wp_parsely_block_editor' );
 	}
 
 	/**

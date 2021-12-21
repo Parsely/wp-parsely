@@ -30,8 +30,11 @@
 		"defaults"
 	],
 	"dependencies": {
+		"@wordpress/components": "^19.1.6",
 		"@wordpress/dom-ready": "^2.13.2",
+		"@wordpress/edit-post": "^5.0.19",
 		"@wordpress/i18n": "^3.20.0",
+		"@wordpress/plugins": "^4.0.7",
 		"js-cookie": "^3.0.0"
 	},
 	"devDependencies": {
