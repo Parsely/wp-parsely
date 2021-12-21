@@ -50,7 +50,10 @@ class Scripts {
 		 *
 		 * @since 3.1.0
 		 */
-		if ( apply_filters( 'wp_parsely_enable_block_editor_integration', false ) ) {
+		if (
+			apply_filters( 'wp_parsely_enable_block_editor_integration', false ) &&
+			$this->parsely->api_key_is_set()
+		) {
 			add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
 		}
 	}
