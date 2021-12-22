@@ -45,46 +45,58 @@ const PARSELY_FILE    = __FILE__;
 require __DIR__ . '/src/class-parsely.php';
 require __DIR__ . '/src/class-rest.php';
 require __DIR__ . '/src/class-scripts.php';
-add_action(
-	'plugins_loaded',
-	function(): void {
-		$GLOBALS['parsely'] = new Parsely();
-		$GLOBALS['parsely']->run();
 
-		$rest = new Rest( $GLOBALS['parsely'] );
-		$rest->run();
+/**
+ * Hook into after_setup_theme to kick off the plugin on the whole.
+ *
+ * @return void
+ */
+function after_setup_theme(): void {
+	$GLOBALS['parsely'] = new Parsely();
+	$GLOBALS['parsely']->run();
 
-		$scripts = new Scripts( $GLOBALS['parsely'] );
-		$scripts->run();
-	}
-);
+	$rest = new Rest( $GLOBALS['parsely'] );
+	$rest->run();
+
+	$scripts = new Scripts( $GLOBALS['parsely'] );
+	$scripts->run();
+}
+add_action( 'after_setup_theme', __NAMESPACE__ . '\\after_setup_theme' );
 
 // Until auto-loading happens, we need to include this file for tests as well.
 require __DIR__ . '/src/UI/class-admin-warning.php';
 require __DIR__ . '/src/UI/class-plugins-actions.php';
 require __DIR__ . '/src/UI/class-row-actions.php';
-add_action(
-	'admin_init',
-	function(): void {
-		$admin_warning = new Admin_Warning( $GLOBALS['parsely'] );
-		$admin_warning->run();
 
-		$GLOBALS['parsely_ui_plugins_actions'] = new Plugins_Actions();
-		$GLOBALS['parsely_ui_plugins_actions']->run();
+/**
+ * Hook into admin_init to kick off various admin-specific features.
+ *
+ * @return void
+ */
+function admin_init(): void {
+	$admin_warning = new Admin_Warning( $GLOBALS['parsely'] );
+	$admin_warning->run();
 
-		$row_actions = new Row_Actions( $GLOBALS['parsely'] );
-		$row_actions->run();
-	}
-);
+	$GLOBALS['parsely_ui_plugins_actions'] = new Plugins_Actions();
+	$GLOBALS['parsely_ui_plugins_actions']->run();
+
+	$row_actions = new Row_Actions( $GLOBALS['parsely'] );
+	$row_actions->run();
+}
+add_action( 'admin_init', __NAMESPACE__ . '\\admin_init' );
 
 require __DIR__ . '/src/UI/class-settings-page.php';
-add_action(
-	'_admin_menu',
-	function(): void {
-		$settings_page = new Settings_Page( $GLOBALS['parsely'] );
-		$settings_page->run();
-	}
-);
+
+/**
+ * Hook into _admin_menu to kick off Settings Page UI.
+ *
+ * @return void
+ */
+function _admin_menu(): void {
+	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
+	$settings_page->run();
+}
+add_action( '_admin_menu', __NAMESPACE__ . '\\_admin_menu' );
 
 require __DIR__ . '/src/UI/class-recommended-widget.php';
 
