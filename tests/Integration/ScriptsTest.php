@@ -111,25 +111,29 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 		$intermediate_output = ob_get_contents();
+
+		// Enqueueing JS tracker script should not produce any output.
 		self::assertSame(
 			'',
 			$intermediate_output,
-			'Failed to confirm scripts were not printed by enqueue_js_tracker()'
+			'Function enqueue_js_tracker() should not return any output'
 		);
 
+		// Confirm that JS tracker script gets enqueued.
 		self::assertTrue(
 			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm tracker script was enqueued'
+			'Script wp-parsely-tracker was not enqueued'
 		);
 
+		// Confirm that JS tracker script gets printed correctly.
 		wp_print_scripts();
+		wp_print_footer_scripts();
 		$output = ob_get_clean();
-
 		self::assertSame(
 			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
-			'Failed to confirm script tag was printed correctly'
+			'JS tracker script tag was not printed correctly'
 		);
 	}
 
