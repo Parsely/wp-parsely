@@ -61,30 +61,31 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		$output = ob_get_clean();
 
+		// Registering scripts should not produce any output.
 		self::assertSame(
 			'',
 			$output,
-			'Failed to confirm nothing was printed by register_scripts()'
+			'Unexpected output while registering scripts'
 		);
 
+		// Confirm that API script is registered but not enqueued.
 		self::assertTrue(
 			wp_script_is( 'wp-parsely-api', 'registered' ),
-			'Failed to confirm API script was registered'
+			'Script wp-parsely-api was not registered'
 		);
-
 		self::assertFalse(
 			wp_script_is( 'wp-parsely-api', 'enqueued' ),
-			'Failed to confirm API script was not enqueued'
+			'Script wp-parsely-api should not be enqueued'
 		);
 
+		// Confirm that tracker script is registered but not enqueued.
 		self::assertTrue(
 			wp_script_is( 'wp-parsely-tracker', 'registered' ),
-			'Failed to confirm API script was registered'
+			'Script wp-parsely-tracker was not registered'
 		);
-
 		self::assertFalse(
 			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm API script was not enqueued'
+			'Script wp-parsely-tracker should not be enqueued'
 		);
 	}
 
