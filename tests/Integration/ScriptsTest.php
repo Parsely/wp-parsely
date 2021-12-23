@@ -49,7 +49,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @group insert-js
+	 * @group enqueue-js
 	 */
 	public function test_parsely_register_scripts(): void {
 		self::$scripts->register_scripts();
@@ -87,7 +87,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
-	 * @group insert-js
+	 * @group enqueue-js
 	 */
 	public function test_enqueue_js_tracker(): void {
 		$post_data = $this->create_test_post_array();
@@ -115,6 +115,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
+	 * @group enqueue-js
 	 * @group insert-js
 	 */
 	public function test_enqueue_js_tracker_with_cloudflare(): void {
@@ -179,7 +180,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
-	 * @group insert-js
+	 * @group enqueue-js
 	 */
 	public function test_enqueue_js_api_no_secret(): void {
 		self::$scripts->register_scripts();
@@ -203,7 +204,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
-	 * @group insert-js
+	 * @group enqueue-js
 	 */
 	public function test_enqueue_js_api_with_secret(): void {
 		self::$scripts->register_scripts();
@@ -224,7 +225,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::parsely_is_user_logged_in
-	 * @group insert-js
+	 * @group enqueue-js
 	 * @group settings
 	 */
 	public function test_user_logged_in(): void {
@@ -268,7 +269,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
-	 * @group insert-js
+	 * @group enqueue-js
 	 * @group settings
 	 */
 	public function test_user_logged_in_multisite(): void {
