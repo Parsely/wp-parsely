@@ -91,7 +91,7 @@ final class ScriptsTest extends TestCase {
 		// Confirm that JS tracker script is registered and enqueued.
 		$this->assert_script_statuses(
 			'wp-parsely-tracker',
-			array( 'registered', 'enqueued' ),
+			array( 'registered', 'enqueued' )
 		);
 	}
 
@@ -282,7 +282,7 @@ final class ScriptsTest extends TestCase {
 		self::assertEquals( get_current_blog_id(), $first_blog );
 		self::assertTrue( is_user_member_of_blog( $first_blog_admin, $first_blog ) );
 
-		// Enqueue JS tracker
+		// Enqueue JS tracker.
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
@@ -304,7 +304,7 @@ final class ScriptsTest extends TestCase {
 		self::assertEquals( get_current_blog_id(), $second_blog );
 		self::assertFalse( is_user_member_of_blog( $first_blog_admin, get_current_blog_id() ) );
 
-		// Enqueue JS tracker
+		// Enqueue JS tracker.
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
@@ -320,8 +320,8 @@ final class ScriptsTest extends TestCase {
 	 * Test multiple script statuses in one go.
 	 *
 	 * @param string $handle Script handle to test.
-	 * @param array $assert_true Statuses that should assert to true.
-	 * @param array $assert_false Statuses that should assert to false.
+	 * @param array  $assert_true Statuses that should assert to true.
+	 * @param array  $assert_false Statuses that should assert to false.
 	 * @return void
 	 */
 	public function assert_script_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
