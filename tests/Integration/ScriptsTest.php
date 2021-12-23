@@ -13,8 +13,6 @@ use Parsely\Parsely;
 use Parsely\Scripts;
 use WP_Scripts;
 
-use const Parsely\PARSELY_FILE;
-
 /**
  * Parsely Scripts tests.
  */
@@ -54,19 +52,7 @@ final class ScriptsTest extends TestCase {
 	 * @group insert-js
 	 */
 	public function test_parsely_register_scripts(): void {
-		ob_start();
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
 		self::$scripts->register_scripts();
-		$output = ob_get_clean();
-
-		// Registering scripts should not produce any output.
-		self::assertSame(
-			'',
-			$output,
-			'Unexpected output while registering scripts'
-		);
 
 		// Confirm that API script is registered but not enqueued.
 		self::assertTrue(
@@ -104,36 +90,16 @@ final class ScriptsTest extends TestCase {
 	 * @group insert-js
 	 */
 	public function test_enqueue_js_tracker(): void {
-		ob_start();
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
+		$post_data = $this->create_test_post_array();
+		$post      = $this->factory->post->create( $post_data );
 		$this->go_to( '/?p=' . $post );
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
-		$intermediate_output = ob_get_contents();
-
-		// Enqueueing JS tracker script should not produce any output.
-		self::assertSame(
-			'',
-			$intermediate_output,
-			'Function enqueue_js_tracker() should not return any output'
-		);
 
 		// Confirm that JS tracker script gets enqueued.
 		self::assertTrue(
 			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
 			'Script wp-parsely-tracker was not enqueued'
-		);
-
-		// Confirm that JS tracker script gets printed correctly.
-		wp_print_scripts();
-		wp_print_footer_scripts();
-		$output = ob_get_clean();
-		self::assertSame(
-			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
-			$output,
-			'JS tracker script tag was not printed correctly'
 		);
 	}
 
@@ -185,31 +151,13 @@ final class ScriptsTest extends TestCase {
 	 * @group insert-js
 	 */
 	public function test_enqueue_js_api_no_secret(): void {
-		ob_start();
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_api();
-		$intermediate_output = ob_get_contents();
-		self::assertSame(
-			'',
-			$intermediate_output,
-			'Failed to confirm scripts were not printed by enqueue_js_api()'
-		);
 
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-api', 'enqueued' ),
-			'Failed to confirm api script was not enqueued when an API secret is not set'
-		);
-
-		wp_print_scripts();
-		$output = ob_get_clean();
-
-		self::assertSame(
-			'',
-			$output,
-			'Failed to confirm script was not printed'
+		// Confirm that API script is registered but not enqueued.
+		self::assertTrue(
+			wp_script_is( 'wp-parsely-api', 'registered' ),
+			'Script wp-parsely-api was not registered'
 		);
 	}
 
@@ -227,46 +175,13 @@ final class ScriptsTest extends TestCase {
 	 * @group insert-js
 	 */
 	public function test_enqueue_js_api_with_secret(): void {
-		ob_start();
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
 		self::$scripts->register_scripts();
-
 		self::set_options( array( 'api_secret' => 'hunter2' ) );
-
 		self::$scripts->enqueue_js_api();
-		$intermediate_output = ob_get_contents();
-		self::assertSame(
-			'',
-			$intermediate_output,
-			'Failed to confirm scripts were not printed by enqueue_js_api()'
-		);
 
 		self::assertTrue(
 			wp_script_is( 'wp-parsely-api', 'enqueued' ),
 			'Failed to confirm api script was enqueued when an API secret is set'
-		);
-
-		wp_print_scripts();
-		$output = ob_get_clean();
-
-
-		self::assertStringContainsString(
-			"<script type='text/javascript' id='wp-parsely-api-js-extra'>
-/* <![CDATA[ */
-var wpParsely = {\"apikey\":\"blog.parsely.com\"};
-/* ]]> */
-</script>",
-			$output,
-			'Failed to confirm "localized" data were embedded'
-		);
-
-		self::assertStringContainsString(
-			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-			"<script type='text/javascript' src='" . esc_url( plugin_dir_url( PARSELY_FILE ) ) . 'build/init-api.js?ver=' . Parsely::VERSION . "' id='wp-parsely-api-js'></script>",
-			$output,
-			'Failed to confirm script tag was printed correctly'
 		);
 	}
 
@@ -286,15 +201,7 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		$new_user = $this->create_test_user( 'bill_brasky' );
 		wp_set_current_user( $new_user );
 
-		ob_start();
 		self::$scripts->enqueue_js_tracker();
-
-		$intermediate_output = ob_get_contents();
-		self::assertSame(
-			'',
-			$intermediate_output,
-			'Failed to confirm scripts were not printed by enqueue_js_tracker()'
-		);
 
 		self::assertFalse(
 			wp_script_is( 'wp-parsely-api', 'registered' ),
@@ -314,15 +221,6 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		self::assertFalse(
 			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
 			'Failed to confirm tracker script was not enqueued'
-		);
-
-		wp_print_scripts();
-		$output = ob_get_clean();
-
-		self::assertSame(
-			'',
-			$output,
-			'Failed to confirm script tags were not printed'
 		);
 	}
 
@@ -371,29 +269,12 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		self::assertTrue( is_user_member_of_blog( $new_user, $first_blog ) );
 		self::assertFalse( is_user_member_of_blog( $new_user, $second_blog ) );
 
-		ob_start();
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
-
-		$intermediate_output = ob_get_contents();
-		self::assertSame(
-			'',
-			$intermediate_output,
-			'Failed to confirm scripts were not printed by enqueue_js_tracker()'
-		);
 
 		self::assertFalse(
 			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
 			'Failed to confirm tracker script was not enqueued'
-		);
-
-		wp_print_scripts();
-		$output = ob_get_clean();
-
-		self::assertSame(
-			'',
-			$output,
-			'Failed to confirm script tags were not printed'
 		);
 
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
@@ -403,30 +284,12 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 		self::assertEquals( get_current_blog_id(), $second_blog );
 		self::assertFalse( is_user_member_of_blog( $new_user, get_current_blog_id() ) );
 
-		ob_start();
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
-
-		$intermediate_output = ob_get_contents();
-		self::assertSame(
-			'',
-			$intermediate_output,
-			'Failed to confirm scripts were not printed by enqueue_js_tracker()'
-		);
 
 		self::assertTrue(
 			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
 			'Failed to confirm tracker script was enqueued'
-		);
-
-		wp_print_scripts();
-		$output = ob_get_clean();
-
-		self::assertSame(
-			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-			"<script type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
-			$output,
-			'Failed to confirm script tags were printed correctly'
 		);
 	}
 
@@ -442,28 +305,22 @@ var wpParsely = {\"apikey\":\"blog.parsely.com\"};
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 */
 	public function test_enqueue_js_tracker_filter(): void {
-		add_filter( 'wp_parsely_enqueue_js_tracker', '__return_false' );
+		add_filter( 'wp_parsely_load_js_tracker', '__return_false' );
 
-		ob_start();
 		$post_array = $this->create_test_post_array();
 		$post       = $this->factory->post->create( $post_array );
 		$this->go_to( '/?p=' . $post );
+		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
-		$intermediate_output = ob_get_contents();
 
-		self::assertSame(
-			'',
-			$intermediate_output,
-			'Failed to confirm scripts were not printed by enqueue_js_tracker()'
+		// Confirm that tracker script is registered but not enqueued.
+		self::assertTrue(
+			wp_script_is( 'wp-parsely-tracker', 'registered' ),
+			'Script wp-parsely-tracker was not registered'
 		);
-
-		wp_print_scripts();
-
-		$output = ob_get_clean();
-		self::assertSame(
-			'',
-			$output,
-			'Failed to confirm filter prevented enqueued scripts'
+		self::assertFalse(
+			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
+			'Script wp-parsely-tracker should not be enqueued'
 		);
 	}
 }
