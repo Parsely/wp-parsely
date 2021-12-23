@@ -55,23 +55,17 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 
 		// Confirm that API script is registered but not enqueued.
-		self::assertTrue(
-			wp_script_is( 'wp-parsely-api', 'registered' ),
-			'Script wp-parsely-api was not registered'
-		);
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-api', 'enqueued' ),
-			'Script wp-parsely-api should not be enqueued'
+		$this->assert_script_statuses(
+			'wp-parsely-api',
+			array( 'registered' ),
+			array( 'enqueued' )
 		);
 
 		// Confirm that tracker script is registered but not enqueued.
-		self::assertTrue(
-			wp_script_is( 'wp-parsely-tracker', 'registered' ),
-			'Script wp-parsely-tracker was not registered'
-		);
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Script wp-parsely-tracker should not be enqueued'
+		$this->assert_script_statuses(
+			'wp-parsely-tracker',
+			array( 'registered' ),
+			array( 'enqueued' )
 		);
 	}
 
@@ -94,10 +88,10 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		// Confirm that JS tracker script gets enqueued.
-		self::assertTrue(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Script wp-parsely-tracker was not enqueued'
+		// Confirm that JS tracker script is registered and enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-tracker',
+			array( 'registered', 'enqueued' ),
 		);
 	}
 
@@ -153,14 +147,12 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
+		// Since wp_parsely_load_js_tracker is set to false, enqueue should fail.
 		// Confirm that tracker script is registered but not enqueued.
-		self::assertTrue(
-			wp_script_is( 'wp-parsely-tracker', 'registered' ),
-			'Script wp-parsely-tracker was not registered'
-		);
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Script wp-parsely-tracker should not be enqueued'
+		$this->assert_script_statuses(
+			'wp-parsely-tracker',
+			array( 'registered' ),
+			array( 'enqueued' )
 		);
 	}
 
@@ -180,10 +172,12 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_api();
 
+		// Since no secret is provided, enqueue should fail.
 		// Confirm that API script is registered but not enqueued.
-		self::assertTrue(
-			wp_script_is( 'wp-parsely-api', 'registered' ),
-			'Script wp-parsely-api was not registered'
+		$this->assert_script_statuses(
+			'wp-parsely-api',
+			array( 'registered' ),
+			array( 'enqueued' )
 		);
 	}
 
@@ -205,14 +199,15 @@ final class ScriptsTest extends TestCase {
 		self::set_options( array( 'api_secret' => 'hunter2' ) );
 		self::$scripts->enqueue_js_api();
 
-		self::assertTrue(
-			wp_script_is( 'wp-parsely-api', 'enqueued' ),
-			'Failed to confirm api script was enqueued when an API secret is set'
+		// Confirm that API script is registered and enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-api',
+			array( 'registered', 'enqueued' )
 		);
 	}
 
 	/**
-	 * Make sure users can log in.
+	 * Make sure that disabling authenticated user tracking works.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @uses \Parsely\Parsely::api_key_is_missing
@@ -222,36 +217,27 @@ final class ScriptsTest extends TestCase {
 	 * @group enqueue-js
 	 * @group settings
 	 */
-	public function test_user_logged_in(): void {
+	public function test_do_not_track_logged_in_users(): void {
 		TestCase::set_options( array( 'track_authenticated_users' => false ) );
 		$new_user = $this->create_test_user( 'bill_brasky' );
 		wp_set_current_user( $new_user );
 
+		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-api', 'registered' ),
-			'Failed to confirm API script was not registered'
-		);
-
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-api', 'enqueued' ),
-			'Failed to confirm API script was not enqueued'
-		);
-
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-tracker', 'registered' ),
-			'Failed to confirm tracker script was not registered'
-		);
-
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm tracker script was not enqueued'
+		// As track_authenticated_users options is false, enqueue should fail.
+		// Confirm that tracker script is registered but not enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-tracker',
+			array( 'registered' ),
+			array( 'enqueued' )
 		);
 	}
 
 	/**
-	 * Make sure users can log in to more than one site.
+	 * Make sure that disabling authenticated user tracking works in a multisite
+	 * environment. The test simulates authenticated and unauthenticated user
+	 * activity.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @uses \Parsely\Parsely::api_key_is_missing
@@ -266,54 +252,91 @@ final class ScriptsTest extends TestCase {
 	 * @group enqueue-js
 	 * @group settings
 	 */
-	public function test_user_logged_in_multisite(): void {
+	public function test_do_not_track_logged_in_users_multisite(): void {
 		if ( ! is_multisite() ) {
 			self::markTestSkipped( "this test can't run without multisite" );
 		}
 
-		$new_user    = $this->create_test_user( 'optimus_prime' );
-		$second_user = $this->create_test_user( 'megatron' );
-		$first_blog  = $this->create_test_blog( 'autobots', $new_user );
-		$second_blog = $this->create_test_blog( 'decepticons', $second_user );
+		// Set up users and blogs.
+		$first_blog_admin  = $this->create_test_user( 'optimus_prime' );
+		$second_blog_admin = $this->create_test_user( 'megatron' );
+		$first_blog        = $this->create_test_blog( 'autobots', $first_blog_admin );
+		$second_blog       = $this->create_test_blog( 'decepticons', $second_blog_admin );
 
-		wp_set_current_user( $new_user );
-		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
-		switch_to_blog( $first_blog );
-
-		// These custom options will be used for both blog_ids.
+		// These custom options will be used for both blogs.
 		$custom_options = array(
-			'track_authenticated_users' => false,
+			'track_authenticated_users' => false, // Don't track logged-in users.
 			'apikey'                    => 'blog.parsely.com',
 		);
-		TestCase::set_options( $custom_options );
 
+		// Only first admin is logged-in throughout the test.
+		wp_set_current_user( $first_blog_admin );
+
+		// -- Test first blog.
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
+		switch_to_blog( $first_blog );
+		TestCase::set_options( $custom_options );
 		$this->go_to_new_post();
 
+		// Check that we're on the first blog and that first user is a member.
 		self::assertEquals( get_current_blog_id(), $first_blog );
-		self::assertTrue( is_user_member_of_blog( $new_user, $first_blog ) );
-		self::assertFalse( is_user_member_of_blog( $new_user, $second_blog ) );
+		self::assertTrue( is_user_member_of_blog( $first_blog_admin, $first_blog ) );
 
+		// Enqueue JS tracker
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm tracker script was not enqueued'
+		// Current user is logged-in and track_authenticated_users is false so enqueue
+		// should fail. Confirm that tracker script is registered but not enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-tracker',
+			array( 'registered' ),
+			array( 'enqueued' )
 		);
 
+		// -- Test second blog.
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
 		switch_to_blog( $second_blog );
 		TestCase::set_options( $custom_options );
+		$this->go_to_new_post();
 
+		// Check that we're on the second blog and that first user is not a member.
 		self::assertEquals( get_current_blog_id(), $second_blog );
-		self::assertFalse( is_user_member_of_blog( $new_user, get_current_blog_id() ) );
+		self::assertFalse( is_user_member_of_blog( $first_blog_admin, get_current_blog_id() ) );
 
+		// Enqueue JS tracker
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		self::assertTrue(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Failed to confirm tracker script was enqueued'
+		// First user is not logged-in to the second blog, so track_authenticated_users value
+		// is irrelevant. Confirm that tracker script is registered and enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-tracker',
+			array( 'enqueued', 'registered' )
 		);
+	}
+
+	/**
+	 * Test multiple script statuses in one go.
+	 *
+	 * @param string $handle Script handle to test.
+	 * @param array $assert_true Statuses that should assert to true.
+	 * @param array $assert_false Statuses that should assert to false.
+	 * @return void
+	 */
+	public function assert_script_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
+		foreach ( $assert_true as $status ) {
+			self::assertTrue(
+				wp_script_is( $handle, $status ),
+				"Unexpected script status: $handle status should be '$status'"
+			);
+		}
+
+		foreach ( $assert_false as $status ) {
+			self::assertFalse(
+				wp_script_is( $handle, $status ),
+				"Unexpected script status: $handle status should NOT be '$status'"
+			);
+		}
 	}
 }
