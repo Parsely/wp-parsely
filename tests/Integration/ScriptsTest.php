@@ -139,6 +139,37 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
+	 * Test the wp_parsely_enqueue_js_tracker filter
+	 * When it returns false, the tracking script should not be enqueued.
+	 *
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 */
+	public function test_enqueue_js_tracker_filter(): void {
+		add_filter( 'wp_parsely_load_js_tracker', '__return_false' );
+
+		$post_array = $this->create_test_post_array();
+		$post       = $this->factory->post->create( $post_array );
+		$this->go_to( '/?p=' . $post );
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
+
+		// Confirm that tracker script is registered but not enqueued.
+		self::assertTrue(
+			wp_script_is( 'wp-parsely-tracker', 'registered' ),
+			'Script wp-parsely-tracker was not registered'
+		);
+		self::assertFalse(
+			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
+			'Script wp-parsely-tracker should not be enqueued'
+		);
+	}
+
+	/**
 	 * Test the API init script enqueue.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_api
@@ -290,37 +321,6 @@ final class ScriptsTest extends TestCase {
 		self::assertTrue(
 			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
 			'Failed to confirm tracker script was enqueued'
-		);
-	}
-
-	/**
-	 * Test the wp_parsely_enqueue_js_tracker filter
-	 * When it returns false, the tracking script should not be enqueued.
-	 *
-	 * @covers \Parsely\Scripts::enqueue_js_tracker
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::post_has_trackable_status
-	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 */
-	public function test_enqueue_js_tracker_filter(): void {
-		add_filter( 'wp_parsely_load_js_tracker', '__return_false' );
-
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
-		self::$scripts->register_scripts();
-		self::$scripts->enqueue_js_tracker();
-
-		// Confirm that tracker script is registered but not enqueued.
-		self::assertTrue(
-			wp_script_is( 'wp-parsely-tracker', 'registered' ),
-			'Script wp-parsely-tracker was not registered'
-		);
-		self::assertFalse(
-			wp_script_is( 'wp-parsely-tracker', 'enqueued' ),
-			'Script wp-parsely-tracker should not be enqueued'
 		);
 	}
 }
