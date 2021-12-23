@@ -134,10 +134,8 @@ final class OtherTest extends TestCase {
 	public function test_filter_wp_parsely_post_type(): void {
 		$options = get_option( Parsely::OPTIONS_KEY );
 
-		$post_array = $this->create_test_post_array();
-		$post_id    = $this->factory->post->create( $post_array );
-		$post_obj   = get_post( $post_id );
-		$this->go_to( '/?p=' . $post_id );
+		$post_id  = $this->go_to_new_post();
+		$post_obj = get_post( $post_id );
 
 		// Try to change the post type to a supported value - BlogPosting.
 		add_filter(

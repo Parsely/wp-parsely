@@ -90,9 +90,7 @@ final class ScriptsTest extends TestCase {
 	 * @group enqueue-js
 	 */
 	public function test_enqueue_js_tracker(): void {
-		$post_data = $this->create_test_post_array();
-		$post      = $this->factory->post->create( $post_data );
-		$this->go_to( '/?p=' . $post );
+		$this->go_to_new_post();
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
@@ -122,9 +120,7 @@ final class ScriptsTest extends TestCase {
 		add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 
 		ob_start();
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
+		$this->go_to_new_post();
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
@@ -153,9 +149,7 @@ final class ScriptsTest extends TestCase {
 	public function test_enqueue_js_tracker_filter(): void {
 		add_filter( 'wp_parsely_load_js_tracker', '__return_false' );
 
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
+		$this->go_to_new_post();
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
@@ -293,9 +287,7 @@ final class ScriptsTest extends TestCase {
 		);
 		TestCase::set_options( $custom_options );
 
-		$post_array = $this->create_test_post_array();
-		$post       = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post );
+		$this->go_to_new_post();
 
 		self::assertEquals( get_current_blog_id(), $first_blog );
 		self::assertTrue( is_user_member_of_blog( $new_user, $first_blog ) );
