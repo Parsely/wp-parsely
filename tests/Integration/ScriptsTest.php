@@ -136,7 +136,7 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
-	 * Test the wp_parsely_enqueue_js_tracker filter
+	 * Test the wp_parsely_load_js_tracker filter
 	 * When it returns false, the tracking script should not be enqueued.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
@@ -146,7 +146,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 */
-	public function test_enqueue_js_tracker_filter(): void {
+	public function test_wp_parsely_load_js_tracker_filter(): void {
 		add_filter( 'wp_parsely_load_js_tracker', '__return_false' );
 
 		$this->go_to_new_post();
