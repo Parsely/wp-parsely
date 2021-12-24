@@ -248,12 +248,18 @@ final class ScriptsTest extends TestCase {
 	 * @group settings
 	 */
 	public function test_do_not_track_logged_in_users(): void {
-		TestCase::set_options( array( 'track_authenticated_users' => false ) );
+		TestCase::set_options(
+			array(
+				'api_secret'                => 'hunter2',
+				'track_authenticated_users' => false,
+			)
+		);
 		$new_user = $this->create_test_user( 'bill_brasky' );
 		wp_set_current_user( $new_user );
 
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
+		self::$scripts->enqueue_js_api();
 
 		// As track_authenticated_users options is false, enqueue should fail.
 		// Confirm that tracker script is registered but not enqueued.
@@ -261,6 +267,13 @@ final class ScriptsTest extends TestCase {
 			'wp-parsely-tracker',
 			array( 'registered' ),
 			array( 'enqueued' )
+		);
+
+		// API should be unaffected by track_authenticated_users setting.
+		// Confirm that API script is registered and enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-api',
+			array( 'registered', 'enqueued' )
 		);
 	}
 
