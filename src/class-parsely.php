@@ -449,8 +449,8 @@ class Parsely {
 			);
 			$parsely_page['dateCreated']      = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
 			$parsely_page['datePublished']    = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
-			if ( get_the_modified_date( 'U', true ) >= get_post_time( 'U', true, $post ) ) {
-				$parsely_page['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_the_modified_date( 'U', true ) );
+			if ( get_post_modified_time( 'U', true, $post ) >= get_post_time( 'U', true, $post ) ) {
+				$parsely_page['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_post_modified_time( 'U', true, $post ) );
 			} else {
 				// Use the post time as the earliest possible modification date.
 				$parsely_page['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
