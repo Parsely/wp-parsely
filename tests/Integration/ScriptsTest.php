@@ -125,7 +125,7 @@ final class ScriptsTest extends TestCase {
 			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
-			'Failed to confirm script tag was printed correctly'
+			'Tracker script tag was not printed correctly'
 		);
 	}
 
