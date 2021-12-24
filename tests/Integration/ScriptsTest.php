@@ -88,10 +88,40 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		// Confirm that JS tracker script is registered and enqueued.
+		// Confirm that tracker script is registered and enqueued.
 		$this->assert_script_statuses(
 			'wp-parsely-tracker',
 			array( 'registered', 'enqueued' )
+		);
+	}
+
+	/**
+	 * Test the tracker script enqueue with the disable_javascript option set
+	 * to true.
+	 *
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @uses \Parsely\Parsely::get_asset_cache_buster
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 * @uses \Parsely\Scripts::register_scripts
+	 * @uses \Parsely\Scripts::script_loader_tag
+	 * @group enqueue-js
+	 */
+	public function test_enqueue_js_tracker_with_javascript_option_disabled(): void {
+		TestCase::set_options( array( 'disable_javascript' => true ) );
+
+		$this->go_to_new_post();
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
+
+		// Confirm that tracker script is registered but not enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-tracker',
+			array( 'registered' ),
+			array( 'enqueued' )
 		);
 	}
 
@@ -282,7 +312,7 @@ final class ScriptsTest extends TestCase {
 		self::assertEquals( get_current_blog_id(), $first_blog );
 		self::assertTrue( is_user_member_of_blog( $first_blog_admin, $first_blog ) );
 
-		// Enqueue JS tracker.
+		// Enqueue tracker script.
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
@@ -304,7 +334,7 @@ final class ScriptsTest extends TestCase {
 		self::assertEquals( get_current_blog_id(), $second_blog );
 		self::assertFalse( is_user_member_of_blog( $first_blog_admin, get_current_blog_id() ) );
 
-		// Enqueue JS tracker.
+		// Enqueue tracker script.
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
