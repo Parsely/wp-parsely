@@ -41,7 +41,7 @@ final class AuthorArchiveTest extends NonPostTestCase {
 		// See https://github.com/Parsely/wp-parsely/issues/151.
 		$this->set_permalink_structure( '/%postname%/' );
 
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
