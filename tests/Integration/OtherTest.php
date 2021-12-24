@@ -86,7 +86,7 @@ final class OtherTest extends TestCase {
 	 * @group filters
 	 */
 	public function test_parsely_page_filter(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
