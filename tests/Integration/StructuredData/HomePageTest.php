@@ -48,7 +48,7 @@ final class HomePageTest extends NonPostTestCase {
 	 * @group metadata
 	 */
 	public function test_home_page_for_posts(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
@@ -94,7 +94,7 @@ final class HomePageTest extends NonPostTestCase {
 	 * @group metadata
 	 */
 	public function test_home_page_for_posts_paged(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
@@ -145,7 +145,7 @@ final class HomePageTest extends NonPostTestCase {
 	 * @group metadata
 	 */
 	public function test_home_page_on_front(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
@@ -197,7 +197,7 @@ final class HomePageTest extends NonPostTestCase {
 	 * @group metadata
 	 */
 	public function test_home_for_misconfigured_settings(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
