@@ -70,11 +70,11 @@ jobs:
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v1
+        uses: ramsey/composer-install@v2
 
       # - name: Install Composer dependencies for PHP >= 8.2
       #  if: ${{ matrix.php >= 8.2 }}
-      #  uses: ramsey/composer-install@v1
+      #  uses: ramsey/composer-install@v2
       #  with:
       #    composer-options: --ignore-platform-reqs
 
@@ -86,12 +86,12 @@ jobs:
         run: mysql -u root -proot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
 
       - name: Prepare environment for integration tests
-        run: composer prepare-ci
+        run: composer prepare-ci --no-interaction
 
       - name: Run integration tests (single site)
         if: ${{ matrix.php != 8.0 }}
-        run: composer testwp
+        run: composer testwp --no-interaction
 
       - name: Run integration tests (multisite site with code coverage)
         if: ${{ matrix.php == 8.0 }}
-        run: composer coveragewp-ci
+        run: composer coveragewp-ci --no-interaction
