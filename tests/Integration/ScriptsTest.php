@@ -317,7 +317,7 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
-	 * Test multiple script statuses in one go.
+	 * Assert multiple enqueueing statuses for a script.
 	 *
 	 * @param string $handle Script handle to test.
 	 * @param array  $assert_true Statuses that should assert to true.
