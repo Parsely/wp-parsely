@@ -362,9 +362,9 @@ final class ScriptsTest extends TestCase {
 	/**
 	 * Assert multiple enqueueing statuses for a script.
 	 *
-	 * @param string $handle Script handle to test.
-	 * @param array  $assert_true Statuses that should assert to true.
-	 * @param array  $assert_false Statuses that should assert to false.
+	 * @param string $handle       Script handle to test.
+	 * @param array  $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued', 'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 * @param array  $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued', 'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
 	 * @return void
 	 */
 	public function assert_script_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
