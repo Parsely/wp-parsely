@@ -49,7 +49,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @group enqueue-js
+	 * @group scripts
 	 */
 	public function test_parsely_register_scripts(): void {
 
@@ -94,7 +94,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
-	 * @group enqueue-js
+	 * @group scripts
 	 */
 	public function test_enqueue_js_tracker(): void {
 		$this->go_to_new_post();
@@ -121,7 +121,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
-	 * @group enqueue-js
+	 * @group scripts
 	 */
 	public function test_enqueue_js_tracker_with_javascript_option_disabled(): void {
 		TestCase::set_options( array( 'disable_javascript' => true ) );
@@ -175,7 +175,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
-	 * @group enqueue-js
+	 * @group scripts
 	 */
 	public function test_enqueue_js_api_no_secret(): void {
 		self::$scripts->register_scripts();
@@ -201,7 +201,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
-	 * @group enqueue-js
+	 * @group scripts
 	 */
 	public function test_enqueue_js_api_with_secret(): void {
 		self::$scripts->register_scripts();
@@ -223,7 +223,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::parsely_is_user_logged_in
-	 * @group enqueue-js
+	 * @group scripts
 	 * @group settings
 	 */
 	public function test_do_not_track_logged_in_users(): void {
@@ -271,7 +271,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
-	 * @group enqueue-js
+	 * @group scripts
 	 * @group settings
 	 */
 	public function test_do_not_track_logged_in_users_multisite(): void {
@@ -339,6 +339,41 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
+	 * Test that the tracker script is correctly output in HTML markup
+	 * when the wp_parsely_enable_cfasync_attribute filter is used.
+	 *
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @uses \Parsely\Parsely::get_asset_cache_buster
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 * @uses \Parsely\Scripts::register_scripts
+	 * @uses \Parsely\Scripts::script_loader_tag
+	 * @group scripts
+	 * @group scripts-output
+	 */
+	public function test_tracker_html_markup_when_cfasync_filter_is_called(): void {
+		add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
+
+		ob_start();
+		$this->go_to_new_post();
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
+
+		wp_print_scripts();
+		$output = ob_get_clean();
+
+		self::assertSame(
+			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
+			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
+			$output,
+			'Tracker script tag was not printed correctly'
+		);
+	}
+
+	/**
 	 * Assert multiple enqueueing statuses for a script.
 	 *
 	 * @param string $handle       Script handle to test.
@@ -360,40 +395,5 @@ final class ScriptsTest extends TestCase {
 				"Unexpected script status: $handle status should NOT be '$status'"
 			);
 		}
-	}
-
-	/**
-	 * Test that the tracker script is correctly output in HTML markup
-	 * when the wp_parsely_enable_cfasync_attribute filter is used.
-	 *
-	 * @covers \Parsely\Scripts::enqueue_js_tracker
-	 * @uses \Parsely\Parsely::get_asset_cache_buster
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::post_has_trackable_status
-	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Scripts::register_scripts
-	 * @uses \Parsely\Scripts::script_loader_tag
-	 * @group enqueue-js
-	 * @group insert-js
-	 */
-	public function test_tracker_html_markup_when_cfasync_filter_is_called(): void {
-		add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
-
-		ob_start();
-		$this->go_to_new_post();
-		self::$scripts->register_scripts();
-		self::$scripts->enqueue_js_tracker();
-
-		wp_print_scripts();
-		$output = ob_get_clean();
-
-		self::assertSame(
-			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
-			$output,
-			'Tracker script tag was not printed correctly'
-		);
 	}
 }
