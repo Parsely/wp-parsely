@@ -41,7 +41,7 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
-	 * Test JavaScript registrations.
+	 * Test script registration functionality.
 	 *
 	 * @covers \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Parsely::get_asset_cache_buster
@@ -52,16 +52,29 @@ final class ScriptsTest extends TestCase {
 	 * @group enqueue-js
 	 */
 	public function test_parsely_register_scripts(): void {
+
+		// Confirm that API and tracker scripts are not registered.
+		$this->assert_script_statuses(
+			'wp-parsely-api',
+			array(),
+			array( 'registered' )
+		);
+		$this->assert_script_statuses(
+			'wp-parsely-tracker',
+			array(),
+			array( 'registered' )
+		);
+
+		// Attempt to register API and tracker scripts.
 		self::$scripts->register_scripts();
 
-		// Confirm that API script is registered but not enqueued.
+		// Confirm that API and tracker scripts are now registered
+		// (but not yet enqueued).
 		$this->assert_script_statuses(
 			'wp-parsely-api',
 			array( 'registered' ),
 			array( 'enqueued' )
 		);
-
-		// Confirm that tracker script is registered but not enqueued.
 		$this->assert_script_statuses(
 			'wp-parsely-tracker',
 			array( 'registered' ),
