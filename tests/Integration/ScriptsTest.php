@@ -11,6 +11,7 @@ namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
 use Parsely\Scripts;
+use PHPUnit\Framework\RiskyTestError;
 use WP_Scripts;
 
 /**
@@ -379,9 +380,14 @@ final class ScriptsTest extends TestCase {
 	 * @param string $handle       Script handle to test.
 	 * @param array  $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued', 'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
 	 * @param array  $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued', 'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 * @return void
+	 *
+	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
 	 */
 	public function assert_script_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
+		if ( 0 === count( $assert_true ) + count( $assert_false ) ) {
+			throw new RiskyTestError( 'Function assert_script_statuses() has been used without any arguments' );
+		}
+
 		foreach ( $assert_true as $status ) {
 			self::assertTrue(
 				wp_script_is( $handle, $status ),
