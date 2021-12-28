@@ -431,6 +431,58 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
+	 * Check post modified date in Parsely metadata.
+	 *
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::get_author_name
+	 * @uses \Parsely\Parsely::get_author_names
+	 * @uses \Parsely\Parsely::get_bottom_level_term
+	 * @uses \Parsely\Parsely::get_category_name
+	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
+	 * @uses \Parsely\Parsely::get_coauthor_names
+	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Parsely::get_first_image
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 * @group metadata
+	 */
+	public function test_metadata_post_modified_date(): void {
+		// Setup Parsely object.
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+
+		// Create a post with a date in the past.
+		$time_format      = 'Y-m-d\TH:i:s\Z';
+		$time_yesterday   = time() - DAY_IN_SECONDS;
+		$date_created     = gmdate( $time_format, $time_yesterday );
+		$date_created_gmt = gmdate( $time_format, ( $time_yesterday + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) );
+		$post_id          = self::factory()->post->create(
+			array(
+				'post_date'     => $date_created,
+				'post_date_gmt' => $date_created_gmt,
+			)
+		);
+
+		// In the metadata, check that the post's created date is correct and
+		// that the last modified date is identical.
+		$post     = get_post( $post_id );
+		$metadata = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		self::assertSame( $date_created, $metadata['dateCreated'] );
+		self::assertSame( $date_created, $metadata['dateModified'] );
+
+		// Update the post and reload metadata.
+		wp_update_post( array( 'ID' => $post_id ) );
+		$post_updated     = get_post( $post_id );
+		$metadata_updated = $parsely->construct_parsely_metadata( $parsely_options, $post_updated );
+
+		// In the metadata, check that the last modified date has been updated.
+		self::assertSame( $date_created, $metadata_updated['dateCreated'] );
+		self::assertNotSame( $date_created, $metadata_updated['dateModified'] );
+	}
+
+	/**
 	 * Utility method to check metadata properties correctly set.
 	 *
 	 * @param array $structured_data Array of metadata to check.
