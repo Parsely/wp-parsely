@@ -355,7 +355,7 @@ final class ScriptsTest extends TestCase {
 	 * @group scripts
 	 * @group scripts-output
 	 */
-	public function test_tracker_html_markup_when_cfasync_filter_is_called(): void {
+	public function test_tracker_markup_has_attribute_when_cfasync_filter_is_used(): void {
 		add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 
 		ob_start();
