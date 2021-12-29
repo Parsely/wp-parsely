@@ -447,14 +447,9 @@ class Parsely {
 				'@type' => 'ImageObject',
 				'url'   => $image_url,
 			);
-			$parsely_page['dateCreated']      = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
-			$parsely_page['datePublished']    = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
-			if ( get_post_modified_time( 'U', true, $post ) >= get_post_time( 'U', true, $post ) ) {
-				$parsely_page['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_post_modified_time( 'U', true, $post ) );
-			} else {
-				// Use the post time as the earliest possible modification date.
-				$parsely_page['dateModified'] = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
-			}
+
+			$this->set_metadata_post_times( $parsely_page, $post );
+
 			$parsely_page['articleSection'] = $category;
 			$author_objects                 = array();
 			foreach ( $authors as $author ) {
@@ -490,6 +485,31 @@ class Parsely {
 		 * @param array   $parsely_options The Parsely options.
 		 */
 		return apply_filters( 'wp_parsely_metadata', $parsely_page, $post, $parsely_options );
+	}
+
+	/**
+	 * Sets all metadata values related to post time.
+	 *
+	 * @param array   $metadata Array containing all metadata.
+	 * @param WP_Post $post Post object from which to extract time data.
+	 * @return void
+	 */
+	private function set_metadata_post_times( array &$metadata, WP_Post $post ): void {
+		// Initializations.
+		$date_format   = 'Y-m-d\TH:i:s\Z';
+		$post_time     = get_post_time( 'U', true, $post );
+		$post_time_gmt = gmdate( $date_format, $post_time );
+
+		// Set post created and published time.
+		$metadata['dateCreated']   = $post_time_gmt;
+		$metadata['datePublished'] = $post_time_gmt;
+
+		// Set post modified time.
+		$metadata['dateModified'] = $post_time_gmt;
+		$post_modified_time       = get_post_modified_time( 'U', true, $post );
+		if ( false !== $post_modified_time && $post_modified_time > $post_time ) {
+			$metadata['dateModified'] = $post_modified_time;
+		}
 	}
 
 	/**
