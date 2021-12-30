@@ -490,7 +490,7 @@ class Parsely {
 	/**
 	 * Sets all metadata values related to post time.
 	 *
-	 * @param array   $metadata Array containing all metadata.
+	 * @param array   $metadata Array containing all metadata. It will be potentially mutated to add keys: dateCreated, dateModified, & datePublished.
 	 * @param WP_Post $post Post object from which to extract time data.
 	 * @return void
 	 */
