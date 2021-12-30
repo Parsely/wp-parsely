@@ -48,7 +48,7 @@ final class SinglePostTest extends TestCase {
 	 * @group metadata
 	 */
 	public function test_single_post(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
@@ -87,7 +87,7 @@ final class SinglePostTest extends TestCase {
 	 * @group metadata
 	 */
 	public function test_category_data_for_single_post(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
@@ -123,7 +123,7 @@ final class SinglePostTest extends TestCase {
 	 * @group settings
 	 */
 	public function test_tag_data_assigned_to_a_post_are_lowercase(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
@@ -170,7 +170,7 @@ final class SinglePostTest extends TestCase {
 	 * @group settings
 	 */
 	public function test_parsely_categories_as_tags_in_single_post(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
@@ -217,7 +217,7 @@ final class SinglePostTest extends TestCase {
 	 * @group settings
 	 */
 	public function test_custom_taxonomy_as_tags_in_single_post(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
@@ -275,7 +275,7 @@ final class SinglePostTest extends TestCase {
 	 * @group settings
 	 */
 	public function test_use_top_level_cats_in_single_post(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
@@ -332,7 +332,7 @@ final class SinglePostTest extends TestCase {
 	 * @group settings
 	 */
 	public function test_custom_taxonomy_as_section_in_single_post(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
@@ -399,7 +399,7 @@ final class SinglePostTest extends TestCase {
 	 * @group settings
 	 */
 	public function test_http_canonicals_for_single_post(): void {
-		// Setup Parsley object.
+		// Setup Parsely object.
 		$parsely         = new Parsely();
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
 
