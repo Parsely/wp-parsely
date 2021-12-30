@@ -483,6 +483,139 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
+	 * Check that post objects with valid creation date work with construct_parsely_metadata.
+	 *
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Parsely::set_metadata_post_times
+	 * @group metadata
+	 */
+	public function test_empty_post_date_has_dates_omitted_from_metadata(): void {
+		// Setup Parsely object.
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+
+		// Create a single post.
+		$post_id = $this->factory->post->create();
+		$post    = get_post( $post_id );
+
+		unset( $post->post_date );
+		unset( $post->post_date_gmt );
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// Without a post date, there should not be the following in the metadata.
+		self::assertArrayNotHasKey( 'dateCreated', $structured_data );
+		self::assertArrayNotHasKey( 'datePublished', $structured_data );
+		self::assertArrayNotHasKey( 'dateModified', $structured_data );
+	}
+
+	/**
+	 * Check that post objects with identical creation & modified dates produce expected metadata.
+	 *
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Parsely::set_metadata_post_times
+	 * @group metadata
+	 */
+	public function test_post_date_with_same_create_modified_dates_included_in_metadata(): void {
+		// Setup Parsely object.
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+
+		// Create the post.
+		$post_id = $this->factory->post->create();
+		$post    = get_post( $post_id );
+
+		// Annotate it with the timestamps to test against.
+		$singular_datetime       = '2021-12-30 20:11:42';
+		$post->post_date         = $singular_datetime;
+		$post->post_date_gmt     = $singular_datetime;
+		$post->post_modified     = $singular_datetime;
+		$post->post_modified_gmt = $singular_datetime;
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// Identical post creation and modified dates should be present in the metadata.
+		$expected_singular_datetime = '2021-12-30T20:11:42Z';
+
+		self::assertSame( $expected_singular_datetime, $structured_data['dateCreated'] );
+		self::assertSame( $expected_singular_datetime, $structured_data['datePublished'] );
+		self::assertSame( $expected_singular_datetime, $structured_data['dateModified'] );
+	}
+
+	/**
+	 * Check that posts with modified before creation date "promotes" modified in metadata.
+	 *
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Parsely::set_metadata_post_times
+	 * @group metadata
+	 */
+	public function test_post_date_with_modified_before_created_date_in_metadata(): void {
+		// Setup Parsely object.
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+
+		// Create the post.
+		$post_id = $this->factory->post->create();
+		$post    = get_post( $post_id );
+
+		// Annotate it with the timestamps to test against.
+		$modified_datetime       = '2021-12-30 20:11:41';
+		$created_datetime        = '2021-12-30 20:11:42';
+		$post->post_date         = $created_datetime;
+		$post->post_date_gmt     = $created_datetime;
+		$post->post_modified     = $modified_datetime;
+		$post->post_modified_gmt = $modified_datetime;
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// Modified dates earlier than created dates should be "promoted" to the latter.
+		$expected_singular_datetime = '2021-12-30T20:11:42Z';
+
+		self::assertSame( $expected_singular_datetime, $structured_data['dateCreated'] );
+		self::assertSame( $expected_singular_datetime, $structured_data['datePublished'] );
+		self::assertSame( $expected_singular_datetime, $structured_data['dateModified'] );
+	}
+
+	/**
+	 * Check that posts with modified after creation date has both in metadata.
+	 *
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Parsely::set_metadata_post_times
+	 * @group metadata
+	 */
+	public function test_post_date_with_modified_after_created_date_in_metadata(): void {
+		// Setup Parsely object.
+		$parsely         = new Parsely();
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+
+		// Create the post.
+		$post_id = $this->factory->post->create();
+		$post    = get_post( $post_id );
+
+		// Annotate it with the timestamps to test against.
+		$created_datetime        = '2021-12-30 20:11:42';
+		$modified_datetime       = '2021-12-30 20:11:43';
+		$post->post_date         = $created_datetime;
+		$post->post_date_gmt     = $created_datetime;
+		$post->post_modified     = $modified_datetime;
+		$post->post_modified_gmt = $modified_datetime;
+
+		// Create the structured data for that post.
+		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+
+		// Modified dates later than created dates should be present in the metadata.
+		$expected_created_datetime  = '2021-12-30T20:11:42Z';
+		$expected_modified_datetime = '2021-12-30T20:11:43Z';
+
+		self::assertSame( $expected_created_datetime, $structured_data['dateCreated'] );
+		self::assertSame( $expected_created_datetime, $structured_data['datePublished'] );
+		self::assertSame( $expected_modified_datetime, $structured_data['dateModified'] );
+	}
+
+	/**
 	 * Utility method to check metadata properties correctly set.
 	 *
 	 * @param array $structured_data Array of metadata to check.
