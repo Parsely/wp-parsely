@@ -495,14 +495,12 @@ class Parsely {
 	 * @return void
 	 */
 	private function set_metadata_post_times( array &$metadata, WP_Post $post ): void {
-		$date_format = 'Y-m-d\TH:i:s\Z';
-		$post_time   = get_post_time( 'U', true, $post );
+		$date_format   = 'Y-m-d\TH:i:s\Z';
+		$post_time_gmt = get_post_time( $date_format, true, $post );
 
-		if ( false === $post_time ) {
+		if ( false === $post_time_gmt ) {
 			return;
 		}
-
-		$post_time_gmt = gmdate( $date_format, $post_time );
 
 		// Set post created and published time.
 		$metadata['dateCreated']   = $post_time_gmt;
@@ -511,10 +509,10 @@ class Parsely {
 		// Set post modified time.
 		$metadata['dateModified'] = $post_time_gmt;
 
-		$post_modified_time = get_post_modified_time( 'U', true, $post );
+		$post_modified_gmt = get_post_modified_time( $date_format, true, $post );
 
-		if ( false !== $post_modified_time && $post_modified_time > $post_time ) {
-			$metadata['dateModified'] = gmdate( $date_format, $post_modified_time );
+		if ( false !== $post_modified_gmt && $post_modified_gmt > $post_time_gmt ) {
+			$metadata['dateModified'] = $post_modified_gmt;
 		}
 	}
 
