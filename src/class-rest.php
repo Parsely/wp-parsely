@@ -106,7 +106,7 @@ class Rest {
 		 *
 		 * @param bool $enabled True if enabled, false if not.
 		 */
-		if ( apply_filters( 'wp_parsely_enable_rest_rendered_support', true ) ) {
+		if ( apply_filters( 'wp_parsely_enable_rest_rendered_support', true, $post ) ) {
 			$response['rendered'] = $this->get_rendered_meta();
 		}
 
