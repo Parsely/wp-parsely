@@ -10,6 +10,12 @@ on:
   # Allow manually triggering the workflow.
   workflow_dispatch:
 
+# Cancels all previous workflow runs for the same branch that have not yet completed.
+concurrency:
+  # The concurrency group contains the workflow name and the branch name.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   checkcs:
     name: 'Basic CS and QA checks'
@@ -42,16 +48,16 @@ jobs:
       # Validate the composer.json file.
       # @link https://getcomposer.org/doc/03-cli.md#validate
       - name: Validate Composer installation
-        run: composer validate --no-check-all --strict
+        run: composer validate --no-check-all --strict --no-interaction
 
       # Install dependencies and handle caching in one go.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v1
+        uses: ramsey/composer-install@v2
 
       # Lint PHP.
       - name: Lint PHP against parse errors
-        run: composer lint-ci | cs2pr
+        run: composer lint-ci --no-interaction | cs2pr
 
       # Needed as runs-on: system doesn't have xml-lint by default.
       # @link https://github.com/marketplace/actions/xml-lint
@@ -69,7 +75,7 @@ jobs:
 
       # Check the code-style consistency of the PHP files.
       - name: Check PHP code style
-        run: vendor/bin/phpcs --report-full --report-checkstyle=./phpcs-report.xml
+        run: composer cs -- --report-full --report-checkstyle=./phpcs-report.xml
 
       - name: Show PHPCS results in PR
         run: cs2pr ./phpcs-report.xml
