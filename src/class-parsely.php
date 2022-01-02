@@ -193,7 +193,7 @@ class Parsely {
 			return;
 		}
 
-		echo "\n" . '<!-- BEGIN Parse.ly ' . esc_html( self::VERSION ) . ' -->' . "\n";
+		echo PHP_EOL;
 
 		// Insert JSON-LD or repeated metas.
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
@@ -230,7 +230,7 @@ class Parsely {
 			include plugin_dir_path( PARSELY_FILE ) . 'views/custom-metadata.php';
 		}
 
-		echo '<!-- END Parse.ly -->' . "\n\n";
+		echo PHP_EOL;
 	}
 
 	/**
@@ -256,6 +256,22 @@ class Parsely {
 		$post_id      = is_int( $post ) ? $post : $post->ID;
 		if ( isset( $cache[ $post_id ] ) ) {
 			return $cache[ $post_id ];
+		}
+
+		/**
+		 * Filters whether the post password check should be skipped when getting the post trackable status.
+		 *
+		 * @since 3.0.1
+		 *
+		 * @param bool $skip True if the password check should be skipped.
+		 * @param int|WP_Post $post Which post object or ID is being checked.
+		 *
+		 * @returns bool
+		 */
+		$skip_password_check = apply_filters( 'wp_parsely_skip_post_password_check', false, $post );
+		if ( ! $skip_password_check && post_password_required( $post ) ) {
+			$cache[ $post_id ] = false;
+			return false;
 		}
 
 		/**
@@ -388,7 +404,7 @@ class Parsely {
 			$supported_types = array_merge( $this->supported_jsonld_post_types, $this->supported_jsonld_non_post_types );
 
 			// Validate type before passing it further as an invalid type will not be recognized by Parse.ly.
-			if ( ! in_array( $type, $supported_types ) ) {
+			if ( ! in_array( $type, $supported_types, true ) ) {
 				$error = sprintf(
 					/* translators: 1: JSON @type like NewsArticle, 2: URL */
 					__( '@type %1$s is not supported by Parse.ly. Please use a type mentioned in %2$s', 'wp-parsely' ),
@@ -423,11 +439,11 @@ class Parsely {
 			$parsely_page['articleSection'] = $category;
 			$author_objects                 = array();
 			foreach ( $authors as $author ) {
-				$author_tag = array(
+				$author_tag       = array(
 					'@type' => 'Person',
 					'name'  => $author,
 				);
-				array_push( $author_objects, $author_tag );
+				$author_objects[] = $author_tag;
 			}
 			$parsely_page['author']    = $author_objects;
 			$parsely_page['creator']   = $authors;
@@ -628,6 +644,11 @@ class Parsely {
 	 */
 	public function get_options(): array {
 		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
+
+		if ( ! is_array( $options ) ) {
+			return $this->option_defaults;
+		}
+
 		return array_merge( $this->option_defaults, $options );
 	}
 
@@ -769,7 +790,7 @@ class Parsely {
 						$post_author   = $coauthors_plus->get_coauthor_by( 'user_nicename', $coauthor_slug );
 						// In case the user has been deleted while plugin was deactivated.
 						if ( ! empty( $post_author ) ) {
-							$coauthors[] = $post_author;
+							$coauthors[] = new WP_User( $post_author );
 						}
 					}
 				} elseif ( ! $coauthors_plus->force_guest_authors ) {
@@ -837,11 +858,12 @@ class Parsely {
 		 *
 		 * @since 1.14.0
 		 *
-		 * @param array   $authors One or more authors as WP_User objects (may also be `false`).
-		 * @param WP_Post $post    Post object.
+		 * @param WP_User[] $authors One or more authors as WP_User objects.
+		 * @param WP_Post   $post    Post object.
 		 */
 		$authors = apply_filters( 'wp_parsely_pre_authors', $authors, $post );
 
+		// Getting the author name for each author.
 		$authors = array_map( array( $this, 'get_author_name' ), $authors );
 
 		/**
@@ -963,7 +985,7 @@ class Parsely {
 	 * @return string "post" or "index".
 	 */
 	public function convert_jsonld_to_parsely_type( string $type ): string {
-		return in_array( $type, $this->supported_jsonld_post_types ) ? 'post' : 'index';
+		return in_array( $type, $this->supported_jsonld_post_types, true ) ? 'post' : 'index';
 	}
 
 	/**
