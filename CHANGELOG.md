@@ -44,7 +44,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - E2E test for recommended widget. [#434](https://github.com/Parsely/wp-parsely/pull/434)
 - JavaScript code-scanning [#453](https://github.com/Parsely/wp-parsely/pull/453)
 
-### Changed 
+### Changed
 
 - Minimum PHP and WP versions required to run the plugin are now 7.1 (from 5.6) and 5.0 from (4.0), respectively. [#416](https://github.com/Parsely/wp-parsely/pull/416)
 - The development Node JS version has been bumped from 14 to 16.
@@ -82,7 +82,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - Consistent return types on `update_metadata_endpoint`. [#446](https://github.com/Parsely/wp-parsely/pull/446)
   - The function used to return different return types, now it always returns `void`.
 - Consistent return type on `insert_parsely_page`. [#443](https://github.com/Parsely/wp-parsely/pull/443)
-  - The function used to return `string|null|array`, now it returns `void`. 
+  - The function used to return `string|null|array`, now it returns `void`.
 - Fixed fatal error when the option in the database was corrupted. [#540](https://github.com/Parsely/wp-parsely/pull/540)
 - Tests: Stop using deprecated `setMethods()` method. [#427](https://github.com/Parsely/wp-parsely/pull/427)
 - e2e tests: fix watch command. [#476](https://github.com/Parsely/wp-parsely/pull/476)
@@ -97,7 +97,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - `post_has_viewable_type` function. [#417](https://github.com/Parsely/wp-parsely/pull/417)
   - Use `is_post_viewable` instead. The `post_has_viewable_type` function was only added to support older versions of WordPress.
 - Custom Parse.ly load text domain. [#457](https://github.com/Parsely/wp-parsely/pull/457)
-  - Since the plugin now supports versions of WordPress that load custom text domains automatically, the plugins doesn't have to explicitly load the text domain itself. 
+  - Since the plugin now supports versions of WordPress that load custom text domains automatically, the plugins doesn't have to explicitly load the text domain itself.
 - Empty functions for admin settings. [#456](https://github.com/Parsely/wp-parsely/pull/456)
   - The callbacks were never utilised.
 - Redundant code coverage annotations. [#469](https://github.com/Parsely/wp-parsely/pull/469)
@@ -138,7 +138,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - Bump prettier from 2.3.2 to 2.4.1 #376
 - Bump @wordpress/scripts from 17.1.0 to 18.0.1 #366
 
-### Fixed 
+### Fixed
 
 - Widget: Hide the recommendation widget until the element is populated #193
 - Add conditional for CPT archives and CPT term archives #328
@@ -148,7 +148,6 @@ If you are using the plugin without any code-level customizations (for instance,
 - Change red color in admin to match wp-admin styles #386
 - Remove unused default logo variable #387
 - Remove unused return_personalized_json function #391
-
 
 ## [2.5.2] - 2021-09-17
 
