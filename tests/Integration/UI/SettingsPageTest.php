@@ -14,7 +14,7 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Settings_Page;
 
 /**
- * Row actions tests.
+ * Settings page tests.
  *
  * @since 3.1.0
  */
