@@ -33,6 +33,26 @@ abstract class TestCase extends WPIntegrationTestCase {
 		'logo'                      => '',
 	);
 
+	public const EMPTY_DEFAULT_OPTIONS = array(
+		'apikey'                      => '',
+		'content_id_prefix'           => '',
+		'api_secret'                  => '',
+		'use_top_level_cats'          => false,
+		'custom_taxonomy_section'     => 'category',
+		'cats_as_tags'                => false,
+		'track_authenticated_users'   => true,
+		'lowercase_tags'              => true,
+		'force_https_canonicals'      => false,
+		'track_post_types'            => array( 'post' ),
+		'track_page_types'            => array( 'page' ),
+		'disable_javascript'          => false,
+		'disable_amp'                 => false,
+		'meta_type'                   => 'json_ld',
+		'logo'                        => '',
+		'metadata_secret'             => '',
+		'parsely_wipe_metadata_cache' => false,
+	);
+
 	/**
 	 * Utility function to update Parse.ly options with a merge of default values and custom values.
 	 *
@@ -142,5 +162,18 @@ abstract class TestCase extends WPIntegrationTestCase {
 		$method = $class->getMethod( $method_name );
 		$method->setAccessible( true );
 		return $method;
+	}
+
+	/**
+	 * Create a new post and go to it.
+	 *
+	 * @return int The new post's ID.
+	 */
+	public function go_to_new_post(): int {
+		$post_data = $this->create_test_post_array();
+		$post_id   = $this->factory->post->create( $post_data );
+		$this->go_to( '/?p=' . $post_id );
+
+		return $post_id;
 	}
 }

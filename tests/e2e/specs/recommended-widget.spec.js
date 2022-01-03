@@ -11,9 +11,7 @@ import {
  * Internal dependencies
  */
 import {
-	activatePluginApiKey,
-	deactivatePluginApiKey,
-	deactivatePluginApiSecret,
+	changeKeysState,
 	waitForWpAdmin,
 } from '../utils';
 
@@ -35,7 +33,7 @@ const selectParselyWidgetFromWidgetSearch = async () => {
 	await button.click();
 };
 
-const checkForNonActiveWidgetText = async () => {
+const getNonActiveWidgetText = async () => {
 	// Checking if Parse.ly widget is present in the widgets list
 	await page.waitForSelector( '.wp-block-legacy-widget__edit-form', {
 		visible: true,
@@ -46,14 +44,10 @@ const checkForNonActiveWidgetText = async () => {
 	await h3.click();
 
 	const widgetContent = await page.evaluateHandle( ( el ) => el.nextElementSibling, h3 );
-	const textContent = await page.evaluate( ( el ) => el.textContent, widgetContent );
-
-	expect( textContent ).toContain( deactivatedPluginWidgetText );
+	return page.evaluate( ( el ) => el.textContent, widgetContent );
 };
 
 describe( 'Recommended widget', () => {
-	jest.setTimeout( 30000 );
-
 	beforeAll( () => {
 		page.once( 'dialog', async function( dialog ) {
 			await dialog.accept();
@@ -63,8 +57,7 @@ describe( 'Recommended widget', () => {
 	it( 'Widget should be available but inactive without api key and secret', async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
-		await deactivatePluginApiKey();
-		await deactivatePluginApiSecret();
+		await changeKeysState( false, false );
 
 		await visitAdminPage( '/widgets.php', '' );
 		await waitForWpAdmin();
@@ -73,14 +66,13 @@ describe( 'Recommended widget', () => {
 		await searchForParselyWidget();
 		await selectParselyWidgetFromWidgetSearch();
 
-		await checkForNonActiveWidgetText();
+		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
 	} );
 
 	it( 'Widget should be available but inactive without api secret', async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
-		await activatePluginApiKey();
-		await deactivatePluginApiSecret();
+		await changeKeysState( true, false );
 
 		await visitAdminPage( '/widgets.php', '' );
 		await waitForWpAdmin();
@@ -89,6 +81,6 @@ describe( 'Recommended widget', () => {
 		await searchForParselyWidget();
 		await selectParselyWidgetFromWidgetSearch();
 
-		await checkForNonActiveWidgetText();
+		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
 	} );
 } );

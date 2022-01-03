@@ -1,6 +1,6 @@
 # Parse.ly
 
-Stable tag: 3.0.0-alpha
+Stable tag: 3.1.0-alpha  
 Requires at least: 5.0  
 Tested up to: 5.8  
 Requires PHP: 7.1  
@@ -22,49 +22,78 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 
 - Get started with Parse.ly right away: the plugin automatically inserts the required metadata and JavaScript on all your published pages and posts.
 - Choose what format the metadata takes, and whether logged-in users should be included in the analytics.
+- Using it in a decoupled setup? Parse.ly adds metadata to the REST API output for pages, posts and optionally other object types.
 - If you've purchased access to the Parse.ly API, add a widget to your site with article recommendations personalized to individual users.
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
 
 ## Installation
 
-The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results.
-[Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
+The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results. [Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
 ### Install the plugin from within WordPress
 
 1. Visit the Plugins page from your WordPress dashboard and click "Add New" at the top of the page.
-1. Search for "parse.ly" using the search bar on the right side.
-1. Click "Install Now" to install the plugin.
-1. After it's installed, click "Activate" to activate the plugin on your site.
+1. Search for _parse.ly_ using the search bar on the right side.
+1. Click _Install Now_ to install the plugin.
+1. After it's installed, click _Activate_ to activate the plugin on your site.
 
 ### Install the plugin manually
 
-1. Download the plugin from WordPress.org or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
+1. Download the plugin from [WordPress.org](https://wordpress.org/plugins/wp-parsely/) or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
 1. Unzip the downloaded archive.
 1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
 1. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
-1. Click "Activate" to activate the plugin on your site.
+1. Click _Activate_ to activate the plugin on your site.
 
 ## Local development
 
-The easiest way to develop this plugin locally is by using the `wp-env` package. [It is an official WP.org package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) that spins up a Docker-based WordPress environment for plugin development.
+To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](CONTRIBUTING.md) file.
 
-Having Docker running,
+## REST API
+
+The plugin adds a `parsely` field to certain REST API responses. This can be disabled by returning `false` from the `wp_parsely_enable_rest_api_support` filter.
+
+Example:
 
 ```
-npm install
-
-# Start the environment
-npm run dev:start
-
-# Stop the environment
-npm run dev:stop
+// Disable all REST API output from the Parse.ly plugin.
+add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
 ```
 
-This will start up an environment in `localhost:8888`, running in the background.
+The plugin adds the `parsely` field to endpoints corresponding to the Tracked Post Types and Tracked Page Types selected in the plugin settings. By default, this would be the `/wp-json/wp/v2/pages` and `/wp-json/wp/v2/posts` endpoints along with the corresponding single resource endpoints.
 
-To develop for WordPress VIP sites, we recommend using [the WordPress VIP dev-env](https://docs.wpvip.com/technical-references/vip-local-development-environment/).
+This choice of objects types can be further changed by using the `wp_parsely_rest_object_types` filter.
+
+Example:
+
+```
+// Disable REST API output from pages, but enable for term archives.
+add_filter(
+	'wp_parsely_rest_object_types',
+	function( $object_types ) {
+		$object_types = array_diff( $object_types, array( 'page' ) );
+		$object_types[] = 'term';
+		return $object_types;
+	}
+);
+```
+
+The `parsely` field contains the following fields:
+ - `version`, which is a string identifying the version of the REST API output; this will be updated if changes are made to the output, so consuming applications can check against it.
+ - `meta`, which is an array of metadata for the specific post, page or other object type.
+ - `rendered`, which is the rendered HTML of the metadata for the post, page or other object type. This will be a JSON-LD `<script>` tag, or a set of `<meta>` tags, depending on the format selected in the plugin settings. The decoupled code can consume and use this directly, instead of building the values from the `meta` field values.
+
+The `rendered` field is a convenience field containing the HTML-formatted meta data which can be printed to a decoupled page as is.
+
+This can be disabled by returning `false` from the `wp_parsely_enable_rest_rendered_support` filter.
+
+Example:
+
+```
+// Disable rendered field output from the REST API output.
+add_filter( 'wp_parsely_enable_rest_rendered_support', '__return_false' );
+```
 
 ## Frequently Asked Questions
 
@@ -94,7 +123,7 @@ This filter can go anywhere in your codebase, provided it always gets loaded.
 
 It is! The plugin hooks into Automattic's official plugins for [AMP](https://wordpress.org/plugins/amp/) and [Facebook Instant Articles](https://wordpress.org/plugins/fb-instant-articles/).
 
-AMP support is enabled automatically if the Automattic AMP plugin is installed
+AMP support is enabled automatically if the Automattic AMP plugin is installed.
 
 For Facebook Instant Articles support, enable "Parsely Analytics" in the "Advanced Settings" menu of the Facebook Instant Articles plugin.
 
@@ -130,27 +159,19 @@ add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 
 The standard Parse.ly JavaScript tracker inserted before the closing `body` tag:
 
-    <!-- START Parse.ly Include: Standard -->
-
-       <script data-cfasync="false" id="parsely-cfg" data-parsely-site="example.com" src="https://cdn.parsely.com/keys/example.com/p.js"></script>
-
-    <!-- END Parse.ly Include: Standard -->
+    <script id="parsely-cfg" data-parsely-site="example.com" src="https://cdn.parsely.com/keys/example.com/p.js"></script>
 
 A sample `JSON-LD` structured data for a home page or section page:
 
-    <!-- BEGIN Parse.ly 2.5.0 -->
     <script type="application/ld+json">
     {"@context":"http:\/\/schema.org","@type":"WebPage","headline":"WordPress VIP","url":"http:\/\/wpvip.com\/"}
     </script>
-    <!-- END Parse.ly -->
 
 A sample `JSON-LD` meta tag and structured data for an article or post:
 
-    <!-- BEGIN Parse.ly 2.5.0 -->
     <script type="application/ld+json">
-        {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
+    {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
     </script>
-    <!-- END Parse.ly -->
 
 ## Changelog
 
