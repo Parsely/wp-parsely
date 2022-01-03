@@ -93,11 +93,34 @@ class Rest {
 		$post_id = $object['ID'] ?? $object['id'];
 		$options = $this->parsely->get_options();
 		$post    = WP_Post::get_instance( $post_id );
-		$meta    = $this->parsely->construct_parsely_metadata( $options, $post );
 
-		return array(
+		$response = array(
 			'version' => self::REST_VERSION,
-			'meta'    => $meta,
+			'meta'    => $this->parsely->construct_parsely_metadata( $options, $post ),
 		);
+
+		/**
+		 * Filter whether REST API support in rendered string format is enabled or not.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param bool $enabled True if enabled, false if not.
+		 */
+		if ( apply_filters( 'wp_parsely_enable_rest_rendered_support', true, $post ) ) {
+			$response['rendered'] = $this->get_rendered_meta();
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Get the metadata in string format.
+	 *
+	 * @return string String containing the metadata as HTML code that can be directly inserted in into the page.
+	 */
+	public function get_rendered_meta(): string {
+		ob_start();
+		$this->parsely->insert_page_header_metadata();
+		return ob_get_clean();
 	}
 }
