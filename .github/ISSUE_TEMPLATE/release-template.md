@@ -13,6 +13,7 @@ labels: 'Type: Maintenance'
 PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM YYYY.
 
 - [ ] Merge any outstanding PRs due for this release to `develop`.
+- [ ] Notify stakeholders of an upcoming release.
 - [ ] Add [PR](https://github.com/Parsely/wp-parsely/pull/XXX) against `develop` which:
   - Increases version numbers in the README, plugin bootstrap file `wp-parsely.php`, and `package.json`.
   - Adds or updates the changelog for the release.
