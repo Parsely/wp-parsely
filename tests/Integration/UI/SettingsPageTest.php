@@ -63,14 +63,15 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Check that validate_options() method will not allow duplicate tracking.
+	 * Check that validate_options() method will not allow duplicate tracking
+	 * in post types array.
 	 *
 	 * @since 3.1.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_options
 	 * @group ui
 	 */
-	public function test_validate_duplicate_tracking_values_returns_errors(): void {
+	public function test_validate_duplicate_tracking_in_post_types(): void {
 		// Initializations.
 		$expected = self::$parsely->get_options();
 		$options  = self::$parsely->get_options();
@@ -81,6 +82,21 @@ final class SettingsPageTest extends TestCase {
 
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Check that validate_options() method will not allow duplicate tracking
+	 * in page types array.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_options
+	 * @group ui
+	 */
+	public function test_validate_duplicate_tracking_in_page_types(): void {
+		// Initializations.
+		$expected = self::$parsely->get_options();
+		$options  = self::$parsely->get_options();
 
 		// Duplicate selection in Page Types.
 		$options['track_post_types'] = array( 'post' );
@@ -88,6 +104,21 @@ final class SettingsPageTest extends TestCase {
 
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Check that validate_options() method will not allow duplicate tracking
+	 * when the array order is different than the default.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_options
+	 * @group ui
+	 */
+	public function test_validate_duplicate_tracking_with_unexpected_array_order(): void {
+		// Initializations.
+		$expected = self::$parsely->get_options();
+		$options  = self::$parsely->get_options();
 
 		// Duplicate selection in Page Types (different order of array items).
 		$options['track_post_types'] = array( 'post' );
