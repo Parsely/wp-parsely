@@ -502,19 +502,15 @@ class Parsely {
 			return;
 		}
 
-		$post_time_gmt = gmdate( $date_format, $post_time );
+		$post_time_created_gmt = gmdate( $date_format, $post_time );
+		$post_time_modified    = get_post_modified_time( 'U', true, $post );
 
-		// Set post created and published time.
-		$metadata['dateCreated']   = $post_time_gmt;
-		$metadata['datePublished'] = $post_time_gmt;
+		$metadata['dateCreated']   = $post_time_created_gmt;
+		$metadata['datePublished'] = $post_time_created_gmt;
+		$metadata['dateModified']  = $post_time_created_gmt;
 
-		// Set post modified time.
-		$metadata['dateModified'] = $post_time_gmt;
-
-		$post_modified_time = get_post_modified_time( 'U', true, $post );
-
-		if ( false !== $post_modified_time && $post_modified_time > $post_time ) {
-			$metadata['dateModified'] = gmdate( $date_format, $post_modified_time );
+		if ( false !== $post_time_modified && $post_time_modified > $post_time ) {
+			$metadata['dateModified'] = gmdate( $date_format, $post_time_modified );
 		}
 	}
 
