@@ -57,7 +57,7 @@ final class SettingsPageTest extends TestCase {
 		// Default tracking values.
 		$options['track_post_types'] = array( 'post' );
 		$options['track_page_types'] = array( 'page' );
-		self::assertSame( self::$settings_page->validate_options( $options ), $expected );
+		self::assertSame( $expected, self::$settings_page->validate_options( $options ) );
 	}
 
 	/**
@@ -76,16 +76,16 @@ final class SettingsPageTest extends TestCase {
 		// Duplicate selection in Post Types.
 		$options['track_post_types'] = array( 'post', 'page' );
 		$options['track_page_types'] = array( 'page' );
-		self::assertSame( self::$settings_page->validate_options( $options ), $expected );
+		self::assertSame( $expected, self::$settings_page->validate_options( $options ) );
 
 		// Duplicate selection in Page Types.
 		$options['track_post_types'] = array( 'post' );
 		$options['track_page_types'] = array( 'post', 'page' );
-		self::assertSame( self::$settings_page->validate_options( $options ), $expected );
+		self::assertSame( $expected, self::$settings_page->validate_options( $options ) );
 
 		// Duplicate selection in Page Types (different order of array items).
 		$options['track_post_types'] = array( 'post' );
 		$options['track_page_types'] = array( 'page', 'post' );
-		self::assertSame( self::$settings_page->validate_options( $options ), $expected );
+		self::assertSame( $expected, self::$settings_page->validate_options( $options ) );
 	}
 }
