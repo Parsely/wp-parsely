@@ -139,9 +139,7 @@ final class GetCurrentUrlTest extends TestCase {
 	 * @param string $expected Expected start of the URL.
 	 */
 	private function assertCurrentUrlForSpecificPostWithId( string $expected ): void {
-		$post_array = $this->create_test_post_array();
-		$post_id    = $this->factory->post->create( $post_array );
-		$this->go_to( '/?p=' . $post_id );
+		$post_id = $this->go_to_new_post();
 
 		$parsely = new Parsely();
 		$res     = $parsely->get_current_url( 'post', $post_id );
