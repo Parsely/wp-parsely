@@ -42,9 +42,9 @@ class Parsely_Recommendations_API {
 	/**
 	 * Determine if the endpoint can be called. Applies `read` permissions.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
-	public static function permission_callback() {
+	public static function permission_callback(): bool {
 		return current_user_can( 'read' );
 	}
 
@@ -53,10 +53,10 @@ class Parsely_Recommendations_API {
 	 *
 	 * @param WP_Rest_Request $request The request object.
 	 *
-	 * @return StdClass
+	 * @return array
 	 * @uses Parsely_Recommendations_API::fetch_related_links
 	 */
-	public static function get_items( $request ) {
+	public static function get_items( WP_REST_Request  $request ): array {
 		global $parsely;
 		$options = $parsely->get_options();
 		$apikey  = $options['apikey'];
@@ -98,7 +98,7 @@ class Parsely_Recommendations_API {
 
 		wp_cache_set( $cache_key, $data, 'wp-parsely', 5 * MINUTE_IN_SECONDS );
 
-		return (object) array(
+		return array(
 			'data' => $data,
 		);
 	}
