@@ -495,22 +495,21 @@ class Parsely {
 	 * @return void
 	 */
 	private function set_metadata_post_times( array &$metadata, WP_Post $post ): void {
-		$date_format = 'Y-m-d\TH:i:s\Z';
-		$post_time   = get_post_time( 'U', true, $post );
+		$date_format      = 'Y-m-d\TH:i:s\Z';
+		$post_created_gmt = get_post_time( $date_format, true, $post );
 
-		if ( false === $post_time ) {
+		if ( false === $post_created_gmt ) {
 			return;
 		}
 
-		$post_time_created_gmt = gmdate( $date_format, $post_time );
-		$post_time_modified    = get_post_modified_time( 'U', true, $post );
+		$metadata['dateCreated']   = $post_created_gmt;
+		$metadata['datePublished'] = $post_created_gmt;
+		$metadata['dateModified']  = $post_created_gmt;
 
-		$metadata['dateCreated']   = $post_time_created_gmt;
-		$metadata['datePublished'] = $post_time_created_gmt;
-		$metadata['dateModified']  = $post_time_created_gmt;
+		$post_modified_gmt = get_post_modified_time( $date_format, true, $post );
 
-		if ( false !== $post_time_modified && $post_time_modified > $post_time ) {
-			$metadata['dateModified'] = gmdate( $date_format, $post_time_modified );
+		if ( false !== $post_modified_gmt && $post_modified_gmt > $post_created_gmt ) {
+			$metadata['dateModified'] = $post_modified_gmt;
 		}
 	}
 
