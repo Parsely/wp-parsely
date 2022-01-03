@@ -46,6 +46,20 @@ final class Settings_Page {
 	public function run(): void {
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_scripts' ) );
+	}
+
+	/**
+	 * Enqueue all needed scripts for Parse.ly plugin settings page.
+	 *
+	 * @param string $hook_suffix The current page being loaded.
+	 * @return void
+	 */
+	public function enqueue_settings_scripts( string $hook_suffix ): void {
+		if ( 'settings_page_parsely' === $hook_suffix ) {
+			wp_enqueue_media();
+			wp_enqueue_script( 'parsely_admin_scripts', dirname( plugin_dir_url( __FILE__ ) ) . '/js/admin/index.js', array(), Parsely::VERSION, true );
+		}
 	}
 
 	/**
