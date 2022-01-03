@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
+use Parsely\Utils;
 use WP_Post;
 
 /**
@@ -106,32 +107,10 @@ final class Row_Actions {
 	private function generate_link_to_parsely( WP_Post $post ): string {
 		return sprintf(
 			'<a href="%1$s" aria-label="%2$s">%3$s</a>',
-			esc_url( $this->generate_url( $post, $this->parsely->get_api_key() ) ),
+			esc_url( Utils::generate_parsely_post_url( $post, $this->parsely->get_api_key() ) ),
 			esc_attr( $this->generate_aria_label_for_post( $post ) ),
 			esc_html__( 'Parse.ly&nbsp;Stats', 'wp-parsely' )
 		);
-	}
-
-	/**
-	 * Generate the URL for the link.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param WP_Post $post   Which post object or ID to check.
-	 * @param string  $apikey API key or empty string.
-	 * @return string
-	 */
-	private function generate_url( WP_Post $post, string $apikey ): string {
-		$query_args = array(
-			'url'          => rawurlencode( get_permalink( $post ) ),
-			'utm_campaign' => 'wp-admin-posts-list',
-			'utm_medium'   => 'wp-parsely',
-			'utm_source'   => 'wp-admin',
-		);
-
-		$base_url = trailingslashit( 'https://dash.parsely.com/' . $apikey ) . 'find';
-
-		return add_query_arg( $query_args, $base_url );
 	}
 
 	/**
