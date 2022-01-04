@@ -33,17 +33,17 @@ The plugin requires an active Parse.ly account. Parse.ly gives creators, markete
 ### Install the plugin from within WordPress
 
 1. Visit the Plugins page from your WordPress dashboard and click "Add New" at the top of the page.
-1. Search for _parse.ly_ using the search bar on the right side.
-1. Click _Install Now_ to install the plugin.
-1. After it's installed, click _Activate_ to activate the plugin on your site.
+2. Search for _parse.ly_ using the search bar on the right side.
+3. Click _Install Now_ to install the plugin.
+4. After it's installed, click _Activate_ to activate the plugin on your site.
 
 ### Install the plugin manually
 
 1. Download the plugin from [WordPress.org](https://wordpress.org/plugins/wp-parsely/) or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
-1. Unzip the downloaded archive.
-1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
-1. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
-1. Click _Activate_ to activate the plugin on your site.
+2. Unzip the downloaded archive.
+3. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
+4. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
+5. Click _Activate_ to activate the plugin on your site.
 
 ## Local development
 
@@ -101,19 +101,15 @@ add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 
 ## Screenshots
 
-1. Parse.ly plugin main settings for easy setup. For the plugin to start working, only the website ID is needed.
+1. Parse.ly plugin main settings for easy setup. For the plugin to start working, only the website ID is needed.  
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-1.png)
-
-2. Parse.ly plugin settings that require you to submit a website recrawl request whenever you update them.
+2. Parse.ly plugin settings that require you to submit a website recrawl request whenever you update them.  
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-2.png)
-
-3. Parse.ly plugin advanced settings. To be used only if instructed by Parse.ly staff.
+3. Parse.ly plugin advanced settings. To be used only if instructed by Parse.ly staff.  
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-3.png)
-
-4. The settings for the Parse.ly Recommended Widget. Engage your visitors with predictive and personalized recommendations from Parse.ly.
+4. The settings for the Parse.ly Recommended Widget. Engage your visitors with predictive and personalized recommendations from Parse.ly.  
    ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-4.png)
-
-5. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.
+5. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.  
    ![The Parsely Dashboard Overview](.wordpress-org/screenshot-5.png)
 
 ## Sample Parse.ly metadata
