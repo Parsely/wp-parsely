@@ -22,6 +22,7 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 
 - Get started with Parse.ly right away: the plugin automatically inserts the required metadata and JavaScript on all your published pages and posts.
 - Choose what format the metadata takes, and whether logged-in users should be included in the analytics.
+- Using it in a decoupled setup? Parse.ly adds metadata to the REST API output for pages, posts and optionally other object types.
 - If you've purchased access to the Parse.ly API, add a widget to your site with article recommendations personalized to individual users.
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
@@ -48,6 +49,51 @@ The plugin requires an active Parse.ly account. Parse.ly gives creators, markete
 ## Local development
 
 To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](CONTRIBUTING.md) file.
+
+## REST API
+
+The plugin adds a `parsely` field to certain REST API responses. This can be disabled by returning `false` from the `wp_parsely_enable_rest_api_support` filter.
+
+Example:
+
+```
+// Disable all REST API output from the Parse.ly plugin.
+add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
+```
+
+The plugin adds the `parsely` field to endpoints corresponding to the Tracked Post Types and Tracked Page Types selected in the plugin settings. By default, this would be the `/wp-json/wp/v2/pages` and `/wp-json/wp/v2/posts` endpoints along with the corresponding single resource endpoints.
+
+This choice of objects types can be further changed by using the `wp_parsely_rest_object_types` filter.
+
+Example:
+
+```
+// Disable REST API output from pages, but enable for term archives.
+add_filter(
+	'wp_parsely_rest_object_types',
+	function( $object_types ) {
+		$object_types = array_diff( $object_types, array( 'page' ) );
+		$object_types[] = 'term';
+		return $object_types;
+	}
+);
+```
+
+The `parsely` field contains the following fields:
+ - `version`, which is a string identifying the version of the REST API output; this will be updated if changes are made to the output, so consuming applications can check against it.
+ - `meta`, which is an array of metadata for the specific post, page or other object type.
+ - `rendered`, which is the rendered HTML of the metadata for the post, page or other object type. This will be a JSON-LD `<script>` tag, or a set of `<meta>` tags, depending on the format selected in the plugin settings. The decoupled code can consume and use this directly, instead of building the values from the `meta` field values.
+
+The `rendered` field is a convenience field containing the HTML-formatted meta data which can be printed to a decoupled page as is.
+
+This can be disabled by returning `false` from the `wp_parsely_enable_rest_rendered_support` filter.
+
+Example:
+
+```
+// Disable rendered field output from the REST API output.
+add_filter( 'wp_parsely_enable_rest_rendered_support', '__return_false' );
+```
 
 ## Frequently Asked Questions
 
