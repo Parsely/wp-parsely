@@ -6,7 +6,7 @@ Tested up to: 5.8
 Requires PHP: 7.1  
 License: GPLv2 or later  
 Tags: analytics, parse.ly, parsely, parsley  
-Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauargelaguet
+Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauargelaguet, acicovic
 
 The Parse.ly plugin facilitates real-time and historical analytics to your content through a platform designed and built for digital publishing.
 
@@ -101,13 +101,20 @@ add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 
 ## Screenshots
 
-1. The main admin screen of the Parse.ly plugin, showing some of the settings.  
+1. Parse.ly plugin main settings for easy setup. For the plugin to start working, only the website ID is needed.
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-1.png)
 
-2. The settings for the Parse.ly Recommended Widget. Engage your visitors with predictive and personalized recommendations from Parse.ly.  
-   ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-2.png)
-3. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.  
-   ![The Parsely Dashboard Overview](.wordpress-org/screenshot-3.png)
+2. Parse.ly plugin settings that require you to submit a website recrawl request whenever you update them.
+   ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-2.png)
+
+3. Parse.ly plugin advanced settings. To be used only if instructed by Parse.ly staff.
+   ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-3.png)
+
+4. The settings for the Parse.ly Recommended Widget. Engage your visitors with predictive and personalized recommendations from Parse.ly.
+   ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-4.png)
+
+5. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.
+   ![The Parsely Dashboard Overview](.wordpress-org/screenshot-5.png)
 
 ## Sample Parse.ly metadata
 
