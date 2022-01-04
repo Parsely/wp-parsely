@@ -193,6 +193,12 @@ npm run test
 
 To run end-to-end tests, [please refer to their separate instructions](tests/e2e/README.md).
 
+### Releasing a new version
+
+To release a new version of the plugin, a GitHub issue with the name of the release (for instance, _Release 3.2.1_) has to be created using the _Release_ template.
+
+After creating the issue, all the steps laid down in that template must be completed in order. Every time a step is completed, please mark it using the checkbox. Once all steps are done, the issue can be closed. 
+
 ## Building Included Assets
 
 JavaScript files that are included in the released plugin are built with the

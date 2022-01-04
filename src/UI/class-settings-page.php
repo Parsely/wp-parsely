@@ -605,6 +605,8 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @return array List of validated input settings.
 	 */
 	public function validate_options( array $input ): array {
+		$options = $this->parsely->get_options();
+
 		if ( empty( $input['apikey'] ) ) {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
@@ -636,6 +638,27 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		$input['track_post_types'] = self::validate_option_array( $input['track_post_types'] );
 		$input['track_page_types'] = self::validate_option_array( $input['track_page_types'] );
+
+		// Detect and prevent duplicate tracking.
+		$duplicate_items = array_intersect( $input['track_post_types'], $input['track_page_types'] );
+		if ( 0 !== count( $duplicate_items ) ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'track_page_types',
+				sprintf(
+					/* translators: %s: Item(s) being tracked both as posts and pages. */
+					__(
+						'%s cannot be tracked as both posts and pages. Please select every element only once.',
+						'wp-parsely'
+					),
+					implode( 'and ', $duplicate_items )
+				)
+			);
+
+			// Revert invalid settings.
+			$input['track_post_types'] = $options['track_post_types'];
+			$input['track_page_types'] = $options['track_page_types'];
+		}
 
 		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
 		// Content ID prefix.
@@ -710,7 +733,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		// Allow for Disable AMP setting to be conditionally included on the page.
 		// If it's not shown, then set the value as what was previously saved.
 		if ( ! isset( $input['disable_amp'] ) || null === $input['disable_amp'] ) {
-			$options              = $this->parsely->get_options();
 			$input['disable_amp'] = 'true';
 			if ( false === $options['disable_amp'] ) {
 				$input['disable_amp'] = 'false';
