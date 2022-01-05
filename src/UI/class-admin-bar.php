@@ -58,11 +58,9 @@ final class Admin_Bar {
 	public function admin_bar_parsely_stats_button( WP_Admin_Bar $admin_bar ): void {
 		$current_object = $GLOBALS['wp_the_query']->get_queried_object();
 
-		if ( empty( $current_object ) ) {
+		if ( empty( $current_object ) || empty( $current_object->post_type ) ) {
 			return;
 		}
-
-		if ( ! empty( $current_object->post_type ) ) {
 			$post_type_object = get_post_type_object( $current_object->post_type );
 			if ( $post_type_object && current_user_can( 'edit_post', $current_object->ID ) && $post_type_object->show_in_admin_bar ) {
 				$admin_bar->add_node(
