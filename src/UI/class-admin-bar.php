@@ -61,16 +61,16 @@ final class Admin_Bar {
 		if ( empty( $current_object ) || empty( $current_object->post_type ) ) {
 			return;
 		}
-			$post_type_object = get_post_type_object( $current_object->post_type );
-			if ( $post_type_object && current_user_can( 'edit_post', $current_object->ID ) && $post_type_object->show_in_admin_bar ) {
-				$admin_bar->add_node(
-					array(
-						'id'    => 'parsely-stats',
-						'title' => __( 'Parse.ly Stats', 'wp-parsely' ),
-						'href'  => Utils::generate_parsely_post_url( $current_object, $this->parsely->get_api_key() ),
-					)
-				);
-			}
+
+		$post_type_object = get_post_type_object( $current_object->post_type );
+		if ( $post_type_object && current_user_can( 'edit_post', $current_object->ID ) && $post_type_object->show_in_admin_bar ) {
+			$admin_bar->add_node(
+				array(
+					'id'    => 'parsely-stats',
+					'title' => __( 'Parse.ly Stats', 'wp-parsely' ),
+					'href'  => Utils::generate_parsely_post_url( $current_object, $this->parsely->get_api_key() ),
+				)
+			);
 		}
 	}
 }
