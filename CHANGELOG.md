@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- [Properly render the post modified date metadata](https://github.com/Parsely/wp-parsely/issues/558) & Fix a [fatal error](https://github.com/Parsely/wp-parsely/issues/562) caused by an unexpedted data type [#560](https://github.com/Parsely/wp-parsely/pull/560)
+- [Properly render the post modified date metadata](https://github.com/Parsely/wp-parsely/issues/558) & Fix a [fatal error](https://github.com/Parsely/wp-parsely/issues/562) caused by an unexpected data type [#560](https://github.com/Parsely/wp-parsely/pull/560)
 
 ## [3.0.1] - 2021-12-17
 
