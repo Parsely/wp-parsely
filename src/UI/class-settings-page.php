@@ -198,20 +198,20 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		);
 
 		// Logo.
-		$h          = __( 'If you want to specify the URL for your logo, you can do so here.', 'wp-parsely' );
+		$field_help = __( 'Here you can specify your logo\'s URL by using the "Browse" button or typing the URL manually.', 'wp-parsely' );
 		$field_id   = 'logo';
-		$field_args = array(
-			'option_key' => $field_id,
-			'help_text'  => $h,
-			'label_for'  => $field_id,
-		);
 		add_settings_field(
 			$field_id,
 			__( 'Logo', 'wp-parsely' ),
-			array( $this, 'print_text_tag' ),
+			array( $this, 'print_media_single_image' ),
 			Parsely::MENU_SLUG,
 			'basic_settings',
-			$field_args
+			array(
+				'title'      => __( 'Logo', 'wp-parsely' ), // Passed for legend element.
+				'option_key' => $field_id,
+				'label_for'  => $field_id,
+				'help_text'  => $field_help,
+			)
 		);
 
 		// Track logged-in users.
@@ -609,6 +609,30 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			echo sprintf( ' /> %s</label><br />', esc_attr( $val ) );
 		}
 
+		$this->print_description_text( $args );
+	}
+
+	/**
+	 * Print out a "single-image browse control" which includes a text
+	 * input to store image path and a button to browse for images.
+	 *
+	 * @param array $args The arguments for the control.
+	 * @return void
+	 */
+	public function print_media_single_image( array $args ) {
+		$key         = esc_attr( $args['option_key'] );
+		$input_value = $this->parsely->get_options()[ $key ];
+		$input_name  = Parsely::OPTIONS_KEY . "[$key]";
+		$button_text = __( 'Browse', 'wp-parsely' );
+		?>
+
+		<fieldset class="media-single-image" id="media-single-image-<?php echo esc_attr( $key ); ?>">
+			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
+			<input class="large-text file-path" type="text" name="<?php echo esc_attr( $input_name ); ?>" value="<?php echo esc_attr( $input_value ); ?>" />
+			<button data-option="<?php echo esc_attr( $key ); ?>" class="browse button" style="margin-top: 0.4rem" type="button"><?php echo esc_html( $button_text ); ?></button>
+		</fieldset>
+
+		<?php
 		$this->print_description_text( $args );
 	}
 
