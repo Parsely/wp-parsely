@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\UI;
 
+// Explicit require as the `Rest` class could not be found in some environments.
+require_once __DIR__ . '/../../../src/UI/class-admin-bar.php';
+
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Bar;
@@ -35,5 +38,14 @@ final class AdminBarTest extends TestCase {
 		self::$admin_bar = new Admin_Bar( new Parsely() );
 	}
 
+	/**
+	 * Check that the function to render the stats button is enqueued on the admin menu.
+	 *
+	 * @covers \Parsely\UI\Admin_Bar::run
+	 */
+	public function test_admin_bar_enqueued(): void {
+		self::$admin_bar->run();
 
+		self::assertEquals( 201, has_filter( 'admin_bar_menu', array( self::$admin_bar, 'admin_bar_parsely_stats_button' ) ) );
+	}
 }
