@@ -21,7 +21,7 @@ final class UtilsTest extends TestCase {
 	/**
 	 * Test if Parse.ly Dash URL can be generated for a post.
 	 *
-	 * @covers \Parsely\Utils::generate_parsely_post_url
+	 * @covers \Parsely\Utils::generate_parsely_post_dash_url
 	 */
 	public function test_generate_parsely_post_url(): void {
 		$post_id = self::factory()->post->create();
@@ -29,7 +29,7 @@ final class UtilsTest extends TestCase {
 		$apikey  = 'demo-api-key';
 
 		$expected = 'https://dash.parsely.com/demo-api-key/find?url=http%3A%2F%2Fexample.org%2F%3Fp%3D' . $post_id . '&utm_campaign=wp-admin-posts-list&utm_medium=wp-parsely&utm_source=wp-admin';
-		$actual   = Utils::generate_parsely_post_url( $post, $apikey, 'wp-admin-posts-list', 'wp-admin' );
+		$actual   = Utils::generate_parsely_post_dash_url( $post, $apikey, 'wp-admin-posts-list', 'wp-admin' );
 
 		self::assertSame( $expected, $actual );
 	}
