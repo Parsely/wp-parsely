@@ -19,21 +19,23 @@ use WP_Post;
  */
 class Utils {
 	/**
-	 * Generate the URL for the link.
+	 * Generate the Parse.ly dashboard URL for the post.
 	 *
 	 * @since 2.6.0
-	 * @since 3.2.0 Moved to class-utils.php. Renamed from `generate_url`.
+	 * @since 3.2.0 Moved to class-utils.php. Renamed from `generate_url` and added source parameter.
 	 *
 	 * @param WP_Post $post   Which post object or ID to check.
 	 * @param string  $apikey API key or empty string.
+	 * @param string  $campaign Campaign name for the `utm_campaign` URL parameter.
+	 * @param string  $source Source name for the `utm_source` URL parameter.
 	 * @return string
 	 */
-	public static function generate_parsely_post_url( WP_Post $post, string $apikey ): string {
+	public static function generate_parsely_post_url( WP_Post $post, string $apikey, string $campaign, string $source ): string {
 		$query_args = array(
 			'url'          => rawurlencode( get_permalink( $post ) ),
-			'utm_campaign' => 'wp-admin-posts-list',
+			'utm_campaign' => $campaign,
+			'utm_source'   => $source,
 			'utm_medium'   => 'wp-parsely',
-			'utm_source'   => 'wp-admin',
 		);
 
 		$base_url = trailingslashit( 'https://dash.parsely.com/' . $apikey ) . 'find';

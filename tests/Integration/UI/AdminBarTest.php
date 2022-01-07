@@ -13,6 +13,11 @@ use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Bar;
 
+/**
+ * Admin bar modifications tests.
+ *
+ * @since 3.2.0
+ */
 final class AdminBarTest extends TestCase {
 	/**
 	 * Internal variable.

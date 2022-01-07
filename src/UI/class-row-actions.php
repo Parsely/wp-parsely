@@ -107,7 +107,7 @@ final class Row_Actions {
 	private function generate_link_to_parsely( WP_Post $post ): string {
 		return sprintf(
 			'<a href="%1$s" aria-label="%2$s">%3$s</a>',
-			esc_url( Utils::generate_parsely_post_url( $post, $this->parsely->get_api_key() ) ),
+			esc_url( Utils::generate_parsely_post_url( $post, $this->parsely->get_api_key(), 'wp-admin-posts-list', 'wp-admin' ) ),
 			esc_attr( $this->generate_aria_label_for_post( $post ) ),
 			esc_html__( 'Parse.ly&nbsp;Stats', 'wp-parsely' )
 		);

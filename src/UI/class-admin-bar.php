@@ -68,7 +68,7 @@ final class Admin_Bar {
 				array(
 					'id'    => 'parsely-stats',
 					'title' => __( 'Parse.ly Stats', 'wp-parsely' ),
-					'href'  => Utils::generate_parsely_post_url( $current_object, $this->parsely->get_api_key() ),
+					'href'  => Utils::generate_parsely_post_url( $current_object, $this->parsely->get_api_key(), 'wp-page-single', 'admin-bar' ),
 				)
 			);
 		}
