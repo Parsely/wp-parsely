@@ -46,7 +46,7 @@ const PARSELY_FILE    = __FILE__;
 require __DIR__ . '/src/class-parsely.php';
 require __DIR__ . '/src/class-rest.php';
 require __DIR__ . '/src/class-scripts.php';
-require __DIR__ . '/src/class-utils.php';
+require __DIR__ . '/src/class-dashboard-links.php';
 require __DIR__ . '/src/UI/class-admin-bar.php';
 add_action(
 	'plugins_loaded',

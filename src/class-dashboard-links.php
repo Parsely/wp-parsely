@@ -44,7 +44,7 @@ class Dashboard_Links {
 	}
 
 	/**
-	 * Determine whether Parse.ly row action link should be shown or not.
+	 * Determine whether Parse.ly dashboard link should be shown or not.
 	 *
 	 * @since 2.6.0
 	 * @since 3.2.0 Moved to class-utils.php. Renamed from `cannot_show_parsely_link`.
