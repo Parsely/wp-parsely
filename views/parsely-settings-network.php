@@ -19,12 +19,5 @@ $parsely_version_string = sprintf( __( 'Version %s', 'wp-parsely' ), Parsely::VE
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php echo esc_html( get_admin_page_title() ); ?></h1>
 	<span id="wp-parsely_version"><?php echo esc_html( $parsely_version_string ); ?></span>
-
-	<div id="nds-wp-list-table-demo">
-		<div id="nds-post-body">
-			<form id="nds-user-list-form" method="get">
-				<?php $this->parsely_sites_table->display(); ?>
-			</form>
-		</div>
-	</div>
+	<?php $this->parsely_sites_table->display(); ?>
 </div>

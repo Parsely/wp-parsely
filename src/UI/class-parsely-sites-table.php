@@ -31,33 +31,52 @@ final class Parsely_Sites_Table extends WP_List_Table {
 		$this->parsely = $parsely;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function get_columns(): array {
 		return array(
-			'blog_id' => __('Blog ID', 'wp-parsely'),
-			'blog_name' => __('Blog Name', 'wp-parsely'),
-			'api_key_set' => __('Status', 'wp-parsely'),
-			'path' => __('Parsely Site Settings', 'wp-admin'),
+			'blog_id'     => __( 'Blog ID', 'wp-parsely' ),
+			'blog_name'   => __( 'Blog Name', 'wp-parsely' ),
+			'api_key_set' => __( 'Status', 'wp-parsely' ),
+			'settings'    => __( 'Settings', 'wp-admin' ),
 		);
 	}
 
+	/**
+	 * @return void
+	 */
 	public function prepare_items(): void {
 		$this->_column_headers = $this->get_column_info();
-		$this->items = $this->fetch_table_data();
+		$this->items           = $this->fetch_table_data();
 	}
 
+	/**
+	 * @param $item
+	 * @param $column_name
+	 *
+	 * @return string
+	 */
 	public function column_default( $item, $column_name ): string {
-		return strval($item[$column_name]);
+		if ( $column_name == 'settings' ) {
+			return '<a href="' . $item[ $column_name ] . '">Parse.ly Site Settings</a>';
+		}
+
+		return strval( $item[ $column_name ] );
 	}
 
+	/**
+	 * @return array
+	 */
 	private function fetch_table_data(): array {
 		$parsely_network_sites = array();
-		foreach (get_sites() as $site) {
-			switch_to_blog($site->blog_id);
+		foreach ( get_sites() as $site ) {
+			switch_to_blog( $site->blog_id );
 			$parsely_network_sites[] = array(
-				'blog_id' => $site->blog_id,
-				'blog_name' => get_bloginfo('name'),
-				'path' => $site->path,
+				'blog_id'     => $site->blog_id,
+				'blog_name'   => get_bloginfo( 'name' ),
 				'api_key_set' => $this->parsely->api_key_is_set() ? 'All OK' : 'API Key is missing',
+				'settings'    => admin_url( 'options-general.php?page=parsely' ),
 			);
 			restore_current_blog();
 		}

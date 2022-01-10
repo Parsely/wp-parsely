@@ -60,11 +60,11 @@ final class Settings_Page_Network {
 
 		$page_hook = add_submenu_page(
 			'settings.php',
-			__('Parse.ly Network Settings', 'wp-parsely'),
-			__( 'Parse.ly (Network)', 'wp-parsely'),
+			__( 'Parse.ly Network Settings', 'wp-parsely' ),
+			__( 'Parse.ly (Network)', 'wp-parsely' ),
 			Parsely::CAPABILITY,
 			Parsely::MENU_SLUG_NETWORK,
-			array( $this, 'load_sites_table')
+			array( $this, 'load_sites_table' )
 		);
 
 		/*
@@ -73,14 +73,14 @@ final class Settings_Page_Network {
 		 *
 		 * The callback below will be called when the respective page is loaded
 		 */
-		add_action( 'load-'.$page_hook, array( $this, 'load_sites_list_table_screen_options' ) );
+		add_action( 'load-' . $page_hook, array( $this, 'load_sites_list_table_screen_options' ) );
 	}
 
 	public function load_sites_list_table_screen_options(): void {
 		$arguments = array(
-			'label'		=>	__( 'Users Per Page', 'wp-parsely' ),
-			'default'	=>	5,
-			'option'	=>	'users_per_page'
+			'label'   => __( 'Users Per Page', 'wp-parsely' ),
+			'default' => 5,
+			'option'  => 'users_per_page',
 		);
 		add_screen_option( 'per_page', $arguments );
 		/*
