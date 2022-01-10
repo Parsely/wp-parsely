@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly Dashboard Links utility class.
+ * Parse.ly Dashboard Link utility class.
  *
  * @package Parsely
  * @since 3.2.0

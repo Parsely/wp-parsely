@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests of the Dashboard Links class
+ * Tests of the Dashboard Link class
  *
  * @package Parsely\Tests\Unit
  */
@@ -18,7 +18,7 @@ use Parsely\Dashboard_Link;
 /**
  * Test the functions on the utilities class.
  */
-final class DashboardLinksTest extends TestCase {
+final class DashboardLinkTest extends TestCase {
 	/**
 	 * Internal Parsely variable
 	 *
@@ -55,7 +55,7 @@ final class DashboardLinksTest extends TestCase {
 	 * Test if logic for showing Parse.ly row action accounts for actions not being an array.
 	 *
 	 * @since 2.6.0
-	 * @since 3.2.0 Moved to `DashboardLinksTest.php`
+	 * @since 3.2.0 Moved to `DashboardLinkTest.php`
 	 *
 	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
 	 * @uses \Parsely\Parsely::api_key_is_set
@@ -65,7 +65,7 @@ final class DashboardLinksTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_actions_are_an_array_or_not(): void {
+	public function test_can_correctly_determine_if_Parsely_link_can_be_shown(): void {
 		$published_post = self::factory()->post->create_and_get();
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
@@ -76,7 +76,7 @@ final class DashboardLinksTest extends TestCase {
 	 * Test if logic for showing Parse.ly row action accounts for post having trackable status.
 	 *
 	 * @since 2.6.0
-	 * @since 3.2.0 Moved to `DashboardLinksTest.php`
+	 * @since 3.2.0 Moved to `DashboardLinkTest.php`
 	 *
 	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
 	 * @uses \Parsely\Parsely::api_key_is_set
@@ -86,22 +86,19 @@ final class DashboardLinksTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_has_trackable_status_or_not(): void {
-		$draft_post     = self::factory()->post->create_and_get( array( 'post_status' => 'draft' ) );
-		$published_post = self::factory()->post->create_and_get();
-
+	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_has_not_trackable_status(): void {
+		$draft_post = self::factory()->post->create_and_get( array( 'post_status' => 'draft' ) );
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		// Test if post does not have trackable status - only published posts are tracked by default.
 		self::assertFalse( Dashboard_Link::can_show_link( $draft_post, self::$parsely ) );
-		self::assertTrue( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 	}
 
 	/**
 	 * Test if logic for showing Parse.ly row action accounts for post not having a viewable type.
 	 *
 	 * @since 2.6.0
-	 * @since 3.2.0 Moved to `DashboardLinksTest.php`
+	 * @since 3.2.0 Moved to `DashboardLinkTest.php`
 	 *
 	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
 	 * @uses \Parsely\Parsely::api_key_is_set
@@ -111,22 +108,19 @@ final class DashboardLinksTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_is_viewable_or_not(): void {
+	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_is_viewable(): void {
 		$non_publicly_queryable_post = self::factory()->post->create_and_get( array( 'post_type' => 'parsely_tests_pt' ) );
-		$published_post              = self::factory()->post->create_and_get();
-
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		// Test if post is not viewable status.
 		self::assertFalse( Dashboard_Link::can_show_link( $non_publicly_queryable_post, self::$parsely ) );
-		self::assertTrue( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 	}
 
 	/**
 	 * Test if logic for showing Parse.ly row action accounts for API key option being saved or not.
 	 *
 	 * @since 2.6.0
-	 * @since 3.2.0 Moved to `DashboardLinksTest.php`
+	 * @since 3.2.0 Moved to `DashboardLinkTest.php`
 	 *
 	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
 	 * @uses \Parsely\Parsely::api_key_is_set
