@@ -72,6 +72,18 @@ final class Settings_Page_Network {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
 
+		$parsely_network_sites = array();
+		foreach (get_sites() as $site) {
+			switch_to_blog($site->blog_id);
+			$parsely_network_sites[] = array(
+				'blog_id' => $site->blog_id,
+				'site_id' => $site->site_id,
+				'path' => $site->path,
+				'api_key_set' => $this->parsely->api_key_is_set(),
+			);
+			restore_current_blog();
+		}
+
 		include plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings-network.php';
 	}
 }

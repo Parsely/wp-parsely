@@ -2,7 +2,7 @@
 /**
  * Settings file
  *
- * Create the settings page for parse.ly
+ * Create the settings page for Parse.ly.
  *
  * @package      Parsely\wp-parsely
  * @author       Parse.ly
