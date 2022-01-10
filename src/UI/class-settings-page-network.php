@@ -68,34 +68,22 @@ final class Settings_Page_Network {
 			array( $this, 'load_sites_table' )
 		);
 
-		/*
-		 * The $page_hook_suffix can be combined with the load-($page_hook) action hook
-		 * https://codex.wordpress.org/Plugin_API/Action_Reference/load-(page)
-		 *
-		 * The callback below will be called when the respective page is loaded
-		 */
 		add_action( 'load-' . $page_hook, array( $this, 'load_sites_list_table_screen_options' ) );
 	}
 
 	public function load_sites_list_table_screen_options(): void {
 		$arguments = array(
-			'label'   => __( 'Users Per Page', 'wp-parsely' ),
-			'default' => 5,
-			'option'  => 'users_per_page',
+			'label'   => __( 'Sites Per Page', 'wp-parsely' ),
+			'default' => 25,
+			'option'  => 'sites_per_page',
 		);
 		add_screen_option( 'per_page', $arguments );
-		/*
-		 * Instantiate the User List Table. Creating an instance here will allow the core WP_List_Table class to automatically
-		 * load the table columns in the screen options panel
-		 */
+
 		$this->parsely_sites_table = new Parsely_Sites_Table( $this->parsely );
 	}
 
 	public function load_sites_table(): void {
-		// query, filter, and sort the data
 		$this->parsely_sites_table->prepare_items();
-
-		// render the List Table
 		include plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings-network.php';
 	}
 }

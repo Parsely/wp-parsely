@@ -37,6 +37,7 @@ final class Parsely_Sites_Table extends WP_List_Table {
 	public function get_columns(): array {
 		return array(
 			'blog_id'     => __( 'Blog ID', 'wp-parsely' ),
+			'blog_domain' => __('Blog Domain', 'wp-parsely'),
 			'blog_name'   => __( 'Blog Name', 'wp-parsely' ),
 			'api_key_set' => __( 'Status', 'wp-parsely' ),
 			'settings'    => __( 'Settings', 'wp-admin' ),
@@ -65,15 +66,28 @@ final class Parsely_Sites_Table extends WP_List_Table {
 		return strval( $item[ $column_name ] );
 	}
 
+	protected function get_sortable_columns(): array {
+		return array (
+			'blog_id' => array( 'id', true ),
+			'blog_domain'=>'domain',
+		);
+	}
+
 	/**
 	 * @return array
 	 */
 	private function fetch_table_data(): array {
+		$sites = get_sites(array(
+			'orderby' => ( isset( $_GET['orderby'] ) ) ? esc_sql( $_GET['orderby'] ) : 'id',
+			'order' => ( isset( $_GET['order'] ) ) ? esc_sql( $_GET['order'] ) : 'ASC'
+		));
+
 		$parsely_network_sites = array();
-		foreach ( get_sites() as $site ) {
+		foreach ( $sites as $site ) {
 			switch_to_blog( $site->blog_id );
 			$parsely_network_sites[] = array(
 				'blog_id'     => $site->blog_id,
+				'blog_domain' => $site->domain,
 				'blog_name'   => get_bloginfo( 'name' ),
 				'api_key_set' => $this->parsely->api_key_is_set() ? 'All OK' : 'API Key is missing',
 				'settings'    => admin_url( 'options-general.php?page=parsely' ),
