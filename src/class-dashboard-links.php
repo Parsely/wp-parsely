@@ -51,9 +51,9 @@ class Dashboard_Links {
 	 *
 	 * @param WP_Post $post    Which post object or ID to check.
 	 * @param Parsely $parsely Parsely object.
-	 * @return bool True if the link cannot be shown, false if the link can be shown.
+	 * @return bool True if the link can be shown, false otherwise.
 	 */
-	public static function cannot_show_link( WP_Post $post, Parsely $parsely ): bool {
-		return ! Parsely::post_has_trackable_status( $post ) || ! is_post_type_viewable( $post->post_type ) || $parsely->api_key_is_missing();
+	public static function can_show_link( WP_Post $post, Parsely $parsely ): bool {
+		return Parsely::post_has_trackable_status( $post ) && is_post_type_viewable( $post->post_type ) && ! $parsely->api_key_is_missing();
 	}
 }

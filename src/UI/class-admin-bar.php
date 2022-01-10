@@ -63,7 +63,7 @@ final class Admin_Bar {
 		}
 
 		$post_type_object = get_post_type_object( $current_object->post_type );
-		if ( $post_type_object && $post_type_object->show_in_admin_bar && ! Dashboard_Links::cannot_show_link( $current_object, $this->parsely ) ) {
+		if ( $post_type_object && $post_type_object->show_in_admin_bar && Dashboard_Links::can_show_link( $current_object, $this->parsely ) ) {
 			$admin_bar->add_node(
 				array(
 					'id'    => 'parsely-stats',

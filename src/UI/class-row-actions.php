@@ -73,7 +73,7 @@ final class Row_Actions {
 	 * @return array<string, string> The amended list of actions.
 	 */
 	public function row_actions_add_parsely_link( array $actions, WP_Post $post ): array {
-		if ( Dashboard_Links::cannot_show_link( $post, $this->parsely ) ) {
+		if ( ! Dashboard_Links::can_show_link( $post, $this->parsely ) ) {
 			return $actions;
 		}
 

@@ -69,7 +69,7 @@ final class DashboardLinksTest extends TestCase {
 		$published_post = self::factory()->post->create_and_get();
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
-		self::assertFalse( Dashboard_Links::cannot_show_link( $published_post, self::$parsely ) );
+		self::assertTrue( Dashboard_Links::can_show_link( $published_post, self::$parsely ) );
 	}
 
 	/**
@@ -93,8 +93,8 @@ final class DashboardLinksTest extends TestCase {
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		// Test if post does not have trackable status - only published posts are tracked by default.
-		self::assertTrue( Dashboard_Links::cannot_show_link( $draft_post, self::$parsely ) );
-		self::assertFalse( Dashboard_Links::cannot_show_link( $published_post, self::$parsely ) );
+		self::assertFalse( Dashboard_Links::can_show_link( $draft_post, self::$parsely ) );
+		self::assertTrue( Dashboard_Links::can_show_link( $published_post, self::$parsely ) );
 	}
 
 	/**
@@ -118,8 +118,8 @@ final class DashboardLinksTest extends TestCase {
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		// Test if post is not viewable status.
-		self::assertTrue( Dashboard_Links::cannot_show_link( $non_publicly_queryable_post, self::$parsely ) );
-		self::assertFalse( Dashboard_Links::cannot_show_link( $published_post, self::$parsely ) );
+		self::assertFalse( Dashboard_Links::can_show_link( $non_publicly_queryable_post, self::$parsely ) );
+		self::assertTrue( Dashboard_Links::can_show_link( $published_post, self::$parsely ) );
 	}
 
 	/**
@@ -141,10 +141,10 @@ final class DashboardLinksTest extends TestCase {
 
 		// Test if API key is not set.
 		self::set_options( array( 'apikey' => '' ) );
-		self::assertTrue( Dashboard_Links::cannot_show_link( $published_post, self::$parsely ) );
+		self::assertFalse( Dashboard_Links::can_show_link( $published_post, self::$parsely ) );
 
 		// Test with API key set.
 		self::set_options( array( 'apikey' => 'somekey' ) );
-		self::assertFalse( Dashboard_Links::cannot_show_link( $published_post, self::$parsely ) );
+		self::assertTrue( Dashboard_Links::can_show_link( $published_post, self::$parsely ) );
 	}
 }
