@@ -110,6 +110,26 @@ add_action(
 			10,
 			2
 		);
+
+		add_filter(
+			'wpmu_blogs_columns',
+			function($sites_columns) {
+				$sites_columns[] = 'Parse.ly Status';
+				return $sites_columns;
+			}
+		);
+
+		add_action(
+			'manage_sites_custom_column',
+			function($column_name, $blog_id) {
+				if ( $column_name == 'status') {
+					switch_to_blog($blog_id);
+					echo $GLOBALS['parsely']->api_key_is_set() ? 'All OK' : 'API Key is missing';
+					restore_current_blog();
+				}
+			},
+			10, 2
+		);
 	}
 );
 
