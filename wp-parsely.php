@@ -125,7 +125,7 @@ add_action(
 				if ( $column_name == 'status') {
 					switch_to_blog($blog_id);
 					$apikey = $GLOBALS['parsely']->get_api_key();
-					echo $apikey ?: '<em>Parse.ly API key is missing';
+					echo $apikey ?: '<em>Parse.ly API key is missing</em>';
 					restore_current_blog();
 				}
 			},
