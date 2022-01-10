@@ -34,6 +34,7 @@ use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Recommended_Widget;
 use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
+use Parsely\UI\Settings_Page_Network;
 
 if ( class_exists( Parsely::class ) ) {
 	return;
@@ -78,11 +79,15 @@ add_action(
 );
 
 require __DIR__ . '/src/UI/class-settings-page.php';
+require __DIR__ . '/src/UI/class-settings-page-network.php';
 add_action(
 	'_admin_menu',
 	function(): void {
 		$settings_page = new Settings_Page( $GLOBALS['parsely'] );
 		$settings_page->run();
+
+		$settings_page_network = new Settings_Page_Network( $GLOBALS['parsely'] );
+		$settings_page_network->run();
 	}
 );
 
