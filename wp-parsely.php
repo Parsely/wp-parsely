@@ -139,18 +139,20 @@ add_action(
 		add_action(
 			'manage_sites_custom_column',
 			function( $column_name, $blog_id ) {
-				if ( $column_name == 'status') {
-					switch_to_blog($blog_id);
-					$apikey = $GLOBALS['parsely']->get_api_key();
-					if ( strlen( $apikey ) > 0 ) {
-						echo esc_html( $apikey );
-					} else {
-						echo '<em>' . esc_html( 'Parse.ly API key is missing' ) . '</em>';
-					}
-					restore_current_blog();
+				if ( $column_name !== 'status' ) {
+					return;
 				}
+				switch_to_blog( $blog_id );
+				$apikey = $GLOBALS['parsely']->get_api_key();
+				if ( strlen( $apikey ) > 0 ) {
+					echo esc_html( $apikey );
+				} else {
+					echo '<em>' . esc_html( 'Parse.ly API key is missing' ) . '</em>';
+				}
+				restore_current_blog();
 			},
-			10, 2
+			10,
+			2
 		);
 	}
 );
