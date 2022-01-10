@@ -86,6 +86,33 @@ add_action(
 	}
 );
 
+add_action(
+	'admin_init',
+	function () {
+		add_filter(
+			'manage_sites_action_links',
+			function ( $actions, $_blog_id ) {
+				if ( ! current_user_can( Parsely::CAPABILITY ) ) {
+					return $actions;
+				}
+
+				if ( ! is_numeric( $_blog_id ) ) {
+					return $actions;
+				}
+
+				$settings_url                = $GLOBALS['parsely']::get_settings_url( (int) $_blog_id );
+				$actions['parsely-settings'] = '<a href="' . esc_url( $settings_url ) . '">' .
+				__( 'Parse.ly Settings', 'wp-parsely' ) .
+				'</a>';
+
+				return $actions;
+			},
+			10,
+			2
+		);
+	}
+);
+
 require __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
