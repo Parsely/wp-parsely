@@ -139,9 +139,10 @@ add_action(
 		add_action(
 			'manage_sites_custom_column',
 			function( $column_name, $blog_id ) {
-				if ( $column_name !== 'status' ) {
+				if ( 'status' !== $column_name ) {
 					return;
 				}
+				// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
 				switch_to_blog( $blog_id );
 				$apikey = $GLOBALS['parsely']->get_api_key();
 				if ( strlen( $apikey ) > 0 ) {
