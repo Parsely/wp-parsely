@@ -45,7 +45,8 @@ final class Settings_Page_Network {
 	 * @return void
 	 */
 	public function run(): void {
-		add_action( 'network_admin_menu', array( $this, 'network_settings_sub_menu' ) );
+		// Priority 11 to run after `network_admin_menu` in `wp-parsely.php`.
+		add_action( 'network_admin_menu', array( $this, 'network_settings_sub_menu' ), 11 );
 	}
 
 	/**
