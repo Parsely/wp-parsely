@@ -114,7 +114,7 @@ add_action(
 		add_filter(
 			'wpmu_blogs_columns',
 			function($sites_columns) {
-				$sites_columns[] = 'Parse.ly Status';
+				$sites_columns[] = 'Parse.ly API Key';
 				return $sites_columns;
 			}
 		);
@@ -124,7 +124,8 @@ add_action(
 			function($column_name, $blog_id) {
 				if ( $column_name == 'status') {
 					switch_to_blog($blog_id);
-					echo $GLOBALS['parsely']->api_key_is_set() ? 'All OK' : 'API Key is missing';
+					$apikey = $GLOBALS['parsely']->get_api_key();
+					echo $apikey ?: '<em>Parse.ly API key is missing';
 					restore_current_blog();
 				}
 			},
