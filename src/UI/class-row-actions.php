@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
-use Parsely\Dashboard_Links;
+use Parsely\Dashboard_Link;
 use WP_Post;
 
 /**
@@ -73,7 +73,7 @@ final class Row_Actions {
 	 * @return array<string, string> The amended list of actions.
 	 */
 	public function row_actions_add_parsely_link( array $actions, WP_Post $post ): array {
-		if ( ! Dashboard_Links::can_show_link( $post, $this->parsely ) ) {
+		if ( ! Dashboard_Link::can_show_link( $post, $this->parsely ) ) {
 			return $actions;
 		}
 
@@ -93,7 +93,7 @@ final class Row_Actions {
 	private function generate_link_to_parsely( WP_Post $post ): string {
 		return sprintf(
 			'<a href="%1$s" aria-label="%2$s">%3$s</a>',
-			esc_url( Dashboard_Links::generate_url( $post, $this->parsely->get_api_key(), 'wp-admin-posts-list', 'wp-admin' ) ),
+			esc_url( Dashboard_Link::generate_url( $post, $this->parsely->get_api_key(), 'wp-admin-posts-list', 'wp-admin' ) ),
 			esc_attr( $this->generate_aria_label_for_post( $post ) ),
 			esc_html__( 'Parse.ly&nbsp;Stats', 'wp-parsely' )
 		);

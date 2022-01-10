@@ -10,10 +10,10 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 // Explicit require as the `Rest` class could not be found in some environments.
-require_once __DIR__ . '/../../src/class-dashboard-links.php';
+require_once __DIR__ . '/../../src/class-dashboard-link.php';
 
 use Parsely\Parsely;
-use Parsely\Dashboard_Links;
+use Parsely\Dashboard_Link;
 
 /**
  * Test the functions on the utilities class.
@@ -38,7 +38,7 @@ final class DashboardLinksTest extends TestCase {
 	/**
 	 * Test if Parse.ly Dash URL can be generated for a post.
 	 *
-	 * @covers \Parsely\Dashboard_Links::generate_url
+	 * @covers \Parsely\Dashboard_Link::generate_url
 	 */
 	public function test_generate_parsely_post_url(): void {
 		$post_id = self::factory()->post->create();
@@ -46,7 +46,7 @@ final class DashboardLinksTest extends TestCase {
 		$apikey  = 'demo-api-key';
 
 		$expected = 'https://dash.parsely.com/demo-api-key/find?url=http%3A%2F%2Fexample.org%2F%3Fp%3D' . $post_id . '&utm_campaign=wp-admin-posts-list&utm_source=wp-admin&utm_medium=wp-parsely';
-		$actual   = Dashboard_Links::generate_url( $post, $apikey, 'wp-admin-posts-list', 'wp-admin' );
+		$actual   = Dashboard_Link::generate_url( $post, $apikey, 'wp-admin-posts-list', 'wp-admin' );
 
 		self::assertSame( $expected, $actual );
 	}
@@ -69,7 +69,7 @@ final class DashboardLinksTest extends TestCase {
 		$published_post = self::factory()->post->create_and_get();
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
-		self::assertTrue( Dashboard_Links::can_show_link( $published_post, self::$parsely ) );
+		self::assertTrue( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 	}
 
 	/**
@@ -93,8 +93,8 @@ final class DashboardLinksTest extends TestCase {
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		// Test if post does not have trackable status - only published posts are tracked by default.
-		self::assertFalse( Dashboard_Links::can_show_link( $draft_post, self::$parsely ) );
-		self::assertTrue( Dashboard_Links::can_show_link( $published_post, self::$parsely ) );
+		self::assertFalse( Dashboard_Link::can_show_link( $draft_post, self::$parsely ) );
+		self::assertTrue( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 	}
 
 	/**
@@ -118,8 +118,8 @@ final class DashboardLinksTest extends TestCase {
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		// Test if post is not viewable status.
-		self::assertFalse( Dashboard_Links::can_show_link( $non_publicly_queryable_post, self::$parsely ) );
-		self::assertTrue( Dashboard_Links::can_show_link( $published_post, self::$parsely ) );
+		self::assertFalse( Dashboard_Link::can_show_link( $non_publicly_queryable_post, self::$parsely ) );
+		self::assertTrue( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 	}
 
 	/**
@@ -141,10 +141,10 @@ final class DashboardLinksTest extends TestCase {
 
 		// Test if API key is not set.
 		self::set_options( array( 'apikey' => '' ) );
-		self::assertFalse( Dashboard_Links::can_show_link( $published_post, self::$parsely ) );
+		self::assertFalse( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 
 		// Test with API key set.
 		self::set_options( array( 'apikey' => 'somekey' ) );
-		self::assertTrue( Dashboard_Links::can_show_link( $published_post, self::$parsely ) );
+		self::assertTrue( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 	}
 }

@@ -17,12 +17,12 @@ use WP_Post;
  *
  * @since 3.2.0
  */
-class Dashboard_Links {
+class Dashboard_Link {
 	/**
 	 * Generate the Parse.ly dashboard URL for the post.
 	 *
 	 * @since 2.6.0
-	 * @since 3.2.0 Moved to class-dashboard-links.php. Added source parameter.
+	 * @since 3.2.0 Moved to class-dashboard-link.php. Added source parameter.
 	 *
 	 * @param WP_Post $post   Which post object or ID to check.
 	 * @param string  $apikey API key or empty string.

@@ -12,7 +12,7 @@ namespace Parsely\UI;
 
 use WP_Admin_Bar;
 use Parsely\Parsely;
-use Parsely\Dashboard_Links;
+use Parsely\Dashboard_Link;
 
 /**
  * Render Parse.ly related buttons in the WordPress administrator top bar.
@@ -63,12 +63,12 @@ final class Admin_Bar {
 		}
 
 		$post_type_object = get_post_type_object( $current_object->post_type );
-		if ( $post_type_object && $post_type_object->show_in_admin_bar && Dashboard_Links::can_show_link( $current_object, $this->parsely ) ) {
+		if ( $post_type_object && $post_type_object->show_in_admin_bar && Dashboard_Link::can_show_link( $current_object, $this->parsely ) ) {
 			$admin_bar->add_node(
 				array(
 					'id'    => 'parsely-stats',
 					'title' => __( 'Parse.ly Stats', 'wp-parsely' ),
-					'href'  => Dashboard_Links::generate_url( $current_object, $this->parsely->get_api_key(), 'wp-page-single', 'admin-bar' ),
+					'href'  => Dashboard_Link::generate_url( $current_object, $this->parsely->get_api_key(), 'wp-page-single', 'admin-bar' ),
 				)
 			);
 		}
