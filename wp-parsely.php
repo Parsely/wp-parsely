@@ -79,13 +79,18 @@ add_action(
 );
 
 require __DIR__ . '/src/UI/class-settings-page.php';
-require __DIR__ . '/src/UI/class-settings-page-network.php';
 add_action(
 	'_admin_menu',
 	function(): void {
 		$settings_page = new Settings_Page( $GLOBALS['parsely'] );
 		$settings_page->run();
+	}
+);
 
+require __DIR__ . '/src/UI/class-settings-page-network.php';
+add_action(
+	'_network_admin_menu',
+	function(): void {
 		$settings_page_network = new Settings_Page_Network( $GLOBALS['parsely'] );
 		$settings_page_network->run();
 	}

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
+use const Parsely\PARSELY_FILE;
 
 /**
  * Render the network (multisite) wp-admin Parse.ly plugin settings page
@@ -42,9 +43,7 @@ final class Settings_Page_Network {
 	 * @return void
 	 */
 	public function run(): void {
-		if ( is_multisite() ) {
-			add_action( 'admin_menu', 'network_settings_sub_menu' );
-		}
+		add_action( 'network_admin_menu', array( $this, 'network_settings_sub_menu' ) );
 	}
 
 	/**
@@ -53,12 +52,26 @@ final class Settings_Page_Network {
 	 * @return void
 	 */
 	public function network_settings_sub_menu(): void {
-		add_options_page(
+		add_submenu_page(
+			'settings.php',
 			__('Parse.ly Network Settings', 'wp-parsely'),
 			__( 'Parse.ly (Network)', 'wp-parsely'),
 			Parsely::CAPABILITY,
 			Parsely::MENU_SLUG_NETWORK,
 			array( $this, 'display_settings')
 		);
+	}
+
+	/**
+	 * Parse.ly network settings screen.
+	 *
+	 * @return void
+	 */
+	public function display_settings(): void {
+		if ( ! current_user_can( Parsely::CAPABILITY ) ) {
+			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
+		}
+
+		include plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings-network.php';
 	}
 }
