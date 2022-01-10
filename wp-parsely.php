@@ -127,6 +127,31 @@ add_action(
 			10,
 			2
 		);
+
+		add_filter(
+			'wpmu_blogs_columns',
+			function( $sites_columns ) {
+				$sites_columns[] = __( 'Parse.ly API Key', 'wp-parsely' );
+				return $sites_columns;
+			}
+		);
+
+		add_action(
+			'manage_sites_custom_column',
+			function( $column_name, $blog_id ) {
+				if ( $column_name == 'status') {
+					switch_to_blog($blog_id);
+					$apikey = $GLOBALS['parsely']->get_api_key();
+					if ( strlen( $apikey ) > 0 ) {
+						echo esc_html( $apikey );
+					} else {
+						echo '<em>' . esc_html( 'Parse.ly API key is missing' ) . '</em>';
+					}
+					restore_current_blog();
+				}
+			},
+			10, 2
+		);
 	}
 );
 
