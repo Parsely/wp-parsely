@@ -103,58 +103,12 @@ function parsely_admin_menu_register(): void {
 	$settings_page->run();
 }
 
+require __DIR__ . '/src/UI/class-network-admin-sites-list.php';
 add_action(
 	'admin_init',
-	function () {
-		add_filter(
-			'manage_sites_action_links',
-			function ( $actions, $_blog_id ) {
-				if ( ! current_user_can( Parsely::CAPABILITY ) ) {
-					return $actions;
-				}
-
-				if ( ! is_numeric( $_blog_id ) ) {
-					return $actions;
-				}
-
-				$settings_url                = $GLOBALS['parsely']::get_settings_url( (int) $_blog_id );
-				$actions['parsely-settings'] = '<a href="' . esc_url( $settings_url ) . '">' .
-				__( 'Parse.ly Settings', 'wp-parsely' ) .
-				'</a>';
-
-				return $actions;
-			},
-			10,
-			2
-		);
-
-		add_filter(
-			'wpmu_blogs_columns',
-			function( $sites_columns ) {
-				$sites_columns[] = __( 'Parse.ly API Key', 'wp-parsely' );
-				return $sites_columns;
-			}
-		);
-
-		add_action(
-			'manage_sites_custom_column',
-			function( $column_name, $blog_id ) {
-				if ( 'status' !== $column_name ) {
-					return;
-				}
-				// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
-				switch_to_blog( $blog_id );
-				$apikey = $GLOBALS['parsely']->get_api_key();
-				if ( strlen( $apikey ) > 0 ) {
-					echo esc_html( $apikey );
-				} else {
-					echo '<em>' . esc_html( 'Parse.ly API key is missing' ) . '</em>';
-				}
-				restore_current_blog();
-			},
-			10,
-			2
-		);
+	function(): void {
+		$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
+		$network_admin_sites_list->run();
 	}
 );
 
