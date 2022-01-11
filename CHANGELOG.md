@@ -5,6 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] 2022-01-12
+
+The 3.1.0 release is a minor release for the plugin that does not introduce any breaking changes coming from the 3.0 branch. This version's primary focus is adding support for WordPress decoupled architectures and a revamped settings page. We have also worked hard on refining our code, testing, and delivery process.
+
+The Parse.ly plugin now hooks into the WordPress REST API to provide the Parse.ly metadata inserted automatically in non-decoupled sites. No new endpoint is introduced -- a `parsely` field is now rendered in the tracked objects containing that data (e.g., `post` and `page`). Please, refer to the plugin's README file for more details. Note that the tracking script must be inserted manually in the decoupled front-end. This behavior can be disabled using a filter.
+
+### Added
+
+- Decoupled support. [#489](https://github.com/Parsely/wp-parsely/pull/489) [#500](https://github.com/Parsely/wp-parsely/pull/500)
+- Revamped wp-admin settings page, divided in sections. [#518](https://github.com/Parsely/wp-parsely/pull/518)
+- Show error in settings page when duplicated tracking is selected. [#543](https://github.com/Parsely/wp-parsely/pull/543)
+- Instructions for local development. [#525](https://github.com/Parsely/wp-parsely/pull/525)
+- Local developer environment logs command. [#532](https://github.com/Parsely/wp-parsely/pull/532)
+- Husky-based git commit hooks to enforce linting rules prior to commit. [#538](https://github.com/Parsely/wp-parsely/pull/538)
+- Linting for JavaScript and CSS files. [#527](https://github.com/Parsely/wp-parsely/pull/527)
+- Types to function arguments in GetCurrentUrlTest. [#504](https://github.com/Parsely/wp-parsely/pull/504)
+- End-to-end test to verify if scripts are rendered in the front-end. [#528](https://github.com/Parsely/wp-parsely/pull/528)
+- Concurrency to CI configuration and Composer tweaks. [#559](https://github.com/Parsely/wp-parsely/pull/559)
+- Explicit dependabot reviewers on GitHub. [#526](https://github.com/Parsely/wp-parsely/pull/526)
+- WordPress.org banner images. [#581](https://github.com/Parsely/wp-parsely/pull/581)
+
+### Changed
+
+- Hiding _Disable AMP_ section on settings page when the AMP plugin is not enabled. [#519](https://github.com/Parsely/wp-parsely/pull/519)
+- Use built-in WordPress submit button instead of custom one in the settings page. [#513](https://github.com/Parsely/wp-parsely/pull/513)
+- Improved wp-admin settings page help texts. [#552](https://github.com/Parsely/wp-parsely/pull/552)
+- `@wordpress/scripts` bumped from 19.2.1 to 19.2.2. [#503](https://github.com/Parsely/wp-parsely/pull/503)
+- `prettier` bumped from 2.4.1 to 2.5.0. [#509](https://github.com/Parsely/wp-parsely/pull/509) 
+- `concurrently` bumped from 6.4.0 to 6.5.1. [#551](https://github.com/Parsely/wp-parsely/pull/551)
+- Ubuntu bumped in from 18.04 to 20.04 on CI tests. [#445](https://github.com/Parsely/wp-parsely/pull/445)
+- Unit and Integration tests run in random order. [#511](https://github.com/Parsely/wp-parsely/pull/511)
+- Correct Parse.ly spelling in tests comments. [#561](https://github.com/Parsely/wp-parsely/pull/561)
+- Minor amendments on the documentation. [#514](https://github.com/Parsely/wp-parsely/pull/514)
+- Updated release process guidelines. [#567](https://github.com/Parsely/wp-parsely/pull/567)
+- Removed checkboxes from GitHub's PR template. [#512](https://github.com/Parsely/wp-parsely/pull/512)
+- Improved JS scripts integration tests. [#557](https://github.com/Parsely/wp-parsely/pull/557)
+- WordPress.org screenshots for settings page. [#574](https://github.com/Parsely/wp-parsely/pull/574)
+
+### Fixed
+
+- Undefined index error on settings page. [#536](https://github.com/Parsely/wp-parsely/pull/536)
+- Source the correct asset for the Recommendations Widget. [#545](https://github.com/Parsely/wp-parsely/pull/545)
+- End-to-end tests in CI (GitHub Actions). [#521](https://github.com/Parsely/wp-parsely/pull/521)
+- Source code linting violations (PHPCS with --serverity=1). [#544](https://github.com/Parsely/wp-parsely/pull/544)
+
+### Removed 
+
+- Plugin version number being printed in front-end's HTML source code. [#502](https://github.com/Parsely/wp-parsely/pull/502)
+- Custom CSS on wp-admin settings page. [#496](https://github.com/Parsely/wp-parsely/pull/496)
+- PHP 8.2 from CI tests. [#523](https://github.com/Parsely/wp-parsely/pull/523)
+- Custom end-to-end Docker image. [#524] (https://github.com/Parsely/wp-parsely/pull/524)
+
 ## [3.0.2] - 2022-01-05
 
 ### Fixed
@@ -434,6 +486,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - Initial version.
 - Add support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
+[3.1.0]: https://github.com/Parsely/wp-parsely/compare/3.0.2...3.1.0
 [3.0.2]: https://github.com/Parsely/wp-parsely/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/Parsely/wp-parsely/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/Parsely/wp-parsely/compare/2.6.1...3.0.0
