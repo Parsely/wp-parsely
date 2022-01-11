@@ -98,7 +98,7 @@ final class Network_Admin_Sites_List {
 		if ( strlen( $apikey ) > 0 ) {
 			echo esc_html( $apikey );
 		} else {
-			echo '<em>' . esc_html( 'Parse.ly API key is missing' ) . '</em>';
+			echo '<em>' . esc_html__( 'Parse.ly API key is missing', 'wp-parsely' ) . '</em>';
 		}
 	}
 }
