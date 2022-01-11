@@ -33,7 +33,6 @@ final class Network_Admin_Sites_List {
 	 * Attach network admin page functionality to the appropriate action and filter hooks.
 	 *
 	 * @since 3.2.0
-	 *
 	 * @return void
 	 */
 	public function run() {
@@ -45,11 +44,10 @@ final class Network_Admin_Sites_List {
 	/**
 	 * Use the manage_sites_action_links filter to append a link to the settings page in the "row actions."
 	 *
-	 * @param array $actions The list of actions meant to be displayed for the current site's context in the row actions.
-	 * @param int   $_blog_id The blog ID for the current context.
-	 *
 	 * @since 3.2.0
 	 *
+	 * @param array $actions The list of actions meant to be displayed for the current site's context in the row actions.
+	 * @param int   $_blog_id The blog ID for the current context.
 	 * @return array The list of actions including ours.
 	 */
 	public static function add_action_link( array $actions, int $_blog_id ): array {
@@ -68,10 +66,9 @@ final class Network_Admin_Sites_List {
 	/**
 	 * Use the wpmu_blogs_columns filter to register the column where we'll display the site's API Key (if configured).
 	 *
-	 * @param array $sites_columns The list of columns meant to be displayed in the sites list table.
-	 *
 	 * @since 3.2.0
 	 *
+	 * @param array $sites_columns The list of columns meant to be displayed in the sites list table.
 	 * @return array The list of columns to display in the network admin table including ours.
 	 */
 	public static function add_api_key_column( array $sites_columns ): array {
@@ -82,11 +79,10 @@ final class Network_Admin_Sites_List {
 	/**
 	 * Use the manage_sites_custom_column action to output each site's API Key (if configured).
 	 *
-	 * @param string $column_name The column name for the current context.
-	 * @param int    $_blog_id The blog ID for the current context.
-	 *
 	 * @since 3.2.0
 	 *
+	 * @param string $column_name The column name for the current context.
+	 * @param int    $_blog_id The blog ID for the current context.
 	 * @return void
 	 */
 	public function populate_api_key_column( string $column_name, int $_blog_id ): void {
