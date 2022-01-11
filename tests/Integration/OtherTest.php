@@ -248,7 +248,6 @@ final class OtherTest extends TestCase {
 		self::assertTrue( $result );
 	}
 
-
 	/**
 	 * Tests if keywords in Parse.ly metadata are generated correctly when categories are tags.
 	 *
@@ -258,14 +257,14 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_categories
 	 */
 	public function test_post_with_categories_as_tags(): void {
-		self::set_options( array('cats_as_tags' => true) );
+		self::set_options( array( 'cats_as_tags' => true ) );
 		$options = self::$parsely->get_options();
 
 		// Create a single post.
 		$post_id = $this->factory->post->create();
 		$post    = get_post( $post_id );
 
-		$expected = array( "uncategorized", );
+		$expected = array( 'uncategorized' );
 		$metadata = self::$parsely->construct_parsely_metadata( $options, $post );
 
 		self::assertSame( $expected, $metadata['keywords'] );
@@ -280,7 +279,7 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_categories
 	 */
 	public function test_post_with_categories_as_tags_without_categories(): void {
-		self::set_options( array('cats_as_tags' => true) );
+		self::set_options( array( 'cats_as_tags' => true ) );
 		$options = self::$parsely->get_options();
 
 		// Create a single post.

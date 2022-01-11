@@ -666,13 +666,16 @@ class Parsely {
 	private function get_categories( int $post_id, string $delimiter = '/' ): array {
 		$tags = array();
 		foreach ( get_the_category( $post_id ) as $category ) {
-			$hierarchy = get_category_parents( $category, false, $delimiter );
+			$hierarchy = get_category_parents( $category->term_id, false, $delimiter );
 			$hierarchy = rtrim( $hierarchy, '/' );
-			array_push( $tags, $hierarchy );
+			$tags[]    = $hierarchy;
 		}
 		// take last element in the hierarchy, a string representing the full parent->child tree,
 		// and split it into individual category names.
-		$tags = explode( '/', end( $tags ) );
+		$last_tag = end( $tags );
+		if ( $last_tag ) {
+			$tags = explode( '/', $last_tag );
+		}
 		// remove uncategorized value from tags.
 		return array_diff( $tags, array( 'Uncategorized' ) );
 	}
