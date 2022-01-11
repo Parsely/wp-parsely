@@ -35,7 +35,7 @@ final class Network_Admin_Sites_List {
 	 * @since 3.2.0
 	 * @return void
 	 */
-	public function run() {
+	public function run(): void {
 		add_filter( 'manage_sites_action_links', array( __CLASS__, 'add_action_link' ), 10, 2 );
 		add_filter( 'wpmu_blogs_columns', array( __CLASS__, 'add_api_key_column' ) );
 		add_action( 'manage_sites_custom_column', array( $this, 'populate_api_key_column' ), 10, 2 );
