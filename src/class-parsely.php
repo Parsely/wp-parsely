@@ -667,8 +667,10 @@ class Parsely {
 		$tags = array();
 		foreach ( get_the_category( $post_id ) as $category ) {
 			$hierarchy = get_category_parents( $category->term_id, false, $delimiter );
-			$hierarchy = rtrim( $hierarchy, '/' );
-			$tags[]    = $hierarchy;
+			if ( ! is_wp_error( $hierarchy ) ) {
+				$hierarchy = rtrim( $hierarchy, '/' );
+				$tags[]    = $hierarchy;
+			}
 		}
 		// take last element in the hierarchy, a string representing the full parent->child tree,
 		// and split it into individual category names.
