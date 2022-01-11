@@ -247,4 +247,51 @@ final class OtherTest extends TestCase {
 		$result = Parsely::post_has_trackable_status( $post );
 		self::assertTrue( $result );
 	}
+
+
+	/**
+	 * Tests if keywords in Parse.ly metadata are generated correctly when categories are tags.
+	 *
+	 * @since 3.0.3
+	 *
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::get_categories
+	 */
+	public function test_post_with_categories_as_tags(): void {
+		self::set_options( array('cats_as_tags' => true) );
+		$options = self::$parsely->get_options();
+
+		// Create a single post.
+		$post_id = $this->factory->post->create();
+		$post    = get_post( $post_id );
+
+		$expected = array( "uncategorized", );
+		$metadata = self::$parsely->construct_parsely_metadata( $options, $post );
+
+		self::assertSame( $expected, $metadata['keywords'] );
+	}
+
+	/**
+	 * Tests if keywords in Parse.ly metadata are generated correctly when categories are tags and the post has no categories.
+	 *
+	 * @since 3.0.3
+	 *
+	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @uses \Parsely\Parsely::get_categories
+	 */
+	public function test_post_with_categories_as_tags_without_categories(): void {
+		self::set_options( array('cats_as_tags' => true) );
+		$options = self::$parsely->get_options();
+
+		// Create a single post.
+		$post_id = $this->factory->post->create();
+		$post    = get_post( $post_id );
+
+		wp_remove_object_terms( $post_id, 'uncategorized', 'category' );
+
+		$expected = array();
+		$metadata = self::$parsely->construct_parsely_metadata( $options, $post );
+
+		self::assertSame( $expected, $metadata['keywords'] );
+	}
 }
