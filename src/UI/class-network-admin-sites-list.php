@@ -18,6 +18,8 @@ use Parsely\Parsely;
  * @since 3.2.0
  */
 final class Network_Admin_Sites_List {
+	const COLUMN_NAME = 'parsely-api-key';
+
 	/**
 	 * Constructor.
 	 *
@@ -73,7 +75,7 @@ final class Network_Admin_Sites_List {
 	 * @return array The list of columns to display in the network admin table including ours.
 	 */
 	public static function add_api_key_column( array $sites_columns ): array {
-		$sites_columns['parsely-api-key'] = __( 'Parse.ly API Key', 'wp-parsely' );
+		$sites_columns[ self::COLUMN_NAME ] = __( 'Parse.ly API Key', 'wp-parsely' );
 		return $sites_columns;
 	}
 
@@ -88,7 +90,7 @@ final class Network_Admin_Sites_List {
 	 * @return void
 	 */
 	public function populate_api_key_column( string $column_name, int $_blog_id ): void {
-		if ( 'parsely-api-key' !== $column_name ) {
+		if ( self::COLUMN_NAME !== $column_name ) {
 			return;
 		}
 
