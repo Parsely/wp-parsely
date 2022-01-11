@@ -28,13 +28,13 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide the Parse.l
 
 ### Changed
 
-- Hiding _Disable AMP_ section on settings page when the AMP plugin is not enabled. [#519](https://github.com/Parsely/wp-parsely/pull/519)
+- Hiding _Disable AMP_ field on settings page when the AMP plugin is not enabled. [#519](https://github.com/Parsely/wp-parsely/pull/519)
 - Use built-in WordPress submit button instead of custom one in the settings page. [#513](https://github.com/Parsely/wp-parsely/pull/513)
 - Improved wp-admin settings page help texts. [#552](https://github.com/Parsely/wp-parsely/pull/552)
 - `@wordpress/scripts` bumped from 19.2.1 to 19.2.2. [#503](https://github.com/Parsely/wp-parsely/pull/503)
 - `prettier` bumped from 2.4.1 to 2.5.0. [#509](https://github.com/Parsely/wp-parsely/pull/509) 
 - `concurrently` bumped from 6.4.0 to 6.5.1. [#551](https://github.com/Parsely/wp-parsely/pull/551)
-- Ubuntu bumped in from 18.04 to 20.04 on CI tests. [#445](https://github.com/Parsely/wp-parsely/pull/445)
+- Ubuntu bumped from 18.04 to 20.04 on CI tests. [#445](https://github.com/Parsely/wp-parsely/pull/445)
 - Unit and Integration tests run in random order. [#511](https://github.com/Parsely/wp-parsely/pull/511)
 - Correct Parse.ly spelling in tests comments. [#561](https://github.com/Parsely/wp-parsely/pull/561)
 - Minor amendments on the documentation. [#514](https://github.com/Parsely/wp-parsely/pull/514)
@@ -48,7 +48,7 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide the Parse.l
 - Undefined index error on settings page. [#536](https://github.com/Parsely/wp-parsely/pull/536)
 - Source the correct asset for the Recommendations Widget. [#545](https://github.com/Parsely/wp-parsely/pull/545)
 - End-to-end tests in CI (GitHub Actions). [#521](https://github.com/Parsely/wp-parsely/pull/521)
-- Source code linting violations (PHPCS with --serverity=1). [#544](https://github.com/Parsely/wp-parsely/pull/544)
+- Source code linting violations (PHPCS with `--serverity=1`). [#544](https://github.com/Parsely/wp-parsely/pull/544)
 
 ### Removed 
 
