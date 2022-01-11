@@ -55,14 +55,10 @@ final class Network_Admin_Sites_List {
 			return $actions;
 		}
 
-		if ( ! is_numeric( $_blog_id ) ) {
-			return $actions;
-		}
-
-		$settings_url                = Parsely::get_settings_url( (int) $_blog_id );
-		$actions['parsely-settings'] = '<a href="' . esc_url( $settings_url ) . '">' .
-		__( 'Parse.ly Settings', 'wp-parsely' ) .
-		'</a>';
+		$actions['parsely-settings'] =
+			'<a href="' . esc_url( Parsely::get_settings_url( $_blog_id ) ) . '">' .
+				__( 'Parse.ly Settings', 'wp-parsely' ) .
+			'</a>';
 
 		return $actions;
 	}
