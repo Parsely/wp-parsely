@@ -80,7 +80,7 @@
 			"@php ./vendor/bin/phpunit --no-coverage --order-by=random"
 		],
 	   	"static-analysis": [
-		  "@php ./vendor/bin/phpstan analyze src views wp-parsely.php uninstall.php -l 9 --memory-limit 536870912"
+		  "@php ./vendor/bin/phpstan analyze --memory-limit 536870912"
 		],
 		"test-ms": [
 			"@putenv WP_MULTISITE=1",
