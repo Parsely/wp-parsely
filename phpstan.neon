@@ -3,6 +3,5 @@ parameters:
   paths:
     - src/
     - views/
-    - tests/
     - wp-parsely.php
     - uninstall.php
