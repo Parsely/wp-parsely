@@ -32,7 +32,7 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide the Parse.l
 - Use built-in WordPress submit button instead of custom one in the settings page. [#513](https://github.com/Parsely/wp-parsely/pull/513)
 - Improved wp-admin settings page help texts. [#552](https://github.com/Parsely/wp-parsely/pull/552)
 - `@wordpress/scripts` bumped from 19.2.1 to 19.2.2. [#503](https://github.com/Parsely/wp-parsely/pull/503)
-- `prettier` bumped from 2.4.1 to 2.5.0. [#509](https://github.com/Parsely/wp-parsely/pull/509) 
+- `prettier` bumped from 2.4.1 to 2.5.0. [#509](https://github.com/Parsely/wp-parsely/pull/509)
 - `concurrently` bumped from 6.4.0 to 6.5.1. [#551](https://github.com/Parsely/wp-parsely/pull/551)
 - Ubuntu bumped from 18.04 to 20.04 on CI tests. [#445](https://github.com/Parsely/wp-parsely/pull/445)
 - Unit and Integration tests run in random order. [#511](https://github.com/Parsely/wp-parsely/pull/511)
@@ -50,12 +50,19 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide the Parse.l
 - End-to-end tests in CI (GitHub Actions). [#521](https://github.com/Parsely/wp-parsely/pull/521)
 - Source code linting violations (PHPCS with `--serverity=1`). [#544](https://github.com/Parsely/wp-parsely/pull/544)
 
-### Removed 
+### Removed
 
 - Plugin version number being printed in front-end's HTML source code. [#502](https://github.com/Parsely/wp-parsely/pull/502)
 - Custom CSS on wp-admin settings page. [#496](https://github.com/Parsely/wp-parsely/pull/496)
 - PHP 8.2 from CI tests. [#523](https://github.com/Parsely/wp-parsely/pull/523)
 - Custom end-to-end Docker image. [#524] (https://github.com/Parsely/wp-parsely/pull/524)
+
+
+## [3.0.3] - 2022-01-12
+
+### Fixed
+
+- [Fixed a fatal error](https://github.com/Parsely/wp-parsely/issues/587) when requesting metadata for a post without categories and `categories as tags` enabled. [#588](https://github.com/Parsely/wp-parsely/pull/588)
 
 ## [3.0.2] - 2022-01-05
 
@@ -486,7 +493,8 @@ If you are using the plugin without any code-level customizations (for instance,
 - Initial version.
 - Add support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
-[3.1.0]: https://github.com/Parsely/wp-parsely/compare/3.0.2...3.1.0
+[3.1.0]: https://github.com/Parsely/wp-parsely/compare/3.0.3...3.1.0
+[3.0.3]: https://github.com/Parsely/wp-parsely/compare/3.0.2...3.0.3
 [3.0.2]: https://github.com/Parsely/wp-parsely/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/Parsely/wp-parsely/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/Parsely/wp-parsely/compare/2.6.1...3.0.0
