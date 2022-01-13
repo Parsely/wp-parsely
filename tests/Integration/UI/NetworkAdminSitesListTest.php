@@ -56,6 +56,8 @@ final class NetworkAdminSitesListTest extends TestCase {
 	 * Make sure the custom column is included.
 	 *
 	 * @covers \Parsely\UI\Network_Admin_Sites_List::add_api_key_column
+	 * @covers \Parsely\UI\Network_Admin_Sites_List::run
+	 * @uses \Parsely\UI\Network_Admin_Sites_List::__construct
 	 * @return void
 	 */
 	public function test_api_key_column_is_present(): void {
@@ -70,6 +72,11 @@ final class NetworkAdminSitesListTest extends TestCase {
 	 * Make sure the custom column is populated with default data for no option and the API key when set.
 	 *
 	 * @covers \Parsely\UI\Network_Admin_Sites_List::populate_api_key_column
+	 * @covers \Parsely\UI\Network_Admin_Sites_List::run
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\UI\Network_Admin_Sites_List::__construct
 	 * @return void
 	 */
 	public function test_api_key_column_is_correctly_printed(): void {

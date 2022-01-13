@@ -132,6 +132,7 @@ final class SettingsPageTest extends TestCase {
 	 * Make sure that the settings URL is correctly returned for single sites and multisites with and without a blog_id param.
 	 *
 	 * @covers \Parsely\Parsely::get_settings_url
+	 * @uses \Parsely\UI\Settings_Page::__construct
 	 * @return void
 	 */
 	public function test_get_settings_url_with_and_without_blog_id(): void {
