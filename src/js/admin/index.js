@@ -2,13 +2,8 @@ document.querySelector( '.media-single-image button.browse' ).addEventListener( 
 
 function selectImage() {
 	const optionName = this.dataset.option;
-	let imageFrame = null;
 
-	if ( imageFrame ) {
-		imageFrame.open();
-	}
-
-	imageFrame = wp.media( {
+	const imageFrame = wp.media( {
 		multiple: false,
 		library: {
 			type: 'image',
