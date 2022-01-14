@@ -178,7 +178,7 @@ class Parsely_Recommendations_Block {
 	data-limit="<?php echo esc_attr( $attributes['limit'] ); ?>"
 	data-personalized="<?php echo esc_attr( $attributes['personalized'] ); ?>"
 	data-saveresults="<?php echo esc_attr( $attributes['saveresults'] ); ?>"
-	data-savedresults="<?php echo esc_attr( htmlspecialchars( json_encode( $validated_saved_results ), ENT_QUOTES, 'UTF-8' ) ); ?>"
+	data-savedresults="<?php echo esc_attr( htmlspecialchars( wp_json_encode( $validated_saved_results ), ENT_QUOTES, 'UTF-8' ) ); ?>"
 	data-showimages="<?php echo esc_attr( $attributes['showimages'] ); ?>"
 	data-sort="<?php echo esc_attr( $attributes['sort'] ); ?>"
 	data-title="<?php echo esc_attr( $attributes['title'] ); ?>"

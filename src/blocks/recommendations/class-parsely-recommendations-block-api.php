@@ -51,7 +51,7 @@ class Parsely_Recommendations_Block_API {
 		$apikey  = $options['apikey'];
 		$params  = $request->get_params();
 
-		$cache_key = 'block_recos-' . md5( json_encode( compact( 'apikey', 'params' ) ) );
+		$cache_key = 'block_recos-' . md5( wp_json_encode( compact( 'apikey', 'params' ) ) );
 		$cached    = wp_cache_get( $cache_key, 'wp-parsely' );
 		if ( is_array( $cached ) ) {
 			return array(
