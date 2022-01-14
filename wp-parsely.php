@@ -55,9 +55,6 @@ function parsely_initialize_plugin(): void {
 	$GLOBALS['parsely'] = new Parsely();
 	$GLOBALS['parsely']->run();
 
-	$rest = new Rest( $GLOBALS['parsely'] );
-	$rest->run();
-
 	$scripts = new Scripts( $GLOBALS['parsely'] );
 	$scripts->run();
 }
