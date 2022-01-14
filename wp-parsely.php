@@ -59,32 +59,39 @@ add_action(
 	}
 );
 
-// Until auto-loading happens, we need to include this file for tests as well.
 require __DIR__ . '/src/UI/class-admin-warning.php';
 require __DIR__ . '/src/UI/class-plugins-actions.php';
 require __DIR__ . '/src/UI/class-row-actions.php';
-add_action(
-	'admin_init',
-	function(): void {
-		$admin_warning = new Admin_Warning( $GLOBALS['parsely'] );
-		$admin_warning->run();
 
-		$GLOBALS['parsely_ui_plugins_actions'] = new Plugins_Actions();
-		$GLOBALS['parsely_ui_plugins_actions']->run();
+add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
+/**
+ * Register the Parse.ly wp-admin warnings, plugin actions and row actions.
+ *
+ * @return void
+ */
+function parsely_admin_init_register(): void {
+	$admin_warning = new Admin_Warning( $GLOBALS['parsely'] );
+	$admin_warning->run();
 
-		$row_actions = new Row_Actions( $GLOBALS['parsely'] );
-		$row_actions->run();
-	}
-);
+	$GLOBALS['parsely_ui_plugins_actions'] = new Plugins_Actions();
+	$GLOBALS['parsely_ui_plugins_actions']->run();
+
+	$row_actions = new Row_Actions( $GLOBALS['parsely'] );
+	$row_actions->run();
+}
 
 require __DIR__ . '/src/UI/class-settings-page.php';
-add_action(
-	'_admin_menu',
-	function(): void {
-		$settings_page = new Settings_Page( $GLOBALS['parsely'] );
-		$settings_page->run();
-	}
-);
+
+add_action( '_admin_menu', __NAMESPACE__ . '\\parsely_admin_menu_register' );
+/**
+ * Register the Parse.ly wp-admin settings page.
+ *
+ * @return void
+ */
+function parsely_admin_menu_register(): void {
+	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
+	$settings_page->run();
+}
 
 require __DIR__ . '/src/UI/class-recommended-widget.php';
 
