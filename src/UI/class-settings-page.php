@@ -629,7 +629,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		<fieldset class="media-single-image" id="media-single-image-<?php echo esc_attr( $key ); ?>">
 			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
 			<input class="large-text file-path" type="text" name="<?php echo esc_attr( $input_name ); ?>" value="<?php echo esc_attr( $input_value ); ?>" />
-			<button data-option="<?php echo esc_attr( $key ); ?>" class="browse button" style="margin-top: 0.4rem" type="button"><?php echo esc_html( $button_text ); ?></button>
+			<p>
+				<button data-option="<?php echo esc_attr( $key ); ?>" class="browse button" type="button"><?php echo esc_html( $button_text ); ?></button>
+			</p>
 		</fieldset>
 
 		<?php
