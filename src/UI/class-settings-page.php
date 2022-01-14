@@ -620,7 +620,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @return void
 	 */
 	public function print_media_single_image( array $args ) {
-		$key         = esc_attr( $args['option_key'] );
+		$key         = $args['option_key'];
 		$input_value = $this->parsely->get_options()[ $key ];
 		$input_name  = Parsely::OPTIONS_KEY . "[$key]";
 		$button_text = __( 'Browse', 'wp-parsely' );
