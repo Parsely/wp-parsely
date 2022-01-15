@@ -54,6 +54,7 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide content met
 
 - Plugin version number being printed in front-end's HTML source code. [#502](https://github.com/Parsely/wp-parsely/pull/502)
 - Custom CSS on wp-admin settings page. [#496](https://github.com/Parsely/wp-parsely/pull/496)
+- `migrate_old_fields` private function from Recommended Widget. [#599](https://github.com/Parsely/wp-parsely/pull/599)
 - PHP 8.2 from CI tests. [#523](https://github.com/Parsely/wp-parsely/pull/523)
 - Custom end-to-end Docker image. [#524] (https://github.com/Parsely/wp-parsely/pull/524)
 
