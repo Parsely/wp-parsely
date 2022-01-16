@@ -25,8 +25,12 @@ jobs:
       XMLLINT_INDENT: '	'
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@14dc64f30986eaa2ad2dddcec073f5aab18e5a24 # v1
+        with:
+          egress-policy: audit
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@cf8b3c07b614e754f66e055af0e3498701349be9 # v2
         with:
           php-version: '7.4'
           coverage: none
@@ -35,15 +39,15 @@ jobs:
       # Show PHP lint violations inline in the file diff.
       # @link https://github.com/marketplace/actions/xmllint-problem-matcher
       - name: Register PHP lint violations to appear as file diff comments
-        uses: korelstar/phplint-problem-matcher@v1
+        uses: korelstar/phplint-problem-matcher@65ba096f36d529ff7e26267074e4a814824c89ae # v1
 
       # Show XML violations inline in the file diff.
       # @link https://github.com/marketplace/actions/xmllint-problem-matcher
       - name: Register XML violations to appear as file diff comments
-        uses: korelstar/xmllint-problem-matcher@v1
+        uses: korelstar/xmllint-problem-matcher@059d630f7d16a7a38845c30e0227a875e39813db # v1
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
 
       # Validate the composer.json file.
       # @link https://getcomposer.org/doc/03-cli.md#validate
@@ -53,7 +57,7 @@ jobs:
       # Install dependencies and handle caching in one go.
       # @link https://github.com/marketplace/actions/install-composer-dependencies
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v2
+        uses: ramsey/composer-install@f680dac46551dffb2234a240d65ae806c2999dd6 # v2
 
       # Lint PHP.
       - name: Lint PHP against parse errors
@@ -62,13 +66,13 @@ jobs:
       # Needed as runs-on: system doesn't have xml-lint by default.
       # @link https://github.com/marketplace/actions/xml-lint
       - name: Lint phpunit.xml.dist
-        uses: ChristophWurst/xmllint-action@v1
+        uses: ChristophWurst/xmllint-action@d18a551aab4728e4af449617638600634d7a48cb # v1
         with:
           xml-file: ./phpunit.xml.dist
           xml-schema-file: ./vendor/phpunit/phpunit/phpunit.xsd
 
       - name: Lint .phpcs.xml.dist
-        uses: ChristophWurst/xmllint-action@v1
+        uses: ChristophWurst/xmllint-action@d18a551aab4728e4af449617638600634d7a48cb # v1
         with:
           xml-file: ./.phpcs.xml.dist
           xml-schema-file: ./vendor/squizlabs/php_codesniffer/phpcs.xsd
