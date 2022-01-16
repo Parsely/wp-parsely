@@ -1,7 +1,7 @@
 # Parse.ly
 
 Stable tag: 3.1.0-alpha  
-Requires at least: 5.0  
+Requires at least: 5.2  
 Tested up to: 5.8  
 Requires PHP: 7.1  
 License: GPLv2 or later  
@@ -80,9 +80,10 @@ add_filter(
 ```
 
 The `parsely` field contains the following fields:
- - `version`, which is a string identifying the version of the REST API output; this will be updated if changes are made to the output, so consuming applications can check against it.
- - `meta`, which is an array of metadata for the specific post, page or other object type.
- - `rendered`, which is the rendered HTML of the metadata for the post, page or other object type. This will be a JSON-LD `<script>` tag, or a set of `<meta>` tags, depending on the format selected in the plugin settings. The decoupled code can consume and use this directly, instead of building the values from the `meta` field values.
+
+- `version`, which is a string identifying the version of the REST API output; this will be updated if changes are made to the output, so consuming applications can check against it.
+- `meta`, which is an array of metadata for the specific post, page or other object type.
+- `rendered`, which is the rendered HTML of the metadata for the post, page or other object type. This will be a JSON-LD `<script>` tag, or a set of `<meta>` tags, depending on the format selected in the plugin settings. The decoupled code can consume and use this directly, instead of building the values from the `meta` field values.
 
 The `rendered` field is a convenience field containing the HTML-formatted meta data which can be printed to a decoupled page as is.
 
