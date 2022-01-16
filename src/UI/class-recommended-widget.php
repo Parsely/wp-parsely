@@ -104,31 +104,11 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Migrates previous display_options settings
-	 *
-	 * @param array $instance Values saved to the db.
-	 * @return void
-	 */
-	private function migrate_old_fields( array $instance ): void {
-		if ( ! empty( $instance['display_options'] ) && is_array( $instance['display_options'] ) ) {
-			if ( empty( $instance['img_src'] ) ) {
-				$instance['img_src'] = in_array( 'display_thumbnail', $instance['display_options'], true ) ? 'parsely_thumb' : 'none';
-			}
-
-			if ( empty( $instance['display_author'] ) ) {
-				$instance['display_author'] = in_array( 'display_author', $instance['display_options'], true );
-			}
-		}
-	}
-
-	/**
 	 * This is the form function
 	 *
 	 * @param array $instance Values saved to the db.
 	 */
 	public function form( $instance ): void {
-		$this->migrate_old_fields( $instance );
-
 		if ( ! $this->api_key_and_secret_are_populated() ) {
 			$settings_page_url = add_query_arg( 'page', 'parsely', get_admin_url() . 'options-general.php' );
 
