@@ -21,7 +21,7 @@ export const ParselyRecommendationsEdit = ( editProps ) => (
 		<RecommendationsStore clientId={ editProps.clientId }>
 			<ParselyRecommendationsBlockControls { ...editProps } />
 			<ParselyRecommendationsInspectorControls { ...editProps } />
-			<ParselyRecommendations { ...editProps.attributes } />
+			<ParselyRecommendations { ...editProps.attributes } isEditMode="true" />
 		</RecommendationsStore>
 	</div>
 );

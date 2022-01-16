@@ -19,6 +19,7 @@ export default function ParselyRecommendations( {
 	layoutstyle,
 	limit,
 	imagestyle,
+	isEditMode,
 	personalized,
 	saveresults,
 	savedresults,
@@ -44,6 +45,15 @@ export default function ParselyRecommendations( {
 	}
 
 	const _recommendations = saveresults ? decodedSavedResults : recommendations;
+
+	if ( isLoaded && ! _recommendations.length ) {
+		if ( isEditMode ) {
+			// This will only show on the back end / editor as a hint the block will not actually render anything.
+			return __( 'No recommendations found.', 'wp-parsely' );
+		}
+		// Don't render anything on the frontend if data is loaded and there is no data.
+		return false;
+	}
 
 	return (
 		<>
