@@ -55,7 +55,19 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@14dc64f30986eaa2ad2dddcec073f5aab18e5a24 # v1
         with:
-          egress-policy: audit
+          allowed-endpoints:
+            api.github.com:443
+            artifactcache.actions.githubusercontent.com:443
+            codeload.github.com:443
+            develop.svn.wordpress.org:443
+            github.com:443
+            kv4gacprodeus2file3.blob.core.windows.net:443
+            objects.githubusercontent.com:443
+            packagist.org:443
+            raw.github.com:443
+            repo.packagist.org:443
+            wordpress.org:443
+
       - name: Checkout code
         uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
 

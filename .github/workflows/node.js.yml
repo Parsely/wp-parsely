@@ -31,8 +31,15 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@14dc64f30986eaa2ad2dddcec073f5aab18e5a24 # v1
         with:
-          egress-policy: audit
-      - uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
+          allowed-endpoints:
+            artifactcache.actions.githubusercontent.com:443
+            github.com:443
+            kv4gacprodeus2file3.blob.core.windows.net:443
+            registry.npmjs.org:443
+            storage.googleapis.com:443
+
+      - name: Checkout code
+        uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # v2
