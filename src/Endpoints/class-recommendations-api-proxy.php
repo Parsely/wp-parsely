@@ -1,28 +1,38 @@
 <?php
 /**
- * Parsely Recommendations Block API
+ * Parsely Recommendations REST API Endpoint
  *
  * @package Parsely
  */
 
+namespace Parsely\Endpoints;
+
+use Parsely\Recommended_Content;
+use WP_REST_Server;
+use WP_REST_Request;
+
 /**
- * A "namespace" class with functions that power REST API endpoints for use by the Recommendations Block
+ * A "namespace" class with functions that power REST API endpoints for use by the Recommendations Block and other consumers.
  */
-class Parsely_Recommendations_Block_API {
+final class Recommendations_API_Proxy {
+	public function run() {
+		$this->register_rest_route();
+	}
+
 	/**
 	 * Registers the REST API Routes and backing functionality
 	 *
 	 * @return void
 	 */
-	public static function rest_api_init() {
+	public static function register_rest_route() {
 		register_rest_route(
 			'wp-parsely/v1',
 			'/recommendations',
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => 'Parsely_Recommendations_Block_API::get_items',
-					'permission_callback' => 'Parsely_Recommendations_Block_API::permission_callback',
+					'callback'            => __CLASS__ . '::get_items',
+					'permission_callback' => __CLASS__ . '::permission_callback',
 					'args'                => array(),
 				),
 			)
@@ -41,17 +51,16 @@ class Parsely_Recommendations_Block_API {
 	/**
 	 * Cached "proxy" to the Parsely `/related` endpoint
 	 *
-	 * @uses Parsely_Recommendations_Block_API::fetch_related_links
 	 * @param WP_Rest_Request $request The request object.
 	 * @return StdClass
 	 */
-	public static function get_items( $request ) {
+	public static function get_items( WP_Rest_Request $request ) {
 		global $parsely;
 		$options = $parsely->get_options();
 		$apikey  = $options['apikey'];
 		$params  = $request->get_params();
 
-		$cache_key = 'block_recos-' . md5( wp_json_encode( compact( 'apikey', 'params' ) ) );
+		$cache_key = 'api_recos-' . md5( wp_json_encode( compact( 'apikey', 'params' ) ) );
 		$cached    = wp_cache_get( $cache_key, 'wp-parsely' );
 		if ( is_array( $cached ) ) {
 			return array(
@@ -63,10 +72,10 @@ class Parsely_Recommendations_Block_API {
 		$links = self::fetch_related_links(
 			$apikey,
 			$params['url'],
-			$params['pub_date_start'],
-			$params['sort'],
-			$params['limit'],
-			$params['boost']
+			$params['pub_date_start'] ?? 0,
+			$params['sort'] ?? 'score',
+			$params['limit'] ?? 5,
+			$params['boost'] ?? 'views'
 		);
 
 		if ( is_wp_error( $links ) ) {
@@ -105,12 +114,12 @@ class Parsely_Recommendations_Block_API {
 	 * @see https://www.parse.ly/help/api/recommendations#get-related
 	 * @return array
 	 */
-	public static function fetch_related_links( $apikey, $url, $pub_start = 0, $sort_recs = 'score', $limit = 5, $boost = 'views' ) {
+	public static function fetch_related_links( string $apikey, string $url, int $pub_start, string $sort_recs, int $limit, string $boost ) {
 		$full_api_url = add_query_arg(
 			array(
 				'url' => rawurlencode( $url ),
 			),
-			Parsely_Recommended_Content::get_api_url(
+			Recommended_Content::get_api_url(
 				$apikey,
 				$pub_start,
 				$sort_recs,

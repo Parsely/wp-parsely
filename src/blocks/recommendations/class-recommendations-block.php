@@ -1,21 +1,22 @@
 <?php
 /**
- * Parsely_Recommendations_Block class file
+ * Recommendations_Block class file
  *
  * @package Parsely
+ * @since 3.2.0
  */
+
+declare(strict_types=1);
+
+namespace Parsely;
 
 /**
- * Parsely_Recommendations_Block
+ * Recommendations_Block
  */
-class Parsely_Recommendations_Block {
+class Recommendations_Block {
 	const MINIMUM_WORDPRESS_VERSION = '5.6';
 
-	/**
-	 * Hooked into `init` in the main block entry file.
-	 * That gives ample opportunity for themes and other plugins to hook and unhook functionality.
-	 */
-	public static function init() {
+	public function run() {
 		global $wp_version;
 
 		if ( ! apply_filters( 'wp_parsely_recommendations_block_enabled', false ) ) {
@@ -23,15 +24,7 @@ class Parsely_Recommendations_Block {
 			return;
 		}
 
-		if ( version_compare( $wp_version, self::MINIMUM_WORDPRESS_VERSION ) < 0 ) {
-			// WordPress is not recent enough to run this block.
-			return;
-		}
-
 		self::register_block_and_assets();
-
-		require __DIR__ . '/class-parsely-recommendations-block-api.php';
-		add_action( 'rest_api_init', array( 'Parsely_Recommendations_Block_API', 'rest_api_init' ) );
 	}
 
 	/**
@@ -39,20 +32,23 @@ class Parsely_Recommendations_Block {
 	 * the corresponding context.
 	 */
 	public static function register_block_and_assets() {
-		$editor_asset_file = require PARSELY_PLUGIN_DIR . 'build/recommendations-edit.asset.php';
+		$plugin_path = plugin_dir_path( PARSELY_FILE );
+		$plugin_url = plugin_dir_url( PARSELY_FILE );
+
+		$editor_asset_file = require $plugin_path . 'build/recommendations-edit.asset.php';
 
 		wp_register_script(
 			'wp-parsely-recommendations-block-editor',
-			PARSELY_PLUGIN_URL . 'build/recommendations-edit.js',
+			$plugin_url . 'build/recommendations-edit.js',
 			$editor_asset_file['dependencies'],
 			$editor_asset_file['version'],
 			true
 		);
 
-		$script_asset_file = require PARSELY_PLUGIN_DIR . 'build/recommendations.asset.php';
+		$script_asset_file = require $plugin_path . 'build/recommendations.asset.php';
 		wp_register_script(
 			'wp-parsely-recommendations-block',
-			PARSELY_PLUGIN_URL . 'build/recommendations.js',
+			$plugin_url . 'build/recommendations.js',
 			array_merge( $script_asset_file['dependencies'], array( 'wp-parsely-api' ) ),
 			$script_asset_file['version'],
 			true
@@ -60,7 +56,7 @@ class Parsely_Recommendations_Block {
 
 		wp_register_style(
 			'wp-parsely-recommendations-block',
-			PARSELY_PLUGIN_URL . 'build/style-recommendations-edit.css',
+			$plugin_url . 'build/style-recommendations-edit.css',
 			array(),
 			Parsely::get_asset_cache_buster()
 		);
@@ -69,7 +65,7 @@ class Parsely_Recommendations_Block {
 			'wp-parsely/recommendations',
 			array(
 				'editor_script'   => 'wp-parsely-recommendations-block-editor',
-				'render_callback' => 'Parsely_Recommendations_Block::render_callback',
+				'render_callback' => __CLASS__ . '::render_callback',
 				'script'          => 'wp-parsely-recommendations-block',
 				'style'           => 'wp-parsely-recommendations-block',
 				'supports'        => array(

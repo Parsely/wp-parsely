@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\Endpoints\Recommendations_API_Proxy;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;
@@ -98,7 +99,21 @@ function parsely_admin_menu_register(): void {
 }
 
 require __DIR__ . '/src/class-recommended-content.php';
-require __DIR__ . '/src/blocks/recommendations/index.php';
+
+require __DIR__ . '/src/Endpoints/class-recommendations-api-proxy.php';
+function rest_api_init() {
+	$api = new Recommendations_API_Proxy();
+	$api->run();
+}
+add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init' );
+
+require __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';
+function init_recommendations_block() {
+	$recommendations_block = new Recommendations_Block();
+	$recommendations_block->run();
+}
+add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
+
 require __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
