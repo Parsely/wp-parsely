@@ -52,11 +52,15 @@ jobs:
       fail-fast: false
     continue-on-error: ${{ matrix.experimental }}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@14dc64f30986eaa2ad2dddcec073f5aab18e5a24 # v1
+        with:
+          egress-policy: audit
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
 
       - name: Setup PHP ${{ matrix.php }}
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@cf8b3c07b614e754f66e055af0e3498701349be9 # v2
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ matrix.extensions }}
@@ -70,11 +74,11 @@ jobs:
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
       - name: Install Composer dependencies
-        uses: ramsey/composer-install@v2
+        uses: ramsey/composer-install@f680dac46551dffb2234a240d65ae806c2999dd6 # v2
 
       # - name: Install Composer dependencies for PHP >= 8.2
       #  if: ${{ matrix.php >= 8.2 }}
-      #  uses: ramsey/composer-install@v2
+      #  uses: ramsey/composer-install@f680dac46551dffb2234a240d65ae806c2999dd6 # v2
       #  with:
       #    composer-options: --ignore-platform-reqs
 

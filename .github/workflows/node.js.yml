@@ -19,6 +19,8 @@ concurrency:
 
 jobs:
   build:
+    permissions:
+      contents: read # for actions/checkout to fetch code
     runs-on: ubuntu-20.04
 
     strategy:
@@ -26,10 +28,14 @@ jobs:
         node-version: [16.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Harden Runner
+        uses: step-security/harden-runner@14dc64f30986eaa2ad2dddcec073f5aab18e5a24 # v1
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # v2
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm

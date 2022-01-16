@@ -28,7 +28,13 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@14dc64f30986eaa2ad2dddcec073f5aab18e5a24 # v1
         with:
-          egress-policy: audit
+          egress-policy: block
+          allowed-endpoints:
+            artifactcache.actions.githubusercontent.com:443
+            github.com:443
+            kv4gacprodeus2file3.blob.core.windows.net:443
+            objects.githubusercontent.com:443
+            repo.packagist.org:443
       - name: Setup PHP
         uses: shivammathur/setup-php@cf8b3c07b614e754f66e055af0e3498701349be9 # v2
         with:
