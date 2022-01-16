@@ -14,17 +14,25 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
   cancel-in-progress: true
 
+permissions: read-all
+
 jobs:
   test:
+    permissions:
+      contents: read # for actions/checkout to fetch code
     name: e2e against WordPress latest
     runs-on: ubuntu-20.04
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@14dc64f30986eaa2ad2dddcec073f5aab18e5a24 # v1
+        with:
+          egress-policy: audit
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
 
       - name: Use desired version of NodeJS
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@1f8c6b94b26d0feae1e387ca63ccbdc44d27b561 # v2
         with:
           node-version: 16
           cache: npm
