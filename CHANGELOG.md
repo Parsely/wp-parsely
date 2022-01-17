@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.1.0] 2022-01-12
+## [3.1.0] 2022-01-21
 
 The 3.1.0 release is a minor release for the plugin that does not introduce any breaking changes coming from the 3.0 branch. This version's primary focus is adding support for WordPress decoupled architectures and a revamped settings page. We have also worked hard on refining our code, testing, and delivery process.
 
@@ -58,6 +58,12 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide content met
 - PHP 8.2 from CI tests. [#523](https://github.com/Parsely/wp-parsely/pull/523)
 - Custom end-to-end Docker image. [#524] (https://github.com/Parsely/wp-parsely/pull/524)
 
+
+## [3.0.4] - 2022-01-17
+
+### Changed
+
+- Changed plugin loading functions from anonymous to named functions. [#595](https://github.com/Parsely/wp-parsely/pull/595)
 
 ## [3.0.3] - 2022-01-12
 
@@ -494,7 +500,8 @@ If you are using the plugin without any code-level customizations (for instance,
 - Initial version.
 - Add support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
-[3.1.0]: https://github.com/Parsely/wp-parsely/compare/3.0.3...3.1.0
+[3.1.0]: https://github.com/Parsely/wp-parsely/compare/3.0.4...3.1.0
+[3.0.4]: https://github.com/Parsely/wp-parsely/compare/3.0.3...3.0.4
 [3.0.3]: https://github.com/Parsely/wp-parsely/compare/3.0.2...3.0.3
 [3.0.2]: https://github.com/Parsely/wp-parsely/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/Parsely/wp-parsely/compare/3.0.0...3.0.1
