@@ -57,32 +57,6 @@ Default: `true`
 
 Default: `true`
 
-### `saveresults`
-
-Store the results of the API in the `savedresults` block attributes (so visitors will see what showed up in the Editor preview). Incompatible with `personalized` (since that requires the API call to occur on the front end when the visitor browses).
-
-Default: `false`
-
-### `savedresults`
-
-There is currently no UI for this attribute -- it is populated with the validated results of the `/related` API call when the `saveresults` block attribute is true.
-
-Links URLs are passed through [`wp_validate_redirect`](https://developer.wordpress.org/reference/functions/wp_validate_redirect/) in attempt prevent misuse of this feature (e.g. storing spam links in block attributes). If you have a use case to link to external domains that you control or trust, you can permit those domains via the [`allowed_redirect_hosts` filter](https://developer.wordpress.org/reference/hooks/allowed_redirect_hosts/).
-
-Example:
-
-```
-function yourprefix_allowed_redirect_hosts( $hosts ) {
-	return array_merge( (array) $hosts, array(
-		'domaintoallow1.example.com',
-		'domaintoallow2.example.com',
-	) );
-}
-add_filter( 'allowed_redirect_hosts', 'yourprefix_allowed_redirect_hosts' );
-```
-
-Default: `array()`
-
 ### `sort`
 
 Default: `score`

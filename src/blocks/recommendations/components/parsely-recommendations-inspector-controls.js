@@ -12,46 +12,11 @@ import {
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
-import { useEffect } from '@wordpress/element';
-
-/**
- * Internal dependencies
- */
-import { useRecommendationsStore } from '../recommendations-store';
 
 const ParselyRecommendationsInspectorControls = ( {
-	attributes: {
-		boost,
-		imagestyle,
-		layoutstyle,
-		limit,
-		personalized,
-		saveresults,
-		savedresults,
-		showimages,
-		sort,
-		tag,
-		title,
-	},
+	attributes: { boost, imagestyle, layoutstyle, limit, personalized, showimages, sort, tag, title },
 	setAttributes,
 } ) => {
-	const {
-		state: { error, isLoaded, recommendations },
-	} = useRecommendationsStore();
-
-	useEffect( () => {
-		if ( error || ! isLoaded ) {
-			return;
-		}
-		if ( saveresults && typeof recommendations === 'undefined' ) {
-			return;
-		}
-		setAttributes( { savedresults: saveresults ? recommendations : undefined } );
-	}, [ error, isLoaded, recommendations, saveresults ] );
-
-	const hasRecos = ! error && isLoaded && recommendations?.length;
-	const canSaveResults = ! personalized && ( hasRecos || savedresults?.length );
-
 	return (
 		<InspectorControls>
 			<PanelBody title="Settings" initialOpen={ true }>
@@ -67,7 +32,7 @@ const ParselyRecommendationsInspectorControls = ( {
 						label={ __( 'Maximum Results', 'wp-parsely' ) }
 						min="1"
 						max="99"
-						onChange={ ( newval ) => setAttributes( { limit: newval, savedresults: undefined } ) }
+						onChange={ ( newval ) => setAttributes( { limit: newval } ) }
 						value={ limit }
 					/>
 				</PanelRow>
@@ -120,28 +85,14 @@ const ParselyRecommendationsInspectorControls = ( {
 					<ToggleControl
 						label={ __( 'Personalize to Visitor', 'wp-parsely' ) }
 						help={
-							personalized ? __( 'Personalized', 'wp-parsely' ) : __( 'Not Personalized', 'wp-parsely' )
+							personalized
+								? __( 'Personalized', 'wp-parsely' )
+								: __( 'Not Personalized', 'wp-parsely' )
 						}
 						checked={ personalized }
-						onChange={ () =>
-							setAttributes( {
-								personalized: ! personalized,
-								saveresults: false,
-								savedresults: [],
-							} )
-						}
+						onChange={ () => setAttributes( { personalized: ! personalized } ) }
 					/>
 				</PanelRow>
-				{ canSaveResults && (
-					<PanelRow>
-						<ToggleControl
-							label={ __( 'Save Results to block', 'wp-parsely' ) }
-							checked={ saveresults }
-							onChange={ () => setAttributes( { saveresults: ! saveresults } ) }
-						/>
-						{ false }
-					</PanelRow>
-				) }
 				<PanelRow>
 					<TextControl
 						label={ __( 'Tag', 'wp-parsely' ) }

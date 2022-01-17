@@ -96,14 +96,6 @@ class Recommendations_Block {
 						'type'    => 'boolean',
 						'default' => true,
 					),
-					'saveresults'  => array(
-						'type'    => 'boolean',
-						'default' => false,
-					),
-					'savedresults' => array(
-						'type'    => 'array',
-						'default' => array(),
-					),
 					'sort'         => array(
 						'type'    => 'string',
 						'default' => 'score',
@@ -121,38 +113,6 @@ class Recommendations_Block {
 	}
 
 	/**
-	 * Passes saved urls through `wp_validate_redirect`. If they pass, only include supported keys.
-	 * To modify what's allowed, add a filter on `allowed_redirect_hosts`.
-	 *
-	 * @see https://developer.wordpress.org/reference/hooks/allowed_redirect_hosts/
-	 * @see https://developer.wordpress.org/reference/functions/wp_validate_redirect/
-	 * @param array $saved_results The list of link information stored in the `savedresults` block attribute.
-	 * @return array The validated list of link information.
-	 */
-	public static function validate_saved_results( $saved_results ) {
-		if ( ! is_array( $saved_results ) || empty( $saved_results ) ) {
-			return array();
-		}
-
-		return array_filter(
-			array_map(
-				function ( $result ) {
-					if ( ! wp_validate_redirect( $result['url'] ) ) {
-						return false;
-					}
-					return array(
-						'title'            => $result['title'],
-						'url'              => $result['url'],
-						'image_url'        => $result['image_url'],
-						'thumb_url_medium' => $result['thumb_url_medium'],
-					);
-				},
-				$saved_results
-			)
-		);
-	}
-
-	/**
 	 * The Server-side render_callback for the wp-parsely/recommendations block.
 	 *
 	 * @uses wp_validate_redirect If the stored results aren't considered "safe" by this function, they're skipped.
@@ -160,7 +120,6 @@ class Recommendations_Block {
 	 * @return string
 	 */
 	public static function render_callback( $attributes ) {
-		$validated_saved_results = self::validate_saved_results( $attributes['savedresults'] );
 		ob_start();
 		?>
 <section
@@ -173,8 +132,6 @@ class Recommendations_Block {
 	data-imagestyle="<?php echo esc_attr( $attributes['imagestyle'] ); ?>"
 	data-limit="<?php echo esc_attr( $attributes['limit'] ); ?>"
 	data-personalized="<?php echo esc_attr( $attributes['personalized'] ); ?>"
-	data-saveresults="<?php echo esc_attr( $attributes['saveresults'] ); ?>"
-	data-savedresults="<?php echo esc_attr( htmlspecialchars( wp_json_encode( $validated_saved_results ), ENT_QUOTES, 'UTF-8' ) ); ?>"
 	data-showimages="<?php echo esc_attr( $attributes['showimages'] ); ?>"
 	data-sort="<?php echo esc_attr( $attributes['sort'] ); ?>"
 	data-title="<?php echo esc_attr( $attributes['title'] ); ?>"

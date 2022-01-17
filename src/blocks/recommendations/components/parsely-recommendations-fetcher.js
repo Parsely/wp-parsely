@@ -13,7 +13,7 @@ import { setError, setRecommendations } from '../actions';
 import { fetchRelated } from '../../../js/lib/parsely-api';
 import { useRecommendationsStore } from '../recommendations-store';
 
-const ParselyRecommendationsFetcher = ( { boost, limit, personalized, saveresults, sort } ) => {
+const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) => {
 	const {
 		state: { error, isLoaded, uuid },
 		dispatch,
@@ -38,7 +38,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, saveresult
 	}
 
 	async function fetchRecos() {
-		if ( saveresults && ! isLoaded ) {
+		if ( isLoaded ) {
 			return;
 		}
 
@@ -50,6 +50,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, saveresult
 				response = await fetchRecosFromWpApi();
 			} catch ( wpError ) {
 				dispatch( setError( { error: wpError } ) );
+				return;
 			}
 		}
 
@@ -57,7 +58,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, saveresult
 		dispatch( setRecommendations( { recommendations: data } ) );
 	}
 
-	const apiMemoProps = [ ...Object.values( apiQueryArgs ), error, saveresults ];
+	const apiMemoProps = [ ...Object.values( apiQueryArgs ), error ];
 
 	const updateRecosWhenPropsChange = useCallback( fetchRecos, apiMemoProps );
 
@@ -68,7 +69,6 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, saveresult
 	 * - On component mount
 	 * - When an attribute changes that affects the API call.
 	 *   (This happens in the Editor context when someone changes a setting.)
-	 * - When the `saveresults` attribute changes.
 	 */
 	useEffect( debouncedUpdate, apiMemoProps );
 
