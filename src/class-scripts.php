@@ -44,6 +44,7 @@ class Scripts {
 		add_action( 'init', array( $this, 'register_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_api' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_tracker' ) );
+		add_action( 'web_stories_print_analytics', array( $this, 'enqueue_web_stories_tracker' ) );
 	}
 
 	/**
@@ -204,5 +205,26 @@ class Scripts {
 			);
 		}
 		return $tag;
+	}
+
+	/**
+	 * Load additional Javascript for Google's Web Stories WordPress plugin.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @return void
+	 */
+	public function enqueue_web_stories_tracker(): void {
+		?>
+		<amp-analytics type="parsely">
+			<script type="application/json">
+				{
+					"vars": {
+						"apikey": <?php echo esc_js( $this->parsely->get_api_key() ); ?>
+					}
+				}
+			</script>
+		</amp-analytics>
+		<?php
 	}
 }
