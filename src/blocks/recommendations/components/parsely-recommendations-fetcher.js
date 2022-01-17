@@ -15,7 +15,7 @@ import { useRecommendationsStore } from '../recommendations-store';
 
 const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) => {
 	const {
-		state: { error, isLoaded, uuid },
+		state: { error, uuid },
 		dispatch,
 	} = useRecommendationsStore();
 
@@ -38,10 +38,6 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) =
 	}
 
 	async function fetchRecos() {
-		if ( isLoaded ) {
-			return;
-		}
-
 		let response;
 		try {
 			response = await fetchRelated( apiQueryArgs );
