@@ -402,4 +402,18 @@ final class ScriptsTest extends TestCase {
 			);
 		}
 	}
+
+	public function test_web_stories_script_is_enqueued(): void {
+		self::assertTrue(true);
+	}
+
+	public function test_render_amp_analytics_tracker(): void {
+		ob_start();
+		$this::$scripts->render_amp_analytics_tracker();
+		$output = ob_get_clean();
+
+		$expected = '';
+
+		self::assertSame( $expected, $output );
+	}
 }

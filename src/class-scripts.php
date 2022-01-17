@@ -44,7 +44,7 @@ class Scripts {
 		add_action( 'init', array( $this, 'register_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_api' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_tracker' ) );
-		add_action( 'web_stories_print_analytics', array( $this, 'enqueue_web_stories_tracker' ) );
+		add_action( 'web_stories_print_analytics', array( $this, 'render_amp_analytics_tracker' ) );
 	}
 
 	/**
@@ -208,13 +208,14 @@ class Scripts {
 	}
 
 	/**
-	 * Load additional Javascript for Google's Web Stories WordPress plugin.
+	 * Load additional Javascript for Google's Web Stories WordPress plugin. This relies on the `amp-analytics` tag.
+	 * See more at: https://www.parse.ly/help/integration/google-amp.
 	 *
 	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
-	public function enqueue_web_stories_tracker(): void {
+	public function render_amp_analytics_tracker(): void {
 		?>
 		<amp-analytics type="parsely">
 			<script type="application/json">
