@@ -220,7 +220,7 @@ class Scripts {
 			<script type="application/json">
 				{
 					"vars": {
-						"apikey": <?php echo esc_js( $this->parsely->get_api_key() ); ?>
+						"apikey": "<?php echo esc_js( $this->parsely->get_api_key() ); ?>"
 					}
 				}
 			</script>
