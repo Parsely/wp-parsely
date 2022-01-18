@@ -47,7 +47,8 @@ final class Recommendations_API_Proxy {
 	 * @return boolean
 	 */
 	public static function permission_callback() {
-		return current_user_can( 'read' );
+		// Unauthenticated.
+		return true;
 	}
 
 	/**
