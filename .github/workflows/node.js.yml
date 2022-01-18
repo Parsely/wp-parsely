@@ -11,9 +11,15 @@ on:
       - '**/*[tj]sx?'
       - package*.json
 
+# Cancels all previous workflow runs for the same branch that have not yet completed.
+concurrency:
+  # The concurrency group contains the workflow name and the branch name.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
@@ -30,6 +36,15 @@ jobs:
 
       - name: Install JavaScript dependencies
         run: npm ci
+
+      - name: Lint CSS code
+        run: npm run lint:css
+
+      - name: Lint package.json file
+        run: npm run lint:pkg-json
+
+      - name: Lint JS code
+        run: npm run lint:js
 
       - name: Build application
         run: npm run build

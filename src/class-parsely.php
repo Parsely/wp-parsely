@@ -193,7 +193,7 @@ class Parsely {
 			return;
 		}
 
-		echo "\n" . '<!-- BEGIN Parse.ly ' . esc_html( self::VERSION ) . ' -->' . "\n";
+		echo PHP_EOL;
 
 		// Insert JSON-LD or repeated metas.
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
@@ -230,7 +230,7 @@ class Parsely {
 			include plugin_dir_path( PARSELY_FILE ) . 'views/custom-metadata.php';
 		}
 
-		echo '<!-- END Parse.ly -->' . "\n\n";
+		echo PHP_EOL;
 	}
 
 	/**
@@ -423,7 +423,7 @@ class Parsely {
 			$supported_types = array_merge( $this->supported_jsonld_post_types, $this->supported_jsonld_non_post_types );
 
 			// Validate type before passing it further as an invalid type will not be recognized by Parse.ly.
-			if ( ! in_array( $type, $supported_types ) ) {
+			if ( ! in_array( $type, $supported_types, true ) ) {
 				$error = sprintf(
 					/* translators: 1: JSON @type like NewsArticle, 2: URL */
 					__( '@type %1$s is not supported by Parse.ly. Please use a type mentioned in %2$s', 'wp-parsely' ),
@@ -1033,7 +1033,7 @@ class Parsely {
 	 * @return string "post" or "index".
 	 */
 	public function convert_jsonld_to_parsely_type( string $type ): string {
-		return in_array( $type, $this->supported_jsonld_post_types ) ? 'post' : 'index';
+		return in_array( $type, $this->supported_jsonld_post_types, true ) ? 'post' : 'index';
 	}
 
 	/**
