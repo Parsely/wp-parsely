@@ -10,12 +10,11 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { setError, setRecommendations } from '../actions';
-import { fetchRelated } from '../../../js/lib/parsely-api';
 import { useRecommendationsStore } from '../recommendations-store';
 
-const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) => {
+const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 	const {
-		state: { error, uuid },
+		state: { error },
 		dispatch,
 	} = useRecommendationsStore();
 
@@ -25,11 +24,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) =
 		sort,
 	};
 
-	if ( personalized && uuid ) {
-		apiQueryArgs.uuid = uuid;
-	} else {
-		apiQueryArgs.url = window.location.href;
-	}
+	apiQueryArgs.url = window.location.href;
 
 	async function fetchRecosFromWpApi() {
 		return apiFetch( {
@@ -40,14 +35,10 @@ const ParselyRecommendationsFetcher = ( { boost, limit, personalized, sort } ) =
 	async function fetchRecos() {
 		let response;
 		try {
-			response = await fetchRelated( apiQueryArgs );
-		} catch ( parselyError ) {
-			try {
-				response = await fetchRecosFromWpApi();
-			} catch ( wpError ) {
-				dispatch( setError( { error: wpError } ) );
-				return;
-			}
+			response = await fetchRecosFromWpApi();
+		} catch ( wpError ) {
+			dispatch( setError( { error: wpError } ) );
+			return;
 		}
 
 		const data = response?.data || [];

@@ -11,6 +11,8 @@ use Parsely\Recommended_Content;
 use WP_REST_Server;
 use WP_REST_Request;
 
+const VISITOR_COOKIE_KEY_NAME = '_parsely_visitor';
+
 /**
  * A "namespace" class with functions that power REST API endpoints for use by the Recommendations Block and other consumers.
  */
@@ -60,7 +62,22 @@ final class Recommendations_API_Proxy {
 		$apikey  = $options['apikey'];
 		$params  = $request->get_params();
 
-		$cache_key = 'api_recos-' . md5( wp_json_encode( compact( 'apikey', 'params' ) ) );
+		$url = $params['url'] ?? '';
+
+		if ( $url && ! wp_http_validate_url( $url ) ) {
+			wp_send_json_error( 'The `url` is invalid.', 400 );
+		}
+
+		$uuid = '';
+		$visitor_cookie = $_COOKIE[ VISITOR_COOKIE_KEY_NAME ] ?? '';
+		if ( strlen( $visitor_cookie ) ) {
+			$visitor_cookie = wp_unslash( $visitor_cookie );
+			$visitor_cookie = json_decode( $visitor_cookie );
+			$uuid_cookie = $visitor_cookie->id ?? '';
+			list( $_, $uuid ) = explode( 'pid=', $uuid_cookie );
+		}
+
+		$cache_key = 'api_recos-' . md5( wp_json_encode( compact( 'apikey', 'params', 'uuid' ) ) );
 		$cached    = wp_cache_get( $cache_key, 'wp-parsely' );
 		if ( is_array( $cached ) ) {
 			return array(
@@ -71,7 +88,8 @@ final class Recommendations_API_Proxy {
 
 		$links = self::fetch_related_links(
 			$apikey,
-			$params['url'],
+			$url,
+			$uuid,
 			$params['pub_date_start'] ?? 0,
 			$params['sort'] ?? 'score',
 			$params['limit'] ?? 5,
@@ -106,6 +124,7 @@ final class Recommendations_API_Proxy {
 	 *
 	 * @param string  $apikey The Parsely API key.
 	 * @param string  $url The current URL to get related content.
+	 * @param string  $uuid The identifier for use in personalizing results to the visitor.
 	 * @param integer $pub_start Publication filter start date (`pub_date_start`).
 	 * @param string  $sort_recs What to sort the results by (`sort`).
 	 * @param integer $limit Number of records to retrieve.
@@ -114,11 +133,24 @@ final class Recommendations_API_Proxy {
 	 * @see https://www.parse.ly/help/api/recommendations#get-related
 	 * @return array
 	 */
-	public static function fetch_related_links( string $apikey, string $url, int $pub_start, string $sort_recs, int $limit, string $boost ) {
+	public static function fetch_related_links(
+		string $apikey,
+		string $url,
+		string $uuid,
+		int $pub_start,
+		string $sort_recs,
+		int $limit,
+		string $boost
+	) {
+		$query_args = array();
+		if ( strlen( $uuid ) ) {
+			$query_args['uuid'] = $uuid;
+		} else {
+			$query_args['url'] = $url;
+		}
+
 		$full_api_url = add_query_arg(
-			array(
-				'url' => rawurlencode( $url ),
-			),
+			$query_args,
 			Recommended_Content::get_api_url(
 				$apikey,
 				$pub_start,
