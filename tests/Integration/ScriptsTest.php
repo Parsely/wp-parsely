@@ -404,6 +404,22 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
+	 * Test if the web stories analytics got enqueued.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @covers \Parsely\Scripts::run()
+	 * @group scripts
+	 */
+	public function test_web_stories_script_is_enqueued(): void {
+		self::$scripts->run();
+		self::assertSame(
+			10,
+			has_action( 'web_stories_print_analytics', array( self::$scripts, 'render_amp_analytics_tracker' ) )
+		);
+	}
+
+	/**
 	 * Test if the AMP tracker render outputs the correct script.
 	 *
 	 * @since 3.2.0
