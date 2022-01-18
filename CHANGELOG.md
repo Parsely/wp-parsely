@@ -25,6 +25,7 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide content met
 - Concurrency to CI configuration and Composer tweaks. [#559](https://github.com/Parsely/wp-parsely/pull/559)
 - Explicit dependabot reviewers on GitHub. [#526](https://github.com/Parsely/wp-parsely/pull/526)
 - WordPress.org banner images. [#581](https://github.com/Parsely/wp-parsely/pull/581)
+- PHPStan static analysis tool. [#590](https://github.com/Parsely/wp-parsely/pull/590)
 
 ### Changed
 
