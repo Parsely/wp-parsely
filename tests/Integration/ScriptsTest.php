@@ -367,7 +367,7 @@ final class ScriptsTest extends TestCase {
 		$output = ob_get_clean();
 
 		self::assertSame(
-			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
+		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Tracker script tag was not printed correctly'
@@ -403,16 +403,32 @@ final class ScriptsTest extends TestCase {
 		}
 	}
 
-	public function test_web_stories_script_is_enqueued(): void {
-		self::assertTrue(true);
-	}
-
+	/**
+	 * Test if the AMP tracker render outputs the correct script.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @covers \Parsely\Scripts::render_amp_analytics_tracker
+	 * @group scripts
+	 */
 	public function test_render_amp_analytics_tracker(): void {
 		ob_start();
 		$this::$scripts->render_amp_analytics_tracker();
 		$output = ob_get_clean();
+		$output = str_replace( array( "\r", "\n" ), '', $output );
 
-		$expected = '';
+		$expected = '
+		<amp-analytics type="parsely">
+			<script type="application/json">
+				{
+					"vars": {
+						"apikey": "blog.parsely.com"
+					}
+				}
+			</script>
+		</amp-analytics>
+		';
+		$expected = str_replace( array( "\r", "\n" ), '', $expected );
 
 		self::assertSame( $expected, $output );
 	}
