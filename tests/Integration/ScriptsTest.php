@@ -367,7 +367,7 @@ final class ScriptsTest extends TestCase {
 		$output = ob_get_clean();
 
 		self::assertSame(
-		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
+			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
 			$output,
 			'Tracker script tag was not printed correctly'
