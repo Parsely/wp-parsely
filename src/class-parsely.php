@@ -730,7 +730,7 @@ class Parsely {
 				$term_name = $this->get_bottom_level_term( $post_obj->ID, $parsely_options['custom_taxonomy_section'] );
 			}
 
-			if ( $term_name ) {
+			if ( $term_name !== false ) {
 				$category = $term_name;
 			}
 		}
@@ -771,12 +771,17 @@ class Parsely {
 	 *
 	 * @param int    $post_id The post id you're interested in.
 	 * @param string $taxonomy_name The name of the taxonomy.
-	 * @return string Name of the custom taxonomy.
+	 * @return string|false Name of the custom taxonomy.
 	 */
-	private function get_bottom_level_term( int $post_id, string $taxonomy_name ): string {
+	private function get_bottom_level_term( int $post_id, string $taxonomy_name ) {
 		$terms    = get_the_terms( $post_id, $taxonomy_name );
-		$term_ids = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
-		$parents  = is_array( $terms ) ? array_filter( wp_list_pluck( $terms, 'parent' ) ) : array();
+
+		if ( ! is_array( $terms ) ) {
+			return false;
+		}
+
+		$term_ids = wp_list_pluck( $terms, 'term_id' );
+		$parents  = array_filter( wp_list_pluck( $terms, 'parent' ) );
 
 		// Get array of IDs of terms which are not parents.
 		$term_ids_not_parents = array_diff( $term_ids, $parents );
