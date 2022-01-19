@@ -9,9 +9,6 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
-// Explicit require as the `Rest` class could not be found in some environments.
-require_once __DIR__ . '/../../src/class-rest.php';
-
 use Parsely\Parsely;
 use Parsely\Rest;
 
