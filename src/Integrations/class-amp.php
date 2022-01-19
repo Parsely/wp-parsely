@@ -80,7 +80,7 @@ class Amp implements Integration {
 	 * @return array The analytics registry.
 	 */
 	public function register_parsely_for_amp_analytics( ?array $analytics ): array {
-		if ( $analytics === null ) {
+		if ( null === $analytics ) {
 			$analytics = array();
 		}
 
@@ -112,7 +112,7 @@ class Amp implements Integration {
 	 * @return array The analytics registry.
 	 */
 	public function register_parsely_for_amp_native_analytics( ?array $analytics ): array {
-		if ( $analytics === null ) {
+		if ( null === $analytics ) {
 			$analytics = array();
 		}
 

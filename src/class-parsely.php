@@ -959,7 +959,7 @@ class Parsely {
 	 * @return string
 	 */
 	public function get_clean_parsely_page_value( ?string $val ): string {
-		if ( $val === null ) {
+		if ( null === $val ) {
 			return '';
 		}
 
