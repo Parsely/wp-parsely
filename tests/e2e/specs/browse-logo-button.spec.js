@@ -88,6 +88,7 @@ describe( 'Browse for logo button', () => {
 
 		// Verify that that the image path has been updated.
 		const filePath = await page.$eval( filePathInput, ( input ) => input.value );
+		await page.waitFor( 1000 );
 		expect( filePath ).toMatch( uploadedImagePattern );
 	} );
 
@@ -101,6 +102,7 @@ describe( 'Browse for logo button', () => {
 
 		// Verify that that the image path has been updated.
 		const filePath = await page.$eval( filePathInput, ( input ) => input.value );
+		await page.waitFor( 1000 );
 		expect( filePath ).toMatch( uploadedImagePattern );
 	} );
 
@@ -114,6 +116,7 @@ describe( 'Browse for logo button', () => {
 
 		// Verify that the image path is empty.
 		const filePath = await page.$eval( filePathInput, ( input ) => input.value );
+		await page.waitFor( 1000 );
 		expect( filePath ).toMatch( '' );
 	} );
 } );
