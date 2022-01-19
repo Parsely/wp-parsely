@@ -21,7 +21,7 @@ final class OtherTest extends TestCase {
 	 *
 	 * @var string $parsely Holds the Parsely object.
 	 */
-	protected static $parsely;
+	private static $parsely;
 
 	/**
 	 * The setUp run before each test
