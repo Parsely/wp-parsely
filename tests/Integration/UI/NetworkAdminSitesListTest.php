@@ -15,7 +15,7 @@ require_once __DIR__ . '/../../../src/UI/class-network-admin-sites-list.php';
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Network_Admin_Sites_List;
-use \WP_Site;
+use WP_Site;
 
 /**
  * UI Tests for the Network Admin Sites List.
