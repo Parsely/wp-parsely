@@ -61,6 +61,9 @@ final class NetworkAdminSitesListTest extends TestCase {
 	 * @return void
 	 */
 	public function test_api_key_column_is_present(): void {
+		$columns = $this->table->get_columns();
+		self::assertArrayNotHasKey( 'parsely-api-key', $columns );
+
 		self::$sites_list->run();
 		$columns = $this->table->get_columns();
 
