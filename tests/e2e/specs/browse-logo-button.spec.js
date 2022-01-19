@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import resolve from 'path';
 import {
 	activatePlugin,
 	loginUser,
@@ -18,7 +17,7 @@ import { waitForWpAdmin } from '../utils';
  */
 describe( 'Browse for logo button', () => {
 	// General initializations.
-	const imageLocalPath = resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
+	const imageLocalPath = require( 'path' ).resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
 	const uploadedImagePattern = /\/wp-content\/uploads\/\d{4}\/\d{2}\/icon-256x256-?\d*\.png$/;
 	const filePathInput = '#media-single-image-logo input.file-path';
 	const modalAttachment = 'li.attachment'; // Used in both modals.
@@ -85,43 +84,40 @@ describe( 'Browse for logo button', () => {
 		// Upload an image file and confirm the dialog.
 		const fileInput = await page.$( modalFileUploadInput );
 		await fileInput.uploadFile( imageLocalPath );
-
 		await page.waitFor( 100 );
-
 		await page.click( modalConfirmButton );
 
-		await page.waitFor( 100 );
-
 		// Verify that the image path has been updated.
+		await page.waitFor( 100 );
 		const filePath = await page.evaluate( ( element ) => element.value, await page.$( filePathInput ) );
 		expect( filePath ).toMatch( uploadedImagePattern );
 	} );
 
-	// /**
-	//  * Test: Click the Browse button, select an existing image and confirm.
-	//  */
-	// it( 'Should set the file path when an existing image is selected and confirmed', async () => {
-	// 	// Select the existing and confirm the dialog.
-	// 	await page.click( modalAttachment );
-	// 	await page.click( modalConfirmButton );
+	/**
+	 * Test: Click the Browse button, select an existing image and confirm.
+	 */
+	it( 'Should set the file path when an existing image is selected and confirmed', async () => {
+		// Select the existing and confirm the dialog.
+		await page.click( modalAttachment );
+		await page.click( modalConfirmButton );
 
-	// 	// Verify that that the image path has been updated.
-	// 	await page.waitFor( 1000 );
-	// 	const filePath = await page.$eval( filePathInput, ( input ) => input.value );
-	// 	expect( filePath ).toMatch( uploadedImagePattern );
-	// } );
+		// Verify that that the image path has been updated.
+		await page.waitFor( 100 );
+		const filePath = await page.$eval( filePathInput, ( input ) => input.value );
+		expect( filePath ).toMatch( uploadedImagePattern );
+	} );
 
-	// /**
-	//  * Test: Click the Brows button, select an existing image and dismiss the modal.
-	//  */
-	// it( 'Should not set the file path when dismissing the modal', async () => {
-	// 	// Select the existing image but cancel the dialog.
-	// 	await page.click( modalAttachment );
-	// 	await page.keyboard.press( 'Escape' );
+	/**
+	 * Test: Click the Brows button, select an existing image and dismiss the modal.
+	 */
+	it( 'Should not set the file path when dismissing the modal', async () => {
+		// Select the existing image but cancel the dialog.
+		await page.click( modalAttachment );
+		await page.keyboard.press( 'Escape' );
 
-	// 	// Verify that the image path is empty.
-	// 	await page.waitFor( 1000 );
-	// 	const filePath = await page.$eval( filePathInput, ( input ) => input.value );
-	// 	expect( filePath ).toMatch( '' );
-	// } );
+		// Verify that the image path is empty.
+		await page.waitFor( 100 );
+		const filePath = await page.$eval( filePathInput, ( input ) => input.value );
+		expect( filePath ).toMatch( '' );
+	} );
 } );
