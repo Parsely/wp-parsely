@@ -49,10 +49,6 @@ Default: `grid`
 
 Default: `3`
 
-### `personalized`
-
-Default: `true`
-
 ### `showimages`
 
 Default: `true`

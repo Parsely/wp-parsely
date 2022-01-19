@@ -88,10 +88,6 @@ class Recommendations_Block {
 						'type'    => 'number',
 						'default' => 3,
 					),
-					'personalized' => array(
-						'type'    => 'boolean',
-						'default' => true,
-					),
 					'showimages'   => array(
 						'type'    => 'boolean',
 						'default' => true,
@@ -131,7 +127,6 @@ class Recommendations_Block {
 	data-layoutstyle="<?php echo esc_attr( $attributes['layoutstyle'] ); ?>"
 	data-imagestyle="<?php echo esc_attr( $attributes['imagestyle'] ); ?>"
 	data-limit="<?php echo esc_attr( $attributes['limit'] ); ?>"
-	data-personalized="<?php echo esc_attr( $attributes['personalized'] ); ?>"
 	data-showimages="<?php echo esc_attr( $attributes['showimages'] ); ?>"
 	data-sort="<?php echo esc_attr( $attributes['sort'] ); ?>"
 	data-title="<?php echo esc_attr( $attributes['title'] ); ?>"

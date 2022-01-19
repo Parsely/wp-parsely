@@ -14,7 +14,7 @@ import {
 } from '@wordpress/components';
 
 const ParselyRecommendationsInspectorControls = ( {
-	attributes: { boost, imagestyle, layoutstyle, limit, personalized, showimages, sort, tag, title },
+	attributes: { boost, imagestyle, layoutstyle, limit, showimages, sort, tag, title },
 	setAttributes,
 } ) => {
 	return (
@@ -79,18 +79,6 @@ const ParselyRecommendationsInspectorControls = ( {
 								layoutstyle: newval === 'list' ? 'list' : 'grid',
 							} )
 						}
-					/>
-				</PanelRow>
-				<PanelRow>
-					<ToggleControl
-						label={ __( 'Personalize to Visitor', 'wp-parsely' ) }
-						help={
-							personalized
-								? __( 'Personalized', 'wp-parsely' )
-								: __( 'Not Personalized', 'wp-parsely' )
-						}
-						checked={ personalized }
-						onChange={ () => setAttributes( { personalized: ! personalized } ) }
 					/>
 				</PanelRow>
 				<PanelRow>
