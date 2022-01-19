@@ -105,13 +105,17 @@ function parsely_admin_menu_register(): void {
 }
 
 require __DIR__ . '/src/UI/class-network-admin-sites-list.php';
-add_action(
-	'admin_init',
-	function(): void {
-		$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
-		$network_admin_sites_list->run();
-	}
-);
+
+add_action( 'admin_init', __NAMESPACE__ . '\\admin_init_network_sites_list' );
+/**
+ * Register the additions the Multisite Network Admin Sites List table.
+ *
+ * @return void
+ */
+function admin_init_network_sites_list(): void {
+	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
+	$network_admin_sites_list->run();
+}
 
 require __DIR__ . '/src/UI/class-recommended-widget.php';
 
