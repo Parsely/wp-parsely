@@ -12,26 +12,26 @@ import {
  */
 import { waitForWpAdmin } from '../utils';
 
+// General initializations.
+const imageLocalPath = require( 'path' ).resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
+const uploadedImagePattern = /\/wp-content\/uploads\/\d{4}\/\d{2}\/icon-256x256-?\d*\.png$/;
+const filePathInput = '#media-single-image-logo input.file-path';
+const modalAttachment = 'li.attachment'; // Used in both modals.
+
+// Media library modal selectors.
+const modalMediaLibrary = 'div.media-modal-content';
+const modalSelectFilesButton = '#media-single-image-logo button.browse';
+const modalConfirmButton = `${ modalMediaLibrary } button.media-button-select`;
+const modalFileUploadInput = `${ modalMediaLibrary } input[type=file]`;
+
+// Edit attachment modal selectors.
+const modalEditAttachment = 'div.media-modal div.edit-attachment-frame';
+const modalDeleteAttachmentLink = `${ modalEditAttachment } button.delete-attachment`;
+
 /**
  * Browse button tests
  */
 describe( 'Browse for logo button', () => {
-	// General initializations.
-	const imageLocalPath = require( 'path' ).resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
-	const uploadedImagePattern = /\/wp-content\/uploads\/\d{4}\/\d{2}\/icon-256x256-?\d*\.png$/;
-	const filePathInput = '#media-single-image-logo input.file-path';
-	const modalAttachment = 'li.attachment'; // Used in both modals.
-
-	// Media library modal selectors.
-	const modalMediaLibrary = 'div.media-modal-content';
-	const modalSelectFilesButton = '#media-single-image-logo button.browse';
-	const modalConfirmButton = `${ modalMediaLibrary } button.media-button-select`;
-	const modalFileUploadInput = `${ modalMediaLibrary } input[type=file]`;
-
-	// Edit attachment modal selectors.
-	const modalEditAttachment = 'div.media-modal div.edit-attachment-frame';
-	const modalDeleteAttachmentLink = `${ modalEditAttachment } button.delete-attachment`;
-
 	/**
 	 * Before all tests, login and activate the Parse.ly plugin.
 	 */
