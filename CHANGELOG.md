@@ -160,19 +160,19 @@ If you are using the plugin without any code-level customizations (for instance,
 ### Removed
 
 - Previously deprecated filter `after_set_parsely_page`. [#436](https://github.com/Parsely/wp-parsely/pull/436)
-	- Use `wp_parsely_metadata` instead.
+- Use `wp_parsely_metadata` instead.
 - Previously deprecated filter `parsely_filter_insert_javascript`. [#437](https://github.com/Parsely/wp-parsely/pull/437)
-	- Use `wp_parsely_load_js_tracker` instead.
+- Use `wp_parsely_load_js_tracker` instead.
 - `post_has_viewable_type` function. [#417](https://github.com/Parsely/wp-parsely/pull/417)
-	- Use `is_post_viewable` instead. The `post_has_viewable_type` function was only added to support older versions of WordPress.
+- Use `is_post_viewable` instead. The `post_has_viewable_type` function was only added to support older versions of WordPress.
 - Custom Parse.ly load text domain. [#457](https://github.com/Parsely/wp-parsely/pull/457)
-	- Since the plugin now supports versions of WordPress that load custom text domains automatically, the plugins doesn't have to explicitly load the text domain itself.
+- Since the plugin now supports versions of WordPress that load custom text domains automatically, the plugins doesn't have to explicitly load the text domain itself.
 - Empty functions for admin settings. [#456](https://github.com/Parsely/wp-parsely/pull/456)
-	- The callbacks were never utilised.
+- The callbacks were never utilised.
 - Redundant code coverage annotations. [#469](https://github.com/Parsely/wp-parsely/pull/469)
 - Old init Python script. [#441](https://github.com/Parsely/wp-parsely/pull/441)
 - "Add admin warning for minimum requirements in 3.0" notice. [#424](https://github.com/Parsely/wp-parsely/pull/424)
-	- This was only added in the previous version of the plugin.
+- This was only added in the previous version of the plugin.
 - Upgrade README notice. [#470](https://github.com/Parsely/wp-parsely/pull/470)
 
 ## [2.6.1] - 2021-10-15
