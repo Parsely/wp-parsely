@@ -48,7 +48,7 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide content met
 
 ### Fixed
 
-- Minor TypeErrors for WordPress VIP customers. [#607](https://github.com/Parsely/wp-parsely/pull/607)
+- Incorrect type errors. [#607](https://github.com/Parsely/wp-parsely/pull/607)
 - Undefined index error on settings page. [#536](https://github.com/Parsely/wp-parsely/pull/536)
 - Source the correct asset for the Recommendations Widget. [#545](https://github.com/Parsely/wp-parsely/pull/545)
 - End-to-end tests in CI (GitHub Actions). [#521](https://github.com/Parsely/wp-parsely/pull/521)
