@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 The 3.1.0 release is a minor release for the plugin that does not introduce any breaking changes coming from the 3.0 branch. This version's primary focus is adding support for WordPress decoupled architectures and a revamped settings page. We have also worked hard on refining our code, testing, and delivery process.
 
-The Parse.ly plugin now hooks into the WordPress REST API to provide content metadata in a format that's easy for a variety of client applications to consume. A `parsely` field containing the metadata is now rendered in the tracked objects (e.g., `post` and `page`). No new endpoint is introduced. This behavior can be disabled using a filter. Please, refer to the plugin's README file for more details. Note that the tracking script must still be inserted manually in the decoupled front-end or otherwise loaded for your site.
+The Parse.ly plugin now hooks into the WordPress REST API to provide content metadata in a format that's easy for a variety of client applications to consume. A `parsely` field containing the metadata is now rendered in the tracked objects (e.g., `post` and `page`). No new endpoint is introduced. This behavior can be disabled using a filter. Please refer to the plugin's README file for more details. Note that the tracking script must still be inserted manually in the decoupled front-end or otherwise loaded for your site.
 
 ### Added
 
