@@ -502,6 +502,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - Initial version.
 - Add support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
+[3.1.0]: https://github.com/Parsely/wp-parsely/compare/3.0.4...3.1.0
 [3.0.4]: https://github.com/Parsely/wp-parsely/compare/3.0.3...3.0.4
 [3.0.3]: https://github.com/Parsely/wp-parsely/compare/3.0.2...3.0.3
 [3.0.2]: https://github.com/Parsely/wp-parsely/compare/3.0.1...3.0.2
