@@ -10,6 +10,9 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\UI\Recommended_Widget;
+use Parsely\Recommended_Content;
+
+require_once __DIR__ . '/../../src/class-recommended-content.php';
 
 /**
  * Recommended Widget tests.
@@ -61,7 +64,7 @@ final class RecommendedApiTest extends TestCase {
 	 * Test the basic generation of the API URL.
 	 *
 	 * @dataProvider data_recommended_api_url
-	 * @covers \Parsely\UI\Recommended_Widget::get_api_url
+	 * @covers \Parsely\Recommended_Content::get_api_url
 	 *
 	 * @param string $api_key          Publisher Site ID (API key).
 	 * @param int    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
@@ -73,14 +76,8 @@ final class RecommendedApiTest extends TestCase {
 	 *                                 received high e.g. views; default is undefined.
 	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
 	 * @param string $url              Expected generated URL.
-	 * @uses \Parsely\UI\Recommended_Widget::__construct
-	 * @group widgets
 	 */
 	public function test_recommended_api_url( string $api_key, int $published_within, string $sort, string $boost, int $return_limit, string $url ): void {
-		$recommended_widget = new Recommended_Widget();
-		$get_api_url        = self::getMethod( 'get_api_url', Recommended_Widget::class );
-		$response           = $get_api_url->invoke( $recommended_widget, $api_key, $published_within, $sort, $boost, $return_limit );
-
-		self::assertEquals( $url, $response );
+		self::assertEquals( $url, Recommended_Content::get_api_url( $api_key, $published_within, $sort, $boost, $return_limit ) );
 	}
 }
