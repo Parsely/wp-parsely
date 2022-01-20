@@ -531,34 +531,6 @@ class Parsely {
 	}
 
 	/**
-	 * Sets all metadata values related to post time.
-	 *
-	 * @since 3.0.2
-	 *
-	 * @param array   $metadata Array containing all metadata. It will be potentially mutated to add keys: dateCreated, dateModified, & datePublished.
-	 * @param WP_Post $post     Post object from which to extract time data.
-	 * @return void
-	 */
-	private function set_metadata_post_times( array &$metadata, WP_Post $post ): void {
-		$date_format      = 'Y-m-d\TH:i:s\Z';
-		$post_created_gmt = get_post_time( $date_format, true, $post );
-
-		if ( false === $post_created_gmt ) {
-			return;
-		}
-
-		$metadata['dateCreated']   = $post_created_gmt;
-		$metadata['datePublished'] = $post_created_gmt;
-		$metadata['dateModified']  = $post_created_gmt;
-
-		$post_modified_gmt = get_post_modified_time( $date_format, true, $post );
-
-		if ( false !== $post_modified_gmt && $post_modified_gmt > $post_created_gmt ) {
-			$metadata['dateModified'] = $post_modified_gmt;
-		}
-	}
-
-	/**
 	 * Updates the Parsely metadata endpoint with the new metadata of the post.
 	 *
 	 * @param int $post_id id of the post to update.
