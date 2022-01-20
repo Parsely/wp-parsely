@@ -46,13 +46,9 @@ describe( 'Browse for logo button', () => {
 	afterAll( async () => {
 	// Go to Media Library and select the image.
 		await visitAdminPage( '/upload.php' );
-		await page.waitForSelector( modalAttachment, {
-			visible: true,
-		} );
+		await page.waitForSelector( modalAttachment, { visible: true } );
 		await page.click( modalAttachment );
-		await page.waitForSelector( modalEditAttachment, {
-			visible: true,
-		} );
+		await page.waitForSelector( modalEditAttachment, { visible: true } );
 
 		// Confirm image deletion.
 		// Note: Dialog handling must be placed before the click event.
@@ -72,9 +68,7 @@ describe( 'Browse for logo button', () => {
 
 		// Click browse button and wait for Media Library to appear.
 		await page.click( modalSelectFilesButton );
-		await page.waitForSelector( modalMediaLibrary, {
-			visible: true,
-		} );
+		await page.waitForSelector( modalMediaLibrary, { visible: true } );
 	} );
 
 	/**
