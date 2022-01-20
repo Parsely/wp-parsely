@@ -29,6 +29,7 @@ namespace Parsely;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Integrations;
+use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Recommended_Widget;
@@ -45,6 +46,8 @@ const PARSELY_FILE    = __FILE__;
 require __DIR__ . '/src/class-parsely.php';
 require __DIR__ . '/src/class-rest.php';
 require __DIR__ . '/src/class-scripts.php';
+require __DIR__ . '/src/class-dashboard-link.php';
+require __DIR__ . '/src/UI/class-admin-bar.php';
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
@@ -61,6 +64,9 @@ function parsely_initialize_plugin(): void {
 
 	$scripts = new Scripts( $GLOBALS['parsely'] );
 	$scripts->run();
+
+	$admin_bar = new Admin_Bar( $GLOBALS['parsely'] );
+	$admin_bar->run();
 }
 
 require __DIR__ . '/src/UI/class-admin-warning.php';

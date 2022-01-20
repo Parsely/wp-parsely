@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
+use Parsely\Dashboard_Link;
 use WP_Post;
 
 /**
@@ -72,27 +73,13 @@ final class Row_Actions {
 	 * @return array<string, string> The amended list of actions.
 	 */
 	public function row_actions_add_parsely_link( array $actions, WP_Post $post ): array {
-		if ( $this->cannot_show_parsely_link( $post ) ) {
+		if ( ! Dashboard_Link::can_show_link( $post, $this->parsely ) ) {
 			return $actions;
 		}
 
 		$actions['find_in_parsely'] = $this->generate_link_to_parsely( $post );
 
 		return $actions;
-	}
-
-	/**
-	 * Determine whether Parse.ly row action link should be shown or not.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param WP_Post $post    Which post object or ID to check.
-	 * @return bool True if the link cannot be shown, false if the link can be shown.
-	 */
-	private function cannot_show_parsely_link( WP_Post $post ): bool {
-		return ! Parsely::post_has_trackable_status( $post ) ||
-			! is_post_type_viewable( $post->post_type ) ||
-			$this->parsely->api_key_is_missing();
 	}
 
 	/**
@@ -106,32 +93,10 @@ final class Row_Actions {
 	private function generate_link_to_parsely( WP_Post $post ): string {
 		return sprintf(
 			'<a href="%1$s" aria-label="%2$s">%3$s</a>',
-			esc_url( $this->generate_url( $post, $this->parsely->get_api_key() ) ),
+			esc_url( Dashboard_Link::generate_url( $post, $this->parsely->get_api_key(), 'wp-admin-posts-list', 'wp-admin' ) ),
 			esc_attr( $this->generate_aria_label_for_post( $post ) ),
 			esc_html__( 'Parse.ly&nbsp;Stats', 'wp-parsely' )
 		);
-	}
-
-	/**
-	 * Generate the URL for the link.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param WP_Post $post   Which post object or ID to check.
-	 * @param string  $apikey API key or empty string.
-	 * @return string
-	 */
-	private function generate_url( WP_Post $post, string $apikey ): string {
-		$query_args = array(
-			'url'          => rawurlencode( get_permalink( $post ) ),
-			'utm_campaign' => 'wp-admin-posts-list',
-			'utm_medium'   => 'wp-parsely',
-			'utm_source'   => 'wp-admin',
-		);
-
-		$base_url = trailingslashit( 'https://dash.parsely.com/' . $apikey ) . 'find';
-
-		return add_query_arg( $query_args, $base_url );
 	}
 
 	/**
