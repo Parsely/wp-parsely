@@ -163,4 +163,17 @@ abstract class TestCase extends WPIntegrationTestCase {
 		$method->setAccessible( true );
 		return $method;
 	}
+
+	/**
+	 * Create a new post and go to it.
+	 *
+	 * @return int The new post's ID.
+	 */
+	public function go_to_new_post(): int {
+		$post_data = $this->create_test_post_array();
+		$post_id   = $this->factory->post->create( $post_data );
+		$this->go_to( '/?p=' . $post_id );
+
+		return $post_id;
+	}
 }

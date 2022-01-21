@@ -10,13 +10,16 @@ on:
   # Allow manually triggering the workflow.
   workflow_dispatch:
 
+# Cancels all previous workflow runs for the same branch that have not yet completed.
+concurrency:
+  # The concurrency group contains the workflow name and the branch name.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: PHP ${{ matrix.php }}
-    # ubuntu-20.04 / ubuntu-latest includes MySQL 8, which has issues with PHP < 7.4. Has PHP 7.4-8.0
-    # ubuntu-18.04 includes PHP versions 7.1-8.0.
-    # See https://setup-php.com/i/452
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     env:
       WP_VERSION: latest
@@ -70,13 +73,13 @@ jobs:
 
       - name: Install Composer dependencies for PHP < 8.2
         if: ${{ matrix.php < 8.2 }}
-        uses: ramsey/composer-install@v1
+        uses: ramsey/composer-install@v2
 
       - name: Install Composer dependencies for PHP >= 8.2
         if: ${{ matrix.php >= 8.2 }}
-        uses: ramsey/composer-install@v1
+        uses: ramsey/composer-install@v2
         with:
           composer-options: --ignore-platform-reqs
 
       - name: Run unit tests
-        run: composer test
+        run: composer test --no-interaction

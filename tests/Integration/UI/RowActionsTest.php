@@ -70,111 +70,6 @@ final class RowActionsTest extends TestCase {
 	}
 
 	/**
-	 * Test if logic for showing Parse.ly row action accounts for actions not being an array.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
-	 * @uses \Parsely\UI\Row_Actions::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::post_has_trackable_status
-	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @group ui
-	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_actions_are_an_array_or_not(): void {
-		$cannot_show_parsely_link = self::getMethod( 'cannot_show_parsely_link', Row_Actions::class );
-
-		$published_post = self::factory()->post->create_and_get();
-		self::set_options( array( 'apikey' => 'somekey' ) );
-
-		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $published_post ) ) );
-	}
-
-	/**
-	 * Test if logic for showing Parse.ly row action accounts for post having trackable status.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
-	 * @uses \Parsely\UI\Row_Actions::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::post_has_trackable_status
-	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @group ui
-	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_has_trackable_status_or_not(): void {
-		$cannot_show_parsely_link = self::getMethod( 'cannot_show_parsely_link', Row_Actions::class );
-
-		$draft_post     = self::factory()->post->create_and_get( array( 'post_status' => 'draft' ) );
-		$published_post = self::factory()->post->create_and_get();
-
-		self::set_options( array( 'apikey' => 'somekey' ) );
-
-		// Test if post does not have trackable status - only published posts are tracked by default.
-		self::assertTrue( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $draft_post ) ) );
-		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $published_post ) ) );
-	}
-
-	/**
-	 * Test if logic for showing Parse.ly row action accounts for post not having a viewable type.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
-	 * @uses \Parsely\UI\Row_Actions::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::post_has_trackable_status
-	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @group ui
-	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_is_viewable_or_not(): void {
-		$cannot_show_parsely_link = self::getMethod( 'cannot_show_parsely_link', Row_Actions::class );
-
-		$non_publicly_queryable_post = self::factory()->post->create_and_get( array( 'post_type' => 'parsely_tests_pt' ) );
-		$published_post              = self::factory()->post->create_and_get();
-
-		self::set_options( array( 'apikey' => 'somekey' ) );
-
-		// Test if post is not viewable status.
-		self::assertTrue( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $non_publicly_queryable_post ) ) );
-		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $published_post ) ) );
-	}
-
-	/**
-	 * Test if logic for showing Parse.ly row action accounts for API key option being saved or not.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
-	 * @uses \Parsely\UI\Row_Actions::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::post_has_trackable_status
-	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @group ui
-	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_api_key_is_set_or_missing(): void {
-		$cannot_show_parsely_link = self::getMethod( 'cannot_show_parsely_link', Row_Actions::class );
-
-		$published_post = self::factory()->post->create_and_get();
-
-		// Test if API key is not set.
-		self::set_options( array( 'apikey' => '' ) );
-		self::assertTrue( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $published_post ) ) );
-
-		// Test with API key set.
-		self::set_options( array( 'apikey' => 'somekey' ) );
-		self::assertFalse( $cannot_show_parsely_link->invokeArgs( self::$row_actions, array( $published_post ) ) );
-	}
-
-	/**
 	 * Test if a row action is correctly not added when conditions are not good.
 	 *
 	 * @since 2.6.0
@@ -246,7 +141,7 @@ final class RowActionsTest extends TestCase {
 		self::assertCount( 1, $actions );
 		self::assertArrayHasKey( 'find_in_parsely', $actions );
 
-		$url        = 'https://dash.parsely.com/somekey/find?url=http%3A%2F%2Fexample.org%2F%3Fp%3D' . $post_id . '&#038;utm_campaign=wp-admin-posts-list&#038;utm_medium=wp-parsely&#038;utm_source=wp-admin';
+		$url        = 'https://dash.parsely.com/somekey/find?url=http%3A%2F%2Fexample.org%2F%3Fp%3D' . $post_id . '&#038;utm_campaign=wp-admin-posts-list&#038;utm_source=wp-admin&#038;utm_medium=wp-parsely';
 		$aria_label = 'Go to Parse.ly stats for &quot;Foo2&quot;';
 		self::assertSame(
 			'<a href="' . $url . '" aria-label="' . $aria_label . '">Parse.ly&nbsp;Stats</a>',

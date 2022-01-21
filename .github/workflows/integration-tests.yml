@@ -7,16 +7,17 @@ on:
     paths-ignore:
       - '**.md'
   pull_request:
-  # Allow manually triggering the workflow.
-  workflow_dispatch:
+
+# Cancels all previous workflow runs for the same branch that have not yet completed.
+concurrency:
+  # The concurrency group contains the workflow name and the branch name.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
     name: PHP ${{ matrix.php }}
-    # ubuntu-20.04 / ubuntu-latest includes MySQL 8, which has issues with PHP < 7.4. Has PHP 7.4-8.0
-    # ubuntu-18.04 includes PHP versions 7.1-8.0.
-    # See https://setup-php.com/i/452
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     env:
       WP_VERSION: latest
@@ -45,9 +46,9 @@ jobs:
           - php: '8.1'
             coverage: none
             experimental: false
-          - php: '8.2'
-            coverage: none
-            experimental: true
+          # - php: '8.2'
+          #  coverage: none
+          #  experimental: true
       fail-fast: false
     continue-on-error: ${{ matrix.experimental }}
     steps:
@@ -68,25 +69,29 @@ jobs:
       - name: Setup Problem Matchers for PHPUnit
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-      - name: Install Composer dependencies for PHP < 8.2
-        if: ${{ matrix.php < 8.2 }}
-        uses: ramsey/composer-install@v1
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v2
 
-      - name: Install Composer dependencies for PHP >= 8.2
-        if: ${{ matrix.php >= 8.2 }}
-        uses: ramsey/composer-install@v1
-        with:
-          composer-options: --ignore-platform-reqs
+      # - name: Install Composer dependencies for PHP >= 8.2
+      #  if: ${{ matrix.php >= 8.2 }}
+      #  uses: ramsey/composer-install@v2
+      #  with:
+      #    composer-options: --ignore-platform-reqs
 
       - name: Start MySQL Service
         run: sudo systemctl start mysql.service
 
+      - name: Setting mysql_native_password for PHP <= 7.3
+        if: ${{ matrix.php <= 7.3 }}
+        run: mysql -u root -proot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+
       - name: Prepare environment for integration tests
-        run: composer prepare-ci
+        run: composer prepare-ci --no-interaction
 
       - name: Run integration tests (single site)
         if: ${{ matrix.php != 8.0 }}
-        run: composer testwp
+        run: composer testwp --no-interaction
+
       - name: Run integration tests (multisite site with code coverage)
         if: ${{ matrix.php == 8.0 }}
-        run: composer coveragewp-ci
+        run: composer coveragewp-ci --no-interaction

@@ -184,16 +184,21 @@ class Parsely {
 			return;
 		}
 
+		$parsed_post = get_post( $post );
+		if ( ! $parsed_post instanceof WP_Post ) {
+			return;
+		}
+
 		// Assign default values for LD+JSON
 		// TODO: Mapping of an install's post types to Parse.ly post types (namely page/post).
-		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $post );
+		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $parsed_post );
 
 		// Something went wrong - abort.
 		if ( empty( $parsely_page ) || ! isset( $parsely_page['headline'] ) ) {
 			return;
 		}
 
-		echo "\n" . '<!-- BEGIN Parse.ly ' . esc_html( self::VERSION ) . ' -->' . "\n";
+		echo PHP_EOL;
 
 		// Insert JSON-LD or repeated metas.
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
@@ -230,7 +235,7 @@ class Parsely {
 			include plugin_dir_path( PARSELY_FILE ) . 'views/custom-metadata.php';
 		}
 
-		echo '<!-- END Parse.ly -->' . "\n\n";
+		echo PHP_EOL;
 	}
 
 	/**
@@ -249,7 +254,13 @@ class Parsely {
 		$this->insert_page_header_metadata();
 
 		global $post;
-		return $this->construct_parsely_metadata( $this->get_options(), $post );
+
+		$parsed_post = get_post( $post );
+		if ( ! $parsed_post instanceof WP_Post ) {
+			return array();
+		}
+
+		return $this->construct_parsely_metadata( $this->get_options(), $parsed_post );
 	}
 
 	/**
@@ -423,7 +434,7 @@ class Parsely {
 			$supported_types = array_merge( $this->supported_jsonld_post_types, $this->supported_jsonld_non_post_types );
 
 			// Validate type before passing it further as an invalid type will not be recognized by Parse.ly.
-			if ( ! in_array( $type, $supported_types ) ) {
+			if ( ! in_array( $type, $supported_types, true ) ) {
 				$error = sprintf(
 					/* translators: 1: JSON @type like NewsArticle, 2: URL */
 					__( '@type %1$s is not supported by Parse.ly. Please use a type mentioned in %2$s', 'wp-parsely' ),
@@ -484,7 +495,11 @@ class Parsely {
 		 * @param WP_Post $post            Post object.
 		 * @param array   $parsely_options The Parsely options.
 		 */
-		return apply_filters( 'wp_parsely_metadata', $parsely_page, $post, $parsely_options );
+		$filtered = apply_filters( 'wp_parsely_metadata', $parsely_page, $post, $parsely_options );
+		if ( is_array( $filtered ) ) {
+			return $filtered;
+		}
+		return array();
 	}
 
 	/**
@@ -722,7 +737,7 @@ class Parsely {
 				$term_name = $this->get_bottom_level_term( $post_obj->ID, $parsely_options['custom_taxonomy_section'] );
 			}
 
-			if ( $term_name ) {
+			if ( is_string( $term_name ) && 0 < strlen( $term_name ) ) {
 				$category = $term_name;
 			}
 		}
@@ -766,9 +781,14 @@ class Parsely {
 	 * @return string Name of the custom taxonomy.
 	 */
 	private function get_bottom_level_term( int $post_id, string $taxonomy_name ): string {
-		$terms    = get_the_terms( $post_id, $taxonomy_name );
-		$term_ids = is_array( $terms ) ? wp_list_pluck( $terms, 'term_id' ) : array();
-		$parents  = is_array( $terms ) ? array_filter( wp_list_pluck( $terms, 'parent' ) ) : array();
+		$terms = get_the_terms( $post_id, $taxonomy_name );
+
+		if ( ! is_array( $terms ) ) {
+			return '';
+		}
+
+		$term_ids = wp_list_pluck( $terms, 'term_id' );
+		$parents  = array_filter( wp_list_pluck( $terms, 'parent' ) );
 
 		// Get array of IDs of terms which are not parents.
 		$term_ids_not_parents = array_diff( $term_ids, $parents );
@@ -777,10 +797,15 @@ class Parsely {
 		// remove array index keys.
 		$terms_not_parents_cleaned = array();
 		foreach ( $terms_not_parents as $index => $value ) {
-			array_push( $terms_not_parents_cleaned, $value );
+			$terms_not_parents_cleaned[] = $value;
 		}
-		// if you assign multiple child terms in a custom taxonomy, will only return the first.
-		return $terms_not_parents_cleaned[0]->name;
+
+		if ( ! empty( $terms_not_parents_cleaned ) ) {
+			// if you assign multiple child terms in a custom taxonomy, will only return the first.
+			return $terms_not_parents_cleaned[0]->name ?? '';
+		}
+
+		return '';
 	}
 
 	/**
@@ -932,10 +957,14 @@ class Parsely {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param string $val The content you'd like sanitized.
+	 * @param string|null $val The content you'd like sanitized.
 	 * @return string
 	 */
-	public function get_clean_parsely_page_value( string $val ): string {
+	public function get_clean_parsely_page_value( ?string $val ): string {
+		if ( null === $val ) {
+			return '';
+		}
+
 		$val = str_replace( "\n", '', $val );
 		$val = str_replace( "\r", '', $val );
 		$val = wp_strip_all_tags( $val );
@@ -1033,7 +1062,7 @@ class Parsely {
 	 * @return string "post" or "index".
 	 */
 	public function convert_jsonld_to_parsely_type( string $type ): string {
-		return in_array( $type, $this->supported_jsonld_post_types ) ? 'post' : 'index';
+		return in_array( $type, $this->supported_jsonld_post_types, true ) ? 'post' : 'index';
 	}
 
 	/**
