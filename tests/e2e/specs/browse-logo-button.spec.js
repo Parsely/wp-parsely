@@ -45,7 +45,7 @@ describe( 'Browse for logo button', () => {
 	 * Remove the uploaded image.
 	 */
 	afterAll( async () => {
-	// Go to Media Library and select the image.
+		// Go to Media Library and select the image.
 		await visitAdminPage( '/upload.php' );
 		await page.waitForSelector( modalAttachment, { visible: true } );
 		await page.click( modalAttachment );
