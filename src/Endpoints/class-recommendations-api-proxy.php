@@ -75,7 +75,7 @@ final class Recommendations_API_Proxy {
 			);
 		}
 
-		$cache_key = 'api_recos-' . md5( wp_json_encode( compact( 'apikey', 'params' ) ) );
+		$cache_key = 'api_recos-' . wp_hash( wp_json_encode( compact( 'apikey', 'params' ) ) );
 		$cached    = wp_cache_get( $cache_key, 'wp-parsely' );
 		if ( is_object( $cached ) ) {
 			return $cached;
