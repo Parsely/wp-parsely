@@ -18,6 +18,8 @@ use WP_REST_Request;
  * A "namespace" class with functions that power REST API endpoints for use by the Recommendations Block and other consumers.
  */
 final class Recommendations_API_Proxy {
+	const OBJECT_CACHE_TTL = 5 * MINUTE_IN_SECONDS;
+
 	/**
 	 * Used to inject dependencies.
 	 *
@@ -95,7 +97,8 @@ final class Recommendations_API_Proxy {
 				'data'  => array(),
 				'error' => $links,
 			);
-			wp_cache_set( $cache_key, $response, 'wp-parsely', 5 * MINUTE_IN_SECONDS );
+			// phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
+			wp_cache_set( $cache_key, $response, 'wp-parsely', self::OBJECT_CACHE_TTL );
 			return $response;
 		}
 
@@ -111,7 +114,8 @@ final class Recommendations_API_Proxy {
 		);
 
 		$response = (object) array( 'data' => $data );
-		wp_cache_set( $cache_key, $data, 'wp-parsely', 5 * MINUTE_IN_SECONDS );
+		// phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
+		wp_cache_set( $cache_key, $data, 'wp-parsely', self::OBJECT_CACHE_TTL );
 
 		return $response;
 	}
