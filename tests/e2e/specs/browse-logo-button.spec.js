@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-const resolve = require( 'path' ).resolve;
+import * as path from 'path';
 import {
 	activatePlugin,
 	loginUser,
@@ -14,7 +14,7 @@ import {
 import { waitForWpAdmin } from '../utils';
 
 // General initializations.
-const imageLocalPath = resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
+const imageLocalPath = path.resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
 const uploadedImagePattern = /\/wp-content\/uploads\/\d{4}\/\d{2}\/icon-256x256-?\d*\.png$/;
 const filePathInput = '#media-single-image-logo input.file-path';
 const modalAttachment = 'li.attachment'; // Used in both modals.
