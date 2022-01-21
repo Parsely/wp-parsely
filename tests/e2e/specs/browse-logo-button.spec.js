@@ -34,7 +34,7 @@ const modalDeleteAttachmentLink = `${ modalEditAttachment } button.delete-attach
  */
 describe( 'Browse for logo button', () => {
 	/**
-	 * Before all tests, login and activate the Parse.ly plugin.
+	 * Login and activate the Parse.ly plugin.
 	 */
 	beforeAll( async () => {
 		await loginUser();
@@ -42,7 +42,7 @@ describe( 'Browse for logo button', () => {
 	} );
 
 	/**
-	 * After all tests, remove the uploaded image.
+	 * Remove the uploaded image.
 	 */
 	afterAll( async () => {
 	// Go to Media Library and select the image.
@@ -60,10 +60,9 @@ describe( 'Browse for logo button', () => {
 	} );
 
 	/**
-	 * Before each test, go to settings page and click the browse button.
+	 * Go to settings page and click the browse button.
 	 */
 	beforeEach( async () => {
-	// Go to settings page (resets page selections).
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await waitForWpAdmin();
 
