@@ -11,6 +11,7 @@ namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
 use Parsely\Endpoints\Recommendations_API_Proxy;
+use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
 use WP_Test_REST_Controller_Testcase;
@@ -24,6 +25,7 @@ final class RecommendationsProxyEndpointTest extends WP_Test_REST_Controller_Tes
 	 */
 	public function setUp(): void {
 		parent::setUp();
+		update_option( 'parsely', array( 'apikey' => 'example.com' ) );
 		$this->parsely_global_backup        = $GLOBALS['parsely'] ?? null;
 		$GLOBALS['parsely']                 = new Parsely();
 		$this->wp_rest_server_global_backup = $GLOBALS['wp_rest_server'] ?? null;
@@ -39,6 +41,7 @@ final class RecommendationsProxyEndpointTest extends WP_Test_REST_Controller_Tes
 		$GLOBALS['parsely'] = $this->parsely_global_backup;
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$GLOBALS['wp_rest_server'] = $this->wp_rest_server_global_backup;
+		delete_option( 'parsely' );
 	}
 
 	/**
@@ -92,6 +95,35 @@ final class RecommendationsProxyEndpointTest extends WP_Test_REST_Controller_Tes
 				),
 			),
 			$response->get_data()
+		);
+	}
+
+	/**
+	 * Confirm that calls to `GET /wp-parsely/v1/recommendations` gets and error and makes no remote call when the apikey is not populated in site options.
+	 *
+	 * @covers Recommendations_API_Proxy::get_items
+	 */
+	public function test_get_items_fails_without_apikey_set() {
+		delete_option( 'parsely' );
+		$request    = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
+		$response   = null;
+		$dispatched = TestCase::mock_remote_network_request(
+			function () use ( &$response, $request ) {
+				$response = rest_get_server()->dispatch( $request );
+			}
+		);
+
+		$this->assertSame( 200, $response->get_status() );
+		$data = $response->get_data();
+
+		$this->assertSame( 0, $dispatched );
+		$this->assertObjectHasAttribute( 'data', $data );
+		$this->assertEmpty( $data->data );
+
+		$this->assertObjectHasAttribute( 'error', $data );
+		$this->assertEquals(
+			new WP_Error( 400, 'A Parsely API Key must be set in site options to use this Endpoint' ),
+			$data->error
 		);
 	}
 

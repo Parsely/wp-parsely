@@ -68,7 +68,12 @@ final class Recommendations_API_Proxy {
 		$apikey  = $options['apikey'];
 		$params  = $request->get_params();
 
-		$url = $params['url'] ?? '';
+		if ( empty( $apikey ) ) {
+			return (object) array(
+				'data'  => array(),
+				'error' => new WP_Error( 400, __( 'A Parsely API Key must be set in site options to use this Endpoint', 'wp-parsely' ) ),
+			);
+		}
 
 		$cache_key = 'api_recos-' . md5( wp_json_encode( compact( 'apikey', 'params' ) ) );
 		$cached    = wp_cache_get( $cache_key, 'wp-parsely' );
@@ -78,7 +83,7 @@ final class Recommendations_API_Proxy {
 
 		$links = self::fetch_related_links(
 			$apikey,
-			$url,
+			$params['url'] ?? '',
 			$params['pub_date_start'] ?? 0,
 			$params['sort'] ?? 'score',
 			$params['limit'] ?? 5,
