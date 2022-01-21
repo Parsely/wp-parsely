@@ -35,6 +35,9 @@ final class Recommendations_API_Proxy {
 	 * @return void
 	 */
 	public function run() {
+		if ( ! apply_filters( 'wp_parsely_enable_recommendations_endpoint', false ) ) {
+			return;
+		}
 		register_rest_route(
 			'wp-parsely/v1',
 			'/recommendations',
