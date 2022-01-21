@@ -7,6 +7,7 @@
 
 namespace Parsely\Endpoints;
 
+use Parsely\Parsely;
 use Parsely\Recommended_Content;
 use stdClass;
 use WP_Error;
@@ -18,28 +19,28 @@ use WP_REST_Request;
  */
 final class Recommendations_API_Proxy {
 	/**
+	 * Used to inject dependencies.
+	 *
+	 * @param Parsely $parsely Instance of Parsely class.
+	 */
+	public function __construct( Parsely $parsely ) {
+		$this->parsely = $parsely;
+	}
+
+	/**
 	 * Entrypoint to register the endpoint and otherwise initialize this class.
 	 *
 	 * @return void
 	 */
 	public function run() {
-		self::register_rest_route();
-	}
-
-	/**
-	 * Registers the REST API Routes and backing functionality
-	 *
-	 * @return void
-	 */
-	public static function register_rest_route() {
 		register_rest_route(
 			'wp-parsely/v1',
 			'/recommendations',
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => __CLASS__ . '::get_items',
-					'permission_callback' => __CLASS__ . '::permission_callback',
+					'callback'            => array( $this, 'get_items' ),
+					'permission_callback' => array( $this, 'permission_callback' ),
 					'args'                => array(),
 				),
 			)
@@ -51,7 +52,7 @@ final class Recommendations_API_Proxy {
 	 *
 	 * @return boolean
 	 */
-	public static function permission_callback() {
+	public function permission_callback() {
 		// Unauthenticated.
 		return true;
 	}
@@ -62,9 +63,8 @@ final class Recommendations_API_Proxy {
 	 * @param WP_Rest_Request $request The request object.
 	 * @return array
 	 */
-	public static function get_items( WP_Rest_Request $request ) {
-		global $parsely;
-		$options = $parsely->get_options();
+	public function get_items( WP_Rest_Request $request ) {
+		$options = $this->parsely->get_options();
 		$apikey  = $options['apikey'];
 		$params  = $request->get_params();
 

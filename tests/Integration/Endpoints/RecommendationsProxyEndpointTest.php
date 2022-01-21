@@ -26,11 +26,11 @@ final class RecommendationsProxyEndpointTest extends WP_Test_REST_Controller_Tes
 	public function setUp(): void {
 		parent::setUp();
 		update_option( 'parsely', array( 'apikey' => 'example.com' ) );
-		$this->parsely_global_backup        = $GLOBALS['parsely'] ?? null;
-		$GLOBALS['parsely']                 = new Parsely();
+
 		$this->wp_rest_server_global_backup = $GLOBALS['wp_rest_server'] ?? null;
-		$this->endpoint                     = new Recommendations_API_Proxy();
-		$this->endpoint->run();
+		$endpoint                           = new Recommendations_API_Proxy( new Parsely() );
+
+		$endpoint->run();
 	}
 
 	/**
