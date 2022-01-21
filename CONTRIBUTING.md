@@ -43,7 +43,7 @@ When creating a new issue, please add specific steps to reproduce the problem, u
 
 - WordPress - 5.0
 
-  You don't need to explicitely install WordPress if you use the provided, Docker-based wp-env.
+  You don't need to explicitly install WordPress if you use the provided, Docker-based wp-env.
 
 - Docker 
 
