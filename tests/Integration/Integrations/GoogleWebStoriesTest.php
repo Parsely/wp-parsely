@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\Integrations;
 
-require_once __DIR__ . '/../../../src/Integrations/class-google-web-stories.php';
-
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;

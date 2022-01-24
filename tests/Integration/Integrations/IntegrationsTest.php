@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\Integrations;
 
+use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use ReflectionClass;
 
@@ -20,6 +21,15 @@ use function Parsely\parsely_integrations;
  * @todo: Instantiate and then try to register something that doesn't implement the Integration interface.
  */
 final class IntegrationsTest extends TestCase {
+	/**
+	 * The setUpBeforeClass run before all tests
+	 */
+	public static function setUpBeforeClass(): void {
+		parent::setUpBeforeClass();
+
+		$GLOBALS['parsely'] = new Parsely();
+	}
+
 	/**
 	 * Check an integration can be added via a filter.
 	 *
@@ -46,8 +56,8 @@ final class IntegrationsTest extends TestCase {
 		$reflector_property->setAccessible( true );
 		$registered_integrations = $reflector_property->getValue( $integrations );
 
-		self::assertCount( 3, $registered_integrations );
-		self::assertSame( array( 'amp', 'fbia', 'fake' ), array_keys( $registered_integrations ) );
+		self::assertCount( 4, $registered_integrations );
+		self::assertSame( array( 'amp', 'fbia', 'webstories', 'fake' ), array_keys( $registered_integrations ) );
 
 		// Use filter to override existing key.
 		add_action(
@@ -59,8 +69,8 @@ final class IntegrationsTest extends TestCase {
 			}
 		);
 
-		self::assertCount( 3, $registered_integrations );
-		self::assertSame( array( 'amp', 'fbia', 'fake' ), array_keys( $registered_integrations ) );
+		self::assertCount( 4, $registered_integrations );
+		self::assertSame( array( 'amp', 'fbia', 'webstories', 'fake' ), array_keys( $registered_integrations ) );
 	}
 
 }
