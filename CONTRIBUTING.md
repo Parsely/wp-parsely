@@ -51,7 +51,7 @@ When creating a new issue, please add specific steps to reproduce the problem, u
 
 ### Installing Dependencies
 
-Once you have Node.js, PHP, and Composer installed locally, you will need to install dependencies in the main plugin directory to install the dependencies of the plugin needed to run tests and check coding standards.
+Once you have Node.js, PHP, and Composer installed locally, you will need to install dependencies in the main plugin directory in order to run tests and check coding standards.
 
 ```
 # Install PHP dependencies
@@ -68,7 +68,7 @@ npm install
 
 This plugin uses the `wp-env` package for local development and testing. [It is an official WP.org package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/) that spins up a Docker-based WordPress environment for plugin development.
 
-Having Docker running,
+While Docker is running, you have the following commands available:
 
 ```
 # Start the environment
@@ -80,7 +80,7 @@ npm run dev:stop
 
 This will start up an environment in `localhost:8888`, running in the background. If you have any issue running the above commands, we recommend checking that you are running an up-to-date version of Docker on your system and that you don't have any other services running on ports 8888 and 8889.
 
-By default, WordPress will use the production built JavaScript and CSS assets in the `build/` folder. That is OK if you don't plan on modifying those files. If you do, you can start a Node server that will compile them on the fly. Once you've done, we ask you to generate the production-ready (compressed) ones.
+By default, WordPress will use the production built JavaScript and CSS assets in the `build/` folder. That is OK if you don't plan on modifying those files. If you do, you can start a Node server that will compile them on the fly. Once you've done this, we ask you to generate the production-ready (compressed) ones.
 
 ```
 # Start development server
@@ -96,7 +96,7 @@ To develop for WordPress VIP sites, we recommend using [the WordPress VIP dev-en
 
 ### Branches
 
-Ongoing development will be done in the `develop` branch with merges done into `trunk` once considered stable.
+Ongoing development is being done in the `develop` branch. Merges are performed against the `trunk` branch once considered stable.
 
 To contribute an improvement to this project, fork the repo and open a pull request to the `develop` branch. Alternatively, if you have push access to this repo, create a feature branch and then open an intra-repo PR from that branch to `develop`.
 
@@ -159,8 +159,8 @@ For example, the [coding standards](#coding-standards) and [lint rules](#linting
 First, you'll need to install the tests by running the install script:
 
 1. Navigate to the main plugin directory.
-1. You'll need to have a local database setup and have the database name, username, password, and host ready.
-1. Run the test install script using the database information.
+2. You'll need to have a local database setup and have the database name, username, password, and host ready.
+3. Run the test install script using the database information.
    ```
    ./bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
    ```
@@ -207,9 +207,9 @@ JavaScript files that are included in the released plugin are built with the
 Here's how to get started making changes to them:
 
 1. Install the dependencies: `npm i`
-1. Start the build tool: `npm run start`
-1. Make and test your changes -- assets are rebuilt automatically
-1. Create a branch / PR with all applicable changes to:
+2. Start the build tool: `npm run start`
+3. Make and test your changes -- assets are rebuilt automatically
+4. Create a branch / PR with all applicable changes to:
    - Source files (in the `src` directory)
    - Build tooling (including an updated `package-lock.json` if you've altered dependencies)
    - Built files (in the `build` directory)
