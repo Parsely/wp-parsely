@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\Integrations;
 
+require_once __DIR__ . '/../../../src/Integrations/class-google-web-stories.php';
+
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
@@ -23,6 +25,17 @@ final class GoogleWebStoriesTest extends TestCase {
 	 * @var GoogleWebStoriesTest $google Holds the Google_Web_Stories object.
 	 */
 	private static $google;
+
+	/**
+	 * The setUpBeforeClass run before all tests
+	 */
+	public static function setUpBeforeClass(): void {
+		parent::setUpBeforeClass();
+
+		// Mocking the existence of the plugin for the sake of testing.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
+		define( 'WEBSTORIES_PLUGIN_FILE', __DIR__ );
+	}
 
 	/**
 	 * The setUp run before each test
@@ -59,6 +72,8 @@ final class GoogleWebStoriesTest extends TestCase {
 	 * @group scripts
 	 */
 	public function test_render_amp_analytics_tracker(): void {
+		$this::set_options( array( 'apikey' => 'blog.parsely.com' ) );
+
 		ob_start();
 		$this::$google->render_amp_analytics_tracker();
 		$output = ob_get_clean();
