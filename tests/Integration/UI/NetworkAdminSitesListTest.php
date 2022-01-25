@@ -9,9 +9,6 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\UI;
 
-// Explicit require as the `Network_Admin_Sites_List` class could not be found in test environment.
-require_once __DIR__ . '/../../../src/UI/class-network-admin-sites-list.php';
-
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Network_Admin_Sites_List;
