@@ -54,6 +54,8 @@ final class GoogleWebStoriesTest extends TestCase {
 	 * @group scripts
 	 */
 	public function test_web_stories_script_is_enqueued(): void {
+		self::assertFalse( has_action( 'web_stories_print_analytics', array( self::$google, 'render_amp_analytics_tracker' ) ) );
+
 		self::$google->integrate();
 		self::assertSame(
 			10,
@@ -70,15 +72,7 @@ final class GoogleWebStoriesTest extends TestCase {
 	 * @group scripts
 	 */
 	public function test_render_amp_analytics_tracker(): void {
-		$this::set_options( array( 'apikey' => 'blog.parsely.com' ) );
-
-		ob_start();
-		$this::$google->render_amp_analytics_tracker();
-		$output = ob_get_clean();
-		$output = str_replace( array( "\r", "\n" ), '', $output );
-
-		$expected = '
-		<amp-analytics type="parsely">
+		$expected = '		<amp-analytics type="parsely">
 			<script type="application/json">
 				{
 					"vars": {
@@ -88,8 +82,10 @@ final class GoogleWebStoriesTest extends TestCase {
 			</script>
 		</amp-analytics>
 		';
-		$expected = str_replace( array( "\r", "\n" ), '', $expected );
 
-		self::assertSame( $expected, $output );
+		self::expectOutputString( $expected );
+
+		$this::set_options( array( 'apikey' => 'blog.parsely.com' ) );
+		$this::$google->render_amp_analytics_tracker();
 	}
 }
