@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
+use WP_Site;
 
 /**
  * Render the additions to the WordPress Multisite Network Admin Sites List page
@@ -55,12 +56,32 @@ final class Network_Admin_Sites_List {
 			return $actions;
 		}
 
-		$actions['parsely-settings'] =
-			'<a href="' . esc_url( Parsely::get_settings_url( $_blog_id ) ) . '">' .
-				__( 'Parse.ly Settings', 'wp-parsely' ) .
-			'</a>';
+		$actions['parsely-settings'] = sprintf(
+			'<a href="%1$s" aria-label="%2$s">%3$s</a>',
+			esc_url( esc_url( Parsely::get_settings_url( $_blog_id ) ) ),
+			esc_attr( self::generate_aria_label_for_blog_id( $_blog_id ) ),
+			__( 'Parse.ly Settings', 'wp-parsely' )
+		);
 
 		return $actions;
+	}
+
+	/**
+	 * Generate ARIA label content.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param int $_blog_id Which sub-site to include in the ARIA label.
+	 * @return string ARIA label content including the blogname.
+	 */
+	private static function generate_aria_label_for_blog_id( int $_blog_id ): string {
+		$site = get_blog_details( $_blog_id );
+
+		return sprintf(
+			/* translators: blog name or blog id if empty  */
+			__( 'Go to Parse.ly stats for "%s"', 'wp-parsely' ),
+			empty( $site->blogname ) ? $_blog_id : $site->blogname
+		);
 	}
 
 	/**
