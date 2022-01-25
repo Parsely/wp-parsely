@@ -20,7 +20,7 @@ To contribute code to this project, fork the repo and open a PR to the `develop`
 
 ### Coding standards
 
-The Parse.ly plugin uses the PHP_CodeSniffer tool that is installed through Composer. This plugin uses a [custom ruleset.](https://github.com/Parsely/wp-parsely/blob/develop/.phpcs.xml.dist)
+The Parse.ly plugin uses the PHP_CodeSniffer tool that is installed through Composer. This plugin uses a [custom ruleset](https://github.com/Parsely/wp-parsely/blob/develop/.phpcs.xml.dist).
 
 The plugin aims to use strong types where possible, so be sure to declare `strict_types=1` on new files, and include type definitions for parameters and return types that are compatible with the minimum version of PHP that this plugin supports.
 
