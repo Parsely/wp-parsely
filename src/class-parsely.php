@@ -694,8 +694,9 @@ class Parsely {
 		if ( $last_tag ) {
 			$tags = explode( '/', $last_tag );
 		}
-		// remove uncategorized value from tags.
-		return array_diff( $tags, array( 'Uncategorized' ) );
+		// remove default category name from tags.
+		$default_category = get_option( 'default_category' );
+		return array_diff( $tags, array( $default_category ) );
 	}
 
 	/**
@@ -727,8 +728,8 @@ class Parsely {
 		$taxonomy_dropdown_choice = get_the_terms( $post_obj->ID, $parsely_options['custom_taxonomy_section'] );
 		// Get top-level taxonomy name for chosen taxonomy and assign to $parent_name; it will be used
 		// as the category value if 'use_top_level_cats' option is checked.
-		// Assign as "Uncategorized" if no value is checked for the chosen taxonomy.
-		$category = 'Uncategorized';
+		// Assign as the default category name if no value is checked for the chosen taxonomy.
+		$category = get_option( 'default_category' );
 		if ( ! empty( $taxonomy_dropdown_choice ) && ! is_wp_error( $taxonomy_dropdown_choice ) ) {
 			if ( $parsely_options['use_top_level_cats'] ) {
 				$first_term = array_shift( $taxonomy_dropdown_choice );
