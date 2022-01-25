@@ -177,6 +177,12 @@ First, you'll need to install the tests by running the install script:
 
 Then, you can use Composer to run the tests from your terminal.
 
+You might have some issues related to requiring files while running the tests locally. You shouldn't `require` any files on your tests. If you have those issues, you can fix them by running:
+
+```
+composer dump-autoload
+```
+
 To run the single-site tests:
 
 ```
