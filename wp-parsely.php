@@ -33,6 +33,7 @@ use Parsely\Integrations\Integrations;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Plugins_Actions;
+use Parsely\UI\Network_Admin_Sites_List;
 use Parsely\UI\Recommended_Widget;
 use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
@@ -102,6 +103,19 @@ add_action( '_admin_menu', __NAMESPACE__ . '\\parsely_admin_menu_register' );
 function parsely_admin_menu_register(): void {
 	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
 	$settings_page->run();
+}
+
+require __DIR__ . '/src/UI/class-network-admin-sites-list.php';
+
+add_action( 'admin_init', __NAMESPACE__ . '\\admin_init_network_sites_list' );
+/**
+ * Register the additions the Multisite Network Admin Sites List table.
+ *
+ * @return void
+ */
+function admin_init_network_sites_list(): void {
+	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
+	$network_admin_sites_list->run();
 }
 
 require __DIR__ . '/src/UI/class-recommended-widget.php';
