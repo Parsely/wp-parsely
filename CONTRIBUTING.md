@@ -10,7 +10,7 @@ When creating a new issue, please add specific steps to reproduce the problem, u
 
 ## Contributing code
 
-You are more than welcome to submit PRs that fix issues or introduce new features to the Parse.ly plugin.
+You are welcome to contribute to the plugin by submitting Pull Requests fix issues or introduce new features to the Parse.ly plugin.
 
 ### Important branches
 
