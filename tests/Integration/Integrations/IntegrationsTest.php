@@ -27,6 +27,8 @@ final class IntegrationsTest extends TestCase {
 	public static function setUpBeforeClass(): void {
 		parent::setUpBeforeClass();
 
+		// Add a global instance, so that calls to `parsely_integrations()` in tests can correctly instantiate
+		// and register Google_Web_Stories as an integration.
 		$GLOBALS['parsely'] = new Parsely();
 	}
 
