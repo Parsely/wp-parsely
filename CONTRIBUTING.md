@@ -106,7 +106,9 @@ npm run dev:stop
 
 We're leveraging [husky](https://typicode.github.io/husky) to automate some tasks around things like code and commit message quality. You can browse the configured hooks in [this directory](.husky/).
 
-For example, the [coding standards](#coding-standards) and [lint rules](#linting) are applied [prior to commit](.husky/pre-commit). If violations are encountered, the commit is rejected.
+For example, the [coding standards](#coding-standards) and [lint rules](#linting) are applied [prior to commit](.husky/pre-commit). If violations are encountered, the commit is rejected. Please note that this quality assurance process introduces a delay before every commit.
+
+If you're on Windows, you might get an error when trying to make commits. In this case refer to [WINDOWS.md](WINDOWS.md).
 
 #### Modifying and rebuilding plugin assets
 
@@ -166,7 +168,7 @@ composer cs
 
 #### Testing
 
-First, you'll need to install the tests by running the install script:
+First, you'll need to install the tests by running the install script (if you're on Windows, refer to [WINDOWS.md](WINDOWS.md)):
 
 1. Navigate to the main plugin directory.
 2. You'll need to have a local database setup and have the database name, username, password, and host ready.
