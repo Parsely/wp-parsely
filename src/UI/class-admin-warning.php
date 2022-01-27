@@ -42,7 +42,7 @@ final class Admin_Warning {
 	 * @return void
 	 */
 	public function run(): void {
-		add_action( 'admin_footer', array( $this, 'display_admin_warning' ) );
+		add_action( 'admin_notices', array( $this, 'display_admin_warning' ) );
 	}
 
 	/**
