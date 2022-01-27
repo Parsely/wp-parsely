@@ -695,8 +695,7 @@ class Parsely {
 			$tags = explode( '/', $last_tag );
 		}
 		// remove default category name from tags.
-		$default_category = get_option( 'default_category' );
-		return array_diff( $tags, array( $default_category ) );
+		return array_diff( $tags, array( $this->get_default_post_category_name() ) );
 	}
 
 	/**
@@ -729,7 +728,7 @@ class Parsely {
 		// Get top-level taxonomy name for chosen taxonomy and assign to $parent_name; it will be used
 		// as the category value if 'use_top_level_cats' option is checked.
 		// Assign as the default category name if no value is checked for the chosen taxonomy.
-		$category = get_option( 'default_category' );
+		$category = $this->get_default_post_category_name();
 		if ( ! empty( $taxonomy_dropdown_choice ) && ! is_wp_error( $taxonomy_dropdown_choice ) ) {
 			if ( $parsely_options['use_top_level_cats'] ) {
 				$first_term = array_shift( $taxonomy_dropdown_choice );
@@ -1105,5 +1104,18 @@ class Parsely {
 		$options = $this->get_options();
 
 		return $this->api_key_is_set() ? $options['apikey'] : '';
+	}
+
+	/**
+	 * Get the default category name for posts.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @return string The category name.
+	 */
+	public function get_default_post_category_name(): string {
+		$category_id = get_option( 'default_category' );
+
+		return get_categories( array( 'ID' => $category_id ) )[0]->name;
 	}
 }
