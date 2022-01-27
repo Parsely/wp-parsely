@@ -22,7 +22,18 @@
 		"phpcompatibility/phpcompatibility-wp": "^2.1",
 		"squizlabs/php_codesniffer": "^3.5",
 		"wp-coding-standards/wpcs": "^2.3.0",
-		"yoast/wp-test-utils": "^1"
+		"yoast/wp-test-utils": "^1",
+		"phpstan/phpstan": "^1.4",
+		"phpstan/extension-installer": "^1.1",
+		"phpstan/phpstan-strict-rules": "^1.1",
+		"szepeviktor/phpstan-wordpress": "^1.0"
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
+		}
 	},
 	"autoload": {
 		"classmap": [
@@ -42,20 +53,20 @@
 			"@putenv WP_MULTISITE=1",
 			"@php ./vendor/bin/phpunit --coverage-html ./build/coverage-html/unit -v"
 		],
-		"coveragewp": [
-			"@putenv WP_MULTISITE=1",
-			"@php ./vendor/bin/phpunit --coverage-html ./build/coverage-html/integration -c phpunit-integration.xml.dist -v"
-		],
 		"coverage-ci": [
 			"@putenv WP_MULTISITE=1",
 			"@php ./vendor/bin/phpunit -v"
+		],
+		"coveragewp": [
+			"@putenv WP_MULTISITE=1",
+			"@php ./vendor/bin/phpunit --coverage-html ./build/coverage-html/integration -c phpunit-integration.xml.dist -v"
 		],
 		"coveragewp-ci": [
 			"@putenv WP_MULTISITE=1",
 			"@php ./vendor/bin/phpunit -c phpunit-integration.xml.dist -v"
 		],
 		"cs": [
-			"@php ./vendor/bin/phpcs"
+			"@php ./vendor/bin/phpcs --severity=1"
 		],
 		"lint": [
 			"@php ./vendor/php-parallel-lint/php-parallel-lint/parallel-lint . -e php --exclude vendor --exclude .git"
@@ -68,6 +79,9 @@
 		],
 		"test": [
 			"@php ./vendor/bin/phpunit --no-coverage --order-by=random"
+		],
+	   	"static-analysis": [
+		  "@php ./vendor/bin/phpstan analyze --memory-limit 536870912"
 		],
 		"test-ms": [
 			"@putenv WP_MULTISITE=1",
@@ -82,13 +96,17 @@
 		]
 	},
 	"scripts-descriptions": {
-		"coverage": "Run tests with code coverage for the Parse.ly plugin and generate local HTML output.",
-		"coverage-ci": "Run tests with code coverage for the Parse.ly plugin and generate a Clover XML file for CI.",
+		"coverage": "Run unit tests with code coverage for the Parse.ly plugin, send results to stdout, and generate plus local HTML output.",
+		"coverage-ci": "Run unit tests with code coverage for the Parse.ly plugin and send results to stdout.",
+		"coveragewp": "Run integration tests with code coverage for the Parse.ly plugin, send results to stdout, and generate local HTML output.",
+		"coveragewp-ci": "Run integration tests with code coverage for the Parse.ly plugin and send results to stdout.",
 		"cs": "Run PHPCS to checking coding standards for the Parse.ly plugin.",
 		"lint": "Run PHP linting on the Parse.ly plugin.",
 		"lint-ci": "Run PHP linting on the Parse.ly plugin with checkstyle output for CI.",
 		"prepare-ci": "Install the files and setup a database needed to run tests for the Parse.ly plugin for CI.",
-		"test": "Run the tests for the Parse.ly plugin.",
-		"test-ms": "Run the tests for the Parse.ly plugin on a multisite install."
+		"test": "Run the unit tests for the Parse.ly plugin.",
+		"test-ms": "Run the unit tests for the Parse.ly plugin on a multisite install.",
+		"testwp": "Run the integration tests for the Parse.ly plugin.",
+		"testwp-ms": "Run the integration tests for the Parse.ly plugin on a multisite install."
 	}
 }

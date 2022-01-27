@@ -1,12 +1,12 @@
 # Parse.ly
 
-Stable tag: 3.1.0-alpha  
+Stable tag: 3.1.0  
 Requires at least: 5.0  
 Tested up to: 5.8  
 Requires PHP: 7.1  
 License: GPLv2 or later  
 Tags: analytics, parse.ly, parsely, parsley  
-Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauargelaguet
+Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauargelaguet, acicovic
 
 The Parse.ly plugin facilitates real-time and historical analytics to your content through a platform designed and built for digital publishing.
 
@@ -22,32 +22,78 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 
 - Get started with Parse.ly right away: the plugin automatically inserts the required metadata and JavaScript on all your published pages and posts.
 - Choose what format the metadata takes, and whether logged-in users should be included in the analytics.
+- Using it in a decoupled setup? Parse.ly adds metadata to the REST API output for pages, posts and optionally other object types.
 - If you've purchased access to the Parse.ly API, add a widget to your site with article recommendations personalized to individual users.
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
 
 ## Installation
 
-The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results. [Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
+The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results. [Sign up for a free demo of Parse.ly](https://www.parsely.com/getdemo?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
 ### Install the plugin from within WordPress
 
 1. Visit the Plugins page from your WordPress dashboard and click "Add New" at the top of the page.
-1. Search for _parse.ly_ using the search bar on the right side.
-1. Click _Install Now_ to install the plugin.
-1. After it's installed, click _Activate_ to activate the plugin on your site.
+2. Search for _parse.ly_ using the search bar on the right side.
+3. Click _Install Now_ to install the plugin.
+4. After it's installed, click _Activate_ to activate the plugin on your site.
 
 ### Install the plugin manually
 
 1. Download the plugin from [WordPress.org](https://wordpress.org/plugins/wp-parsely/) or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
-1. Unzip the downloaded archive.
-1. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
-1. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
-1. Click _Activate_ to activate the plugin on your site.
+2. Unzip the downloaded archive.
+3. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
+4. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
+5. Click _Activate_ to activate the plugin on your site.
 
 ## Local development
 
 To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](CONTRIBUTING.md) file.
+
+## REST API
+
+The plugin adds a `parsely` field to certain REST API responses. This can be disabled by returning `false` from the `wp_parsely_enable_rest_api_support` filter.
+
+Example:
+
+```
+// Disable all REST API output from the Parse.ly plugin.
+add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
+```
+
+The plugin adds the `parsely` field to endpoints corresponding to the Tracked Post Types and Tracked Page Types selected in the plugin settings. By default, this would be the `/wp-json/wp/v2/pages` and `/wp-json/wp/v2/posts` endpoints along with the corresponding single resource endpoints.
+
+This choice of objects types can be further changed by using the `wp_parsely_rest_object_types` filter.
+
+Example:
+
+```
+// Disable REST API output from pages, but enable for term archives.
+add_filter(
+	'wp_parsely_rest_object_types',
+	function( $object_types ) {
+		$object_types = array_diff( $object_types, array( 'page' ) );
+		$object_types[] = 'term';
+		return $object_types;
+	}
+);
+```
+
+The `parsely` field contains the following fields:
+ - `version`, which is a string identifying the version of the REST API output; this will be updated if changes are made to the output, so consuming applications can check against it.
+ - `meta`, which is an array of metadata for the specific post, page or other object type.
+ - `rendered`, which is the rendered HTML of the metadata for the post, page or other object type. This will be a JSON-LD `<script>` tag, or a set of `<meta>` tags, depending on the format selected in the plugin settings. The decoupled code can consume and use this directly, instead of building the values from the `meta` field values.
+
+The `rendered` field is a convenience field containing the HTML-formatted metadata which can be printed to a decoupled page as is.
+
+This can be disabled by returning `false` from the `wp_parsely_enable_rest_rendered_support` filter.
+
+Example:
+
+```
+// Disable rendered field output from the REST API output.
+add_filter( 'wp_parsely_enable_rest_rendered_support', '__return_false' );
+```
 
 ## Frequently Asked Questions
 
@@ -101,13 +147,16 @@ add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 
 ## Screenshots
 
-1. The main admin screen of the Parse.ly plugin, showing some of the settings.  
+1. Parse.ly plugin main settings for easy setup. For the plugin to start working, only the website ID is needed.  
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-1.png)
-
-2. The settings for the Parse.ly Recommended Widget. Engage your visitors with predictive and personalized recommendations from Parse.ly.  
-   ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-2.png)
-3. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.  
-   ![The Parsely Dashboard Overview](.wordpress-org/screenshot-3.png)
+2. Parse.ly plugin settings that require you to submit a website recrawl request whenever you update them.  
+   ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-2.png)
+3. Parse.ly plugin advanced settings. To be used only if instructed by Parse.ly staff.  
+   ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-3.png)
+4. The settings for the Parse.ly Recommended Widget. Engage your visitors with predictive and personalized recommendations from Parse.ly.  
+   ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-4.png)
+5. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.  
+   ![The Parsely Dashboard Overview](.wordpress-org/screenshot-5.png)
 
 ## Sample Parse.ly metadata
 

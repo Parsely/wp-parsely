@@ -22,7 +22,7 @@ final class AdminWarningTest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var Admin_Warning $admin_warning Holds the Settings_Page object
+	 * @var Admin_Warning $admin_warning Holds the Admin_Warning object
 	 */
 	private static $admin_warning;
 

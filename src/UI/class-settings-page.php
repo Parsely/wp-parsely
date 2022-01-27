@@ -67,10 +67,24 @@ final class Settings_Page {
 	public function run(): void {
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_scripts' ) );
 		// Handle saving of screen options.
 		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 11, 3 );
 		// Render screen options.
 		add_filter( 'screen_settings', array( $this, 'screen_settings' ), 10, 2 );
+	}
+
+	/**
+	 * Enqueue all needed scripts for Parse.ly plugin settings page.
+	 *
+	 * @param string $hook_suffix The current page being loaded.
+	 * @return void
+	 */
+	public function enqueue_settings_scripts( string $hook_suffix ): void {
+		if ( 'settings_page_parsely' === $hook_suffix ) {
+			wp_enqueue_media();
+			wp_enqueue_script( 'parsely_admin_scripts', dirname( plugin_dir_url( __FILE__ ) ) . '/js/admin/index.js', array(), Parsely::VERSION, true );
+		}
 	}
 
 	/**
@@ -208,7 +222,7 @@ final class Settings_Page {
 				'title'   => __( 'Requires Recrawl', 'wp-parsely' ),
 				'content' => '<p>' . __(
 					'Important: changing any of the values in the Requires Recrawl section on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data.
-Once you have changed a value and and saved, please contact support@parsely.com to request a recrawl.',
+Once you have changed a value and saved, please contact support@parsely.com to request a recrawl.',
 					'wp-parsely'
 				) . '</p>' .
 					'<p>' . __(
@@ -295,7 +309,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		);
 
 		/* translators: 1: Opening anchor tag markup, 2: Documentation URL, 3: Opening anchor tag markup continued, 4: Closing anchor tag */
-		$h          = __( 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API, and would like to do so, email your account manager or support@parsely.com.', 'wp-parsely' );
+		$h          = __( 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API and would like to do so, email your account manager or <a href="mailto:support@parsely.com">support@parsely.com</a>.', 'wp-parsely' );
 		$field_id   = 'api_secret';
 		$field_args = array(
 			'option_key' => $field_id,
@@ -328,20 +342,20 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		);
 
 		// Logo.
-		$h          = __( 'If you want to specify the URL for your logo, you can do so here.', 'wp-parsely' );
+		$field_help = __( 'Here you can specify your logo\'s URL by using the "Browse" button or typing the URL manually.', 'wp-parsely' );
 		$field_id   = 'logo';
-		$field_args = array(
-			'option_key' => $field_id,
-			'help_text'  => $h,
-			'label_for'  => $field_id,
-		);
 		add_settings_field(
 			$field_id,
 			__( 'Logo', 'wp-parsely' ),
-			array( $this, 'print_text_tag' ),
+			array( $this, 'print_media_single_image' ),
 			Parsely::MENU_SLUG,
 			'basic_settings',
-			$field_args
+			array(
+				'title'      => __( 'Logo', 'wp-parsely' ), // Passed for legend element.
+				'option_key' => $field_id,
+				'label_for'  => $field_id,
+				'help_text'  => $field_help,
+			)
 		);
 
 		// Track logged-in users.
@@ -360,7 +374,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		);
 
 		// Disable JavaScript.
-		$h = __( 'If you use a separate system for JavaScript tracking (Tealium / Segment / Google Tag Manager / other tag manager solution) you may want to use that instead of having the plugin load the tracker. WARNING: disabling this option will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving this option set to "No".', 'wp-parsely' );
+		$h = __( 'If you use a separate system for JavaScript tracking (Tealium / Segment / Google Tag Manager / other tag manager solution) you may want to use that instead of having the plugin load the tracker. <span style="color:#d63638">WARNING:</span> disabling this option will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving this option set to "No".', 'wp-parsely' );
 		add_settings_field(
 			'disable_javascript',
 			__( 'Disable JavaScript', 'wp-parsely' ),
@@ -404,11 +418,11 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 			'requires_recrawl_settings',
 			__( 'Requires Recrawl Settings', 'wp-parsely' ),
 			function (): void {
-				echo '<strong>' . wp_kses_post( __( '<span style="color:#d63638">Important:</span> changing any of these values below on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data.', 'wp-parsely' ) ) . '</strong><br />';
+				echo '<strong>' . wp_kses_post( __( '<span style="color:#d63638">Important:</span> Changing any of these values below on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data.', 'wp-parsely' ) ) . '</strong><br />';
 				printf(
 				/* translators: Mailto link  */
 					esc_html__( 'Once you have changed a value and and saved, please contact %s to request a recrawl.', 'wp-parsely' ),
-					wp_kses_post( '<a href="mailto:support@parsely.com?subject=' . urlencode( 'Please reprocess ' . $this->parsely->get_api_key() ) . '">support@parsely.com</a>' )
+					wp_kses_post( '<a href="mailto:support@parsely.com?subject=' . rawurlencode( 'Please reprocess ' . $this->parsely->get_api_key() ) . '">support@parsely.com</a>' )
 				);
 			},
 			Parsely::MENU_SLUG
@@ -418,7 +432,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		$h          = __( 'By default, Parse.ly only tracks the default post type as a post page. If you want to track custom post types, select them here!', 'wp-parsely' );
 		$field_id   = 'track_post_types';
 		$field_args = array(
-			'title'          => __( 'Post Types To Track', 'wp-parsely' ),
+			'title'          => __( 'Post Types to Track', 'wp-parsely' ),
 			'option_key'     => $field_id,
 			'help_text'      => $h,
 			'select_options' => get_post_types( array( 'public' => true ) ),
@@ -426,7 +440,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Post Types To Track', 'wp-parsely' ),
+			__( 'Post Types to Track', 'wp-parsely' ),
 			array( $this, 'print_multiple_checkboxes' ),
 			Parsely::MENU_SLUG,
 			'requires_recrawl_settings',
@@ -437,7 +451,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		$h          = __( 'By default, Parse.ly only tracks the default page type as a non-post page. If you want to track custom post types as non-post pages, select them here!', 'wp-parsely' );
 		$field_id   = 'track_page_types';
 		$field_args = array(
-			'title'          => __( 'Page Types To Track', 'wp-parsely' ),
+			'title'          => __( 'Page Types to Track', 'wp-parsely' ),
 			'option_key'     => 'track_page_types',
 			'help_text'      => $h,
 			'select_options' => get_post_types( array( 'public' => true ) ),
@@ -445,7 +459,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		);
 		add_settings_field(
 			'track_page_types',
-			__( 'Page Types To Track', 'wp-parsely' ),
+			__( 'Page Types to Track', 'wp-parsely' ),
 			array( $this, 'print_multiple_checkboxes' ),
 			Parsely::MENU_SLUG,
 			'requires_recrawl_settings',
@@ -572,12 +586,12 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		$h = __( 'The plugin uses <code>http</code> canonical URLs by default. If this needs to be forced to use <code>https</code>, set this option to true. Note: the default is fine for almost all publishers, it\'s unlikely you\'ll have to change this unless directed to do so by a Parse.ly support rep.', 'wp-parsely' );
 		add_settings_field(
 			'force_https_canonicals',
-			__( 'Force HTTPS canonicals', 'wp-parsely' ),
+			__( 'Force HTTPS Canonicals', 'wp-parsely' ),
 			array( $this, 'print_binary_radio_tag' ),
 			Parsely::MENU_SLUG,
 			'requires_recrawl_settings',
 			array(
-				'title'      => __( 'Force HTTPS canonicals', 'wp-parsely' ), // Passed for legend element.
+				'title'      => __( 'Force HTTPS Canonicals', 'wp-parsely' ), // Passed for legend element.
 				'option_key' => 'force_https_canonicals',
 				'help_text'  => $h,
 			)
@@ -601,7 +615,7 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		);
 
 		// Clear metadata.
-		$h = __( 'Check this radio button and hit "Save Changes" to clear all metadata information for Parse.ly posts and re-send all metadata to Parse.ly.<br />WARNING: do not do this unless explicitly instructed by Parse.ly Staff!', 'wp-parsely' );
+		$h = __( 'Check this radio button and hit "Save Changes" to clear all metadata information for Parse.ly posts and re-send all metadata to Parse.ly.<br /><span style="color:#d63638">WARNING:</span> Do not do this unless explicitly instructed by Parse.ly Staff!', 'wp-parsely' );
 		add_settings_field(
 			'parsely_wipe_metadata_cache',
 			__( 'Wipe Parse.ly Metadata Info', 'wp-parsely' ),
@@ -770,6 +784,32 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 	}
 
 	/**
+	 * Print out a "single-image browse control" which includes a text
+	 * input to store image path and a button to browse for images.
+	 *
+	 * @param array $args The arguments for the control.
+	 * @return void
+	 */
+	public function print_media_single_image( array $args ) {
+		$key         = $args['option_key'];
+		$input_value = $this->parsely->get_options()[ $key ];
+		$input_name  = Parsely::OPTIONS_KEY . "[$key]";
+		$button_text = __( 'Browse', 'wp-parsely' );
+		?>
+
+		<fieldset class="media-single-image" id="media-single-image-<?php echo esc_attr( $key ); ?>">
+			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
+			<input class="file-path" type="text" name="<?php echo esc_attr( $input_name ); ?>" value="<?php echo esc_attr( $input_value ); ?>" />
+			<p>
+				<button data-option="<?php echo esc_attr( $key ); ?>" class="browse button" type="button"><?php echo esc_html( $button_text ); ?></button>
+			</p>
+		</fieldset>
+
+		<?php
+		$this->print_description_text( $args );
+	}
+
+	/**
 	 * Validate the options provided by the user
 	 *
 	 * @param array $input Options from the settings page.
@@ -876,6 +916,29 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 		$input['track_post_types'] = self::validate_option_array( $input['track_post_types'] );
 		$input['track_page_types'] = self::validate_option_array( $input['track_page_types'] );
 
+		// Detect and prevent duplicate tracking.
+		$duplicate_items = array_intersect( $input['track_post_types'], $input['track_page_types'] );
+		if ( 0 !== count( $duplicate_items ) ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'track_page_types',
+				sprintf(
+					/* translators: %s: Item(s) being tracked both as posts and pages. */
+					__(
+						'%s cannot be tracked as both posts and pages. Please select every element only once.',
+						'wp-parsely'
+					),
+					implode( 'and ', $duplicate_items )
+				)
+			);
+
+			// Revert invalid settings.
+			$input['track_post_types'] = $options['track_post_types'];
+			$input['track_page_types'] = $options['track_page_types'];
+		}
+
+		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
+
 		// Custom taxonomy as section.
 		if ( null === $input['meta_type'] ) {
 			$input['meta_type'] = $options['meta_type'];
@@ -974,6 +1037,50 @@ Once you have changed a value and and saved, please contact support@parsely.com 
 			);
 		} else {
 			$input['force_https_canonicals'] = 'true' === $input['force_https_canonicals'];
+		}
+
+		if ( 'true' !== $input['disable_javascript'] && 'false' !== $input['disable_javascript'] ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'disable_javascript',
+				__( 'Value passed for disable_javascript must be either "true" or "false".', 'wp-parsely' )
+			);
+		} else {
+			$input['disable_javascript'] = 'true' === $input['disable_javascript'];
+		}
+
+		// Allow for Disable AMP setting to be conditionally included on the page.
+		// If it's not shown, then set the value as what was previously saved.
+		if ( ! isset( $input['disable_amp'] ) || null === $input['disable_amp'] ) {
+			$input['disable_amp'] = 'true';
+			if ( false === $options['disable_amp'] ) {
+				$input['disable_amp'] = 'false';
+			}
+		}
+
+		if ( 'true' !== $input['disable_amp'] && 'false' !== $input['disable_amp'] ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'disable_amp',
+				__( 'Value passed for disable_amp must be either "true" or "false".', 'wp-parsely' )
+			);
+		} else {
+			$input['disable_amp'] = 'true' === $input['disable_amp'];
+		}
+
+		if ( ! empty( $input['metadata_secret'] ) ) {
+			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
+				add_settings_error(
+					Parsely::OPTIONS_KEY,
+					'metadata_secret',
+					__( 'Metadata secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+				);
+			} elseif ( 'true' === $input['parsely_wipe_metadata_cache'] ) {
+				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
+
+				wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
+				$input['parsely_wipe_metadata_cache'] = false;
+			}
 		}
 
 		return $input;

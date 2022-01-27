@@ -5,7 +5,87 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.0.0] - 2021-11-26
+## [3.1.0] 2022-01-21
+
+The 3.1.0 release is a minor release for the plugin that does not introduce any breaking changes coming from the 3.0 branch. This version's primary focus is adding support for WordPress decoupled architectures and a revamped settings page. We have also worked hard on refining our code, testing, and delivery process.
+
+The Parse.ly plugin now hooks into the WordPress REST API to provide content metadata in a format that's easy for a variety of client applications to consume. A `parsely` field containing the metadata is now rendered in the tracked objects (e.g., `post` and `page`). No new endpoint is introduced. This behavior can be disabled using a filter. Please refer to the plugin's README file for more details. Note that the tracking script must still be inserted manually in the decoupled front-end or otherwise loaded for your site.
+
+### Added
+
+- Decoupled support. [#489](https://github.com/Parsely/wp-parsely/pull/489) [#500](https://github.com/Parsely/wp-parsely/pull/500)
+- Revamped wp-admin settings page, divided in sections. [#518](https://github.com/Parsely/wp-parsely/pull/518)
+- Parse.ly stats button on admin bar. [#569](https://github.com/Parsely/wp-parsely/pull/569)
+- Show error in settings page when duplicated tracking is selected. [#543](https://github.com/Parsely/wp-parsely/pull/543)
+- Instructions for local development. [#525](https://github.com/Parsely/wp-parsely/pull/525)
+- Local developer environment logs command. [#532](https://github.com/Parsely/wp-parsely/pull/532)
+- Husky-based git commit hooks to enforce linting rules prior to commit. [#538](https://github.com/Parsely/wp-parsely/pull/538)
+- Linting for JavaScript and CSS files. [#527](https://github.com/Parsely/wp-parsely/pull/527)
+- Types to function arguments in GetCurrentUrlTest. [#504](https://github.com/Parsely/wp-parsely/pull/504)
+- End-to-end test to verify if scripts are rendered in the front-end. [#528](https://github.com/Parsely/wp-parsely/pull/528)
+- Concurrency to CI configuration and Composer tweaks. [#559](https://github.com/Parsely/wp-parsely/pull/559)
+- Explicit dependabot reviewers on GitHub. [#526](https://github.com/Parsely/wp-parsely/pull/526)
+- WordPress.org banner images. [#581](https://github.com/Parsely/wp-parsely/pull/581)
+- PHPStan static analysis tool. [#590](https://github.com/Parsely/wp-parsely/pull/590)
+
+### Changed
+
+- Hiding _Disable AMP_ field on settings page when the AMP plugin is not enabled. [#519](https://github.com/Parsely/wp-parsely/pull/519)
+- Use built-in WordPress submit button instead of custom one in the settings page. [#513](https://github.com/Parsely/wp-parsely/pull/513)
+- Improved wp-admin settings page help texts. [#552](https://github.com/Parsely/wp-parsely/pull/552)
+- `@wordpress/scripts` bumped from 19.2.1 to 19.2.3. [#503](https://github.com/Parsely/wp-parsely/pull/503) [#603](https://github.com/Parsely/wp-parsely/pull/603)
+- `prettier` bumped from 2.4.1 to 2.5.0. [#509](https://github.com/Parsely/wp-parsely/pull/509)
+- `concurrently` bumped from 6.4.0 to 6.5.1. [#551](https://github.com/Parsely/wp-parsely/pull/551)
+- Ubuntu bumped from 18.04 to 20.04 on CI tests. [#445](https://github.com/Parsely/wp-parsely/pull/445)
+- Unit and Integration tests run in random order. [#511](https://github.com/Parsely/wp-parsely/pull/511)
+- Correct Parse.ly spelling in tests comments. [#561](https://github.com/Parsely/wp-parsely/pull/561)
+- Minor amendments on the documentation. [#514](https://github.com/Parsely/wp-parsely/pull/514)
+- Updated release process guidelines. [#567](https://github.com/Parsely/wp-parsely/pull/567)
+- Removed checkboxes from GitHub's PR template. [#512](https://github.com/Parsely/wp-parsely/pull/512)
+- Improved JS scripts integration tests. [#557](https://github.com/Parsely/wp-parsely/pull/557)
+- Source code linting violations (PHPCS with `--serverity=1`). [#544](https://github.com/Parsely/wp-parsely/pull/544)
+- WordPress.org screenshots for settings page. [#574](https://github.com/Parsely/wp-parsely/pull/574)
+
+### Fixed
+
+- Incorrect type errors. [#607](https://github.com/Parsely/wp-parsely/pull/607)
+- Undefined index error on settings page. [#536](https://github.com/Parsely/wp-parsely/pull/536)
+- Source the correct asset for the Recommendations Widget. [#545](https://github.com/Parsely/wp-parsely/pull/545)
+- End-to-end tests in CI (GitHub Actions). [#521](https://github.com/Parsely/wp-parsely/pull/521)
+
+### Removed
+
+- Plugin version number being printed in front-end's HTML source code. [#502](https://github.com/Parsely/wp-parsely/pull/502)
+- Custom CSS on wp-admin settings page. [#496](https://github.com/Parsely/wp-parsely/pull/496)
+- `migrate_old_fields` private function from Recommended Widget. [#599](https://github.com/Parsely/wp-parsely/pull/599)
+- PHP 8.2 from CI tests. [#523](https://github.com/Parsely/wp-parsely/pull/523)
+- Custom end-to-end Docker image. [#524] (https://github.com/Parsely/wp-parsely/pull/524)
+
+## [3.0.4] - 2022-01-17
+
+### Changed
+
+- Changed plugin loading functions from anonymous to named functions. [#595](https://github.com/Parsely/wp-parsely/pull/595)
+
+## [3.0.3] - 2022-01-12
+
+### Fixed
+
+- [Fixed a fatal error](https://github.com/Parsely/wp-parsely/issues/587) when requesting metadata for a post without categories and `categories as tags` enabled. [#588](https://github.com/Parsely/wp-parsely/pull/588)
+
+## [3.0.2] - 2022-01-05
+
+### Fixed
+
+- [Properly render the post modified date metadata](https://github.com/Parsely/wp-parsely/issues/558) & Fix a [fatal error](https://github.com/Parsely/wp-parsely/issues/562) caused by an unexpected data type [#560](https://github.com/Parsely/wp-parsely/pull/560)
+
+## [3.0.1] - 2021-12-17
+
+### Fixed
+
+- Fix metadata on password protected posts [#547](https://github.com/Parsely/wp-parsely/pull/547)
+
+## [3.0.0] - 2021-12-15
 
 ## Important information about this release
 
@@ -32,7 +112,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - E2E test for recommended widget. [#434](https://github.com/Parsely/wp-parsely/pull/434)
 - JavaScript code-scanning [#453](https://github.com/Parsely/wp-parsely/pull/453)
 
-### Changed 
+### Changed
 
 - Minimum PHP and WP versions required to run the plugin are now 7.1 (from 5.6) and 5.0 from (4.0), respectively. [#416](https://github.com/Parsely/wp-parsely/pull/416)
 - The development Node JS version has been bumped from 14 to 16.
@@ -70,7 +150,8 @@ If you are using the plugin without any code-level customizations (for instance,
 - Consistent return types on `update_metadata_endpoint`. [#446](https://github.com/Parsely/wp-parsely/pull/446)
   - The function used to return different return types, now it always returns `void`.
 - Consistent return type on `insert_parsely_page`. [#443](https://github.com/Parsely/wp-parsely/pull/443)
-  - The function used to return `string|null|array`, now it returns `void`. 
+  - The function used to return `string|null|array`, now it returns `void`.
+- Fixed fatal error when the option in the database was corrupted. [#540](https://github.com/Parsely/wp-parsely/pull/540)
 - Tests: Stop using deprecated `setMethods()` method. [#427](https://github.com/Parsely/wp-parsely/pull/427)
 - e2e tests: fix watch command. [#476](https://github.com/Parsely/wp-parsely/pull/476)
 - Fix non-working README code example. [#439](https://github.com/Parsely/wp-parsely/pull/439)
@@ -84,7 +165,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - `post_has_viewable_type` function. [#417](https://github.com/Parsely/wp-parsely/pull/417)
   - Use `is_post_viewable` instead. The `post_has_viewable_type` function was only added to support older versions of WordPress.
 - Custom Parse.ly load text domain. [#457](https://github.com/Parsely/wp-parsely/pull/457)
-  - Since the plugin now supports versions of WordPress that load custom text domains automatically, the plugins doesn't have to explicitly load the text domain itself. 
+  - Since the plugin now supports versions of WordPress that load custom text domains automatically, the plugins doesn't have to explicitly load the text domain itself.
 - Empty functions for admin settings. [#456](https://github.com/Parsely/wp-parsely/pull/456)
   - The callbacks were never utilised.
 - Redundant code coverage annotations. [#469](https://github.com/Parsely/wp-parsely/pull/469)
@@ -125,7 +206,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - Bump prettier from 2.3.2 to 2.4.1 #376
 - Bump @wordpress/scripts from 17.1.0 to 18.0.1 #366
 
-### Fixed 
+### Fixed
 
 - Widget: Hide the recommendation widget until the element is populated #193
 - Add conditional for CPT archives and CPT term archives #328
@@ -135,7 +216,6 @@ If you are using the plugin without any code-level customizations (for instance,
 - Change red color in admin to match wp-admin styles #386
 - Remove unused default logo variable #387
 - Remove unused return_personalized_json function #391
-
 
 ## [2.5.2] - 2021-09-17
 
@@ -420,8 +500,13 @@ If you are using the plugin without any code-level customizations (for instance,
 ## [v1.0] - 2012-07-15
 
 - Initial version.
-- Add sSupport for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
+- Add support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
+[3.1.0]: https://github.com/Parsely/wp-parsely/compare/3.0.4...3.1.0
+[3.0.4]: https://github.com/Parsely/wp-parsely/compare/3.0.3...3.0.4
+[3.0.3]: https://github.com/Parsely/wp-parsely/compare/3.0.2...3.0.3
+[3.0.2]: https://github.com/Parsely/wp-parsely/compare/3.0.1...3.0.2
+[3.0.1]: https://github.com/Parsely/wp-parsely/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/Parsely/wp-parsely/compare/2.6.1...3.0.0
 [2.6.1]: https://github.com/Parsely/wp-parsely/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/Parsely/wp-parsely/compare/2.5.2...2.6.0
