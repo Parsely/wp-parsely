@@ -97,7 +97,7 @@ require __DIR__ . '/src/UI/class-network-admin-sites-list.php';
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
- * Register the additions the Multisite Network Admin Sites List table.
+ * Register the additions the Parse.ly wp-admin settings page and Multisite Network Admin Sites List table.
  *
  * @return void
  */
