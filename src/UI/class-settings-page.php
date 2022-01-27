@@ -31,7 +31,7 @@ final class Settings_Page {
 	/**
 	 * Admin page name used for hook suffixes.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ final class Settings_Page {
 	 *
 	 * Name must end in `_page` so that set-screen-option hook is triggered for WP < 5.4.2.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @var string
 	 */
@@ -112,7 +112,7 @@ final class Settings_Page {
 	 *
 	 * Nonce is already checked in set_screen_options() - no need to check here.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @param mixed  $screen_option The value to save instead of the option value. Default false (to skip saving the current option).
 	 * @param string $option        The option name.
@@ -135,7 +135,7 @@ final class Settings_Page {
 	/**
 	 * Register screen options.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
@@ -159,7 +159,7 @@ final class Settings_Page {
 	/**
 	 * Render the screen options block.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @param string    $screen_settings Screen settings.
 	 * @param WP_Screen $screen          WP_Screen object.
@@ -275,7 +275,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Register section and settings for Basic section.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
@@ -409,7 +409,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Register section and settings for Requires Recrawl section.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
@@ -420,7 +420,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			function (): void {
 				echo '<strong>' . wp_kses_post( __( '<span style="color:#d63638">Important:</span> Changing any of these values below on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data.', 'wp-parsely' ) ) . '</strong><br />';
 				printf(
-				/* translators: Mailto link  */
+					/* translators: Mailto link  */
 					esc_html__( 'Once you have changed a value and and saved, please contact %s to request a recrawl.', 'wp-parsely' ),
 					wp_kses_post( '<a href="mailto:support@parsely.com?subject=' . rawurlencode( 'Please reprocess ' . $this->parsely->get_api_key() ) . '">support@parsely.com</a>' )
 				);
@@ -471,14 +471,14 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$h          = __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with <a href="https://www.parse.ly/help/integration/jsonld/">JSON-LD</a>, but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' );
 		$field_id   = 'meta_type';
 		$field_args = array(
-			'option_key'         => $field_id,
-			'help_text'          => $h,
+			'option_key'     => $field_id,
+			'help_text'      => $h,
 			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-				'select_options' => array(
-					'json_ld'        => 'json_ld',
-					'repeated_metas' => 'repeated_metas',
-				),
-			'label_for'          => Parsely::OPTIONS_KEY . "[$field_id]",
+			'select_options' => array(
+				'json_ld'        => 'json_ld',
+				'repeated_metas' => 'repeated_metas',
+			),
+			'label_for'      => Parsely::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
 			$field_id,
@@ -518,10 +518,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			Parsely::MENU_SLUG,
 			'requires_recrawl_settings',
 			array(
-				'title'          => __( 'Use Top-Level Categories for Section', 'wp-parsely' ),
-				// Passed for legend element.
-					'option_key' => 'use_top_level_cats',
-				'help_text'      => $h,
+				'title'      => __( 'Use Top-Level Categories for Section', 'wp-parsely' ), // Passed for legend element.
+				'option_key' => 'use_top_level_cats',
+				'help_text'  => $h,
 			)
 		);
 
@@ -601,7 +600,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Register section and settings for Advanced section.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
@@ -1115,7 +1114,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			}
 		}
 
-		// get_site_icon_url() returns an empty string if one isn't found,
+		// get_site_icon_url returns an empty string if one isn't found,
 		// which is what we want to use as the default anyway.
 		return get_site_icon_url();
 	}
