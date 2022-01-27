@@ -240,7 +240,7 @@ If you are using the plugin without any code-level customizations (for instance,
 
 ### Added
 
-- Refreshed contributor documentation into a new [CONTRIBUTING.md](CONTRIBUTING.md) file.
+- Refreshed contributor documentation into a new [CONTRIBUTING.md](docs/CONTRIBUTING.md) file.
 - Introduce a build step for front-end and admin page JavaScript assets which leverages the [`@wordpress/scripts` package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-scripts/). Scripts are now separately enqueued and browser-cacheable.
 - Allow for select HTML tags and attributes in the Recommended Content widget title.
 - Add a "No boost" option for scores in the widget.
