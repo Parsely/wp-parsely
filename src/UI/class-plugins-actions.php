@@ -11,8 +11,9 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
-
 use const Parsely\PARSELY_FILE;
+use function Parsely\_plugin_basename;
+use function Parsely\is_network_active;
 
 /**
  * User Interface changes for the plugins actions.
@@ -27,7 +28,7 @@ final class Plugins_Actions {
 	 * @return void
 	 */
 	public function run(): void {
-		add_filter( 'plugin_action_links_' . plugin_basename( PARSELY_FILE ), array( $this, 'add_plugin_meta_links' ) );
+		add_filter( 'plugin_action_links_' . _plugin_basename(), array( $this, 'add_plugin_meta_links' ) );
 	}
 
 	/**
@@ -39,7 +40,7 @@ final class Plugins_Actions {
 	 * @return array
 	 */
 	public function add_plugin_meta_links( array $actions ): array {
-		if ( ( is_multisite() && is_plugin_active_for_network( plugin_basename( PARSELY_FILE ) ) ) ) {
+		if ( is_network_active() ) {
 			$actions['siteslist']     = sprintf(
 				'<a href="%s" target="_blank">%s</a>',
 				network_admin_url( 'sites.php' ),
