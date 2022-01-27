@@ -388,7 +388,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			)
 		);
 
-		if ( \defined( 'AMP__VERSION' ) ) {
+		if ( defined( 'AMP__VERSION' ) ) {
 			// Disable AMP tracking.
 			$h = __( 'If you use a separate system for JavaScript tracking on AMP pages (Tealium / Segment / Google Tag Manager / other tag manager solution) you may want to use that instead of having the plugin load the tracker.', 'wp-parsely' );
 			add_settings_field(
@@ -528,20 +528,20 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$h          = __( 'By default, the section value in your Parse.ly dashboard maps to a post\'s category. You can optionally choose a custom taxonomy, if you\'ve created one, to populate the section value instead.', 'wp-parsely' );
 		$field_id   = 'custom_taxonomy_section';
 		$field_args = array(
-			'option_key'         => $field_id,
-			'help_text'          => $h,
+			'option_key'     => $field_id,
+			'help_text'      => $h,
 			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-				'select_options' => array_diff(
-					get_taxonomies(),
-					array(
-						'post_tag',
-						'nav_menu',
-						'author',
-						'link_category',
-						'post_format',
-					)
-				),
-			'label_for'          => Parsely::OPTIONS_KEY . "[$field_id]",
+			'select_options' => array_diff(
+				get_taxonomies(),
+				array(
+					'post_tag',
+					'nav_menu',
+					'author',
+					'link_category',
+					'post_format',
+				)
+			),
+			'label_for'      => Parsely::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
 			$field_id,
