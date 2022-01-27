@@ -56,16 +56,19 @@ final class Google_Web_Stories implements Integration {
 	 * @return void
 	 */
 	public function render_amp_analytics_tracker(): void {
-		?>
-		<amp-analytics type="parsely">
-			<script type="application/json">
-				{
-					"vars": {
-						"apikey": "<?php echo esc_js( $this->parsely->get_api_key() ); ?>"
+		$apikey = $this->parsely->get_api_key();
+		if ( strlen( $apikey ) > 0 ) {
+			?>
+			<amp-analytics type="parsely">
+				<script type="application/json">
+					{
+						"vars": {
+							"apikey": "<?php echo esc_js( $apikey ); ?>"
+						}
 					}
-				}
-			</script>
-		</amp-analytics>
-		<?php
+				</script>
+			</amp-analytics>
+			<?php
+		}
 	}
 }
