@@ -61,7 +61,7 @@ final class Admin_Warning {
 			esc_url( Parsely::get_settings_url() )
 		);
 		?>
-		<div id="message" class="error"><p><?php echo wp_kses_post( $message ); ?></p></div>
+		<div id="wp-parsely-apikey-error-notice" class="notice notice-error"><p><?php echo wp_kses_post( $message ); ?></p></div>
 		<?php
 	}
 
