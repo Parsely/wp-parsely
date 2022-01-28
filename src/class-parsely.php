@@ -655,7 +655,7 @@ class Parsely {
 		 *
 		 * @param string $cache_buster Plugin version, unless WP_DEBUG is defined and truthy, and tests are not running.
 		 */
-		$cache_buster = apply_filters( 'wp_parsely_cache_buster', (string) $cache_buster );
+		$cache_buster = apply_filters_deprecated( 'wp_parsely_cache_buster', array( (string) $cache_buster ), '3.2.0' );
 
 		return $cache_buster;
 	}
