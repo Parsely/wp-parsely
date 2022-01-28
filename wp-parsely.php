@@ -28,10 +28,12 @@ namespace Parsely;
 
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
+use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Plugins_Actions;
+use Parsely\UI\Network_Admin_Sites_List;
 use Parsely\UI\Recommended_Widget;
 use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
@@ -103,6 +105,19 @@ function parsely_admin_menu_register(): void {
 	$settings_page->run();
 }
 
+require __DIR__ . '/src/UI/class-network-admin-sites-list.php';
+
+add_action( 'admin_init', __NAMESPACE__ . '\\admin_init_network_sites_list' );
+/**
+ * Register the additions the Multisite Network Admin Sites List table.
+ *
+ * @return void
+ */
+function admin_init_network_sites_list(): void {
+	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
+	$network_admin_sites_list->run();
+}
+
 require __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
@@ -119,6 +134,7 @@ require __DIR__ . '/src/Integrations/class-integration.php';
 require __DIR__ . '/src/Integrations/class-integrations.php';
 require __DIR__ . '/src/Integrations/class-amp.php';
 require __DIR__ . '/src/Integrations/class-facebook-instant-articles.php';
+require __DIR__ . '/src/Integrations/class-google-web-stories.php';
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
 /**
@@ -132,6 +148,7 @@ function parsely_integrations(): Integrations {
 	$parsely_integrations = new Integrations();
 	$parsely_integrations->register( 'amp', Amp::class );
 	$parsely_integrations->register( 'fbia', Facebook_Instant_Articles::class );
+	$parsely_integrations->register( 'webstories', new Google_Web_Stories( $GLOBALS['parsely'] ) );
 	$parsely_integrations = apply_filters( 'wp_parsely_add_integration', $parsely_integrations );
 	$parsely_integrations->integrate();
 
