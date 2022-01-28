@@ -20,7 +20,7 @@ $parsely_version_string = sprintf( __( 'Version %s', 'wp-parsely' ), Parsely::VE
 <div class="wrap">
 	<h1 class="wp-heading-inline"><?php echo esc_html( get_admin_page_title() ); ?></h1>
 	<span id="wp-parsely_version"><?php echo esc_html( $parsely_version_string ); ?></span>
-	<p><em><?php esc_html_e( 'More settings can be enabled via Screen Options.', 'wp-parsely' ); ?></em></p>
+	<p><em><?php esc_html_e( 'More settings can be enabled via Screen Options (button on the top right corner of the page).', 'wp-parsely' ); ?></em></p>
 	<form name="parsely" method="post" action="options.php" novalidate>
 		<?php
 		settings_fields( Parsely::OPTIONS_KEY );

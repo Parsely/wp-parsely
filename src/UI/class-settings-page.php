@@ -68,6 +68,7 @@ final class Settings_Page {
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_scripts' ) );
+
 		// Handle saving of screen options.
 		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 11, 3 );
 		// Render screen options.
@@ -93,7 +94,7 @@ final class Settings_Page {
 	 * @return void
 	 */
 	public function add_settings_sub_menu(): void {
-		$this->hook_suffix = add_options_page(
+		$suffix = add_options_page(
 			__( 'Parse.ly Settings', 'wp-parsely' ),
 			__( 'Parse.ly', 'wp-parsely' ),
 			Parsely::CAPABILITY,
@@ -101,10 +102,14 @@ final class Settings_Page {
 			array( $this, 'display_settings' )
 		);
 
-		// Adds help text when admin page loads.
-		add_action( 'load-' . $this->hook_suffix, array( $this, 'add_help_text' ) );
-		// Adds screen options when admin page loads.
-		add_action( 'load-' . $this->hook_suffix, array( $this, 'add_screen_options' ) );
+		if ( is_string( $suffix ) ) {
+			$this->hook_suffix = $suffix;
+
+			// Adds help text when admin page loads.
+			add_action( 'load-' . $this->hook_suffix, array( $this, 'add_help_text' ) );
+			// Adds screen options when admin page loads.
+			add_action( 'load-' . $this->hook_suffix, array( $this, 'add_screen_options' ) );
+		}
 	}
 
 	/**
@@ -121,10 +126,11 @@ final class Settings_Page {
 	 */
 	public function set_screen_option( $screen_option, string $option, $value ) {
 		if ( $this->screen_options_name === $option ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			if ( isset( $_POST[ $this->screen_options_name ] ) ) {
-				// phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-				$data = array_map( 'sanitize_text_field', array_map( 'wp_unslash', (array) $_POST[ $this->screen_options_name ] ) );
+			check_admin_referer( 'screen-options-nonce', 'screenoptionnonce' );
+			if ( isset( $_POST[ $this->screen_options_name ] ) && is_array( $_POST[ $this->screen_options_name ] ) ) {
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$unslashed = wp_unslash( $_POST[ $this->screen_options_name ] );
+				$data      = array_map( 'sanitize_text_field', $unslashed );
 			}
 			$value = $data ?? array();
 		}
@@ -263,11 +269,11 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		$this->initialize_basic_section();
 
-		if ( \in_array( 'requires-recrawl', $user_meta, true ) ) {
+		if ( in_array( 'requires-recrawl', $user_meta, true ) ) {
 			$this->initialize_requires_recrawl_section();
 		}
 
-		if ( \in_array( 'advanced', $user_meta, true ) ) {
+		if ( in_array( 'advanced', $user_meta, true ) ) {
 			$this->initialize_advanced_section();
 		}
 	}
