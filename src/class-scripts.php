@@ -68,7 +68,7 @@ class Scripts {
 			'wp-parsely-tracker',
 			$tracker_url,
 			array(),
-			Parsely::get_asset_cache_buster(),
+			PARSELY_VERSION,
 			true
 		);
 
