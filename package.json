@@ -31,7 +31,6 @@
 	],
 	"dependencies": {
 		"@wordpress/dom-ready": "^3.3.0",
-		"@wordpress/i18n": "^4.3.0",
 		"js-cookie": "^3.0.1"
 	},
 	"devDependencies": {
