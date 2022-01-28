@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely;
 
 use WP_Post;
+use WP_Term;
 use WP_User;
 
 /**
@@ -694,8 +695,14 @@ class Parsely {
 		if ( $last_tag ) {
 			$tags = explode( '/', $last_tag );
 		}
-		// remove default category name from tags.
-		return array_diff( $tags, array( $this->get_default_post_category_name() ) );
+
+		// Remove default category name from tags if needed.
+		$default_category_name = $this->get_default_category()->name ?? null;
+		if ( null !== $default_category_name ) {
+			return array_diff( $tags, array( $default_category_name ) );
+		}
+
+		return $tags;
 	}
 
 	/**
@@ -728,7 +735,7 @@ class Parsely {
 		// Get top-level taxonomy name for chosen taxonomy and assign to $parent_name; it will be used
 		// as the category value if 'use_top_level_cats' option is checked.
 		// Assign as the default category name if no value is checked for the chosen taxonomy.
-		$category = $this->get_default_post_category_name();
+		$category_name = $this->get_default_category()->name ?? '';
 		if ( ! empty( $taxonomy_dropdown_choice ) && ! is_wp_error( $taxonomy_dropdown_choice ) ) {
 			if ( $parsely_options['use_top_level_cats'] ) {
 				$first_term = array_shift( $taxonomy_dropdown_choice );
@@ -738,7 +745,7 @@ class Parsely {
 			}
 
 			if ( is_string( $term_name ) && 0 < strlen( $term_name ) ) {
-				$category = $term_name;
+				$category_name = $term_name;
 			}
 		}
 
@@ -751,9 +758,9 @@ class Parsely {
 		 * @param WP_Post $post_obj        Post object.
 		 * @param array   $parsely_options The Parsely options.
 		 */
-		$category = apply_filters( 'wp_parsely_post_category', $category, $post_obj, $parsely_options );
+		$category_name = apply_filters( 'wp_parsely_post_category', $category_name, $post_obj, $parsely_options );
 
-		return $this->get_clean_parsely_page_value( $category );
+		return $this->get_clean_parsely_page_value( $category_name );
 	}
 
 	/**
@@ -1107,20 +1114,21 @@ class Parsely {
 	}
 
 	/**
-	 * Get the default category name for posts.
+	 * Get the default category for posts.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @return string The category name.
+	 * @return WP_Term|null The category, or null if a category couldn't be retrieved.
 	 */
-	public function get_default_post_category_name(): string {
+	public function get_default_category(): ?WP_Term {
+		$result      = null;
 		$category_id = get_option( 'default_category' );
-		$category    = get_categories( array( 'ID' => $category_id ) );
+		$categories  = get_categories( array( 'ID' => $category_id ) );
 
-		if ( 0 === count( $category ) ) {
-			return '';
+		if ( 1 === count( $categories ) ) {
+			$result = $categories[0];
 		}
 
-		return $category[0]->name;
+		return $result;
 	}
 }

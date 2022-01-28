@@ -652,8 +652,8 @@ final class SinglePostTest extends TestCase {
 		$parsely_options['cats_as_tags'] = true;
 		update_option( 'parsely', $parsely_options );
 
-		$default_category_name = $parsely->get_default_post_category_name();
-		wp_remove_object_terms( $post_id, $default_category_name, 'category' );
+		$default_category_slug = $parsely->get_default_category()->slug;
+		wp_remove_object_terms( $post_id, $default_category_slug, 'category' );
 
 		$expected = array();
 		$metadata = $parsely->construct_parsely_metadata( $parsely_options, $post );
