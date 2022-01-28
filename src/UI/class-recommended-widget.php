@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
-use Parsely\Recommended_Content;
 use WP_Widget;
 
 use const Parsely\PARSELY_FILE;
@@ -31,11 +30,50 @@ final class Recommended_Widget extends WP_Widget {
 			'Parsely_Recommended_Widget',
 			__( 'Parse.ly Recommended Widget', 'wp-parsely' ),
 			array(
-				'classname'             => 'Recommended_Widget parsely-recommended-widget-hidden',
-				'description'           => __( 'Display a list of post recommendations, personalized for a visitor or the current post.', 'wp-parsely' ),
-				'show_instance_in_rest' => true,
+				'classname'   => 'Recommended_Widget parsely-recommended-widget-hidden',
+				'description' => __( 'Display a list of post recommendations, personalized for a visitor or the current post.', 'wp-parsely' ),
 			)
 		);
+	}
+
+	/**
+	 * Get the URL for the Recommendation API (GET /related).
+	 *
+	 * @see https://www.parse.ly/help/api/recommendations#get-related
+	 *
+	 * @internal While this is a public method now, this should be moved to a new class.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param string $api_key          Publisher Site ID (API key).
+	 * @param int    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
+	 *                                 formatting details. No restriction by default.
+	 * @param string $sort             What to sort the results by. There are currently 2 valid options: `score`, which
+	 *                                 will sort articles by overall relevance and `pub_date` which will sort results by
+	 *                                 their publication date. The default is `score`.
+	 * @param string $boost            Available for sort=score only. Sub-sort value to re-rank relevant posts that
+	 *                                 received high e.g. views; default is undefined.
+	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
+	 * @return string API URL.
+	 */
+	private function get_api_url( string $api_key, int $published_within, string $sort, string $boost, int $return_limit ): string {
+		$related_api_endpoint = 'https://api.parsely.com/v2/related';
+
+		$query_args = array(
+			'apikey' => $api_key,
+			'sort'   => $sort,
+			'limit'  => $return_limit,
+		);
+
+		if ( 'score' === $sort && 'no-boost' !== $boost ) {
+			$query_args['boost'] = $boost;
+		}
+
+		if ( 0 !== $published_within ) {
+			$query_args['pub_date_start'] = $published_within . 'd';
+		}
+
+		return add_query_arg( $query_args, $related_api_endpoint );
 	}
 
 	/**
@@ -53,7 +91,7 @@ final class Recommended_Widget extends WP_Widget {
 		$removed_title_esc = remove_filter( 'widget_title', 'esc_html' );
 
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
-		$title = apply_filters( 'widget_title', $instance['title'] ?? '' );
+		$title = apply_filters( 'widget_title', $instance['title'] );
 
 		if ( $removed_title_esc ) {
 			add_filter( 'widget_title', 'esc_html' );
@@ -66,12 +104,12 @@ final class Recommended_Widget extends WP_Widget {
 
 		// Set up the variables.
 		$options = get_option( 'parsely' );
-		$api_url = Recommended_Content::get_api_url(
+		$api_url = $this->get_api_url(
 			$options['apikey'],
-			$instance['published_within'] ?? 0,
-			$instance['sort'] ?? 'score',
-			$instance['boost'] ?? 'views',
-			(int) ( $instance['return_limit'] ?? 0 )
+			$instance['published_within'],
+			$instance['sort'],
+			$instance['boost'],
+			(int) $instance['return_limit']
 		);
 
 		$recommended_widget_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/recommended-widget.asset.php';
@@ -79,12 +117,12 @@ final class Recommended_Widget extends WP_Widget {
 		?>
 
 		<div class="parsely-recommended-widget"
-			data-parsely-widget-display-author="<?php echo esc_attr( wp_json_encode( $instance['display_author'] ?? false ) ); ?>"
+			data-parsely-widget-display-author="<?php echo esc_attr( wp_json_encode( isset( $instance['display_author'] ) && $instance['display_author'] ) ); ?>"
 			data-parsely-widget-display-direction="<?php echo esc_attr( $instance['display_direction'] ?? '' ); ?>"
 			data-parsely-widget-api-url="<?php echo esc_url( $api_url ); ?>"
 			data-parsely-widget-img-display="<?php echo esc_attr( $instance['img_src'] ?? '' ); ?>"
 			data-parsely-widget-permalink="<?php echo esc_url( get_permalink() ); ?>"
-			data-parsely-widget-personalized="<?php echo esc_attr( wp_json_encode( $instance['personalize_results'] ?? false ) ); ?>"
+			data-parsely-widget-personalized="<?php echo esc_attr( wp_json_encode( isset( $instance['personalize_results'] ) && $instance['personalize_results'] ) ); ?>"
 			data-parsely-widget-id="<?php echo esc_attr( $this->id ); ?>"
 		></div>
 
@@ -224,8 +262,8 @@ final class Recommended_Widget extends WP_Widget {
 		$instance['display_direction']   = trim( $new_instance['display_direction'] );
 		$instance['sort']                = trim( $new_instance['sort'] );
 		$instance['boost']               = trim( $new_instance['boost'] );
-		$instance['display_author']      = $new_instance['display_author'] ?? false;
-		$instance['personalize_results'] = $new_instance['personalize_results'] ?? false;
+		$instance['display_author']      = $new_instance['display_author'];
+		$instance['personalize_results'] = $new_instance['personalize_results'];
 		$instance['img_src']             = trim( $new_instance['img_src'] );
 		return $instance;
 	}
