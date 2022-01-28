@@ -21,7 +21,7 @@ class Recommended_Content {
 	 *
 	 * @see https://www.parse.ly/help/api/recommendations#get-related
 	 *
-	 * @since 2.6.0
+	 * @since 3.2.0
 	 *
 	 * @param string $api_key          Publisher Site ID (API key).
 	 * @param int    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
