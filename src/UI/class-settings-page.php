@@ -850,7 +850,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 					'metadata_secret',
 					__( 'Metadata secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
 				);
-			} elseif ( 'true' === $input['parsely_wipe_metadata_cache'] ) {
+			} elseif ( isset( $input['parsely_wipe_metadata_cache'] ) && 'true' === $input['parsely_wipe_metadata_cache'] ) {
 				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
 
 				wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
@@ -885,7 +885,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		// Allow for Disable AMP setting to be conditionally included on the page.
 		// If it's not shown, then set the value as what was previously saved.
-		if ( null === $input['disable_amp'] ) {
+		if ( ! isset( $input['disable_amp'] ) ) {
 			$input['disable_amp'] = 'true';
 			if ( false === $options['disable_amp'] ) {
 				$input['disable_amp'] = 'false';
@@ -902,7 +902,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$input['disable_amp'] = 'true' === $input['disable_amp'];
 		}
 
-		if ( null === $input['track_post_types'] ) {
+		if ( ! isset( $input['track_post_types'] ) ) {
 			if ( isset( $options['track_post_types'] ) ) {
 				$input['track_post_types'] = $options['track_post_types'];
 			} else {
@@ -910,7 +910,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			}
 		}
 
-		if ( null === $input['track_page_types'] ) {
+		if ( ! isset( $input['track_page_types'] ) ) {
 			if ( isset( $options['track_page_types'] ) ) {
 				$input['track_page_types'] = $options['track_page_types'];
 			} else {
@@ -945,14 +945,14 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
 
 		// Custom taxonomy as section.
-		if ( null === $input['meta_type'] ) {
+		if ( ! isset( $input['meta_type'] ) ) {
 			$input['meta_type'] = $options['meta_type'];
 		} else {
 			$input['meta_type'] = sanitize_text_field( $input['meta_type'] );
 		}
 
 		// Content ID prefix.
-		if ( null === $input['content_id_prefix'] ) {
+		if ( ! isset( $input['content_id_prefix'] ) ) {
 			$input['content_id_prefix'] = $options['content_id_prefix'];
 		} else {
 			$input['content_id_prefix'] = sanitize_text_field( $input['content_id_prefix'] );
@@ -960,7 +960,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		// Allow for Top-level categories setting to be conditionally included on the page.
 		// If it's not shown, then set the value as what was previously saved.
-		if ( null === $input['use_top_level_cats'] ) {
+		if ( ! isset( $input['use_top_level_cats'] ) ) {
 			$input['use_top_level_cats'] = 'true';
 			if ( false === $options['use_top_level_cats'] ) {
 				$input['use_top_level_cats'] = 'false';
@@ -979,7 +979,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		}
 
 		// Custom taxonomy as section.
-		if ( null === $input['custom_taxonomy_section'] ) {
+		if ( ! isset( $input['custom_taxonomy_section'] ) ) {
 			$input['custom_taxonomy_section'] = $options['custom_taxonomy_section'];
 		} else {
 			$input['custom_taxonomy_section'] = sanitize_text_field( $input['custom_taxonomy_section'] );
@@ -987,7 +987,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		// Allow for Categories as Tags setting to be conditionally included on the page.
 		// If it's not shown, then set the value as what was previously saved.
-		if ( null === $input['cats_as_tags'] ) {
+		if ( ! isset( $input['cats_as_tags'] ) ) {
 			$input['cats_as_tags'] = 'true';
 			if ( false === $options['cats_as_tags'] ) {
 				$input['cats_as_tags'] = 'false';
@@ -1007,7 +1007,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		// Allow for Lowercase Tags setting to be conditionally included on the page.
 		// If it's not shown, then set the value as what was previously saved.
-		if ( null === $input['lowercase_tags'] ) {
+		if ( ! isset( $input['lowercase_tags'] ) ) {
 			$input['lowercase_tags'] = 'true';
 			if ( false === $options['lowercase_tags'] ) {
 				$input['lowercase_tags'] = 'false';
@@ -1027,7 +1027,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		// Allow for Force HTTPS Canonical setting to be conditionally included on the page.
 		// If it's not shown, then set the value as what was previously saved.
-		if ( null === $input['force_https_canonicals'] ) {
+		if ( ! isset( $input['force_https_canonicals'] ) ) {
 			$input['force_https_canonicals'] = 'true';
 			if ( false === $options['force_https_canonicals'] ) {
 				$input['force_https_canonicals'] = 'false';
@@ -1042,50 +1042,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			);
 		} else {
 			$input['force_https_canonicals'] = 'true' === $input['force_https_canonicals'];
-		}
-
-		if ( 'true' !== $input['disable_javascript'] && 'false' !== $input['disable_javascript'] ) {
-			add_settings_error(
-				Parsely::OPTIONS_KEY,
-				'disable_javascript',
-				__( 'Value passed for disable_javascript must be either "true" or "false".', 'wp-parsely' )
-			);
-		} else {
-			$input['disable_javascript'] = 'true' === $input['disable_javascript'];
-		}
-
-		// Allow for Disable AMP setting to be conditionally included on the page.
-		// If it's not shown, then set the value as what was previously saved.
-		if ( ! isset( $input['disable_amp'] ) || null === $input['disable_amp'] ) {
-			$input['disable_amp'] = 'true';
-			if ( false === $options['disable_amp'] ) {
-				$input['disable_amp'] = 'false';
-			}
-		}
-
-		if ( 'true' !== $input['disable_amp'] && 'false' !== $input['disable_amp'] ) {
-			add_settings_error(
-				Parsely::OPTIONS_KEY,
-				'disable_amp',
-				__( 'Value passed for disable_amp must be either "true" or "false".', 'wp-parsely' )
-			);
-		} else {
-			$input['disable_amp'] = 'true' === $input['disable_amp'];
-		}
-
-		if ( ! empty( $input['metadata_secret'] ) ) {
-			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
-				add_settings_error(
-					Parsely::OPTIONS_KEY,
-					'metadata_secret',
-					__( 'Metadata secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
-				);
-			} elseif ( 'true' === $input['parsely_wipe_metadata_cache'] ) {
-				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
-
-				wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
-				$input['parsely_wipe_metadata_cache'] = false;
-			}
 		}
 
 		return $input;
