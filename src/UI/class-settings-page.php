@@ -470,7 +470,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out the radio buttons.
+	 * Print out an input text tag.
 	 *
 	 * @param array $args The arguments for text tag.
 	 * @return void
