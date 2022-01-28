@@ -1115,7 +1115,12 @@ class Parsely {
 	 */
 	public function get_default_post_category_name(): string {
 		$category_id = get_option( 'default_category' );
+		$category    = get_categories( array( 'ID' => $category_id ) );
 
-		return get_categories( array( 'ID' => $category_id ) )[0]->name;
+		if ( 0 === count( $category ) ) {
+			return '';
+		}
+
+		return $category[0]->name;
 	}
 }
