@@ -981,10 +981,12 @@ class Parsely {
 	/**
 	 * Get the URL of the plugin settings page.
 	 *
+	 * @param int $_blog_id The Blog ID for the multisite subsite to use for context (Default null for current).
+	 *
 	 * @return string
 	 */
-	public static function get_settings_url(): string {
-		return admin_url( 'options-general.php?page=' . self::MENU_SLUG );
+	public static function get_settings_url( int $_blog_id = null ): string {
+		return get_admin_url( $_blog_id, 'options-general.php?page=' . self::MENU_SLUG );
 	}
 
 	/**
