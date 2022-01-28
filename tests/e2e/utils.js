@@ -27,7 +27,7 @@ export const changeKeysState = async ( activateApiKey, activateApiSecret ) => {
 export const deactivatePluginApiKey = async () => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
 	await page.evaluate( () => document.getElementById( 'apikey' ).value = '' );
-	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input' );
+	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'submit\')]' );
 	await input.click();
 	await waitForWpAdmin();
 };
