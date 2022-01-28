@@ -14,12 +14,11 @@ use Parsely\Endpoints\Recommendations_API_Proxy;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
-use WP_Test_REST_Controller_Testcase;
 
 /**
  * Parsely REST API tests.
  */
-final class RecommendationsProxyEndpointTest extends WP_Test_REST_Controller_Testcase {
+final class RecommendationsProxyEndpointTest extends TestCase {
 	/**
 	 * Set up globals & initialize the Endpoint.
 	 */
@@ -28,10 +27,12 @@ final class RecommendationsProxyEndpointTest extends WP_Test_REST_Controller_Tes
 		add_filter( 'wp_parsely_enable_recommendations_endpoint', '__return_true' );
 		update_option( 'parsely', array( 'apikey' => 'example.com' ) );
 
-		$this->wp_rest_server_global_backup = $GLOBALS['wp_rest_server'] ?? null;
-		$endpoint                           = new Recommendations_API_Proxy( new Parsely() );
-
-		$endpoint->run();
+		$this->wp_rest_server_global_backup        = $GLOBALS['wp_rest_server'] ?? null;
+		$this->rest_api_init_recommendations_proxy = function () {
+			$endpoint = new Recommendations_API_Proxy( new Parsely() );
+			$endpoint->run();
+		};
+		add_action( 'rest_api_init', $this->rest_api_init_recommendations_proxy );
 	}
 
 	/**
@@ -39,6 +40,7 @@ final class RecommendationsProxyEndpointTest extends WP_Test_REST_Controller_Tes
 	 */
 	public function tearDown(): void {
 		parent::tearDown();
+		remove_action( 'rest_api_init', $this->rest_api_init_recommendations_proxy );
 		$GLOBALS['parsely'] = $this->parsely_global_backup;
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$GLOBALS['wp_rest_server'] = $this->wp_rest_server_global_backup;
@@ -59,13 +61,6 @@ final class RecommendationsProxyEndpointTest extends WP_Test_REST_Controller_Tes
 	}
 
 	/**
-	 * Undocumented function (required to implement WP_Test_REST_Controller_Testcase)
-	 */
-	public function test_context_param() {
-		$this->markTestSkipped();
-	}
-
-	/**
 	 * Confirm that calls to `GET /wp-parsely/v1/recommendations` get results in the expected format.
 	 *
 	 * @covers Recommendations_API_Proxy::get_items
@@ -73,7 +68,7 @@ final class RecommendationsProxyEndpointTest extends WP_Test_REST_Controller_Tes
 	public function test_get_items() {
 		$request  = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
 		$response = null;
-		TestCase::mock_remote_network_request(
+		self::mock_remote_network_request(
 			function () use ( &$response, $request ) {
 				$response = rest_get_server()->dispatch( $request );
 			},
@@ -127,47 +122,5 @@ final class RecommendationsProxyEndpointTest extends WP_Test_REST_Controller_Tes
 			new WP_Error( 400, 'A Parsely API Key must be set in site options to use this Endpoint' ),
 			$data->error
 		);
-	}
-
-	/**
-	 * Undocumented function (required to implement WP_Test_REST_Controller_Testcase)
-	 */
-	public function test_get_item() {
-		$this->markTestSkipped();
-	}
-
-	/**
-	 * Undocumented function (required to implement WP_Test_REST_Controller_Testcase)
-	 */
-	public function test_create_item() {
-		$this->markTestSkipped();
-	}
-
-	/**
-	 * Undocumented function (required to implement WP_Test_REST_Controller_Testcase)
-	 */
-	public function test_update_item() {
-		$this->markTestSkipped();
-	}
-
-	/**
-	 * Undocumented function (required to implement WP_Test_REST_Controller_Testcase)
-	 */
-	public function test_delete_item() {
-		$this->markTestSkipped();
-	}
-
-	/**
-	 * Undocumented function (required to implement WP_Test_REST_Controller_Testcase)
-	 */
-	public function test_prepare_item() {
-		$this->markTestSkipped();
-	}
-
-	/**
-	 * Undocumented function (required to implement WP_Test_REST_Controller_Testcase)
-	 */
-	public function test_get_item_schema() {
-		$this->markTestSkipped();
 	}
 }
