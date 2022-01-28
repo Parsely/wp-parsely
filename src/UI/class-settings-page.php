@@ -134,7 +134,6 @@ final class Settings_Page {
 			}
 			$value = $data ?? array();
 		}
-
 		return $value;
 	}
 

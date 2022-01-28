@@ -19,7 +19,7 @@ export const changeKeysState = async ( activateApiKey, activateApiSecret ) => {
 		await page.keyboard.type( 'somesecret' );
 	}
 
-	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input' );
+	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'submit\')]' );
 	await input.click();
 	await waitForWpAdmin();
 };
