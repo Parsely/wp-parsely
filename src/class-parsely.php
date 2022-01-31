@@ -697,11 +697,7 @@ class Parsely {
 
 		// Remove default category name from tags if needed.
 		$default_category_name = get_cat_name( get_option( 'default_category' ) );
-		if ( null !== $default_category_name ) {
-			return array_diff( $tags, array( $default_category_name ) );
-		}
-
-		return $tags;
+		return array_diff( $tags, array( $default_category_name ) );
 	}
 
 	/**
