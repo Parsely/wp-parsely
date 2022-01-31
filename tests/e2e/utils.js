@@ -40,3 +40,8 @@ export const activatePluginApiKey = async () => {
 	await page.keyboard.press( 'Enter' );
 	await waitForWpAdmin();
 };
+
+export const checkH2DoesNotExist = async ( text ) => {
+	const [ h2 ] = await page.$x( `//h2[contains(text(), "${ text }")]` );
+	return h2 === undefined;
+};
