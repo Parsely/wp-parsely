@@ -697,7 +697,7 @@ class Parsely {
 		}
 
 		// Remove default category name from tags if needed.
-		$default_category_name = $this->get_default_category()->name ?? null;
+		$default_category_name = get_cat_name( get_option( 'default_category' ) );
 		if ( null !== $default_category_name ) {
 			return array_diff( $tags, array( $default_category_name ) );
 		}
@@ -735,7 +735,7 @@ class Parsely {
 		// Get top-level taxonomy name for chosen taxonomy and assign to $parent_name; it will be used
 		// as the category value if 'use_top_level_cats' option is checked.
 		// Assign as the default category name if no value is checked for the chosen taxonomy.
-		$category_name = $this->get_default_category()->name ?? '';
+		$category_name = get_cat_name( get_option( 'default_category' ) );
 		if ( ! empty( $taxonomy_dropdown_choice ) && ! is_wp_error( $taxonomy_dropdown_choice ) ) {
 			if ( $parsely_options['use_top_level_cats'] ) {
 				$first_term = array_shift( $taxonomy_dropdown_choice );
@@ -1113,24 +1113,5 @@ class Parsely {
 		$options = $this->get_options();
 
 		return $this->api_key_is_set() ? $options['apikey'] : '';
-	}
-
-	/**
-	 * Get the default category for posts.
-	 *
-	 * @since 3.2.0
-	 *
-	 * @return WP_Term|null The category, or null if a category couldn't be retrieved.
-	 */
-	public function get_default_category(): ?WP_Term {
-		$result      = null;
-		$category_id = get_option( 'default_category' );
-		$categories  = get_categories( array( 'ID' => $category_id ) );
-
-		if ( 1 === count( $categories ) ) {
-			$result = $categories[0];
-		}
-
-		return $result;
 	}
 }
