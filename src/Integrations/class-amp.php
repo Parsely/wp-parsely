@@ -159,15 +159,16 @@ class Amp implements Integration {
 	 */
 	public static function construct_amp_config(): array {
 		$options = get_option( Parsely::OPTIONS_KEY );
-		if ( ! is_string( $options['apikey'] ) || strlen( $options['apikey'] ) < 1 ) {
-			return array();
+
+		if ( isset( $options['apikey'] ) && is_string( $options['apikey'] ) && '' !== $options['apikey'] ) {
+			return array(
+				'vars' => array(
+					// This field will be rendered in a JS context.
+					'apikey' => esc_js( $options['apikey'] ),
+				),
+			);
 		}
 
-		return array(
-			'vars' => array(
-				// This field will be rendered in a JS context.
-				'apikey' => esc_js( $options['apikey'] ),
-			),
-		);
+		return array();
 	}
 }
