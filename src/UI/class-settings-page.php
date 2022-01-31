@@ -84,7 +84,15 @@ final class Settings_Page {
 	public function enqueue_settings_scripts( string $hook_suffix ): void {
 		if ( 'settings_page_parsely' === $hook_suffix ) {
 			wp_enqueue_media();
-			wp_enqueue_script( 'parsely_admin_scripts', dirname( plugin_dir_url( __FILE__ ) ) . '/js/admin/index.js', array(), Parsely::VERSION, true );
+
+			$admin_settings_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
+			wp_enqueue_script(
+				'parsely_admin_settings',
+				plugin_dir_url( PARSELY_FILE ) . '/build/admin-settings.js',
+				$admin_settings_asset['dependencies'],
+				$admin_settings_asset['version'],
+				true
+			);
 		}
 	}
 
