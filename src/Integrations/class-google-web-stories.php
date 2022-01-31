@@ -10,30 +10,12 @@ declare(strict_types=1);
 
 namespace Parsely\Integrations;
 
-use Parsely\Parsely;
-
 /**
  * Integrates Parse.ly tracking with the Google Web Stories plugin.
  *
  * @since 3.2.0
  */
 final class Google_Web_Stories implements Integration {
-	/**
-	 * Instance of Parsely class.
-	 *
-	 * @var Parsely
-	 */
-	private $parsely;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Parsely $parsely Instance of Parsely class.
-	 */
-	public function __construct( Parsely $parsely ) {
-		$this->parsely = $parsely;
-	}
-
 	/**
 	 * Apply the hooks that integrate the plugin or theme with the Parse.ly plugin.
 	 *
@@ -56,16 +38,12 @@ final class Google_Web_Stories implements Integration {
 	 * @return void
 	 */
 	public function render_amp_analytics_tracker(): void {
-		$apikey = $this->parsely->get_api_key();
-		if ( strlen( $apikey ) > 0 ) {
+		$json = Amp::construct_amp_json();
+		if ( strlen( $json ) > 0 ) {
 			?>
 			<amp-analytics type="parsely">
 				<script type="application/json">
-					{
-						"vars": {
-							"apikey": "<?php echo esc_js( $apikey ); ?>"
-						}
-					}
+					<?php echo esc_js( $json ); ?>
 				</script>
 			</amp-analytics>
 			<?php

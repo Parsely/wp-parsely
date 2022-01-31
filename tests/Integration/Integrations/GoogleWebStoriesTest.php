@@ -41,8 +41,7 @@ final class GoogleWebStoriesTest extends TestCase {
 	public function set_up(): void {
 		parent::set_up();
 
-		$parsely      = new Parsely();
-		self::$google = new Google_Web_Stories( $parsely );
+		self::$google = new Google_Web_Stories();
 	}
 
 	/**
