@@ -165,7 +165,8 @@ class Amp implements Integration {
 
 		return array(
 			'vars' => array(
-				'apikey' => $options['apikey'],
+				// This field will be rendered in a JS context.
+				'apikey' => esc_js( $options['apikey'] ),
 			),
 		);
 	}
