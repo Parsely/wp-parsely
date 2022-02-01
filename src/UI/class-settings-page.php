@@ -67,6 +67,8 @@ final class Settings_Page {
 				$admin_settings_asset['version'],
 				true
 			);
+
+			wp_enqueue_style( 'parsely_admin_settings_css', plugin_dir_url( PARSELY_FILE ) . '/wp-parsely-admin.css', array(), Parsely::VERSION );
 		}
 	}
 
@@ -285,41 +287,19 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h          = __( 'By default, Parse.ly only tracks the default post type as a post page. If you want to track custom post types, select them here!', 'wp-parsely' );
 		$field_id   = 'track_post_types';
-		$field_args = array(
-			'title'          => __( 'Post Types to Track', 'wp-parsely' ),
-			'option_key'     => $field_id,
-			'help_text'      => $h,
-			'select_options' => get_post_types( array( 'public' => true ) ),
-			'label_for'      => Parsely::OPTIONS_KEY . "[$field_id]",
-		);
+		$field_help = __( 'Select how you want to track every Post Type.', 'wp-parsely' );
 		add_settings_field(
 			$field_id,
-			__( 'Post Types to Track', 'wp-parsely' ),
-			array( $this, 'print_multiple_checkboxes' ),
+			__( 'Track Post Types as...', 'wp-parsely' ),
+			array( $this, 'print_track_post_types_table' ),
 			Parsely::MENU_SLUG,
 			'requires_recrawl_settings',
-			$field_args
-		);
-
-		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h          = __( 'By default, Parse.ly only tracks the default page type as a non-post page. If you want to track custom post types as non-post pages, select them here!', 'wp-parsely' );
-		$field_id   = 'track_page_types';
-		$field_args = array(
-			'title'          => __( 'Page Types to Track', 'wp-parsely' ),
-			'option_key'     => 'track_page_types',
-			'help_text'      => $h,
-			'select_options' => get_post_types( array( 'public' => true ) ),
-			'label_for'      => Parsely::OPTIONS_KEY . "[$field_id]",
-		);
-		add_settings_field(
-			'track_page_types',
-			__( 'Page Types to Track', 'wp-parsely' ),
-			array( $this, 'print_multiple_checkboxes' ),
-			Parsely::MENU_SLUG,
-			'requires_recrawl_settings',
-			$field_args
+			array(
+				'title'      => __( 'Track Post Types as...', 'wp-parsely' ),
+				'option_key' => $field_id,
+				'help_text'  => $field_help,
+			)
 		);
 
 		// Metadata Format.
@@ -642,6 +622,62 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			</p>
 		</fieldset>
 
+		<?php
+		$this->print_description_text( $args );
+	}
+
+	/**
+	 * Print out the post tracking options table.
+	 *
+	 * @param array $args The arguments used in the output HTML elements.
+	 * @return void
+	 */
+	public function print_track_post_types_table( array $args ): void {
+		$name       = $args['option_key'];
+		$id         = esc_attr( $name );
+		$post_types = get_post_types( array( 'public' => true ) );
+		?>
+		<fieldset>
+			<table class="form-table widefat striped" role="presentation" id="track-post-types">
+				<caption class="screen-reader-text"><?php echo esc_html( $args['title'] ); ?></caption>
+				<thead>
+					<tr>
+						<th scope="col"><?php echo esc_html__( 'Post Type', 'wp-parsely' ); ?></th>
+						<th id="track-post-types--post" scope="col"><?php echo esc_html__( 'Track as Post', 'wp-parsely' ); ?></th>
+						<th id="track-post-types--page" scope="col"><?php echo esc_html__( 'Track as Page', 'wp-parsely' ); ?></th>
+						<th id="track-post-types--none" scope="col"><?php echo esc_html__( "Don't track", 'wp-parsely' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					foreach ( $post_types as $post_type ) {
+						$group_name = "{$id}[{$post_type}]";
+						$id_post    = "{$id}_{$post_type}_post";
+						$id_page    = "{$id}_{$post_type}_page";
+						$id_none    = "{$id}_{$post_type}_none";
+						?>
+						<tr>
+							<th scope="row"><?php echo esc_html( $post_type ); ?></th>
+							<td>
+								<label aria-labelledby="track-post-types--post" for="<?php echo esc_attr( $id_post ); ?>">
+									<input id="<?php echo esc_attr( $id_post ); ?>" name="<?php echo esc_attr( $group_name ); ?>" type="radio" value="post" />
+								</label>
+							</td>
+							<td>
+								<label aria-labelledby="track-post-types--page" for="<?php echo esc_attr( $id_page ); ?>">
+									<input id="<?php echo esc_attr( $id_page ); ?>" name="<?php echo esc_attr( $group_name ); ?>" type="radio" value="page" />
+								</label>
+							</td>
+							<td>
+								<label aria-labelledby="track-post-types--none" for="<?php echo esc_attr( $id_none ); ?>">
+									<input id="<?php echo esc_attr( $id_none ); ?>" name="<?php echo esc_attr( $group_name ); ?>" type="radio" value="" />
+								</label>
+							</td>
+						</tr>
+					<?php } ?>
+				</tbody>
+			</table>
+		</fieldset>
 		<?php
 		$this->print_description_text( $args );
 	}
