@@ -127,4 +127,57 @@ final class SettingsPageTest extends TestCase {
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );
 	}
+
+	/**
+	 * Make sure that the settings URL is correctly returned for single sites and multisites with and without a blog_id param.
+	 *
+	 * @covers \Parsely\Parsely::get_settings_url
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @return void
+	 */
+	public function test_get_settings_url_with_and_without_blog_id(): void {
+		self::assertSame(
+			'http://example.org/wp-admin/options-general.php?page=parsely',
+			self::$parsely->get_settings_url(),
+			'The URL did not match the expected value without a $blog_id param.'
+		);
+
+		self::assertSame(
+			'http://example.org/wp-admin/options-general.php?page=parsely',
+			self::$parsely->get_settings_url( get_current_blog_id() ),
+			'The URL did not match the expected value with a $blog_id param.'
+		);
+
+		if ( ! is_multisite() ) {
+			return;
+		}
+
+		$subsite_blog_id = $this->factory->blog->create(
+			array(
+				'domain' => 'parselyrocks.example.org',
+				'path'   => '/vipvipvip',
+			)
+		);
+
+		self::assertSame(
+			'http://parselyrocks.example.org/vipvipvip/wp-admin/options-general.php?page=parsely',
+			self::$parsely->get_settings_url( $subsite_blog_id ),
+			'The URL did not match when passing $subsite_blog_id.'
+		);
+
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
+		switch_to_blog( $subsite_blog_id );
+		self::assertSame(
+			'http://parselyrocks.example.org/vipvipvip/wp-admin/options-general.php?page=parsely',
+			self::$parsely->get_settings_url(),
+			'The URL did not match the subsite without passing a $blog_id param.'
+		);
+		restore_current_blog();
+
+		self::assertSame(
+			'http://example.org/wp-admin/options-general.php?page=parsely',
+			self::$parsely->get_settings_url(),
+			'The URL did not match the expected value for the main site with no $blog_id param after switching back.'
+		);
+	}
 }

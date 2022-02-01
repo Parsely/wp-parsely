@@ -1,6 +1,6 @@
 # Parse.ly
 
-Stable tag: 3.1.0-alpha  
+Stable tag: 3.1.0  
 Requires at least: 5.0  
 Tested up to: 5.8  
 Requires PHP: 7.1  
@@ -29,7 +29,7 @@ Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://
 
 ## Installation
 
-The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results. [Sign up for a free trial of Parse.ly](http://www.parsely.com/trial/?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
+The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results. [Sign up for a free demo of Parse.ly](https://www.parsely.com/getdemo?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
 ### Install the plugin from within WordPress
 
@@ -84,7 +84,7 @@ The `parsely` field contains the following fields:
  - `meta`, which is an array of metadata for the specific post, page or other object type.
  - `rendered`, which is the rendered HTML of the metadata for the post, page or other object type. This will be a JSON-LD `<script>` tag, or a set of `<meta>` tags, depending on the format selected in the plugin settings. The decoupled code can consume and use this directly, instead of building the values from the `meta` field values.
 
-The `rendered` field is a convenience field containing the HTML-formatted meta data which can be printed to a decoupled page as is.
+The `rendered` field is a convenience field containing the HTML-formatted metadata which can be printed to a decoupled page as is.
 
 This can be disabled by returning `false` from the `wp_parsely_enable_rest_rendered_support` filter.
 
