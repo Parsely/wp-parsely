@@ -22,17 +22,6 @@ use function Parsely\parsely_integrations;
  */
 final class IntegrationsTest extends TestCase {
 	/**
-	 * The setUpBeforeClass run before all tests
-	 */
-	public static function setUpBeforeClass(): void {
-		parent::setUpBeforeClass();
-
-		// Add a global instance, so that calls to `parsely_integrations()` in tests can correctly instantiate
-		// and register Google_Web_Stories as an integration.
-		$GLOBALS['parsely'] = new Parsely();
-	}
-
-	/**
 	 * Check an integration can be added via a filter.
 	 *
 	 * @covers \Parsely\parsely_integrations
