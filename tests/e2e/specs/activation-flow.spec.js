@@ -12,19 +12,19 @@ import {
  */
 import { activatePluginApiKey, checkH2DoesNotExist, deactivatePluginApiKey, waitForWpAdmin } from '../utils';
 
-const selectScreenOptions = async ( recrawl, advanced ) => {
+const selectScreenOptions = async ( sections ) => {
 	const [ button ] = await page.$x( '//button[@id="show-settings-link"]' );
 	await button.click();
 
 	await page.waitForSelector( '#requires-recrawl' );
 
-	if ( recrawl ) {
+	if ( sections.recrawl ) {
 		await page.evaluate( () => {
 			document.querySelector( '#requires-recrawl' ).parentElement.click();
 		} );
 	}
 
-	if ( advanced ) {
+	if ( sections.advanced ) {
 		await page.evaluate( () => {
 			document.querySelector( '#advanced' ).parentElement.click();
 		} );
@@ -67,19 +67,19 @@ describe( 'Activation flow', () => {
 		expect( await checkH2DoesNotExist( 'Requires Recrawl Settings' ) ).toBe( true );
 		expect( await checkH2DoesNotExist( 'Advanced Settings' ) ).toBe( true );
 
-		await selectScreenOptions( true, true );
+		await selectScreenOptions( { recrawl: true, advanced: true } );
 
 		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
 		await page.waitForXPath( '//h2[contains(text(), "Requires Recrawl Settings")]' );
 		await page.waitForXPath( '//h2[contains(text(), "Advanced Settings")]' );
 
-		await selectScreenOptions( false, true );
+		await selectScreenOptions( { recrawl: false, advanced: true } );
 
 		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
 		await page.waitForXPath( '//h2[contains(text(), "Requires Recrawl Settings")]' );
 		expect( await checkH2DoesNotExist( 'Advanced Settings' ) ).toBe( true );
 
 		// Reverting to initial state
-		await selectScreenOptions( true, false );
+		await selectScreenOptions( { recrawl: true, advanced: false } );
 	} );
 } );
