@@ -68,7 +68,7 @@ class Scripts {
 			'wp-parsely-tracker',
 			$tracker_url,
 			array(),
-			Parsely::get_asset_cache_buster(),
+			PARSELY_VERSION,
 			true
 		);
 
@@ -77,7 +77,7 @@ class Scripts {
 			'wp-parsely-api',
 			plugin_dir_url( PARSELY_FILE ) . 'build/init-api.js',
 			$api_script_asset['dependencies'],
-			Parsely::get_asset_cache_buster(),
+			$api_script_asset['version'],
 			true
 		);
 

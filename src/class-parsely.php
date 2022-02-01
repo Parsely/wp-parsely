@@ -635,10 +635,12 @@ class Parsely {
 	 * Otherwise, use the plugin version.
 	 *
 	 * @since 2.5.0
+	 * @deprecated 3.2.0
 	 *
 	 * @return string Random number string or plugin version string.
 	 */
 	public static function get_asset_cache_buster(): string {
+		_deprecated_function( 'Parsely::get_asset_cache_buster', '3.2.0' );
 		static $cache_buster;
 		if ( isset( $cache_buster ) ) {
 			return $cache_buster;
@@ -653,7 +655,9 @@ class Parsely {
 		 *
 		 * @param string $cache_buster Plugin version, unless WP_DEBUG is defined and truthy, and tests are not running.
 		 */
-		return apply_filters( 'wp_parsely_cache_buster', (string) $cache_buster );
+		$cache_buster = apply_filters_deprecated( 'wp_parsely_cache_buster', array( (string) $cache_buster ), '3.2.0' );
+
+		return $cache_buster;
 	}
 
 	/**
