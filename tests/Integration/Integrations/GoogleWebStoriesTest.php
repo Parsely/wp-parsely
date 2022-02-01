@@ -41,8 +41,7 @@ final class GoogleWebStoriesTest extends TestCase {
 	public function set_up(): void {
 		parent::set_up();
 
-		$parsely      = new Parsely();
-		self::$google = new Google_Web_Stories( $parsely );
+		self::$google = new Google_Web_Stories();
 	}
 
 	/**
@@ -72,16 +71,12 @@ final class GoogleWebStoriesTest extends TestCase {
 	 * @group scripts
 	 */
 	public function test_render_amp_analytics_tracker(): void {
-		$expected = '		<amp-analytics type="parsely">
-			<script type="application/json">
-				{
-					"vars": {
-						"apikey": "blog.parsely.com"
-					}
-				}
-			</script>
-		</amp-analytics>
-		';
+		$expected = '			<amp-analytics type="parsely">
+				<script type="application/json">
+					{"vars":{"apikey":"blog.parsely.com"}}
+				</script>
+			</amp-analytics>
+			';
 
 		self::expectOutputString( $expected );
 
