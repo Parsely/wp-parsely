@@ -134,9 +134,9 @@ final class Settings_Page {
 	 */
 	public function set_screen_option( $screen_option, string $option, $value ) {
 		if ( $this->screen_options_name === $option ) {
-			check_admin_referer( 'screen-options-nonce', 'screenoptionnonce' );
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( isset( $_POST[ $this->screen_options_name ] ) && is_array( $_POST[ $this->screen_options_name ] ) ) {
-				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 				$unslashed = wp_unslash( $_POST[ $this->screen_options_name ] );
 				$data      = array_map( 'sanitize_text_field', $unslashed );
 			}
