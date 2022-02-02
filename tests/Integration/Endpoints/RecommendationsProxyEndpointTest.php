@@ -38,8 +38,11 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	 */
 	public function setUp(): void {
 		parent::setUp();
+
+		// Set the default options prior to each test.
+		TestCase::set_options();
+
 		add_filter( 'wp_parsely_enable_recommendations_endpoint', '__return_true' );
-		self::set_options( array( 'apikey' => 'example.com' ) );
 
 		$this->wp_rest_server_global_backup        = $GLOBALS['wp_rest_server'] ?? null;
 		$this->rest_api_init_recommendations_proxy = function () {
@@ -59,8 +62,6 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$GLOBALS['wp_rest_server'] = $this->wp_rest_server_global_backup;
 
-		// Restore default options.
-		self::set_options();
 		remove_filter( 'wp_parsely_enable_recommendations_endpoint', '__return_true' );
 	}
 
@@ -82,6 +83,8 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	 * @covers Recommendations_API_Proxy::get_items
 	 */
 	public function test_get_items() {
+		TestCase::set_options( array( 'apikey' => 'example.com' ) );
+
 		$request  = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
 		$response = null;
 		self::mock_remote_network_request(
@@ -117,7 +120,6 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	 * @covers Recommendations_API_Proxy::get_items
 	 */
 	public function test_get_items_fails_without_apikey_set() {
-		self::set_options();
 		$request    = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
 		$response   = null;
 		$dispatched = self::mock_remote_network_request(
