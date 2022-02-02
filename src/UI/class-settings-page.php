@@ -870,17 +870,21 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$input[ $pages ] = array();
 		}
 
-		// Transfer values to required arrays.
-		foreach ( $input['track_post_types_as'] as $key => $value ) {
-			if ( 'post' === $value ) {
-				$input[ $posts ][] = $key;
-			} elseif ( 'page' === $value ) {
-				$input[ $pages ][] = $key;
+		if ( isset( $input['track_post_types_as'] ) ) {
+			// Transfer values to required arrays.
+			foreach ( $input['track_post_types_as'] as $key => $value ) {
+				if ( 'post' === $value ) {
+					$input[ $posts ][] = $key;
+				} elseif ( 'page' === $value ) {
+					$input[ $pages ][] = $key;
+				}
 			}
+
+			// Remove unneeded array from settings and validate required arrays.
+			unset( $input['track_post_types_as'] );
 		}
 
-		// Remove unneeded array from settings and validate required arrays.
-		unset( $input['track_post_types_as'] );
+
 		$input[ $posts ] = self::validate_option_array( $input[ $posts ] );
 		$input[ $pages ] = self::validate_option_array( $input[ $pages ] );
 
