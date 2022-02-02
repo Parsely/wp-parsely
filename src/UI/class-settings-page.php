@@ -638,7 +638,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$values     = $this->get_tracking_values_for_display();
 		?>
 		<fieldset>
-			<table class="form-table widefat striped" role="presentation" id="track-post-types">
+			<table class="form-table widefat striped" id="track-post-types">
 				<caption class="screen-reader-text"><?php echo esc_html( $args['title'] ); ?></caption>
 				<thead>
 					<tr>
