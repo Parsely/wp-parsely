@@ -5,6 +5,8 @@
  * @package Parsely
  */
 
+declare(strict_types=1);
+
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
