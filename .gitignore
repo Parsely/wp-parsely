@@ -5,6 +5,7 @@
 .DS_Store
 .idea
 .phpunit.result.cache
+.wp-env.override.json
 node_modules
 /build/logs/
 /build/coverage-html/
