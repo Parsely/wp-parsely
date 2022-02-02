@@ -74,7 +74,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 		$routes = rest_get_server()->get_routes();
 		$this->assertArrayHasKey( '/wp-parsely/v1/recommendations', $routes );
 		$this->assertCount( 1, $routes['/wp-parsely/v1/recommendations'] );
-		$this->assertEquals( array( 'GET' => true ), $routes['/wp-parsely/v1/recommendations'][0]['methods'] );
+		$this->assertSame( array( 'GET' => true ), $routes['/wp-parsely/v1/recommendations'][0]['methods'] );
 	}
 
 	/**
