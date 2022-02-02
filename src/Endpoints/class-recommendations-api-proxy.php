@@ -48,7 +48,11 @@ final class Recommendations_API_Proxy {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
 					'permission_callback' => array( $this, 'permission_callback' ),
-					'args'                => array(),
+					'args'                => array(
+						'limit' => array(
+							'sanitize_callback' => 'absint',
+						),
+					),
 				),
 			)
 		);
