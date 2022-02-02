@@ -41,7 +41,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	public function tearDown(): void {
 		parent::tearDown();
 		remove_action( 'rest_api_init', $this->rest_api_init_recommendations_proxy );
-		$GLOBALS['parsely'] = $this->parsely_global_backup;
+
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$GLOBALS['wp_rest_server'] = $this->wp_rest_server_global_backup;
 
