@@ -20,6 +20,20 @@ use WP_REST_Server;
  */
 final class RecommendationsProxyEndpointTest extends TestCase {
 	/**
+	 * Hold a reference to the global $wp_rest_server object to restore in tearDown.
+	 *
+	 * @var WP_REST_Server $wp_rest_server_global_backup
+	 */
+	private $wp_rest_server_global_backup;
+
+	/**
+	 * Hold a reference to the callback that initializes the endpoint to remove in tearDown.
+	 *
+	 * @var function $rest_api_init_recommendations_proxy
+	 */
+	private $rest_api_init_recommendations_proxy;
+
+	/**
 	 * Set up globals & initialize the Endpoint.
 	 */
 	public function setUp(): void {
