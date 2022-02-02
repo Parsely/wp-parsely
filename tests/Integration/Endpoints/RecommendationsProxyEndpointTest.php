@@ -120,7 +120,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 		self::set_options();
 		$request    = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
 		$response   = null;
-		$dispatched = TestCase::mock_remote_network_request(
+		$dispatched = self::mock_remote_network_request(
 			function () use ( &$response, $request ) {
 				$response = rest_get_server()->dispatch( $request );
 			}
