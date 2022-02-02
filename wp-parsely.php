@@ -107,7 +107,6 @@ function parsely_admin_menu_register(): void {
 }
 
 require __DIR__ . '/src/class-recommended-content.php';
-
 require __DIR__ . '/src/Endpoints/class-recommendations-api-proxy.php';
 /**
  * Register the Recommendatiosn API Proxy WP-API REST Endpoint
