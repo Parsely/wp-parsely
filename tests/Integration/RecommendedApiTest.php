@@ -12,8 +12,6 @@ namespace Parsely\Tests\Integration;
 use Parsely\UI\Recommended_Widget;
 use Parsely\Recommended_Content;
 
-require_once __DIR__ . '/../../src/class-recommended-content.php';
-
 /**
  * Recommended Widget tests.
  */
