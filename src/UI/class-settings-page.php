@@ -862,15 +862,15 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$posts = 'track_post_types';
 		$pages = 'track_page_types';
 
-		// Create required arrays if they don't exist.
-		if ( ! isset( $input[ $posts ] ) ) {
-			$input[ $posts ] = array();
-		}
-		if ( ! isset( $input[ $pages ] ) ) {
-			$input[ $pages ] = array();
-		}
-
 		if ( isset( $input['track_post_types_as'] ) ) {
+			// Create required arrays if they don't exist.
+			if ( ! isset( $input[ $posts ] ) ) {
+				$input[ $posts ] = array();
+			}
+			if ( ! isset( $input[ $pages ] ) ) {
+				$input[ $pages ] = array();
+			}
+
 			// Transfer values to required arrays.
 			foreach ( $input['track_post_types_as'] as $key => $value ) {
 				if ( 'post' === $value ) {
