@@ -113,7 +113,7 @@ require __DIR__ . '/src/Endpoints/class-recommendations-api-proxy.php';
  *
  * @return void
  */
-function rest_api_init_recommendations_proxy() {
+function rest_api_init_recommendations_proxy(): void {
 	$endpoint = new Recommendations_API_Proxy( $GLOBALS['parsely'] );
 	$endpoint->run();
 }
