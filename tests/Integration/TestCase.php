@@ -182,11 +182,11 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param callable $callback The function that will be called while the network response is mocked.
 	 * @param string   $response_body The data that will be used in the HTTP response body. Default ''.
-	 * @param integer  $response_code The numerical code that will be used in the HTTP response. Default 200.
+	 * @param int      $response_code The numerical code that will be used in the HTTP response. Default 200.
 	 * @param string   $response_message The data that will be used in the HTTP response body. Default 'OK'.
 	 * @param array    $response_headers The data that will be used in the HTTP response headers. Default empty array.
 	 * @param array    $response_cookies The data that will be used in the HTTP response cookies. Default empty array.
-	 * @return int     The number of times the remote request was dispatched.
+	 * @return int The number of times the remote request was dispatched.
 	 */
 	public static function mock_remote_network_request(
 		callable $callback,
@@ -195,7 +195,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 		string $response_message = 'OK',
 		array $response_headers = array(),
 		array $response_cookies = array()
-	) {
+	): int {
 		$dispatched              = 0;
 		$pre_http_request_filter = function ( $preempt, $args, $requested_url ) use ( &$dispatched, $response_cookies, $response_headers, $response_body, $response_code, $response_message ) {
 			$dispatched++;
@@ -215,7 +215,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 
 		add_filter( 'pre_http_request', $pre_http_request_filter, 10, 3 );
 		$callback();
-		remove_filter( 'pre_http_request', $pre_http_request_filter, 10 );
+		remove_filter( 'pre_http_request', $pre_http_request_filter );
 		return $dispatched;
 	}
 }

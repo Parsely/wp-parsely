@@ -56,7 +56,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	public function test_register_routes() {
 		$routes = rest_get_server()->get_routes();
 		$this->assertArrayHasKey( '/wp-parsely/v1/recommendations', $routes );
-		$this->assertSame( 1, count( $routes['/wp-parsely/v1/recommendations'] ) );
+		$this->assertCount( 1, $routes['/wp-parsely/v1/recommendations'] );
 		$this->assertEquals( array( 'GET' => true ), $routes['/wp-parsely/v1/recommendations'][0]['methods'] );
 	}
 
@@ -96,7 +96,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Confirm that calls to `GET /wp-parsely/v1/recommendations` gets and error and makes no remote call when the apikey is not populated in site options.
+	 * Confirm that calls to `GET /wp-parsely/v1/recommendations` gets an error and makes no remote call when the apikey is not populated in site options.
 	 *
 	 * @covers Recommendations_API_Proxy::get_items
 	 */
@@ -119,7 +119,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 
 		$this->assertObjectHasAttribute( 'error', $data );
 		$this->assertEquals(
-			new WP_Error( 400, 'A Parsely API Key must be set in site options to use this Endpoint' ),
+			new WP_Error( 400, 'A Parse.ly API Key must be set in site options to use this endpoint' ),
 			$data->error
 		);
 	}

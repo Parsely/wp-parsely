@@ -78,7 +78,7 @@ final class Recommendations_API_Proxy {
 		if ( empty( $apikey ) ) {
 			return (object) array(
 				'data'  => array(),
-				'error' => new WP_Error( 400, __( 'A Parsely API Key must be set in site options to use this Endpoint', 'wp-parsely' ) ),
+				'error' => new WP_Error( 400, __( 'A Parse.ly API Key must be set in site options to use this endpoint', 'wp-parsely' ) ),
 			);
 		}
 
