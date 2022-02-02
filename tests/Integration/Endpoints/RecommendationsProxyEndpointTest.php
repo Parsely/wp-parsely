@@ -25,7 +25,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	public function setUp(): void {
 		parent::setUp();
 		add_filter( 'wp_parsely_enable_recommendations_endpoint', '__return_true' );
-		update_option( 'parsely', array( 'apikey' => 'example.com' ) );
+		self::set_options( array( 'apikey' => 'example.com' ) );
 
 		$this->wp_rest_server_global_backup        = $GLOBALS['wp_rest_server'] ?? null;
 		$this->rest_api_init_recommendations_proxy = function () {
@@ -44,7 +44,6 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 		$GLOBALS['parsely'] = $this->parsely_global_backup;
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$GLOBALS['wp_rest_server'] = $this->wp_rest_server_global_backup;
-		delete_option( 'parsely' );
 		remove_filter( 'wp_parsely_enable_recommendations_endpoint', '__return_true' );
 	}
 
