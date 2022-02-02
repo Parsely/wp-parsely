@@ -44,6 +44,9 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 		$GLOBALS['parsely'] = $this->parsely_global_backup;
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$GLOBALS['wp_rest_server'] = $this->wp_rest_server_global_backup;
+
+		// Restore default options.
+		self::set_options();
 		remove_filter( 'wp_parsely_enable_recommendations_endpoint', '__return_true' );
 	}
 
