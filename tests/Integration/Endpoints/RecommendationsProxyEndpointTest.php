@@ -117,7 +117,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	 * @covers Recommendations_API_Proxy::get_items
 	 */
 	public function test_get_items_fails_without_apikey_set() {
-		delete_option( 'parsely' );
+		self::set_options();
 		$request    = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
 		$response   = null;
 		$dispatched = TestCase::mock_remote_network_request(
