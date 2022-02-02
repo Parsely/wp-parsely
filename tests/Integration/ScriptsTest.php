@@ -45,7 +45,6 @@ final class ScriptsTest extends TestCase {
 	 * Test script registration functionality.
 	 *
 	 * @covers \Parsely\Scripts::register_scripts
-	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -87,7 +86,6 @@ final class ScriptsTest extends TestCase {
 	 * Test the tracker script enqueue.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
-	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -114,7 +112,6 @@ final class ScriptsTest extends TestCase {
 	 * to true.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
-	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -172,7 +169,6 @@ final class ScriptsTest extends TestCase {
 	 * @covers \Parsely\Scripts::enqueue_js_api
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
@@ -197,7 +193,6 @@ final class ScriptsTest extends TestCase {
 	 * @covers \Parsely\Scripts::enqueue_js_api
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
@@ -265,7 +260,6 @@ final class ScriptsTest extends TestCase {
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::parsely_is_user_logged_in
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -344,7 +338,6 @@ final class ScriptsTest extends TestCase {
 	 * when the wp_parsely_enable_cfasync_attribute filter is used.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
-	 * @uses \Parsely\Parsely::get_asset_cache_buster
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options

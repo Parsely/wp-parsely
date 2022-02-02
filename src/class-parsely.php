@@ -635,10 +635,12 @@ class Parsely {
 	 * Otherwise, use the plugin version.
 	 *
 	 * @since 2.5.0
+	 * @deprecated 3.2.0
 	 *
 	 * @return string Random number string or plugin version string.
 	 */
 	public static function get_asset_cache_buster(): string {
+		_deprecated_function( 'Parsely::get_asset_cache_buster', '3.2.0' );
 		static $cache_buster;
 		if ( isset( $cache_buster ) ) {
 			return $cache_buster;
@@ -653,7 +655,9 @@ class Parsely {
 		 *
 		 * @param string $cache_buster Plugin version, unless WP_DEBUG is defined and truthy, and tests are not running.
 		 */
-		return apply_filters( 'wp_parsely_cache_buster', (string) $cache_buster );
+		$cache_buster = apply_filters_deprecated( 'wp_parsely_cache_buster', array( (string) $cache_buster ), '3.2.0' );
+
+		return $cache_buster;
 	}
 
 	/**
@@ -694,8 +698,10 @@ class Parsely {
 		if ( $last_tag ) {
 			$tags = explode( '/', $last_tag );
 		}
-		// remove uncategorized value from tags.
-		return array_diff( $tags, array( 'Uncategorized' ) );
+
+		// Remove default category name from tags if needed.
+		$default_category_name = get_cat_name( get_option( 'default_category' ) );
+		return array_diff( $tags, array( $default_category_name ) );
 	}
 
 	/**
@@ -727,8 +733,8 @@ class Parsely {
 		$taxonomy_dropdown_choice = get_the_terms( $post_obj->ID, $parsely_options['custom_taxonomy_section'] );
 		// Get top-level taxonomy name for chosen taxonomy and assign to $parent_name; it will be used
 		// as the category value if 'use_top_level_cats' option is checked.
-		// Assign as "Uncategorized" if no value is checked for the chosen taxonomy.
-		$category = 'Uncategorized';
+		// Assign as the default category name if no value is checked for the chosen taxonomy.
+		$category_name = get_cat_name( get_option( 'default_category' ) );
 		if ( ! empty( $taxonomy_dropdown_choice ) && ! is_wp_error( $taxonomy_dropdown_choice ) ) {
 			if ( $parsely_options['use_top_level_cats'] ) {
 				$first_term = array_shift( $taxonomy_dropdown_choice );
@@ -738,7 +744,7 @@ class Parsely {
 			}
 
 			if ( is_string( $term_name ) && 0 < strlen( $term_name ) ) {
-				$category = $term_name;
+				$category_name = $term_name;
 			}
 		}
 
@@ -751,9 +757,9 @@ class Parsely {
 		 * @param WP_Post $post_obj        Post object.
 		 * @param array   $parsely_options The Parsely options.
 		 */
-		$category = apply_filters( 'wp_parsely_post_category', $category, $post_obj, $parsely_options );
+		$category_name = apply_filters( 'wp_parsely_post_category', $category_name, $post_obj, $parsely_options );
 
-		return $this->get_clean_parsely_page_value( $category );
+		return $this->get_clean_parsely_page_value( $category_name );
 	}
 
 	/**
@@ -974,10 +980,12 @@ class Parsely {
 	/**
 	 * Get the URL of the plugin settings page.
 	 *
+	 * @param int $_blog_id The Blog ID for the multisite subsite to use for context (Default null for current).
+	 *
 	 * @return string
 	 */
-	public static function get_settings_url(): string {
-		return admin_url( 'options-general.php?page=' . self::MENU_SLUG );
+	public static function get_settings_url( int $_blog_id = null ): string {
+		return get_admin_url( $_blog_id, 'options-general.php?page=' . self::MENU_SLUG );
 	}
 
 	/**
