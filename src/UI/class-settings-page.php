@@ -46,29 +46,38 @@ final class Settings_Page {
 	public function run(): void {
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_assets' ) );
 	}
 
 	/**
-	 * Enqueue all needed scripts for Parse.ly plugin settings page.
+	 * Enqueue all needed scripts and styles for Parse.ly plugin settings page.
 	 *
 	 * @param string $hook_suffix The current page being loaded.
 	 * @return void
 	 */
-	public function enqueue_settings_scripts( string $hook_suffix ): void {
+	public function enqueue_settings_assets( string $hook_suffix ): void {
 		if ( 'settings_page_parsely' === $hook_suffix ) {
 			wp_enqueue_media();
 
 			$admin_settings_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
+			$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
+
+			// Admin settings JS.
 			wp_enqueue_script(
-				'parsely_admin_settings',
-				plugin_dir_url( PARSELY_FILE ) . '/build/admin-settings.js',
+				'parsely-admin-settings-js',
+				$built_assets_url . 'admin-settings.js',
 				$admin_settings_asset['dependencies'],
 				$admin_settings_asset['version'],
 				true
 			);
 
-			wp_enqueue_style( 'wp-parsely-admin-style', plugin_dir_url( PARSELY_FILE ) . '/wp-parsely-admin.css', array(), Parsely::VERSION );
+			// Admin settings CSS.
+			wp_enqueue_style(
+				'parsely-admin-settings-css',
+				$built_assets_url . 'admin-settings.css',
+				$admin_settings_asset['dependencies'],
+				$admin_settings_asset['version']
+			);
 		}
 	}
 
