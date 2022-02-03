@@ -93,27 +93,18 @@ function parsely_admin_init_register(): void {
 }
 
 require __DIR__ . '/src/UI/class-settings-page.php';
-
-add_action( '_admin_menu', __NAMESPACE__ . '\\parsely_admin_menu_register' );
-/**
- * Register the Parse.ly wp-admin settings page.
- *
- * @return void
- */
-function parsely_admin_menu_register(): void {
-	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
-	$settings_page->run();
-}
-
 require __DIR__ . '/src/UI/class-network-admin-sites-list.php';
 
-add_action( 'admin_init', __NAMESPACE__ . '\\admin_init_network_sites_list' );
+add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
- * Register the additions the Multisite Network Admin Sites List table.
+ * Register the additions the Parse.ly wp-admin settings page and Multisite Network Admin Sites List table.
  *
  * @return void
  */
-function admin_init_network_sites_list(): void {
+function parsely_wp_admin_early_register(): void {
+	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
+	$settings_page->run();
+
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
 }

@@ -19,7 +19,7 @@ export const changeKeysState = async ( activateApiKey, activateApiSecret ) => {
 		await page.keyboard.type( 'somesecret' );
 	}
 
-	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input' );
+	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'submit\')]' );
 	await input.click();
 	await waitForWpAdmin();
 };
@@ -27,7 +27,7 @@ export const changeKeysState = async ( activateApiKey, activateApiSecret ) => {
 export const deactivatePluginApiKey = async () => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
 	await page.evaluate( () => document.getElementById( 'apikey' ).value = '' );
-	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input' );
+	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'submit\')]' );
 	await input.click();
 	await waitForWpAdmin();
 };
@@ -39,4 +39,9 @@ export const activatePluginApiKey = async () => {
 	await page.keyboard.type( 'e2etest.example.com' );
 	await page.keyboard.press( 'Enter' );
 	await waitForWpAdmin();
+};
+
+export const checkH2DoesNotExist = async ( text ) => {
+	const [ h2 ] = await page.$x( `//h2[contains(text(), "${ text }")]` );
+	return h2 === undefined;
 };
