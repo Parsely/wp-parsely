@@ -68,7 +68,7 @@ final class Settings_Page {
 				true
 			);
 
-			wp_enqueue_style( 'parsely_admin_settings_css', plugin_dir_url( PARSELY_FILE ) . '/wp-parsely-admin.css', array(), Parsely::VERSION );
+			wp_enqueue_style( 'wp-parsely-admin-style', plugin_dir_url( PARSELY_FILE ) . '/wp-parsely-admin.css', array(), Parsely::VERSION );
 		}
 	}
 
