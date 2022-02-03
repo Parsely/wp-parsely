@@ -10,12 +10,37 @@ import {
 /**
  * Internal dependencies
  */
-import { activatePluginApiKey, deactivatePluginApiKey, waitForWpAdmin } from '../utils';
+import { activatePluginApiKey, checkH2DoesNotExist, deactivatePluginApiKey, waitForWpAdmin } from '../utils';
+
+const selectScreenOptions = async ( sections ) => {
+	const [ button ] = await page.$x( '//button[@id="show-settings-link"]' );
+	await button.click();
+
+	await page.waitForSelector( '#requires-recrawl' );
+
+	if ( sections.recrawl ) {
+		await page.evaluate( () => {
+			document.querySelector( '#requires-recrawl' ).parentElement.click();
+		} );
+	}
+
+	if ( sections.advanced ) {
+		await page.evaluate( () => {
+			document.querySelector( '#advanced' ).parentElement.click();
+		} );
+	}
+
+	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'screen-options-apply\')]' );
+	await input.click();
+};
 
 describe( 'Activation flow', () => {
-	it( 'Should progress as intended', async () => {
+	beforeEach( async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
+	} );
+
+	it( 'Should progress as intended', async () => {
 		await deactivatePluginApiKey();
 
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
@@ -33,5 +58,28 @@ describe( 'Activation flow', () => {
 
 		await waitForWpAdmin();
 		expect( await page.$( '#message.error' ) ).toBe( null );
+	} );
+
+	it( 'Should display all admin sections', async () => {
+		await visitAdminPage( '/options-general.php', '?page=parsely' );
+
+		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
+		expect( await checkH2DoesNotExist( 'Requires Recrawl Settings' ) ).toBe( true );
+		expect( await checkH2DoesNotExist( 'Advanced Settings' ) ).toBe( true );
+
+		await selectScreenOptions( { recrawl: true, advanced: true } );
+
+		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
+		await page.waitForXPath( '//h2[contains(text(), "Requires Recrawl Settings")]' );
+		await page.waitForXPath( '//h2[contains(text(), "Advanced Settings")]' );
+
+		await selectScreenOptions( { recrawl: false, advanced: true } );
+
+		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
+		await page.waitForXPath( '//h2[contains(text(), "Requires Recrawl Settings")]' );
+		expect( await checkH2DoesNotExist( 'Advanced Settings' ) ).toBe( true );
+
+		// Reverting to initial state
+		await selectScreenOptions( { recrawl: true, advanced: false } );
 	} );
 } );
