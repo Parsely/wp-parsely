@@ -85,15 +85,23 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	public function test_get_items() {
 		TestCase::set_options( array( 'apikey' => 'example.com' ) );
 
-		$request  = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
-		$response = null;
-		self::mock_remote_network_request(
-			function () use ( &$response, $request ) {
-				$response = rest_get_server()->dispatch( $request );
-			},
-			'{"data":[{"image_url":"https:\/\/example.com\/img.png","title":"something","url":"https:\/\/example.com"},{"image_url":"https:\/\/example.com\/img2.png","title":"something2","url":"https:\/\/example.com\/2"}]}'
+		$request = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
+
+		$dispatched = 0;
+
+		add_filter(
+			'pre_http_request',
+			function () use ( &$dispatched ) {
+				$dispatched++;
+				return array(
+					'body' => '{"data":[{"image_url":"https:\/\/example.com\/img.png","title":"something","url":"https:\/\/example.com"},{"image_url":"https:\/\/example.com\/img2.png","title":"something2","url":"https:\/\/example.com\/2"}]}',
+				);
+			}
 		);
 
+		$response = rest_get_server()->dispatch( $request );
+
+		$this->assertSame( 1, $dispatched );
 		$this->assertSame( 200, $response->get_status() );
 		$this->assertEquals(
 			(object) array(
@@ -121,13 +129,20 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	 */
 	public function test_get_items_fails_without_apikey_set() {
 		TestCase::set_options( array( 'apikey' => '' ) );
-		$request    = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
-		$response   = null;
-		$dispatched = self::mock_remote_network_request(
-			function () use ( &$response, $request ) {
-				$response = rest_get_server()->dispatch( $request );
+		$request  = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
+		$response = null;
+
+		$dispatched = 0;
+
+		add_filter(
+			'pre_http_request',
+			function () use ( &$dispatched ) {
+				$dispatched++;
+				return null;
 			}
 		);
+
+		$response = rest_get_server()->dispatch( $request );
 
 		$this->assertSame( 200, $response->get_status() );
 		$data = $response->get_data();
