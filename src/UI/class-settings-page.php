@@ -1123,7 +1123,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			unset( $input['track_post_types_as'] );
 		}
 
-
 		$input[ $posts ] = self::validate_option_array( $input[ $posts ] );
 		$input[ $pages ] = self::validate_option_array( $input[ $pages ] );
 
