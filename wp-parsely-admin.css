@@ -27,3 +27,19 @@
 	padding-bottom: var(--padding-default);
 	width: 100%;
 }
+
+@media only screen and (max-width: 380px) {
+
+	#track-post-types th,
+	#track-post-types td {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+
+	#track-post-types th:first-child {
+		max-width: 120px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+}
