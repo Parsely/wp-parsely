@@ -42,6 +42,59 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
+	 * Test whether the run method adds the register and enqueue actions.
+	 *
+	 * @covers \Parsely\Scripts::run
+	 *
+	 * @group scripts
+	 */
+	public function test_run_adds_actions(): void {
+		self::assertFalse( has_action( 'init', array( self::$scripts, 'register_scripts' ) ) );
+		self::assertFalse( has_action( 'wp_enqueue_scripts', array( self::$scripts, 'enqueue_js_api' ) ) );
+		self::assertFalse( has_action( 'wp_enqueue_scripts', array( self::$scripts, 'enqueue_js_tracker' ) ) );
+
+		self::$scripts->run();
+
+		self::assertSame( 10, has_action( 'init', array( self::$scripts, 'register_scripts' ) ) );
+		self::assertSame( 10, has_action( 'wp_enqueue_scripts', array( self::$scripts, 'enqueue_js_api' ) ) );
+		self::assertSame( 10, has_action( 'wp_enqueue_scripts', array( self::$scripts, 'enqueue_js_tracker' ) ) );
+	}
+
+	/**
+	 * Test whether the run method adds the register and enqueue actions when no API key is set.
+	 *
+	 * @covers \Parsely\Scripts::run
+	 *
+	 * @group scripts
+	 */
+	public function test_run_not_adds_actions_no_api_key(): void {
+		TestCase::set_options( array( 'apikey' => null ) );
+
+		self::$scripts->run();
+
+		self::assertFalse( has_action( 'init', array( self::$scripts, 'register_scripts' ) ) );
+		self::assertFalse( has_action( 'wp_enqueue_scripts', array( self::$scripts, 'enqueue_js_api' ) ) );
+		self::assertFalse( has_action( 'wp_enqueue_scripts', array( self::$scripts, 'enqueue_js_tracker' ) ) );
+	}
+
+	/**
+	 * Test whether the run method adds the register and enqueue actions when the disable javascript option is set.
+	 *
+	 * @covers \Parsely\Scripts::run
+	 *
+	 * @group scripts
+	 */
+	public function test_run_not_adds_actions_disable_javascript(): void {
+		TestCase::set_options( array( 'disable_javascript' => true ) );
+
+		self::$scripts->run();
+
+		self::assertFalse( has_action( 'init', array( self::$scripts, 'register_scripts' ) ) );
+		self::assertFalse( has_action( 'wp_enqueue_scripts', array( self::$scripts, 'enqueue_js_api' ) ) );
+		self::assertFalse( has_action( 'wp_enqueue_scripts', array( self::$scripts, 'enqueue_js_tracker' ) ) );
+	}
+
+	/**
 	 * Test script registration functionality.
 	 *
 	 * @covers \Parsely\Scripts::register_scripts
@@ -104,35 +157,6 @@ final class ScriptsTest extends TestCase {
 		$this->assert_script_statuses(
 			'wp-parsely-tracker',
 			array( 'registered', 'enqueued' )
-		);
-	}
-
-	/**
-	 * Test the tracker script enqueue with the disable_javascript option set
-	 * to true.
-	 *
-	 * @covers \Parsely\Scripts::enqueue_js_tracker
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::post_has_trackable_status
-	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Scripts::register_scripts
-	 * @uses \Parsely\Scripts::script_loader_tag
-	 * @group scripts
-	 */
-	public function test_enqueue_js_tracker_with_javascript_option_disabled(): void {
-		TestCase::set_options( array( 'disable_javascript' => true ) );
-
-		$this->go_to_new_post();
-		self::$scripts->register_scripts();
-		self::$scripts->enqueue_js_tracker();
-
-		// Confirm that tracker script is registered but not enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-tracker',
-			array( 'registered' ),
-			array( 'enqueued' )
 		);
 	}
 
