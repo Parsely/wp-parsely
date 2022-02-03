@@ -85,8 +85,6 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	public function test_get_items() {
 		TestCase::set_options( array( 'apikey' => 'example.com' ) );
 
-		$request = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
-
 		$dispatched = 0;
 
 		add_filter(
@@ -99,7 +97,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 			}
 		);
 
-		$response = rest_get_server()->dispatch( $request );
+		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' ) );
 
 		$this->assertSame( 1, $dispatched );
 		$this->assertSame( 200, $response->get_status() );
@@ -129,8 +127,6 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	 */
 	public function test_get_items_fails_without_apikey_set() {
 		TestCase::set_options( array( 'apikey' => '' ) );
-		$request  = new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' );
-		$response = null;
 
 		$dispatched = 0;
 
@@ -142,7 +138,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 			}
 		);
 
-		$response = rest_get_server()->dispatch( $request );
+		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' ) );
 
 		$this->assertSame( 200, $response->get_status() );
 		$data = $response->get_data();
