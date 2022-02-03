@@ -291,12 +291,12 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$field_help = __( 'Select how you want to track every Post Type.', 'wp-parsely' );
 		add_settings_field(
 			$field_id,
-			__( 'Track Post Types as...', 'wp-parsely' ),
+			__( 'Track Post Types as', 'wp-parsely' ),
 			array( $this, 'print_track_post_types_table' ),
 			Parsely::MENU_SLUG,
 			'requires_recrawl_settings',
 			array(
-				'title'      => __( 'Track Post Types as...', 'wp-parsely' ),
+				'title'      => __( 'Track Post Types as', 'wp-parsely' ),
 				'option_key' => $field_id,
 				'help_text'  => $field_help,
 			)
@@ -739,7 +739,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$input['logo'] = self::get_logo_default();
 		}
 
-		// Validate 'Track post type as...'.
+		// Validate 'Track post type as'.
 		$this->validate_options_post_type_tracking( $input );
 
 		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
