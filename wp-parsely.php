@@ -110,7 +110,7 @@ function parsely_wp_admin_early_register(): void {
 	$network_admin_sites_list->run();
 }
 
-require __DIR__ . '/src/class-recommended-content.php';
+require __DIR__ . '/src/RemoteAPI/class-recommended-content.php';
 require __DIR__ . '/src/Endpoints/class-recommendations-api-proxy.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_recommendations_proxy' );

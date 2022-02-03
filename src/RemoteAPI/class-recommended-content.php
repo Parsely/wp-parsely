@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely;
+namespace Parsely\RemoteAPI;
 
 /**
  * Recommended_Content

@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\UI\Recommended_Widget;
-use Parsely\Recommended_Content;
+use Parsely\RemoteAPI\Recommended_Content;
 
 /**
  * Recommended Widget tests.

@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
-use Parsely\Recommended_Content;
+use Parsely\RemoteAPI\Recommended_Content;
 use stdClass;
 use WP_Error;
 use WP_REST_Server;
