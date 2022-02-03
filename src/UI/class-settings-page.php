@@ -12,6 +12,7 @@ namespace Parsely\UI;
 
 use Parsely\Parsely;
 
+use WP_Screen;
 use const Parsely\PARSELY_FILE;
 
 /**
@@ -26,6 +27,26 @@ final class Settings_Page {
 	 * @var Parsely
 	 */
 	private $parsely;
+
+	/**
+	 * Admin page name used for hook suffixes.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @var string
+	 */
+	private $hook_suffix;
+
+	/**
+	 * Screen options name.
+	 *
+	 * Name must end in `_page` so that set-screen-option hook is triggered for WP < 5.4.2.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @var string
+	 */
+	private $screen_options_name = 'wp_parsely_page';
 
 	/**
 	 * Constructor.
@@ -47,6 +68,11 @@ final class Settings_Page {
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_assets' ) );
+
+		// Handle saving of screen options.
+		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 11, 3 );
+		// Render screen options.
+		add_filter( 'screen_settings', array( $this, 'screen_settings' ), 10, 2 );
 	}
 
 	/**
@@ -87,7 +113,7 @@ final class Settings_Page {
 	 * @return void
 	 */
 	public function add_settings_sub_menu(): void {
-		$hook_suffix = add_options_page(
+		$suffix = add_options_page(
 			__( 'Parse.ly Settings', 'wp-parsely' ),
 			__( 'Parse.ly', 'wp-parsely' ),
 			Parsely::CAPABILITY,
@@ -95,8 +121,107 @@ final class Settings_Page {
 			array( $this, 'display_settings' )
 		);
 
-		// Adds help text when admin page loads.
-		add_action( 'load-' . $hook_suffix, array( $this, 'add_help_text' ) );
+		if ( is_string( $suffix ) ) {
+			$this->hook_suffix = $suffix;
+
+			// Adds help text when admin page loads.
+			add_action( 'load-' . $this->hook_suffix, array( $this, 'add_help_text' ) );
+			// Adds screen options when admin page loads.
+			add_action( 'load-' . $this->hook_suffix, array( $this, 'add_screen_options' ) );
+		}
+	}
+
+	/**
+	 * Save the screen option setting.
+	 *
+	 * Nonce is already checked in set_screen_options() - no need to check here.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param mixed  $screen_option The value to save instead of the option value. Default false (to skip saving the current option).
+	 * @param string $option        The option name.
+	 * @param mixed  $value         The option value.
+	 * @return mixed Updated option value.
+	 */
+	public function set_screen_option( $screen_option, string $option, $value ) {
+		if ( $this->screen_options_name === $option ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
+			if ( isset( $_POST[ $this->screen_options_name ] ) && is_array( $_POST[ $this->screen_options_name ] ) ) {
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+				$unslashed = wp_unslash( $_POST[ $this->screen_options_name ] );
+				$data      = array_map( 'sanitize_text_field', $unslashed );
+			}
+			$value = $data ?? array();
+		}
+		return $value;
+	}
+
+	/**
+	 * Register screen options.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @return void
+	 */
+	public function add_screen_options(): void {
+		add_screen_option(
+			'wp_parsely_screen_options_requires_recrawl',
+			array(
+				'label'  => __( 'Requires Recrawl Settings', 'wp-parsely' ),
+				'option' => 'requires-recrawl',
+			)
+		);
+		add_screen_option(
+			'wp_parsely_screen_options_advanced',
+			array(
+				'label'  => __( 'Advanced Settings', 'wp-parsely' ),
+				'option' => 'advanced',
+			)
+		);
+	}
+
+	/**
+	 * Render the screen options block.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param string    $screen_settings Screen settings.
+	 * @param WP_Screen $screen          WP_Screen object.
+	 *
+	 * @return string The filtered screen settings.
+	 */
+	public function screen_settings( string $screen_settings, WP_Screen $screen ): string {
+		if ( $this->hook_suffix !== $screen->base ) {
+			return $screen_settings;
+		}
+
+		$current_screen = get_current_screen();
+		if ( null === $current_screen ) {
+			return $screen_settings;
+		}
+
+		$user_meta = get_user_meta( get_current_user_id(), $this->screen_options_name, true );
+
+		ob_start();
+		?>
+		<fieldset>
+		<legend><?php esc_html_e( 'Show on screen', 'wp-parsely' ); ?></legend>
+		<input type="hidden" name="wp_screen_options[option]" value="<?php echo esc_attr( $this->screen_options_name ); ?>" />
+		<input type="hidden" name="wp_screen_options[value]" value="yes" />
+		<?php
+		foreach ( $current_screen->get_options() as $option ) {
+			$checked = isset( $user_meta[ $option['option'] ] );
+			$name    = $this->screen_options_name . '[' . $option['option'] . ']';
+			?>
+			<label><input class="hide-section-tog" name="<?php echo esc_attr( $name ); ?>" type="checkbox" id="<?php echo esc_attr( $option['option'] ); ?>" value="true"<?php checked( $checked ); ?>><?php echo esc_html( $option['label'] ); ?></label>
+			<?php
+		}
+		?>
+		</fieldset>
+		<?php
+		submit_button( __( 'Apply', 'wp-parsely' ), 'primary', 'screen-options-apply' );
+
+		return ob_get_clean();
 	}
 
 	/**
@@ -123,7 +248,11 @@ final class Settings_Page {
 					'Important: changing any of the values in the Requires Recrawl section on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data.
 Once you have changed a value and saved, please contact support@parsely.com to request a recrawl.',
 					'wp-parsely'
-				) . '</p>',
+				) . '</p>' .
+					'<p>' . __(
+						'If you can\'t see these settings, you will need to enable the Requires Recrawl Settings in the Screen Options.',
+						'wp-parsely'
+					) . '</p>',
 			)
 		);
 	}
@@ -154,7 +283,27 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			array( $this, 'validate_options' )
 		);
 
-		// These are the Basic Settings.
+		$user_meta = array_keys( (array) get_user_meta( get_current_user_id(), $this->screen_options_name, true ) );
+
+		$this->initialize_basic_section();
+
+		if ( in_array( 'requires-recrawl', $user_meta, true ) ) {
+			$this->initialize_requires_recrawl_section();
+		}
+
+		if ( in_array( 'advanced', $user_meta, true ) ) {
+			$this->initialize_advanced_section();
+		}
+	}
+
+	/**
+	 * Register section and settings for Basic section.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @return void
+	 */
+	private function initialize_basic_section(): void {
 		add_settings_section(
 			'basic_settings',
 			__( 'Basic Settings', 'wp-parsely' ),
@@ -279,8 +428,16 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				)
 			);
 		}
+	}
 
-		// These are the Requires Recrawl Settings.
+	/**
+	 * Register section and settings for Requires Recrawl section.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @return void
+	 */
+	private function initialize_requires_recrawl_section(): void {
 		add_settings_section(
 			'requires_recrawl_settings',
 			__( 'Requires Recrawl Settings', 'wp-parsely' ),
@@ -376,7 +533,16 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			'option_key'     => $field_id,
 			'help_text'      => $h,
 			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-			'select_options' => array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) ),
+			'select_options' => array_diff(
+				get_taxonomies(),
+				array(
+					'post_tag',
+					'nav_menu',
+					'author',
+					'link_category',
+					'post_format',
+				)
+			),
 			'label_for'      => Parsely::OPTIONS_KEY . "[$field_id]",
 		);
 		add_settings_field(
@@ -431,7 +597,16 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				'help_text'  => $h,
 			)
 		);
+	}
 
+	/**
+	 * Register section and settings for Advanced section.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @return void
+	 */
+	private function initialize_advanced_section(): void {
 		// These are Advanced Settings.
 		add_settings_section(
 			'advanced_settings',
@@ -744,40 +919,29 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			}
 		}
 
+		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
+
+		if ( ! empty( $input['metadata_secret'] ) ) {
+			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
+				add_settings_error(
+					Parsely::OPTIONS_KEY,
+					'metadata_secret',
+					__( 'Metadata secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+				);
+			} elseif ( isset( $input['parsely_wipe_metadata_cache'] ) && 'true' === $input['parsely_wipe_metadata_cache'] ) {
+				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
+
+				wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
+				$input['parsely_wipe_metadata_cache'] = false;
+			}
+		}
+
 		if ( empty( $input['logo'] ) ) {
 			$input['logo'] = self::get_logo_default();
 		}
 
 		// Validate 'Track post type as'.
 		$this->validate_options_post_type_tracking( $input );
-
-		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
-		// Content ID prefix.
-		$input['content_id_prefix']       = sanitize_text_field( $input['content_id_prefix'] );
-		$input['custom_taxonomy_section'] = sanitize_text_field( $input['custom_taxonomy_section'] );
-
-		// Custom taxonomy as section.
-		// Top-level categories.
-		if ( 'true' !== $input['use_top_level_cats'] && 'false' !== $input['use_top_level_cats'] ) {
-			add_settings_error(
-				Parsely::OPTIONS_KEY,
-				'use_top_level_cats',
-				__( 'Value passed for use_top_level_cats must be either "true" or "false".', 'wp-parsely' )
-			);
-		} else {
-			$input['use_top_level_cats'] = 'true' === $input['use_top_level_cats'];
-		}
-
-		// Child categories as tags.
-		if ( 'true' !== $input['cats_as_tags'] && 'false' !== $input['cats_as_tags'] ) {
-			add_settings_error(
-				Parsely::OPTIONS_KEY,
-				'cats_as_tags',
-				__( 'Value passed for cats_as_tags must be either "true" or "false".', 'wp-parsely' )
-			);
-		} else {
-			$input['cats_as_tags'] = 'true' === $input['cats_as_tags'];
-		}
 
 		// Track authenticated users.
 		if ( 'true' !== $input['track_authenticated_users'] && 'false' !== $input['track_authenticated_users'] ) {
@@ -788,27 +952,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			);
 		} else {
 			$input['track_authenticated_users'] = 'true' === $input['track_authenticated_users'];
-		}
-
-		// Lowercase tags.
-		if ( 'true' !== $input['lowercase_tags'] && 'false' !== $input['lowercase_tags'] ) {
-			add_settings_error(
-				Parsely::OPTIONS_KEY,
-				'lowercase_tags',
-				__( 'Value passed for lowercase_tags must be either "true" or "false".', 'wp-parsely' )
-			);
-		} else {
-			$input['lowercase_tags'] = 'true' === $input['lowercase_tags'];
-		}
-
-		if ( 'true' !== $input['force_https_canonicals'] && 'false' !== $input['force_https_canonicals'] ) {
-			add_settings_error(
-				Parsely::OPTIONS_KEY,
-				'force_https_canonicals',
-				__( 'Value passed for force_https_canonicals must be either "true" or "false".', 'wp-parsely' )
-			);
-		} else {
-			$input['force_https_canonicals'] = 'true' === $input['force_https_canonicals'];
 		}
 
 		if ( 'true' !== $input['disable_javascript'] && 'false' !== $input['disable_javascript'] ) {
@@ -823,7 +966,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		// Allow for Disable AMP setting to be conditionally included on the page.
 		// If it's not shown, then set the value as what was previously saved.
-		if ( ! isset( $input['disable_amp'] ) || null === $input['disable_amp'] ) {
+		if ( ! isset( $input['disable_amp'] ) ) {
 			$input['disable_amp'] = 'true';
 			if ( false === $options['disable_amp'] ) {
 				$input['disable_amp'] = 'false';
@@ -840,19 +983,106 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$input['disable_amp'] = 'true' === $input['disable_amp'];
 		}
 
-		if ( ! empty( $input['metadata_secret'] ) ) {
-			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
-				add_settings_error(
-					Parsely::OPTIONS_KEY,
-					'metadata_secret',
-					__( 'Metadata secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
-				);
-			} elseif ( 'true' === $input['parsely_wipe_metadata_cache'] ) {
-				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
+		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
 
-				wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
-				$input['parsely_wipe_metadata_cache'] = false;
+		// Custom taxonomy as section.
+		if ( ! isset( $input['meta_type'] ) ) {
+			$input['meta_type'] = $options['meta_type'];
+		} else {
+			$input['meta_type'] = sanitize_text_field( $input['meta_type'] );
+		}
+
+		// Content ID prefix.
+		if ( ! isset( $input['content_id_prefix'] ) ) {
+			$input['content_id_prefix'] = $options['content_id_prefix'];
+		} else {
+			$input['content_id_prefix'] = sanitize_text_field( $input['content_id_prefix'] );
+		}
+
+		// Allow for Top-level categories setting to be conditionally included on the page.
+		// If it's not shown, then set the value as what was previously saved.
+		if ( ! isset( $input['use_top_level_cats'] ) ) {
+			$input['use_top_level_cats'] = 'true';
+			if ( false === $options['use_top_level_cats'] ) {
+				$input['use_top_level_cats'] = 'false';
 			}
+		}
+
+		// Top-level categories.
+		if ( 'true' !== $input['use_top_level_cats'] && 'false' !== $input['use_top_level_cats'] ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'use_top_level_cats',
+				__( 'Value passed for use_top_level_cats must be either "true" or "false".', 'wp-parsely' )
+			);
+		} else {
+			$input['use_top_level_cats'] = 'true' === $input['use_top_level_cats'];
+		}
+
+		// Custom taxonomy as section.
+		if ( ! isset( $input['custom_taxonomy_section'] ) ) {
+			$input['custom_taxonomy_section'] = $options['custom_taxonomy_section'];
+		} else {
+			$input['custom_taxonomy_section'] = sanitize_text_field( $input['custom_taxonomy_section'] );
+		}
+
+		// Allow for Categories as Tags setting to be conditionally included on the page.
+		// If it's not shown, then set the value as what was previously saved.
+		if ( ! isset( $input['cats_as_tags'] ) ) {
+			$input['cats_as_tags'] = 'true';
+			if ( false === $options['cats_as_tags'] ) {
+				$input['cats_as_tags'] = 'false';
+			}
+		}
+
+		// Child categories as tags.
+		if ( 'true' !== $input['cats_as_tags'] && 'false' !== $input['cats_as_tags'] ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'cats_as_tags',
+				__( 'Value passed for cats_as_tags must be either "true" or "false".', 'wp-parsely' )
+			);
+		} else {
+			$input['cats_as_tags'] = 'true' === $input['cats_as_tags'];
+		}
+
+		// Allow for Lowercase Tags setting to be conditionally included on the page.
+		// If it's not shown, then set the value as what was previously saved.
+		if ( ! isset( $input['lowercase_tags'] ) ) {
+			$input['lowercase_tags'] = 'true';
+			if ( false === $options['lowercase_tags'] ) {
+				$input['lowercase_tags'] = 'false';
+			}
+		}
+
+		// Lowercase tags.
+		if ( 'true' !== $input['lowercase_tags'] && 'false' !== $input['lowercase_tags'] ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'lowercase_tags',
+				__( 'Value passed for lowercase_tags must be either "true" or "false".', 'wp-parsely' )
+			);
+		} else {
+			$input['lowercase_tags'] = 'true' === $input['lowercase_tags'];
+		}
+
+		// Allow for Force HTTPS Canonical setting to be conditionally included on the page.
+		// If it's not shown, then set the value as what was previously saved.
+		if ( ! isset( $input['force_https_canonicals'] ) ) {
+			$input['force_https_canonicals'] = 'true';
+			if ( false === $options['force_https_canonicals'] ) {
+				$input['force_https_canonicals'] = 'false';
+			}
+		}
+
+		if ( 'true' !== $input['force_https_canonicals'] && 'false' !== $input['force_https_canonicals'] ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'force_https_canonicals',
+				__( 'Value passed for force_https_canonicals must be either "true" or "false".', 'wp-parsely' )
+			);
+		} else {
+			$input['force_https_canonicals'] = 'true' === $input['force_https_canonicals'];
 		}
 
 		return $input;
