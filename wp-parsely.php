@@ -148,7 +148,7 @@ function parsely_integrations(): Integrations {
 	$parsely_integrations = new Integrations();
 	$parsely_integrations->register( 'amp', Amp::class );
 	$parsely_integrations->register( 'fbia', Facebook_Instant_Articles::class );
-	$parsely_integrations->register( 'webstories', new Google_Web_Stories( $GLOBALS['parsely'] ) );
+	$parsely_integrations->register( 'webstories', Google_Web_Stories::class );
 	$parsely_integrations = apply_filters( 'wp_parsely_add_integration', $parsely_integrations );
 	$parsely_integrations->integrate();
 

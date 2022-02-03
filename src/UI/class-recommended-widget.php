@@ -132,7 +132,7 @@ final class Recommended_Widget extends WP_Widget {
 			'wp-parsely-recommended-widget',
 			plugin_dir_url( PARSELY_FILE ) . 'build/recommended-widget.js',
 			$recommended_widget_script_asset['dependencies'],
-			Parsely::get_asset_cache_buster(),
+			$recommended_widget_script_asset['version'],
 			true
 		);
 
