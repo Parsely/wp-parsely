@@ -42,7 +42,7 @@ class Scripts {
 	 */
 	public function run(): void {
 		$parsely_options = $this->parsely->get_options();
-		if ( ! $this->parsely->api_key_is_missing() && ! $parsely_options['disable_javascript'] ) {
+		if ( $this->parsely->api_key_is_set() && false !== $parsely_options['disable_javascript'] ) {
 			add_action( 'init', array( $this, 'register_scripts' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_api' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_tracker' ) );
