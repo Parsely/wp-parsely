@@ -26,6 +26,7 @@ describe( 'Front end code insertion', () => {
 		expect( content ).toContain( `<script data-parsely-site="e2etest.example.com" src="https://cdn.parsely.com/keys/e2etest.example.com/p.js?ver=${ PLUGIN_VERSION }" id="parsely-cfg"></script>` );
 		expect( content ).not.toContain( '<script id="wp-parsely-api-js-extra">' );
 		expect( content ).not.toContain( 'var wpParsely' );
+		expect( content ).not.toContain( 'init-api.js' );
 	} );
 
 	it( 'Should inject loading script homepage and extra variable', async () => {
@@ -41,5 +42,6 @@ describe( 'Front end code insertion', () => {
 		expect( content ).toContain( `<script data-parsely-site="e2etest.example.com" src="https://cdn.parsely.com/keys/e2etest.example.com/p.js?ver=${ PLUGIN_VERSION }" id="parsely-cfg"></script>` );
 		expect( content ).toContain( '<script id="wp-parsely-api-js-extra">' );
 		expect( content ).toContain( 'var wpParsely = {"apikey":"e2etest.example.com"};' );
+		expect( content ).toContain( '<script src="http://localhost:8889/wp-content/plugins/wp-parsely/build/init-api.js?ver=f68f5afd116c18f188eb32c9cd990d80" id="wp-parsely-api-js"></script>' );
 	} );
 } );
