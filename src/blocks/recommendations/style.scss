@@ -1,24 +1,24 @@
-.block-editor .parsely-recommendations__ul .parsely-recommendations__link {
+.block-editor .parsely-recommendations-ul .parsely-recommendations-link {
 	// Disable clicking on links (probably just during dev)
 	pointer-events: none;
 }
 
-.parsely-recommendations__list-title {
+.parsely-recommendations-list-title {
 	font-size: 1.75ch;
 }
 
-.parsely-recommendations__ul {
+.parsely-recommendations-ul {
 	list-style: none !important; // Not sure why, but the !important is needed in the editor. TODO: avoid.
 }
 
-.parsely-recommendations__cardbody {
+.parsely-recommendations-cardbody {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	max-height: 150px;
 	padding: 5px;
 }
 
-.parsely-recommendations__cardmedia {
+.parsely-recommendations-cardmedia {
 	min-height: 100px;
 	max-height: 100px;
 
@@ -28,25 +28,25 @@
 	}
 }
 
-.parsely-recommendations__ul-list {
+.parsely-recommendations-ul-list {
 	// Styles for the list view
-	.parsely-recommendations__cardbody {
+	.parsely-recommendations-cardbody {
 		text-decoration: underline;
 		font-size: 0.8vw;
 	}
 
-	.parsely-recommendations__card {
+	.parsely-recommendations-card {
 		display: inline-flex;
 		min-width: 100%;
 	}
 
-	.parsely-recommendations__cardmedia {
+	.parsely-recommendations-cardmedia {
 		min-width: 150px;
 		max-width: 150px;
 	}
 }
 
-.parsely-recommendations__ul-grid {
+.parsely-recommendations-ul-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, 13ch);
 	row-gap: 0.5em;
@@ -58,7 +58,7 @@
 		vertical-align: middle;
 	}
 
-	.parsely-recommendations__cardbody {
+	.parsely-recommendations-cardbody {
 		font-size: 0.8vw;
 	}
 }

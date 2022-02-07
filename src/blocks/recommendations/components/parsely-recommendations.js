@@ -48,7 +48,7 @@ export default function ParselyRecommendations( {
 				sort={ sort }
 			/>
 			{ ! isLoaded && (
-				<span className="parsely-recommendations__loading">{ __( 'Loading…', 'wp-parsely' ) }</span>
+				<span className="parsely-recommendations-loading">{ __( 'Loading…', 'wp-parsely' ) }</span>
 			) }
 			{ isLoaded && !! recommendations?.length && (
 				<>

@@ -12,8 +12,8 @@ import ParselyRecommendationsListItem from './parsely-recommendations-list-item'
 const ParselyRecommendationsList = ( { imagestyle, layoutstyle, recommendations, showimages } ) => (
 	<ul
 		className={ classNames(
-			'parsely-recommendations__ul',
-			layoutstyle && `parsely-recommendations__ul-${ layoutstyle }`
+			'parsely-recommendations-ul',
+			layoutstyle && `parsely-recommendations-ul-${ layoutstyle }`
 		) }
 	>
 		{ recommendations.map( ( recommendation, index ) => (

@@ -25,18 +25,18 @@ const ParselyRecommendationsListItem = ( {
 
 	return (
 		<li>
-			<a href={ linkUrl } className="parsely-recommendations__link">
-				<Card className="parsely-recommendations__card" size="custom">
+			<a href={ linkUrl } className="parsely-recommendations-link">
+				<Card className="parsely-recommendations-card" size="custom">
 					{ imageForLink && (
-						<CardMedia className="parsely-recommendations__cardmedia">
+						<CardMedia className="parsely-recommendations-cardmedia">
 							<img
-								className="parsely-recommendations__list-img"
+								className="parsely-recommendations-list-img"
 								src={ imageForLink }
 								alt={ imageAlt }
 							/>
 						</CardMedia>
 					) }
-					<CardBody className="parsely-recommendations__cardbody">{ linkTitle }</CardBody>
+					<CardBody className="parsely-recommendations-cardbody">{ linkTitle }</CardBody>
 				</Card>
 			</a>
 		</li>
