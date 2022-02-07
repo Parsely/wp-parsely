@@ -452,7 +452,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
 		$field_id   = 'track_post_types_as';
-		$field_help = __( 'Select how you want to track every Post Type.', 'wp-parsely' );
+		$field_help = __( 'Select how you want to track every post type.', 'wp-parsely' );
 		add_settings_field(
 			$field_id,
 			__( 'Track Post Types as', 'wp-parsely' ),
