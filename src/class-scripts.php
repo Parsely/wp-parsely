@@ -127,6 +127,8 @@ class Scripts {
 			add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
 		}
 
+		do_action( 'wp_parsely_pre_load_tracker' );
+
 		wp_enqueue_script( 'wp-parsely-tracker' );
 	}
 
