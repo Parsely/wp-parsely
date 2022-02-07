@@ -18,16 +18,16 @@ const selectScreenOptions = async ( sections ) => {
 
 	await page.waitForSelector( '#requires-recrawl' );
 
-	if ( sections.recrawl ) {
-		await page.evaluate( () => {
-			document.querySelector( '#requires-recrawl' ).parentElement.click();
-		} );
+	const recrawlInput = await page.$( '#requires-recrawl' );
+	const isRecrawlChecked = await ( await recrawlInput.getProperty( 'checked' ) ).jsonValue();
+	if ( ( sections.recrawl && ! isRecrawlChecked ) || ( ! sections.recrawl && isRecrawlChecked ) ) {
+		await recrawlInput.click();
 	}
 
-	if ( sections.advanced ) {
-		await page.evaluate( () => {
-			document.querySelector( '#advanced' ).parentElement.click();
-		} );
+	const advancedInput = await page.$( '#advanced' );
+	const isAdvancedChecked = await ( await advancedInput.getProperty( 'checked' ) ).jsonValue();
+	if ( ( sections.advanced && ! isAdvancedChecked ) || ( ! sections.advanced && isAdvancedChecked ) ) {
+		await advancedInput.click();
 	}
 
 	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'screen-options-apply\')]' );
@@ -73,13 +73,13 @@ describe( 'Activation flow', () => {
 		await page.waitForXPath( '//h2[contains(text(), "Requires Recrawl Settings")]' );
 		await page.waitForXPath( '//h2[contains(text(), "Advanced Settings")]' );
 
-		await selectScreenOptions( { recrawl: false, advanced: true } );
+		await selectScreenOptions( { recrawl: true, advanced: false } );
 
 		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
 		await page.waitForXPath( '//h2[contains(text(), "Requires Recrawl Settings")]' );
 		expect( await checkH2DoesNotExist( 'Advanced Settings' ) ).toBe( true );
 
 		// Reverting to initial state
-		await selectScreenOptions( { recrawl: true, advanced: false } );
+		await selectScreenOptions( { recrawl: false, advanced: false } );
 	} );
 } );
