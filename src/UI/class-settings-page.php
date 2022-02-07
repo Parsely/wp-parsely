@@ -88,7 +88,6 @@ final class Settings_Page {
 			$admin_settings_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
 			$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
 
-			// Admin settings JS.
 			wp_enqueue_script(
 				'parsely-admin-settings-js',
 				$built_assets_url . 'admin-settings.js',
@@ -97,7 +96,6 @@ final class Settings_Page {
 				true
 			);
 
-			// Admin settings CSS.
 			wp_enqueue_style(
 				'parsely-admin-settings-css',
 				$built_assets_url . 'admin-settings.css',
@@ -813,7 +811,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Print out the post tracking options table.
 	 *
-	 * @param array $args The arguments used in the output HTML elements.
+	 * @since 3.2.0
+	 *
+	 * @param array<string, string> $args The arguments used in the output HTML elements.
 	 * @return void
 	 */
 	public function print_track_post_types_table( array $args ): void {
@@ -1181,7 +1181,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Validate options from an array.
+	 * Sanitize all elements in an option array.
 	 *
 	 * @param array $array Array of options to be sanitized.
 	 * @return array
