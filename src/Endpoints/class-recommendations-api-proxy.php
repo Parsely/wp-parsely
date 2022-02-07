@@ -49,8 +49,12 @@ final class Recommendations_API_Proxy {
 					'callback'            => array( $this, 'get_items' ),
 					'permission_callback' => array( $this, 'permission_callback' ),
 					'args'                => array(
-						'limit' => array(
-							'sanitize_callback' => 'absint',
+						'query' => array(
+							'default'           => array(),
+							'sanitize_callback' => function ( $query ) {
+								// question: how should we sanitize these?
+								return (array) $query;
+							},
 						),
 					),
 				),
@@ -92,14 +96,7 @@ final class Recommendations_API_Proxy {
 			return $cached;
 		}
 
-		$links = self::fetch_related_links(
-			$apikey,
-			$params['url'] ?? '',
-			$params['pub_date_start'] ?? 0,
-			$params['sort'] ?? 'score',
-			$params['limit'] ?? 5,
-			$params['boost'] ?? 'views'
-		);
+		$links = $this->fetch_related_links( $params['query'] );
 
 		if ( is_wp_error( $links ) ) {
 			$response = (object) array(
@@ -132,34 +129,14 @@ final class Recommendations_API_Proxy {
 	/**
 	 * Call the Parsely `/related` endpoint to get recommendations
 	 *
-	 * @param string  $apikey The Parsely API key.
-	 * @param string  $url The current URL to get related content.
-	 * @param integer $pub_start Publication filter start date (`pub_date_start`).
-	 * @param string  $sort_recs What to sort the results by (`sort`).
-	 * @param integer $limit Number of records to retrieve.
-	 * @param string  $boost Sub-sort value to re-rank relevant posts.
+	 * @param array $query The query arguments that will be passed to the backend API.
 	 *
 	 * @see https://www.parse.ly/help/api/recommendations#get-related
 	 * @return array|WP_Error
 	 */
-	public static function fetch_related_links(
-		string $apikey,
-		string $url,
-		int $pub_start,
-		string $sort_recs,
-		int $limit,
-		string $boost
-	) {
-		$full_api_url = add_query_arg(
-			array( 'url' => $url ),
-			Recommended_Content::get_api_url(
-				$apikey,
-				$pub_start,
-				$sort_recs,
-				$boost,
-				$limit
-			)
-		);
+	public function fetch_related_links( array $query ) {
+		$recommended_content = new Recommended_Content( $this->parsely );
+		$full_api_url        = $recommended_content->get_api_url( $query );
 
 		$result = wp_safe_remote_get( $full_api_url, array() );
 
