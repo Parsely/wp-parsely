@@ -27,8 +27,8 @@ const reducer = ( state, action ) => {
 				( { title, url, image_url, thumb_url_medium } ) => ( {
 					title,
 					url,
-					image_url,
-					thumb_url_medium,
+					image_url, // eslint-disable-line camelcase
+					thumb_url_medium, // eslint-disable-line camelcase
 				} )
 			);
 			return { ...state, isLoaded: true, recommendations: validRecommendations };
