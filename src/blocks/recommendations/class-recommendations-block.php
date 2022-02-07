@@ -21,7 +21,7 @@ class Recommendations_Block {
 	 *
 	 * @return void
 	 */
-	public function run() {
+	public function run(): void {
 		global $wp_version;
 
 		if ( ! apply_filters( 'wp_parsely_recommendations_block_enabled', false ) ) {
@@ -35,8 +35,10 @@ class Recommendations_Block {
 	/**
 	 * Registers all block assets so that they can be enqueued through Gutenberg in
 	 * the corresponding context.
+	 *
+	 * @return void
 	 */
-	public static function register_block_and_assets() {
+	public static function register_block_and_assets(): void {
 		$plugin_path = plugin_dir_path( PARSELY_FILE );
 		$plugin_url  = plugin_dir_url( PARSELY_FILE );
 
