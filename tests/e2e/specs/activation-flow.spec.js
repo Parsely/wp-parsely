@@ -12,6 +12,12 @@ import {
  */
 import { activatePluginApiKey, checkH2DoesNotExist, deactivatePluginApiKey, waitForWpAdmin } from '../utils';
 
+/**
+ * Set the visible sections in the array to their values `true` for visible and `false` for not visible.
+ *
+ * @param {Object} sections Dictionary containing the desired sections to change. Currently, `recrawl` and `advanced`.
+ * @return {Promise<void>}
+ */
 const selectScreenOptions = async ( sections ) => {
 	const [ button ] = await page.$x( '//button[@id="show-settings-link"]' );
 	await button.click();
