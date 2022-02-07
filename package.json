@@ -73,6 +73,7 @@
 		"test:unit": "wp-scripts test-unit-js",
 		"test:unit:debug": "wp-scripts --inspect-brk test-unit-js --runInBand --no-cache",
 		"test:unit:help": "wp-scripts test-unit-js --help",
-		"test:unit:watch": "wp-scripts test-unit-js --watch"
+		"test:unit:watch": "wp-scripts test-unit-js --watch",
+		"wp-env": "wp-env"
 	}
 }
