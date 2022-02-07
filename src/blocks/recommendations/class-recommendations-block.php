@@ -39,11 +39,9 @@ class Recommendations_Block {
 	 * @return void
 	 */
 	public static function register_block_and_assets(): void {
-		$plugin_path = plugin_dir_path( PARSELY_FILE );
-		$plugin_url  = plugin_dir_url( PARSELY_FILE );
+		$plugin_url = plugin_dir_url( PARSELY_FILE );
 
-		$editor_asset_file = require $plugin_path . 'build/recommendations-edit.asset.php';
-
+		$editor_asset_file = require plugin_dir_path( PARSELY_FILE ) . 'build/recommendations-edit.asset.php';
 		wp_register_script(
 			'wp-parsely-recommendations-block-editor',
 			$plugin_url . 'build/recommendations-edit.js',
@@ -52,7 +50,7 @@ class Recommendations_Block {
 			true
 		);
 
-		$script_asset_file = require $plugin_path . 'build/recommendations.asset.php';
+		$script_asset_file = require plugin_dir_path( PARSELY_FILE ) . 'build/recommendations.asset.php';
 		wp_register_script(
 			'wp-parsely-recommendations-block',
 			$plugin_url . 'build/recommendations.js',
