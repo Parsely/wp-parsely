@@ -16,6 +16,11 @@ namespace Parsely;
 class Recommendations_Block {
 	const MINIMUM_WORDPRESS_VERSION = '5.6';
 
+	/**
+	 * Determine whether the block and its assets should be registered.
+	 *
+	 * @return void
+	 */
 	public function run() {
 		global $wp_version;
 
@@ -33,7 +38,7 @@ class Recommendations_Block {
 	 */
 	public static function register_block_and_assets() {
 		$plugin_path = plugin_dir_path( PARSELY_FILE );
-		$plugin_url = plugin_dir_url( PARSELY_FILE );
+		$plugin_url  = plugin_dir_url( PARSELY_FILE );
 
 		$editor_asset_file = require $plugin_path . 'build/recommendations-edit.asset.php';
 
@@ -58,7 +63,7 @@ class Recommendations_Block {
 			'wp-parsely-recommendations-block',
 			$plugin_url . 'build/style-recommendations-edit.css',
 			array(),
-			$script_asset_file['version'],
+			$script_asset_file['version']
 		);
 
 		register_block_type(
@@ -72,34 +77,34 @@ class Recommendations_Block {
 					'html' => false,
 				),
 				'attributes'      => array(
-					'boost'        => array(
+					'boost'       => array(
 						'type'    => 'string',
 						'default' => 'views',
 					),
-					'imagestyle'   => array(
+					'imagestyle'  => array(
 						'type'    => 'string',
 						'default' => 'original',
 					),
-					'layoutstyle'  => array(
+					'layoutstyle' => array(
 						'type'    => 'string',
 						'default' => 'grid',
 					),
-					'limit'        => array(
+					'limit'       => array(
 						'type'    => 'number',
 						'default' => 3,
 					),
-					'showimages'   => array(
+					'showimages'  => array(
 						'type'    => 'boolean',
 						'default' => true,
 					),
-					'sort'         => array(
+					'sort'        => array(
 						'type'    => 'string',
 						'default' => 'score',
 					),
-					'tag'          => array(
+					'tag'         => array(
 						'type' => 'string',
 					),
-					'title'        => array(
+					'title'       => array(
 						'type'    => 'string',
 						'default' => __( 'Related Content', 'wp-parsely' ),
 					),
