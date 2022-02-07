@@ -822,6 +822,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$values     = $this->get_tracking_values_for_display();
 		?>
 		<fieldset>
+			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
 			<table class="form-table widefat striped" id="track-post-types">
 				<caption class="screen-reader-text"><?php echo esc_html( $args['title'] ); ?></caption>
 				<thead>
