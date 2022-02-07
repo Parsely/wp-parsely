@@ -63,6 +63,9 @@ describe( 'Activation flow', () => {
 	it( 'Should display all admin sections', async () => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 
+		// Set initial state
+		await selectScreenOptions( { recrawl: false, advanced: false } );
+
 		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
 		expect( await checkH2DoesNotExist( 'Requires Recrawl Settings' ) ).toBe( true );
 		expect( await checkH2DoesNotExist( 'Advanced Settings' ) ).toBe( true );
