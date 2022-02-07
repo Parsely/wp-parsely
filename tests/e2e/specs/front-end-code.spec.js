@@ -17,6 +17,7 @@ const getAssetVersion = () => {
 	const data = fs.readFileSync( 'build/init-api.asset.php', { encoding: 'utf8', flag: 'r' } );
 	const re = new RegExp( "\'version\' => \'(.*)\'" );
 	const r = data.match( re );
+	expect( r[ 1 ].length ).toBeGreaterThanOrEqual( 1 );
 	return r[ 1 ];
 };
 
