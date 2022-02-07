@@ -874,9 +874,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.2.0
 	 *
-	 * @return array Key-value pairs with post type and their 'track as' value.
+	 * @return array<string, string> Key-value pairs with post type and their 'track as' value.
 	 */
-	public function get_tracking_values_for_display() {
+	public function get_tracking_values_for_display(): array {
 		$options = $this->parsely->get_options();
 		$types   = array( 'post', 'page' );
 		$result  = array();
