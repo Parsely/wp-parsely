@@ -1098,33 +1098,30 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @return void
 	 */
 	private function validate_options_post_type_tracking( array &$input ): void {
-		$posts = 'track_post_types';
-		$pages = 'track_page_types';
-
-		// Create required arrays if they don't exist.
-		if ( ! isset( $input[ $posts ] ) ) {
-			$input[ $posts ] = array();
-		}
-		if ( ! isset( $input[ $pages ] ) ) {
-			$input[ $pages ] = array();
-		}
+		$options         = $this->parsely->get_options();
+		$posts           = 'track_post_types';
+		$pages           = 'track_page_types';
+		$input[ $posts ] = $options[ $posts ];
+		$input[ $pages ] = $options[ $pages ];
 
 		if ( isset( $input['track_post_types_as'] ) ) {
-			// Transfer values to required arrays.
+			$temp_posts = array();
+			$temp_pages = array();
+
+			// Create temporary Post and Page arrays.
 			foreach ( $input['track_post_types_as'] as $key => $value ) {
 				if ( 'post' === $value ) {
-					$input[ $posts ][] = $key;
+					$temp_posts[] = $key;
 				} elseif ( 'page' === $value ) {
-					$input[ $pages ][] = $key;
+					$temp_pages[] = $key;
 				}
 			}
 
-			// Remove unneeded array from settings and validate required arrays.
+			// Cleanup and sanitized values assignment.
 			unset( $input['track_post_types_as'] );
+			$input [ $posts ] = self::sanitize_option_array( $temp_posts );
+			$input [ $pages ] = self::sanitize_option_array( $temp_pages );
 		}
-
-		$input[ $posts ] = self::validate_option_array( $input[ $posts ] );
-		$input[ $pages ] = self::validate_option_array( $input[ $pages ] );
 
 		// Detect and prevent duplicate tracking.
 		$duplicate_items = array_intersect( $input[ $posts ], $input[ $pages ] );
@@ -1143,7 +1140,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			);
 
 			// Revert to default options if duplicate tracking was detected.
-			$options         = $this->parsely->get_options();
 			$input[ $posts ] = $options[ $posts ];
 			$input[ $pages ] = $options[ $pages ];
 		}
@@ -1189,7 +1185,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @param array $array Array of options to be sanitized.
 	 * @return array
 	 */
-	private static function validate_option_array( array $array ): array {
+	private static function sanitize_option_array( array $array ): array {
 		$new_array = $array;
 		foreach ( $array as $key => $val ) {
 			$new_array[ $key ] = sanitize_text_field( $val );
