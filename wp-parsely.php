@@ -138,6 +138,11 @@ function rest_api_init_proxies(): void {
 }
 
 require __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';
+/**
+ * Register the Recommendations Block.
+ *
+ * @return void
+ */
 function init_recommendations_block() {
 	$recommendations_block = new Recommendations_Block();
 	$recommendations_block->run();
