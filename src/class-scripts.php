@@ -60,12 +60,20 @@ class Scripts {
 	public function register_scripts(): void {
 		$tracker_url = 'https://cdn.parsely.com/keys/' . $this->parsely->get_api_key() . '/p.js';
 		$tracker_url = esc_url( $tracker_url );
-
 		wp_register_script(
 			'wp-parsely-tracker',
 			$tracker_url,
 			array(),
 			PARSELY_VERSION,
+			true
+		);
+
+		$custom_loader_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/custom-loader.asset.php';
+		wp_register_script(
+			'wp-parsely-custom-loader',
+			plugin_dir_url(PARSELY_FILE) . 'build/custom-loader.js',
+			$custom_loader_asset['dependencies'],
+			$custom_loader_asset['version'],
 			true
 		);
 
@@ -134,11 +142,15 @@ class Scripts {
 		 *
 		 * @param array<string> $scripts
 		 */
-		if ( false !== has_filter('wp_parsely_pre_load_tracker' ) ) {
-			$scripts = apply_filters( 'wp_parsely_pre_load_tracker', array());
+		if ( false !== has_filter('wp_parsely_onload_scripts' ) ) {
+			$scripts = apply_filters( 'wp_parsely_onload_scripts', array());
 			foreach ($scripts as $script) {
-				wp_add_inline_script('wp-parsely-tracker', $script, 'before');
+				wp_add_inline_script('wp-parsely-custom-loader', $script, 'before');
 			}
+			$function_names = implode(",", array_keys( $scripts ));
+			$function_variables = 'const wpParselyCustomFunctions = [' . $function_names . '];';
+			wp_add_inline_script('wp-parsely-custom-loader', $function_variables, 'before');
+			wp_enqueue_script('wp-parsely-custom-loader');
 		}
 
 		wp_enqueue_script( 'wp-parsely-tracker' );
@@ -190,6 +202,10 @@ class Scripts {
 		 */
 		if ( apply_filters( 'wp_parsely_enable_cfasync_attribute', false, $handle ) ) {
 			$tag = preg_replace( '/^<script /', '<script data-cfasync="false" ', $tag );
+		}
+
+		if ( null !== $tag && 'wp-parsely-tracker' === $handle ) {
+			$tag = preg_replace( '/ id=(["\'])wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
 		}
 
 		return $tag ?? '';
