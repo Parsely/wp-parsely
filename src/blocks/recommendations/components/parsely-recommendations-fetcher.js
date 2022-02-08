@@ -18,17 +18,16 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 		dispatch,
 	} = useRecommendationsStore();
 
-	const apiQueryArgs = {
+	const query = {
 		boost,
 		limit,
 		sort,
+		url: window.location.href,
 	};
-
-	apiQueryArgs.url = window.location.href;
 
 	async function fetchRecosFromWpApi() {
 		return apiFetch( {
-			path: addQueryArgs( '/wp-parsely/v1/recommendations', apiQueryArgs ),
+			path: addQueryArgs( '/wp-parsely/v1/recommendations', { query } ),
 		} );
 	}
 
@@ -45,7 +44,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 		dispatch( setRecommendations( { recommendations: data } ) );
 	}
 
-	const apiMemoProps = [ ...Object.values( apiQueryArgs ), error ];
+	const apiMemoProps = [ ...Object.values( query ), error ];
 
 	const updateRecosWhenPropsChange = useCallback( fetchRecos, apiMemoProps );
 
