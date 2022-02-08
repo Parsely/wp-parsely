@@ -153,6 +153,72 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
+	 * Verify that trying to save tracking settings with an unset value fails.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_options
+	 * @group ui
+	 */
+	public function test_trying_to_save_unset_tracking_settings_should_fail(): void {
+		$options  = self::$parsely->get_options();
+		$expected = array(
+			'setting' => 'parsely',
+			'code'    => 'track_post_types_as',
+			'message' => 'Settings could not be saved because post tracking data is invalid.',
+			'type'    => 'error',
+		);
+
+		unset( $options['track_post_types_as'] );
+		self::$settings_page->validate_options( $options );
+		self::assertTrue( in_array( $expected, get_settings_errors(), true ) );
+	}
+
+	/**
+	 * Verify that trying to save tracking settings with an empty array value fails.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_options
+	 * @group ui
+	 */
+	public function test_trying_to_save_empty_array_tracking_settings_should_fail(): void {
+		$options  = self::$parsely->get_options();
+		$expected = array(
+			'setting' => 'parsely',
+			'code'    => 'track_post_types_as',
+			'message' => 'Settings could not be saved because post tracking data is invalid.',
+			'type'    => 'error',
+		);
+
+		$options['track_post_types_as'] = array();
+		self::$settings_page->validate_options( $options );
+		self::assertTrue( in_array( $expected, get_settings_errors(), true ) );
+	}
+
+	/**
+	 * Verify that trying to save tracking settings with an non-array value fails.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_options
+	 * @group ui
+	 */
+	public function test_trying_to_save_non_array_tracking_settings_should_fail(): void {
+		$options  = self::$parsely->get_options();
+		$expected = array(
+			'setting' => 'parsely',
+			'code'    => 'track_post_types_as',
+			'message' => 'Settings could not be saved because post tracking data is invalid.',
+			'type'    => 'error',
+		);
+
+		$options['track_post_types_as'] = 'string';
+		self::$settings_page->validate_options( $options );
+		self::assertTrue( in_array( $expected, get_settings_errors(), true ) );
+	}
+
+	/**
 	 * Make sure that the settings URL is correctly returned for single sites and multisites with and without a blog_id param.
 	 *
 	 * @covers \Parsely\Parsely::get_settings_url

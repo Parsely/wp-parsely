@@ -1102,16 +1102,17 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$options         = $this->parsely->get_options();
 		$posts           = 'track_post_types';
 		$pages           = 'track_page_types';
+		$track_as        = 'track_post_types_as';
 		$input[ $posts ] = $options[ $posts ];
 		$input[ $pages ] = $options[ $pages ];
 
-		if ( isset( $input['track_post_types_as'] ) ) {
+		if ( isset( $input[ $track_as ] ) && is_array( $input[ $track_as ] ) && 0 < count( $input[ $track_as ] ) ) {
 			$post_types = get_post_types( array( 'public' => true ) );
 			$temp_posts = array();
 			$temp_pages = array();
 
 			// Create temporary Post and Page arrays, disallowing inexistent post types.
-			foreach ( $input['track_post_types_as'] as $key => $value ) {
+			foreach ( $input[ $track_as ] as $key => $value ) {
 				if ( false === in_array( $key, $post_types, true ) ) {
 					continue;
 				}
@@ -1124,9 +1125,20 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			}
 
 			// Cleanup and sanitized values assignment.
-			unset( $input['track_post_types_as'] );
+			unset( $input[ $track_as ] );
 			$input [ $posts ] = self::sanitize_option_array( $temp_posts );
 			$input [ $pages ] = self::sanitize_option_array( $temp_pages );
+		} else {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				$track_as,
+				sprintf(
+					__(
+						'Settings could not be saved because post tracking data is invalid.',
+						'wp-parsely'
+					)
+				)
+			);
 		}
 
 		// Detect and prevent duplicate tracking.
@@ -1134,7 +1146,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		if ( 0 !== count( $duplicate_items ) ) {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
-				'track_page_types',
+				$track_as,
 				sprintf(
 					/* translators: %s: Item(s) being tracked both as posts and pages. */
 					__(
