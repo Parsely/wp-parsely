@@ -1,11 +1,11 @@
 export function wpParselyInitCustom() {
 	const customOnLoad = () => {
-		if (Array.isArray(wpParselyCustomFunctions)) {
-			wpParselyCustomFunctions.forEach(f => {
-				if ( typeof f === 'function') {
+		if ( Array.isArray( wpParselyCustomFunctions ) ) {
+			wpParselyCustomFunctions.forEach( ( f ) => {
+				if ( typeof f === 'function' ) {
 					f();
 				}
-			});
+			} );
 		}
 	};
 
