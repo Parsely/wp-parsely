@@ -42,24 +42,25 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Check that default tracking values get saved.
+	 * Verify that tracking settings get saved.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_options
 	 * @group ui
 	 */
-	public function test_validate_unique_tracking_values_succeeds(): void {
-		// Initializations.
-		$expected = self::$parsely->get_options();
-		$options  = self::$parsely->get_options();
+	public function test_save_tracking_settings(): void {
+		$options = self::$parsely->get_options();
 
-		// Default tracking values.
-		$options['track_post_types'] = array( 'post' );
-		$options['track_page_types'] = array( 'page' );
+		$options['track_post_types_as'] = array(
+			'post'       => 'post',
+			'page'       => 'page',
+			'attachment' => 'post',
+		);
 
 		$actual = self::$settings_page->validate_options( $options );
-		self::assertSame( $expected, $actual );
+		self::assertSame( array( 'post', 'attachment' ), $actual['track_post_types'] );
+		self::assertSame( array( 'page' ), $actual['track_page_types'] );
 	}
 
 	/**
@@ -71,7 +72,6 @@ final class SettingsPageTest extends TestCase {
 	 * @group ui
 	 */
 	public function test_saving_tracking_settings_for_inexistent_post_type_should_fail(): void {
-		// Initializations.
 		$expected = self::$parsely->get_options();
 		$options  = self::$parsely->get_options();
 
