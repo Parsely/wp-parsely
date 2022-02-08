@@ -1106,11 +1106,16 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$input[ $pages ] = $options[ $pages ];
 
 		if ( isset( $input['track_post_types_as'] ) ) {
+			$post_types = get_post_types( array( 'public' => true ) );
 			$temp_posts = array();
 			$temp_pages = array();
 
-			// Create temporary Post and Page arrays.
+			// Create temporary Post and Page arrays, disallowing inexistent post types.
 			foreach ( $input['track_post_types_as'] as $key => $value ) {
+				if ( false === in_array( $key, $post_types, true ) ) {
+					continue;
+				}
+
 				if ( 'post' === $value ) {
 					$temp_posts[] = $key;
 				} elseif ( 'page' === $value ) {
