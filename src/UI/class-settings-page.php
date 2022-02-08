@@ -1140,27 +1140,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				)
 			);
 		}
-
-		// Detect and prevent duplicate tracking.
-		$duplicate_items = array_intersect( $input[ $posts ], $input[ $pages ] );
-		if ( 0 !== count( $duplicate_items ) ) {
-			add_settings_error(
-				Parsely::OPTIONS_KEY,
-				$track_as,
-				sprintf(
-					/* translators: %s: Item(s) being tracked both as posts and pages. */
-					__(
-						'%s cannot be tracked as both posts and pages. Please select every element only once.',
-						'wp-parsely'
-					),
-					implode( 'and ', $duplicate_items )
-				)
-			);
-
-			// Revert to default options if duplicate tracking was detected.
-			$input[ $posts ] = $options[ $posts ];
-			$input[ $pages ] = $options[ $pages ];
-		}
 	}
 
 	/**
