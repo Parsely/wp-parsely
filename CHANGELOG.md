@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Users could not create new instances of the recommended plugin on WordPress 5.9. [#651](https://github.com/Parsely/wp-parsely/pull/651)
+- Users could not create new instances of the recommended widget on WordPress 5.9. [#651](https://github.com/Parsely/wp-parsely/pull/651)
 - Correct "since" annotations to 3.1.0. [#646](https://github.com/Parsely/wp-parsely/pull/646)
 - Fix recommended widget e2e tests for WordPress 5.9. [#631](https://github.com/Parsely/wp-parsely/pull/631)
 - Bumped dependencies. [#632](https://github.com/Parsely/wp-parsely/pull/632) [#637](https://github.com/Parsely/wp-parsely/pull/637)
