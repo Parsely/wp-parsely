@@ -89,7 +89,7 @@ final class Settings_Page {
 			$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
 
 			wp_enqueue_script(
-				'parsely-admin-settings-js',
+				'parsely-admin-settings',
 				$built_assets_url . 'admin-settings.js',
 				$admin_settings_asset['dependencies'],
 				$admin_settings_asset['version'],
@@ -97,7 +97,7 @@ final class Settings_Page {
 			);
 
 			wp_enqueue_style(
-				'parsely-admin-settings-css',
+				'parsely-admin-settings',
 				$built_assets_url . 'admin-settings.css',
 				$admin_settings_asset['dependencies'],
 				$admin_settings_asset['version']
