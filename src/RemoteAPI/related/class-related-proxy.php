@@ -45,6 +45,7 @@ class Related_Proxy implements Proxy {
 	public function __construct( Parsely $parsely, array $query ) {
 		$this->parsely = $parsely;
 		$this->query   = $query;
+		ksort( $this->query );
 	}
 
 	/**
