@@ -67,7 +67,7 @@ final class Settings_Page {
 	public function run(): void {
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_assets' ) );
 
 		// Handle saving of screen options.
 		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 11, 3 );
@@ -76,22 +76,31 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Enqueue all needed scripts for Parse.ly plugin settings page.
+	 * Enqueue all needed scripts and styles for Parse.ly plugin settings page.
 	 *
 	 * @param string $hook_suffix The current page being loaded.
 	 * @return void
 	 */
-	public function enqueue_settings_scripts( string $hook_suffix ): void {
+	public function enqueue_settings_assets( string $hook_suffix ): void {
 		if ( 'settings_page_parsely' === $hook_suffix ) {
 			wp_enqueue_media();
 
 			$admin_settings_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
+			$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
+
 			wp_enqueue_script(
-				'parsely_admin_settings',
-				plugin_dir_url( PARSELY_FILE ) . '/build/admin-settings.js',
+				'parsely-admin-settings',
+				$built_assets_url . 'admin-settings.js',
 				$admin_settings_asset['dependencies'],
 				$admin_settings_asset['version'],
 				true
+			);
+
+			wp_enqueue_style(
+				'parsely-admin-settings',
+				$built_assets_url . 'admin-settings.css',
+				$admin_settings_asset['dependencies'],
+				$admin_settings_asset['version']
 			);
 		}
 	}
@@ -442,41 +451,19 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		);
 
 		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h          = __( 'By default, Parse.ly only tracks the default post type as a post page. If you want to track custom post types, select them here!', 'wp-parsely' );
-		$field_id   = 'track_post_types';
-		$field_args = array(
-			'title'          => __( 'Post Types to Track', 'wp-parsely' ),
-			'option_key'     => $field_id,
-			'help_text'      => $h,
-			'select_options' => get_post_types( array( 'public' => true ) ),
-			'label_for'      => Parsely::OPTIONS_KEY . "[$field_id]",
-		);
+		$field_id   = 'track_post_types_as';
+		$field_help = __( 'By default, Parse.ly only tracks posts and pages. If you want to track other post types, select how you want to track them here.', 'wp-parsely' );
 		add_settings_field(
 			$field_id,
-			__( 'Post Types to Track', 'wp-parsely' ),
-			array( $this, 'print_multiple_checkboxes' ),
+			__( 'Track Post Types as', 'wp-parsely' ),
+			array( $this, 'print_track_post_types_table' ),
 			Parsely::MENU_SLUG,
 			'requires_recrawl_settings',
-			$field_args
-		);
-
-		// Allow use of custom taxonomy to populate articleSection in parselyPage; defaults to category.
-		$h          = __( 'By default, Parse.ly only tracks the default page type as a non-post page. If you want to track custom post types as non-post pages, select them here!', 'wp-parsely' );
-		$field_id   = 'track_page_types';
-		$field_args = array(
-			'title'          => __( 'Page Types to Track', 'wp-parsely' ),
-			'option_key'     => 'track_page_types',
-			'help_text'      => $h,
-			'select_options' => get_post_types( array( 'public' => true ) ),
-			'label_for'      => Parsely::OPTIONS_KEY . "[$field_id]",
-		);
-		add_settings_field(
-			'track_page_types',
-			__( 'Page Types to Track', 'wp-parsely' ),
-			array( $this, 'print_multiple_checkboxes' ),
-			Parsely::MENU_SLUG,
-			'requires_recrawl_settings',
-			$field_args
+			array(
+				'title'      => __( 'Track Post Types as', 'wp-parsely' ),
+				'option_key' => $field_id,
+				'help_text'  => $field_help,
+			)
 		);
 
 		// Metadata Format.
@@ -653,7 +640,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out the radio buttons.
+	 * Print out an input text tag.
 	 *
 	 * @param array $args The arguments for text tag.
 	 * @return void
@@ -822,6 +809,91 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
+	 * Print out the post tracking options table.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param array<string, string> $args The arguments used in the output HTML elements.
+	 * @return void
+	 */
+	public function print_track_post_types_table( array $args ): void {
+		$option_key = esc_attr( $args['option_key'] );
+		$post_types = get_post_types( array( 'public' => true ) );
+		$values     = $this->get_tracking_values_for_display();
+		?>
+		<fieldset>
+			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
+			<table class="form-table widefat striped" id="track-post-types">
+				<caption class="screen-reader-text"><?php echo esc_html( $args['title'] ); ?></caption>
+				<thead>
+					<tr>
+						<th scope="col"><?php echo esc_html__( 'Post Type', 'wp-parsely' ); ?></th>
+						<th id="track-post-types--post" scope="col"><?php echo esc_html__( 'Track as Post', 'wp-parsely' ); ?></th>
+						<th id="track-post-types--page" scope="col"><?php echo esc_html__( 'Track as Page', 'wp-parsely' ); ?></th>
+						<th id="track-post-types--none" scope="col"><?php echo esc_html__( 'Do not track', 'wp-parsely' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					foreach ( $post_types as $post_type ) {
+						$group_name = "parsely[{$option_key}][{$post_type}]";
+						$id_post    = "{$option_key}_{$post_type}_post";
+						$id_page    = "{$option_key}_{$post_type}_page";
+						$id_none    = "{$option_key}_{$post_type}_none";
+						$value      = $values[ $post_type ] ?? 'none';
+						?>
+						<tr>
+							<th scope="row"><?php echo esc_html( $post_type ); ?></th>
+							<td>
+								<label aria-labelledby="track-post-types--post" for="<?php echo esc_attr( $id_post ); ?>">
+									<input id="<?php echo esc_attr( $id_post ); ?>" name="<?php echo esc_attr( $group_name ); ?>" type="radio" value="post" <?php checked( $value, 'post' ); ?> />
+								</label>
+							</td>
+							<td>
+								<label aria-labelledby="track-post-types--page" for="<?php echo esc_attr( $id_page ); ?>">
+									<input id="<?php echo esc_attr( $id_page ); ?>" name="<?php echo esc_attr( $group_name ); ?>" type="radio" value="page" <?php checked( $value, 'page' ); ?> />
+								</label>
+							</td>
+							<td>
+								<label aria-labelledby="track-post-types--none" for="<?php echo esc_attr( $id_none ); ?>">
+									<input id="<?php echo esc_attr( $id_none ); ?>" name="<?php echo esc_attr( $group_name ); ?>" type="radio" value="none" <?php checked( $value, 'none' ); ?> />
+								</label>
+							</td>
+						</tr>
+					<?php } ?>
+				</tbody>
+			</table>
+		</fieldset>
+		<?php
+		$this->print_description_text( $args );
+	}
+
+	/**
+	 * Return the custom post type tracking values in a format that is easily
+	 * consumable by the print_track_post_types_table() function.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @return array<string, string> Key-value pairs with post type and their 'track as' value.
+	 */
+	public function get_tracking_values_for_display(): array {
+		$options = $this->parsely->get_options();
+		$types   = array( 'post', 'page' );
+		$result  = array();
+
+		foreach ( $types as $type ) {
+			$array_key = "track_{$type}_types";
+			if ( array_key_exists( $array_key, $options ) ) {
+				foreach ( $options[ $array_key ] as $post_type ) {
+					$result[ $post_type ] = $type;
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Validate the options provided by the user
 	 *
 	 * @param array $input Options from the settings page.
@@ -869,6 +941,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$input['logo'] = self::get_logo_default();
 		}
 
+		// Validate 'Track post type as'.
+		$this->validate_options_post_type_tracking( $input );
+
 		// Track authenticated users.
 		if ( 'true' !== $input['track_authenticated_users'] && 'false' !== $input['track_authenticated_users'] ) {
 			add_settings_error(
@@ -907,46 +982,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			);
 		} else {
 			$input['disable_amp'] = 'true' === $input['disable_amp'];
-		}
-
-		if ( ! isset( $input['track_post_types'] ) ) {
-			if ( isset( $options['track_post_types'] ) ) {
-				$input['track_post_types'] = $options['track_post_types'];
-			} else {
-				$input['track_post_types'] = array( 'post' );
-			}
-		}
-
-		if ( ! isset( $input['track_page_types'] ) ) {
-			if ( isset( $options['track_page_types'] ) ) {
-				$input['track_page_types'] = $options['track_page_types'];
-			} else {
-				$input['track_page_types'] = array( 'page' );
-			}
-		}
-
-		$input['track_post_types'] = self::validate_option_array( $input['track_post_types'] );
-		$input['track_page_types'] = self::validate_option_array( $input['track_page_types'] );
-
-		// Detect and prevent duplicate tracking.
-		$duplicate_items = array_intersect( $input['track_post_types'], $input['track_page_types'] );
-		if ( 0 !== count( $duplicate_items ) ) {
-			add_settings_error(
-				Parsely::OPTIONS_KEY,
-				'track_page_types',
-				sprintf(
-					/* translators: %s: Item(s) being tracked both as posts and pages. */
-					__(
-						'%s cannot be tracked as both posts and pages. Please select every element only once.',
-						'wp-parsely'
-					),
-					implode( 'and ', $duplicate_items )
-				)
-			);
-
-			// Revert invalid settings.
-			$input['track_post_types'] = $options['track_post_types'];
-			$input['track_page_types'] = $options['track_page_types'];
 		}
 
 		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
@@ -1055,6 +1090,59 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
+	 * Receive the $input array from the validate_options() function and validate post tracking options.
+	 * This function will mutate the $input array.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param array $input Array passed to validate_options() function.
+	 * @return void
+	 */
+	private function validate_options_post_type_tracking( array &$input ): void {
+		$options         = $this->parsely->get_options();
+		$posts           = 'track_post_types';
+		$pages           = 'track_page_types';
+		$track_as        = 'track_post_types_as';
+		$input[ $posts ] = $options[ $posts ];
+		$input[ $pages ] = $options[ $pages ];
+
+		if ( isset( $input[ $track_as ] ) && is_array( $input[ $track_as ] ) && 0 < count( $input[ $track_as ] ) ) {
+			$post_types = get_post_types( array( 'public' => true ) );
+			$temp_posts = array();
+			$temp_pages = array();
+
+			// Create temporary Post and Page arrays, disallowing non-existent post types.
+			foreach ( $input[ $track_as ] as $key => $value ) {
+				if ( false === in_array( $key, $post_types, true ) ) {
+					continue;
+				}
+
+				if ( 'post' === $value ) {
+					$temp_posts[] = $key;
+				} elseif ( 'page' === $value ) {
+					$temp_pages[] = $key;
+				}
+			}
+
+			// Cleanup and sanitized values assignment.
+			unset( $input[ $track_as ] );
+			$input [ $posts ] = self::sanitize_option_array( $temp_posts );
+			$input [ $pages ] = self::sanitize_option_array( $temp_pages );
+		} else {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				$track_as,
+				sprintf(
+					__(
+						'Settings could not be saved because post tracking data is invalid.',
+						'wp-parsely'
+					)
+				)
+			);
+		}
+	}
+
+	/**
 	 * Show our note about dynamic tracking.
 	 *
 	 * @return void
@@ -1089,12 +1177,12 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Validate options from an array.
+	 * Sanitize all elements in an option array.
 	 *
 	 * @param array $array Array of options to be sanitized.
 	 * @return array
 	 */
-	private static function validate_option_array( array $array ): array {
+	private static function sanitize_option_array( array $array ): array {
 		$new_array = $array;
 		foreach ( $array as $key => $val ) {
 			$new_array[ $key ] = sanitize_text_field( $val );
