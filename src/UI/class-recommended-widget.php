@@ -140,8 +140,8 @@ final class Recommended_Widget extends WP_Widget {
 			$recommended_widget_script_asset['version']
 		);
 
-		wp_enqueue_style( 'wp-parsely-recommended-widget' );
 		wp_enqueue_script( 'wp-parsely-recommended-widget' );
+		wp_enqueue_style( 'wp-parsely-recommended-widget' );
 
 		echo wp_kses_post( $args['after_widget'] );
 	}
