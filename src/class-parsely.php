@@ -31,7 +31,7 @@ class Parsely {
 	/**
 	 * Declare some class properties
 	 *
-	 * @var array $option_defaults The defaults we need for the class.
+	 * @var array<string, mixed> $option_defaults The defaults we need for the class.
 	 */
 	private $option_defaults = array(
 		'apikey'                      => '',
@@ -237,7 +237,7 @@ class Parsely {
 	 * @deprecated 3.0.0
 	 * @see construct_parsely_metadata()
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public function insert_parsely_page(): array {
 		_deprecated_function( __FUNCTION__, '3.0', 'construct_parsely_metadata()' );
@@ -312,9 +312,9 @@ class Parsely {
 	/**
 	 * Creates parsely metadata object from post metadata.
 	 *
-	 * @param array   $parsely_options parsely_options array.
-	 * @param WP_Post $post object.
-	 * @return array
+	 * @param array<string, mixed> $parsely_options parsely_options array.
+	 * @param WP_Post              $post object.
+	 * @return array<string, mixed>
 	 */
 	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ): array {
 		$parsely_page      = array(

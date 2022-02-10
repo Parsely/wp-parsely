@@ -197,6 +197,7 @@ class Scripts {
 				$tag
 			);
 		}
-		return $tag;
+		
+		return $tag ?? '';
 	}
 }
