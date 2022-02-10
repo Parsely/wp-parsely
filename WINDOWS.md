@@ -44,7 +44,7 @@ For this section, we will assume that:
 6. In a new terminal, you should be able to execute the integration tests by running:
    ```
 	composer testwp
-	```
+   ```
    **Note:** If you're issuing the command from PowerShell and it fails, please try another environment as PowerShell had some issues during our testing.
 7. You might want to revert your change in `install-wp-tests.sh` so you don't commit it accidentally.
 
