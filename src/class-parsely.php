@@ -113,7 +113,6 @@ class Parsely {
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
 		add_action( 'wp_head', array( $this, 'insert_page_header_metadata' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'wp_parsely_style_init' ) );
 	}
 
 	/**
@@ -128,15 +127,6 @@ class Parsely {
 			'display'  => __( 'Every 10 Minutes', 'wp-parsely' ),
 		);
 		return $schedules;
-	}
-
-	/**
-	 * Initialize Parse.ly WordPress style.
-	 *
-	 * @return void
-	 */
-	public function wp_parsely_style_init(): void {
-		wp_register_style( 'wp-parsely-style', plugin_dir_url( PARSELY_FILE ) . 'wp-parsely.css', array(), self::VERSION );
 	}
 
 	/**
