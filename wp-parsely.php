@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace Parsely;
 
-use Parsely\Endpoints\Recommendations_API_Proxy;
+use Parsely\Endpoints\Related_API_Proxy;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Google_Web_Stories;
@@ -110,8 +110,8 @@ function parsely_wp_admin_early_register(): void {
 	$network_admin_sites_list->run();
 }
 
-require __DIR__ . '/src/RemoteAPI/class-recommended-content.php';
-require __DIR__ . '/src/Endpoints/class-recommendations-api-proxy.php';
+require __DIR__ . '/src/RemoteAPI/index.php';
+require __DIR__ . '/src/Endpoints/index.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_recommendations_proxy' );
 /**
@@ -120,7 +120,7 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_recommendations_pr
  * @return void
  */
 function rest_api_init_recommendations_proxy(): void {
-	$endpoint = new Recommendations_API_Proxy( $GLOBALS['parsely'] );
+	$endpoint = new Related_API_Proxy( $GLOBALS['parsely'] );
 	$endpoint->run();
 }
 

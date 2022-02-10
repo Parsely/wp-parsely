@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely Recommendations API Proxy Endpoint tests.
+ * Parsely Related API Proxy Endpoint tests.
  *
  * @package Parsely\Tests
  */
@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
-use Parsely\Endpoints\Recommendations_API_Proxy;
+use Parsely\Endpoints\Related_API_Proxy;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
@@ -18,7 +18,7 @@ use WP_REST_Server;
 /**
  * Parsely REST API tests.
  */
-final class RecommendationsProxyEndpointTest extends TestCase {
+final class RelatedProxyEndpointTest extends TestCase {
 	/**
 	 * Hold a reference to the global $wp_rest_server object to restore in tearDown.
 	 *
@@ -29,9 +29,9 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	/**
 	 * Hold a reference to the callback that initializes the endpoint to remove in tearDown.
 	 *
-	 * @var function $rest_api_init_recommendations_proxy
+	 * @var function $rest_api_init_related_proxy
 	 */
-	private $rest_api_init_recommendations_proxy;
+	private $rest_api_init_related_proxy;
 
 	/**
 	 * Set up globals & initialize the Endpoint.
@@ -42,14 +42,14 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 		// Set the default options prior to each test.
 		TestCase::set_options();
 
-		add_filter( 'wp_parsely_enable_recommendations_endpoint', '__return_true' );
+		add_filter( 'wp_parsely_enable_related_endpoint', '__return_true' );
 
-		$this->wp_rest_server_global_backup        = $GLOBALS['wp_rest_server'] ?? null;
-		$this->rest_api_init_recommendations_proxy = function () {
-			$endpoint = new Recommendations_API_Proxy( new Parsely() );
+		$this->wp_rest_server_global_backup = $GLOBALS['wp_rest_server'] ?? null;
+		$this->rest_api_init_related_proxy  = function () {
+			$endpoint = new Related_API_Proxy( new Parsely() );
 			$endpoint->run();
 		};
-		add_action( 'rest_api_init', $this->rest_api_init_recommendations_proxy );
+		add_action( 'rest_api_init', $this->rest_api_init_related_proxy );
 	}
 
 	/**
@@ -57,30 +57,30 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	 */
 	public function tearDown(): void {
 		parent::tearDown();
-		remove_action( 'rest_api_init', $this->rest_api_init_recommendations_proxy );
+		remove_action( 'rest_api_init', $this->rest_api_init_related_proxy );
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$GLOBALS['wp_rest_server'] = $this->wp_rest_server_global_backup;
 
-		remove_filter( 'wp_parsely_enable_recommendations_endpoint', '__return_true' );
+		remove_filter( 'wp_parsely_enable_related_endpoint', '__return_true' );
 	}
 
 	/**
 	 * Confirm the the route is registered.
 	 *
-	 * @covers Recommendations_API_Proxy::register_rest_route
+	 * @covers Related_API_Proxy::register_rest_route
 	 */
 	public function test_register_routes() {
 		$routes = rest_get_server()->get_routes();
-		$this->assertArrayHasKey( '/wp-parsely/v1/recommendations', $routes );
-		$this->assertCount( 1, $routes['/wp-parsely/v1/recommendations'] );
-		$this->assertSame( array( 'GET' => true ), $routes['/wp-parsely/v1/recommendations'][0]['methods'] );
+		$this->assertArrayHasKey( '/wp-parsely/v1/related', $routes );
+		$this->assertCount( 1, $routes['/wp-parsely/v1/related'] );
+		$this->assertSame( array( 'GET' => true ), $routes['/wp-parsely/v1/related'][0]['methods'] );
 	}
 
 	/**
-	 * Confirm that calls to `GET /wp-parsely/v1/recommendations` get results in the expected format.
+	 * Confirm that calls to `GET /wp-parsely/v1/related` get results in the expected format.
 	 *
-	 * @covers Recommendations_API_Proxy::get_items
+	 * @covers Related_API_Proxy::get_items
 	 */
 	public function test_get_items() {
 		TestCase::set_options( array( 'apikey' => 'example.com' ) );
@@ -97,7 +97,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 			}
 		);
 
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' ) );
+		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/related' ) );
 
 		$this->assertSame( 1, $dispatched );
 		$this->assertSame( 200, $response->get_status() );
@@ -121,9 +121,9 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Confirm that calls to `GET /wp-parsely/v1/recommendations` gets an error and makes no remote call when the apikey is not populated in site options.
+	 * Confirm that calls to `GET /wp-parsely/v1/related` gets an error and makes no remote call when the apikey is not populated in site options.
 	 *
-	 * @covers Recommendations_API_Proxy::get_items
+	 * @covers Related_API_Proxy::get_items
 	 */
 	public function test_get_items_fails_without_apikey_set() {
 		TestCase::set_options( array( 'apikey' => '' ) );
@@ -138,7 +138,7 @@ final class RecommendationsProxyEndpointTest extends TestCase {
 			}
 		);
 
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/recommendations' ) );
+		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/related' ) );
 
 		$this->assertSame( 200, $response->get_status() );
 		$data = $response->get_data();
