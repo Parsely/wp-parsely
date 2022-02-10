@@ -64,22 +64,22 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verify that inexistent post types cannot be saved into the database for tracking.
+	 * Verify that non-existent post types cannot be saved into the database for tracking.
 	 *
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_options
 	 * @group ui
 	 */
-	public function test_saving_tracking_settings_for_inexistent_post_type_should_fail(): void {
+	public function test_saving_tracking_settings_for_non_existent_post_type_should_fail(): void {
 		$expected = self::$parsely->get_options();
 		$options  = self::$parsely->get_options();
 
-		// Inject inexistent post type.
+		// Inject non-existent post type.
 		$options['track_post_types_as'] = array(
-			'page'                 => 'page',
-			'post'                 => 'post',
-			'inexistent_post_type' => 'post',
+			'page'                   => 'page',
+			'post'                   => 'post',
+			'non_existent_post_type' => 'post',
 		);
 
 		$actual = self::$settings_page->validate_options( $options );

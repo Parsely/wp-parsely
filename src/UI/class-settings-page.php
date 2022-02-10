@@ -1111,7 +1111,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$temp_posts = array();
 			$temp_pages = array();
 
-			// Create temporary Post and Page arrays, disallowing inexistent post types.
+			// Create temporary Post and Page arrays, disallowing non-existent post types.
 			foreach ( $input[ $track_as ] as $key => $value ) {
 				if ( false === in_array( $key, $post_types, true ) ) {
 					continue;
