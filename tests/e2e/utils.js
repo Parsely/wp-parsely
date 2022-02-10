@@ -76,6 +76,8 @@ export const selectScreenOptions = async ( sections ) => {
 
 /**
  * Save settings in the settings page and force a hard refresh.
+ *
+ * @return {Promise<void>}
  */
 export const saveSettingsAndHardRefresh = async () => {
 	await page.click( '#submit' );
