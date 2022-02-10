@@ -46,7 +46,7 @@ final class Google_Web_Stories implements Integration {
 					<?php
 					// Output contains the API key, and it's already escaped in the construct_amp_json function.
 					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo $json . PHP_EOL;
+					echo $json . "\n";
 					?>
 				</script>
 			</amp-analytics>
