@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Parsely\UI;
 
-use Parsely\Parsely;
 use WP_Widget;
 
 use const Parsely\PARSELY_FILE;
@@ -45,18 +44,18 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $api_key          Publisher Site ID (API key).
-	 * @param int    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
+	 * @param string      $api_key          Publisher Site ID (API key).
+	 * @param int|null    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
 	 *                                 formatting details. No restriction by default.
-	 * @param string $sort             What to sort the results by. There are currently 2 valid options: `score`, which
+	 * @param string|null $sort             What to sort the results by. There are currently 2 valid options: `score`, which
 	 *                                 will sort articles by overall relevance and `pub_date` which will sort results by
 	 *                                 their publication date. The default is `score`.
-	 * @param string $boost            Available for sort=score only. Sub-sort value to re-rank relevant posts that
+	 * @param string|null $boost            Available for sort=score only. Sub-sort value to re-rank relevant posts that
 	 *                                 received high e.g. views; default is undefined.
-	 * @param int    $return_limit     Number of records to retrieve; defaults to "10".
+	 * @param int         $return_limit     Number of records to retrieve; defaults to "10".
 	 * @return string API URL.
 	 */
-	private function get_api_url( string $api_key, int $published_within, string $sort, string $boost, int $return_limit ): string {
+	private function get_api_url( string $api_key, ?int $published_within, ?string $sort, ?string $boost, int $return_limit ): string {
 		$related_api_endpoint = 'https://api.parsely.com/v2/related';
 
 		$query_args = array(
@@ -69,7 +68,7 @@ final class Recommended_Widget extends WP_Widget {
 			$query_args['boost'] = $boost;
 		}
 
-		if ( 0 !== $published_within ) {
+		if ( null !== $published_within && 0 !== $published_within ) {
 			$query_args['pub_date_start'] = $published_within . 'd';
 		}
 
@@ -96,8 +95,6 @@ final class Recommended_Widget extends WP_Widget {
 		if ( $removed_title_esc ) {
 			add_filter( 'widget_title', 'esc_html' );
 		}
-
-		wp_enqueue_style( 'wp-parsely-style' );
 
 		$title_html = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
 		echo wp_kses_post( $title_html );
@@ -136,7 +133,15 @@ final class Recommended_Widget extends WP_Widget {
 			true
 		);
 
+		wp_register_style(
+			'wp-parsely-recommended-widget',
+			plugin_dir_url( PARSELY_FILE ) . 'build/recommended-widget.css',
+			array(),
+			$recommended_widget_script_asset['version']
+		);
+
 		wp_enqueue_script( 'wp-parsely-recommended-widget' );
+		wp_enqueue_style( 'wp-parsely-recommended-widget' );
 
 		echo wp_kses_post( $args['after_widget'] );
 	}

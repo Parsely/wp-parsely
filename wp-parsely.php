@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://www.parse.ly/help/integration/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
- * Version:           3.1.0
+ * Version:           3.1.1
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\Endpoints\Recommendations_API_Proxy;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Google_Web_Stories;
@@ -42,7 +43,7 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.1.0';
+const PARSELY_VERSION = '3.1.1';
 const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
@@ -93,29 +94,34 @@ function parsely_admin_init_register(): void {
 }
 
 require __DIR__ . '/src/UI/class-settings-page.php';
-
-add_action( '_admin_menu', __NAMESPACE__ . '\\parsely_admin_menu_register' );
-/**
- * Register the Parse.ly wp-admin settings page.
- *
- * @return void
- */
-function parsely_admin_menu_register(): void {
-	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
-	$settings_page->run();
-}
-
 require __DIR__ . '/src/UI/class-network-admin-sites-list.php';
 
-add_action( 'admin_init', __NAMESPACE__ . '\\admin_init_network_sites_list' );
+add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
- * Register the additions the Multisite Network Admin Sites List table.
+ * Register the additions the Parse.ly wp-admin settings page and Multisite Network Admin Sites List table.
  *
  * @return void
  */
-function admin_init_network_sites_list(): void {
+function parsely_wp_admin_early_register(): void {
+	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
+	$settings_page->run();
+
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
+}
+
+require __DIR__ . '/src/RemoteAPI/class-recommended-content.php';
+require __DIR__ . '/src/Endpoints/class-recommendations-api-proxy.php';
+
+add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_recommendations_proxy' );
+/**
+ * Register the Recommendations API Proxy WP-API REST Endpoint
+ *
+ * @return void
+ */
+function rest_api_init_recommendations_proxy(): void {
+	$endpoint = new Recommendations_API_Proxy( $GLOBALS['parsely'] );
+	$endpoint->run();
 }
 
 require __DIR__ . '/src/UI/class-recommended-widget.php';
