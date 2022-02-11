@@ -119,6 +119,8 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_recommendations_pr
 /**
  * Register the Recommendations API Proxy WP-API REST Endpoint
  *
+ * @since 3.2.0
+ *
  * @return void
  */
 function rest_api_init_recommendations_proxy(): void {
