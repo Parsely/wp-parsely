@@ -38,8 +38,8 @@ class Related_Proxy implements Proxy {
 	/**
 	 * Constructor.
 	 *
-	 * @param Parsely $parsely Parsely instance.
-	 * @param array   $query The query arguments to send to the remote API.
+	 * @param Parsely              $parsely Parsely instance.
+	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @since 3.2.0
 	 */
 	public function __construct( Parsely $parsely, array $query ) {
