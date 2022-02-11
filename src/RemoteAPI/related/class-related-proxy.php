@@ -51,8 +51,10 @@ class Related_Proxy implements Proxy {
 	 * Accessor for private query var.
 	 *
 	 * @since 3.2.0
+	 *
+	 * @return array<string, mixed>
 	 */
-	public function get_query() {
+	public function get_query(): array {
 		return $this->query;
 	}
 
@@ -79,6 +81,8 @@ class Related_Proxy implements Proxy {
 	 * Implements the fetcher for the proxy interface.
 	 *
 	 * @since 3.2.0
+	 *
+	 * @return WP_Error|array<string, mixed>
 	 */
 	public function get_items() {
 		$full_api_url = $this->get_api_url();
