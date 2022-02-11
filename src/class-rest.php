@@ -127,12 +127,6 @@ class Rest {
 	public function get_rendered_meta(): string {
 		ob_start();
 		$this->parsely->insert_page_header_metadata();
-		$meta = ob_get_clean();
-
-		if ( false === $meta ) {
-			return '';
-		}
-
-		return $meta;
+		return ob_get_clean();
 	}
 }
