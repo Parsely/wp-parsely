@@ -110,8 +110,10 @@ function parsely_wp_admin_early_register(): void {
 	$network_admin_sites_list->run();
 }
 
-require __DIR__ . '/src/RemoteAPI/index.php';
-require __DIR__ . '/src/Endpoints/index.php';
+require __DIR__ . '/src/RemoteAPI/interface-proxy.php';
+require __DIR__ . '/src/RemoteAPI/related/class-related-proxy.php';
+require __DIR__ . '/src/RemoteAPI/related/class-related-caching-decorator.php';
+require __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_recommendations_proxy' );
 /**
