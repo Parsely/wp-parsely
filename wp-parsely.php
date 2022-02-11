@@ -110,7 +110,9 @@ function parsely_wp_admin_early_register(): void {
 	$network_admin_sites_list->run();
 }
 
+require __DIR__ . '/src/RemoteAPI/interface-cache.php';
 require __DIR__ . '/src/RemoteAPI/interface-proxy.php';
+require __DIR__ . '/src/RemoteAPI/class-cache-adapter.php';
 require __DIR__ . '/src/RemoteAPI/related/class-related-proxy.php';
 require __DIR__ . '/src/RemoteAPI/related/class-related-caching-decorator.php';
 require __DIR__ . '/src/Endpoints/class-related-api-proxy.php';

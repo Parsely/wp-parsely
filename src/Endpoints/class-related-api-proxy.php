@@ -3,6 +3,7 @@
  * Parsely Related REST API Endpoint
  *
  * @package Parsely
+ * @since 3.2.0
  */
 
 declare(strict_types=1);
@@ -10,11 +11,11 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
+use Parsely\RemoteAPI\Cache_Adapter;
 use Parsely\RemoteAPI\Related_Caching_Decorator;
 use Parsely\RemoteAPI\Related_Proxy;
 use stdClass;
 use WP_Error;
-use WP_Object_Cache;
 use WP_REST_Server;
 use WP_REST_Request;
 
@@ -94,7 +95,7 @@ final class Related_API_Proxy {
 		}
 
 		$proxy        = new Related_Proxy( $this->parsely, $params['query'] );
-		$cached_proxy = new Related_Caching_Decorator( $proxy, $GLOBALS['wp_object_cache'] );
+		$cached_proxy = new Related_Caching_Decorator( $proxy, new Cache_Adapter( $GLOBALS['wp_object_cache'] ) );
 		$links        = $cached_proxy->get_items();
 
 		if ( is_wp_error( $links ) ) {

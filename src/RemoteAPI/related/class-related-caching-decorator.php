@@ -3,13 +3,12 @@
  * Parsely Related REST API Caching Decorator
  *
  * @package Parsely
+ * @since 3.2.0
  */
 
 declare(strict_types=1);
 
 namespace Parsely\RemoteAPI;
-
-use WP_Object_Cache;
 
 /**
  * Caching Decorator for the remote /related endpoint.
@@ -26,9 +25,9 @@ class Related_Caching_Decorator implements Proxy {
 	private $decorated_proxy;
 
 	/**
-	 * Usually $GLOBALS['wp_object_cache'], but automated tests can inject a mock.
+	 * A wrapped object that's compatible with the Cache Interface.
 	 *
-	 * @var WP_Object_Cache
+	 * @var Cache_Adapter
 	 */
 	private $cache;
 
@@ -42,10 +41,10 @@ class Related_Caching_Decorator implements Proxy {
 	/**
 	 * Constructor.
 	 *
-	 * @param Proxy           $proxy The Proxy object to cache.
-	 * @param WP_Object_Cache $cache The WordPress object cache instance.
+	 * @param Proxy         $proxy The Proxy object to cache.
+	 * @param Cache_Adapter $cache An object cache instance.
 	 */
-	public function __construct( Proxy $proxy, WP_Object_Cache $cache ) {
+	public function __construct( Proxy $proxy, Cache_Adapter $cache ) {
 		$this->decorated_proxy = $proxy;
 		$this->cache           = $cache;
 		$this->cache_key       = 'api_related-' . wp_hash( wp_json_encode( $this->decorated_proxy->get_query() ) );

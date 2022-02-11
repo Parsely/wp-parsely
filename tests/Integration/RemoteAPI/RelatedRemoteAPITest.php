@@ -10,10 +10,10 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
+use Parsely\RemoteAPI\Cache_Adapter;
 use Parsely\RemoteAPI\Related_Caching_Decorator;
 use Parsely\RemoteAPI\Related_Proxy;
 use WP_Error;
-use WP_Object_Cache;
 
 /**
  * Parsely `/related` Remote API tests.
@@ -110,7 +110,7 @@ final class RelatedRemoteAPITest extends TestCase {
 
 		$cache_key = 'api_related-abcdef123456';
 
-		$object_cache = $this->createMock( WP_Object_Cache::class );
+		$object_cache = $this->createMock( Cache_Adapter::class );
 		$object_cache->method( 'get' )
 			->willReturn( (object) array( 'cache_hit' => true ) );
 
@@ -151,7 +151,7 @@ final class RelatedRemoteAPITest extends TestCase {
 
 		$cache_key = 'api_related-abcdef123456';
 
-		$object_cache = $this->createMock( WP_Object_Cache::class );
+		$object_cache = $this->createMock( Cache_Adapter::class );
 		$object_cache->method( 'get' )
 			->willReturn( false );
 

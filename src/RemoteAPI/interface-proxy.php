@@ -3,6 +3,7 @@
  * Parsely Remote API Proxy Interface
  *
  * @package Parsely
+ * @since 3.2.0
  */
 
 declare(strict_types=1);
