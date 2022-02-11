@@ -31,7 +31,7 @@ class Related_Proxy implements Proxy {
 	/**
 	 * The query arguments to send to the remote API.
 	 *
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	private $query;
 
