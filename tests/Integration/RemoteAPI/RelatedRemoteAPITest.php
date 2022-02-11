@@ -108,7 +108,7 @@ final class RelatedRemoteAPITest extends TestCase {
 		// If this method is called, that means our cache did not hit as expected.
 		$proxy->expects( $this->never() )->method( 'get_items' );
 
-		$cache_key = 'api_recos-abcdef123456';
+		$cache_key = 'api_related-abcdef123456';
 
 		$object_cache = $this->createMock( WP_Object_Cache::class );
 		$object_cache->method( 'get' )
@@ -149,7 +149,7 @@ final class RelatedRemoteAPITest extends TestCase {
 		// If this method is _NOT_ called, that means our cache did not miss as expected.
 		$proxy->expects( $this->once() )->method( 'get_items' );
 
-		$cache_key = 'api_recos-abcdef123456';
+		$cache_key = 'api_related-abcdef123456';
 
 		$object_cache = $this->createMock( WP_Object_Cache::class );
 		$object_cache->method( 'get' )

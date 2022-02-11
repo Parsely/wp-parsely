@@ -48,7 +48,7 @@ class Related_Caching_Decorator implements Proxy {
 	public function __construct( Proxy $proxy, WP_Object_Cache $cache ) {
 		$this->decorated_proxy = $proxy;
 		$this->cache           = $cache;
-		$this->cache_key       = 'api_recos-' . wp_hash( wp_json_encode( $this->decorated_proxy->get_query() ) );
+		$this->cache_key       = 'api_related-' . wp_hash( wp_json_encode( $this->decorated_proxy->get_query() ) );
 	}
 
 	/**
