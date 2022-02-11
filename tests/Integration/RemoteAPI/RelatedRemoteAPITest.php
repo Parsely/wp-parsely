@@ -110,7 +110,7 @@ final class RelatedRemoteAPITest extends TestCase {
 
 		$cache_key = 'api_recos-abcdef123456';
 
-		$object_cache = $this->createStub( WP_Object_Cache::class );
+		$object_cache = $this->createMock( WP_Object_Cache::class );
 		$object_cache->method( 'get' )
 			->willReturn( (object) array( 'cache_hit' => true ) );
 
@@ -151,7 +151,7 @@ final class RelatedRemoteAPITest extends TestCase {
 
 		$cache_key = 'api_recos-abcdef123456';
 
-		$object_cache = $this->createStub( WP_Object_Cache::class );
+		$object_cache = $this->createMock( WP_Object_Cache::class );
 		$object_cache->method( 'get' )
 			->willReturn( false );
 
