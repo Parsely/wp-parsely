@@ -1,3 +1,5 @@
+window.wpParselyHooks.addAction('wpParselyOnLoad', 'wpParsely', uuidProfileCall );
+
 async function uuidProfileCall() {
 	const apikey = global.wpParsely?.apikey;
 	const uuid = global.PARSELY?.config?.parsely_site_uuid;
@@ -12,26 +14,3 @@ async function uuidProfileCall() {
 
 	return fetch( url );
 }
-
-export function initApi() {
-	if ( typeof global.PARSELY === 'object' ) {
-		if ( typeof global.PARSELY.onload !== 'function' ) {
-			global.PARSELY.onload = uuidProfileCall;
-			return;
-		}
-		const oldonload = global.PARSELY.onload;
-		global.PARSELY.onload = function() {
-			if ( oldonload ) {
-				oldonload();
-			}
-			uuidProfileCall();
-		};
-		return;
-	}
-
-	global.PARSELY = {
-		onload: uuidProfileCall,
-	};
-}
-
-initApi();
