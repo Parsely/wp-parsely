@@ -39,5 +39,5 @@ jobs:
 
       - name: Running the tests
         run: |
-          $( npm bin )/wp-scripts test-e2e --listTests > ~/.jest-e2e-tests
-          $( npm bin )/wp-scripts test-e2e --cacheDirectory="$HOME/.jest-cache"
+          npm run test:e2e -- --listTests > ~/.jest-e2e-tests
+          npm run test:e2e -- --cacheDirectory="$HOME/.jest-cache"
