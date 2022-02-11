@@ -38,45 +38,46 @@ final class RelatedRemoteAPITest extends TestCase {
 	/**
 	 * Data provider for test_related_api_url().
 	 *
-	 * @return array[]
+	 * @return iterable
 	 */
-	public function data_related_api_url(): array {
-		return array(
-			'Basic (Expected data)'                   => array(
-				array(
-					'apikey'         => 'my-key',
-					'pub_date_start' => '7d',
-					'sort'           => 'score',
-					'boost'          => 'views',
-					'limit'          => 5,
-				),
-				'https://api.parsely.com/v2/related?apikey=my-key&boost=views&limit=5&pub_date_start=7d&sort=score',
+	public function data_related_api_url(): iterable {
+		yield 'Basic (Expected data)' => array(
+			array(
+				'apikey'         => 'my-key',
+				'pub_date_start' => '7d',
+				'sort'           => 'score',
+				'boost'          => 'views',
+				'limit'          => 5,
 			),
-			'published_within value of 0'             => array(
-				array(
-					'apikey' => 'my-key',
-					'sort'   => 'score',
-					'boost'  => 'views',
-					'limit'  => 5,
-				),
-				'https://api.parsely.com/v2/related?apikey=my-key&boost=views&limit=5&sort=score',
+			'https://api.parsely.com/v2/related?apikey=my-key&boost=views&limit=5&pub_date_start=7d&sort=score',
+		);
+
+		yield 'published_within value of 0' => array(
+			array(
+				'apikey' => 'my-key',
+				'sort'   => 'score',
+				'boost'  => 'views',
+				'limit'  => 5,
 			),
-			'Sort on publish date (no boost param)'   => array(
-				array(
-					'apikey' => 'my-key',
-					'sort'   => 'pub_date',
-					'limit'  => 5,
-				),
-				'https://api.parsely.com/v2/related?apikey=my-key&limit=5&sort=pub_date',
+			'https://api.parsely.com/v2/related?apikey=my-key&boost=views&limit=5&sort=score',
+		);
+
+		yield 'Sort on publish date (no boost param)' => array(
+			array(
+				'apikey' => 'my-key',
+				'sort'   => 'pub_date',
+				'limit'  => 5,
 			),
-			'Rank by relevance only (no boost param)' => array(
-				array(
-					'apikey' => 'my-key',
-					'sort'   => 'score',
-					'limit'  => 5,
-				),
-				'https://api.parsely.com/v2/related?apikey=my-key&limit=5&sort=score',
+			'https://api.parsely.com/v2/related?apikey=my-key&limit=5&sort=pub_date',
+		);
+
+		yield 'Rank by relevance only (no boost param)' => array(
+			array(
+				'apikey' => 'my-key',
+				'sort'   => 'score',
+				'limit'  => 5,
 			),
+			'https://api.parsely.com/v2/related?apikey=my-key&limit=5&sort=score',
 		);
 	}
 
