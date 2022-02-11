@@ -10,8 +10,10 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
+use Parsely\RemoteAPI\Related_Caching_Decorator;
 use Parsely\RemoteAPI\Related_Proxy;
 use WP_Error;
+use WP_Object_Cache;
 
 /**
  * Parsely `/related` Remote API tests.
@@ -91,5 +93,84 @@ final class RelatedRemoteAPITest extends TestCase {
 		self::set_options( array( 'apikey' => 'my-key' ) );
 		$proxy = new Related_Proxy( self::$parsely, $query );
 		self::assertEquals( $url, $proxy->get_api_url( $query ) );
+	}
+
+	/**
+	 * Test that the cache is used instead of the proxy when there's a cache hit.
+	 *
+	 * @covers Parsely\RemoteAPI\Related_Caching_Decorator::get_items
+	 */
+	public function test_related_caching_decorator_returns_cached_value(): void {
+		$proxy = $this->getMockBuilder( Related_Proxy::class )
+			->disableOriginalConstructor()
+			->getMock();
+
+		// If this method is called, that means our cache did not hit as expected.
+		$proxy->expects( $this->never() )->method( 'get_items' );
+
+		$cache_key = 'api_recos-abcdef123456';
+
+		$object_cache = $this->createStub( WP_Object_Cache::class );
+		$object_cache->method( 'get' )
+			->willReturn( (object) array( 'cache_hit' => true ) );
+
+		$object_cache->expects( $this->once() )
+			->method( 'get' )
+			->with(
+				$this->equalTo( $cache_key ),
+				$this->equalTo( 'wp-parsely' ),
+				$this->equalTo( false ),
+				$this->isNull()
+			);
+
+		$caching_decorator = $this->getMockBuilder( Related_Caching_Decorator::class )
+			->setConstructorArgs( array( $proxy, $object_cache ) )
+			->setMethodsExcept( array( 'get_items' ) )
+			->getMock();
+
+		self::setPrivateProperty( Related_Caching_Decorator::class, $caching_decorator, 'cache_key', $cache_key );
+
+		$this->assertEquals( (object) array( 'cache_hit' => true ), $caching_decorator->get_items() );
+	}
+
+	/**
+	 * Test that when the cache misses, the proxy is used instead and the resultant value is cached.
+	 *
+	 * @covers Parsely\RemoteAPI\Related_Caching_Decorator::get_items
+	 */
+	public function test_related_caching_decorator_returns_uncached_value(): void {
+		$proxy = $this->getMockBuilder( Related_Proxy::class )
+			->disableOriginalConstructor()
+			->getMock();
+
+		$proxy->method( 'get_items' )
+			->willReturn( (object) array( 'cache_hit' => false ) );
+
+		// If this method is _NOT_ called, that means our cache did not miss as expected.
+		$proxy->expects( $this->once() )->method( 'get_items' );
+
+		$cache_key = 'api_recos-abcdef123456';
+
+		$object_cache = $this->createStub( WP_Object_Cache::class );
+		$object_cache->method( 'get' )
+			->willReturn( false );
+
+		$object_cache->expects( $this->once() )
+			->method( 'get' )
+			->with(
+				$this->equalTo( $cache_key ),
+				$this->equalTo( 'wp-parsely' ),
+				$this->equalTo( false ),
+				$this->isNull()
+			);
+
+		$caching_decorator = $this->getMockBuilder( Related_Caching_Decorator::class )
+			->setConstructorArgs( array( $proxy, $object_cache ) )
+			->setMethodsExcept( array( 'get_items' ) )
+			->getMock();
+
+		self::setPrivateProperty( Related_Caching_Decorator::class, $caching_decorator, 'cache_key', $cache_key );
+
+		$this->assertEquals( (object) array( 'cache_hit' => false ), $caching_decorator->get_items() );
 	}
 }

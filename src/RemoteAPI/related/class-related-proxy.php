@@ -45,7 +45,6 @@ class Related_Proxy implements Proxy {
 	public function __construct( Parsely $parsely, array $query ) {
 		$this->parsely = $parsely;
 		$this->query   = $query;
-		ksort( $this->query );
 	}
 
 	/**
@@ -68,7 +67,11 @@ class Related_Proxy implements Proxy {
 		$query           = $this->query;
 		$query['apikey'] = $this->parsely->get_api_key();
 		$query           = array_filter( $query );
-		$query           = apply_filters( 'wp_parsely_related_endpoint_args', $query );
+
+		// Sort by key so the query args are in alphabetical order.
+		ksort( $query );
+
+		$query = apply_filters( 'wp_parsely_related_endpoint_args', $query );
 		return add_query_arg( $query, self::RELATED_API_ENDPOINT );
 	}
 
