@@ -41,6 +41,16 @@ final class Related_API_Proxy {
 			return;
 		}
 
+		$get_items_args = array(
+			'query' => array(
+				'default'           => array(),
+				'sanitize_callback' => function ( $query ) {
+					// question: how should we sanitize these?
+					return (array) $query;
+				},
+			),
+		);
+
 		register_rest_route(
 			'wp-parsely/v1',
 			'/related',
@@ -49,15 +59,7 @@ final class Related_API_Proxy {
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
 					'permission_callback' => array( $this, 'permission_callback' ),
-					'args'                => array(
-						'query' => array(
-							'default'           => array(),
-							'sanitize_callback' => function ( $query ) {
-								// question: how should we sanitize these?
-								return (array) $query;
-							},
-						),
-					),
+					'args'                => $get_items_args,
 				),
 			)
 		);
