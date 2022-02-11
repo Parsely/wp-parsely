@@ -22,8 +22,6 @@ use WP_REST_Request;
  * Configure a REST API endpoint for use e.g. by the Related Block.
  */
 final class Related_API_Proxy {
-	const OBJECT_CACHE_TTL = 5 * MINUTE_IN_SECONDS;
-
 	/**
 	 * Used to inject dependencies.
 	 *

@@ -15,6 +15,8 @@ use WP_Object_Cache;
  * Caching Decorator for the remote /related endpoint.
  */
 class Related_Caching_Decorator implements Proxy {
+	const OBJECT_CACHE_TTL = 5 * MINUTE_IN_SECONDS;
+
 	/**
 	 * The Proxy instance this will cache.
 	 *
@@ -55,7 +57,7 @@ class Related_Caching_Decorator implements Proxy {
 		$items = $this->cache->get( $this->cache_key, 'wp-parsely' );
 		if ( ! is_object( $items ) ) {
 			$items = $this->decorated_proxy->get_items();
-			$this->cache->set( $this->cache_key, $items, 'wp-parsely', 5 * MINUTE_IN_SECONDS );
+			$this->cache->set( $this->cache_key, $items, 'wp-parsely', self::OBJECT_CACHE_TTL );
 		}
 		return $items;
 	}
