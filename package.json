@@ -26,15 +26,15 @@
 	"directories": {
 		"test": "tests"
 	},
-  	"files": [
-	  "build/",
-	  "src/",
-	  "views/",
-	  "uninstall.php",
-	  "wp-parsely.css",
-	  "wp-parsely.php"
+	"files": [
+		"build/",
+		"src/",
+		"views/",
+		"uninstall.php",
+		"wp-parsely.css",
+		"wp-parsely.php"
 	],
-  	"browserslist": [
+	"browserslist": [
 		"defaults"
 	],
 	"dependencies": {
@@ -46,6 +46,7 @@
 		"@wordpress/e2e-test-utils": "^6.0.1",
 		"@wordpress/env": "^4.2.1",
 		"@wordpress/eslint-plugin": "^10.0.1",
+		"@wordpress/hooks": "^3.3.1",
 		"@wordpress/scripts": "^20.0.2",
 		"concurrently": "^7.0.0",
 		"husky": "^7.0.4",
@@ -61,7 +62,7 @@
 		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
 		"lint:pkg-json": "wp-scripts lint-pkg-json",
-	  	"plugin-zip": "wp-scripts plugin-zip",
+		"plugin-zip": "wp-scripts plugin-zip",
 		"prepare": "husky install",
 		"start": "wp-scripts start",
 		"test": "npm run test:unit",

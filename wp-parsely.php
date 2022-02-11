@@ -160,18 +160,3 @@ function parsely_integrations(): Integrations {
 
 	return $parsely_integrations;
 }
-
-
-// TODO: Remove before landing, just for testing purposes
-add_filter('wp_parsely_onload_scripts', function( $scripts ) {
-	$scripts['test_function'] = "
-	function test_function() {
-		console.log('this is a loading function');
-	}";
-	$scripts['another_func'] = "
-	function another_func() {
-		console.log('another func');
-	}
-	";
-	return $scripts;
-});

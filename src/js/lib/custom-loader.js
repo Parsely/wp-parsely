@@ -1,13 +1,9 @@
+import { createHooks } from '@wordpress/hooks';
+
+window.wpParselyHooks = createHooks();
+
 export function wpParselyInitCustom() {
-	const customOnLoad = () => {
-		if ( Array.isArray( wpParselyCustomFunctions ) ) {
-			wpParselyCustomFunctions.forEach( ( f ) => {
-				if ( typeof f === 'function' ) {
-					f();
-				}
-			} );
-		}
-	};
+	const customOnLoad = () => window.wpParselyHooks.doAction('wpParselyOnLoad');
 
 	if ( typeof window.PARSELY === 'object' ) {
 		if ( typeof window.PARSELY.onload !== 'function' ) {

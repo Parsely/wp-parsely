@@ -135,24 +135,7 @@ class Scripts {
 			add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
 		}
 
-		/**
-		 *
-		 *
-		 * @since 3.2.0
-		 *
-		 * @param array<string> $scripts
-		 */
-		if ( false !== has_filter('wp_parsely_onload_scripts' ) ) {
-			$scripts = apply_filters( 'wp_parsely_onload_scripts', array());
-			foreach ($scripts as $script) {
-				wp_add_inline_script('wp-parsely-custom-loader', $script, 'before');
-			}
-			$function_names = implode(",", array_keys( $scripts ));
-			$function_variables = 'const wpParselyCustomFunctions = [' . $function_names . '];';
-			wp_add_inline_script('wp-parsely-custom-loader', $function_variables, 'before');
-			wp_enqueue_script('wp-parsely-custom-loader');
-		}
-
+		wp_enqueue_script('wp-parsely-custom-loader');
 		wp_enqueue_script( 'wp-parsely-tracker' );
 	}
 
@@ -177,6 +160,15 @@ class Scripts {
 		}
 
 		wp_enqueue_script( 'wp-parsely-api' );
+
+		// TODO: Remove before landing, just for testing purposes
+		$script = '
+		window.wpParselyHooks.addAction("wpParselyOnLoad", "wpParsely", testFunc, 10);
+		function testFunc() {
+			console.log("This is a hook");
+		}
+		';
+		wp_add_inline_script( 'wp-parsely-custom-loader',  $script );
 	}
 
 	/**
