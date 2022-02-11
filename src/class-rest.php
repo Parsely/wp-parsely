@@ -90,7 +90,7 @@ class Rest {
 	 * response and the `meta` object containing the actual metadata.
 	 */
 	public function get_callback( array $object ): array {
-		$post_id = $object['ID'] ?? $object['id'] ?? '';
+		$post_id = $object['ID'] ?? $object['id'] ?? 0;
 		$options = $this->parsely->get_options();
 		$post    = WP_Post::get_instance( $post_id );
 
