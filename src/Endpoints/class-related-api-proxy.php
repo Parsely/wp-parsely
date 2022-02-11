@@ -68,7 +68,7 @@ final class Related_API_Proxy {
 	/**
 	 * Determine if the endpoint can be called.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function permission_callback() {
 		// Unauthenticated.
@@ -79,7 +79,7 @@ final class Related_API_Proxy {
 	 * Cached "proxy" to the Parsely `/related` endpoint
 	 *
 	 * @param WP_Rest_Request $request The request object.
-	 * @return array
+	 * @return stdClass|WP_Error
 	 */
 	public function get_items( WP_Rest_Request $request ) {
 		$options = $this->parsely->get_options();
