@@ -29,13 +29,6 @@ class Related_Proxy implements Proxy {
 	private $parsely;
 
 	/**
-	 * The query arguments to send to the remote API.
-	 *
-	 * @var array<string, mixed>
-	 */
-	private $query;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Parsely $parsely Parsely instance.

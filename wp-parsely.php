@@ -115,20 +115,21 @@ function parsely_wp_admin_early_register(): void {
 
 require __DIR__ . '/src/RemoteAPI/interface-cache.php';
 require __DIR__ . '/src/RemoteAPI/interface-proxy.php';
+require __DIR__ . '/src/RemoteAPI/class-cached-proxy.php';
 require __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
 require __DIR__ . '/src/RemoteAPI/related/class-related-proxy.php';
-require __DIR__ . '/src/RemoteAPI/related/class-related-caching-decorator.php';
 require __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
 
-add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_recommendations_proxy' );
+add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_proxies' );
 /**
- * Register the Recommendations API Proxy WP-API REST Endpoint
+ * Register REST Endpoints that act as a proxy to the Parse.ly API.
+ * This is needed to get around a CORS issues with Firefox.
  *
  * @since 3.2.0
  *
  * @return void
  */
-function rest_api_init_recommendations_proxy(): void {
+function rest_api_init_proxies(): void {
 	$proxy        = new Related_Proxy( $GLOBALS['parsely'] );
 	$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
 	$endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $cached_proxy );

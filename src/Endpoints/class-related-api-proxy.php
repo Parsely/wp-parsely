@@ -51,7 +51,7 @@ final class Related_API_Proxy {
 	 *
 	 * @return void
 	 */
-	public function run() {
+	public function run(): void {
 		if ( ! apply_filters( 'wp_parsely_enable_related_endpoint', false ) ) {
 			return;
 		}
@@ -66,18 +66,16 @@ final class Related_API_Proxy {
 			),
 		);
 
-		register_rest_route(
-			'wp-parsely/v1',
-			'/related',
+		$rest_route_args = array(
 			array(
-				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'permission_callback' ),
-					'args'                => $get_items_args,
-				),
-			)
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_items' ),
+				'permission_callback' => array( $this, 'permission_callback' ),
+				'args'                => $get_items_args,
+			),
 		);
+
+		register_rest_route( 'wp-parsely/v1', '/related', $rest_route_args );
 	}
 
 	/**
@@ -93,10 +91,10 @@ final class Related_API_Proxy {
 	/**
 	 * Cached "proxy" to the Parsely `/related` endpoint
 	 *
-	 * @param WP_Rest_Request $request The request object.
-	 * @return stdClass|WP_Error
+	 * @param WP_REST_Request $request The request object.
+	 * @return stdClass
 	 */
-	public function get_items( WP_Rest_Request $request ) {
+	public function get_items( WP_REST_Request $request ) {
 		$options = $this->parsely->get_options();
 		$apikey  = $options['apikey'];
 		$params  = $request->get_params();
@@ -119,7 +117,7 @@ final class Related_API_Proxy {
 		}
 
 		$data = array_map(
-			function( stdClass $link ) {
+			static function( stdClass $link ) {
 				return (object) array(
 					'image_url' => $link->image_url,
 					'title'     => $link->title,
