@@ -38,24 +38,11 @@ class Related_Proxy implements Proxy {
 	/**
 	 * Constructor.
 	 *
-	 * @param Parsely              $parsely Parsely instance.
-	 * @param array<string, mixed> $query The query arguments to send to the remote API.
+	 * @param Parsely $parsely Parsely instance.
 	 * @since 3.2.0
 	 */
-	public function __construct( Parsely $parsely, array $query ) {
+	public function __construct( Parsely $parsely ) {
 		$this->parsely = $parsely;
-		$this->query   = $query;
-	}
-
-	/**
-	 * Accessor for private query var.
-	 *
-	 * @since 3.2.0
-	 *
-	 * @return array<string, mixed>
-	 */
-	public function get_query(): array {
-		return $this->query;
 	}
 
 	/**
@@ -63,10 +50,10 @@ class Related_Proxy implements Proxy {
 	 *
 	 * @since 3.2.0
 	 *
+	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @return string
 	 */
-	public function get_api_url(): string {
-		$query           = $this->query;
+	public function get_api_url( array $query ): string {
 		$query['apikey'] = $this->parsely->get_api_key();
 		$query           = array_filter( $query );
 
@@ -82,10 +69,11 @@ class Related_Proxy implements Proxy {
 	 *
 	 * @since 3.2.0
 	 *
+	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @return WP_Error|array<string, mixed>
 	 */
-	public function get_items() {
-		$full_api_url = $this->get_api_url();
+	public function get_items( array $query ) {
+		$full_api_url = $this->get_api_url( $query);
 
 		$result = wp_safe_remote_get( $full_api_url, array() );
 

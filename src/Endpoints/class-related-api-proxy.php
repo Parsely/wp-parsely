@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Cache;
 use Parsely\RemoteAPI\Cached_Proxy;
 use Parsely\RemoteAPI\Related_Proxy;
 use Parsely\RemoteAPI\WordPress_Cache;
@@ -24,6 +23,11 @@ use WP_REST_Request;
  * Configure a REST API endpoint for use e.g. by the Related Block.
  */
 final class Related_API_Proxy {
+	/**
+	 * @var Parsely
+	 */
+	private $parsely;
+
 	/**
 	 * Used to inject dependencies.
 	 *
@@ -72,7 +76,7 @@ final class Related_API_Proxy {
 	 *
 	 * @return bool
 	 */
-	public function permission_callback() {
+	public function permission_callback(): bool {
 		// Unauthenticated.
 		return true;
 	}
@@ -97,16 +101,15 @@ final class Related_API_Proxy {
 
 		// Find a way to instantiate these objects outside this class.
 		// Probably inject a Proxy object into the constructor, and then pass the query into `get_items()`.
-		$proxy        = new Related_Proxy( $this->parsely, $params['query'] );
+		$proxy        = new Related_Proxy( $this->parsely );
 		$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
-		$links        = $cached_proxy->get_items();
+		$links        = $cached_proxy->get_items( $params['query'] );
 
 		if ( is_wp_error( $links ) ) {
-			$response = (object) array(
+			return (object) array(
 				'data'  => array(),
 				'error' => $links,
 			);
-			return $response;
 		}
 
 		$data = array_map(

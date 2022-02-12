@@ -92,8 +92,8 @@ final class RelatedRemoteAPITest extends TestCase {
 	 */
 	public function test_related_api_url( array $query, string $url ): void {
 		self::set_options( array( 'apikey' => 'my-key' ) );
-		$proxy = new Related_Proxy( self::$parsely, $query );
-		self::assertEquals( $url, $proxy->get_api_url() );
+		$proxy = new Related_Proxy( self::$parsely );
+		self::assertEquals( $url, $proxy->get_api_url( $query ) );
 	}
 
 	/**
@@ -109,7 +109,7 @@ final class RelatedRemoteAPITest extends TestCase {
 		// If this method is called, that means our cache did not hit as expected.
 		$proxy->expects( self::never() )->method( 'get_items' );
 
-		$cache_key = 'parsely_api-abcdef123456';
+		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $proxy ) ) . '_' . wp_hash( wp_json_encode( array() ) );
 
 		$object_cache = $this->createMock( Cache::class );
 		$object_cache->method( 'get' )
@@ -129,9 +129,7 @@ final class RelatedRemoteAPITest extends TestCase {
 			->setMethodsExcept( array( 'get_items' ) )
 			->getMock();
 
-		self::setPrivateProperty( Cached_Proxy::class, $cached_proxy, 'cache_key', $cache_key );
-
-		self::assertEquals( (object) array( 'cache_hit' => true ), $cached_proxy->get_items() );
+		self::assertEquals( (object) array( 'cache_hit' => true ), $cached_proxy->get_items( array() ) );
 	}
 
 	/**
@@ -150,7 +148,7 @@ final class RelatedRemoteAPITest extends TestCase {
 		// If this method is _NOT_ called, that means our cache did not miss as expected.
 		$proxy->expects( self::once() )->method( 'get_items' );
 
-		$cache_key = 'parsely_api-abcdef123456';
+		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $proxy ) ) . '_' . wp_hash( wp_json_encode( array() ) );
 
 		$object_cache = $this->createMock( Cache::class );
 		$object_cache->method( 'get' )
@@ -170,8 +168,6 @@ final class RelatedRemoteAPITest extends TestCase {
 			->setMethodsExcept( array( 'get_items' ) )
 			->getMock();
 
-		self::setPrivateProperty( Cached_Proxy::class, $cached_proxy, 'cache_key', $cache_key );
-
-		self::assertEquals( (object) array( 'cache_hit' => false ), $cached_proxy->get_items() );
+		self::assertEquals( (object) array( 'cache_hit' => false ), $cached_proxy->get_items( array() ) );
 	}
 }
