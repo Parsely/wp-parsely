@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely Remote API Cache Adapter
+ * Parsely Remote API Adapter for the WordPress Object Cache
  *
  * @package Parsely
  * @since 3.2.0
@@ -11,9 +11,14 @@ declare(strict_types=1);
 namespace Parsely\RemoteAPI;
 
 /**
- * Remote API Cache Adapter
+ * Remote API Adapter for the WordPress Object Cache.
  */
-class Cache_Adapter implements Cache {
+class WordPress_Cache implements Cache {
+	/**
+	 * @var Cache
+	 */
+	private $cache;
+
 	/**
 	 * Constructor.
 	 *

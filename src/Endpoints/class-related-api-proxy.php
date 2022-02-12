@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Cache_Adapter;
+use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\RemoteAPI\Related_Caching_Decorator;
 use Parsely\RemoteAPI\Related_Proxy;
 use stdClass;
@@ -95,7 +95,7 @@ final class Related_API_Proxy {
 		}
 
 		$proxy        = new Related_Proxy( $this->parsely, $params['query'] );
-		$cached_proxy = new Related_Caching_Decorator( $proxy, new Cache_Adapter( $GLOBALS['wp_object_cache'] ) );
+		$cached_proxy = new Related_Caching_Decorator( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
 		$links        = $cached_proxy->get_items();
 
 		if ( is_wp_error( $links ) ) {

@@ -27,7 +27,7 @@ class Related_Caching_Decorator implements Proxy {
 	/**
 	 * A wrapped object that's compatible with the Cache Interface.
 	 *
-	 * @var Cache_Adapter
+	 * @var WordPress_Cache
 	 */
 	private $cache;
 
@@ -41,10 +41,10 @@ class Related_Caching_Decorator implements Proxy {
 	/**
 	 * Constructor.
 	 *
-	 * @param Proxy         $proxy The Proxy object to cache.
-	 * @param Cache_Adapter $cache An object cache instance.
+	 * @param Proxy           $proxy The Proxy object to cache.
+	 * @param WordPress_Cache $cache An object cache instance.
 	 */
-	public function __construct( Proxy $proxy, Cache_Adapter $cache ) {
+	public function __construct( Proxy $proxy, WordPress_Cache $cache ) {
 		$this->decorated_proxy = $proxy;
 		$this->cache           = $cache;
 		$this->cache_key       = 'api_related-' . wp_hash( wp_json_encode( $this->decorated_proxy->get_query() ) );
