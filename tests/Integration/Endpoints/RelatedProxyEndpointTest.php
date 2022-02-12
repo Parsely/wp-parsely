@@ -29,7 +29,7 @@ final class RelatedProxyEndpointTest extends TestCase {
 	/**
 	 * Hold a reference to the callback that initializes the endpoint to remove in tearDown.
 	 *
-	 * @var function $rest_api_init_related_proxy
+	 * @var callable $rest_api_init_related_proxy
 	 */
 	private $rest_api_init_related_proxy;
 
@@ -45,7 +45,7 @@ final class RelatedProxyEndpointTest extends TestCase {
 		add_filter( 'wp_parsely_enable_related_endpoint', '__return_true' );
 
 		$this->wp_rest_server_global_backup = $GLOBALS['wp_rest_server'] ?? null;
-		$this->rest_api_init_related_proxy  = function () {
+		$this->rest_api_init_related_proxy  = static function () {
 			$endpoint = new Related_API_Proxy( new Parsely() );
 			$endpoint->run();
 		};
@@ -66,21 +66,21 @@ final class RelatedProxyEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Confirm the the route is registered.
+	 * Confirm the route is registered.
 	 *
-	 * @covers Related_API_Proxy::register_rest_route
+	 * @covers \Related_API_Proxy::register_rest_route
 	 */
 	public function test_register_routes() {
 		$routes = rest_get_server()->get_routes();
-		$this->assertArrayHasKey( '/wp-parsely/v1/related', $routes );
-		$this->assertCount( 1, $routes['/wp-parsely/v1/related'] );
-		$this->assertSame( array( 'GET' => true ), $routes['/wp-parsely/v1/related'][0]['methods'] );
+		self::assertArrayHasKey( '/wp-parsely/v1/related', $routes );
+		self::assertCount( 1, $routes['/wp-parsely/v1/related'] );
+		self::assertSame( array( 'GET' => true ), $routes['/wp-parsely/v1/related'][0]['methods'] );
 	}
 
 	/**
 	 * Confirm that calls to `GET /wp-parsely/v1/related` get results in the expected format.
 	 *
-	 * @covers Related_API_Proxy::get_items
+	 * @covers \Related_API_Proxy::get_items
 	 */
 	public function test_get_items() {
 		TestCase::set_options( array( 'apikey' => 'example.com' ) );
@@ -99,9 +99,9 @@ final class RelatedProxyEndpointTest extends TestCase {
 
 		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/related' ) );
 
-		$this->assertSame( 1, $dispatched );
-		$this->assertSame( 200, $response->get_status() );
-		$this->assertEquals(
+		self::assertSame( 1, $dispatched );
+		self::assertSame( 200, $response->get_status() );
+		self::assertEquals(
 			(object) array(
 				'data' => array(
 					(object) array(
@@ -123,7 +123,7 @@ final class RelatedProxyEndpointTest extends TestCase {
 	/**
 	 * Confirm that calls to `GET /wp-parsely/v1/related` gets an error and makes no remote call when the apikey is not populated in site options.
 	 *
-	 * @covers Related_API_Proxy::get_items
+	 * @covers \Related_API_Proxy::get_items
 	 */
 	public function test_get_items_fails_without_apikey_set() {
 		TestCase::set_options( array( 'apikey' => '' ) );
@@ -140,15 +140,15 @@ final class RelatedProxyEndpointTest extends TestCase {
 
 		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/related' ) );
 
-		$this->assertSame( 200, $response->get_status() );
+		self::assertSame( 200, $response->get_status() );
 		$data = $response->get_data();
 
-		$this->assertSame( 0, $dispatched );
-		$this->assertObjectHasAttribute( 'data', $data );
-		$this->assertEmpty( $data->data );
+		self::assertSame( 0, $dispatched );
+		self::assertObjectHasAttribute( 'data', $data );
+		self::assertEmpty( $data->data );
 
-		$this->assertObjectHasAttribute( 'error', $data );
-		$this->assertEquals(
+		self::assertObjectHasAttribute( 'error', $data );
+		self::assertEquals(
 			new WP_Error( 400, 'A Parse.ly API Key must be set in site options to use this endpoint' ),
 			$data->error
 		);

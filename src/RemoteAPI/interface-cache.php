@@ -42,5 +42,5 @@ interface Cache {
 	 *                           Default 0 (no expiration).
 	 * @return bool True on success, false on failure.
 	 */
-	public function set( $key, $data, string $group = '', int $expire = 0 );
+	public function set( $key, $data, string $group = '', int $expire = 0 ): bool;
 }

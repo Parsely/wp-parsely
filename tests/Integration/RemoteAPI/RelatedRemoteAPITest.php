@@ -85,7 +85,7 @@ final class RelatedRemoteAPITest extends TestCase {
 	 * Test the basic generation of the API URL.
 	 *
 	 * @dataProvider data_related_api_url
-	 * @covers Parsely\RemoteAPI\Related_Proxy:get_api_url
+	 * @covers \Parsely\RemoteAPI\Related_Proxy:get_api_url
 	 *
 	 * @param array  $query Test query arguments.
 	 * @param string $url Expected generated URL.
@@ -93,13 +93,13 @@ final class RelatedRemoteAPITest extends TestCase {
 	public function test_related_api_url( array $query, string $url ): void {
 		self::set_options( array( 'apikey' => 'my-key' ) );
 		$proxy = new Related_Proxy( self::$parsely, $query );
-		self::assertEquals( $url, $proxy->get_api_url( $query ) );
+		self::assertEquals( $url, $proxy->get_api_url() );
 	}
 
 	/**
 	 * Test that the cache is used instead of the proxy when there's a cache hit.
 	 *
-	 * @covers Parsely\RemoteAPI\Cached_Proxy::get_items
+	 * @covers \Parsely\RemoteAPI\Cached_Proxy::get_items
 	 */
 	public function test_related_cached_proxy_returns_cached_value(): void {
 		$proxy = $this->getMockBuilder( Related_Proxy::class )
@@ -107,7 +107,7 @@ final class RelatedRemoteAPITest extends TestCase {
 			->getMock();
 
 		// If this method is called, that means our cache did not hit as expected.
-		$proxy->expects( $this->never() )->method( 'get_items' );
+		$proxy->expects( self::never() )->method( 'get_items' );
 
 		$cache_key = 'parsely_api-abcdef123456';
 
@@ -115,13 +115,13 @@ final class RelatedRemoteAPITest extends TestCase {
 		$object_cache->method( 'get' )
 			->willReturn( (object) array( 'cache_hit' => true ) );
 
-		$object_cache->expects( $this->once() )
+		$object_cache->expects( self::once() )
 			->method( 'get' )
 			->with(
-				$this->equalTo( $cache_key ),
-				$this->equalTo( 'wp-parsely' ),
-				$this->equalTo( false ),
-				$this->isNull()
+				self::equalTo( $cache_key ),
+				self::equalTo( 'wp-parsely' ),
+				self::equalTo( false ),
+				self::isNull()
 			);
 
 		$cached_proxy = $this->getMockBuilder( Cached_Proxy::class )
@@ -131,13 +131,13 @@ final class RelatedRemoteAPITest extends TestCase {
 
 		self::setPrivateProperty( Cached_Proxy::class, $cached_proxy, 'cache_key', $cache_key );
 
-		$this->assertEquals( (object) array( 'cache_hit' => true ), $cached_proxy->get_items() );
+		self::assertEquals( (object) array( 'cache_hit' => true ), $cached_proxy->get_items() );
 	}
 
 	/**
 	 * Test that when the cache misses, the proxy is used instead and the resultant value is cached.
 	 *
-	 * @covers Parsely\RemoteAPI\Cached_Proxy::get_items
+	 * @covers \Parsely\RemoteAPI\Cached_Proxy::get_items
 	 */
 	public function test_related_caching_decorator_returns_uncached_value(): void {
 		$proxy = $this->getMockBuilder( Related_Proxy::class )
@@ -148,7 +148,7 @@ final class RelatedRemoteAPITest extends TestCase {
 			->willReturn( (object) array( 'cache_hit' => false ) );
 
 		// If this method is _NOT_ called, that means our cache did not miss as expected.
-		$proxy->expects( $this->once() )->method( 'get_items' );
+		$proxy->expects( self::once() )->method( 'get_items' );
 
 		$cache_key = 'parsely_api-abcdef123456';
 
@@ -156,13 +156,13 @@ final class RelatedRemoteAPITest extends TestCase {
 		$object_cache->method( 'get' )
 			->willReturn( false );
 
-		$object_cache->expects( $this->once() )
+		$object_cache->expects( self::once() )
 			->method( 'get' )
 			->with(
-				$this->equalTo( $cache_key ),
-				$this->equalTo( 'wp-parsely' ),
-				$this->equalTo( false ),
-				$this->isNull()
+				self::equalTo( $cache_key ),
+				self::equalTo( 'wp-parsely' ),
+				self::equalTo( false ),
+				self::isNull()
 			);
 
 		$cached_proxy = $this->getMockBuilder( Cached_Proxy::class )
@@ -172,6 +172,6 @@ final class RelatedRemoteAPITest extends TestCase {
 
 		self::setPrivateProperty( Cached_Proxy::class, $cached_proxy, 'cache_key', $cache_key );
 
-		$this->assertEquals( (object) array( 'cache_hit' => false ), $cached_proxy->get_items() );
+		self::assertEquals( (object) array( 'cache_hit' => false ), $cached_proxy->get_items() );
 	}
 }
