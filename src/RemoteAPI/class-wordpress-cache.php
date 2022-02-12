@@ -10,21 +10,25 @@ declare(strict_types=1);
 
 namespace Parsely\RemoteAPI;
 
+use WP_Object_Cache;
+
 /**
  * Remote API Adapter for the WordPress Object Cache.
  */
 class WordPress_Cache implements Cache {
 	/**
-	 * @var Cache
+	 * The WordPress Object Cache.
+	 *
+	 * @var WP_Object_Cache
 	 */
 	private $cache;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Cache $cache A class that's compatible with the Cache Interface.
+	 * @param WP_Object_Cache $cache A class that's compatible with the Cache Interface.
 	 */
-	public function __construct( $cache ) {
+	public function __construct( WP_Object_Cache $cache ) {
 		$this->cache = $cache;
 	}
 

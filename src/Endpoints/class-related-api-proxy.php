@@ -22,11 +22,15 @@ use WP_REST_Request;
  */
 final class Related_API_Proxy {
 	/**
+	 * Parsely instance.
+	 *
 	 * @var Parsely
 	 */
 	private $parsely;
 
 	/**
+	 * Proxy object which does the actual calls to the Parse.ly API.
+	 *
 	 * @var Proxy
 	 */
 	private $proxy;
@@ -35,6 +39,7 @@ final class Related_API_Proxy {
 	 * Used to inject dependencies.
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
+	 * @param Proxy   $proxy   Proxy object which does the actual calls to the Parse.ly API.
 	 */
 	public function __construct( Parsely $parsely, Proxy $proxy ) {
 		$this->parsely = $parsely;

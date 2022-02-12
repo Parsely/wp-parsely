@@ -46,8 +46,8 @@ final class RelatedProxyEndpointTest extends TestCase {
 		add_filter( 'wp_parsely_enable_related_endpoint', '__return_true' );
 
 		$this->wp_rest_server_global_backup = $GLOBALS['wp_rest_server'] ?? null;
-		// Related_Proxy should be mocked here?
 		$this->rest_api_init_related_proxy  = static function () {
+			// Related_Proxy should be mocked here?
 			$endpoint = new Related_API_Proxy( new Parsely(), new Related_Proxy( new Parsely() ) );
 			$endpoint->run();
 		};

@@ -73,7 +73,7 @@ class Related_Proxy implements Proxy {
 	 * @return WP_Error|array<string, mixed>
 	 */
 	public function get_items( array $query ) {
-		$full_api_url = $this->get_api_url( $query);
+		$full_api_url = $this->get_api_url( $query );
 
 		$result = wp_safe_remote_get( $full_api_url, array() );
 

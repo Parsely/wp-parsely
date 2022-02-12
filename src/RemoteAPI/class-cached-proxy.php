@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Parsely\RemoteAPI;
 
-use Parsely\RemoteAPI\Cache;
 use WP_Error;
 
 /**
@@ -49,15 +48,16 @@ class Cached_Proxy implements Proxy {
 	 * Implements caching for the proxy interface.
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
-	 * @return WP_Error|array<string, mixed>
+	 * @return array<string, mixed>|false The response from the remote API, or false if the response is empty.
 	 */
 	public function get_items( array $query ) {
-		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $this->proxy ) ) . '_' . wp_hash( wp_json_encode( $query ) );
-		$items = $this->cache->get( $cache_key, self::CACHE_GROUP );
-		if ( ! \is_object( $items ) ) {
+		$cache_key = 'parsely_api_' . wp_hash( (string) wp_json_encode( $this->proxy ) ) . '_' . wp_hash( (string) wp_json_encode( $query ) );
+		$items     = $this->cache->get( $cache_key, self::CACHE_GROUP );
+		if ( false === $items ) {
 			$items = $this->proxy->get_items( $query );
 			$this->cache->set( $cache_key, $items, self::CACHE_GROUP, self::OBJECT_CACHE_TTL );
 		}
+
 		return $items;
 	}
 }
