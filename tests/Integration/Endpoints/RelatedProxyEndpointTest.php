@@ -11,6 +11,7 @@ namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
 use Parsely\Endpoints\Related_API_Proxy;
+use Parsely\RemoteAPI\Related_Proxy;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
@@ -45,8 +46,9 @@ final class RelatedProxyEndpointTest extends TestCase {
 		add_filter( 'wp_parsely_enable_related_endpoint', '__return_true' );
 
 		$this->wp_rest_server_global_backup = $GLOBALS['wp_rest_server'] ?? null;
+		// Related_Proxy should be mocked here?
 		$this->rest_api_init_related_proxy  = static function () {
-			$endpoint = new Related_API_Proxy( new Parsely() );
+			$endpoint = new Related_API_Proxy( new Parsely(), new Related_Proxy( new Parsely() ) );
 			$endpoint->run();
 		};
 		add_action( 'rest_api_init', $this->rest_api_init_related_proxy );

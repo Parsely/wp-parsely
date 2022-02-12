@@ -31,6 +31,9 @@ use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
+use Parsely\RemoteAPI\Cached_Proxy;
+use Parsely\RemoteAPI\Related_Proxy;
+use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Plugins_Actions;
@@ -126,7 +129,9 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_recommendations_pr
  * @return void
  */
 function rest_api_init_recommendations_proxy(): void {
-	$endpoint = new Related_API_Proxy( $GLOBALS['parsely'] );
+	$proxy        = new Related_Proxy( $GLOBALS['parsely'] );
+	$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
+	$endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $cached_proxy );
 	$endpoint->run();
 }
 

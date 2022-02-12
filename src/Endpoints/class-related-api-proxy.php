@@ -11,9 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Cached_Proxy;
-use Parsely\RemoteAPI\Related_Proxy;
-use Parsely\RemoteAPI\WordPress_Cache;
+use Parsely\RemoteAPI\Proxy;
 use stdClass;
 use WP_Error;
 use WP_REST_Server;
@@ -29,12 +27,18 @@ final class Related_API_Proxy {
 	private $parsely;
 
 	/**
+	 * @var Proxy
+	 */
+	private $proxy;
+
+	/**
 	 * Used to inject dependencies.
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
 	 */
-	public function __construct( Parsely $parsely ) {
+	public function __construct( Parsely $parsely, Proxy $proxy ) {
 		$this->parsely = $parsely;
+		$this->proxy   = $proxy;
 	}
 
 	/**
@@ -99,11 +103,8 @@ final class Related_API_Proxy {
 			);
 		}
 
-		// Find a way to instantiate these objects outside this class.
-		// Probably inject a Proxy object into the constructor, and then pass the query into `get_items()`.
-		$proxy        = new Related_Proxy( $this->parsely );
-		$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
-		$links        = $cached_proxy->get_items( $params['query'] );
+		// A proxy with caching behaviour is used here.
+		$links = $this->proxy->get_items( $params['query'] );
 
 		if ( is_wp_error( $links ) ) {
 			return (object) array(
