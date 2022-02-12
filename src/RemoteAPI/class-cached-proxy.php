@@ -10,10 +10,12 @@ declare(strict_types=1);
 
 namespace Parsely\RemoteAPI;
 
+use Parsely\RemoteAPI\Cache;
+
 /**
  * Caching Decorator for the remote /related endpoint.
  */
-class Related_Caching_Decorator implements Proxy {
+class Cached_Proxy implements Proxy {
 	const CACHE_GROUP      = 'wp-parsely';
 	const OBJECT_CACHE_TTL = 5 * MINUTE_IN_SECONDS;
 
@@ -22,12 +24,12 @@ class Related_Caching_Decorator implements Proxy {
 	 *
 	 * @var Proxy
 	 */
-	private $decorated_proxy;
+	private $proxy;
 
 	/**
 	 * A wrapped object that's compatible with the Cache Interface.
 	 *
-	 * @var WordPress_Cache
+	 * @var Cache
 	 */
 	private $cache;
 
@@ -41,13 +43,13 @@ class Related_Caching_Decorator implements Proxy {
 	/**
 	 * Constructor.
 	 *
-	 * @param Proxy           $proxy The Proxy object to cache.
-	 * @param WordPress_Cache $cache An object cache instance.
+	 * @param Proxy $proxy The Proxy object to cache.
+	 * @param Cache $cache An object cache instance.
 	 */
-	public function __construct( Proxy $proxy, WordPress_Cache $cache ) {
-		$this->decorated_proxy = $proxy;
-		$this->cache           = $cache;
-		$this->cache_key       = 'api_related-' . wp_hash( wp_json_encode( $this->decorated_proxy->get_query() ) );
+	public function __construct( Proxy $proxy, Cache $cache ) {
+		$this->proxy     = $proxy;
+		$this->cache     = $cache;
+		$this->cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $this->proxy ) );
 	}
 
 	/**
@@ -56,7 +58,7 @@ class Related_Caching_Decorator implements Proxy {
 	public function get_items() {
 		$items = $this->cache->get( $this->cache_key, self::CACHE_GROUP );
 		if ( ! is_object( $items ) ) {
-			$items = $this->decorated_proxy->get_items();
+			$items = $this->proxy->get_items();
 			$this->cache->set( $this->cache_key, $items, self::CACHE_GROUP, self::OBJECT_CACHE_TTL );
 		}
 		return $items;

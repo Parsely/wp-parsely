@@ -11,9 +11,10 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\WordPress_Cache;
-use Parsely\RemoteAPI\Related_Caching_Decorator;
+use Parsely\RemoteAPI\Cache;
+use Parsely\RemoteAPI\Cached_Proxy;
 use Parsely\RemoteAPI\Related_Proxy;
+use Parsely\RemoteAPI\WordPress_Cache;
 use stdClass;
 use WP_Error;
 use WP_REST_Server;
@@ -94,8 +95,10 @@ final class Related_API_Proxy {
 			);
 		}
 
+		// Find a way to instantiate these objects outside this class.
+		// Probably inject a Proxy object into the constructor, and then pass the query into `get_items()`.
 		$proxy        = new Related_Proxy( $this->parsely, $params['query'] );
-		$cached_proxy = new Related_Caching_Decorator( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
+		$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
 		$links        = $cached_proxy->get_items();
 
 		if ( is_wp_error( $links ) ) {
