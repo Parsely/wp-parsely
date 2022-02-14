@@ -162,6 +162,6 @@ describe( 'Track Post Types as', () => {
 		await page.click( '#submit' );
 		await waitForWpAdmin();
 
-		await expect( page ).toMatchElement( '#setting-error-settings_updated.notice-success' );
+		expect( page ).toMatchElement( '#setting-error-settings_updated.notice-success' );
 	} );
 } );
