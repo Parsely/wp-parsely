@@ -137,6 +137,13 @@ function rest_api_init_proxies(): void {
 	$endpoint->run();
 }
 
+require __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';
+function init_recommendations_block() {
+	$recommendations_block = new Recommendations_Block();
+	$recommendations_block->run();
+}
+add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
+
 require __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );

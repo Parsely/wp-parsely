@@ -13,5 +13,7 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'js', 'widgets', 'recommended.js' ),
 			path.resolve( __dirname, 'src', 'css', 'recommended-widget.css' ),
 		],
+		'recommendations-edit': path.resolve( __dirname, 'src', 'blocks', 'recommendations', 'edit' ),
+		recommendations: path.resolve( __dirname, 'src', 'blocks', 'recommendations' ),
 	},
 };
