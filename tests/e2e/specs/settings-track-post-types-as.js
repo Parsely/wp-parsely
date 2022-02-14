@@ -46,12 +46,15 @@ describe( 'Track Post Types as', () => {
 	 * Set default values and save.
 	 */
 	afterAll( async () => {
+		await selectScreenOptions( { recrawl: true, advanced: false } );
+		await waitForWpAdmin();
+
 		await page.click( radioPostAsPost );
 		await page.click( radioPageAsPage );
 		await page.click( radioAttachmentAsNone );
 
 		await page.click( '#submit' );
-		await page.waitForSelector( radioAttachmentAsNone );
+		await waitForWpAdmin();
 	} );
 
 	/**
@@ -148,5 +151,17 @@ describe( 'Track Post Types as', () => {
 		expect( await page.$eval( radioAttachmentAsPost, ( input ) => input.checked ) ).toBeFalsy();
 		expect( await page.$eval( radioAttachmentAsPage, ( input ) => input.checked ) ).toBeFalsy();
 		expect( await page.$eval( radioAttachmentAsNone, ( input ) => input.checked ) ).toBeTruthy();
+	} );
+
+	/**
+	 * Test: Save should work when recrawl settings are hidden.
+	 */
+	it( 'Should be able to save when recrawl settings are hidden', async () => {
+		await selectScreenOptions( { recrawl: false, advanced: false } );
+		await waitForWpAdmin();
+		await page.click( '#submit' );
+		await waitForWpAdmin();
+
+		await expect( page ).toMatchElement( '#setting-error-settings_updated.notice-success' );
 	} );
 } );
