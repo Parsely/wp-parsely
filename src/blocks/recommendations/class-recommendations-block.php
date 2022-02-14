@@ -29,6 +29,11 @@ class Recommendations_Block {
 			return;
 		}
 
+		if ( ! isset( $wp_version ) || version_compare( $wp_version, self::MINIMUM_WORDPRESS_VERSION ) < 0 ) {
+			// WordPress is not recent enough to run this block.
+			return;
+		}
+
 		self::register_block_and_assets();
 	}
 
