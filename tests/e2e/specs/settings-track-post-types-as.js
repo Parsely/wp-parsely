@@ -152,16 +152,4 @@ describe( 'Track Post Types as', () => {
 		expect( await page.$eval( radioAttachmentAsPage, ( input ) => input.checked ) ).toBeFalsy();
 		expect( await page.$eval( radioAttachmentAsNone, ( input ) => input.checked ) ).toBeTruthy();
 	} );
-
-	/**
-	 * Test: Save should work when recrawl settings are hidden.
-	 */
-	it( 'Should be able to save when recrawl settings are hidden', async () => {
-		await selectScreenOptions( { recrawl: false, advanced: false } );
-		await waitForWpAdmin();
-		await page.click( '#submit' );
-		await page.waitForSelector( '#setting-error-settings_updated.notice-success' );
-
-		expect( page ).toMatchElement( '#setting-error-settings_updated.notice-success' );
-	} );
 } );
