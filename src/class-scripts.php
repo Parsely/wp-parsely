@@ -76,23 +76,6 @@ class Scripts {
 			$custom_loader_asset['version'],
 			true
 		);
-
-		$api_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/init-api.asset.php';
-		wp_register_script(
-			'wp-parsely-api',
-			plugin_dir_url( PARSELY_FILE ) . 'build/init-api.js',
-			$api_script_asset['dependencies'],
-			$api_script_asset['version'],
-			true
-		);
-
-		wp_localize_script(
-			'wp-parsely-api',
-			'wpParsely', // This globally-scoped object holds variables used to interact with the API.
-			array(
-				'apikey' => $this->parsely->get_api_key(),
-			)
-		);
 	}
 
 	/**
@@ -155,20 +138,8 @@ class Scripts {
 			return;
 		}
 
-		if ( false === has_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ) ) ) {
-			add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
-		}
-
-		wp_enqueue_script( 'wp-parsely-api' );
-
-		// TODO: Remove before landing, just for testing purposes.
-		$script = '
-		window.wpParselyHooks.addAction("wpParselyOnLoad", "wpParsely", testFunc, 10);
-		function testFunc() {
-			console.log("This is a hook");
-		}
-		';
-		wp_add_inline_script( 'wp-parsely-custom-loader', $script );
+		$js_api_key = "window.wpParselyApiKey = '" . $this->parsely->get_api_key() . "';";
+		wp_add_inline_script( 'wp-parsely-custom-loader', $js_api_key, 'before' );
 	}
 
 	/**
@@ -186,7 +157,6 @@ class Scripts {
 		if ( in_array(
 			$handle,
 			array(
-				'wp-parsely-api',
 				'wp-parsely-tracker',
 				'wp-parsely-recommended-widget',
 			),
