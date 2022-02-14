@@ -3,7 +3,7 @@ import { createHooks } from '@wordpress/hooks';
 window.wpParselyHooks = createHooks();
 
 export function wpParselyInitCustom() {
-	const customOnLoad = () => window.wpParselyHooks.doAction('wpParselyOnLoad');
+	const customOnLoad = () => window.wpParselyHooks.doAction( 'wpParselyOnLoad' );
 
 	if ( typeof window.PARSELY === 'object' ) {
 		if ( typeof window.PARSELY.onload !== 'function' ) {

@@ -1,4 +1,4 @@
-window.wpParselyHooks.addAction('wpParselyOnLoad', 'wpParsely', uuidProfileCall );
+window.wpParselyHooks.addAction( 'wpParselyOnLoad', 'wpParsely', uuidProfileCall );
 
 async function uuidProfileCall() {
 	const apikey = global.wpParsely?.apikey;
