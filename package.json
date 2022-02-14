@@ -31,7 +31,6 @@
 		"src/",
 		"views/",
 		"uninstall.php",
-		"wp-parsely.css",
 		"wp-parsely.php"
 	],
 	"browserslist": [
