@@ -53,17 +53,19 @@ export const checkH2DoesNotExist = async ( text ) => {
  * @return {Promise<void>}
  */
 export const selectScreenOptions = async ( sections ) => {
+	await page.waitForSelector( '#show-settings-link', { visible: true } );
 	const [ button ] = await page.$x( '//button[@id="show-settings-link"]' );
 	await button.click();
+	await page.waitForSelector( '#screen-options-apply', { visible: true } );
 
-	await page.waitForSelector( '#requires-recrawl' );
-
+	await page.waitForSelector( '#requires-recrawl', { visible: true } );
 	const recrawlInput = await page.$( '#requires-recrawl' );
 	const isRecrawlChecked = await ( await recrawlInput.getProperty( 'checked' ) ).jsonValue();
 	if ( ( sections.recrawl && ! isRecrawlChecked ) || ( ! sections.recrawl && isRecrawlChecked ) ) {
 		await recrawlInput.click();
 	}
 
+	await page.waitForSelector( '#advanced', { visible: true } );
 	const advancedInput = await page.$( '#advanced' );
 	const isAdvancedChecked = await ( await advancedInput.getProperty( 'checked' ) ).jsonValue();
 	if ( ( sections.advanced && ! isAdvancedChecked ) || ( ! sections.advanced && isAdvancedChecked ) ) {
@@ -72,6 +74,8 @@ export const selectScreenOptions = async ( sections ) => {
 
 	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'screen-options-apply\')]' );
 	await input.click();
+
+	await waitForWpAdmin();
 };
 
 /**

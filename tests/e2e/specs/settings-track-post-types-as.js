@@ -47,7 +47,7 @@ describe( 'Track Post Types as', () => {
 	 */
 	afterAll( async () => {
 		await selectScreenOptions( { recrawl: true, advanced: false } );
-		await waitForWpAdmin();
+		// await waitForWpAdmin();
 
 		await page.click( radioPostAsPost );
 		await page.click( radioPageAsPage );
@@ -58,10 +58,10 @@ describe( 'Track Post Types as', () => {
 	} );
 
 	/**
-	 * Wait for last radio button to be ready.
+	 * Wait for page to be ready.
 	 */
 	beforeEach( async () => {
-		await page.waitForSelector( radioAttachmentAsNone );
+		await waitForWpAdmin();
 	} );
 
 	/**
@@ -158,7 +158,7 @@ describe( 'Track Post Types as', () => {
 	 */
 	it( 'Should be able to save when recrawl settings are hidden', async () => {
 		await selectScreenOptions( { recrawl: false, advanced: false } );
-		await waitForWpAdmin();
+		// await waitForWpAdmin();
 		await page.click( '#submit' );
 		await page.waitForSelector( '#setting-error-settings_updated.notice-success' );
 
