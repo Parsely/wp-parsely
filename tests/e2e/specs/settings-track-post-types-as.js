@@ -160,7 +160,7 @@ describe( 'Track Post Types as', () => {
 		await selectScreenOptions( { recrawl: false, advanced: false } );
 		await waitForWpAdmin();
 		await page.click( '#submit' );
-		await waitForWpAdmin();
+		await page.waitForSelector( '#setting-error-settings_updated.notice-success', { visible: true } );
 
 		expect( page ).toMatchElement( '#setting-error-settings_updated.notice-success' );
 	} );
