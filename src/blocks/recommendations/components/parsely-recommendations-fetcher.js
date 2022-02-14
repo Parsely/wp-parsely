@@ -27,7 +27,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 
 	async function fetchRecosFromWpApi() {
 		return apiFetch( {
-			path: addQueryArgs( '/wp-parsely/v1/recommendations', { query } ),
+			path: addQueryArgs( '/wp-parsely/v1/related', { query } ),
 		} );
 	}
 
