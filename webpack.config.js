@@ -8,8 +8,8 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'js', 'admin-settings' ),
 			path.resolve( __dirname, 'src', 'css', 'admin-settings.css' ),
 		],
-		'custom-loader': [
-			path.resolve( __dirname, 'src', 'js', 'lib', 'custom-loader' ),
+		loader: [
+			path.resolve( __dirname, 'src', 'js', 'lib', 'loader' ),
 			path.resolve( __dirname, 'src', 'js', 'lib', 'uuid-profile-call' ),
 		],
 		'recommended-widget': [
