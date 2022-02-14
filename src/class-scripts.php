@@ -44,7 +44,6 @@ class Scripts {
 		$parsely_options = $this->parsely->get_options();
 		if ( $this->parsely->api_key_is_set() && true !== $parsely_options['disable_javascript'] ) {
 			add_action( 'init', array( $this, 'register_scripts' ) );
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_api' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_tracker' ) );
 		}
 	}
@@ -120,26 +119,13 @@ class Scripts {
 
 		wp_enqueue_script( 'wp-parsely-loader' );
 		wp_enqueue_script( 'wp-parsely-tracker' );
-	}
 
-	/**
-	 * Load JavaScript for Parse.ly API.
-	 *
-	 * @since 2.5.0
-	 * @since 3.0.0 Rename from load_js_api
-	 *
-	 * @return void
-	 */
-	public function enqueue_js_api(): void {
-		$parsely_options = $this->parsely->get_options();
-
-		// If we don't have an API secret, there's no need to proceed.
-		if ( empty( $parsely_options['api_secret'] ) ) {
-			return;
+		// If we don't have an API secret, there's no need to set the API key.
+		// Setting the API key triggers the UUID Profile Call function.
+		if ( isset( $parsely_options['api_secret'] ) && is_string( $parsely_options['api_secret'] ) && '' !== $parsely_options['api_secret'] ) {
+			$js_api_key = "window.wpParselyApiKey = '" . $this->parsely->get_api_key() . "';";
+			wp_add_inline_script( 'wp-parsely-loader', $js_api_key, 'before' );
 		}
-
-		$js_api_key = "window.wpParselyApiKey = '" . $this->parsely->get_api_key() . "';";
-		wp_add_inline_script( 'wp-parsely-loader', $js_api_key, 'before' );
 	}
 
 	/**
@@ -157,6 +143,7 @@ class Scripts {
 		if ( in_array(
 			$handle,
 			array(
+				'wp-parsely-loader',
 				'wp-parsely-tracker',
 				'wp-parsely-recommended-widget',
 			),
