@@ -176,4 +176,14 @@ abstract class TestCase extends WPIntegrationTestCase {
 
 		return $post_id;
 	}
+
+	/**
+	 * Normalize a string, removing line feeds and tab characters.
+	 *
+	 * @param string $string The string to be normalized.
+	 * @return string The normalized string.
+	 */
+	public static function normalize_string( string $string ): string {
+		return str_replace( array( "\r", "\n", "\t" ), '', $string );
+	}
 }

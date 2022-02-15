@@ -381,14 +381,11 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->enqueue_js_tracker();
 
 		wp_print_scripts();
-		$output = ob_get_clean();
+		$output = self::normalize_string( ob_get_clean() );
+		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
+		$expected = self::normalize_string( "<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>" );
 
-		self::assertSame(
-			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-			"<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=" . Parsely::VERSION . "' id=\"parsely-cfg\"></script>\n",
-			$output,
-			'Tracker script tag was not printed correctly'
-		);
+		self::assertSame( $expected, $output, 'Tracker script tag was not printed correctly' );
 	}
 
 	/**
