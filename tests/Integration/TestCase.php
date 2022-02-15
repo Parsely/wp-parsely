@@ -194,12 +194,13 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Normalize a string, removing line feeds and tab characters.
+	 * Normalize a string by removing the passed substrings.
 	 *
-	 * @param string $string The string to be normalized.
+	 * @param string        $string The string to be normalized.
+	 * @param array<string> $remove The substrings to remove.
 	 * @return string The normalized string.
 	 */
-	public static function normalize_string( string $string ): string {
-		return str_replace( array( "\r", "\n", "\t" ), '', $string );
+	public static function normalize_string( string $string, array $remove = array( "\r", "\n", "\t" ) ): string {
+		return str_replace( $remove, '', $string );
 	}
 }
