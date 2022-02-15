@@ -14,6 +14,8 @@ use Parsely\Scripts;
 use PHPUnit\Framework\RiskyTestError;
 use WP_Scripts;
 
+use const Parsely\PARSELY_FILE;
+
 /**
  * Parsely Scripts tests.
  */
@@ -384,11 +386,13 @@ final class ScriptsTest extends TestCase {
 		wp_print_scripts();
 		$output = ob_get_clean();
 
+		$loader_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/loader.asset.php';
+
 		// @codingStandardsIgnoreStart
 		$expected = "<script type='text/javascript' src='http://example.org/wp-includes/js/dist/vendor/regenerator-runtime.min.js?ver=0.13.9' id='regenerator-runtime-js'></script>
 <script type='text/javascript' src='http://example.org/wp-includes/js/dist/vendor/wp-polyfill.min.js?ver=3.15.0' id='wp-polyfill-js'></script>
 <script type='text/javascript' src='http://example.org/wp-includes/js/dist/hooks.min.js?ver=1e58c8c5a32b2e97491080c5b10dc71c' id='wp-hooks-js'></script>
-<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=efb845aba771e779ddaf8a17ac41a4c4' id='wp-parsely-loader-js'></script>
+<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $loader_asset['version'] . "' id='wp-parsely-loader-js'></script>
 <script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=123456.78.9' id=\"parsely-cfg\"></script>
 ";
 		// @codingStandardsIgnoreEnd
