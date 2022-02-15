@@ -10,35 +10,13 @@ import {
 /**
  * Internal dependencies
  */
-import { activatePluginApiKey, checkH2DoesNotExist, deactivatePluginApiKey, waitForWpAdmin } from '../utils';
-
-/**
- * Set the visible sections in the array to their values `true` for visible and `false` for not visible.
- *
- * @param {Object} sections Dictionary containing the desired sections to change. Currently, `recrawl` and `advanced`.
- * @return {Promise<void>}
- */
-const selectScreenOptions = async ( sections ) => {
-	const [ button ] = await page.$x( '//button[@id="show-settings-link"]' );
-	await button.click();
-
-	await page.waitForSelector( '#requires-recrawl' );
-
-	const recrawlInput = await page.$( '#requires-recrawl' );
-	const isRecrawlChecked = await ( await recrawlInput.getProperty( 'checked' ) ).jsonValue();
-	if ( ( sections.recrawl && ! isRecrawlChecked ) || ( ! sections.recrawl && isRecrawlChecked ) ) {
-		await recrawlInput.click();
-	}
-
-	const advancedInput = await page.$( '#advanced' );
-	const isAdvancedChecked = await ( await advancedInput.getProperty( 'checked' ) ).jsonValue();
-	if ( ( sections.advanced && ! isAdvancedChecked ) || ( ! sections.advanced && isAdvancedChecked ) ) {
-		await advancedInput.click();
-	}
-
-	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'screen-options-apply\')]' );
-	await input.click();
-};
+import {
+	activatePluginApiKey,
+	checkH2DoesNotExist,
+	deactivatePluginApiKey,
+	waitForWpAdmin,
+	selectScreenOptions,
+} from '../utils';
 
 describe( 'Activation flow', () => {
 	beforeEach( async () => {

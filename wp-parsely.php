@@ -26,11 +26,14 @@ declare(strict_types=1);
 
 namespace Parsely;
 
-use Parsely\Endpoints\Recommendations_API_Proxy;
+use Parsely\Endpoints\Related_API_Proxy;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
+use Parsely\RemoteAPI\Cached_Proxy;
+use Parsely\RemoteAPI\Related_Proxy;
+use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Plugins_Actions;
@@ -110,17 +113,27 @@ function parsely_wp_admin_early_register(): void {
 	$network_admin_sites_list->run();
 }
 
-require __DIR__ . '/src/RemoteAPI/class-recommended-content.php';
-require __DIR__ . '/src/Endpoints/class-recommendations-api-proxy.php';
+require __DIR__ . '/src/RemoteAPI/interface-cache.php';
+require __DIR__ . '/src/RemoteAPI/interface-proxy.php';
+require __DIR__ . '/src/RemoteAPI/class-base-proxy.php';
+require __DIR__ . '/src/RemoteAPI/class-cached-proxy.php';
+require __DIR__ . '/src/RemoteAPI/class-related-proxy.php';
+require __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
+require __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
 
-add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_recommendations_proxy' );
+add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_proxies' );
 /**
- * Register the Recommendations API Proxy WP-API REST Endpoint
+ * Register REST Endpoints that act as a proxy to the Parse.ly API.
+ * This is needed to get around a CORS issues with Firefox.
+ *
+ * @since 3.2.0
  *
  * @return void
  */
-function rest_api_init_recommendations_proxy(): void {
-	$endpoint = new Recommendations_API_Proxy( $GLOBALS['parsely'] );
+function rest_api_init_proxies(): void {
+	$proxy        = new Related_Proxy( $GLOBALS['parsely'] );
+	$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
+	$endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $cached_proxy );
 	$endpoint->run();
 }
 

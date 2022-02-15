@@ -147,6 +147,22 @@ final class RestTest extends TestCase {
 	}
 
 	/**
+	 * Test that the get_rest_callback method doesn't crash when the post does not exist.
+	 *
+	 * @covers \Parsely\Rest::get_callback
+	 */
+	public function test_get_callback_with_non_existent_post(): void {
+		$meta_object = self::$rest->get_callback( array() );
+		$expected    = array(
+			'version'  => '1.0.0',
+			'meta'     => '',
+			'rendered' => '',
+		);
+
+		self::assertEquals( $expected, $meta_object );
+	}
+
+	/**
 	 * Test that the rendered meta function returns the meta HTML string with json ld.
 	 *
 	 * @covers \Parsely\Rest::get_rendered_meta
