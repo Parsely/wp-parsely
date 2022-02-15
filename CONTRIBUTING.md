@@ -116,12 +116,21 @@ JavaScript files that are included in the released plugin are built with the [wp
 
 By default, the plugin will use the production-built JavaScript and CSS assets in the `build/` folder. This is fine if you don't plan on modifying those files, but if you do, you can start a Node server that will compile your changes on the fly. Once your changes are complete, we ask you to rebuild the production-ready (compressed) ones. Here's the process of modifying and rebuilding the assets:
 
-1. Install the dependencies: `npm i`
-2. Start the build tool: `npm run start`
-3. Make and test your changes -- assets are rebuilt automatically
-4. When you have completed your changes, stop the `start` script and build the production assets by running `npm run build`
+1. Install the dependencies:
+  ```
+	npm i
+	```
+2. Start the build tool:
+  ```
+	npm run start
+	```
+3. Make and test your changes (assets are rebuilt automatically)
+4. When you have completed your changes, stop the `start` script and build the production assets:
+  ```
+	npm run build
+	```
 
-When submitting a PR which includes asset modifications, please make sure that it includes any applicable changes to:
+When submitting a PR which contains asset modifications, please make sure that it includes any applicable changes to:
 - Source files (in the `src` directory)
 - Build tooling (including an updated `package-lock.json` if you've altered dependencies)
 - Built files (in the `build` directory)
