@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
-use function Parsely\is_network_active;
 
 use const Parsely\PARSELY_FILE;
 
@@ -40,7 +39,7 @@ final class Plugins_Actions {
 	 * @return array
 	 */
 	public function add_plugin_meta_links( array $actions ): array {
-		if ( is_network_active() ) {
+		if ( is_multisite() && is_plugin_active_for_network( plugin_basename( PARSELY_FILE ) ) ) {
 			$actions['siteslist'] = sprintf(
 				'<a href="%s" target="_blank">%s</a>',
 				network_admin_url( 'sites.php' ),

@@ -173,12 +173,3 @@ function parsely_integrations(): Integrations {
 
 	return $parsely_integrations;
 }
-
-/**
- * Helper function to determine if this plugin is activated "network-wide" for a Multisite instance.
- *
- * @return boolean
- */
-function is_network_active(): bool {
-	return is_multisite() && is_plugin_active_for_network( plugin_basename( PARSELY_FILE ) );
-}
