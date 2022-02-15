@@ -186,38 +186,48 @@ First, you'll need to install the tests by running the install script (if you're
    ./bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
    ```
 
-Then, you can use Composer to run the tests from your terminal.
-
-You might have some issues related to requiring files while running the tests locally. You shouldn't `require` any files on your tests. If you have those issues, you can fix them by running:
+Then, you can use Composer to run the tests from your terminal. If you encounter any `require` (class not found) issues, you can fix them by running:
 
 ```
 composer dump-autoload
 ```
 
-To run the single-site tests:
+Here are some of the commands that you can use for running tests. You can find a full list of supported commands within [composer.js](composer.js) in the `scripts` and `scripts-descriptions` sections.
 
+##### Unit tests:
 ```
+# Run all single-site unit tests
 composer test
-```
 
-To run the multisite tests:
-
-```
+# Run all multisite unit tests
 composer test-ms
 ```
 
-To run with code coverage:
+##### Integration tests:
+```
+# Run all single-site integration tests
+composer testwp
 
+# You can use double dashes to add PHPUnit parameters
+# (this will only run the SettingsPage test):
+composer testwp -- --filter SettingsPageTest
+
+# Run all multisite integration tests
+composer testwp-ms
+```
+
+##### Code coverage:
 ```
 composer coverage
 ```
 
-To run JavaScript front-end tests:
-
+##### Javascript tests:
 ```
+# Run front-end tests
 npm run test
 ```
 
+##### End-to-end tests:
 To run end-to-end tests, [please refer to their separate instructions](tests/e2e/README.md).
 
 ### Releasing a new version
