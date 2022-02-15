@@ -180,22 +180,5 @@ function parsely_integrations(): Integrations {
  * @return boolean
  */
 function is_network_active(): bool {
-	return is_multisite() && is_plugin_active_for_network( _plugin_basename() );
-}
-
-/**
- * Get the relative path to the plugin entry file for use in e.g. specifying the plugin on the plugins list admin page.
- * This is a wrapper on plugin_basename which caches the calculated result to avoid repeating the underlying work.
- *
- * @return string The cached result of the plugin basename.
- */
-function _plugin_basename(): string {
-	static $basename;
-
-	if ( isset( $basename ) ) {
-		return $basename;
-	}
-
-	$basename = plugin_basename( PARSELY_FILE );
-	return $basename;
+	return is_multisite() && is_plugin_active_for_network( plugin_basename( PARSELY_FILE ) );
 }
