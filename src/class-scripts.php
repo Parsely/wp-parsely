@@ -123,7 +123,7 @@ class Scripts {
 		// If we don't have an API secret, there's no need to set the API key.
 		// Setting the API key triggers the UUID Profile Call function.
 		if ( isset( $parsely_options['api_secret'] ) && is_string( $parsely_options['api_secret'] ) && '' !== $parsely_options['api_secret'] ) {
-			$js_api_key = "window.wpParselyApiKey = '" . $this->parsely->get_api_key() . "';";
+			$js_api_key = "window.wpParselyApiKey = '" . esc_js( $this->parsely->get_api_key() ) . "';";
 			wp_add_inline_script( 'wp-parsely-loader', $js_api_key, 'before' );
 		}
 	}
