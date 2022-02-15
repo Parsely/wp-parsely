@@ -41,7 +41,7 @@ namespace Parsely\Tests\Integration {
 	WPIntegration\bootstrap_it();
 
 	if ( ! defined( 'WP_PLUGIN_DIR' ) || file_exists( WP_PLUGIN_DIR . '/wp-parsely/wp-parsely.php' ) === false ) {
-		echo "\nERROR: Please check whether the WP_PLUGIN_DIR environment variable is set and set to the correct value. The unit test suite won't be able to run without it.\n";
+		echo PHP_EOL . "ERROR: Please check whether the WP_PLUGIN_DIR environment variable is set and set to the correct value. The unit test suite won't be able to run without it." . PHP_EOL;
 		exit( 1 );
 	}
 
