@@ -199,28 +199,3 @@ function _plugin_basename(): string {
 	$basename = plugin_basename( PARSELY_FILE );
 	return $basename;
 }
-
-/**
- * When this plugin was activated, redirect to the most appropriate settings page.
- * If the plugin was activated network-wide for a multisite, the destination is the sites list.
- * Otherwise, this will redirect to the wp-parsely settings URL for the current site.
- *
- * @param string $plugin The "basename" of the activated plugin.
- * @param bool   $network_wide Was the plugin was network activated.
- * @return void
- */
-function redirect_to_settings_or_sites_list_on_activate( $plugin, $network_wide ) {
-	if (
-		_plugin_basename() !== $plugin ||
-		( defined( 'WP_CLI' ) && WP_CLI ) ||
-		( defined( 'REST_REQUEST' ) && REST_REQUEST ) ||
-		( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST )
-	) {
-		return;
-	}
-
-	$destination = $network_wide ? network_admin_url( 'sites.php' ) : Parsely::get_settings_url();
-	wp_safe_redirect( $destination );
-	exit;
-}
-add_action( 'activated_plugin', __NAMESPACE__ . '\\redirect_to_sites_list_on_network_activate', 10, 2 );
