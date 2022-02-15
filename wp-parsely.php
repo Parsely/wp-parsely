@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://www.parse.ly/help/integration/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code to your WordPress blog.
- * Version:           3.1.0
+ * Version:           3.1.1
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -26,10 +26,14 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\Endpoints\Related_API_Proxy;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
+use Parsely\RemoteAPI\Cached_Proxy;
+use Parsely\RemoteAPI\Related_Proxy;
+use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Plugins_Actions;
@@ -42,7 +46,7 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.1.0';
+const PARSELY_VERSION = '3.1.1';
 const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
@@ -93,29 +97,44 @@ function parsely_admin_init_register(): void {
 }
 
 require __DIR__ . '/src/UI/class-settings-page.php';
-
-add_action( '_admin_menu', __NAMESPACE__ . '\\parsely_admin_menu_register' );
-/**
- * Register the Parse.ly wp-admin settings page.
- *
- * @return void
- */
-function parsely_admin_menu_register(): void {
-	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
-	$settings_page->run();
-}
-
 require __DIR__ . '/src/UI/class-network-admin-sites-list.php';
 
-add_action( 'admin_init', __NAMESPACE__ . '\\admin_init_network_sites_list' );
+add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
- * Register the additions the Multisite Network Admin Sites List table.
+ * Register the additions the Parse.ly wp-admin settings page and Multisite Network Admin Sites List table.
  *
  * @return void
  */
-function admin_init_network_sites_list(): void {
+function parsely_wp_admin_early_register(): void {
+	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
+	$settings_page->run();
+
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
+}
+
+require __DIR__ . '/src/RemoteAPI/interface-cache.php';
+require __DIR__ . '/src/RemoteAPI/interface-proxy.php';
+require __DIR__ . '/src/RemoteAPI/class-base-proxy.php';
+require __DIR__ . '/src/RemoteAPI/class-cached-proxy.php';
+require __DIR__ . '/src/RemoteAPI/class-related-proxy.php';
+require __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
+require __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
+
+add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_proxies' );
+/**
+ * Register REST Endpoints that act as a proxy to the Parse.ly API.
+ * This is needed to get around a CORS issues with Firefox.
+ *
+ * @since 3.2.0
+ *
+ * @return void
+ */
+function rest_api_init_proxies(): void {
+	$proxy        = new Related_Proxy( $GLOBALS['parsely'] );
+	$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
+	$endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $cached_proxy );
+	$endpoint->run();
 }
 
 require __DIR__ . '/src/UI/class-recommended-widget.php';
@@ -148,7 +167,7 @@ function parsely_integrations(): Integrations {
 	$parsely_integrations = new Integrations();
 	$parsely_integrations->register( 'amp', Amp::class );
 	$parsely_integrations->register( 'fbia', Facebook_Instant_Articles::class );
-	$parsely_integrations->register( 'webstories', new Google_Web_Stories( $GLOBALS['parsely'] ) );
+	$parsely_integrations->register( 'webstories', Google_Web_Stories::class );
 	$parsely_integrations = apply_filters( 'wp_parsely_add_integration', $parsely_integrations );
 	$parsely_integrations->integrate();
 

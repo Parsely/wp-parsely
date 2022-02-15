@@ -42,90 +42,114 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Check that default tracking values get saved.
+	 * Verify that tracking settings get saved.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_options
 	 * @group ui
 	 */
-	public function test_validate_unique_tracking_values_succeeds(): void {
-		// Initializations.
+	public function test_save_tracking_settings(): void {
+		$options = self::$parsely->get_options();
+
+		$options['track_post_types_as'] = array(
+			'post'       => 'post',
+			'page'       => 'page',
+			'attachment' => 'post',
+		);
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( array( 'post', 'attachment' ), $actual['track_post_types'] );
+		self::assertSame( array( 'page' ), $actual['track_page_types'] );
+	}
+
+	/**
+	 * Verify that non-existent post types cannot be saved into the database for tracking.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_options
+	 * @group ui
+	 */
+	public function test_saving_tracking_settings_for_non_existent_post_type_should_fail(): void {
 		$expected = self::$parsely->get_options();
 		$options  = self::$parsely->get_options();
 
-		// Default tracking values.
-		$options['track_post_types'] = array( 'post' );
-		$options['track_page_types'] = array( 'page' );
+		// Inject non-existent post type.
+		$options['track_post_types_as'] = array(
+			'page'                   => 'page',
+			'post'                   => 'post',
+			'non_existent_post_type' => 'post',
+		);
 
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );
 	}
 
 	/**
-	 * Check that validate_options() method will not allow duplicate tracking
-	 * in post types array.
+	 * Verify that trying to save tracking settings with an unset value fails.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_options
 	 * @group ui
 	 */
-	public function test_validate_duplicate_tracking_in_post_types(): void {
-		// Initializations.
-		$expected = self::$parsely->get_options();
+	public function test_trying_to_save_unset_tracking_settings_should_fail(): void {
 		$options  = self::$parsely->get_options();
+		$expected = array(
+			'setting' => 'parsely',
+			'code'    => 'track_post_types_as',
+			'message' => 'Settings could not be saved because post tracking data is invalid.',
+			'type'    => 'error',
+		);
 
-		// Duplicate selection in Post Types.
-		$options['track_post_types'] = array( 'post', 'page' );
-		$options['track_page_types'] = array( 'page' );
-
-		$actual = self::$settings_page->validate_options( $options );
-		self::assertSame( $expected, $actual );
+		unset( $options['track_post_types_as'] );
+		self::$settings_page->validate_options( $options );
+		self::assertTrue( in_array( $expected, get_settings_errors(), true ) );
 	}
 
 	/**
-	 * Check that validate_options() method will not allow duplicate tracking
-	 * in page types array.
+	 * Verify that trying to save tracking settings with an empty array value fails.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_options
 	 * @group ui
 	 */
-	public function test_validate_duplicate_tracking_in_page_types(): void {
-		// Initializations.
-		$expected = self::$parsely->get_options();
+	public function test_trying_to_save_empty_array_tracking_settings_should_fail(): void {
 		$options  = self::$parsely->get_options();
+		$expected = array(
+			'setting' => 'parsely',
+			'code'    => 'track_post_types_as',
+			'message' => 'Settings could not be saved because post tracking data is invalid.',
+			'type'    => 'error',
+		);
 
-		// Duplicate selection in Page Types.
-		$options['track_post_types'] = array( 'post' );
-		$options['track_page_types'] = array( 'post', 'page' );
-
-		$actual = self::$settings_page->validate_options( $options );
-		self::assertSame( $expected, $actual );
+		$options['track_post_types_as'] = array();
+		self::$settings_page->validate_options( $options );
+		self::assertTrue( in_array( $expected, get_settings_errors(), true ) );
 	}
 
 	/**
-	 * Check that validate_options() method will not allow duplicate tracking
-	 * when the array order is different than the default.
+	 * Verify that trying to save tracking settings with an non-array value fails.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_options
 	 * @group ui
 	 */
-	public function test_validate_duplicate_tracking_with_unexpected_array_order(): void {
-		// Initializations.
-		$expected = self::$parsely->get_options();
+	public function test_trying_to_save_non_array_tracking_settings_should_fail(): void {
 		$options  = self::$parsely->get_options();
+		$expected = array(
+			'setting' => 'parsely',
+			'code'    => 'track_post_types_as',
+			'message' => 'Settings could not be saved because post tracking data is invalid.',
+			'type'    => 'error',
+		);
 
-		// Duplicate selection in Page Types (different order of array items).
-		$options['track_post_types'] = array( 'post' );
-		$options['track_page_types'] = array( 'page', 'post' );
-
-		$actual = self::$settings_page->validate_options( $options );
-		self::assertSame( $expected, $actual );
+		$options['track_post_types_as'] = 'string';
+		self::$settings_page->validate_options( $options );
+		self::assertTrue( in_array( $expected, get_settings_errors(), true ) );
 	}
 
 	/**

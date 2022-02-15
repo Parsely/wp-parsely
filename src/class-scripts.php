@@ -41,9 +41,12 @@ class Scripts {
 	 * @return void
 	 */
 	public function run(): void {
-		add_action( 'init', array( $this, 'register_scripts' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_api' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_tracker' ) );
+		$parsely_options = $this->parsely->get_options();
+		if ( $this->parsely->api_key_is_set() && true !== $parsely_options['disable_javascript'] ) {
+			add_action( 'init', array( $this, 'register_scripts' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_api' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_tracker' ) );
+		}
 	}
 
 	/**
@@ -55,20 +58,14 @@ class Scripts {
 	 * @return void
 	 */
 	public function register_scripts(): void {
-		$parsely_options = $this->parsely->get_options();
-
-		if ( $this->parsely->api_key_is_missing() ) {
-			return;
-		}
-
-		$tracker_url = 'https://cdn.parsely.com/keys/' . $parsely_options['apikey'] . '/p.js';
+		$tracker_url = 'https://cdn.parsely.com/keys/' . $this->parsely->get_api_key() . '/p.js';
 		$tracker_url = esc_url( $tracker_url );
 
 		wp_register_script(
 			'wp-parsely-tracker',
 			$tracker_url,
 			array(),
-			Parsely::get_asset_cache_buster(),
+			PARSELY_VERSION,
 			true
 		);
 
@@ -77,7 +74,7 @@ class Scripts {
 			'wp-parsely-api',
 			plugin_dir_url( PARSELY_FILE ) . 'build/init-api.js',
 			$api_script_asset['dependencies'],
-			Parsely::get_asset_cache_buster(),
+			$api_script_asset['version'],
 			true
 		);
 
@@ -85,7 +82,7 @@ class Scripts {
 			'wp-parsely-api',
 			'wpParsely', // This globally-scoped object holds variables used to interact with the API.
 			array(
-				'apikey' => $parsely_options['apikey'],
+				'apikey' => $this->parsely->get_api_key(),
 			)
 		);
 	}
@@ -100,9 +97,6 @@ class Scripts {
 	 */
 	public function enqueue_js_tracker(): void {
 		$parsely_options = $this->parsely->get_options();
-		if ( $this->parsely->api_key_is_missing() || $parsely_options['disable_javascript'] ) {
-			return;
-		}
 
 		global $post;
 		$display = true;
@@ -129,7 +123,7 @@ class Scripts {
 			return;
 		}
 
-		if ( ! has_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ) ) ) {
+		if ( false === has_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ) ) ) {
 			add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
 		}
 
@@ -152,7 +146,7 @@ class Scripts {
 			return;
 		}
 
-		if ( ! has_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ) ) ) {
+		if ( false === has_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ) ) ) {
 			add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
 		}
 
@@ -195,7 +189,7 @@ class Scripts {
 			}
 		}
 
-		if ( 'wp-parsely-tracker' === $handle ) {
+		if ( null !== $tag && 'wp-parsely-tracker' === $handle ) {
 			$tag = preg_replace( '/ id=(["\'])wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
 			$tag = preg_replace(
 				'/ src=/',
@@ -203,6 +197,7 @@ class Scripts {
 				$tag
 			);
 		}
-		return $tag;
+
+		return $tag ?? '';
 	}
 }
