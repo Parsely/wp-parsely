@@ -33,7 +33,7 @@ jobs:
       # - coverage: Whether to run the tests with code coverage.
       # - experimental: Whether the build is "allowed to fail".
       matrix:
-        os: [ubuntu-20.04, windows-2022]
+        os: ['ubuntu-20.04', 'windows-2022']
         php: ['7.1', '7.2', '7.3', '7.4']
         coverage: [none]
         experimental: [false]
@@ -51,7 +51,9 @@ jobs:
           #  coverage: none
           #  experimental: true
       fail-fast: false
+
     continue-on-error: ${{ matrix.experimental }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
