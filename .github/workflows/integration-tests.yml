@@ -43,7 +43,7 @@ jobs:
             extensions: pcov
             ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
             experimental: false
-           - php: '8.2'
+          - php: '8.2'
             coverage: none
             experimental: true
       fail-fast: false
