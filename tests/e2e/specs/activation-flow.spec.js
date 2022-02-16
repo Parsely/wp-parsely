@@ -22,6 +22,7 @@ describe( 'Activation flow', () => {
 	beforeEach( async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
+		await page.waitForTimeout( 200 );
 	} );
 
 	it( 'Should progress as intended', async () => {
