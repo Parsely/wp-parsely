@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   test:
-    name: WordPress Integration tests
+    name: Integration
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -34,6 +34,13 @@ jobs:
         php: ['7.1', '7.2', '7.3', '7.4', '8.1']
         coverage: [none]
         experimental: [false]
+        include:
+          - php: '8.0'
+            os: ubuntu-20.04
+            coverage: pcov
+            extensions: pcov
+            ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
+            experimental: false
       fail-fast: false
 
     env:
