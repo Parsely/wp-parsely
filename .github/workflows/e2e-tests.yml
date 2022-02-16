@@ -43,4 +43,4 @@ jobs:
 
       - name: Cleanup
         run: |
-          npm run wp-env -- destroy
+          npm run dev:stop
