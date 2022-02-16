@@ -39,6 +39,7 @@ describe( 'Browse for logo button', () => {
 	beforeAll( async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
+		await waitForWpAdmin();
 	} );
 
 	/**

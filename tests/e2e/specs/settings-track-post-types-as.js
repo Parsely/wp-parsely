@@ -39,6 +39,7 @@ describe( 'Track Post Types as', () => {
 		await activatePlugin( 'wp-parsely' );
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await waitForWpAdmin();
+
 		await selectScreenOptions( { recrawl: true, advanced: false } );
 	} );
 

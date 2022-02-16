@@ -19,10 +19,10 @@ import {
 } from '../utils';
 
 describe( 'Activation flow', () => {
-	beforeEach( async () => {
+	beforeAll( async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
-		await page.waitForTimeout( 200 );
+		await waitForWpAdmin();
 	} );
 
 	it( 'Should progress as intended', async () => {

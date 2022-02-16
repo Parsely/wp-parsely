@@ -11,7 +11,7 @@ import * as fs from 'fs';
 /**
  * Internal dependencies
  */
-import { changeKeysState, PLUGIN_VERSION } from '../utils';
+import { changeKeysState, PLUGIN_VERSION, waitForWpAdmin } from '../utils';
 
 const getAssetVersion = () => {
 	const data = fs.readFileSync( 'build/loader.asset.php', { encoding: 'utf8', flag: 'r' } );
@@ -22,9 +22,13 @@ const getAssetVersion = () => {
 };
 
 describe( 'Front end code insertion', () => {
-	it( 'Should inject loading script homepage', async () => {
+	beforeAll( async () => {
 		await loginUser();
 		await activatePlugin( 'wp-parsely' );
+		await waitForWpAdmin();
+	} );
+
+	it( 'Should inject loading script homepage', async () => {
 		await changeKeysState( true, false );
 
 		await page.goto( createURL( '/' ) );
@@ -39,8 +43,6 @@ describe( 'Front end code insertion', () => {
 	} );
 
 	it( 'Should inject loading script homepage and extra variable', async () => {
-		await loginUser();
-		await activatePlugin( 'wp-parsely' );
 		await changeKeysState( true, true );
 
 		await page.goto( createURL( '/' ) );

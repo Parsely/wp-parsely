@@ -49,19 +49,18 @@ const getNonActiveWidgetText = async () => {
 };
 
 describe( 'Recommended widget', () => {
-	beforeAll( () => {
+	beforeAll( async () => {
 		page.on( 'dialog', async function( dialog ) {
 			await dialog.accept();
 		} );
-	} );
 
-	beforeEach( async () => {
 		await loginUser();
 		await activateTheme( 'twentytwentyone' );
 		await activatePlugin( 'wp-parsely' );
+		await waitForWpAdmin();
 	} );
 
-	afterEach( async () => {
+	afterAll( async () => {
 		await activateTheme( 'twentytwentytwo' );
 	} );
 
