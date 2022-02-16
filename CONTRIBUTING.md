@@ -227,7 +227,7 @@ composer testwp-ms
 composer coverage
 ```
 
-##### Javascript tests:
+##### JavaScript tests:
 ```
 # Run front-end tests
 npm run test
