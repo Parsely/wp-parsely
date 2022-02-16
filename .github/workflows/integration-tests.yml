@@ -45,6 +45,7 @@ jobs:
 
     env:
       WP_VERSION: latest
+      WP_TESTS_DIR: 'C:/test-path/wordpress-tests-lib/'
 
     continue-on-error: ${{ matrix.experimental }}
 

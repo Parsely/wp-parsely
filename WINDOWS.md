@@ -1,8 +1,6 @@
 # Developing on Windows
 
-**Disclaimer:** We don't officially support or recommend development on Windows, as some of our tooling may not run well out of the box or may not support Windows in the future.
-
-Having said that, this document describes some workarounds that (as of the time of this writing) result in a fully functional development environment under Windows.
+This document describes some workarounds that (as of the time of this writing) result in a fully functional development environment under Windows.
 
 ## Making integration tests work
 
