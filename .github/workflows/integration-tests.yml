@@ -66,11 +66,9 @@ jobs:
         uses: ramsey/composer-install@v2
 
       - name: Start MySQL Service
-        run: sudo systemctl start mysql.service
-
-      - name: Setting mysql_native_password for PHP <= 7.3
-        if: ${{ matrix.php <= 7.3 }}
-        run: mysql -u root -proot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
+        uses: ankane/setup-mysql@v1
+        with:
+          mysql-version: 8.0
 
       - name: Prepare environment for integration tests
         run: composer prepare-ci --no-interaction
