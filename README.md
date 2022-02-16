@@ -162,6 +162,19 @@ function filter_parsely_metadata( $parsely_metadata, $post, $parsely_options ) {
 
 This filter can go anywhere in your codebase, provided it always gets loaded.
 
+### How can I access the JavaScript hooks on the Parse.ly object?
+
+For some advanced integrations, you need to hook custom JavaScript code to some events on the `window.PARSELY` object. To do so, our plugin supports WordPress JavaScript hooks. For example:
+
+~~~php
+$script = '
+window.wpParselyHooks.addAction("wpParselyOnLoad", "wpParsely", testFunc, 10);
+function testFunc() {
+	console.log("This is a hook");
+}';
+wp_add_inline_script( 'wp-parsely-loader', $script );
+~~~
+
 ### Is the plugin compatible with AMP and Facebook Instant Articles?
 
 It is! The plugin hooks into Automattic's official plugins for [AMP](https://wordpress.org/plugins/amp/) and [Facebook Instant Articles](https://wordpress.org/plugins/fb-instant-articles/).
