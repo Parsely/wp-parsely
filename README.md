@@ -5,7 +5,7 @@ Requires at least: 5.0
 Tested up to: 5.9  
 Requires PHP: 7.1  
 License: GPLv2 or later  
-Tags: analytics, parse.ly, parsely, parsley  
+Tags: analytics, parsely, parsley, parse.ly  
 Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauargelaguet, acicovic
 
 The Parse.ly plugin facilitates real-time and historical analytics to your content through a platform designed and built for digital publishing.
