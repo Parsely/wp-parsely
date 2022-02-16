@@ -56,10 +56,8 @@ The plugin adds a `parsely` field to certain REST API responses. This can be dis
 
 Example:
 
-```
-// Disable all REST API output from the Parse.ly plugin.
-add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
-```
+	// Disable all REST API output from the Parse.ly plugin.
+	add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
 
 The plugin adds the `parsely` field to endpoints corresponding to the Tracked Post Types and Tracked Page Types selected in the plugin settings. By default, this would be the `/wp-json/wp/v2/pages` and `/wp-json/wp/v2/posts` endpoints along with the corresponding single resource endpoints.
 
@@ -67,17 +65,15 @@ This choice of objects types can be further changed by using the `wp_parsely_res
 
 Example:
 
-```
-// Disable REST API output from pages, but enable for term archives.
-add_filter(
-	'wp_parsely_rest_object_types',
-	function( $object_types ) {
-		$object_types = array_diff( $object_types, array( 'page' ) );
-		$object_types[] = 'term';
-		return $object_types;
-	}
-);
-```
+	// Disable REST API output from pages, but enable for term archives.
+	add_filter(
+		'wp_parsely_rest_object_types',
+		function( $object_types ) {
+			$object_types = array_diff( $object_types, array( 'page' ) );
+			$object_types[] = 'term';
+			return $object_types;
+		}
+	);
 
 The `parsely` field contains the following fields:
  - `version`, which is a string identifying the version of the REST API output; this will be updated if changes are made to the output, so consuming applications can check against it.
@@ -90,10 +86,8 @@ This can be disabled by returning `false` from the `wp_parsely_enable_rest_rende
 
 Example:
 
-```
-// Disable rendered field output from the REST API output.
-add_filter( 'wp_parsely_enable_rest_rendered_support', '__return_false' );
-```
+	// Disable rendered field output from the REST API output.
+	add_filter( 'wp_parsely_enable_rest_rendered_support', '__return_false' );
 
 ## Frequently Asked Questions
 
@@ -111,11 +105,11 @@ You may also be not tracking logged-in users, via one of the settings.
 
 You can use the `wp_parsely_metadata` filter, which sends three arguments: the array of metadata, the post object, and the `parsely_options` array:
 
-    add_filter( 'wp_parsely_metadata', 'filter_parsely_metadata', 10, 3 );
-    function filter_parsely_metadata( $parsely_metadata, $post, $parsely_options ) {
-        $parsely_metadata['articleSection'] = '...'; // Whatever values you want Parse.ly's Section to be.
-        return $parsely_metadata;
-    }
+	add_filter( 'wp_parsely_metadata', 'filter_parsely_metadata', 10, 3 );
+	function filter_parsely_metadata( $parsely_metadata, $post, $parsely_options ) {
+	    $parsely_metadata['articleSection'] = '...'; // Whatever values you want Parse.ly's Section to be.
+	    return $parsely_metadata;
+	}
 
 This filter can go anywhere in your codebase, provided it always gets loaded.
 
@@ -141,9 +135,7 @@ If the site is running behind a Cloudflare DNS, their Rocket Loader technology w
 
 Previous versions of this plugin would mark all scripts with that tag by default. Starting in version 3.0, that behavior has become optional and scripts won't be annotated with `data-cfasync="false"`. The previous behavior can be restored by adding the following filter:
 
-```
-add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
-```
+	add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 
 ## Screenshots
 
@@ -162,19 +154,19 @@ add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
 
 The standard Parse.ly JavaScript tracker inserted before the closing `body` tag:
 
-    <script id="parsely-cfg" data-parsely-site="example.com" src="https://cdn.parsely.com/keys/example.com/p.js"></script>
+	<script id="parsely-cfg" data-parsely-site="example.com" src="https://cdn.parsely.com/keys/example.com/p.js"></script>
 
 A sample `JSON-LD` structured data for a home page or section page:
 
-    <script type="application/ld+json">
-    {"@context":"http:\/\/schema.org","@type":"WebPage","headline":"WordPress VIP","url":"http:\/\/wpvip.com\/"}
-    </script>
+	<script type="application/ld+json">
+	{"@context":"http:\/\/schema.org","@type":"WebPage","headline":"WordPress VIP","url":"http:\/\/wpvip.com\/"}
+	</script>
 
 A sample `JSON-LD` meta tag and structured data for an article or post:
 
-    <script type="application/ld+json">
-    {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
-    </script>
+	<script type="application/ld+json">
+	{"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
+	</script>
 
 ## Changelog
 
