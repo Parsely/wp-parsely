@@ -123,14 +123,14 @@ This filter can go anywhere in your codebase, provided it always gets loaded.
 
 For some advanced integrations, you need to hook custom JavaScript code to some events on the `window.PARSELY` object. To do so, our plugin supports WordPress JavaScript hooks. For example:
 
-```
+~~~php
 $script = '
 window.wpParselyHooks.addAction("wpParselyOnLoad", "wpParsely", testFunc, 10);
 function testFunc() {
 	console.log("This is a hook");
 }';
 wp_add_inline_script( 'wp-parsely-loader', $script );
-```
+~~~
 
 ### Is the plugin compatible with AMP and Facebook Instant Articles?
 
