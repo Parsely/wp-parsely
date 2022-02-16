@@ -2,16 +2,12 @@
  * External dependencies
  */
 import * as path from 'path';
-import {
-	activatePlugin,
-	loginUser,
-	visitAdminPage,
-} from '@wordpress/e2e-test-utils';
+import { visitAdminPage } from '@wordpress/e2e-test-utils';
 
 /**
  * Internal dependencies
  */
-import { waitForWpAdmin } from '../utils';
+import { startUpTest, waitForWpAdmin } from '../utils';
 
 // General initializations.
 const imageLocalPath = path.resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
@@ -33,13 +29,7 @@ const modalDeleteAttachmentLink = `${ modalEditAttachment } button.delete-attach
  * Browse button tests
  */
 describe( 'Browse for logo button', () => {
-	/**
-	 * Login and activate the Parse.ly plugin.
-	 */
-	beforeAll( async () => {
-		await loginUser();
-		await activatePlugin( 'wp-parsely' );
-	} );
+	beforeAll( startUpTest );
 
 	/**
 	 * Remove the uploaded image.
