@@ -46,12 +46,15 @@ describe( 'Track Post Types as', () => {
 	 * Set default values and save.
 	 */
 	afterAll( async () => {
+		await selectScreenOptions( { recrawl: true, advanced: false } );
+		await waitForWpAdmin();
+
 		await page.click( radioPostAsPost );
 		await page.click( radioPageAsPage );
 		await page.click( radioAttachmentAsNone );
 
 		await page.click( '#submit' );
-		await page.waitForSelector( radioAttachmentAsNone );
+		await waitForWpAdmin();
 	} );
 
 	/**
