@@ -17,11 +17,7 @@ concurrency:
 jobs:
   test:
     name: e2e against WordPress latest
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ macos-latest, ubuntu-20.04 ]
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout code
