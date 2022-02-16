@@ -1,17 +1,13 @@
 /**
  * External dependencies
  */
-import {
-	activatePlugin,
-	createURL,
-	loginUser,
-} from '@wordpress/e2e-test-utils';
+import { createURL } from '@wordpress/e2e-test-utils';
 import * as fs from 'fs';
 
 /**
  * Internal dependencies
  */
-import { changeKeysState, PLUGIN_VERSION, waitForWpAdmin } from '../utils';
+import { changeKeysState, PLUGIN_VERSION, startUpTest } from '../utils';
 
 const getAssetVersion = () => {
 	const data = fs.readFileSync( 'build/loader.asset.php', { encoding: 'utf8', flag: 'r' } );
@@ -22,11 +18,7 @@ const getAssetVersion = () => {
 };
 
 describe( 'Front end code insertion', () => {
-	beforeAll( async () => {
-		await loginUser();
-		await activatePlugin( 'wp-parsely' );
-		await waitForWpAdmin();
-	} );
+	beforeAll( startUpTest );
 
 	it( 'Should inject loading script homepage', async () => {
 		await changeKeysState( true, false );

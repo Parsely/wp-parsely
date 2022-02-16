@@ -1,18 +1,13 @@
 /**
  * External dependencies
  */
-import {
-	activateTheme,
-	activatePlugin,
-	loginUser,
-	visitAdminPage,
-} from '@wordpress/e2e-test-utils';
+import { activateTheme, visitAdminPage } from '@wordpress/e2e-test-utils';
 
 /**
  * Internal dependencies
  */
 import {
-	changeKeysState,
+	changeKeysState, startUpTest,
 	waitForWpAdmin,
 } from '../utils';
 
@@ -54,10 +49,8 @@ describe( 'Recommended widget', () => {
 			await dialog.accept();
 		} );
 
-		await loginUser();
+		await startUpTest();
 		await activateTheme( 'twentytwentyone' );
-		await activatePlugin( 'wp-parsely' );
-		await waitForWpAdmin();
 	} );
 
 	afterAll( async () => {
