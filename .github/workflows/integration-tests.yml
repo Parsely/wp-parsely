@@ -16,8 +16,16 @@ concurrency:
 
 jobs:
   test:
-    name: OS ${{ matrix.os }} PHP ${{ matrix.php }}
+    name: WordPress Integration tests
     runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, windows-2022]
+        php: ['7.1', '7.2', '7.3', '7.4']
+        coverage: [none]
+        experimental: [false]
+      fail-fast: false
 
     env:
       WP_VERSION: latest

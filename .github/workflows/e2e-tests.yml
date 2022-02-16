@@ -17,12 +17,11 @@ concurrency:
 jobs:
   test:
     name: e2e against WordPress latest
-
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
-        os: [ windows-2022, ubuntu-20.04 ]
-        node: [ 14, 16 ]
+        os: [ macos-latest, ubuntu-20.04 ]
 
     steps:
       - name: Checkout code
@@ -31,7 +30,7 @@ jobs:
       - name: Use desired version of NodeJS
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
           cache: npm
 
       - name: Npm install
