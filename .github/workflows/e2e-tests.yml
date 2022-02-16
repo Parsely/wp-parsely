@@ -33,7 +33,7 @@ jobs:
         run: |
           npm ci
 
-      - name: Install WordPress
+      - name: Start up WordPress environment
         run: |
           npm run dev:start
 
@@ -41,6 +41,6 @@ jobs:
         run: |
           npm run test:e2e
 
-      - name: Cleanup
+      - name: Stop WordPress environment
         run: |
           npm run dev:stop
