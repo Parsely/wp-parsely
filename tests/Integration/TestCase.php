@@ -196,6 +196,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 	/**
 	 * Normalize a string by removing the passed substrings.
 	 *
+	 * @since 3.2.0
+	 *
 	 * @param string        $string The string to be normalized.
 	 * @param array<string> $remove The substrings to remove.
 	 * @return string The normalized string.
