@@ -7,7 +7,8 @@ import { activateTheme, visitAdminPage } from '@wordpress/e2e-test-utils';
  * Internal dependencies
  */
 import {
-	changeKeysState, startUpTest,
+	changeKeysState,
+	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
 

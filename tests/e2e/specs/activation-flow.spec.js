@@ -11,7 +11,8 @@ import {
 	checkH2DoesNotExist,
 	deactivatePluginApiKey,
 	waitForWpAdmin,
-	selectScreenOptions, startUpTest,
+	selectScreenOptions,
+	startUpTest,
 } from '../utils';
 
 describe( 'Activation flow', () => {
