@@ -1125,20 +1125,12 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			}
 
 			// Cleanup and sanitized values assignment.
-			unset( $input[ $track_as ] );
 			$input [ $posts ] = self::sanitize_option_array( $temp_posts );
 			$input [ $pages ] = self::sanitize_option_array( $temp_pages );
-		} else {
-			add_settings_error(
-				Parsely::OPTIONS_KEY,
-				$track_as,
-				sprintf(
-					__(
-						'Settings could not be saved because post tracking data is invalid.',
-						'wp-parsely'
-					)
-				)
-			);
+		}
+
+		if ( isset( $input[ $track_as ] ) ) {
+			unset( $input[ $track_as ] );
 		}
 	}
 

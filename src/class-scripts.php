@@ -44,7 +44,6 @@ class Scripts {
 		$parsely_options = $this->parsely->get_options();
 		if ( $this->parsely->api_key_is_set() && true !== $parsely_options['disable_javascript'] ) {
 			add_action( 'init', array( $this, 'register_scripts' ) );
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_api' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_tracker' ) );
 		}
 	}
@@ -60,7 +59,6 @@ class Scripts {
 	public function register_scripts(): void {
 		$tracker_url = 'https://cdn.parsely.com/keys/' . $this->parsely->get_api_key() . '/p.js';
 		$tracker_url = esc_url( $tracker_url );
-
 		wp_register_script(
 			'wp-parsely-tracker',
 			$tracker_url,
@@ -69,21 +67,13 @@ class Scripts {
 			true
 		);
 
-		$api_script_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/init-api.asset.php';
+		$loader_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/loader.asset.php';
 		wp_register_script(
-			'wp-parsely-api',
-			plugin_dir_url( PARSELY_FILE ) . 'build/init-api.js',
-			$api_script_asset['dependencies'],
-			$api_script_asset['version'],
+			'wp-parsely-loader',
+			plugin_dir_url( PARSELY_FILE ) . 'build/loader.js',
+			$loader_asset['dependencies'],
+			$loader_asset['version'],
 			true
-		);
-
-		wp_localize_script(
-			'wp-parsely-api',
-			'wpParsely', // This globally-scoped object holds variables used to interact with the API.
-			array(
-				'apikey' => $this->parsely->get_api_key(),
-			)
 		);
 	}
 
@@ -127,30 +117,15 @@ class Scripts {
 			add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
 		}
 
+		wp_enqueue_script( 'wp-parsely-loader' );
 		wp_enqueue_script( 'wp-parsely-tracker' );
-	}
 
-	/**
-	 * Load JavaScript for Parse.ly API.
-	 *
-	 * @since 2.5.0
-	 * @since 3.0.0 Rename from load_js_api
-	 *
-	 * @return void
-	 */
-	public function enqueue_js_api(): void {
-		$parsely_options = $this->parsely->get_options();
-
-		// If we don't have an API secret, there's no need to proceed.
-		if ( empty( $parsely_options['api_secret'] ) ) {
-			return;
+		// If we don't have an API secret, there's no need to set the API key.
+		// Setting the API key triggers the UUID Profile Call function.
+		if ( isset( $parsely_options['api_secret'] ) && is_string( $parsely_options['api_secret'] ) && '' !== $parsely_options['api_secret'] ) {
+			$js_api_key = "window.wpParselyApiKey = '" . esc_js( $this->parsely->get_api_key() ) . "';";
+			wp_add_inline_script( 'wp-parsely-loader', $js_api_key, 'before' );
 		}
-
-		if ( false === has_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ) ) ) {
-			add_filter( 'script_loader_tag', array( $this, 'script_loader_tag' ), 10, 3 );
-		}
-
-		wp_enqueue_script( 'wp-parsely-api' );
 	}
 
 	/**
@@ -168,7 +143,7 @@ class Scripts {
 		if ( in_array(
 			$handle,
 			array(
-				'wp-parsely-api',
+				'wp-parsely-loader',
 				'wp-parsely-tracker',
 				'wp-parsely-recommended-widget',
 			),

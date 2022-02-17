@@ -95,17 +95,12 @@ final class SettingsPageTest extends TestCase {
 	 * @group ui
 	 */
 	public function test_trying_to_save_unset_tracking_settings_should_fail(): void {
+		$expected = self::$parsely->get_options();
 		$options  = self::$parsely->get_options();
-		$expected = array(
-			'setting' => 'parsely',
-			'code'    => 'track_post_types_as',
-			'message' => 'Settings could not be saved because post tracking data is invalid.',
-			'type'    => 'error',
-		);
 
 		unset( $options['track_post_types_as'] );
-		self::$settings_page->validate_options( $options );
-		self::assertTrue( in_array( $expected, get_settings_errors(), true ) );
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
 	}
 
 	/**
@@ -117,17 +112,12 @@ final class SettingsPageTest extends TestCase {
 	 * @group ui
 	 */
 	public function test_trying_to_save_empty_array_tracking_settings_should_fail(): void {
+		$expected = self::$parsely->get_options();
 		$options  = self::$parsely->get_options();
-		$expected = array(
-			'setting' => 'parsely',
-			'code'    => 'track_post_types_as',
-			'message' => 'Settings could not be saved because post tracking data is invalid.',
-			'type'    => 'error',
-		);
 
 		$options['track_post_types_as'] = array();
-		self::$settings_page->validate_options( $options );
-		self::assertTrue( in_array( $expected, get_settings_errors(), true ) );
+		$actual                         = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
 	}
 
 	/**
@@ -139,17 +129,12 @@ final class SettingsPageTest extends TestCase {
 	 * @group ui
 	 */
 	public function test_trying_to_save_non_array_tracking_settings_should_fail(): void {
+		$expected = self::$parsely->get_options();
 		$options  = self::$parsely->get_options();
-		$expected = array(
-			'setting' => 'parsely',
-			'code'    => 'track_post_types_as',
-			'message' => 'Settings could not be saved because post tracking data is invalid.',
-			'type'    => 'error',
-		);
 
 		$options['track_post_types_as'] = 'string';
-		self::$settings_page->validate_options( $options );
-		self::assertTrue( in_array( $expected, get_settings_errors(), true ) );
+		$actual                         = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
 	}
 
 	/**
