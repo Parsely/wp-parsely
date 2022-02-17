@@ -31,20 +31,27 @@ For this section, we will assume that:
 
 1. Create the database `wp_tests` using your preferred tool.
 2. In `bin\install-wp-tests.sh`, change the `TMPDIR` variable to the desired path. Note that a traditional Windows path won't work. Here's an example with our path:
-   
-   ```
-   TMPDIR="/C/my-custom-path/wp-tests/"
-   ```
-   
-   **Warning:** If you don't do this, the files will be downloaded in the Windows TEMP directory, meaning they could get deleted soon.
+
+	```
+	TMPDIR="/C/my-custom-path/wp-tests/"
+	```
+
+	**Warning:** If you don't do this, the files will be downloaded in the Windows TEMP directory, meaning they could get deleted soon.
 3. Open the plugin's directory in Git Bash (or any other environment that can run `.sh` files) and issue this command to download all the WP Test Suite files:
-   
-   ```
-   ./bin/install-wp-tests.sh "wp_tests" "root" "" "localhost" "trunk" "true"
-   ```
+
+	```
+	./bin/install-wp-tests.sh "wp_tests" "root" "" "localhost" "trunk" "true"
+	```
+
 4. Open the `C:\my-custom-path\wp-tests\wordpress-tests-lib\wp-tests-config.php` file, and update the `ABSPATH` constant (should be on line 3) so it can be understood by PHP on Windows. For our case, `C:/my-custom-path/wp-tests/wordpress/` should work.
 5. Add a new Environment Variable called `WP_TESTS_DIR` with the value of the WP Tests Suite path, appending `wordpress-tests-lib\` (in our case `C:\my-custom-path\wp-tests\wordpress-tests-lib\`). Note that any existing terminal windows won't be aware of the new variable, so it is recommended to close them.
-6. In a new terminal, you should be able to execute the integration tests by running `composer testwp`.
+6. In a new terminal, you should be able to execute the integration tests by running:
+
+	```
+	composer testwp
+	```
+
+	**Note:** If you're issuing the command from PowerShell and it fails, please try another environment as PowerShell had some issues during our testing.
 7. You might want to revert your change in `install-wp-tests.sh` so you don't commit it accidentally.
 
 ## Fixing composer issues when committing
