@@ -54,7 +54,7 @@ final class DashboardLinkTest extends TestCase {
 	 * @since 2.6.0
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
 	 *
-	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
+	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::get_options
@@ -75,7 +75,7 @@ final class DashboardLinkTest extends TestCase {
 	 * @since 2.6.0
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
 	 *
-	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
+	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::get_options
@@ -97,7 +97,7 @@ final class DashboardLinkTest extends TestCase {
 	 * @since 2.6.0
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
 	 *
-	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
+	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::get_options
@@ -119,7 +119,7 @@ final class DashboardLinkTest extends TestCase {
 	 * @since 2.6.0
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
 	 *
-	 * @covers \Parsely\UI\Row_Actions::cannot_show_parsely_link
+	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::get_options
