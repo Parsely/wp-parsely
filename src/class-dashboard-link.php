@@ -47,7 +47,7 @@ class Dashboard_Link {
 	 * Determine whether Parse.ly dashboard link should be shown or not.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to class-utils.php. Renamed from `cannot_show_parsely_link`.
+	 * @since 3.1.0 Moved to class-dashboard-link.php. Renamed from `cannot_show_parsely_link`.
 	 *
 	 * @param WP_Post $post    Which post object or ID to check.
 	 * @param Parsely $parsely Parsely object.
