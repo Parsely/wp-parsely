@@ -73,8 +73,7 @@ final class GoogleWebStoriesTest extends TestCase {
 	public function test_render_amp_analytics_tracker(): void {
 		$expected = '			<amp-analytics type="parsely">
 				<script type="application/json">
-					{"vars":{"apikey":"blog.parsely.com"}}
-				</script>
+					{"vars":{"apikey":"blog.parsely.com"}}				</script>
 			</amp-analytics>
 			';
 

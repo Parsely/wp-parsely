@@ -1,4 +1,4 @@
-import { visitAdminPage } from '@wordpress/e2e-test-utils';
+import { activatePlugin, loginUser, visitAdminPage } from '@wordpress/e2e-test-utils';
 
 export const PLUGIN_VERSION = '3.1.1';
 
@@ -86,4 +86,15 @@ export const saveSettingsAndHardRefresh = async () => {
 		location.reload( true );
 	} );
 	await page.waitForSelector( '#submit' );
+};
+
+/**
+ * Some common actions to do before starting tests.
+ *
+ * @return {Promise<void>}
+ */
+export const startUpTest = async () => {
+	await loginUser();
+	await activatePlugin( 'wp-parsely' );
+	await waitForWpAdmin();
 };
