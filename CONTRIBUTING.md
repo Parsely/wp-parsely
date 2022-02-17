@@ -116,12 +116,26 @@ JavaScript files that are included in the released plugin are built with the [wp
 
 By default, the plugin will use the production-built JavaScript and CSS assets in the `build/` folder. This is fine if you don't plan on modifying those files, but if you do, you can start a Node server that will compile your changes on the fly. Once your changes are complete, we ask you to rebuild the production-ready (compressed) ones. Here's the process of modifying and rebuilding the assets:
 
-1. Install the dependencies: `npm i`
-2. Start the build tool: `npm run start`
-3. Make and test your changes -- assets are rebuilt automatically
-4. When you have completed your changes, stop the `start` script and build the production assets by running `npm run build`
+1. Install the dependencies:
 
-When submitting a PR which includes asset modifications, please make sure that it includes any applicable changes to:
+	```
+	npm i
+	```
+
+2. Start the build tool:
+
+	```
+	npm run start
+	```
+
+3. Make and test your changes (assets are rebuilt automatically)
+4. When you have completed your changes, stop the `start` script and build the production assets:
+
+	```
+	npm run build
+	```
+
+When submitting a PR which contains asset modifications, please make sure that it includes any applicable changes to:
 - Source files (in the `src` directory)
 - Build tooling (including an updated `package-lock.json` if you've altered dependencies)
 - Built files (in the `build` directory)
@@ -173,42 +187,53 @@ First, you'll need to install the tests by running the install script (if you're
 1. Navigate to the main plugin directory.
 2. You'll need to have a local database setup and have the database name, username, password, and host ready.
 3. Run the test install script using the database information:
-   ```
-   ./bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
-   ```
 
-Then, you can use Composer to run the tests from your terminal.
+	```
+	./bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
+	```
 
-You might have some issues related to requiring files while running the tests locally. You shouldn't `require` any files on your tests. If you have those issues, you can fix them by running:
+Then, you can use Composer to run the tests from your terminal. If you encounter any `require` (class not found) issues, you can fix them by running:
 
 ```
 composer dump-autoload
 ```
 
-To run the single-site tests:
+Here are some of the commands that you can use for running tests. You can find a full list of supported commands within [composer.js](composer.js) in the `scripts` and `scripts-descriptions` sections.
 
+##### Unit tests:
 ```
+# Run all single-site unit tests
 composer test
-```
 
-To run the multisite tests:
-
-```
+# Run all multisite unit tests
 composer test-ms
 ```
 
-To run with code coverage:
+##### Integration tests:
+```
+# Run all single-site integration tests
+composer testwp
 
+# You can use double dashes to add PHPUnit parameters
+# (this will only run the SettingsPage test):
+composer testwp -- --filter SettingsPageTest
+
+# Run all multisite integration tests
+composer testwp-ms
+```
+
+##### Code coverage:
 ```
 composer coverage
 ```
 
-To run JavaScript front-end tests:
-
+##### JavaScript tests:
 ```
+# Run front-end tests
 npm run test
 ```
 
+##### End-to-end tests:
 To run end-to-end tests, [please refer to their separate instructions](tests/e2e/README.md).
 
 ### Releasing a new version

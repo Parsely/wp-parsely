@@ -188,8 +188,6 @@ class Parsely {
 			return;
 		}
 
-		echo PHP_EOL;
-
 		// Insert JSON-LD or repeated metas.
 		if ( 'json_ld' === $parsely_options['meta_type'] ) {
 			include plugin_dir_path( PARSELY_FILE ) . 'views/json-ld.php';
@@ -224,8 +222,6 @@ class Parsely {
 		if ( isset( $parsely_page['custom_metadata'] ) ) {
 			include plugin_dir_path( PARSELY_FILE ) . 'views/custom-metadata.php';
 		}
-
-		echo PHP_EOL;
 	}
 
 	/**
