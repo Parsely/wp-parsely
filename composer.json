@@ -13,7 +13,7 @@
 	],
 	"require": {
 		"php": ">=7.1",
-		"composer/installers": "^1.12.0"
+		"composer/installers": "^1||^2"
 	},
 	"require-dev": {
 		"automattic/vipwpcs": "^2.3.3",
