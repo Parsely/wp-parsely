@@ -8,7 +8,8 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
  */
 import {
 	saveSettingsAndHardRefresh,
-	selectScreenOptions, startUpTest,
+	selectScreenOptions,
+	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
 

@@ -39,7 +39,8 @@ jobs:
 
       - name: Running the tests
         run: |
-          npm run test:e2e
+          npm run test:e2e -- --listTests > ~/.jest-e2e-tests
+          npm run test:e2e -- --cacheDirectory="$HOME/.jest-cache"
 
       - name: Stop WordPress environment
         run: |
