@@ -1,11 +1,7 @@
 /**
  * External dependencies
  */
-import {
-	activatePlugin,
-	loginUser,
-	visitAdminPage,
-} from '@wordpress/e2e-test-utils';
+import { visitAdminPage } from '@wordpress/e2e-test-utils';
 
 /**
  * Internal dependencies
@@ -16,13 +12,11 @@ import {
 	deactivatePluginApiKey,
 	waitForWpAdmin,
 	selectScreenOptions,
+	startUpTest,
 } from '../utils';
 
 describe( 'Activation flow', () => {
-	beforeEach( async () => {
-		await loginUser();
-		await activatePlugin( 'wp-parsely' );
-	} );
+	beforeAll( startUpTest );
 
 	it( 'Should progress as intended', async () => {
 		await deactivatePluginApiKey();
