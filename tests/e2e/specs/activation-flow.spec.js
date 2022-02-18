@@ -27,8 +27,13 @@ describe( 'Activation flow', () => {
 		const versionText = await page.$eval( '#wp-parsely_version', ( el ) => el.innerText );
 		expect( versionText ).toMatch( /^Version \d+.\d+/ );
 
-		const errorMessage = await page.$eval( '#message.error', ( el ) => el.innerText );
-		expect( errorMessage ).toBe(
+		const errorData = await page.$eval( '#wp-parsely-apikey-error-notice', ( el ) => ( {
+			classes: el.classList.value,
+			message: el.innerText,
+		} ) );
+
+		expect( errorData.classes ).toBe( 'notice notice-error' );
+		expect( errorData.message ).toBe(
 			'The Parse.ly plugin is not active. You need to provide your Parse.ly Dash Site ID before things get cooking.'
 		);
 
