@@ -45,6 +45,7 @@ describe( 'Activation flow', () => {
 
 	it( 'Should display all admin sections', async () => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
+		await waitForWpAdmin();
 
 		// Set initial state
 		await selectScreenOptions( { recrawl: false, advanced: false } );
