@@ -83,7 +83,7 @@ jobs:
         run: mysql -u root -proot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
 
       - name: Prepare environment for integration tests
-        run: composer prepare-ci-old --no-interaction
+        run: composer prepare-ci --no-interaction -- latest
 
       - name: Run integration tests (single site)
         if: ${{ matrix.php != 8.0 }}
