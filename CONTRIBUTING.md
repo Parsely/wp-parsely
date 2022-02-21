@@ -73,9 +73,11 @@ This plugin uses the `wp-env` package (an [official WP.org package](https://deve
 
 #### Installing dependencies
 
-Once you have Node.js, PHP, and Composer installed locally, you will need to install dependencies in the main plugin directory in order to run tests and check coding standards.
+Once you have Node.js, PHP, and Composer installed locally, you will need to install dependencies in the main plugin directory.
 
 ```
+cd wp-parsely
+
 # Install PHP dependencies
 composer install
 
@@ -240,4 +242,4 @@ To run end-to-end tests, [please refer to their separate instructions](tests/e2e
 
 To release a new version of the plugin, a GitHub issue with the name of the release (for instance, _Release 3.2.1_) has to be created using the _Release_ template.
 
-After creating the issue, all the steps laid down in that template must be completed in order. Every time a step is completed, please mark it using the checkbox. Once all steps are done, the issue can be closed.
+After creating the issue, all the steps laid down in that template must be completed. Every time a step is completed, please mark it using the checkbox. Once all steps are done, the issue can be closed.
