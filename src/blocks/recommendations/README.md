@@ -2,7 +2,7 @@
 
 This block is designed to showcase links to content on your site as provided by the [Parse.ly `/related` API endpoint](https://www.parse.ly/help/api/recommendations#get-related).
 
-You can use the Parse.ly Recommendations Block wherever you use the WordPress Block Editor ("Gutenberg") to build your site. That means that not only can leverage this feature in single `Post`'s content (or `Page` or nearly any custom post type), you can also leverage it in the Full Site Editor's template editor [slated to debut with WordPress version 5.8](https://make.wordpress.org/core/2021/06/16/introducing-the-template-editor-in-wordpress-5-8/) to add it to various layout elements (e.g. a Header, Footer, or Sidebar).
+You can use the Parse.ly Recommendations Block wherever you use the WordPress Block Editor ("Gutenberg") to build your site. That means that you can leverage this feature in `Posts`, `Pages`, or nearly any other custom post type. You can also leverage it in the Full Site Editor's template editor [slated to debut with WordPress version 5.8](https://make.wordpress.org/core/2021/06/16/introducing-the-template-editor-in-wordpress-5-8/) to add it to various layout elements (e.g. a Header, Footer, or Sidebar).
 
 ### Disabled by Default
 
