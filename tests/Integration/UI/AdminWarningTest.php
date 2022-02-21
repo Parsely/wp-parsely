@@ -45,6 +45,7 @@ final class AdminWarningTest extends TestCase {
 	public function test_display_admin_warning_without_key(): void {
 		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning', Admin_Warning::class );
 		$this->set_options( array( 'apikey' => '' ) );
+		set_current_screen( 'settings_page_parsely' );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
 		self::assertTrue( $response );
