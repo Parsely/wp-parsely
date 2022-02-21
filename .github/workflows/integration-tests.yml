@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      WP_VERSION: latest
+      WP_VERSION: ${{ matrix.wp }}
 
     strategy:
       # PHP 7.1 uses PHPUnit 7.5.20
@@ -33,11 +33,16 @@ jobs:
       # - coverage: Whether to run the tests with code coverage.
       # - experimental: Whether the build is "allowed to fail".
       matrix:
-        php: ['7.1', '7.2', '7.3', '7.4', '8.1']
+        php: [ '7.2', '7.3', '7.4', '8.1']
+        wp: ['latest']
         coverage: [none]
         experimental: [false]
         include:
           # Separate out PHP 8.0, so it can run with code coverage.
+          - php: '7.1'
+            wp: '5.8.3'
+            coverage: none
+            experimental: false
           - php: '8.0'
             coverage: pcov
             extensions: pcov
@@ -83,7 +88,7 @@ jobs:
         run: mysql -u root -proot -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';"
 
       - name: Prepare environment for integration tests
-        run: composer prepare-ci --no-interaction -- latest
+        run: composer prepare-ci --no-interaction
 
       - name: Run integration tests (single site)
         if: ${{ matrix.php != 8.0 }}
