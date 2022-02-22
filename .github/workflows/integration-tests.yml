@@ -38,7 +38,6 @@ jobs:
         coverage: [none]
         experimental: [false]
         include:
-          # Separate out PHP 8.0, so it can run with code coverage.
           - php: '7.1'
             wp: '5.8.3'
             coverage: none
@@ -48,9 +47,10 @@ jobs:
             extensions: pcov
             ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
             experimental: false
-          # - php: '8.2'
-          #  coverage: none
-          #  experimental: true
+           - php: '8.2'
+            wp: 'trunk'
+            coverage: none
+            experimental: true
       fail-fast: false
     continue-on-error: ${{ matrix.experimental }}
     steps:
