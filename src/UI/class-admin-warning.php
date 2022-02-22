@@ -77,7 +77,6 @@ final class Admin_Warning {
 			return false;
 		}
 
-		$options = $this->parsely->get_options();
-		return empty( $options['apikey'] );
+		return $this->parsely->api_key_is_missing();
 	}
 }
