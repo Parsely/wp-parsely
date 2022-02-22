@@ -92,8 +92,12 @@ jobs:
         run: composer prepare-ci --no-interaction
 
       - name: Run integration tests (single site)
-        if: ${{ matrix.php != 8.0 }}
+        if: ${{ matrix.php != 8.0 && ! matrix.experimental }}
         run: composer testwp --no-interaction
+
+      - name: Run integration tests experimental
+        if: ${{ matrix.experimental }}
+        run: composer testwp-experimental --no-interaction
 
       - name: Run integration tests (multi site)
         run: composer testwp-ms --no-interaction
