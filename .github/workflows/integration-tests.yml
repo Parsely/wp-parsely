@@ -29,6 +29,7 @@ jobs:
       # PHP 7.4 uses PHPUnit 9.5.10
       # PHP 8.0 uses PHPUnit 9.5.10
       # PHP 8.1 uses PHPUnit 9.5.10
+      # PHP 8.2 uses PHPUnit 9.5.10
       # Keys:
       # - coverage: Whether to run the tests with code coverage.
       # - experimental: Whether the build is "allowed to fail".

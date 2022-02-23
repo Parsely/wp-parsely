@@ -6,7 +6,7 @@
 	bootstrap="./tests/Integration/bootstrap.php"
 	backupGlobals="false"
 	beStrictAboutCoversAnnotation="true"
-	beStrictAboutTestsThatDoNotTestAnything="false"
+	beStrictAboutTestsThatDoNotTestAnything="true"
 	colors="true"
 	convertDeprecationsToExceptions="false"
 	forceCoversAnnotation="true"
