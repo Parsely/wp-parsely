@@ -44,8 +44,17 @@ final class Admin_Bar {
 	 * @return void
 	 */
 	public function run(): void {
-		// Priority 201 to load after Core's admin bar secondary groups (200).
-		add_action( 'admin_bar_menu', array( $this, 'admin_bar_parsely_stats_button' ), 201 );
+		/**
+		 * Filter whether the Open on Parse.ly button is enabled or not on the admin bar menu.
+		 *
+		 * @since 3.1.2
+		 *
+		 * @param bool $enabled True if enabled, false if not.
+		 */
+		if ( apply_filters( 'wp_parsely_enable_admin_bar', true ) ) {
+			// Priority 201 to load after Core's admin bar secondary groups (200).
+			add_action( 'admin_bar_menu', array( $this, 'admin_bar_parsely_stats_button' ), 201 );
+		}
 	}
 
 	/**
