@@ -1,8 +1,8 @@
 # Parse.ly
 
-Stable tag: 3.1.1  
+Stable tag: 3.1.2  
 Requires at least: 5.0  
-Tested up to: 5.9  
+Tested up to: 5.9.1  
 Requires PHP: 7.1  
 License: GPLv2 or later  
 Tags: analytics, parse.ly, parsely, parsley  

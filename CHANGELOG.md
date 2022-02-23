@@ -5,7 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.1.1] 2022-02-09
+## [3.1.2] - 2022-02-24
+
+### Added
+
+- `wp_parsely_enable_admin_bar` filter. [#691](https://github.com/Parsely/wp-parsely/pull/691)
+
+### Changed
+
+- Don't return metadata on REST if no API key. [#688](https://github.com/Parsely/wp-parsely/pull/688)
+
+### Fixed
+
+- Compatibility issues when the default category wasn't `Uncategorized`. [#620](https://github.com/Parsely/wp-parsely/pull/620)
+- Fixed some type safety issues. [#657](https://github.com/Parsely/wp-parsely/pull/657)
+- Update outdated references in function comments. [#676](https://github.com/Parsely/wp-parsely/pull/676)
+- Exclude some files & dirs from exported plugin archives. [#612](https://github.com/Parsely/wp-parsely/pull/612)
+- Not installing wp-env globally on CI. [#665](https://github.com/Parsely/wp-parsely/pull/665)
+- README.md: Change "meta data" to "metadata". [#614](https://github.com/Parsely/wp-parsely/pull/614)
+- Update CONTRIBUTING.md for clarity and readability. [#613](https://github.com/Parsely/wp-parsely/pull/613)
+- Adding help for local development issues. [#616](https://github.com/Parsely/wp-parsely/pull/616)
+- Improve documentation. [#654](https://github.com/Parsely/wp-parsely/pull/654)
+- Minor additions to the contributing file. [#683](https://github.com/Parsely/wp-parsely/pull/683)
+
+## [3.1.1] - 2022-02-09
 
 ### Fixed
 
@@ -24,7 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed unused dependency `@wordpress/i18n`. [#632](https://github.com/Parsely/wp-parsely/pull/632)
  
-## [3.1.0] 2022-01-21
+## [3.1.0] - 2022-01-21
 
 The 3.1.0 release is a minor release for the plugin that does not introduce any breaking changes coming from the 3.0 branch. This version's primary focus is adding support for WordPress decoupled architectures and a revamped settings page. We have also worked hard on refining our code, testing, and delivery process.
 
@@ -521,6 +544,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - Initial version.
 - Add support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
+[3.1.2]: https://github.com/Parsely/wp-parsely/compare/3.1.1...3.1.2
 [3.1.1]: https://github.com/Parsely/wp-parsely/compare/3.1.0...3.1.1
 [3.1.0]: https://github.com/Parsely/wp-parsely/compare/3.0.4...3.1.0
 [3.0.4]: https://github.com/Parsely/wp-parsely/compare/3.0.3...3.0.4
