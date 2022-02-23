@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Same of normal integration config, but we don't want to fail on deprecations -->
 <phpunit
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
@@ -7,7 +8,7 @@
 	beStrictAboutCoversAnnotation="true"
 	beStrictAboutTestsThatDoNotTestAnything="true"
 	colors="true"
-	convertDeprecationsToExceptions="true"
+	convertDeprecationsToExceptions="false"
 	forceCoversAnnotation="true"
 	testdox="true"
 	>
