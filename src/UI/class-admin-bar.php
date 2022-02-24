@@ -67,7 +67,7 @@ final class Admin_Bar {
 	public function admin_bar_parsely_stats_button( WP_Admin_Bar $admin_bar ): void {
 		$current_object = $GLOBALS['wp_the_query']->get_queried_object();
 
-		if ( empty( $current_object ) || empty( $current_object->post_type ) ) {
+		if ( null === $current_object || empty( $current_object->post_type ) ) {
 			return;
 		}
 
