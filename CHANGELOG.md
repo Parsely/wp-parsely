@@ -22,11 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update outdated references in function comments. [#676](https://github.com/Parsely/wp-parsely/pull/676)
 - Exclude some files & dirs from exported plugin archives. [#612](https://github.com/Parsely/wp-parsely/pull/612)
 - Not installing wp-env globally on CI. [#665](https://github.com/Parsely/wp-parsely/pull/665)
-- README.md: Change "meta data" to "metadata". [#614](https://github.com/Parsely/wp-parsely/pull/614)
-- Update CONTRIBUTING.md for clarity and readability. [#613](https://github.com/Parsely/wp-parsely/pull/613)
-- Adding help for local development issues. [#616](https://github.com/Parsely/wp-parsely/pull/616)
-- Improve documentation. [#654](https://github.com/Parsely/wp-parsely/pull/654)
-- Minor additions to the contributing file. [#683](https://github.com/Parsely/wp-parsely/pull/683)
+- Updating documentation. [#614](https://github.com/Parsely/wp-parsely/pull/614), [#613](https://github.com/Parsely/wp-parsely/pull/613), [#616](https://github.com/Parsely/wp-parsely/pull/616), [#654](https://github.com/Parsely/wp-parsely/pull/654), [#683](https://github.com/Parsely/wp-parsely/pull/683)
 
 ## [3.1.1] - 2022-02-09
 
