@@ -19,7 +19,7 @@ use WP_Post;
  */
 class Dashboard_Link {
 	/**
-	 * Generate the Parse.ly dashboard URL for the post.
+	 * Generate the Parse.ly dashboard URL for the post. Returns an empty string if the URL could not be generated.
 	 *
 	 * @since 2.6.0
 	 * @since 3.1.0 Moved to class-dashboard-link.php. Added source parameter.
@@ -31,8 +31,13 @@ class Dashboard_Link {
 	 * @return string
 	 */
 	public static function generate_url( WP_Post $post, string $apikey, string $campaign, string $source ): string {
+		$permalink = get_permalink( $post );
+		if ( ! is_string( $permalink ) ) {
+			return '';
+		}
+
 		$query_args = array(
-			'url'          => rawurlencode( get_permalink( $post ) ),
+			'url'          => rawurlencode( $permalink ),
 			'utm_campaign' => $campaign,
 			'utm_source'   => $source,
 			'utm_medium'   => 'wp-parsely',
