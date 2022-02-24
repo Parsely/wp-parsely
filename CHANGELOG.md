@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Crash for pages that wouldn't generate a permalink. [#698](https://github.com/Parsely/wp-parsely/pull/698)
 - Compatibility issues when the default category wasn't `Uncategorized`. [#620](https://github.com/Parsely/wp-parsely/pull/620)
 - Fixed some type safety issues. [#657](https://github.com/Parsely/wp-parsely/pull/657)
 - Update outdated references in function comments. [#676](https://github.com/Parsely/wp-parsely/pull/676)
