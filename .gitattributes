@@ -40,3 +40,4 @@
 /phpunit-integration.xml.dist    export-ignore
 /phpunit-experimental.xml.dist   export-ignore
 /webpack.config.js               export-ignore
+/WINDOWS.md                      export-ignore
