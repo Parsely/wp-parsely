@@ -49,6 +49,26 @@ final class DashboardLinkTest extends TestCase {
 	}
 
 	/**
+	 * Test generating a URL for a post that doesn't exist.
+	 *
+	 * @since 3.1.2
+	 *
+	 * @covers \Parsely\Dashboard_Link::generate_url
+	 */
+	public function test_generate_invalid_post_url(): void {
+		add_filter( 'post_link', '__return_false' );
+
+		$post_id = self::factory()->post->create();
+		$post    = get_post( $post_id );
+		$apikey  = 'demo-api-key';
+
+		$expected = '';
+		$actual   = Dashboard_Link::generate_url( $post, $apikey, 'wp-admin-posts-list', 'wp-admin' );
+
+		self::assertSame( $expected, $actual );
+	}
+
+	/**
 	 * Test if logic for showing Parse.ly row action accounts for actions not being an array.
 	 *
 	 * @since 2.6.0
