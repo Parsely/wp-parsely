@@ -67,19 +67,24 @@ final class Admin_Bar {
 	public function admin_bar_parsely_stats_button( WP_Admin_Bar $admin_bar ): void {
 		$current_object = $GLOBALS['wp_the_query']->get_queried_object();
 
-		if ( empty( $current_object ) || empty( $current_object->post_type ) ) {
+		if ( null === $current_object || empty( $current_object->post_type ) ) {
 			return;
 		}
 
 		$post_type_object = get_post_type_object( $current_object->post_type );
-		if ( $post_type_object && $post_type_object->show_in_admin_bar && Dashboard_Link::can_show_link( $current_object, $this->parsely ) ) {
-			$admin_bar->add_node(
-				array(
-					'id'    => 'parsely-stats',
-					'title' => __( 'Parse.ly Stats', 'wp-parsely' ),
-					'href'  => Dashboard_Link::generate_url( $current_object, $this->parsely->get_api_key(), 'wp-page-single', 'admin-bar' ),
-				)
-			);
+		if ( null !== $post_type_object && $post_type_object->show_in_admin_bar && Dashboard_Link::can_show_link( $current_object, $this->parsely ) ) {
+			$href = Dashboard_Link::generate_url( $current_object, $this->parsely->get_api_key(), 'wp-page-single', 'admin-bar' );
+
+			// Not adding the link if there were issues generating the URL.
+			if ( '' !== $href ) {
+				$admin_bar->add_node(
+					array(
+						'id'    => 'parsely-stats',
+						'title' => __( 'Parse.ly Stats', 'wp-parsely' ),
+						'href'  => $href,
+					)
+				);
+			}
 		}
 	}
 }
