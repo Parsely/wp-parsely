@@ -32,7 +32,7 @@ Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://
 
 If you are looking for the plugin's documentation and how to set up your WordPress site with Parse.ly, take a look at [the Parse.ly integration docs](https://www.parsely.com/help/integration/wordpress).
 
-In case you are a WordPress VIP customer, [VIP's documentation will be also useful for you](https://docs.wpvip.com/technical-references/plugins/parse-ly/).
+In case you are a WordPress VIP customer, [VIP's documentation](https://docs.wpvip.com/technical-references/plugins/parse-ly/) will be also useful for you.
 
 ## Installation
 
@@ -53,7 +53,7 @@ The plugin requires an active Parse.ly account. Parse.ly gives creators, markete
 4. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
 5. Click _Activate_ to activate the plugin on your site.
 
-Note that this method is the recommended one for installing old versions of the plugin. Those can be downloaded from [WordPress.org](https://wordpress.org/plugins/wp-parsely/advanced/) or GitHub Releases page.
+Note that this method is the recommended one for installing old versions of the plugin. Those can be downloaded from [WordPress.org](https://wordpress.org/plugins/wp-parsely/advanced/) or the GitHub Releases page.
 
 ## Local development
 
