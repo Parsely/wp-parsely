@@ -28,6 +28,12 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
 
+### Documentation
+
+If you are looking for the plugin's documentation and how to set up your WordPress site with Parse.ly, take a look at [the Parse.ly integration docs](https://www.parsely.com/help/integration/wordpress).
+
+In case you are a WordPress VIP customer, [VIP's documentation](https://docs.wpvip.com/technical-references/plugins/parse-ly/) will be also useful for you.
+
 ## Installation
 
 The plugin requires an active Parse.ly account. Parse.ly gives creators, marketers, and developers the tools to understand content performance, prove content value, and deliver tailored content experiences that drive meaningful results. [Sign up for a free demo of Parse.ly](https://www.parsely.com/getdemo?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
@@ -47,9 +53,13 @@ The plugin requires an active Parse.ly account. Parse.ly gives creators, markete
 4. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
 5. Click _Activate_ to activate the plugin on your site.
 
+Note that this method is the recommended one for installing old versions of the plugin. Those can be downloaded from [WordPress.org](https://wordpress.org/plugins/wp-parsely/advanced/) or the GitHub Releases page.
+
 ## Local development
 
-To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](CONTRIBUTING.md) file.
+Development, code hosting and issue tracking of this plugin happens on the [wp-parsely GitHub repository](https://github.com/Parsely/wp-parsely/). Active development happens on the `develop` branch and releases are made off the `trunk` branch.
+
+To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](https://github.com/parsely/wp-parsely/blob/trunk/CONTRIBUTING.md) file.
 
 ## REST API
 
