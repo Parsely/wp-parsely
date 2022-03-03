@@ -61,54 +61,6 @@ Development, code hosting and issue tracking of this plugin happens on the [wp-p
 
 To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](https://github.com/parsely/wp-parsely/blob/trunk/CONTRIBUTING.md) file.
 
-## REST API
-
-The plugin adds a `parsely` field to certain REST API responses. This can be disabled by returning `false` from the `wp_parsely_enable_rest_api_support` filter.
-
-Example:
-
-~~~php
-// Disable all REST API output from the Parse.ly plugin.
-add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
-~~~
-
-The plugin adds the `parsely` field to endpoints corresponding to the Tracked Post Types and Tracked Page Types selected in the plugin settings. By default, this would be the `/wp-json/wp/v2/pages` and `/wp-json/wp/v2/posts` endpoints along with the corresponding single resource endpoints.
-
-This choice of objects types can be further changed by using the `wp_parsely_rest_object_types` filter.
-
-Example:
-
-~~~php
-// Disable REST API output from pages, but enable for term archives.
-add_filter(
-	'wp_parsely_rest_object_types',
-	function( $object_types ) {
-		$object_types = array_diff( $object_types, array( 'page' ) );
-		$object_types[] = 'term';
-		return $object_types;
-	}
-);
-~~~
-
-The `parsely` field contains the following fields:
-
-- `version`, which is a string identifying the version of the REST API output; this will be updated if changes are made to the output, so consuming applications can check against it.
-- `meta`, which is an array of metadata for the specific post, page or other object type.
-- `rendered`, which is the rendered HTML of the metadata for the post, page or other object type. This will be a JSON-LD `<script>` tag, or a set of `<meta>` tags, depending on the format selected in the plugin settings. The decoupled code can consume and use this directly, instead of building the values from the `meta` field values.
-
-The `rendered` field is a convenience field containing the HTML-formatted metadata which can be printed to a decoupled page as is.
-
-This can be disabled by returning `false` from the `wp_parsely_enable_rest_rendered_support` filter.
-
-Example:
-
-~~~php
-// Disable rendered field output from the REST API output.
-add_filter( 'wp_parsely_enable_rest_rendered_support', '__return_false' );
-~~~
-
-This will return the REST API to the default.
-
 ## Sample Parse.ly metadata
 
 The standard Parse.ly JavaScript tracker inserted before the closing `body` tag:
@@ -148,68 +100,7 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
 
 ## Frequently Asked Questions
 
-### Where do I find my Site ID?
-
-Your Site ID is likely your own site domain name (e.g., `mysite.com`). You can find this in your Parse.ly account.
-
-### Why can't I see Parse.ly code on my post when I preview?
-
-The code will only be placed on posts and pages which have been published in WordPress to ensure we don't track traffic generated while you're still writing a post or page.
-
-You may also be not tracking logged-in users, via one of the settings.
-
-### How can I edit the values passed to the JSON-LD metadata?
-
-You can use the `wp_parsely_metadata` filter, which sends three arguments: the array of metadata, the post object, and the `parsely_options` array:
-
-~~~php
-add_filter( 'wp_parsely_metadata', 'filter_parsely_metadata', 10, 3 );
-function filter_parsely_metadata( $parsely_metadata, $post, $parsely_options ) {
-	$parsely_metadata['articleSection'] = '...'; // Whatever values you want Parse.ly's Section to be.
-	return $parsely_metadata;
-}
-~~~
-
-This filter can go anywhere in your codebase, provided it always gets loaded.
-
-### How can I access the JavaScript hooks on the Parse.ly object?
-
-For some advanced integrations, you need to hook custom JavaScript code to some events on the `window.PARSELY` object. To do so, our plugin supports WordPress JavaScript hooks. For example:
-
-~~~php
-$script = '
-window.wpParselyHooks.addAction("wpParselyOnLoad", "wpParsely", testFunc, 10);
-function testFunc() {
-	console.log("This is a hook");
-}';
-wp_add_inline_script( 'wp-parsely-loader', $script );
-~~~
-
-### Is the plugin compatible with AMP and Facebook Instant Articles?
-
-It is! The plugin hooks into Automattic's official plugins for [AMP](https://wordpress.org/plugins/amp/) and [Facebook Instant Articles](https://wordpress.org/plugins/fb-instant-articles/).
-
-AMP support is enabled automatically if the Automattic AMP plugin is installed.
-
-For Facebook Instant Articles support, enable "Parsely Analytics" in the "Advanced Settings" menu of the Facebook Instant Articles plugin.
-
-### Does the plugin support dynamic tracking?
-
-This plugin does not currently support dynamic tracking (the tracking of multiple pageviews on a single page).
-
-Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh.
-
-Tracking these events requires manually implementing additional JavaScript above [the standard Parse.ly include](http://www.parsely.com/help/integration/basic/) that the plugin injects into your page source. Please consult [the Parse.ly documentation on dynamic tracking](https://www.parsely.com/help/integration/dynamic/) for instructions on implementing dynamic tracking, or contact Parse.ly support for additional assistance.
-
-### Cloudflare support
-
-If the site is running behind a Cloudflare DNS, their Rocket Loader technology will alter how JavaScript files are loaded. [A JavaScript file can be ignored by Rocket Loader](https://support.cloudflare.com/hc/en-us/articles/200169436-How-can-I-have-Rocket-Loader-ignore-specific-JavaScripts) by using `data-cfasync="false"`.
-
-Previous versions of this plugin would mark all scripts with that tag by default. Starting in version 3.0, that behavior has become optional and scripts won't be annotated with `data-cfasync="false"`. The previous behavior can be restored by adding the following filter:
-
-~~~php
-add_filter( 'wp_parsely_enable_cfasync_attribute', '__return_true' );
-~~~
+See [frequently asked questions](https://www.parse.ly/help/integration/wordpress#frequently-asked-questions) on the Parse.ly Technical Documentation.
 
 ## Changelog
 
