@@ -8,16 +8,18 @@
 
 declare(strict_types=1);
 
-namespace Parsely;
+namespace Parsely\Endpoints;
 
+use Parsely\Parsely;
 use WP_Post;
 
 /**
  * Injects Parse.ly Metadata to WordPress REST API
  *
  * @since 3.1.0
+ * @since 3.3.0 Renamed to from `Rest` to `Rest_Metadata`
  */
-class Rest {
+class Rest_Metadata {
 	private const REST_VERSION    = '1.0.0';
 	private const REST_FIELD_NAME = 'parsely';
 
@@ -53,7 +55,7 @@ class Rest {
 		 * @param bool $enabled True if enabled, false if not.
 		 */
 		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) ) {
-			add_action( 'rest_api_init', array( $this, 'register_meta' ) );
+			$this->register_meta();
 		}
 	}
 

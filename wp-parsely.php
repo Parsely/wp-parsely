@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace Parsely;
 
 use Parsely\Endpoints\Related_API_Proxy;
+use Parsely\Endpoints\Rest_Metadata;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Google_Web_Stories;
@@ -50,7 +51,6 @@ const PARSELY_VERSION = '3.1.2';
 const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
-require __DIR__ . '/src/class-rest.php';
 require __DIR__ . '/src/class-scripts.php';
 require __DIR__ . '/src/class-dashboard-link.php';
 require __DIR__ . '/src/UI/class-admin-bar.php';
@@ -64,9 +64,6 @@ add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 function parsely_initialize_plugin(): void {
 	$GLOBALS['parsely'] = new Parsely();
 	$GLOBALS['parsely']->run();
-
-	$rest = new Rest( $GLOBALS['parsely'] );
-	$rest->run();
 
 	$scripts = new Scripts( $GLOBALS['parsely'] );
 	$scripts->run();
@@ -120,6 +117,7 @@ require __DIR__ . '/src/RemoteAPI/class-cached-proxy.php';
 require __DIR__ . '/src/RemoteAPI/class-related-proxy.php';
 require __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
 require __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
+require __DIR__ . '/src/Endpoints/class-rest-metadata.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_proxies' );
 /**
@@ -131,6 +129,9 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_proxies' );
  * @return void
  */
 function rest_api_init_proxies(): void {
+	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
+	$rest->run();
+
 	$proxy        = new Related_Proxy( $GLOBALS['parsely'] );
 	$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
 	$endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $cached_proxy );
