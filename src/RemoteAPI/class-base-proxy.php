@@ -43,7 +43,7 @@ abstract class Base_Proxy implements Proxy {
 	}
 
 	/**
-	 * Get URL for Recommendation API (GET /related).
+	 * Get URL for Recommendations API (GET /related).
 	 *
 	 * @since 3.2.0
 	 *

@@ -18,7 +18,7 @@ use WP_REST_Server;
 use WP_REST_Request;
 
 /**
- * Configure a REST API endpoint for use e.g. by the Related Block.
+ * Configure a REST API endpoint for use e.g. by the Recommendations Block.
  */
 final class Related_API_Proxy {
 	/**

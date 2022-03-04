@@ -28,7 +28,7 @@ export const ParselyRecommendationsEdit = ( editProps ) => (
 
 registerBlockType( 'wp-parsely/recommendations', {
 	apiVersion: 2,
-	title: __( 'Parse.ly Related', 'wp-parsely' ),
+	title: __( 'Parse.ly Recommendations', 'wp-parsely' ),
 	icon: LeafIcon,
 	category: 'widgets',
 	edit: ParselyRecommendationsEdit,

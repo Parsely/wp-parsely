@@ -36,7 +36,7 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Get the URL for the Recommendation API (GET /related).
+	 * Get the URL for the Recommendations API (GET /related).
 	 *
 	 * @see https://www.parse.ly/help/api/recommendations#get-related
 	 *
