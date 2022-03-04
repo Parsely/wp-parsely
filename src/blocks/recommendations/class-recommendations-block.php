@@ -59,7 +59,7 @@ class Recommendations_Block {
 		wp_register_script(
 			'wp-parsely-recommendations-block',
 			$plugin_url . 'build/recommendations.js',
-			array_merge( $script_asset_file['dependencies'], array( 'wp-parsely-api' ) ),
+			$script_asset_file['dependencies'],
 			$script_asset_file['version'],
 			true
 		);
