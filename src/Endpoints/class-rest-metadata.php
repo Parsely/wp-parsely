@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Parsely\Endpoints;
 
-use Parsely\Parsely;
 use WP_Post;
 
 /**
@@ -19,26 +18,7 @@ use WP_Post;
  * @since 3.1.0
  * @since 3.3.0 Renamed to from `Rest` to `Rest_Metadata`
  */
-class Rest_Metadata {
-	private const REST_VERSION    = '1.0.0';
-	private const REST_FIELD_NAME = 'parsely';
-
-	/**
-	 * Instance of Parsely class.
-	 *
-	 * @var Parsely
-	 */
-	private $parsely;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Parsely $parsely Instance of Parsely class.
-	 */
-	public function __construct( Parsely $parsely ) {
-		$this->parsely = $parsely;
-	}
-
+class Rest_Metadata extends Metadata_Endpoint {
 	/**
 	 * Register fields in WordPress REST API
 	 *
@@ -80,7 +60,7 @@ class Rest_Metadata {
 		$object_types = apply_filters( 'wp_parsely_rest_object_types', $object_types );
 
 		$args = array( 'get_callback' => array( $this, 'get_callback' ) );
-		register_rest_field( $object_types, self::REST_FIELD_NAME, $args );
+		register_rest_field( $object_types, self::FIELD_NAME, $args );
 	}
 
 	/**
@@ -103,7 +83,7 @@ class Rest_Metadata {
 		}
 
 		$response = array(
-			'version' => self::REST_VERSION,
+			'version' => self::VERSION,
 			'meta'    => $meta,
 		);
 
@@ -119,16 +99,5 @@ class Rest_Metadata {
 		}
 
 		return $response;
-	}
-
-	/**
-	 * Get the metadata in string format.
-	 *
-	 * @return string String containing the metadata as HTML code that can be directly inserted in into the page.
-	 */
-	public function get_rendered_meta(): string {
-		ob_start();
-		$this->parsely->insert_page_header_metadata();
-		return ob_get_clean();
 	}
 }
