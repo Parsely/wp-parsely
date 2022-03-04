@@ -120,7 +120,7 @@ require __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
 require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
 require __DIR__ . '/src/Endpoints/class-rest-metadata.php';
 
-add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_proxies' );
+add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
  * Register REST Endpoints that act as a proxy to the Parse.ly API.
  * This is needed to get around a CORS issues with Firefox.
@@ -129,7 +129,7 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_proxies' );
  *
  * @return void
  */
-function rest_api_init_proxies(): void {
+function parsely_rest_api_init(): void {
 	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
 	$rest->run();
 
