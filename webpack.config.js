@@ -1,20 +1,5 @@
 const path = require( 'path' );
-const CopyWebpackPlugin = require( 'copy-webpack-plugin' );
-
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
-// Removing the CopyWebpackPlugin, since we don't want the *.php files copied into our build folder.
-defaultConfig.plugins = [
-	...defaultConfig.plugins.filter( ( p ) => ! ( p instanceof CopyWebpackPlugin ) ),
-	new CopyWebpackPlugin( {
-		patterns: [
-			{
-				from: '**/block.json',
-				context: 'src',
-				noErrorOnMissing: true,
-			},
-		],
-	} ),
-];
 
 module.exports = {
 	...defaultConfig,
