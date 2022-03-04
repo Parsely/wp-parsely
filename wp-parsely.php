@@ -51,6 +51,7 @@ const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
 require __DIR__ . '/src/class-rest.php';
+require __DIR__ . '/src/class-graphql.php';
 require __DIR__ . '/src/class-scripts.php';
 require __DIR__ . '/src/class-dashboard-link.php';
 require __DIR__ . '/src/UI/class-admin-bar.php';
@@ -67,6 +68,9 @@ function parsely_initialize_plugin(): void {
 
 	$rest = new Rest( $GLOBALS['parsely'] );
 	$rest->run();
+
+	$graphql = new GraphQL( $GLOBALS['parsely'] );
+	$graphql->run();
 
 	$scripts = new Scripts( $GLOBALS['parsely'] );
 	$scripts->run();
