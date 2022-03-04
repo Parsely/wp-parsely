@@ -3,7 +3,7 @@
  * Metadata endpoint abstract class
  *
  * @package Parsely\Endpoints
- * @since 3.3.0
+ * @since 3.2.0
  */
 
 declare(strict_types=1);
@@ -15,7 +15,7 @@ use Parsely\Parsely;
 /**
  * Metadata endpoint classes are expected to implement the remaining functions of the class.
  *
- * @since 3.3.0
+ * @since 3.2.0
  */
 abstract class Metadata_Endpoint {
 	protected const VERSION    = '1.0.0';
@@ -40,7 +40,7 @@ abstract class Metadata_Endpoint {
 	/**
 	 * Function to start up the class and enqueue necessary actions.
 	 *
-	 * @since 3.3.0
+	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
@@ -58,7 +58,7 @@ abstract class Metadata_Endpoint {
 	/**
 	 * Get the metadata in string format.
 	 *
-	 * @since 3.3.0
+	 * @since 3.2.0
 	 *
 	 * @return string String containing the metadata as HTML code that can be directly inserted in into the page.
 	 */
