@@ -38,13 +38,22 @@ abstract class Metadata_Endpoint {
 	}
 
 	/**
-	 * Register metadata fields in the endpoints
+	 * Function to start up the class and enqueue necessary actions.
 	 *
 	 * @since 3.3.0
 	 *
 	 * @return void
 	 */
 	abstract public function run(): void;
+
+	/**
+	 * Registers the metadata fields on the appropriate resource types.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return void
+	 */
+	abstract public function register_meta(): void;
 
 	/**
 	 * Get the metadata in string format.
