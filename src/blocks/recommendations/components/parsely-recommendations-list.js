@@ -9,11 +9,10 @@ import { __ } from '@wordpress/i18n';
  */
 import ParselyRecommendationsListItem from './parsely-recommendations-list-item';
 
-const ParselyRecommendationsList = ( { imagestyle, layoutstyle, recommendations, showimages } ) => (
+const ParselyRecommendationsList = ( { imagestyle, recommendations, showimages } ) => (
 	<ul
 		className={ classNames(
-			'parsely-recommendations-ul',
-			layoutstyle && `parsely-recommendations-ul-${ layoutstyle }`
+			'parsely-recommendations-ul'
 		) }
 	>
 		{ recommendations.map( ( recommendation, index ) => (

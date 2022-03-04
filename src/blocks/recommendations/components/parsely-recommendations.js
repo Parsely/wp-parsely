@@ -13,7 +13,6 @@ import { useRecommendationsStore } from '../recommendations-store';
 
 export default function ParselyRecommendations( {
 	boost,
-	layoutstyle,
 	limit,
 	imagestyle,
 	isEditMode,
@@ -55,7 +54,6 @@ export default function ParselyRecommendations( {
 					<ParselyRecommendationsTitle title={ title } />
 					<ParselyRecommendationsList
 						imagestyle={ imagestyle }
-						layoutstyle={ layoutstyle }
 						recommendations={ recommendations }
 						showimages={ showimages }
 					/>

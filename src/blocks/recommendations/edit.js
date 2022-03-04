@@ -9,7 +9,6 @@ import { useBlockProps } from '@wordpress/block-editor';
  * Internal dependencies
  */
 import ParselyRecommendations from './components/parsely-recommendations';
-import ParselyRecommendationsBlockControls from './components/parsely-recommendations-block-controls';
 import ParselyRecommendationsInspectorControls from './components/parsely-recommendations-inspector-controls';
 import RecommendationsStore from './recommendations-store';
 import { ReactComponent as LeafIcon } from './Parsely-Logo-sRGB-Leaf-Green.svg';
@@ -19,7 +18,6 @@ import './style.scss';
 export const ParselyRecommendationsEdit = ( editProps ) => (
 	<div { ...useBlockProps() }>
 		<RecommendationsStore clientId={ editProps.clientId }>
-			<ParselyRecommendationsBlockControls { ...editProps } />
 			<ParselyRecommendationsInspectorControls { ...editProps } />
 			<ParselyRecommendations { ...editProps.attributes } isEditMode="true" />
 		</RecommendationsStore>

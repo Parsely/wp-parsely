@@ -27,38 +27,3 @@
 		max-height: 100px;
 	}
 }
-
-.parsely-recommendations-ul-list {
-	// Styles for the list view
-	.parsely-recommendations-cardbody {
-		text-decoration: underline;
-		font-size: 0.8vw;
-	}
-
-	.parsely-recommendations-card {
-		display: inline-flex;
-		min-width: 100%;
-	}
-
-	.parsely-recommendations-cardmedia {
-		min-width: 150px;
-		max-width: 150px;
-	}
-}
-
-.parsely-recommendations-ul-grid {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, 13ch);
-	row-gap: 0.5em;
-	column-gap: 0.8em;
-
-	a {
-		display: inline;
-		text-align: center;
-		vertical-align: middle;
-	}
-
-	.parsely-recommendations-cardbody {
-		font-size: 0.8vw;
-	}
-}

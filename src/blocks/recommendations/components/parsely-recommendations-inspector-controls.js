@@ -14,7 +14,7 @@ import {
 } from '@wordpress/components';
 
 const ParselyRecommendationsInspectorControls = ( {
-	attributes: { boost, imagestyle, layoutstyle, limit, showimages, sort, tag, title },
+	attributes: { boost, imagestyle, limit, showimages, sort, tag, title },
 	setAttributes,
 } ) => {
 	return (
@@ -65,22 +65,6 @@ const ParselyRecommendationsInspectorControls = ( {
 						/>
 					</PanelRow>
 				) }
-				<PanelRow>
-					<RadioControl
-						label={ __( 'Display style', 'wp-parsely' ) }
-						help={ __( 'Show the list of recommended links in a grid or list', 'wp-parsely' ) }
-						selected={ layoutstyle }
-						options={ [
-							{ label: __( 'Grid', 'wp-parsely' ), value: 'grid' },
-							{ label: __( 'List', 'wp-parsely' ), value: 'list' },
-						] }
-						onChange={ ( newval ) =>
-							setAttributes( {
-								layoutstyle: newval === 'list' ? 'list' : 'grid',
-							} )
-						}
-					/>
-				</PanelRow>
 				<PanelRow>
 					<TextControl
 						label={ __( 'Tag', 'wp-parsely' ) }

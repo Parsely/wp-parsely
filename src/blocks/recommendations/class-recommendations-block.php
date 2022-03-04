@@ -82,34 +82,30 @@ class Recommendations_Block {
 					'html' => false,
 				),
 				'attributes'      => array(
-					'boost'       => array(
+					'boost'      => array(
 						'type'    => 'string',
 						'default' => 'views',
 					),
-					'imagestyle'  => array(
+					'imagestyle' => array(
 						'type'    => 'string',
 						'default' => 'original',
 					),
-					'layoutstyle' => array(
-						'type'    => 'string',
-						'default' => 'grid',
-					),
-					'limit'       => array(
+					'limit'      => array(
 						'type'    => 'number',
 						'default' => 3,
 					),
-					'showimages'  => array(
+					'showimages' => array(
 						'type'    => 'boolean',
 						'default' => true,
 					),
-					'sort'        => array(
+					'sort'       => array(
 						'type'    => 'string',
 						'default' => 'score',
 					),
-					'tag'         => array(
+					'tag'        => array(
 						'type' => 'string',
 					),
-					'title'       => array(
+					'title'      => array(
 						'type'    => 'string',
 						'default' => __( 'Related Content', 'wp-parsely' ),
 					),
@@ -134,7 +130,6 @@ class Recommendations_Block {
 		?>
 
 	data-boost="<?php echo esc_attr( $attributes['boost'] ); ?>"
-	data-layoutstyle="<?php echo esc_attr( $attributes['layoutstyle'] ); ?>"
 	data-imagestyle="<?php echo esc_attr( $attributes['imagestyle'] ); ?>"
 	data-limit="<?php echo esc_attr( $attributes['limit'] ); ?>"
 	data-showimages="<?php echo esc_attr( $attributes['showimages'] ); ?>"

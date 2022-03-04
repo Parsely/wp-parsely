@@ -31,20 +31,6 @@ Default: `views`
 
 Default: `original`
 
-### `layoutstyle`
-
-#### Options
-
-- `grid`
-
-  Display the results in a grid of cards that fills the available space horizontally and adds rows as needed.
-
-- `list`
-
-  Display the results in a vertically-oriented list.
-
-Default: `grid`
-
 ### `limit`
 
 Default: `3`
