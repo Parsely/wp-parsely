@@ -95,11 +95,9 @@ final class Related_API_Proxy {
 	 * @return stdClass
 	 */
 	public function get_items( WP_REST_Request $request ) {
-		$options = $this->parsely->get_options();
-		$apikey  = $options['apikey'];
-		$params  = $request->get_params();
+		$params = $request->get_params();
 
-		if ( empty( $apikey ) ) {
+		if ( $this->parsely->api_key_is_missing() ) {
 			return (object) array(
 				'data'  => array(),
 				'error' => new WP_Error( 400, __( 'A Parse.ly API Key must be set in site options to use this endpoint', 'wp-parsely' ) ),

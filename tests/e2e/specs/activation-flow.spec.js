@@ -1,11 +1,7 @@
 /**
  * External dependencies
  */
-import {
-	activatePlugin,
-	loginUser,
-	visitAdminPage,
-} from '@wordpress/e2e-test-utils';
+import { visitAdminPage } from '@wordpress/e2e-test-utils';
 
 /**
  * Internal dependencies
@@ -16,13 +12,11 @@ import {
 	deactivatePluginApiKey,
 	waitForWpAdmin,
 	selectScreenOptions,
+	startUpTest,
 } from '../utils';
 
 describe( 'Activation flow', () => {
-	beforeEach( async () => {
-		await loginUser();
-		await activatePlugin( 'wp-parsely' );
-	} );
+	beforeAll( startUpTest );
 
 	it( 'Should progress as intended', async () => {
 		await deactivatePluginApiKey();
@@ -33,8 +27,13 @@ describe( 'Activation flow', () => {
 		const versionText = await page.$eval( '#wp-parsely_version', ( el ) => el.innerText );
 		expect( versionText ).toMatch( /^Version \d+.\d+/ );
 
-		const errorMessage = await page.$eval( '#message.error', ( el ) => el.innerText );
-		expect( errorMessage ).toBe(
+		const errorData = await page.$eval( '#wp-parsely-apikey-error-notice', ( el ) => ( {
+			classes: el.classList.value,
+			message: el.innerText,
+		} ) );
+
+		expect( errorData.classes ).toBe( 'notice notice-error' );
+		expect( errorData.message ).toBe(
 			'The Parse.ly plugin is not active. You need to provide your Parse.ly Dash Site ID before things get cooking.'
 		);
 
@@ -46,6 +45,7 @@ describe( 'Activation flow', () => {
 
 	it( 'Should display all admin sections', async () => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
+		await waitForWpAdmin();
 
 		// Set initial state
 		await selectScreenOptions( { recrawl: false, advanced: false } );

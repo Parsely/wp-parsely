@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Use desired version of NodeJS
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3.0.0
         with:
           node-version: 16
           cache: npm
@@ -33,11 +33,15 @@ jobs:
         run: |
           npm ci
 
-      - name: Install WordPress
+      - name: Start up WordPress environment
         run: |
           npm run dev:start
 
       - name: Running the tests
         run: |
-          $( npm bin )/wp-scripts test-e2e --listTests > ~/.jest-e2e-tests
-          $( npm bin )/wp-scripts test-e2e --cacheDirectory="$HOME/.jest-cache"
+          npm run test:e2e -- --listTests > ~/.jest-e2e-tests
+          npm run test:e2e -- --cacheDirectory="$HOME/.jest-cache"
+
+      - name: Stop WordPress environment
+        run: |
+          npm run dev:stop
