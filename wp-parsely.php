@@ -117,6 +117,7 @@ require __DIR__ . '/src/RemoteAPI/class-cached-proxy.php';
 require __DIR__ . '/src/RemoteAPI/class-related-proxy.php';
 require __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
 require __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
+require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
 require __DIR__ . '/src/Endpoints/class-rest-metadata.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\rest_api_init_proxies' );
