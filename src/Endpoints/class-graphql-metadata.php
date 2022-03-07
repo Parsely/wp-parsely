@@ -17,9 +17,13 @@ namespace Parsely\Endpoints;
  * @since 3.2.0
  */
 class GraphQL_Metadata extends Metadata_Endpoint {
-	private const GRAPHQL_VERSION        = '1.0.0';
-	private const GRAPHQL_CONTAINER_TYPE = 'ParselyMetaContainer';
-	private const GRAPHQL_META_TYPE      = 'ParselyMeta';
+	private const GRAPHQL_VERSION          = '1.0.0';
+	private const GRAPHQL_CONTAINER_TYPE   = 'ParselyMetaContainer';
+	private const GRAPHQL_AUTHOR_TYPE      = 'ParselyAuthor';
+	private const GRAPHQL_MAIN_ENTITY_TYPE = 'ParselyMainEntityOfPage';
+	private const GRAPHQL_IMAGE_TYPE       = 'ParselyImage';
+	private const GRAPHQL_PUBLISHER_TYPE   = 'ParselyPublisher';
+	private const GRAPHQL_META_TYPE        = 'ParselyMeta';
 
 	/**
 	 * Register fields in WPGraphQL plugin
@@ -52,7 +56,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 */
 	public function register_meta(): void {
 		register_graphql_object_type(
-			'ParselyAuthor',
+			self::GRAPHQL_AUTHOR_TYPE,
 			array(
 				'description' => __( '..', 'wp-parsely' ),
 				'fields'      => array(
@@ -69,7 +73,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		);
 
 		register_graphql_object_type(
-			'ParselyMainEntityOfPage',
+			self::GRAPHQL_MAIN_ENTITY_TYPE,
 			array(
 				'description' => __( '..', 'wp-parsely' ),
 				'fields'      => array(
@@ -86,7 +90,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		);
 
 		register_graphql_object_type(
-			'ParselyImage',
+			self::GRAPHQL_IMAGE_TYPE,
 			array(
 				'description' => __( '..', 'wp-parsely' ),
 				'fields'      => array(
@@ -103,7 +107,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		);
 
 		register_graphql_object_type(
-			'ParselyPublisher',
+			self::GRAPHQL_PUBLISHER_TYPE,
 			array(
 				'description' => __( '..', 'wp-parsely' ),
 				'fields'      => array(
@@ -137,7 +141,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 						'description' => __( 'desc', 'wp-parsely' ),
 					),
 					'mainEntityOfPage' => array(
-						'type'        => 'ParselyMainEntityOfPage',
+						'type'        => self::GRAPHQL_MAIN_ENTITY_TYPE,
 						'description' => __( 'desc', 'wp-parsely' ),
 					),
 					'headline'         => array(
@@ -153,7 +157,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 						'description' => __( 'desc', 'wp-parsely' ),
 					),
 					'image'            => array(
-						'type'        => 'ParselyImage',
+						'type'        => self::GRAPHQL_IMAGE_TYPE,
 						'description' => __( 'desc', 'wp-parsely' ),
 					),
 					'articleSection'   => array(
@@ -161,7 +165,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 						'description' => __( 'desc', 'wp-parsely' ),
 					),
 					'author'           => array(
-						'type'        => array( 'list_of' => 'ParselyAuthor' ),
+						'type'        => array( 'list_of' => self::GRAPHQL_AUTHOR_TYPE ),
 						'description' => __( 'desc', 'wp-parsely' ),
 					),
 					'creator'          => array(
@@ -169,7 +173,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 						'description' => __( 'desc', 'wp-parsely' ),
 					),
 					'publisher'        => array(
-						'type'        => 'ParselyPublisher',
+						'type'        => self::GRAPHQL_PUBLISHER_TYPE,
 						'description' => __( 'desc', 'wp-parsely' ),
 					),
 					'keywords'         => array(
