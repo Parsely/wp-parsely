@@ -9,31 +9,15 @@
 
 declare(strict_types=1);
 
-namespace Parsely;
+namespace Parsely\Endpoints;
 
 
 /**
  * Injects Parse.ly Metadata to the GraphQL outputs
  *
- * @since 3.3.0
+ * @since 3.2.0
  */
-class GraphQL {
-	/**
-	 * Instance of Parsely class.
-	 *
-	 * @var Parsely
-	 */
-	private $parsely;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Parsely $parsely Instance of Parsely class.
-	 */
-	public function __construct( Parsely $parsely ) {
-		$this->parsely = $parsely;
-	}
-
+class GraphQL_Metadata extends Metadata_Endpoint {
 	/**
 	 * Register fields in WPGraphQL plugin
 	 *
@@ -101,7 +85,7 @@ class GraphQL {
 		foreach ( $post_types as $post_type ) {
 			$post_type_object = get_post_type_object( $post_type );
 
-			register_graphql_field( $post_type_object->graphql_single_name, 'parsely', [
+			register_graphql_field( $post_type_object->graphql_single_name, self::FIELD_NAME, [
 				'type' => 'ParselyMeta',
 				'description' => 'Parse.ly metadata support',
 				'resolve' => function ( $post ) {
