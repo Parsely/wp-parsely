@@ -40,19 +40,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		}
 	}
 
-	public function example_extend_wpgraphql_schema() {
-		register_graphql_field( 'RootQuery', 'customField', [
-			'type' => 'CustomType',
-			'description' => __( 'Describe what the field should be used for', 'your-textdomain' ),
-			'resolve' => function() {
-				return [
-					'count' => 5,
-					'testField' => 'test value',
-				];
-			}
-		] );
-	}
-
 	/**
 	 * Registers the meta field on the appropriate resource types in the REST API.
 	 *
