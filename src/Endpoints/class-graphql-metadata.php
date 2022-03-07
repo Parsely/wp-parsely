@@ -89,12 +89,9 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				'type' => 'ParselyMeta',
 				'description' => 'Parse.ly metadata support',
 				'resolve' => function ( $post ) {
-					ob_start();
-					$this->parsely->insert_page_header_metadata();
-					$rendered = ob_get_clean();
 					return [
 						'version' => '1.0',
-						'rendered' => $rendered,
+						'rendered' => self::get_rendered_meta(),
 					];
 				}
 			]);
