@@ -16,7 +16,7 @@ use WP_Post;
  * Injects Parse.ly Metadata to WordPress REST API
  *
  * @since 3.1.0
- * @since 3.3.0 Renamed to from `Rest` to `Rest_Metadata`
+ * @since 3.3.0 Renamed FQCN from `Parsely\Rest` to `Parsely\Endpoints\Rest_Metadata`.
  */
 class Rest_Metadata extends Metadata_Endpoint {
 	/**
