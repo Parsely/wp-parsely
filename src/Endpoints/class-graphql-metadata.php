@@ -187,21 +187,21 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				'fields'      => array(
 					'version'  => array(
 						'type'        => 'String',
-						'description' => __( 'Describe what testField should be used for', 'your-textdomain' ),
+						'description' => __( 'Describe what testField should be used for', 'wp-parsely' ),
 					),
 					'meta'     => array(
 						'type'        => 'ParselyMeta',
-						'description' => __( 'Describe what the count field should be used for', 'your-textdomain' ),
+						'description' => __( 'Describe what the count field should be used for', 'wp-parsely' ),
 					),
 					'rendered' => array(
 						'type'        => 'String',
 						'description' => __( 'Rendered field', 'wp-parsely' ),
 					),
 				),
-			) 
+			)
 		);
 
-		// TODO: Only register allowed post types by the user
+		// TODO: Only register allowed post types by the user.
 		$post_types = \WPGraphQL::get_allowed_post_types();
 
 		foreach ( $post_types as $post_type ) {
