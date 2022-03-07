@@ -4,16 +4,16 @@
 }
 
 .parsely-recommendations-list-title {
-	font-size: 1.75ch;
+	font-size: 1.2em;
 }
 
 .parsely-recommendations-ul {
-	list-style: none !important; // Not sure why, but the !important is needed in the editor. TODO: avoid.
+	list-style: none;
 }
 
 .parsely-recommendations-cardbody {
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
-	padding: 5px;
+	padding: 0.8em;
 }
