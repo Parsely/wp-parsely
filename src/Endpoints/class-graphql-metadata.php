@@ -50,11 +50,24 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	/**
 	 * Registers the meta field on the appropriate resource types in the REST API.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
 	public function register_meta(): void {
+		$this->register_object_types();
+		$this->register_fields();
+	}
+
+
+	/**
+	 * Registers the new custom types for Parse.ly Metadata into the GraphQL instance.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @return void
+	 */
+	private function register_object_types(): void {
 		register_graphql_object_type(
 			self::GRAPHQL_AUTHOR_TYPE,
 			array(
@@ -204,7 +217,16 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				),
 			)
 		);
+	}
 
+	/**
+	 * Register the custom metadata fields so they can be queried in GraphQL.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @return void
+	 */
+	private function register_fields(): void {
 		// TODO: Only register allowed post types by the user.
 		$post_types = \WPGraphQL::get_allowed_post_types();
 
