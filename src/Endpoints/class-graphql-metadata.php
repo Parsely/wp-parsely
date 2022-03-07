@@ -4,7 +4,7 @@
  * Note: this class will only work if the WPGraphQL plugin is installed.
  *
  * @package Parsely
- * @since 3.3.0
+ * @since 3.2.0
  */
 
 declare(strict_types=1);
@@ -25,7 +25,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	/**
 	 * Register fields in WPGraphQL plugin
 	 *
-	 * @since 3.3.0
+	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
@@ -34,7 +34,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 			/**
 			 * Filter whether GraphQL support is enabled or not.
 			 *
-			 * @since 3.3.0
+			 * @since 3.2.0
 			 *
 			 * @param bool $enabled True if enabled, false if not.
 			 */
