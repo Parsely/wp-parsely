@@ -49,7 +49,7 @@ abstract class Metadata_Endpoint {
 	/**
 	 * Registers the metadata fields on the appropriate resource types.
 	 *
-	 * @since 3.1.0
+	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
