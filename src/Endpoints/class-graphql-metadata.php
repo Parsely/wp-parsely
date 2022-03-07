@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Parsely\Endpoints;
 
+use WP_Post;
+
 /**
  * Injects Parse.ly Metadata to the GraphQL outputs
  *
@@ -241,7 +243,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 					'description' => 'Parse.ly metadata support',
 					'resolve'     => function ( $graphql_post ) {
 						$post_id = $graphql_post->__get( 'ID' );
-						$post    = \WP_Post::get_instance( $post_id );
+						$post    = WP_Post::get_instance( $post_id );
 
 						$meta            = $this->parsely->construct_parsely_metadata( $this->parsely->get_options(), $post );
 						$meta['context'] = $meta['@context'];
