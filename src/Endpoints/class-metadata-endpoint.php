@@ -60,7 +60,7 @@ abstract class Metadata_Endpoint {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @return string String containing the metadata as HTML code that can be directly inserted in into the page.
+	 * @return string Contains the metadata as HTML code that can be directly inserted into the page.
 	 */
 	public function get_rendered_meta(): string {
 		ob_start();
