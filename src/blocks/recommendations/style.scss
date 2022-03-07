@@ -14,6 +14,6 @@
 .parsely-recommendations-cardbody {
 	text-overflow: ellipsis;
 	overflow: hidden;
-	max-height: 150px;
+	white-space: nowrap;
 	padding: 5px;
 }
