@@ -7,20 +7,21 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\Endpoints;
 
 use Parsely\Parsely;
-use Parsely\Rest;
+use Parsely\Endpoints\Rest_Metadata;
+use Parsely\Tests\Integration\TestCase;
 
 
 /**
  * Parsely REST API tests.
  */
-final class RestTest extends TestCase {
+final class RestMetadataTest extends TestCase {
 	/**
 	 * Internal variable
 	 *
-	 * @var Rest $rest Holds the Rest object
+	 * @var Rest_Metadata $rest Holds the Rest object
 	 */
 	private static $rest;
 
@@ -38,26 +39,13 @@ final class RestTest extends TestCase {
 		parent::set_up();
 
 		self::$parsely = new Parsely();
-		self::$rest    = new Rest( self::$parsely );
-	}
-
-	/**
-	 * Test whether the logic has been enqueued in the `rest_api_init` hook.
-	 *
-	 * @covers \Parsely\Rest::run
-	 */
-	public function test_register_enqueued_rest_init(): void {
-		self::$rest->run();
-		self::assertSame(
-			10,
-			has_action( 'rest_api_init', array( self::$rest, 'register_meta' ) )
-		);
+		self::$rest    = new Rest_Metadata( self::$parsely );
 	}
 
 	/**
 	 * Test whether the logic has been enqueued in the `rest_api_init` hook with a filter that disables it.
 	 *
-	 * @covers \Parsely\Rest::run
+	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 */
 	public function test_register_enqueued_rest_init_filter(): void {
 		add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
@@ -68,7 +56,7 @@ final class RestTest extends TestCase {
 	/**
 	 * Test that the REST fields are registered to WordPress REST API.
 	 *
-	 * @covers \Parsely\Rest::register_meta
+	 * @covers \Parsely\Endpoints\Rest_Metadata::register_meta
 	 */
 	public function test_register_meta_registers_fields(): void {
 		global $wp_rest_additional_fields;
@@ -85,7 +73,7 @@ final class RestTest extends TestCase {
 	/**
 	 * Test that the REST fields are can be modified using the `wp_parsely_rest_object_types` filter.
 	 *
-	 * @covers \Parsely\Rest::register_meta
+	 * @covers \Parsely\Endpoints\Rest_Metadata::register_meta
 	 */
 	public function test_register_meta_with_filter(): void {
 		global $wp_rest_additional_fields;
@@ -112,7 +100,7 @@ final class RestTest extends TestCase {
 	/**
 	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
 	 *
-	 * @covers \Parsely\Rest::get_callback
+	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 */
 	public function test_get_callback(): void {
 		self::set_options( array( 'apikey' => 'testkey' ) );
@@ -131,7 +119,7 @@ final class RestTest extends TestCase {
 	/**
 	 * Test that the get_rest_callback method does not generate metadata when there is no API key.
 	 *
-	 * @covers \Parsely\Rest::get_callback
+	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 */
 	public function test_get_callback_no_api_key(): void {
 		$post_id = self::factory()->post->create();
@@ -149,7 +137,7 @@ final class RestTest extends TestCase {
 	/**
 	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
 	 *
-	 * @covers \Parsely\Rest::get_callback
+	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 */
 	public function test_get_callback_with_filter(): void {
 		add_filter( 'wp_parsely_enable_rest_rendered_support', '__return_false' );
@@ -168,7 +156,7 @@ final class RestTest extends TestCase {
 	/**
 	 * Test that the get_rest_callback method doesn't crash when the post does not exist.
 	 *
-	 * @covers \Parsely\Rest::get_callback
+	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 */
 	public function test_get_callback_with_non_existent_post(): void {
 		$meta_object = self::$rest->get_callback( array() );
@@ -184,7 +172,7 @@ final class RestTest extends TestCase {
 	/**
 	 * Test that the rendered meta function returns the meta HTML string with json ld.
 	 *
-	 * @covers \Parsely\Rest::get_rendered_meta
+	 * @covers \Parsely\Endpoints\Rest_Metadata::get_rendered_meta
 	 */
 	public function test_get_rendered_meta_json_ld(): void {
 		// Set the default options prior to each test.
@@ -212,7 +200,7 @@ final class RestTest extends TestCase {
 	/**
 	 * Test that the rendered meta function returns the meta HTML string with json ld.
 	 *
-	 * @covers \Parsely\Rest::get_rendered_meta
+	 * @covers \Parsely\Endpoints\Rest_Metadata::get_rendered_meta
 	 */
 	public function test_get_rendered_repeated_metas(): void {
 		// Set the default options prior to each test.
