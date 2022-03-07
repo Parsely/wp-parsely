@@ -19,6 +19,8 @@ use WP_Post;
  * @since 3.2.0 Renamed FQCN from `Parsely\Rest` to `Parsely\Endpoints\Rest_Metadata`.
  */
 class Rest_Metadata extends Metadata_Endpoint {
+	private const REST_VERSION = '1.0.0';
+
 	/**
 	 * Register fields in WordPress REST API
 	 *
@@ -83,7 +85,7 @@ class Rest_Metadata extends Metadata_Endpoint {
 		}
 
 		$response = array(
-			'version' => self::VERSION,
+			'version' => self::REST_VERSION,
 			'meta'    => $meta,
 		);
 

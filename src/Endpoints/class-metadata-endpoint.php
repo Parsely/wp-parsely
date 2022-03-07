@@ -18,7 +18,6 @@ use Parsely\Parsely;
  * @since 3.2.0
  */
 abstract class Metadata_Endpoint {
-	protected const VERSION    = '1.0.0';
 	protected const FIELD_NAME = 'parsely';
 
 	/**
