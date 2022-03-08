@@ -91,7 +91,10 @@ const ParselyRecommendationsInspectorControls = ( {
 						label={ __( 'Boost', 'wp-parsely' ) }
 						value={ boost }
 						options={ [
-							{ label: __( 'Views', 'wp-parsely' ), value: 'views' },
+							{
+								label: __( 'Views', 'wp-parsely' ),
+								value: 'views',
+							},
 							{
 								label: __( 'Mobile Views', 'wp-parsely' ),
 								value: 'mobile_views',
@@ -103,10 +106,6 @@ const ParselyRecommendationsInspectorControls = ( {
 							{
 								label: __( 'Desktop Views', 'wp-parsely' ),
 								value: 'desktop_views',
-							},
-							{
-								label: __( 'Tablet Views', 'wp-parsely' ),
-								value: 'tablet_views',
 							},
 							{
 								label: __( 'Visitors', 'wp-parsely' ),
@@ -125,15 +124,15 @@ const ParselyRecommendationsInspectorControls = ( {
 								value: 'engaged_minutes',
 							},
 							{
-								label: __( 'Avergae Engaged', 'wp-parsely' ),
+								label: __( 'Average Engaged', 'wp-parsely' ),
 								value: 'avg_engaged',
 							},
 							{
-								label: __( 'Avergae Engaged New', 'wp-parsely' ),
+								label: __( 'Average Engaged New', 'wp-parsely' ),
 								value: 'avg_engaged_new',
 							},
 							{
-								label: __( 'Avergae Engaged Returning', 'wp-parsely' ),
+								label: __( 'Average Engaged Returning', 'wp-parsely' ),
 								value: 'avg_engaged_returning',
 							},
 							{
@@ -155,6 +154,10 @@ const ParselyRecommendationsInspectorControls = ( {
 							{
 								label: __( 'Pinterest Interactions', 'wp-parsely' ),
 								value: 'pi_interactions',
+							},
+							{
+								label: __( 'Social Referrals', 'wp-parsely' ),
+								value: 'social_referrals',
 							},
 							{
 								label: __( 'Facebook Referrals', 'wp-parsely' ),
