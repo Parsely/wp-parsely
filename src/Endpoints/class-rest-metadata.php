@@ -53,7 +53,7 @@ class Rest_Metadata extends Metadata_Endpoint {
 		$object_types = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 
 		/**
-		 * Filters the list of post object types that the Parse.ly REST API is hooked into.
+		 * Filters the list of object types that the Parse.ly REST API is hooked into.
 		 *
 		 * @since 3.1.0
 		 *
