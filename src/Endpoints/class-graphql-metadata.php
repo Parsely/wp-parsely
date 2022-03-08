@@ -70,155 +70,152 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * @return void
 	 */
 	private function register_object_types(): void {
-		register_graphql_object_type(
-			self::GRAPHQL_AUTHOR_TYPE,
-			array(
-				'description' => __( '..', 'wp-parsely' ),
-				'fields'      => array(
-					'type' => array(
-						'type'        => 'String',
-						'description' => __( 'asdf', 'wp-parsely' ),
-					),
-					'name' => array(
-						'type'        => 'String',
-						'description' => __( 'asdf', 'wp-parsely' ),
-					),
+		$author_type = array(
+			'description' => __( '..', 'wp-parsely' ),
+			'fields'      => array(
+				'type' => array(
+					'type'        => 'String',
+					'description' => __( 'asdf', 'wp-parsely' ),
 				),
-			)
+				'name' => array(
+					'type'        => 'String',
+					'description' => __( 'asdf', 'wp-parsely' ),
+				),
+			),
 		);
+		register_graphql_object_type( self::GRAPHQL_AUTHOR_TYPE, $author_type );
 
-		register_graphql_object_type(
-			self::GRAPHQL_MAIN_ENTITY_TYPE,
-			array(
-				'description' => __( '..', 'wp-parsely' ),
-				'fields'      => array(
-					'type' => array(
-						'type'        => 'String',
-						'description' => __( 'asdf', 'wp-parsely' ),
-					),
-					'id'   => array(
-						'type'        => 'String',
-						'description' => __( 'asdf', 'wp-parsely' ),
-					),
+		$main_entity_type = array(
+			'description' => __( '..', 'wp-parsely' ),
+			'fields'      => array(
+				'type' => array(
+					'type'        => 'String',
+					'description' => __( 'asdf', 'wp-parsely' ),
 				),
-			)
+				'id'   => array(
+					'type'        => 'String',
+					'description' => __( 'asdf', 'wp-parsely' ),
+				),
+			),
 		);
+		register_graphql_object_type( self::GRAPHQL_MAIN_ENTITY_TYPE, $main_entity_type );
 
-		register_graphql_object_type(
-			self::GRAPHQL_IMAGE_TYPE,
-			array(
-				'description' => __( '..', 'wp-parsely' ),
-				'fields'      => array(
-					'type' => array(
-						'type'        => 'String',
-						'description' => __( 'asdf', 'wp-parsely' ),
-					),
-					'url'  => array(
-						'type'        => 'String',
-						'description' => __( 'asdf', 'wp-parsely' ),
-					),
+		$image_type = array(
+			'description' => __( '..', 'wp-parsely' ),
+			'fields'      => array(
+				'type' => array(
+					'type'        => 'String',
+					'description' => __( 'asdf', 'wp-parsely' ),
 				),
-			)
+				'url'  => array(
+					'type'        => 'String',
+					'description' => __( 'asdf', 'wp-parsely' ),
+				),
+			),
 		);
+		register_graphql_object_type( self::GRAPHQL_IMAGE_TYPE, $image_type );
 
-		register_graphql_object_type(
-			self::GRAPHQL_PUBLISHER_TYPE,
-			array(
-				'description' => __( '..', 'wp-parsely' ),
-				'fields'      => array(
-					'type' => array(
-						'type'        => 'String',
-						'description' => __( 'asdf', 'wp-parsely' ),
-					),
-					'name' => array(
-						'type'        => 'String',
-						'description' => __( 'asdf', 'wp-parsely' ),
-					),
-					'logo' => array(
-						'type'        => 'String',
-						'description' => __( 'asdf', 'wp-parsely' ),
-					),
+		$publisher_type = array(
+			'description' => __( '..', 'wp-parsely' ),
+			'fields'      => array(
+				'type' => array(
+					'type'        => 'String',
+					'description' => __( 'asdf', 'wp-parsely' ),
 				),
-			)
+				'name' => array(
+					'type'        => 'String',
+					'description' => __( 'asdf', 'wp-parsely' ),
+				),
+				'logo' => array(
+					'type'        => 'String',
+					'description' => __( 'asdf', 'wp-parsely' ),
+				),
+			),
 		);
+		register_graphql_object_type( self::GRAPHQL_PUBLISHER_TYPE, $publisher_type );
 
-		register_graphql_object_type(
-			self::GRAPHQL_META_TYPE,
-			array(
-				'description' => __( 'Some desription for the type', 'wp-parsely' ),
-				'fields'      => array(
-					'context'          => array(
-						'type'        => 'String',
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
-					'type'             => array(
-						'type'        => 'String',
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
-					'mainEntityOfPage' => array(
-						'type'        => self::GRAPHQL_MAIN_ENTITY_TYPE,
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
-					'headline'         => array(
-						'type'        => 'String',
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
-					'url'              => array(
-						'type'        => 'String',
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
-					'thumbnailUrl'     => array(
-						'type'        => 'String',
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
-					'image'            => array(
-						'type'        => self::GRAPHQL_IMAGE_TYPE,
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
-					'articleSection'   => array(
-						'type'        => 'String',
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
-					'author'           => array(
-						'type'        => array( 'list_of' => self::GRAPHQL_AUTHOR_TYPE ),
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
-					'creator'          => array(
-						'type'        => 'String',
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
-					'publisher'        => array(
-						'type'        => self::GRAPHQL_PUBLISHER_TYPE,
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
-					'keywords'         => array(
-						'type'        => 'String',
-						'description' => __( 'desc', 'wp-parsely' ),
-					),
+		$meta_type = array(
+			'description' => __( 'Some desription for the type', 'wp-parsely' ),
+			'fields'      => array(
+				'context'          => array(
+					'type'        => 'String',
+					'description' => __( 'desc', 'wp-parsely' ),
 				),
-			)
+				'type'             => array(
+					'type'        => 'String',
+					'description' => __( 'desc', 'wp-parsely' ),
+				),
+				'mainEntityOfPage' => array(
+					'type'        => self::GRAPHQL_MAIN_ENTITY_TYPE,
+					'description' => __( 'desc', 'wp-parsely' ),
+				),
+				'headline'         => array(
+					'type'        => 'String',
+					'description' => __( 'desc', 'wp-parsely' ),
+				),
+				'url'              => array(
+					'type'        => 'String',
+					'description' => __( 'desc', 'wp-parsely' ),
+				),
+				'thumbnailUrl'     => array(
+					'type'        => 'String',
+					'description' => __( 'desc', 'wp-parsely' ),
+				),
+				'image'            => array(
+					'type'        => self::GRAPHQL_IMAGE_TYPE,
+					'description' => __( 'desc', 'wp-parsely' ),
+				),
+				'articleSection'   => array(
+					'type'        => 'String',
+					'description' => __( 'desc', 'wp-parsely' ),
+				),
+				'author'           => array(
+					'type'        => array( 'list_of' => self::GRAPHQL_AUTHOR_TYPE ),
+					'description' => __( 'desc', 'wp-parsely' ),
+				),
+				'creator'          => array(
+					'type'        => 'String',
+					'description' => __( 'desc', 'wp-parsely' ),
+				),
+				'publisher'        => array(
+					'type'        => self::GRAPHQL_PUBLISHER_TYPE,
+					'description' => __( 'desc', 'wp-parsely' ),
+				),
+				'keywords'         => array(
+					'type'        => 'String',
+					'description' => __( 'desc', 'wp-parsely' ),
+				),
+			),
 		);
+		/**
+		 * Filters the array for the custom type to represent metadata on GraphQL.
+		 *
+		 * @see https://wpgraphqldocs.gatsbyjs.io/functions/register_graphql_object_type/
+		 * @since 3.2.0
+		 *
+		 * @param array $meta_type Array with the fields of the new type.
+		 */
+		$meta_type = apply_filters( 'wp_parsely_graphql_meta_type', $meta_type );
+		register_graphql_object_type( self::GRAPHQL_META_TYPE, $meta_type );
 
-		register_graphql_object_type(
-			self::GRAPHQL_CONTAINER_TYPE,
-			array(
-				'description' => __( 'Describe what a CustomType is', 'wp-parsely' ),
-				'fields'      => array(
-					'version'  => array(
-						'type'        => 'String',
-						'description' => __( 'Describe what testField should be used for', 'wp-parsely' ),
-					),
-					'meta'     => array(
-						'type'        => 'ParselyMeta',
-						'description' => __( 'Describe what the count field should be used for', 'wp-parsely' ),
-					),
-					'rendered' => array(
-						'type'        => 'String',
-						'description' => __( 'Rendered field', 'wp-parsely' ),
-					),
+		$container_type = array(
+			'description' => __( 'Describe what a CustomType is', 'wp-parsely' ),
+			'fields'      => array(
+				'version'  => array(
+					'type'        => 'String',
+					'description' => __( 'Describe what testField should be used for', 'wp-parsely' ),
 				),
-			)
+				'meta'     => array(
+					'type'        => 'ParselyMeta',
+					'description' => __( 'Describe what the count field should be used for', 'wp-parsely' ),
+				),
+				'rendered' => array(
+					'type'        => 'String',
+					'description' => __( 'Rendered field', 'wp-parsely' ),
+				),
+			),
 		);
+		register_graphql_object_type( self::GRAPHQL_CONTAINER_TYPE, $container_type );
 	}
 
 	/**
@@ -261,6 +258,16 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 						$meta            = $this->parsely->construct_parsely_metadata( $this->parsely->get_options(), $post );
 						$meta['context'] = $meta['@context'];
 						$meta['type']    = $meta['@type'];
+
+						/**
+						 * Filters the array with the actual metadata that is exposed through GraphQL.
+						 *
+						 * @see https://wpgraphqldocs.gatsbyjs.io/functions/register_graphql_field/
+						 * @since 3.2.0
+						 *
+						 * @param array $meta Array with the fields of the new type.
+						 */
+						$meta = apply_filters( 'wp_parsely_graphql_meta_object', $meta );
 
 						return array(
 							'version'  => self::GRAPHQL_VERSION,
