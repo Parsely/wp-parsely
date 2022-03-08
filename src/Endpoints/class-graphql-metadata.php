@@ -229,11 +229,20 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * @return void
 	 */
 	private function register_fields(): void {
-		// TODO: Only register allowed post types by the user.
-		$post_types = \WPGraphQL::get_allowed_post_types();
+		$options      = $this->parsely->get_options();
+		$object_types = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 
-		foreach ( $post_types as $post_type ) {
-			$post_type_object = get_post_type_object( $post_type );
+		/**
+		 * Filters the list of post object types that the Parse.ly GraphQL API is hooked into.
+		 *
+		 * @since 3.2.0
+		 *
+		 * @param string[] $object_types Array of strings containing the object types, i.e. `page`, `post`, `term`.
+		 */
+		$object_types = apply_filters( 'wp_parsely_graphql_object_types', $object_types );
+
+		foreach ( $object_types as $object_type ) {
+			$post_type_object = get_post_type_object( $object_type );
 
 			register_graphql_field(
 				$post_type_object->graphql_single_name,
