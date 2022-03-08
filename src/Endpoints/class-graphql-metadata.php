@@ -245,6 +245,10 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 						$post_id = $graphql_post->__get( 'ID' );
 						$post    = WP_Post::get_instance( $post_id );
 
+						if ( false === $post ) {
+							return array();
+						}
+
 						$meta            = $this->parsely->construct_parsely_metadata( $this->parsely->get_options(), $post );
 						$meta['context'] = $meta['@context'];
 						$meta['type']    = $meta['@type'];
