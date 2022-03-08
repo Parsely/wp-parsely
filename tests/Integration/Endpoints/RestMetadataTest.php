@@ -43,7 +43,7 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test whether the logic has been enqueued in the when the `run` method is called.
+	 * Test whether the logic has been enqueued when the `run` method is called.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 * @uses \Parsely\Endpoints\Rest_Metadata::register_meta
