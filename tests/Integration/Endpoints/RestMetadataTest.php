@@ -62,7 +62,7 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test whether the logic has been enqueued in the when the `run` method is called with a filter that disables it.
+	 * Test whether the logic has been enqueued when the `run` method is called with a filter that disables it.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 */
