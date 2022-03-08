@@ -76,7 +76,7 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test whether the logic has been enqueued in the when the `run` method is called with no API key.
+	 * Test whether the logic has been enqueued when the `run` method is called with no API key.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 */
