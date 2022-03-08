@@ -36,7 +36,7 @@ class Rest_Metadata extends Metadata_Endpoint {
 		 *
 		 * @param bool $enabled True if enabled, false if not.
 		 */
-		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) ) {
+		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) && $this->parsely->api_key_is_set() ) {
 			$this->register_meta();
 		}
 	}
@@ -53,7 +53,7 @@ class Rest_Metadata extends Metadata_Endpoint {
 		$object_types = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 
 		/**
-		 * Filters the list of author object types that the Parse.ly REST API is hooked into.
+		 * Filters the list of object types that the Parse.ly REST API is hooked into.
 		 *
 		 * @since 3.1.0
 		 *
@@ -77,7 +77,7 @@ class Rest_Metadata extends Metadata_Endpoint {
 		$post_id = $object['ID'] ?? $object['id'] ?? 0;
 		$post    = WP_Post::get_instance( $post_id );
 
-		if ( false === $post || $this->parsely->api_key_is_missing() ) {
+		if ( false === $post ) {
 			$meta = '';
 		} else {
 			$options = $this->parsely->get_options();

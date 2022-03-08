@@ -43,14 +43,49 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test whether the logic has been enqueued in the `rest_api_init` hook with a filter that disables it.
+	 * Test whether the logic has been enqueued in the when the `run` method is called.
+	 *
+	 * @covers \Parsely\Endpoints\Rest_Metadata::run
+	 * @uses \Parsely\Endpoints\Rest_Metadata::register_meta
+	 */
+	public function test_register_enqueued_rest_init(): void {
+		global $wp_rest_additional_fields;
+
+		self::set_options( array( 'apikey' => 'testkey' ) );
+		self::$rest->run();
+
+		$this->assertParselyRestFieldIsConstructedCorrectly( 'page', $wp_rest_additional_fields );
+
+		// Cleaning up the registered fields.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
+		$wp_rest_additional_fields = array();
+	}
+
+	/**
+	 * Test whether the logic has been enqueued in the when the `run` method is called with a filter that disables it.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 */
 	public function test_register_enqueued_rest_init_filter(): void {
+		global $wp_rest_additional_fields;
+
 		add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
 		self::$rest->run();
-		self::assertFalse( has_action( 'rest_api_init', array( self::$rest, 'register_meta' ) ) );
+
+		self::assertEmpty( $wp_rest_additional_fields );
+	}
+
+	/**
+	 * Test whether the logic has been enqueued in the when the `run` method is called with no API key.
+	 *
+	 * @covers \Parsely\Endpoints\Rest_Metadata::run
+	 */
+	public function test_register_enqueued_rest_init_no_api_key(): void {
+		global $wp_rest_additional_fields;
+
+		self::$rest->run();
+
+		self::assertEmpty( $wp_rest_additional_fields );
 	}
 
 	/**
@@ -116,23 +151,7 @@ final class RestMetadataTest extends TestCase {
 		self::assertEquals( $expected, $meta_object );
 	}
 
-	/**
-	 * Test that the get_rest_callback method does not generate metadata when there is no API key.
-	 *
-	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
-	 */
-	public function test_get_callback_no_api_key(): void {
-		$post_id = self::factory()->post->create();
 
-		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
-		$expected    = array(
-			'version'  => '1.0.0',
-			'meta'     => '',
-			'rendered' => '',
-		);
-
-		self::assertEquals( $expected, $meta_object );
-	}
 
 	/**
 	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
