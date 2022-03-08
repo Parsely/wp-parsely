@@ -61,7 +61,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		$this->register_fields();
 	}
 
-
 	/**
 	 * Registers the new custom types for Parse.ly Metadata into the GraphQL instance.
 	 *
@@ -255,9 +254,8 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 							return array();
 						}
 
-						$meta            = $this->parsely->construct_parsely_metadata( $this->parsely->get_options(), $post );
-						$meta['context'] = $meta['@context'];
-						$meta['type']    = $meta['@type'];
+						$meta = $this->parsely->construct_parsely_metadata( $this->parsely->get_options(), $post );
+						$meta = $this->process_meta_for_graphql( $meta );
 
 						/**
 						 * Filters the array with the actual metadata that is exposed through GraphQL.
@@ -278,5 +276,43 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				)
 			);
 		}
+	}
+
+	/**
+	 * @param array $meta
+	 *
+	 * @return array
+	 */
+	private function process_meta_for_graphql( array $meta ): array {
+		$meta = $this->add_type_key( $meta );
+
+		$meta['context'] = $meta['@context'];
+
+		if ( array_key_exists( 'author', $meta ) ) {
+			$meta['author'] = array_map( array( $this, 'add_type_key' ), $meta['author'] );
+		}
+
+		if ( array_key_exists( 'mainEntityofPage', $meta ) ) {
+			$meta['mainEntityOfPage'] = array(
+				'type' => $meta['mainEntityOfPage']['@type'],
+				'id'   => $meta['mainEntityOfPage']['@id'],
+			);
+		}
+
+		if ( array_key_exists( 'publisher', $meta ) ) {
+			$meta['publisher'] = $this->add_type_key( $meta['publisher'] );
+		}
+
+		return $meta;
+	}
+
+	/**
+	 * @param $array
+	 *
+	 * @return array
+	 */
+	private function add_type_key( $array ): array {
+		$array['type'] = $array['@type'];
+		return $array;
 	}
 }
