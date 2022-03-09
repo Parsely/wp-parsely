@@ -70,120 +70,57 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 */
 	private function register_object_types(): void {
 		$author_type = array(
-			'description' => __( '..', 'wp-parsely' ),
+			'description' => __( 'Parse.ly container type for author meta object.', 'wp-parsely' ),
 			'fields'      => array(
-				'type' => array(
-					'type'        => 'String',
-					'description' => __( 'asdf', 'wp-parsely' ),
-				),
-				'name' => array(
-					'type'        => 'String',
-					'description' => __( 'asdf', 'wp-parsely' ),
-				),
+				'type' => array( 'type' => 'String' ),
+				'name' => array( 'type' => 'String' ),
 			),
 		);
 		register_graphql_object_type( self::GRAPHQL_AUTHOR_TYPE, $author_type );
 
 		$main_entity_type = array(
-			'description' => __( '..', 'wp-parsely' ),
+			'description' => __( 'Parse.ly container type for main entity meta object.', 'wp-parsely' ),
 			'fields'      => array(
-				'type' => array(
-					'type'        => 'String',
-					'description' => __( 'asdf', 'wp-parsely' ),
-				),
-				'id'   => array(
-					'type'        => 'String',
-					'description' => __( 'asdf', 'wp-parsely' ),
-				),
+				'type' => array( 'type' => 'String' ),
+				'id'   => array( 'type' => 'String' ),
 			),
 		);
 		register_graphql_object_type( self::GRAPHQL_MAIN_ENTITY_TYPE, $main_entity_type );
 
 		$image_type = array(
-			'description' => __( '..', 'wp-parsely' ),
+			'description' => __( 'Parse.ly container type for image meta object.', 'wp-parsely' ),
 			'fields'      => array(
-				'type' => array(
-					'type'        => 'String',
-					'description' => __( 'asdf', 'wp-parsely' ),
-				),
-				'url'  => array(
-					'type'        => 'String',
-					'description' => __( 'asdf', 'wp-parsely' ),
-				),
+				'type' => array( 'type' => 'String' ),
+				'url'  => array( 'type' => 'String' ),
 			),
 		);
 		register_graphql_object_type( self::GRAPHQL_IMAGE_TYPE, $image_type );
 
 		$publisher_type = array(
-			'description' => __( '..', 'wp-parsely' ),
+			'description' => __( 'Parse.ly container type for publisher meta object.', 'wp-parsely' ),
 			'fields'      => array(
-				'type' => array(
-					'type'        => 'String',
-					'description' => __( 'asdf', 'wp-parsely' ),
-				),
-				'name' => array(
-					'type'        => 'String',
-					'description' => __( 'asdf', 'wp-parsely' ),
-				),
-				'logo' => array(
-					'type'        => 'String',
-					'description' => __( 'asdf', 'wp-parsely' ),
-				),
+				'type' => array( 'type' => 'String' ),
+				'name' => array( 'type' => 'String' ),
+				'logo' => array( 'type' => 'String' ),
 			),
 		);
 		register_graphql_object_type( self::GRAPHQL_PUBLISHER_TYPE, $publisher_type );
 
 		$meta_type = array(
-			'description' => __( 'Some desription for the type', 'wp-parsely' ),
+			'description' => __( 'Metadata fields to be rendered in the front-end. They follow Parse.ly\'s metadata structure. See https://www.parse.ly/help/integration/category/metadata', 'wp-parsely' ),
 			'fields'      => array(
-				'context'          => array(
-					'type'        => 'String',
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
-				'type'             => array(
-					'type'        => 'String',
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
-				'mainEntityOfPage' => array(
-					'type'        => self::GRAPHQL_MAIN_ENTITY_TYPE,
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
-				'headline'         => array(
-					'type'        => 'String',
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
-				'url'              => array(
-					'type'        => 'String',
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
-				'thumbnailUrl'     => array(
-					'type'        => 'String',
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
-				'image'            => array(
-					'type'        => self::GRAPHQL_IMAGE_TYPE,
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
-				'articleSection'   => array(
-					'type'        => 'String',
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
-				'author'           => array(
-					'type'        => array( 'list_of' => self::GRAPHQL_AUTHOR_TYPE ),
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
-				'creator'          => array(
-					'type'        => 'String',
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
-				'publisher'        => array(
-					'type'        => self::GRAPHQL_PUBLISHER_TYPE,
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
-				'keywords'         => array(
-					'type'        => 'String',
-					'description' => __( 'desc', 'wp-parsely' ),
-				),
+				'context'          => array( 'type' => 'String' ),
+				'type'             => array( 'type' => 'String' ),
+				'mainEntityOfPage' => array( 'type' => self::GRAPHQL_MAIN_ENTITY_TYPE ),
+				'headline'         => array( 'type' => 'String' ),
+				'url'              => array( 'type' => 'String' ),
+				'thumbnailUrl'     => array( 'type' => 'String' ),
+				'image'            => array( 'type' => self::GRAPHQL_IMAGE_TYPE ),
+				'articleSection'   => array( 'type' => 'String' ),
+				'author'           => array( 'type' => array( 'list_of' => self::GRAPHQL_AUTHOR_TYPE ) ),
+				'creator'          => array( 'type' => 'String' ),
+				'publisher'        => array( 'type' => self::GRAPHQL_PUBLISHER_TYPE ),
+				'keywords'         => array( 'type' => 'String' ),
 			),
 		);
 		/**
@@ -198,19 +135,19 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		register_graphql_object_type( self::GRAPHQL_META_TYPE, $meta_type );
 
 		$container_type = array(
-			'description' => __( 'Describe what a CustomType is', 'wp-parsely' ),
+			'description' => __( 'Parse.ly Metadata root type.', 'wp-parsely' ),
 			'fields'      => array(
 				'version'  => array(
 					'type'        => 'String',
-					'description' => __( 'Describe what testField should be used for', 'wp-parsely' ),
+					'description' => __( 'Revision of the metadata format.', 'wp-parsely' ),
 				),
 				'meta'     => array(
 					'type'        => 'ParselyMeta',
-					'description' => __( 'Describe what the count field should be used for', 'wp-parsely' ),
+					'description' => __( 'Structured and filterable metadata.', 'wp-parsely' ),
 				),
 				'rendered' => array(
 					'type'        => 'String',
-					'description' => __( 'Rendered field', 'wp-parsely' ),
+					'description' => __( 'HTML string containing the metadata. Intended to be rendered in the front-end as is.', 'wp-parsely' ),
 				),
 			),
 		);
@@ -245,7 +182,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				self::FIELD_NAME,
 				array(
 					'type'        => self::GRAPHQL_CONTAINER_TYPE,
-					'description' => 'Parse.ly metadata support',
+					'description' => 'Parse.ly metadata fields, to be rendered in the front-end so they can be parsed by the crawler. See https://www.parse.ly/help/integration/crawler.',
 					'resolve'     => function ( $graphql_post ) {
 						$post_id = $graphql_post->__get( 'ID' );
 						$post    = WP_Post::get_instance( $post_id );
@@ -279,9 +216,12 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	}
 
 	/**
+	 * Adapts an array of metadata to GraphQL. Namely, all keys with a leading `@` symbol are duplicated by the same
+	 * key without the symbol.
+	 *
 	 * @since 3.2.0
 	 *
-	 * @param array<string, mixed> $meta
+	 * @param array<string, mixed> $meta Page metadata array.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -309,14 +249,18 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	}
 
 	/**
+	 * Adds the `type` key in an array, sourcing its value from `@type` if that key exists.
+	 *
 	 * @since 3.2.0
 	 *
-	 * @param array<string, mixed> $data
+	 * @param array<string, mixed> $data Some array that may or may not contain the `@type` key.
 	 *
 	 * @return array<string, mixed>
 	 */
 	private function add_type_key( array $data ): array {
-		$data['type'] = $data['@type'];
+		if ( array_key_exists( '@type', $data ) ) {
+			$data['type'] = $data['@type'];
+		}
 		return $data;
 	}
 }
