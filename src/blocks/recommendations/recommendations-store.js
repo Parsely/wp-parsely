@@ -14,7 +14,7 @@ const RecommendationsContext = createContext();
 const reducer = ( state, action ) => {
 	switch ( action.type ) {
 		case RECO_BLOCK_ERROR:
-			return { ...state, error: action.error };
+			return { ...state, isLoaded: true, error: action.error, recommendations: undefined };
 		case RECO_BLOCK_LOADED:
 			return { ...state, isLoaded: true };
 		case RECO_BLOCK_RECOMMENDATIONS: {
@@ -31,7 +31,7 @@ const reducer = ( state, action ) => {
 					thumb_url_medium, // eslint-disable-line camelcase
 				} )
 			);
-			return { ...state, isLoaded: true, recommendations: validRecommendations };
+			return { ...state, isLoaded: true, error: undefined, recommendations: validRecommendations };
 		}
 		default:
 			return { ...state };

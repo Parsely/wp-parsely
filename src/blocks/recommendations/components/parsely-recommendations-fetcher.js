@@ -14,7 +14,7 @@ import { useRecommendationsStore } from '../recommendations-store';
 
 const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 	const {
-		state: { error },
+		state: {},
 		dispatch,
 	} = useRecommendationsStore();
 
@@ -33,10 +33,20 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 
 	async function fetchRecos() {
 		let response;
+		let errorMessage;
+
 		try {
 			response = await fetchRecosFromWpApi();
 		} catch ( wpError ) {
-			dispatch( setError( { error: wpError } ) );
+			errorMessage = wpError;
+		}
+
+		if ( response?.error ) {
+			errorMessage = response.error;
+		}
+
+		if ( errorMessage ) {
+			dispatch( setError( { error: response.error } ) );
 			return;
 		}
 
@@ -44,7 +54,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 		dispatch( setRecommendations( { recommendations: data } ) );
 	}
 
-	const apiMemoProps = [ ...Object.values( query ), error ];
+	const apiMemoProps = [ ...Object.values( query ) ];
 
 	const updateRecosWhenPropsChange = useCallback( fetchRecos, apiMemoProps );
 

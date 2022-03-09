@@ -25,17 +25,14 @@ export default function ParselyRecommendations( {
 		state: { error, isLoaded, recommendations },
 	} = useRecommendationsStore();
 
-	if ( error ) {
-		return false;
-	}
-
-	if ( isLoaded && ! recommendations.length ) {
-		if ( isEditMode ) {
-			// This will only show on the back end / editor as a hint the block will not actually render anything.
-			return __( 'No recommendations found.', 'wp-parsely' );
+	// Show error messages within Gutenberg editor when needed.
+	let errorMessage;
+	if ( isLoaded && isEditMode ) {
+		if ( error ) {
+			errorMessage = __( 'Parse.ly API replied with error: ', 'wp-parsely' ) + JSON.stringify( error );
+		} else if ( Array.isArray( recommendations ) && ! recommendations?.length ) {
+			errorMessage = __( 'No recommendations found.', 'wp-parsely' );
 		}
-		// Don't render anything on the frontend if data is loaded and there is no data.
-		return false;
 	}
 
 	return (
@@ -48,6 +45,9 @@ export default function ParselyRecommendations( {
 			/>
 			{ ! isLoaded && (
 				<span className="parsely-recommendations-loading">{ __( 'Loading…', 'wp-parsely' ) }</span>
+			) }
+			{ errorMessage && (
+				<span>{ errorMessage }</span>
 			) }
 			{ isLoaded && !! recommendations?.length && (
 				<>
