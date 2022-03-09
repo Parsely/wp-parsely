@@ -72,8 +72,8 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		$author_type = array(
 			'description' => __( 'Parse.ly container type for author meta object.', 'wp-parsely' ),
 			'fields'      => array(
-				'type' => array( 'type' => 'String' ),
 				'name' => array( 'type' => 'String' ),
+				'type' => array( 'type' => 'String' ),
 			),
 		);
 		register_graphql_object_type( self::GRAPHQL_AUTHOR_TYPE, $author_type );
@@ -81,8 +81,8 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		$main_entity_type = array(
 			'description' => __( 'Parse.ly container type for main entity meta object.', 'wp-parsely' ),
 			'fields'      => array(
-				'type' => array( 'type' => 'String' ),
 				'id'   => array( 'type' => 'String' ),
+				'type' => array( 'type' => 'String' ),
 			),
 		);
 		register_graphql_object_type( self::GRAPHQL_MAIN_ENTITY_TYPE, $main_entity_type );
@@ -99,9 +99,9 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		$publisher_type = array(
 			'description' => __( 'Parse.ly container type for publisher meta object.', 'wp-parsely' ),
 			'fields'      => array(
-				'type' => array( 'type' => 'String' ),
-				'name' => array( 'type' => 'String' ),
 				'logo' => array( 'type' => 'String' ),
+				'name' => array( 'type' => 'String' ),
+				'type' => array( 'type' => 'String' ),
 			),
 		);
 		register_graphql_object_type( self::GRAPHQL_PUBLISHER_TYPE, $publisher_type );
@@ -109,18 +109,18 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		$meta_type = array(
 			'description' => __( 'Metadata fields to be rendered in the front-end. They follow Parse.ly\'s metadata structure. See https://www.parse.ly/help/integration/category/metadata', 'wp-parsely' ),
 			'fields'      => array(
-				'context'          => array( 'type' => 'String' ),
-				'type'             => array( 'type' => 'String' ),
-				'mainEntityOfPage' => array( 'type' => self::GRAPHQL_MAIN_ENTITY_TYPE ),
-				'headline'         => array( 'type' => 'String' ),
-				'url'              => array( 'type' => 'String' ),
-				'thumbnailUrl'     => array( 'type' => 'String' ),
-				'image'            => array( 'type' => self::GRAPHQL_IMAGE_TYPE ),
 				'articleSection'   => array( 'type' => 'String' ),
 				'author'           => array( 'type' => array( 'list_of' => self::GRAPHQL_AUTHOR_TYPE ) ),
+				'context'          => array( 'type' => 'String' ),
 				'creator'          => array( 'type' => 'String' ),
-				'publisher'        => array( 'type' => self::GRAPHQL_PUBLISHER_TYPE ),
+				'headline'         => array( 'type' => 'String' ),
+				'image'            => array( 'type' => self::GRAPHQL_IMAGE_TYPE ),
 				'keywords'         => array( 'type' => 'String' ),
+				'mainEntityOfPage' => array( 'type' => self::GRAPHQL_MAIN_ENTITY_TYPE ),
+				'publisher'        => array( 'type' => self::GRAPHQL_PUBLISHER_TYPE ),
+				'thumbnailUrl'     => array( 'type' => 'String' ),
+				'type'             => array( 'type' => 'String' ),
+				'url'              => array( 'type' => 'String' ),
 			),
 		);
 		/**
