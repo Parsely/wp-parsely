@@ -222,7 +222,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * @since 3.2.0
 	 *
 	 * @param array<string, mixed> $meta Page metadata array.
-	 *
 	 * @return array<string, mixed>
 	 */
 	private function process_meta_for_graphql( array $meta ): array {
