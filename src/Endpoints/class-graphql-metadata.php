@@ -254,7 +254,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * @since 3.2.0
 	 *
 	 * @param array<string, mixed> $data Some array that may or may not contain the `@type` key.
-	 *
 	 * @return array<string, mixed>
 	 */
 	private function add_type_key( array $data ): array {
