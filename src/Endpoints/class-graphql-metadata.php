@@ -180,7 +180,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				self::FIELD_NAME,
 				array(
 					'type'        => self::GRAPHQL_CONTAINER_TYPE,
-					'description' => 'Parse.ly metadata fields, to be rendered in the front-end so they can be parsed by the crawler. See https://www.parse.ly/help/integration/crawler.',
+					'description' => __( 'Parse.ly metadata fields, to be rendered in the front-end so they can be parsed by the crawler. See https://www.parse.ly/help/integration/crawler.', 'wp-parsely' ),
 					'resolve'     => function ( $graphql_post ) {
 						$post_id = $graphql_post->__get( 'ID' );
 						$post    = WP_Post::get_instance( $post_id );
