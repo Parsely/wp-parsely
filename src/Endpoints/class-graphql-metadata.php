@@ -105,7 +105,10 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		register_graphql_object_type( self::GRAPHQL_PUBLISHER_TYPE, $publisher_type );
 
 		$meta_type = array(
-			'description' => __( 'Metadata fields to be rendered in the front-end. They follow Parse.ly\'s metadata structure. See https://www.parse.ly/help/integration/category/metadata', 'wp-parsely' ),
+			'description' => __(
+				'Metadata fields to be rendered in the front-end. They follow Parse.ly\'s metadata structure. See https://www.parse.ly/help/integration/category/metadata',
+				'wp-parsely'
+			),
 			'fields'      => array(
 				'articleSection'   => array( 'type' => 'String' ),
 				'author'           => array( 'type' => array( 'list_of' => self::GRAPHQL_AUTHOR_TYPE ) ),
@@ -145,7 +148,10 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				),
 				'rendered' => array(
 					'type'        => 'String',
-					'description' => __( 'HTML string containing the metadata. Intended to be rendered in the front-end as is.', 'wp-parsely' ),
+					'description' => __(
+						'HTML string containing the metadata. Intended to be rendered in the front-end as is.',
+						'wp-parsely'
+					),
 				),
 			),
 		);
@@ -202,16 +208,15 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 
 		foreach ( $object_types as $object_type ) {
 			$post_type_object = get_post_type_object( $object_type );
-
-			register_graphql_field(
-				$post_type_object->graphql_single_name,
-				self::FIELD_NAME,
-				array(
-					'type'        => self::GRAPHQL_CONTAINER_TYPE,
-					'description' => __( 'Parse.ly metadata fields, to be rendered in the front-end so they can be parsed by the crawler. See https://www.parse.ly/help/integration/crawler.', 'wp-parsely' ),
-					'resolve'     => $resolve,
-				)
+			$config           = array(
+				'type'        => self::GRAPHQL_CONTAINER_TYPE,
+				'description' => __(
+					'Parse.ly metadata fields, to be rendered in the front-end so they can be parsed by the crawler. See https://www.parse.ly/help/integration/crawler.',
+					'wp-parsely'
+				),
+				'resolve'     => $resolve,
 			);
+			register_graphql_field( $post_type_object->graphql_single_name, self::FIELD_NAME, $config );
 		}
 	}
 
