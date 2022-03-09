@@ -43,7 +43,7 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test whether the logic has been enqueued in the when the `run` method is called.
+	 * Test whether the logic has been enqueued when the `run` method is called.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 * @uses \Parsely\Endpoints\Rest_Metadata::register_meta
@@ -62,7 +62,7 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test whether the logic has been enqueued in the when the `run` method is called with a filter that disables it.
+	 * Verify that the logic has not been enqueued when the `run` method is called with a filter that disables it.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 */
@@ -77,7 +77,7 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test whether the logic has been enqueued in the when the `run` method is called with no API key.
+	 * Verify that the logic has not been enqueued when the `run` method is called with no API key.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 */
