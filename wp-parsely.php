@@ -68,8 +68,10 @@ function parsely_initialize_plugin(): void {
 	$GLOBALS['parsely'] = new Parsely();
 	$GLOBALS['parsely']->run();
 
-	$graphql = new GraphQL_Metadata( $GLOBALS['parsely'] );
-	$graphql->run();
+	if ( class_exists( 'WPGraphQL' ) ) {
+		$graphql = new GraphQL_Metadata( $GLOBALS['parsely'] );
+		$graphql->run();
+	}
 
 	$scripts = new Scripts( $GLOBALS['parsely'] );
 	$scripts->run();

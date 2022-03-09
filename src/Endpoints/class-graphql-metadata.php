@@ -35,17 +35,15 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * @return void
 	 */
 	public function run(): void {
-		if ( class_exists( 'WPGraphQL' ) ) {
-			/**
-			 * Filter whether GraphQL support is enabled or not.
-			 *
-			 * @since 3.2.0
-			 *
-			 * @param bool $enabled True if enabled, false if not.
-			 */
-			if ( apply_filters( 'wp_parsely_enable_graphql_support', true ) && $this->parsely->api_key_is_set() ) {
-				add_action( 'graphql_register_types', array( $this, 'register_meta' ) );
-			}
+		/**
+		 * Filter whether GraphQL support is enabled or not.
+		 *
+		 * @since 3.2.0
+		 *
+		 * @param bool $enabled True if enabled, false if not.
+		 */
+		if ( apply_filters( 'wp_parsely_enable_graphql_support', true ) && $this->parsely->api_key_is_set() ) {
+			add_action( 'graphql_register_types', array( $this, 'register_meta' ) );
 		}
 	}
 
