@@ -69,6 +69,7 @@ final class RestMetadataTest extends TestCase {
 	public function test_register_enqueued_rest_init_filter(): void {
 		global $wp_rest_additional_fields;
 
+		self::set_options( array( 'apikey' => 'testkey' ) );
 		add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
 		self::$rest->run();
 
