@@ -279,9 +279,11 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	}
 
 	/**
-	 * @param array $meta
+	 * @since 3.2.0
 	 *
-	 * @return array
+	 * @param array<string, mixed> $meta
+	 *
+	 * @return array<string, mixed>
 	 */
 	private function process_meta_for_graphql( array $meta ): array {
 		$meta = $this->add_type_key( $meta );
@@ -307,12 +309,14 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	}
 
 	/**
-	 * @param $array
+	 * @since 3.2.0
 	 *
-	 * @return array
+	 * @param array<string, mixed> $data
+	 *
+	 * @return array<string, mixed>
 	 */
-	private function add_type_key( $array ): array {
-		$array['type'] = $array['@type'];
-		return $array;
+	private function add_type_key( array $data ): array {
+		$data['type'] = $data['@type'];
+		return $data;
 	}
 }
