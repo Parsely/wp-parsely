@@ -172,6 +172,34 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		 */
 		$object_types = apply_filters( 'wp_parsely_graphql_object_types', $object_types );
 
+		$resolve = function ( \WPGraphQL\Model\Post $graphql_post ) {
+			$post_id = $graphql_post->__get( 'ID' );
+			$post    = WP_Post::get_instance( $post_id );
+
+			if ( false === $post ) {
+				return array();
+			}
+
+			$meta = $this->parsely->construct_parsely_metadata( $this->parsely->get_options(), $post );
+			$meta = $this->process_meta_for_graphql( $meta );
+
+			/**
+			 * Filters the array with the actual metadata that is exposed through GraphQL.
+			 *
+			 * @see https://wpgraphqldocs.gatsbyjs.io/functions/register_graphql_field/
+			 * @since 3.2.0
+			 *
+			 * @param array $meta Array with the fields of the new type.
+			 */
+			$meta = apply_filters( 'wp_parsely_graphql_meta_object', $meta );
+
+			return array(
+				'version'  => self::GRAPHQL_VERSION,
+				'meta'     => $meta,
+				'rendered' => self::get_rendered_meta(),
+			);
+		};
+
 		foreach ( $object_types as $object_type ) {
 			$post_type_object = get_post_type_object( $object_type );
 
@@ -181,33 +209,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				array(
 					'type'        => self::GRAPHQL_CONTAINER_TYPE,
 					'description' => __( 'Parse.ly metadata fields, to be rendered in the front-end so they can be parsed by the crawler. See https://www.parse.ly/help/integration/crawler.', 'wp-parsely' ),
-					'resolve'     => function ( $graphql_post ) {
-						$post_id = $graphql_post->__get( 'ID' );
-						$post    = WP_Post::get_instance( $post_id );
-
-						if ( false === $post ) {
-							return array();
-						}
-
-						$meta = $this->parsely->construct_parsely_metadata( $this->parsely->get_options(), $post );
-						$meta = $this->process_meta_for_graphql( $meta );
-
-						/**
-						 * Filters the array with the actual metadata that is exposed through GraphQL.
-						 *
-						 * @see https://wpgraphqldocs.gatsbyjs.io/functions/register_graphql_field/
-						 * @since 3.2.0
-						 *
-						 * @param array $meta Array with the fields of the new type.
-						 */
-						$meta = apply_filters( 'wp_parsely_graphql_meta_object', $meta );
-
-						return array(
-							'version'  => self::GRAPHQL_VERSION,
-							'meta'     => $meta,
-							'rendered' => self::get_rendered_meta(),
-						);
-					},
+					'resolve'     => $resolve,
 				)
 			);
 		}
