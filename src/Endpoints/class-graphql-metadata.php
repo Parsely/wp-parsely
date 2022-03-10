@@ -180,15 +180,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 			$meta = $this->parsely->construct_parsely_metadata( $this->parsely->get_options(), $post );
 			$meta = $this->process_meta_for_graphql( $meta );
 
-			/**
-			 * Filters the array with the actual metadata that is exposed through GraphQL.
-			 *
-			 * @see https://wpgraphqldocs.gatsbyjs.io/functions/register_graphql_field/
-			 * @since 3.2.0
-			 *
-			 * @param array $meta Array with the fields of the new type.
-			 */
-			$meta = apply_filters( 'wp_parsely_graphql_meta_object', $meta );
 
 			return array(
 				'version'  => self::GRAPHQL_VERSION,
