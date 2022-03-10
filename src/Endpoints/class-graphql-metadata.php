@@ -170,7 +170,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		$object_types = apply_filters( 'wp_parsely_graphql_object_types', $object_types );
 
 		$resolve = function ( \WPGraphQL\Model\Post $graphql_post ) {
-			$post_id = $graphql_post->__get( 'ID' );
+			$post_id = $graphql_post->ID;
 			$post    = WP_Post::get_instance( $post_id );
 
 			if ( false === $post ) {
