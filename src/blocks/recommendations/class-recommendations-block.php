@@ -1,6 +1,6 @@
 <?php
 /**
- * Recommendations_Block class file
+ * Parse.ly Recommendations Block class file.
  *
  * @package Parsely
  * @since 3.2.0
@@ -11,7 +11,10 @@ declare(strict_types=1);
 namespace Parsely;
 
 /**
- * Recommendations_Block
+ * Parse.ly Recommendations Gutenberg Block.
+ *
+ * Gutenberg Block that lists Parse.ly recommendations using the /related
+ * Parse.ly API, which is made possible by the Related_API_Proxy endpoint.
  */
 class Recommendations_Block {
 	const MINIMUM_WORDPRESS_VERSION = '5.6';
