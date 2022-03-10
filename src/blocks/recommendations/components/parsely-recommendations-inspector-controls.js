@@ -148,10 +148,6 @@ const ParselyRecommendationsInspectorControls = ( {
 								value: 'tw_interactions',
 							},
 							{
-								label: __( 'LinkedIn Interactions', 'wp-parsely' ),
-								value: 'li_interactions',
-							},
-							{
 								label: __( 'Pinterest Interactions', 'wp-parsely' ),
 								value: 'pi_interactions',
 							},
