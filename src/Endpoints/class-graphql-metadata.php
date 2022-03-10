@@ -124,15 +124,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				'url'              => array( 'type' => 'String' ),
 			),
 		);
-		/**
-		 * Filters the array for the custom type to represent metadata on GraphQL.
-		 *
-		 * @see https://wpgraphqldocs.gatsbyjs.io/functions/register_graphql_object_type/
-		 * @since 3.2.0
-		 *
-		 * @param array $meta_type Array with the fields of the new type.
-		 */
-		$meta_type = apply_filters( 'wp_parsely_graphql_meta_type', $meta_type );
 		register_graphql_object_type( self::GRAPHQL_META_TYPE, $meta_type );
 
 		$container_type = array(
