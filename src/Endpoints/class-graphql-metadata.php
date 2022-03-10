@@ -180,7 +180,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 			$meta = $this->parsely->construct_parsely_metadata( $this->parsely->get_options(), $post );
 			$meta = $this->process_meta_for_graphql( $meta );
 
-
 			return array(
 				'version'  => self::GRAPHQL_VERSION,
 				'meta'     => $meta,
