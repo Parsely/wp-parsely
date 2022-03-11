@@ -6,18 +6,18 @@ import { createContext, useContext, useReducer } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { RECO_BLOCK_ERROR, RECO_BLOCK_LOADED, RECO_BLOCK_RECOMMENDATIONS } from './constants';
+import { RECOMMENDED_BLOCK_ERROR, RECOMMENDED_BLOCK_LOADED, RECOMMENDED_BLOCK_RECOMMENDATIONS } from './constants';
 // TODO: consider using createReduxStore https://github.com/WordPress/gutenberg/tree/a7e2895829c16ecd77a5ba22d84f1dee1cfb0977/packages/data#registering-a-store
 
 const RecommendationsContext = createContext();
 
 const reducer = ( state, action ) => {
 	switch ( action.type ) {
-		case RECO_BLOCK_ERROR:
+		case RECOMMENDED_BLOCK_ERROR:
 			return { ...state, isLoaded: true, error: action.error, recommendations: undefined };
-		case RECO_BLOCK_LOADED:
+		case RECOMMENDED_BLOCK_LOADED:
 			return { ...state, isLoaded: true };
-		case RECO_BLOCK_RECOMMENDATIONS: {
+		case RECOMMENDED_BLOCK_RECOMMENDATIONS: {
 			const { recommendations } = action;
 			if ( ! Array.isArray( recommendations ) ) {
 				return { ...state, recommendations: undefined };

@@ -1,15 +1,15 @@
-import { RECO_BLOCK_ERROR, RECO_BLOCK_LOADED, RECO_BLOCK_RECOMMENDATIONS } from './constants';
+import { RECOMMENDED_BLOCK_ERROR, RECOMMENDED_BLOCK_LOADED, RECOMMENDED_BLOCK_RECOMMENDATIONS } from './constants';
 
 export const setError = ( { error } ) => ( {
-	type: RECO_BLOCK_ERROR,
+	type: RECOMMENDED_BLOCK_ERROR,
 	error,
 } );
 
 export const setRecommendations = ( { recommendations } ) => ( {
-	type: RECO_BLOCK_RECOMMENDATIONS,
+	type: RECOMMENDED_BLOCK_RECOMMENDATIONS,
 	recommendations,
 } );
 
 export const setLoaded = () => ( {
-	type: RECO_BLOCK_LOADED,
+	type: RECOMMENDED_BLOCK_LOADED,
 } );
