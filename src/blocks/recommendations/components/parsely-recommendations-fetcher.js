@@ -54,11 +54,10 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 		dispatch( setRecommendations( { recommendations: data } ) );
 	}
 
+	const reinvocationDelay = 300; // Reinvoke function at most every this amount of milliseconds.
 	const apiMemoProps = [ ...Object.values( query ) ];
-
 	const updateRecommendationsWhenPropsChange = useCallback( fetchRecommendations, apiMemoProps );
-
-	const debouncedUpdate = useDebounce( updateRecommendationsWhenPropsChange, 300 );
+	const debouncedUpdate = useDebounce( updateRecommendationsWhenPropsChange, reinvocationDelay );
 
 	/**
 	 * Fetch recommendations:
