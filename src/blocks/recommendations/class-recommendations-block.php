@@ -128,7 +128,7 @@ class Recommendations_Block {
 	 * @param array $attributes The user-controlled settings for this block.
 	 * @return string
 	 */
-	public static function render_callback( $attributes ): string {
+	public static function render_callback( array $attributes ): string {
 		ob_start();
 		?>
 <section
