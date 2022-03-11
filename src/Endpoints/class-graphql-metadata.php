@@ -65,18 +65,22 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		$container_type = array(
 			'description' => __( 'Parse.ly Metadata root type.', 'wp-parsely' ),
 			'fields'      => array(
-				'version'  => array(
+				'version'   => array(
 					'type'        => 'String',
 					'description' => __( 'Revision of the metadata format.', 'wp-parsely' ),
 				),
-				'metaTags' => array(
+				'scriptUrl' => array(
+					'type'        => 'String',
+					'description' => __( 'URL of the Parse.ly tracking script, specific to the site.', 'wp-parsely' ),
+				),
+				'metaTags'  => array(
 					'type'        => 'String',
 					'description' => __(
 						'HTML string containing the metadata in JSON-LD. Intended to be rendered in the front-end as is.',
 						'wp-parsely'
 					),
 				),
-				'jsonLd'   => array(
+				'jsonLd'    => array(
 					'type'        => 'String',
 					'description' => __(
 						'HTML string containing the metadata in JSON-LD. Intended to be rendered in the front-end as is.',
@@ -120,9 +124,10 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 			$meta = $this->process_meta_for_graphql( $meta );
 
 			return array(
-				'version'  => self::GRAPHQL_VERSION,
-				'metaTags' => self::get_rendered_meta( 'meta_tags' ),
-				'jsonLd'   => self::get_rendered_meta( 'json_ld' ),
+				'version'   => self::GRAPHQL_VERSION,
+				'scriptUrl' => $this->parsely->get_tracker_url(),
+				'metaTags'  => self::get_rendered_meta( 'meta_tags' ),
+				'jsonLd'    => self::get_rendered_meta( 'json_ld' ),
 			);
 		};
 

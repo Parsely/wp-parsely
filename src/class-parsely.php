@@ -130,6 +130,21 @@ class Parsely {
 	}
 
 	/**
+	 * Gets the full URL of the JavaScript tracker file for the site. If not api is set, returns an empty string.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @return string
+	 */
+	public function get_tracker_url(): string {
+		if ( $this->api_key_is_set() ) {
+			$tracker_url = 'https://cdn.parsely.com/keys/' . $this->get_api_key() . '/p.js';
+			return esc_url( $tracker_url );
+		}
+		return '';
+	}
+
+	/**
 	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 *
 	 * @since 3.2.0
