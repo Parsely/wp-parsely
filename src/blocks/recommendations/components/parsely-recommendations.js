@@ -25,7 +25,7 @@ export default function ParselyRecommendations( {
 		state: { error, isLoaded, recommendations },
 	} = useRecommendationsStore();
 
-	// Show error messages within Gutenberg editor when needed.
+	// Show error messages within the WordPress Block Editor when needed.
 	let errorMessage;
 	if ( isLoaded && isEditMode ) {
 		if ( error ) {

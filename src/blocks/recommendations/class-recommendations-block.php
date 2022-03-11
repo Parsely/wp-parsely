@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace Parsely;
 
 /**
- * Parse.ly Recommendations Gutenberg Block.
+ * Parse.ly Recommendations Block for the WordPress Block Editor.
  *
- * Gutenberg Block that lists Parse.ly recommendations using the /related
- * Parse.ly API, which is made possible by the Related_API_Proxy endpoint.
+ * Block that lists Parse.ly recommendations using the /related Parse.ly API,
+ * which is made possible by the Related_API_Proxy endpoint.
  */
 class Recommendations_Block {
 	const MINIMUM_WORDPRESS_VERSION = '5.6';
@@ -41,8 +41,8 @@ class Recommendations_Block {
 	}
 
 	/**
-	 * Registers all block assets so that they can be enqueued through Gutenberg in
-	 * the corresponding context.
+	 * Registers all block assets so that they can be enqueued through the
+	 * WordPress Block Editor in the corresponding context.
 	 *
 	 * @return void
 	 */
