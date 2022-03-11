@@ -25,18 +25,18 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 		url: window.location.href,
 	};
 
-	async function fetchRecosFromWpApi() {
+	async function fetchRecommendationsFromWpApi() {
 		return apiFetch( {
 			path: addQueryArgs( '/wp-parsely/v1/related', { query } ),
 		} );
 	}
 
-	async function fetchRecos() {
+	async function fetchRecommendations() {
 		let response;
 		let errorMessage;
 
 		try {
-			response = await fetchRecosFromWpApi();
+			response = await fetchRecommendationsFromWpApi();
 		} catch ( wpError ) {
 			errorMessage = wpError;
 		}
@@ -56,9 +56,9 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 
 	const apiMemoProps = [ ...Object.values( query ) ];
 
-	const updateRecosWhenPropsChange = useCallback( fetchRecos, apiMemoProps );
+	const updateRecommendationsWhenPropsChange = useCallback( fetchRecommendations, apiMemoProps );
 
-	const debouncedUpdate = useDebounce( updateRecosWhenPropsChange, 300 );
+	const debouncedUpdate = useDebounce( updateRecommendationsWhenPropsChange, 300 );
 
 	/**
 	 * Fetch recommendations:
