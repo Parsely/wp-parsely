@@ -13,14 +13,15 @@ namespace Parsely;
 /**
  * Parse.ly Recommendations Block for the WordPress Block Editor.
  *
- * Block that lists Parse.ly recommendations using the /related Parse.ly API,
- * which is made possible by the Related_API_Proxy endpoint.
+ * @since 3.2.0
  */
 class Recommendations_Block {
 	const MINIMUM_WORDPRESS_VERSION = '5.6';
 
 	/**
 	 * Determine whether the block and its assets should be registered.
+	 *
+	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
@@ -43,6 +44,8 @@ class Recommendations_Block {
 	/**
 	 * Registers all block assets so that they can be enqueued through the
 	 * WordPress Block Editor in the corresponding context.
+	 *
+	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
@@ -120,11 +123,12 @@ class Recommendations_Block {
 	/**
 	 * The Server-side render_callback for the wp-parsely/recommendations block.
 	 *
-	 * @uses wp_validate_redirect If the stored results aren't considered "safe" by this function, they're skipped.
+	 * @since 3.2.0
+	 *
 	 * @param array $attributes The user-controlled settings for this block.
 	 * @return string
 	 */
-	public static function render_callback( $attributes ) {
+	public static function render_callback( $attributes ): string {
 		ob_start();
 		?>
 <section
