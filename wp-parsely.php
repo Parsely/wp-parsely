@@ -140,16 +140,17 @@ function parsely_rest_api_init(): void {
 }
 
 require __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';
+
+add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 /**
  * Register the Recommendations Block.
  *
  * @return void
  */
-function init_recommendations_block() {
+function init_recommendations_block(): void {
 	$recommendations_block = new Recommendations_Block();
 	$recommendations_block->run();
 }
-add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 
 require __DIR__ . '/src/UI/class-recommended-widget.php';
 

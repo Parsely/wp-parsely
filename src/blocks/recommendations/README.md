@@ -17,7 +17,7 @@ This restriction will be lifted and the block code loading will become opt-out i
 ## How to Use
 
 - Inside the Block Editor, add the `Parse.ly Recommendations` block via the [standard block controls](https://wordpress.org/support/article/adding-a-new-block/).
-- Use the Block and Inspector Controls to configure the [block attributes](#block-attributes)
+- Use the Block and Inspector Controls to configure the [block attributes](#block-attributes).
 
 ## Block Attributes
 
