@@ -59,11 +59,12 @@ abstract class Metadata_Endpoint {
 	 *
 	 * @since 3.2.0
 	 *
+	 * @param string $meta_type `json_ld` or `meta_tags`.
 	 * @return string Contains the metadata as HTML code that can be directly inserted into the page.
 	 */
-	public function get_rendered_meta(): string {
+	public function get_rendered_meta( string $meta_type ): string {
 		ob_start();
-		$this->parsely->insert_page_header_metadata();
+		$this->parsely->render_metadata( $meta_type );
 		return ob_get_clean();
 	}
 }

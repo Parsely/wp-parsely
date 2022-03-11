@@ -19,13 +19,8 @@ use WP_Post;
  * @since 3.2.0
  */
 class GraphQL_Metadata extends Metadata_Endpoint {
-	private const GRAPHQL_VERSION          = '1.0.0';
-	private const GRAPHQL_CONTAINER_TYPE   = 'ParselyMetaContainer';
-	private const GRAPHQL_AUTHOR_TYPE      = 'ParselyAuthor';
-	private const GRAPHQL_MAIN_ENTITY_TYPE = 'ParselyMainEntityOfPage';
-	private const GRAPHQL_IMAGE_TYPE       = 'ParselyImage';
-	private const GRAPHQL_PUBLISHER_TYPE   = 'ParselyPublisher';
-	private const GRAPHQL_META_TYPE        = 'ParselyMeta';
+	private const GRAPHQL_VERSION        = '1.0.0';
+	private const GRAPHQL_CONTAINER_TYPE = 'ParselyMetaContainer';
 
 	/**
 	 * Register fields in WPGraphQL plugin
@@ -67,65 +62,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * @return void
 	 */
 	private function register_object_types(): void {
-		$author_type = array(
-			'description' => __( 'Parse.ly container type for author meta object.', 'wp-parsely' ),
-			'fields'      => array(
-				'name' => array( 'type' => 'String' ),
-				'type' => array( 'type' => 'String' ),
-			),
-		);
-		register_graphql_object_type( self::GRAPHQL_AUTHOR_TYPE, $author_type );
-
-		$main_entity_type = array(
-			'description' => __( 'Parse.ly container type for main entity meta object.', 'wp-parsely' ),
-			'fields'      => array(
-				'id'   => array( 'type' => 'String' ),
-				'type' => array( 'type' => 'String' ),
-			),
-		);
-		register_graphql_object_type( self::GRAPHQL_MAIN_ENTITY_TYPE, $main_entity_type );
-
-		$image_type = array(
-			'description' => __( 'Parse.ly container type for image meta object.', 'wp-parsely' ),
-			'fields'      => array(
-				'type' => array( 'type' => 'String' ),
-				'url'  => array( 'type' => 'String' ),
-			),
-		);
-		register_graphql_object_type( self::GRAPHQL_IMAGE_TYPE, $image_type );
-
-		$publisher_type = array(
-			'description' => __( 'Parse.ly container type for publisher meta object.', 'wp-parsely' ),
-			'fields'      => array(
-				'logo' => array( 'type' => 'String' ),
-				'name' => array( 'type' => 'String' ),
-				'type' => array( 'type' => 'String' ),
-			),
-		);
-		register_graphql_object_type( self::GRAPHQL_PUBLISHER_TYPE, $publisher_type );
-
-		$meta_type = array(
-			'description' => __(
-				'Metadata fields to be rendered in the front-end. They follow Parse.ly\'s metadata structure. See https://www.parse.ly/help/integration/category/metadata',
-				'wp-parsely'
-			),
-			'fields'      => array(
-				'articleSection'   => array( 'type' => 'String' ),
-				'author'           => array( 'type' => array( 'list_of' => self::GRAPHQL_AUTHOR_TYPE ) ),
-				'context'          => array( 'type' => 'String' ),
-				'creator'          => array( 'type' => 'String' ),
-				'headline'         => array( 'type' => 'String' ),
-				'image'            => array( 'type' => self::GRAPHQL_IMAGE_TYPE ),
-				'keywords'         => array( 'type' => array( 'list_of' => 'String' ) ),
-				'mainEntityOfPage' => array( 'type' => self::GRAPHQL_MAIN_ENTITY_TYPE ),
-				'publisher'        => array( 'type' => self::GRAPHQL_PUBLISHER_TYPE ),
-				'thumbnailUrl'     => array( 'type' => 'String' ),
-				'type'             => array( 'type' => 'String' ),
-				'url'              => array( 'type' => 'String' ),
-			),
-		);
-		register_graphql_object_type( self::GRAPHQL_META_TYPE, $meta_type );
-
 		$container_type = array(
 			'description' => __( 'Parse.ly Metadata root type.', 'wp-parsely' ),
 			'fields'      => array(
@@ -133,14 +69,17 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 					'type'        => 'String',
 					'description' => __( 'Revision of the metadata format.', 'wp-parsely' ),
 				),
-				'meta'     => array(
-					'type'        => 'ParselyMeta',
-					'description' => __( 'Structured and filterable metadata.', 'wp-parsely' ),
-				),
-				'rendered' => array(
+				'metaTags' => array(
 					'type'        => 'String',
 					'description' => __(
-						'HTML string containing the metadata. Intended to be rendered in the front-end as is.',
+						'HTML string containing the metadata in JSON-LD. Intended to be rendered in the front-end as is.',
+						'wp-parsely'
+					),
+				),
+				'jsonLd'   => array(
+					'type'        => 'String',
+					'description' => __(
+						'HTML string containing the metadata in JSON-LD. Intended to be rendered in the front-end as is.',
 						'wp-parsely'
 					),
 				),
@@ -182,8 +121,8 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 
 			return array(
 				'version'  => self::GRAPHQL_VERSION,
-				'meta'     => $meta,
-				'rendered' => self::get_rendered_meta(),
+				'metaTags' => self::get_rendered_meta( 'meta_tags' ),
+				'jsonLd'   => self::get_rendered_meta( 'json_ld' ),
 			);
 		};
 
@@ -199,52 +138,5 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 			);
 			register_graphql_field( $post_type_object->graphql_single_name, self::FIELD_NAME, $config );
 		}
-	}
-
-	/**
-	 * Adapts an array of metadata to GraphQL. Namely, all keys with a leading `@` symbol are duplicated by the same
-	 * key without the symbol.
-	 *
-	 * @since 3.2.0
-	 *
-	 * @param array<string, mixed> $meta Page metadata array.
-	 * @return array<string, mixed>
-	 */
-	private function process_meta_for_graphql( array $meta ): array {
-		$meta = $this->add_type_key( $meta );
-
-		$meta['context'] = $meta['@context'];
-
-		if ( array_key_exists( 'author', $meta ) ) {
-			$meta['author'] = array_map( array( $this, 'add_type_key' ), $meta['author'] );
-		}
-
-		if ( array_key_exists( 'mainEntityofPage', $meta ) ) {
-			$meta['mainEntityOfPage'] = array(
-				'type' => $meta['mainEntityOfPage']['@type'],
-				'id'   => $meta['mainEntityOfPage']['@id'],
-			);
-		}
-
-		if ( array_key_exists( 'publisher', $meta ) ) {
-			$meta['publisher'] = $this->add_type_key( $meta['publisher'] );
-		}
-
-		return $meta;
-	}
-
-	/**
-	 * Adds the `type` key in an array, sourcing its value from `@type` if that key exists.
-	 *
-	 * @since 3.2.0
-	 *
-	 * @param array<string, mixed> $data Some array that may or may not contain the `@type` key.
-	 * @return array<string, mixed>
-	 */
-	private function add_type_key( array $data ): array {
-		if ( array_key_exists( '@type', $data ) ) {
-			$data['type'] = $data['@type'];
-		}
-		return $data;
 	}
 }

@@ -97,7 +97,7 @@ class Rest_Metadata extends Metadata_Endpoint {
 		 * @param bool $enabled True if enabled, false if not.
 		 */
 		if ( apply_filters( 'wp_parsely_enable_rest_rendered_support', true, $post ) ) {
-			$response['rendered'] = $this->get_rendered_meta();
+			$response['rendered'] = $this->get_rendered_meta( $options['meta_type'] );
 		}
 
 		return $response;
