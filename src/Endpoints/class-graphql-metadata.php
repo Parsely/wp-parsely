@@ -87,6 +87,13 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 						'wp-parsely'
 					),
 				),
+				'isTracked' => array(
+					'type'        => 'Boolean',
+					'description' => __(
+						'Boolean indicating whether the current object\'s page type should be tracked according to user\'s settings.',
+						'wp-parsely'
+					),
+				),
 			),
 		);
 		register_graphql_object_type( self::GRAPHQL_CONTAINER_TYPE, $container_type );
@@ -100,18 +107,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * @return void
 	 */
 	private function register_fields(): void {
-		$options      = $this->parsely->get_options();
-		$object_types = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
-
-		/**
-		 * Filters the list of post object types that the Parse.ly GraphQL API is hooked into.
-		 *
-		 * @since 3.2.0
-		 *
-		 * @param string[] $object_types Array of strings containing the object types, i.e. `page`, `post`, `term`.
-		 */
-		$object_types = apply_filters( 'wp_parsely_graphql_object_types', $object_types );
-
 		$resolve = function ( \WPGraphQL\Model\Post $graphql_post ) {
 			$post_id = $graphql_post->ID;
 			$post    = WP_Post::get_instance( $post_id );
@@ -120,28 +115,27 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				return array();
 			}
 
-			$meta = $this->parsely->construct_parsely_metadata( $this->parsely->get_options(), $post );
-			$meta = $this->process_meta_for_graphql( $meta );
+			$options             = $this->parsely->get_options();
+			$object_types        = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
+			$current_object_type = get_post_type( $post );
 
 			return array(
 				'version'   => self::GRAPHQL_VERSION,
 				'scriptUrl' => $this->parsely->get_tracker_url(),
 				'metaTags'  => self::get_rendered_meta( 'meta_tags' ),
 				'jsonLd'    => self::get_rendered_meta( 'json_ld' ),
+				'isTracked' => is_string( $current_object_type ) && array_key_exists( $current_object_type, $object_types ),
 			);
 		};
 
-		foreach ( $object_types as $object_type ) {
-			$post_type_object = get_post_type_object( $object_type );
-			$config           = array(
-				'type'        => self::GRAPHQL_CONTAINER_TYPE,
-				'description' => __(
-					'Parse.ly metadata fields, to be rendered in the front-end so they can be parsed by the crawler. See https://www.parse.ly/help/integration/crawler.',
-					'wp-parsely'
-				),
-				'resolve'     => $resolve,
-			);
-			register_graphql_field( $post_type_object->graphql_single_name, self::FIELD_NAME, $config );
-		}
+		$config = array(
+			'type'        => self::GRAPHQL_CONTAINER_TYPE,
+			'description' => __(
+				'Parse.ly metadata fields, to be rendered in the front-end so they can be parsed by the crawler. See https://www.parse.ly/help/integration/crawler.',
+				'wp-parsely'
+			),
+			'resolve'     => $resolve,
+		);
+		register_graphql_field( 'ContentNode', self::FIELD_NAME, $config );
 	}
 }
