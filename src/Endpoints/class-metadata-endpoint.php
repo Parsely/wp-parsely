@@ -59,7 +59,7 @@ abstract class Metadata_Endpoint {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param string $meta_type `json_ld` or `meta_tags`.
+	 * @param string $meta_type `json_ld` or `repeated_metas`.
 	 * @return string Contains the metadata as HTML code that can be directly inserted into the page.
 	 */
 	public function get_rendered_meta( string $meta_type ): string {

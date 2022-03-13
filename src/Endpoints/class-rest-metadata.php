@@ -76,12 +76,12 @@ class Rest_Metadata extends Metadata_Endpoint {
 	public function get_callback( array $object ): array {
 		$post_id = $object['ID'] ?? $object['id'] ?? 0;
 		$post    = WP_Post::get_instance( $post_id );
+		$options = $this->parsely->get_options();
 
 		if ( false === $post ) {
 			$meta = '';
 		} else {
-			$options = $this->parsely->get_options();
-			$meta    = $this->parsely->construct_parsely_metadata( $options, $post );
+			$meta = $this->parsely->construct_parsely_metadata( $options, $post );
 		}
 
 		$response = array(

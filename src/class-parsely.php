@@ -149,7 +149,7 @@ class Parsely {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param string $meta_type `json_ld` or `meta_tags`.
+	 * @param string $meta_type `json_ld` or `repeated_metas`.
 	 * @return void
 	 */
 	public function render_metadata( string $meta_type ): void {
