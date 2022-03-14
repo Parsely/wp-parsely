@@ -142,14 +142,14 @@ class Recommendations_Block {
 <section
 		<?php
 		echo wp_kses_post( get_block_wrapper_attributes() );
-		?>
 
-	data-boost="<?php echo esc_attr( $attributes['boost'] ); ?>"
-	data-imagestyle="<?php echo esc_attr( $attributes['imagestyle'] ); ?>"
-	data-limit="<?php echo esc_attr( $attributes['limit'] ); ?>"
-	data-showimages="<?php echo esc_attr( $attributes['showimages'] ); ?>"
-	data-sort="<?php echo esc_attr( $attributes['sort'] ); ?>"
-	data-title="<?php echo esc_attr( $attributes['title'] ); ?>"
+		// Remove any attributes that don't need to be in output.
+		unset( $attributes['tag'] );
+
+		foreach ( $attributes as $name => $value ) {
+			echo ' data-' . esc_attr( $name ) . '="' . esc_attr( $value ) . '"';
+		}
+		?>
 ></section>
 		<?php
 		return ob_get_clean();
