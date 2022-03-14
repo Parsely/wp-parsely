@@ -42,7 +42,7 @@
 	},
 	"devDependencies": {
 		"@wordpress/api-fetch": "^6.0.1",
-		"@wordpress/babel-preset-default": "^6.5.1",
+		"@wordpress/babel-preset-default": "^6.6.1",
 		"@wordpress/block-editor": "^8.2.0",
 		"@wordpress/blocks": "^11.2.2",
 		"@wordpress/components": "^19.5.0",
