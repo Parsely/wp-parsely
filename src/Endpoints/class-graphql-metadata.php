@@ -124,7 +124,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				'scriptUrl'     => $this->parsely->get_tracker_url(),
 				'repeatedMetas' => self::get_rendered_meta( 'repeated_metas' ),
 				'jsonLd'        => self::get_rendered_meta( 'json_ld' ),
-				'isTracked'     => is_string( $current_object_type ) && array_key_exists( $current_object_type, $object_types ),
+				'isTracked'     => in_array( $current_object_type, $object_types, true ),
 			);
 		};
 
