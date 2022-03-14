@@ -77,46 +77,54 @@ class Recommendations_Block {
 			$script_asset_file['version']
 		);
 
-		register_block_type(
-			'wp-parsely/recommendations',
-			array(
-				'editor_script'   => 'wp-parsely-recommendations-block-editor',
-				'render_callback' => __CLASS__ . '::render_callback',
-				'script'          => 'wp-parsely-recommendations-block',
-				'style'           => 'wp-parsely-recommendations-block',
-				'supports'        => array(
-					'html' => false,
+		register_block_type( 'wp-parsely/recommendations', self::get_block_registration_args() );
+	}
+
+	/**
+	 * Return the Block's registration arguments.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @return array
+	 */
+	private static function get_block_registration_args(): array {
+		return array(
+			'editor_script'   => 'wp-parsely-recommendations-block-editor',
+			'render_callback' => __CLASS__ . '::render_callback',
+			'script'          => 'wp-parsely-recommendations-block',
+			'style'           => 'wp-parsely-recommendations-block',
+			'supports'        => array(
+				'html' => false,
+			),
+			'attributes'      => array(
+				'boost'      => array(
+					'type'    => 'string',
+					'default' => 'views',
 				),
-				'attributes'      => array(
-					'boost'      => array(
-						'type'    => 'string',
-						'default' => 'views',
-					),
-					'imagestyle' => array(
-						'type'    => 'string',
-						'default' => 'original',
-					),
-					'limit'      => array(
-						'type'    => 'number',
-						'default' => 3,
-					),
-					'showimages' => array(
-						'type'    => 'boolean',
-						'default' => true,
-					),
-					'sort'       => array(
-						'type'    => 'string',
-						'default' => 'score',
-					),
-					'tag'        => array(
-						'type' => 'string',
-					),
-					'title'      => array(
-						'type'    => 'string',
-						'default' => __( 'Related Content', 'wp-parsely' ),
-					),
+				'imagestyle' => array(
+					'type'    => 'string',
+					'default' => 'original',
 				),
-			)
+				'limit'      => array(
+					'type'    => 'number',
+					'default' => 3,
+				),
+				'showimages' => array(
+					'type'    => 'boolean',
+					'default' => true,
+				),
+				'sort'       => array(
+					'type'    => 'string',
+					'default' => 'score',
+				),
+				'tag'        => array(
+					'type' => 'string',
+				),
+				'title'      => array(
+					'type'    => 'string',
+					'default' => __( 'Related Content', 'wp-parsely' ),
+				),
+			),
 		);
 	}
 
