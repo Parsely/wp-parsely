@@ -12,7 +12,7 @@ import ParselyRecommendationsListItem from './parsely-recommendations-list-item'
 const ParselyRecommendationsList = ( { imagestyle, recommendations, showimages } ) => (
 	<ul
 		className={ classNames(
-			'parsely-recommendations-ul'
+			'parsely-recommendations-list'
 		) }
 	>
 		{ recommendations.map( ( recommendation, index ) => (

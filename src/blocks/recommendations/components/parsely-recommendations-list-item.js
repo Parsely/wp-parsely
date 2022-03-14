@@ -30,7 +30,7 @@ const ParselyRecommendationsListItem = ( {
 					{ imageForLink && (
 						<CardMedia className="parsely-recommendations-cardmedia">
 							<img
-								className="parsely-recommendations-list-img"
+								className="parsely-recommendations-image"
 								src={ imageForLink }
 								alt={ imageAlt }
 							/>
