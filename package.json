@@ -41,12 +41,12 @@
 		"js-cookie": "^3.0.1"
 	},
 	"devDependencies": {
-		"@wordpress/babel-preset-default": "^6.5.1",
-		"@wordpress/e2e-test-utils": "^6.0.2",
-		"@wordpress/env": "^4.2.2",
-		"@wordpress/eslint-plugin": "^10.0.2",
-		"@wordpress/hooks": "^3.3.1",
-		"@wordpress/scripts": "^22.1.0",
+		"@wordpress/babel-preset-default": "^6.6.1",
+		"@wordpress/e2e-test-utils": "^7.0.1",
+		"@wordpress/env": "^4.3.1",
+		"@wordpress/eslint-plugin": "^11.0.1",
+		"@wordpress/hooks": "^3.4.1",
+		"@wordpress/scripts": "^22.2.1",
 		"concurrently": "^7.0.0",
 		"husky": "^7.0.4",
 		"prettier": "^2.5.1"
