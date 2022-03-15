@@ -38,6 +38,17 @@ class Recommendations_Block {
 			return;
 		}
 
+		// Temporary workaround - remove block when in FSE due to issues.
+		global $pagenow;
+		if ( 'site-editor.php' === $pagenow ) {
+			add_action(
+				'admin_init',
+				function() {
+					unregister_block_type( 'wp-parsely/recommendations' );
+				}
+			);
+		}
+
 		self::register_block_and_assets();
 	}
 
