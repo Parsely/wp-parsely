@@ -140,9 +140,9 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 			$current_object_type = get_post_type( $post );
 
 			return array(
-				'version'       => self::GRAPHQL_VERSION,
-				'scriptUrl'     => $this->parsely->get_tracker_url(),
-				'isTracked'     => in_array( $current_object_type, $object_types, true ),
+				'version'   => self::GRAPHQL_VERSION,
+				'scriptUrl' => $this->parsely->get_tracker_url(),
+				'isTracked' => in_array( $current_object_type, $object_types, true ),
 			);
 		};
 
