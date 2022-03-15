@@ -65,6 +65,12 @@ abstract class Metadata_Endpoint {
 	public function get_rendered_meta( string $meta_type ): string {
 		ob_start();
 		$this->parsely->render_metadata( $meta_type );
-		return ob_get_clean();
+		$out = ob_get_clean();
+
+		if ( false === $out ) {
+			return '';
+		}
+
+		return trim( $out );
 	}
 }

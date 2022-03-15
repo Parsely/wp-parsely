@@ -100,14 +100,14 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	}
 
 	/**
-	 * Register the custom metadata fields so they can be queried in GraphQL.
+	 * Register the custom metadata fields, so they can be queried in GraphQL.
 	 *
 	 * @since 3.2.0
 	 *
 	 * @return void
 	 */
 	private function register_fields(): void {
-		$resolve = function ( \WPGraphQL\Model\Post $graphql_post ) {
+		$resolve = function ( \WPGraphQL\Model\Post $graphql_post, array $args ) {
 			$post_id = $graphql_post->ID;
 			$post    = WP_Post::get_instance( $post_id );
 
@@ -118,18 +118,31 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 			$options             = $this->parsely->get_options();
 			$object_types        = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 			$current_object_type = get_post_type( $post );
+			$json_ld             = self::get_rendered_meta( 'json_ld' );
+
+			if ( isset( $args['removeWrappingTag'] ) && true === $args['removeWrappingTag'] ) {
+				// phpcs:ignore WordPressVIPMinimum.Functions.StripTags.StripTagsOneParameter
+				$json_ld = strip_tags( $json_ld );
+				$json_ld = trim( $json_ld );
+			}
 
 			return array(
 				'version'       => self::GRAPHQL_VERSION,
 				'scriptUrl'     => $this->parsely->get_tracker_url(),
 				'repeatedMetas' => self::get_rendered_meta( 'repeated_metas' ),
-				'jsonLd'        => self::get_rendered_meta( 'json_ld' ),
+				'jsonLd'        => $json_ld,
 				'isTracked'     => in_array( $current_object_type, $object_types, true ),
 			);
 		};
 
 		$config = array(
 			'type'        => self::GRAPHQL_CONTAINER_TYPE,
+			'args'        => array(
+				'removeWrappingTag' => array(
+					'type'        => 'Boolean',
+					'description' => __( 'Return rendered tags without the `script` wrapping tags.', 'wp-parsely' ),
+				),
+			),
 			'description' => __(
 				'Parse.ly metadata fields, to be rendered in the front-end so they can be parsed by the crawler. See https://www.parse.ly/help/integration/crawler.',
 				'wp-parsely'
