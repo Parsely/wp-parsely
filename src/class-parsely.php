@@ -668,7 +668,7 @@ class Parsely {
 	 *
 	 * @param int    $post_id The id of the post you're trying to get categories for.
 	 * @param string $delimiter What character will delimit the categories.
-	 * @return string[] All the child categories of the current post.
+	 * @return array<string> All the child categories of the current post.
 	 */
 	private function get_categories( int $post_id, string $delimiter = '/' ): array {
 		$tags = array();
