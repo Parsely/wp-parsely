@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely REST API tests.
+ * Parsely REST API Metadata tests.
  *
  * @package Parsely\Tests
  */
@@ -15,7 +15,7 @@ use Parsely\Tests\Integration\TestCase;
 
 
 /**
- * Parsely REST API tests.
+ * Parsely REST API Metadata tests.
  */
 final class RestMetadataTest extends TestCase {
 	/**
