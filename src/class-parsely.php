@@ -804,7 +804,7 @@ class Parsely {
 	 * Get all term values from custom taxonomies.
 	 *
 	 * @param WP_Post $post_obj The post object.
-	 * @return string[]
+	 * @return array<string>
 	 */
 	private function get_custom_taxonomy_values( WP_Post $post_obj ): array {
 		// filter out default WordPress taxonomies.
