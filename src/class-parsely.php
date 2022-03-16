@@ -831,7 +831,7 @@ class Parsely {
 	 * https://github.com/Automattic/Co-Authors-Plus/blob/master/template-tags.php#L3-35
 	 *
 	 * @param int $post_id The id of the post.
-	 * @return array
+	 * @return array<WP_User>
 	 */
 	private function get_coauthor_names( int $post_id ): array {
 		$coauthors = array();
@@ -879,14 +879,13 @@ class Parsely {
 	 * @return string
 	 */
 	private function get_author_name( ?WP_User $author ): string {
-		// gracefully handle situation where no author is available.
-		if ( empty( $author ) || ! is_object( $author ) ) {
+		// Gracefully handle situation where no author is available.
+		if ( null === $author ) {
 			return '';
 		}
 
-		$author_name = $author->display_name;
-		if ( ! empty( $author_name ) ) {
-			return $author_name;
+		if ( ! empty( $author->display_name ) ) {
+			return $author->display_name;
 		}
 
 		$author_name = $author->user_firstname . ' ' . $author->user_lastname;
@@ -894,12 +893,15 @@ class Parsely {
 			return $author_name;
 		}
 
-		$author_name = $author->nickname;
-		if ( ! empty( $author_name ) ) {
-			return $author_name;
+		if ( ! empty( $author->nickname ) ) {
+			return $author->nickname;
 		}
 
-		return $author->user_nicename;
+		if ( ! empty( $author->user_nicename ) ) {
+			return $author->user_nicename;
+		}
+
+		return '';
 	}
 
 	/**
@@ -907,11 +909,11 @@ class Parsely {
 	 * authors if coauthors plugin is in use.
 	 *
 	 * @param WP_Post $post The post object.
-	 * @return array
+	 * @return array<string>
 	 */
 	private function get_author_names( WP_Post $post ): array {
 		$authors = $this->get_coauthor_names( $post->ID );
-		if ( empty( $authors ) ) {
+		if ( 0 === count( $authors ) ) {
 			$post_author = get_user_by( 'id', $post->post_author );
 			if ( false !== $post_author ) {
 				$authors = array( $post_author );
@@ -940,8 +942,8 @@ class Parsely {
 		 * @param WP_Post  $post    Post object.
 		 */
 		$authors = apply_filters( 'wp_parsely_post_authors', $authors, $post );
-		$authors = array_map( array( $this, 'get_clean_parsely_page_value' ), $authors );
-		return $authors;
+
+		return array_map( array( $this, 'get_clean_parsely_page_value' ), $authors );
 	}
 
 	/**
