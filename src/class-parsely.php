@@ -909,7 +909,7 @@ class Parsely {
 	 * authors if coauthors plugin is in use.
 	 *
 	 * @param WP_Post $post The post object.
-	 * @return string[]
+	 * @return array<string>
 	 */
 	private function get_author_names( WP_Post $post ): array {
 		$authors = $this->get_coauthor_names( $post->ID );
