@@ -61,6 +61,7 @@
 		"classnames": "^2.3.1",
 		"concurrently": "^7.0.0",
 		"husky": "^7.0.4",
+		"msw": "^0.39.2",
 		"prettier": "^2.5.1"
 	},
 	"scripts": {
