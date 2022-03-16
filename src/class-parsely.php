@@ -831,7 +831,7 @@ class Parsely {
 	 * https://github.com/Automattic/Co-Authors-Plus/blob/master/template-tags.php#L3-35
 	 *
 	 * @param int $post_id The id of the post.
-	 * @return WP_User[]
+	 * @return array<WP_User>
 	 */
 	private function get_coauthor_names( int $post_id ): array {
 		$coauthors = array();
