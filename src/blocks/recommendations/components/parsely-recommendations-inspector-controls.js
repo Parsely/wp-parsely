@@ -167,10 +167,6 @@ const ParselyRecommendationsInspectorControls = ( {
 								value: 'tw_referrals',
 							},
 							{
-								label: __( 'Page views where the referrer was linkedin.com', 'wp-parsely' ),
-								value: 'li_referrals',
-							},
-							{
 								label: __( 'Page views where the referrer was pinterest.com', 'wp-parsely' ),
 								value: 'pi_referrals',
 							},
