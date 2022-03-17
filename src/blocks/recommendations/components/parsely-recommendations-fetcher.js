@@ -13,10 +13,7 @@ import { setError, setRecommendations } from '../actions';
 import { useRecommendationsStore } from '../recommendations-store';
 
 const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
-	const {
-		state: {},
-		dispatch,
-	} = useRecommendationsStore();
+	const {	dispatch } = useRecommendationsStore();
 
 	const query = {
 		boost,
