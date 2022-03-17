@@ -297,12 +297,10 @@ final class Recommended_Widget extends WP_Widget {
 			'social_interactions'   => __( 'Total for Facebook, Twitter, LinkedIn, and Pinterest', 'wp-parsely' ),
 			'fb_interactions'       => __( 'Count of Facebook shares, likes, and comments', 'wp-parsely' ),
 			'tw_interactions'       => __( 'Count of Twitter tweets and retweets', 'wp-parsely' ),
-			'li_interactions'       => __( 'Count of LinkedIn social interactions', 'wp-parsely' ),
 			'pi_interactions'       => __( 'Count of Pinterest pins', 'wp-parsely' ),
 			'social_referrals'      => __( 'Page views where the referrer was any social network', 'wp-parsely' ),
 			'fb_referrals'          => __( 'Page views where the referrer was facebook.com', 'wp-parsely' ),
 			'tw_referrals'          => __( 'Page views where the referrer was twitter.com', 'wp-parsely' ),
-			'li_referrals'          => __( 'Page views where the referrer was linkedin.com', 'wp-parsely' ),
 			'pi_referrals'          => __( 'Page views where the referrer was pinterest.com', 'wp-parsely' ),
 		);
 	}
