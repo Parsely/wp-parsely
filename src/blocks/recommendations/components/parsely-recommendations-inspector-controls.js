@@ -31,7 +31,7 @@ const ParselyRecommendationsInspectorControls = ( {
 					<RangeControl
 						label={ __( 'Maximum Results', 'wp-parsely' ) }
 						min="1"
-						max="99"
+						max="25"
 						onChange={ ( newval ) => setAttributes( { limit: newval } ) }
 						value={ limit }
 					/>
