@@ -278,7 +278,7 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return array Boost parameters values and labels.
+	 * @return array<string, string> Boost parameters values and labels.
 	 */
 	private function get_boost_params(): array {
 		return array(
