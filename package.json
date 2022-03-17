@@ -47,7 +47,6 @@
 		"@wordpress/blocks": "^11.3.1",
 		"@wordpress/components": "^19.6.1",
 		"@wordpress/compose": "^5.2.1",
-		"@wordpress/dom-ready": "^3.4.1",
 		"@wordpress/e2e-test-utils": "^7.0.1",
 		"@wordpress/editor": "^12.3.1",
 		"@wordpress/element": "^4.2.1",
