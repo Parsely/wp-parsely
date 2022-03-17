@@ -41,6 +41,7 @@
 		"js-cookie": "^3.0.1"
 	},
 	"devDependencies": {
+		"@testing-library/jest-dom": "^5.16.2",
 		"@testing-library/react": "^12.1.4",
 		"@wordpress/api-fetch": "^6.1.1",
 		"@wordpress/babel-preset-default": "^6.6.1",
