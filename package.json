@@ -57,7 +57,6 @@
 		"@wordpress/i18n": "^4.4.1",
 		"@wordpress/scripts": "^22.2.1",
 		"@wordpress/url": "^3.5.1",
-		"classnames": "^2.3.1",
 		"concurrently": "^7.0.0",
 		"husky": "^7.0.4",
 		"prettier": "^2.6.0"

@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import classNames from 'classnames';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -10,11 +9,7 @@ import { __ } from '@wordpress/i18n';
 import ParselyRecommendationsListItem from './parsely-recommendations-list-item';
 
 const ParselyRecommendationsList = ( { imagestyle, recommendations, showimages } ) => (
-	<ul
-		className={ classNames(
-			'parsely-recommendations-list'
-		) }
-	>
+	<ul className="parsely-recommendations-list">
 		{ recommendations.map( ( recommendation, index ) => (
 			<ParselyRecommendationsListItem
 				imagestyle={ imagestyle }
