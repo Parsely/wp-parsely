@@ -96,7 +96,7 @@ class Recommendations_Block {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	private static function get_block_registration_args(): array {
 		return array(
