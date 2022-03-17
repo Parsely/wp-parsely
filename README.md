@@ -87,7 +87,7 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
 
 ## The Parse.ly Recommendations Block (beta)
 
-The plugin includes a (currently in beta and disabled by default) Recommendations Block that uses the [Parse.ly API](https://www.parse.ly/help/api/recommendations#get-related) to showcase links to content on your site. More information about enabling the Recommendations Block can be found in its [documentation](https://github.com/Parsely/wp-parsely/blob/trunk/src/blocks/recommendations/README.md).
+The plugin includes a Recommendations Block that uses the [Parse.ly API](https://www.parse.ly/help/api/recommendations#get-related) to showcase links to content on your site. More information about enabling the Recommendations Block can be found in its [documentation](https://github.com/Parsely/wp-parsely/blob/trunk/src/blocks/recommendations/README.md). This feature is currently in beta and disabled by default.
 
 ## Screenshots
 
