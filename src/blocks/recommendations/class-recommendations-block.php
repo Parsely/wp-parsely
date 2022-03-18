@@ -50,7 +50,6 @@ class Recommendations_Block {
 	 * @return void
 	 */
 	public static function register_block_and_assets(): void {
-
 		// Temporary workaround - don't register block when in FSE due to issues.
 		global $pagenow;
 		if ( 'site-editor.php' === $pagenow ) {
