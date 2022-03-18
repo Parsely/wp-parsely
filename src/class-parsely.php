@@ -130,7 +130,7 @@ class Parsely {
 	}
 
 	/**
-	 * Gets the full URL of the JavaScript tracker file for the site. If not api is set, returns an empty string.
+	 * Get the full URL of the JavaScript tracker file for the site. If an API key is not set, return an empty string.
 	 *
 	 * @since 3.2.0
 	 *
@@ -145,7 +145,7 @@ class Parsely {
 	}
 
 	/**
-	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 *
 	 * @since 3.2.0
 	 *
@@ -154,7 +154,7 @@ class Parsely {
 	 */
 	public function render_metadata( string $meta_type ): void {
 		/**
-		 * Filters whether the Parse.ly meta tags should be inserted in the page.
+		 * Filter whether the Parse.ly meta tags should be inserted in the page.
 		 *
 		 * By default, the tags are inserted.
 		 *
@@ -237,7 +237,7 @@ class Parsely {
 	}
 
 	/**
-	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 *
 	 * @since 3.0.0
 	 *
@@ -249,7 +249,7 @@ class Parsely {
 	}
 
 	/**
-	 * Deprecated. Echoes the metadata into the page, and returns the inserted values.
+	 * Deprecated. Echo the metadata into the page, and return the inserted values.
 	 *
 	 * To just echo the metadata, use the `insert_page_header_metadata()` method.
 	 * To get the metadata to be inserted, use the `construct_parsely_metadata()` method.
@@ -274,12 +274,12 @@ class Parsely {
 	}
 
 	/**
-	 * Function to be used in `array_filter` to clean up repeated metas
+	 * Function to be used in `array_filter` to clean up repeated metas.
 	 *
 	 * @since 2.6.0
 	 *
 	 * @param mixed $var Value to filter from the array.
-	 * @return bool Returns true if the variable is not empty, and it's a string
+	 * @return bool True if the variable is not empty, and it's a string.
 	 */
 	private static function filter_empty_and_not_string_from_array( $var ): bool {
 		return is_string( $var ) && '' !== $var;

@@ -247,7 +247,7 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Tests if the tracker URL is correctly generated with a set API key.
+	 * Test if the tracker URL is correctly generated with a set API key.
 	 *
 	 * @since 3.2.0
 	 *
@@ -259,7 +259,7 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Tests if the tracker URL is an empty string when there's no API key.
+	 * Test if the tracker URL is an empty string when there's no API key.
 	 *
 	 * @since 3.2.0
 	 *
