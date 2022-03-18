@@ -14,7 +14,7 @@ namespace Parsely\Endpoints;
 use WP_Post;
 
 /**
- * Injects Parse.ly Metadata to the GraphQL outputs
+ * Add Parse.ly metadata fields to the WP GraphQL server.
  *
  * @since 3.2.0
  */
