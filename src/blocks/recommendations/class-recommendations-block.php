@@ -38,17 +38,6 @@ class Recommendations_Block {
 			return;
 		}
 
-		// Temporary workaround - remove block when in FSE due to issues.
-		global $pagenow;
-		if ( 'site-editor.php' === $pagenow ) {
-			add_action(
-				'admin_init',
-				function() {
-					unregister_block_type( 'wp-parsely/recommendations' );
-				}
-			);
-		}
-
 		self::register_block_and_assets();
 	}
 
@@ -61,6 +50,13 @@ class Recommendations_Block {
 	 * @return void
 	 */
 	public static function register_block_and_assets(): void {
+
+		// Temporary workaround - don't register block when in FSE due to issues.
+		global $pagenow;
+		if ( 'site-editor.php' === $pagenow ) {
+			return;
+		}
+
 		$plugin_url = plugin_dir_url( PARSELY_FILE );
 
 		$editor_asset_file = require plugin_dir_path( PARSELY_FILE ) . 'build/recommendations-edit.asset.php';
