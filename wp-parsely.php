@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace Parsely;
 
 use Parsely\Endpoints\Related_API_Proxy;
+use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Endpoints\Rest_Metadata;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
@@ -54,6 +55,8 @@ require __DIR__ . '/src/class-parsely.php';
 require __DIR__ . '/src/class-scripts.php';
 require __DIR__ . '/src/class-dashboard-link.php';
 require __DIR__ . '/src/UI/class-admin-bar.php';
+require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
+require __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
@@ -64,6 +67,11 @@ add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 function parsely_initialize_plugin(): void {
 	$GLOBALS['parsely'] = new Parsely();
 	$GLOBALS['parsely']->run();
+
+	if ( class_exists( 'WPGraphQL' ) ) {
+		$graphql = new GraphQL_Metadata( $GLOBALS['parsely'] );
+		$graphql->run();
+	}
 
 	$scripts = new Scripts( $GLOBALS['parsely'] );
 	$scripts->run();
@@ -117,7 +125,6 @@ require __DIR__ . '/src/RemoteAPI/class-cached-proxy.php';
 require __DIR__ . '/src/RemoteAPI/class-related-proxy.php';
 require __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
 require __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
-require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
 require __DIR__ . '/src/Endpoints/class-rest-metadata.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
