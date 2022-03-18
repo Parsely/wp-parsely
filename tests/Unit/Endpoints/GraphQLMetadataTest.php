@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely GraphQL Metadata tests.
+ * Parse.ly GraphQL Metadata tests.
  *
  * @package Parsely\Tests
  */
@@ -34,7 +34,7 @@ final class GraphQLMetadataTest extends TestCase {
 	private static $parsely;
 
 	/**
-	 * The setUp run before each test
+	 * The setup run before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -44,7 +44,7 @@ final class GraphQLMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Tests if the functions to register items into GraphQL have been called.
+	 * Test if the functions to register items into GraphQL have been called.
 	 *
 	 * @since 3.2.0
 	 *

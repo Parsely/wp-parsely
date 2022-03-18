@@ -23,7 +23,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	private const GRAPHQL_CONTAINER_TYPE = 'ParselyMetaContainer';
 
 	/**
-	 * Register fields in WPGraphQL plugin
+	 * Register fields in WPGraphQL plugin.
 	 *
 	 * @since 3.2.0
 	 *
@@ -43,7 +43,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	}
 
 	/**
-	 * Registers the meta field on the appropriate resource types in the REST API.
+	 * Register the meta field on the appropriate resource types in the REST API.
 	 *
 	 * @since 3.2.0
 	 *
@@ -55,7 +55,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	}
 
 	/**
-	 * Registers the new custom types for Parse.ly Metadata into the GraphQL instance.
+	 * Register the new custom types for Parse.ly Metadata into the GraphQL instance.
 	 *
 	 * @since 3.2.0
 	 *
