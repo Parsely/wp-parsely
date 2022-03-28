@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely Related REST API Proxy
+ * Base Proxy for all Parse.ly API endpoints.
  *
  * @package Parsely
  * @since 3.2.0
@@ -43,7 +43,7 @@ abstract class Base_Proxy implements Proxy {
 	}
 
 	/**
-	 * Get URL for Recommendation API (GET /related).
+	 * Get URL for a particular Parse.ly API endpoint.
 	 *
 	 * @since 3.2.0
 	 *

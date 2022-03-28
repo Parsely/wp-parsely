@@ -146,6 +146,19 @@ function parsely_rest_api_init(): void {
 	$endpoint->run();
 }
 
+require __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';
+
+add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
+/**
+ * Register the Recommendations Block.
+ *
+ * @return void
+ */
+function init_recommendations_block(): void {
+	$recommendations_block = new Recommendations_Block();
+	$recommendations_block->run();
+}
+
 require __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );

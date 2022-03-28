@@ -18,7 +18,7 @@ use WP_REST_Server;
 use WP_REST_Request;
 
 /**
- * Configure a REST API endpoint for use e.g. by the Related Block.
+ * Configure a REST API endpoint for use e.g. by the Recommendations Block.
  */
 final class Related_API_Proxy {
 	/**
@@ -52,7 +52,7 @@ final class Related_API_Proxy {
 	 * @return void
 	 */
 	public function run(): void {
-		if ( ! apply_filters( 'wp_parsely_enable_related_endpoint', false ) ) {
+		if ( ! apply_filters( 'wp_parsely_recommendations_block_enabled', false ) ) {
 			return;
 		}
 

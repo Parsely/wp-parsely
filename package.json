@@ -37,16 +37,24 @@
 		"defaults"
 	],
 	"dependencies": {
-		"@wordpress/dom-ready": "^3.3.1",
+		"@wordpress/dom-ready": "^3.4.1",
 		"js-cookie": "^3.0.1"
 	},
 	"devDependencies": {
+		"@wordpress/api-fetch": "^6.1.1",
 		"@wordpress/babel-preset-default": "^6.6.1",
+		"@wordpress/block-editor": "^8.3.1",
+		"@wordpress/blocks": "^11.3.1",
+		"@wordpress/components": "^19.6.1",
+		"@wordpress/compose": "^5.2.1",
 		"@wordpress/e2e-test-utils": "^7.0.1",
+		"@wordpress/element": "^4.2.1",
 		"@wordpress/env": "^4.3.1",
 		"@wordpress/eslint-plugin": "^11.0.1",
 		"@wordpress/hooks": "^3.4.1",
+		"@wordpress/i18n": "^4.4.1",
 		"@wordpress/scripts": "^22.2.1",
+		"@wordpress/url": "^3.5.1",
 		"concurrently": "^7.0.0",
 		"husky": "^7.0.4",
 		"prettier": "^2.6.0"
