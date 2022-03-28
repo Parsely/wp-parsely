@@ -19,7 +19,7 @@ use WP_Post;
  * @since 3.2.0 Renamed FQCN from `Parsely\Rest` to `Parsely\Endpoints\Rest_Metadata`.
  */
 class Rest_Metadata extends Metadata_Endpoint {
-	private const REST_VERSION = '1.0.0';
+	private const REST_VERSION = '1.1.0';
 
 	/**
 	 * Register fields in WordPress REST API
@@ -95,9 +95,22 @@ class Rest_Metadata extends Metadata_Endpoint {
 		 * @since 3.1.0
 		 *
 		 * @param bool $enabled True if enabled, false if not.
+		 * @param WP_Post|false $post Current post object.
 		 */
 		if ( apply_filters( 'wp_parsely_enable_rest_rendered_support', true, $post ) ) {
 			$response['rendered'] = $this->get_rendered_meta( $options['meta_type'] );
+		}
+
+		/**
+		 * Filter whether REST API support in rendered string format is enabled or not.
+		 *
+		 * @since 3.3.0
+		 *
+		 * @param bool $enabled True if enabled, false if not.
+		 * @param WP_Post|false $post Current post object.
+		 */
+		if ( apply_filters( 'wp_parsely_enable_tracker_url', true, $post ) ) {
+			$response['tracker_url'] = $this->parsely->get_tracker_url();
 		}
 
 		return $response;
