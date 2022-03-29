@@ -102,7 +102,7 @@ class Rest_Metadata extends Metadata_Endpoint {
 		}
 
 		/**
-		 * Filter whether REST API support in rendered string format is enabled or not.
+		 * Filter whether the REST API returns the tracker URL.
 		 *
 		 * @since 3.3.0
 		 *
