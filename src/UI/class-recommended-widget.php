@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Parsely\UI;
 
-use Parsely\Parsely;
 use WP_Widget;
 
 use const Parsely\PARSELY_FILE;
@@ -37,7 +36,7 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Get the URL for the Recommendation API (GET /related).
+	 * Get the URL for the Recommendations API (GET /related).
 	 *
 	 * @see https://www.parse.ly/help/api/recommendations#get-related
 	 *
@@ -97,8 +96,6 @@ final class Recommended_Widget extends WP_Widget {
 			add_filter( 'widget_title', 'esc_html' );
 		}
 
-		wp_enqueue_style( 'wp-parsely-style' );
-
 		$title_html = $args['before_widget'] . $args['before_title'] . $title . $args['after_title'];
 		echo wp_kses_post( $title_html );
 
@@ -132,11 +129,19 @@ final class Recommended_Widget extends WP_Widget {
 			'wp-parsely-recommended-widget',
 			plugin_dir_url( PARSELY_FILE ) . 'build/recommended-widget.js',
 			$recommended_widget_script_asset['dependencies'],
-			Parsely::get_asset_cache_buster(),
+			$recommended_widget_script_asset['version'],
 			true
 		);
 
+		wp_register_style(
+			'wp-parsely-recommended-widget',
+			plugin_dir_url( PARSELY_FILE ) . 'build/recommended-widget.css',
+			array(),
+			$recommended_widget_script_asset['version']
+		);
+
 		wp_enqueue_script( 'wp-parsely-recommended-widget' );
+		wp_enqueue_style( 'wp-parsely-recommended-widget' );
 
 		echo wp_kses_post( $args['after_widget'] );
 	}
@@ -273,7 +278,7 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return array Boost parameters values and labels.
+	 * @return array<string, string> Boost parameters values and labels.
 	 */
 	private function get_boost_params(): array {
 		return array(
@@ -292,12 +297,10 @@ final class Recommended_Widget extends WP_Widget {
 			'social_interactions'   => __( 'Total for Facebook, Twitter, LinkedIn, and Pinterest', 'wp-parsely' ),
 			'fb_interactions'       => __( 'Count of Facebook shares, likes, and comments', 'wp-parsely' ),
 			'tw_interactions'       => __( 'Count of Twitter tweets and retweets', 'wp-parsely' ),
-			'li_interactions'       => __( 'Count of LinkedIn social interactions', 'wp-parsely' ),
 			'pi_interactions'       => __( 'Count of Pinterest pins', 'wp-parsely' ),
 			'social_referrals'      => __( 'Page views where the referrer was any social network', 'wp-parsely' ),
 			'fb_referrals'          => __( 'Page views where the referrer was facebook.com', 'wp-parsely' ),
 			'tw_referrals'          => __( 'Page views where the referrer was twitter.com', 'wp-parsely' ),
-			'li_referrals'          => __( 'Page views where the referrer was linkedin.com', 'wp-parsely' ),
 			'pi_referrals'          => __( 'Page views where the referrer was pinterest.com', 'wp-parsely' ),
 		);
 	}

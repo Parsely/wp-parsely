@@ -19,7 +19,7 @@ final class OtherTest extends TestCase {
 	/**
 	 * Internal variables
 	 *
-	 * @var string $parsely Holds the Parsely object.
+	 * @var Parsely $parsely Holds the Parsely object.
 	 */
 	private static $parsely;
 
@@ -60,9 +60,9 @@ final class OtherTest extends TestCase {
 	 * During tests, this should only return the version constant.
 	 *
 	 * @covers \Parsely\Parsely::get_asset_cache_buster
-	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_cache_buster(): void {
+		$this->setExpectedDeprecated( 'Parsely::get_asset_cache_buster' );
 		self::assertSame( Parsely::VERSION, Parsely::get_asset_cache_buster() );
 	}
 
@@ -244,5 +244,30 @@ final class OtherTest extends TestCase {
 
 		$result = Parsely::post_has_trackable_status( $post );
 		self::assertTrue( $result );
+	}
+
+	/**
+	 * Test if the tracker URL is correctly generated with a set API key.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @covers \Parsely\Parsely::get_tracker_url
+	 */
+	public function test_get_tracker_url(): void {
+		$expected = 'https://cdn.parsely.com/keys/blog.parsely.com/p.js';
+		self::assertEquals( $expected, self::$parsely->get_tracker_url() );
+	}
+
+	/**
+	 * Test if the tracker URL is an empty string when there's no API key.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @covers \Parsely\Parsely::get_tracker_url
+	 */
+	public function test_get_tracker_no_api_key(): void {
+		self::set_options( array( 'apikey' => '' ) );
+		$expected = '';
+		self::assertEquals( $expected, self::$parsely->get_tracker_url() );
 	}
 }

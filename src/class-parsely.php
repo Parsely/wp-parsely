@@ -113,7 +113,6 @@ class Parsely {
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
 		add_action( 'wp_head', array( $this, 'insert_page_header_metadata' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'wp_parsely_style_init' ) );
 	}
 
 	/**
@@ -131,24 +130,31 @@ class Parsely {
 	}
 
 	/**
-	 * Initialize Parse.ly WordPress style.
+	 * Get the full URL of the JavaScript tracker file for the site. If an API key is not set, return an empty string.
 	 *
-	 * @return void
+	 * @since 3.2.0
+	 *
+	 * @return string
 	 */
-	public function wp_parsely_style_init(): void {
-		wp_register_style( 'wp-parsely-style', plugin_dir_url( PARSELY_FILE ) . 'wp-parsely.css', array(), self::VERSION );
+	public function get_tracker_url(): string {
+		if ( $this->api_key_is_set() ) {
+			$tracker_url = 'https://cdn.parsely.com/keys/' . $this->get_api_key() . '/p.js';
+			return esc_url( $tracker_url );
+		}
+		return '';
 	}
 
 	/**
-	 * Actually inserts the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 *
-	 * @since 3.0.0
+	 * @since 3.2.0
 	 *
+	 * @param string $meta_type `json_ld` or `repeated_metas`.
 	 * @return void
 	 */
-	public function insert_page_header_metadata(): void {
+	public function render_metadata( string $meta_type ): void {
 		/**
-		 * Filters whether the Parse.ly meta tags should be inserted in the page.
+		 * Filter whether the Parse.ly meta tags should be inserted in the page.
 		 *
 		 * By default, the tags are inserted.
 		 *
@@ -180,10 +186,6 @@ class Parsely {
 		global $post;
 
 		// We can't construct the metadata without a valid post object.
-		if ( empty( $post ) ) {
-			return;
-		}
-
 		$parsed_post = get_post( $post );
 		if ( ! $parsed_post instanceof WP_Post ) {
 			return;
@@ -194,14 +196,12 @@ class Parsely {
 		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $parsed_post );
 
 		// Something went wrong - abort.
-		if ( empty( $parsely_page ) || ! isset( $parsely_page['headline'] ) ) {
+		if ( 0 === count( $parsely_page ) || ! isset( $parsely_page['headline'] ) ) {
 			return;
 		}
 
-		echo PHP_EOL;
-
 		// Insert JSON-LD or repeated metas.
-		if ( 'json_ld' === $parsely_options['meta_type'] ) {
+		if ( 'json_ld' === $meta_type ) {
 			include plugin_dir_path( PARSELY_FILE ) . 'views/json-ld.php';
 		} else {
 			// Assume `meta_type` is `repeated_metas`.
@@ -234,12 +234,22 @@ class Parsely {
 		if ( isset( $parsely_page['custom_metadata'] ) ) {
 			include plugin_dir_path( PARSELY_FILE ) . 'views/custom-metadata.php';
 		}
-
-		echo PHP_EOL;
 	}
 
 	/**
-	 * Deprecated. Echoes the metadata into the page, and returns the inserted values.
+	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return void
+	 */
+	public function insert_page_header_metadata(): void {
+		$parsely_options = $this->get_options();
+		$this->render_metadata( $parsely_options['meta_type'] );
+	}
+
+	/**
+	 * Deprecated. Echo the metadata into the page, and return the inserted values.
 	 *
 	 * To just echo the metadata, use the `insert_page_header_metadata()` method.
 	 * To get the metadata to be inserted, use the `construct_parsely_metadata()` method.
@@ -264,13 +274,15 @@ class Parsely {
 	}
 
 	/**
-	 * Function to be used in `array_filter` to clean up repeated metas
+	 * Function to be used in `array_filter` to clean up repeated metas.
+	 *
+	 * @since 2.6.0
 	 *
 	 * @param mixed $var Value to filter from the array.
-	 * @return bool Returns true if the variable is not empty, and it's a string
+	 * @return bool True if the variable is not empty, and it's a string.
 	 */
 	private static function filter_empty_and_not_string_from_array( $var ): bool {
-		return ! empty( $var ) && is_string( $var );
+		return is_string( $var ) && '' !== $var;
 	}
 
 	/**
@@ -635,10 +647,12 @@ class Parsely {
 	 * Otherwise, use the plugin version.
 	 *
 	 * @since 2.5.0
+	 * @deprecated 3.2.0
 	 *
 	 * @return string Random number string or plugin version string.
 	 */
 	public static function get_asset_cache_buster(): string {
+		_deprecated_function( 'Parsely::get_asset_cache_buster', '3.2.0' );
 		static $cache_buster;
 		if ( isset( $cache_buster ) ) {
 			return $cache_buster;
@@ -653,7 +667,9 @@ class Parsely {
 		 *
 		 * @param string $cache_buster Plugin version, unless WP_DEBUG is defined and truthy, and tests are not running.
 		 */
-		return apply_filters( 'wp_parsely_cache_buster', (string) $cache_buster );
+		$cache_buster = apply_filters_deprecated( 'wp_parsely_cache_buster', array( (string) $cache_buster ), '3.2.0' );
+
+		return $cache_buster;
 	}
 
 	/**
@@ -976,10 +992,12 @@ class Parsely {
 	/**
 	 * Get the URL of the plugin settings page.
 	 *
+	 * @param int $_blog_id The Blog ID for the multisite subsite to use for context (Default null for current).
+	 *
 	 * @return string
 	 */
-	public static function get_settings_url(): string {
-		return admin_url( 'options-general.php?page=' . self::MENU_SLUG );
+	public static function get_settings_url( int $_blog_id = null ): string {
+		return get_admin_url( $_blog_id, 'options-general.php?page=' . self::MENU_SLUG );
 	}
 
 	/**
@@ -1057,13 +1075,14 @@ class Parsely {
 	 * Otherwise, for "non-posts" and unknown types, "index" is returned.
 	 *
 	 * @since 2.5.0
+	 * @since 3.2.0 Moved to private method.
 	 *
 	 * @see https://www.parse.ly/help/integration/metatags#field-description
 	 *
 	 * @param string $type JSON-LD type.
 	 * @return string "post" or "index".
 	 */
-	public function convert_jsonld_to_parsely_type( string $type ): string {
+	private function convert_jsonld_to_parsely_type( string $type ): string {
 		return in_array( $type, $this->supported_jsonld_post_types, true ) ? 'post' : 'index';
 	}
 

@@ -1,6 +1,6 @@
 # Parse.ly
 
-Stable tag: 3.1.3  
+Stable tag: 3.2.0  
 Requires at least: 5.0  
 Tested up to: 5.9.2  
 Requires PHP: 7.1  
@@ -84,6 +84,10 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
 {"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/"},"headline":"How the WordPress Gutenberg Block Editor Empowers Enterprise Content Creators","url":"http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/","thumbnailUrl":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120","image":{"@type":"ImageObject","url":"https:\/\/wpvip.com\/wp-content\/uploads\/2021\/04\/ladyatdesk.png?w=120"},"dateCreated":"2021-04-09T15:13:13Z","datePublished":"2021-04-09T15:13:13Z","dateModified":"2021-04-09T15:13:13Z","articleSection":"Gutenberg","author":[{"@type":"Person","name":"Sam Wendland"}],"creator":["Sam Wendland"],"publisher":{"@type":"Organization","name":"The Enterprise Content Management Platform | WordPress VIP","logo":"https:\/\/wpvip.com\/wp-content\/uploads\/2020\/11\/cropped-favicon-dark.png"},"keywords":[]}
 </script>
 ~~~
+
+## The Parse.ly Recommendations Block (beta)
+
+The plugin includes a Recommendations Block that uses the [Parse.ly API](https://www.parse.ly/help/api/recommendations#get-related) to showcase links to content on your site. More information about enabling the Recommendations Block can be found in its [documentation](https://github.com/Parsely/wp-parsely/blob/trunk/src/blocks/recommendations/README.md). This feature is currently in beta and disabled by default.
 
 ## Screenshots
 
