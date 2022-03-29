@@ -13,15 +13,11 @@ The 3.2.0 release introduces many new features, including:
 - Official support for interacting with the Parse.ly tracker's `onload` event, that eliminates the possible need of resorting to workarounds.
 - GraphQL support which opens new possibilities for decoupled/headless setups.
 - Google Web Stories support.
-- For Multisite installations, the Network Admin sites list has been enhanced with a link to the plugin's settings for each subsite, as well as showing the API Key for each subsite.
-- The settings page has been enhanced to become a bit more user friendly, and you can now also hide the sections that might not interest you, using the Screen Options section.
-
-In addition to all the features, we've worked on improving our documentation. And under the hood, we've improved our tests, updated our dependencies, did some cleanups and added more files to our asset building process.
 
 ### Added
 
 - Recommendations Block. [#611](https://github.com/Parsely/wp-parsely/pull/611), [#642](https://github.com/Parsely/wp-parsely/pull/642), [#649](https://github.com/Parsely/wp-parsely/pull/649)
-- JS hook for accessing the tracker's `onload` event. [#650](https://github.com/Parsely/wp-parsely/pull/650)
+- JavaScript hook for accessing the tracker's `onload` event. [#650](https://github.com/Parsely/wp-parsely/pull/650)
 - GraphQL support. [#710](https://github.com/Parsely/wp-parsely/pull/710)
 - Google Web Stories support. [#602](https://github.com/Parsely/wp-parsely/pull/602)
 - Settings link and API Key in Network Admin sites list. [#583](https://github.com/Parsely/wp-parsely/pull/583)
