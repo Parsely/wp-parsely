@@ -17,7 +17,7 @@ use WP_Post;
  * Generates and inserts metadata readable by the Parse.ly Crawler.
  *
  * @since 1.0.0
- * @since 3.3.0 Moved from class-parsely to separate file
+ * @since 3.3.0 Logic extracted from Parsely\Parsely class to separate file/class.
  */
 class Metadata {
 	/**
