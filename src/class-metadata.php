@@ -46,7 +46,7 @@ class Metadata {
 	 */
 	public function construct_metadata( array $parsely_options, WP_Post $post ): array {
 		$parsely_page      = array(
-			'@context' => 'http://schema.org',
+			'@context' => 'https://schema.org',
 			'@type'    => 'WebPage',
 		);
 		$current_url       = $this->get_current_url();
