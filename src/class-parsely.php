@@ -641,38 +641,6 @@ class Parsely {
 	}
 
 	/**
-	 * Get the cache buster value for script and styles.
-	 *
-	 * If WP_DEBUG is defined and truthy, and we're not running tests, then use a random number.
-	 * Otherwise, use the plugin version.
-	 *
-	 * @since 2.5.0
-	 * @deprecated 3.2.0
-	 *
-	 * @return string Random number string or plugin version string.
-	 */
-	public static function get_asset_cache_buster(): string {
-		_deprecated_function( 'Parsely::get_asset_cache_buster', '3.2.0' );
-		static $cache_buster;
-		if ( isset( $cache_buster ) ) {
-			return $cache_buster;
-		}
-
-		$cache_buster = defined( 'WP_DEBUG' ) && WP_DEBUG && empty( 'WP_TESTS_DOMAIN' ) ? wp_rand() : PARSELY_VERSION;
-
-		/**
-		 * Filters the cache buster value for linked scripts and styles.
-		 *
-		 * @since 2.5.0
-		 *
-		 * @param string $cache_buster Plugin version, unless WP_DEBUG is defined and truthy, and tests are not running.
-		 */
-		$cache_buster = apply_filters_deprecated( 'wp_parsely_cache_buster', array( (string) $cache_buster ), '3.2.0' );
-
-		return $cache_buster;
-	}
-
-	/**
 	 * Returns the tags associated with this page or post
 	 *
 	 * @param int $post_id The id of the post you're trying to get tags for.
