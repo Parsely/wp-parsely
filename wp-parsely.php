@@ -141,7 +141,7 @@ function parsely_rest_api_init(): void {
 	$rest->run();
 
 	$proxy        = new Related_Proxy( $GLOBALS['parsely'] );
-	$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
+	$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache() );
 	$endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $cached_proxy );
 	$endpoint->run();
 }
