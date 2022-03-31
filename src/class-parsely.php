@@ -111,7 +111,6 @@ class Parsely {
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
-		add_action( 'wp_head', array( $this, 'insert_page_header_metadata' ) );
 	}
 
 	/**
@@ -152,87 +151,6 @@ class Parsely {
 	 * @return void
 	 */
 	public function render_metadata( string $meta_type ): void {
-		/**
-		 * Filter whether the Parse.ly meta tags should be inserted in the page.
-		 *
-		 * By default, the tags are inserted.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param bool $insert_metadata True to insert the metadata, false otherwise.
-		 */
-		if ( ! apply_filters( 'wp_parsely_should_insert_metadata', true ) ) {
-			return;
-		}
-
-		$parsely_options = $this->get_options();
-
-		if (
-			$this->api_key_is_missing() ||
-
-			// Chosen not to track logged-in users.
-			( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
-
-			// 404 pages are not tracked.
-			is_404() ||
-
-			// Search pages are not tracked.
-			is_search()
-		) {
-			return;
-		}
-
-		global $post;
-
-		// We can't construct the metadata without a valid post object.
-		$parsed_post = get_post( $post );
-		if ( ! $parsed_post instanceof WP_Post ) {
-			return;
-		}
-
-		// Assign default values for LD+JSON
-		// TODO: Mapping of an install's post types to Parse.ly post types (namely page/post).
-		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $parsed_post );
-
-		// Something went wrong - abort.
-		if ( 0 === count( $parsely_page ) || ! isset( $parsely_page['headline'] ) ) {
-			return;
-		}
-
-		// Insert JSON-LD or repeated metas.
-		if ( 'json_ld' === $meta_type ) {
-			include plugin_dir_path( PARSELY_FILE ) . 'views/json-ld.php';
-		} else {
-			// Assume `meta_type` is `repeated_metas`.
-			$parsely_post_type = $this->convert_jsonld_to_parsely_type( $parsely_page['@type'] );
-			if ( isset( $parsely_page['keywords'] ) && is_array( $parsely_page['keywords'] ) ) {
-				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
-			}
-
-			$parsely_metas = array(
-				'title'     => $parsely_page['headline'] ?? null,
-				'link'      => $parsely_page['url'] ?? null,
-				'type'      => $parsely_post_type,
-				'image-url' => $parsely_page['thumbnailUrl'] ?? null,
-				'pub-date'  => $parsely_page['datePublished'] ?? null,
-				'section'   => $parsely_page['articleSection'] ?? null,
-				'tags'      => $parsely_page['keywords'] ?? null,
-				'author'    => isset( $parsely_page['author'] ),
-			);
-			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
-
-			if ( isset( $parsely_page['author'] ) ) {
-				$parsely_page_authors = wp_list_pluck( $parsely_page['author'], 'name' );
-				$parsely_page_authors = array_filter( $parsely_page_authors, array( $this, 'filter_empty_and_not_string_from_array' ) );
-			}
-
-			include plugin_dir_path( PARSELY_FILE ) . 'views/repeated-metas.php';
-		}
-
-		// Add any custom metadata.
-		if ( isset( $parsely_page['custom_metadata'] ) ) {
-			include plugin_dir_path( PARSELY_FILE ) . 'views/custom-metadata.php';
-		}
 	}
 
 	/**
@@ -524,14 +442,13 @@ class Parsely {
 	 * Otherwise, for "non-posts" and unknown types, "index" is returned.
 	 *
 	 * @since 2.5.0
-	 * @since 3.2.0 Moved to private method.
 	 *
 	 * @see https://www.parse.ly/help/integration/metatags#field-description
 	 *
 	 * @param string $type JSON-LD type.
 	 * @return string "post" or "index".
 	 */
-	private function convert_jsonld_to_parsely_type( string $type ): string {
+	public function convert_jsonld_to_parsely_type( string $type ): string {
 		return in_array( $type, self::SUPPORTED_JSONLD_POST_TYPES, true ) ? 'post' : 'index';
 	}
 
