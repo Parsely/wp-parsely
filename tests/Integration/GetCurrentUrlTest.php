@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
+use Parsely\Metadata;
 
 /**
  * \Parsely\Parsely::get_current_url() tests.
@@ -127,8 +128,9 @@ final class GetCurrentUrlTest extends TestCase {
 	private function assertCurrentUrlForHomepage( string $expected ): void {
 		$this->go_to( '/' );
 
-		$parsely = new Parsely();
-		$res     = $parsely->get_current_url();
+		$metadata        = new Metadata( new Parsely() );
+		$get_current_url = self::getMethod( 'get_current_url', Metadata::class );
+		$res             = $get_current_url->invoke( $metadata );
 
 		self::assertEquals( $expected . '/', $res, 'Homepage page does not match.' );
 	}
@@ -141,8 +143,9 @@ final class GetCurrentUrlTest extends TestCase {
 	private function assertCurrentUrlForSpecificPostWithId( string $expected ): void {
 		$post_id = $this->go_to_new_post();
 
-		$parsely = new Parsely();
-		$res     = $parsely->get_current_url( 'post', $post_id );
+		$metadata        = new Metadata( new Parsely() );
+		$get_current_url = self::getMethod( 'get_current_url', Metadata::class );
+		$res             = $get_current_url->invoke( $metadata, 'post', $post_id );
 
 		self::assertEquals( $expected . '/?p=' . $post_id, $res, 'Specific post by ID does not match.' );
 	}
@@ -153,9 +156,11 @@ final class GetCurrentUrlTest extends TestCase {
 	 * @param string $expected Expected start of the URL.
 	 */
 	private function assertCurrentUrlForRandomUrl( string $expected ): void {
-		$parsely = new Parsely();
 		$this->go_to( '/random/url/' );
-		$res = $parsely->get_current_url();
+
+		$metadata        = new Metadata( new Parsely() );
+		$get_current_url = self::getMethod( 'get_current_url', Metadata::class );
+		$res             = $get_current_url->invoke( $metadata );
 
 		$constructed_expected = $expected . '/random/url/';
 		self::assertEquals( $constructed_expected, $res, 'Random URL does not match.' );
