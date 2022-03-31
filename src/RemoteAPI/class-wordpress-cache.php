@@ -46,6 +46,7 @@ class WordPress_Cache implements Cache {
 	 * @return bool True on success, false on failure.
 	 */
 	public function set( $key, $data, string $group = '', $expire = 0 ): bool {
-		return wp_cache_set( $key, $data, $group, $expire ); // phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
+		// phpcs:ignore WordPressVIPMinimum.Performance.LowExpiryCacheTime.CacheTimeUndetermined
+		return wp_cache_set( $key, $data, $group, $expire );
 	}
 }
