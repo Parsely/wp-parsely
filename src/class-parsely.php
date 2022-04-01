@@ -191,18 +191,6 @@ class Parsely {
 	}
 
 	/**
-	 * Function to be used in `array_filter` to clean up repeated metas.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param mixed $var Value to filter from the array.
-	 * @return bool True if the variable is not empty, and it's a string.
-	 */
-	private static function filter_empty_and_not_string_from_array( $var ): bool {
-		return is_string( $var ) && '' !== $var;
-	}
-
-	/**
 	 * Compare the post_status key against an allowed list (by default, only 'publish'ed content includes tracking data).
 	 *
 	 * @since 2.5.0

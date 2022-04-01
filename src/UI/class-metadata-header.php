@@ -140,4 +140,17 @@ final class Metadata_Header {
 			include plugin_dir_path( PARSELY_FILE ) . 'views/custom-metadata.php';
 		}
 	}
+
+	/**
+	 * Function to be used in `array_filter` to clean up repeated metas.
+	 *
+	 * @since 2.6.0
+	 * @since 3.3.0 Moved from `Parsely` class to `Metadata_Header`
+	 *
+	 * @param mixed $var Value to filter from the array.
+	 * @return bool True if the variable is not empty, and it's a string.
+	 */
+	private function filter_empty_and_not_string_from_array( $var ): bool {
+		return is_string( $var ) && '' !== $var;
+	}
 }
