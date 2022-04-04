@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely REST API tests.
+ * Parsely REST API Metadata tests.
  *
  * @package Parsely\Tests
  */
@@ -15,7 +15,7 @@ use Parsely\Tests\Integration\TestCase;
 
 
 /**
- * Parsely REST API tests.
+ * Parsely REST API Metadata tests.
  */
 final class RestMetadataTest extends TestCase {
 	/**
@@ -144,15 +144,14 @@ final class RestMetadataTest extends TestCase {
 
 		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
 		$expected    = array(
-			'version'  => '1.0.0',
-			'meta'     => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
-			'rendered' => self::$rest->get_rendered_meta(),
+			'version'     => '1.1.0',
+			'meta'        => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
+			'rendered'    => self::$rest->get_rendered_meta( 'json_ld' ),
+			'tracker_url' => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
 		self::assertEquals( $expected, $meta_object );
 	}
-
-
 
 	/**
 	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
@@ -166,8 +165,29 @@ final class RestMetadataTest extends TestCase {
 
 		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
 		$expected    = array(
-			'version' => '1.0.0',
-			'meta'    => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
+			'version'     => '1.1.0',
+			'meta'        => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
+			'tracker_url' => 'https://cdn.parsely.com/keys/testkey/p.js',
+		);
+
+		self::assertEquals( $expected, $meta_object );
+	}
+
+	/**
+	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
+	 *
+	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
+	 */
+	public function test_get_callback_with_url_filter(): void {
+		add_filter( 'wp_parsely_enable_tracker_url', '__return_false' );
+		self::set_options( array( 'apikey' => 'testkey' ) );
+		$post_id = self::factory()->post->create();
+
+		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
+		$expected    = array(
+			'version'  => '1.1.0',
+			'meta'     => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
+			'rendered' => self::$rest->get_rendered_meta( 'json_ld' ),
 		);
 
 		self::assertEquals( $expected, $meta_object );
@@ -181,9 +201,10 @@ final class RestMetadataTest extends TestCase {
 	public function test_get_callback_with_non_existent_post(): void {
 		$meta_object = self::$rest->get_callback( array() );
 		$expected    = array(
-			'version'  => '1.0.0',
-			'meta'     => '',
-			'rendered' => '',
+			'version'     => '1.1.0',
+			'meta'        => '',
+			'rendered'    => '',
+			'tracker_url' => '',
 		);
 
 		self::assertEquals( $expected, $meta_object );
@@ -209,11 +230,10 @@ final class RestMetadataTest extends TestCase {
 		$post = get_post( $post_id );
 		$date = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
 
-		$meta_string = self::$rest->get_rendered_meta();
+		$meta_string = self::$rest->get_rendered_meta( 'json_ld' );
 		$expected    = '<script type="application/ld+json">
-{"@context":"http:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=' . $post_id . '"},"headline":"My test_get_rendered_meta_json_ld title","url":"http:\/\/example.org\/?p=' . $post_id . '","thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '","articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[]}
-</script>
-';
+{"@context":"https:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=' . $post_id . '"},"headline":"My test_get_rendered_meta_json_ld title","url":"http:\/\/example.org\/?p=' . $post_id . '","thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '","articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[]}
+</script>';
 		self::assertEquals( $expected, $meta_string );
 	}
 
@@ -223,12 +243,10 @@ final class RestMetadataTest extends TestCase {
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_rendered_meta
 	 */
 	public function test_get_rendered_repeated_metas(): void {
-		// Set the default options prior to each test.
-		TestCase::set_options(
-			array( 'meta_type' => 'repeated_metas' )
-		);
-
 		global $post;
+
+		self::set_options( array( 'apikey' => 'testkey' ) );
+
 		$post_id = self::factory()->post->create(
 			array(
 				'post_title' => 'My test_get_rendered_repeated_metas title',
@@ -239,13 +257,12 @@ final class RestMetadataTest extends TestCase {
 		$post = get_post( $post_id );
 		$date = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
 
-		$meta_string = self::$rest->get_rendered_meta();
+		$meta_string = self::$rest->get_rendered_meta( 'repeated_metas' );
 		$expected    = '<meta name="parsely-title" content="My test_get_rendered_repeated_metas title" />
 <meta name="parsely-link" content="http://example.org/?p=' . $post_id . '" />
 <meta name="parsely-type" content="post" />
 <meta name="parsely-pub-date" content="' . $date . '" />
-<meta name="parsely-section" content="Uncategorized" />
-';
+<meta name="parsely-section" content="Uncategorized" />';
 		self::assertEquals( $expected, $meta_string );
 	}
 

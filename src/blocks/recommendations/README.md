@@ -6,7 +6,7 @@ You can add it in `Posts`, `Pages`, or nearly any other custom post type. From W
 
 ## Disabled by Default
 
-Note that this block is currently behind a "feature flag" and must be explicitly enabled for the code to load.
+Note that this block is currently behind a feature flag and must be explicitly enabled for the code to load.
 
 To enable the block on your site, add the following line anywhere in your theme code (or a custom plugin) that is sourced [prior to the `init` WordPress action](https://codex.wordpress.org/Plugin_API/Action_Reference) (top-level in your theme or plugin is fine):
 

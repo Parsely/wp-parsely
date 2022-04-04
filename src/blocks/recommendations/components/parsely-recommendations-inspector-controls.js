@@ -31,7 +31,7 @@ const ParselyRecommendationsInspectorControls = ( {
 					<RangeControl
 						label={ __( 'Maximum Results', 'wp-parsely' ) }
 						min="1"
-						max="99"
+						max="25"
 						onChange={ ( newval ) => setAttributes( { limit: newval } ) }
 						value={ limit }
 					/>
@@ -165,10 +165,6 @@ const ParselyRecommendationsInspectorControls = ( {
 							{
 								label: __( 'Page views where the referrer was twitter.com', 'wp-parsely' ),
 								value: 'tw_referrals',
-							},
-							{
-								label: __( 'Page views where the referrer was linkedin.com', 'wp-parsely' ),
-								value: 'li_referrals',
 							},
 							{
 								label: __( 'Page views where the referrer was pinterest.com', 'wp-parsely' ),

@@ -57,11 +57,9 @@ class Scripts {
 	 * @return void
 	 */
 	public function register_scripts(): void {
-		$tracker_url = 'https://cdn.parsely.com/keys/' . $this->parsely->get_api_key() . '/p.js';
-		$tracker_url = esc_url( $tracker_url );
 		wp_register_script(
 			'wp-parsely-tracker',
-			$tracker_url,
+			$this->parsely->get_tracker_url(),
 			array(),
 			PARSELY_VERSION,
 			true

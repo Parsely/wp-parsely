@@ -7,7 +7,6 @@ import { createContext, useContext, useReducer } from '@wordpress/element';
  * Internal dependencies
  */
 import { RECOMMENDATIONS_BLOCK_ERROR, RECOMMENDATIONS_BLOCK_LOADED, RECOMMENDATIONS_BLOCK_RECOMMENDATIONS } from './constants';
-// TODO: consider using createReduxStore https://github.com/WordPress/gutenberg/tree/a7e2895829c16ecd77a5ba22d84f1dee1cfb0977/packages/data#registering-a-store
 
 const RecommendationsContext = createContext();
 

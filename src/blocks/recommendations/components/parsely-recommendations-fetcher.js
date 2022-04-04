@@ -12,11 +12,10 @@ import { addQueryArgs } from '@wordpress/url';
 import { setError, setRecommendations } from '../actions';
 import { useRecommendationsStore } from '../recommendations-store';
 
+const updateDelay = 300; // The Block's update delay in the Block Editor when settings/props change.
+
 const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
-	const {
-		state: {},
-		dispatch,
-	} = useRecommendationsStore();
+	const {	dispatch } = useRecommendationsStore();
 
 	const query = {
 		boost,
@@ -54,10 +53,9 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 		dispatch( setRecommendations( { recommendations: data } ) );
 	}
 
-	const reinvocationDelay = 300; // Reinvoke function at most every this amount of milliseconds.
 	const apiMemoProps = [ ...Object.values( query ) ];
 	const updateRecommendationsWhenPropsChange = useCallback( fetchRecommendations, apiMemoProps );
-	const debouncedUpdate = useDebounce( updateRecommendationsWhenPropsChange, reinvocationDelay );
+	const debouncedUpdate = useDebounce( updateRecommendationsWhenPropsChange, updateDelay );
 
 	/**
 	 * Fetch recommendations:

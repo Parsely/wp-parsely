@@ -3,12 +3,7 @@
  */
 import { Card, CardBody, CardMedia } from '@wordpress/components';
 
-const getImageForLink = ( { imagestyle, imageUrl, thumbUrlMedium } ) => {
-	if ( imagestyle === 'original' ) {
-		return imageUrl;
-	}
-	return thumbUrlMedium;
-};
+const getImageForLink = ( { imagestyle, imageUrl, thumbUrlMedium } ) => imagestyle === 'original' ? imageUrl : thumbUrlMedium;
 
 const ParselyRecommendationsListItem = ( {
 	imageAlt,
