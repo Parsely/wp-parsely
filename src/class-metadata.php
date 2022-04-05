@@ -102,12 +102,13 @@ class Metadata {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
 
-			if ( has_post_thumbnail( $post ) ) {
-				$image_id  = get_post_thumbnail_id( $post );
-				$image_url = wp_get_attachment_image_src( $image_id );
-				$image_url = $image_url[0];
+			// Get featured image and thumbnail. On failure, fall back to the post's first image.
+			$image_url = get_the_post_thumbnail_url( $post, 'full' );
+			if ( false !== $image_url ) {
+				$thumb_url = get_the_post_thumbnail_url( $post, 'thumbnail' );
 			} else {
 				$image_url = $this->get_first_image( $post );
+				$thumb_url = $image_url;
 			}
 
 			$tags = $this->get_tags( $post->ID );
@@ -173,7 +174,7 @@ class Metadata {
 			);
 			$parsely_page['headline']         = $this->get_clean_parsely_page_value( get_the_title( $post ) );
 			$parsely_page['url']              = $this->get_current_url( 'post', $post->ID );
-			$parsely_page['thumbnailUrl']     = $image_url;
+			$parsely_page['thumbnailUrl']     = $thumb_url;
 			$parsely_page['image']            = array(
 				'@type' => 'ImageObject',
 				'url'   => $image_url,
