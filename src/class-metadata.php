@@ -558,18 +558,17 @@ class Metadata {
 	}
 
 	/**
-	 * Get the first image from a post
-	 * https://css-tricks.com/snippets/wordpress/get-the-first-image-from-a-post/
+	 * Gets the first image from a post.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param WP_Post $post The post object you're interested in.
+	 * @param WP_Post $post The post object.
 	 * @return string
 	 */
 	private function get_first_image( WP_Post $post ): string {
 		ob_start();
 		ob_end_clean();
-		if ( preg_match_all( '/<img.+src=[\'"]( [^\'"]+ )[\'"].*>/i', $post->post_content, $matches ) ) {
+		if ( preg_match_all( '/\<img.+src\=(?:\"|\')(.+?)(?:\"|\')(?:.+?)\>/i', $post->post_content, $matches ) ) {
 			return $matches[1][0];
 		}
 		return '';
