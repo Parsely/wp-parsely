@@ -50,6 +50,26 @@ class Recommendations_Block {
 	 * @return void
 	 */
 	public static function register_block(): void {
+
+		// viewScript was added in WordPress 5.9 so we need to manually register our script if we're < 5.9.
+		// This can be removed if MINIMUM_WORDPRESS_VERSION is set to 5.9.
+		global $wp_version;
+
+		if ( ! isset( $wp_version ) || version_compare( $wp_version, '5.9' ) < 0 ) {
+			$plugin_url      = plugin_dir_url( PARSELY_FILE );
+			$view_asset_path = plugin_dir_path( PARSELY_FILE ) . 'build/blocks/recommendations/view.asset.php';
+			if ( file_exists( $view_asset_path ) ) {
+				$view_asset_file = require plugin_dir_path( PARSELY_FILE ) . 'build/blocks/recommendations/view.asset.php';
+				wp_register_script(
+					'wp-parsely-recommendations-view-script',
+					$plugin_url . 'build/blocks/recommendations/view.js',
+					$view_asset_file['dependencies'],
+					$view_asset_file['version'],
+					true
+				);
+			}
+		}
+
 		/**
 		 * Register the block by passing the path to it's block.json file that contains the majority of it's definition.
 		 * This file will be copied into `build/blocks/recommendations` by the build process and should be accessed there.
