@@ -14,8 +14,11 @@ import RecommendationsStore from './recommendations-store';
 import { ReactComponent as LeafIcon } from './parsely-logo.svg';
 
 import './style.scss';
-
 import './editor.scss';
+
+import json from './block.json';
+
+const { name, attributes } = json;
 
 export const ParselyRecommendationsEdit = ( editProps ) => (
 	<div { ...useBlockProps() }>
@@ -26,12 +29,18 @@ export const ParselyRecommendationsEdit = ( editProps ) => (
 	</div>
 );
 
-registerBlockType( 'wp-parsely/recommendations', {
+registerBlockType( name, {
 	apiVersion: 2,
-	title: __( 'Parse.ly Recommendations', 'wp-parsely' ),
 	icon: LeafIcon,
 	category: 'widgets',
 	edit: ParselyRecommendationsEdit,
+	attributes: {
+		...attributes,
+		title: {
+			type: 'string',
+			default: __( 'Related Content', 'wp-parsely' ),
+		},
+	},
 	transforms: {
 		from: [
 			{
