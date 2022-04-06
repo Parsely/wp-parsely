@@ -4,6 +4,7 @@
 	"name": "wp-parsely/recommendations",
 	"title": "Parse.ly Recommendations",
 	"category": "widgets",
+	"textdomain": "wp-parsely",
 	"supports": {
 		"html": false
 	},
@@ -38,5 +39,6 @@
 	},
 	"editorScript": "file:./edit.js",
 	"style": "file:./style-edit.css",
+	"editorStyle": "file:./edit.css",
 	"viewScript": "file:./view.js"
 }
