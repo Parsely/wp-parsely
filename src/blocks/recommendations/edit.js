@@ -15,6 +15,8 @@ import { ReactComponent as LeafIcon } from './parsely-logo.svg';
 
 import './style.scss';
 
+import './editor.scss';
+
 export const ParselyRecommendationsEdit = ( editProps ) => (
 	<div { ...useBlockProps() }>
 		<RecommendationsStore clientId={ editProps.clientId }>
