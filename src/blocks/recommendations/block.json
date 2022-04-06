@@ -4,6 +4,7 @@
 	"name": "wp-parsely/recommendations",
 	"title": "Parse.ly Recommendations",
 	"category": "widgets",
+	"textdomain": "wp-parsely",
 	"supports": {
 		"html": false
 	},
