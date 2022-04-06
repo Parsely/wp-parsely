@@ -102,7 +102,7 @@ class Metadata {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
 
-			// Get featured image and thumbnail. On failure, fall back to the post's first image.
+			// Get featured image and thumbnail.
 			$image_url = get_the_post_thumbnail_url( $post, 'full' );
 			if ( false === $image_url ) {
 				$image_url = '';
