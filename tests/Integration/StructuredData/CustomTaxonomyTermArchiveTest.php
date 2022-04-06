@@ -30,7 +30,6 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
 	 * @uses \Parsely\Parsely::get_coauthor_names
 	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status

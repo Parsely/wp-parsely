@@ -104,11 +104,12 @@ class Metadata {
 
 			// Get featured image and thumbnail. On failure, fall back to the post's first image.
 			$image_url = get_the_post_thumbnail_url( $post, 'full' );
-			if ( false !== $image_url ) {
-				$thumb_url = get_the_post_thumbnail_url( $post, 'thumbnail' );
-			} else {
-				$image_url = $this->get_first_image( $post );
-				$thumb_url = $image_url;
+			if ( false === $image_url ) {
+				$image_url = '';
+			}
+			$thumb_url = get_the_post_thumbnail_url( $post, 'thumbnail' );
+			if ( false === $thumb_url ) {
+				$thumb_url = '';
 			}
 
 			$tags = $this->get_tags( $post->ID );
@@ -554,23 +555,6 @@ class Metadata {
 			return $author->user_nicename;
 		}
 
-		return '';
-	}
-
-	/**
-	 * Gets the first image from a post.
-	 *
-	 * @since 3.3.0 Moved to class-metadata
-	 *
-	 * @param WP_Post $post The post object.
-	 * @return string
-	 */
-	private function get_first_image( WP_Post $post ): string {
-		ob_start();
-		ob_end_clean();
-		if ( preg_match_all( '/\<img.+src\=(?:\"|\')(.+?)(?:\"|\')(?:.+?)\>/i', $post->post_content, $matches ) ) {
-			return $matches[1][0];
-		}
 		return '';
 	}
 
