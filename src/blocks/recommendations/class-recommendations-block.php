@@ -57,17 +57,14 @@ class Recommendations_Block {
 
 		if ( ! isset( $wp_version ) || version_compare( $wp_version, '5.9' ) < 0 ) {
 			$plugin_url      = plugin_dir_url( PARSELY_FILE );
-			$view_asset_path = plugin_dir_path( PARSELY_FILE ) . 'build/blocks/recommendations/view.asset.php';
-			if ( file_exists( $view_asset_path ) ) {
-				$view_asset_file = require plugin_dir_path( PARSELY_FILE ) . 'build/blocks/recommendations/view.asset.php';
-				wp_register_script(
-					'wp-parsely-recommendations-view-script',
-					$plugin_url . 'build/blocks/recommendations/view.js',
-					$view_asset_file['dependencies'],
-					$view_asset_file['version'],
-					true
-				);
-			}
+			$view_asset_file = require plugin_dir_path( PARSELY_FILE ) . 'build/blocks/recommendations/view.asset.php';
+			wp_register_script(
+				'wp-parsely-recommendations-view-script',
+				$plugin_url . 'build/blocks/recommendations/view.js',
+				$view_asset_file['dependencies'],
+				$view_asset_file['version'],
+				true
+			);
 		}
 
 		/**
@@ -79,23 +76,11 @@ class Recommendations_Block {
 
 		register_block_type(
 			plugin_dir_path( PARSELY_FILE ) . 'build/blocks/recommendations/',
-			self::get_block_registration_args()
+			array(
+				'render_callback' => __CLASS__ . '::render_callback',
+			)
 		);
 	}
-
-	/**
-	 * Return the Block's registration arguments.
-	 *
-	 * @since 3.2.0
-	 *
-	 * @return array<string, mixed>
-	 */
-	private static function get_block_registration_args(): array {
-		return array(
-			'render_callback' => __CLASS__ . '::render_callback',
-		);
-	}
-
 	/**
 	 * The Server-side render_callback for the wp-parsely/recommendations block.
 	 *
