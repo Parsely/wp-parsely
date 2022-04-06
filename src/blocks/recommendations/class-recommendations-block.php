@@ -77,7 +77,17 @@ class Recommendations_Block {
 			$script_asset_file['version']
 		);
 
-		register_block_type( 'wp-parsely/recommendations', self::get_block_registration_args() );
+		/**
+		 * Register the block by passing the path to it's block.json file that contains the majority of it's definition.
+		 * This file will be copied into `build/blocks/recommendations` by the build process and should be accessed there.
+		 *
+		 * @see https://developer.wordpress.org/reference/functions/register_block_type/
+		 */
+
+		register_block_type(
+			plugin_dir_path( PARSELY_FILE ) . 'build/blocks/recommendations/',
+			self::get_block_registration_args()
+		);
 	}
 
 	/**
@@ -93,38 +103,6 @@ class Recommendations_Block {
 			'render_callback' => __CLASS__ . '::render_callback',
 			'script'          => 'wp-parsely-recommendations-block',
 			'style'           => 'wp-parsely-recommendations-block',
-			'supports'        => array(
-				'html' => false,
-			),
-			'attributes'      => array(
-				'boost'      => array(
-					'type'    => 'string',
-					'default' => 'views',
-				),
-				'imagestyle' => array(
-					'type'    => 'string',
-					'default' => 'original',
-				),
-				'limit'      => array(
-					'type'    => 'number',
-					'default' => 3,
-				),
-				'showimages' => array(
-					'type'    => 'boolean',
-					'default' => true,
-				),
-				'sort'       => array(
-					'type'    => 'string',
-					'default' => 'score',
-				),
-				'tag'        => array(
-					'type' => 'string',
-				),
-				'title'      => array(
-					'type'    => 'string',
-					'default' => __( 'Related Content', 'wp-parsely' ),
-				),
-			),
 		);
 	}
 
