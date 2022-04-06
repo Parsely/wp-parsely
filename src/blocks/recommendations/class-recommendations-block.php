@@ -28,7 +28,7 @@ class Recommendations_Block {
 	public function run(): void {
 		global $wp_version;
 
-		if ( ! apply_filters( 'wp_parsely_recommendations_block_enabled', true ) ) {
+		if ( ! apply_filters( 'wp_parsely_recommendations_block_enabled', false ) ) {
 			// This block is behind a "feature flag" and it's not enabled. Bail.
 			return;
 		}
