@@ -33,16 +33,16 @@ final class HomePageTest extends NonPostTestCase {
 	 * Create a single page, set as homepage (blog archive), and test the structured data.
 	 *
 	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Metadata::get_author_name
+	 * @uses \Parsely\Metadata::get_author_names
+	 * @uses \Parsely\Metadata::get_bottom_level_term
+	 * @uses \Parsely\Metadata::get_category_name
+	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
+	 * @uses \Parsely\Metadata::get_coauthor_names
+	 * @uses \Parsely\Metadata::get_current_url
 	 * @uses \Parsely\Parsely::get_first_image
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -79,16 +79,16 @@ final class HomePageTest extends NonPostTestCase {
 	 * Create 2 posts, set posts per page to 1, navigate to page 2 and test the structured data.
 	 *
 	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Metadata::get_author_name
+	 * @uses \Parsely\Metadata::get_author_names
+	 * @uses \Parsely\Metadata::get_bottom_level_term
+	 * @uses \Parsely\Metadata::get_category_name
+	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
+	 * @uses \Parsely\Metadata::get_coauthor_names
+	 * @uses \Parsely\Metadata::get_current_url
 	 * @uses \Parsely\Parsely::get_first_image
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -130,16 +130,16 @@ final class HomePageTest extends NonPostTestCase {
 	 * Create a single page, set as homepage (page on front), and test the structured data.
 	 *
 	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Metadata::get_author_name
+	 * @uses \Parsely\Metadata::get_author_names
+	 * @uses \Parsely\Metadata::get_bottom_level_term
+	 * @uses \Parsely\Metadata::get_category_name
+	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
+	 * @uses \Parsely\Metadata::get_coauthor_names
+	 * @uses \Parsely\Metadata::get_current_url
 	 * @uses \Parsely\Parsely::get_first_image
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -182,16 +182,16 @@ final class HomePageTest extends NonPostTestCase {
 	 * Check for the case when the show_on_front setting is Page, but no Page has been selected.
 	 *
 	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Metadata::get_author_name
+	 * @uses \Parsely\Metadata::get_author_names
+	 * @uses \Parsely\Metadata::get_bottom_level_term
+	 * @uses \Parsely\Metadata::get_category_name
+	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
+	 * @uses \Parsely\Metadata::get_coauthor_names
+	 * @uses \Parsely\Metadata::get_current_url
 	 * @uses \Parsely\Parsely::get_first_image
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
