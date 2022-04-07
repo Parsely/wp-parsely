@@ -104,11 +104,11 @@ class Metadata {
 
 			// Get featured image and thumbnail.
 			$image_url = get_the_post_thumbnail_url( $post, 'full' );
-			if ( false === $image_url ) {
+			if ( ! is_string( $image_url ) ) {
 				$image_url = '';
 			}
 			$thumb_url = get_the_post_thumbnail_url( $post, 'thumbnail' );
-			if ( false === $thumb_url ) {
+			if ( ! is_string( $thumb_url ) ) {
 				$thumb_url = '';
 			}
 
