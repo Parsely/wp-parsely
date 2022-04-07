@@ -70,16 +70,16 @@ final class OtherTest extends TestCase {
 	 * Check out page filtering.
 	 *
 	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Metadata::get_author_name
+	 * @uses \Parsely\Metadata::get_author_names
+	 * @uses \Parsely\Metadata::get_bottom_level_term
+	 * @uses \Parsely\Metadata::get_category_name
+	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
+	 * @uses \Parsely\Metadata::get_coauthor_names
+	 * @uses \Parsely\Metadata::get_current_url
 	 * @uses \Parsely\Parsely::get_first_image
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -119,15 +119,15 @@ final class OtherTest extends TestCase {
 	 *
 	 * @covers \Parsely\Parsely::construct_parsely_metadata
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
+	 * @uses \Parsely\Metadata::get_author_name
+	 * @uses \Parsely\Metadata::get_author_names
+	 * @uses \Parsely\Metadata::get_bottom_level_term
+	 * @uses \Parsely\Metadata::get_category_name
+	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
+	 * @uses \Parsely\Metadata::get_coauthor_names
+	 * @uses \Parsely\Metadata::get_current_url
 	 * @uses \Parsely\Parsely::get_first_image
-	 * @uses \Parsely\Parsely::get_tags
+	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 */
