@@ -895,7 +895,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Validate the options provided by the user
+	 * Validates the options provided by the user.
 	 *
 	 * @param array $input Options from the settings page.
 	 * @return array List of validated input settings.
@@ -910,9 +910,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				__( 'Please specify the Site ID', 'wp-parsely' )
 			);
 		} else {
-			$input['apikey'] = strtolower( $input['apikey'] );
-			$input['apikey'] = sanitize_text_field( $input['apikey'] );
-			if ( strpos( $input['apikey'], '.' ) === false || strpos( $input['apikey'], ' ' ) !== false ) {
+			$api_key_format  = '/^((\w+)\.)?(([\w-]+)?)(\.[\w-]+){1,2}$/';
+			$input['apikey'] = strtolower( sanitize_text_field( $input['apikey'] ) );
+			if ( 1 !== preg_match( $api_key_format, $input['apikey'] ) ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'apikey',
