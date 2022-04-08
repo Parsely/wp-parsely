@@ -43,8 +43,6 @@ final class RelatedProxyEndpointTest extends TestCase {
 		// Set the default options prior to each test.
 		TestCase::set_options();
 
-		add_filter( 'wp_parsely_recommendations_block_enabled', '__return_true' );
-
 		$this->wp_rest_server_global_backup = $GLOBALS['wp_rest_server'] ?? null;
 		$this->rest_api_init_related_proxy  = static function () {
 			// Related_Proxy should be mocked here?
@@ -63,8 +61,6 @@ final class RelatedProxyEndpointTest extends TestCase {
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$GLOBALS['wp_rest_server'] = $this->wp_rest_server_global_backup;
-
-		remove_filter( 'wp_parsely_recommendations_block_enabled', '__return_true' );
 	}
 
 	/**

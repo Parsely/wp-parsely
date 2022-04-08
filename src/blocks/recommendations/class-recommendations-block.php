@@ -28,11 +28,6 @@ class Recommendations_Block {
 	public function run(): void {
 		global $wp_version;
 
-		if ( ! apply_filters( 'wp_parsely_recommendations_block_enabled', false ) ) {
-			// This block is behind a "feature flag" and it's not enabled. Bail.
-			return;
-		}
-
 		if ( ! isset( $wp_version ) || version_compare( $wp_version, self::MINIMUM_WORDPRESS_VERSION ) < 0 ) {
 			// WordPress is not recent enough to run this block.
 			return;

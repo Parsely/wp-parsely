@@ -52,10 +52,6 @@ final class Related_API_Proxy {
 	 * @return void
 	 */
 	public function run(): void {
-		if ( ! apply_filters( 'wp_parsely_recommendations_block_enabled', false ) ) {
-			return;
-		}
-
 		$get_items_args = array(
 			'query' => array(
 				'default'           => array(),
