@@ -102,12 +102,14 @@ class Metadata {
 			$authors  = $this->get_author_names( $post );
 			$category = $this->get_category_name( $post, $parsely_options );
 
-			if ( has_post_thumbnail( $post ) ) {
-				$image_id  = get_post_thumbnail_id( $post );
-				$image_url = wp_get_attachment_image_src( $image_id );
-				$image_url = $image_url[0];
-			} else {
-				$image_url = $this->get_first_image( $post );
+			// Get featured image and thumbnail.
+			$image_url = get_the_post_thumbnail_url( $post, 'full' );
+			if ( ! is_string( $image_url ) ) {
+				$image_url = '';
+			}
+			$thumb_url = get_the_post_thumbnail_url( $post, 'thumbnail' );
+			if ( ! is_string( $thumb_url ) ) {
+				$thumb_url = '';
 			}
 
 			$tags = $this->get_tags( $post->ID );
@@ -173,7 +175,7 @@ class Metadata {
 			);
 			$parsely_page['headline']         = $this->get_clean_parsely_page_value( get_the_title( $post ) );
 			$parsely_page['url']              = $this->get_current_url( 'post', $post->ID );
-			$parsely_page['thumbnailUrl']     = $image_url;
+			$parsely_page['thumbnailUrl']     = $thumb_url;
 			$parsely_page['image']            = array(
 				'@type' => 'ImageObject',
 				'url'   => $image_url,
@@ -553,24 +555,6 @@ class Metadata {
 			return $author->user_nicename;
 		}
 
-		return '';
-	}
-
-	/**
-	 * Get the first image from a post
-	 * https://css-tricks.com/snippets/wordpress/get-the-first-image-from-a-post/
-	 *
-	 * @since 3.3.0 Moved to class-metadata
-	 *
-	 * @param WP_Post $post The post object you're interested in.
-	 * @return string
-	 */
-	private function get_first_image( WP_Post $post ): string {
-		ob_start();
-		ob_end_clean();
-		if ( preg_match_all( '/<img.+src=[\'"]( [^\'"]+ )[\'"].*>/i', $post->post_content, $matches ) ) {
-			return $matches[1][0];
-		}
 		return '';
 	}
 
