@@ -1,8 +1,10 @@
 # Parse.ly Recommendations Block
 
+**IMPORTANT:** The Recommendations Block is available only in WordPress 5.9 and later.
+
 The Recommendations Block is designed to showcase links to content on your site as provided by the [Parse.ly `/related` API endpoint](https://www.parse.ly/help/api/recommendations#get-related).
 
-You can add it in `Posts`, `Pages`, or nearly any other custom post type. From WordPress 5.8 and up, the block can also be used as a [Block-based Widget](https://wordpress.org/support/article/block-based-widgets-editor/). Note however, that the Recommendations Block is not available in the Full Site Editor's template editor. This restriction will be lifted in the future.
+You can add it in `Posts`, `Pages`, or nearly any other custom post type. The Block can also be used in Full Site Editing (FSE) mode or as a [Block-based Widget](https://wordpress.org/support/article/block-based-widgets-editor/).
 
 ## Disabled by Default
 
