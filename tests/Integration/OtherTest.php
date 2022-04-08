@@ -77,7 +77,6 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
 	 * @uses \Parsely\Metadata::get_coauthor_names
 	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -126,7 +125,6 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
 	 * @uses \Parsely\Metadata::get_coauthor_names
 	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
 	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
