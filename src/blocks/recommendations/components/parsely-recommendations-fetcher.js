@@ -14,7 +14,7 @@ import { useRecommendationsStore } from '../recommendations-store';
 
 const updateDelay = 300; // The Block's update delay in the Block Editor when settings/props change.
 
-const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
+const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } ) => {
 	const {	dispatch } = useRecommendationsStore();
 
 	const query = {
@@ -49,7 +49,15 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort } ) => {
 			return;
 		}
 
-		const data = response?.data || [];
+		let data = response?.data || [];
+
+		// When in the editor, change URLs to # for better screen reader experience.
+		if ( isEditMode ) {
+			data = data.map( ( obj ) => {
+				return { ...obj, url: '#' };
+			} );
+		}
+
 		dispatch( setRecommendations( { recommendations: data } ) );
 	}
 
