@@ -310,7 +310,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		);
 
 		// Get the API Key.
-		$h          = __( 'Your Site ID is your own site domain without <code>http(s)://</code> prefixes or trailing <code>/</code> (e.g. <code>mydomain.com</code>).', 'wp-parsely' );
+		$h          = __( 'Your Site ID is typically your own site domain without <code>http(s)://</code> prefixes or trailing <code>/</code> (e.g. <code>mydomain.com</code>).', 'wp-parsely' );
 		$field_id   = 'apikey';
 		$field_args = array(
 			'option_key'    => $field_id,
