@@ -56,7 +56,7 @@ final class Metadata_Header {
 		 * @param bool $insert_metadata True to insert the metadata, false otherwise.
 		 */
 		if ( apply_filters( 'wp_parsely_should_insert_metadata', true ) ) {
-			add_action( 'wp_head', array( $this, 'insert_page_header_metadata' ) );
+			add_action( 'wp_head', array( $this, 'render_metadata' ) );
 		}
 	}
 

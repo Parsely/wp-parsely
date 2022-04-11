@@ -143,54 +143,6 @@ class Parsely {
 	}
 
 	/**
-	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
-	 *
-	 * @since 3.2.0
-	 *
-	 * @param string $meta_type `json_ld` or `repeated_metas`.
-	 * @return void
-	 */
-	public function render_metadata( string $meta_type ): void {
-	}
-
-	/**
-	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @return void
-	 */
-	public function insert_page_header_metadata(): void {
-		$parsely_options = $this->get_options();
-		$this->render_metadata( $parsely_options['meta_type'] );
-	}
-
-	/**
-	 * Deprecated. Echo the metadata into the page, and return the inserted values.
-	 *
-	 * To just echo the metadata, use the `insert_page_header_metadata()` method.
-	 * To get the metadata to be inserted, use the `construct_parsely_metadata()` method.
-	 *
-	 * @deprecated 3.0.0
-	 * @see construct_parsely_metadata()
-	 *
-	 * @return array<string, mixed>
-	 */
-	public function insert_parsely_page(): array {
-		_deprecated_function( __FUNCTION__, '3.0', 'construct_parsely_metadata()' );
-		$this->insert_page_header_metadata();
-
-		global $post;
-
-		$parsed_post = get_post( $post );
-		if ( ! $parsed_post instanceof WP_Post ) {
-			return array();
-		}
-
-		return $this->construct_parsely_metadata( $this->get_options(), $parsed_post );
-	}
-
-	/**
 	 * Compare the post_status key against an allowed list (by default, only 'publish'ed content includes tracking data).
 	 *
 	 * @since 2.5.0
