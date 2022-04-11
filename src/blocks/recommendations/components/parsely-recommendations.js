@@ -42,6 +42,7 @@ export default function ParselyRecommendations( {
 				limit={ limit }
 				personalized={ personalized }
 				sort={ sort }
+				isEditMode={ isEditMode }
 			/>
 			{ ! isLoaded && (
 				<span className="parsely-recommendations-loading">{ __( 'Loading…', 'wp-parsely' ) }</span>
