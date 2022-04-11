@@ -26,7 +26,7 @@ export default function ParselyRecommendations( {
 	} = useRecommendationsStore();
 
 	function getErrorMessage() {
-		errorMessage = __( 'Error: ', 'wp-parsely' ) + JSON.stringify( error );
+		let errorMessage = `${ __( 'Error:', 'wp-parsely' ) } ${ JSON.stringify( error ) }`;
 
 		if ( errorMessage.includes( '{"errors":{"403":["Forbidden"]},"error_data":[]}' ) ) {
 			errorMessage = __( 'Access denied. Please verify that your Site ID is valid.', 'wp-parsely' );
@@ -41,7 +41,7 @@ export default function ParselyRecommendations( {
 	let errorMessage;
 	if ( isLoaded && isEditMode ) {
 		if ( error ) {
-			errorMessage = getErrorMessage( error );
+			errorMessage = getErrorMessage();
 		} else if ( Array.isArray( recommendations ) && ! recommendations?.length ) {
 			errorMessage = __( 'No recommendations found.', 'wp-parsely' );
 		}
