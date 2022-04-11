@@ -32,20 +32,20 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } ) => 
 
 	async function fetchRecommendations() {
 		let response;
-		let errorMessage;
+		let error;
 
 		try {
 			response = await fetchRecommendationsFromWpApi();
 		} catch ( wpError ) {
-			errorMessage = wpError;
+			error = wpError;
 		}
 
 		if ( response?.error ) {
-			errorMessage = response.error;
+			error = response.error;
 		}
 
-		if ( errorMessage ) {
-			dispatch( setError( { error: response.error } ) );
+		if ( error ) {
+			dispatch( setError( { error } ) );
 			return;
 		}
 
