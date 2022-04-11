@@ -52,6 +52,10 @@ final class Related_API_Proxy {
 	 * @return void
 	 */
 	public function run(): void {
+		if ( ! apply_filters( 'wp_parsely_enable_related_api_proxy', true ) ) {
+			return;
+		}
+
 		$get_items_args = array(
 			'query' => array(
 				'default'           => array(),
