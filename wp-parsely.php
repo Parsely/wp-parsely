@@ -38,7 +38,7 @@ use Parsely\RemoteAPI\Related_Proxy;
 use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
-use Parsely\UI\Metadata_Header;
+use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Network_Admin_Sites_List;
 use Parsely\UI\Recommended_Widget;
@@ -82,7 +82,7 @@ function parsely_initialize_plugin(): void {
 	$admin_bar = new Admin_Bar( $GLOBALS['parsely'] );
 	$admin_bar->run();
 
-	$metadata = new Metadata_Header( $GLOBALS['parsely'] );
+	$metadata = new Metadata_Renderer( $GLOBALS['parsely'] );
 	$metadata->run();
 }
 

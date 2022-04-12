@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
-use Parsely\UI\Metadata_Header;
+use Parsely\UI\Metadata_Renderer;
 
 /**
  * Metadata endpoint classes are expected to implement the remaining functions of the class.
@@ -64,7 +64,7 @@ abstract class Metadata_Endpoint {
 	 * @return string The metadata as HTML code.
 	 */
 	public function get_rendered_meta( string $meta_type ): string {
-		$metadata = new Metadata_Header( $this->parsely );
+		$metadata = new Metadata_Renderer( $this->parsely );
 
 		ob_start();
 		$metadata->render_metadata( $meta_type );

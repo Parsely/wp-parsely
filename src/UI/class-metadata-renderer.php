@@ -21,7 +21,7 @@ use const Parsely\PARSELY_FILE;
  *
  * @since 3.3.0
  */
-final class Metadata_Header {
+final class Metadata_Renderer {
 	/**
 	 * Instance of Parsely class.
 	 *
