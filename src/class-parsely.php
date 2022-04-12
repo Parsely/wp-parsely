@@ -248,13 +248,17 @@ class Parsely {
 	 */
 	public function update_metadata_endpoint( int $post_id ): void {
 		$parsely_options = $this->get_options();
-
 		if ( $this->api_key_is_missing() || empty( $parsely_options['metadata_secret'] ) ) {
 			return;
 		}
 
-		$post     = get_post( $post_id );
-		$metadata = $this->construct_parsely_metadata( $parsely_options, $post );
+		$post = get_post( $post_id );
+		if ( null === $post ) {
+			return;
+		}
+
+		$metadata_obj = new Metadata( $this );
+		$metadata     = $metadata_obj->construct_metadata( $parsely_options, $post );
 
 		$endpoint_metadata = array(
 			'canonical_url' => $metadata['url'],

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Endpoints;
 
+use Parsely\Metadata;
 use WP_Post;
 
 /**
@@ -81,7 +82,8 @@ class Rest_Metadata extends Metadata_Endpoint {
 		if ( false === $post ) {
 			$meta = '';
 		} else {
-			$meta = $this->parsely->construct_parsely_metadata( $options, $post );
+			$metadata = new Metadata( $this->parsely );
+			$meta     = $metadata->construct_metadata( $options, $post );
 		}
 
 		$response = array(
