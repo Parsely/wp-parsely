@@ -40,7 +40,7 @@ class Recommendations_Block {
 	 * Registers all block assets so that they can be enqueued through the
 	 * WordPress Block Editor in the corresponding context.
 	 *
-	 * @since 3.2.0
+	 * @since 3.3.0
 	 *
 	 * @return void
 	 */
