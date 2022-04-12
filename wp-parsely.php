@@ -53,6 +53,7 @@ const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
 require __DIR__ . '/src/class-scripts.php';
+require __DIR__ . '/src/class-metadata.php';
 require __DIR__ . '/src/class-dashboard-link.php';
 require __DIR__ . '/src/UI/class-admin-bar.php';
 require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
@@ -141,7 +142,7 @@ function parsely_rest_api_init(): void {
 	$rest->run();
 
 	$proxy        = new Related_Proxy( $GLOBALS['parsely'] );
-	$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache( $GLOBALS['wp_object_cache'] ) );
+	$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache() );
 	$endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $cached_proxy );
 	$endpoint->run();
 }
