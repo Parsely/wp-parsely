@@ -38,6 +38,7 @@ use Parsely\RemoteAPI\Related_Proxy;
 use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
+use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Network_Admin_Sites_List;
 use Parsely\UI\Recommended_Widget;
@@ -56,6 +57,7 @@ require __DIR__ . '/src/class-scripts.php';
 require __DIR__ . '/src/class-metadata.php';
 require __DIR__ . '/src/class-dashboard-link.php';
 require __DIR__ . '/src/UI/class-admin-bar.php';
+require __DIR__ . '/src/UI/class-metadata-renderer.php';
 require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
 require __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
 
@@ -79,6 +81,9 @@ function parsely_initialize_plugin(): void {
 
 	$admin_bar = new Admin_Bar( $GLOBALS['parsely'] );
 	$admin_bar->run();
+
+	$metadata = new Metadata_Renderer( $GLOBALS['parsely'] );
+	$metadata->run();
 }
 
 require __DIR__ . '/src/UI/class-admin-warning.php';
