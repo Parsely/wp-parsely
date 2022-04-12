@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\UI\Metadata_Renderer;
 use WP_Post;
 
 /**
@@ -111,7 +112,6 @@ class Parsely {
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
-		add_action( 'wp_head', array( $this, 'insert_page_header_metadata' ) );
 	}
 
 	/**
@@ -144,144 +144,37 @@ class Parsely {
 	}
 
 	/**
+	 * Deprecated
 	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 *
 	 * @since 3.2.0
+	 * @deprecated 3.3.0
+	 * @see Metadata_Renderer::render_metadata
 	 *
 	 * @param string $meta_type `json_ld` or `repeated_metas`.
 	 * @return void
 	 */
 	public function render_metadata( string $meta_type ): void {
-		/**
-		 * Filter whether the Parse.ly meta tags should be inserted in the page.
-		 *
-		 * By default, the tags are inserted.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param bool $insert_metadata True to insert the metadata, false otherwise.
-		 */
-		if ( ! apply_filters( 'wp_parsely_should_insert_metadata', true ) ) {
-			return;
-		}
-
-		$parsely_options = $this->get_options();
-
-		if (
-			$this->api_key_is_missing() ||
-
-			// Chosen not to track logged-in users.
-			( ! $parsely_options['track_authenticated_users'] && $this->parsely_is_user_logged_in() ) ||
-
-			// 404 pages are not tracked.
-			is_404() ||
-
-			// Search pages are not tracked.
-			is_search()
-		) {
-			return;
-		}
-
-		global $post;
-
-		// We can't construct the metadata without a valid post object.
-		$parsed_post = get_post( $post );
-		if ( ! $parsed_post instanceof WP_Post ) {
-			return;
-		}
-
-		// Assign default values for LD+JSON
-		// TODO: Mapping of an install's post types to Parse.ly post types (namely page/post).
-		$parsely_page = $this->construct_parsely_metadata( $parsely_options, $parsed_post );
-
-		// Something went wrong - abort.
-		if ( 0 === count( $parsely_page ) || ! isset( $parsely_page['headline'] ) ) {
-			return;
-		}
-
-		// Insert JSON-LD or repeated metas.
-		if ( 'json_ld' === $meta_type ) {
-			include plugin_dir_path( PARSELY_FILE ) . 'views/json-ld.php';
-		} else {
-			// Assume `meta_type` is `repeated_metas`.
-			$parsely_post_type = $this->convert_jsonld_to_parsely_type( $parsely_page['@type'] );
-			if ( isset( $parsely_page['keywords'] ) && is_array( $parsely_page['keywords'] ) ) {
-				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
-			}
-
-			$parsely_metas = array(
-				'title'     => $parsely_page['headline'] ?? null,
-				'link'      => $parsely_page['url'] ?? null,
-				'type'      => $parsely_post_type,
-				'image-url' => $parsely_page['thumbnailUrl'] ?? null,
-				'pub-date'  => $parsely_page['datePublished'] ?? null,
-				'section'   => $parsely_page['articleSection'] ?? null,
-				'tags'      => $parsely_page['keywords'] ?? null,
-				'author'    => isset( $parsely_page['author'] ),
-			);
-			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
-
-			if ( isset( $parsely_page['author'] ) ) {
-				$parsely_page_authors = wp_list_pluck( $parsely_page['author'], 'name' );
-				$parsely_page_authors = array_filter( $parsely_page_authors, array( $this, 'filter_empty_and_not_string_from_array' ) );
-			}
-
-			include plugin_dir_path( PARSELY_FILE ) . 'views/repeated-metas.php';
-		}
-
-		// Add any custom metadata.
-		if ( isset( $parsely_page['custom_metadata'] ) ) {
-			include plugin_dir_path( PARSELY_FILE ) . 'views/custom-metadata.php';
-		}
+		_deprecated_function( __FUNCTION__, '3.3', 'Metadata_Renderer::render_metadata()' );
+		$metadata = new Metadata_Renderer( $this );
+		$metadata->render_metadata( $meta_type );
 	}
 
 	/**
+	 * Deprecated.
 	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 *
 	 * @since 3.0.0
+	 * @deprecated 3.3.0
+	 * @see Metadata_Renderer::render_metadata
 	 *
 	 * @return void
 	 */
 	public function insert_page_header_metadata(): void {
+		_deprecated_function( __FUNCTION__, '3.3', 'Metadata_Renderer::render_metadata()' );
 		$parsely_options = $this->get_options();
-		$this->render_metadata( $parsely_options['meta_type'] );
-	}
-
-	/**
-	 * Deprecated. Echo the metadata into the page, and return the inserted values.
-	 *
-	 * To just echo the metadata, use the `insert_page_header_metadata()` method.
-	 * To get the metadata to be inserted, use the `construct_parsely_metadata()` method.
-	 *
-	 * @deprecated 3.0.0
-	 * @see construct_parsely_metadata()
-	 *
-	 * @return array<string, mixed>
-	 */
-	public function insert_parsely_page(): array {
-		_deprecated_function( __FUNCTION__, '3.0', 'construct_parsely_metadata()' );
-		$this->insert_page_header_metadata();
-
-		global $post;
-
-		$parsed_post = get_post( $post );
-		if ( ! $parsed_post instanceof WP_Post ) {
-			return array();
-		}
-
-		return $this->construct_parsely_metadata( $this->get_options(), $parsed_post );
-	}
-
-	/**
-	 * Function to be used in `array_filter` to clean up repeated metas.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param mixed $var Value to filter from the array.
-	 * @return bool True if the variable is not empty, and it's a string.
-	 */
-	private static function filter_empty_and_not_string_from_array( $var ): bool {
-		return is_string( $var ) && '' !== $var;
+		$metadata        = new Metadata_Renderer( $this );
+		$metadata->render_metadata( $parsely_options['meta_type'] );
 	}
 
 	/**
@@ -524,14 +417,13 @@ class Parsely {
 	 * Otherwise, for "non-posts" and unknown types, "index" is returned.
 	 *
 	 * @since 2.5.0
-	 * @since 3.2.0 Moved to private method.
 	 *
 	 * @see https://www.parse.ly/help/integration/metatags#field-description
 	 *
 	 * @param string $type JSON-LD type.
 	 * @return string "post" or "index".
 	 */
-	private function convert_jsonld_to_parsely_type( string $type ): string {
+	public function convert_jsonld_to_parsely_type( string $type ): string {
 		return in_array( $type, self::SUPPORTED_JSONLD_POST_TYPES, true ) ? 'post' : 'index';
 	}
 
