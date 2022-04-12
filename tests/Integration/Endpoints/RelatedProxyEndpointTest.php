@@ -43,8 +43,6 @@ final class RelatedProxyEndpointTest extends TestCase {
 		// Set the default options prior to each test.
 		TestCase::set_options();
 
-		add_filter( 'wp_parsely_recommendations_block_enabled', '__return_true' );
-
 		$this->wp_rest_server_global_backup = $GLOBALS['wp_rest_server'] ?? null;
 		$this->rest_api_init_related_proxy  = static function () {
 			// Related_Proxy should be mocked here?
@@ -63,20 +61,41 @@ final class RelatedProxyEndpointTest extends TestCase {
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$GLOBALS['wp_rest_server'] = $this->wp_rest_server_global_backup;
-
-		remove_filter( 'wp_parsely_recommendations_block_enabled', '__return_true' );
 	}
 
 	/**
 	 * Confirm the route is registered.
 	 *
-	 * @covers \Related_API_Proxy::register_rest_route
+	 * @covers \Related_API_Proxy::run
 	 */
-	public function test_register_routes() {
+	public function test_register_routes_by_default() {
 		$routes = rest_get_server()->get_routes();
 		self::assertArrayHasKey( '/wp-parsely/v1/related', $routes );
 		self::assertCount( 1, $routes['/wp-parsely/v1/related'] );
 		self::assertSame( array( 'GET' => true ), $routes['/wp-parsely/v1/related'][0]['methods'] );
+	}
+
+	/**
+	 * Confirm the route is not registered when the wp_parsely_enable_related_api_proxy
+	 * filter is set to false.
+	 *
+	 * @covers \Related_API_Proxy::run
+	 */
+	public function test_do_not_register_routes_when_related_proxy_is_disabled() {
+
+		// Override some setup steps in order to set the wp_parsely_enable_related_api_proxy
+		// filter to false.
+		remove_action( 'rest_api_init', $this->rest_api_init_related_proxy );
+		$this->rest_api_init_related_proxy = static function () {
+			// Related_Proxy should be mocked here?
+			$endpoint = new Related_API_Proxy( new Parsely(), new Related_Proxy( new Parsely() ) );
+			add_filter( 'wp_parsely_enable_related_api_proxy', '__return_false' );
+			$endpoint->run();
+		};
+		add_action( 'rest_api_init', $this->rest_api_init_related_proxy );
+
+		$routes = rest_get_server()->get_routes();
+		self::assertFalse( array_key_exists( '/wp-parsely/v1/related', $routes ) );
 	}
 
 	/**
