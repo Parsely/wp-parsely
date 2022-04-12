@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\UI\Metadata_Renderer;
 use WP_Post;
 
 /**
@@ -140,6 +141,40 @@ class Parsely {
 			return esc_url( $tracker_url );
 		}
 		return '';
+	}
+
+	/**
+	 * Deprecated
+	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 *
+	 * @since 3.2.0
+	 * @deprecated 3.3.0
+	 * @see Metadata_Renderer::render_metadata
+	 *
+	 * @param string $meta_type `json_ld` or `repeated_metas`.
+	 * @return void
+	 */
+	public function render_metadata( string $meta_type ): void {
+		_deprecated_function( __FUNCTION__, '3.3', 'Metadata_Renderer::render_metadata()' );
+		$metadata = new Metadata_Renderer( $this );
+		$metadata->render_metadata( $meta_type );
+	}
+
+	/**
+	 * Deprecated.
+	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 *
+	 * @since 3.0.0
+	 * @deprecated 3.3.0
+	 * @see Metadata_Renderer::render_metadata
+	 *
+	 * @return void
+	 */
+	public function insert_page_header_metadata(): void {
+		_deprecated_function( __FUNCTION__, '3.3', 'Metadata_Renderer::render_metadata()' );
+		$parsely_options = $this->get_options();
+		$metadata        = new Metadata_Renderer( $this );
+		$metadata->render_metadata( $parsely_options['meta_type'] );
 	}
 
 	/**
