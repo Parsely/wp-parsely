@@ -910,14 +910,15 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				__( 'Please specify the Site ID', 'wp-parsely' )
 			);
 		} else {
-			$api_key_format  = '/^((\w+)\.)?(([\w-]+)?)(\.[\w-]+){1,2}$/';
-			$input['apikey'] = strtolower( sanitize_text_field( $input['apikey'] ) );
-			if ( 1 !== preg_match( $api_key_format, $input['apikey'] ) ) {
+			$api_key = $this->sanitize_api_key( $input['apikey'] );
+			if ( false === $this->validate_api_key( $api_key ) ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'apikey',
 					__( 'Your Parse.ly Site ID looks incorrect, it should look like "example.com".', 'wp-parsely' )
 				);
+			} else {
+				$input['apikey'] = $api_key;
 			}
 		}
 
@@ -1088,6 +1089,40 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		}
 
 		return $input;
+	}
+
+	/**
+	 * Validates the passed API key.
+	 *
+	 * Accepts a www prefix and up to 3 periods.
+	 *
+	 * Valid examples: 'test.com', 'www.test.com', 'subdomain.test.com',
+	 * 'www.subdomain.test.com', 'subdomain.subdomain.test.com'.
+	 *
+	 * Invalid examples: 'test', 'test.com/', 'http://test.com', 'https://test.com',
+	 * 'www.subdomain.subdomain.test.com'.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @param string $api_key The API key to be validated.
+	 * @return bool
+	 */
+	private function validate_api_key( string $api_key ): bool {
+		$key_format = '/^((\w+)\.)?(([\w-]+)?)(\.[\w-]+){1,2}$/';
+
+		return 1 === preg_match( $key_format, $api_key );
+	}
+
+	/**
+	 * Sanitizes the passed API key.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @param string $api_key The API key to be sanitized.
+	 * @return string
+	 */
+	private function sanitize_api_key( string $api_key ): string {
+		return strtolower( sanitize_text_field( $api_key ) );
 	}
 
 	/**
