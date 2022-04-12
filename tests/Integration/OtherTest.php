@@ -55,18 +55,6 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Test cache buster string.
-	 *
-	 * During tests, this should only return the version constant.
-	 *
-	 * @covers \Parsely\Parsely::get_asset_cache_buster
-	 */
-	public function test_cache_buster(): void {
-		$this->setExpectedDeprecated( 'Parsely::get_asset_cache_buster' );
-		self::assertSame( Parsely::VERSION, Parsely::get_asset_cache_buster() );
-	}
-
-	/**
 	 * Check out page filtering.
 	 *
 	 * @covers \Parsely\Parsely::construct_parsely_metadata
