@@ -57,7 +57,7 @@ require __DIR__ . '/src/class-scripts.php';
 require __DIR__ . '/src/class-metadata.php';
 require __DIR__ . '/src/class-dashboard-link.php';
 require __DIR__ . '/src/UI/class-admin-bar.php';
-require __DIR__ . '/src/UI/class-metadata-header.php';
+require __DIR__ . '/src/UI/class-metadata-renderer.php';
 require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
 require __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
 
