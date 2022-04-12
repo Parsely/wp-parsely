@@ -20,7 +20,23 @@ final class RecommendationsBlockTest extends TestCase {
 	private const BLOCK_NAME = 'wp-parsely/recommendations';
 
 	/**
-	 * Verifies that the run method registers the Recommendations Block.
+	 * The setup run before each test.
+	 */
+	public function set_up(): void {
+		parent::set_up();
+
+		// Don't run tests on WordPress versions unsupported by the Block.
+		$minimum_version = Recommendations_Block::MINIMUM_WORDPRESS_VERSION;
+		global $wp_version;
+		if ( true === version_compare( $wp_version, $minimum_version, '<' ) ) {
+			self::markTestSkipped( 'The Recommendations Block is not supported by WordPress versions lower than ' . $minimum_version );
+		}
+	}
+
+	/**
+	 * Verifies that the Recommendations Block's run() method registers the Block.
+	 *
+	 * @since 3.3.0
 	 *
 	 * @covers \Parsely\Recommendations_Block::run
 	 *
