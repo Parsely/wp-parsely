@@ -1,18 +1,38 @@
 /**
  * External dependencies
  */
-import { createURL } from '@wordpress/e2e-test-utils';
+import { createURL, visitAdminPage } from '@wordpress/e2e-test-utils';
 
 /**
  * Internal dependencies
  */
-import { changeKeysState, startUpTest } from '../utils';
+import { changeKeysState, selectScreenOptions, startUpTest } from '../utils';
+
+const setMetadataFormat = async ( format ) => {
+	await visitAdminPage( '/options-general.php', '?page=parsely' );
+	await selectScreenOptions( { recrawl: true, advanced: false } );
+
+	await page.select( '#parsely[meta_type]', format );
+
+	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'submit\')]' );
+	await input.click();
+};
 
 describe( 'Front end metadata insertion', () => {
 	beforeAll( startUpTest );
 
-	it( 'Should insert repeated metas on homepage', async () => {
+	beforeEach( async () => {
 		await changeKeysState( true, false );
+	} );
+
+	it( 'Should insert JSON LD on homepage', async () => {
+		await setMetadataFormat( 'json_ld' );
+
+		await page.goto( createURL( '/' ) );
+	} );
+
+	it( 'Should insert repeated metas on homepage', async () => {
+		await setMetadataFormat( 'repeated_metas' );
 
 		await page.goto( createURL( '/' ) );
 
@@ -24,7 +44,7 @@ describe( 'Front end metadata insertion', () => {
 	} );
 
 	it( 'Should insert repeated metas on post page', async () => {
-		await changeKeysState( true, false );
+		await setMetadataFormat( 'repeated_metas' );
 
 		await page.goto( createURL( '/', '?p=1' ) );
 
