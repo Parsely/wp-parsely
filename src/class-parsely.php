@@ -156,8 +156,8 @@ class Parsely {
 	 */
 	public function render_metadata( string $meta_type ): void {
 		_deprecated_function( __FUNCTION__, '3.3', 'Metadata_Renderer::render_metadata()' );
-		$metadata = new Metadata_Renderer( $this );
-		$metadata->render_metadata( $meta_type );
+		$metadata_renderer = new Metadata_Renderer( $this );
+		$metadata_renderer->render_metadata( $meta_type );
 	}
 
 	/**
@@ -172,9 +172,9 @@ class Parsely {
 	 */
 	public function insert_page_header_metadata(): void {
 		_deprecated_function( __FUNCTION__, '3.3', 'Metadata_Renderer::render_metadata()' );
-		$parsely_options = $this->get_options();
-		$metadata        = new Metadata_Renderer( $this );
-		$metadata->render_metadata( $parsely_options['meta_type'] );
+		$parsely_options   = $this->get_options();
+		$metadata_renderer = new Metadata_Renderer( $this );
+		$metadata_renderer->render_metadata( $parsely_options['meta_type'] );
 	}
 
 	/**
