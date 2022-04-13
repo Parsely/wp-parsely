@@ -56,8 +56,20 @@ final class Metadata_Renderer {
 		 * @param bool $insert_metadata True to insert the metadata, false otherwise.
 		 */
 		if ( apply_filters( 'wp_parsely_should_insert_metadata', true ) ) {
-			add_action( 'wp_head', array( $this, 'render_metadata' ) );
+			add_action( 'wp_head', array( $this, 'render_metadata_on_head' ) );
 		}
+	}
+
+	/**
+	 * Renders metadata on site's head using the format from the site's options.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @return void
+	 */
+	public function render_metadata_on_head(): void {
+		$parsely_options = $this->parsely->get_options();
+		$this->render_metadata( $parsely_options['meta_type'] );
 	}
 
 	/**
