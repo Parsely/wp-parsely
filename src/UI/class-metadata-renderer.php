@@ -97,11 +97,10 @@ final class Metadata_Renderer {
 
 		// Assign default values for LD+JSON
 		// TODO: Mapping of an install's post types to Parse.ly post types (namely page/post).
-		$metadata     = new Metadata( $this->parsely );
-		$parsely_page = $metadata->construct_metadata( $parsely_options, $parsed_post );
+		$metadata = ( new Metadata( $this->parsely ) )->construct_metadata( $parsely_options, $post );
 
 		// Something went wrong - abort.
-		if ( 0 === count( $parsely_page ) || ! isset( $parsely_page['headline'] ) ) {
+		if ( 0 === count( $metadata ) || ! isset( $metadata['headline'] ) ) {
 			return;
 		}
 
@@ -110,25 +109,25 @@ final class Metadata_Renderer {
 			include plugin_dir_path( PARSELY_FILE ) . 'views/json-ld.php';
 		} else {
 			// Assume `meta_type` is `repeated_metas`.
-			$parsely_post_type = $this->parsely->convert_jsonld_to_parsely_type( $parsely_page['@type'] );
-			if ( isset( $parsely_page['keywords'] ) && is_array( $parsely_page['keywords'] ) ) {
-				$parsely_page['keywords'] = implode( ',', $parsely_page['keywords'] );
+			$parsely_post_type = $this->parsely->convert_jsonld_to_parsely_type( $metadata['@type'] );
+			if ( isset( $metadata['keywords'] ) && is_array( $metadata['keywords'] ) ) {
+				$metadata['keywords'] = implode( ',', $metadata['keywords'] );
 			}
 
 			$parsely_metas = array(
-				'title'     => $parsely_page['headline'] ?? null,
-				'link'      => $parsely_page['url'] ?? null,
+				'title'     => $metadata['headline'] ?? null,
+				'link'      => $metadata['url'] ?? null,
 				'type'      => $parsely_post_type,
-				'image-url' => $parsely_page['thumbnailUrl'] ?? null,
-				'pub-date'  => $parsely_page['datePublished'] ?? null,
-				'section'   => $parsely_page['articleSection'] ?? null,
-				'tags'      => $parsely_page['keywords'] ?? null,
-				'author'    => isset( $parsely_page['author'] ),
+				'image-url' => $metadata['thumbnailUrl'] ?? null,
+				'pub-date'  => $metadata['datePublished'] ?? null,
+				'section'   => $metadata['articleSection'] ?? null,
+				'tags'      => $metadata['keywords'] ?? null,
+				'author'    => isset( $metadata['author'] ),
 			);
 			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
 
-			if ( isset( $parsely_page['author'] ) ) {
-				$parsely_page_authors = wp_list_pluck( $parsely_page['author'], 'name' );
+			if ( isset( $metadata['author'] ) ) {
+				$parsely_page_authors = wp_list_pluck( $metadata['author'], 'name' );
 				$parsely_page_authors = array_filter( $parsely_page_authors, array( $this, 'filter_empty_and_not_string_from_array' ) );
 			}
 
@@ -136,7 +135,7 @@ final class Metadata_Renderer {
 		}
 
 		// Add any custom metadata.
-		if ( isset( $parsely_page['custom_metadata'] ) ) {
+		if ( isset( $metadata['custom_metadata'] ) ) {
 			include plugin_dir_path( PARSELY_FILE ) . 'views/custom-metadata.php';
 		}
 	}

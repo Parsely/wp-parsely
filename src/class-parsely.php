@@ -257,8 +257,7 @@ class Parsely {
 			return;
 		}
 
-		$metadata_obj = new Metadata( $this );
-		$metadata     = $metadata_obj->construct_metadata( $parsely_options, $post );
+		$metadata = ( new Metadata( $this ) )->construct_metadata( $parsely_options, $post );
 
 		$endpoint_metadata = array(
 			'canonical_url' => $metadata['url'],
@@ -327,7 +326,7 @@ class Parsely {
 				ARRAY_N
 			);
 			foreach ( $results as $result ) {
-				array_push( $ids, $result[0] );
+				$ids[] = $result[0];
 			}
 			wp_cache_set( 'parsely_post_ids_need_meta_updating', $ids, '', 86400 );
 		}

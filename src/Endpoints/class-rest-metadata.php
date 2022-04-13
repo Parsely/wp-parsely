@@ -80,15 +80,14 @@ class Rest_Metadata extends Metadata_Endpoint {
 		$options = $this->parsely->get_options();
 
 		if ( false === $post ) {
-			$meta = '';
+			$metadata = '';
 		} else {
-			$metadata = new Metadata( $this->parsely );
-			$meta     = $metadata->construct_metadata( $options, $post );
+			$metadata = ( new Metadata( $this->parsely ) )->construct_metadata( $options, $post );
 		}
 
 		$response = array(
 			'version' => self::REST_VERSION,
-			'meta'    => $meta,
+			'meta'    => $metadata,
 		);
 
 		/**
