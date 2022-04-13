@@ -310,14 +310,15 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		);
 
 		// Get the API Key.
-		$h          = __( 'Your Site ID is your own site domain (e.g. `mydomain.com`).', 'wp-parsely' );
+		$h          = __( 'Your Site ID is typically your own site domain without <code>http(s)://</code> prefixes or trailing <code>/</code> (e.g. <code>mydomain.com</code>).', 'wp-parsely' );
 		$field_id   = 'apikey';
 		$field_args = array(
 			'option_key'    => $field_id,
 			'help_text'     => $h,
 			'label_for'     => $field_id,
 			'optional_args' => array(
-				'required' => 'required',
+				'required'    => 'required',
+				'placeholder' => 'mydomain.com',
 			),
 
 		);
@@ -894,7 +895,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Validate the options provided by the user
+	 * Validates the options provided by the user.
 	 *
 	 * @param array $input Options from the settings page.
 	 * @return array List of validated input settings.
@@ -909,14 +910,15 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				__( 'Please specify the Site ID', 'wp-parsely' )
 			);
 		} else {
-			$input['apikey'] = strtolower( $input['apikey'] );
-			$input['apikey'] = sanitize_text_field( $input['apikey'] );
-			if ( strpos( $input['apikey'], '.' ) === false || strpos( $input['apikey'], ' ' ) !== false ) {
+			$api_key = $this->sanitize_api_key( $input['apikey'] );
+			if ( false === $this->validate_api_key( $api_key ) ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'apikey',
 					__( 'Your Parse.ly Site ID looks incorrect, it should look like "example.com".', 'wp-parsely' )
 				);
+			} else {
+				$input['apikey'] = $api_key;
 			}
 		}
 
@@ -1087,6 +1089,40 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		}
 
 		return $input;
+	}
+
+	/**
+	 * Validates the passed API key.
+	 *
+	 * Accepts a www prefix and up to 3 periods.
+	 *
+	 * Valid examples: 'test.com', 'www.test.com', 'subdomain.test.com',
+	 * 'www.subdomain.test.com', 'subdomain.subdomain.test.com'.
+	 *
+	 * Invalid examples: 'test', 'test.com/', 'http://test.com', 'https://test.com',
+	 * 'www.subdomain.subdomain.test.com'.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @param string $api_key The API key to be validated.
+	 * @return bool
+	 */
+	private function validate_api_key( string $api_key ): bool {
+		$key_format = '/^((\w+)\.)?(([\w-]+)?)(\.[\w-]+){1,2}$/';
+
+		return 1 === preg_match( $key_format, $api_key );
+	}
+
+	/**
+	 * Sanitizes the passed API key.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @param string $api_key The API key to be sanitized.
+	 * @return string
+	 */
+	private function sanitize_api_key( string $api_key ): string {
+		return strtolower( sanitize_text_field( $api_key ) );
 	}
 
 	/**
