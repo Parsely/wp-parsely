@@ -82,8 +82,8 @@ function parsely_initialize_plugin(): void {
 	$admin_bar = new Admin_Bar( $GLOBALS['parsely'] );
 	$admin_bar->run();
 
-	$metadata = new Metadata_Renderer( $GLOBALS['parsely'] );
-	$metadata->run();
+	$metadata_renderer = new Metadata_Renderer( $GLOBALS['parsely'] );
+	$metadata_renderer->run();
 }
 
 require __DIR__ . '/src/UI/class-admin-warning.php';

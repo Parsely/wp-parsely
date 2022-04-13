@@ -14,5 +14,5 @@ namespace Parsely;
 
 ?>
 <script type="application/ld+json">
-<?php echo wp_json_encode( $parsely_page ) . "\n"; ?>
+<?php echo wp_json_encode( $metadata ) . "\n"; ?>
 </script>
