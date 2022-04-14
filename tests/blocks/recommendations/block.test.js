@@ -12,23 +12,26 @@ import ParselyRecommendationsList from '../../../src/blocks/recommendations/comp
 import ParselyRecommendationsTitle from '../../../src/blocks/recommendations/components/parsely-recommendations-title';
 import RecommendationsStore from '../../../src/blocks/recommendations/recommendations-store';
 
-describe( 'Recommendations Block', () => {
-	const apiResultSingle = [
-		{
-			author: 'John Doe',
-			authors: [ 'John Doe', 'Jane Doe' ],
-			full_content_word_count: 0,
-			image_url: 'https://example.com/image.jpg',
-			metadata: null,
-			pub_date: '2022-03-14T13:14:00',
-			section: 'Articles',
-			tags: [ 'parsely_smart:entity:Tag 1', 'parsely_smart:iab:Tag 2' ],
-			thumb_url_medium: 'https://example.com/image-thumb.jpg',
-			title: 'My nice article',
-			url: 'https://example.com/my-nice-article/',
-		},
-	];
+/**
+ * Initializations
+ */
+const apiResultSingle = [
+	{
+		author: 'John Doe',
+		authors: [ 'John Doe', 'Jane Doe' ],
+		full_content_word_count: 0,
+		image_url: 'https://example.com/image.jpg',
+		metadata: null,
+		pub_date: '2022-03-14T13:14:00',
+		section: 'Articles',
+		tags: [ 'parsely_smart:entity:Tag 1', 'parsely_smart:iab:Tag 2' ],
+		thumb_url_medium: 'https://example.com/image-thumb.jpg',
+		title: 'My nice article',
+		url: 'https://example.com/my-nice-article/',
+	},
+];
 
+describe( 'Recommendations Block', () => {
 	it( 'should display loading text when starting', () => {
 		render(
 			<RecommendationsStore>
