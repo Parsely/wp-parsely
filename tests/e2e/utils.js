@@ -41,13 +41,28 @@ export const activatePluginApiKey = async () => {
 	await waitForWpAdmin();
 };
 
+/**
+ * Saves the specified Site ID to the database using the settings page.
+ *
+ * @param {string} siteId The site ID to be saved to the database.
+ * @return {Promise<void>}
+ */
+export const setSiteId = async ( siteId ) => {
+	await visitAdminPage( '/options-general.php', '?page=parsely' );
+	await page.focus( '#apikey' );
+	await page.evaluate( () => document.getElementById( 'apikey' ).value = '' );
+	await page.keyboard.type( siteId );
+	await page.keyboard.press( 'Enter' );
+	await waitForWpAdmin();
+};
+
 export const checkH2DoesNotExist = async ( text ) => {
 	const [ h2 ] = await page.$x( `//h2[contains(text(), "${ text }")]` );
 	return h2 === undefined;
 };
 
 /**
- * Set the visible sections in the array to their values `true` for visible and `false` for not visible.
+ * Sets the visible sections in the array to their values `true` for visible and `false` for not visible.
  *
  * @param {Object} sections Dictionary containing the desired sections to change. Currently, `recrawl` and `advanced`.
  * @return {Promise<void>}
@@ -75,7 +90,7 @@ export const selectScreenOptions = async ( sections ) => {
 };
 
 /**
- * Save settings in the settings page and force a hard refresh.
+ * Saves settings in the settings page and forces a hard refresh.
  *
  * @return {Promise<void>}
  */
@@ -89,7 +104,7 @@ export const saveSettingsAndHardRefresh = async () => {
 };
 
 /**
- * Some common actions to do before starting tests.
+ * Performs preparatory actions before starting the tests.
  *
  * @return {Promise<void>}
  */
