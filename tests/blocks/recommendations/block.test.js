@@ -1,11 +1,11 @@
 /**
- * External dependencies
+ * External dependencies.
  */
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 /**
- * Internal dependencies
+ * Internal dependencies.
  */
 import ParselyRecommendations from '../../../src/blocks/recommendations/components/parsely-recommendations';
 import ParselyRecommendationsList from '../../../src/blocks/recommendations/components/parsely-recommendations-list';
@@ -13,7 +13,7 @@ import ParselyRecommendationsTitle from '../../../src/blocks/recommendations/com
 import RecommendationsStore from '../../../src/blocks/recommendations/recommendations-store';
 
 /**
- * Initializations
+ * Initializations.
  */
 const apiResultSingle = [
 	{
