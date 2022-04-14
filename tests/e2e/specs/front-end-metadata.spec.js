@@ -6,29 +6,37 @@ import { createURL, visitAdminPage } from '@wordpress/e2e-test-utils';
 /**
  * Internal dependencies
  */
-import { changeKeysState, selectScreenOptions, startUpTest } from '../utils';
+import { changeKeysState, selectScreenOptions, startUpTest, waitForWpAdmin } from '../utils';
 
 const setMetadataFormat = async ( format ) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
-	await selectScreenOptions( { recrawl: true, advanced: false } );
+	await waitForWpAdmin();
 
-	await page.select( '#parsely[meta_type]', format );
+	await page.select( 'select', format );
 
 	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'submit\')]' );
 	await input.click();
+
+	await waitForWpAdmin();
 };
 
 describe( 'Front end metadata insertion', () => {
-	beforeAll( startUpTest );
-
-	beforeEach( async () => {
+	beforeAll( async () => {
+		await startUpTest();
 		await changeKeysState( true, false );
+		await selectScreenOptions( { recrawl: true, advanced: false } );
 	} );
 
 	it( 'Should insert JSON LD on homepage', async () => {
 		await setMetadataFormat( 'json_ld' );
 
 		await page.goto( createURL( '/' ) );
+
+		const content = await page.content();
+
+		expect( content ).toContain( '<script type="application/ld+json">\n' +
+			'{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"wp-parsely","url":"http:\\/\\/localhost:8889"}\n' +
+		'</script>' );
 	} );
 
 	it( 'Should insert repeated metas on homepage', async () => {
