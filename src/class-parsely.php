@@ -156,8 +156,8 @@ class Parsely {
 	 */
 	public function render_metadata( string $meta_type ): void {
 		_deprecated_function( __FUNCTION__, '3.3', 'Metadata_Renderer::render_metadata()' );
-		$metadata = new Metadata_Renderer( $this );
-		$metadata->render_metadata( $meta_type );
+		$metadata_renderer = new Metadata_Renderer( $this );
+		$metadata_renderer->render_metadata( $meta_type );
 	}
 
 	/**
@@ -172,9 +172,9 @@ class Parsely {
 	 */
 	public function insert_page_header_metadata(): void {
 		_deprecated_function( __FUNCTION__, '3.3', 'Metadata_Renderer::render_metadata()' );
-		$parsely_options = $this->get_options();
-		$metadata        = new Metadata_Renderer( $this );
-		$metadata->render_metadata( $parsely_options['meta_type'] );
+		$parsely_options   = $this->get_options();
+		$metadata_renderer = new Metadata_Renderer( $this );
+		$metadata_renderer->render_metadata( $parsely_options['meta_type'] );
 	}
 
 	/**
@@ -248,13 +248,16 @@ class Parsely {
 	 */
 	public function update_metadata_endpoint( int $post_id ): void {
 		$parsely_options = $this->get_options();
-
 		if ( $this->api_key_is_missing() || empty( $parsely_options['metadata_secret'] ) ) {
 			return;
 		}
 
-		$post     = get_post( $post_id );
-		$metadata = $this->construct_parsely_metadata( $parsely_options, $post );
+		$post = get_post( $post_id );
+		if ( null === $post ) {
+			return;
+		}
+
+		$metadata = ( new Metadata( $this ) )->construct_metadata( $parsely_options, $post );
 
 		$endpoint_metadata = array(
 			'canonical_url' => $metadata['url'],
@@ -323,7 +326,7 @@ class Parsely {
 				ARRAY_N
 			);
 			foreach ( $results as $result ) {
-				array_push( $ids, $result[0] );
+				$ids[] = $result[0];
 			}
 			wp_cache_set( 'parsely_post_ids_need_meta_updating', $ids, '', 86400 );
 		}

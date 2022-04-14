@@ -64,10 +64,10 @@ abstract class Metadata_Endpoint {
 	 * @return string The metadata as HTML code.
 	 */
 	public function get_rendered_meta( string $meta_type ): string {
-		$metadata = new Metadata_Renderer( $this->parsely );
+		$metadata_renderer = new Metadata_Renderer( $this->parsely );
 
 		ob_start();
-		$metadata->render_metadata( $meta_type );
+		$metadata_renderer->render_metadata( $meta_type );
 		$out = ob_get_clean();
 
 		if ( false === $out ) {
