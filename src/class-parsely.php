@@ -144,7 +144,7 @@ class Parsely {
 	}
 
 	/**
-	 * Deprecated
+	 * Deprecated.
 	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
 	 *
 	 * @since 3.2.0

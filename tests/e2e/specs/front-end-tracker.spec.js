@@ -17,7 +17,7 @@ const getAssetVersion = () => {
 	return r[ 1 ];
 };
 
-describe( 'Front end code insertion', () => {
+describe( 'Front end tracking code insertion', () => {
 	beforeAll( startUpTest );
 
 	it( 'Should inject loading script homepage', async () => {
