@@ -295,8 +295,8 @@ class Metadata {
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param WP_Post $post_obj The object for the post.
-	 * @param array   $parsely_options The parsely options.
+	 * @param WP_Post              $post_obj The object for the post.
+	 * @param array<string, mixed> $parsely_options The parsely options.
 	 * @return string Cleaned category name for the post in question.
 	 */
 	private function get_category_name( WP_Post $post_obj, array $parsely_options ): string {
@@ -325,7 +325,7 @@ class Metadata {
 		 *
 		 * @param string  $category        Category name.
 		 * @param WP_Post $post_obj        Post object.
-		 * @param array   $parsely_options The Parsely options.
+		 * @param array<string, mixed>   $parsely_options The Parsely options.
 		 */
 		$category_name = apply_filters( 'wp_parsely_post_category', $category_name, $post_obj, $parsely_options );
 
@@ -338,7 +338,7 @@ class Metadata {
 	 * @since 3.3.0 Moved to class-metadata
 	 *
 	 * @param int $post_id The id of the post you're trying to get tags for.
-	 * @return array The tags of the post represented by the post id.
+	 * @return array<string> The tags of the post represented by the post id.
 	 */
 	private function get_tags( int $post_id ): array {
 		$tags      = array();
@@ -501,7 +501,7 @@ class Metadata {
 			if ( $post_id ) {
 				$coauthor_terms = get_the_terms( $post_id, $coauthors_plus->coauthor_taxonomy );
 
-				if ( is_array( $coauthor_terms ) && ! empty( $coauthor_terms ) ) {
+				if ( is_array( $coauthor_terms ) ) {
 					foreach ( $coauthor_terms as $coauthor ) {
 						$coauthor_slug = preg_replace( '#^cap-#', '', $coauthor->slug );
 						$post_author   = $coauthors_plus->get_coauthor_by( 'user_nicename', $coauthor_slug );
@@ -517,7 +517,8 @@ class Metadata {
 					if ( ! empty( $post_author ) ) {
 						$coauthors[] = $post_author;
 					}
-				} // the empty else case is because if we force guest authors, we don't ever care what value wp_posts.post_author has.
+				}
+				// The empty else case is because if we force guest authors, we don't ever care what value wp_posts.post_author has.
 			}
 		}
 		return $coauthors;
