@@ -39,6 +39,17 @@ describe( 'Front end metadata insertion', () => {
 		'</script>' );
 	} );
 
+	it( 'Should insert JSON LD on post page', async () => {
+		await setMetadataFormat( 'json_ld' );
+
+		await page.goto( createURL( '/', '?p=1' ) );
+
+		const content = await page.content();
+
+		expect( content ).toContain( '<script type="application/ld+json">' );
+		expect( content ).toContain( '{"@context":"https:\\/\\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\\/\\/localhost:8889\\/?p=1"},"headline":"Hello world!","url":"http:\\/\\/localhost:8889\\/?p=1","thumbnailUrl":"","image":{"@type":"ImageObject","url":""},' );
+	} );
+
 	it( 'Should insert repeated metas on homepage', async () => {
 		await setMetadataFormat( 'repeated_metas' );
 
@@ -61,7 +72,7 @@ describe( 'Front end metadata insertion', () => {
 		expect( content ).toContain( '<meta name="parsely-title" content="Hello world!">' );
 		expect( content ).toContain( '<meta name="parsely-link" content="http://localhost:8889/?p=1">' );
 		expect( content ).toContain( '<meta name="parsely-type" content="post">' );
-		expect( content ).toContain( '<meta name="parsely-pub-date" content="' );
+		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
 		expect( content ).toContain( '<meta name="parsely-author" content="admin">' );
 	} );
