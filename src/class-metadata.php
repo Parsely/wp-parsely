@@ -323,9 +323,9 @@ class Metadata {
 		 *
 		 * @since 1.8.0
 		 *
-		 * @param string  $category        Category name.
-		 * @param WP_Post $post_obj        Post object.
-		 * @param array<string, mixed>   $parsely_options The Parsely options.
+		 * @param string  $category    Category name.
+		 * @param WP_Post $post_obj    Post object.
+		 * @param array<string, mixed> $parsely_options The Parsely options.
 		 */
 		$category_name = apply_filters( 'wp_parsely_post_category', $category_name, $post_obj, $parsely_options );
 
@@ -337,7 +337,7 @@ class Metadata {
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param int $post_id The id of the post you're trying to get tags for.
+	 * @param int $post_id   The id of the post you're trying to get tags for.
 	 * @return array<string> The tags of the post represented by the post id.
 	 */
 	private function get_tags( int $post_id ): array {
