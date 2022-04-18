@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * External dependencies.
  */
 import {
 	createNewPost,
@@ -8,7 +8,7 @@ import {
 } from '@wordpress/e2e-test-utils';
 
 /**
- * Internal dependencies
+ * Internal dependencies.
  */
 import {
 	activatePluginApiKey,
@@ -27,26 +27,6 @@ describe( 'Recommendations Block', () => {
 	beforeAll( async () => {
 		enablePageDialogAccept();
 		await startUpTest();
-	} );
-
-	/**
-	 * Verifies that the block will display results when a valid Site ID is provided.
-	 */
-	it( 'Should display results when a valid Site ID is provided', async () => {
-		await setSiteId( 'wpvip.com' );
-		await createNewPost();
-		await insertBlock( 'Parse.ly' );
-
-		// A list should appear within the block.
-		await page.waitForSelector( '.parsely-recommendations-list' );
-
-		// The Block title should be "Related Content" by default.
-		const text = await page.$eval( '.parsely-recommendations-list-title', ( element ) => element.textContent );
-		expect( text ).toMatch( 'Related Content' );
-
-		// The list should contain 3 items by default.
-		const itemsCount = await page.$$eval( '.parsely-recommendations-list > li', ( element ) => element.length );
-		expect( itemsCount ).toBe( 3 );
 	} );
 
 	/**
