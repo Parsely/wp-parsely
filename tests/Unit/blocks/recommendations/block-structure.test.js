@@ -7,10 +7,10 @@ import '@testing-library/jest-dom';
 /**
  * Internal dependencies.
  */
-import ParselyRecommendations from '../../../src/blocks/recommendations/components/parsely-recommendations';
-import ParselyRecommendationsList from '../../../src/blocks/recommendations/components/parsely-recommendations-list';
-import ParselyRecommendationsTitle from '../../../src/blocks/recommendations/components/parsely-recommendations-title';
-import RecommendationsStore from '../../../src/blocks/recommendations/recommendations-store';
+import ParselyRecommendations from '../../../../src/blocks/recommendations/components/parsely-recommendations';
+import ParselyRecommendationsList from '../../../../src/blocks/recommendations/components/parsely-recommendations-list';
+import ParselyRecommendationsTitle from '../../../../src/blocks/recommendations/components/parsely-recommendations-title';
+import RecommendationsStore from '../../../../src/blocks/recommendations/recommendations-store';
 
 /**
  * Initializations.
