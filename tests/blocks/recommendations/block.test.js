@@ -212,7 +212,7 @@ describe( 'Recommendations Block', () => {
 		const listItem2Text = within( listItem2 ).getByText( 'My second article' );
 		const listItem2Image = within( listItem2 ).queryByRole( 'img' );
 
-		// We should two list items.
+		// We should have two list items.
 		expect( listItems.length ).toBe( 2 );
 
 		// Element hierarchy checks.
@@ -259,7 +259,7 @@ describe( 'Recommendations Block', () => {
 		const listItem2Text = within( listItem2 ).getByText( 'My second article' );
 		const listItem2Image = within( listItem2 ).getByRole( 'img' );
 
-		// We should two list items.
+		// We should have two list items.
 		expect( listItems.length ).toBe( 2 );
 
 		// Element hierarchy checks.

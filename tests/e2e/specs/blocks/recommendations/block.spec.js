@@ -21,8 +21,8 @@ import {
  */
 describe( 'Recommendations Block', () => {
 	/**
-	 * Prevent browser from locking with dialogs, log in to WordPress,
-	 * and activate the Parse.ly plugin.
+	 * Prevents browser from locking with dialogs, logs in to WordPress,
+	 * and activates the Parse.ly plugin.
 	 */
 	beforeAll( async () => {
 		enablePageDialogAccept();
