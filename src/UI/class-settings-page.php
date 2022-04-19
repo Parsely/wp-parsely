@@ -234,8 +234,7 @@ final class Settings_Page {
 				'id'      => 'overview',
 				'title'   => __( 'Overview', 'wp-parsely' ),
 				'content' => '<p>' . __( 'The only required setting on this page is the Site ID. All of the other settings are optional.', 'wp-parsely' ) . '</p>' .
-					'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.', 'wp-parsely' ) . '</p>' .
-					'<p>' . __( 'This plugin does not currently support dynamic tracking (the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications — situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href="https://www.parsely.com/help/integration/basic/">the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href="https://www.parsely.com/help/integration/dynamic/">the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href="mailto:support@parsely.com">support@parsely.com</a>) for additional assistance.', 'wp-parsely' ) . '</p>',
+					'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.', 'wp-parsely' ) . '</p>',
 			)
 		);
 		$screen->add_help_tab(
@@ -1168,21 +1167,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		if ( isset( $input[ $track_as ] ) ) {
 			unset( $input[ $track_as ] );
 		}
-	}
-
-	/**
-	 * Show our note about dynamic tracking.
-	 *
-	 * @return void
-	 */
-	public function print_dynamic_tracking_note(): void {
-		printf(
-		/* translators: 1: Documentation URL 2: Documentation URL */
-			wp_kses_post( __( 'This plugin does not currently support dynamic tracking ( the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href="%1$s">the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href="%2$s">the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href="%3$s">support@parsely.com</a> ) for additional assistance.', 'wp-parsely' ) ),
-			esc_url( 'http://www.parsely.com/help/integration/basic/' ),
-			esc_url( 'https://www.parsely.com/help/integration/dynamic/' ),
-			esc_url( 'mailto:support@parsely.com' )
-		);
 	}
 
 	/**
