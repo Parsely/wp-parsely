@@ -117,9 +117,10 @@ final class Related_API_Proxy {
 		$data = array_map(
 			static function( stdClass $link ) {
 				return (object) array(
-					'image_url' => $link->image_url,
-					'title'     => $link->title,
-					'url'       => $link->url,
+					'image_url'        => $link->image_url,
+					'thumb_url_medium' => $link->thumb_url_medium,
+					'title'            => $link->title,
+					'url'              => $link->url,
 				);
 			},
 			$links
