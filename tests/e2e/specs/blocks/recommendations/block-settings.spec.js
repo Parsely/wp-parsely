@@ -79,25 +79,25 @@ describe( 'Recommendations Block', () => {
 /**
  * Returns the Block's title text.
  *
- * @return {string} The Block's title text.
+ * @return {Promise<string>} The Block's title text.
  */
 async function getTitleText() {
-	return await page.$eval( '.parsely-recommendations-list-title', ( element ) => element.textContent );
+	return page.$eval( '.parsely-recommendations-list-title', ( element ) => element.textContent );
 }
 
 /**
  * Returns the number of results displayed within the Block.
  *
- * @return {number} The number of results displayed within the Block.
+ * @return {Promise<number>} The number of results displayed within the Block.
  */
 async function getResultCount() {
-	return await page.$$eval( '.parsely-recommendations-list > li', ( element ) => element.length );
+	return page.$$eval( '.parsely-recommendations-list > li', ( element ) => element.length );
 }
 
 /**
  * Returns whether the Block contains one or more images.
  *
- * @return {boolean} Whether the Block contains one or more images.
+ * @return {Promise<boolean>} Whether the Block contains one or more images.
  */
 async function resultsContainImage() {
 	return ( await page.$( '.parsely-recommendations-image' ) ) !== null;
@@ -106,10 +106,10 @@ async function resultsContainImage() {
 /**
  * Returns the "src" attribute of all images contained within the Block.
  *
- * @return {Array<string>} The "src" attribute of all images contained within the Block.
+ * @return {Promise<Array<string>>} The "src" attribute of all images contained within the Block.
  */
 async function getResultImageUrls() {
-	return await page.$$eval( '.parsely-recommendations-image', ( imgs ) => imgs.map( ( img ) => img.getAttribute( 'src' ) ) );
+	return page.$$eval( '.parsely-recommendations-image', ( imgs ) => imgs.map( ( img ) => img.getAttribute( 'src' ) ) );
 }
 
 /**
