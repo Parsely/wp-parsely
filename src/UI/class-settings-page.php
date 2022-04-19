@@ -229,6 +229,10 @@ final class Settings_Page {
 	 */
 	public function add_help_text(): void {
 		$screen = get_current_screen();
+		if ( null === $screen ) {
+			return;
+		}
+
 		$screen->add_help_tab(
 			array(
 				'id'      => 'overview',
@@ -634,8 +638,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @since 3.1.0
 	 *
 	 * @param array $args The arguments for the form field. May contain 'help_text'.
+	 * @return void
 	 */
-	public function print_description_text( $args ) {
+	public function print_description_text( $args ): void {
 		echo isset( $args['help_text'] ) ? '<p class="description" id="' . esc_attr( $args['option_key'] ) . '-description">' . wp_kses_post( $args['help_text'] ) . '</p>' : '';
 	}
 
@@ -753,43 +758,13 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Prints out multiple selection in the form of checkboxes
-	 *
-	 * @param array $args The arguments for the checkboxes.
-	 * @return void
-	 */
-	public function print_multiple_checkboxes( array $args ): void {
-		$options        = $this->parsely->get_options();
-		$select_options = $args['select_options'];
-		$id             = esc_attr( $args['option_key'] );
-		$name           = Parsely::OPTIONS_KEY . "[$id]";
-
-		?>
-		<fieldset>
-			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
-		<?php
-		foreach ( $select_options as $key => $val ) {
-			$selected = in_array( $val, $options[ $args['option_key'] ], true );
-			printf(
-				'<label for="%1$s-%2$s"><input type="checkbox" name="%1$s[]" id="%1$s-%2$s" value="%2$s" ',
-				esc_attr( $name ),
-				esc_attr( $key )
-			);
-			echo checked( $selected, true, false );
-			echo sprintf( ' /> %s</label><br />', esc_attr( $val ) );
-		}
-
-		$this->print_description_text( $args );
-	}
-
-	/**
 	 * Print out a "single-image browse control" which includes a text
 	 * input to store image path and a button to browse for images.
 	 *
 	 * @param array $args The arguments for the control.
 	 * @return void
 	 */
-	public function print_media_single_image( array $args ) {
+	public function print_media_single_image( array $args ): void {
 		$key         = $args['option_key'];
 		$input_value = $this->parsely->get_options()[ $key ];
 		$input_name  = Parsely::OPTIONS_KEY . "[$key]";
