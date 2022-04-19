@@ -27,6 +27,7 @@ export function wpParselyInitCustom() {
 	}
 
 	window.PARSELY = {
+		autotrack: window.wpParselyShouldAutotrack,
 		onload: customOnLoad,
 	};
 }
