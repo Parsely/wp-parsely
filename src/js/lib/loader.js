@@ -10,6 +10,7 @@ export function wpParselyInitCustom() {
 	 */
 	const customOnLoad = () => window.wpParselyHooks.doAction( 'wpParselyOnLoad' );
 
+	// Constructing window.PARSELY object.
 	if ( typeof window.PARSELY === 'object' ) {
 		if ( typeof window.PARSELY.onload !== 'function' ) {
 			window.PARSELY.onload = customOnLoad;
@@ -28,6 +29,7 @@ export function wpParselyInitCustom() {
 		};
 	}
 
+	// Disabling autotrack if it was defined as such from PHP.
 	if ( window.wpParselyDisableAutotrack === true ) {
 		window.PARSELY.autotrack = false;
 	}
