@@ -60,7 +60,7 @@ export default function ParselyRecommendations( {
 				<span className="parsely-recommendations-loading">{ __( 'Loading…', 'wp-parsely' ) }</span>
 			) }
 			{ errorMessage && (
-				<span>{ errorMessage }</span>
+				<span className="parsely-recommendations-error">{ errorMessage }</span>
 			) }
 			{ isLoaded && !! recommendations?.length && (
 				<>
