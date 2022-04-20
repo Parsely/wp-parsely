@@ -96,23 +96,22 @@ function verifyBlockStructure( resultCount, blockTitle, imageStyle = '' ) {
 	// Iterate through every <li> item.
 	listItems.forEach( ( listItem, index ) => {
 		// Initializations.
-		const i = ++index;
 		const listItemLink = within( listItem ).getByRole( 'link' );
-		const listItemText = within( listItem ).getByText( `Article ${ i }` );
+		const listItemText = within( listItem ).getByText( `Article ${ index }` );
 		const listItemImage = within( listItem ).queryByRole( 'img' );
 
 		// The <li> should contain an <a>, which should contain the Recommendation's
 		// title and a correct "href" attribute.
 		expect( listItem ).toContainElement( listItemLink );
 		expect( listItemLink ).toContainElement( listItemText );
-		expect( listItemLink ).toHaveProperty( 'href', `https://example.com/article-${ i }/` );
+		expect( listItemLink ).toHaveProperty( 'href', `https://example.com/article-${ index }/` );
 
 		// If the <a> contains an image, it should have a correct "src" attribute.
 		if ( imageStyle === '' ) {
 			expect( listItemLink ).not.toContainElement( listItemImage );
 		} else {
 			expect( listItemLink ).toContainElement( listItemImage );
-			expect( listItemImage ).toHaveProperty( 'src', `https://example.com/${ imageStyle }-${ i }.jpg` );
+			expect( listItemImage ).toHaveProperty( 'src', `https://example.com/${ imageStyle }-${ index }.jpg` );
 		}
 
 		// Verify class names.
@@ -134,7 +133,7 @@ function verifyBlockStructure( resultCount, blockTitle, imageStyle = '' ) {
 function getApiData( resultCount ) {
 	const results = [];
 
-	for ( let i = 1; i <= resultCount; i++ ) {
+	for ( let i = 0; i < resultCount; i++ ) {
 		results.push(
 			{
 				author: 'John Doe',
