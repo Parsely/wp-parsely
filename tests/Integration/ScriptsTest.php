@@ -165,8 +165,8 @@ final class ScriptsTest extends TestCase {
 			array( 'registered', 'enqueued' )
 		);
 
-		// Since no secret is provided, the extra fields (inline scripts) should not contain the secret.
-		self::assertEquals( 2, count( $wp_scripts->registered['wp-parsely-loader']->extra ) );
+		// Since no secret is provided, the extra fields (inline scripts) on the loader should not be populated.
+		self::assertEquals( 1, count( $wp_scripts->registered['wp-parsely-loader']->extra ) );
 	}
 
 	/**
