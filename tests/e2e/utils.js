@@ -24,30 +24,13 @@ export const changeKeysState = async ( activateApiKey, activateApiSecret ) => {
 	await waitForWpAdmin();
 };
 
-export const deactivatePluginApiKey = async () => {
-	await visitAdminPage( '/options-general.php', '?page=parsely' );
-	await page.evaluate( () => document.getElementById( 'apikey' ).value = '' );
-	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'submit\')]' );
-	await input.click();
-	await waitForWpAdmin();
-};
-
-export const activatePluginApiKey = async () => {
-	await visitAdminPage( '/options-general.php', '?page=parsely' );
-	await page.focus( '#apikey' );
-	await page.evaluate( () => document.getElementById( 'apikey' ).value = '' );
-	await page.keyboard.type( 'e2etest.example.com' );
-	await page.keyboard.press( 'Enter' );
-	await waitForWpAdmin();
-};
-
 /**
  * Saves the specified Site ID to the database using the settings page.
  *
  * @param {string} siteId The site ID to be saved to the database.
  * @return {Promise<void>}
  */
-export const setSiteId = async ( siteId ) => {
+export const setSiteId = async ( siteId = 'e2etest.example.com' ) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
 	await page.focus( '#apikey' );
 	await page.evaluate( () => document.getElementById( 'apikey' ).value = '' );

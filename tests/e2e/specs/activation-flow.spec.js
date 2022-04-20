@@ -7,19 +7,18 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
  * Internal dependencies
  */
 import {
-	activatePluginApiKey,
 	checkH2DoesNotExist,
-	deactivatePluginApiKey,
-	waitForWpAdmin,
 	selectScreenOptions,
+	setSiteId,
 	startUpTest,
+	waitForWpAdmin,
 } from '../utils';
 
 describe( 'Activation flow', () => {
 	beforeAll( startUpTest );
 
 	it( 'Should progress as intended', async () => {
-		await deactivatePluginApiKey();
+		await setSiteId( '' );
 
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await waitForWpAdmin();
@@ -37,7 +36,7 @@ describe( 'Activation flow', () => {
 			'The Parse.ly plugin is not active. You need to provide your Parse.ly Dash Site ID before things get cooking.'
 		);
 
-		await activatePluginApiKey();
+		await setSiteId();
 
 		await waitForWpAdmin();
 		expect( await page.$( '#message.error' ) ).toBe( null );

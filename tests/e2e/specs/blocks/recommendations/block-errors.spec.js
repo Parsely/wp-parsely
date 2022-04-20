@@ -11,7 +11,6 @@ import {
  * Internal dependencies.
  */
 import {
-	activatePluginApiKey,
 	setSiteId,
 	startUpTest,
 } from '../../../utils';
@@ -33,7 +32,7 @@ describe( 'Recommendations Block', () => {
 	 * Verifies that the block will display an error when an invalid Site ID is provided.
 	 */
 	it( 'Should display an error when an invalid Site ID is provided', async () => {
-		await activatePluginApiKey();
+		await setSiteId();
 		await createNewPost();
 		await insertBlock( 'Parse.ly' );
 
