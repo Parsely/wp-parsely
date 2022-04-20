@@ -950,7 +950,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'disable_javascript',
-				__( 'Value passed for disable_javascript must be either "true" or "false".', 'wp-parsely' )
+				__( 'Value passed for disable_javascript must be either "Yes" or "No".', 'wp-parsely' )
 			);
 		} else {
 			$input['disable_javascript'] = 'true' === $input['disable_javascript'];
@@ -960,7 +960,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'disable_autotrack',
-				__( 'Value passed for disable_autotrack must be either "true" or "false".', 'wp-parsely' )
+				__( 'Value passed for disable_autotrack must be either "Yes" or "No".', 'wp-parsely' )
 			);
 		} else {
 			$input['disable_autotrack'] = 'true' === $input['disable_autotrack'];
