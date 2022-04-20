@@ -13,28 +13,23 @@ export function wpParselyInitCustom() {
 	if ( typeof window.PARSELY === 'object' ) {
 		if ( typeof window.PARSELY.onload !== 'function' ) {
 			window.PARSELY.onload = customOnLoad;
-			return;
+		} else {
+			const oldOnLoad = window.PARSELY.onload;
+			window.PARSELY.onload = function() {
+				if ( oldOnLoad ) {
+					oldOnLoad();
+				}
+				customOnLoad();
+			};
 		}
-
-		const oldOnLoad = window.PARSELY.onload;
-		window.PARSELY.onload = function() {
-			if ( oldOnLoad ) {
-				oldOnLoad();
-			}
-			customOnLoad();
-		};
-		return;
-	}
-
-	if ( window.wpParselyDisableAutotrack === true ) {
-		window.PARSELY = {
-			autotrack: false,
-			onload: customOnLoad,
-		};
 	} else {
 		window.PARSELY = {
 			onload: customOnLoad,
 		};
+	}
+
+	if ( window.wpParselyDisableAutotrack === true ) {
+		window.PARSELY.autotrack = false;
 	}
 }
 
