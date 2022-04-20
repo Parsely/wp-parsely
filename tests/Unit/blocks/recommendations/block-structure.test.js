@@ -1,7 +1,11 @@
 /**
  * External dependencies.
  */
-import { render, screen, within } from '@testing-library/react';
+import {
+	render,
+	screen,
+	within,
+} from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 /**
@@ -11,53 +15,6 @@ import ParselyRecommendations from '../../../../src/blocks/recommendations/compo
 import ParselyRecommendationsList from '../../../../src/blocks/recommendations/components/parsely-recommendations-list';
 import ParselyRecommendationsTitle from '../../../../src/blocks/recommendations/components/parsely-recommendations-title';
 import RecommendationsStore from '../../../../src/blocks/recommendations/recommendations-store';
-
-/**
- * Initializations.
- */
-const apiResultSingle = [
-	{
-		author: 'John Doe',
-		authors: [ 'John Doe', 'Jane Doe' ],
-		full_content_word_count: 0,
-		image_url: 'https://example.com/image.jpg',
-		metadata: null,
-		pub_date: '2022-03-14T13:14:00',
-		section: 'Articles',
-		tags: [ 'parsely_smart:entity:Tag 1', 'parsely_smart:iab:Tag 2' ],
-		thumb_url_medium: 'https://example.com/image-thumb.jpg',
-		title: 'My nice article',
-		url: 'https://example.com/my-nice-article/',
-	},
-];
-const apiResultMultiple = [
-	{
-		author: 'John Doe',
-		authors: [ 'John Doe', 'Jane Doe' ],
-		full_content_word_count: 0,
-		image_url: 'https://example.com/image-1.jpg',
-		metadata: null,
-		pub_date: '2022-03-14T13:14:00',
-		section: 'Articles',
-		tags: [ 'parsely_smart:entity:Tag 1', 'parsely_smart:iab:Tag 2' ],
-		thumb_url_medium: 'https://example.com/image-first-article-thumb.jpg',
-		title: 'My first article',
-		url: 'https://example.com/my-first-article/',
-	},
-	{
-		author: 'Jane Doe',
-		authors: [ 'Jane Doe', 'John Doe' ],
-		full_content_word_count: 0,
-		image_url: 'https://example.com/image-2.jpg',
-		metadata: null,
-		pub_date: '2022-04-14T13:14:00',
-		section: 'Articles',
-		tags: [ 'parsely_smart:entity:Tag 1', 'parsely_smart:iab:Tag 2' ],
-		thumb_url_medium: 'https://example.com/image-second-article-thumb.jpg',
-		title: 'My second article',
-		url: 'https://example.com/my-second-article/',
-	},
-];
 
 /**
  * Verifies that the Block's structure remains consistent and correct
@@ -80,263 +37,120 @@ describe( 'Recommendations Block', () => {
 	} );
 
 	it( 'should load one recommendation without image', () => {
-		render(
-			<RecommendationsStore>
-				<ParselyRecommendationsTitle title="Recommendations Block test title" />
-				<ParselyRecommendationsList imagestyle="original" showimages={ false } recommendations={ apiResultSingle } />
-			</RecommendationsStore>
-		);
-
-		// Initialize elements.
-		const blockTitle = screen.getByText( /Recommendations Block test title/i );
-		const list = screen.getByRole( 'list' );
-		const listItems = screen.getAllByRole( 'listitem' );
-		const listItem = listItems[ 0 ];
-		const listItemLink = screen.getByRole( 'link' );
-		const listItemText = screen.getByText( 'My nice article' );
-		const listItemImage = screen.queryByRole( 'img' );
-
-		// We should have only one list item.
-		expect( listItems.length ).toBe( 1 );
-
-		// Element hierarchy checks.
-		expect( listItem ).toContainElement( listItemLink );
-		expect( listItemLink ).toContainElement( listItemText );
-		expect( listItemLink ).not.toContainElement( listItemImage );
-
-		// Element property checks.
-		expect( listItemLink ).toHaveProperty( 'href', 'https://example.com/my-nice-article/' );
-
-		// Element class name checks.
-		expect( blockTitle ).toHaveClass( 'parsely-recommendations-list-title' );
-		expect( list ).toHaveClass( 'parsely-recommendations-list' );
-		expect( listItem ).not.toHaveClass();
-		expect( listItemLink ).toHaveClass( 'parsely-recommendations-link' );
-		expect( listItemText ).toHaveClass( 'components-card__body components-card-body parsely-recommendations-cardbody' );
+		expect( verifyBlockStructure( 1, 'One item without image' ) ).toBeTruthy();
 	} );
 
 	it( 'should load one recommendation with image', () => {
-		render(
-			<RecommendationsStore>
-				<ParselyRecommendationsTitle title="Recommendations Block test title" />
-				<ParselyRecommendationsList imagestyle="original" showimages={ true } recommendations={ apiResultSingle } />
-			</RecommendationsStore>
-		);
-
-		// Initialize elements.
-		const blockTitle = screen.getByText( /Recommendations Block test title/i );
-		const list = screen.getByRole( 'list' );
-		const listItems = screen.getAllByRole( 'listitem' );
-		const listItem = listItems[ 0 ];
-		const listItemLink = screen.getByRole( 'link' );
-		const listItemText = screen.getByText( 'My nice article' );
-		const listItemImage = screen.getByRole( 'img' );
-
-		// We should have only one list item.
-		expect( listItems.length ).toBe( 1 );
-
-		// Element hierarchy checks.
-		expect( listItem ).toContainElement( listItemLink );
-		expect( listItemLink ).toContainElement( listItemText );
-		expect( listItemLink ).toContainElement( listItemImage );
-
-		// Element property checks.
-		expect( listItemLink ).toHaveProperty( 'href', 'https://example.com/my-nice-article/' );
-		expect( listItemImage ).toHaveProperty( 'src', 'https://example.com/image.jpg' );
-
-		// Element class name checks.
-		expect( blockTitle ).toHaveClass( 'parsely-recommendations-list-title' );
-		expect( list ).toHaveClass( 'parsely-recommendations-list' );
-		expect( listItem ).not.toHaveClass();
-		expect( listItemLink ).toHaveClass( 'parsely-recommendations-link' );
-		expect( listItemText ).toHaveClass( 'components-card__body components-card-body parsely-recommendations-cardbody' );
-		expect( listItemImage ).toHaveClass( 'parsely-recommendations-image' );
+		expect( verifyBlockStructure( 1, 'One item with image', 'original' ) ).toBeTruthy();
 	} );
 
 	it( 'should load one recommendation with thumbnail', () => {
-		render(
-			<RecommendationsStore>
-				<ParselyRecommendationsTitle title="Recommendations Block test title" />
-				<ParselyRecommendationsList imagestyle="thumbnail" showimages={ true } recommendations={ apiResultSingle } />
-			</RecommendationsStore>
-		);
-
-		// Initialize elements.
-		const blockTitle = screen.getByText( /Recommendations Block test title/i );
-		const list = screen.getByRole( 'list' );
-		const listItems = screen.getAllByRole( 'listitem' );
-		const listItem = listItems[ 0 ];
-		const listItemLink = screen.getByRole( 'link' );
-		const listItemText = screen.getByText( 'My nice article' );
-		const listItemImage = screen.getByRole( 'img' );
-
-		// We should have only one list item.
-		expect( listItems.length ).toBe( 1 );
-
-		// Element hierarchy checks.
-		expect( listItem ).toContainElement( listItemLink );
-		expect( listItemLink ).toContainElement( listItemText );
-		expect( listItemLink ).toContainElement( listItemImage );
-
-		// Element property checks.
-		expect( listItemLink ).toHaveProperty( 'href', 'https://example.com/my-nice-article/' );
-		expect( listItemImage ).toHaveProperty( 'src', 'https://example.com/image-thumb.jpg' );
-
-		// Element class name checks.
-		expect( blockTitle ).toHaveClass( 'parsely-recommendations-list-title' );
-		expect( list ).toHaveClass( 'parsely-recommendations-list' );
-		expect( listItem ).not.toHaveClass();
-		expect( listItemLink ).toHaveClass( 'parsely-recommendations-link' );
-		expect( listItemText ).toHaveClass( 'components-card__body components-card-body parsely-recommendations-cardbody' );
-		expect( listItemImage ).toHaveClass( 'parsely-recommendations-image' );
+		expect( verifyBlockStructure( 1, 'One item with thumbnail', 'thumbnail' ) ).toBeTruthy();
 	} );
 
 	it( 'should load multiple recommendations without image', () => {
-		render(
-			<RecommendationsStore>
-				<ParselyRecommendationsTitle title="Recommendations Block with multiple items" />
-				<ParselyRecommendationsList imagestyle="original" showimages={ false } recommendations={ apiResultMultiple } />
-			</RecommendationsStore>
-		);
-
-		// Initialize elements.
-		const blockTitle = screen.getByText( /Recommendations Block with multiple items/i );
-		const list = screen.getByRole( 'list' );
-		const listItems = screen.getAllByRole( 'listitem' );
-		const listItem1 = listItems[ 0 ];
-		const listItem1Link = within( listItem1 ).getByRole( 'link' );
-		const listItem1Text = within( listItem1 ).getByText( 'My first article' );
-		const listItem1Image = within( listItem1 ).queryByRole( 'img' );
-		const listItem2 = listItems[ 1 ];
-		const listItem2Link = within( listItem2 ).getByRole( 'link' );
-		const listItem2Text = within( listItem2 ).getByText( 'My second article' );
-		const listItem2Image = within( listItem2 ).queryByRole( 'img' );
-
-		// We should have two list items.
-		expect( listItems.length ).toBe( 2 );
-
-		// Element hierarchy checks.
-		expect( listItem1 ).toContainElement( listItem1Link );
-		expect( listItem1Link ).toContainElement( listItem1Text );
-		expect( listItem1Link ).not.toContainElement( listItem1Image );
-		expect( listItem2 ).toContainElement( listItem2Link );
-		expect( listItem2Link ).toContainElement( listItem2Text );
-		expect( listItem2Link ).not.toContainElement( listItem2Image );
-
-		// Element property checks.
-		expect( listItem1Link ).toHaveProperty( 'href', 'https://example.com/my-first-article/' );
-		expect( listItem2Link ).toHaveProperty( 'href', 'https://example.com/my-second-article/' );
-
-		// Element class name checks.
-		expect( blockTitle ).toHaveClass( 'parsely-recommendations-list-title' );
-		expect( list ).toHaveClass( 'parsely-recommendations-list' );
-		expect( listItem1 ).not.toHaveClass();
-		expect( listItem1Link ).toHaveClass( 'parsely-recommendations-link' );
-		expect( listItem1Text ).toHaveClass( 'components-card__body components-card-body parsely-recommendations-cardbody' );
-		expect( listItem2 ).not.toHaveClass();
-		expect( listItem2Link ).toHaveClass( 'parsely-recommendations-link' );
-		expect( listItem2Text ).toHaveClass( 'components-card__body components-card-body parsely-recommendations-cardbody' );
+		expect( verifyBlockStructure( 2, 'Two items without image' ) ).toBeTruthy();
 	} );
 
 	it( 'should load multiple recommendations with image', () => {
-		render(
-			<RecommendationsStore>
-				<ParselyRecommendationsTitle title="Recommendations Block with multiple items" />
-				<ParselyRecommendationsList imagestyle="original" showimages={ true } recommendations={ apiResultMultiple } />
-			</RecommendationsStore>
-		);
-
-		// Initialize elements.
-		const blockTitle = screen.getByText( /Recommendations Block with multiple items/i );
-		const list = screen.getByRole( 'list' );
-		const listItems = screen.getAllByRole( 'listitem' );
-		const listItem1 = listItems[ 0 ];
-		const listItem1Link = within( listItem1 ).getByRole( 'link' );
-		const listItem1Text = within( listItem1 ).getByText( 'My first article' );
-		const listItem1Image = within( listItem1 ).getByRole( 'img' );
-		const listItem2 = listItems[ 1 ];
-		const listItem2Link = within( listItem2 ).getByRole( 'link' );
-		const listItem2Text = within( listItem2 ).getByText( 'My second article' );
-		const listItem2Image = within( listItem2 ).getByRole( 'img' );
-
-		// We should have two list items.
-		expect( listItems.length ).toBe( 2 );
-
-		// Element hierarchy checks.
-		expect( listItem1 ).toContainElement( listItem1Link );
-		expect( listItem1Link ).toContainElement( listItem1Text );
-		expect( listItem1Link ).toContainElement( listItem1Image );
-		expect( listItem2 ).toContainElement( listItem2Link );
-		expect( listItem2Link ).toContainElement( listItem2Text );
-		expect( listItem2Link ).toContainElement( listItem2Image );
-
-		// Element property checks.
-		expect( listItem1Link ).toHaveProperty( 'href', 'https://example.com/my-first-article/' );
-		expect( listItem1Image ).toHaveProperty( 'src', 'https://example.com/image-1.jpg' );
-		expect( listItem2Link ).toHaveProperty( 'href', 'https://example.com/my-second-article/' );
-		expect( listItem2Image ).toHaveProperty( 'src', 'https://example.com/image-2.jpg' );
-
-		// Element class name checks.
-		expect( blockTitle ).toHaveClass( 'parsely-recommendations-list-title' );
-		expect( list ).toHaveClass( 'parsely-recommendations-list' );
-		expect( listItem1 ).not.toHaveClass();
-		expect( listItem1Link ).toHaveClass( 'parsely-recommendations-link' );
-		expect( listItem1Text ).toHaveClass( 'components-card__body components-card-body parsely-recommendations-cardbody' );
-		expect( listItem1Image ).toHaveClass( 'parsely-recommendations-image' );
-		expect( listItem2 ).not.toHaveClass();
-		expect( listItem2Link ).toHaveClass( 'parsely-recommendations-link' );
-		expect( listItem2Text ).toHaveClass( 'components-card__body components-card-body parsely-recommendations-cardbody' );
-		expect( listItem2Image ).toHaveClass( 'parsely-recommendations-image' );
+		expect( verifyBlockStructure( 2, 'Two items with image', 'original' ) ).toBeTruthy();
 	} );
 
 	it( 'should load multiple recommendations with thumbnail', () => {
-		render(
-			<RecommendationsStore>
-				<ParselyRecommendationsTitle title="Recommendations Block with multiple items" />
-				<ParselyRecommendationsList imagestyle="thumbnail" showimages={ true } recommendations={ apiResultMultiple } />
-			</RecommendationsStore>
-		);
-
-		// Initialize elements.
-		const blockTitle = screen.getByText( /Recommendations Block with multiple items/i );
-		const list = screen.getByRole( 'list' );
-		const listItems = screen.getAllByRole( 'listitem' );
-		const listItem1 = listItems[ 0 ];
-		const listItem1Link = within( listItem1 ).getByRole( 'link' );
-		const listItem1Text = within( listItem1 ).getByText( 'My first article' );
-		const listItem1Image = within( listItem1 ).getByRole( 'img' );
-		const listItem2 = listItems[ 1 ];
-		const listItem2Link = within( listItem2 ).getByRole( 'link' );
-		const listItem2Text = within( listItem2 ).getByText( 'My second article' );
-		const listItem2Image = within( listItem2 ).getByRole( 'img' );
-
-		// We should two list items.
-		expect( listItems.length ).toBe( 2 );
-
-		// Element hierarchy checks.
-		expect( listItem1 ).toContainElement( listItem1Link );
-		expect( listItem1Link ).toContainElement( listItem1Text );
-		expect( listItem1Link ).toContainElement( listItem1Image );
-		expect( listItem2 ).toContainElement( listItem2Link );
-		expect( listItem2Link ).toContainElement( listItem2Text );
-		expect( listItem2Link ).toContainElement( listItem2Image );
-
-		// Element property checks.
-		expect( listItem1Link ).toHaveProperty( 'href', 'https://example.com/my-first-article/' );
-		expect( listItem1Image ).toHaveProperty( 'src', 'https://example.com/image-first-article-thumb.jpg' );
-		expect( listItem2Link ).toHaveProperty( 'href', 'https://example.com/my-second-article/' );
-		expect( listItem2Image ).toHaveProperty( 'src', 'https://example.com/image-second-article-thumb.jpg' );
-
-		// Element class name checks.
-		expect( blockTitle ).toHaveClass( 'parsely-recommendations-list-title' );
-		expect( list ).toHaveClass( 'parsely-recommendations-list' );
-		expect( listItem1 ).not.toHaveClass();
-		expect( listItem1Link ).toHaveClass( 'parsely-recommendations-link' );
-		expect( listItem1Text ).toHaveClass( 'components-card__body components-card-body parsely-recommendations-cardbody' );
-		expect( listItem1Image ).toHaveClass( 'parsely-recommendations-image' );
-		expect( listItem2 ).not.toHaveClass();
-		expect( listItem2Link ).toHaveClass( 'parsely-recommendations-link' );
-		expect( listItem2Text ).toHaveClass( 'components-card__body components-card-body parsely-recommendations-cardbody' );
-		expect( listItem2Image ).toHaveClass( 'parsely-recommendations-image' );
+		expect( verifyBlockStructure( 2, 'Two items with thumbnail', 'thumbnail' ) ).toBeTruthy();
 	} );
 } );
+
+/**
+ * Renders the Recommendations Block and verifies its structure.
+ *
+ * @param {number} resultCount How many data results should be fetched.
+ * @param {string} blockTitle  The title the Block should have.
+ * @param {string} imageStyle  Style of Image. Can be 'original', thumbnail or ''.
+ * @return {true} Always returns true if end of function is reached.
+ */
+function verifyBlockStructure( resultCount, blockTitle, imageStyle = '' ) {
+	// Expect valid image value and generate render props.
+	expect( [ '', 'original', 'thumbnail' ].includes( imageStyle ) ).toBeTruthy();
+	const showImages = imageStyle === '' ? false : true;
+	const apiData = getApiData( resultCount );
+
+	// Render the Block.
+	render(
+		<RecommendationsStore>
+			<ParselyRecommendationsTitle title={ blockTitle } />
+			<ParselyRecommendationsList imagestyle={ imageStyle } showimages={ showImages } recommendations={ apiData } />
+		</RecommendationsStore>
+	);
+
+	// Verify Block title text and class.
+	expect( screen.getByText( blockTitle ) ).toHaveClass( 'parsely-recommendations-list-title' );
+
+	// Verify <ul> class.
+	expect( screen.getByRole( 'list' ) ).toHaveClass( 'parsely-recommendations-list' );
+
+	// Verify <li> item count.
+	const listItems = screen.getAllByRole( 'listitem' );
+	expect( listItems.length ).toBe( apiData.length );
+
+	// Iterate through every <li> item.
+	listItems.forEach( ( listItem, index ) => {
+		// Initializations.
+		const i = ++index;
+		const listItemLink = within( listItem ).getByRole( 'link' );
+		const listItemText = within( listItem ).getByText( `Article ${ i }` );
+		const listItemImage = within( listItem ).queryByRole( 'img' );
+
+		// The <li> should contain an <a>, which should contain the Recommendation's
+		// title and a correct "href" attribute.
+		expect( listItem ).toContainElement( listItemLink );
+		expect( listItemLink ).toContainElement( listItemText );
+		expect( listItemLink ).toHaveProperty( 'href', `https://example.com/article-${ i }/` );
+
+		// If the <a> contains an image, it should have a correct "src" attribute.
+		if ( imageStyle === '' ) {
+			expect( listItemLink ).not.toContainElement( listItemImage );
+		} else {
+			expect( listItemLink ).toContainElement( listItemImage );
+			expect( listItemImage ).toHaveProperty( 'src', `https://example.com/${ imageStyle }-${ i }.jpg` );
+		}
+
+		// Verify class names.
+		expect( listItem ).not.toHaveClass(); // <li> items don't have a class.
+		expect( listItemLink ).toHaveClass( 'parsely-recommendations-link' );
+		expect( listItemText ).toHaveClass( 'components-card__body components-card-body parsely-recommendations-cardbody' );
+	} );
+
+	return true;
+}
+
+/**
+ * Generates and returns mocked data to simulate the Parse.ly related API. The
+ * data is not random for testability.
+ *
+ * @param {number} resultCount How many results to fetch (like the API's limit parameter).
+ * @return {Array<object>} The generated data.
+ */
+function getApiData( resultCount ) {
+	const results = [];
+
+	for ( let i = 1; i <= resultCount; i++ ) {
+		results.push(
+			{
+				author: 'John Doe',
+				authors: [ 'John Doe', 'Jane Doe' ],
+				full_content_word_count: 0,
+				image_url: `https://example.com/original-${ i }.jpg`,
+				metadata: null,
+				pub_date: '2022-03-14T13:14:00',
+				section: 'Articles',
+				tags: [ 'parsely_smart:entity:Tag 1', 'parsely_smart:iab:Tag 2' ],
+				thumb_url_medium: `https://example.com/thumbnail-${ i }.jpg`,
+				title: `Article ${ i }`,
+				url: `https://example.com/article-${ i }/`,
+			},
+		);
+	}
+
+	return results;
+}
