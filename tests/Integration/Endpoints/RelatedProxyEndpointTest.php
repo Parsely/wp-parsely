@@ -113,7 +113,7 @@ final class RelatedProxyEndpointTest extends TestCase {
 			function () use ( &$dispatched ) {
 				$dispatched++;
 				return array(
-					'body' => '{"data":[{"image_url":"https:\/\/example.com\/img.png","title":"something","url":"https:\/\/example.com"},{"image_url":"https:\/\/example.com\/img2.png","title":"something2","url":"https:\/\/example.com\/2"}]}',
+					'body' => '{"data":[{"image_url":"https:\/\/example.com\/img.png","thumb_url_medium":"https:\/\/example.com\/thumb.png","title":"something","url":"https:\/\/example.com"},{"image_url":"https:\/\/example.com\/img2.png","thumb_url_medium":"https:\/\/example.com\/thumb2.png","title":"something2","url":"https:\/\/example.com\/2"}]}',
 				);
 			}
 		);
@@ -126,14 +126,16 @@ final class RelatedProxyEndpointTest extends TestCase {
 			(object) array(
 				'data' => array(
 					(object) array(
-						'image_url' => 'https://example.com/img.png',
-						'title'     => 'something',
-						'url'       => 'https://example.com',
+						'image_url'        => 'https://example.com/img.png',
+						'thumb_url_medium' => 'https://example.com/thumb.png',
+						'title'            => 'something',
+						'url'              => 'https://example.com',
 					),
 					(object) array(
-						'image_url' => 'https://example.com/img2.png',
-						'title'     => 'something2',
-						'url'       => 'https://example.com/2',
+						'image_url'        => 'https://example.com/img2.png',
+						'thumb_url_medium' => 'https://example.com/thumb2.png',
+						'title'            => 'something2',
+						'url'              => 'https://example.com/2',
 					),
 				),
 			),
