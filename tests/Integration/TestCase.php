@@ -20,6 +20,9 @@ use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
  * @package Parsely\Tests
  */
 abstract class TestCase extends WPIntegrationTestCase {
+
+	use \Parsely\Tests\Tests_Trait;
+
 	public const DEFAULT_OPTIONS = array(
 		'apikey'                    => 'blog.parsely.com',
 		'content_id_prefix'         => '',
@@ -146,38 +149,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 				'taxonomy' => $taxonomy_key,
 			)
 		);
-	}
-
-	/**
-	 * Get a method from the Parsely class. This should be used when trying to access a private method for testing.
-	 *
-	 * @param string $method_name Name of the method to get.
-	 * @param string $class_name  Name of the class the method is in. Can be passed as Foo::class.
-	 *
-	 * @return \ReflectionMethod
-	 * @throws \ReflectionException The method does not exist in the class.
-	 */
-	public static function getMethod( string $method_name, string $class_name = Parsely::class ): \ReflectionMethod {
-		$class  = new \ReflectionClass( $class_name );
-		$method = $class->getMethod( $method_name );
-		$method->setAccessible( true );
-		return $method;
-	}
-
-	/**
-	 * Override the value of a private property on a given object. This is useful when mocking the internals of class.
-	 * Note that the property will no longer be private after setAccessible is called.
-	 *
-	 * @param string $class_name The fully qualified class name (including namespace).
-	 * @param object $object The object instance on which to set the value.
-	 * @param string $property_name The name of the private property to override.
-	 * @param mixed  $value The value to set.
-	 */
-	public static function setPrivateProperty( string $class_name, $object, string $property_name, $value ): void {
-		$class = new \ReflectionClass( $class_name );
-		$prop  = $class->getProperty( $property_name );
-		$prop->setAccessible( true );
-		$prop->setValue( $object, $value );
 	}
 
 	/**
