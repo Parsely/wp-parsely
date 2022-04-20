@@ -99,7 +99,7 @@ function renderWidget( data, {
 	}
 
 	outerDiv.appendChild( outerList );
-	outerDiv.parentElement.classList.remove( 'parsely-recommended-widget-hidden' );
+	outerDiv.closest( '.widget.Recommended_Widget' ).classList.remove( 'parsely-recommended-widget-hidden' );
 }
 
 domReady( () => {
