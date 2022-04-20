@@ -125,9 +125,10 @@ class Scripts {
 			wp_add_inline_script( 'wp-parsely-loader', $js_api_key, 'before' );
 		}
 
-		$disable_autotrack     = isset( $parsely_options['disable_autotrack'] ) && $parsely_options['disable_autotrack'];
-		$should_load_autotrack = 'window.wpParselyShouldAutotrack = ' . esc_js( $disable_autotrack ? 'false' : 'true' ) . ';';
-		wp_add_inline_script( 'wp-parsely-loader', $should_load_autotrack, 'before' );
+		if ( isset( $parsely_options['disable_autotrack'] ) && $parsely_options['disable_autotrack'] ) {
+			$should_load_autotrack = 'window.wpParselyDisableAutotrack = true';
+			wp_add_inline_script( 'wp-parsely-loader', $should_load_autotrack, 'before' );
+		}
 	}
 
 	/**

@@ -26,10 +26,16 @@ export function wpParselyInitCustom() {
 		return;
 	}
 
-	window.PARSELY = {
-		autotrack: window.wpParselyShouldAutotrack,
-		onload: customOnLoad,
-	};
+	if ( window.wpParselyDisableAutotrack === true ) {
+		window.PARSELY = {
+			autotrack: false,
+			onload: customOnLoad,
+		};
+	} else {
+		window.PARSELY = {
+			onload: customOnLoad,
+		};
+	}
 }
 
 wpParselyInitCustom();
