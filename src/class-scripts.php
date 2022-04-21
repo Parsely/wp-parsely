@@ -126,8 +126,8 @@ class Scripts {
 		}
 
 		if ( isset( $parsely_options['disable_autotrack'] ) && true === $parsely_options['disable_autotrack'] ) {
-			$should_load_autotrack = 'window.wpParselyDisableAutotrack = true';
-			wp_add_inline_script( 'wp-parsely-loader', $should_load_autotrack, 'before' );
+			$disable_autotrack = 'window.wpParselyDisableAutotrack = true';
+			wp_add_inline_script( 'wp-parsely-loader', $disable_autotrack, 'before' );
 		}
 	}
 
