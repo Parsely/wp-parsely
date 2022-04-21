@@ -80,8 +80,7 @@ final class NetworkAdminSitesListTest extends TestCase {
 	 * @return void
 	 */
 	public function test_api_key_column_is_correctly_printed(): void {
-		$blog_id_with_api_key    = $this->factory->blog->create();
-		$blog_id_without_api_key = $this->factory->blog->create();
+		$blog_id_with_api_key = $this->factory->blog->create();
 
 		self::$sites_list->run();
 
