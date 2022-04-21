@@ -602,10 +602,7 @@ class Metadata {
 		// Get corresponding term objects, which are mapped to array index keys.
 		$terms_not_parents = array_intersect_key( $terms, $term_ids_not_parents );
 		// remove array index keys.
-		$terms_not_parents_cleaned = array();
-		foreach ( $terms_not_parents as $value ) {
-			$terms_not_parents_cleaned[] = $value;
-		}
+		$terms_not_parents_cleaned = array_values( $terms_not_parents );
 
 		if ( ! empty( $terms_not_parents_cleaned ) ) {
 			// if you assign multiple child terms in a custom taxonomy, will only return the first.
