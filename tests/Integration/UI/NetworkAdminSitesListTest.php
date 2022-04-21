@@ -82,7 +82,7 @@ final class NetworkAdminSitesListTest extends TestCase {
 	public function test_api_key_column_is_correctly_printed(): void {
 		$blog_id_with_api_key = $this->factory->blog->create();
 
-		// Creating a blog without an API key.
+		// Create a blog without a Site ID.
 		$this->factory->blog->create();
 
 		self::$sites_list->run();
