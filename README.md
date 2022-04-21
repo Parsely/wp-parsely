@@ -85,11 +85,11 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
 </script>
 ~~~
 
-## The Parse.ly Recommendations Block (beta)
+## The Parse.ly Recommendations Block
 
 **IMPORTANT:** The Recommendations Block is available only in WordPress 5.9 and later.
 
-The plugin includes a Recommendations Block that uses the [Parse.ly API](https://www.parse.ly/help/api/recommendations#get-related) to showcase links to content on your site. More information about the Block [can be found here](https://github.com/Parsely/wp-parsely/blob/trunk/src/blocks/recommendations/README.md). Please note that the Block is currently in beta and that you can report any issues in our [GitHub Repository](https://github.com/Parsely/wp-parsely/issues).
+The plugin includes a Recommendations Block that uses the [Parse.ly API](https://www.parse.ly/help/api/recommendations#get-related) to showcase links to content on your site. More information about the Block [can be found here](https://github.com/Parsely/wp-parsely/blob/trunk/src/blocks/recommendations/README.md).
 
 ## Screenshots
 
