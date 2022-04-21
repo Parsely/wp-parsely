@@ -29,7 +29,7 @@ export function wpParselyInitCustom() {
 		};
 	}
 
-	// Disabling autotrack if it was defined as such from PHP.
+	// Disable autotrack if it was set as such in settings.
 	if ( window.wpParselyDisableAutotrack === true ) {
 		window.PARSELY.autotrack = false;
 	}
