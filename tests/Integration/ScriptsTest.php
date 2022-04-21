@@ -170,7 +170,7 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
-	 * Test the tracker script enqueue.
+	 * Tests the tracker script enqueue.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @uses \Parsely\Parsely::api_key_is_missing
