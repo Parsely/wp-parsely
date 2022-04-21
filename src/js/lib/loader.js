@@ -10,25 +10,29 @@ export function wpParselyInitCustom() {
 	 */
 	const customOnLoad = () => window.wpParselyHooks.doAction( 'wpParselyOnLoad' );
 
+	// Construct window.PARSELY object.
 	if ( typeof window.PARSELY === 'object' ) {
 		if ( typeof window.PARSELY.onload !== 'function' ) {
 			window.PARSELY.onload = customOnLoad;
-			return;
+		} else {
+			const oldOnLoad = window.PARSELY.onload;
+			window.PARSELY.onload = function() {
+				if ( oldOnLoad ) {
+					oldOnLoad();
+				}
+				customOnLoad();
+			};
 		}
-
-		const oldOnLoad = window.PARSELY.onload;
-		window.PARSELY.onload = function() {
-			if ( oldOnLoad ) {
-				oldOnLoad();
-			}
-			customOnLoad();
+	} else {
+		window.PARSELY = {
+			onload: customOnLoad,
 		};
-		return;
 	}
 
-	window.PARSELY = {
-		onload: customOnLoad,
-	};
+	// Disable autotrack if it was set as such in settings.
+	if ( window.wpParselyDisableAutotrack === true ) {
+		window.PARSELY.autotrack = false;
+	}
 }
 
 wpParselyInitCustom();
