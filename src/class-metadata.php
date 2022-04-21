@@ -603,7 +603,7 @@ class Metadata {
 		$terms_not_parents = array_intersect_key( $terms, $term_ids_not_parents );
 		// remove array index keys.
 		$terms_not_parents_cleaned = array();
-		foreach ( $terms_not_parents as $index => $value ) {
+		foreach ( $terms_not_parents as $value ) {
 			$terms_not_parents_cleaned[] = $value;
 		}
 
