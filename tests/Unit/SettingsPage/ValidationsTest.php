@@ -19,7 +19,7 @@ use Parsely\UI\Settings_Page;
  */
 final class SettingsValidationsTest extends TestCase {
 
-	use \Parsely\Tests\Tests_Trait;
+	use \Parsely\Tests\Tests_Reflection;
 
 	/**
 	 * Internal Parsely variable.

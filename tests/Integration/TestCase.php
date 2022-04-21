@@ -21,7 +21,7 @@ use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
  */
 abstract class TestCase extends WPIntegrationTestCase {
 
-	use \Parsely\Tests\Tests_Trait;
+	use \Parsely\Tests\Tests_Reflection;
 
 	public const DEFAULT_OPTIONS = array(
 		'apikey'                    => 'blog.parsely.com',

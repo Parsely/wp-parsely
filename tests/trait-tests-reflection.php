@@ -1,6 +1,6 @@
 <?php
 /**
- * Contains functions that are shared between integration and unit tests.
+ * Contains reflection functions used by tests.
  *
  * @package Parsely\Tests
  * @license GPL-2.0-or-later
@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests;
 
-trait Tests_Trait {
+trait Tests_Reflection {
 
 	/**
 	 * Gets a method from a class. This should be used when trying to access a
