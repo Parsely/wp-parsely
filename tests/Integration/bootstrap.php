@@ -45,7 +45,8 @@ namespace Parsely\Tests\Integration {
 		exit( 1 );
 	}
 
-	// Include the Parsely custom test cases.
+	// Additional necessary requires.
+	require_once dirname( __DIR__ ) . '/trait-tests-reflection.php';
 	require_once __DIR__ . '/TestCase.php';
 	require_once __DIR__ . '/StructuredData/NonPostTestCase.php';
 }
