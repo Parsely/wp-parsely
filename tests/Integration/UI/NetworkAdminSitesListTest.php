@@ -82,6 +82,9 @@ final class NetworkAdminSitesListTest extends TestCase {
 	public function test_api_key_column_is_correctly_printed(): void {
 		$blog_id_with_api_key = $this->factory->blog->create();
 
+		// Creating a blog without an API key.
+		$this->factory->blog->create();
+
 		self::$sites_list->run();
 
 		update_blog_option( $blog_id_with_api_key, Parsely::OPTIONS_KEY, array( 'apikey' => 'parselyrocks.example.com' ) );
