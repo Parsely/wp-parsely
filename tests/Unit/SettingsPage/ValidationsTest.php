@@ -18,6 +18,9 @@ use Parsely\UI\Settings_Page;
  * Parse.ly settings page validations tests.
  */
 final class SettingsValidationsTest extends TestCase {
+
+	use \Parsely\Tests\Tests_Reflection;
+
 	/**
 	 * Internal Parsely variable.
 	 *
@@ -50,7 +53,7 @@ final class SettingsValidationsTest extends TestCase {
 	 * @covers \Parsely\UI\Settings_Page::validate_api_key
 	 */
 	public function test_validate_api_keys(): void {
-		$validate_api_key = self::getMethod( 'validate_api_key', Settings_Page::class );
+		$validate_api_key = self::get_method( 'validate_api_key', Settings_Page::class );
 
 		// Test valid API keys.
 		$valid_values = array(
@@ -78,21 +81,5 @@ final class SettingsValidationsTest extends TestCase {
 		foreach ( $invalid_values as $value ) {
 			self::assertFalse( $validate_api_key->invoke( self::$settings_page, $value ) );
 		}
-	}
-
-	/**
-	 * Gets a method from the Parsely class. This should be used when trying to access a private method for testing.
-	 *
-	 * @param string $method_name Name of the method to get.
-	 * @param string $class_name  Name of the class the method is in. Can be passed as Foo::class.
-	 *
-	 * @return \ReflectionMethod
-	 * @throws \ReflectionException The method does not exist in the class.
-	 */
-	public static function getMethod( string $method_name, string $class_name = Parsely::class ): \ReflectionMethod {
-		$class  = new \ReflectionClass( $class_name );
-		$method = $class->getMethod( $method_name );
-		$method->setAccessible( true );
-		return $method;
 	}
 }
