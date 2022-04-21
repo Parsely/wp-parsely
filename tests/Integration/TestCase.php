@@ -54,6 +54,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 		'logo'                        => '',
 		'metadata_secret'             => '',
 		'parsely_wipe_metadata_cache' => false,
+		'disable_autotrack'           => false,
 	);
 
 	/**

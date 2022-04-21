@@ -124,6 +124,11 @@ class Scripts {
 			$js_api_key = "window.wpParselyApiKey = '" . esc_js( $this->parsely->get_api_key() ) . "';";
 			wp_add_inline_script( 'wp-parsely-loader', $js_api_key, 'before' );
 		}
+
+		if ( isset( $parsely_options['disable_autotrack'] ) && true === $parsely_options['disable_autotrack'] ) {
+			$disable_autotrack = 'window.wpParselyDisableAutotrack = true';
+			wp_add_inline_script( 'wp-parsely-loader', $disable_autotrack, 'before' );
+		}
 	}
 
 	/**

@@ -170,6 +170,44 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
+	 * Tests the tracker script enqueue.
+	 *
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 * @uses \Parsely\Scripts::register_scripts
+	 * @uses \Parsely\Scripts::script_loader_tag
+	 * @group scripts
+	 */
+	public function test_enqueue_js_tracker_no_autotrack(): void {
+		global $wp_scripts;
+
+		TestCase::set_options( array( 'disable_autotrack' => true ) );
+
+		$this->go_to_new_post();
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
+
+		// Confirm that tracker script is registered and enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-tracker',
+			array( 'registered', 'enqueued' )
+		);
+
+		// Confirm that loader script is registered and enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-loader',
+			array( 'registered', 'enqueued' )
+		);
+
+		// Since no secret is provided, the extra fields (inline scripts) on the loader should not be populated.
+		self::assertEquals( 2, count( $wp_scripts->registered['wp-parsely-loader']->extra ) );
+	}
+
+	/**
 	 * Test the wp_parsely_load_js_tracker filter
 	 * When it returns false, the tracking script should not be enqueued.
 	 *

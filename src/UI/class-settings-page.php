@@ -617,6 +617,21 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			Parsely::MENU_SLUG
 		);
 
+		// Disable autotrack.
+		$h = __( 'The default behavior of the tracking code is to report an event as soon as the script has finished loading. This setting enables or disables that behavior. Only disable this if you plan to implement Dynamic Tracking yourself.', 'wp-parsely' );
+		add_settings_field(
+			'disable_autotrack',
+			__( 'Disable Autotracking', 'wp-parsely' ),
+			array( $this, 'print_binary_radio_tag' ),
+			Parsely::MENU_SLUG,
+			'advanced_settings',
+			array(
+				'title'      => __( 'Disable Autotracking', 'wp-parsely' ), // Passed for legend element.
+				'option_key' => 'disable_autotrack',
+				'help_text'  => $h,
+			)
+		);
+
 		// Clear metadata.
 		$h = __( 'Check this radio button and hit "Save Changes" to clear all metadata information for Parse.ly posts and re-send all metadata to Parse.ly.<br /><span style="color:#d63638">WARNING:</span> Do not do this unless explicitly instructed by Parse.ly Staff!', 'wp-parsely' );
 		add_settings_field(
@@ -935,10 +950,20 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'disable_javascript',
-				__( 'Value passed for disable_javascript must be either "true" or "false".', 'wp-parsely' )
+				__( 'Value passed for disable_javascript must be either "Yes" or "No".', 'wp-parsely' )
 			);
 		} else {
 			$input['disable_javascript'] = 'true' === $input['disable_javascript'];
+		}
+
+		if ( 'true' !== $input['disable_autotrack'] && 'false' !== $input['disable_autotrack'] ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'disable_autotrack',
+				__( 'Value passed for disable_autotrack must be either "Yes" or "No".', 'wp-parsely' )
+			);
+		} else {
+			$input['disable_autotrack'] = 'true' === $input['disable_autotrack'];
 		}
 
 		// Allow for Disable AMP setting to be conditionally included on the page.
