@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
+use Parsely\Metadata;
 use Parsely\Tests\Integration\TestCase;
 
 use Parsely\Parsely;
@@ -623,12 +624,14 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Tests if keywords in Parse.ly metadata are generated correctly when categories are tags and the post has no categories.
+	 * Proves that keywords in Parse.ly metadata are generated correctly when categories
+	 * are tags and the post has no categories.
 	 *
 	 * @since 3.0.3
 	 *
 	 * @covers \Parsely\Parsely::construct_parsely_metadata
 	 * @uses \Parsely\Metadata::get_categories
+	 * @group metadata
 	 */
 	public function test_post_with_categories_as_tags_without_categories(): void {
 		// Setup Parsely object.
@@ -653,9 +656,37 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * These are the required properties for posts.
+	 * Proves that featured image URLs are correctly generated in the metadata.
 	 *
-	 * @return string[]
+	 * @since 3.3.0
+	 *
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @group metadata
+	 */
+	public function test_post_featured_image_urls_in_metadata_are_correct(): void {
+		// Initialize required objects.
+		$metadata        = new Metadata( new Parsely() );
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+
+		// Create a post with a featured image.
+		$post            = self::factory()->post->create_and_get();
+		$attachment_path = dirname( __DIR__, 3 ) . '/.wordpress-org/banner-1544x500.png';
+		$attachment_id   = self::factory()->attachment->create_upload_object( $attachment_path, $post->ID );
+		set_post_thumbnail( $post, $attachment_id );
+
+		// Generate metadata and expected results.
+		$actual_metadata    = $metadata->construct_metadata( $parsely_options, $post );
+		$expected_image_url = get_the_post_thumbnail_url( $post, 'full' );
+		$expected_thumb_url = get_the_post_thumbnail_url( $post, 'thumbnail' );
+
+		self::assertSame( $expected_image_url, $actual_metadata['image']['url'] );
+		self::assertSame( $expected_thumb_url, $actual_metadata['thumbnailUrl'] );
+	}
+
+	/**
+	 * Returns the required properties for posts.
+	 *
+	 * @return array<string>
 	 */
 	private function get_required_properties(): array {
 		return array(
