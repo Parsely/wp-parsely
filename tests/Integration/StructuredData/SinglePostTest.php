@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
+use Parsely\Metadata;
 use Parsely\Tests\Integration\TestCase;
 
 use Parsely\Parsely;
@@ -650,6 +651,35 @@ final class SinglePostTest extends TestCase {
 		$metadata = $parsely->construct_parsely_metadata( $parsely_options, $post );
 
 		self::assertSame( $expected, $metadata['keywords'] );
+	}
+
+	/**
+	 * Proves that featured image URLs are correctly generated in the metadata.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @covers \Parsely\Metadata::construct_metadata
+	 *
+	 * @return void
+	 */
+	public function test_post_featured_image_urls_in_metadata_are_correct() {
+		// Initialize required objects.
+		$metadata        = new Metadata( new Parsely() );
+		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+
+		// Create a post with a featured image.
+		$post            = self::factory()->post->create_and_get();
+		$attachment_path = dirname( __DIR__, 3 ) . '/.wordpress-org/banner-1544x500.png';
+		$attachment_id   = self::factory()->attachment->create_upload_object( $attachment_path, $post->ID );
+		set_post_thumbnail( $post, $attachment_id );
+
+		// Generate metadata and expected results.
+		$actual_metadata    = $metadata->construct_metadata( $parsely_options, $post );
+		$expected_image_url = get_the_post_thumbnail_url( $post, 'full' );
+		$expected_thumb_url = get_the_post_thumbnail_url( $post, 'thumbnail' );
+
+		self::assertSame( $expected_image_url, $actual_metadata['image']['url'] );
+		self::assertSame( $expected_thumb_url, $actual_metadata['thumbnailUrl'] );
 	}
 
 	/**
