@@ -82,9 +82,6 @@ class Recommendations_Block {
 		<?php
 		echo wp_kses_post( get_block_wrapper_attributes() );
 
-		// Remove any attributes that don't need to be in output.
-		unset( $attributes['tag'] );
-
 		foreach ( $attributes as $name => $value ) {
 			echo ' data-' . esc_attr( $name ) . '="' . esc_attr( $value ) . '"';
 		}
