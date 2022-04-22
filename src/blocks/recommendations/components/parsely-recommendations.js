@@ -26,7 +26,7 @@ export default function ParselyRecommendations( {
 	} = useRecommendationsStore();
 
 	function getErrorMessage() {
-		let errorMessage = `${ __( 'Error:', 'wp-parsely' ) } ${ JSON.stringify( error ) }`;
+		errorMessage = `${ __( 'Error:', 'wp-parsely' ) } ${ JSON.stringify( error ) }`;
 
 		if ( errorMessage.includes( '{"errors":{"403":["Forbidden"]},"error_data":[]}' ) ) {
 			errorMessage = __( 'Access denied. Please verify that your Site ID is valid.', 'wp-parsely' );
