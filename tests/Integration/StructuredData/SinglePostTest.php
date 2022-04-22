@@ -624,12 +624,14 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Tests if keywords in Parse.ly metadata are generated correctly when categories are tags and the post has no categories.
+	 * Proves that keywords in Parse.ly metadata are generated correctly when categories
+	 * are tags and the post has no categories.
 	 *
 	 * @since 3.0.3
 	 *
 	 * @covers \Parsely\Parsely::construct_parsely_metadata
 	 * @uses \Parsely\Metadata::get_categories
+	 * @group metadata
 	 */
 	public function test_post_with_categories_as_tags_without_categories(): void {
 		// Setup Parsely object.
@@ -659,10 +661,9 @@ final class SinglePostTest extends TestCase {
 	 * @since 3.3.0
 	 *
 	 * @covers \Parsely\Metadata::construct_metadata
-	 *
-	 * @return void
+	 * @group metadata
 	 */
-	public function test_post_featured_image_urls_in_metadata_are_correct() {
+	public function test_post_featured_image_urls_in_metadata_are_correct(): void {
 		// Initialize required objects.
 		$metadata        = new Metadata( new Parsely() );
 		$parsely_options = get_option( Parsely::OPTIONS_KEY );
@@ -683,9 +684,9 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * These are the required properties for posts.
+	 * Returns the required properties for posts.
 	 *
-	 * @return string[]
+	 * @return array<string>
 	 */
 	private function get_required_properties(): array {
 		return array(
