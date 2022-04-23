@@ -32,6 +32,8 @@ export default function ParselyRecommendations( {
 			errorMessage = __( 'Access denied. Please verify that your Site ID is valid.', 'wp-parsely' );
 		} else if ( typeof error === 'object' && error?.code === 'rest_no_route' ) {
 			errorMessage = __( 'The REST route is unavailable. To use it, wp_parsely_enable_related_api_proxy should be true.', 'wp-parsely' );
+		} else if ( errorMessage.includes( '{"errors":{"http_request_failed":["A valid URL was not provided."]},"error_data":[]}' ) ) {
+			errorMessage = __( 'The Parse.ly Recommendations API is not accessible. You may be offline.', 'wp-parsely' );
 		}
 
 		return errorMessage;
