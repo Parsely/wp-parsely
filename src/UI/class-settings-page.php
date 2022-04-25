@@ -83,6 +83,7 @@ final class Settings_Page {
 	 */
 	public function enqueue_settings_assets( string $hook_suffix ): void {
 		if ( 'settings_page_parsely' === $hook_suffix ) {
+			add_filter( 'media_library_months_with_files', '__return_empty_array' );
 			wp_enqueue_media();
 
 			$admin_settings_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
