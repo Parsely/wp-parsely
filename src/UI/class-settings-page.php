@@ -83,6 +83,7 @@ final class Settings_Page {
 	 */
 	public function enqueue_settings_assets( string $hook_suffix ): void {
 		if ( 'settings_page_parsely' === $hook_suffix ) {
+			add_filter( 'media_library_months_with_files', '__return_empty_array' );
 			wp_enqueue_media();
 
 			$admin_settings_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
@@ -788,10 +789,8 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		<fieldset class="media-single-image" id="media-single-image-<?php echo esc_attr( $key ); ?>">
 			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
-			<input class="file-path" type="text" name="<?php echo esc_attr( $input_name ); ?>" value="<?php echo esc_attr( $input_value ); ?>" />
-			<p>
-				<button data-option="<?php echo esc_attr( $key ); ?>" class="browse button" type="button"><?php echo esc_html( $button_text ); ?></button>
-			</p>
+			<input class="file-path" type="text" name="<?php echo esc_attr( $input_name ); ?>" id="logo" value="<?php echo esc_attr( $input_value ); ?>" />
+			<button data-option="<?php echo esc_attr( $key ); ?>" class="browse button" type="button"><?php echo esc_html( $button_text ); ?></button>
 		</fieldset>
 
 		<?php
