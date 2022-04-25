@@ -26,19 +26,19 @@ export default function ParselyRecommendations( {
 	} = useRecommendationsStore();
 
 	function getErrorMessage() {
-		let errorMessage = `${ __( 'Error:', 'wp-parsely' ) } ${ JSON.stringify( error ) }`;
-		const httpError = errorMessage.includes( '"errors":{"http_request_failed"' ) ||
+		let message = `${ __( 'Error:', 'wp-parsely' ) } ${ JSON.stringify( error ) }`;
+		const httpError = message.includes( '"errors":{"http_request_failed"' ) ||
 		( typeof error === 'object' && error?.code === 'fetch_error' );
 
 		if ( httpError ) {
-			errorMessage = __( 'The Parse.ly Recommendations API is not accessible. You may be offline.', 'wp-parsely' );
-		} else if ( errorMessage.includes( '{"errors":{"403":["Forbidden"]},"error_data":[]}' ) ) {
-			errorMessage = __( 'Access denied. Please verify that your Site ID is valid.', 'wp-parsely' );
+			message = __( 'The Parse.ly Recommendations API is not accessible. You may be offline.', 'wp-parsely' );
+		} else if ( message.includes( '{"errors":{"403":["Forbidden"]},"error_data":[]}' ) ) {
+			message = __( 'Access denied. Please verify that your Site ID is valid.', 'wp-parsely' );
 		} else if ( typeof error === 'object' && error?.code === 'rest_no_route' ) {
-			errorMessage = __( 'The REST route is unavailable. To use it, wp_parsely_enable_related_api_proxy should be true.', 'wp-parsely' );
+			message = __( 'The REST route is unavailable. To use it, wp_parsely_enable_related_api_proxy should be true.', 'wp-parsely' );
 		}
 
-		return errorMessage;
+		return message;
 	}
 
 	// Show error messages within the WordPress Block Editor when needed.
