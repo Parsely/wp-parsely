@@ -56,8 +56,6 @@ describe( 'Recommendations Block', () => {
 
 	/**
 	 * Proves that the block will display an error when the API is not accessible.
-	 *
-	 * Note: This test should be placed last in this file.
 	 */
 	it( 'Should display an error when the Parse.ly API is not accessible', async () => {
 		await setSiteId();
@@ -69,5 +67,7 @@ describe( 'Recommendations Block', () => {
 		const text = await page.$eval( '.parsely-recommendations-error', ( element ) => element.textContent );
 
 		expect( text ).toMatch( 'The Parse.ly Recommendations API is not accessible. You may be offline.' );
+
+		await page.setOfflineMode( false );
 	} );
 } );
