@@ -58,7 +58,7 @@
 		"@wordpress/scripts": "^22.3.0",
 		"@wordpress/url": "^3.7.0",
 		"concurrently": "^7.1.0",
-		"eslint-plugin-jest": "^26.1.4",
+		"eslint-plugin-jest": "^26.1.5",
 		"husky": "^7.0.4",
 		"prettier": "^2.6.2"
 	},
