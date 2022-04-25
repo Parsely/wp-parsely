@@ -29,9 +29,6 @@
 			"type":"string",
 			"default":"score"
 		},
-		"tag": {
-			"type":"string"
-		},
 		"title": {
 			"type":"string",
 			"default": "Related Content"
