@@ -4,7 +4,7 @@ const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 module.exports = {
 	...defaultConfig,
 	entry: {
-		...defaultConfig.entry,
+		...defaultConfig.entry(),
 		'admin-settings': [
 			path.resolve( __dirname, 'src', 'js', 'admin-settings' ),
 			path.resolve( __dirname, 'src', 'css', 'admin-settings.css' ),
