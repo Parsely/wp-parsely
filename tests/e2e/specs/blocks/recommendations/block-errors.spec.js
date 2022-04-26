@@ -29,7 +29,7 @@ describe( 'Recommendations Block', () => {
 	} );
 
 	/**
-	 * Verifies that the block will display an error when an invalid Site ID is provided.
+	 * Proves that the block will display an error when an invalid Site ID is provided.
 	 */
 	it( 'Should display an error when an invalid Site ID is provided', async () => {
 		await setSiteId();
@@ -42,7 +42,7 @@ describe( 'Recommendations Block', () => {
 	} );
 
 	/**
-	 * Verifies that the block will display an error when an empty Site ID is provided.
+	 * Proves that the block will display an error when an empty Site ID is provided.
 	 */
 	it( 'Should display an error when an empty Site ID is provided', async () => {
 		await setSiteId( '' );
@@ -52,5 +52,22 @@ describe( 'Recommendations Block', () => {
 		await page.waitForSelector( '.parsely-recommendations-error' );
 		const text = await page.$eval( '.parsely-recommendations-error', ( element ) => element.textContent );
 		expect( text ).toMatch( 'A Parse.ly API Key must be set in site options to use this endpoint' );
+	} );
+
+	/**
+	 * Proves that the block will display an error when the API is not accessible.
+	 */
+	it( 'Should display an error when the Parse.ly API is not accessible', async () => {
+		await setSiteId();
+		await createNewPost();
+		await page.setOfflineMode( true );
+		await insertBlock( 'Parse.ly' );
+
+		await page.waitForSelector( '.parsely-recommendations-error' );
+		const text = await page.$eval( '.parsely-recommendations-error', ( element ) => element.textContent );
+
+		expect( text ).toMatch( 'The Parse.ly Recommendations API is not accessible. You may be offline.' );
+
+		await page.setOfflineMode( false );
 	} );
 } );
