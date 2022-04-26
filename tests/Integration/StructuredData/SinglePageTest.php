@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
+use Parsely\Metadata;
 use Parsely\Parsely;
 
 /**
@@ -22,7 +23,7 @@ final class SinglePageTest extends NonPostTestCase {
 	/**
 	 * Create a single page, and test the structured data.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -60,7 +61,8 @@ final class SinglePageTest extends NonPostTestCase {
 		$this->go_to( get_permalink( $page_id ) );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $page );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $page );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
