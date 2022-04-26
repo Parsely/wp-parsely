@@ -2,9 +2,11 @@
 
 The Recommendations Block is designed to showcase links to content on your site as provided by the [Parse.ly `/related` API endpoint](https://www.parse.ly/help/api/recommendations#get-related). You can add it in Posts, Pages, or nearly any other custom post type. The Block can also be used in Full Site Editing (FSE) mode or as a [Block-based Widget](https://wordpress.org/support/article/block-based-widgets-editor/).
 
+> Note: In wp-parsely version 4.0.0, the Recommendations Block will completely replace the Recommended Widget. If you're using the Widget, we highly recommend migrating to the Block as soon as possible.
+
 ## Requirements
 
-The Block is available only in WordPress 5.9 and higher.
+The Block is available only in WordPress 5.9 or later.
 
 ## How to use
 
@@ -52,7 +54,7 @@ For styling purposes, you can specify one or more CSS classes that will be assig
 
 ### I can't find the Block.
 
-Ensure that you're running WordPress version 5.9.0 or higher, as the Block is unavailable in lower WordPress versions.
+Ensure that you're running WordPress version 5.9.0 or later, as the Block is unavailable in lower WordPress versions.
 
 ### The Block's images are of low-quality, even though the `Image style` option is set to `Original` and the original image is large.
 
