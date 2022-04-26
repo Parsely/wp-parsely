@@ -16,7 +16,7 @@ use Parsely\Parsely;
  * Structured Data Tests for the blog page (archive).
  *
  * @see https://www.parse.ly/help/integration/jsonld
- * @covers \Parsely\Parsely::construct_parsely_metadata
+ * @covers \Parsely\Metadata::construct_metadata
  */
 final class BlogArchiveTest extends NonPostTestCase {
 	/**

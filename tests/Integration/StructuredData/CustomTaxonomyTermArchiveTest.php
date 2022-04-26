@@ -16,7 +16,7 @@ use Parsely\Parsely;
  * Structured Data Tests for the custom taxonomy term (archive).
  *
  * @see https://www.parse.ly/help/integration/jsonld
- * @covers \Parsely\Parsely::construct_parsely_metadata
+ * @covers \Parsely\Metadata::construct_metadata
  */
 class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 	/**
