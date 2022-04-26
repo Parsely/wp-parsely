@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
+use Parsely\Metadata;
 use Parsely\Parsely;
 
 /**
