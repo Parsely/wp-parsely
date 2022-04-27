@@ -42,8 +42,7 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 		$this->set_permalink_structure( '/%postname%/' );
 
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Register Post Type with specific archive URL.
 		register_post_type(
@@ -75,7 +74,7 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 		// Create the structured data for that CPT.
 		// The CPT archive metadata doesn't use the post data, but the construction method requires it for now.
 		$metadata        = new Metadata( $parsely );
-		$structured_data = $metadata->construct_metadata( $parsely_options, get_post() );
+		$structured_data = $metadata->construct_metadata( get_post() );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
