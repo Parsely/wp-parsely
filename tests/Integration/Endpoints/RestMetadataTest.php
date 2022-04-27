@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\Endpoints;
 
+use Parsely\Metadata;
 use Parsely\Parsely;
 use Parsely\Endpoints\Rest_Metadata;
 use Parsely\Tests\Integration\TestCase;
@@ -143,9 +144,10 @@ final class RestMetadataTest extends TestCase {
 		$post_id = self::factory()->post->create();
 
 		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
+		$metadata    = new Metadata( self::$parsely );
 		$expected    = array(
 			'version'     => '1.1.0',
-			'meta'        => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
+			'meta'        => $metadata->construct_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
 			'rendered'    => self::$rest->get_rendered_meta( 'json_ld' ),
 			'tracker_url' => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
@@ -164,9 +166,10 @@ final class RestMetadataTest extends TestCase {
 		$post_id = self::factory()->post->create();
 
 		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
+		$metadata    = new Metadata( self::$parsely );
 		$expected    = array(
 			'version'     => '1.1.0',
-			'meta'        => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
+			'meta'        => $metadata->construct_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
 			'tracker_url' => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
@@ -184,9 +187,10 @@ final class RestMetadataTest extends TestCase {
 		$post_id = self::factory()->post->create();
 
 		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
+		$metadata    = new Metadata( self::$parsely );
 		$expected    = array(
 			'version'  => '1.1.0',
-			'meta'     => self::$parsely->construct_parsely_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
+			'meta'     => $metadata->construct_metadata( self::$parsely->get_options(), get_post( $post_id ) ),
 			'rendered' => self::$rest->get_rendered_meta( 'json_ld' ),
 		);
 

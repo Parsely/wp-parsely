@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use Parsely\Metadata;
 use Parsely\Parsely;
 use WP_Scripts;
 
@@ -57,7 +58,7 @@ final class OtherTest extends TestCase {
 	/**
 	 * Check out page filtering.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -95,7 +96,8 @@ final class OtherTest extends TestCase {
 		);
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// The structured data should contain the headline from the filter.
 		self::assertSame( strpos( $structured_data['headline'], $headline ), 0 );
@@ -104,7 +106,7 @@ final class OtherTest extends TestCase {
 	/**
 	 * Test the wp_parsely_post_type filter
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
@@ -131,8 +133,10 @@ final class OtherTest extends TestCase {
 			}
 		);
 
-		$metadata = self::$parsely->construct_parsely_metadata( $options, $post_obj );
-		self::assertSame( 'BlogPosting', $metadata['@type'] );
+		$metadata        = new Metadata( self::$parsely );
+		$structured_data = $metadata->construct_metadata( $options, $post_obj );
+
+		self::assertSame( 'BlogPosting', $structured_data['@type'] );
 
 		// Try to change the post type to a non-supported value - Not_Supported.
 		add_filter(
@@ -144,7 +148,7 @@ final class OtherTest extends TestCase {
 
 		$this->expectWarning();
 		$this->expectWarningMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages' );
-		self::$parsely->construct_parsely_metadata( $options, $post_obj );
+		$metadata->construct_metadata( $options, $post_obj );
 	}
 
 	/**
