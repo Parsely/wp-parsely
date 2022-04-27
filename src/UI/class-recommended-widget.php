@@ -294,7 +294,7 @@ final class Recommended_Widget extends WP_Widget {
 			'avg_engaged'           => __( 'Engaged minutes spent by total visitors', 'wp-parsely' ),
 			'avg_engaged_new'       => __( 'Average engaged minutes spent by new visitors', 'wp-parsely' ),
 			'avg_engaged_returning' => __( 'Average engaged minutes spent by returning visitors', 'wp-parsely' ),
-			'social_interactions'   => __( 'Total for Facebook, Twitter, LinkedIn, and Pinterest', 'wp-parsely' ),
+			'social_interactions'   => __( 'Total social interactions', 'wp-parsely' ),
 			'fb_interactions'       => __( 'Count of Facebook shares, likes, and comments', 'wp-parsely' ),
 			'tw_interactions'       => __( 'Count of Twitter tweets and retweets', 'wp-parsely' ),
 			'pi_interactions'       => __( 'Count of Pinterest pins', 'wp-parsely' ),
