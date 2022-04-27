@@ -9,19 +9,20 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
+use Parsely\Metadata;
 use Parsely\Parsely;
 
 /**
  * Structured Data Tests for the term archives.
  *
  * @see https://www.parse.ly/help/integration/jsonld
- * @covers \Parsely\Parsely::construct_parsely_metadata
+ * @covers \Parsely\Metadata::construct_metadata
  */
 final class TermArchiveTest extends NonPostTestCase {
 	/**
 	 * Check metadata for term archive.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -57,7 +58,8 @@ final class TermArchiveTest extends NonPostTestCase {
 
 		// Create the structured data for that category.
 		// The category metadata doesn't use the post data, but the construction method requires it for now.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, get_post() );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, get_post() );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );

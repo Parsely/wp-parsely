@@ -9,13 +9,14 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
+use Parsely\Metadata;
 use Parsely\Parsely;
 
 /**
  * Structured Data Tests for the home page.
  *
  * @see https://www.parse.ly/help/integration/jsonld
- * @covers \Parsely\Parsely::construct_parsely_metadata
+ * @covers \Parsely\Metadata::construct_metadata
  */
 final class HomePageTest extends NonPostTestCase {
 	/**
@@ -32,7 +33,7 @@ final class HomePageTest extends NonPostTestCase {
 	/**
 	 * Create a single page, set as homepage (blog archive), and test the structured data.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -64,7 +65,8 @@ final class HomePageTest extends NonPostTestCase {
 		$this->go_to( '/' );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $page );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $page );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
@@ -77,7 +79,7 @@ final class HomePageTest extends NonPostTestCase {
 	/**
 	 * Create 2 posts, set posts per page to 1, navigate to page 2 and test the structured data.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -113,7 +115,8 @@ final class HomePageTest extends NonPostTestCase {
 		$this->go_to( home_url( '/page/2' ) );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $page );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $page );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
@@ -127,7 +130,7 @@ final class HomePageTest extends NonPostTestCase {
 	/**
 	 * Create a single page, set as homepage (page on front), and test the structured data.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -163,7 +166,8 @@ final class HomePageTest extends NonPostTestCase {
 		$this->go_to( '/' );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $page );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $page );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
@@ -178,7 +182,7 @@ final class HomePageTest extends NonPostTestCase {
 	/**
 	 * Check for the case when the show_on_front setting is Page, but no Page has been selected.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -214,7 +218,8 @@ final class HomePageTest extends NonPostTestCase {
 		$this->go_to( '/' );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $page );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $page );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );

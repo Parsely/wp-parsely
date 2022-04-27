@@ -33,7 +33,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Create a single post, and test the structured data.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -60,7 +60,8 @@ final class SinglePostTest extends TestCase {
 		$this->go_to( get_permalink( $post ) );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
@@ -71,7 +72,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the category.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -96,7 +97,8 @@ final class SinglePostTest extends TestCase {
 		$post     = get_post( $post_id );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// The category in the structured data should match the category of the post.
 		self::assertSame( 'Test Category', $structured_data['articleSection'] );
@@ -105,7 +107,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that the tags assigned to a post are lowercase.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -139,7 +141,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// The structured data should contain both tags in lowercase form.
 		self::assertContains( 'sample', $structured_data['keywords'] );
@@ -149,7 +152,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the categories as tags.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -184,7 +187,8 @@ final class SinglePostTest extends TestCase {
 		$post    = get_post( $post_id );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// The structured data should contain all three categories as keywords.
 		self::assertContains( 'Test Category', $structured_data['keywords'] );
@@ -195,7 +199,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Test custom taxonomy terms, categories, and tags in the metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -242,7 +246,8 @@ final class SinglePostTest extends TestCase {
 		wp_set_object_terms( $post_id, array( $tag ), 'post_tag' );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// The structured data should contain the category, the post tag, and the custom taxonomy term.
 		self::assertContains( 'my category', $structured_data['keywords'] );
@@ -253,7 +258,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Are the top level categories what we expect?
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -290,7 +295,8 @@ final class SinglePostTest extends TestCase {
 		$post    = get_post( $post_id );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// The structured data should contain the parent category.
 		self::assertSame( 'Parent Category', $structured_data['articleSection'] );
@@ -300,7 +306,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// The structured data should contain the child category.
 		self::assertSame( 'Child Category', $structured_data['articleSection'] );
@@ -309,7 +316,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check out the custom taxonomy as section.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -359,7 +366,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		self::assertSame( 'Premier League', $structured_data['articleSection'] );
 
@@ -368,7 +376,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		self::assertSame( 'football', $structured_data['articleSection'] );
 	}
@@ -376,7 +385,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the canonicals.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -405,7 +414,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// The url scheme should be 'http'.
 		$url = wp_parse_url( $structured_data['url'] );
@@ -416,7 +426,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// The url scheme should be 'https'.
 		$url = wp_parse_url( $structured_data['url'] );
@@ -426,7 +437,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check post modified date in Parsely metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -460,14 +471,15 @@ final class SinglePostTest extends TestCase {
 		// In the metadata, check that the post's created date is correct and
 		// that the last modified date is identical.
 		$post     = get_post( $post_id );
-		$metadata = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$meta     = new Metadata( $parsely );
+		$metadata = $meta->construct_metadata( $parsely_options, $post );
 		self::assertSame( $date_created, $metadata['dateCreated'] );
 		self::assertSame( $date_created, $metadata['dateModified'] );
 
 		// Update the post and reload metadata.
 		wp_update_post( array( 'ID' => $post_id ) );
 		$post_updated     = get_post( $post_id );
-		$metadata_updated = $parsely->construct_parsely_metadata( $parsely_options, $post_updated );
+		$metadata_updated = $meta->construct_metadata( $parsely_options, $post_updated );
 
 		// In the metadata, check that the last modified date has been updated.
 		self::assertSame( $date_created, $metadata_updated['dateCreated'] );
@@ -477,7 +489,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that post objects with valid creation date work with construct_parsely_metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @group metadata
 	 */
@@ -494,7 +506,8 @@ final class SinglePostTest extends TestCase {
 		unset( $post->post_date_gmt );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// Without a post date, there should not be the following in the metadata.
 		self::assertArrayNotHasKey( 'dateCreated', $structured_data );
@@ -505,7 +518,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that post objects with identical creation & modified dates produce expected metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @group metadata
 	 */
@@ -526,7 +539,8 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified_gmt = $singular_datetime;
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// Identical post creation and modified dates should be present in the metadata.
 		$expected_singular_datetime = '2021-12-30T20:11:42Z';
@@ -539,7 +553,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that posts with modified before creation date "promotes" modified in metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @group metadata
 	 */
@@ -561,7 +575,8 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified_gmt = $modified_datetime;
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// Modified dates earlier than created dates should be "promoted" to the latter.
 		$expected_singular_datetime = '2021-12-30T20:11:42Z';
@@ -574,7 +589,7 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that posts with modified after creation date has both in metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @group metadata
 	 */
@@ -596,7 +611,8 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified_gmt = $modified_datetime;
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
 		// Modified dates later than created dates should be present in the metadata.
 		$expected_created_datetime  = '2021-12-30T20:11:42Z';
@@ -629,7 +645,7 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @since 3.0.3
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_categories
 	 * @group metadata
 	 */
@@ -649,10 +665,11 @@ final class SinglePostTest extends TestCase {
 		$default_category_slug = get_category( get_option( 'default_category' ) )->slug;
 		wp_remove_object_terms( $post_id, $default_category_slug, 'category' );
 
-		$expected = array();
-		$metadata = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$expected        = array();
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
 
-		self::assertSame( $expected, $metadata['keywords'] );
+		self::assertSame( $expected, $structured_data['keywords'] );
 	}
 
 	/**

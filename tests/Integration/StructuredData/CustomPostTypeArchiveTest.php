@@ -9,20 +9,20 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
+use Parsely\Metadata;
 use Parsely\Parsely;
 
 /**
  * Structured Data Tests for the custom post type (archive).
  *
  * @see https://www.parse.ly/help/integration/jsonld
- * @covers \Parsely\Parsely::construct_parsely_metadata
+ * @covers \Parsely\Metadata::construct_metadata
  */
 final class CustomPostTypeArchiveTest extends NonPostTestCase {
 	/**
 	 * Check metadata for custom post type archive.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
 	 * @uses \Parsely\Metadata::get_author_name
 	 * @uses \Parsely\Metadata::get_author_names
 	 * @uses \Parsely\Metadata::get_bottom_level_term
@@ -74,7 +74,8 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 
 		// Create the structured data for that CPT.
 		// The CPT archive metadata doesn't use the post data, but the construction method requires it for now.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, get_post() );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $parsely_options, get_post() );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
