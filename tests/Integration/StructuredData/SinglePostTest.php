@@ -33,16 +33,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Create a single post, and test the structured data.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -72,16 +74,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the category.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -107,16 +111,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that the tags assigned to a post are lowercase.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -152,18 +158,20 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the categories as tags.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_categories
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_custom_taxonomy_values
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_categories
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_custom_taxonomy_values
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -199,18 +207,20 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Test custom taxonomy terms, categories, and tags in the metadata.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_categories
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_custom_taxonomy_values
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_categories
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_custom_taxonomy_values
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -258,17 +268,19 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Are the top level categories what we expect?
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::get_top_level_term
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::get_top_level_term
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -316,17 +328,19 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check out the custom taxonomy as section.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::get_top_level_term
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::get_top_level_term
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -385,16 +399,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the canonicals.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -437,16 +453,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check post modified date in Parsely metadata.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -489,8 +507,19 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that post objects with valid creation date work with construct_parsely_metadata.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
 	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
 	 */
 	public function test_empty_post_date_has_dates_omitted_from_metadata(): void {
@@ -518,8 +547,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that post objects with identical creation & modified dates produce expected metadata.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
 	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
 	 */
 	public function test_post_date_with_same_create_modified_dates_included_in_metadata(): void {
@@ -553,8 +592,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that posts with modified before creation date "promotes" modified in metadata.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
 	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
 	 */
 	public function test_post_date_with_modified_before_created_date_in_metadata(): void {
@@ -589,8 +638,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that posts with modified after creation date has both in metadata.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
 	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
 	 */
 	public function test_post_date_with_modified_after_created_date_in_metadata(): void {
@@ -645,8 +704,20 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @since 3.0.3
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_categories
+	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::get_categories
+	 * @covers \Parsely\Metadata::get_custom_taxonomy_values
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
 	 */
 	public function test_post_with_categories_as_tags_without_categories(): void {
@@ -677,7 +748,18 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @since 3.3.0
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
 	 */
 	public function test_post_featured_image_urls_in_metadata_are_correct(): void {

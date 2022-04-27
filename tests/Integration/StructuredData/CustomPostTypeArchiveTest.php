@@ -22,16 +22,17 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 	/**
 	 * Check metadata for custom post type archive.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata

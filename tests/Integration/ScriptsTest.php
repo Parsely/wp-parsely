@@ -47,6 +47,9 @@ final class ScriptsTest extends TestCase {
 	 * Test whether the run method adds the register and enqueue actions.
 	 *
 	 * @covers \Parsely\Scripts::run
+	 * @covers \Parsely\Scripts::__construct
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
 	 *
 	 * @group scripts
 	 */
@@ -64,6 +67,9 @@ final class ScriptsTest extends TestCase {
 	 * Test whether the run method adds the register and enqueue actions when no API key is set.
 	 *
 	 * @covers \Parsely\Scripts::run
+	 * @covers \Parsely\Scripts::__construct
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
 	 *
 	 * @group scripts
 	 */
@@ -80,6 +86,9 @@ final class ScriptsTest extends TestCase {
 	 * Test whether the run method adds the register and enqueue actions when the disable javascript option is set.
 	 *
 	 * @covers \Parsely\Scripts::run
+	 * @covers \Parsely\Scripts::__construct
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
 	 *
 	 * @group scripts
 	 */
@@ -96,9 +105,12 @@ final class ScriptsTest extends TestCase {
 	 * Test script registration functionality.
 	 *
 	 * @covers \Parsely\Scripts::register_scripts
+	 * @covers \Parsely\Scripts::__construct
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_api_key
 	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group scripts
 	 */
@@ -137,9 +149,12 @@ final class ScriptsTest extends TestCase {
 	 * Test the tracker script enqueue.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @covers \Parsely\Scripts::__construct
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_api_key
 	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
@@ -173,9 +188,12 @@ final class ScriptsTest extends TestCase {
 	 * Tests the tracker script enqueue.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @covers \Parsely\Scripts::__construct
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
@@ -212,8 +230,12 @@ final class ScriptsTest extends TestCase {
 	 * When it returns false, the tracking script should not be enqueued.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @covers \Parsely\Scripts::register_scripts
+	 * @covers \Parsely\Scripts::__construct
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -251,9 +273,13 @@ final class ScriptsTest extends TestCase {
 	 * Test the API init script enqueue.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @covers \Parsely\Scripts::__construct
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
@@ -281,10 +307,15 @@ final class ScriptsTest extends TestCase {
 	 * Make sure that disabling authenticated user tracking works.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @covers \Parsely\Scripts::register_scripts
+	 * @covers \Parsely\Scripts::__construct
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::parsely_is_user_logged_in
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group scripts
 	 * @group settings
 	 */
@@ -323,14 +354,17 @@ final class ScriptsTest extends TestCase {
 	 * activity.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @covers \Parsely\Scripts::__construct
+	 * @covers \Parsely\Scripts::register_scripts
+	 * @covers \Parsely\Scripts::script_loader_tag
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::parsely_is_user_logged_in
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Scripts::register_scripts
-	 * @uses \Parsely\Scripts::script_loader_tag
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @group scripts
 	 * @group settings
 	 */
@@ -403,13 +437,16 @@ final class ScriptsTest extends TestCase {
 	 * when the wp_parsely_enable_cfasync_attribute filter is used.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @uses \Parsely\Scripts::script_loader_tag
+	 * @uses \Parsely\Scripts::register_scripts
+	 * @uses \Parsely\Scripts::__construct
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Scripts::register_scripts
-	 * @uses \Parsely\Scripts::script_loader_tag
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @group scripts
 	 * @group scripts-output
 	 */

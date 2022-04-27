@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\Integrations;
 
 use Parsely\Integrations\Google_Web_Stories;
-use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 
 /**
@@ -49,7 +48,9 @@ final class GoogleWebStoriesTest extends TestCase {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @covers \Parsely\Scripts::run()
+	 * @covers \Parsely\Integrations\Google_Web_Stories::integrate
+	 * @uses \Parsely\Integrations\Amp::construct_amp_config
+	 * @uses \Parsely\Integrations\Amp::construct_amp_json
 	 * @group scripts
 	 */
 	public function test_web_stories_script_is_enqueued(): void {
@@ -67,7 +68,9 @@ final class GoogleWebStoriesTest extends TestCase {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @covers \Parsely\Scripts::render_amp_analytics_tracker
+	 * @covers \Parsely\Integrations\Google_Web_Stories::render_amp_analytics_tracker
+	 * @uses \Parsely\Integrations\Amp::construct_amp_config
+	 * @uses \Parsely\Integrations\Amp::construct_amp_json
 	 * @group scripts
 	 */
 	public function test_render_amp_analytics_tracker(): void {

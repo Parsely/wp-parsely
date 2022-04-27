@@ -58,16 +58,18 @@ final class OtherTest extends TestCase {
 	/**
 	 * Check out page filtering.
 	 *
+	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -107,15 +109,17 @@ final class OtherTest extends TestCase {
 	 * Test the wp_parsely_post_type filter
 	 *
 	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Metadata::get_author_name
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 */
@@ -242,6 +246,9 @@ final class OtherTest extends TestCase {
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_tracker_url(): void {
 		$expected = 'https://cdn.parsely.com/keys/blog.parsely.com/p.js';
@@ -254,6 +261,8 @@ final class OtherTest extends TestCase {
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_tracker_no_api_key(): void {
 		self::set_options( array( 'apikey' => '' ) );
