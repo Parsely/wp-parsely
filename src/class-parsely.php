@@ -24,9 +24,9 @@ class Parsely {
 	 * Declare our constants
 	 */
 	public const VERSION     = PARSELY_VERSION;
-	public const MENU_SLUG   = 'parsely';             // Defines the page param passed to options-general.php.
-	public const OPTIONS_KEY = 'parsely';             // Defines the key used to store options in the WP database.
-	public const CAPABILITY  = 'manage_options';      // The capability required for the user to administer settings.
+	public const MENU_SLUG   = 'parsely';        // Defines the page param passed to options-general.php.
+	public const OPTIONS_KEY = 'parsely';        // Defines the key used to store options in the WP database.
+	public const CAPABILITY  = 'manage_options'; // The capability required for the user to administer settings.
 
 	/**
 	 * Declare some class properties
@@ -183,7 +183,8 @@ class Parsely {
 	 * @since 2.5.0
 	 *
 	 * @param int|WP_Post $post Which post object or ID to check.
-	 * @return bool Should the post status be tracked for the provided post's post_type. By default, only 'publish' is allowed.
+	 * @return bool Should the post status be tracked for the provided post's post_type.
+	 *              By default,only 'publish' is allowed.
 	 */
 	public static function post_has_trackable_status( $post ): bool {
 		static $cache = array();
@@ -193,7 +194,8 @@ class Parsely {
 		}
 
 		/**
-		 * Filters whether the post password check should be skipped when getting the post trackable status.
+		 * Filters whether the post password check should be skipped when getting
+		 * the post trackable status.
 		 *
 		 * @since 3.0.1
 		 *
@@ -211,7 +213,8 @@ class Parsely {
 		/**
 		 * Filters the statuses that are permitted to be tracked.
 		 *
-		 * By default, the only status tracked is 'publish'. Use this filter if you have other published content that has a different (custom) status.
+		 * By default, the only status tracked is 'publish'. Use this filter if
+		 * you have other published content that has a different (custom) status.
 		 *
 		 * @since 2.5.0
 		 *
@@ -360,7 +363,8 @@ class Parsely {
 	/**
 	 * Gets the URL of the plugin's settings page.
 	 *
-	 * @param int|null $_blog_id The Blog ID for the multisite subsite to use for context (Default null for current).
+	 * @param int|null $_blog_id The Blog ID for the multisite subsite to use
+	 *                           for context (Default null for current).
 	 *
 	 * @return string
 	 */

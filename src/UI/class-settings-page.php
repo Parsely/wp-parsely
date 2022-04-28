@@ -40,7 +40,8 @@ final class Settings_Page {
 	/**
 	 * Screen options name.
 	 *
-	 * Name must end in `_page` so that set-screen-option hook is triggered for WP < 5.4.2.
+	 * Name must end in `_page` so that set-screen-option hook is triggered for
+	 * WP < 5.4.2.
 	 *
 	 * @since 3.2.0
 	 *
@@ -132,7 +133,8 @@ final class Settings_Page {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param mixed  $screen_option The value to save instead of the option value. Default false (to skip saving the current option).
+	 * @param mixed  $screen_option The value to save instead of the option value.
+	 *                              Default false (to skip saving the current option).
 	 * @param string $option        The option name.
 	 * @param mixed  $value         The option value.
 	 * @return mixed Updated option value.
@@ -752,8 +754,8 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Prints out a "single-image browse control" which includes a text
-	 * input to store image path and a button to browse for images.
+	 * Prints out a "single-image browse control" which includes a text input to
+	 * store image path and a button to browse for images.
 	 *
 	 * @param array $args The arguments for the control.
 	 */

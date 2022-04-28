@@ -39,7 +39,8 @@ final class Related_API_Proxy {
 	 * Constructor.
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
-	 * @param Proxy   $proxy   Proxy object which does the actual calls to the Parse.ly API.
+	 * @param Proxy   $proxy   Proxy object which does the actual calls to the
+	 *                         Parse.ly API.
 	 */
 	public function __construct( Parsely $parsely, Proxy $proxy ) {
 		$this->parsely = $parsely;

@@ -33,7 +33,7 @@ class Integrations {
 	 *
 	 * @param string        $key             A unique identifier for the integration.
 	 * @param string|object $class_or_object Fully-qualified class name, or an instantiated object.
-	 *                             If a class name is passed, it will be instantiated.
+	 *                                       If a class name is passed, it will be instantiated.
 	 */
 	public function register( string $key, $class_or_object ): void {
 		// If a Foo::class or other fully qualified class name is passed, instantiate it.

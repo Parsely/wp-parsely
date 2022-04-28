@@ -46,12 +46,12 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @param string      $api_key          Publisher Site ID (API key).
 	 * @param int|null    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
-	 *                                 formatting details. No restriction by default.
-	 * @param string|null $sort             What to sort the results by. There are currently 2 valid options: `score`, which
-	 *                                 will sort articles by overall relevance and `pub_date` which will sort results by
-	 *                                 their publication date. The default is `score`.
+	 *                                      formatting details. No restriction by default.
+	 * @param string|null $sort             What to sort the results by. There are currently 2 valid options: `score`,
+	 *                                      which will sort articles by overall relevance and `pub_date` which will sort
+	 *                                      results by their publication date. The default is `score`.
 	 * @param string|null $boost            Available for sort=score only. Sub-sort value to re-rank relevant posts that
-	 *                                 received high e.g. views; default is undefined.
+	 *                                      received high e.g. views; default is undefined.
 	 * @param int         $return_limit     Number of records to retrieve; defaults to "10".
 	 * @return string API URL.
 	 */
@@ -310,7 +310,8 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return bool True if apikey and api_secret settings are not empty strings. False otherwise.
+	 * @return bool True if apikey and api_secret settings are not empty strings.
+	 *              False otherwise.
 	 */
 	private function api_key_and_secret_are_populated(): bool {
 		$options = get_option( 'parsely' );

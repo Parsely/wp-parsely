@@ -414,8 +414,10 @@ class Metadata {
 	 * @since 3.0.0 $parsely_type Default parameter changed to `non-post`.
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param string $parsely_type Optional. Parse.ly post type you're interested in, either 'post' or 'non-post'. Default is 'non-post'.
-	 * @param int    $post_id      Optional. ID of the post you want to get the URL for. Default is 0, which means the global `$post` is used.
+	 * @param string $parsely_type Optional. Parse.ly post type you're interested in, either 'post'
+	 *                             or 'non-post'. Default is 'non-post'.
+	 * @param int    $post_id      Optional. ID of the post you want to get the URL for. Default is
+	 *                             0, which means the global `$post` is used.
 	 * @return string
 	 */
 	private function get_current_url( string $parsely_type = 'non-post', int $post_id = 0 ): string {
@@ -428,10 +430,10 @@ class Metadata {
 			 * @since 1.14.0
 			 * @since 2.5.0  Added $post_id.
 			 *
-			 * @param string $permalink         The permalink URL or false if post does not exist.
-			 * @param string $parsely_type      Parse.ly type ("post" or "non-post").
-			 * @param int    $post_id           ID of the post you want to get the URL for. May be 0, so $permalink will be
-			 *                                  for the global $post.
+			 * @param string $permalink    The permalink URL or false if post does not exist.
+			 * @param string $parsely_type Parse.ly type ("post" or "non-post").
+			 * @param int    $post_id      ID of the post you want to get the URL for. May be 0, so
+			 *                             $permalink will be for the global $post.
 			 */
 			$url = apply_filters( 'wp_parsely_permalink', $permalink, $parsely_type, $post_id );
 		} else {
@@ -454,7 +456,8 @@ class Metadata {
 	 * @since 3.0.2
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param array   $metadata Array containing all metadata. It will be potentially mutated to add keys: dateCreated, dateModified, & datePublished.
+	 * @param array   $metadata Array containing all metadata. It will be potentially mutated to add
+	 *                          keys: dateCreated, dateModified, & datePublished.
 	 * @param WP_Post $post     Post object from which to extract time data.
 	 */
 	private function set_metadata_post_times( array &$metadata, WP_Post $post ): void {

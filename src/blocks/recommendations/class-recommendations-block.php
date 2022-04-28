@@ -42,9 +42,10 @@ class Recommendations_Block {
 	 */
 	public static function register_block(): void {
 		/**
-		 * Register the block by passing the path to it's block.json file that contains the
-		 * majority of it's definition. This file will be copied into `build/blocks/recommendations`
-		 * by the build process and should be accessed there.
+		 * Register the block by passing the path to it's block.json file that
+		 * contains the majority of it's definition. This file will be copied
+		 * into `build/blocks/recommendations`by the build process and should be
+		 * accessed there.
 		 *
 		 * @see https://developer.wordpress.org/reference/functions/register_block_type/
 		 */
@@ -66,8 +67,8 @@ class Recommendations_Block {
 	 */
 	public static function render_callback( array $attributes ): string {
 		/**
-		 * In block.json we define a `viewScript` that is mean to only be loaded on the front end.
-		 * We need to manually enqueue this script here.
+		 * In block.json we define a `viewScript` that is mean to only be loaded
+		 * on the front end. We need to manually enqueue this script here.
 		 *
 		 * The slug is automatically generated as {namespace}-{block-name}-view-script
 		 */

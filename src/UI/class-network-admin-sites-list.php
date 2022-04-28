@@ -49,7 +49,8 @@ final class Network_Admin_Sites_List {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $actions The list of actions meant to be displayed for the current site's context in the row actions.
+	 * @param array $actions The list of actions meant to be displayed for the current site's
+	 *                       context in the row actions.
 	 * @param int   $_blog_id The blog ID for the current context.
 	 * @return array The list of actions including ours.
 	 */
