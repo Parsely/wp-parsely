@@ -64,8 +64,6 @@ require __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
  * Registers the basic classes to initialize the plugin.
- *
- * @return void
  */
 function parsely_initialize_plugin(): void {
 	$GLOBALS['parsely'] = new Parsely();
@@ -93,8 +91,6 @@ require __DIR__ . '/src/UI/class-row-actions.php';
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
 /**
  * Registers the Parse.ly wp-admin warnings, plugin actions and row actions.
- *
- * @return void
  */
 function parsely_admin_init_register(): void {
 	$admin_warning = new Admin_Warning( $GLOBALS['parsely'] );
@@ -114,8 +110,6 @@ add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
  * Registers the additions the Parse.ly wp-admin settings page and Multisite
  * Network Admin Sites List table.
- *
- * @return void
  */
 function parsely_wp_admin_early_register(): void {
 	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
@@ -140,8 +134,6 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
  * This is needed to get around a CORS issues with Firefox.
  *
  * @since 3.2.0
- *
- * @return void
  */
 function parsely_rest_api_init(): void {
 	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
@@ -158,8 +150,6 @@ require __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';
 add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 /**
  * Registers the Recommendations Block.
- *
- * @return void
  */
 function init_recommendations_block(): void {
 	$recommendations_block = new Recommendations_Block();
@@ -171,8 +161,6 @@ require __DIR__ . '/src/UI/class-recommended-widget.php';
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
  * Registers the Parse.ly Recommended widget.
- *
- * @return void
  */
 function parsely_recommended_widget_register(): void {
 	register_widget( Recommended_Widget::class );

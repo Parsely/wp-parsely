@@ -40,8 +40,6 @@ final class Admin_Bar {
 	 * Registers admin bar buttons.
 	 *
 	 * @since 3.1.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		/**
@@ -63,8 +61,6 @@ final class Admin_Bar {
 	 * is a post or a page.
 	 *
 	 * @param WP_Admin_Bar $admin_bar WP_Admin_Bar instance, passed by reference.
-	 *
-	 * @return void
 	 */
 	public function admin_bar_parsely_stats_button( WP_Admin_Bar $admin_bar ): void {
 		$current_object = $GLOBALS['wp_the_query']->get_queried_object();

@@ -61,8 +61,6 @@ final class Settings_Page {
 	 * Registers settings page.
 	 *
 	 * @since 3.0.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
@@ -79,7 +77,6 @@ final class Settings_Page {
 	 * Enqueues all needed scripts and styles for Parse.ly plugin settings page.
 	 *
 	 * @param string $hook_suffix The current page being loaded.
-	 * @return void
 	 */
 	public function enqueue_settings_assets( string $hook_suffix ): void {
 		if ( 'settings_page_parsely' === $hook_suffix ) {
@@ -108,8 +105,6 @@ final class Settings_Page {
 
 	/**
 	 * Adds the Parse.ly settings page in WordPress settings menu.
-	 *
-	 * @return void
 	 */
 	public function add_settings_sub_menu(): void {
 		$suffix = add_options_page(
@@ -159,8 +154,6 @@ final class Settings_Page {
 	 * Registers screen options.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	public function add_screen_options(): void {
 		add_screen_option(
@@ -261,8 +254,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 	/**
 	 * Displays the Parse.ly settings screen ( options-general.php?page=[SLUG] ).
-	 *
-	 * @return void
 	 */
 	public function display_settings(): void {
 		if ( ! current_user_can( Parsely::CAPABILITY ) ) {
@@ -274,8 +265,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 	/**
 	 * Initializes the settings for Parse.ly.
-	 *
-	 * @return void
 	 */
 	public function initialize_settings(): void {
 		// All our options are actually stored in one single array to reduce DB queries.
@@ -302,8 +291,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * Registers section and settings for Basic section.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	private function initialize_basic_section(): void {
 		add_settings_section(
@@ -437,8 +424,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * Registers section and settings for Requires Recrawl section.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	private function initialize_requires_recrawl_section(): void {
 		add_settings_section(
@@ -606,8 +591,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * Registers section and settings for Advanced section.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	private function initialize_advanced_section(): void {
 		// These are Advanced Settings.
@@ -654,7 +637,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @since 3.1.0
 	 *
 	 * @param array $args The arguments for the form field. May contain 'help_text'.
-	 * @return void
 	 */
 	public function print_description_text( $args ): void {
 		echo isset( $args['help_text'] ) ? '<p class="description" id="' . esc_attr( $args['option_key'] ) . '-description">' . wp_kses_post( $args['help_text'] ) . '</p>' : '';
@@ -664,7 +646,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * Prints out an input text tag.
 	 *
 	 * @param array $args The arguments for text tag.
-	 * @return void
 	 */
 	public function print_text_tag( array $args ): void {
 		$options       = $this->parsely->get_options();
@@ -694,7 +675,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * Prints a checkbox tag in the settings page.
 	 *
 	 * @param array $args Arguments to print to checkbox tag.
-	 * @return void
 	 */
 	public function print_checkbox_tag( array $args ): void {
 		$options = $this->parsely->get_options();
@@ -717,7 +697,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * Prints out the select tags
 	 *
 	 * @param array $args The arguments for the select dropdowns.
-	 * @return void
 	 */
 	public function print_select_tag( array $args ): void {
 		$options        = $this->parsely->get_options();
@@ -748,7 +727,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * Prints out the radio buttons
 	 *
 	 * @param array $args The arguments for the radio buttons.
-	 * @return void
 	 */
 	public function print_binary_radio_tag( array $args ): void {
 		$options = $this->parsely->get_options();
@@ -778,7 +756,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * input to store image path and a button to browse for images.
 	 *
 	 * @param array $args The arguments for the control.
-	 * @return void
 	 */
 	public function print_media_single_image( array $args ): void {
 		$key         = $args['option_key'];
@@ -803,7 +780,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @since 3.2.0
 	 *
 	 * @param array<string, string> $args The arguments used in the output HTML elements.
-	 * @return void
 	 */
 	public function print_track_post_types_table( array $args ): void {
 		$option_key = esc_attr( $args['option_key'] );
@@ -1132,7 +1108,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @since 3.2.0
 	 *
 	 * @param array $input Array passed to validate_options() function.
-	 * @return void
 	 */
 	private function validate_options_post_type_tracking( array &$input ): void {
 		$options         = $this->parsely->get_options();

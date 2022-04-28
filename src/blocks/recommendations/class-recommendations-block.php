@@ -22,8 +22,6 @@ class Recommendations_Block {
 	 * Determines whether the block and its assets should be registered.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		global $wp_version;
@@ -41,8 +39,6 @@ class Recommendations_Block {
 	 * WordPress Block Editor in the corresponding context.
 	 *
 	 * @since 3.3.0
-	 *
-	 * @return void
 	 */
 	public static function register_block(): void {
 		/**

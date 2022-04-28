@@ -38,8 +38,6 @@ final class Admin_Warning {
 	 * Registers admin warning.
 	 *
 	 * @since 3.0.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		add_action( 'admin_notices', array( $this, 'display_admin_warning' ) );
@@ -47,8 +45,6 @@ final class Admin_Warning {
 
 	/**
 	 * Displays the admin warning if needed.
-	 *
-	 * @return void
 	 */
 	public function display_admin_warning(): void {
 		if ( ! $this->should_display_admin_warning() ) {

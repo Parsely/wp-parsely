@@ -34,7 +34,6 @@ class Integrations {
 	 * @param string        $key             A unique identifier for the integration.
 	 * @param string|object $class_or_object Fully-qualified class name, or an instantiated object.
 	 *                             If a class name is passed, it will be instantiated.
-	 * @return void
 	 */
 	public function register( string $key, $class_or_object ): void {
 		// If a Foo::class or other fully qualified class name is passed, instantiate it.
@@ -49,8 +48,6 @@ class Integrations {
 	 * add_action() and add_filter() calls.
 	 *
 	 * @since 2.6.0
-	 *
-	 * @return void
 	 */
 	public function integrate(): void {
 		foreach ( $this->integrations as $integration ) {

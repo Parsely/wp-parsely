@@ -23,8 +23,6 @@ class Amp implements Integration {
 	 * plugin.
 	 *
 	 * @since 2.6.0
-	 *
-	 * @return void
 	 */
 	public function integrate(): void {
 		if ( defined( 'AMP__VERSION' ) ) {
@@ -64,8 +62,6 @@ class Amp implements Integration {
 	 * Adds AMP actions.
 	 *
 	 * @since 2.6.0
-	 *
-	 * @return void
 	 */
 	public function add_actions(): void {
 		if ( $this->can_handle_amp_request() ) {

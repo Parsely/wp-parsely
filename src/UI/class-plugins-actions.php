@@ -23,8 +23,6 @@ final class Plugins_Actions {
 
 	/**
 	 * Registers action and filter hook callbacks.
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		add_filter( 'plugin_action_links_' . plugin_basename( PARSELY_FILE ), array( $this, 'add_plugin_meta_links' ) );

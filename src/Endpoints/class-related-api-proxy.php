@@ -48,8 +48,6 @@ final class Related_API_Proxy {
 
 	/**
 	 * Registers the endpoint and initializes this class.
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		if ( ! apply_filters( 'wp_parsely_enable_related_api_proxy', true ) ) {

@@ -36,7 +36,6 @@ final class Network_Admin_Sites_List {
 	 * filter hooks.
 	 *
 	 * @since 3.2.0
-	 * @return void
 	 */
 	public function run(): void {
 		add_filter( 'manage_sites_action_links', array( __CLASS__, 'add_action_link' ), 10, 2 );
@@ -109,7 +108,6 @@ final class Network_Admin_Sites_List {
 	 *
 	 * @param string $column_name The column name for the current context.
 	 * @param int    $_blog_id The blog ID for the current context.
-	 * @return void
 	 */
 	public function populate_api_key_column( string $column_name, int $_blog_id ): void {
 		if ( self::COLUMN_NAME !== $column_name ) {

@@ -26,8 +26,6 @@ class Rest_Metadata extends Metadata_Endpoint {
 	 * Registers fields in WordPress REST API.
 	 *
 	 * @since 3.1.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		/**
@@ -46,8 +44,6 @@ class Rest_Metadata extends Metadata_Endpoint {
 	 * Registers the meta field on the appropriate resource types in the REST API.
 	 *
 	 * @since 3.1.0
-	 *
-	 * @return void
 	 */
 	public function register_meta(): void {
 		$options      = $this->parsely->get_options();

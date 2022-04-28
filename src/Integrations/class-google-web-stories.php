@@ -21,8 +21,6 @@ final class Google_Web_Stories implements Integration {
 	 * plugin.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	public function integrate(): void {
 		if ( defined( 'WEBSTORIES_PLUGIN_FILE' ) ) {
@@ -37,8 +35,6 @@ final class Google_Web_Stories implements Integration {
 	 * See more at: https://www.parse.ly/help/integration/google-amp.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	public function render_amp_analytics_tracker(): void {
 		$json = Amp::construct_amp_json();

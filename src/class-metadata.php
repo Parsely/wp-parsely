@@ -456,7 +456,6 @@ class Metadata {
 	 *
 	 * @param array   $metadata Array containing all metadata. It will be potentially mutated to add keys: dateCreated, dateModified, & datePublished.
 	 * @param WP_Post $post     Post object from which to extract time data.
-	 * @return void
 	 */
 	private function set_metadata_post_times( array &$metadata, WP_Post $post ): void {
 		$date_format      = 'Y-m-d\TH:i:s\Z';

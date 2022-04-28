@@ -40,8 +40,6 @@ final class Row_Actions {
 	 * Registers action and filter hook callbacks.
 	 *
 	 * @since 2.6.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		/**

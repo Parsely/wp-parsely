@@ -37,8 +37,6 @@ class Scripts {
 	 * Registers scripts.
 	 *
 	 * @since 3.0.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		$parsely_options = $this->parsely->get_options();
@@ -53,8 +51,6 @@ class Scripts {
 	 *
 	 * @since 2.5.0
 	 * @since 3.0.0 Rename from register_js
-	 *
-	 * @return void
 	 */
 	public function register_scripts(): void {
 		wp_register_script(
@@ -80,8 +76,6 @@ class Scripts {
 	 *
 	 * @since 2.5.0 Rename from insert_parsely_javascript
 	 * @since 3.0.0 Rename from load_js_tracker
-	 *
-	 * @return void
 	 */
 	public function enqueue_js_tracker(): void {
 		$parsely_options = $this->parsely->get_options();

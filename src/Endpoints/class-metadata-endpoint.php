@@ -42,8 +42,6 @@ abstract class Metadata_Endpoint {
 	 * Starts up the class and enqueues necessary actions.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	abstract public function run(): void;
 
@@ -51,8 +49,6 @@ abstract class Metadata_Endpoint {
 	 * Registers the metadata fields on the appropriate resource types.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	abstract public function register_meta(): void;
 

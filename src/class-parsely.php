@@ -92,8 +92,6 @@ class Parsely {
 	/**
 	 * Registers action and filter hook callbacks, and immediately upgrades
 	 * options if needed.
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		// Run upgrade options if they exist for the version currently defined.
@@ -154,7 +152,6 @@ class Parsely {
 	 * @see Metadata_Renderer::render_metadata
 	 *
 	 * @param string $meta_type `json_ld` or `repeated_metas`.
-	 * @return void
 	 */
 	public function render_metadata( string $meta_type ): void {
 		_deprecated_function( __FUNCTION__, '3.3', 'Metadata_Renderer::render_metadata()' );
@@ -170,8 +167,6 @@ class Parsely {
 	 * @since 3.0.0
 	 * @deprecated 3.3.0
 	 * @see Metadata_Renderer::render_metadata
-	 *
-	 * @return void
 	 */
 	public function insert_page_header_metadata(): void {
 		_deprecated_function( __FUNCTION__, '3.3', 'Metadata_Renderer::render_metadata()' );
@@ -249,7 +244,6 @@ class Parsely {
 	 * Updates the Parsely metadata endpoint with the new metadata of the post.
 	 *
 	 * @param int $post_id id of the post to update.
-	 * @return void
 	 */
 	public function update_metadata_endpoint( int $post_id ): void {
 		$parsely_options = $this->get_options();
@@ -306,8 +300,6 @@ class Parsely {
 
 	/**
 	 * Updates posts with Parsely metadata api in bulk.
-	 *
-	 * @return void
 	 */
 	public function bulk_update_posts(): void {
 		global $wpdb;

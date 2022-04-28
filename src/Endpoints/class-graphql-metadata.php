@@ -26,8 +26,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * Registers fields in WPGraphQL plugin.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		/**
@@ -47,8 +45,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * API.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	public function register_meta(): void {
 		$this->register_object_types();
@@ -60,8 +56,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * instance.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	private function register_object_types(): void {
 		$container_type = array(
@@ -125,8 +119,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * Registers the custom metadata fields, so they can be queried in GraphQL.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	private function register_fields(): void {
 		$resolve = function ( \WPGraphQL\Model\Post $graphql_post ) {

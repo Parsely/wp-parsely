@@ -80,7 +80,6 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @param array $args Widget Arguments.
 	 * @param array $instance Values saved to the db.
-	 * @return void
 	 */
 	public function widget( $args, $instance ): void {
 		if ( ! $this->api_key_and_secret_are_populated() ) {
