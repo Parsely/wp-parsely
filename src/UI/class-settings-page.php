@@ -16,7 +16,7 @@ use WP_Screen;
 use const Parsely\PARSELY_FILE;
 
 /**
- * Renders the wp-admin Parse.ly plugin settings page
+ * Renders the wp-admin Parse.ly plugin settings page.
  *
  * @since 3.0.0
  */
@@ -255,7 +255,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Displays the Parse.ly settings screen ( options-general.php?page=[SLUG] ).
+	 * Displays the Parse.ly settings screen (options-general.php?page=[SLUG]).
 	 */
 	public function display_settings(): void {
 		if ( ! current_user_can( Parsely::CAPABILITY ) ) {
@@ -726,7 +726,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Prints out the radio buttons
+	 * Prints out the radio buttons.
 	 *
 	 * @param array $args The arguments for the radio buttons.
 	 */

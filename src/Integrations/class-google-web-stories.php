@@ -1,6 +1,6 @@
 <?php
 /**
- * Google Web Stories integration class
+ * Google Web Stories integration class.
  *
  * @package Parsely\Integrations
  * @since 3.2.0

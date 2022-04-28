@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration interface
+ * Integration interface.
  *
  * @package Parsely\Integrations
  * @since 2.6.0

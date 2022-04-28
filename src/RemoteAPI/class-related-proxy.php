@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely Related REST API Proxy
+ * Parsely Related REST API Proxy.
  *
  * @package Parsely
  * @since 3.2.0
@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\RemoteAPI;
 
 /**
- * Proxy for the /related endpoint.
+ * Proxy for the `/related` endpoint.
  *
  * @since 3.2.0
  */

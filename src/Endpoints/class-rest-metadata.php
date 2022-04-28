@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API class
+ * REST API class.
  *
  * @package Parsely
  * @since 3.1.0
@@ -14,7 +14,7 @@ use Parsely\Metadata;
 use WP_Post;
 
 /**
- * Injects Parse.ly Metadata to WordPress REST API
+ * Injects Parse.ly Metadata to WordPress REST API.
  *
  * @since 3.1.0
  * @since 3.2.0 Renamed FQCN from `Parsely\Rest` to `Parsely\Endpoints\Rest_Metadata`.

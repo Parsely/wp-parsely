@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely Remote API Cache Interface
+ * Parsely Remote API Cache Interface.
  *
  * @package Parsely
  * @since 3.2.0

@@ -1,6 +1,6 @@
 <?php
 /**
- * Facebook Instant Articles integration class
+ * Facebook Instant Articles integration class.
  *
  * @package Parsely\Integrations
  * @since 2.6.0

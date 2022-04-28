@@ -76,7 +76,7 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * This is the widget function
+	 * This is the widget function.
 	 *
 	 * @param array $args Widget Arguments.
 	 * @param array $instance Values saved to the db.
@@ -146,7 +146,7 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * This is the form function
+	 * This is the form function.
 	 *
 	 * @param array $instance Values saved to the db.
 	 */
@@ -252,7 +252,7 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * This is the update function
+	 * This is the update function.
 	 *
 	 * @param array $new_instance The new values for the db.
 	 * @param array $old_instance Values saved to the db.

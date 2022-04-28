@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely Related REST API Caching Decorator
+ * Parsely Related REST API Caching Decorator.
  *
  * @package Parsely
  * @since 3.2.0

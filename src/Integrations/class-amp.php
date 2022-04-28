@@ -1,6 +1,6 @@
 <?php
 /**
- * AMP integration class
+ * AMP integration class.
  *
  * @package Parsely\Integrations
  * @since 2.6.0

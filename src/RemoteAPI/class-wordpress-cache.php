@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely Remote API Adapter for the WordPress Object Cache
+ * Parsely Remote API Adapter for the WordPress Object Cache.
  *
  * @package Parsely
  * @since 3.2.0

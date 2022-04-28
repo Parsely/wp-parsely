@@ -334,7 +334,7 @@ class Metadata {
 	}
 
 	/**
-	 * Returns the tags associated with this page or post
+	 * Returns the tags associated with this page or post.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
@@ -353,7 +353,7 @@ class Metadata {
 	}
 
 	/**
-	 * Returns an array of all the child categories for the current post
+	 * Returns an array of all the child categories for the current post.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
@@ -567,7 +567,7 @@ class Metadata {
 
 	/**
 	 * Returns the top-most category/taxonomy value in a hierarcy given a
-	 * taxonomy value's ID
+	 * taxonomy value's ID.
 	 *
 	 * (WordPress calls taxonomy values 'terms').
 	 *
@@ -587,7 +587,7 @@ class Metadata {
 
 	/**
 	 * Returns the bottom-most category/taxonomy value in a hierarchy given a
-	 * post ID
+	 * post ID.
 	 *
 	 * (WordPress calls taxonomy values 'terms').
 	 *

@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely tweaks to WordPress admin bar
+ * Parsely tweaks to WordPress admin bar.
  *
  * @package Parsely
  * @since 3.1.0

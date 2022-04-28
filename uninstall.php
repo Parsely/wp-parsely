@@ -3,8 +3,8 @@
  * Uninstalls script for wp-parsely. It deletes the `parsely` option on the
  * database.
  *
- * @package      Parsely\wp-parsely
- * @since 3.0.0
+ * @package Parsely\wp-parsely
+ * @since   3.0.0
  */
 
 declare(strict_types=1);

@@ -66,7 +66,7 @@ final class Admin_Warning {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @return bool True if the admin warning should be displayed
+	 * @return bool True if the admin warning should be displayed.
 	 */
 	private function should_display_admin_warning(): bool {
 		if ( is_network_admin() ) {

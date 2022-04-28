@@ -1,11 +1,11 @@
 <?php
 /**
- * Parse.ly repeated meta elements output
+ * Parse.ly repeated meta elements output.
  *
- * @package      Parsely\wp-parsely
- * @author       Parse.ly
- * @copyright    2012 Parse.ly
- * @license      GPL-2.0-or-later
+ * @package   Parsely\wp-parsely
+ * @author    Parse.ly
+ * @copyright 2012 Parse.ly
+ * @license   GPL-2.0-or-later
  */
 
 declare(strict_types=1);
