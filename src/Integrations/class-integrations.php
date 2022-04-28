@@ -13,7 +13,8 @@ namespace Parsely\Integrations;
 /**
  * Integrations are registered to this collection.
  *
- * The `integrate()` method is called on each registered integration, on the init hook.
+ * The `integrate()` method is called on each registered integration, on the
+ * init hook.
  *
  * @since 2.6.0
  */
@@ -26,7 +27,7 @@ class Integrations {
 	private $integrations = array();
 
 	/**
-	 * Register an integration.
+	 * Registers an integration.
 	 *
 	 * @since 2.6.0
 	 *
@@ -44,7 +45,8 @@ class Integrations {
 	}
 
 	/**
-	 * Integrate each integration by calling the method that does the add_action() and add_filter() calls.
+	 * Integrates each integration by calling the method that does the
+	 * add_action() and add_filter() calls.
 	 *
 	 * @since 2.6.0
 	 *

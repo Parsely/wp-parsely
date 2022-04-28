@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly header metadata class
+ * Parse.ly header metadata class.
  *
  * @package Parsely
  * @since 3.3.0
@@ -17,7 +17,7 @@ use WP_Post;
 use const Parsely\PARSELY_FILE;
 
 /**
- * Render metadata in the WordPress front-end header.
+ * Renders metadata in the WordPress front-end header.
  *
  * @since 3.3.0
  */
@@ -39,7 +39,7 @@ final class Metadata_Renderer {
 	}
 
 	/**
-	 * Register metadata actions.
+	 * Registers metadata actions.
 	 *
 	 * @since 3.3.0
 	 *
@@ -73,7 +73,7 @@ final class Metadata_Renderer {
 	}
 
 	/**
-	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 * Inserts the code for the meta parameter within the head tag.
 	 *
 	 * @since 3.2.0
 	 * @since 3.3.0 Moved from `Parsely` class to `Metadata_Header`

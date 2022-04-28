@@ -22,7 +22,8 @@ final class Facebook_Instant_Articles implements Integration {
 	private const REGISTRY_DISPLAY_NAME = 'Parse.ly Analytics';
 
 	/**
-	 * Apply the hooks that integrate the plugin or theme with the Parse.ly plugin.
+	 * Applies the hooks that integrate the plugin or theme with the Parse.ly
+	 * plugin.
 	 *
 	 * @since 2.6.0
 	 *
@@ -35,7 +36,7 @@ final class Facebook_Instant_Articles implements Integration {
 	}
 
 	/**
-	 * Add Parse.ly tracking to Facebook instant articles.
+	 * Adds Parse.ly tracking to Facebook instant articles.
 	 *
 	 * @since 2.6.0
 	 *
@@ -55,7 +56,7 @@ final class Facebook_Instant_Articles implements Integration {
 	}
 
 	/**
-	 * Get the payload / embed code.
+	 * Returns the payload / embed code.
 	 *
 	 * @since 2.6.0
 	 *

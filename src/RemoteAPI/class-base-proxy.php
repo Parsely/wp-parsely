@@ -17,7 +17,8 @@ use WP_Error;
 /**
  * Base Proxy for all Parse.ly API endpoints.
  *
- * Child classes must add a protected `ENDPOINT` constant, and a protected QUERY_FILTER constant.
+ * Child classes must add a protected `ENDPOINT` constant, and a protected
+ * QUERY_FILTER constant.
  *
  * @since 3.2.0
  */
@@ -43,7 +44,7 @@ abstract class Base_Proxy implements Proxy {
 	}
 
 	/**
-	 * Get URL for a particular Parse.ly API endpoint.
+	 * Gets the URL for a particular Parse.ly API endpoint.
 	 *
 	 * @since 3.2.0
 	 *

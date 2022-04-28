@@ -14,7 +14,8 @@ use Parsely\Parsely;
 use Parsely\UI\Metadata_Renderer;
 
 /**
- * Metadata endpoint classes are expected to implement the remaining functions of the class.
+ * Metadata endpoint classes are expected to implement the remaining functions
+ * of the class.
  *
  * @since 3.2.0
  */
@@ -38,7 +39,7 @@ abstract class Metadata_Endpoint {
 	}
 
 	/**
-	 * Function to start up the class and enqueue necessary actions.
+	 * Starts up the class and enqueues necessary actions.
 	 *
 	 * @since 3.2.0
 	 *
@@ -56,7 +57,7 @@ abstract class Metadata_Endpoint {
 	abstract public function register_meta(): void;
 
 	/**
-	 * Get the metadata in string format.
+	 * Returns the metadata in string format.
 	 *
 	 * @since 3.2.0
 	 *

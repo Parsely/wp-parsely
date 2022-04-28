@@ -34,7 +34,7 @@ class Scripts {
 	}
 
 	/**
-	 * Register js scripts.
+	 * Registers scripts.
 	 *
 	 * @since 3.0.0
 	 *
@@ -49,7 +49,7 @@ class Scripts {
 	}
 
 	/**
-	 * Register JavaScripts, if there's an API key value saved.
+	 * Registers scripts, if there's an API key value saved.
 	 *
 	 * @since 2.5.0
 	 * @since 3.0.0 Rename from register_js
@@ -132,7 +132,7 @@ class Scripts {
 	}
 
 	/**
-	 * Filter the script tag for certain scripts to add needed attributes.
+	 * Filters the script tag for certain scripts to add needed attributes.
 	 *
 	 * @since 2.5.0
 	 *

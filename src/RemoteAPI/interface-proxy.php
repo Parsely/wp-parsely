@@ -17,7 +17,7 @@ use WP_Error;
  */
 interface Proxy {
 	/**
-	 * Return the items provided by this interface.
+	 * Returns the items provided by this interface.
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @return WP_Error|array<string, mixed>

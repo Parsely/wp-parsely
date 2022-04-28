@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely settings page class
+ * Settings page class.
  *
  * @package Parsely
  * @since 3.0.0
@@ -16,7 +16,7 @@ use WP_Screen;
 use const Parsely\PARSELY_FILE;
 
 /**
- * Render the wp-admin Parse.ly plugin settings page
+ * Renders the wp-admin Parse.ly plugin settings page
  *
  * @since 3.0.0
  */
@@ -58,7 +58,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Register settings page.
+	 * Registers settings page.
 	 *
 	 * @since 3.0.0
 	 *
@@ -76,7 +76,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Enqueue all needed scripts and styles for Parse.ly plugin settings page.
+	 * Enqueues all needed scripts and styles for Parse.ly plugin settings page.
 	 *
 	 * @param string $hook_suffix The current page being loaded.
 	 * @return void
@@ -107,7 +107,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Parse.ly settings page in WordPress settings menu.
+	 * Adds the Parse.ly settings page in WordPress settings menu.
 	 *
 	 * @return void
 	 */
@@ -131,7 +131,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Save the screen option setting.
+	 * Saves the screen option setting.
 	 *
 	 * Nonce is already checked in set_screen_options() - no need to check here.
 	 *
@@ -156,7 +156,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Register screen options.
+	 * Registers screen options.
 	 *
 	 * @since 3.2.0
 	 *
@@ -180,7 +180,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Render the screen options block.
+	 * Renders the screen options block.
 	 *
 	 * @since 3.2.0
 	 *
@@ -224,7 +224,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Add help tab to the settings page.
+	 * Adds the help tab to the settings page.
 	 *
 	 * @since 3.1.0
 	 */
@@ -260,7 +260,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Parse.ly settings screen ( options-general.php?page=[MENU_SLUG] ).
+	 * Displays the Parse.ly settings screen ( options-general.php?page=[SLUG] ).
 	 *
 	 * @return void
 	 */
@@ -273,7 +273,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Initialize the settings for Parsely.
+	 * Initializes the settings for Parse.ly.
 	 *
 	 * @return void
 	 */
@@ -299,7 +299,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Register section and settings for Basic section.
+	 * Registers section and settings for Basic section.
 	 *
 	 * @since 3.2.0
 	 *
@@ -434,7 +434,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Register section and settings for Requires Recrawl section.
+	 * Registers section and settings for Requires Recrawl section.
 	 *
 	 * @since 3.2.0
 	 *
@@ -603,7 +603,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Register section and settings for Advanced section.
+	 * Registers section and settings for Advanced section.
 	 *
 	 * @since 3.2.0
 	 *
@@ -649,7 +649,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out the description text, if there is any.
+	 * Prints out the description text, if there is any.
 	 *
 	 * @since 3.1.0
 	 *
@@ -661,7 +661,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out an input text tag.
+	 * Prints out an input text tag.
 	 *
 	 * @param array $args The arguments for text tag.
 	 * @return void
@@ -714,7 +714,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out the select tags
+	 * Prints out the select tags
 	 *
 	 * @param array $args The arguments for the select dropdowns.
 	 * @return void
@@ -745,7 +745,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out the radio buttons
+	 * Prints out the radio buttons
 	 *
 	 * @param array $args The arguments for the radio buttons.
 	 * @return void
@@ -774,7 +774,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out a "single-image browse control" which includes a text
+	 * Prints out a "single-image browse control" which includes a text
 	 * input to store image path and a button to browse for images.
 	 *
 	 * @param array $args The arguments for the control.
@@ -798,7 +798,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out the post tracking options table.
+	 * Prints out the post tracking options table.
 	 *
 	 * @since 3.2.0
 	 *
@@ -858,7 +858,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Return the custom post type tracking values in a format that is easily
+	 * Returns the custom post type tracking values in a format that is easily
 	 * consumable by the print_track_post_types_table() function.
 	 *
 	 * @since 3.2.0
@@ -1124,7 +1124,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Receive the $input array from the validate_options() function and validate post tracking options.
+	 * Receives the $input array from the validate_options() function and
+	 * validate post tracking options.
+	 *
 	 * This function will mutate the $input array.
 	 *
 	 * @since 3.2.0
@@ -1188,7 +1190,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Sanitize all elements in an option array.
+	 * Sanitizes all elements in an option array.
 	 *
 	 * @param array $array Array of options to be sanitized.
 	 * @return array

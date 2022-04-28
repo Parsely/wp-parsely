@@ -1,8 +1,8 @@
 <?php
 /**
- * Recommended Widget file
+ * Recommended Widget class.
  *
- * This provides a widget to put on a page, will have parsely recommended articles
+ * Provides a widget with Parse.ly recommended articles.
  *
  * @category   Components
  * @package    WordPress
@@ -18,11 +18,11 @@ use WP_Widget;
 use const Parsely\PARSELY_FILE;
 
 /**
- * This is the class for the recommended widget.
+ * Provides a widget with Parse.ly recommended articles.
  */
 final class Recommended_Widget extends WP_Widget {
 	/**
-	 * This is the constructor function.
+	 * Constructor.
 	 */
 	public function __construct() {
 		parent::__construct(
@@ -36,7 +36,7 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Get the URL for the Recommendations API (GET /related).
+	 * Gets the URL for the Recommendations API (GET /related).
 	 *
 	 * @see https://www.parse.ly/help/api/recommendations#get-related
 	 *
@@ -274,7 +274,7 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Return the list of boost parameters, values and labels.
+	 * Returns the list of boost parameters, values and labels.
 	 *
 	 * @since 2.5.0
 	 *
@@ -306,7 +306,8 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Check if both the API key and API secret settings are populated with non-empty values.
+	 * Checks if both the API key and API secret settings are populated with
+	 * non-empty values.
 	 *
 	 * @since 2.5.0
 	 *

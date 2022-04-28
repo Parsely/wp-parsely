@@ -63,7 +63,7 @@ require __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
- * Register the basic classes to initialize the plugin.
+ * Registers the basic classes to initialize the plugin.
  *
  * @return void
  */
@@ -92,7 +92,7 @@ require __DIR__ . '/src/UI/class-row-actions.php';
 
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
 /**
- * Register the Parse.ly wp-admin warnings, plugin actions and row actions.
+ * Registers the Parse.ly wp-admin warnings, plugin actions and row actions.
  *
  * @return void
  */
@@ -112,7 +112,8 @@ require __DIR__ . '/src/UI/class-network-admin-sites-list.php';
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
- * Register the additions the Parse.ly wp-admin settings page and Multisite Network Admin Sites List table.
+ * Registers the additions the Parse.ly wp-admin settings page and Multisite
+ * Network Admin Sites List table.
  *
  * @return void
  */
@@ -135,7 +136,7 @@ require __DIR__ . '/src/Endpoints/class-rest-metadata.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
- * Register REST Endpoints that act as a proxy to the Parse.ly API.
+ * Registers REST Endpoints that act as a proxy to the Parse.ly API.
  * This is needed to get around a CORS issues with Firefox.
  *
  * @since 3.2.0
@@ -156,7 +157,7 @@ require __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';
 
 add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 /**
- * Register the Recommendations Block.
+ * Registers the Recommendations Block.
  *
  * @return void
  */
@@ -169,7 +170,7 @@ require __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
- * Register the Parse.ly Recommended widget.
+ * Registers the Parse.ly Recommended widget.
  *
  * @return void
  */
@@ -185,7 +186,7 @@ require __DIR__ . '/src/Integrations/class-google-web-stories.php';
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
 /**
- * Instantiate Integrations collection and register built-in integrations.
+ * Instantiates Integrations collection and registers built-in integrations.
  *
  * @since 2.6.0
  *

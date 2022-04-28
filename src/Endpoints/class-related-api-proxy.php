@@ -18,7 +18,7 @@ use WP_REST_Server;
 use WP_REST_Request;
 
 /**
- * Configure a REST API endpoint for use e.g. by the Recommendations Block.
+ * Configures a REST API endpoint for use e.g. by the Recommendations Block.
  */
 final class Related_API_Proxy {
 	/**
@@ -36,7 +36,7 @@ final class Related_API_Proxy {
 	private $proxy;
 
 	/**
-	 * Used to inject dependencies.
+	 * Constructor.
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
 	 * @param Proxy   $proxy   Proxy object which does the actual calls to the Parse.ly API.
@@ -47,7 +47,7 @@ final class Related_API_Proxy {
 	}
 
 	/**
-	 * Entrypoint to register the endpoint and otherwise initialize this class.
+	 * Registers the endpoint and initializes this class.
 	 *
 	 * @return void
 	 */
@@ -79,7 +79,7 @@ final class Related_API_Proxy {
 	}
 
 	/**
-	 * Determine if the endpoint can be called.
+	 * Determines if the endpoint can be called.
 	 *
 	 * @return bool
 	 */

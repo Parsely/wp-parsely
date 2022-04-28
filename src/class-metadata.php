@@ -1,6 +1,6 @@
 <?php
 /**
- * Metadata class
+ * Metadata class.
  *
  * @package Parsely
  * @since 3.3.0
@@ -226,7 +226,7 @@ class Metadata {
 	}
 
 	/**
-	 * Sanitize content
+	 * Sanitizes content.
 	 *
 	 * @since 2.6.0
 	 * @since 3.3.0 Moved to class-metadata
@@ -246,7 +246,7 @@ class Metadata {
 	}
 
 	/**
-	 * Retrieve all the authors for a post as an array. Can include multiple
+	 * Retrieves all the authors for a post as an array. Can include multiple
 	 * authors if coauthors plugin is in use.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
@@ -290,8 +290,9 @@ class Metadata {
 	}
 
 	/**
-	 * Returns a properly cleaned category/taxonomy value and will optionally use the top-level category/taxonomy value
-	 * if so instructed via the `use_top_level_cats` option.
+	 * Returns a properly cleaned category/taxonomy value and will optionally
+	 * use the top-level category/taxonomy value, if so instructed via the
+	 * `use_top_level_cats` option.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
@@ -381,7 +382,7 @@ class Metadata {
 	}
 
 	/**
-	 * Get all term values from custom taxonomies.
+	 * Gets all term values from custom taxonomies.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
@@ -406,8 +407,9 @@ class Metadata {
 	}
 
 	/**
-	 * Get the URL of the current PHP script.
-	 * A fall-back implementation to determine permalink
+	 * Gets the URL of the current PHP script.
+	 *
+	 * A fall-back implementation to determine permalink.
 	 *
 	 * @since 3.0.0 $parsely_type Default parameter changed to `non-post`.
 	 * @since 3.3.0 Moved to class-metadata
@@ -476,8 +478,10 @@ class Metadata {
 	}
 
 	/**
-	 * Returns a list of coauthors for a post assuming the Co-Authors Plus plugin is
-	 * installed. Borrowed from
+	 * Returns a list of coauthors for a post assuming the Co-Authors Plus plugin
+	 * is installed.
+	 *
+	 * Borrowed from
 	 * https://github.com/Automattic/Co-Authors-Plus/blob/master/template-tags.php#L3-35
 	 *
 	 * @since 3.3.0 Moved to class-metadata
@@ -525,7 +529,7 @@ class Metadata {
 	}
 
 	/**
-	 * Determine author name from display name, falling back to firstname
+	 * Determines author name from display name, falling back to firstname
 	 * lastname, then nickname and finally the nicename.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
@@ -560,8 +564,10 @@ class Metadata {
 	}
 
 	/**
-	 * Return the top-most category/taxonomy value in a hierarcy given a taxonomy value's ID
-	 * ( WordPress calls taxonomy values 'terms' ).
+	 * Returns the top-most category/taxonomy value in a hierarcy given a
+	 * taxonomy value's ID
+	 *
+	 * (WordPress calls taxonomy values 'terms').
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
@@ -578,8 +584,10 @@ class Metadata {
 	}
 
 	/**
-	 * Return the bottom-most category/taxonomy value in a hierarchy given a post ID
-	 * ( WordPress calls taxonomy values 'terms' ).
+	 * Returns the bottom-most category/taxonomy value in a hierarchy given a
+	 * post ID
+	 *
+	 * (WordPress calls taxonomy values 'terms').
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *

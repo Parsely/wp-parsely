@@ -17,7 +17,8 @@ namespace Parsely\Integrations;
  */
 interface Integration {
 	/**
-	 * Apply the hooks that integrate the plugin or theme with the Parse.ly plugin.
+	 * Applies the hooks that integrate the plugin or theme with the Parse.ly
+	 * plugin.
 	 *
 	 * @since 2.6.0
 	 */

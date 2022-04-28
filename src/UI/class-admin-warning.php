@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely wp-admin warning
+ * Parsely wp-admin warning.
  *
  * @package Parsely
  * @since 3.0.0
@@ -13,7 +13,7 @@ namespace Parsely\UI;
 use Parsely\Parsely;
 
 /**
- * Conditionally render a warning message on wp-admin
+ * Conditionally renders a warning message on wp-admin.
  *
  * @since 3.0.0
  */
@@ -35,7 +35,7 @@ final class Admin_Warning {
 	}
 
 	/**
-	 * Register admin warning.
+	 * Registers admin warning.
 	 *
 	 * @since 3.0.0
 	 *
@@ -46,7 +46,7 @@ final class Admin_Warning {
 	}
 
 	/**
-	 * Display the admin warning if needed.
+	 * Displays the admin warning if needed.
 	 *
 	 * @return void
 	 */
@@ -66,7 +66,7 @@ final class Admin_Warning {
 	}
 
 	/**
-	 * Decide whether the admin display warning should be displayed
+	 * Returns whether the admin display warning should be displayed.
 	 *
 	 * @since 2.6.0
 	 *

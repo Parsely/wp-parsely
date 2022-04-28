@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely class
+ * Parsely class.
  *
  * @package Parsely
  * @since 2.5.0
@@ -90,9 +90,8 @@ class Parsely {
 	);
 
 	/**
-	 * Register action and filter hook callbacks.
-	 *
-	 * Also, immediately upgrade options if needed.
+	 * Registers action and filter hook callbacks, and immediately upgrades
+	 * options if needed.
 	 *
 	 * @return void
 	 */
@@ -130,7 +129,8 @@ class Parsely {
 	}
 
 	/**
-	 * Get the full URL of the JavaScript tracker file for the site. If an API key is not set, return an empty string.
+	 * Gets the full URL of the JavaScript tracker file for the site. If an API
+	 * key is not set, return an empty string.
 	 *
 	 * @since 3.2.0
 	 *
@@ -146,7 +146,8 @@ class Parsely {
 
 	/**
 	 * Deprecated.
-	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 * Inserts the code for the <meta name='parsely-page'> parameter within the
+	 * head tag.
 	 *
 	 * @since 3.2.0
 	 * @deprecated 3.3.0
@@ -163,7 +164,8 @@ class Parsely {
 
 	/**
 	 * Deprecated.
-	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 * Insert the code for the <meta name='parsely-page'> parameter within the
+	 * head tag.
 	 *
 	 * @since 3.0.0
 	 * @deprecated 3.3.0
@@ -179,7 +181,9 @@ class Parsely {
 	}
 
 	/**
-	 * Compare the post_status key against an allowed list (by default, only 'publish'ed content includes tracking data).
+	 * Compares the post_status key against an allowed list.
+	 *
+	 * By default, only 'publish'ed content includes tracking data.
 	 *
 	 * @since 2.5.0
 	 *
@@ -343,9 +347,11 @@ class Parsely {
 	}
 
 	/**
-	 * Safely returns options for the plugin by assigning defaults contained in optionDefaults.  As soon as actual
-	 * options are saved, they override the defaults. This prevents us from having to do a lot of isset() checking
-	 * on variables.
+	 * Safely returns options for the plugin by assigning defaults contained in
+	 * optionDefaults.
+	 *
+	 * As soon as actual options are saved, they override the defaults. This
+	 * prevents us from having to do a lot of isset() checking on variables.
 	 *
 	 * @return array<string, mixed>
 	 */
@@ -360,7 +366,7 @@ class Parsely {
 	}
 
 	/**
-	 * Get the URL of the plugin settings page.
+	 * Gets the URL of the plugin's settings page.
 	 *
 	 * @param int|null $_blog_id The Blog ID for the multisite subsite to use for context (Default null for current).
 	 *
@@ -371,7 +377,7 @@ class Parsely {
 	}
 
 	/**
-	 * Check to see if parsely user is logged in.
+	 * Checks to see if Parse.ly user is logged in.
 	 *
 	 * @return bool
 	 */
@@ -383,10 +389,11 @@ class Parsely {
 	}
 
 	/**
-	 * Convert JSON-LD type to respective Parse.ly page type.
+	 * Converts JSON-LD type to respective Parse.ly page type.
 	 *
-	 * If the JSON-LD type is one of the types Parse.ly supports as a "post", then "post" will be returned.
-	 * Otherwise, for "non-posts" and unknown types, "index" is returned.
+	 * If the JSON-LD type is one of the types Parse.ly supports as a "post",
+	 * then "post" will be returned. Otherwise, for "non-posts" and unknown
+	 * types, "index" is returned.
 	 *
 	 * @since 2.5.0
 	 *
@@ -400,7 +407,7 @@ class Parsely {
 	}
 
 	/**
-	 * Determine if an API key is saved in the options.
+	 * Determines if an API key is saved in the options.
 	 *
 	 * @since 2.6.0
 	 *
@@ -417,7 +424,7 @@ class Parsely {
 	}
 
 	/**
-	 * Determine if an API key is not saved in the options.
+	 * Determines if an API key is not saved in the options.
 	 *
 	 * @since 2.6.0
 	 *
@@ -428,7 +435,7 @@ class Parsely {
 	}
 
 	/**
-	 * Get the API key if set.
+	 * Gets the API key if set.
 	 *
 	 * @since 2.6.0
 	 *

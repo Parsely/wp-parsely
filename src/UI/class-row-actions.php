@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely row actions class
+ * Row actions class.
  *
  * @package Parsely
  * @since 2.6.0
@@ -15,7 +15,7 @@ use Parsely\Dashboard_Link;
 use WP_Post;
 
 /**
- * Handle the post/page row actions.
+ * Handles the post/page row actions.
  *
  * @since 2.6.0
  */
@@ -37,7 +37,7 @@ final class Row_Actions {
 	}
 
 	/**
-	 * Register action and filter hook callbacks.
+	 * Registers action and filter hook callbacks.
 	 *
 	 * @since 2.6.0
 	 *
@@ -58,9 +58,11 @@ final class Row_Actions {
 	}
 
 	/**
-	 * Include a link to the statistics page for an article in the wp-admin Posts List.
+	 * Includes a link to the statistics page for an article in the wp-admin
+	 * Posts List.
 	 *
-	 * If the post object is the "front page," this will include the main dashboard link instead.
+	 * If the post object is the "front page," this will include the main
+	 * dashboard link instead.
 	 *
 	 * @since 2.6.0
 	 *
@@ -86,7 +88,7 @@ final class Row_Actions {
 	}
 
 	/**
-	 * Generate the HTML link to Parse.ly.
+	 * Generates the HTML link to Parse.ly.
 	 *
 	 * @since 2.6.0
 	 * @since 3.1.2 Added `url` parameter.
@@ -105,7 +107,7 @@ final class Row_Actions {
 	}
 
 	/**
-	 * Generate ARIA label content.
+	 * Generates ARIA label content.
 	 *
 	 * @since 2.6.0
 	 *

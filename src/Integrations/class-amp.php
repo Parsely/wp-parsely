@@ -19,7 +19,8 @@ use Parsely\Parsely;
  */
 class Amp implements Integration {
 	/**
-	 * Apply the hooks that integrate the plugin or theme with the Parse.ly plugin.
+	 * Applies the hooks that integrate the plugin or theme with the Parse.ly
+	 * plugin.
 	 *
 	 * @since 2.6.0
 	 *
@@ -32,9 +33,10 @@ class Amp implements Integration {
 	}
 
 	/**
-	 * Verify if request is an AMP request.
+	 * Verifies that request is an AMP request.
 	 *
-	 * This is needed to make it easier to mock whether the function exists ot not during tests.
+	 * This is needed to make it easier to mock whether the function exists or
+	 * not during tests.
 	 *
 	 * @since 2.6.0
 	 *
@@ -45,7 +47,8 @@ class Amp implements Integration {
 	}
 
 	/**
-	 * Verify if request is an AMP request, and that AMP support is not disabled.
+	 * Verifies that request is an AMP request, and that AMP support is not
+	 * disabled.
 	 *
 	 * @since 2.6.0
 	 *
@@ -58,7 +61,7 @@ class Amp implements Integration {
 	}
 
 	/**
-	 * Add AMP actions.
+	 * Adds AMP actions.
 	 *
 	 * @since 2.6.0
 	 *
@@ -72,7 +75,7 @@ class Amp implements Integration {
 	}
 
 	/**
-	 * Register Parse.ly for AMP analytics.
+	 * Registers Parse.ly for AMP analytics.
 	 *
 	 * @since 2.6.0
 	 *
@@ -99,7 +102,7 @@ class Amp implements Integration {
 	}
 
 	/**
-	 * Register Parse.ly for AMP native analytics.
+	 * Registers Parse.ly for AMP native analytics.
 	 *
 	 * @since 2.6.0
 	 *
@@ -132,8 +135,9 @@ class Amp implements Integration {
 	}
 
 	/**
-	 * Returns a string containing the JSON-encoded configuration required for AMP. It consists of the site's API
-	 * key if that's defined, an empty string otherwise.
+	 * Returns a string containing the JSON-encoded configuration required for
+	 * AMP. It consists of the site's Site ID if that's defined, an empty string
+	 * otherwise.
 	 *
 	 * @since 3.2.0
 	 *
@@ -150,8 +154,9 @@ class Amp implements Integration {
 	}
 
 	/**
-	 * Returns an array containing the configuration required for AMP. It consists of the site's API key if that's
-	 * defined, or an empty array otherwise.
+	 * Returns an array containing the configuration required for AMP. It
+	 * consists of the site's Site ID if that's defined, or an empty array
+	 * otherwise.
 	 *
 	 * @since 3.2.0
 	 *
