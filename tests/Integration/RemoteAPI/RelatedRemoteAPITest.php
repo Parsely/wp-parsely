@@ -85,7 +85,11 @@ final class RelatedRemoteAPITest extends TestCase {
 	 * Test the basic generation of the API URL.
 	 *
 	 * @dataProvider data_related_api_url
-	 * @covers \Parsely\RemoteAPI\Related_Proxy:get_api_url
+	 * @covers \Parsely\RemoteAPI\Related_Proxy::get_api_url
+	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_options
 	 *
 	 * @param array  $query Test query arguments.
 	 * @param string $url Expected generated URL.
@@ -100,6 +104,7 @@ final class RelatedRemoteAPITest extends TestCase {
 	 * Test that the cache is used instead of the proxy when there's a cache hit.
 	 *
 	 * @covers \Parsely\RemoteAPI\Cached_Proxy::get_items
+	 * @covers \Parsely\RemoteAPI\Cached_Proxy::__construct
 	 */
 	public function test_related_cached_proxy_returns_cached_value(): void {
 		$proxy = $this->getMockBuilder( Related_Proxy::class )
@@ -136,6 +141,7 @@ final class RelatedRemoteAPITest extends TestCase {
 	 * Test that when the cache misses, the proxy is used instead and the resultant value is cached.
 	 *
 	 * @covers \Parsely\RemoteAPI\Cached_Proxy::get_items
+	 * @covers \Parsely\RemoteAPI\Cached_Proxy::__construct
 	 */
 	public function test_related_caching_decorator_returns_uncached_value(): void {
 		$proxy = $this->getMockBuilder( Related_Proxy::class )

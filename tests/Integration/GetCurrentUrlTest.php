@@ -104,6 +104,7 @@ final class GetCurrentUrlTest extends TestCase {
 	 * @testdox Given Force HTTPS is $force_https, when home is $home, then expect URLs starting with $expected.
 	 * @dataProvider data_for_test_get_current_url
 	 * @covers \Parsely\Metadata::get_current_url
+	 * @uses \Parsely\Metadata::__construct
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 *

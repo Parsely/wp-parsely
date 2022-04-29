@@ -38,6 +38,7 @@ final class AdminBarTest extends TestCase {
 	/**
 	 * Check that the function to render the stats button is enqueued on the admin menu.
 	 *
+	 * @covers \Parsely\UI\Admin_Bar::__construct
 	 * @covers \Parsely\UI\Admin_Bar::run
 	 */
 	public function test_admin_bar_enqueued(): void {
@@ -49,6 +50,7 @@ final class AdminBarTest extends TestCase {
 	/**
 	 * Check that the function to render the stats button is not enqueued on the admin menu when there's the filter.
 	 *
+	 * @covers \Parsely\UI\Admin_Bar::__construct
 	 * @covers \Parsely\UI\Admin_Bar::run
 	 */
 	public function test_admin_bar_not_enqueued_with_filter(): void {
