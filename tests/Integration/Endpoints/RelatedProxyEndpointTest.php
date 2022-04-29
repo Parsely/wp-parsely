@@ -66,7 +66,9 @@ final class RelatedProxyEndpointTest extends TestCase {
 	/**
 	 * Confirm the route is registered.
 	 *
-	 * @covers \Related_API_Proxy::run
+	 * @covers \Parsely\Endpoints\Related_API_Proxy::run
+	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
+	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
 	public function test_register_routes_by_default() {
 		$routes = rest_get_server()->get_routes();
@@ -79,7 +81,9 @@ final class RelatedProxyEndpointTest extends TestCase {
 	 * Confirm the route is not registered when the wp_parsely_enable_related_api_proxy
 	 * filter is set to false.
 	 *
-	 * @covers \Related_API_Proxy::run
+	 * @covers \Parsely\Endpoints\Related_API_Proxy::run
+	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
+	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
 	public function test_do_not_register_routes_when_related_proxy_is_disabled() {
 
@@ -101,7 +105,17 @@ final class RelatedProxyEndpointTest extends TestCase {
 	/**
 	 * Confirm that calls to `GET /wp-parsely/v1/related` get results in the expected format.
 	 *
-	 * @covers \Related_API_Proxy::get_items
+	 * @covers \Parsely\Endpoints\Related_API_Proxy::get_items
+	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
+	 * @uses \Parsely\Endpoints\Related_API_Proxy::permission_callback
+	 * @uses \Parsely\Endpoints\Related_API_Proxy::run
+	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
+	 * @uses \Parsely\RemoteAPI\Base_Proxy::get_api_url
+	 * @uses \Parsely\RemoteAPI\Base_Proxy::get_items
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_items() {
 		TestCase::set_options( array( 'apikey' => 'example.com' ) );
@@ -146,7 +160,14 @@ final class RelatedProxyEndpointTest extends TestCase {
 	/**
 	 * Confirm that calls to `GET /wp-parsely/v1/related` gets an error and makes no remote call when the apikey is not populated in site options.
 	 *
-	 * @covers \Related_API_Proxy::get_items
+	 * @covers \Parsely\Endpoints\Related_API_Proxy::get_items
+	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
+	 * @uses \Parsely\Endpoints\Related_API_Proxy::permission_callback
+	 * @uses \Parsely\Endpoints\Related_API_Proxy::run
+	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_items_fails_without_apikey_set() {
 		TestCase::set_options( array( 'apikey' => '' ) );

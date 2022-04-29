@@ -93,6 +93,7 @@ final class AmpTest extends TestCase {
 	 *
 	 * @covers \Parsely\Integrations\Amp::add_actions
 	 * @covers \Parsely\Integrations\Amp::register_parsely_for_amp_analytics
+	 * @covers \Parsely\Integrations\Amp::construct_amp_config
 	 * @uses \Parsely\Parsely::get_options
 	 * @group amp
 	 * @group settings
@@ -118,6 +119,8 @@ final class AmpTest extends TestCase {
 	 *
 	 * @covers \Parsely\Integrations\Amp::add_actions
 	 * @covers \Parsely\Integrations\Amp::register_parsely_for_amp_native_analytics
+	 * @covers \Parsely\Integrations\Amp::construct_amp_config
+	 * @covers \Parsely\Integrations\Amp::construct_amp_json
 	 * @uses \Parsely\Parsely::get_options
 	 * @group amp
 	 * @group settings

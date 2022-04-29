@@ -47,6 +47,9 @@ final class GraphQLMetadataTest extends TestCase {
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Endpoints\GraphQL_Metadata::run
+	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_graphql_enqueued(): void {
 		self::set_options( array( 'apikey' => 'testkey' ) );
@@ -61,6 +64,7 @@ final class GraphQLMetadataTest extends TestCase {
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Endpoints\GraphQL_Metadata::run
+	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
 	 */
 	public function test_graphql_enqueued_filter(): void {
 		self::set_options( array( 'apikey' => 'testkey' ) );
@@ -76,6 +80,9 @@ final class GraphQLMetadataTest extends TestCase {
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Endpoints\GraphQL_Metadata::run
+	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_graphql_enqueued_no_api_key(): void {
 		self::$graphql->run();
