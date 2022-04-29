@@ -68,8 +68,8 @@ final class OtherTest extends TestCase {
 	 * @covers \Parsely\Metadata::get_coauthor_names
 	 * @covers \Parsely\Metadata::get_current_url
 	 * @covers \Parsely\Metadata::set_metadata_post_times
-	 * @uses \Parsely\Parsely::get_options
 	 * @covers \Parsely\Metadata::get_tags
+	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
