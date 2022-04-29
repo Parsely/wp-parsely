@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely Remote API Adapter for the WordPress Object Cache.
+ * Remote API: Adapter class for the WordPress Object Cache
  *
  * @package Parsely
- * @since 3.2.0
+ * @since   3.2.0
  */
 
 declare(strict_types=1);

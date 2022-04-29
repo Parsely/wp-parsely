@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely Network Admin Site List class.
+ * UI: Network Admin site list class
  *
  * @package Parsely
- * @since 3.2.0
+ * @since   3.2.0
  */
 
 declare(strict_types=1);

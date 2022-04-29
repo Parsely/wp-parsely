@@ -1,6 +1,6 @@
 <?php
 /**
- * Recommended Widget class.
+ * UI: Recommended Widget class
  *
  * Provides a widget with Parse.ly recommended articles.
  *

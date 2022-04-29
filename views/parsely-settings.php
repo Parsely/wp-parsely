@@ -1,8 +1,8 @@
 <?php
 /**
- * Settings file.
+ * Views: Plugin settings view
  *
- * Create the settings page for parse.ly.
+ * Shows the settings page.
  *
  * @package   Parsely\wp-parsely
  * @author    Parse.ly

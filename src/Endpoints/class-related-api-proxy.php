@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely Related REST API Endpoint
+ * Endpoints: Parse.ly `/related` API proxy endpoint class
  *
  * @package Parsely
- * @since 3.2.0
+ * @since   3.2.0
  */
 
 declare(strict_types=1);

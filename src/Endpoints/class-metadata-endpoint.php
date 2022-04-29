@@ -1,9 +1,9 @@
 <?php
 /**
- * Metadata endpoint abstract class
+ * Endpoints: Metadata endpoint abstract class
  *
  * @package Parsely\Endpoints
- * @since 3.2.0
+ * @since   3.2.0
  */
 
 declare(strict_types=1);

@@ -1,9 +1,9 @@
 <?php
 /**
- * REST API class.
+ * Endpoints: REST Metadata endpoint class
  *
  * @package Parsely
- * @since 3.1.0
+ * @since   3.1.0
  */
 
 declare(strict_types=1);

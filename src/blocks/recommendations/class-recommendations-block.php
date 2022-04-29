@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly Recommendations Block class file.
+ * Parse.ly Recommendations Block class
  *
  * @package Parsely
  * @since 3.2.0

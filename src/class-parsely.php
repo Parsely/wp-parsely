@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely class.
+ * Parsely class
  *
  * @package Parsely
- * @since 2.5.0
+ * @since   2.5.0
  */
 
 declare(strict_types=1);

@@ -1,9 +1,11 @@
 <?php
 /**
- * Parsely tweaks to WordPress admin bar.
+ * UI: Admin bar class
+ *
+ * Enhances the WordPress admin bar with Parse.ly tweaks.
  *
  * @package Parsely
- * @since 3.1.0
+ * @since   3.1.0
  */
 
 declare(strict_types=1);

@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely Remote API Cache Interface.
+ * Remote API: Cache interface
  *
  * @package Parsely
- * @since 3.2.0
+ * @since   3.2.0
  */
 
 declare(strict_types=1);

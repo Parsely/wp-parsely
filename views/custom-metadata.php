@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly custom metadata output.
+ * Views: Parse.ly custom metadata output
  *
  * @package   Parsely\wp-parsely
  * @author    Parse.ly

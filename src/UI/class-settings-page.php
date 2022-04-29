@@ -1,9 +1,9 @@
 <?php
 /**
- * Settings page class.
+ * UI: Settings page class
  *
  * @package Parsely
- * @since 3.0.0
+ * @since   3.0.0
  */
 
 declare(strict_types=1);

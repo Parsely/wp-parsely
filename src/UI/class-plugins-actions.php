@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely plugins actions class.
+ * UI: plugins actions class
  *
  * @package Parsely
- * @since 2.6.0
+ * @since   2.6.0
  */
 
 declare(strict_types=1);

@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely wp-admin warning.
+ * UI: Parse.ly wp-admin warning class
  *
  * @package Parsely
- * @since 3.0.0
+ * @since   3.0.0
  */
 
 declare(strict_types=1);

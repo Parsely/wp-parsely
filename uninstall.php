@@ -1,7 +1,8 @@
 <?php
 /**
- * Uninstalls script for wp-parsely. It deletes the `parsely` option on the
- * database.
+ * Parse.ly plugin uninstaller
+ *
+ * Deletes the `parsely` option from the database.
  *
  * @package Parsely\wp-parsely
  * @since   3.0.0

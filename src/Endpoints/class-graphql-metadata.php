@@ -1,10 +1,12 @@
 <?php
 /**
- * GraphQL support class.
- * Note: this class will only work if the WPGraphQL plugin is installed.
+ * Endpoints: GraphQL metadata endpoint class
+ *
+ * Adds support for GraphQL.
+ * Note: This class will only work if the WPGraphQL plugin is installed.
  *
  * @package Parsely
- * @since 3.2.0
+ * @since   3.2.0
  */
 
 declare(strict_types=1);

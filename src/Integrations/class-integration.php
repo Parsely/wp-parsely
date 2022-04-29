@@ -1,9 +1,9 @@
 <?php
 /**
- * Integration interface.
+ * Integrations: Integration interface
  *
  * @package Parsely\Integrations
- * @since 2.6.0
+ * @since   2.6.0
  */
 
 declare(strict_types=1);

@@ -1,9 +1,9 @@
 <?php
 /**
- * Metadata class.
+ * Metadata class
  *
  * @package Parsely
- * @since 3.3.0
+ * @since   3.3.0
  */
 
 declare(strict_types=1);

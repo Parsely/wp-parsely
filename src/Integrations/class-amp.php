@@ -1,9 +1,9 @@
 <?php
 /**
- * AMP integration class.
+ * Integrations: AMP integration class
  *
  * @package Parsely\Integrations
- * @since 2.6.0
+ * @since   2.6.0
  */
 
 declare(strict_types=1);

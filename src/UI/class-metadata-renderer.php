@@ -1,9 +1,9 @@
 <?php
 /**
- * Parse.ly header metadata class.
+ * UI: Metadata renderer class.
  *
  * @package Parsely
- * @since 3.3.0
+ * @since   3.3.0
  */
 
 declare(strict_types=1);

@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly JSON-LD output.
+ * Views: Parse.ly JSON-LD output
  *
  * @package   Parsely\wp-parsely
  * @author    Parse.ly

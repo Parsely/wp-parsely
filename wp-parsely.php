@@ -1,6 +1,8 @@
 <?php
 /**
- * Parse.ly
+ * Parse.ly plugin loader
+ *
+ * Requires any necessary files and loads the plugin.
  *
  * @package   Parsely\wp-parsely
  * @author    Parse.ly
