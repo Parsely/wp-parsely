@@ -5,7 +5,6 @@
  * Shows the settings page.
  *
  * @package   Parsely\wp-parsely
- * @author    Parse.ly
  * @copyright 2012 Parse.ly
  * @license   GPL-2.0-or-later
  */
