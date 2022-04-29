@@ -37,14 +37,15 @@ class Metadata {
 	}
 
 	/**
-	 * Creates parsely metadata object from post metadata.
+	 * Creates Parse.ly metadata object from post metadata.
 	 *
-	 * @param array<string, mixed> $parsely_options parsely_options array.
-	 * @param WP_Post              $post object.
+	 * @param WP_Post $post object.
 	 *
 	 * @return array<string, mixed>
 	 */
-	public function construct_metadata( array $parsely_options, WP_Post $post ): array {
+	public function construct_metadata( WP_Post $post ): array {
+		$options = $this->parsely->get_options();
+
 		$parsely_page      = array(
 			'@context' => 'https://schema.org',
 			'@type'    => 'WebPage',
@@ -98,9 +99,9 @@ class Metadata {
 			/* translators: %s: Tag name */
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( sprintf( __( 'Tagged - %s', 'wp-parsely' ), $tag ) );
 			$parsely_page['url']      = $current_url;
-		} elseif ( in_array( get_post_type( $post ), $parsely_options['track_post_types'], true ) && Parsely::post_has_trackable_status( $post ) ) {
+		} elseif ( in_array( get_post_type( $post ), $options['track_post_types'], true ) && Parsely::post_has_trackable_status( $post ) ) {
 			$authors  = $this->get_author_names( $post );
-			$category = $this->get_category_name( $post, $parsely_options );
+			$category = $this->get_category_name( $post, $options );
 
 			// Get featured image and thumbnail.
 			$image_url = get_the_post_thumbnail_url( $post, 'full' );
@@ -113,7 +114,7 @@ class Metadata {
 			}
 
 			$tags = $this->get_tags( $post->ID );
-			if ( $parsely_options['cats_as_tags'] ) {
+			if ( $options['cats_as_tags'] ) {
 				$tags = array_merge( $tags, $this->get_categories( $post->ID ) );
 				// add custom taxonomy values.
 				$tags = array_merge( $tags, $this->get_custom_taxonomy_values( $post ) );
@@ -125,7 +126,7 @@ class Metadata {
 			} else {
 				$lowercase_callback = 'strtolower';
 			}
-			if ( $parsely_options['lowercase_tags'] ) {
+			if ( $options['lowercase_tags'] ) {
 				$tags = array_map( $lowercase_callback, $tags );
 			}
 
@@ -197,10 +198,10 @@ class Metadata {
 			$parsely_page['publisher'] = array(
 				'@type' => 'Organization',
 				'name'  => get_bloginfo( 'name' ),
-				'logo'  => $parsely_options['logo'],
+				'logo'  => $options['logo'],
 			);
 			$parsely_page['keywords']  = $tags;
-		} elseif ( in_array( get_post_type(), $parsely_options['track_page_types'], true ) && Parsely::post_has_trackable_status( $post ) ) {
+		} elseif ( in_array( get_post_type(), $options['track_page_types'], true ) && Parsely::post_has_trackable_status( $post ) ) {
 			$parsely_page['headline'] = $this->get_clean_parsely_page_value( get_the_title( $post ) );
 			$parsely_page['url']      = $this->get_current_url( 'post' );
 		} elseif ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) {
@@ -213,11 +214,11 @@ class Metadata {
 		 *
 		 * @param array $parsely_page Existing structured metadata for a page.
 		 * @param WP_Post $post Post object.
-		 * @param array $parsely_options The Parsely options.
+		 * @param array $options The Parse.ly options.
 		 *
 		 * @since 2.5.0
 		 */
-		$filtered = apply_filters( 'wp_parsely_metadata', $parsely_page, $post, $parsely_options );
+		$filtered = apply_filters( 'wp_parsely_metadata', $parsely_page, $post, $options );
 		if ( is_array( $filtered ) ) {
 			return $filtered;
 		}

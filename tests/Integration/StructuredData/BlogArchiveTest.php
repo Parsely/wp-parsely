@@ -39,8 +39,7 @@ final class BlogArchiveTest extends NonPostTestCase {
 	 */
 	public function test_blog_page_for_posts_paged(): void {
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Insert a page for the blog posts.
 		$page_id = self::factory()->post->create(
@@ -72,7 +71,7 @@ final class BlogArchiveTest extends NonPostTestCase {
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
-		$structured_data = $metadata->construct_metadata( $parsely_options, $page );
+		$structured_data = $metadata->construct_metadata( $page );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );

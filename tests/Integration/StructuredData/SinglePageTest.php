@@ -40,8 +40,7 @@ final class SinglePageTest extends NonPostTestCase {
 	 */
 	public function test_single_page(): void {
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Insert a single page.
 		$page_id = self::factory()->post->create(
@@ -63,7 +62,7 @@ final class SinglePageTest extends NonPostTestCase {
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
-		$structured_data = $metadata->construct_metadata( $parsely_options, $page );
+		$structured_data = $metadata->construct_metadata( $page );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );

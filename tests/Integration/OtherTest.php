@@ -77,8 +77,7 @@ final class OtherTest extends TestCase {
 	 */
 	public function test_parsely_page_filter(): void {
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Create a single post.
 		$post_id = $this->factory->post->create();
@@ -99,7 +98,7 @@ final class OtherTest extends TestCase {
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
-		$structured_data = $metadata->construct_metadata( $parsely_options, $post );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain the headline from the filter.
 		self::assertSame( strpos( $structured_data['headline'], $headline ), 0 );
@@ -124,8 +123,6 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 */
 	public function test_filter_wp_parsely_post_type(): void {
-		$options = get_option( Parsely::OPTIONS_KEY );
-
 		$post_id  = $this->go_to_new_post();
 		$post_obj = get_post( $post_id );
 
@@ -138,7 +135,7 @@ final class OtherTest extends TestCase {
 		);
 
 		$metadata        = new Metadata( self::$parsely );
-		$structured_data = $metadata->construct_metadata( $options, $post_obj );
+		$structured_data = $metadata->construct_metadata( $post_obj );
 
 		self::assertSame( 'BlogPosting', $structured_data['@type'] );
 
@@ -152,7 +149,7 @@ final class OtherTest extends TestCase {
 
 		$this->expectWarning();
 		$this->expectWarningMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages' );
-		$metadata->construct_metadata( $options, $post_obj );
+		$metadata->construct_metadata( $post_obj );
 	}
 
 	/**
