@@ -4,8 +4,7 @@
  *
  * Requires any necessary files and loads the plugin.
  *
- * @package   Parsely\wp-parsely
- * @license   GPL-2.0-or-later
+ * @package Parsely\wp-parsely
  *
  * @wordpress-plugin
  * Plugin Name:       Parse.ly

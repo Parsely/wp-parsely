@@ -3,7 +3,6 @@
  * Base unit test case
  *
  * @package Parsely\Tests
- * @license GPL-2.0-or-later
  */
 
 declare(strict_types=1);

@@ -4,8 +4,7 @@
  *
  * Shows the settings page.
  *
- * @package   Parsely\wp-parsely
- * @license   GPL-2.0-or-later
+ * @package Parsely\wp-parsely
  */
 
 declare(strict_types=1);
