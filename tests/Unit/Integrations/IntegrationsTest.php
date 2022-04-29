@@ -2,7 +2,7 @@
 /**
  * Integrations collection tests.
  *
- * @package Parsely\Tests\Unit
+ * @package Parsely\Tests
  */
 
 declare(strict_types=1);
@@ -71,16 +71,12 @@ final class IntegrationsTest extends TestCase {
 // phpcs:disable Generic.Files.OneObjectStructurePerFile.MultipleFound
 /**
  * Class FakeIntegration
- *
- * @package Parsely\Tests\Unit
  */
 class FakeIntegration {
 }
 
 /**
  * Class FakeIntegration2
- *
- * @package Parsely\Tests\Unit
  */
 class FakeIntegration2 {
 	/**

@@ -2,7 +2,7 @@
 /**
  * Integrations: Integration interface
  *
- * @package Parsely\Integrations
+ * @package Parsely
  * @since   2.6.0
  */
 

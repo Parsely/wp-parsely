@@ -4,7 +4,7 @@
  *
  * Requires any necessary files and loads the plugin.
  *
- * @package Parsely\wp-parsely
+ * @package Parsely
  *
  * @wordpress-plugin
  * Plugin Name:       Parse.ly

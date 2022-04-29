@@ -15,8 +15,6 @@ use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
 
 /**
  * Abstract base class for all test case implementations.
- *
- * @package Parsely\Tests
  */
 abstract class TestCase extends WPIntegrationTestCase {
 

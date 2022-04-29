@@ -4,7 +4,7 @@
  *
  * Deletes the `parsely` option from the database.
  *
- * @package Parsely\wp-parsely
+ * @package Parsely
  * @since   3.0.0
  */
 

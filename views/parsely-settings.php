@@ -4,7 +4,7 @@
  *
  * Shows the settings page.
  *
- * @package Parsely\wp-parsely
+ * @package Parsely
  */
 
 declare(strict_types=1);

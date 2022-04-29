@@ -2,7 +2,7 @@
 /**
  * Views: Parse.ly repeated metas output
  *
- * @package Parsely\wp-parsely
+ * @package Parsely
  */
 
 declare(strict_types=1);

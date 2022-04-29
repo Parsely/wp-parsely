@@ -2,7 +2,7 @@
 /**
  * Tests of the Dashboard Link class
  *
- * @package Parsely\Tests\Unit
+ * @package Parsely\Tests
  */
 
 declare(strict_types=1);

@@ -2,7 +2,7 @@
 /**
  * Endpoints: Metadata endpoint abstract class
  *
- * @package Parsely\Endpoints
+ * @package Parsely
  * @since   3.2.0
  */
 

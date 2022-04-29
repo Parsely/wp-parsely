@@ -2,7 +2,7 @@
 /**
  * Integrations: Google Web Stories integration class
  *
- * @package Parsely\Integrations
+ * @package Parsely
  * @since   3.2.0
  */
 
