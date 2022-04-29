@@ -4,9 +4,7 @@
  *
  * Provides a widget with Parse.ly recommended articles.
  *
- * @category   Components
- * @package    WordPress
- * @subpackage Parse.ly
+ * @package Parsely
  */
 
 declare(strict_types=1);
