@@ -81,7 +81,7 @@ class Rest_Metadata extends Metadata_Endpoint {
 		if ( false === $post ) {
 			$metadata = '';
 		} else {
-			$metadata = ( new Metadata( $this->parsely ) )->construct_metadata( $options, $post );
+			$metadata = ( new Metadata( $this->parsely ) )->construct_metadata( $post );
 		}
 
 		$response = array(
