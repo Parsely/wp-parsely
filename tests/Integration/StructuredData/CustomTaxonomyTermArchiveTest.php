@@ -42,8 +42,7 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		$this->set_permalink_structure( '/%postname%/' );
 
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Register custom taxonomy.
 		register_taxonomy( 'custom_tax', array( 'post' ) );
@@ -75,7 +74,7 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		// Create the structured data for that term archive.
 		// The term archive metadata doesn't use the post data, but the construction method requires it for now.
 		$metadata        = new Metadata( $parsely );
-		$structured_data = $metadata->construct_metadata( $parsely_options, get_post( $post_id ) );
+		$structured_data = $metadata->construct_metadata( get_post( $post_id ) );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );

@@ -240,7 +240,7 @@ class Parsely {
 	 */
 	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ): array {
 		$metadata = new Metadata( $this );
-		return $metadata->construct_metadata( $parsely_options, $post );
+		return $metadata->construct_metadata( $post );
 	}
 
 	/**
@@ -259,7 +259,7 @@ class Parsely {
 			return;
 		}
 
-		$metadata = ( new Metadata( $this ) )->construct_metadata( $parsely_options, $post );
+		$metadata = ( new Metadata( $this ) )->construct_metadata( $post );
 
 		$endpoint_metadata = array(
 			'canonical_url' => $metadata['url'],
