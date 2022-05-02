@@ -27,6 +27,7 @@ final class IntegrationsTest extends TestCase {
 	 * @covers \Parsely\parsely_integrations
 	 * @uses \Parsely\Integrations\Amp::integrate
 	 * @uses \Parsely\Integrations\Facebook_Instant_Articles::integrate
+	 * @uses \Parsely\Integrations\Google_Web_Stories::integrate
 	 * @uses \Parsely\Integrations\Integrations::integrate
 	 * @uses \Parsely\Integrations\Integrations::register
 	 */

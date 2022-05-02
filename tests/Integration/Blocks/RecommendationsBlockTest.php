@@ -39,6 +39,7 @@ final class RecommendationsBlockTest extends TestCase {
 	 * @since 3.3.0
 	 *
 	 * @covers \Parsely\Recommendations_Block::run
+	 * @uses \Parsely\Recommendations_Block::register_block
 	 *
 	 * @group blocks
 	 */
