@@ -1,10 +1,11 @@
 <?php
 /**
- * Parse.ly plugin loader
+ * Parse.ly
  *
- * Requires any necessary files and loads the plugin.
- *
- * @package Parsely
+ * @package   Parsely
+ * @author    Parse.ly
+ * @copyright 2012 Parse.ly
+ * @license   GPL-2.0-or-later
  *
  * @wordpress-plugin
  * Plugin Name:       Parse.ly
