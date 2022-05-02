@@ -5,6 +5,59 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2022-05-02
+
+### Added
+
+- Tracker URL field to REST API endpoint. [#743](https://github.com/Parsely/wp-parsely/pull/743)
+- Recommendations out of beta phase, now enabled by default. [#764](https://github.com/Parsely/wp-parsely/pull/764)
+- Dynamic support tracking. Disable autotrack option. [#792](https://github.com/Parsely/wp-parsely/pull/792)
+- Adding support for Audience Segments. JavaScript `onReady` hook. [#808](https://github.com/Parsely/wp-parsely/pull/808)
+- End-to-end tests for front-end metadata. [#789](https://github.com/Parsely/wp-parsely/pull/789)
+- Integration tests for post image metadata. [#820](https://github.com/Parsely/wp-parsely/pull/820)
+
+### Changed
+
+- Recommendations Block:
+  - Disabled link clicking in Editor. [#767](https://github.com/Parsely/wp-parsely/pull/767)
+  - Register the block using block.json file. [#62](https://github.com/Parsely/wp-parsely/pull/762)
+  - Fixed thumbnail images not showing. [#793](https://github.com/Parsely/wp-parsely/pull/793)
+  - Added additional testing. [#724](https://github.com/Parsely/wp-parsely/pull/724)
+  - Removed tag setting. [#822](https://github.com/Parsely/wp-parsely/pull/822)
+- Metadata. We have changed the way metadata is generated. Filters continue to work as expected. We kept the legacy functions for backwards compatibility, but we recommend migrating to `Metadata` class.
+  - Extracted Metadata generation in a separate class. [#742](https://github.com/Parsely/wp-parsely/pull/742)
+  - Extracted Metadata rendering in a separate class. [#751](https://github.com/Parsely/wp-parsely/pull/751)
+- Improved Site ID handling on settings page. [#766](https://github.com/Parsely/wp-parsely/pull/766)
+- Upgraded dependencies:
+  - @wordpress/api-fetch from 6.2.0 to 6.3.0
+  - @wordpress/babel-preset-default from 6.7.0 to 6.9.0
+  - @wordpress/block-editor from 8.4.0 to 8.5.1
+  - @wordpress/blocks from 11.4.0 to 11.5.0
+  - @wordpress/components from 19.7.0 to 19.8.0
+  - @wordpress/compose from 5.3.0 to 5.4.0
+  - @wordpress/e2e-test-utils from 7.1.0 to 7.3.0
+  - @wordpress/env from 4.4.0 to 4.6.0
+  - @wordpress/eslint-plugin from 11.1.0 to 12.1.0
+  - @wordpress/hooks from 3.6.0 to 3.7.0
+  - @wordpress/scripts from 22.3.0 to 22.5.0
+  - @wordpress/url from 3.6.0 to 3.7.0
+  - eslint-plugin-jest from 26.1.3 to 26.1.5
+
+### Fixed
+
+- Image URL generation for metadata. Links would generate thumbnail-sized images. [#758](https://github.com/Parsely/wp-parsely/pull/758)
+- Set image URL instead of thumbnail URL on metadata update. [#794](https://github.com/Parsely/wp-parsely/pull/794)
+- Legacy Recommended Widget not showing. [#797](https://github.com/Parsely/wp-parsely/pull/797)
+- PHPDoc annotations and comments. [#761](https://github.com/Parsely/wp-parsely/pull/761) [#838](https://github.com/Parsely/wp-parsely/pull/838)
+- Removed redundant media query on settings page. [#827](https://github.com/Parsely/wp-parsely/pull/827)
+- Improved accessibility of logo field on settings page. [#826](https://github.com/Parsely/wp-parsely/pull/826)
+- Coverage annotations in tests. [#837](https://github.com/Parsely/wp-parsely/pull/837)
+
+### Removed
+
+- References to the plugin not being compatible with Dynamic Tracking. [#791](https://github.com/Parsely/wp-parsely/pull/791)
+- Removed Cache Buster function from Parse.ly class. [#747](https://github.com/Parsely/wp-parsely/pull/747)
+
 ## [3.2.1] - 2022-04-01
 
 ### Fixed
@@ -611,6 +664,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - Initial version.
 - Add support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
+[3.3.0]: https://github.com/Parsely/wp-parsely/compare/3.2.1...3.3.0
 [3.2.1]: https://github.com/Parsely/wp-parsely/compare/3.2.0...3.2.1
 [3.2.0]: https://github.com/Parsely/wp-parsely/compare/3.1.3...3.2.0
 [3.1.3]: https://github.com/Parsely/wp-parsely/compare/3.1.2...3.1.3
