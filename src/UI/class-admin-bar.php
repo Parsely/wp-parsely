@@ -1,9 +1,11 @@
 <?php
 /**
- * Parsely tweaks to WordPress admin bar
+ * UI: Admin bar class
+ *
+ * Enhances the WordPress admin bar with Parse.ly tweaks.
  *
  * @package Parsely
- * @since 3.1.0
+ * @since   3.1.0
  */
 
 declare(strict_types=1);
@@ -15,7 +17,7 @@ use Parsely\Parsely;
 use Parsely\Dashboard_Link;
 
 /**
- * Render Parse.ly related buttons in the WordPress administrator top bar.
+ * Renders Parse.ly related buttons in the WordPress administrator top bar.
  *
  * @since 3.1.0
  */
@@ -37,15 +39,14 @@ final class Admin_Bar {
 	}
 
 	/**
-	 * Register admin bar buttons.
+	 * Registers admin bar buttons.
 	 *
 	 * @since 3.1.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		/**
-		 * Filter whether the Open on Parse.ly button is enabled or not on the admin bar menu.
+		 * Filter whether the Open on Parse.ly button is enabled or not on the
+		 * admin bar menu.
 		 *
 		 * @since 3.1.2
 		 *
@@ -58,11 +59,10 @@ final class Admin_Bar {
 	}
 
 	/**
-	 * Adds the `Parse.ly Stats` button on the admin bar when the current object is a post or a page.
+	 * Adds the `Parse.ly Stats` button on the admin bar when the current object
+	 * is a post or a page.
 	 *
 	 * @param WP_Admin_Bar $admin_bar WP_Admin_Bar instance, passed by reference.
-	 *
-	 * @return void
 	 */
 	public function admin_bar_parsely_stats_button( WP_Admin_Bar $admin_bar ): void {
 		$current_object = $GLOBALS['wp_the_query']->get_queried_object();

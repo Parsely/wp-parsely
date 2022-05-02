@@ -2,7 +2,7 @@
 /**
  * Admin bar tests.
  *
- * @package Parsely
+ * @package Parsely\Tests
  */
 
 declare(strict_types=1);

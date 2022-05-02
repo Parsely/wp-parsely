@@ -1,9 +1,11 @@
 <?php
 /**
- * Uninstall script for wp-parsely. It deletes the `parsely` option on the database.
+ * Parse.ly plugin uninstaller
  *
- * @package      Parsely\wp-parsely
- * @since 3.0.0
+ * Deletes the `parsely` option from the database.
+ *
+ * @package Parsely
+ * @since   3.0.0
  */
 
 declare(strict_types=1);

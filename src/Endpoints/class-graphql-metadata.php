@@ -1,10 +1,12 @@
 <?php
 /**
- * GraphQL support class.
- * Note: this class will only work if the WPGraphQL plugin is installed.
+ * Endpoints: GraphQL metadata endpoint class
+ *
+ * Adds support for GraphQL.
+ * Note: This class will only work if the WPGraphQL plugin is installed.
  *
  * @package Parsely
- * @since 3.2.0
+ * @since   3.2.0
  */
 
 declare(strict_types=1);
@@ -14,7 +16,7 @@ namespace Parsely\Endpoints;
 use WP_Post;
 
 /**
- * Add Parse.ly metadata fields to the WP GraphQL server.
+ * Adds Parse.ly metadata fields to the WP GraphQL server.
  *
  * @since 3.2.0
  */
@@ -23,15 +25,13 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	private const GRAPHQL_CONTAINER_TYPE = 'ParselyMetaContainer';
 
 	/**
-	 * Register fields in WPGraphQL plugin.
+	 * Registers fields in WPGraphQL plugin.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		/**
-		 * Filter whether GraphQL support is enabled or not.
+		 * Filters whether GraphQL support is enabled or not.
 		 *
 		 * @since 3.2.0
 		 *
@@ -43,11 +43,10 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	}
 
 	/**
-	 * Register the meta field on the appropriate resource types in the REST API.
+	 * Registers the meta field on the appropriate resource types in the REST
+	 * API.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	public function register_meta(): void {
 		$this->register_object_types();
@@ -55,11 +54,10 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	}
 
 	/**
-	 * Register the new custom types for Parse.ly Metadata into the GraphQL instance.
+	 * Registers the new custom types for Parse.ly Metadata into the GraphQL
+	 * instance.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	private function register_object_types(): void {
 		$container_type = array(
@@ -120,11 +118,9 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	}
 
 	/**
-	 * Register the custom metadata fields, so they can be queried in GraphQL.
+	 * Registers the custom metadata fields, so they can be queried in GraphQL.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	private function register_fields(): void {
 		$resolve = function ( \WPGraphQL\Model\Post $graphql_post ) {

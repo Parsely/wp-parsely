@@ -1,11 +1,8 @@
 <?php
 /**
- * Parse.ly JSON-LD output
+ * Views: Parse.ly JSON-LD output
  *
- * @package      Parsely\wp-parsely
- * @author       Parse.ly
- * @copyright    2012 Parse.ly
- * @license      GPL-2.0-or-later
+ * @package Parsely
  */
 
 declare(strict_types=1);

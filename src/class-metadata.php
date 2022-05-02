@@ -3,7 +3,7 @@
  * Metadata class
  *
  * @package Parsely
- * @since 3.3.0
+ * @since   3.3.0
  */
 
 declare(strict_types=1);
@@ -227,7 +227,7 @@ class Metadata {
 	}
 
 	/**
-	 * Sanitize content
+	 * Sanitizes content.
 	 *
 	 * @since 2.6.0
 	 * @since 3.3.0 Moved to class-metadata
@@ -247,7 +247,7 @@ class Metadata {
 	}
 
 	/**
-	 * Retrieve all the authors for a post as an array. Can include multiple
+	 * Retrieves all the authors for a post as an array. Can include multiple
 	 * authors if coauthors plugin is in use.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
@@ -291,8 +291,9 @@ class Metadata {
 	}
 
 	/**
-	 * Returns a properly cleaned category/taxonomy value and will optionally use the top-level category/taxonomy value
-	 * if so instructed via the `use_top_level_cats` option.
+	 * Returns a properly cleaned category/taxonomy value and will optionally
+	 * use the top-level category/taxonomy value, if so instructed via the
+	 * `use_top_level_cats` option.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
@@ -334,7 +335,7 @@ class Metadata {
 	}
 
 	/**
-	 * Returns the tags associated with this page or post
+	 * Returns the tags associated with this page or post.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
@@ -353,7 +354,7 @@ class Metadata {
 	}
 
 	/**
-	 * Returns an array of all the child categories for the current post
+	 * Returns an array of all the child categories for the current post.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
@@ -382,7 +383,7 @@ class Metadata {
 	}
 
 	/**
-	 * Get all term values from custom taxonomies.
+	 * Gets all term values from custom taxonomies.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
@@ -407,14 +408,17 @@ class Metadata {
 	}
 
 	/**
-	 * Get the URL of the current PHP script.
-	 * A fall-back implementation to determine permalink
+	 * Gets the URL of the current PHP script.
+	 *
+	 * A fall-back implementation to determine permalink.
 	 *
 	 * @since 3.0.0 $parsely_type Default parameter changed to `non-post`.
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param string $parsely_type Optional. Parse.ly post type you're interested in, either 'post' or 'non-post'. Default is 'non-post'.
-	 * @param int    $post_id      Optional. ID of the post you want to get the URL for. Default is 0, which means the global `$post` is used.
+	 * @param string $parsely_type Optional. Parse.ly post type you're interested in, either 'post'
+	 *                             or 'non-post'. Default is 'non-post'.
+	 * @param int    $post_id      Optional. ID of the post you want to get the URL for. Default is
+	 *                             0, which means the global `$post` is used.
 	 * @return string
 	 */
 	private function get_current_url( string $parsely_type = 'non-post', int $post_id = 0 ): string {
@@ -427,10 +431,10 @@ class Metadata {
 			 * @since 1.14.0
 			 * @since 2.5.0  Added $post_id.
 			 *
-			 * @param string $permalink         The permalink URL or false if post does not exist.
-			 * @param string $parsely_type      Parse.ly type ("post" or "non-post").
-			 * @param int    $post_id           ID of the post you want to get the URL for. May be 0, so $permalink will be
-			 *                                  for the global $post.
+			 * @param string $permalink    The permalink URL or false if post does not exist.
+			 * @param string $parsely_type Parse.ly type ("post" or "non-post").
+			 * @param int    $post_id      ID of the post you want to get the URL for. May be 0, so
+			 *                             $permalink will be for the global $post.
 			 */
 			$url = apply_filters( 'wp_parsely_permalink', $permalink, $parsely_type, $post_id );
 		} else {
@@ -453,9 +457,9 @@ class Metadata {
 	 * @since 3.0.2
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param array   $metadata Array containing all metadata. It will be potentially mutated to add keys: dateCreated, dateModified, & datePublished.
+	 * @param array   $metadata Array containing all metadata. It will be potentially mutated to add
+	 *                          keys: dateCreated, dateModified, & datePublished.
 	 * @param WP_Post $post     Post object from which to extract time data.
-	 * @return void
 	 */
 	private function set_metadata_post_times( array &$metadata, WP_Post $post ): void {
 		$date_format      = 'Y-m-d\TH:i:s\Z';
@@ -477,8 +481,10 @@ class Metadata {
 	}
 
 	/**
-	 * Returns a list of coauthors for a post assuming the Co-Authors Plus plugin is
-	 * installed. Borrowed from
+	 * Returns a list of coauthors for a post assuming the Co-Authors Plus plugin
+	 * is installed.
+	 *
+	 * Borrowed from
 	 * https://github.com/Automattic/Co-Authors-Plus/blob/master/template-tags.php#L3-35
 	 *
 	 * @since 3.3.0 Moved to class-metadata
@@ -526,7 +532,7 @@ class Metadata {
 	}
 
 	/**
-	 * Determine author name from display name, falling back to firstname
+	 * Determines author name from display name, falling back to firstname
 	 * lastname, then nickname and finally the nicename.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
@@ -561,8 +567,10 @@ class Metadata {
 	}
 
 	/**
-	 * Return the top-most category/taxonomy value in a hierarcy given a taxonomy value's ID
-	 * ( WordPress calls taxonomy values 'terms' ).
+	 * Returns the top-most category/taxonomy value in a hierarcy given a
+	 * taxonomy value's ID.
+	 *
+	 * (WordPress calls taxonomy values 'terms').
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
@@ -579,8 +587,10 @@ class Metadata {
 	}
 
 	/**
-	 * Return the bottom-most category/taxonomy value in a hierarchy given a post ID
-	 * ( WordPress calls taxonomy values 'terms' ).
+	 * Returns the bottom-most category/taxonomy value in a hierarchy given a
+	 * post ID.
+	 *
+	 * (WordPress calls taxonomy values 'terms').
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *

@@ -3,7 +3,6 @@
  * Contains reflection functions used by tests.
  *
  * @package Parsely\Tests
- * @license GPL-2.0-or-later
  */
 
 declare(strict_types=1);

@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely Related REST API Endpoint
+ * Endpoints: Parse.ly `/related` API proxy endpoint class
  *
  * @package Parsely
- * @since 3.2.0
+ * @since   3.2.0
  */
 
 declare(strict_types=1);
@@ -18,7 +18,7 @@ use WP_REST_Server;
 use WP_REST_Request;
 
 /**
- * Configure a REST API endpoint for use e.g. by the Recommendations Block.
+ * Configures a REST API endpoint for use e.g. by the Recommendations Block.
  */
 final class Related_API_Proxy {
 	/**
@@ -36,10 +36,11 @@ final class Related_API_Proxy {
 	private $proxy;
 
 	/**
-	 * Used to inject dependencies.
+	 * Constructor.
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
-	 * @param Proxy   $proxy   Proxy object which does the actual calls to the Parse.ly API.
+	 * @param Proxy   $proxy   Proxy object which does the actual calls to the
+	 *                         Parse.ly API.
 	 */
 	public function __construct( Parsely $parsely, Proxy $proxy ) {
 		$this->parsely = $parsely;
@@ -47,9 +48,7 @@ final class Related_API_Proxy {
 	}
 
 	/**
-	 * Entrypoint to register the endpoint and otherwise initialize this class.
-	 *
-	 * @return void
+	 * Registers the endpoint and initializes this class.
 	 */
 	public function run(): void {
 		if ( ! apply_filters( 'wp_parsely_enable_related_api_proxy', true ) ) {
@@ -79,7 +78,7 @@ final class Related_API_Proxy {
 	}
 
 	/**
-	 * Determine if the endpoint can be called.
+	 * Determines if the endpoint can be called.
 	 *
 	 * @return bool
 	 */

@@ -3,7 +3,6 @@
  * Base unit test case
  *
  * @package Parsely\Tests
- * @license GPL-2.0-or-later
  */
 
 declare(strict_types=1);
@@ -16,8 +15,6 @@ use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
 
 /**
  * Abstract base class for all test case implementations.
- *
- * @package Parsely\Tests
  */
 abstract class TestCase extends WPIntegrationTestCase {
 

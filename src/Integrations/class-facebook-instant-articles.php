@@ -1,9 +1,9 @@
 <?php
 /**
- * Facebook Instant Articles integration class
+ * Integrations: Facebook Instant Articles integration class
  *
- * @package Parsely\Integrations
- * @since 2.6.0
+ * @package Parsely
+ * @since   2.6.0
  */
 
 declare(strict_types=1);
@@ -22,11 +22,10 @@ final class Facebook_Instant_Articles implements Integration {
 	private const REGISTRY_DISPLAY_NAME = 'Parse.ly Analytics';
 
 	/**
-	 * Apply the hooks that integrate the plugin or theme with the Parse.ly plugin.
+	 * Applies the hooks that integrate the plugin or theme with the Parse.ly
+	 * plugin.
 	 *
 	 * @since 2.6.0
-	 *
-	 * @return void
 	 */
 	public function integrate(): void {
 		if ( defined( 'IA_PLUGIN_VERSION' ) ) {
@@ -35,12 +34,11 @@ final class Facebook_Instant_Articles implements Integration {
 	}
 
 	/**
-	 * Add Parse.ly tracking to Facebook instant articles.
+	 * Adds Parse.ly tracking to Facebook instant articles.
 	 *
 	 * @since 2.6.0
 	 *
 	 * @param array $registry The registry info for Facebook Instant Articles.
-	 * @return void
 	 */
 	public function insert_parsely_tracking( &$registry ): void {
 		$parsely = new Parsely();
@@ -55,7 +53,7 @@ final class Facebook_Instant_Articles implements Integration {
 	}
 
 	/**
-	 * Get the payload / embed code.
+	 * Returns the payload / embed code.
 	 *
 	 * @since 2.6.0
 	 *

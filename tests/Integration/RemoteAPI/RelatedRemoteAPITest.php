@@ -13,7 +13,6 @@ use Parsely\Parsely;
 use Parsely\RemoteAPI\Cache;
 use Parsely\RemoteAPI\Cached_Proxy;
 use Parsely\RemoteAPI\Related_Proxy;
-use WP_Error;
 
 /**
  * Parsely `/related` Remote API tests.

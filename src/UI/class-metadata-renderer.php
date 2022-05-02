@@ -1,9 +1,9 @@
 <?php
 /**
- * Parse.ly header metadata class
+ * UI: Metadata renderer class.
  *
  * @package Parsely
- * @since 3.3.0
+ * @since   3.3.0
  */
 
 declare(strict_types=1);
@@ -17,7 +17,7 @@ use WP_Post;
 use const Parsely\PARSELY_FILE;
 
 /**
- * Render metadata in the WordPress front-end header.
+ * Renders metadata in the WordPress front-end header.
  *
  * @since 3.3.0
  */
@@ -39,11 +39,9 @@ final class Metadata_Renderer {
 	}
 
 	/**
-	 * Register metadata actions.
+	 * Registers metadata actions.
 	 *
 	 * @since 3.3.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		/**
@@ -64,8 +62,6 @@ final class Metadata_Renderer {
 	 * Renders metadata on site's head using the format from the site's options.
 	 *
 	 * @since 3.3.0
-	 *
-	 * @return void
 	 */
 	public function render_metadata_on_head(): void {
 		$parsely_options = $this->parsely->get_options();
@@ -73,13 +69,12 @@ final class Metadata_Renderer {
 	}
 
 	/**
-	 * Insert the code for the <meta name='parsely-page'> parameter within the <head></head> tag.
+	 * Inserts the code for the meta parameter within the head tag.
 	 *
 	 * @since 3.2.0
 	 * @since 3.3.0 Moved from `Parsely` class to `Metadata_Header`
 	 *
 	 * @param string $meta_type `json_ld` or `repeated_metas`.
-	 * @return void
 	 */
 	public function render_metadata( string $meta_type ): void {
 		$parsely_options = $this->parsely->get_options();

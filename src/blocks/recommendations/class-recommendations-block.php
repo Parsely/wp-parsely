@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly Recommendations Block class file.
+ * Parse.ly Recommendations Block class
  *
  * @package Parsely
  * @since 3.2.0
@@ -22,8 +22,6 @@ class Recommendations_Block {
 	 * Determines whether the block and its assets should be registered.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		global $wp_version;
@@ -41,14 +39,13 @@ class Recommendations_Block {
 	 * WordPress Block Editor in the corresponding context.
 	 *
 	 * @since 3.3.0
-	 *
-	 * @return void
 	 */
 	public static function register_block(): void {
 		/**
-		 * Register the block by passing the path to it's block.json file that contains the
-		 * majority of it's definition. This file will be copied into `build/blocks/recommendations`
-		 * by the build process and should be accessed there.
+		 * Register the block by passing the path to it's block.json file that
+		 * contains the majority of it's definition. This file will be copied
+		 * into `build/blocks/recommendations`by the build process and should be
+		 * accessed there.
 		 *
 		 * @see https://developer.wordpress.org/reference/functions/register_block_type/
 		 */
@@ -70,8 +67,8 @@ class Recommendations_Block {
 	 */
 	public static function render_callback( array $attributes ): string {
 		/**
-		 * In block.json we define a `viewScript` that is mean to only be loaded on the front end.
-		 * We need to manually enqueue this script here.
+		 * In block.json we define a `viewScript` that is mean to only be loaded
+		 * on the front end. We need to manually enqueue this script here.
 		 *
 		 * The slug is automatically generated as {namespace}-{block-name}-view-script
 		 */

@@ -2,7 +2,7 @@
 /**
  * Parse.ly Recommendations Block tests.
  *
- * @package Parsely\Tests\Blocks
+ * @package Parsely\Tests
  */
 
 declare(strict_types=1);

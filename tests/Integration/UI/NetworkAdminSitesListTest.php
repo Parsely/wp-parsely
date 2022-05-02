@@ -2,7 +2,7 @@
 /**
  * UI Tests for the Network Admin Sites List.
  *
- * @package Parsely
+ * @package Parsely\Tests
  */
 
 declare(strict_types=1);

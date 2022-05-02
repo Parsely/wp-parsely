@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely Remote API Proxy Interface
+ * Remote API: Proxy interface
  *
  * @package Parsely
- * @since 3.2.0
+ * @since   3.2.0
  */
 
 declare(strict_types=1);
@@ -13,11 +13,11 @@ namespace Parsely\RemoteAPI;
 use WP_Error;
 
 /**
- * Remote API Proxy Interface
+ * Remote API Proxy Interface.
  */
 interface Proxy {
 	/**
-	 * Return the items provided by this interface.
+	 * Returns the items provided by this interface.
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @return WP_Error|array<string, mixed>

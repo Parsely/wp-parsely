@@ -2,7 +2,7 @@
 /**
  * AMP integration tests.
  *
- * @package Parsely\Tests\Integrations
+ * @package Parsely\Tests
  */
 
 declare(strict_types=1);

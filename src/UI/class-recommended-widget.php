@@ -1,12 +1,10 @@
 <?php
 /**
- * Recommended Widget file
+ * UI: Recommended Widget class
  *
- * This provides a widget to put on a page, will have parsely recommended articles
+ * Provides a widget with Parse.ly recommended articles.
  *
- * @category   Components
- * @package    WordPress
- * @subpackage Parse.ly
+ * @package Parsely
  */
 
 declare(strict_types=1);
@@ -18,11 +16,11 @@ use WP_Widget;
 use const Parsely\PARSELY_FILE;
 
 /**
- * This is the class for the recommended widget.
+ * Provides a widget with Parse.ly recommended articles.
  */
 final class Recommended_Widget extends WP_Widget {
 	/**
-	 * This is the constructor function.
+	 * Constructor.
 	 */
 	public function __construct() {
 		parent::__construct(
@@ -36,7 +34,7 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Get the URL for the Recommendations API (GET /related).
+	 * Gets the URL for the Recommendations API (GET /related).
 	 *
 	 * @see https://www.parse.ly/help/api/recommendations#get-related
 	 *
@@ -46,12 +44,12 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @param string      $api_key          Publisher Site ID (API key).
 	 * @param int|null    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
-	 *                                 formatting details. No restriction by default.
-	 * @param string|null $sort             What to sort the results by. There are currently 2 valid options: `score`, which
-	 *                                 will sort articles by overall relevance and `pub_date` which will sort results by
-	 *                                 their publication date. The default is `score`.
+	 *                                      formatting details. No restriction by default.
+	 * @param string|null $sort             What to sort the results by. There are currently 2 valid options: `score`,
+	 *                                      which will sort articles by overall relevance and `pub_date` which will sort
+	 *                                      results by their publication date. The default is `score`.
 	 * @param string|null $boost            Available for sort=score only. Sub-sort value to re-rank relevant posts that
-	 *                                 received high e.g. views; default is undefined.
+	 *                                      received high e.g. views; default is undefined.
 	 * @param int         $return_limit     Number of records to retrieve; defaults to "10".
 	 * @return string API URL.
 	 */
@@ -76,11 +74,10 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * This is the widget function
+	 * This is the widget function.
 	 *
 	 * @param array $args Widget Arguments.
 	 * @param array $instance Values saved to the db.
-	 * @return void
 	 */
 	public function widget( $args, $instance ): void {
 		if ( ! $this->api_key_and_secret_are_populated() ) {
@@ -147,7 +144,7 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * This is the form function
+	 * This is the form function.
 	 *
 	 * @param array $instance Values saved to the db.
 	 */
@@ -253,7 +250,7 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * This is the update function
+	 * This is the update function.
 	 *
 	 * @param array $new_instance The new values for the db.
 	 * @param array $old_instance Values saved to the db.
@@ -274,7 +271,7 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Return the list of boost parameters, values and labels.
+	 * Returns the list of boost parameters, values and labels.
 	 *
 	 * @since 2.5.0
 	 *
@@ -306,11 +303,13 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Check if both the API key and API secret settings are populated with non-empty values.
+	 * Checks if both the API key and API secret settings are populated with
+	 * non-empty values.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return bool True if apikey and api_secret settings are not empty strings. False otherwise.
+	 * @return bool True if apikey and api_secret settings are not empty strings.
+	 *              False otherwise.
 	 */
 	private function api_key_and_secret_are_populated(): bool {
 		$options = get_option( 'parsely' );

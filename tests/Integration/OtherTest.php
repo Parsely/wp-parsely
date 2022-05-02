@@ -2,7 +2,7 @@
 /**
  * Class SampleTest
  *
- * @package WordPress
+ * @package Parsely\Tests
  */
 
 declare(strict_types=1);

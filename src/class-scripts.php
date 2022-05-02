@@ -3,7 +3,7 @@
  * Scripts class
  *
  * @package Parsely
- * @since 3.0.0
+ * @since   3.0.0
  */
 
 declare(strict_types=1);
@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely;
 
 /**
- * Inserts the scripts and tracking code into the site's front-end
+ * Inserts the scripts and tracking code into the site's front-end.
  *
  * @since 1.0.0
  * @since 3.0.0 Moved from class-parsely to separate file
@@ -34,11 +34,9 @@ class Scripts {
 	}
 
 	/**
-	 * Register js scripts.
+	 * Registers scripts.
 	 *
 	 * @since 3.0.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		$parsely_options = $this->parsely->get_options();
@@ -49,12 +47,10 @@ class Scripts {
 	}
 
 	/**
-	 * Register JavaScripts, if there's an API key value saved.
+	 * Registers scripts, if there's an API key value saved.
 	 *
 	 * @since 2.5.0
 	 * @since 3.0.0 Rename from register_js
-	 *
-	 * @return void
 	 */
 	public function register_scripts(): void {
 		wp_register_script(
@@ -80,8 +76,6 @@ class Scripts {
 	 *
 	 * @since 2.5.0 Rename from insert_parsely_javascript
 	 * @since 3.0.0 Rename from load_js_tracker
-	 *
-	 * @return void
 	 */
 	public function enqueue_js_tracker(): void {
 		$parsely_options = $this->parsely->get_options();
@@ -132,7 +126,7 @@ class Scripts {
 	}
 
 	/**
-	 * Filter the script tag for certain scripts to add needed attributes.
+	 * Filters the script tag for certain scripts to add needed attributes.
 	 *
 	 * @since 2.5.0
 	 *

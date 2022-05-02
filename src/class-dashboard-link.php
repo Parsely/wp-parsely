@@ -1,9 +1,9 @@
 <?php
 /**
- * Parse.ly Dashboard Link utility class.
+ * Dashboard link utility class
  *
  * @package Parsely
- * @since 3.1.0
+ * @since   3.1.0
  */
 
 declare(strict_types=1);
@@ -19,7 +19,8 @@ use WP_Post;
  */
 class Dashboard_Link {
 	/**
-	 * Generate the Parse.ly dashboard URL for the post. Returns an empty string if the URL could not be generated.
+	 * Generates the Parse.ly dashboard URL for the post. Returns an empty
+	 * string if the URL could not be generated.
 	 *
 	 * @since 2.6.0
 	 * @since 3.1.0 Moved to class-dashboard-link.php. Added source parameter.
@@ -49,7 +50,7 @@ class Dashboard_Link {
 	}
 
 	/**
-	 * Determine whether Parse.ly dashboard link should be shown or not.
+	 * Determines whether Parse.ly dashboard link should be shown or not.
 	 *
 	 * @since 2.6.0
 	 * @since 3.1.0 Moved to class-dashboard-link.php. Renamed from `cannot_show_parsely_link`.

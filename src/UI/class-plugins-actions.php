@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely plugins actions class
+ * UI: plugins actions class
  *
  * @package Parsely
- * @since 2.6.0
+ * @since   2.6.0
  */
 
 declare(strict_types=1);
@@ -22,9 +22,7 @@ use const Parsely\PARSELY_FILE;
 final class Plugins_Actions {
 
 	/**
-	 * Register action and filter hook callbacks.
-	 *
-	 * @return void
+	 * Registers action and filter hook callbacks.
 	 */
 	public function run(): void {
 		add_filter( 'plugin_action_links_' . plugin_basename( PARSELY_FILE ), array( $this, 'add_plugin_meta_links' ) );
