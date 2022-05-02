@@ -1,11 +1,8 @@
 <?php
 /**
- * Parse.ly custom metadata output
+ * Views: Parse.ly custom metadata output
  *
- * @package      Parsely\wp-parsely
- * @author       Parse.ly
- * @copyright    2012 Parse.ly
- * @license      GPL-2.0-or-later
+ * @package Parsely
  */
 
 declare(strict_types=1);
@@ -13,4 +10,4 @@ declare(strict_types=1);
 namespace Parsely;
 
 ?>
-<meta name="parsely-metadata" content="<?php echo esc_attr( $parsely_page['custom_metadata'] ); ?>" />
+<meta name="parsely-metadata" content="<?php echo esc_attr( $metadata['custom_metadata'] ); ?>" />

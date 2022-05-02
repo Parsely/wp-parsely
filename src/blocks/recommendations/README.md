@@ -1,52 +1,65 @@
 # Parse.ly Recommendations Block
 
-The Recommendations Block is designed to showcase links to content on your site as provided by the [Parse.ly `/related` API endpoint](https://www.parse.ly/help/api/recommendations#get-related).
+The Recommendations Block is designed to showcase links to content on your site as provided by the [Parse.ly `/related` API endpoint](https://www.parse.ly/help/api/recommendations#get-related). You can add it in Posts, Pages, or nearly any other custom post type. The Block can also be used in Full Site Editing (FSE) mode or as a [Block-based Widget](https://wordpress.org/support/article/block-based-widgets-editor/).
 
-You can add it in `Posts`, `Pages`, or nearly any other custom post type. From WordPress 5.8 and up, the block can also be used as a [Block-based Widget](https://wordpress.org/support/article/block-based-widgets-editor/). Note however, that the Recommendations Block is not available in the Full Site Editor's template editor. This restriction will be lifted in the future.
+> Note: In wp-parsely version 4.0.0, the Recommendations Block will completely replace the Recommended Widget. If you're using the Widget, we highly recommend migrating to the Block as soon as possible.
 
-## Disabled by Default
+## Requirements
 
-Note that this block is currently behind a feature flag and must be explicitly enabled for the code to load.
+The Block is available only in WordPress 5.9 or later.
 
-To enable the block on your site, add the following line anywhere in your theme code (or a custom plugin) that is sourced [prior to the `init` WordPress action](https://codex.wordpress.org/Plugin_API/Action_Reference) (top-level in your theme or plugin is fine):
+## How to use
 
-`add_filter( 'wp_parsely_recommendations_block_enabled', '__return_true' );`
+Inside the Block Editor, add the `Parse.ly Recommendations` Block via the [standard block controls](https://wordpress.org/support/article/adding-a-new-block/) and configure its [settings](#settings) using the sidebar.
 
-This restriction will be lifted and the block code loading will become opt-out in a future release.
+## Customizing the appearance
 
-## How to Use
+The Block's appearance is minimal and inherits the active theme's styling. At this moment, the Block doesn't offer any styling preferences in its settings and its appearance is meant to be manipulated using CSS.
 
-- Inside the Block Editor, add the `Parse.ly Recommendations` block via the [standard block controls](https://wordpress.org/support/article/adding-a-new-block/).
-- Use the Block and Inspector Controls to configure the [block attributes](#block-attributes).
+## Settings
 
-## Block Attributes
+### Title
 
-### `boost`
+Change the Block's title by updating this setting. You can also make the title section completely vanish by specifying an empty value.
 
-Passed to the API endpoint to determine how to rank prospective results.
+### Maximum Results
 
-Default: `views`
+Specify the maximum number of recommendations to show.
 
-### `imagestyle`
+> Note: In certain cases, the number of results might be lower than this setting (especially if it is set to a large number).
 
-Default: `original`
+### Show Images
 
-### `limit`
+Toggle this setting to enable or disable images in the results. 
 
-Default: `3`
+### Image Style
 
-### `showimages`
+Use this setting to specify whether the Block should display the post's original image or the respective thumbnail provided by Parse.ly. Selecting the thumbnail option could be more performant but is not ideal for displaying large images.
 
-Default: `true`
+> Note: If you select the `Parse.ly thumbnail` setting, the image will appear big and distorted. You should use CSS to tailor it to your needs.
 
-### `sort`
+### Sort Recommendations
 
-Default: `score`
+Sort the results by score or published date. 
 
-### `tag`
+### Boost
 
-Default: none
+Sub-sort the results by a variety of [available metrics](https://www.parse.ly/help/api/available-metrics).
 
-### `title`
+### Additional CSS class(es) (Advanced section)
 
-Default: `Related Content`
+For styling purposes, you can specify one or more CSS classes that will be assigned to the block. 
+
+## FAQ
+
+### I can't find the Block.
+
+Ensure that you're running WordPress version 5.9.0 or later, as the Block is unavailable in lower WordPress versions.
+
+### The Block's images are of low-quality, even though the `Image style` option is set to `Original` and the original image is large.
+
+To resolve this, you must perform the following steps in order:
+1. Upgrade to [wp-parsely](https://wordpress.org/plugins/wp-parsely/) 3.3.0 or higher.
+2. Contact [Parse.ly Support](https://www.parse.ly/support/) and request a recrawl, mentioning that you're experiencing an image quality issue with the Block.
+
+Once Parse.ly has performed the recrawl, the images loaded by the Block should be correct.

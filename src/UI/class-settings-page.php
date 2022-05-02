@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely settings page class
+ * UI: Settings page class
  *
  * @package Parsely
- * @since 3.0.0
+ * @since   3.0.0
  */
 
 declare(strict_types=1);
@@ -16,7 +16,7 @@ use WP_Screen;
 use const Parsely\PARSELY_FILE;
 
 /**
- * Render the wp-admin Parse.ly plugin settings page
+ * Renders the wp-admin Parse.ly plugin settings page.
  *
  * @since 3.0.0
  */
@@ -40,7 +40,8 @@ final class Settings_Page {
 	/**
 	 * Screen options name.
 	 *
-	 * Name must end in `_page` so that set-screen-option hook is triggered for WP < 5.4.2.
+	 * Name must end in `_page` so that set-screen-option hook is triggered for
+	 * WP < 5.4.2.
 	 *
 	 * @since 3.2.0
 	 *
@@ -58,11 +59,9 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Register settings page.
+	 * Registers settings page.
 	 *
 	 * @since 3.0.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
@@ -76,13 +75,13 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Enqueue all needed scripts and styles for Parse.ly plugin settings page.
+	 * Enqueues all needed scripts and styles for Parse.ly plugin settings page.
 	 *
 	 * @param string $hook_suffix The current page being loaded.
-	 * @return void
 	 */
 	public function enqueue_settings_assets( string $hook_suffix ): void {
 		if ( 'settings_page_parsely' === $hook_suffix ) {
+			add_filter( 'media_library_months_with_files', '__return_empty_array' );
 			wp_enqueue_media();
 
 			$admin_settings_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
@@ -106,9 +105,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Parse.ly settings page in WordPress settings menu.
-	 *
-	 * @return void
+	 * Adds the Parse.ly settings page in WordPress settings menu.
 	 */
 	public function add_settings_sub_menu(): void {
 		$suffix = add_options_page(
@@ -130,13 +127,14 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Save the screen option setting.
+	 * Saves the screen option setting.
 	 *
 	 * Nonce is already checked in set_screen_options() - no need to check here.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param mixed  $screen_option The value to save instead of the option value. Default false (to skip saving the current option).
+	 * @param mixed  $screen_option The value to save instead of the option value.
+	 *                              Default false (to skip saving the current option).
 	 * @param string $option        The option name.
 	 * @param mixed  $value         The option value.
 	 * @return mixed Updated option value.
@@ -155,11 +153,9 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Register screen options.
+	 * Registers screen options.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	public function add_screen_options(): void {
 		add_screen_option(
@@ -179,7 +175,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Render the screen options block.
+	 * Renders the screen options block.
 	 *
 	 * @since 3.2.0
 	 *
@@ -223,19 +219,22 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Add help tab to the settings page.
+	 * Adds the help tab to the settings page.
 	 *
 	 * @since 3.1.0
 	 */
 	public function add_help_text(): void {
 		$screen = get_current_screen();
+		if ( null === $screen ) {
+			return;
+		}
+
 		$screen->add_help_tab(
 			array(
 				'id'      => 'overview',
 				'title'   => __( 'Overview', 'wp-parsely' ),
 				'content' => '<p>' . __( 'The only required setting on this page is the Site ID. All of the other settings are optional.', 'wp-parsely' ) . '</p>' .
-					'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.', 'wp-parsely' ) . '</p>' .
-					'<p>' . __( 'This plugin does not currently support dynamic tracking (the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications — situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href="https://www.parsely.com/help/integration/basic/">the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href="https://www.parsely.com/help/integration/dynamic/">the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href="mailto:support@parsely.com">support@parsely.com</a>) for additional assistance.', 'wp-parsely' ) . '</p>',
+					'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.', 'wp-parsely' ) . '</p>',
 			)
 		);
 		$screen->add_help_tab(
@@ -256,9 +255,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Parse.ly settings screen ( options-general.php?page=[MENU_SLUG] ).
-	 *
-	 * @return void
+	 * Displays the Parse.ly settings screen (options-general.php?page=[SLUG]).
 	 */
 	public function display_settings(): void {
 		if ( ! current_user_can( Parsely::CAPABILITY ) ) {
@@ -269,9 +266,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Initialize the settings for Parsely.
-	 *
-	 * @return void
+	 * Initializes the settings for Parse.ly.
 	 */
 	public function initialize_settings(): void {
 		// All our options are actually stored in one single array to reduce DB queries.
@@ -295,11 +290,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Register section and settings for Basic section.
+	 * Registers section and settings for Basic section.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	private function initialize_basic_section(): void {
 		add_settings_section(
@@ -310,14 +303,15 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		);
 
 		// Get the API Key.
-		$h          = __( 'Your Site ID is your own site domain (e.g. `mydomain.com`).', 'wp-parsely' );
+		$h          = __( 'Your Site ID is typically your own site domain without <code>http(s)://</code> prefixes or trailing <code>/</code> (e.g. <code>mydomain.com</code>).', 'wp-parsely' );
 		$field_id   = 'apikey';
 		$field_args = array(
 			'option_key'    => $field_id,
 			'help_text'     => $h,
 			'label_for'     => $field_id,
 			'optional_args' => array(
-				'required' => 'required',
+				'required'    => 'required',
+				'placeholder' => 'mydomain.com',
 			),
 
 		);
@@ -429,11 +423,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Register section and settings for Requires Recrawl section.
+	 * Registers section and settings for Requires Recrawl section.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	private function initialize_requires_recrawl_section(): void {
 		add_settings_section(
@@ -598,11 +590,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Register section and settings for Advanced section.
+	 * Registers section and settings for Advanced section.
 	 *
 	 * @since 3.2.0
-	 *
-	 * @return void
 	 */
 	private function initialize_advanced_section(): void {
 		// These are Advanced Settings.
@@ -611,6 +601,21 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Advanced Settings', 'wp-parsely' ),
 			'__return_null',
 			Parsely::MENU_SLUG
+		);
+
+		// Disable autotrack.
+		$h = __( 'The default behavior of the tracking code is to report an event as soon as the script has finished loading. This setting enables or disables that behavior. Only disable this if you plan to implement Dynamic Tracking yourself.', 'wp-parsely' );
+		add_settings_field(
+			'disable_autotrack',
+			__( 'Disable Autotracking', 'wp-parsely' ),
+			array( $this, 'print_binary_radio_tag' ),
+			Parsely::MENU_SLUG,
+			'advanced_settings',
+			array(
+				'title'      => __( 'Disable Autotracking', 'wp-parsely' ), // Passed for legend element.
+				'option_key' => 'disable_autotrack',
+				'help_text'  => $h,
+			)
 		);
 
 		// Clear metadata.
@@ -629,21 +634,20 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out the description text, if there is any.
+	 * Prints out the description text, if there is any.
 	 *
 	 * @since 3.1.0
 	 *
 	 * @param array $args The arguments for the form field. May contain 'help_text'.
 	 */
-	public function print_description_text( $args ) {
+	public function print_description_text( $args ): void {
 		echo isset( $args['help_text'] ) ? '<p class="description" id="' . esc_attr( $args['option_key'] ) . '-description">' . wp_kses_post( $args['help_text'] ) . '</p>' : '';
 	}
 
 	/**
-	 * Print out an input text tag.
+	 * Prints out an input text tag.
 	 *
 	 * @param array $args The arguments for text tag.
-	 * @return void
 	 */
 	public function print_text_tag( array $args ): void {
 		$options       = $this->parsely->get_options();
@@ -673,7 +677,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * Prints a checkbox tag in the settings page.
 	 *
 	 * @param array $args Arguments to print to checkbox tag.
-	 * @return void
 	 */
 	public function print_checkbox_tag( array $args ): void {
 		$options = $this->parsely->get_options();
@@ -693,10 +696,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out the select tags
+	 * Prints out the select tags
 	 *
 	 * @param array $args The arguments for the select dropdowns.
-	 * @return void
 	 */
 	public function print_select_tag( array $args ): void {
 		$options        = $this->parsely->get_options();
@@ -724,10 +726,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out the radio buttons
+	 * Prints out the radio buttons.
 	 *
 	 * @param array $args The arguments for the radio buttons.
-	 * @return void
 	 */
 	public function print_binary_radio_tag( array $args ): void {
 		$options = $this->parsely->get_options();
@@ -753,43 +754,12 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Prints out multiple selection in the form of checkboxes
-	 *
-	 * @param array $args The arguments for the checkboxes.
-	 * @return void
-	 */
-	public function print_multiple_checkboxes( array $args ): void {
-		$options        = $this->parsely->get_options();
-		$select_options = $args['select_options'];
-		$id             = esc_attr( $args['option_key'] );
-		$name           = Parsely::OPTIONS_KEY . "[$id]";
-
-		?>
-		<fieldset>
-			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
-		<?php
-		foreach ( $select_options as $key => $val ) {
-			$selected = in_array( $val, $options[ $args['option_key'] ], true );
-			printf(
-				'<label for="%1$s-%2$s"><input type="checkbox" name="%1$s[]" id="%1$s-%2$s" value="%2$s" ',
-				esc_attr( $name ),
-				esc_attr( $key )
-			);
-			echo checked( $selected, true, false );
-			echo sprintf( ' /> %s</label><br />', esc_attr( $val ) );
-		}
-
-		$this->print_description_text( $args );
-	}
-
-	/**
-	 * Print out a "single-image browse control" which includes a text
-	 * input to store image path and a button to browse for images.
+	 * Prints out a "single-image browse control" which includes a text input to
+	 * store image path and a button to browse for images.
 	 *
 	 * @param array $args The arguments for the control.
-	 * @return void
 	 */
-	public function print_media_single_image( array $args ) {
+	public function print_media_single_image( array $args ): void {
 		$key         = $args['option_key'];
 		$input_value = $this->parsely->get_options()[ $key ];
 		$input_name  = Parsely::OPTIONS_KEY . "[$key]";
@@ -798,10 +768,8 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		<fieldset class="media-single-image" id="media-single-image-<?php echo esc_attr( $key ); ?>">
 			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
-			<input class="file-path" type="text" name="<?php echo esc_attr( $input_name ); ?>" value="<?php echo esc_attr( $input_value ); ?>" />
-			<p>
-				<button data-option="<?php echo esc_attr( $key ); ?>" class="browse button" type="button"><?php echo esc_html( $button_text ); ?></button>
-			</p>
+			<input class="file-path" type="text" name="<?php echo esc_attr( $input_name ); ?>" id="logo" value="<?php echo esc_attr( $input_value ); ?>" />
+			<button data-option="<?php echo esc_attr( $key ); ?>" class="browse button" type="button"><?php echo esc_html( $button_text ); ?></button>
 		</fieldset>
 
 		<?php
@@ -809,12 +777,11 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Print out the post tracking options table.
+	 * Prints out the post tracking options table.
 	 *
 	 * @since 3.2.0
 	 *
 	 * @param array<string, string> $args The arguments used in the output HTML elements.
-	 * @return void
 	 */
 	public function print_track_post_types_table( array $args ): void {
 		$option_key = esc_attr( $args['option_key'] );
@@ -869,7 +836,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Return the custom post type tracking values in a format that is easily
+	 * Returns the custom post type tracking values in a format that is easily
 	 * consumable by the print_track_post_types_table() function.
 	 *
 	 * @since 3.2.0
@@ -894,7 +861,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Validate the options provided by the user
+	 * Validates the options provided by the user.
 	 *
 	 * @param array $input Options from the settings page.
 	 * @return array List of validated input settings.
@@ -909,14 +876,15 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				__( 'Please specify the Site ID', 'wp-parsely' )
 			);
 		} else {
-			$input['apikey'] = strtolower( $input['apikey'] );
-			$input['apikey'] = sanitize_text_field( $input['apikey'] );
-			if ( strpos( $input['apikey'], '.' ) === false || strpos( $input['apikey'], ' ' ) !== false ) {
+			$api_key = $this->sanitize_api_key( $input['apikey'] );
+			if ( false === $this->validate_api_key( $api_key ) ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'apikey',
 					__( 'Your Parse.ly Site ID looks incorrect, it should look like "example.com".', 'wp-parsely' )
 				);
+			} else {
+				$input['apikey'] = $api_key;
 			}
 		}
 
@@ -959,10 +927,20 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'disable_javascript',
-				__( 'Value passed for disable_javascript must be either "true" or "false".', 'wp-parsely' )
+				__( 'Value passed for disable_javascript must be either "Yes" or "No".', 'wp-parsely' )
 			);
 		} else {
 			$input['disable_javascript'] = 'true' === $input['disable_javascript'];
+		}
+
+		if ( 'true' !== $input['disable_autotrack'] && 'false' !== $input['disable_autotrack'] ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'disable_autotrack',
+				__( 'Value passed for disable_autotrack must be either "Yes" or "No".', 'wp-parsely' )
+			);
+		} else {
+			$input['disable_autotrack'] = 'true' === $input['disable_autotrack'];
 		}
 
 		// Allow for Disable AMP setting to be conditionally included on the page.
@@ -1090,13 +1068,48 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Receive the $input array from the validate_options() function and validate post tracking options.
+	 * Validates the passed API key.
+	 *
+	 * Accepts a www prefix and up to 3 periods.
+	 *
+	 * Valid examples: 'test.com', 'www.test.com', 'subdomain.test.com',
+	 * 'www.subdomain.test.com', 'subdomain.subdomain.test.com'.
+	 *
+	 * Invalid examples: 'test', 'test.com/', 'http://test.com', 'https://test.com',
+	 * 'www.subdomain.subdomain.test.com'.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @param string $api_key The API key to be validated.
+	 * @return bool
+	 */
+	private function validate_api_key( string $api_key ): bool {
+		$key_format = '/^((\w+)\.)?(([\w-]+)?)(\.[\w-]+){1,2}$/';
+
+		return 1 === preg_match( $key_format, $api_key );
+	}
+
+	/**
+	 * Sanitizes the passed API key.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @param string $api_key The API key to be sanitized.
+	 * @return string
+	 */
+	private function sanitize_api_key( string $api_key ): string {
+		return strtolower( sanitize_text_field( $api_key ) );
+	}
+
+	/**
+	 * Receives the $input array from the validate_options() function and
+	 * validate post tracking options.
+	 *
 	 * This function will mutate the $input array.
 	 *
 	 * @since 3.2.0
 	 *
 	 * @param array $input Array passed to validate_options() function.
-	 * @return void
 	 */
 	private function validate_options_post_type_tracking( array &$input ): void {
 		$options         = $this->parsely->get_options();
@@ -1135,21 +1148,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Show our note about dynamic tracking.
-	 *
-	 * @return void
-	 */
-	public function print_dynamic_tracking_note(): void {
-		printf(
-		/* translators: 1: Documentation URL 2: Documentation URL */
-			wp_kses_post( __( 'This plugin does not currently support dynamic tracking ( the tracking of multiple pageviews on a single page). Some common use-cases for dynamic tracking are slideshows or articles loaded via AJAX calls in single-page applications -- situations in which new content is loaded without a full page refresh. Tracking these events requires manually implementing additional JavaScript above <a href="%1$s">the standard Parse.ly include</a> that the plugin injects into your page source. Please consult <a href="%2$s">the Parse.ly documentation on dynamic tracking</a> for instructions on implementing dynamic tracking, or contact Parse.ly support (<a href="%3$s">support@parsely.com</a> ) for additional assistance.', 'wp-parsely' ) ),
-			esc_url( 'http://www.parsely.com/help/integration/basic/' ),
-			esc_url( 'https://www.parsely.com/help/integration/dynamic/' ),
-			esc_url( 'mailto:support@parsely.com' )
-		);
-	}
-
-	/**
 	 * Returns default logo if one can be found.
 	 *
 	 * @return string
@@ -1169,7 +1167,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Sanitize all elements in an option array.
+	 * Sanitizes all elements in an option array.
 	 *
 	 * @param array $array Array of options to be sanitized.
 	 * @return array

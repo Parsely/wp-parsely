@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely wp-admin warning
+ * UI: Parse.ly wp-admin warning class
  *
  * @package Parsely
- * @since 3.0.0
+ * @since   3.0.0
  */
 
 declare(strict_types=1);
@@ -13,7 +13,7 @@ namespace Parsely\UI;
 use Parsely\Parsely;
 
 /**
- * Conditionally render a warning message on wp-admin
+ * Conditionally renders a warning message on wp-admin.
  *
  * @since 3.0.0
  */
@@ -35,20 +35,16 @@ final class Admin_Warning {
 	}
 
 	/**
-	 * Register admin warning.
+	 * Registers admin warning.
 	 *
 	 * @since 3.0.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		add_action( 'admin_notices', array( $this, 'display_admin_warning' ) );
 	}
 
 	/**
-	 * Display the admin warning if needed.
-	 *
-	 * @return void
+	 * Displays the admin warning if needed.
 	 */
 	public function display_admin_warning(): void {
 		if ( ! $this->should_display_admin_warning() ) {
@@ -66,11 +62,11 @@ final class Admin_Warning {
 	}
 
 	/**
-	 * Decide whether the admin display warning should be displayed
+	 * Returns whether the admin display warning should be displayed.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @return bool True if the admin warning should be displayed
+	 * @return bool True if the admin warning should be displayed.
 	 */
 	private function should_display_admin_warning(): bool {
 		if ( is_network_admin() ) {

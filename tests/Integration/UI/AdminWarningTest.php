@@ -2,7 +2,7 @@
 /**
  * Admin page warning tests.
  *
- * @package Parsely
+ * @package Parsely\Tests
  */
 
 declare(strict_types=1);
@@ -39,7 +39,9 @@ final class AdminWarningTest extends TestCase {
 	 * Test that test_display_admin_warning action returns a warning when there is no key
 	 *
 	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
-	 * @uses \Parsely\UI\Admin_Warning::__construct
+	 * @covers \Parsely\UI\Admin_Warning::__construct
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_display_admin_warning_without_key(): void {
@@ -47,7 +49,7 @@ final class AdminWarningTest extends TestCase {
 			self::markTestSkipped( "This test can't run below 5.9" );
 		}
 
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning', Admin_Warning::class );
+		$should_display_admin_warning = self::get_method( 'should_display_admin_warning', Admin_Warning::class );
 		$this->set_options( array( 'apikey' => '' ) );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
@@ -58,11 +60,13 @@ final class AdminWarningTest extends TestCase {
 	 * Test that test_display_admin_warning action returns a warning when there is no key
 	 *
 	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
-	 * @uses \Parsely\UI\Admin_Warning::__construct
+	 * @covers \Parsely\UI\Admin_Warning::__construct
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_display_admin_warning_without_key_old_wp(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning', Admin_Warning::class );
+		$should_display_admin_warning = self::get_method( 'should_display_admin_warning', Admin_Warning::class );
 		$this->set_options( array( 'apikey' => '' ) );
 		set_current_screen( 'settings_page_parsely' );
 
@@ -74,10 +78,10 @@ final class AdminWarningTest extends TestCase {
 	 * Test that test_display_admin_warning action returns a warning when there is no key
 	 *
 	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
-	 * @uses \Parsely\UI\Admin_Warning::__construct
+	 * @covers \Parsely\UI\Admin_Warning::__construct
 	 */
 	public function test_display_admin_warning_network_admin(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning', Admin_Warning::class );
+		$should_display_admin_warning = self::get_method( 'should_display_admin_warning', Admin_Warning::class );
 		$this->set_options( array( 'apikey' => '' ) );
 		set_current_screen( 'dashboard-network' );
 
@@ -89,11 +93,13 @@ final class AdminWarningTest extends TestCase {
 	 * Test that test_display_admin_warning action doesn't return a warning when there is a key
 	 *
 	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
-	 * @uses \Parsely\UI\Admin_Warning::__construct
+	 * @covers \Parsely\UI\Admin_Warning::__construct
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_display_admin_warning_with_key(): void {
-		$should_display_admin_warning = self::getMethod( 'should_display_admin_warning', Admin_Warning::class );
+		$should_display_admin_warning = self::get_method( 'should_display_admin_warning', Admin_Warning::class );
 		$this->set_options( array( 'apikey' => 'somekey' ) );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );

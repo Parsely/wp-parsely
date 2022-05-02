@@ -2,13 +2,14 @@
 /**
  * Class SampleTest
  *
- * @package WordPress
+ * @package Parsely\Tests
  */
 
 declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use Parsely\Metadata;
 use Parsely\Parsely;
 use WP_Scripts;
 
@@ -55,31 +56,20 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Test cache buster string.
-	 *
-	 * During tests, this should only return the version constant.
-	 *
-	 * @covers \Parsely\Parsely::get_asset_cache_buster
-	 */
-	public function test_cache_buster(): void {
-		$this->setExpectedDeprecated( 'Parsely::get_asset_cache_buster' );
-		self::assertSame( Parsely::VERSION, Parsely::get_asset_cache_buster() );
-	}
-
-	/**
 	 * Check out page filtering.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -87,8 +77,7 @@ final class OtherTest extends TestCase {
 	 */
 	public function test_parsely_page_filter(): void {
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Create a single post.
 		$post_id = $this->factory->post->create();
@@ -108,7 +97,8 @@ final class OtherTest extends TestCase {
 		);
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain the headline from the filter.
 		self::assertSame( strpos( $structured_data['headline'], $headline ), 0 );
@@ -117,23 +107,22 @@ final class OtherTest extends TestCase {
 	/**
 	 * Test the wp_parsely_post_type filter
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
-	 * @uses \Parsely\Parsely::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 */
 	public function test_filter_wp_parsely_post_type(): void {
-		$options = get_option( Parsely::OPTIONS_KEY );
-
 		$post_id  = $this->go_to_new_post();
 		$post_obj = get_post( $post_id );
 
@@ -145,8 +134,10 @@ final class OtherTest extends TestCase {
 			}
 		);
 
-		$metadata = self::$parsely->construct_parsely_metadata( $options, $post_obj );
-		self::assertSame( 'BlogPosting', $metadata['@type'] );
+		$metadata        = new Metadata( self::$parsely );
+		$structured_data = $metadata->construct_metadata( $post_obj );
+
+		self::assertSame( 'BlogPosting', $structured_data['@type'] );
 
 		// Try to change the post type to a non-supported value - Not_Supported.
 		add_filter(
@@ -158,7 +149,7 @@ final class OtherTest extends TestCase {
 
 		$this->expectWarning();
 		$this->expectWarningMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages' );
-		self::$parsely->construct_parsely_metadata( $options, $post_obj );
+		$metadata->construct_metadata( $post_obj );
 	}
 
 	/**
@@ -252,6 +243,9 @@ final class OtherTest extends TestCase {
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_tracker_url(): void {
 		$expected = 'https://cdn.parsely.com/keys/blog.parsely.com/p.js';
@@ -264,6 +258,8 @@ final class OtherTest extends TestCase {
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_tracker_no_api_key(): void {
 		self::set_options( array( 'apikey' => '' ) );

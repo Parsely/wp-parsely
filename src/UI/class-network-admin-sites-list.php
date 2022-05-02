@@ -1,9 +1,9 @@
 <?php
 /**
- * Parsely Network Admin Site List class
+ * UI: Network Admin site list class
  *
  * @package Parsely
- * @since 3.2.0
+ * @since   3.2.0
  */
 
 declare(strict_types=1);
@@ -14,7 +14,8 @@ use Parsely\Parsely;
 use WP_Site;
 
 /**
- * Render the additions to the WordPress Multisite Network Admin Sites List page
+ * Renders the additions to the WordPress Multisite Network Admin Sites List
+ * page.
  *
  * @since 3.2.0
  */
@@ -31,10 +32,10 @@ final class Network_Admin_Sites_List {
 	}
 
 	/**
-	 * Attach network admin page functionality to the appropriate action and filter hooks.
+	 * Attaches network admin page functionality to the appropriate action and
+	 * filter hooks.
 	 *
 	 * @since 3.2.0
-	 * @return void
 	 */
 	public function run(): void {
 		add_filter( 'manage_sites_action_links', array( __CLASS__, 'add_action_link' ), 10, 2 );
@@ -43,11 +44,13 @@ final class Network_Admin_Sites_List {
 	}
 
 	/**
-	 * Use the manage_sites_action_links filter to append a link to the settings page in the "row actions."
+	 * Uses the manage_sites_action_links filter to append a link to the settings
+	 * page in the "row actions".
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $actions The list of actions meant to be displayed for the current site's context in the row actions.
+	 * @param array $actions The list of actions meant to be displayed for the current site's
+	 *                       context in the row actions.
 	 * @param int   $_blog_id The blog ID for the current context.
 	 * @return array The list of actions including ours.
 	 */
@@ -67,7 +70,7 @@ final class Network_Admin_Sites_List {
 	}
 
 	/**
-	 * Generate ARIA label content.
+	 * Generates ARIA label content.
 	 *
 	 * @since 3.2.0
 	 *
@@ -85,7 +88,8 @@ final class Network_Admin_Sites_List {
 	}
 
 	/**
-	 * Use the wpmu_blogs_columns filter to register the column where we'll display the site's API Key (if configured).
+	 * Uses the wpmu_blogs_columns filter to register the column where we'll
+	 * display the site's Site ID (if configured).
 	 *
 	 * @since 3.2.0
 	 *
@@ -98,13 +102,13 @@ final class Network_Admin_Sites_List {
 	}
 
 	/**
-	 * Use the manage_sites_custom_column action to output each site's API Key (if configured).
+	 * Uses the manage_sites_custom_column action to output each site's Site ID
+	 * (if configured).
 	 *
 	 * @since 3.2.0
 	 *
 	 * @param string $column_name The column name for the current context.
 	 * @param int    $_blog_id The blog ID for the current context.
-	 * @return void
 	 */
 	public function populate_api_key_column( string $column_name, int $_blog_id ): void {
 		if ( self::COLUMN_NAME !== $column_name ) {

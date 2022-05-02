@@ -2,16 +2,16 @@
 /**
  * Parse.ly
  *
- * @package      Parsely\wp-parsely
- * @author       Parse.ly
- * @copyright    2012 Parse.ly
- * @license      GPL-2.0-or-later
+ * @package   Parsely
+ * @author    Parse.ly
+ * @copyright 2012 Parse.ly
+ * @license   GPL-2.0-or-later
  *
  * @wordpress-plugin
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://www.parse.ly/help/integration/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
- * Version:           3.2.1
+ * Version:           3.3.0
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -38,6 +38,7 @@ use Parsely\RemoteAPI\Related_Proxy;
 use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
+use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Network_Admin_Sites_List;
 use Parsely\UI\Recommended_Widget;
@@ -48,21 +49,21 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.2.1';
+const PARSELY_VERSION = '3.3.0';
 const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
 require __DIR__ . '/src/class-scripts.php';
+require __DIR__ . '/src/class-metadata.php';
 require __DIR__ . '/src/class-dashboard-link.php';
 require __DIR__ . '/src/UI/class-admin-bar.php';
+require __DIR__ . '/src/UI/class-metadata-renderer.php';
 require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
 require __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
- * Register the basic classes to initialize the plugin.
- *
- * @return void
+ * Registers the basic classes to initialize the plugin.
  */
 function parsely_initialize_plugin(): void {
 	$GLOBALS['parsely'] = new Parsely();
@@ -78,6 +79,9 @@ function parsely_initialize_plugin(): void {
 
 	$admin_bar = new Admin_Bar( $GLOBALS['parsely'] );
 	$admin_bar->run();
+
+	$metadata_renderer = new Metadata_Renderer( $GLOBALS['parsely'] );
+	$metadata_renderer->run();
 }
 
 require __DIR__ . '/src/UI/class-admin-warning.php';
@@ -86,9 +90,7 @@ require __DIR__ . '/src/UI/class-row-actions.php';
 
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
 /**
- * Register the Parse.ly wp-admin warnings, plugin actions and row actions.
- *
- * @return void
+ * Registers the Parse.ly wp-admin warnings, plugin actions and row actions.
  */
 function parsely_admin_init_register(): void {
 	$admin_warning = new Admin_Warning( $GLOBALS['parsely'] );
@@ -106,9 +108,8 @@ require __DIR__ . '/src/UI/class-network-admin-sites-list.php';
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
- * Register the additions the Parse.ly wp-admin settings page and Multisite Network Admin Sites List table.
- *
- * @return void
+ * Registers the additions the Parse.ly wp-admin settings page and Multisite
+ * Network Admin Sites List table.
  */
 function parsely_wp_admin_early_register(): void {
 	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
@@ -129,12 +130,10 @@ require __DIR__ . '/src/Endpoints/class-rest-metadata.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
- * Register REST Endpoints that act as a proxy to the Parse.ly API.
+ * Registers REST Endpoints that act as a proxy to the Parse.ly API.
  * This is needed to get around a CORS issues with Firefox.
  *
  * @since 3.2.0
- *
- * @return void
  */
 function parsely_rest_api_init(): void {
 	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
@@ -150,9 +149,7 @@ require __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';
 
 add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 /**
- * Register the Recommendations Block.
- *
- * @return void
+ * Registers the Recommendations Block.
  */
 function init_recommendations_block(): void {
 	$recommendations_block = new Recommendations_Block();
@@ -163,9 +160,7 @@ require __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
- * Register the Parse.ly Recommended widget.
- *
- * @return void
+ * Registers the Parse.ly Recommended widget.
  */
 function parsely_recommended_widget_register(): void {
 	register_widget( Recommended_Widget::class );
@@ -179,7 +174,7 @@ require __DIR__ . '/src/Integrations/class-google-web-stories.php';
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
 /**
- * Instantiate Integrations collection and register built-in integrations.
+ * Instantiates Integrations collection and registers built-in integrations.
  *
  * @since 2.6.0
  *

@@ -14,7 +14,7 @@ import {
 } from '@wordpress/components';
 
 const ParselyRecommendationsInspectorControls = ( {
-	attributes: { boost, imagestyle, limit, showimages, sort, tag, title },
+	attributes: { boost, imagestyle, limit, showimages, sort, title },
 	setAttributes,
 } ) => {
 	return (
@@ -65,13 +65,6 @@ const ParselyRecommendationsInspectorControls = ( {
 						/>
 					</PanelRow>
 				) }
-				<PanelRow>
-					<TextControl
-						label={ __( 'Tag', 'wp-parsely' ) }
-						value={ tag }
-						onChange={ ( newval ) => setAttributes( { tag: newval } ) }
-					/>
-				</PanelRow>
 				<PanelRow>
 					<SelectControl
 						label={ __( 'Sort Recommendations', 'wp-parsely' ) }

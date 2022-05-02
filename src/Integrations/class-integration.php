@@ -1,9 +1,9 @@
 <?php
 /**
- * Integration interface
+ * Integrations: Integration interface
  *
- * @package Parsely\Integrations
- * @since 2.6.0
+ * @package Parsely
+ * @since   2.6.0
  */
 
 declare(strict_types=1);
@@ -17,7 +17,8 @@ namespace Parsely\Integrations;
  */
 interface Integration {
 	/**
-	 * Apply the hooks that integrate the plugin or theme with the Parse.ly plugin.
+	 * Applies the hooks that integrate the plugin or theme with the Parse.ly
+	 * plugin.
 	 *
 	 * @since 2.6.0
 	 */

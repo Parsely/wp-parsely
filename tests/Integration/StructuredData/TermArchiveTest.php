@@ -9,29 +9,30 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
+use Parsely\Metadata;
 use Parsely\Parsely;
 
 /**
  * Structured Data Tests for the term archives.
  *
  * @see https://www.parse.ly/help/integration/jsonld
- * @covers \Parsely\Parsely::construct_parsely_metadata
+ * @covers \Parsely\Metadata::construct_metadata
  */
 final class TermArchiveTest extends NonPostTestCase {
 	/**
 	 * Check metadata for term archive.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -42,8 +43,7 @@ final class TermArchiveTest extends NonPostTestCase {
 		$this->set_permalink_structure( '/%postname%/' );
 
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Insert a single category term, and a Post with that category.
 		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
@@ -58,7 +58,8 @@ final class TermArchiveTest extends NonPostTestCase {
 
 		// Create the structured data for that category.
 		// The category metadata doesn't use the post data, but the construction method requires it for now.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, get_post() );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( get_post() );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
+use Parsely\Metadata;
 use Parsely\Tests\Integration\TestCase;
 
 use Parsely\Parsely;
@@ -32,25 +33,25 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Create a single post, and test the structured data.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_single_post(): void {
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Insert a single post and set as global post.
 		$post_id = self::factory()->post->create();
@@ -60,7 +61,8 @@ final class SinglePostTest extends TestCase {
 		$this->go_to( get_permalink( $post ) );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
@@ -71,25 +73,25 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the category.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_category_data_for_single_post(): void {
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Insert a single category term, and a Post with that category.
 		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
@@ -97,7 +99,8 @@ final class SinglePostTest extends TestCase {
 		$post     = get_post( $post_id );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// The category in the structured data should match the category of the post.
 		self::assertSame( 'Test Category', $structured_data['articleSection'] );
@@ -106,17 +109,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that the tags assigned to a post are lowercase.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -141,7 +145,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain both tags in lowercase form.
 		self::assertContains( 'sample', $structured_data['keywords'] );
@@ -151,19 +156,20 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the categories as tags.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_categories
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_custom_taxonomy_values
-	 * @uses \Parsely\Parsely::get_first_image
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_categories
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_custom_taxonomy_values
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -187,7 +193,8 @@ final class SinglePostTest extends TestCase {
 		$post    = get_post( $post_id );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain all three categories as keywords.
 		self::assertContains( 'Test Category', $structured_data['keywords'] );
@@ -198,19 +205,20 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Test custom taxonomy terms, categories, and tags in the metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_categories
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_custom_taxonomy_values
-	 * @uses \Parsely\Parsely::get_first_image
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_categories
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_custom_taxonomy_values
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -246,7 +254,8 @@ final class SinglePostTest extends TestCase {
 		wp_set_object_terms( $post_id, array( $tag ), 'post_tag' );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain the category, the post tag, and the custom taxonomy term.
 		self::assertContains( 'my category', $structured_data['keywords'] );
@@ -257,18 +266,19 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Are the top level categories what we expect?
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::get_top_level_term
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
-	 * @uses \Parsely\Parsely::get_top_level_term
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -295,7 +305,8 @@ final class SinglePostTest extends TestCase {
 		$post    = get_post( $post_id );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain the parent category.
 		self::assertSame( 'Parent Category', $structured_data['articleSection'] );
@@ -305,7 +316,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain the child category.
 		self::assertSame( 'Child Category', $structured_data['articleSection'] );
@@ -314,18 +326,19 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check out the custom taxonomy as section.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::get_top_level_term
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
-	 * @uses \Parsely\Parsely::get_top_level_term
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -365,7 +378,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		self::assertSame( 'Premier League', $structured_data['articleSection'] );
 
@@ -374,7 +388,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		self::assertSame( 'football', $structured_data['articleSection'] );
 	}
@@ -382,17 +397,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check the canonicals.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
@@ -412,7 +428,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// The url scheme should be 'http'.
 		$url = wp_parse_url( $structured_data['url'] );
@@ -423,7 +440,8 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// The url scheme should be 'https'.
 		$url = wp_parse_url( $structured_data['url'] );
@@ -433,25 +451,25 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check post modified date in Parsely metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_author_name
-	 * @uses \Parsely\Parsely::get_author_names
-	 * @uses \Parsely\Parsely::get_bottom_level_term
-	 * @uses \Parsely\Parsely::get_category_name
-	 * @uses \Parsely\Parsely::get_clean_parsely_page_value
-	 * @uses \Parsely\Parsely::get_coauthor_names
-	 * @uses \Parsely\Parsely::get_current_url
-	 * @uses \Parsely\Parsely::get_first_image
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_tags
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group metadata
 	 */
 	public function test_metadata_post_modified_date(): void {
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Create a post with a date in the past.
 		$time_format      = 'Y-m-d\TH:i:s\Z';
@@ -468,14 +486,15 @@ final class SinglePostTest extends TestCase {
 		// In the metadata, check that the post's created date is correct and
 		// that the last modified date is identical.
 		$post     = get_post( $post_id );
-		$metadata = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$meta     = new Metadata( $parsely );
+		$metadata = $meta->construct_metadata( $post );
 		self::assertSame( $date_created, $metadata['dateCreated'] );
 		self::assertSame( $date_created, $metadata['dateModified'] );
 
 		// Update the post and reload metadata.
 		wp_update_post( array( 'ID' => $post_id ) );
 		$post_updated     = get_post( $post_id );
-		$metadata_updated = $parsely->construct_parsely_metadata( $parsely_options, $post_updated );
+		$metadata_updated = $meta->construct_metadata( $post_updated );
 
 		// In the metadata, check that the last modified date has been updated.
 		self::assertSame( $date_created, $metadata_updated['dateCreated'] );
@@ -485,14 +504,24 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that post objects with valid creation date work with construct_parsely_metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @covers \Parsely\Parsely::set_metadata_post_times
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::get_author_name
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
 	 */
 	public function test_empty_post_date_has_dates_omitted_from_metadata(): void {
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Create a single post.
 		$post_id = $this->factory->post->create();
@@ -502,7 +531,8 @@ final class SinglePostTest extends TestCase {
 		unset( $post->post_date_gmt );
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// Without a post date, there should not be the following in the metadata.
 		self::assertArrayNotHasKey( 'dateCreated', $structured_data );
@@ -513,8 +543,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that post objects with identical creation & modified dates produce expected metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @covers \Parsely\Parsely::set_metadata_post_times
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
 	 */
 	public function test_post_date_with_same_create_modified_dates_included_in_metadata(): void {
@@ -534,7 +574,8 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified_gmt = $singular_datetime;
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// Identical post creation and modified dates should be present in the metadata.
 		$expected_singular_datetime = '2021-12-30T20:11:42Z';
@@ -547,8 +588,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that posts with modified before creation date "promotes" modified in metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @covers \Parsely\Parsely::set_metadata_post_times
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
 	 */
 	public function test_post_date_with_modified_before_created_date_in_metadata(): void {
@@ -569,7 +620,8 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified_gmt = $modified_datetime;
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// Modified dates earlier than created dates should be "promoted" to the latter.
 		$expected_singular_datetime = '2021-12-30T20:11:42Z';
@@ -582,8 +634,18 @@ final class SinglePostTest extends TestCase {
 	/**
 	 * Check that posts with modified after creation date has both in metadata.
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @covers \Parsely\Parsely::set_metadata_post_times
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
 	 */
 	public function test_post_date_with_modified_after_created_date_in_metadata(): void {
@@ -604,7 +666,8 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified_gmt = $modified_datetime;
 
 		// Create the structured data for that post.
-		$structured_data = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
 		// Modified dates later than created dates should be present in the metadata.
 		$expected_created_datetime  = '2021-12-30T20:11:42Z';
@@ -632,12 +695,26 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Tests if keywords in Parse.ly metadata are generated correctly when categories are tags and the post has no categories.
+	 * Proves that keywords in Parse.ly metadata are generated correctly when categories
+	 * are tags and the post has no categories.
 	 *
 	 * @since 3.0.3
 	 *
-	 * @covers \Parsely\Parsely::construct_parsely_metadata
-	 * @uses \Parsely\Parsely::get_categories
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata::get_categories
+	 * @covers \Parsely\Metadata::get_custom_taxonomy_values
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @group metadata
 	 */
 	public function test_post_with_categories_as_tags_without_categories(): void {
 		// Setup Parsely object.
@@ -655,16 +732,55 @@ final class SinglePostTest extends TestCase {
 		$default_category_slug = get_category( get_option( 'default_category' ) )->slug;
 		wp_remove_object_terms( $post_id, $default_category_slug, 'category' );
 
-		$expected = array();
-		$metadata = $parsely->construct_parsely_metadata( $parsely_options, $post );
+		$expected        = array();
+		$metadata        = new Metadata( $parsely );
+		$structured_data = $metadata->construct_metadata( $post );
 
-		self::assertSame( $expected, $metadata['keywords'] );
+		self::assertSame( $expected, $structured_data['keywords'] );
 	}
 
 	/**
-	 * These are the required properties for posts.
+	 * Proves that featured image URLs are correctly generated in the metadata.
 	 *
-	 * @return string[]
+	 * @since 3.3.0
+	 *
+	 * @covers \Parsely\Metadata::__construct
+	 * @covers \Parsely\Metadata::construct_metadata
+	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata::get_author_names
+	 * @covers \Parsely\Metadata::get_bottom_level_term
+	 * @covers \Parsely\Metadata::get_category_name
+	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
+	 * @covers \Parsely\Metadata::get_coauthor_names
+	 * @covers \Parsely\Metadata::get_current_url
+	 * @covers \Parsely\Metadata::get_tags
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 * @group metadata
+	 */
+	public function test_post_featured_image_urls_in_metadata_are_correct(): void {
+		// Initialize required objects.
+		$metadata = new Metadata( new Parsely() );
+
+		// Create a post with a featured image.
+		$post            = self::factory()->post->create_and_get();
+		$attachment_path = dirname( __DIR__, 3 ) . '/.wordpress-org/banner-1544x500.png';
+		$attachment_id   = self::factory()->attachment->create_upload_object( $attachment_path, $post->ID );
+		set_post_thumbnail( $post, $attachment_id );
+
+		// Generate metadata and expected results.
+		$actual_metadata    = $metadata->construct_metadata( $post );
+		$expected_image_url = get_the_post_thumbnail_url( $post, 'full' );
+		$expected_thumb_url = get_the_post_thumbnail_url( $post, 'thumbnail' );
+
+		self::assertSame( $expected_image_url, $actual_metadata['image']['url'] );
+		self::assertSame( $expected_thumb_url, $actual_metadata['thumbnailUrl'] );
+	}
+
+	/**
+	 * Returns the required properties for posts.
+	 *
+	 * @return array<string>
 	 */
 	private function get_required_properties(): array {
 		return array(

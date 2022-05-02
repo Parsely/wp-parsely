@@ -2,7 +2,7 @@
 /**
  * Integrations collection tests.
  *
- * @package Parsely\Tests\Integrations
+ * @package Parsely\Tests
  */
 
 declare(strict_types=1);
@@ -27,6 +27,7 @@ final class IntegrationsTest extends TestCase {
 	 * @covers \Parsely\parsely_integrations
 	 * @uses \Parsely\Integrations\Amp::integrate
 	 * @uses \Parsely\Integrations\Facebook_Instant_Articles::integrate
+	 * @uses \Parsely\Integrations\Google_Web_Stories::integrate
 	 * @uses \Parsely\Integrations\Integrations::integrate
 	 * @uses \Parsely\Integrations\Integrations::register
 	 */
@@ -68,8 +69,6 @@ final class IntegrationsTest extends TestCase {
 // phpcs:disable Generic.Files.OneObjectStructurePerFile.MultipleFound
 /**
  * Class FakeIntegration2
- *
- * @package Parsely\Tests\Integrations
  */
 class FakeIntegration2 {
 	/**

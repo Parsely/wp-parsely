@@ -1,13 +1,10 @@
 <?php
 /**
- * Settings file
+ * Views: Plugin settings view
  *
- * Create the settings page for parse.ly
+ * Shows the settings page.
  *
- * @package      Parsely\wp-parsely
- * @author       Parse.ly
- * @copyright    2012 Parse.ly
- * @license      GPL-2.0-or-later
+ * @package Parsely
  */
 
 declare(strict_types=1);
