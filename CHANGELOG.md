@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tracker URL field to REST API endpoint. [#743](https://github.com/Parsely/wp-parsely/pull/743)
 - Recommendations out of beta phase, now enabled by default. [#764](https://github.com/Parsely/wp-parsely/pull/764)
 - Dynamic support tracking. Disable autotrack option. [#792](https://github.com/Parsely/wp-parsely/pull/792)
-- Adding support for Audience Segments. JavaScript `onReady` hook. [#808](https://github.com/Parsely/wp-parsely/pull/808)
+- Added support for Audience Segments. JavaScript `onReady` hook. [#808](https://github.com/Parsely/wp-parsely/pull/808)
 - End-to-end tests for front-end metadata. [#789](https://github.com/Parsely/wp-parsely/pull/789)
 - Integration tests for post image metadata. [#820](https://github.com/Parsely/wp-parsely/pull/820)
 
