@@ -34,9 +34,7 @@ describe( 'Front end metadata insertion', () => {
 
 		const content = await page.content();
 
-		expect( content ).toContain( '<script type="application/ld+json">\n' +
-			'{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"wp-parsely","url":"http:\\/\\/localhost:8889"}\n' +
-		'</script>' );
+		expect( content ).toContain( '<script type="application/ld+json">{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"wp-parsely","url":"http:\\/\\/localhost:8889"}</script>' );
 
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
