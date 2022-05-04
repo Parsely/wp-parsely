@@ -55,13 +55,14 @@ class Metadata {
 		$options           = $this->parsely->get_options();
 		$queried_object_id = get_queried_object_id();
 
-		if ( is_front_page() && ! is_paged() ) {
+		if ( is_front_page() ) {
 			if ( ! is_paged() ) {
 				$builder = new Front_Page_Builder( $this->parsely );
 			} else {
-				// TODO: Check if we can ever get into this condition.
 				$builder = new Paginated_Front_Page_Builder( $this->parsely );
 			}
+		} elseif ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) {
+			$builder = new Front_Page_Builder( $this->parsely );
 		} elseif (
 			is_home() && (
 				! ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) ||
@@ -79,10 +80,8 @@ class Metadata {
 			$builder = new Tag_Builder( $this->parsely );
 		} elseif ( in_array( get_post_type( $post ), $options['track_post_types'], true ) && Parsely::post_has_trackable_status( $post ) ) {
 			$builder = new Post_Builder( $this->parsely, $post );
-		} elseif ( in_array( get_post_type(), $options['track_page_types'], true ) && Parsely::post_has_trackable_status( $post ) ) {
-			$builder = new Page_Builder( $this->parsely );
-		} elseif ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) {
-			$builder = new Front_Page_Builder( $this->parsely );
+		} elseif ( in_array( get_post_type( $post ), $options['track_page_types'], true ) && Parsely::post_has_trackable_status( $post ) ) {
+			$builder = new Page_Builder( $this->parsely, $post );
 		}
 
 		if ( null !== $builder ) {

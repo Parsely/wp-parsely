@@ -1,7 +1,6 @@
 <?php
-
 /**
- * Author Archive Page Metadata Builder class
+ * Tag Page Metadata Builder class
  *
  * @package Parsely
  * @since 3.4.0
@@ -13,11 +12,19 @@ namespace Parsely\Meta;
 
 /**
  * Implements abstract Metadata Builder class to generate the metadata array
- * for a author archive page.
+ * for a tag page.
  *
  * @since 3.4.0
  */
 class Tag_Builder extends Metadata_Builder {
+	/**
+	 * Generates the metadata object by calling the build_* methods and
+	 * returns the value.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return array<string, mixed>
+	 */
 	public function get_metadata(): array {
 		$this->build_basic();
 		$this->build_headline();
@@ -26,6 +33,11 @@ class Tag_Builder extends Metadata_Builder {
 		return $this->metadata;
 	}
 
+	/**
+	 * Populates the `headline` field in the metadata object.
+	 *
+	 * @since 3.4.0
+	 */
 	private function build_headline(): void {
 		$tag = single_tag_title( '', false );
 		if ( empty( $tag ) ) {

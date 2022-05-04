@@ -12,11 +12,19 @@ namespace Parsely\Meta;
 
 /**
  * Implements abstract Metadata Builder class to generate the metadata array
- * for a author archive page.
+ * for an author archive page.
  *
  * @since 3.4.0
  */
 class Author_Archive_Builder extends Metadata_Builder {
+	/**
+	 * Generates the metadata object by calling the build_* methods and
+	 * returns the value.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return array<string, mixed>
+	 */
 	public function get_metadata(): array {
 		$this->build_basic();
 		$this->build_headline();
@@ -25,6 +33,11 @@ class Author_Archive_Builder extends Metadata_Builder {
 		return $this->metadata;
 	}
 
+	/**
+	 * Populates the `headline` field in the metadata object.
+	 *
+	 * @since 3.4.0
+	 */
 	private function build_headline(): void {
 		$author                     = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
 		$this->metadata['headline'] = $this->clean_value( 'Author - ' . $author->data->display_name );

@@ -1,12 +1,25 @@
 <?php
+/**
+ * Front Page Metadata Builder class
+ *
+ * @package Parsely
+ * @since 3.4.0
+ */
 
 declare(strict_types=1);
 
 namespace Parsely\Meta;
 
 use Parsely\Parsely;
-use WP_Post;
 
+/**
+ * Abstract class that implements modular builders for Metadata. It should be
+ * extended in subclasses that implement a particular page view to render
+ * metadata for. Specifically, the `get_metadata` method should be implemented.
+ *
+ * @since 1.0.0
+ * @since 3.3.0 Logic extracted from Parsely\Parsely class to separate file/class.
+ */
 abstract class Metadata_Builder {
 	/**
 	 * Instance of Parsely class.
@@ -16,6 +29,8 @@ abstract class Metadata_Builder {
 	protected $parsely;
 
 	/**
+	 * Array holding the metadata keys and values.
+	 *
 	 * @var array<string, mixed>
 	 */
 	protected $metadata = array();
@@ -30,21 +45,39 @@ abstract class Metadata_Builder {
 	}
 
 	/**
+	 * Generates the metadata object by calling the build_* methods and
+	 * returns the value.
 	 *
+	 * @since 3.4.0
 	 *
 	 * @return array<string, mixed>
 	 */
 	abstract public function get_metadata(): array;
 
+	/**
+	 * Build basic metadata present in all pages.
+	 *
+	 * @since 3.4.0
+	 */
 	protected function build_basic(): void {
 		$this->metadata['@context'] = 'https://schema.org';
 		$this->metadata['@type']    = 'WebPage';
 	}
 
 	/**
-	 * Sanitize content
+	 * Populates the `url` field in the metadata object by getting the current page's URL.
+	 *
+	 * @since 3.4.0
+	 */
+	protected function build_url(): void {
+		$this->metadata['url'] = $this->get_current_url();
+	}
+
+	/**
+	 * Sanitize string content.
 	 *
 	 * @since 2.6.0
+	 * @since 3.4.0 Moved to class-metadata-builder
 	 *
 	 * @param string|null $val The content you'd like sanitized.
 	 * @return string
@@ -57,17 +90,13 @@ abstract class Metadata_Builder {
 		return trim( wp_strip_all_tags( str_replace( array( "\n", "\r" ), '', $val ) ) );
 	}
 
-	protected function build_url(): void {
-		$this->metadata['url'] = $this->get_current_url();
-	}
-
 	/**
 	 * Gets the URL of the current PHP script.
 	 *
 	 * A fall-back implementation to determine permalink.
 	 *
 	 * @since 3.0.0 $parsely_type Default parameter changed to `non-post`.
-	 * @since 3.3.0 Moved to class-metadata
+	 * @since 3.4.0 Moved to class-metadata-builder
 	 *
 	 * @param string $parsely_type Optional. Parse.ly post type you're interested in, either 'post'
 	 *                             or 'non-post'. Default is 'non-post'.

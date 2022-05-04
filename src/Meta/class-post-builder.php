@@ -1,6 +1,6 @@
 <?php
 /**
- * Author Archive Page Metadata Builder class
+ * Post Page Metadata Builder class
  *
  * @package Parsely
  * @since 3.4.0
@@ -16,23 +16,37 @@ use WP_User;
 
 /**
  * Implements abstract Metadata Builder class to generate the metadata array
- * for a author archive page.
+ * for a post page.
  *
  * @since 3.4.0
  */
 class Post_Builder extends Metadata_Builder {
-	protected $post;
+	/**
+	 * Post object to generate the metadata for.
+	 *
+	 * @var WP_Post
+	 */
+	private $post;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
+	 * @param WP_Post $post Post object to generate the metadata for.
 	 */
 	public function __construct( Parsely $parsely, WP_Post $post ) {
 		parent::__construct( $parsely );
 		$this->post = $post;
 	}
 
+	/**
+	 * Generates the metadata object by calling the build_* methods and
+	 * returns the value.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return array<string, mixed>
+	 */
 	public function get_metadata(): array {
 		$this->build_basic();
 		$this->build_headline();
@@ -51,14 +65,29 @@ class Post_Builder extends Metadata_Builder {
 		return $this->metadata;
 	}
 
+	/**
+	 * Populates the `headline` field in the metadata object.
+	 *
+	 * @since 3.4.0
+	 */
 	private function build_headline(): void {
 		$this->metadata['headline'] = $this->clean_value( get_the_title( $this->post ) );
 	}
 
+	/**
+	 * Populates the `url` field in the metadata object by getting the current page's URL.
+	 *
+	 * @since 3.4.0
+	 */
 	protected function build_url(): void {
 		$this->metadata['url'] = $this->get_current_url( 'post', $this->post->ID );
 	}
 
+	/**
+	 * Populates the `@type` field in the metadata object.
+	 *
+	 * @since 3.4.0
+	 */
 	private function build_type(): void {
 		/**
 		 * Filters the JSON-LD @type.
@@ -69,9 +98,32 @@ class Post_Builder extends Metadata_Builder {
 		 *
 		 * @since 2.5.0
 		 */
-		$this->metadata['@type'] = (string) apply_filters( 'wp_parsely_post_type', 'NewsArticle', $this->post->ID, $this->post->post_type );
+		$type = (string) apply_filters( 'wp_parsely_post_type', 'NewsArticle', $this->post->ID, $this->post->post_type );
+
+		// TODO: Merge only once, not every execution.
+		$supported_types = array_merge( Parsely::SUPPORTED_JSONLD_POST_TYPES, Parsely::SUPPORTED_JSONLD_NON_POST_TYPES );
+
+		// Validate type before passing it further as an invalid type will not be recognized by Parse.ly.
+		if ( ! in_array( $type, $supported_types, true ) ) {
+			$error = sprintf(
+			/* translators: 1: JSON @type like NewsArticle, 2: URL */
+				__( '@type %1$s is not supported by Parse.ly. Please use a type mentioned in %2$s', 'wp-parsely' ),
+				$type,
+				'https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages'
+			);
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+			trigger_error( esc_html( $error ), E_USER_WARNING );
+			$type = 'NewsArticle';
+		}
+
+		$this->metadata['@type'] = $type;
 	}
 
+	/**
+	 * Populates the `mainEntityOfPage` field in the metadata object.
+	 *
+	 * @since 3.4.0
+	 */
 	private function build_main_entity(): void {
 		$this->metadata['mainEntityOfPage'] = array(
 			'@type' => 'WebPage',
@@ -79,6 +131,11 @@ class Post_Builder extends Metadata_Builder {
 		);
 	}
 
+	/**
+	 * Populates the `thumbnailUrl` field in the metadata object.
+	 *
+	 * @since 3.4.0
+	 */
 	private function build_thumbnail_url(): void {
 		$thumb_url = get_the_post_thumbnail_url( $this->post, 'thumbnail' );
 		if ( ! is_string( $thumb_url ) ) {
@@ -87,6 +144,11 @@ class Post_Builder extends Metadata_Builder {
 		$this->metadata['thumbnailUrl'] = $thumb_url;
 	}
 
+	/**
+	 * Populates the `image` field in the metadata object.
+	 *
+	 * @since 3.4.0
+	 */
 	private function build_image(): void {
 		$image_url = get_the_post_thumbnail_url( $this->post, 'full' );
 		if ( ! is_string( $image_url ) ) {
@@ -98,10 +160,20 @@ class Post_Builder extends Metadata_Builder {
 		);
 	}
 
+	/**
+	 * Populates the `articleSection` field in the metadata object.
+	 *
+	 * @since 3.4.0
+	 */
 	private function build_article_section(): void {
 		$this->metadata['articleSection'] = $this->get_category_name( $this->post, $this->parsely->get_options() );
 	}
 
+	/**
+	 * Populates the `author` and `creator` fields in the metadata object.
+	 *
+	 * @since 3.4.0
+	 */
 	private function build_author(): void {
 		$authors        = $this->get_author_names( $this->post );
 		$author_objects = array();
@@ -116,6 +188,11 @@ class Post_Builder extends Metadata_Builder {
 		$this->metadata['creator'] = $authors;
 	}
 
+	/**
+	 * Populates the `publisher` field in the metadata object.
+	 *
+	 * @since 3.4.0
+	 */
 	private function build_publisher(): void {
 		$this->metadata['publisher'] = array(
 			'@type' => 'Organization',
@@ -124,7 +201,13 @@ class Post_Builder extends Metadata_Builder {
 		);
 	}
 
+	/**
+	 * Populates the `keywords` field in the metadata object.
+	 *
+	 * @since 3.4.0
+	 */
 	private function build_keywords(): void {
+		$post    = get_post();
 		$options = $this->parsely->get_options();
 		$tags    = $this->get_tags( $this->post->ID );
 		if ( $options['cats_as_tags'] ) {
