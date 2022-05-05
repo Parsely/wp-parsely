@@ -317,7 +317,7 @@ class Post_Builder extends Metadata_Builder {
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param int    $term_id The id of the top level term.
+	 * @param int    $term_id       The ID of the top level term.
 	 * @param string $taxonomy_name The name of the taxonomy.
 	 * @return string|false $parent The top level name of the category / taxonomy.
 	 */
