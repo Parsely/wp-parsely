@@ -468,7 +468,7 @@ class Post_Builder extends Metadata_Builder {
 	 * @since 3.3.0 Moved to class-metadata
 	 *
 	 * @param ?WP_User $author The author of the post.
-	 * @return string
+	 * @return string An author name.
 	 */
 	private function get_author_name( ?WP_User $author ): string {
 		// Gracefully handle situation where no author is available.
