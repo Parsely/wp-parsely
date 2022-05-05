@@ -532,7 +532,7 @@ class Post_Builder extends Metadata_Builder {
 				$tags[] = rtrim( $hierarchy, '/' );
 			}
 		}
-		// take last element in the hierarchy, a string representing the full parent->child tree,
+		// Take last element in the hierarchy, a string representing the full parent->child tree,
 		// and split it into individual category names.
 		$last_tag = end( $tags );
 		if ( false !== $last_tag ) {
