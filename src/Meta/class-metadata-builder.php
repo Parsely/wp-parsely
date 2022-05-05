@@ -13,9 +13,10 @@ namespace Parsely\Meta;
 use Parsely\Parsely;
 
 /**
- * Abstract class that implements modular builders for Metadata. It should be
- * extended in subclasses that implement a particular page view to render
- * metadata for. Specifically, the `get_metadata` method should be implemented.
+ * Abstract class that implements modular builders for Metadata.
+ *
+ * It should be extended in subclasses that implement a particular page view to render
+ * metadata for. Specifically, the `get_metadata()` method should be implemented.
  *
  * @since 1.0.0
  * @since 3.3.0 Logic extracted from Parsely\Parsely class to separate file/class.
