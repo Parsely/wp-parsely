@@ -139,7 +139,7 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verify that trying to save tracking settings with an non-array value fails.
+	 * Verify that trying to save tracking settings with a non-array value fails.
 	 *
 	 * @since 3.2.0
 	 *
@@ -156,6 +156,25 @@ final class SettingsPageTest extends TestCase {
 
 		$options['track_post_types_as'] = 'string';
 		$actual                         = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Verify that trying to save tracking settings without autotrack value pulls default.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::__construct
+	 * @covers \Parsely\UI\Settings_Page::validate_options
+	 * @uses \Parsely\Parsely::get_options
+	 * @group ui
+	 */
+	public function test_saving_disable_autotrack_works_default_value(): void {
+		$expected = self::$parsely->get_options();
+		$options  = self::$parsely->get_options();
+
+		unset( $options['disable_autotrack'] );
+		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );
 	}
 
