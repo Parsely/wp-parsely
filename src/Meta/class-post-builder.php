@@ -368,7 +368,7 @@ class Post_Builder extends Metadata_Builder {
 
 	/**
 	 * Retrieves all the authors for a post as an array. Can include multiple
-	 * authors if coauthors plugin is in use.
+	 * authors if the Co-Authors Plus plugin is in use.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
