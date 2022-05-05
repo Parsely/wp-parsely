@@ -229,7 +229,7 @@ class Post_Builder extends Metadata_Builder {
 		/**
 		 * Filters the post tags that are used as metadata keywords.
 		 *
-		 * @param string[] $tags Post tags.
+		 * @param array<string> $tags Post tags.
 		 * @param int $ID Post ID.
 		 *
 		 * @since 1.8.0
