@@ -520,7 +520,7 @@ class Post_Builder extends Metadata_Builder {
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param int    $post_id The id of the post you're trying to get categories for.
+	 * @param int    $post_id   The id of the post you're trying to get categories for.
 	 * @param string $delimiter What character will delimit the categories.
 	 * @return array<string> All the child categories of the current post.
 	 */
