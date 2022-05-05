@@ -310,7 +310,7 @@ class Post_Builder extends Metadata_Builder {
 	}
 
 	/**
-	 * Returns the top-most category/taxonomy value in a hierarcy given a
+	 * Returns the top-most category/taxonomy value in a hierarchy given a
 	 * taxonomy value's ID.
 	 *
 	 * (WordPress calls taxonomy values 'terms').
