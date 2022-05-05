@@ -337,7 +337,7 @@ class Post_Builder extends Metadata_Builder {
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param int    $post_id The post id you're interested in.
+	 * @param int    $post_id       The post id you're interested in.
 	 * @param string $taxonomy_name The name of the taxonomy.
 	 * @return string Name of the custom taxonomy.
 	 */
