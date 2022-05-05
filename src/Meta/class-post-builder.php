@@ -389,8 +389,8 @@ class Post_Builder extends Metadata_Builder {
 		 *
 		 * @since 1.14.0
 		 *
-		 * @param WP_User[] $authors One or more authors as WP_User objects.
-		 * @param WP_Post   $post    Post object.
+		 * @param array<WP_User> $authors One or more authors as WP_User objects.
+		 * @param WP_Post        $post    Post object.
 		 */
 		$authors = apply_filters( 'wp_parsely_pre_authors', $authors, $post );
 
