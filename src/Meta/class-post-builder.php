@@ -545,12 +545,13 @@ class Post_Builder extends Metadata_Builder {
 	}
 
 	/**
-	 * Gets all term values from custom taxonomies.
+	 * Gets all term names from all custom taxonomies assigned to a post.
 	 *
 	 * @since 3.3.0 Moved to class-metadata
+	 * @since 3.4.0 Moved to class-post-builder
 	 *
-	 * @param WP_Post $post_obj The post object.
-	 * @return array<string>
+	 * @param WP_Post $post_obj The post object to find the terms for.
+	 * @return array<string> Term names.
 	 */
 	private function get_custom_taxonomy_values( WP_Post $post_obj ): array {
 		// filter out default WordPress taxonomies.
