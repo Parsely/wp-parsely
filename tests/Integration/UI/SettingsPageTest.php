@@ -166,6 +166,8 @@ final class SettingsPageTest extends TestCase {
 	 *
 	 * @covers \Parsely\UI\Settings_Page::__construct
 	 * @covers \Parsely\UI\Settings_Page::validate_options
+	 * @covers \Parsely\UI\Settings_Page::get_logo_default
+	 * @covers \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\Parsely::get_options
 	 * @group ui
 	 */
