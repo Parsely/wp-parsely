@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.0] - 2022-05-06
+
+### Fixed
+
+- Saving settings on a new installation would show a warning on wp-admin. [#845](https://github.com/Parsely/wp-parsely/pull/845)
+- Risky JSON-LD metadata views. [#842](https://github.com/Parsely/wp-parsely/pull/842)
+
+### Removed
+
+- Remove Recommendations Block README. [#844](https://github.com/Parsely/wp-parsely/pull/844)
+
 ## [3.3.0] - 2022-05-02
 
 ### Added
@@ -664,6 +675,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - Initial version.
 - Add support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
 
+[3.3.1]: https://github.com/Parsely/wp-parsely/compare/3.3.0...3.3.1
 [3.3.0]: https://github.com/Parsely/wp-parsely/compare/3.2.1...3.3.0
 [3.2.1]: https://github.com/Parsely/wp-parsely/compare/3.2.0...3.2.1
 [3.2.0]: https://github.com/Parsely/wp-parsely/compare/3.1.3...3.2.0
