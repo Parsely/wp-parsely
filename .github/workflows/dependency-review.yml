@@ -14,5 +14,6 @@ jobs:
       - name: Check out the source code
         uses: actions/checkout@v3
 
+      # Checks for dependencies with known vulnerabilities
       - name: Review dependencies
         uses: actions/dependency-review-action@v1
