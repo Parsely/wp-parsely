@@ -501,7 +501,7 @@ class Post_Builder extends Metadata_Builder {
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param int $post_id   The id of the post you're trying to get tags for.
+	 * @param int $post_id   The ID of the post you're trying to get tags for.
 	 * @return array<string> The tags of the post represented by the post id.
 	 */
 	private function get_tags( int $post_id ): array {
