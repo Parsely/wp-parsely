@@ -56,7 +56,7 @@ abstract class Metadata_Builder {
 	abstract public function get_metadata(): array;
 
 	/**
-	 * Build basic metadata present in all pages.
+	 * Builds basic metadata present in all pages.
 	 *
 	 * @since 3.4.0
 	 */
