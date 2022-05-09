@@ -419,7 +419,7 @@ class Post_Builder extends Metadata_Builder {
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param int $post_id The id of the post.
+	 * @param int $post_id The ID of the post.
 	 * @return array<WP_User> List of coauthors, or an empty array if the Co-Authors Plus plugin is not active.
 	 */
 	private function get_coauthor_names( int $post_id ): array {
