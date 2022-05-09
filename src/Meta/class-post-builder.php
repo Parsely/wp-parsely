@@ -554,7 +554,7 @@ class Post_Builder extends Metadata_Builder {
 	 * @return array<string> Term names.
 	 */
 	private function get_custom_taxonomy_values( WP_Post $post_obj ): array {
-		// filter out default WordPress taxonomies.
+		// Filter out default WordPress taxonomies.
 		$all_taxonomies = array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) );
 		$all_values     = array();
 
