@@ -359,7 +359,7 @@ class Post_Builder extends Metadata_Builder {
 		$terms_not_parents_cleaned = array_values( $terms_not_parents );
 
 		if ( ! empty( $terms_not_parents_cleaned ) ) {
-			// if you assign multiple child terms in a custom taxonomy, will only return the first.
+			// If you assign multiple child terms in a custom taxonomy, will only return the first.
 			return $terms_not_parents_cleaned[0]->name ?? '';
 		}
 
