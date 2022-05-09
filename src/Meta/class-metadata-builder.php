@@ -75,7 +75,7 @@ abstract class Metadata_Builder {
 	}
 
 	/**
-	 * Sanitize string content.
+	 * Sanitizes string content.
 	 *
 	 * @since 2.6.0
 	 * @since 3.4.0 Moved to class-metadata-builder
