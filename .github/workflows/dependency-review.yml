@@ -2,6 +2,9 @@ name: Dependency Review
 
 on:
   pull_request:
+    paths:
+      - package*.json
+      - composer.json
 
 permissions:
   contents: read
