@@ -39,7 +39,8 @@ class Author_Archive_Builder extends Metadata_Builder {
 	 * @since 3.4.0
 	 */
 	private function build_headline(): void {
-		$author                     = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
-		$this->metadata['headline'] = $this->clean_value( 'Author - ' . $author->data->display_name );
+		$author = ( get_query_var( 'author_name' ) ) ? get_user_by( 'slug', get_query_var( 'author_name' ) ) : get_userdata( get_query_var( 'author' ) );
+		/* translators: %s: Author name. */
+		$this->metadata['headline'] = $this->clean_value( sprintf( __( 'Author - %s', 'wp-parsely' ), $author->data->display_name ) );
 	}
 }
