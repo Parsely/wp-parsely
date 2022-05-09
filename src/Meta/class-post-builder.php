@@ -296,7 +296,7 @@ class Post_Builder extends Metadata_Builder {
 		}
 
 		/**
-		 * Filters the constructed category name that are used as metadata keywords.
+		 * Filters the constructed category name.
 		 *
 		 * @since 1.8.0
 		 *
