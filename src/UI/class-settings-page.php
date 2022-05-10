@@ -456,6 +456,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				'title'      => __( 'Track Post Types as', 'wp-parsely' ),
 				'option_key' => $field_id,
 				'help_text'  => $field_help,
+				'filter'     => 'wp_parsely_trackable_statuses',
 			)
 		);
 
@@ -472,6 +473,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				'repeated_metas' => 'repeated_metas',
 			),
 			'label_for'      => Parsely::OPTIONS_KEY . "[$field_id]",
+			'filter'         => 'wp_parsely_metadata',
 		);
 		add_settings_field(
 			$field_id,
@@ -736,6 +738,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		}
 		echo '</select>';
 
+		$this->print_filter_text( $args );
 		$this->print_description_text( $args );
 	}
 
@@ -847,6 +850,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			</table>
 		</fieldset>
 		<?php
+		$this->print_filter_text( $args );
 		$this->print_description_text( $args );
 	}
 
