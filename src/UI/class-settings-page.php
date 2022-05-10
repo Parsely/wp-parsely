@@ -401,6 +401,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				'title'      => __( 'Disable JavaScript', 'wp-parsely' ), // Passed for legend element.
 				'option_key' => 'disable_javascript',
 				'help_text'  => $h,
+				'filter'     => 'wp_parsely_load_js_tracker',
 			)
 		);
 
@@ -634,13 +635,26 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
+	 * Prints out a warning if the filter for the setting is defined, if any.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param array $args The arguments for the form field. May contain 'filter'.
+	 */
+	public function print_filter_text( array $args ): void {
+		if ( isset( $args['filter'] ) && has_filter( $args['filter'] ) ) {
+			echo '<p><b>The <code>' . esc_html( $args['filter'] ) . '</code> filter is defined!</b> You have defined it somewhere in your code, therefore it might interfere and override this setting.</p>';
+		}
+	}
+
+	/**
 	 * Prints out the description text, if there is any.
 	 *
 	 * @since 3.1.0
 	 *
 	 * @param array $args The arguments for the form field. May contain 'help_text'.
 	 */
-	public function print_description_text( $args ): void {
+	public function print_description_text( array $args ): void {
 		echo isset( $args['help_text'] ) ? '<p class="description" id="' . esc_attr( $args['option_key'] ) . '-description">' . wp_kses_post( $args['help_text'] ) . '</p>' : '';
 	}
 
@@ -750,6 +764,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			</p>
 		</fieldset>
 		<?php
+		$this->print_filter_text( $args );
 		$this->print_description_text( $args );
 	}
 
