@@ -70,6 +70,8 @@ export const selectScreenOptions = async ( sections ) => {
 
 	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'screen-options-apply\')]' );
 	await input.click();
+
+	await waitForWpAdmin();
 };
 
 /**
