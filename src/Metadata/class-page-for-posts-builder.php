@@ -1,6 +1,6 @@
 <?php
 /**
- * Category Page Metadata Builder class
+ * Page For Posts Metadata Builder class
  *
  * @package Parsely
  * @since 3.4.0
@@ -8,15 +8,15 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Meta;
+namespace Parsely\Metadata;
 
 /**
  * Implements abstract Metadata Builder class to generate the metadata array
- * for a category page.
+ * for a page for posts.
  *
  * @since 3.4.0
  */
-class Category_Builder extends Metadata_Builder {
+class Page_For_Posts_Builder extends Metadata_Builder {
 	/**
 	 * Generates the metadata object by calling the build_* methods and
 	 * returns the value.
@@ -39,7 +39,6 @@ class Category_Builder extends Metadata_Builder {
 	 * @since 3.4.0
 	 */
 	private function build_headline(): void {
-		$category                   = get_queried_object();
-		$this->metadata['headline'] = $this->clean_value( $category->name );
+		$this->metadata['headline'] = get_the_title( get_option( 'page_for_posts', true ) );
 	}
 }

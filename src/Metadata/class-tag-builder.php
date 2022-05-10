@@ -8,7 +8,7 @@
 
 declare( strict_types=1 );
 
-namespace Parsely\Meta;
+namespace Parsely\Metadata;
 
 /**
  * Implements abstract Metadata Builder class to generate the metadata array

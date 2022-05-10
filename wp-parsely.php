@@ -61,15 +61,15 @@ require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
 require __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
 
 require __DIR__ . '/src/class-metadata.php';
-require __DIR__ . '/src/Meta/class-metadata-builder.php';
-require __DIR__ . '/src/Meta/class-author-archive-builder.php';
-require __DIR__ . '/src/Meta/class-category-builder.php';
-require __DIR__ . '/src/Meta/class-front-page-builder.php';
-require __DIR__ . '/src/Meta/class-page-builder.php';
-require __DIR__ . '/src/Meta/class-page-for-posts-builder.php';
-require __DIR__ . '/src/Meta/class-paginated-front-page-builder.php';
-require __DIR__ . '/src/Meta/class-post-builder.php';
-require __DIR__ . '/src/Meta/class-tag-builder.php';
+require __DIR__ . '/src/Metadata/class-metadata-builder.php';
+require __DIR__ . '/src/Metadata/class-author-archive-builder.php';
+require __DIR__ . '/src/Metadata/class-category-builder.php';
+require __DIR__ . '/src/Metadata/class-front-page-builder.php';
+require __DIR__ . '/src/Metadata/class-page-builder.php';
+require __DIR__ . '/src/Metadata/class-page-for-posts-builder.php';
+require __DIR__ . '/src/Metadata/class-paginated-front-page-builder.php';
+require __DIR__ . '/src/Metadata/class-post-builder.php';
+require __DIR__ . '/src/Metadata/class-tag-builder.php';
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**

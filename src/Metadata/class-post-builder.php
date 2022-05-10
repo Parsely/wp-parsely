@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Meta;
+namespace Parsely\Metadata;
 
 use Parsely\Parsely;
 use WP_Post;

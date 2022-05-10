@@ -10,15 +10,15 @@ declare(strict_types=1);
 
 namespace Parsely;
 
-use Parsely\Meta\Author_Archive_Builder;
-use Parsely\Meta\Category_Builder;
-use Parsely\Meta\Date_Builder;
-use Parsely\Meta\Front_Page_Builder;
-use Parsely\Meta\Page_Builder;
-use Parsely\Meta\Page_For_Posts_Builder;
-use Parsely\Meta\Paginated_Front_Page_Builder;
-use Parsely\Meta\Post_Builder;
-use Parsely\Meta\Tag_Builder;
+use Parsely\Metadata\Author_Archive_Builder;
+use Parsely\Metadata\Category_Builder;
+use Parsely\Metadata\Date_Builder;
+use Parsely\Metadata\Front_Page_Builder;
+use Parsely\Metadata\Page_Builder;
+use Parsely\Metadata\Page_For_Posts_Builder;
+use Parsely\Metadata\Paginated_Front_Page_Builder;
+use Parsely\Metadata\Post_Builder;
+use Parsely\Metadata\Tag_Builder;
 use WP_Post;
 
 /**

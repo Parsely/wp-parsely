@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
-use Parsely\Meta\Front_Page_Builder;
+use Parsely\Metadata\Front_Page_Builder;
 use Parsely\Parsely;
 use Parsely\Metadata;
 
