@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use Parsely\Metadata\Front_Page_Builder;
 use Parsely\Parsely;
 use Parsely\Metadata;
 
@@ -129,9 +130,10 @@ final class GetCurrentUrlTest extends TestCase {
 	private function assertCurrentUrlForHomepage( string $expected ): void {
 		$this->go_to( '/' );
 
-		$metadata        = new Metadata( new Parsely() );
-		$get_current_url = self::get_method( 'get_current_url', Metadata::class );
-		$res             = $get_current_url->invoke( $metadata );
+		// Using Front_Page_Builder since we can't instantiate abstract Metadata_Builder.
+		$builder         = new Front_Page_Builder( new Parsely() );
+		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
+		$res             = $get_current_url->invoke( $builder );
 
 		self::assertEquals( $expected . '/', $res, 'Homepage page does not match.' );
 	}
@@ -144,9 +146,10 @@ final class GetCurrentUrlTest extends TestCase {
 	private function assertCurrentUrlForSpecificPostWithId( string $expected ): void {
 		$post_id = $this->go_to_new_post();
 
-		$metadata        = new Metadata( new Parsely() );
-		$get_current_url = self::get_method( 'get_current_url', Metadata::class );
-		$res             = $get_current_url->invoke( $metadata, 'post', $post_id );
+		// Using Front_Page_Builder since we can't instantiate abstract Metadata_Builder.
+		$builder         = new Front_Page_Builder( new Parsely() );
+		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
+		$res             = $get_current_url->invoke( $builder, 'post', $post_id );
 
 		self::assertEquals( $expected . '/?p=' . $post_id, $res, 'Specific post by ID does not match.' );
 	}
@@ -159,9 +162,10 @@ final class GetCurrentUrlTest extends TestCase {
 	private function assertCurrentUrlForRandomUrl( string $expected ): void {
 		$this->go_to( '/random/url/' );
 
-		$metadata        = new Metadata( new Parsely() );
-		$get_current_url = self::get_method( 'get_current_url', Metadata::class );
-		$res             = $get_current_url->invoke( $metadata );
+		// Using Front_Page_Builder since we can't instantiate abstract Metadata_Builder.
+		$builder         = new Front_Page_Builder( new Parsely() );
+		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
+		$res             = $get_current_url->invoke( $builder );
 
 		$constructed_expected = $expected . '/random/url/';
 		self::assertEquals( $constructed_expected, $res, 'Random URL does not match.' );

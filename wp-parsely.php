@@ -54,12 +54,22 @@ const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
 require __DIR__ . '/src/class-scripts.php';
-require __DIR__ . '/src/class-metadata.php';
 require __DIR__ . '/src/class-dashboard-link.php';
 require __DIR__ . '/src/UI/class-admin-bar.php';
 require __DIR__ . '/src/UI/class-metadata-renderer.php';
 require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
 require __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
+
+require __DIR__ . '/src/class-metadata.php';
+require __DIR__ . '/src/Metadata/class-metadata-builder.php';
+require __DIR__ . '/src/Metadata/class-author-archive-builder.php';
+require __DIR__ . '/src/Metadata/class-category-builder.php';
+require __DIR__ . '/src/Metadata/class-front-page-builder.php';
+require __DIR__ . '/src/Metadata/class-page-builder.php';
+require __DIR__ . '/src/Metadata/class-page-for-posts-builder.php';
+require __DIR__ . '/src/Metadata/class-paginated-front-page-builder.php';
+require __DIR__ . '/src/Metadata/class-post-builder.php';
+require __DIR__ . '/src/Metadata/class-tag-builder.php';
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
