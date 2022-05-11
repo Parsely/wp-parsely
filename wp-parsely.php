@@ -44,6 +44,7 @@ use Parsely\UI\Network_Admin_Sites_List;
 use Parsely\UI\Recommended_Widget;
 use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
+use Parsely\UI\Site_Health;
 
 if ( class_exists( Parsely::class ) ) {
 	return;
@@ -97,6 +98,7 @@ function parsely_initialize_plugin(): void {
 require __DIR__ . '/src/UI/class-admin-warning.php';
 require __DIR__ . '/src/UI/class-plugins-actions.php';
 require __DIR__ . '/src/UI/class-row-actions.php';
+require __DIR__ . '/src/UI/class-site-health.php';
 
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
 /**
@@ -111,6 +113,9 @@ function parsely_admin_init_register(): void {
 
 	$row_actions = new Row_Actions( $GLOBALS['parsely'] );
 	$row_actions->run();
+
+	$site_health = new Site_Health( $GLOBALS['parsely'] );
+	$site_health->run();
 }
 
 require __DIR__ . '/src/UI/class-settings-page.php';
