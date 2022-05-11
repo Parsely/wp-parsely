@@ -646,7 +646,8 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	private function print_filter_text( array $args ): void {
 		if ( isset( $args['filter'] ) && has_filter( $args['filter'] ) ) {
 			echo '<p>';
-			echo sprintf( __( '<b>The <code>%s</code> filter hook is in use!</b> A callback is attached to the filter hook that might interfere and override this setting.', 'wp-parsely' ), esc_html( $args['filter'] ) );
+			/* translators: 1: filter hook name */
+			echo sprintf( esc_html( __( '<b>The <code>%s</code> filter hook is in use!</b> A callback is attached to the filter hook that might interfere and override this setting.', 'wp-parsely' ) ), esc_html( $args['filter'] ) );
 			echo '</p>';
 		}
 	}
