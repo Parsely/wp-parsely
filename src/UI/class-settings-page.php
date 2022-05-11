@@ -643,9 +643,11 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @param array $args The arguments for the form field. May contain 'filter'.
 	 */
-	public function print_filter_text( array $args ): void {
+	private function print_filter_text( array $args ): void {
 		if ( isset( $args['filter'] ) && has_filter( $args['filter'] ) ) {
-			echo '<p><b>The <code>' . esc_html( $args['filter'] ) . '</code> filter hook is in use!</b> A callback is attached to the filter hook that might interfere and override this setting.</p>';
+			echo '<p>';
+			echo sprintf( __( '<b>The <code>%s</code> filter hook is in use!</b> A callback is attached to the filter hook that might interfere and override this setting.', 'wp-parsely' ), esc_html( $args['filter'] ) );
+			echo '</p>';
 		}
 	}
 
@@ -656,7 +658,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @param array $args The arguments for the form field. May contain 'help_text'.
 	 */
-	public function print_description_text( array $args ): void {
+	private function print_description_text( array $args ): void {
 		echo isset( $args['help_text'] ) ? '<p class="description" id="' . esc_attr( $args['option_key'] ) . '-description">' . wp_kses_post( $args['help_text'] ) . '</p>' : '';
 	}
 
