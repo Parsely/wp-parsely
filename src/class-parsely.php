@@ -239,6 +239,7 @@ class Parsely {
 	 * @return array<string, mixed>
 	 */
 	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ): array {
+		_deprecated_function( __FUNCTION__, '3.3', 'Metadata::construct_metadata()' );
 		$metadata = new Metadata( $this );
 		return $metadata->construct_metadata( $post );
 	}
