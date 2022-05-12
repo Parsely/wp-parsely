@@ -401,6 +401,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				'title'      => __( 'Disable JavaScript', 'wp-parsely' ), // Passed for legend element.
 				'option_key' => 'disable_javascript',
 				'help_text'  => $h,
+				'filter'     => 'wp_parsely_load_js_tracker',
 			)
 		);
 
@@ -455,6 +456,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				'title'      => __( 'Track Post Types as', 'wp-parsely' ),
 				'option_key' => $field_id,
 				'help_text'  => $field_help,
+				'filter'     => 'wp_parsely_trackable_statuses',
 			)
 		);
 
@@ -471,6 +473,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				'repeated_metas' => 'repeated_metas',
 			),
 			'label_for'      => Parsely::OPTIONS_KEY . "[$field_id]",
+			'filter'         => 'wp_parsely_metadata',
 		);
 		add_settings_field(
 			$field_id,
@@ -634,13 +637,29 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
+	 * Prints out a warning if the filter for the setting is defined, if any.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param array $args The arguments for the form field. May contain 'filter'.
+	 */
+	private function print_filter_text( array $args ): void {
+		if ( isset( $args['filter'] ) && has_filter( $args['filter'] ) ) {
+			echo '<p>';
+			echo '<b><code>' . esc_html( $args['filter'] ) . '</code>' . esc_html__( 'filter hook is in use!', 'wp-parsely' ) . '</b> ';
+			echo esc_html__( 'A callback is attached to the filter hook that might interfere and override this setting.', 'wp-parsely' );
+			echo '</p>';
+		}
+	}
+
+	/**
 	 * Prints out the description text, if there is any.
 	 *
 	 * @since 3.1.0
 	 *
 	 * @param array $args The arguments for the form field. May contain 'help_text'.
 	 */
-	public function print_description_text( $args ): void {
+	private function print_description_text( array $args ): void {
 		echo isset( $args['help_text'] ) ? '<p class="description" id="' . esc_attr( $args['option_key'] ) . '-description">' . wp_kses_post( $args['help_text'] ) . '</p>' : '';
 	}
 
@@ -722,6 +741,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		}
 		echo '</select>';
 
+		$this->print_filter_text( $args );
 		$this->print_description_text( $args );
 	}
 
@@ -750,6 +770,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			</p>
 		</fieldset>
 		<?php
+		$this->print_filter_text( $args );
 		$this->print_description_text( $args );
 	}
 
@@ -832,6 +853,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			</table>
 		</fieldset>
 		<?php
+		$this->print_filter_text( $args );
 		$this->print_description_text( $args );
 	}
 
