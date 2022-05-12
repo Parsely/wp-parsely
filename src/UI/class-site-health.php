@@ -56,7 +56,7 @@ final class Site_Health {
 	 * @return array
 	 */
 	public function check_api_key( array $tests ): array {
-		$check = function() {
+		$test = function() {
 			$result = array(
 				'label'       => __( 'The Site ID is correctly set up', 'wp-parsely' ),
 				'status'      => 'good',
@@ -82,7 +82,7 @@ final class Site_Health {
 
 		$tests['direct']['parsely'] = array(
 			'label' => __( 'Parse.ly Site ID', 'wp-parsely' ),
-			'test'  => $check,
+			'test'  => $test,
 		);
 
 		return $tests;
