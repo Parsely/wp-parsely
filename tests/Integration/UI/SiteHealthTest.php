@@ -47,4 +47,20 @@ final class SiteHealthTest extends TestCase {
 		self::assertEquals( 10, has_filter( 'site_status_tests', array( self::$site_health, 'check_api_key' ) ) );
 		self::assertEquals( 10, has_filter( 'debug_information', array( self::$site_health, 'options_debug_info' ) ) );
 	}
+
+	/**
+	 * Test if options_debug_info can populate the args array to be consumed by WordPress.
+	 *
+	 * @covers \Parsely\UI\Site_Health::__construct
+	 * @covers \Parsely\UI\Site_Health::options_debug_info
+	 */
+	public function test_options_debug_info(): void {
+		$args = self::$site_health->options_debug_info( array() );
+
+		self::assertArrayHasKey( 'parsely', $args );
+		self::assertEquals( 'Parse.ly Options', $args['parsely']['label'] );
+		self::assertEquals( 'Shows the options stored in the database used by the wp-parsely plugin.', $args['parsely']['description'] );
+		self::assertTrue( $args['parsely']['show_count'] );
+		self::assertArrayHasKey( 'fields', $args['parsely'] );
+	}
 }

@@ -107,12 +107,10 @@ final class Site_Health {
 		);
 
 		foreach ( $options as $name => $value ) {
-			if ( $value ) {
-				$args['parsely']['fields'][ $name ] = array(
-					'label' => $name,
-					'value' => $value,
-				);
-			}
+			$args['parsely']['fields'][ $name ] = array(
+				'label' => $name,
+				'value' => $value,
+			);
 		}
 
 		return $args;
