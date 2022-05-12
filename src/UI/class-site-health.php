@@ -74,7 +74,7 @@ final class Site_Health {
 			if ( $this->parsely->api_key_is_missing() ) {
 				$result['status']  = 'critical';
 				$result['label']   = __( 'You need to provide the Site ID', 'wp-parsely' );
-				$result['actions'] = __( 'The site id can be provided in the <a href="/wp-admin/options-general.php?page=parsely">Parse.ly Settings Page</a>.', 'wp-parsely' );
+				$result['actions'] = __( 'The site ID can be set in the <a href="/wp-admin/options-general.php?page=parsely">Parse.ly Settings Page</a>.', 'wp-parsely' );
 			}
 
 			return $result;
