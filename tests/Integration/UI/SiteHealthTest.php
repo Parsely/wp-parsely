@@ -27,7 +27,7 @@ final class SiteHealthTest extends TestCase {
 	private static $site_health;
 
 	/**
-	 * The setUp run before each test
+	 * The setup run before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
