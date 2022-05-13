@@ -1,6 +1,6 @@
 import { activatePlugin, loginUser, visitAdminPage } from '@wordpress/e2e-test-utils';
 
-export const PLUGIN_VERSION = '3.3.1';
+export const PLUGIN_VERSION = '3.3.2';
 
 export const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
 
