@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [3.3.1] - 2022-05-06
+## [3.3.2](https://github.com/Parsely/wp-parsely/compare/3.3.1...3.3.2) - 2022-05-16
+
+### Fixed
+
+- Fix passing wrong parameter to construct_metadata() in render_metadata(). [#869](https://github.com/Parsely/wp-parsely/pull/869)
+
+## [3.3.1](https://github.com/Parsely/wp-parsely/compare/3.3.0...3.3.1) - 2022-05-06
 
 ### Fixed
 
@@ -16,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove Recommendations Block README. [#844](https://github.com/Parsely/wp-parsely/pull/844)
 
-## [3.3.0] - 2022-05-02
+## [3.3.0](https://github.com/Parsely/wp-parsely/compare/3.2.1...3.3.0) - 2022-05-02
 
 ### Added
 
@@ -29,30 +35,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Recommendations Block:
-  - Disabled link clicking in Editor. [#767](https://github.com/Parsely/wp-parsely/pull/767)
-  - Register the block using block.json file. [#62](https://github.com/Parsely/wp-parsely/pull/762)
-  - Fixed thumbnail images not showing. [#793](https://github.com/Parsely/wp-parsely/pull/793)
-  - Added additional testing. [#724](https://github.com/Parsely/wp-parsely/pull/724)
-  - Removed tag setting. [#822](https://github.com/Parsely/wp-parsely/pull/822)
-- Metadata. We have changed the way metadata is generated. Filters continue to work as expected. We kept the legacy functions for backwards compatibility, but we recommend migrating to `Metadata` class.
-  - Extracted Metadata generation in a separate class. [#742](https://github.com/Parsely/wp-parsely/pull/742)
-  - Extracted Metadata rendering in a separate class. [#751](https://github.com/Parsely/wp-parsely/pull/751)
+- Recommendations Block: Disabled link clicking in Editor. [#767](https://github.com/Parsely/wp-parsely/pull/767)
+- Recommendations Block: Register the block using block.json file. [#62](https://github.com/Parsely/wp-parsely/pull/762)
+- Recommendations Block: Fixed thumbnail images not showing. [#793](https://github.com/Parsely/wp-parsely/pull/793)
+- Recommendations Block: Added additional testing. [#724](https://github.com/Parsely/wp-parsely/pull/724)
+- Recommendations Block: Removed tag setting. [#822](https://github.com/Parsely/wp-parsely/pull/822)
+- Metadata: We have changed the way metadata is generated. Filters continue to work as expected. We kept the legacy functions for backwards compatibility, but we recommend migrating to `Metadata` class.
+- Metadata: Extracted Metadata generation in a separate class. [#742](https://github.com/Parsely/wp-parsely/pull/742)
+- Metadata: Extracted Metadata rendering in a separate class. [#751](https://github.com/Parsely/wp-parsely/pull/751)
 - Improved Site ID handling on settings page. [#766](https://github.com/Parsely/wp-parsely/pull/766)
-- Upgraded dependencies:
-  - @wordpress/api-fetch from 6.2.0 to 6.3.0
-  - @wordpress/babel-preset-default from 6.7.0 to 6.9.0
-  - @wordpress/block-editor from 8.4.0 to 8.5.1
-  - @wordpress/blocks from 11.4.0 to 11.5.0
-  - @wordpress/components from 19.7.0 to 19.8.0
-  - @wordpress/compose from 5.3.0 to 5.4.0
-  - @wordpress/e2e-test-utils from 7.1.0 to 7.3.0
-  - @wordpress/env from 4.4.0 to 4.6.0
-  - @wordpress/eslint-plugin from 11.1.0 to 12.1.0
-  - @wordpress/hooks from 3.6.0 to 3.7.0
-  - @wordpress/scripts from 22.3.0 to 22.5.0
-  - @wordpress/url from 3.6.0 to 3.7.0
-  - eslint-plugin-jest from 26.1.3 to 26.1.5
+
+### Dependency Updates
+
+- @wordpress/api-fetch from 6.2.0 to 6.3.0
+- @wordpress/babel-preset-default from 6.7.0 to 6.9.0
+- @wordpress/block-editor from 8.4.0 to 8.5.1
+- @wordpress/blocks from 11.4.0 to 11.5.0
+- @wordpress/components from 19.7.0 to 19.8.0
+- @wordpress/compose from 5.3.0 to 5.4.0
+- @wordpress/e2e-test-utils from 7.1.0 to 7.3.0
+- @wordpress/env from 4.4.0 to 4.6.0
+- @wordpress/eslint-plugin from 11.1.0 to 12.1.0
+- @wordpress/hooks from 3.6.0 to 3.7.0
+- @wordpress/scripts from 22.3.0 to 22.5.0
+- @wordpress/url from 3.6.0 to 3.7.0
+- eslint-plugin-jest from 26.1.3 to 26.1.5
 
 ### Fixed
 
@@ -69,13 +76,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - References to the plugin not being compatible with Dynamic Tracking. [#791](https://github.com/Parsely/wp-parsely/pull/791)
 - Removed Cache Buster function from Parse.ly class. [#747](https://github.com/Parsely/wp-parsely/pull/747)
 
-## [3.2.1] - 2022-04-01
+## [3.2.1](https://github.com/Parsely/wp-parsely/compare/3.2.0...3.2.1) - 2022-04-01
 
 ### Fixed
 
 - The Recommended Widget Proxy would fail to work with certain third-party cache plugins. [#750](https://github.com/Parsely/wp-parsely/pull/750)
 
-## [3.2.0] - 2022-03-29
+## [3.2.0](https://github.com/Parsely/wp-parsely/compare/3.1.3...3.2.0) - 2022-03-29
 
 The 3.2.0 release introduces many new features, including:
 
@@ -102,44 +109,47 @@ The 3.2.0 release introduces many new features, including:
 - Improve empty API key checks and check for API key existence earlier. [#686](https://github.com/Parsely/wp-parsely/pull/686), [#709](https://github.com/Parsely/wp-parsely/pull/709)
 - Improve reliability and optimize E2E tests. [#647](https://github.com/Parsely/wp-parsely/pull/647), [#675](https://github.com/Parsely/wp-parsely/pull/675), [#681](https://github.com/Parsely/wp-parsely/pull/681), [#684](https://github.com/Parsely/wp-parsely/pull/684)
 - Update README.md and plugin page on wordpress.org. [#673](https://github.com/Parsely/wp-parsely/pull/673), [#700](https://github.com/Parsely/wp-parsely/pull/700), [#704](https://github.com/Parsely/wp-parsely/pull/704)
-- Cleanups and refactoring:
-  - Unify AMP and Google Web Stories implementation. [#622](https://github.com/Parsely/wp-parsely/pull/622)
-  - Move `Rest` class into the `Endpoints` package. [#707](https://github.com/Parsely/wp-parsely/pull/707)
-  - Cleanup `Scripts` class. [#644](https://github.com/Parsely/wp-parsely/pull/644)
-  - Remove `$GLOBALS['parsely_ui_plugins_actions']` global variable. [#615](https://github.com/Parsely/wp-parsely/pull/615)
-- Assets and building:
-  - Use WordPress scripts to export plugin. [#634](https://github.com/Parsely/wp-parsely/pull/634)
-  - Build the admin settings page script and enqueue built version. [#635](https://github.com/Parsely/wp-parsely/pull/635)
-  - Use built version strings and deprecate `Parsely::get_asset_cache_buster`. [#636](https://github.com/Parsely/wp-parsely/pull/636)
-  - Integrate Recommended Widget CSS into the build system and move it to the CSS folder. [#656](https://github.com/Parsely/wp-parsely/pull/656), [#658](https://github.com/Parsely/wp-parsely/pull/658)
-- Dependency updates:
-  - Update `@wordpress/babel-preset-default` package to `6.7.0`. [#660](https://github.com/Parsely/wp-parsely/pull/660), [#715](https://github.com/Parsely/wp-parsely/pull/715), [#737](https://github.com/Parsely/wp-parsely/pull/737)
-  - Update `@wordpress/dom-ready` package to `3.5.0`. [#741](https://github.com/Parsely/wp-parsely/pull/741)
-  - Update `@wordpress/e2e-test-utils` package to `7.1.0`. [#659](https://github.com/Parsely/wp-parsely/pull/659), [#718](https://github.com/Parsely/wp-parsely/pull/718), [#736](https://github.com/Parsely/wp-parsely/pull/736)
-  - Update `@wordpress/env` package to `4.4.0`. [#663](https://github.com/Parsely/wp-parsely/pull/663), [#716](https://github.com/Parsely/wp-parsely/pull/716), [#734](https://github.com/Parsely/wp-parsely/pull/734)
-  - Update `@wordpress/eslint-plugin` package to `11.1.0`. [#661](https://github.com/Parsely/wp-parsely/pull/661), [#719](https://github.com/Parsely/wp-parsely/pull/719), [#741](https://github.com/Parsely/wp-parsely/pull/741)
-  - Update `@wordpress/hooks` package to `3.5.0`. [#717](https://github.com/Parsely/wp-parsely/pull/717), [#735](https://github.com/Parsely/wp-parsely/pull/735)
-  - Update `@wordpress/scripts` package to `22.3.0`. [#671](https://github.com/Parsely/wp-parsely/pull/671), [#705](https://github.com/Parsely/wp-parsely/pull/705), [#720](https://github.com/Parsely/wp-parsely/pull/720), [#733](https://github.com/Parsely/wp-parsely/pull/733)
-  - Update `follow-redirects` package to `1.14.8`. [#610](https://github.com/Parsely/wp-parsely/pull/610), [#669](https://github.com/Parsely/wp-parsely/pull/669)
-  - Update `minimist` package to `1.2.6`. [#739](https://github.com/Parsely/wp-parsely/pull/739)
-  - Update `node-forge` package to `1.3.0`. [#738](https://github.com/Parsely/wp-parsely/pull/738)
-  - Update `prettier` package to `2.6.1`. [#727](https://github.com/Parsely/wp-parsely/pull/727), [#741](https://github.com/Parsely/wp-parsely/pull/741)
-  - Update `actions/checkout` GitHub Action to `3`. [#701](https://github.com/Parsely/wp-parsely/pull/701)
-  - Update `actions/setup-node` GitHub Action to `3.0.0`. [#699](https://github.com/Parsely/wp-parsely/pull/699)
+- Unify AMP and Google Web Stories implementation. [#622](https://github.com/Parsely/wp-parsely/pull/622)
+- Move `Rest` class into the `Endpoints` package. [#707](https://github.com/Parsely/wp-parsely/pull/707)
+- Cleanup `Scripts` class. [#644](https://github.com/Parsely/wp-parsely/pull/644)
+- Use WordPress scripts to export plugin. [#634](https://github.com/Parsely/wp-parsely/pull/634)
+- Build the admin settings page script and enqueue built version. [#635](https://github.com/Parsely/wp-parsely/pull/635)
+- Use built version strings and deprecate `Parsely::get_asset_cache_buster`. [#636](https://github.com/Parsely/wp-parsely/pull/636)
+- Integrate Recommended Widget CSS into the build system and move it to the CSS folder. [#656](https://github.com/Parsely/wp-parsely/pull/656), [#658](https://github.com/Parsely/wp-parsely/pull/658)
+
+### Removed
+
+- Remove `$GLOBALS['parsely_ui_plugins_actions']` global variable. [#615](https://github.com/Parsely/wp-parsely/pull/615)
+
+### Dependency updates
+
+- Update `@wordpress/babel-preset-default` package to `6.7.0`. [#660](https://github.com/Parsely/wp-parsely/pull/660), [#715](https://github.com/Parsely/wp-parsely/pull/715), [#737](https://github.com/Parsely/wp-parsely/pull/737)
+- Update `@wordpress/dom-ready` package to `3.5.0`. [#741](https://github.com/Parsely/wp-parsely/pull/741)
+- Update `@wordpress/e2e-test-utils` package to `7.1.0`. [#659](https://github.com/Parsely/wp-parsely/pull/659), [#718](https://github.com/Parsely/wp-parsely/pull/718), [#736](https://github.com/Parsely/wp-parsely/pull/736)
+- Update `@wordpress/env` package to `4.4.0`. [#663](https://github.com/Parsely/wp-parsely/pull/663), [#716](https://github.com/Parsely/wp-parsely/pull/716), [#734](https://github.com/Parsely/wp-parsely/pull/734)
+- Update `@wordpress/eslint-plugin` package to `11.1.0`. [#661](https://github.com/Parsely/wp-parsely/pull/661), [#719](https://github.com/Parsely/wp-parsely/pull/719), [#741](https://github.com/Parsely/wp-parsely/pull/741)
+- Update `@wordpress/hooks` package to `3.5.0`. [#717](https://github.com/Parsely/wp-parsely/pull/717), [#735](https://github.com/Parsely/wp-parsely/pull/735)
+- Update `@wordpress/scripts` package to `22.3.0`. [#671](https://github.com/Parsely/wp-parsely/pull/671), [#705](https://github.com/Parsely/wp-parsely/pull/705), [#720](https://github.com/Parsely/wp-parsely/pull/720), [#733](https://github.com/Parsely/wp-parsely/pull/733)
+- Update `follow-redirects` package to `1.14.8`. [#610](https://github.com/Parsely/wp-parsely/pull/610), [#669](https://github.com/Parsely/wp-parsely/pull/669)
+- Update `minimist` package to `1.2.6`. [#739](https://github.com/Parsely/wp-parsely/pull/739)
+- Update `node-forge` package to `1.3.0`. [#738](https://github.com/Parsely/wp-parsely/pull/738)
+- Update `prettier` package to `2.6.1`. [#727](https://github.com/Parsely/wp-parsely/pull/727), [#741](https://github.com/Parsely/wp-parsely/pull/741)
+- Update `actions/checkout` GitHub Action to `3`. [#701](https://github.com/Parsely/wp-parsely/pull/701)
+- Update `actions/setup-node` GitHub Action to `3.0.0`. [#699](https://github.com/Parsely/wp-parsely/pull/699)
 
 ### Fixed
 
 - Remove phased-out boost parameters from Recommended Widget. [#728](https://github.com/Parsely/wp-parsely/pull/728)
 - Make integration tests work on Windows and remove unneeded end of lines. [#677](https://github.com/Parsely/wp-parsely/pull/677), [#680](https://github.com/Parsely/wp-parsely/pull/680)
 
-## [3.1.3] - 2022-03-17
+## [3.1.3](https://github.com/Parsely/wp-parsely/compare/3.1.2...3.1.3) - 2022-03-17
 
 ### Fixed
 
 - Fix rare errors when getting authors metadata. The error occurred on posts that contained malformed authors. [#722](https://github.com/Parsely/wp-parsely/pull/722)
 - Improve type definitions on categories metadata generation. [#723](https://github.com/Parsely/wp-parsely/pull/723)
 
-## [3.1.2] - 2022-02-24
+## [3.1.2](https://github.com/Parsely/wp-parsely/compare/3.1.1...3.1.2) - 2022-02-24
 
 ### Added
 
@@ -159,26 +169,29 @@ The 3.2.0 release introduces many new features, including:
 - Not installing wp-env globally on CI. [#665](https://github.com/Parsely/wp-parsely/pull/665)
 - Updating documentation. [#614](https://github.com/Parsely/wp-parsely/pull/614), [#613](https://github.com/Parsely/wp-parsely/pull/613), [#616](https://github.com/Parsely/wp-parsely/pull/616), [#654](https://github.com/Parsely/wp-parsely/pull/654), [#683](https://github.com/Parsely/wp-parsely/pull/683)
 
-## [3.1.1] - 2022-02-09
+## [3.1.1](https://github.com/Parsely/wp-parsely/compare/3.1.0...3.1.1) - 2022-02-09
 
 ### Fixed
 
 - Users could not create new instances of the recommended widget on WordPress 5.9. [#651](https://github.com/Parsely/wp-parsely/pull/651)
 - Correct "since" annotations to 3.1.0. [#646](https://github.com/Parsely/wp-parsely/pull/646)
 - Fix recommended widget e2e tests for WordPress 5.9. [#631](https://github.com/Parsely/wp-parsely/pull/631)
+
+### Dependency updates
+
 - Bumped dependencies. [#632](https://github.com/Parsely/wp-parsely/pull/632) [#637](https://github.com/Parsely/wp-parsely/pull/637)
-  - `@wordpress/dom-ready` from 2.13.2 to 3.3.0
-  - `@wordpress/babel-preset-default` from 6.4.1 to 6.5.0
-  - `@wordpress/e2e-test-utils` from 5.4.10 to 6.0.0
-  - `@wordpress/env` from 4.1.3 to 4.2.0
-  - `@wordpress/eslint-plugin` from 9.3.0 to 10.0.0
-  - `@wordpress/scripts` from 19.2.3 to 20.0.2
+- `@wordpress/dom-ready` from 2.13.2 to 3.3.0
+- `@wordpress/babel-preset-default` from 6.4.1 to 6.5.0
+- `@wordpress/e2e-test-utils` from 5.4.10 to 6.0.0
+- `@wordpress/env` from 4.1.3 to 4.2.0
+- `@wordpress/eslint-plugin` from 9.3.0 to 10.0.0
+- `@wordpress/scripts` from 19.2.3 to 20.0.2
 
 ### Removed
 
 - Removed unused dependency `@wordpress/i18n`. [#632](https://github.com/Parsely/wp-parsely/pull/632)
- 
-## [3.1.0] - 2022-01-21
+
+## [3.1.0](https://github.com/Parsely/wp-parsely/compare/3.0.4...3.1.0) - 2022-01-21
 
 The 3.1.0 release is a minor release for the plugin that does not introduce any breaking changes coming from the 3.0 branch. This version's primary focus is adding support for WordPress decoupled architectures and a revamped settings page. We have also worked hard on refining our code, testing, and delivery process.
 
@@ -203,7 +216,7 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide content met
 
 ### Changed
 
-- Hiding _Disable AMP_ field on settings page when the AMP plugin is not enabled. [#519](https://github.com/Parsely/wp-parsely/pull/519)
+- Hiding `Disable AMP` field on settings page when the AMP plugin is not enabled. [#519](https://github.com/Parsely/wp-parsely/pull/519)
 - Use built-in WordPress submit button instead of custom one in the settings page. [#513](https://github.com/Parsely/wp-parsely/pull/513)
 - Improved wp-admin settings page help texts. [#552](https://github.com/Parsely/wp-parsely/pull/552)
 - `@wordpress/scripts` bumped from 19.2.1 to 19.2.3. [#503](https://github.com/Parsely/wp-parsely/pull/503) [#603](https://github.com/Parsely/wp-parsely/pull/603)
@@ -234,31 +247,31 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide content met
 - PHP 8.2 from CI tests. [#523](https://github.com/Parsely/wp-parsely/pull/523)
 - Custom end-to-end Docker image. [#524] (https://github.com/Parsely/wp-parsely/pull/524)
 
-## [3.0.4] - 2022-01-17
+## [3.0.4](https://github.com/Parsely/wp-parsely/compare/3.0.3...3.0.4) - 2022-01-17
 
 ### Changed
 
 - Changed plugin loading functions from anonymous to named functions. [#595](https://github.com/Parsely/wp-parsely/pull/595)
 
-## [3.0.3] - 2022-01-12
+## [3.0.3](https://github.com/Parsely/wp-parsely/compare/3.0.2...3.0.3) - 2022-01-12
 
 ### Fixed
 
 - [Fixed a fatal error](https://github.com/Parsely/wp-parsely/issues/587) when requesting metadata for a post without categories and `categories as tags` enabled. [#588](https://github.com/Parsely/wp-parsely/pull/588)
 
-## [3.0.2] - 2022-01-05
+## [3.0.2](https://github.com/Parsely/wp-parsely/compare/3.0.1...3.0.2) - 2022-01-05
 
 ### Fixed
 
 - [Properly render the post modified date metadata](https://github.com/Parsely/wp-parsely/issues/558) & Fix a [fatal error](https://github.com/Parsely/wp-parsely/issues/562) caused by an unexpected data type [#560](https://github.com/Parsely/wp-parsely/pull/560)
 
-## [3.0.1] - 2021-12-17
+## [3.0.1](https://github.com/Parsely/wp-parsely/compare/3.0.0...3.0.1) - 2021-12-17
 
 ### Fixed
 
 - Fix metadata on password protected posts [#547](https://github.com/Parsely/wp-parsely/pull/547)
 
-## [3.0.0] - 2021-12-15
+## [3.0.0](https://github.com/Parsely/wp-parsely/compare/2.6.1...3.0.0) - 2021-12-15
 
 ## Important information about this release
 
@@ -270,17 +283,12 @@ If you are using the plugin without any code-level customizations (for instance,
 
 ### Added
 
-- Namespaces to files. [#430](https://github.com/Parsely/wp-parsely/pull/430) [#475](https://github.com/Parsely/wp-parsely/pull/475) [#477](https://github.com/Parsely/wp-parsely/pull/477)
-  - Now all functions and classes are under the `Parsely` namespace, or a child namespace of that e.g. `Parsely\Parsely` or `Parsely\UI\Recommended_Widget`. If your code is calling a wp-parsely function (directly, or as a hook callback) without the namespace, then you'll need to update that call.
-- Strict typing (`strict_types=1`) to all files in the codebase [#420](https://github.com/Parsely/wp-parsely/pull/420).
-  - Passing a value to a function in wp-parsely with an incorrect type will now raise an error.
+- Namespaces to files. Now all functions and classes are under the `Parsely` namespace, or a child namespace of that e.g. `Parsely\Parsely` or `Parsely\UI\Recommended_Widget`. If your code is calling a wp-parsely function (directly, or as a hook callback) without the namespace, then you'll need to update that call. [#430](https://github.com/Parsely/wp-parsely/pull/430) [#475](https://github.com/Parsely/wp-parsely/pull/475) [#477](https://github.com/Parsely/wp-parsely/pull/477)
+- Strict typing (`strict_types=1`) to all files in the codebase. Passing a value to a function in wp-parsely with an incorrect type will now raise an error. [#420](https://github.com/Parsely/wp-parsely/pull/420).
 - Type declarations have been added to function returns [#429](https://github.com/Parsely/wp-parsely/pull/429) and arguments [#455](https://github.com/Parsely/wp-parsely/pull/455).
-- `wp_parsely_should_insert_metadata` filter. [#440](https://github.com/Parsely/wp-parsely/pull/440)
-  - The filter controls whether the Parse.ly metadata should be inserted in the page's HTML. By default, the meta tags are rendered (the filter returns `true`).
-- `wp_parsely_enable_cfasync_tag` filter. [#473](https://github.com/Parsely/wp-parsely/pull/473).
-  - The Cloudflare `cfasync` attributes are now not rendered by default, but they can be enabled by returning `true` to this filter.
-- WordPress plugin uninstall script. [#444](https://github.com/Parsely/wp-parsely/pull/444)
-  - When the plugin is uninstalled, the options will be removed from the database. Deactivating the plugin will not cause the options to be deleted.
+- `wp_parsely_should_insert_metadata` filter. The filter controls whether the Parse.ly metadata should be inserted in the page's HTML. By default, the meta tags are rendered (the filter returns `true`). [#440](https://github.com/Parsely/wp-parsely/pull/440)
+- `wp_parsely_enable_cfasync_tag` filter. The Cloudflare `cfasync` attributes are now not rendered by default, but they can be enabled by returning `true` to this filter. [#473](https://github.com/Parsely/wp-parsely/pull/473).
+- WordPress plugin uninstall script. When the plugin is uninstalled, the options will be removed from the database. Deactivating the plugin will not cause the options to be deleted. [#444](https://github.com/Parsely/wp-parsely/pull/444)
 - `npm run dev:start` and `npm run dev:stop` commands to run the plugin locally for development purposes. [#493](https://github.com/Parsely/wp-parsely/pull/493)
 - E2E test for recommended widget. [#434](https://github.com/Parsely/wp-parsely/pull/434)
 - JavaScript code-scanning [#453](https://github.com/Parsely/wp-parsely/pull/453)
@@ -289,28 +297,24 @@ If you are using the plugin without any code-level customizations (for instance,
 
 - Minimum PHP and WP versions required to run the plugin are now 7.1 (from 5.6) and 5.0 from (4.0), respectively. [#416](https://github.com/Parsely/wp-parsely/pull/416)
 - The development Node JS version has been bumped from 14 to 16.
-- Extract logic from `class-parsely.php` file:
-  - Extract admin warning to `Parsely\UI\Admin_Warning`. [#468](https://github.com/Parsely/wp-parsely/pull/468)
-  - Extract tracker logic to `Parsely\Scripts` [#478](https://github.com/Parsely/wp-parsely/pull/478)
-  - Extract settings page to `Parsely\UI\Settings_Page`. [#467](https://github.com/Parsely/wp-parsely/pull/467)
-- Rename `Parsely_Recommended_Widget` class to `Parsely\UI\Recommended_Widget`.
-- Rename methods in `Parsely\Scripts` class [#481](https://github.com/Parsely/wp-parsely/pull/481):
-  - `register_js()` to `register_scripts()`.
-  - `load_js_api()` to `enqueue_js_api()`.
-  - `load_js_tracker()` to `enqueue_js_tracker()`.
+- Extract admin warning logic from `class-parsely.php` to `Parsely\UI\Admin_Warning`. [#468](https://github.com/Parsely/wp-parsely/pull/468)
+- Extract tracker logic from `class-parsely.php` to `Parsely\Scripts` [#478](https://github.com/Parsely/wp-parsely/pull/478)
+- Extract settings page logic from `class-parsely.php` to `Parsely\UI\Settings_Page`. [#467](https://github.com/Parsely/wp-parsely/pull/467)
+- Rename `Parsely_Recommended_Widget` class to `Parsely\UI\Recommended_Widget`. [#475](https://github.com/Parsely/wp-parsely/pull/475)
+- Rename `register_js()` method to `register_scripts()`. [#481](https://github.com/Parsely/wp-parsely/pull/481)
+- Rename `load_js_api()` method to `enqueue_js_api()`. [#481](https://github.com/Parsely/wp-parsely/pull/481)
+- Rename `load_js_tracker()` method to `enqueue_js_tracker()`. [#481](https://github.com/Parsely/wp-parsely/pull/481)
 - Move Parse.ly settings file to `views/parsely-settings.php`. [#459](https://github.com/Parsely/wp-parsely/pull/459)
-- _Open on Parse.ly_ links are displayed by default. [#433](https://github.com/Parsely/wp-parsely/pull/433)
-  - To disable the feature, the `wp_parsely_enable_row_action_links` filter must return `false`.
-- `Parsely::get_current_url()` default value for argument `string $parsely_type` changed from `nonpost` to `non-post`. [#447](https://github.com/Parsely/wp-parsely/pull/447)
-  - This change has been done to better align with Parse.ly's backend.
-- Enqueue scripts with theme independent hook. [#458](https://github.com/Parsely/wp-parsely/pull/458)
-  - The JavaScript scripts are now enqueued at the `wp_enqueue_scripts` hook instead of `wp_footer`.
-- Replace multi-select fields with checkboxes on the settings page. [#482](https://github.com/Parsely/wp-parsely/pull/482)
-  - Existing selections will be retained.
-- Made class members private [#486](https://github.com/Parsely/wp-parsely/pull/486):
-  - `Parsely\Integrations\Facebook_Instant_Articles`: `REGISTRY_IDENTIFIER`, `REGISTRY_DISPLAY_NAME`, `get_embed_code()`.
-  - `Parsely\UI\Recommended_Widget`: `get_api_url()`.
+- `Open on Parse.ly` links are displayed by default. To disable the feature, the `wp_parsely_enable_row_action_links` filter must return `false`. [#433](https://github.com/Parsely/wp-parsely/pull/433)
+- `Parsely::get_current_url()` default value for argument `string $parsely_type` changed from `nonpost` to `non-post`. This change has been done to better align with Parse.ly's backend. [#447](https://github.com/Parsely/wp-parsely/pull/447)
+- Enqueue scripts with theme independent hook. The JavaScript scripts are now enqueued at the `wp_enqueue_scripts` hook instead of `wp_footer`. [#458](https://github.com/Parsely/wp-parsely/pull/458)
+- Replace multi-select fields with checkboxes on the settings page. Existing selections will be retained. [#482](https://github.com/Parsely/wp-parsely/pull/482)
+- `Parsely\Integrations\Facebook_Instant_Articles`: `REGISTRY_IDENTIFIER`, `REGISTRY_DISPLAY_NAME`, `get_embed_code()` are now private. [#486](https://github.com/Parsely/wp-parsely/pull/486)
+- `Parsely\UI\Recommended_Widget`: `get_api_url()` is now private. [#486](https://github.com/Parsely/wp-parsely/pull/486)
 - Tests: Specify `coverage: none` where it is not needed. [#419](https://github.com/Parsely/wp-parsely/pull/419)
+
+### Dependency updates
+
 - Bump @wordpress/e2e-test-utils from 5.4.3 to 5.4.8. [#492](https://github.com/Parsely/wp-parsely/pull/492)
 - Bump @wordpress/scripts from 18.0.1 to 19.1.0. [#480](https://github.com/Parsely/wp-parsely/pull/480)
 - Bump @wordpress/eslint-plugin from 9.2.0 to 9.3.0. [#490](https://github.com/Parsely/wp-parsely/pull/490)
@@ -320,10 +324,8 @@ If you are using the plugin without any code-level customizations (for instance,
 - Fix missing translation support for Yes and No labels in the settings page. [#463](https://github.com/Parsely/wp-parsely/pull/463)
 - Avoid making duplicate calls to Parse.ly API on the Recommended Widget's front-end. [#460](https://github.com/Parsely/wp-parsely/pull/460)
 - Fix JS string translation in settings page. [#462](https://github.com/Parsely/wp-parsely/pull/462)
-- Consistent return types on `update_metadata_endpoint`. [#446](https://github.com/Parsely/wp-parsely/pull/446)
-  - The function used to return different return types, now it always returns `void`.
-- Consistent return type on `insert_parsely_page`. [#443](https://github.com/Parsely/wp-parsely/pull/443)
-  - The function used to return `string|null|array`, now it returns `void`.
+- Consistent return types on `update_metadata_endpoint`. The function used to return different return types, now it always returns `void`. [#446](https://github.com/Parsely/wp-parsely/pull/446)
+- Consistent return type on `insert_parsely_page`. The function used to return `string|null|array`, now it returns `void`. [#443](https://github.com/Parsely/wp-parsely/pull/443)
 - Fixed fatal error when the option in the database was corrupted. [#540](https://github.com/Parsely/wp-parsely/pull/540)
 - Tests: Stop using deprecated `setMethods()` method. [#427](https://github.com/Parsely/wp-parsely/pull/427)
 - e2e tests: fix watch command. [#476](https://github.com/Parsely/wp-parsely/pull/476)
@@ -331,29 +333,23 @@ If you are using the plugin without any code-level customizations (for instance,
 
 ### Removed
 
-- Previously deprecated filter `after_set_parsely_page`. [#436](https://github.com/Parsely/wp-parsely/pull/436)
-  - Use `wp_parsely_metadata` instead.
-- Previously deprecated filter `parsely_filter_insert_javascript`. [#437](https://github.com/Parsely/wp-parsely/pull/437)
-  - Use `wp_parsely_load_js_tracker` instead.
-- `post_has_viewable_type` function. [#417](https://github.com/Parsely/wp-parsely/pull/417)
-  - Use `is_post_viewable` instead. The `post_has_viewable_type` function was only added to support older versions of WordPress.
-- Custom Parse.ly load text domain. [#457](https://github.com/Parsely/wp-parsely/pull/457)
-  - Since the plugin now supports versions of WordPress that load custom text domains automatically, the plugins doesn't have to explicitly load the text domain itself.
-- Empty functions for admin settings. [#456](https://github.com/Parsely/wp-parsely/pull/456)
-  - The callbacks were never utilised.
+- Previously deprecated filter `after_set_parsely_page`. Use `wp_parsely_metadata` instead. [#436](https://github.com/Parsely/wp-parsely/pull/436)
+- Previously deprecated filter `parsely_filter_insert_javascript`. Use `wp_parsely_load_js_tracker` instead. [#437](https://github.com/Parsely/wp-parsely/pull/437)
+- `post_has_viewable_type` function. Use `is_post_viewable` instead. The `post_has_viewable_type` function was only added to support older versions of WordPress. [#417](https://github.com/Parsely/wp-parsely/pull/417)
+- Custom Parse.ly load text domain. Since the plugin now supports versions of WordPress that load custom text domains automatically, the plugins doesn't have to explicitly load the text domain itself. [#457](https://github.com/Parsely/wp-parsely/pull/457)
+- Empty functions for admin settings. The callbacks were never utilised. [#456](https://github.com/Parsely/wp-parsely/pull/456)
 - Redundant code coverage annotations. [#469](https://github.com/Parsely/wp-parsely/pull/469)
 - Old init Python script. [#441](https://github.com/Parsely/wp-parsely/pull/441)
-- "Add admin warning for minimum requirements in 3.0" notice. [#424](https://github.com/Parsely/wp-parsely/pull/424)
-  - This was only added in the previous version of the plugin.
+- "Add admin warning for minimum requirements in 3.0" notice. This was only added in the previous version of the plugin. [#424](https://github.com/Parsely/wp-parsely/pull/424)
 - Upgrade README notice. [#470](https://github.com/Parsely/wp-parsely/pull/470)
 
-## [2.6.1] - 2021-10-15
+## [2.6.1](https://github.com/Parsely/wp-parsely/compare/2.6.0...2.6.1) - 2021-10-15
 
 ### Fixed
 
 - Fix recommended widget not following configuration #451
 
-## [2.6.0] - 2021-09-29
+## [2.6.0](https://github.com/Parsely/wp-parsely/compare/2.5.2...2.6.0) - 2021-09-29
 
 ### Added
 
@@ -390,7 +386,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - Remove unused default logo variable #387
 - Remove unused return_personalized_json function #391
 
-## [2.5.2] - 2021-09-17
+## [2.5.2](https://github.com/Parsely/wp-parsely/compare/2.5.1...2.5.2) - 2021-09-17
 
 ### Changed
 
@@ -402,14 +398,14 @@ If you are using the plugin without any code-level customizations (for instance,
 - Fix notices that would appear if the plugin was set up to print repeating metas but those wouldn't exist. #370
 - Fix cookie parsing. In some edge cases, a cookie that contained special characters would not be parsed correctly. #364
 
-## [2.5.1] - 2021-08-10
+## [2.5.1](https://github.com/Parsely/wp-parsely/compare/2.5.0...2.5.1) - 2021-08-10
 
 ### Fixed
 
 - Load the API init script before the tracker so values are populated.
 - Encode the current URL in the `uuidProfileCall` URL.
 
-## [2.5.0] - 2021-05-17
+## [2.5.0](https://github.com/Parsely/wp-parsely/compare/2.4.1...2.5.0) - 2021-05-17
 
 ### Added
 
@@ -449,13 +445,13 @@ If you are using the plugin without any code-level customizations (for instance,
 - Deprecate filter `after_set_parsely_page` -- use new name `wp_parsely_metadata` instead.
 - Deprecate filter `parsely_filter_insert_javascript` -- use new name `wp_parsely_load_js_tracker` instead.
 
-## [2.4.1] - 2021-04-13
+## [2.4.1](https://github.com/Parsely/wp-parsely/compare/2.4.0...2.4.1) - 2021-04-13
 
 ### Fixed
 
 - Fix the version number set in the main plugin file.
 
-## [2.4.0] - 2021-04-13
+## [2.4.0](https://github.com/Parsely/wp-parsely/compare/2.3.0...2.4.0) - 2021-04-13
 
 ### Added
 
@@ -482,36 +478,36 @@ If you are using the plugin without any code-level customizations (for instance,
 
 - Remove Parse.ly metadata from search result pages.
 
-## [2.3.0] - 2021-03-24
+## [2.3.0](https://github.com/Parsely/wp-parsely/compare/2.2.1...2.3.0) - 2021-03-24
 
 - Fix and improve Travis configuration.
 - Small maintenance items: merge isset() calls, remove unnecessary typecasting, remove is_null() in favour of null comparison, un-nest nested functions, simplify ternary operators, remove unnecessary local variable, etc.
 - Improve tests: split utility methods to custom test case, use more specific assertions, etc.
 - Update WordPress plugin Tested Up To version.
 
-## [2.2.1] - 2020-12-18
+## [2.2.1](https://github.com/Parsely/wp-parsely/compare/2.2...2.2.1) - 2020-12-18
 
 - Add logo to JSON LD publisher object.
 
-## [2.2] - 2020-09-14
+## [2.2](https://github.com/Parsely/wp-parsely/compare/2.1.3...2.2) - 2020-09-14
 
 - Fix metadata being inserted on a 404 page.
 - Add `parsely_filter_insert_javascript` filter hook.
 
-## [2.1.3] - 2020-09-11
+## [2.1.3](https://github.com/Parsely/wp-parsely/compare/2.1.2...2.1.3) - 2020-09-11
 
 - Add defaults for API Secret and Wipe settings.
 
-## [2.1.2] - 2020-07-02
+## [2.1.2](https://github.com/Parsely/wp-parsely/compare/2.1.1...2.1.2) - 2020-07-02
 
 - Cleanup code to conform to WordPress VIP standards.
 - Add a guard against null values.
 
-## [2.1.1] - 2020-06-08
+## [2.1.1](https://github.com/Parsely/wp-parsely/compare/2.1...2.1.1) - 2020-06-08
 
 - Fix incorrect variable name.
 
-## [2.1] - 2020-06-05
+## [2.1](https://github.com/Parsely/wp-parsely/compare/2.0...2.1) - 2020-06-05
 
 - Update documentation.
 - Extract logic for metadata construction and updating into their own methods.
@@ -520,12 +516,12 @@ If you are using the plugin without any code-level customizations (for instance,
 - Add 10-minute cron job schedule.
 - Add Wipe Parsely Metadata Info setting.
 
-## [2.0] - 2019-04-29
+## [2.0](https://github.com/Parsely/wp-parsely/compare/1.14...2.0) - 2019-04-29
 
-- Change JavaScript integration to directly load tracker bundles that are customized for your specific site ID. See https://www.parse.ly/help/integration/basic/.  
-  NOTE: Sites that have custom Parse.ly video tracking configured (outside the Parse.ly WordPress plugin) for a player listed at https://www.parse.ly/help/integration/video_v2/#supported-players should contact support@parsely.com before upgrading.
+- Change JavaScript integration to directly load tracker bundles that are customized for your specific site ID. See https://www.parse.ly/help/integration/basic/.
+- NOTE: Sites that have custom Parse.ly video tracking configured (outside the Parse.ly WordPress plugin) for a player listed at https://www.parse.ly/help/integration/video_v2/#supported-players should contact support@parsely.com before upgrading.
 
-## [1.14] - 2019-01-15
+## [1.14](https://github.com/Parsely/wp-parsely/compare/1.13.1...1.14) - 2019-01-15
 
 - Update AMP analytics implementation.
 - Add ability to use a horizontal layout of the widget (for page footers).
@@ -535,29 +531,29 @@ If you are using the plugin without any code-level customizations (for instance,
 - Improve post status check.
 - Cleanup code to conform to WordPress VIP standards.
 
-## [1.13.1] - 2018-06-18
+## [1.13.1](https://github.com/Parsely/wp-parsely/compare/1.13...1.13.1) - 2018-06-18
 
 - Cleanup code to conform to WordPress VIP standards.
 
-## [1.13] - 2018-05-24
+## [1.13](https://github.com/Parsely/wp-parsely/compare/1.12.5...1.13) - 2018-05-24
 
 - Make AMP integration optional.
 - Add support for publisher logo information.
 - Fix minor bugs.
 
-## [1.12.5] - 2018-05-16
+## [1.12.5](https://github.com/Parsely/wp-parsely/compare/1.12.4...1.12.5) - 2018-05-16
 
 - Fix kissing close bracket for select tags on settings page.
 
-## [1.12.4] - 2018-05-15
+## [1.12.4](https://github.com/Parsely/wp-parsely/compare/1.12.3...1.12.4) - 2018-05-15
 
 - No net changes from 1.12.3
 
-## [1.12.3] - 2018-05-01
+## [1.12.3](https://github.com/Parsely/wp-parsely/compare/1.12.2...1.12.3) - 2018-05-01
 
 - Cleanup code to conform to WordPress VIP standards.
 
-## [1.12.2] - 2018-04-27
+## [1.12.2](https://github.com/Parsely/wp-parsely/compare/1.12.1...1.12.2) - 2018-04-27
 
 - Cleanup code to conform to WordPress VIP standards.
 - Add security fixes.
@@ -566,67 +562,67 @@ If you are using the plugin without any code-level customizations (for instance,
 - Fix CSS bug for non-thumbnail widget.
 - Remove broken or un-needed CSS rules.
 
-## [1.12.1] - 2018-01-30
+## [1.12.1](https://github.com/Parsely/wp-parsely/compare/1.12...1.12.1) - 2018-01-30
 
 - Fix archive pages having post canonicals.
 
-## [1.12] - 2018-01-26
+## [1.12](https://github.com/Parsely/wp-parsely/compare/1.11.2...1.12) - 2018-01-26
 
 - Add ability to use repeated meta tags instead of ld+json tags for metadata.
 - Cleanup code to conform to WordPress VIP standards.
 - Fix minor bugs.
 
-## [1.11.2] - 2017-12-19
+## [1.11.2](https://github.com/Parsely/wp-parsely/compare/1.11...1.11.2) - 2017-12-19
 
 - No net changes from 1.11.
 
-## [1.11] - 2017-12-18
+## [1.11](https://github.com/Parsely/wp-parsely/compare/1.10.3...1.11) - 2017-12-18
 
 - Add ability to use Parsely API with widget.
 - Add ability to track or not track custom page and post types.
 - Add ability to disable JavaScript tracking.
 - Fix minor bugs.
 
-## [1.10.3] - 2017-09-21
+## [1.10.3](https://github.com/Parsely/wp-parsely/compare/1.10.2...1.10.3) - 2017-09-21
 
 - Update documentation.
 - Amend logic for allowing logged users not to be tracked.
 
-## [1.10.2] - 2016-10-25
+## [1.10.2](https://github.com/Parsely/wp-parsely/compare/v1.10.1...1.10.2) - 2016-10-25
 
 - Validate `force_https_canonicals` value.
 - Improve setting help text.
 - Add security fix.
 
-## [v1.10.1] - 2016-09-22
+## [v1.10.1](https://github.com/Parsely/wp-parsely/compare/v1.10...v1.10.1) - 2016-09-22
 
 - Update documentation.
 - Add conditional in case there are no custom taxonomies.
 
-## [v1.10] - 2016-09-20
+## [v1.10](https://github.com/Parsely/wp-parsely/compare/v1.9...v1.10) - 2016-09-20
 
 - Add ability to filter final JSON-LD output.
 - Add the ability to use a custom taxonomy as tags.
 - Add AMP / Facebook Instant integration with official AMP / FBIA plugins from Automattic.
 - Fix bug related to HTTPS canonicals.
 
-## [v1.9] - 2016-06-23
+## [v1.9](https://github.com/Parsely/wp-parsely/compare/v1.8...v1.9) - 2016-06-23
 
 - Add ability to assign custom taxonomies as section.
 - Fix bug related to adding section to tag field.
 
-## [v1.8] - 2016-01-13
+## [v1.8](https://github.com/Parsely/wp-parsely/compare/v1.7...v1.8) - 2016-01-13
 
 - Update documentation for installation and local development.
 - Allow developers to adjust the tag list and the category reported for a post.
 - Add support for themes to extend the reported authors.
 
-## [v1.7] - 2014-11-19
+## [v1.7](https://github.com/Parsely/wp-parsely/compare/v1.6...v1.7) - 2014-11-19
 
 - Use JSON-LD / schema.org for parsely-page data instead of proprietary format.
 - Add support for multiple authors if using the [Co-Authors Plus plugin](https://wordpress.org/plugins/co-authors-plus/).
 
-## [v1.6] - 2014-04-30
+## [v1.6](https://github.com/Parsely/wp-parsely/compare/v1.5...v1.6) - 2014-04-30
 
 - Maintenance release with multiple changes needed for WordPress VIP inclusion.
 - Migrate to WP Settings API.
@@ -635,20 +631,20 @@ If you are using the plugin without any code-level customizations (for instance,
 - Update much of the copy in settings page.
 - Update screenshots.
 
-## [v1.5] - 2013-06-17
+## [v1.5](https://github.com/Parsely/wp-parsely/compare/v1.4...v1.5) - 2013-06-17
 
 - Add support for new option - "Use Categories as Tags".
 - Fix bug that caused wp-admin bar to be hidden when "Do not track authenticated in users" was selected.
 - Fix WP category logic bug that failed on users with custom post types.
 
-## [v1.4] - 2012-11-09
+## [v1.4](https://github.com/Parsely/wp-parsely/compare/v1.3...v1.4) - 2012-11-09
 
 - Add early support for post tags.
 - Fix permalink errors on category/author/tag pages.
 - Add version output to both templates and settings pages.
 - Rename API key to Site ID to avoid confusion.
 
-## [v1.3] - 2012-10-03
+## [v1.3](https://github.com/Parsely/wp-parsely/compare/v1.2...v1.3) - 2012-10-03
 
 - Add option to not track or not track authenticated users (default is to not track authenticated users).
 - Remove async implementation option.
@@ -656,13 +652,13 @@ If you are using the plugin without any code-level customizations (for instance,
 - Add activation/deactivation hooks.
 - null categories are now set to "Uncategorized".
 
-## [v1.2] - 2012-08-31
+## [v1.2](https://github.com/Parsely/wp-parsely/compare/v1.1...v1.2) - 2012-08-31
 
 - Add support for using top-level categories for posts instead of the first active post the plugin finds.
 - parsely-page meta tag now outputs its value using 'content' attribute instead of 'value'.
 - Minor fixes to outputting to use proper WordPress functions.
 
-## [v1.1] - 2012-07-19
+## [v1.1](https://github.com/Parsely/wp-parsely/compare/v1.0...v1.1) - 2012-07-19
 
 - Add ability to add a prefix to content IDs.
 - Ensured the plugin only uses long tags `<?php` instead of `<?`.
@@ -670,61 +666,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - Better error checking of values for API key / implementation method.
 - Fix bugs.
 
-## [v1.0] - 2012-07-15
+## [v1.0](https://github.com/Parsely/wp-parsely/releases/tag/v1.0) - 2012-07-15
 
 - Initial version.
 - Add support for parsely-page and JavaScript on home page and published pages and posts as well as archive pages (date/author/category/tag).
-
-[3.3.1]: https://github.com/Parsely/wp-parsely/compare/3.3.0...3.3.1
-[3.3.0]: https://github.com/Parsely/wp-parsely/compare/3.2.1...3.3.0
-[3.2.1]: https://github.com/Parsely/wp-parsely/compare/3.2.0...3.2.1
-[3.2.0]: https://github.com/Parsely/wp-parsely/compare/3.1.3...3.2.0
-[3.1.3]: https://github.com/Parsely/wp-parsely/compare/3.1.2...3.1.3
-[3.1.2]: https://github.com/Parsely/wp-parsely/compare/3.1.1...3.1.2
-[3.1.1]: https://github.com/Parsely/wp-parsely/compare/3.1.0...3.1.1
-[3.1.0]: https://github.com/Parsely/wp-parsely/compare/3.0.4...3.1.0
-[3.0.4]: https://github.com/Parsely/wp-parsely/compare/3.0.3...3.0.4
-[3.0.3]: https://github.com/Parsely/wp-parsely/compare/3.0.2...3.0.3
-[3.0.2]: https://github.com/Parsely/wp-parsely/compare/3.0.1...3.0.2
-[3.0.1]: https://github.com/Parsely/wp-parsely/compare/3.0.0...3.0.1
-[3.0.0]: https://github.com/Parsely/wp-parsely/compare/2.6.1...3.0.0
-[2.6.1]: https://github.com/Parsely/wp-parsely/compare/2.6.0...2.6.1
-[2.6.0]: https://github.com/Parsely/wp-parsely/compare/2.5.2...2.6.0
-[2.5.2]: https://github.com/Parsely/wp-parsely/compare/2.5.1...2.5.2
-[2.5.1]: https://github.com/Parsely/wp-parsely/compare/2.5.0...2.5.1
-[2.5.0]: https://github.com/Parsely/wp-parsely/compare/2.4.1...2.5.0
-[2.4.1]: https://github.com/Parsely/wp-parsely/compare/2.4.0...2.4.1
-[2.4.0]: https://github.com/Parsely/wp-parsely/compare/2.3.0...2.4.0
-[2.3.0]: https://github.com/Parsely/wp-parsely/compare/2.2.1...2.3.0
-[2.2.1]: https://github.com/Parsely/wp-parsely/compare/2.2...2.2.1
-[2.2]: https://github.com/Parsely/wp-parsely/compare/2.1.3...2.2
-[2.1.3]: https://github.com/Parsely/wp-parsely/compare/2.1.2...2.1.3
-[2.1.2]: https://github.com/Parsely/wp-parsely/compare/2.1.1...2.1.2
-[2.1.1]: https://github.com/Parsely/wp-parsely/compare/2.1...2.1.1
-[2.1]: https://github.com/Parsely/wp-parsely/compare/2.0...2.1
-[2.0]: https://github.com/Parsely/wp-parsely/compare/1.14...2.0
-[1.14]: https://github.com/Parsely/wp-parsely/compare/1.13.1...1.14
-[1.13.1]: https://github.com/Parsely/wp-parsely/compare/1.13...1.13.1
-[1.13]: https://github.com/Parsely/wp-parsely/compare/1.12.5...1.13
-[1.12.5]: https://github.com/Parsely/wp-parsely/compare/1.12.4...1.12.5
-[1.12.4]: https://github.com/Parsely/wp-parsely/compare/1.12.3...1.12.4
-[1.12.3]: https://github.com/Parsely/wp-parsely/compare/1.12.2...1.12.3
-[1.12.2]: https://github.com/Parsely/wp-parsely/compare/1.12.1...1.12.2
-[1.12.1]: https://github.com/Parsely/wp-parsely/compare/1.12...1.12.1
-[1.12]: https://github.com/Parsely/wp-parsely/compare/1.11.2...1.12
-[1.11.2]: https://github.com/Parsely/wp-parsely/compare/1.11...1.11.2
-[1.11]: https://github.com/Parsely/wp-parsely/compare/1.10.3...1.11
-[1.10.3]: https://github.com/Parsely/wp-parsely/compare/1.10.2...1.10.3
-[1.10.2]: https://github.com/Parsely/wp-parsely/compare/v1.10.1...1.10.2
-[v1.10.1]: https://github.com/Parsely/wp-parsely/compare/v1.10...v1.10.1
-[v1.10]: https://github.com/Parsely/wp-parsely/compare/v1.9...v1.10
-[v1.9]: https://github.com/Parsely/wp-parsely/compare/v1.8...v1.9
-[v1.8]: https://github.com/Parsely/wp-parsely/compare/v1.7...v1.8
-[v1.7]: https://github.com/Parsely/wp-parsely/compare/v1.6...v1.7
-[v1.6]: https://github.com/Parsely/wp-parsely/compare/v1.5...v1.6
-[v1.5]: https://github.com/Parsely/wp-parsely/compare/v1.4...v1.5
-[v1.4]: https://github.com/Parsely/wp-parsely/compare/v1.3...v1.4
-[v1.3]: https://github.com/Parsely/wp-parsely/compare/v1.2...v1.3
-[v1.2]: https://github.com/Parsely/wp-parsely/compare/v1.1...v1.2
-[v1.1]: https://github.com/Parsely/wp-parsely/compare/v1.0...v1.1
-[v1.0]: https://github.com/Parsely/wp-parsely/releases/tag/v1.0
