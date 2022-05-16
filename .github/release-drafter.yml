@@ -1,0 +1,44 @@
+name-template: $RESOLVED_VERSION
+tag-template: $RESOLVED_VERSION
+template: $CHANGES
+change-template: '- $TITLE ([#$NUMBER](https://github.com/Parsely/wp-parsely/pull/$NUMBER))'
+categories:
+  - title: Added
+    labels:
+      - 'changelog:added'
+  - title: Changed
+    labels:
+      - 'changelog:changed'
+  - title: Deprecated
+    labels:
+      - 'changelog:deprecated'
+  - title: Removed
+    labels:
+    - 'changelog:removed'
+  - title: Fixed
+    labels:
+      - 'changelog:fixed'
+  - title: Security
+    labels:
+      - 'security'
+      - 'changelog:security'
+  - title: Dependency Updates
+    labels:
+      - 'Component: Dependencies'
+
+version-resolver:
+  major:
+    labels:
+      - 'changelog:removed'
+  minor:
+    labels:
+      - 'changelog:added'
+      - 'changelog:deprecated'
+  patch:
+    labels:
+      - 'changelog:fixed'
+      - 'changelog:security'
+      - 'Component: Dependencies'
+
+exclude-labels:
+  - 'changelog:skip'

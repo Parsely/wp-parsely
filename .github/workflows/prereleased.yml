@@ -1,0 +1,55 @@
+name: Update version numbers and changelog and push them to trunk
+
+on:
+  release:
+    types: [prereleased]
+
+jobs:
+  update:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.release.target_commitish }}
+
+     # Bump version numbers and push to trunk
+      - name: Bump version numbers
+        run: |
+          NEW_VERSION=$(git describe --tags --abbrev=0)
+          sed -i "s/Stable tag: .*  $/Stable tag: $NEW_VERSION  /" README.md
+          sed -i "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" package.json
+          sed -i "s/export const PLUGIN_VERSION = '.*'/export const PLUGIN_VERSION = '$NEW_VERSION'/" tests/e2e/utils.js
+          sed -i "s/ \* Version:           .*$/ \* Version:           $NEW_VERSION/" wp-parsely.php
+          sed -i "s/const PARSELY_VERSION = '.*'/const PARSELY_VERSION = '$NEW_VERSION'/" wp-parsely.php
+          npm install
+
+      - name: Commit version bumps to trunk
+        uses: stefanzweifel/git-auto-commit-action@v4.14.1
+        with:
+          branch: trunk
+          commit_message: Bump plugin version number to ${{ github.event.release.tag_name }}
+          file_pattern: README.md package-lock.json package.json tests/e2e/utils.js wp-parsely.php
+
+     # Update changelog and push to trunk
+      - name: Add latest release notes to changelog
+        uses: stefanzweifel/changelog-updater-action@v1.5.0
+        with:
+          latest-version: ${{ github.event.release.tag_name }}
+          release-notes: ${{ github.event.release.body }}
+
+      - name: Add comparison URL to changelog
+        run: |
+          TAG_PREVIOUS=$(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))
+          sed -i -e "0,/$TAG_NEW/ s+$TAG_NEW+\[&\]\(https\:\/\/github\.com\/Parsely\/wp\-parsely\/compare\/$TAG_PREVIOUS\.\.\.$TAG_NEW\)+" CHANGELOG.md
+        env:
+          TAG_NEW: ${{ github.event.release.tag_name }}
+
+      - name: Commit updated changelog to trunk
+        uses: stefanzweifel/git-auto-commit-action@v4.14.1
+        with:
+          branch: trunk
+          commit_message: Update CHANGELOG.md for plugin version ${{ github.event.release.tag_name }}
+          file_pattern: CHANGELOG.md
