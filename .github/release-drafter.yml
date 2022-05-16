@@ -5,23 +5,23 @@ change-template: '- $TITLE ([#$NUMBER](https://github.com/Parsely/wp-parsely/pul
 categories:
   - title: Added
     labels:
-      - 'changelog:added'
+      - 'Changelog: Added'
   - title: Changed
     labels:
-      - 'changelog:changed'
+      - 'Changelog: Changed'
   - title: Deprecated
     labels:
-      - 'changelog:deprecated'
+      - 'Changelog: Deprecated'
   - title: Removed
     labels:
-    - 'changelog:removed'
+    - 'Changelog: Removed'
   - title: Fixed
     labels:
-      - 'changelog:fixed'
+      - 'Changelog: Fixed'
   - title: Security
     labels:
       - 'security'
-      - 'changelog:security'
+      - 'Changelog: Security'
   - title: Dependency Updates
     labels:
       - 'Component: Dependencies'
@@ -29,16 +29,16 @@ categories:
 version-resolver:
   major:
     labels:
-      - 'changelog:removed'
+      - 'Changelog: Removed'
   minor:
     labels:
-      - 'changelog:added'
-      - 'changelog:deprecated'
+      - 'Changelog: Added'
+      - 'Changelog: Deprecated'
   patch:
     labels:
-      - 'changelog:fixed'
-      - 'changelog:security'
+      - 'Changelog: Fixed'
+      - 'Changelog: Security'
       - 'Component: Dependencies'
 
 exclude-labels:
-  - 'changelog:skip'
+  - 'Changelog: Skip'
