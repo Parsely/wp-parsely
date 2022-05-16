@@ -84,7 +84,7 @@ class Metadata {
 			$builder = new Page_Builder( $this->parsely, $post );
 		}
 
-		if ( null !== $builder ) {
+		if ( isset( $builder ) ) {
 			$parsely_page = $builder->get_metadata();
 		} else {
 			$parsely_page = array();
