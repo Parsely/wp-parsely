@@ -53,6 +53,7 @@ final class SiteHealthTest extends TestCase {
 	 *
 	 * @covers \Parsely\UI\Site_Health::__construct
 	 * @covers \Parsely\UI\Site_Health::options_debug_info
+	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_options_debug_info(): void {
 		$args = self::$site_health->options_debug_info( array() );

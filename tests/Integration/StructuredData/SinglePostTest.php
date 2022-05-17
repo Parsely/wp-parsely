@@ -35,15 +35,28 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -75,15 +88,28 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -111,15 +137,28 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -158,17 +197,30 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_categories
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_custom_taxonomy_values
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
+	 * @uses \Parsely\Metadata\Post_Builder::get_categories
+	 * @uses \Parsely\Metadata\Post_Builder::get_custom_taxonomy_values
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -207,17 +259,30 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_categories
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_custom_taxonomy_values
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
+	 * @uses \Parsely\Metadata\Post_Builder::get_categories
+	 * @uses \Parsely\Metadata\Post_Builder::get_custom_taxonomy_values
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -268,16 +333,29 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::get_top_level_term
-	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
+	 * @uses \Parsely\Metadata\Post_Builder::get_top_level_term
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -328,16 +406,29 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::get_top_level_term
-	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
+	 * @uses \Parsely\Metadata\Post_Builder::get_top_level_term
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -399,15 +490,28 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -453,15 +557,28 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -506,15 +623,28 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
@@ -545,14 +675,28 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::set_metadata_post_times
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
@@ -590,14 +734,28 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::set_metadata_post_times
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
@@ -636,14 +794,28 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::set_metadata_post_times
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
@@ -702,16 +874,30 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::set_metadata_post_times
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::get_categories
-	 * @covers \Parsely\Metadata::get_custom_taxonomy_values
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_categories
+	 * @uses \Parsely\Metadata\Post_Builder::get_custom_taxonomy_values
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
@@ -746,14 +932,28 @@ final class SinglePostTest extends TestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::set_metadata_post_times
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group metadata
