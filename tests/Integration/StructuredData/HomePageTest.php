@@ -35,14 +35,14 @@ final class HomePageTest extends NonPostTestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @covers \Parsely\Metadata\Paginated_Front_Page_Builder::build_url
+	 * @uses \Parsely\Metadata\Front_Page_Builder::build_url
+	 * @uses \Parsely\Metadata\Front_Page_Builder::build_headline
+	 * @uses \Parsely\Metadata\Front_Page_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -81,14 +81,14 @@ final class HomePageTest extends NonPostTestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @covers \Parsely\Metadata\Paginated_Front_Page_Builder::build_url
+	 * @uses \Parsely\Metadata\Front_Page_Builder::build_headline
+	 * @uses \Parsely\Metadata\Front_Page_Builder::build_url
+	 * @uses \Parsely\Metadata\Front_Page_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -132,14 +132,13 @@ final class HomePageTest extends NonPostTestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Front_Page_Builder::build_headline
+	 * @uses \Parsely\Metadata\Front_Page_Builder::build_url
+	 * @uses \Parsely\Metadata\Front_Page_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -184,14 +183,13 @@ final class HomePageTest extends NonPostTestCase {
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Front_Page_Builder::build_headline
+	 * @uses \Parsely\Metadata\Front_Page_Builder::build_url
+	 * @uses \Parsely\Metadata\Front_Page_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
