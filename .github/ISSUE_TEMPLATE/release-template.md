@@ -43,7 +43,7 @@ PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM 
 - [ ] Manually run the `Deploy to WordPress.org` GitHub workflow.
   > This will deploy the new version of the plugin to wordpress.org.
 
-## After releasing:
+## After releasing
 
 **Managing milestones**
 - [ ] Close the current milestone.
