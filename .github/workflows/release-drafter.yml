@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   update_release_draft:
-    if: github.event.pull_request.merged == true # Run only when a PR is merged.
+    if: github.event.pull_request.merged # Run only when a PR is merged.
     runs-on: ubuntu-20.04
 
     steps:
