@@ -8,21 +8,49 @@ labels: 'Type: Maintenance'
 
 :warning: DO NOT MERGE (YET) :warning:
 
-[Remaining work for this Milestone](https://github.com/Parsely/wp-parsely/milestone/14)
+[Remaining work for this Milestone](https://github.com/Parsely/wp-parsely/milestone/xx)
 
 PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM YYYY.
 
-- [ ] Merge any outstanding PRs due for this release to `develop`.
+## Before releasing
+
 - [ ] Notify stakeholders of an upcoming release.
-- [ ] Add [PR](https://github.com/Parsely/wp-parsely/pull/XXX) against `develop` which:
-  - Increases version numbers in the README, plugin bootstrap file `wp-parsely.php`, and `package.json`.
-  - Adds or updates the changelog for the release.
-- [ ] Merge this PR.
-- [ ] Create a branch from `trunk` named `release-x.y.z`. Merge `develop` into that branch. Open a PR from `release-x.y.z` to `trunk` named _Release x.y.z_.
-- [ ] Add signed release tag against `trunk` using GitHub's UI.
+- [ ] Merge any outstanding PRs due for this release to `develop`.
+- [ ] Verify that all PRs have a `Changelog` tag.
+
+## Release proccess
+
+**Create the release PR**
+- [ ] Create a PR that merges `develop` into `trunk`, named _Release x.y.z_.
+- [ ] Merge the PR into trunk.
+  > This will create a new release draft. It might take some seconds to appear.
+
+**Promote the release draft to a pre-release**
+- [ ] In the release draft page, check the version numbers and changelog data.
+- [ ] Make any adjustments if needed.
+- [ ] Save the draft as a pre-release.
+  > This will commit the version numbers and changelog into `trunk` as 2 distinct commits. Changes might take a minute to appear.
+
+**Promote the pre-release to a release**
+- [ ] Go to `trunk` and inspect the version and changelog commits for correctness.
+  > If commits happen to be incorrect, please stop and contact the development team.
+- [ ] Go to the pre-release and promote it to a release.
+  > This will merge `trunk` into `develop` and also update the `release's tag`. Changes might take a minute to appear.
+- [ ] Inspect the `develop` branch and the `release's tag` to verify that they contain the version and changelog updates.
+  > If this is not the case,please stop and contact the development team.
+
+**Deploy the release to wordpress.org**
+- [ ] Manually run the `Deploy to WordPress.org` GitHub workflow.
+  > This will deploy the new version of the plugin to wordpress.org.
+
+## After releasing:
+
+**Managing milestones**
 - [ ] Close the current milestone.
-- [ ] Open a new milestone for the next release.
-- [ ] If any open PRs/issues which were milestoned for this release do not make it into the release, update their milestone.
-- [ ] Sync changes from `trunk` to `develop`. Update versions in `develop` to be `x.y.z-alpha` (where `x.y.z` is the next milestone).
-- [ ] Write a Lobby post.
-- [ ] Write an internal P2 post.
+- [ ] If needed, open a new milestone for the next release.
+- [ ] If there are any open PRs/issues that did do not make it into the release, update their milestone.
+
+**Communicating and releasing to other platforms**
+- [ ] Write an internal P2 post about the release.
+- [ ] Release the plugin for WPVIP and write a release lobby post.
+- [ ] Release the plugin for WPCOM.
