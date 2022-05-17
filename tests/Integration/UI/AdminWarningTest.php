@@ -27,7 +27,7 @@ final class AdminWarningTest extends TestCase {
 	private static $admin_warning;
 
 	/**
-	 * The setUp run before each test
+	 * The setup run before each test
 	 */
 	public function set_up(): void {
 		parent::set_up();
