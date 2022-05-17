@@ -23,12 +23,11 @@ jobs:
           target_branch: develop
           github_token: ${{ github.token }}
 
-      - name: Prepare "trunk_last_commit" variable
-        run: echo "trunk_last_commit=$(git rev-parse trunk)" >> $GITHUB_ENV
-
       - name: Force push ${{ github.event.release.tag_name }} tag to latest commit in trunk
-        uses: rickstaa/action-create-tag@v1.3.1
-        with:
-          tag: ${{ github.event.release.tag_name }}
-          force_push_tag: true
-          commit_sha: ${{ env.trunk_last_commit }}
+        run: |
+          SHA=$(git rev-parse trunk)
+          TAG=$(git describe --tags --abbrev=0)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -fa $TAG $SHA -m "Release $TAG"
+          git push --force origin $TAG
