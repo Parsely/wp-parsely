@@ -1,7 +1,20 @@
+# Release Drafter configuration file.
+
+# Name of the created release draft.
 name-template: $RESOLVED_VERSION
+
+# Name of the created tag.
 tag-template: $RESOLVED_VERSION
+
+# The release draft's text, which is the list of merged PRs.
 template: $CHANGES
+
+# Template for every PR added to the changelog as a line.
 change-template: '- $TITLE ([#$NUMBER](https://github.com/Parsely/wp-parsely/pull/$NUMBER))'
+
+# Changelog sections and their respective labels.
+# For example, all PRs with the "Changelog: Added" label will be inserted within
+# the changelog's "Added" section.
 categories:
   - title: Added
     labels:
@@ -26,6 +39,14 @@ categories:
     labels:
       - 'Component: Dependencies'
 
+# Labels that will exclude PRs from the changelog.
+exclude-labels:
+  - 'Changelog: Skip'
+
+# Automatic release draft version bumping based on PR labels.
+# For example, if the changeset includes an "Added" label, a minor version bump
+# will occur. However, if there's also a "Removed" label, a major version bump
+# will occur.
 version-resolver:
   major:
     labels:
@@ -39,6 +60,3 @@ version-resolver:
       - 'Changelog: Fixed'
       - 'Changelog: Security'
       - 'Component: Dependencies'
-
-exclude-labels:
-  - 'Changelog: Skip'
