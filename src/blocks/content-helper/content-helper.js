@@ -18,38 +18,40 @@ import { registerPlugin } from '@wordpress/plugins';
  */
 import { ReactComponent as LeafIcon } from '../../../images/parsely-logo-green.svg';
 
-function registerParselySidebar() {
-	const renderPostCard = () => (
-		<>
-			<Card>
-				<CardHeader><b>The post title</b></CardHeader>
-				<CardBody>
-					<p>Published on December 15, 2022 by Author</p>
-					<p><Button variant="primary">Open Post</Button> <Button variant="secondary">Post Stats</Button></p>
-				</CardBody>
-			</Card>
-			<br />
-		</>
-	);
+const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
-	registerPlugin( 'wp-parsley-block-editor-sidebar', {
-		icon: LeafIcon,
-		render: () => (
-			<PluginSidebar name="wp-parsely-sidebar" title="Parse.ly">
-				<Panel>
-					<PanelHeader>Parse.ly Content Helper</PanelHeader>
-					<PanelBody>
-						<p>Related posts that performed well in the past:</p>
-						{ renderPostCard() }
-						{ renderPostCard() }
-						{ renderPostCard() }
-						{ renderPostCard() }
-						{ renderPostCard() }
-					</PanelBody>
-				</Panel>
-			</PluginSidebar>
-		),
-	} );
-}
+const renderPostCard = () => (
+	<>
+		<Card>
+			<CardHeader><b>The post title</b></CardHeader>
+			<CardBody>
+				<p>Published on December 15, 2022 by Author</p>
+				<p><Button variant="primary">Open Post</Button> <Button variant="secondary">Post Stats</Button></p>
+			</CardBody>
+		</Card>
+		<br />
+	</>
+);
 
-registerParselySidebar();
+const renderSidebar = () => {
+	return (
+		<PluginSidebar name="wp-parsely-sidebar" title="Parse.ly">
+			<Panel>
+				<PanelHeader>Parse.ly Content Helper</PanelHeader>
+				<PanelBody>
+					<p>Related posts that performed well in the past:</p>
+					{ renderPostCard() }
+					{ renderPostCard() }
+					{ renderPostCard() }
+					{ renderPostCard() }
+					{ renderPostCard() }
+				</PanelBody>
+			</Panel>
+		</PluginSidebar> );
+};
+
+// Registering Plugin to WordPress Block Editor.
+registerPlugin( BLOCK_PLUGIN_ID, {
+	icon: LeafIcon,
+	render: renderSidebar,
+} );
