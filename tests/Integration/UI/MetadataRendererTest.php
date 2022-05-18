@@ -210,7 +210,7 @@ final class MetadataRendererTest extends TestCase {
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\UI\Metadata_Renderer::filter_empty_and_not_string_from_array
 	 */
-	public function test_render_metadata_global_post(): void {
+	public function test_render_metadata_int_global_post(): void {
 		self::set_options( array( 'apikey' => 'testkey' ) );
 
 		$post_id = self::factory()->post->create();
