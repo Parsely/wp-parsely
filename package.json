@@ -37,7 +37,6 @@
 		"defaults"
 	],
 	"dependencies": {
-		"@wordpress/data": "^6.8.0",
 		"@wordpress/dom-ready": "^3.5.0",
 		"js-cookie": "^3.0.1"
 	},
@@ -50,6 +49,7 @@
 		"@wordpress/blocks": "^11.7.0",
 		"@wordpress/components": "^19.10.0",
 		"@wordpress/compose": "^5.5.0",
+		"@wordpress/data": "^6.8.0",
 		"@wordpress/e2e-test-utils": "^7.4.0",
 		"@wordpress/edit-post": "^6.5.0",
 		"@wordpress/element": "^4.3.0",
