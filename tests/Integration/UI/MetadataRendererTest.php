@@ -171,7 +171,7 @@ final class MetadataRendererTest extends TestCase {
 	}
 
 	/**
-	 * Check that the renderer completes successfully and outputs repeated metas when the current
+	 * Checks that the renderer completes successfully and outputs repeated metas when the current
 	 * post is an integer but not WP_Post object.
 	 * We're not fully testing the output, since that's not the renderer's concern.
 	 *
