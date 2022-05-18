@@ -154,14 +154,28 @@ final class RestMetadataTest extends TestCase {
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::get_rendered_meta
 	 * @uses \Parsely\Metadata::__construct
 	 * @uses \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_api_key
@@ -192,16 +206,32 @@ final class RestMetadataTest extends TestCase {
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
+	 * @uses \Parsely\Endpoints\Metadata_Endpoint::get_rendered_meta
 	 * @uses \Parsely\Metadata::__construct
 	 * @uses \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
+	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_api_key
 	 * @uses \Parsely\Parsely::get_options
@@ -232,14 +262,28 @@ final class RestMetadataTest extends TestCase {
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::get_rendered_meta
 	 * @uses \Parsely\Metadata::__construct
 	 * @uses \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -291,18 +335,33 @@ final class RestMetadataTest extends TestCase {
 	/**
 	 * Test that the rendered meta function returns the meta HTML string with json ld.
 	 *
-	 * @covers \Parsely\Endpoints\Rest_Metadata::get_rendered_meta
+	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
+	 * @uses \Parsely\Endpoints\Metadata_Endpoint::get_rendered_meta
 	 * @uses \Parsely\Metadata::__construct
 	 * @uses \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -333,18 +392,33 @@ final class RestMetadataTest extends TestCase {
 	/**
 	 * Test that the rendered meta function returns the meta HTML string with json ld.
 	 *
-	 * @covers \Parsely\Endpoints\Rest_Metadata::get_rendered_meta
+	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
+	 * @uses \Parsely\Endpoints\Metadata_Endpoint::get_rendered_meta
 	 * @uses \Parsely\Metadata::__construct
 	 * @uses \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
