@@ -16,13 +16,13 @@ PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM 
 
 - [ ] Notify stakeholders of an upcoming release.
 - [ ] Merge any outstanding PRs due for this release to `develop`.
-- [ ] Verify that all PRs have a `Changelog` tag.
+- [ ] Verify that all PRs in the release have a `Changelog` tag.
 
 ## Release proccess
 
 **Create the release PR**
 - [ ] Create a PR that merges `develop` into `trunk`, named _Release x.y.z_.
-- [ ] Merge the PR into trunk.
+- [ ] Have the PR reviewed and merge the PR into `trunk`.
   > This will create a new release draft. It might take some seconds to appear.
 
 **Promote the release draft to a pre-release**
@@ -52,5 +52,5 @@ PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM 
 
 **Communicating and releasing to other platforms**
 - [ ] Write an internal P2 post about the release.
-- [ ] Release the plugin for WPVIP and write a release lobby post.
-- [ ] Release the plugin for WPCOM.
+- [ ] Release the plugin for WordPress VIP and write a release lobby post.
+- [ ] Release the plugin for WordPress.com.
