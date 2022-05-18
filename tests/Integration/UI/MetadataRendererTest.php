@@ -65,7 +65,7 @@ final class MetadataRendererTest extends TestCase {
 	}
 
 	/**
-	 * Check that the renderer completes successfully and outputs JSON-LD.
+	 * Checks that the renderer completes successfully and outputs JSON-LD.
 	 * We're not fully testing the output, since that's not the renderer's concern.
 	 *
 	 * @since 3.4.0
