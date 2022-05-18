@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { TextControl } from '@wordpress/components';
+import { Panel, PanelBody, PanelHeader } from '@wordpress/components';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { registerPlugin } from '@wordpress/plugins';
 
@@ -15,12 +15,17 @@ function registerParselySidebar() {
 		icon: LeafIcon,
 		render: () => (
 			<PluginSidebar name="wp-parsely-sidebar" title="Parse.ly">
-				<h2>Parse.ly Content Helper</h2>
-				<TextControl
-					label="This is a text control"
-					value="Initial Value"
-					onChange={ ( content ) => `new content: ${ content }` }
-				></TextControl>
+				<Panel>
+					<PanelHeader>Parse.ly Content Helper</PanelHeader>
+					<PanelBody>
+						<p>Related posts that performed well in the past.</p>
+						<ol>
+							<li>Post 1</li>
+							<li>Post 2</li>
+							<li>Post 3</li>
+						</ol>
+					</PanelBody>
+				</Panel>
 			</PluginSidebar>
 		),
 	} );
