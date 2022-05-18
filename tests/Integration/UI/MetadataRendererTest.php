@@ -1,5 +1,5 @@
 <?php
-/** Metadata renderer tests.
+/** Metadata Renderer tests
  *
  * @package Parsely\Tests
  */
