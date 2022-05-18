@@ -14,8 +14,8 @@ function registerParselySidebar() {
 	registerPlugin( 'wp-parsley-block-editor-sidebar', {
 		icon: LeafIcon,
 		render: () => (
-			<PluginSidebar name="wp-parsely-sidebar" title="Parsely">
-				<h2>[Controls to interact with the Parse.ly API on a post level will live here]</h2>
+			<PluginSidebar name="wp-parsely-sidebar" title="Parse.ly">
+				<h2>Parse.ly Content Helper</h2>
 				<TextControl
 					label="This is a text control"
 					value="Initial Value"
