@@ -6,8 +6,10 @@ import { select } from '@wordpress/data';
 class ContentHelperProvider {
 	static getTopPosts() {
 		const post = select( 'core/editor' ).getCurrentPost();
-		const term = select( 'core' ).getEntityRecord( 'taxonomy', 'category', 3 );
-		const users = select( 'core' ).getEntityRecord( 'root', 'user', 1 );
+		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', post.categories[ 0 ] );
+		const user = select( 'core' ).getEntityRecord( 'root', 'user', post.author );
+
+		this.fetchData( user, category );
 
 		return [
 			{
@@ -51,6 +53,10 @@ class ContentHelperProvider {
 				statsUrl: 'http://www.example.com',
 			},
 		];
+	}
+
+	static fetchData( user, category ) {
+		// Fetch data with user and category
 	}
 }
 
