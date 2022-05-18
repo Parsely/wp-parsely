@@ -21,7 +21,7 @@ final class MetadataRendererTest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var Metadata_Renderer $metadata_renderer Holds the Metadata_Renderer object
+	 * @var Metadata_Renderer $metadata_renderer Holds the Metadata_Renderer object.
 	 */
 	private static $metadata_renderer;
 
