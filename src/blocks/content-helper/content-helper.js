@@ -10,20 +10,20 @@ import { registerPlugin } from '@wordpress/plugins';
  */
 import { ReactComponent as LeafIcon } from '../../../images/parsely-logo-green.svg';
 import PostCard from './components/PostCard.jsx';
+import ContentHelperProvider from './content-helper-provider';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
-// TODO: Remove hardcoded card titles
-const titles = [ 'Title 1', 'Title 2', 'Title 3', 'Title 4', 'Title 5' ];
-
 const renderSidebar = () => {
+	const posts = ContentHelperProvider.getTopPosts();
+
 	return (
 		<PluginSidebar name="wp-parsely-sidebar" title="Parse.ly">
 			<Panel>
 				<PanelHeader>Parse.ly Content Helper</PanelHeader>
 				<PanelBody>
 					<p>Related posts that performed well in the past:</p>
-					{ titles.map( ( t ) => <PostCard key={ t } title={ t } /> ) }
+					{ posts.map( ( post ) => <PostCard key={ post.id } post={ post } /> ) }
 				</PanelBody>
 			</Panel>
 		</PluginSidebar> );
