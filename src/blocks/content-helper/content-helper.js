@@ -16,7 +16,7 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
-import { ReactComponent as LeafIcon } from '../../../images/Parsely-Logo-sRGB-Leaf-Green.svg';
+import { ReactComponent as LeafIcon } from '../../../images/parsely-logo-green.svg';
 
 function registerParselySidebar() {
 	const renderPostCard = () => (
