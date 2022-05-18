@@ -6,8 +6,6 @@ labels: 'Type: Maintenance'
 
 ---
 
-:warning: DO NOT MERGE (YET) :warning:
-
 [Remaining work for this Milestone](https://github.com/Parsely/wp-parsely/milestone/xx)
 
 PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM YYYY.
@@ -22,7 +20,7 @@ PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM 
 
 **Create the release PR**
 - [ ] Create a PR that merges `develop` into `trunk`, named _Release x.y.z_.
-- [ ] Have the PR reviewed and merge the PR into `trunk`.
+- [ ] Have the PR reviewed and merge it into `trunk`.
   > This will create a new release draft. It might take some seconds to appear.
 
 **Promote the release draft to a pre-release**
