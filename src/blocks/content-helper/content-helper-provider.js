@@ -4,13 +4,19 @@
 import { select } from '@wordpress/data';
 
 class ContentHelperProvider {
-	static getTopPosts() {
+	static async getTopPosts() {
 		const post = select( 'core/editor' ).getCurrentPost();
 		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', post.categories[ 0 ] );
 		const user = select( 'core' ).getEntityRecord( 'root', 'user', post.author );
 
-		this.fetchData( user, category );
+		return this.fetchData( user, category );
+	}
 
+	static async fetchData( user, category ) {
+		// Faking some network delay
+		await new Promise( ( r ) => setTimeout( r, 500 ) );
+
+		// TODO: Fetch data with user and category
 		return [
 			{
 				id: 1,
@@ -53,10 +59,6 @@ class ContentHelperProvider {
 				statsUrl: 'http://www.example.com',
 			},
 		];
-	}
-
-	static fetchData( user, category ) {
-		// Fetch data with user and category
 	}
 }
 
