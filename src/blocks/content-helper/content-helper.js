@@ -17,9 +17,7 @@ const renderSidebar = () => (
 	<PluginSidebar name="wp-parsely-sidebar" title="Parse.ly">
 		<Panel>
 			<PanelHeader>Parse.ly Content Helper</PanelHeader>
-			<PanelBody>
-				<PostsList />
-			</PanelBody>
+			<PanelBody><PostsList /></PanelBody>
 		</Panel>
 	</PluginSidebar>
 );
