@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import * as React from 'react';
 import { Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 

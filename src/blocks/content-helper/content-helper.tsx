@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import * as React from 'react';
 import { Panel, PanelBody, PanelHeader } from '@wordpress/components';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { registerPlugin } from '@wordpress/plugins';

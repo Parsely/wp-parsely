@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import * as React from 'react';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 
 /**
