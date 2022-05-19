@@ -443,4 +443,34 @@ class Parsely {
 
 		return $this->api_key_is_set() ? $options['apikey'] : '';
 	}
+
+	/**
+	 * Returns whether the API Secret is set in the plugin's options.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return bool True if the API Secret is set, false if not set.
+	 */
+	public function api_secret_is_set(): bool {
+		$options = $this->get_options();
+
+		return (
+				isset( $options['api_secret'] ) &&
+				is_string( $options['api_secret'] ) &&
+				'' !== $options['api_secret']
+		);
+	}
+
+	/**
+	 * Returns the API Secret stored in the plugin's options.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return string The API Secret, empty string if the API secret is not set.
+	 */
+	public function get_api_secret(): string {
+		$options = $this->get_options();
+
+		return $this->api_secret_is_set() ? $options['api_secret'] : '';
+	}
 }
