@@ -55,7 +55,7 @@
 		"@wordpress/eslint-plugin": "^12.2.0",
 		"@wordpress/hooks": "^3.8.0",
 		"@wordpress/i18n": "^4.5.0",
-		"@wordpress/scripts": "^23.0.0",
+		"@wordpress/scripts": "^23.1.0",
 		"@wordpress/url": "^3.9.0",
 		"concurrently": "^7.2.0",
 		"eslint-plugin-jest": "^26.2.2",
