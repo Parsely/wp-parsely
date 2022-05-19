@@ -1,9 +1,19 @@
 /**
  * External dependencies
  */
+import * as React from 'react';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 
-function PostCard( { post } ) {
+/**
+ * Internal dependencies
+ */
+import SuggestedPost from '../models/SuggestedPost';
+
+interface PostCardProps {
+	post: SuggestedPost;
+}
+
+function PostCard( { post }: PostCardProps ) {
 	return (
 		<>
 			<Card>

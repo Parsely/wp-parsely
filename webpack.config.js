@@ -1,4 +1,5 @@
-const path = require( 'path' );
+import * as path from 'path';
+
 const defaultConfig = require( '@wordpress/scripts/config/webpack.config' );
 
 module.exports = {
@@ -18,5 +19,15 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'js', 'widgets', 'recommended.js' ),
 			path.resolve( __dirname, 'src', 'css', 'recommended-widget.css' ),
 		],
+	},
+	module: {
+		rules: defaultConfig.module.rules.concat(
+			[
+				{
+					test: /\.tsx?$/,
+					use: 'ts-loader',
+				},
+			]
+		),
 	},
 };

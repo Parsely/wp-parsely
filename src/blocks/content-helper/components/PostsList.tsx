@@ -1,23 +1,28 @@
 /**
  * External dependencies
  */
+import * as React from 'react';
+import { Spinner } from '@wordpress/components';
+import { useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
 import ContentHelperProvider from '../content-helper-provider';
-import PostCard from './PostCard.jsx';
-import { Spinner } from '@wordpress/components';
-import { useEffect, useState } from '@wordpress/element';
+import PostCard from './PostCard';
+import SuggestedPost from '../models/SuggestedPost';
 
 function PostsList() {
-	const [ loading, setLoading ] = useState( true );
-	const [ posts, setPosts ] = useState( [] );
+	const [ loading, setLoading ] = useState<boolean>( true );
+	const [ posts, setPosts ] = useState<SuggestedPost[]>( [] );
 
-	useEffect( async () => {
+	const fetchPosts = async () => {
 		const fetchedPosts = await ContentHelperProvider.getTopPosts();
 		setPosts( fetchedPosts );
-		setLoading( false );
+	};
+
+	useEffect( () => {
+		fetchPosts().then( ( r ) => setLoading( false ) );
 	}, [] );
 
 	return (

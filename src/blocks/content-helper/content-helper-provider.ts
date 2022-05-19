@@ -2,17 +2,24 @@
  * External dependencies
  */
 import { select } from '@wordpress/data';
+import { Schema } from '@wordpress/core-data';
+import Post = Schema.Post;
+
+/**
+ * Internal dependencies
+ */
+import SuggestedPost from './models/SuggestedPost';
 
 class ContentHelperProvider {
-	static async getTopPosts() {
-		const post = select( 'core/editor' ).getCurrentPost();
-		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', post.categories[ 0 ] );
-		const user = select( 'core' ).getEntityRecord( 'root', 'user', post.author );
+	static async getTopPosts(): Promise<SuggestedPost[]> {
+		const currentPost: Post = select( 'core/editor' ).getCurrentPost();
+		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', currentPost.categories[ 0 ] );
+		const user = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author );
 
 		return this.fetchData( user, category );
 	}
 
-	static async fetchData( user, category ) {
+	static async fetchData( user: any, category: any ): Promise<SuggestedPost[]> {
 		// Faking some network delay
 		await new Promise( ( r ) => setTimeout( r, 500 ) );
 
