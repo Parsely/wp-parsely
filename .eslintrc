@@ -1,17 +1,22 @@
 {
 	"env": { "browser": true },
 	"extends": [
-	  "plugin:@wordpress/eslint-plugin/recommended-with-formatting",
-	  "plugin:jest/recommended",
-	  "plugin:@typescript-eslint/eslint-recommended",
-	  "plugin:@typescript-eslint/recommended"
+		"plugin:@wordpress/eslint-plugin/recommended-with-formatting",
+		"plugin:jest/recommended",
+	  	"plugin:@typescript-eslint/recommended"
 	],
-    "plugins": [
-	  "@typescript-eslint"
+	"plugins": [
+		"@typescript-eslint"
 	],
 	"settings": {
-		"jest": { "version": "latest" }
+		"jest": { "version": "latest" },
+	 	"import/resolver": {
+			"node": {
+		  		"extensions": [ ".js", ".jsx", ".ts", ".tsx" ]
+			}
+	  	}
 	},
+  	"ignorePatterns": [ "webpack.config.js" ],
 	"rules": {
 		"@wordpress/i18n-text-domain": [ "error", { "allowedTextDomain": [ "wp-parsely" ] } ]
 	},

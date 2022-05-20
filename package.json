@@ -43,6 +43,7 @@
 	"devDependencies": {
 		"@testing-library/jest-dom": "^5.16.4",
 		"@testing-library/react": "^12.1.5",
+		"@types/wordpress__block-editor": "^7.0.0",
 		"@types/wordpress__components": "^19.10.0",
 		"@types/wordpress__core-data": "^2.4.5",
 		"@types/wordpress__edit-post": "^4.0.1",
@@ -62,7 +63,7 @@
 		"@wordpress/env": "^4.7.0",
 		"@wordpress/eslint-plugin": "^12.3.0",
 		"@wordpress/hooks": "^3.9.0",
-		"@wordpress/i18n": "^4.9.0",
+		"@wordpress/i18n": "^4.5.0",
 		"@wordpress/plugins": "^4.7.0",
 		"@wordpress/scripts": "^23.1.0",
 		"@wordpress/url": "^3.10.0",
