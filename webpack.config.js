@@ -18,4 +18,14 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'css', 'recommended-widget.css' ),
 		],
 	},
+	module: {
+		rules: defaultConfig.module.rules.concat(
+			[
+				{
+					test: /\.tsx?$/,
+					use: 'ts-loader',
+				},
+			]
+		),
+	},
 };
