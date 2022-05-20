@@ -13,18 +13,14 @@ import {
 	ToggleControl,
 } from '@wordpress/components';
 
-interface ParselyRecommendationsInspectorControlsAttributes {
-	boost: string;
-	imagestyle: string;
-	limit: number;
-	showimages: boolean;
-	sort: string;
-	title: string;
-}
+/**
+ * Internal dependencies
+ */
+import { RecommendationsAttributes } from '../models/RecommendationsAttributes';
 
 interface ParselyRecommendationsInspectorControlsProps {
-	attributes: ParselyRecommendationsInspectorControlsAttributes,
-	setAttributes: ( attr: Partial<ParselyRecommendationsInspectorControlsAttributes> ) => void,
+	attributes: RecommendationsAttributes,
+	setAttributes: ( attr: Partial<RecommendationsAttributes> ) => void,
 }
 
 const ParselyRecommendationsInspectorControls = ( {
