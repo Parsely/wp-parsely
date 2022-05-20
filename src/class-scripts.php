@@ -142,7 +142,6 @@ class Scripts {
 			array(
 				'wp-parsely-loader',
 				'wp-parsely-tracker',
-				'wp-parsely-recommended-widget',
 			),
 			true
 		) ) {
