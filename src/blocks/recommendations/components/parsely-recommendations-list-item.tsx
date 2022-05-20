@@ -3,7 +3,19 @@
  */
 import { Card, CardBody, CardMedia } from '@wordpress/components';
 
-const getImageForLink = ( { imagestyle, imageUrl, thumbUrlMedium } ) => imagestyle === 'original' ? imageUrl : thumbUrlMedium;
+/**
+ * Internal dependencies
+ */
+import { Recommendation } from '../models/Recommendation';
+
+interface ParselyRecommendationsListItemProps {
+	imageAlt: string;
+	imagestyle: string;
+	recommendation: Recommendation;
+	showimages: boolean;
+}
+
+const getImageForLink = ( imagestyle: string, imageUrl: string, thumbUrlMedium: string ) => imagestyle === 'original' ? imageUrl : thumbUrlMedium;
 
 const ParselyRecommendationsListItem = ( {
 	imageAlt,
@@ -15,13 +27,13 @@ const ParselyRecommendationsListItem = ( {
 		thumb_url_medium: thumbUrlMedium,
 	},
 	showimages,
-} ) => {
-	const imageForLink = showimages && getImageForLink( { imagestyle, imageUrl, thumbUrlMedium } );
+} : ParselyRecommendationsListItemProps ) => {
+	const imageForLink = showimages && getImageForLink( imagestyle, imageUrl, thumbUrlMedium );
 
 	return (
 		<li>
 			<a href={ linkUrl } className="parsely-recommendations-link">
-				<Card className="parsely-recommendations-card" size="custom">
+				<Card className="parsely-recommendations-card">
 					{ imageForLink && (
 						<CardMedia className="parsely-recommendations-cardmedia">
 							<img
@@ -37,4 +49,5 @@ const ParselyRecommendationsListItem = ( {
 		</li>
 	);
 };
+
 export default ParselyRecommendationsListItem;
