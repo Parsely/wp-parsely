@@ -41,7 +41,6 @@ use Parsely\UI\Admin_Warning;
 use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Network_Admin_Sites_List;
-use Parsely\UI\Recommended_Widget;
 use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
 use Parsely\UI\Site_Health;
@@ -169,16 +168,6 @@ add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 function init_recommendations_block(): void {
 	$recommendations_block = new Recommendations_Block();
 	$recommendations_block->run();
-}
-
-require __DIR__ . '/src/UI/class-recommended-widget.php';
-
-add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
-/**
- * Registers the Parse.ly Recommended widget.
- */
-function parsely_recommended_widget_register(): void {
-	register_widget( Recommended_Widget::class );
 }
 
 require __DIR__ . '/src/Integrations/class-integration.php';

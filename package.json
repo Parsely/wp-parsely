@@ -37,8 +37,7 @@
 		"defaults"
 	],
 	"dependencies": {
-		"@wordpress/dom-ready": "^3.9.0",
-		"js-cookie": "^3.0.1"
+		"@wordpress/dom-ready": "^3.9.0"
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "^5.16.4",

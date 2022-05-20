@@ -13,9 +13,5 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'js', 'lib', 'loader' ),
 			path.resolve( __dirname, 'src', 'js', 'lib', 'uuid-profile-call' ),
 		],
-		'recommended-widget': [
-			path.resolve( __dirname, 'src', 'js', 'widgets', 'recommended.js' ),
-			path.resolve( __dirname, 'src', 'css', 'recommended-widget.css' ),
-		],
 	},
 };
