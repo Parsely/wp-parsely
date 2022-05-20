@@ -9,7 +9,7 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import ContentHelperProvider from '../content-helper-provider';
 import PostCard from './PostCard';
-import SuggestedPost from '../models/SuggestedPost';
+import { SuggestedPost } from '../models/SuggestedPost';
 
 function PostsList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
@@ -21,7 +21,7 @@ function PostsList() {
 	};
 
 	useEffect( () => {
-		fetchPosts().then( ( r ) => setLoading( false ) );
+		fetchPosts().then( () => setLoading( false ) );
 	}, [] );
 
 	return (

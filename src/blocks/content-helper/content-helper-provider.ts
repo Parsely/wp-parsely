@@ -8,7 +8,7 @@ import Post = Schema.Post;
 /**
  * Internal dependencies
  */
-import SuggestedPost from './models/SuggestedPost';
+import { SuggestedPost } from './models/SuggestedPost';
 
 class ContentHelperProvider {
 	static async getTopPosts(): Promise<SuggestedPost[]> {
