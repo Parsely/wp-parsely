@@ -15,7 +15,6 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.release.target_commitish }}
 
-     # Bump version numbers and push to trunk
       - name: Bump version numbers
         run: |
           NEW_VERSION=$(git describe --tags --abbrev=0)
@@ -26,14 +25,6 @@ jobs:
           sed -i "s/const PARSELY_VERSION = '.*'/const PARSELY_VERSION = '$NEW_VERSION'/" wp-parsely.php
           npm install
 
-      - name: Commit version bumps to trunk
-        uses: stefanzweifel/git-auto-commit-action@v4.14.1
-        with:
-          branch: trunk
-          commit_message: Bump plugin version number to ${{ github.event.release.tag_name }}
-          file_pattern: README.md package-lock.json package.json tests/e2e/utils.js wp-parsely.php
-
-     # Update changelog and push to trunk
       - name: Add latest release notes to changelog
         uses: stefanzweifel/changelog-updater-action@v1.5.0
         with:
@@ -47,9 +38,26 @@ jobs:
         env:
           TAG_NEW: ${{ github.event.release.tag_name }}
 
-      - name: Commit updated changelog to trunk
+      - name: Remove pull request protection from trunk branch
+        uses: octokit/request-action@v2.1.4
+        with:
+          route: DELETE /repos/Parsely/wp-parsely/branches/trunk/protection/required_pull_request_reviews
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_PERMISSION }}
+
+      - name: Commit version bump and changelog to trunk
         uses: stefanzweifel/git-auto-commit-action@v4.14.1
         with:
           branch: trunk
-          commit_message: Update CHANGELOG.md for plugin version ${{ github.event.release.tag_name }}
-          file_pattern: CHANGELOG.md
+          commit_message: Bump plugin version to ${{ github.event.release.tag_name }} and update changelog
+          file_pattern: CHANGELOG.md README.md package-lock.json package.json tests/e2e/utils.js wp-parsely.php
+
+      - name: Re-add pull request protection to trunk branch
+        uses: octokit/request-action@v2.1.4
+        with:
+          route: PATCH /repos/Parsely/wp-parsely/branches/trunk/protection/required_pull_request_reviews
+          dismiss_stale_reviews: true
+          require_code_owner_reviews: true
+          required_approving_review_count: 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_PERMISSION }}

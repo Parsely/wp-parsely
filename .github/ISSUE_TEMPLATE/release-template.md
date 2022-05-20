@@ -27,15 +27,15 @@ PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM 
 - [ ] In the release draft page, check the version numbers and changelog data.
 - [ ] Make any adjustments if needed.
 - [ ] Save the draft as a pre-release.
-  > This will commit the version numbers and changelog into `trunk` as 2 distinct commits. Changes might take a minute to appear.
+  > This will push a commit with the updated version number and changelog into `trunk`. Changes might take a couple of minutes to appear.
 
 **Promote the pre-release to a release**
-- [ ] Go to `trunk` and inspect the version and changelog commits for correctness.
-  > If commits happen to be incorrect, please stop and contact the development team.
+- [ ] Go to `trunk` and inspect the new commit for correctness.
+  > If the commit contains any errors, please stop and contact the development team.
 - [ ] Go to the pre-release and promote it to a release.
-  > This will merge `trunk` into `develop` and also update the `release's tag`. Changes might take a minute to appear.
-- [ ] Inspect the `develop` branch and the `release's tag` to verify that they contain the version and changelog updates.
-  > If this is not the case,please stop and contact the development team.
+  > This will merge `trunk` into `develop` and also update the `release's tag`. Changes might take a couple of minutes to appear.
+- [ ] Inspect the `develop` branch and the `release's tag` to verify that they contain the new commit.
+  > If this is not the case, please stop and contact the development team.
 
 **Deploy the release to wordpress.org**
 - [ ] Manually run the `Deploy to WordPress.org` GitHub workflow.

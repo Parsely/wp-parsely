@@ -15,6 +15,13 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.release.target_commitish }}
 
+      - name: Remove pull request protection from develop branch
+        uses: octokit/request-action@v2.1.4
+        with:
+          route: DELETE /repos/Parsely/wp-parsely/branches/develop/protection/required_pull_request_reviews
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_PERMISSION }}
+
       - name: Merge trunk to develop branch
         uses: devmasx/merge-branch@v1.4.0
         with:
@@ -22,6 +29,16 @@ jobs:
           from_branch: trunk
           target_branch: develop
           github_token: ${{ github.token }}
+
+      - name: Re-add pull request protection to develop branch
+        uses: octokit/request-action@v2.1.4
+        with:
+          route: PATCH /repos/Parsely/wp-parsely/branches/develop/protection/required_pull_request_reviews
+          dismiss_stale_reviews: true
+          require_code_owner_reviews: true
+          required_approving_review_count: 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_PERMISSION }}
 
       - name: Force push ${{ github.event.release.tag_name }} tag to latest commit in trunk
         run: |
