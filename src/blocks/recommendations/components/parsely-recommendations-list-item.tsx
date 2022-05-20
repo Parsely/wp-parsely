@@ -27,27 +27,23 @@ const ParselyRecommendationsListItem = ( {
 		thumb_url_medium: thumbUrlMedium,
 	},
 	showimages,
-} : ParselyRecommendationsListItemProps ) => {
-	const imageForLink = showimages && getImageForLink( imagestyle, imageUrl, thumbUrlMedium );
-
-	return (
-		<li>
-			<a href={ linkUrl } className="parsely-recommendations-link">
-				<Card className="parsely-recommendations-card">
-					{ imageForLink && (
-						<CardMedia className="parsely-recommendations-cardmedia">
-							<img
-								className="parsely-recommendations-image"
-								src={ imageForLink }
-								alt={ imageAlt }
-							/>
-						</CardMedia>
-					) }
-					<CardBody className="parsely-recommendations-cardbody">{ linkTitle }</CardBody>
-				</Card>
-			</a>
-		</li>
-	);
-};
+} : ParselyRecommendationsListItemProps ) => (
+	<li>
+		<a href={ linkUrl } className="parsely-recommendations-link">
+			<Card className="parsely-recommendations-card">
+				{ showimages && (
+					<CardMedia className="parsely-recommendations-cardmedia">
+						<img
+							className="parsely-recommendations-image"
+							src={ getImageForLink( imagestyle, imageUrl, thumbUrlMedium ) }
+							alt={ imageAlt }
+						/>
+					</CardMedia>
+				) }
+				<CardBody className="parsely-recommendations-cardbody">{ linkTitle }</CardBody>
+			</Card>
+		</a>
+	</li>
+);
 
 export default ParselyRecommendationsListItem;
