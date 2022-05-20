@@ -1,0 +1,20 @@
+name: Release Drafter
+
+on:
+  pull_request:
+    types: [closed]
+    branches: ['trunk']
+
+permissions:
+  contents: write
+
+jobs:
+  update_release_draft:
+    if: github.event.pull_request.merged # Run only when a PR is merged.
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Create a new release draft
+        uses: release-drafter/release-drafter@v5.20.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

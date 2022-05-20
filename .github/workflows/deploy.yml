@@ -1,7 +1,5 @@
 name: Deploy to WordPress.org
-on:
-  release:
-    types: [released]
+on: workflow_dispatch
 jobs:
   tag:
     name: New tag
