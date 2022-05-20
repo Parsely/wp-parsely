@@ -14,4 +14,14 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'js', 'lib', 'uuid-profile-call' ),
 		],
 	},
+	module: {
+		rules: defaultConfig.module.rules.concat(
+			[
+				{
+					test: /\.tsx?$/,
+					use: 'ts-loader',
+				},
+			]
+		),
+	},
 };
