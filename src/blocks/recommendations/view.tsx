@@ -15,6 +15,7 @@ domReady( () => {
 	blocks.forEach( ( block, i ) =>
 		render(
 			<RecommendationsStore>
+				{ /* @ts-ignore */ }
 				<ParselyRecommendations { ...block.dataset } key={ i } />
 			</RecommendationsStore>,
 			block
