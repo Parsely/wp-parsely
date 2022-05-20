@@ -13,10 +13,24 @@ import {
 	ToggleControl,
 } from '@wordpress/components';
 
+interface ParselyRecommendationsInspectorControlsAttributes {
+	boost: string;
+	imagestyle: string;
+	limit: number;
+	showimages: boolean;
+	sort: string;
+	title: string;
+}
+
+interface ParselyRecommendationsInspectorControlsProps {
+	attributes: ParselyRecommendationsInspectorControlsAttributes,
+	setAttributes: ( attr: Partial<ParselyRecommendationsInspectorControlsAttributes> ) => void,
+}
+
 const ParselyRecommendationsInspectorControls = ( {
 	attributes: { boost, imagestyle, limit, showimages, sort, title },
 	setAttributes,
-} ) => (
+} : ParselyRecommendationsInspectorControlsProps ) => (
 	<InspectorControls>
 		<PanelBody title="Settings" initialOpen={ true }>
 			<PanelRow>
@@ -29,8 +43,8 @@ const ParselyRecommendationsInspectorControls = ( {
 			<PanelRow>
 				<RangeControl
 					label={ __( 'Maximum Results', 'wp-parsely' ) }
-					min="1"
-					max="25"
+					min={ 1 }
+					max={ 25 }
 					onChange={ ( newval ) => setAttributes( { limit: newval } ) }
 					value={ limit }
 				/>
