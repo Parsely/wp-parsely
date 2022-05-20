@@ -24,7 +24,12 @@ Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who 
 - Get started with Parse.ly right away: the plugin automatically inserts the required metadata and JavaScript on all your published pages and posts.
 - Choose what format the metadata takes, and whether logged-in users should be included in the analytics.
 - Using it in a decoupled setup? Parse.ly adds metadata to the REST API output for pages, posts and optionally other object types.
-- If you've purchased access to the Parse.ly API, add a widget to your site with article recommendations personalized to individual users.
+
+#### Recommendations Block
+
+**IMPORTANT:** The Recommendations Block is available only in WordPress 5.9 and later.
+
+The plugin includes a Recommendations Block that uses the [Parse.ly API](https://www.parse.ly/help/api/recommendations#get-related) to showcase links to content on your site. More information about the Block [can be found here](https://www.parse.ly/help/integration/recommendations-block).
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
 
@@ -85,12 +90,6 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
 </script>
 ~~~
 
-## The Parse.ly Recommendations Block
-
-**IMPORTANT:** The Recommendations Block is available only in WordPress 5.9 and later.
-
-The plugin includes a Recommendations Block that uses the [Parse.ly API](https://www.parse.ly/help/api/recommendations#get-related) to showcase links to content on your site. More information about the Block [can be found here](https://www.parse.ly/help/integration/recommendations-block).
-
 ## Screenshots
 
 1. Parse.ly plugin main settings for easy setup. For the plugin to start working, only the website ID is needed.  
@@ -99,9 +98,7 @@ The plugin includes a Recommendations Block that uses the [Parse.ly API](https:/
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-2.png)
 3. Parse.ly plugin advanced settings. To be used only if instructed by Parse.ly staff.  
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-3.png)
-4. The settings for the Parse.ly Recommended Widget. Engage your visitors with predictive and personalized recommendations from Parse.ly.  
-   ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-4.png)
-5. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.  
+4. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.  
    ![The Parsely Dashboard Overview](.wordpress-org/screenshot-5.png)
 
 ## Frequently Asked Questions

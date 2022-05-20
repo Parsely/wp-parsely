@@ -390,7 +390,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		);
 
 		// Disable JavaScript.
-		$h = __( 'If you use a separate system for JavaScript tracking (Tealium / Segment / Google Tag Manager / other tag manager solution) you may want to use that instead of having the plugin load the tracker. <span style="color:#d63638">WARNING:</span> disabling this option will also disable the "Personalize Results" section of the recommended widget! We highly recommend leaving this option set to "No".', 'wp-parsely' );
+		$h = __( 'If you use a separate system for JavaScript tracking (Tealium / Segment / Google Tag Manager / other tag manager solution) you may want to use that instead of having the plugin load the tracker.', 'wp-parsely' );
 		add_settings_field(
 			'disable_javascript',
 			__( 'Disable JavaScript', 'wp-parsely' ),
