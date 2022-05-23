@@ -11,10 +11,23 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { setError, setRecommendations } from '../actions';
 import { useRecommendationsStore } from '../recommendations-store';
+import { Recommendation } from '../models/Recommendation';
+
+interface ParselyRecommendationsFetcherProps {
+	boost: string;
+	limit: number;
+	sort: string;
+	isEditMode: boolean;
+}
+
+interface ApiResponse {
+	error?: string;
+	data?: Recommendation[];
+}
 
 const updateDelay = 300; // The Block's update delay in the Block Editor when settings/props change.
 
-const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } ) => {
+const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } : ParselyRecommendationsFetcherProps ): JSX.Element => {
 	const {	dispatch } = useRecommendationsStore();
 
 	const query = {
@@ -24,7 +37,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } ) => 
 		url: window.location.href,
 	};
 
-	async function fetchRecommendationsFromWpApi() {
+	async function fetchRecommendationsFromWpApi(): Promise<ApiResponse> {
 		return apiFetch( {
 			path: addQueryArgs( '/wp-parsely/v1/related', { query } ),
 		} );
@@ -71,7 +84,9 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } ) => 
 	 * - When an attribute changes that affects the API call.
 	 *   (This happens in the Editor context when someone changes a setting.)
 	 */
-	useEffect( debouncedUpdate, apiMemoProps );
+	useEffect( () => {
+		debouncedUpdate();
+	}, apiMemoProps );
 
 	// This is a data-only component and does not render
 	return null;
