@@ -15,7 +15,7 @@ interface PostCardProps {
 function PostCard( { post }: PostCardProps ) {
 	return (
 		<>
-			<Card>
+			<Card size="small" elevation={ 2 }>
 				<CardHeader><b>{ post.title }</b></CardHeader>
 				<CardBody>
 					<p>Published on { post.date } by <em>{ post.author }</em>.</p>
