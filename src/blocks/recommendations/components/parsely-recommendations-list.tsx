@@ -7,8 +7,15 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import ParselyRecommendationsListItem from './parsely-recommendations-list-item';
+import { Recommendation } from '../models/Recommendation';
 
-const ParselyRecommendationsList = ( { imagestyle, recommendations, showimages } ) => (
+interface ParselyRecommendationsListProps {
+	imagestyle: string;
+	recommendations: Recommendation[];
+	showimages: boolean;
+}
+
+const ParselyRecommendationsList = ( { imagestyle, recommendations, showimages }: ParselyRecommendationsListProps ) => (
 	<ul className="parsely-recommendations-list">
 		{ recommendations.map( ( recommendation, index ) => (
 			<ParselyRecommendationsListItem

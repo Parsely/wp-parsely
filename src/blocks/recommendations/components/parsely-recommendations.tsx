@@ -11,16 +11,25 @@ import ParselyRecommendationsList from './parsely-recommendations-list';
 import ParselyRecommendationsTitle from './parsely-recommendations-title';
 import { useRecommendationsStore } from '../recommendations-store';
 
+interface ParselyRecommendationsProps {
+	boost: string;
+	limit: number;
+	imagestyle: string;
+	isEditMode: boolean;
+	showimages: boolean;
+	sort: string;
+	title: string;
+}
+
 export default function ParselyRecommendations( {
 	boost,
 	limit,
 	imagestyle,
 	isEditMode,
-	personalized,
 	showimages,
 	sort,
 	title,
-} ) {
+} : ParselyRecommendationsProps ) {
 	const {
 		state: { error, isLoaded, recommendations },
 	} = useRecommendationsStore();
@@ -56,7 +65,6 @@ export default function ParselyRecommendations( {
 			<ParselyRecommendationsFetcher
 				boost={ boost }
 				limit={ limit }
-				personalized={ personalized }
 				sort={ sort }
 				isEditMode={ isEditMode }
 			/>
