@@ -11,24 +11,32 @@ import { useBlockProps } from '@wordpress/block-editor';
 import ParselyRecommendations from './components/parsely-recommendations';
 import ParselyRecommendationsInspectorControls from './components/parsely-recommendations-inspector-controls';
 import RecommendationsStore from './recommendations-store';
-import { ReactComponent as LeafIcon } from '../../../images/parsely-logo-green.svg';
+import LeafIcon from '../../img/parsely-logo.svg';
 
 import './style.scss';
 import './editor.scss';
 
 import json from './block.json';
+import { RecommendationsAttributes } from './models/RecommendationsAttributes';
+
+interface ParselyRecommendationsEditProps {
+	clientId: string;
+	attributes: RecommendationsAttributes;
+	setAttributes: ( attr: Partial<RecommendationsAttributes> ) => void
+}
 
 const { name, attributes } = json;
 
-export const ParselyRecommendationsEdit = ( editProps ) => (
+export const ParselyRecommendationsEdit = ( editProps: ParselyRecommendationsEditProps ) => (
 	<div { ...useBlockProps() }>
 		<RecommendationsStore clientId={ editProps.clientId }>
 			<ParselyRecommendationsInspectorControls { ...editProps } />
-			<ParselyRecommendations { ...editProps.attributes } isEditMode="true" />
+			<ParselyRecommendations { ...editProps.attributes } isEditMode={ true } />
 		</RecommendationsStore>
 	</div>
 );
 
+// @ts-ignore
 registerBlockType( name, {
 	apiVersion: 2,
 	icon: LeafIcon,
@@ -46,6 +54,7 @@ registerBlockType( name, {
 			{
 				type: 'block',
 				blocks: [ 'core/legacy-widget' ],
+				// @ts-ignore
 				isMatch: ( { idBase, instance } ) => {
 					if ( ! instance?.raw ) {
 						// Can't transform if raw instance is not shown in REST API.
@@ -53,6 +62,7 @@ registerBlockType( name, {
 					}
 					return idBase === 'Parsely_Recommended_Widget';
 				},
+				// @ts-ignore
 				transform: ( { instance } ) => {
 					return createBlock( 'wp-parsely/recommendations', {
 						name: instance.raw.name,

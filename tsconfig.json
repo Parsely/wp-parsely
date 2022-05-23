@@ -6,7 +6,9 @@
 	"target": "es5",
 	"jsx": "react-jsx",
 	"allowJs": true,
-	"moduleResolution": "node"
+	"moduleResolution": "node",
+	"resolveJsonModule": true,
+	"esModuleInterop": true,
   },
   "exclude": [
 	"node_modules", "vendor"
