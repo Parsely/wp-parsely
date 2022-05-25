@@ -15,13 +15,20 @@ function PostsList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ posts, setPosts ] = useState<SuggestedPost[]>( [] );
 
-	const fetchPosts = async () => {
-		const fetchedPosts = await ContentHelperProvider.getTopPosts();
-		setPosts( fetchedPosts );
+	const fetchPosts = async ( retry: boolean ) => {
+		ContentHelperProvider.getTopPosts()
+			.then( ( p ) => setPosts( p ) )
+			.catch( async () => {
+				// TODO: Print error message
+				if ( retry ) {
+					await new Promise( ( r ) => setTimeout( r, 1000 ) );
+					await fetchPosts( false );
+				}
+			} );
 	};
 
 	useEffect( () => {
-		fetchPosts().then( () => setLoading( false ) );
+		fetchPosts( true ).then( () => setLoading( false ) );
 	}, [] );
 
 	return (
