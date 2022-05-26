@@ -11,34 +11,41 @@ import ContentHelperProvider from '../content-helper-provider';
 import PostCard from './PostCard';
 import { SuggestedPost } from '../models/SuggestedPost';
 
+const FETCH_RETRIES = 3;
+
 function PostsList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
+	const [ error, setError ] = useState<string>( null );
 	const [ posts, setPosts ] = useState<SuggestedPost[]>( [] );
 
-	const fetchPosts = async ( retry: boolean ) => {
+	const fetchPosts = async ( retries: number ) => {
 		ContentHelperProvider.getTopPosts()
 			.then( ( p ) => {
 				setPosts( p );
 				setLoading( false );
 			} )
-			.catch( async () => {
-				// TODO: Print error message
-				if ( retry ) {
-					await new Promise( ( r ) => setTimeout( r, 1000 ) );
-					await fetchPosts( false );
+			.catch( async ( err: string ) => {
+				if ( retries > 0 ) {
+					await new Promise( ( r ) => setTimeout( r, 500 ) );
+					await fetchPosts( retries - 1 );
+				} else {
+					setLoading( false );
+					setError( err );
 				}
 			} );
 	};
 
 	useEffect( () => {
 		setLoading( true );
-		fetchPosts( true );
+		fetchPosts( FETCH_RETRIES );
 	}, [] );
+
+	const body = error ? <p>{ error }</p> : posts.map( ( post ) => <PostCard key={ post.id } post={ post } /> );
 
 	return (
 		<>
 			<p>Related posts that performed well in the past:</p>
-			{ loading ? <Spinner /> : posts.map( ( post ) => <PostCard key={ post.id } post={ post } /> ) }
+			{ loading ? <Spinner /> : body }
 		</>
 	);
 }

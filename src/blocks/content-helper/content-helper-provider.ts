@@ -26,7 +26,7 @@ class ContentHelperProvider {
 		const user = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author ) as User;
 
 		if ( ! user && ! category ) {
-			return Promise.reject();
+			return Promise.reject( 'No user or categories were found.' );
 		}
 
 		return this.fetchData( user, category );
@@ -55,8 +55,7 @@ class ContentHelperProvider {
 		}
 
 		if ( error ) {
-			// TODO: Return actual error message
-			return Promise.reject();
+			return Promise.reject( error );
 		}
 
 		return response?.data || [];
