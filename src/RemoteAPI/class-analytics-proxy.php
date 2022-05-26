@@ -16,6 +16,6 @@ namespace Parsely\RemoteAPI;
  * @since 3.4.0
  */
 class Analytics_Proxy extends Base_Proxy {
-	protected const ENDPOINT     = 'https://api.parsely.com/v2/analytics';
+	protected const ENDPOINT     = 'https://api.parsely.com/v2/analytics/posts';
 	protected const QUERY_FILTER = 'wp_parsely_analytics_endpoint_args';
 }

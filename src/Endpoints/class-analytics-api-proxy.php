@@ -74,7 +74,7 @@ final class Analytics_API_Proxy {
 			),
 		);
 
-		register_rest_route( 'wp-parsely/v1', '/analytics', $rest_route_args );
+		register_rest_route( 'wp-parsely/v1/analytics', '/posts', $rest_route_args );
 	}
 
 	/**
