@@ -111,7 +111,7 @@ final class Analytics_API_Proxy {
 		}
 
 		// A proxy with caching behaviour is used here.
-		$response = $this->proxy->get_items( $params['query'] );
+		$response = $this->proxy->get_items( $params );
 
 		if ( is_wp_error( $response ) ) {
 			return (object) array(
