@@ -64,7 +64,7 @@ abstract class Base_Proxy implements Proxy {
 
 		$query['apikey'] = $this->parsely->get_api_key();
 		if ( $this->parsely->api_secret_is_set() ) {
-			$query['api_secret'] = $this->parsely->get_api_secret();
+			$query['secret'] = $this->parsely->get_api_secret();
 		}
 		$query = array_filter( $query );
 
