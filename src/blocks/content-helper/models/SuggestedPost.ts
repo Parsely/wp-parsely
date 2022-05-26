@@ -3,6 +3,6 @@ export interface SuggestedPost {
 	title: string;
 	date: string;
 	author: string;
-	viewUrl: string;
+	url: string;
 	statsUrl: string;
 }

@@ -20,7 +20,7 @@ function PostCard( { post }: PostCardProps ) {
 				<CardBody>
 					<p>Published on { post.date } by <em>{ post.author }</em>.</p>
 					<p>
-						<Button href={ post.viewUrl } target="_blank" variant="primary">Open Post</Button> { ' ' }
+						<Button href={ post.url } target="_blank" variant="primary">Open Post</Button> { ' ' }
 						<Button href={ post.statsUrl } target="_blank" variant="secondary">Post Stats</Button>
 					</p>
 				</CardBody>

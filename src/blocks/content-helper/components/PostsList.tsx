@@ -17,7 +17,10 @@ function PostsList() {
 
 	const fetchPosts = async ( retry: boolean ) => {
 		ContentHelperProvider.getTopPosts()
-			.then( ( p ) => setPosts( p ) )
+			.then( ( p ) => {
+				setPosts( p );
+				setLoading( false );
+			} )
 			.catch( async () => {
 				// TODO: Print error message
 				if ( retry ) {
@@ -28,7 +31,8 @@ function PostsList() {
 	};
 
 	useEffect( () => {
-		fetchPosts( true ).then( () => setLoading( false ) );
+		setLoading( true );
+		fetchPosts( true );
 	}, [] );
 
 	return (
