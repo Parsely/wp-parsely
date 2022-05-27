@@ -1,6 +1,6 @@
 <?php
 /**
- * Structured Data Tests for single Pages.
+ * Integration Tests: Single Page pages metadata
  *
  * @package Parsely\Tests
  */
@@ -13,7 +13,7 @@ use Parsely\Metadata;
 use Parsely\Parsely;
 
 /**
- * Structured Data Tests for single Pages.
+ * Integration Tests for Single Page pages metadata.
  *
  * @see https://www.parse.ly/help/integration/jsonld
  * @covers \Parsely\Metadata::construct_metadata
@@ -21,7 +21,8 @@ use Parsely\Parsely;
 final class SinglePageTest extends NonPostTestCase {
 
 	/**
-	 * Create a single page, and test the structured data.
+	 * Verifies that the metadata generated for Single Page pages is as
+	 * expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -52,8 +53,8 @@ final class SinglePageTest extends NonPostTestCase {
 		);
 		$page    = get_post( $page_id );
 
-		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
-		// See https://github.com/Parsely/wp-parsely/issues/151.
+		// Set permalinks, as Parsely currently strips ?page_id=... from the URL
+		// property. See https://github.com/Parsely/wp-parsely/issues/151.
 		global $wp_rewrite;
 		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
@@ -67,12 +68,12 @@ final class SinglePageTest extends NonPostTestCase {
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
-		// The headline should be the post_title of the Page.
+		// The headline should be the post_title of the page.
 		self::assertEquals( 'Single Page', $structured_data['headline'] );
 		self::assertEquals( get_permalink( $page_id ), $structured_data['url'] );
 		self::assertQueryTrue( 'is_page', 'is_singular' );
 
-		// Reset permalinks to Plain.
+		// Reset permalinks to plain.
 		$wp_rewrite->set_permalink_structure( '' );
 	}
 }

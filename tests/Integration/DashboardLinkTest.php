@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests of the Dashboard Link class
+ * Integration Tests: Parse.ly Dashboard URL generation
  *
  * @package Parsely\Tests
  */
@@ -13,18 +13,18 @@ use Parsely\Parsely;
 use Parsely\Dashboard_Link;
 
 /**
- * Test the functions on the utilities class.
+ * Integration Tests for Parse.ly Dashboard URL generation.
  */
 final class DashboardLinkTest extends TestCase {
 	/**
-	 * Internal Parsely variable
+	 * Internal variable.
 	 *
-	 * @var Parsely $parsely Holds the Parsely object
+	 * @var Parsely $parsely Holds the Parsely object.
 	 */
 	private static $parsely;
 
 	/**
-	 * The setUp run before each test
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -33,7 +33,7 @@ final class DashboardLinkTest extends TestCase {
 	}
 
 	/**
-	 * Test if Parse.ly Dash URL can be generated for a post.
+	 * Verifies that generating a Parse.ly Dashboard URL works as expected.
 	 *
 	 * @covers \Parsely\Dashboard_Link::generate_url
 	 */
@@ -49,7 +49,8 @@ final class DashboardLinkTest extends TestCase {
 	}
 
 	/**
-	 * Test generating a URL for a post that doesn't exist.
+	 * Verifies that attempting to generate a Parse.ly Dashboard URL for a post
+	 * without a permalink results in an empty string.
 	 *
 	 * @since 3.1.2
 	 *
@@ -69,7 +70,7 @@ final class DashboardLinkTest extends TestCase {
 	}
 
 	/**
-	 * Test if logic for showing Parse.ly row action accounts for actions not being an array.
+	 * Verifies that determining whether a link can be shown works as expected.
 	 *
 	 * @since 2.6.0
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
@@ -90,7 +91,9 @@ final class DashboardLinkTest extends TestCase {
 	}
 
 	/**
-	 * Test if logic for showing Parse.ly row action accounts for post having trackable status.
+	 * Verifies that links for untrackable posts aren't being shown.
+	 *
+	 * Only published posts are tracked by default.
 	 *
 	 * @since 2.6.0
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
@@ -107,12 +110,11 @@ final class DashboardLinkTest extends TestCase {
 		$draft_post = self::factory()->post->create_and_get( array( 'post_status' => 'draft' ) );
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
-		// Test if post does not have trackable status - only published posts are tracked by default.
 		self::assertFalse( Dashboard_Link::can_show_link( $draft_post, self::$parsely ) );
 	}
 
 	/**
-	 * Test if logic for showing Parse.ly row action accounts for post not having a viewable type.
+	 * Verifies that links for unviewable posts aren't being shown.
 	 *
 	 * @since 2.6.0
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
@@ -129,12 +131,12 @@ final class DashboardLinkTest extends TestCase {
 		$non_publicly_queryable_post = self::factory()->post->create_and_get( array( 'post_type' => 'parsely_tests_pt' ) );
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
-		// Test if post is not viewable status.
 		self::assertFalse( Dashboard_Link::can_show_link( $non_publicly_queryable_post, self::$parsely ) );
 	}
 
 	/**
-	 * Test if logic for showing Parse.ly row action accounts for API key option being saved or not.
+	 * Verifies that links for posts aren't being shown when the Site ID is not
+	 * set.
 	 *
 	 * @since 2.6.0
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
@@ -150,11 +152,11 @@ final class DashboardLinkTest extends TestCase {
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_api_key_is_set_or_missing(): void {
 		$published_post = self::factory()->post->create_and_get();
 
-		// Test if API key is not set.
+		// Site ID is not set.
 		self::set_options( array( 'apikey' => '' ) );
 		self::assertFalse( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 
-		// Test with API key set.
+		// Site ID is set.
 		self::set_options( array( 'apikey' => 'somekey' ) );
 		self::assertTrue( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 	}

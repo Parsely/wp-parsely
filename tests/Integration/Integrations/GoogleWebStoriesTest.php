@@ -1,6 +1,6 @@
 <?php
 /**
- * Google Web Stories integration tests.
+ * Integration Tests: Google Web Stories Integration
  *
  * @package Parsely\Tests
  */
@@ -13,7 +13,7 @@ use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Tests\Integration\TestCase;
 
 /**
- * Test Google Web Stories integration.
+ * Integration Tests for the Google Web Stories Integration.
  */
 final class GoogleWebStoriesTest extends TestCase {
 	/**
@@ -24,18 +24,18 @@ final class GoogleWebStoriesTest extends TestCase {
 	private static $google;
 
 	/**
-	 * The setUpBeforeClass run before all tests
+	 * Setup method called before tests get executed.
 	 */
-	public static function setUpBeforeClass(): void {
-		parent::setUpBeforeClass();
+	public static function set_up_before_class(): void {
+		parent::set_up_before_class();
 
-		// Mocking the existence of the plugin for the sake of testing.
+		// Mock the existence of the plugin for the sake of testing.
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 		define( 'WEBSTORIES_PLUGIN_FILE', __DIR__ );
 	}
 
 	/**
-	 * The setUp run before each test
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -44,7 +44,7 @@ final class GoogleWebStoriesTest extends TestCase {
 	}
 
 	/**
-	 * Test if the web stories analytics got enqueued.
+	 * Verifies that the Google Web Stories analytics get enqueued.
 	 *
 	 * @since 3.2.0
 	 *
@@ -64,7 +64,7 @@ final class GoogleWebStoriesTest extends TestCase {
 	}
 
 	/**
-	 * Test if the AMP tracker render outputs the correct script.
+	 * Verifies that the AMP tracker output is correct.
 	 *
 	 * @since 3.2.0
 	 *
