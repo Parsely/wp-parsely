@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly GraphQL Metadata tests.
+ * Unit Tests: GraphQL Metadata
  *
  * @package Parsely\Tests
  */
@@ -16,25 +16,25 @@ use Yoast\WPTestUtils\BrainMonkey\TestCase;
 use Brain\Monkey\Functions;
 
 /**
- * Parse.ly GraphQL Metadata tests.
+ * Unit Tests for GraphQL Metadata.
  */
 final class GraphQLMetadataTest extends TestCase {
 	/**
-	 * Internal variable
+	 * Internal variable.
 	 *
-	 * @var GraphQL_Metadata $graphql Holds the GraphQL object
+	 * @var GraphQL_Metadata $graphql Holds the GraphQL object.
 	 */
 	private static $graphql;
 
 	/**
-	 * Internal Parsely variable
+	 * Internal variable.
 	 *
-	 * @var Parsely $parsely Holds the Parsely object
+	 * @var Parsely $parsely Holds the Parsely object.
 	 */
 	private static $parsely;
 
 	/**
-	 * The setup run before each test.
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -44,7 +44,8 @@ final class GraphQLMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test if the functions to register items into GraphQL have been called.
+	 * Verifies that the functions to register items into GraphQL have been
+	 * called.
 	 *
 	 * @since 3.2.0
 	 *
