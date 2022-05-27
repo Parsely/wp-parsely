@@ -49,7 +49,7 @@ namespace Parsely\Tests\Integration {
 	// Additional necessary requires.
 	require_once dirname( __DIR__ ) . '/trait-tests-reflection.php';
 	require_once __DIR__ . '/TestCase.php';
-	require_once __DIR__ . '/StructuredData/NonPostTestCase.php';
+	require_once __DIR__ . '/Metadata/NonPostTestCase.php';
 }
 
 // Plugin root file is not included during tests, so define the namespaced
