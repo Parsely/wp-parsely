@@ -112,7 +112,7 @@ describe( 'Track Post Types as', () => {
 	} );
 
 	/**
-	 * Test that radio buttons can be browsed correctly using the keyboard.
+	 * Verifies that radio buttons can be browsed correctly using the keyboard.
 	 */
 	it( 'Should be browsable with arrow and tab keys', async () => {
 		// Set initial values so we can start from a known position for each radio.
