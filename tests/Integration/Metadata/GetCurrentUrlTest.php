@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration Tests: \Parsely\Metadata::get_current_url()
+ * Integration Tests: \Parsely\Metadata\Metadata_Builder->get_current_url()
  *
  * @package Parsely\Tests
  */
@@ -13,7 +13,7 @@ use Parsely\Metadata\Front_Page_Builder;
 use Parsely\Parsely;
 
 /**
- * Integration Tests for \Parsely\Metadata::get_current_url().
+ * Integration Tests for \Parsely\MetadataMetadata_Builder->get_current_url().
  */
 final class GetCurrentUrlTest extends TestCase {
 	/**
