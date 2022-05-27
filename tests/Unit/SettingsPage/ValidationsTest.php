@@ -15,7 +15,7 @@ use Parsely\UI\Settings_Page;
 
 
 /**
- * Unit Tests for the Settings' page validation funtionality.
+ * Unit Tests for the Settings' page validation functionality.
  */
 final class SettingsValidationsTest extends TestCase {
 
