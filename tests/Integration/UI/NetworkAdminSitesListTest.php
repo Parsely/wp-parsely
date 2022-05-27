@@ -19,14 +19,14 @@ use WP_Site;
  */
 final class NetworkAdminSitesListTest extends TestCase {
 	/**
-	 * Hold an insance of Network_Admin_Sites_List.
+	 * Holds an instance of Network_Admin_Sites_List.
 	 *
 	 * @var Network_Admin_Sites_List
 	 */
 	private static $sites_list;
 
 	/**
-	 * Hold an instance of WP_MS_Sites_List_Table.
+	 * Holds an instance of WP_MS_Sites_List_Table.
 	 *
 	 * @var WP_MS_Sites_List_Table
 	 */

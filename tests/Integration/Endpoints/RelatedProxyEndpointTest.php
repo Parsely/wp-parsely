@@ -21,7 +21,7 @@ use WP_REST_Server;
  */
 final class RelatedProxyEndpointTest extends TestCase {
 	/**
-	 * Hold a reference to the global $wp_rest_server object to restore in
+	 * Holds a reference to the global $wp_rest_server object to restore in
 	 * tear_down().
 	 *
 	 * @var WP_REST_Server $wp_rest_server_global_backup
@@ -29,7 +29,7 @@ final class RelatedProxyEndpointTest extends TestCase {
 	private $wp_rest_server_global_backup;
 
 	/**
-	 * Hold a reference to the callback that initializes the endpoint to remove
+	 * Holds a reference to the callback that initializes the endpoint to remove
 	 * in tear_down().
 	 *
 	 * @var callable $rest_api_init_related_proxy
