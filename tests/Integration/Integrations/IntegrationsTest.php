@@ -1,6 +1,6 @@
 <?php
 /**
- * Integrations collection tests.
+ * Integration Tests: Integrations collection
  *
  * @package Parsely\Tests
  */
@@ -9,20 +9,21 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\Integrations;
 
-use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use ReflectionClass;
 
 use function Parsely\parsely_integrations;
 
 /**
- * Test plugin integrations collection class.
+ * Integration Tests for the Integrations collection.
  *
- * @todo: Instantiate and then try to register something that doesn't implement the Integration interface.
+ * @todo: Instantiate and then try to register something that doesn't implement
+ * the Integration interface.
  */
 final class IntegrationsTest extends TestCase {
 	/**
-	 * Check an integration can be added via a filter.
+	 * Verifies that an integration can be added via the
+	 * wp_parsely_add_integration filter.
 	 *
 	 * @covers \Parsely\parsely_integrations
 	 * @uses \Parsely\Integrations\Amp::integrate
@@ -35,7 +36,7 @@ final class IntegrationsTest extends TestCase {
 		add_action(
 			'wp_parsely_add_integration',
 			function( $integrations ) {
-				$integrations->register( 'fake', new FakeIntegration2() );
+				$integrations->register( 'fake', new FakeIntegration() );
 
 				return $integrations;
 			}
@@ -55,7 +56,7 @@ final class IntegrationsTest extends TestCase {
 		add_action(
 			'wp_parsely_add_integration',
 			function( $integrations ) {
-				$integrations->register( 'amp', new FakeIntegration2() );
+				$integrations->register( 'amp', new FakeIntegration() );
 
 				return $integrations;
 			}
@@ -68,11 +69,11 @@ final class IntegrationsTest extends TestCase {
 }
 // phpcs:disable Generic.Files.OneObjectStructurePerFile.MultipleFound
 /**
- * Class FakeIntegration2
+ * Class FakeIntegration
  */
-class FakeIntegration2 {
+class FakeIntegration {
 	/**
-	 * Stub this method to avoid a fatal error.
+	 * Stubs this method to avoid a fatal error.
 	 */
 	public function integrate(): void {
 	}

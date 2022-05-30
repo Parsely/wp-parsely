@@ -1,6 +1,6 @@
 <?php
 /**
- * \Parsely\Metadata::get_current_url() tests.
+ * Integration Tests: \Parsely\Metadata\Metadata_Builder->get_current_url()
  *
  * @package Parsely\Tests
  */
@@ -11,14 +11,13 @@ namespace Parsely\Tests\Integration;
 
 use Parsely\Metadata\Front_Page_Builder;
 use Parsely\Parsely;
-use Parsely\Metadata;
 
 /**
- * \Parsely\Metadata::get_current_url() tests.
+ * Integration Tests for \Parsely\MetadataMetadata_Builder->get_current_url().
  */
 final class GetCurrentUrlTest extends TestCase {
 	/**
-	 * Data provider for test_get_current_url
+	 * Provides the data for test_get_current_url().
 	 *
 	 * @return iterable
 	 */
@@ -98,11 +97,10 @@ final class GetCurrentUrlTest extends TestCase {
 	}
 
 	/**
-	 * Test the get_current_url() method.
+	 * Verifies that getting the current URL works as expected.
 	 *
-	 * Assert that homepage, a specific page, and a random URL return the expected URL.
-	 *
-	 * @testdox Given Force HTTPS is $force_https, when home is $home, then expect URLs starting with $expected.
+	 * @testdox Given Force HTTPS is $force_https, when home is $home, then
+	 *          expect URLs starting with $expected.
 	 * @dataProvider data_for_test_get_current_url
 	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
 	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
@@ -118,20 +116,21 @@ final class GetCurrentUrlTest extends TestCase {
 		$this->set_options( array( 'force_https_canonicals' => $force_https ) );
 		update_option( 'home', $home );
 
-		$this->assertCurrentUrlForHomepage( $expected );
-		$this->assertCurrentUrlForSpecificPostWithId( $expected );
-		$this->assertCurrentUrlForRandomUrl( $expected );
+		$this->assert_current_url_for_homepage( $expected );
+		$this->assert_current_url_for_post_with_id( $expected );
+		$this->assert_current_url_for_random_url( $expected );
 	}
 
 	/**
-	 * Assert the correct current URL for the homepage.
+	 * Asserts the correct current URL for the homepage.
 	 *
 	 * @param string $expected Expected start of the URL.
 	 */
-	private function assertCurrentUrlForHomepage( string $expected ): void {
+	private function assert_current_url_for_homepage( string $expected ): void {
 		$this->go_to( '/' );
 
-		// Using Front_Page_Builder since we can't instantiate abstract Metadata_Builder.
+		// Using Front_Page_Builder since we can't instantiate abstract
+		// Metadata_Builder.
 		$builder         = new Front_Page_Builder( new Parsely() );
 		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
 		$res             = $get_current_url->invoke( $builder );
@@ -140,14 +139,15 @@ final class GetCurrentUrlTest extends TestCase {
 	}
 
 	/**
-	 * Assert the correct current URL for a post by ID.
+	 * Asserts the correct current URL for a post by ID.
 	 *
 	 * @param string $expected Expected start of the URL.
 	 */
-	private function assertCurrentUrlForSpecificPostWithId( string $expected ): void {
+	private function assert_current_url_for_post_with_id( string $expected ): void {
 		$post_id = $this->go_to_new_post();
 
-		// Using Front_Page_Builder since we can't instantiate abstract Metadata_Builder.
+		// Using Front_Page_Builder since we can't instantiate abstract
+		// Metadata_Builder.
 		$builder         = new Front_Page_Builder( new Parsely() );
 		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
 		$res             = $get_current_url->invoke( $builder, 'post', $post_id );
@@ -156,14 +156,15 @@ final class GetCurrentUrlTest extends TestCase {
 	}
 
 	/**
-	 * Assert the correct current URL for a random URL with trailing slash.
+	 * Asserts the correct current URL for a random URL with trailing slash.
 	 *
 	 * @param string $expected Expected start of the URL.
 	 */
-	private function assertCurrentUrlForRandomUrl( string $expected ): void {
+	private function assert_current_url_for_random_url( string $expected ): void {
 		$this->go_to( '/random/url/' );
 
-		// Using Front_Page_Builder since we can't instantiate abstract Metadata_Builder.
+		// Using Front_Page_Builder since we can't instantiate abstract
+		// Metadata_Builder.
 		$builder         = new Front_Page_Builder( new Parsely() );
 		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
 		$res             = $get_current_url->invoke( $builder );

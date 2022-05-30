@@ -1,6 +1,6 @@
 <?php
 /**
- * AMP integration tests.
+ * Integration Tests: AMP Integration
  *
  * @package Parsely\Tests
  */
@@ -14,42 +14,43 @@ use Parsely\Integrations\Amp;
 use Parsely\Tests\Integration\TestCase;
 
 /**
- * Test AMP integration.
+ * Integration Tests for the AMP Integration.
  */
 final class AmpTest extends TestCase {
 	/**
-	 * Check the integration only happens when a condition is met.
+	 * Verifies that the integration is active only if the AMP plugin is active.
 	 *
 	 * @covers \Parsely\Integrations\Amp::integrate
 	 */
 	public function test_integration_only_runs_when_AMP_plugin_is_active(): void {
 		$amp = new Amp();
 
-		// By default, the integration will not happen if the condition has not been met.
+		// AMP plugin inactive.
 		$amp->integrate();
 		self::assertFalse( has_action( 'template_redirect', array( $amp, 'add_actions' ) ) );
 
-		// Meet the condition, and check again.
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- can't prefix this.
+		// AMP plugin active.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 		define( 'AMP__VERSION', '1.2.3' );
 		$amp->integrate();
 		self::assertNotFalse( has_action( 'template_redirect', array( $amp, 'add_actions' ) ) );
 	}
 
 	/**
-	 * Check the AMP integration when plugin is not active or request is not an AMP request.
+	 * Verifies that the integration runs only if the request is an AMP request.
 	 *
 	 * @covers \Parsely\Integrations\Amp::add_actions
 	 * @uses \Parsely\Parsely::get_options
 	 * @group amp
 	 */
 	public function test_integration_only_runs_if_we_can_handle_an_AMP_request(): void {
-		// Mock the Amp class, but only the can_handle_amp_request() method. This leaves
-		// the other methods unmocked, and therefore testable.
+		// Mock the Amp class, but only the can_handle_amp_request() method.
+		// This leaves the other methods unmocked, and therefore testable.
 
 		$amp_mock = $this->getMockBuilder( Amp::class )->setMethods( array( 'can_handle_amp_request' ) )->getMock();
 
-		// On the first run, let can_handle_amp_request() return false, then true on second run.
+		// On the first run, let can_handle_amp_request() return false, then
+		// true on second run.
 		$amp_mock->method( 'can_handle_amp_request' )->willReturnOnConsecutiveCalls( false, true );
 
 		$amp_mock->add_actions();
@@ -62,7 +63,8 @@ final class AmpTest extends TestCase {
 	}
 
 	/**
-	 * Check the AMP request is not handled when support is disabled.
+	 * Verifies that any AMP requests will not be handled if AMP support is
+	 * disabled.
 	 *
 	 * @covers \Parsely\Integrations\Amp::can_handle_amp_request
 	 * @uses \Parsely\Parsely::get_options
@@ -74,22 +76,20 @@ final class AmpTest extends TestCase {
 
 		$amp_mock = $this->getMockBuilder( Amp::class )->setMethods( array( 'is_amp_request' ) )->getMock();
 
-		// On the first run, let can_handle_amp_request() return false, then true on second run.
+		// Make is_amp_request() always return true.
 		$amp_mock->method( 'is_amp_request' )->willReturn( true );
 
-		// Check with AMP marked as disabled.
+		// AMP disabled.
 		self::set_options( array( 'disable_amp' => true ) );
-
 		self::assertFalse( $amp_mock->can_handle_amp_request() );
 
-		// Now enable AMP.
+		// AMP enabled.
 		self::set_options( array( 'disable_amp' => false ) );
-
 		self::assertTrue( $amp_mock->can_handle_amp_request() );
 	}
 
 	/**
-	 * Check the registration of Parse.ly with AMP.
+	 * Verifies that the plugin can be registered for AMP analytics.
 	 *
 	 * @covers \Parsely\Integrations\Amp::add_actions
 	 * @covers \Parsely\Integrations\Amp::register_parsely_for_amp_analytics
@@ -115,7 +115,7 @@ final class AmpTest extends TestCase {
 	}
 
 	/**
-	 * Check the registration of Parse.ly with AMP Native.
+	 * Verifies that the plugin can be registered for AMP native analytics.
 	 *
 	 * @covers \Parsely\Integrations\Amp::add_actions
 	 * @covers \Parsely\Integrations\Amp::register_parsely_for_amp_native_analytics

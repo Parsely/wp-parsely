@@ -1,6 +1,6 @@
 <?php
 /**
- * Site Health tools tests.
+ * Integration Tests: wp-admin Site Health
  *
  * @package Parsely\Tests
  */
@@ -14,7 +14,8 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Site_Health;
 
 /**
- * Site Health extensions tests.
+ * Integration Tests for the plugin's entries in the wp-admin Site Health
+ * page.
  *
  * @since 3.4.0
  */
@@ -27,7 +28,7 @@ final class SiteHealthTest extends TestCase {
 	private static $site_health;
 
 	/**
-	 * The setup run before each test.
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -36,7 +37,8 @@ final class SiteHealthTest extends TestCase {
 	}
 
 	/**
-	 * Check that the functions that extend the Site Health page are enqueued.
+	 * Verifies that the functions that extend the Site Health page are
+	 * enqueued.
 	 *
 	 * @covers \Parsely\UI\Site_Health::__construct
 	 * @covers \Parsely\UI\Site_Health::run
@@ -49,7 +51,8 @@ final class SiteHealthTest extends TestCase {
 	}
 
 	/**
-	 * Test if options_debug_info can populate the args array to be consumed by WordPress.
+	 * Verifies that options_debug_info() can populate the args array to be
+	 * consumed by WordPress.
 	 *
 	 * @covers \Parsely\UI\Site_Health::__construct
 	 * @covers \Parsely\UI\Site_Health::options_debug_info

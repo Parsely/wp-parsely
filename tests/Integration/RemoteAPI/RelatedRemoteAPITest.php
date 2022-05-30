@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely `/related` Remote API Integration tests.
+ * Integration Tests: Parsely `/related` Remote API
  *
  * @package Parsely\Tests
  */
@@ -15,18 +15,18 @@ use Parsely\RemoteAPI\Cached_Proxy;
 use Parsely\RemoteAPI\Related_Proxy;
 
 /**
- * Parsely `/related` Remote API tests.
+ * Integration Tests for the Parsely `/related` Remote API.
  */
 final class RelatedRemoteAPITest extends TestCase {
 	/**
-	 * Internal Parsely variable
+	 * Internal variable.
 	 *
-	 * @var Parsely $parsely Holds the Parsely object
+	 * @var Parsely $parsely Holds the Parsely object.
 	 */
 	private static $parsely;
 
 	/**
-	 * The setUp run before each test
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -81,7 +81,7 @@ final class RelatedRemoteAPITest extends TestCase {
 	}
 
 	/**
-	 * Test the basic generation of the API URL.
+	 * Verifies the basic generation of the API URL.
 	 *
 	 * @dataProvider data_related_api_url
 	 * @covers \Parsely\RemoteAPI\Related_Proxy::get_api_url
@@ -100,7 +100,8 @@ final class RelatedRemoteAPITest extends TestCase {
 	}
 
 	/**
-	 * Test that the cache is used instead of the proxy when there's a cache hit.
+	 * Verifies that the cache is used instead of the proxy when there's a cache
+	 * hit.
 	 *
 	 * @covers \Parsely\RemoteAPI\Cached_Proxy::get_items
 	 * @covers \Parsely\RemoteAPI\Cached_Proxy::__construct
@@ -110,7 +111,8 @@ final class RelatedRemoteAPITest extends TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 
-		// If this method is called, that means our cache did not hit as expected.
+		// If this method is called, that means our cache did not hit as
+		// expected.
 		$proxy->expects( self::never() )->method( 'get_items' );
 
 		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $proxy ) ) . '_' . wp_hash( wp_json_encode( array() ) );
@@ -137,7 +139,8 @@ final class RelatedRemoteAPITest extends TestCase {
 	}
 
 	/**
-	 * Test that when the cache misses, the proxy is used instead and the resultant value is cached.
+	 * Verifies that when the cache misses, the proxy is used instead and the
+	 * resultant value is cached.
 	 *
 	 * @covers \Parsely\RemoteAPI\Cached_Proxy::get_items
 	 * @covers \Parsely\RemoteAPI\Cached_Proxy::__construct
@@ -150,7 +153,8 @@ final class RelatedRemoteAPITest extends TestCase {
 		$proxy->method( 'get_items' )
 			->willReturn( (object) array( 'cache_hit' => false ) );
 
-		// If this method is _NOT_ called, that means our cache did not miss as expected.
+		// If this method is _NOT_ called, that means our cache did not miss as
+		// expected.
 		$proxy->expects( self::once() )->method( 'get_items' );
 
 		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $proxy ) ) . '_' . wp_hash( wp_json_encode( array() ) );

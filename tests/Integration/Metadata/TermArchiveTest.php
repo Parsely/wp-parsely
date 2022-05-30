@@ -1,6 +1,6 @@
 <?php
 /**
- * Structured Data Tests for the term archives.
+ * Integration Tests: Term Archive pages metadata
  *
  * @package Parsely\Tests
  */
@@ -13,14 +13,15 @@ use Parsely\Metadata;
 use Parsely\Parsely;
 
 /**
- * Structured Data Tests for the term archives.
+ * Integration Tests for Term Archive pages metadata.
  *
  * @see https://www.parse.ly/help/integration/jsonld
  * @covers \Parsely\Metadata::construct_metadata
  */
 final class TermArchiveTest extends NonPostTestCase {
 	/**
-	 * Check metadata for term archive.
+	 * Verifies that the metadata generated for Term Archive pages is as
+	 * expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -37,8 +38,8 @@ final class TermArchiveTest extends NonPostTestCase {
 	 * @group metadata
 	 */
 	public function test_term_archive(): void {
-		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
-		// See https://github.com/Parsely/wp-parsely/issues/151.
+		// Set permalinks, as Parsely currently strips ?page_id=... from the URL
+		// property. See https://github.com/Parsely/wp-parsely/issues/151.
 		$this->set_permalink_structure( '/%postname%/' );
 
 		// Setup Parsely object.
@@ -56,7 +57,8 @@ final class TermArchiveTest extends NonPostTestCase {
 		$this->set_permalink_structure( '' );
 
 		// Create the structured data for that category.
-		// The category metadata doesn't use the post data, but the construction method requires it for now.
+		// The category metadata doesn't use the post data, but the construction
+		// method requires it for now.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( get_post() );
 

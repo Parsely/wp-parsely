@@ -1,6 +1,6 @@
 <?php
 /**
- * Integrations collection tests.
+ * Unit Tests: Integrations collection
  *
  * @package Parsely\Tests
  */
@@ -15,11 +15,11 @@ use ReflectionClass;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
 /**
- * Test plugin integrations collection class.
+ * Unit Tests for the Integrations collection.
  */
 final class IntegrationsTest extends TestCase {
 	/**
-	 * Check the integration only happens when a condition is met.
+	 * Verifies that registering and overriding integrations works as expected.
 	 *
 	 * @covers \Parsely\Integrations\Integrations::register
 	 */
@@ -46,7 +46,8 @@ final class IntegrationsTest extends TestCase {
 	}
 
 	/**
-	 * Ensure integrations have their integrate() method called when looping through them.
+	 * Verifies that integrations have their integrate() method called when
+	 * looping through them.
 	 *
 	 * @covers \Parsely\Integrations\Integrations::integrate
 	 * @uses \Parsely\Integrations\Integrations::register
@@ -80,7 +81,7 @@ class FakeIntegration {
  */
 class FakeIntegration2 {
 	/**
-	 * Stub this method to avoid a fatal error.
+	 * Stubs this method to avoid a fatal error.
 	 */
 	public function integrate(): void {
 	}

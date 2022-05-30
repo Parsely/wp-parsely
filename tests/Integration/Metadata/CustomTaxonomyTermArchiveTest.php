@@ -1,6 +1,6 @@
 <?php
 /**
- * Structured Data Tests for the blog page (archive).
+ * Integration Tests: Custom Taxonomy Term Archive pages metadata
  *
  * @package Parsely\Tests
  */
@@ -13,14 +13,15 @@ use Parsely\Metadata;
 use Parsely\Parsely;
 
 /**
- * Structured Data Tests for the custom taxonomy term (archive).
+ * Integration Tests for Custom Taxonomy Term Archive pages metadata.
  *
  * @see https://www.parse.ly/help/integration/jsonld
  * @covers \Parsely\Metadata::construct_metadata
  */
 class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 	/**
-	 * Check metadata for custom post type term archive.
+	 * Verifies that the metadata generated for Custom Taxonomy Term Archive
+	 * pages is as expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -71,8 +72,9 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		// The query should be for a taxonomy archive.
 		self::assertQueryTrue( 'is_archive', 'is_tax' );
 
-		// Create the structured data for that term archive.
-		// The term archive metadata doesn't use the post data, but the construction method requires it for now.
+		// Create the structured data for that term archive. The term archive
+		// metadata doesn't use the post data, but the construction method
+		// requires it for now.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( get_post( $post_id ) );
 

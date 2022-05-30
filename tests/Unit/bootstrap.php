@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit bootstrap file.
+ * Unit Tests: PHPUnit bootstrap file.
  *
  * @package Parsely\Tests
  */
@@ -16,7 +16,8 @@ namespace Parsely\Tests\Unit {
 
 }
 
-// Plugin root file is not included during tests, so define the namespaced constants here.
+// Plugin root file is not included during tests, so define the namespaced
+// constants here.
 namespace Parsely {
 	const PARSELY_VERSION = '123456.78.9';
 	const PARSELY_FILE    = __DIR__ . '/../../wp-parsely.php';
