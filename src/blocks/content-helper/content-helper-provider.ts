@@ -13,6 +13,7 @@ import User = Schema.User;
 import { SuggestedPost } from './models/SuggestedPost';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
+import Tag = Schema.Tag;
 
 interface ApiResponse {
 	error?: string;
@@ -23,16 +24,19 @@ class ContentHelperProvider {
 	static async getTopPosts(): Promise<SuggestedPost[]> {
 		const currentPost: Post = select( 'core/editor' ).getCurrentPost();
 		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', currentPost.categories[ 0 ] ) as Taxonomy;
+		const tag = currentPost.tags[ 0 ];
 		const user = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author ) as User;
 
 		if ( ! user && ! category ) {
 			return Promise.reject( 'No user or categories were found.' );
 		}
 
-		return this.fetchData( user, category );
+		this.processData();
+
+		return this.fetchData( user, category, tag );
 	}
 
-	static async fetchData( user: User, category: Taxonomy ): Promise<SuggestedPost[]> {
+	static async fetchData( user: User, category: Taxonomy, tag: string ): Promise<SuggestedPost[]> {
 		const query = {
 			limit: 5,
 			// TODO: Figure out how to use the author
@@ -59,6 +63,12 @@ class ContentHelperProvider {
 		}
 
 		return response?.data || [];
+	}
+
+	static processData(): SuggestedPost[] {
+		const data = select( 'core' ).getEntityRecord( 'root', 'site', 0 );
+		console.log( data );
+		return [];
 	}
 }
 

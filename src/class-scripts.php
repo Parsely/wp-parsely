@@ -130,7 +130,7 @@ class Scripts {
 		}
 
 		if ( isset( $parsely_options['disable_autotrack'] ) && true === $parsely_options['disable_autotrack'] ) {
-			$disable_autotrack = 'window.wpParselyDisableAutotrack = true';
+			$disable_autotrack = 'window.wpParselyDisableAutotrack = true;';
 			wp_add_inline_script( 'wp-parsely-loader', $disable_autotrack, 'before' );
 		}
 	}
@@ -144,6 +144,9 @@ class Scripts {
 	 */
 	public static function enqueue_block_editor_assets(): void {
 		wp_enqueue_script( 'wp-parsely-block-content-helper' );
+
+		$analytics_link_prefix = 'window.wpParselyContentHelperPrefix = https://www.prefix.com;';
+		wp_add_inline_script( 'wp-parsely-block-content-helper', $analytics_link_prefix, 'before' );
 	}
 
 	/**
