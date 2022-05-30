@@ -26,7 +26,7 @@ jobs:
           npm install
 
       - name: Add latest release notes to changelog
-        uses: stefanzweifel/changelog-updater-action@v1.5.0
+        uses: stefanzweifel/changelog-updater-action@v1.6.0
         with:
           latest-version: ${{ github.event.release.tag_name }}
           release-notes: ${{ github.event.release.body }}
