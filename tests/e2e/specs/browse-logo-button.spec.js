@@ -86,7 +86,7 @@ describe( 'Browse for logo button', () => {
 		await page.click( modalAttachment );
 		await page.click( modalConfirmButton );
 
-		// Verify that that the image path has been updated.
+		// Verify that the image path has been updated.
 		const filePath = await page.$eval( filePathInput, ( input ) => input.value );
 		expect( filePath ).toMatch( uploadedImagePattern );
 	} );

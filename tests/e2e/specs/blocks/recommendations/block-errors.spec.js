@@ -29,7 +29,7 @@ describe( 'Recommendations Block', () => {
 	} );
 
 	/**
-	 * Proves that the block will display an error when an invalid Site ID is provided.
+	 * Verifies that the block will display an error when an invalid Site ID is provided.
 	 */
 	it( 'Should display an error when an invalid Site ID is provided', async () => {
 		await setSiteId();
@@ -42,7 +42,7 @@ describe( 'Recommendations Block', () => {
 	} );
 
 	/**
-	 * Proves that the block will display an error when an empty Site ID is provided.
+	 * Verifies that the block will display an error when an empty Site ID is provided.
 	 */
 	it( 'Should display an error when an empty Site ID is provided', async () => {
 		await setSiteId( '' );
@@ -55,7 +55,7 @@ describe( 'Recommendations Block', () => {
 	} );
 
 	/**
-	 * Proves that the block will display an error when the API is not accessible.
+	 * Verifies that the block will display an error when the API is not accessible.
 	 */
 	it( 'Should display an error when the Parse.ly API is not accessible', async () => {
 		await setSiteId();

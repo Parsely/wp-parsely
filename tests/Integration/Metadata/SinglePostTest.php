@@ -1,6 +1,6 @@
 <?php
 /**
- * Structured Data Tests for posts.
+ * Integration Tests: Single Post pages metadata
  *
  * @package Parsely\Tests
  */
@@ -15,23 +15,23 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\Parsely;
 
 /**
- * Structured Data Tests for posts.
+ * Integration Tests for Single Post pages metadata.
  *
  * @see https://www.parse.ly/help/integration/jsonld
  */
 final class SinglePostTest extends TestCase {
 	/**
-	 * The setUp run before each test
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
 
-		// Set the default options prior to each test.
 		TestCase::set_options();
 	}
 
 	/**
-	 * Create a single post, and test the structured data.
+	 * Verifies that the metadata generated for Single Post pages is as
+	 * expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -70,7 +70,8 @@ final class SinglePostTest extends TestCase {
 		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
-		// Make a request to the root of the site to set the global $wp_query object.
+		// Make a request to the root of the site to set the global $wp_query
+		// object.
 		$this->go_to( get_permalink( $post ) );
 
 		// Create the structured data for that post.
@@ -79,12 +80,13 @@ final class SinglePostTest extends TestCase {
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
-		// The metadata '@type' for the context should be 'NewsArticle' for a single post page.
+		// The metadata '@type' for the context should be 'NewsArticle' for a
+		// single post page.
 		self::assertSame( 'NewsArticle', $structured_data['@type'] );
 	}
 
 	/**
-	 * Check the category.
+	 * Verifies that the metadata generated for Categories is as expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -128,12 +130,13 @@ final class SinglePostTest extends TestCase {
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
-		// The category in the structured data should match the category of the post.
+		// The category in the structured data should match the category of the
+		// post.
 		self::assertSame( 'Test Category', $structured_data['articleSection'] );
 	}
 
 	/**
-	 * Check that the tags assigned to a post are lowercase.
+	 * Verifies that the "Lowercase All Tags" option works as expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -193,7 +196,7 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Check the categories as tags.
+	 * Verifies that the "Add Categories to Tags" option works as expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -255,7 +258,8 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Test custom taxonomy terms, categories, and tags in the metadata.
+	 * Verifies that the "Add Categories to Tags" option works as expected with
+	 * custom taxonomies.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -329,7 +333,8 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Are the top level categories what we expect?
+	 * Verifies that the "Use Top-Level Categories for Section" option works as
+	 * expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -402,7 +407,8 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Check out the custom taxonomy as section.
+	 * Verifies that the "Use Custom Taxonomy for Section" option works as
+	 * expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -443,7 +449,8 @@ final class SinglePostTest extends TestCase {
 		// Set Parsely to use 'sports' as custom taxonomy for section.
 		$parsely_options['custom_taxonomy_section'] = 'sports';
 
-		// Create a custom taxonomy, add a term and child term to it, and create a post.
+		// Create a custom taxonomy, add a term and child term to it, and create
+		// a post.
 		register_taxonomy( 'sports', 'post' );
 		$custom_tax_tag       = self::factory()->term->create(
 			array(
@@ -486,7 +493,7 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Check the canonicals.
+	 * Verifies that the "Force HTTPS Canonicals" option works as expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -553,7 +560,8 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Check post modified date in Parsely metadata.
+	 * Verifies that the modified date field in the generated metadata is as
+	 * expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -619,7 +627,8 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Check that post objects with valid creation date work with construct_parsely_metadata.
+	 * Verifies that date fields in the generated metadata are as expected when
+	 * the post doesn't contain a creation date.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -664,14 +673,16 @@ final class SinglePostTest extends TestCase {
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
-		// Without a post date, there should not be the following in the metadata.
+		// Without a post date, there should not be the following in the
+		// metadata.
 		self::assertArrayNotHasKey( 'dateCreated', $structured_data );
 		self::assertArrayNotHasKey( 'datePublished', $structured_data );
 		self::assertArrayNotHasKey( 'dateModified', $structured_data );
 	}
 
 	/**
-	 * Check that post objects with identical creation & modified dates produce expected metadata.
+	 * Verifies that date fields in the generated metadata are as expected when
+	 * the post has identical creation and modified dates.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -703,8 +714,7 @@ final class SinglePostTest extends TestCase {
 	 */
 	public function test_post_date_with_same_create_modified_dates_included_in_metadata(): void {
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Create the post.
 		$post_id = $this->factory->post->create();
@@ -721,7 +731,8 @@ final class SinglePostTest extends TestCase {
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
-		// Identical post creation and modified dates should be present in the metadata.
+		// Identical post creation and modified dates should be present in the
+		// metadata.
 		$expected_singular_datetime = '2021-12-30T20:11:42Z';
 
 		self::assertSame( $expected_singular_datetime, $structured_data['dateCreated'] );
@@ -730,7 +741,8 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Check that posts with modified before creation date "promotes" modified in metadata.
+	 * Verifies that date fields in the generated metadata are as expected when
+	 * the post has a modified date that is prior to its creation date.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -762,8 +774,7 @@ final class SinglePostTest extends TestCase {
 	 */
 	public function test_post_date_with_modified_before_created_date_in_metadata(): void {
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Create the post.
 		$post_id = $this->factory->post->create();
@@ -790,7 +801,8 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Check that posts with modified after creation date has both in metadata.
+	 * Verifies that date fields in the generated metadata are as expected when
+	 * the post has a modified date that is after its creation date.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -822,8 +834,7 @@ final class SinglePostTest extends TestCase {
 	 */
 	public function test_post_date_with_modified_after_created_date_in_metadata(): void {
 		// Setup Parsely object.
-		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely = new Parsely();
 
 		// Create the post.
 		$post_id = $this->factory->post->create();
@@ -841,7 +852,8 @@ final class SinglePostTest extends TestCase {
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
-		// Modified dates later than created dates should be present in the metadata.
+		// Modified dates later than created dates should be present in the
+		// metadata.
 		$expected_created_datetime  = '2021-12-30T20:11:42Z';
 		$expected_modified_datetime = '2021-12-30T20:11:43Z';
 
@@ -851,7 +863,7 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Utility method to check metadata properties correctly set.
+	 * Asserts whether metadata properties have been correctly set.
 	 *
 	 * @param array $structured_data Array of metadata to check.
 	 */
@@ -867,8 +879,9 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Proves that keywords in Parse.ly metadata are generated correctly when categories
-	 * are tags and the post has no categories.
+	 * Verifies that the keywords field in the generated metadata is as expected
+	 * when the option "Add Categories to Tags" is enabled but the post has no
+	 * categories.
 	 *
 	 * @since 3.0.3
 	 *
@@ -926,7 +939,8 @@ final class SinglePostTest extends TestCase {
 	}
 
 	/**
-	 * Proves that featured image URLs are correctly generated in the metadata.
+	 * Verifies that the image fields in the generated metadata are as
+	 * expected.
 	 *
 	 * @since 3.3.0
 	 *

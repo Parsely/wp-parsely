@@ -1,6 +1,6 @@
 <?php
 /**
- * Row actions tests.
+ * Integration Tests: wp-admin Post and Page list actions
  *
  * @package Parsely\Tests
  */
@@ -14,7 +14,8 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Row_Actions;
 
 /**
- * Row actions tests.
+ * Integration Tests for the plugin's actions shown in wp-admin's Post and Page
+ * lists.
  *
  * @since 2.6.0
  */
@@ -27,7 +28,7 @@ final class RowActionsTest extends TestCase {
 	private static $row_actions;
 
 	/**
-	 * The setUp run before each test
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -36,7 +37,7 @@ final class RowActionsTest extends TestCase {
 	}
 
 	/**
-	 * Check that run() method will not add hooks to add the row action links by default.
+	 * Verifies that run() will not add *_row_actions hooks by default.
 	 *
 	 * @since 2.6.0
 	 *
@@ -53,7 +54,8 @@ final class RowActionsTest extends TestCase {
 	}
 
 	/**
-	 * Check that run() method will add hooks to add the row action links.
+	 * Verifies that run() will add *_row_actions hooks when the
+	 * wp_parsely_enable_row_action_links filter is set to true.
 	 *
 	 * @since 2.6.0
 	 *
@@ -70,7 +72,7 @@ final class RowActionsTest extends TestCase {
 	}
 
 	/**
-	 * Test if a row action is correctly not added when conditions are not good.
+	 * Verifies that row actions are not added when conditions fail.
 	 *
 	 * @since 2.6.0
 	 *
@@ -106,7 +108,7 @@ final class RowActionsTest extends TestCase {
 	}
 
 	/**
-	 * Test if a row action is correctly added.
+	 * Verifies that row actions get added correctly.
 	 *
 	 * @since 2.6.0
 	 *

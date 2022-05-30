@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPUnit bootstrap file
+ * Integration Tests: PHPUnit bootstrap file
  *
  * @package Parsely\Tests
  */
@@ -36,7 +36,8 @@ namespace Parsely\Tests\Integration {
 	require_once dirname( __DIR__ ) . '/../vendor/yoast/wp-test-utils/src/WPIntegration/bootstrap-functions.php';
 
 	/*
-	 * Load WordPress, which will load the Composer autoload file, and load the MockObject autoloader after that.
+	 * Load WordPress, which will load the Composer autoload file, and load the
+	 * MockObject autoloader after that.
 	 */
 	WPIntegration\bootstrap_it();
 
@@ -48,10 +49,11 @@ namespace Parsely\Tests\Integration {
 	// Additional necessary requires.
 	require_once dirname( __DIR__ ) . '/trait-tests-reflection.php';
 	require_once __DIR__ . '/TestCase.php';
-	require_once __DIR__ . '/StructuredData/NonPostTestCase.php';
+	require_once __DIR__ . '/Metadata/NonPostTestCase.php';
 }
 
-// Plugin root file is not included during tests, so define the namespaced constants here.
+// Plugin root file is not included during tests, so define the namespaced
+// constants here.
 namespace Parsely {
 	const PARSELY_VERSION = '123456.78.9';
 	const PARSELY_FILE    = __DIR__ . '/../../wp-parsely.php';

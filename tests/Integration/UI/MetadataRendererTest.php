@@ -1,5 +1,6 @@
 <?php
-/** Metadata Renderer tests
+/**
+ * Integration Tests: Metadata Renderer
  *
  * @package Parsely\Tests
  */
@@ -13,7 +14,7 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Metadata_Renderer;
 
 /**
- * UI Metadata Renderer Tests.
+ * Integration Tests for the Metadata Renderer.
  *
  * @since 3.4.0
  */
@@ -26,7 +27,7 @@ final class MetadataRendererTest extends TestCase {
 	private static $metadata_renderer;
 
 	/**
-	 * The setup run before each test.
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -35,7 +36,7 @@ final class MetadataRendererTest extends TestCase {
 	}
 
 	/**
-	 * Tests whether the renderer is enqueued on the site's head.
+	 * Verifies that the renderer is enqueued on the site's head.
 	 *
 	 * @since 3.4.0
 	 *
@@ -49,7 +50,8 @@ final class MetadataRendererTest extends TestCase {
 	}
 
 	/**
-	 * Tests whether the renderer is enqueued on the site's head when it's disabled by a filter.
+	 * Verifies that the renderer is not enqueued on the site's head when it is
+	 * disabled by a filter.
 	 *
 	 * @since 3.4.0
 	 *
@@ -65,8 +67,10 @@ final class MetadataRendererTest extends TestCase {
 	}
 
 	/**
-	 * Checks that the renderer completes successfully and outputs JSON-LD.
-	 * We're not fully testing the output, since that's not the renderer's concern.
+	 * Verifies that the renderer completes successfully and outputs JSON-LD.
+	 *
+	 * We're not fully testing the output, since that's not the renderer's
+	 * concern.
 	 *
 	 * @since 3.4.0
 	 *
@@ -118,8 +122,11 @@ final class MetadataRendererTest extends TestCase {
 	}
 
 	/**
-	 * Checks that the renderer completes successfully and outputs repeated metas.
-	 * We're not fully testing the output, since that's not the renderer's concern.
+	 * Verifies that the renderer completes successfully and outputs repeated
+	 * metas.
+	 *
+	 * We're not fully testing the output, since that's not the renderer's
+	 * concern.
 	 *
 	 * @since 3.4.0
 	 *
@@ -171,9 +178,11 @@ final class MetadataRendererTest extends TestCase {
 	}
 
 	/**
-	 * Checks that the renderer completes successfully and outputs repeated metas when the current
-	 * post is an integer but not WP_Post object.
-	 * We're not fully testing the output, since that's not the renderer's concern.
+	 * Verifies that the renderer completes successfully and outputs repeated
+	 * metas when the current post is an integer but not WP_Post object.
+	 *
+	 * We're not fully testing the output, since that's not the renderer's
+	 * concern.
 	 *
 	 * @since 3.4.0
 	 *
