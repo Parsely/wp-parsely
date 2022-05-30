@@ -1,6 +1,6 @@
 <?php
 /**
- * UI Tests for the Network Admin Sites List.
+ * Integration Tests: Network Admin site list
  *
  * @package Parsely\Tests
  */
@@ -15,28 +15,26 @@ use Parsely\UI\Network_Admin_Sites_List;
 use WP_Site;
 
 /**
- * UI Tests for the Network Admin Sites List.
+ * Integration Tests for the Network Admin site list.
  */
 final class NetworkAdminSitesListTest extends TestCase {
 	/**
-	 * Hold an insance of Network_Admin_Sites_List
+	 * Holds an instance of Network_Admin_Sites_List.
 	 *
 	 * @var Network_Admin_Sites_List
 	 */
 	private static $sites_list;
 
 	/**
-	 * Hold an instance of WP_MS_Sites_List_Table
+	 * Holds an instance of WP_MS_Sites_List_Table.
 	 *
 	 * @var WP_MS_Sites_List_Table
 	 */
 	public $table = false;
 
 	/**
-	 * Skip all tests for non-multisite runs.
-	 * Set up an instance variable to hold a `WP_MS_Sites_List_Table` object.
-	 *
-	 * @return void
+	 * Skips all tests for non-multisite runs.
+	 * Sets up an instance variable to hold a `WP_MS_Sites_List_Table` object.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -50,12 +48,11 @@ final class NetworkAdminSitesListTest extends TestCase {
 	}
 
 	/**
-	 * Make sure the custom column is included.
+	 * Verifies that the custom column is included.
 	 *
 	 * @covers \Parsely\UI\Network_Admin_Sites_List::add_api_key_column
 	 * @covers \Parsely\UI\Network_Admin_Sites_List::run
 	 * @uses \Parsely\UI\Network_Admin_Sites_List::__construct
-	 * @return void
 	 */
 	public function test_api_key_column_is_present(): void {
 		$columns = $this->table->get_columns();
@@ -69,7 +66,8 @@ final class NetworkAdminSitesListTest extends TestCase {
 	}
 
 	/**
-	 * Make sure the custom column is populated with default data for no option and the API key when set.
+	 * Verifies that the custom column is populated with default data for no
+	 * option and the API key when set.
 	 *
 	 * @covers \Parsely\UI\Network_Admin_Sites_List::populate_api_key_column
 	 * @covers \Parsely\UI\Network_Admin_Sites_List::run
@@ -77,7 +75,6 @@ final class NetworkAdminSitesListTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_api_key
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\UI\Network_Admin_Sites_List::__construct
-	 * @return void
 	 */
 	public function test_api_key_column_is_correctly_printed(): void {
 		$blog_id_with_api_key = $this->factory->blog->create();

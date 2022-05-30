@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly settings page validations tests.
+ * Unit Tests: Settings page validation functionality
  *
  * @package Parsely\Tests
  */
@@ -15,14 +15,14 @@ use Parsely\UI\Settings_Page;
 
 
 /**
- * Parse.ly settings page validations tests.
+ * Unit Tests for the Settings' page validation functionality.
  */
 final class SettingsValidationsTest extends TestCase {
 
 	use \Parsely\Tests\Tests_Reflection;
 
 	/**
-	 * Internal Parsely variable.
+	 * Internal variable.
 	 *
 	 * @var Parsely $parsely Holds the Parsely object.
 	 */
@@ -46,7 +46,7 @@ final class SettingsValidationsTest extends TestCase {
 	}
 
 	/**
-	 * Tests API key validation.
+	 * Verifies that API key validation works as expected.
 	 *
 	 * @since 3.3.0
 	 *

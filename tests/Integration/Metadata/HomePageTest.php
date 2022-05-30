@@ -1,6 +1,6 @@
 <?php
 /**
- * Structured Data Tests for the home page.
+ * Integration Tests: Homepage metadata
  *
  * @package Parsely\Tests
  */
@@ -13,14 +13,14 @@ use Parsely\Metadata;
 use Parsely\Parsely;
 
 /**
- * Structured Data Tests for the home page.
+ * Integration Tests for the Homepage's metadata.
  *
  * @see https://www.parse.ly/help/integration/jsonld
  * @covers \Parsely\Metadata::construct_metadata
  */
 final class HomePageTest extends NonPostTestCase {
 	/**
-	 * Runs the routine before each test is executed.
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -31,7 +31,8 @@ final class HomePageTest extends NonPostTestCase {
 	}
 
 	/**
-	 * Create a single page, set as homepage (blog archive), and test the structured data.
+	 * Creates a single page, sets it as homepage (blog archive), and tests its
+	 * metadata.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -61,7 +62,8 @@ final class HomePageTest extends NonPostTestCase {
 		);
 		$page    = get_post( $page_id );
 
-		// Make a request to the root of the site to set the global $wp_query object.
+		// Make a request to the root of the site to set the global $wp_query
+		// object.
 		$this->go_to( '/' );
 
 		// Create the structured data for that post.
@@ -71,13 +73,15 @@ final class HomePageTest extends NonPostTestCase {
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
-		// The headline should be the name of the site, not the post_title of the Page.
+		// The headline should be the name of the site, not the post_title of
+		// the page.
 		self::assertEquals( 'Test Blog', $structured_data['headline'] );
 		self::assertEquals( home_url(), $structured_data['url'] );
 	}
 
 	/**
-	 * Create 2 posts, set posts per page to 1, navigate to page 2 and test the structured data.
+	 * Creates 2 posts, sets posts per page to 1, navigates to page 2 and tests
+	 * its metadata.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -103,8 +107,8 @@ final class HomePageTest extends NonPostTestCase {
 		self::factory()->post->create();
 		$page = get_post( $page_id );
 
-		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
-		// See https://github.com/Parsely/wp-parsely/issues/151.
+		// Set permalinks, as Parsely currently strips ?page_id=... from the URL
+		// property. See https://github.com/Parsely/wp-parsely/issues/151.
 		global $wp_rewrite;
 		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
@@ -121,14 +125,16 @@ final class HomePageTest extends NonPostTestCase {
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
-		// The headline should be the name of the site, not the post_title of the latest post.
+		// The headline should be the name of the site, not the post_title of
+		// the latest post.
 		self::assertEquals( 'Test Blog', $structured_data['headline'] );
 		// The URL should be the current page, not the home url.
 		self::assertEquals( home_url( '/page/2' ), $structured_data['url'] );
 	}
 
 	/**
-	 * Create a single page, set as homepage (page on front), and test the structured data.
+	 * Creates a single page, sets it as homepage (page on front), and tests its
+	 * metadata.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -161,7 +167,8 @@ final class HomePageTest extends NonPostTestCase {
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', $page_id );
 
-		// Make a request to the root of the site to set the global $wp_query object.
+		// Make a request to the root of the site to set the global $wp_query
+		// object.
 		$this->go_to( '/' );
 
 		// Create the structured data for that post.
@@ -171,15 +178,18 @@ final class HomePageTest extends NonPostTestCase {
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
-		// The headline should be the name of the site, not the post_title of the Page.
+		// The headline should be the name of the site, not the post_title of
+		// the page.
 		self::assertEquals( 'Test Blog', $structured_data['headline'] );
 		self::assertEquals( home_url(), $structured_data['url'] );
-		// The metadata '@type' for the context should be 'WebPage' for the homepage.
+		// The metadata '@type' for the context should be 'WebPage' for the
+		// homepage.
 		self::assertSame( 'WebPage', $structured_data['@type'] );
 	}
 
 	/**
-	 * Check for the case when the show_on_front setting is Page, but no Page has been selected.
+	 * Verifies the case when the show_on_front setting is set to "Page", but no
+	 * page has been selected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -212,7 +222,8 @@ final class HomePageTest extends NonPostTestCase {
 		update_option( 'show_on_front', 'page' );
 		delete_option( 'page_on_front' );
 
-		// Make a request to the root of the site to set the global $wp_query object.
+		// Make a request to the root of the site to set the global $wp_query
+		// object.
 		$this->go_to( '/' );
 
 		// Create the structured data for that post.
@@ -222,7 +233,8 @@ final class HomePageTest extends NonPostTestCase {
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
-		// The headline should be the name of the site, not the post_title of the Page.
+		// The headline should be the name of the site, not the post_title of
+		// the page.
 		self::assertEquals( 'Test Blog', $structured_data['headline'] );
 		self::assertEquals( home_url(), $structured_data['url'] );
 	}

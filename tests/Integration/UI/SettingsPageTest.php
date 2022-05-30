@@ -1,6 +1,6 @@
 <?php
 /**
- * Settings page tests.
+ * Integration Tests: wp-admin Settings page
  *
  * @package Parsely\Tests
  */
@@ -14,7 +14,7 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Settings_Page;
 
 /**
- * Settings page tests.
+ * Integration Tests for the plugin's wp-admin Settings page.
  *
  * @since 3.1.0
  */
@@ -33,7 +33,7 @@ final class SettingsPageTest extends TestCase {
 	private static $parsely;
 
 	/**
-	 * The setup run before each test.
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -42,7 +42,7 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verify that tracking settings get saved.
+	 * Verifies that the "Track Post Types as" setting gets saved.
 	 *
 	 * @since 3.2.0
 	 *
@@ -69,7 +69,8 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verify that non-existent post types cannot be saved into the database for tracking.
+	 * Verifies that non-existent post types cannot be saved into the database
+	 * for the "Track Post Types as" setting.
 	 *
 	 * @since 3.2.0
 	 *
@@ -97,7 +98,8 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verify that trying to save tracking settings with an unset value fails.
+	 * Verifies that the "Track Post Types as" setting doesn't get saved when
+	 * attempting to save it with an unset value.
 	 *
 	 * @since 3.2.0
 	 *
@@ -118,7 +120,8 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verify that trying to save tracking settings with an empty array value fails.
+	 * Verifies that the "Track Post Types as" setting doesn't get saved when
+	 * attempting to save it with an empty array.
 	 *
 	 * @since 3.2.0
 	 *
@@ -139,7 +142,8 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verify that trying to save tracking settings with a non-array value fails.
+	 * Verifies that the "Track Post Types as" setting doesn't get saved when
+	 * attempting to save it with a non-array value.
 	 *
 	 * @since 3.2.0
 	 *
@@ -160,7 +164,8 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verify that trying to save tracking settings without autotrack value pulls default.
+	 * Verifies that the "disable_autotrack" option is taken into account during
+	 * option validation, even if it is unset.
 	 *
 	 * @since 3.2.0
 	 *
@@ -181,11 +186,11 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Make sure that the settings URL is correctly returned for single sites and multisites with and without a blog_id param.
+	 * Verifies that the settings URL is correctly returned for single sites and
+	 * multisites with and without a blog_id param.
 	 *
 	 * @covers \Parsely\Parsely::get_settings_url
 	 * @uses \Parsely\UI\Settings_Page::__construct
-	 * @return void
 	 */
 	public function test_get_settings_url_with_and_without_blog_id(): void {
 		self::assertSame(

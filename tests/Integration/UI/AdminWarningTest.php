@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin page warning tests.
+ * Integration Tests: wp-admin warning message
  *
  * @package Parsely\Tests
  */
@@ -14,7 +14,7 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Warning;
 
 /**
- * Admin page warning tests.
+ * Integration Tests for the wp-admin warning message.
  *
  * @since 3.0.0
  */
@@ -22,12 +22,12 @@ final class AdminWarningTest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var Admin_Warning $admin_warning Holds the Admin_Warning object
+	 * @var Admin_Warning $admin_warning Holds the Admin_Warning object.
 	 */
 	private static $admin_warning;
 
 	/**
-	 * The setup run before each test.
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -36,7 +36,8 @@ final class AdminWarningTest extends TestCase {
 	}
 
 	/**
-	 * Test that test_display_admin_warning action returns a warning when there is no key
+	 * Verifies that test_display_admin_warning action returns a warning when
+	 * there is no key.
 	 *
 	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
 	 * @covers \Parsely\UI\Admin_Warning::__construct
@@ -57,7 +58,8 @@ final class AdminWarningTest extends TestCase {
 	}
 
 	/**
-	 * Test that test_display_admin_warning action returns a warning when there is no key
+	 * Verifies that test_display_admin_warning action returns a warning when
+	 * there is no key.
 	 *
 	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
 	 * @covers \Parsely\UI\Admin_Warning::__construct
@@ -75,7 +77,8 @@ final class AdminWarningTest extends TestCase {
 	}
 
 	/**
-	 * Test that test_display_admin_warning action returns a warning when there is no key
+	 * Verifies that test_display_admin_warning action returns a warning when
+	 * there is no key.
 	 *
 	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
 	 * @covers \Parsely\UI\Admin_Warning::__construct
@@ -90,7 +93,8 @@ final class AdminWarningTest extends TestCase {
 	}
 
 	/**
-	 * Test that test_display_admin_warning action doesn't return a warning when there is a key
+	 * Verifies that test_display_admin_warning action doesn't return a warning
+	 * when there is a key.
 	 *
 	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
 	 * @covers \Parsely\UI\Admin_Warning::__construct

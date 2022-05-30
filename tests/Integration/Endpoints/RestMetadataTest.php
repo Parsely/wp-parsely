@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely REST API Metadata tests.
+ * Integration Tests: REST API Metadata Endpoint
  *
  * @package Parsely\Tests
  */
@@ -16,25 +16,25 @@ use Parsely\Tests\Integration\TestCase;
 
 
 /**
- * Parsely REST API Metadata tests.
+ * Integration Tests for the REST API Metadata Endpoint.
  */
 final class RestMetadataTest extends TestCase {
 	/**
-	 * Internal variable
+	 * Internal variable.
 	 *
-	 * @var Rest_Metadata $rest Holds the Rest object
+	 * @var Rest_Metadata $rest Holds the Rest object.
 	 */
 	private static $rest;
 
 	/**
-	 * Internal Parsely variable
+	 * Internal variable.
 	 *
-	 * @var Parsely $parsely Holds the Parsely object
+	 * @var Parsely $parsely Holds the Parsely object.
 	 */
 	private static $parsely;
 
 	/**
-	 * The setUp run before each test
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -44,7 +44,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test whether the logic has been enqueued when the `run` method is called.
+	 * Verifies that the logic has been enqueued when the `run` method is
+	 * called.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 * @uses \Parsely\Endpoints\Rest_Metadata::register_meta
@@ -66,7 +67,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Verify that the logic has not been enqueued when the `run` method is called with a filter that disables it.
+	 * Verifies that the logic has not been enqueued when the `run` method is
+	 * called with a filter that disables it.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -82,7 +84,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Verify that the logic has not been enqueued when the `run` method is called with no API key.
+	 * Verifies that the logic has not been enqueued when the `run` method is
+	 * called with no API key.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -98,7 +101,7 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the REST fields are registered to WordPress REST API.
+	 * Verifies that the REST fields are registered to WordPress REST API.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::register_meta
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -118,7 +121,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the REST fields are can be modified using the `wp_parsely_rest_object_types` filter.
+	 * Verifies that the REST fields are can be modified using the
+	 * `wp_parsely_rest_object_types` filter.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::register_meta
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -136,7 +140,8 @@ final class RestMetadataTest extends TestCase {
 
 		self::$rest->register_meta();
 
-		// Should only be 1, including term. Post and page should be left out by the filter.
+		// Should only be 1, including term. Post and page should be left out by
+		// the filter.
 		self::assertCount( 1, $wp_rest_additional_fields );
 
 		$this->assertParselyRestFieldIsConstructedCorrectly( 'term', $wp_rest_additional_fields );
@@ -147,7 +152,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
+	 * Verifies that the get_rest_callback method is able to generate the
+	 * `parsely` object for the REST API.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -202,7 +208,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
+	 * Verifies that the get_rest_callback method is able to generate the
+	 * `parsely` object for the REST API.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -255,7 +262,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
+	 * Verifies that the get_rest_callback method is able to generate the
+	 * `parsely` object for the REST API.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -308,7 +316,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the get_rest_callback method doesn't crash when the post does not exist.
+	 * Verifies that the get_rest_callback method doesn't crash when the post
+	 * does not exist.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -333,7 +342,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the rendered meta function returns the meta HTML string with json ld.
+	 * Verifies that the rendered meta function returns the meta HTML string
+	 * with JSON-LD.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -370,7 +380,6 @@ final class RestMetadataTest extends TestCase {
 	 * @uses \Parsely\UI\Metadata_Renderer::render_metadata
 	 */
 	public function test_get_rendered_meta_json_ld(): void {
-		// Set the default options prior to each test.
 		TestCase::set_options();
 
 		global $post;
@@ -390,7 +399,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the rendered meta function returns the meta HTML string with json ld.
+	 * Verifies that the rendered meta function returns the meta HTML string
+	 * with JSON-LD.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -453,12 +463,12 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Assert that the Parsely REST field is constructed correctly.
+	 * Asserts that the Parsely REST field is constructed correctly.
+	 *
 	 * This is a helper function for the tests above.
 	 *
 	 * @param string $post_type                 Post type.
 	 * @param array  $wp_rest_additional_fields Global variable.
-	 * @return void
 	 */
 	private function assertParselyRestFieldIsConstructedCorrectly( string $post_type, array $wp_rest_additional_fields ): void {
 		self::assertArrayHasKey( $post_type, $wp_rest_additional_fields );
