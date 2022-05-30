@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly GraphQL Metadata tests.
+ * Integration Tests: GraphQL Metadata Endpoint
  *
  * @package Parsely\Tests
  */
@@ -14,25 +14,25 @@ use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Tests\Integration\TestCase;
 
 /**
- * Parse.ly GraphQL Metadata tests.
+ * Integration Tests for the GraphQL Metadata Endpoint.
  */
 final class GraphQLMetadataTest extends TestCase {
 	/**
-	 * Internal variable
+	 * Internal variable.
 	 *
-	 * @var GraphQL_Metadata $graphql Holds the GraphQL object
+	 * @var GraphQL_Metadata $graphql Holds the GraphQL object.
 	 */
 	private static $graphql;
 
 	/**
-	 * Internal Parsely variable
+	 * Internal variable.
 	 *
-	 * @var Parsely $parsely Holds the Parsely object
+	 * @var Parsely $parsely Holds the Parsely object.
 	 */
 	private static $parsely;
 
 	/**
-	 * The setup run before each test.
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -42,7 +42,8 @@ final class GraphQLMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that GraphQL types are set to be registered if there's an API key defined.
+	 * Verifies that GraphQL types are set to be registered if there's an API
+	 * key defined.
 	 *
 	 * @since 3.2.0
 	 *
@@ -59,7 +60,7 @@ final class GraphQLMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that GraphQL types are not registered if there's a filter.
+	 * Verifies that GraphQL types are not registered if there's a filter.
 	 *
 	 * @since 3.2.0
 	 *
@@ -75,7 +76,7 @@ final class GraphQLMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that GraphQL types are not registered if there's no API key.
+	 * Verifies that GraphQL types are not registered if there's no API key.
 	 *
 	 * @since 3.2.0
 	 *

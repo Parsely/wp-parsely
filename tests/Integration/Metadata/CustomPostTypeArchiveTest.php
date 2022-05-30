@@ -1,6 +1,6 @@
 <?php
 /**
- * Structured Data Tests for the blog page (archive).
+ * Integration Tests: Custom Post Type Archive pages metadata
  *
  * @package Parsely\Tests
  */
@@ -13,14 +13,15 @@ use Parsely\Metadata;
 use Parsely\Parsely;
 
 /**
- * Structured Data Tests for the custom post type (archive).
+ * Integration Tests for Custom Post Type Archive pages metadata.
  *
  * @see https://www.parse.ly/help/integration/jsonld
  * @covers \Parsely\Metadata::construct_metadata
  */
 final class CustomPostTypeArchiveTest extends NonPostTestCase {
 	/**
-	 * Check metadata for custom post type archive.
+	 * Verifies that the metadata generated for Custom Post Type Archive pages
+	 * is as expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
@@ -37,8 +38,8 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 	 * @group metadata
 	 */
 	public function test_metadata_is_correctly_constructed_for_custom_post_type_archive(): void {
-		// Set permalinks, as Parsely currently strips ?page_id=... from the URL property.
-		// See https://github.com/Parsely/wp-parsely/issues/151.
+		// Set permalinks, as Parsely currently strips ?page_id=... from the URL
+		// property. See https://github.com/Parsely/wp-parsely/issues/151.
 		$this->set_permalink_structure( '/%postname%/' );
 
 		// Setup Parsely object.
@@ -71,8 +72,9 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 		// The query should be for a custom post type archive.
 		self::assertQueryTrue( 'is_archive', 'is_post_type_archive' );
 
-		// Create the structured data for that CPT.
-		// The CPT archive metadata doesn't use the post data, but the construction method requires it for now.
+		// Create the structured data for that CPT. The CPT archive metadata
+		// doesn't use the post data, but the // construction method requires it
+		// for now.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( get_post() );
 

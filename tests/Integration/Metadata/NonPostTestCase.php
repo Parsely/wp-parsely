@@ -1,6 +1,6 @@
 <?php
 /**
- * Abstract class for Structured Data Tests for non-posts.
+ * Integration Tests: Abstract base class for non-post metadata tests
  *
  * @package Parsely\Tests
  */
@@ -12,25 +12,24 @@ namespace Parsely\Tests\Integration\StructuredData;
 use Parsely\Tests\Integration\TestCase;
 
 /**
- * Create a base class that all Structured Data Tests for non-posts should extend.
+ * Base class that all non-post metadata tests should extend from.
  */
 abstract class NonPostTestCase extends TestCase {
 	/**
-	 * The setUp run before each test
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
 
-		// Set the default options prior to each test.
 		TestCase::set_options();
 	}
 
 	/**
-	 * Utility method to check metadata properties correctly set.
+	 * Asserts that the metadata contains all required properties.
 	 *
-	 * @param array $structured_data Array of metadata to check.
+	 * @param array $structured_data The metadata array to check.
 	 */
-	public function assert_data_has_required_properties( $structured_data ): void {
+	public function assert_data_has_required_properties( array $structured_data ): void {
 		$required_properties = $this->get_required_properties();
 
 		array_walk(
@@ -42,9 +41,9 @@ abstract class NonPostTestCase extends TestCase {
 	}
 
 	/**
-	 * These are the required properties for non-posts.
+	 * Returns the required properties for non-posts.
 	 *
-	 * @return string[]
+	 * @return array<string>
 	 */
 	private function get_required_properties(): array {
 		return array(
