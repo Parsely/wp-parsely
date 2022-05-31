@@ -142,10 +142,11 @@ class Scripts {
 	 * @see: https://developer.wordpress.org/block-editor/how-to-guides/plugin-sidebar-0/
 	 * @return void
 	 */
-	public static function enqueue_block_editor_assets(): void {
+	public function enqueue_block_editor_assets(): void {
 		wp_enqueue_script( 'wp-parsely-block-content-helper' );
 
-		$analytics_link_prefix = 'window.wpParselyContentHelperPrefix = https://www.prefix.com;';
+		$prefix                = trailingslashit( 'https://dash.parsely.com/' . esc_js( $this->parsely->get_api_key() ) ) . 'find';
+		$analytics_link_prefix = 'window.wpParselyContentHelperPrefix = "' . $prefix . '";';
 		wp_add_inline_script( 'wp-parsely-block-content-helper', $analytics_link_prefix, 'before' );
 	}
 

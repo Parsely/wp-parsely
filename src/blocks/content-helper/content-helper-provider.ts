@@ -13,7 +13,6 @@ import User = Schema.User;
 import { SuggestedPost } from './models/SuggestedPost';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
-import Tag = Schema.Tag;
 
 interface ApiResponse {
 	error?: string;
@@ -31,12 +30,11 @@ class ContentHelperProvider {
 			return Promise.reject( 'No user or categories were found.' );
 		}
 
-		this.processData();
-
-		return this.fetchData( user, category, tag );
+		const data = await this.fetchData( user, category, tag );
+		return this.processData( data );
 	}
 
-	static async fetchData( user: User, category: Taxonomy, tag: string ): Promise<SuggestedPost[]> {
+	private static async fetchData( user: User, category: Taxonomy, tag: string ): Promise<SuggestedPost[]> {
 		const query = {
 			limit: 5,
 			// TODO: Figure out how to use the author
@@ -65,10 +63,12 @@ class ContentHelperProvider {
 		return response?.data || [];
 	}
 
-	static processData(): SuggestedPost[] {
-		const data = select( 'core' ).getEntityRecord( 'root', 'site', 0 );
-		console.log( data );
-		return [];
+	private static processData( data: SuggestedPost[] ): SuggestedPost[] {
+		return data.map( ( p ) => {
+			// @ts-ignore
+			p.statsUrl = `${ window.wpParselyContentHelperPrefix }?url=${ p.url }`;
+			return p;
+		} );
 	}
 }
 
