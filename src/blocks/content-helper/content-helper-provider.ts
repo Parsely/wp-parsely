@@ -35,18 +35,13 @@ class ContentHelperProvider {
 	}
 
 	private static async fetchData( user: User, category: Taxonomy, tag: string ): Promise<SuggestedPost[]> {
-		const query = {
-			limit: 5,
-			// TODO: Figure out how to use the author
-			author: user.name,
-		};
-
+		const query = this.buildFetchDataQuery( user, category, tag );
 		let response;
 		let error;
 
 		try {
 			response = await apiFetch( {
-				path: addQueryArgs( '/wp-parsely/v1/analytics/posts', { query } ),
+				path: addQueryArgs( '/wp-parsely/v1/analytics/posts', query ),
 			} ) as ApiResponse;
 		} catch ( wpError ) {
 			error = wpError;
@@ -69,6 +64,22 @@ class ContentHelperProvider {
 			p.statsUrl = `${ window.wpParselyContentHelperPrefix }?url=${ p.url }`;
 			return p;
 		} );
+	}
+
+	private static buildFetchDataQuery( user: User, category: Taxonomy, tag: string ) {
+		const limit = 5;
+
+		if ( tag ) {
+			return { limit, tag };
+		}
+		if ( category?.name ) {
+			return { limit, section: category.name };
+		}
+		if ( user?.name ) {
+			return { limit, author: user.name }; // User display name.
+		}
+
+		return { limit };
 	}
 }
 
