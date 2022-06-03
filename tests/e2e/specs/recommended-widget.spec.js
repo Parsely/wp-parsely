@@ -21,10 +21,7 @@ const searchForParselyWidget = async () => {
 		visible: true,
 	} );
 	await page.click( '.block-list-appender' );
-	await page.waitForSelector( '.block-editor-inserter__quick-inserter', {
-		visible: true,
-	} );
-	// await page.focus( '.block-editor-inserter__quick-inserter .components-search-control__input' );
+	await page.waitForTimeout( 500 );
 	await page.keyboard.type( 'parse.ly recommended widget' );
 };
 
