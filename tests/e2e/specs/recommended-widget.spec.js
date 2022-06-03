@@ -17,24 +17,18 @@ const deactivatedPluginWidgetText = 'The Parse.ly Site ID and Parse.ly API Secre
 const closeWidgetScreenModal = () => page.keyboard.press( 'Escape' );
 
 const insertParselyWidget = async () => {
-	await page.waitForSelector( '.block-editor-button-block-appender', {
-		visible: true,
-	} );
+	await page.waitForTimeout( 500 );
 	await page.click( '.block-editor-button-block-appender' );
 	await page.waitForTimeout( 500 );
 	await page.keyboard.type( 'parse.ly recommended widget' );
 	await page.keyboard.press( 'Tab' );
 	await page.keyboard.press( 'Tab' );
 	await page.keyboard.press( 'Enter' );
+	await page.waitForTimeout( 500 );
 };
 
 const getNonActiveWidgetText = async () => {
-	// Checking if Parse.ly widget is present in the widgets list
-	await page.waitForTimeout( 500 );
 	const [ h3 ] = await page.$x( "//h3[contains(., 'Parse.ly Recommended Widget')]" );
-	expect( h3 ).toBeTruthy();
-
-	await h3.click();
 
 	const widgetContent = await page.evaluateHandle( ( el ) => el.nextElementSibling, h3 );
 	return page.evaluate( ( el ) => el.textContent, widgetContent );
