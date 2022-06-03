@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { select } from '@wordpress/data';
+// eslint-disable-next-line import/named
 import { Schema } from '@wordpress/core-data';
 import Post = Schema.Post;
 import Taxonomy = Schema.Taxonomy;
