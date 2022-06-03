@@ -16,29 +16,19 @@ const deactivatedPluginWidgetText = 'The Parse.ly Site ID and Parse.ly API Secre
 
 const closeWidgetScreenModal = () => page.keyboard.press( 'Escape' );
 
-const searchForParselyWidget = async () => {
-	await page.waitForSelector( '.block-list-appender', {
-		visible: true,
-	} );
-	await page.click( '.block-list-appender' );
-	await page.focus( '.block-editor-inserter__quick-inserter .components-search-control__input' );
+const insertParselyWidget = async () => {
+	await page.waitForTimeout( 500 );
+	await page.click( '.block-editor-button-block-appender' );
+	await page.waitForTimeout( 500 );
 	await page.keyboard.type( 'parse.ly recommended widget' );
-};
-
-const selectParselyWidgetFromWidgetSearch = async () => {
-	const [ button ] = await page.$x( "//button[contains(., 'Parse.ly Recommended Widget')]" );
-	await button.click();
+	await page.keyboard.press( 'Tab' );
+	await page.keyboard.press( 'Tab' );
+	await page.keyboard.press( 'Enter' );
+	await page.waitForTimeout( 500 );
 };
 
 const getNonActiveWidgetText = async () => {
-	// Checking if Parse.ly widget is present in the widgets list
-	await page.waitForSelector( '.wp-block-legacy-widget__edit-form', {
-		visible: true,
-	} );
 	const [ h3 ] = await page.$x( "//h3[contains(., 'Parse.ly Recommended Widget')]" );
-	expect( h3 ).toBeTruthy();
-
-	await h3.click();
 
 	const widgetContent = await page.evaluateHandle( ( el ) => el.nextElementSibling, h3 );
 	return page.evaluate( ( el ) => el.textContent, widgetContent );
@@ -65,8 +55,7 @@ describe( 'Recommended widget', () => {
 		await waitForWpAdmin();
 
 		await closeWidgetScreenModal();
-		await searchForParselyWidget();
-		await selectParselyWidgetFromWidgetSearch();
+		await insertParselyWidget();
 
 		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
 	} );
@@ -78,8 +67,7 @@ describe( 'Recommended widget', () => {
 		await waitForWpAdmin();
 
 		await closeWidgetScreenModal();
-		await searchForParselyWidget();
-		await selectParselyWidgetFromWidgetSearch();
+		await insertParselyWidget();
 
 		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
 	} );
