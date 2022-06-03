@@ -16,18 +16,16 @@ const deactivatedPluginWidgetText = 'The Parse.ly Site ID and Parse.ly API Secre
 
 const closeWidgetScreenModal = () => page.keyboard.press( 'Escape' );
 
-const searchForParselyWidget = async () => {
+const insertParselyWidget = async () => {
 	await page.waitForSelector( '.block-editor-button-block-appender', {
 		visible: true,
 	} );
 	await page.click( '.block-editor-button-block-appender' );
 	await page.waitForTimeout( 500 );
 	await page.keyboard.type( 'parse.ly recommended widget' );
-};
-
-const selectParselyWidgetFromWidgetSearch = async () => {
-	const [ button ] = await page.$x( "//button[contains(., 'Parse.ly Recommended Widget')]" );
-	await button.click();
+	await page.keyboard.press( 'Tab' );
+	await page.keyboard.press( 'Tab' );
+	await page.keyboard.press( 'Enter' );
 };
 
 const getNonActiveWidgetText = async () => {
@@ -65,8 +63,7 @@ describe( 'Recommended widget', () => {
 		await waitForWpAdmin();
 
 		await closeWidgetScreenModal();
-		await searchForParselyWidget();
-		await selectParselyWidgetFromWidgetSearch();
+		await insertParselyWidget();
 
 		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
 	} );
@@ -78,8 +75,7 @@ describe( 'Recommended widget', () => {
 		await waitForWpAdmin();
 
 		await closeWidgetScreenModal();
-		await searchForParselyWidget();
-		await selectParselyWidgetFromWidgetSearch();
+		await insertParselyWidget();
 
 		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
 	} );
