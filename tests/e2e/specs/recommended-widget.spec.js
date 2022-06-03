@@ -21,7 +21,10 @@ const searchForParselyWidget = async () => {
 		visible: true,
 	} );
 	await page.click( '.block-editor-button-block-appender' );
-	await page.waitForTimeout( 500 );
+	await page.waitForSelector( '.components-search-control__input', {
+		visible: true,
+	} );
+	await page.focus( '.components-search-control__input' );
 	await page.keyboard.type( 'parse.ly recommended widget' );
 };
 
