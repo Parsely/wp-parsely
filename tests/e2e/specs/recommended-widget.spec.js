@@ -30,9 +30,7 @@ const insertParselyWidget = async () => {
 
 const getNonActiveWidgetText = async () => {
 	// Checking if Parse.ly widget is present in the widgets list
-	await page.waitForSelector( '.wp-block-legacy-widget__edit-form-title', {
-		visible: true,
-	} );
+	await page.waitForTimeout( 500 );
 	const [ h3 ] = await page.$x( "//h3[contains(., 'Parse.ly Recommended Widget')]" );
 	expect( h3 ).toBeTruthy();
 
