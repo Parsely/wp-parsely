@@ -94,8 +94,6 @@ final class Analytics_API_Proxy {
 	 * @return stdClass
 	 */
 	public function get_items( WP_REST_Request $request ) {
-		$params = $request->get_params();
-
 		if ( false === $this->parsely->api_key_is_set() ) {
 			return (object) array(
 				'data'  => array(),
@@ -110,7 +108,8 @@ final class Analytics_API_Proxy {
 			);
 		}
 
-		// A proxy with caching behaviour is used here.
+		// A proxy with caching behavior is used here.
+		$params   = $request->get_params();
 		$response = $this->proxy->get_items( $params );
 
 		if ( is_wp_error( $response ) ) {
@@ -120,11 +119,12 @@ final class Analytics_API_Proxy {
 			);
 		}
 
-		$data = array_map(
-			static function( stdClass $item ) {
+		$date_format = get_option( 'date_format' );
+		$data        = array_map(
+			static function( stdClass $item ) use ( $date_format ) {
 				return (object) array(
 					'author' => $item->author,
-					'date'   => $item->pub_date,
+					'date'   => wp_date( $date_format, strtotime( $item->pub_date ) ),
 					'title'  => $item->title,
 					'url'    => $item->url,
 				);
