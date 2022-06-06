@@ -127,6 +127,7 @@ final class Analytics_API_Proxy {
 					'date'   => wp_date( $date_format, strtotime( $item->pub_date ) ),
 					'title'  => $item->title,
 					'url'    => $item->url,
+					'views'  => $item->metrics->views,
 				);
 			},
 			$response

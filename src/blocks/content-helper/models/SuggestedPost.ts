@@ -1,8 +1,9 @@
 export interface SuggestedPost {
-	id: number;
-	title: string;
-	date: string;
 	author: string;
-	url: string;
+	date: string;
+	id: number;
 	statsUrl: string;
+	title: string;
+	url: string;
+	views: number;
 }

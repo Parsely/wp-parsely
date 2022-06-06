@@ -18,7 +18,11 @@ function PostCard( { post }: PostCardProps ) {
 			<Card size="small" elevation={ 2 }>
 				<CardHeader><b>{ post.title }</b></CardHeader>
 				<CardBody>
-					<p>Published on { post.date } by <em>{ post.author }</em>.</p>
+					<ul>
+						<li>Views: { post.views }</li>
+						<li>Published: { post.date }</li>
+						<li>Author: { post.author }</li>
+					</ul>
 					<p>
 						<Button href={ post.url } target="_blank" variant="primary">Open Post</Button> { ' ' }
 						<Button href={ post.statsUrl } target="_blank" variant="secondary">Post Stats</Button>
