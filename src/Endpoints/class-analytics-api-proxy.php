@@ -123,10 +123,10 @@ final class Analytics_API_Proxy {
 		$data = array_map(
 			static function( stdClass $item ) {
 				return (object) array(
-					'author'   => $item->author,
-					'pub_date' => $item->pub_date,
-					'title'    => $item->title,
-					'url'      => $item->url,
+					'author' => $item->author,
+					'date'   => $item->pub_date,
+					'title'  => $item->title,
+					'url'    => $item->url,
 				);
 			},
 			$response
