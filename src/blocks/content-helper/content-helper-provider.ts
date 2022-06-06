@@ -24,7 +24,7 @@ class ContentHelperProvider {
 	static async getTopPosts(): Promise<SuggestedPost[]> {
 		const currentPost: Post = select( 'core/editor' ).getCurrentPost();
 		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', currentPost.categories[ 0 ] ) as Taxonomy;
-		const tag = currentPost.tags[ 0 ];
+		const tag = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', Number( currentPost.tags[ 0 ] ) ) as Taxonomy;
 		const user = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author ) as User;
 
 		if ( ! user && ! category ) {
@@ -35,7 +35,7 @@ class ContentHelperProvider {
 		return this.processData( data );
 	}
 
-	private static async fetchData( user: User, category: Taxonomy, tag: string ): Promise<SuggestedPost[]> {
+	private static async fetchData( user: User, category: Taxonomy, tag: Taxonomy ): Promise<SuggestedPost[]> {
 		const query = this.buildFetchDataQuery( user, category, tag );
 		let response;
 		let error;
@@ -67,7 +67,7 @@ class ContentHelperProvider {
 		} );
 	}
 
-	private static buildFetchDataQuery( user: User, category: Taxonomy, tag: string ) {
+	private static buildFetchDataQuery( user: User, category: Taxonomy, tag: Taxonomy ) {
 		const limit = 5;
 
 		if ( tag ) {
