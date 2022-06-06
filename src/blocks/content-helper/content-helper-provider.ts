@@ -27,11 +27,15 @@ class ContentHelperProvider {
 		const tag = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', Number( currentPost.tags[ 0 ] ) ) as Taxonomy;
 		const user = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author ) as User;
 
-		if ( ! user && ! category ) {
-			return Promise.reject( 'No user or categories were found.' );
+		if ( ! category && ! user && ! tag ) {
+			return Promise.reject( 'Cannot make request to Parse.ly API because User, Category and Tag are empty.' );
 		}
 
 		const data = await this.fetchData( user, category, tag );
+		if ( data.length === 0 ) {
+			return Promise.reject( 'The Parse.ly API did not return any posts.' );
+		}
+
 		return this.processData( data );
 	}
 
