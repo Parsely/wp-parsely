@@ -125,6 +125,7 @@ final class Analytics_API_Proxy {
 				return (object) array(
 					'author' => $item->author,
 					'date'   => wp_date( $date_format, strtotime( $item->pub_date ) ),
+					'id'     => $item->url,
 					'title'  => $item->title,
 					'url'    => $item->url,
 					'views'  => $item->metrics->views,
