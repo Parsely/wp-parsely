@@ -16,12 +16,14 @@ const FETCH_RETRIES = 3;
 function PostsList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<string>( null );
+	const [ message, setMessage ] = useState<string>( null );
 	const [ posts, setPosts ] = useState<SuggestedPost[]>( [] );
 
 	const fetchPosts = async ( retries: number ) => {
 		ContentHelperProvider.getTopPosts()
-			.then( ( p ) => {
-				setPosts( p );
+			.then( ( result ) => {
+				setPosts( result.posts );
+				setMessage( result.message );
 				setLoading( false );
 			} )
 			.catch( async ( err: string ) => {
@@ -44,7 +46,7 @@ function PostsList() {
 
 	return (
 		<>
-			<p>Related posts that performed well in the past:</p>
+			<p>{ message }</p>
 			{ loading ? <Spinner /> : body }
 		</>
 	);

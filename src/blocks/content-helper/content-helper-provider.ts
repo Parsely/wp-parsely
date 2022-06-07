@@ -12,6 +12,7 @@ import User = Schema.User;
  * Internal dependencies
  */
 import { SuggestedPost } from './models/SuggestedPost';
+import { GetTopPostsResult, BuildFetchDataQueryResult } from './models/ContentHelperProviderFunctionResults';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 
@@ -21,32 +22,33 @@ interface ApiResponse {
 }
 
 class ContentHelperProvider {
-	static async getTopPosts(): Promise<SuggestedPost[]> {
+	static async getTopPosts(): Promise<GetTopPostsResult> {
 		const currentPost: Post = select( 'core/editor' ).getCurrentPost();
 		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', currentPost.categories[ 0 ] ) as Taxonomy;
 		const tag = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', Number( currentPost.tags[ 0 ] ) ) as Taxonomy;
 		const user = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author ) as User;
 
-		if ( ! category && ! user && ! tag ) {
-			return Promise.reject( 'Cannot make request to Parse.ly API because User, Category and Tag are empty.' );
+		const fetchQueryResult = this.buildFetchDataQuery( user, category, tag );
+		if ( fetchQueryResult.query === null ) {
+			return Promise.reject( fetchQueryResult.message );
 		}
 
-		const data = await this.fetchData( user, category, tag );
+		const data = await this.fetchData( fetchQueryResult );
 		if ( data.length === 0 ) {
-			return Promise.reject( 'The Parse.ly API did not return any posts.' );
+			return Promise.reject( 'The Parse.ly API did not return any results.' );
 		}
 
-		return this.processData( data );
+		const message = `Top-performing posts ${ fetchQueryResult.message }.`;
+		return { message, posts: this.processData( data ) };
 	}
 
-	private static async fetchData( user: User, category: Taxonomy, tag: Taxonomy ): Promise<SuggestedPost[]> {
-		const query = this.buildFetchDataQuery( user, category, tag );
+	private static async fetchData( fetchDataQueryResult: BuildFetchDataQueryResult ): Promise<SuggestedPost[]> {
 		let response;
 		let error;
 
 		try {
 			response = await apiFetch( {
-				path: addQueryArgs( '/wp-parsely/v1/analytics/posts', query ),
+				path: addQueryArgs( '/wp-parsely/v1/analytics/posts', fetchDataQueryResult.query ),
 			} ) as ApiResponse;
 		} catch ( wpError ) {
 			error = wpError;
@@ -71,20 +73,33 @@ class ContentHelperProvider {
 		} );
 	}
 
-	private static buildFetchDataQuery( user: User, category: Taxonomy, tag: Taxonomy ) {
+	private static buildFetchDataQuery( user: User, category: Taxonomy, tag: Taxonomy ): BuildFetchDataQueryResult {
 		const limit = 5;
 
-		if ( tag ) {
-			return { limit, tag };
-		}
-		if ( category?.name ) {
-			return { limit, section: category.name };
-		}
-		if ( user?.name ) {
-			return { limit, author: user.name }; // User display name.
+		if ( ! category && ! user && ! tag ) {
+			return ( {
+				query: null,
+				message: "Error: Cannot perform request because the post's Author, Category and Tag are empty.",
+			} );
 		}
 
-		return { limit };
+		if ( tag ) {
+			return ( {
+				query: { limit, tag },
+				message: `with the tag "${ tag.name }"`,
+			} );
+		}
+		if ( category?.name ) {
+			return ( {
+				query: { limit, section: category.name },
+				message: `in the category "${ category.name }"`,
+			} );
+		}
+
+		return ( {
+			query: { limit, author: user.name },
+			message: `by the author "${ user.name }"`,
+		} );
 	}
 }
 
