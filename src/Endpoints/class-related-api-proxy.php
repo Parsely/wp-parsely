@@ -40,7 +40,7 @@ final class Related_API_Proxy extends Base_API_Proxy {
 	 * @param array<string, mixed> $response The response received by the proxy.
 	 * @return array<stdClass> The generated data.
 	 */
-	protected function generate_data( $response ): array {
+	protected function generate_data( array $response ): array {
 		$result = array_map(
 			static function( stdClass $item ) {
 				return (object) array(
