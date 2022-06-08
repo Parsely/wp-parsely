@@ -1,6 +1,6 @@
 <?php
 /**
- * Endpoints: Parse.ly `/analytics` API proxy endpoint class
+ * Endpoints: Base API proxy endpoint class for all API proxy endpoints
  *
  * @package Parsely
  * @since   3.4.0
@@ -14,13 +14,13 @@ use Parsely\Parsely;
 use Parsely\RemoteAPI\Proxy;
 use stdClass;
 use WP_Error;
-use WP_REST_Server;
 use WP_REST_Request;
+use WP_REST_Server;
 
 /**
  * Configures a REST API endpoint for use.
  */
-final class Analytics_API_Proxy {
+abstract class Base_API_Proxy {
 	/**
 	 * Parsely object instance.
 	 *
@@ -48,10 +48,13 @@ final class Analytics_API_Proxy {
 	}
 
 	/**
-	 * Registers the endpoint and initializes this class.
+	 * Registers the endpoint's WP REST route.
+	 *
+	 * @param string $endpoint The endpoint (e.g. /analytics/posts).
 	 */
-	public function run(): void {
-		if ( ! apply_filters( 'wp_parsely_enable_analytics_api_proxy', true ) ) {
+	protected function register_endpoint( string $endpoint ): void {
+		$filter_key = trim( str_replace( '/', '_', $endpoint ), '_' );
+		if ( ! apply_filters( 'wp_parsely_enable_' . $filter_key . '_api_proxy', true ) ) {
 			return;
 		}
 
@@ -74,11 +77,11 @@ final class Analytics_API_Proxy {
 			),
 		);
 
-		register_rest_route( 'wp-parsely/v1/analytics', '/posts', $rest_route_args );
+		register_rest_route( 'wp-parsely/v1', $endpoint, $rest_route_args );
 	}
 
 	/**
-	 * Determines if the endpoint can be called.
+	 * Determines if there are enough permissions to call the endpoint.
 	 *
 	 * @return bool
 	 */
@@ -88,12 +91,14 @@ final class Analytics_API_Proxy {
 	}
 
 	/**
-	 * Cached "proxy" to the Parsely `/analytics` endpoint
+	 * Cached "proxy" to the Parsely `/analytics` endpoint.
 	 *
-	 * @param WP_REST_Request $request The request object.
+	 * @param WP_REST_Request $request            The request object.
+	 * @param bool            $require_api_secret Specifies if the API Secret is required.
+	 * @param string          $param_item         The param element to use to get the items.
 	 * @return stdClass
 	 */
-	public function get_items( WP_REST_Request $request ) {
+	protected function get_data( WP_REST_Request $request, bool $require_api_secret = true, string $param_item = null ): stdClass {
 		if ( false === $this->parsely->api_key_is_set() ) {
 			return (object) array(
 				'data'  => array(),
@@ -101,15 +106,20 @@ final class Analytics_API_Proxy {
 			);
 		}
 
-		if ( false === $this->parsely->api_secret_is_set() ) {
+		if ( true === $require_api_secret && false === $this->parsely->api_secret_is_set() ) {
 			return (object) array(
 				'data'  => array(),
 				'error' => new WP_Error( 400, __( 'A Parse.ly API Secret must be set in site options to use this endpoint', 'wp-parsely' ) ),
 			);
 		}
 
+		if ( null !== $param_item ) {
+			$params = $request->get_params()[ $param_item ];
+		} else {
+			$params = $request->get_params();
+		}
+
 		// A proxy with caching behavior is used here.
-		$params   = $request->get_params();
 		$response = $this->proxy->get_items( $params );
 
 		if ( is_wp_error( $response ) ) {
@@ -119,21 +129,16 @@ final class Analytics_API_Proxy {
 			);
 		}
 
-		$date_format = get_option( 'date_format' );
-		$data        = array_map(
-			static function( stdClass $item ) use ( $date_format ) {
-				return (object) array(
-					'author' => $item->author,
-					'date'   => wp_date( $date_format, strtotime( $item->pub_date ) ),
-					'id'     => $item->url,
-					'title'  => $item->title,
-					'url'    => $item->url,
-					'views'  => $item->metrics->views,
-				);
-			},
-			$response
-		);
+		return (object) array( 'data' => $this->generate_data( $response ) );
+	}
 
-		return (object) array( 'data' => $data );
+	/**
+	 * Generates the final data from the passed response.
+	 *
+	 * @param array<string, mixed> $response The response received by the proxy.
+	 * @return array<stdClass> The generated data.
+	 */
+	protected function generate_data( array $response ): array {
+		return array();
 	}
 }
