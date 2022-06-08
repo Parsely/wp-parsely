@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Panel, PanelBody, PanelHeader } from '@wordpress/components';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { registerPlugin } from '@wordpress/plugins';
@@ -17,7 +18,7 @@ const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 const renderSidebar = () => (
 	<PluginSidebar name="wp-parsely-sidebar" title="Parse.ly">
 		<Panel>
-			<PanelHeader>Parse.ly Content Helper</PanelHeader>
+			<PanelHeader>{ __( 'Parse.ly Content Helper (Beta)', 'wp-parsely' ) }</PanelHeader>
 			<PanelBody><PostList /></PanelBody>
 		</Panel>
 	</PluginSidebar>

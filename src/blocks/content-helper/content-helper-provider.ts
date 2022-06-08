@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { select } from '@wordpress/data';
 // eslint-disable-next-line import/named
 import { Schema } from '@wordpress/core-data';
@@ -35,10 +36,10 @@ class ContentHelperProvider {
 
 		const data = await this.fetchData( fetchQueryResult );
 		if ( data.length === 0 ) {
-			return Promise.reject( 'The Parse.ly API did not return any results.' );
+			return Promise.reject( __( 'The Parse.ly API did not return any results.', 'wp-parsely' ) );
 		}
 
-		const message = `Top-performing posts ${ fetchQueryResult.message }.`;
+		const message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ fetchQueryResult.message }.`;
 		return { message, posts: this.processData( data ) };
 	}
 
@@ -79,26 +80,26 @@ class ContentHelperProvider {
 		if ( ! category && ! user && ! tag ) {
 			return ( {
 				query: null,
-				message: "Error: Cannot perform request because the post's Author, Category and Tag are empty.",
+				message: __( "Error: Cannot perform request because the post's Author, Category and Tag are empty.", 'wp-parsely' ),
 			} );
 		}
 
 		if ( tag ) {
 			return ( {
 				query: { limit, tag },
-				message: `with the tag "${ tag.name }"`,
+				message: `${ __( 'with the tag', 'wp-parsely' ) } "${ tag.name }"`,
 			} );
 		}
 		if ( category?.name ) {
 			return ( {
 				query: { limit, section: category.name },
-				message: `in the category "${ category.name }"`,
+				message: `${ __( 'in the category', 'wp-parsely' ) } "${ category.name }"`,
 			} );
 		}
 
 		return ( {
 			query: { limit, author: user.name },
-			message: `by the author "${ user.name }"`,
+			message: `${ __( 'by the author', 'wp-parsely' ) } "${ user.name }"`,
 		} );
 	}
 }

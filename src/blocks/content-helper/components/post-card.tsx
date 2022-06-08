@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 
 /**
@@ -19,13 +20,13 @@ function PostCard( { post }: PostCardProps ) {
 				<CardHeader><b>{ post.title }</b></CardHeader>
 				<CardBody>
 					<ul>
-						<li>Views: { post.views }</li>
-						<li>Published: { post.date }</li>
-						<li>Author: { post.author }</li>
+						<li>{ __( 'Views:', 'wp-parsely' ) } { post.views }</li>
+						<li>{ __( 'Published:', 'wp-parsely' ) } { post.date }</li>
+						<li>{ __( 'Author:', 'wp-parsely' ) } { post.author }</li>
 					</ul>
 					<p>
-						<Button href={ post.url } target="_blank" variant="primary">Open Post</Button> { ' ' }
-						<Button href={ post.statsUrl } target="_blank" variant="secondary">Post Stats</Button>
+						<Button href={ post.url } target="_blank" variant="primary">{ __( 'Open Post', 'wp-parsely' ) }</Button> { ' ' }
+						<Button href={ post.statsUrl } target="_blank" variant="secondary">{ __( 'Post Stats', 'wp-parsely' ) }</Button>
 					</p>
 				</CardBody>
 			</Card>
