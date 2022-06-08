@@ -24,22 +24,33 @@ interface ApiResponse {
 
 class ContentHelperProvider {
 	static async getTopPosts(): Promise<GetTopPostsResult> {
-		const currentPost: Post = select( 'core/editor' ).getCurrentPost();
-		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', currentPost.categories[ 0 ] ) as Taxonomy;
-		const tag = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', Number( currentPost.tags[ 0 ] ) ) as Taxonomy;
-		const user = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author ) as User;
+		const editor = select( 'core/editor' );
 
-		const fetchQueryResult = this.buildFetchDataQuery( user, category, tag );
+		// Get post's author.
+		const currentPost = editor.getCurrentPost() as Post;
+		const author = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author ) as User;
+
+		// Get post's first category.
+		const categoryId = editor.getEditedPostAttribute( 'categories' ) as Array<number>[0];
+		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryId ) as Taxonomy;
+
+		// Get post's first tag.
+		const tagId = editor.getEditedPostAttribute( 'tags' ) as Array<number>[0];
+		const tag = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagId ) as Taxonomy;
+
+		// Fetch data from the API.
+		const fetchQueryResult = this.buildFetchDataQuery( author, category, tag );
 		if ( fetchQueryResult.query === null ) {
 			return Promise.reject( fetchQueryResult.message );
 		}
-
 		const data = await this.fetchData( fetchQueryResult );
+
+		// Set the content helper's message.
+		let message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ fetchQueryResult.message }.`;
 		if ( data.length === 0 ) {
-			return Promise.reject( __( 'The Parse.ly API did not return any results.', 'wp-parsely' ) );
+			message = `${ __( 'The Parse.ly API did not return any results for top-performing posts', 'wp-parsely' ) } ${ fetchQueryResult.message }.`;
 		}
 
-		const message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ fetchQueryResult.message }.`;
 		return { message, posts: this.processData( data ) };
 	}
 
@@ -74,10 +85,10 @@ class ContentHelperProvider {
 		} );
 	}
 
-	private static buildFetchDataQuery( user: User, category: Taxonomy, tag: Taxonomy ): BuildFetchDataQueryResult {
+	private static buildFetchDataQuery( author: User, category: Taxonomy, tag: Taxonomy ): BuildFetchDataQueryResult {
 		const limit = 5;
 
-		if ( ! category && ! user && ! tag ) {
+		if ( ! author && ! category && ! tag ) {
 			return ( {
 				query: null,
 				message: __( "Error: Cannot perform request because the post's Author, Category and Tag are empty.", 'wp-parsely' ),
@@ -98,8 +109,8 @@ class ContentHelperProvider {
 		}
 
 		return ( {
-			query: { limit, author: user.name },
-			message: `${ __( 'by the author', 'wp-parsely' ) } "${ user.name }"`,
+			query: { limit, author: author.name },
+			message: `${ __( 'by the author', 'wp-parsely' ) } "${ author.name }"`,
 		} );
 	}
 }
