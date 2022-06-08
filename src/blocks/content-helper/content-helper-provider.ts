@@ -11,8 +11,8 @@ import User = Schema.User;
 /**
  * Internal dependencies
  */
-import { SuggestedPost } from './models/SuggestedPost';
-import { GetTopPostsResult, BuildFetchDataQueryResult } from './models/ContentHelperProviderFunctionResults';
+import { SuggestedPost } from './models/suggested-post';
+import { GetTopPostsResult, BuildFetchDataQueryResult } from './models/function-results';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 

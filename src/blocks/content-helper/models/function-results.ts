@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { SuggestedPost } from './SuggestedPost';
+import { SuggestedPost } from './suggested-post';
 
 export interface GetTopPostsResult {
 	message: string;

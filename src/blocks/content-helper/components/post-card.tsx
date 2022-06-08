@@ -6,7 +6,7 @@ import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { SuggestedPost } from '../models/SuggestedPost';
+import { SuggestedPost } from '../models/suggested-post';
 
 interface PostCardProps {
 	post: SuggestedPost;

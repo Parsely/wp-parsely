@@ -8,12 +8,12 @@ import { useEffect, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import ContentHelperProvider from '../content-helper-provider';
-import PostCard from './PostCard';
-import { SuggestedPost } from '../models/SuggestedPost';
+import PostCard from './post-card';
+import { SuggestedPost } from '../models/suggested-post';
 
 const FETCH_RETRIES = 3;
 
-function PostsList() {
+function PostList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<string>( null );
 	const [ message, setMessage ] = useState<string>( null );
@@ -52,4 +52,4 @@ function PostsList() {
 	);
 }
 
-export default PostsList;
+export default PostList;

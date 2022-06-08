@@ -8,7 +8,7 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
-import PostsList from './components/PostsList';
+import PostList from './components/post-list';
 // @ts-ignore
 import { ReactComponent as LeafIcon } from '../../img/parsely-logo.svg';
 
@@ -18,7 +18,7 @@ const renderSidebar = () => (
 	<PluginSidebar name="wp-parsely-sidebar" title="Parse.ly">
 		<Panel>
 			<PanelHeader>Parse.ly Content Helper</PanelHeader>
-			<PanelBody><PostsList /></PanelBody>
+			<PanelBody><PostList /></PanelBody>
 		</Panel>
 	</PluginSidebar>
 );
