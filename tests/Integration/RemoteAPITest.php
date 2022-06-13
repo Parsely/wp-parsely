@@ -77,15 +77,15 @@ abstract class RemoteAPITest extends TestCase {
 	 * @covers \Parsely\RemoteAPI\Cached_Proxy::__construct
 	 */
 	public function test_cached_proxy_returns_cached_value(): void {
-		$proxy = $this->getMockBuilder( get_class( self::$proxy ) )
+		$proxy_mock = $this->getMockBuilder( get_class( self::$proxy ) )
 			->disableOriginalConstructor()
 			->getMock();
 
 		// If this method is called, that means our cache did not hit as
 		// expected.
-		$proxy->expects( self::never() )->method( 'get_items' );
+		$proxy_mock->expects( self::never() )->method( 'get_items' );
 
-		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $proxy ) ) . '_' . wp_hash( wp_json_encode( array() ) );
+		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $proxy_mock ) ) . '_' . wp_hash( wp_json_encode( array() ) );
 
 		$object_cache = $this->createMock( Cache::class );
 		$object_cache->method( 'get' )
@@ -101,7 +101,7 @@ abstract class RemoteAPITest extends TestCase {
 			);
 
 		$cached_proxy = $this->getMockBuilder( Cached_Proxy::class )
-			->setConstructorArgs( array( $proxy, $object_cache ) )
+			->setConstructorArgs( array( $proxy_mock, $object_cache ) )
 			->setMethodsExcept( array( 'get_items' ) )
 			->getMock();
 
@@ -116,18 +116,18 @@ abstract class RemoteAPITest extends TestCase {
 	 * @covers \Parsely\RemoteAPI\Cached_Proxy::__construct
 	 */
 	public function test_caching_decorator_returns_uncached_value(): void {
-		$proxy = $this->getMockBuilder( get_class( self::$proxy ) )
+		$proxy_mock = $this->getMockBuilder( get_class( self::$proxy ) )
 			->disableOriginalConstructor()
 			->getMock();
 
-		$proxy->method( 'get_items' )
+		$proxy_mock->method( 'get_items' )
 			->willReturn( (object) array( 'cache_hit' => false ) );
 
 		// If this method is _NOT_ called, that means our cache did not miss as
 		// expected.
-		$proxy->expects( self::once() )->method( 'get_items' );
+		$proxy_mock->expects( self::once() )->method( 'get_items' );
 
-		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $proxy ) ) . '_' . wp_hash( wp_json_encode( array() ) );
+		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $proxy_mock ) ) . '_' . wp_hash( wp_json_encode( array() ) );
 
 		$object_cache = $this->createMock( Cache::class );
 		$object_cache->method( 'get' )
@@ -143,7 +143,7 @@ abstract class RemoteAPITest extends TestCase {
 			);
 
 		$cached_proxy = $this->getMockBuilder( Cached_Proxy::class )
-			->setConstructorArgs( array( $proxy, $object_cache ) )
+			->setConstructorArgs( array( $proxy_mock, $object_cache ) )
 			->setMethodsExcept( array( 'get_items' ) )
 			->getMock();
 
