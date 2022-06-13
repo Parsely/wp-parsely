@@ -31,7 +31,7 @@ abstract class RemoteAPITest extends TestCase {
 	 *
 	 * @param Base_Proxy $proxy Instance of the proxy object being tested.
 	 */
-	public function set_proxy( Base_Proxy $proxy ) {
+	public static function set_proxy( Base_Proxy $proxy ) {
 		self::$proxy = $proxy;
 	}
 
