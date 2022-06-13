@@ -107,8 +107,8 @@ final class RelatedProxyEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that calls to `GET /wp-parsely/v1/related` get results in the
-	 * expected format.
+	 * Verifies that calls to `GET /wp-parsely/v1/related` return
+	 * results in the expected format.
 	 *
 	 * @covers \Parsely\Endpoints\Related_API_Proxy::get_items
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
@@ -163,8 +163,9 @@ final class RelatedProxyEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that calls to `GET /wp-parsely/v1/related` gets an error and
-	 * makes no remote call when the apikey is not populated in site options.
+	 * Verifies that calling `GET /wp-parsely/v1/related` returns an error and
+	 * does not perform a remote call when the apikey is not populated
+	 * in site options.
 	 *
 	 * @covers \Parsely\Endpoints\Related_API_Proxy::get_items
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
