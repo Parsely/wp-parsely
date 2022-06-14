@@ -207,7 +207,6 @@ class Post_Builder extends Metadata_Builder {
 	 * @since 3.4.0
 	 */
 	private function build_keywords(): void {
-		$post    = get_post();
 		$options = $this->parsely->get_options();
 		$tags    = $this->get_tags( $this->post->ID );
 		if ( $options['cats_as_tags'] ) {
