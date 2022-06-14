@@ -37,22 +37,23 @@ final class Plugins_Actions {
 	 * @return array
 	 */
 	public function add_plugin_meta_links( array $actions ): array {
+		$link_pattern = '<a href="%s">%s</a>';
 		if ( is_multisite() && is_plugin_active_for_network( plugin_basename( PARSELY_FILE ) ) ) {
 			$actions['siteslist'] = sprintf(
-				'<a href="%s">%s</a>',
+				$link_pattern,
 				esc_url( network_admin_url( 'sites.php' ) ),
 				esc_html__( 'Sites', 'wp-parsely' )
 			);
 		}
 
 		$actions['settings'] = sprintf(
-			'<a href="%s">%s</a>',
+			$link_pattern,
 			esc_url( Parsely::get_settings_url() ),
 			esc_html__( 'Settings', 'wp-parsely' )
 		);
 
 		$actions['documentation'] = sprintf(
-			'<a href="%s">%s</a>',
+			$link_pattern,
 			'https://www.parse.ly/help/integration/wordpress',
 			esc_html__( 'Documentation', 'wp-parsely' )
 		);

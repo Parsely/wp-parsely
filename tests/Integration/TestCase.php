@@ -121,7 +121,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	public function create_test_blog( string $domain, int $user_id ) {
 		return $this->factory->blog->create(
 			array(
-				'domain'  => 'http://' . $domain . 'com',
+				'domain'  => 'https://' . $domain . 'com',
 				'user_id' => $user_id,
 			)
 		);
