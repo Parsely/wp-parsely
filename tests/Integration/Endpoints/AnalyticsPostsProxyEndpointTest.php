@@ -3,71 +3,43 @@
  * Integration Tests: Analytics Posts Proxy Endpoint
  *
  * @package Parsely\Tests
+ *
+ * phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod.Found
  */
 
 declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
-use Parsely\Parsely;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
+use Parsely\Endpoints\Base_API_Proxy;
+use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_Proxy;
-use WP_Error;
 use WP_REST_Request;
-use WP_REST_Server;
 
 /**
  * Integration Tests for the Analytics Posts API Proxy Endpoint.
  */
-final class AnalyticsPostsProxyEndpointTest extends TestCase {
-	/**
-	 * Holds a reference to the global $wp_rest_server object to restore in
-	 * tear_down().
-	 *
-	 * @var WP_REST_Server $wp_rest_server_global_backup
-	 */
-	private $wp_rest_server_global_backup;
+final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 
 	/**
-	 * Holds a reference to the callback that initializes the endpoint to remove
-	 * in tear_down().
-	 *
-	 * @var callable $rest_api_init_analytics_posts_proxy
+	 * Runs once before all tests.
 	 */
-	private $rest_api_init_analytics_posts_proxy;
-
-	/**
-	 * Setup method called before each test.
-	 *
-	 * Sets up globals and initializes the Endpoint.
-	 */
-	public function set_up(): void {
-		parent::set_up();
-
-		TestCase::set_options();
-
-		$this->wp_rest_server_global_backup        = $GLOBALS['wp_rest_server'] ?? null;
-		$this->rest_api_init_analytics_posts_proxy = static function () {
-			$endpoint = new Analytics_Posts_API_Proxy(
-				new Parsely(),
-				new Analytics_Posts_Proxy( new Parsely() )
-			);
-			$endpoint->run();
-		};
-		add_action( 'rest_api_init', $this->rest_api_init_analytics_posts_proxy );
+	public static function set_up_before_class(): void {
+		self::$route      = '/wp-parsely/v1/analytics/posts';
+		self::$filter_key = 'analytics_posts';
 	}
 
 	/**
-	 * Teardown method called after each test.
+	 * Returns the endpoint to be used in tests.
 	 *
-	 * Resets globals.
+	 * @return Base_API_Proxy
 	 */
-	public function tear_down(): void {
-		parent::tear_down();
-		remove_action( 'rest_api_init', $this->rest_api_init_analytics_posts_proxy );
-
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
-		$GLOBALS['wp_rest_server'] = $this->wp_rest_server_global_backup;
+	public function get_endpoint(): Base_API_Proxy {
+		return new Analytics_Posts_API_Proxy(
+			new Parsely(),
+			new Analytics_Posts_Proxy( new Parsely() )
+		);
 	}
 
 	/**
@@ -77,11 +49,8 @@ final class AnalyticsPostsProxyEndpointTest extends TestCase {
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::__construct
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
-	public function test_register_routes_by_default() {
-		$routes = rest_get_server()->get_routes();
-		self::assertArrayHasKey( '/wp-parsely/v1/analytics/posts', $routes );
-		self::assertCount( 1, $routes['/wp-parsely/v1/analytics/posts'] );
-		self::assertSame( array( 'GET' => true ), $routes['/wp-parsely/v1/analytics/posts'][0]['methods'] );
+	public function test_register_routes_by_default(): void {
+		parent::test_register_routes_by_default();
 	}
 
 	/**
@@ -92,24 +61,26 @@ final class AnalyticsPostsProxyEndpointTest extends TestCase {
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::__construct
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
-	public function test_do_not_register_routes_when_analytics_posts_proxy_is_disabled() {
+	public function test_do_not_register_routes_when_related_proxy_is_disabled(): void {
+		parent::test_do_not_register_routes_when_related_proxy_is_disabled();
+	}
 
-		// Override some setup steps in order to set the
-		// wp_parsely_enable_analytics_posts_api_proxy filter to false.
-		remove_action( 'rest_api_init', $this->rest_api_init_analytics_posts_proxy );
-		$this->rest_api_init_analytics_posts_proxy = static function () {
-			// Analytics_Posts_Proxy should be mocked here?
-			$endpoint = new Analytics_Posts_API_Proxy(
-				new Parsely(),
-				new Analytics_Posts_Proxy( new Parsely() )
-			);
-			add_filter( 'wp_parsely_enable_analytics_posts_api_proxy', '__return_false' );
-			$endpoint->run();
-		};
-		add_action( 'rest_api_init', $this->rest_api_init_analytics_posts_proxy );
-
-		$routes = rest_get_server()->get_routes();
-		self::assertFalse( array_key_exists( '/wp-parsely/v1/analytics/posts', $routes ) );
+	/**
+	 * Verifies that calling `GET /wp-parsely/v1/analytics/posts` returns an
+	 * error and does not perform a remote call when the apikey is not populated
+	 * in site options.
+	 *
+	 * @covers \Parsely\Endpoints\Analytics_Posts_API_Proxy::get_items
+	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::__construct
+	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::permission_callback
+	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::run
+	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::get_options
+	 */
+	public function test_get_items_fails_without_apikey_set() {
+		parent::test_get_items_fails_without_apikey_set();
 	}
 
 	/**
@@ -171,49 +142,6 @@ final class AnalyticsPostsProxyEndpointTest extends TestCase {
 				),
 			),
 			$response->get_data()
-		);
-	}
-
-	/**
-	 * Verifies that calling `GET /wp-parsely/v1/analytics/posts` returns an
-	 * error and does not perform a remote call when the apikey is not populated
-	 * in site options.
-	 *
-	 * @covers \Parsely\Endpoints\Analytics_Posts_API_Proxy::get_items
-	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::__construct
-	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::permission_callback
-	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::run
-	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_options
-	 */
-	public function test_get_items_fails_without_apikey_set() {
-		TestCase::set_options( array( 'apikey' => '' ) );
-
-		$dispatched = 0;
-
-		add_filter(
-			'pre_http_request',
-			function () use ( &$dispatched ) {
-				$dispatched++;
-				return null;
-			}
-		);
-
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/analytics/posts' ) );
-
-		self::assertSame( 200, $response->get_status() );
-		$data = $response->get_data();
-
-		self::assertSame( 0, $dispatched );
-		self::assertObjectHasAttribute( 'data', $data );
-		self::assertEmpty( $data->data );
-
-		self::assertObjectHasAttribute( 'error', $data );
-		self::assertEquals(
-			new WP_Error( 400, 'A Parse.ly API Key must be set in site options to use this endpoint' ),
-			$data->error
 		);
 	}
 }
