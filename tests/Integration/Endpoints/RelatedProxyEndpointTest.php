@@ -46,6 +46,7 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * Verifies that the route is registered.
 	 *
 	 * @covers \Parsely\Endpoints\Related_API_Proxy::run
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
@@ -58,6 +59,7 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * wp_parsely_enable_related_api_proxy filter is set to false.
 	 *
 	 * @covers \Parsely\Endpoints\Related_API_Proxy::run
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
@@ -71,13 +73,15 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * in site options.
 	 *
 	 * @covers \Parsely\Endpoints\Related_API_Proxy::get_items
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::get_data
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::permission_callback
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::run
-	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
 	public function test_get_items_fails_without_apikey_set() {
 		parent::test_get_items_fails_without_apikey_set();
@@ -88,16 +92,20 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * results in the expected format.
 	 *
 	 * @covers \Parsely\Endpoints\Related_API_Proxy::get_items
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::get_data
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
+	 * @uses \Parsely\Endpoints\Related_API_Proxy::generate_data
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::permission_callback
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::run
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::get_api_url
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::get_items
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
-	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_items() {
 		TestCase::set_options( array( 'apikey' => 'example.com' ) );

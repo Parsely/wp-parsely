@@ -47,6 +47,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 *
 	 * @covers \Parsely\Endpoints\Analytics_Posts_API_Proxy::run
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::__construct
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
 	public function test_register_routes_by_default(): void {
@@ -59,6 +60,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 *
 	 * @covers \Parsely\Endpoints\Analytics_Posts_API_Proxy::run
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::__construct
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
 	public function test_do_not_register_routes_when_related_proxy_is_disabled(): void {
@@ -74,10 +76,12 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::__construct
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::permission_callback
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::run
-	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::get_data
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 */
 	public function test_get_items_fails_without_apikey_set() {
 		parent::test_get_items_fails_without_apikey_set();
@@ -89,15 +93,20 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 *
 	 * @covers \Parsely\Endpoints\Analytics_Posts_API_Proxy::get_items
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::__construct
+	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::generate_data
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::permission_callback
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::run
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::get_data
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
+	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::get_api_url
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::get_items
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
-	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_items() {
 		TestCase::set_options( array( 'apikey' => 'example.com' ) );
