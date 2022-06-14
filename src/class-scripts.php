@@ -137,7 +137,7 @@ class Scripts {
 	 */
 	public function script_loader_tag( string $tag, string $handle, string $src ): string {
 		$parsely_options = $this->parsely->get_options();
-		if ( in_array(
+		if ( \in_array(
 			$handle,
 			array(
 				'wp-parsely-loader',
@@ -163,8 +163,8 @@ class Scripts {
 
 		if ( null !== $tag && 'wp-parsely-tracker' === $handle ) {
 			$tag = preg_replace( '/ id=(["\'])wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
-			$tag = preg_replace(
-				'/ src=/',
+			$tag = str_replace(
+				' src=',
 				' data-parsely-site="' . esc_attr( $parsely_options['apikey'] ) . '" src=',
 				$tag
 			);

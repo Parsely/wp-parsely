@@ -20,6 +20,8 @@ use WP_REST_Server;
  * Integration Tests for the Related API Proxy Endpoint.
  */
 final class RelatedProxyEndpointTest extends TestCase {
+	private const RELATED_ROUTE = '/wp-parsely/v1/related';
+
 	/**
 	 * Holds a reference to the global $wp_rest_server object to restore in
 	 * tear_down().
@@ -76,9 +78,9 @@ final class RelatedProxyEndpointTest extends TestCase {
 	 */
 	public function test_register_routes_by_default() {
 		$routes = rest_get_server()->get_routes();
-		self::assertArrayHasKey( '/wp-parsely/v1/related', $routes );
-		self::assertCount( 1, $routes['/wp-parsely/v1/related'] );
-		self::assertSame( array( 'GET' => true ), $routes['/wp-parsely/v1/related'][0]['methods'] );
+		self::assertArrayHasKey( self::RELATED_ROUTE, $routes );
+		self::assertCount( 1, $routes[ self::RELATED_ROUTE ] );
+		self::assertSame( array( 'GET' => true ), $routes[ self::RELATED_ROUTE ][0]['methods'] );
 	}
 
 	/**
@@ -103,7 +105,7 @@ final class RelatedProxyEndpointTest extends TestCase {
 		add_action( 'rest_api_init', $this->rest_api_init_related_proxy );
 
 		$routes = rest_get_server()->get_routes();
-		self::assertFalse( array_key_exists( '/wp-parsely/v1/related', $routes ) );
+		self::assertFalse( array_key_exists( self::RELATED_ROUTE, $routes ) );
 	}
 
 	/**
@@ -137,7 +139,7 @@ final class RelatedProxyEndpointTest extends TestCase {
 			}
 		);
 
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/related' ) );
+		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', self::RELATED_ROUTE ) );
 
 		self::assertSame( 1, $dispatched );
 		self::assertSame( 200, $response->get_status() );
@@ -188,7 +190,7 @@ final class RelatedProxyEndpointTest extends TestCase {
 			}
 		);
 
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/related' ) );
+		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', self::RELATED_ROUTE ) );
 
 		self::assertSame( 200, $response->get_status() );
 		$data = $response->get_data();
