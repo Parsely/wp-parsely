@@ -61,9 +61,13 @@ abstract class Base_API_Proxy {
 		$get_items_args = array(
 			'query' => array(
 				'default'           => array(),
-				'sanitize_callback' => function ( $query ) {
-					// question: how should we sanitize these?
-					return (array) $query;
+				'sanitize_callback' => function ( array $query ) {
+					$sanitized_query = array();
+					foreach ( $query as $key => $value ) {
+						$sanitized_query[ sanitize_key( $key ) ] = sanitize_text_field( $value );
+					}
+
+					return $sanitized_query;
 				},
 			),
 		);
