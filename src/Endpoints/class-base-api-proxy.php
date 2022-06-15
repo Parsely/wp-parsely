@@ -135,7 +135,7 @@ abstract class Base_API_Proxy {
 		}
 
 		if ( null !== $param_item ) {
-			$params = $request->get_params()[ $param_item ];
+			$params = $request->get_param( $param_item );
 		} else {
 			$params = $request->get_params();
 		}
