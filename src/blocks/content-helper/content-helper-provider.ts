@@ -18,7 +18,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 
 interface ApiResponse {
-	error?: string;
+	error?: object;
 	data?: SuggestedPost[];
 }
 
@@ -38,15 +38,20 @@ class ContentHelperProvider {
 		const tagId = editor.getEditedPostAttribute( 'tags' ) as Array<number>[0];
 		const tag = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagId ) as Taxonomy;
 
-		// Fetch data from the API.
+		// Create API query.
 		const fetchQueryResult = this.buildFetchDataQuery( author, category, tag );
 		if ( fetchQueryResult.query === null ) {
 			return Promise.reject( fetchQueryResult.message );
 		}
-		const data = await this.fetchData( fetchQueryResult );
 
-		// Set the content helper's message.
+		// Fetch results from API and set the Content Helper's message.
+		const data = await this.fetchData( fetchQueryResult );
 		let message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ fetchQueryResult.message }.`;
+
+		if ( typeof data === 'string' ) {
+			return { message: data, posts: [] };
+		}
+
 		if ( data.length === 0 ) {
 			message = `${ __( 'The Parse.ly API did not return any results for top-performing posts', 'wp-parsely' ) } ${ fetchQueryResult.message }.`;
 		}
@@ -54,24 +59,20 @@ class ContentHelperProvider {
 		return { message, posts: this.processData( data ) };
 	}
 
-	private static async fetchData( fetchDataQueryResult: BuildFetchDataQueryResult ): Promise<SuggestedPost[]> {
+	private static async fetchData( fetchDataQueryResult: BuildFetchDataQueryResult ): Promise<SuggestedPost[] | string> {
 		let response;
-		let error;
 
 		try {
 			response = await apiFetch( {
 				path: addQueryArgs( '/wp-parsely/v1/analytics/posts', fetchDataQueryResult.query ),
 			} ) as ApiResponse;
 		} catch ( wpError ) {
-			error = wpError;
+			return `${ __( 'WordPress Error: ', 'wp-parsely' ) } ${ wpError.message }`;
 		}
 
 		if ( response?.error ) {
-			error = response.error;
-		}
-
-		if ( error ) {
-			return Promise.reject( error );
+			const errorMessage = JSON.stringify( response.error ).match( /\[\"(.*?)\"\]/ )[ 1 ];
+			return `${ __( 'Error: ', 'wp-parsely' ) } ${ errorMessage }`;
 		}
 
 		return response?.data || [];
