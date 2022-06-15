@@ -80,9 +80,8 @@ class ContentHelperProvider {
 
 	private static processData( data: SuggestedPost[] ): SuggestedPost[] {
 		return data.map( ( p ) => {
-			// @ts-ignore
-			p.statsUrl = `${ window.wpParselyContentHelperPrefix }?url=${ p.url }`;
-			return p;
+			const statsUrl = `${ window.wpParselyContentHelperPrefix }?url=${ window.encodeURIComponent( p.url ) }`;
+			return Object.assign( p, { statsUrl } );
 		} );
 	}
 
