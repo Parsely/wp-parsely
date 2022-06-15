@@ -26,7 +26,7 @@ final class Related_API_Proxy extends Base_API_Proxy {
 	}
 
 	/**
-	 * Cached "proxy" to the Parsely `/related` endpoint.
+	 * Cached "proxy" to the Parse.ly `/related` API endpoint.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 */
@@ -54,5 +54,15 @@ final class Related_API_Proxy extends Base_API_Proxy {
 		);
 
 		return $result;
+	}
+
+	/**
+	 * Determines if there are enough permissions to call the endpoint.
+	 *
+	 * @return bool
+	 */
+	public function permission_callback(): bool {
+		// Unauthenticated.
+		return true;
 	}
 }

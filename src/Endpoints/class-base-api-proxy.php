@@ -36,6 +36,33 @@ abstract class Base_API_Proxy {
 	private $proxy;
 
 	/**
+	 * Registers the endpoint's WP REST route.
+	 */
+	abstract public function run(): void;
+
+	/**
+	 * Generates the final data from the passed response.
+	 *
+	 * @param array<string, mixed> $response The response received by the proxy.
+	 * @return array<stdClass> The generated data.
+	 */
+	abstract protected function generate_data( array $response ): array;
+
+	/**
+	 * Cached "proxy" to the Parse.ly API endpoint.
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 */
+	abstract public function get_items( WP_REST_Request $request ): stdClass;
+
+	/**
+	 * Determines if there are enough permissions to call the endpoint.
+	 *
+	 * @return bool
+	 */
+	abstract public function permission_callback(): bool;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
@@ -85,16 +112,6 @@ abstract class Base_API_Proxy {
 	}
 
 	/**
-	 * Determines if there are enough permissions to call the endpoint.
-	 *
-	 * @return bool
-	 */
-	public function permission_callback(): bool {
-		// Unauthenticated.
-		return true;
-	}
-
-	/**
 	 * Cached "proxy" to the Parsely `/analytics` endpoint.
 	 *
 	 * @param WP_REST_Request $request            The request object.
@@ -134,15 +151,5 @@ abstract class Base_API_Proxy {
 		}
 
 		return (object) array( 'data' => $this->generate_data( $response ) );
-	}
-
-	/**
-	 * Generates the final data from the passed response.
-	 *
-	 * @param array<string, mixed> $response The response received by the proxy.
-	 * @return array<stdClass> The generated data.
-	 */
-	protected function generate_data( array $response ): array {
-		return array();
 	}
 }
