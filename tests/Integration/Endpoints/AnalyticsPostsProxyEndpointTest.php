@@ -25,7 +25,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	/**
 	 * Initializes all required values for the test.
 	 */
-	public function initialize(): void {
+	public static function initialize(): void {
 		self::$route      = '/wp-parsely/v1/analytics/posts';
 		self::$filter_key = 'analytics_posts';
 	}

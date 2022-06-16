@@ -52,7 +52,7 @@ abstract class ProxyEndpointTest extends TestCase {
 	/**
 	 * Initializes all required values for the test.
 	 */
-	abstract public function initialize(): void;
+	abstract public static function initialize(): void;
 
 	/**
 	 * Returns the endpoint to be used in tests.

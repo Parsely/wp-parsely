@@ -25,7 +25,7 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	/**
 	 * Initializes all required values for the test.
 	 */
-	public function initialize(): void {
+	public static function initialize(): void {
 		self::$route      = '/wp-parsely/v1/related';
 		self::$filter_key = 'related';
 	}
