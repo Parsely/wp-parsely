@@ -31,12 +31,12 @@ class ContentHelperProvider {
 		const author = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author ) as User;
 
 		// Get post's first category.
-		const categoryId = editor.getEditedPostAttribute( 'categories' ) as Array<number>[0];
-		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryId ) as Taxonomy;
+		const categoryIds = editor.getEditedPostAttribute( 'categories' ) as Array<number>;
+		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryIds[ 0 ] ) as Taxonomy;
 
 		// Get post's first tag.
-		const tagId = editor.getEditedPostAttribute( 'tags' ) as Array<number>[0];
-		const tag = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagId ) as Taxonomy;
+		const tagIds = editor.getEditedPostAttribute( 'tags' ) as Array<number>;
+		const tag = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagIds[ 0 ] ) as Taxonomy;
 
 		// Create API query.
 		const fetchQueryResult = this.buildFetchDataQuery( author, category, tag );
