@@ -3,6 +3,7 @@
  * Integration Tests: Parsely `/analytics/posts` Remote API
  *
  * @package Parsely\Tests
+ * @since   3.4.0
  */
 
 declare(strict_types=1);
@@ -18,10 +19,10 @@ use Parsely\RemoteAPI\Analytics_Posts_Proxy;
 final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 
 	/**
-	 * Runs once before all tests.
+	 * Initializes all required values for the test.
 	 */
-	public static function set_up_before_class(): void {
-		parent::set_proxy( new Analytics_Posts_Proxy( new Parsely() ) );
+	public static function initialize(): void {
+		self::$proxy = new Analytics_Posts_Proxy( new Parsely() );
 	}
 
 	/**

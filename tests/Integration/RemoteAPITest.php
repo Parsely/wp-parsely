@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
-use Parsely\RemoteAPI\Base_Proxy;
 use Parsely\RemoteAPI\Cache;
 use Parsely\RemoteAPI\Cached_Proxy;
 
@@ -24,30 +23,25 @@ abstract class RemoteAPITest extends TestCase {
 	 *
 	 * @var string $parsely Holds an instance of the class being tested.
 	 */
-	private static $proxy;
+	protected static $proxy;
 
 	/**
-	 * Injects into this class the proxy instance to be tested.
-	 *
-	 * @param Base_Proxy $proxy Instance of the proxy object being tested.
+	 * Initializes all required values for the test.
 	 */
-	public static function set_proxy( Base_Proxy $proxy ) {
-		self::$proxy = $proxy;
-	}
+	abstract public static function initialize(): void;
 
 	/**
 	 * Provides data for test_api_url().
 	 *
 	 * @return iterable
 	 */
-	public function data_api_url(): iterable {
-		yield 'This method must be overridden in child classes' => array(
-			array(
-				'apikey' => 'my-key',
-				'limit'  => 5,
-			),
-			'https://api.parsely.com/v2',
-		);
+	abstract public function data_api_url(): iterable;
+
+	/**
+	 * Runs once before all tests.
+	 */
+	public static function set_up_before_class(): void {
+		static::initialize();
 	}
 
 	/**

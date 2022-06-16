@@ -18,10 +18,10 @@ use Parsely\RemoteAPI\Related_Proxy;
 final class RelatedRemoteAPITest extends RemoteAPITest {
 
 	/**
-	 * Runs once before all tests.
+	 * Initializes all required values for the test.
 	 */
-	public static function set_up_before_class(): void {
-		parent::set_proxy( new Related_Proxy( new Parsely() ) );
+	public static function initialize(): void {
+		self::$proxy = new Related_Proxy( new Parsely() );
 	}
 
 	/**
