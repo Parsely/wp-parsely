@@ -23,9 +23,9 @@ use WP_REST_Request;
 final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 
 	/**
-	 * Runs once before all tests.
+	 * Initializes all required values for the test.
 	 */
-	public static function set_up_before_class(): void {
+	public function initialize(): void {
 		self::$route      = '/wp-parsely/v1/related';
 		self::$filter_key = 'related';
 	}

@@ -23,9 +23,9 @@ use WP_REST_Request;
 final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 
 	/**
-	 * Runs once before all tests.
+	 * Initializes all required values for the test.
 	 */
-	public static function set_up_before_class(): void {
+	public function initialize(): void {
 		self::$route      = '/wp-parsely/v1/analytics/posts';
 		self::$filter_key = 'analytics_posts';
 	}

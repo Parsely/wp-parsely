@@ -50,17 +50,25 @@ abstract class ProxyEndpointTest extends TestCase {
 	protected static $filter_key;
 
 	/**
-	 * Returns the endpoint to be used in tests. To be implemented in child
-	 * classes.
+	 * Initializes all required values for the test.
 	 */
-	public function get_endpoint() {
-	}
+	abstract public function initialize(): void;
 
 	/**
-	 * Verifies that calls return results in the expected format. To be
-	 * implemented in child classes.
+	 * Returns the endpoint to be used in tests.
 	 */
-	public function test_get_items() {
+	abstract public function get_endpoint();
+
+	/**
+	 * Verifies that calls return results in the expected format.
+	 */
+	abstract public function test_get_items();
+
+	/**
+	 * Runs once before all tests.
+	 */
+	public static function set_up_before_class(): void {
+		static::initialize();
 	}
 
 	/**
