@@ -42,12 +42,15 @@ function PostList() {
 		fetchPosts( FETCH_RETRIES );
 	}, [] );
 
-	const body = error ? <p>{ error }</p> : posts.map( ( post ) => <PostCard key={ post.id } post={ post } /> );
+	if ( error ) {
+		return <p>{ error }</p>;
+	}
 
+	const postList = posts.map( ( post ) => <PostCard key={ post.id } post={ post } /> );
 	return (
 		<>
 			<p>{ message }</p>
-			{ loading ? <Spinner /> : body }
+			{ loading ? <Spinner /> : postList }
 		</>
 	);
 }
