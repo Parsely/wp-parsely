@@ -43,6 +43,7 @@ class Scripts {
 		if ( $this->parsely->api_key_is_set() && true !== $parsely_options['disable_javascript'] ) {
 			add_action( 'init', array( $this, 'register_scripts' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_tracker' ) );
+			add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
 		}
 	}
 
@@ -66,6 +67,15 @@ class Scripts {
 			'wp-parsely-loader',
 			plugin_dir_url( PARSELY_FILE ) . 'build/loader.js',
 			$loader_asset['dependencies'],
+			$loader_asset['version'],
+			true
+		);
+
+		$content_helper_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/content-helper.asset.php';
+		wp_register_script(
+			'wp-parsely-block-content-helper',
+			plugin_dir_url( PARSELY_FILE ) . 'build/content-helper.js',
+			$content_helper_asset['dependencies'],
 			$loader_asset['version'],
 			true
 		);
@@ -120,9 +130,24 @@ class Scripts {
 		}
 
 		if ( isset( $parsely_options['disable_autotrack'] ) && true === $parsely_options['disable_autotrack'] ) {
-			$disable_autotrack = 'window.wpParselyDisableAutotrack = true';
+			$disable_autotrack = 'window.wpParselyDisableAutotrack = true;';
 			wp_add_inline_script( 'wp-parsely-loader', $disable_autotrack, 'before' );
 		}
+	}
+
+	/**
+	 * Loads the Block Editor / Gutenberg experience enhancements.
+	 * Hooked into the `enqueue_block_editor_assets` action in `$this->run()`
+	 *
+	 * @see: https://developer.wordpress.org/block-editor/how-to-guides/plugin-sidebar-0/
+	 * @return void
+	 */
+	public function enqueue_block_editor_assets(): void {
+		wp_enqueue_script( 'wp-parsely-block-content-helper' );
+
+		$prefix                = trailingslashit( 'https://dash.parsely.com/' . esc_js( $this->parsely->get_api_key() ) ) . 'find';
+		$analytics_link_prefix = 'window.wpParselyContentHelperPrefix = "' . $prefix . '";';
+		wp_add_inline_script( 'wp-parsely-block-content-helper', $analytics_link_prefix, 'before' );
 	}
 
 	/**
