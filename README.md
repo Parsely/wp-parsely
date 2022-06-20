@@ -2,12 +2,12 @@
 
 Stable tag: 3.3.2  
 Requires at least: 5.0  
-Tested up to: 5.9.3  
+Tested up to: 6.0  
 Requires PHP: 7.1  
 License: GPLv2 or later  
 License URI: https://www.gnu.org/licenses/gpl-2.0.html  
 Tags: analytics, content marketing, parse.ly, parsely, parsley  
-Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauargelaguet, acicovic
+Contributors: parsely, pauargelaguet, jblz, acicovic, GaryJ, hbbtstar, welcher, mikeyarce
 
 The Parse.ly plugin facilitates real-time and historical analytics to your content through a platform designed and built for digital publishing.
 
@@ -19,47 +19,34 @@ Thousands of writers, editors, site managers, and technologists already use Pars
 
 Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who already use Parse.ly to bring clarity to content, audience, and analytics.
 
-### Features
-
-- Get started with Parse.ly right away: the plugin automatically inserts the required metadata and JavaScript on all your published pages and posts.
-- Choose what format the metadata takes, and whether logged-in users should be included in the analytics.
-- Using it in a decoupled setup? Parse.ly adds metadata to the REST API output for pages, posts and optionally other object types.
-- If you've purchased access to the Parse.ly API, add a widget to your site with article recommendations personalized to individual users.
-
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
 
-### Documentation
+**NOTE:** The plugin requires an active Parse.ly account. [Sign up for a free Parse.ly demo](https://www.parsely.com/getdemo?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
-If you are looking for the plugin's documentation and how to set up your WordPress site with Parse.ly, take a look at [the Parse.ly integration docs](https://www.parsely.com/help/integration/wordpress).
+## Features
 
-In case you are a WordPress VIP customer, [VIP's documentation](https://docs.wpvip.com/technical-references/plugins/parse-ly/) will be also useful for you.
+Some notable features of the wp-parsely plugin are:
 
-## Installation
+- Automatically inserts the Parse.ly metadata and JavaScript in all published pages and posts (supports Custom Post Types).
+- [Supports Google Tag Manager, AMP, Facebook Instant Articles, Google Web Stories and Cloudflare](https://www.parse.ly/help/integration/frequently-asked-questions#third-party-and-feature-support).
+- Offers the `wpParselyOnLoad` and `wpParselyOnReady` JavaScript hooks that allow advanced integrations requiring JavaScript, such as [Dynamic Tracking](https://www.parse.ly/help/integration/dynamic-tracking).
+- [Supports WordPress Network (Multisite) setups](https://www.parse.ly/help/integration/frequently-asked-questions#third-party-and-feature-support).
+- [Supports decoupled (headless) setups](https://www.parse.ly/help/integration/decoupled-headless-support).
+- Provides a [Recommendations Block](https://www.parse.ly/help/integration/recommendations-block) that shows a list of links related to the currently viewed page. Useful for showcasing related content to visitors.
+- Provides a [Content Helper](https://www.parse.ly/help/integration/content-helper) in the WordPress Editor sidebar that displays top-performing posts based on the currently edited post's tag or category. Useful for editors to see which related content is popular so they can gain insights from it.
+- Provides a settings page to customize your integration. Some of the options include:
+  - Output metadata as [JSON-LD](https://www.parse.ly/help/integration/jsonld) or [repeated meta tags](https://www.parse.ly/help/integration/metatags).
+  - Choose whether logged-in users should be tracked.
+  - Define how to track every Post Type (as Page, as Post or no tracking).
+- Offers a wide range of hooks to customize the plugin's functionality even further.
 
-The plugin requires an active Parse.ly account. [Sign up for a free demo of Parse.ly](https://www.parsely.com/getdemo?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
+## Documentation and resources
 
-### Install the plugin from within WordPress
+- [Plugin documentation](https://www.parse.ly/help/integration/category/wordpress).
+- [Frequently asked questions](https://www.parse.ly/help/integration/wordpress#frequently-asked-questions).
+- [Changelog](https://github.com/parsely/wp-parsely/blob/trunk/CHANGELOG.md).
 
-1. Visit the Plugins page from your WordPress dashboard and click "Add New" at the top of the page.
-2. Search for _parse.ly_ using the search bar on the right side.
-3. Click _Install Now_ to install the plugin.
-4. After it's installed, click _Activate_ to activate the plugin on your site.
-
-### Install the plugin manually
-
-1. Download the plugin from [WordPress.org](https://wordpress.org/plugins/wp-parsely/) or get the latest release from our [Github Releases page](https://github.com/Parsely/wp-parsely/releases).
-2. Unzip the downloaded archive.
-3. Upload the entire `wp-parsely` folder to your `/wp-content/plugins` directory.
-4. Visit the Plugins page from your WordPress dashboard and look for the newly installed Parse.ly plugin.
-5. Click _Activate_ to activate the plugin on your site.
-
-Note that this method is the recommended one for installing old versions of the plugin. Those can be downloaded from [WordPress.org](https://wordpress.org/plugins/wp-parsely/advanced/) or the GitHub Releases page.
-
-## Local development
-
-Development, code hosting and issue tracking of this plugin happens on the [wp-parsely GitHub repository](https://github.com/Parsely/wp-parsely/). Active development happens on the `develop` branch and releases are made off the `trunk` branch.
-
-To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](https://github.com/parsely/wp-parsely/blob/trunk/CONTRIBUTING.md) file.
+**IMPORTANT:** If you are a [WordPress VIP](https://wpvip.com/) customer, the plugin should be enabled by using an `mu-plugins` filter. Please consult the [WordPress VIP documentation](https://docs.wpvip.com/technical-references/plugins/parse-ly/) for more details.
 
 ## Sample Parse.ly metadata
 
@@ -85,12 +72,6 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
 </script>
 ~~~
 
-## The Parse.ly Recommendations Block
-
-**IMPORTANT:** The Recommendations Block is available only in WordPress 5.9 and later.
-
-The plugin includes a Recommendations Block that uses the [Parse.ly API](https://www.parse.ly/help/api/recommendations#get-related) to showcase links to content on your site. More information about the Block [can be found here](https://www.parse.ly/help/integration/recommendations-block).
-
 ## Screenshots
 
 1. Parse.ly plugin main settings for easy setup. For the plugin to start working, only the website ID is needed.  
@@ -99,15 +80,13 @@ The plugin includes a Recommendations Block that uses the [Parse.ly API](https:/
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-2.png)
 3. Parse.ly plugin advanced settings. To be used only if instructed by Parse.ly staff.  
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-3.png)
-4. The settings for the Parse.ly Recommended Widget. Engage your visitors with predictive and personalized recommendations from Parse.ly.  
+4. The settings for the legacy Parse.ly Recommended Widget. Engage your visitors with predictive and personalized recommendations from Parse.ly.  
    ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-4.png)
 5. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.  
    ![The Parsely Dashboard Overview](.wordpress-org/screenshot-5.png)
 
-## Frequently Asked Questions
+## Contributing
 
-See [frequently asked questions](https://www.parse.ly/help/integration/wordpress#frequently-asked-questions) on the Parse.ly Technical Documentation.
+Development, code hosting and issue tracking of this plugin happens on the [wp-parsely GitHub repository](https://github.com/Parsely/wp-parsely/). Active development happens on the `develop` branch and releases are made off the `trunk` branch.
 
-## Changelog
-
-See the [change log](https://github.com/parsely/wp-parsely/blob/trunk/CHANGELOG.md).
+To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](https://github.com/parsely/wp-parsely/blob/trunk/CONTRIBUTING.md) file.
