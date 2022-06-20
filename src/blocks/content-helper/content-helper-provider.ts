@@ -18,7 +18,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 
 interface ApiResponse {
-	error?: string;
+	error?: object;
 	data?: SuggestedPost[];
 }
 
@@ -31,22 +31,27 @@ class ContentHelperProvider {
 		const author = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author ) as User;
 
 		// Get post's first category.
-		const categoryId = editor.getEditedPostAttribute( 'categories' ) as Array<number>[0];
-		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryId ) as Taxonomy;
+		const categoryIds = editor.getEditedPostAttribute( 'categories' ) as Array<number>;
+		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryIds[ 0 ] ) as Taxonomy;
 
 		// Get post's first tag.
-		const tagId = editor.getEditedPostAttribute( 'tags' ) as Array<number>[0];
-		const tag = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagId ) as Taxonomy;
+		const tagIds = editor.getEditedPostAttribute( 'tags' ) as Array<number>;
+		const tag = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagIds[ 0 ] ) as Taxonomy;
 
-		// Fetch data from the API.
+		// Create API query.
 		const fetchQueryResult = this.buildFetchDataQuery( author, category, tag );
 		if ( fetchQueryResult.query === null ) {
 			return Promise.reject( fetchQueryResult.message );
 		}
-		const data = await this.fetchData( fetchQueryResult );
 
-		// Set the content helper's message.
+		// Fetch results from API and set the Content Helper's message.
+		const data = await this.fetchData( fetchQueryResult );
 		let message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ fetchQueryResult.message }.`;
+
+		if ( typeof data === 'string' ) {
+			return { message: data, posts: [] };
+		}
+
 		if ( data.length === 0 ) {
 			message = `${ __( 'The Parse.ly API did not return any results for top-performing posts', 'wp-parsely' ) } ${ fetchQueryResult.message }.`;
 		}
@@ -54,24 +59,20 @@ class ContentHelperProvider {
 		return { message, posts: this.processData( data ) };
 	}
 
-	private static async fetchData( fetchDataQueryResult: BuildFetchDataQueryResult ): Promise<SuggestedPost[]> {
+	private static async fetchData( fetchDataQueryResult: BuildFetchDataQueryResult ): Promise<SuggestedPost[] | string> {
 		let response;
-		let error;
 
 		try {
 			response = await apiFetch( {
 				path: addQueryArgs( '/wp-parsely/v1/analytics/posts', fetchDataQueryResult.query ),
 			} ) as ApiResponse;
 		} catch ( wpError ) {
-			error = wpError;
+			return `${ __( 'WordPress Error: ', 'wp-parsely' ) } ${ wpError.message }`;
 		}
 
 		if ( response?.error ) {
-			error = response.error;
-		}
-
-		if ( error ) {
-			return Promise.reject( error );
+			const errorMessage = JSON.stringify( response.error ).match( /\[\"(.*?)\"\]/ )[ 1 ];
+			return `${ __( 'Error: ', 'wp-parsely' ) } ${ errorMessage }`;
 		}
 
 		return response?.data || [];
@@ -79,9 +80,8 @@ class ContentHelperProvider {
 
 	private static processData( data: SuggestedPost[] ): SuggestedPost[] {
 		return data.map( ( p ) => {
-			// @ts-ignore
-			p.statsUrl = `${ window.wpParselyContentHelperPrefix }?url=${ p.url }`;
-			return p;
+			const statsUrl = `${ window.wpParselyContentHelperPrefix }?url=${ window.encodeURIComponent( p.url ) }`;
+			return Object.assign( p, { statsUrl } );
 		} );
 	}
 

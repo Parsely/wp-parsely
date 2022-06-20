@@ -67,10 +67,10 @@
 		"@wordpress/plugins": "^4.7.0",
 		"@wordpress/scripts": "^23.2.0",
 		"@wordpress/url": "^3.10.0",
-		"concurrently": "^7.2.1",
+		"concurrently": "^7.2.2",
 		"eslint-plugin-jest": "^26.5.3",
 		"husky": "^8.0.1",
-		"prettier": "^2.6.2",
+		"prettier": "^2.7.0",
 		"ts-loader": "^9.3.0",
 		"typescript": "^4.7.3"
 	},
