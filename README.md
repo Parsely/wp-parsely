@@ -23,7 +23,7 @@ Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://
 
 **NOTE:** The plugin requires an active Parse.ly account. [Sign up for a free Parse.ly demo](https://www.parsely.com/getdemo?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
-## Features
+### Features
 
 Some notable features of the wp-parsely plugin are:
 
@@ -40,7 +40,7 @@ Some notable features of the wp-parsely plugin are:
   - Define how to track every Post Type (as Page, as Post or no tracking).
 - Offers a wide range of hooks to customize the plugin's functionality even further.
 
-## Documentation and resources
+### Documentation and resources
 
 - [Plugin documentation](https://www.parse.ly/help/integration/category/wordpress).
 - [Frequently asked questions](https://www.parse.ly/help/integration/wordpress#frequently-asked-questions).
@@ -48,7 +48,7 @@ Some notable features of the wp-parsely plugin are:
 
 **IMPORTANT:** If you are a [WordPress VIP](https://wpvip.com/) customer, the plugin should be enabled by using an `mu-plugins` filter. Please consult the [WordPress VIP documentation](https://docs.wpvip.com/technical-references/plugins/parse-ly/) for more details.
 
-## Sample Parse.ly metadata
+### Sample Parse.ly metadata
 
 The standard Parse.ly JavaScript tracker inserted before the closing `body` tag:
 
@@ -72,6 +72,12 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
 </script>
 ~~~
 
+### Contributing
+
+Development, code hosting and issue tracking of this plugin happens on the [wp-parsely GitHub repository](https://github.com/Parsely/wp-parsely/). Active development happens on the `develop` branch and releases are made off the `trunk` branch.
+
+To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](https://github.com/parsely/wp-parsely/blob/trunk/CONTRIBUTING.md) file.
+
 ## Screenshots
 
 1. Parse.ly plugin main settings for easy setup. For the plugin to start working, only the website ID is needed.  
@@ -84,9 +90,3 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
    ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-4.png)
 5. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.  
    ![The Parsely Dashboard Overview](.wordpress-org/screenshot-5.png)
-
-## Contributing
-
-Development, code hosting and issue tracking of this plugin happens on the [wp-parsely GitHub repository](https://github.com/Parsely/wp-parsely/). Active development happens on the `develop` branch and releases are made off the `trunk` branch.
-
-To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](https://github.com/parsely/wp-parsely/blob/trunk/CONTRIBUTING.md) file.
