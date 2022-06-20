@@ -1,9 +1,9 @@
 <?php
 /**
- * Endpoints: Parse.ly `/related` API proxy endpoint class
+ * Endpoints: Parse.ly `/analytics/posts` API proxy endpoint class
  *
  * @package Parsely
- * @since   3.2.0
+ * @since   3.4.0
  */
 
 declare(strict_types=1);
@@ -14,24 +14,24 @@ use stdClass;
 use WP_REST_Request;
 
 /**
- * Configures the `/related` REST API endpoint.
+ * Configures the `/analytics/posts` REST API endpoint.
  */
-final class Related_API_Proxy extends Base_API_Proxy {
+final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 
 	/**
 	 * Registers the endpoint's WP REST route.
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/related' );
+		$this->register_endpoint( '/analytics/posts' );
 	}
 
 	/**
-	 * Cached "proxy" to the Parse.ly `/related` API endpoint.
+	 * Cached "proxy" to the Parse.ly `/analytics/posts` API endpoint.
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 */
 	public function get_items( WP_REST_Request $request ): stdClass {
-		return $this->get_data( $request, false, 'query' );
+		return $this->get_data( $request );
 	}
 
 	/**
@@ -41,13 +41,16 @@ final class Related_API_Proxy extends Base_API_Proxy {
 	 * @return array<stdClass> The generated data.
 	 */
 	protected function generate_data( array $response ): array {
-		$result = array_map(
-			static function( stdClass $item ) {
+		$date_format = get_option( 'date_format' );
+		$result      = array_map(
+			static function( stdClass $item ) use ( $date_format ) {
 				return (object) array(
-					'image_url'        => $item->image_url,
-					'thumb_url_medium' => $item->thumb_url_medium,
-					'title'            => $item->title,
-					'url'              => $item->url,
+					'author' => $item->author,
+					'date'   => wp_date( $date_format, strtotime( $item->pub_date ) ),
+					'id'     => $item->url,
+					'title'  => $item->title,
+					'url'    => $item->url,
+					'views'  => $item->metrics->views,
 				);
 			},
 			$response

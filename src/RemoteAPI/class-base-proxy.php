@@ -63,7 +63,10 @@ abstract class Base_Proxy implements Proxy {
 		}
 
 		$query['apikey'] = $this->parsely->get_api_key();
-		$query           = array_filter( $query );
+		if ( $this->parsely->api_secret_is_set() ) {
+			$query['secret'] = $this->parsely->get_api_secret();
+		}
+		$query = array_filter( $query );
 
 		// Sort by key so the query args are in alphabetical order.
 		ksort( $query );
