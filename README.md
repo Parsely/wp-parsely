@@ -80,13 +80,15 @@ To run the plugin locally or to contribute to it, please check the instructions 
 
 ## Screenshots
 
-1. Parse.ly plugin main settings for easy setup. For the plugin to start working, only the website ID is needed.  
+1. Parse.ly plugin main settings for easy setup. For the plugin to start working, only the Site ID is needed.  
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-1.png)
 2. Parse.ly plugin settings that require you to submit a website recrawl request whenever you update them.  
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-2.png)
 3. Parse.ly plugin advanced settings. To be used only if instructed by Parse.ly staff.  
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-3.png)
-4. The settings for the legacy Parse.ly Recommended Widget. Engage your visitors with predictive and personalized recommendations from Parse.ly.  
+4. The Content Helper. Provides a list of the website's most successful similar posts to the one that is currently being edited.  
    ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-4.png)
-5. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is peforming.  
-   ![The Parsely Dashboard Overview](.wordpress-org/screenshot-5.png)
+4. The Recommendations Block. Showcases links to content on your site as provided by the Parse.ly /related API.  
+   ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-5.png)
+6. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is performing.  
+   ![The Parsely Dashboard Overview](.wordpress-org/screenshot-6.png)
