@@ -102,7 +102,7 @@ Please visit the [changelog](https://github.com/parsely/wp-parsely/blob/trunk/CH
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-3.png)
 4. The Content Helper. Provides a list of the website's most successful similar posts to the one that is currently being edited.  
    ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-4.png)
-4. The Recommendations Block. Showcases links to content on your site as provided by the Parse.ly /related API.  
+5. The Recommendations Block. Showcases links to content on your site as provided by the Parse.ly /related API.  
    ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-5.png)
 6. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empowers you to better understand how your content is performing.  
    ![The Parsely Dashboard Overview](.wordpress-org/screenshot-6.png)
