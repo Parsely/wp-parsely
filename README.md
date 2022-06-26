@@ -84,6 +84,10 @@ The plugin requires an active Parse.ly account. [Sign up for a free demo of Pars
 
 For more information, please visit the [installation instructions](https://www.parse.ly/help/integration/wordpress) in the official documentation. 
 
+## Frequently Asked Questions
+
+Please visit the [Frequently asked questions](https://www.parse.ly/help/integration/frequently-asked-questions) in the official documentation.
+
 ## Screenshots
 
 1. Parse.ly plugin main settings for easy setup. For the plugin to start working, only the Site ID is needed.  
