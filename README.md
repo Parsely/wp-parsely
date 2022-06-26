@@ -86,7 +86,11 @@ For more information, please visit the [installation instructions](https://www.p
 
 ## Frequently Asked Questions
 
-Please visit the [Frequently asked questions](https://www.parse.ly/help/integration/frequently-asked-questions) in the official documentation.
+Please visit the [frequently asked questions](https://www.parse.ly/help/integration/frequently-asked-questions) in the official documentation.
+
+## Changelog
+
+Please visit the [changelog](https://github.com/parsely/wp-parsely/blob/trunk/CHANGELOG.md).
 
 ## Screenshots
 
