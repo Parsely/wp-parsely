@@ -78,6 +78,12 @@ Development, code hosting and issue tracking of this plugin happens on the [wp-p
 
 To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](https://github.com/parsely/wp-parsely/blob/trunk/CONTRIBUTING.md) file.
 
+## Installation
+
+The plugin requires an active Parse.ly account. [Sign up for a free demo of Parse.ly](https://www.parsely.com/getdemo?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
+
+For more information, please visit the [installation instructions](https://www.parse.ly/help/integration/wordpress) in the official documentation. 
+
 ## Screenshots
 
 1. Parse.ly plugin main settings for easy setup. For the plugin to start working, only the Site ID is needed.  
