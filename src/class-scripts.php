@@ -79,6 +79,13 @@ class Scripts {
 			$loader_asset['version'],
 			true
 		);
+
+		wp_register_style(
+			'wp-parsely-block-content-helper',
+			plugin_dir_url( PARSELY_FILE ) . 'build/content-helper.css',
+			array(),
+			$content_helper_asset['version']
+		);
 	}
 
 	/**
@@ -144,6 +151,7 @@ class Scripts {
 	 */
 	public function enqueue_block_editor_assets(): void {
 		wp_enqueue_script( 'wp-parsely-block-content-helper' );
+		wp_enqueue_style( 'wp-parsely-block-content-helper' );
 
 		$prefix                = trailingslashit( 'https://dash.parsely.com/' . esc_js( $this->parsely->get_api_key() ) ) . 'find';
 		$analytics_link_prefix = 'window.wpParselyContentHelperPrefix = "' . $prefix . '";';
