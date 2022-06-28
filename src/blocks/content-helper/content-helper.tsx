@@ -10,7 +10,7 @@ import { registerPlugin } from '@wordpress/plugins';
  * Internal dependencies
  */
 import PostList from './components/post-list';
-import { ReactComponent as LeafIcon } from '../../img/parsely-logo.svg';
+import LeafIcon from '../shared/components/leaf-icon';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
