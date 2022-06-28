@@ -11,7 +11,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 import ParselyRecommendations from './components/parsely-recommendations';
 import ParselyRecommendationsInspectorControls from './components/parsely-recommendations-inspector-controls';
 import RecommendationsStore from './recommendations-store';
-import { ReactComponent as LeafIcon } from '../../img/parsely-logo.svg';
+import LeafIcon from '../shared/components/leaf-icon';
 import './style.scss';
 import './editor.scss';
 import json from './block.json';
