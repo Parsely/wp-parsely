@@ -1,0 +1,50 @@
+name: Merge trunk to develop branch and update tag
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  update:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.release.target_commitish }}
+
+      - name: Remove pull request protection from develop branch
+        uses: octokit/request-action@v2.1.4
+        with:
+          route: DELETE /repos/Parsely/wp-parsely/branches/develop/protection/required_pull_request_reviews
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_PERMISSION }}
+
+      - name: Merge trunk to develop branch
+        uses: devmasx/merge-branch@v1.4.0
+        with:
+          type: now
+          from_branch: trunk
+          target_branch: develop
+          github_token: ${{ github.token }}
+
+      - name: Re-add pull request protection to develop branch
+        uses: octokit/request-action@v2.1.4
+        with:
+          route: PATCH /repos/Parsely/wp-parsely/branches/develop/protection/required_pull_request_reviews
+          dismiss_stale_reviews: true
+          require_code_owner_reviews: true
+          required_approving_review_count: 1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_PERMISSION }}
+
+      - name: Force push ${{ github.event.release.tag_name }} tag to latest commit in trunk
+        run: |
+          SHA=$(git rev-parse trunk)
+          TAG=$(git describe --tags --abbrev=0)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -fa $TAG $SHA -m "Release $TAG"
+          git push --force origin $TAG
