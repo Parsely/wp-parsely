@@ -10,19 +10,16 @@ import '@testing-library/jest-dom';
 /**
  * Internal dependencies.
  */
-import ContentHelper from '../../../../src/blocks/content-helper/content-helper';
-import ContentHelperProvider from '../../../../src/blocks/content-helper/content-helper-provider';
+import PostList from '../../../../src/blocks/content-helper/components/post-list';
 
 describe( 'Content Helper', () => {
-	it( 'should display loading text when starting', () => {
+	it( 'should display spinner when starting', () => {
 		render(
-			<ContentHelperProvider>
-				<ContentHelper />
-			</ContentHelperProvider>
+			<PostList />
 		);
 
-		const loadingText = screen.getByText( /Loading/i );
-
-		expect( loadingText ).toBeVisible();
+		const spinner = screen.getByRole( 'presentation' );
+		expect( spinner ).toBeVisible();
+		expect( spinner ).toHaveClass( 'components-spinner' );
 	} );
 } );
