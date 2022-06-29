@@ -14,9 +14,7 @@ import PostList from '../../../../src/blocks/content-helper/components/post-list
 
 describe( 'Content Helper', () => {
 	it( 'should display spinner when starting', () => {
-		render(
-			<PostList />
-		);
+		render( <PostList /> );
 
 		const spinner = screen.getByRole( 'presentation' );
 		expect( spinner ).toBeVisible();
