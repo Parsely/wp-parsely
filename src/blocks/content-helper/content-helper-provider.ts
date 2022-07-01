@@ -69,7 +69,7 @@ class ContentHelperProvider {
 
 		if ( response?.error ) {
 			const errorMessage = JSON.stringify( response.error ).match( /\[\"(.*?)\"\]/ )[ 1 ];
-			return `${ __( 'Error: ', 'wp-parsely' ) } ${ errorMessage }`;
+			return `${ __( 'Error:', 'wp-parsely' ) } ${ errorMessage }`;
 		}
 
 		return response?.data || [];
