@@ -1,0 +1,22 @@
+name: Dependency Review
+
+on:
+  pull_request:
+    paths:
+      - package*.json
+      - composer.json
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Check out the source code
+        uses: actions/checkout@v3
+
+      # Checks for dependencies with known vulnerabilities
+      - name: Review dependencies
+        uses: actions/dependency-review-action@v1

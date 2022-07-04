@@ -47,7 +47,7 @@ describe( 'Front end metadata insertion', () => {
 		const content = await page.content();
 
 		expect( content ).toContain( '<script type="application/ld+json">' );
-		expect( content ).toContain( '{"@context":"https:\\/\\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\\/\\/localhost:8889\\/?p=1"},"headline":"Hello world!","url":"http:\\/\\/localhost:8889\\/?p=1","thumbnailUrl":"","image":{"@type":"ImageObject","url":""},' );
+		expect( content ).toContain( '{"@context":"https:\\/\\/schema.org","@type":"NewsArticle","headline":"Hello world!","url":"http:\\/\\/localhost:8889\\/?p=1","mainEntityOfPage":{"@type":"WebPage","@id":"http:\\/\\/localhost:8889\\/?p=1"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"' );
 
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );

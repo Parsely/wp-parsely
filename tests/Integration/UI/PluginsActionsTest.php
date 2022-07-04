@@ -1,6 +1,6 @@
 <?php
 /**
- * UI Tests for the plugin actions
+ * Integration Tests: wp-admin Plugins page actions
  *
  * @package Parsely\Tests\UI
  */
@@ -15,11 +15,13 @@ use Parsely\UI\Plugins_Actions;
 use const Parsely\PARSELY_FILE;
 
 /**
- * UI Tests for the plugin screen.
+ * Integration Tests for the plugin's actions shown in the wp-admin Plugins
+ * page.
  */
 final class PluginsActionsTest extends TestCase {
 	/**
-	 * Check that plugins screen will add a hook to change the plugin action links.
+	 * Verifies that plugins screen will add a hook to change the plugin action
+	 * links.
 	 *
 	 * @covers \Parsely\UI\Plugins_Actions::run
 	 * @group ui
@@ -32,7 +34,8 @@ final class PluginsActionsTest extends TestCase {
 	}
 
 	/**
-	 * Check that plugins screen will add a hook to change the plugin action links.
+	 * Verifies that plugins screen will add a hook to change the plugin action
+	 * links.
 	 *
 	 * @covers \Parsely\UI\Plugins_Actions::run
 	 * @covers \Parsely\UI\Plugins_Actions::add_plugin_meta_links

@@ -1,6 +1,6 @@
 <?php
 /**
- * Class SampleTest
+ * Integration Tests: Other functions
  *
  * @package Parsely\Tests
  */
@@ -14,18 +14,18 @@ use Parsely\Parsely;
 use WP_Scripts;
 
 /**
- * Catch-all class for testing.
+ * Integration Tests for other functions.
  */
 final class OtherTest extends TestCase {
 	/**
-	 * Internal variables
+	 * Internal variable.
 	 *
 	 * @var Parsely $parsely Holds the Parsely object.
 	 */
 	private static $parsely;
 
 	/**
-	 * The setUp run before each test
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		global $wp_scripts;
@@ -36,12 +36,11 @@ final class OtherTest extends TestCase {
 		$wp_scripts    = new WP_Scripts();
 		self::$parsely = new Parsely();
 
-		// Set the default options prior to each test.
 		TestCase::set_options();
 	}
 
 	/**
-	 * Make sure the version is semver-compliant
+	 * Verifies that the plugin's version is semver-compliant.
 	 *
 	 * @see https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 	 * @see https://regex101.com/r/Ly7O1x/3/
@@ -56,19 +55,32 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Check out page filtering.
+	 * Verifies that the wp_parsely_metadata filter works as expected.
 	 *
 	 * @covers \Parsely\Metadata::__construct
 	 * @covers \Parsely\Metadata::construct_metadata
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::set_metadata_post_times
-	 * @covers \Parsely\Metadata::get_tags
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -105,19 +117,33 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Test the wp_parsely_post_type filter
+	 * Verifies that the wp_parsely_post_type filter works as expected.
 	 *
 	 * @covers \Parsely\Metadata::construct_metadata
 	 * @covers \Parsely\Metadata::__construct
-	 * @covers \Parsely\Metadata::get_author_name
-	 * @covers \Parsely\Metadata::get_author_names
-	 * @covers \Parsely\Metadata::get_bottom_level_term
-	 * @covers \Parsely\Metadata::get_category_name
-	 * @covers \Parsely\Metadata::get_clean_parsely_page_value
-	 * @covers \Parsely\Metadata::get_coauthor_names
-	 * @covers \Parsely\Metadata::get_current_url
-	 * @covers \Parsely\Metadata::get_tags
-	 * @covers \Parsely\Metadata::set_metadata_post_times
+	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -153,7 +179,7 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Check that utility methods for checking if the API key is set work correctly.
+	 * Verifies that api_key_is_set() and api_key_is_missing() work as expected.
 	 *
 	 * @since 2.6.0
 	 *
@@ -172,7 +198,7 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Test the utility methods for retrieving the API key.
+	 * Verifies that get_api_key() works as expected.
 	 *
 	 * @since 2.6.0
 	 *
@@ -188,7 +214,8 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Test if the `get_options` method can handle a corrupted (not an array) value in the database.
+	 * Verifies that get_options() can handle a corrupted (non-array) value in
+	 * the database.
 	 *
 	 * @since 3.0.0
 	 *
@@ -202,7 +229,7 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Test if post is trackable when it is password protected.
+	 * Verifies that posts are not trackable when they are password protected.
 	 *
 	 * @since 3.0.1
 	 *
@@ -219,7 +246,8 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Test if post is trackable when it is password protected and a filter disables it.
+	 * Verifies that posts are trackable when they are password protected but
+	 * the wp_parsely_skip_post_password_check filter returns true.
 	 *
 	 * @since 3.0.1
 	 *
@@ -238,7 +266,7 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Test if the tracker URL is correctly generated with a set API key.
+	 * Verifies that the tracker URL is correctly generated with a set API key.
 	 *
 	 * @since 3.2.0
 	 *
@@ -253,7 +281,8 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Test if the tracker URL is an empty string when there's no API key.
+	 * Verifies that the tracker URL is an empty string when there's no API key
+	 * set.
 	 *
 	 * @since 3.2.0
 	 *

@@ -239,6 +239,7 @@ class Parsely {
 	 * @return array<string, mixed>
 	 */
 	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ): array {
+		_deprecated_function( __FUNCTION__, '3.3', 'Metadata::construct_metadata()' );
 		$metadata = new Metadata( $this );
 		return $metadata->construct_metadata( $post );
 	}
@@ -441,5 +442,35 @@ class Parsely {
 		$options = $this->get_options();
 
 		return $this->api_key_is_set() ? $options['apikey'] : '';
+	}
+
+	/**
+	 * Returns whether the API Secret is set in the plugin's options.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return bool True if the API Secret is set, false if not set.
+	 */
+	public function api_secret_is_set(): bool {
+		$options = $this->get_options();
+
+		return (
+				isset( $options['api_secret'] ) &&
+				is_string( $options['api_secret'] ) &&
+				'' !== $options['api_secret']
+		);
+	}
+
+	/**
+	 * Returns the API Secret stored in the plugin's options.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return string The API Secret, empty string if the API secret is not set.
+	 */
+	public function get_api_secret(): string {
+		$options = $this->get_options();
+
+		return $this->api_secret_is_set() ? $options['api_secret'] : '';
 	}
 }

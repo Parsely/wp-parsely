@@ -9,6 +9,7 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'js', 'admin-settings' ),
 			path.resolve( __dirname, 'src', 'css', 'admin-settings.css' ),
 		],
+		'content-helper': path.resolve( __dirname, 'src', 'blocks', 'content-helper', 'content-helper' ),
 		loader: [
 			path.resolve( __dirname, 'src', 'js', 'lib', 'loader' ),
 			path.resolve( __dirname, 'src', 'js', 'lib', 'uuid-profile-call' ),
@@ -17,5 +18,15 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'js', 'widgets', 'recommended.js' ),
 			path.resolve( __dirname, 'src', 'css', 'recommended-widget.css' ),
 		],
+	},
+	module: {
+		rules: defaultConfig.module.rules.concat(
+			[
+				{
+					test: /\.tsx?$/,
+					use: 'ts-loader',
+				},
+			]
+		),
 	},
 };

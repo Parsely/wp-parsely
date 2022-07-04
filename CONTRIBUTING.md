@@ -184,7 +184,9 @@ composer cs
 
 #### Testing
 
-First, you'll need to install the tests by running the install script (if you're on Windows, refer to [WINDOWS.md](WINDOWS.md)):
+**Note:** For the tests to install, the `svn` command is needed. To get it, you can install subversion (`brew install subversion` if you're using brew).
+
+You'll need to install the tests by running the install script (if you're on Windows, refer to [WINDOWS.md](WINDOWS.md)):
 
 1. Navigate to the main plugin directory.
 2. You'll need to have a local database setup and have the database name, username, password, and host ready.

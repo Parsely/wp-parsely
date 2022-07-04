@@ -1,6 +1,6 @@
 <?php
 /**
- * Parsely REST API Metadata tests.
+ * Integration Tests: REST API Metadata Endpoint
  *
  * @package Parsely\Tests
  */
@@ -16,25 +16,25 @@ use Parsely\Tests\Integration\TestCase;
 
 
 /**
- * Parsely REST API Metadata tests.
+ * Integration Tests for the REST API Metadata Endpoint.
  */
 final class RestMetadataTest extends TestCase {
 	/**
-	 * Internal variable
+	 * Internal variable.
 	 *
-	 * @var Rest_Metadata $rest Holds the Rest object
+	 * @var Rest_Metadata $rest Holds the Rest object.
 	 */
 	private static $rest;
 
 	/**
-	 * Internal Parsely variable
+	 * Internal variable.
 	 *
-	 * @var Parsely $parsely Holds the Parsely object
+	 * @var Parsely $parsely Holds the Parsely object.
 	 */
 	private static $parsely;
 
 	/**
-	 * The setUp run before each test
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -44,7 +44,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test whether the logic has been enqueued when the `run` method is called.
+	 * Verifies that the logic has been enqueued when the `run` method is
+	 * called.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 * @uses \Parsely\Endpoints\Rest_Metadata::register_meta
@@ -66,7 +67,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Verify that the logic has not been enqueued when the `run` method is called with a filter that disables it.
+	 * Verifies that the logic has not been enqueued when the `run` method is
+	 * called with a filter that disables it.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -82,7 +84,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Verify that the logic has not been enqueued when the `run` method is called with no API key.
+	 * Verifies that the logic has not been enqueued when the `run` method is
+	 * called with no API key.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -98,7 +101,7 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the REST fields are registered to WordPress REST API.
+	 * Verifies that the REST fields are registered to WordPress REST API.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::register_meta
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -118,7 +121,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the REST fields are can be modified using the `wp_parsely_rest_object_types` filter.
+	 * Verifies that the REST fields are can be modified using the
+	 * `wp_parsely_rest_object_types` filter.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::register_meta
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -136,7 +140,8 @@ final class RestMetadataTest extends TestCase {
 
 		self::$rest->register_meta();
 
-		// Should only be 1, including term. Post and page should be left out by the filter.
+		// Should only be 1, including term. Post and page should be left out by
+		// the filter.
 		self::assertCount( 1, $wp_rest_additional_fields );
 
 		$this->assertParselyRestFieldIsConstructedCorrectly( 'term', $wp_rest_additional_fields );
@@ -147,21 +152,36 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
+	 * Verifies that the get_rest_callback method is able to generate the
+	 * `parsely` object for the REST API.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::get_rendered_meta
 	 * @uses \Parsely\Metadata::__construct
 	 * @uses \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_api_key
@@ -188,20 +208,37 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
+	 * Verifies that the get_rest_callback method is able to generate the
+	 * `parsely` object for the REST API.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
+	 * @uses \Parsely\Endpoints\Metadata_Endpoint::get_rendered_meta
 	 * @uses \Parsely\Metadata::__construct
 	 * @uses \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
+	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_api_key
 	 * @uses \Parsely\Parsely::get_options
@@ -225,21 +262,36 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the get_rest_callback method is able to generate the `parsely` object for the REST API.
+	 * Verifies that the get_rest_callback method is able to generate the
+	 * `parsely` object for the REST API.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::get_rendered_meta
 	 * @uses \Parsely\Metadata::__construct
 	 * @uses \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -264,7 +316,8 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the get_rest_callback method doesn't crash when the post does not exist.
+	 * Verifies that the get_rest_callback method doesn't crash when the post
+	 * does not exist.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
@@ -289,20 +342,36 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Test that the rendered meta function returns the meta HTML string with json ld.
+	 * Verifies that the rendered meta function returns the meta HTML string
+	 * with JSON-LD.
 	 *
-	 * @covers \Parsely\Endpoints\Rest_Metadata::get_rendered_meta
+	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
+	 * @uses \Parsely\Endpoints\Metadata_Endpoint::get_rendered_meta
 	 * @uses \Parsely\Metadata::__construct
 	 * @uses \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -311,7 +380,6 @@ final class RestMetadataTest extends TestCase {
 	 * @uses \Parsely\UI\Metadata_Renderer::render_metadata
 	 */
 	public function test_get_rendered_meta_json_ld(): void {
-		// Set the default options prior to each test.
 		TestCase::set_options();
 
 		global $post;
@@ -326,25 +394,41 @@ final class RestMetadataTest extends TestCase {
 		$date = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
 
 		$meta_string = self::$rest->get_rendered_meta( 'json_ld' );
-		$expected    = '<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"NewsArticle","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=' . $post_id . '"},"headline":"My test_get_rendered_meta_json_ld title","url":"http:\/\/example.org\/?p=' . $post_id . '","thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '","articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[]}</script>';
+		$expected    = '<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"NewsArticle","headline":"My test_get_rendered_meta_json_ld title","url":"http:\/\/example.org\/?p=' . $post_id . '","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=' . $post_id . '"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[],"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '"}</script>';
 		self::assertEquals( $expected, $meta_string );
 	}
 
 	/**
-	 * Test that the rendered meta function returns the meta HTML string with json ld.
+	 * Verifies that the rendered meta function returns the meta HTML string
+	 * with JSON-LD.
 	 *
-	 * @covers \Parsely\Endpoints\Rest_Metadata::get_rendered_meta
+	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
+	 * @uses \Parsely\Endpoints\Metadata_Endpoint::get_rendered_meta
 	 * @uses \Parsely\Metadata::__construct
 	 * @uses \Parsely\Metadata::construct_metadata
-	 * @uses \Parsely\Metadata::get_author_names
-	 * @uses \Parsely\Metadata::get_bottom_level_term
-	 * @uses \Parsely\Metadata::get_category_name
-	 * @uses \Parsely\Metadata::get_clean_parsely_page_value
-	 * @uses \Parsely\Metadata::get_coauthor_names
-	 * @uses \Parsely\Metadata::get_current_url
-	 * @uses \Parsely\Metadata::get_tags
-	 * @uses \Parsely\Metadata::set_metadata_post_times
+	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::clean_value
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Metadata\Post_Builder::__construct
+	 * @uses \Parsely\Metadata\Post_Builder::build_article_section
+	 * @uses \Parsely\Metadata\Post_Builder::build_author
+	 * @uses \Parsely\Metadata\Post_Builder::build_headline
+	 * @uses \Parsely\Metadata\Post_Builder::build_image
+	 * @uses \Parsely\Metadata\Post_Builder::build_keywords
+	 * @uses \Parsely\Metadata\Post_Builder::build_main_entity
+	 * @uses \Parsely\Metadata\Post_Builder::build_metadata_post_times
+	 * @uses \Parsely\Metadata\Post_Builder::build_publisher
+	 * @uses \Parsely\Metadata\Post_Builder::build_thumbnail_url
+	 * @uses \Parsely\Metadata\Post_Builder::build_type
+	 * @uses \Parsely\Metadata\Post_Builder::build_url
+	 * @uses \Parsely\Metadata\Post_Builder::get_author_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_bottom_level_term
+	 * @uses \Parsely\Metadata\Post_Builder::get_category_name
+	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
+	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
+	 * @uses \Parsely\Metadata\Post_Builder::get_tags
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -379,12 +463,12 @@ final class RestMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Assert that the Parsely REST field is constructed correctly.
+	 * Asserts that the Parsely REST field is constructed correctly.
+	 *
 	 * This is a helper function for the tests above.
 	 *
 	 * @param string $post_type                 Post type.
 	 * @param array  $wp_rest_additional_fields Global variable.
-	 * @return void
 	 */
 	private function assertParselyRestFieldIsConstructedCorrectly( string $post_type, array $wp_rest_additional_fields ): void {
 		self::assertArrayHasKey( $post_type, $wp_rest_additional_fields );

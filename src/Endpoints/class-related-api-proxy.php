@@ -10,121 +10,59 @@ declare(strict_types=1);
 
 namespace Parsely\Endpoints;
 
-use Parsely\Parsely;
-use Parsely\RemoteAPI\Proxy;
 use stdClass;
-use WP_Error;
-use WP_REST_Server;
 use WP_REST_Request;
 
 /**
- * Configures a REST API endpoint for use e.g. by the Recommendations Block.
+ * Configures the `/related` REST API endpoint.
  */
-final class Related_API_Proxy {
-	/**
-	 * Parsely instance.
-	 *
-	 * @var Parsely
-	 */
-	private $parsely;
+final class Related_API_Proxy extends Base_API_Proxy {
 
 	/**
-	 * Proxy object which does the actual calls to the Parse.ly API.
-	 *
-	 * @var Proxy
-	 */
-	private $proxy;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param Parsely $parsely Instance of Parsely class.
-	 * @param Proxy   $proxy   Proxy object which does the actual calls to the
-	 *                         Parse.ly API.
-	 */
-	public function __construct( Parsely $parsely, Proxy $proxy ) {
-		$this->parsely = $parsely;
-		$this->proxy   = $proxy;
-	}
-
-	/**
-	 * Registers the endpoint and initializes this class.
+	 * Registers the endpoint's WP REST route.
 	 */
 	public function run(): void {
-		if ( ! apply_filters( 'wp_parsely_enable_related_api_proxy', true ) ) {
-			return;
-		}
-
-		$get_items_args = array(
-			'query' => array(
-				'default'           => array(),
-				'sanitize_callback' => function ( $query ) {
-					// question: how should we sanitize these?
-					return (array) $query;
-				},
-			),
-		);
-
-		$rest_route_args = array(
-			array(
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'get_items' ),
-				'permission_callback' => array( $this, 'permission_callback' ),
-				'args'                => $get_items_args,
-			),
-		);
-
-		register_rest_route( 'wp-parsely/v1', '/related', $rest_route_args );
+		$this->register_endpoint( '/related' );
 	}
 
 	/**
-	 * Determines if the endpoint can be called.
+	 * Cached "proxy" to the Parse.ly `/related` API endpoint.
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 */
+	public function get_items( WP_REST_Request $request ): stdClass {
+		return $this->get_data( $request, false, 'query' );
+	}
+
+	/**
+	 * Generates the final data from the passed response.
+	 *
+	 * @param array<string, mixed> $response The response received by the proxy.
+	 * @return array<stdClass> The generated data.
+	 */
+	protected function generate_data( array $response ): array {
+		$result = array_map(
+			static function( stdClass $item ) {
+				return (object) array(
+					'image_url'        => $item->image_url,
+					'thumb_url_medium' => $item->thumb_url_medium,
+					'title'            => $item->title,
+					'url'              => $item->url,
+				);
+			},
+			$response
+		);
+
+		return $result;
+	}
+
+	/**
+	 * Determines if there are enough permissions to call the endpoint.
 	 *
 	 * @return bool
 	 */
 	public function permission_callback(): bool {
 		// Unauthenticated.
 		return true;
-	}
-
-	/**
-	 * Cached "proxy" to the Parsely `/related` endpoint
-	 *
-	 * @param WP_REST_Request $request The request object.
-	 * @return stdClass
-	 */
-	public function get_items( WP_REST_Request $request ) {
-		$params = $request->get_params();
-
-		if ( $this->parsely->api_key_is_missing() ) {
-			return (object) array(
-				'data'  => array(),
-				'error' => new WP_Error( 400, __( 'A Parse.ly API Key must be set in site options to use this endpoint', 'wp-parsely' ) ),
-			);
-		}
-
-		// A proxy with caching behaviour is used here.
-		$links = $this->proxy->get_items( $params['query'] );
-
-		if ( is_wp_error( $links ) ) {
-			return (object) array(
-				'data'  => array(),
-				'error' => $links,
-			);
-		}
-
-		$data = array_map(
-			static function( stdClass $link ) {
-				return (object) array(
-					'image_url'        => $link->image_url,
-					'thumb_url_medium' => $link->thumb_url_medium,
-					'title'            => $link->title,
-					'url'              => $link->url,
-				);
-			},
-			$links
-		);
-
-		return (object) array( 'data' => $data );
 	}
 }

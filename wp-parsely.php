@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace Parsely;
 
 use Parsely\Endpoints\Related_API_Proxy;
+use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Endpoints\Rest_Metadata;
 use Parsely\Integrations\Amp;
@@ -35,6 +36,7 @@ use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
 use Parsely\RemoteAPI\Cached_Proxy;
 use Parsely\RemoteAPI\Related_Proxy;
+use Parsely\RemoteAPI\Analytics_Posts_Proxy;
 use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
@@ -44,6 +46,7 @@ use Parsely\UI\Network_Admin_Sites_List;
 use Parsely\UI\Recommended_Widget;
 use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
+use Parsely\UI\Site_Health;
 
 if ( class_exists( Parsely::class ) ) {
 	return;
@@ -54,12 +57,22 @@ const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
 require __DIR__ . '/src/class-scripts.php';
-require __DIR__ . '/src/class-metadata.php';
 require __DIR__ . '/src/class-dashboard-link.php';
 require __DIR__ . '/src/UI/class-admin-bar.php';
 require __DIR__ . '/src/UI/class-metadata-renderer.php';
 require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
 require __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
+
+require __DIR__ . '/src/class-metadata.php';
+require __DIR__ . '/src/Metadata/class-metadata-builder.php';
+require __DIR__ . '/src/Metadata/class-author-archive-builder.php';
+require __DIR__ . '/src/Metadata/class-category-builder.php';
+require __DIR__ . '/src/Metadata/class-front-page-builder.php';
+require __DIR__ . '/src/Metadata/class-page-builder.php';
+require __DIR__ . '/src/Metadata/class-page-for-posts-builder.php';
+require __DIR__ . '/src/Metadata/class-paginated-front-page-builder.php';
+require __DIR__ . '/src/Metadata/class-post-builder.php';
+require __DIR__ . '/src/Metadata/class-tag-builder.php';
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
@@ -87,6 +100,7 @@ function parsely_initialize_plugin(): void {
 require __DIR__ . '/src/UI/class-admin-warning.php';
 require __DIR__ . '/src/UI/class-plugins-actions.php';
 require __DIR__ . '/src/UI/class-row-actions.php';
+require __DIR__ . '/src/UI/class-site-health.php';
 
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
 /**
@@ -101,6 +115,9 @@ function parsely_admin_init_register(): void {
 
 	$row_actions = new Row_Actions( $GLOBALS['parsely'] );
 	$row_actions->run();
+
+	$site_health = new Site_Health( $GLOBALS['parsely'] );
+	$site_health->run();
 }
 
 require __DIR__ . '/src/UI/class-settings-page.php';
@@ -124,8 +141,11 @@ require __DIR__ . '/src/RemoteAPI/interface-proxy.php';
 require __DIR__ . '/src/RemoteAPI/class-base-proxy.php';
 require __DIR__ . '/src/RemoteAPI/class-cached-proxy.php';
 require __DIR__ . '/src/RemoteAPI/class-related-proxy.php';
+require __DIR__ . '/src/RemoteAPI/class-analytics-posts-proxy.php';
 require __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
+require __DIR__ . '/src/Endpoints/class-base-api-proxy.php';
 require __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
+require __DIR__ . '/src/Endpoints/class-analytics-posts-api-proxy.php';
 require __DIR__ . '/src/Endpoints/class-rest-metadata.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
@@ -139,10 +159,15 @@ function parsely_rest_api_init(): void {
 	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
 	$rest->run();
 
-	$proxy        = new Related_Proxy( $GLOBALS['parsely'] );
-	$cached_proxy = new Cached_Proxy( $proxy, new WordPress_Cache() );
-	$endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $cached_proxy );
-	$endpoint->run();
+	$related_proxy        = new Related_Proxy( $GLOBALS['parsely'] );
+	$related_cached_proxy = new Cached_Proxy( $related_proxy, new WordPress_Cache() );
+	$related_endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $related_cached_proxy );
+	$related_endpoint->run();
+
+	$analytics_posts_proxy        = new Analytics_Posts_Proxy( $GLOBALS['parsely'] );
+	$analytics_posts_cached_proxy = new Cached_Proxy( $analytics_posts_proxy, new WordPress_Cache() );
+	$analytics_posts_endpoint     = new Analytics_Posts_API_Proxy( $GLOBALS['parsely'], $analytics_posts_cached_proxy );
+	$analytics_posts_endpoint->run();
 }
 
 require __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';

@@ -1,6 +1,6 @@
 <?php
 /**
- * Remote API: `/related` REST API caching decorator class
+ * Remote API: REST API caching decorator class
  *
  * @package Parsely
  * @since   3.2.0
@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\RemoteAPI;
 
 /**
- * Caching Decorator for the remote /related endpoint.
+ * Caching Decorator for remote API endpoints.
  */
 class Cached_Proxy implements Proxy {
 	private const CACHE_GROUP      = 'wp-parsely';

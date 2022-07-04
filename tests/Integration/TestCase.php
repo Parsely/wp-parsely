@@ -1,6 +1,6 @@
 <?php
 /**
- * Base unit test case
+ * Integration Tests: Abstract base class for all test case implementations
  *
  * @package Parsely\Tests
  */
@@ -55,18 +55,19 @@ abstract class TestCase extends WPIntegrationTestCase {
 	);
 
 	/**
-	 * Utility function to update Parse.ly options with a merge of default values and custom values.
+	 * Updates Parse.ly options with a merge of default and custom values.
 	 *
-	 * @param array $custom_options Associative array of option keys and values that should be saved.
+	 * @param array $custom_options Associative array of option keys and values
+	 *                              to be saved.
 	 */
 	public static function set_options( array $custom_options = array() ): void {
 		update_option( Parsely::OPTIONS_KEY, array_merge( self::DEFAULT_OPTIONS, $custom_options ) );
 	}
 
 	/**
-	 * Create a test post.
+	 * Creates a test post.
 	 *
-	 * @param string $post_type Optional. Post type. Default is 'post'.
+	 * @param string $post_type Optional. The post's type. Default is 'post'.
 	 *
 	 * @return array An array of WP_Post fields.
 	 */
@@ -81,10 +82,11 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Create a test category.
+	 * Creates a test category.
 	 *
 	 * @param string $name Category name.
-	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
+	 * @return array|WP_Error Array containing the term_id and term_taxonomy_id,
+	 *                        WP_Error otherwise.
 	 */
 	public function create_test_category( string $name ) {
 		return $this->factory->category->create(
@@ -98,17 +100,18 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Create a test user.
+	 * Creates a test user.
 	 *
 	 * @param string $user_login The user's login username.
-	 * @return int|WP_Error The newly created user's ID or a WP_Error object if the user could not be created.
+	 * @return int|WP_Error The newly created user's ID or a WP_Error object
+	 *                      if the user could not be created.
 	 */
 	public function create_test_user( string $user_login ) {
 		return $this->factory->user->create( array( 'user_login' => $user_login ) );
 	}
 
 	/**
-	 * Create a test blog.
+	 * Creates a test blog.
 	 *
 	 * @param string $domain  Site second-level domain without a .com TLD e.g. 'example' will
 	 *                        result in a new subsite of 'http://example.com'.
@@ -118,18 +121,19 @@ abstract class TestCase extends WPIntegrationTestCase {
 	public function create_test_blog( string $domain, int $user_id ) {
 		return $this->factory->blog->create(
 			array(
-				'domain'  => 'http://' . $domain . 'com',
+				'domain'  => 'https://' . $domain . 'com',
 				'user_id' => $user_id,
 			)
 		);
 	}
 
 	/**
-	 * Create a test taxonomy with a single term.
+	 * Creates a test taxonomy with a single term.
 	 *
 	 * @param string $taxonomy_key Taxonomy key, must not exceed 32 characters.
 	 * @param string $term_name    The term name to add.
-	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id, WP_Error otherwise.
+	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id,
+	 *                        WP_Error otherwise.
 	 */
 	public function create_test_taxonomy( string $taxonomy_key, string $term_name ) {
 		register_taxonomy(
@@ -150,7 +154,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Create a new post and go to it.
+	 * Creates a new post and navigates to it.
 	 *
 	 * @return int The new post's ID.
 	 */

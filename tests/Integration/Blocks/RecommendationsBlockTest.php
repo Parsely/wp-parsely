@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly Recommendations Block tests.
+ * Integration Tests: Recommendations Block
  *
  * @package Parsely\Tests
  */
@@ -14,13 +14,13 @@ use Parsely\Tests\Integration\TestCase;
 use WP_Block_Type_Registry;
 
 /**
- * Parse.ly Recommendations Block tests.
+ * Integration Tests for the Recommendations Block.
  */
 final class RecommendationsBlockTest extends TestCase {
 	private const BLOCK_NAME = 'wp-parsely/recommendations';
 
 	/**
-	 * The setup run before each test.
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -34,7 +34,8 @@ final class RecommendationsBlockTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that the Recommendations Block's run() method registers the Block.
+	 * Verifies that the Recommendations Block's run() method registers the
+	 * Block.
 	 *
 	 * @since 3.3.0
 	 *

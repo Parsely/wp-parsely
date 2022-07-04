@@ -1,11 +1,25 @@
 {
 	"env": { "browser": true },
-	"extends": [ "plugin:@wordpress/eslint-plugin/recommended-with-formatting", "plugin:jest/recommended" ],
+	"extends": [
+		"plugin:@wordpress/eslint-plugin/recommended-with-formatting",
+		"plugin:jest/recommended",
+	  	"plugin:@typescript-eslint/recommended"
+	],
+	"plugins": [
+		"@typescript-eslint"
+	],
 	"settings": {
-		"jest": { "version": "latest" }
+		"jest": { "version": "latest" },
+	 	"import/resolver": {
+			"node": {
+		  		"extensions": [ ".js", ".jsx", ".ts", ".tsx", ".json" ]
+			}
+	  	}
 	},
+  	"ignorePatterns": [ "webpack.config.js" ],
 	"rules": {
-		"@wordpress/i18n-text-domain": [ "error", { "allowedTextDomain": [ "wp-parsely" ] } ]
+		"@wordpress/i18n-text-domain": [ "error", { "allowedTextDomain": [ "wp-parsely" ] } ],
+	  	"@typescript-eslint/ban-ts-comment": "off"
 	},
 	"globals": {
 		// Page variable for Puppeteer tests

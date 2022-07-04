@@ -1,6 +1,6 @@
 <?php
 /**
- * Facebook Instant Articles integration tests.
+ * Integration Tests: Facebook Instant Articles Integration
  *
  * @package Parsely\Tests
  */
@@ -10,12 +10,11 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\Integrations;
 
 use ReflectionClass;
-use Parsely;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Tests\Integration\TestCase;
 
 /**
- * Test Facebook Instant Articles integration.
+ * Integration Tests for the Facebook Instant Articles Integration.
  */
 final class FacebookInstantArticlesTest extends TestCase {
 	/**
@@ -40,7 +39,7 @@ final class FacebookInstantArticlesTest extends TestCase {
 	private static $registry_display_name;
 
 	/**
-	 * The setUp run before each test
+	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -53,12 +52,13 @@ final class FacebookInstantArticlesTest extends TestCase {
 	}
 
 	/**
-	 * Check the integration only happens when a condition is met.
+	 * Verifies that the integration is active only if the FBIA plugin is
+	 * active.
 	 *
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::integrate
 	 */
 	public function test_integration_only_runs_when_FBIA_plugin_is_active(): void {
-		// By default, the integration will not happen if the condition has not been met.
+		// FBIA plugin is inactive.
 		self::$fbia->integrate();
 		self::assertFalse(
 			has_action(
@@ -67,8 +67,8 @@ final class FacebookInstantArticlesTest extends TestCase {
 			)
 		);
 
-		// Meet the condition, and check again.
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- can't prefix this.
+		// FBIA plugin is active.
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 		define( 'IA_PLUGIN_VERSION', '1.2.3' );
 		self::$fbia->integrate();
 		self::assertNotFalse(
@@ -80,7 +80,7 @@ final class FacebookInstantArticlesTest extends TestCase {
 	}
 
 	/**
-	 * Check the Facebook Instant Articles integration.
+	 * Verifies that the integration is active only if an API key is set.
 	 *
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::insert_parsely_tracking
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::get_embed_code
@@ -91,34 +91,33 @@ final class FacebookInstantArticlesTest extends TestCase {
 	 * @group fbia
 	 */
 	public function test_parsely_is_added_to_FBIA_registry(): void {
-		// We use our own registry here, but the integration with the FBIA plugin provides its own.
+		// We use our own registry here, but the integration with the FBIA
+		// plugin provides its own.
 		$registry = array();
 
-		// Check for no registration when there is no API key saved.
+		// Site ID is not set.
 		self::$fbia->insert_parsely_tracking( $registry );
-
 		self::assertArrayNotHasKey( self::$registry_identifier, $registry );
 
-		// Now set API key.
+		// Site ID is set.
 		$fake_api_key = 'my-api-key.com';
 		self::set_options( array( 'apikey' => $fake_api_key ) );
-
 		self::$fbia->insert_parsely_tracking( $registry );
-
-		self::assertParselyWasAddedToRegistryCorrectly( $registry, $fake_api_key );
+		self::assert_parsely_added_to_registry( $registry, $fake_api_key );
 	}
 
 	/**
-	 * Check registry has the integration identifier as a key, that display name is correct, and payload is correct.
+	 * Verifies that the registry array has the integration identifier as a key,
+	 * and that the display name and payload are correct.
 	 *
 	 * @param array  $registry Representation of Facebook Instant Articles registry.
 	 * @param string $api_key  API key.
 	 */
-	public static function assertParselyWasAddedToRegistryCorrectly( array $registry, string $api_key ): void {
+	public static function assert_parsely_added_to_registry( array $registry, string $api_key ): void {
 		self::assertArrayHasKey( self::$registry_identifier, $registry );
 		self::assertSame( self::$registry_display_name, $registry[ self::$registry_identifier ]['name'] );
 
-		// Check embed code contains a script (don't test for specifics), and the API key.
+		// Payload should contain a script tag and the API key.
 		self::assertStringContainsString( '<script>', $registry[ self::$registry_identifier ]['payload'] );
 		self::assertStringContainsString( $api_key, $registry[ self::$registry_identifier ]['payload'] );
 	}
