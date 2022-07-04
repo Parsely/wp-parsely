@@ -14,6 +14,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.release.target_commitish }}
+          token: ${{ secrets.PUBLIC_REPO_PERMISSION }}
 
       - name: Bump version numbers
         run: |
@@ -52,7 +53,6 @@ jobs:
           commit_message: Bump plugin version to ${{ github.event.release.tag_name }} and update changelog
           file_pattern: CHANGELOG.md README.md package-lock.json package.json tests/e2e/utils.js wp-parsely.php
           commit_options: '--no-verify'
-          token: ${{ secrets.PUBLIC_REPO_PERMISSION }}
 
       - name: Re-add pull request protection to trunk branch
         uses: octokit/request-action@v2.1.4
