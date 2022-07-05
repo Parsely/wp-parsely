@@ -16,7 +16,7 @@ interface PostCardProps {
 function PostCard( { post }: PostCardProps ) {
 	return (
 		<>
-			<Card size="small" elevation={ 2 }>
+			<Card size="small" elevation={ 2 } className="parsely-content-helper-card">
 				<CardHeader><b>{ post.title }</b></CardHeader>
 				<CardBody>
 					<ul>
@@ -30,7 +30,6 @@ function PostCard( { post }: PostCardProps ) {
 					</p>
 				</CardBody>
 			</Card>
-			<br />
 		</>
 	);
 }
