@@ -5,6 +5,63 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.4.0](https://github.com/Parsely/wp-parsely/compare/3.3.2...3.4.0) - 2022-07-05
+
+### Added
+
+- Add Content Helper feature ([#876](https://github.com/Parsely/wp-parsely/pull/876))
+- Add automated release workflow ([#875](https://github.com/Parsely/wp-parsely/pull/875))
+- Add TypeScript support ([#895](https://github.com/Parsely/wp-parsely/pull/895))
+- Add tests for Metadata Renderer ([#880](https://github.com/Parsely/wp-parsely/pull/880))
+- Signal filter overrides on settings page ([#864](https://github.com/Parsely/wp-parsely/pull/864))
+- Add debug information in the Site Health page ([#866](https://github.com/Parsely/wp-parsely/pull/866))
+- Add Dependency Review GitHub Action ([#851](https://github.com/Parsely/wp-parsely/pull/851))
+
+### Changed
+
+- Prepare README.md for 3.4.0 release ([#937](https://github.com/Parsely/wp-parsely/pull/937))
+- CONTRIBUTING.md: Add note about svn ([#941](https://github.com/Parsely/wp-parsely/pull/941))
+- Fix failing Recommended Widget test ([#915](https://github.com/Parsely/wp-parsely/pull/915))
+- PHPUnit Tests: Improve comments conformity to Inline Documentation Standards ([#903](https://github.com/Parsely/wp-parsely/pull/903))
+- Migrate Recommendations Block to TypeScript ([#897](https://github.com/Parsely/wp-parsely/pull/897))
+- Remove Jest configuration override ([#891](https://github.com/Parsely/wp-parsely/pull/891))
+- Refactor metadata generation to use builders ([#843](https://github.com/Parsely/wp-parsely/pull/843))
+- Add wait on E2E Tests helper function ([#858](https://github.com/Parsely/wp-parsely/pull/858))
+
+### Deprecated
+
+- Deprecate construct_parsely_metadata ([#865](https://github.com/Parsely/wp-parsely/pull/865))
+
+### Fixed
+
+- Fix some SonarCloud issues ([#923](https://github.com/Parsely/wp-parsely/pull/923))
+- Fix Metadata test coverage ([#879](https://github.com/Parsely/wp-parsely/pull/879))
+- Fix metadata builder not defined warning ([#877](https://github.com/Parsely/wp-parsely/pull/877))
+
+### Dependency Updates
+
+- Bump @wordpress/api-fetch from 6.5.0 to 6.6.0 ([#884](https://github.com/Parsely/wp-parsely/pull/884))
+- Bump @wordpress/babel-preset-default from 6.10.0 to 6.11.0 ([#882](https://github.com/Parsely/wp-parsely/pull/882))
+- Bump @wordpress/blocks from 11.6.0 to 11.7.0 ([#860](https://github.com/Parsely/wp-parsely/pull/860))
+- Bump @wordpress/block-editor from 8.6.0 to 9.2.0 ([#913](https://github.com/Parsely/wp-parsely/pull/913))
+- Bump @wordpress/components from 19.9.0 to 19.10.0 ([#861](https://github.com/Parsely/wp-parsely/pull/861))
+- Bump @wordpress/compose from 5.6.0 to 5.7.0 ([#883](https://github.com/Parsely/wp-parsely/pull/883))
+- Bump @wordpress/e2e-test-utils from 7.3.0 to 7.6.0 ([#916](https://github.com/Parsely/wp-parsely/pull/916))
+- Bump @wordpress/env from 4.6.0 to 4.8.0 ([#908](https://github.com/Parsely/wp-parsely/pull/908))
+- Bump @wordpress/eslint-plugin from 12.1.0 to 12.4.0 ([#911](https://github.com/Parsely/wp-parsely/pull/911))
+- Bump @wordpress/hooks from 3.7.0 to 3.10.0 ([#910](https://github.com/Parsely/wp-parsely/pull/910))
+- Bump @wordpress/scripts from 22.5.0 to 23.2.0 ([#909](https://github.com/Parsely/wp-parsely/pull/909))
+- Bump @wordpress/url from 3.8.0 to 3.9.0 ([#854](https://github.com/Parsely/wp-parsely/pull/854))
+- Bump actions/setup-node from 3.1.1 to 3.3.0 ([#920](https://github.com/Parsely/wp-parsely/pull/920))
+- Bump concurrently from 7.1.0 to 7.2.2 ([#928](https://github.com/Parsely/wp-parsely/pull/928))
+- Bump eslint-plugin-jest from 22.2.2 to 26.5.3 ([#919](https://github.com/Parsely/wp-parsely/pull/919))
+- Bump husky from 7.0.4 to 8.0.1 ([#863](https://github.com/Parsely/wp-parsely/pull/863))
+- Bump prettier from 2.6.2 to 2.7.0 ([#927](https://github.com/Parsely/wp-parsely/pull/927))
+- Bump stefanzweifel/changelog-updater-action from 1.5.0 to 1.6.0 ([#906](https://github.com/Parsely/wp-parsely/pull/906))
+- Bump typescript from 4.6.4 to 4.7.3 ([#918](https://github.com/Parsely/wp-parsely/pull/918))
+- Fix broken package.json ([#926](https://github.com/Parsely/wp-parsely/pull/926))
+- Upgrade minor JS dependencies ([#893](https://github.com/Parsely/wp-parsely/pull/893))
+
 ## [3.3.2](https://github.com/Parsely/wp-parsely/compare/3.3.1...3.3.2) - 2022-05-16
 
 ### Fixed
