@@ -67,6 +67,7 @@ require __DIR__ . '/src/class-metadata.php';
 require __DIR__ . '/src/Metadata/class-metadata-builder.php';
 require __DIR__ . '/src/Metadata/class-author-archive-builder.php';
 require __DIR__ . '/src/Metadata/class-category-builder.php';
+require __DIR__ . '/src/Metadata/class-date-builder.php';
 require __DIR__ . '/src/Metadata/class-front-page-builder.php';
 require __DIR__ . '/src/Metadata/class-page-builder.php';
 require __DIR__ . '/src/Metadata/class-page-for-posts-builder.php';
