@@ -10,12 +10,12 @@ import { registerPlugin } from '@wordpress/plugins';
  * Internal dependencies
  */
 import PostList from './components/post-list';
-import { ReactComponent as LeafIcon } from '../../img/parsely-logo.svg';
+import LeafIcon from '../shared/components/leaf-icon';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
 const renderSidebar = () => (
-	<PluginSidebar name="wp-parsely-sidebar" title="Parse.ly">
+	<PluginSidebar icon={ <LeafIcon /> } name="wp-parsely-sidebar" title="Parse.ly">
 		<Panel>
 			<PanelHeader>{ __( 'Parse.ly Content Helper (Beta)', 'wp-parsely' ) }</PanelHeader>
 			<PanelBody><PostList /></PanelBody>
