@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://www.parse.ly/help/integration/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
- * Version:           3.4.0
+ * Version:           3.4.1
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -52,7 +52,7 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.4.0';
+const PARSELY_VERSION = '3.4.1';
 const PARSELY_FILE    = __FILE__;
 
 require __DIR__ . '/src/class-parsely.php';
@@ -67,6 +67,7 @@ require __DIR__ . '/src/class-metadata.php';
 require __DIR__ . '/src/Metadata/class-metadata-builder.php';
 require __DIR__ . '/src/Metadata/class-author-archive-builder.php';
 require __DIR__ . '/src/Metadata/class-category-builder.php';
+require __DIR__ . '/src/Metadata/class-date-builder.php';
 require __DIR__ . '/src/Metadata/class-front-page-builder.php';
 require __DIR__ . '/src/Metadata/class-page-builder.php';
 require __DIR__ . '/src/Metadata/class-page-for-posts-builder.php';
