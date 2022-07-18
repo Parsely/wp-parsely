@@ -69,7 +69,7 @@ describe( 'Content Helper filters', () => {
 
 		// Author + category + tag.
 		expect( await getContentHelperMessage( categoryName, tagName ) ).toMatch( 'Top-performing posts with the tag "' + tagName + '".' );
-	}, 60000 );
+	} );
 
 	/**
 	 * Verifies that the Content Helper will work correctly when new categories
@@ -84,7 +84,7 @@ describe( 'Content Helper filters', () => {
 		const categoryName = 'Parse.ly Tips';
 		const tagName = 'analytics';
 
-		expect( await getContentHelperMessage( categoryName, null, false, 3000 ) ).toMatch( 'Top-performing posts in the category "' + categoryName + '".' );
-		expect( await getContentHelperMessage( null, tagName, false, 3000 ) ).toMatch( 'Top-performing posts with the tag "' + tagName + '".' );
+		expect( await getContentHelperMessage( categoryName, null, false, 2000 ) ).toMatch( 'Top-performing posts in the category "' + categoryName + '".' );
+		expect( await getContentHelperMessage( null, tagName, false, 5000 ) ).toMatch( 'Top-performing posts with the tag "' + tagName + '".' );
 	}, 60000 );
 } );
