@@ -59,16 +59,16 @@ describe( 'Content Helper filters', () => {
 		await insertRecordIntoTaxonomy( tagName, 'post_tag' );
 
 		// Author.
-		expect( await getContentHelperMessage() ).toMatch( 'Top-performing posts by the author "' + firstName + ' ' + lastName + '".' );
+		expect( await getContentHelperMessage() ).toMatch( `Top-performing posts by the author "${ firstName } ${ lastName }".` );
 
 		// Author + category.
-		expect( await getContentHelperMessage( categoryName ) ).toMatch( 'Top-performing posts in the category "' + categoryName + '".' );
+		expect( await getContentHelperMessage( categoryName ) ).toMatch( `Top-performing posts in the category "${ categoryName }".` );
 
 		// Author + tag.
-		expect( await getContentHelperMessage( null, tagName ) ).toMatch( 'Top-performing posts with the tag "' + tagName + '".' );
+		expect( await getContentHelperMessage( null, tagName ) ).toMatch( `Top-performing posts with the tag "${ tagName }".` );
 
 		// Author + category + tag.
-		expect( await getContentHelperMessage( categoryName, tagName ) ).toMatch( 'Top-performing posts with the tag "' + tagName + '".' );
+		expect( await getContentHelperMessage( categoryName, tagName ) ).toMatch( `Top-performing posts with the tag "${ tagName }".` );
 	} );
 
 	/**
@@ -83,6 +83,6 @@ describe( 'Content Helper filters', () => {
 	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
 		const categoryName = 'Parse.ly Tips';
 
-		expect( await getContentHelperMessage( categoryName, null, false, 2000 ) ).toMatch( 'Top-performing posts in the category "' + categoryName + '".' );
+		expect( await getContentHelperMessage( categoryName, null, false, 2000 ) ).toMatch( `Top-performing posts in the category "${ categoryName }".` );
 	} );
 } );
