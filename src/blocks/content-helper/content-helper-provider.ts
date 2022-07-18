@@ -64,7 +64,7 @@ class ContentHelperProvider {
 				path: addQueryArgs( '/wp-parsely/v1/analytics/posts', fetchDataQueryResult.query ),
 			} ) as ApiResponse;
 		} catch ( wpError ) {
-			return `${ __( 'WordPress Error: ', 'wp-parsely' ) } ${ wpError.message }`;
+			return `${ __( 'WordPress Error:', 'wp-parsely' ) } ${ wpError.message }`;
 		}
 
 		if ( response?.error ) {
