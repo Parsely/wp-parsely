@@ -72,19 +72,17 @@ describe( 'Content Helper filters', () => {
 	} );
 
 	/**
-	 * Verifies that the Content Helper will work correctly when new categories
-	 * or tags are added from within the WordPress Post Editor.
+	 * Verifies that the Content Helper will work correctly when a new taxonomy
+	 * is added from within the WordPress Post Editor.
 	 *
-	 * Note: This test does not insert the category/tag into the database before
+	 * Note: This test does not insert the taxonomy into the database before
 	 * selecting it in the WordPress Post Editor. As such, a delay in
-	 * intercepting the new values is expected, since they must first be stored
+	 * intercepting the new value is expected, since it must first be stored
 	 * into the database and then picked up by the Content Helper.
 	 */
-	it( 'Should work correctly when new categories/tags are added from within the Post Editor', async () => {
+	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
 		const categoryName = 'Parse.ly Tips';
-		const tagName = 'analytics';
 
 		expect( await getContentHelperMessage( categoryName, null, false, 2000 ) ).toMatch( 'Top-performing posts in the category "' + categoryName + '".' );
-		expect( await getContentHelperMessage( null, tagName, false, 5000 ) ).toMatch( 'Top-performing posts with the tag "' + tagName + '".' );
-	}, 60000 );
+	} );
 } );

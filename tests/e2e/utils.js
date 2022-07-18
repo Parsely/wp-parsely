@@ -162,10 +162,10 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 	if ( category !== null ) {
 		await page.waitForTimeout( 250 );
 		const categoryToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Categories' );
-		await page.waitForTimeout( 500 );
+		await page.waitForTimeout( 250 );
 		await categoryToggleButton.click();
 		await page.waitForSelector( addCategoryButton, { visible: true } );
-		await page.waitForTimeout( 500 );
+		await page.waitForTimeout( 250 );
 		await page.click( addCategoryButton );
 		await page.keyboard.press( 'Tab' );
 		await page.keyboard.type( category );
@@ -177,7 +177,7 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 	if ( tag !== null ) {
 		await page.waitForTimeout( 250 );
 		const tagToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Tags' );
-		await page.waitForTimeout( 500 );
+		await page.waitForTimeout( 250 );
 		await tagToggleButton.click();
 		await page.keyboard.press( 'Tab' );
 		await page.keyboard.type( tag );
