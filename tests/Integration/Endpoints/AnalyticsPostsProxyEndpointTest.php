@@ -3,6 +3,7 @@
  * Integration Tests: Analytics Posts Proxy Endpoint
  *
  * @package Parsely\Tests
+ * @since   3.5.0
  *
  * phpcs:disable Generic.CodeAnalysis.UselessOverridingMethod.Found
  */

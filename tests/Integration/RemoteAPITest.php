@@ -3,7 +3,7 @@
  * Integration Tests: Parsely Remote API
  *
  * @package Parsely\Tests
- * @since   3.4.0
+ * @since   3.5.0
  */
 
 declare(strict_types=1);
