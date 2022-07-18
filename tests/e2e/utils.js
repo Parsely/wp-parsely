@@ -1,20 +1,55 @@
-import { activatePlugin, loginUser, visitAdminPage } from '@wordpress/e2e-test-utils';
+/**
+ * External dependencies.
+ */
+import {
+	activatePlugin,
+	createNewPost,
+	ensureSidebarOpened,
+	findSidebarPanelToggleButtonWithTitle,
+	loginUser,
+	visitAdminPage,
+} from '@wordpress/e2e-test-utils';
 
 export const PLUGIN_VERSION = '3.4.2';
 
 export const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
 
-export const changeKeysState = async ( activateApiKey, activateApiSecret ) => {
+/**
+ * Sets the value of a TextBox by typing the value into it.
+ *
+ * @param {string} id    The TextBox's ID.
+ * @param {string} value The value to be written into the TextBox.
+ * @return {Promise<void>}
+ */
+export const setTextBoxValue = async ( id, value ) => {
+	await page.focus( '#' + id );
+	await page.evaluate( ( elementId ) => {
+		document.getElementById( elementId ).value = '';
+	}, id );
+	await page.keyboard.type( value );
+};
+
+/**
+ * Sets the Site ID and API Secret to predefined values, using the plugin's
+ * settings page.
+ *
+ * Note: This function should be removed as being replaced by setSiteKeys().
+ *
+ * @param {boolean} setSiteId    Whether the Site ID Should be set.
+ * @param {boolean} setApiSecret Whether the API Secret should be set.
+ * @return {Promise<void>}
+ */
+export const changeKeysState = async ( setSiteId, setApiSecret ) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
 
 	await page.evaluate( () => document.getElementById( 'apikey' ).value = '' );
-	if ( activateApiKey ) {
+	if ( setSiteId ) {
 		await page.focus( '#apikey' );
 		await page.keyboard.type( 'e2etest.example.com' );
 	}
 
 	await page.evaluate( () => document.getElementById( 'api_secret' ).value = '' );
-	if ( activateApiSecret ) {
+	if ( setApiSecret ) {
 		await page.focus( '#api_secret' );
 		await page.keyboard.type( 'somesecret' );
 	}
@@ -25,7 +60,27 @@ export const changeKeysState = async ( activateApiKey, activateApiSecret ) => {
 };
 
 /**
+ * Sets the Site ID and API Secret to the given values, using the plugin's
+ * settings page.
+ *
+ * @param {string} siteId    The site ID to be saved to the database.
+ * @param {string} apiSecret The API Secret to be saved to the database.
+ * @return {Promise<void>}
+ */
+export const setSiteKeys = async ( siteId = 'e2etest.example.com', apiSecret = '' ) => {
+	await visitAdminPage( '/options-general.php', '?page=parsely' );
+
+	await setTextBoxValue( 'apikey', siteId );
+	await setTextBoxValue( 'api_secret', apiSecret );
+
+	await page.click( 'input#submit' );
+	await waitForWpAdmin();
+};
+
+/**
  * Saves the specified Site ID to the database using the settings page.
+ *
+ * Note: This function could be removed as being replaced by setSiteKeys().
  *
  * @param {string} siteId The site ID to be saved to the database.
  * @return {Promise<void>}
@@ -37,6 +92,117 @@ export const setSiteId = async ( siteId = 'e2etest.example.com' ) => {
 	await page.keyboard.type( siteId );
 	await page.keyboard.press( 'Enter' );
 	await waitForWpAdmin();
+};
+
+/**
+ * Sets a new display name for the current WordPress user.
+ *
+ * @param {string} firstName The user's first name.
+ * @param {string} lastName  The user's last name.
+ * @return {Promise<void>}
+ */
+export const setUserDisplayName = async ( firstName, lastName ) => {
+	await visitAdminPage( '/profile.php' );
+
+	await setTextBoxValue( 'first_name', firstName );
+	await setTextBoxValue( 'last_name', lastName );
+
+	// Tab out and give some time for the Display Name dropdown to populate.
+	await page.keyboard.press( 'Tab' );
+	await page.waitForTimeout( 250 );
+
+	// Select the full name if a last name has been given.
+	await page.evaluate( () => document.getElementById( 'display_name' ).selectedIndex = 0 );
+	if ( lastName.length > 0 ) {
+		await page.evaluate( () => document.getElementById( 'display_name' ).selectedIndex = 3 );
+	}
+
+	await page.click( 'input#submit' );
+	await waitForWpAdmin();
+};
+
+/**
+ * Inserts a new record into the specified taxonomy.
+ *
+ * @param {string} recordName   The newly inserted record's name.
+ * @param {string} taxonomyType The taxonomy type (e.g. 'category' or 'post_tag).
+ * @return {Promise<void>}
+ */
+export const insertRecordIntoTaxonomy = async ( recordName, taxonomyType ) => {
+	await visitAdminPage( 'edit-tags.php', '?taxonomy=' + taxonomyType );
+
+	await setTextBoxValue( 'tag-name', recordName );
+
+	await page.click( 'input#submit' );
+	await waitForWpAdmin();
+};
+
+/**
+ * Gets the message returned by the Content Helper according to the various
+ * conditions passed to the function.
+ *
+ * @param {string}  category Name of the category to select in the Post Editor.
+ * @param {string}  tag      Name of the tag to select in the Post Editor.
+ * @param {boolean} offline  Emulate being offline during the operation.
+ * @param {number}  timeout  Milliseconds to wait after category/tag selection.
+ * @return {Promise<string>} The message returned by the Content Helper.
+ */
+export const getContentHelperMessage = async ( category = null, tag = null, offline = false, timeout = 500 ) => {
+	// Selectors
+	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
+	const pluginButton = 'button[aria-label="Parse.ly"]';
+	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel__body.is-opened > p';
+
+	// Run basic operations.
+	await createNewPost();
+	await page.setOfflineMode( offline );
+	await ensureSidebarOpened();
+
+	// Select/add category in the Post Editor.
+	if ( category !== null ) {
+		await page.waitForTimeout( 250 );
+		const categoryToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Categories' );
+		await page.waitForTimeout( 500 );
+		await categoryToggleButton.click();
+		await page.waitForSelector( addCategoryButton, { visible: true } );
+		await page.waitForTimeout( 250 );
+		await page.click( addCategoryButton );
+		await page.keyboard.press( 'Tab' );
+		await page.keyboard.type( category );
+		await page.keyboard.press( 'Enter' );
+		await categoryToggleButton.click();
+	}
+
+	// Select/add tag in the Post Editor.
+	if ( tag !== null ) {
+		await page.waitForTimeout( 250 );
+		const tagToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Tags' );
+		await page.waitForTimeout( 500 );
+		await tagToggleButton.click();
+		await page.keyboard.press( 'Tab' );
+		await page.keyboard.type( tag );
+		await page.keyboard.press( 'Enter' );
+		await tagToggleButton.click();
+	}
+
+	// Add a delay to wait for taxonomy selection/saving.
+	if ( category !== null || tag !== null ) {
+		await page.waitForTimeout( timeout );
+	}
+
+	// Show the Content Helper and get the displayed message.
+	await page.waitForSelector( pluginButton );
+	await page.click( pluginButton );
+	await page.waitForSelector( contentHelperMessage );
+	await page.waitForFunction( // Wait for Content Helper message to appear.
+		'document.querySelector("' + contentHelperMessage + '").innerText.length > 0',
+		{ polling: 'mutation', timeout: 5000 }
+	);
+	const text = await page.$eval( contentHelperMessage, ( element ) => element.textContent );
+
+	await page.setOfflineMode( false );
+
+	return text;
 };
 
 export const checkH2DoesNotExist = async ( text ) => {
