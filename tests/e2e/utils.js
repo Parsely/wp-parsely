@@ -162,7 +162,7 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 	if ( category !== null ) {
 		await page.waitForTimeout( 250 );
 		const categoryToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Categories' );
-		await page.waitForTimeout( 500 );
+		await page.waitForTimeout( 1000 );
 		await categoryToggleButton.click();
 		await page.waitForSelector( addCategoryButton, { visible: true } );
 		await page.waitForTimeout( 250 );
@@ -264,3 +264,15 @@ export const startUpTest = async () => {
 	await activatePlugin( 'wp-parsely' );
 	await waitForWpAdmin();
 };
+
+/**
+ * Returns whether the passed arrays are equal.
+ *
+ * This function is meant to compare very simple arrays.Please don't use it to
+ * compare arrays that contain objects, or that are complex or large.
+ *
+ * @param {Array<string>} array1
+ * @param {Array<string>} array2
+ * @return {boolean} Whether the passed arrays are equal.
+ */
+export const arraysEqual = ( array1, array2 ) => JSON.stringify( array1 ) === JSON.stringify( array2 );
