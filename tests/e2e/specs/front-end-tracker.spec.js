@@ -7,7 +7,7 @@ import * as fs from 'fs';
 /**
  * Internal dependencies
  */
-import { changeKeysState, PLUGIN_VERSION, startUpTest } from '../utils';
+import { setSiteKeys, PLUGIN_VERSION, startUpTest } from '../utils';
 
 const getAssetVersion = () => {
 	const data = fs.readFileSync( 'build/loader.asset.php', { encoding: 'utf8', flag: 'r' } );
@@ -20,7 +20,7 @@ describe( 'Front end tracking code insertion', () => {
 	beforeAll( startUpTest );
 
 	it( 'Should inject loading script homepage', async () => {
-		await changeKeysState( true, false );
+		await setSiteKeys();
 
 		await page.goto( createURL( '/' ) );
 
@@ -34,7 +34,7 @@ describe( 'Front end tracking code insertion', () => {
 	} );
 
 	it( 'Should inject loading script homepage and extra variable', async () => {
-		await changeKeysState( true, true );
+		await setSiteKeys( 'e2etest.example.com', 'somesecret' );
 
 		await page.goto( createURL( '/' ) );
 

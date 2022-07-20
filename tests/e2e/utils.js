@@ -30,36 +30,6 @@ export const setTextBoxValue = async ( id, value ) => {
 };
 
 /**
- * Sets the Site ID and API Secret to predefined values, using the plugin's
- * settings page.
- *
- * Note: This function should be removed as being replaced by setSiteKeys().
- *
- * @param {boolean} setSiteId    Whether the Site ID Should be set.
- * @param {boolean} setApiSecret Whether the API Secret should be set.
- * @return {Promise<void>}
- */
-export const changeKeysState = async ( setSiteId, setApiSecret ) => {
-	await visitAdminPage( '/options-general.php', '?page=parsely' );
-
-	await page.evaluate( () => document.getElementById( 'apikey' ).value = '' );
-	if ( setSiteId ) {
-		await page.focus( '#apikey' );
-		await page.keyboard.type( 'e2etest.example.com' );
-	}
-
-	await page.evaluate( () => document.getElementById( 'api_secret' ).value = '' );
-	if ( setApiSecret ) {
-		await page.focus( '#api_secret' );
-		await page.keyboard.type( 'somesecret' );
-	}
-
-	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'submit\')]' );
-	await input.click();
-	await waitForWpAdmin();
-};
-
-/**
  * Sets the Site ID and API Secret to the given values, using the plugin's
  * settings page.
  *
