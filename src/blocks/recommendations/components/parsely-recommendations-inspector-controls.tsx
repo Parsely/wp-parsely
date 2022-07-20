@@ -24,7 +24,7 @@ interface ParselyRecommendationsInspectorControlsProps {
 }
 
 const ParselyRecommendationsInspectorControls = ( {
-	attributes: { boost, imagestyle, limit, showimages, sort, title },
+	attributes: { boost, imagestyle, limit, openlinksinnewtab, showimages, sort, title },
 	setAttributes,
 } : ParselyRecommendationsInspectorControlsProps ) => (
 	<InspectorControls>
@@ -43,6 +43,13 @@ const ParselyRecommendationsInspectorControls = ( {
 					max={ 25 }
 					onChange={ ( newval ) => setAttributes( { limit: newval } ) }
 					value={ limit }
+				/>
+			</PanelRow>
+			<PanelRow>
+				<ToggleControl
+					label={ __( 'Open Links in New Tab', 'wp-parsely' ) }
+					checked={ openlinksinnewtab }
+					onChange={ () => setAttributes( { openlinksinnewtab: ! openlinksinnewtab } ) }
 				/>
 			</PanelRow>
 			<PanelRow>
