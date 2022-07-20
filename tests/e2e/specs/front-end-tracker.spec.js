@@ -7,7 +7,11 @@ import * as fs from 'fs';
 /**
  * Internal dependencies
  */
-import { setSiteKeys, PLUGIN_VERSION, startUpTest } from '../utils';
+import {
+	PLUGIN_VERSION,
+	setSiteKeys,
+	startUpTest,
+} from '../utils';
 
 const getAssetVersion = () => {
 	const data = fs.readFileSync( 'build/loader.asset.php', { encoding: 'utf8', flag: 'r' } );

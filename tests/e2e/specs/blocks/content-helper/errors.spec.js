@@ -3,8 +3,8 @@
  */
 import {
 	getContentHelperMessage,
-	startUpTest,
 	setSiteKeys,
+	startUpTest,
 } from '../../../utils';
 
 /**

@@ -4,8 +4,8 @@
 import {
 	createNewPost,
 	enablePageDialogAccept,
-	insertBlock,
 	ensureSidebarOpened,
+	insertBlock,
 } from '@wordpress/e2e-test-utils';
 
 /**
