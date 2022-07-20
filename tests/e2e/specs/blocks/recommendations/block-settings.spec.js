@@ -4,14 +4,15 @@
 import {
 	createNewPost,
 	enablePageDialogAccept,
-	insertBlock,
 	ensureSidebarOpened,
+	insertBlock,
 } from '@wordpress/e2e-test-utils';
 
 /**
  * Internal dependencies.
  */
 import {
+	arraysEqual,
 	setSiteId,
 	startUpTest,
 } from '../../../utils';
@@ -46,6 +47,7 @@ describe( 'Recommendations Block', () => {
 		// Open sidebar to start changing settings.
 		await ensureSidebarOpened();
 		const [ titleInput ] = await page.$x( "//label[contains(., 'Title')]/following-sibling::input" );
+		const [ openLinksInNewTabLabel ] = await page.$x( "//label[contains(., 'Open Links in New Tab')]" );
 		const [ showImagesLabel ] = await page.$x( "//label[contains(., 'Show Images')]" );
 		const [ originalImagesLabel ] = await page.$x( "//label[contains(., 'Thumbnail from Parse.ly')]" );
 		const [ thumbnailImagesLabel ] = await page.$x( "//label[contains(., 'Thumbnail from Parse.ly')]" );
@@ -63,6 +65,17 @@ describe( 'Recommendations Block', () => {
 			'document.querySelectorAll(".parsely-recommendations-list > li").length === 5',
 			{ polling: 'mutation', timeout: 3000 }
 		);
+
+		// Verify that toggling "Open Links in New Tab" works.
+		const internalLinkTargets = await getLinkTargets();
+		internalLinkTargets.forEach( function( link ) {
+			expect( arraysEqual( link, [ '_self', '' ] ) ).toBe( true );
+		} );
+		await openLinksInNewTabLabel.click();
+		const externalLinkTargets = await getLinkTargets();
+		externalLinkTargets.forEach( function( link ) {
+			expect( arraysEqual( link, [ '_blank', 'noopener' ] ) ).toBe( true );
+		} );
 
 		// For images, verify that original and thumbnail "src" attributes are different.
 		const originalImagesUrls = await getResultImageUrls();
@@ -113,13 +126,12 @@ async function getResultImageUrls() {
 }
 
 /**
- * Returns whether the passed arrays are equal.
+ * Returns the "target" and "rel" attribute of all links contained within the Block.
  *
- * This function is meant to compare very simple arrays.Please don't use it to
- * compare arrays that contain objects, or that are complex or large.
- *
- * @param {Array<string>} array1
- * @param {Array<string>} array2
- * @return {boolean} Whether the passed arrays are equal.
+ * @return {Promise<Array<string, string>>} The "target" and "rel" attributes of all links contained within the Block.
  */
-const arraysEqual = ( array1, array2 ) => JSON.stringify( array1 ) === JSON.stringify( array2 );
+async function getLinkTargets() {
+	return page.$$eval( '.parsely-recommendations-link', ( links ) => links.map(
+		( link ) => [ link.getAttribute( 'target' ), link.getAttribute( 'rel' ) ] )
+	);
+}
