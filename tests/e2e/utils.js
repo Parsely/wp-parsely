@@ -162,7 +162,7 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 	if ( category !== null ) {
 		await page.waitForTimeout( 250 );
 		const categoryToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Categories' );
-		await page.waitForTimeout( 500 );
+		await page.waitForTimeout( 750 );
 		await categoryToggleButton.click();
 		await page.waitForSelector( addCategoryButton, { visible: true } );
 		await page.waitForTimeout( 250 );
