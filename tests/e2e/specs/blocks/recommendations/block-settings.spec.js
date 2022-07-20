@@ -12,7 +12,7 @@ import {
  * Internal dependencies.
  */
 import {
-	setSiteId,
+	setSiteKeys,
 	startUpTest,
 } from '../../../utils';
 
@@ -33,7 +33,7 @@ describe( 'Recommendations Block', () => {
 	 * Verifies that the Block works correctly when changing settings.
 	 */
 	it( 'Should update correctly when any options are changed', async () => {
-		await setSiteId( 'wpvip.com' );
+		await setSiteKeys( 'wpvip.com' );
 		await createNewPost();
 		await insertBlock( 'Parse.ly' );
 

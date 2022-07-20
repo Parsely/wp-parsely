@@ -48,23 +48,6 @@ export const setSiteKeys = async ( siteId = 'e2etest.example.com', apiSecret = '
 };
 
 /**
- * Saves the specified Site ID to the database using the settings page.
- *
- * Note: This function could be removed as being replaced by setSiteKeys().
- *
- * @param {string} siteId The site ID to be saved to the database.
- * @return {Promise<void>}
- */
-export const setSiteId = async ( siteId = 'e2etest.example.com' ) => {
-	await visitAdminPage( '/options-general.php', '?page=parsely' );
-	await page.focus( '#apikey' );
-	await page.evaluate( () => document.getElementById( 'apikey' ).value = '' );
-	await page.keyboard.type( siteId );
-	await page.keyboard.press( 'Enter' );
-	await waitForWpAdmin();
-};
-
-/**
  * Sets a new display name for the current WordPress user.
  *
  * @param {string} firstName The user's first name.
