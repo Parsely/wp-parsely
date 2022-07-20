@@ -21,6 +21,10 @@
       "type": "number",
       "default": 3
     },
+    "openlinksinnewtab": {
+      "type": "boolean",
+      "default": false
+    },
     "showimages": {
       "type": "boolean",
       "default": true
