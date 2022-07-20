@@ -11,17 +11,19 @@ import { Recommendation } from '../models/Recommendation';
 
 interface ParselyRecommendationsListProps {
 	imagestyle: string;
+	openlinksinnewtab: boolean;
 	recommendations: Recommendation[];
 	showimages: boolean;
 }
 
-const ParselyRecommendationsList = ( { imagestyle, recommendations, showimages }: ParselyRecommendationsListProps ) => (
+const ParselyRecommendationsList = ( { imagestyle, recommendations, showimages, openlinksinnewtab }: ParselyRecommendationsListProps ) => (
 	<ul className="parsely-recommendations-list">
 		{ recommendations.map( ( recommendation, index ) => (
 			<ParselyRecommendationsListItem
-				imagestyle={ imagestyle }
 				imageAlt={ __( 'Image for link', 'wp-parsely' ) }
+				imagestyle={ imagestyle }
 				key={ index }
+				openlinksinnewtab={ openlinksinnewtab }
 				recommendation={ recommendation }
 				showimages={ showimages }
 			/>

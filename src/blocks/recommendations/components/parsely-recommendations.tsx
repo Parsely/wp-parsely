@@ -13,9 +13,10 @@ import { useRecommendationsStore } from '../recommendations-store';
 
 interface ParselyRecommendationsProps {
 	boost: string;
-	limit: number;
 	imagestyle: string;
 	isEditMode: boolean;
+	limit: number;
+	openlinksinnewtab: boolean;
 	showimages: boolean;
 	sort: string;
 	title: string;
@@ -23,9 +24,10 @@ interface ParselyRecommendationsProps {
 
 export default function ParselyRecommendations( {
 	boost,
-	limit,
 	imagestyle,
 	isEditMode,
+	limit,
+	openlinksinnewtab,
 	showimages,
 	sort,
 	title,
@@ -79,6 +81,7 @@ export default function ParselyRecommendations( {
 					<ParselyRecommendationsTitle title={ title } />
 					<ParselyRecommendationsList
 						imagestyle={ imagestyle }
+						openlinksinnewtab={ openlinksinnewtab }
 						recommendations={ recommendations }
 						showimages={ showimages }
 					/>
