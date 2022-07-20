@@ -40,6 +40,11 @@ registerBlockType( name, {
 	icon: LeafIcon,
 	category: 'widgets',
 	edit: ParselyRecommendationsEdit,
+	example: {
+		attributes: {
+			preview: true,
+		},
+	},
 	attributes: {
 		...attributes,
 		title: {
