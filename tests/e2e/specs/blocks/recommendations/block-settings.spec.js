@@ -49,7 +49,6 @@ describe( 'Recommendations Block', () => {
 		const [ titleInput ] = await page.$x( "//label[contains(., 'Title')]/following-sibling::input" );
 		const [ openLinksInNewTabLabel ] = await page.$x( "//label[contains(., 'Open Links in New Tab')]" );
 		const [ showImagesLabel ] = await page.$x( "//label[contains(., 'Show Images')]" );
-		const [ originalImagesLabel ] = await page.$x( "//label[contains(., 'Thumbnail from Parse.ly')]" );
 		const [ thumbnailImagesLabel ] = await page.$x( "//label[contains(., 'Thumbnail from Parse.ly')]" );
 
 		// Verify that changing "Title" works.
@@ -83,7 +82,6 @@ describe( 'Recommendations Block', () => {
 		expect( arraysEqual( originalImagesUrls, await getResultImageUrls() ) ).toBe( false );
 
 		// Verify that toggling "Show Images" works.
-		await originalImagesLabel.click();
 		await showImagesLabel.click( );
 		expect( await resultsContainImage() ).toBe( false );
 	} );
