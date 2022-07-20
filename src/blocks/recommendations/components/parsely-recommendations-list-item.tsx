@@ -17,8 +17,7 @@ interface ParselyRecommendationsListItemProps {
 }
 
 const getImageForLink = ( imagestyle: string, imageUrl: string, thumbUrlMedium: string ) => imagestyle === 'original' ? imageUrl : thumbUrlMedium;
-const getLinkTarget = ( openlinksinnewtab: boolean ) => Boolean( openlinksinnewtab ) === true ? '_blank' : '_self';
-const getLinkRel = ( openlinksinnewtab: boolean ) => Boolean( openlinksinnewtab ) === true ? 'noopener' : '';
+const getLinkTarget = ( openlinksinnewtab: boolean ) => Boolean( openlinksinnewtab ) === true ? { target: '_blank', rel: 'noopener' } : { target: '_self', rel: '' };
 
 const ParselyRecommendationsListItem = ( {
 	imageAlt,
@@ -33,7 +32,7 @@ const ParselyRecommendationsListItem = ( {
 	showimages,
 } : ParselyRecommendationsListItemProps ) => (
 	<li>
-		<a href={ linkUrl } className="parsely-recommendations-link" target={ getLinkTarget( openlinksinnewtab ) } rel={ getLinkRel( openlinksinnewtab ) } >
+		<a href={ linkUrl } className="parsely-recommendations-link" { ... getLinkTarget( openlinksinnewtab ) } >
 			<Card className="parsely-recommendations-card">
 				{ showimages && (
 					<CardMedia className="parsely-recommendations-cardmedia">
