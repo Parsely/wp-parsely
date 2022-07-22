@@ -110,14 +110,13 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 	await createNewPost();
 	await page.setOfflineMode( offline );
 	await ensureSidebarOpened();
-	await page.waitForTimeout( 1500 );
+	await page.waitForTimeout( 1000 );
 
 	// Select/add category in the Post Editor.
 	if ( category !== null ) {
 		const categoryToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Categories' );
 		await categoryToggleButton.click();
 		await page.waitForSelector( addCategoryButton, { visible: true } );
-		await page.waitForTimeout( 250 );
 		await page.click( addCategoryButton );
 		await page.keyboard.press( 'Tab' );
 		await page.keyboard.type( category );
@@ -128,7 +127,6 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 	// Select/add tag in the Post Editor.
 	if ( tag !== null ) {
 		const tagToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Tags' );
-		await page.waitForTimeout( 500 );
 		await tagToggleButton.click();
 		await page.keyboard.press( 'Tab' );
 		await page.keyboard.type( tag );
