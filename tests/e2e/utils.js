@@ -114,8 +114,7 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 	// Select/add category in the Post Editor.
 	if ( category !== null ) {
 		await page.waitForTimeout( 250 );
-		const categoryToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Categories' );
-		await page.waitForTimeout( 1000 );
+		const [ categoryToggleButton ] = await page.$x( "//button[contains(., 'Categories')]" );
 		await categoryToggleButton.click();
 		await page.waitForSelector( addCategoryButton, { visible: true } );
 		await page.waitForTimeout( 250 );
