@@ -111,10 +111,6 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 	await page.setOfflineMode( offline );
 	await ensureSidebarOpened();
 
-	await page.waitForNavigation( {
-		waitUntil: 'networkidle0',
-	} );
-
 	// Select/add category in the Post Editor.
 	if ( category !== null ) {
 		await page.waitForTimeout( 250 );
