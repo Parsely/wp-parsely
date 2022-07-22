@@ -10,8 +10,8 @@ import {
  * Internal dependencies.
  */
 import {
-	startUpTest,
 	setSiteKeys,
+	startUpTest,
 } from '../../../utils';
 
 // Selectors.
