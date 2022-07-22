@@ -1,12 +1,20 @@
 /**
  * External dependencies
  */
-import { createURL, visitAdminPage } from '@wordpress/e2e-test-utils';
+import {
+	createURL,
+	visitAdminPage,
+} from '@wordpress/e2e-test-utils';
 
 /**
  * Internal dependencies
  */
-import { changeKeysState, selectScreenOptions, startUpTest, waitForWpAdmin } from '../utils';
+import {
+	selectScreenOptions,
+	setSiteKeys,
+	startUpTest,
+	waitForWpAdmin,
+} from '../utils';
 
 const setMetadataFormat = async ( format ) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
@@ -23,7 +31,7 @@ const setMetadataFormat = async ( format ) => {
 describe( 'Front end metadata insertion', () => {
 	beforeAll( async () => {
 		await startUpTest();
-		await changeKeysState( true, false );
+		await setSiteKeys();
 		await selectScreenOptions( { recrawl: true, advanced: false } );
 	} );
 

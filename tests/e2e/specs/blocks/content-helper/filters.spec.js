@@ -9,11 +9,11 @@ import {
  * Internal dependencies.
  */
 import {
-	insertRecordIntoTaxonomy,
 	getContentHelperMessage,
+	insertRecordIntoTaxonomy,
+	setSiteKeys,
 	setUserDisplayName,
 	startUpTest,
-	setSiteKeys,
 } from '../../../utils';
 
 /**

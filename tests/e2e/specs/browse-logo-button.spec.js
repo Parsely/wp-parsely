@@ -7,7 +7,10 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
 /**
  * Internal dependencies
  */
-import { startUpTest, waitForWpAdmin } from '../utils';
+import {
+	startUpTest,
+	waitForWpAdmin,
+} from '../utils';
 
 // General initializations.
 const imageLocalPath = path.resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
