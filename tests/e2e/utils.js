@@ -116,7 +116,7 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 	if ( category !== null ) {
 		const categoryToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Categories' );
 		await categoryToggleButton.click();
-		await page.waitForSelector( addCategoryButton, { visible: true } );
+		await page.waitForTimeout( 500 );
 		await page.click( addCategoryButton );
 		await page.keyboard.press( 'Tab' );
 		await page.keyboard.type( category );
