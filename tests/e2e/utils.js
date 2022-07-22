@@ -110,11 +110,11 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 	await createNewPost();
 	await page.setOfflineMode( offline );
 	await ensureSidebarOpened();
+	await page.waitForTimeout( 1500 );
 
 	// Select/add category in the Post Editor.
 	if ( category !== null ) {
-		await page.waitForTimeout( 250 );
-		const [ categoryToggleButton ] = await page.$x( "//button[contains(., 'Categories')]" );
+		const categoryToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Categories' );
 		await categoryToggleButton.click();
 		await page.waitForSelector( addCategoryButton, { visible: true } );
 		await page.waitForTimeout( 250 );
@@ -127,7 +127,6 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 
 	// Select/add tag in the Post Editor.
 	if ( tag !== null ) {
-		await page.waitForTimeout( 250 );
 		const tagToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Tags' );
 		await page.waitForTimeout( 500 );
 		await tagToggleButton.click();
