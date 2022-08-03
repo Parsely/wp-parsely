@@ -182,6 +182,7 @@ function init_recommendations_block(): void {
 	$recommendations_block->run();
 }
 
+require __DIR__ . '/src/blocks/content-helper/class-content-helper.php';
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\init_content_helper' );
 /**
  * Inserts the Content Helper into the WordPress Post Editor.
@@ -189,22 +190,7 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\init_content_helper
  * @since 3.5.0 Moved from Parsely\Scripts\enqueue_block_editor_assets()
  */
 function init_content_helper(): void {
-	$content_helper_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/content-helper.asset.php';
-
-	wp_enqueue_script(
-		'wp-parsely-block-content-helper',
-		plugin_dir_url( PARSELY_FILE ) . 'build/content-helper.js',
-		$content_helper_asset['dependencies'],
-		$content_helper_asset['version'],
-		true
-	);
-
-	wp_enqueue_style(
-		'wp-parsely-block-content-helper',
-		plugin_dir_url( PARSELY_FILE ) . 'build/content-helper.css',
-		array(),
-		$content_helper_asset['version']
-	);
+	( new Content_Helper() )->run();
 }
 
 require __DIR__ . '/src/UI/class-recommended-widget.php';
