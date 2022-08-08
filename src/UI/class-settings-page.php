@@ -302,7 +302,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			Parsely::MENU_SLUG
 		);
 
-		// Get the API Key.
+		// Site ID.
 		$h          = __( 'Your Site ID is typically your own site domain without <code>http(s)://</code> prefixes or trailing <code>/</code> (e.g. <code>mydomain.com</code>).', 'wp-parsely' );
 		$field_id   = 'apikey';
 		$field_args = array(
@@ -324,6 +324,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$field_args
 		);
 
+		// API Secret.
 		/* translators: 1: Opening anchor tag markup, 2: Documentation URL, 3: Opening anchor tag markup continued, 4: Closing anchor tag */
 		$h          = __( 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API and would like to do so, email your account manager or <a href="mailto:support@parsely.com">support@parsely.com</a>.', 'wp-parsely' );
 		$field_id   = 'api_secret';
@@ -341,6 +342,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$field_args
 		);
 
+		// Metadata Secret.
 		$h          = __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' );
 		$field_id   = 'metadata_secret';
 		$field_args = array(
@@ -352,6 +354,30 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$field_id,
 			__( 'Parse.ly Metadata Secret', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
+			Parsely::MENU_SLUG,
+			'basic_settings',
+			$field_args
+		);
+
+		// Metadata Format.
+		/* translators: 1: Opening anchor tag markup, 2: Documentation URL, 3: Opening anchor tag markup continued, 4: Closing anchor tag */
+		$h          = __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with <a href="https://www.parse.ly/help/integration/jsonld/">JSON-LD</a>, but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' );
+		$field_id   = 'meta_type';
+		$field_args = array(
+			'option_key'     => $field_id,
+			'help_text'      => $h,
+			// filter WordPress taxonomies under the hood that should not appear in dropdown.
+			'select_options' => array(
+				'json_ld'        => 'json_ld',
+				'repeated_metas' => 'repeated_metas',
+			),
+			'label_for'      => Parsely::OPTIONS_KEY . "[$field_id]",
+			'filter'         => 'wp_parsely_metadata',
+		);
+		add_settings_field(
+			$field_id,
+			__( 'Metadata Format', 'wp-parsely' ),
+			array( $this, 'print_select_tag' ),
 			Parsely::MENU_SLUG,
 			'basic_settings',
 			$field_args
@@ -458,30 +484,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				'help_text'  => $field_help,
 				'filter'     => 'wp_parsely_trackable_statuses',
 			)
-		);
-
-		// Metadata Format.
-		/* translators: 1: Opening anchor tag markup, 2: Documentation URL, 3: Opening anchor tag markup continued, 4: Closing anchor tag */
-		$h          = __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with <a href="https://www.parse.ly/help/integration/jsonld/">JSON-LD</a>, but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' );
-		$field_id   = 'meta_type';
-		$field_args = array(
-			'option_key'     => $field_id,
-			'help_text'      => $h,
-			// filter WordPress taxonomies under the hood that should not appear in dropdown.
-			'select_options' => array(
-				'json_ld'        => 'json_ld',
-				'repeated_metas' => 'repeated_metas',
-			),
-			'label_for'      => Parsely::OPTIONS_KEY . "[$field_id]",
-			'filter'         => 'wp_parsely_metadata',
-		);
-		add_settings_field(
-			$field_id,
-			__( 'Metadata Format', 'wp-parsely' ),
-			array( $this, 'print_select_tag' ),
-			Parsely::MENU_SLUG,
-			'requires_recrawl_settings',
-			$field_args
 		);
 
 		// Content ID Prefix.

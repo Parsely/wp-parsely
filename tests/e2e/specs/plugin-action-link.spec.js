@@ -6,7 +6,10 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
 /**
  * Internal dependencies
  */
-import { startUpTest, waitForWpAdmin } from '../utils';
+import {
+	startUpTest,
+	waitForWpAdmin,
+} from '../utils';
 
 describe( 'Plugin action link', () => {
 	beforeAll( startUpTest );

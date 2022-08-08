@@ -1,13 +1,16 @@
 /**
  * External dependencies
  */
-import { activateTheme, visitAdminPage } from '@wordpress/e2e-test-utils';
+import {
+	activateTheme,
+	visitAdminPage,
+} from '@wordpress/e2e-test-utils';
 
 /**
  * Internal dependencies
  */
 import {
-	changeKeysState,
+	setSiteKeys,
 	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
@@ -49,7 +52,7 @@ describe( 'Recommended widget', () => {
 	} );
 
 	it( 'Widget should be available but inactive without api key and secret', async () => {
-		await changeKeysState( false, false );
+		await setSiteKeys( '' );
 
 		await visitAdminPage( '/widgets.php', '' );
 		await waitForWpAdmin();
@@ -61,7 +64,7 @@ describe( 'Recommended widget', () => {
 	} );
 
 	it( 'Widget should be available but inactive without api secret', async () => {
-		await changeKeysState( true, false );
+		await setSiteKeys();
 
 		await visitAdminPage( '/widgets.php', '' );
 		await waitForWpAdmin();
