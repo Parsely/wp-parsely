@@ -114,12 +114,11 @@ abstract class ProxyEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that the route is not registered when the
-	 * wp_parsely_enable_related_api_proxy filter is set to false.
+	 * Verifies that the route is not registered when the respective filter is
+	 * set to false.
 	 */
-	public function test_do_not_register_routes_when_related_proxy_is_disabled(): void {
-		// Override some setup steps in order to set the
-		// wp_parsely_enable_related_api_proxy filter to false.
+	public function test_do_not_register_route_when_proxy_is_disabled(): void {
+		// Override some setup steps in order to set the filter to false.
 		remove_action( 'rest_api_init', $this->rest_api_init_proxy );
 		$endpoint                  = $this->get_endpoint();
 		$this->rest_api_init_proxy = static function () use ( $endpoint ) {
