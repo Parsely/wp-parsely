@@ -64,8 +64,8 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
-	public function test_do_not_register_routes_when_related_proxy_is_disabled(): void {
-		parent::test_do_not_register_routes_when_related_proxy_is_disabled();
+	public function test_do_not_register_route_when_proxy_is_disabled(): void {
+		parent::test_do_not_register_route_when_proxy_is_disabled();
 	}
 
 	/**
