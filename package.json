@@ -60,7 +60,7 @@
 		"@wordpress/e2e-test-utils": "^7.9.0",
 		"@wordpress/edit-post": "^6.10.0",
 		"@wordpress/element": "^4.7.0",
-		"@wordpress/env": "^4.9.0",
+		"@wordpress/env": "^5.0.0",
 		"@wordpress/eslint-plugin": "^12.7.0",
 		"@wordpress/hooks": "^3.10.0",
 		"@wordpress/i18n": "^4.5.0",
