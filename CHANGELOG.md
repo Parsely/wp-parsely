@@ -69,7 +69,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Prepare README.md for 3.4.0 release ([#937](https://github.com/Parsely/wp-parsely/pull/937))
 - CONTRIBUTING.md: Add note about svn ([#941](https://github.com/Parsely/wp-parsely/pull/941))
 - Fix failing Recommended Widget test ([#915](https://github.com/Parsely/wp-parsely/pull/915))
 - PHPUnit Tests: Improve comments conformity to Inline Documentation Standards ([#903](https://github.com/Parsely/wp-parsely/pull/903))
