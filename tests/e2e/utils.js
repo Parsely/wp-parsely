@@ -94,13 +94,12 @@ export const insertRecordIntoTaxonomy = async ( recordName, taxonomyType ) => {
  * Gets the message returned by the Content Helper according to the various
  * conditions passed to the function.
  *
- * @param {string}  category Name of the category to select in the Post Editor.
- * @param {string}  tag      Name of the tag to select in the Post Editor.
- * @param {boolean} offline  Emulate being offline during the operation.
- * @param {number}  timeout  Milliseconds to wait after category/tag selection.
+ * @param {string} category Name of the category to select in the Post Editor.
+ * @param {string} tag      Name of the tag to select in the Post Editor.
+ * @param {number} timeout  Milliseconds to wait after category/tag selection.
  * @return {Promise<string>} The message returned by the Content Helper.
  */
-export const getContentHelperMessage = async ( category = null, tag = null, offline = false, timeout = 500 ) => {
+export const getContentHelperMessage = async ( category = null, tag = null, timeout = 500 ) => {
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
@@ -108,7 +107,6 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 
 	// Run basic operations.
 	await createNewPost();
-	await page.setOfflineMode( offline );
 	await ensureSidebarOpened();
 	await page.waitForTimeout( 1000 );
 
@@ -150,8 +148,6 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 		{ polling: 'mutation', timeout: 5000 }
 	);
 	const text = await page.$eval( contentHelperMessage, ( element ) => element.textContent );
-
-	await page.setOfflineMode( false );
 
 	return text;
 };
