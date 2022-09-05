@@ -103,7 +103,7 @@ export const insertRecordIntoTaxonomy = async ( recordName, taxonomyType ) => {
 export const getContentHelperMessage = async ( category = null, tag = null, offline = false, timeout = 500 ) => {
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
-	const pluginButton = 'button[aria-label="Parse.ly"]';
+	const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
 	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel__body.is-opened > p';
 
 	// Run basic operations.
@@ -142,6 +142,8 @@ export const getContentHelperMessage = async ( category = null, tag = null, offl
 	// Show the Content Helper and get the displayed message.
 	await page.waitForSelector( pluginButton );
 	await page.click( pluginButton );
+	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Top-performing related posts' );
+	await topRelatedPostsButton.click();
 	await page.waitForSelector( contentHelperMessage );
 	await page.waitForFunction( // Wait for Content Helper message to appear.
 		'document.querySelector("' + contentHelperMessage + '").innerText.length > 0',
