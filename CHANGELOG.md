@@ -5,6 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.0](https://github.com/Parsely/wp-parsely/compare/3.4.2...3.5.0) - 2022-08-08
+
+### Added
+
+- Add init_content_helper() action ([#1005](https://github.com/Parsely/wp-parsely/pull/1005))
+- Recommendations Block: Add preview in the WordPress Post Editor ([#993](https://github.com/Parsely/wp-parsely/pull/993))
+- Recommendations Block: Add "Open Links in New Tab" option ([#990](https://github.com/Parsely/wp-parsely/pull/990))
+- Add Content Helper tests ([#925](https://github.com/Parsely/wp-parsely/pull/925))
+
+### Changed
+
+- E2E tests: Remove changeKeysState() and setSiteID() functions ([#992](https://github.com/Parsely/wp-parsely/pull/992))
+- Settings page: Move "Metadata Format" setting to "Basic Settings" section ([#966](https://github.com/Parsely/wp-parsely/pull/966))
+- Add stylesheet to Content Helper ([#935](https://github.com/Parsely/wp-parsely/pull/935))
+
+### Dependency Updates
+
+- Bump @types/wordpress__components from 19.10.0 to 19.10.1 ([#971](https://github.com/Parsely/wp-parsely/pull/971))
+- Bump @typescript-eslint/eslint-plugin from 5.25.0 to 5.31.0 ([#998](https://github.com/Parsely/wp-parsely/pull/998))
+- Bump @wordpress/api-fetch from 6.9.0 to 6.10.0 ([#974](https://github.com/Parsely/wp-parsely/pull/974))
+- Bump @wordpress/blocks from 11.11.0 to 11.12.0 ([#978](https://github.com/Parsely/wp-parsely/pull/978))
+- Bump @wordpress/compose from 5.8.0 to 5.10.0 ([#945](https://github.com/Parsely/wp-parsely/pull/945))
+- Bump @wordpress/e2e-test-utils from 7.6.0 to 7.9.0 ([#975](https://github.com/Parsely/wp-parsely/pull/975))
+- Bump @wordpress/edit-post from 6.6.0 to 6.10.0 ([#982](https://github.com/Parsely/wp-parsely/pull/982))
+- Bump @wordpress/env from 4.8.0 to 4.9.0 ([#930](https://github.com/Parsely/wp-parsely/pull/930))
+- Bump @wordpress/eslint-plugin from 12.6.0 to 12.7.0 ([#972](https://github.com/Parsely/wp-parsely/pull/972))
+- Bump @wordpress/plugins from 4.7.0 to 4.11.0 ([#976](https://github.com/Parsely/wp-parsely/pull/976))
+- Bump @wordpress/scripts from 23.2.0 to 23.5.0 ([#973](https://github.com/Parsely/wp-parsely/pull/973))
+- Bump actions/dependency-review-action from 1 to 2 ([#934](https://github.com/Parsely/wp-parsely/pull/934))
+- Bump actions/setup-node from 3.3.0 to 3.4.1 ([#984](https://github.com/Parsely/wp-parsely/pull/984))
+- Bump concurrently from 7.2.2 to 7.3.0 ([#989](https://github.com/Parsely/wp-parsely/pull/989))
+- Bump eslint-plugin-jest from 26.5.3 to 26.6.0 ([#983](https://github.com/Parsely/wp-parsely/pull/983))
+- Bump moment from 2.29.3 to 2.29.4 ([#970](https://github.com/Parsely/wp-parsely/pull/970))
+- Bump octokit/request-action from 2.1.4 to 2.1.6 ([#967](https://github.com/Parsely/wp-parsely/pull/967))
+- Bump terser from 5.12.1 to 5.14.2 ([#994](https://github.com/Parsely/wp-parsely/pull/994))
+- Bump ts-loader from 9.3.0 to 9.3.1 ([#951](https://github.com/Parsely/wp-parsely/pull/951))
+- Bump typescript from 4.7.3 to 4.7.4 ([#958](https://github.com/Parsely/wp-parsely/pull/958))
+
 ## [3.4.2](https://github.com/Parsely/wp-parsely/compare/3.4.1...3.4.2) - 2022-07-07
 
 ### Fixed
@@ -31,7 +69,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Prepare README.md for 3.4.0 release ([#937](https://github.com/Parsely/wp-parsely/pull/937))
 - CONTRIBUTING.md: Add note about svn ([#941](https://github.com/Parsely/wp-parsely/pull/941))
 - Fix failing Recommended Widget test ([#915](https://github.com/Parsely/wp-parsely/pull/915))
 - PHPUnit Tests: Improve comments conformity to Inline Documentation Standards ([#903](https://github.com/Parsely/wp-parsely/pull/903))
