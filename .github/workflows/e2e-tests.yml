@@ -23,7 +23,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Refresh Composer autoloader
+      - name: Refresh Composer autoload files
         run: composer dump-autoload
 
       - name: Use desired version of NodeJS
