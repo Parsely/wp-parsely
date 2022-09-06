@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Panel, PanelBody, PanelHeader } from '@wordpress/components';
+import { Panel, PanelBody } from '@wordpress/components';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { registerPlugin } from '@wordpress/plugins';
 
@@ -15,10 +15,11 @@ import LeafIcon from '../shared/components/leaf-icon';
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
 const renderSidebar = () => (
-	<PluginSidebar icon={ <LeafIcon /> } name="wp-parsely-content-helper" className="wp-parsely-content-helper" title="Parse.ly">
+	<PluginSidebar icon={ <LeafIcon /> } name="wp-parsely-content-helper" className="wp-parsely-content-helper" title={ __( 'Parse.ly Content Helper', 'wp-parsely' ) }>
 		<Panel>
-			<PanelHeader>{ __( 'Parse.ly Content Helper (Beta)', 'wp-parsely' ) }</PanelHeader>
-			<PanelBody><PostList /></PanelBody>
+			<PanelBody title={ __( 'Top-performing related posts', 'wp-parsely' ) } initialOpen={ false }>
+				<PostList />
+			</PanelBody>
 		</Panel>
 	</PluginSidebar>
 );

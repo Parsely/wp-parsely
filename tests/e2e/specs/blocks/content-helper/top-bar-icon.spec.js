@@ -15,7 +15,7 @@ import {
 } from '../../../utils';
 
 // Selectors.
-const pluginButton = 'button[aria-label="Parse.ly"]';
+const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
 
 /**
  * Tests for the Content Helper's top bar icon.
