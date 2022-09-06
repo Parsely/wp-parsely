@@ -9,6 +9,7 @@ import { Schema } from '@wordpress/core-data';
 /**
  * Internal dependencies
  */
+import { PostPerformanceData } from './models/post-performance-data';
 import { SuggestedPost } from './models/suggested-post';
 import { GetTopPostsResult, BuildFetchDataQueryResult } from './models/function-results';
 import apiFetch from '@wordpress/api-fetch';
@@ -20,6 +21,17 @@ interface ApiResponse {
 }
 
 class ContentHelperProvider {
+	static async getPostPerformanceData(): Promise<PostPerformanceData> {
+		const editor = select( 'core/editor' );
+
+		// Get post URL.
+		const currentPost: Schema.Post = editor.getCurrentPost();
+		const postUrl = currentPost.link;
+
+		// Fetch results from API and set the Content Helper's message.
+		return await this.fetchPostPerformance( postUrl );
+	}
+
 	static async getTopPosts(): Promise<GetTopPostsResult> {
 		const editor = select( 'core/editor' );
 
@@ -42,7 +54,7 @@ class ContentHelperProvider {
 		}
 
 		// Fetch results from API and set the Content Helper's message.
-		const data = await this.fetchData( fetchQueryResult );
+		const data = await this.fetchTopPosts( fetchQueryResult );
 		let message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ fetchQueryResult.message }.`;
 
 		if ( typeof data === 'string' ) {
@@ -56,7 +68,16 @@ class ContentHelperProvider {
 		return { message, posts: this.processData( data ) };
 	}
 
-	private static async fetchData( fetchDataQueryResult: BuildFetchDataQueryResult ): Promise<SuggestedPost[] | string> {
+	private static async fetchPostPerformance( postUrl: string ): Promise<PostPerformanceData> {
+		// mock response
+		return {
+			hits: 1000,
+			likes: 50,
+			retweets: 10,
+		};
+	}
+
+	private static async fetchTopPosts( fetchDataQueryResult: BuildFetchDataQueryResult ): Promise<SuggestedPost[] | string> {
 		let response;
 
 		try {
