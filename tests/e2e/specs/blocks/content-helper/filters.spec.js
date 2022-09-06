@@ -83,6 +83,6 @@ describe( 'Content Helper filters', () => {
 	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
 		const categoryName = 'Parse.ly Tips';
 
-		expect( await getContentHelperMessage( categoryName, null, false, 2000 ) ).toMatch( `Top-performing posts in the category "${ categoryName }".` );
+		expect( await getContentHelperMessage( categoryName, null, 2000 ) ).toMatch( `Top-performing posts in the category "${ categoryName }".` );
 	} );
 } );
