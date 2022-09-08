@@ -374,14 +374,15 @@ class Parsely {
 	}
 
 	/**
-	 * Checks to see if Parse.ly user is logged in.
+	 * Checks to see if the current user is a member of the current blog.
 	 *
 	 * @return bool
 	 */
-	public function parsely_is_user_logged_in(): bool {
-		// can't use $blog_id here because it futzes with the global $blog_id.
+	public function is_blog_member_logged_in(): bool {
+		// Can't use $blog_id here because it futzes with the global $blog_id.
 		$current_blog_id = get_current_blog_id();
 		$current_user_id = get_current_user_id();
+
 		return is_user_member_of_blog( $current_user_id, $current_blog_id );
 	}
 
