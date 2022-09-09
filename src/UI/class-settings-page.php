@@ -400,16 +400,16 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			)
 		);
 
-		// Track Logged-in Blog Members.
-		$h = __( 'Choose whether logged-in blog members should be tracked. Note: In some multisite contexts, a user can be logged-in without being a member. Those users will be tracked even when this setting is set to "No". Also, you will no longer see the Parse.ly tracking code on your site if you browse while logged-in.', 'wp-parsely' );
+		// Track logged-in users.
+		$h = __( 'Choose whether logged-in visitors should be tracked. You will no longer see the Parse.ly tracking code on your site if you browse while logged-in. Note: For WordPress multisite, a user must be logged-in to the current site to be considered logged-in.', 'wp-parsely' );
 		add_settings_field(
 			'track_authenticated_users',
-			__( 'Track Logged-in Blog Members', 'wp-parsely' ),
+			__( 'Track Logged-in Users', 'wp-parsely' ),
 			array( $this, 'print_binary_radio_tag' ),
 			Parsely::MENU_SLUG,
 			'basic_settings',
 			array(
-				'title'      => __( 'Track Logged-in Blog Members', 'wp-parsely' ), // Passed for legend element.
+				'title'      => __( 'Track Logged-in Users', 'wp-parsely' ), // Passed for legend element.
 				'option_key' => 'track_authenticated_users',
 				'help_text'  => $h,
 			)
