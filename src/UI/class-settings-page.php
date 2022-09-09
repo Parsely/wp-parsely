@@ -401,7 +401,10 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		);
 
 		// Track logged-in users.
-		$h = __( 'Choose whether logged-in visitors should be tracked. You will no longer see the Parse.ly tracking code on your site if you browse while logged-in. Note: For WordPress multisite, a user must be logged-in to the current site to be considered logged-in.', 'wp-parsely' );
+		$h = __( 'Choose whether logged-in visitors should be tracked. You will no longer see the Parse.ly tracking code on your site if you browse while logged-in.', 'wp-parsely' );
+		if ( is_multisite() ) {
+			$h .= __( ' Note: For WordPress multisite, a user must be logged-in to the current site to be considered logged-in.', 'wp-parsely' );
+		}
 		add_settings_field(
 			'track_authenticated_users',
 			__( 'Track Logged-in Users', 'wp-parsely' ),
