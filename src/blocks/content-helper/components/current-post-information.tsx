@@ -8,15 +8,15 @@ import { useEffect, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import ContentHelperProvider from '../content-helper-provider';
-import { PostPerformanceData } from '../models/post-performance-data';
+import { CurrentPostInformationData } from '../models/current-post-information-data';
 
 const FETCH_RETRIES = 3;
 
-type PostPerformanceTableProps = {
-	data: PostPerformanceData;
+type PostInformationTableProps = {
+	data: CurrentPostInformationData;
 };
 
-function PostPerformanceTable( props: PostPerformanceTableProps ) {
+function PostInformationTable( props: PostInformationTableProps ) {
 	return (
 		<table>
 			<thead>
@@ -39,16 +39,16 @@ function PostPerformanceTable( props: PostPerformanceTableProps ) {
 	);
 }
 
-function PostPerformance() {
+function PostInformation() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<string>( null );
-	const [ performanceData, setPerformanceData ] = useState<PostPerformanceData>( {} );
+	const [ postInformationData, setInformationData ] = useState<CurrentPostInformationData>( {} );
 
 	useEffect( () => {
 		const fetchPosts = async ( retries: number ) => {
-			ContentHelperProvider.getPostPerformanceData()
+			ContentHelperProvider.getCurrentPostInformationData()
 				.then( ( result ) => {
-					setPerformanceData( result );
+					setInformationData( result );
 					setLoading( false );
 				} )
 				.catch( async ( err: string ) => {
@@ -72,9 +72,9 @@ function PostPerformance() {
 
 	return (
 		<>
-			{ loading ? <Spinner /> : <PostPerformanceTable data={ performanceData } /> }
+			{ loading ? <Spinner /> : <PostInformationTable data={ postInformationData } /> }
 		</>
 	);
 }
 
-export default PostPerformance;
+export default PostInformation;

@@ -9,7 +9,7 @@ import { Schema } from '@wordpress/core-data';
 /**
  * Internal dependencies
  */
-import { PostPerformanceData } from './models/post-performance-data';
+import { CurrentPostInformationData } from './models/current-post-information-data';
 import { SuggestedPost } from './models/suggested-post';
 import { GetTopPostsResult, BuildFetchDataQueryResult } from './models/function-results';
 import apiFetch from '@wordpress/api-fetch';
@@ -21,7 +21,7 @@ interface ApiResponse {
 }
 
 class ContentHelperProvider {
-	static async getPostPerformanceData(): Promise<PostPerformanceData> {
+	static async getCurrentPostInformationData(): Promise<CurrentPostInformationData> {
 		const editor = select( 'core/editor' );
 
 		// Get post URL.
@@ -29,7 +29,7 @@ class ContentHelperProvider {
 		const postUrl = currentPost.link;
 
 		// Fetch results from API and set the Content Helper's message.
-		return await this.fetchPostPerformance( postUrl );
+		return await this.fetchCurrentPostInformation( postUrl );
 	}
 
 	static async getTopPosts(): Promise<GetTopPostsResult> {
@@ -68,7 +68,7 @@ class ContentHelperProvider {
 		return { message, posts: this.processData( data ) };
 	}
 
-	private static async fetchPostPerformance( postUrl: string ): Promise<PostPerformanceData> {
+	private static async fetchCurrentPostInformation( postUrl: string ): Promise<CurrentPostInformationData> {
 		// mock response
 		return {
 			hits: 1000,
