@@ -42,7 +42,7 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 	 */
 	protected function generate_data( array $response ): array {
 		$date_format    = get_option( 'date_format' );
-		$stats_base_url = trailingslashit( 'https://dash.parsely.com/' . esc_js( $this->parsely->get_api_key() ) ) . 'find';
+		$stats_base_url = trailingslashit( 'https://dash.parsely.com/' . $this->parsely->get_api_key() ) . 'find';
 
 		$result = array_map(
 			static function( stdClass $item ) use ( $date_format, $stats_base_url ) {
