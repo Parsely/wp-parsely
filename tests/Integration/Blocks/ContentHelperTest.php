@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Blocks;
 
 use Parsely\Content_Helper;
+use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 
 /**
@@ -29,7 +30,7 @@ final class ContentHelperTest extends TestCase {
 	 * @group blocks
 	 */
 	public function test_content_helper_files_get_enqueued_on_run(): void {
-		( new Content_Helper() )->run();
+		( new Content_Helper( new Parsely() ) )->run();
 		self::assertTrue( wp_script_is( self::BLOCK_NAME ) );
 		self::assertTrue( wp_style_is( self::BLOCK_NAME ) );
 	}
