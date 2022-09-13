@@ -318,7 +318,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::parsely_is_user_logged_in
+	 * @uses \Parsely\Parsely::is_blog_member_logged_in
 	 * @uses \Parsely\Parsely::get_api_key
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -366,7 +366,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::parsely_is_user_logged_in
+	 * @uses \Parsely\Parsely::is_blog_member_logged_in
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Parsely::get_api_key
