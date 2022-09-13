@@ -85,7 +85,7 @@ class Scripts {
 		if ( in_array( get_post_type(), $parsely_options['track_post_types'], true ) && ! Parsely::post_has_trackable_status( $post ) ) {
 			$display = false;
 		}
-		if ( ! $parsely_options['track_authenticated_users'] && $this->parsely->parsely_is_user_logged_in() ) {
+		if ( ! $parsely_options['track_authenticated_users'] && $this->parsely->is_blog_member_logged_in() ) {
 			$display = false;
 		}
 		if ( ! in_array( get_post_type(), $parsely_options['track_post_types'], true ) && ! in_array( get_post_type(), $parsely_options['track_page_types'], true ) ) {

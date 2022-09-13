@@ -83,7 +83,7 @@ final class Metadata_Renderer {
 			$this->parsely->api_key_is_missing() ||
 
 			// Chosen not to track logged-in users.
-			( ! $parsely_options['track_authenticated_users'] && $this->parsely->parsely_is_user_logged_in() ) ||
+			( ! $parsely_options['track_authenticated_users'] && $this->parsely->is_blog_member_logged_in() ) ||
 
 			// 404 pages are not tracked.
 			is_404() ||
