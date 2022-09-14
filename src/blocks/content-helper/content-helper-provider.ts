@@ -25,7 +25,7 @@ class ContentHelperProvider {
 		const editor = select( 'core/editor' );
 
 		// Get post URL.
-		const currentPost: Schema.Post = editor.getCurrentPost();
+		const currentPost: Post = editor.getCurrentPost();
 		const postUrl = currentPost.link;
 
 		// Fetch results from API and set the Content Helper's message.
