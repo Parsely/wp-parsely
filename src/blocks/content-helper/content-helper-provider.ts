@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { select } from '@wordpress/data';
 // eslint-disable-next-line import/named
-import { Schema } from '@wordpress/core-data';
+import { Post, Taxonomy, User } from '@wordpress/core-data';
 
 /**
  * Internal dependencies
@@ -24,16 +24,16 @@ class ContentHelperProvider {
 		const editor = select( 'core/editor' );
 
 		// Get post's author.
-		const currentPost = editor.getCurrentPost() as Schema.Post;
-		const author = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author ) as Schema.User;
+		const currentPost: Post = editor.getCurrentPost();
+		const author: User = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author );
 
 		// Get post's first category.
 		const categoryIds = editor.getEditedPostAttribute( 'categories' ) as Array<number>;
-		const category = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryIds[ 0 ] ) as Schema.Taxonomy;
+		const category: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryIds[ 0 ] );
 
 		// Get post's first tag.
 		const tagIds = editor.getEditedPostAttribute( 'tags' ) as Array<number>;
-		const tag = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagIds[ 0 ] ) as Schema.Taxonomy;
+		const tag: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagIds[ 0 ] );
 
 		// Create API query.
 		const fetchQueryResult = this.buildFetchDataQuery( author, category, tag );
@@ -75,7 +75,7 @@ class ContentHelperProvider {
 		return response?.data || [];
 	}
 
-	private static buildFetchDataQuery( author: Schema.User, category: Schema.Taxonomy, tag: Schema.Taxonomy ): BuildFetchDataQueryResult {
+	private static buildFetchDataQuery( author: User, category: Taxonomy, tag: Taxonomy ): BuildFetchDataQueryResult {
 		const limit = 5;
 
 		if ( ! author && ! category && ! tag ) {
