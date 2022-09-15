@@ -10,11 +10,11 @@ import '@testing-library/jest-dom';
 /**
  * Internal dependencies.
  */
-import PostList from '../../../../src/blocks/content-helper/components/post-list';
+import RelatedTopPostList from '../../../../src/blocks/content-helper/components/related-top-post-list';
 
 describe( 'Content Helper', () => {
 	it( 'should display spinner when starting', () => {
-		render( <PostList /> );
+		render( <RelatedTopPostList /> );
 
 		const spinner = screen.getByRole( 'presentation' );
 		expect( spinner ).toBeVisible();

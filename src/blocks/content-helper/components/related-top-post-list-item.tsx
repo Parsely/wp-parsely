@@ -7,13 +7,13 @@ import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { SuggestedPost } from '../models/suggested-post';
+import { RelatedTopPostData } from '../models/related-top-post-data';
 
-interface PostCardProps {
-	post: SuggestedPost;
+interface RelatedTopPostListItemProps {
+	post: RelatedTopPostData;
 }
 
-function PostCard( { post }: PostCardProps ) {
+function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ) {
 	return (
 		<>
 			<Card size="small" elevation={ 2 } className="parsely-content-helper-card">
@@ -34,4 +34,4 @@ function PostCard( { post }: PostCardProps ) {
 	);
 }
 
-export default PostCard;
+export default RelatedTopPostListItem;
