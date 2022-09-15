@@ -11,6 +11,7 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * Internal dependencies
  */
+import { CurrentPostDetailsData } from './models/current-post-details-data';
 import { RelatedTopPostData } from './models/related-top-post-data';
 
 /**
@@ -40,6 +41,38 @@ interface GetRelatedTopPostsResult {
 }
 
 class ContentHelperProvider {
+	/**
+	 * Returns details about the post that is currently being edited within the
+	 * WordPress Block Editor.
+	 *
+	 * @return {Promise<CurrentPostDetailsData>} The current post's details.
+	 */
+	static async getCurrentPostDetails(): Promise<CurrentPostDetailsData> {
+		const editor = select( 'core/editor' );
+
+		// Get post URL.
+		const currentPost: Post = editor.getCurrentPost();
+		const postUrl = currentPost.link;
+
+		// Fetch results from API and set the Content Helper's message.
+		return await this.fetchCurrentPostDetailsFromWpEndpoint( postUrl );
+	}
+
+	/**
+	 * Fetches the details of the current post from the WordPress REST API.
+	 *
+	 * @param {string} postUrl
+	 * @return {Promise<CurrentPostDetailsData>} The current post's details.
+	 */
+	private static async fetchCurrentPostDetailsFromWpEndpoint( postUrl: string ): Promise<CurrentPostDetailsData> {
+		// mock response
+		return {
+			hits: 1000,
+			likes: 50,
+			retweets: 10,
+		};
+	}
+
 	/**
 	 * Returns related top-performing posts to the one that is currently being
 	 * edited within the WordPress Block Editor.
