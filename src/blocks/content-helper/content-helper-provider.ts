@@ -20,7 +20,7 @@ import { RelatedTopPostData } from './models/related-top-post-data';
 interface RelatedTopPostsApiQuery {
 	message: string;
 	query: null | {
-		[ key: string ]: string;
+		[ key: string ]: string | number | Taxonomy;
 	};
 }
 
