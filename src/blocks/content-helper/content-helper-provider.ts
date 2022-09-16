@@ -19,7 +19,9 @@ import { RelatedTopPostData } from './models/related-top-post-data';
  */
 interface RelatedTopPostsApiQuery {
 	message: string;
-	query: object;
+	query: null | {
+		[ key: string ]: string;
+	};
 }
 
 /**
