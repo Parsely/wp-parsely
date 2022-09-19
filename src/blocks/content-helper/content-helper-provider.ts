@@ -90,15 +90,15 @@ class ContentHelperProvider {
 	/**
 	 * Fetches the related top-performing posts data from the WordPress REST API.
 	 *
-	 * @param {RelatedTopPostsApiQuery} fetchDataQueryResult
+	 * @param {RelatedTopPostsApiQuery} query
 	 * @return {Promise<Array<RelatedTopPostData>>} Array of fetched posts or empty array.
 	 */
-	private static async fetchRelatedTopPostsFromWpEndpoint( fetchDataQueryResult: RelatedTopPostsApiQuery ): Promise<RelatedTopPostData[] | string> {
+	private static async fetchRelatedTopPostsFromWpEndpoint( query: RelatedTopPostsApiQuery ): Promise<RelatedTopPostData[] | string> {
 		let response;
 
 		try {
 			response = await apiFetch( {
-				path: addQueryArgs( '/wp-parsely/v1/analytics/posts', fetchDataQueryResult.query ),
+				path: addQueryArgs( '/wp-parsely/v1/analytics/posts', query.query ),
 			} ) as RelatedTopPostsApiResponse;
 		} catch ( wpError ) {
 			return `${ __( 'WordPress Error:', 'wp-parsely' ) } ${ wpError.message }`;
