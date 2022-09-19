@@ -200,7 +200,7 @@ add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_regist
  * Registers the Parse.ly Recommended widget.
  */
 function parsely_recommended_widget_register(): void {
-	register_widget( Recommended_Widget::class );
+	register_widget( new Recommended_Widget( $GLOBALS['parsely'] ) );
 }
 
 require __DIR__ . '/src/Integrations/class-integration.php';
