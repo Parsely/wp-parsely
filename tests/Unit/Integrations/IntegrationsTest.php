@@ -74,12 +74,12 @@ final class IntegrationsTest extends TestCase {
 		// See https://github.com/Parsely/wp-parsely/issues/426.
 		if ( method_exists( $mock_builder, 'onlyMethods' ) ) {
 			$mock_integration = $mock_builder->onlyMethods( array( 'integrate' ) )
-			->setConstructorArgs( array( self::$parsely ) )
-			->getMock();
+				->setConstructorArgs( array( self::$parsely ) )
+				->getMock();
 		} else {
 			$mock_integration = $mock_builder->setMethods( array( 'integrate' ) )
-			->setConstructorArgs( array( self::$parsely ) )
-			->getMock();
+				->setConstructorArgs( array( self::$parsely ) )
+				->getMock();
 		}
 		$mock_integration->expects( $this->once() )->method( 'integrate' );
 
