@@ -168,10 +168,15 @@ add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
  *
  * @since 2.6.0
  *
+ * @param Parsely|string|null $parsely The Parsely object to pass to the integrations.
  * @return Integrations
  */
-function parsely_integrations(): Integrations {
-	$parsely_integrations = new Integrations();
+function parsely_integrations( $parsely = null ): Integrations {
+	if ( empty( $parsely ) || get_class( $parsely ) !== Parsely::class ) {
+		$parsely = $GLOBALS['parsely'];
+	}
+
+	$parsely_integrations = new Integrations( $parsely );
 	$parsely_integrations->register( 'amp', Amp::class );
 	$parsely_integrations->register( 'fbia', Facebook_Instant_Articles::class );
 	$parsely_integrations->register( 'webstories', Google_Web_Stories::class );

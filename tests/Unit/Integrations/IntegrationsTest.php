@@ -11,6 +11,7 @@ namespace Parsely\Tests\Unit\Integrations;
 
 use Parsely\Integrations\Integration;
 use Parsely\Integrations\Integrations;
+use Parsely\Parsely;
 use ReflectionClass;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
@@ -19,12 +20,28 @@ use Yoast\WPTestUtils\BrainMonkey\TestCase;
  */
 final class IntegrationsTest extends TestCase {
 	/**
+	 * Internal variable.
+	 *
+	 * @var Parsely $parsely Holds the Parsely object.
+	 */
+	private static $parsely;
+
+	/**
+	 * Setup method called before each test.
+	 */
+	public function set_up(): void {
+		parent::set_up();
+
+		self::$parsely = new Parsely();
+	}
+
+	/**
 	 * Verifies that registering and overriding integrations works as expected.
 	 *
 	 * @covers \Parsely\Integrations\Integrations::register
 	 */
 	public function test_an_integration_can_be_registered_to_a_new_Integrations_object(): void {
-		$integrations = new Integrations();
+		$integrations = new Integrations( self::$parsely );
 
 		$integrations->register( 'class', FakeIntegration::class );
 		$integrations->register( 'object', new FakeIntegration() );
@@ -56,13 +73,17 @@ final class IntegrationsTest extends TestCase {
 		$mock_builder = $this->getMockBuilder( Integration::class );
 		// See https://github.com/Parsely/wp-parsely/issues/426.
 		if ( method_exists( $mock_builder, 'onlyMethods' ) ) {
-			$mock_integration = $mock_builder->onlyMethods( array( 'integrate' ) )->getMock();
+			$mock_integration = $mock_builder->onlyMethods( array( 'integrate' ) )
+			->setConstructorArgs( array( self::$parsely ) )
+			->getMock();
 		} else {
-			$mock_integration = $mock_builder->setMethods( array( 'integrate' ) )->getMock();
+			$mock_integration = $mock_builder->setMethods( array( 'integrate' ) )
+			->setConstructorArgs( array( self::$parsely ) )
+			->getMock();
 		}
 		$mock_integration->expects( $this->once() )->method( 'integrate' );
 
-		$integrations = new Integrations();
+		$integrations = new Integrations( self::$parsely );
 		$integrations->register( 'mock-integration', $mock_integration );
 
 		$integrations->integrate();
