@@ -1,4 +1,4 @@
-export interface SuggestedPost {
+export interface RelatedTopPostData {
 	author: string;
 	date: string;
 	id: number;

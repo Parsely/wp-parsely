@@ -9,7 +9,7 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
-import PostList from './components/post-list';
+import RelatedTopPostList from './components/related-top-post-list';
 import LeafIcon from '../shared/components/leaf-icon';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
@@ -17,8 +17,8 @@ const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 const renderSidebar = () => (
 	<PluginSidebar icon={ <LeafIcon /> } name="wp-parsely-content-helper" className="wp-parsely-content-helper" title={ __( 'Parse.ly Content Helper', 'wp-parsely' ) }>
 		<Panel>
-			<PanelBody title={ __( 'Top-performing related posts', 'wp-parsely' ) } initialOpen={ false }>
-				<PostList />
+			<PanelBody title={ __( 'Related top-performing posts', 'wp-parsely' ) } initialOpen={ false }>
+				<RelatedTopPostList />
 			</PanelBody>
 		</Panel>
 	</PluginSidebar>
