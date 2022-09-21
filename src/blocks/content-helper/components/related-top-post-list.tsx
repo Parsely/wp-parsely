@@ -8,20 +8,20 @@ import { useEffect, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import ContentHelperProvider from '../content-helper-provider';
-import PostCard from './post-card';
-import { SuggestedPost } from '../models/suggested-post';
+import RelatedTopPostListItem from './related-top-post-list-item';
+import { RelatedTopPostData } from '../models/related-top-post-data';
 
 const FETCH_RETRIES = 3;
 
-function PostList() {
+function RelatedTopPostList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<string>( null );
 	const [ message, setMessage ] = useState<string>( null );
-	const [ posts, setPosts ] = useState<SuggestedPost[]>( [] );
+	const [ posts, setPosts ] = useState<RelatedTopPostData[]>( [] );
 
 	useEffect( () => {
 		const fetchPosts = async ( retries: number ) => {
-			ContentHelperProvider.getTopPosts()
+			ContentHelperProvider.getRelatedTopPosts()
 				.then( ( result ) => {
 					setPosts( result.posts );
 					setMessage( result.message );
@@ -46,7 +46,7 @@ function PostList() {
 		return <p>{ error }</p>;
 	}
 
-	const postList = posts.map( ( post ) => <PostCard key={ post.id } post={ post } /> );
+	const postList = posts.map( ( post ) => <RelatedTopPostListItem key={ post.id } post={ post } /> );
 	return (
 		<>
 			<p>{ message }</p>
@@ -55,4 +55,4 @@ function PostList() {
 	);
 }
 
-export default PostList;
+export default RelatedTopPostList;
