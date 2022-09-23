@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 
@@ -15,7 +16,7 @@ const FETCH_RETRIES = 3;
 
 function PostList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
-	const [ error, setError ] = useState<string>( null );
+	const [ error, setError ] = useState( null );
 	const [ message, setMessage ] = useState<string>( null );
 	const [ posts, setPosts ] = useState<SuggestedPost[]>( [] );
 
@@ -27,7 +28,7 @@ function PostList() {
 					setMessage( result.message );
 					setLoading( false );
 				} )
-				.catch( async ( err: string ) => {
+				.catch( async ( err ) => {
 					if ( retries > 0 ) {
 						await new Promise( ( r ) => setTimeout( r, 500 ) );
 						await fetchPosts( retries - 1 );
@@ -43,7 +44,12 @@ function PostList() {
 	}, [] );
 
 	if ( error ) {
-		return <p>{ error }</p>;
+		if ( error?.message ) {
+			return <p>{ __( 'Error:', 'wp-parsely' ) } { error.message }</p>;
+		}
+
+		const errorMessage = JSON.stringify( error ).match( /\[\"(.*?)\"\]/ )[ 1 ];
+		return <p>{ __( 'Error:', 'wp-parsely' ) } { errorMessage }</p>;
 	}
 
 	const postList = posts.map( ( post ) => <PostCard key={ post.id } post={ post } /> );
