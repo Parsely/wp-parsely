@@ -14,7 +14,10 @@ import { SuggestedPost } from '../models/suggested-post';
 
 const FETCH_RETRIES = 3;
 
-function PostList() {
+/**
+ * List of the related top posts.
+ */
+function RelatedTopPostList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState( null );
 	const [ message, setMessage ] = useState<string>( null );
@@ -43,15 +46,25 @@ function PostList() {
 		fetchPosts( FETCH_RETRIES );
 	}, [] );
 
+	// Show error message or contact message.
 	if ( error ) {
+		// Errors that should be converted to a contact message.
+		if ( error?.errors?.parsely_site_id_not_set ||
+				error?.errors?.parsely_api_secret_not_set ) {
+			return ContactUsMessage();
+		}
+
+		// Error coming from apiFetch.
 		if ( error?.message ) {
 			return <p>{ __( 'Error:', 'wp-parsely' ) } { error.message }</p>;
 		}
 
+		// Error coming from the WordPress REST API.
 		const errorMessage = JSON.stringify( error ).match( /\[\"(.*?)\"\]/ )[ 1 ];
 		return <p>{ __( 'Error:', 'wp-parsely' ) } { errorMessage }</p>;
 	}
 
+	// Show related top posts list.
 	const postList = posts.map( ( post ) => <PostCard key={ post.id } post={ post } /> );
 	return (
 		<>
@@ -61,4 +74,31 @@ function PostList() {
 	);
 }
 
-export default PostList;
+/**
+ * "Contact Us" component that we display in place of certain errors.
+ */
+function ContactUsMessage() {
+	return (
+		<>
+			<p className="margin-top-small">
+				{ /* eslint-disable-next-line react/jsx-no-target-blank */ }
+				<a href="https://www.parse.ly/contact" target="_blank" rel="noopener">
+					{ __( 'Contact us', 'wp-parsely' ) + ' ' }
+				</a>
+				{ __( 'about advanced plugin features and the Parse.ly dashboard.', 'wp-parsely' ) }
+			</p>
+			<p>
+				{ __(
+					'Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in',
+					'wp-parsely'
+				) + ' ' }
+				{ /* eslint-disable-next-line react/jsx-no-target-blank */ }
+				<a href="/wp-admin/options-general.php?page=parsely" target="_blank" rel="noopener">
+					{ __( 'wp-parsely options.', 'wp-parsely' ) }
+				</a>
+			</p>
+		</>
+	);
+}
+
+export default RelatedTopPostList;
