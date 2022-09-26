@@ -159,7 +159,7 @@ add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_regist
  * Registers the Parse.ly Recommended widget.
  */
 function parsely_recommended_widget_register(): void {
-	register_widget( Recommended_Widget::class );
+	register_widget( new Recommended_Widget( $GLOBALS['parsely'] ) );
 }
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
@@ -168,10 +168,18 @@ add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
  *
  * @since 2.6.0
  *
+ * @param Parsely|string|null $parsely The Parsely object to pass to the integrations.
  * @return Integrations
  */
-function parsely_integrations(): Integrations {
-	$parsely_integrations = new Integrations();
+function parsely_integrations( $parsely = null ): Integrations {
+	// If $parsely value is "", then this function is being called by the init
+	// hook and we can get the value from $GLOBALS. If $parsely is an instance
+	// of the Parsely object, then this function is being called by a test.
+	if ( empty( $parsely ) || get_class( $parsely ) !== Parsely::class ) {
+		$parsely = $GLOBALS['parsely'];
+	}
+
+	$parsely_integrations = new Integrations( $parsely );
 	$parsely_integrations->register( 'amp', Amp::class );
 	$parsely_integrations->register( 'fbia', Facebook_Instant_Articles::class );
 	$parsely_integrations->register( 'webstories', Google_Web_Stories::class );

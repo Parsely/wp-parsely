@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\Integrations;
 
-use Parsely;
+use Parsely\Parsely;
 use Parsely\Integrations\Amp;
 use Parsely\Tests\Integration\TestCase;
 
@@ -18,12 +18,28 @@ use Parsely\Tests\Integration\TestCase;
  */
 final class AmpTest extends TestCase {
 	/**
+	 * Internal variable.
+	 *
+	 * @var Parsely $parsely Holds the Parsely object.
+	 */
+	private static $parsely;
+
+	/**
+	 * Setup method called before each test.
+	 */
+	public function set_up(): void {
+		parent::set_up();
+
+		self::$parsely = new Parsely();
+	}
+
+	/**
 	 * Verifies that the integration is active only if the AMP plugin is active.
 	 *
 	 * @covers \Parsely\Integrations\Amp::integrate
 	 */
 	public function test_integration_only_runs_when_AMP_plugin_is_active(): void {
-		$amp = new Amp();
+		$amp = new Amp( self::$parsely );
 
 		// AMP plugin inactive.
 		$amp->integrate();
@@ -47,7 +63,9 @@ final class AmpTest extends TestCase {
 		// Mock the Amp class, but only the can_handle_amp_request() method.
 		// This leaves the other methods unmocked, and therefore testable.
 
-		$amp_mock = $this->getMockBuilder( Amp::class )->setMethods( array( 'can_handle_amp_request' ) )->getMock();
+		$amp_mock = $this->getMockBuilder( Amp::class )->setMethods( array( 'can_handle_amp_request' ) )
+			->setConstructorArgs( array( self::$parsely ) )
+			->getMock();
 
 		// On the first run, let can_handle_amp_request() return false, then
 		// true on second run.
@@ -74,7 +92,9 @@ final class AmpTest extends TestCase {
 		// Mock the Amp class, but only the is_amp_request() method. This leaves
 		// the other methods unmocked, and therefore testable.
 
-		$amp_mock = $this->getMockBuilder( Amp::class )->setMethods( array( 'is_amp_request' ) )->getMock();
+		$amp_mock = $this->getMockBuilder( Amp::class )->setMethods( array( 'is_amp_request' ) )
+			->setConstructorArgs( array( self::$parsely ) )
+			->getMock();
 
 		// Make is_amp_request() always return true.
 		$amp_mock->method( 'is_amp_request' )->willReturn( true );
@@ -99,7 +119,7 @@ final class AmpTest extends TestCase {
 	 * @group settings
 	 */
 	public function test_can_register_Parsely_for_AMP_analytics(): void {
-		$amp       = new Parsely\Integrations\Amp();
+		$amp       = new Amp( self::$parsely );
 		$analytics = array();
 
 		// If apikey is empty, $analytics are returned.
@@ -126,7 +146,7 @@ final class AmpTest extends TestCase {
 	 * @group settings
 	 */
 	public function test_can_register_Parsely_for_AMP_native_analytics(): void {
-		$amp       = new Parsely\Integrations\Amp();
+		$amp       = new Amp( self::$parsely );
 		$analytics = array();
 
 		// If apikey is empty, $analytics are returned.
