@@ -172,6 +172,9 @@ add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
  * @return Integrations
  */
 function parsely_integrations( $parsely = null ): Integrations {
+	// If $parsely value is "", then this function is being called by the init
+	// hook and we can get the value from $GLOBALS. If $parsely is an instance
+	// of the Parsely object, then this function is being called by a test.
 	if ( empty( $parsely ) || get_class( $parsely ) !== Parsely::class ) {
 		$parsely = $GLOBALS['parsely'];
 	}
