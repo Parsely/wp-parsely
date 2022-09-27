@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\Integrations;
 
+use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use ReflectionClass;
 
@@ -42,7 +43,7 @@ final class IntegrationsTest extends TestCase {
 			}
 		);
 
-		$integrations = parsely_integrations();
+		$integrations = parsely_integrations( new Parsely() );
 
 		// Use Reflection to look inside the collection.
 		$reflector_property = ( new ReflectionClass( $integrations ) )->getProperty( 'integrations' );

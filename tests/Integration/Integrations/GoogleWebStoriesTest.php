@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\Integrations;
 
 use Parsely\Integrations\Google_Web_Stories;
+use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 
 /**
@@ -40,7 +41,7 @@ final class GoogleWebStoriesTest extends TestCase {
 	public function set_up(): void {
 		parent::set_up();
 
-		self::$google = new Google_Web_Stories();
+		self::$google = new Google_Web_Stories( new Parsely() );
 	}
 
 	/**
