@@ -80,7 +80,7 @@ function RelatedTopPostList() {
 function ContactUsMessage() {
 	return (
 		<>
-			<p className="margin-top-small">
+			<p>
 				{ /* eslint-disable-next-line react/jsx-no-target-blank */ }
 				<a href="https://www.parse.ly/contact" target="_blank" rel="noopener">
 					{ __( 'Contact us', 'wp-parsely' ) + ' ' }

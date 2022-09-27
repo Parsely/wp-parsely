@@ -77,6 +77,6 @@ describe( 'Content Helper', () => {
 	it( 'Should display an error when the Parse.ly API is not accessible', async () => {
 		await setSiteKeys( 'blog.parsely.com', 'test' );
 
-		expect( await getContentHelperMessage( null, null, true ) ).toMatch( 'WordPress Error: You are probably offline.' );
+		expect( await getContentHelperMessage( null, null, true ) ).toMatch( 'Error: You are probably offline.' );
 	} );
 } );
