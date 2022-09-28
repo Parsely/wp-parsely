@@ -11,6 +11,7 @@ namespace Parsely\Tests\Integration\Integrations;
 
 use ReflectionClass;
 use Parsely\Integrations\Facebook_Instant_Articles;
+use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 
 /**
@@ -44,7 +45,7 @@ final class FacebookInstantArticlesTest extends TestCase {
 	public function set_up(): void {
 		parent::set_up();
 
-		self::$fbia = new Facebook_Instant_Articles();
+		self::$fbia = new Facebook_Instant_Articles( new Parsely() );
 		$reflect    = new ReflectionClass( self::$fbia );
 
 		self::$registry_identifier   = $reflect->getReflectionConstant( 'REGISTRY_IDENTIFIER' )->getValue();
