@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.2](https://github.com/Parsely/wp-parsely/compare/3.5.1...3.5.2) - 2022-09-27
+
+### Changed
+
+- Use Parsely->get_options() in the whole codebase ([#1098](https://github.com/Parsely/wp-parsely/pull/1098))
+- Content Helper: Show "Contact Us" message when Site ID or API Secret are not set ([#1114](https://github.com/Parsely/wp-parsely/pull/1114))
+
 ## [3.5.1](https://github.com/Parsely/wp-parsely/compare/3.5.0...3.5.1) - 2022-09-13
 
 ### Fixed
