@@ -21,6 +21,8 @@ const pluginButton = 'button[aria-label="Parse.ly"]';
  * Tests for the Content Helper's top bar icon.
  */
 describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
+	const relatedPostsTitle = 'Parse.ly Content Helper (Beta)';
+
 	/**
 	 * Logs in to WordPress and activates the Parse.ly plugin.
 	 */
@@ -29,15 +31,35 @@ describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
 	} );
 
 	/**
-	 * Verifies that the Content Helper top bar icon will not be displayed when
-	 * a Site ID is not provided.
+	 * Verifies that the Content Helper top bar icon gets displayed when the
+	 * Site ID and API Secret are not provided.
 	 */
-	it( 'Should not be displayed when a Site ID is not provided', async () => {
-		await setSiteKeys( '', '' );
-		await createNewPost();
-		const content = await page.content();
+	it( 'Should be displayed when the Site ID and API Secret are not provided', async () => {
+		expect( await testContentHelperIcon() ).toMatch( relatedPostsTitle );
+	} );
 
-		expect( content ).not.toMatch( pluginButton );
+	/**
+	 * Verifies that the Content Helper top bar icon gets displayed when only
+	 * the Site ID is provided.
+	 */
+	it( 'Should be displayed when only the Site ID is provided.', async () => {
+		expect( await testContentHelperIcon( 'blog.parsely.com' ) ).toMatch( relatedPostsTitle );
+	} );
+
+	/**
+	 * Verifies that the Content Helper top bar icon gets displayed when only
+	 * the API Secret is provided.
+	 */
+	it( 'Should be displayed when only the API Secret is provided', async () => {
+		expect( await testContentHelperIcon( '', 'test' ) ).toMatch( relatedPostsTitle );
+	} );
+
+	/**
+	 * Verifies that the Content Helper top bar icon gets displayed when both
+	 * the Site ID and API Secret are provided.
+	 */
+	it( 'Should be displayed when both the Site ID and API Secret are provided', async () => {
+		expect( await testContentHelperIcon( 'blog.parsely.com', 'test' ) ).toMatch( relatedPostsTitle );
 	} );
 
 	/**
@@ -66,3 +88,38 @@ describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
 		expect( await text ).toMatch( 'Parse.ly' );
 	} );
 } );
+
+/**
+ * Tests the Content Helper icon by clicking on it and verifying that the
+ * Content Helper sidebar opens.
+ *
+ * @param {string} siteId
+ * @param {string} apiSecret
+ * @return {string} Text content found in the Content Helper sidebar.
+ */
+async function testContentHelperIcon( siteId = '', apiSecret = '' ) {
+	await setSiteKeys( siteId, apiSecret );
+	await createNewPost();
+
+	// Open the Content Helper sidebar by clicking on the Content Helper icon,
+	// to verify that it is visible and working as expected.
+	await page.waitForSelector( pluginButton, { visible: true } );
+	const toggleSidebarButton = await page.$(
+		pluginButton
+	);
+	if ( toggleSidebarButton ) {
+		await toggleSidebarButton.click();
+	}
+
+	// Get the text content of the Content Helper sidebar.
+	await page.waitForSelector( 'div.wp-parsely-content-helper', { visible: true } );
+	const text = await page.$eval(
+		'div.wp-parsely-content-helper',
+		( element ) => element.textContent
+	);
+
+	// Close the sidebar for the next test.
+	await toggleSidebarButton.click();
+
+	return text;
+}

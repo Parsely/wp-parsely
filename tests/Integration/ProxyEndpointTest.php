@@ -157,7 +157,7 @@ abstract class ProxyEndpointTest extends TestCase {
 
 		self::assertObjectHasAttribute( 'error', $data );
 		self::assertEquals(
-			new WP_Error( 400, 'A Parse.ly API Key must be set in site options to use this endpoint' ),
+			new WP_Error( 'parsely_site_id_not_set', 'A Parse.ly API Key must be set in site options to use this endpoint' ),
 			$data->error
 		);
 	}

@@ -171,7 +171,7 @@ final class SinglePostTest extends TestCase {
 	public function test_tag_data_assigned_to_a_post_are_lowercase(): void {
 		// Setup Parsely object.
 		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely_options = $parsely->get_options();
 
 		// Create two tags with uppercase names and a single post.
 		$tag1    = self::factory()->tag->create( array( 'name' => 'Sample' ) );
@@ -233,7 +233,7 @@ final class SinglePostTest extends TestCase {
 	public function test_parsely_categories_as_tags_in_single_post(): void {
 		// Setup Parsely object.
 		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely_options = $parsely->get_options();
 
 		// Set the Categories as Tags option to true.
 		$parsely_options['cats_as_tags']   = true;
@@ -296,7 +296,7 @@ final class SinglePostTest extends TestCase {
 	public function test_custom_taxonomy_as_tags_in_single_post(): void {
 		// Setup Parsely object.
 		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely_options = $parsely->get_options();
 
 		// Set up the options to force lowercase tags.
 		$parsely_options['cats_as_tags'] = true;
@@ -370,7 +370,7 @@ final class SinglePostTest extends TestCase {
 	public function test_use_top_level_cats_in_single_post(): void {
 		// Setup Parsely object.
 		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely_options = $parsely->get_options();
 
 		// Set Parsely to use top-level categories.
 		$parsely_options['use_top_level_cats'] = true;
@@ -444,7 +444,7 @@ final class SinglePostTest extends TestCase {
 	public function test_custom_taxonomy_as_section_in_single_post(): void {
 		// Setup Parsely object.
 		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely_options = $parsely->get_options();
 
 		// Set Parsely to use 'sports' as custom taxonomy for section.
 		$parsely_options['custom_taxonomy_section'] = 'sports';
@@ -528,7 +528,7 @@ final class SinglePostTest extends TestCase {
 	public function test_http_canonicals_for_single_post(): void {
 		// Setup Parsely object.
 		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely_options = $parsely->get_options();
 
 		// Create a single post.
 		$post_id = self::factory()->post->create();
@@ -918,7 +918,7 @@ final class SinglePostTest extends TestCase {
 	public function test_post_with_categories_as_tags_without_categories(): void {
 		// Setup Parsely object.
 		$parsely         = new Parsely();
-		$parsely_options = get_option( Parsely::OPTIONS_KEY );
+		$parsely_options = $parsely->get_options();
 
 		// Create a single post.
 		$post_id = self::factory()->post->create();
