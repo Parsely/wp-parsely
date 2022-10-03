@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Related_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
@@ -34,6 +35,7 @@ use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
+use Parsely\RemoteAPI\Analytics_Post_Detail_Proxy;
 use Parsely\RemoteAPI\Cached_Proxy;
 use Parsely\RemoteAPI\Related_Proxy;
 use Parsely\RemoteAPI\Analytics_Posts_Proxy;
@@ -133,6 +135,11 @@ function parsely_rest_api_init(): void {
 	$analytics_posts_cached_proxy = new Cached_Proxy( $analytics_posts_proxy, new WordPress_Cache() );
 	$analytics_posts_endpoint     = new Analytics_Posts_API_Proxy( $GLOBALS['parsely'], $analytics_posts_cached_proxy );
 	$analytics_posts_endpoint->run();
+
+	$analytics_post_detail_proxy        = new Analytics_Post_Detail_Proxy( $GLOBALS['parsely'] );
+	$analytics_post_detail_cached_proxy = new Cached_Proxy( $analytics_post_detail_proxy, new WordPress_Cache() );
+	$analytics_post_detail_endpoint     = new Analytics_Post_Detail_API_Proxy( $GLOBALS['parsely'], $analytics_post_detail_cached_proxy );
+	$analytics_post_detail_endpoint->run();
 }
 
 add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
