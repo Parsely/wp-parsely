@@ -1,7 +1,46 @@
 .margin-top-small {
-	margin-top: 1em !important;
+	margin-top: 1rem !important;
 }
 
 .parsely-content-helper-card {
 	margin-bottom: 1rem;
+}
+
+div.content-helper.current-post-details {
+
+	h2 {
+		margin: 1.5rem 0 0.5rem 0;
+
+		&:first-child {
+			margin-top: 0.5rem;
+		}
+	}
+
+	table {
+		border-collapse: collapse;
+		margin-bottom: 1rem;
+		margin-left: 0.5rem;
+
+		tbody {
+
+			td {
+				padding-left: 0.8rem;
+				text-align: right;
+			}
+
+			th {
+				font-weight: 500;
+				text-align: left;
+			}
+		}
+
+		thead th {
+			font-size: 1rem;
+			padding-bottom: 1rem;
+		}
+	}
+
+	ul {
+		margin: 0 0 0 0.5rem;
+	}
 }
