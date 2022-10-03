@@ -126,20 +126,20 @@ function parsely_rest_api_init(): void {
 	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
 	$rest->run();
 
-	$related_proxy        = new Related_Proxy( $GLOBALS['parsely'] );
-	$related_cached_proxy = new Cached_Proxy( $related_proxy, new WordPress_Cache() );
-	$related_endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $related_cached_proxy );
-	$related_endpoint->run();
+	parsely_run_rest_api_endpoint(
+		Related_Proxy::class,
+		Related_API_Proxy::class
+	);
 
-	$analytics_posts_proxy        = new Analytics_Posts_Proxy( $GLOBALS['parsely'] );
-	$analytics_posts_cached_proxy = new Cached_Proxy( $analytics_posts_proxy, new WordPress_Cache() );
-	$analytics_posts_endpoint     = new Analytics_Posts_API_Proxy( $GLOBALS['parsely'], $analytics_posts_cached_proxy );
-	$analytics_posts_endpoint->run();
+	parsely_run_rest_api_endpoint(
+		Analytics_Posts_Proxy::class,
+		Analytics_Posts_API_Proxy::class
+	);
 
-	$analytics_post_detail_proxy        = new Analytics_Post_Detail_Proxy( $GLOBALS['parsely'] );
-	$analytics_post_detail_cached_proxy = new Cached_Proxy( $analytics_post_detail_proxy, new WordPress_Cache() );
-	$analytics_post_detail_endpoint     = new Analytics_Post_Detail_API_Proxy( $GLOBALS['parsely'], $analytics_post_detail_cached_proxy );
-	$analytics_post_detail_endpoint->run();
+	parsely_run_rest_api_endpoint(
+		Analytics_Post_Detail_Proxy::class,
+		Analytics_Post_Detail_API_Proxy::class
+	);
 }
 
 add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
@@ -194,4 +194,17 @@ function parsely_integrations( $parsely = null ): Integrations {
 	$parsely_integrations->integrate();
 
 	return $parsely_integrations;
+}
+
+/**
+ * Instantiates and runs the specified API endpoint.
+ *
+ * @param string $proxy_class_name The proxy class to instantiate.
+ * @param string $api_proxy_class_name The API proxy class to instantiate and run.
+ */
+function parsely_run_rest_api_endpoint( string $proxy_class_name, string $api_proxy_class_name ): void {
+	$proxy_instance        = new $proxy_class_name( $GLOBALS['parsely'] );
+	$cached_proxy_instance = new Cached_Proxy( $proxy_instance, new WordPress_Cache() );
+	$api_proxy_instance    = new $api_proxy_class_name( $GLOBALS['parsely'], $cached_proxy_instance );
+	$api_proxy_instance->run();
 }
