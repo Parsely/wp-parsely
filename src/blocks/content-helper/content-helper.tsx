@@ -9,7 +9,7 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
-import CurrentPostDetails from './components/current-post-details';
+import CurrentPostDetails from './current-post-details/component';
 import RelatedTopPostList from './components/related-top-post-list';
 import LeafIcon from '../shared/components/leaf-icon';
 

@@ -8,8 +8,8 @@ import { useEffect, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import ContentHelperProvider from '../content-helper-provider';
-import { CurrentPostDetailsData } from '../models/current-post-details-data';
+import CurrentPostDetailsProvider from './provider';
+import { CurrentPostDetailsData } from './data';
 
 const FETCH_RETRIES = 3;
 
@@ -24,7 +24,7 @@ function CurrentPostDetails() {
 
 	useEffect( () => {
 		const fetchPosts = async ( retries: number ) => {
-			ContentHelperProvider.getCurrentPostDetails()
+			CurrentPostDetailsProvider.getCurrentPostDetails()
 				.then( ( result ) => {
 					setPostDetails( result );
 					setLoading( false );
