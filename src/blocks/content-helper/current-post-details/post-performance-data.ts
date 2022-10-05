@@ -1,4 +1,4 @@
-export interface CurrentPostDetailsData {
+export interface PostPerformanceData {
 	author: string;
 	date: string;
 	id: number;

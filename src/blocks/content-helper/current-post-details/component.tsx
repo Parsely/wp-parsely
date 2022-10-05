@@ -9,18 +9,18 @@ import { useEffect, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import CurrentPostDetailsProvider from './provider';
-import { CurrentPostDetailsData } from './data';
+import { PostPerformanceData } from './post-performance-data';
 
 const FETCH_RETRIES = 3;
 
  interface PostDetailsTableProps {
-	data: CurrentPostDetailsData;
+	data: PostPerformanceData;
 }
 
 function CurrentPostDetails() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState( null );
-	const [ postDetailsData, setPostDetails ] = useState<CurrentPostDetailsData>( null );
+	const [ postDetailsData, setPostDetails ] = useState<PostPerformanceData>( null );
 
 	useEffect( () => {
 		const fetchPosts = async ( retries: number ) => {

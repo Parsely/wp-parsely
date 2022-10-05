@@ -9,7 +9,7 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * Internal dependencies
  */
-import { CurrentPostDetailsData } from './data';
+import { PostPerformanceData } from './post-performance-data';
 
 /**
  * The form of the response returned by the /analytics/post/detail WordPress
@@ -17,7 +17,7 @@ import { CurrentPostDetailsData } from './data';
  */
  interface CurrentPostDetailsApiResponse {
 	error?: object;
-	data: CurrentPostDetailsData[];
+	data: PostPerformanceData[];
 }
 
 class CurrentPostDetailsProvider {
@@ -25,9 +25,9 @@ class CurrentPostDetailsProvider {
 	 * Returns details about the post that is currently being edited within the
 	 * WordPress Block Editor.
 	 *
-	 * @return {Promise<CurrentPostDetailsData>} The current post's details.
+	 * @return {Promise<PostPerformanceData>} The current post's details.
 	 */
-	static async getCurrentPostDetails(): Promise<CurrentPostDetailsData> {
+	static async getCurrentPostDetails(): Promise<PostPerformanceData> {
 		const editor = select( 'core/editor' );
 
 		// We cannot show data for non-published posts.
@@ -41,23 +41,24 @@ class CurrentPostDetailsProvider {
 		const postUrl = editor.getPermalink();
 
 		// Fetch results from API and set the Content Helper's message.
-		let data;
+		let performanceData;
 		try {
-			data = await this.fetchCurrentPostDetailsFromWpEndpoint( postUrl );
+			performanceData = this.fetchPerformanceDataFromWpEndpoint( postUrl );
 		} catch ( error ) {
 			return Promise.reject( error );
 		}
 
-		return data;
+		return performanceData;
 	}
 
 	/**
-	 * Fetches the details of the current post from the WordPress REST API.
+	 * Fetches the performance data of the current post from the WordPress REST
+	 * API.
 	 *
 	 * @param {string} postUrl
-	 * @return {Promise<CurrentPostDetailsData> } The current post's details.
+	 * @return {Promise<PostPerformanceData> } The current post's details.
 	 */
-	private static async fetchCurrentPostDetailsFromWpEndpoint( postUrl: string ): Promise<CurrentPostDetailsData> {
+	private static async fetchPerformanceDataFromWpEndpoint( postUrl: string ): Promise<PostPerformanceData> {
 		let response;
 
 		try {
