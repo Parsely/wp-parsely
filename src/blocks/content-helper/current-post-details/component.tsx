@@ -34,8 +34,8 @@ function CurrentPostDetails() {
 						await new Promise( ( r ) => setTimeout( r, 500 ) );
 						await fetchPosts( retries - 1 );
 					} else {
-						setLoading( false );
 						setError( err );
+						setLoading( false );
 					}
 				} );
 		};
