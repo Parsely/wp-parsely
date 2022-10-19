@@ -16,7 +16,7 @@ jobs:
           ref: ${{ github.event.release.target_commitish }}
 
       - name: Remove pull request protection from develop branch
-        uses: octokit/request-action@v2.1.6
+        uses: octokit/request-action@v2.1.7
         with:
           route: DELETE /repos/Parsely/wp-parsely/branches/develop/protection/required_pull_request_reviews
         env:
@@ -31,7 +31,7 @@ jobs:
           github_token: ${{ github.token }}
 
       - name: Re-add pull request protection to develop branch
-        uses: octokit/request-action@v2.1.6
+        uses: octokit/request-action@v2.1.7
         with:
           route: PATCH /repos/Parsely/wp-parsely/branches/develop/protection/required_pull_request_reviews
           dismiss_stale_reviews: true
