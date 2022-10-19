@@ -348,7 +348,7 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide content met
 - Updated release process guidelines. [#567](https://github.com/Parsely/wp-parsely/pull/567)
 - Removed checkboxes from GitHub's PR template. [#512](https://github.com/Parsely/wp-parsely/pull/512)
 - Improved JS scripts integration tests. [#557](https://github.com/Parsely/wp-parsely/pull/557)
-- Source code linting violations (PHPCS with `--serverity=1`). [#544](https://github.com/Parsely/wp-parsely/pull/544)
+- Source code linting violations (PHPCS with `--severity=1`). [#544](https://github.com/Parsely/wp-parsely/pull/544)
 - WordPress.org screenshots for settings page. [#574](https://github.com/Parsely/wp-parsely/pull/574)
 
 ### Fixed
@@ -364,7 +364,7 @@ The Parse.ly plugin now hooks into the WordPress REST API to provide content met
 - Custom CSS on wp-admin settings page. [#496](https://github.com/Parsely/wp-parsely/pull/496)
 - `migrate_old_fields` private function from Recommended Widget. [#599](https://github.com/Parsely/wp-parsely/pull/599)
 - PHP 8.2 from CI tests. [#523](https://github.com/Parsely/wp-parsely/pull/523)
-- Custom end-to-end Docker image. [#524] (https://github.com/Parsely/wp-parsely/pull/524)
+- Custom end-to-end Docker image. [#524](https://github.com/Parsely/wp-parsely/pull/524)
 
 ## [3.0.4](https://github.com/Parsely/wp-parsely/compare/3.0.3...3.0.4) - 2022-01-17
 
@@ -456,7 +456,7 @@ If you are using the plugin without any code-level customizations (for instance,
 - Previously deprecated filter `parsely_filter_insert_javascript`. Use `wp_parsely_load_js_tracker` instead. [#437](https://github.com/Parsely/wp-parsely/pull/437)
 - `post_has_viewable_type` function. Use `is_post_viewable` instead. The `post_has_viewable_type` function was only added to support older versions of WordPress. [#417](https://github.com/Parsely/wp-parsely/pull/417)
 - Custom Parse.ly load text domain. Since the plugin now supports versions of WordPress that load custom text domains automatically, the plugins doesn't have to explicitly load the text domain itself. [#457](https://github.com/Parsely/wp-parsely/pull/457)
-- Empty functions for admin settings. The callbacks were never utilised. [#456](https://github.com/Parsely/wp-parsely/pull/456)
+- Empty functions for admin settings. The callbacks were never utilized. [#456](https://github.com/Parsely/wp-parsely/pull/456)
 - Redundant code coverage annotations. [#469](https://github.com/Parsely/wp-parsely/pull/469)
 - Old init Python script. [#441](https://github.com/Parsely/wp-parsely/pull/441)
 - "Add admin warning for minimum requirements in 3.0" notice. This was only added in the previous version of the plugin. [#424](https://github.com/Parsely/wp-parsely/pull/424)
