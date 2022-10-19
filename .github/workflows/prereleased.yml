@@ -40,14 +40,14 @@ jobs:
           TAG_NEW: ${{ github.event.release.tag_name }}
 
       - name: Remove pull request protection from trunk branch
-        uses: octokit/request-action@v2.1.6
+        uses: octokit/request-action@v2.1.7
         with:
           route: DELETE /repos/Parsely/wp-parsely/branches/trunk/protection/required_pull_request_reviews
         env:
           GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_PERMISSION }}
 
       - name: Commit version bump and changelog to trunk
-        uses: stefanzweifel/git-auto-commit-action@v4.15.0
+        uses: stefanzweifel/git-auto-commit-action@v4.15.1
         with:
           branch: trunk
           commit_message: Bump plugin version to ${{ github.event.release.tag_name }} and update changelog
@@ -55,7 +55,7 @@ jobs:
           commit_options: '--no-verify'
 
       - name: Re-add pull request protection to trunk branch
-        uses: octokit/request-action@v2.1.6
+        uses: octokit/request-action@v2.1.7
         with:
           route: PATCH /repos/Parsely/wp-parsely/branches/trunk/protection/required_pull_request_reviews
           dismiss_stale_reviews: true
