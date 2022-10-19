@@ -16,7 +16,7 @@ PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM 
 - [ ] Merge any outstanding PRs due for this release to `develop`.
 - [ ] Verify that all PRs in the release have a `Changelog` tag.
 
-## Release proccess
+## Release process
 
 **Create the release PR**
 - [ ] Create a PR that merges `develop` into `trunk`, named _Release x.y.z_.
