@@ -202,7 +202,7 @@ Then, you can use Composer to run the tests from your terminal. If you encounter
 composer dump-autoload
 ```
 
-Here are some of the commands that you can use for running tests. You can find a full list of supported commands within [composer.js](composer.js) in the `scripts` and `scripts-descriptions` sections.
+Here are some of the commands that you can use for running tests. You can find a full list of supported commands within [composer.json](composer.json) in the `scripts` and `scripts-descriptions` sections.
 
 ##### Unit tests:
 ```

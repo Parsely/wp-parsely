@@ -27,7 +27,7 @@ jobs:
         run: composer dump-autoload --classmap-authoritative
 
       - name: Use desired version of NodeJS
-        uses: actions/setup-node@v3.5.0
+        uses: actions/setup-node@v3.5.1
         with:
           node-version: 16
           cache: npm
