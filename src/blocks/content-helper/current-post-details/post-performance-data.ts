@@ -5,7 +5,20 @@ export interface PostPerformanceData {
 	statsUrl: string;
 	title: string;
 	url: string;
-	views: number;
-	visitors: number;
-	avgEngaged: number;
+	views: string;
+	visitors: string;
+	avgEngaged: string;
+	referrers: PostPerformanceReferrerData;
+}
+
+export interface PostPerformanceReferrerData {
+	top: {
+		views: string;
+		viewsPercentage: string;
+		datasetViewsPercentage: string;
+	}[];
+	types: {
+		views: string;
+		viewsPercentage: string;
+	}[];
 }

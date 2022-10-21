@@ -6,41 +6,54 @@
 	margin-bottom: 1rem;
 }
 
-div.content-helper.current-post-details {
+div.current-post-details {
 
-	h2 {
-		margin: 1.5rem 0 0.5rem 0;
+	div.section {
+		padding: 1rem 0.5rem;
 
-		&:first-child {
-			margin-top: 0.5rem;
+		&.top-referrers p {
+			margin: 1rem 1.5rem 0 1.5rem;
+			text-align: center;
 		}
-	}
 
-	table {
-		border-collapse: collapse;
-		margin-bottom: 1rem;
-		margin-left: 0.5rem;
+		h2 {
+			text-align: center;
+		}
 
-		tbody {
+		table {
+			border-collapse: collapse;
+			width: 100%;
 
-			td {
-				padding-left: 0.8rem;
-				text-align: right;
+			tbody {
+
+				td {
+					padding-left: 0.8rem;
+					text-align: right;
+				}
+
+				tr {
+					line-height: 2;
+				}
+
+				th {
+					font-weight: 500;
+					// Use min and max width to make text truncation work
+					max-width: 15ch;
+					min-width: 15ch;
+					overflow: hidden;
+					text-align: left;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+
+					&.capitalized::first-letter {
+						text-transform: capitalize;
+					}
+				}
 			}
-
-			th {
-				font-weight: 500;
-				text-align: left;
-			}
 		}
 
-		thead th {
-			font-size: 1rem;
-			padding-bottom: 1rem;
+		ul {
+			margin: 0 0 0 0.5rem;
 		}
-	}
-
-	ul {
-		margin: 0 0 0 0.5rem;
 	}
 }

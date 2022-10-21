@@ -9,17 +9,32 @@ import apiFetch from '@wordpress/api-fetch';
 /**
  * Internal dependencies
  */
-import { PostPerformanceData } from './post-performance-data';
+import {
+	PostPerformanceData,
+	PostPerformanceReferrerData,
+} from './post-performance-data';
 
 /**
- * The form of the response returned by the /analytics/post/detail WordPress
- * REST API endpoint.
+ * Specifies the form of the response returned by the `/analytics/post/detail`
+ * WordPress REST API endpoint.
  */
- interface CurrentPostDetailsApiResponse {
+ interface analyticsApiResponse {
 	error?: object;
 	data: PostPerformanceData[];
 }
 
+/**
+ * Specifies the form of the response returned by the `/referrers/post/detail`
+ * WordPress REST API endpoint.
+ */
+interface referrersApiResponse {
+	error?: object;
+	data: PostPerformanceReferrerData;
+}
+
+/**
+ * Provides current post details data for use in other components.
+ */
 class CurrentPostDetailsProvider {
 	/**
 	 * Returns details about the post that is currently being edited within the
@@ -41,18 +56,21 @@ class CurrentPostDetailsProvider {
 		const postUrl = editor.getPermalink();
 
 		// Fetch results from API and set the Content Helper's message.
-		let performanceData;
+		let performanceData, referrerData;
 		try {
-			performanceData = this.fetchPerformanceDataFromWpEndpoint( postUrl );
+			[ performanceData, referrerData ] = await Promise.all( [
+				this.fetchPerformanceDataFromWpEndpoint( postUrl ),
+				this.fetchReferrerDataFromWpEndpoint( postUrl ),
+			] );
 		} catch ( error ) {
 			return Promise.reject( error );
 		}
 
-		return performanceData;
+		return { ...performanceData, referrers: referrerData };
 	}
 
 	/**
-	 * Fetches the performance data of the current post from the WordPress REST
+	 * Fetches the performance data for the current post from the WordPress REST
 	 * API.
 	 *
 	 * @param {string} postUrl
@@ -66,7 +84,7 @@ class CurrentPostDetailsProvider {
 				path: addQueryArgs(
 					'/wp-parsely/v1/analytics/post/detail', { url: postUrl }
 				),
-			} ) as CurrentPostDetailsApiResponse;
+			} ) as analyticsApiResponse;
 		} catch ( wpError ) {
 			return Promise.reject( wpError );
 		}
@@ -90,6 +108,71 @@ class CurrentPostDetailsProvider {
 		}
 
 		return response.data[ 0 ];
+	}
+
+	/**
+	 * Fetches referrer data for the current post from the WordPress REST API.
+	 * Returns data for the last 7 days (today included) by default.
+	 *
+	 * @param {string} postUrl  The post's URL.
+	 * @param {string} fromDate The start date in "YYYY-MM-DD" format.
+	 * @param {string} toDate   The end date in "YYYY-MM-DD" format.
+	 * @return {Promise<PostPerformanceReferrerData>} The post's referrer data.
+	 */
+	private static async fetchReferrerDataFromWpEndpoint(
+		postUrl: string,
+		fromDate: string = null,
+		toDate: string = this.convertDateToString( new Date() ) + 'T23:59',
+	): Promise<PostPerformanceReferrerData> {
+		let response;
+
+		// Set default start date if needed.
+		if ( null === fromDate ) {
+			fromDate = this.removeDaysFromDate( toDate, 6 ) + 'T00:00';
+		}
+
+		// Query WordPress API endpoint.
+		try {
+			response = await apiFetch( {
+				path: addQueryArgs(
+					'/wp-parsely/v1/referrers/post/detail',
+					{ url: postUrl, period_start: fromDate, period_end: toDate }
+				),
+			} ) as referrersApiResponse;
+		} catch ( wpError ) {
+			return Promise.reject( wpError );
+		}
+
+		if ( response?.error ) {
+			return Promise.reject( response.error );
+		}
+
+		return response.data;
+	}
+
+	/**
+	 * Removes the given number of days from a "YYYY-MM-DD" string, and returns
+	 * the result in the same format.
+	 *
+	 * @param {string} date The date in "YYYY-MM-DD" format.
+	 * @param {number} days The number of days to remove from the date.
+	 * @return {string} The resulting date in "YYYY-MM-DD" format.
+	 */
+	private static removeDaysFromDate( date: string, days: number ): string {
+		const pastDate = new Date( date );
+		pastDate.setDate( pastDate.getDate() - days );
+
+		return this.convertDateToString( pastDate );
+	}
+
+	/**
+	 * Converts a date to a string in "YYYY-MM-DD" format.
+	 *
+	 * @param {Date} date The  date to format.
+	 * @return {string} The date in "YYYY-MM-DD" format.
+	 */
+	private static convertDateToString( date: Date ): string {
+		return date.toISOString().substring( 0, 10 );
 	}
 }
 
