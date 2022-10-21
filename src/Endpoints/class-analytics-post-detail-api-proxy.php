@@ -46,7 +46,7 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 		$result = array_map(
 			static function( stdClass $item ) use ( $stats_base_url ) {
 				return (object) array(
-					'avgEngaged' => number_format_i18n( $item->avg_engaged, 3 ),
+					'avgEngaged' => self::get_duration( (float) $item->avg_engaged ),
 					'statsUrl'   => $stats_base_url . '?url=' . rawurlencode( $item->url ),
 					'url'        => $item->url,
 					'views'      => number_format_i18n( $item->metrics->views ),
@@ -57,6 +57,19 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 		);
 
 		return $result;
+	}
+
+	/**
+	 * Returns the passed number as a time duration.
+	 *
+	 * @since 3.6.0
+	 *
+	 * @param float $time The time as a float number.
+	 * @return string The resulting formatted time duration.
+	 */
+	private function get_duration( float $time ) {
+		$decimal_value = round( fmod( $time, 1 ) * 60 );
+		return sprintf( '%2d:%02d', (int) $time, $decimal_value );
 	}
 
 	/**
