@@ -27,7 +27,7 @@ jobs:
           npm install
 
       - name: Add latest release notes to changelog
-        uses: stefanzweifel/changelog-updater-action@v1.6.0
+        uses: stefanzweifel/changelog-updater-action@v1.6.2
         with:
           latest-version: ${{ github.event.release.tag_name }}
           release-notes: ${{ github.event.release.body }}
@@ -47,7 +47,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PUBLIC_REPO_PERMISSION }}
 
       - name: Commit version bump and changelog to trunk
-        uses: stefanzweifel/git-auto-commit-action@v4.15.1
+        uses: stefanzweifel/git-auto-commit-action@v4.15.2
         with:
           branch: trunk
           commit_message: Bump plugin version to ${{ github.event.release.tag_name }} and update changelog
