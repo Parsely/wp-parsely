@@ -50,7 +50,7 @@
 		"@types/wordpress__plugins": "^3.0.0",
 		"@typescript-eslint/eslint-plugin": "^5.42.0",
 		"@wordpress/api-fetch": "^6.11.0",
-		"@wordpress/babel-preset-default": "^7.3.0",
+		"@wordpress/babel-preset-default": "^7.5.0",
 		"@wordpress/block-editor": "^10.2.0",
 		"@wordpress/blocks": "^11.20.0",
 		"@wordpress/components": "^21.3.0",
