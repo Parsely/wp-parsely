@@ -39,6 +39,8 @@ class Date_Builder extends Metadata_Builder {
 	 * @since 3.4.0
 	 */
 	private function build_headline(): void {
+		$site_date_format = get_option( 'date_format' );
+
 		if ( is_year() ) {
 			/* translators: %s: Archive year */
 			$this->metadata['headline'] = sprintf( __( 'Yearly Archive - %s', 'wp-parsely' ), get_the_time( 'Y' ) );
@@ -47,10 +49,11 @@ class Date_Builder extends Metadata_Builder {
 			$this->metadata['headline'] = sprintf( __( 'Monthly Archive - %s', 'wp-parsely' ), get_the_time( 'F, Y' ) );
 		} elseif ( is_day() ) {
 			/* translators: %s: Archive day, formatted as F jS, Y */
-			$this->metadata['headline'] = sprintf( __( 'Daily Archive - %s', 'wp-parsely' ), get_the_time( 'F jS, Y' ) );
+			$this->metadata['headline'] = sprintf( __( 'Daily Archive - %s', 'wp-parsely' ), get_the_time( $site_date_format ) );
 		} elseif ( is_time() ) {
+			$site_time_format = get_option( 'time_format' );
 			/* translators: %s: Archive time, formatted as F jS g:i:s A */
-			$this->metadata['headline'] = sprintf( __( 'Hourly, Minutely, or Secondly Archive - %s', 'wp-parsely' ), get_the_time( 'F jS g:i:s A' ) );
+			$this->metadata['headline'] = sprintf( __( 'Hourly, Minutely, or Secondly Archive - %s', 'wp-parsely' ), get_the_time( "{$site_date_format}:{$site_time_format}" ) );
 		}
 	}
 }
