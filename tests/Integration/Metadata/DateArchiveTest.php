@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\StructuredData;
 
-use Parsely\Metadata;
-use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
+use Parsely\Metadata\Date_Builder;
+use Parsely\Parsely;
 
 /**
  * Integration Tests for Date Archive pages metadata.
@@ -22,23 +22,15 @@ final class DateArchiveTest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var $parsely Holds the Parsely object.
+	 * @var $date_builder Holds the Date_Builder object.
 	 */
-	private static $parsely;
-
-	/**
-	 * Internal variable.
-	 *
-	 * @var $metadata Holds the Metadata object.
-	 */
-	private static $metadata;
+	private static $date_builder;
 
 	/**
 	 * Runs once before all tests.
 	 */
 	public static function set_up_before_class(): void {
-		self::$parsely  = new Parsely();
-		self::$metadata = new Metadata( self::$parsely );
+		self::$date_builder = new Date_Builder( new Parsely() );
 
 		self::factory()->post->create( array( 'post_date' => '2022-10-31 23:59:59' ) );
 	}
@@ -56,11 +48,19 @@ final class DateArchiveTest extends TestCase {
 	 * Verifies headline metadata of Yearly Archive page.
 	 *
 	 * @covers \Parsely\Metadata\Date_Builder::build_headline
+	 * @covers \Parsely\Metadata\Date_Builder::get_metadata
+	 *
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Parsely::get_options
+	 *
+	 * @group metadata
 	 */
 	public function test_yearly_archive(): void {
 		$this->go_to( home_url( '/2022/' ) );
 
-		$parsely_metadata = self::$metadata->construct_metadata( get_post() );
+		$parsely_metadata = self::$date_builder->get_metadata();
 
 		self::assertEquals( 'Yearly Archive - 2022', $parsely_metadata['headline'] );
 	}
@@ -69,11 +69,19 @@ final class DateArchiveTest extends TestCase {
 	 * Verifies headline of Monthly Archive page.
 	 *
 	 * @covers \Parsely\Metadata\Date_Builder::build_headline
+	 * @covers \Parsely\Metadata\Date_Builder::get_metadata
+	 *
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Parsely::get_options
+	 *
+	 * @group metadata
 	 */
 	public function test_monthly_archive(): void {
 		$this->go_to( home_url( '/2022/10/' ) );
 
-		$parsely_metadata = self::$metadata->construct_metadata( get_post() );
+		$parsely_metadata = self::$date_builder->get_metadata();
 
 		self::assertEquals( 'Monthly Archive - October, 2022', $parsely_metadata['headline'] );
 	}
@@ -82,25 +90,41 @@ final class DateArchiveTest extends TestCase {
 	 * Verifies headline of Daily Archive page.
 	 *
 	 * @covers \Parsely\Metadata\Date_Builder::build_headline
+	 * @covers \Parsely\Metadata\Date_Builder::get_metadata
+	 *
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Parsely::get_options
+	 *
+	 * @group metadata
 	 */
 	public function test_daily_archive(): void {
 		$this->go_to( home_url( '/2022/10/31/' ) );
 
-		$parsely_metadata = self::$metadata->construct_metadata( get_post() );
+		$parsely_metadata = self::$date_builder->get_metadata();
 
 		self::assertEquals( 'Daily Archive - October 31, 2022', $parsely_metadata['headline'] );
 	}
 
 	/**
-	 * Verifies headline of Daily Archive page with users specified date format.
+	 * Verifies headline of Daily Archive page with user's specified date format.
 	 *
 	 * @covers \Parsely\Metadata\Date_Builder::build_headline
+	 * @covers \Parsely\Metadata\Date_Builder::get_metadata
+	 *
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Parsely::get_options
+	 *
+	 * @group metadata
 	 */
 	public function test_daily_archive_with_users_specified_date_format(): void {
 		update_option( 'date_format', 'Y-m-d' );
 		$this->go_to( home_url( '/2022/10/31/' ) );
 
-		$parsely_metadata = self::$metadata->construct_metadata( get_post() );
+		$parsely_metadata = self::$date_builder->get_metadata();
 
 		self::assertEquals( 'Daily Archive - 2022-10-31', $parsely_metadata['headline'] );
 	}
@@ -109,19 +133,35 @@ final class DateArchiveTest extends TestCase {
 	 * Verifies headline of Time Archive page.
 	 *
 	 * @covers \Parsely\Metadata\Date_Builder::build_headline
+	 * @covers \Parsely\Metadata\Date_Builder::get_metadata
+	 *
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Parsely::get_options
+	 *
+	 * @group metadata
 	 */
 	public function test_time_archive(): void {
 		$this->go_to( home_url( '/2022/10/31/23' ) );
 
-		$parsely_metadata = self::$metadata->construct_metadata( get_post() );
+		$parsely_metadata = self::$date_builder->get_metadata();
 
 		self::assertEquals( 'Hourly, Minutely, or Secondly Archive - October 31, 2022:11:59 pm', $parsely_metadata['headline'] );
 	}
 
 	/**
-	 * Verifies headline of Time Archive page with users specified time format.
+	 * Verifies headline of Time Archive page with user's specified time format.
 	 *
 	 * @covers \Parsely\Metadata\Date_Builder::build_headline
+	 * @covers \Parsely\Metadata\Date_Builder::get_metadata
+	 *
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic
+	 * @uses \Parsely\Metadata\Metadata_Builder::build_url
+	 * @uses \Parsely\Metadata\Metadata_Builder::get_current_url
+	 * @uses \Parsely\Parsely::get_options
+	 *
+	 * @group metadata
 	 */
 	public function test_time_archive_with_users_specified_time_format(): void {
 		update_option( 'date_format', 'Y/m/d' );
@@ -129,7 +169,7 @@ final class DateArchiveTest extends TestCase {
 
 		$this->go_to( home_url( '/2022/10/31/23' ) );
 
-		$parsely_metadata = self::$metadata->construct_metadata( get_post() );
+		$parsely_metadata = self::$date_builder->get_metadata();
 
 		self::assertEquals( 'Hourly, Minutely, or Secondly Archive - 2022/10/31:23:59', $parsely_metadata['headline'] );
 	}
@@ -148,7 +188,6 @@ final class DateArchiveTest extends TestCase {
 	 * Runs once after all tests.
 	 */
 	public static function tear_down_after_class(): void {
-		self::$parsely  = null;
-		self::$metadata = null;
+		self::$date_builder = null;
 	}
 }

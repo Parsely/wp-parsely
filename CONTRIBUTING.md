@@ -182,12 +182,6 @@ To check your code with our code standards:
 composer cs
 ```
 
-To fix automatically fixable code based on our coding standards:
-
-```
-composer cbf
-```
-
 #### Testing
 
 **Note:** For the tests to install, the `svn` command is needed. To get it, you can install subversion (`brew install subversion` if you're using brew).

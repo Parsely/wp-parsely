@@ -65,9 +65,6 @@
 		"cs": [
 			"@php ./vendor/bin/phpcs --severity=1"
 		],
-		"cbf": [
-			"@php ./vendor/bin/phpcbf"
-		],
 		"lint": [
 			"@php ./vendor/php-parallel-lint/php-parallel-lint/parallel-lint . -e php --exclude vendor --exclude .git"
 		],
@@ -104,7 +101,6 @@
 		"coveragewp": "Run integration tests with code coverage for the Parse.ly plugin, send results to stdout, and generate local HTML output.",
 		"coveragewp-ci": "Run integration tests with code coverage for the Parse.ly plugin and send results to stdout.",
 		"cs": "Run PHPCS to checking coding standards for the Parse.ly plugin.",
-		"cbf": "Run PHPCBF to fix code based on coding standards for the Parse.ly plugin.",
 		"lint": "Run PHP linting on the Parse.ly plugin.",
 		"lint-ci": "Run PHP linting on the Parse.ly plugin with checkstyle output for CI.",
 		"prepare-ci": "Install the files and setup a database needed to run tests for the Parse.ly plugin for CI.",
