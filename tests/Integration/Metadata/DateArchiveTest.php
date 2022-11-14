@@ -42,6 +42,10 @@ final class DateArchiveTest extends TestCase {
 		parent::set_up();
 
 		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%hour%/%minute%/%second%/%postname%/' );
+
+		// explicitly setting the date and time formats to avoid relying on WP core defaults.
+		update_option( 'date_format', 'F j, Y' );
+		update_option( 'time_format', 'g:i a' );
 	}
 
 	/**
@@ -147,7 +151,7 @@ final class DateArchiveTest extends TestCase {
 
 		$parsely_metadata = self::$date_builder->get_metadata();
 
-		self::assertEquals( 'Hourly, Minutely, or Secondly Archive - October 31, 2022:11:59 pm', $parsely_metadata['headline'] );
+		self::assertEquals( 'Hourly, Minutely, or Secondly Archive - October 31, 2022 : 11:59 pm', $parsely_metadata['headline'] );
 	}
 
 	/**
@@ -171,7 +175,7 @@ final class DateArchiveTest extends TestCase {
 
 		$parsely_metadata = self::$date_builder->get_metadata();
 
-		self::assertEquals( 'Hourly, Minutely, or Secondly Archive - 2022/10/31:23:59', $parsely_metadata['headline'] );
+		self::assertEquals( 'Hourly, Minutely, or Secondly Archive - 2022/10/31 : 23:59', $parsely_metadata['headline'] );
 	}
 
 	/**

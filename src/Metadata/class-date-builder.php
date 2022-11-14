@@ -53,7 +53,7 @@ class Date_Builder extends Metadata_Builder {
 		} elseif ( is_time() ) {
 			$site_time_format = get_option( 'time_format' );
 			/* translators: %s: Archive time, formatted as F jS g:i:s A */
-			$this->metadata['headline'] = sprintf( __( 'Hourly, Minutely, or Secondly Archive - %s', 'wp-parsely' ), get_the_time( "{$site_date_format}:{$site_time_format}" ) );
+			$this->metadata['headline'] = sprintf( __( 'Hourly, Minutely, or Secondly Archive - %s', 'wp-parsely' ), get_the_time( "{$site_date_format} : {$site_time_format}" ) );
 		}
 	}
 }
