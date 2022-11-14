@@ -209,7 +209,7 @@ final class SettingsPageTest extends TestCase {
 			return;
 		}
 
-		$subsite_blog_id = $this->factory->blog->create(
+		$subsite_blog_id = self::factory()->blog->create(
 			array(
 				'domain' => 'parselyrocks.example.org',
 				'path'   => '/vipvipvip',

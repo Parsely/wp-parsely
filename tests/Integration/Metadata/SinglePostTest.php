@@ -663,7 +663,7 @@ final class SinglePostTest extends TestCase {
 		$parsely = new Parsely();
 
 		// Create a single post.
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
 		unset( $post->post_date );
@@ -717,7 +717,7 @@ final class SinglePostTest extends TestCase {
 		$parsely = new Parsely();
 
 		// Create the post.
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
 		// Annotate it with the timestamps to test against.
@@ -777,7 +777,7 @@ final class SinglePostTest extends TestCase {
 		$parsely = new Parsely();
 
 		// Create the post.
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
 		// Annotate it with the timestamps to test against.
@@ -837,7 +837,7 @@ final class SinglePostTest extends TestCase {
 		$parsely = new Parsely();
 
 		// Create the post.
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
 		// Annotate it with the timestamps to test against.
