@@ -279,6 +279,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$user_meta = array_keys( (array) get_user_meta( get_current_user_id(), $this->screen_options_name, true ) );
 
 		$this->initialize_basic_section();
+		$this->initialize_blocks_section();
 
 		if ( in_array( 'requires-recrawl', $user_meta, true ) ) {
 			$this->initialize_requires_recrawl_section();
@@ -450,6 +451,38 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				)
 			);
 		}
+	}
+
+	/**
+	 * Registers section and settings for blocks.
+	 *
+	 * @since 3.6.0
+	 */
+	private function initialize_blocks_section(): void {
+		add_settings_section(
+			'blocks_settings',
+			__( 'Blocks Settings', 'wp-parsely' ),
+			'__return_null',
+			Parsely::MENU_SLUG
+		);
+
+		// Recommendations placeholder.
+		$field_id    = 'recommendations_placeholder_image';
+		$field_title = __( 'Recommendations placeholder image', 'wp-parsely' );
+		$field_help  = __( 'Here you can specify the placeholder image for "Recommendations Block" by using the "Browse" button or typing the URL manually.', 'wp-parsely' );
+		add_settings_field(
+			$field_id,
+			$field_title,
+			array( $this, 'print_media_single_image' ),
+			Parsely::MENU_SLUG,
+			'blocks_settings',
+			array(
+				'option_key' => $field_id,
+				'label_for'  => $field_id,
+				'title'      => $field_title,
+				'help_text'  => $field_help,
+			)
+		);
 	}
 
 	/**

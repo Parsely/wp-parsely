@@ -1,4 +1,6 @@
-document.querySelector( '.media-single-image button.browse' ).addEventListener( 'click', selectImage );
+document
+	.querySelectorAll( '.media-single-image button.browse' )
+	.forEach( ( btn ) => btn.addEventListener( 'click', selectImage ) );
 
 function selectImage() {
 	const optionName = this.dataset.option;

@@ -34,24 +34,29 @@ class Parsely {
 	 * @var array<string, mixed> $option_defaults The defaults we need for the class.
 	 */
 	private $option_defaults = array(
-		'apikey'                      => '',
-		'content_id_prefix'           => '',
-		'api_secret'                  => '',
-		'use_top_level_cats'          => false,
-		'custom_taxonomy_section'     => 'category',
-		'cats_as_tags'                => false,
-		'track_authenticated_users'   => true,
-		'lowercase_tags'              => true,
-		'force_https_canonicals'      => false,
-		'track_post_types'            => array( 'post' ),
-		'track_page_types'            => array( 'page' ),
-		'disable_javascript'          => false,
-		'disable_amp'                 => false,
-		'meta_type'                   => 'json_ld',
-		'logo'                        => '',
-		'metadata_secret'             => '',
-		'parsely_wipe_metadata_cache' => false,
-		'disable_autotrack'           => false,
+		// Basics Settings.
+		'apikey'                            => '',
+		'api_secret'                        => '',
+		'metadata_secret'                   => '',
+		'meta_type'                         => 'json_ld',
+		'logo'                              => '',
+		'track_authenticated_users'         => true,
+		'disable_javascript'                => false,
+		// Blocks Settings.
+		'recommendations_placeholder_image' => '',
+		// Recrawl Settings.
+		'track_post_types'                  => array( 'post' ),
+		'track_page_types'                  => array( 'page' ),
+		'disable_amp'                       => false,
+		'content_id_prefix'                 => '',
+		'use_top_level_cats'                => false,
+		'custom_taxonomy_section'           => 'category',
+		'cats_as_tags'                      => false,
+		'lowercase_tags'                    => true,
+		'force_https_canonicals'            => false,
+		// Advanced Settings.
+		'parsely_wipe_metadata_cache'       => false,
+		'disable_autotrack'                 => false,
 	);
 
 	/**
