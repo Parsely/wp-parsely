@@ -92,7 +92,7 @@ final class OtherTest extends TestCase {
 		$parsely = new Parsely();
 
 		// Create a single post.
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
 		// Apply page filtering.
@@ -236,7 +236,7 @@ final class OtherTest extends TestCase {
 	 * @covers \Parsely\Parsely::post_has_trackable_status
 	 */
 	public function test_post_has_trackable_status_password_protected(): void {
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
 		$post->post_password = 'somepassword';
@@ -256,7 +256,7 @@ final class OtherTest extends TestCase {
 	public function test_post_has_trackable_status_password_protected_with_filter(): void {
 		add_filter( 'wp_parsely_skip_post_password_check', '__return_true' );
 
-		$post_id = $this->factory->post->create();
+		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
 		$post->post_password = 'somepassword';

@@ -89,7 +89,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *                        WP_Error otherwise.
 	 */
 	public function create_test_category( string $name ) {
-		return $this->factory->category->create(
+		return self::factory()->category->create(
 			array(
 				'name'                 => $name,
 				'category_description' => $name,
@@ -107,7 +107,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *                      if the user could not be created.
 	 */
 	public function create_test_user( string $user_login ) {
-		return $this->factory->user->create( array( 'user_login' => $user_login ) );
+		return self::factory()->user->create( array( 'user_login' => $user_login ) );
 	}
 
 	/**
@@ -119,7 +119,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @return int|WP_Error The site ID on success, WP_Error object on failure.
 	 */
 	public function create_test_blog( string $domain, int $user_id ) {
-		return $this->factory->blog->create(
+		return self::factory()->blog->create(
 			array(
 				'domain'  => 'https://' . $domain . 'com',
 				'user_id' => $user_id,
@@ -145,7 +145,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 			)
 		);
 
-		return $this->factory->term->create(
+		return self::factory()->term->create(
 			array(
 				'name'     => $term_name,
 				'taxonomy' => $taxonomy_key,
@@ -160,7 +160,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 */
 	public function go_to_new_post(): int {
 		$post_data = $this->create_test_post_array();
-		$post_id   = $this->factory->post->create( $post_data );
+		$post_id   = self::factory()->post->create( $post_data );
 		$this->go_to( '/?p=' . $post_id );
 
 		return $post_id;
