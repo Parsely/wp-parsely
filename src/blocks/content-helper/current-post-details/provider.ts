@@ -36,13 +36,25 @@ interface referrersApiResponse {
  * Provides current post details data for use in other components.
  */
 class CurrentPostDetailsProvider {
+	private dataPeriodDays: number;
+	private dataPeriodStart: string;
+	private dataPeriodEnd: string;
+
+	/**
+	 * Constructor.
+	 */
+	constructor() {
+		// Return data for the last 7 days (today included).
+		this.setDataPeriod( 7 );
+	}
+
 	/**
 	 * Returns details about the post that is currently being edited within the
 	 * WordPress Block Editor.
 	 *
 	 * @return {Promise<PostPerformanceData>} The current post's details.
 	 */
-	static async getCurrentPostDetails(): Promise<PostPerformanceData> {
+	public async getCurrentPostDetails(): Promise<PostPerformanceData> {
 		const editor = select( 'core/editor' );
 
 		// We cannot show data for non-published posts.
@@ -66,7 +78,8 @@ class CurrentPostDetailsProvider {
 			return Promise.reject( error );
 		}
 
-		return { ...performanceData, referrers: referrerData };
+		const period = { start: this.dataPeriodStart, end: this.dataPeriodEnd, days: this.dataPeriodDays };
+		return { ...performanceData, referrers: referrerData, period };
 	}
 
 	/**
@@ -76,14 +89,17 @@ class CurrentPostDetailsProvider {
 	 * @param {string} postUrl
 	 * @return {Promise<PostPerformanceData> } The current post's details.
 	 */
-	private static async fetchPerformanceDataFromWpEndpoint( postUrl: string ): Promise<PostPerformanceData> {
+	private async fetchPerformanceDataFromWpEndpoint( postUrl: string ): Promise<PostPerformanceData> {
 		let response;
 
 		try {
 			response = await apiFetch( {
 				path: addQueryArgs(
-					'/wp-parsely/v1/analytics/post/detail', { url: postUrl }
-				),
+					'/wp-parsely/v1/analytics/post/detail', {
+						url: postUrl,
+						period_start: this.dataPeriodStart,
+						period_end: this.dataPeriodEnd,
+					} ),
 			} ) as analyticsApiResponse;
 		} catch ( wpError ) {
 			return Promise.reject( wpError );
@@ -112,32 +128,23 @@ class CurrentPostDetailsProvider {
 
 	/**
 	 * Fetches referrer data for the current post from the WordPress REST API.
-	 * Returns data for the last 7 days (today included) by default.
 	 *
-	 * @param {string} postUrl  The post's URL.
-	 * @param {string} fromDate The start date in "YYYY-MM-DD" format.
-	 * @param {string} toDate   The end date in "YYYY-MM-DD" format.
+	 * @param {string} postUrl The post's URL.
 	 * @return {Promise<PostPerformanceReferrerData>} The post's referrer data.
 	 */
-	private static async fetchReferrerDataFromWpEndpoint(
+	private async fetchReferrerDataFromWpEndpoint(
 		postUrl: string,
-		fromDate: string = null,
-		toDate: string = this.convertDateToString( new Date() ) + 'T23:59',
 	): Promise<PostPerformanceReferrerData> {
 		let response;
 
-		// Set default start date if needed.
-		if ( null === fromDate ) {
-			fromDate = this.removeDaysFromDate( toDate, 6 ) + 'T00:00';
-		}
-
 		// Query WordPress API endpoint.
 		try {
-			response = await apiFetch( {
-				path: addQueryArgs(
-					'/wp-parsely/v1/referrers/post/detail',
-					{ url: postUrl, period_start: fromDate, period_end: toDate }
-				),
+			response = await apiFetch( { path: addQueryArgs(
+				'/wp-parsely/v1/referrers/post/detail', {
+					url: postUrl,
+					period_start: this.dataPeriodStart,
+					period_end: this.dataPeriodEnd,
+				} ),
 			} ) as referrersApiResponse;
 		} catch ( wpError ) {
 			return Promise.reject( wpError );
@@ -151,6 +158,17 @@ class CurrentPostDetailsProvider {
 	}
 
 	/**
+	 * Sets the period for which to fetch the data.
+	 *
+	 * @param {number} days Number of last days to get the data for.
+	 */
+	private setDataPeriod( days: number ) {
+		this.dataPeriodDays = days;
+		this.dataPeriodEnd = this.convertDateToString( new Date() ) + 'T23:59';
+		this.dataPeriodStart = this.removeDaysFromDate( this.dataPeriodEnd, this.dataPeriodDays - 1 ) + 'T00:00';
+	}
+
+	/**
 	 * Removes the given number of days from a "YYYY-MM-DD" string, and returns
 	 * the result in the same format.
 	 *
@@ -158,7 +176,7 @@ class CurrentPostDetailsProvider {
 	 * @param {number} days The number of days to remove from the date.
 	 * @return {string} The resulting date in "YYYY-MM-DD" format.
 	 */
-	private static removeDaysFromDate( date: string, days: number ): string {
+	private removeDaysFromDate( date: string, days: number ): string {
 		const pastDate = new Date( date );
 		pastDate.setDate( pastDate.getDate() - days );
 
@@ -171,7 +189,7 @@ class CurrentPostDetailsProvider {
 	 * @param {Date} date The  date to format.
 	 * @return {string} The date in "YYYY-MM-DD" format.
 	 */
-	private static convertDateToString( date: Date ): string {
+	private convertDateToString( date: Date ): string {
 		return date.toISOString().substring( 0, 10 );
 	}
 }
