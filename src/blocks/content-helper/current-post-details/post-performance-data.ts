@@ -1,14 +1,19 @@
 export interface PostPerformanceData {
 	author: string;
+	avgEngaged: string;
 	date: string;
 	id: number;
+	period: {
+		start: string,
+		end: string,
+		days: number,
+	};
+	referrers: PostPerformanceReferrerData;
 	statsUrl: string;
 	title: string;
 	url: string;
 	views: string;
 	visitors: string;
-	avgEngaged: string;
-	referrers: PostPerformanceReferrerData;
 }
 
 export interface PostPerformanceReferrerData {
