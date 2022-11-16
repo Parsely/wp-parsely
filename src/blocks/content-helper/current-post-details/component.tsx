@@ -230,7 +230,7 @@ function TopReferrersSection( data: PostPerformanceData ) {
 				</tbody>
 			</table>
 			<div>
-				{ totalViewsPercentage.toFixed( 1 ) + __( '% of views came from top 5 referrers.', 'wp-parsely' ) }
+				{ totalViewsPercentage + __( '% of views came from top referrers.', 'wp-parsely' ) }
 			</div>
 		</div>
 	);
