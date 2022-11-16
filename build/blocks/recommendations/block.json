@@ -29,6 +29,10 @@
       "type": "boolean",
       "default": true
     },
+    "showImagePlaceholders": {
+      "type": "boolean",
+      "default": false
+    },
     "sort": {
       "type": "string",
       "default": "score"

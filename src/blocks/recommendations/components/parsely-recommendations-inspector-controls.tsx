@@ -24,10 +24,10 @@ interface ParselyRecommendationsInspectorControlsProps {
 }
 
 const ParselyRecommendationsInspectorControls = ( {
-	attributes: { boost, imagestyle, limit, openlinksinnewtab, showimages, sort, title },
+	attributes: { boost, imagestyle, limit, openlinksinnewtab, showimages, showImagePlaceholders, sort, title },
 	setAttributes,
-} : ParselyRecommendationsInspectorControlsProps ) => (
-	<InspectorControls>
+} : ParselyRecommendationsInspectorControlsProps ): JSX.Element => {
+	return <InspectorControls>
 		<PanelBody title="Settings" initialOpen={ true }>
 			<PanelRow>
 				<TextControl
@@ -55,11 +55,6 @@ const ParselyRecommendationsInspectorControls = ( {
 			<PanelRow>
 				<ToggleControl
 					label={ __( 'Show Images', 'wp-parsely' ) }
-					help={
-						showimages
-							? __( 'Showing images', 'wp-parsely' )
-							: __( 'Not showing images', 'wp-parsely' )
-					}
 					checked={ showimages }
 					onChange={ () => setAttributes( { showimages: ! showimages } ) }
 				/>
@@ -81,6 +76,13 @@ const ParselyRecommendationsInspectorControls = ( {
 					/>
 				</PanelRow>
 			) }
+			<PanelRow>
+				<ToggleControl
+					label={ __( 'Show Image Placeholders', 'wp-parsely' ) }
+					checked={ showImagePlaceholders }
+					onChange={ (): void => setAttributes( { showImagePlaceholders: ! showImagePlaceholders } ) }
+				/>
+			</PanelRow>
 			<PanelRow>
 				<SelectControl
 					label={ __( 'Sort Recommendations', 'wp-parsely' ) }
@@ -184,7 +186,7 @@ const ParselyRecommendationsInspectorControls = ( {
 				/>
 			</PanelRow>
 		</PanelBody>
-	</InspectorControls>
-);
+	</InspectorControls>;
+};
 
 export default ParselyRecommendationsInspectorControls;

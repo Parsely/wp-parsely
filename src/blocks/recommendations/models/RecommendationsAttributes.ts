@@ -4,6 +4,7 @@ export interface RecommendationsAttributes {
 	limit: number;
 	openlinksinnewtab: boolean;
 	showimages: boolean;
+	showImagePlaceholders: boolean;
 	sort: string;
 	title: string;
 }
