@@ -50,7 +50,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 */
 	protected function generate_data( array $response ): array {
 		$referrers_types = $this->generate_referrer_types_data( $response );
-		$total_views     = (int) $referrers_types->totals->views;
+		$total_views     = (int) preg_replace( '/\D/', '', $referrers_types->totals->views );
 		$referrers_top   = $this->generate_referrers_data( 5, $response, $total_views );
 
 		$result = array(
