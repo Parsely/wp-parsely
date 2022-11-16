@@ -65,9 +65,10 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * Generates the referrer types data.
 	 *
 	 * Referrer types are:
+	 * - `social`:   Views coming from social media.
 	 * - `search`:   Views coming from search engines.
-	 * - `internal`: Views coming from linking pages of the same website.
 	 * - `other`:    Views coming from other referrers, like external websites.
+	 * - `internal`: Views coming from linking pages of the same website.
 	 *
 	 * Returned object properties:
 	 * - `views`:          The number of views.
@@ -83,6 +84,12 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		$result      = new stdClass();
 		$total_views = 0;
 
+		// Set referrer type order as it is displayed in the Parse.ly dashboard.
+		$referrer_type_keys = array( 'social', 'search', 'other', 'internal' );
+		foreach ( $referrer_type_keys as $key ) {
+			$result->$key->views = 0;
+		}
+
 		// Set views and views totals.
 		foreach ( $response as $referrer_data ) {
 			// Point by reference to the item to be processed, and set it to 0
@@ -95,6 +102,13 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 			// Set the values.
 			$views       += $referrer_data->metrics->referrers_views;
 			$total_views += $referrer_data->metrics->referrers_views;
+		}
+
+		// Remove referrer types without views.
+		foreach ( $referrer_type_keys as $key ) {
+			if ( 0 === $result->$key->views ) {
+				unset( $result->$key );
+			}
 		}
 
 		// Add totals to the end of the object.
