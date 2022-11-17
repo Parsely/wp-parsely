@@ -99,11 +99,11 @@ export const insertRecordIntoTaxonomy = async ( recordName, taxonomyType ) => {
  * @param {number} timeout  Milliseconds to wait after category/tag selection.
  * @return {Promise<string>} The message returned by the Content Helper.
  */
-export const getContentHelperMessage = async ( category = null, tag = null, timeout = 500 ) => {
+export const getTopRelatedPostsMessage = async ( category = null, tag = null, timeout = 500 ) => {
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
-	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel__body.is-opened > p';
+	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel:last-child div.components-panel__body.is-opened > p';
 
 	// Run basic operations.
 	await createNewPost();
