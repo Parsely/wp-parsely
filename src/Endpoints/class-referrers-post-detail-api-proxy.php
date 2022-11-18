@@ -197,9 +197,13 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 *
 	 * @param int $number The number to be calculated as a percentage.
 	 * @param int $total The total number to compare against.
-	 * @return string The resulting internationalized percentage.
+	 * @return string|false The internationalized percentage or false on error.
 	 */
 	private function get_i18n_percentage( int $number, int $total ) {
+		if ( 0 === $total ) {
+			return false;
+		}
+
 		return number_format_i18n( $number / $total * 100, 2 );
 	}
 
