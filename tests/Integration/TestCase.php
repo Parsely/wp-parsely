@@ -155,7 +155,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Creates a new post
+	 * Creates a new post.
 	 *
 	 * @param string $post_status Optional. The post's status. Default is 'publish'.
 	 *
@@ -183,7 +183,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Set current user as admin
+	 * Sets current user as admin.
 	 *
 	 * @param int $admin_user_id User ID for the site administrator.
 	 *                           Default is 1 which is assigned to first admin user while creating the site.

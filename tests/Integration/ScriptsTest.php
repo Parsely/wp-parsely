@@ -187,7 +187,7 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that tracker scripts are not loading for drafted posts
+	 * Verifies that tracker scripts are not loading for drafted posts.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 *
@@ -221,7 +221,7 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that tracker scripts are not loading for published posts in preview mode
+	 * Verifies that tracker scripts are not loading for published posts in preview mode.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 *
