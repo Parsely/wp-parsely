@@ -207,14 +207,12 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		// Verify that tracker script is registered and enqueued.
 		$this->assert_script_statuses(
 			'wp-parsely-tracker',
 			array( 'registered' ),
 			array( 'enqueued' )
 		);
 
-		// Verify that loader script is registered and enqueued.
 		$this->assert_script_statuses(
 			'wp-parsely-loader',
 			array( 'registered' ),
@@ -245,14 +243,12 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		// Verify that tracker script is registered and enqueued.
 		$this->assert_script_statuses(
 			'wp-parsely-tracker',
 			array( 'registered' ),
 			array( 'enqueued' )
 		);
 
-		// Verify that loader script is registered and enqueued.
 		$this->assert_script_statuses(
 			'wp-parsely-loader',
 			array( 'registered' ),
