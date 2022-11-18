@@ -261,7 +261,7 @@ function ActionsSection( data: PostPerformanceData ) {
  * @return {string} The number formatted as an imprecise number.
  */
 function ImpreciseNumber( value: string, fractionDigits = 1, glue = '' ): string {
-	const number = parseInt( value.replace( /\D/g, '' ) );
+	const number = parseInt( value.replace( /\D/g, '' ), 10 );
 
 	if ( number < 1000 ) {
 		return value;
