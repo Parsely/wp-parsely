@@ -68,15 +68,16 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Creates a test post.
 	 *
 	 * @param string $post_type Optional. The post's type. Default is 'post'.
+	 * @param string $post_status Optional. The post's status. Default is 'publish'.
 	 *
 	 * @return array An array of WP_Post fields.
 	 */
-	public function create_test_post_array( string $post_type = 'post' ): array {
+	public function create_test_post_array( string $post_type = 'post', string $post_status = 'publish' ): array {
 		return array(
 			'post_title'   => 'Sample Parsely Post',
 			'post_author'  => 1,
 			'post_content' => 'Some sample content just to have here',
-			'post_status'  => 'publish',
+			'post_status'  => $post_status,
 			'post_type'    => $post_type,
 		);
 	}
@@ -154,15 +155,42 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Creates a new post and navigates to it.
+	 * Creates a new post.
+	 *
+	 * @param string $post_status Optional. The post's status. Default is 'publish'.
 	 *
 	 * @return int The new post's ID.
 	 */
-	public function go_to_new_post(): int {
-		$post_data = $this->create_test_post_array();
+	public function create_test_post( string $post_status = 'publish' ): int {
+		$post_data = $this->create_test_post_array( 'post', $post_status );
 		$post_id   = self::factory()->post->create( $post_data );
+
+		return $post_id;
+	}
+
+	/**
+	 * Creates a new post and navigates to it.
+	 *
+	 * @param string $post_status Optional. The post's status. Default is 'publish'.
+	 *
+	 * @return int The new post's ID.
+	 */
+	public function go_to_new_post( string $post_status = 'publish' ): int {
+		$post_id = $this->create_test_post( $post_status );
 		$this->go_to( '/?p=' . $post_id );
 
 		return $post_id;
+	}
+
+	/**
+	 * Sets current user as admin.
+	 *
+	 * @param int $admin_user_id User ID for the site administrator.
+	 *                           Default is 1 which is assigned to first admin user while creating the site.
+	 *
+	 * @return void
+	 */
+	public function set_admin_user( $admin_user_id = 1 ): void {
+		wp_set_current_user( $admin_user_id );
 	}
 }
