@@ -78,6 +78,10 @@ class Scripts {
 	 * @since 3.0.0 Rename from load_js_tracker
 	 */
 	public function enqueue_js_tracker(): void {
+		if ( is_preview() ) {
+			return;
+		}
+
 		$parsely_options = $this->parsely->get_options();
 
 		global $post;
