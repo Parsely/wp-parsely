@@ -187,6 +187,80 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that tracker scripts are not loading for drafted posts
+	 *
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 *
+	 * @uses Parsely\Parsely::api_key_is_set
+	 * @uses Parsely\Parsely::get_api_key
+	 * @uses Parsely\Parsely::get_options
+	 * @uses Parsely\Parsely::get_tracker_url
+	 * @uses Parsely\Scripts::__construct
+	 * @uses Parsely\Scripts::register_scripts
+	 *
+	 * @group scripts
+	 */
+	public function test_should_not_enqueue_tracker_scripts_for_drafted_posts(): void {
+		$this->set_admin_user();
+		$this->go_to_new_post( 'draft' );
+		
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
+
+		// Verify that tracker script is registered and enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-tracker',
+			array( 'registered' ),
+			array( 'enqueued' )
+		);
+
+		// Verify that loader script is registered and enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-loader',
+			array( 'registered' ),
+			array( 'enqueued' )
+		);
+	}
+
+	/**
+	 * Verifies that tracker scripts are not loading for published posts in preview mode
+	 *
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 *
+	 * @uses Parsely\Parsely::api_key_is_set
+	 * @uses Parsely\Parsely::get_api_key
+	 * @uses Parsely\Parsely::get_options
+	 * @uses Parsely\Parsely::get_tracker_url
+	 * @uses Parsely\Scripts::__construct
+	 * @uses Parsely\Scripts::register_scripts
+	 *
+	 * @group scripts
+	 */
+	public function test_should_not_enqueue_tracker_scripts_for_published_posts_in_preview_mode(): void {
+		$post_id = $this->create_test_post();
+
+		$this->set_admin_user();
+		$this->go_to( "/?p={$post_id}&preview=true" );
+		
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
+
+		// Verify that tracker script is registered and enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-tracker',
+			array( 'registered' ),
+			array( 'enqueued' )
+		);
+
+		// Verify that loader script is registered and enqueued.
+		$this->assert_script_statuses(
+			'wp-parsely-loader',
+			array( 'registered' ),
+			array( 'enqueued' )
+		);
+	}
+
+	/**
 	 * Verifies that tracker enqueuing functionality works as expected when the
 	 * autotrack option is disabled.
 	 *
