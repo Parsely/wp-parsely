@@ -66,7 +66,7 @@
 		"@wordpress/i18n": "^4.5.0",
 		"@wordpress/plugins": "^4.19.0",
 		"@wordpress/scripts": "^24.5.0",
-		"@wordpress/url": "^3.15.0",
+		"@wordpress/url": "^3.23.0",
 		"concurrently": "^7.5.0",
 		"eslint-plugin-jest": "^27.1.5",
 		"husky": "^8.0.2",
