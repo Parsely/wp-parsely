@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Button, Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 
@@ -111,9 +111,15 @@ function DataPeriodSection( data: PostPerformanceData ) {
 
 	return (
 		<div className="section period">
-			{ __( 'Last ', 'wp-parsely' ) + period.days + __( ' Days ', 'wp-parsely' ) }
+			{
+				/* translators: Number of days for which data is being shown */
+				sprintf( __( 'Last %d Days', 'wp-parsely' ), period.days )
+			}
 			<span>
-				{ __( '(', 'wp-parsely' ) + periodStart + __( ' - Today)', 'wp-parsely' ) }
+				{
+					/* translators: Period starting date in short format */
+					sprintf( __( ' (%s - Today)', 'wp-parsely' ), periodStart )
+				}
 			</span>
 		</div>
 	);
@@ -166,7 +172,10 @@ function ReferrerTypesSection( data: PostPerformanceData ) {
 				Object.entries( data.referrers.types ).map( ( [ key, value ] ) => {
 					return (
 						<div className={ 'bar-fill ' + key } key={ key }
-							title={ value.viewsPercentage + __( '%', 'wp-parsely' ) }
+							title={
+								/* translators: %s: Percentage value, %%: Escaped percent sign */
+								sprintf( __( '%s%%', 'wp-parsely' ), value.viewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
+							}
 							style={ { width: value.viewsPercentage + '%' } }>
 						</div>
 					);
@@ -219,7 +228,10 @@ function TopReferrersSection( data: PostPerformanceData ) {
 						return (
 							<tr key={ key }>
 								<th title={ key }>{ key }</th>
-								<td title={ value.viewsPercentage + __( '%', 'wp-parsely' ) }>
+								<td title={
+									/* translators: %s: Percentage value, %%: Escaped percent sign */
+									sprintf( __( '%s%%', 'wp-parsely' ), value.viewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
+								}>
 									<div className="percentage-bar" style={ { '--bar-fill': value.viewsPercentage + '%' } as React.CSSProperties }></div>
 								</td>
 								<td>{ ImpreciseNumber( value.views ) }</td>
@@ -229,8 +241,10 @@ function TopReferrersSection( data: PostPerformanceData ) {
 				}
 				</tbody>
 			</table>
-			<div>
-				{ totalViewsPercentage + __( '% of views came from top referrers.', 'wp-parsely' ) }
+			<div> {
+				/* translators: %s: Percentage value, %%: Escaped percent sign */
+				sprintf( __( '%s%% of views came from top referrers.', 'wp-parsely' ), totalViewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
+			}
 			</div>
 		</div>
 	);
