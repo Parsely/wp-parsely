@@ -147,7 +147,7 @@ function GeneralPerformanceSection( data: PostPerformanceData ) {
 						<th>{ __( 'Visitors', 'wp-parsely' ) }</th>
 						<th title={
 							__( 'Average time visitors engaged with content', 'wp-parsely' )
-						}>{ __( 'Engaged Time', 'wp-parsely' ) }</th>
+						}>{ __( 'Avg. Time', 'wp-parsely' ) }</th>
 					</tr>
 				</tfoot>
 			</table>
