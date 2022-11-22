@@ -487,7 +487,7 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
-	 * Assert that a passed script is not registered.
+	 * Asserts that a passed script is not registered.
 	 *
 	 * @param string $handle Script handle to test.
 	 */
@@ -496,7 +496,7 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
-	 * Assert that a passed script is registered.
+	 * Asserts that a passed script is registered.
 	 *
 	 * @param string $handle Script handle to test.
 	 */
@@ -505,7 +505,7 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
-	 * Assert that a passed script is not enqueued.
+	 * Asserts that a passed script is not enqueued.
 	 *
 	 * @param string $handle Script handle to test.
 	 */
@@ -514,7 +514,7 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
-	 * Assert that a passed script is enqueued.
+	 * Asserts that a passed script is enqueued.
 	 *
 	 * @param string $handle Script handle to test.
 	 */
