@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import dayjs from 'dayjs';
 import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
@@ -26,8 +27,17 @@ function RelatedTopPostList() {
 	useEffect( () => {
 		const fetchPosts = async ( retries: number ) => {
 			ContentHelperProvider.getRelatedTopPosts()
-				.then( ( result ) => {
-					setPosts( result.posts );
+				.then( ( result ): void => {
+					const mappedPosts: RelatedTopPostData[] = result.posts.map(
+						( post: RelatedTopPostData ): RelatedTopPostData => (
+							{
+								...post,
+								date: dayjs( post.date ).format( 'MMM D, YYYY' ),
+							}
+						)
+					);
+
+					setPosts( mappedPosts );
 					setMessage( result.message );
 					setLoading( false );
 				} )
@@ -65,22 +75,35 @@ function RelatedTopPostList() {
 	}
 
 	// Show related top posts list.
-	const postList = posts.map( ( post ) => <RelatedTopPostListItem key={ post.id } post={ post } /> );
+	const postList: JSX.Element = (
+		<div className="parsely-top-posts">
+			{ posts.map( ( post: RelatedTopPostData ): JSX.Element => <RelatedTopPostListItem key={ post.id } post={ post } /> ) }
+		</div>
+	);
+
 	return (
-		<>
-			<p>{ message }</p>
-			{ loading ? <Spinner /> : postList }
-		</>
+		loading
+			?	(
+				<div className="parsely-spinner-wrapper">
+					<Spinner />
+				</div>
+			)
+			: (
+				<div className="parsely-top-posts-wrapper">
+					<p className="parsely-top-posts-time-range">{ message }</p>
+					{ postList }
+				</div>
+			)
 	);
 }
 
 /**
  * "Contact Us" component that we display in place of certain errors.
  */
-function ContactUsMessage() {
+function ContactUsMessage(): JSX.Element {
 	return (
-		<>
-			<p className="margin-top-small">
+		<div className="parsely-contact-us">
+			<p>
 				{ /* eslint-disable-next-line react/jsx-no-target-blank */ }
 				<a href="https://www.parse.ly/contact" target="_blank" rel="noopener">
 					{ __( 'Contact us', 'wp-parsely' ) + ' ' }
@@ -97,7 +120,7 @@ function ContactUsMessage() {
 					{ __( 'wp-parsely options.', 'wp-parsely' ) }
 				</a>
 			</p>
-		</>
+		</div>
 	);
 }
 

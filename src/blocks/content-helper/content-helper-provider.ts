@@ -80,7 +80,7 @@ class ContentHelperProvider {
 			return Promise.reject( error );
 		}
 
-		let message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ apiQuery.message }.`;
+		let message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ apiQuery.message } ${ __( 'in last 3 days.', 'wp-parsely' ) }`;
 		if ( data.length === 0 ) {
 			message = `${ __( 'The Parse.ly API did not return any results for top-performing posts', 'wp-parsely' ) } ${ apiQuery.message }.`;
 		}
@@ -138,7 +138,7 @@ class ContentHelperProvider {
 		if ( tag ) {
 			return ( {
 				query: { limit, tag },
-				message: `${ __( 'with the tag', 'wp-parsely' ) } "${ tag.name }"`,
+				message: `${ __( 'with tag', 'wp-parsely' ) } "${ tag.name }"`,
 			} );
 		}
 
@@ -146,14 +146,14 @@ class ContentHelperProvider {
 		if ( category?.name ) {
 			return ( {
 				query: { limit, section: category.name },
-				message: `${ __( 'in the category', 'wp-parsely' ) } "${ category.name }"`,
+				message: `${ __( 'from category', 'wp-parsely' ) } "${ category.name }"`,
 			} );
 		}
 
 		// Only the post author exists.
 		return ( {
 			query: { limit, author: author.name },
-			message: `${ __( 'by the author', 'wp-parsely' ) } "${ author.name }"`,
+			message: `${ __( 'by author', 'wp-parsely' ) } "${ author.name }"`,
 		} );
 	}
 }

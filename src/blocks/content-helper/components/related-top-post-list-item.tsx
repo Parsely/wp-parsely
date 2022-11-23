@@ -2,35 +2,35 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import { RelatedTopPostData } from '../models/related-top-post-data';
+import { ReactComponent as PublishedLinkIcon } from '../icons/published-link.svg';
+import { ReactComponent as ViewsIcon } from '../icons/views.svg';
 
 interface RelatedTopPostListItemProps {
 	post: RelatedTopPostData;
 }
 
-function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ) {
+function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ): JSX.Element {
 	return (
-		<>
-			<Card size="small" elevation={ 2 } className="parsely-content-helper-card">
-				<CardHeader><b>{ post.title }</b></CardHeader>
-				<CardBody>
-					<ul>
-						<li>{ __( 'Views:', 'wp-parsely' ) } { post.views }</li>
-						<li>{ __( 'Published:', 'wp-parsely' ) } { post.date }</li>
-						<li>{ __( 'Author:', 'wp-parsely' ) } { post.author }</li>
-					</ul>
-					<p>
-						<Button href={ post.url } target="_blank" variant="primary">{ __( 'Open Post', 'wp-parsely' ) }</Button> { ' ' }
-						<Button href={ post.statsUrl } target="_blank" variant="secondary">{ __( 'Post Stats', 'wp-parsely' ) }</Button>
-					</p>
-				</CardBody>
-			</Card>
-		</>
+		<div className="parsely-top-post">
+			<div className="parsely-top-post-title">
+				<a className="parsely-top-post-stats-link" href={ post.statsUrl } target="_blank" rel="noreferrer" title={ __( 'View in Parse.ly', 'wp-parsely' ) }>
+					{ post.title }
+				</a>
+				<a className="parsely-top-post-link" href={ post.url } target="_blank" rel="noreferrer" title={ __( 'View Published Post', 'wp-parsely' ) }>
+					<PublishedLinkIcon />
+				</a>
+			</div>
+			<ul className="parsely-top-post-info">
+				<li>{ post.date }</li>
+				<li>{ post.author }</li>
+				<li className="parsely-top-post-views"><ViewsIcon /> { post.views }</li>
+			</ul>
+		</div>
 	);
 }
 
