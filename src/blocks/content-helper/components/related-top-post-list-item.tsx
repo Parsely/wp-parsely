@@ -7,8 +7,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { RelatedTopPostData } from '../models/related-top-post-data';
-import { ReactComponent as PublishedLinkIcon } from '../icons/published-link.svg';
-import { ReactComponent as ViewsIcon } from '../icons/views.svg';
+import ViewsIcon from '../icons/views-icon';
+import PublishedLinkIcon from '../icons/published-link-icon';
 
 interface RelatedTopPostListItemProps {
 	post: RelatedTopPostData;
