@@ -103,7 +103,7 @@ export const getContentHelperMessage = async ( category = null, tag = null, time
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
-	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel__body.is-opened > p';
+	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel__body.is-opened .parsely-top-posts-desc';
 
 	// Run basic operations.
 	await createNewPost();
