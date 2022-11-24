@@ -97,7 +97,7 @@ function RelatedTopPostList() {
 			)
 			: (
 				<div className="parsely-top-posts-wrapper">
-					<p className="parsely-top-posts-time-range">{ message }</p>
+					<p className="parsely-top-posts-desc" data-testid="parsely-top-posts-desc">{ message }</p>
 					{ postList }
 				</div>
 			)

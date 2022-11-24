@@ -16,7 +16,7 @@ interface RelatedTopPostListItemProps {
 
 function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ): JSX.Element {
 	return (
-		<div className="parsely-top-post">
+		<div className="parsely-top-post" data-testid="parsely-top-post">
 			<div className="parsely-top-post-title">
 				<a className="parsely-top-post-stats-link" href={ post.statsUrl } target="_blank" rel="noreferrer" title={ __( 'View in Parse.ly', 'wp-parsely' ) }>
 					{ post.title }
@@ -26,9 +26,9 @@ function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ): JSX.El
 				</a>
 			</div>
 			<ul className="parsely-top-post-info">
-				<li>{ post.date }</li>
-				<li>{ post.author }</li>
-				<li className="parsely-top-post-views"><ViewsIcon /> { post.views }</li>
+				<li className="parsely-top-post-date">{ post.date }</li>
+				<li className="parsely-top-post-author">{ post.author }</li>
+				<li className="parsely-top-post-views"><ViewsIcon />{ post.views }</li>
 			</ul>
 		</div>
 	);

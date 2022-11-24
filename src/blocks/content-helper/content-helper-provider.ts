@@ -41,6 +41,9 @@ interface GetRelatedTopPostsResult {
 	posts: RelatedTopPostData[];
 }
 
+export const RELATED_POSTS_DEFAULT_LIMIT = 5;
+export const RELATED_POSTS_DEFAULT_TIME_RANGE = 3; // in days
+
 class ContentHelperProvider {
 	/**
 	 * Returns related top-performing posts to the one that is currently being
@@ -80,7 +83,7 @@ class ContentHelperProvider {
 			return Promise.reject( error );
 		}
 
-		let message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ apiQuery.message } ${ __( 'in last 3 days.', 'wp-parsely' ) }`;
+		let message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ apiQuery.message } ${ __( `in last`, 'wp-parsely' ) } ${ RELATED_POSTS_DEFAULT_TIME_RANGE } ${ __( `days.`, 'wp-parsely' ) }`;
 		if ( data.length === 0 ) {
 			message = `${ __( 'The Parse.ly API did not return any results for top-performing posts', 'wp-parsely' ) } ${ apiQuery.message }.`;
 		}
@@ -122,9 +125,7 @@ class ContentHelperProvider {
 	 * @return {RelatedTopPostsApiQuery} The query object.
 	 */
 	private static buildRelatedTopPostsApiQuery( author: User, category: Taxonomy, tag: Taxonomy ): RelatedTopPostsApiQuery {
-		// Number of maximum posts to fetch. The actual number of returned posts
-		// might be lower.
-		const limit = 5;
+		const limit = RELATED_POSTS_DEFAULT_LIMIT;
 
 		// All fetching criteria are empty.
 		if ( ! author && ! category && ! tag ) {
