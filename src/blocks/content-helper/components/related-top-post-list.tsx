@@ -54,6 +54,13 @@ function RelatedTopPostList() {
 
 		setLoading( true );
 		fetchPosts( FETCH_RETRIES );
+
+		return (): void => {
+			setLoading( false );
+			setPosts( [] );
+			setMessage( '' );
+			setError( null );
+		};
 	}, [] );
 
 	// Show error message or contact message.
@@ -66,12 +73,12 @@ function RelatedTopPostList() {
 
 		// Error coming from apiFetch.
 		if ( error?.message ) {
-			return <p>{ __( 'Error:', 'wp-parsely' ) } { error.message }</p>;
+			return <p data-testid="api-error">{ __( 'Error:', 'wp-parsely' ) } { error.message }</p>;
 		}
 
 		// Error coming from the WordPress REST API.
 		const errorMessage = JSON.stringify( error ).match( /\[\"(.*?)\"\]/ )[ 1 ];
-		return <p>{ __( 'Error:', 'wp-parsely' ) } { errorMessage }</p>;
+		return <p data-testid="wp-api-error">{ __( 'Error:', 'wp-parsely' ) } { errorMessage }</p>;
 	}
 
 	// Show related top posts list.
@@ -84,7 +91,7 @@ function RelatedTopPostList() {
 	return (
 		loading
 			?	(
-				<div className="parsely-spinner-wrapper">
+				<div className="parsely-spinner-wrapper" data-testid="parsely-spinner-wrapper">
 					<Spinner />
 				</div>
 			)
@@ -102,7 +109,7 @@ function RelatedTopPostList() {
  */
 function ContactUsMessage(): JSX.Element {
 	return (
-		<div className="parsely-contact-us">
+		<div className="parsely-contact-us" data-testid="parsely-contact-us">
 			<p>
 				{ /* eslint-disable-next-line react/jsx-no-target-blank */ }
 				<a href="https://www.parse.ly/contact" target="_blank" rel="noopener">
