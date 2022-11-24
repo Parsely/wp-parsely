@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { select } from '@wordpress/data';
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
@@ -112,14 +112,22 @@ class CurrentPostDetailsProvider {
 		// No data was returned.
 		if ( response.data.length === 0 ) {
 			return Promise.reject(
-				__( 'No data was found for the URL', 'wp-parsely' ) + ` ${ postUrl }`
+				sprintf(
+					/* translators: URL of the published post */
+					__( 'The post %s has 0 views or no data was returned for it by the Parse.ly API.',
+						'wp-parsely' ), postUrl
+				)
 			);
 		}
 
 		// Data for multiple URLs was returned.
 		if ( response.data.length > 1 ) {
 			return Promise.reject(
-				__( 'Error: multiple results were returned for the URL', 'wp-parsely' ) + `${ postUrl }`
+				sprintf(
+					/* translators: URL of the published post */
+					__( 'Error: multiple results were returned for the post %s by the Parse.ly API.',
+						'wp-parsely' ), postUrl
+				)
 			);
 		}
 
