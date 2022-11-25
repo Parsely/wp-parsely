@@ -76,6 +76,10 @@ div.wp-parsely-content-helper {
 					}
 
 					// Bar-fill colors by referrer type.
+					&.direct {
+						background-color: hsl(var(--ref-direct));
+					}
+
 					&.internal {
 						background-color: hsl(var(--ref-internal));
 					}

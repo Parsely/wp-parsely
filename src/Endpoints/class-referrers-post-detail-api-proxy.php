@@ -19,6 +19,12 @@ use WP_REST_Request;
  * @since 3.6.0
  */
 final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
+	/**
+	 * Count of total views.
+	 *
+	 * @var int
+	 */
+	private $total_views = 0;
 
 	/**
 	 * Registers the endpoint's WP REST route.
@@ -37,6 +43,8 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @param WP_REST_Request $request The request object.
 	 */
 	public function get_items( WP_REST_Request $request ): stdClass {
+		$this->total_views = (int) $request->get_param( 'total_views' );
+		$request->offsetUnset( 'total_views' ); // Remove param from request.
 		return $this->get_data( $request );
 	}
 
@@ -50,8 +58,8 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 */
 	protected function generate_data( array $response ): array {
 		$referrers_types = $this->generate_referrer_types_data( $response );
-		$total_views     = (int) preg_replace( '/\D/', '', $referrers_types->totals->views );
-		$referrers_top   = $this->generate_referrers_data( 5, $response, $total_views );
+		$direct_views    = (int) preg_replace( '/\D/', '', $referrers_types->direct->views );
+		$referrers_top   = $this->generate_referrers_data( 5, $response, $direct_views );
 
 		$result = array(
 			'top'   => $referrers_top,
@@ -81,11 +89,11 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @return stdClass The generated data.
 	 */
 	private function generate_referrer_types_data( array $response ): stdClass {
-		$result      = new stdClass();
-		$total_views = 0;
+		$result               = new stdClass();
+		$total_referrer_views = 0; // Views from all referrer types combined.
 
 		// Set referrer type order as it is displayed in the Parse.ly dashboard.
-		$referrer_type_keys = array( 'social', 'search', 'other', 'internal' );
+		$referrer_type_keys = array( 'social', 'search', 'other', 'internal', 'direct' );
 		foreach ( $referrer_type_keys as $key ) {
 			$result->$key->views = 0;
 		}
@@ -94,15 +102,19 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		foreach ( $response as $referrer_data ) {
 			// Point by reference to the item to be processed, and set it to 0
 			// when needed in order to avoid potential PHP warnings.
-			$views =& $result->{ $referrer_data->type }->views;
-			if ( ! isset( $views ) ) {
-				$views = 0;
+			$current_type_views =& $result->{ $referrer_data->type }->views;
+			if ( ! isset( $current_type_views ) ) {
+				$current_type_views = 0;
 			}
 
 			// Set the values.
-			$views       += $referrer_data->metrics->referrers_views;
-			$total_views += $referrer_data->metrics->referrers_views;
+			$current_type_views   += $referrer_data->metrics->referrers_views;
+			$total_referrer_views += $referrer_data->metrics->referrers_views;
 		}
+
+		// Add direct and total views to the object.
+		$result->direct->views = $this->total_views - $total_referrer_views;
+		$result->totals->views = $this->total_views;
 
 		// Remove referrer types without views.
 		foreach ( $referrer_type_keys as $key ) {
@@ -111,15 +123,12 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 			}
 		}
 
-		// Add totals to the end of the object.
-		$result->totals->views = $total_views;
-
 		// Set percentage values and format numbers.
 		foreach ( $result as $key => $value ) {
 			// Set and format percentage values.
 			$result->{ $key }->viewsPercentage = $this->get_i18n_percentage(
 				(int) $value->views,
-				(int) $total_views
+				$this->total_views
 			);
 
 			// Format views values.
@@ -143,31 +152,41 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 *
 	 * @param int             $limit The limit of returned referrers.
 	 * @param array<stdClass> $response The response received by the proxy.
-	 * @param int             $total_views The total views of the $views object.
+	 * @param int             $direct_views The count of direct views.
 	 * @return stdClass The generated data.
 	 */
 	private function generate_referrers_data(
-		int $limit, array $response, int $total_views
+		int $limit, array $response, int $direct_views
 	): stdClass {
-		$result = new stdClass();
-		$totals = 0;
-
-		// Set the new limit if too few results are returned.
-		$response_item_count = count( $response );
-		if ( $response_item_count < $limit ) {
-			$limit = $response_item_count;
-		};
+		$temp_views     = array();
+		$totals         = 0;
+		$referrer_count = count( $response );
 
 		// Set views and views totals.
-		for ( $i = 0; $i < $limit; $i++ ) {
-			$data  = $response[ $i ];
-			$views = $data->metrics->referrers_views;
+		$loop_count = $referrer_count > $limit ? $limit : $referrer_count;
+		for ( $i = 0; $i < $loop_count; $i++ ) {
+			$data           = $response[ $i ];
+			$referrer_views = $data->metrics->referrers_views;
 
-			$result->{ $data->name }->views = $views;
-			$totals                        += $views;
+			$temp_views[ $data->name ] = $referrer_views;
+			$totals                   += $referrer_views;
 		}
 
-		// Add totals to the end of the object.
+		// If applicable, add the direct views.
+		if ( $direct_views >= $referrer_views ) {
+			$temp_views['direct'] = $direct_views;
+			$totals              += $direct_views;
+			arsort( $temp_views );
+			if ( count( $temp_views ) > $limit ) {
+				$totals -= array_pop( $temp_views );
+			}
+		}
+
+		// Convert temporary array to result object and add totals.
+		$result = new stdClass();
+		foreach ( $temp_views as $key => $value ) {
+			$result->$key->views = $value;
+		}
 		$result->totals->views = $totals;
 
 		// Set percentages values and format numbers.
@@ -175,7 +194,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 			// Percentage against all referrer views, even those not included
 			// in the dataset due to the $limit argument.
 			$result->{ $key }->viewsPercentage = $this
-				->get_i18n_percentage( (int) $value->views, $total_views );
+				->get_i18n_percentage( (int) $value->views, $this->total_views );
 
 			// Percentage against the current dataset that is limited due to the
 			// $limit argument.

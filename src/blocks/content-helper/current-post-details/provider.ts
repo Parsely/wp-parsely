@@ -67,13 +67,11 @@ class CurrentPostDetailsProvider {
 		// Get post URL.
 		const postUrl = editor.getPermalink();
 
-		// Fetch results from API and set the Content Helper's message.
+		// Fetch all needed results using our WordPress endpoints.
 		let performanceData, referrerData;
 		try {
-			[ performanceData, referrerData ] = await Promise.all( [
-				this.fetchPerformanceDataFromWpEndpoint( postUrl ),
-				this.fetchReferrerDataFromWpEndpoint( postUrl ),
-			] );
+			performanceData = await this.fetchPerformanceDataFromWpEndpoint( postUrl );
+			referrerData = await this.fetchReferrerDataFromWpEndpoint( postUrl, performanceData.views );
 		} catch ( error ) {
 			return Promise.reject( error );
 		}
@@ -137,11 +135,12 @@ class CurrentPostDetailsProvider {
 	/**
 	 * Fetches referrer data for the current post from the WordPress REST API.
 	 *
-	 * @param {string} postUrl The post's URL.
+	 * @param {string} postUrl    The post's URL.
+	 * @param {string} totalViews Total post views (including direct views).
 	 * @return {Promise<PostPerformanceReferrerData>} The post's referrer data.
 	 */
 	private async fetchReferrerDataFromWpEndpoint(
-		postUrl: string,
+		postUrl: string, totalViews: string
 	): Promise<PostPerformanceReferrerData> {
 		let response;
 
@@ -152,6 +151,7 @@ class CurrentPostDetailsProvider {
 					url: postUrl,
 					period_start: this.dataPeriodStart,
 					period_end: this.dataPeriodEnd,
+					total_views: totalViews, // Needed to calculate direct views.
 				} ),
 			} ) as referrersApiResponse;
 		} catch ( wpError ) {

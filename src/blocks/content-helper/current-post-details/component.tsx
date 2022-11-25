@@ -225,9 +225,14 @@ function TopReferrersSection( data: PostPerformanceData ) {
 							return null;
 						}
 
+						let referrerUrl = key;
+						if ( key === 'direct' ) {
+							referrerUrl = __( 'Direct', 'wp-parsely' );
+						}
+
 						return (
 							<tr key={ key }>
-								<th title={ key }>{ key }</th>
+								<th title={ referrerUrl }>{ referrerUrl }</th>
 								<td title={
 									/* translators: %s: Percentage value, %%: Escaped percent sign */
 									sprintf( __( '%s%%', 'wp-parsely' ), value.viewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
