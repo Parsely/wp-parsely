@@ -83,9 +83,9 @@ function RelatedTopPostList() {
 
 	// Show related top posts list.
 	const postList: JSX.Element = (
-		<div className="parsely-top-posts">
+		<ol className="parsely-top-posts">
 			{ posts.map( ( post: RelatedTopPostData ): JSX.Element => <RelatedTopPostListItem key={ post.id } post={ post } /> ) }
-		</div>
+		</ol>
 	);
 
 	return (

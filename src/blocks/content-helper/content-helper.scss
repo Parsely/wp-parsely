@@ -11,6 +11,11 @@
 	}
 }
 
+.parsely-top-posts {
+	list-style-type: none;
+	margin: 0;
+}
+
 .wp-parsely-content-helper p.parsely-top-posts-desc {
 	margin: 15px 0 22px;
 	color: $gray-700;
@@ -50,12 +55,12 @@
 	}
 }
 
-.parsely-top-post-info {
+.wp-parsely-content-helper p.parsely-top-post-info {
 	display: flex;
-	margin-bottom: 0;
+	margin: 5px 0 0;
 	justify-content: space-between;
 
-	li {
+	> span {
 		color: $gray-600;
 		margin-bottom: 0;
 		display: flex;
@@ -68,7 +73,7 @@
 
 .parsely-top-post-views svg {
 	position: relative;
-	top: 1px;
+	top: 2px;
 	margin-right: 3px;
 	fill: $gray-600;
 }

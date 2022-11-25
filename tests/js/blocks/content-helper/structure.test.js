@@ -132,14 +132,14 @@ describe( 'Content Helper', () => {
 
 		expect( firstTopPost.querySelector( '.parsely-top-post-title' ).textContent ).toEqual( 'Title 1' );
 		expect( statsLink.getAttribute( 'href' ) ).toEqual( 'https://dash.parsely.com/example.com/post-1' );
-		expect( statsLink.getAttribute( 'title' ) ).toEqual( 'View in Parse.ly' );
+		expect( statsLink.getAttribute( 'title' ) ).toEqual( 'View in Parse.ly (opens new tab)' );
 		expect( statsLink.getAttribute( 'target' ) ).toEqual( '_blank' );
 		expect( postLink.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
-		expect( postLink.getAttribute( 'title' ) ).toEqual( 'View Published Post' );
+		expect( postLink.getAttribute( 'title' ) ).toEqual( 'View Published Post (opens new tab)' );
 		expect( postLink.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-date' ).textContent ).toEqual( 'Jan 1, 2022' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-author' ).textContent ).toEqual( 'Author 1' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-views' ).textContent ).toEqual( '1' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-date' ).textContent ).toEqual( 'Date Jan 1, 2022' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-author' ).textContent ).toEqual( 'Author Name 1' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-views' ).textContent ).toEqual( 'Number of Views 1' );
 	} );
 
 	test( 'should show 5 posts by default', async () => {
@@ -185,7 +185,7 @@ describe( 'Content Helper', () => {
 
 		for ( let i = 1; i <= postsCount; i++ ) {
 			posts.push( {
-				author: `Author ${ i }`,
+				author: `Name ${ i }`,
 				date: `Jan ${ i }, 2022`,
 				id: `http://example.com/post-${ i }`,
 				statsUrl: `https://dash.parsely.com/example.com/post-${ i }`,

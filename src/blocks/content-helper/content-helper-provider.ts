@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { select } from '@wordpress/data';
 // eslint-disable-next-line import/named
 import { Post, Taxonomy, User } from '@wordpress/core-data';
@@ -83,7 +83,8 @@ class ContentHelperProvider {
 			return Promise.reject( error );
 		}
 
-		let message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ apiQuery.message } ${ __( `in last`, 'wp-parsely' ) } ${ RELATED_POSTS_DEFAULT_TIME_RANGE } ${ __( `days.`, 'wp-parsely' ) }`;
+		/* translators: %s: message from api, %d: default time range of related posts api */
+		let message = sprintf( __( 'Top-performing posts %1$s in last %2$d days.', 'wp-parsely' ), apiQuery.message, RELATED_POSTS_DEFAULT_TIME_RANGE );
 		if ( data.length === 0 ) {
 			message = `${ __( 'The Parse.ly API did not return any results for top-performing posts', 'wp-parsely' ) } ${ apiQuery.message }.`;
 		}

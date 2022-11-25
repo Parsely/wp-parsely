@@ -16,21 +16,21 @@ interface RelatedTopPostListItemProps {
 
 function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ): JSX.Element {
 	return (
-		<div className="parsely-top-post" data-testid="parsely-top-post">
+		<li className="parsely-top-post" data-testid="parsely-top-post">
 			<div className="parsely-top-post-title">
-				<a className="parsely-top-post-stats-link" href={ post.statsUrl } target="_blank" rel="noreferrer" title={ __( 'View in Parse.ly', 'wp-parsely' ) }>
+				<a className="parsely-top-post-stats-link" href={ post.statsUrl } target="_blank" rel="noreferrer" title={ __( 'View in Parse.ly (opens new tab)', 'wp-parsely' ) }>
 					{ post.title }
 				</a>
-				<a className="parsely-top-post-link" href={ post.url } target="_blank" rel="noreferrer" title={ __( 'View Published Post', 'wp-parsely' ) }>
+				<a className="parsely-top-post-link" href={ post.url } target="_blank" rel="noreferrer" title={ __( 'View Published Post (opens new tab)', 'wp-parsely' ) }>
 					<PublishedLinkIcon />
 				</a>
 			</div>
-			<ul className="parsely-top-post-info">
-				<li className="parsely-top-post-date">{ post.date }</li>
-				<li className="parsely-top-post-author">{ post.author }</li>
-				<li className="parsely-top-post-views"><ViewsIcon />{ post.views }</li>
-			</ul>
-		</div>
+			<p className="parsely-top-post-info">
+				<span className="parsely-top-post-date"><span className="screen-reader-text">Date </span>{ post.date }</span>
+				<span className="parsely-top-post-author"><span className="screen-reader-text">Author </span>{ post.author }</span>
+				<span className="parsely-top-post-views"><span className="screen-reader-text">Number of Views </span><ViewsIcon />{ post.views }</span>
+			</p>
+		</li>
 	);
 }
 

@@ -5,6 +5,7 @@ import { SVG, Path } from '@wordpress/components';
 
 export const ViewsIcon = () => (
 	<SVG
+		aria-hidden="true"
 		version="1.1"
 		viewBox="0 0 16 16"
 		width="16"
