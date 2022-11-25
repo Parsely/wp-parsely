@@ -164,6 +164,17 @@ function ReferrerTypesSection( data: PostPerformanceData ) {
 	// Remove unneeded totals to simplify upcoming map() calls.
 	delete data.referrers.types[ 'totals' as unknown as number ];
 
+	// Returns an internationalized referrer title based on the passed key.
+	const getKeyTitle = ( key: string ) => {
+		switch ( key ) {
+			case 'social': return __( 'Social', 'wp-parsely' );
+			case 'search': return __( 'Search', 'wp-parsely' );
+			case 'other': return __( 'Other', 'wp-parsely' );
+			case 'internal': return __( 'Internal', 'wp-parsely' );
+			case 'direct': return __( 'Direct', 'wp-parsely' );
+		}
+	};
+
 	return (
 		<div className="section referrer-types">
 			<div className="section-title">{ __( 'Referrers (Page Views)', 'wp-parsely' ) }</div>
@@ -173,8 +184,8 @@ function ReferrerTypesSection( data: PostPerformanceData ) {
 					return (
 						<div className={ 'bar-fill ' + key } key={ key }
 							title={
-								/* translators: %s: Percentage value, %%: Escaped percent sign */
-								sprintf( __( '%s%%', 'wp-parsely' ), value.viewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
+								/* translators: 1: Referrer type, 2: Percentage value, %%: Escaped percent sign */
+								sprintf( __( '%s: %s%%', 'wp-parsely' ), getKeyTitle( key ), value.viewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
 							}
 							style={ { width: value.viewsPercentage + '%' } }>
 						</div>
@@ -186,7 +197,7 @@ function ReferrerTypesSection( data: PostPerformanceData ) {
 				<thead>
 					<tr>{
 						Object.keys( data.referrers.types ).map( ( key ) => {
-							return <th key={ key }>{ key }</th>;
+							return <th key={ key }>{ getKeyTitle( key ) }</th>;
 						} ) }
 					</tr>
 				</thead>
