@@ -165,7 +165,7 @@ function ReferrerTypesSection( data: PostPerformanceData ) {
 	delete data.referrers.types[ 'totals' as unknown as number ];
 
 	// Returns an internationalized referrer title based on the passed key.
-	const getKeyTitle = ( key: string ) => {
+	const getKeyTitle = ( key: string ): string => {
 		switch ( key ) {
 			case 'social': return __( 'Social', 'wp-parsely' );
 			case 'search': return __( 'Search', 'wp-parsely' );
@@ -173,6 +173,8 @@ function ReferrerTypesSection( data: PostPerformanceData ) {
 			case 'internal': return __( 'Internal', 'wp-parsely' );
 			case 'direct': return __( 'Direct', 'wp-parsely' );
 		}
+
+		return key;
 	};
 
 	return (
