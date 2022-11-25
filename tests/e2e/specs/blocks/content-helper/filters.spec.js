@@ -37,7 +37,7 @@ describe( 'Content Helper filters', () => {
 	it( 'Should attempt to fetch results when a Site ID and API Secret are provided', async () => {
 		await setUserDisplayName( 'admin', '' );
 
-		expect( await getContentHelperMessage() ).toMatch( 'The Parse.ly API did not return any results for top-performing posts by the author "admin".' );
+		expect( await getContentHelperMessage() ).toMatch( `The Parse.ly API did not return any results for top-performing posts by author "admin".` );
 	} );
 
 	/**
@@ -59,16 +59,16 @@ describe( 'Content Helper filters', () => {
 		await insertRecordIntoTaxonomy( tagName, 'post_tag' );
 
 		// Author.
-		expect( await getContentHelperMessage() ).toMatch( `Top-performing posts by the author "${ firstName } ${ lastName }".` );
+		expect( await getContentHelperMessage() ).toMatch( `Top-performing posts by author "${ firstName } ${ lastName }" in last 3 days.` );
 
 		// Author + category.
-		expect( await getContentHelperMessage( categoryName ) ).toMatch( `Top-performing posts in the category "${ categoryName }".` );
+		expect( await getContentHelperMessage( categoryName ) ).toMatch( `Top-performing posts from category "${ categoryName }" in last 3 days.` );
 
 		// Author + tag.
-		expect( await getContentHelperMessage( null, tagName ) ).toMatch( `Top-performing posts with the tag "${ tagName }".` );
+		expect( await getContentHelperMessage( null, tagName ) ).toMatch( `Top-performing posts with tag "${ tagName }" in last 3 days.` );
 
 		// Author + category + tag.
-		expect( await getContentHelperMessage( categoryName, tagName ) ).toMatch( `Top-performing posts with the tag "${ tagName }".` );
+		expect( await getContentHelperMessage( categoryName, tagName ) ).toMatch( `Top-performing posts with tag "${ tagName }" in last 3 days.` );
 	} );
 
 	/**
@@ -83,6 +83,6 @@ describe( 'Content Helper filters', () => {
 	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
 		const categoryName = 'Parse.ly Tips';
 
-		expect( await getContentHelperMessage( categoryName, null, 2000 ) ).toMatch( `Top-performing posts in the category "${ categoryName }".` );
+		expect( await getContentHelperMessage( categoryName, null, 2000 ) ).toMatch( `Top-performing posts from category "${ categoryName }" in last 3 days.` );
 	} );
 } );

@@ -119,7 +119,7 @@ describe( 'Content Helper', () => {
 		const getRelatedTopPostsMock = jest
 			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
 			.mockImplementation( () => Promise.resolve( {
-				message: 'The Parse.ly API did not return any results for top-performing posts',
+				message: 'The Parse.ly API did not return any results for top-performing posts by "author".',
 				posts: [],
 			} ) );
 
@@ -133,7 +133,7 @@ describe( 'Content Helper', () => {
 		const topPostDesc = getTopPostDesc();
 		expect( topPostDesc ).toBeInTheDocument();
 		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc.textContent ).toEqual( 'The Parse.ly API did not return any results for top-performing posts' );
+		expect( topPostDesc.textContent ).toEqual( 'The Parse.ly API did not return any results for top-performing posts by "author".' );
 	} );
 
 	test( 'should show a single top post with description and proper attributes', async () => {

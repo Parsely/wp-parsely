@@ -73,12 +73,12 @@ function RelatedTopPostList() {
 
 		// Error coming from apiFetch.
 		if ( error?.message ) {
-			return <p data-testid="api-error">{ __( 'Error:', 'wp-parsely' ) } { error.message }</p>;
+			return <p className="parsely-top-posts-desc" data-testid="api-error">{ __( 'Error:', 'wp-parsely' ) } { error.message }</p>;
 		}
 
 		// Error coming from the WordPress REST API.
 		const errorMessage = JSON.stringify( error ).match( /\[\"(.*?)\"\]/ )[ 1 ];
-		return <p data-testid="wp-api-error">{ __( 'Error:', 'wp-parsely' ) } { errorMessage }</p>;
+		return <p className="parsely-top-posts-desc" data-testid="wp-api-error">{ __( 'Error:', 'wp-parsely' ) } { errorMessage }</p>;
 	}
 
 	// Show related top posts list.
@@ -109,7 +109,7 @@ function RelatedTopPostList() {
  */
 function ContactUsMessage(): JSX.Element {
 	return (
-		<div className="parsely-contact-us" data-testid="parsely-contact-us">
+		<div className="parsely-contact-us parsely-top-posts-desc" data-testid="parsely-contact-us">
 			<p>
 				{ /* eslint-disable-next-line react/jsx-no-target-blank */ }
 				<a href="https://www.parse.ly/contact" target="_blank" rel="noopener">
