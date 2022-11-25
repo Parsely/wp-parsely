@@ -16,13 +16,11 @@ import ContentHelperProvider, { RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAU
 
 describe( 'Content Helper', () => {
 	test( 'should display spinner when starting', () => {
-		const getRelatedTopPostsMock = jest
-			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
-			.mockImplementation( () => Promise.resolve( {} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {} ) );
 
 		render( <RelatedTopPostList /> );
 
-		expect( getRelatedTopPostsMock ).toHaveBeenCalled();
+		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 
 		const spinner = getSpinner();
 		expect( spinner ).toBeInTheDocument();
@@ -30,62 +28,36 @@ describe( 'Content Helper', () => {
 	} );
 
 	test( 'should show contact us message when parsely site id is not set', async () => {
-		const getRelatedTopPostsMock = jest
-			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
-			.mockImplementation( () => Promise.reject( {
-				errors: {
-					parsely_site_id_not_set: 'error msg',
-				},
-			} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
+			errors: {
+				parsely_site_id_not_set: 'error msg',
+			},
+		} ) );
 
-		render( <RelatedTopPostList /> );
-		expect( getSpinner() ).toBeInTheDocument();
-
-		await waitFor( () => screen.findByTestId( 'parsely-contact-us' ), { timeout: 3000 } );
-
-		expect( getRelatedTopPostsMock ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
-
-		const contactUsMessage = getContactUsMessage();
-		expect( contactUsMessage ).toBeInTheDocument();
-		expect( contactUsMessage ).toBeVisible();
+		expect( await verifyContactUsMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 	} );
 
 	test( 'should show contact us message when parsely secret is not set', async () => {
-		const getRelatedTopPostsMock = jest
-			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
-			.mockImplementation( () => Promise.reject( {
-				errors: {
-					parsely_api_secret_not_set: 'error msg',
-				},
-			} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
+			errors: {
+				parsely_api_secret_not_set: 'error msg',
+			},
+		} ) );
 
-		render( <RelatedTopPostList /> );
-		expect( getSpinner() ).toBeInTheDocument();
-
-		await waitFor( () => screen.findByTestId( 'parsely-contact-us' ), { timeout: 3000 } );
-
-		expect( getRelatedTopPostsMock ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
-
-		const contactUsMessage = getContactUsMessage();
-		expect( contactUsMessage ).toBeInTheDocument();
-		expect( contactUsMessage ).toBeVisible();
+		expect( await verifyContactUsMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 	} );
 
 	test( 'should show error message when API returns the error', async () => {
-		const getRelatedTopPostsMock = jest
-			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
-			.mockImplementation( () => Promise.reject( {
-				message: 'fake error from api',
-			} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
+			message: 'fake error from api',
+		} ) );
 
 		render( <RelatedTopPostList /> );
 		expect( getSpinner() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'api-error' ), { timeout: 3000 } );
 
-		expect( getRelatedTopPostsMock ).toHaveBeenCalled();
+		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 
 		const apiError = screen.queryByTestId( 'api-error' );
@@ -95,18 +67,16 @@ describe( 'Content Helper', () => {
 	} );
 
 	test( 'should show error message when WordPress REST API returns the error', async () => {
-		const getRelatedTopPostsMock = jest
-			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
-			.mockImplementation( () => Promise.reject( {
-				error: [ 'fake error from WP api' ],
-			} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
+			error: [ 'fake error from WP api' ],
+		} ) );
 
 		render( <RelatedTopPostList /> );
 		expect( getSpinner() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'wp-api-error' ), { timeout: 3000 } );
 
-		expect( getRelatedTopPostsMock ).toHaveBeenCalled();
+		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 
 		const wpApiError = screen.queryByTestId( 'wp-api-error' );
@@ -116,18 +86,16 @@ describe( 'Content Helper', () => {
 	} );
 
 	test( 'should show not data message when there is no tag, category or author in the post', async () => {
-		const getRelatedTopPostsMock = jest
-			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
-			.mockImplementation( () => Promise.resolve( {
-				message: 'The Parse.ly API did not return any results for top-performing posts by "author".',
-				posts: [],
-			} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
+			message: 'The Parse.ly API did not return any results for top-performing posts by "author".',
+			posts: [],
+		} ) );
 
 		await waitFor( async () => {
 			await render( <RelatedTopPostList /> );
 		} );
 
-		expect( getRelatedTopPostsMock ).toHaveBeenCalled();
+		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 
 		const topPostDesc = getTopPostDesc();
@@ -137,18 +105,16 @@ describe( 'Content Helper', () => {
 	} );
 
 	test( 'should show a single top post with description and proper attributes', async () => {
-		const getRelatedTopPostsMock = jest
-			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
-			.mockImplementation( () => Promise.resolve( {
-				message: `Top-performing posts from category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
-				posts: getRelatedTopPostsApiMock( 1 ),
-			} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
+			message: `Top-performing posts from category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
+			posts: getRelatedTopPostsMockData( 1 ),
+		} ) );
 
 		await waitFor( async () => {
 			await render( <RelatedTopPostList /> );
 		} );
 
-		expect( getRelatedTopPostsMock ).toHaveBeenCalled();
+		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 
 		const topPostDesc = getTopPostDesc();
@@ -177,18 +143,16 @@ describe( 'Content Helper', () => {
 	} );
 
 	test( 'should show 5 posts by default', async () => {
-		const getRelatedTopPostsMock = jest
-			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
-			.mockImplementation( () => Promise.resolve( {
-				message: `Top-performing posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
-				posts: getRelatedTopPostsApiMock(),
-			} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
+			message: `Top-performing posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
+			posts: getRelatedTopPostsMockData(),
+		} ) );
 
 		await waitFor( async () => {
 			await render( <RelatedTopPostList /> );
 		} );
 
-		expect( getRelatedTopPostsMock ).toHaveBeenCalled();
+		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 		expect( getTopPostDesc().textContent ).toEqual( `Top-performing posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
 		expect( getTopPosts().length ).toEqual( 5 );
@@ -210,7 +174,13 @@ describe( 'Content Helper', () => {
 		return screen.queryByTestId( 'parsely-contact-us' );
 	}
 
-	function getRelatedTopPostsApiMock( postsCount = RELATED_POSTS_DEFAULT_LIMIT ) {
+	function getRelatedTopPostsMockFn( mockFn ) {
+		return jest
+			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
+			.mockImplementation( mockFn );
+	}
+
+	function getRelatedTopPostsMockData( postsCount = RELATED_POSTS_DEFAULT_LIMIT ) {
 		const posts = [];
 
 		for ( let i = 1; i <= postsCount; i++ ) {
@@ -226,5 +196,21 @@ describe( 'Content Helper', () => {
 		}
 
 		return posts;
+	}
+
+	async function verifyContactUsMessage( getRelatedTopPostsFn ) {
+		render( <RelatedTopPostList /> );
+		expect( getSpinner() ).toBeInTheDocument();
+
+		await waitFor( () => screen.findByTestId( 'parsely-contact-us' ), { timeout: 3000 } );
+
+		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
+		expect( getSpinner() ).toBeNull();
+
+		const contactUsMessage = getContactUsMessage();
+		expect( contactUsMessage ).toBeInTheDocument();
+		expect( contactUsMessage ).toBeVisible();
+
+		return true;
 	}
 } );
