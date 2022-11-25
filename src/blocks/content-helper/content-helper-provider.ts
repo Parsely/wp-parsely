@@ -83,7 +83,7 @@ class ContentHelperProvider {
 			return Promise.reject( error );
 		}
 
-		/* translators: %s: message from api, %d: default time range of related posts api */
+		/* translators: %s: message such as "from category Foo", %d: number of days */
 		let message = sprintf( __( 'Top-performing posts %1$s in last %2$d days.', 'wp-parsely' ), apiQuery.message, RELATED_POSTS_DEFAULT_TIME_RANGE );
 		if ( data.length === 0 ) {
 			message = `${ __( 'The Parse.ly API did not return any results for top-performing posts', 'wp-parsely' ) } ${ apiQuery.message }.`;
@@ -140,7 +140,8 @@ class ContentHelperProvider {
 		if ( tag ) {
 			return ( {
 				query: { limit, tag },
-				message: `${ __( 'with tag', 'wp-parsely' ) } "${ tag.name }"`,
+				/* translators: %s: message such as "with tag Foo" */
+				message: sprintf( __( 'with tag "%1$s"', 'wp-parsely' ), tag.name ),
 			} );
 		}
 
@@ -148,14 +149,16 @@ class ContentHelperProvider {
 		if ( category?.name ) {
 			return ( {
 				query: { limit, section: category.name },
-				message: `${ __( 'from category', 'wp-parsely' ) } "${ category.name }"`,
+				/* translators: %s: message such as "from category Foo" */
+				message: sprintf( __( 'from category "%1$s"', 'wp-parsely' ), category.name ),
 			} );
 		}
 
 		// Only the post author exists.
 		return ( {
 			query: { limit, author: author.name },
-			message: `${ __( 'by author', 'wp-parsely' ) } "${ author.name }"`,
+			/* translators: %s: message such as "by author John" */
+			message: sprintf( __( 'by author "%1$s"', 'wp-parsely' ), author.name ),
 		} );
 	}
 }
