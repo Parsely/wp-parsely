@@ -227,8 +227,8 @@ function TopReferrersSection( data: PostPerformanceData ) {
 			<table>
 				<thead>
 					<tr>
-						<th>{ __( 'Top Referrers', 'wp-parsely' ) }</th>
-						<th colSpan={ 2 }>{ __( 'Page Views', 'wp-parsely' ) }</th>
+						<th scope="col">{ __( 'Top Referrers', 'wp-parsely' ) }</th>
+						<th colSpan={ 2 } scope="colgroup">{ __( 'Page Views', 'wp-parsely' ) }</th>
 					</tr>
 				</thead>
 				<tbody>{
@@ -245,7 +245,7 @@ function TopReferrersSection( data: PostPerformanceData ) {
 
 						return (
 							<tr key={ key }>
-								<th title={ referrerUrl }>{ referrerUrl }</th>
+								<th scope="row" title={ referrerUrl }>{ referrerUrl }</th>
 								<td title={
 									/* translators: %s: Percentage value, %%: Escaped percent sign */
 									sprintf( __( '%s%%', 'wp-parsely' ), value.viewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
