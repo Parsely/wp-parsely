@@ -187,7 +187,7 @@ function ReferrerTypesSection( data: PostPerformanceData ) {
 						<div className={ 'bar-fill ' + key } key={ key }
 							title={
 								/* translators: 1: Referrer type, 2: Percentage value, %%: Escaped percent sign */
-								sprintf( __( '%s: %s%%', 'wp-parsely' ), getKeyTitle( key ), value.viewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
+								sprintf( __( '%1$s: %2$s%%', 'wp-parsely' ), getKeyTitle( key ), value.viewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
 							}
 							style={ { width: value.viewsPercentage + '%' } }>
 						</div>
