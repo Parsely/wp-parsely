@@ -243,14 +243,17 @@ function TopReferrersSection( data: PostPerformanceData ) {
 							referrerUrl = __( 'Direct', 'wp-parsely' );
 						}
 
+						/* translators: %s: Percentage value, %%: Escaped percent sign */
+						const percentage = sprintf( __( '%s%%', 'wp-parsely' ), value.viewsPercentage ); // eslint-disable-line @wordpress/valid-sprintf
+
 						return (
 							<tr key={ key }>
 								<th scope="row" title={ referrerUrl }>{ referrerUrl }</th>
-								<td title={
-									/* translators: %s: Percentage value, %%: Escaped percent sign */
-									sprintf( __( '%s%%', 'wp-parsely' ), value.viewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
-								}>
-									<div className="percentage-bar" style={ { '--bar-fill': value.viewsPercentage + '%' } as React.CSSProperties }></div>
+								<td title={ percentage }>
+									<div aria-label={ percentage }
+										className="percentage-bar"
+										style={ { '--bar-fill': value.viewsPercentage + '%' } as React.CSSProperties }>
+									</div>
 								</td>
 								<td>{ ImpreciseNumber( value.views ) }</td>
 							</tr>
@@ -278,10 +281,20 @@ function TopReferrersSection( data: PostPerformanceData ) {
  * @param {PostPerformanceData} data The data needed to populate the section.
  */
 function ActionsSection( data: PostPerformanceData ) {
+	const ariaOpensNewTab = <span className="screen-reader-text"> {
+		__( '(opens in new tab)', 'wp-parsely' ) }
+	</span>;
+
 	return (
 		<div className="section actions">
-			<Button href={ data.url } rel="noopener" target="_blank" variant="secondary">{ __( 'Visit Post', 'wp-parsely' ) }</Button>
-			<Button href={ data.statsUrl } rel="noopener" target="_blank" variant="primary">{ __( 'View in Parse.ly', 'wp-parsely' ) }</Button>
+			<Button
+				href={ data.url } rel="noopener" target="_blank" variant="secondary">
+				{ __( 'Visit Post', 'wp-parsely' ) }{ ariaOpensNewTab }
+			</Button>
+			<Button
+				href={ data.statsUrl } rel="noopener" target="_blank" variant="primary">
+				{ __( 'View in Parse.ly', 'wp-parsely' ) }{ ariaOpensNewTab }
+			</Button>
 		</div>
 	);
 }
