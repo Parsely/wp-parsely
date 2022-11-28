@@ -83,7 +83,7 @@ class ContentHelperProvider {
 			return Promise.reject( error );
 		}
 
-		/* translators: %s: message such as "from category Foo", %d: number of days */
+		/* translators: %s: message such as "in category Foo", %d: number of days */
 		let message = sprintf( __( 'Top-performing posts %1$s in last %2$d days.', 'wp-parsely' ), apiQuery.message, RELATED_POSTS_DEFAULT_TIME_RANGE );
 		if ( data.length === 0 ) {
 			message = `${ __( 'The Parse.ly API did not return any results for top-performing posts', 'wp-parsely' ) } ${ apiQuery.message }.`;
@@ -149,8 +149,8 @@ class ContentHelperProvider {
 		if ( category?.name ) {
 			return ( {
 				query: { limit, section: category.name },
-				/* translators: %s: message such as "from category Foo" */
-				message: sprintf( __( 'from category "%1$s"', 'wp-parsely' ), category.name ),
+				/* translators: %s: message such as "in category Foo" */
+				message: sprintf( __( 'in category "%1$s"', 'wp-parsely' ), category.name ),
 			} );
 		}
 

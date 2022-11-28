@@ -106,7 +106,7 @@ describe( 'Content Helper', () => {
 
 	test( 'should show a single top post with description and proper attributes', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: `Top-performing posts from category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
+			message: `Top-performing posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
 			posts: getRelatedTopPostsMockData( 1 ),
 		} ) );
 
@@ -120,7 +120,7 @@ describe( 'Content Helper', () => {
 		const topPostDesc = getTopPostDesc();
 		expect( topPostDesc ).toBeInTheDocument();
 		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc.textContent ).toEqual( `Top-performing posts from category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
+		expect( topPostDesc.textContent ).toEqual( `Top-performing posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
 
 		const topPosts = getTopPosts();
 		expect( topPosts.length ).toEqual( 1 );

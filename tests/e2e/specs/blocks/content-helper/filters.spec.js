@@ -62,7 +62,7 @@ describe( 'Content Helper filters', () => {
 		expect( await getContentHelperMessage() ).toMatch( `Top-performing posts by author "${ firstName } ${ lastName }" in last 3 days.` );
 
 		// Author + category.
-		expect( await getContentHelperMessage( categoryName ) ).toMatch( `Top-performing posts from category "${ categoryName }" in last 3 days.` );
+		expect( await getContentHelperMessage( categoryName ) ).toMatch( `Top-performing posts in category "${ categoryName }" in last 3 days.` );
 
 		// Author + tag.
 		expect( await getContentHelperMessage( null, tagName ) ).toMatch( `Top-performing posts with tag "${ tagName }" in last 3 days.` );
@@ -83,6 +83,6 @@ describe( 'Content Helper filters', () => {
 	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
 		const categoryName = 'Parse.ly Tips';
 
-		expect( await getContentHelperMessage( categoryName, null, 2000 ) ).toMatch( `Top-performing posts from category "${ categoryName }" in last 3 days.` );
+		expect( await getContentHelperMessage( categoryName, null, 2000 ) ).toMatch( `Top-performing posts in category "${ categoryName }" in last 3 days.` );
 	} );
 } );
