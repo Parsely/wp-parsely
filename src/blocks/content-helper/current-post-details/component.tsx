@@ -145,9 +145,7 @@ function GeneralPerformanceSection( data: PostPerformanceData ) {
 					<tr>
 						<th>{ __( 'Page Views', 'wp-parsely' ) }</th>
 						<th>{ __( 'Visitors', 'wp-parsely' ) }</th>
-						<th title={
-							__( 'Average time visitors engaged with content', 'wp-parsely' )
-						}>{ __( 'Avg. Time', 'wp-parsely' ) }</th>
+						<th>{ __( 'Avg. Time', 'wp-parsely' ) }</th>
 					</tr>
 				</tfoot>
 			</table>
@@ -183,12 +181,15 @@ function ReferrerTypesSection( data: PostPerformanceData ) {
 
 			<div className="multi-percentage-bar">{
 				Object.entries( data.referrers.types ).map( ( [ key, value ] ) => {
+					const ariaLabel = sprintf(
+						/* translators: 1: Referrer type, 2: Percentage value, %%: Escaped percent sign */
+						__( '%1$s: %2$s%%', 'wp-parsely' ),
+						getKeyTitle( key ), value.viewsPercentage
+					);
+
 					return (
-						<div className={ 'bar-fill ' + key } key={ key }
-							title={
-								/* translators: 1: Referrer type, 2: Percentage value, %%: Escaped percent sign */
-								sprintf( __( '%1$s: %2$s%%', 'wp-parsely' ), getKeyTitle( key ), value.viewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
-							}
+						<div aria-label={ ariaLabel }
+							className={ 'bar-fill ' + key } key={ key }
 							style={ { width: value.viewsPercentage + '%' } }>
 						</div>
 					);
@@ -244,13 +245,13 @@ function TopReferrersSection( data: PostPerformanceData ) {
 						}
 
 						/* translators: %s: Percentage value, %%: Escaped percent sign */
-						const percentage = sprintf( __( '%s%%', 'wp-parsely' ), value.viewsPercentage ); // eslint-disable-line @wordpress/valid-sprintf
+						const ariaLabel = sprintf( __( '%s%%', 'wp-parsely' ), value.viewsPercentage ); // eslint-disable-line @wordpress/valid-sprintf
 
 						return (
 							<tr key={ key }>
-								<th scope="row" title={ referrerUrl }>{ referrerUrl }</th>
-								<td title={ percentage }>
-									<div aria-label={ percentage }
+								<th scope="row">{ referrerUrl }</th>
+								<td>
+									<div aria-label={ ariaLabel }
 										className="percentage-bar"
 										style={ { '--bar-fill': value.viewsPercentage + '%' } as React.CSSProperties }>
 									</div>
