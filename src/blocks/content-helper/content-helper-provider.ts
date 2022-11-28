@@ -42,7 +42,7 @@ interface GetRelatedTopPostsResult {
 }
 
 export const RELATED_POSTS_DEFAULT_LIMIT = 5;
-export const RELATED_POSTS_DEFAULT_TIME_RANGE = 3; // in days
+export const RELATED_POSTS_DEFAULT_TIME_RANGE = 3; // In days.
 
 class ContentHelperProvider {
 	/**

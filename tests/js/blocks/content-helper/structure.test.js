@@ -27,20 +27,20 @@ describe( 'Content Helper', () => {
 		expect( spinner ).toBeVisible();
 	} );
 
-	test( 'should show contact us message when parsely site id is not set', async () => {
+	test( 'should show contact us message when Parse.ly Site ID is not set', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
 			errors: {
-				parsely_site_id_not_set: 'error msg',
+				parsely_site_id_not_set: 'Error message.',
 			},
 		} ) );
 
 		expect( await verifyContactUsMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 	} );
 
-	test( 'should show contact us message when parsely secret is not set', async () => {
+	test( 'should show contact us message when Parse.ly API Secret is not set', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
 			errors: {
-				parsely_api_secret_not_set: 'error msg',
+				parsely_api_secret_not_set: 'Error message',
 			},
 		} ) );
 
@@ -49,7 +49,7 @@ describe( 'Content Helper', () => {
 
 	test( 'should show error message when API returns the error', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
-			message: 'fake error from api',
+			message: 'fake error from API',
 		} ) );
 
 		render( <RelatedTopPostList /> );
@@ -63,12 +63,12 @@ describe( 'Content Helper', () => {
 		const apiError = screen.queryByTestId( 'api-error' );
 		expect( apiError ).toBeInTheDocument();
 		expect( apiError ).toBeVisible();
-		expect( apiError.textContent ).toEqual( 'Error: fake error from api' );
+		expect( apiError.textContent ).toEqual( 'Error: fake error from API' );
 	} );
 
 	test( 'should show error message when WordPress REST API returns the error', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
-			error: [ 'fake error from WP api' ],
+			error: [ 'fake error from WP API' ],
 		} ) );
 
 		render( <RelatedTopPostList /> );
@@ -82,10 +82,10 @@ describe( 'Content Helper', () => {
 		const wpApiError = screen.queryByTestId( 'wp-api-error' );
 		expect( wpApiError ).toBeInTheDocument();
 		expect( wpApiError ).toBeVisible();
-		expect( wpApiError.textContent ).toEqual( 'Error: fake error from WP api' );
+		expect( wpApiError.textContent ).toEqual( 'Error: fake error from WP API' );
 	} );
 
-	test( 'should show not data message when there is no tag, category or author in the post', async () => {
+	test( 'should show no results message when there is no tag, category or author in the post', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
 			message: 'The Parse.ly API did not return any results for top-performing posts by "author".',
 			posts: [],
@@ -163,7 +163,7 @@ describe( 'Content Helper', () => {
 	}
 
 	function getTopPostDesc() {
-		return screen.queryByTestId( 'parsely-top-posts-desc' );
+		return screen.queryByTestId( 'parsely-top-posts-descr' );
 	}
 
 	function getTopPosts() {
