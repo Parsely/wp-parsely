@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import dayjs from 'dayjs';
 import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
@@ -12,6 +11,7 @@ import { useEffect, useState } from '@wordpress/element';
 import ContentHelperProvider from '../content-helper-provider';
 import RelatedTopPostListItem from './related-top-post-list-item';
 import { RelatedTopPostData } from '../models/related-top-post-data';
+import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../shared/utils/date';
 
 const FETCH_RETRIES = 3;
 
@@ -32,7 +32,7 @@ function RelatedTopPostList() {
 						( post: RelatedTopPostData ): RelatedTopPostData => (
 							{
 								...post,
-								date: dayjs( post.date ).format( 'MMM D, YYYY' ),
+								date: getDateInUserLang( new Date( post.date ), SHORT_DATE_FORMAT ),
 							}
 						)
 					);
