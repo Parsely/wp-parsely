@@ -303,7 +303,7 @@ class Parsely {
 	}
 
 	/**
-	 * Updates posts with Parsely metadata api in bulk.
+	 * Updates posts with Parsely metadata API in bulk.
 	 */
 	public function bulk_update_posts(): void {
 		global $wpdb;

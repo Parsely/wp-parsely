@@ -103,7 +103,7 @@ export const getTopRelatedPostsMessage = async ( category = null, tag = null, ti
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
-	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel:last-child div.components-panel__body.is-opened > p';
+	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel__body.is-opened .parsely-top-posts-descr';
 
 	// Run basic operations.
 	await createNewPost();
