@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button, Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 
@@ -261,7 +261,11 @@ function TopReferrersSection( data: PostPerformanceData ) {
 			</table>
 			<div> {
 				/* translators: %s: Percentage value, %%: Escaped percent sign */
-				sprintf( __( '%s%% of views came from top referrers.', 'wp-parsely' ), totalViewsPercentage ) // eslint-disable-line @wordpress/valid-sprintf
+				sprintf( _n( // eslint-disable-line @wordpress/valid-sprintf
+					'%s%% of views came from top referrers.',
+					'%s%% of views came from top referrers.',
+					totalViewsPercentage, 'wp-parsely' ), totalViewsPercentage
+				)
 			}
 			</div>
 		</div>
