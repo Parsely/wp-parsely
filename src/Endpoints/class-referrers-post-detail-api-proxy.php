@@ -43,7 +43,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @param WP_REST_Request $request The request object.
 	 */
 	public function get_items( WP_REST_Request $request ): stdClass {
-		$this->total_views = (int) $request->get_param( 'total_views' );
+		$this->total_views = absint( $request->get_param( 'total_views' ) );
 		$request->offsetUnset( 'total_views' ); // Remove param from request.
 		return $this->get_data( $request );
 	}
@@ -58,7 +58,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 */
 	protected function generate_data( array $response ): array {
 		$referrers_types = $this->generate_referrer_types_data( $response );
-		$direct_views    = (int) preg_replace( '/\D/', '', $referrers_types->direct->views );
+		$direct_views    = absint( preg_replace( '/\D/', '', $referrers_types->direct->views ) );
 		$referrers_top   = $this->generate_referrers_data( 5, $response, $direct_views );
 
 		$result = array(
@@ -127,7 +127,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		foreach ( $result as $key => $value ) {
 			// Set and format percentage values.
 			$result->{ $key }->viewsPercentage = $this->get_i18n_percentage(
-				(int) $value->views,
+				absint( $value->views ),
 				$this->total_views
 			);
 
@@ -194,12 +194,12 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 			// Percentage against all referrer views, even those not included
 			// in the dataset due to the $limit argument.
 			$result->{ $key }->viewsPercentage = $this
-				->get_i18n_percentage( (int) $value->views, $this->total_views );
+				->get_i18n_percentage( absint( $value->views ), $this->total_views );
 
 			// Percentage against the current dataset that is limited due to the
 			// $limit argument.
 			$result->{ $key }->datasetViewsPercentage = $this
-				->get_i18n_percentage( (int) $value->views, $totals );
+				->get_i18n_percentage( absint( $value->views ), $totals );
 
 			// Format views values.
 			$result->{ $key }->views = number_format_i18n( $result->{ $key }->views );

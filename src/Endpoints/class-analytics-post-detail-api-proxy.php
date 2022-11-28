@@ -73,8 +73,8 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @return string The resulting formatted time duration.
 	 */
 	private function get_duration( float $time ): string {
-		$minutes = (int) $time;
-		$seconds = (int) round( fmod( $time, 1 ) * 60 );
+		$minutes = absint( $time );
+		$seconds = absint( round( fmod( $time, 1 ) * 60 ) );
 
 		if ( 60 === $seconds ) {
 			$minutes++;
