@@ -11,7 +11,7 @@ import '@testing-library/jest-dom';
 /**
  * Internal dependencies.
  */
-import RelatedTopPostList from '../../../../src/blocks/content-helper/components/related-top-post-list';
+import RelatedTopPostList, { AD_BLOCKER_HINT } from '../../../../src/blocks/content-helper/components/related-top-post-list';
 import ContentHelperProvider, { RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/content-helper-provider';
 import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
 
@@ -50,7 +50,7 @@ describe( 'Content Helper', () => {
 
 	test( 'should show error message when API returns the error', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
-			message: 'fake error from API',
+			message: 'fake error from API.',
 		} ) );
 
 		render( <RelatedTopPostList /> );
@@ -64,7 +64,7 @@ describe( 'Content Helper', () => {
 		const apiError = screen.queryByTestId( 'api-error' );
 		expect( apiError ).toBeInTheDocument();
 		expect( apiError ).toBeVisible();
-		expect( apiError.textContent ).toEqual( 'Error: fake error from API' );
+		expect( apiError.textContent ).toEqual( `Error: fake error from API. Hint: ${ AD_BLOCKER_HINT }` );
 	} );
 
 	test( 'should show error message when WordPress REST API returns the error', async () => {
