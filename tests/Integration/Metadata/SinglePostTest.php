@@ -70,7 +70,7 @@ final class SinglePostTest extends TestCase {
 		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
@@ -125,7 +125,7 @@ final class SinglePostTest extends TestCase {
 		$post_id  = self::factory()->post->create( array( 'post_category' => array( $category ) ) );
 		$post     = get_post( $post_id );
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
@@ -188,7 +188,7 @@ final class SinglePostTest extends TestCase {
 		$parsely_options['lowercase_tags'] = true;
 		update_option( 'parsely', $parsely_options );
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
@@ -252,7 +252,7 @@ final class SinglePostTest extends TestCase {
 		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2, $cat3 ) ) );
 		$post    = get_post( $post_id );
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
@@ -330,7 +330,7 @@ final class SinglePostTest extends TestCase {
 		wp_set_object_terms( $post_id, array( $custom_tax_tag ), 'hockey' );
 		wp_set_object_terms( $post_id, array( $tag ), 'post_tag' );
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
@@ -398,7 +398,7 @@ final class SinglePostTest extends TestCase {
 		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2 ) ) );
 		$post    = get_post( $post_id );
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
@@ -489,7 +489,7 @@ final class SinglePostTest extends TestCase {
 		$parsely_options['use_top_level_cats'] = false;
 		update_option( 'parsely', $parsely_options );
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
@@ -555,7 +555,7 @@ final class SinglePostTest extends TestCase {
 		$parsely_options['force_https_canonicals'] = false;
 		update_option( 'parsely', $parsely_options );
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
@@ -629,7 +629,7 @@ final class SinglePostTest extends TestCase {
 		);
 		$post             = get_post( $post_id );
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		$meta     = new Metadata( $parsely );
@@ -749,7 +749,7 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified     = $singular_datetime;
 		$post->post_modified_gmt = $singular_datetime;
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
@@ -813,7 +813,7 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified     = $modified_datetime;
 		$post->post_modified_gmt = $modified_datetime;
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
@@ -876,7 +876,7 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified     = $modified_datetime;
 		$post->post_modified_gmt = $modified_datetime;
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
@@ -962,7 +962,7 @@ final class SinglePostTest extends TestCase {
 		$default_category_slug = get_category( get_option( 'default_category' ) )->slug;
 		wp_remove_object_terms( $post_id, $default_category_slug, 'category' );
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post_id ) );
 
 		$expected        = array();
@@ -1016,7 +1016,7 @@ final class SinglePostTest extends TestCase {
 		$attachment_id   = self::factory()->attachment->create_upload_object( $attachment_path, $post->ID );
 		set_post_thumbnail( $post, $attachment_id );
 
-		// Navigate to post which setup conditional functions that refers current post.
+		// Go to current post to update WP_Query with correct data.
 		$this->go_to( get_permalink( $post->ID ) );
 
 		// Generate metadata and expected results.
