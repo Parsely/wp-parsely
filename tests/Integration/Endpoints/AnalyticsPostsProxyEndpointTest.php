@@ -27,8 +27,8 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * Initializes all required values for the test.
 	 */
 	public static function initialize(): void {
-		self::$route      = '/wp-parsely/v1/analytics/posts';
-		self::$filter_key = 'analytics_posts';
+		self::$route      = '/wp-parsely/v1/stats/posts';
+		self::$filter_key = 'stats_posts';
 	}
 
 	/**
@@ -69,7 +69,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	}
 
 	/**
-	 * Verifies that calling `GET /wp-parsely/v1/analytics/posts` returns an
+	 * Verifies that calling `GET /wp-parsely/v1/stats/posts` returns an
 	 * error and does not perform a remote call when the apikey is not populated
 	 * in site options.
 	 *
@@ -89,7 +89,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	}
 
 	/**
-	 * Verifies that calls to `GET /wp-parsely/v1/analytics/posts` return
+	 * Verifies that calls to `GET /wp-parsely/v1/stats/posts` return
 	 * results in the expected format.
 	 *
 	 * @covers \Parsely\Endpoints\Analytics_Posts_API_Proxy::get_items
@@ -126,7 +126,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 			}
 		);
 
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/analytics/posts' ) );
+		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/stats/posts' ) );
 
 		self::assertSame( 1, $dispatched );
 		self::assertSame( 200, $response->get_status() );

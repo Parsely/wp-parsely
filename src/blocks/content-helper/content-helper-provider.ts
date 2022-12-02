@@ -103,7 +103,7 @@ class ContentHelperProvider {
 
 		try {
 			response = await apiFetch( {
-				path: addQueryArgs( '/wp-parsely/v1/analytics/posts', query.query ),
+				path: addQueryArgs( '/wp-parsely/v1/stats/posts', query.query ),
 			} ) as RelatedTopPostsApiResponse;
 		} catch ( wpError ) {
 			return Promise.reject( wpError );
