@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { select } from '@wordpress/data';
 // eslint-disable-next-line import/named
 import { Post, Taxonomy, User } from '@wordpress/core-data';
@@ -40,6 +40,9 @@ interface GetRelatedTopPostsResult {
 	message: string;
 	posts: RelatedTopPostData[];
 }
+
+export const RELATED_POSTS_DEFAULT_LIMIT = 5;
+export const RELATED_POSTS_DEFAULT_TIME_RANGE = 3; // In days.
 
 class ContentHelperProvider {
 	/**
@@ -80,7 +83,8 @@ class ContentHelperProvider {
 			return Promise.reject( error );
 		}
 
-		let message = `${ __( 'Top-performing posts', 'wp-parsely' ) } ${ apiQuery.message }.`;
+		/* translators: %s: message such as "in category Foo", %d: number of days */
+		let message = sprintf( __( 'Top-performing posts %1$s in last %2$d days.', 'wp-parsely' ), apiQuery.message, RELATED_POSTS_DEFAULT_TIME_RANGE );
 		if ( data.length === 0 ) {
 			message = `${ __( 'The Parse.ly API did not return any results for top-performing posts', 'wp-parsely' ) } ${ apiQuery.message }.`;
 		}
@@ -122,9 +126,7 @@ class ContentHelperProvider {
 	 * @return {RelatedTopPostsApiQuery} The query object.
 	 */
 	private static buildRelatedTopPostsApiQuery( author: User, category: Taxonomy, tag: Taxonomy ): RelatedTopPostsApiQuery {
-		// Number of maximum posts to fetch. The actual number of returned posts
-		// might be lower.
-		const limit = 5;
+		const limit = RELATED_POSTS_DEFAULT_LIMIT;
 
 		// All fetching criteria are empty.
 		if ( ! author && ! category && ! tag ) {
@@ -135,10 +137,11 @@ class ContentHelperProvider {
 		}
 
 		// A tag exists.
-		if ( tag ) {
+		if ( tag?.slug ) {
 			return ( {
-				query: { limit, tag },
-				message: `${ __( 'with the tag', 'wp-parsely' ) } "${ tag.name }"`,
+				query: { limit, tag: tag.slug },
+				/* translators: %s: message such as "with tag Foo" */
+				message: sprintf( __( 'with tag "%1$s"', 'wp-parsely' ), tag.name ),
 			} );
 		}
 
@@ -146,14 +149,16 @@ class ContentHelperProvider {
 		if ( category?.name ) {
 			return ( {
 				query: { limit, section: category.name },
-				message: `${ __( 'in the category', 'wp-parsely' ) } "${ category.name }"`,
+				/* translators: %s: message such as "in category Foo" */
+				message: sprintf( __( 'in category "%1$s"', 'wp-parsely' ), category.name ),
 			} );
 		}
 
 		// Only the post author exists.
 		return ( {
 			query: { limit, author: author.name },
-			message: `${ __( 'by the author', 'wp-parsely' ) } "${ author.name }"`,
+			/* translators: %s: message such as "by author John" */
+			message: sprintf( __( 'by author "%1$s"', 'wp-parsely' ), author.name ),
 		} );
 	}
 }

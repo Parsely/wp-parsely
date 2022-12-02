@@ -224,9 +224,8 @@ final class MetadataRendererTest extends TestCase {
 
 		$post_id = self::factory()->post->create();
 
-		global $post;
-		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		$post = $post_id;
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
 
 		ob_start();
 		self::$metadata_renderer->render_metadata( 'repeated_metas' );

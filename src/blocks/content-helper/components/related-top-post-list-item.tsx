@@ -2,35 +2,35 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import { RelatedTopPostData } from '../models/related-top-post-data';
+import ViewsIcon from '../icons/views-icon';
+import PublishedLinkIcon from '../icons/published-link-icon';
 
 interface RelatedTopPostListItemProps {
 	post: RelatedTopPostData;
 }
 
-function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ) {
+function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ): JSX.Element {
 	return (
-		<>
-			<Card size="small" elevation={ 2 } className="parsely-content-helper-card">
-				<CardHeader><b>{ post.title }</b></CardHeader>
-				<CardBody>
-					<ul>
-						<li>{ __( 'Views:', 'wp-parsely' ) } { post.views }</li>
-						<li>{ __( 'Published:', 'wp-parsely' ) } { post.date }</li>
-						<li>{ __( 'Author:', 'wp-parsely' ) } { post.author }</li>
-					</ul>
-					<p>
-						<Button href={ post.url } target="_blank" variant="primary">{ __( 'Open Post', 'wp-parsely' ) }</Button> { ' ' }
-						<Button href={ post.statsUrl } target="_blank" variant="secondary">{ __( 'Post Stats', 'wp-parsely' ) }</Button>
-					</p>
-				</CardBody>
-			</Card>
-		</>
+		<li className="parsely-top-post" data-testid="parsely-top-post">
+			<div className="parsely-top-post-title">
+				<a className="parsely-top-post-stats-link" href={ post.statsUrl } target="_blank" rel="noreferrer" title={ __( 'View in Parse.ly (opens new tab)', 'wp-parsely' ) }>
+					{ post.title }
+				</a>
+				<a className="parsely-top-post-link" href={ post.url } target="_blank" rel="noreferrer" title={ __( 'View Published Post (opens new tab)', 'wp-parsely' ) }>
+					<PublishedLinkIcon />
+				</a>
+			</div>
+			<p className="parsely-top-post-info">
+				<span className="parsely-top-post-date"><span className="screen-reader-text">Date </span>{ post.date }</span>
+				<span className="parsely-top-post-author"><span className="screen-reader-text">Author </span>{ post.author }</span>
+				<span className="parsely-top-post-views"><span className="screen-reader-text">Number of Views </span><ViewsIcon />{ post.views }</span>
+			</p>
+		</li>
 	);
 }
 
