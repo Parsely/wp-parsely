@@ -137,9 +137,9 @@ class ContentHelperProvider {
 		}
 
 		// A tag exists.
-		if ( tag ) {
+		if ( tag?.slug ) {
 			return ( {
-				query: { limit, tag },
+				query: { limit, tag: tag.slug },
 				/* translators: %s: message such as "with tag Foo" */
 				message: sprintf( __( 'with tag "%1$s"', 'wp-parsely' ), tag.name ),
 			} );

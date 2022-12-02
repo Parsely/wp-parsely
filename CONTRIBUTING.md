@@ -32,7 +32,7 @@ This plugin uses the `wp-env` package (an [official WP.org package](https://deve
 
 **Important Note:** If you want to develop for WordPress VIP sites, we recommend using [WordPress VIP dev-env](https://docs.wpvip.com/technical-references/vip-local-development-environment/) instead.
 
-#### Minimum required dependency versions
+#### Minimum requirements and dependency versions
 
 - Node.js - 16 (LTS)
 
@@ -71,6 +71,10 @@ This plugin uses the `wp-env` package (an [official WP.org package](https://deve
 
   Docker installation depends on your OS. [Please follow their official instructions](https://docs.docker.com/get-docker/).
 
+- MySQL
+
+  To run integration tests, you will need a local MySQL installation. If you're using brew, this can be done with `brew install mysql`. Alternatively, you can visit the official [Installing and Upgrading MySQL](https://dev.mysql.com/doc/refman/8.0/en/installing.html) documentation.
+
 #### Installing dependencies
 
 Once you have Node.js, PHP, and Composer installed locally, you will need to install dependencies in the main plugin directory.
@@ -88,6 +92,34 @@ nvm use
 npm install
 ```
 
+#### Running the integration tests installation script
+
+In order to run integration tests, an installation script must be executed beforehand. For this to succeed, you will need to:
+
+- Have the `svn` command installed into your system. If you don't have it, you can install subversion to get it (`brew install subversion` if you're using brew).
+- Create a new dedicated test database in your local MySQL installation. Here we will assume that the database is named `wp_tests` with a username of `root` and an empty (`""`) password.
+- If you're on Windows, please also refer to [WINDOWS.md](WINDOWS.md).
+
+To run the installation script:
+
+1. Navigate to the main plugin directory.
+2. Run the script:
+
+	```
+	./bin/install-wp-tests.sh wp_tests root "" localhost latest true
+	```
+
+	If you are using different credentials/settings, the structure of the command is as follows:
+
+	```
+	./bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
+	```
+
+**Important Notes:**
+- It is recommended to always use `latest` as the value for the `wp-version` argument.
+- The installation takes place into a temporary directory, which means that the related files will get deleted in a day or so. The way to remediate this is just to re-run the installation script whenever needed.
+- The database will be completely overwritten every time integration tests are executed. 
+
 ### Developing locally
 
 #### Starting and stopping the built-in wp-env environment
@@ -103,6 +135,8 @@ npm run dev:stop
 ```
 
 `npm run dev:start` will start up an environment in `localhost:8888`, running in the background. If you have any issue running the above commands, we recommend checking that you are running an up-to-date version of Docker on your system and that you don't have any other services running on ports 8888 and 8889.
+
+The credentials for entering wp-admin are `admin` and `password`.
 
 #### Making commits
 
@@ -190,27 +224,10 @@ composer cbf
 
 #### Testing
 
-**Note:** For the tests to install, the `svn` command is needed. To get it, you can install subversion (`brew install subversion` if you're using brew).
-
-You'll need to install the tests by running the install script (if you're on Windows, refer to [WINDOWS.md](WINDOWS.md)):
-
-1. Navigate to the main plugin directory.
-2. You'll need to have a local database setup and have the database name, username, password, and host ready.
-3. Run the test install script using the database information:
-
-	```
-	./bin/install-wp-tests.sh <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
-	```
-
-Then, you can use Composer to run the tests from your terminal. If you encounter any `require` (class not found) issues, you can fix them by running:
-
-```
-composer dump-autoload
-```
-
 Here are some of the commands that you can use for running tests. You can find a full list of supported commands within [composer.json](composer.json) in the `scripts` and `scripts-descriptions` sections.
 
 ##### Unit tests:
+
 ```
 # Run all single-site unit tests
 composer test
@@ -220,6 +237,7 @@ composer test-ms
 ```
 
 ##### Integration tests:
+
 ```
 # Run all single-site integration tests
 composer testwp
@@ -232,18 +250,25 @@ composer testwp -- --filter SettingsPageTest
 composer testwp-ms
 ```
 
+**Troubleshooting:**
+- If you encounter any `require` (class not found) issues, you can fix them by running `composer dump-autoload`.
+- If you're getting an error like `ERROR: The WordPress native unit test bootstrap file could not be found. Please set either the WP_TESTS_DIR or the WP_DEVELOP_DIR environment variable, either in your OS or in a custom phpunit.xml file.`, then most probably you need to re-run the integration tests installation script, as the related files get regularly deleted.
+
 ##### Code coverage:
+
 ```
 composer coverage
 ```
 
 ##### JavaScript tests:
+
 ```
 # Run front-end tests
 npm run test
 ```
 
 ##### End-to-end tests:
+
 To run end-to-end tests, [please refer to their separate instructions](tests/e2e/README.md).
 
 ### Releasing a new version
