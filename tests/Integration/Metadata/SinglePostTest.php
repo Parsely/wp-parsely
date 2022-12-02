@@ -70,9 +70,8 @@ final class SinglePostTest extends TestCase {
 		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
 
-		// Make a request to the root of the site to set the global $wp_query
-		// object.
-		$this->go_to( get_permalink( $post ) );
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -125,6 +124,9 @@ final class SinglePostTest extends TestCase {
 		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
 		$post_id  = self::factory()->post->create( array( 'post_category' => array( $category ) ) );
 		$post     = get_post( $post_id );
+
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -186,6 +188,9 @@ final class SinglePostTest extends TestCase {
 		$parsely_options['lowercase_tags'] = true;
 		update_option( 'parsely', $parsely_options );
 
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
+
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
@@ -246,6 +251,9 @@ final class SinglePostTest extends TestCase {
 		$cat3    = self::factory()->category->create( array( 'name' => 'Test Category 3' ) );
 		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2, $cat3 ) ) );
 		$post    = get_post( $post_id );
+
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -322,6 +330,9 @@ final class SinglePostTest extends TestCase {
 		wp_set_object_terms( $post_id, array( $custom_tax_tag ), 'hockey' );
 		wp_set_object_terms( $post_id, array( $tag ), 'post_tag' );
 
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
+
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
@@ -386,6 +397,9 @@ final class SinglePostTest extends TestCase {
 		);
 		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2 ) ) );
 		$post    = get_post( $post_id );
+
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -475,6 +489,9 @@ final class SinglePostTest extends TestCase {
 		$parsely_options['use_top_level_cats'] = false;
 		update_option( 'parsely', $parsely_options );
 
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
+
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
@@ -537,6 +554,9 @@ final class SinglePostTest extends TestCase {
 		// Set Parsely to not force https canonicals.
 		$parsely_options['force_https_canonicals'] = false;
 		update_option( 'parsely', $parsely_options );
+
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -607,12 +627,14 @@ final class SinglePostTest extends TestCase {
 				'post_date_gmt' => $date_created_gmt,
 			)
 		);
+		$post             = get_post( $post_id );
 
-		// In the metadata, check that the post's created date is correct and
-		// that the last modified date is identical.
-		$post     = get_post( $post_id );
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
+
 		$meta     = new Metadata( $parsely );
 		$metadata = $meta->construct_metadata( $post );
+
 		self::assertSame( $date_created, $metadata['dateCreated'] );
 		self::assertSame( $date_created, $metadata['dateModified'] );
 
@@ -727,6 +749,9 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified     = $singular_datetime;
 		$post->post_modified_gmt = $singular_datetime;
 
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
+
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
@@ -788,6 +813,9 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified     = $modified_datetime;
 		$post->post_modified_gmt = $modified_datetime;
 
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
+
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
@@ -847,6 +875,9 @@ final class SinglePostTest extends TestCase {
 		$post->post_date_gmt     = $created_datetime;
 		$post->post_modified     = $modified_datetime;
 		$post->post_modified_gmt = $modified_datetime;
+
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -931,6 +962,9 @@ final class SinglePostTest extends TestCase {
 		$default_category_slug = get_category( get_option( 'default_category' ) )->slug;
 		wp_remove_object_terms( $post_id, $default_category_slug, 'category' );
 
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
+
 		$expected        = array();
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
@@ -981,6 +1015,9 @@ final class SinglePostTest extends TestCase {
 		$attachment_path = dirname( __DIR__, 3 ) . '/.wordpress-org/banner-1544x500.png';
 		$attachment_id   = self::factory()->attachment->create_upload_object( $attachment_path, $post->ID );
 		set_post_thumbnail( $post, $attachment_id );
+
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post->ID ) );
 
 		// Generate metadata and expected results.
 		$actual_metadata    = $metadata->construct_metadata( $post );
