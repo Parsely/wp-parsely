@@ -18,7 +18,7 @@ import {
  * Specifies the form of the response returned by the `/analytics/post/detail`
  * WordPress REST API endpoint.
  */
- interface analyticsApiResponse {
+ interface AnalyticsApiResponse {
 	error?: object;
 	data: PostPerformanceData[];
 }
@@ -27,7 +27,7 @@ import {
  * Specifies the form of the response returned by the `/referrers/post/detail`
  * WordPress REST API endpoint.
  */
-interface referrersApiResponse {
+interface ReferrersApiResponse {
 	error?: object;
 	data: PostPerformanceReferrerData;
 }
@@ -91,14 +91,14 @@ class CurrentPostDetailsProvider {
 		let response;
 
 		try {
-			response = await apiFetch( {
+			response = await apiFetch<AnalyticsApiResponse>( {
 				path: addQueryArgs(
 					'/wp-parsely/v1/analytics/post/detail', {
 						url: postUrl,
 						period_start: this.dataPeriodStart,
 						period_end: this.dataPeriodEnd,
 					} ),
-			} ) as analyticsApiResponse;
+			} );
 		} catch ( wpError ) {
 			return Promise.reject( wpError );
 		}
@@ -146,14 +146,14 @@ class CurrentPostDetailsProvider {
 
 		// Query WordPress API endpoint.
 		try {
-			response = await apiFetch( { path: addQueryArgs(
+			response = await apiFetch<ReferrersApiResponse>( { path: addQueryArgs(
 				'/wp-parsely/v1/referrers/post/detail', {
 					url: postUrl,
 					period_start: this.dataPeriodStart,
 					period_end: this.dataPeriodEnd,
 					total_views: totalViews, // Needed to calculate direct views.
 				} ),
-			} ) as referrersApiResponse;
+			} );
 		} catch ( wpError ) {
 			return Promise.reject( wpError );
 		}

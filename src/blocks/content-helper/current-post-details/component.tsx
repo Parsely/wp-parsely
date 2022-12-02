@@ -69,9 +69,9 @@ function CurrentPostDetails() {
 	}
 
 	return (
-		<>
-			{ loading ? <Spinner /> : <CurrentPostDetailsSections data={ postDetailsData } /> }
-		</>
+		loading
+			? <Spinner />
+			: <CurrentPostDetailsSections data={ postDetailsData } />
 	);
 }
 
@@ -136,8 +136,8 @@ function GeneralPerformanceSection( data: PostPerformanceData ) {
 			<table>
 				<tbody>
 					<tr>
-						<td>{ ImpreciseNumber( data.views ) }</td>
-						<td>{ ImpreciseNumber( data.visitors ) }</td>
+						<td>{ impreciseNumber( data.views ) }</td>
+						<td>{ impreciseNumber( data.visitors ) }</td>
 						<td>{ data.avgEngaged }</td>
 					</tr>
 				</tbody>
@@ -207,7 +207,7 @@ function ReferrerTypesSection( data: PostPerformanceData ) {
 				<tbody>
 					<tr>{
 						Object.entries( data.referrers.types ).map( ( [ key, value ] ) => {
-							return <td key={ key }>{ ImpreciseNumber( value.views ) }</td>;
+							return <td key={ key }>{ impreciseNumber( value.views ) }</td>;
 						} ) }
 					</tr>
 				</tbody>
@@ -256,7 +256,7 @@ function TopReferrersSection( data: PostPerformanceData ) {
 										style={ { '--bar-fill': value.viewsPercentage + '%' } as React.CSSProperties }>
 									</div>
 								</td>
-								<td>{ ImpreciseNumber( value.views ) }</td>
+								<td>{ impreciseNumber( value.views ) }</td>
 							</tr>
 						);
 					} )
@@ -310,7 +310,7 @@ function ActionsSection( data: PostPerformanceData ) {
  * @param {string} glue           A string to put between the number and unit.
  * @return {string} The number formatted as an imprecise number.
  */
-function ImpreciseNumber( value: string, fractionDigits = 1, glue = '' ): string {
+function impreciseNumber( value: string, fractionDigits = 1, glue = '' ): string {
 	const number = parseInt( value.replace( /\D/g, '' ), 10 );
 
 	if ( number < 1000 ) {

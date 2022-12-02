@@ -4,9 +4,9 @@ export interface PostPerformanceData {
 	date: string;
 	id: number;
 	period: {
-		start: string,
-		end: string,
-		days: number,
+		start: string;
+		end: string;
+		days: number;
 	};
 	referrers: PostPerformanceReferrerData;
 	statsUrl: string;
