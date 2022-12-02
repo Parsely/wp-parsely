@@ -73,7 +73,7 @@ This plugin uses the `wp-env` package (an [official WP.org package](https://deve
 
 - MySQL
 
-  To run integration tests, you will need a local MySQL installation.
+  To run integration tests, you will need a local MySQL installation. If you're using brew, this can be done with `brew install mysql`. Alternatively, you can visit the official [Installing and Upgrading MySQL](https://dev.mysql.com/doc/refman/8.0/en/installing.html) documentation.
 
 #### Installing dependencies
 
