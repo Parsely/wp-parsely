@@ -406,7 +406,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		add_settings_field(
 			'track_authenticated_users',
 			__( 'Track Logged-in Users', 'wp-parsely' ),
-			array( $this, 'print_binary_radio_tag' ),
+			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			'basic_settings',
 			array(
@@ -421,7 +421,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		add_settings_field(
 			'disable_javascript',
 			__( 'Disable JavaScript', 'wp-parsely' ),
-			array( $this, 'print_binary_radio_tag' ),
+			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			'basic_settings',
 			array(
@@ -438,7 +438,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			add_settings_field(
 				'disable_amp',
 				__( 'Disable AMP Tracking', 'wp-parsely' ),
-				array( $this, 'print_binary_radio_tag' ),
+				array( $this, 'print_radio_tags' ),
 				Parsely::MENU_SLUG,
 				'basic_settings',
 				array(
@@ -512,15 +512,17 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		add_settings_field(
 			'use_top_level_cats',
 			__( 'Use Top-Level Categories for Section', 'wp-parsely' ),
-			array( $this, 'print_binary_radio_tag' ),
+			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			'requires_recrawl_settings',
 			array(
-				'title'      => __( 'Use Top-Level Categories for Section', 'wp-parsely' ), // Passed for legend element.
-				'option_key' => 'use_top_level_cats',
-				'yes_text'   => __( 'Yes, use the first category assigned to a post as the section name.', 'wp-parsely' ),
-				'no_text'    => __( 'No, do not use the first category assigned to a post as the section name.', 'wp-parsely' ),
-				'help_text'  => $h,
+				'title'         => __( 'Use Top-Level Categories for Section', 'wp-parsely' ), // Passed for legend element.
+				'option_key'    => 'use_top_level_cats',
+				'radio_options' => array(
+					'true'  => __( 'Yes, use the first category assigned to a post as the section name.', 'wp-parsely' ),
+					'false' => __( 'No, do not use the first category assigned to a post as the section name.', 'wp-parsely' ),
+				),
+				'help_text'     => $h,
 			)
 		);
 
@@ -557,15 +559,17 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		add_settings_field(
 			'cats_as_tags',
 			__( 'Add Categories to Tags', 'wp-parsely' ),
-			array( $this, 'print_binary_radio_tag' ),
+			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			'requires_recrawl_settings',
 			array(
-				'title'      => __( 'Add Categories to Tags', 'wp-parsely' ), // Passed for legend element.
-				'option_key' => 'cats_as_tags',
-				'yes_text'   => __( 'Yes, add all assigned categories and taxonomies to my tags.', 'wp-parsely' ),
-				'no_text'    => __( 'No, do not add all assigned categories and taxonomies to my tags.', 'wp-parsely' ),
-				'help_text'  => $h,
+				'title'         => __( 'Add Categories to Tags', 'wp-parsely' ), // Passed for legend element.
+				'option_key'    => 'cats_as_tags',
+				'radio_options' => array(
+					'true'  => __( 'Yes, add all assigned categories and taxonomies to my tags.', 'wp-parsely' ),
+					'false' => __( 'No, do not add all assigned categories and taxonomies to my tags.', 'wp-parsely' ),
+				),
+				'help_text'     => $h,
 			)
 		);
 
@@ -573,14 +577,16 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		add_settings_field(
 			'lowercase_tags',
 			__( 'Lowercase All Tags', 'wp-parsely' ),
-			array( $this, 'print_binary_radio_tag' ),
+			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			'requires_recrawl_settings',
 			array(
-				'title'      => __( 'Lowercase All Tags', 'wp-parsely' ), // Passed for legend element.
-				'option_key' => 'lowercase_tags',
-				'yes_text'   => __( 'Yes, use lowercase versions of my tags to correct for potential misspellings.', 'wp-parsely' ),
-				'no_text'    => __( 'No, do not use lowercase versions of my tags to correct for potential misspellings.', 'wp-parsely' ),
+				'title'         => __( 'Lowercase All Tags', 'wp-parsely' ), // Passed for legend element.
+				'option_key'    => 'lowercase_tags',
+				'radio_options' => array(
+					'true'  => __( 'Yes, use lowercase versions of my tags to correct for potential misspellings.', 'wp-parsely' ),
+					'false' => __( 'No, do not use lowercase versions of my tags to correct for potential misspellings.', 'wp-parsely' ),
+				),
 			)
 		);
 
@@ -588,15 +594,17 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		add_settings_field(
 			'force_https_canonicals',
 			__( 'Force HTTPS Canonicals', 'wp-parsely' ),
-			array( $this, 'print_binary_radio_tag' ),
+			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			'requires_recrawl_settings',
 			array(
-				'title'      => __( 'Force HTTPS Canonicals', 'wp-parsely' ), // Passed for legend element.
-				'option_key' => 'force_https_canonicals',
-				'yes_text'   => __( 'Yes, force <code>https</code> canonical URLs by default.', 'wp-parsely' ),
-				'no_text'    => __( 'No, I want to use <code>http</code>.', 'wp-parsely' ),
-				'help_text'  => $h,
+				'title'         => __( 'Force HTTPS Canonicals', 'wp-parsely' ), // Passed for legend element.
+				'option_key'    => 'force_https_canonicals',
+				'radio_options' => array(
+					'true'  => __( 'Yes, force <code>https</code> canonical URLs by default.', 'wp-parsely' ),
+					'false' => __( 'No, I want to use <code>http</code>.', 'wp-parsely' ),
+				),
+				'help_text'     => $h,
 			)
 		);
 	}
@@ -619,14 +627,16 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		add_settings_field(
 			'disable_autotrack',
 			__( 'Disable Autotracking', 'wp-parsely' ),
-			array( $this, 'print_binary_radio_tag' ),
+			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
 			'advanced_settings',
 			array(
-				'title'      => __( 'Disable Autotracking', 'wp-parsely' ), // Passed for legend element.
-				'option_key' => 'disable_autotrack',
-				'yes_text'   => __( 'Yes, disable autotracking. I do not want the tracking code to report an event as soon as the script has finished loading. I plan to implement Dynamic Tracking myself.', 'wp-parsely' ),
-				'no_text'    => __( 'No, do not disable autotracking. I want to make sure the default behavior of the tracking code is in place. The tracking code should report an event as soon as the script has finished loading.', 'wp-parsely' ),
+				'title'         => __( 'Disable Autotracking', 'wp-parsely' ), // Passed for legend element.
+				'option_key'    => 'disable_autotrack',
+				'radio_options' => array(
+					'true'  => __( 'Yes, disable autotracking. I do not want the tracking code to report an event as soon as the script has finished loading. I plan to implement Dynamic Tracking myself.', 'wp-parsely' ),
+					'false' => __( 'No, do not disable autotracking. I want to make sure the default behavior of the tracking code is in place. The tracking code should report an event as soon as the script has finished loading.', 'wp-parsely' ),
+				),
 			)
 		);
 
@@ -757,59 +767,35 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Prints out the radio buttons with options Yes/No.
-	 *
-	 * @param array $args The arguments for the radio buttons.
-	 */
-	public function print_binary_radio_tag( array $args ): void {
-		$options  = $this->parsely->get_options();
-		$name     = $args['option_key'];
-		$value    = $options[ $name ];
-		$id       = esc_attr( $name );
-		$name     = Parsely::OPTIONS_KEY . "[$id]";
-		$yes_text = $args['yes_text'] ?? __( 'Yes', 'wp-parsely' );
-		$no_text  = $args['no_text'] ?? __( 'No', 'wp-parsely' );
-		?>
-		<fieldset>
-			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
-			<p>
-				<label for="<?php echo esc_attr( "{$id}_true" ); ?>">
-					<input type="radio" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( "{$id}_true" ); ?>" value="true" <?php checked( $value ); ?> />
-					<?php echo wp_kses_post( $yes_text ); ?>
-				</label>
-				<br />
-				<label for="<?php echo esc_attr( "{$id}_false" ); ?>">
-					<input type="radio" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( "{$id}_false" ); ?>" value="false" <?php checked( $value, false ); ?> />
-					<?php echo wp_kses_post( $no_text ); ?>
-				</label>
-			</p>
-		</fieldset>
-		<?php
-		$this->print_filter_text( $args );
-		$this->print_description_text( $args );
-	}
-
-	/**
-	 * Prints out the radio buttons.
+	 * Prints the radio buttons.
 	 *
 	 * @param array $args The arguments for the radio buttons.
 	 */
 	public function print_radio_tags( array $args ): void {
-		$options       = $this->parsely->get_options();
 		$name          = $args['option_key'];
-		$selected      = $options[ $name ];
 		$id            = esc_attr( $name );
-		$name          = Parsely::OPTIONS_KEY . "[$id]";
-		$radio_options = $args['radio_options'];
+		$input_name    = Parsely::OPTIONS_KEY . "[$id]";
+		$options       = $this->parsely->get_options();
+		$selected      = $options[ $name ];
+		$radio_options = $args['radio_options'] ?? array(
+			'true'  => __( 'Yes', 'wp-parsely' ),
+			'false' => __( 'No', 'wp-parsely' ),
+		);
+
+		if ( is_bool( $selected ) ) {
+			// Converting boolean to string so that we have string type keys for all cases.
+			$selected = $selected ? 'true' : 'false';
+		}
+
 		?>
 		<fieldset>
 			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
 			<p>
 				<?php foreach ( $radio_options as $value => $text ) { ?>
-				<label for="<?php echo esc_attr( "{$id}_true" ); ?>">
+				<label for="<?php echo esc_attr( "{$id}_{$value}" ); ?>">
 					<input
 						type="radio"
-						name="<?php echo esc_attr( $name ); ?>"
+						name="<?php echo esc_attr( $input_name ); ?>"
 						id="<?php echo esc_attr( "{$id}_{$value}" ); ?>"
 						value="<?php echo esc_attr( $value ); ?>"
 					<?php checked( $selected, $value ); ?>
