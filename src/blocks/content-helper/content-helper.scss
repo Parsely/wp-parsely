@@ -15,12 +15,19 @@
 
 .parsely-top-posts {
 	list-style-type: none;
-	margin: 0;
+	margin: 22px 0 0;
 }
 
-.wp-parsely-content-helper p.parsely-top-posts-descr {
-	margin: 15px 0 22px;
-	color: $gray-700;
+.wp-parsely-content-helper {
+
+	p.parsely-top-posts-descr,
+	p.parsely-error-hint {
+		color: $gray-700;
+	}
+
+	p.parsely-top-posts-descr {
+		margin-top: 15px;
+	}
 }
 
 .parsely-top-post {
@@ -63,7 +70,7 @@
 	justify-content: space-between;
 	align-items: center;
 
-	> span {
+	>span {
 		color: $gray-600;
 		margin-bottom: 0;
 		display: flex;

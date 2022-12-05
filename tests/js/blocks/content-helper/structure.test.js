@@ -11,8 +11,9 @@ import '@testing-library/jest-dom';
 /**
  * Internal dependencies.
  */
-import RelatedTopPostList, { AD_BLOCKER_HINT } from '../../../../src/blocks/content-helper/components/related-top-post-list';
+import RelatedTopPostList from '../../../../src/blocks/content-helper/components/related-top-post-list';
 import ContentHelperProvider, { RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/content-helper-provider';
+import { AD_BLOCKER_HINT } from '../../../../src/blocks/shared/components/error-hint';
 import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
 
 describe( 'Content Helper', () => {
@@ -64,7 +65,12 @@ describe( 'Content Helper', () => {
 		const apiError = screen.queryByTestId( 'api-error' );
 		expect( apiError ).toBeInTheDocument();
 		expect( apiError ).toBeVisible();
-		expect( apiError.textContent ).toEqual( `Error: fake error from API. Hint: ${ AD_BLOCKER_HINT }` );
+		expect( apiError.textContent ).toEqual( `Error: fake error from API.` );
+
+		const apiErrorHint = screen.queryByTestId( 'parsely-error-hint' );
+		expect( apiErrorHint ).toBeInTheDocument();
+		expect( apiErrorHint ).toBeVisible();
+		expect( apiErrorHint.textContent ).toEqual( `Hint: ${ AD_BLOCKER_HINT }` );
 	} );
 
 	test( 'should show error message when WordPress REST API returns the error', async () => {

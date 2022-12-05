@@ -10,13 +10,10 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import ContentHelperProvider from '../content-helper-provider';
 import RelatedTopPostListItem from './related-top-post-list-item';
+import ErrorHint from '../../shared/components/error-hint';
 import { RelatedTopPostData } from '../models/related-top-post-data';
 import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../shared/utils/date';
 
-export const AD_BLOCKER_HINT: string = __(
-	'This error can be sometimes caused by ad-blockers or browser tracking protections. Please whitelist this website where needed and try again.',
-	'wp-parsely',
-);
 const FETCH_RETRIES = 3;
 
 /**
@@ -78,11 +75,12 @@ function RelatedTopPostList() {
 		// Error coming from apiFetch.
 		if ( error?.message ) {
 			return (
-				<p className="parsely-top-posts-descr" data-testid="api-error">
-					{ __( 'Error:', 'wp-parsely' ) } { error.message }
-					<br /><br />
-					<strong>{ __( ' Hint: ', 'wp-parsely' ) }</strong>{ AD_BLOCKER_HINT }
-				</p>
+				<>
+					<p className="parsely-top-posts-descr" data-testid="api-error">
+						{ __( 'Error:', 'wp-parsely' ) } { error.message }
+					</p>
+					<ErrorHint />
+				</>
 			);
 		}
 
