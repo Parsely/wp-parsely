@@ -54,18 +54,7 @@ describe( 'Content Helper', () => {
 			message: 'fake error from API.',
 		} ) );
 
-		render( <RelatedTopPostList /> );
-		expect( getSpinner() ).toBeInTheDocument();
-
-		await waitFor( () => screen.findByTestId( 'api-error' ), { timeout: 3000 } );
-
-		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
-
-		const apiError = screen.queryByTestId( 'api-error' );
-		expect( apiError ).toBeInTheDocument();
-		expect( apiError ).toBeVisible();
-		expect( apiError.textContent ).toEqual( `Error: fake error from API.` );
+		expect( await verifyApiErrorMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 	} );
 
 	test( 'should show error message and hint when API fetch is failed', async () => {
@@ -74,18 +63,7 @@ describe( 'Content Helper', () => {
 			message: 'fake error from API.',
 		} ) );
 
-		render( <RelatedTopPostList /> );
-		expect( getSpinner() ).toBeInTheDocument();
-
-		await waitFor( () => screen.findByTestId( 'api-error' ), { timeout: 3000 } );
-
-		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
-
-		const apiError = screen.queryByTestId( 'api-error' );
-		expect( apiError ).toBeInTheDocument();
-		expect( apiError ).toBeVisible();
-		expect( apiError.textContent ).toEqual( `Error: fake error from API.` );
+		expect( await verifyApiErrorMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 
 		const apiErrorHint = screen.queryByTestId( 'parsely-error-hint' );
 		expect( apiErrorHint ).toBeInTheDocument();
@@ -237,6 +215,23 @@ describe( 'Content Helper', () => {
 		const contactUsMessage = getContactUsMessage();
 		expect( contactUsMessage ).toBeInTheDocument();
 		expect( contactUsMessage ).toBeVisible();
+
+		return true;
+	}
+
+	async function verifyApiErrorMessage( getRelatedTopPostsFn ) {
+		render( <RelatedTopPostList /> );
+		expect( getSpinner() ).toBeInTheDocument();
+
+		await waitFor( () => screen.findByTestId( 'api-error' ), { timeout: 3000 } );
+
+		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
+		expect( getSpinner() ).toBeNull();
+
+		const apiError = screen.queryByTestId( 'api-error' );
+		expect( apiError ).toBeInTheDocument();
+		expect( apiError ).toBeVisible();
+		expect( apiError.textContent ).toEqual( `Error: fake error from API.` );
 
 		return true;
 	}
