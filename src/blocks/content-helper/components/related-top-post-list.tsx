@@ -79,7 +79,11 @@ function RelatedTopPostList() {
 					<p className="parsely-top-posts-descr" data-testid="api-error">
 						{ __( 'Error:', 'wp-parsely' ) } { error.message }
 					</p>
-					<ErrorHint />
+
+					{
+						error?.code === 'fetch_error' &&
+						<ErrorHint />
+					}
 				</>
 			);
 		}
