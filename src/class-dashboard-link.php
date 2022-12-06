@@ -45,7 +45,7 @@ class Dashboard_Link {
 			'utm_medium'   => 'wp-parsely',
 		);
 
-		$base_url = trailingslashit( Parsely::API_BASE_URL . "/{$apikey}" ) . 'find';
+		$base_url = trailingslashit( Parsely::DASHBOARD_BASE_URL . "/{$apikey}" ) . 'find';
 
 		return add_query_arg( $query_args, $base_url );
 	}
