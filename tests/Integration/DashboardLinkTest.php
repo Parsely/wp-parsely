@@ -42,7 +42,7 @@ final class DashboardLinkTest extends TestCase {
 		$post    = get_post( $post_id );
 		$apikey  = 'demo-api-key';
 
-		$expected = 'https://dash.parsely.com/demo-api-key/find?url=http%3A%2F%2Fexample.org%2F%3Fp%3D' . $post_id . '&utm_campaign=wp-admin-posts-list&utm_source=wp-admin&utm_medium=wp-parsely';
+		$expected = PARSELY::API_BASE_URL . '/demo-api-key/find?url=http%3A%2F%2Fexample.org%2F%3Fp%3D' . $post_id . '&utm_campaign=wp-admin-posts-list&utm_source=wp-admin&utm_medium=wp-parsely';
 		$actual   = Dashboard_Link::generate_url( $post, $apikey, 'wp-admin-posts-list', 'wp-admin' );
 
 		self::assertSame( $expected, $actual );

@@ -143,7 +143,7 @@ final class RowActionsTest extends TestCase {
 		self::assertCount( 1, $actions );
 		self::assertArrayHasKey( 'find_in_parsely', $actions );
 
-		$url        = 'https://dash.parsely.com/somekey/find?url=http%3A%2F%2Fexample.org%2F%3Fp%3D' . $post_id . '&#038;utm_campaign=wp-admin-posts-list&#038;utm_source=wp-admin&#038;utm_medium=wp-parsely';
+		$url        = PARSELY::API_BASE_URL . '/somekey/find?url=http%3A%2F%2Fexample.org%2F%3Fp%3D' . $post_id . '&#038;utm_campaign=wp-admin-posts-list&#038;utm_source=wp-admin&#038;utm_medium=wp-parsely';
 		$aria_label = 'Go to Parse.ly stats for &quot;Foo2&quot;';
 		self::assertSame(
 			'<a href="' . $url . '" aria-label="' . $aria_label . '">Parse.ly&nbsp;Stats</a>',

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely;
 
 use WP_Post;
+use Parsely\Parsely;
 
 /**
  * Utility methods to build and generate dashboard links.
@@ -44,7 +45,7 @@ class Dashboard_Link {
 			'utm_medium'   => 'wp-parsely',
 		);
 
-		$base_url = trailingslashit( 'https://dash.parsely.com/' . $apikey ) . 'find';
+		$base_url = trailingslashit( Parsely::API_BASE_URL . "/{$apikey}" ) . 'find';
 
 		return add_query_arg( $query_args, $base_url );
 	}
