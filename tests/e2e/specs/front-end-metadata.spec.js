@@ -12,6 +12,7 @@ import {
 import {
 	selectScreenOptions,
 	setSiteKeys,
+	setUserDisplayName,
 	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
@@ -34,6 +35,9 @@ describe( 'Front end metadata insertion', () => {
 		await startUpTest();
 		await setSiteKeys();
 		await selectScreenOptions( { recrawl: true, advanced: false } );
+
+		// Reset display name to compare metadata with default values.
+		await setUserDisplayName( 'admin', '' );
 	} );
 
 	it( 'Should insert JSON LD on homepage', async () => {
