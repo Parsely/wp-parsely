@@ -718,7 +718,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$value    = $options[ $name ];
 		$id       = esc_attr( $name );
 		$name     = Parsely::OPTIONS_KEY . "[$id]";
-		$yes_text = empty( $args['yes_text'] ) ? __( 'Yes', 'wp-parsely' ) : $args['yes_text'];
+		$yes_text = $args['yes_text'];
 
 		echo sprintf( "<input type='checkbox' name='%s' id='%s_true' value='true' ", esc_attr( $name ), esc_attr( $id ) );
 		if ( $args['help_text'] ) {
@@ -798,7 +798,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 					<?php echo wp_kses_post( $text ); ?>
 				</label>
 				<br />
-				<?php }; ?>
+				<?php } ?>
 			</p>
 		</fieldset>
 		<?php
