@@ -78,18 +78,16 @@ function CurrentPostDetails() {
 /**
  * Outputs all the "Current Post Details" sections.
  *
- * @param {PostDetailsSectionProps} props Props needed to populate the sections.
+ * @param {PostDetailsSectionProps} props The props needed to populate the sections.
  */
 function CurrentPostDetailsSections( props: PostDetailsSectionProps ) {
-	const data = props.data;
-
 	return (
 		<div className="current-post-details-panel">
-			{ DataPeriodSection( data ) }
-			{ GeneralPerformanceSection( data ) }
-			{ ReferrerTypesSection( data ) }
-			{ TopReferrersSection( data ) }
-			{ ActionsSection( data ) }
+			<DataPeriodSection { ...props } />
+			<GeneralPerformanceSection { ...props } />
+			<ReferrerTypesSection { ...props } />
+			<TopReferrersSection { ...props } />
+			<ActionsSection { ...props } />
 		</div>
 	);
 }
@@ -98,10 +96,10 @@ function CurrentPostDetailsSections( props: PostDetailsSectionProps ) {
  * Outputs the "Period" section, which denotes the period for which data is
  * shown.
  *
- * @param {PostPerformanceData} data The data needed to populate the section.
+ * @param {PostDetailsSectionProps} props The props needed to populate the section.
  */
-function DataPeriodSection( data: PostPerformanceData ) {
-	const period = data.period;
+function DataPeriodSection( props: PostDetailsSectionProps ) {
+	const period = props.data.period;
 
 	// Get the date (in short format) on which the period starts.
 	const periodStart = Intl.DateTimeFormat(
@@ -128,9 +126,11 @@ function DataPeriodSection( data: PostPerformanceData ) {
 /**
  * Outputs the "General Performance" (Views, Visitors, Time) section.
  *
- * @param {PostPerformanceData} data The data needed to populate the section.
+ * @param {PostDetailsSectionProps} props The props needed to populate the section.
  */
-function GeneralPerformanceSection( data: PostPerformanceData ) {
+function GeneralPerformanceSection( props: PostDetailsSectionProps ) {
+	const data = props.data;
+
 	return (
 		<div className="section general-performance">
 			<table>
@@ -156,9 +156,11 @@ function GeneralPerformanceSection( data: PostPerformanceData ) {
 /**
  * Outputs the "Referrer Types" section.
  *
- * @param {PostPerformanceData} data The data needed to populate the section.
+ * @param {PostDetailsSectionProps} props The props needed to populate the section.
  */
-function ReferrerTypesSection( data: PostPerformanceData ) {
+function ReferrerTypesSection( props: PostDetailsSectionProps ) {
+	const data = props.data;
+
 	// Remove unneeded totals to simplify upcoming map() calls.
 	delete data.referrers.types[ 'totals' as unknown as number ];
 
@@ -219,10 +221,12 @@ function ReferrerTypesSection( data: PostPerformanceData ) {
 /**
  * Outputs the "Top Referrers" section.
  *
- * @param {PostPerformanceData} data The data needed to populate the section.
+ * @param {PostDetailsSectionProps} props The props needed to populate the section.
  */
-function TopReferrersSection( data: PostPerformanceData ) {
+function TopReferrersSection( props: PostDetailsSectionProps ) {
+	const data = props.data;
 	let totalViewsPercentage = 0;
+
 	return (
 		<div className="section top-referrers">
 			<table>
@@ -279,9 +283,10 @@ function TopReferrersSection( data: PostPerformanceData ) {
 /**
  * Outputs the "Actions" section.
  *
- * @param {PostPerformanceData} data The data needed to populate the section.
+ * @param {PostDetailsSectionProps} props The props needed to populate the section.
  */
-function ActionsSection( data: PostPerformanceData ) {
+function ActionsSection( props: PostDetailsSectionProps ) {
+	const data = props.data;
 	const ariaOpensNewTab = <span className="screen-reader-text"> {
 		__( '(opens in new tab)', 'wp-parsely' ) }
 	</span>;
