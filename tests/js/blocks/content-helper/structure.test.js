@@ -51,7 +51,7 @@ describe( 'Content Helper', () => {
 
 	test( 'should show error message when API returns the error', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
-			message: 'fake error from API.',
+			message: 'Fake error from API.',
 		} ) );
 
 		expect( await verifyApiErrorMessage( getRelatedTopPostsFn ) ).toBeTruthy();
@@ -60,7 +60,7 @@ describe( 'Content Helper', () => {
 	test( 'should show error message and hint when API fetch is failed', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
 			code: 'fetch_error',
-			message: 'fake error from API.',
+			message: 'Fake error from API.',
 		} ) );
 
 		expect( await verifyApiErrorMessage( getRelatedTopPostsFn ) ).toBeTruthy();
@@ -231,7 +231,7 @@ describe( 'Content Helper', () => {
 		const apiError = screen.queryByTestId( 'api-error' );
 		expect( apiError ).toBeInTheDocument();
 		expect( apiError ).toBeVisible();
-		expect( apiError.textContent ).toEqual( `Error: fake error from API.` );
+		expect( apiError.textContent ).toEqual( `Error: Fake error from API.` );
 
 		return true;
 	}
