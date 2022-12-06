@@ -20,10 +20,11 @@ const setMetadataFormat = async ( format ) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
 	await waitForWpAdmin();
 
-	await page.select( 'select', format );
+	const selectedMetadataFormat = await page.$( `#meta_type_${ format }`, format );
+	await selectedMetadataFormat.click();
 
-	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'submit\')]' );
-	await input.click();
+	const submitButton = await page.$( `form[name="parsely"] #submit` );
+	await submitButton.click();
 
 	await waitForWpAdmin();
 };
