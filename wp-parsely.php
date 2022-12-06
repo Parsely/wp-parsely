@@ -121,16 +121,17 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
  * @since 3.2.0
  */
 function parsely_rest_api_init(): void {
-	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
+	$wp_cache = new WordPress_Cache();
+	$rest     = new Rest_Metadata( $GLOBALS['parsely'] );
 	$rest->run();
 
 	$related_proxy        = new Related_Proxy( $GLOBALS['parsely'] );
-	$related_cached_proxy = new Cached_Proxy( $related_proxy, new WordPress_Cache() );
+	$related_cached_proxy = new Cached_Proxy( $related_proxy, $wp_cache );
 	$related_endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $related_cached_proxy );
 	$related_endpoint->run();
 
 	$analytics_posts_proxy        = new Analytics_Posts_Proxy( $GLOBALS['parsely'] );
-	$analytics_posts_cached_proxy = new Cached_Proxy( $analytics_posts_proxy, new WordPress_Cache() );
+	$analytics_posts_cached_proxy = new Cached_Proxy( $analytics_posts_proxy, $wp_cache );
 	$analytics_posts_endpoint     = new Analytics_Posts_API_Proxy( $GLOBALS['parsely'], $analytics_posts_cached_proxy );
 	$analytics_posts_endpoint->run();
 }
