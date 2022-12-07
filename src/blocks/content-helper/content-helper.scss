@@ -1,11 +1,12 @@
 @import "variables";
 @import "../shared/variables";
+@import "../shared/functions";
 
 
 .parsely-spinner-wrapper {
 	display: flex;
 	justify-content: center;
-	margin-top: 40px;
+	margin-top: to_rem(40px);
 
 	svg {
 		width: 22px;
@@ -15,7 +16,7 @@
 
 .parsely-top-posts {
 	list-style-type: none;
-	margin: 22px 0 0;
+	margin: to_rem(22px) 0 0;
 }
 
 .wp-parsely-content-helper {
@@ -26,14 +27,14 @@
 	}
 
 	p.parsely-top-posts-descr {
-		margin-top: 15px;
+		margin-top: to_rem(15px);
 	}
 }
 
 .parsely-top-post {
 	border-top: 1px solid $gray-300;
-	margin-bottom: 5px;
-	padding: 10px 0;
+	margin-bottom: to_rem(5px);
+	padding: to_rem(10px) 0;
 }
 
 .parsely-top-post-title a {
@@ -43,8 +44,8 @@
 
 .parsely-top-post-stats-link {
 	color: $black;
-	font-size: 14px;
-	margin-right: 7px;
+	font-size: to_rem(14px);
+	margin-right: to_rem(7px);
 
 	&:hover {
 		color: $blue-550;
@@ -66,7 +67,7 @@
 
 .wp-parsely-content-helper p.parsely-top-post-info {
 	display: flex;
-	margin: 5px 0 0;
+	margin: to_rem(5px) 0 0;
 	justify-content: space-between;
 	align-items: center;
 
@@ -76,7 +77,7 @@
 		display: flex;
 
 		&:not(:first-child) {
-			margin-left: 5px;
+			margin-left: to_rem(5px);
 		}
 	}
 }
@@ -84,7 +85,7 @@
 .parsely-top-post-views svg {
 	position: relative;
 	top: 2px;
-	margin-right: 3px;
+	margin-right: to_rem(3px);
 	fill: $gray-600;
 }
 
@@ -93,7 +94,7 @@
 }
 
 .parsely-contact-us {
-	margin-top: 1em !important;
+	margin-top: to_rem(15px) !important;
 }
 
 div.wp-parsely-content-helper {
