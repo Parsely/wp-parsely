@@ -10,7 +10,7 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import ContentHelperProvider from '../content-helper-provider';
 import RelatedTopPostListItem from './related-top-post-list-item';
-import { RelatedTopPostData } from '../models/related-top-post-data';
+import { RelatedTopPostApiError, RelatedTopPostData } from '../models/related-top-post-data';
 import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../shared/utils/date';
 
 const FETCH_RETRIES = 3;
@@ -20,8 +20,8 @@ const FETCH_RETRIES = 3;
  */
 function RelatedTopPostList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
-	const [ error, setError ] = useState( null );
-	const [ message, setMessage ] = useState<string>( null );
+	const [ error, setError ] = useState<RelatedTopPostApiError | null>( null );
+	const [ message, setMessage ] = useState<string | null>( null );
 	const [ posts, setPosts ] = useState<RelatedTopPostData[]>( [] );
 
 	useEffect( () => {
@@ -72,13 +72,17 @@ function RelatedTopPostList() {
 		}
 
 		// Error coming from apiFetch.
-		if ( error?.message ) {
+		if ( error.message ) {
 			return <p className="parsely-top-posts-descr" data-testid="api-error">{ __( 'Error:', 'wp-parsely' ) } { error.message }</p>;
 		}
 
 		// Error coming from the WordPress REST API.
-		const errorMessage = JSON.stringify( error ).match( /\[\"(.*?)\"\]/ )[ 1 ];
-		return <p className="parsely-top-posts-descr" data-testid="wp-api-error">{ __( 'Error:', 'wp-parsely' ) } { errorMessage }</p>;
+		const errorMessages = JSON.stringify( error ).match( /\[\"(.*?)\"\]/ ) as string[];
+
+		if ( errorMessages.length > 0 ) {
+			const errorMessage = errorMessages[ 1 ];
+			return <p className="parsely-top-posts-descr" data-testid="wp-api-error">{ __( 'Error:', 'wp-parsely' ) } { errorMessage }</p>;
+		}
 	}
 
 	// Show related top posts list.
