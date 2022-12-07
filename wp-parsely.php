@@ -125,27 +125,32 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
  * @since 3.2.0
  */
 function parsely_rest_api_init(): void {
-	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
+	$wp_cache = new WordPress_Cache();
+	$rest     = new Rest_Metadata( $GLOBALS['parsely'] );
 	$rest->run();
 
 	parsely_run_rest_api_endpoint(
 		Related_Proxy::class,
-		Related_API_Proxy::class
+		Related_API_Proxy::class,
+		$wp_cache
 	);
 
 	parsely_run_rest_api_endpoint(
 		Analytics_Posts_Proxy::class,
-		Analytics_Posts_API_Proxy::class
+		Analytics_Posts_API_Proxy::class,
+		$wp_cache
 	);
 
 	parsely_run_rest_api_endpoint(
 		Analytics_Post_Detail_Proxy::class,
-		Analytics_Post_Detail_API_Proxy::class
+		Analytics_Post_Detail_API_Proxy::class,
+		$wp_cache
 	);
 
 	parsely_run_rest_api_endpoint(
 		Referrers_Post_Detail_Proxy::class,
-		Referrers_Post_Detail_API_Proxy::class
+		Referrers_Post_Detail_API_Proxy::class,
+		$wp_cache
 	);
 }
 
@@ -208,12 +213,17 @@ function parsely_integrations( $parsely = null ): Integrations {
  *
  * @since 3.6.0
  *
- * @param string $proxy_class_name The proxy class to instantiate.
- * @param string $api_proxy_class_name The API proxy class to instantiate and run.
+ * @param string          $proxy_class_name The proxy class to instantiate.
+ * @param string          $api_proxy_class_name The API proxy class to instantiate and run.
+ * @param WordPress_Cache $wp_cache The WordPress cache instance to be used.
  */
-function parsely_run_rest_api_endpoint( string $proxy_class_name, string $api_proxy_class_name ): void {
+function parsely_run_rest_api_endpoint(
+	string $proxy_class_name,
+	string $api_proxy_class_name,
+	WordPress_Cache &$wp_cache
+): void {
 	$proxy_instance        = new $proxy_class_name( $GLOBALS['parsely'] );
-	$cached_proxy_instance = new Cached_Proxy( $proxy_instance, new WordPress_Cache() );
+	$cached_proxy_instance = new Cached_Proxy( $proxy_instance, $wp_cache );
 	$api_proxy_instance    = new $api_proxy_class_name( $GLOBALS['parsely'], $cached_proxy_instance );
 	$api_proxy_instance->run();
 }

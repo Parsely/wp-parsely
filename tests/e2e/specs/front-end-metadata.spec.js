@@ -12,6 +12,7 @@ import {
 import {
 	selectScreenOptions,
 	setSiteKeys,
+	setUserDisplayName,
 	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
@@ -20,10 +21,11 @@ const setMetadataFormat = async ( format ) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
 	await waitForWpAdmin();
 
-	await page.select( 'select', format );
+	const selectedMetadataFormat = await page.$( `#meta_type_${ format }`, format );
+	await selectedMetadataFormat.click();
 
-	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'submit\')]' );
-	await input.click();
+	const submitButton = await page.$( `form[name="parsely"] #submit` );
+	await submitButton.click();
 
 	await waitForWpAdmin();
 };
@@ -33,6 +35,9 @@ describe( 'Front end metadata insertion', () => {
 		await startUpTest();
 		await setSiteKeys();
 		await selectScreenOptions( { recrawl: true, advanced: false } );
+
+		// Reset display name to compare metadata with default values.
+		await setUserDisplayName( 'admin', '' );
 	} );
 
 	it( 'Should insert JSON LD on homepage', async () => {
