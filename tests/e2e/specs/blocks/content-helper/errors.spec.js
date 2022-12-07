@@ -2,7 +2,7 @@
  * Internal dependencies.
  */
 import {
-	getContentHelperMessage,
+	getTopRelatedPostsMessage,
 	setSiteKeys,
 	startUpTest,
 } from '../../../utils';
@@ -27,7 +27,7 @@ describe( 'Content Helper', () => {
 	it( 'Should display an error when an invalid Site ID is provided', async () => {
 		await setSiteKeys( 'e2etest.example.com', 'test' );
 
-		expect( await getContentHelperMessage() ).toMatch( 'Error: Forbidden' );
+		expect( await getTopRelatedPostsMessage() ).toMatch( 'Error: Forbidden' );
 	} );
 
 	/**
@@ -37,7 +37,7 @@ describe( 'Content Helper', () => {
 	it( 'Should display a "Contact Us" message when the Site ID and API Secret are not provided', async () => {
 		await setSiteKeys( '', '' );
 
-		expect( await getContentHelperMessage() ).toMatch( contactMessage );
+		expect( await getTopRelatedPostsMessage() ).toMatch( contactMessage );
 	} );
 
 	/**
@@ -47,7 +47,7 @@ describe( 'Content Helper', () => {
 	it( 'Should display a "Contact Us" message when only the Site ID is provided', async () => {
 		await setSiteKeys( 'blog.parsely.com', '' );
 
-		expect( await getContentHelperMessage() ).toMatch( contactMessage );
+		expect( await getTopRelatedPostsMessage() ).toMatch( contactMessage );
 	} );
 
 	/**
@@ -57,7 +57,7 @@ describe( 'Content Helper', () => {
 	it( 'Should display a "Contact Us" message when only the API Secret is provided', async () => {
 		await setSiteKeys( '', 'test' );
 
-		expect( await getContentHelperMessage() ).toMatch( contactMessage );
+		expect( await getTopRelatedPostsMessage() ).toMatch( contactMessage );
 	} );
 
 	/**
@@ -67,6 +67,6 @@ describe( 'Content Helper', () => {
 	it( 'Should not display a "Contact Us" message when both the Site ID and API Secret are provided', async () => {
 		await setSiteKeys( 'blog.parsely.com', 'test' );
 
-		expect( await getContentHelperMessage() ).not.toMatch( contactMessage );
+		expect( await getTopRelatedPostsMessage() ).not.toMatch( contactMessage );
 	} );
 } );
