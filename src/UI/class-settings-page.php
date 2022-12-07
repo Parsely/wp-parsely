@@ -443,9 +443,12 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				Parsely::MENU_SLUG,
 				'basic_settings',
 				array(
-					'title'      => __( 'Disable AMP Tracking', 'wp-parsely' ), // Passed for legend element.
-					'option_key' => 'disable_amp',
-					'help_text'  => __( 'If you use a separate system for JavaScript tracking on AMP pages (Tealium / Segment / Google Tag Manager / other tag manager solution) you may want to use that instead of having the plugin load the tracker.', 'wp-parsely' ),
+					'title'         => __( 'Disable AMP Tracking', 'wp-parsely' ), // Passed for legend element.
+					'option_key'    => 'disable_amp',
+					'radio_options' => array(
+						'true'  => __( 'Yes, disable Parse.ly tracking on AMP pages. I use a different system for JavaScript tracking on AMP pages.', 'wp-parsely' ),
+						'false' => __( 'No, do not disable Parse.ly tracking on AMP pages.', 'wp-parsely' ),
+					),
 				)
 			);
 		}
@@ -767,15 +770,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @param array $args The arguments for the radio buttons.
 	 */
 	public function print_radio_tags( array $args ): void {
-		$name          = $args['option_key'];
-		$id            = esc_attr( $name );
-		$input_name    = Parsely::OPTIONS_KEY . "[$id]";
-		$options       = $this->parsely->get_options();
-		$selected      = $options[ $name ];
-		$radio_options = $args['radio_options'] ?? array(
-			'true'  => __( 'Yes', 'wp-parsely' ),
-			'false' => __( 'No', 'wp-parsely' ),
-		);
+		$name     = $args['option_key'];
+		$id       = esc_attr( $name );
+		$selected = $this->parsely->get_options()[ $name ];
 
 		if ( is_bool( $selected ) ) {
 			// Converting boolean to string so that we have string type keys for all cases.
@@ -786,11 +783,11 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		<fieldset>
 			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
 			<p>
-				<?php foreach ( $radio_options as $value => $text ) { ?>
+				<?php foreach ( $args['radio_options'] as $value => $text ) { ?>
 				<label for="<?php echo esc_attr( "{$id}_{$value}" ); ?>">
 					<input
 						type="radio"
-						name="<?php echo esc_attr( $input_name ); ?>"
+						name="<?php echo esc_attr( Parsely::OPTIONS_KEY . "[$id]" ); ?>"
 						id="<?php echo esc_attr( "{$id}_{$value}" ); ?>"
 						value="<?php echo esc_attr( $value ); ?>"
 					<?php checked( $selected, $value ); ?>
