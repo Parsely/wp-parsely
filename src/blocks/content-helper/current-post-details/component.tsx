@@ -10,6 +10,7 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import CurrentPostDetailsProvider from './provider';
 import { PostPerformanceData } from './post-performance-data';
+import { ContentHelperError } from '../content-helper-error';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 3;
@@ -26,7 +27,7 @@ interface PostDetailsSectionProps {
  */
 function CurrentPostDetails() {
 	const [ loading, setLoading ] = useState<boolean>( true );
-	const [ error, setError ] = useState( null );
+	const [ error, setError ] = useState<ContentHelperError>( null );
 	const [ postDetailsData, setPostDetails ] = useState<PostPerformanceData>( null );
 	const provider = new CurrentPostDetailsProvider();
 
@@ -53,19 +54,7 @@ function CurrentPostDetails() {
 	}, [] );
 
 	if ( error ) {
-		// "Soft" error for which we do not want to show an "Error:" prefix.
-		if ( 'string' === typeof error ) {
-			return <p>{ error }</p>;
-		}
-
-		// Error coming from apiFetch.
-		if ( error?.message ) {
-			return <p>{ __( 'Error:', 'wp-parsely' ) } { error.message }</p>;
-		}
-
-		// Error coming from the WordPress REST API.
-		const errorMessage = JSON.stringify( error ).match( /\[\"(.*?)\"\]/ )[ 1 ];
-		return <p>{ __( 'Error:', 'wp-parsely' ) } { errorMessage }</p>;
+		return <p>{ error.message }</p>;
 	}
 
 	return (

@@ -10,6 +10,10 @@ import apiFetch from '@wordpress/api-fetch';
  * Internal dependencies
  */
 import {
+	ContentHelperError,
+	ContentHelperErrorCode,
+} from '../content-helper-error';
+import {
 	PostPerformanceData,
 	PostPerformanceReferrerData,
 } from './post-performance-data';
@@ -19,7 +23,7 @@ import {
  * WordPress REST API endpoint.
  */
  interface AnalyticsApiResponse {
-	error?: object;
+	error?: Error;
 	data: PostPerformanceData[];
 }
 
@@ -28,7 +32,7 @@ import {
  * WordPress REST API endpoint.
  */
 interface ReferrersApiResponse {
-	error?: object;
+	error?: Error;
 	data: PostPerformanceReferrerData;
 }
 
@@ -60,7 +64,10 @@ class CurrentPostDetailsProvider {
 		// We cannot show data for non-published posts.
 		if ( false === editor.isCurrentPostPublished() ) {
 			return Promise.reject(
-				__( 'This post is not published, so its details are unavailable.', 'wp-parsely' )
+				new ContentHelperError( __(
+					'This post is not published, so its details are unavailable.',
+					'wp-parsely' ), ContentHelperErrorCode.PostNotPublished, ''
+				)
 			);
 		}
 
@@ -72,8 +79,8 @@ class CurrentPostDetailsProvider {
 		try {
 			performanceData = await this.fetchPerformanceDataFromWpEndpoint( postUrl );
 			referrerData = await this.fetchReferrerDataFromWpEndpoint( postUrl, performanceData.views );
-		} catch ( error ) {
-			return Promise.reject( error );
+		} catch ( contentHelperError ) {
+			return Promise.reject( contentHelperError );
 		}
 
 		const period = { start: this.dataPeriodStart, end: this.dataPeriodEnd, days: this.dataPeriodDays };
@@ -100,33 +107,37 @@ class CurrentPostDetailsProvider {
 					} ),
 			} );
 		} catch ( wpError ) {
-			return Promise.reject( wpError );
+			return Promise.reject( new ContentHelperError(
+				wpError.message, wpError.code
+			) );
 		}
 
 		if ( response?.error ) {
-			return Promise.reject( response.error );
+			return Promise.reject( new ContentHelperError(
+				response.error.message, ContentHelperErrorCode.ResponseError
+			) );
 		}
 
 		// No data was returned.
 		if ( response.data.length === 0 ) {
-			return Promise.reject(
+			return Promise.reject( new ContentHelperError(
 				sprintf(
 					/* translators: URL of the published post */
 					__( 'The post %s has 0 views or no data was returned for it by the Parse.ly API.',
 						'wp-parsely' ), postUrl
-				)
-			);
+				), ContentHelperErrorCode.ApiNoData, ''
+			) );
 		}
 
 		// Data for multiple URLs was returned.
 		if ( response.data.length > 1 ) {
-			return Promise.reject(
+			return Promise.reject( new ContentHelperError(
 				sprintf(
 					/* translators: URL of the published post */
 					__( 'Error: multiple results were returned for the post %s by the Parse.ly API.',
 						'wp-parsely' ), postUrl
-				)
-			);
+				), ContentHelperErrorCode.ApiTooManyResults
+			) );
 		}
 
 		return response.data[ 0 ];
@@ -155,11 +166,15 @@ class CurrentPostDetailsProvider {
 				} ),
 			} );
 		} catch ( wpError ) {
-			return Promise.reject( wpError );
+			return Promise.reject( new ContentHelperError(
+				wpError.message, wpError.code
+			) );
 		}
 
 		if ( response?.error ) {
-			return Promise.reject( response.error );
+			return Promise.reject( new ContentHelperError(
+				response.error.message, ContentHelperErrorCode.ResponseError
+			) );
 		}
 
 		return response.data;
