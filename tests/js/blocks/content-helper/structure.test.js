@@ -13,6 +13,7 @@ import '@testing-library/jest-dom';
  */
 import RelatedTopPostList from '../../../../src/blocks/content-helper/components/related-top-post-list';
 import ContentHelperProvider, { RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/content-helper-provider';
+import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
 
 describe( 'Content Helper', () => {
 	test( 'should display spinner when starting', () => {
@@ -131,7 +132,7 @@ describe( 'Content Helper', () => {
 		const postLink = firstTopPost.querySelector( '.parsely-top-post-link' );
 
 		expect( firstTopPost.querySelector( '.parsely-top-post-title' ).textContent ).toEqual( 'Title 1' );
-		expect( statsLink.getAttribute( 'href' ) ).toEqual( 'https://dash.parsely.com/example.com/post-1' );
+		expect( statsLink.getAttribute( 'href' ) ).toEqual( `${ DASHBOARD_BASE_URL }/example.com/post-1` );
 		expect( statsLink.getAttribute( 'title' ) ).toEqual( 'View in Parse.ly (opens new tab)' );
 		expect( statsLink.getAttribute( 'target' ) ).toEqual( '_blank' );
 		expect( postLink.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
@@ -188,7 +189,7 @@ describe( 'Content Helper', () => {
 				author: `Name ${ i }`,
 				date: `Jan ${ i }, 2022`,
 				id: `http://example.com/post-${ i }`,
-				statsUrl: `https://dash.parsely.com/example.com/post-${ i }`,
+				statsUrl: `${ DASHBOARD_BASE_URL }/example.com/post-${ i }`,
 				title: `Title ${ i }`,
 				url: `http://example.com/post-${ i }`,
 				views: i,
