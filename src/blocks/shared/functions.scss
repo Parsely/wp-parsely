@@ -1,12 +1,7 @@
 @use "sass:math";
 @import "./variables";
 
-@function stripUnit($value) {
-
-	@return math.div($value, $value * 0 + 1);
-}
-
 @function to_rem($pxValue) {
 
-	@return math.div(stripUnit($pxValue), stripUnit($html-font-size)) + rem;
+	@return math.div($pxValue, $html-font-size) + rem;
 }

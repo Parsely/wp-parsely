@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 
 export const AD_BLOCKER_HINT: string = __(
-	'This error can be sometimes caused by ad-blockers or browser tracking protections. Please whitelist this website where needed and try again.',
+	'This error can be sometimes caused by ad-blockers or browser tracking protections. Please add this site to any applicable allow lists and try again.',
 	'wp-parsely',
 );
 

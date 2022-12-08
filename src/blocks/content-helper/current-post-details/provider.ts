@@ -15,7 +15,7 @@ import {
 } from './post-performance-data';
 
 /**
- * Specifies the form of the response returned by the `/analytics/post/detail`
+ * Specifies the form of the response returned by the `/stats/post/detail`
  * WordPress REST API endpoint.
  */
  interface AnalyticsApiResponse {
@@ -93,7 +93,7 @@ class CurrentPostDetailsProvider {
 		try {
 			response = await apiFetch<AnalyticsApiResponse>( {
 				path: addQueryArgs(
-					'/wp-parsely/v1/analytics/post/detail', {
+					'/wp-parsely/v1/stats/post/detail', {
 						url: postUrl,
 						period_start: this.dataPeriodStart,
 						period_end: this.dataPeriodEnd,

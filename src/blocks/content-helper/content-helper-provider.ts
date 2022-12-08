@@ -25,7 +25,7 @@ interface RelatedTopPostsApiQuery {
 }
 
 /**
- * The form of the response returned by the /analytics/posts WordPress REST API
+ * The form of the response returned by the /stats/posts WordPress REST API
  * endpoint.
  */
 interface RelatedTopPostsApiResponse {
