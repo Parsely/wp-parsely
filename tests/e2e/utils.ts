@@ -21,10 +21,10 @@ export const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
  * @param {string} value The value to be written into the TextBox.
  * @return {Promise<void>}
  */
-export const setTextBoxValue = async ( id, value ) => {
+export const setTextBoxValue = async ( id: string, value: string ) => {
 	await page.focus( '#' + id );
-	await page.evaluate( ( elementId ) => {
-		document.getElementById( elementId ).value = '';
+	await page.evaluate( ( elementId: string ) => {
+		( document.getElementById( elementId ) as HTMLInputElement ).value = '';
 	}, id );
 	await page.keyboard.type( value );
 };
@@ -54,7 +54,7 @@ export const setSiteKeys = async ( siteId = 'e2etest.example.com', apiSecret = '
  * @param {string} lastName  The user's last name.
  * @return {Promise<void>}
  */
-export const setUserDisplayName = async ( firstName, lastName ) => {
+export const setUserDisplayName = async ( firstName: string, lastName: string ) => {
 	await visitAdminPage( '/profile.php' );
 
 	await setTextBoxValue( 'first_name', firstName );
@@ -65,9 +65,9 @@ export const setUserDisplayName = async ( firstName, lastName ) => {
 	await page.waitForTimeout( 250 );
 
 	// Select the full name if a last name has been given.
-	await page.evaluate( () => document.getElementById( 'display_name' ).selectedIndex = 0 );
+	await page.evaluate( () => ( document.getElementById( 'display_name' ) as HTMLSelectElement ).selectedIndex = 0 );
 	if ( lastName.length > 0 ) {
-		await page.evaluate( () => document.getElementById( 'display_name' ).selectedIndex = 3 );
+		await page.evaluate( () => ( document.getElementById( 'display_name' ) as HTMLSelectElement ).selectedIndex = 3 );
 	}
 
 	await page.click( 'input#submit' );
@@ -81,7 +81,7 @@ export const setUserDisplayName = async ( firstName, lastName ) => {
  * @param {string} taxonomyType The taxonomy type (e.g. 'category' or 'post_tag).
  * @return {Promise<void>}
  */
-export const insertRecordIntoTaxonomy = async ( recordName, taxonomyType ) => {
+export const insertRecordIntoTaxonomy = async ( recordName: string, taxonomyType: string ) => {
 	await visitAdminPage( 'edit-tags.php', '?taxonomy=' + taxonomyType );
 
 	await setTextBoxValue( 'tag-name', recordName );
@@ -99,7 +99,7 @@ export const insertRecordIntoTaxonomy = async ( recordName, taxonomyType ) => {
  * @param {number} timeout  Milliseconds to wait after category/tag selection.
  * @return {Promise<string>} The message returned by the Content Helper.
  */
-export const getContentHelperMessage = async ( category = null, tag = null, timeout = 500 ) => {
+export const getContentHelperMessage = async ( category = '', tag = '', timeout = 500 ): Promise<string> => {
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
@@ -111,7 +111,7 @@ export const getContentHelperMessage = async ( category = null, tag = null, time
 	await page.waitForTimeout( 1000 );
 
 	// Select/add category in the Post Editor.
-	if ( category !== null ) {
+	if ( category !== '' ) {
 		const categoryToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Categories' );
 		await categoryToggleButton.click();
 		await page.waitForTimeout( 500 );
@@ -123,7 +123,7 @@ export const getContentHelperMessage = async ( category = null, tag = null, time
 	}
 
 	// Select/add tag in the Post Editor.
-	if ( tag !== null ) {
+	if ( tag !== '' ) {
 		const tagToggleButton = await findSidebarPanelToggleButtonWithTitle( 'Tags' );
 		await tagToggleButton.click();
 		await page.keyboard.press( 'Tab' );
@@ -133,7 +133,7 @@ export const getContentHelperMessage = async ( category = null, tag = null, time
 	}
 
 	// Add a delay to wait for taxonomy selection/saving.
-	if ( category !== null || tag !== null ) {
+	if ( category !== '' || tag !== '' ) {
 		await page.waitForTimeout( timeout );
 	}
 
@@ -147,15 +147,20 @@ export const getContentHelperMessage = async ( category = null, tag = null, time
 		'document.querySelector("' + contentHelperMessage + '").innerText.length > 0',
 		{ polling: 'mutation', timeout: 5000 }
 	);
-	const text = await page.$eval( contentHelperMessage, ( element ) => element.textContent );
+	const text = await page.$eval( contentHelperMessage, ( element: HTMLElement ) => element.textContent );
 
 	return text;
 };
 
-export const checkH2DoesNotExist = async ( text ) => {
+export const checkH2DoesNotExist = async ( text: string ) => {
 	const [ h2 ] = await page.$x( `//h2[contains(text(), "${ text }")]` );
 	return h2 === undefined;
 };
+
+interface ScreenOptions {
+	recrawl: boolean;
+	advanced: boolean;
+}
 
 /**
  * Sets the visible sections in the array to their values `true` for visible and `false` for not visible.
@@ -163,7 +168,7 @@ export const checkH2DoesNotExist = async ( text ) => {
  * @param {Object} sections Dictionary containing the desired sections to change. Currently, `recrawl` and `advanced`.
  * @return {Promise<void>}
  */
-export const selectScreenOptions = async ( sections ) => {
+export const selectScreenOptions = async ( sections: ScreenOptions ) => {
 	const [ button ] = await page.$x( '//button[@id="show-settings-link"]' );
 	await button.click();
 
@@ -196,7 +201,7 @@ export const saveSettingsAndHardRefresh = async () => {
 	await page.click( '#submit' );
 	await page.waitForSelector( '#submit' );
 	await page.evaluate( () => {
-		location.reload( true );
+		location.reload();
 	} );
 	await page.waitForSelector( '#submit' );
 };
@@ -222,4 +227,4 @@ export const startUpTest = async () => {
  * @param {Array<string>} array2
  * @return {boolean} Whether the passed arrays are equal.
  */
-export const arraysEqual = ( array1, array2 ) => JSON.stringify( array1 ) === JSON.stringify( array2 );
+export const arraysEqual = ( array1: string[], array2: string[] ) => JSON.stringify( array1 ) === JSON.stringify( array2 );

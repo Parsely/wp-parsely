@@ -13,7 +13,7 @@ import {
 } from '../utils';
 
 // General initializations.
-const imageLocalPath = path.resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
+const imageLocalPath: string = path.resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
 const uploadedImagePattern = /\/wp-content\/uploads\/\d{4}\/\d{2}\/icon-256x256-?\d*\.png$/;
 const filePathInput = '#media-single-image-logo input.file-path';
 const modalAttachment = 'li.attachment'; // Used in both modals.
@@ -46,7 +46,8 @@ describe( 'Browse for logo button', () => {
 
 		// Confirm image deletion.
 		// Note: Dialog handling must be placed before the click event.
-		await page.on( 'dialog', async ( dialog ) => {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		await page.on( 'dialog', async ( dialog: any ) => {
 			await dialog.accept();
 		} );
 		await page.click( modalDeleteAttachmentLink );
@@ -76,7 +77,8 @@ describe( 'Browse for logo button', () => {
 
 		// Verify that the image path has been updated.
 		await page.waitForTimeout( 500 );
-		const filePath = await page.evaluate( ( element ) => element.value, await page.$( filePathInput ) );
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const filePath = await page.evaluate( ( element: any ) => element.value, await page.$( filePathInput ) );
 		expect( filePath ).toMatch( uploadedImagePattern );
 	} );
 
@@ -90,7 +92,8 @@ describe( 'Browse for logo button', () => {
 		await page.click( modalConfirmButton );
 
 		// Verify that the image path has been updated.
-		const filePath = await page.$eval( filePathInput, ( input ) => input.value );
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const filePath = await page.$eval( filePathInput, ( input: any ) => input.value );
 		expect( filePath ).toMatch( uploadedImagePattern );
 	} );
 
@@ -104,7 +107,8 @@ describe( 'Browse for logo button', () => {
 		await page.keyboard.press( 'Escape' );
 
 		// Verify that the image path is empty.
-		const filePath = await page.$eval( filePathInput, ( input ) => input.value );
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const filePath = await page.$eval( filePathInput, ( input: any ) => input.value );
 		expect( filePath ).toMatch( '' );
 	} );
 } );

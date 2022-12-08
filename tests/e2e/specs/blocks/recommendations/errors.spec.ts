@@ -37,7 +37,7 @@ describe( 'Recommendations Block', () => {
 		await insertBlock( 'Parse.ly' );
 
 		await page.waitForSelector( '.parsely-recommendations-error' );
-		const text = await page.$eval( '.parsely-recommendations-error', ( element ) => element.textContent );
+		const text = await page.$eval( '.parsely-recommendations-error', ( element: HTMLElement ) => element.textContent );
 		expect( text ).toMatch( 'Access denied. Please verify that your Site ID is valid.' );
 	} );
 
@@ -50,7 +50,7 @@ describe( 'Recommendations Block', () => {
 		await insertBlock( 'Parse.ly' );
 
 		await page.waitForSelector( '.parsely-recommendations-error' );
-		const text = await page.$eval( '.parsely-recommendations-error', ( element ) => element.textContent );
+		const text = await page.$eval( '.parsely-recommendations-error', ( element: HTMLElement ) => element.textContent );
 		expect( text ).toMatch( 'A Parse.ly API Key must be set in site options to use this endpoint' );
 	} );
 
@@ -64,7 +64,7 @@ describe( 'Recommendations Block', () => {
 		await insertBlock( 'Parse.ly' );
 
 		await page.waitForSelector( '.parsely-recommendations-error' );
-		const text = await page.$eval( '.parsely-recommendations-error', ( element ) => element.textContent );
+		const text = await page.$eval( '.parsely-recommendations-error', ( element: HTMLElement ) => element.textContent );
 
 		expect( text ).toMatch( 'The Parse.ly Recommendations API is not accessible. You may be offline.' );
 

@@ -36,7 +36,7 @@ interface RelatedTopPostsApiResponse {
 /**
  * The form of the result returned by the getRelatedTopPosts() function.
  */
-interface GetRelatedTopPostsResult {
+export interface GetRelatedTopPostsResult {
 	message: string;
 	posts: RelatedTopPostData[];
 }

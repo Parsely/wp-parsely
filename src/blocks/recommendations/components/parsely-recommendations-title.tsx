@@ -1,5 +1,5 @@
 interface ParselyRecommendationsTitleProps {
-	title: string;
+	title?: string;
 }
 
 const ParselyRecommendationsTitle = ( { title }: ParselyRecommendationsTitleProps ) => (

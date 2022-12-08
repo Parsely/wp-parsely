@@ -17,7 +17,7 @@ import {
 	waitForWpAdmin,
 } from '../utils';
 
-const setMetadataFormat = async ( format ) => {
+const setMetadataFormat = async ( format: string ) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
 	await waitForWpAdmin();
 

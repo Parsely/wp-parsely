@@ -15,6 +15,7 @@ import ParselyRecommendations from '../../../../src/blocks/recommendations/compo
 import ParselyRecommendationsList from '../../../../src/blocks/recommendations/components/parsely-recommendations-list';
 import ParselyRecommendationsTitle from '../../../../src/blocks/recommendations/components/parsely-recommendations-title';
 import RecommendationsStore from '../../../../src/blocks/recommendations/recommendations-store';
+import { Recommendation } from '../../../../src/blocks/recommendations/models/Recommendation';
 
 /**
  * Verifies that the Block's structure remains consistent and correct
@@ -67,9 +68,9 @@ describe( 'Recommendations Block', () => {
  * @param {number} resultCount How many data results should be fetched.
  * @param {string} blockTitle  The title the Block should have.
  * @param {string} imageStyle  Style of Image. Can be 'original', thumbnail or ''.
- * @return {true} Always returns true if end of function is reached.
+ * @return {boolean} Returns true if end of function is reached.
  */
-function verifyBlockStructure( resultCount, blockTitle, imageStyle = '' ) {
+function verifyBlockStructure( resultCount: number, blockTitle: string, imageStyle = '' ): boolean {
 	// Expect valid image value and generate render props.
 	expect( [ '', 'original', 'thumbnail' ].includes( imageStyle ) ).toBeTruthy();
 	const showImages = imageStyle === '' ? false : true;
@@ -128,22 +129,15 @@ function verifyBlockStructure( resultCount, blockTitle, imageStyle = '' ) {
  * data is not random for testability.
  *
  * @param {number} resultCount How many results to fetch (like the API's limit parameter).
- * @return {Array<object>} The generated data.
+ * @return {Array<Recommendation>} The generated data.
  */
-function getApiData( resultCount ) {
-	const results = [];
+function getApiData( resultCount: number ): Recommendation[] {
+	const results: Recommendation[] = [];
 
 	for ( let i = 0; i < resultCount; i++ ) {
 		results.push(
 			{
-				author: 'John Doe',
-				authors: [ 'John Doe', 'Jane Doe' ],
-				full_content_word_count: 0,
 				image_url: `https://example.com/original-${ i }.jpg`,
-				metadata: null,
-				pub_date: '2022-03-14T13:14:00',
-				section: 'Articles',
-				tags: [ 'parsely_smart:entity:Tag 1', 'parsely_smart:iab:Tag 2' ],
 				thumb_url_medium: `https://example.com/thumbnail-${ i }.jpg`,
 				title: `Article ${ i }`,
 				url: `https://example.com/article-${ i }/`,

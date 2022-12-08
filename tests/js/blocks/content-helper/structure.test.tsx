@@ -12,12 +12,12 @@ import '@testing-library/jest-dom';
  * Internal dependencies.
  */
 import RelatedTopPostList from '../../../../src/blocks/content-helper/components/related-top-post-list';
-import ContentHelperProvider, { RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/content-helper-provider';
+import ContentHelperProvider, { GetRelatedTopPostsResult, RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/content-helper-provider';
 import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
 
 describe( 'Content Helper', () => {
 	test( 'should display spinner when starting', () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {} as GetRelatedTopPostsResult ) );
 
 		render( <RelatedTopPostList /> );
 
@@ -64,7 +64,7 @@ describe( 'Content Helper', () => {
 		const apiError = screen.queryByTestId( 'api-error' );
 		expect( apiError ).toBeInTheDocument();
 		expect( apiError ).toBeVisible();
-		expect( apiError.textContent ).toEqual( 'Error: fake error from API' );
+		expect( apiError?.textContent ).toEqual( 'Error: fake error from API' );
 	} );
 
 	test( 'should show error message when WordPress REST API returns the error', async () => {
@@ -83,7 +83,7 @@ describe( 'Content Helper', () => {
 		const wpApiError = screen.queryByTestId( 'wp-api-error' );
 		expect( wpApiError ).toBeInTheDocument();
 		expect( wpApiError ).toBeVisible();
-		expect( wpApiError.textContent ).toEqual( 'Error: fake error from WP API' );
+		expect( wpApiError?.textContent ).toEqual( 'Error: fake error from WP API' );
 	} );
 
 	test( 'should show no results message when there is no tag, category or author in the post', async () => {
@@ -102,7 +102,7 @@ describe( 'Content Helper', () => {
 		const topPostDesc = getTopPostDesc();
 		expect( topPostDesc ).toBeInTheDocument();
 		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc.textContent ).toEqual( 'The Parse.ly API did not return any results for top-performing posts by "author".' );
+		expect( topPostDesc?.textContent ).toEqual( 'The Parse.ly API did not return any results for top-performing posts by "author".' );
 	} );
 
 	test( 'should show a single top post with description and proper attributes', async () => {
@@ -121,7 +121,7 @@ describe( 'Content Helper', () => {
 		const topPostDesc = getTopPostDesc();
 		expect( topPostDesc ).toBeInTheDocument();
 		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc.textContent ).toEqual( `Top-performing posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
+		expect( topPostDesc?.textContent ).toEqual( `Top-performing posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
 
 		const topPosts = getTopPosts();
 		expect( topPosts.length ).toEqual( 1 );
@@ -131,16 +131,16 @@ describe( 'Content Helper', () => {
 		const statsLink = firstTopPost.querySelector( '.parsely-top-post-stats-link' );
 		const postLink = firstTopPost.querySelector( '.parsely-top-post-link' );
 
-		expect( firstTopPost.querySelector( '.parsely-top-post-title' ).textContent ).toEqual( 'Title 1' );
-		expect( statsLink.getAttribute( 'href' ) ).toEqual( `${ DASHBOARD_BASE_URL }/example.com/post-1` );
-		expect( statsLink.getAttribute( 'title' ) ).toEqual( 'View in Parse.ly (opens new tab)' );
-		expect( statsLink.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( postLink.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
-		expect( postLink.getAttribute( 'title' ) ).toEqual( 'View Published Post (opens new tab)' );
-		expect( postLink.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-date' ).textContent ).toEqual( 'Date Jan 1, 2022' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-author' ).textContent ).toEqual( 'Author Name 1' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-views' ).textContent ).toEqual( 'Number of Views 1' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-title' )?.textContent ).toEqual( 'Title 1' );
+		expect( statsLink?.getAttribute( 'href' ) ).toEqual( `${ DASHBOARD_BASE_URL }/example.com/post-1` );
+		expect( statsLink?.getAttribute( 'title' ) ).toEqual( 'View in Parse.ly (opens new tab)' );
+		expect( statsLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
+		expect( postLink?.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
+		expect( postLink?.getAttribute( 'title' ) ).toEqual( 'View Published Post (opens new tab)' );
+		expect( postLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-date' )?.textContent ).toEqual( 'Date Jan 1, 2022' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-author' )?.textContent ).toEqual( 'Author Name 1' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-views' )?.textContent ).toEqual( 'Number of Views 1' );
 	} );
 
 	test( 'should show 5 posts by default', async () => {
@@ -155,7 +155,7 @@ describe( 'Content Helper', () => {
 
 		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
-		expect( getTopPostDesc().textContent ).toEqual( `Top-performing posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
+		expect( getTopPostDesc()?.textContent ).toEqual( `Top-performing posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
 		expect( getTopPosts().length ).toEqual( 5 );
 	} );
 
@@ -175,7 +175,7 @@ describe( 'Content Helper', () => {
 		return screen.queryByTestId( 'parsely-contact-us' );
 	}
 
-	function getRelatedTopPostsMockFn( mockFn ) {
+	function getRelatedTopPostsMockFn( mockFn: () => Promise<GetRelatedTopPostsResult> ) {
 		return jest
 			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
 			.mockImplementation( mockFn );
@@ -188,7 +188,7 @@ describe( 'Content Helper', () => {
 			posts.push( {
 				author: `Name ${ i }`,
 				date: `Jan ${ i }, 2022`,
-				id: `http://example.com/post-${ i }`,
+				id: i,
 				statsUrl: `${ DASHBOARD_BASE_URL }/example.com/post-${ i }`,
 				title: `Title ${ i }`,
 				url: `http://example.com/post-${ i }`,
@@ -199,7 +199,7 @@ describe( 'Content Helper', () => {
 		return posts;
 	}
 
-	async function verifyContactUsMessage( getRelatedTopPostsFn ) {
+	async function verifyContactUsMessage( getRelatedTopPostsFn: jest.SpyInstance<Promise<GetRelatedTopPostsResult>, []> ) {
 		render( <RelatedTopPostList /> );
 		expect( getSpinner() ).toBeInTheDocument();
 
