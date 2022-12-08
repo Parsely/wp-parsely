@@ -63,11 +63,11 @@ class ContentHelperProvider {
 
 		// Get post's first category.
 		const categoryIds = editor.getEditedPostAttribute( 'categories' ) as Array<number>;
-		const category: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryIds[ 0 ] );
+		const category: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryIds?.[ 0 ] );
 
 		// Get post's first tag.
 		const tagIds = editor.getEditedPostAttribute( 'tags' ) as Array<number>;
-		const tag: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagIds[ 0 ] );
+		const tag: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagIds?.[ 0 ] );
 
 		// Create API query.
 		const apiQuery = this.buildRelatedTopPostsApiQuery( author, category, tag );
