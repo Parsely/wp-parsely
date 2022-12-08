@@ -10,6 +10,7 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import ContentHelperProvider from '../content-helper-provider';
 import RelatedTopPostListItem from './related-top-post-list-item';
+import ErrorHint from '../../shared/components/error-hint';
 import { RelatedTopPostData } from '../models/related-top-post-data';
 import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../shared/utils/date';
 
@@ -73,7 +74,18 @@ function RelatedTopPostList() {
 
 		// Error coming from apiFetch.
 		if ( error?.message ) {
-			return <p className="parsely-top-posts-descr" data-testid="api-error">{ __( 'Error:', 'wp-parsely' ) } { error.message }</p>;
+			return (
+				<>
+					<p className="parsely-top-posts-descr" data-testid="api-error">
+						{ __( 'Error:', 'wp-parsely' ) } { error.message }
+					</p>
+
+					{
+						error?.code === 'fetch_error' &&
+						<ErrorHint />
+					}
+				</>
+			);
 		}
 
 		// Error coming from the WordPress REST API.

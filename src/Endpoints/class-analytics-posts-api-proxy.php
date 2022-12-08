@@ -15,7 +15,7 @@ use WP_REST_Request;
 use Parsely\Parsely;
 
 /**
- * Configures the `/analytics/posts` REST API endpoint.
+ * Configures the `/stats/posts` REST API endpoint.
  */
 final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 
@@ -23,7 +23,7 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 	 * Registers the endpoint's WP REST route.
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/analytics/posts' );
+		$this->register_endpoint( '/stats/posts' );
 	}
 
 	/**

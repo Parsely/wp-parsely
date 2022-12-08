@@ -10,6 +10,7 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import CurrentPostDetailsProvider from './provider';
 import { PostPerformanceData } from './post-performance-data';
+import ErrorHint from '../../shared/components/error-hint';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 3;
@@ -60,7 +61,16 @@ function CurrentPostDetails() {
 
 		// Error coming from apiFetch.
 		if ( error?.message ) {
-			return <p>{ __( 'Error:', 'wp-parsely' ) } { error.message }</p>;
+			return (
+				<>
+					<p>{ __( 'Error:', 'wp-parsely' ) } { error.message }</p>
+
+					{
+						error?.code === 'fetch_error' &&
+						<ErrorHint />
+					}
+				</>
+			);
 		}
 
 		// Error coming from the WordPress REST API.
