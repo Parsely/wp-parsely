@@ -12,7 +12,7 @@ import { Recommendation } from './models/Recommendation';
 interface RecommendationState {
 	isLoaded: boolean;
 	recommendations: Recommendation[] | undefined;
-	uuid: string;
+	uuid?: string;
 	clientId: string;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	error?: any;
@@ -22,7 +22,7 @@ interface RecommendationState {
 const RecommendationsContext = createContext( {} as any );
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const reducer = ( state: RecommendationState, action: any ) => {
+const reducer = ( state: RecommendationState, action: any ): RecommendationState => {
 	switch ( action.type ) {
 		case RecommendationsAction.Error:
 			return { ...state, isLoaded: true, error: action.error, recommendations: undefined };

@@ -8,14 +8,14 @@ export function wpParselyInitCustom() {
 	 * All functions enqueued on that hook will be executed on that event according to their priorities. Those
 	 * functions should not expect any parameters and shouldn't return any.
 	 */
-	const customOnLoad = () => window.wpParselyHooks.doAction( 'wpParselyOnLoad' );
+	const customOnLoad = () => window.wpParselyHooks?.doAction( 'wpParselyOnLoad' );
 
 	/**
 	 * The `wpParselyOnReady` hook gets called with the `onReady` event of the `window.PARSELY` object.
 	 * All functions enqueued on that hook will be executed on that event according to their priorities. Those
 	 * functions should not expect any parameters and shouldn't return any.
 	 */
-	const customOnReady = () => window.wpParselyHooks.doAction( 'wpParselyOnReady' );
+	const customOnReady = () => window.wpParselyHooks?.doAction( 'wpParselyOnReady' );
 
 	// Construct window.PARSELY object.
 	if ( typeof window.PARSELY === 'object' ) {
