@@ -6,17 +6,29 @@ import { createContext, useContext, useReducer } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { RECOMMENDATIONS_BLOCK_ERROR, RECOMMENDATIONS_BLOCK_LOADED, RECOMMENDATIONS_BLOCK_RECOMMENDATIONS } from './constants';
+import { RecommendationsAction } from './constants';
+import { Recommendation } from './models/Recommendation';
 
-const RecommendationsContext = createContext();
+interface RecommendationState {
+	isLoaded: boolean;
+	recommendations: Recommendation[] | undefined;
+	uuid: string;
+	clientId: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	error?: any;
+}
 
-const reducer = ( state, action ) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const RecommendationsContext = createContext( {} as any );
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const reducer = ( state: RecommendationState, action: any ) => {
 	switch ( action.type ) {
-		case RECOMMENDATIONS_BLOCK_ERROR:
+		case RecommendationsAction.Error:
 			return { ...state, isLoaded: true, error: action.error, recommendations: undefined };
-		case RECOMMENDATIONS_BLOCK_LOADED:
+		case RecommendationsAction.Loaded:
 			return { ...state, isLoaded: true };
-		case RECOMMENDATIONS_BLOCK_RECOMMENDATIONS: {
+		case RecommendationsAction.Recommendations: {
 			const { recommendations } = action;
 			if ( ! Array.isArray( recommendations ) ) {
 				return { ...state, recommendations: undefined };
@@ -37,8 +49,9 @@ const reducer = ( state, action ) => {
 	}
 };
 
-const RecommendationsStore = ( props ) => {
-	const defaultState = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const RecommendationsStore = ( props: any ) => {
+	const defaultState: RecommendationState = {
 		isLoaded: false,
 		recommendations: undefined,
 		uuid: window.PARSELY?.config?.uuid,
