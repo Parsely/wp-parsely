@@ -10,10 +10,10 @@ import { Recommendation } from '../models/Recommendation';
 
 interface ParselyRecommendationsListItemProps {
 	imageAlt: string;
-	imagestyle?: string;
-	openlinksinnewtab?: boolean;
+	imagestyle: string;
+	openlinksinnewtab: boolean;
 	recommendation: Recommendation;
-	showimages?: boolean;
+	showimages: boolean;
 }
 
 const getImageForLink = ( imagestyle = '', imageUrl: string, thumbUrlMedium: string ) => imagestyle === 'original' ? imageUrl : thumbUrlMedium;

@@ -21,8 +21,8 @@ const FETCH_RETRIES = 3;
  */
 function RelatedTopPostList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
-	const [ error, setError ] = useState<RelatedTopPostApiError | null>( null );
-	const [ message, setMessage ] = useState<string | null>( null );
+	const [ error, setError ] = useState<RelatedTopPostApiError>();
+	const [ message, setMessage ] = useState<string>();
 	const [ posts, setPosts ] = useState<RelatedTopPostData[]>( [] );
 
 	useEffect( () => {
@@ -60,7 +60,7 @@ function RelatedTopPostList() {
 			setLoading( false );
 			setPosts( [] );
 			setMessage( '' );
-			setError( null );
+			setError( undefined );
 		};
 	}, [] );
 

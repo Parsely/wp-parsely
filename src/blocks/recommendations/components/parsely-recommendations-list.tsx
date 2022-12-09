@@ -10,10 +10,10 @@ import ParselyRecommendationsListItem from './parsely-recommendations-list-item'
 import { Recommendation } from '../models/Recommendation';
 
 interface ParselyRecommendationsListProps {
-	imagestyle?: string;
-	openlinksinnewtab?: boolean;
+	imagestyle: string;
+	openlinksinnewtab: boolean;
 	recommendations: Recommendation[];
-	showimages?: boolean;
+	showimages: boolean;
 }
 
 const ParselyRecommendationsList = ( { imagestyle, recommendations, showimages, openlinksinnewtab }: ParselyRecommendationsListProps ) => (

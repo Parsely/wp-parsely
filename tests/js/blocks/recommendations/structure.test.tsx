@@ -28,7 +28,17 @@ describe( 'Recommendations Block', () => {
 	it( 'should display loading text when starting', () => {
 		render(
 			<RecommendationsStore>
-				<ParselyRecommendations />
+				<ParselyRecommendations
+					// Took default value from block.json file
+					boost={ 'views' }
+					imagestyle={ 'original' }
+					isEditMode={ false }
+					limit={ 3 }
+					openlinksinnewtab={ false }
+					showimages={ true }
+					sort={ 'score' }
+					title={ 'Related Content' }
+				/>
 			</RecommendationsStore>
 		);
 
@@ -80,7 +90,7 @@ function verifyBlockStructure( resultCount: number, blockTitle: string, imageSty
 	render(
 		<RecommendationsStore>
 			<ParselyRecommendationsTitle title={ blockTitle } />
-			<ParselyRecommendationsList imagestyle={ imageStyle } showimages={ showImages } recommendations={ apiData } />
+			<ParselyRecommendationsList imagestyle={ imageStyle } showimages={ showImages } recommendations={ apiData } openlinksinnewtab={ false } />
 		</RecommendationsStore>
 	);
 

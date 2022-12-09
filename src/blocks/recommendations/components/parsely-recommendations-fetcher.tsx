@@ -14,10 +14,10 @@ import { useRecommendationsStore } from '../recommendations-store';
 import { Recommendation } from '../models/Recommendation';
 
 interface ParselyRecommendationsFetcherProps {
-	boost?: string;
-	limit?: number;
-	sort?: string;
-	isEditMode?: boolean;
+	boost: string;
+	limit: number;
+	sort: string;
+	isEditMode: boolean;
 }
 
 interface ApiResponse {

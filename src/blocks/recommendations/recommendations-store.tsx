@@ -12,10 +12,10 @@ import { Recommendation } from './models/Recommendation';
 interface RecommendationState {
 	isLoaded: boolean;
 	recommendations: Recommendation[] | undefined;
-	uuid?: string;
-	clientId: string;
+	uuid: string | null;
+	clientId: string | null;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	error?: any;
+	error: any;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,13 +49,18 @@ const reducer = ( state: RecommendationState, action: any ): RecommendationState
 	}
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const RecommendationsStore = ( props: any ) => {
+interface RecommendationStore {
+	clientId?: string;
+	children: JSX.Element | JSX.Element[];
+}
+
+const RecommendationsStore = ( props: RecommendationStore ) => {
 	const defaultState: RecommendationState = {
 		isLoaded: false,
 		recommendations: undefined,
-		uuid: window.PARSELY?.config?.uuid,
-		clientId: props.clientId,
+		uuid: window.PARSELY?.config?.uuid || null,
+		clientId: props?.clientId || null,
+		error: null,
 	};
 
 	const [ state, dispatch ] = useReducer( reducer, defaultState );

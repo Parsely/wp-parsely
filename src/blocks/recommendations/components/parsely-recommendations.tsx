@@ -12,14 +12,14 @@ import ParselyRecommendationsTitle from './parsely-recommendations-title';
 import { useRecommendationsStore } from '../recommendations-store';
 
 interface ParselyRecommendationsProps {
-	boost?: string;
-	imagestyle?: string;
-	isEditMode?: boolean;
-	limit?: number;
-	openlinksinnewtab?: boolean;
-	showimages?: boolean;
-	sort?: string;
-	title?: string;
+	boost: string;
+	imagestyle: string;
+	isEditMode: boolean;
+	limit: number;
+	openlinksinnewtab: boolean;
+	showimages: boolean;
+	sort: string;
+	title: string;
 }
 
 export default function ParselyRecommendations( {
