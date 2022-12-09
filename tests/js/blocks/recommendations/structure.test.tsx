@@ -29,7 +29,7 @@ describe( 'Recommendations Block', () => {
 		render(
 			<RecommendationsStore>
 				<ParselyRecommendations
-					// Took default value from block.json file
+					// Passing default values taken from block.json
 					boost={ 'views' }
 					imagestyle={ 'original' }
 					isEditMode={ false }

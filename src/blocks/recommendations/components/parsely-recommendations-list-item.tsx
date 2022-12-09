@@ -16,8 +16,8 @@ interface ParselyRecommendationsListItemProps {
 	showimages: boolean;
 }
 
-const getImageForLink = ( imagestyle = '', imageUrl: string, thumbUrlMedium: string ) => imagestyle === 'original' ? imageUrl : thumbUrlMedium;
-const getLinkTarget = ( openlinksinnewtab?: boolean ) => Boolean( openlinksinnewtab ) === true ? { target: '_blank', rel: 'noopener' } : { target: '_self', rel: '' };
+const getImageForLink = ( imagestyle: string, imageUrl: string, thumbUrlMedium: string ) => imagestyle === 'original' ? imageUrl : thumbUrlMedium;
+const getLinkTarget = ( openlinksinnewtab: boolean ) => Boolean( openlinksinnewtab ) === true ? { target: '_blank', rel: 'noopener' } : { target: '_self', rel: '' };
 
 const ParselyRecommendationsListItem = ( {
 	imageAlt,
