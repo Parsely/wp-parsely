@@ -1,3 +1,6 @@
+/**
+ * External dependencies.
+ */
 import { _Hooks } from '@wordpress/hooks/build-types/createHooks';
 
 export {};
