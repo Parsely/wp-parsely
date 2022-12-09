@@ -9,6 +9,7 @@ export interface RelatedTopPostData {
 }
 
 export interface RelatedTopPostApiError {
+	code: string;
 	message :string;
 	errors: {
 		parsely_site_id_not_set: string;

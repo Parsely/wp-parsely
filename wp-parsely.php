@@ -26,23 +26,27 @@ declare(strict_types=1);
 
 namespace Parsely;
 
-use Parsely\Endpoints\Related_API_Proxy;
+use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
+use Parsely\Endpoints\Referrers_Post_Detail_API_Proxy;
+use Parsely\Endpoints\Related_API_Proxy;
 use Parsely\Endpoints\Rest_Metadata;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
-use Parsely\RemoteAPI\Cached_Proxy;
-use Parsely\RemoteAPI\Related_Proxy;
+use Parsely\RemoteAPI\Analytics_Post_Detail_Proxy;
 use Parsely\RemoteAPI\Analytics_Posts_Proxy;
+use Parsely\RemoteAPI\Cached_Proxy;
+use Parsely\RemoteAPI\Referrers_Post_Detail_Proxy;
+use Parsely\RemoteAPI\Related_Proxy;
 use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Metadata_Renderer;
-use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Network_Admin_Sites_List;
+use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Recommended_Widget;
 use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
@@ -116,7 +120,7 @@ function parsely_wp_admin_early_register(): void {
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
  * Registers REST Endpoints that act as a proxy to the Parse.ly API.
- * This is needed to get around a CORS issues with Firefox.
+ * This is needed to get around CORS issues with Firefox.
  *
  * @since 3.2.0
  */
@@ -125,15 +129,29 @@ function parsely_rest_api_init(): void {
 	$rest     = new Rest_Metadata( $GLOBALS['parsely'] );
 	$rest->run();
 
-	$related_proxy        = new Related_Proxy( $GLOBALS['parsely'] );
-	$related_cached_proxy = new Cached_Proxy( $related_proxy, $wp_cache );
-	$related_endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $related_cached_proxy );
-	$related_endpoint->run();
+	parsely_run_rest_api_endpoint(
+		Related_Proxy::class,
+		Related_API_Proxy::class,
+		$wp_cache
+	);
 
-	$analytics_posts_proxy        = new Analytics_Posts_Proxy( $GLOBALS['parsely'] );
-	$analytics_posts_cached_proxy = new Cached_Proxy( $analytics_posts_proxy, $wp_cache );
-	$analytics_posts_endpoint     = new Analytics_Posts_API_Proxy( $GLOBALS['parsely'], $analytics_posts_cached_proxy );
-	$analytics_posts_endpoint->run();
+	parsely_run_rest_api_endpoint(
+		Analytics_Posts_Proxy::class,
+		Analytics_Posts_API_Proxy::class,
+		$wp_cache
+	);
+
+	parsely_run_rest_api_endpoint(
+		Analytics_Post_Detail_Proxy::class,
+		Analytics_Post_Detail_API_Proxy::class,
+		$wp_cache
+	);
+
+	parsely_run_rest_api_endpoint(
+		Referrers_Post_Detail_Proxy::class,
+		Referrers_Post_Detail_API_Proxy::class,
+		$wp_cache
+	);
 }
 
 add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
@@ -188,4 +206,24 @@ function parsely_integrations( $parsely = null ): Integrations {
 	$parsely_integrations->integrate();
 
 	return $parsely_integrations;
+}
+
+/**
+ * Instantiates and runs the specified API endpoint.
+ *
+ * @since 3.6.0
+ *
+ * @param string          $proxy_class_name The proxy class to instantiate.
+ * @param string          $api_proxy_class_name The API proxy class to instantiate and run.
+ * @param WordPress_Cache $wp_cache The WordPress cache instance to be used.
+ */
+function parsely_run_rest_api_endpoint(
+	string $proxy_class_name,
+	string $api_proxy_class_name,
+	WordPress_Cache &$wp_cache
+): void {
+	$proxy_instance        = new $proxy_class_name( $GLOBALS['parsely'] );
+	$cached_proxy_instance = new Cached_Proxy( $proxy_instance, $wp_cache );
+	$api_proxy_instance    = new $api_proxy_class_name( $GLOBALS['parsely'], $cached_proxy_instance );
+	$api_proxy_instance->run();
 }

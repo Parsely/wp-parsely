@@ -77,7 +77,7 @@ abstract class Base_API_Proxy {
 	/**
 	 * Registers the endpoint's WP REST route.
 	 *
-	 * @param string $endpoint The endpoint (e.g. /analytics/posts).
+	 * @param string $endpoint The endpoint (e.g. /stats/posts).
 	 */
 	protected function register_endpoint( string $endpoint ): void {
 		$filter_key = trim( str_replace( '/', '_', $endpoint ), '_' );
