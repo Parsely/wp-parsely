@@ -80,7 +80,7 @@ final class Metadata_Renderer {
 		$parsely_options = $this->parsely->get_options();
 
 		if (
-			$this->parsely->api_key_is_missing() ||
+			$this->parsely->site_id_is_missing() ||
 
 			// Chosen not to track logged-in users.
 			( ! $parsely_options['track_authenticated_users'] && $this->parsely->is_blog_member_logged_in() ) ||

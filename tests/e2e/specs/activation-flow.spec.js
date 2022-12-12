@@ -26,7 +26,7 @@ describe( 'Activation flow', () => {
 		const versionText = await page.$eval( '#wp-parsely_version', ( el ) => el.innerText );
 		expect( versionText ).toMatch( /^Version \d+.\d+/ );
 
-		const errorData = await page.$eval( '#wp-parsely-apikey-error-notice', ( el ) => ( {
+		const errorData = await page.$eval( '#wp-parsely-site-id-error-notice', ( el ) => ( {
 			classes: el.classList.value,
 			message: el.innerText,
 		} ) );

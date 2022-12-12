@@ -62,7 +62,7 @@ abstract class Base_Proxy implements Proxy {
 			throw new RuntimeException( 'QUERY_FILTER constant must be defined in child class.' );
 		}
 
-		$query['apikey'] = $this->parsely->get_api_key();
+		$query['apikey'] = $this->parsely->get_site_id();
 		if ( $this->parsely->api_secret_is_set() ) {
 			$query['secret'] = $this->parsely->get_api_secret();
 		}

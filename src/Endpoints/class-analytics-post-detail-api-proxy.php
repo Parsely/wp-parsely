@@ -41,7 +41,7 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @return array<stdClass> The generated data.
 	 */
 	protected function generate_data( array $response ): array {
-		$stats_base_url = trailingslashit( 'https://dash.parsely.com/' . $this->parsely->get_api_key() ) . 'find';
+		$stats_base_url = trailingslashit( 'https://dash.parsely.com/' . $this->parsely->get_site_id() ) . 'find';
 
 		$result = array_map(
 			static function( stdClass $item ) use ( $stats_base_url ) {

@@ -133,10 +133,10 @@ abstract class ProxyEndpointTest extends TestCase {
 
 	/**
 	 * Verifies that calls return an error and do not perform a remote call when
-	 * the apikey is not populated in site options.
+	 * the site_id is not populated in site options.
 	 */
-	public function test_get_items_fails_without_apikey_set() {
-		TestCase::set_options( array( 'apikey' => '' ) );
+	public function test_get_items_fails_without_site_id_set() {
+		TestCase::set_options( array( 'site_id' => '' ) );
 
 		$dispatched = 0;
 		add_filter(
@@ -157,7 +157,7 @@ abstract class ProxyEndpointTest extends TestCase {
 
 		self::assertObjectHasAttribute( 'error', $data );
 		self::assertEquals(
-			new WP_Error( 'parsely_site_id_not_set', 'A Parse.ly API Key must be set in site options to use this endpoint' ),
+			new WP_Error( 'parsely_site_id_not_set', 'A Parse.ly Site ID must be set in site options to use this endpoint' ),
 			$data->error
 		);
 	}

@@ -51,7 +51,7 @@ describe( 'Recommendations Block', () => {
 
 		await page.waitForSelector( '.parsely-recommendations-error' );
 		const text = await page.$eval( '.parsely-recommendations-error', ( element ) => element.textContent );
-		expect( text ).toMatch( 'A Parse.ly API Key must be set in site options to use this endpoint' );
+		expect( text ).toMatch( 'A Parse.ly Site ID must be set in site options to use this endpoint' );
 	} );
 
 	/**

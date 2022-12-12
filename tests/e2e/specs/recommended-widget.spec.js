@@ -51,7 +51,7 @@ describe( 'Recommended widget', () => {
 		await activateTheme( 'twentytwentytwo' );
 	} );
 
-	it( 'Widget should be available but inactive without api key and secret', async () => {
+	it( 'Widget should be available but inactive without site ID and secret', async () => {
 		await setSiteKeys( '' );
 
 		await visitAdminPage( '/widgets.php', '' );

@@ -35,7 +35,7 @@ class Parsely {
 	 * @var array<string, mixed> $option_defaults The defaults we need for the class.
 	 */
 	private $option_defaults = array(
-		'apikey'                      => '',
+		'site_id'                     => '',
 		'content_id_prefix'           => '',
 		'api_secret'                  => '',
 		'use_top_level_cats'          => false,
@@ -136,8 +136,8 @@ class Parsely {
 	 * @return string
 	 */
 	public function get_tracker_url(): string {
-		if ( $this->api_key_is_set() ) {
-			$tracker_url = 'https://cdn.parsely.com/keys/' . $this->get_api_key() . '/p.js';
+		if ( $this->site_id_is_set() ) {
+			$tracker_url = 'https://cdn.parsely.com/keys/' . $this->get_site_id() . '/p.js';
 			return esc_url( $tracker_url );
 		}
 		return '';
@@ -252,7 +252,7 @@ class Parsely {
 	 */
 	public function update_metadata_endpoint( int $post_id ): void {
 		$parsely_options = $this->get_options();
-		if ( $this->api_key_is_missing() || empty( $parsely_options['metadata_secret'] ) ) {
+		if ( $this->site_id_is_missing() || empty( $parsely_options['metadata_secret'] ) ) {
 			return;
 		}
 
@@ -282,7 +282,7 @@ class Parsely {
 		$body                    = wp_json_encode(
 			array(
 				'secret'   => $parsely_metadata_secret,
-				'apikey'   => $parsely_options['apikey'],
+				'site_id'  => $parsely_options['site_id'],
 				'metadata' => $endpoint_metadata,
 			)
 		);
@@ -359,6 +359,12 @@ class Parsely {
 			return $this->option_defaults;
 		}
 
+		// Deprecates the usage of `apikey` option and replace it with `site_id'.
+		if ( isset( $options['apikey'] ) ) {
+			$options['site_id'] = $options['apikey'];
+			unset( $options['apikey'] );
+		}
+
 		return array_merge( $this->option_defaults, $options );
 	}
 
@@ -406,44 +412,44 @@ class Parsely {
 	}
 
 	/**
-	 * Determines if an API key is saved in the options.
+	 * Determines if an Site ID is saved in the options.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @return bool True is API key is set, false if it is missing.
+	 * @return bool True is Site ID is set, false if it is missing.
 	 */
-	public function api_key_is_set(): bool {
+	public function site_id_is_set(): bool {
 		$options = $this->get_options();
 
 		return (
-				isset( $options['apikey'] ) &&
-				is_string( $options['apikey'] ) &&
-				'' !== $options['apikey']
+				isset( $options['site_id'] ) &&
+				is_string( $options['site_id'] ) &&
+				'' !== $options['site_id']
 		);
 	}
 
 	/**
-	 * Determines if an API key is not saved in the options.
+	 * Determines if an Site ID is not saved in the options.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @return bool True if API key is missing, false if it is set.
+	 * @return bool True if Site ID is missing, false if it is set.
 	 */
-	public function api_key_is_missing(): bool {
-		return ! $this->api_key_is_set();
+	public function site_id_is_missing(): bool {
+		return ! $this->site_id_is_set();
 	}
 
 	/**
-	 * Gets the API key if set.
+	 * Gets the Site ID if set.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @return string API key if set, or empty string if not.
+	 * @return string Site ID if set, or empty string if not.
 	 */
-	public function get_api_key(): string {
+	public function get_site_id(): string {
 		$options = $this->get_options();
 
-		return $this->api_key_is_set() ? $options['apikey'] : '';
+		return $this->site_id_is_set() ? $options['site_id'] : '';
 	}
 
 	/**

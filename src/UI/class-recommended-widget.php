@@ -54,7 +54,7 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string      $api_key          Publisher Site ID (API key).
+	 * @param string      $site_id          Publisher Site ID.
 	 * @param int|null    $published_within Publication filter start date; see https://www.parse.ly/help/api/time for
 	 *                                      formatting details. No restriction by default.
 	 * @param string|null $sort             What to sort the results by. There are currently 2 valid options: `score`,
@@ -65,11 +65,11 @@ final class Recommended_Widget extends WP_Widget {
 	 * @param int         $return_limit     Number of records to retrieve; defaults to "10".
 	 * @return string API URL.
 	 */
-	private function get_api_url( string $api_key, ?int $published_within, ?string $sort, ?string $boost, int $return_limit ): string {
+	private function get_api_url( string $site_id, ?int $published_within, ?string $sort, ?string $boost, int $return_limit ): string {
 		$related_api_endpoint = 'https://api.parsely.com/v2/related';
 
 		$query_args = array(
-			'apikey' => $api_key,
+			'apikey' => $site_id,
 			'sort'   => $sort,
 			'limit'  => $return_limit,
 		);
@@ -92,7 +92,7 @@ final class Recommended_Widget extends WP_Widget {
 	 * @param array $instance Values saved to the db.
 	 */
 	public function widget( $args, $instance ): void {
-		if ( ! $this->api_key_and_secret_are_populated() ) {
+		if ( ! $this->site_id_and_secret_are_populated() ) {
 			return;
 		}
 
@@ -111,7 +111,7 @@ final class Recommended_Widget extends WP_Widget {
 		// Set up the variables.
 		$options = $this->parsely->get_options();
 		$api_url = $this->get_api_url(
-			$options['apikey'],
+			$options['site_id'],
 			$instance['published_within'],
 			$instance['sort'],
 			$instance['boost'],
@@ -161,7 +161,7 @@ final class Recommended_Widget extends WP_Widget {
 	 * @param array $instance Values saved to the db.
 	 */
 	public function form( $instance ): void {
-		if ( ! $this->api_key_and_secret_are_populated() ) {
+		if ( ! $this->site_id_and_secret_are_populated() ) {
 			$settings_page_url = add_query_arg( 'page', 'parsely', get_admin_url() . 'options-general.php' );
 
 			$message = sprintf(
@@ -315,32 +315,15 @@ final class Recommended_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Checks if both the API key and API secret settings are populated with
+	 * Checks if both the Site ID and API secret settings are populated with
 	 * non-empty values.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return bool True if apikey and api_secret settings are not empty strings.
+	 * @return bool True if site_id and api_secret settings are not empty strings.
 	 *              False otherwise.
 	 */
-	private function api_key_and_secret_are_populated(): bool {
-		$options = $this->parsely->get_options();
-
-		// No options are saved, so API key is not available.
-		if ( ! is_array( $options ) ) {
-			return false;
-		}
-
-		// Parse.ly Site ID settings field is not populated.
-		if ( ! array_key_exists( 'apikey', $options ) || '' === $options['apikey'] ) {
-			return false;
-		}
-
-		// Parse.ly API Secret settings field is not populated.
-		if ( ! array_key_exists( 'api_secret', $options ) || '' === $options['api_secret'] ) {
-			return false;
-		}
-
-		return true;
+	private function site_id_and_secret_are_populated(): bool {
+		return $this->parsely->site_id_is_set() && $this->parsely->api_secret_is_set();
 	}
 }

@@ -47,7 +47,7 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::run
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 *
 	 * @group scripts
@@ -64,17 +64,17 @@ final class ScriptsTest extends TestCase {
 
 	/**
 	 * Verifies that run() does not add the register and enqueue actions when no
-	 * API key is set.
+	 * Site ID is set.
 	 *
 	 * @covers \Parsely\Scripts::run
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 *
 	 * @group scripts
 	 */
-	public function test_run_not_adds_actions_no_api_key(): void {
-		TestCase::set_options( array( 'apikey' => null ) );
+	public function test_run_not_adds_actions_no_site_id(): void {
+		TestCase::set_options( array( 'site_id' => null ) );
 
 		self::$scripts->run();
 
@@ -88,7 +88,7 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::run
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 *
 	 * @group scripts
@@ -107,9 +107,9 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::register_scripts
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -133,9 +133,9 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -167,8 +167,8 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 *
-	 * @uses Parsely\Parsely::api_key_is_set
-	 * @uses Parsely\Parsely::get_api_key
+	 * @uses Parsely\Parsely::site_id_is_set
+	 * @uses Parsely\Parsely::get_site_id
 	 * @uses Parsely\Parsely::get_options
 	 * @uses Parsely\Parsely::get_tracker_url
 	 * @uses Parsely\Scripts::__construct
@@ -195,8 +195,8 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 *
-	 * @uses Parsely\Parsely::api_key_is_set
-	 * @uses Parsely\Parsely::get_api_key
+	 * @uses Parsely\Parsely::site_id_is_set
+	 * @uses Parsely\Parsely::get_site_id
 	 * @uses Parsely\Parsely::get_options
 	 * @uses Parsely\Parsely::get_tracker_url
 	 * @uses Parsely\Scripts::__construct
@@ -226,10 +226,10 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -264,9 +264,9 @@ final class ScriptsTest extends TestCase {
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @covers \Parsely\Scripts::register_scripts
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -302,10 +302,10 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -325,7 +325,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
 
 		// The variable should be inlined before the script.
-		self::assertEquals( "window.wpParselyApiKey = 'blog.parsely.com';", $wp_scripts->registered['wp-parsely-loader']->extra['before'][1] );
+		self::assertEquals( "window.wpParselySiteID = 'blog.parsely.com';", $wp_scripts->registered['wp-parsely-loader']->extra['before'][1] );
 	}
 
 	/**
@@ -334,11 +334,11 @@ final class ScriptsTest extends TestCase {
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @covers \Parsely\Scripts::register_scripts
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::is_blog_member_logged_in
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group scripts
@@ -376,13 +376,13 @@ final class ScriptsTest extends TestCase {
 	 * @covers \Parsely\Scripts::__construct
 	 * @covers \Parsely\Scripts::register_scripts
 	 * @covers \Parsely\Scripts::script_loader_tag
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::is_blog_member_logged_in
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @group scripts
 	 * @group settings
@@ -401,7 +401,7 @@ final class ScriptsTest extends TestCase {
 		// These custom options will be used for both blogs.
 		$custom_options = array(
 			'track_authenticated_users' => false, // Don't track logged-in users.
-			'apikey'                    => 'blog.parsely.com',
+			'site_id'                   => 'blog.parsely.com',
 		);
 
 		// Only first admin is logged-in throughout the test.
@@ -457,12 +457,12 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Scripts::script_loader_tag
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @group scripts
 	 * @group scripts-output

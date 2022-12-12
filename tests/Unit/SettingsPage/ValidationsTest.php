@@ -46,16 +46,16 @@ final class SettingsValidationsTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that API key validation works as expected.
+	 * Verifies that Site ID validation works as expected.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @covers \Parsely\UI\Settings_Page::validate_api_key
+	 * @covers \Parsely\UI\Settings_Page::validate_site_id
 	 */
-	public function test_validate_api_keys(): void {
-		$validate_api_key = self::get_method( 'validate_api_key', Settings_Page::class );
+	public function test_validate_site_ids(): void {
+		$validate_site_id = self::get_method( 'validate_site_id', Settings_Page::class );
 
-		// Test valid API keys.
+		// Test valid site_ids.
 		$valid_values = array(
 			'test.com',
 			'www.test.com',
@@ -64,10 +64,10 @@ final class SettingsValidationsTest extends TestCase {
 			'subdomain.subdomain.test.com',
 		);
 		foreach ( $valid_values as $value ) {
-			self::assertTrue( $validate_api_key->invoke( self::$settings_page, $value ) );
+			self::assertTrue( $validate_site_id->invoke( self::$settings_page, $value ) );
 		}
 
-		// Test invalid API keys.
+		// Test invalid site_ids.
 		$invalid_values = array(
 			'test',
 			'test.',
@@ -79,7 +79,7 @@ final class SettingsValidationsTest extends TestCase {
 			'www.subdomain.subdomain.test.com', // Value cannot have more than 3 periods.
 		);
 		foreach ( $invalid_values as $value ) {
-			self::assertFalse( $validate_api_key->invoke( self::$settings_page, $value ) );
+			self::assertFalse( $validate_site_id->invoke( self::$settings_page, $value ) );
 		}
 	}
 }

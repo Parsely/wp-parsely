@@ -49,11 +49,11 @@ final class GraphQLMetadataTest extends TestCase {
 	 *
 	 * @covers \Parsely\Endpoints\GraphQL_Metadata::run
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_graphql_enqueued(): void {
-		self::set_options( array( 'apikey' => 'testkey' ) );
+		self::set_options( array( 'site_id' => 'testkey' ) );
 
 		self::$graphql->run();
 		self::assertEquals( 10, has_filter( 'graphql_register_types', array( self::$graphql, 'register_meta' ) ) );
@@ -68,7 +68,7 @@ final class GraphQLMetadataTest extends TestCase {
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
 	 */
 	public function test_graphql_enqueued_filter(): void {
-		self::set_options( array( 'apikey' => 'testkey' ) );
+		self::set_options( array( 'site_id' => 'testkey' ) );
 		add_filter( 'wp_parsely_enable_graphql_support', '__return_false' );
 
 		self::$graphql->run();
@@ -76,16 +76,16 @@ final class GraphQLMetadataTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that GraphQL types are not registered if there's no API key.
+	 * Verifies that GraphQL types are not registered if there's no Site ID.
 	 *
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Endpoints\GraphQL_Metadata::run
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
-	public function test_graphql_enqueued_no_api_key(): void {
+	public function test_graphql_enqueued_no_site_id(): void {
 		self::$graphql->run();
 		self::assertFalse( has_filter( 'graphql_register_types', array( self::$graphql, 'register_meta' ) ) );
 	}

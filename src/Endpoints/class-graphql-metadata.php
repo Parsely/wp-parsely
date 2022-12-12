@@ -37,7 +37,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 		 *
 		 * @param bool $enabled True if enabled, false if not.
 		 */
-		if ( apply_filters( 'wp_parsely_enable_graphql_support', true ) && $this->parsely->api_key_is_set() ) {
+		if ( apply_filters( 'wp_parsely_enable_graphql_support', true ) && $this->parsely->site_id_is_set() ) {
 			add_action( 'graphql_register_types', array( $this, 'register_meta' ) );
 		}
 	}

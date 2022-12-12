@@ -40,14 +40,14 @@ class Scripts {
 	 */
 	public function run(): void {
 		$parsely_options = $this->parsely->get_options();
-		if ( $this->parsely->api_key_is_set() && true !== $parsely_options['disable_javascript'] ) {
+		if ( $this->parsely->site_id_is_set() && true !== $parsely_options['disable_javascript'] ) {
 			add_action( 'init', array( $this, 'register_scripts' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_js_tracker' ) );
 		}
 	}
 
 	/**
-	 * Registers scripts, if there's an API key value saved.
+	 * Registers scripts, if there's an Site ID value saved.
 	 *
 	 * @since 2.5.0
 	 * @since 3.0.0 Rename from register_js
@@ -116,11 +116,11 @@ class Scripts {
 		wp_enqueue_script( 'wp-parsely-loader' );
 		wp_enqueue_script( 'wp-parsely-tracker' );
 
-		// If we don't have an API secret, there's no need to set the API key.
-		// Setting the API key triggers the UUID Profile Call function.
+		// If we don't have an API secret, there's no need to set the Site ID.
+		// Setting the Site ID triggers the UUID Profile Call function.
 		if ( isset( $parsely_options['api_secret'] ) && is_string( $parsely_options['api_secret'] ) && '' !== $parsely_options['api_secret'] ) {
-			$js_api_key = "window.wpParselyApiKey = '" . esc_js( $this->parsely->get_api_key() ) . "';";
-			wp_add_inline_script( 'wp-parsely-loader', $js_api_key, 'before' );
+			$js_site_id = "window.wpParselySiteID = '" . esc_js( $this->parsely->get_site_id() ) . "';";
+			wp_add_inline_script( 'wp-parsely-loader', $js_site_id, 'before' );
 		}
 
 		if ( isset( $parsely_options['disable_autotrack'] ) && true === $parsely_options['disable_autotrack'] ) {
@@ -169,7 +169,7 @@ class Scripts {
 			$tag = preg_replace( '/ id=(["\'])wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
 			$tag = str_replace(
 				' src=',
-				' data-parsely-site="' . esc_attr( $parsely_options['apikey'] ) . '" src=',
+				' data-parsely-site="' . esc_attr( $parsely_options['site_id'] ) . '" src=',
 				$tag
 			);
 		}

@@ -82,9 +82,9 @@ final class RowActionsTest extends TestCase {
 	 * @covers \Parsely\UI\Row_Actions::generate_link_to_parsely
 	 * @covers \Parsely\Dashboard_Link::generate_url
 	 * @uses \Parsely\Dashboard_Link::can_show_link
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -99,8 +99,8 @@ final class RowActionsTest extends TestCase {
 		// Existing actions is an array.
 		$existing_actions = array();
 
-		// Unset API key.
-		self::set_options( array( 'apikey' => '' ) );
+		// Unset Site ID.
+		self::set_options( array( 'site_id' => '' ) );
 
 		// Guard clause catches, and original $actions is returned.
 		$actions = self::$row_actions->row_actions_add_parsely_link( $existing_actions, $post );
@@ -118,9 +118,9 @@ final class RowActionsTest extends TestCase {
 	 * @covers \Parsely\UI\Row_Actions::generate_link_to_parsely
 	 * @covers \Parsely\Dashboard_Link::generate_url
 	 * @uses \Parsely\Dashboard_Link::can_show_link
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -135,8 +135,8 @@ final class RowActionsTest extends TestCase {
 		// Existing actions is an array.
 		$existing_actions = array();
 
-		// Set the API key.
-		self::set_options( array( 'apikey' => 'somekey' ) );
+		// Set the Site ID.
+		self::set_options( array( 'site_id' => 'somekey' ) );
 
 		// All conditions for the guard clause have been met.
 		$actions = self::$row_actions->row_actions_add_parsely_link( $existing_actions, $post );
