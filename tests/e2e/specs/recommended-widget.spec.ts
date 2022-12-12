@@ -39,8 +39,7 @@ const getNonActiveWidgetText = async () => {
 
 describe( 'Recommended widget', () => {
 	beforeAll( async () => {
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		page.on( 'dialog', async function( dialog: any ) {
+		page.on( 'dialog', async function( dialog ) {
 			await dialog.accept();
 		} );
 

@@ -99,7 +99,7 @@ export const insertRecordIntoTaxonomy = async ( recordName: string, taxonomyType
  * @param {number} timeout  Milliseconds to wait after category/tag selection.
  * @return {Promise<string>} The message returned by the Content Helper.
  */
-export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeout = 500 ): Promise<void> => {
+export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeout = 500 ): Promise<string> => {
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
@@ -147,7 +147,7 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
 		'document.querySelector("' + contentHelperMessage + '").innerText.length > 0',
 		{ polling: 'mutation', timeout: 5000 }
 	);
-	const text = await page.$eval( contentHelperMessage, ( element: HTMLElement ) => element.textContent );
+	const text = await page.$eval( contentHelperMessage, ( element: Element ): string => element.textContent || '' );
 
 	return text;
 };
@@ -175,15 +175,21 @@ export const selectScreenOptions = async ( sections: ScreenOptions ) => {
 	await page.waitForSelector( '#requires-recrawl' );
 
 	const recrawlInput = await page.$( '#requires-recrawl' );
-	const isRecrawlChecked = await ( await recrawlInput.getProperty( 'checked' ) ).jsonValue();
-	if ( ( sections.recrawl && ! isRecrawlChecked ) || ( ! sections.recrawl && isRecrawlChecked ) ) {
-		await recrawlInput.click();
+
+	if ( recrawlInput ) {
+		const isRecrawlChecked = await ( await recrawlInput.getProperty( 'checked' ) ).jsonValue();
+		if ( ( sections.recrawl && ! isRecrawlChecked ) || ( ! sections.recrawl && isRecrawlChecked ) ) {
+			await recrawlInput.click();
+		}
 	}
 
 	const advancedInput = await page.$( '#advanced' );
-	const isAdvancedChecked = await ( await advancedInput.getProperty( 'checked' ) ).jsonValue();
-	if ( ( sections.advanced && ! isAdvancedChecked ) || ( ! sections.advanced && isAdvancedChecked ) ) {
-		await advancedInput.click();
+
+	if ( advancedInput ) {
+		const isAdvancedChecked = await ( await advancedInput.getProperty( 'checked' ) ).jsonValue();
+		if ( ( sections.advanced && ! isAdvancedChecked ) || ( ! sections.advanced && isAdvancedChecked ) ) {
+			await advancedInput.click();
+		}
 	}
 
 	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'screen-options-apply\')]' );
@@ -223,8 +229,8 @@ export const startUpTest = async () => {
  * This function is meant to compare very simple arrays.Please don't use it to
  * compare arrays that contain objects, or that are complex or large.
  *
- * @param {Array<string>} array1
- * @param {Array<string>} array2
+ * @param {Array<string | null>} array1
+ * @param {Array<string | null>} array2
  * @return {boolean} Whether the passed arrays are equal.
  */
-export const arraysEqual = ( array1: string[], array2: string[] ) => JSON.stringify( array1 ) === JSON.stringify( array2 );
+export const arraysEqual = ( array1: ( string | null )[], array2: ( string | null )[] ) => JSON.stringify( array1 ) === JSON.stringify( array2 );

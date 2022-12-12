@@ -84,7 +84,7 @@ describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
 		// Ensure that the menu opens without crashing the Post Editor.
 		await toggleMoreMenu();
 		await page.waitForSelector( 'div.components-dropdown-menu__menu', { visible: true } );
-		const text = await page.$eval( 'div.components-dropdown-menu__menu', ( element: HTMLElement ) => element.textContent );
+		const text = await page.$eval( 'div.components-dropdown-menu__menu', ( element: Element ) => element.textContent );
 		expect( await text ).toMatch( 'Parse.ly' );
 	} );
 } );
@@ -115,11 +115,11 @@ async function testContentHelperIcon( siteId = '', apiSecret = '' ) {
 	await page.waitForSelector( 'div.wp-parsely-content-helper', { visible: true } );
 	const text = await page.$eval(
 		'div.wp-parsely-content-helper',
-		( element: HTMLElement ) => element.textContent
+		( element: Element ) => element.textContent
 	);
 
 	// Close the sidebar for the next test.
-	await toggleSidebarButton.click();
+	await toggleSidebarButton?.click();
 
 	return text;
 }

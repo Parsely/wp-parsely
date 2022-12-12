@@ -21,7 +21,7 @@ describe( 'Plugin action link', () => {
 		await expect( page ).toClick( '[data-slug=wp-parsely] .settings>a', { text: 'Settings' } );
 		await waitForWpAdmin();
 
-		const versionText = await page.$eval( '#wp-parsely_version', ( el: HTMLElement ) => el.innerText );
+		const versionText = await page.$eval( '#wp-parsely_version', ( el: Element ) => el.textContent );
 		expect( versionText ).toMatch( /^Version \d+.\d+/ );
 	} );
 } );

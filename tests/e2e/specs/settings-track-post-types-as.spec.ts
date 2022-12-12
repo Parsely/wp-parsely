@@ -73,19 +73,19 @@ describe( 'Track Post Types as', () => {
 		await saveSettingsAndHardRefresh();
 
 		// Verify that post is tracked as none.
-		expect( await page.$eval( radioPostAsPost, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioPostAsPage, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioPostAsNone, ( input: HTMLInputElement ) => input.checked ) ).toBeTruthy();
+		expect( await page.$eval( radioPostAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioPostAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioPostAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
 
 		// Verify that page is tracked as post
-		expect( await page.$eval( radioPageAsPost, ( input: HTMLInputElement ) => input.checked ) ).toBeTruthy();
-		expect( await page.$eval( radioPageAsPage, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioPageAsNone, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
+		expect( await page.$eval( radioPageAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
+		expect( await page.$eval( radioPageAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioPageAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
 
 		// Verify that attachment is tracked as page
-		expect( await page.$eval( radioAttachmentAsPost, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsPage, ( input: HTMLInputElement ) => input.checked ) ).toBeTruthy();
-		expect( await page.$eval( radioAttachmentAsNone, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
+		expect( await page.$eval( radioAttachmentAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioAttachmentAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
+		expect( await page.$eval( radioAttachmentAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
 	} );
 
 	/**
@@ -100,15 +100,15 @@ describe( 'Track Post Types as', () => {
 		await saveSettingsAndHardRefresh();
 
 		// Check that all selections are set to 'none'.
-		expect( await page.$eval( radioPostAsPost, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioPostAsPage, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioPostAsNone, ( input: HTMLInputElement ) => input.checked ) ).toBeTruthy();
-		expect( await page.$eval( radioPageAsPost, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioPageAsPage, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioPageAsNone, ( input: HTMLInputElement ) => input.checked ) ).toBeTruthy();
-		expect( await page.$eval( radioAttachmentAsPost, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsPage, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsNone, ( input: HTMLInputElement ) => input.checked ) ).toBeTruthy();
+		expect( await page.$eval( radioPostAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioPostAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioPostAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
+		expect( await page.$eval( radioPageAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioPageAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioPageAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
+		expect( await page.$eval( radioAttachmentAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioAttachmentAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioAttachmentAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
 	} );
 
 	/**
@@ -139,14 +139,14 @@ describe( 'Track Post Types as', () => {
 		await saveSettingsAndHardRefresh();
 
 		// The above keys should set the default options. Verify that this is the case.
-		expect( await page.$eval( radioPostAsPost, ( input: HTMLInputElement ) => input.checked ) ).toBeTruthy();
-		expect( await page.$eval( radioPostAsPage, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioPostAsNone, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioPageAsPost, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioPageAsPage, ( input: HTMLInputElement ) => input.checked ) ).toBeTruthy();
-		expect( await page.$eval( radioPageAsNone, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsPost, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsPage, ( input: HTMLInputElement ) => input.checked ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsNone, ( input: HTMLInputElement ) => input.checked ) ).toBeTruthy();
+		expect( await page.$eval( radioPostAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
+		expect( await page.$eval( radioPostAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioPostAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioPageAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioPageAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
+		expect( await page.$eval( radioPageAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioAttachmentAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioAttachmentAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		expect( await page.$eval( radioAttachmentAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
 	} );
 } );

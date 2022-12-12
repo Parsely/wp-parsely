@@ -23,12 +23,12 @@ describe( 'Activation flow', (): void => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await waitForWpAdmin();
 
-		const versionText: string = await page.$eval( '#wp-parsely_version', ( el : HTMLElement ) => el.innerText );
+		const versionText: string = await page.$eval( '#wp-parsely_version', ( el : Element ) => el.textContent || '' );
 		expect( versionText ).toMatch( /^Version \d+.\d+/ );
 
-		const errorData = await page.$eval( '#wp-parsely-apikey-error-notice', ( el: HTMLElement ) => ( {
+		const errorData = await page.$eval( '#wp-parsely-apikey-error-notice', ( el: Element ) => ( {
 			classes: el.classList.value,
-			message: el.innerText,
+			message: el.textContent,
 		} ) );
 
 		expect( errorData.classes ).toBe( 'notice notice-error' );

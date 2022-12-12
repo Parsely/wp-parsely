@@ -46,8 +46,7 @@ describe( 'Browse for logo button', () => {
 
 		// Confirm image deletion.
 		// Note: Dialog handling must be placed before the click event.
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		await page.on( 'dialog', async ( dialog: any ) => {
+		page.on( 'dialog', async ( dialog ) => {
 			await dialog.accept();
 		} );
 		await page.click( modalDeleteAttachmentLink );
@@ -71,14 +70,13 @@ describe( 'Browse for logo button', () => {
 	it( 'Should set the file path when a new image is uploaded and confirmed', async () => {
 		// Upload an image file and confirm the dialog.
 		const fileInput = await page.$( modalFileUploadInput );
-		await fileInput.uploadFile( imageLocalPath );
+		await fileInput?.uploadFile( imageLocalPath );
 		await page.waitForTimeout( 500 );
 		await page.click( modalConfirmButton );
 
 		// Verify that the image path has been updated.
 		await page.waitForTimeout( 500 );
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const filePath = await page.evaluate( ( element: any ) => element.value, await page.$( filePathInput ) );
+		const filePath = await page.evaluate( ( element ) => element.value, await page.$( filePathInput ) );
 		expect( filePath ).toMatch( uploadedImagePattern );
 	} );
 
@@ -93,7 +91,7 @@ describe( 'Browse for logo button', () => {
 
 		// Verify that the image path has been updated.
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const filePath = await page.$eval( filePathInput, ( input: any ) => input.value );
+		const filePath = await page.$eval( filePathInput, ( input: any ) => input.getAttribute( 'value' ) );
 		expect( filePath ).toMatch( uploadedImagePattern );
 	} );
 
@@ -108,7 +106,7 @@ describe( 'Browse for logo button', () => {
 
 		// Verify that the image path is empty.
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const filePath = await page.$eval( filePathInput, ( input: any ) => input.value );
+		const filePath = await page.$eval( filePathInput, ( input: any ) => input.getAttribute( 'value' ) );
 		expect( filePath ).toMatch( '' );
 	} );
 } );

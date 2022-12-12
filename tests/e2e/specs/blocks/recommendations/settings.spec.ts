@@ -90,10 +90,10 @@ describe( 'Recommendations Block', () => {
 /**
  * Returns the Block's title text.
  *
- * @return {Promise<string>} The Block's title text.
+ * @return {Promise<string | null>} The Block's title text.
  */
-async function getTitleText(): Promise<string> {
-	return page.$eval( '.parsely-recommendations-list-title', ( element: HTMLElement ) => element.textContent );
+async function getTitleText(): Promise<string | null> {
+	return page.$eval( '.parsely-recommendations-list-title', ( element: Element ) => element.textContent );
 }
 
 /**
@@ -102,7 +102,7 @@ async function getTitleText(): Promise<string> {
  * @return {Promise<number>} The number of results displayed within the Block.
  */
 async function getResultCount(): Promise<number> {
-	return page.$$eval( '.parsely-recommendations-list > li', ( element: HTMLElement[] ) => element.length );
+	return page.$$eval( '.parsely-recommendations-list > li', ( element: Element[] ) => element.length );
 }
 
 /**
@@ -117,10 +117,10 @@ async function resultsContainImage(): Promise<boolean> {
 /**
  * Returns the "src" attribute of all images contained within the Block.
  *
- * @return {Promise<Array<string>>} The "src" attribute of all images contained within the Block.
+ * @return {Promise<Array<string | null>>} The "src" attribute of all images contained within the Block.
  */
-async function getResultImageUrls(): Promise<string[]> {
-	return page.$$eval( '.parsely-recommendations-image', ( imgs: HTMLElement[] ) => imgs.map( ( img: HTMLElement ) => img.getAttribute( 'src' ) ) );
+async function getResultImageUrls(): Promise<( string | null )[]> {
+	return page.$$eval( '.parsely-recommendations-image', ( imgs: Element[] ) => imgs.map( ( img: Element ) => img.getAttribute( 'src' ) ) );
 }
 
 /**
@@ -129,7 +129,7 @@ async function getResultImageUrls(): Promise<string[]> {
  * @return {Promise<Array<string, string>>} The "target" and "rel" attributes of all links contained within the Block.
  */
 async function getLinkTargets(): Promise<string[][]> {
-	return page.$$eval( '.parsely-recommendations-link', ( links: HTMLElement[] ) => links.map(
-		( link: HTMLElement ): string[] => [ link.getAttribute( 'target' ) as string, link.getAttribute( 'rel' ) as string ] )
+	return page.$$eval( '.parsely-recommendations-link', ( links: Element[] ) => links.map(
+		( link: Element ): string[] => [ link.getAttribute( 'target' ) as string, link.getAttribute( 'rel' ) as string ] )
 	);
 }
