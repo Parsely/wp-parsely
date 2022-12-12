@@ -47,8 +47,8 @@ function constructUrl( apiUrl: string, permalink: string, personalized: boolean 
 }
 
 function constructWidget( widget: Element ): WidgetOptions {
-	const apiUrl = widget.getAttribute( 'data-parsely-widget-api-url' ) as string;
-	const permalink = widget.getAttribute( 'data-parsely-widget-permalink' ) as string;
+	const apiUrl = widget.getAttribute( 'data-parsely-widget-api-url' ) || '';
+	const permalink = widget.getAttribute( 'data-parsely-widget-permalink' ) || '';
 	const personalized = widget.getAttribute( 'data-parsely-widget-personalized' ) === 'true';
 	const url = constructUrl( apiUrl, permalink, personalized );
 

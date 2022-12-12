@@ -1,8 +1,7 @@
 document.querySelector( '.media-single-image button.browse' )?.addEventListener( 'click', selectImage );
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function selectImage( this: any ) {
-	const optionName = this.dataset.option;
+function selectImage( event: Event ) {
+	const optionName = ( event.target as HTMLButtonElement ).dataset.option;
 
 	const imageFrame = window.wp.media( {
 		multiple: false,

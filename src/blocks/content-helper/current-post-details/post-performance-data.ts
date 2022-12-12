@@ -30,5 +30,5 @@ export interface PostPerformanceReferrerData {
 
 export interface PostPerformanceError {
 	code: string;
-	message :string;
+	message: string;
 }

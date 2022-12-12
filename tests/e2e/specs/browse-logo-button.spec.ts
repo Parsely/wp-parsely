@@ -91,7 +91,7 @@ describe( 'Browse for logo button', () => {
 
 		// Verify that the image path has been updated.
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const filePath = await page.$eval( filePathInput, ( input: any ) => input.getAttribute( 'value' ) );
+		const filePath = await page.$eval( filePathInput, ( input: any ) => input.value );
 		expect( filePath ).toMatch( uploadedImagePattern );
 	} );
 
@@ -106,7 +106,7 @@ describe( 'Browse for logo button', () => {
 
 		// Verify that the image path is empty.
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const filePath = await page.$eval( filePathInput, ( input: any ) => input.getAttribute( 'value' ) );
+		const filePath = await page.$eval( filePathInput, ( input: any ) => input.value );
 		expect( filePath ).toMatch( '' );
 	} );
 } );

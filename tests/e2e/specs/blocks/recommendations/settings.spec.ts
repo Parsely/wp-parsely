@@ -130,6 +130,6 @@ async function getResultImageUrls(): Promise<( string | null )[]> {
  */
 async function getLinkTargets(): Promise<string[][]> {
 	return page.$$eval( '.parsely-recommendations-link', ( links: Element[] ) => links.map(
-		( link: Element ): string[] => [ link.getAttribute( 'target' ) as string, link.getAttribute( 'rel' ) as string ] )
+		( link: Element ): string[] => [ link.getAttribute( 'target' ) || '', link.getAttribute( 'rel' ) || '' ] )
 	);
 }

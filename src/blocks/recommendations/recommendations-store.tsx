@@ -11,11 +11,10 @@ import { Recommendation } from './models/Recommendation';
 
 interface RecommendationState {
 	isLoaded: boolean;
-	recommendations: Recommendation[] | undefined;
+	recommendations: Recommendation[];
 	uuid: string | null;
 	clientId: string | null;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	error: any;
+	error: Error | null;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,13 +24,13 @@ const RecommendationsContext = createContext( {} as any );
 const reducer = ( state: RecommendationState, action: any ): RecommendationState => {
 	switch ( action.type ) {
 		case RecommendationsAction.Error:
-			return { ...state, isLoaded: true, error: action.error, recommendations: undefined };
+			return { ...state, isLoaded: true, error: action.error, recommendations: [] };
 		case RecommendationsAction.Loaded:
 			return { ...state, isLoaded: true };
 		case RecommendationsAction.Recommendations: {
 			const { recommendations } = action;
 			if ( ! Array.isArray( recommendations ) ) {
-				return { ...state, recommendations: undefined };
+				return { ...state, recommendations: [] };
 			}
 			const validRecommendations = recommendations.map(
 				// eslint-disable-next-line camelcase
@@ -42,7 +41,7 @@ const reducer = ( state: RecommendationState, action: any ): RecommendationState
 					thumb_url_medium, // eslint-disable-line camelcase
 				} )
 			);
-			return { ...state, isLoaded: true, error: undefined, recommendations: validRecommendations };
+			return { ...state, isLoaded: true, error: null, recommendations: validRecommendations };
 		}
 		default:
 			return { ...state };
@@ -51,13 +50,13 @@ const reducer = ( state: RecommendationState, action: any ): RecommendationState
 
 interface RecommendationStore {
 	clientId?: string;
-	children: JSX.Element | JSX.Element[];
+	children: React.ReactNode;
 }
 
 const RecommendationsStore = ( props: RecommendationStore ) => {
 	const defaultState: RecommendationState = {
 		isLoaded: false,
-		recommendations: undefined,
+		recommendations: [],
 		uuid: window.PARSELY?.config?.uuid || null,
 		clientId: props?.clientId || null,
 		error: null,
