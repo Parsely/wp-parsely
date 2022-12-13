@@ -359,7 +359,11 @@ class Parsely {
 			return $this->option_defaults;
 		}
 
-		// Deprecates the usage of `apikey` option and replace it with `site_id'.
+		/**
+		 * Makes the usage of `apikey` backward compatible while replacing it with `site_id`.
+		 *
+		 * @since 3.7.0.
+		 */
 		if ( isset( $options['apikey'] ) ) {
 			$options['site_id'] = $options['apikey'];
 			unset( $options['apikey'] );

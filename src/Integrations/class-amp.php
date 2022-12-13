@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace Parsely\Integrations;
 
-use Parsely\Parsely;
-
 /**
  * Integrates Parse.ly tracking with the AMP plugin.
  *
@@ -161,7 +159,7 @@ class Amp extends Integration {
 	public static function construct_amp_config(): array {
 		$options = self::$parsely->get_options();
 
-		if ( isset( $options['site_id'] ) && is_string( $options['site_id'] ) && '' !== $options['site_id'] ) {
+		if ( self::$parsely->site_id_is_set() ) {
 			return array(
 				'vars' => array(
 					// This field will be rendered in a JS context.
