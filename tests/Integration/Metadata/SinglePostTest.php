@@ -14,6 +14,10 @@ use Parsely\Tests\Integration\TestCase;
 
 use Parsely\Parsely;
 
+const TEST_CATEGORY_1        = 'Test Category 1';
+const POST_DATETIME          = '2021-12-30 20:11:42';
+const EXPECTED_POST_DATETIME = '2021-12-30T20:11:42Z';
+
 /**
  * Integration Tests for Single Post pages metadata.
  *
@@ -121,7 +125,7 @@ final class SinglePostTest extends TestCase {
 		$parsely = new Parsely();
 
 		// Insert a single category term, and a Post with that category.
-		$category = self::factory()->category->create( array( 'name' => 'Test Category' ) );
+		$category = self::factory()->category->create( array( 'name' => TEST_CATEGORY_1 ) );
 		$post_id  = self::factory()->post->create( array( 'post_category' => array( $category ) ) );
 		$post     = get_post( $post_id );
 
@@ -134,7 +138,7 @@ final class SinglePostTest extends TestCase {
 
 		// The category in the structured data should match the category of the
 		// post.
-		self::assertSame( 'Test Category', $structured_data['articleSection'] );
+		self::assertSame( TEST_CATEGORY_1, $structured_data['articleSection'] );
 	}
 
 	/**
@@ -246,7 +250,7 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Create 3 categories and a single post with those categories.
-		$cat1    = self::factory()->category->create( array( 'name' => 'Test Category' ) );
+		$cat1    = self::factory()->category->create( array( 'name' => TEST_CATEGORY_1 ) );
 		$cat2    = self::factory()->category->create( array( 'name' => 'Test Category 2' ) );
 		$cat3    = self::factory()->category->create( array( 'name' => 'Test Category 3' ) );
 		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat1, $cat2, $cat3 ) ) );
@@ -260,7 +264,7 @@ final class SinglePostTest extends TestCase {
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain all three categories as keywords.
-		self::assertContains( 'Test Category', $structured_data['keywords'] );
+		self::assertContains( TEST_CATEGORY_1, $structured_data['keywords'] );
 		self::assertContains( 'Test Category 2', $structured_data['keywords'] );
 		self::assertContains( 'Test Category 3', $structured_data['keywords'] );
 	}
@@ -743,7 +747,7 @@ final class SinglePostTest extends TestCase {
 		$post    = get_post( $post_id );
 
 		// Annotate it with the timestamps to test against.
-		$singular_datetime       = '2021-12-30 20:11:42';
+		$singular_datetime       = POST_DATETIME;
 		$post->post_date         = $singular_datetime;
 		$post->post_date_gmt     = $singular_datetime;
 		$post->post_modified     = $singular_datetime;
@@ -758,7 +762,7 @@ final class SinglePostTest extends TestCase {
 
 		// Identical post creation and modified dates should be present in the
 		// metadata.
-		$expected_singular_datetime = '2021-12-30T20:11:42Z';
+		$expected_singular_datetime = EXPECTED_POST_DATETIME;
 
 		self::assertSame( $expected_singular_datetime, $structured_data['dateCreated'] );
 		self::assertSame( $expected_singular_datetime, $structured_data['datePublished'] );
@@ -807,7 +811,7 @@ final class SinglePostTest extends TestCase {
 
 		// Annotate it with the timestamps to test against.
 		$modified_datetime       = '2021-12-30 20:11:41';
-		$created_datetime        = '2021-12-30 20:11:42';
+		$created_datetime        = POST_DATETIME;
 		$post->post_date         = $created_datetime;
 		$post->post_date_gmt     = $created_datetime;
 		$post->post_modified     = $modified_datetime;
@@ -821,7 +825,7 @@ final class SinglePostTest extends TestCase {
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// Modified dates earlier than created dates should be "promoted" to the latter.
-		$expected_singular_datetime = '2021-12-30T20:11:42Z';
+		$expected_singular_datetime = EXPECTED_POST_DATETIME;
 
 		self::assertSame( $expected_singular_datetime, $structured_data['dateCreated'] );
 		self::assertSame( $expected_singular_datetime, $structured_data['datePublished'] );
@@ -869,7 +873,7 @@ final class SinglePostTest extends TestCase {
 		$post    = get_post( $post_id );
 
 		// Annotate it with the timestamps to test against.
-		$created_datetime        = '2021-12-30 20:11:42';
+		$created_datetime        = POST_DATETIME;
 		$modified_datetime       = '2021-12-30 20:11:43';
 		$post->post_date         = $created_datetime;
 		$post->post_date_gmt     = $created_datetime;
@@ -885,7 +889,7 @@ final class SinglePostTest extends TestCase {
 
 		// Modified dates later than created dates should be present in the
 		// metadata.
-		$expected_created_datetime  = '2021-12-30T20:11:42Z';
+		$expected_created_datetime  = EXPECTED_POST_DATETIME;
 		$expected_modified_datetime = '2021-12-30T20:11:43Z';
 
 		self::assertSame( $expected_created_datetime, $structured_data['dateCreated'] );

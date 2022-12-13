@@ -13,6 +13,8 @@ use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Settings_Page;
 
+const PARSELY_SETTINGS_URL = 'http://example.org/wp-admin/options-general.php?page=parsely';
+
 /**
  * Integration Tests for the plugin's wp-admin Settings page.
  *
@@ -194,13 +196,13 @@ final class SettingsPageTest extends TestCase {
 	 */
 	public function test_get_settings_url_with_and_without_blog_id(): void {
 		self::assertSame(
-			'http://example.org/wp-admin/options-general.php?page=parsely',
+			PARSELY_SETTINGS_URL,
 			self::$parsely->get_settings_url(),
 			'The URL did not match the expected value without a $blog_id param.'
 		);
 
 		self::assertSame(
-			'http://example.org/wp-admin/options-general.php?page=parsely',
+			PARSELY_SETTINGS_URL,
 			self::$parsely->get_settings_url( get_current_blog_id() ),
 			'The URL did not match the expected value with a $blog_id param.'
 		);
@@ -232,7 +234,7 @@ final class SettingsPageTest extends TestCase {
 		restore_current_blog();
 
 		self::assertSame(
-			'http://example.org/wp-admin/options-general.php?page=parsely',
+			PARSELY_SETTINGS_URL,
 			self::$parsely->get_settings_url(),
 			'The URL did not match the expected value for the main site with no $blog_id param after switching back.'
 		);

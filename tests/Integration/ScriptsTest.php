@@ -14,8 +14,6 @@ use Parsely\Scripts;
 use PHPUnit\Framework\RiskyTestError;
 use WP_Scripts;
 
-use const Parsely\PARSELY_FILE;
-
 /**
  * Integration Tests for the plugin's scripts.
  */
