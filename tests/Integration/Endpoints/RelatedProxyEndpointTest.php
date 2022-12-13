@@ -83,7 +83,7 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
-	public function test_get_items_fails_without_apikey_set() {
+	public function test_get_items_fails_when_apikey_is_not_set() {
 		parent::test_get_items_fails_without_apikey_set();
 	}
 

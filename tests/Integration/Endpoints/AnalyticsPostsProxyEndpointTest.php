@@ -84,7 +84,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::get_data
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 */
-	public function test_get_items_fails_without_apikey_set() {
+	public function test_get_items_fails_when_apikey_is_not_set() {
 		parent::test_get_items_fails_without_apikey_set();
 	}
 
