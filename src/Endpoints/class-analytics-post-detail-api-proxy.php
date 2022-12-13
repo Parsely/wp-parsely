@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Endpoints;
 
+use Parsely\Parsely;
 use stdClass;
 use WP_REST_Request;
 
@@ -41,9 +42,9 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @return array<stdClass> The generated data.
 	 */
 	protected function generate_data( array $response ): array {
-		$stats_base_url = trailingslashit( 'https://dash.parsely.com/' . $this->parsely->get_api_key() ) . 'find';
+		$stats_base_url = trailingslashit( Parsely::DASHBOARD_BASE_URL . '/' . $this->parsely->get_api_key() ) . 'find';
 
-		$result = array_map(
+		return array_map(
 			static function( stdClass $item ) use ( $stats_base_url ) {
 				return (object) array(
 					'avgEngaged' => self::get_duration( (float) $item->avg_engaged ),
@@ -55,8 +56,6 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 			},
 			$response
 		);
-
-		return $result;
 	}
 
 	/**

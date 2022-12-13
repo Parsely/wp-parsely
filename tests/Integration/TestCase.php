@@ -163,9 +163,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 */
 	public function create_test_post( string $post_status = 'publish' ): int {
 		$post_data = $this->create_test_post_array( 'post', $post_status );
-		$post_id   = self::factory()->post->create( $post_data );
 
-		return $post_id;
+		return self::factory()->post->create( $post_data );
 	}
 
 	/**

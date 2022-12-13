@@ -41,7 +41,7 @@ final class Related_API_Proxy extends Base_API_Proxy {
 	 * @return array<stdClass> The generated data.
 	 */
 	protected function generate_data( array $response ): array {
-		$result = array_map(
+		return array_map(
 			static function( stdClass $item ) {
 				return (object) array(
 					'image_url'        => $item->image_url,
@@ -52,8 +52,6 @@ final class Related_API_Proxy extends Base_API_Proxy {
 			},
 			$response
 		);
-
-		return $result;
 	}
 
 	/**
