@@ -84,22 +84,22 @@ final class Settings_Page {
 			add_filter( 'media_library_months_with_files', '__return_empty_array' );
 			wp_enqueue_media();
 
-			$admin_settings_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
+			$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
 			$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
 
 			wp_enqueue_script(
 				'parsely-admin-settings',
 				$built_assets_url . 'admin-settings.js',
-				$admin_settings_asset['dependencies'],
-				$admin_settings_asset['version'],
+				$admin_settings_asset['dependencies'] ?? null,
+				$admin_settings_asset['version'] ?? Parsely::VERSION,
 				true
 			);
 
 			wp_enqueue_style(
 				'parsely-admin-settings',
 				$built_assets_url . 'admin-settings.css',
-				$admin_settings_asset['dependencies'],
-				$admin_settings_asset['version']
+				$admin_settings_asset['dependencies'] ?? null,
+				$admin_settings_asset['version'] ?? Parsely::VERSION
 			);
 		}
 	}
@@ -262,7 +262,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
 
-		include plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings.php';
+		include_once plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings.php';
 	}
 
 	/**

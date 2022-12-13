@@ -61,12 +61,12 @@ class Scripts {
 			true
 		);
 
-		$loader_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/loader.asset.php';
+		$loader_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/loader.asset.php';
 		wp_register_script(
 			'wp-parsely-loader',
 			plugin_dir_url( PARSELY_FILE ) . 'build/loader.js',
-			$loader_asset['dependencies'],
-			$loader_asset['version'],
+			$loader_asset['dependencies'] ?? null,
+			$loader_asset['version'] ?? Parsely::VERSION,
 			true
 		);
 	}
