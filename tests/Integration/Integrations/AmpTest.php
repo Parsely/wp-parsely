@@ -131,7 +131,7 @@ final class AmpTest extends TestCase {
 		$output = $amp->register_parsely_for_amp_analytics( $analytics );
 
 		self::assertSame( 'parsely', $output['parsely']['type'] );
-		self::assertSame( 'my-site-id.com', $output['parsely']['config_data']['vars']['site_id'] );
+		self::assertSame( 'my-site-id.com', $output['parsely']['config_data']['vars']['apikey'] );
 	}
 
 	/**

@@ -152,6 +152,7 @@ class Amp extends Integration {
 	 * consists of the site's Site ID if that's defined, or an empty array
 	 * otherwise.
 	 *
+	 * @link https://docs.parse.ly/google-amp/
 	 * @since 3.2.0
 	 *
 	 * @return array<string, array<string, string>>
@@ -163,7 +164,7 @@ class Amp extends Integration {
 			return array(
 				'vars' => array(
 					// This field will be rendered in a JS context.
-					'site_id' => esc_js( $options['site_id'] ),
+					'apikey' => esc_js( $options['site_id'] ),
 				),
 			);
 		}
