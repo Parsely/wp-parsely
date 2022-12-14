@@ -39,7 +39,7 @@
 			}
 		],
 		"@typescript-eslint/ban-ts-comment": "off",
-		// Enabling ts and rule and disabling base rule as it can report incorrect errors.
+		// Enabling TS rule and disabling Base rule as it can report incorrect errors.
 		"no-shadow": "off",
 		"@typescript-eslint/no-shadow": ["error"]
 	}
