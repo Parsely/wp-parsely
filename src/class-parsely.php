@@ -100,7 +100,7 @@ class Parsely {
 		if ( empty( $options['plugin_version'] ) || self::VERSION !== $options['plugin_version'] ) {
 			$method = 'upgrade_plugin_to_version_' . str_replace( '.', '_', self::VERSION );
 			if ( method_exists( $this, $method ) ) {
-				call_user_func_array( array( $this, $method ), array( $options ) );
+				$options = call_user_func_array( array( $this, $method ), array( $options ) );
 			}
 			// Update our version info.
 			$options['plugin_version'] = self::VERSION;
@@ -111,6 +111,7 @@ class Parsely {
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
+		add_filter( 'pre_update_option_' . self::OPTIONS_KEY, array( $this, 'pre_update_parsely_options' ) );
 	}
 
 	/**
@@ -360,13 +361,13 @@ class Parsely {
 		}
 
 		/**
-		 * Makes the usage of `apikey` backward compatible while replacing it with `site_id`.
+		 * Makes option `site_id` compatible with `apikey`.
 		 *
-		 * @since 3.7.0.
+		 * @since 3.7.0
+		 * @todo Should be removed after 4.0.0 upgrade
 		 */
 		if ( isset( $options['apikey'] ) ) {
 			$options['site_id'] = $options['apikey'];
-			unset( $options['apikey'] );
 		}
 
 		return array_merge( $this->option_defaults, $options );
@@ -487,5 +488,22 @@ class Parsely {
 		$options = $this->get_options();
 
 		return $this->api_secret_is_set() ? $options['api_secret'] : '';
+	}
+
+	/**
+	 * Callback which called before updating parsely options
+	 *
+	 * @param mixed $options   The value of the option now that it's been updated.
+	 */
+	public function pre_update_parsely_options( $options ) {
+		/**
+		 * Makes option `apikey` backward compatible.
+		 *
+		 * @since 3.7.0
+		 * @todo Should unset `apikey` after 4.0.0 upgrade to clean the DB.
+		 */
+		$options['apikey'] = $options['site_id'];
+
+		return $options;
 	}
 }
