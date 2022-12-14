@@ -13,6 +13,7 @@ import '@testing-library/jest-dom';
  */
 import RelatedTopPostList from '../../../../src/blocks/content-helper/components/related-top-post-list';
 import ContentHelperProvider, { RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/content-helper-provider';
+import { AD_BLOCKER_HINT } from '../../../../src/blocks/shared/components/error-hint';
 import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
 
 describe( 'Content Helper', () => {
@@ -50,21 +51,24 @@ describe( 'Content Helper', () => {
 
 	test( 'should show error message when API returns the error', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
-			message: 'fake error from API',
+			message: 'Fake error from API.',
 		} ) );
 
-		render( <RelatedTopPostList /> );
-		expect( getSpinner() ).toBeInTheDocument();
+		expect( await verifyApiErrorMessage( getRelatedTopPostsFn ) ).toBeTruthy();
+	} );
 
-		await waitFor( () => screen.findByTestId( 'api-error' ), { timeout: 3000 } );
+	test( 'should show error message and hint when API fetch is failed', async () => {
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
+			code: 'fetch_error',
+			message: 'Fake error from API.',
+		} ) );
 
-		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
+		expect( await verifyApiErrorMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 
-		const apiError = screen.queryByTestId( 'api-error' );
-		expect( apiError ).toBeInTheDocument();
-		expect( apiError ).toBeVisible();
-		expect( apiError.textContent ).toEqual( 'Error: fake error from API' );
+		const apiErrorHint = screen.queryByTestId( 'parsely-error-hint' );
+		expect( apiErrorHint ).toBeInTheDocument();
+		expect( apiErrorHint ).toBeVisible();
+		expect( apiErrorHint.textContent ).toEqual( `Hint: ${ AD_BLOCKER_HINT }` );
 	} );
 
 	test( 'should show error message when WordPress REST API returns the error', async () => {
@@ -211,6 +215,23 @@ describe( 'Content Helper', () => {
 		const contactUsMessage = getContactUsMessage();
 		expect( contactUsMessage ).toBeInTheDocument();
 		expect( contactUsMessage ).toBeVisible();
+
+		return true;
+	}
+
+	async function verifyApiErrorMessage( getRelatedTopPostsFn ) {
+		render( <RelatedTopPostList /> );
+		expect( getSpinner() ).toBeInTheDocument();
+
+		await waitFor( () => screen.findByTestId( 'api-error' ), { timeout: 3000 } );
+
+		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
+		expect( getSpinner() ).toBeNull();
+
+		const apiError = screen.queryByTestId( 'api-error' );
+		expect( apiError ).toBeInTheDocument();
+		expect( apiError ).toBeVisible();
+		expect( apiError.textContent ).toEqual( `Error: Fake error from API.` );
 
 		return true;
 	}
