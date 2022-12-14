@@ -98,10 +98,8 @@ class Post_Builder extends Metadata_Builder {
 		 *
 		 * @since 2.5.0
 		 */
-		$type = (string) apply_filters( 'wp_parsely_post_type', 'NewsArticle', $this->post->ID, $this->post->post_type );
-
-		// TODO: Merge only once, not every execution.
-		$supported_types = array_merge( Parsely::SUPPORTED_JSONLD_POST_TYPES, Parsely::SUPPORTED_JSONLD_NON_POST_TYPES );
+		$type            = (string) apply_filters( 'wp_parsely_post_type', 'NewsArticle', $this->post->ID, $this->post->post_type );
+		$supported_types = $this->parsely->get_all_supported_types();
 
 		// Validate type before passing it further as an invalid type will not be recognized by Parse.ly.
 		if ( ! in_array( $type, $supported_types, true ) ) {
