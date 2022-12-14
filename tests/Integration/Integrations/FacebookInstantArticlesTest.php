@@ -81,7 +81,7 @@ final class FacebookInstantArticlesTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that the integration is active only if an Site ID is set.
+	 * Verifies that the integration is active only if a Site ID is set.
 	 *
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::insert_parsely_tracking
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::get_embed_code

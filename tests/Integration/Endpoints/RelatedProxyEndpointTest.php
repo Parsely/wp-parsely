@@ -69,7 +69,7 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 
 	/**
 	 * Verifies that calling `GET /wp-parsely/v1/related` returns an error and
-	 * does not perform a remote call when the site_id is not populated
+	 * does not perform a remote call when the Site ID is not populated
 	 * in site options.
 	 *
 	 * @covers \Parsely\Endpoints\Related_API_Proxy::get_items

@@ -325,7 +325,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
 
 		// The variable should be inlined before the script.
-		self::assertEquals( "window.wpParselySiteID = 'blog.parsely.com';", $wp_scripts->registered['wp-parsely-loader']->extra['before'][1] );
+		self::assertEquals( "window.wpParselySiteId = 'blog.parsely.com';", $wp_scripts->registered['wp-parsely-loader']->extra['before'][1] );
 	}
 
 	/**

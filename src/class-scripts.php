@@ -47,7 +47,7 @@ class Scripts {
 	}
 
 	/**
-	 * Registers scripts, if there's an Site ID value saved.
+	 * Registers scripts, if there's a Site ID value saved.
 	 *
 	 * @since 2.5.0
 	 * @since 3.0.0 Rename from register_js
@@ -119,7 +119,7 @@ class Scripts {
 		// If we don't have an API secret, there's no need to set the Site ID.
 		// Setting the Site ID triggers the UUID Profile Call function.
 		if ( isset( $parsely_options['api_secret'] ) && is_string( $parsely_options['api_secret'] ) && '' !== $parsely_options['api_secret'] ) {
-			$js_site_id = "window.wpParselySiteID = '" . esc_js( $this->parsely->get_site_id() ) . "';";
+			$js_site_id = "window.wpParselySiteId = '" . esc_js( $this->parsely->get_site_id() ) . "';";
 			wp_add_inline_script( 'wp-parsely-loader', $js_site_id, 'before' );
 		}
 

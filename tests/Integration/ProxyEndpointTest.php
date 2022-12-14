@@ -133,7 +133,7 @@ abstract class ProxyEndpointTest extends TestCase {
 
 	/**
 	 * Verifies that calls return an error and do not perform a remote call when
-	 * the site_id is not populated in site options.
+	 * the Site ID is not populated in site options.
 	 */
 	public function test_get_items_fails_without_site_id_set() {
 		TestCase::set_options( array( 'site_id' => '' ) );

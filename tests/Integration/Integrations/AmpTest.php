@@ -122,7 +122,7 @@ final class AmpTest extends TestCase {
 		$amp       = new Amp( self::$parsely );
 		$analytics = array();
 
-		// If site_id is empty, $analytics are returned.
+		// If Site ID is empty, $analytics are returned.
 		self::assertSame( $analytics, $amp->register_parsely_for_amp_analytics( $analytics ) );
 
 		// Now set the key and test for changes.
@@ -149,7 +149,7 @@ final class AmpTest extends TestCase {
 		$amp       = new Amp( self::$parsely );
 		$analytics = array();
 
-		// If site_id is empty, $analytics are returned.
+		// If Site ID is empty, $analytics are returned.
 		self::assertSame( $analytics, $amp->register_parsely_for_amp_native_analytics( $analytics ) );
 
 		// Check with AMP marked as disabled.

@@ -55,7 +55,7 @@ final class SettingsValidationsTest extends TestCase {
 	public function test_validate_site_ids(): void {
 		$validate_site_id = self::get_method( 'validate_site_id', Settings_Page::class );
 
-		// Test valid site_ids.
+		// Test valid Site IDs.
 		$valid_values = array(
 			'test.com',
 			'www.test.com',
@@ -67,7 +67,7 @@ final class SettingsValidationsTest extends TestCase {
 			self::assertTrue( $validate_site_id->invoke( self::$settings_page, $value ) );
 		}
 
-		// Test invalid site_ids.
+		// Test invalid Site IDs.
 		$invalid_values = array(
 			'test',
 			'test.',
