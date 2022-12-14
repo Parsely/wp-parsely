@@ -149,10 +149,7 @@ abstract class Base_API_Proxy {
 		$response = $this->proxy->get_items( $params );
 
 		if ( is_wp_error( $response ) ) {
-			return (object) array(
-				'data'  => array(),
-				'error' => $response,
-			);
+			return $response;
 		}
 
 		return (object) array( 'data' => $this->generate_data( $response ) );
