@@ -11,6 +11,7 @@ import { __ } from '@wordpress/i18n';
 export enum ContentHelperErrorCode {
 	ApiNoData = 'ch_api_no_data',
 	ApiTooManyResults = 'ch_api_too_many_results',
+	CannotFormulateApiQuery = 'ch_cannot_formulate_api_query',
 	FetchError = 'fetch_error', // apiFetch() failure, possibly caused by ad blocker.
 	PostNotPublished = 'ch_post_not_published',
 	ResponseError = 'ch_response_error',
