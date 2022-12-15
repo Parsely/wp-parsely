@@ -37,7 +37,7 @@ Some notable features of the wp-parsely plugin are:
 - Provides a settings page to customize your integration. Some of the options include:
   - Output metadata as [JSON-LD](https://docs.parse.ly/metadata-jsonld/) or [repeated meta tags](https://docs.parse.ly/metatags/).
   - Choose whether logged-in users should be tracked.
-  - Define how to track every Post Type (as Page, as Post or no tracking).
+  - Define how to track every Post Type (as Post, Non-Post or no tracking).
 - Offers a wide range of hooks to customize the plugin's functionality even further.
 
 ### Documentation and resources

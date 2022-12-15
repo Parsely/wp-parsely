@@ -25,7 +25,7 @@ interface RelatedTopPostsApiQuery {
 }
 
 /**
- * The form of the response returned by the /analytics/posts WordPress REST API
+ * The form of the response returned by the /stats/posts WordPress REST API
  * endpoint.
  */
 interface RelatedTopPostsApiResponse {
@@ -63,11 +63,11 @@ class ContentHelperProvider {
 
 		// Get post's first category.
 		const categoryIds = editor.getEditedPostAttribute( 'categories' ) as Array<number>;
-		const category: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryIds[ 0 ] );
+		const category: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryIds?.[ 0 ] );
 
 		// Get post's first tag.
 		const tagIds = editor.getEditedPostAttribute( 'tags' ) as Array<number>;
-		const tag: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagIds[ 0 ] );
+		const tag: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagIds?.[ 0 ] );
 
 		// Create API query.
 		const apiQuery = this.buildRelatedTopPostsApiQuery( author, category, tag );
@@ -103,7 +103,7 @@ class ContentHelperProvider {
 
 		try {
 			response = await apiFetch( {
-				path: addQueryArgs( '/wp-parsely/v1/analytics/posts', query.query ),
+				path: addQueryArgs( '/wp-parsely/v1/stats/posts', query.query ),
 			} ) as RelatedTopPostsApiResponse;
 		} catch ( wpError ) {
 			return Promise.reject( wpError );

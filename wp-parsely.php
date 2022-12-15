@@ -60,7 +60,7 @@ const PARSELY_VERSION = '3.5.2';
 const PARSELY_FILE    = __FILE__;
 
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
-	require __DIR__ . '/vendor/autoload.php';
+	require_once __DIR__ . '/vendor/autoload.php';
 }
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
