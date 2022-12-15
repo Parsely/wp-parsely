@@ -33,7 +33,9 @@ Some notable features of the wp-parsely plugin are:
 - [Supports WordPress Network (Multisite) setups](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-wordpress-network-multisite).
 - [Supports decoupled (headless) setups](https://docs.parse.ly/plugin-decoupled-headless-support/).
 - Provides a [Recommendations Block](https://docs.parse.ly/recommendations-block/) that shows a list of links related to the currently viewed page. Useful for showcasing related content to visitors.
-- Provides a [Content Helper](https://docs.parse.ly/plugin-content-helper/) in the WordPress Editor sidebar that displays top-performing posts based on the currently edited post's tag or category. Useful for editors to see which related content is popular so they can gain insights from it.
+- Provides a [Content Helper](https://docs.parse.ly/plugin-content-helper/) in the WordPress Editor sidebar that displays the following panels:
+  - **Performance Details**: Shows performance metrics about the post/page currently being edited.
+  - **Related Top-Performing Posts**: Provides a list of the website’s most successful posts, similar to the post/page currently being edited.
 - Provides a settings page to customize your integration. Some of the options include:
   - Output metadata as [JSON-LD](https://docs.parse.ly/metadata-jsonld/) or [repeated meta tags](https://docs.parse.ly/metatags/).
   - Choose whether logged-in users should be tracked.
