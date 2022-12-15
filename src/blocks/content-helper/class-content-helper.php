@@ -23,7 +23,7 @@ class Content_Helper {
 	 * @since 3.5.0
 	 */
 	public function run(): void {
-		$content_helper_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/content-helper.asset.php';
+		$content_helper_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/content-helper.asset.php';
 
 		wp_enqueue_script(
 			'wp-parsely-block-content-helper',
