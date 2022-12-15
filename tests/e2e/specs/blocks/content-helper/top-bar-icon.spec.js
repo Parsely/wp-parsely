@@ -35,7 +35,7 @@ describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
 	 * Site ID and API Secret are not provided.
 	 */
 	it( 'Should be displayed when the Site ID and API Secret are not provided', async () => {
-		expect( testContentHelperIcon() ).toMatch( contentHelperTitle );
+		expect( await testContentHelperIcon() ).toMatch( contentHelperTitle );
 	} );
 
 	/**
@@ -43,7 +43,7 @@ describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
 	 * the Site ID is provided.
 	 */
 	it( 'Should be displayed when only the Site ID is provided.', async () => {
-		expect( testContentHelperIcon( 'blog.parsely.com' ) ).toMatch( contentHelperTitle );
+		expect( await testContentHelperIcon( 'blog.parsely.com' ) ).toMatch( contentHelperTitle );
 	} );
 
 	/**
@@ -51,7 +51,7 @@ describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
 	 * the API Secret is provided.
 	 */
 	it( 'Should be displayed when only the API Secret is provided', async () => {
-		expect( testContentHelperIcon( '', 'test' ) ).toMatch( contentHelperTitle );
+		expect( await testContentHelperIcon( '', 'test' ) ).toMatch( contentHelperTitle );
 	} );
 
 	/**
@@ -59,7 +59,7 @@ describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
 	 * the Site ID and API Secret are provided.
 	 */
 	it( 'Should be displayed when both the Site ID and API Secret are provided', async () => {
-		expect( testContentHelperIcon( 'blog.parsely.com', 'test' ) ).toMatch( contentHelperTitle );
+		expect( await testContentHelperIcon( 'blog.parsely.com', 'test' ) ).toMatch( contentHelperTitle );
 	} );
 
 	/**
