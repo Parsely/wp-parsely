@@ -66,7 +66,7 @@ class CurrentPostDetailsProvider {
 			return Promise.reject(
 				new ContentHelperError( __(
 					'This post is not published, so its details are unavailable.',
-					'wp-parsely' ), ContentHelperErrorCode.PostNotPublished, ''
+					'wp-parsely' ), ContentHelperErrorCode.PostIsNotPublished, ''
 				)
 			);
 		}
@@ -114,7 +114,8 @@ class CurrentPostDetailsProvider {
 
 		if ( response?.error ) {
 			return Promise.reject( new ContentHelperError(
-				response.error.message, ContentHelperErrorCode.ResponseError
+				response.error.message,
+				ContentHelperErrorCode.ParselyApiResponseContainsError
 			) );
 		}
 
@@ -125,7 +126,7 @@ class CurrentPostDetailsProvider {
 					/* translators: URL of the published post */
 					__( 'The post %s has 0 views or no data was returned for it by the Parse.ly API.',
 						'wp-parsely' ), postUrl
-				), ContentHelperErrorCode.ApiNoData, ''
+				), ContentHelperErrorCode.ParselyApiReturnedNoData, ''
 			) );
 		}
 
@@ -134,9 +135,9 @@ class CurrentPostDetailsProvider {
 			return Promise.reject( new ContentHelperError(
 				sprintf(
 					/* translators: URL of the published post */
-					__( 'Error: multiple results were returned for the post %s by the Parse.ly API.',
+					__( 'Multiple results were returned for the post %s by the Parse.ly API.',
 						'wp-parsely' ), postUrl
-				), ContentHelperErrorCode.ApiTooManyResults
+				), ContentHelperErrorCode.ParselyApiReturnedTooManyResults
 			) );
 		}
 
@@ -173,7 +174,8 @@ class CurrentPostDetailsProvider {
 
 		if ( response?.error ) {
 			return Promise.reject( new ContentHelperError(
-				response.error.message, ContentHelperErrorCode.ResponseError
+				response.error.message,
+				ContentHelperErrorCode.ParselyApiResponseContainsError
 			) );
 		}
 

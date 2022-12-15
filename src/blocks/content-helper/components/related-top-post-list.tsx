@@ -9,9 +9,9 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import ContentHelperProvider from '../content-helper-provider';
 import RelatedTopPostListItem from './related-top-post-list-item';
-import { RelatedTopPostData } from '../models/related-top-post-data';
-import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../shared/utils/date';
 import { ContentHelperError } from '../content-helper-error';
+import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../shared/utils/date';
+import { RelatedTopPostData } from '../models/related-top-post-data';
 
 const FETCH_RETRIES = 3;
 
@@ -65,7 +65,7 @@ function RelatedTopPostList() {
 
 	// Show error message.
 	if ( error ) {
-		return <p className="parsely-top-posts-descr" data-testid="error">{ error.message }</p>;
+		return error.ProcessedMessage( 'parsely-top-posts-descr' );
 	}
 
 	// Show related top posts list.

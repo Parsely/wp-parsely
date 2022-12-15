@@ -54,7 +54,7 @@ function CurrentPostDetails() {
 	}, [] );
 
 	if ( error ) {
-		return <p>{ error.message }</p>;
+		return error.ProcessedMessage();
 	}
 
 	return (

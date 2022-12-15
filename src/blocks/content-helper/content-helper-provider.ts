@@ -119,7 +119,8 @@ class ContentHelperProvider {
 
 		if ( response?.error ) {
 			return Promise.reject( new ContentHelperError(
-				response.error.message, ContentHelperErrorCode.ResponseError
+				response.error.message,
+				ContentHelperErrorCode.ParselyApiResponseContainsError
 			) );
 		}
 

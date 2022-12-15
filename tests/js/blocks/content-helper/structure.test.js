@@ -13,7 +13,6 @@ import '@testing-library/jest-dom';
  */
 import RelatedTopPostList from '../../../../src/blocks/content-helper/components/related-top-post-list';
 import ContentHelperProvider, { RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/content-helper-provider';
-import { AD_BLOCKER_HINT } from '../../../../src/blocks/shared/components/error-hint';
 import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
 
 describe( 'Content Helper', () => {
@@ -68,7 +67,9 @@ describe( 'Content Helper', () => {
 		const apiErrorHint = screen.queryByTestId( 'parsely-error-hint' );
 		expect( apiErrorHint ).toBeInTheDocument();
 		expect( apiErrorHint ).toBeVisible();
-		expect( apiErrorHint.textContent ).toEqual( `Hint: ${ AD_BLOCKER_HINT }` );
+		expect( apiErrorHint.textContent ).toEqual(
+			'Hint: This error can be sometimes caused by ad-blockers or browser tracking protections. Please add this site to any applicable allow lists and try again.'
+		);
 	} );
 
 	test( 'should show error message when WordPress REST API returns the error', async () => {
@@ -79,12 +80,12 @@ describe( 'Content Helper', () => {
 		render( <RelatedTopPostList /> );
 		expect( getSpinner() ).toBeInTheDocument();
 
-		await waitFor( () => screen.findByTestId( 'wp-api-error' ), { timeout: 3000 } );
+		await waitFor( () => screen.findByTestId( 'error' ), { timeout: 3000 } );
 
 		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 
-		const wpApiError = screen.queryByTestId( 'wp-api-error' );
+		const wpApiError = screen.queryByTestId( 'error' );
 		expect( wpApiError ).toBeInTheDocument();
 		expect( wpApiError ).toBeVisible();
 		expect( wpApiError.textContent ).toEqual( 'Error: fake error from WP API' );
@@ -223,12 +224,12 @@ describe( 'Content Helper', () => {
 		render( <RelatedTopPostList /> );
 		expect( getSpinner() ).toBeInTheDocument();
 
-		await waitFor( () => screen.findByTestId( 'api-error' ), { timeout: 3000 } );
+		await waitFor( () => screen.findByTestId( 'error' ), { timeout: 3000 } );
 
 		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 
-		const apiError = screen.queryByTestId( 'api-error' );
+		const apiError = screen.queryByTestId( 'error' );
 		expect( apiError ).toBeInTheDocument();
 		expect( apiError ).toBeVisible();
 		expect( apiError.textContent ).toEqual( `Error: Fake error from API.` );
