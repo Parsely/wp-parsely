@@ -7,7 +7,7 @@ Requires PHP: 7.1
 License: GPLv2 or later  
 License URI: https://www.gnu.org/licenses/gpl-2.0.html  
 Tags: analytics, content marketing, parse.ly, parsely, parsley  
-Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauargelaguet, acicovic
+Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, pauargelaguet, acicovic, mehmoodak
 
 The Parse.ly plugin facilitates real-time and historical analytics to your content through a platform designed and built for digital publishing.
 
@@ -17,7 +17,7 @@ Designed and built for digital publishers, Parse.ly helps you understand how you
 
 Thousands of writers, editors, site managers, and technologists already use Parse.ly to understand what content draws in website visitors, and why. Using our powerful dashboards and APIs, customers build successful digital strategies that allow them to grow and engage a loyal audience.
 
-Join industry leaders -- like Mashable, Slate, News Corp, and Conde Nast -- who already use Parse.ly to bring clarity to content, audience, and analytics.
+Join industry leaders -- like NBA, Slate, News Corp, and Conde Nast -- who already use Parse.ly to bring clarity to content, audience, and analytics.
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
 
@@ -28,22 +28,24 @@ Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://
 Some notable features of the wp-parsely plugin are:
 
 - Automatically inserts the Parse.ly metadata and JavaScript in all published pages and posts (supports Custom Post Types).
-- [Supports Google Tag Manager, AMP, Facebook Instant Articles, Google Web Stories and Cloudflare](https://www.parse.ly/help/integration/frequently-asked-questions#third-party-and-feature-support).
-- Offers the `wpParselyOnLoad` and `wpParselyOnReady` JavaScript hooks that allow advanced integrations requiring JavaScript, such as [Dynamic Tracking](https://www.parse.ly/help/integration/dynamic-tracking).
-- [Supports WordPress Network (Multisite) setups](https://www.parse.ly/help/integration/frequently-asked-questions#third-party-and-feature-support).
-- [Supports decoupled (headless) setups](https://www.parse.ly/help/integration/decoupled-headless-support).
-- Provides a [Recommendations Block](https://www.parse.ly/help/integration/recommendations-block) that shows a list of links related to the currently viewed page. Useful for showcasing related content to visitors.
-- Provides a [Content Helper](https://www.parse.ly/help/integration/content-helper) in the WordPress Editor sidebar that displays top-performing posts based on the currently edited post's tag or category. Useful for editors to see which related content is popular so they can gain insights from it.
+- [Supports Google Tag Manager, AMP, Facebook Instant Articles, Google Web Stories and Cloudflare](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-amp-facebook-instant-articles-or-google-web-stories).
+- Offers the `wpParselyOnLoad` and `wpParselyOnReady` JavaScript hooks that allow advanced integrations requiring JavaScript, such as [Dynamic Tracking](https://docs.parse.ly/plugin-dynamic-tracking/).
+- [Supports WordPress Network (Multisite) setups](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-wordpress-network-multisite).
+- [Supports decoupled (headless) setups](https://docs.parse.ly/plugin-decoupled-headless-support/).
+- Provides a [Recommendations Block](https://docs.parse.ly/recommendations-block/) that shows a list of links related to the currently viewed page. Useful for showcasing related content to visitors.
+- Provides a [Content Helper](https://docs.parse.ly/plugin-content-helper/) in the WordPress Editor sidebar that displays the following panels:
+  - **Performance Details**: Shows performance metrics about the post/page currently being edited.
+  - **Related Top-Performing Posts**: Provides a list of the website’s most successful posts, similar to the post/page currently being edited.
 - Provides a settings page to customize your integration. Some of the options include:
-  - Output metadata as [JSON-LD](https://www.parse.ly/help/integration/jsonld) or [repeated meta tags](https://www.parse.ly/help/integration/metatags).
+  - Output metadata as [JSON-LD](https://docs.parse.ly/metadata-jsonld/) or [repeated meta tags](https://docs.parse.ly/metatags/).
   - Choose whether logged-in users should be tracked.
   - Define how to track every Post Type (as Post, Non-Post or no tracking).
 - Offers a wide range of hooks to customize the plugin's functionality even further.
 
 ### Documentation and resources
 
-- [Plugin documentation](https://www.parse.ly/help/integration/category/wordpress).
-- [Frequently asked questions](https://www.parse.ly/help/integration/wordpress#frequently-asked-questions).
+- [Plugin Documentation](https://docs.parse.ly/wordpress-plugin-setup/).
+- [Commonly Asked Questions](https://docs.parse.ly/plugin-common-questions/).
 - [Changelog](https://github.com/parsely/wp-parsely/blob/trunk/CHANGELOG.md).
 
 **IMPORTANT:** If you are a [WordPress VIP](https://wpvip.com/) customer, the plugin should be enabled by using an `mu-plugins` filter. Please consult the [WordPress VIP documentation](https://docs.wpvip.com/technical-references/plugins/parse-ly/) for more details.
@@ -82,11 +84,11 @@ To run the plugin locally or to contribute to it, please check the instructions 
 
 The plugin requires an active Parse.ly account. [Sign up for a free demo of Parse.ly](https://www.parsely.com/getdemo?utm_medium=referral&utm_source=wordpress.org&utm_content=wp-parsely).
 
-For more information, please visit the [installation instructions](https://www.parse.ly/help/integration/wordpress) in the official documentation. 
+For more information, please visit the [installation instructions](https://docs.parse.ly/wordpress-plugin-setup/) in the official documentation. 
 
 ## Frequently Asked Questions
 
-Please visit the [frequently asked questions](https://www.parse.ly/help/integration/frequently-asked-questions) in the official documentation.
+Please visit the [Commonly Asked Questions page](https://docs.parse.ly/plugin-common-questions/) in the official documentation.
 
 ## Changelog
 
@@ -100,7 +102,7 @@ Please visit the [changelog](https://github.com/parsely/wp-parsely/blob/trunk/CH
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-2.png)
 3. Parse.ly plugin advanced settings. To be used only if instructed by Parse.ly staff.  
    ![The main settings screen of the wp-parsely plugin](.wordpress-org/screenshot-3.png)
-4. The Content Helper. Provides a list of the website's most successful similar posts to the one that is currently being edited.  
+4. The Content Helper, featuring the "Performance Details" and "Related Top-Performing Posts" panels.  
    ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-4.png)
 5. The Recommendations Block. Showcases links to content on your site as provided by the Parse.ly /related API.  
    ![The settings for the Parse.ly Recommended Widget](.wordpress-org/screenshot-5.png)
