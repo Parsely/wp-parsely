@@ -41,8 +41,10 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @since 3.6.0
 	 *
 	 * @param WP_REST_Request $request The request object.
+	 * @return stdClass|WPError stdClass containing the data or a WP_Error
+	 *                          object on failure.
 	 */
-	public function get_items( WP_REST_Request $request ): stdClass {
+	public function get_items( WP_REST_Request $request ) {
 		$this->total_views = absint( $request->get_param( 'total_views' ) );
 		$request->offsetUnset( 'total_views' ); // Remove param from request.
 		return $this->get_data( $request );
