@@ -19,7 +19,9 @@
   	"ignorePatterns": [ "webpack.config.js" ],
 	"rules": {
 		"@wordpress/i18n-text-domain": [ "error", { "allowedTextDomain": [ "wp-parsely" ] } ],
-	  	"@typescript-eslint/ban-ts-comment": "off"
+	  	"@typescript-eslint/ban-ts-comment": "off",
+		"no-shadow": "off",
+		"@typescript-eslint/no-shadow": ["error"]
 	},
 	"globals": {
 		// Page variable for Puppeteer tests
