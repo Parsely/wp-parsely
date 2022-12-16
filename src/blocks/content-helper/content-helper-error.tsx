@@ -26,14 +26,14 @@ export enum ContentHelperErrorCode {
  * @see https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
  */
 export class ContentHelperError extends Error {
-	protected code: string;
+	protected code: ContentHelperErrorCode;
 	protected prefix: string;
 	protected hint: JSX.Element = null;
 
-	constructor( message: string, code: string, prefix = __( 'Error: ', 'wp-parsely' ) ) {
+	constructor( message: string, code: ContentHelperErrorCode, prefix = __( 'Error: ', 'wp-parsely' ) ) {
 		super( prefix + message );
 		this.name = this.constructor.name;
-		this.code = code.toString();
+		this.code = code;
 
 		// Set the prototype explicitly.
 		Object.setPrototypeOf( this, ContentHelperError.prototype );
@@ -42,8 +42,8 @@ export class ContentHelperError extends Error {
 	public ProcessedMessage( className = '' ): JSX.Element {
 		// Errors that need to display the "Contact Us" message.
 		const contactUsErrorCodes = [
-			ContentHelperErrorCode.PluginSettingsSiteIdNotSet.toString(),
-			ContentHelperErrorCode.PluginSettingsApiSecretNotSet.toString(),
+			ContentHelperErrorCode.PluginSettingsSiteIdNotSet,
+			ContentHelperErrorCode.PluginSettingsApiSecretNotSet,
 		];
 		if ( contactUsErrorCodes.includes( this.code ) ) {
 			return this.ContactUsMessage();
@@ -108,7 +108,7 @@ export class ContentHelperError extends Error {
 	protected Hint( hint: string ): JSX.Element {
 		return (
 			<p className="parsely-error-hint" data-testid="parsely-error-hint">
-				<strong>{ __( 'Hint: ', 'wp-parsely' ) }</strong> { hint }
+				<strong>{ __( 'Hint:', 'wp-parsely' ) }</strong> { hint }
 			</p>
 		);
 	}

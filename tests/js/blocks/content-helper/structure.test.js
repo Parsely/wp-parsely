@@ -14,6 +14,7 @@ import '@testing-library/jest-dom';
 import RelatedTopPostList from '../../../../src/blocks/content-helper/components/related-top-post-list';
 import ContentHelperProvider, { RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/content-helper-provider';
 import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
+import { ContentHelperError, ContentHelperErrorCode } from '../../../../src/blocks/content-helper/content-helper-error';
 
 describe( 'Content Helper', () => {
 	test( 'should display spinner when starting', () => {
@@ -29,38 +30,37 @@ describe( 'Content Helper', () => {
 	} );
 
 	test( 'should show contact us message when Parse.ly Site ID is not set', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
-			errors: {
-				parsely_site_id_not_set: 'Error message.',
-			},
-		} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( new ContentHelperError(
+			'Error message.',
+			ContentHelperErrorCode.PluginSettingsSiteIdNotSet
+		) ) );
 
 		expect( await verifyContactUsMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 	} );
 
 	test( 'should show contact us message when Parse.ly API Secret is not set', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
-			errors: {
-				parsely_api_secret_not_set: 'Error message',
-			},
-		} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( new ContentHelperError(
+			'Error message.',
+			ContentHelperErrorCode.PluginSettingsApiSecretNotSet
+		) ) );
 
 		expect( await verifyContactUsMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 	} );
 
 	test( 'should show error message when API returns the error', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
-			message: 'Fake error from API.',
-		} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( new ContentHelperError(
+			'Fake error from API.',
+			ContentHelperErrorCode.ParselyApiResponseContainsError
+		) ) );
 
 		expect( await verifyApiErrorMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 	} );
 
 	test( 'should show error message and hint when API fetch is failed', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
-			code: 'fetch_error',
-			message: 'Fake error from API.',
-		} ) );
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( new ContentHelperError(
+			'Fake error from API.',
+			ContentHelperErrorCode.FetchError
+		) ) );
 
 		expect( await verifyApiErrorMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 
@@ -70,25 +70,6 @@ describe( 'Content Helper', () => {
 		expect( apiErrorHint.textContent ).toEqual(
 			'Hint: This error can be sometimes caused by ad-blockers or browser tracking protections. Please add this site to any applicable allow lists and try again.'
 		);
-	} );
-
-	test( 'should show error message when WordPress REST API returns the error', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( {
-			error: [ 'fake error from WP API' ],
-		} ) );
-
-		render( <RelatedTopPostList /> );
-		expect( getSpinner() ).toBeInTheDocument();
-
-		await waitFor( () => screen.findByTestId( 'error' ), { timeout: 3000 } );
-
-		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
-
-		const wpApiError = screen.queryByTestId( 'error' );
-		expect( wpApiError ).toBeInTheDocument();
-		expect( wpApiError ).toBeVisible();
-		expect( wpApiError.textContent ).toEqual( 'Error: fake error from WP API' );
 	} );
 
 	test( 'should show no results message when there is no tag, category or author in the post', async () => {
