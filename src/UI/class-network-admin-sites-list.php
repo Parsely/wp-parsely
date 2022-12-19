@@ -83,13 +83,13 @@ final class Network_Admin_Sites_List {
 	 * @return string ARIA label content including the blogname.
 	 */
 	private static function generate_aria_label_for_blog_id( int $_blog_id ): string {
-		$site      = get_blog_details( $_blog_id );
-		$blog_name = false === $site ? null : $site->blogname;
+		$site     = get_blog_details( $_blog_id );
+		$blogname = false === $site ? '' : $site->blogname;
 
 		return sprintf(
 			/* translators: blog name or blog id if empty  */
 			__( 'Go to Parse.ly stats for "%s"', 'wp-parsely' ),
-			is_null( $blog_name ) ? $_blog_id : $blog_name
+			'' === $blogname ? $_blog_id : $blogname
 		);
 	}
 
