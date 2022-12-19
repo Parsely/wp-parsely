@@ -187,9 +187,16 @@ final class Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the form function.
 	 *
-	 * @param WidgetConfigs $instance Values saved to the db.
+	 * @param array $current_settings Values saved to the db.
 	 */
-	public function form( $instance ): void {
+	public function form( $current_settings ): string {
+		/**
+		 * Variable.
+		 *
+		 * @var WidgetConfigs
+		 */
+		$instance = $current_settings;
+
 		if ( ! $this->api_key_and_secret_are_populated() ) {
 			$settings_page_url = add_query_arg( 'page', 'parsely', get_admin_url() . 'options-general.php' );
 
@@ -201,7 +208,7 @@ final class Recommended_Widget extends WP_Widget {
 
 			echo '<p>', wp_kses_post( $message ), '</p>';
 
-			return;
+			return '';
 		}
 
 		$widget_configs = $this->get_widget_configs( $instance );
@@ -290,6 +297,8 @@ final class Recommended_Widget extends WP_Widget {
 			<label for="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>"><?php esc_html_e( 'Personalize recommended results', 'wp-parsely' ); ?></label>
 		</p>
 		<?php
+
+		return '';
 	}
 
 	/**

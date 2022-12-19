@@ -124,6 +124,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		}
 
 		// Set percentage values and format numbers.
+		// @phpstan-ignore-next-line.
 		foreach ( $result as $key => $value ) {
 			// Set and format percentage values.
 			$result->{ $key }->viewsPercentage = $this->get_i18n_percentage(
@@ -190,6 +191,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		$result->totals->views = $totals;
 
 		// Set percentages values and format numbers.
+		// @phpstan-ignore-next-line.
 		foreach ( $result as $key => $value ) {
 			// Percentage against all referrer views, even those not included
 			// in the dataset due to the $limit argument.
