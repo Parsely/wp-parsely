@@ -112,7 +112,7 @@ class Amp extends Integration {
 
 		$options = self::$parsely->get_options();
 
-		if ( isset( $options['disable_amp'] ) && true === $options['disable_amp'] ) {
+		if ( true === $options['disable_amp'] ) {
 			return $analytics;
 		}
 

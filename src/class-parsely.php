@@ -20,9 +20,9 @@ use WP_Post;
  * @since 2.5.0 Moved from plugin root file to this file.
  *
  * @phpstan-type ParselyOptions array{
- *   apikey: string,
+ *   apikey?: string,
  *   content_id_prefix: string,
- *   api_secret: string,
+ *   api_secret?: string,
  *   use_top_level_cats: bool,
  *   custom_taxonomy_section: string,
  *   cats_as_tags: bool,
@@ -36,8 +36,8 @@ use WP_Post;
  *   meta_type: string,
  *   logo: string,
  *   metadata_secret: string,
- *   parsely_wipe_metadata_cache: bool,
- *   disable_autotrack: bool,
+ *   parsely_wipe_metadata_cache?: bool,
+ *   disable_autotrack?: bool,
  *   plugin_version: string,
  * }
  */

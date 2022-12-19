@@ -951,7 +951,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 					'metadata_secret',
 					__( 'Metadata secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
 				);
-			} elseif ( isset( $input['parsely_wipe_metadata_cache'] ) && 'true' === $input['parsely_wipe_metadata_cache'] ) {
+			} elseif (
+				isset( $input['parsely_wipe_metadata_cache'] ) && 'true' === $input['parsely_wipe_metadata_cache'] // @phpstan-ignore-line
+			) {
 				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
 
 				wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );

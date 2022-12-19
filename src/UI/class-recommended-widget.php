@@ -366,18 +366,13 @@ final class Recommended_Widget extends WP_Widget {
 	private function api_key_and_secret_are_populated(): bool {
 		$options = $this->parsely->get_options();
 
-		// No options are saved, so API key is not available.
-		if ( ! is_array( $options ) ) {
-			return false;
-		}
-
 		// Parse.ly Site ID settings field is not populated.
-		if ( ! array_key_exists( 'apikey', $options ) || '' === $options['apikey'] ) {
+		if ( '' === $options['apikey'] ) {
 			return false;
 		}
 
 		// Parse.ly API Secret settings field is not populated.
-		if ( ! array_key_exists( 'api_secret', $options ) || '' === $options['api_secret'] ) {
+		if ( '' === $options['api_secret'] ) {
 			return false;
 		}
 

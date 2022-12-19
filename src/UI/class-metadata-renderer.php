@@ -122,7 +122,7 @@ final class Metadata_Renderer {
 			}
 
 			$parsely_metas = array(
-				'title'     => $metadata['headline'] ?? null,
+				'title'     => $metadata['headline'],
 				'link'      => $metadata['url'] ?? null,
 				'type'      => $parsely_post_type,
 				'image-url' => $metadata['thumbnailUrl'] ?? null,

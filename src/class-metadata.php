@@ -93,6 +93,8 @@ class Metadata {
 		/**
 		 * Filters the structured metadata.
 		 *
+		 * @var mixed
+		 *
 		 * @param array $parsely_page Existing structured metadata for a page.
 		 * @param WP_Post $post Post object.
 		 * @param array $options The Parse.ly options.
