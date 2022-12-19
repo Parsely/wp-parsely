@@ -61,11 +61,11 @@ class Metadata {
 			} else {
 				$builder = new Paginated_Front_Page_Builder( $this->parsely );
 			}
-		} elseif ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) {
+		} elseif ( 'page' === get_option( 'show_on_front' ) && ! (bool) get_option( 'page_on_front' ) ) {
 			$builder = new Front_Page_Builder( $this->parsely );
 		} elseif (
 			is_home() && (
-				! ( 'page' === get_option( 'show_on_front' ) && ! get_option( 'page_on_front' ) ) ||
+				! ( 'page' === get_option( 'show_on_front' ) && ! (bool) get_option( 'page_on_front' ) ) ||
 				$queried_object_id && (int) get_option( 'page_for_posts' ) === $queried_object_id
 			)
 		) {

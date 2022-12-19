@@ -19,6 +19,8 @@ use const Parsely\PARSELY_FILE;
  * Renders the wp-admin Parse.ly plugin settings page.
  *
  * @since 3.0.0
+ *
+ * @phpstan-import-type ParselyOptions from Parsely
  */
 final class Settings_Page {
 	/**
@@ -914,13 +916,14 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Validates the options provided by the user.
 	 *
-	 * @param array $input Options from the settings page.
-	 * @return array List of validated input settings.
+	 * @param ParselyOptions $input Options from the settings page.
+	 *
+	 * @return ParselyOptions List of validated input settings.
 	 */
-	public function validate_options( array $input ): array {
+	public function validate_options( $input ) {
 		$options = $this->parsely->get_options();
 
-		if ( empty( $input['apikey'] ) ) {
+		if ( '' === $input['apikey'] ) {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'apikey',
@@ -941,7 +944,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
 
-		if ( ! empty( $input['metadata_secret'] ) ) {
+		if ( '' !== $input['metadata_secret'] ) {
 			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
@@ -956,7 +959,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			}
 		}
 
-		if ( empty( $input['logo'] ) ) {
+		if ( '' === $input['logo'] ) {
 			$input['logo'] = self::get_logo_default();
 		}
 
@@ -1206,6 +1209,11 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @return string
 	 */
 	private static function get_logo_default(): string {
+		/**
+		 * Variable.
+		 *
+		 * @var bool
+		 */
 		$custom_logo_id = get_theme_mod( 'custom_logo' );
 		if ( $custom_logo_id ) {
 			$logo_attrs = wp_get_attachment_image_src( $custom_logo_id, 'full' );

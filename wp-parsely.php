@@ -181,7 +181,7 @@ function parsely_recommended_widget_register(): void {
 	register_widget( new Recommended_Widget( $GLOBALS['parsely'] ) );
 }
 
-add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
+add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' ); // @phpstan-ignore-line
 /**
  * Instantiates Integrations collection and registers built-in integrations.
  *
@@ -194,7 +194,7 @@ function parsely_integrations( $parsely = null ): Integrations {
 	// If $parsely value is "", then this function is being called by the init
 	// hook and we can get the value from $GLOBALS. If $parsely is an instance
 	// of the Parsely object, then this function is being called by a test.
-	if ( empty( $parsely ) || get_class( $parsely ) !== Parsely::class ) {
+	if ( '' === $parsely || get_class( (object) $parsely ) !== Parsely::class ) {
 		$parsely = $GLOBALS['parsely'];
 	}
 

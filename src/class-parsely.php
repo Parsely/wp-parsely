@@ -18,6 +18,28 @@ use WP_Post;
  *
  * @since 1.0.0
  * @since 2.5.0 Moved from plugin root file to this file.
+ *
+ * @phpstan-type ParselyOptions array{
+ *   apikey: string,
+ *   content_id_prefix: string,
+ *   api_secret: string,
+ *   use_top_level_cats: bool,
+ *   custom_taxonomy_section: string,
+ *   cats_as_tags: bool,
+ *   track_authenticated_users: bool,
+ *   lowercase_tags: bool,
+ *   force_https_canonicals: bool,
+ *   track_post_types: string[],
+ *   track_page_types: string[],
+ *   disable_javascript: bool,
+ *   disable_amp: bool,
+ *   meta_type: string,
+ *   logo: string,
+ *   metadata_secret: string,
+ *   parsely_wipe_metadata_cache: bool,
+ *   disable_autotrack: bool,
+ *   plugin_version: string,
+ * }
  */
 class Parsely {
 	/**
@@ -32,7 +54,7 @@ class Parsely {
 	/**
 	 * Declare some class properties
 	 *
-	 * @var array<string, mixed> $option_defaults The defaults we need for the class.
+	 * @var ParselyOptions $option_defaults The defaults we need for the class.
 	 */
 	private $option_defaults = array(
 		'apikey'                      => '',
@@ -53,6 +75,7 @@ class Parsely {
 		'metadata_secret'             => '',
 		'parsely_wipe_metadata_cache' => false,
 		'disable_autotrack'           => false,
+		'plugin_version'              => '',
 	);
 
 	/**
@@ -97,7 +120,7 @@ class Parsely {
 	public function run(): void {
 		// Run upgrade options if they exist for the version currently defined.
 		$options = $this->get_options();
-		if ( empty( $options['plugin_version'] ) || self::VERSION !== $options['plugin_version'] ) {
+		if ( self::VERSION !== $options['plugin_version'] ) {
 			$method = 'upgrade_plugin_to_version_' . str_replace( '.', '_', self::VERSION );
 			if ( method_exists( $this, $method ) ) {
 				call_user_func_array( array( $this, $method ), array( $options ) );
@@ -252,7 +275,7 @@ class Parsely {
 	 */
 	public function update_metadata_endpoint( int $post_id ): void {
 		$parsely_options = $this->get_options();
-		if ( $this->api_key_is_missing() || empty( $parsely_options['metadata_secret'] ) ) {
+		if ( $this->api_key_is_missing() || '' === $parsely_options['metadata_secret'] ) {
 			return;
 		}
 
@@ -350,9 +373,14 @@ class Parsely {
 	 * As soon as actual options are saved, they override the defaults. This
 	 * prevents us from having to do a lot of isset() checking on variables.
 	 *
-	 * @return array<string, mixed>
+	 * @return ParselyOptions
 	 */
-	public function get_options(): array {
+	public function get_options() {
+		/**
+		 * Variable.
+		 *
+		 * @var ParselyOptions|null
+		 */
 		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
 
 		if ( ! is_array( $options ) ) {

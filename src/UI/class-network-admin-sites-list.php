@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
-use WP_Site;
 
 /**
  * Renders the additions to the WordPress Multisite Network Admin Sites List
@@ -21,6 +20,12 @@ use WP_Site;
  */
 final class Network_Admin_Sites_List {
 	const COLUMN_NAME = 'parsely-api-key';
+	/**
+	 * Instance of Parsely class.
+	 *
+	 * @var Parsely
+	 */
+	private $parsely;
 
 	/**
 	 * Constructor.
@@ -78,12 +83,13 @@ final class Network_Admin_Sites_List {
 	 * @return string ARIA label content including the blogname.
 	 */
 	private static function generate_aria_label_for_blog_id( int $_blog_id ): string {
-		$site = get_blog_details( $_blog_id );
+		$site      = get_blog_details( $_blog_id );
+		$blog_name = false === $site ? null : $site->blogname;
 
 		return sprintf(
 			/* translators: blog name or blog id if empty  */
 			__( 'Go to Parse.ly stats for "%s"', 'wp-parsely' ),
-			empty( $site->blogname ) ? $_blog_id : $site->blogname
+			is_null( $blog_name ) ? $_blog_id : $blog_name
 		);
 	}
 

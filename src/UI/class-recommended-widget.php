@@ -18,6 +18,18 @@ use const Parsely\PARSELY_FILE;
 
 /**
  * Provides a widget with Parse.ly recommended articles.
+ *
+ * @phpstan-type WidgetConfigs array{
+ *   title: string,
+ *   return_limit: int,
+ *   display_direction: string,
+ *   published_within: int,
+ *   sort: string,
+ *   boost: string,
+ *   personalize_results: bool,
+ *   img_src: string,
+ *   display_author: bool,
+ * }
  */
 final class Recommended_Widget extends WP_Widget {
 	/**
@@ -26,6 +38,23 @@ final class Recommended_Widget extends WP_Widget {
 	 * @var Parsely
 	 */
 	private $parsely;
+
+	/**
+	 * Default values of widget configs
+	 *
+	 * @var WidgetConfigs
+	 */
+	private static $default_widget_configs = array(
+		'title'               => '',
+		'return_limit'        => 5,
+		'display_direction'   => 'vertical',
+		'published_within'    => 0,
+		'sort'                => 'score',
+		'boost'               => 'views',
+		'personalize_results' => false,
+		'img_src'             => 'parsely_thumb',
+		'display_author'      => false,
+	);
 
 	/**
 	 * Constructor.
@@ -158,7 +187,7 @@ final class Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the form function.
 	 *
-	 * @param array $instance Values saved to the db.
+	 * @param WidgetConfigs $instance Values saved to the db.
 	 */
 	public function form( $instance ): void {
 		if ( ! $this->api_key_and_secret_are_populated() ) {
@@ -175,16 +204,18 @@ final class Recommended_Widget extends WP_Widget {
 			return;
 		}
 
+		$widget_configs = $this->get_widget_configs( $instance );
+
 		// editable fields: title.
-		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
-		$return_limit        = ! empty( $instance['return_limit'] ) ? (int) $instance['return_limit'] : 5;
-		$display_direction   = ! empty( $instance['display_direction'] ) ? $instance['display_direction'] : 'vertical';
-		$published_within    = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
-		$sort                = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
-		$boost               = ! empty( $instance['boost'] ) ? $instance['boost'] : 'views';
-		$personalize_results = ! empty( $instance['personalize_results'] ) ? $instance['personalize_results'] : false;
-		$img_src             = ! empty( $instance['img_src'] ) ? $instance['img_src'] : 'parsely_thumb';
-		$display_author      = ! empty( $instance['display_author'] ) ? $instance['display_author'] : false;
+		$title               = $widget_configs['title'];
+		$return_limit        = $widget_configs['return_limit'];
+		$display_direction   = $widget_configs['display_direction'];
+		$published_within    = $widget_configs['published_within'];
+		$sort                = $widget_configs['sort'];
+		$boost               = $widget_configs['boost'];
+		$personalize_results = $widget_configs['personalize_results'];
+		$img_src             = $widget_configs['img_src'];
+		$display_author      = $widget_configs['display_author'];
 
 		$instance['return_limit']        = $return_limit;
 		$instance['display_direction']   = $display_direction;
@@ -342,5 +373,18 @@ final class Recommended_Widget extends WP_Widget {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Returns all widget configs by assigning defaults if config isn't present
+	 *
+	 * @since 3.7.0
+	 *
+	 * @param WidgetConfigs $configs Widget Options.
+	 *
+	 * @return WidgetConfigs
+	 */
+	public function get_widget_configs( $configs ) {
+		return array_merge( self::$default_widget_configs, $configs );
 	}
 }
