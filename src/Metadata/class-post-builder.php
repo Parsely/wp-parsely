@@ -286,12 +286,14 @@ class Post_Builder extends Metadata_Builder {
 		if ( false !== $taxonomy_dropdown_choice && ! is_wp_error( $taxonomy_dropdown_choice ) ) {
 			if ( $parsely_options['use_top_level_cats'] ) {
 				$first_term = array_shift( $taxonomy_dropdown_choice );
-				$term_name  = $this->get_top_level_term( $first_term->term_id, $first_term->taxonomy );
+				if ( null !== $first_term ) {
+					$term_name = $this->get_top_level_term( $first_term->term_id, $first_term->taxonomy );
+				}
 			} else {
 				$term_name = $this->get_bottom_level_term( $post_obj->ID, $parsely_options['custom_taxonomy_section'] );
 			}
 
-			if ( is_string( $term_name ) && 0 < strlen( $term_name ) ) {
+			if ( isset( $term_name ) && is_string( $term_name ) && 0 < strlen( $term_name ) ) {
 				$category_name = $term_name;
 			}
 		}

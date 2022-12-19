@@ -167,11 +167,14 @@ class Scripts {
 
 		if ( null !== $tag && 'wp-parsely-tracker' === $handle ) {
 			$tag = preg_replace( '/ id=(["\'])wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
-			$tag = str_replace(
-				' src=',
-				' data-parsely-site="' . esc_attr( $parsely_options['apikey'] ) . '" src=',
-				$tag
-			);
+
+			if ( null !== $tag ) {
+				$tag = str_replace(
+					' src=',
+					' data-parsely-site="' . esc_attr( $parsely_options['apikey'] ) . '" src=',
+					$tag
+				);
+			}
 		}
 
 		return $tag ?? '';
