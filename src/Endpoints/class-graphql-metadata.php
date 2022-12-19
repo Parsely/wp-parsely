@@ -126,7 +126,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	private function register_fields(): void {
 		// @phpstan-ignore-next-line
 		$resolve = function ( \WPGraphQL\Model\Post $graphql_post ) {
-			$post_id = $graphql_post->ID;
+			$post_id = $graphql_post->ID; // @phpstan-ignore-line
 			$post    = WP_Post::get_instance( $post_id );
 
 			if ( false === $post ) {

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Metadata;
 
 use WP_User;
+use stdClass;
 
 /**
  * Implements abstract Metadata Builder class to generate the metadata array

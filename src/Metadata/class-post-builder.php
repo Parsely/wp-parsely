@@ -428,7 +428,7 @@ class Post_Builder extends Metadata_Builder {
 		if ( class_exists( 'coauthors_plus' ) ) {
 			global $post, $post_ID, $coauthors_plus;
 
-			if ( ! $post_id && $post_ID ) {
+			if ( ! ( $post_id > 0 ) && $post_ID ) {
 				$post_id = $post_ID;
 			}
 
