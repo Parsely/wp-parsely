@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Parsely\UI;
 
+use WP_Post;
 use WP_Admin_Bar;
 use Parsely\Parsely;
 use Parsely\Dashboard_Link;
@@ -65,9 +66,14 @@ final class Admin_Bar {
 	 * @param WP_Admin_Bar $admin_bar WP_Admin_Bar instance, passed by reference.
 	 */
 	public function admin_bar_parsely_stats_button( WP_Admin_Bar $admin_bar ): void {
+		/**
+		 * Internal Variable.
+		 *
+		 * @var WP_Post|null
+		 */
 		$current_object = $GLOBALS['wp_the_query']->get_queried_object();
 
-		if ( null === $current_object || ( isset( $current_object->post_type ) && '' === $current_object->post_type ) ) {
+		if ( null === $current_object || '' === $current_object->post_type ) {
 			return;
 		}
 

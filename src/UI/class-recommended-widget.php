@@ -384,6 +384,13 @@ final class Recommended_Widget extends WP_Widget {
 	 * @return WidgetSettings
 	 */
 	public function get_widget_settings( array $settings ) {
-		return array_merge( self::$default_widget_settings, $settings );
+		/**
+		 * Variable.
+		 *
+		 * @var WidgetSettings
+		 */
+		$widget_settings = $settings;
+
+		return array_merge( self::$default_widget_settings, $widget_settings );
 	}
 }

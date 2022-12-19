@@ -63,9 +63,9 @@ class Recommendations_Block {
 	 * @since 3.2.0
 	 *
 	 * @param array<string, mixed> $attributes The user-controlled settings for this block.
-	 * @return string
+	 * @return string|false
 	 */
-	public static function render_callback( array $attributes ): string {
+	public static function render_callback( array $attributes ) {
 		/**
 		 * In block.json we define a `viewScript` that is mean to only be loaded
 		 * on the front end. We need to manually enqueue this script here.

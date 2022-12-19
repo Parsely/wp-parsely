@@ -20,9 +20,9 @@ use WP_Post;
  * @since 2.5.0 Moved from plugin root file to this file.
  *
  * @phpstan-type ParselyOptions array{
- *   apikey?: string,
+ *   apikey: string,
  *   content_id_prefix: string,
- *   api_secret?: string,
+ *   api_secret: string,
  *   use_top_level_cats: bool,
  *   custom_taxonomy_section: string,
  *   cats_as_tags: bool,
@@ -36,8 +36,8 @@ use WP_Post;
  *   meta_type: string,
  *   logo: string,
  *   metadata_secret: string,
- *   parsely_wipe_metadata_cache?: bool,
- *   disable_autotrack?: bool,
+ *   parsely_wipe_metadata_cache: bool,
+ *   disable_autotrack: bool,
  *   plugin_version: string,
  * }
  */
@@ -123,7 +123,13 @@ class Parsely {
 		if ( self::VERSION !== $options['plugin_version'] ) {
 			$method = 'upgrade_plugin_to_version_' . str_replace( '.', '_', self::VERSION );
 			if ( method_exists( $this, $method ) ) {
-				call_user_func_array( array( $this, $method ), array( $options ) );
+				/**
+				 * Variable.
+				 *
+				 * @var callable
+				 */
+				$callable = array( $this, $method );
+				call_user_func_array( $callable, array( $options ) );
 			}
 			// Update our version info.
 			$options['plugin_version'] = self::VERSION;
@@ -444,8 +450,7 @@ class Parsely {
 		$options = $this->get_options();
 
 		return (
-				isset( $options['apikey'] ) &&
-				is_string( $options['apikey'] ) &&
+				is_string( $options['apikey'] ) && // @phpstan-ignore-line.
 				'' !== $options['apikey']
 		);
 	}
@@ -485,8 +490,7 @@ class Parsely {
 		$options = $this->get_options();
 
 		return (
-				isset( $options['api_secret'] ) &&
-				is_string( $options['api_secret'] ) &&
+				is_string( $options['api_secret'] ) && // @phpstan-ignore-line.
 				'' !== $options['api_secret']
 		);
 	}

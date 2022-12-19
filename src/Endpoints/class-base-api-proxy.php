@@ -149,6 +149,10 @@ abstract class Base_API_Proxy {
 		// A proxy with caching behavior is used here.
 		$response = $this->proxy->get_items( $params );
 
+		if ( false === $response ) {
+			return new stdClass();
+		}
+
 		if ( is_wp_error( $response ) ) {
 			return (object) array(
 				'data'  => array(),

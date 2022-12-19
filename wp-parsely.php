@@ -222,8 +222,19 @@ function parsely_run_rest_api_endpoint(
 	string $api_proxy_class_name,
 	WordPress_Cache &$wp_cache
 ): void {
+	/**
+	 * Internal Variable.
+	 *
+	 * @var RemoteAPI\Base_Proxy
+	 */
 	$proxy_instance        = new $proxy_class_name( $GLOBALS['parsely'] );
 	$cached_proxy_instance = new Cached_Proxy( $proxy_instance, $wp_cache );
-	$api_proxy_instance    = new $api_proxy_class_name( $GLOBALS['parsely'], $cached_proxy_instance );
+
+	/**
+	 * Internal Variable.
+	 *
+	 * @var Endpoints\Base_API_Proxy
+	 */
+	$api_proxy_instance = new $api_proxy_class_name( $GLOBALS['parsely'], $cached_proxy_instance );
 	$api_proxy_instance->run();
 }
