@@ -54,10 +54,11 @@ final class Network_Admin_Sites_List {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $actions The list of actions meant to be displayed for the current site's
-	 *                       context in the row actions.
-	 * @param int   $_blog_id The blog ID for the current context.
-	 * @return array The list of actions including ours.
+	 * @param array<string, mixed> $actions  The list of actions meant to be displayed for the current site's
+	 *                                       context in the row actions.
+	 * @param int                  $_blog_id The blog ID for the current context.
+	 *
+	 * @return array<string, mixed> The list of actions including ours.
 	 */
 	public static function add_action_link( array $actions, int $_blog_id ): array {
 		if ( ! current_user_can( Parsely::CAPABILITY ) ) {
@@ -99,8 +100,8 @@ final class Network_Admin_Sites_List {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $sites_columns The list of columns meant to be displayed in the sites list table.
-	 * @return array The list of columns to display in the network admin table including ours.
+	 * @param array<string, mixed> $sites_columns The list of columns meant to be displayed in the sites list table.
+	 * @return array<string, mixed> The list of columns to display in the network admin table including ours.
 	 */
 	public static function add_api_key_column( array $sites_columns ): array {
 		$sites_columns[ self::COLUMN_NAME ] = __( 'Parse.ly API Key', 'wp-parsely' );

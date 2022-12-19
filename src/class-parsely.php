@@ -139,8 +139,8 @@ class Parsely {
 	/**
 	 * Adds 10 minute cron interval.
 	 *
-	 * @param array $schedules WP schedules array.
-	 * @return array
+	 * @param array<string, mixed> $schedules WP schedules array.
+	 * @return array<string, mixed>
 	 */
 	public function wpparsely_add_cron_interval( array $schedules ): array {
 		$schedules['everytenminutes'] = array(

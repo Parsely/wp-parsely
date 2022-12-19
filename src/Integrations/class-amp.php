@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace Parsely\Integrations;
 
-use Parsely\Parsely;
-
 /**
  * Integrates Parse.ly tracking with the AMP plugin.
  *
@@ -75,8 +73,8 @@ class Amp extends Integration {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array|null $analytics The analytics registry.
-	 * @return array The analytics registry.
+	 * @param array<string, mixed>|null $analytics The analytics registry.
+	 * @return array<string, mixed> The analytics registry.
 	 */
 	public function register_parsely_for_amp_analytics( ?array $analytics ): array {
 		if ( null === $analytics ) {
@@ -102,8 +100,8 @@ class Amp extends Integration {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array|null $analytics The analytics registry.
-	 * @return array The analytics registry.
+	 * @param array<string, mixed>|null $analytics The analytics registry.
+	 * @return array<string, mixed> The analytics registry.
 	 */
 	public function register_parsely_for_amp_native_analytics( ?array $analytics ): array {
 		if ( null === $analytics ) {

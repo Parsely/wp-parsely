@@ -62,7 +62,7 @@ class Recommendations_Block {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $attributes The user-controlled settings for this block.
+	 * @param array<string, mixed> $attributes The user-controlled settings for this block.
 	 * @return string
 	 */
 	public static function render_callback( array $attributes ): string {
@@ -75,7 +75,7 @@ class Recommendations_Block {
 		wp_enqueue_script( 'wp-parsely-recommendations-view-script' );
 		ob_start();
 		?>
-<section
+		<section
 		<?php
 		echo wp_kses_post( get_block_wrapper_attributes() );
 
@@ -83,7 +83,7 @@ class Recommendations_Block {
 			echo ' data-' . esc_attr( $name ) . '="' . esc_attr( $value ) . '"';
 		}
 		?>
-></section>
+		></section>
 		<?php
 		return ob_get_clean();
 	}

@@ -40,7 +40,7 @@ class Integrations {
 	/**
 	 * Collection of registered integrations.
 	 *
-	 * @var array
+	 * @var array<string, mixed>
 	 */
 	private $integrations = array();
 

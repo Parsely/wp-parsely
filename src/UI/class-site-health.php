@@ -53,7 +53,7 @@ final class Site_Health {
 	 *
 	 * @param array<string, mixed> $tests An associative array of direct and asynchronous tests.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public function check_api_key( array $tests ): array {
 		$test = function() {
