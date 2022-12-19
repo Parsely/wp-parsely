@@ -52,8 +52,8 @@ abstract class Base_API_Proxy {
 	 * Cached "proxy" to the Parse.ly API endpoint.
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return stdClass|WPError stdClass containing the data or a WP_Error
-	 *                          object on failure.
+	 *
+	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	abstract public function get_items( WP_REST_Request $request );
 
@@ -121,8 +121,8 @@ abstract class Base_API_Proxy {
 	 *                                            required.
 	 * @param string          $param_item         The param element to use to
 	 *                                            get the items.
-	 * @return stdClass|WPError stdClass containing the data or a WP_Error
-	 *                          object on failure.
+	 *
+	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	protected function get_data( WP_REST_Request $request, bool $require_api_secret = true, string $param_item = null ) {
 		if ( false === $this->parsely->api_key_is_set() ) {

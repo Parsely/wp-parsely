@@ -33,7 +33,7 @@ function get_default_category(): int {
 }
 
 /**
- * Get option page_for_posts.
+ * Get option `page_for_posts`.
  *
  * @since 3.7.0
  *
@@ -48,6 +48,22 @@ function get_page_for_posts( $default = false ) {
 	 * @var int|WP_Post
 	 */
 	return get_option( 'page_for_posts', $default );
+}
+
+/**
+ * Get option `page_on_front`.
+ *
+ * @since 3.7.0
+ *
+ * @return bool
+ */
+function get_page_on_front() {
+	/**
+	 * Variable.
+	 * 
+	 * @var bool
+	 */
+	return get_option( 'page_on_front' );
 }
 
 /**

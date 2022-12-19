@@ -39,7 +39,7 @@ class Amp extends Integration {
 	 * @return bool True is an AMP request, false otherwise.
 	 */
 	public function is_amp_request(): bool {
-		return function_exists( 'amp_is_request' );
+		return function_exists( 'amp_is_request' ) && amp_is_request();
 	}
 
 	/**
