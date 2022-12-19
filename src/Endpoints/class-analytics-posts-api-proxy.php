@@ -14,6 +14,8 @@ use stdClass;
 use WP_REST_Request;
 use Parsely\Parsely;
 
+use function Parsely\Utils\get_date_format;
+
 /**
  * Configures the `/stats/posts` REST API endpoint.
  */
@@ -38,11 +40,11 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 	/**
 	 * Generates the final data from the passed response.
 	 *
-	 * @param array<string, mixed> $response The response received by the proxy.
+	 * @param array<stdClass> $response The response received by the proxy.
 	 * @return array<stdClass> The generated data.
 	 */
-	protected function generate_data( array $response ): array {
-		$date_format    = get_option( 'date_format' );
+	protected function generate_data( $response ): array {
+		$date_format    = get_date_format();
 		$stats_base_url = trailingslashit( Parsely::DASHBOARD_BASE_URL . '/' . $this->parsely->get_api_key() ) . 'find';
 
 		$result = array_map(

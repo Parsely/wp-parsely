@@ -43,10 +43,10 @@ abstract class Base_API_Proxy {
 	/**
 	 * Generates the final data from the passed response.
 	 *
-	 * @param array<string, mixed> $response The response received by the proxy.
+	 * @param array<stdClass> $response The response received by the proxy.
 	 * @return array<stdClass> The generated data.
 	 */
-	abstract protected function generate_data( array $response ): array;
+	abstract protected function generate_data( $response ): array;
 
 	/**
 	 * Cached "proxy" to the Parse.ly API endpoint.
@@ -147,7 +147,7 @@ abstract class Base_API_Proxy {
 		}
 
 		// A proxy with caching behavior is used here.
-		$response = $this->proxy->get_items( $params );
+		$response = $this->proxy->get_items( $params ); // @phpstan-ignore-line.
 
 		if ( false === $response ) {
 			return new stdClass();
@@ -160,6 +160,8 @@ abstract class Base_API_Proxy {
 			);
 		}
 
-		return (object) array( 'data' => $this->generate_data( $response ) );
+		return (object) array(
+			'data' => $this->generate_data( $response ), // @phpstan-ignore-line.
+		);
 	}
 }

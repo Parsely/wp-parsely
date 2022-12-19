@@ -208,6 +208,11 @@ final class Settings_Page {
 			return $screen_settings;
 		}
 
+		/**
+		 * Variable.
+		 *
+		 * @var array<string, mixed>
+		 */
 		$user_meta = get_user_meta( get_current_user_id(), $this->screen_options_name, true );
 
 		ob_start();
@@ -1200,9 +1205,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array<string, mixed> $input Array passed to validate_options() function.
+	 * @param ParselyOptions $input Array passed to validate_options() function.
 	 */
-	private function validate_options_post_type_tracking( array &$input ): void {
+	private function validate_options_post_type_tracking( &$input ): void {
 		$options         = $this->parsely->get_options();
 		$posts           = 'track_post_types';
 		$pages           = 'track_page_types';

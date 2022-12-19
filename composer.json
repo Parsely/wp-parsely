@@ -36,6 +36,9 @@
 		}
 	},
 	"autoload": {
+		"files": [
+			"src/Utils/utils.php"
+		],
 		"classmap": [
 			"src/"
 		]

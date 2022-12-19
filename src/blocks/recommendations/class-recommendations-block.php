@@ -62,7 +62,7 @@ class Recommendations_Block {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array<string, mixed> $attributes The user-controlled settings for this block.
+	 * @param array<string, string> $attributes The user-controlled settings for this block.
 	 * @return string|false
 	 */
 	public static function render_callback( array $attributes ) {

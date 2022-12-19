@@ -31,6 +31,7 @@ use WP_Post;
  *   force_https_canonicals: bool,
  *   track_post_types: string[],
  *   track_page_types: string[],
+ *   track_post_types_as?: array<string, string>,
  *   disable_javascript: bool,
  *   disable_amp: bool,
  *   meta_type: string,
@@ -40,6 +41,8 @@ use WP_Post;
  *   disable_autotrack: bool,
  *   plugin_version: string,
  * }
+ *
+ * @phpstan-import-type MetadataAttributes from Metadata
  */
 class Parsely {
 	/**
@@ -266,9 +269,10 @@ class Parsely {
 	 *
 	 * @param array<string, mixed> $parsely_options parsely_options array.
 	 * @param WP_Post              $post object.
-	 * @return array<string, mixed>
+	 *
+	 * @return MetadataAttributes
 	 */
-	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ): array {
+	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ) {
 		_deprecated_function( __FUNCTION__, '3.3', 'Metadata::construct_metadata()' );
 		$metadata = new Metadata( $this );
 		return $metadata->construct_metadata( $post );
@@ -293,14 +297,14 @@ class Parsely {
 		$metadata = ( new Metadata( $this ) )->construct_metadata( $post );
 
 		$endpoint_metadata = array(
-			'canonical_url' => $metadata['url'],
-			'page_type'     => $this->convert_jsonld_to_parsely_type( $metadata['@type'] ),
-			'title'         => $metadata['headline'],
-			'image_url'     => $metadata['image']['url'],
-			'pub_date_tmsp' => $metadata['datePublished'],
-			'section'       => $metadata['articleSection'],
-			'authors'       => $metadata['creator'],
-			'tags'          => $metadata['keywords'],
+			'canonical_url' => $metadata['url'] ?? '',
+			'page_type'     => $this->convert_jsonld_to_parsely_type( $metadata['@type'] ?? '' ),
+			'title'         => $metadata['headline'] ?? '',
+			'image_url'     => isset( $metadata['image']['url'] ) ? $metadata['image']['url'] : '',
+			'pub_date_tmsp' => $metadata['datePublished'] ?? '',
+			'section'       => $metadata['articleSection'] ?? '',
+			'authors'       => $metadata['creator'] ?? '',
+			'tags'          => $metadata['keywords'] ?? '',
 		);
 
 		$parsely_api_endpoint    = 'https://api.parsely.com/v2/metadata/posts';
@@ -337,8 +341,7 @@ class Parsely {
 	 */
 	public function bulk_update_posts(): void {
 		global $wpdb;
-		$parsely_options      = $this->get_options();
-		$allowed_types        = array_merge( $parsely_options['track_post_types'], $parsely_options['track_page_types'] );
+		$allowed_types        = $this->get_all_track_types();
 		$allowed_types_string = implode(
 			', ',
 			array_map(
@@ -348,7 +351,13 @@ class Parsely {
 				$allowed_types
 			)
 		);
-		$ids                  = wp_cache_get( 'parsely_post_ids_need_meta_updating' );
+
+		/**
+		 * Variable.
+		 *
+		 * @var int[]|false
+		 */
+		$ids = wp_cache_get( 'parsely_post_ids_need_meta_updating' );
 		if ( false === $ids ) {
 			$ids = array();
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
@@ -506,5 +515,18 @@ class Parsely {
 		$options = $this->get_options();
 
 		return $this->api_secret_is_set() ? $options['api_secret'] : '';
+	}
+
+	/**
+	 * Get all track post types.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @return array<string>
+	 */
+	public function get_all_track_types(): array {
+		$options = $this->get_options();
+
+		return array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 	}
 }

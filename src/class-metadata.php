@@ -21,11 +21,47 @@ use Parsely\Metadata\Post_Builder;
 use Parsely\Metadata\Tag_Builder;
 use WP_Post;
 
+use function Parsely\Utils\get_page_for_posts;
+
 /**
  * Generates and inserts metadata readable by the Parse.ly Crawler.
  *
  * @since 1.0.0
  * @since 3.3.0 Logic extracted from Parsely\Parsely class to separate file/class.
+ *
+ * @phpstan-type MetadataAttributes array{
+ *   '@id'?: string,
+ *   '@type'?: string,
+ *   headline?: string,
+ *   url?: string,
+ *   image?: MetadataImage,
+ *   thumbnailUrl?: string,
+ *   articleSection?: string,
+ *   creator?: string[],
+ *   author?: MetadataAuthor[],
+ *   publisher?: MetadataPublisher,
+ *   keywords?: string[],
+ *   dateCreated?: string,
+ *   datePublished?: string,
+ *   dateModified?: string,
+ *   custom_metadata?: string,
+ * }
+ *
+ * @phpstan-type MetadataImage array{
+ *   '@type': 'ImageObject',
+ *   url: string,
+ * }
+ *
+ * @phpstan-type MetadataAuthor array{
+ *   '@type': 'Person',
+ *   name: string,
+ * }
+ *
+ * @phpstan-type MetadataPublisher array{
+ *   '@type': 'Organization',
+ *   name: string,
+ *   logo: string,
+ * }
  */
 class Metadata {
 	/**
@@ -49,9 +85,9 @@ class Metadata {
 	 *
 	 * @param WP_Post $post object.
 	 *
-	 * @return array<string, mixed>
+	 * @return MetadataAttributes
 	 */
-	public function construct_metadata( WP_Post $post ): array {
+	public function construct_metadata( WP_Post $post ) {
 		$options           = $this->parsely->get_options();
 		$queried_object_id = get_queried_object_id();
 
@@ -66,7 +102,7 @@ class Metadata {
 		} elseif (
 			is_home() && (
 				! ( 'page' === get_option( 'show_on_front' ) && ! (bool) get_option( 'page_on_front' ) ) ||
-				(int) get_option( 'page_for_posts' ) === $queried_object_id
+				get_page_for_posts() === $queried_object_id
 			)
 		) {
 			$builder = new Page_For_Posts_Builder( $this->parsely );

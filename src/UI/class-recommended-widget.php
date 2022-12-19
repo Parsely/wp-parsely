@@ -117,10 +117,10 @@ final class Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the widget function.
 	 *
-	 * @param array<mixed> $args Widget     Arguments.
-	 * @param array<mixed> $widget_settings Values saved to the db.
+	 * @param array<string, string> $args            Widget Arguments.
+	 * @param array<mixed>          $widget_settings Values saved to the db.
 	 */
-	public function widget( $args, $widget_settings ): void {
+	public function widget( $args, $widget_settings ): void /* @phpstan-ignore-line */ {
 		if ( ! $this->api_key_and_secret_are_populated() ) {
 			return;
 		}
@@ -297,16 +297,16 @@ final class Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the update function.
 	 *
-	 * @param array<mixed> $new_instance The new values for the db.
-	 * @param array<mixed> $old_instance Values saved to the db.
+	 * @param WidgetSettings $new_instance The new values for the db.
+	 * @param WidgetSettings $old_instance Values saved to the db.
 	 *
-	 * @return array<mixed>
+	 * @return WidgetSettings
 	 */
-	public function update( $new_instance, $old_instance ) {
+	public function update( $new_instance, $old_instance ) /* @phpstan-ignore-line */ {
 		$instance                        = $old_instance;
 		$instance['title']               = trim( wp_kses_post( $new_instance['title'] ) );
-		$instance['published_within']    = is_int( $new_instance['published_within'] ) ? $new_instance['published_within'] : (int) trim( $new_instance['published_within'] );
-		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? (int) $new_instance['return_limit'] : 20;
+		$instance['published_within']    = $new_instance['published_within'];
+		$instance['return_limit']        = $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : 20;
 		$instance['display_direction']   = trim( $new_instance['display_direction'] );
 		$instance['sort']                = trim( $new_instance['sort'] );
 		$instance['boost']               = trim( $new_instance['boost'] );

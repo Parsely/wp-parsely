@@ -46,8 +46,7 @@ class Rest_Metadata extends Metadata_Endpoint {
 	 * @since 3.1.0
 	 */
 	public function register_meta(): void {
-		$options      = $this->parsely->get_options();
-		$object_types = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
+		$object_types = $this->parsely->get_all_track_types();
 
 		/**
 		 * Filters the list of object types that the Parse.ly REST API is hooked into.
@@ -74,6 +73,11 @@ class Rest_Metadata extends Metadata_Endpoint {
 	 *                              containing the actual metadata.
 	 */
 	public function get_callback( array $object ): array {
+		/**
+		 * Variable.
+		 *
+		 * @var int
+		 */
 		$post_id = $object['ID'] ?? $object['id'] ?? 0;
 		$post    = WP_Post::get_instance( $post_id );
 		$options = $this->parsely->get_options();
