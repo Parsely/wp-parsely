@@ -173,7 +173,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		}
 
 		// If applicable, add the direct views.
-		if ( $direct_views >= $referrer_views ) {
+		if ( isset( $referrer_views ) && $direct_views >= $referrer_views ) {
 			$temp_views['direct'] = $direct_views;
 			$totals              += $direct_views;
 			arsort( $temp_views );
