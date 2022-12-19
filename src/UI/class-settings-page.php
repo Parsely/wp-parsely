@@ -1214,12 +1214,12 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		/**
 		 * Variable.
 		 *
-		 * @var bool
+		 * @var int
 		 */
 		$custom_logo_id = get_theme_mod( 'custom_logo' );
-		if ( $custom_logo_id ) {
+		if ( (bool) $custom_logo_id ) {
 			$logo_attrs = wp_get_attachment_image_src( $custom_logo_id, 'full' );
-			if ( $logo_attrs ) {
+			if ( isset( $logo_attrs[0] ) ) {
 				return $logo_attrs[0];
 			}
 		}
