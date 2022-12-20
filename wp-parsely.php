@@ -59,9 +59,25 @@ if ( class_exists( Parsely::class ) ) {
 const PARSELY_VERSION = '3.6.0';
 const PARSELY_FILE    = __FILE__;
 
-if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
-	require_once __DIR__ . '/vendor/autoload.php';
-}
+require_once __DIR__ . '/src/class-parsely.php';
+require_once __DIR__ . '/src/class-scripts.php';
+require_once __DIR__ . '/src/class-dashboard-link.php';
+require_once __DIR__ . '/src/UI/class-admin-bar.php';
+require_once __DIR__ . '/src/UI/class-metadata-renderer.php';
+require_once __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
+require_once __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
+
+require_once __DIR__ . '/src/class-metadata.php';
+require_once __DIR__ . '/src/Metadata/class-metadata-builder.php';
+require_once __DIR__ . '/src/Metadata/class-author-archive-builder.php';
+require_once __DIR__ . '/src/Metadata/class-category-builder.php';
+require_once __DIR__ . '/src/Metadata/class-date-builder.php';
+require_once __DIR__ . '/src/Metadata/class-front-page-builder.php';
+require_once __DIR__ . '/src/Metadata/class-page-builder.php';
+require_once __DIR__ . '/src/Metadata/class-page-for-posts-builder.php';
+require_once __DIR__ . '/src/Metadata/class-paginated-front-page-builder.php';
+require_once __DIR__ . '/src/Metadata/class-post-builder.php';
+require_once __DIR__ . '/src/Metadata/class-tag-builder.php';
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
@@ -86,6 +102,11 @@ function parsely_initialize_plugin(): void {
 	$metadata_renderer->run();
 }
 
+require_once __DIR__ . '/src/UI/class-admin-warning.php';
+require_once __DIR__ . '/src/UI/class-plugins-actions.php';
+require_once __DIR__ . '/src/UI/class-row-actions.php';
+require_once __DIR__ . '/src/UI/class-site-health.php';
+
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
 /**
  * Registers the Parse.ly wp-admin warnings, plugin actions and row actions.
@@ -104,6 +125,9 @@ function parsely_admin_init_register(): void {
 	$site_health->run();
 }
 
+require_once __DIR__ . '/src/UI/class-settings-page.php';
+require_once __DIR__ . '/src/UI/class-network-admin-sites-list.php';
+
 add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
  * Registers the additions the Parse.ly wp-admin settings page and Multisite
@@ -116,6 +140,23 @@ function parsely_wp_admin_early_register(): void {
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
 }
+
+require_once __DIR__ . '/src/RemoteAPI/interface-cache.php';
+require_once __DIR__ . '/src/RemoteAPI/interface-proxy.php';
+require_once __DIR__ . '/src/RemoteAPI/class-base-proxy.php';
+require_once __DIR__ . '/src/RemoteAPI/class-cached-proxy.php';
+require_once __DIR__ . '/src/RemoteAPI/class-related-proxy.php';
+require_once __DIR__ . '/src/RemoteAPI/class-analytics-posts-proxy.php';
+require_once __DIR__ . '/src/RemoteAPI/class-analytics-post-detail-proxy.php';
+require_once __DIR__ . '/src/RemoteAPI/class-referrers-post-detail-proxy.php';
+require_once __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
+
+require_once __DIR__ . '/src/Endpoints/class-base-api-proxy.php';
+require_once __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
+require_once __DIR__ . '/src/Endpoints/class-analytics-posts-api-proxy.php';
+require_once __DIR__ . '/src/Endpoints/class-analytics-post-detail-api-proxy.php';
+require_once __DIR__ . '/src/Endpoints/class-referrers-post-detail-api-proxy.php';
+require_once __DIR__ . '/src/Endpoints/class-rest-metadata.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
@@ -154,6 +195,8 @@ function parsely_rest_api_init(): void {
 	);
 }
 
+require_once __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';
+
 add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 /**
  * Registers the Recommendations Block.
@@ -162,6 +205,8 @@ function init_recommendations_block(): void {
 	$recommendations_block = new Recommendations_Block();
 	$recommendations_block->run();
 }
+
+require_once __DIR__ . '/src/blocks/content-helper/class-content-helper.php';
 
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\init_content_helper' );
 /**
@@ -173,6 +218,8 @@ function init_content_helper(): void {
 	( new Content_Helper() )->run();
 }
 
+require_once __DIR__ . '/src/UI/class-recommended-widget.php';
+
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
  * Registers the Parse.ly Recommended widget.
@@ -180,6 +227,12 @@ add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_regist
 function parsely_recommended_widget_register(): void {
 	register_widget( new Recommended_Widget( $GLOBALS['parsely'] ) );
 }
+
+require_once __DIR__ . '/src/Integrations/class-integration.php';
+require_once __DIR__ . '/src/Integrations/class-integrations.php';
+require_once __DIR__ . '/src/Integrations/class-amp.php';
+require_once __DIR__ . '/src/Integrations/class-facebook-instant-articles.php';
+require_once __DIR__ . '/src/Integrations/class-google-web-stories.php';
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
 /**
