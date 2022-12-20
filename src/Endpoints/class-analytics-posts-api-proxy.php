@@ -12,9 +12,10 @@ namespace Parsely\Endpoints;
 
 use stdClass;
 use WP_REST_Request;
+use Parsely\Parsely;
 
 /**
- * Configures the `/analytics/posts` REST API endpoint.
+ * Configures the `/stats/posts` REST API endpoint.
  */
 final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 
@@ -22,15 +23,17 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 	 * Registers the endpoint's WP REST route.
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/analytics/posts' );
+		$this->register_endpoint( '/stats/posts' );
 	}
 
 	/**
 	 * Cached "proxy" to the Parse.ly `/analytics/posts` API endpoint.
 	 *
 	 * @param WP_REST_Request $request The request object.
+	 * @return stdClass|WPError stdClass containing the data or a WP_Error
+	 *                          object on failure.
 	 */
-	public function get_items( WP_REST_Request $request ): stdClass {
+	public function get_items( WP_REST_Request $request ) {
 		return $this->get_data( $request );
 	}
 
@@ -42,7 +45,7 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 	 */
 	protected function generate_data( array $response ): array {
 		$date_format    = get_option( 'date_format' );
-		$stats_base_url = trailingslashit( 'https://dash.parsely.com/' . esc_js( $this->parsely->get_api_key() ) ) . 'find';
+		$stats_base_url = trailingslashit( Parsely::DASHBOARD_BASE_URL . '/' . $this->parsely->get_api_key() ) . 'find';
 
 		$result = array_map(
 			static function( stdClass $item ) use ( $date_format, $stats_base_url ) {

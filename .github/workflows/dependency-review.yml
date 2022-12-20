@@ -19,4 +19,4 @@ jobs:
 
       # Checks for dependencies with known vulnerabilities
       - name: Review dependencies
-        uses: actions/dependency-review-action@v2
+        uses: actions/dependency-review-action@v3

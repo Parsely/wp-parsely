@@ -2,23 +2,30 @@
  * External dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Panel, PanelBody, PanelHeader } from '@wordpress/components';
+import { Panel, PanelBody } from '@wordpress/components';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { registerPlugin } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
  */
-import PostList from './components/post-list';
+import CurrentPostDetails from './current-post-details/component';
+import RelatedTopPostList from './components/related-top-post-list';
 import LeafIcon from '../shared/components/leaf-icon';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
 const renderSidebar = () => (
-	<PluginSidebar icon={ <LeafIcon /> } name="wp-parsely-content-helper" className="wp-parsely-content-helper" title="Parse.ly">
+	<PluginSidebar icon={ <LeafIcon /> } name="wp-parsely-content-helper" className="wp-parsely-content-helper" title={ __( 'Parse.ly Content Helper', 'wp-parsely' ) }>
 		<Panel>
-			<PanelHeader>{ __( 'Parse.ly Content Helper (Beta)', 'wp-parsely' ) }</PanelHeader>
-			<PanelBody><PostList /></PanelBody>
+			<PanelBody title={ __( 'Performance Details', 'wp-parsely' ) } initialOpen={ true }>
+				<CurrentPostDetails />
+			</PanelBody>
+		</Panel>
+		<Panel>
+			<PanelBody title={ __( 'Related Top-Performing Posts', 'wp-parsely' ) } initialOpen={ false }>
+				<RelatedTopPostList />
+			</PanelBody>
 		</Panel>
 	</PluginSidebar>
 );

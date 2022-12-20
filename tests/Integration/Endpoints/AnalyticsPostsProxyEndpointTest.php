@@ -27,8 +27,8 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * Initializes all required values for the test.
 	 */
 	public static function initialize(): void {
-		self::$route      = '/wp-parsely/v1/analytics/posts';
-		self::$filter_key = 'analytics_posts';
+		self::$route      = '/wp-parsely/v1/stats/posts';
+		self::$filter_key = 'stats_posts';
 	}
 
 	/**
@@ -69,7 +69,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	}
 
 	/**
-	 * Verifies that calling `GET /wp-parsely/v1/analytics/posts` returns an
+	 * Verifies that calling `GET /wp-parsely/v1/stats/posts` returns an
 	 * error and does not perform a remote call when the apikey is not populated
 	 * in site options.
 	 *
@@ -89,7 +89,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	}
 
 	/**
-	 * Verifies that calls to `GET /wp-parsely/v1/analytics/posts` return
+	 * Verifies that calls to `GET /wp-parsely/v1/stats/posts` return
 	 * results in the expected format.
 	 *
 	 * @covers \Parsely\Endpoints\Analytics_Posts_API_Proxy::get_items
@@ -126,7 +126,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 			}
 		);
 
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/analytics/posts' ) );
+		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/stats/posts' ) );
 
 		self::assertSame( 1, $dispatched );
 		self::assertSame( 200, $response->get_status() );
@@ -137,7 +137,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 						'author'   => 'Aakash Shah',
 						'date'     => wp_date( $date_format, strtotime( '2020-04-06T13:30:58' ) ),
 						'id'       => 'https://blog.parse.ly/web-analytics-software-tools/?itm_source=parsely-api',
-						'statsUrl' => 'https://dash.parsely.com/blog.parsely.com/find?url=https%3A%2F%2Fblog.parse.ly%2Fweb-analytics-software-tools%2F%3Fitm_source%3Dparsely-api',
+						'statsUrl' => PARSELY::DASHBOARD_BASE_URL . '/blog.parsely.com/find?url=https%3A%2F%2Fblog.parse.ly%2Fweb-analytics-software-tools%2F%3Fitm_source%3Dparsely-api',
 						'title'    => '9 Types of Web Analytics Tools — And How to Know Which Ones You Really Need',
 						'url'      => 'https://blog.parse.ly/web-analytics-software-tools/?itm_source=parsely-api',
 						'views'    => 142,
@@ -146,7 +146,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 						'author'   => 'Stephanie Schwartz and Andrew Butler',
 						'date'     => wp_date( $date_format, strtotime( '2021-04-30T20:30:24' ) ),
 						'id'       => 'https://blog.parse.ly/5-tagging-best-practices-content-strategy/?itm_source=parsely-api',
-						'statsUrl' => 'https://dash.parsely.com/blog.parsely.com/find?url=https%3A%2F%2Fblog.parse.ly%2F5-tagging-best-practices-content-strategy%2F%3Fitm_source%3Dparsely-api',
+						'statsUrl' => PARSELY::DASHBOARD_BASE_URL . '/blog.parsely.com/find?url=https%3A%2F%2Fblog.parse.ly%2F5-tagging-best-practices-content-strategy%2F%3Fitm_source%3Dparsely-api',
 						'title'    => '5 Tagging Best Practices For Getting the Most Out of Your Content Strategy',
 						'url'      => 'https://blog.parse.ly/5-tagging-best-practices-content-strategy/?itm_source=parsely-api',
 						'views'    => 40,

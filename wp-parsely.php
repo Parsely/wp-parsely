@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://www.parse.ly/help/integration/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
- * Version:           3.5.2
+ * Version:           3.6.0
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -26,23 +26,27 @@ declare(strict_types=1);
 
 namespace Parsely;
 
-use Parsely\Endpoints\Related_API_Proxy;
+use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
+use Parsely\Endpoints\Referrers_Post_Detail_API_Proxy;
+use Parsely\Endpoints\Related_API_Proxy;
 use Parsely\Endpoints\Rest_Metadata;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
-use Parsely\RemoteAPI\Cached_Proxy;
-use Parsely\RemoteAPI\Related_Proxy;
+use Parsely\RemoteAPI\Analytics_Post_Detail_Proxy;
 use Parsely\RemoteAPI\Analytics_Posts_Proxy;
+use Parsely\RemoteAPI\Cached_Proxy;
+use Parsely\RemoteAPI\Referrers_Post_Detail_Proxy;
+use Parsely\RemoteAPI\Related_Proxy;
 use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Metadata_Renderer;
-use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Network_Admin_Sites_List;
+use Parsely\UI\Plugins_Actions;
 use Parsely\UI\Recommended_Widget;
 use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
@@ -52,28 +56,12 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.5.2';
+const PARSELY_VERSION = '3.6.0';
 const PARSELY_FILE    = __FILE__;
 
-require __DIR__ . '/src/class-parsely.php';
-require __DIR__ . '/src/class-scripts.php';
-require __DIR__ . '/src/class-dashboard-link.php';
-require __DIR__ . '/src/UI/class-admin-bar.php';
-require __DIR__ . '/src/UI/class-metadata-renderer.php';
-require __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
-require __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
-
-require __DIR__ . '/src/class-metadata.php';
-require __DIR__ . '/src/Metadata/class-metadata-builder.php';
-require __DIR__ . '/src/Metadata/class-author-archive-builder.php';
-require __DIR__ . '/src/Metadata/class-category-builder.php';
-require __DIR__ . '/src/Metadata/class-date-builder.php';
-require __DIR__ . '/src/Metadata/class-front-page-builder.php';
-require __DIR__ . '/src/Metadata/class-page-builder.php';
-require __DIR__ . '/src/Metadata/class-page-for-posts-builder.php';
-require __DIR__ . '/src/Metadata/class-paginated-front-page-builder.php';
-require __DIR__ . '/src/Metadata/class-post-builder.php';
-require __DIR__ . '/src/Metadata/class-tag-builder.php';
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+}
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
@@ -98,11 +86,6 @@ function parsely_initialize_plugin(): void {
 	$metadata_renderer->run();
 }
 
-require __DIR__ . '/src/UI/class-admin-warning.php';
-require __DIR__ . '/src/UI/class-plugins-actions.php';
-require __DIR__ . '/src/UI/class-row-actions.php';
-require __DIR__ . '/src/UI/class-site-health.php';
-
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
 /**
  * Registers the Parse.ly wp-admin warnings, plugin actions and row actions.
@@ -121,9 +104,6 @@ function parsely_admin_init_register(): void {
 	$site_health->run();
 }
 
-require __DIR__ . '/src/UI/class-settings-page.php';
-require __DIR__ . '/src/UI/class-network-admin-sites-list.php';
-
 add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
  * Registers the additions the Parse.ly wp-admin settings page and Multisite
@@ -137,41 +117,42 @@ function parsely_wp_admin_early_register(): void {
 	$network_admin_sites_list->run();
 }
 
-require __DIR__ . '/src/RemoteAPI/interface-cache.php';
-require __DIR__ . '/src/RemoteAPI/interface-proxy.php';
-require __DIR__ . '/src/RemoteAPI/class-base-proxy.php';
-require __DIR__ . '/src/RemoteAPI/class-cached-proxy.php';
-require __DIR__ . '/src/RemoteAPI/class-related-proxy.php';
-require __DIR__ . '/src/RemoteAPI/class-analytics-posts-proxy.php';
-require __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
-require __DIR__ . '/src/Endpoints/class-base-api-proxy.php';
-require __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
-require __DIR__ . '/src/Endpoints/class-analytics-posts-api-proxy.php';
-require __DIR__ . '/src/Endpoints/class-rest-metadata.php';
-
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
  * Registers REST Endpoints that act as a proxy to the Parse.ly API.
- * This is needed to get around a CORS issues with Firefox.
+ * This is needed to get around CORS issues with Firefox.
  *
  * @since 3.2.0
  */
 function parsely_rest_api_init(): void {
-	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
+	$wp_cache = new WordPress_Cache();
+	$rest     = new Rest_Metadata( $GLOBALS['parsely'] );
 	$rest->run();
 
-	$related_proxy        = new Related_Proxy( $GLOBALS['parsely'] );
-	$related_cached_proxy = new Cached_Proxy( $related_proxy, new WordPress_Cache() );
-	$related_endpoint     = new Related_API_Proxy( $GLOBALS['parsely'], $related_cached_proxy );
-	$related_endpoint->run();
+	parsely_run_rest_api_endpoint(
+		Related_Proxy::class,
+		Related_API_Proxy::class,
+		$wp_cache
+	);
 
-	$analytics_posts_proxy        = new Analytics_Posts_Proxy( $GLOBALS['parsely'] );
-	$analytics_posts_cached_proxy = new Cached_Proxy( $analytics_posts_proxy, new WordPress_Cache() );
-	$analytics_posts_endpoint     = new Analytics_Posts_API_Proxy( $GLOBALS['parsely'], $analytics_posts_cached_proxy );
-	$analytics_posts_endpoint->run();
+	parsely_run_rest_api_endpoint(
+		Analytics_Posts_Proxy::class,
+		Analytics_Posts_API_Proxy::class,
+		$wp_cache
+	);
+
+	parsely_run_rest_api_endpoint(
+		Analytics_Post_Detail_Proxy::class,
+		Analytics_Post_Detail_API_Proxy::class,
+		$wp_cache
+	);
+
+	parsely_run_rest_api_endpoint(
+		Referrers_Post_Detail_Proxy::class,
+		Referrers_Post_Detail_API_Proxy::class,
+		$wp_cache
+	);
 }
-
-require __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';
 
 add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 /**
@@ -182,7 +163,6 @@ function init_recommendations_block(): void {
 	$recommendations_block->run();
 }
 
-require __DIR__ . '/src/blocks/content-helper/class-content-helper.php';
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\init_content_helper' );
 /**
  * Inserts the Content Helper into the WordPress Post Editor.
@@ -193,8 +173,6 @@ function init_content_helper(): void {
 	( new Content_Helper() )->run();
 }
 
-require __DIR__ . '/src/UI/class-recommended-widget.php';
-
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
  * Registers the Parse.ly Recommended widget.
@@ -202,12 +180,6 @@ add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_regist
 function parsely_recommended_widget_register(): void {
 	register_widget( new Recommended_Widget( $GLOBALS['parsely'] ) );
 }
-
-require __DIR__ . '/src/Integrations/class-integration.php';
-require __DIR__ . '/src/Integrations/class-integrations.php';
-require __DIR__ . '/src/Integrations/class-amp.php';
-require __DIR__ . '/src/Integrations/class-facebook-instant-articles.php';
-require __DIR__ . '/src/Integrations/class-google-web-stories.php';
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
 /**
@@ -219,6 +191,9 @@ add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
  * @return Integrations
  */
 function parsely_integrations( $parsely = null ): Integrations {
+	// If $parsely value is "", then this function is being called by the init
+	// hook and we can get the value from $GLOBALS. If $parsely is an instance
+	// of the Parsely object, then this function is being called by a test.
 	if ( empty( $parsely ) || get_class( $parsely ) !== Parsely::class ) {
 		$parsely = $GLOBALS['parsely'];
 	}
@@ -231,4 +206,24 @@ function parsely_integrations( $parsely = null ): Integrations {
 	$parsely_integrations->integrate();
 
 	return $parsely_integrations;
+}
+
+/**
+ * Instantiates and runs the specified API endpoint.
+ *
+ * @since 3.6.0
+ *
+ * @param string          $proxy_class_name The proxy class to instantiate.
+ * @param string          $api_proxy_class_name The API proxy class to instantiate and run.
+ * @param WordPress_Cache $wp_cache The WordPress cache instance to be used.
+ */
+function parsely_run_rest_api_endpoint(
+	string $proxy_class_name,
+	string $api_proxy_class_name,
+	WordPress_Cache &$wp_cache
+): void {
+	$proxy_instance        = new $proxy_class_name( $GLOBALS['parsely'] );
+	$cached_proxy_instance = new Cached_Proxy( $proxy_instance, $wp_cache );
+	$api_proxy_instance    = new $api_proxy_class_name( $GLOBALS['parsely'], $cached_proxy_instance );
+	$api_proxy_instance->run();
 }

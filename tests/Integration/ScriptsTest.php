@@ -116,34 +116,16 @@ final class ScriptsTest extends TestCase {
 	 * @group scripts
 	 */
 	public function test_parsely_register_scripts(): void {
+		$this->assert_is_script_not_registered( 'wp-parsely-loader' );
+		$this->assert_is_script_not_registered( 'wp-parsely-tracker' );
 
-		// Verify that API and tracker scripts are not registered.
-		$this->assert_script_statuses(
-			'wp-parsely-loader',
-			array(),
-			array( 'registered' )
-		);
-		$this->assert_script_statuses(
-			'wp-parsely-tracker',
-			array(),
-			array( 'registered' )
-		);
-
-		// Attempt to register API and tracker scripts.
 		self::$scripts->register_scripts();
 
-		// Verify that API and tracker scripts are now registered (but not yet
-		// enqueued).
-		$this->assert_script_statuses(
-			'wp-parsely-loader',
-			array( 'registered' ),
-			array( 'enqueued' )
-		);
-		$this->assert_script_statuses(
-			'wp-parsely-tracker',
-			array( 'registered' ),
-			array( 'enqueued' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-loader' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-loader' );
+
+		$this->assert_is_script_registered( 'wp-parsely-tracker' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-tracker' );
 	}
 
 	/**
@@ -169,21 +151,73 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		// Verify that tracker script is registered and enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-tracker',
-			array( 'registered', 'enqueued' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-tracker' );
+		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
 
-		// Verify that loader script is registered and enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-loader',
-			array( 'registered', 'enqueued' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-loader' );
+		$this->assert_is_script_enqueued( 'wp-parsely-loader' );
 
 		// Since no secret is provided, the extra fields (inline scripts) on the
 		// loader should not be populated.
 		self::assertEquals( 1, count( $wp_scripts->registered['wp-parsely-loader']->extra ) );
+	}
+
+	/**
+	 * Verifies that tracker scripts are not loading for drafted posts.
+	 *
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 *
+	 * @uses Parsely\Parsely::api_key_is_set
+	 * @uses Parsely\Parsely::get_api_key
+	 * @uses Parsely\Parsely::get_options
+	 * @uses Parsely\Parsely::get_tracker_url
+	 * @uses Parsely\Scripts::__construct
+	 * @uses Parsely\Scripts::register_scripts
+	 *
+	 * @group scripts
+	 */
+	public function test_should_not_enqueue_tracker_scripts_for_drafted_posts(): void {
+		$this->set_admin_user();
+		$this->go_to_new_post( 'draft' );
+		
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
+
+		$this->assert_is_script_registered( 'wp-parsely-tracker' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-tracker' );
+
+		$this->assert_is_script_registered( 'wp-parsely-loader' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-loader' );
+	}
+
+	/**
+	 * Verifies that tracker scripts are not loading for published posts in preview mode.
+	 *
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 *
+	 * @uses Parsely\Parsely::api_key_is_set
+	 * @uses Parsely\Parsely::get_api_key
+	 * @uses Parsely\Parsely::get_options
+	 * @uses Parsely\Parsely::get_tracker_url
+	 * @uses Parsely\Scripts::__construct
+	 * @uses Parsely\Scripts::register_scripts
+	 *
+	 * @group scripts
+	 */
+	public function test_should_not_enqueue_tracker_scripts_for_published_posts_in_preview_mode(): void {
+		$post_id = $this->create_test_post();
+
+		$this->set_admin_user();
+		$this->go_to( "/?p={$post_id}&preview=true" );
+		
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
+
+		$this->assert_is_script_registered( 'wp-parsely-tracker' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-tracker' );
+
+		$this->assert_is_script_registered( 'wp-parsely-loader' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-loader' );
 	}
 
 	/**
@@ -212,17 +246,11 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		// Verify that tracker script is registered and enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-tracker',
-			array( 'registered', 'enqueued' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-tracker' );
+		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
 
-		// Verify that loader script is registered and enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-loader',
-			array( 'registered', 'enqueued' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-loader' );
+		$this->assert_is_script_enqueued( 'wp-parsely-loader' );
 
 		// Since no secret is provided, the extra fields (inline scripts) on the
 		// loader should not be populated.
@@ -255,19 +283,13 @@ final class ScriptsTest extends TestCase {
 
 		// Since wp_parsely_load_js_tracker is set to false, enqueuing should
 		// fail. Verify that tracker script is registered but not enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-tracker',
-			array( 'registered' ),
-			array( 'enqueued' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-tracker' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-tracker' );
 
 		// Since no secret is provided, enqueuing should fail. Verify that API
 		// script is registered but not enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-loader',
-			array( 'registered' ),
-			array( 'enqueued' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-loader' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-loader' );
 
 		// Since no secret is provided, the extra fields (inline scripts) on the
 		// loader should not be populated.
@@ -299,11 +321,8 @@ final class ScriptsTest extends TestCase {
 		self::set_options( array( 'api_secret' => 'hunter2' ) );
 		self::$scripts->enqueue_js_tracker();
 
-		// Verify that API script is registered and enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-tracker',
-			array( 'registered', 'enqueued' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-tracker' );
+		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
 
 		// The variable should be inlined before the script.
 		self::assertEquals( "window.wpParselyApiKey = 'blog.parsely.com';", $wp_scripts->registered['wp-parsely-loader']->extra['before'][1] );
@@ -318,7 +337,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::parsely_is_user_logged_in
+	 * @uses \Parsely\Parsely::is_blog_member_logged_in
 	 * @uses \Parsely\Parsely::get_api_key
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -340,18 +359,12 @@ final class ScriptsTest extends TestCase {
 
 		// As track_authenticated_users options is false, enqueuing should fail.
 		// Verify that tracker script is registered but not enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-tracker',
-			array( 'registered' ),
-			array( 'enqueued' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-tracker' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-tracker' );
 
 		// Verify that API script is registered but not enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-loader',
-			array( 'registered' ),
-			array( 'enqueued' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-loader' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-loader' );
 	}
 
 	/**
@@ -366,7 +379,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::api_key_is_missing
 	 * @uses \Parsely\Parsely::api_key_is_set
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::parsely_is_user_logged_in
+	 * @uses \Parsely\Parsely::is_blog_member_logged_in
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Parsely::get_api_key
@@ -411,11 +424,8 @@ final class ScriptsTest extends TestCase {
 		// Current user is logged-in and track_authenticated_users is false so
 		// enqueuing should fail. Verify that tracker script is registered but
 		// not enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-tracker',
-			array( 'registered' ),
-			array( 'enqueued' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-tracker' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-tracker' );
 
 		// -- Test second blog.
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
@@ -435,10 +445,8 @@ final class ScriptsTest extends TestCase {
 		// First user is not logged-in to the second blog, so
 		// track_authenticated_users value is irrelevant. Verify that tracker
 		// script is registered and enqueued.
-		$this->assert_script_statuses(
-			'wp-parsely-tracker',
-			array( 'enqueued', 'registered' )
-		);
+		$this->assert_is_script_registered( 'wp-parsely-tracker' );
+		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
 	}
 
 	/**
@@ -476,6 +484,42 @@ final class ScriptsTest extends TestCase {
 		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $loader_asset['version'] . "' id='wp-parsely-loader-js'></script>", $output );
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=123456.78.9' id=\"parsely-cfg\"></script>", $output );
+	}
+
+	/**
+	 * Asserts that a passed script is not registered.
+	 *
+	 * @param string $handle Script handle to test.
+	 */
+	private function assert_is_script_not_registered( string $handle ): void {
+		$this->assert_script_statuses( $handle, array(), array( 'registered' ) );
+	}
+
+	/**
+	 * Asserts that a passed script is registered.
+	 *
+	 * @param string $handle Script handle to test.
+	 */
+	private function assert_is_script_registered( string $handle ): void {
+		$this->assert_script_statuses( $handle, array( 'registered' ) );
+	}
+
+	/**
+	 * Asserts that a passed script is not enqueued.
+	 *
+	 * @param string $handle Script handle to test.
+	 */
+	private function assert_is_script_not_enqueued( string $handle ): void {
+		$this->assert_script_statuses( $handle, array(), array( 'enqueued' ) );
+	}
+
+	/**
+	 * Asserts that a passed script is enqueued.
+	 *
+	 * @param string $handle Script handle to test.
+	 */
+	private function assert_is_script_enqueued( string $handle ): void {
+		$this->assert_script_statuses( $handle, array( 'enqueued' ) );
 	}
 
 	/**

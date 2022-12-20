@@ -23,10 +23,11 @@ class Parsely {
 	/**
 	 * Declare our constants
 	 */
-	public const VERSION     = PARSELY_VERSION;
-	public const MENU_SLUG   = 'parsely';        // Defines the page param passed to options-general.php.
-	public const OPTIONS_KEY = 'parsely';        // Defines the key used to store options in the WP database.
-	public const CAPABILITY  = 'manage_options'; // The capability required for the user to administer settings.
+	public const VERSION            = PARSELY_VERSION;
+	public const MENU_SLUG          = 'parsely';        // Defines the page param passed to options-general.php.
+	public const OPTIONS_KEY        = 'parsely';        // Defines the key used to store options in the WP database.
+	public const CAPABILITY         = 'manage_options'; // The capability required for the user to administer settings.
+	public const DASHBOARD_BASE_URL = 'https://dash.parsely.com';
 
 	/**
 	 * Declare some class properties
@@ -303,7 +304,7 @@ class Parsely {
 	}
 
 	/**
-	 * Updates posts with Parsely metadata api in bulk.
+	 * Updates posts with Parsely metadata API in bulk.
 	 */
 	public function bulk_update_posts(): void {
 		global $wpdb;
@@ -374,14 +375,15 @@ class Parsely {
 	}
 
 	/**
-	 * Checks to see if Parse.ly user is logged in.
+	 * Checks to see if the current user is a member of the current blog.
 	 *
 	 * @return bool
 	 */
-	public function parsely_is_user_logged_in(): bool {
-		// can't use $blog_id here because it futzes with the global $blog_id.
+	public function is_blog_member_logged_in(): bool {
+		// Can't use $blog_id here because it futzes with the global $blog_id.
 		$current_blog_id = get_current_blog_id();
 		$current_user_id = get_current_user_id();
+
 		return is_user_member_of_blog( $current_user_id, $current_blog_id );
 	}
 

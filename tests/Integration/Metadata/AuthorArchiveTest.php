@@ -27,6 +27,7 @@ final class AuthorArchiveTest extends NonPostTestCase {
 	 * @covers \Parsely\Metadata::construct_metadata
 	 * @covers \Parsely\Metadata\Metadata_Builder::get_current_url
 	 * @uses \Parsely\Metadata\Author_Archive_Builder::build_headline
+	 * @uses \Parsely\Metadata\Author_Archive_Builder::get_display_name_from_coauthors
 	 * @uses \Parsely\Metadata\Author_Archive_Builder::get_metadata
 	 * @uses \Parsely\Metadata\Metadata_Builder::__construct
 	 * @uses \Parsely\Metadata\Metadata_Builder::build_basic

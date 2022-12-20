@@ -195,6 +195,9 @@ final class RestMetadataTest extends TestCase {
 		self::set_options( array( 'apikey' => 'testkey' ) );
 		$post_id = self::factory()->post->create();
 
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
+
 		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
 		$metadata    = new Metadata( self::$parsely );
 		$expected    = array(
@@ -304,6 +307,9 @@ final class RestMetadataTest extends TestCase {
 		self::set_options( array( 'apikey' => 'testkey' ) );
 		$post_id = self::factory()->post->create();
 
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
+
 		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
 		$metadata    = new Metadata( self::$parsely );
 		$expected    = array(
@@ -393,6 +399,9 @@ final class RestMetadataTest extends TestCase {
 		$post = get_post( $post_id );
 		$date = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
 
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
+
 		$meta_string = self::$rest->get_rendered_meta( 'json_ld' );
 		$expected    = '<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"NewsArticle","headline":"My test_get_rendered_meta_json_ld title","url":"http:\/\/example.org\/?p=' . $post_id . '","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=' . $post_id . '"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[],"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '"}</script>';
 		self::assertEquals( $expected, $meta_string );
@@ -452,6 +461,9 @@ final class RestMetadataTest extends TestCase {
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		$post = get_post( $post_id );
 		$date = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
+
+		// Go to current post to update WP_Query with correct data.
+		$this->go_to( get_permalink( $post_id ) );
 
 		$meta_string = self::$rest->get_rendered_meta( 'repeated_metas' );
 		$expected    = '<meta name="parsely-title" content="My test_get_rendered_repeated_metas title" />
