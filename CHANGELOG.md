@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.1](https://github.com/Parsely/wp-parsely/compare/3.6.0...3.6.1) - 2022-12-20
+
+### Fixed
+
+- Revert composer autoloader PR that resulted in fatal errors ([#1259](https://github.com/Parsely/wp-parsely/pull/1259))
+
 ## [3.6.0](https://github.com/Parsely/wp-parsely/compare/3.5.2...3.6.0) - 2022-12-20
 
 ### Added
