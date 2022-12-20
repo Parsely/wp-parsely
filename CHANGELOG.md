@@ -19,20 +19,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Content Helper: Improve error handling ([#1232](https://github.com/Parsely/wp-parsely/pull/1232))
 - Content Helper: Make panels collapsible ([#1063](https://github.com/Parsely/wp-parsely/pull/1063))
 - Content Helper: Refactor code for clarity ([#1069](https://github.com/Parsely/wp-parsely/pull/1069))
-- Content Helper: Show "Contact Us" message when Site ID or API Secret are not set ([#1114](https://github.com/Parsely/wp-parsely/pull/1114))
 - Content Helper: Improve UI of Related Top Performing Posts ([#1216](https://github.com/Parsely/wp-parsely/pull/1216))
 - Markdown Files: Fix errors and conform to US spelling ([#1143](https://github.com/Parsely/wp-parsely/pull/1143))
 - Settings Page: Rename "Track as Page" to "Track as Non-Post" ([#1241](https://github.com/Parsely/wp-parsely/pull/1241), [#1250](https://github.com/Parsely/wp-parsely/pull/1250))
 - Settings page: Update texts for clarity ([#1071](https://github.com/Parsely/wp-parsely/pull/1071), [#1229](https://github.com/Parsely/wp-parsely/pull/1229))
 - Switch to Composer autoloader ([#985](https://github.com/Parsely/wp-parsely/pull/985))
-- Use Parsely->get_options() in the whole codebase ([#1098](https://github.com/Parsely/wp-parsely/pull/1098))
 
 ### Fixed
 
 - Avoid tracking page views when post is opened in preview mode ([#1195](https://github.com/Parsely/wp-parsely/pull/1195))
 - Content Helper: Fix Parse.ly Posts API call for pages ([#1237](https://github.com/Parsely/wp-parsely/pull/1237))
 - Content Helper: Fix blocked API requests caused by ad blockers ([#1225](https://github.com/Parsely/wp-parsely/pull/1225))
-- Content Helper: Fix broken links in "Post Stats" button ([#1077](https://github.com/Parsely/wp-parsely/pull/1077))
 - Content Helper: Fix tag parameter while requesting Parse.ly Analytics API ([#1220](https://github.com/Parsely/wp-parsely/pull/1220))
 
 ### Dependency Updates
