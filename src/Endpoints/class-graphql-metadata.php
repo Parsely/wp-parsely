@@ -114,7 +114,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				),
 			),
 		);
-		// @phpstan-ignore-next-line
 		register_graphql_object_type( self::GRAPHQL_CONTAINER_TYPE, $container_type );
 	}
 
@@ -124,9 +123,8 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 	 * @since 3.2.0
 	 */
 	private function register_fields(): void {
-		// @phpstan-ignore-next-line
 		$resolve = function ( \WPGraphQL\Model\Post $graphql_post ) {
-			$post_id = $graphql_post->ID; // @phpstan-ignore-line
+			$post_id = $graphql_post->ID;
 			$post    = WP_Post::get_instance( $post_id );
 
 			if ( false === $post ) {
@@ -151,7 +149,6 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 			),
 			'resolve'     => $resolve,
 		);
-		// @phpstan-ignore-next-line
 		register_graphql_field( 'ContentNode', self::FIELD_NAME, $config );
 	}
 }

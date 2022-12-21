@@ -5,3 +5,5 @@ parameters:
     - views/
     - wp-parsely.php
     - uninstall.php
+  scanFiles:
+    - vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php
