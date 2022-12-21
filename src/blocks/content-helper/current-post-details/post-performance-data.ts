@@ -27,8 +27,3 @@ export interface PostPerformanceReferrerData {
 		viewsPercentage: string;
 	}[];
 }
-
-export interface PostPerformanceError {
-	code: string;
-	message: string;
-}

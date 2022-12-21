@@ -7,12 +7,3 @@ export interface RelatedTopPostData {
 	url: string;
 	views: number;
 }
-
-export interface RelatedTopPostApiError {
-	code: string;
-	message: string;
-	errors: {
-		parsely_site_id_not_set: string;
-		parsely_api_secret_not_set: string;
-	};
-}

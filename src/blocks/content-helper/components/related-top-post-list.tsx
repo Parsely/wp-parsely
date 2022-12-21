@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 
@@ -10,8 +9,8 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import ContentHelperProvider from '../content-helper-provider';
 import RelatedTopPostListItem from './related-top-post-list-item';
-import { RelatedTopPostApiError, RelatedTopPostData } from '../models/related-top-post-data';
-import ErrorHint from '../../shared/components/error-hint';
+import { RelatedTopPostData } from '../models/related-top-post-data';
+import { ContentHelperError } from '../content-helper-error';
 import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../shared/utils/date';
 
 const FETCH_RETRIES = 3;
@@ -21,7 +20,7 @@ const FETCH_RETRIES = 3;
  */
 function RelatedTopPostList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
-	const [ error, setError ] = useState<RelatedTopPostApiError>();
+	const [ error, setError ] = useState<ContentHelperError>();
 	const [ message, setMessage ] = useState<string>();
 	const [ posts, setPosts ] = useState<RelatedTopPostData[]>( [] );
 
@@ -64,33 +63,9 @@ function RelatedTopPostList() {
 		};
 	}, [] );
 
-	// Show error message or contact message.
+	// Show error message.
 	if ( error ) {
-		// Errors that should be converted to a contact message.
-		if ( error?.errors?.parsely_site_id_not_set ||
-				error?.errors?.parsely_api_secret_not_set ) {
-			return ContactUsMessage();
-		}
-
-		// Error coming from apiFetch.
-		if ( error?.message ) {
-			return (
-				<>
-					<p className="parsely-top-posts-descr" data-testid="api-error">
-						{ __( 'Error:', 'wp-parsely' ) } { error.message }
-					</p>
-
-					{
-						error?.code === 'fetch_error' &&
-						<ErrorHint />
-					}
-				</>
-			);
-		}
-
-		// Error coming from the WordPress REST API.
-		const errorMessage = JSON.stringify( error ).match( /\[\"(.*?)\"\]/ )?.[ 1 ];
-		return <p className="parsely-top-posts-descr" data-testid="wp-api-error">{ __( 'Error:', 'wp-parsely' ) } { errorMessage }</p>;
+		return error.ProcessedMessage( 'parsely-top-posts-descr' );
 	}
 
 	// Show related top posts list.
@@ -113,33 +88,6 @@ function RelatedTopPostList() {
 					{ postList }
 				</div>
 			)
-	);
-}
-
-/**
- * "Contact Us" component that we display in place of certain errors.
- */
-function ContactUsMessage(): JSX.Element {
-	return (
-		<div className="parsely-contact-us parsely-top-posts-descr" data-testid="parsely-contact-us">
-			<p>
-				{ /* eslint-disable-next-line react/jsx-no-target-blank */ }
-				<a href="https://www.parse.ly/contact" target="_blank" rel="noopener">
-					{ __( 'Contact us', 'wp-parsely' ) + ' ' }
-				</a>
-				{ __( 'about advanced plugin features and the Parse.ly dashboard.', 'wp-parsely' ) }
-			</p>
-			<p>
-				{ __(
-					'Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in',
-					'wp-parsely'
-				) + ' ' }
-				{ /* eslint-disable-next-line react/jsx-no-target-blank */ }
-				<a href="/wp-admin/options-general.php?page=parsely" target="_blank" rel="noopener">
-					{ __( 'wp-parsely options.', 'wp-parsely' ) }
-				</a>
-			</p>
-		</div>
 	);
 }
 
