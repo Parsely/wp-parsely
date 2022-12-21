@@ -8,7 +8,34 @@ import domReady from '@wordpress/dom-ready';
  */
 import { getUuidFromVisitorCookie } from '../lib/personalization';
 
-function constructUrl( apiUrl, permalink, personalized ) {
+interface WidgetData {
+	data: {
+		[key: string]: WidgetRecommendation;
+	};
+}
+
+interface WidgetRecommendation {
+	title: string;
+	url: string;
+	author: string;
+	image_url: string;
+	thumb_url_medium: string;
+}
+
+interface WidgetOptions {
+	url: string;
+	outerDiv: Element;
+	displayAuthor: boolean;
+	displayDirection: string | null;
+	imgDisplay: string | null;
+	widgetId: string | null;
+}
+
+interface WidgetOptionsGroup {
+	[key: string]: WidgetOptions[];
+}
+
+function constructUrl( apiUrl: string, permalink: string, personalized: boolean ): string {
 	if ( personalized ) {
 		const uuid = getUuidFromVisitorCookie();
 		if ( uuid ) {
@@ -19,9 +46,9 @@ function constructUrl( apiUrl, permalink, personalized ) {
 	return `${ apiUrl }&url=${ encodeURIComponent( permalink ) }`;
 }
 
-function constructWidget( widget ) {
-	const apiUrl = widget.getAttribute( 'data-parsely-widget-api-url' );
-	const permalink = widget.getAttribute( 'data-parsely-widget-permalink' );
+function constructWidget( widget: Element ): WidgetOptions {
+	const apiUrl = widget.getAttribute( 'data-parsely-widget-api-url' ) || '';
+	const permalink = widget.getAttribute( 'data-parsely-widget-permalink' ) || '';
 	const personalized = widget.getAttribute( 'data-parsely-widget-personalized' ) === 'true';
 	const url = constructUrl( apiUrl, permalink, personalized );
 
@@ -35,13 +62,13 @@ function constructWidget( widget ) {
 	};
 }
 
-function renderWidget( data, {
+function renderWidget( data: WidgetData, {
 	outerDiv,
 	displayAuthor,
 	displayDirection,
 	imgDisplay,
 	widgetId,
-} ) {
+}: WidgetOptions ) {
 	if ( imgDisplay !== 'none' ) {
 		outerDiv.classList.add( 'display-thumbnail' );
 	}
@@ -99,14 +126,14 @@ function renderWidget( data, {
 	}
 
 	outerDiv.appendChild( outerList );
-	outerDiv.closest( '.widget.Recommended_Widget' ).classList.remove( 'parsely-recommended-widget-hidden' );
+	outerDiv.closest( '.widget.Recommended_Widget' )?.classList.remove( 'parsely-recommended-widget-hidden' );
 }
 
 domReady( () => {
 	const widgetDOMElements = document.querySelectorAll( '.parsely-recommended-widget' );
-	const widgetObjects = Array.from( widgetDOMElements ).map( constructWidget );
+	const widgetObjects = Array.from( widgetDOMElements ).map( ( widget: Element ) => constructWidget( widget ) );
 
-	const widgetsGroupedByUrl = widgetObjects.reduce( ( acc, curr ) => {
+	const widgetsGroupedByUrl: WidgetOptionsGroup = widgetObjects.reduce( ( acc: WidgetOptionsGroup, curr: WidgetOptions ): object => {
 		if ( ! acc[ curr.url ] ) {
 			acc[ curr.url ] = [];
 		}
@@ -118,7 +145,7 @@ domReady( () => {
 		fetch( url )
 			.then( ( response ) => response.json() )
 			.then( ( data ) => {
-				widgets.forEach( ( widget ) => {
+				widgets.forEach( ( widget: WidgetOptions ) => {
 					renderWidget( data, widget );
 				} );
 			} );

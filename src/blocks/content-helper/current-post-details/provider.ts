@@ -48,8 +48,10 @@ class CurrentPostDetailsProvider {
 	 * Constructor.
 	 */
 	constructor() {
-		// Return data for the last 7 days (today included).
-		this.setDataPeriod( 7 );
+		// Set period for the last 7 days (today included).
+		this.dataPeriodDays = 7;
+		this.dataPeriodEnd = this.convertDateToString( new Date() ) + 'T23:59';
+		this.dataPeriodStart = this.removeDaysFromDate( this.dataPeriodEnd, this.dataPeriodDays - 1 ) + 'T00:00';
 	}
 
 	/**
@@ -106,7 +108,7 @@ class CurrentPostDetailsProvider {
 						period_end: this.dataPeriodEnd,
 					} ),
 			} );
-		} catch ( wpError ) {
+		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			return Promise.reject( new ContentHelperError(
 				wpError.message, wpError.code
 			) );
@@ -166,7 +168,7 @@ class CurrentPostDetailsProvider {
 					total_views: totalViews, // Needed to calculate direct views.
 				} ),
 			} );
-		} catch ( wpError ) {
+		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			return Promise.reject( new ContentHelperError(
 				wpError.message, wpError.code
 			) );
@@ -180,17 +182,6 @@ class CurrentPostDetailsProvider {
 		}
 
 		return response.data;
-	}
-
-	/**
-	 * Sets the period for which to fetch the data.
-	 *
-	 * @param {number} days Number of last days to get the data for.
-	 */
-	private setDataPeriod( days: number ) {
-		this.dataPeriodDays = days;
-		this.dataPeriodEnd = this.convertDateToString( new Date() ) + 'T23:59';
-		this.dataPeriodStart = this.removeDaysFromDate( this.dataPeriodEnd, this.dataPeriodDays - 1 ) + 'T00:00';
 	}
 
 	/**

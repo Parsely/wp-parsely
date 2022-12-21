@@ -42,6 +42,9 @@
 		],
 		"classmap": [
 			"src/"
+		],
+		"files": [
+			"wp-parsely.php"
 		]
 	},
 	"autoload-dev": {

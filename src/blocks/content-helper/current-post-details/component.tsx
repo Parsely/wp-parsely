@@ -27,8 +27,8 @@ interface PostDetailsSectionProps {
  */
 function CurrentPostDetails() {
 	const [ loading, setLoading ] = useState<boolean>( true );
-	const [ error, setError ] = useState<ContentHelperError>( null );
-	const [ postDetailsData, setPostDetails ] = useState<PostPerformanceData>( null );
+	const [ error, setError ] = useState<ContentHelperError>();
+	const [ postDetailsData, setPostDetails ] = useState<PostPerformanceData>();
 	const provider = new CurrentPostDetailsProvider();
 
 	useEffect( () => {
@@ -60,7 +60,7 @@ function CurrentPostDetails() {
 	return (
 		loading
 			? <Spinner />
-			: <CurrentPostDetailsSections data={ postDetailsData } />
+			: <CurrentPostDetailsSections data={ postDetailsData as PostPerformanceData } />
 	);
 }
 

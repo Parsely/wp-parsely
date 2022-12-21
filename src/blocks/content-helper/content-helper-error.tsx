@@ -27,8 +27,7 @@ export enum ContentHelperErrorCode {
  */
 export class ContentHelperError extends Error {
 	protected code: ContentHelperErrorCode;
-	protected prefix: string;
-	protected hint: JSX.Element = null;
+	protected hint: JSX.Element | null = null;
 
 	constructor( message: string, code: ContentHelperErrorCode, prefix = __( 'Error: ', 'wp-parsely' ) ) {
 		super( prefix + message );

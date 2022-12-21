@@ -10,7 +10,6 @@ jobs:
         run: |
           npm ci
           npm run build
-          composer dump-autoload --classmap-authoritative
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@stable
         env:

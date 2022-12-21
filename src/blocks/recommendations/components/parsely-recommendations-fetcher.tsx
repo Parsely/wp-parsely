@@ -27,7 +27,7 @@ interface ApiResponse {
 
 const updateDelay = 300; // The Block's update delay in the Block Editor when settings/props change.
 
-const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } : ParselyRecommendationsFetcherProps ): JSX.Element => {
+const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } : ParselyRecommendationsFetcherProps ): JSX.Element | null => {
 	const {	dispatch } = useRecommendationsStore();
 
 	const query = {
@@ -58,7 +58,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } : Par
 		}
 
 		if ( error ) {
-			dispatch( setError( { error } ) );
+			dispatch( setError( { error: error as string } ) );
 			return;
 		}
 

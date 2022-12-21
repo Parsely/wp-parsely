@@ -40,7 +40,7 @@ interface RelatedTopPostsApiResponse {
 /**
  * The form of the result returned by the getRelatedTopPosts() function.
  */
-interface GetRelatedTopPostsResult {
+export interface GetRelatedTopPostsResult {
 	message: string;
 	posts: RelatedTopPostData[];
 }
@@ -109,9 +109,9 @@ class ContentHelperProvider {
 
 		try {
 			response = await apiFetch( {
-				path: addQueryArgs( '/wp-parsely/v1/stats/posts', query.query ),
+				path: addQueryArgs( '/wp-parsely/v1/stats/posts', query.query as object ),
 			} ) as RelatedTopPostsApiResponse;
-		} catch ( wpError ) {
+		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			return Promise.reject( new ContentHelperError(
 				wpError.message, wpError.code
 			) );
