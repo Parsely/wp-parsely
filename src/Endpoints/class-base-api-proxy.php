@@ -128,7 +128,7 @@ abstract class Base_API_Proxy {
 		if ( false === $this->parsely->site_id_is_set() ) {
 			return new WP_Error(
 				'parsely_site_id_not_set',
-				__( 'A Parse.ly API Key must be set in site options to use this endpoint', 'wp-parsely' ),
+				__( 'A Parse.ly Site ID must be set in site options to use this endpoint', 'wp-parsely' ),
 				array( 'status' => 403 )
 			);
 		}

@@ -148,17 +148,12 @@ abstract class ProxyEndpointTest extends TestCase {
 		);
 
 		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', self::$route ) );
-		self::assertSame( 200, $response->get_status() );
-		$data = $response->get_data();
-
-		self::assertSame( 0, $dispatched );
-		self::assertObjectHasAttribute( 'data', $data );
-		self::assertEmpty( $data->data );
-
-		self::assertObjectHasAttribute( 'error', $data );
-		self::assertEquals(
-			new WP_Error( 'parsely_site_id_not_set', 'A Parse.ly Site ID must be set in site options to use this endpoint' ),
-			$data->error
+		$error    = $response->as_error();
+		self::assertSame( 403, $response->get_status() );
+		self::assertSame( 'parsely_site_id_not_set', $error->get_error_code() );
+		self::assertSame(
+			'A Parse.ly Site ID must be set in site options to use this endpoint',
+			$error->get_error_message()
 		);
 	}
 }
