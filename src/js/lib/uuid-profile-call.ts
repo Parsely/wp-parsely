@@ -1,10 +1,10 @@
 // Only enqueuing the action if the site has a defined Site ID.
 if ( typeof window.wpParselySiteId !== 'undefined' ) {
-	window.wpParselyHooks.addAction( 'wpParselyOnLoad', 'wpParsely', uuidProfileCall );
+	window.wpParselyHooks?.addAction( 'wpParselyOnLoad', 'wpParsely', uuidProfileCall );
 }
 
 async function uuidProfileCall() {
-	const uuid = global.PARSELY?.config?.parsely_site_uuid;
+	const uuid = window.PARSELY?.config?.parsely_site_uuid;
 
 	if ( ! ( window.wpParselySiteId && uuid ) ) {
 		return;

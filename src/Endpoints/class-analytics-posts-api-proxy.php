@@ -30,8 +30,10 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 	 * Cached "proxy" to the Parse.ly `/analytics/posts` API endpoint.
 	 *
 	 * @param WP_REST_Request $request The request object.
+	 * @return stdClass|WPError stdClass containing the data or a WP_Error
+	 *                          object on failure.
 	 */
-	public function get_items( WP_REST_Request $request ): stdClass {
+	public function get_items( WP_REST_Request $request ) {
 		return $this->get_data( $request );
 	}
 

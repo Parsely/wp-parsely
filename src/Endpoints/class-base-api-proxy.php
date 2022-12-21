@@ -52,8 +52,10 @@ abstract class Base_API_Proxy {
 	 * Cached "proxy" to the Parse.ly API endpoint.
 	 *
 	 * @param WP_REST_Request $request The request object.
+	 * @return stdClass|WPError stdClass containing the data or a WP_Error
+	 *                          object on failure.
 	 */
-	abstract public function get_items( WP_REST_Request $request ): stdClass;
+	abstract public function get_items( WP_REST_Request $request );
 
 	/**
 	 * Determines if there are enough permissions to call the endpoint.
@@ -77,7 +79,7 @@ abstract class Base_API_Proxy {
 	/**
 	 * Registers the endpoint's WP REST route.
 	 *
-	 * @param string $endpoint The endpoint (e.g. /stats/posts).
+	 * @param string $endpoint The endpoint's route (e.g. /stats/posts).
 	 */
 	protected function register_endpoint( string $endpoint ): void {
 		$filter_key = trim( str_replace( '/', '_', $endpoint ), '_' );
@@ -112,31 +114,30 @@ abstract class Base_API_Proxy {
 	}
 
 	/**
-	 * Cached "proxy" to the Parsely `/analytics` endpoint.
+	 * Cached "proxy" to the endpoint.
 	 *
 	 * @param WP_REST_Request $request            The request object.
-	 * @param bool            $require_api_secret Specifies if the API Secret is required.
-	 * @param string          $param_item         The param element to use to get the items.
-	 * @return stdClass
+	 * @param bool            $require_api_secret Specifies if the API Secret is
+	 *                                            required.
+	 * @param string          $param_item         The param element to use to
+	 *                                            get the items.
+	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error
+	 *                          object on failure.
 	 */
-	protected function get_data( WP_REST_Request $request, bool $require_api_secret = true, string $param_item = null ): stdClass {
+	protected function get_data( WP_REST_Request $request, bool $require_api_secret = true, string $param_item = null ) {
 		if ( false === $this->parsely->site_id_is_set() ) {
-			return (object) array(
-				'data'  => array(),
-				'error' => new WP_Error(
-					'parsely_site_id_not_set',
-					__( 'A Parse.ly Site ID must be set in site options to use this endpoint', 'wp-parsely' )
-				),
+			return new WP_Error(
+				'parsely_site_id_not_set',
+				__( 'A Parse.ly API Key must be set in site options to use this endpoint', 'wp-parsely' ),
+				array( 'status' => 403 )
 			);
 		}
 
 		if ( true === $require_api_secret && false === $this->parsely->api_secret_is_set() ) {
-			return (object) array(
-				'data'  => array(),
-				'error' => new WP_Error(
-					'parsely_api_secret_not_set',
-					__( 'A Parse.ly API Secret must be set in site options to use this endpoint', 'wp-parsely' )
-				),
+			return new WP_Error(
+				'parsely_api_secret_not_set',
+				__( 'A Parse.ly API Secret must be set in site options to use this endpoint', 'wp-parsely' ),
+				array( 'status' => 403 )
 			);
 		}
 
@@ -150,10 +151,7 @@ abstract class Base_API_Proxy {
 		$response = $this->proxy->get_items( $params );
 
 		if ( is_wp_error( $response ) ) {
-			return (object) array(
-				'data'  => array(),
-				'error' => $response,
-			);
+			return $response;
 		}
 
 		return (object) array( 'data' => $this->generate_data( $response ) );

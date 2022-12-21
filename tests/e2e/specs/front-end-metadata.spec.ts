@@ -17,15 +17,15 @@ import {
 	waitForWpAdmin,
 } from '../utils';
 
-const setMetadataFormat = async ( format ) => {
+const setMetadataFormat = async ( format: string ) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
 	await waitForWpAdmin();
 
-	const selectedMetadataFormat = await page.$( `#meta_type_${ format }`, format );
-	await selectedMetadataFormat.click();
+	const selectedMetadataFormat = await page.$( `#meta_type_${ format }` );
+	await selectedMetadataFormat?.click();
 
 	const submitButton = await page.$( `form[name="parsely"] #submit` );
-	await submitButton.click();
+	await submitButton?.click();
 
 	await waitForWpAdmin();
 };

@@ -90,10 +90,10 @@ describe( 'Recommendations Block', () => {
 /**
  * Returns the Block's title text.
  *
- * @return {Promise<string>} The Block's title text.
+ * @return {Promise<string | null>} The Block's title text.
  */
-async function getTitleText() {
-	return page.$eval( '.parsely-recommendations-list-title', ( element ) => element.textContent );
+async function getTitleText(): Promise<string | null> {
+	return page.$eval( '.parsely-recommendations-list-title', ( element: Element ) => element.textContent );
 }
 
 /**
@@ -101,8 +101,8 @@ async function getTitleText() {
  *
  * @return {Promise<number>} The number of results displayed within the Block.
  */
-async function getResultCount() {
-	return page.$$eval( '.parsely-recommendations-list > li', ( element ) => element.length );
+async function getResultCount(): Promise<number> {
+	return page.$$eval( '.parsely-recommendations-list > li', ( element: Element[] ) => element.length );
 }
 
 /**
@@ -110,17 +110,17 @@ async function getResultCount() {
  *
  * @return {Promise<boolean>} Whether the Block contains one or more images.
  */
-async function resultsContainImage() {
+async function resultsContainImage(): Promise<boolean> {
 	return ( await page.$( '.parsely-recommendations-image' ) ) !== null;
 }
 
 /**
  * Returns the "src" attribute of all images contained within the Block.
  *
- * @return {Promise<Array<string>>} The "src" attribute of all images contained within the Block.
+ * @return {Promise<Array<string | null>>} The "src" attribute of all images contained within the Block.
  */
-async function getResultImageUrls() {
-	return page.$$eval( '.parsely-recommendations-image', ( imgs ) => imgs.map( ( img ) => img.getAttribute( 'src' ) ) );
+async function getResultImageUrls(): Promise<( string | null )[]> {
+	return page.$$eval( '.parsely-recommendations-image', ( imgs: Element[] ) => imgs.map( ( img: Element ) => img.getAttribute( 'src' ) ) );
 }
 
 /**
@@ -128,8 +128,8 @@ async function getResultImageUrls() {
  *
  * @return {Promise<Array<string, string>>} The "target" and "rel" attributes of all links contained within the Block.
  */
-async function getLinkTargets() {
-	return page.$$eval( '.parsely-recommendations-link', ( links ) => links.map(
-		( link ) => [ link.getAttribute( 'target' ), link.getAttribute( 'rel' ) ] )
+async function getLinkTargets(): Promise<string[][]> {
+	return page.$$eval( '.parsely-recommendations-link', ( links: Element[] ) => links.map(
+		( link: Element ): string[] => [ link.getAttribute( 'target' ) || '', link.getAttribute( 'rel' ) || '' ] )
 	);
 }
