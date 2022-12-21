@@ -491,13 +491,13 @@ class Parsely {
 	}
 
 	/**
-	 * Callback which called before updating parsely options
+	 * Callback which is called before updating plugin options.
 	 *
-	 * @param mixed $options   The value of the option now that it's been updated.
+	 * @param mixed $options The value of the option now that it's been updated.
 	 */
 	public function pre_update_parsely_options( $options ) {
 		/**
-		 * Makes option `apikey` backward compatible.
+		 * Keeps the deprecated `apikey` option for backward compatibility.
 		 *
 		 * @since 3.7.0
 		 * @todo Should unset `apikey` after 4.0.0 upgrade to clean the DB.
