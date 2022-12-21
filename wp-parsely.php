@@ -52,6 +52,8 @@ use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
 use Parsely\UI\Site_Health;
 
+require_once __DIR__ . '/src/Utils/utils.php';
+
 if ( class_exists( Parsely::class ) ) {
 	return;
 }
