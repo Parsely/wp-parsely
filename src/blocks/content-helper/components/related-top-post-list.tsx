@@ -9,9 +9,9 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import ContentHelperProvider from '../content-helper-provider';
 import RelatedTopPostListItem from './related-top-post-list-item';
+import { RelatedTopPostData } from '../models/related-top-post-data';
 import { ContentHelperError } from '../content-helper-error';
 import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../shared/utils/date';
-import { RelatedTopPostData } from '../models/related-top-post-data';
 
 const FETCH_RETRIES = 3;
 
@@ -20,8 +20,8 @@ const FETCH_RETRIES = 3;
  */
 function RelatedTopPostList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
-	const [ error, setError ] = useState<ContentHelperError>( null );
-	const [ message, setMessage ] = useState<string>( null );
+	const [ error, setError ] = useState<ContentHelperError>();
+	const [ message, setMessage ] = useState<string>();
 	const [ posts, setPosts ] = useState<RelatedTopPostData[]>( [] );
 
 	useEffect( () => {
@@ -59,7 +59,7 @@ function RelatedTopPostList() {
 			setLoading( false );
 			setPosts( [] );
 			setMessage( '' );
-			setError( null );
+			setError( undefined );
 		};
 	}, [] );
 

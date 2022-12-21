@@ -13,7 +13,7 @@ import {
 } from '../utils';
 
 // General initializations.
-const imageLocalPath = path.resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
+const imageLocalPath: string = path.resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
 const uploadedImagePattern = /\/wp-content\/uploads\/\d{4}\/\d{2}\/icon-256x256-?\d*\.png$/;
 const filePathInput = '#media-single-image-logo input.file-path';
 const modalAttachment = 'li.attachment'; // Used in both modals.
@@ -46,7 +46,7 @@ describe( 'Browse for logo button', () => {
 
 		// Confirm image deletion.
 		// Note: Dialog handling must be placed before the click event.
-		await page.on( 'dialog', async ( dialog ) => {
+		page.on( 'dialog', async ( dialog ) => {
 			await dialog.accept();
 		} );
 		await page.click( modalDeleteAttachmentLink );
@@ -70,7 +70,7 @@ describe( 'Browse for logo button', () => {
 	it( 'Should set the file path when a new image is uploaded and confirmed', async () => {
 		// Upload an image file and confirm the dialog.
 		const fileInput = await page.$( modalFileUploadInput );
-		await fileInput.uploadFile( imageLocalPath );
+		await fileInput?.uploadFile( imageLocalPath );
 		await page.waitForTimeout( 500 );
 		await page.click( modalConfirmButton );
 
@@ -90,7 +90,8 @@ describe( 'Browse for logo button', () => {
 		await page.click( modalConfirmButton );
 
 		// Verify that the image path has been updated.
-		const filePath = await page.$eval( filePathInput, ( input ) => input.value );
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const filePath = await page.$eval( filePathInput, ( input: any ) => input.value );
 		expect( filePath ).toMatch( uploadedImagePattern );
 	} );
 
@@ -104,7 +105,8 @@ describe( 'Browse for logo button', () => {
 		await page.keyboard.press( 'Escape' );
 
 		// Verify that the image path is empty.
-		const filePath = await page.$eval( filePathInput, ( input ) => input.value );
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const filePath = await page.$eval( filePathInput, ( input: any ) => input.value );
 		expect( filePath ).toMatch( '' );
 	} );
 } );
