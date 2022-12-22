@@ -52,6 +52,8 @@ use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
 use Parsely\UI\Site_Health;
 
+require_once __DIR__ . '/src/Utils/utils.php';
+
 if ( class_exists( Parsely::class ) ) {
 	return;
 }
@@ -234,7 +236,7 @@ require_once __DIR__ . '/src/Integrations/class-amp.php';
 require_once __DIR__ . '/src/Integrations/class-facebook-instant-articles.php';
 require_once __DIR__ . '/src/Integrations/class-google-web-stories.php';
 
-add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' );
+add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' ); // @phpstan-ignore-line
 /**
  * Instantiates Integrations collection and registers built-in integrations.
  *
@@ -247,7 +249,7 @@ function parsely_integrations( $parsely = null ): Integrations {
 	// If $parsely value is "", then this function is being called by the init
 	// hook and we can get the value from $GLOBALS. If $parsely is an instance
 	// of the Parsely object, then this function is being called by a test.
-	if ( empty( $parsely ) || get_class( $parsely ) !== Parsely::class ) {
+	if ( ! is_object( $parsely ) || get_class( $parsely ) !== Parsely::class ) {
 		$parsely = $GLOBALS['parsely'];
 	}
 
@@ -275,8 +277,19 @@ function parsely_run_rest_api_endpoint(
 	string $api_proxy_class_name,
 	WordPress_Cache &$wp_cache
 ): void {
+	/**
+	 * Internal Variable.
+	 *
+	 * @var RemoteAPI\Base_Proxy
+	 */
 	$proxy_instance        = new $proxy_class_name( $GLOBALS['parsely'] );
 	$cached_proxy_instance = new Cached_Proxy( $proxy_instance, $wp_cache );
-	$api_proxy_instance    = new $api_proxy_class_name( $GLOBALS['parsely'], $cached_proxy_instance );
+
+	/**
+	 * Internal Variable.
+	 *
+	 * @var Endpoints\Base_API_Proxy
+	 */
+	$api_proxy_instance = new $api_proxy_class_name( $GLOBALS['parsely'], $cached_proxy_instance );
 	$api_proxy_instance->run();
 }

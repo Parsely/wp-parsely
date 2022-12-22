@@ -20,7 +20,8 @@ interface Proxy {
 	 * Returns the items provided by this interface.
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
-	 * @return WP_Error|array<string, mixed>
+	 *
+	 * @return WP_Error|array<string, mixed>|false
 	 */
 	public function get_items( array $query );
 }

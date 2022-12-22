@@ -131,8 +131,7 @@ class GraphQL_Metadata extends Metadata_Endpoint {
 				return null;
 			}
 
-			$options             = $this->parsely->get_options();
-			$object_types        = array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
+			$object_types        = $this->parsely->get_all_track_types();
 			$current_object_type = get_post_type( $post );
 
 			return array(

@@ -118,12 +118,12 @@ class Scripts {
 
 		// If we don't have an API secret, there's no need to set the Site ID.
 		// Setting the Site ID triggers the UUID Profile Call function.
-		if ( isset( $parsely_options['api_secret'] ) && is_string( $parsely_options['api_secret'] ) && '' !== $parsely_options['api_secret'] ) {
+		if ( $this->parsely->api_secret_is_set() ) {
 			$js_site_id = "window.wpParselySiteId = '" . esc_js( $this->parsely->get_site_id() ) . "';";
 			wp_add_inline_script( 'wp-parsely-loader', $js_site_id, 'before' );
 		}
 
-		if ( isset( $parsely_options['disable_autotrack'] ) && true === $parsely_options['disable_autotrack'] ) {
+		if ( true === $parsely_options['disable_autotrack'] ) {
 			$disable_autotrack = 'window.wpParselyDisableAutotrack = true;';
 			wp_add_inline_script( 'wp-parsely-loader', $disable_autotrack, 'before' );
 		}
@@ -167,11 +167,14 @@ class Scripts {
 
 		if ( null !== $tag && 'wp-parsely-tracker' === $handle ) {
 			$tag = preg_replace( '/ id=(["\'])wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
-			$tag = str_replace(
-				' src=',
-				' data-parsely-site="' . esc_attr( $this->parsely->get_site_id() ) . '" src=',
-				$tag
-			);
+
+			if ( null !== $tag ) {
+				$tag = str_replace(
+					' src=',
+					' data-parsely-site="' . esc_attr( $this->parsely->get_site_id() ) . '" src=',
+					$tag
+				);
+			}
 		}
 
 		return $tag ?? '';

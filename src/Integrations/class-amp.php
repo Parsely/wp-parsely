@@ -53,7 +53,7 @@ class Amp extends Integration {
 	public function can_handle_amp_request(): bool {
 		$options = self::$parsely->get_options();
 
-		return $this->is_amp_request() && is_array( $options ) && ! $options['disable_amp'];
+		return $this->is_amp_request() && ! $options['disable_amp'];
 	}
 
 	/**
@@ -73,8 +73,8 @@ class Amp extends Integration {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array|null $analytics The analytics registry.
-	 * @return array The analytics registry.
+	 * @param array<string, mixed>|null $analytics The analytics registry.
+	 * @return array<string, mixed> The analytics registry.
 	 */
 	public function register_parsely_for_amp_analytics( ?array $analytics ): array {
 		if ( null === $analytics ) {
@@ -100,8 +100,8 @@ class Amp extends Integration {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array|null $analytics The analytics registry.
-	 * @return array The analytics registry.
+	 * @param array<string, mixed>|null $analytics The analytics registry.
+	 * @return array<string, mixed> The analytics registry.
 	 */
 	public function register_parsely_for_amp_native_analytics( ?array $analytics ): array {
 		if ( null === $analytics ) {
@@ -110,7 +110,7 @@ class Amp extends Integration {
 
 		$options = self::$parsely->get_options();
 
-		if ( isset( $options['disable_amp'] ) && true === $options['disable_amp'] ) {
+		if ( true === $options['disable_amp'] ) {
 			return $analytics;
 		}
 

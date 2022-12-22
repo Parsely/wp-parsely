@@ -19,7 +19,13 @@ use Parsely\Parsely;
  * @since 3.2.0
  */
 final class Network_Admin_Sites_List {
-	const COLUMN_NAME = 'parsely-site-id';
+	const COLUMN_NAME = 'parsely-site-key';
+	/**
+	 * Instance of Parsely class.
+	 *
+	 * @var Parsely
+	 */
+	private $parsely;
 
 	/**
 	 * Constructor.
@@ -48,10 +54,11 @@ final class Network_Admin_Sites_List {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $actions The list of actions meant to be displayed for the current site's
-	 *                       context in the row actions.
-	 * @param int   $_blog_id The blog ID for the current context.
-	 * @return array The list of actions including ours.
+	 * @param array<string, mixed> $actions  The list of actions meant to be displayed for the current site's
+	 *                                       context in the row actions.
+	 * @param int                  $_blog_id The blog ID for the current context.
+	 *
+	 * @return array<string, mixed> The list of actions including ours.
 	 */
 	public static function add_action_link( array $actions, int $_blog_id ): array {
 		if ( ! current_user_can( Parsely::CAPABILITY ) ) {
@@ -77,12 +84,13 @@ final class Network_Admin_Sites_List {
 	 * @return string ARIA label content including the blogname.
 	 */
 	private static function generate_aria_label_for_blog_id( int $_blog_id ): string {
-		$site = get_blog_details( $_blog_id );
+		$site     = get_blog_details( $_blog_id );
+		$blogname = false === $site ? '' : $site->blogname;
 
 		return sprintf(
 			/* translators: blog name or blog id if empty  */
 			__( 'Go to Parse.ly stats for "%s"', 'wp-parsely' ),
-			empty( $site->blogname ) ? $_blog_id : $site->blogname
+			'' === $blogname ? $_blog_id : $blogname
 		);
 	}
 
@@ -92,8 +100,8 @@ final class Network_Admin_Sites_List {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $sites_columns The list of columns meant to be displayed in the sites list table.
-	 * @return array The list of columns to display in the network admin table including ours.
+	 * @param array<string, mixed> $sites_columns The list of columns meant to be displayed in the sites list table.
+	 * @return array<string, mixed> The list of columns to display in the network admin table including ours.
 	 */
 	public static function add_site_id_column( array $sites_columns ): array {
 		$sites_columns[ self::COLUMN_NAME ] = __( 'Parse.ly Site ID', 'wp-parsely' );
