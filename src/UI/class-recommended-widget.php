@@ -355,7 +355,7 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return bool True if site_id and api_secret settings are not empty strings.
+	 * @return bool True if Site ID and API Secret settings are set.
 	 *              False otherwise.
 	 */
 	private function site_id_and_secret_are_populated(): bool {
