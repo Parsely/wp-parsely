@@ -33,8 +33,8 @@ const insertParselyWidget = async () => {
 const getNonActiveWidgetText = async () => {
 	const [ h3 ] = await page.$x( "//h3[contains(., 'Parse.ly Recommended Widget')]" );
 
-	const widgetContent = await page.evaluateHandle( ( el ) => el.nextElementSibling, h3 );
-	return page.evaluate( ( el ) => el.textContent, widgetContent );
+	const widgetContent = await page.evaluateHandle( ( el: HTMLElement ) => el.nextElementSibling, h3 );
+	return page.evaluate( ( el: HTMLElement ) => el.textContent, widgetContent );
 };
 
 describe( 'Recommended widget', () => {

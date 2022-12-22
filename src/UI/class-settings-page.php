@@ -846,7 +846,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 					<tr>
 						<th scope="col"><?php echo esc_html__( 'Post Type', 'wp-parsely' ); ?></th>
 						<th id="track-post-types--post" scope="col"><?php echo esc_html__( 'Track as Post', 'wp-parsely' ); ?></th>
-						<th id="track-post-types--page" scope="col"><?php echo esc_html__( 'Track as Page', 'wp-parsely' ); ?></th>
+						<th id="track-post-types--page" scope="col"><?php echo esc_html__( 'Track as Non-Post', 'wp-parsely' ); ?></th>
 						<th id="track-post-types--none" scope="col"><?php echo esc_html__( 'Do not track', 'wp-parsely' ); ?></th>
 					</tr>
 				</thead>

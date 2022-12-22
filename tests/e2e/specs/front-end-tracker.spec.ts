@@ -16,8 +16,8 @@ import {
 const getAssetVersion = () => {
 	const data = fs.readFileSync( 'build/loader.asset.php', { encoding: 'utf8', flag: 'r' } );
 	const r = data.match( /'version' => '(.*)'/ );
-	expect( r[ 1 ].length ).toBeGreaterThanOrEqual( 1 );
-	return r[ 1 ];
+	expect( r?.[ 1 ].length ).toBeGreaterThanOrEqual( 1 );
+	return r?.[ 1 ];
 };
 
 describe( 'Front end tracking code insertion', () => {
