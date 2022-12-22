@@ -169,7 +169,7 @@ class Scripts {
 			$tag = preg_replace( '/ id=(["\'])wp-parsely-tracker-js\1/', ' id="parsely-cfg"', $tag );
 			$tag = str_replace(
 				' src=',
-				' data-parsely-site="' . esc_attr( $parsely_options['site_id'] ) . '" src=',
+				' data-parsely-site="' . esc_attr( $this->parsely->get_site_id() ) . '" src=',
 				$tag
 			);
 		}

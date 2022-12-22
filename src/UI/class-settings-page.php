@@ -303,7 +303,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		);
 
 		// Site ID.
-		$field_id   = 'site_id';
+		$field_id   = 'apikey';
 		$field_args = array(
 			'option_key'    => $field_id,
 			'help_text'     => __( 'Your Site ID is typically your own site domain without <code>http(s)://</code> prefixes or trailing <code>/</code> (e.g. <code>mydomain.com</code>).', 'wp-parsely' ),
@@ -920,22 +920,22 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	public function validate_options( array $input ): array {
 		$options = $this->parsely->get_options();
 
-		if ( empty( $input['site_id'] ) ) {
+		if ( empty( $input['apikey'] ) ) {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
-				'site_id',
+				'apikey',
 				__( 'Please specify the Site ID', 'wp-parsely' )
 			);
 		} else {
-			$site_id = $this->sanitize_site_id( $input['site_id'] );
+			$site_id = $this->sanitize_site_id( $input['apikey'] );
 			if ( false === $this->validate_site_id( $site_id ) ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
-					'site_id',
+					'apikey',
 					__( 'Your Parse.ly Site ID looks incorrect, it should look like "example.com".', 'wp-parsely' )
 				);
 			} else {
-				$input['site_id'] = $site_id;
+				$input['apikey'] = $site_id;
 			}
 		}
 

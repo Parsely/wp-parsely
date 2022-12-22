@@ -83,7 +83,7 @@ final class GoogleWebStoriesTest extends TestCase {
 
 		self::expectOutputString( $expected );
 
-		$this::set_options( array( 'site_id' => 'blog.parsely.com' ) );
+		$this::set_options( array( 'apikey' => 'blog.parsely.com' ) );
 		$this::$google->render_amp_analytics_tracker();
 	}
 }

@@ -108,7 +108,7 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::get_items
 	 */
 	public function test_get_items() {
-		TestCase::set_options( array( 'site_id' => 'example.com' ) );
+		TestCase::set_options( array( 'apikey' => 'example.com' ) );
 
 		$dispatched = 0;
 

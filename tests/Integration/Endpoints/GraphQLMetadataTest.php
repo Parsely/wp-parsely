@@ -53,7 +53,7 @@ final class GraphQLMetadataTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_graphql_enqueued(): void {
-		self::set_options( array( 'site_id' => 'testkey' ) );
+		self::set_options( array( 'apikey' => 'testkey' ) );
 
 		self::$graphql->run();
 		self::assertEquals( 10, has_filter( 'graphql_register_types', array( self::$graphql, 'register_meta' ) ) );
@@ -68,7 +68,7 @@ final class GraphQLMetadataTest extends TestCase {
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
 	 */
 	public function test_graphql_enqueued_filter(): void {
-		self::set_options( array( 'site_id' => 'testkey' ) );
+		self::set_options( array( 'apikey' => 'testkey' ) );
 		add_filter( 'wp_parsely_enable_graphql_support', '__return_false' );
 
 		self::$graphql->run();

@@ -21,7 +21,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	use \Parsely\Tests\Tests_Reflection;
 
 	public const DEFAULT_OPTIONS = array(
-		'site_id'                   => 'blog.parsely.com',
+		'apikey'                    => 'blog.parsely.com',
 		'content_id_prefix'         => '',
 		'use_top_level_cats'        => false,
 		'cats_as_tags'              => false,
@@ -34,7 +34,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	);
 
 	public const EMPTY_DEFAULT_OPTIONS = array(
-		'site_id'                     => '',
+		'apikey'                      => '',
 		'content_id_prefix'           => '',
 		'api_secret'                  => '',
 		'use_top_level_cats'          => false,

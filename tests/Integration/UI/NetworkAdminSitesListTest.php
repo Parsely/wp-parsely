@@ -84,7 +84,7 @@ final class NetworkAdminSitesListTest extends TestCase {
 
 		self::$sites_list->run();
 
-		update_blog_option( $blog_id_with_site_id, Parsely::OPTIONS_KEY, array( 'site_id' => 'parselyrocks.example.com' ) );
+		update_blog_option( $blog_id_with_site_id, Parsely::OPTIONS_KEY, array( 'apikey' => 'parselyrocks.example.com' ) );
 
 		$this->table->prepare_items();
 

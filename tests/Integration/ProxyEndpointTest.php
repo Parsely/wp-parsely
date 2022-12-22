@@ -136,7 +136,7 @@ abstract class ProxyEndpointTest extends TestCase {
 	 * the Site ID is not populated in site options.
 	 */
 	public function test_get_items_fails_without_site_id_set() {
-		TestCase::set_options( array( 'site_id' => '' ) );
+		TestCase::set_options( array( 'apikey' => '' ) );
 
 		$dispatched = 0;
 		add_filter(

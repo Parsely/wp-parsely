@@ -126,7 +126,7 @@ final class AmpTest extends TestCase {
 		self::assertSame( $analytics, $amp->register_parsely_for_amp_analytics( $analytics ) );
 
 		// Now set the key and test for changes.
-		self::set_options( array( 'site_id' => 'my-site-id.com' ) );
+		self::set_options( array( 'apikey' => 'my-site-id.com' ) );
 
 		$output = $amp->register_parsely_for_amp_analytics( $analytics );
 
@@ -161,7 +161,7 @@ final class AmpTest extends TestCase {
 		self::set_options(
 			array(
 				'disable_amp' => false,
-				'site_id'     => 'my-site-id.com',
+				'apikey'      => 'my-site-id.com',
 			)
 		);
 

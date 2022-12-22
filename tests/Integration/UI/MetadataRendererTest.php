@@ -108,7 +108,7 @@ final class MetadataRendererTest extends TestCase {
 	 * @uses \Parsely\UI\Metadata_Renderer::filter_empty_and_not_string_from_array
 	 */
 	public function test_render_metadata_json_ld(): void {
-		self::set_options( array( 'site_id' => 'testkey' ) );
+		self::set_options( array( 'apikey' => 'testkey' ) );
 
 		$post_id = self::factory()->post->create();
 		$this->go_to( home_url( '/?p=' . $post_id ) );
@@ -164,7 +164,7 @@ final class MetadataRendererTest extends TestCase {
 	 * @uses \Parsely\UI\Metadata_Renderer::filter_empty_and_not_string_from_array
 	 */
 	public function test_render_metadata_repeated_metas(): void {
-		self::set_options( array( 'site_id' => 'testkey' ) );
+		self::set_options( array( 'apikey' => 'testkey' ) );
 
 		$post_id = self::factory()->post->create();
 		$this->go_to( home_url( '/?p=' . $post_id ) );
@@ -220,7 +220,7 @@ final class MetadataRendererTest extends TestCase {
 	 * @uses \Parsely\UI\Metadata_Renderer::filter_empty_and_not_string_from_array
 	 */
 	public function test_render_metadata_int_global_post(): void {
-		self::set_options( array( 'site_id' => 'testkey' ) );
+		self::set_options( array( 'apikey' => 'testkey' ) );
 
 		$post_id = self::factory()->post->create();
 

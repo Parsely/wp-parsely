@@ -188,11 +188,11 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_checking_site_id_is_set_or_not(): void {
-		self::set_options( array( 'site_id' => '' ) );
+		self::set_options( array( 'apikey' => '' ) );
 		self::assertFalse( self::$parsely->site_id_is_set() );
 		self::assertTrue( self::$parsely->site_id_is_missing() );
 
-		self::set_options( array( 'site_id' => 'somekey' ) );
+		self::set_options( array( 'apikey' => 'somekey' ) );
 		self::assertTrue( self::$parsely->site_id_is_set() );
 		self::assertFalse( self::$parsely->site_id_is_missing() );
 	}
@@ -207,9 +207,9 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_can_retrieve_site_id(): void {
-		self::set_options( array( 'site_id' => 'somekey' ) );
+		self::set_options( array( 'apikey' => 'somekey' ) );
 		self::assertSame( 'somekey', self::$parsely->get_site_id() );
-		self::set_options( array( 'site_id' => '' ) );
+		self::set_options( array( 'apikey' => '' ) );
 		self::assertSame( '', self::$parsely->get_site_id() );
 	}
 
@@ -291,7 +291,7 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_tracker_no_site_id(): void {
-		self::set_options( array( 'site_id' => '' ) );
+		self::set_options( array( 'apikey' => '' ) );
 		$expected = '';
 		self::assertEquals( $expected, self::$parsely->get_tracker_url() );
 	}

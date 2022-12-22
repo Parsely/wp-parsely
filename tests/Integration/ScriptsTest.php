@@ -74,7 +74,7 @@ final class ScriptsTest extends TestCase {
 	 * @group scripts
 	 */
 	public function test_run_not_adds_actions_no_site_id(): void {
-		TestCase::set_options( array( 'site_id' => null ) );
+		TestCase::set_options( array( 'apikey' => null ) );
 
 		self::$scripts->run();
 
@@ -401,7 +401,7 @@ final class ScriptsTest extends TestCase {
 		// These custom options will be used for both blogs.
 		$custom_options = array(
 			'track_authenticated_users' => false, // Don't track logged-in users.
-			'site_id'                   => 'blog.parsely.com',
+			'apikey'                    => 'blog.parsely.com',
 		);
 
 		// Only first admin is logged-in throughout the test.

@@ -56,7 +56,7 @@ final class RestMetadataTest extends TestCase {
 	public function test_register_enqueued_rest_init(): void {
 		global $wp_rest_additional_fields;
 
-		self::set_options( array( 'site_id' => 'testkey' ) );
+		self::set_options( array( 'apikey' => 'testkey' ) );
 		self::$rest->run();
 
 		$this->assertParselyRestFieldIsConstructedCorrectly( 'page', $wp_rest_additional_fields );
@@ -76,7 +76,7 @@ final class RestMetadataTest extends TestCase {
 	public function test_register_enqueued_rest_init_filter(): void {
 		global $wp_rest_additional_fields;
 
-		self::set_options( array( 'site_id' => 'testkey' ) );
+		self::set_options( array( 'apikey' => 'testkey' ) );
 		add_filter( 'wp_parsely_enable_rest_api_support', '__return_false' );
 		self::$rest->run();
 
@@ -192,7 +192,7 @@ final class RestMetadataTest extends TestCase {
 	 * @uses \Parsely\UI\Metadata_Renderer::render_metadata
 	 */
 	public function test_get_callback(): void {
-		self::set_options( array( 'site_id' => 'testkey' ) );
+		self::set_options( array( 'apikey' => 'testkey' ) );
 		$post_id = self::factory()->post->create();
 
 		// Go to current post to update WP_Query with correct data.
@@ -250,7 +250,7 @@ final class RestMetadataTest extends TestCase {
 	 */
 	public function test_get_callback_with_filter(): void {
 		add_filter( 'wp_parsely_enable_rest_rendered_support', '__return_false' );
-		self::set_options( array( 'site_id' => 'testkey' ) );
+		self::set_options( array( 'apikey' => 'testkey' ) );
 		$post_id = self::factory()->post->create();
 
 		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
@@ -304,7 +304,7 @@ final class RestMetadataTest extends TestCase {
 	 */
 	public function test_get_callback_with_url_filter(): void {
 		add_filter( 'wp_parsely_enable_tracker_url', '__return_false' );
-		self::set_options( array( 'site_id' => 'testkey' ) );
+		self::set_options( array( 'apikey' => 'testkey' ) );
 		$post_id = self::factory()->post->create();
 
 		// Go to current post to update WP_Query with correct data.
@@ -450,7 +450,7 @@ final class RestMetadataTest extends TestCase {
 	public function test_get_rendered_repeated_metas(): void {
 		global $post;
 
-		self::set_options( array( 'site_id' => 'testkey' ) );
+		self::set_options( array( 'apikey' => 'testkey' ) );
 
 		$post_id = self::factory()->post->create(
 			array(

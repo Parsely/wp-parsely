@@ -100,7 +100,7 @@ final class RowActionsTest extends TestCase {
 		$existing_actions = array();
 
 		// Unset Site ID.
-		self::set_options( array( 'site_id' => '' ) );
+		self::set_options( array( 'apikey' => '' ) );
 
 		// Guard clause catches, and original $actions is returned.
 		$actions = self::$row_actions->row_actions_add_parsely_link( $existing_actions, $post );
@@ -136,7 +136,7 @@ final class RowActionsTest extends TestCase {
 		$existing_actions = array();
 
 		// Set the Site ID.
-		self::set_options( array( 'site_id' => 'somekey' ) );
+		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		// All conditions for the guard clause have been met.
 		$actions = self::$row_actions->row_actions_add_parsely_link( $existing_actions, $post );

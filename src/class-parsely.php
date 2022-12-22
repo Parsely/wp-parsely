@@ -35,7 +35,7 @@ class Parsely {
 	 * @var array<string, mixed> $option_defaults The defaults we need for the class.
 	 */
 	private $option_defaults = array(
-		'site_id'                     => '',
+		'apikey'                      => '',
 		'content_id_prefix'           => '',
 		'api_secret'                  => '',
 		'use_top_level_cats'          => false,
@@ -111,7 +111,6 @@ class Parsely {
 		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
 		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
-		add_filter( 'pre_update_option_' . self::OPTIONS_KEY, array( $this, 'pre_update_parsely_options' ) );
 	}
 
 	/**
@@ -283,7 +282,7 @@ class Parsely {
 		$body                    = wp_json_encode(
 			array(
 				'secret'   => $parsely_metadata_secret,
-				'site_id'  => $parsely_options['site_id'],
+				'apikey'   => $this->get_site_id(),
 				'metadata' => $endpoint_metadata,
 			)
 		);
@@ -360,16 +359,6 @@ class Parsely {
 			return $this->option_defaults;
 		}
 
-		/**
-		 * Makes option `site_id` compatible with `apikey`.
-		 *
-		 * @since 3.7.0
-		 * @todo Should be removed after 4.0.0 upgrade
-		 */
-		if ( isset( $options['apikey'] ) ) {
-			$options['site_id'] = $options['apikey'];
-		}
-
 		return array_merge( $this->option_defaults, $options );
 	}
 
@@ -428,9 +417,9 @@ class Parsely {
 		$options = $this->get_options();
 
 		return (
-				isset( $options['site_id'] ) &&
-				is_string( $options['site_id'] ) &&
-				'' !== $options['site_id']
+				isset( $options['apikey'] ) &&
+				is_string( $options['apikey'] ) &&
+				'' !== $options['apikey']
 		);
 	}
 
@@ -457,7 +446,7 @@ class Parsely {
 	public function get_site_id(): string {
 		$options = $this->get_options();
 
-		return $this->site_id_is_set() ? $options['site_id'] : '';
+		return $this->site_id_is_set() ? $options['apikey'] : '';
 	}
 
 	/**
@@ -488,22 +477,5 @@ class Parsely {
 		$options = $this->get_options();
 
 		return $this->api_secret_is_set() ? $options['api_secret'] : '';
-	}
-
-	/**
-	 * Callback which is called before updating plugin options.
-	 *
-	 * @param mixed $options The value of the option now that it's been updated.
-	 */
-	public function pre_update_parsely_options( $options ) {
-		/**
-		 * Keeps the deprecated `apikey` option for backward compatibility.
-		 *
-		 * @since 3.7.0
-		 * @todo Should unset `apikey` after 4.0.0 upgrade to clean the DB.
-		 */
-		$options['apikey'] = $options['site_id'];
-
-		return $options;
 	}
 }

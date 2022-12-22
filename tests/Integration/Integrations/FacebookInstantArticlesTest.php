@@ -102,7 +102,7 @@ final class FacebookInstantArticlesTest extends TestCase {
 
 		// Site ID is set.
 		$fake_site_id = 'my-site-id.com';
-		self::set_options( array( 'site_id' => $fake_site_id ) );
+		self::set_options( array( 'apikey' => $fake_site_id ) );
 		self::$fbia->insert_parsely_tracking( $registry );
 		self::assert_parsely_added_to_registry( $registry, $fake_site_id );
 	}

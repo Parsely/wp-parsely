@@ -40,7 +40,7 @@ export const setTextBoxValue = async ( id: string, value: string ) => {
 export const setSiteKeys = async ( siteId = 'e2etest.example.com', apiSecret = '' ) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
 
-	await setTextBoxValue( 'site_id', siteId );
+	await setTextBoxValue( 'apikey', siteId );
 	await setTextBoxValue( 'api_secret', apiSecret );
 
 	await page.click( 'input#submit' );

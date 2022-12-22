@@ -85,7 +85,7 @@ final class DashboardLinkTest extends TestCase {
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown(): void {
 		$published_post = self::factory()->post->create_and_get();
-		self::set_options( array( 'site_id' => 'somekey' ) );
+		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		self::assertTrue( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 	}
@@ -108,7 +108,7 @@ final class DashboardLinkTest extends TestCase {
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_has_not_trackable_status(): void {
 		$draft_post = self::factory()->post->create_and_get( array( 'post_status' => 'draft' ) );
-		self::set_options( array( 'site_id' => 'somekey' ) );
+		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		self::assertFalse( Dashboard_Link::can_show_link( $draft_post, self::$parsely ) );
 	}
@@ -129,7 +129,7 @@ final class DashboardLinkTest extends TestCase {
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_is_viewable(): void {
 		$non_publicly_queryable_post = self::factory()->post->create_and_get( array( 'post_type' => 'parsely_tests_pt' ) );
-		self::set_options( array( 'site_id' => 'somekey' ) );
+		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		self::assertFalse( Dashboard_Link::can_show_link( $non_publicly_queryable_post, self::$parsely ) );
 	}
@@ -153,11 +153,11 @@ final class DashboardLinkTest extends TestCase {
 		$published_post = self::factory()->post->create_and_get();
 
 		// Site ID is not set.
-		self::set_options( array( 'site_id' => '' ) );
+		self::set_options( array( 'apikey' => '' ) );
 		self::assertFalse( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 
 		// Site ID is set.
-		self::set_options( array( 'site_id' => 'somekey' ) );
+		self::set_options( array( 'apikey' => 'somekey' ) );
 		self::assertTrue( Dashboard_Link::can_show_link( $published_post, self::$parsely ) );
 	}
 }

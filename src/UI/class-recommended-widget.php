@@ -109,9 +109,8 @@ final class Recommended_Widget extends WP_Widget {
 		echo wp_kses_post( $title_html );
 
 		// Set up the variables.
-		$options = $this->parsely->get_options();
 		$api_url = $this->get_api_url(
-			$options['site_id'],
+			$this->parsely->get_site_id(),
 			$instance['published_within'],
 			$instance['sort'],
 			$instance['boost'],

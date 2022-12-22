@@ -60,7 +60,7 @@ abstract class RemoteAPITest extends TestCase {
 	 * @param string $url Expected generated URL.
 	 */
 	public function test_api_url( array $query, string $url ): void {
-		self::set_options( array( 'site_id' => 'my-key' ) );
+		self::set_options( array( 'apikey' => 'my-key' ) );
 		self::assertEquals( $url, self::$proxy->get_api_url( $query ) );
 	}
 
