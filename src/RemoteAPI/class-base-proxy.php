@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\RemoteAPI;
 
 use Parsely\Parsely;
-use RuntimeException;
+use UnexpectedValueException;
 use WP_Error;
 
 /**
@@ -48,18 +48,18 @@ abstract class Base_Proxy implements Proxy {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @throws RuntimeException If the endpoint constant is not defined.
-	 * @throws RuntimeException If the query filter constant is not defined.
+	 * @throws UnexpectedValueException If the endpoint constant is not defined.
+	 * @throws UnexpectedValueException If the query filter constant is not defined.
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @return string
 	 */
 	public function get_api_url( array $query ): string {
 		if ( static::ENDPOINT === '' ) {
-			throw new RuntimeException( 'ENDPOINT constant must be defined in child class.' );
+			throw new UnexpectedValueException( 'ENDPOINT constant must be defined in child class.' );
 		}
 		if ( static::QUERY_FILTER === '' ) {
-			throw new RuntimeException( 'QUERY_FILTER constant must be defined in child class.' );
+			throw new UnexpectedValueException( 'QUERY_FILTER constant must be defined in child class.' );
 		}
 
 		$query['apikey'] = $this->parsely->get_api_key();

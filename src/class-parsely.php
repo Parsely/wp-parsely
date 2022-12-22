@@ -117,6 +117,21 @@ class Parsely {
 	);
 
 	/**
+	 * Declare all supported types (both post and non-post types).
+	 *
+	 * @since 3.7.0
+	 * @var string[]
+	 */
+	private static $all_supported_types;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		self::$all_supported_types = array_merge( self::SUPPORTED_JSONLD_POST_TYPES, self::SUPPORTED_JSONLD_NON_POST_TYPES );
+	}
+
+	/**
 	 * Registers action and filter hook callbacks, and immediately upgrades
 	 * options if needed.
 	 */
@@ -510,6 +525,17 @@ class Parsely {
 		$options = $this->get_options();
 
 		return $this->api_secret_is_set() ? $options['api_secret'] : '';
+	}
+
+	/**
+	 * Returns all supported post and non-post types.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @return string[] all supported types
+	 */
+	public function get_all_supported_types(): array {
+		return self::$all_supported_types;
 	}
 
 	/**

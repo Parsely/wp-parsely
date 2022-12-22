@@ -65,12 +65,10 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		$direct_views    = absint( preg_replace( '/\D/', '', $referrers_types->direct->views ) );
 		$referrers_top   = $this->generate_referrers_data( 5, $response, $direct_views );
 
-		$result = array(
+		return array(
 			'top'   => $referrers_top,
 			'types' => $referrers_types,
 		);
-
-		return $result;
 	}
 
 	/**

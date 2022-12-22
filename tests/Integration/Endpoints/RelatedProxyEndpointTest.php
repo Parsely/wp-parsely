@@ -63,7 +63,7 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
-	public function test_do_not_register_route_when_proxy_is_disabled(): void {
+	public function test_verify_that_route_is_not_registered_when_proxy_is_disabled(): void {
 		parent::test_do_not_register_route_when_proxy_is_disabled();
 	}
 
@@ -83,7 +83,7 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
-	public function test_get_items_fails_without_apikey_set() {
+	public function test_get_items_fails_when_apikey_is_not_set() {
 		parent::test_get_items_fails_without_apikey_set();
 	}
 
