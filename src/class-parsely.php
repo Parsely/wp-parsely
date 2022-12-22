@@ -459,10 +459,7 @@ class Parsely {
 	public function api_key_is_set(): bool {
 		$options = $this->get_options();
 
-		return (
-				is_string( $options['apikey'] ) && // @phpstan-ignore-line.
-				'' !== $options['apikey']
-		);
+		return '' !== $options['apikey'];
 	}
 
 	/**
@@ -499,10 +496,7 @@ class Parsely {
 	public function api_secret_is_set(): bool {
 		$options = $this->get_options();
 
-		return (
-				is_string( $options['api_secret'] ) && // @phpstan-ignore-line.
-				'' !== $options['api_secret']
-		);
+		return '' !== $options['api_secret'];
 	}
 
 	/**
@@ -519,7 +513,7 @@ class Parsely {
 	}
 
 	/**
-	 * Get all track post types.
+	 * Gets all tracked post types.
 	 *
 	 * @since 3.7.0
 	 *
