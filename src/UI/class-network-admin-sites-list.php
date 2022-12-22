@@ -19,7 +19,7 @@ use Parsely\Parsely;
  * @since 3.2.0
  */
 final class Network_Admin_Sites_List {
-	const COLUMN_NAME = 'parsely-site-key';
+	const COLUMN_NAME = 'parsely-site-id';
 	/**
 	 * Instance of Parsely class.
 	 *
