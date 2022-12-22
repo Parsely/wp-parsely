@@ -38,7 +38,7 @@ final class Facebook_Instant_Articles extends Integration {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array $registry The registry info for Facebook Instant Articles.
+	 * @param array<string, mixed> $registry The registry info for Facebook Instant Articles.
 	 */
 	public function insert_parsely_tracking( &$registry ): void {
 		$parsely = new Parsely();

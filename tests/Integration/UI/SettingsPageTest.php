@@ -184,7 +184,7 @@ final class SettingsPageTest extends TestCase {
 
 		unset( $options['disable_autotrack'] );
 		$actual = self::$settings_page->validate_options( $options );
-		self::assertSame( $expected, $actual );
+		self::assertEquals( $expected, $actual );
 	}
 
 	/**

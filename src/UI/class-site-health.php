@@ -53,7 +53,7 @@ final class Site_Health {
 	 *
 	 * @param array<string, mixed> $tests An associative array of direct and asynchronous tests.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public function check_api_key( array $tests ): array {
 		$test = function() {
@@ -80,7 +80,13 @@ final class Site_Health {
 			return $result;
 		};
 
-		$tests['direct']['parsely'] = array(
+		/**
+		 * Variable.
+		 *
+		 * @var array<mixed>
+		 */
+		$direct            = $tests['direct'];
+		$direct['parsely'] = array(
 			'label' => __( 'Parse.ly Site ID', 'wp-parsely' ),
 			'test'  => $test,
 		);

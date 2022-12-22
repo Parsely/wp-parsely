@@ -62,10 +62,10 @@ class Recommendations_Block {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $attributes The user-controlled settings for this block.
-	 * @return string
+	 * @param array<string, string> $attributes The user-controlled settings for this block.
+	 * @return string|false
 	 */
-	public static function render_callback( array $attributes ): string {
+	public static function render_callback( array $attributes ) {
 		/**
 		 * In block.json we define a `viewScript` that is mean to only be loaded
 		 * on the front end. We need to manually enqueue this script here.
@@ -75,7 +75,7 @@ class Recommendations_Block {
 		wp_enqueue_script( 'wp-parsely-recommendations-view-script' );
 		ob_start();
 		?>
-<section
+		<section
 		<?php
 		echo wp_kses_post( get_block_wrapper_attributes() );
 
@@ -83,7 +83,7 @@ class Recommendations_Block {
 			echo ' data-' . esc_attr( $name ) . '="' . esc_attr( $value ) . '"';
 		}
 		?>
-></section>
+		></section>
 		<?php
 		return ob_get_clean();
 	}

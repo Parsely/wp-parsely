@@ -105,7 +105,7 @@ final class Metadata_Renderer {
 		$metadata = ( new Metadata( $this->parsely ) )->construct_metadata( $parsed_post );
 
 		// Something went wrong - abort.
-		if ( 0 === count( $metadata ) || ! isset( $metadata['headline'] ) ) {
+		if ( ! isset( $metadata['headline'] ) ) {
 			return;
 		}
 
@@ -114,13 +114,13 @@ final class Metadata_Renderer {
 			echo '<script type="application/ld+json">' . wp_json_encode( $metadata ) . '</script>';
 		} else {
 			// Assume `meta_type` is `repeated_metas`.
-			$parsely_post_type = $this->parsely->convert_jsonld_to_parsely_type( $metadata['@type'] );
+			$parsely_post_type = $this->parsely->convert_jsonld_to_parsely_type( $metadata['@type'] ?? '' );
 			if ( isset( $metadata['keywords'] ) && is_array( $metadata['keywords'] ) ) {
 				$metadata['keywords'] = implode( ',', $metadata['keywords'] );
 			}
 
 			$parsely_metas = array(
-				'title'     => $metadata['headline'] ?? null,
+				'title'     => $metadata['headline'],
 				'link'      => $metadata['url'] ?? null,
 				'type'      => $parsely_post_type,
 				'image-url' => $metadata['thumbnailUrl'] ?? null,

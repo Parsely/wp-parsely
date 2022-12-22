@@ -18,6 +18,18 @@ use const Parsely\PARSELY_FILE;
 
 /**
  * Provides a widget with Parse.ly recommended articles.
+ *
+ * @phpstan-type WidgetSettings array{
+ *   title: string,
+ *   return_limit: int,
+ *   display_direction: string,
+ *   published_within: int,
+ *   sort: string,
+ *   boost: string,
+ *   personalize_results: bool,
+ *   img_src: string,
+ *   display_author: bool,
+ * }
  */
 final class Recommended_Widget extends WP_Widget {
 	/**
@@ -26,6 +38,23 @@ final class Recommended_Widget extends WP_Widget {
 	 * @var Parsely
 	 */
 	private $parsely;
+
+	/**
+	 * Default values of widget settings
+	 *
+	 * @var WidgetSettings
+	 */
+	private static $default_widget_settings = array(
+		'title'               => '',
+		'return_limit'        => 5,
+		'display_direction'   => 'vertical',
+		'published_within'    => 0,
+		'sort'                => 'score',
+		'boost'               => 'views',
+		'personalize_results' => false,
+		'img_src'             => 'parsely_thumb',
+		'display_author'      => false,
+	);
 
 	/**
 	 * Constructor.
@@ -88,14 +117,15 @@ final class Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the widget function.
 	 *
-	 * @param array $args Widget Arguments.
-	 * @param array $instance Values saved to the db.
+	 * @param array<string, string> $args            Widget Arguments.
+	 * @param array<mixed>          $widget_settings Values saved to the db.
 	 */
-	public function widget( $args, $instance ): void {
+	public function widget( $args, $widget_settings ): void /* @phpstan-ignore-line */ {
 		if ( ! $this->api_key_and_secret_are_populated() ) {
 			return;
 		}
 
+		$instance          = $this->get_widget_settings( $widget_settings );
 		$removed_title_esc = remove_filter( 'widget_title', 'esc_html' );
 
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
@@ -109,25 +139,24 @@ final class Recommended_Widget extends WP_Widget {
 		echo wp_kses_post( $title_html );
 
 		// Set up the variables.
-		$options = $this->parsely->get_options();
 		$api_url = $this->get_api_url(
-			$options['apikey'],
+			$this->parsely->get_api_key(),
 			$instance['published_within'],
 			$instance['sort'],
 			$instance['boost'],
-			(int) $instance['return_limit']
+			$instance['return_limit']
 		);
 
 		?>
 
 		<div class="parsely-recommended-widget"
-			data-parsely-widget-display-author="<?php echo esc_attr( wp_json_encode( isset( $instance['display_author'] ) && $instance['display_author'] ) ); ?>"
-			data-parsely-widget-display-direction="<?php echo esc_attr( $instance['display_direction'] ?? '' ); ?>"
+			data-parsely-widget-display-author="<?php echo esc_attr( (string) wp_json_encode( $instance['display_author'] ) ); ?>"
+			data-parsely-widget-display-direction="<?php echo esc_attr( $instance['display_direction'] ); ?>"
 			data-parsely-widget-api-url="<?php echo esc_url( $api_url ); ?>"
-			data-parsely-widget-img-display="<?php echo esc_attr( $instance['img_src'] ?? '' ); ?>"
-			data-parsely-widget-permalink="<?php echo esc_url( get_permalink() ); ?>"
-			data-parsely-widget-personalized="<?php echo esc_attr( wp_json_encode( isset( $instance['personalize_results'] ) && $instance['personalize_results'] ) ); ?>"
-			data-parsely-widget-id="<?php echo esc_attr( $this->id ); ?>"
+			data-parsely-widget-img-display="<?php echo esc_attr( $instance['img_src'] ); ?>"
+			data-parsely-widget-permalink="<?php echo esc_url( (string) get_permalink() ); ?>"
+			data-parsely-widget-personalized="<?php echo esc_attr( (string) wp_json_encode( $instance['personalize_results'] ) ); ?>"
+			data-parsely-widget-id="<?php echo esc_attr( (string) $this->id ); ?>"
 		></div>
 
 		<?php
@@ -158,9 +187,9 @@ final class Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the form function.
 	 *
-	 * @param array $instance Values saved to the db.
+	 * @param array<mixed> $current_settings Values saved to the db.
 	 */
-	public function form( $instance ): void {
+	public function form( $current_settings ): string {
 		if ( ! $this->api_key_and_secret_are_populated() ) {
 			$settings_page_url = add_query_arg( 'page', 'parsely', get_admin_url() . 'options-general.php' );
 
@@ -172,19 +201,21 @@ final class Recommended_Widget extends WP_Widget {
 
 			echo '<p>', wp_kses_post( $message ), '</p>';
 
-			return;
+			return '';
 		}
 
+		$instance = $this->get_widget_settings( $current_settings );
+
 		// editable fields: title.
-		$title               = ! empty( $instance['title'] ) ? $instance['title'] : '';
-		$return_limit        = ! empty( $instance['return_limit'] ) ? (int) $instance['return_limit'] : 5;
-		$display_direction   = ! empty( $instance['display_direction'] ) ? $instance['display_direction'] : 'vertical';
-		$published_within    = ! empty( $instance['published_within'] ) ? $instance['published_within'] : 0;
-		$sort                = ! empty( $instance['sort'] ) ? $instance['sort'] : 'score';
-		$boost               = ! empty( $instance['boost'] ) ? $instance['boost'] : 'views';
-		$personalize_results = ! empty( $instance['personalize_results'] ) ? $instance['personalize_results'] : false;
-		$img_src             = ! empty( $instance['img_src'] ) ? $instance['img_src'] : 'parsely_thumb';
-		$display_author      = ! empty( $instance['display_author'] ) ? $instance['display_author'] : false;
+		$title               = $instance['title'];
+		$return_limit        = $instance['return_limit'];
+		$display_direction   = $instance['display_direction'];
+		$published_within    = $instance['published_within'];
+		$sort                = $instance['sort'];
+		$boost               = $instance['boost'];
+		$personalize_results = $instance['personalize_results'];
+		$img_src             = $instance['img_src'];
+		$display_author      = $instance['display_author'];
 
 		$instance['return_limit']        = $return_limit;
 		$instance['display_direction']   = $display_direction;
@@ -210,7 +241,7 @@ final class Recommended_Widget extends WP_Widget {
 		</p>
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>"><?php esc_html_e( 'Number of posts to show (max 20):', 'wp-parsely' ); ?></label>
-			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( $instance['return_limit'] ); ?>" min="1" max="20" class="tiny-text" />
+			<input type="number" id="<?php echo esc_attr( $this->get_field_id( 'return_limit' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'return_limit' ) ); ?>" value="<?php echo esc_attr( (string) $instance['return_limit'] ); ?>" min="1" max="20" class="tiny-text" />
 		</p>
 		<p>
 			<fieldset>
@@ -259,26 +290,30 @@ final class Recommended_Widget extends WP_Widget {
 			<label for="<?php echo esc_attr( $this->get_field_id( 'personalize_results' ) ); ?>"><?php esc_html_e( 'Personalize recommended results', 'wp-parsely' ); ?></label>
 		</p>
 		<?php
+
+		return '';
 	}
 
 	/**
 	 * This is the update function.
 	 *
-	 * @param array $new_instance The new values for the db.
-	 * @param array $old_instance Values saved to the db.
-	 * @return array
+	 * @param WidgetSettings $new_instance The new values for the db.
+	 * @param WidgetSettings $old_instance Values saved to the db.
+	 *
+	 * @return WidgetSettings
 	 */
-	public function update( $new_instance, $old_instance ): array {
+	public function update( $new_instance, $old_instance ) /* @phpstan-ignore-line */ {
 		$instance                        = $old_instance;
 		$instance['title']               = trim( wp_kses_post( $new_instance['title'] ) );
-		$instance['published_within']    = is_int( $new_instance['published_within'] ) ? $new_instance['published_within'] : (int) trim( $new_instance['published_within'] );
-		$instance['return_limit']        = (int) $new_instance['return_limit'] <= 20 ? (int) $new_instance['return_limit'] : 20;
+		$instance['published_within']    = $new_instance['published_within'];
+		$instance['return_limit']        = $new_instance['return_limit'] <= 20 ? $new_instance['return_limit'] : 20;
 		$instance['display_direction']   = trim( $new_instance['display_direction'] );
 		$instance['sort']                = trim( $new_instance['sort'] );
 		$instance['boost']               = trim( $new_instance['boost'] );
 		$instance['display_author']      = $new_instance['display_author'];
 		$instance['personalize_results'] = $new_instance['personalize_results'];
 		$instance['img_src']             = trim( $new_instance['img_src'] );
+
 		return $instance;
 	}
 
@@ -326,21 +361,36 @@ final class Recommended_Widget extends WP_Widget {
 	private function api_key_and_secret_are_populated(): bool {
 		$options = $this->parsely->get_options();
 
-		// No options are saved, so API key is not available.
-		if ( ! is_array( $options ) ) {
-			return false;
-		}
-
 		// Parse.ly Site ID settings field is not populated.
-		if ( ! array_key_exists( 'apikey', $options ) || '' === $options['apikey'] ) {
+		if ( '' === $options['apikey'] ) {
 			return false;
 		}
 
 		// Parse.ly API Secret settings field is not populated.
-		if ( ! array_key_exists( 'api_secret', $options ) || '' === $options['api_secret'] ) {
+		if ( '' === $options['api_secret'] ) {
 			return false;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Returns all widget settings by assigning defaults if a setting isn't present
+	 *
+	 * @since 3.7.0
+	 *
+	 * @param array<string, mixed> $settings Widget Options.
+	 *
+	 * @return WidgetSettings
+	 */
+	public function get_widget_settings( array $settings ) {
+		/**
+		 * Variable.
+		 *
+		 * @var WidgetSettings
+		 */
+		$widget_settings = $settings;
+
+		return array_merge( self::$default_widget_settings, $widget_settings );
 	}
 }
