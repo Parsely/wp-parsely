@@ -12,6 +12,8 @@ namespace Parsely\Tests\Integration\StructuredData;
 use Parsely\Metadata;
 use Parsely\Parsely;
 
+const TEST_BLOG_NAME = 'Test Blog';
+
 /**
  * Integration Tests for the Homepage's metadata.
  *
@@ -75,7 +77,7 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the page.
-		self::assertEquals( 'Test Blog', $structured_data['headline'] );
+		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] );
 		self::assertEquals( home_url(), $structured_data['url'] );
 	}
 
@@ -127,7 +129,7 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the latest post.
-		self::assertEquals( 'Test Blog', $structured_data['headline'] );
+		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] );
 		// The URL should be the current page, not the home url.
 		self::assertEquals( home_url( '/page/2' ), $structured_data['url'] );
 	}
@@ -180,7 +182,7 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the page.
-		self::assertEquals( 'Test Blog', $structured_data['headline'] );
+		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] );
 		self::assertEquals( home_url(), $structured_data['url'] );
 		// The metadata '@type' for the context should be 'WebPage' for the
 		// homepage.
@@ -235,7 +237,7 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the page.
-		self::assertEquals( 'Test Blog', $structured_data['headline'] );
+		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] );
 		self::assertEquals( home_url(), $structured_data['url'] );
 	}
 }

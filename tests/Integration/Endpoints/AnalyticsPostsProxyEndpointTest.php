@@ -64,7 +64,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
-	public function test_do_not_register_route_when_proxy_is_disabled(): void {
+	public function test_verify_that_route_is_not_registered_when_proxy_is_disabled(): void {
 		parent::test_do_not_register_route_when_proxy_is_disabled();
 	}
 
@@ -84,7 +84,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::get_data
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 */
-	public function test_get_items_fails_without_site_id_set() {
+	public function test_get_items_fails_when_site_id_is_not_set(): void {
 		parent::test_get_items_fails_without_site_id_set();
 	}
 

@@ -28,8 +28,8 @@ class Content_Helper {
 		wp_enqueue_script(
 			'wp-parsely-block-content-helper',
 			plugin_dir_url( PARSELY_FILE ) . 'build/content-helper.js',
-			$content_helper_asset['dependencies'],
-			$content_helper_asset['version'],
+			$content_helper_asset['dependencies'] ?? null,
+			$content_helper_asset['version'] ?? Parsely::VERSION,
 			true
 		);
 
@@ -37,7 +37,7 @@ class Content_Helper {
 			'wp-parsely-block-content-helper',
 			plugin_dir_url( PARSELY_FILE ) . 'build/content-helper.css',
 			array(),
-			$content_helper_asset['version']
+			$content_helper_asset['version'] ?? Parsely::VERSION
 		);
 	}
 

@@ -56,7 +56,7 @@ final class IntegrationsTest extends TestCase {
 		self::assertSame( array( 'class', 'object' ), array_keys( $registered_integrations ) );
 
 		// Override an existing integration.
-		$integrations->register( 'object', new FakeIntegration2() );
+		$integrations->register( 'object', new FakeIntegration() );
 
 		self::assertCount( 2, $registered_integrations );
 		self::assertSame( array( 'class', 'object' ), array_keys( $registered_integrations ) );
@@ -95,16 +95,9 @@ final class IntegrationsTest extends TestCase {
  * Class FakeIntegration
  */
 class FakeIntegration {
-}
-
-/**
- * Class FakeIntegration2
- */
-class FakeIntegration2 {
 	/**
 	 * Stubs this method to avoid a fatal error.
 	 */
 	public function integrate(): void {
 	}
 }
-
