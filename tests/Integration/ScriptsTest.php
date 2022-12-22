@@ -74,7 +74,7 @@ final class ScriptsTest extends TestCase {
 	 * @group scripts
 	 */
 	public function test_run_not_adds_actions_no_api_key(): void {
-		TestCase::set_options( array( 'apikey' => null ) );
+		TestCase::set_options( array( 'apikey' => '' ) );
 
 		self::$scripts->run();
 

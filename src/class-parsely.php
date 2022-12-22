@@ -18,6 +18,31 @@ use WP_Post;
  *
  * @since 1.0.0
  * @since 2.5.0 Moved from plugin root file to this file.
+ *
+ * @phpstan-type ParselyOptions array{
+ *   apikey: string,
+ *   content_id_prefix: string,
+ *   api_secret: string,
+ *   use_top_level_cats: bool,
+ *   custom_taxonomy_section: string,
+ *   cats_as_tags: bool,
+ *   track_authenticated_users: bool,
+ *   lowercase_tags: bool,
+ *   force_https_canonicals: bool,
+ *   track_post_types: string[],
+ *   track_page_types: string[],
+ *   track_post_types_as?: array<string, string>,
+ *   disable_javascript: bool,
+ *   disable_amp: bool,
+ *   meta_type: string,
+ *   logo: string,
+ *   metadata_secret: string,
+ *   parsely_wipe_metadata_cache: bool,
+ *   disable_autotrack: bool,
+ *   plugin_version: string,
+ * }
+ *
+ * @phpstan-import-type MetadataAttributes from Metadata
  */
 class Parsely {
 	/**
@@ -32,7 +57,7 @@ class Parsely {
 	/**
 	 * Declare some class properties
 	 *
-	 * @var array<string, mixed> $option_defaults The defaults we need for the class.
+	 * @var ParselyOptions $option_defaults The defaults we need for the class.
 	 */
 	private $option_defaults = array(
 		'apikey'                      => '',
@@ -53,6 +78,7 @@ class Parsely {
 		'metadata_secret'             => '',
 		'parsely_wipe_metadata_cache' => false,
 		'disable_autotrack'           => false,
+		'plugin_version'              => '',
 	);
 
 	/**
@@ -97,10 +123,16 @@ class Parsely {
 	public function run(): void {
 		// Run upgrade options if they exist for the version currently defined.
 		$options = $this->get_options();
-		if ( empty( $options['plugin_version'] ) || self::VERSION !== $options['plugin_version'] ) {
+		if ( self::VERSION !== $options['plugin_version'] ) {
 			$method = 'upgrade_plugin_to_version_' . str_replace( '.', '_', self::VERSION );
 			if ( method_exists( $this, $method ) ) {
-				call_user_func_array( array( $this, $method ), array( $options ) );
+				/**
+				 * Variable.
+				 *
+				 * @var callable
+				 */
+				$callable = array( $this, $method );
+				call_user_func_array( $callable, array( $options ) );
 			}
 			// Update our version info.
 			$options['plugin_version'] = self::VERSION;
@@ -116,8 +148,9 @@ class Parsely {
 	/**
 	 * Adds 10 minute cron interval.
 	 *
-	 * @param array $schedules WP schedules array.
-	 * @return array
+	 * @param array<string, mixed> $schedules WP schedules array.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public function wpparsely_add_cron_interval( array $schedules ): array {
 		$schedules['everytenminutes'] = array(
@@ -237,9 +270,10 @@ class Parsely {
 	 *
 	 * @param array<string, mixed> $parsely_options parsely_options array.
 	 * @param WP_Post              $post object.
-	 * @return array<string, mixed>
+	 *
+	 * @return MetadataAttributes
 	 */
-	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ): array {
+	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ) {
 		_deprecated_function( __FUNCTION__, '3.3', 'Metadata::construct_metadata()' );
 		$metadata = new Metadata( $this );
 		return $metadata->construct_metadata( $post );
@@ -252,7 +286,7 @@ class Parsely {
 	 */
 	public function update_metadata_endpoint( int $post_id ): void {
 		$parsely_options = $this->get_options();
-		if ( $this->api_key_is_missing() || empty( $parsely_options['metadata_secret'] ) ) {
+		if ( $this->api_key_is_missing() || '' === $parsely_options['metadata_secret'] ) {
 			return;
 		}
 
@@ -264,14 +298,14 @@ class Parsely {
 		$metadata = ( new Metadata( $this ) )->construct_metadata( $post );
 
 		$endpoint_metadata = array(
-			'canonical_url' => $metadata['url'],
-			'page_type'     => $this->convert_jsonld_to_parsely_type( $metadata['@type'] ),
-			'title'         => $metadata['headline'],
-			'image_url'     => $metadata['image']['url'],
-			'pub_date_tmsp' => $metadata['datePublished'],
-			'section'       => $metadata['articleSection'],
-			'authors'       => $metadata['creator'],
-			'tags'          => $metadata['keywords'],
+			'canonical_url' => $metadata['url'] ?? '',
+			'page_type'     => $this->convert_jsonld_to_parsely_type( $metadata['@type'] ?? '' ),
+			'title'         => $metadata['headline'] ?? '',
+			'image_url'     => isset( $metadata['image']['url'] ) ? $metadata['image']['url'] : '',
+			'pub_date_tmsp' => $metadata['datePublished'] ?? '',
+			'section'       => $metadata['articleSection'] ?? '',
+			'authors'       => $metadata['creator'] ?? '',
+			'tags'          => $metadata['keywords'] ?? '',
 		);
 
 		$parsely_api_endpoint    = 'https://api.parsely.com/v2/metadata/posts';
@@ -308,8 +342,7 @@ class Parsely {
 	 */
 	public function bulk_update_posts(): void {
 		global $wpdb;
-		$parsely_options      = $this->get_options();
-		$allowed_types        = array_merge( $parsely_options['track_post_types'], $parsely_options['track_page_types'] );
+		$allowed_types        = $this->get_all_track_types();
 		$allowed_types_string = implode(
 			', ',
 			array_map(
@@ -319,7 +352,13 @@ class Parsely {
 				$allowed_types
 			)
 		);
-		$ids                  = wp_cache_get( 'parsely_post_ids_need_meta_updating' );
+
+		/**
+		 * Variable.
+		 *
+		 * @var int[]|false
+		 */
+		$ids = wp_cache_get( 'parsely_post_ids_need_meta_updating' );
 		if ( false === $ids ) {
 			$ids = array();
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
@@ -350,9 +389,14 @@ class Parsely {
 	 * As soon as actual options are saved, they override the defaults. This
 	 * prevents us from having to do a lot of isset() checking on variables.
 	 *
-	 * @return array<string, mixed>
+	 * @return ParselyOptions
 	 */
-	public function get_options(): array {
+	public function get_options() {
+		/**
+		 * Variable.
+		 *
+		 * @var ParselyOptions|null
+		 */
 		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
 
 		if ( ! is_array( $options ) ) {
@@ -415,11 +459,7 @@ class Parsely {
 	public function api_key_is_set(): bool {
 		$options = $this->get_options();
 
-		return (
-				isset( $options['apikey'] ) &&
-				is_string( $options['apikey'] ) &&
-				'' !== $options['apikey']
-		);
+		return '' !== $options['apikey'];
 	}
 
 	/**
@@ -456,11 +496,7 @@ class Parsely {
 	public function api_secret_is_set(): bool {
 		$options = $this->get_options();
 
-		return (
-				isset( $options['api_secret'] ) &&
-				is_string( $options['api_secret'] ) &&
-				'' !== $options['api_secret']
-		);
+		return '' !== $options['api_secret'];
 	}
 
 	/**
@@ -474,5 +510,18 @@ class Parsely {
 		$options = $this->get_options();
 
 		return $this->api_secret_is_set() ? $options['api_secret'] : '';
+	}
+
+	/**
+	 * Gets all tracked post types.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @return array<string>
+	 */
+	public function get_all_track_types(): array {
+		$options = $this->get_options();
+
+		return array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
 	}
 }

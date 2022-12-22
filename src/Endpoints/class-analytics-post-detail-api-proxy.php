@@ -12,6 +12,7 @@ namespace Parsely\Endpoints;
 
 use stdClass;
 use WP_REST_Request;
+use WP_Error;
 
 /**
  * Configures the `/stats/post/detail` REST API endpoint.
@@ -29,8 +30,8 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * Cached "proxy" to the Parse.ly `/analytics/post/detail` API endpoint.
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return stdClass|WPError stdClass containing the data or a WP_Error
-	 *                          object on failure.
+	 *
+	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	public function get_items( WP_REST_Request $request ) {
 		return $this->get_data( $request );
@@ -39,10 +40,10 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	/**
 	 * Generates the final data from the passed response.
 	 *
-	 * @param array<string, mixed> $response The response received by the proxy.
+	 * @param array<stdClass> $response The response received by the proxy.
 	 * @return array<stdClass> The generated data.
 	 */
-	protected function generate_data( array $response ): array {
+	protected function generate_data( $response ): array {
 		$stats_base_url = trailingslashit( 'https://dash.parsely.com/' . $this->parsely->get_api_key() ) . 'find';
 
 		$result = array_map(
