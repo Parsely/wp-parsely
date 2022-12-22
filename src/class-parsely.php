@@ -91,7 +91,7 @@ class Parsely {
 	);
 
 	/**
-	 * To declare all supported types i.e. both post and non-post types
+	 * Declare all supported types (both post and non-post types).
 	 *
 	 * @since 3.7.0
 	 * @var string[]
@@ -492,7 +492,7 @@ class Parsely {
 	}
 
 	/**
-	 * Returns all supported post and non-post types
+	 * Returns all supported post and non-post types.
 	 *
 	 * @since 3.7.0
 	 *
