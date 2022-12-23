@@ -30,6 +30,11 @@
 	"[php]": {
 		"editor.defaultFormatter": "obliviousharmony.vscode-php-codesniffer"
 	},
+	// PHPStan
+	"phpstan.timeout": 30000,
+	"phpstan.ignoreErrors": [
+		".*The Xdebug PHP extension is active.*", ".*slow down performance.*", ".*breakpoints.*",
+	],
 	// PHP Intelephense
 	"intelephense.stubs": [
 		// Defaults
