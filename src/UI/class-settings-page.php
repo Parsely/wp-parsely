@@ -871,8 +871,8 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$option_key = esc_attr( $args['option_key'] );
 		$title      = $args['title'] ?? '';
 		/**
-		 * Internal Variable.
-		 * 
+		 * Variable.
+		 *
 		 * @var array<string>
 		 */
 		$post_types = get_post_types( array( 'public' => true ) );
