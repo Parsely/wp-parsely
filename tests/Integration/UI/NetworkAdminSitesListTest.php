@@ -88,7 +88,7 @@ final class NetworkAdminSitesListTest extends TestCase {
 
 		$this->table->prepare_items();
 
-		self::assertCount( 3, $this->table->items, 'There should be the main site, the subsite with the site_id set, and a subsite without.' );
+		self::assertCount( 3, $this->table->items, 'There should be the main site, the subsite with the Site ID set, and a subsite without.' );
 
 		foreach ( $this->table->items as $site ) {
 			self::assertInstanceOf( WP_Site::class, $site );
