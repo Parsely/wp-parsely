@@ -35,7 +35,7 @@ class Rest_Metadata extends Metadata_Endpoint {
 		 *
 		 * @param bool $enabled True if enabled, false if not.
 		 */
-		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) && $this->parsely->api_key_is_set() ) {
+		if ( apply_filters( 'wp_parsely_enable_rest_api_support', true ) && $this->parsely->site_id_is_set() ) {
 			$this->register_meta();
 		}
 	}

@@ -50,9 +50,9 @@ abstract class RemoteAPITest extends TestCase {
 	 * @dataProvider data_api_url
 	 * @covers \Parsely\RemoteAPI\Related_Proxy::get_api_url
 	 * @covers \Parsely\RemoteAPI\Analytics_Posts_Proxy::get_api_url
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::api_secret_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 *

@@ -122,16 +122,16 @@ final class AmpTest extends TestCase {
 		$amp       = new Amp( self::$parsely );
 		$analytics = array();
 
-		// If apikey is empty, $analytics are returned.
+		// If Site ID is empty, $analytics are returned.
 		self::assertSame( $analytics, $amp->register_parsely_for_amp_analytics( $analytics ) );
 
 		// Now set the key and test for changes.
-		self::set_options( array( 'apikey' => 'my-api-key.com' ) );
+		self::set_options( array( 'apikey' => 'my-site-id.com' ) );
 
 		$output = $amp->register_parsely_for_amp_analytics( $analytics );
 
 		self::assertSame( 'parsely', $output['parsely']['type'] );
-		self::assertSame( 'my-api-key.com', $output['parsely']['config_data']['vars']['apikey'] );
+		self::assertSame( 'my-site-id.com', $output['parsely']['config_data']['vars']['apikey'] );
 	}
 
 	/**
@@ -149,7 +149,7 @@ final class AmpTest extends TestCase {
 		$amp       = new Amp( self::$parsely );
 		$analytics = array();
 
-		// If apikey is empty, $analytics are returned.
+		// If Site ID is empty, $analytics are returned.
 		self::assertSame( $analytics, $amp->register_parsely_for_amp_native_analytics( $analytics ) );
 
 		// Check with AMP marked as disabled.
@@ -157,16 +157,16 @@ final class AmpTest extends TestCase {
 
 		self::assertSame( $analytics, $amp->register_parsely_for_amp_native_analytics( $analytics ) );
 
-		// Now enable AMP, and set the API key and test for changes.
+		// Now enable AMP, and set the Site ID and test for changes.
 		self::set_options(
 			array(
 				'disable_amp' => false,
-				'apikey'      => 'my-api-key.com',
+				'apikey'      => 'my-site-id.com',
 			)
 		);
 
 		$output = $amp->register_parsely_for_amp_native_analytics( $analytics );
 		self::assertSame( 'parsely', $output['parsely']['type'] );
-		self::assertStringContainsString( 'my-api-key.com', $output['parsely']['config'] );
+		self::assertStringContainsString( 'my-site-id.com', $output['parsely']['config'] );
 	}
 }

@@ -179,38 +179,38 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that api_key_is_set() and api_key_is_missing() work as expected.
+	 * Verifies that site_id_is_set() and site_id_is_missing() work as expected.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @covers \Parsely\Parsely::api_key_is_set
-	 * @covers \Parsely\Parsely::api_key_is_missing
+	 * @covers \Parsely\Parsely::site_id_is_set
+	 * @covers \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::get_options
 	 */
-	public function test_checking_API_key_is_set_or_not(): void {
+	public function test_checking_site_id_is_set_or_not(): void {
 		self::set_options( array( 'apikey' => '' ) );
-		self::assertFalse( self::$parsely->api_key_is_set() );
-		self::assertTrue( self::$parsely->api_key_is_missing() );
+		self::assertFalse( self::$parsely->site_id_is_set() );
+		self::assertTrue( self::$parsely->site_id_is_missing() );
 
 		self::set_options( array( 'apikey' => 'somekey' ) );
-		self::assertTrue( self::$parsely->api_key_is_set() );
-		self::assertFalse( self::$parsely->api_key_is_missing() );
+		self::assertTrue( self::$parsely->site_id_is_set() );
+		self::assertFalse( self::$parsely->site_id_is_missing() );
 	}
 
 	/**
-	 * Verifies that get_api_key() works as expected.
+	 * Verifies that get_site_id() works as expected.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @covers \Parsely\Parsely::get_api_key
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @covers \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
-	public function test_can_retrieve_API_key(): void {
+	public function test_can_retrieve_site_id(): void {
 		self::set_options( array( 'apikey' => 'somekey' ) );
-		self::assertSame( 'somekey', self::$parsely->get_api_key() );
+		self::assertSame( 'somekey', self::$parsely->get_site_id() );
 		self::set_options( array( 'apikey' => '' ) );
-		self::assertSame( '', self::$parsely->get_api_key() );
+		self::assertSame( '', self::$parsely->get_site_id() );
 	}
 
 	/**
@@ -266,13 +266,13 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that the tracker URL is correctly generated with a set API key.
+	 * Verifies that the tracker URL is correctly generated with a set site ID.
 	 *
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Parsely::get_tracker_url
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_tracker_url(): void {
@@ -281,16 +281,16 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that the tracker URL is an empty string when there's no API key
+	 * Verifies that the tracker URL is an empty string when there's no site ID
 	 * set.
 	 *
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Parsely::get_tracker_url
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
-	public function test_get_tracker_no_api_key(): void {
+	public function test_get_tracker_no_site_id(): void {
 		self::set_options( array( 'apikey' => '' ) );
 		$expected = '';
 		self::assertEquals( $expected, self::$parsely->get_tracker_url() );

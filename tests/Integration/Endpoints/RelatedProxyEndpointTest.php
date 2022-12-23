@@ -69,7 +69,7 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 
 	/**
 	 * Verifies that calling `GET /wp-parsely/v1/related` returns an error and
-	 * does not perform a remote call when the apikey is not populated
+	 * does not perform a remote call when the Site ID is not populated
 	 * in site options.
 	 *
 	 * @covers \Parsely\Endpoints\Related_API_Proxy::get_items
@@ -78,13 +78,13 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::permission_callback
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::run
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 */
-	public function test_get_items_fails_when_apikey_is_not_set() {
-		parent::test_get_items_fails_without_apikey_set();
+	public function test_get_items_fails_when_site_id_is_not_set(): void {
+		parent::test_get_items_fails_without_site_id_set();
 	}
 
 	/**
@@ -98,10 +98,10 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::generate_data
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::permission_callback
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::run
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::api_secret_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
 	 * @uses \Parsely\RemoteAPI\Base_Proxy::get_api_url

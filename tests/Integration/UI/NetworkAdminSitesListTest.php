@@ -50,63 +50,63 @@ final class NetworkAdminSitesListTest extends TestCase {
 	/**
 	 * Verifies that the custom column is included.
 	 *
-	 * @covers \Parsely\UI\Network_Admin_Sites_List::add_api_key_column
+	 * @covers \Parsely\UI\Network_Admin_Sites_List::add_site_id_column
 	 * @covers \Parsely\UI\Network_Admin_Sites_List::run
 	 * @uses \Parsely\UI\Network_Admin_Sites_List::__construct
 	 */
-	public function test_api_key_column_is_present(): void {
+	public function test_site_id_column_is_present(): void {
 		$columns = $this->table->get_columns();
-		self::assertArrayNotHasKey( 'parsely-api-key', $columns );
+		self::assertArrayNotHasKey( 'parsely-site-id', $columns );
 
 		self::$sites_list->run();
 		$columns = $this->table->get_columns();
 
-		self::assertArrayHasKey( 'parsely-api-key', $columns );
-		self::assertSame( 'Parse.ly API Key', $columns['parsely-api-key'] );
+		self::assertArrayHasKey( 'parsely-site-id', $columns );
+		self::assertSame( 'Parse.ly Site ID', $columns['parsely-site-id'] );
 	}
 
 	/**
 	 * Verifies that the custom column is populated with default data for no
-	 * option and the API key when set.
+	 * option and the Site ID when set.
 	 *
-	 * @covers \Parsely\UI\Network_Admin_Sites_List::populate_api_key_column
+	 * @covers \Parsely\UI\Network_Admin_Sites_List::populate_site_id_column
 	 * @covers \Parsely\UI\Network_Admin_Sites_List::run
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\UI\Network_Admin_Sites_List::__construct
 	 */
-	public function test_api_key_column_is_correctly_printed(): void {
-		$blog_id_with_api_key = self::factory()->blog->create();
+	public function test_site_id_column_is_correctly_printed(): void {
+		$blog_id_with_site_id = self::factory()->blog->create();
 
 		// Create a blog without a Site ID.
 		self::factory()->blog->create();
 
 		self::$sites_list->run();
 
-		update_blog_option( $blog_id_with_api_key, Parsely::OPTIONS_KEY, array( 'apikey' => 'parselyrocks.example.com' ) );
+		update_blog_option( $blog_id_with_site_id, Parsely::OPTIONS_KEY, array( 'apikey' => 'parselyrocks.example.com' ) );
 
 		$this->table->prepare_items();
 
-		self::assertCount( 3, $this->table->items, 'There should be the main site, the subsite with the apikey set, and a subsite without.' );
+		self::assertCount( 3, $this->table->items, 'There should be the main site, the subsite with the Site ID set, and a subsite without.' );
 
 		foreach ( $this->table->items as $site ) {
 			self::assertInstanceOf( WP_Site::class, $site );
 
 			ob_start();
-			$this->table->column_default( $site->to_array(), 'parsely-api-key' );
-			$api_key_col_value = ob_get_clean();
+			$this->table->column_default( $site->to_array(), 'parsely-site-id' );
+			$site_id_col_value = ob_get_clean();
 
-			if ( $blog_id_with_api_key === (int) $site->blog_id ) {
+			if ( $blog_id_with_site_id === (int) $site->blog_id ) {
 				self::assertSame(
 					'parselyrocks.example.com',
-					$api_key_col_value,
-					'The API key was not printed and should have been.'
+					$site_id_col_value,
+					'The Site ID was not printed and should have been.'
 				);
 			} else {
 				self::assertSame(
-					'<em>Parse.ly API key is missing</em>',
-					$api_key_col_value,
+					'<em>Parse.ly Site ID is missing</em>',
+					$site_id_col_value,
 					'The default value was not printed and should have been.'
 				);
 			}

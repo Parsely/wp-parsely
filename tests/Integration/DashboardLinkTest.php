@@ -40,10 +40,10 @@ final class DashboardLinkTest extends TestCase {
 	public function test_generate_parsely_post_url(): void {
 		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
-		$apikey  = 'demo-api-key';
+		$site_id = 'demo-site-id';
 
-		$expected = PARSELY::DASHBOARD_BASE_URL . '/demo-api-key/find?url=http%3A%2F%2Fexample.org%2F%3Fp%3D' . $post_id . '&utm_campaign=wp-admin-posts-list&utm_source=wp-admin&utm_medium=wp-parsely';
-		$actual   = Dashboard_Link::generate_url( $post, $apikey, 'wp-admin-posts-list', 'wp-admin' );
+		$expected = PARSELY::DASHBOARD_BASE_URL . '/demo-site-id/find?url=http%3A%2F%2Fexample.org%2F%3Fp%3D' . $post_id . '&utm_campaign=wp-admin-posts-list&utm_source=wp-admin&utm_medium=wp-parsely';
+		$actual   = Dashboard_Link::generate_url( $post, $site_id, 'wp-admin-posts-list', 'wp-admin' );
 
 		self::assertSame( $expected, $actual );
 	}
@@ -61,10 +61,10 @@ final class DashboardLinkTest extends TestCase {
 
 		$post_id = self::factory()->post->create();
 		$post    = get_post( $post_id );
-		$apikey  = 'demo-api-key';
+		$site_id = 'demo-site-id';
 
 		$expected = '';
-		$actual   = Dashboard_Link::generate_url( $post, $apikey, 'wp-admin-posts-list', 'wp-admin' );
+		$actual   = Dashboard_Link::generate_url( $post, $site_id, 'wp-admin-posts-list', 'wp-admin' );
 
 		self::assertSame( $expected, $actual );
 	}
@@ -76,8 +76,8 @@ final class DashboardLinkTest extends TestCase {
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -99,8 +99,8 @@ final class DashboardLinkTest extends TestCase {
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -120,8 +120,8 @@ final class DashboardLinkTest extends TestCase {
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -142,14 +142,14 @@ final class DashboardLinkTest extends TestCase {
 	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @group ui
 	 */
-	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_api_key_is_set_or_missing(): void {
+	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_site_id_is_set_or_missing(): void {
 		$published_post = self::factory()->post->create_and_get();
 
 		// Site ID is not set.

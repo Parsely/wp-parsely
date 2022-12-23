@@ -81,13 +81,13 @@ final class FacebookInstantArticlesTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that the integration is active only if an API key is set.
+	 * Verifies that the integration is active only if a Site ID is set.
 	 *
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::insert_parsely_tracking
 	 * @covers \Parsely\Integrations\Facebook_Instant_Articles::get_embed_code
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @group fbia
 	 */
@@ -101,10 +101,10 @@ final class FacebookInstantArticlesTest extends TestCase {
 		self::assertArrayNotHasKey( self::$registry_identifier, $registry );
 
 		// Site ID is set.
-		$fake_api_key = 'my-api-key.com';
-		self::set_options( array( 'apikey' => $fake_api_key ) );
+		$fake_site_id = 'my-site-id.com';
+		self::set_options( array( 'apikey' => $fake_site_id ) );
 		self::$fbia->insert_parsely_tracking( $registry );
-		self::assert_parsely_added_to_registry( $registry, $fake_api_key );
+		self::assert_parsely_added_to_registry( $registry, $fake_site_id );
 	}
 
 	/**
@@ -112,14 +112,14 @@ final class FacebookInstantArticlesTest extends TestCase {
 	 * and that the display name and payload are correct.
 	 *
 	 * @param array  $registry Representation of Facebook Instant Articles registry.
-	 * @param string $api_key  API key.
+	 * @param string $site_id  Site ID.
 	 */
-	public static function assert_parsely_added_to_registry( array $registry, string $api_key ): void {
+	public static function assert_parsely_added_to_registry( array $registry, string $site_id ): void {
 		self::assertArrayHasKey( self::$registry_identifier, $registry );
 		self::assertSame( self::$registry_display_name, $registry[ self::$registry_identifier ]['name'] );
 
-		// Payload should contain a script tag and the API key.
+		// Payload should contain a script tag and the Site ID.
 		self::assertStringContainsString( '<script>', $registry[ self::$registry_identifier ]['payload'] );
-		self::assertStringContainsString( $api_key, $registry[ self::$registry_identifier ]['payload'] );
+		self::assertStringContainsString( $site_id, $registry[ self::$registry_identifier ]['payload'] );
 	}
 }

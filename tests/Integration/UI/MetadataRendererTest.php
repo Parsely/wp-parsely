@@ -100,8 +100,8 @@ final class MetadataRendererTest extends TestCase {
 	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
 	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
 	 * @uses \Parsely\Metadata\Post_Builder::get_tags
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::convert_jsonld_to_parsely_type
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -156,8 +156,8 @@ final class MetadataRendererTest extends TestCase {
 	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
 	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
 	 * @uses \Parsely\Metadata\Post_Builder::get_tags
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::convert_jsonld_to_parsely_type
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -212,8 +212,8 @@ final class MetadataRendererTest extends TestCase {
 	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
 	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
 	 * @uses \Parsely\Metadata\Post_Builder::get_tags
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::convert_jsonld_to_parsely_type
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status

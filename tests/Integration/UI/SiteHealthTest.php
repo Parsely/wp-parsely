@@ -46,7 +46,7 @@ final class SiteHealthTest extends TestCase {
 	public function test_admin_bar_enqueued(): void {
 		self::$site_health->run();
 
-		self::assertEquals( 10, has_filter( 'site_status_tests', array( self::$site_health, 'check_api_key' ) ) );
+		self::assertEquals( 10, has_filter( 'site_status_tests', array( self::$site_health, 'check_site_id' ) ) );
 		self::assertEquals( 10, has_filter( 'debug_information', array( self::$site_health, 'options_debug_info' ) ) );
 	}
 

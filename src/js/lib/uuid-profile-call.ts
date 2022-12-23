@@ -1,17 +1,17 @@
-// Only enqueuing the action if the site has a defined API key.
-if ( typeof window.wpParselyApiKey !== 'undefined' ) {
+// Only enqueuing the action if the site has a defined Site ID.
+if ( typeof window.wpParselySiteId !== 'undefined' ) {
 	window.wpParselyHooks?.addAction( 'wpParselyOnLoad', 'wpParsely', uuidProfileCall );
 }
 
 async function uuidProfileCall() {
 	const uuid = window.PARSELY?.config?.parsely_site_uuid;
 
-	if ( ! ( window.wpParselyApiKey && uuid ) ) {
+	if ( ! ( window.wpParselySiteId && uuid ) ) {
 		return;
 	}
 
 	const url = `https://api.parsely.com/v2/profile?apikey=${ encodeURIComponent(
-		window.wpParselyApiKey
+		window.wpParselySiteId
 	) }&uuid=${ encodeURIComponent( uuid ) }&url=${ encodeURIComponent( window.location.href ) }`;
 
 	return fetch( url );

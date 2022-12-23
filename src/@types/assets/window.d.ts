@@ -22,7 +22,7 @@ declare global {
 			onload?: () => unknown,
 			onReady?: () => unknown,
 		},
-		wpParselyApiKey: string,
+		wpParselySiteId: string,
 		wpParselyDisableAutotrack?: boolean;
 		wpParselyHooks?: _Hooks;
 	}

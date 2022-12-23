@@ -27,12 +27,12 @@ class Dashboard_Link {
 	 * @since 3.1.0 Moved to class-dashboard-link.php. Added source parameter.
 	 *
 	 * @param WP_Post $post   Which post object or ID to check.
-	 * @param string  $apikey API key or empty string.
+	 * @param string  $site_id Site ID or empty string.
 	 * @param string  $campaign Campaign name for the `utm_campaign` URL parameter.
 	 * @param string  $source Source name for the `utm_source` URL parameter.
 	 * @return string
 	 */
-	public static function generate_url( WP_Post $post, string $apikey, string $campaign, string $source ): string {
+	public static function generate_url( WP_Post $post, string $site_id, string $campaign, string $source ): string {
 		$permalink = get_permalink( $post );
 		if ( ! is_string( $permalink ) ) {
 			return '';
@@ -45,7 +45,7 @@ class Dashboard_Link {
 			'utm_medium'   => 'wp-parsely',
 		);
 
-		$base_url = trailingslashit( Parsely::DASHBOARD_BASE_URL . "/{$apikey}" ) . 'find';
+		$base_url = trailingslashit( Parsely::DASHBOARD_BASE_URL . "/{$site_id}" ) . 'find';
 
 		return add_query_arg( $query_args, $base_url );
 	}
@@ -61,6 +61,6 @@ class Dashboard_Link {
 	 * @return bool True if the link can be shown, false otherwise.
 	 */
 	public static function can_show_link( WP_Post $post, Parsely $parsely ): bool {
-		return Parsely::post_has_trackable_status( $post ) && is_post_type_viewable( $post->post_type ) && ! $parsely->api_key_is_missing();
+		return Parsely::post_has_trackable_status( $post ) && is_post_type_viewable( $post->post_type ) && ! $parsely->site_id_is_missing();
 	}
 }

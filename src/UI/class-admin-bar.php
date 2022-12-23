@@ -79,7 +79,7 @@ final class Admin_Bar {
 
 		$post_type_object = get_post_type_object( $current_object->post_type );
 		if ( null !== $post_type_object && $post_type_object->show_in_admin_bar && Dashboard_Link::can_show_link( $current_object, $this->parsely ) ) {
-			$href = Dashboard_Link::generate_url( $current_object, $this->parsely->get_api_key(), 'wp-page-single', 'admin-bar' );
+			$href = Dashboard_Link::generate_url( $current_object, $this->parsely->get_site_id(), 'wp-page-single', 'admin-bar' );
 
 			// Not adding the link if there were issues generating the URL.
 			if ( '' !== $href ) {

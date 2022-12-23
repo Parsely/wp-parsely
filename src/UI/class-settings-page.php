@@ -487,7 +487,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				printf(
 					/* translators: Mailto link  */
 					esc_html__( 'Once you have changed a value and and saved, please contact %s to request a recrawl.', 'wp-parsely' ),
-					wp_kses_post( '<a href="mailto:support@parsely.com?subject=' . rawurlencode( 'Please reprocess ' . $this->parsely->get_api_key() ) . '">support@parsely.com</a>' )
+					wp_kses_post( '<a href="mailto:support@parsely.com?subject=' . rawurlencode( 'Please reprocess ' . $this->parsely->get_site_id() ) . '">support@parsely.com</a>' )
 				);
 			},
 			Parsely::MENU_SLUG
@@ -968,15 +968,15 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				__( 'Please specify the Site ID', 'wp-parsely' )
 			);
 		} else {
-			$api_key = $this->sanitize_api_key( $input['apikey'] );
-			if ( false === $this->validate_api_key( $api_key ) ) {
+			$site_id = $this->sanitize_site_id( $input['apikey'] );
+			if ( false === $this->validate_site_id( $site_id ) ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'apikey',
 					__( 'Your Parse.ly Site ID looks incorrect, it should look like "example.com".', 'wp-parsely' )
 				);
 			} else {
-				$input['apikey'] = $api_key;
+				$input['apikey'] = $site_id;
 			}
 		}
 
@@ -1164,7 +1164,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Validates the passed API key.
+	 * Validates the passed Site ID.
 	 *
 	 * Accepts a www prefix and up to 3 periods.
 	 *
@@ -1176,25 +1176,25 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string $api_key The API key to be validated.
+	 * @param string $site_id The Site ID to be validated.
 	 * @return bool
 	 */
-	private function validate_api_key( string $api_key ): bool {
+	private function validate_site_id( string $site_id ): bool {
 		$key_format = '/^((\w+)\.)?(([\w-]+)?)(\.[\w-]+){1,2}$/';
 
-		return 1 === preg_match( $key_format, $api_key );
+		return 1 === preg_match( $key_format, $site_id );
 	}
 
 	/**
-	 * Sanitizes the passed API key.
+	 * Sanitizes the passed Site ID.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string $api_key The API key to be sanitized.
+	 * @param string $site_id The Site ID to be sanitized.
 	 * @return string
 	 */
-	private function sanitize_api_key( string $api_key ): string {
-		return strtolower( sanitize_text_field( $api_key ) );
+	private function sanitize_site_id( string $site_id ): string {
+		return strtolower( sanitize_text_field( $site_id ) );
 	}
 
 	/**

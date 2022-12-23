@@ -152,16 +152,17 @@ class Amp extends Integration {
 	 * consists of the site's Site ID if that's defined, or an empty array
 	 * otherwise.
 	 *
+	 * @link https://docs.parse.ly/google-amp/
 	 * @since 3.2.0
 	 *
 	 * @return array<string, array<string, string>>
 	 */
 	public static function construct_amp_config(): array {
-		if ( self::$parsely->api_key_is_set() ) {
+		if ( self::$parsely->site_id_is_set() ) {
 			return array(
 				'vars' => array(
 					// This field will be rendered in a JS context.
-					'apikey' => esc_js( self::$parsely->get_api_key() ),
+					'apikey' => esc_js( self::$parsely->get_site_id() ),
 				),
 			);
 		}
