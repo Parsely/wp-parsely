@@ -113,7 +113,7 @@ final class GetCurrentUrlTest extends TestCase {
 	 * @param string $expected    Expected current URL.
 	 */
 	public function test_get_current_url( bool $force_https, string $home, string $expected ): void {
-		self::set_options(array( 'force_https_canonicals' => $force_https ));
+		self::set_options( array( 'force_https_canonicals' => $force_https ) );
 		update_option( 'home', $home );
 
 		$this->assert_current_url_for_homepage( $expected );

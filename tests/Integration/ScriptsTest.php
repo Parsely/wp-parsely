@@ -157,7 +157,7 @@ final class ScriptsTest extends TestCase {
 
 		// Since no secret is provided, the extra fields (inline scripts) on the
 		// loader should not be populated.
-		self::assertEquals( 1, is_array($wp_scripts->registered['wp-parsely-loader']->extra) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
+		self::assertEquals( 1, \is_array( $wp_scripts->registered['wp-parsely-loader']->extra ) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
 	}
 
 	/**
@@ -177,7 +177,7 @@ final class ScriptsTest extends TestCase {
 	public function test_should_not_enqueue_tracker_scripts_for_drafted_posts(): void {
 		$this->set_admin_user();
 		$this->go_to_new_post( 'draft' );
-		
+
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
@@ -207,7 +207,7 @@ final class ScriptsTest extends TestCase {
 
 		$this->set_admin_user();
 		$this->go_to( "/?p={$post_id}&preview=true" );
-		
+
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
@@ -252,7 +252,7 @@ final class ScriptsTest extends TestCase {
 
 		// Since no secret is provided, the extra fields (inline scripts) on the
 		// loader should not be populated.
-		self::assertEquals( 2, is_array($wp_scripts->registered['wp-parsely-loader']->extra) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
+		self::assertEquals( 2, \is_array( $wp_scripts->registered['wp-parsely-loader']->extra ) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
 	}
 
 	/**
@@ -291,7 +291,7 @@ final class ScriptsTest extends TestCase {
 
 		// Since no secret is provided, the extra fields (inline scripts) on the
 		// loader should not be populated.
-		self::assertEquals( 1, is_array($wp_scripts->registered['wp-parsely-loader']->extra) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
+		self::assertEquals( 1, \is_array( $wp_scripts->registered['wp-parsely-loader']->extra ) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
 	}
 
 	/**

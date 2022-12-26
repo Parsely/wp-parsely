@@ -51,7 +51,7 @@ final class AdminWarningTest extends TestCase {
 		}
 
 		$should_display_admin_warning = self::get_method( 'should_display_admin_warning', Admin_Warning::class );
-		self::set_options(array( 'apikey' => '' ));
+		self::set_options( array( 'apikey' => '' ) );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
 		self::assertTrue( $response );
@@ -69,7 +69,7 @@ final class AdminWarningTest extends TestCase {
 	 */
 	public function test_display_admin_warning_without_key_old_wp(): void {
 		$should_display_admin_warning = self::get_method( 'should_display_admin_warning', Admin_Warning::class );
-		self::set_options(array( 'apikey' => '' ));
+		self::set_options( array( 'apikey' => '' ) );
 		set_current_screen( 'settings_page_parsely' );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
@@ -85,7 +85,7 @@ final class AdminWarningTest extends TestCase {
 	 */
 	public function test_display_admin_warning_network_admin(): void {
 		$should_display_admin_warning = self::get_method( 'should_display_admin_warning', Admin_Warning::class );
-		self::set_options(array( 'apikey' => '' ));
+		self::set_options( array( 'apikey' => '' ) );
 		set_current_screen( 'dashboard-network' );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
@@ -104,7 +104,7 @@ final class AdminWarningTest extends TestCase {
 	 */
 	public function test_display_admin_warning_with_key(): void {
 		$should_display_admin_warning = self::get_method( 'should_display_admin_warning', Admin_Warning::class );
-		self::set_options(array( 'apikey' => 'somekey' ));
+		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
 		self::assertFalse( $response );
