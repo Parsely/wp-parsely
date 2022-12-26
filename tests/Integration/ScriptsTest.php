@@ -157,7 +157,7 @@ final class ScriptsTest extends TestCase {
 
 		// Since no secret is provided, the extra fields (inline scripts) on the
 		// loader should not be populated.
-		self::assertEquals( 1, count( $wp_scripts->registered['wp-parsely-loader']->extra ) );
+		self::assertEquals( 1, is_array($wp_scripts->registered['wp-parsely-loader']->extra) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
 	}
 
 	/**
@@ -252,7 +252,7 @@ final class ScriptsTest extends TestCase {
 
 		// Since no secret is provided, the extra fields (inline scripts) on the
 		// loader should not be populated.
-		self::assertEquals( 2, count( $wp_scripts->registered['wp-parsely-loader']->extra ) );
+		self::assertEquals( 2, is_array($wp_scripts->registered['wp-parsely-loader']->extra) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
 	}
 
 	/**
@@ -291,7 +291,7 @@ final class ScriptsTest extends TestCase {
 
 		// Since no secret is provided, the extra fields (inline scripts) on the
 		// loader should not be populated.
-		self::assertEquals( 1, count( $wp_scripts->registered['wp-parsely-loader']->extra ) );
+		self::assertEquals( 1, is_array($wp_scripts->registered['wp-parsely-loader']->extra) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
 	}
 
 	/**
