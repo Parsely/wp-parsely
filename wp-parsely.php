@@ -43,6 +43,7 @@ use Parsely\RemoteAPI\Referrers_Post_Detail_Proxy;
 use Parsely\RemoteAPI\Related_Proxy;
 use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\UI\Admin_Bar;
+use Parsely\UI\Admin_Columns_Analytics;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Network_Admin_Sites_List;
@@ -104,6 +105,7 @@ function parsely_initialize_plugin(): void {
 	$metadata_renderer->run();
 }
 
+require_once __DIR__ . '/src/UI/class-admin-columns-analytics.php';
 require_once __DIR__ . '/src/UI/class-admin-warning.php';
 require_once __DIR__ . '/src/UI/class-plugins-actions.php';
 require_once __DIR__ . '/src/UI/class-row-actions.php';
@@ -122,6 +124,9 @@ function parsely_admin_init_register(): void {
 
 	$row_actions = new Row_Actions( $GLOBALS['parsely'] );
 	$row_actions->run();
+
+	$admin_columns_analytics = new Admin_Columns_Analytics();
+	$admin_columns_analytics->run();
 
 	$site_health = new Site_Health( $GLOBALS['parsely'] );
 	$site_health->run();
