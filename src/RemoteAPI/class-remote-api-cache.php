@@ -1,6 +1,6 @@
 <?php
 /**
- * Remote API: REST API caching decorator class
+ * Remote API: Caching decorator class
  *
  * @package Parsely
  * @since   3.2.0
@@ -15,16 +15,16 @@ use WP_Error;
 /**
  * Caching Decorator for remote API endpoints.
  */
-class Cached_Proxy implements Proxy {
+class Remote_API_Cache implements Remote_API_Interface {
 	private const CACHE_GROUP      = 'wp-parsely';
 	private const OBJECT_CACHE_TTL = 5 * MINUTE_IN_SECONDS;
 
 	/**
-	 * The Proxy instance this will cache.
+	 * The Remote API instance which we will cache.
 	 *
-	 * @var Proxy
+	 * @var Remote_API_Base
 	 */
-	private $proxy;
+	private $remote_api;
 
 	/**
 	 * A wrapped object that's compatible with the Cache Interface.
@@ -36,16 +36,16 @@ class Cached_Proxy implements Proxy {
 	/**
 	 * Constructor.
 	 *
-	 * @param Proxy $proxy The Proxy object to cache.
-	 * @param Cache $cache An object cache instance.
+	 * @param Remote_API_Base $remote_api The remote api object to cache.
+	 * @param Cache           $cache An object cache instance.
 	 */
-	public function __construct( Proxy $proxy, Cache $cache ) {
-		$this->proxy = $proxy;
-		$this->cache = $cache;
+	public function __construct( Remote_API_Base $remote_api, Cache $cache ) {
+		$this->remote_api = $remote_api;
+		$this->cache      = $cache;
 	}
 
 	/**
-	 * Implements caching for the proxy interface.
+	 * Implements caching for the Remote API interface.
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 *
@@ -53,7 +53,7 @@ class Cached_Proxy implements Proxy {
 	 *                                             response is empty.
 	 */
 	public function get_items( array $query ) {
-		$cache_key = 'parsely_api_' . wp_hash( (string) wp_json_encode( $this->proxy ) ) . '_' . wp_hash( (string) wp_json_encode( $query ) );
+		$cache_key = 'parsely_api_' . wp_hash( (string) wp_json_encode( $this->remote_api ) ) . '_' . wp_hash( (string) wp_json_encode( $query ) );
 
 		/**
 		 * Variable.
@@ -63,7 +63,7 @@ class Cached_Proxy implements Proxy {
 		$items = $this->cache->get( $cache_key, self::CACHE_GROUP );
 
 		if ( false === $items ) {
-			$items = $this->proxy->get_items( $query );
+			$items = $this->remote_api->get_items( $query );
 			$this->cache->set( $cache_key, $items, self::CACHE_GROUP, self::OBJECT_CACHE_TTL );
 		}
 

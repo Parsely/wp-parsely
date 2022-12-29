@@ -1,6 +1,6 @@
 <?php
 /**
- * Remote API: Base Proxy class for all Parse.ly API endpoints
+ * Remote API: Base class for all Parse.ly API endpoints
  *
  * @package Parsely
  * @since   3.2.0
@@ -15,14 +15,14 @@ use UnexpectedValueException;
 use WP_Error;
 
 /**
- * Base Proxy for all Parse.ly API endpoints.
+ * Base API for all Parse.ly API endpoints.
  *
  * Child classes must add a protected `ENDPOINT` constant, and a protected
  * QUERY_FILTER constant.
  *
  * @since 3.2.0
  */
-abstract class Base_Proxy implements Proxy {
+abstract class Remote_API_Base implements Remote_API_Interface {
 	protected const ENDPOINT     = '';
 	protected const QUERY_FILTER = '';
 
@@ -77,7 +77,7 @@ abstract class Base_Proxy implements Proxy {
 	}
 
 	/**
-	 * Implements the fetcher for the proxy interface.
+	 * Get items from the specified endpoint.
 	 *
 	 * @since 3.2.0
 	 *

@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Related_Proxy;
+use Parsely\RemoteAPI\Related_API;
 
 /**
  * Integration Tests for the Parsely `/related` Remote API.
@@ -21,7 +21,7 @@ final class RelatedRemoteAPITest extends RemoteAPITest {
 	 * Initializes all required values for the test.
 	 */
 	public static function initialize(): void {
-		self::$proxy = new Related_Proxy( new Parsely() );
+		self::$remote_api = new Related_API( new Parsely() );
 	}
 
 	/**
