@@ -21,6 +21,8 @@ use const Parsely\Utils\WP_MAX_POSTS_PER_PAGE;
  * Shows `Parse.ly Stats` on Admin Columns
  *
  * @since 3.7.0
+ *
+ * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
  */
 final class Admin_Columns_Analytics {
 	/**
@@ -113,19 +115,23 @@ final class Admin_Columns_Analytics {
 		}
 
 		$date_params = $this->get_date_params_for_analytics( $posts );
-		if ( count( $date_params ) === 0 ) {
+		if ( is_null( $date_params ) ) {
 			return $posts;
 		}
 
 		$analytics_api = new Analytics_Posts_API( $this->parsely );
-		// TODO: adds interface for query params.
-		$query_params = array_merge(
-			$date_params,
-			array(
-				'limit' => WP_MAX_POSTS_PER_PAGE,
-				'sort'  => 'avg_engaged',
-			)
+		/**
+		 * Variable.
+		 *
+		 * @var Analytics_Post_API_Params
+		 */
+		$query_params = array(
+			'pub_date_start' => $date_params['pub_date_start'] ?? null,
+			'pub_date_end'   => $date_params['pub_date_end'] ?? null,
+			'limit'          => WP_MAX_POSTS_PER_PAGE,
+			'sort'           => 'avg_engaged',
 		);
+
 		// TODO: deal with response.
 		$response = $analytics_api->get_items( $query_params );
 
@@ -137,11 +143,11 @@ final class Admin_Columns_Analytics {
 	 *
 	 * @param WP_Post[] $posts Array of post objects.
 	 *
-	 * @return array<string, string>
+	 * @return Analytics_Post_API_Params|null
 	 */
-	private function get_date_params_for_analytics( array $posts ): array {
+	private function get_date_params_for_analytics( array $posts ) {
 		if ( count( $posts ) === 0 ) {
-			return array();
+			return null;
 		}
 
 		$max_date_time = '';

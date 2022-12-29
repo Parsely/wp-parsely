@@ -84,7 +84,7 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @return WP_Error|array<string, mixed>
 	 */
-	public function get_items( array $query ) {
+	public function get_items( $query ) {
 		$full_api_url = $this->get_api_url( $query );
 
 		$result = wp_safe_remote_get( $full_api_url, array() );
