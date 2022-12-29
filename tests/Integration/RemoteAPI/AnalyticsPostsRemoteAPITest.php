@@ -36,7 +36,7 @@ final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 				'apikey' => 'my-key',
 				'limit'  => 5,
 			),
-			'https://api.parsely.com/v2/analytics/posts?apikey=my-key&limit=5',
+			Parsely::PUBLIC_API_BASE_URL . '/analytics/posts?apikey=my-key&limit=5',
 		);
 	}
 }

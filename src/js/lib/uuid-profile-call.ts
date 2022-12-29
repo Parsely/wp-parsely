@@ -1,3 +1,5 @@
+import { PUBLIC_API_BASE_URL } from '../../blocks/shared/utils/constants';
+
 // Only enqueuing the action if the site has a defined Site ID.
 if ( typeof window.wpParselySiteId !== 'undefined' ) {
 	window.wpParselyHooks?.addAction( 'wpParselyOnLoad', 'wpParsely', uuidProfileCall );
@@ -10,7 +12,7 @@ async function uuidProfileCall() {
 		return;
 	}
 
-	const url = `https://api.parsely.com/v2/profile?apikey=${ encodeURIComponent(
+	const url = `${ PUBLIC_API_BASE_URL }/profile?apikey=${ encodeURIComponent(
 		window.wpParselySiteId
 	) }&uuid=${ encodeURIComponent( uuid ) }&url=${ encodeURIComponent( window.location.href ) }`;
 
