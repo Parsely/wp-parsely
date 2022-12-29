@@ -1,6 +1,6 @@
 <?php
 /**
- * Remote API: `/related` REST API Proxy class
+ * Class for Related API (`/related`).
  *
  * @package Parsely
  * @since   3.2.0
@@ -13,11 +13,11 @@ namespace Parsely\RemoteAPI;
 use Parsely\Parsely;
 
 /**
- * Proxy for the `/related` endpoint.
+ * Class for Related API (`/related`).
  *
  * @since 3.2.0
  */
-class Related_Proxy extends Base_Proxy {
+class Related_API extends Remote_API_Base {
 	protected const ENDPOINT     = Parsely::PUBLIC_API_BASE_URL . '/related';
 	protected const QUERY_FILTER = 'wp_parsely_related_endpoint_args';
 }

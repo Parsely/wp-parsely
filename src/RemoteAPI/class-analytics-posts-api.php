@@ -1,6 +1,6 @@
 <?php
 /**
- * Remote API: `/analytics/posts` REST API Proxy class
+ * Class for Analytics Posts API (`/analytics/post`).
  *
  * @package Parsely
  * @since   3.4.0
@@ -13,11 +13,11 @@ namespace Parsely\RemoteAPI;
 use Parsely\Parsely;
 
 /**
- * Proxy for the `/analytics/posts` endpoint.
+ * Class for Analytics Posts API (`/analytics/post`).
  *
  * @since 3.4.0
  */
-class Analytics_Posts_Proxy extends Base_Proxy {
+class Analytics_Posts_API extends Remote_API_Base {
 	protected const ENDPOINT     = Parsely::PUBLIC_API_BASE_URL . '/analytics/posts';
 	protected const QUERY_FILTER = 'wp_parsely_analytics_posts_endpoint_args';
 }

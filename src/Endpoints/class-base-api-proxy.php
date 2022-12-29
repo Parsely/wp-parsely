@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Proxy;
+use Parsely\RemoteAPI\Remote_API_Base;
 use stdClass;
 use WP_Error;
 use WP_REST_Request;
@@ -29,11 +29,11 @@ abstract class Base_API_Proxy {
 	protected $parsely;
 
 	/**
-	 * Proxy object which does the actual calls to the Parse.ly API.
+	 * API object which does the actual calls to the Parse.ly API.
 	 *
-	 * @var Proxy
+	 * @var Remote_API_Base
 	 */
-	private $proxy;
+	private $remote_api;
 
 	/**
 	 * Registers the endpoint's WP REST route.
@@ -67,13 +67,12 @@ abstract class Base_API_Proxy {
 	/**
 	 * Constructor.
 	 *
-	 * @param Parsely $parsely Instance of Parsely class.
-	 * @param Proxy   $proxy   Proxy object which does the actual calls to the
-	 *                         Parse.ly API.
+	 * @param Parsely         $parsely Instance of Parsely class.
+	 * @param Remote_API_Base $remote_api API object which does the actual calls to the Parse.ly API.
 	 */
-	public function __construct( Parsely $parsely, Proxy $proxy ) {
-		$this->parsely = $parsely;
-		$this->proxy   = $proxy;
+	public function __construct( Parsely $parsely, Remote_API_Base $remote_api ) {
+		$this->parsely    = $parsely;
+		$this->remote_api = $remote_api;
 	}
 
 	/**
@@ -148,11 +147,7 @@ abstract class Base_API_Proxy {
 		}
 
 		// A proxy with caching behavior is used here.
-		$response = $this->proxy->get_items( $params ); // @phpstan-ignore-line.
-
-		if ( false === $response ) {
-			return new stdClass();
-		}
+		$response = $this->remote_api->get_items( $params ); // @phpstan-ignore-line.
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
