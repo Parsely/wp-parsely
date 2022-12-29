@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\UI;
 
+use stdClass;
 use DateTime;
 use WP_Post;
 use Parsely\Parsely;
@@ -23,6 +24,8 @@ use const Parsely\Utils\WP_MAX_POSTS_PER_PAGE;
  * @since 3.7.0
  *
  * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
+ * @phpstan-import-type Analytics_Post from Analytics_Posts_API
+ * @phpstan-import-type Analytics_Post_Metrics from Analytics_Posts_API
  */
 final class Admin_Columns_Analytics {
 	/**
@@ -32,6 +35,12 @@ final class Admin_Columns_Analytics {
 	 */
 	private $parsely;
 
+	/**
+	 * Internal Variable.
+	 *
+	 * @var array<string, mixed>
+	 */
+	private $parsely_stats_map = array();
 
 	/**
 	 * Constructor.
@@ -120,20 +129,35 @@ final class Admin_Columns_Analytics {
 		}
 
 		$analytics_api = new Analytics_Posts_API( $this->parsely );
+		$response      = $analytics_api->get_items(
+			array(
+				'pub_date_start' => $date_params['pub_date_start'] ?? '',
+				'pub_date_end'   => $date_params['pub_date_end'] ?? '',
+				'limit'          => WP_MAX_POSTS_PER_PAGE,
+				'sort'           => 'avg_engaged',
+			)
+		);
+
+		if ( is_wp_error( $response ) ) {
+			// TODO: handle error.
+			return $posts;
+		}
+
 		/**
 		 * Variable.
 		 *
-		 * @var Analytics_Post_API_Params
+		 * @var stdClass $analytics_post
 		 */
-		$query_params = array(
-			'pub_date_start' => $date_params['pub_date_start'] ?? null,
-			'pub_date_end'   => $date_params['pub_date_end'] ?? null,
-			'limit'          => WP_MAX_POSTS_PER_PAGE,
-			'sort'           => 'avg_engaged',
-		);
-
-		// TODO: deal with response.
-		$response = $analytics_api->get_items( $query_params );
+		foreach ( $response as $analytics_post ) {
+			/**
+			 * Variable.
+			 *
+			 * @var string
+			 */
+			$url_with_api_utm                = $analytics_post->url;
+			$url                             = str_replace( '/?itm_source=parsely-api', '', $url_with_api_utm );
+			$this->parsely_stats_map[ $url ] = (array) $analytics_post->metrics;
+		}
 
 		return $posts;
 	}

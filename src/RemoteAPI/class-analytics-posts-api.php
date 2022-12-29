@@ -23,7 +23,30 @@ use Parsely\Parsely;
  *   pub_date_start?: string,
  *   pub_date_end?: string,
  *   sort?: string,
- *   limit?: int,
+ *   limit?: int<0, 2000>,
+ * }
+ *
+ * @phpstan-type Analytics_Post array{
+ *   title: string,
+ *   url: string,
+ *   link: string,
+ *   author: string,
+ *   authors: string[],
+ *   section: string,
+ *   tags: string[],
+ *   metrics: Analytics_Post_Metrics,
+ *   full_content_word_count: int,
+ *   image_url: string,
+ *   metadata: string,
+ *   pub_date: string,
+ *   thumb_url_medium: string,
+ * }
+ *
+ * @phpstan-type Analytics_Post_Metrics array{
+ *   avg_engaged: float,
+ *   engaged_minutes: int,
+ *   views: int,
+ *   visitors: int,
  * }
  */
 class Analytics_Posts_API extends Remote_API_Base {
