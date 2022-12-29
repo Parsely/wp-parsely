@@ -10,6 +10,13 @@ declare(strict_types=1);
 
 namespace Parsely\UI;
 
+use DateTime;
+use WP_Post;
+use Parsely\Parsely;
+use Parsely\RemoteAPI\Analytics_Posts_API;
+
+use const Parsely\Utils\WP_MAX_POSTS_PER_PAGE;
+
 /**
  * Shows `Parse.ly Stats` on Admin Columns
  *
@@ -17,24 +24,35 @@ namespace Parsely\UI;
  */
 final class Admin_Columns_Analytics {
 	/**
+	 * Instance of Parsely class.
+	 *
+	 * @var Parsely
+	 */
+	private $parsely;
+
+
+	/**
+	 * Constructor.
+	 *
+	 * @param Parsely $parsely Instance of Parsely class.
+	 */
+	public function __construct( Parsely $parsely ) {
+		$this->parsely = $parsely;
+	}
+
+	/**
 	 * Registers action and filter hook callbacks.
 	 *
 	 * @since 3.7.0
+	 * @todo  Add columns for pages and all other custom post types.
 	 */
 	public function run(): void {
-		// @TODO: Add columns on all post types.
-
-		// Add column headers.
-		add_filter( 'manage_posts_columns', array( $this, 'add_parsely_stats_column_on_list_view' ), 10, 1 );
-		add_filter( 'manage_pages_columns', array( $this, 'add_parsely_stats_column_on_list_view' ), 10, 1 );
-
-		// Makes stats column sortable.
-		add_filter( 'manage_edit-post_sortable_columns', array( $this, 'makes_parsely_stats_sortable' ), 10, 1 );
-		add_filter( 'manage_edit-page_sortable_columns', array( $this, 'makes_parsely_stats_sortable' ), 10, 1 );
-		
-		// Add content on column.
-		add_action( 'manage_posts_custom_column', array( $this, 'show_parsely_stats' ), 10, 2 );
-		add_action( 'manage_pages_custom_column', array( $this, 'show_parsely_stats' ), 10, 2 );
+		if ( $this->parsely->site_id_is_set() && $this->parsely->api_secret_is_set() ) {
+			add_filter( 'the_posts', array( $this, 'set_parsely_stats' ), 10, 1 );
+			add_filter( 'manage_posts_columns', array( $this, 'add_parsely_stats_column_on_list_view' ), 10, 1 );
+			add_action( 'manage_posts_custom_column', array( $this, 'show_parsely_stats' ), 10, 2 );
+			add_filter( 'manage_edit-post_sortable_columns', array( $this, 'makes_parsely_stats_sortable' ), 10, 1 );
+		}
 	}
 
 	/**
@@ -79,5 +97,76 @@ final class Admin_Columns_Analytics {
 				<span class='parsely-post-avg-time'> 1:04 avg time </span>
 			";
 		}
+	}
+
+	/**
+	 * Calculate Min and Max Publish date from all the found posts.
+	 *
+	 *  @param WP_Post[] $posts Array of post objects.
+	 *
+	 * @return WP_Post[]
+	 */
+	public function set_parsely_stats( array $posts ): array {
+		$post_type = is_null( get_current_screen() ) ? '' : get_current_screen()->post_type;
+		if ( ! in_array( $post_type, array( 'post', 'page' ), true ) ) {
+			return $posts;
+		}
+
+		$date_params = $this->get_date_params_for_analytics( $posts );
+		if ( count( $date_params ) === 0 ) {
+			return $posts;
+		}
+
+		$analytics_api = new Analytics_Posts_API( $this->parsely );
+		// TODO: adds interface for query params.
+		$query_params = array_merge(
+			$date_params,
+			array(
+				'limit' => WP_MAX_POSTS_PER_PAGE,
+				'sort'  => 'avg_engaged',
+			)
+		);
+		// TODO: deal with response.
+		$response = $analytics_api->get_items( $query_params );
+
+		return $posts;
+	}
+
+	/**
+	 * Get date params for analytics API.
+	 *
+	 * @param WP_Post[] $posts Array of post objects.
+	 *
+	 * @return array<string, string>
+	 */
+	private function get_date_params_for_analytics( array $posts ): array {
+		if ( count( $posts ) === 0 ) {
+			return array();
+		}
+
+		$max_date_time = '';
+		$min_date_time = '';
+
+		foreach ( $posts as $post ) {
+			$published_date_time = $post->post_date;
+
+			if ( '' === $min_date_time || $published_date_time < $min_date_time ) {
+				$min_date_time = $published_date_time;
+			}
+
+			if ( $published_date_time > $max_date_time ) {
+				$max_date_time = $published_date_time;
+			}
+		}
+
+		// TODO: Any timezone issue to handle?
+		$date_format    = 'Y-m-d';
+		$pub_date_start = ( new DateTime( $min_date_time ) )->format( $date_format );
+		$pub_date_end   = ( new DateTime( $max_date_time ) )->format( $date_format );
+
+		return array(
+			'pub_date_start' => $pub_date_start,
+			'pub_date_end'   => $pub_date_end,
+		);
 	}
 }

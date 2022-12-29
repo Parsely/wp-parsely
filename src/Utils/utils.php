@@ -14,6 +14,8 @@ namespace Parsely\Utils;
 
 use WP_Post;
 
+const WP_MAX_POSTS_PER_PAGE = 999;
+
 /**
  * Get default category.
  *
