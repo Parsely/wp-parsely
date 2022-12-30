@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Parsely\Utils;
 
 use WP_Post;
+use WP_Error;
 
 const WP_MAX_POSTS_PER_PAGE = 999;
 
@@ -130,4 +131,30 @@ function get_time_format(): string {
 	 * @var string
 	 */
 	return get_option( 'time_format' );
+}
+
+/**
+ * Convert to associate array.
+ *
+ * @since 3.7.0
+ *
+ * @param mixed $obj Input object.
+ *
+ * @return array<string, mixed>|WP_Error
+ */
+function convert_to_associate_array( $obj ) {
+	$encoded = wp_json_encode( $obj );
+
+	if ( false === $encoded ) {
+		return new WP_Error( 400, __( 'Unable to encode API response for associative array', 'wp-parsely' ) );
+	}
+
+	$decoded = json_decode( $encoded, true );
+
+	/**
+	 * Variable.
+	 *
+	 * @var array<string, mixed>
+	 */
+	return $decoded;
 }

@@ -14,6 +14,8 @@ use Parsely\Parsely;
 use UnexpectedValueException;
 use WP_Error;
 
+use function Parsely\Utils\convert_to_associate_array;
+
 /**
  * Base API for all Parse.ly API endpoints.
  *
@@ -80,11 +82,14 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	 * Get items from the specified endpoint.
 	 *
 	 * @since 3.2.0
+	 * @since 3.7.0 Added $associative param.
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
+	 * @param bool                 $associative When TRUE, returned objects will be converted into associative arrays.
+	 *
 	 * @return WP_Error|array<string, mixed>
 	 */
-	public function get_items( $query ) {
+	public function get_items( $query, $associative = false ) {
 		$full_api_url = $this->get_api_url( $query );
 
 		$result = wp_safe_remote_get( $full_api_url, array() );
@@ -108,6 +113,8 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 			return new WP_Error( 400, __( 'Unable to parse data from upstream API', 'wp-parsely' ) );
 		}
 
-		return $decoded->data;
+		$response = $decoded->data;
+
+		return $associative ? convert_to_associate_array( $response ) : $response;
 	}
 }

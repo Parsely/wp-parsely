@@ -129,7 +129,7 @@ final class Admin_Columns_Analytics {
 		}
 
 		$analytics_api = new Analytics_Posts_API( $this->parsely );
-		$response      = $analytics_api->get_items(
+		$response      = $analytics_api->get_post_analytics(
 			array(
 				'pub_date_start' => $date_params['pub_date_start'] ?? '',
 				'pub_date_end'   => $date_params['pub_date_end'] ?? '',
@@ -143,20 +143,10 @@ final class Admin_Columns_Analytics {
 			return $posts;
 		}
 
-		/**
-		 * Variable.
-		 *
-		 * @var stdClass $analytics_post
-		 */
 		foreach ( $response as $analytics_post ) {
-			/**
-			 * Variable.
-			 *
-			 * @var string
-			 */
-			$url_with_api_utm                = $analytics_post->url;
+			$url_with_api_utm                = $analytics_post['url'];
 			$url                             = str_replace( '/?itm_source=parsely-api', '', $url_with_api_utm );
-			$this->parsely_stats_map[ $url ] = (array) $analytics_post->metrics;
+			$this->parsely_stats_map[ $url ] = $analytics_post['metrics'];
 		}
 
 		return $posts;

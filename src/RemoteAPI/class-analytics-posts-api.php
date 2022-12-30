@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\RemoteAPI;
 
 use Parsely\Parsely;
+use WP_Error;
 
 /**
  * Class for Analytics Posts API (`/analytics/post`).
@@ -52,4 +53,26 @@ use Parsely\Parsely;
 class Analytics_Posts_API extends Remote_API_Base {
 	protected const ENDPOINT     = Parsely::PUBLIC_API_BASE_URL . '/analytics/posts';
 	protected const QUERY_FILTER = 'wp_parsely_analytics_posts_endpoint_args';
+
+	/**
+	 * Response of post analytics API.
+	 *
+	 * @param Analytics_Post_API_Params $api_params Parameters for the API.
+	 *
+	 * @return WP_Error|Analytics_Post[]
+	 */
+	public function get_post_analytics( $api_params ) {
+		$response = $this->get_items( $api_params, true );
+
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+
+		/**
+		 * Variable.
+		 *
+		 * @var Analytics_Post[]
+		 */
+		return $response;
+	}
 }
