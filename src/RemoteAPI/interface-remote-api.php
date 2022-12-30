@@ -24,5 +24,5 @@ interface Remote_API_Interface {
 	 *
 	 * @return WP_Error|array<string, mixed>|false
 	 */
-	public function get_items( $query, $associative );
+	public function get_items( $query, $associative = false );
 }

@@ -28,26 +28,26 @@ use WP_Error;
  * }
  *
  * @phpstan-type Analytics_Post array{
- *   title: string,
- *   url: string,
- *   link: string,
- *   author: string,
- *   authors: string[],
- *   section: string,
- *   tags: string[],
- *   metrics: Analytics_Post_Metrics,
- *   full_content_word_count: int,
- *   image_url: string,
- *   metadata: string,
- *   pub_date: string,
- *   thumb_url_medium: string,
+ *   title?: string,
+ *   url?: string,
+ *   link?: string,
+ *   author?: string,
+ *   authors?: string[],
+ *   section?: string,
+ *   tags?: string[],
+ *   metrics?: Analytics_Post_Metrics,
+ *   full_content_word_count?: int,
+ *   image_url?: string,
+ *   metadata?: string,
+ *   pub_date?: string,
+ *   thumb_url_medium?: string,
  * }
  *
  * @phpstan-type Analytics_Post_Metrics array{
- *   avg_engaged: float,
- *   engaged_minutes: int,
- *   views: int,
- *   visitors: int,
+ *   avg_engaged?: float,
+ *   engaged_minutes?: int,
+ *   views?: int,
+ *   visitors?: int,
  * }
  */
 class Analytics_Posts_API extends Remote_API_Base {
