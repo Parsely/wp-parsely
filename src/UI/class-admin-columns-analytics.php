@@ -55,94 +55,13 @@ final class Admin_Columns_Analytics {
 	 * Registers action and filter hook callbacks.
 	 *
 	 * @since 3.7.0
-	 * @todo  Add columns for pages and all other custom post types.
 	 */
 	public function run(): void {
 		if ( $this->parsely->site_id_is_set() && $this->parsely->api_secret_is_set() ) {
 			add_filter( 'the_posts', array( $this, 'set_parsely_stats' ) );
+			// TODO: Add columns for pages and custom post types.
 			add_filter( 'manage_posts_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
 			add_action( 'manage_posts_custom_column', array( $this, 'show_parsely_stats' ) );
-			add_filter( 'manage_edit-post_sortable_columns', array( $this, 'makes_parsely_stats_sortable' ) );
-		}
-	}
-
-	/**
-	 * Adds the `Parse.ly Stats` on admin columns.
-	 *
-	 * @param array<string, string> $columns Columns array which contain keys and labels.
-	 *
-	 * @return array<string, string>
-	 */
-	public function add_parsely_stats_column_on_list_view( array $columns ): array {
-		$columns['parsely-stats'] = 'Parse.ly Stats';
-
-		return $columns;
-	}
-
-	/**
-	 * Makes `Parse.ly Stats` column sortable.
-	 *
-	 * @param array<string, string> $columns Columns array which contain keys and labels.
-	 *
-	 * @return array<string, string>
-	 */
-	public function makes_parsely_stats_sortable( array $columns ): array {
-		$columns['parsely-stats'] = 'parsely-stats';
-
-		return $columns;
-	}
-
-	/**
-	 * Show Parsely Stats.
-	 *
-	 * @param string $column_key Key of the column.
-	 *
-	 * @return void
-	 */
-	public function show_parsely_stats( string $column_key ): void {
-		if ( 'parsely-stats' === $column_key ) {
-			$key = $this->get_unique_stats_key_from_post();
-
-			if ( '' === $key || ! isset( $this->parsely_stats_map[ $key ] ) ) {
-				echo '-';
-				return;
-			}
-
-			$metrics = $this->parsely_stats_map[ $key ];
-
-			if ( isset( $metrics['views'] ) ) {
-				$views = $metrics['views'];
-
-				echo "<span class='parsely-post-page-views'>"
-					. esc_html( strval( $views ) ) . ' '
-					. esc_html( _n( 'page view', 'page views', $views, 'wp-parsely' ) )
-					. '</span> <br/>';
-			}
-
-			if ( isset( $metrics['visitors'] ) ) {
-				$visitors = $metrics['visitors'];
-
-				echo "<span class='parsely-post-visitors'>"
-					. esc_html( strval( $visitors ) ) . ' '
-					. esc_html( _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ) )
-					. '</span> <br/>';
-			}
-
-			if ( isset( $metrics['avg_engaged'] ) ) {
-				$avg_engaged     = $metrics['avg_engaged'];
-				$engaged_minutes = (int) floor( $avg_engaged );
-
-				if ( 0 === $engaged_minutes ) {
-					$engaged_seconds = (int) ( $avg_engaged * 60 );
-				} else {
-					$engaged_seconds = (int) ( fmod( $avg_engaged, $engaged_minutes ) * 60 );
-				}
-
-				echo "<span class='parsely-post-avg_engaged'>"
-					. esc_html( strval( $engaged_minutes ) ) . ':' . esc_html( strval( $engaged_seconds ) ) . ' '
-					. esc_html__( 'avg time', 'wp-parsely' )
-					. '</span> <br/>';
-			}
 		}
 	}
 
@@ -155,11 +74,12 @@ final class Admin_Columns_Analytics {
 	 */
 	public function set_parsely_stats( array $posts ): array {
 		$post_type = is_null( get_current_screen() ) ? '' : get_current_screen()->post_type;
-		if ( ! in_array( $post_type, array( 'post', 'page' ), true ) ) {
+		// TODO: Add support for columns of pages and custom post types.
+		if ( 'post' !== $post_type ) {
 			return $posts;
 		}
 
-		$date_params = $this->get_date_params_for_analytics( $posts );
+		$date_params = $this->get_publish_date_params_for_analytics_api( $posts );
 		if ( is_null( $date_params ) ) {
 			return $posts;
 		}
@@ -191,13 +111,85 @@ final class Admin_Columns_Analytics {
 	}
 
 	/**
-	 * Get date params for analytics API.
+	 * Adds the `Parse.ly Stats` on admin columns.
+	 *
+	 * @param array<string, string> $columns Columns array which contain keys and labels.
+	 *
+	 * @return array<string, string>
+	 */
+	public function add_parsely_stats_column_on_list_view( array $columns ): array {
+		$columns['parsely-stats'] = 'Parse.ly Stats';
+
+		return $columns;
+	}
+
+	/**
+	 * Show Parsely Stats.
+	 *
+	 * @param string $column_key Key of the column.
+	 *
+	 * @return void
+	 */
+	public function show_parsely_stats( string $column_key ): void {
+		if ( 'parsely-stats' !== $column_key ) {
+			return;
+		}
+
+		$key = $this->get_unique_stats_key_of_current_post();
+
+		if ( '' === $key || ! isset( $this->parsely_stats_map[ $key ] ) ) {
+			echo '-';
+			return;
+		}
+
+		$metrics = $this->parsely_stats_map[ $key ];
+
+		if ( isset( $metrics['views'] ) ) {
+			$views = $metrics['views'];
+
+			echo "<span class='parsely-post-page-views'>"
+				. esc_html( strval( $views ) ) . ' '
+				. esc_html( _n( 'page view', 'page views', $views, 'wp-parsely' ) )
+				. '</span> <br/>';
+		}
+
+		if ( isset( $metrics['visitors'] ) ) {
+			$visitors = $metrics['visitors'];
+
+			echo "<span class='parsely-post-visitors'>"
+				. esc_html( strval( $visitors ) ) . ' '
+				. esc_html( _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ) )
+				. '</span> <br/>';
+		}
+
+		if ( isset( $metrics['avg_engaged'] ) ) {
+			$avg_engaged     = $metrics['avg_engaged'];
+			$engaged_minutes = (int) floor( $avg_engaged );
+
+			if ( 0 === $engaged_minutes ) {
+				$engaged_seconds = (int) ( $avg_engaged * 60 );
+			} else {
+				$engaged_seconds = (int) ( fmod( $avg_engaged, $engaged_minutes ) * 60 );
+			}
+
+			echo "<span class='parsely-post-avg_engaged'>"
+				. esc_html( strval( $engaged_minutes ) ) . ':' . esc_html( strval( $engaged_seconds ) ) . ' '
+				. esc_html__( 'avg time', 'wp-parsely' )
+				. '</span> <br/>';
+		}
+	}
+
+	/**
+	 * Get publish date params for analytics API.
+	 *
+	 * For getting date params we loop through all the posts and calculate
+	 * the min and max publish dates based on which we will limit the analytics API.
 	 *
 	 * @param WP_Post[] $posts Array of post objects.
 	 *
 	 * @return Analytics_Post_API_Params|null
 	 */
-	private function get_date_params_for_analytics( array $posts ) {
+	private function get_publish_date_params_for_analytics_api( array $posts ) {
 		if ( count( $posts ) === 0 ) {
 			return null;
 		}
@@ -217,20 +209,18 @@ final class Admin_Columns_Analytics {
 			}
 		}
 
-		// TODO: Any timezone issue to handle?
-		$date_format    = 'Y-m-d';
-		$pub_date_start = ( new DateTime( $min_date_time ) )->format( $date_format );
-		$pub_date_end   = ( new DateTime( $max_date_time ) )->format( $date_format );
+		$date_format = 'Y-m-d';
 
+		// TODO: Handle timezones if needed.
 		return array(
-			'pub_date_start' => $pub_date_start,
-			'pub_date_end'   => $pub_date_end,
+			'pub_date_start' => ( new DateTime( $min_date_time ) )->format( $date_format ),
+			'pub_date_end'   => ( new DateTime( $max_date_time ) )->format( $date_format ),
 		);
 	}
 
 	/**
 	 * Get unique key which we can use for Parse.ly stats map.
-	 * Mainly we need this because Parse.ly doesn't have anything unique in API.
+	 * Mainly we need this because Parse.ly doesn't have anything unique in its analytics API.
 	 *
 	 * @param Analytics_Post $analytics_post Post analytics obj returned from Parse.ly API.
 	 *
@@ -249,7 +239,7 @@ final class Admin_Columns_Analytics {
 	 *
 	 * @return string
 	 */
-	private function get_unique_stats_key_from_post(): string {
+	private function get_unique_stats_key_of_current_post(): string {
 		$published_date     = get_the_date() . get_the_time();
 		$published_utc_date = ( new DateTime( $published_date ) )->format( DATE_TIME_UTC_FORMAT );
 

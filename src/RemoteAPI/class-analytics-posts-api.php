@@ -55,9 +55,9 @@ class Analytics_Posts_API extends Remote_API_Base {
 	protected const QUERY_FILTER = 'wp_parsely_analytics_posts_endpoint_args';
 
 	/**
-	 * Response of post analytics API.
+	 * Call post analytics API and get its response.
 	 *
-	 * @param Analytics_Post_API_Params $api_params Parameters for the API.
+	 * @param Analytics_Post_API_Params $api_params Parameters of the API.
 	 *
 	 * @return WP_Error|Analytics_Post[]
 	 */
