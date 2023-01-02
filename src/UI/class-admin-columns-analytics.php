@@ -158,7 +158,7 @@ final class Admin_Columns_Analytics {
 		$key = $this->get_unique_stats_key_of_current_post();
 
 		if ( '' === $key || ! isset( $this->parsely_stats_map[ $key ] ) ) {
-			echo '-';
+			echo '—';
 			return;
 		}
 
@@ -218,7 +218,7 @@ final class Admin_Columns_Analytics {
 		$min_date_time = '';
 
 		foreach ( $posts as $post ) {
-			$published_date_time = $post->post_date;
+			$published_date_time = $post->post_date_gmt;
 
 			if ( '' === $min_date_time || $published_date_time < $min_date_time ) {
 				$min_date_time = $published_date_time;
@@ -231,7 +231,6 @@ final class Admin_Columns_Analytics {
 
 		$date_format = 'Y-m-d';
 
-		// TODO: Handle timezones if needed.
 		return array(
 			'pub_date_start' => ( new DateTime( $min_date_time ) )->format( $date_format ),
 			'pub_date_end'   => ( new DateTime( $max_date_time ) )->format( $date_format ),
@@ -260,7 +259,9 @@ final class Admin_Columns_Analytics {
 	 * @return string
 	 */
 	private function get_unique_stats_key_of_current_post(): string {
-		$published_date     = get_the_date() . get_the_time();
+		global $post;
+
+		$published_date     = $post->post_date_gmt;
 		$published_utc_date = ( new DateTime( $published_date ) )->format( DATE_TIME_UTC_FORMAT );
 
 		return get_the_title() . '-' . $published_utc_date;
