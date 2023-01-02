@@ -1,0 +1,12 @@
+@import "./shared/variables";
+
+.column-parsely-stats {
+
+	> span {
+		color: $gray-500;
+	}
+
+	.parsely-post-page-views {
+		color: $black;
+	}
+}

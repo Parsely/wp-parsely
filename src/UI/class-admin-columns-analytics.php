@@ -15,6 +15,7 @@ use WP_Post;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 
+use const Parsely\PARSELY_FILE;
 use const Parsely\Utils\WP_MAX_POSTS_PER_PAGE;
 use const Parsely\Utils\DATE_TIME_UTC_FORMAT;
 
@@ -58,11 +59,30 @@ final class Admin_Columns_Analytics {
 	 */
 	public function run(): void {
 		if ( $this->parsely->site_id_is_set() && $this->parsely->api_secret_is_set() ) {
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_parsely_stats_styles' ) );
 			add_filter( 'the_posts', array( $this, 'set_parsely_stats' ) );
 			// TODO: Add columns for pages and custom post types.
 			add_filter( 'manage_posts_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
 			add_action( 'manage_posts_custom_column', array( $this, 'show_parsely_stats' ) );
 		}
+	}
+
+	/**
+	 * Enqueues styles for Parse.ly Stats.
+	 *
+	 * @param string $hook_suffix The current page being loaded.
+	 */
+	public function enqueue_parsely_stats_styles( string $hook_suffix ): void {
+		// TODO: Use $hook_suffix to only load stylesheet on needed pages i.e. list screen for pages, posts and CPT.
+		$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-parsely-stats.asset.php';
+		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
+
+		wp_enqueue_style(
+			'parsely-admin-settings',
+			$built_assets_url . 'admin-parsely-stats.css',
+			$admin_settings_asset['dependencies'] ?? null,
+			$admin_settings_asset['version'] ?? Parsely::VERSION
+		);
 	}
 
 	/**
