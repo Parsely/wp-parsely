@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Remote_API_Base;
+use Parsely\RemoteAPI\Remote_API_Interface;
 use stdClass;
 use WP_Error;
 use WP_REST_Request;
@@ -31,7 +31,7 @@ abstract class Base_API_Proxy {
 	/**
 	 * API object which does the actual calls to the Parse.ly API.
 	 *
-	 * @var Remote_API_Base
+	 * @var Remote_API_Interface
 	 */
 	private $remote_api;
 
@@ -67,10 +67,10 @@ abstract class Base_API_Proxy {
 	/**
 	 * Constructor.
 	 *
-	 * @param Parsely         $parsely Instance of Parsely class.
-	 * @param Remote_API_Base $remote_api API object which does the actual calls to the Parse.ly API.
+	 * @param Parsely              $parsely Instance of Parsely class.
+	 * @param Remote_API_Interface $remote_api API object which does the actual calls to the Parse.ly API.
 	 */
-	public function __construct( Parsely $parsely, Remote_API_Base $remote_api ) {
+	public function __construct( Parsely $parsely, Remote_API_Interface $remote_api ) {
 		$this->parsely    = $parsely;
 		$this->remote_api = $remote_api;
 	}
