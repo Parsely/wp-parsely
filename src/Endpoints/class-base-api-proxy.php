@@ -33,7 +33,7 @@ abstract class Base_API_Proxy {
 	 *
 	 * @var Remote_API_Interface
 	 */
-	private $remote_api;
+	private $api;
 
 	/**
 	 * Registers the endpoint's WP REST route.
@@ -68,11 +68,11 @@ abstract class Base_API_Proxy {
 	 * Constructor.
 	 *
 	 * @param Parsely              $parsely Instance of Parsely class.
-	 * @param Remote_API_Interface $remote_api API object which does the actual calls to the Parse.ly API.
+	 * @param Remote_API_Interface $api API object which does the actual calls to the Parse.ly API.
 	 */
-	public function __construct( Parsely $parsely, Remote_API_Interface $remote_api ) {
-		$this->parsely    = $parsely;
-		$this->remote_api = $remote_api;
+	public function __construct( Parsely $parsely, Remote_API_Interface $api ) {
+		$this->parsely = $parsely;
+		$this->api     = $api;
 	}
 
 	/**
@@ -147,7 +147,7 @@ abstract class Base_API_Proxy {
 		}
 
 		// A proxy with caching behavior is used here.
-		$response = $this->remote_api->get_items( $params ); // @phpstan-ignore-line.
+		$response = $this->api->get_items( $params ); // @phpstan-ignore-line.
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
