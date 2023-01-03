@@ -15,8 +15,10 @@ namespace Parsely\Tests\Integration;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Analytics_Posts_Proxy;
+use Parsely\RemoteAPI\Analytics_Posts_API;
 use WP_REST_Request;
+
+use function Parsely\Utils\get_date_format;
 
 /**
  * Integration Tests for the Analytics Posts API Proxy Endpoint.
@@ -39,7 +41,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	public function get_endpoint(): Base_API_Proxy {
 		return new Analytics_Posts_API_Proxy(
 			new Parsely(),
-			new Analytics_Posts_Proxy( new Parsely() )
+			new Analytics_Posts_API( new Parsely() )
 		);
 	}
 
@@ -49,7 +51,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @covers \Parsely\Endpoints\Analytics_Posts_API_Proxy::run
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::__construct
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
-	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
+	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
 	 */
 	public function test_register_routes_by_default(): void {
 		parent::test_register_routes_by_default();
@@ -62,7 +64,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @covers \Parsely\Endpoints\Analytics_Posts_API_Proxy::run
 	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::__construct
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
-	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
+	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
 	 */
 	public function test_verify_that_route_is_not_registered_when_proxy_is_disabled(): void {
 		parent::test_do_not_register_route_when_proxy_is_disabled();
@@ -80,7 +82,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
+	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::get_data
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 */
@@ -105,16 +107,16 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\RemoteAPI\Base_Proxy::__construct
-	 * @uses \Parsely\RemoteAPI\Base_Proxy::get_api_url
-	 * @uses \Parsely\RemoteAPI\Base_Proxy::get_items
+	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_api_url
+	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_items
 	 */
-	public function test_get_items() {
+	public function test_get_items(): void {
 		TestCase::set_options( array( 'apikey' => 'example.com' ) );
 		TestCase::set_options( array( 'api_secret' => 'test' ) );
 
 		$dispatched  = 0;
-		$date_format = get_option( 'date_format' );
+		$date_format = get_date_format();
 
 		add_filter(
 			'pre_http_request',

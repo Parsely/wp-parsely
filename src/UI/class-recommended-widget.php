@@ -95,7 +95,7 @@ final class Recommended_Widget extends WP_Widget {
 	 * @return string API URL.
 	 */
 	private function get_api_url( string $site_id, ?int $published_within, ?string $sort, ?string $boost, int $return_limit ): string {
-		$related_api_endpoint = 'https://api.parsely.com/v2/related';
+		$related_api_endpoint = Parsely::PUBLIC_API_BASE_URL . '/related';
 
 		$query_args = array(
 			'apikey' => $site_id,

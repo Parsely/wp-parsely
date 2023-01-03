@@ -1,6 +1,6 @@
 <?php
 /**
- * Remote API: Proxy interface
+ * Remote API: Interface
  *
  * @package Parsely
  * @since   3.2.0
@@ -13,9 +13,9 @@ namespace Parsely\RemoteAPI;
 use WP_Error;
 
 /**
- * Remote API Proxy Interface.
+ * Remote API Interface.
  */
-interface Proxy {
+interface Remote_API_Interface {
 	/**
 	 * Returns the items provided by this interface.
 	 *
