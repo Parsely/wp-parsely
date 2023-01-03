@@ -16,6 +16,8 @@ use WP_Error;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 
+use function Parsely\Utils\get_formatted_number;
+use function Parsely\Utils\get_formatted_time;
 use function Parsely\Utils\get_utc_date;
 
 use const Parsely\PARSELY_FILE;
@@ -198,36 +200,35 @@ final class Admin_Columns_Analytics {
 
 		if ( isset( $metrics['views'] ) ) {
 			$views = $metrics['views'];
+			?>
 
-			echo "<span class='parsely-post-page-views'>"
-				. esc_html( strval( $views ) ) . ' '
-				. esc_html( _n( 'page view', 'page views', $views, 'wp-parsely' ) )
-				. '</span> <br/>';
+			<span class='parsely-post-page-views'>
+				<?php echo esc_html( get_formatted_number( $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ) ); ?>
+			</span> <br/>
+
+			<?php 
 		}
 
 		if ( isset( $metrics['visitors'] ) ) {
 			$visitors = $metrics['visitors'];
+			?>
 
-			echo "<span class='parsely-post-visitors'>"
-				. esc_html( strval( $visitors ) ) . ' '
-				. esc_html( _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ) )
-				. '</span> <br/>';
+			<span class='parsely-post-visitors'>
+				<?php echo esc_html( get_formatted_number( $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ) ); ?>
+			</span> <br/>
+
+			<?php
 		}
 
 		if ( isset( $metrics['avg_engaged'] ) ) {
-			$avg_engaged     = $metrics['avg_engaged'];
-			$engaged_minutes = (int) floor( $avg_engaged );
+			$engaged_seconds = $metrics['avg_engaged'] * 60;
+			?>
 
-			if ( 0 === $engaged_minutes ) {
-				$engaged_seconds = (int) ( $avg_engaged * 60 );
-			} else {
-				$engaged_seconds = (int) ( fmod( $avg_engaged, $engaged_minutes ) * 60 );
-			}
+			<span class='parsely-post-avg_engaged'>
+				<?php echo esc_html( get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ) ); ?>
+			</span> <br/>
 
-			echo "<span class='parsely-post-avg_engaged'>"
-				. esc_html( strval( $engaged_minutes ) ) . ':' . esc_html( strval( $engaged_seconds ) ) . ' '
-				. esc_html__( 'avg time', 'wp-parsely' )
-				. '</span> <br/>';
+			<?php
 		}
 	}
 

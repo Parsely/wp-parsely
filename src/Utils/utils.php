@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Parsely\Utils;
 
+use NumberFormatter;
 use WP_Post;
 use WP_Error;
 
@@ -152,6 +153,52 @@ function get_time_format(): string {
 	 * @var string
 	 */
 	return get_option( 'time_format' );
+}
+
+/**
+ * Get number in formatted form i.e. express bigger numbers in form of thousands (K), millions (M), billions (B).
+ *
+ * Example:
+ *   - Represent 10000 as 10K.
+ *
+ * @since 3.7.0
+ *
+ * @param int|float $number Number that we have to format.
+ *
+ * @return string
+ */
+function get_formatted_number( $number ): string {
+	$number_formatter = new NumberFormatter( 'en_US', NumberFormatter::PADDING_POSITION );
+	$formatted_number = $number_formatter->format( $number );
+
+	if ( false === $formatted_number ) {
+		return '';
+	}
+
+	return $formatted_number;
+}
+
+/**
+ * Get time in formatted form.
+ *
+ * Example:
+ *   - Input `1000` (seconds) and Output `16:40` which represent "16 minutes, 40 seconds”
+ *
+ * @since 3.7.0
+ *
+ * @param int|float $seconds Time in seconds that we have to format.
+ *
+ * @return string
+ */
+function get_formatted_time( $seconds ): string {
+	$time_formatter = new NumberFormatter( 'en_US', NumberFormatter::DURATION );
+	$formatted_time = $time_formatter->format( $seconds );
+
+	if ( false === $formatted_time ) {
+		return '';
+	}
+
+	return $formatted_time;
 }
 
 /**
