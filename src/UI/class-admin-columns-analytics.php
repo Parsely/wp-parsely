@@ -311,6 +311,8 @@ final class Admin_Columns_Analytics {
 			return false;
 		}
 
-		return '/wp-admin/edit.php' === $_SERVER['REQUEST_URI']; // Compare current screen url with post list screen.
+		$page_url = esc_url_raw( $_SERVER['REQUEST_URI'] );
+
+		return '/wp-admin/edit.php' === $page_url || strpos( $page_url, 'post_type=post' ) !== false;
 	}
 }
