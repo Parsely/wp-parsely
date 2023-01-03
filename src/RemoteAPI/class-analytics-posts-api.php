@@ -21,6 +21,8 @@ use WP_Error;
  * @phpstan-type Analytics_Post_API_Params array{
  *   apikey?: string,
  *   secret?: string,
+ *   period_start?: string,
+ *   period_end?: string,
  *   pub_date_start?: string,
  *   pub_date_end?: string,
  *   sort?: string,
@@ -51,8 +53,9 @@ use WP_Error;
  * }
  */
 class Analytics_Posts_API extends Remote_API_Base {
-	protected const ENDPOINT     = Parsely::PUBLIC_API_BASE_URL . '/analytics/posts';
-	protected const QUERY_FILTER = 'wp_parsely_analytics_posts_endpoint_args';
+	public const ANALYTICS_API_DAYS_LIMIT = 7;
+	protected const ENDPOINT              = Parsely::PUBLIC_API_BASE_URL . '/analytics/posts';
+	protected const QUERY_FILTER          = 'wp_parsely_analytics_posts_endpoint_args';
 
 	/**
 	 * Call post analytics API and get its response.

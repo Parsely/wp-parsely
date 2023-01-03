@@ -15,7 +15,10 @@ use WP_Post;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 
+use function Parsely\Utils\get_utc_date;
+
 use const Parsely\PARSELY_FILE;
+use const Parsely\Utils\DATE_UTC_FORMAT;
 use const Parsely\Utils\WP_MAX_POSTS_PER_PAGE;
 use const Parsely\Utils\DATE_TIME_UTC_FORMAT;
 
@@ -61,7 +64,7 @@ final class Admin_Columns_Analytics {
 		if ( $this->parsely->site_id_is_set() && $this->parsely->api_secret_is_set() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_parsely_stats_styles' ) );
 			add_filter( 'the_posts', array( $this, 'set_parsely_stats' ) );
-			// TODO: Add columns for pages and custom post types.
+			// TODO: Add columns for pages.
 			add_filter( 'manage_posts_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
 			add_action( 'manage_posts_custom_column', array( $this, 'show_parsely_stats' ) );
 		}
@@ -107,6 +110,8 @@ final class Admin_Columns_Analytics {
 		$analytics_api = new Analytics_Posts_API( $this->parsely );
 		$response      = $analytics_api->get_post_analytics(
 			array(
+				'period_start'   => get_utc_date( - Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT ),
+				'period_end'     => get_utc_date(),
 				'pub_date_start' => $date_params['pub_date_start'] ?? '',
 				'pub_date_end'   => $date_params['pub_date_end'] ?? '',
 				'limit'          => WP_MAX_POSTS_PER_PAGE,
@@ -229,11 +234,9 @@ final class Admin_Columns_Analytics {
 			}
 		}
 
-		$date_format = 'Y-m-d';
-
 		return array(
-			'pub_date_start' => ( new DateTime( $min_date_time ) )->format( $date_format ),
-			'pub_date_end'   => ( new DateTime( $max_date_time ) )->format( $date_format ),
+			'pub_date_start' => ( new DateTime( $min_date_time ) )->format( DATE_UTC_FORMAT ),
+			'pub_date_end'   => ( new DateTime( $max_date_time ) )->format( DATE_UTC_FORMAT ),
 		);
 	}
 

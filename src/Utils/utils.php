@@ -16,7 +16,27 @@ use WP_Post;
 use WP_Error;
 
 const WP_MAX_POSTS_PER_PAGE = 999;
+const DATE_UTC_FORMAT       = 'Y-m-d';
 const DATE_TIME_UTC_FORMAT  = 'Y-m-d\TH:i:s';
+
+/**
+ * Get UTC Date.
+ *
+ * @since 3.7.0
+ *
+ * @param int $days Number of Days before or after the current date.
+ *
+ * @return string
+ */
+function get_utc_date( int $days = 0 ): string {
+	if ( 0 === $days ) {
+		$utc_date = gmdate( DATE_UTC_FORMAT );
+	} else {
+		$utc_date = gmdate( DATE_UTC_FORMAT, (int) strtotime( "{$days} days" ) );
+	}
+
+	return $utc_date;
+}
 
 /**
  * Get default category.
