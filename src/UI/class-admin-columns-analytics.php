@@ -69,6 +69,8 @@ final class Admin_Columns_Analytics {
 	 * Registers action and filter hook callbacks.
 	 *
 	 * @since 3.7.0
+	 *
+	 * @return void
 	 */
 	public function run(): void {
 		if ( $this->parsely->site_id_is_set() && $this->parsely->api_secret_is_set() && $this->is_post_list_screen() ) {
@@ -82,6 +84,8 @@ final class Admin_Columns_Analytics {
 
 	/**
 	 * Enqueues styles for Parse.ly Stats.
+	 *
+	 * @return void
 	 */
 	public function enqueue_parsely_stats_styles(): void {
 		$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-parsely-stats.asset.php';
@@ -110,12 +114,12 @@ final class Admin_Columns_Analytics {
 		$error = $this->parsely_stats_api_error;
 
 		?>
-		<div class="error notice">
+		<div class="error notice error-parsely-stats">
 			<p>
-				<?php esc_html_e( 'Error while getting data for Parse.ly Stats.', 'wp-parsely' ); ?> <br/>
+				<?php echo esc_html__( 'Error while getting data for Parse.ly Stats.', 'wp-parsely' ); ?> <br/>
 				<?php
-					esc_html_e( 'Detail: ', 'wp-parsely' );
-					esc_html( "({$error->get_error_code()}) {$error->get_error_message()}" );
+					echo esc_html__( 'Detail: ', 'wp-parsely' );
+					echo esc_html( "({$error->get_error_code()}) {$error->get_error_message()}" );
 				?>
 				<br/>
 			</p>
@@ -126,7 +130,7 @@ final class Admin_Columns_Analytics {
 	/**
 	 * Calculates Min and Max Publish date from all the found posts.
 	 *
-	 *  @param WP_Post[] $posts Array of post objects.
+	 * @param WP_Post[] $posts Array of post objects.
 	 *
 	 * @return WP_Post[]
 	 */
