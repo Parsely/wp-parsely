@@ -12,6 +12,7 @@ namespace Parsely\UI;
 
 use DateTime;
 use WP_Post;
+use WP_Error;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 
@@ -47,6 +48,13 @@ final class Admin_Columns_Analytics {
 	private $parsely_stats_map = array();
 
 	/**
+	 * Internal Variable.
+	 *
+	 * @var WP_Error|null
+	 */
+	private $parsely_stats_api_error = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
@@ -61,10 +69,10 @@ final class Admin_Columns_Analytics {
 	 * @since 3.7.0
 	 */
 	public function run(): void {
-		if ( $this->parsely->site_id_is_set() && $this->parsely->api_secret_is_set() ) {
+		if ( $this->parsely->site_id_is_set() && $this->parsely->api_secret_is_set() && $this->is_post_list_screen() ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_parsely_stats_styles' ) );
+			add_action( 'admin_notices', array( $this, 'show_parsely_stats_api_error' ) );
 			add_filter( 'the_posts', array( $this, 'set_parsely_stats' ) );
-			// TODO: Add columns for pages.
 			add_filter( 'manage_posts_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
 			add_action( 'manage_posts_custom_column', array( $this, 'show_parsely_stats' ) );
 		}
@@ -72,11 +80,8 @@ final class Admin_Columns_Analytics {
 
 	/**
 	 * Enqueues styles for Parse.ly Stats.
-	 *
-	 * @param string $hook_suffix The current page being loaded.
 	 */
-	public function enqueue_parsely_stats_styles( string $hook_suffix ): void {
-		// TODO: Use $hook_suffix to only load stylesheet on needed pages i.e. list screen for pages, posts and CPT.
+	public function enqueue_parsely_stats_styles(): void {
 		$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-parsely-stats.asset.php';
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
 
@@ -89,6 +94,34 @@ final class Admin_Columns_Analytics {
 	}
 
 	/**
+	 * Show notice related to Parsely Analytics API Error.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @return void
+	 */
+	public function show_parsely_stats_api_error(): void {
+		if ( is_null( $this->parsely_stats_api_error ) ) {
+			return;
+		}
+
+		$error = $this->parsely_stats_api_error;
+
+		?>
+		<div class="error notice">
+			<p>
+				<?php esc_html_e( 'Error while getting data for Parse.ly Stats.', 'wp-parsely' ); ?> <br/>
+				<?php
+					esc_html_e( 'Detail: ', 'wp-parsely' );
+					esc_html( "({$error->get_error_code()}) {$error->get_error_message()}" );
+				?>
+				<br/>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
 	 * Calculate Min and Max Publish date from all the found posts.
 	 *
 	 *  @param WP_Post[] $posts Array of post objects.
@@ -96,12 +129,6 @@ final class Admin_Columns_Analytics {
 	 * @return WP_Post[]
 	 */
 	public function set_parsely_stats( array $posts ): array {
-		$post_type = is_null( get_current_screen() ) ? '' : get_current_screen()->post_type;
-		// TODO: Add support for columns of pages and custom post types.
-		if ( 'post' !== $post_type ) {
-			return $posts;
-		}
-
 		$date_params = $this->get_publish_date_params_for_analytics_api( $posts );
 		if ( is_null( $date_params ) ) {
 			return $posts;
@@ -120,7 +147,7 @@ final class Admin_Columns_Analytics {
 		);
 
 		if ( is_wp_error( $response ) ) {
-			// TODO: handle error.
+			$this->parsely_stats_api_error = $response;
 			return $posts;
 		}
 
@@ -268,5 +295,21 @@ final class Admin_Columns_Analytics {
 		$published_utc_date = ( new DateTime( $published_date ) )->format( DATE_TIME_UTC_FORMAT );
 
 		return get_the_title() . '-' . $published_utc_date;
+	}
+
+	/**
+	 * Return TRUE if the current screen is post list screen.
+	 *
+	 * @since 3.7.0
+	 * @todo Add support for pages and custom post types (currently pending due to API limitation).
+	 *
+	 * @return bool
+	 */
+	private function is_post_list_screen(): bool {
+		if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+			return false;
+		}
+
+		return '/wp-admin/edit.php' === $_SERVER['REQUEST_URI']; // Compare current screen url with post list screen.
 	}
 }
