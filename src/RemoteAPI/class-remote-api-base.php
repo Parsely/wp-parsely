@@ -77,7 +77,7 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	}
 
 	/**
-	 * Get items from the specified endpoint.
+	 * Gets items from the specified endpoint.
 	 *
 	 * @since 3.2.0
 	 *
