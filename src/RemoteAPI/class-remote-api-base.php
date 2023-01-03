@@ -14,7 +14,7 @@ use Parsely\Parsely;
 use UnexpectedValueException;
 use WP_Error;
 
-use function Parsely\Utils\convert_to_associate_array;
+use function Parsely\Utils\convert_to_associative_array;
 
 /**
  * Base API for all Parse.ly API endpoints.
@@ -115,6 +115,6 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 
 		$response = $decoded->data;
 
-		return $associative ? convert_to_associate_array( $response ) : $response;
+		return $associative ? convert_to_associative_array( $response ) : $response;
 	}
 }

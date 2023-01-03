@@ -29,7 +29,7 @@ const DATE_TIME_UTC_FORMAT  = 'Y-m-d\TH:i:s';
  *
  * @return string
  */
-function get_utc_date( int $days = 0 ): string {
+function get_utc_date_format( int $days = 0 ): string {
 	if ( 0 === $days ) {
 		$utc_date = gmdate( DATE_UTC_FORMAT );
 	} else {
@@ -210,7 +210,7 @@ function get_formatted_time( $seconds ): string {
  *
  * @return array<string, mixed>|WP_Error
  */
-function convert_to_associate_array( $obj ) {
+function convert_to_associative_array( $obj ) {
 	$encoded = wp_json_encode( $obj );
 
 	if ( false === $encoded ) {

@@ -18,7 +18,7 @@ use Parsely\RemoteAPI\Analytics_Posts_API;
 
 use function Parsely\Utils\get_formatted_number;
 use function Parsely\Utils\get_formatted_time;
-use function Parsely\Utils\get_utc_date;
+use function Parsely\Utils\get_utc_date_format;
 
 use const Parsely\PARSELY_FILE;
 use const Parsely\Utils\DATE_UTC_FORMAT;
@@ -143,8 +143,8 @@ final class Admin_Columns_Analytics {
 		$analytics_api = new Analytics_Posts_API( $this->parsely );
 		$response      = $analytics_api->get_post_analytics(
 			array(
-				'period_start'   => get_utc_date( - Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT ),
-				'period_end'     => get_utc_date(),
+				'period_start'   => get_utc_date_format( - Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT ),
+				'period_end'     => get_utc_date_format(),
 				'pub_date_start' => $date_params['pub_date_start'] ?? '',
 				'pub_date_end'   => $date_params['pub_date_end'] ?? '',
 				'limit'          => WP_MAX_POSTS_PER_PAGE,
