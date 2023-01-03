@@ -1,6 +1,6 @@
 <?php
 /**
- * UI: Class for adding `Parse.ly Stats` on admin columns.
+ * UI: Class for adding `Parse.ly Stats` on admin columns
  *
  * @package Parsely
  * @since   3.7.0
@@ -26,7 +26,7 @@ use const Parsely\Utils\WP_MAX_POSTS_PER_PAGE;
 use const Parsely\Utils\DATE_TIME_UTC_FORMAT;
 
 /**
- * Shows `Parse.ly Stats` on Admin Columns
+ * Shows `Parse.ly Stats` on Admin Columns.
  *
  * @since 3.7.0
  *
@@ -124,7 +124,7 @@ final class Admin_Columns_Analytics {
 	}
 
 	/**
-	 * Calculate Min and Max Publish date from all the found posts.
+	 * Calculates Min and Max Publish date from all the found posts.
 	 *
 	 *  @param WP_Post[] $posts Array of post objects.
 	 *
