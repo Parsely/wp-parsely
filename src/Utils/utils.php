@@ -31,12 +31,10 @@ const DATE_TIME_UTC_FORMAT  = 'Y-m-d\TH:i:s';
  */
 function get_utc_date_format( int $days = 0 ): string {
 	if ( 0 === $days ) {
-		$utc_date = gmdate( DATE_UTC_FORMAT );
-	} else {
-		$utc_date = gmdate( DATE_UTC_FORMAT, (int) strtotime( "{$days} days" ) );
+		return gmdate( DATE_UTC_FORMAT );
 	}
 
-	return $utc_date;
+	return gmdate( DATE_UTC_FORMAT, (int) strtotime( "{$days} days" ) );
 }
 
 /**
