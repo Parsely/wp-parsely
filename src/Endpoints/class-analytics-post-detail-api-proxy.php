@@ -45,13 +45,13 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @return array<stdClass> The generated data.
 	 */
 	protected function generate_data( $response ): array {
-		$stats_base_url = trailingslashit( Parsely::DASHBOARD_BASE_URL . '/' . $this->parsely->get_site_id() ) . 'find';
+		$site_id = $this->parsely->get_site_id();
 
 		return array_map(
-			static function( stdClass $item ) use ( $stats_base_url ) {
+			static function( stdClass $item ) use ( $site_id ) {
 				return (object) array(
 					'avgEngaged' => self::get_duration( (float) $item->avg_engaged ),
-					'statsUrl'   => $stats_base_url . '?url=' . rawurlencode( $item->url ),
+					'statsUrl'   => Parsely::get_dash_url( $site_id, $item->url ),
 					'url'        => $item->url,
 					'views'      => number_format_i18n( $item->metrics->views ),
 					'visitors'   => number_format_i18n( $item->metrics->visitors ),

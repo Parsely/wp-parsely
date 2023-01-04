@@ -435,6 +435,24 @@ class Parsely {
 	}
 
 	/**
+	 * Returns the URL of the Parse.ly dashboard for a specific page. If a page
+	 * is not specified, the home dashboard URL is returned.
+	 *
+	 * @param string $site_id The Site ID.
+	 * @param string $page_url Optional. The page for which to show the dashboard.
+	 * @return string The complete dashboard URL.
+	 */
+	public static function get_dash_url( string $site_id, string $page_url = '' ) {
+		$result = trailingslashit( self::DASHBOARD_BASE_URL . '/' . $site_id ) . 'find';
+
+		if ( '' !== $page_url ) {
+			$result .= '?url=' . rawurlencode( $page_url );
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Checks to see if the current user is a member of the current blog.
 	 *
 	 * @return bool
