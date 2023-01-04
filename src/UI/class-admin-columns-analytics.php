@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use DateTime;
+use WP_Query;
 use WP_Post;
 use WP_Screen;
 use WP_Error;
@@ -64,6 +65,20 @@ final class Admin_Columns_Analytics {
 	private $parsely_stats_api_error = null;
 
 	/**
+	 * Internal Variable.
+	 *
+	 * @var int
+	 */
+	private $posts_per_page;
+
+	/**
+	 * Internal Variable.
+	 *
+	 * @var int
+	 */
+	private $current_page_num;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
@@ -84,9 +99,15 @@ final class Admin_Columns_Analytics {
 			add_action( 'current_screen', array( $this, 'set_current_screen' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_parsely_stats_styles' ) );
 			add_action( 'admin_notices', array( $this, 'show_parsely_stats_api_error' ) );
-			add_filter( 'the_posts', array( $this, 'set_parsely_stats' ) );
+			// Set Parse.ly Stats data.
+			add_filter( 'edit_posts_per_page', array( $this, 'set_pagination_info' ) ); // 'the_posts' hook can not work in pages case therefore implemented custom logic for both.
+			add_filter( 'found_posts', array( $this, 'set_parsely_stats_for_found_posts' ), 10, 2 );
+			// Show Parse.ly Stats on Posts and Custom Post Types.
 			add_filter( 'manage_posts_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
 			add_action( 'manage_posts_custom_column', array( $this, 'show_parsely_stats' ) );
+			// Show Parse.ly Stats on Pages.
+			add_filter( 'manage_pages_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
+			add_action( 'manage_pages_custom_column', array( $this, 'show_parsely_stats' ) );
 		}
 	}
 
@@ -107,7 +128,7 @@ final class Admin_Columns_Analytics {
 	 * @return void
 	 */
 	public function enqueue_parsely_stats_styles(): void {
-		if ( ! $this->is_post_list_screen() ) {
+		if ( ! $this->is_tracked_as_post_type() ) {
 			return;
 		}
 
@@ -151,14 +172,90 @@ final class Admin_Columns_Analytics {
 	}
 
 	/**
+	 * Set pagination info.
+	 * We will use this to slice the found posts if the count doesn't match with posts_per_page.
+	 *
+	 * @param int $posts_per_page Number of posts to be displayed.
+	 *
+	 * @return int
+	 */
+	public function set_pagination_info( int $posts_per_page ): int {
+		if ( ! $this->is_tracked_as_post_type() ) {
+			return $posts_per_page;
+		}
+
+		$this->posts_per_page = $posts_per_page;
+
+		// phpcs:disable
+		if ( isset( $_GET['paged'] ) ) {
+			$this->current_page_num = (int) $_GET['paged'];
+		}
+		// phpcs:enable
+
+		// Set default.
+		if ( ! ( $this->current_page_num > 0 ) ) {
+			$this->current_page_num = 1;
+		}
+
+		return $posts_per_page;
+	}
+
+	/**
+	 * Set Parse.ly Stats data for found posts.
+	 *
+	 * @param int      $found_posts_count The number of posts found.
+	 * @param WP_Query $query The WP_Query instance (passed by reference).
+	 *
+	 * @return int
+	 */
+	public function set_parsely_stats_for_found_posts( int $found_posts_count, WP_Query $query ): int {
+		if ( ! $this->is_tracked_as_post_type() ) {
+			return $found_posts_count;
+		}
+
+		/**
+		 * Variable.
+		 *
+		 * @var WP_Post[]
+		 */
+		$posts_for_stats = array();
+		$query_posts     = $query->posts;
+
+		if (
+			( count( $query_posts ) !== $this->posts_per_page ) && // For pages we are getting all posts so therefore we need to slice the data.
+			( -1 !== $this->posts_per_page ) // If we aren't showing all posts then slice the data.
+		) {
+			$offset      = ( $this->current_page_num - 1 ) * $this->posts_per_page;
+			$query_posts = array_slice( $query_posts, $offset, $this->posts_per_page );
+		}
+
+		// Get full post object for setting the unique key for parsely_stats_map.
+		foreach ( $query_posts as $post ) {
+			if ( ! isset( $post->ID ) ) {
+				$post = get_post( $post );
+			} else {
+				$post = get_post( $post->ID );
+			}
+
+			if ( ! is_null( $post ) ) {
+				array_push( $posts_for_stats, $post );
+			}
+		}
+
+		$this->set_parsely_stats( $posts_for_stats );
+
+		return $found_posts_count;
+	}
+
+	/**
 	 * Calculates Min and Max Publish date from all the found posts.
 	 *
 	 * @param WP_Post[] $posts Array of post objects.
 	 *
 	 * @return WP_Post[]
 	 */
-	public function set_parsely_stats( array $posts ): array {
-		if ( ! $this->is_post_list_screen() ) {
+	private function set_parsely_stats( array $posts ): array {
+		if ( ! $this->is_tracked_as_post_type() ) {
 			return $posts;
 		}
 
@@ -203,10 +300,9 @@ final class Admin_Columns_Analytics {
 	 * @return array<string, string>
 	 */
 	public function add_parsely_stats_column_on_list_view( array $columns ): array {
-		if ( $this->is_post_list_screen() ) {
+		if ( $this->is_tracked_as_post_type() ) {
 			$columns['parsely-stats'] = 'Parse.ly Stats';
 		}
-
 
 		return $columns;
 	}
@@ -219,7 +315,7 @@ final class Admin_Columns_Analytics {
 	 * @return void
 	 */
 	public function show_parsely_stats( string $column_key ): void {
-		if ( ! $this->is_post_list_screen() || 'parsely-stats' !== $column_key ) {
+		if ( ! $this->is_tracked_as_post_type() || 'parsely-stats' !== $column_key ) {
 			return;
 		}
 
@@ -333,18 +429,28 @@ final class Admin_Columns_Analytics {
 	}
 
 	/**
-	 * Return TRUE if the current screen is post list screen.
+	 * Return TRUE if the current screen is the list screen and we are tracking it as Post
+	 * in plugin settings.
+	 *
+	 * Note: As of now Parse.ly Analytics API don't include Non-Post data so we can only show
+	 * stats on tracked post types.
 	 *
 	 * @since 3.7.0
-	 * @todo Add support for pages and custom post types (currently pending due to API limitation).
 	 *
 	 * @return bool
 	 */
-	private function is_post_list_screen(): bool {
+	private function is_tracked_as_post_type(): bool {
 		if ( is_null( $this->current_screen ) ) {
 			return false;
 		}
 
-		return 'edit' === $this->current_screen->base && 'post' === $this->current_screen->post_type;
+		$track_post_types = $this->parsely->get_options()['track_post_types'];
+		foreach ( $track_post_types as $track_post_type ) {
+			if ( 'edit' === $this->current_screen->base && $track_post_type === $this->current_screen->post_type ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
