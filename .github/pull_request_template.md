@@ -1,15 +1,18 @@
-<!--- Provide a general summary of your changes in the Title above -->
+<!-- 
+Hello! Just a quick reminder that this is a public repo. Please don't include any internal links or sensitive data (like PII, private code, client names, site URLs, etc. If you're not sure if something is safe to share, please just ask!
+-->
 
 ## Description
-<!--- Describe your changes in detail -->
+<!-- Describe your changes in detail. -->
 
-## Motivation and Context
-<!--- Why is this change required? What problem does it solve? -->
-<!--- If it fixes an open issue, please link to the issue here. -->
+## Motivation and context
+<!-- Why is this change required? What problem does it solve? -->
+<!-- If it fixes an open issue, please link to the issue here. -->
 
-## How Has This Been Tested?
-<!--- Please describe in detail how you tested your changes. -->
-<!--- Include details of your testing environment, and the tests you ran to -->
-<!--- see how your change affects other areas of the code, etc. -->
+## How has this been tested?
+<!-- Please describe in detail how you tested your changes. -->
+<!-- Include details of your testing environment, and the tests you ran too. -->
+<!-- See how your change affects other areas of the code, etc. -->
 
 ## Screenshots (if appropriate)
+<!-- Any screenshot(s) demonstrating the result of this PR. -->
