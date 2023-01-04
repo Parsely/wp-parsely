@@ -175,7 +175,7 @@ describe( 'Content Helper', () => {
 				author: `Name ${ i }`,
 				date: `Jan ${ i }, 2022`,
 				id: i,
-				statsUrl: `${ DASHBOARD_BASE_URL }/example.com/post-${ i }`,
+				dashUrl: `${ DASHBOARD_BASE_URL }/example.com/post-${ i }`,
 				title: `Title ${ i }`,
 				url: `http://example.com/post-${ i }`,
 				views: i,
