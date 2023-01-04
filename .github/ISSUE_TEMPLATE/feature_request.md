@@ -3,7 +3,7 @@ name: Feature request
 about: Suggest an idea for this project
 ---
 
-<!-- 
+<!--
 Hello! Just a quick reminder that this is a public repo. Please don't include any internal links or sensitive data (like PII, private code, client names, site URLs, etc. If you're not sure if something is safe to share, please just ask!
 -->
 
