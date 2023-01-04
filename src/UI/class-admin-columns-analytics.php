@@ -12,6 +12,7 @@ namespace Parsely\UI;
 
 use DateTime;
 use WP_Post;
+use WP_Screen;
 use WP_Error;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
@@ -45,6 +46,13 @@ final class Admin_Columns_Analytics {
 	/**
 	 * Internal Variable.
 	 *
+	 * @var WP_Screen|null
+	 */
+	private $current_screen;
+
+	/**
+	 * Internal Variable.
+	 *
 	 * @var array<string, Analytics_Post_Metrics>
 	 */
 	private $parsely_stats_map = array();
@@ -73,7 +81,8 @@ final class Admin_Columns_Analytics {
 	 * @return void
 	 */
 	public function run(): void {
-		if ( $this->parsely->site_id_is_set() && $this->parsely->api_secret_is_set() && $this->is_post_list_screen() ) {
+		if ( $this->parsely->site_id_is_set() && $this->parsely->api_secret_is_set() ) {
+			add_action( 'current_screen', array( $this, 'set_current_screen' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_parsely_stats_styles' ) );
 			add_action( 'admin_notices', array( $this, 'show_parsely_stats_api_error' ) );
 			add_filter( 'the_posts', array( $this, 'set_parsely_stats' ) );
@@ -83,11 +92,26 @@ final class Admin_Columns_Analytics {
 	}
 
 	/**
+	 * Set current screen variable.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @return void
+	 */
+	public function set_current_screen(): void {
+		$this->current_screen = get_current_screen();
+	}
+
+	/**
 	 * Enqueues styles for Parse.ly Stats.
 	 *
 	 * @return void
 	 */
 	public function enqueue_parsely_stats_styles(): void {
+		if ( ! $this->is_post_list_screen() ) {
+			return;
+		}
+
 		$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-parsely-stats.asset.php';
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
 
@@ -135,6 +159,10 @@ final class Admin_Columns_Analytics {
 	 * @return WP_Post[]
 	 */
 	public function set_parsely_stats( array $posts ): array {
+		if ( ! $this->is_post_list_screen() ) {
+			return $posts;
+		}
+
 		$date_params = $this->get_publish_date_params_for_analytics_api( $posts );
 		if ( is_null( $date_params ) ) {
 			return $posts;
@@ -176,7 +204,10 @@ final class Admin_Columns_Analytics {
 	 * @return array<string, string>
 	 */
 	public function add_parsely_stats_column_on_list_view( array $columns ): array {
-		$columns['parsely-stats'] = 'Parse.ly Stats';
+		if ( $this->is_post_list_screen() ) {
+			$columns['parsely-stats'] = 'Parse.ly Stats';
+		}
+
 
 		return $columns;
 	}
@@ -189,7 +220,7 @@ final class Admin_Columns_Analytics {
 	 * @return void
 	 */
 	public function show_parsely_stats( string $column_key ): void {
-		if ( 'parsely-stats' !== $column_key ) {
+		if ( ! $this->is_post_list_screen() || 'parsely-stats' !== $column_key ) {
 			return;
 		}
 
@@ -311,12 +342,10 @@ final class Admin_Columns_Analytics {
 	 * @return bool
 	 */
 	private function is_post_list_screen(): bool {
-		if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+		if ( is_null( $this->current_screen ) ) {
 			return false;
 		}
 
-		$page_url = esc_url_raw( $_SERVER['REQUEST_URI'] );
-
-		return '/wp-admin/edit.php' === $page_url || strpos( $page_url, 'post_type=post' ) !== false;
+		return 'edit' === $this->current_screen->base && 'post' === $this->current_screen->post_type;
 	}
 }
