@@ -9,7 +9,7 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
-import CurrentPostDetails from './current-post-details/component';
+import PerformanceDetails from './performance-details/component';
 import RelatedTopPostList from './components/related-top-post-list';
 import LeafIcon from '../shared/components/leaf-icon';
 
@@ -19,7 +19,7 @@ const renderSidebar = () => (
 	<PluginSidebar icon={ <LeafIcon /> } name="wp-parsely-content-helper" className="wp-parsely-content-helper" title={ __( 'Parse.ly Content Helper', 'wp-parsely' ) }>
 		<Panel>
 			<PanelBody title={ __( 'Performance Details', 'wp-parsely' ) } initialOpen={ true }>
-				<CurrentPostDetails />
+				<PerformanceDetails />
 			</PanelBody>
 		</Panel>
 		<Panel>
