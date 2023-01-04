@@ -24,7 +24,7 @@ const DATE_TIME_UTC_FORMAT = 'Y-m-d\TH:i:s';
  *
  * @since 3.7.0
  *
- * @param int $days Number of Days before or after the current date.
+ * @param int $days Number of days before or after the current date.
  *
  * @return string
  */
