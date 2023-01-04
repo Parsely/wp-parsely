@@ -14,8 +14,8 @@ import apiFetch from '@wordpress/api-fetch';
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
-} from './content-helper-error';
-import { RelatedTopPostData } from './models/related-top-post-data';
+} from '../content-helper-error';
+import { RelatedTopPostData } from './related-top-post-data';
 
 /**
  * The form of the query that gets posted to the analytics/posts WordPress REST
@@ -48,7 +48,7 @@ export interface GetRelatedTopPostsResult {
 export const RELATED_POSTS_DEFAULT_LIMIT = 5;
 export const RELATED_POSTS_DEFAULT_TIME_RANGE = 3; // In days.
 
-class ContentHelperProvider {
+class RelatedTopPostsProvider {
 	/**
 	 * Returns related top-performing posts to the one that is currently being
 	 * edited within the WordPress Block Editor.
@@ -174,4 +174,4 @@ class ContentHelperProvider {
 	}
 }
 
-export default ContentHelperProvider;
+export default RelatedTopPostsProvider;

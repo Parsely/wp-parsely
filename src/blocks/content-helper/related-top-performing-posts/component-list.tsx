@@ -7,9 +7,9 @@ import { useEffect, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import ContentHelperProvider from '../content-helper-provider';
-import RelatedTopPostListItem from './related-top-post-list-item';
-import { RelatedTopPostData } from '../models/related-top-post-data';
+import RelatedTopPostsProvider from './provider';
+import RelatedTopPostListItem from './component-list-item';
+import { RelatedTopPostData } from './related-top-post-data';
 import { ContentHelperError } from '../content-helper-error';
 import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../shared/utils/date';
 
@@ -26,7 +26,7 @@ function RelatedTopPostList() {
 
 	useEffect( () => {
 		const fetchPosts = async ( retries: number ) => {
-			ContentHelperProvider.getRelatedTopPosts()
+			RelatedTopPostsProvider.getRelatedTopPosts()
 				.then( ( result ): void => {
 					const mappedPosts: RelatedTopPostData[] = result.posts.map(
 						( post: RelatedTopPostData ): RelatedTopPostData => (
