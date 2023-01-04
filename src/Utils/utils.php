@@ -16,9 +16,8 @@ use NumberFormatter;
 use WP_Post;
 use WP_Error;
 
-const WP_MAX_POSTS_PER_PAGE = 999;
-const DATE_UTC_FORMAT       = 'Y-m-d';
-const DATE_TIME_UTC_FORMAT  = 'Y-m-d\TH:i:s';
+const DATE_UTC_FORMAT      = 'Y-m-d';
+const DATE_TIME_UTC_FORMAT = 'Y-m-d\TH:i:s';
 
 /**
  * Get UTC Date.

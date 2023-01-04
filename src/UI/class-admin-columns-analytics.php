@@ -23,7 +23,6 @@ use function Parsely\Utils\get_utc_date_format;
 
 use const Parsely\PARSELY_FILE;
 use const Parsely\Utils\DATE_UTC_FORMAT;
-use const Parsely\Utils\WP_MAX_POSTS_PER_PAGE;
 use const Parsely\Utils\DATE_TIME_UTC_FORMAT;
 
 /**
@@ -175,7 +174,7 @@ final class Admin_Columns_Analytics {
 				'period_end'     => get_utc_date_format(),
 				'pub_date_start' => $date_params['pub_date_start'] ?? '',
 				'pub_date_end'   => $date_params['pub_date_end'] ?? '',
-				'limit'          => WP_MAX_POSTS_PER_PAGE,
+				'limit'          => Analytics_Posts_API::MAX_RECORDS_LIMIT,
 				'sort'           => 'avg_engaged',
 			)
 		);
