@@ -287,7 +287,7 @@ function ActionsSection( props: PostDetailsSectionProps ) {
 				{ __( 'Visit Post', 'wp-parsely' ) }{ ariaOpensNewTab }
 			</Button>
 			<Button
-				href={ data.statsUrl } rel="noopener" target="_blank" variant="primary">
+				href={ data.dashUrl } rel="noopener" target="_blank" variant="primary">
 				{ __( 'View in Parse.ly', 'wp-parsely' ) }{ ariaOpensNewTab }
 			</Button>
 		</div>

@@ -47,19 +47,19 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 	 * @return array<stdClass> The generated data.
 	 */
 	protected function generate_data( $response ): array {
-		$date_format    = get_date_format();
-		$stats_base_url = trailingslashit( Parsely::DASHBOARD_BASE_URL . '/' . $this->parsely->get_site_id() ) . 'find';
+		$date_format = get_date_format();
+		$site_id     = $this->parsely->get_site_id();
 
 		return array_map(
-			static function( stdClass $item ) use ( $date_format, $stats_base_url ) {
+			static function( stdClass $item ) use ( $date_format, $site_id ) {
 				return (object) array(
-					'author'   => $item->author,
-					'date'     => wp_date( $date_format, strtotime( $item->pub_date ) ),
-					'id'       => $item->url,
-					'statsUrl' => $stats_base_url . '?url=' . rawurlencode( $item->url ),
-					'title'    => $item->title,
-					'url'      => $item->url,
-					'views'    => $item->metrics->views,
+					'author'  => $item->author,
+					'date'    => wp_date( $date_format, strtotime( $item->pub_date ) ),
+					'id'      => $item->url,
+					'dashUrl' => Parsely::get_dash_url( $site_id, $item->url ),
+					'title'   => $item->title,
+					'url'     => $item->url,
+					'views'   => $item->metrics->views,
 				);
 			},
 			$response

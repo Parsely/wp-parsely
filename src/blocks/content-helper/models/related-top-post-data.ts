@@ -2,7 +2,7 @@ export interface RelatedTopPostData {
 	author: string;
 	date: string;
 	id: number;
-	statsUrl: string;
+	dashUrl: string;
 	title: string;
 	url: string;
 	views: number;
