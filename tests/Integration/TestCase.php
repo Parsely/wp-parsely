@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
+use PHPUnit\Framework\RiskyTestError;
 use WP_Error;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
 
@@ -192,5 +193,139 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 */
 	public function set_admin_user( $admin_user_id = 1 ): void {
 		wp_set_current_user( $admin_user_id );
+	}
+
+	/**
+	 * Asserts that a passed script is not registered.
+	 *
+	 * @param string $handle Script handle to test.
+	 */
+	public function assert_is_script_not_registered( string $handle ): void {
+		$this->assert_script_statuses( $handle, array(), array( 'registered' ) );
+	}
+
+	/**
+	 * Asserts that a passed script is registered.
+	 *
+	 * @param string $handle Script handle to test.
+	 */
+	public function assert_is_script_registered( string $handle ): void {
+		$this->assert_script_statuses( $handle, array( 'registered' ) );
+	}
+
+	/**
+	 * Asserts that a passed script is not enqueued.
+	 *
+	 * @param string $handle Script handle to test.
+	 */
+	public function assert_is_script_not_enqueued( string $handle ): void {
+		$this->assert_script_statuses( $handle, array(), array( 'enqueued' ) );
+	}
+
+	/**
+	 * Asserts that a passed script is enqueued.
+	 *
+	 * @param string $handle Script handle to test.
+	 */
+	public function assert_is_script_enqueued( string $handle ): void {
+		$this->assert_script_statuses( $handle, array( 'enqueued' ) );
+	}
+
+	/**
+	 * Asserts multiple enqueuing statuses for a script.
+	 *
+	 * @param string $handle       Script handle to test.
+	 * @param array  $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
+	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 * @param array  $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
+	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 *
+	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
+	 */
+	private function assert_script_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
+		if ( 0 === count( $assert_true ) + count( $assert_false ) ) {
+			throw new RiskyTestError( 'Function assert_script_statuses() has been used without any arguments' );
+		}
+
+		foreach ( $assert_true as $status ) {
+			self::assertTrue(
+				wp_script_is( $handle, $status ),
+				"Unexpected script status: $handle status should be '$status'"
+			);
+		}
+
+		foreach ( $assert_false as $status ) {
+			self::assertFalse(
+				wp_script_is( $handle, $status ),
+				"Unexpected script status: $handle status should NOT be '$status'"
+			);
+		}
+	}
+
+	/**
+	 * Asserts that a passed style is not registered.
+	 *
+	 * @param string $handle Style handle to test.
+	 */
+	public function assert_is_style_not_registered( string $handle ): void {
+		$this->assert_style_statuses( $handle, array(), array( 'registered' ) );
+	}
+
+	/**
+	 * Asserts that a passed style is registered.
+	 *
+	 * @param string $handle Style handle to test.
+	 */
+	public function assert_is_style_registered( string $handle ): void {
+		$this->assert_style_statuses( $handle, array( 'registered' ) );
+	}
+
+	/**
+	 * Asserts that a passed style is not enqueued.
+	 *
+	 * @param string $handle Style handle to test.
+	 */
+	public function assert_is_style_not_enqueued( string $handle ): void {
+		$this->assert_style_statuses( $handle, array(), array( 'enqueued' ) );
+	}
+
+	/**
+	 * Asserts that a passed style is enqueued.
+	 *
+	 * @param string $handle Style handle to test.
+	 */
+	public function assert_is_style_enqueued( string $handle ): void {
+		$this->assert_style_statuses( $handle, array( 'enqueued' ) );
+	}
+
+	/**
+	 * Asserts multiple enqueuing statuses for a style.
+	 *
+	 * @param string $handle       Style handle to test.
+	 * @param array  $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
+	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 * @param array  $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
+	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 *
+	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
+	 */
+	private function assert_style_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
+		if ( 0 === count( $assert_true ) + count( $assert_false ) ) {
+			throw new RiskyTestError( 'Function assert_style_statuses() has been used without any arguments' );
+		}
+
+		foreach ( $assert_true as $status ) {
+			self::assertTrue(
+				wp_style_is( $handle, $status ),
+				"Unexpected style status: $handle status should be '$status'"
+			);
+		}
+
+		foreach ( $assert_false as $status ) {
+			self::assertFalse(
+				wp_style_is( $handle, $status ),
+				"Unexpected style status: $handle status should NOT be '$status'"
+			);
+		}
 	}
 }
