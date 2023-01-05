@@ -35,7 +35,7 @@ use const Parsely\Utils\DATE_TIME_UTC_FORMAT;
  * @phpstan-import-type Analytics_Post from Analytics_Posts_API
  * @phpstan-import-type Analytics_Post_Metrics from Analytics_Posts_API
  */
-final class Admin_Columns_Analytics {
+final class Admin_Columns_Parsely_Stats {
 	/**
 	 * Instance of Parsely class.
 	 *
