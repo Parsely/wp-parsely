@@ -39,7 +39,7 @@ interface ReferrersApiResponse {
 /**
  * Provides current post details data for use in other components.
  */
-class CurrentPostDetailsProvider {
+class PerformanceDetailsProvider {
 	private dataPeriodDays: number;
 	private dataPeriodStart: string;
 	private dataPeriodEnd: string;
@@ -60,7 +60,7 @@ class CurrentPostDetailsProvider {
 	 *
 	 * @return {Promise<PostPerformanceData>} The current post's details.
 	 */
-	public async getCurrentPostDetails(): Promise<PostPerformanceData> {
+	public async getPerformanceDetails(): Promise<PostPerformanceData> {
 		const editor = select( 'core/editor' );
 
 		// We cannot show data for non-published posts.
@@ -210,4 +210,4 @@ class CurrentPostDetailsProvider {
 	}
 }
 
-export default CurrentPostDetailsProvider;
+export default PerformanceDetailsProvider;

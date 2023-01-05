@@ -8,7 +8,7 @@ import { useEffect, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import CurrentPostDetailsProvider from './provider';
+import PerformanceDetailsProvider from './provider';
 import { PostPerformanceData } from './post-performance-data';
 import { ContentHelperError } from '../content-helper-error';
 
@@ -18,22 +18,22 @@ const FETCH_RETRIES = 3;
 /**
  * Specifies the form of component props.
  */
-interface PostDetailsSectionProps {
+interface PerformanceSectionProps {
 	data: PostPerformanceData;
 }
 
 /**
  * Outputs the current post's details or shows an error message on failure.
  */
-function CurrentPostDetails() {
+function PerformanceDetails() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ postDetailsData, setPostDetails ] = useState<PostPerformanceData>();
-	const provider = new CurrentPostDetailsProvider();
+	const provider = new PerformanceDetailsProvider();
 
 	useEffect( () => {
 		const fetchPosts = async ( retries: number ) => {
-			provider.getCurrentPostDetails()
+			provider.getPerformanceDetails()
 				.then( ( result ) => {
 					setPostDetails( result );
 					setLoading( false );
@@ -60,16 +60,16 @@ function CurrentPostDetails() {
 	return (
 		loading
 			? <Spinner />
-			: <CurrentPostDetailsSections data={ postDetailsData as PostPerformanceData } />
+			: <PerformanceDetailsSections data={ postDetailsData as PostPerformanceData } />
 	);
 }
 
 /**
  * Outputs all the "Current Post Details" sections.
  *
- * @param {PostDetailsSectionProps} props The props needed to populate the sections.
+ * @param {PerformanceSectionProps} props The props needed to populate the sections.
  */
-function CurrentPostDetailsSections( props: PostDetailsSectionProps ) {
+function PerformanceDetailsSections( props: PerformanceSectionProps ) {
 	return (
 		<div className="current-post-details-panel">
 			<DataPeriodSection { ...props } />
@@ -85,9 +85,9 @@ function CurrentPostDetailsSections( props: PostDetailsSectionProps ) {
  * Outputs the "Period" section, which denotes the period for which data is
  * shown.
  *
- * @param {PostDetailsSectionProps} props The props needed to populate the section.
+ * @param {PerformanceSectionProps} props The props needed to populate the section.
  */
-function DataPeriodSection( props: PostDetailsSectionProps ) {
+function DataPeriodSection( props: PerformanceSectionProps ) {
 	const period = props.data.period;
 
 	// Get the date (in short format) on which the period starts.
@@ -115,9 +115,9 @@ function DataPeriodSection( props: PostDetailsSectionProps ) {
 /**
  * Outputs the "General Performance" (Views, Visitors, Time) section.
  *
- * @param {PostDetailsSectionProps} props The props needed to populate the section.
+ * @param {PerformanceSectionProps} props The props needed to populate the section.
  */
-function GeneralPerformanceSection( props: PostDetailsSectionProps ) {
+function GeneralPerformanceSection( props: PerformanceSectionProps ) {
 	const data = props.data;
 
 	return (
@@ -145,9 +145,9 @@ function GeneralPerformanceSection( props: PostDetailsSectionProps ) {
 /**
  * Outputs the "Referrer Types" section.
  *
- * @param {PostDetailsSectionProps} props The props needed to populate the section.
+ * @param {PerformanceSectionProps} props The props needed to populate the section.
  */
-function ReferrerTypesSection( props: PostDetailsSectionProps ) {
+function ReferrerTypesSection( props: PerformanceSectionProps ) {
 	const data = props.data;
 
 	// Remove unneeded totals to simplify upcoming map() calls.
@@ -210,9 +210,9 @@ function ReferrerTypesSection( props: PostDetailsSectionProps ) {
 /**
  * Outputs the "Top Referrers" section.
  *
- * @param {PostDetailsSectionProps} props The props needed to populate the section.
+ * @param {PerformanceSectionProps} props The props needed to populate the section.
  */
-function TopReferrersSection( props: PostDetailsSectionProps ) {
+function TopReferrersSection( props: PerformanceSectionProps ) {
 	const data = props.data;
 	let totalViewsPercentage = 0;
 
@@ -272,9 +272,9 @@ function TopReferrersSection( props: PostDetailsSectionProps ) {
 /**
  * Outputs the "Actions" section.
  *
- * @param {PostDetailsSectionProps} props The props needed to populate the section.
+ * @param {PerformanceSectionProps} props The props needed to populate the section.
  */
-function ActionsSection( props: PostDetailsSectionProps ) {
+function ActionsSection( props: PerformanceSectionProps ) {
 	const data = props.data;
 	const ariaOpensNewTab = <span className="screen-reader-text"> {
 		__( '(opens in new tab)', 'wp-parsely' ) }
@@ -350,4 +350,4 @@ function impreciseNumber( value: string, fractionDigits = 1, glue = '' ): string
 	return currentNumberAsString + glue + unit;
 }
 
-export default CurrentPostDetails;
+export default PerformanceDetails;
