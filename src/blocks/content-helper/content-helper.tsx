@@ -10,7 +10,7 @@ import { registerPlugin } from '@wordpress/plugins';
  * Internal dependencies
  */
 import PerformanceDetails from './performance-details/component';
-import RelatedTopPostList from './related-top-performing-posts/component-list';
+import RelatedTopPostList from './related-top-posts/component-list';
 import LeafIcon from '../shared/components/leaf-icon';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';

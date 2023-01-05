@@ -11,8 +11,8 @@ import '@testing-library/jest-dom';
 /**
  * Internal dependencies.
  */
-import RelatedTopPostList from '../../../../src/blocks/content-helper/related-top-performing-posts/component-list';
-import RelatedTopPostsProvider, { GetRelatedTopPostsResult, RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/related-top-performing-posts/provider';
+import RelatedTopPostList from '../../../../src/blocks/content-helper/related-top-posts/component-list';
+import RelatedTopPostsProvider, { GetRelatedTopPostsResult, RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/related-top-posts/provider';
 import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../../src/blocks/content-helper/content-helper-error';
 
