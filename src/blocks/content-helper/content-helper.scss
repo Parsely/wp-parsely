@@ -22,7 +22,7 @@
 
 	p.parsely-top-posts-descr,
 	p.parsely-error-hint {
-		color: $gray-700;
+		color: var(--gray-700);
 	}
 
 	p.parsely-top-posts-descr {
@@ -31,7 +31,7 @@
 }
 
 .parsely-top-post {
-	border-top: 1px solid $gray-300;
+	border-top: 1px solid var(--gray-300);
 	margin-bottom: to_rem(5px);
 	padding: to_rem(10px) 0;
 }
@@ -42,12 +42,12 @@
 }
 
 .parsely-top-post-stats-link {
-	color: $black;
+	color: var(--black);
 	font-size: to_rem(14px);
 	margin-right: to_rem(7px);
 
 	&:hover {
-		color: $blue-550;
+		color: var(--blue-550);
 	}
 }
 
@@ -71,7 +71,7 @@
 	align-items: center;
 
 	> span {
-		color: $gray-600;
+		color: var(--gray-600);
 		margin-bottom: 0;
 		display: flex;
 
@@ -85,11 +85,11 @@
 	position: relative;
 	top: 2px;
 	margin-right: to_rem(3px);
-	fill: $gray-600;
+	fill: var(--gray-600);
 }
 
 .parsely-top-post-link:hover svg {
-	fill: $blue-550;
+	fill: var(--blue-550);
 }
 
 .parsely-contact-us {

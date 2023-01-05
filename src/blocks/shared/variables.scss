@@ -11,14 +11,12 @@
 	--numeric-font: "ff-din-round-web", sans-serif;
 
 	/** Category colors section - base scss. **/
-	$gray-300: #edeeef;
+	--gray-300: #edeeef;
 	--gray-400: #d7dbdf;
-	$gray-600: #586069;
 	--gray-600: #586069;
-	$gray-700: #444d56;
 	--gray-700: #444d56;
 	--blue-500: #44a8e5;
-	$blue-550: #2596db;
+	--blue-550: #2596db;
 	--green-500: #7bc01b;
 	// ref-* variables to be used as HSL colors.
 	--ref-direct: 205, 13%, 52%;
@@ -35,9 +33,11 @@
 	--control: var(--blue-500);
 
 	/** Additional variables. **/
-	$html-font-size: 16px;
 	--font-size--large: 1rem;
 	--font-size--extra-large: 1.2rem;
-	$black: #000;
+	--black: #000;
 	--sidebar-black: #1e1e1e;
 }
+
+/** SASS variables **/
+$html-font-size: 16px; // Used in functions.scss.
