@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use ReflectionClass;
+use ReflectionProperty;
 use Parsely\Parsely;
 use PHPUnit\Framework\RiskyTestError;
 use WP_Error;
@@ -327,5 +329,21 @@ abstract class TestCase extends WPIntegrationTestCase {
 				"Unexpected style status: $handle status should NOT be '$status'"
 			);
 		}
+	}
+
+	/**
+	 * Get private property of a class.
+	 *
+	 * @param class-string $class_name Name of the class.
+	 * @param string       $property_name Name of the property.
+	 *
+	 * @return ReflectionProperty
+	 */
+	public function getPrivateProperty( $class_name, $property_name ) {
+		$reflector = new ReflectionClass( $class_name );
+		$property  = $reflector->getProperty( $property_name );
+		$property->setAccessible( true );
+
+		return $property;
 	}
 }

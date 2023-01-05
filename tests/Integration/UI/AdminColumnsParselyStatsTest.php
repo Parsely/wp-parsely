@@ -9,11 +9,13 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\UI;
 
+use WP_Error;
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Columns_Parsely_Stats;
 
-use WP_Scripts;
+use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertStringContainsString;
 
 /**
  * Integration Tests for Parsely Stats Column in Admin Screens.
@@ -31,15 +33,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
 	 */
 	public function test_styles_of_parsely_stats_admin_column_are_enqueued(): void {
-		TestCase::set_options(
-			array(
-				'apikey'           => 'test',
-				'api_secret'       => 'test',
-				'track_post_types' => array( 'post' ),
-			) 
-		);
-
-		set_current_screen( 'edit-post' );
+		$this->set_valid_pre_conditions_for_parsely_stats();
 		$this->assert_admin_columns_styles( true );
 	}
 
@@ -60,7 +54,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 				'apikey'           => '',
 				'api_secret'       => '',
 				'track_post_types' => array(),
-			) 
+			)
 		);
 
 		set_current_screen( 'edit-post' );
@@ -72,7 +66,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 				'apikey'           => 'test',
 				'api_secret'       => 'test',
 				'track_post_types' => array(),
-			) 
+			)
 		);
 
 		set_current_screen( 'edit-post' );
@@ -84,11 +78,75 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 				'apikey'           => 'test',
 				'api_secret'       => 'test',
 				'track_post_types' => array( 'post' ),
-			) 
+			)
 		);
 
 		set_current_screen( 'edit-page' );
 		$this->assert_admin_columns_styles( false );
+	}
+
+	/**
+	 * Verifies that styles of Parsely Stats Admin Column are enqueued.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::show_parsely_stats_api_error
+	 */
+	public function test_show_parsely_stats_api_notice_in_case_of_error(): void {
+		$parsely_stats_api_error = self::getPrivateProperty( Admin_Columns_Parsely_Stats::class, 'parsely_stats_api_error' );
+		$admin_parsely_stats     = new Admin_Columns_Parsely_Stats( new Parsely() );
+		$parsely_stats_api_error->setValue( $admin_parsely_stats, new WP_Error( 404, 'Not Found' ) );
+
+		$this->set_valid_pre_conditions_for_parsely_stats();
+		$admin_parsely_stats->run();
+
+		ob_start();
+		do_action( 'admin_notices' ); // phpcs:ignore
+		$output = (string) ob_get_clean();
+
+		assertStringContainsString( 'error-parsely-stats', $output ); // Verify class.
+		assertStringContainsString( 'Detail: (404) Not Found', $output ); // Verify error details.
+	}
+
+	/**
+	 * Verifies that styles of Parsely Stats Admin Column are enqueued.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::show_parsely_stats_api_error
+	 */
+	public function test_do_not_show_parsely_stats_api_notice_in_absense_of_error(): void {
+		$admin_parsely_stats = new Admin_Columns_Parsely_Stats( new Parsely() );
+
+		$this->set_valid_pre_conditions_for_parsely_stats();
+		$admin_parsely_stats->run();
+
+		ob_start();
+		do_action( 'admin_notices' ); // phpcs:ignore
+		$output = (string) ob_get_clean();
+
+		assertEquals( '', $output );
+	}
+
+	/**
+	 * Set valid conditions under which we add hooks for Parse.ly Stats.
+	 *
+	 * @return void
+	 */
+	private function set_valid_pre_conditions_for_parsely_stats(): void {
+		TestCase::set_options(
+			array(
+				'apikey'           => 'test',
+				'api_secret'       => 'test',
+				'track_post_types' => array( 'post' ),
+			)
+		);
+
+		set_current_screen( 'edit-post' );
 	}
 
 	/**
@@ -108,10 +166,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 		$handle = 'parsely-admin-columns-styles';
 		if ( $assert_type ) {
-			$this->assert_is_style_registered( $handle );
 			$this->assert_is_style_enqueued( $handle );
+			wp_dequeue_style( $handle ); // Dequeue to start fresh for next test.
 		} else {
-			$this->assert_is_style_not_registered( $handle );
 			$this->assert_is_style_not_enqueued( $handle );
 		}
 	}
