@@ -71,7 +71,7 @@ function PerformanceDetails() {
  */
 function PerformanceDetailsSections( props: PerformanceSectionProps ) {
 	return (
-		<div className="current-post-details-panel">
+		<div className="performance-details-panel">
 			<DataPeriodSection { ...props } />
 			<GeneralPerformanceSection { ...props } />
 			<ReferrerTypesSection { ...props } />
