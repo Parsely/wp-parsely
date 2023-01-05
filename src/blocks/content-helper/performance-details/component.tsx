@@ -59,8 +59,14 @@ function PerformanceDetails() {
 
 	return (
 		loading
-			? <Spinner />
-			: <PerformanceDetailsSections data={ postDetailsData as PerformanceData } />
+			?	(
+				<div className="parsely-spinner-wrapper" data-testid="parsely-spinner-wrapper">
+					<Spinner />
+				</div>
+			)
+			: (
+				<PerformanceDetailsSections data={ postDetailsData as PerformanceData } />
+			)
 	);
 }
 
