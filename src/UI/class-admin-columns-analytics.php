@@ -136,7 +136,7 @@ final class Admin_Columns_Analytics {
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
 
 		wp_enqueue_style(
-			'parsely-admin-settings',
+			'parsely-admin-columns-styles',
 			$built_assets_url . 'admin-parsely-stats.css',
 			$admin_settings_asset['dependencies'] ?? null,
 			$admin_settings_asset['version'] ?? Parsely::VERSION
