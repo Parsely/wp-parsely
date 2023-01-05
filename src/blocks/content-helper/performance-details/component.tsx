@@ -9,7 +9,7 @@ import { useEffect, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import PerformanceDetailsProvider from './provider';
-import { PerformanceData } from './performance-data';
+import { PerformanceData } from './model';
 import { ContentHelperError } from '../content-helper-error';
 
 // Number of attempts to fetch the data before displaying an error.

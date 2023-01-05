@@ -9,7 +9,7 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import RelatedTopPostsProvider from './provider';
 import RelatedTopPostListItem from './component-list-item';
-import { RelatedTopPostData } from './related-top-post-data';
+import { RelatedTopPostData } from './model';
 import { ContentHelperError } from '../content-helper-error';
 import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../shared/utils/date';
 

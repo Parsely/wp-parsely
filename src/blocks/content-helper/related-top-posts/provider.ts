@@ -15,7 +15,7 @@ import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../content-helper-error';
-import { RelatedTopPostData } from './related-top-post-data';
+import { RelatedTopPostData } from './model';
 
 /**
  * The form of the query that gets posted to the analytics/posts WordPress REST

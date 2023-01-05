@@ -16,7 +16,7 @@ import {
 import {
 	PerformanceData,
 	PerformanceReferrerData,
-} from './performance-data';
+} from './model';
 
 /**
  * Specifies the form of the response returned by the `/stats/post/detail`
