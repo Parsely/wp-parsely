@@ -9,7 +9,7 @@ import { useEffect, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import PerformanceDetailsProvider from './provider';
-import { PostPerformanceData } from './post-performance-data';
+import { PerformanceData } from './performance-data';
 import { ContentHelperError } from '../content-helper-error';
 
 // Number of attempts to fetch the data before displaying an error.
@@ -19,7 +19,7 @@ const FETCH_RETRIES = 3;
  * Specifies the form of component props.
  */
 interface PerformanceSectionProps {
-	data: PostPerformanceData;
+	data: PerformanceData;
 }
 
 /**
@@ -28,7 +28,7 @@ interface PerformanceSectionProps {
 function PerformanceDetails() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
-	const [ postDetailsData, setPostDetails ] = useState<PostPerformanceData>();
+	const [ postDetailsData, setPostDetails ] = useState<PerformanceData>();
 	const provider = new PerformanceDetailsProvider();
 
 	useEffect( () => {
@@ -60,7 +60,7 @@ function PerformanceDetails() {
 	return (
 		loading
 			? <Spinner />
-			: <PerformanceDetailsSections data={ postDetailsData as PostPerformanceData } />
+			: <PerformanceDetailsSections data={ postDetailsData as PerformanceData } />
 	);
 }
 

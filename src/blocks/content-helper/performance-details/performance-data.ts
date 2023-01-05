@@ -1,4 +1,4 @@
-export interface PostPerformanceData {
+export interface PerformanceData {
 	author: string;
 	avgEngaged: string;
 	date: string;
@@ -8,7 +8,7 @@ export interface PostPerformanceData {
 		end: string;
 		days: number;
 	};
-	referrers: PostPerformanceReferrerData;
+	referrers: PerformanceReferrerData;
 	dashUrl: string;
 	title: string;
 	url: string;
@@ -16,7 +16,7 @@ export interface PostPerformanceData {
 	visitors: string;
 }
 
-export interface PostPerformanceReferrerData {
+export interface PerformanceReferrerData {
 	top: {
 		views: string;
 		viewsPercentage: string;
