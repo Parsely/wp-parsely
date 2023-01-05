@@ -9,7 +9,7 @@ export interface PostPerformanceData {
 		days: number;
 	};
 	referrers: PostPerformanceReferrerData;
-	statsUrl: string;
+	dashUrl: string;
 	title: string;
 	url: string;
 	views: string;
