@@ -17,6 +17,7 @@ use WP_Post;
 use WP_Error;
 
 const DATE_UTC_FORMAT      = 'Y-m-d';
+const WP_DATE_TIME_FORMAT  = 'Y-m-d H:i:s';
 const DATE_TIME_UTC_FORMAT = 'Y-m-d\TH:i:s';
 
 /**

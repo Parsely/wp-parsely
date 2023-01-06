@@ -9,12 +9,18 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use DateTime;
+use DateTimeZone;
 use ReflectionClass;
 use ReflectionProperty;
+use ReflectionMethod;
 use Parsely\Parsely;
 use PHPUnit\Framework\RiskyTestError;
 use WP_Error;
+use WP_Post;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
+
+use const Parsely\Utils\WP_DATE_TIME_FORMAT;
 
 /**
  * Abstract base class for all test case implementations.
@@ -169,6 +175,60 @@ abstract class TestCase extends WPIntegrationTestCase {
 		$post_data = $this->create_test_post_array( 'post', $post_status );
 
 		return self::factory()->post->create( $post_data );
+	}
+
+	/**
+	 * Creates multiple test posts in sequence.
+	 *
+	 * @param int $num_of_posts Optional. Number of posts we need to create.
+	 *
+	 * @return int[]
+	 */
+	public function create_test_posts( int $num_of_posts = 1 ) {
+		/**
+		 * Variable.
+		 *
+		 * @var int[]
+		 */
+		$post_ids = array();
+		$date     = new DateTime( '2009-12-31', new DateTimeZone( 'America/New_York' ) ); // Start date with timezone to replicate scenarios like real world.
+
+		for ( $i = 1; $i <= $num_of_posts; $i++ ) {
+			$post_date = date_add( $date, date_interval_create_from_date_string( '1 days' ) ); // Increment by 1 day like sequence.
+			$post_id   = self::factory()->post->create(
+				array(
+					'post_title'    => "Title $i",
+					'post_author'   => $i,
+					'post_content'  => "Content $i",
+					'post_date'     => $post_date->format( WP_DATE_TIME_FORMAT ),
+					'post_date_gmt' => gmdate( WP_DATE_TIME_FORMAT, $post_date->getTimestamp() ),
+					'post_status'   => 'publish',
+					'post_type'     => 'post',
+				) 
+			);
+
+			array_push( $post_ids, $post_id );
+		}
+
+		return $post_ids;
+	}
+
+	/**
+	 * Get given test posts.
+	 *
+	 * @param int[] $post_ids IDs of the posts.
+	 *
+	 * @return WP_Post[]
+	 */
+	public function get_test_posts( $post_ids = array() ) {
+		// phpcs:disable
+		return get_posts(
+			array(
+				'include'          => $post_ids,
+				'suppress_filters' => false,
+			)
+		);
+		// phpcs:enable
 	}
 
 	/**
@@ -342,8 +402,26 @@ abstract class TestCase extends WPIntegrationTestCase {
 	public function getPrivateProperty( $class_name, $property_name ) {
 		$reflector = new ReflectionClass( $class_name );
 		$property  = $reflector->getProperty( $property_name );
+
 		$property->setAccessible( true );
 
 		return $property;
+	}
+
+	/**
+	 * Get private method of a class.
+	 *
+	 * @param class-string $class_name Name of the class.
+	 * @param string       $method Name of the method.
+	 *
+	 * @return ReflectionMethod
+	 */
+	public function getPrivateMethod( $class_name, $method ) {
+		$reflector = new ReflectionClass( $class_name );
+		$method    = $reflector->getMethod( $method );
+
+		$method->setAccessible( true );
+
+		return $method;
 	}
 }

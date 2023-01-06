@@ -11,16 +11,20 @@ namespace Parsely\Tests\Integration\UI;
 
 use WP_Error;
 use Parsely\Parsely;
+use Parsely\RemoteAPI\Analytics_Posts_API;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Columns_Parsely_Stats;
 
 use function PHPUnit\Framework\assertEquals;
+use function PHPUnit\Framework\assertNull;
 use function PHPUnit\Framework\assertStringContainsString;
 
 /**
  * Integration Tests for Parsely Stats Column in Admin Screens.
  *
  * @since 3.7.0
+ *
+ * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
  */
 final class AdminColumnsParselyStatsTest extends TestCase {
 	/**
@@ -130,6 +134,69 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$output = (string) ob_get_clean();
 
 		assertEquals( '', $output );
+	}
+
+	/**
+	 * Verifies null date params if there are no posts.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
+	 */
+	public function test_get_publish_date_params_for_analytics_api_should_return_null_if_there_is_no_post(): void {
+		$admin_parsely_stats                       = new Admin_Columns_Parsely_Stats( new Parsely() );
+		$get_publish_date_params_for_analytics_api = self::getPrivateMethod( Admin_Columns_Parsely_Stats::class, 'get_publish_date_params_for_analytics_api' );
+		$date_params                               = $get_publish_date_params_for_analytics_api->invokeArgs( $admin_parsely_stats, array( array() ) );
+
+		assertNull( $date_params );
+	}
+
+	/**
+	 * Verifies same date params if there is only 1 post.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
+	 */
+	public function test_get_publish_date_params_for_analytics_api_should_return_same_date_params_in_case_of_single_post(): void {
+		$admin_parsely_stats                       = new Admin_Columns_Parsely_Stats( new Parsely() );
+		$get_publish_date_params_for_analytics_api = self::getPrivateMethod( Admin_Columns_Parsely_Stats::class, 'get_publish_date_params_for_analytics_api' );
+
+		$post_ids = $this->create_test_posts( 1 );
+		$posts    = $this->get_test_posts( $post_ids );
+
+		/**
+		 * Variable.
+		 *
+		 * @var Analytics_Post_API_Params
+		 */
+		$date_params = $get_publish_date_params_for_analytics_api->invokeArgs( $admin_parsely_stats, array( $posts ) );
+
+		assertEquals( '2010-01-01', isset( $date_params['pub_date_start'] ) ? $date_params['pub_date_start'] : '' );
+		assertEquals( '2010-01-01', isset( $date_params['pub_date_end'] ) ? $date_params['pub_date_end'] : '' );
+	}
+
+
+	/**
+	 * Verifies min max date params if there are multiple posts
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
+	 */
+	public function test_get_publish_date_params_for_analytics_api_should_return_min_max_date_params(): void {
+		$admin_parsely_stats                       = new Admin_Columns_Parsely_Stats( new Parsely() );
+		$get_publish_date_params_for_analytics_api = self::getPrivateMethod( Admin_Columns_Parsely_Stats::class, 'get_publish_date_params_for_analytics_api' );
+
+		$post_ids = $this->create_test_posts( 10 );
+		$posts    = $this->get_test_posts( $post_ids );
+
+		/**
+		 * Variable.
+		 *
+		 * @var Analytics_Post_API_Params
+		 */
+		$date_params = $get_publish_date_params_for_analytics_api->invokeArgs( $admin_parsely_stats, array( $posts ) );
+
+		assertEquals( '2010-01-01', isset( $date_params['pub_date_start'] ) ? $date_params['pub_date_start'] : '' );
+		assertEquals( '2010-01-10', isset( $date_params['pub_date_end'] ) ? $date_params['pub_date_end'] : '' );
 	}
 
 	/**
