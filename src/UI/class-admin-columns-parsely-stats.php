@@ -320,46 +320,54 @@ final class Admin_Columns_Parsely_Stats {
 		}
 
 		$key = $this->get_unique_stats_key_of_current_post();
+		?>
 
+		<div class="parsely-post-metrics">
+
+		<?php
 		if ( '' === $key || ! isset( $this->parsely_stats_map[ $key ] ) ) {
 			echo '—';
-			return;
+		} else {
+			$metrics = $this->parsely_stats_map[ $key ];
+
+			if ( isset( $metrics['views'] ) ) {
+				$views = $metrics['views'];
+				?>
+
+				<span class='parsely-post-page-views'>
+					<?php echo esc_html( get_formatted_number( $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ) ); ?>
+				</span> <br/>
+
+				<?php 
+			}
+
+			if ( isset( $metrics['visitors'] ) ) {
+				$visitors = $metrics['visitors'];
+				?>
+
+				<span class='parsely-post-visitors'>
+					<?php echo esc_html( get_formatted_number( $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ) ); ?>
+				</span> <br/>
+
+				<?php
+			}
+
+			if ( isset( $metrics['avg_engaged'] ) ) {
+				$engaged_seconds = $metrics['avg_engaged'] * 60;
+				?>
+
+				<span class='parsely-post-avg_engaged'>
+					<?php echo esc_html( get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ) ); ?>
+				</span> <br/>
+
+				<?php
+			}
 		}
+		?>
 
-		$metrics = $this->parsely_stats_map[ $key ];
+		</div> <!-- End: .parsely-post-metrics -->
 
-		if ( isset( $metrics['views'] ) ) {
-			$views = $metrics['views'];
-			?>
-
-			<span class='parsely-post-page-views'>
-				<?php echo esc_html( get_formatted_number( $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ) ); ?>
-			</span> <br/>
-
-			<?php 
-		}
-
-		if ( isset( $metrics['visitors'] ) ) {
-			$visitors = $metrics['visitors'];
-			?>
-
-			<span class='parsely-post-visitors'>
-				<?php echo esc_html( get_formatted_number( $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ) ); ?>
-			</span> <br/>
-
-			<?php
-		}
-
-		if ( isset( $metrics['avg_engaged'] ) ) {
-			$engaged_seconds = $metrics['avg_engaged'] * 60;
-			?>
-
-			<span class='parsely-post-avg_engaged'>
-				<?php echo esc_html( get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ) ); ?>
-			</span> <br/>
-
-			<?php
-		}
+		<?php
 	}
 
 	/**

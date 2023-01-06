@@ -7,8 +7,10 @@
 		width: 150px;
 	}
 
-	> span {
+	.parsely-post-metrics {
 		color: $gray-500;
+		min-height: 54px;
+		line-height: 18px;
 	}
 
 	.parsely-post-page-views {
