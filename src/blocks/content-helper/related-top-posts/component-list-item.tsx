@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { RelatedTopPostData } from '../models/related-top-post-data';
+import { RelatedTopPostData } from './model';
 import ViewsIcon from '../icons/views-icon';
 import PublishedLinkIcon from '../icons/published-link-icon';
 
