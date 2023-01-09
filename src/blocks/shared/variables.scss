@@ -1,9 +1,11 @@
+/** SASS variables **/
+$html-font-size: 16px; // Used in functions.scss.
+
 /**
  * This is a subset of the CSS variables defined in the Parse.ly dashboard. It
  * is sourced from 1.44/src/styles/base.scss and defines some additional
  * variables in the end of the file.
  */
-
 .wp-parsely-content-helper {
 
 	/** Layout section - base.scss. **/
@@ -38,6 +40,3 @@
 	--black: #000;
 	--sidebar-black: #1e1e1e;
 }
-
-/** SASS variables **/
-$html-font-size: 16px; // Used in functions.scss.
