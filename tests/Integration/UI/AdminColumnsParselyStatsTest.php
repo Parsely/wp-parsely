@@ -102,9 +102,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 */
 	private function get_admin_columns() {
 		$admin_columns_parsely_stats = new Admin_Columns_Parsely_Stats( new Parsely() );
-		$admin_columns_parsely_stats->run();
 
-		do_action( 'current_screen' ); // phpcs:ignore
+		$admin_columns_parsely_stats->run();
+		$admin_columns_parsely_stats->set_current_screen();
 
 		return $admin_columns_parsely_stats->add_parsely_stats_column_on_list_view( array() );
 	}
@@ -117,12 +117,11 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @return void
 	 */
 	private function assert_admin_columns_styles( bool $assert_type ): void {
-		( new Admin_Columns_Parsely_Stats( new Parsely() ) )->run();
+		$admin_columns_parsely_stats = new Admin_Columns_Parsely_Stats( new Parsely() );
 
-		// phpcs:disable
-		do_action( 'current_screen' );
-		do_action( 'admin_enqueue_scripts' );
-		// phpcs:enable
+		$admin_columns_parsely_stats->run();
+		$admin_columns_parsely_stats->set_current_screen();
+		$admin_columns_parsely_stats->enqueue_parsely_stats_styles();
 
 		$handle = 'parsely-stats-admin-styles';
 		if ( $assert_type ) {
