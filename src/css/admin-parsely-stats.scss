@@ -7,10 +7,14 @@
 		width: 150px;
 	}
 
-	.parsely-post-metrics {
+	.parsely-post-stats {
 		color: $gray-500;
 		min-height: 54px;
 		line-height: 18px;
+	}
+
+	.parsely-post-stats-placeholder {
+		letter-spacing: 2px;
 	}
 
 	.parsely-post-page-views {

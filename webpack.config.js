@@ -6,6 +6,7 @@ module.exports = {
 	entry: {
 		...defaultConfig.entry(),
 		'admin-parsely-stats': [
+			path.resolve( __dirname, 'src', 'js', 'admin-parsely-stats' ),
 			path.resolve( __dirname, 'src', 'css', 'admin-parsely-stats.scss' ),
 		],
 		'admin-settings': [

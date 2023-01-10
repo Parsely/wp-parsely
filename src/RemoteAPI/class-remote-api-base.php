@@ -23,6 +23,12 @@ use function Parsely\Utils\convert_to_associative_array;
  * QUERY_FILTER constant.
  *
  * @since 3.2.0
+ *
+ * @phpstan-type Remote_API_Error array{
+ *   code: int,
+ *   message: string,
+ *   html: string,
+ * }
  */
 abstract class Remote_API_Base implements Remote_API_Interface {
 	protected const ENDPOINT     = '';
