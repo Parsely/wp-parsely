@@ -258,6 +258,54 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
+	 * Asserts that actions are present.
+	 *
+	 * @param string[] $actions Actions needs to be verified.
+	 */
+	public function assert_true_actions( $actions ): void {
+		$this->assert_wp_actions( $actions );
+	}
+
+	/**
+	 * Asserts that actions are not present.
+	 *
+	 * @param string[] $actions Actions needs to be verified.
+	 */
+	public function assert_false_actions( $actions ): void {
+		$this->assert_wp_actions( array(), $actions );
+	}
+
+	/**
+	 * Assert WordPress actions.
+	 *
+	 * @param string[] $true_actions Optional. Actions that should have been present.
+	 * @param string[] $false_actions Optional. Actions that should have not been present.
+	 *
+	 * @return void
+	 *
+	 * @throws RiskyTestError If no assertions get passed to the function.
+	 */
+	private function assert_wp_actions( array $true_actions = array(), array $false_actions = array() ): void {
+		if ( 0 === count( $true_actions ) + count( $false_actions ) ) {
+			throw new RiskyTestError( 'Function assert_wp_actions() has been used without any arguments' );
+		}
+
+		foreach ( $true_actions as $action ) {
+			self::assertTrue(
+				has_action( $action ),
+				"Unexpected action status: $action should have been called."
+			);
+		}
+
+		foreach ( $false_actions as $action ) {
+			self::assertFalse(
+				has_action( $action ),
+				"Unexpected action status: $action should have not been called."
+			);
+		}
+	}
+
+	/**
 	 * Asserts that a passed script is not registered.
 	 *
 	 * @param string $handle Script handle to test.
