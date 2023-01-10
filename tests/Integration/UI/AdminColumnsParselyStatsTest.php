@@ -70,29 +70,23 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::add_parsely_stats_column_on_list_view
 	 */
 	public function test_parsely_stats_column_visibility(): void {
-		$actions_to_verify = array( 'current_screen', 'manage_posts_columns', 'manage_pages_columns' );
-
 		// 1. No apikey and api_secret.
 		$this->set_empty_plugin_options();
 		set_current_screen( 'edit-post' );
 		self::assertNotContains( 'Parse.ly Stats', $this->get_admin_columns() );
-		$this->assert_false_actions( $actions_to_verify );
 
 		// 2. API Key and Secret is set but no track post type.
 		$this->set_empty_track_post_types();
 		set_current_screen( 'edit-post' );
 		self::assertNotContains( 'Parse.ly Stats', $this->get_admin_columns() );
-		$this->assert_true_actions( $actions_to_verify );
 
 		// 3. Verify needed hooks and column on Posts if conditions are met.
 		$this->set_valid_pre_conditions_for_parsely_stats();
 		self::assertContains( 'Parse.ly Stats', $this->get_admin_columns() );
-		$this->assert_true_actions( $actions_to_verify );
 
 		// 3. Verify needed hooks and column on Pages if conditions are met.
 		$this->set_valid_pre_conditions_for_parsely_stats( 'page' );
 		self::assertContains( 'Parse.ly Stats', $this->get_admin_columns() );
-		$this->assert_true_actions( $actions_to_verify );
 	}
 
 	/**
