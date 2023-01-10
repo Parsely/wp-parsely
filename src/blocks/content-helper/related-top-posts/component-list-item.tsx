@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { RelatedTopPostData } from '../models/related-top-post-data';
+import { RelatedTopPostData } from './model';
 import ViewsIcon from '../icons/views-icon';
 import PublishedLinkIcon from '../icons/published-link-icon';
 
@@ -18,7 +18,7 @@ function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ): JSX.El
 	return (
 		<li className="parsely-top-post" data-testid="parsely-top-post">
 			<div className="parsely-top-post-title">
-				<a className="parsely-top-post-stats-link" href={ post.statsUrl } target="_blank" rel="noreferrer" title={ __( 'View in Parse.ly (opens new tab)', 'wp-parsely' ) }>
+				<a className="parsely-top-post-stats-link" href={ post.dashUrl } target="_blank" rel="noreferrer" title={ __( 'View in Parse.ly (opens new tab)', 'wp-parsely' ) }>
 					{ post.title }
 				</a>
 				<a className="parsely-top-post-link" href={ post.url } target="_blank" rel="noreferrer" title={ __( 'View Published Post (opens new tab)', 'wp-parsely' ) }>

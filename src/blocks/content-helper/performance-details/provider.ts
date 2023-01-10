@@ -14,9 +14,9 @@ import {
 	ContentHelperErrorCode,
 } from '../content-helper-error';
 import {
-	PostPerformanceData,
-	PostPerformanceReferrerData,
-} from './post-performance-data';
+	PerformanceData,
+	PerformanceReferrerData,
+} from './model';
 
 /**
  * Specifies the form of the response returned by the `/stats/post/detail`
@@ -24,7 +24,7 @@ import {
  */
  interface AnalyticsApiResponse {
 	error?: Error;
-	data: PostPerformanceData[];
+	data: PerformanceData[];
 }
 
 /**
@@ -33,13 +33,13 @@ import {
  */
 interface ReferrersApiResponse {
 	error?: Error;
-	data: PostPerformanceReferrerData;
+	data: PerformanceReferrerData;
 }
 
 /**
  * Provides current post details data for use in other components.
  */
-class CurrentPostDetailsProvider {
+class PerformanceDetailsProvider {
 	private dataPeriodDays: number;
 	private dataPeriodStart: string;
 	private dataPeriodEnd: string;
@@ -58,9 +58,9 @@ class CurrentPostDetailsProvider {
 	 * Returns details about the post that is currently being edited within the
 	 * WordPress Block Editor.
 	 *
-	 * @return {Promise<PostPerformanceData>} The current post's details.
+	 * @return {Promise<PerformanceData>} The current post's details.
 	 */
-	public async getCurrentPostDetails(): Promise<PostPerformanceData> {
+	public async getPerformanceDetails(): Promise<PerformanceData> {
 		const editor = select( 'core/editor' );
 
 		// We cannot show data for non-published posts.
@@ -94,9 +94,9 @@ class CurrentPostDetailsProvider {
 	 * API.
 	 *
 	 * @param {string} postUrl
-	 * @return {Promise<PostPerformanceData> } The current post's details.
+	 * @return {Promise<PerformanceData> } The current post's details.
 	 */
-	private async fetchPerformanceDataFromWpEndpoint( postUrl: string ): Promise<PostPerformanceData> {
+	private async fetchPerformanceDataFromWpEndpoint( postUrl: string ): Promise<PerformanceData> {
 		let response;
 
 		try {
@@ -151,11 +151,11 @@ class CurrentPostDetailsProvider {
 	 *
 	 * @param {string} postUrl    The post's URL.
 	 * @param {string} totalViews Total post views (including direct views).
-	 * @return {Promise<PostPerformanceReferrerData>} The post's referrer data.
+	 * @return {Promise<PerformanceReferrerData>} The post's referrer data.
 	 */
 	private async fetchReferrerDataFromWpEndpoint(
 		postUrl: string, totalViews: string
-	): Promise<PostPerformanceReferrerData> {
+	): Promise<PerformanceReferrerData> {
 		let response;
 
 		// Query WordPress API endpoint.
@@ -210,4 +210,4 @@ class CurrentPostDetailsProvider {
 	}
 }
 
-export default CurrentPostDetailsProvider;
+export default PerformanceDetailsProvider;

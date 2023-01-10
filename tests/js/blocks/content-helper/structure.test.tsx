@@ -11,8 +11,8 @@ import '@testing-library/jest-dom';
 /**
  * Internal dependencies.
  */
-import RelatedTopPostList from '../../../../src/blocks/content-helper/components/related-top-post-list';
-import ContentHelperProvider, { GetRelatedTopPostsResult, RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/content-helper-provider';
+import RelatedTopPostList from '../../../../src/blocks/content-helper/related-top-posts/component-list';
+import RelatedTopPostsProvider, { GetRelatedTopPostsResult, RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/related-top-posts/provider';
 import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../../src/blocks/content-helper/content-helper-error';
 
@@ -163,7 +163,7 @@ describe( 'Content Helper', () => {
 
 	function getRelatedTopPostsMockFn( mockFn: () => Promise<GetRelatedTopPostsResult> ) {
 		return jest
-			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
+			.spyOn( RelatedTopPostsProvider, 'getRelatedTopPosts' )
 			.mockImplementation( mockFn );
 	}
 
@@ -175,7 +175,7 @@ describe( 'Content Helper', () => {
 				author: `Name ${ i }`,
 				date: `Jan ${ i }, 2022`,
 				id: i,
-				statsUrl: `${ DASHBOARD_BASE_URL }/example.com/post-${ i }`,
+				dashUrl: `${ DASHBOARD_BASE_URL }/example.com/post-${ i }`,
 				title: `Title ${ i }`,
 				url: `http://example.com/post-${ i }`,
 				views: i,
