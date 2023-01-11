@@ -90,9 +90,9 @@ final class Admin_Columns_Parsely_Stats {
 			add_action( 'current_screen', array( $this, 'set_current_screen' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_parsely_stats_styles' ) );
 			add_filter( 'manage_posts_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
-			add_action( 'manage_posts_custom_column', array( $this, 'update_post_publish_date_times' ) );
+			add_action( 'manage_posts_custom_column', array( $this, 'update_post_publish_date_times_and_show_placeholder' ) );
 			add_filter( 'manage_pages_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
-			add_action( 'manage_pages_custom_column', array( $this, 'update_post_publish_date_times' ) );
+			add_action( 'manage_pages_custom_column', array( $this, 'update_post_publish_date_times_and_show_placeholder' ) );
 			add_action( 'admin_footer', array( $this, 'set_parsely_stats_and_enqueue_script' ) );
 		}
 	}
@@ -155,20 +155,22 @@ final class Admin_Columns_Parsely_Stats {
 	 *
 	 * @return void
 	 */
-	public function update_post_publish_date_times() {
+	public function update_post_publish_date_times_and_show_placeholder() {
+		if ( ! $this->is_tracked_as_post_type() ) {
+			return;
+		}
+
 		global $post;
 
-		if ( 'publish' !== $post->post_status ) {
+		if ( 'publish' === $post->post_status ) {
 			array_push( $this->post_utc_publish_date_times, $post->post_date_gmt );
 		}
 
 		$stats_key = $this->get_unique_stats_key_of_current_post();
 		?>
-
 		<div class="parsely-post-stats" data-stats-key="<?php echo esc_attr( $stats_key ); ?>">
 			<span class="parsely-post-stats-placeholder">...</span>
 		</div>
-
 		<?php
 	}
 

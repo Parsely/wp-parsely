@@ -178,13 +178,30 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Creates multiple test posts in sequence.
+	 * Create test posts in sequence.
 	 *
-	 * @param int $num_of_posts Optional. Number of posts we need to create.
+	 * @param int    $num_of_posts Optional. Number of posts we need to create.
+	 * @param string $post_type Optional. Type of the posts.
+	 * @param string $post_status Optional. Status of the posts.
+	 *
+	 * @return WP_Post[]
+	 */
+	public function create_and_get_test_posts( int $num_of_posts = 1, $post_type = 'post', $post_status = 'publish' ) {
+		$post_ids = $this->create_posts_and_get_ids( $num_of_posts, $post_type, $post_status );
+
+		return $this->get_test_posts( $post_ids );
+	}
+
+	/**
+	 * Create test posts in sequence.
+	 *
+	 * @param int    $num_of_posts Optional. Number of posts we need to create.
+	 * @param string $post_type Optional. Type of the posts.
+	 * @param string $post_status Optional. Status of the posts.
 	 *
 	 * @return int[]
 	 */
-	public function create_test_posts( int $num_of_posts = 1 ) {
+	private function create_posts_and_get_ids( int $num_of_posts = 1, $post_type = 'post', $post_status = 'publish' ) {
 		/**
 		 * Variable.
 		 *
@@ -197,13 +214,13 @@ abstract class TestCase extends WPIntegrationTestCase {
 			$post_date = date_add( $date, date_interval_create_from_date_string( '1 days' ) ); // Increment by 1 day like sequence.
 			$post_id   = self::factory()->post->create(
 				array(
-					'post_title'    => "Title $i",
+					'post_type'     => $post_type,
+					'post_status'   => $post_status,
+					'post_title'    => "Title $i-($post_status)",
 					'post_author'   => $i,
 					'post_content'  => "Content $i",
 					'post_date'     => $post_date->format( WP_DATE_TIME_FORMAT ),
 					'post_date_gmt' => gmdate( WP_DATE_TIME_FORMAT, $post_date->getTimestamp() ),
-					'post_status'   => 'publish',
-					'post_type'     => 'post',
 				) 
 			);
 
@@ -220,15 +237,19 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @return WP_Post[]
 	 */
-	public function get_test_posts( $post_ids = array() ) {
-		// phpcs:disable
-		return get_posts(
-			array(
-				'include'          => $post_ids,
-				'suppress_filters' => false,
-			)
-		);
-		// phpcs:enable
+	private function get_test_posts( $post_ids = array() ) {
+		$posts = array();
+
+		foreach ( $post_ids as $post_id ) {
+			array_push( $posts, get_post( $post_id ) );
+		}
+
+		/**
+		 * Variable.
+		 *
+		 * @var WP_Post[]
+		 */
+		return $posts;
 	}
 
 	/**
@@ -255,6 +276,26 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 */
 	public function set_admin_user( $admin_user_id = 1 ): void {
 		wp_set_current_user( $admin_user_id );
+	}
+
+	/**
+	 * Assert availability of hooks.
+	 *
+	 * @param string[] $hooks WordPress hooks whose availability we have to verify.
+	 * @param bool     $availability_type TRUE if we want to check the presence of given hooks.
+	 *
+	 * @return void
+	 */
+	public function assert_wp_hooks_availablility( $hooks, $availability_type ) {
+		if ( ! $this->isPHPVersion7Dot2OrHigher() ) {
+			return;
+		}
+
+		if ( true === $availability_type ) {
+			$this->assert_true_actions( $hooks );
+		} else {
+			$this->assert_false_actions( $hooks );
+		}
 	}
 
 	/**
@@ -440,11 +481,12 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Return TRUE if minimum PHP version is 7.2 or higher.
+	 * Return TRUE if minimum PHP version is 7.2 or higher. We uses this if something works
+	 * differently in PHP versions < 7.2 and >= 7.2.
 	 *
 	 * Remove this function when we remove support for PHP 7.1.
 	 */
-	public function isPHPVersion72OrHigher(): bool {
+	public function isPHPVersion7Dot2OrHigher(): bool {
 		return phpversion() >= '7.2';
 	}
 
@@ -456,7 +498,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @return ReflectionProperty
 	 */
-	public function getPrivateProperty( $class_name, $property_name ) {
+	public function get_private_property( $class_name, $property_name ) {
 		$reflector = new ReflectionClass( $class_name );
 		$property  = $reflector->getProperty( $property_name );
 
@@ -473,7 +515,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @return ReflectionMethod
 	 */
-	public function getPrivateMethod( $class_name, $method ) {
+	public function get_private_method( $class_name, $method ) {
 		$reflector = new ReflectionClass( $class_name );
 		$method    = $reflector->getMethod( $method );
 
