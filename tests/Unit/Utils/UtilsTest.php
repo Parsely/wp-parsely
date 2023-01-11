@@ -71,23 +71,17 @@ final class UtilsTest extends TestCase {
 		 */
 		$tests_data = array(
 			array(
-				'args'            => array(
-					'days' => 0,
-				),
+				'args'            => array( 'days' => 0 ),
 				'expected_output' => $current_date,
 				'msg'             => 'Should match with the format of the current date.',
 			),
 			array(
-				'args'            => array(
-					'days' => -1,
-				),
+				'args'            => array( 'days' => -1 ),
 				'expected_output' => $past_date,
 				'msg'             => 'Should match with the format of the past date.',
 			),
 			array(
-				'args'            => array(
-					'days' => 1,
-				),
+				'args'            => array( 'days' => 1 ),
 				'expected_output' => $future_date,
 				'msg'             => 'Should match with the format of the future date.',
 			),
@@ -113,44 +107,32 @@ final class UtilsTest extends TestCase {
 		 */
 		$tests_data = array(
 			array(
-				'args'            => array(
-					'number' => 0,
-				),
+				'args'            => array( 'number' => 0 ),
 				'expected_output' => '0',
 				'msg'             => 'Should show number without any special format.',
 			),
 			array(
-				'args'            => array(
-					'number' => 10,
-				),
+				'args'            => array( 'number' => 10 ),
 				'expected_output' => '10',
 				'msg'             => 'Should show number without any special format.',
 			),
 			array(
-				'args'            => array(
-					'number' => 1000,
-				),
+				'args'            => array( 'number' => 1000 ),
 				'expected_output' => '1K',
 				'msg'             => 'Should show number in thousands format.',
 			),
 			array(
-				'args'            => array(
-					'number' => 1100,
-				),
+				'args'            => array( 'number' => 1100 ),
 				'expected_output' => '1.1K',
 				'msg'             => 'Should show number in thousands format.',
 			),
 			array(
-				'args'            => array(
-					'number' => 1000000,
-				),
+				'args'            => array( 'number' => 1000000 ),
 				'expected_output' => '1M',
 				'msg'             => 'Should show number in millions format.',
 			),
 			array(
-				'args'            => array(
-					'number' => 1000000000,
-				),
+				'args'            => array( 'number' => 1000000000 ),
 				'expected_output' => '1B',
 				'msg'             => 'Should show number in billions format.',
 			),
@@ -177,30 +159,22 @@ final class UtilsTest extends TestCase {
 		 */
 		$tests_data = array(
 			array(
-				'args'            => array(
-					'seconds' => 0,
-				),
+				'args'            => array( 'seconds' => 0 ),
 				'expected_output' => '0 sec.',
 				'msg'             => 'Should show seconds.',
 			),
 			array(
-				'args'            => array(
-					'seconds' => 59,
-				),
+				'args'            => array( 'seconds' => 59 ),
 				'expected_output' => '59 sec.',
 				'msg'             => 'Should show seconds.',
 			),
 			array(
-				'args'            => array(
-					'seconds' => 65,
-				),
+				'args'            => array( 'seconds' => 65 ),
 				'expected_output' => '1:05',
 				'msg'             => 'Should show minute and seconds.',
 			),
 			array(
-				'args'            => array(
-					'seconds' => 3665,
-				),
+				'args'            => array( 'seconds' => 3665 ),
 				'expected_output' => '1:01:05',
 				'msg'             => 'Should show hour, minute and seconds.',
 			),
@@ -245,9 +219,7 @@ final class UtilsTest extends TestCase {
 						'first'  => 1,
 						'second' => (object) array(
 							'third'  => 3,
-							'fourth' => (object) array(
-								'five' => 5,
-							),
+							'fourth' => (object) array( 'five' => 5 ),
 						),
 					),
 				),
@@ -255,9 +227,7 @@ final class UtilsTest extends TestCase {
 					'first'  => 1,
 					'second' => array(
 						'third'  => 3,
-						'fourth' => array(
-							'five' => 5,
-						),
+						'fourth' => array( 'five' => 5 ),
 					),
 				),
 				'msg'             => 'Should convert multi-level nested stdClass to array.',
