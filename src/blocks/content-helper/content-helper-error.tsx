@@ -51,7 +51,7 @@ export class ContentHelperError extends Error {
 		// Errors that need a hint.
 		if ( this.code === ContentHelperErrorCode.FetchError ) {
 			this.hint = this.Hint( __(
-				'This error can be sometimes caused by ad-blockers or browser tracking protections. Please add this site to any applicable allow lists and try again.',
+				'This error can sometimes be caused by ad-blockers or browser tracking protections. Please add this site to any applicable allow lists and try again.',
 				'wp-parsely'
 			) );
 		}
