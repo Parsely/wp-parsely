@@ -440,6 +440,15 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
+	 * Return TRUE if minimum PHP version is 7.2 or higher.
+	 *
+	 * Remove this function when we remove support for PHP 7.1.
+	 */
+	public function isPHPVersion72OrHigher(): bool {
+		return phpversion() >= '7.2';
+	}
+
+	/**
 	 * Get private property of a class.
 	 *
 	 * @param class-string $class_name Name of the class.
