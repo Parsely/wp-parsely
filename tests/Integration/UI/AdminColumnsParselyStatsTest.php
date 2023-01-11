@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\UI;
 
+use Mockery;
+use WP_Scripts;
 use WP_Post;
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
@@ -38,7 +40,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 */
 	public function test_styles_of_parsely_stats_admin_column_on_empty_plugin_options(): void {
 		$this->set_empty_plugin_options();
-		$this->assert_admin_columns_styles( false );
+		$this->assert_parsely_stats_admin_styles( false );
 	}
 
 	/**
@@ -52,7 +54,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 */
 	public function test_styles_of_parsely_stats_admin_column_on_empty_track_post_types(): void {
 		$this->set_empty_track_post_types();
-		$this->assert_admin_columns_styles( false );
+		$this->assert_parsely_stats_admin_styles( false );
 	}
 
 	/**
@@ -67,7 +69,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	public function test_styles_of_parsely_stats_admin_column_on_invalid_track_post_type(): void {
 		$this->set_valid_plugin_options();
 		set_current_screen( 'edit-page' );
-		$this->assert_admin_columns_styles( false );
+		$this->assert_parsely_stats_admin_styles( false );
 	}
 
 	/**
@@ -81,7 +83,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 */
 	public function test_styles_of_parsely_stats_admin_column_on_valid_posts(): void {
 		$this->set_valid_conditions_for_parsely_stats();
-		$this->assert_admin_columns_styles( true );
+		$this->assert_parsely_stats_admin_styles( true );
 	}
 
 	/**
@@ -91,16 +93,15 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 *
 	 * @return void
 	 */
-	private function assert_admin_columns_styles( bool $assert_type ): void {
-		$admin_columns_parsely_stats = new Admin_Columns_Parsely_Stats( new Parsely() );
-		$admin_columns_parsely_stats->run();
+	private function assert_parsely_stats_admin_styles( bool $assert_type ): void {
+		$obj = $this->init_admin_columns_parsely_stats();
 
 		if ( $this->isPHPVersion7Dot2OrHigher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
 			do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
 		} else {
-			$admin_columns_parsely_stats->set_current_screen();
-			$admin_columns_parsely_stats->enqueue_parsely_stats_styles();
+			$obj->set_current_screen();
+			$obj->enqueue_parsely_stats_styles();
 		}
 
 		$handle = 'parsely-stats-admin-styles';
@@ -459,6 +460,121 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 			array( 'current_screen', 'manage_posts_custom_column', 'manage_pages_custom_column' ),
 			$assert_type
 		);
+	}
+
+	/**
+	 * Verify enqueued status of Parse.ly Stats script.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_and_pass_data
+	 */
+	public function test_script_of_parsely_stats_admin_column_on_empty_plugin_options(): void {
+		$this->set_empty_plugin_options();
+		$this->assert_parsely_stats_admin_script( null, false );
+	}
+
+	/**
+	 * Verify enqueued status of Parse.ly Stats script.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_and_pass_data
+	 */
+	public function test_script_of_parsely_stats_admin_column_on_empty_track_post_types(): void {
+		$this->set_empty_track_post_types();
+		$this->assert_parsely_stats_admin_script( null, false );
+	}
+
+	/**
+	 * Verify enqueued status of Parse.ly Stats script.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_and_pass_data
+	 */
+	public function test_script_of_parsely_stats_admin_column_on_invalid_track_post_types(): void {
+		$this->set_valid_plugin_options();
+		set_current_screen( 'edit-page' );
+		$this->assert_parsely_stats_admin_script( null, false );
+	}
+
+	/**
+	 * Verify enqueued status of Parse.ly Stats script.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_and_pass_data
+	 */
+	public function test_script_of_parsely_stats_admin_column_on_valid_posts_and_empty_response(): void {
+		$this->set_valid_conditions_for_parsely_stats();
+		$this->assert_parsely_stats_admin_script( null, false );
+	}
+
+
+	/**
+	 * Verify enqueued status of Parse.ly Stats script.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_and_pass_data
+	 */
+	public function test_script_of_parsely_stats_admin_column_on_valid_posts_and_valid_response(): void {
+		$this->set_valid_conditions_for_parsely_stats();
+		$this->assert_parsely_stats_admin_script( array(), true );
+
+		/**
+		 * Internal Variable.
+		 *
+		 * @var WP_Scripts
+		 */
+		global $wp_scripts;
+
+		ob_start();
+		var_dump( $wp_scripts->print_extra_script( 'parsely-stats-admin-script' ) ); // phpcs:ignore
+		$output = (string) ob_get_clean();
+
+		self::assertStringContainsString( 'var wpParselyAdminStatsResponse = [];', $output );
+	}
+
+	/**
+	 * Assert script of Parse.ly Stats.
+	 *
+	 * @param null|array<mixed> $stats_response Stats response that we have to mock.
+	 * @param bool              $assert_type Indicates wether we are asserting for TRUE or FALSE.
+	 *
+	 * @return void
+	 */
+	private function assert_parsely_stats_admin_script( $stats_response, $assert_type ): void {
+		$obj = Mockery::mock( Admin_Columns_Parsely_Stats::class, array( new Parsely() ) )->makePartial();
+		$obj->shouldReceive( 'get_parsely_stats_response' )->once()->andReturn( $stats_response );
+		$obj->run();
+
+		if ( $this->isPHPVersion7Dot2OrHigher() ) {
+			do_action( 'current_screen' ); // phpcs:ignore
+			do_action( 'admin_footer' ); // phpcs:ignore
+		} else {
+			$obj->set_current_screen();
+			$obj->enqueue_parsely_stats_script_and_pass_data();
+		}
+
+		$handle = 'parsely-stats-admin-script';
+		if ( $assert_type ) {
+			$this->assert_is_script_enqueued( $handle );
+			wp_dequeue_script( $handle ); // Dequeue to start fresh for next test.
+		} else {
+			$this->assert_is_script_not_enqueued( $handle );
+		}
 	}
 
 	/**

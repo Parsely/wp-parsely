@@ -44,7 +44,7 @@ use const Parsely\Utils\DATE_TIME_UTC_FORMAT;
  *   error: Remote_API_Error|null,
  * }
  */
-final class Admin_Columns_Parsely_Stats {
+class Admin_Columns_Parsely_Stats {
 	/**
 	 * Instance of Parsely class.
 	 *
@@ -93,7 +93,7 @@ final class Admin_Columns_Parsely_Stats {
 			add_action( 'manage_posts_custom_column', array( $this, 'update_post_publish_date_times_and_show_placeholder' ) );
 			add_filter( 'manage_pages_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
 			add_action( 'manage_pages_custom_column', array( $this, 'update_post_publish_date_times_and_show_placeholder' ) );
-			add_action( 'admin_footer', array( $this, 'set_parsely_stats_and_enqueue_script' ) );
+			add_action( 'admin_footer', array( $this, 'enqueue_parsely_stats_script_and_pass_data' ) );
 		}
 	}
 
@@ -175,9 +175,9 @@ final class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Set Parse.ly Stats data and pass to JS file so that we can show it on Frontend.
+	 * Enqueue script and pass Parse.ly Stats data for showing on Frontend using JS.
 	 */
-	public function set_parsely_stats_and_enqueue_script(): void {
+	public function enqueue_parsely_stats_script_and_pass_data(): void {
 		if ( ! $this->is_tracked_as_post_type() ) {
 			return;
 		}
@@ -192,7 +192,7 @@ final class Admin_Columns_Parsely_Stats {
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_script(
-			'parsely-stats-admin-scripts',
+			'parsely-stats-admin-script',
 			$built_assets_url . 'admin-parsely-stats.js',
 			$admin_settings_asset['dependencies'] ?? null,
 			$admin_settings_asset['version'] ?? Parsely::VERSION,
@@ -200,7 +200,7 @@ final class Admin_Columns_Parsely_Stats {
 		);
 
 		wp_localize_script(
-			'parsely-stats-admin-scripts',
+			'parsely-stats-admin-script',
 			'wpParselyAdminStatsResponse',
 			$parsely_stats_response
 		);
@@ -211,7 +211,7 @@ final class Admin_Columns_Parsely_Stats {
 	 *
 	 * @return Parsely_Stats_Response|null
 	 */
-	private function get_parsely_stats_response() {
+	public function get_parsely_stats_response() {
 		if ( ! $this->is_tracked_as_post_type() ) {
 			return null;
 		}
