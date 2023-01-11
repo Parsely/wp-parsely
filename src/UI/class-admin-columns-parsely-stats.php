@@ -261,34 +261,36 @@ final class Admin_Columns_Parsely_Stats {
 		foreach ( $response as $post_analytics ) {
 			$key = $this->get_unique_stats_key_from_analytics( $post_analytics );
 
-			if ( '' !== $key && isset( $post_analytics['metrics'] ) ) {
-				$metrics = $post_analytics['metrics'];
-
-				if ( isset( $metrics['views'] ) ) {
-					$views = $metrics['views'];
-				}
-
-				if ( isset( $metrics['visitors'] ) ) {
-					$visitors = $metrics['visitors'];
-				}
-
-				if ( isset( $metrics['avg_engaged'] ) ) {
-					$engaged_seconds = $metrics['avg_engaged'] * 60;
-				}
-
-				/**
-				 * Variable.
-				 *
-				 * @var Parsely_Stats
-				 */
-				$stats = array(
-					'page_views'  => isset( $views ) ? get_formatted_number( $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ) : '',
-					'visitors'    => isset( $visitors ) ? get_formatted_number( $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ) : '',
-					'avg_engaged' => isset( $engaged_seconds ) ? get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ) : '',
-				);
-
-				$parsely_stats_map[ $key ] = $stats;
+			if ( '' === $key || ! isset( $post_analytics['metrics'] ) ) {
+				continue;
 			}
+
+			$metrics = $post_analytics['metrics'];
+
+			if ( isset( $metrics['views'] ) ) {
+				$views = $metrics['views'];
+			}
+
+			if ( isset( $metrics['visitors'] ) ) {
+				$visitors = $metrics['visitors'];
+			}
+
+			if ( isset( $metrics['avg_engaged'] ) ) {
+				$engaged_seconds = $metrics['avg_engaged'] * 60;
+			}
+
+			/**
+			 * Variable.
+			 *
+			 * @var Parsely_Stats
+			 */
+			$stats = array(
+				'page_views'  => isset( $views ) ? get_formatted_number( $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ) : '',
+				'visitors'    => isset( $visitors ) ? get_formatted_number( $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ) : '',
+				'avg_engaged' => isset( $engaged_seconds ) ? get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ) : '',
+			);
+
+			$parsely_stats_map[ $key ] = $stats;
 		}
 
 		return array(

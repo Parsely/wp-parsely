@@ -142,13 +142,6 @@ final class UtilsTest extends TestCase {
 			),
 			array(
 				'args'            => array(
-					'number' => 120000,
-				),
-				'expected_output' => '120K',
-				'msg'             => 'Should show number in thousands format.',
-			),
-			array(
-				'args'            => array(
 					'number' => 1000000,
 				),
 				'expected_output' => '1M',

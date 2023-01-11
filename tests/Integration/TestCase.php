@@ -221,7 +221,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 					'post_content'  => "Content $i",
 					'post_date'     => $post_date->format( WP_DATE_TIME_FORMAT ),
 					'post_date_gmt' => gmdate( WP_DATE_TIME_FORMAT, $post_date->getTimestamp() ),
-				) 
+				)
 			);
 
 			array_push( $post_ids, $post_id );

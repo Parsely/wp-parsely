@@ -215,12 +215,10 @@ function convert_to_associative_array( $obj ) {
 		return new WP_Error( 400, __( 'Unable to encode API response for associative array', 'wp-parsely' ) );
 	}
 
-	$decoded = json_decode( $encoded, true );
-
 	/**
 	 * Variable.
 	 *
 	 * @var array<string, mixed>
 	 */
-	return $decoded;
+	return json_decode( $encoded, true );
 }

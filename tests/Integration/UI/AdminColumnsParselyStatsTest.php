@@ -21,6 +21,13 @@ use Parsely\UI\Admin_Columns_Parsely_Stats;
  */
 final class AdminColumnsParselyStatsTest extends TestCase {
 	/**
+	 * Internal variable.
+	 *
+	 * @var string
+	 */
+	private static $parsely_stats_column_header = 'Parse.ly Stats';
+
+	/**
 	 * Verify enqueued status of Parse.ly Stats styles.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
@@ -118,7 +125,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->set_empty_plugin_options();
 
 		$this->assert_hooks_for_parsely_stats_column( false );
-		self::assertNotContains( 'Parse.ly Stats', $this->get_admin_columns() );
+		self::assertNotContains( self::$parsely_stats_column_header, $this->get_admin_columns() );
 	}
 
 	/**
@@ -133,7 +140,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	public function test_parsely_stats_column_visibility_on_empty_track_post_types(): void {
 		$this->set_empty_track_post_types();
 
-		self::assertNotContains( 'Parse.ly Stats', $this->get_admin_columns() );
+		self::assertNotContains( self::$parsely_stats_column_header, $this->get_admin_columns() );
 		$this->assert_hooks_for_parsely_stats_column( true );
 	}
 
@@ -150,7 +157,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->set_valid_plugin_options();
 		set_current_screen( 'edit-page' );
 
-		self::assertNotContains( 'Parse.ly Stats', $this->get_admin_columns() );
+		self::assertNotContains( self::$parsely_stats_column_header, $this->get_admin_columns() );
 		$this->assert_hooks_for_parsely_stats_column( true );
 	}
 
@@ -166,7 +173,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	public function test_parsely_stats_column_visibility_on_valid_posts(): void {
 		$this->set_valid_conditions_for_parsely_stats();
 
-		self::assertContains( 'Parse.ly Stats', $this->get_admin_columns() );
+		self::assertContains( self::$parsely_stats_column_header, $this->get_admin_columns() );
 		$this->assert_hooks_for_parsely_stats_column( true );
 	}
 
@@ -182,7 +189,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	public function test_parsely_stats_column_visibility_on_valid_pages(): void {
 		$this->set_valid_conditions_for_parsely_stats( 'page' );
 
-		self::assertContains( 'Parse.ly Stats', $this->get_admin_columns() );
+		self::assertContains( self::$parsely_stats_column_header, $this->get_admin_columns() );
 		$this->assert_hooks_for_parsely_stats_column( true );
 	}
 
@@ -362,7 +369,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 *
 	 * @return WP_Post[]
 	 */
-	private function set_and_get_posts_data( $publish_num_of_posts, $draft_num_of_posts = 0, $post_type ) {
+	private function set_and_get_posts_data( $publish_num_of_posts, $draft_num_of_posts, $post_type ) {
 		return array_merge(
 			$this->create_and_get_test_posts( $publish_num_of_posts ),
 			$this->create_and_get_test_posts( $draft_num_of_posts, $post_type, 'draft' )
