@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\ContentHelper\Dashboard_Widget;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
@@ -108,6 +109,7 @@ require_once __DIR__ . '/src/UI/class-admin-warning.php';
 require_once __DIR__ . '/src/UI/class-plugins-actions.php';
 require_once __DIR__ . '/src/UI/class-row-actions.php';
 require_once __DIR__ . '/src/UI/class-site-health.php';
+require_once __DIR__ . '/src/content-helper/dashboard-widget/class-dashboard-widget.php';
 
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
 /**
@@ -127,6 +129,8 @@ function parsely_admin_init_register(): void {
 
 	$site_health = new Site_Health( $parsely );
 	$site_health->run();
+
+	( new Dashboard_Widget() )->run();
 }
 
 require_once __DIR__ . '/src/UI/class-settings-page.php';
