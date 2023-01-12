@@ -251,6 +251,13 @@ class Admin_Columns_Parsely_Stats {
 			);
 		}
 
+		if ( null === $response ) {
+			return array(
+				'data'  => array(),
+				'error' => null,
+			);
+		}
+
 		/**
 		 * Variable.
 		 *

@@ -20,6 +20,8 @@ use Parsely\UI\Admin_Columns_Parsely_Stats;
  * Integration Tests for Parse.ly Stats Column in Admin Screens.
  *
  * @since 3.7.0
+ *
+ * @phpstan-import-type Parsely_Stats_Response from Admin_Columns_Parsely_Stats
  */
 final class AdminColumnsParselyStatsTest extends TestCase {
 	/**
@@ -238,7 +240,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->set_empty_plugin_options();
 
 		$obj    = $this->init_admin_columns_parsely_stats();
-		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj, 'post' );
+		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
 
 		$this->assert_hooks_for_parsely_stats_content( false );
 		self::assertEquals( '', $output );
@@ -258,7 +260,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->set_empty_track_post_types();
 
 		$obj    = $this->init_admin_columns_parsely_stats();
-		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj, 'post' );
+		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals( '', $output );
@@ -279,7 +281,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		set_current_screen( 'edit-page' );
 
 		$obj    = $this->init_admin_columns_parsely_stats();
-		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj, 'post' );
+		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals( '', $output );
@@ -299,7 +301,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->set_valid_conditions_for_parsely_stats();
 
 		$obj    = $this->init_admin_columns_parsely_stats();
-		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj, 'post' );
+		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals(
@@ -330,7 +332,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->set_valid_conditions_for_parsely_stats( 'page' );
 
 		$obj    = $this->init_admin_columns_parsely_stats();
-		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj, 'page' );
+		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals(
@@ -355,7 +357,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 *
 	 * @return string
 	 */
-	private function set_posts_data_and_get_content_of_parsely_stats_column( $obj, $post_type ) {
+	private function set_posts_data_and_get_content_of_parsely_stats_column( $obj, $post_type = 'post' ) {
 		$posts = $this->set_and_get_posts_data( 3, 2, $post_type );
 
 		return $this->get_content_of_parsely_stats_column( $obj, $posts, $post_type );
@@ -394,7 +396,8 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Replicate the behavior by which WordPress shows content of Parse.ly Stats in column.
+	 * Replicate behavior by which WordPress set post publish dates and then make API call
+	 * to get Parse.ly stats.
 	 *
 	 * @param Admin_Columns_Parsely_Stats $obj Instance of Admin_Columns_Parsely_Stats.
 	 * @param WP_Post[]                   $posts Available posts.
@@ -575,6 +578,111 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		} else {
 			$this->assert_is_script_not_enqueued( $handle );
 		}
+	}
+
+	/**
+	 * Verify Parse.ly Stats response.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 */
+	public function test_parsely_stats_response_on_empty_plugin_options(): void {
+		$this->set_empty_plugin_options();
+
+		$res = $this->get_parsely_stats_response();
+
+		$this->assert_hooks_for_parsely_stats_response( false );
+		self::assertNull( $res );
+	}
+
+	/**
+	 * Verify Parse.ly Stats response.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 */
+	public function test_parsely_stats_response_on_empty_track_post_types(): void {
+		$this->set_empty_track_post_types();
+
+		$res = $this->get_parsely_stats_response();
+
+		$this->assert_hooks_for_parsely_stats_response( true );
+		self::assertNull( $res );
+	}
+
+	/**
+	 * Verify Parse.ly Stats response.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 */
+	public function test_parsely_stats_response_on_invalid_track_post_types(): void {
+		$this->set_valid_plugin_options();
+		set_current_screen( 'edit-page' );
+
+		$res = $this->get_parsely_stats_response();
+
+		$this->assert_hooks_for_parsely_stats_response( true );
+		self::assertNull( $res );
+	}
+
+	/**
+	 * Verify Parse.ly Stats response.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 */
+	public function test_parsely_stats_response_on_valid_post_type_but_no_data(): void {
+		$this->set_valid_plugin_options();
+		set_current_screen( 'edit-page' );
+
+		$res = $this->get_parsely_stats_response();
+
+		$this->assert_hooks_for_parsely_stats_response( true );
+		self::assertNull( $res );
+	}
+
+	/**
+	 * Replicate behavior by which WordPress set post publish dates and then make API call
+	 * to get Parse.ly stats.
+	 *
+	 * @param WP_Post[] $posts Available Posts.
+	 * @param string    $post_type Type of the post.
+	 *
+	 * @return Parsely_Stats_Response|null
+	 */
+	private function get_parsely_stats_response( $posts = array(), $post_type = 'post' ) {
+		$obj = $this->init_admin_columns_parsely_stats();
+
+		$this->show_content_on_parsely_stats_column( $obj, $posts, $post_type );
+
+		return $obj->get_parsely_stats_response();
+	}
+
+	/**
+	 * Assert status of hooks for Parse.ly Stats response.
+	 *
+	 * @param bool $assert_type Assert this condition on hooks.
+	 *
+	 * @return void
+	 */
+	private function assert_hooks_for_parsely_stats_response( $assert_type = true ) {
+		$this->assert_wp_hooks_availablility(
+			array( 'current_screen', 'manage_posts_custom_column', 'manage_pages_custom_column', 'admin_footer' ),
+			$assert_type
+		);
 	}
 
 	/**

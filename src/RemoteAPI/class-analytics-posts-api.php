@@ -64,7 +64,7 @@ class Analytics_Posts_API extends Remote_API_Base {
 	 *
 	 * @param Analytics_Post_API_Params $api_params Parameters of the API.
 	 *
-	 * @return WP_Error|Analytics_Post[]
+	 * @return Analytics_Post[]|WP_Error|null
 	 */
 	public function get_posts_analytics( $api_params ) {
 		$response = $this->get_items( $api_params, true );
