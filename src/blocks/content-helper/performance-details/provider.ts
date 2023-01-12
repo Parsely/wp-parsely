@@ -126,7 +126,7 @@ class PerformanceDetailsProvider {
 			return Promise.reject( new ContentHelperError(
 				sprintf(
 					/* translators: URL of the published post */
-					__( 'The post %s has 0 views or no data was returned for it by the Parse.ly API.',
+					__( 'The post %s has 0 views, or the Parse.ly API returned no data.',
 						'wp-parsely' ), postUrl
 				), ContentHelperErrorCode.ParselyApiReturnedNoData, ''
 			) );
