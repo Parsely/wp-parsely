@@ -890,6 +890,57 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		);
 	}
 
+
+	/**
+	 * Verify Parse.ly Stats response.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_unique_stats_key_from_analytics
+	 */
+	public function test_parsely_stats_response_on_valid_hierarchal_post_type_and_having_data_from_api(): void {
+		$this->set_valid_conditions_for_parsely_stats( 'page' );
+
+		$pages        = $this->set_and_get_posts_data( 1, 2, 'page' );
+		$api_response = array(
+			array(
+				'title'    => 'Title 1-(publish)',
+				'pub_date' => '2010-01-01T05:00:00',
+				'metrics'  => array(
+					'views'       => 1100,
+					'visitors'    => 1100000,
+					'avg_engaged' => 1.1,
+				),
+			),
+		);
+		$res          = $this->get_parsely_stats_response(
+			$pages,
+			'page',
+			$api_response,
+			array(
+				'pub_date_start' => '2010-01-01',
+				'pub_date_end'   => '2010-01-01',
+			) 
+		);
+
+		$this->assert_hooks_for_parsely_stats_response( true );
+		self::assertNull( isset( $res['error'] ) ? $res['error'] : null );
+		self::assertEquals(
+			array(
+				'Title 1-(publish)-2010-01-01T05:00:00' => array(
+					'page_views'  => '1.1K page views',
+					'visitors'    => '1.1M visitors',
+					'avg_engaged' => '1:06 avg time',
+				),
+			),
+			isset( $res['data'] ) ? $res['data'] : null
+		);
+	}
+
 	/**
 	 * Replicate behavior by which WordPress set post publish dates and then make API call
 	 * to get Parse.ly stats.
@@ -904,9 +955,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	private function get_parsely_stats_response( $posts = array(), $post_type = 'post', $api_response = null, $api_params = null ) {
 		$obj = $this->init_admin_columns_parsely_stats();
 
-		ob_start();
 		$this->show_content_on_parsely_stats_column( $obj, $posts, $post_type );
-		ob_get_clean(); // Discarding output to keep console clean while running tests.
 
 		$api = Mockery::mock( Analytics_Posts_API::class, array( new Parsely() ) )->makePartial();
 		if ( ! is_null( $api_params ) ) {
