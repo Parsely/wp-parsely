@@ -182,7 +182,7 @@ class Admin_Columns_Parsely_Stats {
 			return;
 		}
 
-		$parsely_stats_response = $this->get_parsely_stats_response();
+		$parsely_stats_response = $this->get_parsely_stats_response( new Analytics_Posts_API( $this->parsely ) );
 
 		if ( null === $parsely_stats_response ) {
 			return;
@@ -209,9 +209,11 @@ class Admin_Columns_Parsely_Stats {
 	/**
 	 * Call Parsely Analytics API and get needed data.
 	 *
+	 * @param Analytics_Posts_API $analytics_api Instance of Analytics_Posts_API.
+	 *
 	 * @return Parsely_Stats_Response|null
 	 */
-	public function get_parsely_stats_response() {
+	public function get_parsely_stats_response( $analytics_api ) {
 		if ( ! $this->is_tracked_as_post_type() ) {
 			return null;
 		}
@@ -221,8 +223,7 @@ class Admin_Columns_Parsely_Stats {
 			return null;
 		}
 
-		$analytics_api = new Analytics_Posts_API( $this->parsely );
-		$response      = $analytics_api->get_posts_analytics(
+		$response = $analytics_api->get_posts_analytics(
 			array(
 				'period_start'   => get_utc_date_format( - Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT ),
 				'period_end'     => get_utc_date_format(),

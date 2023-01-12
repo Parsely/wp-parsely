@@ -13,8 +13,10 @@ use Mockery;
 use WP_Scripts;
 use WP_Post;
 use Parsely\Parsely;
+use Parsely\RemoteAPI\Analytics_Posts_API;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Columns_Parsely_Stats;
+use WP_Error;
 
 /**
  * Integration Tests for Parse.ly Stats Column in Admin Screens.
@@ -22,6 +24,7 @@ use Parsely\UI\Admin_Columns_Parsely_Stats;
  * @since 3.7.0
  *
  * @phpstan-import-type Parsely_Stats_Response from Admin_Columns_Parsely_Stats
+ * @phpstan-import-type Analytics_Post from Analytics_Posts_API
  */
 final class AdminColumnsParselyStatsTest extends TestCase {
 	/**
@@ -372,7 +375,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 *
 	 * @return WP_Post[]
 	 */
-	private function set_and_get_posts_data( $publish_num_of_posts, $draft_num_of_posts, $post_type ) {
+	private function set_and_get_posts_data( $publish_num_of_posts = 1, $draft_num_of_posts = 0, $post_type = 'post' ) {
 		return array_merge(
 			$this->create_and_get_test_posts( $publish_num_of_posts ),
 			$this->create_and_get_test_posts( $draft_num_of_posts, $post_type, 'draft' )
@@ -644,9 +647,8 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
 	 */
-	public function test_parsely_stats_response_on_valid_post_type_but_no_data(): void {
-		$this->set_valid_plugin_options();
-		set_current_screen( 'edit-page' );
+	public function test_parsely_stats_response_on_valid_post_type_and_no_post_data(): void {
+		$this->set_valid_conditions_for_parsely_stats();
 
 		$res = $this->get_parsely_stats_response();
 
@@ -655,20 +657,80 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
+	 * Verify Parse.ly Stats response.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 */
+	public function test_parsely_stats_response_on_valid_post_type_and_null_response_from_api(): void {
+		$this->set_valid_conditions_for_parsely_stats();
+
+		$posts = $this->set_and_get_posts_data();
+		$res   = $this->get_parsely_stats_response( $posts );
+
+		$this->assert_hooks_for_parsely_stats_response( true );
+		self::assertEquals(
+			array(
+				'data'  => array(),
+				'error' => null,
+			),
+			$res 
+		);
+	}
+
+	/**
+	 * Verify Parse.ly Stats response.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 */
+	public function test_parsely_stats_response_on_valid_post_type_and_error_response_from_api(): void {
+		$this->set_valid_conditions_for_parsely_stats();
+
+		$posts = $this->set_and_get_posts_data( 1 );
+		$res   = $this->get_parsely_stats_response( $posts, 'post', new WP_Error( 404, 'Not Found.' ) );
+
+		if ( null === $res ) {
+			self::assertTrue( false, 'Response should not be null' );
+		}
+
+		$this->assert_hooks_for_parsely_stats_response( true );
+		self::assertNull( isset( $res['data'] ) ? $res['data'] : null );
+		self::assertEquals(
+			array(
+				'code'    => 404,
+				'message' => 'Not Found.',
+				'html'    => '<div class="error notice error-parsely-stats is-dismissible"><p>Error while getting data for Parse.ly Stats.<br/>Detail: (404) Not Found.</p></div>',
+			),
+			isset( $res['error'] ) ? $res['error'] : null
+		);
+	}
+
+	/**
 	 * Replicate behavior by which WordPress set post publish dates and then make API call
 	 * to get Parse.ly stats.
 	 *
-	 * @param WP_Post[] $posts Available Posts.
-	 * @param string    $post_type Type of the post.
+	 * @param WP_Post[]                      $posts Available Posts.
+	 * @param string                         $post_type Type of the post.
+	 * @param Analytics_Post[]|WP_Error|null $api_response Mocked response that we return on calling API.
 	 *
 	 * @return Parsely_Stats_Response|null
 	 */
-	private function get_parsely_stats_response( $posts = array(), $post_type = 'post' ) {
+	private function get_parsely_stats_response( $posts = array(), $post_type = 'post', $api_response = null ) {
 		$obj = $this->init_admin_columns_parsely_stats();
 
 		$this->show_content_on_parsely_stats_column( $obj, $posts, $post_type );
 
-		return $obj->get_parsely_stats_response();
+		$api = Mockery::mock( Analytics_Posts_API::class, array( new Parsely() ) )->makePartial();
+		$api->shouldReceive( 'get_posts_analytics' )->once()->andReturn( $api_response );
+
+		return $obj->get_parsely_stats_response( $api );
 	}
 
 	/**
