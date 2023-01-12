@@ -538,7 +538,6 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->assert_parsely_stats_admin_script( null, false );
 	}
 
-
 	/**
 	 * Verify enqueued status of Parse.ly Stats script.
 	 *
@@ -761,10 +760,6 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$posts = $this->set_and_get_posts_data( 1 );
 		$res   = $this->get_parsely_stats_response( $posts, 'post', new WP_Error( 404, 'Not Found.' ) );
 
-		if ( null === $res ) {
-			self::assertTrue( false, 'Response should not be null' );
-		}
-
 		$this->assert_hooks_for_parsely_stats_response( true );
 		self::assertNull( isset( $res['data'] ) ? $res['data'] : null );
 		self::assertEquals(
@@ -774,6 +769,124 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 				'html'    => '<div class="error notice error-parsely-stats is-dismissible"><p>Error while getting data for Parse.ly Stats.<br/>Detail: (404) Not Found.</p></div>',
 			),
 			isset( $res['error'] ) ? $res['error'] : null
+		);
+	}
+
+	/**
+	 * Verify Parse.ly Stats response.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_unique_stats_key_from_analytics
+	 */
+	public function test_parsely_stats_response_on_valid_post_type_and_having_data_from_api(): void {
+		$this->set_valid_conditions_for_parsely_stats();
+
+		$posts        = $this->set_and_get_posts_data( 7, 10 );
+		$api_response = array(
+			array(
+				'title'    => 'Title 1-(publish)',
+				'pub_date' => '2010-01-01T05:00:00',
+				'metrics'  => array(
+					'views'       => 0,
+					'visitors'    => 0,
+					'avg_engaged' => 0,
+				),
+			),
+			array(
+				'title'    => 'Title 2-(publish)',
+				'pub_date' => '2010-01-02T05:00:00',
+				'metrics'  => array(
+					'views'       => 1,
+					'visitors'    => 1,
+					'avg_engaged' => 0.01,
+				),
+			),
+			array(
+				'title'    => 'Title 3-(publish)',
+				'pub_date' => '2010-01-03T05:00:00',
+				'metrics'  => array(
+					'views'       => 1100,
+					'visitors'    => 1100000,
+					'avg_engaged' => 1.1,
+				),
+			),
+			array(
+				'title'    => 'Title 4-(publish)',
+				'pub_date' => '2010-01-04T05:00:00',
+			),
+			array(
+				'title'    => 'Title 5-(publish)',
+				'pub_date' => '2010-01-05T05:00:00',
+				'metrics'  => array(
+					'views' => 1,
+				),
+			),
+			array(
+				'title'    => 'Title 6-(publish)',
+				'pub_date' => '2010-01-06T05:00:00',
+				'metrics'  => array(
+					'visitors' => 1,
+				),
+			),
+			array(
+				'title'    => 'Title 7-(publish)',
+				'pub_date' => '2010-01-07T05:00:00',
+				'metrics'  => array(
+					'avg_engaged' => 0.01,
+				),
+			),
+		);
+		$res          = $this->get_parsely_stats_response(
+			$posts,
+			'post',
+			$api_response,
+			array(
+				'pub_date_start' => '2010-01-01',
+				'pub_date_end'   => '2010-01-07',
+			) 
+		);
+
+		$this->assert_hooks_for_parsely_stats_response( true );
+		self::assertNull( isset( $res['error'] ) ? $res['error'] : null );
+		self::assertEquals(
+			array(
+				'Title 1-(publish)-2010-01-01T05:00:00' => array(
+					'page_views'  => '0 page views',
+					'visitors'    => '0 visitors',
+					'avg_engaged' => '0 sec. avg time',
+				),
+				'Title 2-(publish)-2010-01-02T05:00:00' => array(
+					'page_views'  => '1 page view',
+					'visitors'    => '1 visitor',
+					'avg_engaged' => '1 sec. avg time',
+				),
+				'Title 3-(publish)-2010-01-03T05:00:00' => array(
+					'page_views'  => '1.1K page views',
+					'visitors'    => '1.1M visitors',
+					'avg_engaged' => '1:06 avg time',
+				),
+				'Title 5-(publish)-2010-01-05T05:00:00' => array(
+					'page_views'  => '1 page view',
+					'visitors'    => '0 visitors',
+					'avg_engaged' => '0 sec. avg time',
+				),
+				'Title 6-(publish)-2010-01-06T05:00:00' => array(
+					'page_views'  => '0 page views',
+					'visitors'    => '1 visitor',
+					'avg_engaged' => '0 sec. avg time',
+				),
+				'Title 7-(publish)-2010-01-07T05:00:00' => array(
+					'page_views'  => '0 page views',
+					'visitors'    => '0 visitors',
+					'avg_engaged' => '1 sec. avg time',
+				),
+			),
+			isset( $res['data'] ) ? $res['data'] : null
 		);
 	}
 
@@ -791,24 +904,31 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	private function get_parsely_stats_response( $posts = array(), $post_type = 'post', $api_response = null, $api_params = null ) {
 		$obj = $this->init_admin_columns_parsely_stats();
 
+		ob_start();
 		$this->show_content_on_parsely_stats_column( $obj, $posts, $post_type );
+		ob_get_clean(); // Discarding output to keep console clean while running tests.
 
 		$api = Mockery::mock( Analytics_Posts_API::class, array( new Parsely() ) )->makePartial();
-		$api->shouldReceive( 'get_posts_analytics' )->once()->andReturn( $api_response );
-
 		if ( ! is_null( $api_params ) ) {
-			$api->shouldReceive( 'get_posts_analytics' )->withArgs(
-				array_merge(
-					$api_params,
-					// Params which will not change.
+			$api->shouldReceive( 'get_posts_analytics' )
+				->once()
+				->withArgs(
 					array(
-						'period_start' => get_utc_date_format( -7 ),
-						'period_end'   => get_utc_date_format(),
-						'limit'        => 2000,
-						'sort'         => 'avg_engaged',
+						array_merge(
+							$api_params,
+							// Params which will not change.
+							array(
+								'period_start' => get_utc_date_format( -7 ),
+								'period_end'   => get_utc_date_format(),
+								'limit'        => 2000,
+								'sort'         => 'avg_engaged',
+							)
+						),
 					)
 				)
-			);
+				->andReturn( $api_response );
+		} else {
+			$api->shouldReceive( 'get_posts_analytics' )->once()->andReturn( $api_response );
 		}
 
 		return $obj->get_parsely_stats_response( $api );

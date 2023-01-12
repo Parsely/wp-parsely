@@ -273,19 +273,10 @@ class Admin_Columns_Parsely_Stats {
 				continue;
 			}
 
-			$metrics = $post_analytics['metrics'];
-
-			if ( isset( $metrics['views'] ) ) {
-				$views = $metrics['views'];
-			}
-
-			if ( isset( $metrics['visitors'] ) ) {
-				$visitors = $metrics['visitors'];
-			}
-
-			if ( isset( $metrics['avg_engaged'] ) ) {
-				$engaged_seconds = $metrics['avg_engaged'] * 60;
-			}
+			$metrics         = $post_analytics['metrics'];
+			$views           = isset( $metrics['views'] ) ? $metrics['views'] : 0;
+			$visitors        = isset( $metrics['visitors'] ) ? $metrics['visitors'] : 0;
+			$engaged_seconds = isset( $metrics['avg_engaged'] ) ? $metrics['avg_engaged'] * 60 : 0;
 
 			/**
 			 * Variable.
@@ -293,9 +284,9 @@ class Admin_Columns_Parsely_Stats {
 			 * @var Parsely_Stats
 			 */
 			$stats = array(
-				'page_views'  => isset( $views ) ? get_formatted_number( $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ) : '',
-				'visitors'    => isset( $visitors ) ? get_formatted_number( $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ) : '',
-				'avg_engaged' => isset( $engaged_seconds ) ? get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ) : '',
+				'page_views'  => get_formatted_number( $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ),
+				'visitors'    => get_formatted_number( $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ),
+				'avg_engaged' => get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ),
 			);
 
 			$parsely_stats_map[ $key ] = $stats;
