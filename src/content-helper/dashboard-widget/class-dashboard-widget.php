@@ -62,8 +62,8 @@ class Dashboard_Widget {
 			wp_enqueue_script(
 				'wp-parsely-dashboard-widget',
 				$built_assets_url . 'dashboard-widget.js',
-				$admin_settings_asset['dependencies'] ?? null,
-				$admin_settings_asset['version'] ?? Parsely::VERSION,
+				$asset_php['dependencies'] ?? null,
+				$asset_php['version'] ?? Parsely::VERSION,
 				true
 			);
 
