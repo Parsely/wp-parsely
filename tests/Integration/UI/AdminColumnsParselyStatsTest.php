@@ -18,13 +18,16 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Columns_Parsely_Stats;
 use WP_Error;
 
+use function Parsely\Utils\get_utc_date_format;
+
 /**
  * Integration Tests for Parse.ly Stats Column in Admin Screens.
  *
  * @since 3.7.0
  *
- * @phpstan-import-type Parsely_Stats_Response from Admin_Columns_Parsely_Stats
+ * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
  * @phpstan-import-type Analytics_Post from Analytics_Posts_API
+ * @phpstan-import-type Parsely_Stats_Response from Admin_Columns_Parsely_Stats
  */
 final class AdminColumnsParselyStatsTest extends TestCase {
 	/**
@@ -33,6 +36,16 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @var string
 	 */
 	private static $parsely_stats_column_header = 'Parse.ly Stats';
+
+	/**
+	 * Internal variable.
+	 *
+	 * @var Parsely_Stats_Response
+	 */
+	private static $parsely_api_empty_response = array(
+		'data'  => array(),
+		'error' => null,
+	);
 
 	/**
 	 * Verify enqueued status of Parse.ly Stats styles.
@@ -602,6 +615,62 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
+	 * Verify Parse.ly Stats API arguments.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
+	 */
+	public function test_api_params_of_analytics_api_call_on_valid_post_type_and_having_single_record(): void {
+		$this->set_valid_conditions_for_parsely_stats();
+
+		$posts = $this->set_and_get_posts_data( 1, 2 );
+		$res   = $this->get_parsely_stats_response(
+			$posts,
+			'post',
+			null,
+			array(
+				'pub_date_start' => '2010-01-01',
+				'pub_date_end'   => '2010-01-01',
+			) 
+		);
+
+		$this->assert_hooks_for_parsely_stats_response( true );
+		self::assertEquals( self::$parsely_api_empty_response, $res );
+	}
+
+	/**
+	 * Verify Parse.ly Stats API arguments.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
+	 */
+	public function test_api_params_of_analytics_api_call_on_valid_post_type_and_having_multiple_records(): void {
+		$this->set_valid_conditions_for_parsely_stats();
+
+		$posts = $this->set_and_get_posts_data( 3, 5 );
+		$res   = $this->get_parsely_stats_response(
+			$posts,
+			'post',
+			null,
+			array(
+				'pub_date_start' => '2010-01-01',
+				'pub_date_end'   => '2010-01-03',
+			) 
+		);
+
+		$this->assert_hooks_for_parsely_stats_response( true );
+		self::assertEquals( self::$parsely_api_empty_response, $res );
+	}
+
+	/**
 	 * Verify Parse.ly Stats response.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
@@ -664,6 +733,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
 	 */
 	public function test_parsely_stats_response_on_valid_post_type_and_null_response_from_api(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -672,13 +742,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$res   = $this->get_parsely_stats_response( $posts );
 
 		$this->assert_hooks_for_parsely_stats_response( true );
-		self::assertEquals(
-			array(
-				'data'  => array(),
-				'error' => null,
-			),
-			$res 
-		);
+		self::assertEquals( self::$parsely_api_empty_response, $res );
 	}
 
 	/**
@@ -689,6 +753,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
 	 */
 	public function test_parsely_stats_response_on_valid_post_type_and_error_response_from_api(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -719,16 +784,32 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @param WP_Post[]                      $posts Available Posts.
 	 * @param string                         $post_type Type of the post.
 	 * @param Analytics_Post[]|WP_Error|null $api_response Mocked response that we return on calling API.
+	 * @param Analytics_Post_API_Params|null $api_params API Parameters.
 	 *
 	 * @return Parsely_Stats_Response|null
 	 */
-	private function get_parsely_stats_response( $posts = array(), $post_type = 'post', $api_response = null ) {
+	private function get_parsely_stats_response( $posts = array(), $post_type = 'post', $api_response = null, $api_params = null ) {
 		$obj = $this->init_admin_columns_parsely_stats();
 
 		$this->show_content_on_parsely_stats_column( $obj, $posts, $post_type );
 
 		$api = Mockery::mock( Analytics_Posts_API::class, array( new Parsely() ) )->makePartial();
 		$api->shouldReceive( 'get_posts_analytics' )->once()->andReturn( $api_response );
+
+		if ( ! is_null( $api_params ) ) {
+			$api->shouldReceive( 'get_posts_analytics' )->withArgs(
+				array_merge(
+					$api_params,
+					// Params which will not change.
+					array(
+						'period_start' => get_utc_date_format( -7 ),
+						'period_end'   => get_utc_date_format(),
+						'limit'        => 2000,
+						'sort'         => 'avg_engaged',
+					)
+				)
+			);
+		}
 
 		return $obj->get_parsely_stats_response( $api );
 	}
