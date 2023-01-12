@@ -57,7 +57,7 @@ class Dashboard_Widget {
 	public function enqueue_assets( $hook_suffix ): void {
 		if ( 'index.php' === $hook_suffix ) {
 			$asset_php        = require_once plugin_dir_path( PARSELY_FILE ) . 'build/content-helper/dashboard-widget.asset.php';
-			$built_assets_url = plugin_dir_url( PARSELY_FILE ) . '/build/content-helper/';
+			$built_assets_url = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 			wp_enqueue_script(
 				'wp-parsely-dashboard-widget',
