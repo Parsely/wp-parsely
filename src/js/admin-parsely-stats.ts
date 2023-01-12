@@ -1,4 +1,4 @@
-import { ParselyAPIError } from './common.interface';
+import { ParselyAPIError, ParselyAPIErrorInfo } from './common.interface';
 
 export interface ParselyStatsResponse extends ParselyAPIError {
 	data: ParselyStatsMap;
@@ -15,12 +15,16 @@ export interface ParselyStatsMap {
 }
 
 const response = ( window as any ).wpParselyAdminStatsResponse as ParselyStatsResponse; // eslint-disable-line @typescript-eslint/no-explicit-any
-const parselyStatsMap = response && response.data;
-const parselyStatsError = response && response.error;
-const allPostStatsElements = document.querySelectorAll( '.parsely-post-stats' );
 
-if ( parselyStatsMap ) {
-	allPostStatsElements?.forEach( ( statsElement: Element ): void => {
+showParselyStats( response && response.data );
+showParselyStatsError( response && response.error );
+
+export function showParselyStats( parselyStatsMap: ParselyStatsMap ): void {
+	if ( ! parselyStatsMap ) {
+		return;
+	}
+
+	getAllPostStatsElements()?.forEach( ( statsElement: Element ): void => {
 		const statsKey = statsElement.getAttribute( 'data-stats-key' );
 
 		if ( statsKey === null || parselyStatsMap[ statsKey ] === undefined ) {
@@ -45,14 +49,22 @@ if ( parselyStatsMap ) {
 	} );
 }
 
-if ( parselyStatsError ) {
+export function showParselyStatsError( parselyStatsError: ParselyAPIErrorInfo ): void {
+	if ( ! parselyStatsError ) {
+		return;
+	}
+
 	const headerEndElement = document.querySelector( '.wp-header-end' );
 
 	if ( headerEndElement !== null ) {
 		headerEndElement.innerHTML += parselyStatsError.html;
 	}
 
-	allPostStatsElements?.forEach( ( statsElement: Element ): void => {
+	getAllPostStatsElements()?.forEach( ( statsElement: Element ): void => {
 		statsElement.innerHTML = '—';
 	} );
+}
+
+function getAllPostStatsElements(): NodeListOf<Element> {
+	return document.querySelectorAll( '.parsely-post-stats' );
 }
