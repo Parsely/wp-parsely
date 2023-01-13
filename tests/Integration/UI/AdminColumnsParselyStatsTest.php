@@ -48,19 +48,21 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	);
 
 	/**
-	 * Runs once before all tests.
+	 * Setup method called before each test.
 	 */
-	public static function set_up_before_class(): void {
-		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%' );
+	public function set_up(): void {
+		parent::set_up();
+
+		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%' );
 	}
 
 	/**
-	 * Runs once after all tests.
+	 * Teardown method called after each test.
 	 */
-	public static function tear_down_after_class(): void {
-		global $wp_rewrite;
-		$wp_rewrite->set_permalink_structure( '' ); // Reset to default.
+	public function tear_down(): void {
+		parent::tear_down();
+
+		$this->set_permalink_structure( '' );
 	}
 
 	/**
