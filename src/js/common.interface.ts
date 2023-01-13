@@ -3,7 +3,7 @@ export interface ParselyAPIError {
 }
 
 export interface ParselyAPIErrorInfo {
-		code: number;
-		message: string;
-		htmlMessage: string;
+	code: number;
+	message: string;
+	htmlMessage: string;
 }

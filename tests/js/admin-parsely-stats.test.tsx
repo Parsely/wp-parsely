@@ -7,7 +7,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 			render( getPageContent( 2 ) );
 		} );
 
-		showParselyStatsResponse( document.body );
+		showParselyStatsResponse();
 
 		expect( getAllPostStatsElements().length ).toBe( 2 );
 		expect( getPostStatsElement( 'key-1' )?.textContent ).toBe( '—' );
@@ -31,7 +31,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 			error: null,
 		};
 
-		showParselyStatsResponse( document.body );
+		showParselyStatsResponse();
 
 		expect( getPlaceholderElement() ).toBeNull();
 		expect( getStatsErrorElement() ).toBeNull();
@@ -85,7 +85,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 			},
 		};
 
-		showParselyStatsResponse( document.body );
+		showParselyStatsResponse();
 
 		expect( getPlaceholderElement() ).toBeNull();
 		expect( getStatsErrorElement()?.innerHTML ).toBe( '<p>HTML Error Message</p>' );
@@ -109,7 +109,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 function getPageContent( numOfPlaceholders: number ): JSX.Element {
 	return (
 		<>
-			{ /* WP put this hr element after every header and we need this to test API error */ }
+			{ /* WP have this element before admin notices and we need this to test the API error */ }
 			<hr className="wp-header-end" />
 			{ getParselyStatsPlaceholders( numOfPlaceholders ) }
 		</>
