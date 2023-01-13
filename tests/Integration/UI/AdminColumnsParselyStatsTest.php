@@ -48,6 +48,22 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	);
 
 	/**
+	 * Runs once before all tests.
+	 */
+	public static function set_up_before_class(): void {
+		global $wp_rewrite;
+		$wp_rewrite->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%' );
+	}
+
+	/**
+	 * Runs once after all tests.
+	 */
+	public static function tear_down_after_class(): void {
+		global $wp_rewrite;
+		$wp_rewrite->set_permalink_structure( '' ); // Reset to default.
+	}
+
+	/**
 	 * Verify enqueued status of Parse.ly Stats styles.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
@@ -321,11 +337,11 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals(
-			$this->get_parsely_stats_placeholder_content( 'Title 1-(publish)-2010-01-01T05:00:00' ) .
-			$this->get_parsely_stats_placeholder_content( 'Title 2-(publish)-2010-01-02T05:00:00' ) .
-			$this->get_parsely_stats_placeholder_content( 'Title 3-(publish)-2010-01-03T05:00:00' ) .
-			$this->get_parsely_stats_placeholder_content( 'Title 1-(draft)-2010-01-01T05:00:00' ) .
-			$this->get_parsely_stats_placeholder_content( 'Title 2-(draft)-2010-01-02T05:00:00' ),
+			$this->get_parsely_stats_placeholder_content( '/2010/01/01/title-1-publish' ) .
+			$this->get_parsely_stats_placeholder_content( '/2010/01/02/title-2-publish' ) .
+			$this->get_parsely_stats_placeholder_content( '/2010/01/03/title-3-publish' ) .
+			$this->get_parsely_stats_placeholder_content( '/' ) .
+			$this->get_parsely_stats_placeholder_content( '/' ),
 			$output
 		);
 		self::assertEquals(
@@ -352,11 +368,11 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals(
-			$this->get_parsely_stats_placeholder_content( 'Title 1-(publish)-2010-01-01T05:00:00' ) .
-			$this->get_parsely_stats_placeholder_content( 'Title 2-(publish)-2010-01-02T05:00:00' ) .
-			$this->get_parsely_stats_placeholder_content( 'Title 3-(publish)-2010-01-03T05:00:00' ) .
-			$this->get_parsely_stats_placeholder_content( 'Title 1-(draft)-2010-01-01T05:00:00' ) .
-			$this->get_parsely_stats_placeholder_content( 'Title 2-(draft)-2010-01-02T05:00:00' ),
+			$this->get_parsely_stats_placeholder_content( '/2010/01/01/title-1-publish' ) .
+			$this->get_parsely_stats_placeholder_content( '/2010/01/02/title-2-publish' ) .
+			$this->get_parsely_stats_placeholder_content( '/2010/01/03/title-3-publish' ) .
+			$this->get_parsely_stats_placeholder_content( '/' ) .
+			$this->get_parsely_stats_placeholder_content( '/' ),
 			$output
 		);
 		self::assertEquals(
@@ -789,54 +805,47 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$posts        = $this->set_and_get_posts_data( 7, 10 );
 		$api_response = array(
 			array(
-				'title'    => 'Title 1-(publish)',
-				'pub_date' => '2010-01-01T05:00:00',
-				'metrics'  => array(
+				'url'     => 'http://example.com/2010/01/01/title-1-publish',
+				'metrics' => array(
 					'views'       => 0,
 					'visitors'    => 0,
 					'avg_engaged' => 0,
 				),
 			),
 			array(
-				'title'    => 'Title 2-(publish)',
-				'pub_date' => '2010-01-02T05:00:00',
-				'metrics'  => array(
+				'url'     => 'http://example.com/2010/01/02/title-2-publish',
+				'metrics' => array(
 					'views'       => 1,
 					'visitors'    => 1,
 					'avg_engaged' => 0.01,
 				),
 			),
 			array(
-				'title'    => 'Title 3-(publish)',
-				'pub_date' => '2010-01-03T05:00:00',
-				'metrics'  => array(
+				'url'     => 'http://example.com/2010/01/03/title-3-publish',
+				'metrics' => array(
 					'views'       => 1100,
 					'visitors'    => 1100000,
 					'avg_engaged' => 1.1,
 				),
 			),
 			array(
-				'title'    => 'Title 4-(publish)',
-				'pub_date' => '2010-01-04T05:00:00',
+				'url' => 'http://example.com/2010/01/04/title-4-publish',
 			),
 			array(
-				'title'    => 'Title 5-(publish)',
-				'pub_date' => '2010-01-05T05:00:00',
-				'metrics'  => array(
+				'url'     => 'http://example.com/2010/01/05/title-5-publish',
+				'metrics' => array(
 					'views' => 1,
 				),
 			),
 			array(
-				'title'    => 'Title 6-(publish)',
-				'pub_date' => '2010-01-06T05:00:00',
-				'metrics'  => array(
+				'url'     => 'http://example.com/2010/01/06/title-6-publish',
+				'metrics' => array(
 					'visitors' => 1,
 				),
 			),
 			array(
-				'title'    => 'Title 7-(publish)',
-				'pub_date' => '2010-01-07T05:00:00',
-				'metrics'  => array(
+				'url'     => 'http://example.com/2010/01/07/title-7-publish',
+				'metrics' => array(
 					'avg_engaged' => 0.01,
 				),
 			),
@@ -855,32 +864,32 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		self::assertNull( isset( $res['error'] ) ? $res['error'] : null );
 		self::assertEquals(
 			array(
-				'Title 1-(publish)-2010-01-01T05:00:00' => array(
+				'/2010/01/01/title-1-publish' => array(
 					'page_views' => '0 page views',
 					'visitors'   => '0 visitors',
 					'avg_time'   => '0 sec. avg time',
 				),
-				'Title 2-(publish)-2010-01-02T05:00:00' => array(
+				'/2010/01/02/title-2-publish' => array(
 					'page_views' => '1 page view',
 					'visitors'   => '1 visitor',
 					'avg_time'   => '1 sec. avg time',
 				),
-				'Title 3-(publish)-2010-01-03T05:00:00' => array(
+				'/2010/01/03/title-3-publish' => array(
 					'page_views' => '1.1K page views',
 					'visitors'   => '1.1M visitors',
 					'avg_time'   => '1:06 avg time',
 				),
-				'Title 5-(publish)-2010-01-05T05:00:00' => array(
+				'/2010/01/05/title-5-publish' => array(
 					'page_views' => '1 page view',
 					'visitors'   => '0 visitors',
 					'avg_time'   => '0 sec. avg time',
 				),
-				'Title 6-(publish)-2010-01-06T05:00:00' => array(
+				'/2010/01/06/title-6-publish' => array(
 					'page_views' => '0 page views',
 					'visitors'   => '1 visitor',
 					'avg_time'   => '0 sec. avg time',
 				),
-				'Title 7-(publish)-2010-01-07T05:00:00' => array(
+				'/2010/01/07/title-7-publish' => array(
 					'page_views' => '0 page views',
 					'visitors'   => '0 visitors',
 					'avg_time'   => '1 sec. avg time',
@@ -908,9 +917,8 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$pages        = $this->set_and_get_posts_data( 1, 2, 'page' );
 		$api_response = array(
 			array(
-				'title'    => 'Title 1-(publish)',
-				'pub_date' => '2010-01-01T05:00:00',
-				'metrics'  => array(
+				'url'     => 'http://example.com/2010/01/01/title-1-publish',
+				'metrics' => array(
 					'views'       => 1100,
 					'visitors'    => 1100000,
 					'avg_engaged' => 1.1,
@@ -931,7 +939,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		self::assertNull( isset( $res['error'] ) ? $res['error'] : null );
 		self::assertEquals(
 			array(
-				'Title 1-(publish)-2010-01-01T05:00:00' => array(
+				'/2010/01/01/title-1-publish' => array(
 					'page_views' => '1.1K page views',
 					'visitors'   => '1.1M visitors',
 					'avg_time'   => '1:06 avg time',

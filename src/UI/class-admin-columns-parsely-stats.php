@@ -22,7 +22,6 @@ use function Parsely\Utils\get_utc_date_format;
 
 use const Parsely\PARSELY_FILE;
 use const Parsely\Utils\DATE_UTC_FORMAT;
-use const Parsely\Utils\DATE_TIME_UTC_FORMAT;
 
 /**
  * Class for adding `Parse.ly Stats` on admin columns.
@@ -329,11 +328,11 @@ class Admin_Columns_Parsely_Stats {
 	 * @return string
 	 */
 	private function get_unique_stats_key_from_analytics( $analytics_post ): string {
-		if ( ! isset( $analytics_post['title'] ) || ! isset( $analytics_post['pub_date'] ) ) {
+		if ( ! isset( $analytics_post['url'] ) ) {
 			return '';
 		}
 
-		return $analytics_post['title'] . '-' . $analytics_post['pub_date'];
+		return (string) wp_parse_url( $analytics_post['url'], PHP_URL_PATH );
 	}
 
 	/**
@@ -342,12 +341,7 @@ class Admin_Columns_Parsely_Stats {
 	 * @return string
 	 */
 	private function get_unique_stats_key_of_current_post(): string {
-		global $post;
-
-		$published_time     = $post->post_date_gmt;
-		$utc_published_time = ( new DateTime( $published_time ) )->format( DATE_TIME_UTC_FORMAT );
-
-		return get_the_title() . '-' . $utc_published_time;
+		return (string) wp_parse_url( (string) get_permalink(), PHP_URL_PATH );
 	}
 
 	/**
