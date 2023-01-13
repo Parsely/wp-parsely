@@ -764,9 +764,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		self::assertNull( isset( $res['data'] ) ? $res['data'] : null );
 		self::assertEquals(
 			array(
-				'code'    => 404,
-				'message' => 'Not Found.',
-				'html'    => '<div class="error notice error-parsely-stats is-dismissible"><p>Error while getting data for Parse.ly Stats.<br/>Detail: (404) Not Found.</p></div>',
+				'code'        => 404,
+				'message'     => 'Not Found.',
+				'htmlMessage' => '<p>Error while getting data for Parse.ly Stats.<br/>Detail: (404) Not Found.</p>',
 			),
 			isset( $res['error'] ) ? $res['error'] : null
 		);
@@ -856,34 +856,34 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		self::assertEquals(
 			array(
 				'Title 1-(publish)-2010-01-01T05:00:00' => array(
-					'page_views'  => '0 page views',
-					'visitors'    => '0 visitors',
-					'avg_engaged' => '0 sec. avg time',
+					'page_views' => '0 page views',
+					'visitors'   => '0 visitors',
+					'avg_time'   => '0 sec. avg time',
 				),
 				'Title 2-(publish)-2010-01-02T05:00:00' => array(
-					'page_views'  => '1 page view',
-					'visitors'    => '1 visitor',
-					'avg_engaged' => '1 sec. avg time',
+					'page_views' => '1 page view',
+					'visitors'   => '1 visitor',
+					'avg_time'   => '1 sec. avg time',
 				),
 				'Title 3-(publish)-2010-01-03T05:00:00' => array(
-					'page_views'  => '1.1K page views',
-					'visitors'    => '1.1M visitors',
-					'avg_engaged' => '1:06 avg time',
+					'page_views' => '1.1K page views',
+					'visitors'   => '1.1M visitors',
+					'avg_time'   => '1:06 avg time',
 				),
 				'Title 5-(publish)-2010-01-05T05:00:00' => array(
-					'page_views'  => '1 page view',
-					'visitors'    => '0 visitors',
-					'avg_engaged' => '0 sec. avg time',
+					'page_views' => '1 page view',
+					'visitors'   => '0 visitors',
+					'avg_time'   => '0 sec. avg time',
 				),
 				'Title 6-(publish)-2010-01-06T05:00:00' => array(
-					'page_views'  => '0 page views',
-					'visitors'    => '1 visitor',
-					'avg_engaged' => '0 sec. avg time',
+					'page_views' => '0 page views',
+					'visitors'   => '1 visitor',
+					'avg_time'   => '0 sec. avg time',
 				),
 				'Title 7-(publish)-2010-01-07T05:00:00' => array(
-					'page_views'  => '0 page views',
-					'visitors'    => '0 visitors',
-					'avg_engaged' => '1 sec. avg time',
+					'page_views' => '0 page views',
+					'visitors'   => '0 visitors',
+					'avg_time'   => '1 sec. avg time',
 				),
 			),
 			isset( $res['data'] ) ? $res['data'] : null
@@ -932,9 +932,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		self::assertEquals(
 			array(
 				'Title 1-(publish)-2010-01-01T05:00:00' => array(
-					'page_views'  => '1.1K page views',
-					'visitors'    => '1.1M visitors',
-					'avg_engaged' => '1:06 avg time',
+					'page_views' => '1.1K page views',
+					'visitors'   => '1.1M visitors',
+					'avg_time'   => '1:06 avg time',
 				),
 			),
 			isset( $res['data'] ) ? $res['data'] : null
@@ -955,7 +955,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	private function get_parsely_stats_response( $posts = array(), $post_type = 'post', $api_response = null, $api_params = null ) {
 		$obj = $this->init_admin_columns_parsely_stats();
 
+		ob_start();
 		$this->show_content_on_parsely_stats_column( $obj, $posts, $post_type );
+		ob_get_clean(); // Discard output to keep console clean while running tests.
 
 		$api = Mockery::mock( Analytics_Posts_API::class, array( new Parsely() ) )->makePartial();
 		if ( ! is_null( $api_params ) ) {

@@ -1,9 +1,9 @@
 export interface ParselyAPIError {
-	error: ParselyAPIErrorInfo;
+	error: ParselyAPIErrorInfo | null;
 }
 
 export interface ParselyAPIErrorInfo {
 		code: number;
 		message: string;
-		html: string;
+		htmlMessage: string;
 }

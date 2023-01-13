@@ -47,7 +47,6 @@ use WP_Error;
  *
  * @phpstan-type Analytics_Post_Metrics array{
  *   avg_engaged?: float,
- *   engaged_minutes?: int,
  *   views?: int,
  *   visitors?: int,
  * }

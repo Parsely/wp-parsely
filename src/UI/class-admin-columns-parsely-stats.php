@@ -238,15 +238,13 @@ class Admin_Columns_Parsely_Stats {
 			return array(
 				'data'  => null,
 				'error' => array(
-					'code'    => (int) $response->get_error_code(),
-					'message' => $response->get_error_message(),
-					'html'    => (
-						'<div class="error notice error-parsely-stats is-dismissible">' .
-							'<p>' .
-								esc_html__( 'Error while getting data for Parse.ly Stats.', 'wp-parsely' ) . '<br/>' .
-								esc_html__( 'Detail: ', 'wp-parsely' ) . esc_html( "({$response->get_error_code()}) {$response->get_error_message()}" ) .
-							'</p>' .
-						'</div>'
+					'code'        => (int) $response->get_error_code(),
+					'message'     => $response->get_error_message(),
+					'htmlMessage' => (
+						'<p>' .
+							esc_html__( 'Error while getting data for Parse.ly Stats.', 'wp-parsely' ) . '<br/>' .
+							esc_html__( 'Detail: ', 'wp-parsely' ) . esc_html( "({$response->get_error_code()}) {$response->get_error_message()}" ) .
+						'</p>'
 					),
 				),
 			);
@@ -284,9 +282,9 @@ class Admin_Columns_Parsely_Stats {
 			 * @var Parsely_Stats
 			 */
 			$stats = array(
-				'page_views'  => get_formatted_number( $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ),
-				'visitors'    => get_formatted_number( $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ),
-				'avg_engaged' => get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ),
+				'page_views' => get_formatted_number( $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ),
+				'visitors'   => get_formatted_number( $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ),
+				'avg_time'   => get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ),
 			);
 
 			$parsely_stats_map[ $key ] = $stats;

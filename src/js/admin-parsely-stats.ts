@@ -1,34 +1,55 @@
 import { ParselyAPIError, ParselyAPIErrorInfo } from './common.interface';
 
 export interface ParselyStatsResponse extends ParselyAPIError {
-	data: ParselyStatsMap;
+	data: ParselyStatsMap | null;
 }
 
 interface ParselyStats {
-	page_views: string;
-	visitors: string;
-	avg_engaged: string;
+	page_views?: string;
+	visitors?: string;
+	avg_time?: string;
 }
 
-export interface ParselyStatsMap {
+interface ParselyStatsMap {
 	[key: string]: ParselyStats;
 }
 
-const response = ( window as any ).wpParselyAdminStatsResponse as ParselyStatsResponse; // eslint-disable-line @typescript-eslint/no-explicit-any
+( function() {
+	showParselyStatsResponse( document.body );
+}() );
 
-showParselyStats( response && response.data );
-showParselyStatsError( response && response.error );
+export function showParselyStatsResponse( body: HTMLElement ) {
+	const response = getParselyStatsResponse();
 
-export function showParselyStats( parselyStatsMap: ParselyStatsMap ): void {
+	if ( response?.error ) {
+		showParselyStatsError( body, response.error );
+		return;
+	}
+
+	showParselyStats( body, response?.data );
+}
+
+function getParselyStatsResponse(): ParselyStatsResponse {
+	return ( window as any ).wpParselyAdminStatsResponse as ParselyStatsResponse; // eslint-disable-line @typescript-eslint/no-explicit-any
+}
+
+function updateParselyStatsPlaceholder( body: HTMLElement ): void {
+	getAllPostStatsElements( body )?.forEach( ( statsElement: Element ): void => {
+		statsElement.innerHTML = '—';
+	} );
+}
+
+function showParselyStats( body: HTMLElement, parselyStatsMap: ParselyStatsMap | null ): void {
+	updateParselyStatsPlaceholder( body );
+
 	if ( ! parselyStatsMap ) {
 		return;
 	}
 
-	getAllPostStatsElements()?.forEach( ( statsElement: Element ): void => {
+	getAllPostStatsElements( body )?.forEach( ( statsElement: Element ): void => {
 		const statsKey = statsElement.getAttribute( 'data-stats-key' );
 
 		if ( statsKey === null || parselyStatsMap[ statsKey ] === undefined ) {
-			statsElement.innerHTML = '—';
 			return;
 		}
 
@@ -36,35 +57,37 @@ export function showParselyStats( parselyStatsMap: ParselyStatsMap ): void {
 		statsElement.innerHTML = '';
 
 		if ( stats.page_views ) {
-			statsElement.innerHTML += `<span class="parsely-post-page-views"> ${ stats.page_views } </span> <br/>`;
+			statsElement.innerHTML += `<span class="parsely-post-page-views">${ stats.page_views }</span><br/>`;
 		}
 
 		if ( stats.visitors ) {
-			statsElement.innerHTML += `<span class="parsely-post-visitors"> ${ stats.visitors } </span> <br/>`;
+			statsElement.innerHTML += `<span class="parsely-post-visitors">${ stats.visitors }</span><br/>`;
 		}
 
-		if ( stats.avg_engaged ) {
-			statsElement.innerHTML += `<span class="parsely-post-avg-engaged"> ${ stats.avg_engaged } </span> <br/>`;
+		if ( stats.avg_time ) {
+			statsElement.innerHTML += `<span class="parsely-post-avg-time">${ stats.avg_time }</span><br/>`;
 		}
 	} );
 }
 
-export function showParselyStatsError( parselyStatsError: ParselyAPIErrorInfo ): void {
+function showParselyStatsError( body: HTMLElement, parselyStatsError: ParselyAPIErrorInfo | null ): void {
+	updateParselyStatsPlaceholder( body );
+
 	if ( ! parselyStatsError ) {
 		return;
 	}
 
-	const headerEndElement = document.querySelector( '.wp-header-end' );
+	const headerEndElement = body.querySelector( '.wp-header-end' );
 
-	if ( headerEndElement !== null ) {
-		headerEndElement.innerHTML += parselyStatsError.html;
+	if ( headerEndElement !== null && parselyStatsError?.htmlMessage ) {
+		headerEndElement.innerHTML += getWPAdminError( parselyStatsError?.htmlMessage );
 	}
-
-	getAllPostStatsElements()?.forEach( ( statsElement: Element ): void => {
-		statsElement.innerHTML = '—';
-	} );
 }
 
-function getAllPostStatsElements(): NodeListOf<Element> {
-	return document.querySelectorAll( '.parsely-post-stats' );
+function getAllPostStatsElements( body: HTMLElement ): NodeListOf<Element> {
+	return body.querySelectorAll( '.parsely-post-stats' );
+}
+
+function getWPAdminError( htmlMessage: string ): string {
+	return `<div class="error notice error-parsely-stats is-dismissible">${ htmlMessage || '' }</div>`;
 }

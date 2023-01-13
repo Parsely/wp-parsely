@@ -941,10 +941,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		foreach ( $types as $type ) {
 			$array_value = $options[ "track_{$type}_types" ];
-			if ( is_array( $array_value ) ) {
-				foreach ( $array_value as $post_type ) {
-					$result[ $post_type ] = $type;
-				}
+
+			foreach ( $array_value as $post_type ) {
+				$result[ $post_type ] = $type;
 			}
 		}
 
