@@ -27,7 +27,7 @@ use function Parsely\Utils\get_utc_date_format;
  *
  * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
  * @phpstan-import-type Analytics_Post from Analytics_Posts_API
- * @phpstan-import-type Parsely_Stats_Response from Admin_Columns_Parsely_Stats
+ * @phpstan-import-type Parsely_Posts_Stats_Response from Admin_Columns_Parsely_Stats
  */
 final class AdminColumnsParselyStatsTest extends TestCase {
 	/**
@@ -40,7 +40,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var Parsely_Stats_Response
+	 * @var Parsely_Posts_Stats_Response
 	 */
 	private static $parsely_api_empty_response = array(
 		'data'  => array(),
@@ -122,7 +122,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 			$obj->enqueue_parsely_stats_styles();
 		}
 
-		$handle = 'parsely-stats-admin-styles';
+		$handle = 'admin-parsely-stats-styles';
 		if ( $assert_type ) {
 			$this->assert_is_style_enqueued( $handle );
 			wp_dequeue_style( $handle ); // Dequeue to start fresh for next test.
@@ -250,7 +250,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_post_publish_date_times_and_show_placeholder
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_published_times_and_show_placeholder
 	 */
 	public function test_content_of_parsely_stats_column_on_empty_plugin_options(): void {
 		$this->set_empty_plugin_options();
@@ -260,7 +260,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 		$this->assert_hooks_for_parsely_stats_content( false );
 		self::assertEquals( '', $output );
-		self::assertEquals( array(), $this->get_publish_date_times_property( $obj ) );
+		self::assertEquals( array(), $this->get_utc_published_times_property( $obj ) );
 	}
 
 	/**
@@ -270,7 +270,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_post_publish_date_times_and_show_placeholder
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_published_times_and_show_placeholder
 	 */
 	public function test_content_of_parsely_stats_column_on_empty_track_post_types(): void {
 		$this->set_empty_track_post_types();
@@ -280,7 +280,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals( '', $output );
-		self::assertEquals( array(), $this->get_publish_date_times_property( $obj ) );
+		self::assertEquals( array(), $this->get_utc_published_times_property( $obj ) );
 	}
 
 	/**
@@ -290,7 +290,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_post_publish_date_times_and_show_placeholder
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_published_times_and_show_placeholder
 	 */
 	public function test_content_of_parsely_stats_column_on_invalid_track_post_types(): void {
 		$this->set_valid_plugin_options();
@@ -301,7 +301,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals( '', $output );
-		self::assertEquals( array(), $this->get_publish_date_times_property( $obj ) );
+		self::assertEquals( array(), $this->get_utc_published_times_property( $obj ) );
 	}
 
 	/**
@@ -311,7 +311,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_post_publish_date_times_and_show_placeholder
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_published_times_and_show_placeholder
 	 */
 	public function test_content_of_parsely_stats_column_on_valid_posts(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -330,7 +330,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		);
 		self::assertEquals(
 			array( '2010-01-01 05:00:00', '2010-01-02 05:00:00', '2010-01-03 05:00:00' ),
-			$this->get_publish_date_times_property( $obj )
+			$this->get_utc_published_times_property( $obj )
 		);
 	}
 
@@ -342,7 +342,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_post_publish_date_times_and_show_placeholder
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_published_times_and_show_placeholder
 	 */
 	public function test_content_of_parsely_stats_column_on_valid_pages(): void {
 		$this->set_valid_conditions_for_parsely_stats( 'page' );
@@ -361,7 +361,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		);
 		self::assertEquals(
 			array( '2010-01-01 05:00:00', '2010-01-02 05:00:00', '2010-01-03 05:00:00' ),
-			$this->get_publish_date_times_property( $obj )
+			$this->get_utc_published_times_property( $obj )
 		);
 	}
 
@@ -435,7 +435,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 			if ( $this->isPHPVersion7Dot2OrHigher() ) {
 				do_action( "manage_{$post_type}s_custom_column" ); // phpcs:ignore
 			} else {
-				$obj->update_post_publish_date_times_and_show_placeholder();
+				$obj->update_published_times_and_show_placeholder();
 			}
 		}
 	}
@@ -452,19 +452,19 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Get post_utc_publish_date_times property of given object.
+	 * Get utc_published_times property of given object.
 	 *
 	 * @param Admin_Columns_Parsely_Stats $obj Instance of Admin_Columns_Parsely_Stats.
 	 *
 	 * @return string
 	 */
-	private function get_publish_date_times_property( $obj ) {
+	private function get_utc_published_times_property( $obj ) {
 		/**
 		 * Variable.
 		 *
 		 * @var string
 		 */
-		return $this->get_private_property( Admin_Columns_Parsely_Stats::class, 'post_utc_publish_date_times' )->getValue( $obj );
+		return $this->get_private_property( Admin_Columns_Parsely_Stats::class, 'utc_published_times' )->getValue( $obj );
 	}
 
 	/**
@@ -488,7 +488,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_and_pass_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_empty_plugin_options(): void {
 		$this->set_empty_plugin_options();
@@ -502,7 +502,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_and_pass_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_empty_track_post_types(): void {
 		$this->set_empty_track_post_types();
@@ -516,7 +516,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_and_pass_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_invalid_track_post_types(): void {
 		$this->set_valid_plugin_options();
@@ -531,7 +531,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_and_pass_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_valid_posts_and_empty_response(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -545,7 +545,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_and_pass_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_valid_posts_and_valid_response(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -559,10 +559,10 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		global $wp_scripts;
 
 		ob_start();
-		var_dump( $wp_scripts->print_extra_script( 'parsely-stats-admin-script' ) ); // phpcs:ignore
+		var_dump( $wp_scripts->print_extra_script( 'admin-parsely-stats-script' ) ); // phpcs:ignore
 		$output = (string) ob_get_clean();
 
-		self::assertStringContainsString( 'var wpParselyAdminStatsResponse = [];', $output );
+		self::assertStringContainsString( 'var wpParselyPostsStatsResponse = [];', $output );
 	}
 
 	/**
@@ -583,10 +583,10 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 			do_action( 'admin_footer' ); // phpcs:ignore
 		} else {
 			$obj->set_current_screen();
-			$obj->enqueue_parsely_stats_script_and_pass_data();
+			$obj->enqueue_parsely_stats_script_with_data();
 		}
 
-		$handle = 'parsely-stats-admin-script';
+		$handle = 'admin-parsely-stats-script';
 		if ( $assert_type ) {
 			$this->assert_is_script_enqueued( $handle );
 			wp_dequeue_script( $handle ); // Dequeue to start fresh for next test.
@@ -950,7 +950,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @param Analytics_Post[]|WP_Error|null $api_response Mocked response that we return on calling API.
 	 * @param Analytics_Post_API_Params|null $api_params API Parameters.
 	 *
-	 * @return Parsely_Stats_Response|null
+	 * @return Parsely_Posts_Stats_Response|null
 	 */
 	private function get_parsely_stats_response( $posts = array(), $post_type = 'post', $api_response = null, $api_params = null ) {
 		$obj = $this->init_admin_columns_parsely_stats();

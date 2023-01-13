@@ -61,22 +61,13 @@ class Analytics_Posts_API extends Remote_API_Base {
 	/**
 	 * Call Parse.ly Analytics API to get posts info.
 	 *
+	 * Main purpose of this function is to enforce typing.
+	 *
 	 * @param Analytics_Post_API_Params $api_params Parameters of the API.
 	 *
 	 * @return Analytics_Post[]|WP_Error|null
 	 */
 	public function get_posts_analytics( $api_params ) {
-		$response = $this->get_items( $api_params, true );
-
-		if ( is_wp_error( $response ) ) {
-			return $response;
-		}
-
-		/**
-		 * Variable.
-		 *
-		 * @var Analytics_Post[]
-		 */
-		return $response;
+		return $this->get_items( $api_params, true ); // @phpstan-ignore-line
 	}
 }

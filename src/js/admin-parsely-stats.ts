@@ -1,6 +1,6 @@
 import { ParselyAPIError, ParselyAPIErrorInfo } from './common.interface';
 
-export interface ParselyStatsResponse extends ParselyAPIError {
+export interface ParselyPostsStatsResponse extends ParselyAPIError {
 	data: ParselyStatsMap | null;
 }
 
@@ -15,14 +15,14 @@ interface ParselyStatsMap {
 }
 
 ( function() {
-	showParselyStatsResponse();
+	showParselyPostsStatsResponse();
 }() );
 
 /**
  * Shows Parse.ly Post Stats or Error depending on response.
  */
-export function showParselyStatsResponse(): void {
-	const response = ( window as any ).wpParselyAdminStatsResponse as ParselyStatsResponse; // eslint-disable-line @typescript-eslint/no-explicit-any
+export function showParselyPostsStatsResponse(): void {
+	const response = ( window as any ).wpParselyPostsStatsResponse as ParselyPostsStatsResponse; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 	updateParselyStatsPlaceholder();
 

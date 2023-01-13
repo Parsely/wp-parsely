@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use DateTime;
-use WP_Screen;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Remote_API_Base;
 use Parsely\RemoteAPI\Analytics_Posts_API;
+use WP_Screen;
 
 use function Parsely\Utils\get_formatted_number;
 use function Parsely\Utils\get_formatted_time;
@@ -25,7 +25,7 @@ use const Parsely\Utils\DATE_UTC_FORMAT;
 use const Parsely\Utils\DATE_TIME_UTC_FORMAT;
 
 /**
- * Shows `Parse.ly Stats` on Admin Columns.
+ * Class for adding `Parse.ly Stats` on admin columns.
  *
  * @since 3.7.0
  *
@@ -33,14 +33,14 @@ use const Parsely\Utils\DATE_TIME_UTC_FORMAT;
  * @phpstan-import-type Analytics_Post from Analytics_Posts_API
  * @phpstan-import-type Remote_API_Error from Remote_API_Base
  *
- * @phpstan-type Parsely_Stats array{
+ * @phpstan-type Parsely_Post_Stats array{
  *   page_views: string,
  *   visitors: string,
  *   avg_time: string,
  * }
  *
- * @phpstan-type Parsely_Stats_Response array{
- *   data: array<string, Parsely_Stats>|null,
+ * @phpstan-type Parsely_Posts_Stats_Response array{
+ *   data: array<string, Parsely_Post_Stats>|null,
  *   error: Remote_API_Error|null,
  * }
  */
@@ -60,14 +60,14 @@ class Admin_Columns_Parsely_Stats {
 	private $current_screen;
 
 	/**
-	 * Publish date time list of visible posts.
+	 * Published times of visible posts.
 	 *
 	 * Analytics Endpoint don't support post_ids as param so to limit the API we will pass the
-	 * min/max publish dates.
+	 * min/max publish time.
 	 *
 	 * @var string[]
 	 */
-	private $post_utc_publish_date_times = array();
+	private $utc_published_times = array();
 
 	/**
 	 * Constructor.
@@ -86,19 +86,21 @@ class Admin_Columns_Parsely_Stats {
 	 * @return void
 	 */
 	public function run(): void {
-		if ( $this->parsely->site_id_is_set() && $this->parsely->api_secret_is_set() ) {
-			add_action( 'current_screen', array( $this, 'set_current_screen' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_parsely_stats_styles' ) );
-			add_filter( 'manage_posts_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
-			add_action( 'manage_posts_custom_column', array( $this, 'update_post_publish_date_times_and_show_placeholder' ) );
-			add_filter( 'manage_pages_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
-			add_action( 'manage_pages_custom_column', array( $this, 'update_post_publish_date_times_and_show_placeholder' ) );
-			add_action( 'admin_footer', array( $this, 'enqueue_parsely_stats_script_and_pass_data' ) );
+		if ( ! $this->parsely->site_id_is_set() || ! $this->parsely->api_secret_is_set() ) {
+			return;
 		}
+
+		add_action( 'current_screen', array( $this, 'set_current_screen' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_parsely_stats_styles' ) );
+		add_filter( 'manage_posts_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
+		add_action( 'manage_posts_custom_column', array( $this, 'update_published_times_and_show_placeholder' ) );
+		add_filter( 'manage_pages_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
+		add_action( 'manage_pages_custom_column', array( $this, 'update_published_times_and_show_placeholder' ) );
+		add_action( 'admin_footer', array( $this, 'enqueue_parsely_stats_script_with_data' ) );
 	}
 
 	/**
-	 * Set current screen variable.
+	 * Set current screen property.
 	 *
 	 * @since 3.7.0
 	 *
@@ -122,7 +124,7 @@ class Admin_Columns_Parsely_Stats {
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_style(
-			'parsely-stats-admin-styles',
+			'admin-parsely-stats-styles',
 			$built_assets_url . 'admin-parsely-stats.css',
 			$admin_settings_asset['dependencies'] ?? null,
 			$admin_settings_asset['version'] ?? Parsely::VERSION
@@ -130,7 +132,7 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Add the `Parse.ly Stats` on admin columns.
+	 * Add `Parse.ly Stats` column on admin columns.
 	 *
 	 * @param array<string, string> $columns Columns array which contain keys and labels.
 	 *
@@ -145,17 +147,17 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Update our publish date_times list with current post info and show placeholder.
+	 * Update our published_times list with current post info and show placeholder.
 	 *
 	 * Note: We don't have `the_posts` hook for hierarchical post types like pages so we are following this approach:
 	 *
-	 * 1. Get post publish dates and show a placeholder while displaying rows on Admin List.
+	 * 1. Get post publish times and show a placeholder while displaying rows on Admin List.
 	 * 2. Make Parsely Analytics API call limited by publish dates inside `wp_footer` hook and pass the stats data to JS script.
 	 * 3. Show data on each Admin Row using JS.
 	 *
 	 * @return void
 	 */
-	public function update_post_publish_date_times_and_show_placeholder() {
+	public function update_published_times_and_show_placeholder() {
 		if ( ! $this->is_tracked_as_post_type() ) {
 			return;
 		}
@@ -163,7 +165,7 @@ class Admin_Columns_Parsely_Stats {
 		global $post;
 
 		if ( 'publish' === $post->post_status ) {
-			array_push( $this->post_utc_publish_date_times, $post->post_date_gmt );
+			array_push( $this->utc_published_times, $post->post_date_gmt );
 		}
 
 		$stats_key = $this->get_unique_stats_key_of_current_post();
@@ -175,9 +177,9 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Enqueue script and pass Parse.ly Stats data for showing on Frontend using JS.
+	 * Enqueue script and pass Parse.ly Stats data for showing on Frontend.
 	 */
-	public function enqueue_parsely_stats_script_and_pass_data(): void {
+	public function enqueue_parsely_stats_script_with_data(): void {
 		if ( ! $this->is_tracked_as_post_type() ) {
 			return;
 		}
@@ -192,7 +194,7 @@ class Admin_Columns_Parsely_Stats {
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_script(
-			'parsely-stats-admin-script',
+			'admin-parsely-stats-script',
 			$built_assets_url . 'admin-parsely-stats.js',
 			$admin_settings_asset['dependencies'] ?? null,
 			$admin_settings_asset['version'] ?? Parsely::VERSION,
@@ -200,18 +202,18 @@ class Admin_Columns_Parsely_Stats {
 		);
 
 		wp_localize_script(
-			'parsely-stats-admin-script',
-			'wpParselyAdminStatsResponse',
+			'admin-parsely-stats-script',
+			'wpParselyPostsStatsResponse',
 			$parsely_stats_response
 		);
 	}
 
 	/**
-	 * Call Parsely Analytics API and get needed data.
+	 * Call Parsely Analytics API and get stats data.
 	 *
 	 * @param Analytics_Posts_API $analytics_api Instance of Analytics_Posts_API.
 	 *
-	 * @return Parsely_Stats_Response|null
+	 * @return Parsely_Posts_Stats_Response|null
 	 */
 	public function get_parsely_stats_response( $analytics_api ) {
 		if ( ! $this->is_tracked_as_post_type() ) {
@@ -242,8 +244,8 @@ class Admin_Columns_Parsely_Stats {
 					'message'     => $response->get_error_message(),
 					'htmlMessage' => (
 						'<p>' .
-							esc_html__( 'Error while getting data for Parse.ly Stats.', 'wp-parsely' ) . '<br/>' .
-							esc_html__( 'Detail: ', 'wp-parsely' ) . esc_html( "({$response->get_error_code()}) {$response->get_error_message()}" ) .
+								esc_html__( 'Error while getting data for Parse.ly Stats.', 'wp-parsely' ) . '<br/>' .
+								esc_html__( 'Detail: ', 'wp-parsely' ) . esc_html( "({$response->get_error_code()}) {$response->get_error_message()}" ) .
 						'</p>'
 					),
 				),
@@ -260,7 +262,7 @@ class Admin_Columns_Parsely_Stats {
 		/**
 		 * Variable.
 		 *
-		 * @var array<string, Parsely_Stats>
+		 * @var array<string, Parsely_Post_Stats>
 		 */
 		$parsely_stats_map = array();
 
@@ -279,7 +281,7 @@ class Admin_Columns_Parsely_Stats {
 			/**
 			 * Variable.
 			 *
-			 * @var Parsely_Stats
+			 * @var Parsely_Post_Stats
 			 */
 			$stats = array(
 				'page_views' => get_formatted_number( $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ),
@@ -297,40 +299,30 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Get publish date params for analytics API by using publish date times list
-	 * to get the min/max date param which we can use to limit the API.
+	 * Get publish date params for analytics API.
+	 *
+	 * Uses published times list to get the min/max dates which we can use to limit the API.
 	 *
 	 * @return Analytics_Post_API_Params|null
 	 */
 	private function get_publish_date_params_for_analytics_api() {
-		$publish_date_times = $this->post_utc_publish_date_times;
+		$published_times = $this->utc_published_times;
 
-		if ( count( $publish_date_times ) === 0 ) {
+		if ( count( $published_times ) === 0 ) {
 			return null;
 		}
 
-		$max_date_time = '';
-		$min_date_time = '';
-
-		foreach ( $publish_date_times as $publish_date_time ) {
-			if ( '' === $min_date_time || $publish_date_time < $min_date_time ) {
-				$min_date_time = $publish_date_time;
-			}
-
-			if ( $publish_date_time > $max_date_time ) {
-				$max_date_time = $publish_date_time;
-			}
-		}
-
 		return array(
-			'pub_date_start' => ( new DateTime( $min_date_time ) )->format( DATE_UTC_FORMAT ),
-			'pub_date_end'   => ( new DateTime( $max_date_time ) )->format( DATE_UTC_FORMAT ),
+			'pub_date_start' => ( new DateTime( min( $published_times ) ) )->format( DATE_UTC_FORMAT ),
+			'pub_date_end'   => ( new DateTime( max( $published_times ) ) )->format( DATE_UTC_FORMAT ),
 		);
 	}
 
 	/**
 	 * Get unique key which we can use for Parse.ly stats map.
-	 * Mainly we need this because Parse.ly doesn't have anything unique in its analytics API.
+	 *
+	 * Mainly we need this because Parse.ly Analytics API doesn't have anything unique through which we can
+	 * identify the post.
 	 *
 	 * @param Analytics_Post $analytics_post Post analytics obj returned from Parse.ly API.
 	 *
@@ -352,18 +344,14 @@ class Admin_Columns_Parsely_Stats {
 	private function get_unique_stats_key_of_current_post(): string {
 		global $post;
 
-		$published_date     = $post->post_date_gmt;
-		$published_utc_date = ( new DateTime( $published_date ) )->format( DATE_TIME_UTC_FORMAT );
+		$published_time     = $post->post_date_gmt;
+		$utc_published_time = ( new DateTime( $published_time ) )->format( DATE_TIME_UTC_FORMAT );
 
-		return get_the_title() . '-' . $published_utc_date;
+		return get_the_title() . '-' . $utc_published_time;
 	}
 
 	/**
-	 * Return TRUE if the current screen is the list screen and we are tracking it as Post
-	 * in plugin settings.
-	 *
-	 * Note: As of now Parse.ly Analytics API don't include Non-Post data so we can only show
-	 * stats on tracked post types.
+	 * Return TRUE if the current screen is the list screen and we are tracking it as `Post` in plugin settings.
 	 *
 	 * @since 3.7.0
 	 *
@@ -374,7 +362,9 @@ class Admin_Columns_Parsely_Stats {
 			return false;
 		}
 
+		// Analytics API don't include Non-Post data so we can only show stats on tracked post types.
 		$track_post_types = $this->parsely->get_options()['track_post_types'];
+
 		foreach ( $track_post_types as $track_post_type ) {
 			if ( 'edit' === $this->current_screen->base && $track_post_type === $this->current_screen->post_type ) {
 				return true;

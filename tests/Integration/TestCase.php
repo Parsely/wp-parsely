@@ -208,7 +208,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 		 * @var int[]
 		 */
 		$post_ids = array();
-		$date     = new DateTime( '2009-12-31', new DateTimeZone( 'America/New_York' ) ); // Start date with timezone to replicate scenarios like real world.
+		$date     = new DateTime( '2009-12-31', new DateTimeZone( 'America/New_York' ) ); // Date with timezone to replicate real world scenarios.
 
 		for ( $i = 1; $i <= $num_of_posts; $i++ ) {
 			$post_date = date_add( $date, date_interval_create_from_date_string( '1 days' ) ); // Increment by 1 day like sequence.
@@ -279,7 +279,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Assert availability of hooks.
+	 * Verify that given hooks are called or not.
 	 *
 	 * @param string[] $hooks WordPress hooks whose availability we have to verify.
 	 * @param bool     $availability_type TRUE if we want to check the presence of given hooks.
@@ -292,56 +292,38 @@ abstract class TestCase extends WPIntegrationTestCase {
 		}
 
 		if ( true === $availability_type ) {
-			$this->assert_true_actions( $hooks );
+			$this->assert_wp_hooks( $hooks );
 		} else {
-			$this->assert_false_actions( $hooks );
+			$this->assert_wp_hooks( array(), $hooks );
 		}
 	}
 
 	/**
-	 * Asserts that actions are present.
+	 * Assert WordPress hooks.
 	 *
-	 * @param string[] $actions Actions needs to be verified.
-	 */
-	public function assert_true_actions( $actions ): void {
-		$this->assert_wp_actions( $actions );
-	}
-
-	/**
-	 * Asserts that actions are not present.
-	 *
-	 * @param string[] $actions Actions needs to be verified.
-	 */
-	public function assert_false_actions( $actions ): void {
-		$this->assert_wp_actions( array(), $actions );
-	}
-
-	/**
-	 * Assert WordPress actions.
-	 *
-	 * @param string[] $true_actions Optional. Actions that should have been present.
-	 * @param string[] $false_actions Optional. Actions that should have not been present.
+	 * @param string[] $true_hooks Optional. Actions that should have been present.
+	 * @param string[] $false_hooks Optional. Actions that should have not been present.
 	 *
 	 * @return void
 	 *
 	 * @throws RiskyTestError If no assertions get passed to the function.
 	 */
-	private function assert_wp_actions( array $true_actions = array(), array $false_actions = array() ): void {
-		if ( 0 === count( $true_actions ) + count( $false_actions ) ) {
-			throw new RiskyTestError( 'Function assert_wp_actions() has been used without any arguments' );
+	private function assert_wp_hooks( array $true_hooks = array(), array $false_hooks = array() ): void {
+		if ( 0 === count( $true_hooks ) + count( $false_hooks ) ) {
+			throw new RiskyTestError( 'Function assert_wp_hooks() has been used without any arguments' );
 		}
 
-		foreach ( $true_actions as $action ) {
+		foreach ( $true_hooks as $hook ) {
 			self::assertTrue(
-				has_action( $action ),
-				"Unexpected action status: $action should have been called."
+				has_action( $hook ),
+				"Unexpected hook status: $hook should have been called."
 			);
 		}
 
-		foreach ( $false_actions as $action ) {
+		foreach ( $false_hooks as $hook ) {
 			self::assertFalse(
-				has_action( $action ),
-				"Unexpected action status: $action should have not been called."
+				has_action( $hook ),
+				"Unexpected hook status: $hook should have not been called."
 			);
 		}
 	}

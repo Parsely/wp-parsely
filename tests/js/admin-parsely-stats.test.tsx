@@ -1,5 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import { showParselyStatsResponse } from '../../src/js/admin-parsely-stats';
+import { showParselyPostsStatsResponse } from '../../src/js/admin-parsely-stats';
 
 describe( 'src/js/admin-parsely-stats', () => {
 	it( 'should just update placeholders on empty response', async (): Promise<void> => {
@@ -7,7 +7,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 			render( getPageContent( 2 ) );
 		} );
 
-		showParselyStatsResponse();
+		showParselyPostsStatsResponse();
 
 		expect( getAllPostStatsElements().length ).toBe( 2 );
 		expect( getPostStatsElement( 'key-1' )?.textContent ).toBe( '—' );
@@ -20,7 +20,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 			render( getPageContent( 7 ) );
 		} );
 
-		window.wpParselyAdminStatsResponse = {
+		window.wpParselyPostsStatsResponse = {
 			data: {
 				'key-1': { page_views: '0 page views', visitors: '0 visitors', avg_time: '0 sec. avg time' },
 				'key-3': { page_views: '3 page views', visitors: '3 visitors', avg_time: '3 sec. avg time' },
@@ -31,7 +31,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 			error: null,
 		};
 
-		showParselyStatsResponse();
+		showParselyPostsStatsResponse();
 
 		expect( getPlaceholderElement() ).toBeNull();
 		expect( getStatsErrorElement() ).toBeNull();
@@ -76,7 +76,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 			render( getPageContent( 2 ) );
 		} );
 
-		window.wpParselyAdminStatsResponse = {
+		window.wpParselyPostsStatsResponse = {
 			data: null,
 			error: {
 				code: 404,
@@ -85,7 +85,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 			},
 		};
 
-		showParselyStatsResponse();
+		showParselyPostsStatsResponse();
 
 		expect( getPlaceholderElement() ).toBeNull();
 		expect( getStatsErrorElement()?.innerHTML ).toBe( '<p>HTML Error Message</p>' );
