@@ -652,7 +652,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 			array(
 				'pub_date_start' => '2010-01-01',
 				'pub_date_end'   => '2010-01-01',
-			) 
+			)
 		);
 
 		$this->assert_hooks_for_parsely_stats_response( true );
@@ -680,7 +680,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 			array(
 				'pub_date_start' => '2010-01-01',
 				'pub_date_end'   => '2010-01-03',
-			) 
+			)
 		);
 
 		$this->assert_hooks_for_parsely_stats_response( true );
@@ -859,7 +859,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 			array(
 				'pub_date_start' => '2010-01-01',
 				'pub_date_end'   => '2010-01-07',
-			) 
+			)
 		);
 
 		$this->assert_hooks_for_parsely_stats_response( true );
@@ -934,7 +934,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 			array(
 				'pub_date_start' => '2010-01-01',
 				'pub_date_end'   => '2010-01-01',
-			) 
+			)
 		);
 
 		$this->assert_hooks_for_parsely_stats_response( true );
