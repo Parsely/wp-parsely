@@ -41,9 +41,7 @@ class Dashboard_Widget {
 		wp_add_dashboard_widget(
 			'wp-parsely-dashboard-widget',
 			__( 'Parse.ly Top Posts (Last 7 Days)', 'wp-parsely' ),
-			function() {
-				_e( 'Parse.ly Top Posts (Last 7 Days).', 'wp-parsely' );
-			}
+			'__return_empty_string' // Content will be populated by JavaScript.
 		);
 	}
 
