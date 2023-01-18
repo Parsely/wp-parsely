@@ -68,7 +68,7 @@ class Dashboard_Widget {
 			wp_enqueue_style(
 				'wp-parsely-dashboard-widget',
 				$built_assets_url . 'dashboard-widget.css',
-				$asset_php['dependencies'] ?? null,
+				array(),
 				$asset_php['version'] ?? Parsely::VERSION
 			);
 		}
