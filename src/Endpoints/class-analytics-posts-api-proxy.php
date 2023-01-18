@@ -54,9 +54,10 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 			static function( stdClass $item ) use ( $date_format, $site_id ) {
 				return (object) array(
 					'author'         => $item->author,
+					'dashUrl'        => Parsely::get_dash_url( $site_id, $item->url ),
 					'date'           => wp_date( $date_format, strtotime( $item->pub_date ) ),
 					'id'             => $item->url,
-					'dashUrl'        => Parsely::get_dash_url( $site_id, $item->url ),
+					'postId'         => url_to_postid( $item->url ), // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
 					'thumbUrlMedium' => $item->thumb_url_medium,
 					'title'          => $item->title,
 					'url'            => $item->url,
