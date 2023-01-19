@@ -144,6 +144,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 						'title'          => '9 Types of Web Analytics Tools — And How to Know Which Ones You Really Need',
 						'url'            => 'https://blog.parse.ly/web-analytics-software-tools/?itm_source=parsely-api',
 						'views'          => 142,
+						'postId'         => 0,
 					),
 					(object) array(
 						'author'         => 'Stephanie Schwartz and Andrew Butler',
@@ -154,6 +155,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 						'title'          => '5 Tagging Best Practices For Getting the Most Out of Your Content Strategy',
 						'url'            => 'https://blog.parse.ly/5-tagging-best-practices-content-strategy/?itm_source=parsely-api',
 						'views'          => 40,
+						'postId'         => 0,
 					),
 				),
 			),
