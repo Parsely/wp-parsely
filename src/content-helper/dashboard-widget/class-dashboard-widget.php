@@ -27,7 +27,7 @@ class Dashboard_Widget {
 	 *
 	 * @since 3.7.0
 	 */
-	public function run() {
+	public function run(): void {
 		add_action( 'wp_dashboard_setup', array( $this, 'add_dashboard_widget' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
