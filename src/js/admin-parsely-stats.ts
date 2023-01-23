@@ -41,7 +41,7 @@ export function showParselyPostsStatsResponse(): void {
 }
 
 /**
- * Replace Parse.ly Stats placeholder from default to differentiate while the API request
+ * Replaces Parse.ly Stats placeholder from default to differentiate while the API request
  * is in progress or completed.
  */
 function updateParselyStatsPlaceholder(): void {
@@ -50,6 +50,11 @@ function updateParselyStatsPlaceholder(): void {
 	} );
 }
 
+/**
+ * Shows Parse.ly Stats on available posts.
+ *
+ * @param {ParselyStatsMap} parselyStatsMap Object contains unique keys and Parse.ly Stats for posts.
+ */
 function showParselyStats( parselyStatsMap: ParselyStatsMap ): void {
 	if ( ! parselyStatsMap ) {
 		return;
@@ -79,6 +84,11 @@ function showParselyStats( parselyStatsMap: ParselyStatsMap ): void {
 	} );
 }
 
+/**
+ * Shows Parse.ly Stats error as WP Admin Error Notice.
+ *
+ * @param {ParselyAPIErrorInfo} parselyStatsError Object which contians info about error.
+ */
 function showParselyStatsError( parselyStatsError: ParselyAPIErrorInfo ): void {
 	const headerEndElement = document.querySelector( '.wp-header-end' ); // WP has this element before admin notices.
 	if ( headerEndElement === null ) {
@@ -88,10 +98,18 @@ function showParselyStatsError( parselyStatsError: ParselyAPIErrorInfo ): void {
 	headerEndElement.innerHTML += getWPAdminError( parselyStatsError.htmlMessage );
 }
 
+/**
+ * Gets all elements inside which we will show Parse.ly Stats.
+ */
 function getAllPostStatsElements(): NodeListOf<Element> {
 	return document.querySelectorAll( '.parsely-post-stats' );
 }
 
+/**
+ * Gets HTML for showing error message as WP Admin Error Notice.
+ *
+ * @param {string} htmlMessage Message to show inside notice.
+ */
 function getWPAdminError( htmlMessage = '' ): string {
 	return `<div class="error notice error-parsely-stats is-dismissible">${ htmlMessage }</div>`;
 }

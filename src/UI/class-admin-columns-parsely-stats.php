@@ -97,7 +97,7 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Set current screen property.
+	 * Sets current screen property.
 	 *
 	 * @since 3.7.0
 	 */
@@ -125,7 +125,7 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Add `Parse.ly Stats` column on admin columns.
+	 * Adds `Parse.ly Stats` column on admin columns.
 	 *
 	 * @param array<string, string> $columns Columns array which contain keys and labels.
 	 *
@@ -140,7 +140,7 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Update our published_times list with current post info and show placeholder.
+	 * Updates our published_times list with current post info and show placeholder.
 	 *
 	 * Note: We don't have `the_posts` hook for hierarchical post types like pages so we are following this approach:
 	 *
@@ -168,7 +168,7 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Enqueue script and pass Parse.ly Stats data for showing on Frontend.
+	 * Enqueues script and pass Parse.ly Stats data for showing on Frontend.
 	 */
 	public function enqueue_parsely_stats_script_with_data(): void {
 		if ( ! $this->is_tracked_as_post_type() ) {
@@ -200,7 +200,7 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Call Parse.ly Analytics API and get stats data.
+	 * Calls Parse.ly Analytics API and get stats data.
 	 *
 	 * @param Analytics_Posts_API $analytics_api Instance of Analytics_Posts_API.
 	 *
@@ -290,7 +290,7 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Get publish date params for analytics API.
+	 * Gets publish date params which we can used as params in analytics API.
 	 *
 	 * Uses published times list to get the min/max dates which we can use to limit the API.
 	 *
@@ -310,7 +310,7 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Get unique key which we can use for Parse.ly stats map.
+	 * Gets unique key which we can use for Parse.ly stats map.
 	 *
 	 * Needed because Parse.ly Analytics API doesn't have anything unique through which we can identify the post.
 	 *
@@ -327,7 +327,7 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Get unique key from currently set post which we can use to get data from Parse.ly stats map.
+	 * Gets unique key from currently set post which we can use to get data from Parse.ly stats map.
 	 *
 	 * @return string
 	 */
@@ -336,7 +336,7 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
-	 * Return TRUE if the current screen is the list screen and we are tracking it as `Post` in plugin settings.
+	 * Returns TRUE if the current screen is the list screen and we are tracking it as `Post` in plugin settings.
 	 *
 	 * @since 3.7.0
 	 *
