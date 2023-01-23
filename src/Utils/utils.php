@@ -179,7 +179,7 @@ function get_formatted_number( $number ): string {
  * Get time in formatted form.
  *
  * Example:
- *   - Input `1000` (seconds) and Output `16:40` which represent "16 minutes, 40 seconds”
+ *   - Input `1000` (seconds) and Output `16:40` which represents "16 minutes, 40 seconds”
  *
  * @since 3.7.0
  *
@@ -211,7 +211,7 @@ function convert_to_associative_array( $obj ) {
 	$encoded = wp_json_encode( $obj );
 
 	if ( false === $encoded ) {
-		return new WP_Error( 400, __( 'Unable to encode API response for associative array', 'wp-parsely' ) );
+		return new WP_Error( 'parsely_encoding_failed', __( 'Unable to encode API response for associative array', 'wp-parsely' ) );
 	}
 
 	/**

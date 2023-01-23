@@ -126,8 +126,6 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * Assert on Parse.ly Stats styles.
 	 *
 	 * @param bool $assert_type Indicates wether we are asserting for TRUE or FALSE.
-	 *
-	 * @return void
 	 */
 	private function assert_parsely_stats_admin_styles( bool $assert_type ): void {
 		$obj = $this->init_admin_columns_parsely_stats();
@@ -251,10 +249,8 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * Assert status of hooks for Parse.ly Stats column.
 	 *
 	 * @param bool $assert_type Assert this condition on hooks.
-	 *
-	 * @return void
 	 */
-	private function assert_hooks_for_parsely_stats_column( $assert_type ) {
+	private function assert_hooks_for_parsely_stats_column( $assert_type ): void {
 		$this->assert_wp_hooks_availablility(
 			array( 'current_screen', 'manage_posts_columns', 'manage_pages_columns' ),
 			$assert_type
@@ -436,10 +432,8 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @param Admin_Columns_Parsely_Stats $obj Instance of Admin_Columns_Parsely_Stats.
 	 * @param WP_Post[]                   $posts Available posts.
 	 * @param string                      $post_type Type of the post.
-	 *
-	 * @return void
 	 */
-	private function show_content_on_parsely_stats_column( $obj, $posts, $post_type ) {
+	private function show_content_on_parsely_stats_column( $obj, $posts, $post_type ): void {
 		if ( $this->isPHPVersion7Dot2OrHigher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
 		} else {
@@ -489,10 +483,8 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * Assert status of hooks for showing Parse.ly Stats content inside column.
 	 *
 	 * @param bool $assert_type Assert this condition on hooks.
-	 *
-	 * @return void
 	 */
-	private function assert_hooks_for_parsely_stats_content( $assert_type = true ) {
+	private function assert_hooks_for_parsely_stats_content( $assert_type = true ): void {
 		$this->assert_wp_hooks_availablility(
 			array( 'current_screen', 'manage_posts_custom_column', 'manage_pages_custom_column' ),
 			$assert_type
@@ -577,10 +569,10 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		global $wp_scripts;
 
 		ob_start();
-		var_dump( $wp_scripts->print_extra_script( 'admin-parsely-stats-script' ) ); // phpcs:ignore
+		var_dump( $wp_scripts->print_inline_script ( 'admin-parsely-stats-script', 'before' ) ); // phpcs:ignore
 		$output = (string) ob_get_clean();
 
-		self::assertStringContainsString( 'var wpParselyPostsStatsResponse = [];', $output );
+		self::assertStringContainsString( 'window.wpParselyPostsStatsResponse = \'[]\';', $output );
 	}
 
 	/**
@@ -588,8 +580,6 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 *
 	 * @param null|array<mixed> $stats_response Stats response that we have to mock.
 	 * @param bool              $assert_type Indicates wether we are asserting for TRUE or FALSE.
-	 *
-	 * @return void
 	 */
 	private function assert_parsely_stats_admin_script( $stats_response, $assert_type ): void {
 		$obj = Mockery::mock( Admin_Columns_Parsely_Stats::class, array( new Parsely() ) )->makePartial();
@@ -999,10 +989,8 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * Assert status of hooks for Parse.ly Stats response.
 	 *
 	 * @param bool $assert_type Assert this condition on hooks.
-	 *
-	 * @return void
 	 */
-	private function assert_hooks_for_parsely_stats_response( $assert_type = true ) {
+	private function assert_hooks_for_parsely_stats_response( $assert_type = true ): void {
 		$this->assert_wp_hooks_availablility(
 			array( 'current_screen', 'manage_posts_custom_column', 'manage_pages_custom_column', 'admin_footer' ),
 			$assert_type
@@ -1023,8 +1011,6 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 	/**
 	 * Set empty key and secret.
-	 *
-	 * @return void
 	 */
 	private function set_empty_plugin_options(): void {
 		TestCase::set_options(
@@ -1040,8 +1026,6 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 	/**
 	 * Set empty track_post_types.
-	 *
-	 * @return void
 	 */
 	private function set_empty_track_post_types(): void {
 		TestCase::set_options(
@@ -1059,8 +1043,6 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * Set valid plugin_options.
 	 *
 	 * @param string $post_type Type of the post.
-	 *
-	 * @return void
 	 */
 	private function set_valid_plugin_options( $post_type = 'post' ): void {
 		TestCase::set_options(
@@ -1076,8 +1058,6 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * Set valid conditions under which we add hooks for Parse.ly Stats.
 	 *
 	 * @param string $post_type Type of the post.
-	 *
-	 * @return void
 	 */
 	private function set_valid_conditions_for_parsely_stats( $post_type = 'post' ): void {
 		$this->set_valid_plugin_options( $post_type );

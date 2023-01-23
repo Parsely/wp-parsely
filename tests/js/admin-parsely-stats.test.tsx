@@ -20,7 +20,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 			render( getPageContent( 7 ) );
 		} );
 
-		window.wpParselyPostsStatsResponse = {
+		window.wpParselyPostsStatsResponse = JSON.stringify( {
 			data: {
 				'key-1': { page_views: '0 page views', visitors: '0 visitors', avg_time: '0 sec. avg time' },
 				'key-3': { page_views: '3 page views', visitors: '3 visitors', avg_time: '3 sec. avg time' },
@@ -29,7 +29,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 				'key-6': { avg_time: '6 sec. avg time' },
 			},
 			error: null,
-		};
+		} );
 
 		showParselyPostsStatsResponse();
 
@@ -76,14 +76,14 @@ describe( 'src/js/admin-parsely-stats', () => {
 			render( getPageContent( 2 ) );
 		} );
 
-		window.wpParselyPostsStatsResponse = {
+		window.wpParselyPostsStatsResponse = JSON.stringify( {
 			data: null,
 			error: {
 				code: 404,
 				message: 'Not Found.',
 				htmlMessage: '<p>HTML Error Message</p>',
 			},
-		};
+		} );
 
 		showParselyPostsStatsResponse();
 

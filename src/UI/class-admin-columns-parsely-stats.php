@@ -81,8 +81,6 @@ class Admin_Columns_Parsely_Stats {
 	 * Registers action and filter hook callbacks.
 	 *
 	 * @since 3.7.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		if ( ! $this->parsely->site_id_is_set() || ! $this->parsely->api_secret_is_set() ) {
@@ -102,8 +100,6 @@ class Admin_Columns_Parsely_Stats {
 	 * Set current screen property.
 	 *
 	 * @since 3.7.0
-	 *
-	 * @return void
 	 */
 	public function set_current_screen(): void {
 		$this->current_screen = get_current_screen();
@@ -111,8 +107,6 @@ class Admin_Columns_Parsely_Stats {
 
 	/**
 	 * Enqueues styles for Parse.ly Stats.
-	 *
-	 * @return void
 	 */
 	public function enqueue_parsely_stats_styles(): void {
 		if ( ! $this->is_tracked_as_post_type() ) {
@@ -139,7 +133,7 @@ class Admin_Columns_Parsely_Stats {
 	 */
 	public function add_parsely_stats_column_on_list_view( array $columns ): array {
 		if ( $this->is_tracked_as_post_type() ) {
-			$columns['parsely-stats'] = 'Parse.ly Stats';
+			$columns['parsely-stats'] = __( 'Parse.ly Stats', 'wp-parsely' );
 		}
 
 		return $columns;
@@ -153,10 +147,8 @@ class Admin_Columns_Parsely_Stats {
 	 * 1. Get post publish times and show a placeholder while displaying rows on Admin List.
 	 * 2. Make Parsely Analytics API call limited by publish dates inside `wp_footer` hook and pass the stats data to JS script.
 	 * 3. Show data on each Admin Row using JS.
-	 *
-	 * @return void
 	 */
-	public function update_published_times_and_show_placeholder() {
+	public function update_published_times_and_show_placeholder(): void {
 		if ( ! $this->is_tracked_as_post_type() ) {
 			return;
 		}
@@ -200,15 +192,15 @@ class Admin_Columns_Parsely_Stats {
 			true
 		);
 
-		wp_localize_script(
+		wp_add_inline_script(
 			'admin-parsely-stats-script',
-			'wpParselyPostsStatsResponse',
-			$parsely_stats_response
+			"window.wpParselyPostsStatsResponse = '" . wp_json_encode( $parsely_stats_response ) . "';",
+			'before'
 		);
 	}
 
 	/**
-	 * Call Parsely Analytics API and get stats data.
+	 * Call Parse.ly Analytics API and get stats data.
 	 *
 	 * @param Analytics_Posts_API $analytics_api Instance of Analytics_Posts_API.
 	 *
@@ -320,8 +312,7 @@ class Admin_Columns_Parsely_Stats {
 	/**
 	 * Get unique key which we can use for Parse.ly stats map.
 	 *
-	 * Mainly we need this because Parse.ly Analytics API doesn't have anything unique through which we can
-	 * identify the post.
+	 * Needed because Parse.ly Analytics API doesn't have anything unique through which we can identify the post.
 	 *
 	 * @param Analytics_Post $analytics_post Post analytics obj returned from Parse.ly API.
 	 *
@@ -356,7 +347,7 @@ class Admin_Columns_Parsely_Stats {
 			return false;
 		}
 
-		// Analytics API don't include Non-Post data so we can only show stats on tracked post types.
+		// Analytics API doesn't include Non-Post data, so we can only show stats on tracked post types.
 		$track_post_types = $this->parsely->get_options()['track_post_types'];
 
 		foreach ( $track_post_types as $track_post_type ) {

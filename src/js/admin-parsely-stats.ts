@@ -22,9 +22,13 @@ interface ParselyStatsMap {
  * Shows Parse.ly Post Stats or Error depending on response.
  */
 export function showParselyPostsStatsResponse(): void {
-	const response = ( window as any ).wpParselyPostsStatsResponse as ParselyPostsStatsResponse; // eslint-disable-line @typescript-eslint/no-explicit-any
-
 	updateParselyStatsPlaceholder();
+
+	if ( ! window.wpParselyPostsStatsResponse ) {
+		return;
+	}
+
+	const response: ParselyPostsStatsResponse = JSON.parse( window.wpParselyPostsStatsResponse );
 
 	if ( response?.error ) {
 		showParselyStatsError( response.error );
@@ -76,7 +80,7 @@ function showParselyStats( parselyStatsMap: ParselyStatsMap ): void {
 }
 
 function showParselyStatsError( parselyStatsError: ParselyAPIErrorInfo ): void {
-	const headerEndElement = document.querySelector( '.wp-header-end' ); // WP have this element before admin notices.
+	const headerEndElement = document.querySelector( '.wp-header-end' ); // WP has this element before admin notices.
 	if ( headerEndElement === null ) {
 		return;
 	}

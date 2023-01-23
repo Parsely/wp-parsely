@@ -3,8 +3,6 @@
  */
 import type{ _Hooks } from '@wordpress/hooks/build-types/createHooks';
 
-import { ParselyPostsStatsResponse } from '../../js/admin-parsely-stats';
-
 export {};
 
 declare global {
@@ -27,6 +25,6 @@ declare global {
 		wpParselySiteId: string,
 		wpParselyDisableAutotrack?: boolean;
 		wpParselyHooks?: _Hooks;
-		wpParselyPostsStatsResponse: ParselyPostsStatsResponse;
+		wpParselyPostsStatsResponse: string;
 	}
 }

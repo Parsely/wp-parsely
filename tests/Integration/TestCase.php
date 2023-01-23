@@ -271,8 +271,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param int $admin_user_id User ID for the site administrator.
 	 *                           Default is 1 which is assigned to first admin user while creating the site.
-	 *
-	 * @return void
 	 */
 	public function set_admin_user( $admin_user_id = 1 ): void {
 		wp_set_current_user( $admin_user_id );
@@ -283,10 +281,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string[] $hooks WordPress hooks whose availability we have to verify.
 	 * @param bool     $availability_type TRUE if we want to check the presence of given hooks.
-	 *
-	 * @return void
 	 */
-	public function assert_wp_hooks_availablility( $hooks, $availability_type ) {
+	public function assert_wp_hooks_availablility( $hooks, $availability_type ): void {
 		if ( ! $this->isPHPVersion7Dot2OrHigher() ) {
 			return;
 		}
@@ -303,8 +299,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string[] $true_hooks Optional. Actions that should have been present.
 	 * @param string[] $false_hooks Optional. Actions that should have not been present.
-	 *
-	 * @return void
 	 *
 	 * @throws RiskyTestError If no assertions get passed to the function.
 	 */
