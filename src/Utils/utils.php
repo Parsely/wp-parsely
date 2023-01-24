@@ -20,7 +20,7 @@ const DATE_UTC_FORMAT     = 'Y-m-d';
 const WP_DATE_TIME_FORMAT = 'Y-m-d H:i:s';
 
 /**
- * Get UTC Date.
+ * Gets UTC Date.
  *
  * @since 3.7.0
  *
@@ -37,7 +37,7 @@ function get_utc_date_format( int $days = 0 ): string {
 }
 
 /**
- * Get default category.
+ * Gets default category.
  *
  * @since 3.7.0
  *
@@ -55,7 +55,7 @@ function get_default_category(): int {
 }
 
 /**
- * Get option `page_for_posts`.
+ * Gets option `page_for_posts`.
  *
  * @since 3.7.0
  *
@@ -73,7 +73,7 @@ function get_page_for_posts( $default = false ) {
 }
 
 /**
- * Get option `page_on_front`.
+ * Gets option `page_on_front`.
  *
  * @since 3.7.0
  *
@@ -89,7 +89,7 @@ function get_page_on_front() {
 }
 
 /**
- * Get 'string' query variable from WP_Query class.
+ * Gets 'string' query variable from WP_Query class.
  *
  * @since 3.7.0
  *
@@ -107,7 +107,7 @@ function get_string_query_var( $var ): string {
 }
 
 /**
- * Get 'int' query variable from WP_Query class.
+ * Gets 'int' query variable from WP_Query class.
  *
  * @since 3.7.0
  *
@@ -125,7 +125,7 @@ function get_int_query_var( $var ): int {
 }
 
 /**
- * Get site date format.
+ * Gets site date format.
  *
  * @since 3.7.0
  */
@@ -139,7 +139,7 @@ function get_date_format(): string {
 }
 
 /**
- * Get site time format.
+ * Gets site time format.
  *
  * @since 3.7.0
  */
@@ -153,7 +153,7 @@ function get_time_format(): string {
 }
 
 /**
- * Get number in formatted form i.e. express bigger numbers in form of thousands (K), millions (M), billions (B).
+ * Gets number in formatted form i.e. express bigger numbers in form of thousands (K), millions (M), billions (B).
  *
  * Example:
  *   - Represent 10000 as 10K.
@@ -176,7 +176,7 @@ function get_formatted_number( $number ): string {
 }
 
 /**
- * Get time in formatted form.
+ * Gets time in formatted form.
  *
  * Example:
  *   - Input `1000` (seconds) and Output `16:40` which represents "16 minutes, 40 seconds”
@@ -199,7 +199,7 @@ function get_formatted_time( $seconds ): string {
 }
 
 /**
- * Convert to associate array.
+ * Converts to associate array.
  *
  * @since 3.7.0
  *

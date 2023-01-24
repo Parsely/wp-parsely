@@ -55,7 +55,7 @@ use function Parsely\Utils\get_utc_date_format;
  */
 final class UtilsTest extends TestCase {
 	/**
-	 * Test get_utc_date_format function.
+	 * Tests get_utc_date_format function.
 	 *
 	 * @covers function \Parsely\Utils\get_utc_date_format
 	 */
@@ -95,7 +95,7 @@ final class UtilsTest extends TestCase {
 		}
 	}
 	/**
-	 * Test get_formatted_number function.
+	 * Tests get_formatted_number function.
 	 *
 	 * @covers function \Parsely\Utils\get_formatted_number
 	 */
@@ -147,7 +147,7 @@ final class UtilsTest extends TestCase {
 	}
 
 	/**
-	 * Test get_formatted_time function.
+	 * Tests get_formatted_time function.
 	 *
 	 * @covers function \Parsely\Utils\get_formatted_time
 	 */
@@ -189,7 +189,7 @@ final class UtilsTest extends TestCase {
 	}
 
 	/**
-	 * Test convert_to_associative_array function.
+	 * Tests convert_to_associative_array function.
 	 *
 	 * @covers function \Parsely\Utils\convert_to_associative_array
 	 */

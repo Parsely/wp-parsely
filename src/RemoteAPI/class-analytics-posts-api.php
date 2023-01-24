@@ -59,7 +59,7 @@ class Analytics_Posts_API extends Remote_API_Base {
 	protected const QUERY_FILTER = 'wp_parsely_analytics_posts_endpoint_args';
 
 	/**
-	 * Call Parse.ly Analytics API to get posts info.
+	 * Calls Parse.ly Analytics API to get posts info.
 	 *
 	 * Main purpose of this function is to enforce typing.
 	 *

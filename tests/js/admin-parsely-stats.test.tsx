@@ -102,7 +102,7 @@ describe( 'src/js/admin-parsely-stats', () => {
 } );
 
 /**
- * Replicate the DOM structure on which we have to show Parsely Stats Response.
+ * Replicates the DOM structure on which we have to show Parsely Stats Response.
  *
  * @param {number} numOfPlaceholders Number of placeholders which we are going to show in page.
  */

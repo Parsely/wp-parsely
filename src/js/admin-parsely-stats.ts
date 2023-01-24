@@ -14,9 +14,9 @@ interface ParselyStatsMap {
 	[key: string]: ParselyStats;
 }
 
-( function() {
+document.addEventListener( 'DOMContentLoaded', (): void => {
 	showParselyPostsStatsResponse();
-}() );
+} );
 
 /**
  * Shows Parse.ly Post Stats or Error depending on response.

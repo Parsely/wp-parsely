@@ -66,7 +66,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify enqueued status of Parse.ly Stats styles.
+	 * Verifies enqueued status of Parse.ly Stats styles.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -80,7 +80,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify enqueued status of Parse.ly Stats styles.
+	 * Verifies enqueued status of Parse.ly Stats styles.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -94,7 +94,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify enqueued status of Parse.ly Stats styles.
+	 * Verifies enqueued status of Parse.ly Stats styles.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -109,7 +109,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify enqueued status of Parse.ly Stats styles.
+	 * Verifies enqueued status of Parse.ly Stats styles.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -123,7 +123,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Assert on Parse.ly Stats styles.
+	 * Asserts on Parse.ly Stats styles.
 	 *
 	 * @param bool $assert_type Indicates wether we are asserting for TRUE or FALSE.
 	 */
@@ -229,7 +229,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Get Admin Columns.
+	 * Gets Admin Columns.
 	 *
 	 * @return array<string>
 	 */
@@ -246,7 +246,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Assert status of hooks for Parse.ly Stats column.
+	 * Asserts status of hooks for Parse.ly Stats column.
 	 *
 	 * @param bool $assert_type Assert this condition on hooks.
 	 */
@@ -258,7 +258,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify content of Parse.ly Stats column.
+	 * Verifies content of Parse.ly Stats column.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -278,7 +278,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify content of Parse.ly Stats column.
+	 * Verifies content of Parse.ly Stats column.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -298,7 +298,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify content of Parse.ly Stats column.
+	 * Verifies content of Parse.ly Stats column.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -319,7 +319,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify content of Parse.ly Stats column.
+	 * Verifies content of Parse.ly Stats column.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -350,7 +350,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 
 	/**
-	 * Verify content of Parse.ly Stats column.
+	 * Verifies content of Parse.ly Stats column.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -380,7 +380,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Set posts data and get content of Parse.ly Stats column.
+	 * Sets posts data and get content of Parse.ly Stats column.
 	 *
 	 * @param Admin_Columns_Parsely_Stats $obj Instance of Admin_Columns_Parsely_Stats.
 	 * @param string                      $post_type Type of the post.
@@ -394,7 +394,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Set posts data.
+	 * Sets posts data.
 	 *
 	 * @param int    $publish_num_of_posts Number of publish posts that we have to create.
 	 * @param int    $draft_num_of_posts Number of draft posts that we have to create.
@@ -410,7 +410,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Get content of Parse.ly Stats column.
+	 * Gets content of Parse.ly Stats column.
 	 *
 	 * @param Admin_Columns_Parsely_Stats $obj Instance of Admin_Columns_Parsely_Stats.
 	 * @param WP_Post[]                   $posts Available posts.
@@ -426,7 +426,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Replicate behavior by which WordPress set post publish dates and then make API call
+	 * Replicates behavior by which WordPress set post publish dates and then make API call
 	 * to get Parse.ly stats.
 	 *
 	 * @param Admin_Columns_Parsely_Stats $obj Instance of Admin_Columns_Parsely_Stats.
@@ -453,7 +453,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Get placeholder content of Parse.ly stats column.
+	 * Gets placeholder content of Parse.ly stats column.
 	 *
 	 * @param string $key Stats Key.
 	 *
@@ -464,7 +464,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Get utc_published_times property of given object.
+	 * Gets utc_published_times property of given object.
 	 *
 	 * @param Admin_Columns_Parsely_Stats $obj Instance of Admin_Columns_Parsely_Stats.
 	 *
@@ -480,7 +480,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Assert status of hooks for showing Parse.ly Stats content inside column.
+	 * Asserts status of hooks for showing Parse.ly Stats content inside column.
 	 *
 	 * @param bool $assert_type Assert this condition on hooks.
 	 */
@@ -492,7 +492,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify enqueued status of Parse.ly Stats script.
+	 * Verifies enqueued status of Parse.ly Stats script.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -506,7 +506,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify enqueued status of Parse.ly Stats script.
+	 * Verifies enqueued status of Parse.ly Stats script.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -520,7 +520,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify enqueued status of Parse.ly Stats script.
+	 * Verifies enqueued status of Parse.ly Stats script.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -535,7 +535,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify enqueued status of Parse.ly Stats script.
+	 * Verifies enqueued status of Parse.ly Stats script.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -549,7 +549,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify enqueued status of Parse.ly Stats script.
+	 * Verifies enqueued status of Parse.ly Stats script.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -576,7 +576,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Assert script of Parse.ly Stats.
+	 * Asserts script of Parse.ly Stats.
 	 *
 	 * @param null|array<mixed> $stats_response Stats response that we have to mock.
 	 * @param bool              $assert_type Indicates wether we are asserting for TRUE or FALSE.
@@ -604,7 +604,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify Parse.ly Stats response.
+	 * Verifies Parse.ly Stats response.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -622,7 +622,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify Parse.ly Stats API arguments.
+	 * Verifies Parse.ly Stats API arguments.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -650,7 +650,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify Parse.ly Stats API arguments.
+	 * Verifies Parse.ly Stats API arguments.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -678,7 +678,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify Parse.ly Stats response.
+	 * Verifies Parse.ly Stats response.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -696,7 +696,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify Parse.ly Stats response.
+	 * Verifies Parse.ly Stats response.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -715,7 +715,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify Parse.ly Stats response.
+	 * Verifies Parse.ly Stats response.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -733,7 +733,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify Parse.ly Stats response.
+	 * Verifies Parse.ly Stats response.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -753,7 +753,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify Parse.ly Stats response.
+	 * Verifies Parse.ly Stats response.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -781,7 +781,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Verify Parse.ly Stats response.
+	 * Verifies Parse.ly Stats response.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -893,7 +893,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 
 	/**
-	 * Verify Parse.ly Stats response.
+	 * Verifies Parse.ly Stats response.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
@@ -942,7 +942,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Replicate behavior by which WordPress set post publish dates and then make API call
+	 * Replicates behavior by which WordPress set post publish dates and then make API call
 	 * to get Parse.ly stats.
 	 *
 	 * @param WP_Post[]                      $posts Available Posts.
@@ -986,7 +986,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Assert status of hooks for Parse.ly Stats response.
+	 * Asserts status of hooks for Parse.ly Stats response.
 	 *
 	 * @param bool $assert_type Assert this condition on hooks.
 	 */
@@ -998,7 +998,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Initialize Admin_Columns_Parsely_Stats object.
+	 * Initializes Admin_Columns_Parsely_Stats object.
 	 *
 	 * @return Admin_Columns_Parsely_Stats
 	 */
@@ -1010,7 +1010,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Set empty key and secret.
+	 * Sets empty key and secret.
 	 */
 	private function set_empty_plugin_options(): void {
 		TestCase::set_options(
@@ -1025,7 +1025,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Set empty track_post_types.
+	 * Sets empty track_post_types.
 	 */
 	private function set_empty_track_post_types(): void {
 		TestCase::set_options(
@@ -1040,7 +1040,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Set valid plugin_options.
+	 * Sets valid plugin_options.
 	 *
 	 * @param string $post_type Type of the post.
 	 */
@@ -1055,7 +1055,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
-	 * Set valid conditions under which we add hooks for Parse.ly Stats.
+	 * Sets valid conditions under which we add hooks for Parse.ly Stats.
 	 *
 	 * @param string $post_type Type of the post.
 	 */

@@ -178,7 +178,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Create test posts in sequence.
+	 * Creates test posts in sequence.
 	 *
 	 * @param int    $num_of_posts Optional. Number of posts we need to create.
 	 * @param string $post_type Optional. Type of the posts.
@@ -193,7 +193,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Create test posts in sequence.
+	 * Creates test posts in sequence.
 	 *
 	 * @param int    $num_of_posts Optional. Number of posts we need to create.
 	 * @param string $post_type Optional. Type of the posts.
@@ -231,7 +231,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Get given test posts.
+	 * Gets given test posts.
 	 *
 	 * @param int[] $post_ids IDs of the posts.
 	 *
@@ -277,7 +277,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Verify that given hooks are called or not.
+	 * Verifies that given hooks are called or not.
 	 *
 	 * @param string[] $hooks WordPress hooks whose availability we have to verify.
 	 * @param bool     $availability_type TRUE if we want to check the presence of given hooks.
@@ -295,7 +295,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Assert WordPress hooks.
+	 * Asserts WordPress hooks.
 	 *
 	 * @param string[] $true_hooks Optional. Actions that should have been present.
 	 * @param string[] $false_hooks Optional. Actions that should have not been present.
@@ -457,17 +457,17 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Return TRUE if minimum PHP version is 7.2 or higher. We uses this if something works
+	 * Returns TRUE if minimum PHP version is 7.2 or higher. We uses this if something works
 	 * differently in PHP versions < 7.2 and >= 7.2.
 	 *
-	 * Remove this function when we remove support for PHP 7.1.
+	 * Note: Remove this function when we remove support for PHP 7.1.
 	 */
 	public function isPHPVersion7Dot2OrHigher(): bool {
 		return phpversion() >= '7.2';
 	}
 
 	/**
-	 * Get private property of a class.
+	 * Gets private property of a class.
 	 *
 	 * @param class-string $class_name Name of the class.
 	 * @param string       $property_name Name of the property.
@@ -484,7 +484,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Get private method of a class.
+	 * Gets private method of a class.
 	 *
 	 * @param class-string $class_name Name of the class.
 	 * @param string       $method Name of the method.
