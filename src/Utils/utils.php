@@ -24,7 +24,7 @@ use WP_Post;
 function get_default_category(): int {
 	/**
 	 * Variable.
-	 * 
+	 *
 	 * @var string
 	 */
 	$default_category = get_option( 'default_category' );
@@ -44,7 +44,7 @@ function get_default_category(): int {
 function get_page_for_posts( $default = false ) {
 	/**
 	 * Variable.
-	 * 
+	 *
 	 * @var int|WP_Post
 	 */
 	return get_option( 'page_for_posts', $default );
@@ -60,7 +60,7 @@ function get_page_for_posts( $default = false ) {
 function get_page_on_front() {
 	/**
 	 * Variable.
-	 * 
+	 *
 	 * @var bool
 	 */
 	return get_option( 'page_on_front' );
@@ -78,7 +78,7 @@ function get_page_on_front() {
 function get_string_query_var( $var ): string {
 	/**
 	 * Variable.
-	 * 
+	 *
 	 * @var string
 	 */
 	return get_query_var( $var );
@@ -96,7 +96,7 @@ function get_string_query_var( $var ): string {
 function get_int_query_var( $var ): int {
 	/**
 	 * Variable.
-	 * 
+	 *
 	 * @var int
 	 */
 	return get_query_var( $var );
