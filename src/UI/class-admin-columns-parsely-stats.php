@@ -185,6 +185,13 @@ class Admin_Columns_Parsely_Stats {
 			return;
 		}
 
+		if (
+			isset( $this->current_screen ) &&
+			in_array( 'parsely-stats', get_hidden_columns( $this->current_screen ), true )
+		) {
+			return; // Avoid calling the API if column is hidden.
+		}
+
 		$parsely_stats_response = $this->get_parsely_stats_response( new Analytics_Posts_API( $this->parsely ) );
 
 		if ( null === $parsely_stats_response ) {
