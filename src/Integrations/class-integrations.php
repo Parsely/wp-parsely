@@ -58,7 +58,7 @@ class Integrations {
 		if ( ! is_object( $class_or_object ) ) {
 			/**
 			 * Variable.
-			 * 
+			 *
 			 * @var Integrations
 			 */
 			$class_or_object = new $class_or_object( $this->parsely );

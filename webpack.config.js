@@ -5,9 +5,13 @@ module.exports = {
 	...defaultConfig,
 	entry: {
 		...defaultConfig.entry(),
+		'admin-parsely-stats': [
+			path.resolve( __dirname, 'src', 'js', 'admin-parsely-stats' ),
+			path.resolve( __dirname, 'src', 'css', 'admin-parsely-stats.scss' ),
+		],
 		'admin-settings': [
 			path.resolve( __dirname, 'src', 'js', 'admin-settings' ),
-			path.resolve( __dirname, 'src', 'css', 'admin-settings.css' ),
+			path.resolve( __dirname, 'src', 'css', 'admin-settings.scss' ),
 		],
 		'content-helper': [
 			path.resolve( __dirname, 'src', 'blocks', 'content-helper', 'content-helper' ),
@@ -23,7 +27,7 @@ module.exports = {
 		],
 		'recommended-widget': [
 			path.resolve( __dirname, 'src', 'js', 'widgets', 'recommended' ),
-			path.resolve( __dirname, 'src', 'css', 'recommended-widget.css' ),
+			path.resolve( __dirname, 'src', 'css', 'recommended-widget.scss' ),
 		],
 	},
 	module: {

@@ -140,7 +140,6 @@ class Scripts {
 	 * @return string Amended `script` tag.
 	 */
 	public function script_loader_tag( string $tag, string $handle, string $src ): string {
-		$parsely_options = $this->parsely->get_options();
 		if ( \in_array(
 			$handle,
 			array(

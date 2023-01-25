@@ -48,11 +48,12 @@ class Remote_API_Cache implements Remote_API_Interface {
 	 * Implements caching for the Remote API interface.
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
+	 * @param bool                 $associative Always `false`, just present to make definition compatible with interface.
 	 *
 	 * @return array<string, mixed>|WP_Error|false The response from the remote API, or false if the
 	 *                                             response is empty.
 	 */
-	public function get_items( array $query ) {
+	public function get_items( $query, $associative = false ) {
 		$cache_key = 'parsely_api_' . wp_hash( (string) wp_json_encode( $this->remote_api ) ) . '_' . wp_hash( (string) wp_json_encode( $query ) );
 
 		/**

@@ -871,8 +871,8 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$option_key = esc_attr( $args['option_key'] );
 		$title      = $args['title'] ?? '';
 		/**
-		 * Internal Variable.
-		 * 
+		 * Variable.
+		 *
 		 * @var array<string>
 		 */
 		$post_types = get_post_types( array( 'public' => true ) );
@@ -941,10 +941,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		foreach ( $types as $type ) {
 			$array_value = $options[ "track_{$type}_types" ];
-			if ( is_array( $array_value ) ) {
-				foreach ( $array_value as $post_type ) {
-					$result[ $post_type ] = $type;
-				}
+
+			foreach ( $array_value as $post_type ) {
+				$result[ $post_type ] = $type;
 			}
 		}
 
