@@ -442,12 +442,13 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 		foreach ( $posts as $current_post ) {
 			global $post;
-			$post = $current_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			$post        = $current_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			$column_name = 'parsely-stats';
 
 			if ( $this->isPHPVersion7Dot2OrHigher() ) {
-				do_action( "manage_{$post_type}s_custom_column" ); // phpcs:ignore
+				do_action( "manage_{$post_type}s_custom_column", $column_name ); // phpcs:ignore
 			} else {
-				$obj->update_published_times_and_show_placeholder();
+				$obj->update_published_times_and_show_placeholder( $column_name );
 			}
 		}
 	}

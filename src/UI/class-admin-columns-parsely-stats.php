@@ -153,9 +153,11 @@ class Admin_Columns_Parsely_Stats {
 	 * 3. Show data on each Admin Row using JS.
 	 *
 	 * @since 3.7.0
+	 *
+	 * @param string $column_name The name of the column to display.
 	 */
-	public function update_published_times_and_show_placeholder(): void {
-		if ( ! $this->is_tracked_as_post_type() ) {
+	public function update_published_times_and_show_placeholder( string $column_name ): void {
+		if ( 'parsely-stats' !== $column_name || ! $this->is_tracked_as_post_type() ) {
 			return;
 		}
 
