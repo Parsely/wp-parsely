@@ -17,7 +17,7 @@ export function impreciseNumber( value: string, fractionDigits = 1, glue = '' ):
 		fractionDigits = 1;
 	}
 
-	const unitNames = {
+	const unitNames: {[key:string]: string} = {
 		1000: 'k',
 		'1,000,000': 'M',
 		'1,000,000,000': 'B',
