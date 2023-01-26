@@ -245,10 +245,12 @@ class Admin_Columns_Parsely_Stats {
 				'data'  => null,
 				'error' => array(
 					'code'        => 403,
-					'message'     => 'Forbidden.',
+					'message'     => __( 'Forbidden.', 'wp-parsely' ),
 					'htmlMessage' => '<p>' .
-						'We are unable to retrieve data for Parse.ly Stats. ' .
-						'Please contact <a href=\\"mailto:support@parsely.com\\">support@parsely.com</a> for help resolving this issue.' .
+						__(
+							'We are unable to retrieve data for Parse.ly Stats. Please contact <a href=\\"mailto:support@parsely.com\\">support@parsely.com</a> for help resolving this issue.',
+							'wp-parsely'
+						) .
 					'</p>',
 				),
 			);
