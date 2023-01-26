@@ -11,7 +11,7 @@ import { useEffect, useState } from '@wordpress/element';
 import PerformanceDetailsProvider from './provider';
 import { PerformanceData } from './model';
 import { ContentHelperError } from '../content-helper-error';
-import { impreciseNumber } from '../../shared/functions';
+import { formatToImpreciseNumber } from '../../shared/functions';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 3;
@@ -132,8 +132,8 @@ function GeneralPerformanceSection( props: PerformanceSectionProps ) {
 			<table>
 				<tbody>
 					<tr>
-						<td>{ impreciseNumber( data.views ) }</td>
-						<td>{ impreciseNumber( data.visitors ) }</td>
+						<td>{ formatToImpreciseNumber( data.views ) }</td>
+						<td>{ formatToImpreciseNumber( data.visitors ) }</td>
 						<td>{ data.avgEngaged }</td>
 					</tr>
 				</tbody>
@@ -205,7 +205,7 @@ function ReferrerTypesSection( props: PerformanceSectionProps ) {
 				<tbody>
 					<tr>{
 						Object.entries( data.referrers.types ).map( ( [ key, value ] ) => {
-							return <td key={ key }>{ impreciseNumber( value.views ) }</td>;
+							return <td key={ key }>{ formatToImpreciseNumber( value.views ) }</td>;
 						} ) }
 					</tr>
 				</tbody>
@@ -256,7 +256,7 @@ function TopReferrersSection( props: PerformanceSectionProps ) {
 										style={ { '--bar-fill': value.viewsPercentage + '%' } as React.CSSProperties }>
 									</div>
 								</td>
-								<td>{ impreciseNumber( value.views ) }</td>
+								<td>{ formatToImpreciseNumber( value.views ) }</td>
 							</tr>
 						);
 					} )

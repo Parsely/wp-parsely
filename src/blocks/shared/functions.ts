@@ -8,7 +8,7 @@
  * @param {string} glue           A string to put between the number and unit.
  * @return {string} The number formatted as an imprecise number.
  */
-export function impreciseNumber( value: string, fractionDigits = 1, glue = '' ): string {
+export function formatToImpreciseNumber( value: string, fractionDigits = 1, glue = '' ): string {
 	const number = parseInt( value.replace( /\D/g, '' ), 10 );
 
 	if ( number < 1000 ) {

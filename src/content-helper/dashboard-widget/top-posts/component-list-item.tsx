@@ -7,7 +7,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { TopPostData } from './model';
-import { impreciseNumber } from '../../../blocks/shared/functions';
+import { formatToImpreciseNumber } from '../../../blocks/shared/functions';
 import PublishedLinkIcon from '../../../blocks/content-helper/icons/published-link-icon';
 import { getSmartShortDate } from '../../../blocks/shared/utils/date';
 
@@ -34,7 +34,7 @@ function TopPostListItem( { post }: TopPostListItemProps ): JSX.Element {
 
 					<span className="parsely-top-post-views">
 						<span className="screen-reader-text">Number of Views</span>
-						{ impreciseNumber( post.views.toString() ) }
+						{ formatToImpreciseNumber( post.views.toString() ) }
 					</span>
 
 					{ getPostTitleElement( { post } ) }
