@@ -83,7 +83,7 @@ class Admin_Columns_Parsely_Stats {
 	 * @since 3.7.0
 	 */
 	public function run(): void {
-		if ( ! $this->parsely->site_id_is_set() || ! $this->parsely->api_secret_is_set() ) {
+		if ( ! $this->parsely->site_id_is_set() ) {
 			return;
 		}
 
@@ -163,7 +163,7 @@ class Admin_Columns_Parsely_Stats {
 
 		global $post;
 
-		if ( 'publish' === $post->post_status ) {
+		if ( 'publish' === $post->post_status && $this->parsely->api_secret_is_set() ) {
 			array_push( $this->utc_published_times, $post->post_date_gmt );
 		}
 
@@ -183,6 +183,10 @@ class Admin_Columns_Parsely_Stats {
 	public function enqueue_parsely_stats_script_with_data(): void {
 		if ( ! $this->is_tracked_as_post_type() ) {
 			return;
+		}
+
+		if ( $this->is_parsely_stats_column_hidden() ) {
+			return; // Avoid calling the API if column is hidden.
 		}
 
 		$parsely_stats_response = $this->get_parsely_stats_response( new Analytics_Posts_API( $this->parsely ) );
@@ -210,6 +214,19 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
+	 * Return TRUE if Parse.ly Stats column is hidden.
+	 *
+	 * @return bool
+	 */
+	public function is_parsely_stats_column_hidden(): bool {
+		if ( ! isset( $this->current_screen ) ) {
+			return false;
+		}
+
+		return in_array( 'parsely-stats', get_hidden_columns( $this->current_screen ), true );
+	}
+
+	/**
 	 * Calls Parse.ly Analytics API and get stats data.
 	 *
 	 * @since 3.7.0
@@ -221,6 +238,22 @@ class Admin_Columns_Parsely_Stats {
 	public function get_parsely_stats_response( $analytics_api ) {
 		if ( ! $this->is_tracked_as_post_type() ) {
 			return null;
+		}
+
+		if ( ! $this->parsely->api_secret_is_set() ) {
+			return array(
+				'data'  => null,
+				'error' => array(
+					'code'        => 403,
+					'message'     => __( 'Forbidden.', 'wp-parsely' ),
+					'htmlMessage' => '<p>' .
+						__(
+							'We are unable to retrieve data for Parse.ly Stats. Please contact <a href=\\"mailto:support@parsely.com\\">support@parsely.com</a> for help resolving this issue.',
+							'wp-parsely'
+						) .
+					'</p>',
+				),
+			);
 		}
 
 		$date_params = $this->get_publish_date_params_for_analytics_api();
