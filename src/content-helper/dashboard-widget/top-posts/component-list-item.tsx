@@ -23,17 +23,16 @@ interface TopPostListItemProps {
 function TopPostListItem( { post }: TopPostListItemProps ): JSX.Element {
 	return (
 		<li className="parsely-top-post">
-			<div className="parsely-top-post-wrapper">
+			<div className="parsely-top-post-content">
 
-				<div className="parsely-top-post-thumbnail">
-					<span className="screen-reader-text">Thumbnail</span>
-					<img src={ post.thumbUrlMedium } alt={ __( 'Post thumbnail', 'wp-parsely' ) } />
-				</div>
+				{ getPostThumbnailElement( { post } ) }
 
 				<div className="parsely-top-post-data">
 
 					<span className="parsely-top-post-views">
-						<span className="screen-reader-text">Number of Views</span>
+						<span className="screen-reader-text">
+							{ __( 'Number of Views', 'wp-parsely' ) }
+						</span>
 						{ formatToImpreciseNumber( post.views.toString() ) }
 					</span>
 
@@ -48,11 +47,15 @@ function TopPostListItem( { post }: TopPostListItemProps ): JSX.Element {
 
 					<div className="parsely-top-post-metadata">
 						<span className="parsely-top-post-date">
-							<span className="screen-reader-text">Date</span>
+							<span className="screen-reader-text">
+								{ __( 'Date', 'wp-parsely' ) }
+							</span>
 							{ getSmartShortDate( new Date( post.date ) ) }
 						</span>
 						<span className="parsely-top-post-author">
-							<span className="screen-reader-text">Author</span>
+							<span className="screen-reader-text">
+								{ __( 'Author', 'wp-parsely' ) }
+							</span>
 							{ post.author }
 						</span>
 					</div>
@@ -65,27 +68,51 @@ function TopPostListItem( { post }: TopPostListItemProps ): JSX.Element {
 }
 
 /**
+ * Returns the Post thumbnail with its div container. Returns an empty div if
+ * the post has no thumbnail.
+ *
+ * @param {TopPostData} post The Post from which to get the data.
+ */
+function getPostThumbnailElement( { post }: TopPostListItemProps ): JSX.Element {
+	if ( post.thumbUrlMedium ) {
+		return (
+			<div className="parsely-top-post-thumbnail">
+				<span className="screen-reader-text">{ __( 'Thumbnail', 'wp-parsely' ) }</span>
+				<img src={ post.thumbUrlMedium } alt={ __( 'Post thumbnail', 'wp-parsely' ) } />
+			</div>
+		);
+	}
+
+	return (
+		<div className="parsely-top-post-thumbnail">
+			<span className="screen-reader-text">{
+				__( 'Post thumbnail not available', 'wp-parsely' )
+			}</span>
+		</div>
+	);
+}
+
+/**
  * Returns the Post title as a link (for editing the Post) or a div if the Post
  * has no valid ID.
  *
  * @param {TopPostData} post The Post from which to get the data.
  */
 function getPostTitleElement( { post }: TopPostListItemProps ): JSX.Element {
-	const titleLinkUrl = `/wp-admin/post.php?post=${ post.postId }&action=edit`;
+	if ( 0 !== post.postId ) {
+		const titleLinkUrl = `/wp-admin/post.php?post=${ post.postId }&action=edit`;
 
-	let titleLink =
-		<a className="parsely-top-post-title" href={ titleLinkUrl } target="_blank" rel="noreferrer">
-			<span className="screen-reader-text">
-				{ __( 'View in Parse.ly (opens in new tab)', 'wp-parsely' ) }
-			</span>
-			{ post.title }
-		</a>;
-
-	if ( 0 === post.postId ) {
-		titleLink = <div className="parsely-top-post-title">{ post.title }</div>;
+		return (
+			<a className="parsely-top-post-title" href={ titleLinkUrl } target="_blank" rel="noreferrer">
+				<span className="screen-reader-text">
+					{ __( 'View in Parse.ly (opens in new tab)', 'wp-parsely' ) }
+				</span>
+				{ post.title }
+			</a>
+		);
 	}
 
-	return titleLink;
+	return <div className="parsely-top-post-title">{ post.title }</div>;
 }
 
 export default TopPostListItem;

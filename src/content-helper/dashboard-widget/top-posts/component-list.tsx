@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 
@@ -82,7 +83,7 @@ function TopPostList() {
 			)
 			: (
 				<div className="parsely-top-posts-wrapper">
-					<div className="page-views-title">Page Views</div>
+					<div className="page-views-title">{ __( 'Page Views', 'wp-parsely' ) }</div>
 					{ postList }
 				</div>
 			)

@@ -33,7 +33,7 @@
 		width: 100%;
 	}
 
-	.parsely-top-post-wrapper {
+	.parsely-top-post-content {
 		display: flex;
 
 		// Number at left of thumbnails.
@@ -62,8 +62,14 @@
 		margin-bottom: to_rem(16px);
 	}
 
-	.parsely-top-post-thumbnail img {
+	.parsely-top-post-thumbnail {
+		height: 46px;
 		width: 46px;
+
+		img {
+			height: 100%;
+			width: 100%;
+		}
 	}
 
 	.parsely-top-post-data {
