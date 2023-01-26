@@ -30,7 +30,7 @@ interface TopPostsApiResponse {
 export const TOP_POSTS_DEFAULT_LIMIT = 3;
 export const TOP_POSTS_DEFAULT_TIME_RANGE = 7; // In days.
 
-class TopPostsProvider {
+class DashboardWidgetProvider {
 	private dataPeriodStart: string;
 	private dataPeriodEnd: string;
 
@@ -103,4 +103,4 @@ class TopPostsProvider {
 	}
 }
 
-export default TopPostsProvider;
+export default DashboardWidgetProvider;
