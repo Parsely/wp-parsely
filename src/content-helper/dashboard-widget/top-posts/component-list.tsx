@@ -28,7 +28,7 @@ function TopPostList() {
 		const fetchPosts = async ( retries: number ) => {
 			provider.getTopPosts()
 				.then( ( result ): void => {
-					const mappedPosts: TopPostData[] = result.posts.map(
+					const mappedPosts: TopPostData[] = result.map(
 						( post: TopPostData ): TopPostData => (
 							{
 								...post,

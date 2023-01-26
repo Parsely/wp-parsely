@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
 
@@ -26,13 +27,6 @@ interface TopPostsApiResponse {
 	data?: TopPostData[];
 }
 
-/**
- * The form of the result returned by the getTopPosts() function.
- */
-export interface GetTopPostsResult {
-	posts: TopPostData[];
-}
-
 export const TOP_POSTS_DEFAULT_LIMIT = 3;
 export const TOP_POSTS_DEFAULT_TIME_RANGE = 7; // In days.
 
@@ -54,10 +48,10 @@ class TopPostsProvider {
 	/**
 	 * Returns the site's top-performing posts.
 	 *
-	 * @return {Promise<GetTopPostsResult>} Object containing message and posts.
+	 * @return {Promise<Array<TopPostData>>} Object containing message and posts.
 	 */
-	public async getTopPosts(): Promise<GetTopPostsResult> {
-		let data;
+	public async getTopPosts(): Promise<TopPostData[]> {
+		let data: TopPostData[] = [];
 
 		try {
 			data = await this.fetchTopPostsFromWpEndpoint();
@@ -65,7 +59,15 @@ class TopPostsProvider {
 			return Promise.reject( contentHelperError );
 		}
 
-		return { posts: data };
+		if ( 0 === data.length ) {
+			return Promise.reject( new ContentHelperError(
+				__( 'No Top Posts data is available.', 'wp-parsely' ),
+				ContentHelperErrorCode.ParselyApiReturnedNoData,
+				''
+			) );
+		}
+
+		return data;
 	}
 
 	/**
