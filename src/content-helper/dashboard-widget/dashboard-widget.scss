@@ -44,14 +44,12 @@
 		}
 	}
 
-	// ol element.
 	.parsely-top-posts {
 		counter-reset: item; // Needed to increment post numbers.
 		list-style: none;
 		margin: 0;
 	}
 
-	// li elements.
 	.parsely-top-post {
 		margin-bottom: to_rem(16px);
 	}

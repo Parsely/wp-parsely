@@ -8,7 +8,6 @@ import { render } from '@wordpress/element';
  */
 import TopPostList from './top-posts/component-list';
 
-// Insert Dashboard Widget content when the page loads.
 window.addEventListener(
 	'load',
 	function() {
