@@ -42,6 +42,13 @@
 			counter-increment: item;
 			padding-right: to_rem(8px);
 		}
+
+		@media only screen and (max-width: 380px) {
+			&::before {
+				content: "";
+				padding-right: 0;
+			}
+		}
 	}
 
 	.parsely-top-posts {
@@ -107,17 +114,5 @@
 		font-family: var(--numeric-font);
 		font-size: to_rem(18px);
 		padding-left: to_rem(10px);
-	}
-}
-
-@media only screen and (max-width: 380px) {
-
-	#wp-parsely-dashboard-widget .parsely-top-posts-wrapper {
-
-		// Remove number at left of thumbnails.
-		.parsely-top-post-wrapper::before {
-			content: "";
-			padding-right: 0;
-		}
 	}
 }
