@@ -11,7 +11,7 @@ import { __ } from '@wordpress/i18n';
 export enum ContentHelperErrorCode {
 	CannotFormulateApiQuery = 'ch_cannot_formulate_api_query',
 	FetchError = 'fetch_error', // apiFetch() failure, possibly caused by ad blocker.
-	ParselyApiForbidden = '403',
+	ParselyApiForbidden = 403, // Intentionally without quotes.
 	ParselyApiResponseContainsError = 'ch_response_contains_error',
 	ParselyApiReturnedNoData = 'ch_parsely_api_returned_no_data',
 	ParselyApiReturnedTooManyResults = 'ch_parsely_api_returned_too_many_results',
@@ -57,7 +57,7 @@ export class ContentHelperError extends Error {
 		}
 		if ( this.code === ContentHelperErrorCode.ParselyApiForbidden ) {
 			this.hint = this.Hint( __(
-				"Please ensure that the Site ID within the plugin's settings is correct.",
+				"Please ensure that the Site ID and API Secret given in the plugin's settings are correct.",
 				'wp-parsely'
 			) );
 		}
