@@ -17,6 +17,10 @@ import {
 	PerformanceData,
 	PerformanceReferrerData,
 } from './model';
+import {
+	convertDateToString,
+	removeDaysFromDate,
+} from '../../shared/utils/date';
 
 /**
  * Specifies the form of the response returned by the `/stats/post/detail`
@@ -50,8 +54,8 @@ class PerformanceDetailsProvider {
 	constructor() {
 		// Set period for the last 7 days (today included).
 		this.dataPeriodDays = 7;
-		this.dataPeriodEnd = this.convertDateToString( new Date() ) + 'T23:59';
-		this.dataPeriodStart = this.removeDaysFromDate( this.dataPeriodEnd, this.dataPeriodDays - 1 ) + 'T00:00';
+		this.dataPeriodEnd = convertDateToString( new Date() ) + 'T23:59';
+		this.dataPeriodStart = removeDaysFromDate( this.dataPeriodEnd, this.dataPeriodDays - 1 ) + 'T00:00';
 	}
 
 	/**
@@ -182,31 +186,6 @@ class PerformanceDetailsProvider {
 		}
 
 		return response.data;
-	}
-
-	/**
-	 * Removes the given number of days from a "YYYY-MM-DD" string, and returns
-	 * the result in the same format.
-	 *
-	 * @param {string} date The date in "YYYY-MM-DD" format.
-	 * @param {number} days The number of days to remove from the date.
-	 * @return {string} The resulting date in "YYYY-MM-DD" format.
-	 */
-	private removeDaysFromDate( date: string, days: number ): string {
-		const pastDate = new Date( date );
-		pastDate.setDate( pastDate.getDate() - days );
-
-		return this.convertDateToString( pastDate );
-	}
-
-	/**
-	 * Converts a date to a string in "YYYY-MM-DD" format.
-	 *
-	 * @param {Date} date The  date to format.
-	 * @return {string} The date in "YYYY-MM-DD" format.
-	 */
-	private convertDateToString( date: Date ): string {
-		return date.toISOString().substring( 0, 10 );
 	}
 }
 
