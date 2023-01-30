@@ -69,6 +69,12 @@ final class AdminDashboardWidgetTest extends TestCase {
 
 		$this->assert_is_style_registered( 'wp-parsely-dashboard-widget' );
 		$this->assert_is_style_enqueued( 'wp-parsely-dashboard-widget' );
+
+		// Deregister and dequeue for next test.
+		wp_deregister_script( 'wp-parsely-dashboard-widget' );
+		wp_deregister_style( 'wp-parsely-dashboard-widget' );
+		wp_dequeue_script( 'wp-parsely-dashboard-widget' );
+		wp_dequeue_style( 'wp-parsely-dashboard-widget' );
 	}
 
 	/**
