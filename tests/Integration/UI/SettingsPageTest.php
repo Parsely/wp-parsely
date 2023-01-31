@@ -65,7 +65,9 @@ final class SettingsPageTest extends TestCase {
 			'attachment' => 'post',
 		);
 
+		$this->set_recrawl_settings_tab();
 		$actual = self::$settings_page->validate_options( $options );
+
 		self::assertSame( array( 'post', 'attachment' ), $actual['track_post_types'] );
 		self::assertSame( array( 'page' ), $actual['track_page_types'] );
 	}
@@ -95,7 +97,9 @@ final class SettingsPageTest extends TestCase {
 			'non_existent_post_type' => 'post',
 		);
 
+		$this->set_recrawl_settings_tab();
 		$actual = self::$settings_page->validate_options( $options );
+
 		self::assertSame( $expected, $actual );
 	}
 
@@ -115,9 +119,11 @@ final class SettingsPageTest extends TestCase {
 	public function test_trying_to_save_unset_tracking_settings_should_fail(): void {
 		$expected = self::$parsely->get_options();
 		$options  = self::$parsely->get_options();
-
 		unset( $options['track_post_types_as'] );
+
+		$this->set_recrawl_settings_tab();
 		$actual = self::$settings_page->validate_options( $options );
+
 		self::assertSame( $expected, $actual );
 	}
 
@@ -135,11 +141,13 @@ final class SettingsPageTest extends TestCase {
 	 * @group ui
 	 */
 	public function test_trying_to_save_empty_array_tracking_settings_should_fail(): void {
-		$expected = self::$parsely->get_options();
-		$options  = self::$parsely->get_options();
-
+		$expected                       = self::$parsely->get_options();
+		$options                        = self::$parsely->get_options();
 		$options['track_post_types_as'] = array();
-		$actual                         = self::$settings_page->validate_options( $options );
+
+		$this->set_recrawl_settings_tab();
+		$actual = self::$settings_page->validate_options( $options );
+
 		self::assertSame( $expected, $actual );
 	}
 
@@ -157,11 +165,13 @@ final class SettingsPageTest extends TestCase {
 	 * @group ui
 	 */
 	public function test_trying_to_save_non_array_tracking_settings_should_fail(): void {
-		$expected = self::$parsely->get_options();
-		$options  = self::$parsely->get_options();
-
+		$expected                       = self::$parsely->get_options();
+		$options                        = self::$parsely->get_options();
 		$options['track_post_types_as'] = 'string';
-		$actual                         = self::$settings_page->validate_options( $options );
+
+		$this->set_recrawl_settings_tab();
+		$actual = self::$settings_page->validate_options( $options );
+
 		self::assertSame( $expected, $actual );
 	}
 
@@ -181,9 +191,11 @@ final class SettingsPageTest extends TestCase {
 	public function test_saving_disable_autotrack_works_default_value(): void {
 		$expected = self::$parsely->get_options();
 		$options  = self::$parsely->get_options();
-
 		unset( $options['disable_autotrack'] );
+
+		$this->set_advanced_settings_tab();
 		$actual = self::$settings_page->validate_options( $options );
+
 		self::assertEquals( $expected, $actual );
 	}
 
@@ -238,5 +250,28 @@ final class SettingsPageTest extends TestCase {
 			self::$parsely->get_settings_url(),
 			'The URL did not match the expected value for the main site with no $blog_id param after switching back.'
 		);
+	}
+
+	/**
+	 * Sets Advanced Settings tab.
+	 */
+	private function set_advanced_settings_tab(): void {
+		$this->set_active_tab( 'advanced-settings' );
+	}
+
+	/**
+	 * Sets Recrawl Settings tab.
+	 */
+	private function set_recrawl_settings_tab(): void {
+		$this->set_active_tab( 'recrawl-settings' );
+	}
+
+	/**
+	 * Sets active tab.
+	 *
+	 * @param string $active_tab Key of the active tab.
+	 */
+	private function set_active_tab( string $active_tab ): void {
+		$_GET['tab'] = $active_tab;
 	}
 }
