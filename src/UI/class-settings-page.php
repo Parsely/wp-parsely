@@ -377,7 +377,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		// Metadata Format.
 		$field_id   = 'meta_type';
 		$field_args = array(
-			'title' => __( 'Metadata Format', 'wp-parsely' ),
+			'title'         => __( 'Metadata Format', 'wp-parsely' ),
 			'option_key'    => $field_id,
 			'help_text'     => __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with <a href="https://www.parse.ly/help/integration/jsonld/">JSON-LD</a>, but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' ),
 			'radio_options' => array(
