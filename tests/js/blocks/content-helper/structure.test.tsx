@@ -115,15 +115,19 @@ describe( 'Content Helper', () => {
 		// test top post attributes
 		const firstTopPost = topPosts[ 0 ];
 		const statsLink = firstTopPost.querySelector( '.parsely-top-post-stats-link' );
-		const postLink = firstTopPost.querySelector( '.parsely-top-post-link' );
+		const viewPostLink = firstTopPost.querySelector( '.parsely-top-post-view-link' );
+		const editPostLink = firstTopPost.querySelector( '.parsely-top-post-edit-link' );
 
 		expect( firstTopPost.querySelector( '.parsely-top-post-title' )?.textContent ).toEqual( 'Title 1' );
 		expect( statsLink?.getAttribute( 'href' ) ).toEqual( `${ DASHBOARD_BASE_URL }/example.com/post-1` );
 		expect( statsLink?.getAttribute( 'title' ) ).toEqual( 'View in Parse.ly (opens new tab)' );
 		expect( statsLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( postLink?.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
-		expect( postLink?.getAttribute( 'title' ) ).toEqual( 'View Published Post (opens new tab)' );
-		expect( postLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
+		expect( viewPostLink?.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
+		expect( viewPostLink?.getAttribute( 'title' ) ).toEqual( 'View Post (opens new tab)' );
+		expect( viewPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
+		expect( editPostLink?.getAttribute( 'href' ) ).toEqual( 'http://example.com/wp-admin/post.php?post=1&action=edit' );
+		expect( editPostLink?.getAttribute( 'title' ) ).toEqual( 'Edit Post (opens new tab)' );
+		expect( editPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
 		expect( firstTopPost.querySelector( '.parsely-top-post-date' )?.textContent ).toEqual( 'Date Jan 1, 2022' );
 		expect( firstTopPost.querySelector( '.parsely-top-post-author' )?.textContent ).toEqual( 'Author Name 1' );
 		expect( firstTopPost.querySelector( '.parsely-top-post-views' )?.textContent ).toEqual( 'Number of Views 1' );
@@ -175,6 +179,7 @@ describe( 'Content Helper', () => {
 				author: `Name ${ i }`,
 				date: `Jan ${ i }, 2022`,
 				id: i,
+				postId: i,
 				dashUrl: `${ DASHBOARD_BASE_URL }/example.com/post-${ i }`,
 				title: `Title ${ i }`,
 				url: `http://example.com/post-${ i }`,

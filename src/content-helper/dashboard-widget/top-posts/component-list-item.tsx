@@ -8,8 +8,10 @@ import { __ } from '@wordpress/i18n';
  */
 import { TopPostData } from './model';
 import { formatToImpreciseNumber } from '../../../blocks/shared/functions';
-import PublishedLinkIcon from '../../../blocks/content-helper/icons/published-link-icon';
+import OpenLinkIcon from '../../../blocks/content-helper/icons/open-link-icon';
 import { getSmartShortDate } from '../../../blocks/shared/utils/date';
+import EditIcon from '../../../blocks/content-helper/icons/edit-icon';
+import { getPostEditUrl } from '../../../blocks/shared/utils/post';
 
 interface TopPostListItemProps {
 	post: TopPostData;
@@ -40,10 +42,20 @@ function TopPostListItem( { post }: TopPostListItemProps ): JSX.Element {
 
 					<a className="parsely-top-post-icon-link" href={ post.url } target="_blank" rel="noreferrer">
 						<span className="screen-reader-text">
-							{ __( 'View Published Post (opens in new tab)', 'wp-parsely' ) }
+							{ __( 'View Post (opens in new tab)', 'wp-parsely' ) }
 						</span>
-						<PublishedLinkIcon />
+						<OpenLinkIcon />
 					</a>
+
+					{
+						0 !== post.postId &&
+						<a className="parsely-top-post-icon-link" href={ getPostEditUrl( post.postId ) } target="_blank" rel="noreferrer">
+							<span className="screen-reader-text">
+								{ __( 'Edit Post (opens in new tab)', 'wp-parsely' ) }
+							</span>
+							<EditIcon />
+						</a>
+					}
 
 					<div className="parsely-top-post-metadata">
 						<span className="parsely-top-post-date">
@@ -99,20 +111,14 @@ function getPostThumbnailElement( { post }: TopPostListItemProps ): JSX.Element 
  * @param {TopPostData} post The Post from which to get the data.
  */
 function getPostTitleElement( { post }: TopPostListItemProps ): JSX.Element {
-	if ( 0 !== post.postId ) {
-		const titleLinkUrl = `/wp-admin/post.php?post=${ post.postId }&action=edit`;
-
-		return (
-			<a className="parsely-top-post-title" href={ titleLinkUrl } target="_blank" rel="noreferrer">
-				<span className="screen-reader-text">
-					{ __( 'View in Parse.ly (opens in new tab)', 'wp-parsely' ) }
-				</span>
-				{ post.title }
-			</a>
-		);
-	}
-
-	return <div className="parsely-top-post-title">{ post.title }</div>;
+	return (
+		<a className="parsely-top-post-title" href={ post.dashUrl } target="_blank" rel="noreferrer">
+			<span className="screen-reader-text">
+				{ __( 'View in Parse.ly (opens in new tab)', 'wp-parsely' ) }
+			</span>
+			{ post.title }
+		</a>
+	);
 }
 
 export default TopPostListItem;
