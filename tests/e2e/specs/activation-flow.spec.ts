@@ -44,35 +44,34 @@ describe( 'Activation flow', (): void => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await waitForWpAdmin();
 
+		// Default tab.
+		expect( page ).not.toBe( null );
+		testSectionsVisibility( [ 'initial', 'none', 'none' ] );
+
+		// Basic Settings Tab.
+		await page.click( '.basic-section-tab' );
+		testSectionsVisibility( [ 'initial', 'none', 'none' ] );
+
+		// Recrawl Settings Tab.
+		await page.click( '.recrawl-section-tab' );
+		testSectionsVisibility( [ 'none', 'initial', 'none' ] );
+
+		// Advanced Settings Tab.
+		await page.click( '.advanced-section-tab' );
+		testSectionsVisibility( [ 'none', 'none', 'initial' ] );
+
+		await page.click( '.basic-section-tab' ); // Revert to initial state
+	} );
+
+	async function testSectionsVisibility( displayValues: string[] ): Promise<void> {
 		const basicSectionSelector = '.basic-section';
 		const recrawlSectionSelector = '.recrawl-section';
 		const advancedSectionSelector = '.advanced-section';
 
-		// Default tab.
-		expect( await getSectionStyles( basicSectionSelector ) ).toContain( 'display: initial' );
-		expect( await getSectionStyles( recrawlSectionSelector ) ).toContain( 'display: none' );
-		expect( await getSectionStyles( advancedSectionSelector ) ).toContain( 'display: none' );
-
-		// Basic Settings Tab.
-		await page.click( '.basic-section-tab' );
-		expect( await getSectionStyles( basicSectionSelector ) ).toContain( 'display: initial' );
-		expect( await getSectionStyles( recrawlSectionSelector ) ).toContain( 'display: none' );
-		expect( await getSectionStyles( advancedSectionSelector ) ).toContain( 'display: none' );
-
-		// Recrawl Settings Tab.
-		await page.click( '.recrawl-section-tab' );
-		expect( await getSectionStyles( basicSectionSelector ) ).toContain( 'display: none' );
-		expect( await getSectionStyles( recrawlSectionSelector ) ).toContain( 'display: initial' );
-		expect( await getSectionStyles( advancedSectionSelector ) ).toContain( 'display: none' );
-
-		// Advanced Settings Tab.
-		await page.click( '.advanced-section-tab' );
-		expect( await getSectionStyles( basicSectionSelector ) ).toContain( 'display: none' );
-		expect( await getSectionStyles( recrawlSectionSelector ) ).toContain( 'display: none' );
-		expect( await getSectionStyles( advancedSectionSelector ) ).toContain( 'display: initial' );
-
-		await page.click( '.basic-section-tab' ); // Revert to initial state
-	} );
+		expect( await getSectionStyles( basicSectionSelector ) ).toContain( `display: ${ displayValues[ 0 ] }` );
+		expect( await getSectionStyles( recrawlSectionSelector ) ).toContain( `display: ${ displayValues[ 1 ] }` );
+		expect( await getSectionStyles( advancedSectionSelector ) ).toContain( `display: ${ displayValues[ 2 ] }` );
+	}
 
 	async function getSectionStyles( selector: string ): Promise<string> {
 		return await page.$eval( selector, ( e: Element ): string => e.getAttribute( 'style' ) || '' );
