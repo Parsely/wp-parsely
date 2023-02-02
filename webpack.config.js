@@ -17,6 +17,10 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'blocks', 'content-helper', 'content-helper' ),
 			path.resolve( __dirname, 'src', 'blocks', 'content-helper', 'content-helper.scss' ),
 		],
+		'content-helper/dashboard-widget': [
+			path.resolve( __dirname, 'src', 'content-helper', 'dashboard-widget', 'dashboard-widget' ),
+			path.resolve( __dirname, 'src', 'content-helper', 'dashboard-widget', 'dashboard-widget.scss' ),
+		],
 		loader: [
 			path.resolve( __dirname, 'src', 'js', 'lib', 'loader' ),
 			path.resolve( __dirname, 'src', 'js', 'lib', 'uuid-profile-call' ),

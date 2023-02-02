@@ -6,7 +6,8 @@ $html-font-size: 16px; // Used in functions.scss.
  * is sourced from 1.44/src/styles/base.scss and defines some additional
  * variables in the end of the file.
  */
-.wp-parsely-content-helper {
+.wp-parsely-content-helper,
+#wp-parsely-dashboard-widget {
 
 	/** Layout section - base.scss. **/
 	--base-font: "source-sans-pro", arial, sans-serif;
@@ -15,8 +16,10 @@ $html-font-size: 16px; // Used in functions.scss.
 	/** Category colors section - base scss. **/
 	--gray-300: #edeeef;
 	--gray-400: #d7dbdf;
+	--gray-500: #959da5;
 	--gray-600: #586069;
 	--gray-700: #444d56;
+	--gray-900: #24292e;
 	--blue-500: #44a8e5;
 	--blue-550: #2596db;
 	--green-500: #7bc01b;
@@ -28,6 +31,7 @@ $html-font-size: 16px; // Used in functions.scss.
 	--ref-other: 3, 76%, 58%;
 
 	/** Theme colors section - base.scss. **/
+	--base-text: var(--gray-900);
 	--base-text-2: var(--gray-600);
 	--base-3: var(--gray-400);
 	--border: var(--gray-400);

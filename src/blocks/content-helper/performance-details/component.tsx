@@ -11,6 +11,7 @@ import { useEffect, useState } from '@wordpress/element';
 import PerformanceDetailsProvider from './provider';
 import { PerformanceData } from './model';
 import { ContentHelperError } from '../content-helper-error';
+import { formatToImpreciseNumber } from '../../shared/functions';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 3;
@@ -131,8 +132,8 @@ function GeneralPerformanceSection( props: PerformanceSectionProps ) {
 			<table>
 				<tbody>
 					<tr>
-						<td>{ impreciseNumber( data.views ) }</td>
-						<td>{ impreciseNumber( data.visitors ) }</td>
+						<td>{ formatToImpreciseNumber( data.views ) }</td>
+						<td>{ formatToImpreciseNumber( data.visitors ) }</td>
 						<td>{ data.avgEngaged }</td>
 					</tr>
 				</tbody>
@@ -204,7 +205,7 @@ function ReferrerTypesSection( props: PerformanceSectionProps ) {
 				<tbody>
 					<tr>{
 						Object.entries( data.referrers.types ).map( ( [ key, value ] ) => {
-							return <td key={ key }>{ impreciseNumber( value.views ) }</td>;
+							return <td key={ key }>{ formatToImpreciseNumber( value.views ) }</td>;
 						} ) }
 					</tr>
 				</tbody>
@@ -255,7 +256,7 @@ function TopReferrersSection( props: PerformanceSectionProps ) {
 										style={ { '--bar-fill': value.viewsPercentage + '%' } as React.CSSProperties }>
 									</div>
 								</td>
-								<td>{ impreciseNumber( value.views ) }</td>
+								<td>{ formatToImpreciseNumber( value.views ) }</td>
 							</tr>
 						);
 					} )
@@ -298,62 +299,6 @@ function ActionsSection( props: PerformanceSectionProps ) {
 			</Button>
 		</div>
 	);
-}
-
-/**
- * Implements the "Imprecise Number" functionality of the Parse.ly dashboard.
- *
- * Note: This function is not made to process float numbers.
- *
- * @param {string} value          The number to process. It can be formatted.
- * @param {number} fractionDigits The number of desired fraction digits.
- * @param {string} glue           A string to put between the number and unit.
- * @return {string} The number formatted as an imprecise number.
- */
-function impreciseNumber( value: string, fractionDigits = 1, glue = '' ): string {
-	const number = parseInt( value.replace( /\D/g, '' ), 10 );
-
-	if ( number < 1000 ) {
-		return value;
-	} else if ( number < 10000 ) {
-		fractionDigits = 1;
-	}
-
-	const unitNames = {
-		1000: 'k',
-		'1,000,000': 'M',
-		'1,000,000,000': 'B',
-		'1,000,000,000,000': 'T',
-		'1,000,000,000,000,000': 'Q',
-	};
-	let currentNumber = number;
-	let currentNumberAsString = number.toString();
-	let unit = '';
-	let previousNumber = 0;
-
-	Object.entries( unitNames ).forEach( ( [ thousands, suffix ] ) => {
-		const thousandsInt = parseInt( thousands.replace( /\D/g, '' ), 10 );
-
-		if ( number >= thousandsInt ) {
-			currentNumber = number / thousandsInt;
-			let precision = fractionDigits;
-
-			// For over 10 units, we reduce the precision to 1 fraction digit.
-			if ( currentNumber % 1 > 1 / previousNumber ) {
-				precision = currentNumber > 10 ? 1 : 2;
-			}
-
-			// Precision override, where we want to show 2 fraction digits.
-			const zeroes = parseFloat( currentNumber.toFixed( 2 ) ) === parseFloat( currentNumber.toFixed( 0 ) );
-			precision = zeroes ? 0 : precision;
-			currentNumberAsString = currentNumber.toFixed( precision );
-			unit = suffix;
-		}
-
-		previousNumber = thousandsInt;
-	} );
-
-	return currentNumberAsString + glue + unit;
 }
 
 export default PerformanceDetails;

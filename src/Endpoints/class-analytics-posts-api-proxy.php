@@ -53,13 +53,17 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 		return array_map(
 			static function( stdClass $item ) use ( $date_format, $site_id ) {
 				return (object) array(
-					'author'  => $item->author,
-					'date'    => wp_date( $date_format, strtotime( $item->pub_date ) ),
-					'id'      => $item->url,
-					'dashUrl' => Parsely::get_dash_url( $site_id, $item->url ),
-					'title'   => $item->title,
-					'url'     => $item->url,
-					'views'   => $item->metrics->views,
+					'author'         => $item->author,
+					'dashUrl'        => Parsely::get_dash_url( $site_id, $item->url ),
+					'date'           => wp_date( $date_format, strtotime( $item->pub_date ) ),
+					// Unique ID (can be replaced by Parse.ly API ID if it becomes available).
+					'id'             => $item->url,
+					// WordPress Post ID (0 if the post cannot be found, might not be unique).
+					'postId'         => url_to_postid( $item->url ), // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
+					'thumbUrlMedium' => $item->thumb_url_medium,
+					'title'          => $item->title,
+					'url'            => $item->url,
+					'views'          => $item->metrics->views,
 				);
 			},
 			$response
