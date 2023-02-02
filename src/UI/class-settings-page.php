@@ -38,7 +38,7 @@ use const Parsely\PARSELY_FILE;
  *   label: string,
  * }
  *
- * @phpstan-type ParselyBasicOptions array{
+ * @phpstan-type ParselySettingOptions array{
  *   apikey: string,
  *   api_secret: string,
  *   metadata_secret: string,
@@ -47,9 +47,6 @@ use const Parsely\PARSELY_FILE;
  *   track_authenticated_users: bool|string,
  *   disable_javascript: bool|string,
  *   disable_amp?: bool,
- * }
- *
- * @phpstan-type ParselyRecrawlOptions array{
  *   track_post_types_as?: array<string, string>,
  *   track_post_types: string[],
  *   track_page_types: string[],
@@ -59,9 +56,6 @@ use const Parsely\PARSELY_FILE;
  *   cats_as_tags?: bool|string,
  *   lowercase_tags?: bool,
  *   force_https_canonicals?: bool,
- * }
- *
- * @phpstan-type ParselyAdvancedOptions array{
  *   disable_autotrack?: bool|string,
  *   parsely_wipe_metadata_cache: bool,
  * }
@@ -919,48 +913,24 @@ final class Settings_Page {
 	/**
 	 * Validates the options provided by the user.
 	 *
-	 * @param ParselyBasicOptions|ParselyRecrawlOptions|ParselyAdvancedOptions $input Options from the settings page.
+	 * @param ParselySettingOptions $input Options from the settings page.
 	 *
-	 * @return ParselyOptions
+	 * @return ParselySettingOptions
 	 */
 	public function validate_options( $input ) {
-		/**
-		 * Variable.
-		 *
-		 * @var ParselyBasicOptions $input
-		 */
-		$validated_basic_options = $this->validate_basic_section( $input );
-		/**
-		 * Variable.
-		 *
-		 * @var ParselyRecrawlOptions $input
-		 */
-		$validated_recrawl_options = $this->validate_recrawl_section( $input );
-		/**
-		 * Variable.
-		 *
-		 * @var ParselyAdvancedOptions $input
-		 */
-		$validated_advanced_options = $this->validate_advanced_section( $input );
+		$input = $this->validate_basic_section( $input );
+		$input = $this->validate_recrawl_section( $input );
+		$input = $this->validate_advanced_section( $input );
 
-		/**
-		 * Variable.
-		 *
-		 * @var ParselyOptions
-		 */
-		return array_merge(
-			$validated_basic_options,
-			$validated_recrawl_options,
-			$validated_advanced_options
-		);
+		return $input;
 	}
 
 	/**
 	 * Validate fields of Basic Section.
 	 *
-	 * @param ParselyBasicOptions $input Options from the settings page.
+	 * @param ParselySettingOptions $input Options from the settings page.
 	 *
-	 * @return ParselyBasicOptions Validated inputs.
+	 * @return ParselySettingOptions Validated inputs.
 	 */
 	private function validate_basic_section( $input ) {
 		$options = $this->parsely->get_options();
@@ -1059,9 +1029,9 @@ final class Settings_Page {
 	/**
 	 * Validate fields of Recrawl Section.
 	 *
-	 * @param ParselyRecrawlOptions $input Options from the settings page.
+	 * @param ParselySettingOptions $input Options from the settings page.
 	 *
-	 * @return ParselyRecrawlOptions Validated inputs.
+	 * @return ParselySettingOptions Validated inputs.
 	 */
 	private function validate_recrawl_section( $input ) {
 		$options = $this->parsely->get_options();
@@ -1167,9 +1137,9 @@ final class Settings_Page {
 	/**
 	 * Validate fields of Advanced Section.
 	 *
-	 * @param ParselyAdvancedOptions $input Options from the settings page.
+	 * @param ParselySettingOptions $input Options from the settings page.
 	 *
-	 * @return ParselyAdvancedOptions Validated inputs.
+	 * @return ParselySettingOptions Validated inputs.
 	 */
 	private function validate_advanced_section( $input ) {
 		$options = $this->parsely->get_options();
@@ -1231,7 +1201,7 @@ final class Settings_Page {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param ParselyRecrawlOptions $input Array passed to validate_options() function.
+	 * @param ParselySettingOptions $input Array passed to validate_options() function.
 	 */
 	private function validate_options_post_type_tracking( &$input ): void {
 		$options         = $this->parsely->get_options();
