@@ -7,8 +7,6 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
  * Internal dependencies
  */
 import {
-	checkH2DoesNotExist,
-	selectScreenOptions,
 	setSiteKeys,
 	startUpTest,
 	waitForWpAdmin,
@@ -46,26 +44,37 @@ describe( 'Activation flow', (): void => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await waitForWpAdmin();
 
-		// Set initial state
-		await selectScreenOptions( { recrawl: false, advanced: false } );
+		const basicSectionSelector = '.basic-section';
+		const recrawlSectionSelector = '.recrawl-section';
+		const advancedSectionSelector = '.advanced-section';
 
-		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
-		expect( await checkH2DoesNotExist( 'Requires Recrawl Settings' ) ).toBe( true );
-		expect( await checkH2DoesNotExist( 'Advanced Settings' ) ).toBe( true );
+		// Default tab.
+		expect( await getSectionStyles( basicSectionSelector ) ).toContain( 'display: initial' );
+		expect( await getSectionStyles( recrawlSectionSelector ) ).toContain( 'display: none' );
+		expect( await getSectionStyles( advancedSectionSelector ) ).toContain( 'display: none' );
 
-		await selectScreenOptions( { recrawl: true, advanced: true } );
+		// Basic Settings Tab.
+		await page.click( '.basic-section-tab' );
+		expect( await getSectionStyles( basicSectionSelector ) ).toContain( 'display: initial' );
+		expect( await getSectionStyles( recrawlSectionSelector ) ).toContain( 'display: none' );
+		expect( await getSectionStyles( advancedSectionSelector ) ).toContain( 'display: none' );
 
-		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
-		await page.waitForXPath( '//h2[contains(text(), "Requires Recrawl Settings")]' );
-		await page.waitForXPath( '//h2[contains(text(), "Advanced Settings")]' );
+		// Recrawl Settings Tab.
+		await page.click( '.recrawl-section-tab' );
+		expect( await getSectionStyles( basicSectionSelector ) ).toContain( 'display: none' );
+		expect( await getSectionStyles( recrawlSectionSelector ) ).toContain( 'display: initial' );
+		expect( await getSectionStyles( advancedSectionSelector ) ).toContain( 'display: none' );
 
-		await selectScreenOptions( { recrawl: true, advanced: false } );
+		// Advanced Settings Tab.
+		await page.click( '.advanced-section-tab' );
+		expect( await getSectionStyles( basicSectionSelector ) ).toContain( 'display: none' );
+		expect( await getSectionStyles( recrawlSectionSelector ) ).toContain( 'display: none' );
+		expect( await getSectionStyles( advancedSectionSelector ) ).toContain( 'display: initial' );
 
-		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
-		await page.waitForXPath( '//h2[contains(text(), "Requires Recrawl Settings")]' );
-		expect( await checkH2DoesNotExist( 'Advanced Settings' ) ).toBe( true );
-
-		// Reverting to initial state
-		await selectScreenOptions( { recrawl: false, advanced: false } );
+		await page.click( '.basic-section-tab' ); // Revert to initial state
 	} );
+
+	async function getSectionStyles( selector: string ): Promise<string> {
+		return await page.$eval( selector, ( e: Element ): string => e.getAttribute( 'style' ) || '' );
+	}
 } );
