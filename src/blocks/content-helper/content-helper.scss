@@ -63,11 +63,13 @@
 		fill: var(--gray-600);
 	}
 
-	.parsely-top-post-link {
+	.parsely-top-post-view-link,
+	.parsely-top-post-edit-link {
 		display: inline-block;
 		width: 16px;
 		height: 16px;
 		position: relative;
+		margin-right: to_rem(3px);
 
 		svg {
 			position: absolute;

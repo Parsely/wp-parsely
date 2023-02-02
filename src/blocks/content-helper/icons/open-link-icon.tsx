@@ -3,7 +3,7 @@
  */
 import { SVG, Path } from '@wordpress/components';
 
-export const ViewsIcon = () => (
+export const OpenLinkIcon = () => (
 	<SVG
 		aria-hidden="true"
 		version="1.1"
@@ -18,4 +18,4 @@ export const ViewsIcon = () => (
 	</SVG>
 );
 
-export default ViewsIcon;
+export default OpenLinkIcon;
