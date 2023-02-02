@@ -256,14 +256,14 @@ final class SettingsPageTest extends TestCase {
 	 * Sets Advanced Settings tab.
 	 */
 	private function set_advanced_settings_tab(): void {
-		$this->set_active_tab( 'advanced-settings' );
+		$this->set_active_tab( 'advanced_settings' );
 	}
 
 	/**
 	 * Sets Recrawl Settings tab.
 	 */
 	private function set_recrawl_settings_tab(): void {
-		$this->set_active_tab( 'recrawl-settings' );
+		$this->set_active_tab( 'recrawl_settings' );
 	}
 
 	/**

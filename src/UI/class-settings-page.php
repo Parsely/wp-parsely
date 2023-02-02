@@ -109,15 +109,15 @@ final class Settings_Page {
 	public function run(): void {
 		$this->setting_tabs = array(
 			array(
-				'key'   => 'basic-settings',
+				'key'   => 'basic_settings',
 				'label' => __( 'Basic Settings', 'wp-parsely' ),
 			),
 			array(
-				'key'   => 'recrawl-settings',
+				'key'   => 'recrawl_settings',
 				'label' => __( 'Recrawl Settings', 'wp-parsely' ),
 			),
 			array(
-				'key'   => 'advanced-settings',
+				'key'   => 'advanced_settings',
 				'label' => __( 'Advanced Settings', 'wp-parsely' ),
 			),
 		);
@@ -252,10 +252,10 @@ final class Settings_Page {
 		);
 
 		switch ( $this->get_active_tab() ) :
-			case 'advanced-settings':
+			case 'advanced_settings':
 				$this->initialize_advanced_section();
 				break;
-			case 'recrawl-settings':
+			case 'recrawl_settings':
 				$this->initialize_recrawl_section();
 				break;
 			default:
@@ -915,7 +915,7 @@ final class Settings_Page {
 	 */
 	public function validate_options( $input ) {
 		switch ( $this->get_active_tab() ) :
-			case 'recrawl-settings':
+			case 'recrawl_settings':
 				/**
 				 * Variable.
 				 *
@@ -923,7 +923,7 @@ final class Settings_Page {
 				 */
 				$validated_options = $this->validate_recrawl_section( $input );
 				break;
-			case 'advanced-settings':
+			case 'advanced_settings':
 				/**
 				 * Variable.
 				 *
