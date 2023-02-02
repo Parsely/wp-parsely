@@ -125,7 +125,7 @@ describe( 'Content Helper', () => {
 		expect( viewPostLink?.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
 		expect( viewPostLink?.getAttribute( 'title' ) ).toEqual( 'View Post (opens new tab)' );
 		expect( viewPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( editPostLink?.getAttribute( 'href' ) ).toEqual( 'http://example.com/wp-admin/post.php?post=1&action=edit' );
+		expect( editPostLink?.getAttribute( 'href' ) ).toEqual( '/wp-admin/post.php?post=1&action=edit' );
 		expect( editPostLink?.getAttribute( 'title' ) ).toEqual( 'Edit Post (opens new tab)' );
 		expect( editPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
 		expect( firstTopPost.querySelector( '.parsely-top-post-date' )?.textContent ).toEqual( 'Date Jan 1, 2022' );
