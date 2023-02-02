@@ -40,22 +40,17 @@ if ( is_multisite() && is_main_site() ) {
 
 	<?php $wp_parsely_settings->show_setting_tabs(); ?>
 
-	<div class="tab-content">
-		<form
-			name="parsely"
-			method="post"
-			action=<?php echo esc_url( 'options.php?tab=' . $wp_parsely_settings->get_active_tab() ); ?>
-			novalidate
-		>
-			<?php
-			settings_fields( Parsely::OPTIONS_KEY );
-
-			echo '<table class="form-table" role="presentation">';
-			do_settings_fields( Parsely::MENU_SLUG, $wp_parsely_settings->get_active_tab() );
-			echo '</table>';
-
-			submit_button();
-			?>
-		</form>
-	</div>
+	<form
+		name="parsely"
+		method="post"
+		action=<?php echo esc_url( 'options.php' ); ?>
+		novalidate
+		hidden
+	>
+		<?php
+		settings_fields( Parsely::OPTIONS_KEY );
+		$wp_parsely_settings->show_content_of_setting_tabs();
+		submit_button();
+		?>
+	</form>
 </div>

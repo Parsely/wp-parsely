@@ -109,15 +109,15 @@ final class Settings_Page {
 	public function run(): void {
 		$this->setting_tabs = array(
 			array(
-				'key'   => 'basic_settings',
+				'key'   => 'basic-section',
 				'label' => __( 'Basic Settings', 'wp-parsely' ),
 			),
 			array(
-				'key'   => 'recrawl_settings',
+				'key'   => 'recrawl-section',
 				'label' => __( 'Recrawl Settings', 'wp-parsely' ),
 			),
 			array(
-				'key'   => 'advanced_settings',
+				'key'   => 'advanced-section',
 				'label' => __( 'Advanced Settings', 'wp-parsely' ),
 			),
 		);
@@ -210,7 +210,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Shows settings tabs.
+	 * Shows setting tabs.
 	 *
 	 * @since 3.8.0
 	 */
@@ -219,8 +219,8 @@ final class Settings_Page {
 		<nav class="nav-tab-wrapper">
 			<?php foreach ( $this->setting_tabs as $t ) { ?>
 			<a
-				href=<?php echo esc_url_raw( '?page=' . Parsely::MENU_SLUG . '&tab=' . $t['key'] ); ?>
-				class="nav-tab <?php echo $this->get_active_tab() === $t['key'] ? 'nav-tab-active' : null; ?>"
+				class="nav-tab <?php echo esc_attr( $t['key'] . '-tab' ); ?>"
+				href=<?php echo esc_url_raw( '?page=' . Parsely::MENU_SLUG . '#' . $t['key'] ); ?>
 			>
 				<?php echo esc_html( $t['label'] ); ?>
 			</a>
@@ -230,14 +230,22 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Gets active tab.
+	 * Shows content of setting tabs.
 	 *
 	 * @since 3.8.0
 	 */
-	public function get_active_tab(): string {
-		wp_verify_nonce( Parsely::OPTIONS_KEY . '-options' );
+	public function show_content_of_setting_tabs(): void {
+		foreach ( $this->setting_tabs as $t ) {
+			?>
 
-		return isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : $this->setting_tabs[0]['key'];
+		<div class="tab-content <?php echo esc_attr( $t['key'] ); ?>">
+			<table class="form-table" role="presentation">
+				<?php do_settings_fields( Parsely::MENU_SLUG, $t['key'] ); ?>
+			</table>
+		</div>
+
+			<?php
+		}
 	}
 
 	/**
@@ -251,26 +259,25 @@ final class Settings_Page {
 			array( $this, 'validate_options' )
 		);
 
-		switch ( $this->get_active_tab() ) :
-			case 'advanced_settings':
-				$this->initialize_advanced_section();
-				break;
-			case 'recrawl_settings':
-				$this->initialize_recrawl_section();
-				break;
-			default:
-				$this->initialize_basic_section();
-		endswitch;
+		$basic_section_key    = $this->setting_tabs[0]['key'];
+		$recrawl_section_key  = $this->setting_tabs[1]['key'];
+		$advanced_section_key = $this->setting_tabs[2]['key'];
+
+		$this->initialize_basic_section( $basic_section_key );
+		$this->initialize_recrawl_section( $recrawl_section_key );
+		$this->initialize_advanced_section( $advanced_section_key );
 	}
 
 	/**
 	 * Registers section and settings for Basic section.
 	 *
+	 * @param string $section_key Key of the section.
+	 *
 	 * @since 3.2.0
 	 */
-	private function initialize_basic_section(): void {
+	private function initialize_basic_section( string $section_key ): void {
 		add_settings_section(
-			'basic_settings',
+			$section_key,
 			'',
 			'__return_null',
 			Parsely::MENU_SLUG
@@ -293,7 +300,7 @@ final class Settings_Page {
 			__( 'Parse.ly Site ID <em>(required)</em>', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			$field_args
 		);
 
@@ -309,7 +316,7 @@ final class Settings_Page {
 			__( 'Parse.ly API Secret', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			$field_args
 		);
 
@@ -325,7 +332,7 @@ final class Settings_Page {
 			__( 'Parse.ly Metadata Secret', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			$field_args
 		);
 
@@ -347,7 +354,7 @@ final class Settings_Page {
 			__( 'Metadata Format', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			$field_args
 		);
 
@@ -359,7 +366,7 @@ final class Settings_Page {
 			__( 'Logo', 'wp-parsely' ),
 			array( $this, 'print_media_single_image' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			array(
 				'title'      => __( 'Logo', 'wp-parsely' ), // Passed for legend element.
 				'option_key' => $field_id,
@@ -374,7 +381,7 @@ final class Settings_Page {
 			__( 'Track Logged-in Users', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Track Logged-in Users', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'track_authenticated_users',
@@ -396,7 +403,7 @@ final class Settings_Page {
 			__( 'Disable JavaScript', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Disable JavaScript', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'disable_javascript',
@@ -416,7 +423,7 @@ final class Settings_Page {
 				__( 'Disable AMP Tracking', 'wp-parsely' ),
 				array( $this, 'print_radio_tags' ),
 				Parsely::MENU_SLUG,
-				'basic_settings',
+				$section_key,
 				array(
 					'title'         => __( 'Disable AMP Tracking', 'wp-parsely' ), // Passed for legend element.
 					'option_key'    => 'disable_amp',
@@ -432,11 +439,13 @@ final class Settings_Page {
 	/**
 	 * Registers section and settings for Recrawl section.
 	 *
+	 * @param string $section_key Key of the section.
+	 *
 	 * @since 3.2.0
 	 */
-	private function initialize_recrawl_section(): void {
+	private function initialize_recrawl_section( string $section_key ): void {
 		add_settings_section(
-			'recrawl_settings',
+			$section_key,
 			'',
 			function (): void {
 				echo '<br /><strong>' . wp_kses_post( __( '<span style="color:#d63638">Important:</span> Changing any of these values below on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data.', 'wp-parsely' ) ) . '</strong><br />';
@@ -457,7 +466,7 @@ final class Settings_Page {
 			__( 'Track Post Types as', 'wp-parsely' ),
 			array( $this, 'print_track_post_types_table' ),
 			Parsely::MENU_SLUG,
-			'recrawl_settings',
+			$section_key,
 			array(
 				'title'      => __( 'Track Post Types as', 'wp-parsely' ),
 				'option_key' => $field_id,
@@ -481,7 +490,7 @@ final class Settings_Page {
 			__( 'Content ID Prefix', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
-			'recrawl_settings',
+			$section_key,
 			$field_args
 		);
 
@@ -491,7 +500,7 @@ final class Settings_Page {
 			__( 'Use Top-Level Categories for Section', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'recrawl_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Use Top-Level Categories for Section', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'use_top_level_cats',
@@ -526,7 +535,7 @@ final class Settings_Page {
 			__( 'Use Custom Taxonomy for Section', 'wp-parsely' ),
 			array( $this, 'print_select_tag' ),
 			Parsely::MENU_SLUG,
-			'recrawl_settings',
+			$section_key,
 			$field_args
 		);
 
@@ -536,7 +545,7 @@ final class Settings_Page {
 			__( 'Add Categories to Tags', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'recrawl_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Add Categories to Tags', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'cats_as_tags',
@@ -554,7 +563,7 @@ final class Settings_Page {
 			__( 'Lowercase All Tags', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'recrawl_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Lowercase All Tags', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'lowercase_tags',
@@ -570,7 +579,7 @@ final class Settings_Page {
 			__( 'Force HTTPS Canonicals', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'recrawl_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Force HTTPS Canonicals', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'force_https_canonicals',
@@ -586,12 +595,14 @@ final class Settings_Page {
 	/**
 	 * Registers section and settings for Advanced section.
 	 *
+	 * @param string $section_key Key of the section.
+	 *
 	 * @since 3.2.0
 	 */
-	private function initialize_advanced_section(): void {
+	private function initialize_advanced_section( string $section_key ): void {
 		// These are Advanced Settings.
 		add_settings_section(
-			'advanced_settings',
+			$section_key,
 			'',
 			'__return_null',
 			Parsely::MENU_SLUG
@@ -603,7 +614,7 @@ final class Settings_Page {
 			__( 'Disable Autotracking', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'advanced_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Disable Autotracking', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'disable_autotrack',
@@ -620,7 +631,7 @@ final class Settings_Page {
 			__( 'Wipe Parse.ly Metadata Info', 'wp-parsely' ),
 			array( $this, 'print_checkbox_tag' ),
 			Parsely::MENU_SLUG,
-			'advanced_settings',
+			$section_key,
 			array(
 				'option_key' => 'parsely_wipe_metadata_cache',
 				'yes_text'   => __( 'Yes, clear all metadata information for Parse.ly posts and re-send all metadata to Parse.ly.', 'wp-parsely' ),
@@ -914,38 +925,35 @@ final class Settings_Page {
 	 * @return ParselyOptions
 	 */
 	public function validate_options( $input ) {
-		switch ( $this->get_active_tab() ) :
-			case 'recrawl_settings':
-				/**
-				 * Variable.
-				 *
-				 * @var ParselyRecrawlOptions $input
-				 */
-				$validated_options = $this->validate_recrawl_section( $input );
-				break;
-			case 'advanced_settings':
-				/**
-				 * Variable.
-				 *
-				 * @var ParselyAdvancedOptions $input
-				 */
-				$validated_options = $this->validate_advanced_section( $input );
-				break;
-			default:
-				/**
-				 * Variable.
-				 *
-				 * @var ParselyBasicOptions $input
-				 */
-				$validated_options = $this->validate_basic_section( $input );
-		endswitch;
+		/**
+		 * Variable.
+		 *
+		 * @var ParselyBasicOptions $input
+		 */
+		$validated_basic_options = $this->validate_basic_section( $input );
+		/**
+		 * Variable.
+		 *
+		 * @var ParselyRecrawlOptions $input
+		 */
+		$validated_recrawl_options = $this->validate_recrawl_section( $input );
+		/**
+		 * Variable.
+		 *
+		 * @var ParselyAdvancedOptions $input
+		 */
+		$validated_advanced_options = $this->validate_advanced_section( $input );
 
 		/**
 		 * Variable.
 		 *
 		 * @var ParselyOptions
 		 */
-		return array_merge( $this->parsely->get_options(), $validated_options );
+		return array_merge(
+			$validated_basic_options,
+			$validated_recrawl_options,
+			$validated_advanced_options
+		);
 	}
 
 	/**
