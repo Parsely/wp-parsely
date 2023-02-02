@@ -278,7 +278,7 @@ final class Settings_Page {
 	private function initialize_basic_section( string $section_key ): void {
 		add_settings_section(
 			$section_key,
-			'',
+			__( 'Basic Settings', 'wp-parsely' ),
 			'__return_null',
 			Parsely::MENU_SLUG
 		);
@@ -446,7 +446,7 @@ final class Settings_Page {
 	private function initialize_recrawl_section( string $section_key ): void {
 		add_settings_section(
 			$section_key,
-			'',
+			__( 'Requires Recrawl Settings', 'wp-parsely' ),
 			function (): void {
 				echo '<br /><strong>' . wp_kses_post( __( '<span style="color:#d63638">Important:</span> Changing any of these values below on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data.', 'wp-parsely' ) ) . '</strong><br />';
 				printf(
@@ -600,10 +600,9 @@ final class Settings_Page {
 	 * @since 3.2.0
 	 */
 	private function initialize_advanced_section( string $section_key ): void {
-		// These are Advanced Settings.
 		add_settings_section(
 			$section_key,
-			'',
+			__( 'Advanced Settings', 'wp-parsely' ),
 			'__return_null',
 			Parsely::MENU_SLUG
 		);

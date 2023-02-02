@@ -40,13 +40,7 @@ if ( is_multisite() && is_main_site() ) {
 
 	<?php $wp_parsely_settings->show_setting_tabs(); ?>
 
-	<form
-		name="parsely"
-		method="post"
-		action=<?php echo esc_url( 'options.php' ); ?>
-		novalidate
-		hidden
-	>
+	<form name="parsely" method="post" action='options.php' novalidate hidden>
 		<?php
 		settings_fields( Parsely::OPTIONS_KEY );
 		$wp_parsely_settings->show_content_of_setting_tabs();
