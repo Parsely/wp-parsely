@@ -144,7 +144,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	private function assert_parsely_stats_admin_styles( bool $assert_type ): void {
 		$obj = $this->init_admin_columns_parsely_stats();
 
-		if ( $this->isPHPVersion7Dot2OrHigher() ) {
+		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
 			do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
 		} else {
@@ -267,7 +267,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	private function get_admin_columns() {
 		$obj = $this->init_admin_columns_parsely_stats();
 
-		if ( $this->isPHPVersion7Dot2OrHigher() ) {
+		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
 		} else {
 			$obj->set_current_screen();
@@ -492,7 +492,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @param string                      $post_type Type of the post.
 	 */
 	private function show_content_on_parsely_stats_column( $obj, $posts, $post_type ): void {
-		if ( $this->isPHPVersion7Dot2OrHigher() ) {
+		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
 		} else {
 			$obj->set_current_screen();
@@ -503,7 +503,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 			$post        = $current_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 			$column_name = 'parsely-stats';
 
-			if ( $this->isPHPVersion7Dot2OrHigher() ) {
+			if ( $this->is_php_version_7dot2_or_higher() ) {
 				do_action( "manage_{$post_type}s_custom_column", $column_name ); // phpcs:ignore
 			} else {
 				$obj->update_published_times_and_show_placeholder( $column_name );
@@ -711,7 +711,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @param bool                        $assert_type Indicates wether we are asserting for TRUE or FALSE.
 	 */
 	private function assert_parsely_stats_admin_script( $obj, $assert_type ): void {
-		if ( $this->isPHPVersion7Dot2OrHigher() ) {
+		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
 			do_action( 'admin_footer' ); // phpcs:ignore
 		} else {

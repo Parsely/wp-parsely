@@ -454,7 +454,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param bool     $availability_type TRUE if we want to check the presence of given hooks.
 	 */
 	public function assert_wp_hooks_availablility( $hooks, $availability_type ): void {
-		if ( ! $this->isPHPVersion7Dot2OrHigher() ) {
+		if ( ! $this->is_php_version_7dot2_or_higher() ) {
 			return;
 		}
 
@@ -633,7 +633,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * Note: Remove this function when we remove support for PHP 7.1.
 	 */
-	public function isPHPVersion7Dot2OrHigher(): bool {
+	public function is_php_version_7dot2_or_higher(): bool {
 		return phpversion() >= '7.2';
 	}
 

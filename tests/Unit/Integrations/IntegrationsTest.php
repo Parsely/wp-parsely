@@ -76,19 +76,21 @@ final class IntegrationsTest extends TestCase {
 	 */
 	public function test_registered_integrations_have_their_integrate_method_called(): void {
 		$mock_builder = $this->getMockBuilder( Integration::class );
-		/**
-		 * Variable.
-		 *
-		 * @var Integrations
-		 */
-		$mock_integration = $mock_builder->onlyMethods( array( 'integrate' ) )
-			->setConstructorArgs( array( self::$parsely ) )
-			->getMock();
 
-		$mock_integration->expects( self::once() )->method( 'integrate' ); // @phpstan-ignore-line
+		// See https://github.com/Parsely/wp-parsely/issues/426.
+		if ( method_exists( $mock_builder, 'onlyMethods' ) ) { // @phpstan-ignore-line
+			$mock_integration = $mock_builder->onlyMethods( array( 'integrate' ) )
+				->setConstructorArgs( array( self::$parsely ) )
+				->getMock();
+		} else {
+			$mock_integration = $mock_builder->setMethods( array( 'integrate' ) )
+				->setConstructorArgs( array( self::$parsely ) )
+				->getMock();
+		}
+		$mock_integration->expects( self::once() )->method( 'integrate' );
 
 		$integrations = new Integrations( self::$parsely );
-		$integrations->register( 'mock-integration', $mock_integration );
+		$integrations->register( 'mock-integration', $mock_integration ); // @phpstan-ignore-line
 
 		$integrations->integrate();
 	}
