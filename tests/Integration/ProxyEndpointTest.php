@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
-use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
 
@@ -106,7 +105,7 @@ abstract class ProxyEndpointTest extends TestCase {
 	/**
 	 * Verifies that the route is registered.
 	 */
-	public function test_register_routes_by_default(): void {
+	public function run_test_register_routes_by_default(): void {
 		$routes = rest_get_server()->get_routes();
 		self::assertArrayHasKey( self::$route, $routes );
 		self::assertCount( 1, $routes[ self::$route ] );
@@ -117,7 +116,7 @@ abstract class ProxyEndpointTest extends TestCase {
 	 * Verifies that the route is not registered when the respective filter is
 	 * set to false.
 	 */
-	public function test_do_not_register_route_when_proxy_is_disabled(): void {
+	public function run_test_do_not_register_route_when_proxy_is_disabled(): void {
 		// Override some setup steps in order to set the filter to false.
 		remove_action( 'rest_api_init', $this->rest_api_init_proxy );
 		$endpoint                  = $this->get_endpoint();
@@ -135,7 +134,7 @@ abstract class ProxyEndpointTest extends TestCase {
 	 * Verifies that calls return an error and do not perform a remote call when
 	 * the Site ID is not populated in site options.
 	 */
-	public function test_get_items_fails_without_site_id_set() {
+	public function run_test_get_items_fails_without_site_id_set() {
 		TestCase::set_options( array( 'apikey' => '' ) );
 
 		$dispatched = 0;
@@ -153,6 +152,37 @@ abstract class ProxyEndpointTest extends TestCase {
 		self::assertSame( 'parsely_site_id_not_set', $error->get_error_code() );
 		self::assertSame(
 			'A Parse.ly Site ID must be set in site options to use this endpoint',
+			$error->get_error_message()
+		);
+	}
+
+	/**
+	 * Verifies that calls return an error and do not perform a remote call when
+	 * the API Secret is not populated in site options.
+	 */
+	public function run_test_get_items_fails_without_api_secret_set() {
+		TestCase::set_options(
+			array(
+				'apikey'     => 'example.com',
+				'api_secret' => '',
+			)
+		);
+
+		$dispatched = 0;
+		add_filter(
+			'pre_http_request',
+			function () use ( &$dispatched ) {
+				$dispatched++;
+				return null;
+			}
+		);
+
+		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', self::$route ) );
+		$error    = $response->as_error();
+		self::assertSame( 403, $response->get_status() );
+		self::assertSame( 'parsely_api_secret_not_set', $error->get_error_code() );
+		self::assertSame(
+			'A Parse.ly API Secret must be set in site options to use this endpoint',
 			$error->get_error_message()
 		);
 	}
