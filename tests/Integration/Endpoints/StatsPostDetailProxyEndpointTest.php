@@ -165,7 +165,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 				'data' => array(
 					(object) array(
 						'avgEngaged' => ' 1:55',
-						'dashUrl'    => 'https://dash.parsely.com/example.com/find?url=https%3A%2F%2Fexample.com',
+						'dashUrl'    => Parsely::DASHBOARD_BASE_URL . '/example.com/find?url=https%3A%2F%2Fexample.com',
 						'url'        => 'https://example.com',
 						'views'      => '2,158',
 						'visitors'   => '1,537',
