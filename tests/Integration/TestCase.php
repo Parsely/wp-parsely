@@ -18,6 +18,7 @@ use Parsely\Parsely;
 use PHPUnit\Framework\RiskyTestError;
 use WP_Error;
 use WP_Post;
+use WP_Term;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
 
 use const Parsely\Utils\WP_DATE_TIME_FORMAT;
@@ -235,17 +236,24 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * This function ensures strict typing in our codebase.
 	 *
-	 * @param int $post_id ID of the posts.
+	 * @param int $post_id Optional. Defaults to global $post.
 	 *
 	 * @return WP_Post
 	 */
-	public function get_post( $post_id ) {
+	public function get_post( $post_id = null ) {
+		if ( null === $post_id ) {
+			global $post;
+			$post_obj = $post;
+		} else {
+			$post_obj = get_post( $post_id );
+		}
+
 		/**
 		 * Variable.
 		 *
 		 * @var WP_Post
 		 */
-		return get_post( $post_id );
+		return $post_obj;
 	}
 
 	/**
@@ -293,7 +301,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * This function ensures strict typing in our codebase.
 	 *
-	 * @param int $post_id ID of the posts.
+	 * @param int $post_id ID of the post.
 	 *
 	 * @return string
 	 */
@@ -304,6 +312,60 @@ abstract class TestCase extends WPIntegrationTestCase {
 		 * @var string
 		 */
 		return get_permalink( $post_id );
+	}
+
+	/**
+	 * Wrapper around get_term function which must return WP_Term.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $term_id ID of the term.
+	 *
+	 * @return WP_Term
+	 */
+	public function get_term( $term_id ) {
+		/**
+		 * Variable.
+		 *
+		 * @var WP_Term
+		 */
+		return get_term( $term_id );
+	}
+
+	/**
+	 * Wrapper around get_term function which must return WP_Term in associative array.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $term_id ID of the term.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function get_term_in_array( $term_id ) {
+		/**
+		 * Variable.
+		 *
+		 * @var array<string, mixed>
+		 */
+		return get_term( $term_id, '', 'ARRAY_A' );
+	}
+
+	/**
+	 * Wrapper around get_term_link function which must return url.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $term_id ID of the term.
+	 *
+	 * @return string
+	 */
+	public function get_term_link( $term_id ) {
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
+		return get_term_link( $term_id );
 	}
 
 	/**

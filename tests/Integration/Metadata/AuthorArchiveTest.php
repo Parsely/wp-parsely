@@ -61,13 +61,12 @@ final class AuthorArchiveTest extends NonPostTestCase {
 		// The author archive metadata doesn't use the post data, but the
 		// construction method requires it for now.
 		$metadata        = new Metadata( $parsely );
-		$structured_data = $metadata->construct_metadata( get_post() );
+		$structured_data = $metadata->construct_metadata( $this->get_post() );
 
-		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the category name.
-		self::assertEquals( 'Author - parsely', $structured_data['headline'] );
-		self::assertEquals( $author_posts_url, $structured_data['url'] );
+		self::assertEquals( 'Author - parsely', isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
+		self::assertEquals( $author_posts_url, isset( $structured_data['url'] ) ? $structured_data['url'] : null );
 	}
 }
