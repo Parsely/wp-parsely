@@ -16,7 +16,6 @@ use ReflectionProperty;
 use ReflectionMethod;
 use Parsely\Parsely;
 use PHPUnit\Framework\RiskyTestError;
-use WP_Error;
 use WP_Post;
 use WP_Term;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
@@ -68,8 +67,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	/**
 	 * Updates Parse.ly options with a merge of default and custom values.
 	 *
-	 * @param array $custom_options Associative array of option keys and values
-	 *                              to be saved.
+	 * @param array<string, mixed> $custom_options Associative array of option keys and values to be saved.
 	 */
 	public static function set_options( array $custom_options = array() ): void {
 		update_option( Parsely::OPTIONS_KEY, array_merge( self::DEFAULT_OPTIONS, $custom_options ) );
@@ -81,7 +79,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $post_type Optional. The post's type. Default is 'post'.
 	 * @param string $post_status Optional. The post's status. Default is 'publish'.
 	 *
-	 * @return array An array of WP_Post fields.
+	 * @return array<string, mixed> An array of WP_Post fields.
 	 */
 	public function create_test_post_array( string $post_type = 'post', string $post_status = 'publish' ): array {
 		return array(
@@ -97,8 +95,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Creates a test category.
 	 *
 	 * @param string $name Category name.
-	 * @return array|WP_Error Array containing the term_id and term_taxonomy_id,
-	 *                        WP_Error otherwise.
+	 *
+	 * @return int
 	 */
 	public function create_test_category( string $name ) {
 		return self::factory()->category->create(
@@ -115,8 +113,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Creates a test user.
 	 *
 	 * @param string $user_login The user's login username.
-	 * @return int|WP_Error The newly created user's ID or a WP_Error object
-	 *                      if the user could not be created.
+	 *
+	 * @return int The newly created user's ID or 0 if the user could not be created.
 	 */
 	public function create_test_user( string $user_login ) {
 		return self::factory()->user->create( array( 'user_login' => $user_login ) );
@@ -128,7 +126,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $domain  Site second-level domain without a .com TLD e.g. 'example' will
 	 *                        result in a new subsite of 'http://example.com'.
 	 * @param int    $user_id User ID for the site administrator.
-	 * @return int|WP_Error The site ID on success, WP_Error object on failure.
+	 *
+	 * @return int
 	 */
 	public function create_test_blog( string $domain, int $user_id ) {
 		return self::factory()->blog->create(
@@ -144,8 +143,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string $taxonomy_key Taxonomy key, must not exceed 32 characters.
 	 * @param string $term_name    The term name to add.
-	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id,
-	 *                        WP_Error otherwise.
+	 *
+	 * @return int
 	 */
 	public function create_test_taxonomy( string $taxonomy_key, string $term_name ) {
 		register_taxonomy(
@@ -212,6 +211,11 @@ abstract class TestCase extends WPIntegrationTestCase {
 		$date     = new DateTime( '2009-12-31', new DateTimeZone( 'America/New_York' ) ); // Date with timezone to replicate real world scenarios.
 
 		for ( $i = 1; $i <= $num_of_posts; $i++ ) {
+			/**
+			 * Variable.
+			 *
+			 * @var DateTime
+			 */
 			$post_date = date_add( $date, date_interval_create_from_date_string( '1 days' ) ); // Increment by 1 day like sequence.
 			$post_id   = self::factory()->post->create(
 				array(
@@ -389,6 +393,21 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
+	 * Wrapper around wp_json_encode function which must return string.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param mixed $data — Variable (usually an array or object) to encode as JSON.
+	 *
+	 * @return string
+	 */
+	public function wp_json_encode( $data ) {
+		$encoded_data = wp_json_encode( $data );
+
+		return false !== $encoded_data ? $encoded_data : '';
+	}
+
+	/**
 	 * Creates a new post and navigates to it.
 	 *
 	 * @param string $post_status Optional. The post's status. Default is 'publish'.
@@ -410,6 +429,22 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 */
 	public function set_admin_user( $admin_user_id = 1 ): void {
 		wp_set_current_user( $admin_user_id );
+	}
+
+	/**
+	 * Wrapper around ob_get_clean function which must return string.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @return string
+	 */
+	public function ob_get_clean() {
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
+		return ob_get_clean();
 	}
 
 	/**
@@ -497,11 +532,11 @@ abstract class TestCase extends WPIntegrationTestCase {
 	/**
 	 * Asserts multiple enqueuing statuses for a script.
 	 *
-	 * @param string $handle       Script handle to test.
-	 * @param array  $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 * @param array  $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 * @param string        $handle       Script handle to test.
+	 * @param array<string> $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
+	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 * @param array<string> $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
+	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
 	 *
 	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
 	 */
@@ -564,11 +599,11 @@ abstract class TestCase extends WPIntegrationTestCase {
 	/**
 	 * Asserts multiple enqueuing statuses for a style.
 	 *
-	 * @param string $handle       Style handle to test.
-	 * @param array  $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 * @param array  $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 * @param string        $handle       Style handle to test.
+	 * @param array<string> $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
+	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 * @param array<string> $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
+	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
 	 *
 	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
 	 */

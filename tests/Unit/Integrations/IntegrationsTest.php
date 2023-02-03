@@ -44,19 +44,24 @@ final class IntegrationsTest extends TestCase {
 		$integrations = new Integrations( self::$parsely );
 
 		$integrations->register( 'class', FakeIntegration::class );
-		$integrations->register( 'object', new FakeIntegration() );
+		$integrations->register( 'object', new FakeIntegration() ); // @phpstan-ignore-line
 
 		// Use Reflection to look inside the collection.
 		$reflector          = new ReflectionClass( $integrations );
 		$reflector_property = $reflector->getProperty( 'integrations' );
 		$reflector_property->setAccessible( true );
+		/**
+		 * Variable.
+		 *
+		 * @var array<string, mixed>
+		 */
 		$registered_integrations = $reflector_property->getValue( $integrations );
 
 		self::assertCount( 2, $registered_integrations );
 		self::assertSame( array( 'class', 'object' ), array_keys( $registered_integrations ) );
 
 		// Override an existing integration.
-		$integrations->register( 'object', new FakeIntegration() );
+		$integrations->register( 'object', new FakeIntegration() ); // @phpstan-ignore-line
 
 		self::assertCount( 2, $registered_integrations );
 		self::assertSame( array( 'class', 'object' ), array_keys( $registered_integrations ) );
@@ -71,17 +76,16 @@ final class IntegrationsTest extends TestCase {
 	 */
 	public function test_registered_integrations_have_their_integrate_method_called(): void {
 		$mock_builder = $this->getMockBuilder( Integration::class );
-		// See https://github.com/Parsely/wp-parsely/issues/426.
-		if ( method_exists( $mock_builder, 'onlyMethods' ) ) {
-			$mock_integration = $mock_builder->onlyMethods( array( 'integrate' ) )
-				->setConstructorArgs( array( self::$parsely ) )
-				->getMock();
-		} else {
-			$mock_integration = $mock_builder->setMethods( array( 'integrate' ) )
-				->setConstructorArgs( array( self::$parsely ) )
-				->getMock();
-		}
-		$mock_integration->expects( $this->once() )->method( 'integrate' );
+		/**
+		 * Variable.
+		 *
+		 * @var Integrations
+		 */
+		$mock_integration = $mock_builder->onlyMethods( array( 'integrate' ) )
+			->setConstructorArgs( array( self::$parsely ) )
+			->getMock();
+
+		$mock_integration->expects( self::once() )->method( 'integrate' ); // @phpstan-ignore-line
 
 		$integrations = new Integrations( self::$parsely );
 		$integrations->register( 'mock-integration', $mock_integration );

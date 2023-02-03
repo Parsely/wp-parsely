@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use Parsely\Endpoints\Base_API_Proxy;
+use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
 
@@ -57,12 +59,12 @@ abstract class ProxyEndpointTest extends TestCase {
 	/**
 	 * Returns the endpoint to be used in tests.
 	 */
-	abstract public function get_endpoint();
+	abstract public function get_endpoint(): Base_API_Proxy;
 
 	/**
 	 * Verifies that calls return results in the expected format.
 	 */
-	abstract public function test_get_items();
+	abstract public function test_get_items(): void;
 
 	/**
 	 * Runs once before all tests.
@@ -134,7 +136,7 @@ abstract class ProxyEndpointTest extends TestCase {
 	 * Verifies that calls return an error and do not perform a remote call when
 	 * the Site ID is not populated in site options.
 	 */
-	public function run_test_get_items_fails_without_site_id_set() {
+	public function run_test_get_items_fails_without_site_id_set(): void {
 		TestCase::set_options( array( 'apikey' => '' ) );
 
 		$dispatched = 0;
@@ -147,7 +149,12 @@ abstract class ProxyEndpointTest extends TestCase {
 		);
 
 		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', self::$route ) );
-		$error    = $response->as_error();
+		/**
+		 * Variable.
+		 *
+		 * @var WP_Error
+		 */
+		$error = $response->as_error();
 		self::assertSame( 403, $response->get_status() );
 		self::assertSame( 'parsely_site_id_not_set', $error->get_error_code() );
 		self::assertSame(
@@ -160,7 +167,7 @@ abstract class ProxyEndpointTest extends TestCase {
 	 * Verifies that calls return an error and do not perform a remote call when
 	 * the API Secret is not populated in site options.
 	 */
-	public function run_test_get_items_fails_without_api_secret_set() {
+	public function run_test_get_items_fails_without_api_secret_set(): void {
 		TestCase::set_options(
 			array(
 				'apikey'     => 'example.com',
@@ -178,7 +185,12 @@ abstract class ProxyEndpointTest extends TestCase {
 		);
 
 		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', self::$route ) );
-		$error    = $response->as_error();
+		/**
+		 * Variable.
+		 *
+		 * @var WP_Error
+		 */
+		$error = $response->as_error();
 		self::assertSame( 403, $response->get_status() );
 		self::assertSame( 'parsely_api_secret_not_set', $error->get_error_code() );
 		self::assertSame(

@@ -127,7 +127,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_api_url
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_items
 	 */
-	public function test_get_items() {
+	public function test_get_items(): void {
 		TestCase::set_options(
 			array(
 				'apikey'     => 'example.com',
