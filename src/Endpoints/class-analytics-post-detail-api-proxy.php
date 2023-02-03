@@ -74,7 +74,7 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @param float $time The time as a float number.
 	 * @return string The resulting formatted time duration.
 	 */
-	private function get_duration( float $time ): string {
+	private static function get_duration( float $time ): string {
 		$minutes = absint( $time );
 		$seconds = absint( round( fmod( $time, 1 ) * 60 ) );
 

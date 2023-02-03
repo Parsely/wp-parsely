@@ -97,7 +97,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		// Set referrer type order as it is displayed in the Parse.ly dashboard.
 		$referrer_type_keys = array( 'social', 'search', 'other', 'internal', 'direct' );
 		foreach ( $referrer_type_keys as $key ) {
-			$result->$key->views = 0;
+			$result->$key = (object) array( 'views' => 0 );
 		}
 
 		// Set views and views totals.
@@ -116,7 +116,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 
 		// Add direct and total views to the object.
 		$result->direct->views = $this->total_views - $total_referrer_views;
-		$result->totals->views = $this->total_views;
+		$result->totals        = (object) array( 'views' => $this->total_views );
 
 		// Remove referrer types without views.
 		foreach ( $referrer_type_keys as $key ) {
@@ -187,9 +187,9 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		// Convert temporary array to result object and add totals.
 		$result = new stdClass();
 		foreach ( $temp_views as $key => $value ) {
-			$result->$key->views = $value;
+			$result->$key = (object) array( 'views' => $value );
 		}
-		$result->totals->views = $totals;
+		$result->totals = (object) array( 'views' => $totals );
 
 		// Set percentages values and format numbers.
 		foreach ( $result as $key => $value ) {
