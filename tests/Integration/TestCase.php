@@ -231,6 +231,42 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
+	 * Wrapper around get_post function which must return WP_Post.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $post_id ID of the posts.
+	 *
+	 * @return WP_Post
+	 */
+	public function get_post( $post_id ) {
+		/**
+		 * Variable.
+		 *
+		 * @var WP_Post
+		 */
+		return get_post( $post_id );
+	}
+
+	/**
+	 * Wrapper around get_post function which must return WP_Post as an associative array.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $post_id ID of the posts.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function get_post_in_array( $post_id ) {
+		/**
+		 * Variable.
+		 *
+		 * @var array<string, mixed>
+		 */
+		return get_post( $post_id, 'ARRAY_A' );
+	}
+
+	/**
 	 * Gets given test posts.
 	 *
 	 * @param int[] $post_ids IDs of the posts.
@@ -250,6 +286,44 @@ abstract class TestCase extends WPIntegrationTestCase {
 		 * @var WP_Post[]
 		 */
 		return $posts;
+	}
+
+	/**
+	 * Wrapper around get_permalink function which must return url.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $post_id ID of the posts.
+	 *
+	 * @return string
+	 */
+	public function get_permalink( $post_id ) {
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
+		return get_permalink( $post_id );
+	}
+
+	/**
+	 * Wrapper around get_post_time function which must return url.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param string      $format Format to use for retrieving the time.
+	 * @param bool        $is_gmt Whether to retrieve the GMT time.
+	 * @param int|WP_Post $post WP_Post object or ID.
+	 *
+	 * @return int
+	 */
+	public function get_post_time_in_int( $format, $is_gmt, $post ) {
+		/**
+		 * Variable.
+		 *
+		 * @var int
+		 */
+		return get_post_time( $format, $is_gmt, $post );
 	}
 
 	/**
