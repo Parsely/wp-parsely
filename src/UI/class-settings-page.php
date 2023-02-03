@@ -20,9 +20,9 @@ use const Parsely\PARSELY_FILE;
  *
  * @since 3.0.0
  *
- * @phpstan-import-type ParselyOptions from Parsely
+ * @phpstan-import-type Parsely_Options from Parsely
  *
- * @phpstan-type SettingArguments array{
+ * @phpstan-type Setting_Arguments array{
  *   option_key: string,
  *   label_for: string,
  *   title?: string,
@@ -679,7 +679,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param SettingArguments $args The arguments for the form field. May contain 'filter'.
+	 * @param Setting_Arguments $args The arguments for the form field. May contain 'filter'.
 	 */
 	private function print_filter_text( $args ): void {
 		if ( isset( $args['filter'] ) && has_filter( $args['filter'] ) ) {
@@ -695,7 +695,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param SettingArguments $args The arguments for the form field. May contain 'help_text'.
+	 * @param Setting_Arguments $args The arguments for the form field. May contain 'help_text'.
 	 */
 	private function print_description_text( $args ): void {
 		echo isset( $args['help_text'] ) ? '<p class="description" id="' . esc_attr( $args['option_key'] ) . '-description">' . wp_kses_post( $args['help_text'] ) . '</p>' : '';
@@ -704,7 +704,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Prints out an input text tag.
 	 *
-	 * @param SettingArguments $args The arguments for text tag.
+	 * @param Setting_Arguments $args The arguments for text tag.
 	 */
 	public function print_text_tag( $args ): void {
 		$options = $this->parsely->get_options();
@@ -740,7 +740,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Prints a checkbox tag in the settings page.
 	 *
-	 * @param SettingArguments $args Arguments to print to checkbox tag.
+	 * @param Setting_Arguments $args Arguments to print to checkbox tag.
 	 */
 	public function print_checkbox_tag( $args ): void {
 		$options  = $this->parsely->get_options();
@@ -763,7 +763,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Prints out the select tags
 	 *
-	 * @param SettingArguments $args The arguments for the select dropdowns.
+	 * @param Setting_Arguments $args The arguments for the select dropdowns.
 	 */
 	public function print_select_tag( $args ): void {
 		$options        = $this->parsely->get_options();
@@ -794,7 +794,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Prints the radio buttons.
 	 *
-	 * @param SettingArguments $args The arguments for the radio buttons.
+	 * @param Setting_Arguments $args The arguments for the radio buttons.
 	 */
 	public function print_radio_tags( $args ): void {
 		$name          = $args['option_key'];
@@ -836,7 +836,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * Prints out a "single-image browse control" which includes a text input to
 	 * store image path and a button to browse for images.
 	 *
-	 * @param SettingArguments $args The arguments for the control.
+	 * @param Setting_Arguments $args The arguments for the control.
 	 */
 	public function print_media_single_image( $args ): void {
 		$key   = $args['option_key'];
@@ -866,7 +866,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param SettingArguments $args The arguments used in the output HTML elements.
+	 * @param Setting_Arguments $args The arguments used in the output HTML elements.
 	 */
 	public function print_track_post_types_table( $args ): void {
 		$option_key = esc_attr( $args['option_key'] );
@@ -954,9 +954,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Validates the options provided by the user.
 	 *
-	 * @param ParselyOptions $input Options from the settings page.
+	 * @param Parsely_Options $input Options from the settings page.
 	 *
-	 * @return ParselyOptions List of validated input settings.
+	 * @return Parsely_Options List of validated input settings.
 	 */
 	public function validate_options( $input ) {
 		$options = $this->parsely->get_options();
@@ -1205,7 +1205,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param ParselyOptions $input Array passed to validate_options() function.
+	 * @param Parsely_Options $input Array passed to validate_options() function.
 	 */
 	private function validate_options_post_type_tracking( &$input ): void {
 		$options         = $this->parsely->get_options();
