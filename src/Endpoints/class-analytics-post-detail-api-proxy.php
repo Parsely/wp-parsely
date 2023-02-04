@@ -47,18 +47,19 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	protected function generate_data( $response ): array {
 		$site_id = $this->parsely->get_site_id();
 
-		return array_map(
-			static function( stdClass $item ) use ( $site_id ) {
-				return (object) array(
-					'avgEngaged' => $this->get_duration( (float) $item->avg_engaged ),
-					'dashUrl'    => Parsely::get_dash_url( $site_id, $item->url ),
-					'url'        => $item->url,
-					'views'      => number_format_i18n( $item->metrics->views ),
-					'visitors'   => number_format_i18n( $item->metrics->visitors ),
-				);
-			},
-			$response
-		);
+		$output = [];
+		
+		foreach ( $response as $item ) {
+			$output[] = (object) array(
+				'avgEngaged' => $this->get_duration( (float) $item->avg_engaged ),
+				'dashUrl'    => Parsely::get_dash_url( $site_id, $item->url ),
+				'url'        => $item->url,
+				'views'      => number_format_i18n( $item->metrics->views ),
+				'visitors'   => number_format_i18n( $item->metrics->visitors ),
+			);
+		}
+
+		return $output;
 	}
 
 	/**
