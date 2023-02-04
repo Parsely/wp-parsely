@@ -47,7 +47,7 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	protected function generate_data( $response ): array {
 		$site_id = $this->parsely->get_site_id();
 
-		$output = [];
+		$output = array();
 		
 		foreach ( $response as $item ) {
 			$output[] = (object) array(
