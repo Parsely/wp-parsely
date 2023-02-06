@@ -114,7 +114,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string $user_login The user's login username.
 	 *
-	 * @return int The newly created user's ID or 0 if the user could not be created.
+	 * @return int The newly created user's ID.
 	 */
 	public function create_test_user( string $user_login ) {
 		return self::factory()->user->create( array( 'user_login' => $user_login ) );
@@ -373,7 +373,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Wrapper around get_post_time function which must return url.
+	 * Wrapper around get_post_time function which must return time in int.
 	 *
 	 * This function ensures strict typing in our codebase.
 	 *
@@ -429,22 +429,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 */
 	public function set_admin_user( $admin_user_id = 1 ): void {
 		wp_set_current_user( $admin_user_id );
-	}
-
-	/**
-	 * Wrapper around ob_get_clean function which must return string.
-	 *
-	 * This function ensures strict typing in our codebase.
-	 *
-	 * @return string
-	 */
-	public function ob_get_clean() {
-		/**
-		 * Variable.
-		 *
-		 * @var string
-		 */
-		return ob_get_clean();
 	}
 
 	/**
