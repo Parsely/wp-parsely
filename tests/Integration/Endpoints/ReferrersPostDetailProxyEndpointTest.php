@@ -83,10 +83,7 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
 	 */
 	public function test_get_items_fails_when_site_id_is_not_set(): void {
-		$request = new WP_REST_Request( 'GET', self::$route );
-		$request->set_param( 'total_views', '2,500' );
-
-		parent::run_test_get_items_fails_without_site_id_set( $request );
+		parent::run_test_get_items_fails_without_site_id_set();
 	}
 
 	/**
@@ -107,10 +104,7 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
 	 */
 	public function test_get_items_fails_when_api_secret_is_not_set(): void {
-		$request = new WP_REST_Request( 'GET', self::$route );
-		$request->set_param( 'total_views', '2,500' );
-
-		parent::run_test_get_items_fails_without_api_secret_set( $request );
+		parent::run_test_get_items_fails_without_api_secret_set();
 	}
 
 	/**
