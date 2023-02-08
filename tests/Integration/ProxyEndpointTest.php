@@ -133,9 +133,14 @@ abstract class ProxyEndpointTest extends TestCase {
 	/**
 	 * Verifies that calls return an error and do not perform a remote call when
 	 * the Site ID is not populated in site options.
+	 *
+	 * @param WP_REST_Request|null $request The request object to be used.
 	 */
-	public function run_test_get_items_fails_without_site_id_set() {
+	public function run_test_get_items_fails_without_site_id_set( $request = null ): void {
 		TestCase::set_options( array( 'apikey' => '' ) );
+		if ( null === $request ) {
+			$request = new WP_REST_Request( 'GET', self::$route );
+		}
 
 		$dispatched = 0;
 		add_filter(
@@ -146,7 +151,7 @@ abstract class ProxyEndpointTest extends TestCase {
 			}
 		);
 
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', self::$route ) );
+		$response = rest_get_server()->dispatch( $request );
 		$error    = $response->as_error();
 		self::assertSame( 403, $response->get_status() );
 		self::assertSame( 'parsely_site_id_not_set', $error->get_error_code() );
@@ -159,14 +164,19 @@ abstract class ProxyEndpointTest extends TestCase {
 	/**
 	 * Verifies that calls return an error and do not perform a remote call when
 	 * the API Secret is not populated in site options.
+	 *
+	 * @param WP_REST_Request|null $request The request object to be used.
 	 */
-	public function run_test_get_items_fails_without_api_secret_set() {
+	public function run_test_get_items_fails_without_api_secret_set( $request = null ): void {
 		TestCase::set_options(
 			array(
 				'apikey'     => 'example.com',
 				'api_secret' => '',
 			)
 		);
+		if ( null === $request ) {
+			$request = new WP_REST_Request( 'GET', self::$route );
+		}
 
 		$dispatched = 0;
 		add_filter(
@@ -177,7 +187,7 @@ abstract class ProxyEndpointTest extends TestCase {
 			}
 		);
 
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', self::$route ) );
+		$response = rest_get_server()->dispatch( $request );
 		$error    = $response->as_error();
 		self::assertSame( 403, $response->get_status() );
 		self::assertSame( 'parsely_api_secret_not_set', $error->get_error_code() );
