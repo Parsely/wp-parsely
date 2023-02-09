@@ -14,6 +14,8 @@ use stdClass;
 use WP_REST_Request;
 use WP_Error;
 
+use function Parsely\Utils\convert_to_positive_integer;
+
 /**
  * Configures the `/referrers/post/detail` REST API endpoint.
  *
@@ -46,7 +48,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	public function get_items( WP_REST_Request $request ) {
-		$this->total_views = $this->convert_to_positive_integer(
+		$this->total_views = convert_to_positive_integer(
 			strval( $request->get_param( 'total_views' ) )
 		);
 		$request->offsetUnset( 'total_views' ); // Remove param from request.
@@ -64,7 +66,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 */
 	protected function generate_data( $response ): array {
 		$referrers_types = $this->generate_referrer_types_data( $response );
-		$direct_views    = $this->convert_to_positive_integer(
+		$direct_views    = convert_to_positive_integer(
 			$referrers_types->direct->views
 		);
 		$referrers_top   = $this->generate_referrers_data( 5, $response, $direct_views );
@@ -214,17 +216,6 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Converts a string to a positive integer, removing any non-numeric
-	 * characters.
-	 *
-	 * @param string $string The string to be converted to an integer.
-	 * @return int The integer resulting from the conversion.
-	 */
-	private function convert_to_positive_integer( string $string ): int {
-		return (int) preg_replace( '/\D/', '', $string );
 	}
 
 	/**
