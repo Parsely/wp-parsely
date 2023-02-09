@@ -127,7 +127,7 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_api_url
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_items
 	 */
-	public function test_get_items() {
+	public function test_get_items(): void {
 		TestCase::set_options(
 			array(
 				'apikey'     => 'example.com',
@@ -144,52 +144,52 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 				return array(
 					'body' => '{"data":[
 						{
-							"metrics": {"referrers_views": 1768},
+							"metrics": {"referrers_views": 1500},
 							"name": "google",
 							"type": "search"
 						},
 						{
-							"metrics": {"referrers_views": 65},
+							"metrics": {"referrers_views": 100},
 							"name": "blog.parse.ly",
 							"type": "internal"
 						},
 						{
-							"metrics": {"referrers_views": 12},
+							"metrics": {"referrers_views": 50},
 							"name": "bing",
 							"type": "search"
 						},
 						{
-							"metrics": {"referrers_views": 5},
+							"metrics": {"referrers_views": 30},
 							"name": "facebook.com",
 							"type": "social"
 						},
 						{
-							"metrics": {"referrers_views": 4},
+							"metrics": {"referrers_views": 10},
 							"name": "okt.to",
 							"type": "other"
 						},
 						{
-							"metrics": {"referrers_views": 4},
+							"metrics": {"referrers_views": 10},
 							"name": "yandex",
 							"type": "search"
 						},
 						{
-							"metrics": {"referrers_views": 3},
+							"metrics": {"referrers_views": 10},
 							"name": "parse.ly",
 							"type": "internal"
 						},
 						{
-							"metrics": {"referrers_views": 3},
+							"metrics": {"referrers_views": 10},
 							"name": "yahoo!",
 							"type": "search"
 						},
 						{
-							"metrics": {"referrers_views": 1},
+							"metrics": {"referrers_views": 5},
 							"name": "site1.com",
 							"type": "other"
 						},
 						{
-							"metrics": {"referrers_views": 1},
+							"metrics": {"referrers_views": 5},
 							"name": "link.site2.com",
 							"type": "other"
 						}
@@ -200,65 +200,68 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 
 		$expected_top = (object) array(
 			'direct'        => (object) array(
-				'views'                  => '1,866',
-				'viewsPercentage'        => false,
-				'datasetViewsPercentage' => '50.22',
+				'views'                  => '770',
+				'viewsPercentage'        => '30.80',
+				'datasetViewsPercentage' => '31.43',
 			),
 			'google'        => (object) array(
-				'views'                  => '1,768',
-				'viewsPercentage'        => false,
-				'datasetViewsPercentage' => '47.58',
+				'views'                  => '1,500',
+				'viewsPercentage'        => '60.00',
+				'datasetViewsPercentage' => '61.22',
 			),
 			'blog.parse.ly' => (object) array(
-				'views'                  => '65',
-				'viewsPercentage'        => false,
-				'datasetViewsPercentage' => '1.75',
+				'views'                  => '100',
+				'viewsPercentage'        => '4.00',
+				'datasetViewsPercentage' => '4.08',
 			),
 			'bing'          => (object) array(
-				'views'                  => '12',
-				'viewsPercentage'        => false,
-				'datasetViewsPercentage' => '0.32',
+				'views'                  => '50',
+				'viewsPercentage'        => '2.00',
+				'datasetViewsPercentage' => '2.04',
 			),
 			'facebook.com'  => (object) array(
-				'views'                  => '5',
-				'viewsPercentage'        => false,
-				'datasetViewsPercentage' => '0.13',
+				'views'                  => '30',
+				'viewsPercentage'        => '1.20',
+				'datasetViewsPercentage' => '1.22',
 			),
 			'totals'        => (object) array(
-				'views'                  => '3,716',
-				'viewsPercentage'        => false,
+				'views'                  => '2,450',
+				'viewsPercentage'        => '98.00',
 				'datasetViewsPercentage' => '100.00',
 			),
 		);
 
 		$expected_types = (object) array(
 			'social'   => (object) array(
-				'views'           => '5',
-				'viewsPercentage' => false,
+				'views'           => '30',
+				'viewsPercentage' => '1.20',
 			),
 			'search'   => (object) array(
-				'views'           => '1,787',
-				'viewsPercentage' => false,
+				'views'           => '1,570',
+				'viewsPercentage' => '62.80',
 			),
 			'other'    => (object) array(
-				'views'           => '6',
-				'viewsPercentage' => false,
+				'views'           => '20',
+				'viewsPercentage' => '0.80',
 			),
 			'internal' => (object) array(
-				'views'           => '68',
-				'viewsPercentage' => false,
+				'views'           => '110',
+				'viewsPercentage' => '4.40',
 			),
 			'direct'   => (object) array(
-				'views'           => '-1,866',
-				'viewsPercentage' => false,
+				'views'           => '770',
+				'viewsPercentage' => '30.80',
 			),
 			'totals'   => (object) array(
-				'views'           => '0',
-				'viewsPercentage' => false,
+				'views'           => '2,500',
+				'viewsPercentage' => '100.00',
 			),
 		);
 
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', '/wp-parsely/v1/referrers/post/detail' ) );
+		$request = new WP_REST_Request( 'GET', self::$route );
+		$request->set_param( 'total_views', '2,500' );
+
+		$response = rest_get_server()->dispatch( $request );
 
 		self::assertSame( 1, $dispatched );
 		self::assertSame( 200, $response->get_status() );

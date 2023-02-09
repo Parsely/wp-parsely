@@ -221,3 +221,14 @@ function convert_to_associative_array( $obj ) {
 	 */
 	return json_decode( $encoded, true );
 }
+
+/**
+ * Converts a string to a positive integer, removing any non-numeric
+ * characters.
+ *
+ * @param string $string The string to be converted to an integer.
+ * @return int The integer resulting from the conversion.
+ */
+function convert_to_positive_integer( string $string ): int {
+	return (int) preg_replace( '/\D/', '', $string );
+}

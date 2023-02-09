@@ -133,40 +133,56 @@ abstract class ProxyEndpointTest extends TestCase {
 	/**
 	 * Verifies that calls return an error and do not perform a remote call when
 	 * the Site ID is not populated in site options.
+	 *
+	 * @param WP_REST_Request|null $request The request object to be used.
 	 */
-	public function run_test_get_items_fails_without_site_id_set() {
-		TestCase::set_options( array( 'apikey' => '' ) );
-
-		$dispatched = 0;
-		add_filter(
-			'pre_http_request',
-			function () use ( &$dispatched ) {
-				$dispatched++;
-				return null;
-			}
-		);
-
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', self::$route ) );
-		$error    = $response->as_error();
-		self::assertSame( 403, $response->get_status() );
-		self::assertSame( 'parsely_site_id_not_set', $error->get_error_code() );
-		self::assertSame(
+	public function run_test_get_items_fails_without_site_id_set( $request = null ): void {
+		$this->run_test_get_items_fails(
+			array( 'apikey' => '' ),
+			'parsely_site_id_not_set',
 			'A Parse.ly Site ID must be set in site options to use this endpoint',
-			$error->get_error_message()
+			$request
 		);
 	}
 
 	/**
 	 * Verifies that calls return an error and do not perform a remote call when
 	 * the API Secret is not populated in site options.
+	 *
+	 * @param WP_REST_Request|null $request The request object to be used.
 	 */
-	public function run_test_get_items_fails_without_api_secret_set() {
-		TestCase::set_options(
+	public function run_test_get_items_fails_without_api_secret_set( $request = null ): void {
+		$this->run_test_get_items_fails(
 			array(
 				'apikey'     => 'example.com',
 				'api_secret' => '',
-			)
+			),
+			'parsely_api_secret_not_set',
+			'A Parse.ly API Secret must be set in site options to use this endpoint',
+			$request
 		);
+	}
+
+	/**
+	 * Verifies that attempting to get items under the given conditions will
+	 * fail.
+	 *
+	 * @param array                $options The WordPress options to be set.
+	 * @param string               $expected_error_code The expected error code.
+	 * @param string               $expected_error_message The expected error message.
+	 * @param WP_REST_Request|null $request The request object to be used.
+	 * @return void
+	 */
+	private function run_test_get_items_fails(
+		array $options,
+		string $expected_error_code,
+		string $expected_error_message,
+		$request = null
+	) {
+		TestCase::set_options( $options );
+		if ( null === $request ) {
+			$request = new WP_REST_Request( 'GET', self::$route );
+		}
 
 		$dispatched = 0;
 		add_filter(
@@ -177,13 +193,10 @@ abstract class ProxyEndpointTest extends TestCase {
 			}
 		);
 
-		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', self::$route ) );
+		$response = rest_get_server()->dispatch( $request );
 		$error    = $response->as_error();
 		self::assertSame( 403, $response->get_status() );
-		self::assertSame( 'parsely_api_secret_not_set', $error->get_error_code() );
-		self::assertSame(
-			'A Parse.ly API Secret must be set in site options to use this endpoint',
-			$error->get_error_message()
-		);
+		self::assertSame( $expected_error_code, $error->get_error_code() );
+		self::assertSame( $expected_error_message, $error->get_error_message() );
 	}
 }
