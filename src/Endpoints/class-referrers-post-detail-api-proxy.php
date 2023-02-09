@@ -102,16 +102,27 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 
 		// Set views and views totals.
 		foreach ( $response as $referrer_data ) {
-			// Point by reference to the item to be processed, and set it to 0
-			// when needed in order to avoid potential PHP warnings.
-			$current_type_views =& $result->{ $referrer_data->type }->views;
-			if ( ! isset( $current_type_views ) ) {
-				$current_type_views = 0;
-			}
+			/**
+			 * Variable.
+			 *
+			 * @var int
+			 */
+			$current_views         = isset( $referrer_data->metrics->referrers_views ) ? $referrer_data->metrics->referrers_views : 0;
+			$total_referrer_views += $current_views;
 
-			// Set the values.
-			$current_type_views   += $referrer_data->metrics->referrers_views;
-			$total_referrer_views += $referrer_data->metrics->referrers_views;
+			/**
+			 * Variable.
+			 *
+			 * @var string
+			 */
+			$current_key = isset( $referrer_data->type ) ? $referrer_data->type : '';
+			if ( '' !== $current_key ) {
+				if ( ! isset( $result->$current_key->views ) ) {
+					$result->$current_key = (object) array( 'views' => 0 );
+				}
+
+				$result->$current_key->views += $current_views;
+			}
 		}
 
 		// Add direct and total views to the object.
@@ -167,11 +178,18 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		// Set views and views totals.
 		$loop_count = $referrer_count > $limit ? $limit : $referrer_count;
 		for ( $i = 0; $i < $loop_count; $i++ ) {
-			$data           = $response[ $i ];
-			$referrer_views = $data->metrics->referrers_views;
+			$data = $response[ $i ];
 
-			$temp_views[ $data->name ] = $referrer_views;
-			$totals                   += $referrer_views;
+			/**
+			 * Variable.
+			 *
+			 * @var int
+			 */
+			$referrer_views = isset( $data->metrics->referrers_views ) ? $data->metrics->referrers_views : 0;
+			$totals        += $referrer_views;
+			if ( isset( $data->name ) ) {
+				$temp_views[ $data->name ] = $referrer_views;
+			}
 		}
 
 		// If applicable, add the direct views.
