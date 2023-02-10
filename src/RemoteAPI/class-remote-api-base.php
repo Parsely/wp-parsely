@@ -52,6 +52,17 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	}
 
 	/**
+	 * Gets Parse.ly API endpoint.
+	 *
+	 * @since 3.6.2
+	 *
+	 * @return string
+	 */
+	public function get_endpoint(): string {
+		return static::ENDPOINT;
+	}
+
+	/**
 	 * Gets the URL for a particular Parse.ly API endpoint.
 	 *
 	 * @since 3.2.0
