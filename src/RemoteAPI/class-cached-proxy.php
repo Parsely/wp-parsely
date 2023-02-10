@@ -52,7 +52,7 @@ class Cached_Proxy implements Proxy {
 	public function get_items( array $query ) {
 		$cache_key = (
 			'parsely_api_' .
-			wp_hash( $this->remote_api->get_endpoint() ) . '_' .
+			wp_hash( $this->proxy->get_endpoint() ) . '_' .
 			wp_hash( (string) wp_json_encode( $query ) )
 		);
 
