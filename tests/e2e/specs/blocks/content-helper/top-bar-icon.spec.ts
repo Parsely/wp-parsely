@@ -15,12 +15,12 @@ import {
 } from '../../../utils';
 
 // Selectors.
-const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
+const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
 
 /**
- * Tests for the Content Helper's top bar icon.
+ * Tests for the PCH Editor Sidebar top bar icon.
  */
-describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
+describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => {
 	const contentHelperTitle = 'Performance DetailsRelated Top Posts';
 
 	/**
@@ -31,40 +31,39 @@ describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
 	} );
 
 	/**
-	 * Verifies that the Content Helper top bar icon gets displayed when the
-	 * Site ID and API Secret are not provided.
+	 * Verifies that the top bar icon gets displayed when the Site ID and API
+	 * Secret are not provided.
 	 */
 	it( 'Should be displayed when the Site ID and API Secret are not provided', async () => {
 		expect( await testContentHelperIcon() ).toMatch( contentHelperTitle );
 	} );
 
 	/**
-	 * Verifies that the Content Helper top bar icon gets displayed when only
-	 * the Site ID is provided.
+	 * Verifies that the top bar icon gets displayed when only the Site ID is
+	 * provided.
 	 */
 	it( 'Should be displayed when only the Site ID is provided.', async () => {
 		expect( await testContentHelperIcon( 'blog.parsely.com' ) ).toMatch( contentHelperTitle );
 	} );
 
 	/**
-	 * Verifies that the Content Helper top bar icon gets displayed when only
-	 * the API Secret is provided.
+	 * Verifies that the top bar icon gets displayed when only the API Secret is
+	 * provided.
 	 */
 	it( 'Should be displayed when only the API Secret is provided', async () => {
 		expect( await testContentHelperIcon( '', 'test' ) ).toMatch( contentHelperTitle );
 	} );
 
 	/**
-	 * Verifies that the Content Helper top bar icon gets displayed when both
-	 * the Site ID and API Secret are provided.
+	 * Verifies that the top bar icon gets displayed when both the Site ID and
+	 * API Secret are provided.
 	 */
 	it( 'Should be displayed when both the Site ID and API Secret are provided', async () => {
 		expect( await testContentHelperIcon( 'blog.parsely.com', 'test' ) ).toMatch( contentHelperTitle );
 	} );
 
 	/**
-	 * Verifies that the Content Helper top bar icon does not crash the
-	 * WordPress Post Editor.
+	 * Verifies that the top bar icon does not crash the WordPress Post Editor.
 	 *
 	 * More information: https://github.com/Parsely/wp-parsely/issues/962
 	 */
@@ -90,19 +89,19 @@ describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
 } );
 
 /**
- * Tests the Content Helper icon by clicking on it and verifying that the
- * Content Helper sidebar opens.
+ * Tests the top bar icon by clicking on it and verifying that the PCH Editor
+ * Sidebar opens.
  *
  * @param {string} siteId
  * @param {string} apiSecret
- * @return {string} Text content found in the Content Helper sidebar.
+ * @return {string} Text content found in the PCH Editor Sidebar.
  */
 async function testContentHelperIcon( siteId = '', apiSecret = '' ) {
 	await setSiteKeys( siteId, apiSecret );
 	await createNewPost();
 
-	// Open the Content Helper sidebar by clicking on the Content Helper icon,
-	// to verify that it is visible and working as expected.
+	// Open the sidebar by clicking on the icon, to verify that it is visible and
+	// working as expected.
 	await page.waitForSelector( pluginButton, { visible: true } );
 	const toggleSidebarButton = await page.$(
 		pluginButton
@@ -111,7 +110,7 @@ async function testContentHelperIcon( siteId = '', apiSecret = '' ) {
 		await toggleSidebarButton.click();
 	}
 
-	// Get the text content of the Content Helper sidebar.
+	// Get the text content of the sidebar.
 	await page.waitForSelector( 'div.wp-parsely-content-helper', { visible: true } );
 	const text = await page.$eval(
 		'div.wp-parsely-content-helper',

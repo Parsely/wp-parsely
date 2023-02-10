@@ -81,7 +81,7 @@ class RelatedTopPostsProvider {
 			return Promise.reject( contentHelperError );
 		}
 
-		// Fetch results from API and set the Content Helper's message.
+		// Fetch results from API and set the message.
 		let data;
 		try {
 			data = await this.fetchRelatedTopPostsFromWpEndpoint( apiQuery );

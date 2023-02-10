@@ -17,9 +17,9 @@ import {
 } from '../../../utils';
 
 /**
- * Tests for the Content Helper filters.
+ * Tests for the PCH Editor Sidebar Related Top Post filters.
  */
-describe( 'Content Helper filters', () => {
+describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 	/**
 	 * Prevents browser from locking with dialogs, logs in to WordPress,
 	 * activates the Parse.ly plugin, and sets valid site keys.
@@ -31,8 +31,8 @@ describe( 'Content Helper filters', () => {
 	} );
 
 	/**
-	 * Verifies that the Content Helper attempts to fetch results when a Site ID
-	 * and API Secret are provided.
+	 * Verifies that an attempt to fetch results is made when a Site ID and API
+	 * Secret are provided.
 	 */
 	it( 'Should attempt to fetch results when a Site ID and API Secret are provided', async () => {
 		await setUserDisplayName( 'admin', '' );
@@ -41,9 +41,8 @@ describe( 'Content Helper filters', () => {
 	} );
 
 	/**
-	 * Verifies that the Content Helper respects the author > category > tag
-	 * filter prioritization order, with author being the weakest and tag the
-	 * strongest.
+	 * Verifies that the author > category > tag filter prioritization order is
+	 * respected, with author being the weakest and tag the strongest.
 	 *
 	 * Note: This test inserts the category/tag into the database before
 	 * selecting it in the WordPress Post Editor.
@@ -72,13 +71,13 @@ describe( 'Content Helper filters', () => {
 	} );
 
 	/**
-	 * Verifies that the Content Helper will work correctly when a new taxonomy
-	 * is added from within the WordPress Post Editor.
+	 * Verifies that the Related Top Posts panel will work correctly when a new
+	 * taxonomy is added from within the WordPress Post Editor.
 	 *
 	 * Note: This test does not insert the taxonomy into the database before
 	 * selecting it in the WordPress Post Editor. As such, a delay in
 	 * intercepting the new value is expected, since it must first be stored
-	 * into the database and then picked up by the Content Helper.
+	 * into the database and then picked up by the Related Top Posts panel.
 	 */
 	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
 		const categoryName = 'Parse.ly Tips';

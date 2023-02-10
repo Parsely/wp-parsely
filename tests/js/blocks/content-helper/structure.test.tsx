@@ -16,7 +16,7 @@ import RelatedTopPostsProvider, { GetRelatedTopPostsResult, RELATED_POSTS_DEFAUL
 import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../../src/blocks/content-helper/content-helper-error';
 
-describe( 'Content Helper', () => {
+describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	test( 'should display spinner when starting', () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {} as GetRelatedTopPostsResult ) );
 

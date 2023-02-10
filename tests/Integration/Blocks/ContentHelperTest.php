@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration Tests: Content Helper
+ * Integration Tests: PCH Editor Sidebar
  *
  * @package Parsely\Tests
  */
@@ -13,14 +13,13 @@ use Parsely\Content_Helper;
 use Parsely\Tests\Integration\TestCase;
 
 /**
- * Integration Tests for the Content Helper.
+ * Integration Tests for the PCH Editor Sidebar.
  */
 final class ContentHelperTest extends TestCase {
 	private const BLOCK_NAME = 'wp-parsely-block-content-helper';
 
 	/**
-	 * Verifies that the Content Helper's run() method enqueues the required
-	 * files.
+	 * Verifies that the run() method enqueues the required files.
 	 *
 	 * @since 3.5.0
 	 *
@@ -28,7 +27,7 @@ final class ContentHelperTest extends TestCase {
 	 *
 	 * @group blocks
 	 */
-	public function test_content_helper_files_get_enqueued_on_run(): void {
+	public function test_pch_editor_sidebar_files_get_enqueued_on_run(): void {
 		( new Content_Helper() )->run();
 		self::assertTrue( wp_script_is( self::BLOCK_NAME ) );
 		self::assertTrue( wp_style_is( self::BLOCK_NAME ) );

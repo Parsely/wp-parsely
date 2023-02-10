@@ -16,7 +16,7 @@ import LeafIcon from '../shared/components/leaf-icon';
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
 const renderSidebar = () => (
-	<PluginSidebar icon={ <LeafIcon /> } name="wp-parsely-content-helper" className="wp-parsely-content-helper" title={ __( 'Parse.ly Content Helper', 'wp-parsely' ) }>
+	<PluginSidebar icon={ <LeafIcon /> } name="wp-parsely-content-helper" className="wp-parsely-content-helper" title={ __( 'Parse.ly Editor Sidebar', 'wp-parsely' ) }>
 		<Panel>
 			<PanelBody title={ __( 'Performance Details', 'wp-parsely' ) } initialOpen={ true }>
 				<PerformanceDetails />
