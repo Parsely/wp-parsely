@@ -23,7 +23,7 @@ const renderSidebar = () => (
 			</PanelBody>
 		</Panel>
 		<Panel>
-			<PanelBody title={ __( 'Related Top-Performing Posts', 'wp-parsely' ) } initialOpen={ false }>
+			<PanelBody title={ __( 'Related Top Posts', 'wp-parsely' ) } initialOpen={ false }>
 				<RelatedTopPostList />
 			</PanelBody>
 		</Panel>

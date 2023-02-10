@@ -74,7 +74,7 @@ describe( 'Content Helper', () => {
 
 	test( 'should show no results message when there is no tag, category or author in the post', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: 'The Parse.ly API did not return any results for top-performing posts by "author".',
+			message: 'The Parse.ly API did not return any results for top posts by "author".',
 			posts: [],
 		} ) );
 
@@ -88,12 +88,12 @@ describe( 'Content Helper', () => {
 		const topPostDesc = getTopPostDesc();
 		expect( topPostDesc ).toBeInTheDocument();
 		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc?.textContent ).toEqual( 'The Parse.ly API did not return any results for top-performing posts by "author".' );
+		expect( topPostDesc?.textContent ).toEqual( 'The Parse.ly API did not return any results for top posts by "author".' );
 	} );
 
 	test( 'should show a single top post with description and proper attributes', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: `Top-performing posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
+			message: `Top posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
 			posts: getRelatedTopPostsMockData( 1 ),
 		} ) );
 
@@ -107,7 +107,7 @@ describe( 'Content Helper', () => {
 		const topPostDesc = getTopPostDesc();
 		expect( topPostDesc ).toBeInTheDocument();
 		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc?.textContent ).toEqual( `Top-performing posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
+		expect( topPostDesc?.textContent ).toEqual( `Top posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
 
 		const topPosts = getTopPosts();
 		expect( topPosts.length ).toEqual( 1 );
@@ -135,7 +135,7 @@ describe( 'Content Helper', () => {
 
 	test( 'should show 5 posts by default', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: `Top-performing posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
+			message: `Top posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
 			posts: getRelatedTopPostsMockData(),
 		} ) );
 
@@ -145,7 +145,7 @@ describe( 'Content Helper', () => {
 
 		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
-		expect( getTopPostDesc()?.textContent ).toEqual( `Top-performing posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
+		expect( getTopPostDesc()?.textContent ).toEqual( `Top posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
 		expect( getTopPosts().length ).toEqual( 5 );
 	} );
 

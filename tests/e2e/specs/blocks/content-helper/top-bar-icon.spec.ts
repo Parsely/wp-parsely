@@ -21,7 +21,7 @@ const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
  * Tests for the Content Helper's top bar icon.
  */
 describe( 'Content Helper top bar icon in the WordPress Post Editor', () => {
-	const contentHelperTitle = 'Performance DetailsRelated Top-Performing Posts';
+	const contentHelperTitle = 'Performance DetailsRelated Top Posts';
 
 	/**
 	 * Logs in to WordPress and activates the Parse.ly plugin.

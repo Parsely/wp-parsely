@@ -37,7 +37,7 @@ describe( 'Content Helper filters', () => {
 	it( 'Should attempt to fetch results when a Site ID and API Secret are provided', async () => {
 		await setUserDisplayName( 'admin', '' );
 
-		expect( await getTopRelatedPostsMessage() ).toMatch( `The Parse.ly API did not return any results for top-performing posts by author "admin".` );
+		expect( await getTopRelatedPostsMessage() ).toMatch( `The Parse.ly API did not return any results for related top posts by author "admin".` );
 	} );
 
 	/**
@@ -59,16 +59,16 @@ describe( 'Content Helper filters', () => {
 		await insertRecordIntoTaxonomy( tagName, 'post_tag' );
 
 		// Author.
-		expect( await getTopRelatedPostsMessage() ).toMatch( `Top-performing posts by author "${ firstName } ${ lastName }" in last 3 days.` );
+		expect( await getTopRelatedPostsMessage() ).toMatch( `Top posts by author "${ firstName } ${ lastName }" in last 3 days.` );
 
 		// Author + category.
-		expect( await getTopRelatedPostsMessage( categoryName ) ).toMatch( `Top-performing posts in category "${ categoryName }" in last 3 days.` );
+		expect( await getTopRelatedPostsMessage( categoryName ) ).toMatch( `Top posts in category "${ categoryName }" in last 3 days.` );
 
 		// Author + tag.
-		expect( await getTopRelatedPostsMessage( '', tagName ) ).toMatch( `Top-performing posts with tag "${ tagName }" in last 3 days.` );
+		expect( await getTopRelatedPostsMessage( '', tagName ) ).toMatch( `Top posts with tag "${ tagName }" in last 3 days.` );
 
 		// Author + category + tag.
-		expect( await getTopRelatedPostsMessage( categoryName, tagName ) ).toMatch( `Top-performing posts with tag "${ tagName }" in last 3 days.` );
+		expect( await getTopRelatedPostsMessage( categoryName, tagName ) ).toMatch( `Top posts with tag "${ tagName }" in last 3 days.` );
 	} );
 
 	/**
@@ -83,6 +83,6 @@ describe( 'Content Helper filters', () => {
 	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
 		const categoryName = 'Parse.ly Tips';
 
-		expect( await getTopRelatedPostsMessage( categoryName, '', 2000 ) ).toMatch( `Top-performing posts in category "${ categoryName }" in last 3 days.` );
+		expect( await getTopRelatedPostsMessage( categoryName, '', 2000 ) ).toMatch( `Top posts in category "${ categoryName }" in last 3 days.` );
 	} );
 } );

@@ -140,7 +140,7 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
 	// Show the Content Helper and get the displayed message.
 	await page.waitForSelector( pluginButton );
 	await page.click( pluginButton );
-	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Related Top-Performing Posts' );
+	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Related Top Posts' );
 	await topRelatedPostsButton.click();
 	await page.waitForSelector( contentHelperMessage );
 	await page.waitForFunction( // Wait for Content Helper message to appear.
