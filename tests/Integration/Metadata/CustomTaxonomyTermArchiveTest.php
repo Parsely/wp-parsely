@@ -49,18 +49,19 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		register_taxonomy( 'custom_tax', array( 'post' ) );
 
 		// Insert a single term, and a post with the custom term.
-		$term    = self::factory()->term->create(
+		$term_id    = self::factory()->term->create(
 			array(
 				'taxonomy' => 'custom_tax',
 				'slug'     => 'term',
 				'name'     => 'Custom Taxonomy Term',
 			)
 		);
-		$post_id = self::factory()->post->create();
+		$term_array = $this->get_term_in_array( $term_id );
+		$post_id    = self::factory()->post->create();
 
-		wp_set_post_terms( $post_id, $term, 'custom_tax' );
+		wp_set_post_terms( $post_id, $term_array, 'custom_tax' );
 
-		$term_link = get_term_link( $term );
+		$term_link = $this->get_term_link( $term_id );
 
 		// Flush rewrite rules after creating new taxonomy type.
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.flush_rewrite_rules_flush_rewrite_rules
@@ -76,13 +77,13 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		// metadata doesn't use the post data, but the construction method
 		// requires it for now.
 		$metadata        = new Metadata( $parsely );
-		$structured_data = $metadata->construct_metadata( get_post( $post_id ) );
+		$structured_data = $metadata->construct_metadata( $this->get_post( $post_id ) );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the term name.
-		self::assertEquals( 'Custom Taxonomy Term', $structured_data['headline'] );
-		self::assertEquals( $term_link, $structured_data['url'] );
+		self::assertEquals( 'Custom Taxonomy Term', isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
+		self::assertEquals( $term_link, isset( $structured_data['url'] ) ? $structured_data['url'] : null );
 	}
 }

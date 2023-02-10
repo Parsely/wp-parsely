@@ -115,6 +115,11 @@ final class MetadataRendererTest extends TestCase {
 
 		ob_start();
 		self::$metadata_renderer->render_metadata( 'json_ld' );
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
 		$out = ob_get_clean();
 
 		self::assertStringContainsString( '<script type="application/ld+json">', $out );
@@ -171,6 +176,11 @@ final class MetadataRendererTest extends TestCase {
 
 		ob_start();
 		self::$metadata_renderer->render_metadata( 'repeated_metas' );
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
 		$out = ob_get_clean();
 
 		self::assertStringContainsString( '<meta name="parsely-type" content="post" />', $out );
@@ -225,10 +235,15 @@ final class MetadataRendererTest extends TestCase {
 		$post_id = self::factory()->post->create();
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( get_permalink( $post_id ) );
+		$this->go_to( $this->get_permalink( $post_id ) );
 
 		ob_start();
 		self::$metadata_renderer->render_metadata( 'repeated_metas' );
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
 		$out = ob_get_clean();
 
 		self::assertStringContainsString( '<meta name="parsely-type" content="post" />', $out );

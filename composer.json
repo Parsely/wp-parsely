@@ -28,7 +28,8 @@
 		"phpstan/phpstan-strict-rules": "^1.1",
 		"szepeviktor/phpstan-wordpress": "^1.0",
 		"axepress/wp-graphql-stubs": "^1.13",
-		"phpstan/phpstan-mockery": "^1.0"
+		"phpstan/phpstan-mockery": "^1.0",
+		"php-stubs/wordpress-tests-stubs": "^5.8.1"
 	},
 	"config": {
 		"allow-plugins": {

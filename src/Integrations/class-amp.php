@@ -14,6 +14,34 @@ namespace Parsely\Integrations;
  * Integrates Parse.ly tracking with the AMP plugin.
  *
  * @since 2.6.0 Moved from Parsely class to this file.
+ *
+ * @phpstan-type Amp_Analytics array{
+ *   parsely: Parsely_Amp_Analytics,
+ * }
+ *
+ * @phpstan-type Amp_Native_Analytics array{
+ *   parsely: Parsely_Amp_Native_Analytics,
+ * }
+ *
+ * @phpstan-type Parsely_Amp_Analytics array{
+ *   type: string,
+ *   attributes: array<string, mixed>,
+ *   config_data: Parsely_Amp_Config
+ * }
+ *
+ * @phpstan-type Parsely_Amp_Native_Analytics array{
+ *   type: string,
+ *   attributes: array<string, mixed>,
+ *   config: string
+ * }
+ *
+ * @phpstan-type Parsely_Amp_Config array{
+ *   vars: Parsely_Amp_Config_Vars,
+ * }
+ *
+ * @phpstan-type Parsely_Amp_Config_Vars array{
+ *   apikey: string,
+ * }
  */
 class Amp extends Integration {
 	/**
@@ -101,7 +129,8 @@ class Amp extends Integration {
 	 * @since 2.6.0
 	 *
 	 * @param array<string, mixed>|null $analytics The analytics registry.
-	 * @return array<string, mixed> The analytics registry.
+	 *
+	 * @return Amp_Analytics|array<string, mixed> The analytics registry.
 	 */
 	public function register_parsely_for_amp_native_analytics( ?array $analytics ): array {
 		if ( null === $analytics ) {
