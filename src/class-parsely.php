@@ -19,7 +19,7 @@ use WP_Post;
  * @since 1.0.0
  * @since 2.5.0 Moved from plugin root file to this file.
  *
- * @phpstan-type ParselyOptions array{
+ * @phpstan-type Parsely_Options array{
  *   apikey: string,
  *   content_id_prefix: string,
  *   api_secret: string,
@@ -42,7 +42,7 @@ use WP_Post;
  *   plugin_version: string,
  * }
  *
- * @phpstan-import-type MetadataAttributes from Metadata
+ * @phpstan-import-type Metadata_Attributes from Metadata
  */
 class Parsely {
 	/**
@@ -58,7 +58,7 @@ class Parsely {
 	/**
 	 * Declare some class properties
 	 *
-	 * @var ParselyOptions $option_defaults The defaults we need for the class.
+	 * @var Parsely_Options $option_defaults The defaults we need for the class.
 	 */
 	private $option_defaults = array(
 		'apikey'                      => '',
@@ -287,7 +287,7 @@ class Parsely {
 	 * @param array<string, mixed> $parsely_options parsely_options array.
 	 * @param WP_Post              $post object.
 	 *
-	 * @return MetadataAttributes
+	 * @return Metadata_Attributes
 	 */
 	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ) {
 		_deprecated_function( __FUNCTION__, '3.3', 'Metadata::construct_metadata()' );
@@ -405,13 +405,13 @@ class Parsely {
 	 * As soon as actual options are saved, they override the defaults. This
 	 * prevents us from having to do a lot of isset() checking on variables.
 	 *
-	 * @return ParselyOptions
+	 * @return Parsely_Options
 	 */
 	public function get_options() {
 		/**
 		 * Variable.
 		 *
-		 * @var ParselyOptions|null
+		 * @var Parsely_Options|null
 		 */
 		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
 

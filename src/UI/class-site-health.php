@@ -18,6 +18,17 @@ use Parsely\Parsely;
  * Provides debug information about the plugin.
  *
  * @since 3.4.0
+ *
+ * @phpstan-type Site_Health_Info array{
+ *   parsely?: Parsely_Health_Info
+ * }
+ *
+ * @phpstan-type Parsely_Health_Info array{
+ *   label: string,
+ *   description: string,
+ *   show_count: bool,
+ *   fields: array<string, mixed>,
+ * }
  */
 final class Site_Health {
 	/**
@@ -99,11 +110,11 @@ final class Site_Health {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param array<string, mixed> $args The debug information to be added to the core information page.
+	 * @param Site_Health_Info $args The debug information to be added to the core information page.
 	 *
-	 * @return array<string, mixed>
+	 * @return Site_Health_Info
 	 */
-	public function options_debug_info( array $args ): array {
+	public function options_debug_info( $args ) {
 		$options = $this->parsely->get_options();
 
 		$args['parsely'] = array(

@@ -10,11 +10,16 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use Parsely\Parsely;
+use Parsely\Endpoints\Base_API_Proxy;
+use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
 
 /**
  * Integration Tests for the API Proxy Endpoint.
+ *
+ * @phpstan-import-type Parsely_Options from Parsely
  */
 abstract class ProxyEndpointTest extends TestCase {
 
@@ -57,12 +62,12 @@ abstract class ProxyEndpointTest extends TestCase {
 	/**
 	 * Returns the endpoint to be used in tests.
 	 */
-	abstract public function get_endpoint();
+	abstract public function get_endpoint(): Base_API_Proxy;
 
 	/**
 	 * Verifies that calls return results in the expected format.
 	 */
-	abstract public function test_get_items();
+	abstract public function test_get_items(): void;
 
 	/**
 	 * Runs once before all tests.
@@ -167,7 +172,7 @@ abstract class ProxyEndpointTest extends TestCase {
 	 * Verifies that attempting to get items under the given conditions will
 	 * fail.
 	 *
-	 * @param array                $options The WordPress options to be set.
+	 * @param array<string, mixed> $options The WordPress options to be set.
 	 * @param string               $expected_error_code The expected error code.
 	 * @param string               $expected_error_message The expected error message.
 	 * @param WP_REST_Request|null $request The request object to be used.
@@ -194,7 +199,12 @@ abstract class ProxyEndpointTest extends TestCase {
 		);
 
 		$response = rest_get_server()->dispatch( $request );
-		$error    = $response->as_error();
+		/**
+		 * Variable.
+		 *
+		 * @var WP_Error
+		 */
+		$error = $response->as_error();
 		self::assertSame( 403, $response->get_status() );
 		self::assertSame( $expected_error_code, $error->get_error_code() );
 		self::assertSame( $expected_error_message, $error->get_error_message() );

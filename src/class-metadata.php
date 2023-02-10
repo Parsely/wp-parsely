@@ -30,17 +30,17 @@ use function Parsely\Utils\get_page_on_front;
  * @since 1.0.0
  * @since 3.3.0 Logic extracted from Parsely\Parsely class to separate file/class.
  *
- * @phpstan-type MetadataAttributes array{
+ * @phpstan-type Metadata_Attributes array{
  *   '@id'?: string,
  *   '@type'?: string,
  *   headline?: string,
  *   url?: string,
- *   image?: MetadataImage,
+ *   image?: Metadata_Image,
  *   thumbnailUrl?: string,
  *   articleSection?: string,
  *   creator?: string[],
- *   author?: MetadataAuthor[],
- *   publisher?: MetadataPublisher,
+ *   author?: Metadata_Author[],
+ *   publisher?: Metadata_Publisher,
  *   keywords?: string[],
  *   dateCreated?: string,
  *   datePublished?: string,
@@ -48,17 +48,17 @@ use function Parsely\Utils\get_page_on_front;
  *   custom_metadata?: string,
  * }
  *
- * @phpstan-type MetadataImage array{
+ * @phpstan-type Metadata_Image array{
  *   '@type': 'ImageObject',
  *   url: string,
  * }
  *
- * @phpstan-type MetadataAuthor array{
+ * @phpstan-type Metadata_Author array{
  *   '@type': 'Person',
  *   name: string,
  * }
  *
- * @phpstan-type MetadataPublisher array{
+ * @phpstan-type Metadata_Publisher array{
  *   '@type': 'Organization',
  *   name: string,
  *   logo: string,
@@ -86,7 +86,7 @@ class Metadata {
 	 *
 	 * @param WP_Post $post object.
 	 *
-	 * @return MetadataAttributes
+	 * @return Metadata_Attributes
 	 */
 	public function construct_metadata( WP_Post $post ) {
 		$options           = $this->parsely->get_options();

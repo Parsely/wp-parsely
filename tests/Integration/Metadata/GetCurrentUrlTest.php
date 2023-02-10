@@ -19,7 +19,7 @@ final class GetCurrentUrlTest extends TestCase {
 	/**
 	 * Provides the data for test_get_current_url().
 	 *
-	 * @return iterable
+	 * @return \ArrayIterator<string, mixed>
 	 */
 	public function data_for_test_get_current_url() {
 		yield 'Home is http with force HTTPS true' => array(
@@ -113,7 +113,7 @@ final class GetCurrentUrlTest extends TestCase {
 	 * @param string $expected    Expected current URL.
 	 */
 	public function test_get_current_url( bool $force_https, string $home, string $expected ): void {
-		$this->set_options( array( 'force_https_canonicals' => $force_https ) );
+		self::set_options( array( 'force_https_canonicals' => $force_https ) );
 		update_option( 'home', $home );
 
 		$this->assert_current_url_for_homepage( $expected );
