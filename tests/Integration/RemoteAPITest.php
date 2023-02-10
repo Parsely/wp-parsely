@@ -79,8 +79,9 @@ abstract class RemoteAPITest extends TestCase {
 		// If this method is called, that means our cache did not hit as
 		// expected.
 		$proxy_mock->expects( self::never() )->method( 'get_items' );
+		$proxy_mock->method( 'get_endpoint' )->willReturn( self::$proxy->get_endpoint() ); // Passing call to non-mock method.
 
-		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $proxy_mock ) ) . '_' . wp_hash( wp_json_encode( array() ) );
+		$cache_key = 'parsely_api_' . wp_hash( self::$proxy->get_endpoint() ) . '_' . wp_hash( wp_json_encode( array() ) );
 
 		$object_cache = $this->createMock( Cache::class );
 		$object_cache->method( 'get' )
@@ -121,8 +122,9 @@ abstract class RemoteAPITest extends TestCase {
 		// If this method is _NOT_ called, that means our cache did not miss as
 		// expected.
 		$proxy_mock->expects( self::once() )->method( 'get_items' );
+		$proxy_mock->method( 'get_endpoint' )->willReturn( self::$proxy->get_endpoint() ); // Passing call to non-mock method.
 
-		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $proxy_mock ) ) . '_' . wp_hash( wp_json_encode( array() ) );
+		$cache_key = 'parsely_api_' . wp_hash( self::$proxy->get_endpoint() ) . '_' . wp_hash( wp_json_encode( array() ) );
 
 		$object_cache = $this->createMock( Cache::class );
 		$object_cache->method( 'get' )
