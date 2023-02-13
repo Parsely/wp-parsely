@@ -33,6 +33,11 @@ class Dashboard_Link {
 	 * @return string
 	 */
 	public static function generate_url( WP_Post $post, string $site_id, string $campaign, string $source ): string {
+		/**
+		 * Internal variable.
+		 *
+		 * @var string|false
+		 */
 		$permalink = get_permalink( $post );
 		if ( ! is_string( $permalink ) ) {
 			return '';

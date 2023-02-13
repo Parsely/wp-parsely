@@ -83,6 +83,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
 	 */
 	public function test_get_items_fails_when_site_id_is_not_set(): void {
+		$this->set_admin_user();
 		parent::run_test_get_items_fails_without_site_id_set();
 	}
 
@@ -104,6 +105,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
 	 */
 	public function test_get_items_fails_when_api_secret_is_not_set(): void {
+		$this->set_admin_user();
 		parent::run_test_get_items_fails_without_api_secret_set();
 	}
 
@@ -128,6 +130,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_items
 	 */
 	public function test_get_items(): void {
+		$this->set_admin_user();
 		TestCase::set_options(
 			array(
 				'apikey'     => 'example.com',

@@ -54,11 +54,9 @@ class Remote_API_Cache implements Remote_API_Interface {
 	 *                                             response is empty.
 	 */
 	public function get_items( $query, $associative = false ) {
-		$cache_key = (
-			'parsely_api_' .
+		$cache_key = 'parsely_api_' .
 			wp_hash( $this->remote_api->get_endpoint() ) . '_' .
-			wp_hash( (string) wp_json_encode( $query ) )
-		);
+			wp_hash( (string) wp_json_encode( $query ) );
 
 		/**
 		 * Variable.
