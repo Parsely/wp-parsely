@@ -165,4 +165,14 @@ abstract class TestCase extends WPIntegrationTestCase {
 
 		return $post_id;
 	}
+
+	/**
+	 * Sets current user as admin.
+	 *
+	 * @param int $admin_user_id User ID for the site administrator.
+	 *                           Default is 1 which is assigned to first admin user while creating the site.
+	 */
+	public function set_admin_user( $admin_user_id = 1 ): void {
+		wp_set_current_user( $admin_user_id );
+	}
 }

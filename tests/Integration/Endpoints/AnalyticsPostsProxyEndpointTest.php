@@ -69,6 +69,23 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	}
 
 	/**
+	 * Verifies forbidden error when current user doesn't have proper capabilities.
+	 *
+	 * @covers \Parsely\Endpoints\Base_API_Proxy::permission_callback
+	 *
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
+	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::register_endpoint
+	 */
+	public function test_access_of_analytics_posts_endpoint_is_forbidden(): void {
+		$response = rest_get_server()->dispatch( new WP_REST_Request( 'GET', self::$route ) );
+		$error    = $response->as_error();
+
+		self::assertSame( 401, $response->get_status() );
+		self::assertSame( 'rest_forbidden', $error->get_error_code() );
+		self::assertSame( 'Sorry, you are not allowed to do that.', $error->get_error_message() );
+	}
+
+	/**
 	 * Verifies that calling `GET /wp-parsely/v1/analytics/posts` returns an
 	 * error and does not perform a remote call when the apikey is not populated
 	 * in site options.
@@ -85,6 +102,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 */
 	public function test_get_items_fails_without_apikey_set() {
+		$this->set_admin_user();
 		parent::test_get_items_fails_without_apikey_set();
 	}
 
@@ -112,6 +130,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	public function test_get_items() {
 		TestCase::set_options( array( 'apikey' => 'example.com' ) );
 		TestCase::set_options( array( 'api_secret' => 'test' ) );
+		$this->set_admin_user();
 
 		$dispatched  = 0;
 		$date_format = get_option( 'date_format' );
