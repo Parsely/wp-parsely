@@ -32,7 +32,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @since 3.6.0
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/referrers/post/detail' );
+		$this->register_endpoint( '/referrers/post/detail', 'publish_posts' );
 	}
 
 	/**
@@ -244,17 +244,5 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		}
 
 		return number_format_i18n( $number / $total * 100, 2 );
-	}
-
-	/**
-	 * Determines if there are enough permissions to call the endpoint.
-	 *
-	 * @since 3.6.0
-	 *
-	 * @return bool
-	 */
-	public function permission_callback(): bool {
-		// Unauthenticated.
-		return true;
 	}
 }
