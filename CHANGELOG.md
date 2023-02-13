@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix PHP 8 Incompatibilities ([#1362](https://github.com/Parsely/wp-parsely/pull/1362))
+- Fix referral distribution in Performance Details panel ([#1382](https://github.com/Parsely/wp-parsely/pull/1382))
 
 ## [3.6.1](https://github.com/Parsely/wp-parsely/compare/3.6.0...3.6.1) - 2022-12-20
 
