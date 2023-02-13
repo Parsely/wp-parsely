@@ -14,6 +14,7 @@ use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
+use WP_Error;
 use WP_REST_Request;
 
 use function Parsely\Utils\get_date_format;
@@ -69,6 +70,34 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	}
 
 	/**
+	 * Verifies forbidden error when current user doesn't have proper
+	 * capabilities.
+	 *
+	 * @covers \Parsely\Endpoints\Base_API_Proxy::permission_callback
+	 *
+	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
+	 * @uses \Parsely\Endpoints\Analytics_Posts_API_Proxy::register_endpoint
+	 */
+	public function test_access_of_analytics_posts_endpoint_is_forbidden(): void {
+		$response = rest_get_server()->dispatch(
+			new WP_REST_Request( 'GET', self::$route )
+		);
+		/**
+		 * Variable.
+		 *
+		 * @var WP_Error
+		 */
+		$error = $response->as_error();
+
+		self::assertSame( 401, $response->get_status() );
+		self::assertSame( 'rest_forbidden', $error->get_error_code() );
+		self::assertSame(
+			'Sorry, you are not allowed to do that.',
+			$error->get_error_message()
+		);
+	}
+
+	/**
 	 * Verifies that calling `GET /wp-parsely/v1/stats/posts` returns an
 	 * error and does not perform a remote call when the Site ID is not populated
 	 * in site options.
@@ -85,6 +114,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 */
 	public function test_get_items_fails_when_site_id_is_not_set(): void {
+		$this->set_admin_user();
 		parent::run_test_get_items_fails_without_site_id_set();
 	}
 
@@ -106,6 +136,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 */
 	public function test_get_items_fails_when_api_secret_is_not_set(): void {
+		$this->set_admin_user();
 		parent::run_test_get_items_fails_without_api_secret_set();
 	}
 
@@ -131,6 +162,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_items
 	 */
 	public function test_get_items(): void {
+		$this->set_admin_user();
 		TestCase::set_options(
 			array(
 				'apikey'     => 'example.com',

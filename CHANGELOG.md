@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.2](https://github.com/Parsely/wp-parsely/compare/3.6.1...3.6.2) - 2023-02-13
+
+### Fixed
+
+- Fix PHP 8 Incompatibilities ([#1362](https://github.com/Parsely/wp-parsely/pull/1362))
+- Improve checks on proxy endpoints
+- Fix referral distribution in Performance Details panel ([#1382](https://github.com/Parsely/wp-parsely/pull/1382))
+
+## [3.5.3](https://github.com/Parsely/wp-parsely/compare/3.5.2...3.5.3) - 2023-02-13
+
+### Fixed
+
+- Improve checks on proxy endpoints
+
+## [3.4.3](https://github.com/Parsely/wp-parsely/compare/3.4.2...3.4.3) - 2023-02-13
+
+### Fixed
+
+- Improve checks on proxy endpoints
+
 ## [3.6.1](https://github.com/Parsely/wp-parsely/compare/3.6.0...3.6.1) - 2022-12-20
 
 ### Fixed
