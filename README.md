@@ -30,7 +30,7 @@ The wp-parsely plugin is packed with features that allow for a seamless integrat
 #### Automated integration
 
 The plugin automatically inserts the Parse.ly metadata and JavaScript in all published pages and posts (Custom Post Types are supported). It also provides a settings page to customize your integration, with options including:
-- Output metadata as [JSON-LD](https://docs.parse.ly/metadata-jsonld/) or [repeated meta tags](https://docs.parse.ly/metatags/).
+- Output Parse.ly metadata as [JSON-LD](https://docs.parse.ly/metadata-jsonld/) or [repeated meta tags](https://docs.parse.ly/metatags/).
 - Choose whether logged-in users should be tracked.
 - Define how to track every Post Type (as Post, Non-Post or no tracking).
 
@@ -121,7 +121,7 @@ Please visit the [changelog](https://github.com/parsely/wp-parsely/blob/trunk/CH
    ![Parse.ly List Column](.wordpress-org/screenshot-5.png)
 6. The Parse.ly Editor Sidebar, featuring the Performance Details and Related Top Posts panels.  
    ![Parse.ly Editor Sidebar](.wordpress-org/screenshot-6.png)
-7. The Recommendations Block, Showcasing links to related content on your site.  
+7. The Recommendations Block, showcasing links to related content on your site.  
    ![Parse.ly Recommendations Block](.wordpress-org/screenshot-7.png)
 8. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empower you to better understand how your content is performing.  
    ![Parse.ly Dashboard Overview](.wordpress-org/screenshot-8.png)
