@@ -11,8 +11,9 @@ namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
 use Parsely\Scripts;
-use PHPUnit\Framework\RiskyTestError;
 use WP_Scripts;
+
+use const Parsely\PARSELY_FILE;
 
 /**
  * Integration Tests for the plugin's scripts.
@@ -349,8 +350,8 @@ final class ScriptsTest extends TestCase {
 				'track_authenticated_users' => false,
 			)
 		);
-		$new_user = $this->create_test_user( 'bill_brasky' );
-		wp_set_current_user( $new_user );
+		$new_user_id = $this->create_test_user( 'bill_brasky' );
+		wp_set_current_user( $new_user_id );
 
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
@@ -474,78 +475,23 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->enqueue_js_tracker();
 
 		wp_print_scripts();
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
 		$output = ob_get_clean();
 
+		$loader_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/loader.asset.php';
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
+		$version = is_bool( $loader_asset ) ? Parsely::VERSION : $loader_asset['version'];
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=123456.78.9' id='wp-parsely-loader-js'></script>", $output );
+		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $version . "' id='wp-parsely-loader-js'></script>", $output );
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=123456.78.9' id=\"parsely-cfg\"></script>", $output );
-	}
-
-	/**
-	 * Asserts that a passed script is not registered.
-	 *
-	 * @param string $handle Script handle to test.
-	 */
-	private function assert_is_script_not_registered( string $handle ): void {
-		$this->assert_script_statuses( $handle, array(), array( 'registered' ) );
-	}
-
-	/**
-	 * Asserts that a passed script is registered.
-	 *
-	 * @param string $handle Script handle to test.
-	 */
-	private function assert_is_script_registered( string $handle ): void {
-		$this->assert_script_statuses( $handle, array( 'registered' ) );
-	}
-
-	/**
-	 * Asserts that a passed script is not enqueued.
-	 *
-	 * @param string $handle Script handle to test.
-	 */
-	private function assert_is_script_not_enqueued( string $handle ): void {
-		$this->assert_script_statuses( $handle, array(), array( 'enqueued' ) );
-	}
-
-	/**
-	 * Asserts that a passed script is enqueued.
-	 *
-	 * @param string $handle Script handle to test.
-	 */
-	private function assert_is_script_enqueued( string $handle ): void {
-		$this->assert_script_statuses( $handle, array( 'enqueued' ) );
-	}
-
-	/**
-	 * Asserts multiple enqueuing statuses for a script.
-	 *
-	 * @param string $handle       Script handle to test.
-	 * @param array  $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 * @param array  $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 *
-	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
-	 */
-	public function assert_script_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
-		if ( 0 === count( $assert_true ) + count( $assert_false ) ) {
-			throw new RiskyTestError( 'Function assert_script_statuses() has been used without any arguments' );
-		}
-
-		foreach ( $assert_true as $status ) {
-			self::assertTrue(
-				wp_script_is( $handle, $status ),
-				"Unexpected script status: $handle status should be '$status'"
-			);
-		}
-
-		foreach ( $assert_false as $status ) {
-			self::assertFalse(
-				wp_script_is( $handle, $status ),
-				"Unexpected script status: $handle status should NOT be '$status'"
-			);
-		}
 	}
 }

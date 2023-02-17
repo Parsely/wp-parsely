@@ -52,7 +52,7 @@ final class BlogArchiveTest extends NonPostTestCase {
 		// Create 2 posts so that posts page has pagination.
 		self::factory()->post->create();
 		self::factory()->post->create();
-		$page = get_post( $page_id );
+		$page = $this->get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL
 		// property. See https://github.com/Parsely/wp-parsely/issues/151.
@@ -79,7 +79,7 @@ final class BlogArchiveTest extends NonPostTestCase {
 
 		// The headline should be the title of the post, not the name of the
 		// site.
-		self::assertEquals( 'Page for Posts', $structured_data['headline'] );
-		self::assertEquals( get_permalink( $page_id ) . 'page/2', $structured_data['url'] );
+		self::assertEquals( 'Page for Posts', isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
+		self::assertEquals( get_permalink( $page_id ) . 'page/2', isset( $structured_data['url'] ) ? $structured_data['url'] : null );
 	}
 }

@@ -18,6 +18,8 @@ use Parsely\UI\Site_Health;
  * page.
  *
  * @since 3.4.0
+ *
+ * @phpstan-import-type Parsely_Health_Info from Site_Health
  */
 final class SiteHealthTest extends TestCase {
 	/**
@@ -60,11 +62,17 @@ final class SiteHealthTest extends TestCase {
 	 */
 	public function test_options_debug_info(): void {
 		$args = self::$site_health->options_debug_info( array() );
+		/**
+		 * Variable.
+		 *
+		 * @var Parsely_Health_Info
+		 */
+		$parsely_health_info = isset( $args['parsely'] ) ? $args['parsely'] : array();
 
 		self::assertArrayHasKey( 'parsely', $args );
-		self::assertEquals( 'Parse.ly Options', $args['parsely']['label'] );
-		self::assertEquals( 'Shows the options stored in the database used by the wp-parsely plugin.', $args['parsely']['description'] );
-		self::assertTrue( $args['parsely']['show_count'] );
-		self::assertArrayHasKey( 'fields', $args['parsely'] );
+		self::assertEquals( 'Parse.ly Options', $parsely_health_info['label'] );
+		self::assertEquals( 'Shows the options stored in the database used by the wp-parsely plugin.', $parsely_health_info['description'] );
+		self::assertTrue( $parsely_health_info['show_count'] );
+		self::assertArrayHasKey( 'fields', $parsely_health_info );
 	}
 }

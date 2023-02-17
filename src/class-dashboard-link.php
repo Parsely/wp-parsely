@@ -33,6 +33,11 @@ class Dashboard_Link {
 	 * @return string
 	 */
 	public static function generate_url( WP_Post $post, string $site_id, string $campaign, string $source ): string {
+		/**
+		 * Internal variable.
+		 *
+		 * @var string|false
+		 */
 		$permalink = get_permalink( $post );
 		if ( ! is_string( $permalink ) ) {
 			return '';
@@ -45,9 +50,7 @@ class Dashboard_Link {
 			'utm_medium'   => 'wp-parsely',
 		);
 
-		$base_url = trailingslashit( Parsely::DASHBOARD_BASE_URL . "/{$site_id}" ) . 'find';
-
-		return add_query_arg( $query_args, $base_url );
+		return add_query_arg( $query_args, Parsely::get_dash_url( $site_id ) );
 	}
 
 	/**

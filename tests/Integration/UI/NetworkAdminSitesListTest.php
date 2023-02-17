@@ -12,6 +12,7 @@ namespace Parsely\Tests\Integration\UI;
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Network_Admin_Sites_List;
+use WP_MS_Sites_List_Table;
 use WP_Site;
 
 /**
@@ -30,7 +31,7 @@ final class NetworkAdminSitesListTest extends TestCase {
 	 *
 	 * @var WP_MS_Sites_List_Table
 	 */
-	public $table = false;
+	public $table;
 
 	/**
 	 * Skips all tests for non-multisite runs.
@@ -43,7 +44,11 @@ final class NetworkAdminSitesListTest extends TestCase {
 			self::markTestSkipped();
 		}
 
-		$this->table      = _get_list_table( 'WP_MS_Sites_List_Table', array( 'screen' => 'ms-sites' ) );
+		$list_table = _get_list_table( 'WP_MS_Sites_List_Table', array( 'screen' => 'ms-sites' ) );
+		if ( false !== $list_table ) {
+			$this->table = $list_table;
+		}
+
 		self::$sites_list = new Network_Admin_Sites_List( new Parsely() );
 	}
 

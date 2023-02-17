@@ -161,7 +161,7 @@ final class SettingsPageTest extends TestCase {
 		$options  = self::$parsely->get_options();
 
 		$options['track_post_types_as'] = 'string';
-		$actual                         = self::$settings_page->validate_options( $options );
+		$actual                         = self::$settings_page->validate_options( $options ); // @phpstan-ignore-line
 		self::assertSame( $expected, $actual );
 	}
 
@@ -183,7 +183,7 @@ final class SettingsPageTest extends TestCase {
 		$options  = self::$parsely->get_options();
 
 		unset( $options['disable_autotrack'] );
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options( $options ); // @phpstan-ignore-line
 		self::assertEquals( $expected, $actual );
 	}
 
@@ -197,13 +197,13 @@ final class SettingsPageTest extends TestCase {
 	public function test_get_settings_url_with_and_without_blog_id(): void {
 		self::assertSame(
 			PARSELY_SETTINGS_URL,
-			self::$parsely->get_settings_url(),
+			self::$parsely::get_settings_url(),
 			'The URL did not match the expected value without a $blog_id param.'
 		);
 
 		self::assertSame(
 			PARSELY_SETTINGS_URL,
-			self::$parsely->get_settings_url( get_current_blog_id() ),
+			self::$parsely::get_settings_url( get_current_blog_id() ),
 			'The URL did not match the expected value with a $blog_id param.'
 		);
 
@@ -220,7 +220,7 @@ final class SettingsPageTest extends TestCase {
 
 		self::assertSame(
 			'http://parselyrocks.example.org/vipvipvip/wp-admin/options-general.php?page=parsely',
-			self::$parsely->get_settings_url( $subsite_blog_id ),
+			self::$parsely::get_settings_url( $subsite_blog_id ),
 			'The URL did not match when passing $subsite_blog_id.'
 		);
 
@@ -228,14 +228,14 @@ final class SettingsPageTest extends TestCase {
 		switch_to_blog( $subsite_blog_id );
 		self::assertSame(
 			'http://parselyrocks.example.org/vipvipvip/wp-admin/options-general.php?page=parsely',
-			self::$parsely->get_settings_url(),
+			self::$parsely::get_settings_url(),
 			'The URL did not match the subsite without passing a $blog_id param.'
 		);
 		restore_current_blog();
 
 		self::assertSame(
 			PARSELY_SETTINGS_URL,
-			self::$parsely->get_settings_url(),
+			self::$parsely::get_settings_url(),
 			'The URL did not match the expected value for the main site with no $blog_id param after switching back.'
 		);
 	}

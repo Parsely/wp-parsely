@@ -19,7 +19,7 @@ final class GetCurrentUrlTest extends TestCase {
 	/**
 	 * Provides the data for test_get_current_url().
 	 *
-	 * @return iterable
+	 * @return \ArrayIterator<string, mixed>
 	 */
 	public function data_for_test_get_current_url() {
 		yield 'Home is http with force HTTPS true' => array(

@@ -22,7 +22,7 @@ final class DateArchiveTest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var $date_builder Holds the Date_Builder object.
+	 * @var Date_Builder
 	 */
 	private static $date_builder;
 
@@ -186,12 +186,5 @@ final class DateArchiveTest extends TestCase {
 
 		update_option( 'date_format', 'F j, Y' ); // reset to default.
 		update_option( 'time_format', 'g:i a' ); // reset to default.
-	}
-
-	/**
-	 * Runs once after all tests.
-	 */
-	public static function tear_down_after_class(): void {
-		self::$date_builder = null;
 	}
 }

@@ -11,12 +11,12 @@ import '@testing-library/jest-dom';
 /**
  * Internal dependencies.
  */
-import RelatedTopPostList from '../../../../src/blocks/content-helper/components/related-top-post-list';
-import ContentHelperProvider, { GetRelatedTopPostsResult, RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/content-helper-provider';
+import RelatedTopPostList from '../../../../src/blocks/content-helper/related-top-posts/component-list';
+import RelatedTopPostsProvider, { GetRelatedTopPostsResult, RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/related-top-posts/provider';
 import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
 import { ContentHelperError, ContentHelperErrorCode } from '../../../../src/blocks/content-helper/content-helper-error';
 
-describe( 'Content Helper', () => {
+describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	test( 'should display spinner when starting', () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {} as GetRelatedTopPostsResult ) );
 
@@ -68,13 +68,13 @@ describe( 'Content Helper', () => {
 		expect( apiErrorHint ).toBeInTheDocument();
 		expect( apiErrorHint ).toBeVisible();
 		expect( apiErrorHint?.textContent ).toEqual(
-			'Hint: This error can be sometimes caused by ad-blockers or browser tracking protections. Please add this site to any applicable allow lists and try again.'
+			'Hint: This error can sometimes be caused by ad-blockers or browser tracking protections. Please add this site to any applicable allow lists and try again.'
 		);
 	} );
 
 	test( 'should show no results message when there is no tag, category or author in the post', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: 'The Parse.ly API did not return any results for top-performing posts by "author".',
+			message: 'The Parse.ly API did not return any results for top posts by "author".',
 			posts: [],
 		} ) );
 
@@ -88,12 +88,12 @@ describe( 'Content Helper', () => {
 		const topPostDesc = getTopPostDesc();
 		expect( topPostDesc ).toBeInTheDocument();
 		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc?.textContent ).toEqual( 'The Parse.ly API did not return any results for top-performing posts by "author".' );
+		expect( topPostDesc?.textContent ).toEqual( 'The Parse.ly API did not return any results for top posts by "author".' );
 	} );
 
 	test( 'should show a single top post with description and proper attributes', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: `Top-performing posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
+			message: `Top posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
 			posts: getRelatedTopPostsMockData( 1 ),
 		} ) );
 
@@ -107,7 +107,7 @@ describe( 'Content Helper', () => {
 		const topPostDesc = getTopPostDesc();
 		expect( topPostDesc ).toBeInTheDocument();
 		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc?.textContent ).toEqual( `Top-performing posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
+		expect( topPostDesc?.textContent ).toEqual( `Top posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
 
 		const topPosts = getTopPosts();
 		expect( topPosts.length ).toEqual( 1 );
@@ -115,15 +115,19 @@ describe( 'Content Helper', () => {
 		// test top post attributes
 		const firstTopPost = topPosts[ 0 ];
 		const statsLink = firstTopPost.querySelector( '.parsely-top-post-stats-link' );
-		const postLink = firstTopPost.querySelector( '.parsely-top-post-link' );
+		const viewPostLink = firstTopPost.querySelector( '.parsely-top-post-view-link' );
+		const editPostLink = firstTopPost.querySelector( '.parsely-top-post-edit-link' );
 
 		expect( firstTopPost.querySelector( '.parsely-top-post-title' )?.textContent ).toEqual( 'Title 1' );
 		expect( statsLink?.getAttribute( 'href' ) ).toEqual( `${ DASHBOARD_BASE_URL }/example.com/post-1` );
 		expect( statsLink?.getAttribute( 'title' ) ).toEqual( 'View in Parse.ly (opens new tab)' );
 		expect( statsLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( postLink?.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
-		expect( postLink?.getAttribute( 'title' ) ).toEqual( 'View Published Post (opens new tab)' );
-		expect( postLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
+		expect( viewPostLink?.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
+		expect( viewPostLink?.getAttribute( 'title' ) ).toEqual( 'View Post (opens new tab)' );
+		expect( viewPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
+		expect( editPostLink?.getAttribute( 'href' ) ).toEqual( '/wp-admin/post.php?post=1&action=edit' );
+		expect( editPostLink?.getAttribute( 'title' ) ).toEqual( 'Edit Post (opens new tab)' );
+		expect( editPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
 		expect( firstTopPost.querySelector( '.parsely-top-post-date' )?.textContent ).toEqual( 'Date Jan 1, 2022' );
 		expect( firstTopPost.querySelector( '.parsely-top-post-author' )?.textContent ).toEqual( 'Author Name 1' );
 		expect( firstTopPost.querySelector( '.parsely-top-post-views' )?.textContent ).toEqual( 'Number of Views 1' );
@@ -131,7 +135,7 @@ describe( 'Content Helper', () => {
 
 	test( 'should show 5 posts by default', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: `Top-performing posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
+			message: `Top posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
 			posts: getRelatedTopPostsMockData(),
 		} ) );
 
@@ -141,7 +145,7 @@ describe( 'Content Helper', () => {
 
 		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
-		expect( getTopPostDesc()?.textContent ).toEqual( `Top-performing posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
+		expect( getTopPostDesc()?.textContent ).toEqual( `Top posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
 		expect( getTopPosts().length ).toEqual( 5 );
 	} );
 
@@ -163,7 +167,7 @@ describe( 'Content Helper', () => {
 
 	function getRelatedTopPostsMockFn( mockFn: () => Promise<GetRelatedTopPostsResult> ) {
 		return jest
-			.spyOn( ContentHelperProvider, 'getRelatedTopPosts' )
+			.spyOn( RelatedTopPostsProvider, 'getRelatedTopPosts' )
 			.mockImplementation( mockFn );
 	}
 
@@ -175,7 +179,8 @@ describe( 'Content Helper', () => {
 				author: `Name ${ i }`,
 				date: `Jan ${ i }, 2022`,
 				id: i,
-				statsUrl: `${ DASHBOARD_BASE_URL }/example.com/post-${ i }`,
+				postId: i,
+				dashUrl: `${ DASHBOARD_BASE_URL }/example.com/post-${ i }`,
 				title: `Title ${ i }`,
 				url: `http://example.com/post-${ i }`,
 				views: i,

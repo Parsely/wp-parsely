@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Proxy;
+use Parsely\RemoteAPI\Remote_API_Interface;
 use stdClass;
 use WP_Error;
 use WP_REST_Request;
@@ -29,11 +29,20 @@ abstract class Base_API_Proxy {
 	protected $parsely;
 
 	/**
+	 * Capability of the user based on which we should allow access to endpoint.
+	 *
+	 * `null` should be used for all public endpoints.
+	 *
+	 * @var string|null
+	 */
+	protected $user_capability;
+
+	/**
 	 * Proxy object which does the actual calls to the Parse.ly API.
 	 *
-	 * @var Proxy
+	 * @var Remote_API_Interface
 	 */
-	private $proxy;
+	private $api;
 
 	/**
 	 * Registers the endpoint's WP REST route.
@@ -62,26 +71,41 @@ abstract class Base_API_Proxy {
 	 *
 	 * @return bool
 	 */
-	abstract public function permission_callback(): bool;
+	public function permission_callback(): bool {
+		// This endpoint does not require any capability checks.
+		if ( is_null( $this->user_capability ) ) {
+			return true;
+		}
+
+		// The user has the required capability to access this endpoint.
+		if ( current_user_can( $this->user_capability ) ) {
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 * Constructor.
 	 *
-	 * @param Parsely $parsely Instance of Parsely class.
-	 * @param Proxy   $proxy   Proxy object which does the actual calls to the
-	 *                         Parse.ly API.
+	 * @param Parsely              $parsely Instance of Parsely class.
+	 * @param Remote_API_Interface $api API object which does the actual calls to the Parse.ly API.
 	 */
-	public function __construct( Parsely $parsely, Proxy $proxy ) {
+	public function __construct( Parsely $parsely, Remote_API_Interface $api ) {
 		$this->parsely = $parsely;
-		$this->proxy   = $proxy;
+		$this->api     = $api;
 	}
 
 	/**
 	 * Registers the endpoint's WP REST route.
 	 *
-	 * @param string $endpoint The endpoint's route (e.g. /stats/posts).
+	 * @param string      $endpoint The endpoint's route (e.g. /stats/posts).
+	 * @param string|null $user_capability Capability of the user based on which we should allow access to endpoint.
+	 * @param bool        $show_in_index Show endpoint in /wp-json view if TRUE.
 	 */
-	protected function register_endpoint( string $endpoint ): void {
+	protected function register_endpoint( string $endpoint, ?string $user_capability, $show_in_index = false ): void {
+		$this->user_capability = $user_capability;
+
 		$filter_key = trim( str_replace( '/', '_', $endpoint ), '_' );
 		if ( ! apply_filters( 'wp_parsely_enable_' . $filter_key . '_api_proxy', true ) ) {
 			return;
@@ -107,6 +131,7 @@ abstract class Base_API_Proxy {
 				'callback'            => array( $this, 'get_items' ),
 				'permission_callback' => array( $this, 'permission_callback' ),
 				'args'                => $get_items_args,
+				'show_in_index'       => $show_in_index,
 			),
 		);
 
@@ -148,11 +173,7 @@ abstract class Base_API_Proxy {
 		}
 
 		// A proxy with caching behavior is used here.
-		$response = $this->proxy->get_items( $params ); // @phpstan-ignore-line.
-
-		if ( false === $response ) {
-			return new stdClass();
-		}
+		$response = $this->api->get_items( $params ); // @phpstan-ignore-line.
 
 		if ( is_wp_error( $response ) ) {
 			return $response;

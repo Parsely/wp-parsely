@@ -15,6 +15,9 @@ use Parsely\Tests\Integration\TestCase;
 
 /**
  * Integration Tests for the AMP Integration.
+ *
+ * @phpstan-import-type Amp_Analytics from Amp
+ * @phpstan-import-type Amp_Native_Analytics from Amp
  */
 final class AmpTest extends TestCase {
 	/**
@@ -128,6 +131,11 @@ final class AmpTest extends TestCase {
 		// Now set the key and test for changes.
 		self::set_options( array( 'apikey' => 'my-site-id.com' ) );
 
+		/**
+		 * Variable.
+		 *
+		 * @var Amp_Analytics
+		 */
 		$output = $amp->register_parsely_for_amp_analytics( $analytics );
 
 		self::assertSame( 'parsely', $output['parsely']['type'] );
@@ -165,6 +173,11 @@ final class AmpTest extends TestCase {
 			)
 		);
 
+		/**
+		 * Variable.
+		 *
+		 * @var Amp_Native_Analytics
+		 */
 		$output = $amp->register_parsely_for_amp_native_analytics( $analytics );
 		self::assertSame( 'parsely', $output['parsely']['type'] );
 		self::assertStringContainsString( 'my-site-id.com', $output['parsely']['config'] );

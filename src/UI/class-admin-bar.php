@@ -67,7 +67,7 @@ final class Admin_Bar {
 	 */
 	public function admin_bar_parsely_stats_button( WP_Admin_Bar $admin_bar ): void {
 		/**
-		 * Internal Variable.
+		 * Variable.
 		 *
 		 * @var WP_Post|null
 		 */

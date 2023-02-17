@@ -93,7 +93,7 @@ final class OtherTest extends TestCase {
 
 		// Create a single post.
 		$post_id = self::factory()->post->create();
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 
 		// Apply page filtering.
 		$headline = 'Completely New And Original Filtered Headline';
@@ -105,15 +105,16 @@ final class OtherTest extends TestCase {
 				return $args;
 			},
 			10,
-			3
+			1
 		);
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
+		$meta_headline   = isset( $structured_data['headline'] ) ? $structured_data['headline'] : '';
 
 		// The structured data should contain the headline from the filter.
-		self::assertSame( strpos( $structured_data['headline'], $headline ), 0 );
+		self::assertSame( strpos( $meta_headline, $headline ), 0 );
 	}
 
 	/**
@@ -150,7 +151,7 @@ final class OtherTest extends TestCase {
 	 */
 	public function test_filter_wp_parsely_post_type(): void {
 		$post_id  = $this->go_to_new_post();
-		$post_obj = get_post( $post_id );
+		$post_obj = $this->get_post( $post_id );
 
 		// Try to change the post type to a supported value - BlogPosting.
 		add_filter(
@@ -163,7 +164,7 @@ final class OtherTest extends TestCase {
 		$metadata        = new Metadata( self::$parsely );
 		$structured_data = $metadata->construct_metadata( $post_obj );
 
-		self::assertSame( 'BlogPosting', $structured_data['@type'] );
+		self::assertSame( 'BlogPosting', isset( $structured_data['@type'] ) ? $structured_data['@type'] : null );
 
 		// Try to change the post type to a non-supported value - Not_Supported.
 		add_filter(
@@ -237,7 +238,7 @@ final class OtherTest extends TestCase {
 	 */
 	public function test_post_has_trackable_status_password_protected(): void {
 		$post_id = self::factory()->post->create();
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 
 		$post->post_password = 'somepassword';
 
@@ -257,7 +258,7 @@ final class OtherTest extends TestCase {
 		add_filter( 'wp_parsely_skip_post_password_check', '__return_true' );
 
 		$post_id = self::factory()->post->create();
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 
 		$post->post_password = 'somepassword';
 
