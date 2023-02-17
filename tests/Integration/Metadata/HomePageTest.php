@@ -62,7 +62,7 @@ final class HomePageTest extends NonPostTestCase {
 				'post_title' => 'Page for Posts',
 			)
 		);
-		$page    = get_post( $page_id );
+		$page    = $this->get_post( $page_id );
 
 		// Make a request to the root of the site to set the global $wp_query
 		// object.
@@ -77,8 +77,8 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the page.
-		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] );
-		self::assertEquals( home_url(), $structured_data['url'] );
+		self::assertEquals( TEST_BLOG_NAME, isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
+		self::assertEquals( home_url(), isset( $structured_data['url'] ) ? $structured_data['url'] : null );
 	}
 
 	/**
@@ -107,7 +107,7 @@ final class HomePageTest extends NonPostTestCase {
 		// Insert 2 posts.
 		$page_id = self::factory()->post->create();
 		self::factory()->post->create();
-		$page = get_post( $page_id );
+		$page = $this->get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL
 		// property. See https://github.com/Parsely/wp-parsely/issues/151.
@@ -129,9 +129,9 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the latest post.
-		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] );
+		self::assertEquals( TEST_BLOG_NAME, isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
 		// The URL should be the current page, not the home url.
-		self::assertEquals( home_url( '/page/2' ), $structured_data['url'] );
+		self::assertEquals( home_url( '/page/2' ), isset( $structured_data['url'] ) ? $structured_data['url'] : null );
 	}
 
 	/**
@@ -163,7 +163,7 @@ final class HomePageTest extends NonPostTestCase {
 				'post_title' => 'Home',
 			)
 		);
-		$page    = get_post( $page_id );
+		$page    = $this->get_post( $page_id );
 
 		// Set that page as the homepage Page.
 		update_option( 'show_on_front', 'page' );
@@ -182,11 +182,11 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the page.
-		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] );
-		self::assertEquals( home_url(), $structured_data['url'] );
+		self::assertEquals( TEST_BLOG_NAME, isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
+		self::assertEquals( home_url(), isset( $structured_data['url'] ) ? $structured_data['url'] : null );
 		// The metadata '@type' for the context should be 'WebPage' for the
 		// homepage.
-		self::assertSame( 'WebPage', $structured_data['@type'] );
+		self::assertSame( 'WebPage', isset( $structured_data['@type'] ) ? $structured_data['@type'] : null );
 	}
 
 	/**
@@ -218,7 +218,7 @@ final class HomePageTest extends NonPostTestCase {
 				'post_title' => 'Home',
 			)
 		);
-		$page    = get_post( $page_id );
+		$page    = $this->get_post( $page_id );
 
 		// Set that page as the homepage Page.
 		update_option( 'show_on_front', 'page' );
@@ -237,7 +237,7 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the page.
-		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] );
-		self::assertEquals( home_url(), $structured_data['url'] );
+		self::assertEquals( TEST_BLOG_NAME, isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
+		self::assertEquals( home_url(), isset( $structured_data['url'] ) ? $structured_data['url'] : null );
 	}
 }

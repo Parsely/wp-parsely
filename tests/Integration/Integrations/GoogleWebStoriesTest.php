@@ -20,7 +20,7 @@ final class GoogleWebStoriesTest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var GoogleWebStoriesTest $google Holds the Google_Web_Stories object.
+	 * @var Google_Web_Stories $google Holds the Google_Web_Stories object.
 	 */
 	private static $google;
 

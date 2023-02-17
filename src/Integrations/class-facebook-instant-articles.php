@@ -16,6 +16,15 @@ use Parsely\Parsely;
  * Integrates Parse.ly tracking with the Facebook Instant Articles plugin.
  *
  * @since 2.6.0 Moved from Parsely class to this file.
+ *
+ * @phpstan-type FB_Instant_Articles_Registry array{
+ *   'parsely-analytics-for-wordpress'?: FB_Parsely_Registry,
+ * }
+ *
+ * @phpstan-type FB_Parsely_Registry array{
+ *   name: string,
+ *   payload: string,
+ * }
  */
 final class Facebook_Instant_Articles extends Integration {
 	private const REGISTRY_IDENTIFIER   = 'parsely-analytics-for-wordpress';
@@ -38,7 +47,7 @@ final class Facebook_Instant_Articles extends Integration {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array<string, mixed> $registry The registry info for Facebook Instant Articles.
+	 * @param FB_Instant_Articles_Registry $registry The registry info for Facebook Instant Articles.
 	 */
 	public function insert_parsely_tracking( &$registry ): void {
 		$parsely = new Parsely();

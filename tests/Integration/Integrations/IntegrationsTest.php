@@ -45,6 +45,11 @@ final class IntegrationsTest extends TestCase {
 		// Use Reflection to look inside the collection.
 		$reflector_property = ( new ReflectionClass( $integrations ) )->getProperty( 'integrations' );
 		$reflector_property->setAccessible( true );
+		/**
+		 * Variable.
+		 *
+		 * @var array<string, mixed>
+		 */
 		$registered_integrations = $reflector_property->getValue( $integrations );
 
 		self::assertCount( 4, $registered_integrations );

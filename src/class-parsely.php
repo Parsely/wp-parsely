@@ -19,7 +19,7 @@ use WP_Post;
  * @since 1.0.0
  * @since 2.5.0 Moved from plugin root file to this file.
  *
- * @phpstan-type ParselyOptions array{
+ * @phpstan-type Parsely_Options array{
  *   apikey: string,
  *   content_id_prefix: string,
  *   api_secret: string,
@@ -42,22 +42,23 @@ use WP_Post;
  *   plugin_version: string,
  * }
  *
- * @phpstan-import-type MetadataAttributes from Metadata
+ * @phpstan-import-type Metadata_Attributes from Metadata
  */
 class Parsely {
 	/**
 	 * Declare our constants
 	 */
-	public const VERSION            = PARSELY_VERSION;
-	public const MENU_SLUG          = 'parsely';        // Defines the page param passed to options-general.php.
-	public const OPTIONS_KEY        = 'parsely';        // Defines the key used to store options in the WP database.
-	public const CAPABILITY         = 'manage_options'; // The capability required for the user to administer settings.
-	public const DASHBOARD_BASE_URL = 'https://dash.parsely.com';
+	public const VERSION             = PARSELY_VERSION;
+	public const MENU_SLUG           = 'parsely';        // Defines the page param passed to options-general.php.
+	public const OPTIONS_KEY         = 'parsely';        // Defines the key used to store options in the WP database.
+	public const CAPABILITY          = 'manage_options'; // The capability required for the user to administer settings.
+	public const DASHBOARD_BASE_URL  = 'https://dash.parsely.com';
+	public const PUBLIC_API_BASE_URL = 'https://api.parsely.com/v2';
 
 	/**
 	 * Declare some class properties
 	 *
-	 * @var ParselyOptions $option_defaults The defaults we need for the class.
+	 * @var Parsely_Options $option_defaults The defaults we need for the class.
 	 */
 	private $option_defaults = array(
 		'apikey'                      => '',
@@ -286,7 +287,7 @@ class Parsely {
 	 * @param array<string, mixed> $parsely_options parsely_options array.
 	 * @param WP_Post              $post object.
 	 *
-	 * @return MetadataAttributes
+	 * @return Metadata_Attributes
 	 */
 	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ) {
 		_deprecated_function( __FUNCTION__, '3.3', 'Metadata::construct_metadata()' );
@@ -323,7 +324,7 @@ class Parsely {
 			'tags'          => $metadata['keywords'] ?? '',
 		);
 
-		$parsely_api_endpoint    = 'https://api.parsely.com/v2/metadata/posts';
+		$parsely_api_endpoint    = self::PUBLIC_API_BASE_URL . '/metadata/posts';
 		$parsely_metadata_secret = $parsely_options['metadata_secret'];
 		$headers                 = array(
 			'Content-Type' => 'application/json',
@@ -404,13 +405,13 @@ class Parsely {
 	 * As soon as actual options are saved, they override the defaults. This
 	 * prevents us from having to do a lot of isset() checking on variables.
 	 *
-	 * @return ParselyOptions
+	 * @return Parsely_Options
 	 */
 	public function get_options() {
 		/**
 		 * Variable.
 		 *
-		 * @var ParselyOptions|null
+		 * @var Parsely_Options|null
 		 */
 		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
 
@@ -431,6 +432,27 @@ class Parsely {
 	 */
 	public static function get_settings_url( int $_blog_id = null ): string {
 		return get_admin_url( $_blog_id, 'options-general.php?page=' . self::MENU_SLUG );
+	}
+
+	/**
+	 * Returns the URL of the Parse.ly dashboard for a specific page. If a page
+	 * is not specified, the home dashboard URL for the specified Site ID is
+	 * returned.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @param string $site_id The Site ID for which to get the URL.
+	 * @param string $page_url Optional. The page for which to get the URL.
+	 * @return string The complete dashboard URL.
+	 */
+	public static function get_dash_url( string $site_id, string $page_url = '' ): string {
+		$result = trailingslashit( self::DASHBOARD_BASE_URL . '/' . $site_id ) . 'find';
+
+		if ( '' !== $page_url ) {
+			$result .= '?url=' . rawurlencode( $page_url );
+		}
+
+		return $result;
 	}
 
 	/**

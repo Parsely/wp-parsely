@@ -10,7 +10,7 @@ import {
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
-export const PLUGIN_VERSION = '3.6.1';
+export const PLUGIN_VERSION = '3.6.2';
 
 export const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
 
@@ -91,18 +91,18 @@ export const insertRecordIntoTaxonomy = async ( recordName: string, taxonomyType
 };
 
 /**
- * Gets the message returned by the Content Helper according to the various
- * conditions passed to the function.
+ * Gets the message returned by the PHC Editor Sidebar Related Top Posts panel
+ * according to the various conditions passed to the function.
  *
  * @param {string} category Name of the category to select in the Post Editor.
  * @param {string} tag      Name of the tag to select in the Post Editor.
  * @param {number} timeout  Milliseconds to wait after category/tag selection.
- * @return {Promise<string>} The message returned by the Content Helper.
+ * @return {Promise<string>} The message returned.
  */
 export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeout = 500 ): Promise<string> => {
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
-	const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
+	const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
 	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel__body.is-opened .parsely-top-posts-descr';
 
 	// Run basic operations.
@@ -137,13 +137,13 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
 		await page.waitForTimeout( timeout );
 	}
 
-	// Show the Content Helper and get the displayed message.
+	// Show the panel and get the displayed message.
 	await page.waitForSelector( pluginButton );
 	await page.click( pluginButton );
-	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Related Top-Performing Posts' );
+	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Related Top Posts' );
 	await topRelatedPostsButton.click();
 	await page.waitForSelector( contentHelperMessage );
-	await page.waitForFunction( // Wait for Content Helper message to appear.
+	await page.waitForFunction( // Wait for the message to appear.
 		'document.querySelector("' + contentHelperMessage + '").innerText.length > 0',
 		{ polling: 'mutation', timeout: 5000 }
 	);

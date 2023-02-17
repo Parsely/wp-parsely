@@ -39,7 +39,7 @@ final class DashboardLinkTest extends TestCase {
 	 */
 	public function test_generate_parsely_post_url(): void {
 		$post_id = self::factory()->post->create();
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 		$site_id = 'demo-site-id';
 
 		$expected = PARSELY::DASHBOARD_BASE_URL . '/demo-site-id/find?url=http%3A%2F%2Fexample.org%2F%3Fp%3D' . $post_id . '&utm_campaign=wp-admin-posts-list&utm_source=wp-admin&utm_medium=wp-parsely';
@@ -60,7 +60,7 @@ final class DashboardLinkTest extends TestCase {
 		add_filter( 'post_link', '__return_false' );
 
 		$post_id = self::factory()->post->create();
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 		$site_id = 'demo-site-id';
 
 		$expected = '';

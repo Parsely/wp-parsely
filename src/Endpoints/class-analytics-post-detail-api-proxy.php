@@ -24,7 +24,7 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * Registers the endpoint's WP REST route.
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/stats/post/detail' );
+		$this->register_endpoint( '/stats/post/detail', 'publish_posts' );
 	}
 
 	/**
@@ -45,13 +45,13 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @return array<stdClass> The generated data.
 	 */
 	protected function generate_data( $response ): array {
-		$stats_base_url = trailingslashit( Parsely::DASHBOARD_BASE_URL . '/' . $this->parsely->get_site_id() ) . 'find';
+		$site_id = $this->parsely->get_site_id();
 
 		return array_map(
-			static function( stdClass $item ) use ( $stats_base_url ) {
+			static function( stdClass $item ) use ( $site_id ) {
 				return (object) array(
 					'avgEngaged' => self::get_duration( (float) $item->avg_engaged ),
-					'statsUrl'   => $stats_base_url . '?url=' . rawurlencode( $item->url ),
+					'dashUrl'    => Parsely::get_dash_url( $site_id, $item->url ),
 					'url'        => $item->url,
 					'views'      => number_format_i18n( $item->metrics->views ),
 					'visitors'   => number_format_i18n( $item->metrics->visitors ),
@@ -74,7 +74,7 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @param float $time The time as a float number.
 	 * @return string The resulting formatted time duration.
 	 */
-	private function get_duration( float $time ): string {
+	private static function get_duration( float $time ): string {
 		$minutes = absint( $time );
 		$seconds = absint( round( fmod( $time, 1 ) * 60 ) );
 
@@ -84,15 +84,5 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 		}
 
 		return sprintf( '%2d:%02d', $minutes, $seconds );
-	}
-
-	/**
-	 * Determines if there are enough permissions to call the endpoint.
-	 *
-	 * @return bool
-	 */
-	public function permission_callback(): bool {
-		// Unauthenticated.
-		return true;
 	}
 }
