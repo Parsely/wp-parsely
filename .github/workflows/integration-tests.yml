@@ -23,7 +23,6 @@ jobs:
       WP_VERSION: ${{ matrix.wp }}
 
     strategy:
-      # PHP 7.1 uses PHPUnit 7.5.20
       # PHP 7.2 uses PHPUnit 8.5.21
       # PHP 7.3 uses PHPUnit 9.5.10
       # PHP 7.4 uses PHPUnit 9.5.10
@@ -39,10 +38,6 @@ jobs:
         coverage: [none]
         experimental: [false]
         include:
-          - php: '7.1'
-            wp: '5.8.3'
-            coverage: none
-            experimental: false
           - php: '8.0'
             coverage: pcov
             extensions: pcov
