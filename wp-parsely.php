@@ -213,7 +213,7 @@ require_once __DIR__ . '/src/blocks/content-helper/class-content-helper.php';
 
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\init_content_helper' );
 /**
- * Inserts the Content Helper into the WordPress Post Editor.
+ * Inserts the PCH Editor Sidebar.
  *
  * @since 3.5.0 Moved from Parsely\Scripts\enqueue_block_editor_assets()
  */

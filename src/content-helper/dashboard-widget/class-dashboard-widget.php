@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly Content Helper Dashboard Widget class
+ * PCH Dashboard Widget class
  *
  * @package Parsely
  * @since   3.7.0
@@ -15,7 +15,7 @@ use Parsely\Parsely;
 use const Parsely\PARSELY_FILE;
 
 /**
- * Class that generates and manages the Content Helper Dashboard Widget.
+ * Class that generates and manages the PCH Dashboard Widget.
  *
  * @since 3.7.0
  */

@@ -46,7 +46,7 @@ class DashboardWidgetProvider {
 	}
 
 	/**
-	 * Returns the site's top-performing posts.
+	 * Returns the site's top posts.
 	 *
 	 * @return {Promise<Array<TopPostData>>} Object containing message and posts.
 	 */
@@ -71,7 +71,7 @@ class DashboardWidgetProvider {
 	}
 
 	/**
-	 * Fetches the site's top-performing posts data from the WordPress REST API.
+	 * Fetches the site's top posts data from the WordPress REST API.
 	 *
 	 * @return {Promise<Array<TopPostData>>} Array of fetched posts.
 	 */
