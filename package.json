@@ -37,7 +37,7 @@
 		"defaults"
 	],
 	"dependencies": {
-		"@types/js-cookie": "^3.0.2",
+		"@types/js-cookie": "^3.0.3",
 		"@wordpress/dom-ready": "^3.9.0",
 		"js-cookie": "^3.0.1"
 	},
