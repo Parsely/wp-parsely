@@ -488,7 +488,7 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @return int The count of inline scripts.
 	 */
-	private function count_loader_inline_scrips() {
+	private function count_loader_inline_scrips(): int {
 		global $wp_scripts;
 		$extra = $wp_scripts->registered['wp-parsely-loader']->extra;
 
