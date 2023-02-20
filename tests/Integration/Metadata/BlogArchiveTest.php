@@ -79,7 +79,7 @@ final class BlogArchiveTest extends NonPostTestCase {
 
 		// The headline should be the title of the post, not the name of the
 		// site.
-		self::assertEquals( 'Page for Posts', isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
-		self::assertEquals( get_permalink( $page_id ) . 'page/2', isset( $structured_data['url'] ) ? $structured_data['url'] : null );
+		self::assertEquals( 'Page for Posts', $structured_data['headline'] ?? null );
+		self::assertEquals( get_permalink( $page_id ) . 'page/2', $structured_data['url'] ?? null );
 	}
 }

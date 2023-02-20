@@ -66,7 +66,7 @@ final class TermArchiveTest extends NonPostTestCase {
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the category name.
-		self::assertEquals( 'Test Category', isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
-		self::assertEquals( $cat_link, isset( $structured_data['url'] ) ? $structured_data['url'] : null );
+		self::assertEquals( 'Test Category', $structured_data['headline'] ?? null );
+		self::assertEquals( $cat_link, $structured_data['url'] ?? null );
 	}
 }

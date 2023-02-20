@@ -925,14 +925,14 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$res   = $this->get_parsely_stats_response( $posts, 'post', new WP_Error( 404, 'Not Found.' ) );
 
 		$this->assert_hooks_for_parsely_stats_response( true );
-		self::assertNull( isset( $res['data'] ) ? $res['data'] : null );
+		self::assertNull( $res['data'] ?? null );
 		self::assertEquals(
 			array(
 				'code'        => 404,
 				'message'     => 'Not Found.',
 				'htmlMessage' => '<p>Error while getting data for Parse.ly Stats.<br/>Detail: (404) Not Found.</p>',
 			),
-			isset( $res['error'] ) ? $res['error'] : null
+			$res['error'] ?? null
 		);
 	}
 
@@ -1009,7 +1009,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		);
 
 		$this->assert_hooks_for_parsely_stats_response( true );
-		self::assertNull( isset( $res['error'] ) ? $res['error'] : null );
+		self::assertNull( $res['error'] ?? null );
 		self::assertEquals(
 			array(
 				'/2010/01/01/title-1-publish' => array(
@@ -1043,7 +1043,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 					'avg_time'   => '1 sec. avg time',
 				),
 			),
-			isset( $res['data'] ) ? $res['data'] : null
+			$res['data'] ?? null
 		);
 	}
 
@@ -1084,7 +1084,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		);
 
 		$this->assert_hooks_for_parsely_stats_response( true );
-		self::assertNull( isset( $res['error'] ) ? $res['error'] : null );
+		self::assertNull( $res['error'] ?? null );
 		self::assertEquals(
 			array(
 				'/2010/01/01/title-1-publish' => array(
@@ -1093,7 +1093,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 					'avg_time'   => '1:06 avg time',
 				),
 			),
-			isset( $res['data'] ) ? $res['data'] : null
+			$res['data'] ?? null
 		);
 	}
 

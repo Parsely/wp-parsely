@@ -66,7 +66,7 @@ final class AuthorArchiveTest extends NonPostTestCase {
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the category name.
-		self::assertEquals( 'Author - parsely', isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
-		self::assertEquals( $author_posts_url, isset( $structured_data['url'] ) ? $structured_data['url'] : null );
+		self::assertEquals( 'Author - parsely', $structured_data['headline'] ?? null );
+		self::assertEquals( $author_posts_url, $structured_data['url'] ?? null );
 	}
 }
