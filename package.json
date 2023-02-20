@@ -37,7 +37,7 @@
 		"defaults"
 	],
 	"dependencies": {
-		"@types/js-cookie": "^3.0.2",
+		"@types/js-cookie": "^3.0.3",
 		"@wordpress/dom-ready": "^3.9.0",
 		"js-cookie": "^3.0.1"
 	},
@@ -62,7 +62,7 @@
 		"@wordpress/e2e-test-utils": "^9.4.0",
 		"@wordpress/edit-post": "^6.19.0",
 		"@wordpress/element": "^4.7.0",
-		"@wordpress/env": "^5.11.0",
+		"@wordpress/env": "^5.12.0",
 		"@wordpress/eslint-plugin": "^13.10.0",
 		"@wordpress/hooks": "^3.16.0",
 		"@wordpress/i18n": "^4.5.0",
