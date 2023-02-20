@@ -144,8 +144,6 @@ final class ScriptsTest extends TestCase {
 	 * @group scripts
 	 */
 	public function test_enqueue_js_tracker(): void {
-		global $wp_scripts;
-
 		$this->go_to_new_post();
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
@@ -156,9 +154,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_registered( 'wp-parsely-loader' );
 		$this->assert_is_script_enqueued( 'wp-parsely-loader' );
 
-		// Since no secret is provided, the extra fields (inline scripts) on the
-		// loader should not be populated.
-		self::assertEquals( 1, \is_array( $wp_scripts->registered['wp-parsely-loader']->extra ) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
+		self::assertEquals( 1, $this->count_loader_inline_scrips() );
 	}
 
 	/**
@@ -237,8 +233,6 @@ final class ScriptsTest extends TestCase {
 	 * @group scripts
 	 */
 	public function test_enqueue_js_tracker_no_autotrack(): void {
-		global $wp_scripts;
-
 		TestCase::set_options( array( 'disable_autotrack' => true ) );
 
 		$this->go_to_new_post();
@@ -251,9 +245,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_registered( 'wp-parsely-loader' );
 		$this->assert_is_script_enqueued( 'wp-parsely-loader' );
 
-		// Since no secret is provided, the extra fields (inline scripts) on the
-		// loader should not be populated.
-		self::assertEquals( 2, \is_array( $wp_scripts->registered['wp-parsely-loader']->extra ) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
+		self::assertEquals( 2, $this->count_loader_inline_scrips() );
 	}
 
 	/**
@@ -272,8 +264,6 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 */
 	public function test_wp_parsely_load_js_tracker_filter(): void {
-		global $wp_scripts;
-
 		add_filter( 'wp_parsely_load_js_tracker', '__return_false' );
 
 		$this->go_to_new_post();
@@ -290,9 +280,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_registered( 'wp-parsely-loader' );
 		$this->assert_is_script_not_enqueued( 'wp-parsely-loader' );
 
-		// Since no secret is provided, the extra fields (inline scripts) on the
-		// loader should not be populated.
-		self::assertEquals( 1, \is_array( $wp_scripts->registered['wp-parsely-loader']->extra ) || $wp_scripts->registered['wp-parsely-loader']->extra instanceof \Countable ? count( $wp_scripts->registered['wp-parsely-loader']->extra ) : 0 );
+		self::assertEquals( 1, $this->count_loader_inline_scrips() );
 	}
 
 	/**
@@ -493,5 +481,21 @@ final class ScriptsTest extends TestCase {
 		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $version . "' id='wp-parsely-loader-js'></script>", $output );
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=123456.78.9' id=\"parsely-cfg\"></script>", $output );
+	}
+
+	/**
+	 * Counts the number of inline scripts (extra fields) in the loader.
+	 *
+	 * @return int The count of inline scripts.
+	 */
+	private function count_loader_inline_scrips() {
+		global $wp_scripts;
+		$extra = $wp_scripts->registered['wp-parsely-loader']->extra;
+
+		if ( is_array( $extra ) || $extra instanceof \Countable ) {
+			return count( $extra );
+		}
+
+		return 0;
 	}
 }
