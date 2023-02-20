@@ -88,7 +88,7 @@
 			"@php ./vendor/bin/phpunit --no-coverage --order-by=random"
 		],
 	   	"static-analysis": [
-			"@php ./vendor/bin/phpstan analyze --memory-limit 536870912"
+			"@php ./vendor/bin/phpstan analyze --memory-limit 1074000000"
 		],
 		"test-ms": [
 			"@putenv WP_MULTISITE=1",

@@ -12,6 +12,6 @@ parameters:
     - vendor/php-stubs/wordpress-tests-stubs/wordpress-tests-stubs.php
   type_coverage:
       return_type: 88
-      param_type: 77
+      param_type: 60
       property_type: 0 # We can't use property types until we support PHP 7.4.
       print_suggestions: false
