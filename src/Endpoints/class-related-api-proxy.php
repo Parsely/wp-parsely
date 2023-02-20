@@ -23,7 +23,7 @@ final class Related_API_Proxy extends Base_API_Proxy {
 	 * Registers the endpoint's WP REST route.
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/related', null, true );
+		$this->register_endpoint( '/related' );
 	}
 
 	/**

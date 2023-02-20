@@ -24,7 +24,7 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * Registers the endpoint's WP REST route.
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/stats/post/detail', 'publish_posts' );
+		$this->register_endpoint( '/stats/post/detail' );
 	}
 
 	/**

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\ContentHelper;
 
 use Parsely\Parsely;
+use Parsely\RemoteAPI\Analytics_Posts_API;
 
 use const Parsely\PARSELY_FILE;
 
@@ -28,6 +29,13 @@ class Dashboard_Widget {
 	 * @since 3.7.0
 	 */
 	public function run(): void {
+		$posts_api = new Analytics_Posts_API( $GLOBALS['parsely'] );
+
+		// Avoid adding widget if user is not allowed to make API call.
+		if ( ! $posts_api->is_user_allowed_to_make_api_call() ) {
+			return;
+		}
+
 		add_action( 'wp_dashboard_setup', array( $this, 'add_dashboard_widget' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}

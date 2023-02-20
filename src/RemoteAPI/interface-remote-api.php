@@ -25,4 +25,11 @@ interface Remote_API_Interface {
 	 * @return WP_Error|array<string, mixed>|false
 	 */
 	public function get_items( $query, $associative = false );
+
+	/**
+	 * Check if user is capable for making API call.
+	 *
+	 * @return bool
+	 */
+	public function is_user_allowed_to_make_api_call(): bool;
 }

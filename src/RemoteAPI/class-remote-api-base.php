@@ -35,11 +35,31 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	protected const QUERY_FILTER = '';
 
 	/**
+	 * Indicates whether the endpoint is public or protected behind permissions.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @var bool
+	 */
+	protected $is_public_endpoint = false;
+
+	/**
 	 * Parsely Instance.
 	 *
 	 * @var Parsely
 	 */
 	private $parsely;
+
+	/**
+	 * Capability of the user based on which we should allow access to endpoint.
+	 *
+	 * `null` should be used for all public endpoints.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @var string|null
+	 */
+	private $user_capability;
 
 	/**
 	 * Constructor.
@@ -48,7 +68,8 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	 * @since 3.2.0
 	 */
 	public function __construct( Parsely $parsely ) {
-		$this->parsely = $parsely;
+		$this->parsely         = $parsely;
+		$this->user_capability = $this->is_public_endpoint ? null : 'publish_posts';
 	}
 
 	/**
@@ -133,5 +154,26 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 		$response = $decoded->data;
 
 		return $associative ? convert_to_associative_array( $response ) : $response;
+	}
+
+	/**
+	 * Check if user is capable for making API call.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @return bool
+	 */
+	public function is_user_allowed_to_make_api_call(): bool {
+		// This endpoint does not require any capability checks.
+		if ( is_null( $this->user_capability ) ) {
+			return true;
+		}
+
+		// The user has the required capability to access this endpoint.
+		if ( current_user_can( $this->user_capability ) ) {
+			return true;
+		}
+
+		return false;
 	}
 }
