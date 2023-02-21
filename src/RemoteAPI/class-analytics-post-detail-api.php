@@ -20,4 +20,13 @@ use Parsely\Parsely;
 class Analytics_Post_Detail_API extends Remote_API_Base {
 	protected const ENDPOINT     = Parsely::PUBLIC_API_BASE_URL . '/analytics/post/detail';
 	protected const QUERY_FILTER = 'wp_parsely_analytics_post_detail_endpoint_args';
+
+	/**
+	 * Indicates whether the endpoint is public or protected behind permissions.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @var bool
+	 */
+	protected $is_public_endpoint = false;
 }

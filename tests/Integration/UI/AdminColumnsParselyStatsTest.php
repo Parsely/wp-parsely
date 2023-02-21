@@ -54,6 +54,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		parent::set_up();
 
 		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%' );
+		$this->set_admin_user();
 	}
 
 	/**

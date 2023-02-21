@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use DateInterval;
 use DateTime;
 use DateTimeZone;
 use ReflectionClass;
@@ -208,7 +209,20 @@ abstract class TestCase extends WPIntegrationTestCase {
 		 * @var int[]
 		 */
 		$post_ids = array();
-		$date     = new DateTime( '2009-12-31', new DateTimeZone( 'America/New_York' ) ); // Date with timezone to replicate real world scenarios.
+
+		/**
+		 * Variable.
+		 *
+		 * @var DateTime
+		 */
+		$date = new DateTime( '2009-12-31', new DateTimeZone( 'America/New_York' ) ); // Date with timezone to replicate real world scenarios.
+
+		/**
+		 * Variable.
+		 *
+		 * @var DateInterval
+		 */
+		$one_day_interval = date_interval_create_from_date_string( '1 days' );
 
 		for ( $i = 1; $i <= $num_of_posts; $i++ ) {
 			/**
@@ -216,7 +230,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 			 *
 			 * @var DateTime
 			 */
-			$post_date = date_add( $date, date_interval_create_from_date_string( '1 days' ) ); // Increment by 1 day like sequence.
+			$post_date = date_add( $date, $one_day_interval ); // Like sequence increment by 1 day.
 			$post_id   = self::factory()->post->create(
 				array(
 					'post_type'     => $post_type,
