@@ -74,7 +74,7 @@ class Remote_API_Cache implements Remote_API_Interface {
 	}
 
 	/**
-	 * Check if user is capable for making API call.
+	 * Checks if the current user is allowed to make the API call.
 	 *
 	 * @since 3.7.0
 	 *

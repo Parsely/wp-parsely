@@ -31,7 +31,7 @@ class Dashboard_Widget {
 	public function run(): void {
 		$posts_api = new Analytics_Posts_API( $GLOBALS['parsely'] );
 
-		// Avoid adding widget if user is not allowed to make API call.
+		// Don't add the widget if the user is not allowed to make the API call.
 		if ( ! $posts_api->is_user_allowed_to_make_api_call() ) {
 			return;
 		}

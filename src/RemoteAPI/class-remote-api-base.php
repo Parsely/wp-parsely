@@ -51,7 +51,7 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	private $parsely;
 
 	/**
-	 * Capability of the user based on which we should allow access to endpoint.
+	 * User capability based on which we should allow access to the endpoint.
 	 *
 	 * `null` should be used for all public endpoints.
 	 *
@@ -157,7 +157,7 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	}
 
 	/**
-	 * Check if user is capable for making API call.
+	 * Checks if the current user is allowed to make the API call.
 	 *
 	 * @since 3.7.0
 	 *

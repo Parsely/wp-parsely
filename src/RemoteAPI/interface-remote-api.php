@@ -27,7 +27,7 @@ interface Remote_API_Interface {
 	public function get_items( $query, $associative = false );
 
 	/**
-	 * Check if user is capable for making API call.
+	 * Checks if the current user is allowed to make the API call.
 	 *
 	 * @return bool
 	 */

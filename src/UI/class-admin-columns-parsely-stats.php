@@ -96,7 +96,7 @@ class Admin_Columns_Parsely_Stats {
 
 		$this->analytics_api = new Analytics_Posts_API( $this->parsely );
 
-		// Avoid adding column if user is not allowed to make API call.
+		// Don't add the column if the user is not allowed to make the API call.
 		if ( ! $this->analytics_api->is_user_allowed_to_make_api_call() ) {
 			return;
 		}
