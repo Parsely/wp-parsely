@@ -16,7 +16,7 @@ namespace Parsely;
  * @since 3.2.0
  */
 class Recommendations_Block {
-	const MINIMUM_WORDPRESS_VERSION = '5.9';
+	public const MINIMUM_WORDPRESS_VERSION = '5.9';
 
 	/**
 	 * Determines whether the block and its assets should be registered.
@@ -52,7 +52,7 @@ class Recommendations_Block {
 		register_block_type(
 			plugin_dir_path( PARSELY_FILE ) . 'build/blocks/recommendations/',
 			array(
-				'render_callback' => __CLASS__ . '::render_callback',
+				'render_callback' => self::class . '::render_callback',
 			)
 		);
 	}

@@ -77,8 +77,8 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the page.
-		self::assertEquals( TEST_BLOG_NAME, isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
-		self::assertEquals( home_url(), isset( $structured_data['url'] ) ? $structured_data['url'] : null );
+		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] ?? null );
+		self::assertEquals( home_url(), $structured_data['url'] ?? null );
 	}
 
 	/**
@@ -129,9 +129,9 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the latest post.
-		self::assertEquals( TEST_BLOG_NAME, isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
+		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] ?? null );
 		// The URL should be the current page, not the home url.
-		self::assertEquals( home_url( '/page/2' ), isset( $structured_data['url'] ) ? $structured_data['url'] : null );
+		self::assertEquals( home_url( '/page/2' ), $structured_data['url'] ?? null );
 	}
 
 	/**
@@ -182,11 +182,11 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the page.
-		self::assertEquals( TEST_BLOG_NAME, isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
-		self::assertEquals( home_url(), isset( $structured_data['url'] ) ? $structured_data['url'] : null );
+		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] ?? null );
+		self::assertEquals( home_url(), $structured_data['url'] ?? null );
 		// The metadata '@type' for the context should be 'WebPage' for the
 		// homepage.
-		self::assertSame( 'WebPage', isset( $structured_data['@type'] ) ? $structured_data['@type'] : null );
+		self::assertSame( 'WebPage', $structured_data['@type'] ?? null );
 	}
 
 	/**
@@ -237,7 +237,7 @@ final class HomePageTest extends NonPostTestCase {
 
 		// The headline should be the name of the site, not the post_title of
 		// the page.
-		self::assertEquals( TEST_BLOG_NAME, isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
-		self::assertEquals( home_url(), isset( $structured_data['url'] ) ? $structured_data['url'] : null );
+		self::assertEquals( TEST_BLOG_NAME, $structured_data['headline'] ?? null );
+		self::assertEquals( home_url(), $structured_data['url'] ?? null );
 	}
 }
