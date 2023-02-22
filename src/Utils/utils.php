@@ -232,3 +232,16 @@ function convert_to_associative_array( $obj ) {
 function convert_to_positive_integer( string $string ): int {
 	return (int) preg_replace( '/\D/', '', $string );
 }
+
+/**
+ * Converts endpoint to filter key by replacing `/` with `_`.
+ *
+ * @param string $endpoint Route of the endpoint.
+ *
+ * @since 3.7.0
+ *
+ * @return string
+ */
+function convert_endpoint_to_filter_key( string $endpoint ): string {
+	return trim( str_replace( '/', '_', $endpoint ), '_' );
+}

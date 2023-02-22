@@ -114,11 +114,17 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Creates a test user.
 	 *
 	 * @param string $user_login The user's login username.
+	 * @param string $user_role The user's role. Default is subscriber.
 	 *
 	 * @return int The newly created user's ID.
 	 */
-	public function create_test_user( string $user_login ) {
-		return self::factory()->user->create( array( 'user_login' => $user_login ) );
+	public function create_test_user( string $user_login, string $user_role = 'subscriber' ) {
+		return self::factory()->user->create(
+			array(
+				'user_login' => $user_login,
+				'role'       => $user_role,
+			) 
+		);
 	}
 
 	/**
@@ -443,6 +449,14 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 */
 	public function set_admin_user( $admin_user_id = 1 ): void {
 		wp_set_current_user( $admin_user_id );
+	}
+
+	/**
+	 * Creates a user with role `contributor` and login.
+	 */
+	public function login_as_contributor(): void {
+		$user_id = $this->create_test_user( 'test_contributor', 'contributor' );
+		wp_set_current_user( $user_id );
 	}
 
 	/**

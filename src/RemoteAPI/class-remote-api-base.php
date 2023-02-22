@@ -14,6 +14,7 @@ use Parsely\Parsely;
 use UnexpectedValueException;
 use WP_Error;
 
+use function Parsely\Utils\convert_endpoint_to_filter_key;
 use function Parsely\Utils\convert_to_associative_array;
 
 /**
@@ -65,11 +66,32 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	 * Constructor.
 	 *
 	 * @param Parsely $parsely Parsely instance.
+	 *
 	 * @since 3.2.0
+	 * @since 3.7.0 Added user capability checks based on `is_public_endpoint` attribute.
 	 */
 	public function __construct( Parsely $parsely ) {
-		$this->parsely         = $parsely;
-		$this->user_capability = $this->is_public_endpoint ? null : 'publish_posts';
+		$this->parsely = $parsely;
+
+		if ( $this->is_public_endpoint ) {
+			$this->user_capability = null;
+		} else {
+			/**
+			 * Filter to change the default user capability for all private remote apis.
+			 *
+			 * @var string
+			 */
+			$default_user_capability = apply_filters( 'wp_parsely_user_capability_for_all_private_apis', 'publish_posts' );
+
+			/**
+			 * Filter to change the user capability for specific remote api.
+			 *
+			 * @var string
+			 */
+			$endpoint_specific_user_capability = apply_filters( 'wp_parsely_user_capability_for_' . convert_endpoint_to_filter_key( static::ENDPOINT ) . '_api', $default_user_capability );
+
+			$this->user_capability = $endpoint_specific_user_capability;
+		}
 	}
 
 	/**
@@ -113,7 +135,7 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Hook names are defined in child classes.
 		$query = apply_filters( static::QUERY_FILTER, $query );
-		return add_query_arg( $query, static::ENDPOINT );
+		return add_query_arg( $query, Parsely::PUBLIC_API_BASE_URL . static::ENDPOINT );
 	}
 
 	/**
