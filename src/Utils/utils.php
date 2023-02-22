@@ -238,6 +238,8 @@ function convert_to_positive_integer( string $string ): int {
  *
  * @param string $endpoint Route of the endpoint.
  *
+ * @since 3.7.0
+ *
  * @return string
  */
 function convert_endpoint_to_filter_key( string $endpoint ): string {
