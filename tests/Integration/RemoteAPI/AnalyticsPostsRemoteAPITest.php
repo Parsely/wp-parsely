@@ -83,7 +83,7 @@ final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 	}
 
 	/**
-	 * Verifies that endpoint specific user capability filter have more priority than default.
+	 * Verifies that the endpoint specific user capability filter has more priority than the default capability filter.
 	 *
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
 	 *
