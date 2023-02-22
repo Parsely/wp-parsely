@@ -234,7 +234,7 @@ function convert_to_positive_integer( string $string ): int {
 }
 
 /**
- * Convert endpoint to filter key by replacing `/` with `_`.
+ * Converts endpoint to filter key by replacing `/` with `_`.
  *
  * @param string $endpoint Route of the endpoint.
  *

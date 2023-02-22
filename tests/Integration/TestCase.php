@@ -452,7 +452,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Create a user with role `contributor` and login.
+	 * Creates a user with role `contributor` and login.
 	 */
 	public function login_as_contributor(): void {
 		$user_id = $this->create_test_user( 'test_contributor', 'contributor' );

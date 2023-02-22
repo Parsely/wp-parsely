@@ -81,4 +81,33 @@ final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 
 		self::assertTrue( $api->is_user_allowed_to_make_api_call() );
 	}
+
+	/**
+	 * Verifies that endpoint specific user capability filter have more priority than default.
+	 *
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 *
+	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 */
+	public function test_endpoint_specific_user_capability_filter_have_more_priority_than_default(): void {
+		$this->login_as_contributor();
+
+		add_filter(
+			'wp_parsely_user_capability_for_all_private_apis',
+			function () {
+				return 'publish_posts';
+			}
+		);
+
+		add_filter(
+			'wp_parsely_user_capability_for_analytics_posts_api',
+			function () {
+				return 'edit_posts';
+			}
+		);
+
+		$api = new Analytics_Posts_API( new Parsely() );
+
+		self::assertTrue( $api->is_user_allowed_to_make_api_call() );
+	}
 }
