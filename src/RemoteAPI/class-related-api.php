@@ -18,7 +18,7 @@ use Parsely\Parsely;
  * @since 3.2.0
  */
 class Related_API extends Remote_API_Base {
-	protected const ENDPOINT     = Parsely::PUBLIC_API_BASE_URL . '/related';
+	protected const ENDPOINT     = '/related';
 	protected const QUERY_FILTER = 'wp_parsely_related_endpoint_args';
 
 	/**
