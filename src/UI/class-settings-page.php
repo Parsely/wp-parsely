@@ -524,7 +524,7 @@ final class Settings_Page {
 
 		add_settings_section(
 			$section_key,
-			__( 'Advanced Settings', 'wp-parsely' ),
+			__( 'Advanced', 'wp-parsely' ),
 			'__return_null',
 			Parsely::MENU_SLUG
 		);
@@ -593,12 +593,15 @@ final class Settings_Page {
 		global $wp_settings_sections;
 
 		foreach ( $wp_settings_sections[ Parsely::MENU_SLUG ] as $section ) {
-			if ( $section['callback'] ) {
-				call_user_func( $section['callback'], $section );
-			}
 			?>
 
 			<div class="tab-content <?php echo esc_attr( $section['id'] ); ?>">
+				<?php
+				if ( $section['callback'] ) {
+					call_user_func( $section['callback'], $section );
+				}
+				?>
+
 				<table class="form-table" role="presentation">
 					<?php do_settings_fields( Parsely::MENU_SLUG, $section['id'] ); ?>
 				</table>
