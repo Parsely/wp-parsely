@@ -69,14 +69,4 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 			$response
 		);
 	}
-
-	/**
-	 * Determines if there are enough permissions to call the endpoint.
-	 *
-	 * @return bool
-	 */
-	public function permission_callback(): bool {
-		// Unauthenticated.
-		return true;
-	}
 }

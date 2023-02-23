@@ -19,9 +19,9 @@ use const Parsely\PARSELY_FILE;
  *
  * @since 3.0.0
  *
- * @phpstan-import-type ParselyOptions from Parsely
+ * @phpstan-import-type Parsely_Options from Parsely
  *
- * @phpstan-type SettingArguments array{
+ * @phpstan-type Setting_Arguments array{
  *   option_key: string,
  *   label_for: string,
  *   title?: string,
@@ -613,7 +613,7 @@ final class Settings_Page {
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param SettingArguments $args The arguments for the form field. May contain 'filter'.
+	 * @param Setting_Arguments $args The arguments for the form field. May contain 'filter'.
 	 */
 	private function print_filter_text( $args ): void {
 		if ( isset( $args['filter'] ) && has_filter( $args['filter'] ) ) {
@@ -629,7 +629,7 @@ final class Settings_Page {
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param SettingArguments $args The arguments for the form field. May contain 'help_text'.
+	 * @param Setting_Arguments $args The arguments for the form field. May contain 'help_text'.
 	 */
 	private function print_description_text( $args ): void {
 		echo isset( $args['help_text'] ) ? '<p class="description" id="' . esc_attr( $args['option_key'] ) . '-description">' . wp_kses_post( $args['help_text'] ) . '</p>' : '';
@@ -638,7 +638,7 @@ final class Settings_Page {
 	/**
 	 * Prints out an input text tag.
 	 *
-	 * @param SettingArguments $args The arguments for text tag.
+	 * @param Setting_Arguments $args The arguments for text tag.
 	 */
 	public function print_text_tag( $args ): void {
 		$options = $this->parsely->get_options();
@@ -674,7 +674,7 @@ final class Settings_Page {
 	/**
 	 * Prints a checkbox tag in the settings page.
 	 *
-	 * @param SettingArguments $args Arguments to print to checkbox tag.
+	 * @param Setting_Arguments $args Arguments to print to checkbox tag.
 	 */
 	public function print_checkbox_tag( $args ): void {
 		$options  = $this->parsely->get_options();
@@ -697,7 +697,7 @@ final class Settings_Page {
 	/**
 	 * Prints out the select tags
 	 *
-	 * @param SettingArguments $args The arguments for the select dropdowns.
+	 * @param Setting_Arguments $args The arguments for the select dropdowns.
 	 */
 	public function print_select_tag( $args ): void {
 		$options        = $this->parsely->get_options();
@@ -728,7 +728,7 @@ final class Settings_Page {
 	/**
 	 * Prints the radio buttons.
 	 *
-	 * @param SettingArguments $args The arguments for the radio buttons.
+	 * @param Setting_Arguments $args The arguments for the radio buttons.
 	 */
 	public function print_radio_tags( $args ): void {
 		$name          = $args['option_key'];
@@ -770,7 +770,7 @@ final class Settings_Page {
 	 * Prints out a "single-image browse control" which includes a text input to
 	 * store image path and a button to browse for images.
 	 *
-	 * @param SettingArguments $args The arguments for the control.
+	 * @param Setting_Arguments $args The arguments for the control.
 	 */
 	public function print_media_single_image( $args ): void {
 		$key   = $args['option_key'];
@@ -800,7 +800,7 @@ final class Settings_Page {
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param SettingArguments $args The arguments used in the output HTML elements.
+	 * @param Setting_Arguments $args The arguments used in the output HTML elements.
 	 */
 	public function print_track_post_types_table( $args ): void {
 		$option_key = esc_attr( $args['option_key'] );

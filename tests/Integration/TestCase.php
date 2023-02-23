@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use DateInterval;
 use DateTime;
 use DateTimeZone;
 use ReflectionClass;
@@ -16,8 +17,8 @@ use ReflectionProperty;
 use ReflectionMethod;
 use Parsely\Parsely;
 use PHPUnit\Framework\RiskyTestError;
-use WP_Error;
 use WP_Post;
+use WP_Term;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
 
 use const Parsely\Utils\WP_DATE_TIME_FORMAT;
@@ -67,8 +68,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	/**
 	 * Updates Parse.ly options with a merge of default and custom values.
 	 *
-	 * @param array $custom_options Associative array of option keys and values
-	 *                              to be saved.
+	 * @param array<string, mixed> $custom_options Associative array of option keys and values to be saved.
 	 */
 	public static function set_options( array $custom_options = array() ): void {
 		update_option( Parsely::OPTIONS_KEY, array_merge( self::DEFAULT_OPTIONS, $custom_options ) );
@@ -80,7 +80,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $post_type Optional. The post's type. Default is 'post'.
 	 * @param string $post_status Optional. The post's status. Default is 'publish'.
 	 *
-	 * @return array An array of WP_Post fields.
+	 * @return array<string, mixed> An array of WP_Post fields.
 	 */
 	public function create_test_post_array( string $post_type = 'post', string $post_status = 'publish' ): array {
 		return array(
@@ -96,8 +96,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Creates a test category.
 	 *
 	 * @param string $name Category name.
-	 * @return array|WP_Error Array containing the term_id and term_taxonomy_id,
-	 *                        WP_Error otherwise.
+	 *
+	 * @return int
 	 */
 	public function create_test_category( string $name ) {
 		return self::factory()->category->create(
@@ -114,11 +114,17 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Creates a test user.
 	 *
 	 * @param string $user_login The user's login username.
-	 * @return int|WP_Error The newly created user's ID or a WP_Error object
-	 *                      if the user could not be created.
+	 * @param string $user_role The user's role. Default is subscriber.
+	 *
+	 * @return int The newly created user's ID.
 	 */
-	public function create_test_user( string $user_login ) {
-		return self::factory()->user->create( array( 'user_login' => $user_login ) );
+	public function create_test_user( string $user_login, string $user_role = 'subscriber' ) {
+		return self::factory()->user->create(
+			array(
+				'user_login' => $user_login,
+				'role'       => $user_role,
+			) 
+		);
 	}
 
 	/**
@@ -127,7 +133,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $domain  Site second-level domain without a .com TLD e.g. 'example' will
 	 *                        result in a new subsite of 'http://example.com'.
 	 * @param int    $user_id User ID for the site administrator.
-	 * @return int|WP_Error The site ID on success, WP_Error object on failure.
+	 *
+	 * @return int
 	 */
 	public function create_test_blog( string $domain, int $user_id ) {
 		return self::factory()->blog->create(
@@ -143,8 +150,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string $taxonomy_key Taxonomy key, must not exceed 32 characters.
 	 * @param string $term_name    The term name to add.
-	 * @return array|WP_Error An array containing the term_id and term_taxonomy_id,
-	 *                        WP_Error otherwise.
+	 *
+	 * @return int
 	 */
 	public function create_test_taxonomy( string $taxonomy_key, string $term_name ) {
 		register_taxonomy(
@@ -208,10 +215,28 @@ abstract class TestCase extends WPIntegrationTestCase {
 		 * @var int[]
 		 */
 		$post_ids = array();
-		$date     = new DateTime( '2009-12-31', new DateTimeZone( 'America/New_York' ) ); // Date with timezone to replicate real world scenarios.
+
+		/**
+		 * Variable.
+		 *
+		 * @var DateTime
+		 */
+		$date = new DateTime( '2009-12-31', new DateTimeZone( 'America/New_York' ) ); // Date with timezone to replicate real world scenarios.
+
+		/**
+		 * Variable.
+		 *
+		 * @var DateInterval
+		 */
+		$one_day_interval = date_interval_create_from_date_string( '1 days' );
 
 		for ( $i = 1; $i <= $num_of_posts; $i++ ) {
-			$post_date = date_add( $date, date_interval_create_from_date_string( '1 days' ) ); // Increment by 1 day like sequence.
+			/**
+			 * Variable.
+			 *
+			 * @var DateTime
+			 */
+			$post_date = date_add( $date, $one_day_interval ); // Like sequence increment by 1 day.
 			$post_id   = self::factory()->post->create(
 				array(
 					'post_type'     => $post_type,
@@ -228,6 +253,49 @@ abstract class TestCase extends WPIntegrationTestCase {
 		}
 
 		return $post_ids;
+	}
+
+	/**
+	 * Wrapper around get_post function which must return WP_Post.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $post_id Optional. Defaults to global $post.
+	 *
+	 * @return WP_Post
+	 */
+	public function get_post( $post_id = null ) {
+		if ( null === $post_id ) {
+			global $post;
+			$post_obj = $post;
+		} else {
+			$post_obj = get_post( $post_id );
+		}
+
+		/**
+		 * Variable.
+		 *
+		 * @var WP_Post
+		 */
+		return $post_obj;
+	}
+
+	/**
+	 * Wrapper around get_post function which must return WP_Post as an associative array.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $post_id ID of the posts.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function get_post_in_array( $post_id ) {
+		/**
+		 * Variable.
+		 *
+		 * @var array<string, mixed>
+		 */
+		return get_post( $post_id, 'ARRAY_A' );
 	}
 
 	/**
@@ -250,6 +318,113 @@ abstract class TestCase extends WPIntegrationTestCase {
 		 * @var WP_Post[]
 		 */
 		return $posts;
+	}
+
+	/**
+	 * Wrapper around get_permalink function which must return url.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $post_id ID of the post.
+	 *
+	 * @return string
+	 */
+	public function get_permalink( $post_id ) {
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
+		return get_permalink( $post_id );
+	}
+
+	/**
+	 * Wrapper around get_term function which must return WP_Term.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $term_id ID of the term.
+	 *
+	 * @return WP_Term
+	 */
+	public function get_term( $term_id ) {
+		/**
+		 * Variable.
+		 *
+		 * @var WP_Term
+		 */
+		return get_term( $term_id );
+	}
+
+	/**
+	 * Wrapper around get_term function which must return WP_Term in associative array.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $term_id ID of the term.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public function get_term_in_array( $term_id ) {
+		/**
+		 * Variable.
+		 *
+		 * @var array<string, mixed>
+		 */
+		return get_term( $term_id, '', 'ARRAY_A' );
+	}
+
+	/**
+	 * Wrapper around get_term_link function which must return url.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param int $term_id ID of the term.
+	 *
+	 * @return string
+	 */
+	public function get_term_link( $term_id ) {
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
+		return get_term_link( $term_id );
+	}
+
+	/**
+	 * Wrapper around get_post_time function which must return time in int.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param string      $format Format to use for retrieving the time.
+	 * @param bool        $is_gmt Whether to retrieve the GMT time.
+	 * @param int|WP_Post $post WP_Post object or ID.
+	 *
+	 * @return int
+	 */
+	public function get_post_time_in_int( $format, $is_gmt, $post ) {
+		/**
+		 * Variable.
+		 *
+		 * @var int
+		 */
+		return get_post_time( $format, $is_gmt, $post );
+	}
+
+	/**
+	 * Wrapper around wp_json_encode function which must return string.
+	 *
+	 * This function ensures strict typing in our codebase.
+	 *
+	 * @param mixed $data — Variable (usually an array or object) to encode as JSON.
+	 *
+	 * @return string
+	 */
+	public function wp_json_encode( $data ) {
+		$encoded_data = wp_json_encode( $data );
+
+		return false !== $encoded_data ? $encoded_data : '';
 	}
 
 	/**
@@ -277,13 +452,21 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
+	 * Creates a user with role `contributor` and login.
+	 */
+	public function login_as_contributor(): void {
+		$user_id = $this->create_test_user( 'test_contributor', 'contributor' );
+		wp_set_current_user( $user_id );
+	}
+
+	/**
 	 * Verifies that given hooks are called or not.
 	 *
 	 * @param string[] $hooks WordPress hooks whose availability we have to verify.
 	 * @param bool     $availability_type TRUE if we want to check the presence of given hooks.
 	 */
 	public function assert_wp_hooks_availablility( $hooks, $availability_type ): void {
-		if ( ! $this->isPHPVersion7Dot2OrHigher() ) {
+		if ( ! $this->is_php_version_7dot2_or_higher() ) {
 			return;
 		}
 
@@ -361,11 +544,11 @@ abstract class TestCase extends WPIntegrationTestCase {
 	/**
 	 * Asserts multiple enqueuing statuses for a script.
 	 *
-	 * @param string $handle       Script handle to test.
-	 * @param array  $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 * @param array  $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 * @param string        $handle       Script handle to test.
+	 * @param array<string> $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
+	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 * @param array<string> $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
+	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
 	 *
 	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
 	 */
@@ -428,11 +611,11 @@ abstract class TestCase extends WPIntegrationTestCase {
 	/**
 	 * Asserts multiple enqueuing statuses for a style.
 	 *
-	 * @param string $handle       Style handle to test.
-	 * @param array  $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 * @param array  $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 * @param string        $handle       Style handle to test.
+	 * @param array<string> $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
+	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
+	 * @param array<string> $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
+	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
 	 *
 	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
 	 */
@@ -462,7 +645,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * Note: Remove this function when we remove support for PHP 7.1.
 	 */
-	public function isPHPVersion7Dot2OrHigher(): bool {
+	public function is_php_version_7dot2_or_higher(): bool {
 		return phpversion() >= '7.2';
 	}
 

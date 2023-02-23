@@ -17,6 +17,8 @@ use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
 
+use function Parsely\Utils\convert_endpoint_to_filter_key;
+
 /**
  * Configures a REST API endpoint for use.
  */
@@ -29,7 +31,7 @@ abstract class Base_API_Proxy {
 	protected $parsely;
 
 	/**
-	 * API object which does the actual calls to the Parse.ly API.
+	 * Proxy object which does the actual calls to the Parse.ly API.
 	 *
 	 * @var Remote_API_Interface
 	 */
@@ -62,7 +64,9 @@ abstract class Base_API_Proxy {
 	 *
 	 * @return bool
 	 */
-	abstract public function permission_callback(): bool;
+	public function permission_callback(): bool {
+		return $this->api->is_user_allowed_to_make_api_call();
+	}
 
 	/**
 	 * Constructor.
@@ -81,8 +85,7 @@ abstract class Base_API_Proxy {
 	 * @param string $endpoint The endpoint's route (e.g. /stats/posts).
 	 */
 	protected function register_endpoint( string $endpoint ): void {
-		$filter_key = trim( str_replace( '/', '_', $endpoint ), '_' );
-		if ( ! apply_filters( 'wp_parsely_enable_' . $filter_key . '_api_proxy', true ) ) {
+		if ( ! apply_filters( 'wp_parsely_enable_' . convert_endpoint_to_filter_key( $endpoint ) . '_api_proxy', true ) ) {
 			return;
 		}
 
@@ -106,6 +109,7 @@ abstract class Base_API_Proxy {
 				'callback'            => array( $this, 'get_items' ),
 				'permission_callback' => array( $this, 'permission_callback' ),
 				'args'                => $get_items_args,
+				'show_in_index'       => $this->permission_callback(),
 			),
 		);
 

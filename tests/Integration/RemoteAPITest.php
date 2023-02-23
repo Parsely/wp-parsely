@@ -33,9 +33,9 @@ abstract class RemoteAPITest extends TestCase {
 	/**
 	 * Provides data for test_api_url().
 	 *
-	 * @return iterable
+	 * @return \ArrayIterator<string, mixed>
 	 */
-	abstract public function data_api_url(): iterable;
+	abstract public function data_api_url();
 
 	/**
 	 * Runs once before all tests.
@@ -56,8 +56,8 @@ abstract class RemoteAPITest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
 	 *
-	 * @param array  $query Test query arguments.
-	 * @param string $url Expected generated URL.
+	 * @param array<string, mixed> $query Test query arguments.
+	 * @param string               $url Expected generated URL.
 	 */
 	public function test_api_url( array $query, string $url ): void {
 		self::set_options( array( 'apikey' => 'my-key' ) );
@@ -76,11 +76,11 @@ abstract class RemoteAPITest extends TestCase {
 			->disableOriginalConstructor()
 			->getMock();
 
-		// If this method is called, that means our cache did not hit as
-		// expected.
+		// If this method is called, that means our cache did not hit as expected.
 		$api_mock->expects( self::never() )->method( 'get_items' );
+		$api_mock->method( 'get_endpoint' )->willReturn( self::$remote_api->get_endpoint() ); // Passing call to non-mock method.
 
-		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $api_mock ) ) . '_' . wp_hash( wp_json_encode( array() ) );
+		$cache_key = 'parsely_api_' . wp_hash( self::$remote_api->get_endpoint() ) . '_' . wp_hash( $this->wp_json_encode( array() ) );
 
 		$object_cache = $this->createMock( Cache::class );
 		$object_cache->method( 'get' )
@@ -95,6 +95,11 @@ abstract class RemoteAPITest extends TestCase {
 				self::isNull()
 			);
 
+		/**
+		 * Variable.
+		 *
+		 * @var Remote_API_Cache
+		 */
 		$remote_api_cache = $this->getMockBuilder( Remote_API_Cache::class )
 			->setConstructorArgs( array( $api_mock, $object_cache ) )
 			->setMethodsExcept( array( 'get_items' ) )
@@ -118,11 +123,11 @@ abstract class RemoteAPITest extends TestCase {
 		$api_mock->method( 'get_items' )
 			->willReturn( (object) array( 'cache_hit' => false ) );
 
-		// If this method is _NOT_ called, that means our cache did not miss as
-		// expected.
+		// If this method is _NOT_ called, that means our cache did not miss as expected.
 		$api_mock->expects( self::once() )->method( 'get_items' );
+		$api_mock->method( 'get_endpoint' )->willReturn( self::$remote_api->get_endpoint() ); // Passing call to non-mock method.
 
-		$cache_key = 'parsely_api_' . wp_hash( wp_json_encode( $api_mock ) ) . '_' . wp_hash( wp_json_encode( array() ) );
+		$cache_key = 'parsely_api_' . wp_hash( self::$remote_api->get_endpoint() ) . '_' . wp_hash( $this->wp_json_encode( array() ) );
 
 		$object_cache = $this->createMock( Cache::class );
 		$object_cache->method( 'get' )
@@ -137,6 +142,11 @@ abstract class RemoteAPITest extends TestCase {
 				self::isNull()
 			);
 
+		/**
+		 * Variable.
+		 *
+		 * @var Remote_API_Cache
+		 */
 		$remote_api_cache = $this->getMockBuilder( Remote_API_Cache::class )
 			->setConstructorArgs( array( $api_mock, $object_cache ) )
 			->setMethodsExcept( array( 'get_items' ) )

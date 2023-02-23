@@ -350,8 +350,8 @@ final class ScriptsTest extends TestCase {
 				'track_authenticated_users' => false,
 			)
 		);
-		$new_user = $this->create_test_user( 'bill_brasky' );
-		wp_set_current_user( $new_user );
+		$new_user_id = $this->create_test_user( 'bill_brasky' );
+		wp_set_current_user( $new_user_id );
 
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
@@ -475,12 +475,22 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->enqueue_js_tracker();
 
 		wp_print_scripts();
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
 		$output = ob_get_clean();
 
 		$loader_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/loader.asset.php';
-
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
+		$version = is_bool( $loader_asset ) ? Parsely::VERSION : $loader_asset['version'];
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . is_bool( $loader_asset ) ? Parsely::VERSION : $loader_asset['version'] . "' id='wp-parsely-loader-js'></script>", $output );
+		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $version . "' id='wp-parsely-loader-js'></script>", $output );
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=123456.78.9' id=\"parsely-cfg\"></script>", $output );
 	}

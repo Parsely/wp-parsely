@@ -94,7 +94,7 @@ final class RowActionsTest extends TestCase {
 		// Insert a single post and set as global post.
 		// This post is a viewable type, with a trackable status (published).
 		$post_id = self::factory()->post->create( array( 'post_title' => 'Foo1' ) );
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 
 		// Existing actions is an array.
 		$existing_actions = array();
@@ -130,7 +130,7 @@ final class RowActionsTest extends TestCase {
 		// Insert a single post and set as global post.
 		// This post is a viewable type, with a trackable status (published).
 		$post_id = self::factory()->post->create( array( 'post_title' => 'Foo2' ) );
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 
 		// Existing actions is an array.
 		$existing_actions = array();

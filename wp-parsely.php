@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://www.parse.ly/help/integration/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
- * Version:           3.6.1
+ * Version:           3.6.2
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -60,7 +60,7 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.6.1';
+const PARSELY_VERSION = '3.6.2';
 const PARSELY_FILE    = __FILE__;
 
 require_once __DIR__ . '/src/class-parsely.php';
@@ -213,7 +213,7 @@ require_once __DIR__ . '/src/blocks/content-helper/class-content-helper.php';
 
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\init_content_helper' );
 /**
- * Inserts the Content Helper into the WordPress Post Editor.
+ * Inserts the PCH Editor Sidebar.
  *
  * @since 3.5.0 Moved from Parsely\Scripts\enqueue_block_editor_assets()
  */

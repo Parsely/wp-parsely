@@ -50,8 +50,8 @@ export const RELATED_POSTS_DEFAULT_TIME_RANGE = 3; // In days.
 
 class RelatedTopPostsProvider {
 	/**
-	 * Returns related top-performing posts to the one that is currently being
-	 * edited within the WordPress Block Editor.
+	 * Returns related top posts to the one that is currently being edited
+	 * within the WordPress Block Editor.
 	 *
 	 * The 'related' status is determined by the current post's Author, Category
 	 * or tag.
@@ -81,7 +81,7 @@ class RelatedTopPostsProvider {
 			return Promise.reject( contentHelperError );
 		}
 
-		// Fetch results from API and set the Content Helper's message.
+		// Fetch results from API and set the message.
 		let data;
 		try {
 			data = await this.fetchRelatedTopPostsFromWpEndpoint( apiQuery );
@@ -90,16 +90,16 @@ class RelatedTopPostsProvider {
 		}
 
 		/* translators: %s: message such as "in category Foo", %d: number of days */
-		let message = sprintf( __( 'Top-performing posts %1$s in last %2$d days.', 'wp-parsely' ), apiQuery.message, RELATED_POSTS_DEFAULT_TIME_RANGE );
+		let message = sprintf( __( 'Top posts %1$s in last %2$d days.', 'wp-parsely' ), apiQuery.message, RELATED_POSTS_DEFAULT_TIME_RANGE );
 		if ( data.length === 0 ) {
-			message = `${ __( 'The Parse.ly API did not return any results for top-performing posts', 'wp-parsely' ) } ${ apiQuery.message }.`;
+			message = `${ __( 'The Parse.ly API did not return any results for related top posts', 'wp-parsely' ) } ${ apiQuery.message }.`;
 		}
 
 		return { message, posts: data };
 	}
 
 	/**
-	 * Fetches the related top-performing posts data from the WordPress REST API.
+	 * Fetches the related top posts data from the WordPress REST API.
 	 *
 	 * @param {RelatedTopPostsApiQuery} query
 	 * @return {Promise<Array<RelatedTopPostData>>} Array of fetched posts.
@@ -129,7 +129,7 @@ class RelatedTopPostsProvider {
 
 	/**
 	 * Builds the query object used in the API for performing the related
-	 * top-performing posts request.
+	 * top posts request.
 	 *
 	 * @param {User}     author   The post's author.
 	 * @param {Taxonomy} category The post's category.

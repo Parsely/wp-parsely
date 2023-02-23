@@ -55,8 +55,17 @@ class Analytics_Posts_API extends Remote_API_Base {
 	public const MAX_RECORDS_LIMIT        = 2000;
 	public const ANALYTICS_API_DAYS_LIMIT = 7;
 
-	protected const ENDPOINT     = Parsely::PUBLIC_API_BASE_URL . '/analytics/posts';
+	protected const ENDPOINT     = '/analytics/posts';
 	protected const QUERY_FILTER = 'wp_parsely_analytics_posts_endpoint_args';
+
+	/**
+	 * Indicates whether the endpoint is public or protected behind permissions.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @var bool
+	 */
+	protected $is_public_endpoint = false;
 
 	/**
 	 * Calls Parse.ly Analytics API to get posts info.

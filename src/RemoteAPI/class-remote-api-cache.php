@@ -54,7 +54,9 @@ class Remote_API_Cache implements Remote_API_Interface {
 	 *                                             response is empty.
 	 */
 	public function get_items( $query, $associative = false ) {
-		$cache_key = 'parsely_api_' . wp_hash( (string) wp_json_encode( $this->remote_api ) ) . '_' . wp_hash( (string) wp_json_encode( $query ) );
+		$cache_key = 'parsely_api_' .
+			wp_hash( $this->remote_api->get_endpoint() ) . '_' .
+			wp_hash( (string) wp_json_encode( $query ) );
 
 		/**
 		 * Variable.
@@ -69,5 +71,16 @@ class Remote_API_Cache implements Remote_API_Interface {
 		}
 
 		return $items;
+	}
+
+	/**
+	 * Checks if the current user is allowed to make the API call.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @return bool
+	 */
+	public function is_user_allowed_to_make_api_call(): bool {
+		return $this->remote_api->is_user_allowed_to_make_api_call();
 	}
 }

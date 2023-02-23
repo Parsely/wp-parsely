@@ -27,9 +27,9 @@ final class RelatedRemoteAPITest extends RemoteAPITest {
 	/**
 	 * Provides data for test_api_url().
 	 *
-	 * @return iterable
+	 * @return \ArrayIterator<string, mixed>
 	 */
-	public function data_api_url(): iterable {
+	public function data_api_url() {
 		yield 'Basic (Expected data)' => array(
 			array(
 				'apikey'         => 'my-key',
@@ -67,6 +67,26 @@ final class RelatedRemoteAPITest extends RemoteAPITest {
 				'limit'  => 5,
 			),
 			Parsely::PUBLIC_API_BASE_URL . '/related?apikey=my-key&limit=5&sort=score',
+		);
+	}
+
+	/**
+	 * Verifies that the endpoint does not have filters that check user capability.
+	 *
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 *
+	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 */
+	public function test_related_endpoint_does_not_have_user_capability_filters(): void {
+		$api = new Related_API( new Parsely() );
+
+		self::assertTrue( $api->is_user_allowed_to_make_api_call() );
+		$this->assert_wp_hooks_availablility(
+			array(
+				'wp_parsely_user_capability_for_all_private_apis',
+				'wp_parsely_user_capability_for_related_api',
+			),
+			false
 		);
 	}
 }

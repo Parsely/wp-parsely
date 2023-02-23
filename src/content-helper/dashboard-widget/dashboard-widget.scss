@@ -82,7 +82,6 @@
 	// This element can be a link or div.
 	.parsely-top-post-title {
 		color: var(--base-text);
-		display: inline; // Needed for when this is a div.
 		font-size: to_rem(14px);
 		margin-right: to_rem(7px);
 	}
@@ -97,6 +96,7 @@
 
 		svg {
 			fill: #8d98a1;
+			margin-right: to_rem(3px);
 
 			&:hover {
 				fill: var(--blue-550);

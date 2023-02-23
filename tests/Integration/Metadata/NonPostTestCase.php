@@ -27,7 +27,7 @@ abstract class NonPostTestCase extends TestCase {
 	/**
 	 * Asserts that the metadata contains all required properties.
 	 *
-	 * @param array $structured_data The metadata array to check.
+	 * @param array<string, mixed> $structured_data The metadata array to check.
 	 */
 	public function assert_data_has_required_properties( array $structured_data ): void {
 		$required_properties = $this->get_required_properties();

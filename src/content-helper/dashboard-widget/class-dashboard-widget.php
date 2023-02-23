@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly Content Helper Dashboard Widget class
+ * PCH Dashboard Widget class
  *
  * @package Parsely
  * @since   3.7.0
@@ -11,11 +11,12 @@ declare(strict_types=1);
 namespace Parsely\ContentHelper;
 
 use Parsely\Parsely;
+use Parsely\RemoteAPI\Analytics_Posts_API;
 
 use const Parsely\PARSELY_FILE;
 
 /**
- * Class that generates and manages the Content Helper Dashboard Widget.
+ * Class that generates and manages the PCH Dashboard Widget.
  *
  * @since 3.7.0
  */
@@ -28,6 +29,13 @@ class Dashboard_Widget {
 	 * @since 3.7.0
 	 */
 	public function run(): void {
+		$posts_api = new Analytics_Posts_API( $GLOBALS['parsely'] );
+
+		// Don't add the widget if the user is not allowed to make the API call.
+		if ( ! $posts_api->is_user_allowed_to_make_api_call() ) {
+			return;
+		}
+
 		add_action( 'wp_dashboard_setup', array( $this, 'add_dashboard_widget' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
