@@ -33,11 +33,6 @@ use const Parsely\PARSELY_FILE;
  *   radio_options?: array<string, string>,
  * }
  *
- * @phpstan-type SettingTab array{
- *   key: string,
- *   label: string,
- * }
- *
  * @phpstan-type ParselySettingOptions array{
  *   apikey: string,
  *   api_secret: string,
@@ -78,15 +73,6 @@ final class Settings_Page {
 	private $hook_suffix;
 
 	/**
-	 * Setting Tabs.
-	 *
-	 * @since 3.8.0
-	 *
-	 * @var array<SettingTab>
-	 */
-	private $setting_tabs;
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
@@ -101,21 +87,6 @@ final class Settings_Page {
 	 * @since 3.0.0
 	 */
 	public function run(): void {
-		$this->setting_tabs = array(
-			array(
-				'key'   => 'basic-section',
-				'label' => __( 'Basic Settings', 'wp-parsely' ),
-			),
-			array(
-				'key'   => 'recrawl-section',
-				'label' => __( 'Recrawl Settings', 'wp-parsely' ),
-			),
-			array(
-				'key'   => 'advanced-section',
-				'label' => __( 'Advanced Settings', 'wp-parsely' ),
-			),
-		);
-
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_assets' ) );
@@ -204,45 +175,6 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Shows setting tabs.
-	 *
-	 * @since 3.8.0
-	 */
-	public function show_setting_tabs(): void {
-		?>
-		<nav class="nav-tab-wrapper">
-			<?php foreach ( $this->setting_tabs as $t ) { ?>
-			<a
-				class="nav-tab <?php echo esc_attr( $t['key'] . '-tab' ); ?>"
-				href=<?php echo esc_url_raw( '?page=' . Parsely::MENU_SLUG . '#' . $t['key'] ); ?>
-			>
-				<?php echo esc_html( $t['label'] ); ?>
-			</a>
-			<?php } ?>
-		</nav>
-		<?php
-	}
-
-	/**
-	 * Shows content of setting tabs.
-	 *
-	 * @since 3.8.0
-	 */
-	public function show_content_of_setting_tabs(): void {
-		foreach ( $this->setting_tabs as $t ) {
-			?>
-
-		<div class="tab-content <?php echo esc_attr( $t['key'] ); ?>">
-			<table class="form-table" role="presentation">
-				<?php do_settings_fields( Parsely::MENU_SLUG, $t['key'] ); ?>
-			</table>
-		</div>
-
-			<?php
-		}
-	}
-
-	/**
 	 * Initializes the settings for Parse.ly.
 	 */
 	public function initialize_settings(): void {
@@ -253,26 +185,22 @@ final class Settings_Page {
 			array( $this, 'validate_options' )
 		);
 
-		$basic_section_key    = $this->setting_tabs[0]['key'];
-		$recrawl_section_key  = $this->setting_tabs[1]['key'];
-		$advanced_section_key = $this->setting_tabs[2]['key'];
-
-		$this->initialize_basic_section( $basic_section_key );
-		$this->initialize_recrawl_section( $recrawl_section_key );
-		$this->initialize_advanced_section( $advanced_section_key );
+		$this->initialize_basic_section();
+		$this->initialize_recrawl_section();
+		$this->initialize_advanced_section();
 	}
 
 	/**
 	 * Registers section and settings for Basic section.
 	 *
-	 * @param string $section_key Key of the section.
-	 *
 	 * @since 3.2.0
 	 */
-	private function initialize_basic_section( string $section_key ): void {
+	private function initialize_basic_section(): void {
+		$section_key = 'basic-section';
+
 		add_settings_section(
 			$section_key,
-			__( 'Basic Settings', 'wp-parsely' ),
+			__( 'Basic', 'wp-parsely' ),
 			'__return_null',
 			Parsely::MENU_SLUG
 		);
@@ -433,19 +361,19 @@ final class Settings_Page {
 	/**
 	 * Registers section and settings for Recrawl section.
 	 *
-	 * @param string $section_key Key of the section.
-	 *
 	 * @since 3.2.0
 	 */
-	private function initialize_recrawl_section( string $section_key ): void {
+	private function initialize_recrawl_section(): void {
+		$section_key = 'recrawl-section';
+
 		add_settings_section(
 			$section_key,
-			__( 'Requires Recrawl Settings', 'wp-parsely' ),
+			__( 'Recrawl', 'wp-parsely' ),
 			function (): void {
 				echo '<br /><strong>' . wp_kses_post( __( '<span style="color:#d63638">Important:</span> Changing any of these values below on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data.', 'wp-parsely' ) ) . '</strong><br />';
 				printf(
 					/* translators: Mailto link  */
-					esc_html__( 'Once you have changed a value and and saved, please contact %s to request a recrawl.', 'wp-parsely' ),
+					esc_html__( 'Once you have changed a value and saved, please contact %s to request a recrawl.', 'wp-parsely' ),
 					wp_kses_post( '<a href="mailto:support@parsely.com?subject=' . rawurlencode( 'Please reprocess ' . $this->parsely->get_site_id() ) . '">support@parsely.com</a>' )
 				);
 			},
@@ -589,11 +517,11 @@ final class Settings_Page {
 	/**
 	 * Registers section and settings for Advanced section.
 	 *
-	 * @param string $section_key Key of the section.
-	 *
 	 * @since 3.2.0
 	 */
-	private function initialize_advanced_section( string $section_key ): void {
+	private function initialize_advanced_section(): void {
+		$section_key = 'advanced-section';
+
 		add_settings_section(
 			$section_key,
 			__( 'Advanced Settings', 'wp-parsely' ),
@@ -631,6 +559,53 @@ final class Settings_Page {
 				'help_text'  => __( '<span style="color:#d63638">WARNING:</span> Do not do this unless explicitly instructed by Parse.ly Staff!', 'wp-parsely' ),
 			)
 		);
+	}
+
+	/**
+	 * Shows setting tabs.
+	 *
+	 * @since 3.8.0
+	 */
+	public function show_setting_tabs(): void {
+		global $wp_settings_sections;
+		?>
+
+		<nav class="nav-tab-wrapper">
+			<?php foreach ( $wp_settings_sections[ Parsely::MENU_SLUG ] as $section ) { ?>
+				<a
+					class="nav-tab <?php echo esc_attr( $section['id'] . '-tab' ); ?>"
+					href=<?php echo esc_url_raw( '?page=' . Parsely::MENU_SLUG . '#' . $section['id'] ); ?>
+				>
+					<?php echo esc_html( $section['title'] ); ?>
+				</a>
+			<?php } ?>
+		</nav>
+
+		<?php
+	}
+
+	/**
+	 * Shows content of setting tabs.
+	 *
+	 * @since 3.8.0
+	 */
+	public function show_setting_tabs_content(): void {
+		global $wp_settings_sections;
+
+		foreach ( $wp_settings_sections[ Parsely::MENU_SLUG ] as $section ) {
+			if ( $section['callback'] ) {
+				call_user_func( $section['callback'], $section );
+			}
+			?>
+
+			<div class="tab-content <?php echo esc_attr( $section['id'] ); ?>">
+				<table class="form-table" role="presentation">
+					<?php do_settings_fields( Parsely::MENU_SLUG, $section['id'] ); ?>
+				</table>
+			</div>
+
+			<?php
+		}
 	}
 
 	/**
@@ -926,7 +901,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Validate fields of Basic Section.
+	 * Validates fields of Basic Section.
 	 *
 	 * @param ParselySettingOptions $input Options from the settings page.
 	 *
@@ -1027,7 +1002,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Validate fields of Recrawl Section.
+	 * Validates fields of Recrawl Section.
 	 *
 	 * @param ParselySettingOptions $input Options from the settings page.
 	 *
@@ -1135,7 +1110,7 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Validate fields of Advanced Section.
+	 * Validates fields of Advanced Section.
 	 *
 	 * @param ParselySettingOptions $input Options from the settings page.
 	 *
