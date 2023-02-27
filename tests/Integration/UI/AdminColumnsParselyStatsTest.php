@@ -741,6 +741,24 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	}
 
 	/**
+	 * Verifies Parse.ly Stats response.
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 */
+	public function test_parsely_stats_response_on_empty_api_secret(): void {
+		$this->set_empty_api_secret();
+
+		$res = $this->get_parsely_stats_response();
+
+		$this->assert_hooks_for_parsely_stats_response( false );
+		self::assertNull( $res );
+	}
+
+	/**
 	 * Verifies Parse.ly Stats API arguments.
 	 *
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
