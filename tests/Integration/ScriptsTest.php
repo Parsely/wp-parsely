@@ -11,7 +11,6 @@ namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
 use Parsely\Scripts;
-use PHPUnit\Framework\RiskyTestError;
 use WP_Scripts;
 
 use const Parsely\PARSELY_FILE;
@@ -47,7 +46,7 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::run
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 *
 	 * @group scripts
@@ -64,17 +63,17 @@ final class ScriptsTest extends TestCase {
 
 	/**
 	 * Verifies that run() does not add the register and enqueue actions when no
-	 * API key is set.
+	 * Site ID is set.
 	 *
 	 * @covers \Parsely\Scripts::run
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 *
 	 * @group scripts
 	 */
-	public function test_run_not_adds_actions_no_api_key(): void {
-		TestCase::set_options( array( 'apikey' => null ) );
+	public function test_run_not_adds_actions_no_site_id(): void {
+		TestCase::set_options( array( 'apikey' => '' ) );
 
 		self::$scripts->run();
 
@@ -88,7 +87,7 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::run
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 *
 	 * @group scripts
@@ -107,9 +106,9 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::register_scripts
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -133,9 +132,9 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -167,8 +166,8 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 *
-	 * @uses Parsely\Parsely::api_key_is_set
-	 * @uses Parsely\Parsely::get_api_key
+	 * @uses Parsely\Parsely::site_id_is_set
+	 * @uses Parsely\Parsely::get_site_id
 	 * @uses Parsely\Parsely::get_options
 	 * @uses Parsely\Parsely::get_tracker_url
 	 * @uses Parsely\Scripts::__construct
@@ -195,8 +194,8 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 *
-	 * @uses Parsely\Parsely::api_key_is_set
-	 * @uses Parsely\Parsely::get_api_key
+	 * @uses Parsely\Parsely::site_id_is_set
+	 * @uses Parsely\Parsely::get_site_id
 	 * @uses Parsely\Parsely::get_options
 	 * @uses Parsely\Parsely::get_tracker_url
 	 * @uses Parsely\Scripts::__construct
@@ -226,10 +225,10 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -264,9 +263,9 @@ final class ScriptsTest extends TestCase {
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @covers \Parsely\Scripts::register_scripts
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -302,10 +301,10 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -325,7 +324,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
 
 		// The variable should be inlined before the script.
-		self::assertEquals( "window.wpParselyApiKey = 'blog.parsely.com';", $wp_scripts->registered['wp-parsely-loader']->extra['before'][1] );
+		self::assertEquals( "window.wpParselySiteId = 'blog.parsely.com';", $wp_scripts->registered['wp-parsely-loader']->extra['before'][1] );
 	}
 
 	/**
@@ -334,11 +333,11 @@ final class ScriptsTest extends TestCase {
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @covers \Parsely\Scripts::register_scripts
 	 * @covers \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::is_blog_member_logged_in
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @group scripts
@@ -351,8 +350,8 @@ final class ScriptsTest extends TestCase {
 				'track_authenticated_users' => false,
 			)
 		);
-		$new_user = $this->create_test_user( 'bill_brasky' );
-		wp_set_current_user( $new_user );
+		$new_user_id = $this->create_test_user( 'bill_brasky' );
+		wp_set_current_user( $new_user_id );
 
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
@@ -376,13 +375,13 @@ final class ScriptsTest extends TestCase {
 	 * @covers \Parsely\Scripts::__construct
 	 * @covers \Parsely\Scripts::register_scripts
 	 * @covers \Parsely\Scripts::script_loader_tag
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::is_blog_member_logged_in
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @group scripts
 	 * @group settings
@@ -457,12 +456,12 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Scripts::script_loader_tag
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::__construct
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @group scripts
 	 * @group scripts-output
@@ -476,80 +475,23 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->enqueue_js_tracker();
 
 		wp_print_scripts();
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
 		$output = ob_get_clean();
 
-		$loader_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/loader.asset.php';
-
+		$loader_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/loader.asset.php';
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
+		$version = is_bool( $loader_asset ) ? Parsely::VERSION : $loader_asset['version'];
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $loader_asset['version'] . "' id='wp-parsely-loader-js'></script>", $output );
+		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $version . "' id='wp-parsely-loader-js'></script>", $output );
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=123456.78.9' id=\"parsely-cfg\"></script>", $output );
-	}
-
-	/**
-	 * Asserts that a passed script is not registered.
-	 *
-	 * @param string $handle Script handle to test.
-	 */
-	private function assert_is_script_not_registered( string $handle ): void {
-		$this->assert_script_statuses( $handle, array(), array( 'registered' ) );
-	}
-
-	/**
-	 * Asserts that a passed script is registered.
-	 *
-	 * @param string $handle Script handle to test.
-	 */
-	private function assert_is_script_registered( string $handle ): void {
-		$this->assert_script_statuses( $handle, array( 'registered' ) );
-	}
-
-	/**
-	 * Asserts that a passed script is not enqueued.
-	 *
-	 * @param string $handle Script handle to test.
-	 */
-	private function assert_is_script_not_enqueued( string $handle ): void {
-		$this->assert_script_statuses( $handle, array(), array( 'enqueued' ) );
-	}
-
-	/**
-	 * Asserts that a passed script is enqueued.
-	 *
-	 * @param string $handle Script handle to test.
-	 */
-	private function assert_is_script_enqueued( string $handle ): void {
-		$this->assert_script_statuses( $handle, array( 'enqueued' ) );
-	}
-
-	/**
-	 * Asserts multiple enqueuing statuses for a script.
-	 *
-	 * @param string $handle       Script handle to test.
-	 * @param array  $assert_true  Optional. Statuses that should assert to true. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 * @param array  $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
-	 *                             'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 *
-	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
-	 */
-	public function assert_script_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
-		if ( 0 === count( $assert_true ) + count( $assert_false ) ) {
-			throw new RiskyTestError( 'Function assert_script_statuses() has been used without any arguments' );
-		}
-
-		foreach ( $assert_true as $status ) {
-			self::assertTrue(
-				wp_script_is( $handle, $status ),
-				"Unexpected script status: $handle status should be '$status'"
-			);
-		}
-
-		foreach ( $assert_false as $status ) {
-			self::assertFalse(
-				wp_script_is( $handle, $status ),
-				"Unexpected script status: $handle status should NOT be '$status'"
-			);
-		}
 	}
 }

@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace Parsely\Endpoints;
 
+use Parsely\Parsely;
 use stdClass;
 use WP_REST_Request;
+use WP_Error;
 
 /**
  * Configures the `/stats/post/detail` REST API endpoint.
@@ -22,15 +24,15 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * Registers the endpoint's WP REST route.
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/stats/post/detail', 'publish_posts' );
+		$this->register_endpoint( '/stats/post/detail' );
 	}
 
 	/**
 	 * Cached "proxy" to the Parse.ly `/analytics/post/detail` API endpoint.
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return stdClass|WPError stdClass containing the data or a WP_Error
-	 *                          object on failure.
+	 *
+	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	public function get_items( WP_REST_Request $request ) {
 		return $this->get_data( $request );
@@ -39,17 +41,17 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 	/**
 	 * Generates the final data from the passed response.
 	 *
-	 * @param array<string, mixed> $response The response received by the proxy.
+	 * @param array<stdClass> $response The response received by the proxy.
 	 * @return array<stdClass> The generated data.
 	 */
-	protected function generate_data( array $response ): array {
-		$stats_base_url = trailingslashit( 'https://dash.parsely.com/' . $this->parsely->get_api_key() ) . 'find';
+	protected function generate_data( $response ): array {
+		$site_id = $this->parsely->get_site_id();
 
-		$result = array_map(
-			static function( stdClass $item ) use ( $stats_base_url ) {
+		return array_map(
+			static function( stdClass $item ) use ( $site_id ) {
 				return (object) array(
 					'avgEngaged' => self::get_duration( (float) $item->avg_engaged ),
-					'statsUrl'   => $stats_base_url . '?url=' . rawurlencode( $item->url ),
+					'dashUrl'    => Parsely::get_dash_url( $site_id, $item->url ),
 					'url'        => $item->url,
 					'views'      => number_format_i18n( $item->metrics->views ),
 					'visitors'   => number_format_i18n( $item->metrics->visitors ),
@@ -57,8 +59,6 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 			},
 			$response
 		);
-
-		return $result;
 	}
 
 	/**

@@ -19,6 +19,20 @@ use const Parsely\PARSELY_FILE;
  * Renders the wp-admin Parse.ly plugin settings page.
  *
  * @since 3.0.0
+ *
+ * @phpstan-import-type Parsely_Options from Parsely
+ *
+ * @phpstan-type Setting_Arguments array{
+ *   option_key: string,
+ *   label_for: string,
+ *   title?: string,
+ *   help_text?: string,
+ *   yes_text?: string,
+ *   filter?: string,
+ *   optional_args?: array<string, string>,
+ *   select_options?: array<string, string>,
+ *   radio_options?: array<string, string>,
+ * }
  */
 final class Settings_Page {
 	/**
@@ -84,22 +98,22 @@ final class Settings_Page {
 			add_filter( 'media_library_months_with_files', '__return_empty_array' );
 			wp_enqueue_media();
 
-			$admin_settings_asset = require plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
+			$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
 			$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
 
 			wp_enqueue_script(
 				'parsely-admin-settings',
 				$built_assets_url . 'admin-settings.js',
-				$admin_settings_asset['dependencies'],
-				$admin_settings_asset['version'],
+				$admin_settings_asset['dependencies'] ?? null,
+				$admin_settings_asset['version'] ?? Parsely::VERSION,
 				true
 			);
 
 			wp_enqueue_style(
 				'parsely-admin-settings',
 				$built_assets_url . 'admin-settings.css',
-				$admin_settings_asset['dependencies'],
-				$admin_settings_asset['version']
+				$admin_settings_asset['dependencies'] ?? null,
+				$admin_settings_asset['version'] ?? Parsely::VERSION
 			);
 		}
 	}
@@ -182,9 +196,9 @@ final class Settings_Page {
 	 * @param string    $screen_settings Screen settings.
 	 * @param WP_Screen $screen          WP_Screen object.
 	 *
-	 * @return string The filtered screen settings.
+	 * @return string|false The filtered screen settings.
 	 */
-	public function screen_settings( string $screen_settings, WP_Screen $screen ): string {
+	public function screen_settings( string $screen_settings, WP_Screen $screen ) {
 		if ( $this->hook_suffix !== $screen->base ) {
 			return $screen_settings;
 		}
@@ -194,6 +208,11 @@ final class Settings_Page {
 			return $screen_settings;
 		}
 
+		/**
+		 * Variable.
+		 *
+		 * @var array<string, mixed>
+		 */
 		$user_meta = get_user_meta( get_current_user_id(), $this->screen_options_name, true );
 
 		ob_start();
@@ -262,7 +281,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
 
-		include plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings.php';
+		include_once plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings.php';
 	}
 
 	/**
@@ -358,6 +377,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		// Metadata Format.
 		$field_id   = 'meta_type';
 		$field_args = array(
+			'title'         => __( 'Metadata Format', 'wp-parsely' ),
 			'option_key'    => $field_id,
 			'help_text'     => __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with <a href="https://www.parse.ly/help/integration/jsonld/">JSON-LD</a>, but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' ),
 			'radio_options' => array(
@@ -427,7 +447,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				'option_key'    => 'disable_javascript',
 				'radio_options' => array(
 					'true'  => __( 'Yes, disable JavaScript tracking. I want to use a separate system for tracking instead of the Parse.ly plugin.', 'wp-parsely' ),
-					'false' => __( 'No, do not disable JavaScript tracking. I want to the Parse.ly plugin to load the tracker.', 'wp-parsely' ),
+					'false' => __( 'No, do not disable JavaScript tracking. I want the Parse.ly plugin to load the tracker.', 'wp-parsely' ),
 				),
 				'help_text'     => __( '<span style="color:#d63638">WARNING:</span> We highly recommend choosing "No." Disabling the JavaScript tracker will also disable the "Personalize Results" section of the recommendation widget.', 'wp-parsely' ),
 				'filter'        => 'wp_parsely_load_js_tracker',
@@ -468,7 +488,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				printf(
 					/* translators: Mailto link  */
 					esc_html__( 'Once you have changed a value and and saved, please contact %s to request a recrawl.', 'wp-parsely' ),
-					wp_kses_post( '<a href="mailto:support@parsely.com?subject=' . rawurlencode( 'Please reprocess ' . $this->parsely->get_api_key() ) . '">support@parsely.com</a>' )
+					wp_kses_post( '<a href="mailto:support@parsely.com?subject=' . rawurlencode( 'Please reprocess ' . $this->parsely->get_site_id() ) . '">support@parsely.com</a>' )
 				);
 			},
 			Parsely::MENU_SLUG
@@ -659,9 +679,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param array $args The arguments for the form field. May contain 'filter'.
+	 * @param Setting_Arguments $args The arguments for the form field. May contain 'filter'.
 	 */
-	private function print_filter_text( array $args ): void {
+	private function print_filter_text( $args ): void {
 		if ( isset( $args['filter'] ) && has_filter( $args['filter'] ) ) {
 			echo '<p>';
 			echo '<b><code>' . esc_html( $args['filter'] ) . '</code>' . esc_html__( 'filter hook is in use!', 'wp-parsely' ) . '</b> ';
@@ -675,20 +695,25 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param array $args The arguments for the form field. May contain 'help_text'.
+	 * @param Setting_Arguments $args The arguments for the form field. May contain 'help_text'.
 	 */
-	private function print_description_text( array $args ): void {
+	private function print_description_text( $args ): void {
 		echo isset( $args['help_text'] ) ? '<p class="description" id="' . esc_attr( $args['option_key'] ) . '-description">' . wp_kses_post( $args['help_text'] ) . '</p>' : '';
 	}
 
 	/**
 	 * Prints out an input text tag.
 	 *
-	 * @param array $args The arguments for text tag.
+	 * @param Setting_Arguments $args The arguments for text tag.
 	 */
-	public function print_text_tag( array $args ): void {
-		$options       = $this->parsely->get_options();
-		$name          = $args['option_key'];
+	public function print_text_tag( $args ): void {
+		$options = $this->parsely->get_options();
+		$name    = $args['option_key'];
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
 		$value         = $options[ $name ] ?? '';
 		$optional_args = $args['optional_args'] ?? array();
 		$id            = esc_attr( $name );
@@ -697,9 +722,11 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$accepted_args = array( 'placeholder', 'required' );
 
 		echo sprintf( "<input type='text' name='%s' id='%s' value='%s'", esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
-		if ( $args['help_text'] ) {
+
+		if ( isset( $args['help_text'] ) ) {
 			echo ' aria-describedby="' . esc_attr( $id ) . '-description"';
 		}
+
 		foreach ( $optional_args as $key => $val ) {
 			if ( \in_array( $key, $accepted_args, true ) ) {
 				echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
@@ -713,18 +740,18 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Prints a checkbox tag in the settings page.
 	 *
-	 * @param array $args Arguments to print to checkbox tag.
+	 * @param Setting_Arguments $args Arguments to print to checkbox tag.
 	 */
-	public function print_checkbox_tag( array $args ): void {
+	public function print_checkbox_tag( $args ): void {
 		$options  = $this->parsely->get_options();
 		$name     = $args['option_key'];
 		$value    = $options[ $name ];
 		$id       = esc_attr( $name );
 		$name     = Parsely::OPTIONS_KEY . "[$id]";
-		$yes_text = $args['yes_text'];
+		$yes_text = $args['yes_text'] ?? '';
 
 		echo sprintf( "<input type='checkbox' name='%s' id='%s_true' value='true' ", esc_attr( $name ), esc_attr( $id ) );
-		if ( $args['help_text'] ) {
+		if ( isset( $args['help_text'] ) ) {
 			echo ' aria-describedby="' . esc_attr( $id ) . '-description"';
 		}
 		echo checked( true === $value, true, false );
@@ -736,18 +763,18 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Prints out the select tags
 	 *
-	 * @param array $args The arguments for the select dropdowns.
+	 * @param Setting_Arguments $args The arguments for the select dropdowns.
 	 */
-	public function print_select_tag( array $args ): void {
+	public function print_select_tag( $args ): void {
 		$options        = $this->parsely->get_options();
 		$name           = $args['option_key'];
-		$select_options = $args['select_options'];
+		$select_options = $args['select_options'] ?? array();
 		$selected       = $options[ $name ] ?? null;
 		$id             = esc_attr( $name );
 		$name           = Parsely::OPTIONS_KEY . "[$id]";
 
 		echo sprintf( "<select name='%s' id='%s'", esc_attr( $name ), esc_attr( $name ) );
-		if ( $args['help_text'] ) {
+		if ( isset( $args['help_text'] ) ) {
 			echo ' aria-describedby="' . esc_attr( $id ) . '-description"';
 		}
 		echo '>';
@@ -767,12 +794,14 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Prints the radio buttons.
 	 *
-	 * @param array $args The arguments for the radio buttons.
+	 * @param Setting_Arguments $args The arguments for the radio buttons.
 	 */
-	public function print_radio_tags( array $args ): void {
-		$name     = $args['option_key'];
-		$id       = esc_attr( $name );
-		$selected = $this->parsely->get_options()[ $name ];
+	public function print_radio_tags( $args ): void {
+		$name          = $args['option_key'];
+		$id            = esc_attr( $name );
+		$selected      = $this->parsely->get_options()[ $name ];
+		$title         = $args['title'] ?? '';
+		$radio_options = $args['radio_options'] ?? array();
 
 		if ( is_bool( $selected ) ) {
 			// Converting boolean to string so that we have string type keys for all cases.
@@ -781,9 +810,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		?>
 		<fieldset>
-			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
+			<legend class="screen-reader-text"><span><?php echo esc_html( $title ); ?></span></legend>
 			<p>
-				<?php foreach ( $args['radio_options'] as $value => $text ) { ?>
+				<?php foreach ( $radio_options as $value => $text ) { ?>
 				<label for="<?php echo esc_attr( "{$id}_{$value}" ); ?>">
 					<input
 						type="radio"
@@ -807,17 +836,23 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * Prints out a "single-image browse control" which includes a text input to
 	 * store image path and a button to browse for images.
 	 *
-	 * @param array $args The arguments for the control.
+	 * @param Setting_Arguments $args The arguments for the control.
 	 */
-	public function print_media_single_image( array $args ): void {
-		$key         = $args['option_key'];
+	public function print_media_single_image( $args ): void {
+		$key   = $args['option_key'];
+		$title = $args['title'] ?? '';
+		/**
+		 * Variable.
+		 *
+		 * @var string
+		 */
 		$input_value = $this->parsely->get_options()[ $key ];
 		$input_name  = Parsely::OPTIONS_KEY . "[$key]";
 		$button_text = __( 'Browse', 'wp-parsely' );
 		?>
 
 		<fieldset class="media-single-image" id="media-single-image-<?php echo esc_attr( $key ); ?>">
-			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
+			<legend class="screen-reader-text"><span><?php echo esc_html( $title ); ?></span></legend>
 			<input class="file-path" type="text" name="<?php echo esc_attr( $input_name ); ?>" id="logo" value="<?php echo esc_attr( $input_value ); ?>" />
 			<button data-option="<?php echo esc_attr( $key ); ?>" class="browse button" type="button"><?php echo esc_html( $button_text ); ?></button>
 		</fieldset>
@@ -831,17 +866,23 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array<string, string> $args The arguments used in the output HTML elements.
+	 * @param Setting_Arguments $args The arguments used in the output HTML elements.
 	 */
-	public function print_track_post_types_table( array $args ): void {
+	public function print_track_post_types_table( $args ): void {
 		$option_key = esc_attr( $args['option_key'] );
+		$title      = $args['title'] ?? '';
+		/**
+		 * Variable.
+		 *
+		 * @var array<string>
+		 */
 		$post_types = get_post_types( array( 'public' => true ) );
 		$values     = $this->get_tracking_values_for_display();
 		?>
 		<fieldset>
-			<legend class="screen-reader-text"><span><?php echo esc_html( $args['title'] ); ?></span></legend>
+			<legend class="screen-reader-text"><span><?php echo esc_html( $title ); ?></span></legend>
 			<table class="form-table widefat striped" id="track-post-types">
-				<caption class="screen-reader-text"><?php echo esc_html( $args['title'] ); ?></caption>
+				<caption class="screen-reader-text"><?php echo esc_html( $title ); ?></caption>
 				<thead>
 					<tr>
 						<th scope="col"><?php echo esc_html__( 'Post Type', 'wp-parsely' ); ?></th>
@@ -892,7 +933,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.2.0
 	 *
-	 * @return array<string, string> Key-value pairs with post type and their 'track as' value.
+	 * @return array<string> Key-value pairs with post type and their 'track as' value.
 	 */
 	public function get_tracking_values_for_display(): array {
 		$options = $this->parsely->get_options();
@@ -900,11 +941,10 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$result  = array();
 
 		foreach ( $types as $type ) {
-			$array_key = "track_{$type}_types";
-			if ( array_key_exists( $array_key, $options ) ) {
-				foreach ( $options[ $array_key ] as $post_type ) {
-					$result[ $post_type ] = $type;
-				}
+			$array_value = $options[ "track_{$type}_types" ];
+
+			foreach ( $array_value as $post_type ) {
+				$result[ $post_type ] = $type;
 			}
 		}
 
@@ -914,41 +954,44 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Validates the options provided by the user.
 	 *
-	 * @param array $input Options from the settings page.
-	 * @return array List of validated input settings.
+	 * @param Parsely_Options $input Options from the settings page.
+	 *
+	 * @return Parsely_Options List of validated input settings.
 	 */
-	public function validate_options( array $input ): array {
+	public function validate_options( $input ) {
 		$options = $this->parsely->get_options();
 
-		if ( empty( $input['apikey'] ) ) {
+		if ( '' === $input['apikey'] ) {
 			add_settings_error(
 				Parsely::OPTIONS_KEY,
 				'apikey',
 				__( 'Please specify the Site ID', 'wp-parsely' )
 			);
 		} else {
-			$api_key = $this->sanitize_api_key( $input['apikey'] );
-			if ( false === $this->validate_api_key( $api_key ) ) {
+			$site_id = $this->sanitize_site_id( $input['apikey'] );
+			if ( false === $this->validate_site_id( $site_id ) ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'apikey',
 					__( 'Your Parse.ly Site ID looks incorrect, it should look like "example.com".', 'wp-parsely' )
 				);
 			} else {
-				$input['apikey'] = $api_key;
+				$input['apikey'] = $site_id;
 			}
 		}
 
 		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
 
-		if ( ! empty( $input['metadata_secret'] ) ) {
+		if ( '' !== $input['metadata_secret'] ) {
 			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'metadata_secret',
 					__( 'Metadata secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
 				);
-			} elseif ( isset( $input['parsely_wipe_metadata_cache'] ) && 'true' === $input['parsely_wipe_metadata_cache'] ) {
+			} elseif (
+				isset( $input['parsely_wipe_metadata_cache'] ) && 'true' === $input['parsely_wipe_metadata_cache'] // @phpstan-ignore-line
+			) {
 				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
 
 				wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
@@ -956,7 +999,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			}
 		}
 
-		if ( empty( $input['logo'] ) ) {
+		if ( '' === $input['logo'] ) {
 			$input['logo'] = self::get_logo_default();
 		}
 
@@ -1121,7 +1164,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Validates the passed API key.
+	 * Validates the passed Site ID.
 	 *
 	 * Accepts a www prefix and up to 3 periods.
 	 *
@@ -1133,25 +1176,25 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string $api_key The API key to be validated.
+	 * @param string $site_id The Site ID to be validated.
 	 * @return bool
 	 */
-	private function validate_api_key( string $api_key ): bool {
+	private function validate_site_id( string $site_id ): bool {
 		$key_format = '/^((\w+)\.)?(([\w-]+)?)(\.[\w-]+){1,2}$/';
 
-		return 1 === preg_match( $key_format, $api_key );
+		return 1 === preg_match( $key_format, $site_id );
 	}
 
 	/**
-	 * Sanitizes the passed API key.
+	 * Sanitizes the passed Site ID.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string $api_key The API key to be sanitized.
+	 * @param string $site_id The Site ID to be sanitized.
 	 * @return string
 	 */
-	private function sanitize_api_key( string $api_key ): string {
-		return strtolower( sanitize_text_field( $api_key ) );
+	private function sanitize_site_id( string $site_id ): string {
+		return strtolower( sanitize_text_field( $site_id ) );
 	}
 
 	/**
@@ -1162,9 +1205,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $input Array passed to validate_options() function.
+	 * @param Parsely_Options $input Array passed to validate_options() function.
 	 */
-	private function validate_options_post_type_tracking( array &$input ): void {
+	private function validate_options_post_type_tracking( &$input ): void {
 		$options         = $this->parsely->get_options();
 		$posts           = 'track_post_types';
 		$pages           = 'track_page_types';
@@ -1206,10 +1249,15 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @return string
 	 */
 	private static function get_logo_default(): string {
+		/**
+		 * Variable.
+		 *
+		 * @var int
+		 */
 		$custom_logo_id = get_theme_mod( 'custom_logo' );
-		if ( $custom_logo_id ) {
+		if ( (bool) $custom_logo_id ) {
 			$logo_attrs = wp_get_attachment_image_src( $custom_logo_id, 'full' );
-			if ( $logo_attrs ) {
+			if ( isset( $logo_attrs[0] ) ) {
 				return $logo_attrs[0];
 			}
 		}
@@ -1222,8 +1270,8 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Sanitizes all elements in an option array.
 	 *
-	 * @param array $array Array of options to be sanitized.
-	 * @return array
+	 * @param array<int, string> $array Array of options to be sanitized.
+	 * @return array<int, string>
 	 */
 	private static function sanitize_option_array( array $array ): array {
 		$new_array = $array;

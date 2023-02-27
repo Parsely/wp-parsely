@@ -82,9 +82,9 @@ final class RowActionsTest extends TestCase {
 	 * @covers \Parsely\UI\Row_Actions::generate_link_to_parsely
 	 * @covers \Parsely\Dashboard_Link::generate_url
 	 * @uses \Parsely\Dashboard_Link::can_show_link
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -94,12 +94,12 @@ final class RowActionsTest extends TestCase {
 		// Insert a single post and set as global post.
 		// This post is a viewable type, with a trackable status (published).
 		$post_id = self::factory()->post->create( array( 'post_title' => 'Foo1' ) );
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 
 		// Existing actions is an array.
 		$existing_actions = array();
 
-		// Unset API key.
+		// Unset Site ID.
 		self::set_options( array( 'apikey' => '' ) );
 
 		// Guard clause catches, and original $actions is returned.
@@ -118,9 +118,9 @@ final class RowActionsTest extends TestCase {
 	 * @covers \Parsely\UI\Row_Actions::generate_link_to_parsely
 	 * @covers \Parsely\Dashboard_Link::generate_url
 	 * @uses \Parsely\Dashboard_Link::can_show_link
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
@@ -130,12 +130,12 @@ final class RowActionsTest extends TestCase {
 		// Insert a single post and set as global post.
 		// This post is a viewable type, with a trackable status (published).
 		$post_id = self::factory()->post->create( array( 'post_title' => 'Foo2' ) );
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 
 		// Existing actions is an array.
 		$existing_actions = array();
 
-		// Set the API key.
+		// Set the Site ID.
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		// All conditions for the guard clause have been met.

@@ -17,9 +17,6 @@ use function Parsely\parsely_integrations;
 
 /**
  * Integration Tests for the Integrations collection.
- *
- * @todo: Instantiate and then try to register something that doesn't implement
- * the Integration interface.
  */
 final class IntegrationsTest extends TestCase {
 	/**
@@ -48,6 +45,11 @@ final class IntegrationsTest extends TestCase {
 		// Use Reflection to look inside the collection.
 		$reflector_property = ( new ReflectionClass( $integrations ) )->getProperty( 'integrations' );
 		$reflector_property->setAccessible( true );
+		/**
+		 * Variable.
+		 *
+		 * @var array<string, mixed>
+		 */
 		$registered_integrations = $reflector_property->getValue( $integrations );
 
 		self::assertCount( 4, $registered_integrations );
@@ -68,6 +70,7 @@ final class IntegrationsTest extends TestCase {
 	}
 
 }
+
 // phpcs:disable Generic.Files.OneObjectStructurePerFile.MultipleFound
 /**
  * Class FakeIntegration
@@ -79,4 +82,3 @@ class FakeIntegration {
 	public function integrate(): void {
 	}
 }
-

@@ -12,6 +12,9 @@ namespace Parsely\Endpoints;
 
 use stdClass;
 use WP_REST_Request;
+use WP_Error;
+
+use function Parsely\Utils\convert_to_positive_integer;
 
 /**
  * Configures the `/referrers/post/detail` REST API endpoint.
@@ -32,7 +35,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @since 3.6.0
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/referrers/post/detail', 'publish_posts' );
+		$this->register_endpoint( '/referrers/post/detail' );
 	}
 
 	/**
@@ -41,11 +44,13 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @since 3.6.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return stdClass|WPError stdClass containing the data or a WP_Error
-	 *                          object on failure.
+	 *
+	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	public function get_items( WP_REST_Request $request ) {
-		$this->total_views = absint( $request->get_param( 'total_views' ) );
+		$this->total_views = convert_to_positive_integer(
+			strval( $request->get_param( 'total_views' ) )
+		);
 		$request->offsetUnset( 'total_views' ); // Remove param from request.
 		return $this->get_data( $request );
 	}
@@ -55,20 +60,21 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param array<string, mixed> $response The response received by the proxy.
+	 * @param array<stdClass> $response The response received by the proxy.
+	 *
 	 * @return array<stdClass> The generated data.
 	 */
-	protected function generate_data( array $response ): array {
+	protected function generate_data( $response ): array {
 		$referrers_types = $this->generate_referrer_types_data( $response );
-		$direct_views    = absint( preg_replace( '/\D/', '', $referrers_types->direct->views ) );
+		$direct_views    = convert_to_positive_integer(
+			$referrers_types->direct->views
+		);
 		$referrers_top   = $this->generate_referrers_data( 5, $response, $direct_views );
 
-		$result = array(
+		return array(
 			'top'   => $referrers_top,
 			'types' => $referrers_types,
 		);
-
-		return $result;
 	}
 
 	/**
@@ -137,6 +143,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		}
 
 		// Set percentage values and format numbers.
+		// @phpstan-ignore-next-line.
 		foreach ( $result as $key => $value ) {
 			// Set and format percentage values.
 			$result->{ $key }->viewsPercentage = $this->get_i18n_percentage(
@@ -193,7 +200,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		}
 
 		// If applicable, add the direct views.
-		if ( $direct_views >= $referrer_views ) {
+		if ( isset( $referrer_views ) && $direct_views >= $referrer_views ) {
 			$temp_views['direct'] = $direct_views;
 			$totals              += $direct_views;
 			arsort( $temp_views );
@@ -210,6 +217,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		$result->totals = (object) array( 'views' => $totals );
 
 		// Set percentages values and format numbers.
+		// @phpstan-ignore-next-line.
 		foreach ( $result as $key => $value ) {
 			// Percentage against all referrer views, even those not included
 			// in the dataset due to the $limit argument.

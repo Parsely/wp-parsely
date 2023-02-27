@@ -50,7 +50,7 @@ final class RestMetadataTest extends TestCase {
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 * @uses \Parsely\Endpoints\Rest_Metadata::register_meta
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_register_enqueued_rest_init(): void {
@@ -85,14 +85,14 @@ final class RestMetadataTest extends TestCase {
 
 	/**
 	 * Verifies that the logic has not been enqueued when the `run` method is
-	 * called with no API key.
+	 * called with no Site ID.
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::run
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
-	public function test_register_enqueued_rest_init_no_api_key(): void {
+	public function test_register_enqueued_rest_init_no_site_id(): void {
 		global $wp_rest_additional_fields;
 
 		self::$rest->run();
@@ -105,7 +105,7 @@ final class RestMetadataTest extends TestCase {
 	 *
 	 * @covers \Parsely\Endpoints\Rest_Metadata::register_meta
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_register_meta_registers_fields(): void {
@@ -182,9 +182,9 @@ final class RestMetadataTest extends TestCase {
 	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
 	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
 	 * @uses \Parsely\Metadata\Post_Builder::get_tags
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -196,13 +196,13 @@ final class RestMetadataTest extends TestCase {
 		$post_id = self::factory()->post->create();
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( get_permalink( $post_id ) );
+		$this->go_to( $this->get_permalink( $post_id ) );
 
-		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
+		$meta_object = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
 		$metadata    = new Metadata( self::$parsely );
 		$expected    = array(
 			'version'     => '1.1.0',
-			'meta'        => $metadata->construct_metadata( get_post( $post_id ) ),
+			'meta'        => $metadata->construct_metadata( $this->get_post( $post_id ) ),
 			'rendered'    => self::$rest->get_rendered_meta( 'json_ld' ),
 			'tracker_url' => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
@@ -241,9 +241,9 @@ final class RestMetadataTest extends TestCase {
 	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
 	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
 	 * @uses \Parsely\Metadata\Post_Builder::get_tags
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
@@ -253,11 +253,11 @@ final class RestMetadataTest extends TestCase {
 		self::set_options( array( 'apikey' => 'testkey' ) );
 		$post_id = self::factory()->post->create();
 
-		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
+		$meta_object = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
 		$metadata    = new Metadata( self::$parsely );
 		$expected    = array(
 			'version'     => '1.1.0',
-			'meta'        => $metadata->construct_metadata( get_post( $post_id ) ),
+			'meta'        => $metadata->construct_metadata( $this->get_post( $post_id ) ),
 			'tracker_url' => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
@@ -295,8 +295,8 @@ final class RestMetadataTest extends TestCase {
 	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
 	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
 	 * @uses \Parsely\Metadata\Post_Builder::get_tags
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\UI\Metadata_Renderer::__construct
@@ -308,13 +308,13 @@ final class RestMetadataTest extends TestCase {
 		$post_id = self::factory()->post->create();
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( get_permalink( $post_id ) );
+		$this->go_to( $this->get_permalink( $post_id ) );
 
-		$meta_object = self::$rest->get_callback( get_post( $post_id, 'ARRAY_A' ) );
+		$meta_object = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
 		$metadata    = new Metadata( self::$parsely );
 		$expected    = array(
 			'version'  => '1.1.0',
-			'meta'     => $metadata->construct_metadata( get_post( $post_id ) ),
+			'meta'     => $metadata->construct_metadata( $this->get_post( $post_id ) ),
 			'rendered' => self::$rest->get_rendered_meta( 'json_ld' ),
 		);
 
@@ -328,8 +328,8 @@ final class RestMetadataTest extends TestCase {
 	 * @covers \Parsely\Endpoints\Rest_Metadata::get_callback
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Metadata_Endpoint::get_rendered_meta
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\UI\Metadata_Renderer::__construct
@@ -378,8 +378,8 @@ final class RestMetadataTest extends TestCase {
 	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
 	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
 	 * @uses \Parsely\Metadata\Post_Builder::get_tags
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\UI\Metadata_Renderer::__construct
@@ -396,11 +396,11 @@ final class RestMetadataTest extends TestCase {
 		);
 
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		$post = get_post( $post_id );
-		$date = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
+		$post = $this->get_post( $post_id );
+		$date = gmdate( 'Y-m-d\TH:i:s\Z', $this->get_post_time_in_int( 'U', true, $post ) );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( get_permalink( $post_id ) );
+		$this->go_to( $this->get_permalink( $post_id ) );
 
 		$meta_string = self::$rest->get_rendered_meta( 'json_ld' );
 		$expected    = '<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"NewsArticle","headline":"My test_get_rendered_meta_json_ld title","url":"http:\/\/example.org\/?p=' . $post_id . '","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=' . $post_id . '"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[],"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '"}</script>';
@@ -438,8 +438,8 @@ final class RestMetadataTest extends TestCase {
 	 * @uses \Parsely\Metadata\Post_Builder::get_coauthor_names
 	 * @uses \Parsely\Metadata\Post_Builder::get_metadata
 	 * @uses \Parsely\Metadata\Post_Builder::get_tags
-	 * @uses \Parsely\Parsely::api_key_is_missing
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::convert_jsonld_to_parsely_type
@@ -459,11 +459,11 @@ final class RestMetadataTest extends TestCase {
 		);
 
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		$post = get_post( $post_id );
-		$date = gmdate( 'Y-m-d\TH:i:s\Z', get_post_time( 'U', true, $post ) );
+		$post = $this->get_post( $post_id );
+		$date = gmdate( 'Y-m-d\TH:i:s\Z', $this->get_post_time_in_int( 'U', true, $post ) );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( get_permalink( $post_id ) );
+		$this->go_to( $this->get_permalink( $post_id ) );
 
 		$meta_string = self::$rest->get_rendered_meta( 'repeated_metas' );
 		$expected    = '<meta name="parsely-title" content="My test_get_rendered_repeated_metas title" />
@@ -481,6 +481,8 @@ final class RestMetadataTest extends TestCase {
 	 *
 	 * @param string $post_type                 Post type.
 	 * @param array  $wp_rest_additional_fields Global variable.
+	 *
+	 * @phpstan-ignore-next-line
 	 */
 	private function assertParselyRestFieldIsConstructedCorrectly( string $post_type, array $wp_rest_additional_fields ): void {
 		self::assertArrayHasKey( $post_type, $wp_rest_additional_fields );

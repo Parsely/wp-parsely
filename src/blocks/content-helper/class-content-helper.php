@@ -1,6 +1,6 @@
 <?php
 /**
- * Parse.ly Content Helper class
+ * PCH Editor Sidebar class
  *
  * @package Parsely
  * @since 3.5.0
@@ -11,14 +11,14 @@ declare(strict_types=1);
 namespace Parsely;
 
 /**
- * Parse.ly Content Helper.
+ * Class that generates and manages the PCH Editor Sidebar.
  *
  * @since 3.5.0
  */
 class Content_Helper {
 
 	/**
-	 * Inserts the Content Helper into the WordPress Post Editor.
+	 * Inserts the PCH Editor Sidebar assets.
 	 *
 	 * @since 3.5.0
 	 */
@@ -28,8 +28,8 @@ class Content_Helper {
 		wp_enqueue_script(
 			'wp-parsely-block-content-helper',
 			plugin_dir_url( PARSELY_FILE ) . 'build/content-helper.js',
-			$content_helper_asset['dependencies'],
-			$content_helper_asset['version'],
+			$content_helper_asset['dependencies'] ?? null,
+			$content_helper_asset['version'] ?? Parsely::VERSION,
 			true
 		);
 
@@ -37,7 +37,7 @@ class Content_Helper {
 			'wp-parsely-block-content-helper',
 			plugin_dir_url( PARSELY_FILE ) . 'build/content-helper.css',
 			array(),
-			$content_helper_asset['version']
+			$content_helper_asset['version'] ?? Parsely::VERSION
 		);
 	}
 

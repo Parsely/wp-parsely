@@ -93,7 +93,7 @@ final class OtherTest extends TestCase {
 
 		// Create a single post.
 		$post_id = self::factory()->post->create();
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 
 		// Apply page filtering.
 		$headline = 'Completely New And Original Filtered Headline';
@@ -105,15 +105,16 @@ final class OtherTest extends TestCase {
 				return $args;
 			},
 			10,
-			3
+			1
 		);
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
+		$meta_headline   = isset( $structured_data['headline'] ) ? $structured_data['headline'] : '';
 
 		// The structured data should contain the headline from the filter.
-		self::assertSame( strpos( $structured_data['headline'], $headline ), 0 );
+		self::assertSame( strpos( $meta_headline, $headline ), 0 );
 	}
 
 	/**
@@ -150,7 +151,7 @@ final class OtherTest extends TestCase {
 	 */
 	public function test_filter_wp_parsely_post_type(): void {
 		$post_id  = $this->go_to_new_post();
-		$post_obj = get_post( $post_id );
+		$post_obj = $this->get_post( $post_id );
 
 		// Try to change the post type to a supported value - BlogPosting.
 		add_filter(
@@ -163,7 +164,7 @@ final class OtherTest extends TestCase {
 		$metadata        = new Metadata( self::$parsely );
 		$structured_data = $metadata->construct_metadata( $post_obj );
 
-		self::assertSame( 'BlogPosting', $structured_data['@type'] );
+		self::assertSame( 'BlogPosting', isset( $structured_data['@type'] ) ? $structured_data['@type'] : null );
 
 		// Try to change the post type to a non-supported value - Not_Supported.
 		add_filter(
@@ -179,38 +180,38 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that api_key_is_set() and api_key_is_missing() work as expected.
+	 * Verifies that site_id_is_set() and site_id_is_missing() work as expected.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @covers \Parsely\Parsely::api_key_is_set
-	 * @covers \Parsely\Parsely::api_key_is_missing
+	 * @covers \Parsely\Parsely::site_id_is_set
+	 * @covers \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::get_options
 	 */
-	public function test_checking_API_key_is_set_or_not(): void {
+	public function test_checking_site_id_is_set_or_not(): void {
 		self::set_options( array( 'apikey' => '' ) );
-		self::assertFalse( self::$parsely->api_key_is_set() );
-		self::assertTrue( self::$parsely->api_key_is_missing() );
+		self::assertFalse( self::$parsely->site_id_is_set() );
+		self::assertTrue( self::$parsely->site_id_is_missing() );
 
 		self::set_options( array( 'apikey' => 'somekey' ) );
-		self::assertTrue( self::$parsely->api_key_is_set() );
-		self::assertFalse( self::$parsely->api_key_is_missing() );
+		self::assertTrue( self::$parsely->site_id_is_set() );
+		self::assertFalse( self::$parsely->site_id_is_missing() );
 	}
 
 	/**
-	 * Verifies that get_api_key() works as expected.
+	 * Verifies that get_site_id() works as expected.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @covers \Parsely\Parsely::get_api_key
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @covers \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
-	public function test_can_retrieve_API_key(): void {
+	public function test_can_retrieve_site_id(): void {
 		self::set_options( array( 'apikey' => 'somekey' ) );
-		self::assertSame( 'somekey', self::$parsely->get_api_key() );
+		self::assertSame( 'somekey', self::$parsely->get_site_id() );
 		self::set_options( array( 'apikey' => '' ) );
-		self::assertSame( '', self::$parsely->get_api_key() );
+		self::assertSame( '', self::$parsely->get_site_id() );
 	}
 
 	/**
@@ -237,7 +238,7 @@ final class OtherTest extends TestCase {
 	 */
 	public function test_post_has_trackable_status_password_protected(): void {
 		$post_id = self::factory()->post->create();
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 
 		$post->post_password = 'somepassword';
 
@@ -257,7 +258,7 @@ final class OtherTest extends TestCase {
 		add_filter( 'wp_parsely_skip_post_password_check', '__return_true' );
 
 		$post_id = self::factory()->post->create();
-		$post    = get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 
 		$post->post_password = 'somepassword';
 
@@ -266,13 +267,13 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that the tracker URL is correctly generated with a set API key.
+	 * Verifies that the tracker URL is correctly generated with a set site ID.
 	 *
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Parsely::get_tracker_url
-	 * @uses \Parsely\Parsely::api_key_is_set
-	 * @uses \Parsely\Parsely::get_api_key
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_tracker_url(): void {
@@ -281,16 +282,16 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that the tracker URL is an empty string when there's no API key
+	 * Verifies that the tracker URL is an empty string when there's no site ID
 	 * set.
 	 *
 	 * @since 3.2.0
 	 *
 	 * @covers \Parsely\Parsely::get_tracker_url
-	 * @uses \Parsely\Parsely::api_key_is_set
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 */
-	public function test_get_tracker_no_api_key(): void {
+	public function test_get_tracker_no_site_id(): void {
 		self::set_options( array( 'apikey' => '' ) );
 		$expected = '';
 		self::assertEquals( $expected, self::$parsely->get_tracker_url() );
