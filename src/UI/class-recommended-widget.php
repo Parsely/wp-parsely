@@ -144,7 +144,7 @@ final class Recommended_Widget extends WP_Widget {
 			$instance['published_within'],
 			$instance['sort'],
 			$instance['boost'],
-			$instance['return_limit']
+			(int) $instance['return_limit'] // @phpstan-ignore-line
 		);
 
 		?>
