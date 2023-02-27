@@ -90,7 +90,7 @@ class Admin_Columns_Parsely_Stats {
 	 * @since 3.7.0
 	 */
 	public function run(): void {
-		if ( ! $this->parsely->site_id_is_set() ) {
+		if ( ! $this->parsely->site_id_is_set() || ! $this->parsely->api_secret_is_set() ) {
 			return;
 		}
 
