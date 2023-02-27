@@ -148,7 +148,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
 			do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
-		} else {
+		} elseif ( $obj->should_add_hooks() ) {
 			$obj->set_current_screen();
 			$obj->enqueue_parsely_stats_styles();
 		}
@@ -270,7 +270,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
-		} else {
+		} elseif ( $obj->should_add_hooks() ) {
 			$obj->set_current_screen();
 		}
 
@@ -488,7 +488,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	private function show_content_on_parsely_stats_column( $obj, $posts, $post_type ): void {
 		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
-		} else {
+		} elseif ( $obj->should_add_hooks() ) {
 			$obj->set_current_screen();
 		}
 
@@ -708,7 +708,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
 			do_action( 'admin_footer' ); // phpcs:ignore
-		} else {
+		} elseif ( $obj->should_add_hooks() ) {
 			$obj->set_current_screen();
 			$obj->enqueue_parsely_stats_script_with_data();
 		}
