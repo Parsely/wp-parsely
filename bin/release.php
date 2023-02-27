@@ -126,8 +126,7 @@ function create_pull_request( string $milestone, string $changelog ) {
 	// Push PR to GitHub.
 	return shell_exec(
 		'gh pr create --repo Parsely/wp-parsely --assignee "@me" --base develop ' .
-		'--body "' . $body . '" --draft --label "Changelog: Skip" ' .
-		'--milestone "' . $milestone . '" --title "' . $title . '"'
+		'--body "' . $body . '" --milestone "' . $milestone . '" --title "' . $title . '"'
 	);
 }
 
