@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.1](https://github.com/Parsely/wp-parsely/compare/3.7.0...3.7.1) - 2023-02-27
+
+### Fixed
+
+- Fix Recommended Widget fatal error ([#1424](https://github.com/Parsely/wp-parsely/pull/1424))
+- Hide Parse.ly Stats column if API Secret is not available ([#1423](https://github.com/Parsely/wp-parsely/pull/1423))
+
 ## [3.7.0](https://github.com/Parsely/wp-parsely/compare/3.6.2...3.7.0) - 2023-02-27
 
 ### Added
