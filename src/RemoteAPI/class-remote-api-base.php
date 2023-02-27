@@ -14,6 +14,7 @@ use Parsely\Parsely;
 use UnexpectedValueException;
 use WP_Error;
 
+use function Parsely\Utils\convert_endpoint_to_filter_key;
 use function Parsely\Utils\convert_to_associative_array;
 
 /**
@@ -35,6 +36,15 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	protected const QUERY_FILTER = '';
 
 	/**
+	 * Indicates whether the endpoint is public or protected behind permissions.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @var bool
+	 */
+	protected $is_public_endpoint = false;
+
+	/**
 	 * Parsely Instance.
 	 *
 	 * @var Parsely
@@ -42,13 +52,46 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	private $parsely;
 
 	/**
+	 * User capability based on which we should allow access to the endpoint.
+	 *
+	 * `null` should be used for all public endpoints.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @var string|null
+	 */
+	private $user_capability;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param Parsely $parsely Parsely instance.
+	 *
 	 * @since 3.2.0
+	 * @since 3.7.0 Added user capability checks based on `is_public_endpoint` attribute.
 	 */
 	public function __construct( Parsely $parsely ) {
 		$this->parsely = $parsely;
+
+		if ( $this->is_public_endpoint ) {
+			$this->user_capability = null;
+		} else {
+			/**
+			 * Filter to change the default user capability for all private remote apis.
+			 *
+			 * @var string
+			 */
+			$default_user_capability = apply_filters( 'wp_parsely_user_capability_for_all_private_apis', 'publish_posts' );
+
+			/**
+			 * Filter to change the user capability for specific remote api.
+			 *
+			 * @var string
+			 */
+			$endpoint_specific_user_capability = apply_filters( 'wp_parsely_user_capability_for_' . convert_endpoint_to_filter_key( static::ENDPOINT ) . '_api', $default_user_capability );
+
+			$this->user_capability = $endpoint_specific_user_capability;
+		}
 	}
 
 	/**
@@ -92,7 +135,7 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Hook names are defined in child classes.
 		$query = apply_filters( static::QUERY_FILTER, $query );
-		return add_query_arg( $query, static::ENDPOINT );
+		return add_query_arg( $query, Parsely::PUBLIC_API_BASE_URL . static::ENDPOINT );
 	}
 
 	/**
@@ -133,5 +176,26 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 		$response = $decoded->data;
 
 		return $associative ? convert_to_associative_array( $response ) : $response;
+	}
+
+	/**
+	 * Checks if the current user is allowed to make the API call.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @return bool
+	 */
+	public function is_user_allowed_to_make_api_call(): bool {
+		// This endpoint does not require any capability checks.
+		if ( is_null( $this->user_capability ) ) {
+			return true;
+		}
+
+		// The user has the required capability to access this endpoint.
+		if ( current_user_can( $this->user_capability ) ) {
+			return true;
+		}
+
+		return false;
 	}
 }

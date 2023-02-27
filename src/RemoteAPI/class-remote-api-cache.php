@@ -72,4 +72,15 @@ class Remote_API_Cache implements Remote_API_Interface {
 
 		return $items;
 	}
+
+	/**
+	 * Checks if the current user is allowed to make the API call.
+	 *
+	 * @since 3.7.0
+	 *
+	 * @return bool
+	 */
+	public function is_user_allowed_to_make_api_call(): bool {
+		return $this->remote_api->is_user_allowed_to_make_api_call();
+	}
 }

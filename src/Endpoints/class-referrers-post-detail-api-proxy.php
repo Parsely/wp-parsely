@@ -35,7 +35,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @since 3.6.0
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/referrers/post/detail', 'publish_posts' );
+		$this->register_endpoint( '/referrers/post/detail' );
 	}
 
 	/**

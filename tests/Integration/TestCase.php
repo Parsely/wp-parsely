@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
+use DateInterval;
 use DateTime;
 use DateTimeZone;
 use ReflectionClass;
@@ -113,11 +114,17 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Creates a test user.
 	 *
 	 * @param string $user_login The user's login username.
+	 * @param string $user_role The user's role. Default is subscriber.
 	 *
 	 * @return int The newly created user's ID.
 	 */
-	public function create_test_user( string $user_login ) {
-		return self::factory()->user->create( array( 'user_login' => $user_login ) );
+	public function create_test_user( string $user_login, string $user_role = 'subscriber' ) {
+		return self::factory()->user->create(
+			array(
+				'user_login' => $user_login,
+				'role'       => $user_role,
+			) 
+		);
 	}
 
 	/**
@@ -208,7 +215,20 @@ abstract class TestCase extends WPIntegrationTestCase {
 		 * @var int[]
 		 */
 		$post_ids = array();
-		$date     = new DateTime( '2009-12-31', new DateTimeZone( 'America/New_York' ) ); // Date with timezone to replicate real world scenarios.
+
+		/**
+		 * Variable.
+		 *
+		 * @var DateTime
+		 */
+		$date = new DateTime( '2009-12-31', new DateTimeZone( 'America/New_York' ) ); // Date with timezone to replicate real world scenarios.
+
+		/**
+		 * Variable.
+		 *
+		 * @var DateInterval
+		 */
+		$one_day_interval = date_interval_create_from_date_string( '1 days' );
 
 		for ( $i = 1; $i <= $num_of_posts; $i++ ) {
 			/**
@@ -216,7 +236,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 			 *
 			 * @var DateTime
 			 */
-			$post_date = date_add( $date, date_interval_create_from_date_string( '1 days' ) ); // Increment by 1 day like sequence.
+			$post_date = date_add( $date, $one_day_interval ); // Like sequence increment by 1 day.
 			$post_id   = self::factory()->post->create(
 				array(
 					'post_type'     => $post_type,
@@ -429,6 +449,14 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 */
 	public function set_admin_user( $admin_user_id = 1 ): void {
 		wp_set_current_user( $admin_user_id );
+	}
+
+	/**
+	 * Creates a user with role `contributor` and login.
+	 */
+	public function login_as_contributor(): void {
+		$user_id = $this->create_test_user( 'test_contributor', 'contributor' );
+		wp_set_current_user( $user_id );
 	}
 
 	/**

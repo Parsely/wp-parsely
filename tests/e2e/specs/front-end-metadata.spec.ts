@@ -10,7 +10,6 @@ import {
  * Internal dependencies
  */
 import {
-	selectScreenOptions,
 	setSiteKeys,
 	setUserDisplayName,
 	startUpTest,
@@ -34,7 +33,6 @@ describe( 'Front end metadata insertion', () => {
 	beforeAll( async () => {
 		await startUpTest();
 		await setSiteKeys();
-		await selectScreenOptions( { recrawl: true, advanced: false } );
 
 		// Reset display name to compare metadata with default values.
 		await setUserDisplayName( 'admin', '' );
