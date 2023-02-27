@@ -35,12 +35,15 @@ This is an issue for tracking the X.Y.Z release process.
 
 ## After releasing
 
-**Managing milestones**
+**Merge trunk back into develop**
+- [ ] [Create a PR](https://github.com/Parsely/wp-parsely/compare/trunk?expand=1) that merges `trunk` into `develop`, named _Merge trunk into develop after the wp-parsely x.y.z release_.
+- [ ] Merge the PR into `develop`.
+
+**Manage milestones**
 - [ ] Close the current milestone.
 - [ ] If needed, open a new milestone for the next release.
-- [ ] If there are any open PRs/issues that did do not make it into the release, update their milestone.
 
-**Communicating and releasing to other platforms**
+**Communicate and release to other platforms**
 - [ ] Write an internal P2 post about the release.
 - [ ] Inform any applicable Slack channels about the new release.
 - [ ] Release the plugin for WordPress VIP and write a release lobby post.
