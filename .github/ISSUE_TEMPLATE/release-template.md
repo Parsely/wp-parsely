@@ -6,40 +6,32 @@ labels: 'Type: Maintenance'
 
 ---
 
-[Remaining work for this Milestone](https://github.com/Parsely/wp-parsely/milestone/xx)
-
-PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM YYYY.
+This is an issue for tracking the X.Y.Z release process.
 
 ## Before releasing
 
 - [ ] Notify stakeholders of an upcoming release.
 - [ ] Merge any outstanding PRs due for this release to `develop`.
-- [ ] Verify that all PRs in the release have a `Changelog` tag.
+- [ ] Verify that all PRs in the release have an appropriate `Changelog` tag.
 
 ## Release process
 
-**Create the release PR**
-- [ ] Create a PR that merges `develop` into `trunk`, named _Release x.y.z_.
-- [ ] Have the PR reviewed and merge it into `trunk`.
-  > This will create a new release draft. It might take some seconds to appear.
+**1. Update version numbers and changelog**
+- [ ] Use the `bin/release.php` script to update version numbers and the changelog, and to push the PR to GitHub.
+- [ ] Verify that the PR code looks correct. You can amend it with new commits if needed.
+- [ ] Merge the PR into `develop`.
 
-**Promote the release draft to a pre-release**
-- [ ] In the release draft page, check the version numbers and changelog data.
-- [ ] Make any adjustments if needed.
-- [ ] Save the draft as a pre-release.
-  > This will push a commit with the updated version number and changelog into `trunk`. Changes might take a couple of minutes to appear.
+**2. Merge develop into trunk**
+- [ ] [Create a PR](https://github.com/Parsely/wp-parsely/compare) that merges `develop` into `trunk`, named _Release wp-parsely x.y.z_.
+- [ ] Merge the PR into `trunk`.
 
-**Promote the pre-release to a release**
-- [ ] Go to `trunk` and inspect the new commit for correctness.
-  > If the commit contains any errors, please stop and contact the development team.
-- [ ] Go to the pre-release and promote it to a release.
-  > This will merge `trunk` into `develop` and also update the `release's tag`. Changes might take a couple of minutes to appear.
-- [ ] Inspect the `develop` branch and the `release's tag` to verify that they contain the new commit.
-  > If this is not the case, please stop and contact the development team.
+**3. Create the GitHub release**
+- [ ] [Create a GitHub release](https://github.com/Parsely/wp-parsely/releases/new) that targets `trunk`.
+- [ ] For the release's text, use the changelog text that was posted by the `bin/release.php` script into the PR in step 1.
+- [ ] Verify that you're using the appropriate name and tag (should be the version that is being released, without a leading 'v' character), and publish the release.
 
-**Deploy the release to wordpress.org**
-- [ ] Manually run the `Deploy to WordPress.org` GitHub workflow.
-  > This will deploy the new version of the plugin to wordpress.org.
+**4. Deploy the release to wordpress.org**
+- [ ] Run the [Deploy to WordPress.org](https://github.com/Parsely/wp-parsely/actions/workflows/deploy.yml) GitHub workflow, selecting the new version tag.
 
 ## After releasing
 
@@ -50,5 +42,6 @@ PR for tracking changes for the X.Y.Z release. Target release date: DOW DD MMMM 
 
 **Communicating and releasing to other platforms**
 - [ ] Write an internal P2 post about the release.
+- [ ] Inform any applicable Slack channels about the new release.
 - [ ] Release the plugin for WordPress VIP and write a release lobby post.
 - [ ] Release the plugin for WordPress.com.
