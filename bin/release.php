@@ -117,6 +117,13 @@ function create_pull_request( string $milestone, string $changelog ) {
 		'"'
 	);
 
+	// Create origin branch on GitHub.
+	shell_exec(
+		'git push --set-upstream origin update/wp-parsely-version-to-' .
+		$milestone
+	);
+
+	// Push PR to GitHub.
 	return shell_exec(
 		'gh pr create --repo Parsely/wp-parsely --assignee "@me" --base develop ' .
 		'--body "' . $body . '" --draft --label "Changelog: Skip" ' .
