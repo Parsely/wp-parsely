@@ -91,7 +91,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 */
 	public function test_styles_of_parsely_stats_admin_column_on_empty_api_secret(): void {
 		$this->set_empty_api_secret();
-		$this->assert_parsely_stats_admin_styles( true );
+		$this->assert_parsely_stats_admin_styles( false );
 	}
 
 	/**
@@ -148,7 +148,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
 			do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
-		} else {
+		} elseif ( $obj->should_add_hooks() ) {
 			$obj->set_current_screen();
 			$obj->enqueue_parsely_stats_styles();
 		}
@@ -191,8 +191,8 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	public function test_parsely_stats_column_visibility_on_empty_api_secret(): void {
 		$this->set_empty_api_secret();
 
-		self::assertContains( self::$parsely_stats_column_header, $this->get_admin_columns() );
-		$this->assert_hooks_for_parsely_stats_column( true );
+		self::assertNotContains( self::$parsely_stats_column_header, $this->get_admin_columns() );
+		$this->assert_hooks_for_parsely_stats_column( false );
 	}
 
 	/**
@@ -270,7 +270,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
-		} else {
+		} elseif ( $obj->should_add_hooks() ) {
 			$obj->set_current_screen();
 		}
 
@@ -324,15 +324,8 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$obj    = $this->init_admin_columns_parsely_stats();
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
 
-		$this->assert_hooks_for_parsely_stats_content( true );
-		self::assertEquals(
-			$this->get_parsely_stats_placeholder_content( '/2010/01/01/title-1-publish' ) .
-			$this->get_parsely_stats_placeholder_content( '/2010/01/02/title-2-publish' ) .
-			$this->get_parsely_stats_placeholder_content( '/2010/01/03/title-3-publish' ) .
-			$this->get_parsely_stats_placeholder_content( '/' ) .
-			$this->get_parsely_stats_placeholder_content( '/' ),
-			$output
-		);
+		$this->assert_hooks_for_parsely_stats_content( false );
+		self::assertEquals( '', $output );
 		self::assertEquals( array(), $this->get_utc_published_times_property( $obj ) );
 	}
 
@@ -495,7 +488,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	private function show_content_on_parsely_stats_column( $obj, $posts, $post_type ): void {
 		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
-		} else {
+		} elseif ( $obj->should_add_hooks() ) {
 			$obj->set_current_screen();
 		}
 
@@ -578,7 +571,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	public function test_script_of_parsely_stats_admin_column_on_empty_api_secret(): void {
 		$this->set_empty_api_secret();
 		$obj = $this->mock_parsely_stats_response( array() );
-		$this->assert_parsely_stats_admin_script( $obj, true );
+		$this->assert_parsely_stats_admin_script( $obj, false );
 	}
 
 	/**
@@ -715,7 +708,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		if ( $this->is_php_version_7dot2_or_higher() ) {
 			do_action( 'current_screen' ); // phpcs:ignore
 			do_action( 'admin_footer' ); // phpcs:ignore
-		} else {
+		} elseif ( $obj->should_add_hooks() ) {
 			$obj->set_current_screen();
 			$obj->enqueue_parsely_stats_script_with_data();
 		}
@@ -761,21 +754,8 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 
 		$res = $this->get_parsely_stats_response();
 
-		$this->assert_hooks_for_parsely_stats_response( true );
-		self::assertEquals(
-			array(
-				'data'  => null,
-				'error' => array(
-					'code'        => 403,
-					'message'     => 'Forbidden.',
-					'htmlMessage' => '<p>' .
-						'We are unable to retrieve data for Parse.ly Stats. ' .
-						'Please contact <a href=\\"mailto:support@parsely.com\\">support@parsely.com</a> for help resolving this issue.' .
-					'</p>',
-				),
-			),
-			$res
-		);
+		$this->assert_hooks_for_parsely_stats_response( false );
+		self::assertNull( $res );
 	}
 
 	/**
