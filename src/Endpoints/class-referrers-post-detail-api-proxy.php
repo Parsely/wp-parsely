@@ -14,6 +14,8 @@ use stdClass;
 use WP_REST_Request;
 use WP_Error;
 
+use function Parsely\Utils\convert_to_positive_integer;
+
 /**
  * Configures the `/referrers/post/detail` REST API endpoint.
  *
@@ -46,7 +48,9 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	public function get_items( WP_REST_Request $request ) {
-		$this->total_views = absint( $request->get_param( 'total_views' ) );
+		$this->total_views = convert_to_positive_integer(
+			strval( $request->get_param( 'total_views' ) )
+		);
 		$request->offsetUnset( 'total_views' ); // Remove param from request.
 		return $this->get_data( $request );
 	}
@@ -62,7 +66,9 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 */
 	protected function generate_data( $response ): array {
 		$referrers_types = $this->generate_referrer_types_data( $response );
-		$direct_views    = absint( preg_replace( '/\D/', '', $referrers_types->direct->views ) );
+		$direct_views    = convert_to_positive_integer(
+			$referrers_types->direct->views
+		);
 		$referrers_top   = $this->generate_referrers_data( 5, $response, $direct_views );
 
 		return array(
@@ -97,26 +103,37 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		// Set referrer type order as it is displayed in the Parse.ly dashboard.
 		$referrer_type_keys = array( 'social', 'search', 'other', 'internal', 'direct' );
 		foreach ( $referrer_type_keys as $key ) {
-			$result->$key->views = 0;
+			$result->$key = (object) array( 'views' => 0 );
 		}
 
 		// Set views and views totals.
 		foreach ( $response as $referrer_data ) {
-			// Point by reference to the item to be processed, and set it to 0
-			// when needed in order to avoid potential PHP warnings.
-			$current_type_views =& $result->{ $referrer_data->type }->views;
-			if ( ! isset( $current_type_views ) ) {
-				$current_type_views = 0;
-			}
+			/**
+			 * Variable.
+			 *
+			 * @var int
+			 */
+			$current_views         = $referrer_data->metrics->referrers_views ?? 0;
+			$total_referrer_views += $current_views;
 
-			// Set the values.
-			$current_type_views   += $referrer_data->metrics->referrers_views;
-			$total_referrer_views += $referrer_data->metrics->referrers_views;
+			/**
+			 * Variable.
+			 *
+			 * @var string
+			 */
+			$current_key = $referrer_data->type ?? '';
+			if ( '' !== $current_key ) {
+				if ( ! isset( $result->$current_key->views ) ) {
+					$result->$current_key = (object) array( 'views' => 0 );
+				}
+
+				$result->$current_key->views += $current_views;
+			}
 		}
 
 		// Add direct and total views to the object.
 		$result->direct->views = $this->total_views - $total_referrer_views;
-		$result->totals->views = $this->total_views;
+		$result->totals        = (object) array( 'views' => $this->total_views );
 
 		// Remove referrer types without views.
 		foreach ( $referrer_type_keys as $key ) {
@@ -168,11 +185,18 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		// Set views and views totals.
 		$loop_count = $referrer_count > $limit ? $limit : $referrer_count;
 		for ( $i = 0; $i < $loop_count; $i++ ) {
-			$data           = $response[ $i ];
-			$referrer_views = $data->metrics->referrers_views;
+			$data = $response[ $i ];
 
-			$temp_views[ $data->name ] = $referrer_views;
-			$totals                   += $referrer_views;
+			/**
+			 * Variable.
+			 *
+			 * @var int
+			 */
+			$referrer_views = $data->metrics->referrers_views ?? 0;
+			$totals        += $referrer_views;
+			if ( isset( $data->name ) ) {
+				$temp_views[ $data->name ] = $referrer_views;
+			}
 		}
 
 		// If applicable, add the direct views.
@@ -188,9 +212,9 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		// Convert temporary array to result object and add totals.
 		$result = new stdClass();
 		foreach ( $temp_views as $key => $value ) {
-			$result->$key->views = $value;
+			$result->$key = (object) array( 'views' => $value );
 		}
-		$result->totals->views = $totals;
+		$result->totals = (object) array( 'views' => $totals );
 
 		// Set percentages values and format numbers.
 		// @phpstan-ignore-next-line.
@@ -228,17 +252,5 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 		}
 
 		return number_format_i18n( $number / $total * 100, 2 );
-	}
-
-	/**
-	 * Determines if there are enough permissions to call the endpoint.
-	 *
-	 * @since 3.6.0
-	 *
-	 * @return bool
-	 */
-	public function permission_callback(): bool {
-		// Unauthenticated.
-		return true;
 	}
 }

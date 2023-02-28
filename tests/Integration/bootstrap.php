@@ -15,7 +15,7 @@ namespace Parsely\Tests\Integration {
 	$_tests_dir = getenv( 'WP_TESTS_DIR' );
 
 	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
-	if ( ! $_tests_dir ) {
+	if ( false === $_tests_dir ) {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
 		$_tests_dir = rtrim( sys_get_temp_dir(), '/\\' ) . '/wordpress-tests-lib';
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.runtime_configuration_putenv

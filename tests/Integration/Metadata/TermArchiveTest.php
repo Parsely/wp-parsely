@@ -60,13 +60,13 @@ final class TermArchiveTest extends NonPostTestCase {
 		// The category metadata doesn't use the post data, but the construction
 		// method requires it for now.
 		$metadata        = new Metadata( $parsely );
-		$structured_data = $metadata->construct_metadata( get_post() );
+		$structured_data = $metadata->construct_metadata( $this->get_post() );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the category name.
-		self::assertEquals( 'Test Category', $structured_data['headline'] );
-		self::assertEquals( $cat_link, $structured_data['url'] );
+		self::assertEquals( 'Test Category', $structured_data['headline'] ?? null );
+		self::assertEquals( $cat_link, $structured_data['url'] ?? null );
 	}
 }

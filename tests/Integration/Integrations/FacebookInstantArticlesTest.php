@@ -16,6 +16,9 @@ use Parsely\Tests\Integration\TestCase;
 
 /**
  * Integration Tests for the Facebook Instant Articles Integration.
+ *
+ * @phpstan-import-type FB_Instant_Articles_Registry from Facebook_Instant_Articles
+ * @phpstan-import-type FB_Parsely_Registry from Facebook_Instant_Articles
  */
 final class FacebookInstantArticlesTest extends TestCase {
 	/**
@@ -48,8 +51,15 @@ final class FacebookInstantArticlesTest extends TestCase {
 		self::$fbia = new Facebook_Instant_Articles( new Parsely() );
 		$reflect    = new ReflectionClass( self::$fbia );
 
-		self::$registry_identifier   = $reflect->getReflectionConstant( 'REGISTRY_IDENTIFIER' )->getValue();
-		self::$registry_display_name = $reflect->getReflectionConstant( 'REGISTRY_DISPLAY_NAME' )->getValue();
+		$registry_identifier = $reflect->getReflectionConstant( 'REGISTRY_IDENTIFIER' );
+		if ( false !== $registry_identifier ) {
+			self::$registry_identifier = $registry_identifier->getValue(); // @phpstan-ignore-line
+		}
+
+		$registry_display_name = $reflect->getReflectionConstant( 'REGISTRY_DISPLAY_NAME' );
+		if ( false !== $registry_display_name ) {
+			self::$registry_display_name = $registry_display_name->getValue(); // @phpstan-ignore-line
+		}
 	}
 
 	/**
@@ -92,8 +102,11 @@ final class FacebookInstantArticlesTest extends TestCase {
 	 * @group fbia
 	 */
 	public function test_parsely_is_added_to_FBIA_registry(): void {
-		// We use our own registry here, but the integration with the FBIA
-		// plugin provides its own.
+		/**
+		 * We use our own registry here, but the integration with the FBIA plugin provides its own.
+		 *
+		 * @var FB_Instant_Articles_Registry
+		 */
 		$registry = array();
 
 		// Site ID is not set.
@@ -111,15 +124,22 @@ final class FacebookInstantArticlesTest extends TestCase {
 	 * Verifies that the registry array has the integration identifier as a key,
 	 * and that the display name and payload are correct.
 	 *
-	 * @param array  $registry Representation of Facebook Instant Articles registry.
-	 * @param string $site_id  Site ID.
+	 * @param FB_Instant_Articles_Registry $registry Representation of Facebook Instant Articles registry.
+	 * @param string                       $site_id  Site ID.
 	 */
-	public static function assert_parsely_added_to_registry( array $registry, string $site_id ): void {
+	public static function assert_parsely_added_to_registry( $registry, string $site_id ): void {
 		self::assertArrayHasKey( self::$registry_identifier, $registry );
-		self::assertSame( self::$registry_display_name, $registry[ self::$registry_identifier ]['name'] );
+
+		/**
+		 * Variable.
+		 *
+		 * @var FB_Parsely_Registry
+		 */
+		$parsely_registry = $registry[ self::$registry_identifier ] ?? array();
+		self::assertSame( self::$registry_display_name, $parsely_registry['name'] );
 
 		// Payload should contain a script tag and the Site ID.
-		self::assertStringContainsString( '<script>', $registry[ self::$registry_identifier ]['payload'] );
-		self::assertStringContainsString( $site_id, $registry[ self::$registry_identifier ]['payload'] );
+		self::assertStringContainsString( '<script>', $parsely_registry['payload'] );
+		self::assertStringContainsString( $site_id, $parsely_registry['payload'] );
 	}
 }

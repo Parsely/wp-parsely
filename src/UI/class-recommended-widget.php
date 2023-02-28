@@ -19,7 +19,7 @@ use const Parsely\PARSELY_FILE;
 /**
  * Provides a widget with Parse.ly recommended articles.
  *
- * @phpstan-type WidgetSettings array{
+ * @phpstan-type Widget_Settings array{
  *   title: string,
  *   return_limit: int,
  *   display_direction: string,
@@ -42,7 +42,7 @@ final class Recommended_Widget extends WP_Widget {
 	/**
 	 * Default values of widget settings
 	 *
-	 * @var WidgetSettings
+	 * @var Widget_Settings
 	 */
 	private static $default_widget_settings = array(
 		'title'               => '',
@@ -95,7 +95,7 @@ final class Recommended_Widget extends WP_Widget {
 	 * @return string API URL.
 	 */
 	private function get_api_url( string $site_id, ?int $published_within, ?string $sort, ?string $boost, int $return_limit ): string {
-		$related_api_endpoint = 'https://api.parsely.com/v2/related';
+		$related_api_endpoint = Parsely::PUBLIC_API_BASE_URL . '/related';
 
 		$query_args = array(
 			'apikey' => $site_id,
@@ -144,7 +144,7 @@ final class Recommended_Widget extends WP_Widget {
 			$instance['published_within'],
 			$instance['sort'],
 			$instance['boost'],
-			$instance['return_limit']
+			(int) $instance['return_limit'] // @phpstan-ignore-line
 		);
 
 		?>
@@ -297,10 +297,10 @@ final class Recommended_Widget extends WP_Widget {
 	/**
 	 * This is the update function.
 	 *
-	 * @param WidgetSettings $new_instance The new values for the db.
-	 * @param WidgetSettings $old_instance Values saved to the db.
+	 * @param Widget_Settings $new_instance The new values for the db.
+	 * @param Widget_Settings $old_instance Values saved to the db.
 	 *
-	 * @return WidgetSettings
+	 * @return Widget_Settings
 	 */
 	public function update( $new_instance, $old_instance ) /* @phpstan-ignore-line */ {
 		$instance                        = $old_instance;
@@ -369,13 +369,13 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @param array<string, mixed> $settings Widget Options.
 	 *
-	 * @return WidgetSettings
+	 * @return Widget_Settings
 	 */
 	public function get_widget_settings( array $settings ) {
 		/**
 		 * Variable.
 		 *
-		 * @var WidgetSettings
+		 * @var Widget_Settings
 		 */
 		$widget_settings = $settings;
 

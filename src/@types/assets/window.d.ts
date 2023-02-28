@@ -25,5 +25,6 @@ declare global {
 		wpParselySiteId: string,
 		wpParselyDisableAutotrack?: boolean;
 		wpParselyHooks?: _Hooks;
+		wpParselyPostsStatsResponse: string;
 	}
 }

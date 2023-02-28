@@ -22,7 +22,7 @@ use function Parsely\Utils\get_default_category;
  *
  * @since 3.4.0
  *
- * @phpstan-import-type ParselyOptions from Parsely
+ * @phpstan-import-type Parsely_Options from Parsely
  */
 class Post_Builder extends Metadata_Builder {
 	/**
@@ -273,8 +273,8 @@ class Post_Builder extends Metadata_Builder {
 	 *
 	 * @since 3.3.0 Moved to class-metadata
 	 *
-	 * @param WP_Post        $post_obj The object for the post.
-	 * @param ParselyOptions $parsely_options The parsely options.
+	 * @param WP_Post         $post_obj The object for the post.
+	 * @param Parsely_Options $parsely_options The parsely options.
 	 *
 	 * @return string Cleaned category name for the post in question.
 	 */
@@ -332,7 +332,7 @@ class Post_Builder extends Metadata_Builder {
 			$parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
 		}
 
-		return isset( $parent->name ) ? $parent->name : false;
+		return $parent->name ?? false;
 	}
 
 	/**

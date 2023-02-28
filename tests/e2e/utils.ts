@@ -10,7 +10,7 @@ import {
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
-export const PLUGIN_VERSION = '3.6.1';
+export const PLUGIN_VERSION = '3.7.1';
 
 export const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
 
@@ -91,18 +91,18 @@ export const insertRecordIntoTaxonomy = async ( recordName: string, taxonomyType
 };
 
 /**
- * Gets the message returned by the Content Helper according to the various
- * conditions passed to the function.
+ * Gets the message returned by the PHC Editor Sidebar Related Top Posts panel
+ * according to the various conditions passed to the function.
  *
  * @param {string} category Name of the category to select in the Post Editor.
  * @param {string} tag      Name of the tag to select in the Post Editor.
  * @param {number} timeout  Milliseconds to wait after category/tag selection.
- * @return {Promise<string>} The message returned by the Content Helper.
+ * @return {Promise<string>} The message returned.
  */
 export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeout = 500 ): Promise<string> => {
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
-	const pluginButton = 'button[aria-label="Parse.ly Content Helper"]';
+	const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
 	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel__body.is-opened .parsely-top-posts-descr';
 
 	// Run basic operations.
@@ -137,65 +137,19 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
 		await page.waitForTimeout( timeout );
 	}
 
-	// Show the Content Helper and get the displayed message.
+	// Show the panel and get the displayed message.
 	await page.waitForSelector( pluginButton );
 	await page.click( pluginButton );
-	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Related Top-Performing Posts' );
+	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Related Top Posts' );
 	await topRelatedPostsButton.click();
 	await page.waitForSelector( contentHelperMessage );
-	await page.waitForFunction( // Wait for Content Helper message to appear.
+	await page.waitForFunction( // Wait for the message to appear.
 		'document.querySelector("' + contentHelperMessage + '").innerText.length > 0',
 		{ polling: 'mutation', timeout: 5000 }
 	);
 	const text = await page.$eval( contentHelperMessage, ( element: Element ): string => element.textContent || '' );
 
 	return text;
-};
-
-export const checkH2DoesNotExist = async ( text: string ) => {
-	const [ h2 ] = await page.$x( `//h2[contains(text(), "${ text }")]` );
-	return h2 === undefined;
-};
-
-interface ScreenOptions {
-	recrawl: boolean;
-	advanced: boolean;
-}
-
-/**
- * Sets the visible sections in the array to their values `true` for visible and `false` for not visible.
- *
- * @param {Object} sections Dictionary containing the desired sections to change. Currently, `recrawl` and `advanced`.
- * @return {Promise<void>}
- */
-export const selectScreenOptions = async ( sections: ScreenOptions ) => {
-	const [ button ] = await page.$x( '//button[@id="show-settings-link"]' );
-	await button.click();
-
-	await page.waitForSelector( '#requires-recrawl' );
-
-	const recrawlInput = await page.$( '#requires-recrawl' );
-
-	if ( recrawlInput ) {
-		const isRecrawlChecked = await ( await recrawlInput.getProperty( 'checked' ) ).jsonValue();
-		if ( ( sections.recrawl && ! isRecrawlChecked ) || ( ! sections.recrawl && isRecrawlChecked ) ) {
-			await recrawlInput.click();
-		}
-	}
-
-	const advancedInput = await page.$( '#advanced' );
-
-	if ( advancedInput ) {
-		const isAdvancedChecked = await ( await advancedInput.getProperty( 'checked' ) ).jsonValue();
-		if ( ( sections.advanced && ! isAdvancedChecked ) || ( ! sections.advanced && isAdvancedChecked ) ) {
-			await advancedInput.click();
-		}
-	}
-
-	const [ input ] = await page.$x( '//p[contains(@class, \'submit\')]//input[contains(@name, \'screen-options-apply\')]' );
-	await input.click();
-
-	await waitForWpAdmin();
 };
 
 /**

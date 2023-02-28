@@ -7,8 +7,6 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
  * Internal dependencies
  */
 import {
-	checkH2DoesNotExist,
-	selectScreenOptions,
 	setSiteKeys,
 	startUpTest,
 	waitForWpAdmin,
@@ -46,26 +44,36 @@ describe( 'Activation flow', (): void => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await waitForWpAdmin();
 
-		// Set initial state
-		await selectScreenOptions( { recrawl: false, advanced: false } );
+		// Default tab.
+		expect( page ).not.toBe( null );
+		testSectionsVisibility( [ 'initial', 'none', 'none' ] );
 
-		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
-		expect( await checkH2DoesNotExist( 'Requires Recrawl Settings' ) ).toBe( true );
-		expect( await checkH2DoesNotExist( 'Advanced Settings' ) ).toBe( true );
+		// Basic Settings Tab.
+		await page.click( '.basic-section-tab' );
+		testSectionsVisibility( [ 'initial', 'none', 'none' ] );
 
-		await selectScreenOptions( { recrawl: true, advanced: true } );
+		// Recrawl Settings Tab.
+		await page.click( '.recrawl-section-tab' );
+		testSectionsVisibility( [ 'none', 'initial', 'none' ] );
 
-		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
-		await page.waitForXPath( '//h2[contains(text(), "Requires Recrawl Settings")]' );
-		await page.waitForXPath( '//h2[contains(text(), "Advanced Settings")]' );
+		// Advanced Settings Tab.
+		await page.click( '.advanced-section-tab' );
+		testSectionsVisibility( [ 'none', 'none', 'initial' ] );
 
-		await selectScreenOptions( { recrawl: true, advanced: false } );
-
-		await page.waitForXPath( '//h2[contains(text(), "Basic Settings")]' );
-		await page.waitForXPath( '//h2[contains(text(), "Requires Recrawl Settings")]' );
-		expect( await checkH2DoesNotExist( 'Advanced Settings' ) ).toBe( true );
-
-		// Reverting to initial state
-		await selectScreenOptions( { recrawl: false, advanced: false } );
+		await page.click( '.basic-section-tab' ); // Revert to initial state
 	} );
+
+	async function testSectionsVisibility( displayValues: string[] ): Promise<void> {
+		const basicSectionSelector = '.basic-section';
+		const recrawlSectionSelector = '.recrawl-section';
+		const advancedSectionSelector = '.advanced-section';
+
+		expect( await getSectionStyles( basicSectionSelector ) ).toContain( `display: ${ displayValues[ 0 ] }` );
+		expect( await getSectionStyles( recrawlSectionSelector ) ).toContain( `display: ${ displayValues[ 1 ] }` );
+		expect( await getSectionStyles( advancedSectionSelector ) ).toContain( `display: ${ displayValues[ 2 ] }` );
+	}
+
+	async function getSectionStyles( selector: string ): Promise<string> {
+		return await page.$eval( selector, ( e: Element ): string => e.getAttribute( 'style' ) || '' );
+	}
 } );

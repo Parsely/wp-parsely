@@ -47,32 +47,26 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 	 * @return array<stdClass> The generated data.
 	 */
 	protected function generate_data( $response ): array {
-		$date_format    = get_date_format();
-		$stats_base_url = trailingslashit( Parsely::DASHBOARD_BASE_URL . '/' . $this->parsely->get_site_id() ) . 'find';
+		$date_format = get_date_format();
+		$site_id     = $this->parsely->get_site_id();
 
 		return array_map(
-			static function( stdClass $item ) use ( $date_format, $stats_base_url ) {
+			static function( stdClass $item ) use ( $date_format, $site_id ) {
 				return (object) array(
-					'author'   => $item->author,
-					'date'     => wp_date( $date_format, strtotime( $item->pub_date ) ),
-					'id'       => $item->url,
-					'statsUrl' => $stats_base_url . '?url=' . rawurlencode( $item->url ),
-					'title'    => $item->title,
-					'url'      => $item->url,
-					'views'    => $item->metrics->views,
+					'author'         => $item->author,
+					'dashUrl'        => Parsely::get_dash_url( $site_id, $item->url ),
+					'date'           => wp_date( $date_format, strtotime( $item->pub_date ) ),
+					// Unique ID (can be replaced by Parse.ly API ID if it becomes available).
+					'id'             => $item->url,
+					// WordPress Post ID (0 if the post cannot be found, might not be unique).
+					'postId'         => url_to_postid( $item->url ), // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
+					'thumbUrlMedium' => $item->thumb_url_medium,
+					'title'          => $item->title,
+					'url'            => $item->url,
+					'views'          => $item->metrics->views,
 				);
 			},
 			$response
 		);
-	}
-
-	/**
-	 * Determines if there are enough permissions to call the endpoint.
-	 *
-	 * @return bool
-	 */
-	public function permission_callback(): bool {
-		// Unauthenticated.
-		return true;
 	}
 }

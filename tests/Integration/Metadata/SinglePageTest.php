@@ -51,7 +51,7 @@ final class SinglePageTest extends NonPostTestCase {
 				'post_name'  => 'foo',
 			)
 		);
-		$page    = get_post( $page_id );
+		$page    = $this->get_post( $page_id );
 
 		// Set permalinks, as Parsely currently strips ?page_id=... from the URL
 		// property. See https://github.com/Parsely/wp-parsely/issues/151.
@@ -59,7 +59,7 @@ final class SinglePageTest extends NonPostTestCase {
 		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
 		// Make a request to that page to set the global $wp_query object.
-		$this->go_to( get_permalink( $page_id ) );
+		$this->go_to( $this->get_permalink( $page_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -69,8 +69,8 @@ final class SinglePageTest extends NonPostTestCase {
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the post_title of the page.
-		self::assertEquals( 'Single Page', $structured_data['headline'] );
-		self::assertEquals( get_permalink( $page_id ), $structured_data['url'] );
+		self::assertEquals( 'Single Page', $structured_data['headline'] ?? null );
+		self::assertEquals( get_permalink( $page_id ), $structured_data['url'] ?? null );
 		self::assertQueryTrue( 'is_page', 'is_singular' );
 
 		// Reset permalinks to plain.
