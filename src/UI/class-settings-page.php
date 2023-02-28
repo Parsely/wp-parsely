@@ -1189,6 +1189,7 @@ final class Settings_Page {
 		$input[ $posts ] = $options[ $posts ];
 		$input[ $pages ] = $options[ $pages ];
 
+		// @phpstan-ignore-next-line.
 		if ( isset( $input[ $track_as ] ) && is_array( $input[ $track_as ] ) && 0 < count( $input[ $track_as ] ) ) {
 			$post_types = get_post_types( array( 'public' => true ) );
 			$temp_posts = array();
