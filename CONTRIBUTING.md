@@ -55,7 +55,7 @@ This plugin uses the `wp-env` package (an [official WP.org package](https://deve
 
   This is important to maintain the integrity of the `package-lock.json` file (we use [`lockfileVersion` 2](https://docs.npmjs.com/cli/v7/configuring-npm/package-lock-json#lockfileversion)).
 
-- PHP - 7.1–8.0
+- PHP - 7.2–8.2
 
   There are multiple ways to install PHP on your operating system. You can check out the [official installation instructions from the PHP project's website.](https://www.php.net/manual/en/install.php)
 
