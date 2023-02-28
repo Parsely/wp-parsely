@@ -10,7 +10,7 @@ import {
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
-export const PLUGIN_VERSION = '3.6.2';
+export const PLUGIN_VERSION = '3.7.1';
 
 export const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
 
