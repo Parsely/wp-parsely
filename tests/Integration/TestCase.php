@@ -123,7 +123,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 			array(
 				'user_login' => $user_login,
 				'role'       => $user_role,
-			) 
+			)
 		);
 	}
 
@@ -466,10 +466,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param bool     $availability_type TRUE if we want to check the presence of given hooks.
 	 */
 	public function assert_wp_hooks_availablility( $hooks, $availability_type ): void {
-		if ( ! $this->is_php_version_7dot2_or_higher() ) {
-			return;
-		}
-
 		if ( true === $availability_type ) {
 			$this->assert_wp_hooks( $hooks );
 		} else {
@@ -637,16 +633,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 				"Unexpected style status: $handle status should NOT be '$status'"
 			);
 		}
-	}
-
-	/**
-	 * Returns TRUE if minimum PHP version is 7.2 or higher. We uses this if something works
-	 * differently in PHP versions < 7.2 and >= 7.2.
-	 *
-	 * Note: Remove this function when we remove support for PHP 7.1.
-	 */
-	public function is_php_version_7dot2_or_higher(): bool {
-		return phpversion() >= '7.2';
 	}
 
 	/**
