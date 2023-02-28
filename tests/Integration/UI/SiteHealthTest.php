@@ -67,7 +67,7 @@ final class SiteHealthTest extends TestCase {
 		 *
 		 * @var Parsely_Health_Info
 		 */
-		$parsely_health_info = isset( $args['parsely'] ) ? $args['parsely'] : array();
+		$parsely_health_info = $args['parsely'] ?? array();
 
 		self::assertArrayHasKey( 'parsely', $args );
 		self::assertEquals( 'Parse.ly Options', $parsely_health_info['label'] );

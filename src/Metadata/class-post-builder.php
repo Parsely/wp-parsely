@@ -332,7 +332,7 @@ class Post_Builder extends Metadata_Builder {
 			$parent = get_term_by( 'id', $parent->parent, $taxonomy_name );
 		}
 
-		return isset( $parent->name ) ? $parent->name : false;
+		return $parent->name ?? false;
 	}
 
 	/**

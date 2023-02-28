@@ -135,7 +135,7 @@ final class FacebookInstantArticlesTest extends TestCase {
 		 *
 		 * @var FB_Parsely_Registry
 		 */
-		$parsely_registry = isset( $registry[ self::$registry_identifier ] ) ? $registry[ self::$registry_identifier ] : array();
+		$parsely_registry = $registry[ self::$registry_identifier ] ?? array();
 		self::assertSame( self::$registry_display_name, $parsely_registry['name'] );
 
 		// Payload should contain a script tag and the Site ID.

@@ -69,8 +69,8 @@ final class SinglePageTest extends NonPostTestCase {
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the post_title of the page.
-		self::assertEquals( 'Single Page', isset( $structured_data['headline'] ) ? $structured_data['headline'] : null );
-		self::assertEquals( get_permalink( $page_id ), isset( $structured_data['url'] ) ? $structured_data['url'] : null );
+		self::assertEquals( 'Single Page', $structured_data['headline'] ?? null );
+		self::assertEquals( get_permalink( $page_id ), $structured_data['url'] ?? null );
 		self::assertQueryTrue( 'is_page', 'is_singular' );
 
 		// Reset permalinks to plain.
