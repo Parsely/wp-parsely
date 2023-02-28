@@ -28,9 +28,16 @@ use const Parsely\PARSELY_FILE;
  *   help_text?: string,
  *   yes_text?: string,
  *   filter?: string,
- *   optional_args?: array<string, string>,
+ *   optional_args?: Setting_Optional_Args,
  *   select_options?: array<string, string>,
  *   radio_options?: array<string, string>,
+ * }
+ *
+ * @phpstan-type Setting_Optional_Args array{
+ *   type?: string,
+ *   placeholder?: string,
+ *   required?: string,
+ *   is_obfuscated_value: bool,
  * }
  *
  * @phpstan-type ParselySettingOptions array{
@@ -229,9 +236,13 @@ final class Settings_Page {
 		// API Secret.
 		$field_id   = 'api_secret';
 		$field_args = array(
-			'option_key' => $field_id,
-			'help_text'  => __( 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API and would like to do so, email your account manager or <a href="mailto:support@parsely.com">support@parsely.com</a>.', 'wp-parsely' ),
-			'label_for'  => $field_id,
+			'option_key'    => $field_id,
+			'help_text'     => __( 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API and would like to do so, email your account manager or <a href="mailto:support@parsely.com">support@parsely.com</a>.', 'wp-parsely' ),
+			'label_for'     => $field_id,
+			'optional_args' => array(
+				'type'                => 'password',
+				'is_obfuscated_value' => true,
+			),
 		);
 		add_settings_field(
 			$field_id,
@@ -245,9 +256,13 @@ final class Settings_Page {
 		// Metadata Secret.
 		$field_id   = 'metadata_secret';
 		$field_args = array(
-			'option_key' => $field_id,
-			'help_text'  => __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' ),
-			'label_for'  => $field_id,
+			'option_key'    => $field_id,
+			'help_text'     => __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' ),
+			'label_for'     => $field_id,
+			'optional_args' => array(
+				'type'                => 'password',
+				'is_obfuscated_value' => true,
+			),
 		);
 		add_settings_field(
 			$field_id,
@@ -651,14 +666,16 @@ final class Settings_Page {
 		 *
 		 * @var string
 		 */
-		$value         = $options[ $name ] ?? '';
-		$optional_args = $args['optional_args'] ?? array();
-		$id            = esc_attr( $name );
-		$name          = Parsely::OPTIONS_KEY . "[$id]";
-		$value         = esc_attr( $value );
-		$accepted_args = array( 'placeholder', 'required' );
+		$value               = $options[ $name ] ?? '';
+		$optional_args       = $args['optional_args'] ?? array();
+		$id                  = esc_attr( $name );
+		$name                = Parsely::OPTIONS_KEY . "[$id]";
+		$is_obfuscated_value = $optional_args['is_obfuscated_value'] ?? false;
+		$value               = $is_obfuscated_value ? $this->get_obfuscated_value( $value ) : esc_attr( $value );
+		$accepted_args       = array( 'placeholder', 'required' );
+		$type                = $optional_args['type'] ?? 'text';
 
-		echo sprintf( "<input type='text' name='%s' id='%s' value='%s'", esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
+		echo sprintf( "<input type='%s' name='%s' id='%s' value='%s'", esc_attr( $type ), esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
 
 		if ( isset( $args['help_text'] ) ) {
 			echo ' aria-describedby="' . esc_attr( $id ) . '-description"';
@@ -666,7 +683,7 @@ final class Settings_Page {
 
 		foreach ( $optional_args as $key => $val ) {
 			if ( \in_array( $key, $accepted_args, true ) ) {
-				echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
+				echo ' ' . esc_attr( $key ) . '="' . esc_attr( (string) $val ) . '"';
 			}
 		}
 		echo ' />';
@@ -932,8 +949,9 @@ final class Settings_Page {
 			}
 		}
 
-		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
+		$input['api_secret'] = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
 
+		$input['metadata_secret'] = $this->get_unobfuscated_value( $input['metadata_secret'], $this->parsely->get_options()['metadata_secret'] );
 		if ( '' !== $input['metadata_secret'] ) {
 			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
 				add_settings_error(
@@ -1189,7 +1207,7 @@ final class Settings_Page {
 		$input[ $posts ] = $options[ $posts ];
 		$input[ $pages ] = $options[ $pages ];
 
-		// @phpstan-ignore-next-line.
+		// @phpstan-ignore-next-line
 		if ( isset( $input[ $track_as ] ) && is_array( $input[ $track_as ] ) && 0 < count( $input[ $track_as ] ) ) {
 			$post_types = get_post_types( array( 'public' => true ) );
 			$temp_posts = array();
@@ -1254,5 +1272,33 @@ final class Settings_Page {
 			$new_array[ $key ] = sanitize_text_field( $val );
 		}
 		return $new_array;
+	}
+
+	/**
+	 * Gets obfuscated value.
+	 *
+	 * @param string $current_value Current value of the field.
+	 *
+	 * @return string
+	 */
+	private function get_obfuscated_value( $current_value ): string {
+		return str_repeat( '*', strlen( $current_value ) );
+	}
+
+	/**
+	 * Gets unobfuscated value.
+	 *
+	 * @param string $current_value Current value of the field.
+	 * @param string $previous_value Previous value of the field. If current
+	 *                               value is obfuscated then we will use this.
+	 *
+	 * @return string
+	 */
+	private function get_unobfuscated_value( $current_value, $previous_value ): string {
+		if ( $current_value === $this->get_obfuscated_value( $current_value ) ) {
+			return '' === $current_value ? $current_value : $previous_value;
+		}
+
+		return $current_value;
 	}
 }
