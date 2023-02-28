@@ -18,7 +18,7 @@
  * License:           GPL-2.0-or-later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * GitHub Plugin URI: https://github.com/Parsely/wp-parsely
- * Requires PHP:      7.1
+ * Requires PHP:      7.2
  * Requires WP:       5.0.0
  */
 
@@ -137,8 +137,8 @@ add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
  * Network Admin Sites List table.
  */
 function parsely_wp_admin_early_register(): void {
-	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
-	$settings_page->run();
+	$GLOBALS['parsely_settings_page'] = new Settings_Page( $GLOBALS['parsely'] );
+	$GLOBALS['parsely_settings_page']->run();
 
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();

@@ -113,7 +113,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 			 *
 			 * @var int
 			 */
-			$current_views         = isset( $referrer_data->metrics->referrers_views ) ? $referrer_data->metrics->referrers_views : 0;
+			$current_views         = $referrer_data->metrics->referrers_views ?? 0;
 			$total_referrer_views += $current_views;
 
 			/**
@@ -121,7 +121,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 			 *
 			 * @var string
 			 */
-			$current_key = isset( $referrer_data->type ) ? $referrer_data->type : '';
+			$current_key = $referrer_data->type ?? '';
 			if ( '' !== $current_key ) {
 				if ( ! isset( $result->$current_key->views ) ) {
 					$result->$current_key = (object) array( 'views' => 0 );
@@ -192,7 +192,7 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 			 *
 			 * @var int
 			 */
-			$referrer_views = isset( $data->metrics->referrers_views ) ? $data->metrics->referrers_views : 0;
+			$referrer_views = $data->metrics->referrers_views ?? 0;
 			$totals        += $referrer_views;
 			if ( isset( $data->name ) ) {
 				$temp_views[ $data->name ] = $referrer_views;

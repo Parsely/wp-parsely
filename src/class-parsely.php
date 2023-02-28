@@ -317,7 +317,7 @@ class Parsely {
 			'canonical_url' => $metadata['url'] ?? '',
 			'page_type'     => $this->convert_jsonld_to_parsely_type( $metadata['@type'] ?? '' ),
 			'title'         => $metadata['headline'] ?? '',
-			'image_url'     => isset( $metadata['image']['url'] ) ? $metadata['image']['url'] : '',
+			'image_url'     => $metadata['image']['url'] ?? '',
 			'pub_date_tmsp' => $metadata['datePublished'] ?? '',
 			'section'       => $metadata['articleSection'] ?? '',
 			'authors'       => $metadata['creator'] ?? '',
