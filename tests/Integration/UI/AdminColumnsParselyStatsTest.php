@@ -143,10 +143,15 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @param bool $assert_type Indicates wether we are asserting for TRUE or FALSE.
 	 */
 	private function assert_parsely_stats_admin_styles( bool $assert_type ): void {
-		$this->init_admin_columns_parsely_stats();
+		$obj = $this->init_admin_columns_parsely_stats();
 
-		do_action( 'current_screen' ); // phpcs:ignore
-		do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
+		if ( $this->is_php_version_7dot2_or_higher() ) {
+			do_action( 'current_screen' ); // phpcs:ignore
+			do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
+		} elseif ( $obj->should_add_hooks() ) {
+			$obj->set_current_screen();
+			$obj->enqueue_parsely_stats_styles();
+		}
 
 		$handle = 'admin-parsely-stats-styles';
 		if ( $assert_type ) {
@@ -263,7 +268,11 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	private function get_admin_columns() {
 		$obj = $this->init_admin_columns_parsely_stats();
 
-		do_action( 'current_screen' ); // phpcs:ignore
+		if ( $this->is_php_version_7dot2_or_higher() ) {
+			do_action( 'current_screen' ); // phpcs:ignore
+		} elseif ( $obj->should_add_hooks() ) {
+			$obj->set_current_screen();
+		}
 
 		return $obj->add_parsely_stats_column_on_list_view( array() );
 	}
@@ -477,14 +486,22 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @param string                      $post_type Type of the post.
 	 */
 	private function show_content_on_parsely_stats_column( $obj, $posts, $post_type ): void {
-		do_action( 'current_screen' ); // phpcs:ignore
+		if ( $this->is_php_version_7dot2_or_higher() ) {
+			do_action( 'current_screen' ); // phpcs:ignore
+		} elseif ( $obj->should_add_hooks() ) {
+			$obj->set_current_screen();
+		}
 
 		foreach ( $posts as $current_post ) {
 			global $post;
 			$post        = $current_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 			$column_name = 'parsely-stats';
 
-			do_action( "manage_{$post_type}s_custom_column", $column_name ); // phpcs:ignore
+			if ( $this->is_php_version_7dot2_or_higher() ) {
+				do_action( "manage_{$post_type}s_custom_column", $column_name ); // phpcs:ignore
+			} else {
+				$obj->update_published_times_and_show_placeholder( $column_name );
+			}
 		}
 	}
 
@@ -688,8 +705,13 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @param bool                        $assert_type Indicates wether we are asserting for TRUE or FALSE.
 	 */
 	private function assert_parsely_stats_admin_script( $obj, $assert_type ): void {
-		do_action( 'current_screen' ); // phpcs:ignore
-		do_action( 'admin_footer' ); // phpcs:ignore
+		if ( $this->is_php_version_7dot2_or_higher() ) {
+			do_action( 'current_screen' ); // phpcs:ignore
+			do_action( 'admin_footer' ); // phpcs:ignore
+		} elseif ( $obj->should_add_hooks() ) {
+			$obj->set_current_screen();
+			$obj->enqueue_parsely_stats_script_with_data();
+		}
 
 		$handle = 'admin-parsely-stats-script';
 		if ( $assert_type ) {
