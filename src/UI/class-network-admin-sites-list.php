@@ -19,7 +19,7 @@ use Parsely\Parsely;
  * @since 3.2.0
  */
 final class Network_Admin_Sites_List {
-	const COLUMN_NAME = 'parsely-site-id';
+	public const COLUMN_NAME = 'parsely-site-id';
 	/**
 	 * Instance of Parsely class.
 	 *
@@ -43,8 +43,8 @@ final class Network_Admin_Sites_List {
 	 * @since 3.2.0
 	 */
 	public function run(): void {
-		add_filter( 'manage_sites_action_links', array( __CLASS__, 'add_action_link' ), 10, 2 );
-		add_filter( 'wpmu_blogs_columns', array( __CLASS__, 'add_site_id_column' ) );
+		add_filter( 'manage_sites_action_links', array( self::class, 'add_action_link' ), 10, 2 );
+		add_filter( 'wpmu_blogs_columns', array( self::class, 'add_site_id_column' ) );
 		add_action( 'manage_sites_custom_column', array( $this, 'populate_site_id_column' ), 10, 2 );
 	}
 

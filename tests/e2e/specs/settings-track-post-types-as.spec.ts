@@ -8,7 +8,6 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
  */
 import {
 	saveSettingsAndHardRefresh,
-	selectScreenOptions,
 	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
@@ -36,14 +35,13 @@ describe( 'Track Post Types as', () => {
 
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await waitForWpAdmin();
-		await selectScreenOptions( { recrawl: true, advanced: false } );
+		await page.click( '.recrawl-section-tab' );
 	} );
 
 	/**
 	 * Set default values and save.
 	 */
 	afterAll( async () => {
-		await selectScreenOptions( { recrawl: true, advanced: false } );
 		await waitForWpAdmin();
 
 		await page.click( radioPostAsPost );
@@ -52,6 +50,7 @@ describe( 'Track Post Types as', () => {
 
 		await page.click( '#submit' );
 		await waitForWpAdmin();
+		await page.click( '.basic-section-tab' ); // Revert to initial state
 	} );
 
 	/**

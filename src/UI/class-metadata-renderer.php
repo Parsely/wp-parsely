@@ -115,6 +115,7 @@ final class Metadata_Renderer {
 		} else {
 			// Assume `meta_type` is `repeated_metas`.
 			$parsely_post_type = $this->parsely->convert_jsonld_to_parsely_type( $metadata['@type'] ?? '' );
+
 			if ( isset( $metadata['keywords'] ) && is_array( $metadata['keywords'] ) ) {
 				$metadata['keywords'] = implode( ',', $metadata['keywords'] );
 			}
