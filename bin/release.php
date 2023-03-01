@@ -16,7 +16,7 @@
  */
 
 // Exit if the GitHub CLI is not available.
-if ( ! shell_exec( 'gh --version')) {
+if ( ! shell_exec( 'gh --version' ) ) {
 	exit(
 		'The GitHub CLI (https://cli.github.com/) is not installed. Please ' .
 		'install it before running this script.'
@@ -105,7 +105,7 @@ function generate_release_log( string $milestone ): string {
 function get_pull_request_data( string $milestone, string $label, $limit = 100 ) {
 	return shell_exec(
 		'gh pr list --repo Parsely/wp-parsely --search "milestone:' . $milestone .
-		'" --label "' . $label . '"  --state merged --limit ' . $limit .
+		'" --label "' . $label . '" --state merged --limit ' . $limit .
 		' --json title,number,url --jq \'.[] | "- \(.title) ([#\(.number)](\(.url)))"\''
 	);
 }
@@ -141,24 +141,24 @@ function create_pull_request( string $milestone, string $changelog ) {
 /**
  * Writes the passed string to the changelog file.
  *
- * @param string $string The string to be written to the changelog file.
+ * @param string $release_log The string to be written to the changelog file.
  * @param string $milestone_from The milestone we're upgrading from.
  * @param string $milestone_to The milestone we're upgrading to.
  */
 function write_to_changelog_file(
-	string $string,
+	string $release_log,
 	string $milestone_from,
 	string $milestone_to
 ): void {
 	$date   = date( 'Y-m-d' );
 	$header = "## [{$milestone_to}](https://github.com/Parsely/wp-parsely/compare/{$milestone_from}...{$milestone_to}) - {$date}";
-	$string = "{$header}\n\n{$string}";
+	$release_log = "{$header}\n\n{$release_log}";
 
 	$find               = "## [{$milestone_from}]";
 	$changelog_contents = file_get_contents( 'CHANGELOG.md' );
 	$changelog_contents = str_replace(
 		$find,
-		$string . "\n" . $find,
+		$release_log . "\n" . $find,
 		$changelog_contents
 	);
 
