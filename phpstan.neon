@@ -7,6 +7,7 @@ parameters:
     - wp-parsely.php
     - uninstall.php
   scanFiles:
+    - bin/release.php
     - vendor/axepress/wp-graphql-stubs/wp-graphql-stubs.php
     - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
     - vendor/php-stubs/wordpress-tests-stubs/wordpress-tests-stubs.php
