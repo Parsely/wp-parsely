@@ -15,6 +15,14 @@
  *   `bin/release.php 3.6.2 3.7.0`
  */
 
+// Exit if the GitHub CLI is not available.
+if ( ! shell_exec( 'gh --version')) {
+	exit(
+		'The GitHub CLI (https://cli.github.com/) is not installed. Please ' .
+		'install it before running this script.'
+	);
+}
+
 // Examine and assign arguments passed to the script.
 if ( count( $argv ) < 3 ) {
 	exit(
