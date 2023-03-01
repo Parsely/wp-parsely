@@ -67,7 +67,7 @@ class Parsely {
 		'use_top_level_cats'          => false,
 		'custom_taxonomy_section'     => 'category',
 		'cats_as_tags'                => false,
-		'track_authenticated_users'   => true,
+		'track_authenticated_users'   => false,
 		'lowercase_tags'              => true,
 		'force_https_canonicals'      => false,
 		'track_post_types'            => array( 'post' ),
@@ -574,5 +574,16 @@ class Parsely {
 		$options = $this->get_options();
 
 		return array_unique( array_merge( $options['track_post_types'], $options['track_page_types'] ) );
+	}
+
+	/**
+	 * Gets default options.
+	 *
+	 * @since 3.8.0
+	 *
+	 * @return Parsely_Options
+	 */
+	public function get_default_options() {
+		return $this->option_defaults;
 	}
 }

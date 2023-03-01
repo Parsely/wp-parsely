@@ -226,7 +226,7 @@ final class OtherTest extends TestCase {
 		update_option( Parsely::OPTIONS_KEY, 'someinvalidvalue' );
 
 		$options = self::$parsely->get_options();
-		self::assertSame( self::EMPTY_DEFAULT_OPTIONS, $options );
+		self::assertSame( self::$parsely->get_default_options(), $options );
 	}
 
 	/**
