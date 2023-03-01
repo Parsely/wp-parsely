@@ -344,7 +344,7 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		// As track_authenticated_users options is false, enqueuing should fail.
+		// As track_authenticated_users option is false, enqueuing should fail.
 		// Verify that tracker script is registered but not enqueued.
 		$this->assert_is_script_registered( 'wp-parsely-tracker' );
 		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
@@ -465,7 +465,7 @@ final class ScriptsTest extends TestCase {
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		// As track_authenticated_users options is false by default, enqueuing should fail.
+		// As track_authenticated_users option is false by default, enqueuing should fail.
 		// Verify that tracker script is registered but not enqueued.
 		$this->assert_is_script_registered( 'wp-parsely-tracker' );
 		$this->assert_is_script_not_enqueued( 'wp-parsely-tracker' );
