@@ -2,11 +2,11 @@
 // phpcs:ignoreFile
 
 /**
- * This script creates a new branch, updates version numbers and the changelog,
- * and commits the changes into 2 separate commits. Once this is done, it also
- * asks whether it should push those changes as a PR on GitHub. It will also
- * include the changelog into the PR's body, so it can be easily copy/pasted
- * into the related GitHub release.
+ * This script creates a new branch, updates the wp-parsely version number and
+ * changelog, and commits the changes into 2 separate commits. Once this is
+ * done, it also asks whether it should push those changes as a PR on GitHub.
+ * It will also include the changelog into the PR's body, so it can be easily
+ * copy/pasted into the related GitHub release.
  *
  * Requirements: GitHub CLI (`brew install gh`).
  *
@@ -25,9 +25,9 @@ if ( count( $argv ) < 3 ) {
 $milestone_from = $argv[1];
 $milestone_to   = $argv[2];
 
-// Update and commit version numbers.
-echo "Updating and committing version numbers...\n";
-shell_exec( 'bin/update-version-numbers.sh ' . $milestone_to );
+// Update and commit version number.
+echo "Updating and committing version number...\n";
+shell_exec( 'bin/update-version.sh ' . $milestone_to );
 echo "DONE\n";
 
 // Update and commit the changelog.
@@ -110,9 +110,9 @@ function get_pull_request_data( string $milestone, string $label, $limit = 100 )
  * @return string|false|null The result of the `shell_exec` function.
  */
 function create_pull_request( string $milestone, string $changelog ) {
-	$title = 'Update version numbers and changelog for ' . $milestone . ' release';
+	$title = 'Update version number and changelog for ' . $milestone . ' release';
 	$body  = addcslashes( // Escape double quotes and replace h3 with h2.
-		'This PR updates all version numbers and the changelog in preparation ' .
+		"This PR updates the plugin's version number and changelog in preparation " .
 		"for the {$milestone} release.\n\n" . str_replace( '###', '##', $changelog ),
 		'"'
 	);
