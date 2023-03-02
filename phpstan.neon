@@ -16,3 +16,5 @@ parameters:
       param_type: 59
       property_type: 0 # We can't use property types until we support PHP 7.4.
       print_suggestions: false
+  typeAliases:
+    Asset_Info: 'array{ dependencies: array<string>, version: string }'

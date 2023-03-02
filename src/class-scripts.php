@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use function Parsely\Utils\get_asset_info;
+
 /**
  * Inserts the scripts and tracking code into the site's front-end.
  *
@@ -61,12 +63,13 @@ class Scripts {
 			true
 		);
 
-		$loader_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/loader.asset.php';
+		$loader_asset = get_asset_info( 'build/loader.asset.php' );
+
 		wp_register_script(
 			'wp-parsely-loader',
 			plugin_dir_url( PARSELY_FILE ) . 'build/loader.js',
-			$loader_asset['dependencies'] ?? null,
-			$loader_asset['version'] ?? Parsely::VERSION,
+			$loader_asset['dependencies'],
+			$loader_asset['version'],
 			true
 		);
 	}

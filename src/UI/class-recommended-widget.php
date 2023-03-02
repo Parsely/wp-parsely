@@ -14,6 +14,8 @@ namespace Parsely\UI;
 use Parsely\Parsely;
 use WP_Widget;
 
+use function Parsely\Utils\get_asset_info;
+
 use const Parsely\PARSELY_FILE;
 
 /**
@@ -161,13 +163,13 @@ final class Recommended_Widget extends WP_Widget {
 
 		<?php
 
-		$recommended_widget_script_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/recommended-widget.asset.php';
+		$recommended_widget_script_asset = get_asset_info( 'build/recommended-widget.asset.php' );
 
 		wp_register_script(
 			'wp-parsely-recommended-widget',
 			plugin_dir_url( PARSELY_FILE ) . 'build/recommended-widget.js',
-			$recommended_widget_script_asset['dependencies'] ?? null,
-			$recommended_widget_script_asset['version'] ?? Parsely::VERSION,
+			$recommended_widget_script_asset['dependencies'],
+			$recommended_widget_script_asset['version'],
 			true
 		);
 
@@ -175,7 +177,7 @@ final class Recommended_Widget extends WP_Widget {
 			'wp-parsely-recommended-widget',
 			plugin_dir_url( PARSELY_FILE ) . 'build/recommended-widget.css',
 			array(),
-			$recommended_widget_script_asset['version'] ?? Parsely::VERSION
+			$recommended_widget_script_asset['version']
 		);
 
 		wp_enqueue_script( 'wp-parsely-recommended-widget' );

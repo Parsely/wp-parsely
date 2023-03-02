@@ -16,6 +16,8 @@ use NumberFormatter;
 use WP_Post;
 use WP_Error;
 
+use const Parsely\PARSELY_FILE;
+
 const DATE_UTC_FORMAT     = 'Y-m-d';
 const WP_DATE_TIME_FORMAT = 'Y-m-d H:i:s';
 
@@ -244,4 +246,17 @@ function convert_to_positive_integer( string $string ): int {
  */
 function convert_endpoint_to_filter_key( string $endpoint ): string {
 	return trim( str_replace( '/', '_', $endpoint ), '_' );
+}
+
+/**
+ * Gets content of asset file.
+ *
+ * @param string $path Path of the asset file.
+ *
+ * @since 3.8.0
+ *
+ * @return Asset_Info
+ */
+function get_asset_info( string $path ) {
+	return require plugin_dir_path( PARSELY_FILE ) . $path;
 }
