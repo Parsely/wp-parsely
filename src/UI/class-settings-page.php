@@ -12,6 +12,8 @@ namespace Parsely\UI;
 
 use Parsely\Parsely;
 
+use function Parsely\Utils\get_asset_info;
+
 use const Parsely\PARSELY_FILE;
 
 /**
@@ -109,22 +111,22 @@ final class Settings_Page {
 			add_filter( 'media_library_months_with_files', '__return_empty_array' );
 			wp_enqueue_media();
 
-			$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
+			$admin_settings_asset = get_asset_info( 'build/admin-settings.asset.php' );
 			$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
 
 			wp_enqueue_script(
 				'parsely-admin-settings',
 				$built_assets_url . 'admin-settings.js',
-				$admin_settings_asset['dependencies'] ?? null,
-				$admin_settings_asset['version'] ?? Parsely::VERSION,
+				$admin_settings_asset['dependencies'],
+				$admin_settings_asset['version'],
 				true
 			);
 
 			wp_enqueue_style(
 				'parsely-admin-settings',
 				$built_assets_url . 'admin-settings.css',
-				$admin_settings_asset['dependencies'] ?? null,
-				$admin_settings_asset['version'] ?? Parsely::VERSION
+				$admin_settings_asset['dependencies'],
+				$admin_settings_asset['version']
 			);
 		}
 	}
