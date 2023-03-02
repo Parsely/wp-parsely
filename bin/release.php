@@ -16,7 +16,7 @@
  */
 
 // Exit if the GitHub CLI is not available.
-if ( ! shell_exec( 'gh --version' ) ) {
+if ( null === shell_exec( 'gh --version' ) ) {
 	exit(
 		'The GitHub CLI (https://cli.github.com/) is not installed. Please ' .
 		'install it before running this script.'
@@ -50,7 +50,7 @@ echo "DONE! Please review the changes and amend if needed\n";
 
 // Show a prompt to create a PR on GitHub.
 echo 'Do you want to create a release PR on GitHub? [y/n]';
-$confirmation = trim( fgets( STDIN ) );
+$confirmation = trim( (string) fgets( STDIN ) );
 if ( $confirmation === 'y' ) {
 	create_pull_request( $milestone_to, $release_log );
 }
@@ -76,7 +76,7 @@ function generate_release_log( string $milestone ): string {
 	foreach ( $labels as $label ) {
 		echo "Getting PRs with label \"{$label}\"...\n";
 		$data = get_pull_request_data( $milestone, 'Changelog: ' . $label );
-		if ( ! empty( $data ) ) {
+		if ( '' !== (string) $data ) {
 			$result .= "### {$label}\n\n{$data}\n";
 		}
 
@@ -86,7 +86,7 @@ function generate_release_log( string $milestone ): string {
 	// Include a dependency updates link if there are any dependency updates.
 	echo "Adding \"Dependency Updates\" entry\n";
 	$data = get_pull_request_data( $milestone, 'Component: Dependencies', 1 );
-	if ( ! empty( $data ) ) {
+	if ( '' !== (string) $data ) {
 		$link    = "- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A{$milestone}+label%3A%22Component%3A+Dependencies%22).";
 		$result .= "### Dependency Updates\n\n{$link}\n";
 	}
@@ -100,7 +100,7 @@ function generate_release_log( string $milestone ): string {
  * @param string $milestone The milestone of the PRs that we want to fetch.
  * @param string $label The label of the PRs that we want to fetch.
  * @param int    $limit The maximum number of results to be returned.
- * @return string|false|null The result of the `shell_exec` function.
+ * @return string|null The result of the `shell_exec` function.
  */
 function get_pull_request_data( string $milestone, string $label, $limit = 100 ) {
 	return shell_exec(
@@ -115,7 +115,7 @@ function get_pull_request_data( string $milestone, string $label, $limit = 100 )
  *
  * @param string $milestone The milestone of the PR we're creating.
  * @param string $changelog The changelog to be added to the PR's body.
- * @return string|false|null The result of the `shell_exec` function.
+ * @return string|null The result of the `shell_exec` function.
  */
 function create_pull_request( string $milestone, string $changelog ) {
 	$title = 'Update version number and changelog for ' . $milestone . ' release';
@@ -150,12 +150,17 @@ function write_to_changelog_file(
 	string $milestone_from,
 	string $milestone_to
 ): void {
-	$date   = date( 'Y-m-d' );
-	$header = "## [{$milestone_to}](https://github.com/Parsely/wp-parsely/compare/{$milestone_from}...{$milestone_to}) - {$date}";
+	$date        = date( 'Y-m-d' );
+	$header      = "## [{$milestone_to}](https://github.com/Parsely/wp-parsely/compare/{$milestone_from}...{$milestone_to}) - {$date}";
 	$release_log = "{$header}\n\n{$release_log}";
 
 	$find               = "## [{$milestone_from}]";
 	$changelog_contents = file_get_contents( 'CHANGELOG.md' );
+
+	if ( false === $changelog_contents ) {
+		exit( 'Error: Failed getting CHANGELOG.md contents' );
+	}
+
 	$changelog_contents = str_replace(
 		$find,
 		$release_log . "\n" . $find,
