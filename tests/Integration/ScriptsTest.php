@@ -13,6 +13,8 @@ use Parsely\Parsely;
 use Parsely\Scripts;
 use WP_Scripts;
 
+use function Parsely\Utils\get_asset_info;
+
 use const Parsely\PARSELY_FILE;
 
 /**
@@ -507,17 +509,11 @@ final class ScriptsTest extends TestCase {
 		 *
 		 * @var string
 		 */
-		$output = ob_get_clean();
+		$output       = ob_get_clean();
+		$loader_asset = get_asset_info( 'build/loader.asset.php' );
 
-		$loader_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/loader.asset.php';
-		/**
-		 * Variable.
-		 *
-		 * @var string
-		 */
-		$version = is_bool( $loader_asset ) ? Parsely::VERSION : $loader_asset['version'];
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $version . "' id='wp-parsely-loader-js'></script>", $output );
+		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $loader_asset['version'] . "' id='wp-parsely-loader-js'></script>", $output );
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=123456.78.9' id=\"parsely-cfg\"></script>", $output );
 	}

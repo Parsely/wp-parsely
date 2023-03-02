@@ -16,6 +16,7 @@ use Parsely\RemoteAPI\Remote_API_Base;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 use WP_Screen;
 
+use function Parsely\Utils\get_asset_info;
 use function Parsely\Utils\get_formatted_number;
 use function Parsely\Utils\get_formatted_time;
 use function Parsely\Utils\get_utc_date_format;
@@ -141,14 +142,14 @@ class Admin_Columns_Parsely_Stats {
 			return;
 		}
 
-		$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-parsely-stats.asset.php';
+		$admin_settings_asset = get_asset_info( 'build/admin-parsely-stats.asset.php' );
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_style(
 			'admin-parsely-stats-styles',
 			$built_assets_url . 'admin-parsely-stats.css',
-			$admin_settings_asset['dependencies'] ?? null,
-			$admin_settings_asset['version'] ?? Parsely::VERSION
+			$admin_settings_asset['dependencies'],
+			$admin_settings_asset['version']
 		);
 	}
 
@@ -221,14 +222,14 @@ class Admin_Columns_Parsely_Stats {
 			return;
 		}
 
-		$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-parsely-stats.asset.php';
+		$admin_settings_asset = get_asset_info( 'build/admin-parsely-stats.asset.php' );
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_script(
 			'admin-parsely-stats-script',
 			$built_assets_url . 'admin-parsely-stats.js',
-			$admin_settings_asset['dependencies'] ?? null,
-			$admin_settings_asset['version'] ?? Parsely::VERSION,
+			$admin_settings_asset['dependencies'],
+			$admin_settings_asset['version'],
 			true
 		);
 
