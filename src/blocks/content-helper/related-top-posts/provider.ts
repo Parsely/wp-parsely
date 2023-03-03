@@ -16,6 +16,7 @@ import {
 	ContentHelperErrorCode,
 } from '../content-helper-error';
 import { RelatedTopPostData } from './model';
+import { AnalyticsApiOptionalQueryParams, getApiPeriodParams } from '../../shared/utils/api';
 
 /**
  * The form of the query that gets posted to the analytics/posts WordPress REST
@@ -23,9 +24,7 @@ import { RelatedTopPostData } from './model';
  */
 interface RelatedTopPostsApiQuery {
 	message: string; // Selected filter message to be displayed to the user.
-	query: null | { // Query to be posted to the Parse.ly API.
-		[ key: string ]: string | number | Taxonomy;
-	};
+	query: AnalyticsApiOptionalQueryParams
 }
 
 /**
@@ -46,7 +45,7 @@ export interface GetRelatedTopPostsResult {
 }
 
 export const RELATED_POSTS_DEFAULT_LIMIT = 5;
-export const RELATED_POSTS_DEFAULT_TIME_RANGE = 3; // In days.
+export const RELATED_POSTS_DEFAULT_TIME_RANGE = 7; // In days.
 
 class RelatedTopPostsProvider {
 	/**
@@ -138,11 +137,12 @@ class RelatedTopPostsProvider {
 	 */
 	private static buildRelatedTopPostsApiQuery( author: User, category: Taxonomy, tag: Taxonomy ): RelatedTopPostsApiQuery {
 		const limit = RELATED_POSTS_DEFAULT_LIMIT;
+		const commonQueryParams = { ...getApiPeriodParams( RELATED_POSTS_DEFAULT_TIME_RANGE ) };
 
 		// A tag exists.
 		if ( tag?.slug ) {
 			return ( {
-				query: { limit, tag: tag.slug },
+				query: { limit, tag: tag.slug, ...commonQueryParams },
 				/* translators: %s: message such as "with tag Foo" */
 				message: sprintf( __( 'with tag "%1$s"', 'wp-parsely' ), tag.name ),
 			} );
@@ -151,7 +151,7 @@ class RelatedTopPostsProvider {
 		// A category exists.
 		if ( category?.name ) {
 			return ( {
-				query: { limit, section: category.name },
+				query: { limit, section: category.name, ...commonQueryParams },
 				/* translators: %s: message such as "in category Foo" */
 				message: sprintf( __( 'in category "%1$s"', 'wp-parsely' ), category.name ),
 			} );
@@ -160,7 +160,7 @@ class RelatedTopPostsProvider {
 		// Fallback to author.
 		if ( author?.name ) {
 			return ( {
-				query: { limit, author: author.name },
+				query: { limit, author: author.name, ...commonQueryParams },
 				/* translators: %s: message such as "by author John" */
 				message: sprintf( __( 'by author "%1$s"', 'wp-parsely' ), author.name ),
 			} );

@@ -17,10 +17,7 @@ import {
 	PerformanceData,
 	PerformanceReferrerData,
 } from './model';
-import {
-	convertDateToString,
-	removeDaysFromDate,
-} from '../../shared/utils/date';
+import { ApiPeriodRange, getApiPeriodParams } from '../../shared/utils/api';
 
 /**
  * Specifies the form of the response returned by the `/stats/post/detail`
@@ -40,22 +37,19 @@ interface ReferrersApiResponse {
 	data: PerformanceReferrerData;
 }
 
+const PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE = 7; // In days.
+
 /**
  * Provides current post details data for use in other components.
  */
 class PerformanceDetailsProvider {
-	private dataPeriodDays: number;
-	private dataPeriodStart: string;
-	private dataPeriodEnd: string;
+	private apiPeriodRange: ApiPeriodRange;
 
 	/**
 	 * Constructor.
 	 */
 	constructor() {
-		// Set period for the last 7 days (today included).
-		this.dataPeriodDays = 7;
-		this.dataPeriodEnd = convertDateToString( new Date() ) + 'T23:59';
-		this.dataPeriodStart = removeDaysFromDate( this.dataPeriodEnd, this.dataPeriodDays - 1 ) + 'T00:00';
+		this.apiPeriodRange = getApiPeriodParams( PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE );
 	}
 
 	/**
@@ -89,7 +83,12 @@ class PerformanceDetailsProvider {
 			return Promise.reject( contentHelperError );
 		}
 
-		const period = { start: this.dataPeriodStart, end: this.dataPeriodEnd, days: this.dataPeriodDays };
+		const period = {
+			start: this.apiPeriodRange.period_start as string,
+			end: this.apiPeriodRange.period_end as string,
+			days: PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE,
+		};
+
 		return { ...performanceData, referrers: referrerData, period };
 	}
 
@@ -108,8 +107,7 @@ class PerformanceDetailsProvider {
 				path: addQueryArgs(
 					'/wp-parsely/v1/stats/post/detail', {
 						url: postUrl,
-						period_start: this.dataPeriodStart,
-						period_end: this.dataPeriodEnd,
+						...this.apiPeriodRange,
 					} ),
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -167,9 +165,8 @@ class PerformanceDetailsProvider {
 			response = await apiFetch<ReferrersApiResponse>( { path: addQueryArgs(
 				'/wp-parsely/v1/referrers/post/detail', {
 					url: postUrl,
-					period_start: this.dataPeriodStart,
-					period_end: this.dataPeriodEnd,
 					total_views: totalViews, // Needed to calculate direct views.
+					...this.apiPeriodRange,
 				} ),
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
