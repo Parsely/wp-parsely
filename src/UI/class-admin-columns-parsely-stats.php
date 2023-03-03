@@ -164,7 +164,7 @@ class Admin_Columns_Parsely_Stats {
 	 */
 	public function add_parsely_stats_column_on_list_view( array $columns ): array {
 		if ( $this->is_tracked_as_post_type() ) {
-			$columns['parsely-stats'] = __( 'Parse.ly Stats', 'wp-parsely' );
+			$columns['parsely-stats'] = __( 'Parse.ly Stats (7d)', 'wp-parsely' );
 		}
 
 		return $columns;
