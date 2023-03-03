@@ -19,6 +19,7 @@ use WP_Screen;
 use function Parsely\Utils\get_asset_info;
 use function Parsely\Utils\get_formatted_number;
 use function Parsely\Utils\get_formatted_time;
+use function Parsely\Utils\get_utc_date_format;
 
 use const Parsely\PARSELY_FILE;
 use const Parsely\Utils\DATE_UTC_FORMAT;
