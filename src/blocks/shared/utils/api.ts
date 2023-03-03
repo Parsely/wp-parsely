@@ -1,5 +1,3 @@
-import { convertDateToString, removeDaysFromDate } from './date';
-
 export interface AnalyticsApiQueryParams extends AnalyticsApiOptionalQueryParams {
 	type: string,
 }
@@ -29,11 +27,8 @@ export interface ApiPeriodRange {
  * @return {ApiPeriodRange} API query params.
  */
 export function getApiPeriodParams( days: number ): ApiPeriodRange {
-	const periodEndTime: string = convertDateToString( new Date() ) + 'T23:59';
-	const periodStartTime: string = removeDaysFromDate( periodEndTime, days - 1 ) + 'T00:00';
-
 	return {
-		period_start: periodStartTime,
-		period_end: periodEndTime,
+		period_start: `${ days }d`,
+		period_end: '',
 	};
 }
