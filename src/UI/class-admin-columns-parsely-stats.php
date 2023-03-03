@@ -290,8 +290,7 @@ class Admin_Columns_Parsely_Stats {
 
 		$response = $analytics_api->get_posts_analytics(
 			array(
-				'period_start'   => get_utc_date_format( - Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT ),
-				'period_end'     => get_utc_date_format(),
+				'period_start'   => Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT . 'd',
 				'pub_date_start' => $date_params['pub_date_start'] ?? '',
 				'pub_date_end'   => $date_params['pub_date_end'] ?? '',
 				'limit'          => Analytics_Posts_API::MAX_RECORDS_LIMIT,
