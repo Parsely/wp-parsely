@@ -11,12 +11,9 @@ namespace Parsely\Tests\Unit;
 
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
-use const Parsely\Utils\DATE_UTC_FORMAT;
-
 use function Parsely\Utils\convert_to_associative_array;
 use function Parsely\Utils\get_formatted_number;
 use function Parsely\Utils\get_formatted_time;
-use function Parsely\Utils\get_utc_date_format;
 
 /**
  * Unit Tests: Util Functions
@@ -54,46 +51,6 @@ use function Parsely\Utils\get_utc_date_format;
  * }
  */
 final class UtilsTest extends TestCase {
-	/**
-	 * Tests get_utc_date_format function.
-	 *
-	 * @covers function \Parsely\Utils\get_utc_date_format
-	 */
-	public function test_get_utc_date_format(): void {
-		$current_date = gmdate( DATE_UTC_FORMAT );
-		$past_date    = gmdate( DATE_UTC_FORMAT, strtotime( '-1 days' ) );
-		$future_date  = gmdate( DATE_UTC_FORMAT, strtotime( '1 days' ) );
-
-		/**
-		 * Variable.
-		 *
-		 * @var array<Test_UTC_Date_Format_Data>
-		 */
-		$tests_data = array(
-			array(
-				'args'            => array( 'days' => 0 ),
-				'expected_output' => $current_date,
-				'msg'             => 'Should match with the format of the current date.',
-			),
-			array(
-				'args'            => array( 'days' => -1 ),
-				'expected_output' => $past_date,
-				'msg'             => 'Should match with the format of the past date.',
-			),
-			array(
-				'args'            => array( 'days' => 1 ),
-				'expected_output' => $future_date,
-				'msg'             => 'Should match with the format of the future date.',
-			),
-		);
-
-		foreach ( $tests_data as $t ) {
-			$args   = $t['args'];
-			$output = get_utc_date_format( $args['days'] );
-
-			self::assertEquals( $t['expected_output'], $output, $t['msg'] );
-		}
-	}
 	/**
 	 * Tests get_formatted_number function.
 	 *

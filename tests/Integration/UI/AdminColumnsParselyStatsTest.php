@@ -18,8 +18,6 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Columns_Parsely_Stats;
 use WP_Error;
 
-use function Parsely\Utils\get_utc_date_format;
-
 /**
  * Integration Tests for Parse.ly Stats Column in Admin Screens.
  *

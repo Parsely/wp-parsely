@@ -22,23 +22,6 @@ const DATE_UTC_FORMAT     = 'Y-m-d';
 const WP_DATE_TIME_FORMAT = 'Y-m-d H:i:s';
 
 /**
- * Gets UTC Date.
- *
- * @since 3.7.0
- *
- * @param int $days Number of days before or after the current date.
- *
- * @return string
- */
-function get_utc_date_format( int $days = 0 ): string {
-	if ( 0 === $days ) {
-		return gmdate( DATE_UTC_FORMAT );
-	}
-
-	return gmdate( DATE_UTC_FORMAT, (int) strtotime( "{$days} days" ) );
-}
-
-/**
  * Gets default category.
  *
  * @since 3.7.0
