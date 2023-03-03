@@ -33,7 +33,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 *
 	 * @var string
 	 */
-	private static $parsely_stats_column_header = 'Parse.ly Stats';
+	private static $parsely_stats_column_header = 'Parse.ly Stats (7d)';
 
 	/**
 	 * Internal variable.
