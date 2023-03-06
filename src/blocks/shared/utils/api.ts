@@ -22,7 +22,7 @@ export interface ApiPeriodRange {
 /**
  * Gets `period_start` and `period_end` params for API.
  *
- * @param {number} days No. of days by which we have to calculate period range.
+ * @param {number} days Number of days for which to calculate the period range.
  *
  * @return {ApiPeriodRange} API query params.
  */
