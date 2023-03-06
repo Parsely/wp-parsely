@@ -100,7 +100,7 @@ function generate_release_log( string $milestone ): string {
  * @param string $milestone The milestone of the PRs that we want to fetch.
  * @param string $label The label of the PRs that we want to fetch.
  * @param int    $limit The maximum number of results to be returned.
- * @return string|null The result of the `shell_exec` function.
+ * @return string|false|null The result of the `shell_exec` function.
  */
 function get_pull_request_data( string $milestone, string $label, $limit = 100 ) {
 	return shell_exec(
@@ -115,7 +115,7 @@ function get_pull_request_data( string $milestone, string $label, $limit = 100 )
  *
  * @param string $milestone The milestone of the PR we're creating.
  * @param string $changelog The changelog to be added to the PR's body.
- * @return string|null The result of the `shell_exec` function.
+ * @return string|false|null The result of the `shell_exec` function.
  */
 function create_pull_request( string $milestone, string $changelog ) {
 	$title = 'Update version number and changelog for ' . $milestone . ' release';
