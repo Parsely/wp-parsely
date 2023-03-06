@@ -10,7 +10,6 @@ import {
  * Internal dependencies
  */
 import {
-	selectScreenOptions,
 	setSiteKeys,
 	setUserDisplayName,
 	startUpTest,
@@ -30,11 +29,24 @@ const setMetadataFormat = async ( format: string ) => {
 	await waitForWpAdmin();
 };
 
+async function setTrackLoggedInUsers( shouldTrack = false ) {
+	await visitAdminPage( '/options-general.php', '?page=parsely' );
+	await waitForWpAdmin();
+
+	const trackLoggedInUserRadioButton = await page.$( `#track_authenticated_users_${ shouldTrack }` );
+	await trackLoggedInUserRadioButton?.click();
+
+	const submitButton = await page.$( `form[name="parsely"] #submit` );
+	await submitButton?.click();
+
+	await waitForWpAdmin();
+}
+
 describe( 'Front end metadata insertion', () => {
 	beforeAll( async () => {
 		await startUpTest();
 		await setSiteKeys();
-		await selectScreenOptions( { recrawl: true, advanced: false } );
+		await setTrackLoggedInUsers( true );
 
 		// Reset display name to compare metadata with default values.
 		await setUserDisplayName( 'admin', '' );

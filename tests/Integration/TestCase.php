@@ -35,34 +35,12 @@ abstract class TestCase extends WPIntegrationTestCase {
 		'content_id_prefix'         => '',
 		'use_top_level_cats'        => false,
 		'cats_as_tags'              => false,
-		'track_authenticated_users' => true,
+		'track_authenticated_users' => false,
 		'custom_taxonomy_section'   => 'category',
 		'lowercase_tags'            => true,
 		'track_post_types'          => array( 'post' ),
 		'track_page_types'          => array( 'page' ),
 		'logo'                      => '',
-	);
-
-	public const EMPTY_DEFAULT_OPTIONS = array(
-		'apikey'                      => '',
-		'content_id_prefix'           => '',
-		'api_secret'                  => '',
-		'use_top_level_cats'          => false,
-		'custom_taxonomy_section'     => 'category',
-		'cats_as_tags'                => false,
-		'track_authenticated_users'   => true,
-		'lowercase_tags'              => true,
-		'force_https_canonicals'      => false,
-		'track_post_types'            => array( 'post' ),
-		'track_page_types'            => array( 'page' ),
-		'disable_javascript'          => false,
-		'disable_amp'                 => false,
-		'meta_type'                   => 'json_ld',
-		'logo'                        => '',
-		'metadata_secret'             => '',
-		'parsely_wipe_metadata_cache' => false,
-		'disable_autotrack'           => false,
-		'plugin_version'              => '',
 	);
 
 	/**
@@ -466,10 +444,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param bool     $availability_type TRUE if we want to check the presence of given hooks.
 	 */
 	public function assert_wp_hooks_availablility( $hooks, $availability_type ): void {
-		if ( ! $this->is_php_version_7dot2_or_higher() ) {
-			return;
-		}
-
 		if ( true === $availability_type ) {
 			$this->assert_wp_hooks( $hooks );
 		} else {
@@ -637,16 +611,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 				"Unexpected style status: $handle status should NOT be '$status'"
 			);
 		}
-	}
-
-	/**
-	 * Returns TRUE if minimum PHP version is 7.2 or higher. We uses this if something works
-	 * differently in PHP versions < 7.2 and >= 7.2.
-	 *
-	 * Note: Remove this function when we remove support for PHP 7.1.
-	 */
-	public function is_php_version_7dot2_or_higher(): bool {
-		return phpversion() >= '7.2';
 	}
 
 	/**

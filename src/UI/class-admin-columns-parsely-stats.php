@@ -16,9 +16,9 @@ use Parsely\RemoteAPI\Remote_API_Base;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 use WP_Screen;
 
+use function Parsely\Utils\get_asset_info;
 use function Parsely\Utils\get_formatted_number;
 use function Parsely\Utils\get_formatted_time;
-use function Parsely\Utils\get_utc_date_format;
 
 use const Parsely\PARSELY_FILE;
 use const Parsely\Utils\DATE_UTC_FORMAT;
@@ -141,14 +141,14 @@ class Admin_Columns_Parsely_Stats {
 			return;
 		}
 
-		$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-parsely-stats.asset.php';
+		$admin_settings_asset = get_asset_info( 'build/admin-parsely-stats.asset.php' );
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_style(
 			'admin-parsely-stats-styles',
 			$built_assets_url . 'admin-parsely-stats.css',
-			$admin_settings_asset['dependencies'] ?? null,
-			$admin_settings_asset['version'] ?? Parsely::VERSION
+			$admin_settings_asset['dependencies'],
+			$admin_settings_asset['version']
 		);
 	}
 
@@ -163,7 +163,7 @@ class Admin_Columns_Parsely_Stats {
 	 */
 	public function add_parsely_stats_column_on_list_view( array $columns ): array {
 		if ( $this->is_tracked_as_post_type() ) {
-			$columns['parsely-stats'] = __( 'Parse.ly Stats', 'wp-parsely' );
+			$columns['parsely-stats'] = __( 'Parse.ly Stats (7d)', 'wp-parsely' );
 		}
 
 		return $columns;
@@ -221,14 +221,14 @@ class Admin_Columns_Parsely_Stats {
 			return;
 		}
 
-		$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-parsely-stats.asset.php';
+		$admin_settings_asset = get_asset_info( 'build/admin-parsely-stats.asset.php' );
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_script(
 			'admin-parsely-stats-script',
 			$built_assets_url . 'admin-parsely-stats.js',
-			$admin_settings_asset['dependencies'] ?? null,
-			$admin_settings_asset['version'] ?? Parsely::VERSION,
+			$admin_settings_asset['dependencies'],
+			$admin_settings_asset['version'],
 			true
 		);
 
@@ -289,8 +289,7 @@ class Admin_Columns_Parsely_Stats {
 
 		$response = $analytics_api->get_posts_analytics(
 			array(
-				'period_start'   => get_utc_date_format( - Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT ),
-				'period_end'     => get_utc_date_format(),
+				'period_start'   => Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT . 'd',
 				'pub_date_start' => $date_params['pub_date_start'] ?? '',
 				'pub_date_end'   => $date_params['pub_date_end'] ?? '',
 				'limit'          => Analytics_Posts_API::MAX_RECORDS_LIMIT,

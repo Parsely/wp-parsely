@@ -18,8 +18,6 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Columns_Parsely_Stats;
 use WP_Error;
 
-use function Parsely\Utils\get_utc_date_format;
-
 /**
  * Integration Tests for Parse.ly Stats Column in Admin Screens.
  *
@@ -35,7 +33,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 *
 	 * @var string
 	 */
-	private static $parsely_stats_column_header = 'Parse.ly Stats';
+	private static $parsely_stats_column_header = 'Parse.ly Stats (7d)';
 
 	/**
 	 * Internal variable.
@@ -143,15 +141,10 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * @param bool $assert_type Indicates wether we are asserting for TRUE or FALSE.
 	 */
 	private function assert_parsely_stats_admin_styles( bool $assert_type ): void {
-		$obj = $this->init_admin_columns_parsely_stats();
+		$this->init_admin_columns_parsely_stats();
 
-		if ( $this->is_php_version_7dot2_or_higher() ) {
-			do_action( 'current_screen' ); // phpcs:ignore
-			do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
-		} elseif ( $obj->should_add_hooks() ) {
-			$obj->set_current_screen();
-			$obj->enqueue_parsely_stats_styles();
-		}
+		do_action( 'current_screen' ); // phpcs:ignore
+		do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
 
 		$handle = 'admin-parsely-stats-styles';
 		if ( $assert_type ) {
@@ -268,11 +261,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	private function get_admin_columns() {
 		$obj = $this->init_admin_columns_parsely_stats();
 
-		if ( $this->is_php_version_7dot2_or_higher() ) {
-			do_action( 'current_screen' ); // phpcs:ignore
-		} elseif ( $obj->should_add_hooks() ) {
-			$obj->set_current_screen();
-		}
+		do_action( 'current_screen' ); // phpcs:ignore
 
 		return $obj->add_parsely_stats_column_on_list_view( array() );
 	}
@@ -302,7 +291,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->set_empty_plugin_options();
 
 		$obj    = $this->init_admin_columns_parsely_stats();
-		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
+		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( false );
 		self::assertEquals( '', $output );
@@ -322,7 +311,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->set_empty_api_secret();
 
 		$obj    = $this->init_admin_columns_parsely_stats();
-		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
+		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( false );
 		self::assertEquals( '', $output );
@@ -342,7 +331,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->set_empty_track_post_types();
 
 		$obj    = $this->init_admin_columns_parsely_stats();
-		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
+		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals( '', $output );
@@ -363,7 +352,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		set_current_screen( 'edit-page' );
 
 		$obj    = $this->init_admin_columns_parsely_stats();
-		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
+		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals( '', $output );
@@ -383,7 +372,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->set_valid_conditions_for_parsely_stats();
 
 		$obj    = $this->init_admin_columns_parsely_stats();
-		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
+		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals(
@@ -414,7 +403,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$this->set_valid_conditions_for_parsely_stats( 'page' );
 
 		$obj    = $this->init_admin_columns_parsely_stats();
-		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column( $obj );
+		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
 		self::assertEquals(
@@ -434,15 +423,14 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	/**
 	 * Sets posts data and get content of Parse.ly Stats column.
 	 *
-	 * @param Admin_Columns_Parsely_Stats $obj Instance of Admin_Columns_Parsely_Stats.
-	 * @param string                      $post_type Type of the post.
+	 * @param string $post_type Type of the post.
 	 *
 	 * @return string
 	 */
-	private function set_posts_data_and_get_content_of_parsely_stats_column( $obj, $post_type = 'post' ) {
+	private function set_posts_data_and_get_content_of_parsely_stats_column( $post_type = 'post' ) {
 		$posts = $this->set_and_get_posts_data( 3, 2, $post_type );
 
-		return $this->get_content_of_parsely_stats_column( $obj, $posts, $post_type );
+		return $this->get_content_of_parsely_stats_column( $posts, $post_type );
 	}
 
 	/**
@@ -464,15 +452,14 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	/**
 	 * Gets content of Parse.ly Stats column.
 	 *
-	 * @param Admin_Columns_Parsely_Stats $obj Instance of Admin_Columns_Parsely_Stats.
-	 * @param WP_Post[]                   $posts Available posts.
-	 * @param string                      $post_type Type of the post.
+	 * @param WP_Post[] $posts Available posts.
+	 * @param string    $post_type Type of the post.
 	 *
 	 * @return string
 	 */
-	private function get_content_of_parsely_stats_column( $obj, $posts, $post_type ) {
+	private function get_content_of_parsely_stats_column( $posts, $post_type ) {
 		ob_start();
-		$this->show_content_on_parsely_stats_column( $obj, $posts, $post_type );
+		$this->show_content_on_parsely_stats_column( $posts, $post_type );
 
 		return (string) ob_get_clean();
 	}
@@ -481,27 +468,18 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 * Replicates behavior by which WordPress set post publish dates and then make API call
 	 * to get Parse.ly stats.
 	 *
-	 * @param Admin_Columns_Parsely_Stats $obj Instance of Admin_Columns_Parsely_Stats.
-	 * @param WP_Post[]                   $posts Available posts.
-	 * @param string                      $post_type Type of the post.
+	 * @param WP_Post[] $posts Available posts.
+	 * @param string    $post_type Type of the post.
 	 */
-	private function show_content_on_parsely_stats_column( $obj, $posts, $post_type ): void {
-		if ( $this->is_php_version_7dot2_or_higher() ) {
-			do_action( 'current_screen' ); // phpcs:ignore
-		} elseif ( $obj->should_add_hooks() ) {
-			$obj->set_current_screen();
-		}
+	private function show_content_on_parsely_stats_column( $posts, $post_type ): void {
+		do_action( 'current_screen' ); // phpcs:ignore
 
 		foreach ( $posts as $current_post ) {
 			global $post;
 			$post        = $current_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 			$column_name = 'parsely-stats';
 
-			if ( $this->is_php_version_7dot2_or_higher() ) {
-				do_action( "manage_{$post_type}s_custom_column", $column_name ); // phpcs:ignore
-			} else {
-				$obj->update_published_times_and_show_placeholder( $column_name );
-			}
+			do_action( "manage_{$post_type}s_custom_column", $column_name ); // phpcs:ignore
 		}
 	}
 
@@ -555,8 +533,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_empty_plugin_options(): void {
 		$this->set_empty_plugin_options();
-		$obj = $this->mock_parsely_stats_response( null );
-		$this->assert_parsely_stats_admin_script( $obj, false );
+		$this->mock_parsely_stats_response( null );
+
+		$this->assert_parsely_stats_admin_script( false );
 	}
 
 	/**
@@ -570,8 +549,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_empty_api_secret(): void {
 		$this->set_empty_api_secret();
-		$obj = $this->mock_parsely_stats_response( array() );
-		$this->assert_parsely_stats_admin_script( $obj, false );
+		$this->mock_parsely_stats_response( array() );
+
+		$this->assert_parsely_stats_admin_script( false );
 	}
 
 	/**
@@ -585,8 +565,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_empty_track_post_types(): void {
 		$this->set_empty_track_post_types();
-		$obj = $this->mock_parsely_stats_response( null );
-		$this->assert_parsely_stats_admin_script( $obj, false );
+		$this->mock_parsely_stats_response( null );
+
+		$this->assert_parsely_stats_admin_script( false );
 	}
 
 	/**
@@ -601,9 +582,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	public function test_script_of_parsely_stats_admin_column_on_invalid_track_post_types(): void {
 		$this->set_valid_plugin_options();
 		set_current_screen( 'edit-page' );
+		$this->mock_parsely_stats_response( null );
 
-		$obj = $this->mock_parsely_stats_response( null );
-		$this->assert_parsely_stats_admin_script( $obj, false );
+		$this->assert_parsely_stats_admin_script( false );
 	}
 
 	/**
@@ -617,9 +598,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_valid_posts_and_empty_response(): void {
 		$this->set_valid_conditions_for_parsely_stats();
+		$this->mock_parsely_stats_response( null );
 
-		$obj = $this->mock_parsely_stats_response( null );
-		$this->assert_parsely_stats_admin_script( $obj, false );
+		$this->assert_parsely_stats_admin_script( false );
 	}
 
 	/**
@@ -633,9 +614,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_valid_posts_and_valid_response(): void {
 		$this->set_valid_conditions_for_parsely_stats();
+		$this->mock_parsely_stats_response( array() );
 
-		$obj = $this->mock_parsely_stats_response( array() );
-		$this->assert_parsely_stats_admin_script( $obj, true );
+		$this->assert_parsely_stats_admin_script( true );
 
 		/**
 		 * Internal Variable.
@@ -678,9 +659,9 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 */
 	public function test_should_not_call_parsely_api_on_empty_api_secret_and_hidden_parsely_stats_column(): void {
 		$this->set_empty_api_secret();
+		$this->mock_is_parsely_stats_column_hidden( true );
 
-		$obj = $this->mock_is_parsely_stats_column_hidden( true );
-		$this->assert_parsely_stats_admin_script( $obj, false );
+		$this->assert_parsely_stats_admin_script( false );
 	}
 
 	/**
@@ -701,17 +682,11 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	/**
 	 * Asserts script of Parse.ly Stats.
 	 *
-	 * @param Admin_Columns_Parsely_Stats $obj Instance of the class.
-	 * @param bool                        $assert_type Indicates wether we are asserting for TRUE or FALSE.
+	 * @param bool $assert_type Indicates wether we are asserting for TRUE or FALSE.
 	 */
-	private function assert_parsely_stats_admin_script( $obj, $assert_type ): void {
-		if ( $this->is_php_version_7dot2_or_higher() ) {
-			do_action( 'current_screen' ); // phpcs:ignore
-			do_action( 'admin_footer' ); // phpcs:ignore
-		} elseif ( $obj->should_add_hooks() ) {
-			$obj->set_current_screen();
-			$obj->enqueue_parsely_stats_script_with_data();
-		}
+	private function assert_parsely_stats_admin_script( $assert_type ): void {
+		do_action( 'current_screen' ); // phpcs:ignore
+		do_action( 'admin_footer' ); // phpcs:ignore
 
 		$handle = 'admin-parsely-stats-script';
 		if ( $assert_type ) {
@@ -906,14 +881,14 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$res   = $this->get_parsely_stats_response( $posts, 'post', new WP_Error( 404, 'Not Found.' ) );
 
 		$this->assert_hooks_for_parsely_stats_response( true );
-		self::assertNull( isset( $res['data'] ) ? $res['data'] : null );
+		self::assertNull( $res['data'] ?? null );
 		self::assertEquals(
 			array(
 				'code'        => 404,
 				'message'     => 'Not Found.',
 				'htmlMessage' => '<p>Error while getting data for Parse.ly Stats.<br/>Detail: (404) Not Found.</p>',
 			),
-			isset( $res['error'] ) ? $res['error'] : null
+			$res['error'] ?? null
 		);
 	}
 
@@ -990,7 +965,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		);
 
 		$this->assert_hooks_for_parsely_stats_response( true );
-		self::assertNull( isset( $res['error'] ) ? $res['error'] : null );
+		self::assertNull( $res['error'] ?? null );
 		self::assertEquals(
 			array(
 				'/2010/01/01/title-1-publish' => array(
@@ -1024,7 +999,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 					'avg_time'   => '1 sec. avg time',
 				),
 			),
-			isset( $res['data'] ) ? $res['data'] : null
+			$res['data'] ?? null
 		);
 	}
 
@@ -1065,7 +1040,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		);
 
 		$this->assert_hooks_for_parsely_stats_response( true );
-		self::assertNull( isset( $res['error'] ) ? $res['error'] : null );
+		self::assertNull( $res['error'] ?? null );
 		self::assertEquals(
 			array(
 				'/2010/01/01/title-1-publish' => array(
@@ -1074,7 +1049,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 					'avg_time'   => '1:06 avg time',
 				),
 			),
-			isset( $res['data'] ) ? $res['data'] : null
+			$res['data'] ?? null
 		);
 	}
 
@@ -1093,7 +1068,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		$obj = $this->init_admin_columns_parsely_stats();
 
 		ob_start();
-		$this->show_content_on_parsely_stats_column( $obj, $posts, $post_type );
+		$this->show_content_on_parsely_stats_column( $posts, $post_type );
 		ob_get_clean(); // Discard output to keep console clean while running tests.
 
 		$api = Mockery::mock( Analytics_Posts_API::class, array( new Parsely() ) )->makePartial();
@@ -1106,8 +1081,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 							$api_params,
 							// Params which will not change.
 							array(
-								'period_start' => get_utc_date_format( -7 ),
-								'period_end'   => get_utc_date_format(),
+								'period_start' => Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT . 'd',
 								'limit'        => 2000,
 								'sort'         => 'avg_engaged',
 							)

@@ -183,7 +183,7 @@ final class SettingsPageTest extends TestCase {
 		$options  = self::$parsely->get_options();
 
 		unset( $options['disable_autotrack'] );
-		$actual = self::$settings_page->validate_options( $options ); // @phpstan-ignore-line
+		$actual = self::$settings_page->validate_options( $options );
 		self::assertEquals( $expected, $actual );
 	}
 

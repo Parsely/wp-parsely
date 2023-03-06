@@ -12,7 +12,8 @@ namespace Parsely\UI;
 
 use Parsely\Parsely;
 
-use WP_Screen;
+use function Parsely\Utils\get_asset_info;
+
 use const Parsely\PARSELY_FILE;
 
 /**
@@ -29,9 +30,38 @@ use const Parsely\PARSELY_FILE;
  *   help_text?: string,
  *   yes_text?: string,
  *   filter?: string,
- *   optional_args?: array<string, string>,
+ *   optional_args?: Setting_Optional_Args,
  *   select_options?: array<string, string>,
  *   radio_options?: array<string, string>,
+ * }
+ *
+ * @phpstan-type Setting_Optional_Args array{
+ *   type?: string,
+ *   placeholder?: string,
+ *   required?: string,
+ *   is_obfuscated_value: bool,
+ * }
+ *
+ * @phpstan-type ParselySettingOptions array{
+ *   apikey: string,
+ *   api_secret: string,
+ *   metadata_secret: string,
+ *   meta_type?: string,
+ *   logo: string,
+ *   track_authenticated_users: bool|string,
+ *   disable_javascript: bool|string,
+ *   disable_amp?: bool,
+ *   track_post_types_as?: array<string, string>,
+ *   track_post_types: string[],
+ *   track_page_types: string[],
+ *   content_id_prefix?: string,
+ *   use_top_level_cats?:bool|string,
+ *   custom_taxonomy_section?: string,
+ *   cats_as_tags?: bool|string,
+ *   lowercase_tags?: bool,
+ *   force_https_canonicals?: bool,
+ *   disable_autotrack?: bool|string,
+ *   parsely_wipe_metadata_cache: bool,
  * }
  */
 final class Settings_Page {
@@ -52,18 +82,6 @@ final class Settings_Page {
 	private $hook_suffix;
 
 	/**
-	 * Screen options name.
-	 *
-	 * Name must end in `_page` so that set-screen-option hook is triggered for
-	 * WP < 5.4.2.
-	 *
-	 * @since 3.2.0
-	 *
-	 * @var string
-	 */
-	private $screen_options_name = 'wp_parsely_page';
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Parsely $parsely Instance of Parsely class.
@@ -81,11 +99,6 @@ final class Settings_Page {
 		add_action( 'admin_menu', array( $this, 'add_settings_sub_menu' ) );
 		add_action( 'admin_init', array( $this, 'initialize_settings' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_assets' ) );
-
-		// Handle saving of screen options.
-		add_filter( 'set-screen-option', array( $this, 'set_screen_option' ), 11, 3 );
-		// Render screen options.
-		add_filter( 'screen_settings', array( $this, 'screen_settings' ), 10, 2 );
 	}
 
 	/**
@@ -98,22 +111,22 @@ final class Settings_Page {
 			add_filter( 'media_library_months_with_files', '__return_empty_array' );
 			wp_enqueue_media();
 
-			$admin_settings_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/admin-settings.asset.php';
+			$admin_settings_asset = get_asset_info( 'build/admin-settings.asset.php' );
 			$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
 
 			wp_enqueue_script(
 				'parsely-admin-settings',
 				$built_assets_url . 'admin-settings.js',
-				$admin_settings_asset['dependencies'] ?? null,
-				$admin_settings_asset['version'] ?? Parsely::VERSION,
+				$admin_settings_asset['dependencies'],
+				$admin_settings_asset['version'],
 				true
 			);
 
 			wp_enqueue_style(
 				'parsely-admin-settings',
 				$built_assets_url . 'admin-settings.css',
-				$admin_settings_asset['dependencies'] ?? null,
-				$admin_settings_asset['version'] ?? Parsely::VERSION
+				$admin_settings_asset['dependencies'],
+				$admin_settings_asset['version']
 			);
 		}
 	}
@@ -135,106 +148,7 @@ final class Settings_Page {
 
 			// Adds help text when admin page loads.
 			add_action( 'load-' . $this->hook_suffix, array( $this, 'add_help_text' ) );
-			// Adds screen options when admin page loads.
-			add_action( 'load-' . $this->hook_suffix, array( $this, 'add_screen_options' ) );
 		}
-	}
-
-	/**
-	 * Saves the screen option setting.
-	 *
-	 * Nonce is already checked in set_screen_options() - no need to check here.
-	 *
-	 * @since 3.2.0
-	 *
-	 * @param mixed  $screen_option The value to save instead of the option value.
-	 *                              Default false (to skip saving the current option).
-	 * @param string $option        The option name.
-	 * @param mixed  $value         The option value.
-	 * @return mixed Updated option value.
-	 */
-	public function set_screen_option( $screen_option, string $option, $value ) {
-		if ( $this->screen_options_name === $option ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Missing
-			if ( isset( $_POST[ $this->screen_options_name ] ) && is_array( $_POST[ $this->screen_options_name ] ) ) {
-				// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-				$unslashed = wp_unslash( $_POST[ $this->screen_options_name ] );
-				$data      = array_map( 'sanitize_text_field', $unslashed );
-			}
-			$value = $data ?? array();
-		}
-		return $value;
-	}
-
-	/**
-	 * Registers screen options.
-	 *
-	 * @since 3.2.0
-	 */
-	public function add_screen_options(): void {
-		add_screen_option(
-			'wp_parsely_screen_options_requires_recrawl',
-			array(
-				'label'  => __( 'Requires Recrawl Settings', 'wp-parsely' ),
-				'option' => 'requires-recrawl',
-			)
-		);
-		add_screen_option(
-			'wp_parsely_screen_options_advanced',
-			array(
-				'label'  => __( 'Advanced Settings', 'wp-parsely' ),
-				'option' => 'advanced',
-			)
-		);
-	}
-
-	/**
-	 * Renders the screen options block.
-	 *
-	 * @since 3.2.0
-	 *
-	 * @param string    $screen_settings Screen settings.
-	 * @param WP_Screen $screen          WP_Screen object.
-	 *
-	 * @return string|false The filtered screen settings.
-	 */
-	public function screen_settings( string $screen_settings, WP_Screen $screen ) {
-		if ( $this->hook_suffix !== $screen->base ) {
-			return $screen_settings;
-		}
-
-		$current_screen = get_current_screen();
-		if ( null === $current_screen ) {
-			return $screen_settings;
-		}
-
-		/**
-		 * Variable.
-		 *
-		 * @var array<string, mixed>
-		 */
-		$user_meta = get_user_meta( get_current_user_id(), $this->screen_options_name, true );
-
-		ob_start();
-		?>
-		<fieldset>
-		<legend><?php esc_html_e( 'Show on screen', 'wp-parsely' ); ?></legend>
-		<input type="hidden" name="wp_screen_options[option]" value="<?php echo esc_attr( $this->screen_options_name ); ?>" />
-		<input type="hidden" name="wp_screen_options[value]" value="yes" />
-		<?php
-		foreach ( $current_screen->get_options() as $option ) {
-			$checked = isset( $user_meta[ $option['option'] ] );
-			$name    = $this->screen_options_name . '[' . $option['option'] . ']';
-			?>
-			<label><input class="hide-section-tog" name="<?php echo esc_attr( $name ); ?>" type="checkbox" id="<?php echo esc_attr( $option['option'] ); ?>" value="true"<?php checked( $checked ); ?>><?php echo esc_html( $option['label'] ); ?></label>
-			<?php
-		}
-		?>
-		</fieldset>
-		<?php
-		submit_button( __( 'Apply', 'wp-parsely' ), 'primary', 'screen-options-apply' );
-
-		return ob_get_clean();
 	}
 
 	/**
@@ -254,21 +168,6 @@ final class Settings_Page {
 				'title'   => __( 'Overview', 'wp-parsely' ),
 				'content' => '<p>' . __( 'The only required setting on this page is the Site ID. All of the other settings are optional.', 'wp-parsely' ) . '</p>' .
 					'<p>' . __( 'You must click the Save Changes button at the bottom of the screen for new settings to take effect.', 'wp-parsely' ) . '</p>',
-			)
-		);
-		$screen->add_help_tab(
-			array(
-				'id'      => 'requires_recrawl',
-				'title'   => __( 'Requires Recrawl', 'wp-parsely' ),
-				'content' => '<p>' . __(
-					'Important: changing any of the values in the Requires Recrawl section on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data.
-Once you have changed a value and saved, please contact support@parsely.com to request a recrawl.',
-					'wp-parsely'
-				) . '</p>' .
-					'<p>' . __(
-						'If you can\'t see these settings, you will need to enable the Requires Recrawl Settings in the Screen Options.',
-						'wp-parsely'
-					) . '</p>',
 			)
 		);
 	}
@@ -295,17 +194,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			array( $this, 'validate_options' )
 		);
 
-		$user_meta = array_keys( (array) get_user_meta( get_current_user_id(), $this->screen_options_name, true ) );
-
 		$this->initialize_basic_section();
-
-		if ( in_array( 'requires-recrawl', $user_meta, true ) ) {
-			$this->initialize_requires_recrawl_section();
-		}
-
-		if ( in_array( 'advanced', $user_meta, true ) ) {
-			$this->initialize_advanced_section();
-		}
+		$this->initialize_recrawl_section();
+		$this->initialize_advanced_section();
 	}
 
 	/**
@@ -314,9 +205,11 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @since 3.2.0
 	 */
 	private function initialize_basic_section(): void {
+		$section_key = 'basic-section';
+
 		add_settings_section(
-			'basic_settings',
-			__( 'Basic Settings', 'wp-parsely' ),
+			$section_key,
+			__( 'Basic', 'wp-parsely' ),
 			'__return_null',
 			Parsely::MENU_SLUG
 		);
@@ -338,39 +231,47 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Parse.ly Site ID <em>(required)</em>', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			$field_args
 		);
 
 		// API Secret.
 		$field_id   = 'api_secret';
 		$field_args = array(
-			'option_key' => $field_id,
-			'help_text'  => __( 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API and would like to do so, email your account manager or <a href="mailto:support@parsely.com">support@parsely.com</a>.', 'wp-parsely' ),
-			'label_for'  => $field_id,
+			'option_key'    => $field_id,
+			'help_text'     => __( 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API and would like to do so, email your account manager or <a href="mailto:support@parsely.com">support@parsely.com</a>.', 'wp-parsely' ),
+			'label_for'     => $field_id,
+			'optional_args' => array(
+				'type'                => 'password',
+				'is_obfuscated_value' => true,
+			),
 		);
 		add_settings_field(
 			$field_id,
 			__( 'Parse.ly API Secret', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			$field_args
 		);
 
 		// Metadata Secret.
 		$field_id   = 'metadata_secret';
 		$field_args = array(
-			'option_key' => $field_id,
-			'help_text'  => __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' ),
-			'label_for'  => $field_id,
+			'option_key'    => $field_id,
+			'help_text'     => __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' ),
+			'label_for'     => $field_id,
+			'optional_args' => array(
+				'type'                => 'password',
+				'is_obfuscated_value' => true,
+			),
 		);
 		add_settings_field(
 			$field_id,
 			__( 'Parse.ly Metadata Secret', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			$field_args
 		);
 
@@ -392,7 +293,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Metadata Format', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			$field_args
 		);
 
@@ -404,7 +305,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Logo', 'wp-parsely' ),
 			array( $this, 'print_media_single_image' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			array(
 				'title'      => __( 'Logo', 'wp-parsely' ), // Passed for legend element.
 				'option_key' => $field_id,
@@ -419,7 +320,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Track Logged-in Users', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Track Logged-in Users', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'track_authenticated_users',
@@ -441,7 +342,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Disable JavaScript', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'basic_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Disable JavaScript', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'disable_javascript',
@@ -461,7 +362,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 				__( 'Disable AMP Tracking', 'wp-parsely' ),
 				array( $this, 'print_radio_tags' ),
 				Parsely::MENU_SLUG,
-				'basic_settings',
+				$section_key,
 				array(
 					'title'         => __( 'Disable AMP Tracking', 'wp-parsely' ), // Passed for legend element.
 					'option_key'    => 'disable_amp',
@@ -475,19 +376,21 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
-	 * Registers section and settings for Requires Recrawl section.
+	 * Registers section and settings for Recrawl section.
 	 *
 	 * @since 3.2.0
 	 */
-	private function initialize_requires_recrawl_section(): void {
+	private function initialize_recrawl_section(): void {
+		$section_key = 'recrawl-section';
+
 		add_settings_section(
-			'requires_recrawl_settings',
-			__( 'Requires Recrawl Settings', 'wp-parsely' ),
+			$section_key,
+			__( 'Recrawl', 'wp-parsely' ),
 			function (): void {
-				echo '<strong>' . wp_kses_post( __( '<span style="color:#d63638">Important:</span> Changing any of these values below on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data.', 'wp-parsely' ) ) . '</strong><br />';
+				echo '<br /><strong>' . wp_kses_post( __( '<span style="color:#d63638">Important:</span> Changing any of these values below on a site currently tracked with Parse.ly will require reprocessing of your Parse.ly data.', 'wp-parsely' ) ) . '</strong><br />';
 				printf(
 					/* translators: Mailto link  */
-					esc_html__( 'Once you have changed a value and and saved, please contact %s to request a recrawl.', 'wp-parsely' ),
+					esc_html__( 'Once you have changed a value and saved, please contact %s to request a recrawl.', 'wp-parsely' ),
 					wp_kses_post( '<a href="mailto:support@parsely.com?subject=' . rawurlencode( 'Please reprocess ' . $this->parsely->get_site_id() ) . '">support@parsely.com</a>' )
 				);
 			},
@@ -502,7 +405,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Track Post Types as', 'wp-parsely' ),
 			array( $this, 'print_track_post_types_table' ),
 			Parsely::MENU_SLUG,
-			'requires_recrawl_settings',
+			$section_key,
 			array(
 				'title'      => __( 'Track Post Types as', 'wp-parsely' ),
 				'option_key' => $field_id,
@@ -526,7 +429,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Content ID Prefix', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
-			'requires_recrawl_settings',
+			$section_key,
 			$field_args
 		);
 
@@ -536,7 +439,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Use Top-Level Categories for Section', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'requires_recrawl_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Use Top-Level Categories for Section', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'use_top_level_cats',
@@ -571,7 +474,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Use Custom Taxonomy for Section', 'wp-parsely' ),
 			array( $this, 'print_select_tag' ),
 			Parsely::MENU_SLUG,
-			'requires_recrawl_settings',
+			$section_key,
 			$field_args
 		);
 
@@ -581,7 +484,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Add Categories to Tags', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'requires_recrawl_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Add Categories to Tags', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'cats_as_tags',
@@ -599,7 +502,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Lowercase All Tags', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'requires_recrawl_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Lowercase All Tags', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'lowercase_tags',
@@ -615,7 +518,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Force HTTPS Canonicals', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'requires_recrawl_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Force HTTPS Canonicals', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'force_https_canonicals',
@@ -634,10 +537,11 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 * @since 3.2.0
 	 */
 	private function initialize_advanced_section(): void {
-		// These are Advanced Settings.
+		$section_key = 'advanced-section';
+
 		add_settings_section(
-			'advanced_settings',
-			__( 'Advanced Settings', 'wp-parsely' ),
+			$section_key,
+			__( 'Advanced', 'wp-parsely' ),
 			'__return_null',
 			Parsely::MENU_SLUG
 		);
@@ -648,7 +552,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Disable Autotracking', 'wp-parsely' ),
 			array( $this, 'print_radio_tags' ),
 			Parsely::MENU_SLUG,
-			'advanced_settings',
+			$section_key,
 			array(
 				'title'         => __( 'Disable Autotracking', 'wp-parsely' ), // Passed for legend element.
 				'option_key'    => 'disable_autotrack',
@@ -665,13 +569,63 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			__( 'Wipe Parse.ly Metadata Info', 'wp-parsely' ),
 			array( $this, 'print_checkbox_tag' ),
 			Parsely::MENU_SLUG,
-			'advanced_settings',
+			$section_key,
 			array(
 				'option_key' => 'parsely_wipe_metadata_cache',
 				'yes_text'   => __( 'Yes, clear all metadata information for Parse.ly posts and re-send all metadata to Parse.ly.', 'wp-parsely' ),
 				'help_text'  => __( '<span style="color:#d63638">WARNING:</span> Do not do this unless explicitly instructed by Parse.ly Staff!', 'wp-parsely' ),
 			)
 		);
+	}
+
+	/**
+	 * Shows setting tabs.
+	 *
+	 * @since 3.8.0
+	 */
+	public function show_setting_tabs(): void {
+		global $wp_settings_sections;
+		?>
+
+		<nav class="nav-tab-wrapper">
+			<?php foreach ( $wp_settings_sections[ Parsely::MENU_SLUG ] as $section ) { ?>
+				<a
+					class="nav-tab <?php echo esc_attr( $section['id'] . '-tab' ); ?>"
+					href=<?php echo esc_url_raw( '?page=' . Parsely::MENU_SLUG . '#' . $section['id'] ); ?>
+				>
+					<?php echo esc_html( $section['title'] ); ?>
+				</a>
+			<?php } ?>
+		</nav>
+
+		<?php
+	}
+
+	/**
+	 * Shows content of setting tabs.
+	 *
+	 * @since 3.8.0
+	 */
+	public function show_setting_tabs_content(): void {
+		global $wp_settings_sections;
+
+		foreach ( $wp_settings_sections[ Parsely::MENU_SLUG ] as $section ) {
+			?>
+
+			<div class="tab-content <?php echo esc_attr( $section['id'] ); ?>">
+				<?php
+				if ( $section['callback'] ) {
+					call_user_func( $section['callback'], $section );
+				}
+				?>
+
+				<table class="form-table" role="presentation">
+					<?php do_settings_fields( Parsely::MENU_SLUG, $section['id'] ); ?>
+				</table>
+			</div>
+
+			<?php
+		}
 	}
 
 	/**
@@ -714,14 +668,16 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		 *
 		 * @var string
 		 */
-		$value         = $options[ $name ] ?? '';
-		$optional_args = $args['optional_args'] ?? array();
-		$id            = esc_attr( $name );
-		$name          = Parsely::OPTIONS_KEY . "[$id]";
-		$value         = esc_attr( $value );
-		$accepted_args = array( 'placeholder', 'required' );
+		$value               = $options[ $name ] ?? '';
+		$optional_args       = $args['optional_args'] ?? array();
+		$id                  = esc_attr( $name );
+		$name                = Parsely::OPTIONS_KEY . "[$id]";
+		$is_obfuscated_value = $optional_args['is_obfuscated_value'] ?? false;
+		$value               = $is_obfuscated_value ? $this->get_obfuscated_value( $value ) : esc_attr( $value );
+		$accepted_args       = array( 'placeholder', 'required' );
+		$type                = $optional_args['type'] ?? 'text';
 
-		echo sprintf( "<input type='text' name='%s' id='%s' value='%s'", esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
+		echo sprintf( "<input type='%s' name='%s' id='%s' value='%s'", esc_attr( $type ), esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
 
 		if ( isset( $args['help_text'] ) ) {
 			echo ' aria-describedby="' . esc_attr( $id ) . '-description"';
@@ -729,7 +685,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 
 		foreach ( $optional_args as $key => $val ) {
 			if ( \in_array( $key, $accepted_args, true ) ) {
-				echo ' ' . esc_attr( $key ) . '="' . esc_attr( $val ) . '"';
+				echo ' ' . esc_attr( $key ) . '="' . esc_attr( (string) $val ) . '"';
 			}
 		}
 		echo ' />';
@@ -954,11 +910,26 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	/**
 	 * Validates the options provided by the user.
 	 *
-	 * @param Parsely_Options $input Options from the settings page.
+	 * @param ParselySettingOptions $input Options from the settings page.
 	 *
-	 * @return Parsely_Options List of validated input settings.
+	 * @return ParselySettingOptions
 	 */
 	public function validate_options( $input ) {
+		$input = $this->validate_basic_section( $input );
+		$input = $this->validate_recrawl_section( $input );
+		$input = $this->validate_advanced_section( $input );
+
+		return $input;
+	}
+
+	/**
+	 * Validates fields of Basic Section.
+	 *
+	 * @param ParselySettingOptions $input Options from the settings page.
+	 *
+	 * @return ParselySettingOptions Validated inputs.
+	 */
+	private function validate_basic_section( $input ) {
 		$options = $this->parsely->get_options();
 
 		if ( '' === $input['apikey'] ) {
@@ -980,8 +951,9 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			}
 		}
 
-		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
+		$input['api_secret'] = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
 
+		$input['metadata_secret'] = $this->get_unobfuscated_value( $input['metadata_secret'], $this->parsely->get_options()['metadata_secret'] );
 		if ( '' !== $input['metadata_secret'] ) {
 			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
 				add_settings_error(
@@ -999,12 +971,15 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			}
 		}
 
+		if ( ! isset( $input['meta_type'] ) ) {
+			$input['meta_type'] = $options['meta_type'];
+		} else {
+			$input['meta_type'] = sanitize_text_field( $input['meta_type'] );
+		}
+
 		if ( '' === $input['logo'] ) {
 			$input['logo'] = self::get_logo_default();
 		}
-
-		// Validate 'Track post type as'.
-		$this->validate_options_post_type_tracking( $input );
 
 		// Track authenticated users.
 		if ( 'true' !== $input['track_authenticated_users'] && 'false' !== $input['track_authenticated_users'] ) {
@@ -1027,18 +1002,6 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$input['disable_javascript'] = 'true' === $input['disable_javascript'];
 		}
 
-		if ( ! isset( $input['disable_autotrack'] ) ) {
-			$input['disable_autotrack'] = $options['disable_autotrack'];
-		} elseif ( 'true' !== $input['disable_autotrack'] && 'false' !== $input['disable_autotrack'] ) {
-			add_settings_error(
-				Parsely::OPTIONS_KEY,
-				'disable_autotrack',
-				__( 'Value passed for disable_autotrack must be either "Yes" or "No".', 'wp-parsely' )
-			);
-		} else {
-			$input['disable_autotrack'] = 'true' === $input['disable_autotrack'];
-		}
-
 		// Allow for Disable AMP setting to be conditionally included on the page.
 		// If it's not shown, then set the value as what was previously saved.
 		if ( ! isset( $input['disable_amp'] ) ) {
@@ -1058,14 +1021,20 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$input['disable_amp'] = 'true' === $input['disable_amp'];
 		}
 
-		$input['api_secret'] = sanitize_text_field( $input['api_secret'] );
+		return $input;
+	}
 
-		// Custom taxonomy as section.
-		if ( ! isset( $input['meta_type'] ) ) {
-			$input['meta_type'] = $options['meta_type'];
-		} else {
-			$input['meta_type'] = sanitize_text_field( $input['meta_type'] );
-		}
+	/**
+	 * Validates fields of Recrawl Section.
+	 *
+	 * @param ParselySettingOptions $input Options from the settings page.
+	 *
+	 * @return ParselySettingOptions Validated inputs.
+	 */
+	private function validate_recrawl_section( $input ) {
+		$options = $this->parsely->get_options();
+
+		$this->validate_options_post_type_tracking( $input );
 
 		// Content ID prefix.
 		if ( ! isset( $input['content_id_prefix'] ) ) {
@@ -1164,6 +1133,31 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	}
 
 	/**
+	 * Validates fields of Advanced Section.
+	 *
+	 * @param ParselySettingOptions $input Options from the settings page.
+	 *
+	 * @return ParselySettingOptions Validated inputs.
+	 */
+	private function validate_advanced_section( $input ) {
+		$options = $this->parsely->get_options();
+
+		if ( ! isset( $input['disable_autotrack'] ) ) {
+			$input['disable_autotrack'] = $options['disable_autotrack'];
+		} elseif ( 'true' !== $input['disable_autotrack'] && 'false' !== $input['disable_autotrack'] ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'disable_autotrack',
+				__( 'Value passed for disable_autotrack must be either "Yes" or "No".', 'wp-parsely' )
+			);
+		} else {
+			$input['disable_autotrack'] = 'true' === $input['disable_autotrack'];
+		}
+
+		return $input;
+	}
+
+	/**
 	 * Validates the passed Site ID.
 	 *
 	 * Accepts a www prefix and up to 3 periods.
@@ -1205,7 +1199,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param Parsely_Options $input Array passed to validate_options() function.
+	 * @param ParselySettingOptions $input Array passed to validate_options() function.
 	 */
 	private function validate_options_post_type_tracking( &$input ): void {
 		$options         = $this->parsely->get_options();
@@ -1215,6 +1209,7 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 		$input[ $posts ] = $options[ $posts ];
 		$input[ $pages ] = $options[ $pages ];
 
+		// @phpstan-ignore-next-line
 		if ( isset( $input[ $track_as ] ) && is_array( $input[ $track_as ] ) && 0 < count( $input[ $track_as ] ) ) {
 			$post_types = get_post_types( array( 'public' => true ) );
 			$temp_posts = array();
@@ -1279,5 +1274,33 @@ Once you have changed a value and saved, please contact support@parsely.com to r
 			$new_array[ $key ] = sanitize_text_field( $val );
 		}
 		return $new_array;
+	}
+
+	/**
+	 * Gets obfuscated value.
+	 *
+	 * @param string $current_value Current value of the field.
+	 *
+	 * @return string
+	 */
+	private function get_obfuscated_value( $current_value ): string {
+		return str_repeat( '*', strlen( $current_value ) );
+	}
+
+	/**
+	 * Gets unobfuscated value.
+	 *
+	 * @param string $current_value Current value of the field.
+	 * @param string $previous_value Previous value of the field. If current
+	 *                               value is obfuscated then we will use this.
+	 *
+	 * @return string
+	 */
+	private function get_unobfuscated_value( $current_value, $previous_value ): string {
+		if ( $current_value === $this->get_obfuscated_value( $current_value ) ) {
+			return '' === $current_value ? $current_value : $previous_value;
+		}
+
+		return $current_value;
 	}
 }

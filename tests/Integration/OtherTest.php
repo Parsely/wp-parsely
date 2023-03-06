@@ -111,7 +111,7 @@ final class OtherTest extends TestCase {
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
-		$meta_headline   = isset( $structured_data['headline'] ) ? $structured_data['headline'] : '';
+		$meta_headline   = $structured_data['headline'] ?? '';
 
 		// The structured data should contain the headline from the filter.
 		self::assertSame( strpos( $meta_headline, $headline ), 0 );
@@ -164,7 +164,7 @@ final class OtherTest extends TestCase {
 		$metadata        = new Metadata( self::$parsely );
 		$structured_data = $metadata->construct_metadata( $post_obj );
 
-		self::assertSame( 'BlogPosting', isset( $structured_data['@type'] ) ? $structured_data['@type'] : null );
+		self::assertSame( 'BlogPosting', $structured_data['@type'] ?? null );
 
 		// Try to change the post type to a non-supported value - Not_Supported.
 		add_filter(
@@ -226,7 +226,7 @@ final class OtherTest extends TestCase {
 		update_option( Parsely::OPTIONS_KEY, 'someinvalidvalue' );
 
 		$options = self::$parsely->get_options();
-		self::assertSame( self::EMPTY_DEFAULT_OPTIONS, $options );
+		self::assertSame( self::$parsely->get_default_options(), $options );
 	}
 
 	/**

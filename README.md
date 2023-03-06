@@ -1,9 +1,9 @@
 # Parse.ly
 
-Stable tag: 3.7.1  
+Stable tag: 3.8.0  
 Requires at least: 5.0  
 Tested up to: 6.1  
-Requires PHP: 7.1  
+Requires PHP: 7.2  
 License: GPLv2 or later  
 License URI: https://www.gnu.org/licenses/gpl-2.0.html  
 Tags: analytics, content marketing, parse.ly, parsely, parsley  
@@ -112,7 +112,7 @@ Please visit the [changelog](https://github.com/parsely/wp-parsely/blob/trunk/CH
 1. Parse.ly plugin basic settings for easy setup. For the plugin to start working, only the Site ID is needed.  
    ![Parse.ly Plugin - Basic Settings](.wordpress-org/screenshot-1.png)
 2. Parse.ly plugin settings that require a website recrawl whenever they are updated.  
-   ![Parse.ly Plugin - Requires Recrawl Settings](.wordpress-org/screenshot-2.png)
+   ![Parse.ly Plugin - Recrawl Settings](.wordpress-org/screenshot-2.png)
 3. Parse.ly plugin advanced settings, to be used only if instructed by Parse.ly staff.  
    ![Parse.ly Plugin - Advanced Settings](.wordpress-org/screenshot-3.png)
 4. The Parse.ly Dashboard Widget, showing the website's top posts in the last 7 days.

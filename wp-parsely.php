@@ -11,14 +11,14 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://www.parse.ly/help/integration/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
- * Version:           3.7.1
+ * Version:           3.8.0
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
  * License:           GPL-2.0-or-later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * GitHub Plugin URI: https://github.com/Parsely/wp-parsely
- * Requires PHP:      7.1
+ * Requires PHP:      7.2
  * Requires WP:       5.0.0
  */
 
@@ -60,7 +60,7 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.7.1';
+const PARSELY_VERSION = '3.8.0';
 const PARSELY_FILE    = __FILE__;
 
 require_once __DIR__ . '/src/class-parsely.php';
@@ -137,8 +137,8 @@ add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
  * Network Admin Sites List table.
  */
 function parsely_wp_admin_early_register(): void {
-	$settings_page = new Settings_Page( $GLOBALS['parsely'] );
-	$settings_page->run();
+	$GLOBALS['parsely_settings_page'] = new Settings_Page( $GLOBALS['parsely'] );
+	$GLOBALS['parsely_settings_page']->run();
 
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
