@@ -18,8 +18,6 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Columns_Parsely_Stats;
 use WP_Error;
 
-use function Parsely\Utils\get_utc_date_format;
-
 /**
  * Integration Tests for Parse.ly Stats Column in Admin Screens.
  *
@@ -1083,8 +1081,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 							$api_params,
 							// Params which will not change.
 							array(
-								'period_start' => get_utc_date_format( -7 ),
-								'period_end'   => get_utc_date_format(),
+								'period_start' => Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT . 'd',
 								'limit'        => 2000,
 								'sort'         => 'avg_engaged',
 							)
