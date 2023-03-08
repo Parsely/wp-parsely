@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix some fatal errors and warnings ([#1477](https://github.com/Parsely/wp-parsely/pull/1477))
+- Fix @wordpress/eslint-plugin v14 warnings ([#1455](https://github.com/Parsely/wp-parsely/pull/1455))
 
 ### Dependency Updates
 
@@ -36,6 +37,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Dependency Updates
 
 - The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.0+label%3A%22Component%3A+Dependencies%22).
+
+## [3.7.2](https://github.com/Parsely/wp-parsely/compare/3.7.1...3.7.2) - 2023-03-08
+
+### Fixed
+
+- Import fatal and warning fixes from wp-parsely 3.8.2 ([#1477](https://github.com/Parsely/wp-parsely/pull/1477))
 
 ## [3.7.1](https://github.com/Parsely/wp-parsely/compare/3.7.0...3.7.1) - 2023-02-27
 
