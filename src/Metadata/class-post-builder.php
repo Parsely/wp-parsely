@@ -515,9 +515,7 @@ class Post_Builder extends Metadata_Builder {
 		$post_tags = wp_get_post_tags( $post_id );
 		if ( ! is_wp_error( $post_tags ) ) {
 			foreach ( $post_tags as $wp_tag ) {
-				if ( null !== $wp_tag ) {
-					$tags[] = $wp_tag->name;
-				}
+				$tags[] = $wp_tag->name;
 			}
 		}
 		return $tags;
