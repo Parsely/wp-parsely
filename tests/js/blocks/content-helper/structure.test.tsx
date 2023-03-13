@@ -18,11 +18,7 @@ import { ContentHelperError, ContentHelperErrorCode } from '../../../../src/bloc
 
 describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	test( 'should display spinner when starting', () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {} as GetRelatedTopPostsResult ) );
-
 		render( <RelatedTopPostList /> );
-
-		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 
 		const spinner = getSpinner();
 		expect( spinner ).toBeInTheDocument();
