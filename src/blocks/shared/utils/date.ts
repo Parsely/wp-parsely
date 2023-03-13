@@ -1,7 +1,33 @@
-export const SHORT_DATE_FORMAT: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-export const SHORT_DATE_FORMAT_WITHOUT_YEAR: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+/**
+ * External dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+const SHORT_DATE_FORMAT: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+const SHORT_DATE_FORMAT_WITHOUT_YEAR: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric' };
+const DATE_NOT_AVAILABLE_MESSAGE = __( 'Date N/A', 'wp-parsely' );
+
+/**
+ * Returns whether the passed date can be processed further.
+ *
+ * @param {Date} date The date to be examined.
+ * @return {boolean} Whether the date can be processed further.
+ */
+export function canProcessDate( date: Date|string ): boolean {
+	if ( 'string' === typeof date ) {
+		date = new Date( date );
+	}
+
+	// Return false if the object is not a valid Date object, or if its value is
+	// equal to the Unix Epoch.
+	return date instanceof Date && ! isNaN( +date ) && 0 !== date.getTime();
+}
 
 export function getDateInUserLang( date: Date, options: Intl.DateTimeFormatOptions ): string {
+	if ( false === canProcessDate( date ) ) {
+		return DATE_NOT_AVAILABLE_MESSAGE;
+	}
+
 	return Intl.DateTimeFormat(
 		document.documentElement.lang || 'en',
 		options
@@ -16,6 +42,10 @@ export function getDateInUserLang( date: Date, options: Intl.DateTimeFormatOptio
  * @return {string} The resulting date in its final format.
  */
 export function getSmartShortDate( date: Date ): string {
+	if ( false === canProcessDate( date ) ) {
+		return DATE_NOT_AVAILABLE_MESSAGE;
+	}
+
 	let dateFormat = SHORT_DATE_FORMAT;
 
 	if ( date.getUTCFullYear() === new Date().getUTCFullYear() ) {
@@ -37,6 +67,10 @@ export function getSmartShortDate( date: Date ): string {
  * @return {string} The resulting date in "YYYY-MM-DD" format.
  */
 export function removeDaysFromDate( date: string, days: number ): string {
+	if ( false === canProcessDate( date ) ) {
+		return DATE_NOT_AVAILABLE_MESSAGE;
+	}
+
 	const pastDate = new Date( date );
 	pastDate.setDate( pastDate.getDate() - days );
 
@@ -50,5 +84,9 @@ export function removeDaysFromDate( date: string, days: number ): string {
  * @return {string} The date in "YYYY-MM-DD" format.
  */
 export function convertDateToString( date: Date ): string {
+	if ( false === canProcessDate( date ) ) {
+		return DATE_NOT_AVAILABLE_MESSAGE;
+	}
+
 	return date.toISOString().substring( 0, 10 );
 }

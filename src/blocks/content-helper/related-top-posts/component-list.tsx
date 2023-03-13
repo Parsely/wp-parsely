@@ -11,7 +11,6 @@ import RelatedTopPostsProvider from './provider';
 import RelatedTopPostListItem from './component-list-item';
 import { RelatedTopPostData } from './model';
 import { ContentHelperError } from '../content-helper-error';
-import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../shared/utils/date';
 
 const FETCH_RETRIES = 3;
 
@@ -30,10 +29,7 @@ function RelatedTopPostList() {
 				.then( ( result ): void => {
 					const mappedPosts: RelatedTopPostData[] = result.posts.map(
 						( post: RelatedTopPostData ): RelatedTopPostData => (
-							{
-								...post,
-								date: getDateInUserLang( new Date( post.date ), SHORT_DATE_FORMAT ),
-							}
+							{ ...post }
 						)
 					);
 

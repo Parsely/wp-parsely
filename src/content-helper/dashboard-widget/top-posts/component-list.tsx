@@ -12,7 +12,6 @@ import DashboardWidgetProvider from '../provider';
 import TopPostListItem from './component-list-item';
 import { TopPostData } from './model';
 import { ContentHelperError } from '../../../blocks/content-helper/content-helper-error';
-import { getDateInUserLang, SHORT_DATE_FORMAT } from '../../../blocks/shared/utils/date';
 
 const FETCH_RETRIES = 3;
 
@@ -31,12 +30,7 @@ function TopPostList() {
 			provider.getTopPosts()
 				.then( ( result ): void => {
 					const mappedPosts: TopPostData[] = result.map(
-						( post: TopPostData ): TopPostData => (
-							{
-								...post,
-								date: getDateInUserLang( new Date( post.date ), SHORT_DATE_FORMAT ),
-							}
-						)
+						( post: TopPostData ): TopPostData => ( { ...post } )
 					);
 
 					setPosts( mappedPosts );
