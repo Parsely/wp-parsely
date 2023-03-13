@@ -18,9 +18,10 @@ export function canProcessDate( date: Date|string ): boolean {
 		date = new Date( date );
 	}
 
-	// Return false if the object is not a valid Date object, or if its value is
-	// equal to the Unix Epoch.
-	return date instanceof Date && ! isNaN( +date ) && 0 !== date.getTime();
+	const isValidDateObject = date instanceof Date && ! isNaN( +date );
+	const isNotEpochDate = 0 !== date.getTime();
+
+	return isValidDateObject && isNotEpochDate;
 }
 
 export function getDateInUserLang( date: Date, options: Intl.DateTimeFormatOptions ): string {
