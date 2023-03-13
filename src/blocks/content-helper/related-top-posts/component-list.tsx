@@ -27,13 +27,7 @@ function RelatedTopPostList() {
 		const fetchPosts = async ( retries: number ) => {
 			RelatedTopPostsProvider.getRelatedTopPosts()
 				.then( ( result ): void => {
-					const mappedPosts: RelatedTopPostData[] = result.posts.map(
-						( post: RelatedTopPostData ): RelatedTopPostData => (
-							{ ...post }
-						)
-					);
-
-					setPosts( mappedPosts );
+					setPosts( result.posts );
 					setMessage( result.message );
 					setLoading( false );
 				} )

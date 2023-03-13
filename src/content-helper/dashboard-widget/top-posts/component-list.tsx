@@ -29,11 +29,7 @@ function TopPostList() {
 		const fetchPosts = async ( retries: number ) => {
 			provider.getTopPosts()
 				.then( ( result ): void => {
-					const mappedPosts: TopPostData[] = result.map(
-						( post: TopPostData ): TopPostData => ( { ...post } )
-					);
-
-					setPosts( mappedPosts );
+					setPosts( result );
 					setLoading( false );
 				} )
 				.catch( async ( err ) => {
