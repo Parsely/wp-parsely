@@ -933,22 +933,38 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 				),
 			),
 			array(
-				'url' => 'http://example.com/2010/01/04/title-4-publish',
+				'url'     => 'http://example.com/2010/01/03/title-4-publish',
+				'metrics' => array(
+					'views'       => 1100,
+					'visitors'    => 1100000,
+					'avg_engaged' => 0.992,
+				),
 			),
 			array(
-				'url'     => 'http://example.com/2010/01/05/title-5-publish',
+				'url'     => 'http://example.com/2010/01/03/title-5-publish',
+				'metrics' => array(
+					'views'       => 1100,
+					'visitors'    => 1100000,
+					'avg_engaged' => 0.995,
+				),
+			),
+			array(
+				'url' => 'http://example.com/2010/01/04/title-6-publish',
+			),
+			array(
+				'url'     => 'http://example.com/2010/01/05/title-7-publish',
 				'metrics' => array(
 					'views' => 1,
 				),
 			),
 			array(
-				'url'     => 'http://example.com/2010/01/06/title-6-publish',
+				'url'     => 'http://example.com/2010/01/06/title-8-publish',
 				'metrics' => array(
 					'visitors' => 1,
 				),
 			),
 			array(
-				'url'     => 'http://example.com/2010/01/07/title-7-publish',
+				'url'     => 'http://example.com/2010/01/07/title-9-publish',
 				'metrics' => array(
 					'avg_engaged' => 0.01,
 				),
@@ -983,17 +999,27 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 					'visitors'   => '1.1M visitors',
 					'avg_time'   => '1:06 avg time',
 				),
-				'/2010/01/05/title-5-publish' => array(
+				'/2010/01/03/title-4-publish' => array(
+					'page_views' => '1.1K page views',
+					'visitors'   => '1.1M visitors',
+					'avg_time'   => '59 sec. avg time',
+				),
+				'/2010/01/03/title-5-publish' => array(
+					'page_views' => '1.1K page views',
+					'visitors'   => '1.1M visitors',
+					'avg_time'   => '1:00 avg time',
+				),
+				'/2010/01/05/title-7-publish' => array(
 					'page_views' => '1 page view',
 					'visitors'   => '0 visitors',
 					'avg_time'   => '0 sec. avg time',
 				),
-				'/2010/01/06/title-6-publish' => array(
+				'/2010/01/06/title-8-publish' => array(
 					'page_views' => '0 page views',
 					'visitors'   => '1 visitor',
 					'avg_time'   => '0 sec. avg time',
 				),
-				'/2010/01/07/title-7-publish' => array(
+				'/2010/01/07/title-9-publish' => array(
 					'page_views' => '0 page views',
 					'visitors'   => '0 visitors',
 					'avg_time'   => '1 sec. avg time',
