@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.4](https://github.com/Parsely/wp-parsely/compare/3.8.3...3.8.4) - 2023-03-16
+
+### Fixed
+
+- Fix "Attempt to read property name on null" warning ([#1494](https://github.com/Parsely/wp-parsely/pull/1494))
+- Fix Admin Bar "Undefined Property" warning ([#1493](https://github.com/Parsely/wp-parsely/pull/1493))
+- Fix NumberFormatter constructor failures ([#1492](https://github.com/Parsely/wp-parsely/pull/1492))
+- PCH Stats Column: Fix avg time display issues ([#1491](https://github.com/Parsely/wp-parsely/pull/1491))
+
+### Dependency Updates
+
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.4+label%3A%22Component%3A+Dependencies%22).
+
 ## [3.8.3](https://github.com/Parsely/wp-parsely/compare/3.8.2...3.8.3) - 2023-03-14
 
 ### Fixed
