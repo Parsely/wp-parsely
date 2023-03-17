@@ -13,6 +13,8 @@ use Parsely\Parsely;
 use Parsely\Scripts;
 use WP_Scripts;
 
+use function Parsely\Utils\get_asset_info;
+
 use const Parsely\PARSELY_FILE;
 
 /**
@@ -316,7 +318,7 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that disabling authenticated user tracking works.
+	 * Verifies that enabling authenticated user tracking works.
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 * @covers \Parsely\Scripts::register_scripts
@@ -331,27 +333,27 @@ final class ScriptsTest extends TestCase {
 	 * @group scripts
 	 * @group settings
 	 */
-	public function test_do_not_track_logged_in_users(): void {
+	public function test_track_logged_in_users(): void {
 		TestCase::set_options(
 			array(
 				'api_secret'                => 'hunter2',
-				'track_authenticated_users' => false,
+				'track_authenticated_users' => true,
 			)
 		);
 		$new_user_id = $this->create_test_user( 'bill_brasky' );
 		wp_set_current_user( $new_user_id );
-
+		$this->go_to_new_post();
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
 
-		// As track_authenticated_users options is false, enqueuing should fail.
+		// As track_authenticated_users option is false, enqueuing should fail.
 		// Verify that tracker script is registered but not enqueued.
 		$this->assert_is_script_registered( 'wp-parsely-tracker' );
-		$this->assert_is_script_not_enqueued( 'wp-parsely-tracker' );
+		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
 
 		// Verify that API script is registered but not enqueued.
 		$this->assert_is_script_registered( 'wp-parsely-loader' );
-		$this->assert_is_script_not_enqueued( 'wp-parsely-loader' );
+		$this->assert_is_script_enqueued( 'wp-parsely-loader' );
 	}
 
 	/**
@@ -437,6 +439,45 @@ final class ScriptsTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that authenticated user tracking is disabled by default.
+	 *
+	 * @covers \Parsely\Scripts::enqueue_js_tracker
+	 * @covers \Parsely\Scripts::register_scripts
+	 * @covers \Parsely\Scripts::__construct
+	 *
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::is_blog_member_logged_in
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 *
+	 * @group scripts
+	 * @group settings
+	 */
+	public function test_do_not_track_logged_in_users_by_default(): void {
+		update_option(
+			Parsely::OPTIONS_KEY,
+			( new Parsely() )->get_default_options()
+		);
+
+		$this->set_admin_user();
+		$this->go_to_new_post();
+		self::$scripts->register_scripts();
+		self::$scripts->enqueue_js_tracker();
+
+		// As track_authenticated_users option is false by default, enqueuing should fail.
+		// Verify that tracker script is registered but not enqueued.
+		$this->assert_is_script_registered( 'wp-parsely-tracker' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-tracker' );
+
+		// Verify that API script is registered but not enqueued.
+		$this->assert_is_script_registered( 'wp-parsely-loader' );
+		$this->assert_is_script_not_enqueued( 'wp-parsely-loader' );
+	}
+
+	/**
 	 * Verifies that the tracker script is correctly output in HTML markup
 	 * when the wp_parsely_enable_cfasync_attribute filter is used.
 	 *
@@ -468,17 +509,11 @@ final class ScriptsTest extends TestCase {
 		 *
 		 * @var string
 		 */
-		$output = ob_get_clean();
+		$output       = ob_get_clean();
+		$loader_asset = get_asset_info( 'build/loader.asset.php' );
 
-		$loader_asset = require_once plugin_dir_path( PARSELY_FILE ) . 'build/loader.asset.php';
-		/**
-		 * Variable.
-		 *
-		 * @var string
-		 */
-		$version = is_bool( $loader_asset ) ? Parsely::VERSION : $loader_asset['version'];
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $version . "' id='wp-parsely-loader-js'></script>", $output );
+		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $loader_asset['version'] . "' id='wp-parsely-loader-js'></script>", $output );
 		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
 		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=123456.78.9' id=\"parsely-cfg\"></script>", $output );
 	}

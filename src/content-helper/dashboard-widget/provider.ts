@@ -13,10 +13,7 @@ import {
 	ContentHelperErrorCode,
 } from '../../blocks/content-helper/content-helper-error';
 import { TopPostData } from './top-posts/model';
-import {
-	convertDateToString,
-	removeDaysFromDate,
-} from '../../blocks/shared/utils/date';
+import { getApiPeriodParams } from '../../blocks/shared/utils/api';
 
 /**
  * The form of the response returned by the /stats/posts WordPress REST API
@@ -27,24 +24,10 @@ interface TopPostsApiResponse {
 	data?: TopPostData[];
 }
 
-export const TOP_POSTS_DEFAULT_LIMIT = 3;
-export const TOP_POSTS_DEFAULT_TIME_RANGE = 7; // In days.
+const TOP_POSTS_DEFAULT_LIMIT = 3;
+const TOP_POSTS_DEFAULT_TIME_RANGE = 7; // In days.
 
 class DashboardWidgetProvider {
-	private dataPeriodStart: string;
-	private dataPeriodEnd: string;
-
-	/**
-	 * Constructor.
-	 */
-	constructor() {
-		this.dataPeriodEnd = convertDateToString( new Date() ) + 'T23:59';
-		this.dataPeriodStart = removeDaysFromDate(
-			this.dataPeriodEnd,
-			TOP_POSTS_DEFAULT_TIME_RANGE - 1
-		) + 'T00:00';
-	}
-
 	/**
 	 * Returns the site's top posts.
 	 *
@@ -82,8 +65,7 @@ class DashboardWidgetProvider {
 			response = await apiFetch( {
 				path: addQueryArgs( '/wp-parsely/v1/stats/posts', {
 					limit: TOP_POSTS_DEFAULT_LIMIT,
-					period_start: this.dataPeriodStart,
-					period_end: this.dataPeriodEnd,
+					...getApiPeriodParams( TOP_POSTS_DEFAULT_TIME_RANGE ),
 				} ),
 			} ) as TopPostsApiResponse;
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any

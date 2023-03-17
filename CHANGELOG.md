@@ -5,6 +5,69 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.4](https://github.com/Parsely/wp-parsely/compare/3.8.3...3.8.4) - 2023-03-16
+
+### Fixed
+
+- Fix "Attempt to read property name on null" warning ([#1494](https://github.com/Parsely/wp-parsely/pull/1494))
+- Fix Admin Bar "Undefined Property" warning ([#1493](https://github.com/Parsely/wp-parsely/pull/1493))
+- Fix NumberFormatter constructor failures ([#1492](https://github.com/Parsely/wp-parsely/pull/1492))
+- PCH Stats Column: Fix avg time display issues ([#1491](https://github.com/Parsely/wp-parsely/pull/1491))
+
+### Dependency Updates
+
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.4+label%3A%22Component%3A+Dependencies%22).
+
+## [3.8.3](https://github.com/Parsely/wp-parsely/compare/3.8.2...3.8.3) - 2023-03-14
+
+### Fixed
+
+- Fix Content Helper breakages due to null pub_date in API ([#1484](https://github.com/Parsely/wp-parsely/pull/1484))
+- Fix fatal errors in Co-Authors plugin integration ([#1482](https://github.com/Parsely/wp-parsely/pull/1482))
+
+### Dependency Updates
+
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.3+label%3A%22Component%3A+Dependencies%22).
+
+## [3.8.2](https://github.com/Parsely/wp-parsely/compare/3.8.1...3.8.2) - 2023-03-08
+
+### Fixed
+
+- Fix some fatal errors and warnings ([#1477](https://github.com/Parsely/wp-parsely/pull/1477))
+- Fix @wordpress/eslint-plugin v14 warnings ([#1455](https://github.com/Parsely/wp-parsely/pull/1455))
+
+### Dependency Updates
+
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.2+label%3A%22Component%3A+Dependencies%22).
+
+## [3.8.1](https://github.com/Parsely/wp-parsely/compare/3.8.0...3.8.1) - 2023-03-06
+
+### Fixed
+
+- Content Helper: Fix period range issue on Performance Details panel ([#1467](https://github.com/Parsely/wp-parsely/pull/1467))
+
+## [3.8.0](https://github.com/Parsely/wp-parsely/compare/3.7.1...3.8.0) - 2023-03-06
+
+### Changed
+
+- Content Helper: Update Related Top Posts range to 7 days ([#1454](https://github.com/Parsely/wp-parsely/pull/1454))
+- Content Helper: Add days info in header of Parse.ly Stats column ([#1451](https://github.com/Parsely/wp-parsely/pull/1451))
+- Update the "Track Logged-in Users" option to off by default ([#1436](https://github.com/Parsely/wp-parsely/pull/1436))
+- Make additional PHP 7.2 adjustments ([#1431](https://github.com/Parsely/wp-parsely/pull/1431))
+- Settings page: Update secret field types from text to password ([#1418](https://github.com/Parsely/wp-parsely/pull/1418))
+- Upgrade minimum PHP version to 7.2 ([#1401](https://github.com/Parsely/wp-parsely/pull/1401))
+- Settings page: Replace screen options with tabs ([#1339](https://github.com/Parsely/wp-parsely/pull/1339))
+
+### Dependency Updates
+
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.8.0+label%3A%22Component%3A+Dependencies%22).
+
+## [3.7.2](https://github.com/Parsely/wp-parsely/compare/3.7.1...3.7.2) - 2023-03-08
+
+### Fixed
+
+- Import fatal and warning fixes from wp-parsely 3.8.2 ([#1477](https://github.com/Parsely/wp-parsely/pull/1477))
+
 ## [3.7.1](https://github.com/Parsely/wp-parsely/compare/3.7.0...3.7.1) - 2023-02-27
 
 ### Fixed

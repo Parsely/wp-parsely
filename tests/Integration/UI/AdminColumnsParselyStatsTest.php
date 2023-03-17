@@ -18,8 +18,6 @@ use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Columns_Parsely_Stats;
 use WP_Error;
 
-use function Parsely\Utils\get_utc_date_format;
-
 /**
  * Integration Tests for Parse.ly Stats Column in Admin Screens.
  *
@@ -35,7 +33,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 	 *
 	 * @var string
 	 */
-	private static $parsely_stats_column_header = 'Parse.ly Stats';
+	private static $parsely_stats_column_header = 'Parse.ly Stats (7d)';
 
 	/**
 	 * Internal variable.
@@ -935,22 +933,38 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 				),
 			),
 			array(
-				'url' => 'http://example.com/2010/01/04/title-4-publish',
+				'url'     => 'http://example.com/2010/01/03/title-4-publish',
+				'metrics' => array(
+					'views'       => 1100,
+					'visitors'    => 1100000,
+					'avg_engaged' => 0.992,
+				),
 			),
 			array(
-				'url'     => 'http://example.com/2010/01/05/title-5-publish',
+				'url'     => 'http://example.com/2010/01/03/title-5-publish',
+				'metrics' => array(
+					'views'       => 1100,
+					'visitors'    => 1100000,
+					'avg_engaged' => 0.995,
+				),
+			),
+			array(
+				'url' => 'http://example.com/2010/01/04/title-6-publish',
+			),
+			array(
+				'url'     => 'http://example.com/2010/01/05/title-7-publish',
 				'metrics' => array(
 					'views' => 1,
 				),
 			),
 			array(
-				'url'     => 'http://example.com/2010/01/06/title-6-publish',
+				'url'     => 'http://example.com/2010/01/06/title-8-publish',
 				'metrics' => array(
 					'visitors' => 1,
 				),
 			),
 			array(
-				'url'     => 'http://example.com/2010/01/07/title-7-publish',
+				'url'     => 'http://example.com/2010/01/07/title-9-publish',
 				'metrics' => array(
 					'avg_engaged' => 0.01,
 				),
@@ -985,17 +999,27 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 					'visitors'   => '1.1M visitors',
 					'avg_time'   => '1:06 avg time',
 				),
-				'/2010/01/05/title-5-publish' => array(
+				'/2010/01/03/title-4-publish' => array(
+					'page_views' => '1.1K page views',
+					'visitors'   => '1.1M visitors',
+					'avg_time'   => '59 sec. avg time',
+				),
+				'/2010/01/03/title-5-publish' => array(
+					'page_views' => '1.1K page views',
+					'visitors'   => '1.1M visitors',
+					'avg_time'   => '1:00 avg time',
+				),
+				'/2010/01/05/title-7-publish' => array(
 					'page_views' => '1 page view',
 					'visitors'   => '0 visitors',
 					'avg_time'   => '0 sec. avg time',
 				),
-				'/2010/01/06/title-6-publish' => array(
+				'/2010/01/06/title-8-publish' => array(
 					'page_views' => '0 page views',
 					'visitors'   => '1 visitor',
 					'avg_time'   => '0 sec. avg time',
 				),
-				'/2010/01/07/title-7-publish' => array(
+				'/2010/01/07/title-9-publish' => array(
 					'page_views' => '0 page views',
 					'visitors'   => '0 visitors',
 					'avg_time'   => '1 sec. avg time',
@@ -1083,8 +1107,7 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 							$api_params,
 							// Params which will not change.
 							array(
-								'period_start' => get_utc_date_format( -7 ),
-								'period_end'   => get_utc_date_format(),
+								'period_start' => Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT . 'd',
 								'limit'        => 2000,
 								'sort'         => 'avg_engaged',
 							)

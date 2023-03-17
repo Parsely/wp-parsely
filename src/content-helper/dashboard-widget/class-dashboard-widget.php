@@ -13,6 +13,8 @@ namespace Parsely\ContentHelper;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 
+use function Parsely\Utils\get_asset_info;
+
 use const Parsely\PARSELY_FILE;
 
 /**
@@ -62,14 +64,14 @@ class Dashboard_Widget {
 	 */
 	public function enqueue_assets( $hook_suffix ): void {
 		if ( 'index.php' === $hook_suffix ) {
-			$asset_php        = require_once plugin_dir_path( PARSELY_FILE ) . 'build/content-helper/dashboard-widget.asset.php';
+			$asset_php        = get_asset_info( 'build/content-helper/dashboard-widget.asset.php' );
 			$built_assets_url = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 			wp_enqueue_script(
 				'wp-parsely-dashboard-widget',
 				$built_assets_url . 'dashboard-widget.js',
-				$asset_php['dependencies'] ?? null,
-				$asset_php['version'] ?? Parsely::VERSION,
+				$asset_php['dependencies'],
+				$asset_php['version'],
 				true
 			);
 
@@ -77,7 +79,7 @@ class Dashboard_Widget {
 				'wp-parsely-dashboard-widget',
 				$built_assets_url . 'dashboard-widget.css',
 				array(),
-				$asset_php['version'] ?? Parsely::VERSION
+				$asset_php['version']
 			);
 		}
 	}

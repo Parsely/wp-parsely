@@ -16,6 +16,8 @@ use NumberFormatter;
 use WP_Post;
 use WP_Error;
 
+use const Parsely\PARSELY_FILE;
+
 const DATE_UTC_FORMAT     = 'Y-m-d';
 const WP_DATE_TIME_FORMAT = 'Y-m-d H:i:s';
 
@@ -107,24 +109,6 @@ function get_string_query_var( $var ): string {
 }
 
 /**
- * Gets 'int' query variable from WP_Query class.
- *
- * @since 3.7.0
- *
- * @param string $var Variable key to retrieve.
- *
- * @return int
- */
-function get_int_query_var( $var ): int {
-	/**
-	 * Variable.
-	 *
-	 * @var int
-	 */
-	return get_query_var( $var );
-}
-
-/**
  * Gets site date format.
  *
  * @since 3.7.0
@@ -165,7 +149,7 @@ function get_time_format(): string {
  * @return string
  */
 function get_formatted_number( $number ): string {
-	$number_formatter = new NumberFormatter( 'en_US', NumberFormatter::PADDING_POSITION );
+	$number_formatter = new NumberFormatter( 'en', NumberFormatter::PADDING_POSITION );
 	$formatted_number = $number_formatter->format( $number );
 
 	if ( false === $formatted_number ) {
@@ -188,7 +172,7 @@ function get_formatted_number( $number ): string {
  * @return string
  */
 function get_formatted_time( $seconds ): string {
-	$time_formatter = new NumberFormatter( 'en_US', NumberFormatter::DURATION );
+	$time_formatter = new NumberFormatter( 'en', NumberFormatter::DURATION );
 	$formatted_time = $time_formatter->format( $seconds );
 
 	if ( false === $formatted_time ) {
@@ -244,4 +228,17 @@ function convert_to_positive_integer( string $string ): int {
  */
 function convert_endpoint_to_filter_key( string $endpoint ): string {
 	return trim( str_replace( '/', '_', $endpoint ), '_' );
+}
+
+/**
+ * Gets content of asset file.
+ *
+ * @param string $path Path of the asset file.
+ *
+ * @since 3.8.0
+ *
+ * @return Asset_Info
+ */
+function get_asset_info( string $path ) {
+	return require plugin_dir_path( PARSELY_FILE ) . $path;
 }
