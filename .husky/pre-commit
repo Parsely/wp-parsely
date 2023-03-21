@@ -3,4 +3,4 @@
 
 npm run lint
 composer cs
-vendor/bin/phpstan analyse --memory-limit=-1G
+vendor/bin/phpstan analyse --memory-limit=1G
