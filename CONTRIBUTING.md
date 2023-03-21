@@ -26,6 +26,16 @@ The plugin uses strong types, so be sure to declare `strict_types=1` on new file
 
 For JavaScript we recommend installing ESLint. This plugin includes a [.eslintrc](https://github.com/Parsely/wp-parsely/blob/develop/.eslintrc) file that defines our coding standards.
 
+### Setting up your IDE / Code Editor
+
+#### VSCode
+
+This plugin uses the [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces) feature provided by VSCode which setup the editor with recommended extensions, settings, launch configurations etc. To open the project using workspace follow these steps:
+
+1. Open project in VSCode.
+2. Navigate to `.vscode/wp-parsely.code-workspace`
+3. Click on `Open Workspace` button that appears on the bottom right corner of VSCode UI. It should open the plugin in a new workspace window.
+
 ### Setting up your local development environment
 
 This plugin uses the `wp-env` package (an [official WP.org package](https://developer.wordpress.org/block-editor/reference-guides/packages/packages-env/)) for local development and testing, that spins up a Docker-based WordPress environment for plugin development.
