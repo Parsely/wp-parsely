@@ -33,6 +33,12 @@
 	"settings": {
 		// VSCode Custom Settings
 		"typescript.tsdk": "node_modules/typescript/lib",
+		"search.exclude": {
+			"build/": true
+		},
+		"[markdown]": {
+			"files.trimTrailingWhitespace": false
+		},
 		// ESLint
 		"eslint.format.enable": true,
 		"eslint.validate": [
@@ -41,16 +47,7 @@
 			"javascriptreact",
 			"typescriptreact"
 		],
-		"[javascript]": {
-			"editor.defaultFormatter": "dbaeumer.vscode-eslint",
-		},
-		"[typescript]": {
-			"editor.defaultFormatter": "dbaeumer.vscode-eslint",
-		},
-		"[javascriptreact]": {
-			"editor.defaultFormatter": "dbaeumer.vscode-eslint",
-		},
-		"[typescriptreact]": {
+		"[javascript][typescript][javascriptreact][typescriptreact]": {
 			"editor.defaultFormatter": "dbaeumer.vscode-eslint",
 		},
 		// PHP Code Sniffer
@@ -71,6 +68,8 @@
 			".*breakpoints.*",
 		],
 		// PHP Intelephense
+		"intelephense.format.enable": false,
+		"intelephense.environment.phpVersion": "7.1",
 		"intelephense.stubs": [
 			// Defaults
 			"apache",
