@@ -8,9 +8,8 @@
 
 declare(strict_types=1);
 
-namespace Parsely\ContentHelper;
+namespace Parsely\Content_Helper;
 
-use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 
 use function Parsely\Utils\get_asset_info;

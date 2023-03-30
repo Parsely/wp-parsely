@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace Parsely;
 
-use Parsely\ContentHelper\Dashboard_Widget;
+use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
