@@ -14,6 +14,7 @@ use WP_Scripts;
 use WP_Post;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
+use Parsely\Tests\ContentHelper\ContentHelperFeatureTest;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Admin_Columns_Parsely_Stats;
 use WP_Error;
@@ -27,7 +28,7 @@ use WP_Error;
  * @phpstan-import-type Analytics_Post from Analytics_Posts_API
  * @phpstan-import-type Parsely_Posts_Stats_Response from Admin_Columns_Parsely_Stats
  */
-final class AdminColumnsParselyStatsTest extends TestCase {
+final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Internal variable.
 	 *
@@ -62,6 +63,382 @@ final class AdminColumnsParselyStatsTest extends TestCase {
 		parent::tear_down();
 
 		$this->set_permalink_structure( '' );
+	}
+
+	/**
+	 * Asserts the enqueueing status of the feature's assets according to the
+	 * passed filter values.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @param mixed $global_filter_value The value of the global Content Helper filter.
+	 * @param mixed $feature_filter_value The value of the feature filter.
+	 * @param bool  $expected Whether the assets should be enqueued.
+	 */
+	protected function assert_enqueued_status(
+		$global_filter_value, $feature_filter_value, bool $expected
+	): void {
+		parent::set_filters(
+			Admin_Columns_Parsely_Stats::get_feature_filter_name(),
+			$global_filter_value,
+			$feature_filter_value
+		);
+
+		$this->set_valid_conditions_for_parsely_stats();
+		$this->mock_parsely_stats_response( array() );
+		$this->assert_parsely_stats_admin_script( $expected );
+		$this->assert_parsely_stats_admin_styles( $expected );
+	}
+
+	/**
+	 * Verifies that the run() method enqueues the assets by default.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_get_enqueued_by_default(): void {
+		self::assert_enqueued_status( null, null, true );
+	}
+
+	/**
+	 * Verifies that the run() method enqueues the assets when the global filter
+	 * is set to true.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_get_enqueued_when_global_filter_is_true(): void {
+		self::assert_enqueued_status( true, null, true );
+	}
+
+	/**
+	 * Verifies that the run() method does not enqueue the assets when the
+	 * global filter is set to false.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_do_not_get_enqueued_when_global_filter_is_false(): void {
+		$this->assert_enqueued_status( false, null, false );
+	}
+
+	/**
+	 * Verifies that the run() method does not enqueue the assets when the
+	 * global filter is set to an invalid value.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_do_not_get_enqueued_when_global_filter_is_invalid(): void {
+		// We expect the filter to be boolean true.
+		self::assert_enqueued_status( 1, null, false );
+	}
+
+	/**
+	 * Verifies that the run() method enqueues the assets when the feature
+	 * filter is set to true.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_get_enqueued_when_feature_filter_is_true(): void {
+		self::assert_enqueued_status( null, true, true );
+	}
+
+	/**
+	 * Verifies that the run() method does not enqueue the assets when
+	 * the feature filter is set to false.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_do_not_get_enqueued_when_feature_filter_is_false(): void {
+		self::assert_enqueued_status( null, false, false );
+	}
+
+	/**
+	 * Verifies that the run() method does not enqueue the assets when the
+	 * feature filter is set to an invalid value.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_do_not_get_enqueued_when_feature_filter_is_invalid(): void {
+		self::assert_enqueued_status( null, array(), false );
+	}
+
+	/**
+	 * Verifies that the run() method enqueues the assets when both filters are
+	 * set to true.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_get_enqueued_when_both_filters_are_true(): void {
+		self::assert_enqueued_status( true, true, true );
+	}
+
+	/**
+	 * Verifies that the run() method does not enqueue the assets when both
+	 * filters are set to false.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_do_not_get_enqueued_when_both_filters_are_false(): void {
+		self::assert_enqueued_status( false, false, false );
+	}
+
+	/**
+	 * Verifies that the run() method does not enqueue the assets when both
+	 * filters are set to an invalid value.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_do_not_get_enqueued_when_both_filters_are_invalid(): void {
+		self::assert_enqueued_status( 'string', 'string', false );
+	}
+
+	/**
+	 * Verifies that the run() method does not enqueue the assets when the
+	 * global filter is set to true and the feature filter is set to false.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_do_not_get_enqueued_when_global_filter_is_true_and_feature_filter_is_false(): void {
+		self::assert_enqueued_status( true, false, false );
+	}
+
+	/**
+	 * Verifies that the run() method enqueues the assets when the global filter
+	 * is set to false and the feature filter is set to true.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_get_enqueued_when_global_filter_is_false_and_feature_filter_is_true(): void {
+		self::assert_enqueued_status( false, true, true );
+	}
+
+	/**
+	 * Verifies that the run() method does not enqueue the assets when the
+	 * global filter is set to true and the feature filter is set to an invalid
+	 * value.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_do_not_get_enqueued_when_global_filter_is_true_and_feature_filter_is_invalid(): void {
+		self::assert_enqueued_status( true, array(), false );
+	}
+
+	/**
+	 * Verifies that the run() method enqueues the assets when the global filter
+	 * is set to an invalid value and the feature filter is set to true.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
+	 *
+	 * @group content-helper
+	 * @group content-helper-admin-stats-column
+	 */
+	public function test_assets_get_enqueued_when_global_filter_is_invalid_and_feature_filter_is_true(): void {
+		self::assert_enqueued_status( 'string', true, true );
 	}
 
 	/**
