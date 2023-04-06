@@ -93,7 +93,7 @@ class Admin_Columns_Parsely_Stats extends Content_Helper_Feature {
 	 * @return string The filter name.
 	 */
 	public static function get_feature_filter_name(): string {
-		return self::get_global_filter_name() . '_admin_stats_column';
+		return self::get_global_filter_name() . '_stats_column';
 	}
 
 	/**
