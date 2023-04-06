@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use DateTime;
+use Parsely\Content_Helper\Content_Helper_Feature;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Remote_API_Base;
 use Parsely\RemoteAPI\Analytics_Posts_API;
@@ -43,7 +44,7 @@ use const Parsely\Utils\DATE_UTC_FORMAT;
  *   error: Remote_API_Error|null,
  * }
  */
-class Admin_Columns_Parsely_Stats {
+class Admin_Columns_Parsely_Stats extends Content_Helper_Feature {
 	/**
 	 * Instance of Parsely class.
 	 *
@@ -85,12 +86,45 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
+	 * Returns the feature's filter name.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @return string The filter name.
+	 */
+	public static function get_feature_filter_name(): string {
+		return self::get_global_filter_name() . '_admin_stats_column';
+	}
+
+	/**
+	 * Returns the feature's script ID.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @return string The script ID.
+	 */
+	public static function get_script_id(): string {
+		return 'admin-parsely-stats-script';
+	}
+
+	/**
+	 * Returns the feature's style ID.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @return string The style ID.
+	 */
+	public static function get_style_id(): string {
+		return 'admin-parsely-stats-styles';
+	}
+
+	/**
 	 * Registers action and filter hook callbacks.
 	 *
 	 * @since 3.7.0
 	 */
 	public function run(): void {
-		if ( ! $this->should_add_hooks() ) {
+		if ( ! $this->should_be_enabled() ) {
 			return;
 		}
 
@@ -107,7 +141,7 @@ class Admin_Columns_Parsely_Stats {
 	 * Determines whether we should add hooks or not depending on plugin settings
 	 * and user capabilities.
 	 */
-	public function should_add_hooks(): bool {
+	public function should_be_enabled(): bool {
 		if ( ! $this->parsely->site_id_is_set() || ! $this->parsely->api_secret_is_set() ) {
 			return false;
 		}
@@ -116,6 +150,10 @@ class Admin_Columns_Parsely_Stats {
 
 		// Don't add the column if the user is not allowed to make the API call.
 		if ( ! $this->analytics_api->is_user_allowed_to_make_api_call() ) {
+			return false;
+		}
+
+		if ( ! $this->is_enabled_by_filters() ) {
 			return false;
 		}
 
@@ -145,7 +183,7 @@ class Admin_Columns_Parsely_Stats {
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_style(
-			'admin-parsely-stats-styles',
+			static::get_style_id(),
 			$built_assets_url . 'admin-parsely-stats.css',
 			$admin_settings_asset['dependencies'],
 			$admin_settings_asset['version']
@@ -225,7 +263,7 @@ class Admin_Columns_Parsely_Stats {
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_script(
-			'admin-parsely-stats-script',
+			static::get_script_id(),
 			$built_assets_url . 'admin-parsely-stats.js',
 			$admin_settings_asset['dependencies'],
 			$admin_settings_asset['version'],
@@ -233,7 +271,7 @@ class Admin_Columns_Parsely_Stats {
 		);
 
 		wp_add_inline_script(
-			'admin-parsely-stats-script',
+			static::get_script_id(),
 			"window.wpParselyPostsStatsResponse = '" . wp_json_encode( $parsely_stats_response ) . "';",
 			'before'
 		);

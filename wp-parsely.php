@@ -106,6 +106,7 @@ function parsely_initialize_plugin(): void {
 	$metadata_renderer->run();
 }
 
+require_once __DIR__ . '/src/content-helper/class-content-helper-feature.php';
 require_once __DIR__ . '/src/UI/class-admin-columns-parsely-stats.php';
 require_once __DIR__ . '/src/UI/class-admin-warning.php';
 require_once __DIR__ . '/src/UI/class-plugins-actions.php';
