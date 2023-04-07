@@ -13,7 +13,7 @@ import TopPostListItem from './component-list-item';
 import { TopPostData } from './model';
 import { ContentHelperError } from '../../../blocks/content-helper/content-helper-error';
 
-const FETCH_RETRIES = 3;
+const FETCH_RETRIES = 1;
 
 /**
  * List of the top posts.
@@ -33,7 +33,7 @@ function TopPostList() {
 					setLoading( false );
 				} )
 				.catch( async ( err ) => {
-					if ( retries > 0 ) {
+					if ( retries > 0 && err.retryFetch ) {
 						await new Promise( ( r ) => setTimeout( r, 500 ) );
 						await fetchPosts( retries - 1 );
 					} else {

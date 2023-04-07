@@ -28,11 +28,26 @@ export enum ContentHelperErrorCode {
 export class ContentHelperError extends Error {
 	protected code: ContentHelperErrorCode;
 	protected hint: JSX.Element | null = null;
+	protected retryFetch: boolean;
 
 	constructor( message: string, code: ContentHelperErrorCode, prefix = __( 'Error: ', 'wp-parsely' ) ) {
 		super( prefix + message );
 		this.name = this.constructor.name;
 		this.code = code;
+
+		// Errors for which we should not retry a fetch operation.
+		const noRetryFetchErrors: Array<ContentHelperErrorCode> = [
+			ContentHelperErrorCode.CannotFormulateApiQuery,
+			ContentHelperErrorCode.ParselyApiForbidden,
+			ContentHelperErrorCode.ParselyApiResponseContainsError,
+			ContentHelperErrorCode.ParselyApiReturnedNoData,
+			ContentHelperErrorCode.ParselyApiReturnedTooManyResults,
+			ContentHelperErrorCode.PluginSettingsApiSecretNotSet,
+			ContentHelperErrorCode.PluginSettingsSiteIdNotSet,
+			ContentHelperErrorCode.PostIsNotPublished,
+		];
+
+		this.retryFetch = ! noRetryFetchErrors.includes( this.code );
 
 		// Set the prototype explicitly.
 		Object.setPrototypeOf( this, ContentHelperError.prototype );

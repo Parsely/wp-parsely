@@ -16,7 +16,7 @@ import { getSmartShortDate } from '../../shared/utils/date';
 import { getApiPeriodStartDate } from '../../shared/utils/api';
 
 // Number of attempts to fetch the data before displaying an error.
-const FETCH_RETRIES = 3;
+const FETCH_RETRIES = 1;
 
 /**
  * Specifies the form of component props.
@@ -43,7 +43,7 @@ function PerformanceDetails() {
 					setLoading( false );
 				} )
 				.catch( async ( err ) => {
-					if ( retries > 0 ) {
+					if ( retries > 0 && err.retryFetch ) {
 						await new Promise( ( r ) => setTimeout( r, 500 ) );
 						await fetchPosts( retries - 1 );
 					} else {
