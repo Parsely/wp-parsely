@@ -1,55 +1,62 @@
+/**
+ * Internal dependencies.
+ */
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../../../src/blocks/content-helper/content-helper-error';
 
-describe( 'ContentHelperError class', () => {
-	test( 'should set retryFetch to true for query formulation errors', () => {
+/**
+ * Verifies that the retryFetch property of the ContentHelperErrorCode class
+ * gets set to the correct value depending on the error code.
+ */
+describe( 'ContentHelperError class should set retryFetch to', () => {
+	test( 'true when a query formulation error occurs', () => {
 		const code = ContentHelperErrorCode.CannotFormulateApiQuery;
 		expect( getRetryFetch( code ) ).toBe( true );
 	} );
 
-	test( 'should set retryFetch to true for API fetch errors', () => {
+	test( 'true for API fetch errors', () => {
 		const code = ContentHelperErrorCode.FetchError;
 		expect( getRetryFetch( code ) ).toBe( true );
 	} );
 
-	test( 'should set retryFetch to false for API Forbidden errors', () => {
+	test( 'false for API Forbidden errors', () => {
 		const code = ContentHelperErrorCode.ParselyApiForbidden;
 		expect( getRetryFetch( code ) ).toBe( false );
 	} );
 
-	test( 'should set retryFetch to false when API response contains error', () => {
+	test( 'false when the API response contains an error', () => {
 		const code = ContentHelperErrorCode.ParselyApiResponseContainsError;
 		expect( getRetryFetch( code ) ).toBe( false );
 	} );
 
-	test( 'should set retryFetch to false when API returns no data', () => {
+	test( 'false when the API returns no data', () => {
 		const code = ContentHelperErrorCode.ParselyApiReturnedNoData;
 		expect( getRetryFetch( code ) ).toBe( false );
 	} );
 
-	test( 'should set retryFetch to false when API returns too many results', () => {
+	test( 'false when the API returns too many results', () => {
 		const code = ContentHelperErrorCode.ParselyApiReturnedTooManyResults;
 		expect( getRetryFetch( code ) ).toBe( false );
 	} );
 
-	test( 'should set retryFetch to false when the API secret is not set', () => {
+	test( 'false when the API secret is not set', () => {
 		const code = ContentHelperErrorCode.PluginSettingsApiSecretNotSet;
 		expect( getRetryFetch( code ) ).toBe( false );
 	} );
 
-	test( 'should set retryFetch to false when the Site ID is not set', () => {
+	test( 'false when the Site ID is not set', () => {
 		const code = ContentHelperErrorCode.PluginSettingsSiteIdNotSet;
 		expect( getRetryFetch( code ) ).toBe( false );
 	} );
 
-	test( 'should set retryFetch to false when the current post is not published', () => {
+	test( 'false when the current post is not published', () => {
 		const code = ContentHelperErrorCode.PostIsNotPublished;
 		expect( getRetryFetch( code ) ).toBe( false );
 	} );
 
-	test( 'should set retryFetch to true for unknown errors', () => {
+	test( 'true when an unknown error occurs', () => {
 		const code = 'Any other error' as ContentHelperErrorCode;
 		expect( getRetryFetch( code ) ).toBe( true );
 	} );
