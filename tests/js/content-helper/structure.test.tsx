@@ -11,18 +11,25 @@ import '@testing-library/jest-dom';
 /**
  * Internal dependencies.
  */
-import RelatedTopPostList from '../../../../src/blocks/content-helper/related-top-posts/component-list';
-import RelatedTopPostsProvider, { GetRelatedTopPostsResult, RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../../src/blocks/content-helper/related-top-posts/provider';
-import { DASHBOARD_BASE_URL } from '../../../../src/blocks/shared/utils/constants';
-import { ContentHelperError, ContentHelperErrorCode } from '../../../../src/blocks/content-helper/content-helper-error';
+import RelatedTopPostList from '../../../src/blocks/content-helper/related-top-posts/component-list';
+import RelatedTopPostsProvider, { GetRelatedTopPostsResult, RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../src/blocks/content-helper/related-top-posts/provider';
+import { DASHBOARD_BASE_URL } from '../../../src/blocks/shared/utils/constants';
+import { ContentHelperError, ContentHelperErrorCode } from '../../../src/blocks/content-helper/content-helper-error';
 
 describe( 'PCH Editor Sidebar Related Top Post panel', () => {
-	test( 'should display spinner when starting', () => {
-		render( <RelatedTopPostList /> );
+	test( 'should display spinner when starting', async () => {
+		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
+			message: 'Testing that the spinner appears and disappears.',
+			posts: [],
+		} ) );
 
-		const spinner = getSpinner();
-		expect( spinner ).toBeInTheDocument();
-		expect( spinner ).toBeVisible();
+		await waitFor( async () => {
+			render( <RelatedTopPostList /> );
+			expect( getSpinner() ).toBeInTheDocument();
+		} );
+
+		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
+		expect( getSpinner() ).toBeNull();
 	} );
 
 	test( 'should show contact us message when Parse.ly Site ID is not set', async () => {
@@ -75,7 +82,8 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			await render( <RelatedTopPostList /> );
+			render( <RelatedTopPostList /> );
+			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
 		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
@@ -94,7 +102,8 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			await render( <RelatedTopPostList /> );
+			render( <RelatedTopPostList /> );
+			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
 		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
@@ -136,7 +145,8 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			await render( <RelatedTopPostList /> );
+			render( <RelatedTopPostList /> );
+			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
 		expect( getRelatedTopPostsFn ).toHaveBeenCalled();

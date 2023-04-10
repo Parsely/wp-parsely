@@ -12,7 +12,7 @@ import RelatedTopPostListItem from './component-list-item';
 import { RelatedTopPostData } from './model';
 import { ContentHelperError } from '../content-helper-error';
 
-const FETCH_RETRIES = 3;
+const FETCH_RETRIES = 1;
 
 /**
  * List of the related top posts.
@@ -32,7 +32,7 @@ function RelatedTopPostList() {
 					setLoading( false );
 				} )
 				.catch( async ( err ) => {
-					if ( retries > 0 ) {
+					if ( retries > 0 && err.retryFetch ) {
 						await new Promise( ( r ) => setTimeout( r, 500 ) );
 						await fetchPosts( retries - 1 );
 					} else {
