@@ -63,7 +63,7 @@ class Dashboard_Widget extends Content_Helper_Feature {
 	 * @since 3.7.0
 	 */
 	public function run(): void {
-		// The should_load_feature() function is not being used here, as
+		// The should_be_enabled() function is not being used here, as
 		// get_current_screen() is still null when this function is called.
 		add_action( 'wp_dashboard_setup', array( $this, 'add_dashboard_widget' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
