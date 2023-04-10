@@ -21,7 +21,7 @@ const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
  * Tests for the PCH Editor Sidebar top bar icon.
  */
 describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => {
-	const contentHelperTitle = 'Performance DetailsRelated Top Posts';
+	const contentHelperTitle = 'Performance DetailsThis post is not published, so its details are unavailable.Related Top Posts';
 
 	/**
 	 * Logs in to WordPress and activates the Parse.ly plugin.
