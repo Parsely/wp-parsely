@@ -55,8 +55,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -75,8 +74,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -95,8 +93,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -115,8 +112,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -136,8 +132,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -156,8 +151,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -176,8 +170,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -196,8 +189,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -216,8 +208,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -236,8 +227,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -256,8 +246,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -276,8 +265,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -297,8 +285,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *
@@ -318,8 +305,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper::run
-	 * @covers \Parsely\Content_Helper::should_be_enabled
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
+	 * @covers \Parsely\Content_Helper::can_enable_feature
 	 * @covers \Parsely\Content_Helper::get_script_id
 	 * @covers \Parsely\Content_Helper::get_style_id
 	 *

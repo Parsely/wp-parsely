@@ -99,9 +99,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -124,9 +123,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -149,9 +147,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -174,9 +171,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -200,9 +196,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -225,9 +220,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -250,9 +244,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -275,9 +268,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -300,9 +292,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -325,9 +316,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -350,9 +340,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -375,9 +364,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -401,9 +389,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
@@ -426,9 +413,8 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::should_be_enabled
+	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data

@@ -74,9 +74,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -98,9 +98,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -122,9 +122,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -146,9 +146,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -171,9 +171,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -195,9 +195,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -219,9 +219,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -243,9 +243,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -267,9 +267,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -291,9 +291,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -315,9 +315,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -339,9 +339,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -364,9 +364,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -388,9 +388,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -412,9 +412,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
@@ -437,9 +437,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::enqueue_assets
-	 * @covers \Parsely\Content_Helper\Dashboard_Widget::should_be_enabled
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_widget
+	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::is_enabled_by_filters
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 *
 	 * @group content-helper
