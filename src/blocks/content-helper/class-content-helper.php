@@ -60,7 +60,7 @@ class Content_Helper extends Content_Helper_Feature {
 	 * @since 3.5.0
 	 */
 	public function run(): void {
-		if ( ! $this->should_be_enabled() ) {
+		if ( ! $this->can_enable_feature() ) {
 			return;
 		}
 
@@ -81,16 +81,4 @@ class Content_Helper extends Content_Helper_Feature {
 			$content_helper_asset['version']
 		);
 	}
-
-	/**
-	 * Returns whether the Dashboard Widget should be added/activated.
-	 *
-	 * @since 3.9.0
-	 *
-	 * @return bool Whether the Widget should be added/activated
-	 */
-	public function should_be_enabled(): bool {
-		return $this->is_enabled_by_filters();
-	}
-
 }

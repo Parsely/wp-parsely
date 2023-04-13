@@ -124,7 +124,13 @@ class Admin_Columns_Parsely_Stats extends Content_Helper_Feature {
 	 * @since 3.7.0
 	 */
 	public function run(): void {
-		if ( ! $this->should_be_enabled() ) {
+		$this->analytics_api = new Analytics_Posts_API( $this->parsely );
+
+		if ( ! $this->can_enable_feature(
+			$this->parsely->site_id_is_set(),
+			$this->parsely->api_secret_is_set(),
+			$this->analytics_api->is_user_allowed_to_make_api_call()
+		) ) {
 			return;
 		}
 
@@ -135,29 +141,6 @@ class Admin_Columns_Parsely_Stats extends Content_Helper_Feature {
 		add_filter( 'manage_pages_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
 		add_action( 'manage_pages_custom_column', array( $this, 'update_published_times_and_show_placeholder' ) );
 		add_action( 'admin_footer', array( $this, 'enqueue_parsely_stats_script_with_data' ) );
-	}
-
-	/**
-	 * Determines whether we should add hooks or not depending on plugin settings
-	 * and user capabilities.
-	 */
-	public function should_be_enabled(): bool {
-		if ( ! $this->parsely->site_id_is_set() || ! $this->parsely->api_secret_is_set() ) {
-			return false;
-		}
-
-		$this->analytics_api = new Analytics_Posts_API( $this->parsely );
-
-		// Don't add the column if the user is not allowed to make the API call.
-		if ( ! $this->analytics_api->is_user_allowed_to_make_api_call() ) {
-			return false;
-		}
-
-		if ( ! $this->is_enabled_by_filters() ) {
-			return false;
-		}
-
-		return true;
 	}
 
 	/**

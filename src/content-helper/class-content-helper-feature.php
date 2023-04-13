@@ -61,18 +61,10 @@ abstract class Content_Helper_Feature {
 	 */
 	abstract public function run(): void;
 
-	/**
-	 * Returns whether the feature should be enabled.
-	 *
-	 * @since 3.9.0
-	 *
-	 * @return bool Whether the feature should be enabled.
-	 */
-	abstract public function should_be_enabled(): bool;
 
 	/**
-	 * Examines the global and feature filter values, and returns whether the
-	 * feature is considered to be enabled from a filter perspective.
+	 * Examines filters and conditions to determine whether the feature can be
+	 * enabled.
 	 *
 	 * - By default (no filters are explicitly set), the value returns true.
 	 * - If not set, the feature filter will take the global filter's value.
@@ -80,10 +72,11 @@ abstract class Content_Helper_Feature {
 	 * - Possible invalid filter values will resolve to false.
 	 *
 	 * @since 3.9.0
-	 *
+	 * @param array<bool> ...$conditions Conditions that need to be met besides filters for the
+	 *                                   function to return true.
 	 * @return bool Whether the feature is enabled by filters.
 	 */
-	protected function is_enabled_by_filters(): bool {
+	protected function can_enable_feature( ...$conditions ): bool {
 		// Get filter values.
 		$global  = apply_filters( self::get_global_filter_name(), null ); // phpcs:ignore
 		$feature = apply_filters( static::get_feature_filter_name(), null ); // phpcs:ignore
@@ -98,6 +91,11 @@ abstract class Content_Helper_Feature {
 		// Feature filter has explicitly been set to a value different than true.
 		$feature_filter_is_false = null !== $feature && true !== $feature;
 		if ( $feature_filter_is_false ) {
+			return false;
+		}
+
+		// Return false if any of the passed conditions are false.
+		if ( in_array( false, $conditions, true ) ) {
 			return false;
 		}
 

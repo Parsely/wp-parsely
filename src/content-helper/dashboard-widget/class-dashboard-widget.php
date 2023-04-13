@@ -63,42 +63,27 @@ class Dashboard_Widget extends Content_Helper_Feature {
 	 * @since 3.7.0
 	 */
 	public function run(): void {
-		// The should_be_enabled() function is not being used here, as
+		// The can_enable_feature() function is not being used here, as
 		// get_current_screen() is still null when this function is called.
 		add_action( 'wp_dashboard_setup', array( $this, 'add_dashboard_widget' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
 	/**
-	 * Returns whether the Dashboard Widget should be enabled.
+	 * Returns whether the Dashboard Widget can be enabled.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @return bool Whether the Widget should be enabled.
-	 * @throws UnexpectedValueException If the current screen is null.
+	 * @return bool Whether the Dashboard Widget can be enabled.
 	 */
-	public function should_be_enabled(): bool {
-		// Widget should only appear on the WordPress Dashboard screen.
-		$screen = get_current_screen();
-		if ( null === $screen ) {
-			throw new UnexpectedValueException( 'Error: Screen is null.', 1 );
-		}
-		if ( 'dashboard' !== $screen->id ) {
-			return false;
-		}
-
-		// User should have enough capabilities for the widget to show.
+	public function can_enable_widget(): bool {
+		$screen    = get_current_screen();
 		$posts_api = new Analytics_Posts_API( $GLOBALS['parsely'] );
-		if ( ! $posts_api->is_user_allowed_to_make_api_call() ) {
-			return false;
-		}
 
-		// Filters should resolve to true for the widget to show.
-		if ( ! $this->is_enabled_by_filters() ) {
-			return false;
-		}
-
-		return true;
+		return $this->can_enable_feature(
+			null !== $screen && 'dashboard' === $screen->id,
+			$posts_api->is_user_allowed_to_make_api_call()
+		);
 	}
 
 	/**
@@ -107,7 +92,7 @@ class Dashboard_Widget extends Content_Helper_Feature {
 	 * @since 3.7.0
 	 */
 	public function add_dashboard_widget(): void {
-		if ( ! $this->should_be_enabled() ) {
+		if ( ! $this->can_enable_widget() ) {
 			return;
 		}
 
@@ -124,7 +109,7 @@ class Dashboard_Widget extends Content_Helper_Feature {
 	 * @since 3.7.0
 	 */
 	public function enqueue_assets(): void {
-		if ( ! $this->should_be_enabled() ) {
+		if ( ! $this->can_enable_widget() ) {
 			return;
 		}
 
