@@ -85,7 +85,7 @@ class Parsely {
 	/**
 	 * Declare post types that Parse.ly will process as "posts".
 	 *
-	 * @link https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages
+	 * @link https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages
 	 *
 	 * @since 2.5.0
 	 * @var string[]
@@ -104,7 +104,7 @@ class Parsely {
 	/**
 	 * Declare post types that Parse.ly will process as "non-posts".
 	 *
-	 * @link https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages
+	 * @link https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages
 	 *
 	 * @since 2.5.0
 	 * @var string[]
@@ -477,7 +477,7 @@ class Parsely {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @see https://www.parse.ly/help/integration/metatags#field-description
+	 * @see https://docs.parse.ly/metatags/#h-field-description
 	 *
 	 * @param string $type JSON-LD type.
 	 * @return string "post" or "index".

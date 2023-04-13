@@ -16,7 +16,7 @@ use Parsely\Parsely;
 /**
  * Integration Tests for Date Archive pages metadata.
  *
- * @see https://www.parse.ly/help/integration/jsonld
+ * @see https://docs.parse.ly/metadata-jsonld/
  */
 final class DateArchiveTest extends TestCase {
 	/**

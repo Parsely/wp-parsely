@@ -9,7 +9,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Parse.ly
- * Plugin URI:        https://www.parse.ly/help/integration/wordpress
+ * Plugin URI:        https://docs.parse.ly/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
  * Version:           3.8.4
  * Author:            Parse.ly
