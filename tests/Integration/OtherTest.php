@@ -174,7 +174,7 @@ final class OtherTest extends TestCase {
 		 */
 		set_error_handler( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 			static function ( int $errno, string $errstr ): never {
-				throw new \Exception( $errstr, $errno );
+				throw new \UnexpectedValueException( $errstr, $errno );
 			},
 			E_USER_WARNING
 		);
