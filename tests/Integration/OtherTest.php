@@ -166,6 +166,19 @@ final class OtherTest extends TestCase {
 
 		self::assertSame( 'BlogPosting', $structured_data['@type'] ?? null );
 
+		/**
+		 * Catch the upcoming warning and convert it to an exception, as warning
+		 * support has been removed in PHPUnit 10.
+		 *
+		 * @see https://github.com/sebastianbergmann/phpunit/issues/5062
+		 */
+		set_error_handler( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+			static function ( int $errno, string $errstr ): never {
+				throw new \Exception( $errstr, $errno );
+			},
+			E_USER_WARNING
+		);
+
 		// Try to change the post type to a non-supported value - Not_Supported.
 		add_filter(
 			'wp_parsely_post_type',
@@ -174,9 +187,11 @@ final class OtherTest extends TestCase {
 			}
 		);
 
-		$this->expectWarning();
-		$this->expectWarningMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages' );
+		$this->expectExceptionMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages' );
+
 		$metadata->construct_metadata( $post_obj );
+
+		restore_error_handler();
 	}
 
 	/**
