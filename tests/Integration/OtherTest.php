@@ -175,7 +175,7 @@ final class OtherTest extends TestCase {
 		);
 
 		$this->expectWarning();
-		$this->expectWarningMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages' );
+		$this->expectWarningMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages' );
 		$metadata->construct_metadata( $post_obj );
 	}
 

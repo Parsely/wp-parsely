@@ -15,7 +15,7 @@ use Parsely\Parsely;
 /**
  * Integration Tests for Custom Post Type Archive pages metadata.
  *
- * @see https://www.parse.ly/help/integration/jsonld
+ * @see https://docs.parse.ly/metadata-jsonld/
  * @covers \Parsely\Metadata::construct_metadata
  */
 final class CustomPostTypeArchiveTest extends NonPostTestCase {

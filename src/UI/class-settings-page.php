@@ -239,7 +239,7 @@ final class Settings_Page {
 		$field_id   = 'api_secret';
 		$field_args = array(
 			'option_key'    => $field_id,
-			'help_text'     => __( 'Your API secret is your secret code to <a href="https://www.parse.ly/help/api/analytics/">access our API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API and would like to do so, email your account manager or <a href="mailto:support@parsely.com">support@parsely.com</a>.', 'wp-parsely' ),
+			'help_text'     => __( 'Your API secret is your secret code to <a href="https://docs.parse.ly/the-parsely-api/">access our API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API and would like to do so, email your account manager or <a href="mailto:support@parsely.com">support@parsely.com</a>.', 'wp-parsely' ),
 			'label_for'     => $field_id,
 			'optional_args' => array(
 				'type'                => 'password',
@@ -280,7 +280,7 @@ final class Settings_Page {
 		$field_args = array(
 			'title'         => __( 'Metadata Format', 'wp-parsely' ),
 			'option_key'    => $field_id,
-			'help_text'     => __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with <a href="https://www.parse.ly/help/integration/jsonld/">JSON-LD</a>, but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' ),
+			'help_text'     => __( 'Choose the metadata format for our crawlers to access. Most publishers are fine with <a href="https://docs.parse.ly/metadata-jsonld/">JSON-LD</a>, but if you prefer to use our proprietary metadata format then you can do so here.', 'wp-parsely' ),
 			'radio_options' => array(
 				'json_ld'        => 'json_ld',
 				'repeated_metas' => 'repeated_metas',

@@ -111,7 +111,7 @@ class Post_Builder extends Metadata_Builder {
 			/* translators: 1: JSON @type like NewsArticle, 2: URL */
 				__( '@type %1$s is not supported by Parse.ly. Please use a type mentioned in %2$s', 'wp-parsely' ),
 				$type,
-				'https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages'
+				'https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages'
 			);
 			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
 			trigger_error( esc_html( $error ), E_USER_WARNING );

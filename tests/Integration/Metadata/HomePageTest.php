@@ -17,7 +17,7 @@ const TEST_BLOG_NAME = 'Test Blog';
 /**
  * Integration Tests for the Homepage's metadata.
  *
- * @see https://www.parse.ly/help/integration/jsonld
+ * @see https://docs.parse.ly/metadata-jsonld/
  * @covers \Parsely\Metadata::construct_metadata
  */
 final class HomePageTest extends NonPostTestCase {
