@@ -23,7 +23,7 @@ const EXPECTED_POST_DATETIME = '2021-12-30T20:11:42Z';
 /**
  * Integration Tests for Single Post pages metadata.
  *
- * @see https://www.parse.ly/help/integration/jsonld
+ * @see https://docs.parse.ly/metadata-jsonld/
  */
 final class SinglePostTest extends TestCase {
 	/**
