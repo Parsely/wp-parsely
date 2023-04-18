@@ -101,7 +101,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 			array(
 				'user_login' => $user_login,
 				'role'       => $user_role,
-			) 
+			)
 		);
 	}
 
@@ -443,7 +443,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string[] $hooks WordPress hooks whose availability we have to verify.
 	 * @param bool     $availability_type TRUE if we want to check the presence of given hooks.
 	 */
-	public function assert_wp_hooks_availablility( $hooks, $availability_type ): void {
+	public function assert_wp_hooks_availability( $hooks, $availability_type ): void {
 		if ( true === $availability_type ) {
 			$this->assert_wp_hooks( $hooks );
 		} else {

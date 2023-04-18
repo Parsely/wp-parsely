@@ -365,7 +365,7 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @param bool $assert_type Assert this condition on hooks.
 	 */
 	private function assert_hooks_for_parsely_stats_column( $assert_type ): void {
-		$this->assert_wp_hooks_availablility(
+		$this->assert_wp_hooks_availability(
 			array( 'current_screen', 'manage_posts_columns', 'manage_pages_columns' ),
 			$assert_type
 		);
@@ -609,7 +609,7 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @param bool $assert_type Assert this condition on hooks.
 	 */
 	private function assert_hooks_for_parsely_stats_content( $assert_type = true ): void {
-		$this->assert_wp_hooks_availablility(
+		$this->assert_wp_hooks_availability(
 			array( 'current_screen', 'manage_posts_custom_column', 'manage_pages_custom_column' ),
 			$assert_type
 		);
@@ -1221,7 +1221,7 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @param bool $assert_type Assert this condition on hooks.
 	 */
 	private function assert_hooks_for_parsely_stats_response( $assert_type = true ): void {
-		$this->assert_wp_hooks_availablility(
+		$this->assert_wp_hooks_availability(
 			array( 'current_screen', 'manage_posts_custom_column', 'manage_pages_custom_column', 'admin_footer' ),
 			$assert_type
 		);
