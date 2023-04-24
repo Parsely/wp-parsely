@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace Parsely;
 
-use Parsely\ContentHelper\Dashboard_Widget;
+use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
@@ -106,6 +106,7 @@ function parsely_initialize_plugin(): void {
 	$metadata_renderer->run();
 }
 
+require_once __DIR__ . '/src/content-helper/class-content-helper-feature.php';
 require_once __DIR__ . '/src/UI/class-admin-columns-parsely-stats.php';
 require_once __DIR__ . '/src/UI/class-admin-warning.php';
 require_once __DIR__ . '/src/UI/class-plugins-actions.php';

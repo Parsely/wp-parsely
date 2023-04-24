@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use DateTime;
+use Parsely\Content_Helper\Content_Helper_Feature;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Remote_API_Base;
 use Parsely\RemoteAPI\Analytics_Posts_API;
@@ -43,7 +44,7 @@ use const Parsely\Utils\DATE_UTC_FORMAT;
  *   error: Remote_API_Error|null,
  * }
  */
-class Admin_Columns_Parsely_Stats {
+class Admin_Columns_Parsely_Stats extends Content_Helper_Feature {
 	/**
 	 * Instance of Parsely class.
 	 *
@@ -85,12 +86,51 @@ class Admin_Columns_Parsely_Stats {
 	}
 
 	/**
+	 * Returns the feature's filter name.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @return string The filter name.
+	 */
+	public static function get_feature_filter_name(): string {
+		return self::get_global_filter_name() . '_stats_column';
+	}
+
+	/**
+	 * Returns the feature's script ID.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @return string The script ID.
+	 */
+	public static function get_script_id(): string {
+		return 'admin-parsely-stats-script';
+	}
+
+	/**
+	 * Returns the feature's style ID.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @return string The style ID.
+	 */
+	public static function get_style_id(): string {
+		return 'admin-parsely-stats-styles';
+	}
+
+	/**
 	 * Registers action and filter hook callbacks.
 	 *
 	 * @since 3.7.0
 	 */
 	public function run(): void {
-		if ( ! $this->should_add_hooks() ) {
+		$this->analytics_api = new Analytics_Posts_API( $this->parsely );
+
+		if ( ! $this->can_enable_feature(
+			$this->parsely->site_id_is_set(),
+			$this->parsely->api_secret_is_set(),
+			$this->analytics_api->is_user_allowed_to_make_api_call()
+		) ) {
 			return;
 		}
 
@@ -101,25 +141,6 @@ class Admin_Columns_Parsely_Stats {
 		add_filter( 'manage_pages_columns', array( $this, 'add_parsely_stats_column_on_list_view' ) );
 		add_action( 'manage_pages_custom_column', array( $this, 'update_published_times_and_show_placeholder' ) );
 		add_action( 'admin_footer', array( $this, 'enqueue_parsely_stats_script_with_data' ) );
-	}
-
-	/**
-	 * Determines whether we should add hooks or not depending on plugin settings
-	 * and user capabilities.
-	 */
-	public function should_add_hooks(): bool {
-		if ( ! $this->parsely->site_id_is_set() || ! $this->parsely->api_secret_is_set() ) {
-			return false;
-		}
-
-		$this->analytics_api = new Analytics_Posts_API( $this->parsely );
-
-		// Don't add the column if the user is not allowed to make the API call.
-		if ( ! $this->analytics_api->is_user_allowed_to_make_api_call() ) {
-			return false;
-		}
-
-		return true;
 	}
 
 	/**
@@ -145,7 +166,7 @@ class Admin_Columns_Parsely_Stats {
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_style(
-			'admin-parsely-stats-styles',
+			static::get_style_id(),
 			$built_assets_url . 'admin-parsely-stats.css',
 			$admin_settings_asset['dependencies'],
 			$admin_settings_asset['version']
@@ -225,7 +246,7 @@ class Admin_Columns_Parsely_Stats {
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 		wp_enqueue_script(
-			'admin-parsely-stats-script',
+			static::get_script_id(),
 			$built_assets_url . 'admin-parsely-stats.js',
 			$admin_settings_asset['dependencies'],
 			$admin_settings_asset['version'],
@@ -233,7 +254,7 @@ class Admin_Columns_Parsely_Stats {
 		);
 
 		wp_add_inline_script(
-			'admin-parsely-stats-script',
+			static::get_script_id(),
 			"window.wpParselyPostsStatsResponse = '" . wp_json_encode( $parsely_stats_response ) . "';",
 			'before'
 		);
