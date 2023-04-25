@@ -228,7 +228,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Parse.ly Site ID <em>(required)</em>', 'wp-parsely' ),
+			__( 'Site ID <em>(required)</em>', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -248,7 +248,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Parse.ly API Secret', 'wp-parsely' ),
+			__( 'API Secret', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
@@ -268,7 +268,7 @@ final class Settings_Page {
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Parse.ly Metadata Secret', 'wp-parsely' ),
+			__( 'Metadata Secret', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
