@@ -255,26 +255,6 @@ final class Settings_Page {
 			$field_args
 		);
 
-		// Metadata Secret.
-		$field_id   = 'metadata_secret';
-		$field_args = array(
-			'option_key'    => $field_id,
-			'help_text'     => __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' ),
-			'label_for'     => $field_id,
-			'optional_args' => array(
-				'type'                => 'password',
-				'is_obfuscated_value' => true,
-			),
-		);
-		add_settings_field(
-			$field_id,
-			__( 'Metadata Secret', 'wp-parsely' ),
-			array( $this, 'print_text_tag' ),
-			Parsely::MENU_SLUG,
-			$section_key,
-			$field_args
-		);
-
 		// Metadata Format.
 		$field_id   = 'meta_type';
 		$field_args = array(
@@ -544,6 +524,26 @@ final class Settings_Page {
 			__( 'Advanced', 'wp-parsely' ),
 			'__return_null',
 			Parsely::MENU_SLUG
+		);
+
+		// Metadata Secret.
+		$field_id   = 'metadata_secret';
+		$field_args = array(
+			'option_key'    => $field_id,
+			'help_text'     => __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' ),
+			'label_for'     => $field_id,
+			'optional_args' => array(
+				'type'                => 'password',
+				'is_obfuscated_value' => true,
+			),
+		);
+		add_settings_field(
+			$field_id,
+			__( 'Metadata Secret', 'wp-parsely' ),
+			array( $this, 'print_text_tag' ),
+			Parsely::MENU_SLUG,
+			$section_key,
+			$field_args
 		);
 
 		// Disable autotrack.
@@ -961,24 +961,6 @@ final class Settings_Page {
 			);
 		}
 
-		$input['metadata_secret'] = $this->get_unobfuscated_value( $input['metadata_secret'], $this->parsely->get_options()['metadata_secret'] );
-		if ( '' !== $input['metadata_secret'] ) {
-			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
-				add_settings_error(
-					Parsely::OPTIONS_KEY,
-					'metadata_secret',
-					__( 'The Metadata Secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
-				);
-			} elseif (
-				isset( $input['parsely_wipe_metadata_cache'] ) && 'true' === $input['parsely_wipe_metadata_cache'] // @phpstan-ignore-line
-			) {
-				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
-
-				wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
-				$input['parsely_wipe_metadata_cache'] = false;
-			}
-		}
-
 		if ( ! isset( $input['meta_type'] ) ) {
 			$input['meta_type'] = $options['meta_type'];
 		} else {
@@ -1149,6 +1131,24 @@ final class Settings_Page {
 	 */
 	private function validate_advanced_section( $input ) {
 		$options = $this->parsely->get_options();
+
+		$input['metadata_secret'] = $this->get_unobfuscated_value( $input['metadata_secret'], $this->parsely->get_options()['metadata_secret'] );
+		if ( '' !== $input['metadata_secret'] ) {
+			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
+				add_settings_error(
+					Parsely::OPTIONS_KEY,
+					'metadata_secret',
+					__( 'The Metadata Secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+				);
+			} elseif (
+				isset( $input['parsely_wipe_metadata_cache'] ) && 'true' === $input['parsely_wipe_metadata_cache'] // @phpstan-ignore-line
+			) {
+				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
+
+				wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
+				$input['parsely_wipe_metadata_cache'] = false;
+			}
+		}
 
 		if ( ! isset( $input['disable_autotrack'] ) ) {
 			$input['disable_autotrack'] = $options['disable_autotrack'];
