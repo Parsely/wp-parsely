@@ -952,6 +952,14 @@ final class Settings_Page {
 		}
 
 		$input['api_secret'] = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
+		$api_secret_length   = strlen( $input['api_secret'] );
+		if ( $api_secret_length > 0 && $api_secret_length <= 30 ) {
+			add_settings_error(
+				Parsely::OPTIONS_KEY,
+				'api_secret',
+				__( 'The API Secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+			);
+		}
 
 		$input['metadata_secret'] = $this->get_unobfuscated_value( $input['metadata_secret'], $this->parsely->get_options()['metadata_secret'] );
 		if ( '' !== $input['metadata_secret'] ) {
