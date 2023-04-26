@@ -416,10 +416,13 @@ class Parsely {
 		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
 
 		if ( ! is_array( $options ) ) {
-			return $this->option_defaults;
+			$options = $this->option_defaults;
 		}
 
-		return array_merge( $this->option_defaults, $options );
+		return array_merge(
+			$this->option_defaults,
+			$this->inject_managed_credentials( $options )
+		);
 	}
 
 	/**
@@ -585,5 +588,55 @@ class Parsely {
 	 */
 	public function get_default_options() {
 		return $this->option_defaults;
+	}
+
+	/**
+	 * Injects any managed credentials into the passed plugin options.
+	 *
+	 * This allows hosting providers to provide a more customized experience for
+	 * the plugin by handling credentials automatically.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 *
+	 * @param Parsely_Options $options The options without managed credentials.
+	 *
+	 * @return Parsely_Options The options including the managed credentials.
+	 */
+	private function inject_managed_credentials( $options ) {
+		$credentials = apply_filters( 'wp_parsely_credentials', false );
+
+		if ( ! is_array( $credentials ) ) {
+			return $options;
+		}
+
+		if ( isset( $credentials['site_id'] ) ) {
+			$options['apikey'] = $credentials['site_id'];
+		}
+
+		if ( isset( $credentials['api_secret'] ) ) {
+			$options['api_secret'] = $credentials['api_secret'];
+		}
+
+		if ( isset( $credentials['metadata_secret'] ) ) {
+			$options['metadata_secret'] = $credentials['metadata_secret'];
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Returns whether credentials are being managed at the platform level.
+	 *
+	 * This allows hosting providers to provide a more customized experience for
+	 * the plugin by handling credentials automatically.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 *
+	 * @return bool Whether credentials are being managed at the platform level.
+	 */
+	public static function are_credentials_managed(): bool {
+		return has_filter( 'wp_parsely_credentials' );
 	}
 }
