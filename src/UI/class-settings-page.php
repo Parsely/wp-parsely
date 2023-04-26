@@ -960,8 +960,9 @@ final class Settings_Page {
 					add_settings_error(
 						Parsely::OPTIONS_KEY,
 						'apikey',
-						__( 'The Site ID is incorrect. It should look like "example.com".', 'wp-parsely' )
+						__( 'The Site ID was not saved because it is incorrect. It should look like "example.com".', 'wp-parsely' )
 					);
+					$input['apikey'] = $options['apikey'];
 				} else {
 					$input['apikey'] = $site_id;
 				}
@@ -973,8 +974,9 @@ final class Settings_Page {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'api_secret',
-					__( 'The API Secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+					__( 'The API Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
 				);
+				$input['api_secret'] = $options['api_secret'];
 			}
 		}
 
@@ -1159,8 +1161,9 @@ final class Settings_Page {
 					add_settings_error(
 						Parsely::OPTIONS_KEY,
 						'metadata_secret',
-						__( 'The Metadata Secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+						__( 'The Metadata Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
 					);
+					$input['metadata_secret'] = $options['metadata_secret'];
 				} elseif (
 					isset( $input['parsely_wipe_metadata_cache'] ) && 'true' === $input['parsely_wipe_metadata_cache'] // @phpstan-ignore-line
 				) {
