@@ -214,6 +214,96 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that managed credentials get set as expected.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\Parsely::are_credentials_managed
+	 * @covers \Parsely\Parsely::inject_managed_credentials
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::get_default_options
+	 */
+	public function test_managed_credentials_get_set_as_expected(): void {
+		// Valid and invalid credential sets to be tested.
+		$credential_sets = array(
+			array( 'site_id' => 'example.com' ),
+			array( 'api_secret' => 'test' ),
+			array( 'metadata_secret' => 'test' ),
+			array(
+				'site_id'    => 'example.com',
+				'api_secret' => 'test',
+			),
+			array(
+				'site_id'         => 'example.com',
+				'metadata_secret' => 'test',
+			),
+			array(
+				'api_secret'      => 'test',
+				'metadata_secret' => 'test',
+			),
+			array(
+				'site_id'         => 'example.com',
+				'api_secret'      => 'test',
+				'metadata_secret' => 'test',
+			),
+			array( 'invalid_key' => 'example.com' ),
+			array(
+				'site_id'     => 'example.com',
+				'invalid_key' => 'test',
+			),
+			array( 'invalid_key' => 'test' ),
+			array(),
+			'some_string',
+			1,
+		);
+
+		// Initializations.
+		$default_options             = self::$parsely->get_default_options();
+		$inject_credentials_function = self::get_method(
+			'inject_managed_credentials',
+			Parsely::class
+		);
+
+		foreach ( $credential_sets as $credentials ) {
+			// Add managed credentials.
+			add_filter(
+				'wp_parsely_credentials',
+				function() use ( $credentials ) {
+					return $credentials;
+				}
+			);
+			self::assertTrue( Parsely::are_credentials_managed() );
+
+			// Check that managed credentials get injected correctly.
+			$actual_options = (array) $inject_credentials_function->invoke(
+				self::$parsely,
+				$default_options
+			);
+			if ( is_array( $credentials ) && 0 < count( $credentials ) ) {
+				foreach ( $credentials as $key => $value ) {
+					if ( 'site_id' === $key ) {
+						self::assertSame( $actual_options['apikey'], $value );
+					} elseif ( 'api_secret' === $key ) {
+						self::assertSame( $actual_options['api_secret'], $value );
+					} elseif ( 'metadata_secret' === $key ) {
+						self::assertSame( $actual_options['metadata_secret'], $value );
+					} else {
+						// Invalid keys should not be added to the options array.
+						self::assertFalse( isset( $actual_options[ $key ] ) );
+					}
+				}
+			} else {
+				// Credentials are of wrong data type or an empty array.
+				self::assertSame( $default_options, $actual_options );
+			}
+
+			// Reset managed credentials fo next iteration.
+			remove_all_filters( 'wp_parsely_credentials' );
+			self::assertFalse( Parsely::are_credentials_managed() );
+		}
+	}
+
+	/**
 	 * Verifies that get_site_id() works as expected.
 	 *
 	 * @since 2.6.0
