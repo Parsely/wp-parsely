@@ -68,7 +68,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	 * More information: https://github.com/Parsely/wp-parsely/issues/962
 	 */
 	it( 'Should not crash the editor', async () => {
-		await setSiteKeys( 'blog.parsely.com', 'test' );
+		await setSiteKeys( 'blog.parsely.com', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' );
 		await createNewPost();
 
 		// Close sidebar if it is opened.
