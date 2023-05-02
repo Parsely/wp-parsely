@@ -126,7 +126,7 @@ function parsely_admin_init_register(): void {
 	( new Row_Actions( $parsely ) )->run();
 	( new Admin_Columns_Parsely_Stats( $parsely ) )->run();
 	( new Site_Health( $parsely ) )->run();
-	( new Dashboard_Widget() )->run();
+	( new Dashboard_Widget( $parsely ) )->run();
 }
 
 require_once __DIR__ . '/src/UI/class-settings-page.php';
@@ -219,7 +219,7 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\init_content_helper
  * @since 3.5.0 Moved from Parsely\Scripts\enqueue_block_editor_assets()
  */
 function init_content_helper(): void {
-	( new Content_Helper() )->run();
+	( new Content_Helper( $GLOBALS['parsely'] ) )->run();
 }
 
 require_once __DIR__ . '/src/UI/class-recommended-widget.php';

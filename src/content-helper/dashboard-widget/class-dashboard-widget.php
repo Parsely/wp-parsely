@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
+use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
-use UnexpectedValueException;
 
 use function Parsely\Utils\get_asset_info;
 
@@ -23,6 +23,26 @@ use const Parsely\PARSELY_FILE;
  * @since 3.7.0
  */
 class Dashboard_Widget extends Content_Helper_Feature {
+	/**
+	 * Instance of Parsely class.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @var Parsely
+	 */
+	private $parsely;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @param Parsely $parsely Instance of Parsely class.
+	 */
+	public function __construct( Parsely $parsely ) {
+		$this->parsely = $parsely;
+	}
+
 	/**
 	 * Returns the feature's filter name.
 	 *

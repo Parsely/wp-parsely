@@ -20,6 +20,25 @@ use function Parsely\Utils\get_asset_info;
  * @since 3.5.0
  */
 class Content_Helper extends Content_Helper_Feature {
+	/**
+	 * Instance of Parsely class.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @var Parsely
+	 */
+	private $parsely;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @param Parsely $parsely Instance of Parsely class.
+	 */
+	public function __construct( Parsely $parsely ) {
+		$this->parsely = $parsely;
+	}
 
 	/**
 	 * Returns the feature's filter name.
