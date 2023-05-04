@@ -135,6 +135,8 @@ class Dashboard_Widget extends Content_Helper_Feature {
 			true
 		);
 
+		$this->inject_inline_scripts();
+
 		wp_enqueue_style(
 			static::get_style_id(),
 			$built_assets_url . 'dashboard-widget.css',

@@ -58,7 +58,7 @@ function PerformanceDetails() {
 	}, [] );
 
 	if ( error ) {
-		return error.ProcessedMessage();
+		return error.renderMessage();
 	}
 
 	return (

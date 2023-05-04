@@ -55,7 +55,7 @@ function RelatedTopPostList() {
 
 	// Show error message.
 	if ( error ) {
-		return error.ProcessedMessage( 'parsely-top-posts-descr' );
+		return error.renderMessage( { className: 'parsely-top-posts-descr' } );
 	}
 
 	// Show related top posts list.

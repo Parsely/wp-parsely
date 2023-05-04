@@ -15,9 +15,22 @@ export enum ContentHelperErrorCode {
 	ParselyApiResponseContainsError = 'ch_response_contains_error',
 	ParselyApiReturnedNoData = 'ch_parsely_api_returned_no_data',
 	ParselyApiReturnedTooManyResults = 'ch_parsely_api_returned_too_many_results',
+	PluginCredentialsNotSetMessageDetected = 'parsely_credentials_not_set_message_detected',
 	PluginSettingsApiSecretNotSet = 'parsely_api_secret_not_set',
 	PluginSettingsSiteIdNotSet = 'parsely_site_id_not_set',
 	PostIsNotPublished = 'ch_post_not_published',
+}
+
+/**
+ * Defines the props structure for the ContentHelperErrorMessage component.
+ *
+ * @since 3.9.0
+ *
+ */
+interface ContentHelperErrorMessageProps {
+	children?: string;
+	className?: string;
+	testId?: string
 }
 
 /**
@@ -27,7 +40,7 @@ export enum ContentHelperErrorCode {
  */
 export class ContentHelperError extends Error {
 	protected code: ContentHelperErrorCode;
-	protected hint: JSX.Element | null = null;
+	protected hint: string | null = null;
 	public retryFetch: boolean;
 
 	constructor( message: string, code: ContentHelperErrorCode, prefix = __( 'Error: ', 'wp-parsely' ) ) {
@@ -41,6 +54,7 @@ export class ContentHelperError extends Error {
 			ContentHelperErrorCode.ParselyApiResponseContainsError,
 			ContentHelperErrorCode.ParselyApiReturnedNoData,
 			ContentHelperErrorCode.ParselyApiReturnedTooManyResults,
+			ContentHelperErrorCode.PluginCredentialsNotSetMessageDetected,
 			ContentHelperErrorCode.PluginSettingsApiSecretNotSet,
 			ContentHelperErrorCode.PluginSettingsSiteIdNotSet,
 			ContentHelperErrorCode.PostIsNotPublished,
@@ -52,14 +66,58 @@ export class ContentHelperError extends Error {
 		Object.setPrototypeOf( this, ContentHelperError.prototype );
 	}
 
-	public ProcessedMessage( className = '' ): JSX.Element {
-		// Errors that need to display the "Contact Us" message.
-		const contactUsErrorCodes = [
+	/**
+	 * Returns an error message element that can contain HTML.
+	 *
+	 * Warning: Any HTML passed to this function should be sanitized.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @param {ContentHelperErrorMessageProps} props The props needed for the component.
+	 *
+	 * @return {JSX.Element} The resulting JSX Element.
+	 */
+	protected ContentHelperErrorMessage( props: ContentHelperErrorMessageProps ): JSX.Element {
+		let innerHtml = '';
+		if ( props.children ) {
+			innerHtml = props.children;
+		}
+
+		let classNames = 'content-helper-error-message';
+		if ( props.className ) {
+			classNames += ' ' + props.className;
+		}
+
+		return (
+			<div className={ classNames }
+				data-testid={ props?.testId }
+				dangerouslySetInnerHTML={ { __html: innerHtml } }
+			/>
+		);
+	}
+
+	/**
+	 * Renders the error's message.
+	 *
+	 * @param {ContentHelperErrorMessageProps|null} props The props needed for the function.
+	 *
+	 * @return {JSX.Element} The resulting JSX Element.
+	 */
+	public renderMessage( props: ContentHelperErrorMessageProps|null = null ): JSX.Element {
+		// Handle cases where credentials are not set.
+		const CredentialsNotSetErrorCodes = [
+			ContentHelperErrorCode.PluginCredentialsNotSetMessageDetected,
 			ContentHelperErrorCode.PluginSettingsSiteIdNotSet,
 			ContentHelperErrorCode.PluginSettingsApiSecretNotSet,
 		];
-		if ( contactUsErrorCodes.includes( this.code ) ) {
-			return this.ContactUsMessage();
+		if ( CredentialsNotSetErrorCodes.includes( this.code ) ) {
+			return (
+				<this.ContentHelperErrorMessage
+					className={ props?.className }
+					testId="credentials-not-set-message">
+					{ window.wpParselyCredentialsNotSetMessage }
+				</this.ContentHelperErrorMessage>
+			);
 		}
 
 		// Errors that need a hint.
@@ -77,39 +135,11 @@ export class ContentHelperError extends Error {
 		}
 
 		return (
-			<>
-				<p className={ className } data-testid="error">
-					{ this.message }
-				</p>
-				{ this.hint }
-			</>
-		);
-	}
-
-	/**
-	 * "Contact Us" component that we display in place of certain errors.
-	 */
-	protected ContactUsMessage(): JSX.Element {
-		return (
-			<div className="parsely-contact-us parsely-top-posts-descr" data-testid="parsely-contact-us">
-				<p>
-					{ /* eslint-disable-next-line react/jsx-no-target-blank */ }
-					<a href="https://www.parse.ly/contact" target="_blank" rel="noopener">
-						{ __( 'Contact us', 'wp-parsely' ) + ' ' }
-					</a>
-					{ __( 'about advanced plugin features and the Parse.ly dashboard.', 'wp-parsely' ) }
-				</p>
-				<p>
-					{ __(
-						'Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in',
-						'wp-parsely'
-					) + ' ' }
-					{ /* eslint-disable-next-line react/jsx-no-target-blank */ }
-					<a href="/wp-admin/options-general.php?page=parsely" target="_blank" rel="noopener">
-						{ __( 'wp-parsely options.', 'wp-parsely' ) }
-					</a>
-				</p>
-			</div>
+			<this.ContentHelperErrorMessage
+				className={ props?.className }
+				testId="error">
+				{ `<p>${ this.message }</p>${ this.hint ? this.hint : '' }` }
+			</this.ContentHelperErrorMessage>
 		);
 	}
 
@@ -118,11 +148,7 @@ export class ContentHelperError extends Error {
 	 *
 	 * @param {string} hint The hint to display
 	 */
-	protected Hint( hint: string ): JSX.Element {
-		return (
-			<p className="parsely-error-hint" data-testid="parsely-error-hint">
-				<strong>{ __( 'Hint:', 'wp-parsely' ) }</strong> { hint }
-			</p>
-		);
+	protected Hint( hint: string ): string {
+		return `<p className="content-helper-error-message-hint" data-testid="content-helper-error-message-hint"><strong>${ __( 'Hint:', 'wp-parsely' ) }</strong> ${ hint }</p>`;
 	}
 }

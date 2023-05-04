@@ -84,6 +84,8 @@ class Content_Helper extends Content_Helper_Feature {
 			true
 		);
 
+		$this->inject_inline_scripts();
+
 		wp_enqueue_style(
 			static::get_style_id(),
 			plugin_dir_url( PARSELY_FILE ) . 'build/content-helper.css',
