@@ -224,7 +224,7 @@ final class Settings_Page {
 			'optional_args' => array(
 				'required'    => 'required',
 				'placeholder' => 'mydomain.com',
-				'disabled'    => $are_credentials_managed ? true : false,
+				'disabled'    => $are_credentials_managed,
 			),
 
 		);
