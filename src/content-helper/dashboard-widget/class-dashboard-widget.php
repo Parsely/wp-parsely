@@ -24,15 +24,6 @@ use const Parsely\PARSELY_FILE;
  */
 class Dashboard_Widget extends Content_Helper_Feature {
 	/**
-	 * Instance of Parsely class.
-	 *
-	 * @since 3.9.0
-	 *
-	 * @var Parsely
-	 */
-	private $parsely;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 3.9.0

@@ -46,13 +46,6 @@ use const Parsely\Utils\DATE_UTC_FORMAT;
  */
 class Admin_Columns_Parsely_Stats extends Content_Helper_Feature {
 	/**
-	 * Instance of Parsely class.
-	 *
-	 * @var Parsely
-	 */
-	private $parsely;
-
-	/**
 	 * Instance of Parsely Analytics Posts API.
 	 *
 	 * @var Analytics_Posts_API

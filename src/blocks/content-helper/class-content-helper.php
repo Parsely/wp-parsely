@@ -21,15 +21,6 @@ use function Parsely\Utils\get_asset_info;
  */
 class Content_Helper extends Content_Helper_Feature {
 	/**
-	 * Instance of Parsely class.
-	 *
-	 * @since 3.9.0
-	 *
-	 * @var Parsely
-	 */
-	private $parsely;
-
-	/**
 	 * Constructor.
 	 *
 	 * @since 3.9.0

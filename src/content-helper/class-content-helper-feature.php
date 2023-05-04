@@ -10,12 +10,23 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
+use Parsely\Parsely;
+
 /**
  * Base class for all Content Helper features.
  *
  * @since 3.9.0
  */
 abstract class Content_Helper_Feature {
+	/**
+	 * Instance of Parsely class.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @var Parsely
+	 */
+	protected $parsely;
+
 	/**
 	 * Returns the global Content Helper filter name. The global filter controls
 	 * the enabled/disabled state of all Content Helper features.
