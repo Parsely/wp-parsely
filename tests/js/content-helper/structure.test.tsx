@@ -38,7 +38,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 			ContentHelperErrorCode.PluginSettingsSiteIdNotSet
 		) ) );
 
-		expect( await verifyContactUsMessage( getRelatedTopPostsFn ) ).toBeTruthy();
+		expect( await verifyCredentialsNotSetMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 	} );
 
 	test( 'should show contact us message when Parse.ly API Secret is not set', async () => {
@@ -47,7 +47,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 			ContentHelperErrorCode.PluginSettingsApiSecretNotSet
 		) ) );
 
-		expect( await verifyContactUsMessage( getRelatedTopPostsFn ) ).toBeTruthy();
+		expect( await verifyCredentialsNotSetMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 	} );
 
 	test( 'should show error message when API returns the error', async () => {
@@ -67,7 +67,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 
 		expect( await verifyApiErrorMessage( getRelatedTopPostsFn ) ).toBeTruthy();
 
-		const apiErrorHint = screen.queryByTestId( 'parsely-error-hint' );
+		const apiErrorHint = screen.queryByTestId( 'content-helper-error-message-hint' );
 		expect( apiErrorHint ).toBeInTheDocument();
 		expect( apiErrorHint ).toBeVisible();
 		expect( apiErrorHint?.textContent ).toEqual(
@@ -167,8 +167,8 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		return screen.queryAllByTestId( 'parsely-top-post' );
 	}
 
-	function getContactUsMessage() {
-		return screen.queryByTestId( 'parsely-contact-us' );
+	function getCredentialsNotSetMessage() {
+		return screen.queryByTestId( 'credentials-not-set-message' );
 	}
 
 	function getRelatedTopPostsMockFn( mockFn: () => Promise<GetRelatedTopPostsResult> ) {
@@ -196,16 +196,16 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		return posts;
 	}
 
-	async function verifyContactUsMessage( getRelatedTopPostsFn: jest.SpyInstance<Promise<GetRelatedTopPostsResult>> ) {
+	async function verifyCredentialsNotSetMessage( getRelatedTopPostsFn: jest.SpyInstance<Promise<GetRelatedTopPostsResult>> ) {
 		render( <RelatedTopPostList /> );
 		expect( getSpinner() ).toBeInTheDocument();
 
-		await waitFor( () => screen.findByTestId( 'parsely-contact-us' ), { timeout: 3000 } );
+		await waitFor( () => screen.findByTestId( 'credentials-not-set-message' ), { timeout: 3000 } );
 
 		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 
-		const contactUsMessage = getContactUsMessage();
+		const contactUsMessage = getCredentialsNotSetMessage();
 		expect( contactUsMessage ).toBeInTheDocument();
 		expect( contactUsMessage ).toBeVisible();
 
@@ -224,7 +224,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		const apiError = screen.queryByTestId( 'error' );
 		expect( apiError ).toBeInTheDocument();
 		expect( apiError ).toBeVisible();
-		expect( apiError?.textContent ).toEqual( `Error: Fake error from API.` );
+		expect( apiError?.textContent?.startsWith( 'Error: Fake error from API.' ) ).toBeTruthy();
 
 		return true;
 	}

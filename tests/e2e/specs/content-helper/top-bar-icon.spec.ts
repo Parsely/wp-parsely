@@ -12,7 +12,7 @@ import {
 import {
 	setSiteKeys,
 	startUpTest,
-} from '../../../utils';
+} from '../../utils';
 
 // Selectors.
 const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
@@ -22,6 +22,7 @@ const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
  */
 describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => {
 	const contentHelperTitle = 'Performance DetailsThis post is not published, so its details are unavailable.Related Top Posts';
+	const contentHelperTitleNoCredentials = 'Performance DetailsContact us about advanced plugin features and the Parse.ly dashboard.Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in wp-parsely options.Related Top Posts';
 
 	/**
 	 * Logs in to WordPress and activates the Parse.ly plugin.
@@ -35,7 +36,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	 * Secret are not provided.
 	 */
 	it( 'Should be displayed when the Site ID and API Secret are not provided', async () => {
-		expect( await testContentHelperIcon() ).toMatch( contentHelperTitle );
+		expect( await testContentHelperIcon() ).toMatch( contentHelperTitleNoCredentials );
 	} );
 
 	/**
@@ -43,7 +44,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	 * provided.
 	 */
 	it( 'Should be displayed when only the Site ID is provided.', async () => {
-		expect( await testContentHelperIcon( 'blog.parsely.com' ) ).toMatch( contentHelperTitle );
+		expect( await testContentHelperIcon( 'blog.parsely.com' ) ).toMatch( contentHelperTitleNoCredentials );
 	} );
 
 	/**
@@ -51,7 +52,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	 * provided.
 	 */
 	it( 'Should be displayed when only the API Secret is provided', async () => {
-		expect( await testContentHelperIcon( '', 'test' ) ).toMatch( contentHelperTitle );
+		expect( await testContentHelperIcon( '', 'test' ) ).toMatch( contentHelperTitleNoCredentials );
 	} );
 
 	/**
