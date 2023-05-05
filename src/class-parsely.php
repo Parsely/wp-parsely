@@ -419,9 +419,15 @@ class Parsely {
 			$options = $this->option_defaults;
 		}
 
+		/**
+		 * Final options including any managed credentials.
+		 *
+		 * @var Parsely_Options
+		 */
 		return array_merge(
 			$this->option_defaults,
-			$this->inject_managed_credentials( $options )
+			$options,
+			$this->get_managed_credentials()
 		);
 	}
 
@@ -599,30 +605,30 @@ class Parsely {
 	 * @since 3.9.0
 	 * @access private
 	 *
-	 * @param Parsely_Options $options The options without managed credentials.
-	 *
-	 * @return Parsely_Options The options including the managed credentials.
+	 * @return Parsely_Options|array<empty> The managed credentials.
 	 */
-	private function inject_managed_credentials( $options ) {
+	private function get_managed_credentials() {
 		$credentials = apply_filters( 'wp_parsely_credentials', false );
 
 		if ( ! is_array( $credentials ) ) {
-			return $options;
+			return array();
 		}
 
+		$result = array();
+
 		if ( isset( $credentials['site_id'] ) ) {
-			$options['apikey'] = $credentials['site_id'];
+			$result['apikey'] = $credentials['site_id'];
 		}
 
 		if ( isset( $credentials['api_secret'] ) ) {
-			$options['api_secret'] = $credentials['api_secret'];
+			$result['api_secret'] = $credentials['api_secret'];
 		}
 
 		if ( isset( $credentials['metadata_secret'] ) ) {
-			$options['metadata_secret'] = $credentials['metadata_secret'];
+			$result['metadata_secret'] = $credentials['metadata_secret'];
 		}
 
-		return $options;
+		return $result;
 	}
 
 	/**

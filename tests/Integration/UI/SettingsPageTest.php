@@ -54,7 +54,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::inject_managed_credentials
+	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\UI\Settings_Page::__construct
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
@@ -90,7 +90,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::inject_managed_credentials
+	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\UI\Settings_Page::__construct
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
@@ -126,7 +126,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::inject_managed_credentials
+	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\UI\Settings_Page::__construct
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
@@ -163,7 +163,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::inject_managed_credentials
+	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\UI\Settings_Page::__construct
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
@@ -199,7 +199,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::inject_managed_credentials
+	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\UI\Settings_Page::__construct
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
@@ -235,7 +235,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::inject_managed_credentials
+	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\UI\Settings_Page::__construct
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
@@ -278,7 +278,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::inject_managed_credentials
+	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\UI\Settings_Page::__construct
 	 * @uses \Parsely\UI\Settings_Page::get_logo_default
 	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
