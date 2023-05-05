@@ -145,7 +145,7 @@ final class SettingsPageTest extends TestCase {
 		$options = self::$parsely->get_options();
 
 		// More than 30 characters.
-		$options['api_secret'] = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+		$options['api_secret'] = 'valid_api_secret_key_based_on_length';
 		$expected              = $options;
 
 		$actual = self::$settings_page->validate_options( $options );
@@ -217,7 +217,7 @@ final class SettingsPageTest extends TestCase {
 	public function test_valid_metadata_secret_values_are_retained_when_validated(): void {
 		$options = self::$parsely->get_options();
 
-		$options['metadata_secret'] = 'aaaaaaaaaa'; // 10 characters.
+		$options['metadata_secret'] = 'goodlength'; // 10 characters.
 		$expected                   = $options;
 
 		$actual = self::$settings_page->validate_options( $options );
@@ -254,12 +254,12 @@ final class SettingsPageTest extends TestCase {
 		$expected = self::$parsely->get_options();
 		$options  = self::$parsely->get_options();
 
-		$options['metadata_secret'] = 'a'; // Less than 10 characters.
+		$options['metadata_secret'] = 'too_short'; // Less than 10 characters.
 
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );
 
-		$options['metadata_secret'] = 'aaaaaaaaaaa'; // More than 10 characters.
+		$options['metadata_secret'] = 'too_lengthy'; // More than 10 characters.
 
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );

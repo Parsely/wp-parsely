@@ -11,6 +11,7 @@ import {
 } from '@wordpress/e2e-test-utils';
 
 export const PLUGIN_VERSION = '3.8.4';
+export const VALID_API_SECRET = 'valid_api_secret_key_based_on_length';
 
 export const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
 

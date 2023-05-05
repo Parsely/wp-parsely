@@ -10,6 +10,7 @@ import {
  * Internal dependencies.
  */
 import {
+	VALID_API_SECRET,
 	setSiteKeys,
 	startUpTest,
 } from '../../../utils';
@@ -68,7 +69,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	 * More information: https://github.com/Parsely/wp-parsely/issues/962
 	 */
 	it( 'Should not crash the editor', async () => {
-		await setSiteKeys( 'blog.parsely.com', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' );
+		await setSiteKeys( 'blog.parsely.com', VALID_API_SECRET );
 		await createNewPost();
 
 		// Close sidebar if it is opened.
