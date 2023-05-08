@@ -219,7 +219,7 @@ final class Settings_Page {
 		$field_id   = 'apikey';
 		$field_args = array(
 			'option_key'    => $field_id,
-			'help_text'     => $are_credentials_managed ? '' : __( 'Your Site ID is typically your own site domain without <code>http(s)://</code> prefixes or trailing <code>/</code> (e.g. <code>mydomain.com</code>).', 'wp-parsely' ),
+			'help_text'     => __( 'Your Site ID is typically your own site domain without <code>http(s)://</code> prefixes or trailing <code>/</code> (e.g. <code>mydomain.com</code>).', 'wp-parsely' ),
 			'label_for'     => $field_id,
 			'optional_args' => array(
 				'required'    => 'required',
