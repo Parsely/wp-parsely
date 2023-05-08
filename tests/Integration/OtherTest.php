@@ -233,110 +233,146 @@ final class OtherTest extends TestCase {
 		// Valid and invalid credential sets to be tested.
 		$credential_sets = array(
 			array(
-				'input'    => array( 'site_id' => 'example.com' ),
-				'expected' => array( 'apikey' => 'example.com' ),
+				'input_values'  => array( 'site_id' => 'example.com' ),
+				'output_values' => array( 'apikey' => 'example.com' ),
+				'managed'       => false,
 			),
 			array(
-				'input'    => array( 'api_secret' => 'test' ),
-				'expected' => array( 'api_secret' => 'test' ),
+				'input_values'  => array( 'api_secret' => 'test' ),
+				'output_values' => array( 'api_secret' => 'test' ),
+				'managed'       => false,
 			),
 			array(
-				'input'    => array( 'metadata_secret' => 'test' ),
-				'expected' => array( 'metadata_secret' => 'test' ),
+				'input_values'  => array( 'metadata_secret' => 'test' ),
+				'output_values' => array( 'metadata_secret' => 'test' ),
+				'managed'       => false,
 			),
 			array(
-				'input'    => array(
+				'input_values'  => array(
+					'site_id'    => 'example.com',
+					'api_secret' => 'test',
+				),
+				'output_values' => array(
+					'apikey'     => 'example.com',
+					'api_secret' => 'test',
+				),
+				'managed'       => true,
+			),
+			array(
+				'input_values'  => array(
 					'site_id'         => 'example.com',
 					'metadata_secret' => 'test',
 				),
-				'expected' => array(
+				'output_values' => array(
 					'apikey'          => 'example.com',
 					'metadata_secret' => 'test',
 				),
+				'managed'       => false,
 			),
 			array(
-				'input'    => array(
+				'input_values'  => array(
 					'api_secret'      => 'test',
 					'metadata_secret' => 'test',
 				),
-				'expected' => array(
+				'output_values' => array(
 					'api_secret'      => 'test',
 					'metadata_secret' => 'test',
 				),
+				'managed'       => false,
 			),
 			array(
-				'input'    => array(
+				'input_values'  => array(
 					'site_id'         => 'example.com',
 					'api_secret'      => 'test',
 					'metadata_secret' => 'test',
 				),
-				'expected' => array(
+				'output_values' => array(
+
 					'apikey'          => 'example.com',
 					'api_secret'      => 'test',
 					'metadata_secret' => 'test',
 				),
+				'managed'       => true,
 			),
 			array(
-				'input'    => array( 'invalid_key' => 'example.com' ),
-				'expected' => array(),
+				'input_values'  => array( 'invalid_key' => 'example.com' ),
+				'output_values' => array(),
+				'managed'       => false,
 			),
 			array(
-				'input'    => array(
+				'input_values'  => array(
 					'site_id'     => 'example.com',
 					'invalid_key' => 'test',
 				),
-				'expected' => array( 'apikey' => 'example.com' ),
+				'output_values' => array( 'apikey' => 'example.com' ),
+				'managed'       => false,
 			),
 			array(
-				'input'    => array(),
-				'expected' => array(),
+				'input_values'  => array(),
+				'output_values' => array(),
+				'managed'       => false,
 			),
 			array(
-				'input'    => 'some_string',
-				'expected' => array(),
+				'input_values'  => 'some_string',
+				'output_values' => array(),
+				'managed'       => false,
 			),
 			array(
-				'input'    => 1,
-				'expected' => array(),
+				'input_values'  => 1,
+				'output_values' => array(),
+				'managed'       => false,
 			),
 		);
 
-		// Initializations.
 		$get_managed_credentials_function = self::get_method(
 			'get_managed_credentials',
 			Parsely::class
 		);
 
+		$option_keys = array(
+			'apikey',
+			'api_secret',
+			'metadata_secret',
+		);
+
 		foreach ( $credential_sets as $credentials ) {
-			// Set managed credentials filter to current values.
 			add_filter(
 				'wp_parsely_credentials',
 				function() use ( $credentials ) {
-					return $credentials['input'];
+					return $credentials['input_values'];
 				}
 			);
-			self::assertTrue( Parsely::are_credentials_managed() );
+
+			$parsely             = new Parsely();
+			$options             = $parsely->get_options();
+			$managed_credentials = (array) $get_managed_credentials_function
+				->invoke( $parsely );
+
+			self::assertSame(
+				$credentials['managed'],
+				$parsely->are_credentials_managed
+			);
+
+			if ( false === $credentials['managed'] ) {
+				// Credentials are not being managed and should thus be empty.
+				self::assertSame( array(), $managed_credentials );
+				continue;
+			}
 
 			// Verify that managed credentials are being returned correctly.
-			$managed_credentials = (array) $get_managed_credentials_function
-				->invoke( self::$parsely );
-			self::assertSame( $credentials['expected'], $managed_credentials );
-
-			$options = self::$parsely->get_options();
-			$keys    = array( 'apikey', 'api_secret', 'metadata_secret' );
+			self::assertSame(
+				$credentials['output_values'],
+				$managed_credentials
+			);
 
 			// Verify that managed credentials are being merged into options.
-			foreach ( $keys as $key ) {
+			foreach ( $option_keys as $key ) {
 				if ( isset( $managed_credentials[ $key ] ) ) {
 					self::assertSame( $managed_credentials[ $key ], $options[ $key ] );
 				} else {
 					self::assertSame( '', $options[ $key ] );
 				}
 			}
-
-			// Reset managed credentials for next iteration.
-			remove_all_filters( 'wp_parsely_credentials' );
-			self::assertFalse( Parsely::are_credentials_managed() );
 		}
 	}
 

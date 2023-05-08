@@ -205,7 +205,7 @@ final class Settings_Page {
 	 * @since 3.2.0
 	 */
 	private function initialize_basic_section(): void {
-		$are_credentials_managed = Parsely::are_credentials_managed();
+		$are_credentials_managed = $this->parsely->are_credentials_managed;
 		$section_key             = 'basic-section';
 
 		add_settings_section(
@@ -521,7 +521,7 @@ final class Settings_Page {
 	 * @since 3.2.0
 	 */
 	private function initialize_advanced_section(): void {
-		$are_credentials_managed = Parsely::are_credentials_managed();
+		$are_credentials_managed = $this->parsely->are_credentials_managed;
 		$section_key             = 'advanced-section';
 
 		add_settings_section(
@@ -941,7 +941,7 @@ final class Settings_Page {
 	 * @return ParselySettingOptions Validated inputs.
 	 */
 	private function validate_basic_section( $input ) {
-		$are_credentials_managed = Parsely::are_credentials_managed();
+		$are_credentials_managed = $this->parsely->are_credentials_managed;
 		$options                 = $this->parsely->get_options();
 
 		if ( $are_credentials_managed ) {
@@ -1149,7 +1149,7 @@ final class Settings_Page {
 	 * @return ParselySettingOptions Validated inputs.
 	 */
 	private function validate_advanced_section( $input ) {
-		$are_credentials_managed = Parsely::are_credentials_managed();
+		$are_credentials_managed = $this->parsely->are_credentials_managed;
 		$options                 = $this->parsely->get_options();
 
 		if ( $are_credentials_managed ) {

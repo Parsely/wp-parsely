@@ -126,10 +126,24 @@ class Parsely {
 	private static $all_supported_types;
 
 	/**
+	 * Returns whether credentials are being managed at the platform level.
+	 *
+	 * This allows hosting providers to provide a more customized experience for
+	 * the plugin by handling credentials automatically.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 * @var bool
+	 */
+	public $are_credentials_managed;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
 		self::$all_supported_types = array_merge( self::SUPPORTED_JSONLD_POST_TYPES, self::SUPPORTED_JSONLD_NON_POST_TYPES );
+
+		$this->are_credentials_managed = $this->are_credentials_managed();
 	}
 
 	/**
@@ -597,10 +611,7 @@ class Parsely {
 	}
 
 	/**
-	 * Injects any managed credentials into the passed plugin options.
-	 *
-	 * This allows hosting providers to provide a more customized experience for
-	 * the plugin by handling credentials automatically.
+	 * Returns the credentials that are being managed at the platform level.
 	 *
 	 * @since 3.9.0
 	 * @access private
@@ -608,13 +619,12 @@ class Parsely {
 	 * @return Parsely_Options|array<empty> The managed credentials.
 	 */
 	private function get_managed_credentials() {
-		$credentials = apply_filters( 'wp_parsely_credentials', false );
-
-		if ( ! is_array( $credentials ) ) {
+		if ( true !== $this->are_credentials_managed ) {
 			return array();
 		}
 
-		$result = array();
+		$credentials = apply_filters( 'wp_parsely_credentials', false );
+		$result      = array();
 
 		if ( isset( $credentials['site_id'] ) ) {
 			$result['apikey'] = $credentials['site_id'];
@@ -634,15 +644,27 @@ class Parsely {
 	/**
 	 * Returns whether credentials are being managed at the platform level.
 	 *
-	 * This allows hosting providers to provide a more customized experience for
-	 * the plugin by handling credentials automatically.
-	 *
 	 * @since 3.9.0
 	 * @access private
 	 *
 	 * @return bool Whether credentials are being managed at the platform level.
 	 */
-	public static function are_credentials_managed(): bool {
-		return has_filter( 'wp_parsely_credentials' );
+	private function are_credentials_managed(): bool {
+		$credentials = apply_filters( 'wp_parsely_credentials', false );
+
+		if ( ! is_array( $credentials ) ) {
+			return false;
+		}
+
+		$required_credentials = array( 'site_id', 'api_secret' );
+		$is_valid             = array();
+
+		foreach ( $required_credentials as $key ) {
+			$is_valid[ $key ] = isset( $credentials[ $key ] )
+				&& is_string( $credentials[ $key ] )
+				&& '' !== $credentials[ $key ];
+		}
+
+		return (bool) array_product( $is_valid );
 	}
 }
