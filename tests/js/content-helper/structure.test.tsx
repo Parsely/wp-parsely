@@ -168,7 +168,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	}
 
 	function getCredentialsNotSetMessage() {
-		return screen.queryByTestId( 'credentials-not-set-message' );
+		return screen.queryByTestId( 'empty-credentials-message' );
 	}
 
 	function getRelatedTopPostsMockFn( mockFn: () => Promise<GetRelatedTopPostsResult> ) {
@@ -200,7 +200,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		render( <RelatedTopPostList /> );
 		expect( getSpinner() ).toBeInTheDocument();
 
-		await waitFor( () => screen.findByTestId( 'credentials-not-set-message' ), { timeout: 3000 } );
+		await waitFor( () => screen.findByTestId( 'empty-credentials-message' ), { timeout: 3000 } );
 
 		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
