@@ -61,7 +61,6 @@ use const Parsely\PARSELY_FILE;
  *   lowercase_tags?: bool,
  *   force_https_canonicals?: bool,
  *   disable_autotrack?: bool|string,
- *   parsely_wipe_metadata_cache: bool,
  * }
  */
 final class Settings_Page {
@@ -567,20 +566,6 @@ final class Settings_Page {
 					'true'  => __( 'Yes, disable autotracking. I do not want the tracking code to report an event as soon as the script has finished loading. I plan to implement Dynamic Tracking myself.', 'wp-parsely' ),
 					'false' => __( 'No, do not disable autotracking. I want to make sure the default behavior of the tracking code is in place. The tracking code should report an event as soon as the script has finished loading.', 'wp-parsely' ),
 				),
-			)
-		);
-
-		// Clear metadata.
-		add_settings_field(
-			'parsely_wipe_metadata_cache',
-			__( 'Wipe Parse.ly Metadata Info', 'wp-parsely' ),
-			array( $this, 'print_checkbox_tag' ),
-			Parsely::MENU_SLUG,
-			$section_key,
-			array(
-				'option_key' => 'parsely_wipe_metadata_cache',
-				'yes_text'   => __( 'Yes, clear all metadata information for Parse.ly posts and re-send all metadata to Parse.ly.', 'wp-parsely' ),
-				'help_text'  => __( '<span style="color:#d63638">WARNING:</span> Do not do this unless explicitly instructed by Parse.ly Staff!', 'wp-parsely' ),
 			)
 		);
 	}
@@ -1164,13 +1149,6 @@ final class Settings_Page {
 						__( 'The Metadata Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
 					);
 					$input['metadata_secret'] = $options['metadata_secret'];
-				} elseif (
-					isset( $input['parsely_wipe_metadata_cache'] ) && 'true' === $input['parsely_wipe_metadata_cache'] // @phpstan-ignore-line
-				) {
-					delete_post_meta_by_key( 'parsely_metadata_last_updated' );
-
-					wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
-					$input['parsely_wipe_metadata_cache'] = false;
 				}
 			}
 		}
