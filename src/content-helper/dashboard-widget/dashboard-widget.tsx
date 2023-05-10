@@ -14,7 +14,7 @@ window.addEventListener(
 	function() {
 		let element = <TopPostList />;
 
-		if ( window.wpParselyCredentialsNotSetMessage ) {
+		if ( window.wpParselyEmptyCredentialsMessage ) {
 			const error = new ContentHelperError(
 				'',
 				ContentHelperErrorCode.PluginCredentialsNotSetMessageDetected

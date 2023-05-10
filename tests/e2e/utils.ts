@@ -104,7 +104,7 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
-	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector;
+	const contentHelperMessageSelector = '.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector;
 
 	// Run basic operations.
 	await createNewPost();
@@ -143,12 +143,12 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
 	await page.click( pluginButton );
 	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Related Top Posts' );
 	await topRelatedPostsButton.click();
-	await page.waitForSelector( contentHelperMessage );
+	await page.waitForSelector( contentHelperMessageSelector );
 	await page.waitForFunction( // Wait for the message to appear.
-		'document.querySelector("' + contentHelperMessage + '").innerText.length > 0',
+		'document.querySelector("' + contentHelperMessageSelector + '").innerText.length > 0',
 		{ polling: 'mutation', timeout: 5000 }
 	);
-	const text = await page.$eval( contentHelperMessage, ( element: Element ): string => element.textContent || '' );
+	const text = await page.$eval( contentHelperMessageSelector, ( element: Element ): string => element.textContent || '' );
 
 	return text;
 };

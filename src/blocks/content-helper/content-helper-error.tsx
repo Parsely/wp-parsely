@@ -115,7 +115,7 @@ export class ContentHelperError extends Error {
 				<this.ContentHelperErrorMessage
 					className={ props?.className }
 					testId="credentials-not-set-message">
-					{ window.wpParselyCredentialsNotSetMessage }
+					{ window.wpParselyEmptyCredentialsMessage }
 				</this.ContentHelperErrorMessage>
 			);
 		}

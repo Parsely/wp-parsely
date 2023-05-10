@@ -127,7 +127,7 @@ abstract class Content_Helper_Feature {
 
 			wp_add_inline_script(
 				static::get_script_id(),
-				"window.wpParselyCredentialsNotSetMessage = '{$message}';",
+				"window.wpParselyEmptyCredentialsMessage = '{$message}';",
 				'before'
 			);
 		}
@@ -171,7 +171,6 @@ abstract class Content_Helper_Feature {
 		// Remove unnecessary whitespace to avoid broken output.
 		$message = str_replace( array( "\r", "\n", "\t" ), '', $message );
 
-		$sanitized_message = wp_kses_post( $message );
-		return $sanitized_message;
+		return wp_kses_post( $message );
 	}
 }

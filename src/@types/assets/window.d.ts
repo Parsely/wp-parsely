@@ -26,6 +26,6 @@ declare global {
 		wpParselyDisableAutotrack?: boolean;
 		wpParselyHooks?: _Hooks;
 		wpParselyPostsStatsResponse: string;
-		wpParselyCredentialsNotSetMessage: string;
+		wpParselyEmptyCredentialsMessage: string;
 	}
 }

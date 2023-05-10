@@ -41,7 +41,7 @@ const renderSidebar = () => (
  * @return {JSX.Element} The passed element or an error.
  */
 function renderPanelContent( element: JSX.Element ): JSX.Element {
-	if ( window.wpParselyCredentialsNotSetMessage ) {
+	if ( window.wpParselyEmptyCredentialsMessage ) {
 		const error = new ContentHelperError(
 			'',
 			ContentHelperErrorCode.PluginCredentialsNotSetMessageDetected
