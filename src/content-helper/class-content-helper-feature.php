@@ -120,7 +120,7 @@ abstract class Content_Helper_Feature {
 	 */
 	protected function inject_inline_scripts(): void {
 		$are_credentials_set = $this->parsely->site_id_is_set() &&
-		$this->parsely->api_secret_is_set();
+			$this->parsely->api_secret_is_set();
 
 		if ( ! $are_credentials_set ) {
 			$message = $this->get_credentials_not_set_message();
