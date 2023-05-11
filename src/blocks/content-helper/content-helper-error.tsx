@@ -4,6 +4,14 @@
 import { __ } from '@wordpress/i18n';
 
 /**
+ * Internal dependencies
+ */
+import ContentHelperErrorMessage, {
+	ContentHelperErrorMessageProps,
+	EmptyCredentialsMessage,
+} from '../../content-helper/content-helper-error-message';
+
+/**
  * Enumeration of all the possible errors that might get thrown or processed by
  * the Content Helper during error handling. All errors thrown by the Content
  * Helper should start with a "ch_" prefix.
@@ -20,94 +28,6 @@ export enum ContentHelperErrorCode {
 	PluginSettingsSiteIdNotSet = 'parsely_site_id_not_set',
 	PostIsNotPublished = 'ch_post_not_published',
 }
-
-/**
- * Defines the props structure for ContentHelperErrorMessage.
- *
- * @since 3.9.0
- *
- */
-interface ContentHelperErrorMessageProps {
-	children?: string;
-	className?: string;
-	testId?: string
-}
-
-/**
- * Returns an error message JSX Element that can contain HTML.
- *
- * Warning: Any HTML passed to this function must be sanitized.
- *
- * @since 3.9.0
- *
- * @param {ContentHelperErrorMessageProps} props The error message props.
- *
- * @return {JSX.Element} The error message JSX Element.
- */
-const ContentHelperErrorMessage = (
-	props: ContentHelperErrorMessageProps|null = null
-): JSX.Element => {
-	let innerHtml = '';
-	if ( props?.children ) {
-		innerHtml = props.children;
-	}
-
-	let classNames = 'content-helper-error-message';
-	if ( props?.className ) {
-		classNames += ' ' + props.className;
-	}
-
-	return (
-		<div className={ classNames }
-			data-testid={ props?.testId }
-			dangerouslySetInnerHTML={ { __html: innerHtml } }
-		/>
-	);
-};
-
-/**
- * Returns a customized error message JSX Element for when credentials are
- * empty.
- *
- * @since 3.9.0
- *
- * @param {ContentHelperErrorMessageProps|null} props The error message props.
- *
- * @return {JSX.Element} The error message JSX Element.
- */
-const EmptyCredentialsMessage = (
-	props: ContentHelperErrorMessageProps|null = null
-): JSX.Element => {
-	return (
-		<ContentHelperErrorMessage
-			className={ props?.className }
-			testId="empty-credentials-message">
-			{ window.wpParselyEmptyCredentialsMessage }
-		</ContentHelperErrorMessage>
-	);
-};
-
-/**
- * Returns the passed JSX Element or an error message JSX Element if credentials
- * are empty.
- *
- * @since 3.9.0
- *
- * @param {JSX.Element}                         element The desired JSX element.
- * @param {ContentHelperErrorMessageProps|null} props   The error message props.
- *
- * @return {JSX.Element} The passed JSX Element or the error message JSX Element.
- */
-export const ElementOrEmptyCredentialsMessage = (
-	element: JSX.Element,
-	props: ContentHelperErrorMessageProps|null = null
-): JSX.Element => {
-	if ( window.wpParselyEmptyCredentialsMessage ) {
-		return EmptyCredentialsMessage( props );
-	}
-
-	return element;
-};
 
 /**
  * Extends the standard JS Error class for use with the Content Helper.

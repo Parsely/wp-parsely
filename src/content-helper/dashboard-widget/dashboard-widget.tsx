@@ -7,13 +7,15 @@ import { render } from '@wordpress/element';
  * Internal dependencies
  */
 import TopPostList from './top-posts/component-list';
-import { ElementOrEmptyCredentialsMessage } from '../../blocks/content-helper/content-helper-error';
+import VerifyCredentials from '../verify-credentials';
 
 window.addEventListener(
 	'load',
 	function() {
 		render(
-			ElementOrEmptyCredentialsMessage( <TopPostList /> ),
+			<VerifyCredentials>
+				<TopPostList />
+			</VerifyCredentials>,
 			document.querySelector( '#wp-parsely-dashboard-widget > .inside' )
 		);
 	},
