@@ -21,7 +21,7 @@ describe( 'Activation flow', (): void => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await waitForWpAdmin();
 
-		const versionText: string = await page.$eval( '#wp-parsely_version', ( el : Element ) => el.textContent || '' );
+		const versionText: string = await page.$eval( '#wp-parsely_version', ( el : Element ) => el.textContent ?? '' );
 		expect( versionText ).toMatch( /^Version \d+.\d+/ );
 
 		const errorData = await page.$eval( '#wp-parsely-site-id-error-notice', ( el: Element ) => ( {
@@ -46,19 +46,19 @@ describe( 'Activation flow', (): void => {
 
 		// Default tab.
 		expect( page ).not.toBe( null );
-		testSectionsVisibility( [ 'initial', 'none', 'none' ] );
+		await testSectionsVisibility( [ 'initial', 'none', 'none' ] );
 
 		// Basic Settings Tab.
 		await page.click( '.basic-section-tab' );
-		testSectionsVisibility( [ 'initial', 'none', 'none' ] );
+		await testSectionsVisibility( [ 'initial', 'none', 'none' ] );
 
 		// Recrawl Settings Tab.
 		await page.click( '.recrawl-section-tab' );
-		testSectionsVisibility( [ 'none', 'initial', 'none' ] );
+		await testSectionsVisibility( [ 'none', 'initial', 'none' ] );
 
 		// Advanced Settings Tab.
 		await page.click( '.advanced-section-tab' );
-		testSectionsVisibility( [ 'none', 'none', 'initial' ] );
+		await testSectionsVisibility( [ 'none', 'none', 'initial' ] );
 
 		await page.click( '.basic-section-tab' ); // Revert to initial state
 	} );
@@ -74,6 +74,6 @@ describe( 'Activation flow', (): void => {
 	}
 
 	async function getSectionStyles( selector: string ): Promise<string> {
-		return await page.$eval( selector, ( e: Element ): string => e.getAttribute( 'style' ) || '' );
+		return await page.$eval( selector, ( e: Element ): string => e.getAttribute( 'style' ) ?? '' );
 	}
 } );

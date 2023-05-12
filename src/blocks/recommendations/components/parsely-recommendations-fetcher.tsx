@@ -62,7 +62,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } : Par
 			return;
 		}
 
-		let data = response?.data || [];
+		let data = response?.data ?? [];
 
 		// When in the editor, change URLs to # for better screen reader experience.
 		if ( isEditMode ) {

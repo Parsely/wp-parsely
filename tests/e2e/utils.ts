@@ -148,7 +148,7 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
 		'document.querySelector("' + contentHelperMessageSelector + '").innerText.length > 0',
 		{ polling: 'mutation', timeout: 5000 }
 	);
-	const text = await page.$eval( contentHelperMessageSelector, ( element: Element ): string => element.textContent || '' );
+	const text = await page.$eval( contentHelperMessageSelector, ( element: Element ): string => element.textContent ?? '' );
 
 	return text;
 };
