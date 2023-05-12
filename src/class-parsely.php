@@ -592,14 +592,17 @@ class Parsely {
 		}
 
 		$required_credentials = array( 'site_id', 'api_secret' );
-		$is_valid             = array();
 
 		foreach ( $required_credentials as $key ) {
-			$is_valid[ $key ] = isset( $credentials[ $key ] )
-				&& is_string( $credentials[ $key ] )
-				&& '' !== $credentials[ $key ];
+			if (
+				! isset( $credentials[ $key ] ) ||
+				! is_string( $credentials[ $key ] ) ||
+				'' === $credentials[ $key ]
+			) {
+				return false;
+			}
 		}
 
-		return (bool) array_product( $is_valid );
+		return true;
 	}
 }
