@@ -14,12 +14,14 @@ import {
 	setSiteKeys,
 	setUserDisplayName,
 	startUpTest,
-} from '../../../utils';
+} from '../../utils';
 
 /**
  * Tests for the PCH Editor Sidebar Related Top Post filters.
  */
 describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
+	const messageSelector = '.parsely-top-posts-descr';
+
 	/**
 	 * Prevents browser from locking with dialogs, logs in to WordPress,
 	 * activates the Parse.ly plugin, and sets valid site keys.
@@ -37,7 +39,8 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 	it( 'Should attempt to fetch results when a Site ID and API Secret are provided', async () => {
 		await setUserDisplayName( 'admin', '' );
 
-		expect( await getTopRelatedPostsMessage() ).toMatch( `The Parse.ly API did not return any results for related top posts by author "admin".` );
+		expect( await getTopRelatedPostsMessage( '', '', 500, messageSelector ) )
+			.toMatch( `The Parse.ly API did not return any results for related top posts by author "admin".` );
 	} );
 
 	/**
@@ -58,16 +61,20 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 		await insertRecordIntoTaxonomy( tagName, 'post_tag' );
 
 		// Author.
-		expect( await getTopRelatedPostsMessage() ).toMatch( `Top posts by author "${ firstName } ${ lastName }" in last 7 days.` );
+		expect( await getTopRelatedPostsMessage( '', '', 500, messageSelector ) )
+			.toMatch( `Top posts by author "${ firstName } ${ lastName }" in last 7 days.` );
 
 		// Author + category.
-		expect( await getTopRelatedPostsMessage( categoryName ) ).toMatch( `Top posts in category "${ categoryName }" in last 7 days.` );
+		expect( await getTopRelatedPostsMessage( categoryName, '', 500, messageSelector ) )
+			.toMatch( `Top posts in category "${ categoryName }" in last 7 days.` );
 
 		// Author + tag.
-		expect( await getTopRelatedPostsMessage( '', tagName ) ).toMatch( `Top posts with tag "${ tagName }" in last 7 days.` );
+		expect( await getTopRelatedPostsMessage( '', tagName, 500, messageSelector ) )
+			.toMatch( `Top posts with tag "${ tagName }" in last 7 days.` );
 
 		// Author + category + tag.
-		expect( await getTopRelatedPostsMessage( categoryName, tagName ) ).toMatch( `Top posts with tag "${ tagName }" in last 7 days.` );
+		expect( await getTopRelatedPostsMessage( categoryName, tagName, 500, messageSelector ) )
+			.toMatch( `Top posts with tag "${ tagName }" in last 7 days.` );
 	} );
 
 	/**
@@ -82,6 +89,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
 		const categoryName = 'Parse.ly Tips';
 
-		expect( await getTopRelatedPostsMessage( categoryName, '', 2000 ) ).toMatch( `Top posts in category "${ categoryName }" in last 7 days.` );
+		expect( await getTopRelatedPostsMessage( categoryName, '', 2000, messageSelector ) )
+			.toMatch( `Top posts in category "${ categoryName }" in last 7 days.` );
 	} );
 } );

@@ -10,12 +10,23 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
+use Parsely\Parsely;
+
 /**
  * Base class for all Content Helper features.
  *
  * @since 3.9.0
  */
 abstract class Content_Helper_Feature {
+	/**
+	 * Instance of Parsely class.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @var Parsely
+	 */
+	protected $parsely;
+
 	/**
 	 * Returns the global Content Helper filter name. The global filter controls
 	 * the enabled/disabled state of all Content Helper features.
@@ -100,5 +111,66 @@ abstract class Content_Helper_Feature {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Injects any required inline scripts.
+	 *
+	 * @since 3.9.0
+	 */
+	protected function inject_inline_scripts(): void {
+		$are_credentials_set = $this->parsely->site_id_is_set() &&
+			$this->parsely->api_secret_is_set();
+
+		if ( ! $are_credentials_set ) {
+			$message = $this->get_credentials_not_set_message();
+
+			wp_add_inline_script(
+				static::get_script_id(),
+				"window.wpParselyEmptyCredentialsMessage = '{$message}';",
+				'before'
+			);
+		}
+	}
+
+	/**
+	 * Returns the message to be shown when required credentials are not set.
+	 *
+	 * HTML is allowed within the message. The message can be overridden using
+	 * the wp_parsely_message_credentials_not_set filter.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @return string The sanitized message.
+	 */
+	protected function get_credentials_not_set_message(): string {
+		$default_message = '
+			<p>
+				<a href="https://www.parse.ly/contact" target="_blank" rel="noopener">' .
+					__( 'Contact us', 'wp-parsely' ) .
+				'</a>' .
+				__( ' about advanced plugin features and the Parse.ly dashboard.', 'wp-parsely' ) . '
+			</p>
+			<p>' .
+				__(
+					'Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in ',
+					'wp-parsely'
+				) . '
+				<a href="/wp-admin/options-general.php?page=parsely" target="_blank" rel="noopener">' .
+					__( 'wp-parsely options.', 'wp-parsely' ) . '
+				</a>
+			</p>
+		';
+
+		// Override default message if the respective filter is set.
+		$message = apply_filters(
+			'wp_parsely_message_credentials_not_set',
+			$default_message
+		);
+
+		// Remove unnecessary whitespace to avoid broken output.
+		$message = str_replace( array( "\r", "\n", "\t" ), '', $message );
+
+		return wp_kses_post( $message );
 	}
 }
