@@ -20,6 +20,16 @@ use function Parsely\Utils\get_asset_info;
  * @since 3.5.0
  */
 class Content_Helper extends Content_Helper_Feature {
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @param Parsely $parsely Instance of Parsely class.
+	 */
+	public function __construct( Parsely $parsely ) {
+		$this->parsely = $parsely;
+	}
 
 	/**
 	 * Returns the feature's filter name.
@@ -73,6 +83,8 @@ class Content_Helper extends Content_Helper_Feature {
 			$content_helper_asset['version'],
 			true
 		);
+
+		$this->inject_inline_scripts();
 
 		wp_enqueue_style(
 			static::get_style_id(),

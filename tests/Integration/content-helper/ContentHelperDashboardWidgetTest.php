@@ -65,7 +65,7 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 
 		// Force the feature's enqueueing code to run.
 		set_current_screen( $screen );
-		( new Dashboard_Widget() )->run();
+		( new Dashboard_Widget( $GLOBALS['parsely'] ) )->run();
 		do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
 
 		self::assertEquals( $expected, wp_script_is( $script_id ) );

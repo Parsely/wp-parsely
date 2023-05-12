@@ -6,7 +6,7 @@ import {
 	getTopRelatedPostsMessage,
 	setSiteKeys,
 	startUpTest,
-} from '../../../utils';
+} from '../../utils';
 
 /**
  * Tests for the errors presented by the PCH Editor Sidebar Related Top Posts
@@ -29,7 +29,7 @@ describe( 'PCH Editor Sidebar Related Top Posts panel', () => {
 	it( 'Should display an error when an invalid Site ID is provided', async () => {
 		await setSiteKeys( 'e2etest.example.com', VALID_API_SECRET );
 
-		expect( await getTopRelatedPostsMessage() ).toMatch( 'Error: Forbidden' );
+		expect( await getTopRelatedPostsMessage( '', '', 500, '.parsely-top-posts-descr' ) ).toMatch( 'Error: Forbidden' );
 	} );
 
 	/**
