@@ -57,8 +57,8 @@ const RecommendationsStore = ( props: RecommendationStore ) => {
 	const defaultState: RecommendationState = {
 		isLoaded: false,
 		recommendations: [],
-		uuid: window.PARSELY?.config?.uuid || null,
-		clientId: props?.clientId || null,
+		uuid: window.PARSELY?.config?.uuid ?? null,
+		clientId: props?.clientId ?? null,
 		error: null,
 	};
 

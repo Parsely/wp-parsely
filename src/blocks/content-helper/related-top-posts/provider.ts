@@ -123,7 +123,7 @@ class RelatedTopPostsProvider {
 			) );
 		}
 
-		return response?.data || [];
+		return response?.data ?? [];
 	}
 
 	/**
