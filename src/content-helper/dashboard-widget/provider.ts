@@ -81,7 +81,7 @@ class DashboardWidgetProvider {
 			) );
 		}
 
-		return response?.data || [];
+		return response?.data ?? [];
 	}
 }
 
