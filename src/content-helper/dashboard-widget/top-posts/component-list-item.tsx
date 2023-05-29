@@ -86,11 +86,11 @@ function TopPostListItem( { post }: TopPostListItemProps ): JSX.Element {
  * @param {TopPostData} post The Post from which to get the data.
  */
 function getPostThumbnailElement( { post }: TopPostListItemProps ): JSX.Element {
-	if ( post.thumbUrlMedium ) {
+	if ( post.thumbnailUrl ) {
 		return (
 			<div className="parsely-top-post-thumbnail">
 				<span className="screen-reader-text">{ __( 'Thumbnail', 'wp-parsely' ) }</span>
-				<img src={ post.thumbUrlMedium } alt={ __( 'Post thumbnail', 'wp-parsely' ) } />
+				<img src={ post.thumbnailUrl } alt={ __( 'Post thumbnail', 'wp-parsely' ) } />
 			</div>
 		);
 	}
