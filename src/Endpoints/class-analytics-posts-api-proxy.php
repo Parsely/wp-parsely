@@ -66,11 +66,11 @@ final class Analytics_Posts_API_Proxy extends Base_API_Proxy {
 				'dashUrl'      => Parsely::get_dash_url( $site_id, $item->url ),
 				'date'         => $item->pub_date ? wp_date( $date_format, strtotime( $item->pub_date ) ) : null,
 				// Unique ID (can be replaced by Parse.ly API ID if it becomes available).
-				'id'           => $item->url,
+				'id'           => Parsely::set_url_itm_source( $item->url, null ),
 				'postId'       => $post_id, // Might not be unique.
 				'thumbnailUrl' => $thumbnail_url,
 				'title'        => $item->title,
-				'url'          => $item->url,
+				'url'          => Parsely::set_url_itm_source( $item->url, $this->itm_source ),
 				'views'        => $item->metrics->views,
 			);
 		}

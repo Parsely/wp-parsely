@@ -35,6 +35,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } : Par
 		limit,
 		sort,
 		url: window.location.href,
+		itm_source: 'wp-parsely-recommendations-block',
 	} ), [ boost, limit, sort ] );
 
 	async function fetchRecommendationsFromWpApi(): Promise<ApiResponse> {
