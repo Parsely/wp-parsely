@@ -27,6 +27,8 @@ declare(strict_types=1);
 namespace Parsely;
 
 use Parsely\Content_Helper\Dashboard_Widget;
+use Parsely\Content_Helper\Editor_Sidebar;
+use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
@@ -39,12 +41,11 @@ use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
 use Parsely\RemoteAPI\Analytics_Post_Detail_API;
 use Parsely\RemoteAPI\Analytics_Posts_API;
-use Parsely\RemoteAPI\Remote_API_Cache;
 use Parsely\RemoteAPI\Referrers_Post_Detail_API;
 use Parsely\RemoteAPI\Related_API;
+use Parsely\RemoteAPI\Remote_API_Cache;
 use Parsely\RemoteAPI\WordPress_Cache;
 use Parsely\UI\Admin_Bar;
-use Parsely\UI\Admin_Columns_Parsely_Stats;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Network_Admin_Sites_List;
@@ -106,8 +107,8 @@ function parsely_initialize_plugin(): void {
 	$metadata_renderer->run();
 }
 
-require_once __DIR__ . '/src/content-helper/class-content-helper-feature.php';
-require_once __DIR__ . '/src/UI/class-admin-columns-parsely-stats.php';
+require_once __DIR__ . '/src/content-helper/common/class-content-helper-feature.php';
+require_once __DIR__ . '/src/content-helper/post-list-stats/class-post-list-stats.php';
 require_once __DIR__ . '/src/UI/class-admin-warning.php';
 require_once __DIR__ . '/src/UI/class-plugins-actions.php';
 require_once __DIR__ . '/src/UI/class-row-actions.php';
@@ -124,7 +125,7 @@ function parsely_admin_init_register(): void {
 	( new Admin_Warning( $parsely ) )->run();
 	( new Plugins_Actions() )->run();
 	( new Row_Actions( $parsely ) )->run();
-	( new Admin_Columns_Parsely_Stats( $parsely ) )->run();
+	( new Post_List_Stats( $parsely ) )->run();
 	( new Site_Health( $parsely ) )->run();
 	( new Dashboard_Widget( $parsely ) )->run();
 }
@@ -210,7 +211,7 @@ function init_recommendations_block(): void {
 	$recommendations_block->run();
 }
 
-require_once __DIR__ . '/src/blocks/content-helper/class-content-helper.php';
+require_once __DIR__ . '/src/content-helper/editor-sidebar/class-editor-sidebar.php';
 
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\init_content_helper' );
 /**
@@ -219,7 +220,7 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\init_content_helper
  * @since 3.5.0 Moved from Parsely\Scripts\enqueue_block_editor_assets()
  */
 function init_content_helper(): void {
-	( new Content_Helper( $GLOBALS['parsely'] ) )->run();
+	( new Editor_Sidebar( $GLOBALS['parsely'] ) )->run();
 }
 
 require_once __DIR__ . '/src/UI/class-recommended-widget.php';

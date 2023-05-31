@@ -121,7 +121,7 @@ function getParselyStatsPlaceholders( numOfPlaceholders: number ): JSX.Element[]
 
 	for ( let i = 1; i <= numOfPlaceholders; i++ ) {
 		placeholders.push(
-			// This placeholder content should be kept in sync with Admin_Columns_Parsely_Stats
+			// This placeholder content should be kept in sync with Post_List_Stats
 			<div className="parsely-post-stats" key={ i } data-stats-key={ `key-${ i }` }>
 				<span className="parsely-post-stats-placeholder">...</span>
 			</div>
