@@ -7,11 +7,11 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { RelatedTopPostData } from './model';
-import ViewsIcon from '../icons/views-icon';
-import OpenLinkIcon from '../icons/open-link-icon';
-import EditIcon from '../icons/edit-icon';
-import { getPostEditUrl } from '../../shared/utils/post';
-import { getSmartShortDate } from '../../../blocks/shared/utils/date';
+import ViewsIcon from '../../common/icons/views-icon';
+import OpenLinkIcon from '../../common/icons/open-link-icon';
+import EditIcon from '../../common/icons/edit-icon';
+import { getPostEditUrl } from '../../common/utils/post';
+import { getSmartShortDate } from '../../common/utils/date';
 
 interface RelatedTopPostListItemProps {
 	post: RelatedTopPostData;

@@ -14,9 +14,9 @@ import apiFetch from '@wordpress/api-fetch';
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
-} from '../content-helper-error';
+} from '../../common/content-helper-error';
 import { RelatedTopPostData } from './model';
-import { AnalyticsApiOptionalQueryParams, getApiPeriodParams } from '../../shared/utils/api';
+import { AnalyticsApiOptionalQueryParams, getApiPeriodParams } from '../../common/utils/api';
 
 /**
  * The form of the query that gets posted to the analytics/posts WordPress REST

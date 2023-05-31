@@ -1,7 +1,7 @@
 import { render, waitFor } from '@testing-library/react';
-import { showParselyPostsStatsResponse } from '../../src/js/admin-parsely-stats';
+import { showParselyPostsStatsResponse } from '../../../src/content-helper/post-list-stats/post-list-stats';
 
-describe( 'src/js/admin-parsely-stats', () => {
+describe( 'src/content-helper/post-list-stats', () => {
 	it( 'should just update placeholders on empty response', async (): Promise<void> => {
 		await waitFor( (): void => {
 			render( getPageContent( 2 ) );

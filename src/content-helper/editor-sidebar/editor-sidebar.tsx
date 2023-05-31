@@ -11,8 +11,8 @@ import { registerPlugin } from '@wordpress/plugins';
  */
 import PerformanceDetails from './performance-details/component';
 import RelatedTopPostList from './related-top-posts/component-list';
-import LeafIcon from '../shared/components/leaf-icon';
-import VerifyCredentials from '../../content-helper/verify-credentials';
+import LeafIcon from '../common/icons/leaf-icon';
+import VerifyCredentials from '../common/verify-credentials';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 

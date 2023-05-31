@@ -7,11 +7,11 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { TopPostData } from './model';
-import { formatToImpreciseNumber } from '../../../blocks/shared/functions';
-import OpenLinkIcon from '../../../blocks/content-helper/icons/open-link-icon';
-import { getSmartShortDate } from '../../../blocks/shared/utils/date';
-import EditIcon from '../../../blocks/content-helper/icons/edit-icon';
-import { getPostEditUrl } from '../../../blocks/shared/utils/post';
+import { formatToImpreciseNumber } from '../../common/utils/number';
+import OpenLinkIcon from '../../common/icons/open-link-icon';
+import { getSmartShortDate } from '../../common/utils/date';
+import EditIcon from '../../common/icons/edit-icon';
+import { getPostEditUrl } from '../../common/utils/post';
 
 interface TopPostListItemProps {
 	post: TopPostData;
