@@ -3,7 +3,7 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 import { useDebounce } from '@wordpress/compose';
-import { useEffect, useMemo } from '@wordpress/element';
+import { useCallback, useEffect, useMemo } from '@wordpress/element';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
@@ -38,18 +38,14 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } : Par
 		itm_source: 'wp-parsely-recommendations-block',
 	} ), [ boost, limit, sort ] );
 
-	async function fetchRecommendationsFromWpApi(): Promise<ApiResponse> {
-		return apiFetch( {
-			path: addQueryArgs( '/wp-parsely/v1/related', { query } ),
-		} );
-	}
-
-	async function fetchRecommendations() {
+	const fetchRecommendations = useCallback( async () => {
 		let response;
 		let error;
 
 		try {
-			response = await fetchRecommendationsFromWpApi();
+			response = await apiFetch<Promise<ApiResponse>>( {
+				path: addQueryArgs( '/wp-parsely/v1/related', { query } ),
+			} );
 		} catch ( wpError ) {
 			error = wpError;
 		}
@@ -73,7 +69,7 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } : Par
 		}
 
 		dispatch( setRecommendations( { recommendations: data } ) );
-	}
+	}, [ query, dispatch, isEditMode ] );
 
 	const debouncedFetchRecommendations = useDebounce( fetchRecommendations, updateDelay );
 
