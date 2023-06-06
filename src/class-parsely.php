@@ -449,10 +449,32 @@ class Parsely {
 		$result = trailingslashit( self::DASHBOARD_BASE_URL . '/' . $site_id ) . 'find';
 
 		if ( '' !== $page_url ) {
-			$result .= '?url=' . rawurlencode( $page_url );
+			$page_url = self::get_url_with_itm_source( $page_url, null );
+			$result  .= '?url=' . rawurlencode( $page_url );
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Adds or replaces the itm_source parameter in the URL. Removes the
+	 * parameter if the passed value is null or an empty string.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @param string      $url The URL to modify.
+	 * @param string|null $itm_source The value of the itm_source parameter.
+	 *
+	 * @return string The resulting URL.
+	 */
+	public static function get_url_with_itm_source( string $url, $itm_source ): string {
+		if ( null === $itm_source || '' === $itm_source ) {
+			return remove_query_arg( 'itm_source', $url );
+		}
+
+		$itm_source = rawurlencode( $itm_source );
+
+		return add_query_arg( 'itm_source', $itm_source, $url );
 	}
 
 	/**

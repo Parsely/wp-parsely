@@ -66,6 +66,7 @@ class DashboardWidgetProvider {
 				path: addQueryArgs( '/wp-parsely/v1/stats/posts', {
 					limit: TOP_POSTS_DEFAULT_LIMIT,
 					...getApiPeriodParams( TOP_POSTS_DEFAULT_TIME_RANGE ),
+					itm_source: 'wp-parsely-content-helper',
 				} ),
 			} ) as TopPostsApiResponse;
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
