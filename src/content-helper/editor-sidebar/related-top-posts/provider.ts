@@ -107,9 +107,12 @@ class RelatedTopPostsProvider {
 		let response;
 
 		try {
-			response = await apiFetch( {
-				path: addQueryArgs( '/wp-parsely/v1/stats/posts', query.query as object ),
-			} ) as RelatedTopPostsApiResponse;
+			response = await apiFetch<RelatedTopPostsApiResponse>( {
+				path: addQueryArgs( '/wp-parsely/v1/stats/posts', {
+					...query.query,
+					itm_source: 'wp-parsely-content-helper',
+				} ),
+			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			return Promise.reject( new ContentHelperError(
 				wpError.message, wpError.code

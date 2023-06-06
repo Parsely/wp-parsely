@@ -44,6 +44,7 @@ export const PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE = 7; // In days.
  */
 class PerformanceDetailsProvider {
 	private apiPeriodRange: ApiPeriodRange;
+	private itmSource = 'wp-parsely-content-helper';
 
 	/**
 	 * Constructor.
@@ -102,6 +103,7 @@ class PerformanceDetailsProvider {
 					'/wp-parsely/v1/stats/post/detail', {
 						url: postUrl,
 						...this.apiPeriodRange,
+						itm_source: this.itmSource,
 					} ),
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -161,6 +163,7 @@ class PerformanceDetailsProvider {
 					url: postUrl,
 					total_views: totalViews, // Needed to calculate direct views.
 					...this.apiPeriodRange,
+					itm_source: this.itmSource,
 				} ),
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
