@@ -449,7 +449,7 @@ class Parsely {
 		$result = trailingslashit( self::DASHBOARD_BASE_URL . '/' . $site_id ) . 'find';
 
 		if ( '' !== $page_url ) {
-			$page_url = self::set_url_itm_source( $page_url, null );
+			$page_url = self::get_url_with_itm_source( $page_url, null );
 			$result  .= '?url=' . rawurlencode( $page_url );
 		}
 
@@ -467,7 +467,7 @@ class Parsely {
 	 *
 	 * @return string The resulting URL.
 	 */
-	public static function set_url_itm_source( string $url, $itm_source ): string {
+	public static function get_url_with_itm_source( string $url, $itm_source ): string {
 		if ( null === $itm_source || '' === $itm_source ) {
 			return remove_query_arg( 'itm_source', $url );
 		}

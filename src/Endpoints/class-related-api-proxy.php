@@ -53,7 +53,7 @@ final class Related_API_Proxy extends Base_API_Proxy {
 					'image_url'        => $item->image_url,
 					'thumb_url_medium' => $item->thumb_url_medium,
 					'title'            => $item->title,
-					'url'              => Parsely::set_url_itm_source( $item->url, $itm_source ),
+					'url'              => Parsely::get_url_with_itm_source( $item->url, $itm_source ),
 				);
 			},
 			$response

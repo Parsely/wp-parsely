@@ -53,7 +53,7 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 				return (object) array(
 					'avgEngaged' => self::get_duration( (float) $item->avg_engaged ),
 					'dashUrl'    => Parsely::get_dash_url( $site_id, $item->url ),
-					'url'        => Parsely::set_url_itm_source( $item->url, $itm_source ),
+					'url'        => Parsely::get_url_with_itm_source( $item->url, $itm_source ),
 					'views'      => number_format_i18n( $item->metrics->views ),
 					'visitors'   => number_format_i18n( $item->metrics->visitors ),
 				);
