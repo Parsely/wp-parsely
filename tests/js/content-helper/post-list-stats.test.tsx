@@ -1,7 +1,7 @@
 import { render, waitFor } from '@testing-library/react';
-import { showParselyPostsStatsResponse } from '../../src/js/admin-parsely-stats';
+import { showParselyPostsStatsResponse } from '../../../src/content-helper/post-list-stats/post-list-stats';
 
-describe( 'src/js/admin-parsely-stats', () => {
+describe( 'src/content-helper/post-list-stats', () => {
 	it( 'should just update placeholders on empty response', async (): Promise<void> => {
 		await waitFor( (): void => {
 			render( getPageContent( 2 ) );
@@ -121,7 +121,7 @@ function getParselyStatsPlaceholders( numOfPlaceholders: number ): JSX.Element[]
 
 	for ( let i = 1; i <= numOfPlaceholders; i++ ) {
 		placeholders.push(
-			// This placeholder content should be kept in sync with Admin_Columns_Parsely_Stats
+			// This placeholder content should be kept in sync with Post_List_Stats
 			<div className="parsely-post-stats" key={ i } data-stats-key={ `key-${ i }` }>
 				<span className="parsely-post-stats-placeholder">...</span>
 			</div>

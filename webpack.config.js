@@ -5,21 +5,21 @@ module.exports = {
 	...defaultConfig,
 	entry: {
 		...defaultConfig.entry(),
-		'admin-parsely-stats': [
-			path.resolve( __dirname, 'src', 'js', 'admin-parsely-stats' ),
-			path.resolve( __dirname, 'src', 'css', 'admin-parsely-stats.scss' ),
-		],
 		'admin-settings': [
 			path.resolve( __dirname, 'src', 'js', 'admin-settings' ),
 			path.resolve( __dirname, 'src', 'css', 'admin-settings.scss' ),
 		],
-		'content-helper': [
-			path.resolve( __dirname, 'src', 'blocks', 'content-helper', 'content-helper' ),
-			path.resolve( __dirname, 'src', 'blocks', 'content-helper', 'content-helper.scss' ),
-		],
 		'content-helper/dashboard-widget': [
 			path.resolve( __dirname, 'src', 'content-helper', 'dashboard-widget', 'dashboard-widget' ),
 			path.resolve( __dirname, 'src', 'content-helper', 'dashboard-widget', 'dashboard-widget.scss' ),
+		],
+		'content-helper/editor-sidebar': [
+			path.resolve( __dirname, 'src', 'content-helper', 'editor-sidebar', 'editor-sidebar' ),
+			path.resolve( __dirname, 'src', 'content-helper', 'editor-sidebar', 'editor-sidebar.scss' ),
+		],
+		'content-helper/post-list-stats': [
+			path.resolve( __dirname, 'src', 'content-helper', 'post-list-stats', 'post-list-stats' ),
+			path.resolve( __dirname, 'src', 'content-helper', 'post-list-stats', 'post-list-stats.scss' ),
 		],
 		loader: [
 			path.resolve( __dirname, 'src', 'js', 'lib', 'loader' ),

@@ -12,12 +12,12 @@ import apiFetch from '@wordpress/api-fetch';
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
-} from '../content-helper-error';
+} from '../../common/content-helper-error';
 import {
 	PerformanceData,
 	PerformanceReferrerData,
 } from './model';
-import { ApiPeriodRange, getApiPeriodParams } from '../../shared/utils/api';
+import { ApiPeriodRange, getApiPeriodParams } from '../../common/utils/api';
 
 /**
  * Specifies the form of the response returned by the `/stats/post/detail`

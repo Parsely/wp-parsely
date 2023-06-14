@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\ContentHelper;
 
-use Parsely\Content_Helper;
+use Parsely\Content_Helper\Editor_Sidebar;
 use Parsely\Parsely;
 
 /**
@@ -42,11 +42,11 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 		bool $expected,
 		...$additional_args
 	): void {
-		$script_id = Content_Helper::get_script_id();
-		$style_id  = Content_Helper::get_style_id();
+		$script_id = Editor_Sidebar::get_script_id();
+		$style_id  = Editor_Sidebar::get_style_id();
 
 		parent::set_filters(
-			Content_Helper::get_feature_filter_name(),
+			Editor_Sidebar::get_feature_filter_name(),
 			$global_filter_value,
 			$feature_filter_value
 		);
@@ -57,7 +57,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 		wp_dequeue_style( $style_id );
 		wp_deregister_style( $style_id );
 
-		( new Content_Helper( $GLOBALS['parsely'] ) )->run();
+		( new Editor_Sidebar( $GLOBALS['parsely'] ) )->run();
 
 		self::assertEquals( $expected, wp_script_is( $script_id ) );
 		self::assertEquals( $expected, wp_style_is( $style_id ) );
