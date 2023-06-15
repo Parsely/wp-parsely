@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\UI;
+namespace Parsely\Content_Helper;
 
 use DateTime;
 use Parsely\Content_Helper\Content_Helper_Feature;
@@ -28,6 +28,7 @@ use const Parsely\Utils\DATE_UTC_FORMAT;
  * Class for adding `Parse.ly Stats` on admin columns.
  *
  * @since 3.7.0
+ * @since 3.9.0 Renamed FQCN from `Parsely\UI\Admin_Columns_Parsely_Stats` to `Parsely\Content_Helper\Post_List_Stats`
  *
  * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
  * @phpstan-import-type Analytics_Post from Analytics_Posts_API
@@ -44,7 +45,7 @@ use const Parsely\Utils\DATE_UTC_FORMAT;
  *   error: Remote_API_Error|null,
  * }
  */
-class Admin_Columns_Parsely_Stats extends Content_Helper_Feature {
+class Post_List_Stats extends Content_Helper_Feature {
 	/**
 	 * Instance of Parsely Analytics Posts API.
 	 *
@@ -97,7 +98,7 @@ class Admin_Columns_Parsely_Stats extends Content_Helper_Feature {
 	 * @return string The script ID.
 	 */
 	public static function get_script_id(): string {
-		return 'admin-parsely-stats-script';
+		return 'post-list-stats-script';
 	}
 
 	/**
@@ -108,7 +109,7 @@ class Admin_Columns_Parsely_Stats extends Content_Helper_Feature {
 	 * @return string The style ID.
 	 */
 	public static function get_style_id(): string {
-		return 'admin-parsely-stats-styles';
+		return 'post-list-stats-styles';
 	}
 
 	/**
@@ -155,12 +156,12 @@ class Admin_Columns_Parsely_Stats extends Content_Helper_Feature {
 			return;
 		}
 
-		$admin_settings_asset = get_asset_info( 'build/admin-parsely-stats.asset.php' );
-		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
+		$admin_settings_asset = get_asset_info( 'build/content-helper/post-list-stats.asset.php' );
+		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_style(
 			static::get_style_id(),
-			$built_assets_url . 'admin-parsely-stats.css',
+			$built_assets_url . 'post-list-stats.css',
 			$admin_settings_asset['dependencies'],
 			$admin_settings_asset['version']
 		);
@@ -235,12 +236,12 @@ class Admin_Columns_Parsely_Stats extends Content_Helper_Feature {
 			return;
 		}
 
-		$admin_settings_asset = get_asset_info( 'build/admin-parsely-stats.asset.php' );
-		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/';
+		$admin_settings_asset = get_asset_info( 'build/content-helper/post-list-stats.asset.php' );
+		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_script(
 			static::get_script_id(),
-			$built_assets_url . 'admin-parsely-stats.js',
+			$built_assets_url . 'post-list-stats.js',
 			$admin_settings_asset['dependencies'],
 			$admin_settings_asset['version'],
 			true

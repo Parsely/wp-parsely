@@ -11,7 +11,7 @@ import { useEffect, useState } from '@wordpress/element';
 import DashboardWidgetProvider from '../provider';
 import TopPostListItem from './component-list-item';
 import { TopPostData } from './model';
-import { ContentHelperError } from '../../../blocks/content-helper/content-helper-error';
+import { ContentHelperError } from '../../../content-helper/common/content-helper-error';
 
 const FETCH_RETRIES = 1;
 

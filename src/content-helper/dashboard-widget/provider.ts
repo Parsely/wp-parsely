@@ -11,9 +11,9 @@ import apiFetch from '@wordpress/api-fetch';
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
-} from '../../blocks/content-helper/content-helper-error';
+} from '../common/content-helper-error';
 import { TopPostData } from './top-posts/model';
-import { getApiPeriodParams } from '../../blocks/shared/utils/api';
+import { getApiPeriodParams } from '../common/utils/api';
 
 /**
  * The form of the response returned by the /stats/posts WordPress REST API

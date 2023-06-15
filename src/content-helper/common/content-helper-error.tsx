@@ -9,7 +9,7 @@ import { __ } from '@wordpress/i18n';
 import ContentHelperErrorMessage, {
 	ContentHelperErrorMessageProps,
 	EmptyCredentialsMessage,
-} from '../../content-helper/content-helper-error-message';
+} from './content-helper-error-message';
 
 /**
  * Enumeration of all the possible errors that might get thrown or processed by

@@ -82,10 +82,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -95,17 +91,21 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_script_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_style_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_parsely_stats_column_hidden
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_style_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_parsely_stats_column_hidden
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -126,10 +126,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -139,17 +135,21 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_script_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_style_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_parsely_stats_column_hidden
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_style_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_parsely_stats_column_hidden
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -170,10 +170,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -183,10 +179,14 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -207,10 +207,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -220,10 +216,14 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -245,10 +245,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -258,17 +254,21 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_script_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_style_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_parsely_stats_column_hidden
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_style_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_parsely_stats_column_hidden
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -289,10 +289,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -302,10 +298,14 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -326,10 +326,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -339,10 +335,14 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -363,10 +363,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -376,17 +372,21 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_script_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_style_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_parsely_stats_column_hidden
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_style_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_parsely_stats_column_hidden
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -407,10 +407,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -420,17 +416,21 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_script_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_style_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_parsely_stats_column_hidden
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_style_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_parsely_stats_column_hidden
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -451,10 +451,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -464,10 +460,14 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -488,10 +488,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -501,10 +497,14 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -525,10 +525,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -538,17 +534,21 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_script_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_style_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_parsely_stats_column_hidden
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_style_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_parsely_stats_column_hidden
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -570,10 +570,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -583,10 +579,14 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
@@ -607,10 +607,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers \Parsely\Content_Helper::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper::get_script_id
-	 * @covers \Parsely\Content_Helper::get_style_id
-	 * @covers \Parsely\Content_Helper::run
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::add_dashboard_widget
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::can_enable_feature
@@ -620,17 +616,21 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
+	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_script_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_style_id
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_parsely_stats_column_hidden
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_script_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_style_id
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_parsely_stats_column_hidden
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options

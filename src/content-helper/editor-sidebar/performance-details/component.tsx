@@ -10,10 +10,10 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import PerformanceDetailsProvider, { PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE } from './provider';
 import { PerformanceData } from './model';
-import { ContentHelperError } from '../content-helper-error';
-import { formatToImpreciseNumber } from '../../shared/functions';
-import { getSmartShortDate } from '../../shared/utils/date';
-import { getApiPeriodStartDate } from '../../shared/utils/api';
+import { ContentHelperError } from '../../common/content-helper-error';
+import { formatToImpreciseNumber } from '../../common/utils/number';
+import { getSmartShortDate } from '../../common/utils/date';
+import { getApiPeriodStartDate } from '../../common/utils/api';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 1;

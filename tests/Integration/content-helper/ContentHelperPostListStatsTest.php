@@ -7,17 +7,17 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration\UI;
+namespace Parsely\Tests\ContentHelper;
 
 use Mockery;
-use WP_Scripts;
-use WP_Post;
+use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 use Parsely\Tests\ContentHelper\ContentHelperFeatureTest;
 use Parsely\Tests\Integration\TestCase;
-use Parsely\UI\Admin_Columns_Parsely_Stats;
 use WP_Error;
+use WP_Post;
+use WP_Scripts;
 
 /**
  * Integration Tests for Parse.ly Stats Column in Admin Screens.
@@ -26,9 +26,9 @@ use WP_Error;
  *
  * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
  * @phpstan-import-type Analytics_Post from Analytics_Posts_API
- * @phpstan-import-type Parsely_Posts_Stats_Response from Admin_Columns_Parsely_Stats
+ * @phpstan-import-type Parsely_Posts_Stats_Response from Post_List_Stats
  */
-final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
+final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Internal variable.
 	 *
@@ -90,7 +90,7 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 		$screen = $additional_args[0] ?? 'edit-post';
 
 		parent::set_filters(
-			Admin_Columns_Parsely_Stats::get_feature_filter_name(),
+			Post_List_Stats::get_feature_filter_name(),
 			$global_filter_value,
 			$feature_filter_value
 		);
@@ -110,10 +110,10 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::can_enable_feature
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
 	 * @covers \Parsely\Utils\convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -136,14 +136,14 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::can_enable_feature
 	 * @covers \Parsely\Content_Helper\Content_Helper_Feature::get_global_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_feature_filter_name
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
 	 * @covers \Parsely\Utils\convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -160,11 +160,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies enqueued status of Parse.ly Stats styles.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_styles_of_parsely_stats_admin_column_on_empty_plugin_options(): void {
 		$this->set_empty_plugin_options();
@@ -174,11 +174,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies enqueued status of Parse.ly Stats styles.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_styles_of_parsely_stats_admin_column_on_empty_api_secret(): void {
 		$this->set_empty_api_secret();
@@ -188,11 +188,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies enqueued status of Parse.ly Stats styles.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_styles_of_parsely_stats_admin_column_on_empty_track_post_types(): void {
 		$this->set_empty_track_post_types();
@@ -202,11 +202,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies enqueued status of Parse.ly Stats styles.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_styles_of_parsely_stats_admin_column_on_invalid_track_post_type(): void {
 		$this->set_valid_plugin_options();
@@ -217,11 +217,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies enqueued status of Parse.ly Stats styles.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_styles_of_parsely_stats_admin_column_on_valid_posts(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -234,12 +234,12 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @param bool $assert_type Indicates wether we are asserting for TRUE or FALSE.
 	 */
 	private function assert_parsely_stats_admin_styles( bool $assert_type ): void {
-		$this->init_admin_columns_parsely_stats();
+		$this->init_post_list_stats();
 
 		do_action( 'current_screen' ); // phpcs:ignore
 		do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
 
-		$handle = 'admin-parsely-stats-styles';
+		$handle = 'post-list-stats-styles';
 		if ( $assert_type ) {
 			$this->assert_is_style_enqueued( $handle );
 			wp_dequeue_style( $handle ); // Dequeue to start fresh for next test.
@@ -251,11 +251,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats column visibility.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_column_visibility_on_empty_plugin_options(): void {
 		$this->set_empty_plugin_options();
@@ -268,11 +268,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats column visibility.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_column_visibility_on_empty_api_secret(): void {
 		$this->set_empty_api_secret();
@@ -284,11 +284,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats column visibility.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_column_visibility_on_empty_track_post_types(): void {
 		$this->set_empty_track_post_types();
@@ -300,11 +300,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats column visibility.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_column_visibility_on_invalid_track_post_types(): void {
 		$this->set_valid_plugin_options();
@@ -317,11 +317,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats column visibility.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_column_visibility_on_valid_posts(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -333,11 +333,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats column visibility.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::add_parsely_stats_column_on_list_view
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_column_visibility_on_valid_pages(): void {
 		$this->set_valid_conditions_for_parsely_stats( 'page' );
@@ -352,7 +352,7 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @return array<string>
 	 */
 	private function get_admin_columns() {
-		$obj = $this->init_admin_columns_parsely_stats();
+		$obj = $this->init_post_list_stats();
 
 		do_action( 'current_screen' ); // phpcs:ignore
 
@@ -374,16 +374,16 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies content of Parse.ly Stats column.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_published_times_and_show_placeholder
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::update_published_times_and_show_placeholder
 	 */
 	public function test_content_of_parsely_stats_column_on_empty_plugin_options(): void {
 		$this->set_empty_plugin_options();
 
-		$obj    = $this->init_admin_columns_parsely_stats();
+		$obj    = $this->init_post_list_stats();
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( false );
@@ -394,16 +394,16 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies content of Parse.ly Stats column.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_published_times_and_show_placeholder
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::update_published_times_and_show_placeholder
 	 */
 	public function test_content_of_parsely_stats_column_on_empty_api_secret(): void {
 		$this->set_empty_api_secret();
 
-		$obj    = $this->init_admin_columns_parsely_stats();
+		$obj    = $this->init_post_list_stats();
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( false );
@@ -414,16 +414,16 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies content of Parse.ly Stats column.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_published_times_and_show_placeholder
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::update_published_times_and_show_placeholder
 	 */
 	public function test_content_of_parsely_stats_column_on_empty_track_post_types(): void {
 		$this->set_empty_track_post_types();
 
-		$obj    = $this->init_admin_columns_parsely_stats();
+		$obj    = $this->init_post_list_stats();
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
@@ -434,17 +434,17 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies content of Parse.ly Stats column.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_published_times_and_show_placeholder
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::update_published_times_and_show_placeholder
 	 */
 	public function test_content_of_parsely_stats_column_on_invalid_track_post_types(): void {
 		$this->set_valid_plugin_options();
 		set_current_screen( 'edit-page' );
 
-		$obj    = $this->init_admin_columns_parsely_stats();
+		$obj    = $this->init_post_list_stats();
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
@@ -455,16 +455,16 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies content of Parse.ly Stats column.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_published_times_and_show_placeholder
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::update_published_times_and_show_placeholder
 	 */
 	public function test_content_of_parsely_stats_column_on_valid_posts(): void {
 		$this->set_valid_conditions_for_parsely_stats();
 
-		$obj    = $this->init_admin_columns_parsely_stats();
+		$obj    = $this->init_post_list_stats();
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
@@ -486,16 +486,16 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies content of Parse.ly Stats column.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::update_published_times_and_show_placeholder
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::update_published_times_and_show_placeholder
 	 */
 	public function test_content_of_parsely_stats_column_on_valid_pages(): void {
 		$this->set_valid_conditions_for_parsely_stats( 'page' );
 
-		$obj    = $this->init_admin_columns_parsely_stats();
+		$obj    = $this->init_post_list_stats();
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
@@ -590,7 +590,7 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Gets utc_published_times property of given object.
 	 *
-	 * @param Admin_Columns_Parsely_Stats $obj Instance of Admin_Columns_Parsely_Stats.
+	 * @param Post_List_Stats $obj Instance of Post_List_Stats.
 	 *
 	 * @return string
 	 */
@@ -600,7 +600,7 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 		 *
 		 * @var string
 		 */
-		return $this->get_private_property( Admin_Columns_Parsely_Stats::class, 'utc_published_times' )->getValue( $obj );
+		return $this->get_private_property( Post_List_Stats::class, 'utc_published_times' )->getValue( $obj );
 	}
 
 	/**
@@ -618,11 +618,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies enqueued status of Parse.ly Stats script.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_empty_plugin_options(): void {
 		$this->set_empty_plugin_options();
@@ -634,11 +634,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies enqueued status of Parse.ly Stats script.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_empty_api_secret(): void {
 		$this->set_empty_api_secret();
@@ -650,11 +650,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies enqueued status of Parse.ly Stats script.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_empty_track_post_types(): void {
 		$this->set_empty_track_post_types();
@@ -666,11 +666,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies enqueued status of Parse.ly Stats script.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_invalid_track_post_types(): void {
 		$this->set_valid_plugin_options();
@@ -683,11 +683,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies enqueued status of Parse.ly Stats script.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_valid_posts_and_empty_response(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -699,11 +699,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies enqueued status of Parse.ly Stats script.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_script_of_parsely_stats_admin_column_on_valid_posts_and_valid_response(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -719,7 +719,7 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 		global $wp_scripts;
 
 		ob_start();
-		var_dump( $wp_scripts->print_inline_script ( 'admin-parsely-stats-script', 'before' ) ); // phpcs:ignore
+		var_dump( $wp_scripts->print_inline_script ( 'post-list-stats-script', 'before' ) ); // phpcs:ignore
 		$output = (string) ob_get_clean();
 
 		self::assertStringContainsString( 'window.wpParselyPostsStatsResponse = \'[]\';', $output );
@@ -730,10 +730,10 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @param null|array<mixed> $return_value Value that we have to return from mock function.
 	 *
-	 * @return Admin_Columns_Parsely_Stats
+	 * @return Post_List_Stats
 	 */
 	private function mock_parsely_stats_response( $return_value ) {
-		$obj = Mockery::mock( Admin_Columns_Parsely_Stats::class, array( new Parsely() ) )->makePartial();
+		$obj = Mockery::mock( Post_List_Stats::class, array( new Parsely() ) )->makePartial();
 		$obj->shouldReceive( 'get_parsely_stats_response' )->once()->andReturn( $return_value );
 		$obj->run();
 
@@ -744,11 +744,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly API call and enqueued status of Parse.ly Stats script.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_should_not_call_parsely_api_on_empty_api_secret_and_hidden_parsely_stats_column(): void {
 		$this->set_empty_api_secret();
@@ -762,10 +762,10 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @param bool $return_value Value that we have to return from mock function.
 	 *
-	 * @return Admin_Columns_Parsely_Stats
+	 * @return Post_List_Stats
 	 */
 	private function mock_is_parsely_stats_column_hidden( $return_value = false ) {
-		$obj = Mockery::mock( Admin_Columns_Parsely_Stats::class, array( new Parsely() ) )->makePartial();
+		$obj = Mockery::mock( Post_List_Stats::class, array( new Parsely() ) )->makePartial();
 		$obj->shouldReceive( 'is_parsely_stats_column_hidden' )->once()->andReturn( $return_value );
 		$obj->run();
 
@@ -781,7 +781,7 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 		do_action( 'current_screen' ); // phpcs:ignore
 		do_action( 'admin_footer' ); // phpcs:ignore
 
-		$handle = 'admin-parsely-stats-script';
+		$handle = 'post-list-stats-script';
 		if ( $assert_type ) {
 			$this->assert_is_script_enqueued( $handle );
 			wp_dequeue_script( $handle ); // Dequeue to start fresh for next test.
@@ -793,11 +793,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats response.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_response_on_empty_plugin_options(): void {
 		$this->set_empty_plugin_options();
@@ -811,11 +811,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats response.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_response_on_empty_api_secret(): void {
 		$this->set_empty_api_secret();
@@ -829,12 +829,12 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats API arguments.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_api_params_of_analytics_api_call_on_valid_post_type_and_having_single_record(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -857,12 +857,12 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats API arguments.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_api_params_of_analytics_api_call_on_valid_post_type_and_having_multiple_records(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -885,11 +885,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats response.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_response_on_empty_track_post_types(): void {
 		$this->set_empty_track_post_types();
@@ -903,11 +903,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats response.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_response_on_invalid_track_post_types(): void {
 		$this->set_valid_plugin_options();
@@ -922,11 +922,11 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats response.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_response_on_valid_post_type_and_no_post_data(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -940,12 +940,12 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats response.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_response_on_valid_post_type_and_null_response_from_api(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -960,12 +960,12 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats response.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_response_on_valid_post_type_and_error_response_from_api(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -988,13 +988,13 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats response.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_unique_stats_key_from_analytics
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_unique_stats_key_from_analytics
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_response_on_valid_post_type_and_having_data_from_api(): void {
 		$this->set_valid_conditions_for_parsely_stats();
@@ -1126,13 +1126,13 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Verifies Parse.ly Stats response.
 	 *
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::__construct
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::run
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::set_current_screen
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::is_tracked_as_post_type
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_parsely_stats_response
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_publish_date_params_for_analytics_api
-	 * @covers \Parsely\UI\Admin_Columns_Parsely_Stats::get_unique_stats_key_from_analytics
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_parsely_stats_response
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_publish_date_params_for_analytics_api
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_unique_stats_key_from_analytics
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
+	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 */
 	public function test_parsely_stats_response_on_valid_hierarchal_post_type_and_having_data_from_api(): void {
 		$this->set_valid_conditions_for_parsely_stats( 'page' );
@@ -1184,7 +1184,7 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	 * @return Parsely_Posts_Stats_Response|null
 	 */
 	private function get_parsely_stats_response( $posts = array(), $post_type = 'post', $api_response = null, $api_params = null ) {
-		$obj = $this->init_admin_columns_parsely_stats();
+		$obj = $this->init_post_list_stats();
 
 		ob_start();
 		$this->show_content_on_parsely_stats_column( $posts, $post_type );
@@ -1228,12 +1228,12 @@ final class AdminColumnsParselyStatsTest extends ContentHelperFeatureTest {
 	}
 
 	/**
-	 * Initializes Admin_Columns_Parsely_Stats object.
+	 * Initializes Post_List_Stats object.
 	 *
-	 * @return Admin_Columns_Parsely_Stats
+	 * @return Post_List_Stats
 	 */
-	private function init_admin_columns_parsely_stats() {
-		$obj = new Admin_Columns_Parsely_Stats( new Parsely() );
+	private function init_post_list_stats() {
+		$obj = new Post_List_Stats( new Parsely() );
 		$obj->run();
 
 		return $obj;

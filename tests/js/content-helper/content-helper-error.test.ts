@@ -4,7 +4,7 @@
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
-} from '../../../src/blocks/content-helper/content-helper-error';
+} from '../../../src/content-helper/common/content-helper-error';
 
 /**
  * Verifies that the retryFetch property of the ContentHelperErrorCode class

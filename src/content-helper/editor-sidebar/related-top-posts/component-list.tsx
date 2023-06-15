@@ -10,7 +10,7 @@ import { useEffect, useState } from '@wordpress/element';
 import RelatedTopPostsProvider from './provider';
 import RelatedTopPostListItem from './component-list-item';
 import { RelatedTopPostData } from './model';
-import { ContentHelperError } from '../content-helper-error';
+import { ContentHelperError } from '../../common/content-helper-error';
 
 const FETCH_RETRIES = 1;
 

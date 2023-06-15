@@ -1,6 +1,6 @@
-import { canProcessDate } from '../../../../../src/blocks/shared/utils/date';
+import { canProcessDate } from '../../../../../src/content-helper/common/utils/date';
 
-const basePath = 'src/blocks/shared/utils/date.ts';
+const basePath = 'src/content-helper/common/utils/date.ts';
 
 describe( `${ basePath } canProcessDate()`, (): void => {
 	it.each( [

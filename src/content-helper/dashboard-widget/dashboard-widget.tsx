@@ -7,7 +7,7 @@ import { render } from '@wordpress/element';
  * Internal dependencies
  */
 import TopPostList from './top-posts/component-list';
-import VerifyCredentials from '../verify-credentials';
+import VerifyCredentials from '../common/verify-credentials';
 
 window.addEventListener(
 	'load',

@@ -8,18 +8,22 @@
 
 declare(strict_types=1);
 
-namespace Parsely;
+namespace Parsely\Content_Helper;
 
+use Parsely\Parsely;
 use Parsely\Content_Helper\Content_Helper_Feature;
 
 use function Parsely\Utils\get_asset_info;
+
+use const Parsely\PARSELY_FILE;
 
 /**
  * Class that generates and manages the PCH Editor Sidebar.
  *
  * @since 3.5.0
+ * @since 3.9.0 Renamed FQCN from `Parsely\Content_Helper` to `Parsely\Content_Helper\Editor_Sidebar`
  */
-class Content_Helper extends Content_Helper_Feature {
+class Editor_Sidebar extends Content_Helper_Feature {
 	/**
 	 * Constructor.
 	 *
@@ -74,13 +78,14 @@ class Content_Helper extends Content_Helper_Feature {
 			return;
 		}
 
-		$content_helper_asset = get_asset_info( 'build/content-helper.asset.php' );
+		$asset_php        = get_asset_info( 'build/content-helper/editor-sidebar.asset.php' );
+		$built_assets_url = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_script(
 			static::get_script_id(),
-			plugin_dir_url( PARSELY_FILE ) . 'build/content-helper.js',
-			$content_helper_asset['dependencies'],
-			$content_helper_asset['version'],
+			$built_assets_url . 'editor-sidebar.js',
+			$asset_php['dependencies'],
+			$asset_php['version'],
 			true
 		);
 
@@ -88,9 +93,9 @@ class Content_Helper extends Content_Helper_Feature {
 
 		wp_enqueue_style(
 			static::get_style_id(),
-			plugin_dir_url( PARSELY_FILE ) . 'build/content-helper.css',
+			$built_assets_url . 'editor-sidebar.css',
 			array(),
-			$content_helper_asset['version']
+			$asset_php['version']
 		);
 	}
 }
