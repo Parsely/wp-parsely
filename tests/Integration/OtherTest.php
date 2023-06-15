@@ -233,94 +233,90 @@ final class OtherTest extends TestCase {
 		// Valid and invalid credential sets to be tested.
 		$credential_sets = array(
 			array(
-				'input_values'  => array( 'site_id' => 'example.com' ),
-				'output_values' => array( 'apikey' => 'example.com' ),
-				'managed'       => false,
-			),
-			array(
-				'input_values'  => array( 'api_secret' => 'test' ),
-				'output_values' => array( 'api_secret' => 'test' ),
-				'managed'       => false,
-			),
-			array(
-				'input_values'  => array( 'metadata_secret' => 'test' ),
-				'output_values' => array( 'metadata_secret' => 'test' ),
-				'managed'       => false,
-			),
-			array(
-				'input_values'  => array(
+				'input_values'   => array(
 					'site_id'    => 'example.com',
 					'api_secret' => 'test',
 				),
-				'output_values' => array(
+				'managed_result' => true,
+				'output_values'  => array(
 					'apikey'     => 'example.com',
 					'api_secret' => 'test',
 				),
-				'managed'       => true,
 			),
 			array(
-				'input_values'  => array(
-					'site_id'         => 'example.com',
-					'metadata_secret' => 'test',
-				),
-				'output_values' => array(
-					'apikey'          => 'example.com',
-					'metadata_secret' => 'test',
-				),
-				'managed'       => false,
-			),
-			array(
-				'input_values'  => array(
-					'api_secret'      => 'test',
-					'metadata_secret' => 'test',
-				),
-				'output_values' => array(
-					'api_secret'      => 'test',
-					'metadata_secret' => 'test',
-				),
-				'managed'       => false,
-			),
-			array(
-				'input_values'  => array(
+				'input_values'   => array(
 					'site_id'         => 'example.com',
 					'api_secret'      => 'test',
 					'metadata_secret' => 'test',
 				),
-				'output_values' => array(
+				'managed_result' => true,
+				'output_values'  => array(
 
 					'apikey'          => 'example.com',
 					'api_secret'      => 'test',
 					'metadata_secret' => 'test',
 				),
-				'managed'       => true,
 			),
 			array(
-				'input_values'  => array( 'invalid_key' => 'example.com' ),
-				'output_values' => array(),
-				'managed'       => false,
+				'input_values'   => array(
+					'site_id'     => 'example.com',
+					'api_secret'  => 'test',
+					'invalid_key' => 'test',
+				),
+				'managed_result' => true,
+				'output_values'  => array(
+					'apikey'     => 'example.com',
+					'api_secret' => 'test',
+				),
 			),
 			array(
-				'input_values'  => array(
+				'input_values'   => array( 'site_id' => 'example.com' ),
+				'managed_result' => false,
+			),
+			array(
+				'input_values'   => array( 'api_secret' => 'test' ),
+				'managed_result' => false,
+			),
+			array(
+				'input_values'   => array( 'metadata_secret' => 'test' ),
+				'managed_result' => false,
+			),
+			array(
+				'input_values'   => array(
+					'site_id'         => 'example.com',
+					'metadata_secret' => 'test',
+				),
+				'managed_result' => false,
+			),
+			array(
+				'input_values'   => array(
+					'api_secret'      => 'test',
+					'metadata_secret' => 'test',
+				),
+				'managed_result' => false,
+			),
+			array(
+				'input_values'   => array( 'invalid_key' => 'example.com' ),
+				'managed_result' => false,
+			),
+			array(
+				'input_values'   => array(
 					'site_id'     => 'example.com',
 					'invalid_key' => 'test',
 				),
-				'output_values' => array( 'apikey' => 'example.com' ),
-				'managed'       => false,
+				'managed_result' => false,
 			),
 			array(
-				'input_values'  => array(),
-				'output_values' => array(),
-				'managed'       => false,
+				'input_values'   => array(),
+				'managed_result' => false,
 			),
 			array(
-				'input_values'  => 'some_string',
-				'output_values' => array(),
-				'managed'       => false,
+				'input_values'   => 'some_string',
+				'managed_result' => false,
 			),
 			array(
-				'input_values'  => 1,
-				'output_values' => array(),
-				'managed'       => false,
+				'input_values'   => 1,
+				'managed_result' => false,
 			),
 		);
 
@@ -349,11 +345,11 @@ final class OtherTest extends TestCase {
 				->invoke( $parsely );
 
 			self::assertSame(
-				$credentials['managed'],
+				$credentials['managed_result'],
 				$parsely->are_credentials_managed
 			);
 
-			if ( false === $credentials['managed'] ) {
+			if ( false === $credentials['managed_result'] ) {
 				// Credentials are not being managed and should thus be empty.
 				self::assertSame( array(), $managed_credentials );
 				continue;
