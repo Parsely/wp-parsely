@@ -15,6 +15,11 @@ const DATE_NOT_AVAILABLE_MESSAGE = __( 'Date N/A', 'wp-parsely' );
  */
 export function canProcessDate( date: Date|string ): boolean {
 	if ( 'string' === typeof date ) {
+		// Verify that date format is "YYYY-MM-DD".
+		if ( ! /^\d{4}-\d{2}-\d{2}$/.test( date ) ) {
+			return false;
+		}
+
 		date = new Date( date );
 	}
 
@@ -68,6 +73,10 @@ export function getSmartShortDate( date: Date ): string {
  * @return {string} The resulting date in "YYYY-MM-DD" format.
  */
 export function removeDaysFromDate( date: string, days: number ): string {
+	if ( false === Number.isInteger( days ) ) {
+		return __( 'days parameter must be an integer', 'wp-parsely' );
+	}
+
 	if ( false === canProcessDate( date ) ) {
 		return DATE_NOT_AVAILABLE_MESSAGE;
 	}
