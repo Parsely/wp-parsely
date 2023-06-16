@@ -102,7 +102,7 @@ nvm use
 npm install
 ```
 
-#### Running the integration tests installation script
+#### Installing integration tests
 
 In order to run integration tests, an installation script must be executed beforehand. For this to succeed, you will need to:
 
@@ -128,7 +128,25 @@ To run the installation script:
 **Important Notes:**
 - It is recommended to always use `latest` as the value for the `wp-version` argument.
 - The installation takes place into a temporary directory, which means that the related files will get deleted in a day or so. The way to remediate this is just to re-run the installation script whenever needed.
-- The database will be completely overwritten every time integration tests are executed. 
+- The database will be completely overwritten every time integration tests are executed.
+
+#### Installing pcov
+
+To be able to run coverage commands, you'll need to install `pcov`:
+
+```
+pecl install pcov
+```
+
+Some times, `pcov` does not work out of the box if `PHP` has been installed using Homebrew. Here are some possible troubleshooting steps (version strings should be updated to the ones you're using).
+
+```
+# If missing, create a symlink to pcre2.h.
+ln -s /opt/homebrew/Cellar/pcre2/10.42/include/pcre2.h /opt/homebrew/Cellar/php@7.4/7.4.33_1/include/php/ext/pcre/pcre2.h
+
+# If the /opt/homebrew/Cellar/php@7.4/7.4.33_1/pecl symlink points to a directory that does not exist, create the directory.
+mkdir /opt/homebrew/lib/php/pecl
+```
 
 ### Developing locally
 
@@ -270,6 +288,8 @@ composer testwp-ms
 composer coverage
 ```
 
+Additional commands can be found within [composer.json](composer.json) in the `scripts` and `scripts-descriptions` sections.
+
 ##### JavaScript tests:
 
 ```
@@ -277,12 +297,14 @@ composer coverage
 npm run test
 ```
 
+Additional commands can be found within [composer.json](composer.json) in the `scripts` and `scripts-descriptions` sections.
+
 ##### End-to-end tests:
 
 To run end-to-end tests, [please refer to their separate instructions](tests/e2e/README.md).
 
 ### Releasing a new version
 
-To release a new version of the plugin, a GitHub issue with the name of the release (for instance, _Release 3.2.1_) has to be created using the _Release_ template.
+To release a new version of the plugin, a GitHub issue with the name of the release (for instance, _Release 3.9.0_) has to be created using the _Release_ template.
 
 After creating the issue, all the steps laid down in that template must be completed. Every time a step is completed, please mark it using the checkbox. Once all steps are done, the issue can be closed.
