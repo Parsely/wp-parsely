@@ -211,6 +211,7 @@ final class SettingsPageTest extends TestCase {
 			return;
 		}
 
+		/** @var int $subsite_blog_id */
 		$subsite_blog_id = self::factory()->blog->create(
 			array(
 				'domain' => 'parselyrocks.example.org',
