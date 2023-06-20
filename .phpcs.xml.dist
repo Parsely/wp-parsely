@@ -79,4 +79,9 @@
 		</properties>
 	</rule>
 
+	<!-- Allow short @var assignments in tests. -->
+ 	<rule ref="Generic.Commenting.DocComment.MissingShort">
+    	<exclude-pattern>/tests/</exclude-pattern>
+ 	</rule>
+
 </ruleset>
