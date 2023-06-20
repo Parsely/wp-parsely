@@ -39,6 +39,13 @@
 		"[markdown]": {
 			"files.trimTrailingWhitespace": false
 		},
+		// Error Lens
+		"errorLens.exclude": [
+			// Exclude type coverage errors to reduce noise. The errors are
+			// still visible in all other parts of VSCode and will cause
+			// pre-commit hooks to fail.
+			" actually have it. Add more (return|param) types to get over "
+		],
 		// ESLint
 		"eslint.format.enable": true,
 		"eslint.validate": [
