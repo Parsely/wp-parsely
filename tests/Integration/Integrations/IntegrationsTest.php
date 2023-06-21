@@ -25,7 +25,6 @@ final class IntegrationsTest extends TestCase {
 	 *
 	 * @covers \Parsely\parsely_integrations
 	 * @uses \Parsely\Integrations\Amp::integrate
-	 * @uses \Parsely\Integrations\Facebook_Instant_Articles::integrate
 	 * @uses \Parsely\Integrations\Google_Web_Stories::integrate
 	 * @uses \Parsely\Integrations\Integrations::integrate
 	 * @uses \Parsely\Integrations\Integrations::register
@@ -52,8 +51,8 @@ final class IntegrationsTest extends TestCase {
 		 */
 		$registered_integrations = $reflector_property->getValue( $integrations );
 
-		self::assertCount( 4, $registered_integrations );
-		self::assertSame( array( 'amp', 'fbia', 'webstories', 'fake' ), array_keys( $registered_integrations ) );
+		self::assertCount( 3, $registered_integrations );
+		self::assertSame( array( 'amp', 'webstories', 'fake' ), array_keys( $registered_integrations ) );
 
 		// Use filter to override existing key.
 		add_action(
@@ -65,8 +64,8 @@ final class IntegrationsTest extends TestCase {
 			}
 		);
 
-		self::assertCount( 4, $registered_integrations );
-		self::assertSame( array( 'amp', 'fbia', 'webstories', 'fake' ), array_keys( $registered_integrations ) );
+		self::assertCount( 3, $registered_integrations );
+		self::assertSame( array( 'amp', 'webstories', 'fake' ), array_keys( $registered_integrations ) );
 	}
 
 }
