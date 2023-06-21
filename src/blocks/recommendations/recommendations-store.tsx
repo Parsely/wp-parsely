@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { createContext, useContext, useReducer } from '@wordpress/element';
+import { createContext, useContext, useMemo, useReducer } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -63,7 +63,9 @@ const RecommendationsStore = ( props: RecommendationStore ) => {
 	};
 
 	const [ state, dispatch ] = useReducer( reducer, defaultState );
-	return <RecommendationsContext.Provider value={ { state, dispatch } } { ...props } />;
+	return useMemo( () => {
+		return <RecommendationsContext.Provider value={ { state, dispatch } } { ...props } />;
+	}, [ props, state ] );
 };
 
 export const useRecommendationsStore = () => useContext( RecommendationsContext );
