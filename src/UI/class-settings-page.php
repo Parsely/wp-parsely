@@ -61,7 +61,6 @@ use const Parsely\PARSELY_FILE;
  *   lowercase_tags?: bool,
  *   force_https_canonicals?: bool,
  *   disable_autotrack?: bool|string,
- *   parsely_wipe_metadata_cache: bool,
  * }
  */
 final class Settings_Page {
@@ -205,7 +204,8 @@ final class Settings_Page {
 	 * @since 3.2.0
 	 */
 	private function initialize_basic_section(): void {
-		$section_key = 'basic-section';
+		$are_credentials_managed = $this->parsely->are_credentials_managed;
+		$section_key             = 'basic-section';
 
 		add_settings_section(
 			$section_key,
@@ -223,57 +223,40 @@ final class Settings_Page {
 			'optional_args' => array(
 				'required'    => 'required',
 				'placeholder' => 'mydomain.com',
+				'disabled'    => $are_credentials_managed,
 			),
 
 		);
 		add_settings_field(
 			$field_id,
-			__( 'Parse.ly Site ID <em>(required)</em>', 'wp-parsely' ),
+			__( 'Site ID <em>(required)</em>', 'wp-parsely' ),
 			array( $this, 'print_text_tag' ),
 			Parsely::MENU_SLUG,
 			$section_key,
 			$field_args
 		);
 
-		// API Secret.
-		$field_id   = 'api_secret';
-		$field_args = array(
-			'option_key'    => $field_id,
-			'help_text'     => __( 'Your API secret is your secret code to <a href="https://docs.parse.ly/the-parsely-api/">access our API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API and would like to do so, email your account manager or <a href="mailto:support@parsely.com">support@parsely.com</a>.', 'wp-parsely' ),
-			'label_for'     => $field_id,
-			'optional_args' => array(
-				'type'                => 'password',
-				'is_obfuscated_value' => true,
-			),
-		);
-		add_settings_field(
-			$field_id,
-			__( 'Parse.ly API Secret', 'wp-parsely' ),
-			array( $this, 'print_text_tag' ),
-			Parsely::MENU_SLUG,
-			$section_key,
-			$field_args
-		);
-
-		// Metadata Secret.
-		$field_id   = 'metadata_secret';
-		$field_args = array(
-			'option_key'    => $field_id,
-			'help_text'     => __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' ),
-			'label_for'     => $field_id,
-			'optional_args' => array(
-				'type'                => 'password',
-				'is_obfuscated_value' => true,
-			),
-		);
-		add_settings_field(
-			$field_id,
-			__( 'Parse.ly Metadata Secret', 'wp-parsely' ),
-			array( $this, 'print_text_tag' ),
-			Parsely::MENU_SLUG,
-			$section_key,
-			$field_args
-		);
+		if ( ! $are_credentials_managed ) {
+			// API Secret.
+			$field_id   = 'api_secret';
+			$field_args = array(
+				'option_key'    => $field_id,
+				'help_text'     => __( 'Your API secret is your secret code to <a href="https://docs.parse.ly/the-parsely-api/">access our API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API and would like to do so, email your account manager or <a href="mailto:support@parsely.com">support@parsely.com</a>.', 'wp-parsely' ),
+				'label_for'     => $field_id,
+				'optional_args' => array(
+					'type'                => 'password',
+					'is_obfuscated_value' => true,
+				),
+			);
+			add_settings_field(
+				$field_id,
+				__( 'API Secret', 'wp-parsely' ),
+				array( $this, 'print_text_tag' ),
+				Parsely::MENU_SLUG,
+				$section_key,
+				$field_args
+			);
+		}
 
 		// Metadata Format.
 		$field_id   = 'meta_type';
@@ -537,7 +520,8 @@ final class Settings_Page {
 	 * @since 3.2.0
 	 */
 	private function initialize_advanced_section(): void {
-		$section_key = 'advanced-section';
+		$are_credentials_managed = $this->parsely->are_credentials_managed;
+		$section_key             = 'advanced-section';
 
 		add_settings_section(
 			$section_key,
@@ -545,6 +529,28 @@ final class Settings_Page {
 			'__return_null',
 			Parsely::MENU_SLUG
 		);
+
+		if ( ! $are_credentials_managed ) {
+			// Metadata Secret.
+			$field_id   = 'metadata_secret';
+			$field_args = array(
+				'option_key'    => $field_id,
+				'help_text'     => __( 'Your metadata secret is given to you by Parse.ly support. DO NOT enter anything here unless given to you by Parse.ly support!', 'wp-parsely' ),
+				'label_for'     => $field_id,
+				'optional_args' => array(
+					'type'                => 'password',
+					'is_obfuscated_value' => true,
+				),
+			);
+			add_settings_field(
+				$field_id,
+				__( 'Metadata Secret', 'wp-parsely' ),
+				array( $this, 'print_text_tag' ),
+				Parsely::MENU_SLUG,
+				$section_key,
+				$field_args
+			);
+		}
 
 		// Disable autotrack.
 		add_settings_field(
@@ -560,20 +566,6 @@ final class Settings_Page {
 					'true'  => __( 'Yes, disable autotracking. I do not want the tracking code to report an event as soon as the script has finished loading. I plan to implement Dynamic Tracking myself.', 'wp-parsely' ),
 					'false' => __( 'No, do not disable autotracking. I want to make sure the default behavior of the tracking code is in place. The tracking code should report an event as soon as the script has finished loading.', 'wp-parsely' ),
 				),
-			)
-		);
-
-		// Clear metadata.
-		add_settings_field(
-			'parsely_wipe_metadata_cache',
-			__( 'Wipe Parse.ly Metadata Info', 'wp-parsely' ),
-			array( $this, 'print_checkbox_tag' ),
-			Parsely::MENU_SLUG,
-			$section_key,
-			array(
-				'option_key' => 'parsely_wipe_metadata_cache',
-				'yes_text'   => __( 'Yes, clear all metadata information for Parse.ly posts and re-send all metadata to Parse.ly.', 'wp-parsely' ),
-				'help_text'  => __( '<span style="color:#d63638">WARNING:</span> Do not do this unless explicitly instructed by Parse.ly Staff!', 'wp-parsely' ),
 			)
 		);
 	}
@@ -674,7 +666,7 @@ final class Settings_Page {
 		$name                = Parsely::OPTIONS_KEY . "[$id]";
 		$is_obfuscated_value = $optional_args['is_obfuscated_value'] ?? false;
 		$value               = $is_obfuscated_value ? $this->get_obfuscated_value( $value ) : esc_attr( $value );
-		$accepted_args       = array( 'placeholder', 'required' );
+		$accepted_args       = array( 'placeholder', 'required', 'disabled' );
 		$type                = $optional_args['type'] ?? 'text';
 
 		echo sprintf( "<input type='%s' name='%s' id='%s' value='%s'", esc_attr( $type ), esc_attr( $name ), esc_attr( $id ), esc_attr( $value ) );
@@ -684,8 +676,12 @@ final class Settings_Page {
 		}
 
 		foreach ( $optional_args as $key => $val ) {
-			if ( \in_array( $key, $accepted_args, true ) ) {
-				echo ' ' . esc_attr( $key ) . '="' . esc_attr( (string) $val ) . '"';
+			if ( \in_array( $key, $accepted_args, true ) && false !== $val ) {
+				// Support attributes without values.
+				echo ' ' . esc_attr( $key );
+				if ( true !== $val ) {
+					echo '="' . esc_attr( $val ) . '"';
+				}
 			}
 		}
 		echo ' />';
@@ -930,44 +926,42 @@ final class Settings_Page {
 	 * @return ParselySettingOptions Validated inputs.
 	 */
 	private function validate_basic_section( $input ) {
-		$options = $this->parsely->get_options();
+		$are_credentials_managed = $this->parsely->are_credentials_managed;
+		$options                 = $this->parsely->get_options();
 
-		if ( '' === $input['apikey'] ) {
-			add_settings_error(
-				Parsely::OPTIONS_KEY,
-				'apikey',
-				__( 'Please specify the Site ID', 'wp-parsely' )
-			);
+		if ( $are_credentials_managed ) {
+			$input['apikey']     = '';
+			$input['api_secret'] = '';
 		} else {
-			$site_id = $this->sanitize_site_id( $input['apikey'] );
-			if ( false === $this->validate_site_id( $site_id ) ) {
+			if ( '' === $input['apikey'] ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'apikey',
-					__( 'Your Parse.ly Site ID looks incorrect, it should look like "example.com".', 'wp-parsely' )
+					__( 'Please specify the Site ID', 'wp-parsely' )
 				);
 			} else {
-				$input['apikey'] = $site_id;
+				$site_id = $this->sanitize_site_id( $input['apikey'] );
+				if ( false === $this->validate_site_id( $site_id ) ) {
+					add_settings_error(
+						Parsely::OPTIONS_KEY,
+						'apikey',
+						__( 'The Site ID was not saved because it is incorrect. It should look like "example.com".', 'wp-parsely' )
+					);
+					$input['apikey'] = $options['apikey'];
+				} else {
+					$input['apikey'] = $site_id;
+				}
 			}
-		}
 
-		$input['api_secret'] = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
-
-		$input['metadata_secret'] = $this->get_unobfuscated_value( $input['metadata_secret'], $this->parsely->get_options()['metadata_secret'] );
-		if ( '' !== $input['metadata_secret'] ) {
-			if ( strlen( $input['metadata_secret'] ) !== 10 ) {
+			$input['api_secret'] = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
+			$api_secret_length   = strlen( $input['api_secret'] );
+			if ( $api_secret_length > 0 && $api_secret_length <= 30 ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
-					'metadata_secret',
-					__( 'Metadata secret is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+					'api_secret',
+					__( 'The API Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
 				);
-			} elseif (
-				isset( $input['parsely_wipe_metadata_cache'] ) && 'true' === $input['parsely_wipe_metadata_cache'] // @phpstan-ignore-line
-			) {
-				delete_post_meta_by_key( 'parsely_metadata_last_updated' );
-
-				wp_schedule_event( time() + 100, 'everytenminutes', 'parsely_bulk_metas_update' );
-				$input['parsely_wipe_metadata_cache'] = false;
+				$input['api_secret'] = $options['api_secret'];
 			}
 		}
 
@@ -1140,7 +1134,24 @@ final class Settings_Page {
 	 * @return ParselySettingOptions Validated inputs.
 	 */
 	private function validate_advanced_section( $input ) {
-		$options = $this->parsely->get_options();
+		$are_credentials_managed = $this->parsely->are_credentials_managed;
+		$options                 = $this->parsely->get_options();
+
+		if ( $are_credentials_managed ) {
+			$input['metadata_secret'] = '';
+		} else {
+			$input['metadata_secret'] = $this->get_unobfuscated_value( $input['metadata_secret'], $this->parsely->get_options()['metadata_secret'] );
+			if ( '' !== $input['metadata_secret'] ) {
+				if ( strlen( $input['metadata_secret'] ) !== 10 ) {
+					add_settings_error(
+						Parsely::OPTIONS_KEY,
+						'metadata_secret',
+						__( 'The Metadata Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+					);
+					$input['metadata_secret'] = $options['metadata_secret'];
+				}
+			}
+		}
 
 		if ( ! isset( $input['disable_autotrack'] ) ) {
 			$input['disable_autotrack'] = $options['disable_autotrack'];
