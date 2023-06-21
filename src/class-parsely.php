@@ -37,7 +37,6 @@ use WP_Post;
  *   meta_type: string,
  *   logo: string,
  *   metadata_secret: string,
- *   parsely_wipe_metadata_cache: bool,
  *   disable_autotrack: bool,
  *   plugin_version: string,
  * }
@@ -61,25 +60,24 @@ class Parsely {
 	 * @var Parsely_Options $option_defaults The defaults we need for the class.
 	 */
 	private $option_defaults = array(
-		'apikey'                      => '',
-		'content_id_prefix'           => '',
-		'api_secret'                  => '',
-		'use_top_level_cats'          => false,
-		'custom_taxonomy_section'     => 'category',
-		'cats_as_tags'                => false,
-		'track_authenticated_users'   => false,
-		'lowercase_tags'              => true,
-		'force_https_canonicals'      => false,
-		'track_post_types'            => array( 'post' ),
-		'track_page_types'            => array( 'page' ),
-		'disable_javascript'          => false,
-		'disable_amp'                 => false,
-		'meta_type'                   => 'json_ld',
-		'logo'                        => '',
-		'metadata_secret'             => '',
-		'parsely_wipe_metadata_cache' => false,
-		'disable_autotrack'           => false,
-		'plugin_version'              => '',
+		'apikey'                    => '',
+		'content_id_prefix'         => '',
+		'api_secret'                => '',
+		'use_top_level_cats'        => false,
+		'custom_taxonomy_section'   => 'category',
+		'cats_as_tags'              => false,
+		'track_authenticated_users' => false,
+		'lowercase_tags'            => true,
+		'force_https_canonicals'    => false,
+		'track_post_types'          => array( 'post' ),
+		'track_page_types'          => array( 'page' ),
+		'disable_javascript'        => false,
+		'disable_amp'               => false,
+		'meta_type'                 => 'json_ld',
+		'logo'                      => '',
+		'metadata_secret'           => '',
+		'disable_autotrack'         => false,
+		'plugin_version'            => '',
 	);
 
 	/**
@@ -126,10 +124,24 @@ class Parsely {
 	private static $all_supported_types;
 
 	/**
+	 * Returns whether credentials are being managed at the platform level.
+	 *
+	 * This allows hosting providers to provide a more customized experience for
+	 * the plugin by handling credentials automatically.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 * @var bool
+	 */
+	public $are_credentials_managed;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct() {
 		self::$all_supported_types = array_merge( self::SUPPORTED_JSONLD_POST_TYPES, self::SUPPORTED_JSONLD_NON_POST_TYPES );
+
+		$this->are_credentials_managed = $this->are_credentials_managed();
 	}
 
 	/**
@@ -155,25 +167,7 @@ class Parsely {
 			update_option( self::OPTIONS_KEY, $options );
 		}
 
-		// phpcs:ignore WordPress.WP.CronInterval.CronSchedulesInterval
-		add_filter( 'cron_schedules', array( $this, 'wpparsely_add_cron_interval' ) );
-		add_action( 'parsely_bulk_metas_update', array( $this, 'bulk_update_posts' ) );
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
-	}
-
-	/**
-	 * Adds 10 minute cron interval.
-	 *
-	 * @param array<string, mixed> $schedules WP schedules array.
-	 *
-	 * @return array<string, mixed>
-	 */
-	public function wpparsely_add_cron_interval( array $schedules ): array {
-		$schedules['everytenminutes'] = array(
-			'interval' => 600, // time in seconds.
-			'display'  => __( 'Every 10 Minutes', 'wp-parsely' ),
-		);
-		return $schedules;
 	}
 
 	/**
@@ -354,51 +348,6 @@ class Parsely {
 	}
 
 	/**
-	 * Updates posts with Parsely metadata API in bulk.
-	 */
-	public function bulk_update_posts(): void {
-		global $wpdb;
-		$allowed_types        = $this->get_all_track_types();
-		$allowed_types_string = implode(
-			', ',
-			array_map(
-				function( $v ) {
-					return "'" . esc_sql( $v ) . "'";
-				},
-				$allowed_types
-			)
-		);
-
-		/**
-		 * Variable.
-		 *
-		 * @var int[]|false
-		 */
-		$ids = wp_cache_get( 'parsely_post_ids_need_meta_updating' );
-		if ( false === $ids ) {
-			$ids = array();
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-			$results = $wpdb->get_results(
-				$wpdb->prepare( "SELECT DISTINCT(id) FROM {$wpdb->posts} WHERE post_type IN (\" . %s . \") AND id NOT IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = 'parsely_metadata_last_updated');", $allowed_types_string ),
-				ARRAY_N
-			);
-			foreach ( $results as $result ) {
-				$ids[] = $result[0];
-			}
-			wp_cache_set( 'parsely_post_ids_need_meta_updating', $ids, '', 86400 );
-		}
-
-		for ( $i = 0; $i < 100; $i++ ) {
-			$post_id = array_pop( $ids );
-			if ( null === $post_id ) {
-				wp_clear_scheduled_hook( 'parsely_bulk_metas_update' );
-				break;
-			}
-			$this->update_metadata_endpoint( $post_id );
-		}
-	}
-
-	/**
 	 * Safely returns options for the plugin by assigning defaults contained in
 	 * optionDefaults.
 	 *
@@ -416,10 +365,19 @@ class Parsely {
 		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
 
 		if ( ! is_array( $options ) ) {
-			return $this->option_defaults;
+			$options = $this->option_defaults;
 		}
 
-		return array_merge( $this->option_defaults, $options );
+		/**
+		 * Final options including any managed credentials.
+		 *
+		 * @var Parsely_Options
+		 */
+		return array_merge(
+			$this->option_defaults,
+			$options,
+			$this->get_managed_credentials()
+		);
 	}
 
 	/**
@@ -607,5 +565,66 @@ class Parsely {
 	 */
 	public function get_default_options() {
 		return $this->option_defaults;
+	}
+
+	/**
+	 * Returns the credentials that are being managed at the platform level.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 *
+	 * @return Parsely_Options|array<empty> The managed credentials.
+	 */
+	private function get_managed_credentials() {
+		if ( true !== $this->are_credentials_managed ) {
+			return array();
+		}
+
+		$credentials = apply_filters( 'wp_parsely_credentials', false );
+		$result      = array();
+
+		if ( isset( $credentials['site_id'] ) ) {
+			$result['apikey'] = $credentials['site_id'];
+		}
+
+		if ( isset( $credentials['api_secret'] ) ) {
+			$result['api_secret'] = $credentials['api_secret'];
+		}
+
+		if ( isset( $credentials['metadata_secret'] ) ) {
+			$result['metadata_secret'] = $credentials['metadata_secret'];
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Returns whether credentials are being managed at the platform level.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 *
+	 * @return bool Whether credentials are being managed at the platform level.
+	 */
+	private function are_credentials_managed(): bool {
+		$credentials = apply_filters( 'wp_parsely_credentials', false );
+
+		if ( ! is_array( $credentials ) ) {
+			return false;
+		}
+
+		$required_credentials = array( 'site_id', 'api_secret' );
+
+		foreach ( $required_credentials as $key ) {
+			if (
+				! isset( $credentials[ $key ] ) ||
+				! is_string( $credentials[ $key ] ) ||
+				'' === $credentials[ $key ]
+			) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

@@ -44,6 +44,274 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that valid Site ID values are retained when validated.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses \Parsely\UI\Settings_Page::validate_options
+	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\UI\Settings_Page::validate_site_id
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_valid_site_id_values_are_retained_when_validated(): void {
+		$options = self::$parsely->get_options();
+
+		$options['apikey'] = 'mydomain.com';
+		$expected          = $options;
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Verifies that invalid Site ID values are emptied when validated.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses \Parsely\UI\Settings_Page::validate_options
+	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\UI\Settings_Page::validate_site_id
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_invalid_site_id_values_are_emptied_when_validated(): void {
+		$expected = self::$parsely->get_options();
+		$options  = self::$parsely->get_options();
+
+		$options['apikey'] = 'invalid';
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Verifies that valid API Secret values are retained when validated.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses \Parsely\UI\Settings_Page::validate_options
+	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\UI\Settings_Page::validate_site_id
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_valid_api_secret_values_are_retained_when_validated(): void {
+		$options = self::$parsely->get_options();
+
+		// More than 30 characters.
+		$options['api_secret'] = 'valid_api_secret_key_based_on_length';
+		$expected              = $options;
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Verifies that invalid API Secret values are emptied when validated.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses \Parsely\UI\Settings_Page::validate_options
+	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\UI\Settings_Page::validate_site_id
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_invalid_api_secret_values_are_emptied_when_validated(): void {
+		$expected = self::$parsely->get_options();
+		$options  = self::$parsely->get_options();
+
+		$options['api_secret'] = 'a'; // Less than 30 characters.
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Verifies that valid Metadata Secret values are retained when validated.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses \Parsely\UI\Settings_Page::validate_options
+	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\UI\Settings_Page::validate_site_id
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_valid_metadata_secret_values_are_retained_when_validated(): void {
+		$options = self::$parsely->get_options();
+
+		$options['metadata_secret'] = 'goodlength'; // 10 characters.
+		$expected                   = $options;
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Verifies that invalid Metadata Secret values are emptied when validated.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses \Parsely\UI\Settings_Page::validate_options
+	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\UI\Settings_Page::validate_site_id
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_invalid_metadata_secret_values_are_emptied_when_validated(): void {
+		$expected = self::$parsely->get_options();
+		$options  = self::$parsely->get_options();
+
+		$options['metadata_secret'] = 'too_short'; // Less than 10 characters.
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+
+		$options['metadata_secret'] = 'too_lengthy'; // More than 10 characters.
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Verifies that managed credentials values are always emptied when
+	 * validated.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_api_secret
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses \Parsely\UI\Settings_Page::validate_options
+	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\UI\Settings_Page::validate_site_id
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_managed_credentials_values_are_always_emptied_when_validated(): void {
+		$expected = self::$parsely->get_options();
+		$options  = self::$parsely->get_options();
+
+		add_filter(
+			'wp_parsely_credentials',
+			function() {
+				return array(
+					'site_id'         => 'example.com',
+					'api_secret'      => 'test',
+					'metadata_secret' => 'test',
+				);
+			}
+		);
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+	}
+
+	/**
 	 * Verifies that the "Track Post Types as" setting gets saved.
 	 *
 	 * @since 3.2.0
