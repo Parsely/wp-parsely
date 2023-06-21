@@ -36,7 +36,6 @@ use Parsely\Endpoints\Referrers_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Related_API_Proxy;
 use Parsely\Endpoints\Rest_Metadata;
 use Parsely\Integrations\Amp;
-use Parsely\Integrations\Facebook_Instant_Articles;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
 use Parsely\RemoteAPI\Analytics_Post_Detail_API;
@@ -236,7 +235,6 @@ function parsely_recommended_widget_register(): void {
 require_once __DIR__ . '/src/Integrations/class-integration.php';
 require_once __DIR__ . '/src/Integrations/class-integrations.php';
 require_once __DIR__ . '/src/Integrations/class-amp.php';
-require_once __DIR__ . '/src/Integrations/class-facebook-instant-articles.php';
 require_once __DIR__ . '/src/Integrations/class-google-web-stories.php';
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' ); // @phpstan-ignore-line
@@ -258,7 +256,6 @@ function parsely_integrations( $parsely = null ): Integrations {
 
 	$parsely_integrations = new Integrations( $parsely );
 	$parsely_integrations->register( 'amp', Amp::class );
-	$parsely_integrations->register( 'fbia', Facebook_Instant_Articles::class );
 	$parsely_integrations->register( 'webstories', Google_Web_Stories::class );
 	$parsely_integrations = apply_filters( 'wp_parsely_add_integration', $parsely_integrations );
 	$parsely_integrations->integrate();
