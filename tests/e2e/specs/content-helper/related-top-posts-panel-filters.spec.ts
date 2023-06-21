@@ -9,6 +9,7 @@ import {
  * Internal dependencies.
  */
 import {
+	VALID_API_SECRET,
 	getTopRelatedPostsMessage,
 	insertRecordIntoTaxonomy,
 	setSiteKeys,
@@ -29,7 +30,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 	beforeAll( async () => {
 		enablePageDialogAccept();
 		await startUpTest();
-		await setSiteKeys( 'blog.parsely.com', 'test' );
+		await setSiteKeys( 'blog.parsely.com', VALID_API_SECRET );
 	} );
 
 	/**
