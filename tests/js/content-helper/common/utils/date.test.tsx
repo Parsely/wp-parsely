@@ -45,9 +45,9 @@ describe( `${ basePath } getDateInUserLang()`, (): void => {
 		) ).toBe( 'Nov 11, 2022' );
 
 		expect( getDateInUserLang(
-			new Date( '2022-12-12' ),
+			new Date( '2022-12-11' ),
 			{ dateStyle: 'full', timeStyle: 'long', timeZone: 'UTC' },
-		) ).toBe( 'Monday, December 12, 2022 at 12:00:00 AM UTC' );
+		) ).toBe( 'Sunday, December 11, 2022 at 12:00:00 AM UTC' );
 	} );
 } );
 
@@ -97,6 +97,8 @@ describe( `${ basePath } removeDaysFromDate()`, (): void => {
 		'2023-03-005',
 		'2023-03-99',
 		'0000-00-00',
+		'2023-13-05',
+		'2023-03-32',
 		'xxxx-xx-xx',
 		'invalid',
 		'1970-01-01',
