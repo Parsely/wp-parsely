@@ -47,7 +47,7 @@ export interface GetRelatedTopPostsResult {
 export const RELATED_POSTS_DEFAULT_LIMIT = 5;
 export const RELATED_POSTS_DEFAULT_TIME_RANGE = 7; // In days.
 
-class RelatedTopPostsProvider {
+export class RelatedTopPostsProvider {
 	/**
 	 * Returns related top posts to the one that is currently being edited
 	 * within the WordPress Block Editor.
@@ -176,5 +176,3 @@ class RelatedTopPostsProvider {
 		);
 	}
 }
-
-export default RelatedTopPostsProvider;

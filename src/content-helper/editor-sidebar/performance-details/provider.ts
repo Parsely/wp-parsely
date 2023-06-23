@@ -42,7 +42,7 @@ export const PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE = 7; // In days.
 /**
  * Provides current post details data for use in other components.
  */
-class PerformanceDetailsProvider {
+export class PerformanceDetailsProvider {
 	private apiPeriodRange: ApiPeriodRange;
 	private itmSource = 'wp-parsely-content-helper';
 
@@ -182,5 +182,3 @@ class PerformanceDetailsProvider {
 		return response.data;
 	}
 }
-
-export default PerformanceDetailsProvider;

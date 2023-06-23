@@ -7,7 +7,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Recommendation } from '../models/Recommendation';
-import ParselyRecommendationsListItem from './parsely-recommendations-list-item';
+import { ParselyRecommendationsListItem } from './parsely-recommendations-list-item';
 
 interface ParselyRecommendationsListProps {
 	imagestyle: string;
@@ -16,7 +16,7 @@ interface ParselyRecommendationsListProps {
 	showimages: boolean;
 }
 
-const ParselyRecommendationsList = ( { imagestyle, recommendations, showimages, openlinksinnewtab }: ParselyRecommendationsListProps ) => (
+export const ParselyRecommendationsList = ( { imagestyle, recommendations, showimages, openlinksinnewtab }: ParselyRecommendationsListProps ) => (
 	<ul className="parsely-recommendations-list">
 		{ recommendations.map( ( recommendation ) => (
 			<ParselyRecommendationsListItem
@@ -30,5 +30,3 @@ const ParselyRecommendationsList = ( { imagestyle, recommendations, showimages, 
 		) ) }
 	</ul>
 );
-
-export default ParselyRecommendationsList;

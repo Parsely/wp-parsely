@@ -7,8 +7,8 @@ import { render } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import ParselyRecommendations from './components/parsely-recommendations';
-import RecommendationsStore from './recommendations-store';
+import { ParselyRecommendations } from './components/parsely-recommendations';
+import { RecommendationsStore } from './recommendations-store';
 
 domReady( () => {
 	const blocks = document.querySelectorAll( '.wp-block-wp-parsely-recommendations' );

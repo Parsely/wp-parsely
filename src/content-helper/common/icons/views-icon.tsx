@@ -18,5 +18,3 @@ export const ViewsIcon = () => (
 		/>
 	</SVG>
 );
-
-export default ViewsIcon;

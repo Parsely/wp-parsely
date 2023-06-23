@@ -8,13 +8,13 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import LeafIcon from '../../content-helper/common/icons/leaf-icon';
+import { LeafIcon } from '../../content-helper/common/icons/leaf-icon';
 import json from './block.json';
-import ParselyRecommendations from './components/parsely-recommendations';
-import ParselyRecommendationsInspectorControls from './components/parsely-recommendations-inspector-controls';
+import { ParselyRecommendations } from './components/parsely-recommendations';
+import { ParselyRecommendationsInspectorControls } from './components/parsely-recommendations-inspector-controls';
 import './editor.scss';
 import { RecommendationsAttributes } from './models/RecommendationsAttributes';
-import RecommendationsStore from './recommendations-store';
+import { RecommendationsStore } from './recommendations-store';
 import './style.scss';
 
 interface ParselyRecommendationsEditProps {

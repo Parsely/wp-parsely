@@ -8,16 +8,16 @@ import { useEffect, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { ContentHelperError } from '../../common/content-helper-error';
-import RelatedTopPostListItem from './component-list-item';
+import { RelatedTopPostListItem } from './component-list-item';
 import { RelatedTopPostData } from './model';
-import RelatedTopPostsProvider from './provider';
+import { RelatedTopPostsProvider } from './provider';
 
 const FETCH_RETRIES = 1;
 
 /**
  * List of the related top posts.
  */
-function RelatedTopPostList() {
+export function RelatedTopPostList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ message, setMessage ] = useState<string>();
@@ -80,5 +80,3 @@ function RelatedTopPostList() {
 			)
 	);
 }
-
-export default RelatedTopPostList;

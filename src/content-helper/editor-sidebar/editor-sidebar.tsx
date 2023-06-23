@@ -9,10 +9,10 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
-import LeafIcon from '../common/icons/leaf-icon';
-import VerifyCredentials from '../common/verify-credentials';
-import PerformanceDetails from './performance-details/component';
-import RelatedTopPostList from './related-top-posts/component-list';
+import { LeafIcon } from '../common/icons/leaf-icon';
+import { VerifyCredentials } from '../common/verify-credentials';
+import { PerformanceDetails } from './performance-details/component';
+import { RelatedTopPostList } from './related-top-posts/component-list';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 

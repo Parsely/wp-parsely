@@ -27,7 +27,7 @@ interface TopPostsApiResponse {
 const TOP_POSTS_DEFAULT_LIMIT = 3;
 const TOP_POSTS_DEFAULT_TIME_RANGE = 7; // In days.
 
-class DashboardWidgetProvider {
+export class DashboardWidgetProvider {
 	/**
 	 * Returns the site's top posts.
 	 *
@@ -85,5 +85,3 @@ class DashboardWidgetProvider {
 		return response?.data ?? [];
 	}
 }
-
-export default DashboardWidgetProvider;
