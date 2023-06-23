@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { Card, CardBody, CardMedia } from '@wordpress/components';
 

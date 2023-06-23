@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { createContext, useContext, useMemo, useReducer } from '@wordpress/element';
 

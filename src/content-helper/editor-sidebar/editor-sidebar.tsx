@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { Panel, PanelBody } from '@wordpress/components';
 import { PluginSidebar } from '@wordpress/edit-post';

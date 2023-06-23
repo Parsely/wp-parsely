@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { InspectorControls } from '@wordpress/block-editor';
 import {

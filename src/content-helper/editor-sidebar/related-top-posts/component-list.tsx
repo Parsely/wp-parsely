@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
