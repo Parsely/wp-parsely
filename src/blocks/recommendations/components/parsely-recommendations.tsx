@@ -6,10 +6,10 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { useRecommendationsStore } from '../recommendations-store';
 import ParselyRecommendationsFetcher from './parsely-recommendations-fetcher';
 import ParselyRecommendationsList from './parsely-recommendations-list';
 import ParselyRecommendationsTitle from './parsely-recommendations-title';
-import { useRecommendationsStore } from '../recommendations-store';
 
 interface ParselyRecommendationsProps {
 	boost: string;

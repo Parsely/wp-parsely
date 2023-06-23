@@ -1,9 +1,9 @@
 /**
  * External dependencies
  */
+import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
-import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
@@ -12,8 +12,8 @@ import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../common/content-helper-error';
-import { TopPostData } from './top-posts/model';
 import { getApiPeriodParams } from '../common/utils/api';
+import { TopPostData } from './top-posts/model';
 
 /**
  * The form of the response returned by the /stats/posts WordPress REST API

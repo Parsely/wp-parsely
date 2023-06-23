@@ -1,19 +1,19 @@
 /**
  * External dependencies
  */
-import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button, Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
+import { __, _n, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import PerformanceDetailsProvider, { PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE } from './provider';
-import { PerformanceData } from './model';
 import { ContentHelperError } from '../../common/content-helper-error';
-import { formatToImpreciseNumber } from '../../common/utils/number';
-import { getSmartShortDate } from '../../common/utils/date';
 import { getApiPeriodStartDate } from '../../common/utils/api';
+import { getSmartShortDate } from '../../common/utils/date';
+import { formatToImpreciseNumber } from '../../common/utils/number';
+import { PerformanceData } from './model';
+import PerformanceDetailsProvider, { PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE } from './provider';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 1;

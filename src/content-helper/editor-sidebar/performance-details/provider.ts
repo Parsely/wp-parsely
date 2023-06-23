@@ -1,10 +1,10 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
-import { select } from '@wordpress/data';
-import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
+import { select } from '@wordpress/data';
+import { __, sprintf } from '@wordpress/i18n';
+import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -13,11 +13,11 @@ import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../../common/content-helper-error';
+import { ApiPeriodRange, getApiPeriodParams } from '../../common/utils/api';
 import {
 	PerformanceData,
 	PerformanceReferrerData,
 } from './model';
-import { ApiPeriodRange, getApiPeriodParams } from '../../common/utils/api';
 
 /**
  * Specifies the form of the response returned by the `/stats/post/detail`

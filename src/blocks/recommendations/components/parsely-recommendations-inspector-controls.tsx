@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
 import {
 	PanelBody,
@@ -12,6 +11,7 @@ import {
 	TextControl,
 	ToggleControl,
 } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies

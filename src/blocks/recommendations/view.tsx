@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import { render } from '@wordpress/element';
 import domReady from '@wordpress/dom-ready';
+import { render } from '@wordpress/element';
 
 /**
  * Internal dependencies

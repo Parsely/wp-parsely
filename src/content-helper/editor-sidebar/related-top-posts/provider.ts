@@ -1,12 +1,12 @@
 /**
  * External dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
+import apiFetch from '@wordpress/api-fetch';
 import { select } from '@wordpress/data';
+import { __, sprintf } from '@wordpress/i18n';
 // eslint-disable-next-line import/named
 import { Post, Taxonomy, User } from '@wordpress/core-data';
 import { addQueryArgs } from '@wordpress/url';
-import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
@@ -15,8 +15,8 @@ import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../../common/content-helper-error';
-import { RelatedTopPostData } from './model';
 import { AnalyticsApiOptionalQueryParams, getApiPeriodParams } from '../../common/utils/api';
+import { RelatedTopPostData } from './model';
 
 /**
  * The form of the query that gets posted to the analytics/posts WordPress REST

@@ -6,12 +6,12 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { TopPostData } from './model';
-import { formatToImpreciseNumber } from '../../common/utils/number';
+import EditIcon from '../../common/icons/edit-icon';
 import OpenLinkIcon from '../../common/icons/open-link-icon';
 import { getSmartShortDate } from '../../common/utils/date';
-import EditIcon from '../../common/icons/edit-icon';
+import { formatToImpreciseNumber } from '../../common/utils/number';
 import { getPostEditUrl } from '../../common/utils/post';
+import { TopPostData } from './model';
 
 interface TopPostListItemProps {
 	post: TopPostData;

@@ -6,12 +6,12 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { RelatedTopPostData } from './model';
-import ViewsIcon from '../../common/icons/views-icon';
-import OpenLinkIcon from '../../common/icons/open-link-icon';
 import EditIcon from '../../common/icons/edit-icon';
-import { getPostEditUrl } from '../../common/utils/post';
+import OpenLinkIcon from '../../common/icons/open-link-icon';
+import ViewsIcon from '../../common/icons/views-icon';
 import { getSmartShortDate } from '../../common/utils/date';
+import { getPostEditUrl } from '../../common/utils/post';
+import { RelatedTopPostData } from './model';
 
 interface RelatedTopPostListItemProps {
 	post: RelatedTopPostData;

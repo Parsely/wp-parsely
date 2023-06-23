@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { SVG, Path } from '@wordpress/components';
+import { Path, SVG } from '@wordpress/components';
 
 export const EditIcon = () => (
 	<SVG

@@ -1,9 +1,9 @@
 /**
  * External dependencies.
  */
-import type{ _Hooks } from '@wordpress/hooks/build-types/createHooks';
+import type { _Hooks } from '@wordpress/hooks/build-types/createHooks';
 
-export {};
+export { };
 
 declare global {
 	interface Window {

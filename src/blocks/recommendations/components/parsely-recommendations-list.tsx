@@ -6,8 +6,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import ParselyRecommendationsListItem from './parsely-recommendations-list-item';
 import { Recommendation } from '../models/Recommendation';
+import ParselyRecommendationsListItem from './parsely-recommendations-list-item';
 
 interface ParselyRecommendationsListProps {
 	imagestyle: string;

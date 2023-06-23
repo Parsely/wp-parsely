@@ -10,8 +10,8 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { setError, setRecommendations } from '../actions';
-import { useRecommendationsStore } from '../recommendations-store';
 import { Recommendation } from '../models/Recommendation';
+import { useRecommendationsStore } from '../recommendations-store';
 
 interface ParselyRecommendationsFetcherProps {
 	boost: string;

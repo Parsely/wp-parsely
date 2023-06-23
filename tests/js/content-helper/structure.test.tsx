@@ -1,20 +1,20 @@
 /**
  * External dependencies.
  */
+import '@testing-library/jest-dom';
 import {
 	render,
 	screen,
 	waitFor,
 } from '@testing-library/react';
-import '@testing-library/jest-dom';
 
 /**
  * Internal dependencies.
  */
+import { ContentHelperError, ContentHelperErrorCode } from '../../../src/content-helper/common/content-helper-error';
+import { DASHBOARD_BASE_URL } from '../../../src/content-helper/common/utils/constants';
 import RelatedTopPostList from '../../../src/content-helper/editor-sidebar/related-top-posts/component-list';
 import RelatedTopPostsProvider, { GetRelatedTopPostsResult, RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE } from '../../../src/content-helper/editor-sidebar/related-top-posts/provider';
-import { DASHBOARD_BASE_URL } from '../../../src/content-helper/common/utils/constants';
-import { ContentHelperError, ContentHelperErrorCode } from '../../../src/content-helper/common/content-helper-error';
 
 describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	test( 'should display spinner when starting', async () => {

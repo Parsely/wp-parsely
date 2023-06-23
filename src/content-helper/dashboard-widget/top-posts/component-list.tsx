@@ -1,17 +1,17 @@
 /**
  * External dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
+import { ContentHelperError } from '../../../content-helper/common/content-helper-error';
 import DashboardWidgetProvider from '../provider';
 import TopPostListItem from './component-list-item';
 import { TopPostData } from './model';
-import { ContentHelperError } from '../../../content-helper/common/content-helper-error';
 
 const FETCH_RETRIES = 1;
 
