@@ -1,5 +1,5 @@
 /**
- * External dependencies.
+ * External dependencies
  */
 import '@testing-library/jest-dom';
 import {
@@ -9,7 +9,7 @@ import {
 } from '@testing-library/react';
 
 /**
- * Internal dependencies.
+ * Internal dependencies
  */
 import { ParselyRecommendations } from '../../../../src/blocks/recommendations/components/parsely-recommendations';
 import { ParselyRecommendationsList } from '../../../../src/blocks/recommendations/components/parsely-recommendations-list';

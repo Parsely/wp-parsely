@@ -1,5 +1,5 @@
 /**
- * External dependencies.
+ * External dependencies
  */
 import '@testing-library/jest-dom';
 import {
@@ -9,7 +9,7 @@ import {
 } from '@testing-library/react';
 
 /**
- * Internal dependencies.
+ * Internal dependencies
  */
 import { ContentHelperError, ContentHelperErrorCode } from '../../../src/content-helper/common/content-helper-error';
 import { DASHBOARD_BASE_URL } from '../../../src/content-helper/common/utils/constants';
