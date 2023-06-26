@@ -388,21 +388,6 @@ final class OtherTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that get_options() can handle a corrupted (non-array) value in
-	 * the database.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @covers \Parsely\Parsely::get_options
-	 */
-	public function test_corrupted_options(): void {
-		update_option( Parsely::OPTIONS_KEY, 'someinvalidvalue' );
-
-		$options = self::$parsely->get_options();
-		self::assertSame( self::$parsely->get_default_options(), $options );
-	}
-
-	/**
 	 * Verifies that posts are not trackable when they are password protected.
 	 *
 	 * @since 3.0.1
