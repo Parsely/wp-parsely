@@ -719,7 +719,15 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		global $wp_scripts;
 
 		ob_start();
-		var_dump( $wp_scripts->print_inline_script ( 'post-list-stats-script', 'before' ) ); // phpcs:ignore
+
+		global $wp_version;
+		if ( true === version_compare( substr( $wp_version, 0, 3 ), '6.3', '>=' ) ) {
+			// @phpstan-ignore-next-line
+			var_dump( $wp_scripts->get_inline_script_data( 'post-list-stats-script', 'before' ) ); // phpcs:ignore
+		} else {
+			var_dump( $wp_scripts->print_inline_script( 'post-list-stats-script', 'before' ) ); // phpcs:ignore
+		}
+
 		$output = (string) ob_get_clean();
 
 		self::assertStringContainsString( 'window.wpParselyPostsStatsResponse = \'[]\';', $output );
