@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import * as path from 'path';
 import { visitAdminPage } from '@wordpress/e2e-test-utils';
+import * as path from 'path';
 
 /**
  * Internal dependencies

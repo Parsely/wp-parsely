@@ -38,4 +38,3 @@ export const VerifyCredentials = (
 	return <>{ children }</>;
 };
 
-export default VerifyCredentials;
