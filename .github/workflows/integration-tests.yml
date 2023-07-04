@@ -47,6 +47,10 @@ jobs:
             wp: 'trunk'
             coverage: none
             experimental: false
+          - php: '8.3'
+            wp: 'trunk'
+            coverage: none
+            experimental: true
       fail-fast: false
     continue-on-error: ${{ matrix.experimental }}
     steps:
