@@ -1,24 +1,24 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import DashboardWidgetProvider from '../provider';
-import TopPostListItem from './component-list-item';
-import { TopPostData } from './model';
 import { ContentHelperError } from '../../../content-helper/common/content-helper-error';
+import { DashboardWidgetProvider } from '../provider';
+import { TopPostListItem } from './component-list-item';
+import { TopPostData } from './model';
 
 const FETCH_RETRIES = 1;
 
 /**
  * List of the top posts.
  */
-function TopPostList() {
+export function TopPostList() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ posts, setPosts ] = useState<TopPostData[]>( [] );
@@ -80,5 +80,3 @@ function TopPostList() {
 			)
 	);
 }
-
-export default TopPostList;

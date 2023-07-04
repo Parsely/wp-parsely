@@ -1,19 +1,19 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
-import { __, _n, sprintf } from '@wordpress/i18n';
 import { Button, Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
+import { __, _n, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import PerformanceDetailsProvider, { PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE } from './provider';
-import { PerformanceData } from './model';
 import { ContentHelperError } from '../../common/content-helper-error';
-import { formatToImpreciseNumber } from '../../common/utils/number';
-import { getSmartShortDate } from '../../common/utils/date';
 import { getApiPeriodStartDate } from '../../common/utils/api';
+import { getSmartShortDate } from '../../common/utils/date';
+import { formatToImpreciseNumber } from '../../common/utils/number';
+import { PerformanceData } from './model';
+import { PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE, PerformanceDetailsProvider } from './provider';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 1;
@@ -28,7 +28,7 @@ interface PerformanceSectionProps {
 /**
  * Outputs the current post's details or shows an error message on failure.
  */
-function PerformanceDetails() {
+export function PerformanceDetails() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ postDetailsData, setPostDetails ] = useState<PerformanceData>();
@@ -297,5 +297,3 @@ function ActionsSection( props: PerformanceSectionProps ) {
 		</div>
 	);
 }
-
-export default PerformanceDetails;
