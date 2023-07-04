@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { createContext, useContext, useMemo, useReducer } from '@wordpress/element';
 
@@ -53,7 +53,7 @@ interface RecommendationStore {
 	children: React.ReactNode;
 }
 
-const RecommendationsStore = ( props: RecommendationStore ) => {
+export const RecommendationsStore = ( props: RecommendationStore ) => {
 	const defaultState: RecommendationState = {
 		isLoaded: false,
 		recommendations: [],
@@ -69,5 +69,3 @@ const RecommendationsStore = ( props: RecommendationStore ) => {
 };
 
 export const useRecommendationsStore = () => useContext( RecommendationsContext );
-
-export default RecommendationsStore;

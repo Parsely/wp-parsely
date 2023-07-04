@@ -21,7 +21,7 @@ export interface ContentHelperErrorMessageProps {
  *
  * @return {JSX.Element} The error message JSX Element.
  */
-const ContentHelperErrorMessage = (
+export const ContentHelperErrorMessage = (
 	props: ContentHelperErrorMessageProps|null = null
 ): JSX.Element => {
 	let innerHtml = '';
@@ -64,4 +64,3 @@ export const EmptyCredentialsMessage = (
 	);
 };
 
-export default ContentHelperErrorMessage;

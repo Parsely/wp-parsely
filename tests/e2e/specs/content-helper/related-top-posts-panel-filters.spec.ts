@@ -1,12 +1,12 @@
 /**
- * External dependencies.
+ * WordPress dependencies
  */
 import {
 	enablePageDialogAccept,
 } from '@wordpress/e2e-test-utils';
 
 /**
- * Internal dependencies.
+ * Internal dependencies
  */
 import {
 	VALID_API_SECRET,
