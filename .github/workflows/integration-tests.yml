@@ -104,5 +104,5 @@ jobs:
         run: composer testwp-ms --no-interaction
 
       - name: Run integration tests (multisite site with code coverage)
-        if: ${{ matrix.php == 8.0 }}
+        if: ${{ matrix.php == 8.1 }}
         run: composer coveragewp-ci --no-interaction
