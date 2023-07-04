@@ -1,9 +1,9 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
+import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
-import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Internal dependencies
@@ -12,8 +12,8 @@ import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../common/content-helper-error';
-import { TopPostData } from './top-posts/model';
 import { getApiPeriodParams } from '../common/utils/api';
+import { TopPostData } from './top-posts/model';
 
 /**
  * The form of the response returned by the /stats/posts WordPress REST API
@@ -27,7 +27,7 @@ interface TopPostsApiResponse {
 const TOP_POSTS_DEFAULT_LIMIT = 3;
 const TOP_POSTS_DEFAULT_TIME_RANGE = 7; // In days.
 
-class DashboardWidgetProvider {
+export class DashboardWidgetProvider {
 	/**
 	 * Returns the site's top posts.
 	 *
@@ -85,5 +85,3 @@ class DashboardWidgetProvider {
 		return response?.data ?? [];
 	}
 }
-
-export default DashboardWidgetProvider;
