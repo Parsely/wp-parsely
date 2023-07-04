@@ -48,6 +48,9 @@
 			"typescriptreact"
 		],
 		"[javascript][typescript][javascriptreact][typescriptreact]": {
+			"editor.codeActionsOnSave": {
+				"source.organizeImports": true,
+			},
 			"editor.defaultFormatter": "dbaeumer.vscode-eslint",
 		},
 		// PHP Code Sniffer
@@ -58,7 +61,7 @@
 		"phpcbf.standard": "WordPress-VIP-Go,WordPress-Docs",
 		"phpcbf.onsave": true,
 		"[php]": {
-			"editor.defaultFormatter": "obliviousharmony.vscode-php-codesniffer"
+			"editor.defaultFormatter": "obliviousharmony.vscode-php-codesniffer",
 		},
 		// PHPStan
 		"phpstan.timeout": 30000,

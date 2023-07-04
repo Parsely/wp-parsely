@@ -1,23 +1,23 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { RelatedTopPostData } from './model';
-import ViewsIcon from '../../common/icons/views-icon';
-import OpenLinkIcon from '../../common/icons/open-link-icon';
-import EditIcon from '../../common/icons/edit-icon';
-import { getPostEditUrl } from '../../common/utils/post';
+import { EditIcon } from '../../common/icons/edit-icon';
+import { OpenLinkIcon } from '../../common/icons/open-link-icon';
+import { ViewsIcon } from '../../common/icons/views-icon';
 import { getSmartShortDate } from '../../common/utils/date';
+import { getPostEditUrl } from '../../common/utils/post';
+import { RelatedTopPostData } from './model';
 
 interface RelatedTopPostListItemProps {
 	post: RelatedTopPostData;
 }
 
-function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ): JSX.Element {
+export function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ): JSX.Element {
 	return (
 		<li className="parsely-top-post" data-testid="parsely-top-post">
 			<div className="parsely-top-post-title">
@@ -44,5 +44,3 @@ function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ): JSX.El
 		</li>
 	);
 }
-
-export default RelatedTopPostListItem;

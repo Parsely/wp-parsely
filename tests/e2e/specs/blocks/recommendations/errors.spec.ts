@@ -1,5 +1,5 @@
 /**
- * External dependencies.
+ * WordPress dependencies
  */
 import {
 	createNewPost,
@@ -8,7 +8,7 @@ import {
 } from '@wordpress/e2e-test-utils';
 
 /**
- * Internal dependencies.
+ * Internal dependencies
  */
 import {
 	setSiteKeys,

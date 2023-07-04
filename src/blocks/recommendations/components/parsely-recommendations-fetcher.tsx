@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
 import { useDebounce } from '@wordpress/compose';
@@ -10,8 +10,8 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { setError, setRecommendations } from '../actions';
-import { useRecommendationsStore } from '../recommendations-store';
 import { Recommendation } from '../models/Recommendation';
+import { useRecommendationsStore } from '../recommendations-store';
 
 interface ParselyRecommendationsFetcherProps {
 	boost: string;
@@ -27,7 +27,7 @@ interface ApiResponse {
 
 const updateDelay = 300; // The Block's update delay in the Block Editor when settings/props change.
 
-const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } : ParselyRecommendationsFetcherProps ): JSX.Element | null => {
+export const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } : ParselyRecommendationsFetcherProps ): JSX.Element | null => {
 	const {	dispatch } = useRecommendationsStore();
 
 	const query = useMemo( () => ( {
@@ -86,5 +86,3 @@ const ParselyRecommendationsFetcher = ( { boost, limit, sort, isEditMode } : Par
 	// This is a data-only component and does not render
 	return null;
 };
-
-export default ParselyRecommendationsFetcher;

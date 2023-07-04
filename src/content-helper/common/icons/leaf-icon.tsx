@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { SVG, Path } from '@wordpress/components';
+import { Path, SVG } from '@wordpress/components';
 
 export const LeafIcon = () => (
 	<SVG
@@ -16,5 +16,3 @@ export const LeafIcon = () => (
 		<Path fill="#5ba745" d="M36.12,58.44A6.12,6.12,0,1,1,30,52.32a6.11,6.11,0,0,1,6.12,6.12" />
 	</SVG>
 );
-
-export default LeafIcon;

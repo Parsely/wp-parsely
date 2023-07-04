@@ -1,21 +1,21 @@
 /**
- * External dependencies.
+ * External dependencies
  */
+import '@testing-library/jest-dom';
 import {
 	render,
 	screen,
 	within,
 } from '@testing-library/react';
-import '@testing-library/jest-dom';
 
 /**
- * Internal dependencies.
+ * Internal dependencies
  */
-import ParselyRecommendations from '../../../../src/blocks/recommendations/components/parsely-recommendations';
-import ParselyRecommendationsList from '../../../../src/blocks/recommendations/components/parsely-recommendations-list';
-import ParselyRecommendationsTitle from '../../../../src/blocks/recommendations/components/parsely-recommendations-title';
-import RecommendationsStore from '../../../../src/blocks/recommendations/recommendations-store';
+import { ParselyRecommendations } from '../../../../src/blocks/recommendations/components/parsely-recommendations';
+import { ParselyRecommendationsList } from '../../../../src/blocks/recommendations/components/parsely-recommendations-list';
+import { ParselyRecommendationsTitle } from '../../../../src/blocks/recommendations/components/parsely-recommendations-title';
 import { Recommendation } from '../../../../src/blocks/recommendations/models/Recommendation';
+import { RecommendationsStore } from '../../../../src/blocks/recommendations/recommendations-store';
 
 /**
  * Verifies that the Block's structure remains consistent and correct
