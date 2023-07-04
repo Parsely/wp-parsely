@@ -1,17 +1,17 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { TopPostData } from './model';
-import { formatToImpreciseNumber } from '../../common/utils/number';
-import OpenLinkIcon from '../../common/icons/open-link-icon';
+import { EditIcon } from '../../common/icons/edit-icon';
+import { OpenLinkIcon } from '../../common/icons/open-link-icon';
 import { getSmartShortDate } from '../../common/utils/date';
-import EditIcon from '../../common/icons/edit-icon';
+import { formatToImpreciseNumber } from '../../common/utils/number';
 import { getPostEditUrl } from '../../common/utils/post';
+import { TopPostData } from './model';
 
 interface TopPostListItemProps {
 	post: TopPostData;
@@ -22,7 +22,7 @@ interface TopPostListItemProps {
  *
  * @param {TopPostData} post The Post to be shown.
  */
-function TopPostListItem( { post }: TopPostListItemProps ): JSX.Element {
+export function TopPostListItem( { post }: TopPostListItemProps ): JSX.Element {
 	return (
 		<li className="parsely-top-post">
 			<div className="parsely-top-post-content">
@@ -120,5 +120,3 @@ function getPostTitleElement( { post }: TopPostListItemProps ): JSX.Element {
 		</a>
 	);
 }
-
-export default TopPostListItem;

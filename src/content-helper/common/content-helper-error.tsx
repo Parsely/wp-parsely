@@ -6,7 +6,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import ContentHelperErrorMessage, {
+import {
+	ContentHelperErrorMessage,
 	ContentHelperErrorMessageProps,
 	EmptyCredentialsMessage,
 } from './content-helper-error-message';
