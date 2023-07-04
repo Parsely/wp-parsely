@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * Integration Tests for plugin options.
@@ -63,6 +65,29 @@ final class OptionsTest extends TestCase {
 		$options = self::$parsely->get_options();
 		self::assertSame( array( 'post' ), $options['track_post_types'] );
 		self::assertSame( array( 'page' ), $options['track_page_types'] );
+	}
+
+	/**
+	 * Verifies that set_default_track_as_values() does not get called when
+	 * saved plugin options exist.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 */
+	public function test_set_default_track_as_values_should_not_be_called_when_saved_options_exist(): void {
+		$options                     = self::$parsely->get_options();
+		$options['track_post_types'] = array( 'new_post_type' );
+		$options['track_page_types'] = array( 'new_page_type' );
+
+		add_option( Parsely::OPTIONS_KEY, $options );
+		$saved_options = self::$parsely->get_options();
+
+		self::assertSame( array( 'new_post_type' ), $saved_options['track_post_types'] );
+		self::assertSame( array( 'new_page_type' ), $saved_options['track_page_types'] );
+
+		delete_option( Parsely::OPTIONS_KEY );
 	}
 
 	/**
