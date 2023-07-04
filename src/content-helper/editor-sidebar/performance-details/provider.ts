@@ -1,10 +1,10 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
-import { __, sprintf } from '@wordpress/i18n';
-import { select } from '@wordpress/data';
-import { addQueryArgs } from '@wordpress/url';
 import apiFetch from '@wordpress/api-fetch';
+import { select } from '@wordpress/data';
+import { __, sprintf } from '@wordpress/i18n';
+import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -13,11 +13,11 @@ import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../../common/content-helper-error';
+import { ApiPeriodRange, getApiPeriodParams } from '../../common/utils/api';
 import {
 	PerformanceData,
 	PerformanceReferrerData,
 } from './model';
-import { ApiPeriodRange, getApiPeriodParams } from '../../common/utils/api';
 
 /**
  * Specifies the form of the response returned by the `/stats/post/detail`
@@ -42,7 +42,7 @@ export const PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE = 7; // In days.
 /**
  * Provides current post details data for use in other components.
  */
-class PerformanceDetailsProvider {
+export class PerformanceDetailsProvider {
 	private apiPeriodRange: ApiPeriodRange;
 	private itmSource = 'wp-parsely-content-helper';
 
@@ -182,5 +182,3 @@ class PerformanceDetailsProvider {
 		return response.data;
 	}
 }
-
-export default PerformanceDetailsProvider;

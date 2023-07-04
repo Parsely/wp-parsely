@@ -1,13 +1,13 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { render } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
-import TopPostList from './top-posts/component-list';
-import VerifyCredentials from '../common/verify-credentials';
+import { VerifyCredentials } from '../common/verify-credentials';
+import { TopPostList } from './top-posts/component-list';
 
 window.addEventListener(
 	'load',
