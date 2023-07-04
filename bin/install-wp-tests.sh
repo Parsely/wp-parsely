@@ -63,7 +63,7 @@ install_wp() {
 			case $yn in
 				y|Y ) rm -rf $WP_CORE_DIR; break;;
 				n|N ) exit;;
-				* ) echo invalid response;
+				* ) echo "Invalid response. Please answer with y or n.";
 			esac
 		done
 	fi
