@@ -10,8 +10,6 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
-use PHPUnit\Framework\ExpectationFailedException;
 
 /**
  * Integration Tests for plugin options.
@@ -31,6 +29,16 @@ final class OptionsTest extends TestCase {
 		parent::set_up();
 
 		self::$parsely = new Parsely();
+	}
+
+	/**
+	 * Teardown method called after each test.
+	 *
+	 * Resets globals.
+	 */
+	public function tear_down(): void {
+		parent::tear_down();
+		self::reset_post_types();
 	}
 
 	/**
@@ -86,8 +94,6 @@ final class OptionsTest extends TestCase {
 
 		self::assertSame( array( 'new_post_type' ), $saved_options['track_post_types'] );
 		self::assertSame( array( 'new_page_type' ), $saved_options['track_page_types'] );
-
-		delete_option( Parsely::OPTIONS_KEY );
 	}
 
 	/**
@@ -160,10 +166,5 @@ final class OptionsTest extends TestCase {
 
 		self::assertSame( array( 'post', 'custom_post_type' ), $options['track_post_types'] );
 		self::assertSame( array( 'page', 'custom_page_type' ), $options['track_page_types'] );
-
-		// Clean up.
-		foreach ( $custom_post_types as $key => $value ) {
-			unregister_post_type( $key );
-		}
 	}
 }
