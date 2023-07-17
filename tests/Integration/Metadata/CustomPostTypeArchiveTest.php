@@ -55,7 +55,8 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 		);
 
 		// Add post to custom post type.
-		self::factory()->post->create(
+		/** @var int $post_id */
+		$post_id = self::factory()->post->create(
 			array(
 				'title'     => 'Post Title',
 				'post_type' => 'custom_post_type',
@@ -84,5 +85,9 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 		// The headline should be the CPT name.
 		self::assertEquals( 'custom_post_type', $structured_data['headline'] ?? null );
 		self::assertEquals( home_url( '/cpt-archive' ), $structured_data['url'] ?? null );
+
+		// Clean up.
+		unregister_post_type( 'custom_post_type' );
+		wp_delete_post( $post_id, true );
 	}
 }
