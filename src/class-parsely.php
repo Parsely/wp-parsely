@@ -69,8 +69,8 @@ class Parsely {
 		'track_authenticated_users' => false,
 		'lowercase_tags'            => true,
 		'force_https_canonicals'    => false,
-		'track_post_types'          => array( 'post' ),
-		'track_page_types'          => array( 'page' ),
+		'track_post_types'          => array(),
+		'track_page_types'          => array(),
 		'disable_javascript'        => false,
 		'disable_amp'               => false,
 		'meta_type'                 => 'json_ld',
@@ -362,9 +362,10 @@ class Parsely {
 		 *
 		 * @var Parsely_Options|null
 		 */
-		$options = get_option( self::OPTIONS_KEY, $this->option_defaults );
+		$options = get_option( self::OPTIONS_KEY, null );
 
 		if ( ! is_array( $options ) ) {
+			$this->set_default_track_as_values();
 			$options = $this->option_defaults;
 		}
 
@@ -378,6 +379,31 @@ class Parsely {
 			$options,
 			$this->get_managed_credentials()
 		);
+	}
+
+	/**
+	 * Sets the default values for the track_post_types and track_page_types
+	 * options.
+	 *
+	 * @since 3.9.0
+	 */
+	public function set_default_track_as_values(): void {
+		$this->option_defaults['track_page_types'] = array();
+		$this->option_defaults['track_post_types'] = array();
+
+		$post_types = get_post_types( array( 'public' => true ) );
+
+		foreach ( $post_types as $post_type ) {
+			if ( ! post_type_supports( $post_type, 'editor' ) ) {
+				continue;
+			}
+
+			if ( is_post_type_hierarchical( $post_type ) ) {
+				$this->option_defaults['track_page_types'][] = $post_type;
+			} else {
+				$this->option_defaults['track_post_types'][] = $post_type;
+			}
+		}
 	}
 
 	/**
