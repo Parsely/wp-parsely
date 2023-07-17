@@ -47,6 +47,7 @@ final class AuthorArchiveTest extends NonPostTestCase {
 		$parsely = new Parsely();
 
 		// Insert a single user, and a Post assigned to them.
+		/** @var int $user */
 		$user = self::factory()->user->create( array( 'user_login' => 'parsely' ) );
 		self::factory()->post->create( array( 'post_author' => $user ) );
 
@@ -60,7 +61,8 @@ final class AuthorArchiveTest extends NonPostTestCase {
 		// Create the structured data for that category.
 		// The author archive metadata doesn't use the post data, but the
 		// construction method requires it for now.
-		$metadata        = new Metadata( $parsely );
+		$metadata = new Metadata( $parsely );
+		/** @var array<string, mixed> $structured_data */
 		$structured_data = $metadata->construct_metadata( $this->get_post() );
 
 		$this->assert_data_has_required_properties( $structured_data );

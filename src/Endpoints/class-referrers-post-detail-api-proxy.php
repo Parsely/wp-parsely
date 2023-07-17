@@ -48,9 +48,13 @@ final class Referrers_Post_Detail_API_Proxy extends Base_API_Proxy {
 	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	public function get_items( WP_REST_Request $request ) {
-		$this->total_views = convert_to_positive_integer(
-			strval( $request->get_param( 'total_views' ) )
-		);
+		$total_views = $request->get_param( 'total_views' ) ?? '0';
+
+		if ( ! is_string( $total_views ) ) {
+			$total_views = '0';
+		}
+
+		$this->total_views = convert_to_positive_integer( $total_views );
 		$request->offsetUnset( 'total_views' ); // Remove param from request.
 		return $this->get_data( $request );
 	}
