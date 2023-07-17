@@ -159,6 +159,7 @@ final class OptionsTest extends TestCase {
 		);
 
 		foreach ( $custom_post_types as $key => $value ) {
+			// phpcs:ignore WordPress.NamingConventions.ValidPostTypeSlug.NotStringLiteral
 			register_post_type( $key, $value );
 		}
 
