@@ -68,7 +68,7 @@ final class BlogArchiveTest extends NonPostTestCase {
 
 		// Make a request to the root of the site to set the global $wp_query
 		// object.
-		$this->go_to( get_permalink( $page_id ) . 'page/2' );
+		$this->go_to( self::get_permalink( $page_id ) . 'page/2' );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -80,6 +80,6 @@ final class BlogArchiveTest extends NonPostTestCase {
 		// The headline should be the title of the post, not the name of the
 		// site.
 		self::assertEquals( 'Page for Posts', $structured_data['headline'] ?? null );
-		self::assertEquals( get_permalink( $page_id ) . 'page/2', $structured_data['url'] ?? null );
+		self::assertEquals( self::get_permalink( $page_id ) . 'page/2', $structured_data['url'] ?? null );
 	}
 }

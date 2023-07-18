@@ -1,4 +1,5 @@
 parameters:
+  checkGenericClassInNonGenericObjectType: false
   level: 9
   paths:
     - bin/
@@ -12,8 +13,8 @@ parameters:
     - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
     - vendor/php-stubs/wordpress-tests-stubs/wordpress-tests-stubs.php
   type_coverage:
-      return_type: 88
-      param_type: 59
+      return_type: 92
+      param_type: 65
       property_type: 0 # We can't use property types until we support PHP 7.4.
       print_suggestions: false
   typeAliases:

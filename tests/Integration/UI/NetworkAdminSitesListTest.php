@@ -82,6 +82,7 @@ final class NetworkAdminSitesListTest extends TestCase {
 	 * @uses \Parsely\UI\Network_Admin_Sites_List::__construct
 	 */
 	public function test_site_id_column_is_correctly_printed(): void {
+		/** @var int $blog_id_with_site_id */
 		$blog_id_with_site_id = self::factory()->blog->create();
 
 		// Create a blog without a Site ID.

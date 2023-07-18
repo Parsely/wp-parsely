@@ -44,6 +44,7 @@ final class SinglePageTest extends NonPostTestCase {
 		$parsely = new Parsely();
 
 		// Insert a single page.
+		/** @var int $page_id */
 		$page_id = self::factory()->post->create(
 			array(
 				'post_type'  => 'page',
@@ -59,10 +60,11 @@ final class SinglePageTest extends NonPostTestCase {
 		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
 		// Make a request to that page to set the global $wp_query object.
-		$this->go_to( $this->get_permalink( $page_id ) );
+		$this->go_to( (string) $this->get_permalink( $page_id ) );
 
 		// Create the structured data for that post.
-		$metadata        = new Metadata( $parsely );
+		$metadata = new Metadata( $parsely );
+		/** @var array<string,mixed> $structured_data */
 		$structured_data = $metadata->construct_metadata( $page );
 
 		// Check the required properties exist.

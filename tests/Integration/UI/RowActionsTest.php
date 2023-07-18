@@ -129,6 +129,7 @@ final class RowActionsTest extends TestCase {
 	public function test_link_to_Parsely_is_added_to_row_actions(): void {
 		// Insert a single post and set as global post.
 		// This post is a viewable type, with a trackable status (published).
+		/** @var int $post_id */
 		$post_id = self::factory()->post->create( array( 'post_title' => 'Foo2' ) );
 		$post    = $this->get_post( $post_id );
 

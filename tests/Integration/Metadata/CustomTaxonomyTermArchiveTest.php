@@ -49,6 +49,7 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		register_taxonomy( 'custom_tax', array( 'post' ) );
 
 		// Insert a single term, and a post with the custom term.
+		/** @var int $term_id */
 		$term_id    = self::factory()->term->create(
 			array(
 				'taxonomy' => 'custom_tax',
@@ -57,7 +58,8 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 			)
 		);
 		$term_array = $this->get_term_in_array( $term_id );
-		$post_id    = self::factory()->post->create();
+		/** @var int $post_id */
+		$post_id = self::factory()->post->create();
 
 		wp_set_post_terms( $post_id, $term_array, 'custom_tax' );
 
@@ -76,7 +78,8 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		// Create the structured data for that term archive. The term archive
 		// metadata doesn't use the post data, but the construction method
 		// requires it for now.
-		$metadata        = new Metadata( $parsely );
+		$metadata = new Metadata( $parsely );
+		/** @var array<string, mixed> $structured_data */
 		$structured_data = $metadata->construct_metadata( $this->get_post( $post_id ) );
 
 		// Check the required properties exist.
