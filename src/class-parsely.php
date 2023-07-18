@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely;
 
 use Parsely\UI\Metadata_Renderer;
+use Parsely\UI\Settings_Page;
 use WP_Post;
 
 /**
@@ -131,9 +132,23 @@ class Parsely {
 	 *
 	 * @since 3.9.0
 	 * @access private
+	 *
 	 * @var bool
 	 */
 	public $are_credentials_managed;
+
+	/**
+	 * Holds the managed options and their values.
+	 *
+	 * This allows hosting providers to provide a more customized experience for
+	 * the plugin by handling options automatically.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 *
+	 * @var array<empty>|array<string, bool|string|null>
+	 */
+	public $managed_options = array();
 
 	/**
 	 * Constructor.
@@ -142,6 +157,7 @@ class Parsely {
 		self::$all_supported_types = array_merge( self::SUPPORTED_JSONLD_POST_TYPES, self::SUPPORTED_JSONLD_NON_POST_TYPES );
 
 		$this->are_credentials_managed = $this->are_credentials_managed();
+		$this->set_managed_options();
 	}
 
 	/**
@@ -370,14 +386,15 @@ class Parsely {
 		}
 
 		/**
-		 * Final options including any managed credentials.
+		 * Final options including managed credentials and options.
 		 *
 		 * @var Parsely_Options
 		 */
 		return array_merge(
 			$this->option_defaults,
 			$options,
-			$this->get_managed_credentials()
+			$this->get_managed_credentials(),
+			$this->managed_options
 		);
 	}
 
@@ -652,5 +669,94 @@ class Parsely {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Sets the values of managed options.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 */
+	private function set_managed_options(): void {
+		$managed_options = apply_filters( 'wp_parsely_managed_options', false );
+
+		if ( ! is_array( $managed_options ) ) {
+			return;
+		}
+
+		// Don't allow certain options to be set as managed.
+		unset(
+			$managed_options['apikey'],
+			$managed_options['api_secret'],
+			$managed_options['metadata_secret'],
+			$managed_options['track_post_types'],
+			$managed_options['track_page_types'],
+			$managed_options['plugin_version']
+		);
+
+		/**
+		 * Current options.
+		 *
+		 * @var Parsely_Options $current_options
+		 */
+		$current_options = get_option( self::OPTIONS_KEY, array() );
+
+		// Set managed options values.
+		foreach ( $managed_options as $key => $value ) {
+			$is_option_valid = isset( $this->option_defaults[ $key ] );
+
+			if ( $is_option_valid ) {
+				if ( null === $value ) {
+					// When null, the option gets its value from the database.
+					$this->managed_options[ $key ] =
+						$current_options[ $key ] ?? $this->option_defaults[ $key ];
+				} else {
+					$this->managed_options[ $key ] =
+						$this->sanitize_managed_option( $key, $value );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Sanitizes the value of the passed managed option.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 *
+	 * @param string      $option_id The option's ID.
+	 * @param bool|string $value The option's value.
+	 *
+	 * @return bool|string The sanitized option value.
+	 */
+	private function sanitize_managed_option( string $option_id, $value ) {
+		$option_value_type = gettype( $this->option_defaults[ $option_id ] );
+
+		if ( 'boolean' === $option_value_type && ! is_bool( $value ) ) {
+			return false;
+		}
+
+		if ( 'string' === $option_value_type ) {
+			if ( ! is_string( $value ) ) {
+				$value = strval( $value );
+			}
+
+			// String options that are restricted to specific values.
+			$restricted_value_options = array(
+				'custom_taxonomy_section' => Settings_Page::get_section_taxonomies(),
+				'meta_type'               => array( 'json_ld', 'repeated_metas' ),
+			);
+
+			// Verify that the above values are respected.
+			foreach ( $restricted_value_options as $option_key => $valid_values ) {
+				if ( $option_id === $option_key ) {
+					if ( ! in_array( $value, $valid_values, true ) ) {
+						$value = $this->option_defaults[ $option_id ];
+					}
+				}
+			}
+		}
+
+		return $value;
 	}
 }
