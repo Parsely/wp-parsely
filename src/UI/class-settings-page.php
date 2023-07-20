@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
+use Parsely\Validator;
 
 use function Parsely\Utils\get_asset_info;
 
@@ -974,7 +975,7 @@ final class Settings_Page {
 				);
 			} else {
 				$site_id = $this->sanitize_site_id( $input['apikey'] );
-				if ( false === $this->validate_site_id( $site_id ) ) {
+				if ( false === Validator::validate_site_id( $site_id ) ) {
 					add_settings_error(
 						Parsely::OPTIONS_KEY,
 						'apikey',
@@ -988,7 +989,8 @@ final class Settings_Page {
 
 			$input['api_secret'] = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
 			$api_secret_length   = strlen( $input['api_secret'] );
-			if ( $api_secret_length > 0 && $api_secret_length <= 30 ) {
+			if ( $api_secret_length > 0 &&
+					false === Validator::validate_api_secret( $input['api_secret'] ) ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'api_secret',
@@ -1174,15 +1176,15 @@ final class Settings_Page {
 			$input['metadata_secret'] = '';
 		} else {
 			$input['metadata_secret'] = $this->get_unobfuscated_value( $input['metadata_secret'], $this->parsely->get_options()['metadata_secret'] );
-			if ( '' !== $input['metadata_secret'] ) {
-				if ( strlen( $input['metadata_secret'] ) !== 10 ) {
-					add_settings_error(
-						Parsely::OPTIONS_KEY,
-						'metadata_secret',
-						__( 'The Metadata Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
-					);
-					$input['metadata_secret'] = $options['metadata_secret'];
-				}
+			$metadata_secret_length   = strlen( $input['metadata_secret'] );
+			if ( $metadata_secret_length > 0 &&
+					false === Validator::validate_metadata_secret( $input['metadata_secret'] ) ) {
+				add_settings_error(
+					Parsely::OPTIONS_KEY,
+					'metadata_secret',
+					__( 'The Metadata Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+				);
+				$input['metadata_secret'] = $options['metadata_secret'];
 			}
 		}
 
@@ -1199,29 +1201,6 @@ final class Settings_Page {
 		}
 
 		return $input;
-	}
-
-	/**
-	 * Validates the passed Site ID.
-	 *
-	 * Accepts a www prefix and up to 3 periods.
-	 *
-	 * Valid examples: 'test.com', 'www.test.com', 'subdomain.test.com',
-	 * 'www.subdomain.test.com', 'subdomain.subdomain.test.com'.
-	 *
-	 * Invalid examples: 'test', 'test.com/', 'http://test.com', 'https://test.com',
-	 * 'www.subdomain.subdomain.test.com'.
-	 *
-	 * @since 3.3.0
-	 *
-	 * @param string $site_id The Site ID to be validated.
-	 *
-	 * @return bool
-	 */
-	private function validate_site_id( string $site_id ): bool {
-		$key_format = '/^((\w+)\.)?(([\w-]+)?)(\.[\w-]+){1,2}$/';
-
-		return 1 === preg_match( $key_format, $site_id );
 	}
 
 	/**
