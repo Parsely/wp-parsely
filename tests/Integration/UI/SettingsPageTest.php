@@ -136,6 +136,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_options
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\Validator::validate_api_secret
 	 * @uses \Parsely\Validator::validate_site_id
 	 *
 	 * @group settings-page
@@ -173,6 +174,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_options
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\Validator::validate_api_secret
 	 * @uses \Parsely\Validator::validate_site_id
 	 *
 	 * @group settings-page
@@ -209,6 +211,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_options
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\Validator::validate_metadata_secret
 	 * @uses \Parsely\Validator::validate_site_id
 	 *
 	 * @group settings-page
@@ -245,6 +248,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_options
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses \Parsely\Validator::validate_metadata_secret
 	 * @uses \Parsely\Validator::validate_site_id
 	 *
 	 * @group settings-page
