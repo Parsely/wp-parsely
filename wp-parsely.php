@@ -66,6 +66,7 @@ const PARSELY_FILE    = __FILE__;
 require_once __DIR__ . '/src/class-parsely.php';
 require_once __DIR__ . '/src/class-scripts.php';
 require_once __DIR__ . '/src/class-dashboard-link.php';
+require_once __DIR__ . '/src/class-validator.php';
 require_once __DIR__ . '/src/UI/class-admin-bar.php';
 require_once __DIR__ . '/src/UI/class-metadata-renderer.php';
 require_once __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';

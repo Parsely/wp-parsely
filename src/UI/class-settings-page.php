@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
+use Parsely\Validator;
 
 use function Parsely\Utils\get_asset_info;
 
@@ -941,7 +942,7 @@ final class Settings_Page {
 				);
 			} else {
 				$site_id = $this->sanitize_site_id( $input['apikey'] );
-				if ( false === $this->validate_site_id( $site_id ) ) {
+				if ( false === Validator::validate_site_id( $site_id ) ) {
 					add_settings_error(
 						Parsely::OPTIONS_KEY,
 						'apikey',
@@ -1166,28 +1167,6 @@ final class Settings_Page {
 		}
 
 		return $input;
-	}
-
-	/**
-	 * Validates the passed Site ID.
-	 *
-	 * Accepts a www prefix and up to 3 periods.
-	 *
-	 * Valid examples: 'test.com', 'www.test.com', 'subdomain.test.com',
-	 * 'www.subdomain.test.com', 'subdomain.subdomain.test.com'.
-	 *
-	 * Invalid examples: 'test', 'test.com/', 'http://test.com', 'https://test.com',
-	 * 'www.subdomain.subdomain.test.com'.
-	 *
-	 * @since 3.3.0
-	 *
-	 * @param string $site_id The Site ID to be validated.
-	 * @return bool
-	 */
-	private function validate_site_id( string $site_id ): bool {
-		$key_format = '/^((\w+)\.)?(([\w-]+)?)(\.[\w-]+){1,2}$/';
-
-		return 1 === preg_match( $key_format, $site_id );
 	}
 
 	/**
