@@ -956,7 +956,8 @@ final class Settings_Page {
 
 			$input['api_secret'] = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
 			$api_secret_length   = strlen( $input['api_secret'] );
-			if ( $api_secret_length > 0 && $api_secret_length <= 30 ) {
+			if ( $api_secret_length > 0 &&
+					false === Validator::validate_api_secret( $input['api_secret'] ) ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'api_secret',

@@ -38,4 +38,19 @@ class Validator {
 
 		return 1 === preg_match( $key_format, $site_id );
 	}
+
+	/**
+	 * Validates the passed API Secret.
+	 *
+	 * Currently, the API Secret is considered valid if it is longer than 30
+	 * characters.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @param string $api_secret The API Secret to be validated.
+	 * @return bool True if the API Secret is valid, false otherwise.
+	 */
+	public static function validate_api_secret( string $api_secret ): bool {
+		return strlen( $api_secret ) > 30;
+	}
 }

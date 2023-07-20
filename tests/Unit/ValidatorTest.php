@@ -66,4 +66,34 @@ final class ValidatorTest extends TestCase {
 			self::assertFalse( Validator::validate_site_id( $invalid_site_id ) );
 		}
 	}
+
+	/**
+	 * Verifies that valid API Secrets pass validation.
+	 *
+	 * @since 3.9.0
+	 */
+	public function test_validate_valid_api_secrets(): void {
+		$valid_api_secrets = array(
+			'valid_api_secret_key_based_on_length',
+		);
+
+		foreach ( $valid_api_secrets as $valid_api_secret ) {
+			self::assertTrue( Validator::validate_api_secret( $valid_api_secret ) );
+		}
+	}
+
+	/**
+	 * Verifies that invalid API Secrets fail validation.
+	 *
+	 * @since 3.9.0
+	 */
+	public function test_validate_invalid_api_secrets(): void {
+		$valid_api_secrets = array(
+			'less_than_30_characters',
+		);
+
+		foreach ( $valid_api_secrets as $valid_api_secret ) {
+			self::assertFalse( Validator::validate_api_secret( $valid_api_secret ) );
+		}
+	}
 }
