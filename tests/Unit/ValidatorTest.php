@@ -96,4 +96,35 @@ final class ValidatorTest extends TestCase {
 			self::assertFalse( Validator::validate_api_secret( $valid_api_secret ) );
 		}
 	}
+
+	/**
+	 * Verifies that valid Metadata Secrets pass validation.
+	 *
+	 * @since 3.9.0
+	 */
+	public function test_validate_valid_metadata_secrets(): void {
+		$valid_metadata_secrets = array(
+			'goodlength',
+		);
+
+		foreach ( $valid_metadata_secrets as $valid_metadata_secret ) {
+			self::assertTrue( Validator::validate_metadata_secret( $valid_metadata_secret ) );
+		}
+	}
+
+	/**
+	 * Verifies that invalid Metadata Secrets fail validation.
+	 *
+	 * @since 3.9.0
+	 */
+	public function test_validate_invalid_metadata_secrets(): void {
+		$valid_metadata_secrets = array(
+			'too_short',
+			'too_long_to_be_valid',
+		);
+
+		foreach ( $valid_metadata_secrets as $valid_metadata_secret ) {
+			self::assertFalse( Validator::validate_metadata_secret( $valid_metadata_secret ) );
+		}
+	}
 }

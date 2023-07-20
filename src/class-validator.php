@@ -53,4 +53,19 @@ class Validator {
 	public static function validate_api_secret( string $api_secret ): bool {
 		return strlen( $api_secret ) > 30;
 	}
+
+	/**
+	 * Validates the passed Metadata Secret.
+	 *
+	 * Currently, the Metadata Secret is considered valid if it is exactly 10
+	 * characters.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @param string $metadata_secret The Metadata Secret to be validated.
+	 * @return bool True if the Metadata Secret is valid, false otherwise.
+	 */
+	public static function validate_metadata_secret( string $metadata_secret ): bool {
+		return strlen( $metadata_secret ) === 10;
+	}
 }

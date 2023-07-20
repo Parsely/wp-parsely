@@ -1143,15 +1143,15 @@ final class Settings_Page {
 			$input['metadata_secret'] = '';
 		} else {
 			$input['metadata_secret'] = $this->get_unobfuscated_value( $input['metadata_secret'], $this->parsely->get_options()['metadata_secret'] );
-			if ( '' !== $input['metadata_secret'] ) {
-				if ( strlen( $input['metadata_secret'] ) !== 10 ) {
-					add_settings_error(
-						Parsely::OPTIONS_KEY,
-						'metadata_secret',
-						__( 'The Metadata Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
-					);
-					$input['metadata_secret'] = $options['metadata_secret'];
-				}
+			$metadata_secret_length   = strlen( $input['metadata_secret'] );
+			if ( $metadata_secret_length > 0 &&
+					false === Validator::validate_metadata_secret( $input['metadata_secret'] ) ) {
+				add_settings_error(
+					Parsely::OPTIONS_KEY,
+					'metadata_secret',
+					__( 'The Metadata Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+				);
+				$input['metadata_secret'] = $options['metadata_secret'];
 			}
 		}
 
