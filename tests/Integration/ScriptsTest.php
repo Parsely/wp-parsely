@@ -156,7 +156,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_registered( 'wp-parsely-loader' );
 		$this->assert_is_script_enqueued( 'wp-parsely-loader' );
 
-		self::assertEquals( 1, $this->count_loader_inline_scrips() );
+		self::assertSame( 1, $this->count_loader_inline_scrips() );
 	}
 
 	/**
@@ -247,7 +247,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_registered( 'wp-parsely-loader' );
 		$this->assert_is_script_enqueued( 'wp-parsely-loader' );
 
-		self::assertEquals( 2, $this->count_loader_inline_scrips() );
+		self::assertSame( 2, $this->count_loader_inline_scrips() );
 	}
 
 	/**
@@ -282,7 +282,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_registered( 'wp-parsely-loader' );
 		$this->assert_is_script_not_enqueued( 'wp-parsely-loader' );
 
-		self::assertEquals( 1, $this->count_loader_inline_scrips() );
+		self::assertSame( 1, $this->count_loader_inline_scrips() );
 	}
 
 	/**
@@ -314,7 +314,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
 
 		// The variable should be inlined before the script.
-		self::assertEquals( "window.wpParselySiteId = 'blog.parsely.com';", $wp_scripts->registered['wp-parsely-loader']->extra['before'][1] );
+		self::assertSame( "window.wpParselySiteId = 'blog.parsely.com';", $wp_scripts->registered['wp-parsely-loader']->extra['before'][1] );
 	}
 
 	/**
@@ -403,7 +403,7 @@ final class ScriptsTest extends TestCase {
 		$this->go_to_new_post();
 
 		// Check that we're on the first blog and that first user is a member.
-		self::assertEquals( get_current_blog_id(), $first_blog );
+		self::assertSame( get_current_blog_id(), $first_blog );
 		self::assertTrue( is_user_member_of_blog( $first_blog_admin, $first_blog ) );
 
 		// Enqueue tracker script.
@@ -424,7 +424,7 @@ final class ScriptsTest extends TestCase {
 
 		// Check that we're on the second blog and that first user is not a
 		// member.
-		self::assertEquals( get_current_blog_id(), $second_blog );
+		self::assertSame( get_current_blog_id(), $second_blog );
 		self::assertFalse( is_user_member_of_blog( $first_blog_admin, get_current_blog_id() ) );
 
 		// Enqueue tracker script.

@@ -59,7 +59,7 @@ final class ContentHelperEditorSidebarTest extends ContentHelperFeatureTest {
 
 		( new Editor_Sidebar( $GLOBALS['parsely'] ) )->run();
 
-		self::assertEquals( $expected, wp_script_is( $script_id ) );
-		self::assertEquals( $expected, wp_style_is( $style_id ) );
+		self::assertSame( $expected, wp_script_is( $script_id ) );
+		self::assertSame( $expected, wp_style_is( $style_id ) );
 	}
 }

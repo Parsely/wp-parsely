@@ -437,7 +437,7 @@ final class OtherTest extends TestCase {
 	public function test_get_tracker_url(): void {
 		self::set_options( array( 'apikey' => 'blog.parsely.com' ) );
 		$expected = 'https://cdn.parsely.com/keys/blog.parsely.com/p.js';
-		self::assertEquals( $expected, self::$parsely->get_tracker_url() );
+		self::assertSame( $expected, self::$parsely->get_tracker_url() );
 	}
 
 	/**
@@ -452,6 +452,6 @@ final class OtherTest extends TestCase {
 	 */
 	public function test_get_tracker_no_site_id(): void {
 		$expected = '';
-		self::assertEquals( $expected, self::$parsely->get_tracker_url() );
+		self::assertSame( $expected, self::$parsely->get_tracker_url() );
 	}
 }

@@ -68,8 +68,8 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 		( new Dashboard_Widget( $GLOBALS['parsely'] ) )->run();
 		do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
 
-		self::assertEquals( $expected, wp_script_is( $script_id ) );
-		self::assertEquals( $expected, wp_style_is( $style_id ) );
+		self::assertSame( $expected, wp_script_is( $script_id ) );
+		self::assertSame( $expected, wp_style_is( $style_id ) );
 	}
 
 	/**

@@ -387,8 +387,8 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( false );
-		self::assertEquals( '', $output );
-		self::assertEquals( array(), $this->get_utc_published_times_property( $obj ) );
+		self::assertSame( '', $output );
+		self::assertSame( array(), $this->get_utc_published_times_property( $obj ) );
 	}
 
 	/**
@@ -407,8 +407,8 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( false );
-		self::assertEquals( '', $output );
-		self::assertEquals( array(), $this->get_utc_published_times_property( $obj ) );
+		self::assertSame( '', $output );
+		self::assertSame( array(), $this->get_utc_published_times_property( $obj ) );
 	}
 
 	/**
@@ -427,8 +427,8 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
-		self::assertEquals( '', $output );
-		self::assertEquals( array(), $this->get_utc_published_times_property( $obj ) );
+		self::assertSame( '', $output );
+		self::assertSame( array(), $this->get_utc_published_times_property( $obj ) );
 	}
 
 	/**
@@ -448,8 +448,8 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
-		self::assertEquals( '', $output );
-		self::assertEquals( array(), $this->get_utc_published_times_property( $obj ) );
+		self::assertSame( '', $output );
+		self::assertSame( array(), $this->get_utc_published_times_property( $obj ) );
 	}
 
 	/**
@@ -468,7 +468,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
-		self::assertEquals(
+		self::assertSame(
 			$this->get_parsely_stats_placeholder_content( '/2010/01/01/title-1-publish' ) .
 			$this->get_parsely_stats_placeholder_content( '/2010/01/02/title-2-publish' ) .
 			$this->get_parsely_stats_placeholder_content( '/2010/01/03/title-3-publish' ) .
@@ -476,7 +476,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 			$this->get_parsely_stats_placeholder_content( '/' ),
 			$output
 		);
-		self::assertEquals(
+		self::assertSame(
 			array( '2010-01-01 05:00:00', '2010-01-02 05:00:00', '2010-01-03 05:00:00' ),
 			$this->get_utc_published_times_property( $obj )
 		);
@@ -499,7 +499,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		$output = $this->set_posts_data_and_get_content_of_parsely_stats_column();
 
 		$this->assert_hooks_for_parsely_stats_content( true );
-		self::assertEquals(
+		self::assertSame(
 			$this->get_parsely_stats_placeholder_content( '/2010/01/01/title-1-publish' ) .
 			$this->get_parsely_stats_placeholder_content( '/2010/01/02/title-2-publish' ) .
 			$this->get_parsely_stats_placeholder_content( '/2010/01/03/title-3-publish' ) .
@@ -507,7 +507,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 			$this->get_parsely_stats_placeholder_content( '/' ),
 			$output
 		);
-		self::assertEquals(
+		self::assertSame(
 			array( '2010-01-01 05:00:00', '2010-01-02 05:00:00', '2010-01-03 05:00:00' ),
 			$this->get_utc_published_times_property( $obj )
 		);
@@ -859,7 +859,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		);
 
 		$this->assert_hooks_for_parsely_stats_response( true );
-		self::assertEquals( self::$parsely_api_empty_response, $res );
+		self::assertSame( self::$parsely_api_empty_response, $res );
 	}
 
 	/**
@@ -887,7 +887,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		);
 
 		$this->assert_hooks_for_parsely_stats_response( true );
-		self::assertEquals( self::$parsely_api_empty_response, $res );
+		self::assertSame( self::$parsely_api_empty_response, $res );
 	}
 
 	/**
@@ -962,7 +962,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		$res   = $this->get_parsely_stats_response( $posts );
 
 		$this->assert_hooks_for_parsely_stats_response( true );
-		self::assertEquals( self::$parsely_api_empty_response, $res );
+		self::assertSame( self::$parsely_api_empty_response, $res );
 	}
 
 	/**
@@ -983,7 +983,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 
 		$this->assert_hooks_for_parsely_stats_response( true );
 		self::assertNull( $res['data'] ?? null );
-		self::assertEquals(
+		self::assertSame(
 			array(
 				'code'        => 404,
 				'message'     => 'Not Found.',
@@ -1083,7 +1083,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 
 		$this->assert_hooks_for_parsely_stats_response( true );
 		self::assertNull( $res['error'] ?? null );
-		self::assertEquals(
+		self::assertSame(
 			array(
 				'/2010/01/01/title-1-publish' => array(
 					'page_views' => '0 page views',
@@ -1168,7 +1168,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 
 		$this->assert_hooks_for_parsely_stats_response( true );
 		self::assertNull( $res['error'] ?? null );
-		self::assertEquals(
+		self::assertSame(
 			array(
 				'/2010/01/01/title-1-publish' => array(
 					'page_views' => '1.1K page views',
