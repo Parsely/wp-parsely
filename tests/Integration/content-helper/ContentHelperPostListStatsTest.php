@@ -351,7 +351,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @return array<string>
 	 */
-	private function get_admin_columns() {
+	private function get_admin_columns(): array {
 		$obj = $this->init_post_list_stats();
 
 		do_action( 'current_screen' ); // phpcs:ignore
@@ -364,7 +364,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @param bool $assert_type Assert this condition on hooks.
 	 */
-	private function assert_hooks_for_parsely_stats_column( $assert_type ): void {
+	private function assert_hooks_for_parsely_stats_column( bool $assert_type ): void {
 		$this->assert_wp_hooks_availability(
 			array( 'current_screen', 'manage_posts_columns', 'manage_pages_columns' ),
 			$assert_type
@@ -520,7 +520,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @return string
 	 */
-	private function set_posts_data_and_get_content_of_parsely_stats_column( $post_type = 'post' ) {
+	private function set_posts_data_and_get_content_of_parsely_stats_column( string $post_type = 'post' ): string {
 		$posts = $this->set_and_get_posts_data( 3, 2, $post_type );
 
 		return $this->get_content_of_parsely_stats_column( $posts, $post_type );
@@ -533,9 +533,11 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @param int    $draft_num_of_posts Number of draft posts that we have to create.
 	 * @param string $post_type Type of the post.
 	 *
-	 * @return WP_Post[]
+	 * @return array<WP_Post>
 	 */
-	private function set_and_get_posts_data( $publish_num_of_posts = 1, $draft_num_of_posts = 0, $post_type = 'post' ) {
+	private function set_and_get_posts_data(
+		int $publish_num_of_posts = 1, int $draft_num_of_posts = 0, string $post_type = 'post'
+	): array {
 		return array_merge(
 			$this->create_and_get_test_posts( $publish_num_of_posts ),
 			$this->create_and_get_test_posts( $draft_num_of_posts, $post_type, 'draft' )
@@ -545,12 +547,12 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	/**
 	 * Gets content of Parse.ly Stats column.
 	 *
-	 * @param WP_Post[] $posts Available posts.
-	 * @param string    $post_type Type of the post.
+	 * @param array<WP_Post> $posts Available posts.
+	 * @param string         $post_type Type of the post.
 	 *
 	 * @return string
 	 */
-	private function get_content_of_parsely_stats_column( $posts, $post_type ) {
+	private function get_content_of_parsely_stats_column( array $posts, string $post_type ): string {
 		ob_start();
 		$this->show_content_on_parsely_stats_column( $posts, $post_type );
 
@@ -561,10 +563,10 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * Replicates behavior by which WordPress set post publish dates and then make API call
 	 * to get Parse.ly stats.
 	 *
-	 * @param WP_Post[] $posts Available posts.
-	 * @param string    $post_type Type of the post.
+	 * @param array<WP_Post> $posts Available posts.
+	 * @param string         $post_type Type of the post.
 	 */
-	private function show_content_on_parsely_stats_column( $posts, $post_type ): void {
+	private function show_content_on_parsely_stats_column( array $posts, string $post_type ): void {
 		do_action( 'current_screen' ); // phpcs:ignore
 
 		foreach ( $posts as $current_post ) {
@@ -583,7 +585,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @return string
 	 */
-	private function get_parsely_stats_placeholder_content( $key ) {
+	private function get_parsely_stats_placeholder_content( string $key ): string {
 		return "		<div class=\"parsely-post-stats\" data-stats-key=\"$key\">\n			<span class=\"parsely-post-stats-placeholder\">...</span>\n		</div>\n		";
 	}
 
@@ -592,13 +594,13 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @param Post_List_Stats $obj Instance of Post_List_Stats.
 	 *
-	 * @return string
+	 * @return array<string>
 	 */
-	private function get_utc_published_times_property( $obj ) {
+	private function get_utc_published_times_property( Post_List_Stats $obj ): array {
 		/**
 		 * Variable.
 		 *
-		 * @var string
+		 * @var array<string>
 		 */
 		return $this->get_private_property( Post_List_Stats::class, 'utc_published_times' )->getValue( $obj );
 	}
@@ -608,7 +610,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @param bool $assert_type Assert this condition on hooks.
 	 */
-	private function assert_hooks_for_parsely_stats_content( $assert_type = true ): void {
+	private function assert_hooks_for_parsely_stats_content( bool $assert_type = true ): void {
 		$this->assert_wp_hooks_availability(
 			array( 'current_screen', 'manage_posts_custom_column', 'manage_pages_custom_column' ),
 			$assert_type
@@ -740,7 +742,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @return Post_List_Stats
 	 */
-	private function mock_parsely_stats_response( $return_value ) {
+	private function mock_parsely_stats_response( ?array $return_value ): Post_List_Stats {
 		$obj = Mockery::mock( Post_List_Stats::class, array( new Parsely() ) )->makePartial();
 		$obj->shouldReceive( 'get_parsely_stats_response' )->once()->andReturn( $return_value );
 		$obj->run();
@@ -772,7 +774,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @return Post_List_Stats
 	 */
-	private function mock_is_parsely_stats_column_hidden( $return_value = false ) {
+	private function mock_is_parsely_stats_column_hidden( bool $return_value = false ): Post_List_Stats {
 		$obj = Mockery::mock( Post_List_Stats::class, array( new Parsely() ) )->makePartial();
 		$obj->shouldReceive( 'is_parsely_stats_column_hidden' )->once()->andReturn( $return_value );
 		$obj->run();
@@ -785,7 +787,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @param bool $assert_type Indicates wether we are asserting for TRUE or FALSE.
 	 */
-	private function assert_parsely_stats_admin_script( $assert_type ): void {
+	private function assert_parsely_stats_admin_script( bool $assert_type ): void {
 		do_action( 'current_screen' ); // phpcs:ignore
 		do_action( 'admin_footer' ); // phpcs:ignore
 
@@ -1184,14 +1186,16 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * Replicates behavior by which WordPress set post publish dates and then make API call
 	 * to get Parse.ly stats.
 	 *
-	 * @param WP_Post[]                      $posts Available Posts.
-	 * @param string                         $post_type Type of the post.
-	 * @param Analytics_Post[]|WP_Error|null $api_response Mocked response that we return on calling API.
-	 * @param Analytics_Post_API_Params|null $api_params API Parameters.
+	 * @param array<WP_Post>                      $posts Available Posts.
+	 * @param string                              $post_type Type of the post.
+	 * @param array<Analytics_Post>|WP_Error|null $api_response Mocked response that we return on calling API.
+	 * @param Analytics_Post_API_Params|null      $api_params API Parameters.
 	 *
 	 * @return Parsely_Posts_Stats_Response|null
 	 */
-	private function get_parsely_stats_response( $posts = array(), $post_type = 'post', $api_response = null, $api_params = null ) {
+	private function get_parsely_stats_response(
+		array $posts = array(), string $post_type = 'post', $api_response = null, $api_params = null
+	) {
 		$obj = $this->init_post_list_stats();
 
 		ob_start();
@@ -1240,7 +1244,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @return Post_List_Stats
 	 */
-	private function init_post_list_stats() {
+	private function init_post_list_stats(): Post_List_Stats {
 		$obj = new Post_List_Stats( new Parsely() );
 		$obj->run();
 
@@ -1267,7 +1271,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @param string $post_type Type of the post.
 	 */
-	private function set_empty_api_secret( $post_type = 'post' ): void {
+	private function set_empty_api_secret( string $post_type = 'post' ): void {
 		TestCase::set_options(
 			array(
 				'apikey'           => 'test',
@@ -1299,7 +1303,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @param string $post_type Type of the post.
 	 */
-	private function set_valid_plugin_options( $post_type = 'post' ): void {
+	private function set_valid_plugin_options( string $post_type = 'post' ): void {
 		TestCase::set_options(
 			array(
 				'apikey'           => 'test',
@@ -1314,7 +1318,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @param string $post_type Type of the post.
 	 */
-	private function set_valid_conditions_for_parsely_stats( $post_type = 'post' ): void {
+	private function set_valid_conditions_for_parsely_stats( string $post_type = 'post' ): void {
 		$this->set_valid_plugin_options( $post_type );
 		set_current_screen( "edit-$post_type" );
 	}

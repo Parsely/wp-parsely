@@ -35,7 +35,7 @@ abstract class RemoteAPITest extends TestCase {
 	 *
 	 * @return \ArrayIterator<string, mixed>
 	 */
-	abstract public function data_api_url();
+	abstract public function data_api_url(): iterable;
 
 	/**
 	 * Runs once before all tests.
