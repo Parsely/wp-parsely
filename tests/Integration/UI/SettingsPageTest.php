@@ -27,6 +27,7 @@ final class SettingsPageTest extends TestCase {
 	 * @var Settings_Page $settings_page Holds the Settings_Page object.
 	 */
 	private static $settings_page;
+
 	/**
 	 * Internal variable.
 	 *
@@ -322,6 +323,7 @@ final class SettingsPageTest extends TestCase {
 	 * @covers \Parsely\UI\Settings_Page::sanitize_option_array
 	 * @covers \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\Parsely::get_options
+	 *
 	 * @group ui
 	 */
 	public function test_save_tracking_settings(): void {
@@ -350,6 +352,7 @@ final class SettingsPageTest extends TestCase {
 	 * @covers \Parsely\UI\Settings_Page::sanitize_option_array
 	 * @covers \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\Parsely::get_options
+	 *
 	 * @group ui
 	 */
 	public function test_saving_tracking_settings_for_non_existent_post_type_should_fail(): void {
@@ -378,6 +381,7 @@ final class SettingsPageTest extends TestCase {
 	 * @covers \Parsely\UI\Settings_Page::get_logo_default
 	 * @covers \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\Parsely::get_options
+	 *
 	 * @group ui
 	 */
 	public function test_trying_to_save_unset_tracking_settings_should_fail(): void {
@@ -400,6 +404,7 @@ final class SettingsPageTest extends TestCase {
 	 * @covers \Parsely\UI\Settings_Page::get_logo_default
 	 * @covers \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\Parsely::get_options
+	 *
 	 * @group ui
 	 */
 	public function test_trying_to_save_empty_array_tracking_settings_should_fail(): void {
@@ -422,6 +427,7 @@ final class SettingsPageTest extends TestCase {
 	 * @covers \Parsely\UI\Settings_Page::get_logo_default
 	 * @covers \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\Parsely::get_options
+	 *
 	 * @group ui
 	 */
 	public function test_trying_to_save_non_array_tracking_settings_should_fail(): void {
@@ -444,6 +450,7 @@ final class SettingsPageTest extends TestCase {
 	 * @covers \Parsely\UI\Settings_Page::get_logo_default
 	 * @covers \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\Parsely::get_options
+	 *
 	 * @group ui
 	 */
 	public function test_saving_disable_autotrack_works_default_value(): void {

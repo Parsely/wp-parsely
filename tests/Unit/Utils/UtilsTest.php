@@ -94,6 +94,7 @@ final class UtilsTest extends TestCase {
 			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}
 	}
+
 	/**
 	 * Tests get_formatted_number function.
 	 *

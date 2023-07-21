@@ -91,6 +91,7 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group metadata
 	 * @group filters
 	 */

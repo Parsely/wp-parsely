@@ -176,14 +176,13 @@ abstract class ProxyEndpointTest extends TestCase {
 	 * @param string               $expected_error_code The expected error code.
 	 * @param string               $expected_error_message The expected error message.
 	 * @param WP_REST_Request|null $request The request object to be used.
-	 * @return void
 	 */
 	private function run_test_get_items_fails(
 		array $options,
 		string $expected_error_code,
 		string $expected_error_message,
 		$request = null
-	) {
+	): void {
 		TestCase::set_options( $options );
 		if ( null === $request ) {
 			$request = new WP_REST_Request( 'GET', self::$route );

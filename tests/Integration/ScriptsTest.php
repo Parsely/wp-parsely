@@ -114,6 +114,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group scripts
 	 */
 	public function test_parsely_register_scripts(): void {
@@ -143,6 +144,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
+	 *
 	 * @group scripts
 	 */
 	public function test_enqueue_js_tracker(): void {
@@ -164,12 +166,12 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 *
-	 * @uses Parsely\Parsely::site_id_is_set
-	 * @uses Parsely\Parsely::get_site_id
-	 * @uses Parsely\Parsely::get_options
-	 * @uses Parsely\Parsely::get_tracker_url
-	 * @uses Parsely\Scripts::__construct
-	 * @uses Parsely\Scripts::register_scripts
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Scripts::__construct
+	 * @uses \Parsely\Scripts::register_scripts
 	 *
 	 * @group scripts
 	 */
@@ -192,12 +194,12 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 *
-	 * @uses Parsely\Parsely::site_id_is_set
-	 * @uses Parsely\Parsely::get_site_id
-	 * @uses Parsely\Parsely::get_options
-	 * @uses Parsely\Parsely::get_tracker_url
-	 * @uses Parsely\Scripts::__construct
-	 * @uses Parsely\Scripts::register_scripts
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Scripts::__construct
+	 * @uses \Parsely\Scripts::register_scripts
 	 *
 	 * @group scripts
 	 */
@@ -232,6 +234,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
+	 *
 	 * @group scripts
 	 */
 	public function test_enqueue_js_tracker_no_autotrack(): void {
@@ -300,6 +303,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
+	 *
 	 * @group scripts
 	 */
 	public function test_enqueue_js_api_with_secret(): void {
@@ -330,6 +334,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 *
 	 * @group scripts
 	 * @group settings
 	 */
@@ -373,6 +378,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
+	 *
 	 * @group scripts
 	 * @group settings
 	 */
@@ -492,6 +498,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
+	 *
 	 * @group scripts
 	 * @group scripts-output
 	 */
