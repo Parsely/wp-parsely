@@ -216,7 +216,7 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\init_content_helper
 /**
  * Inserts the PCH Editor Sidebar.
  *
- * @since 3.5.0 Moved from Parsely\Scripts\enqueue_block_editor_assets()
+ * @since 3.5.0 Moved from Parsely\Scripts\enqueue_block_editor_assets().
  */
 function init_content_helper(): void {
 	( new Editor_Sidebar( $GLOBALS['parsely'] ) )->run();

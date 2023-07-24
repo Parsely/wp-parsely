@@ -496,7 +496,7 @@ class Parsely {
 	 * Determines if a Site ID is saved in the options.
 	 *
 	 * @since 2.6.0
-	 * @since 3.7.0 renamed from api_key_is_set
+	 * @since 3.7.0 renamed from api_key_is_set.
 	 *
 	 * @return bool True is Site ID is set, false if it is missing.
 	 */
@@ -510,7 +510,7 @@ class Parsely {
 	 * Determines if a Site ID is not saved in the options.
 	 *
 	 * @since 2.6.0
-	 * @since 3.7.0 renamed from api_key_is_missing
+	 * @since 3.7.0 renamed from api_key_is_missing.
 	 *
 	 * @return bool True if Site ID is missing, false if it is set.
 	 */
@@ -522,7 +522,7 @@ class Parsely {
 	 * Gets the Site ID if set.
 	 *
 	 * @since 2.6.0
-	 * @since 3.7.0 renamed from get_site_id
+	 * @since 3.7.0 renamed from get_site_id.
 	 *
 	 * @return string Site ID if set, or empty string if not.
 	 */
