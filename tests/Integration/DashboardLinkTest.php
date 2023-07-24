@@ -75,7 +75,7 @@ final class DashboardLinkTest extends TestCase {
 	 * Verifies that determining whether a link can be shown works as expected.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -99,7 +99,7 @@ final class DashboardLinkTest extends TestCase {
 	 * Only published posts are tracked by default.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -121,7 +121,7 @@ final class DashboardLinkTest extends TestCase {
 	 * Verifies that links for unviewable posts aren't being shown.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -144,7 +144,7 @@ final class DashboardLinkTest extends TestCase {
 	 * set.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set

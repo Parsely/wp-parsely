@@ -21,7 +21,7 @@ use const Parsely\PARSELY_FILE;
  * Class that generates and manages the PCH Editor Sidebar.
  *
  * @since 3.5.0
- * @since 3.9.0 Renamed FQCN from `Parsely\Content_Helper` to `Parsely\Content_Helper\Editor_Sidebar`
+ * @since 3.9.0 Renamed FQCN from `Parsely\Content_Helper` to `Parsely\Content_Helper\Editor_Sidebar`.
  */
 class Editor_Sidebar extends Content_Helper_Feature {
 	/**
