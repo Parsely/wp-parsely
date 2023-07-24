@@ -212,14 +212,14 @@ function init_recommendations_block(): void {
 
 require_once __DIR__ . '/src/content-helper/editor-sidebar/class-editor-sidebar.php';
 
-add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_sidebar' );
+add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_editor_sidebar' );
 /**
  * Inserts the PCH Editor Sidebar.
  *
  * @since 3.5.0 Moved from Parsely\Scripts\enqueue_block_editor_assets().
  * @since 3.9.0 Renamed from init_content_helper().
  */
-function init_content_helper_sidebar(): void {
+function init_content_helper_editor_sidebar(): void {
 	( new Editor_Sidebar( $GLOBALS['parsely'] ) )->run();
 }
 
