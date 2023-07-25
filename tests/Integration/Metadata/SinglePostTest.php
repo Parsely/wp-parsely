@@ -87,7 +87,7 @@ final class SinglePostTest extends TestCase {
 		$this->assert_data_has_required_properties( $structured_data );
 		// The metadata '@type' for the context should be 'NewsArticle' for a
 		// single post page.
-		self::assertSame( 'NewsArticle', isset( $structured_data['@type'] ) ? $structured_data['@type'] : null );
+		self::assertSame( 'NewsArticle', $structured_data['@type'] ?? null );
 	}
 
 	/**
@@ -140,7 +140,7 @@ final class SinglePostTest extends TestCase {
 
 		// The category in the structured data should match the category of the
 		// post.
-		self::assertSame( TEST_CATEGORY_1, isset( $structured_data['articleSection'] ) ? $structured_data['articleSection'] : null );
+		self::assertSame( TEST_CATEGORY_1, $structured_data['articleSection'] ?? null );
 	}
 
 	/**
@@ -203,7 +203,7 @@ final class SinglePostTest extends TestCase {
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain both tags in lowercase form.
-		$keywords = isset( $structured_data['keywords'] ) ? $structured_data['keywords'] : array();
+		$keywords = $structured_data['keywords'] ?? array();
 		self::assertContains( 'sample', $keywords );
 		self::assertContains( 'tag', $keywords );
 	}
@@ -268,7 +268,7 @@ final class SinglePostTest extends TestCase {
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain all three categories as keywords.
-		$keywords = isset( $structured_data['keywords'] ) ? $structured_data['keywords'] : array();
+		$keywords = $structured_data['keywords'] ?? array();
 		self::assertContains( TEST_CATEGORY_1, $keywords );
 		self::assertContains( 'Test Category 2', $keywords );
 		self::assertContains( 'Test Category 3', $keywords );
@@ -348,7 +348,7 @@ final class SinglePostTest extends TestCase {
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain the category, the post tag, and the custom taxonomy term.
-		$keywords = isset( $structured_data['keywords'] ) ? $structured_data['keywords'] : array();
+		$keywords = $structured_data['keywords'] ?? array();
 		self::assertContains( 'my category', $keywords );
 		self::assertContains( 'my tag', $keywords );
 		self::assertContains( 'gretzky', $keywords );
@@ -417,7 +417,7 @@ final class SinglePostTest extends TestCase {
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain the parent category.
-		self::assertSame( 'Parent Category', isset( $structured_data['articleSection'] ) ? $structured_data['articleSection'] : null );
+		self::assertSame( 'Parent Category', $structured_data['articleSection'] ?? null );
 
 		// Set Parsely to not use top-level categories.
 		$parsely_options['use_top_level_cats'] = false;
@@ -428,7 +428,7 @@ final class SinglePostTest extends TestCase {
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain the child category.
-		self::assertSame( 'Child Category', isset( $structured_data['articleSection'] ) ? $structured_data['articleSection'] : null );
+		self::assertSame( 'Child Category', $structured_data['articleSection'] ?? null );
 	}
 
 	/**
@@ -508,7 +508,7 @@ final class SinglePostTest extends TestCase {
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
-		self::assertSame( 'Premier League', isset( $structured_data['articleSection'] ) ? $structured_data['articleSection'] : null );
+		self::assertSame( 'Premier League', $structured_data['articleSection'] ?? null );
 
 		// Now make sure top-level categories are set to be used.
 		$parsely_options['use_top_level_cats'] = true;
@@ -518,7 +518,7 @@ final class SinglePostTest extends TestCase {
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
-		self::assertSame( 'football', isset( $structured_data['articleSection'] ) ? $structured_data['articleSection'] : null );
+		self::assertSame( 'football', $structured_data['articleSection'] ?? null );
 	}
 
 	/**
@@ -575,8 +575,8 @@ final class SinglePostTest extends TestCase {
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The url scheme should be 'http'.
-		$url = wp_parse_url( isset( $structured_data['url'] ) ? $structured_data['url'] : '' );
-		self::assertSame( 'http', isset( $url['scheme'] ) ? $url['scheme'] : null );
+		$url = wp_parse_url( $structured_data['url'] ?? '' );
+		self::assertSame( 'http', $url['scheme'] ?? null );
 
 		// Set Parsely to force https canonicals.
 		$parsely_options['force_https_canonicals'] = true;
@@ -587,8 +587,8 @@ final class SinglePostTest extends TestCase {
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The url scheme should be 'https'.
-		$url = wp_parse_url( isset( $structured_data['url'] ) ? $structured_data['url'] : '' );
-		self::assertSame( 'https', isset( $url['scheme'] ) ? $url['scheme'] : null );
+		$url = wp_parse_url( $structured_data['url'] ?? '' );
+		self::assertSame( 'https', $url['scheme'] ?? null );
 	}
 
 	/**
@@ -648,8 +648,8 @@ final class SinglePostTest extends TestCase {
 		$meta     = new Metadata( $parsely );
 		$metadata = $meta->construct_metadata( $post );
 
-		self::assertSame( $date_created, isset( $metadata['dateCreated'] ) ? $metadata['dateCreated'] : null );
-		self::assertSame( $date_created, isset( $metadata['dateModified'] ) ? $metadata['dateModified'] : null );
+		self::assertSame( $date_created, $metadata['dateCreated'] ?? null );
+		self::assertSame( $date_created, $metadata['dateModified'] ?? null );
 
 		// Update the post and reload metadata.
 		wp_update_post( array( 'ID' => $post_id ) );
@@ -657,8 +657,8 @@ final class SinglePostTest extends TestCase {
 		$metadata_updated = $meta->construct_metadata( $post_updated );
 
 		// In the metadata, check that the last modified date has been updated.
-		self::assertSame( $date_created, isset( $metadata_updated['dateCreated'] ) ? $metadata_updated['dateCreated'] : null );
-		self::assertNotSame( $date_created, isset( $metadata_updated['dateModified'] ) ? $metadata_updated['dateModified'] : null );
+		self::assertSame( $date_created, $metadata_updated['dateCreated'] ?? null );
+		self::assertNotSame( $date_created, $metadata_updated['dateModified'] ?? null );
 	}
 
 	/**
@@ -773,9 +773,9 @@ final class SinglePostTest extends TestCase {
 		// metadata.
 		$expected_singular_datetime = EXPECTED_POST_DATETIME;
 
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['dateCreated'] ) ? $structured_data['dateCreated'] : null );
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['datePublished'] ) ? $structured_data['datePublished'] : null );
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['dateModified'] ) ? $structured_data['dateModified'] : null );
+		self::assertSame( $expected_singular_datetime, $structured_data['dateCreated'] ?? null );
+		self::assertSame( $expected_singular_datetime, $structured_data['datePublished'] ?? null );
+		self::assertSame( $expected_singular_datetime, $structured_data['dateModified'] ?? null );
 	}
 
 	/**
@@ -836,9 +836,9 @@ final class SinglePostTest extends TestCase {
 		// Modified dates earlier than created dates should be "promoted" to the latter.
 		$expected_singular_datetime = EXPECTED_POST_DATETIME;
 
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['dateCreated'] ) ? $structured_data['dateCreated'] : null );
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['datePublished'] ) ? $structured_data['datePublished'] : null );
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['dateModified'] ) ? $structured_data['dateModified'] : null );
+		self::assertSame( $expected_singular_datetime, $structured_data['dateCreated'] ?? null );
+		self::assertSame( $expected_singular_datetime, $structured_data['datePublished'] ?? null );
+		self::assertSame( $expected_singular_datetime, $structured_data['dateModified'] ?? null );
 	}
 
 	/**
@@ -901,9 +901,9 @@ final class SinglePostTest extends TestCase {
 		$expected_created_datetime  = EXPECTED_POST_DATETIME;
 		$expected_modified_datetime = '2021-12-30T20:11:43Z';
 
-		self::assertSame( $expected_created_datetime, isset( $structured_data['dateCreated'] ) ? $structured_data['dateCreated'] : null );
-		self::assertSame( $expected_created_datetime, isset( $structured_data['datePublished'] ) ? $structured_data['datePublished'] : null );
-		self::assertSame( $expected_modified_datetime, isset( $structured_data['dateModified'] ) ? $structured_data['dateModified'] : null );
+		self::assertSame( $expected_created_datetime, $structured_data['dateCreated'] ?? null );
+		self::assertSame( $expected_created_datetime, $structured_data['datePublished'] ?? null );
+		self::assertSame( $expected_modified_datetime, $structured_data['dateModified'] ?? null );
 	}
 
 	/**
@@ -983,7 +983,7 @@ final class SinglePostTest extends TestCase {
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
-		self::assertSame( $expected, isset( $structured_data['keywords'] ) ? $structured_data['keywords'] : null );
+		self::assertSame( $expected, $structured_data['keywords'] ?? null );
 	}
 
 	/**
@@ -1044,9 +1044,9 @@ final class SinglePostTest extends TestCase {
 		$expected_image_url = get_the_post_thumbnail_url( $post, 'full' );
 		$expected_thumb_url = get_the_post_thumbnail_url( $post, 'thumbnail' );
 
-		$image = isset( $actual_metadata['image'] ) ? $actual_metadata['image'] : array();
-		self::assertSame( $expected_image_url, isset( $image['url'] ) ? $image['url'] : null );
-		self::assertSame( $expected_thumb_url, isset( $actual_metadata['thumbnailUrl'] ) ? $actual_metadata['thumbnailUrl'] : null );
+		$image = $actual_metadata['image'] ?? array();
+		self::assertSame( $expected_image_url, $image['url'] ?? null );
+		self::assertSame( $expected_thumb_url, $actual_metadata['thumbnailUrl'] ?? null );
 	}
 
 	/**

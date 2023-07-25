@@ -65,7 +65,7 @@ final class OptionsTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 */
@@ -81,7 +81,7 @@ final class OptionsTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 */
 	public function test_set_default_track_as_values_should_not_be_called_when_saved_options_exist(): void {
@@ -102,7 +102,7 @@ final class OptionsTest extends TestCase {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @covers Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 */

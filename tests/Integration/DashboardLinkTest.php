@@ -75,7 +75,7 @@ final class DashboardLinkTest extends TestCase {
 	 * Verifies that determining whether a link can be shown works as expected.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -83,6 +83,7 @@ final class DashboardLinkTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown(): void {
@@ -99,7 +100,7 @@ final class DashboardLinkTest extends TestCase {
 	 * Only published posts are tracked by default.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -107,6 +108,7 @@ final class DashboardLinkTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_has_not_trackable_status(): void {
@@ -121,7 +123,7 @@ final class DashboardLinkTest extends TestCase {
 	 * Verifies that links for unviewable posts aren't being shown.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -129,6 +131,7 @@ final class DashboardLinkTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_is_viewable(): void {
@@ -144,7 +147,7 @@ final class DashboardLinkTest extends TestCase {
 	 * set.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -152,6 +155,7 @@ final class DashboardLinkTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_site_id_is_set_or_missing(): void {

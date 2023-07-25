@@ -114,6 +114,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group scripts
 	 */
 	public function test_parsely_register_scripts(): void {
@@ -143,6 +144,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
+	 *
 	 * @group scripts
 	 */
 	public function test_enqueue_js_tracker(): void {
@@ -156,7 +158,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_registered( 'wp-parsely-loader' );
 		$this->assert_is_script_enqueued( 'wp-parsely-loader' );
 
-		self::assertEquals( 1, $this->count_loader_inline_scrips() );
+		self::assertSame( 1, $this->count_loader_inline_scrips() );
 	}
 
 	/**
@@ -164,12 +166,12 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 *
-	 * @uses Parsely\Parsely::site_id_is_set
-	 * @uses Parsely\Parsely::get_site_id
-	 * @uses Parsely\Parsely::get_options
-	 * @uses Parsely\Parsely::get_tracker_url
-	 * @uses Parsely\Scripts::__construct
-	 * @uses Parsely\Scripts::register_scripts
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Scripts::__construct
+	 * @uses \Parsely\Scripts::register_scripts
 	 *
 	 * @group scripts
 	 */
@@ -192,12 +194,12 @@ final class ScriptsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Scripts::enqueue_js_tracker
 	 *
-	 * @uses Parsely\Parsely::site_id_is_set
-	 * @uses Parsely\Parsely::get_site_id
-	 * @uses Parsely\Parsely::get_options
-	 * @uses Parsely\Parsely::get_tracker_url
-	 * @uses Parsely\Scripts::__construct
-	 * @uses Parsely\Scripts::register_scripts
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_tracker_url
+	 * @uses \Parsely\Scripts::__construct
+	 * @uses \Parsely\Scripts::register_scripts
 	 *
 	 * @group scripts
 	 */
@@ -232,6 +234,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
+	 *
 	 * @group scripts
 	 */
 	public function test_enqueue_js_tracker_no_autotrack(): void {
@@ -247,7 +250,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_registered( 'wp-parsely-loader' );
 		$this->assert_is_script_enqueued( 'wp-parsely-loader' );
 
-		self::assertEquals( 2, $this->count_loader_inline_scrips() );
+		self::assertSame( 2, $this->count_loader_inline_scrips() );
 	}
 
 	/**
@@ -282,7 +285,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_registered( 'wp-parsely-loader' );
 		$this->assert_is_script_not_enqueued( 'wp-parsely-loader' );
 
-		self::assertEquals( 1, $this->count_loader_inline_scrips() );
+		self::assertSame( 1, $this->count_loader_inline_scrips() );
 	}
 
 	/**
@@ -300,6 +303,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Scripts::register_scripts
 	 * @uses \Parsely\Scripts::script_loader_tag
+	 *
 	 * @group scripts
 	 */
 	public function test_enqueue_js_api_with_secret(): void {
@@ -314,7 +318,7 @@ final class ScriptsTest extends TestCase {
 		$this->assert_is_script_enqueued( 'wp-parsely-tracker' );
 
 		// The variable should be inlined before the script.
-		self::assertEquals( "window.wpParselySiteId = 'blog.parsely.com';", $wp_scripts->registered['wp-parsely-loader']->extra['before'][1] );
+		self::assertSame( "window.wpParselySiteId = 'blog.parsely.com';", $wp_scripts->registered['wp-parsely-loader']->extra['before'][1] );
 	}
 
 	/**
@@ -330,6 +334,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
 	 * @uses \Parsely\Parsely::post_has_trackable_status
+	 *
 	 * @group scripts
 	 * @group settings
 	 */
@@ -373,6 +378,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
+	 *
 	 * @group scripts
 	 * @group settings
 	 */
@@ -403,7 +409,7 @@ final class ScriptsTest extends TestCase {
 		$this->go_to_new_post();
 
 		// Check that we're on the first blog and that first user is a member.
-		self::assertEquals( get_current_blog_id(), $first_blog );
+		self::assertSame( get_current_blog_id(), $first_blog );
 		self::assertTrue( is_user_member_of_blog( $first_blog_admin, $first_blog ) );
 
 		// Enqueue tracker script.
@@ -424,7 +430,7 @@ final class ScriptsTest extends TestCase {
 
 		// Check that we're on the second blog and that first user is not a
 		// member.
-		self::assertEquals( get_current_blog_id(), $second_blog );
+		self::assertSame( get_current_blog_id(), $second_blog );
 		self::assertFalse( is_user_member_of_blog( $first_blog_admin, get_current_blog_id() ) );
 
 		// Enqueue tracker script.
@@ -492,6 +498,7 @@ final class ScriptsTest extends TestCase {
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
 	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_tracker_url
+	 *
 	 * @group scripts
 	 * @group scripts-output
 	 */

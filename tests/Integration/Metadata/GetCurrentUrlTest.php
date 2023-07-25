@@ -135,7 +135,7 @@ final class GetCurrentUrlTest extends TestCase {
 		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
 		$res             = $get_current_url->invoke( $builder );
 
-		self::assertEquals( $expected . '/', $res, 'Homepage page does not match.' );
+		self::assertSame( $expected . '/', $res, 'Homepage page does not match.' );
 	}
 
 	/**
@@ -152,7 +152,7 @@ final class GetCurrentUrlTest extends TestCase {
 		$get_current_url = self::get_method( 'get_current_url', Front_Page_Builder::class );
 		$res             = $get_current_url->invoke( $builder, 'post', $post_id );
 
-		self::assertEquals( $expected . '/?p=' . $post_id, $res, 'Specific post by ID does not match.' );
+		self::assertSame( $expected . '/?p=' . $post_id, $res, 'Specific post by ID does not match.' );
 	}
 
 	/**
@@ -170,6 +170,6 @@ final class GetCurrentUrlTest extends TestCase {
 		$res             = $get_current_url->invoke( $builder );
 
 		$constructed_expected = $expected . '/random/url/';
-		self::assertEquals( $constructed_expected, $res, 'Random URL does not match.' );
+		self::assertSame( $constructed_expected, $res, 'Random URL does not match.' );
 	}
 }

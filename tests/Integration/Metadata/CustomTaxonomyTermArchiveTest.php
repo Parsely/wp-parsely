@@ -86,7 +86,7 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the term name.
-		self::assertEquals( 'Custom Taxonomy Term', $structured_data['headline'] ?? null );
-		self::assertEquals( $term_link, $structured_data['url'] ?? null );
+		self::assertSame( 'Custom Taxonomy Term', $structured_data['headline'] ?? null );
+		self::assertSame( $term_link, $structured_data['url'] ?? null );
 	}
 }

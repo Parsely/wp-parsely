@@ -48,8 +48,8 @@ final class SiteHealthTest extends TestCase {
 	public function test_admin_bar_enqueued(): void {
 		self::$site_health->run();
 
-		self::assertEquals( 10, has_filter( 'site_status_tests', array( self::$site_health, 'check_site_id' ) ) );
-		self::assertEquals( 10, has_filter( 'debug_information', array( self::$site_health, 'options_debug_info' ) ) );
+		self::assertSame( 10, has_filter( 'site_status_tests', array( self::$site_health, 'check_site_id' ) ) );
+		self::assertSame( 10, has_filter( 'debug_information', array( self::$site_health, 'options_debug_info' ) ) );
 	}
 
 	/**
@@ -70,8 +70,8 @@ final class SiteHealthTest extends TestCase {
 		$parsely_health_info = $args['parsely'] ?? array();
 
 		self::assertArrayHasKey( 'parsely', $args );
-		self::assertEquals( 'Parse.ly Options', $parsely_health_info['label'] );
-		self::assertEquals( 'Shows the options stored in the database used by the wp-parsely plugin.', $parsely_health_info['description'] );
+		self::assertSame( 'Parse.ly Options', $parsely_health_info['label'] );
+		self::assertSame( 'Shows the options stored in the database used by the wp-parsely plugin.', $parsely_health_info['description'] );
 		self::assertTrue( $parsely_health_info['show_count'] );
 		self::assertArrayHasKey( 'fields', $parsely_health_info );
 	}

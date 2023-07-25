@@ -28,7 +28,7 @@ use const Parsely\Utils\DATE_UTC_FORMAT;
  * Class for adding `Parse.ly Stats` on admin columns.
  *
  * @since 3.7.0
- * @since 3.9.0 Renamed FQCN from `Parsely\UI\Admin_Columns_Parsely_Stats` to `Parsely\Content_Helper\Post_List_Stats`
+ * @since 3.9.0 Renamed FQCN from `Parsely\UI\Admin_Columns_Parsely_Stats` to `Parsely\Content_Helper\Post_List_Stats`.
  *
  * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
  * @phpstan-import-type Analytics_Post from Analytics_Posts_API
@@ -350,8 +350,8 @@ class Post_List_Stats extends Content_Helper_Feature {
 			}
 
 			$metrics         = $post_analytics['metrics'];
-			$views           = isset( $metrics['views'] ) ? $metrics['views'] : 0;
-			$visitors        = isset( $metrics['visitors'] ) ? $metrics['visitors'] : 0;
+			$views           = $metrics['views'] ?? 0;
+			$visitors        = $metrics['visitors'] ?? 0;
 			$engaged_seconds = isset( $metrics['avg_engaged'] ) ? round( $metrics['avg_engaged'], 2 ) * 60 : 0;
 
 			/**

@@ -46,7 +46,7 @@ final class MetadataRendererTest extends TestCase {
 	public function test_run_wp_head_action(): void {
 		self::$metadata_renderer->run();
 
-		self::assertEquals( 10, has_action( 'wp_head', array( self::$metadata_renderer, 'render_metadata_on_head' ) ) );
+		self::assertSame( 10, has_action( 'wp_head', array( self::$metadata_renderer, 'render_metadata_on_head' ) ) );
 	}
 
 	/**
