@@ -12,7 +12,6 @@ namespace Parsely\Tests;
 use Parsely\Parsely;
 
 trait Tests_Reflection {
-
 	/**
 	 * Gets a method from a class. This should be used when trying to access a
 	 * private method for testing.
@@ -40,7 +39,6 @@ trait Tests_Reflection {
 	 * @param class-string $class_name The fully qualified class name, including namespace.
 	 * @param object       $object The object instance on which to set the value.
 	 * @param string       $property_name The name of the private property to override.
-	 *
 	 * @param mixed        $value The value to set.
 	 */
 	public static function set_private_property( $class_name, $object, string $property_name, $value ): void {

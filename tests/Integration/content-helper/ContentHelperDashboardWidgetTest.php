@@ -68,8 +68,8 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 		( new Dashboard_Widget( $GLOBALS['parsely'] ) )->run();
 		do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
 
-		self::assertEquals( $expected, wp_script_is( $script_id ) );
-		self::assertEquals( $expected, wp_style_is( $style_id ) );
+		self::assertSame( $expected, wp_script_is( $script_id ) );
+		self::assertSame( $expected, wp_style_is( $style_id ) );
 	}
 
 	/**
@@ -88,10 +88,10 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @uses Parsely\Parsely::__construct
-	 * @uses Parsely\RemoteAPI\Remote_API_Base::__construct
-	 * @uses Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -116,10 +116,10 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
 	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
-	 * @uses Parsely\Parsely::__construct
-	 * @uses Parsely\RemoteAPI\Remote_API_Base::__construct
-	 * @uses Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\get_asset_info
 	 *
 	 * @group content-helper
 	 */

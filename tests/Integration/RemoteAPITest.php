@@ -35,7 +35,7 @@ abstract class RemoteAPITest extends TestCase {
 	 *
 	 * @return \ArrayIterator<string, mixed>
 	 */
-	abstract public function data_api_url();
+	abstract public function data_api_url(): iterable;
 
 	/**
 	 * Runs once before all tests.
@@ -61,7 +61,7 @@ abstract class RemoteAPITest extends TestCase {
 	 */
 	public function test_api_url( array $query, string $url ): void {
 		self::set_options( array( 'apikey' => 'my-key' ) );
-		self::assertEquals( $url, self::$remote_api->get_api_url( $query ) );
+		self::assertSame( $url, self::$remote_api->get_api_url( $query ) );
 	}
 
 	/**

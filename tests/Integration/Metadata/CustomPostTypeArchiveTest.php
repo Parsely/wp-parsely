@@ -83,8 +83,8 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the CPT name.
-		self::assertEquals( 'custom_post_type', $structured_data['headline'] ?? null );
-		self::assertEquals( home_url( '/cpt-archive' ), $structured_data['url'] ?? null );
+		self::assertSame( 'custom_post_type', $structured_data['headline'] ?? null );
+		self::assertSame( home_url( '/cpt-archive' ), $structured_data['url'] ?? null );
 
 		// Clean up.
 		unregister_post_type( 'custom_post_type' );

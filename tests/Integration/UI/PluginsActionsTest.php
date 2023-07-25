@@ -24,6 +24,7 @@ final class PluginsActionsTest extends TestCase {
 	 * links.
 	 *
 	 * @covers \Parsely\UI\Plugins_Actions::run
+	 *
 	 * @group ui
 	 */
 	public function test_plugins_screen_has_filter_to_add_a_settings_action_link(): void {
@@ -40,6 +41,7 @@ final class PluginsActionsTest extends TestCase {
 	 * @covers \Parsely\UI\Plugins_Actions::run
 	 * @covers \Parsely\UI\Plugins_Actions::add_plugin_meta_links
 	 * @uses \Parsely\Parsely::get_settings_url
+	 *
 	 * @group ui
 	 */
 	public function test_plugins_screen_adds_a_settings_action_link(): void {

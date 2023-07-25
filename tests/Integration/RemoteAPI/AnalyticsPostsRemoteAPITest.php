@@ -30,7 +30,7 @@ final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 	 *
 	 * @return \ArrayIterator<string, mixed>
 	 */
-	public function data_api_url() {
+	public function data_api_url(): iterable {
 		yield 'Basic (Expected data)' => array(
 			array(
 				'apikey' => 'my-key',
