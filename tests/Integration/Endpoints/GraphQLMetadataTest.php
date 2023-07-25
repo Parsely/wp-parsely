@@ -56,7 +56,7 @@ final class GraphQLMetadataTest extends TestCase {
 		self::set_options( array( 'apikey' => 'testkey' ) );
 
 		self::$graphql->run();
-		self::assertEquals( 10, has_filter( 'graphql_register_types', array( self::$graphql, 'register_meta' ) ) );
+		self::assertSame( 10, has_filter( 'graphql_register_types', array( self::$graphql, 'register_meta' ) ) );
 	}
 
 	/**
