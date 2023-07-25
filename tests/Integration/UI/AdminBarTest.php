@@ -45,7 +45,7 @@ final class AdminBarTest extends TestCase {
 	public function test_admin_bar_enqueued(): void {
 		self::$admin_bar->run();
 
-		self::assertEquals( 201, has_filter( 'admin_bar_menu', array( self::$admin_bar, 'admin_bar_parsely_stats_button' ) ) );
+		self::assertSame( 201, has_filter( 'admin_bar_menu', array( self::$admin_bar, 'admin_bar_parsely_stats_button' ) ) );
 	}
 
 	/**

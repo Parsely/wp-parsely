@@ -91,9 +91,10 @@ final class UtilsTest extends TestCase {
 			$args   = $t['args'];
 			$output = get_utc_date_format( $args['days'] );
 
-			self::assertEquals( $t['expected_output'], $output, $t['msg'] );
+			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}
 	}
+
 	/**
 	 * Tests get_formatted_number function.
 	 *
@@ -142,7 +143,7 @@ final class UtilsTest extends TestCase {
 			$args   = $t['args'];
 			$output = get_formatted_number( $args['number'] );
 
-			self::assertEquals( $t['expected_output'], $output, $t['msg'] );
+			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}
 	}
 
@@ -184,7 +185,7 @@ final class UtilsTest extends TestCase {
 			$args   = $t['args'];
 			$output = get_formatted_time( $args['seconds'] );
 
-			self::assertEquals( $t['expected_output'], $output, $t['msg'] );
+			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}
 	}
 
@@ -238,7 +239,7 @@ final class UtilsTest extends TestCase {
 			$args   = $t['args'];
 			$output = convert_to_associative_array( $args['obj'] );
 
-			self::assertEquals( $t['expected_output'], $output, $t['msg'] );
+			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}
 	}
 }
