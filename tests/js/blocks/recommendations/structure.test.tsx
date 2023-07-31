@@ -83,7 +83,7 @@ describe( 'Recommendations Block', () => {
 function verifyBlockStructure( resultCount: number, blockTitle: string, imageStyle = '' ): boolean {
 	// Expect valid image value and generate render props.
 	expect( [ '', 'original', 'thumbnail' ].includes( imageStyle ) ).toBeTruthy();
-	const showImages = imageStyle === '' ? false : true;
+	const showImages = imageStyle !== '';
 	const apiData = getApiData( resultCount );
 
 	// Render the Block.
