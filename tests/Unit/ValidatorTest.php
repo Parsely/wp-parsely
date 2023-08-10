@@ -71,8 +71,6 @@ final class ValidatorTest extends TestCase {
 	 * Verifies that valid API Secrets pass validation.
 	 *
 	 * @since 3.9.0
-	 *
-	 * @covers \Parsely\Validator::validate_api_secret
 	 */
 	public function test_validate_valid_api_secrets(): void {
 		$valid_api_secrets = array(
@@ -88,8 +86,6 @@ final class ValidatorTest extends TestCase {
 	 * Verifies that invalid API Secrets fail validation.
 	 *
 	 * @since 3.9.0
-	 *
-	 * @covers \Parsely\Validator::validate_api_secret
 	 */
 	public function test_validate_invalid_api_secrets(): void {
 		$valid_api_secrets = array(
@@ -105,8 +101,6 @@ final class ValidatorTest extends TestCase {
 	 * Verifies that valid Metadata Secrets pass validation.
 	 *
 	 * @since 3.9.0
-	 *
-	 * @covers \Parsely\Validator::validate_metadata_secret
 	 */
 	public function test_validate_valid_metadata_secrets(): void {
 		$valid_metadata_secrets = array(
@@ -122,8 +116,6 @@ final class ValidatorTest extends TestCase {
 	 * Verifies that invalid Metadata Secrets fail validation.
 	 *
 	 * @since 3.9.0
-	 *
-	 * @covers \Parsely\Validator::validate_metadata_secret
 	 */
 	public function test_validate_invalid_metadata_secrets(): void {
 		$valid_metadata_secrets = array(
