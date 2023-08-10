@@ -3,6 +3,7 @@
  */
 import {
 	activateTheme,
+	enablePageDialogAccept,
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
@@ -38,9 +39,7 @@ const getNonActiveWidgetText = async () => {
 
 describe( 'Recommended widget', () => {
 	beforeAll( async () => {
-		page.on( 'dialog', async function( dialog ) {
-			await dialog.accept();
-		} );
+		enablePageDialogAccept();
 
 		await activateTheme( 'twentytwentyone' );
 	} );
