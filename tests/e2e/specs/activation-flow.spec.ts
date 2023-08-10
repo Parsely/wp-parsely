@@ -8,13 +8,10 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
  */
 import {
 	setSiteKeys,
-	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
 
 describe( 'Activation flow', (): void => {
-	beforeAll( startUpTest );
-
 	it( 'Should progress as intended', async (): Promise<void> => {
 		await setSiteKeys( '' );
 

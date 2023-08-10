@@ -8,7 +8,6 @@ import * as path from 'path';
  * Internal dependencies
  */
 import {
-	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
 
@@ -32,8 +31,6 @@ const modalDeleteAttachmentLink = `${ modalEditAttachment } button.delete-attach
  * Browse button tests
  */
 describe( 'Browse for logo button', () => {
-	beforeAll( startUpTest );
-
 	/**
 	 * Remove the uploaded image.
 	 */

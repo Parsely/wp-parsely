@@ -12,7 +12,6 @@ import {
 import {
 	setSiteKeys,
 	setUserDisplayName,
-	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
 
@@ -44,7 +43,6 @@ async function setTrackLoggedInUsers( shouldTrack = false ) {
 
 describe( 'Front end metadata insertion', () => {
 	beforeAll( async () => {
-		await startUpTest();
 		await setSiteKeys();
 		await setTrackLoggedInUsers( true );
 

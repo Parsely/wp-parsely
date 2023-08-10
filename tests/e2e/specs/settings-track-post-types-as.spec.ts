@@ -8,7 +8,6 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
  */
 import {
 	saveSettingsAndHardRefresh,
-	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
 
@@ -31,8 +30,6 @@ describe( 'Track Post Types as', () => {
 	 * Login, activate the Parse.ly plugin and show recrawl settings.
 	 */
 	beforeAll( async () => {
-		await startUpTest();
-
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await waitForWpAdmin();
 		await page.click( '.recrawl-section-tab' );

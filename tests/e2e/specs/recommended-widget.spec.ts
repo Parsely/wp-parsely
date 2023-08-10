@@ -11,7 +11,6 @@ import {
  */
 import {
 	setSiteKeys,
-	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
 
@@ -43,7 +42,6 @@ describe( 'Recommended widget', () => {
 			await dialog.accept();
 		} );
 
-		await startUpTest();
 		await activateTheme( 'twentytwentyone' );
 	} );
 

@@ -167,15 +167,6 @@ export const saveSettingsAndHardRefresh = async () => {
 };
 
 /**
- * Performs preparatory actions before starting the tests.
- *
- * @return {Promise<void>}
- */
-export const startUpTest = async () => {
-	await visitAdminPage( '/' );
-};
-
-/**
  * Returns whether the passed arrays are equal.
  *
  * This function is meant to compare very simple arrays.Please don't use it to
