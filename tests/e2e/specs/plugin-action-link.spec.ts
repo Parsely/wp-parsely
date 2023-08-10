@@ -13,7 +13,6 @@ import {
 describe( 'Plugin action link', () => {
 	it( 'Should link to plugin settings page', async () => {
 		await visitAdminPage( '/plugins.php', '' );
-		await waitForWpAdmin();
 
 		await expect( page ).toClick( '[data-slug=wp-parsely] .settings>a', { text: 'Settings' } );
 		await waitForWpAdmin();

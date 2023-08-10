@@ -31,7 +31,6 @@ describe( 'Track Post Types as', () => {
 	 */
 	beforeAll( async () => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
-		await waitForWpAdmin();
 		await page.click( '.recrawl-section-tab' );
 	} );
 

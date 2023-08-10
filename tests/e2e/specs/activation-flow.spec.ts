@@ -16,7 +16,6 @@ describe( 'Activation flow', (): void => {
 		await setSiteKeys( '' );
 
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
-		await waitForWpAdmin();
 
 		const versionText: string = await page.$eval( '#wp-parsely_version', ( el : Element ) => el.textContent ?? '' );
 		expect( versionText ).toMatch( /^Version \d+.\d+/ );
@@ -39,7 +38,6 @@ describe( 'Activation flow', (): void => {
 
 	it( 'Should display all admin sections', async (): Promise<void> => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
-		await waitForWpAdmin();
 
 		// Default tab.
 		expect( page ).not.toBe( null );

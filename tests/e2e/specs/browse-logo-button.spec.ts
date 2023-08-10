@@ -4,13 +4,6 @@
 import { visitAdminPage } from '@wordpress/e2e-test-utils';
 import * as path from 'path';
 
-/**
- * Internal dependencies
- */
-import {
-	waitForWpAdmin,
-} from '../utils';
-
 // General initializations.
 const imageLocalPath: string = path.resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
 const uploadedImagePattern = /\/wp-content\/uploads\/\d{4}\/\d{2}\/icon-256x256-?\d*\.png$/;
@@ -54,7 +47,6 @@ describe( 'Browse for logo button', () => {
 	 */
 	beforeEach( async () => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
-		await waitForWpAdmin();
 
 		// Click browse button and wait for Media Library to appear.
 		await page.click( modalSelectFilesButton );
