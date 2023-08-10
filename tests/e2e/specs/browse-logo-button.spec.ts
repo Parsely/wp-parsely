@@ -1,16 +1,11 @@
 /**
  * External dependencies
  */
-import { visitAdminPage } from '@wordpress/e2e-test-utils';
-import * as path from 'path';
-
-/**
- * Internal dependencies
- */
 import {
-	startUpTest,
-	waitForWpAdmin,
-} from '../utils';
+	enablePageDialogAccept,
+	visitAdminPage,
+} from '@wordpress/e2e-test-utils';
+import * as path from 'path';
 
 // General initializations.
 const imageLocalPath: string = path.resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
@@ -32,8 +27,6 @@ const modalDeleteAttachmentLink = `${ modalEditAttachment } button.delete-attach
  * Browse button tests
  */
 describe( 'Browse for logo button', () => {
-	beforeAll( startUpTest );
-
 	/**
 	 * Remove the uploaded image.
 	 */
@@ -44,11 +37,7 @@ describe( 'Browse for logo button', () => {
 		await page.click( modalAttachment );
 		await page.waitForSelector( modalEditAttachment, { visible: true } );
 
-		// Confirm image deletion.
-		// Note: Dialog handling must be placed before the click event.
-		page.on( 'dialog', async ( dialog ) => {
-			await dialog.accept();
-		} );
+		enablePageDialogAccept(); // Confirm image deletion.
 		await page.click( modalDeleteAttachmentLink );
 	} );
 
@@ -57,7 +46,6 @@ describe( 'Browse for logo button', () => {
 	 */
 	beforeEach( async () => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
-		await waitForWpAdmin();
 
 		// Click browse button and wait for Media Library to appear.
 		await page.click( modalSelectFilesButton );

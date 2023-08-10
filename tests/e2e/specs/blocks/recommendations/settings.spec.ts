@@ -14,7 +14,6 @@ import {
 import {
 	arraysEqual,
 	setSiteKeys,
-	startUpTest,
 } from '../../../utils';
 
 /**
@@ -27,7 +26,6 @@ describe( 'Recommendations Block', () => {
 	 */
 	beforeAll( async () => {
 		enablePageDialogAccept();
-		await startUpTest();
 	} );
 
 	/**

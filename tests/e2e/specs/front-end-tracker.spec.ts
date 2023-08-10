@@ -11,7 +11,6 @@ import {
 	PLUGIN_VERSION,
 	VALID_API_SECRET,
 	setSiteKeys,
-	startUpTest,
 } from '../utils';
 
 const getAssetVersion = () => {
@@ -22,8 +21,6 @@ const getAssetVersion = () => {
 };
 
 describe( 'Front end tracking code insertion', () => {
-	beforeAll( startUpTest );
-
 	it( 'Should inject loading script homepage', async () => {
 		await setSiteKeys();
 
