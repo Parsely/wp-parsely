@@ -17,8 +17,9 @@ import {
 
 const deactivatedPluginWidgetText = 'The Parse.ly Site ID and Parse.ly API Secret fields need to be populated on the Parse.ly settings page for this widget to work.';
 
+const closeWidgetScreenModal = () => page.keyboard.press( 'Escape' );
+
 const insertParselyWidget = async () => {
-	await waitForWpAdmin();
 	await page.waitForTimeout( 500 );
 	await page.click( '.block-editor-button-block-appender' );
 	await page.waitForTimeout( 500 );
@@ -51,6 +52,9 @@ describe( 'Recommended widget', () => {
 		await setSiteKeys( '' );
 
 		await visitAdminPage( '/widgets.php', '' );
+
+		await waitForWpAdmin();
+		await closeWidgetScreenModal();
 		await insertParselyWidget();
 
 		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
@@ -60,6 +64,9 @@ describe( 'Recommended widget', () => {
 		await setSiteKeys();
 
 		await visitAdminPage( '/widgets.php', '' );
+
+		await waitForWpAdmin();
+		await closeWidgetScreenModal();
 		await insertParselyWidget();
 
 		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
