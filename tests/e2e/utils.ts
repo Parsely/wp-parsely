@@ -6,7 +6,6 @@ import {
 	createNewPost,
 	ensureSidebarOpened,
 	findSidebarPanelToggleButtonWithTitle,
-	loginUser,
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
@@ -174,7 +173,6 @@ export const saveSettingsAndHardRefresh = async () => {
  * @return {Promise<void>}
  */
 export const startUpTest = async () => {
-	await loginUser();
 	await activatePlugin( 'wp-parsely' );
 	await waitForWpAdmin();
 };
