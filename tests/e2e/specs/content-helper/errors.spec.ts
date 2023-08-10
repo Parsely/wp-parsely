@@ -5,7 +5,6 @@ import {
 	VALID_API_SECRET,
 	getTopRelatedPostsMessage,
 	setSiteKeys,
-	startUpTest,
 } from '../../utils';
 
 /**
@@ -14,13 +13,6 @@ import {
  */
 describe( 'PCH Editor Sidebar Related Top Posts panel', () => {
 	const contactMessage = 'Contact us about advanced plugin features and the Parse.ly dashboard.';
-
-	/**
-	 * Logs in to WordPress and activates the Parse.ly plugin.
-	 */
-	beforeAll( async () => {
-		await startUpTest();
-	} );
 
 	/**
 	 * Verifies that the panel will display an error when an invalid Site ID is
