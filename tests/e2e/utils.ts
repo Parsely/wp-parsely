@@ -2,7 +2,6 @@
  * WordPress dependencies
  */
 import {
-	activatePlugin,
 	createNewPost,
 	ensureSidebarOpened,
 	findSidebarPanelToggleButtonWithTitle,
@@ -173,8 +172,7 @@ export const saveSettingsAndHardRefresh = async () => {
  * @return {Promise<void>}
  */
 export const startUpTest = async () => {
-	await activatePlugin( 'wp-parsely' );
-	await waitForWpAdmin();
+	await visitAdminPage( '/' );
 };
 
 /**
