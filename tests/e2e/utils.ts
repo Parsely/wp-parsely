@@ -177,3 +177,19 @@ export const saveSettingsAndHardRefresh = async () => {
  * @return {boolean} Whether the passed arrays are equal.
  */
 export const arraysEqual = ( array1: ( string | null )[], array2: ( string | null )[] ) => JSON.stringify( array1 ) === JSON.stringify( array2 );
+
+/**
+ * Activates the passed WordPress theme.
+ *
+ * Acts as a lightweight replacement for the `activatePlugin()` function from
+ * `@wordpress/e2e-test-utils`.
+ *
+ * @param {string} slug The theme's slug.
+ */
+export const activateTheme = async ( slug: string ): Promise<void> => {
+	await visitAdminPage( 'themes.php' );
+	await waitForWpAdmin();
+
+	await page.click( `div[data-slug="${ slug }"] .button.activate` );
+	await page.waitForSelector( `div[data-slug="${ slug }"].active` );
+};
