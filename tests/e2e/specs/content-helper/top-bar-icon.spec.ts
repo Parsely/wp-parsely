@@ -12,7 +12,6 @@ import {
 import {
 	VALID_API_SECRET,
 	setSiteKeys,
-	startUpTest,
 } from '../../utils';
 
 // Selectors.
@@ -24,13 +23,6 @@ const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
 describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => {
 	const postNotPublishedMessage = 'Performance DetailsThis post is not published, so its details are unavailable.Related Top Posts';
 	const emptyCredentialsMessage = 'Performance DetailsContact us about advanced plugin features and the Parse.ly dashboard.Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in wp-parsely options.Related Top Posts';
-
-	/**
-	 * Logs in to WordPress and activates the Parse.ly plugin.
-	 */
-	beforeAll( async () => {
-		await startUpTest();
-	} );
 
 	/**
 	 * Verifies that the top bar icon gets displayed when the Site ID and API
