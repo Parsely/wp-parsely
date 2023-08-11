@@ -73,6 +73,10 @@ final class Admin_Warning {
 			return false;
 		}
 
+		if ( defined( 'is_managed' ) && true === constant( 'is_managed' ) ) {
+			return false;
+		}
+
 		return $this->parsely->site_id_is_missing();
 	}
 }
