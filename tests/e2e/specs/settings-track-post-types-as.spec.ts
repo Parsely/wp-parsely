@@ -29,7 +29,7 @@ describe( 'Track Post Types as', () => {
 	/**
 	 * Login, activate the Parse.ly plugin and show recrawl settings.
 	 */
-	beforeEach( async () => {
+	beforeAll( async () => {
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await page.click( '.recrawl-section-tab' );
 	} );
@@ -37,7 +37,7 @@ describe( 'Track Post Types as', () => {
 	/**
 	 * Set default values and save.
 	 */
-	afterEach( async () => {
+	afterAll( async () => {
 		await waitForWpAdmin();
 
 		await page.click( radioPostAsPost );
