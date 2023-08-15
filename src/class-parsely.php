@@ -77,7 +77,7 @@ class Parsely {
 		'logo'                      => '',
 		'metadata_secret'           => '',
 		'disable_autotrack'         => false,
-		'plugin_version'            => '',
+		'plugin_version'            => self::VERSION,
 	);
 
 	/**
@@ -162,6 +162,7 @@ class Parsely {
 				$callable = array( $this, $method );
 				call_user_func_array( $callable, array( $options ) );
 			}
+
 			// Update our version info.
 			$options['plugin_version'] = self::VERSION;
 			update_option( self::OPTIONS_KEY, $options );
