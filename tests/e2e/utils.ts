@@ -163,7 +163,7 @@ export const saveSettingsAndHardRefresh = async () => {
 	await page.evaluate( () => {
 		location.reload();
 	} );
-	await waitForWpAdmin();
+	await page.waitForSelector( '#submit' );
 };
 
 /**
