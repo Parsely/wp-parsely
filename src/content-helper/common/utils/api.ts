@@ -38,10 +38,11 @@ export function getApiPeriodParams( days: number ): ApiPeriodRange {
 /**
  * Gets period start date for API.
  *
- * @param {number} days Number of days for which to calculate the period start date.
+ * @param {number} days Number of days for which to calculate the period start
+ *                      date.
  *
  * @return {string} period start date.
  */
 export function getApiPeriodStartDate( days: number ): string {
-	return removeDaysFromDate( new Date().toISOString(), days - 1 ) + 'T00:00';
+	return removeDaysFromDate( new Date(), days - 1 ) + 'T00:00';
 }
