@@ -746,7 +746,7 @@ class Parsely {
 				__FUNCTION__,
 				esc_html(
 					sprintf( /* translators: 1: Option ID */
-						__( 'The value of the managed option "%1$s" must be of boolean type.', 'wp-parsely' ),
+						__( 'The value of the managed option `%1$s` must be of type `boolean`.', 'wp-parsely' ),
 						$option_id
 					)
 				),
@@ -762,7 +762,7 @@ class Parsely {
 					__FUNCTION__,
 					esc_html(
 						sprintf( /* translators: 1: Option ID */
-							__( 'The value of the managed option "%1$s" must be of string type.', 'wp-parsely' ),
+							__( 'The value of the managed option `%1$s` must be of type `string`.', 'wp-parsely' ),
 							$option_id
 						)
 					),
@@ -786,7 +786,7 @@ class Parsely {
 							__FUNCTION__,
 							esc_html(
 								sprintf( /* translators: 1: Option value 2: Option ID */
-									__( 'The value "%1$s" is not allowed for the managed option "%2$s".', 'wp-parsely' ),
+									__( 'The value `%1$s` is not allowed for the managed option `%2$s`.', 'wp-parsely' ),
 									$value,
 									$option_id
 								)

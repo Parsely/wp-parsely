@@ -304,6 +304,8 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\UI\Settings_Page::get_section_taxonomies
+	 *
+	 * @expectedIncorrectUsage sanitize_managed_option
 	 */
 	public function test_managed_options_get_sanitized(): void {
 		add_filter(

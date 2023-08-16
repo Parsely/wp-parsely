@@ -645,7 +645,7 @@ final class SettingsPageTest extends TestCase {
 		);
 		yield 'array() passed to wp_parsely_managed_options_badge' => array(
 			$expected_badge_html,
-			array( 'meta_type' => 'ld_json' ),
+			array( 'meta_type' => 'json_ld' ),
 			array(),
 		);
 
@@ -678,7 +678,7 @@ final class SettingsPageTest extends TestCase {
 		);
 		yield 'string passed to wp_parsely_managed_options_badge' => array(
 			$expected_badge_html,
-			array( 'meta_type' => 'ld_json' ),
+			array( 'meta_type' => 'json_ld' ),
 			'string',
 		);
 
@@ -689,7 +689,7 @@ final class SettingsPageTest extends TestCase {
 		);
 		yield 'integer passed to wp_parsely_managed_options_badge' => array(
 			$expected_badge_html,
-			array( 'meta_type' => 'ld_json' ),
+			array( 'meta_type' => 'json_ld' ),
 			100,
 		);
 
@@ -699,7 +699,7 @@ final class SettingsPageTest extends TestCase {
 
 		yield 'no text passed to wp_parsely_managed_options_badge' => array(
 			$expected,
-			array( 'meta_type' => 'ld_json' ),
+			array( 'meta_type' => 'json_ld' ),
 			array(
 				'url' => 'https://www.parse.ly/getdemo/',
 			),
@@ -765,7 +765,7 @@ final class SettingsPageTest extends TestCase {
 
 		yield 'no url passed to wp_parsely_managed_options_badge' => array(
 			$expected,
-			array( 'meta_type' => 'ld_json' ),
+			array( 'meta_type' => 'json_ld' ),
 			array( 'text' => 'Empty URL' ),
 		);
 
