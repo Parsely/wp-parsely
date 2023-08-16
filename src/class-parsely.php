@@ -742,11 +742,33 @@ class Parsely {
 		$option_value_type = gettype( $this->option_defaults[ $option_id ] );
 
 		if ( 'boolean' === $option_value_type && ! is_bool( $value ) ) {
+			_doing_it_wrong(
+				__FUNCTION__,
+				esc_html(
+					sprintf( /* translators: 1: Option ID */
+						__( 'The value of the managed option "%1$s" must be of boolean type.', 'wp-parsely' ),
+						$option_id
+					)
+				),
+				''
+			);
+
 			return false;
 		}
 
 		if ( 'string' === $option_value_type ) {
 			if ( ! is_string( $value ) ) {
+				_doing_it_wrong(
+					__FUNCTION__,
+					esc_html(
+						sprintf( /* translators: 1: Option ID */
+							__( 'The value of the managed option "%1$s" must be of string type.', 'wp-parsely' ),
+							$option_id
+						)
+					),
+					''
+				);
+
 				$value = strval( $value );
 			}
 
@@ -760,6 +782,18 @@ class Parsely {
 			foreach ( $restricted_value_options as $option_key => $valid_values ) {
 				if ( $option_id === $option_key ) {
 					if ( ! in_array( $value, $valid_values, true ) ) {
+						_doing_it_wrong(
+							__FUNCTION__,
+							esc_html(
+								sprintf( /* translators: 1: Option value 2: Option ID */
+									__( 'The value "%1$s" is not allowed for the managed option "%2$s".', 'wp-parsely' ),
+									$value,
+									$option_id
+								)
+							),
+							''
+						);
+
 						$value = $this->option_defaults[ $option_id ];
 					}
 				}
