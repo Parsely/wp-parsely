@@ -675,6 +675,10 @@ class Parsely {
 	/**
 	 * Sets the values of managed options.
 	 *
+	 * This function won't accept managing credentials or certain plugin options
+	 * that are being managed through other means. For managing credentials,
+	 * please use the `wp_parsely_credentials` filter.
+	 *
 	 * @since 3.9.0
 	 * @access private
 	 */
