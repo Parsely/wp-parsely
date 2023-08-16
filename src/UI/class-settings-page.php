@@ -1349,14 +1349,13 @@ final class Settings_Page {
 				return $title;
 			}
 
-			$text = esc_attr( $text );
-			$url  = filter_var( $this->managed_options_badge['url'] ?? '', FILTER_VALIDATE_URL );
+			$url = filter_var( $this->managed_options_badge['url'] ?? '', FILTER_VALIDATE_URL );
 
 			if ( false === $url ) {
-				$badge = '<span class="managed-option-badge">' . $text . '</span>';
+				$badge = '<span class="managed-option-badge">' . esc_html( $text ) . '</span>';
 			} else {
 				$badge = '<a class="managed-option-badge" href="' . esc_url( $url ) .
-					'" target="_blank" rel="noopener">' . $text . '</a>';
+					'" target="_blank" rel="noopener">' . esc_html( $text ) . '</a>';
 			}
 
 			return "{$title}&nbsp;&nbsp;{$badge}";
