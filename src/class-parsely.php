@@ -695,6 +695,10 @@ class Parsely {
 			$managed_options['plugin_version']
 		);
 
+		if ( 0 === count( $managed_options ) ) {
+			return;
+		}
+
 		/**
 		 * Current options.
 		 *
