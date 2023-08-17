@@ -640,8 +640,9 @@ class Parsely {
 			return false;
 		}
 
-		if ( isset( $credentials['is_managed'] ) && true === $credentials['is_managed'] ) {
-			return true;
+		if ( isset( $credentials['is_managed'] ) &&
+				is_bool( $credentials['is_managed'] ) ) {
+			return $credentials['is_managed'];
 		}
 
 		$required_credentials = array( 'site_id', 'api_secret' );

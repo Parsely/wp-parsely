@@ -235,6 +235,18 @@ final class OtherTest extends TestCase {
 		$credential_sets = array(
 			array(
 				'input_values'   => array(
+					'site_id'    => '',
+					'api_secret' => '',
+					'is_managed' => true,
+				),
+				'managed_result' => true,
+				'output_values'  => array(
+					'apikey'     => '',
+					'api_secret' => '',
+				),
+			),
+			array(
+				'input_values'   => array(
 					'site_id'    => 'example.com',
 					'api_secret' => 'test',
 				),
@@ -269,6 +281,14 @@ final class OtherTest extends TestCase {
 					'apikey'     => 'example.com',
 					'api_secret' => 'test',
 				),
+			),
+			array(
+				'input_values'   => array(
+					'site_id'    => 'example.com',
+					'api_secret' => 'test',
+					'is_managed' => false,
+				),
+				'managed_result' => false,
 			),
 			array(
 				'input_values'   => array( 'site_id' => 'example.com' ),
