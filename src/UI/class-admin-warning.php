@@ -73,7 +73,7 @@ final class Admin_Warning {
 			return false;
 		}
 
-		if ( defined( 'is_managed' ) && true === constant( 'is_managed' ) ) {
+		if ( $this->parsely->are_credentials_managed ) {
 			return false;
 		}
 
