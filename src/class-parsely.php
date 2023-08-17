@@ -634,10 +634,6 @@ class Parsely {
 	 * @return bool Whether credentials are being managed at the platform level.
 	 */
 	private function are_credentials_managed(): bool {
-		if ( defined( 'is_managed' ) && true === constant( 'is_managed' ) ) {
-			return true;
-		}
-
 		$credentials = apply_filters( 'wp_parsely_credentials', false );
 
 		if ( ! is_array( $credentials ) ) {
