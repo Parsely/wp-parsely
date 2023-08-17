@@ -86,7 +86,7 @@ class Analytics_Posts_API extends Remote_API_Base {
 	 *
 	 * @return array<string, mixed> The array of options.
 	 */
-	protected function set_request_options(): array {
+	protected function get_request_options(): array {
 		return array(
 			'timeout' => 30, // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
 		);

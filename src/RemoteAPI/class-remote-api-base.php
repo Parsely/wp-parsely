@@ -151,7 +151,7 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	 */
 	public function get_items( $query, $associative = false ) {
 		$full_api_url = $this->get_api_url( $query );
-		$options      = $this->set_request_options();
+		$options      = $this->get_request_options();
 		$response     = wp_safe_remote_get( $full_api_url, $options );
 
 		if ( is_wp_error( $response ) ) {
@@ -216,7 +216,7 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	 *
 	 * @return array<string, mixed> The array of options.
 	 */
-	protected function set_request_options(): array {
+	protected function get_request_options(): array {
 		return array();
 	}
 }
