@@ -115,7 +115,11 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 			function () use ( &$dispatched ) {
 				$dispatched++;
 				return array(
-					'body' => '{"data":[
+					'response' => array(
+						'code'    => 200,
+						'message' => 'OK',
+					),
+					'body'     => '{"data":[
 						{
 							"image_url":"https:\/\/example.com\/img.png",
 							"thumb_url_medium":"https:\/\/example.com\/thumb.png",

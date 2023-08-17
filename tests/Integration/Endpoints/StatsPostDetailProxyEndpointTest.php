@@ -195,7 +195,11 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 			function () use ( &$dispatched ) {
 				$dispatched++;
 				return array(
-					'body' => '
+					'response' => array(
+						'code'    => 200,
+						'message' => 'OK',
+					),
+					'body'     => '
 						{"data":[{
 							"avg_engaged": 1.911,
 							"metrics": {

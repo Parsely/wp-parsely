@@ -228,7 +228,11 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 			function () use ( &$dispatched ) {
 				$dispatched++;
 				return array(
-					'body' => '{"data":[
+					'response' => array(
+						'code'    => 200,
+						'message' => 'OK',
+					),
+					'body'     => '{"data":[
 						{
 							"author": "Aakash Shah",
 							"metrics": {"views": 142},
