@@ -178,6 +178,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_api_url
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_items
+	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_request_options
 	 */
 	public function test_get_items(): void {
 		$this->set_admin_user();
