@@ -47,18 +47,22 @@ function record_widget_deleted(
  *
  * @since 3.10.0
  *
- * @param array<string, mixed>      $instance The current widget instance's settings.
- * @param array<string, mixed>|null $new_instance Array of new widget settings.
- * @param array<string, mixed>|null $old_instance Array of old widget settings.
- * @param WP_Widget                 $widget_obj The current widget instance.
- * @param Telemetry_System          $telemetry_system The Telemetry System to use.
+ * @param array<string, mixed>|false $instance The current widget instance's settings.
+ * @param array<string, mixed>|null  $new_instance Array of new widget settings.
+ * @param array<string, mixed>|null  $old_instance Array of old widget settings.
+ * @param WP_Widget                  $widget_obj The current widget instance.
+ * @param Telemetry_System           $telemetry_system The Telemetry System to use.
  *
- * @return array<string, mixed> The updated widget settings
+ * @return array<string, mixed>|false The updated widget settings.
  */
 function record_widget_updated(
-	array $instance, ?array $new_instance, ?array $old_instance,
+	$instance, ?array $new_instance, ?array $old_instance,
 	WP_Widget $widget_obj, Telemetry_System $telemetry_system
-	): array {
+	) {
+	if ( ! is_array( $instance ) ) {
+		return $instance;
+	}
+
 	$id_base = $widget_obj->id_base;
 	if ( PARSELY_RECOMMENDED_WIDGET_BASE_ID !== $id_base ) {
 		return $instance;
