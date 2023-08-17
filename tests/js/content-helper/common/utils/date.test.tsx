@@ -25,11 +25,17 @@ describe( `${ basePath } canProcessDate()`, (): void => {
 		new Date( null ),
 		new Date( '' ),
 		new Date( 0 ),
-		new Date( '1970-01-01' ),
 		new Date( 'test' ),
 		new Date( 'Date N/A' ),
-	] )( 'should return false for invalid dates', ( invalidDate ): void => {
-		expect( canProcessDate( new Date( invalidDate ) ) ).toBe( false );
+		new Date( 'xxxx-xx-xx' ),
+		new Date( '23-03-05' ),
+		new Date( '2023-03-99' ),
+		new Date( '0000-00-00' ),
+		new Date( '2023-13-05' ),
+		new Date( '2023-03-32' ),
+		new Date( '1970-01-01' ), // Unix epoch is not supported.
+	] )( 'should return false for invalid or unsupported dates', ( invalidDate ): void => {
+		expect( canProcessDate( invalidDate ) ).toBe( false );
 	} );
 } );
 
@@ -76,34 +82,16 @@ describe( `${ basePath } getSmartShortDate()`, (): void => {
  */
 describe( `${ basePath } removeDaysFromDate()`, (): void => {
 	it( 'should calculate date difference correctly', (): void => {
-		expect( removeDaysFromDate( '2023-11-11', 10 ) ).toBe( '2023-11-01' );
-		expect( removeDaysFromDate( '2023-03-05', 5 ) ).toBe( '2023-02-28' );
-		expect( removeDaysFromDate( '2024-03-05', 5 ) ).toBe( '2024-02-29' );
-		expect( removeDaysFromDate( '2023-03-05', 0 ) ).toBe( '2023-03-05' );
-		expect( removeDaysFromDate( '2023-03-05', -1 ) ).toBe( '2023-03-06' );
+		expect( removeDaysFromDate( new Date( '2023-11-11' ), 10 ) ).toBe( '2023-11-01' );
+		expect( removeDaysFromDate( new Date( '2023-03-05' ), 5 ) ).toBe( '2023-02-28' );
+		expect( removeDaysFromDate( new Date( '2024-03-05' ), 5 ) ).toBe( '2024-02-29' );
+		expect( removeDaysFromDate( new Date( '2023-03-05' ), 0 ) ).toBe( '2023-03-05' );
+		expect( removeDaysFromDate( new Date( '2023-03-05' ), -1 ) ).toBe( '2023-03-06' );
 	} );
 
 	it( 'should expect days parameter to be an integer', (): void => {
 		expect(
-			removeDaysFromDate( '2023-03-05', 4.5 )
+			removeDaysFromDate( new Date( '2023-03-05' ), 4.5 )
 		).toBe( 'days parameter must be an integer' );
 	} );
-
-	it.each( [
-		'23-03-05',
-		'2023-3-05',
-		'2023-003-05',
-		'2023-03-5',
-		'2023-03-005',
-		'2023-03-99',
-		'0000-00-00',
-		'2023-13-05',
-		'2023-03-32',
-		'xxxx-xx-xx',
-		'invalid',
-		'1970-01-01',
-	] )( 'should return "Date N/A" for invalid or unsupported dates',
-		( invalidDate ): void => {
-			expect( removeDaysFromDate( invalidDate, 4 ) ).toBe( 'Date N/A' );
-		} );
 } );

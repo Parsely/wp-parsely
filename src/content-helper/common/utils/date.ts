@@ -13,20 +13,14 @@ const DATE_NOT_AVAILABLE_MESSAGE = __( 'Date N/A', 'wp-parsely' );
  * @param {Date} date The date to be examined.
  * @return {boolean} Whether the date can be processed further.
  */
-export function canProcessDate( date: Date|string ): boolean {
-	if ( 'string' === typeof date ) {
-		// Verify that date format is "YYYY-MM-DD".
-		if ( ! /^\d{4}-\d{2}-\d{2}$/.test( date ) ) {
-			return false;
-		}
-
-		date = new Date( date );
+export function canProcessDate( date: Date ): boolean {
+	// Return false if the date is not a valid Date object.
+	if ( isNaN( +date ) ) {
+		return false;
 	}
 
-	const isValidDateObject = date instanceof Date && ! isNaN( +date );
-	const isNotEpochDate = 0 !== date.getTime();
-
-	return isValidDateObject && isNotEpochDate;
+	// Return false if the date is the Unix Epoch time.
+	return 0 !== date.getTime();
 }
 
 export function getDateInUserLang( date: Date, options: Intl.DateTimeFormatOptions ): string {
@@ -68,11 +62,11 @@ export function getSmartShortDate( date: Date ): string {
  * Removes the given number of days from a "YYYY-MM-DD" string, and returns
  * the result in the same format.
  *
- * @param {string} date The date in "YYYY-MM-DD" format.
+ * @param {Date}   date The date to be processed.
  * @param {number} days The number of days to remove from the date.
  * @return {string} The resulting date in "YYYY-MM-DD" format.
  */
-export function removeDaysFromDate( date: string, days: number ): string {
+export function removeDaysFromDate( date: Date, days: number ): string {
 	if ( false === Number.isInteger( days ) ) {
 		return __( 'days parameter must be an integer', 'wp-parsely' );
 	}
