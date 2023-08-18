@@ -158,16 +158,6 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 			return $response;
 		}
 
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( 200 !== $response_code ) {
-			$error_message = wp_remote_retrieve_response_message( $response );
-			if ( '' === $error_message ) {
-				$error_message = __( 'Unknown error', 'wp-parsely' );
-			}
-
-			return new WP_Error( $response_code, $error_message );
-		}
-
 		$body    = wp_remote_retrieve_body( $response );
 		$decoded = json_decode( $body );
 

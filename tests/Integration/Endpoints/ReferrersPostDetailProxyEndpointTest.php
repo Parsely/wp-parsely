@@ -196,11 +196,7 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 			function () use ( &$dispatched ) {
 				$dispatched++;
 				return array(
-					'response' => array(
-						'code'    => 200,
-						'message' => 'OK',
-					),
-					'body'     => '{"data":[
+					'body' => '{"data":[
 						{
 							"metrics": {"referrers_views": 1500},
 							"name": "google",
