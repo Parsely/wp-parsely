@@ -80,7 +80,7 @@ class Analytics_Posts_API extends Remote_API_Base {
 	}
 
 	/**
-	 * Sets the request's options for the remote API call.
+	 * Returns the request's options for the remote API call.
 	 *
 	 * @since 3.9.0
 	 *

@@ -200,7 +200,7 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	}
 
 	/**
-	 * Sets the request's options for the remote API call.
+	 * Returns the request's options for the remote API call.
 	 *
 	 * @since 3.9.0
 	 *
