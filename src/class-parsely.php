@@ -657,19 +657,11 @@ class Parsely {
 			return false;
 		}
 
-		$required_credentials = array( 'site_id', 'api_secret' );
-
-		foreach ( $required_credentials as $key ) {
-			if (
-				! isset( $credentials[ $key ] ) ||
-				! is_string( $credentials[ $key ] ) ||
-				'' === $credentials[ $key ]
-			) {
-				return false;
-			}
+		if ( isset( $credentials['is_managed'] ) ) {
+			return $credentials['is_managed'];
 		}
 
-		return true;
+		return false;
 	}
 
 	/**

@@ -235,8 +235,21 @@ final class OtherTest extends TestCase {
 		$credential_sets = array(
 			array(
 				'input_values'   => array(
+					'site_id'    => '',
+					'api_secret' => '',
+					'is_managed' => true,
+				),
+				'managed_result' => true,
+				'output_values'  => array(
+					'apikey'     => '',
+					'api_secret' => '',
+				),
+			),
+			array(
+				'input_values'   => array(
 					'site_id'    => 'example.com',
 					'api_secret' => 'test',
+					'is_managed' => true,
 				),
 				'managed_result' => true,
 				'output_values'  => array(
@@ -246,77 +259,10 @@ final class OtherTest extends TestCase {
 			),
 			array(
 				'input_values'   => array(
-					'site_id'         => 'example.com',
-					'api_secret'      => 'test',
-					'metadata_secret' => 'test',
-				),
-				'managed_result' => true,
-				'output_values'  => array(
-
-					'apikey'          => 'example.com',
-					'api_secret'      => 'test',
-					'metadata_secret' => 'test',
-				),
-			),
-			array(
-				'input_values'   => array(
-					'site_id'     => 'example.com',
-					'api_secret'  => 'test',
-					'invalid_key' => 'test',
-				),
-				'managed_result' => true,
-				'output_values'  => array(
-					'apikey'     => 'example.com',
+					'site_id'    => 'example.com',
 					'api_secret' => 'test',
+					'is_managed' => false,
 				),
-			),
-			array(
-				'input_values'   => array( 'site_id' => 'example.com' ),
-				'managed_result' => false,
-			),
-			array(
-				'input_values'   => array( 'api_secret' => 'test' ),
-				'managed_result' => false,
-			),
-			array(
-				'input_values'   => array( 'metadata_secret' => 'test' ),
-				'managed_result' => false,
-			),
-			array(
-				'input_values'   => array(
-					'site_id'         => 'example.com',
-					'metadata_secret' => 'test',
-				),
-				'managed_result' => false,
-			),
-			array(
-				'input_values'   => array(
-					'api_secret'      => 'test',
-					'metadata_secret' => 'test',
-				),
-				'managed_result' => false,
-			),
-			array(
-				'input_values'   => array( 'invalid_key' => 'example.com' ),
-				'managed_result' => false,
-			),
-			array(
-				'input_values'   => array(
-					'site_id'     => 'example.com',
-					'invalid_key' => 'test',
-				),
-				'managed_result' => false,
-			),
-			array(
-				'input_values'   => array(),
-				'managed_result' => false,
-			),
-			array(
-				'input_values'   => 'some_string',
-				'managed_result' => false,
-			),
-			array(
-				'input_values'   => 1,
 				'managed_result' => false,
 			),
 		);
