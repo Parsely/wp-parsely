@@ -607,7 +607,12 @@ class Parsely {
 			return array();
 		}
 
-		$credentials = apply_filters( 'wp_parsely_credentials', false );
+		$credentials = apply_filters( 'wp_parsely_credentials', array() );
+
+		if ( ! is_array( $credentials ) || 0 === count( $credentials ) ) {
+			return array();
+		}
+
 		$result      = array();
 
 		if ( isset( $credentials['site_id'] ) ) {
@@ -634,9 +639,9 @@ class Parsely {
 	 * @return bool Whether credentials are being managed at the platform level.
 	 */
 	private function are_credentials_managed(): bool {
-		$credentials = apply_filters( 'wp_parsely_credentials', false );
+		$credentials = apply_filters( 'wp_parsely_credentials', array() );
 
-		if ( ! is_array( $credentials ) ) {
+		if ( ! is_array( $credentials ) || 0 === count( $credentials ) ) {
 			return false;
 		}
 
