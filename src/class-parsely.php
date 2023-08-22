@@ -613,7 +613,7 @@ class Parsely {
 			return array();
 		}
 
-		$result      = array();
+		$result = array();
 
 		if ( isset( $credentials['site_id'] ) ) {
 			$result['apikey'] = $credentials['site_id'];
