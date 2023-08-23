@@ -42,7 +42,7 @@
 		"js-cookie": "^3.0.5"
 	},
 	"devDependencies": {
-		"@testing-library/jest-dom": "^5.17.0",
+		"@testing-library/jest-dom": "^6.0.1",
 		"@testing-library/react": "^12.1.5",
 		"@types/jest-environment-puppeteer": "^5.0.3",
 		"@types/wordpress__block-editor": "^7.0.0",
