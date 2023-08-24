@@ -44,21 +44,10 @@ use WP_Post;
  * @phpstan-type WP_HTTP_Request_Args array{
  *   method: string,
  *   timeout: float,
- *   redirection: int,
- *   httpversion: string,
- *   user-agent: string,
- *   reject_unsafe_urls: bool,
  *   blocking: bool,
  *   headers: array<string, string>,
- *   cookies: array<string, string>,
  *   body: string,
- *   compress: bool,
- *   decompress: bool,
- *   sslverify: bool,
- *   sslcertificates: string,
- *   stream: bool,
- *   filename: string,
- *   limit_response_size: int,
+ *   data_format: string,
  * }
  *
  * @phpstan-import-type Metadata_Attributes from Metadata
