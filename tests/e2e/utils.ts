@@ -158,13 +158,14 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
  * @return {Promise<void>}
  */
 export const saveSettingsAndHardRefresh = async () => {
+	await page.waitForTimeout( 1000 );
 	await page.click( '#submit' );
-	await page.waitForTimeout( 500 );
+	await page.waitForTimeout( 1000 );
 	await page.waitForSelector( '#footer-upgrade' );
 	await page.evaluate( () => {
 		location.reload();
 	} );
-	await page.waitForSelector( '#footer-upgrade' );
+	await page.waitForTimeout( 1000 );
 };
 
 /**
