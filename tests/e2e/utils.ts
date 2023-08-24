@@ -159,13 +159,11 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
  */
 export const saveSettingsAndHardRefresh = async () => {
 	await page.click( '#submit' );
-	await waitForWpAdmin();
+	await page.waitForSelector( '#submit' );
 	await page.evaluate( () => {
 		location.reload();
 	} );
-	await waitForWpAdmin();
-	await visitAdminPage( '/options-general.php', '?page=parsely' );
-	await page.click( '.recrawl-section-tab' );
+	await page.waitForSelector( '#submit' );
 };
 
 /**
