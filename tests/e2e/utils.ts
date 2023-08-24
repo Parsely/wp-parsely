@@ -158,14 +158,14 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
  * @return {Promise<void>}
  */
 export const saveSettingsAndHardRefresh = async () => {
-	await page.waitForTimeout( 1000 );
 	await page.click( '#submit' );
-	await page.waitForTimeout( 1000 );
-	await page.waitForSelector( '#footer-upgrade' );
+	await waitForWpAdmin();
 	await page.evaluate( () => {
 		location.reload();
 	} );
-	await page.waitForTimeout( 1000 );
+	await waitForWpAdmin();
+	await visitAdminPage( '/options-general.php', '?page=parsely' );
+	await page.click( '.recrawl-section-tab' );
 };
 
 /**
