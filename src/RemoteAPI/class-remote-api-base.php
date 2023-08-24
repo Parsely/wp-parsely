@@ -30,6 +30,8 @@ use function Parsely\Utils\convert_to_associative_array;
  *   message: string,
  *   htmlMessage: string,
  * }
+ *
+ * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
 abstract class Remote_API_Base implements Remote_API_Interface {
 	protected const ENDPOINT     = '';
@@ -151,8 +153,13 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	 */
 	public function get_items( $query, $associative = false ) {
 		$full_api_url = $this->get_api_url( $query );
-		$options      = $this->get_request_options();
-		$response     = wp_safe_remote_get( $full_api_url, $options );
+		/**
+		 * GET request options.
+		 *
+		 * @var WP_HTTP_Request_Args $options
+		 */
+		$options  = $this->get_request_options();
+		$response = wp_safe_remote_get( $full_api_url, $options );
 
 		if ( is_wp_error( $response ) ) {
 			return $response;

@@ -41,6 +41,26 @@ use WP_Post;
  *   plugin_version: string,
  * }
  *
+ * @phpstan-type WP_HTTP_Request_Args array{
+ *   method: string,
+ *   timeout: float,
+ *   redirection: int,
+ *   httpversion: string,
+ *   user-agent: string,
+ *   reject_unsafe_urls: bool,
+ *   blocking: bool,
+ *   headers: array<string, string>,
+ *   cookies: array<string, string>,
+ *   body: string,
+ *   compress: bool,
+ *   decompress: bool,
+ *   sslverify: bool,
+ *   sslcertificates: string,
+ *   stream: bool,
+ *   filename: string,
+ *   limit_response_size: int,
+ * }
+ *
  * @phpstan-import-type Metadata_Attributes from Metadata
  */
 class Parsely {
@@ -321,26 +341,30 @@ class Parsely {
 
 		$parsely_api_endpoint    = self::PUBLIC_API_BASE_URL . '/metadata/posts';
 		$parsely_metadata_secret = $parsely_options['metadata_secret'];
-		$headers                 = array(
-			'Content-Type' => 'application/json',
-		);
-		$body                    = wp_json_encode(
+
+		$headers = array( 'Content-Type' => 'application/json' );
+		$body    = wp_json_encode(
 			array(
 				'secret'   => $parsely_metadata_secret,
 				'apikey'   => $this->get_site_id(),
 				'metadata' => $endpoint_metadata,
 			)
 		);
-		$response                = wp_remote_post(
-			$parsely_api_endpoint,
-			array(
-				'method'      => 'POST',
-				'headers'     => $headers,
-				'blocking'    => false,
-				'body'        => $body,
-				'data_format' => 'body',
-			)
+
+		/**
+		 * POST request options.
+		 *
+		 * @var WP_HTTP_Request_Args $options
+		*/
+		$options = array(
+			'method'      => 'POST',
+			'headers'     => $headers,
+			'blocking'    => false,
+			'body'        => $body,
+			'data_format' => 'body',
 		);
+
+		$response = wp_remote_post( $parsely_api_endpoint, $options );
 
 		if ( ! is_wp_error( $response ) ) {
 			$current_timestamp = time();
