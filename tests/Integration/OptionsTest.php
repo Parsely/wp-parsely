@@ -168,4 +168,163 @@ final class OptionsTest extends TestCase {
 		self::assertSame( array( 'post', 'custom_post_type' ), $options['track_post_types'] );
 		self::assertSame( array( 'page', 'custom_page_type' ), $options['track_page_types'] );
 	}
+
+	/**
+	 * Verifies that managed options with a value different than null override
+	 * default and saved options.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_default_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::sanitize_managed_option
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 */
+	public function test_set_managed_options_override_all_other_option_types(): void {
+		$default_options = self::$parsely->get_default_options();
+		self::assertSame( 'json_ld', $default_options['meta_type'] );
+
+		add_filter(
+			'wp_parsely_managed_options',
+			function() {
+				return array( 'meta_type' => 'repeated_metas' );
+			}
+		);
+
+		// Options aren't saved. Default meta_type value should be overridden.
+		self::assertSame(
+			'repeated_metas',
+			( new Parsely() )->get_options()['meta_type']
+		);
+
+		// Options are saved. Saved meta_type value should be overridden.
+		add_option( Parsely::OPTIONS_KEY, $default_options );
+		self::assertSame(
+			'repeated_metas',
+			( new Parsely() )->get_options()['meta_type']
+		);
+	}
+
+	/**
+	 * Verifies that managed options with a null value get their value from the
+	 * database or option defaults.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_default_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::sanitize_managed_option
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 */
+	public function test_null_managed_options_get_their_value_from_the_database_or_defaults(): void {
+		$default_options = self::$parsely->get_default_options();
+		self::assertSame( 'json_ld', $default_options['meta_type'] );
+
+		add_filter(
+			'wp_parsely_managed_options',
+			function() {
+				return array( 'meta_type' => null );
+			}
+		);
+
+		// No options are saved. Should get the value from option defaults.
+		self::assertSame(
+			'json_ld',
+			( new Parsely() )->get_options()['meta_type']
+		);
+
+		// Options are saved. Should get the value from saved option.
+		$options              = $default_options;
+		$options['meta_type'] = 'repeated_metas';
+		add_option( Parsely::OPTIONS_KEY, $options );
+		self::assertSame(
+			'repeated_metas',
+			( new Parsely() )->get_options()['meta_type']
+		);
+	}
+
+	/**
+	 * Verifies that certain options cannot be set as managed.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_default_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::sanitize_managed_option
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 */
+	public function test_certain_options_cannot_be_set_as_managed(): void {
+		add_filter(
+			'wp_parsely_managed_options',
+			function() {
+				return array(
+					// Options that are not allowed to be managed.
+					'api_secret'       => 'abcde',
+					'apikey'           => '12345',
+					'metadata_secret'  => 'fghij',
+					'plugin_version'   => '1.2.3',
+					'track_page_types' => array( 'page1', 'page2' ),
+					'track_post_types' => array( 'post1', 'post2' ),
+				);
+			}
+		);
+
+		$expected                     = self::$parsely->get_default_options();
+		$expected['track_post_types'] = array( 'post' );
+		$expected['track_page_types'] = array( 'page' );
+
+		self::assertSame(
+			$expected,
+			( new Parsely() )->get_options()
+		);
+	}
+
+	/**
+	 * Verifies that managed options sanitization works as expected.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::sanitize_managed_option
+	 * @covers \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\UI\Settings_Page::get_section_taxonomies
+	 *
+	 * @expectedIncorrectUsage sanitize_managed_option
+	 */
+	public function test_managed_options_get_sanitized(): void {
+		add_filter(
+			'wp_parsely_managed_options',
+			function() {
+				return array(
+					'custom_taxonomy_section' => 1, // Should be string.
+					'disable_javascript'      => 'string', // Should be boolean.
+					'meta_type'               => 'Disallowed value',
+					'use_top_level_cats'      => 2, // Should be boolean.
+				);
+			}
+		);
+
+		$options = ( new Parsely() )->get_options();
+
+		self::assertSame( 'category', $options['custom_taxonomy_section'] );
+		self::assertSame( false, $options['disable_javascript'] );
+		self::assertSame( 'json_ld', $options['meta_type'] );
+		self::assertSame( false, $options['use_top_level_cats'] );
+	}
 }
