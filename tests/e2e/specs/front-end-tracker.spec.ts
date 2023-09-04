@@ -9,8 +9,8 @@ import * as fs from 'fs';
  */
 import {
 	PLUGIN_VERSION,
+	VALID_API_SECRET,
 	setSiteKeys,
-	startUpTest,
 } from '../utils';
 
 const getAssetVersion = () => {
@@ -21,8 +21,6 @@ const getAssetVersion = () => {
 };
 
 describe( 'Front end tracking code insertion', () => {
-	beforeAll( startUpTest );
-
 	it( 'Should inject loading script homepage', async () => {
 		await setSiteKeys();
 
@@ -38,7 +36,7 @@ describe( 'Front end tracking code insertion', () => {
 	} );
 
 	it( 'Should inject loading script homepage and extra variable', async () => {
-		await setSiteKeys( 'e2etest.example.com', 'somesecret' );
+		await setSiteKeys( 'e2etest.example.com', VALID_API_SECRET );
 
 		await page.goto( createURL( '/' ) );
 

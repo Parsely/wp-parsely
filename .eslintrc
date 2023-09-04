@@ -7,6 +7,9 @@
 		"plugin:jest/recommended",
 		"plugin:@typescript-eslint/recommended"
 	],
+	"parserOptions": {
+		"project": "./tsconfig.json"
+	},
 	"plugins": [
 		"@typescript-eslint"
 	],
@@ -39,6 +42,7 @@
 			}
 		],
 		"@typescript-eslint/ban-ts-comment": "off",
+		"@typescript-eslint/prefer-nullish-coalescing": ["error"],
 		// Enabling TS rule and disabling Base rule as it can report incorrect errors.
 		"no-shadow": "off",
 		"@typescript-eslint/no-shadow": ["error"]

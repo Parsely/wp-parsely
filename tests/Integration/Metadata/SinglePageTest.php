@@ -15,7 +15,7 @@ use Parsely\Parsely;
 /**
  * Integration Tests for Single Page pages metadata.
  *
- * @see https://www.parse.ly/help/integration/jsonld
+ * @see https://docs.parse.ly/metadata-jsonld/
  * @covers \Parsely\Metadata::construct_metadata
  */
 final class SinglePageTest extends NonPostTestCase {
@@ -44,6 +44,7 @@ final class SinglePageTest extends NonPostTestCase {
 		$parsely = new Parsely();
 
 		// Insert a single page.
+		/** @var int $page_id */
 		$page_id = self::factory()->post->create(
 			array(
 				'post_type'  => 'page',
@@ -59,18 +60,19 @@ final class SinglePageTest extends NonPostTestCase {
 		$wp_rewrite->set_permalink_structure( '/%postname%/' );
 
 		// Make a request to that page to set the global $wp_query object.
-		$this->go_to( $this->get_permalink( $page_id ) );
+		$this->go_to( (string) $this->get_permalink( $page_id ) );
 
 		// Create the structured data for that post.
-		$metadata        = new Metadata( $parsely );
+		$metadata = new Metadata( $parsely );
+		/** @var array<string,mixed> $structured_data */
 		$structured_data = $metadata->construct_metadata( $page );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the post_title of the page.
-		self::assertEquals( 'Single Page', $structured_data['headline'] ?? null );
-		self::assertEquals( get_permalink( $page_id ), $structured_data['url'] ?? null );
+		self::assertSame( 'Single Page', $structured_data['headline'] ?? null );
+		self::assertSame( get_permalink( $page_id ), $structured_data['url'] ?? null );
 		self::assertQueryTrue( 'is_page', 'is_singular' );
 
 		// Reset permalinks to plain.

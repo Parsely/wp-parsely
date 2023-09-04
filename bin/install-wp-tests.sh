@@ -58,12 +58,22 @@ set -ex
 install_wp() {
 
 	if [ -d $WP_CORE_DIR ]; then
-		return;
+		while true; do
+			read -p "The $WP_CORE_DIR directory already exists. Overwrite it? (y/n) " yn
+			case $yn in
+				y|Y ) rm -rf $WP_CORE_DIR; break;;
+				n|N ) exit;;
+				* ) echo "Invalid response. Please answer with y or n.";
+			esac
+		done
 	fi
 
 	mkdir -p $WP_CORE_DIR
 
 	if [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
+		if [ -d $WP_CORE_DIR ]; then
+			rm -rf $TMPDIR/wordpress-nightly;
+		fi
 		mkdir -p $TMPDIR/wordpress-nightly
 		download https://wordpress.org/nightly-builds/wordpress-latest.zip  $TMPDIR/wordpress-nightly/wordpress-nightly.zip
 		unzip -q $TMPDIR/wordpress-nightly/wordpress-nightly.zip -d $TMPDIR/wordpress-nightly/

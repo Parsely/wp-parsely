@@ -11,6 +11,7 @@ namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
 use Parsely\Dashboard_Link;
+use WP_Post;
 
 /**
  * Integration Tests for Parse.ly Dashboard URL generation.
@@ -38,6 +39,7 @@ final class DashboardLinkTest extends TestCase {
 	 * @covers \Parsely\Dashboard_Link::generate_url
 	 */
 	public function test_generate_parsely_post_url(): void {
+		/** @var int $post_id */
 		$post_id = self::factory()->post->create();
 		$post    = $this->get_post( $post_id );
 		$site_id = 'demo-site-id';
@@ -73,7 +75,7 @@ final class DashboardLinkTest extends TestCase {
 	 * Verifies that determining whether a link can be shown works as expected.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -81,9 +83,11 @@ final class DashboardLinkTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown(): void {
+		/** @var WP_Post $published_post */
 		$published_post = self::factory()->post->create_and_get();
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
@@ -96,7 +100,7 @@ final class DashboardLinkTest extends TestCase {
 	 * Only published posts are tracked by default.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -104,9 +108,11 @@ final class DashboardLinkTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_has_not_trackable_status(): void {
+		/** @var WP_Post $draft_post */
 		$draft_post = self::factory()->post->create_and_get( array( 'post_status' => 'draft' ) );
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
@@ -117,7 +123,7 @@ final class DashboardLinkTest extends TestCase {
 	 * Verifies that links for unviewable posts aren't being shown.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -125,9 +131,11 @@ final class DashboardLinkTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_post_is_viewable(): void {
+		/**  @var WP_Post $non_publicly_queryable_post */
 		$non_publicly_queryable_post = self::factory()->post->create_and_get( array( 'post_type' => 'parsely_tests_pt' ) );
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
@@ -139,7 +147,7 @@ final class DashboardLinkTest extends TestCase {
 	 * set.
 	 *
 	 * @since 2.6.0
-	 * @since 3.1.0 Moved to `DashboardLinkTest.php`
+	 * @since 3.1.0 Moved to `DashboardLinkTest.php`.
 	 *
 	 * @covers \Parsely\Dashboard_Link::can_show_link
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -147,9 +155,11 @@ final class DashboardLinkTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group ui
 	 */
 	public function test_can_correctly_determine_if_Parsely_link_can_be_shown_when_site_id_is_set_or_missing(): void {
+		/** @var WP_Post $published_post */
 		$published_post = self::factory()->post->create_and_get();
 
 		// Site ID is not set.

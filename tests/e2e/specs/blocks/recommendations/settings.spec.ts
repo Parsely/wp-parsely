@@ -1,5 +1,5 @@
 /**
- * External dependencies.
+ * WordPress dependencies
  */
 import {
 	createNewPost,
@@ -9,12 +9,11 @@ import {
 } from '@wordpress/e2e-test-utils';
 
 /**
- * Internal dependencies.
+ * Internal dependencies
  */
 import {
 	arraysEqual,
 	setSiteKeys,
-	startUpTest,
 } from '../../../utils';
 
 /**
@@ -27,7 +26,6 @@ describe( 'Recommendations Block', () => {
 	 */
 	beforeAll( async () => {
 		enablePageDialogAccept();
-		await startUpTest();
 	} );
 
 	/**
@@ -130,6 +128,6 @@ async function getResultImageUrls(): Promise<( string | null )[]> {
  */
 async function getLinkTargets(): Promise<string[][]> {
 	return page.$$eval( '.parsely-recommendations-link', ( links: Element[] ) => links.map(
-		( link: Element ): string[] => [ link.getAttribute( 'target' ) || '', link.getAttribute( 'rel' ) || '' ] )
+		( link: Element ): string[] => [ link.getAttribute( 'target' ) ?? '', link.getAttribute( 'rel' ) ?? '' ] )
 	);
 }

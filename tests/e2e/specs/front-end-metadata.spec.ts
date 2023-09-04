@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import {
 	createURL,
@@ -12,13 +12,11 @@ import {
 import {
 	setSiteKeys,
 	setUserDisplayName,
-	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
 
 const setMetadataFormat = async ( format: string ) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
-	await waitForWpAdmin();
 
 	const selectedMetadataFormat = await page.$( `#meta_type_${ format }` );
 	await selectedMetadataFormat?.click();
@@ -31,7 +29,6 @@ const setMetadataFormat = async ( format: string ) => {
 
 async function setTrackLoggedInUsers( shouldTrack = false ) {
 	await visitAdminPage( '/options-general.php', '?page=parsely' );
-	await waitForWpAdmin();
 
 	const trackLoggedInUserRadioButton = await page.$( `#track_authenticated_users_${ shouldTrack }` );
 	await trackLoggedInUserRadioButton?.click();
@@ -44,7 +41,6 @@ async function setTrackLoggedInUsers( shouldTrack = false ) {
 
 describe( 'Front end metadata insertion', () => {
 	beforeAll( async () => {
-		await startUpTest();
 		await setSiteKeys();
 		await setTrackLoggedInUsers( true );
 

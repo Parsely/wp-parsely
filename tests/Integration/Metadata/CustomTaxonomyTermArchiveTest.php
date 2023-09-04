@@ -15,7 +15,7 @@ use Parsely\Parsely;
 /**
  * Integration Tests for Custom Taxonomy Term Archive pages metadata.
  *
- * @see https://www.parse.ly/help/integration/jsonld
+ * @see https://docs.parse.ly/metadata-jsonld/
  * @covers \Parsely\Metadata::construct_metadata
  */
 class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
@@ -49,6 +49,7 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		register_taxonomy( 'custom_tax', array( 'post' ) );
 
 		// Insert a single term, and a post with the custom term.
+		/** @var int $term_id */
 		$term_id    = self::factory()->term->create(
 			array(
 				'taxonomy' => 'custom_tax',
@@ -57,7 +58,8 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 			)
 		);
 		$term_array = $this->get_term_in_array( $term_id );
-		$post_id    = self::factory()->post->create();
+		/** @var int $post_id */
+		$post_id = self::factory()->post->create();
 
 		wp_set_post_terms( $post_id, $term_array, 'custom_tax' );
 
@@ -76,14 +78,15 @@ class CustomTaxonomyTermArchiveTest extends NonPostTestCase {
 		// Create the structured data for that term archive. The term archive
 		// metadata doesn't use the post data, but the construction method
 		// requires it for now.
-		$metadata        = new Metadata( $parsely );
+		$metadata = new Metadata( $parsely );
+		/** @var array<string, mixed> $structured_data */
 		$structured_data = $metadata->construct_metadata( $this->get_post( $post_id ) );
 
 		// Check the required properties exist.
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the term name.
-		self::assertEquals( 'Custom Taxonomy Term', $structured_data['headline'] ?? null );
-		self::assertEquals( $term_link, $structured_data['url'] ?? null );
+		self::assertSame( 'Custom Taxonomy Term', $structured_data['headline'] ?? null );
+		self::assertSame( $term_link, $structured_data['url'] ?? null );
 	}
 }

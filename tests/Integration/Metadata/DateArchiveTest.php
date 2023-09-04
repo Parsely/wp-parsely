@@ -16,7 +16,7 @@ use Parsely\Parsely;
 /**
  * Integration Tests for Date Archive pages metadata.
  *
- * @see https://www.parse.ly/help/integration/jsonld
+ * @see https://docs.parse.ly/metadata-jsonld/
  */
 final class DateArchiveTest extends TestCase {
 	/**
@@ -66,7 +66,7 @@ final class DateArchiveTest extends TestCase {
 
 		$parsely_metadata = self::$date_builder->get_metadata();
 
-		self::assertEquals( 'Yearly Archive - 2022', $parsely_metadata['headline'] );
+		self::assertSame( 'Yearly Archive - 2022', $parsely_metadata['headline'] );
 	}
 
 	/**
@@ -87,7 +87,7 @@ final class DateArchiveTest extends TestCase {
 
 		$parsely_metadata = self::$date_builder->get_metadata();
 
-		self::assertEquals( 'Monthly Archive - October, 2022', $parsely_metadata['headline'] );
+		self::assertSame( 'Monthly Archive - October, 2022', $parsely_metadata['headline'] );
 	}
 
 	/**
@@ -108,7 +108,7 @@ final class DateArchiveTest extends TestCase {
 
 		$parsely_metadata = self::$date_builder->get_metadata();
 
-		self::assertEquals( 'Daily Archive - October 31, 2022', $parsely_metadata['headline'] );
+		self::assertSame( 'Daily Archive - October 31, 2022', $parsely_metadata['headline'] );
 	}
 
 	/**
@@ -130,7 +130,7 @@ final class DateArchiveTest extends TestCase {
 
 		$parsely_metadata = self::$date_builder->get_metadata();
 
-		self::assertEquals( 'Daily Archive - 2022-10-31', $parsely_metadata['headline'] );
+		self::assertSame( 'Daily Archive - 2022-10-31', $parsely_metadata['headline'] );
 	}
 
 	/**
@@ -151,7 +151,7 @@ final class DateArchiveTest extends TestCase {
 
 		$parsely_metadata = self::$date_builder->get_metadata();
 
-		self::assertEquals( 'Hourly, Minutely, or Secondly Archive - October 31, 2022 11:59 pm', $parsely_metadata['headline'] );
+		self::assertSame( 'Hourly, Minutely, or Secondly Archive - October 31, 2022 11:59 pm', $parsely_metadata['headline'] );
 	}
 
 	/**
@@ -175,7 +175,7 @@ final class DateArchiveTest extends TestCase {
 
 		$parsely_metadata = self::$date_builder->get_metadata();
 
-		self::assertEquals( 'Hourly, Minutely, or Secondly Archive - 2022/10/31 23:59', $parsely_metadata['headline'] );
+		self::assertSame( 'Hourly, Minutely, or Secondly Archive - 2022/10/31 23:59', $parsely_metadata['headline'] );
 	}
 
 	/**

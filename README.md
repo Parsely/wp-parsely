@@ -1,8 +1,8 @@
 # Parse.ly
 
-Stable tag: 3.8.4  
+Stable tag: 3.9.0  
 Requires at least: 5.0  
-Tested up to: 6.1  
+Tested up to: 6.3  
 Requires PHP: 7.2  
 License: GPLv2 or later  
 License URI: https://www.gnu.org/licenses/gpl-2.0.html  
@@ -50,7 +50,7 @@ The plugin includes a [Recommendations Block](https://docs.parse.ly/recommendati
 #### Advanced integrations support
 
 While the plugin works out of the box for basic integrations, it offers a host of features that easily allow for advanced integration scenarios:
-- Support for [Google Tag Manager, AMP, Facebook Instant Articles, Google Web Stories and Cloudflare](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-amp-facebook-instant-articles-or-google-web-stories) is included.
+- Support for [Google Tag Manager, AMP, Google Web Stories and Cloudflare](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-amp-facebook-instant-articles-or-google-web-stories) is included.
 - The plugin exposes the `wpParselyOnLoad` and `wpParselyOnReady` JavaScript hooks that allow for advanced integrations requiring JavaScript, such as [Dynamic Tracking](https://docs.parse.ly/plugin-dynamic-tracking/).
 - Support for WordPress [network/multisite](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-wordpress-network-multisite) and [decoupled/headless](https://docs.parse.ly/plugin-decoupled-headless-support/) (GraphQL and WP Rest API) setups is included.
 - Last but not least, a wide range of hooks is available in order to customize the plugin's functionality even further.

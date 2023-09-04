@@ -1,16 +1,15 @@
 /**
- * External dependencies.
+ * WordPress dependencies
  */
 import {
-	activatePlugin,
 	createNewPost,
 	ensureSidebarOpened,
 	findSidebarPanelToggleButtonWithTitle,
-	loginUser,
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
-export const PLUGIN_VERSION = '3.8.4';
+export const PLUGIN_VERSION = '3.9.0';
+export const VALID_API_SECRET = 'valid_api_secret_key_based_on_length';
 
 export const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
 
@@ -97,13 +96,14 @@ export const insertRecordIntoTaxonomy = async ( recordName: string, taxonomyType
  * @param {string} category Name of the category to select in the Post Editor.
  * @param {string} tag      Name of the tag to select in the Post Editor.
  * @param {number} timeout  Milliseconds to wait after category/tag selection.
+ * @param {string} selector The selector from which to extract the message.
  * @return {Promise<string>} The message returned.
  */
-export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeout = 500 ): Promise<string> => {
+export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeout = 500, selector = '.content-helper-error-message' ): Promise<string> => {
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
-	const contentHelperMessage = '.wp-parsely-content-helper div.components-panel__body.is-opened .parsely-top-posts-descr';
+	const contentHelperMessageSelector = '.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector;
 
 	// Run basic operations.
 	await createNewPost();
@@ -142,12 +142,12 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
 	await page.click( pluginButton );
 	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Related Top Posts' );
 	await topRelatedPostsButton.click();
-	await page.waitForSelector( contentHelperMessage );
+	await page.waitForSelector( contentHelperMessageSelector );
 	await page.waitForFunction( // Wait for the message to appear.
-		'document.querySelector("' + contentHelperMessage + '").innerText.length > 0',
+		'document.querySelector("' + contentHelperMessageSelector + '").innerText.length > 0',
 		{ polling: 'mutation', timeout: 5000 }
 	);
-	const text = await page.$eval( contentHelperMessage, ( element: Element ): string => element.textContent || '' );
+	const text = await page.$eval( contentHelperMessageSelector, ( element: Element ): string => element.textContent ?? '' );
 
 	return text;
 };
@@ -167,17 +167,6 @@ export const saveSettingsAndHardRefresh = async () => {
 };
 
 /**
- * Performs preparatory actions before starting the tests.
- *
- * @return {Promise<void>}
- */
-export const startUpTest = async () => {
-	await loginUser();
-	await activatePlugin( 'wp-parsely' );
-	await waitForWpAdmin();
-};
-
-/**
  * Returns whether the passed arrays are equal.
  *
  * This function is meant to compare very simple arrays.Please don't use it to
@@ -188,3 +177,19 @@ export const startUpTest = async () => {
  * @return {boolean} Whether the passed arrays are equal.
  */
 export const arraysEqual = ( array1: ( string | null )[], array2: ( string | null )[] ) => JSON.stringify( array1 ) === JSON.stringify( array2 );
+
+/**
+ * Activates the passed WordPress theme.
+ *
+ * Acts as a lightweight replacement for the `activatePlugin()` function from
+ * `@wordpress/e2e-test-utils`.
+ *
+ * @param {string} slug The theme's slug.
+ */
+export const activateTheme = async ( slug: string ): Promise<void> => {
+	await visitAdminPage( 'themes.php' );
+	await waitForWpAdmin();
+
+	await page.click( `div[data-slug="${ slug }"] .button.activate` );
+	await page.waitForSelector( `div[data-slug="${ slug }"].active` );
+};

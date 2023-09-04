@@ -196,7 +196,7 @@ final class RestMetadataTest extends TestCase {
 		$post_id = self::factory()->post->create();
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		$meta_object = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
 		$metadata    = new Metadata( self::$parsely );
@@ -207,7 +207,7 @@ final class RestMetadataTest extends TestCase {
 			'tracker_url' => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
-		self::assertEquals( $expected, $meta_object );
+		self::assertSame( $expected, $meta_object );
 	}
 
 	/**
@@ -261,7 +261,7 @@ final class RestMetadataTest extends TestCase {
 			'tracker_url' => 'https://cdn.parsely.com/keys/testkey/p.js',
 		);
 
-		self::assertEquals( $expected, $meta_object );
+		self::assertSame( $expected, $meta_object );
 	}
 
 	/**
@@ -308,7 +308,7 @@ final class RestMetadataTest extends TestCase {
 		$post_id = self::factory()->post->create();
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		$meta_object = self::$rest->get_callback( $this->get_post_in_array( $post_id ) );
 		$metadata    = new Metadata( self::$parsely );
@@ -318,7 +318,7 @@ final class RestMetadataTest extends TestCase {
 			'rendered' => self::$rest->get_rendered_meta( 'json_ld' ),
 		);
 
-		self::assertEquals( $expected, $meta_object );
+		self::assertSame( $expected, $meta_object );
 	}
 
 	/**
@@ -344,7 +344,7 @@ final class RestMetadataTest extends TestCase {
 			'tracker_url' => '',
 		);
 
-		self::assertEquals( $expected, $meta_object );
+		self::assertSame( $expected, $meta_object );
 	}
 
 	/**
@@ -389,6 +389,7 @@ final class RestMetadataTest extends TestCase {
 		TestCase::set_options();
 
 		global $post;
+		/** @var int $post_id */
 		$post_id = self::factory()->post->create(
 			array(
 				'post_title' => 'My test_get_rendered_meta_json_ld title',
@@ -400,11 +401,11 @@ final class RestMetadataTest extends TestCase {
 		$date = gmdate( 'Y-m-d\TH:i:s\Z', $this->get_post_time_in_int( 'U', true, $post ) );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		$meta_string = self::$rest->get_rendered_meta( 'json_ld' );
 		$expected    = '<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"NewsArticle","headline":"My test_get_rendered_meta_json_ld title","url":"http:\/\/example.org\/?p=' . $post_id . '","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=' . $post_id . '"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[],"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '"}</script>';
-		self::assertEquals( $expected, $meta_string );
+		self::assertSame( $expected, $meta_string );
 	}
 
 	/**
@@ -452,6 +453,7 @@ final class RestMetadataTest extends TestCase {
 
 		self::set_options( array( 'apikey' => 'testkey' ) );
 
+		/** @var int $post_id */
 		$post_id = self::factory()->post->create(
 			array(
 				'post_title' => 'My test_get_rendered_repeated_metas title',
@@ -463,7 +465,7 @@ final class RestMetadataTest extends TestCase {
 		$date = gmdate( 'Y-m-d\TH:i:s\Z', $this->get_post_time_in_int( 'U', true, $post ) );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		$meta_string = self::$rest->get_rendered_meta( 'repeated_metas' );
 		$expected    = '<meta name="parsely-title" content="My test_get_rendered_repeated_metas title" />
@@ -471,7 +473,7 @@ final class RestMetadataTest extends TestCase {
 <meta name="parsely-type" content="post" />
 <meta name="parsely-pub-date" content="' . $date . '" />
 <meta name="parsely-section" content="Uncategorized" />';
-		self::assertEquals( $expected, $meta_string );
+		self::assertSame( $expected, $meta_string );
 	}
 
 	/**

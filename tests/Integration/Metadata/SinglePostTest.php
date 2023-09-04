@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\StructuredData;
 
 use Parsely\Metadata;
-use Parsely\Tests\Integration\TestCase;
-
 use Parsely\Parsely;
+use Parsely\Tests\Integration\TestCase;
+use WP_Post;
 
 use function Parsely\Utils\get_default_category;
 
@@ -23,7 +23,7 @@ const EXPECTED_POST_DATETIME = '2021-12-30T20:11:42Z';
 /**
  * Integration Tests for Single Post pages metadata.
  *
- * @see https://www.parse.ly/help/integration/jsonld
+ * @see https://docs.parse.ly/metadata-jsonld/
  */
 final class SinglePostTest extends TestCase {
 	/**
@@ -77,7 +77,7 @@ final class SinglePostTest extends TestCase {
 		$post    = $this->get_post( $post_id );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -87,7 +87,7 @@ final class SinglePostTest extends TestCase {
 		$this->assert_data_has_required_properties( $structured_data );
 		// The metadata '@type' for the context should be 'NewsArticle' for a
 		// single post page.
-		self::assertSame( 'NewsArticle', isset( $structured_data['@type'] ) ? $structured_data['@type'] : null );
+		self::assertSame( 'NewsArticle', $structured_data['@type'] ?? null );
 	}
 
 	/**
@@ -132,7 +132,7 @@ final class SinglePostTest extends TestCase {
 		$post     = $this->get_post( $post_id );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -140,7 +140,7 @@ final class SinglePostTest extends TestCase {
 
 		// The category in the structured data should match the category of the
 		// post.
-		self::assertSame( TEST_CATEGORY_1, isset( $structured_data['articleSection'] ) ? $structured_data['articleSection'] : null );
+		self::assertSame( TEST_CATEGORY_1, $structured_data['articleSection'] ?? null );
 	}
 
 	/**
@@ -182,8 +182,9 @@ final class SinglePostTest extends TestCase {
 		$parsely_options = $parsely->get_options();
 
 		// Create two tags with uppercase names and a single post.
-		$tag1    = self::factory()->tag->create( array( 'name' => 'Sample' ) );
-		$tag2    = self::factory()->tag->create( array( 'name' => 'Tag' ) );
+		$tag1 = self::factory()->tag->create( array( 'name' => 'Sample' ) );
+		$tag2 = self::factory()->tag->create( array( 'name' => 'Tag' ) );
+		/** @var int $post_id */
 		$post_id = self::factory()->post->create();
 		$post    = $this->get_post( $post_id );
 
@@ -195,14 +196,14 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain both tags in lowercase form.
-		$keywords = isset( $structured_data['keywords'] ) ? $structured_data['keywords'] : array();
+		$keywords = $structured_data['keywords'] ?? array();
 		self::assertContains( 'sample', $keywords );
 		self::assertContains( 'tag', $keywords );
 	}
@@ -260,14 +261,14 @@ final class SinglePostTest extends TestCase {
 		$post    = $this->get_post( $post_id );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain all three categories as keywords.
-		$keywords = isset( $structured_data['keywords'] ) ? $structured_data['keywords'] : array();
+		$keywords = $structured_data['keywords'] ?? array();
 		self::assertContains( TEST_CATEGORY_1, $keywords );
 		self::assertContains( 'Test Category 2', $keywords );
 		self::assertContains( 'Test Category 3', $keywords );
@@ -328,8 +329,9 @@ final class SinglePostTest extends TestCase {
 		);
 
 		// Create a tag and a category and a single post and assign the category to the post.
-		$tag     = self::factory()->tag->create( array( 'name' => 'My Tag' ) );
-		$cat     = self::factory()->category->create( array( 'name' => 'My Category' ) );
+		$tag = self::factory()->tag->create( array( 'name' => 'My Tag' ) );
+		$cat = self::factory()->category->create( array( 'name' => 'My Category' ) );
+		/** @var int $post_id */
 		$post_id = self::factory()->post->create( array( 'post_category' => array( $cat ) ) );
 
 		$post = $this->get_post( $post_id );
@@ -339,14 +341,14 @@ final class SinglePostTest extends TestCase {
 		wp_set_object_terms( $post_id, array( $tag ), 'post_tag' );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain the category, the post tag, and the custom taxonomy term.
-		$keywords = isset( $structured_data['keywords'] ) ? $structured_data['keywords'] : array();
+		$keywords = $structured_data['keywords'] ?? array();
 		self::assertContains( 'my category', $keywords );
 		self::assertContains( 'my tag', $keywords );
 		self::assertContains( 'gretzky', $keywords );
@@ -408,14 +410,14 @@ final class SinglePostTest extends TestCase {
 		$post    = $this->get_post( $post_id );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain the parent category.
-		self::assertSame( 'Parent Category', isset( $structured_data['articleSection'] ) ? $structured_data['articleSection'] : null );
+		self::assertSame( 'Parent Category', $structured_data['articleSection'] ?? null );
 
 		// Set Parsely to not use top-level categories.
 		$parsely_options['use_top_level_cats'] = false;
@@ -426,7 +428,7 @@ final class SinglePostTest extends TestCase {
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The structured data should contain the child category.
-		self::assertSame( 'Child Category', isset( $structured_data['articleSection'] ) ? $structured_data['articleSection'] : null );
+		self::assertSame( 'Child Category', $structured_data['articleSection'] ?? null );
 	}
 
 	/**
@@ -488,8 +490,9 @@ final class SinglePostTest extends TestCase {
 				'parent'   => $custom_tax_tag,
 			)
 		);
-		$post_id              = self::factory()->post->create();
-		$post                 = $this->get_post( $post_id );
+		/** @var int $post_id */
+		$post_id = self::factory()->post->create();
+		$post    = $this->get_post( $post_id );
 
 		// Set the custom taxonomy terms to the post.
 		wp_set_object_terms( $post_id, array( $custom_tax_tag, $custom_tax_tag_child ), 'sports' );
@@ -499,13 +502,13 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
-		self::assertSame( 'Premier League', isset( $structured_data['articleSection'] ) ? $structured_data['articleSection'] : null );
+		self::assertSame( 'Premier League', $structured_data['articleSection'] ?? null );
 
 		// Now make sure top-level categories are set to be used.
 		$parsely_options['use_top_level_cats'] = true;
@@ -515,7 +518,7 @@ final class SinglePostTest extends TestCase {
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
-		self::assertSame( 'football', isset( $structured_data['articleSection'] ) ? $structured_data['articleSection'] : null );
+		self::assertSame( 'football', $structured_data['articleSection'] ?? null );
 	}
 
 	/**
@@ -565,15 +568,15 @@ final class SinglePostTest extends TestCase {
 		update_option( 'parsely', $parsely_options );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The url scheme should be 'http'.
-		$url = wp_parse_url( isset( $structured_data['url'] ) ? $structured_data['url'] : '' );
-		self::assertSame( 'http', isset( $url['scheme'] ) ? $url['scheme'] : null );
+		$url = wp_parse_url( $structured_data['url'] ?? '' );
+		self::assertSame( 'http', $url['scheme'] ?? null );
 
 		// Set Parsely to force https canonicals.
 		$parsely_options['force_https_canonicals'] = true;
@@ -584,8 +587,8 @@ final class SinglePostTest extends TestCase {
 		$structured_data = $metadata->construct_metadata( $post );
 
 		// The url scheme should be 'https'.
-		$url = wp_parse_url( isset( $structured_data['url'] ) ? $structured_data['url'] : '' );
-		self::assertSame( 'https', isset( $url['scheme'] ) ? $url['scheme'] : null );
+		$url = wp_parse_url( $structured_data['url'] ?? '' );
+		self::assertSame( 'https', $url['scheme'] ?? null );
 	}
 
 	/**
@@ -630,22 +633,23 @@ final class SinglePostTest extends TestCase {
 		$time_yesterday   = time() - DAY_IN_SECONDS;
 		$date_created     = gmdate( $time_format, $time_yesterday );
 		$date_created_gmt = gmdate( $time_format, ( $time_yesterday + get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) );
-		$post_id          = self::factory()->post->create(
+		/** @var int $post_id */
+		$post_id = self::factory()->post->create(
 			array(
 				'post_date'     => $date_created,
 				'post_date_gmt' => $date_created_gmt,
 			)
 		);
-		$post             = $this->get_post( $post_id );
+		$post    = $this->get_post( $post_id );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		$meta     = new Metadata( $parsely );
 		$metadata = $meta->construct_metadata( $post );
 
-		self::assertSame( $date_created, isset( $metadata['dateCreated'] ) ? $metadata['dateCreated'] : null );
-		self::assertSame( $date_created, isset( $metadata['dateModified'] ) ? $metadata['dateModified'] : null );
+		self::assertSame( $date_created, $metadata['dateCreated'] ?? null );
+		self::assertSame( $date_created, $metadata['dateModified'] ?? null );
 
 		// Update the post and reload metadata.
 		wp_update_post( array( 'ID' => $post_id ) );
@@ -653,8 +657,8 @@ final class SinglePostTest extends TestCase {
 		$metadata_updated = $meta->construct_metadata( $post_updated );
 
 		// In the metadata, check that the last modified date has been updated.
-		self::assertSame( $date_created, isset( $metadata_updated['dateCreated'] ) ? $metadata_updated['dateCreated'] : null );
-		self::assertNotSame( $date_created, isset( $metadata_updated['dateModified'] ) ? $metadata_updated['dateModified'] : null );
+		self::assertSame( $date_created, $metadata_updated['dateCreated'] ?? null );
+		self::assertNotSame( $date_created, $metadata_updated['dateModified'] ?? null );
 	}
 
 	/**
@@ -759,7 +763,7 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified_gmt = $singular_datetime;
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -769,9 +773,9 @@ final class SinglePostTest extends TestCase {
 		// metadata.
 		$expected_singular_datetime = EXPECTED_POST_DATETIME;
 
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['dateCreated'] ) ? $structured_data['dateCreated'] : null );
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['datePublished'] ) ? $structured_data['datePublished'] : null );
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['dateModified'] ) ? $structured_data['dateModified'] : null );
+		self::assertSame( $expected_singular_datetime, $structured_data['dateCreated'] ?? null );
+		self::assertSame( $expected_singular_datetime, $structured_data['datePublished'] ?? null );
+		self::assertSame( $expected_singular_datetime, $structured_data['dateModified'] ?? null );
 	}
 
 	/**
@@ -823,7 +827,7 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified_gmt = $modified_datetime;
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -832,9 +836,9 @@ final class SinglePostTest extends TestCase {
 		// Modified dates earlier than created dates should be "promoted" to the latter.
 		$expected_singular_datetime = EXPECTED_POST_DATETIME;
 
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['dateCreated'] ) ? $structured_data['dateCreated'] : null );
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['datePublished'] ) ? $structured_data['datePublished'] : null );
-		self::assertSame( $expected_singular_datetime, isset( $structured_data['dateModified'] ) ? $structured_data['dateModified'] : null );
+		self::assertSame( $expected_singular_datetime, $structured_data['dateCreated'] ?? null );
+		self::assertSame( $expected_singular_datetime, $structured_data['datePublished'] ?? null );
+		self::assertSame( $expected_singular_datetime, $structured_data['dateModified'] ?? null );
 	}
 
 	/**
@@ -886,7 +890,7 @@ final class SinglePostTest extends TestCase {
 		$post->post_modified_gmt = $modified_datetime;
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		// Create the structured data for that post.
 		$metadata        = new Metadata( $parsely );
@@ -897,9 +901,9 @@ final class SinglePostTest extends TestCase {
 		$expected_created_datetime  = EXPECTED_POST_DATETIME;
 		$expected_modified_datetime = '2021-12-30T20:11:43Z';
 
-		self::assertSame( $expected_created_datetime, isset( $structured_data['dateCreated'] ) ? $structured_data['dateCreated'] : null );
-		self::assertSame( $expected_created_datetime, isset( $structured_data['datePublished'] ) ? $structured_data['datePublished'] : null );
-		self::assertSame( $expected_modified_datetime, isset( $structured_data['dateModified'] ) ? $structured_data['dateModified'] : null );
+		self::assertSame( $expected_created_datetime, $structured_data['dateCreated'] ?? null );
+		self::assertSame( $expected_created_datetime, $structured_data['datePublished'] ?? null );
+		self::assertSame( $expected_modified_datetime, $structured_data['dateModified'] ?? null );
 	}
 
 	/**
@@ -961,6 +965,7 @@ final class SinglePostTest extends TestCase {
 		$parsely_options = $parsely->get_options();
 
 		// Create a single post.
+		/** @var int $post_id */
 		$post_id = self::factory()->post->create();
 		$post    = $this->get_post( $post_id );
 
@@ -972,13 +977,13 @@ final class SinglePostTest extends TestCase {
 		wp_remove_object_terms( $post_id, $default_category_slug, 'category' );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		$expected        = array();
 		$metadata        = new Metadata( $parsely );
 		$structured_data = $metadata->construct_metadata( $post );
 
-		self::assertSame( $expected, isset( $structured_data['keywords'] ) ? $structured_data['keywords'] : null );
+		self::assertSame( $expected, $structured_data['keywords'] ?? null );
 	}
 
 	/**
@@ -1020,6 +1025,7 @@ final class SinglePostTest extends TestCase {
 		$metadata = new Metadata( new Parsely() );
 
 		// Create a post with a featured image.
+		/** @var WP_Post $post */
 		$post            = self::factory()->post->create_and_get();
 		$attachment_path = dirname( __DIR__, 3 ) . '/.wordpress-org/banner-1544x500.png';
 		/**
@@ -1031,16 +1037,16 @@ final class SinglePostTest extends TestCase {
 		set_post_thumbnail( $post, $attachment_id );
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post->ID ) );
+		$this->go_to( (string) $this->get_permalink( $post->ID ) );
 
 		// Generate metadata and expected results.
 		$actual_metadata    = $metadata->construct_metadata( $post );
 		$expected_image_url = get_the_post_thumbnail_url( $post, 'full' );
 		$expected_thumb_url = get_the_post_thumbnail_url( $post, 'thumbnail' );
 
-		$image = isset( $actual_metadata['image'] ) ? $actual_metadata['image'] : array();
-		self::assertSame( $expected_image_url, isset( $image['url'] ) ? $image['url'] : null );
-		self::assertSame( $expected_thumb_url, isset( $actual_metadata['thumbnailUrl'] ) ? $actual_metadata['thumbnailUrl'] : null );
+		$image = $actual_metadata['image'] ?? array();
+		self::assertSame( $expected_image_url, $image['url'] ?? null );
+		self::assertSame( $expected_thumb_url, $actual_metadata['thumbnailUrl'] ?? null );
 	}
 
 	/**

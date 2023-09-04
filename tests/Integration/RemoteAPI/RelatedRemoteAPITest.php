@@ -29,7 +29,7 @@ final class RelatedRemoteAPITest extends RemoteAPITest {
 	 *
 	 * @return \ArrayIterator<string, mixed>
 	 */
-	public function data_api_url() {
+	public function data_api_url(): iterable {
 		yield 'Basic (Expected data)' => array(
 			array(
 				'apikey'         => 'my-key',
@@ -81,7 +81,7 @@ final class RelatedRemoteAPITest extends RemoteAPITest {
 		$api = new Related_API( new Parsely() );
 
 		self::assertTrue( $api->is_user_allowed_to_make_api_call() );
-		$this->assert_wp_hooks_availablility(
+		$this->assert_wp_hooks_availability(
 			array(
 				'wp_parsely_user_capability_for_all_private_apis',
 				'wp_parsely_user_capability_for_related_api',

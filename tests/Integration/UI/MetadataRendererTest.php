@@ -46,7 +46,7 @@ final class MetadataRendererTest extends TestCase {
 	public function test_run_wp_head_action(): void {
 		self::$metadata_renderer->run();
 
-		self::assertEquals( 10, has_action( 'wp_head', array( self::$metadata_renderer, 'render_metadata_on_head' ) ) );
+		self::assertSame( 10, has_action( 'wp_head', array( self::$metadata_renderer, 'render_metadata_on_head' ) ) );
 	}
 
 	/**
@@ -110,6 +110,7 @@ final class MetadataRendererTest extends TestCase {
 	public function test_render_metadata_json_ld(): void {
 		self::set_options( array( 'apikey' => 'testkey' ) );
 
+		/** @var int $post_id */
 		$post_id = self::factory()->post->create();
 		$this->go_to( home_url( '/?p=' . $post_id ) );
 
@@ -171,6 +172,7 @@ final class MetadataRendererTest extends TestCase {
 	public function test_render_metadata_repeated_metas(): void {
 		self::set_options( array( 'apikey' => 'testkey' ) );
 
+		/** @var int $post_id */
 		$post_id = self::factory()->post->create();
 		$this->go_to( home_url( '/?p=' . $post_id ) );
 
@@ -232,10 +234,11 @@ final class MetadataRendererTest extends TestCase {
 	public function test_render_metadata_int_global_post(): void {
 		self::set_options( array( 'apikey' => 'testkey' ) );
 
+		/** @var int $post_id */
 		$post_id = self::factory()->post->create();
 
 		// Go to current post to update WP_Query with correct data.
-		$this->go_to( $this->get_permalink( $post_id ) );
+		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		ob_start();
 		self::$metadata_renderer->render_metadata( 'repeated_metas' );

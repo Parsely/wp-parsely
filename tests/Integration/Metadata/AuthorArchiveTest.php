@@ -15,7 +15,7 @@ use Parsely\Parsely;
 /**
  * Integration Tests for Author Archive pages metadata.
  *
- * @see https://www.parse.ly/help/integration/jsonld
+ * @see https://docs.parse.ly/metadata-jsonld/
  * @covers \Parsely\Metadata::construct_metadata
  */
 final class AuthorArchiveTest extends NonPostTestCase {
@@ -47,6 +47,7 @@ final class AuthorArchiveTest extends NonPostTestCase {
 		$parsely = new Parsely();
 
 		// Insert a single user, and a Post assigned to them.
+		/** @var int $user */
 		$user = self::factory()->user->create( array( 'user_login' => 'parsely' ) );
 		self::factory()->post->create( array( 'post_author' => $user ) );
 
@@ -60,13 +61,14 @@ final class AuthorArchiveTest extends NonPostTestCase {
 		// Create the structured data for that category.
 		// The author archive metadata doesn't use the post data, but the
 		// construction method requires it for now.
-		$metadata        = new Metadata( $parsely );
+		$metadata = new Metadata( $parsely );
+		/** @var array<string, mixed> $structured_data */
 		$structured_data = $metadata->construct_metadata( $this->get_post() );
 
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the category name.
-		self::assertEquals( 'Author - parsely', $structured_data['headline'] ?? null );
-		self::assertEquals( $author_posts_url, $structured_data['url'] ?? null );
+		self::assertSame( 'Author - parsely', $structured_data['headline'] ?? null );
+		self::assertSame( $author_posts_url, $structured_data['url'] ?? null );
 	}
 }

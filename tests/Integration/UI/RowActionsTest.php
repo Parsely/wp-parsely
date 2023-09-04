@@ -43,6 +43,7 @@ final class RowActionsTest extends TestCase {
 	 *
 	 * @covers \Parsely\UI\Row_Actions::__construct
 	 * @covers \Parsely\UI\Row_Actions::run
+	 *
 	 * @group ui
 	 */
 	public function test_row_actions_class_will_not_add_row_actions_filter_when_enabling_filter_returns_false(): void {
@@ -61,6 +62,7 @@ final class RowActionsTest extends TestCase {
 	 *
 	 * @covers \Parsely\UI\Row_Actions::__construct
 	 * @covers \Parsely\UI\Row_Actions::run
+	 *
 	 * @group ui
 	 */
 	public function test_row_actions_class_will_add_row_actions_filter_when_enabling_filter_returns_true(): void {
@@ -88,6 +90,7 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group ui
 	 */
 	public function test_link_to_Parsely_is_not_added_to_row_actions_when_conditions_fail(): void {
@@ -124,11 +127,13 @@ final class RowActionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group ui
 	 */
 	public function test_link_to_Parsely_is_added_to_row_actions(): void {
 		// Insert a single post and set as global post.
 		// This post is a viewable type, with a trackable status (published).
+		/** @var int $post_id */
 		$post_id = self::factory()->post->create( array( 'post_title' => 'Foo2' ) );
 		$post    = $this->get_post( $post_id );
 

@@ -15,7 +15,7 @@ use Parsely\Parsely;
 /**
  * Integration Tests for Custom Post Type Archive pages metadata.
  *
- * @see https://www.parse.ly/help/integration/jsonld
+ * @see https://docs.parse.ly/metadata-jsonld/
  * @covers \Parsely\Metadata::construct_metadata
  */
 final class CustomPostTypeArchiveTest extends NonPostTestCase {
@@ -55,7 +55,8 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 		);
 
 		// Add post to custom post type.
-		self::factory()->post->create(
+		/** @var int $post_id */
+		$post_id = self::factory()->post->create(
 			array(
 				'title'     => 'Post Title',
 				'post_type' => 'custom_post_type',
@@ -82,7 +83,11 @@ final class CustomPostTypeArchiveTest extends NonPostTestCase {
 		$this->assert_data_has_required_properties( $structured_data );
 
 		// The headline should be the CPT name.
-		self::assertEquals( 'custom_post_type', $structured_data['headline'] ?? null );
-		self::assertEquals( home_url( '/cpt-archive' ), $structured_data['url'] ?? null );
+		self::assertSame( 'custom_post_type', $structured_data['headline'] ?? null );
+		self::assertSame( home_url( '/cpt-archive' ), $structured_data['url'] ?? null );
+
+		// Clean up.
+		unregister_post_type( 'custom_post_type' );
+		wp_delete_post( $post_id, true );
 	}
 }

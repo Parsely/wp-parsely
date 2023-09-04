@@ -36,7 +36,14 @@ final class OtherTest extends TestCase {
 		$wp_scripts    = new WP_Scripts();
 		self::$parsely = new Parsely();
 
-		TestCase::set_options();
+		// Reset all credentials to empty values.
+		self::set_options(
+			array(
+				'apikey'          => '',
+				'api_secret'      => '',
+				'metadata_secret' => '',
+			)
+		);
 	}
 
 	/**
@@ -84,6 +91,7 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 *
 	 * @group metadata
 	 * @group filters
 	 */
@@ -166,6 +174,19 @@ final class OtherTest extends TestCase {
 
 		self::assertSame( 'BlogPosting', $structured_data['@type'] ?? null );
 
+		/**
+		 * Catch the upcoming warning and convert it to an exception, as warning
+		 * support has been removed in PHPUnit 10.
+		 *
+		 * @see https://github.com/sebastianbergmann/phpunit/issues/5062
+		 */
+		set_error_handler( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+			static function ( int $errno, string $errstr ): never {
+				throw new \UnexpectedValueException( $errstr, $errno );
+			},
+			E_USER_WARNING
+		);
+
 		// Try to change the post type to a non-supported value - Not_Supported.
 		add_filter(
 			'wp_parsely_post_type',
@@ -174,9 +195,11 @@ final class OtherTest extends TestCase {
 			}
 		);
 
-		$this->expectWarning();
-		$this->expectWarningMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://www.parse.ly/help/integration/jsonld#distinguishing-between-posts-and-pages' );
+		$this->expectExceptionMessage( '@type Not_Supported_Type is not supported by Parse.ly. Please use a type mentioned in https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages' );
+
 		$metadata->construct_metadata( $post_obj );
+
+		restore_error_handler();
 	}
 
 	/**
@@ -189,13 +212,111 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_checking_site_id_is_set_or_not(): void {
-		self::set_options( array( 'apikey' => '' ) );
 		self::assertFalse( self::$parsely->site_id_is_set() );
 		self::assertTrue( self::$parsely->site_id_is_missing() );
 
 		self::set_options( array( 'apikey' => 'somekey' ) );
 		self::assertTrue( self::$parsely->site_id_is_set() );
 		self::assertFalse( self::$parsely->site_id_is_missing() );
+	}
+
+	/**
+	 * Verifies that managed credentials get set as expected.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\Parsely::are_credentials_managed
+	 * @covers \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::get_default_options
+	 */
+	public function test_managed_credentials_get_set_as_expected(): void {
+		// Valid and invalid credential sets to be tested.
+		$credential_sets = array(
+			array(
+				'input_values'   => array(
+					'site_id'    => '',
+					'api_secret' => '',
+					'is_managed' => true,
+				),
+				'managed_result' => true,
+				'output_values'  => array(
+					'apikey'     => '',
+					'api_secret' => '',
+				),
+			),
+			array(
+				'input_values'   => array(
+					'site_id'    => 'example.com',
+					'api_secret' => 'test',
+					'is_managed' => true,
+				),
+				'managed_result' => true,
+				'output_values'  => array(
+					'apikey'     => 'example.com',
+					'api_secret' => 'test',
+				),
+			),
+			array(
+				'input_values'   => array(
+					'site_id'    => 'example.com',
+					'api_secret' => 'test',
+					'is_managed' => false,
+				),
+				'managed_result' => false,
+			),
+		);
+
+		$get_managed_credentials_function = self::get_method(
+			'get_managed_credentials',
+			Parsely::class
+		);
+
+		$option_keys = array(
+			'apikey',
+			'api_secret',
+			'metadata_secret',
+		);
+
+		foreach ( $credential_sets as $credentials ) {
+			add_filter(
+				'wp_parsely_credentials',
+				function() use ( $credentials ) {
+					return $credentials['input_values'];
+				}
+			);
+
+			$parsely             = new Parsely();
+			$options             = $parsely->get_options();
+			$managed_credentials = (array) $get_managed_credentials_function
+				->invoke( $parsely );
+
+			self::assertSame(
+				$credentials['managed_result'],
+				$parsely->are_credentials_managed
+			);
+
+			if ( false === $credentials['managed_result'] ) {
+				// Credentials are not being managed and should thus be empty.
+				self::assertSame( array(), $managed_credentials );
+				continue;
+			}
+
+			// Verify that managed credentials are being returned correctly.
+			self::assertSame(
+				$credentials['output_values'],
+				$managed_credentials
+			);
+
+			// Verify that managed credentials are being merged into options.
+			foreach ( $option_keys as $key ) {
+				if ( isset( $managed_credentials[ $key ] ) ) {
+					self::assertSame( $managed_credentials[ $key ], $options[ $key ] );
+				} else {
+					self::assertSame( '', $options[ $key ] );
+				}
+			}
+		}
 	}
 
 	/**
@@ -208,25 +329,9 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_can_retrieve_site_id(): void {
+		self::assertSame( '', self::$parsely->get_site_id() );
 		self::set_options( array( 'apikey' => 'somekey' ) );
 		self::assertSame( 'somekey', self::$parsely->get_site_id() );
-		self::set_options( array( 'apikey' => '' ) );
-		self::assertSame( '', self::$parsely->get_site_id() );
-	}
-
-	/**
-	 * Verifies that get_options() can handle a corrupted (non-array) value in
-	 * the database.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @covers \Parsely\Parsely::get_options
-	 */
-	public function test_corrupted_options(): void {
-		update_option( Parsely::OPTIONS_KEY, 'someinvalidvalue' );
-
-		$options = self::$parsely->get_options();
-		self::assertSame( self::$parsely->get_default_options(), $options );
 	}
 
 	/**
@@ -277,8 +382,9 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_tracker_url(): void {
+		self::set_options( array( 'apikey' => 'blog.parsely.com' ) );
 		$expected = 'https://cdn.parsely.com/keys/blog.parsely.com/p.js';
-		self::assertEquals( $expected, self::$parsely->get_tracker_url() );
+		self::assertSame( $expected, self::$parsely->get_tracker_url() );
 	}
 
 	/**
@@ -292,8 +398,7 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_tracker_no_site_id(): void {
-		self::set_options( array( 'apikey' => '' ) );
 		$expected = '';
-		self::assertEquals( $expected, self::$parsely->get_tracker_url() );
+		self::assertSame( $expected, self::$parsely->get_tracker_url() );
 	}
 }
