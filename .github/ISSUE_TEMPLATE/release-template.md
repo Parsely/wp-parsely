@@ -6,18 +6,35 @@ labels: 'Type: Maintenance'
 
 ---
 
-This is an issue for tracking the X.Y.Z release process.
+This is an issue for tracking the next `wp-parsely` release. This ticket is to be opened the week before the actual release so we have enough time to complete all the related tasks.
+
+The actual release of the plugin should be done on Mondays so we can catch the Tuesday WordPress VIP release window.
 
 ## Before releasing
 
-- [ ] Notify stakeholders of an upcoming release.
+**1. Merge all outstanding work**
 - [ ] Merge any outstanding PRs due for this release to `develop`.
-- [ ] Verify that all PRs in the release have an appropriate `Changelog` tag.
+- [ ] Verify that all important PRs have an appropriate `Changelog` tag. Those who don't won't be added to the changelog.
+
+**2. Conduct additional testing**
+We've got automated testing in place and also test under our local development environment during development. For impactful releases we should also:
+- [ ] Conduct an additional smoke test under our local development environment.
+- [ ] Test under a regular non-local WordPress installation.
+- [ ] Test under a real WordPress VIP environment.
+
+**3. Communicate**
+- [ ] Inform Parse.ly support of the upcoming release.
+
+The following additional tasks might be needed depending on the release and its impact:
+- [ ] Write any needed internal documentation.
+- [ ] Write an internal P2 post about the release (to be posted immediately so folks are aware of the release ahead of time).
+- [ ] Write a WordPress VIP Lobby post about the release (to be posted immediately to preannounce next week's VIP release - don't forget to get someone to proofread!).
+- [ ] Prepare any public documentation (to be posted after the WordPress.org release).
 
 ## Release process
 
 **1. Update version numbers and changelog**
-- [ ] Use the `bin/release.php` script to update version numbers and the changelog, and to push the PR to GitHub.
+- [ ] Run `php bin/release.php $OLD_VERSION $NEW_VERSION` to update version numbers, the changelog, and to push the PR to GitHub. Copy the changelog's new release text for later use.
 - [ ] Verify that the PR code looks correct. You can amend it with new commits if needed.
 - [ ] Merge the PR into `develop`.
 
@@ -35,16 +52,19 @@ This is an issue for tracking the X.Y.Z release process.
 
 ## After releasing
 
-**Merge trunk back into develop**
+**1. Communicate**
+- [ ] If needed, update the public documentation.
+- [ ] Inform the concerned Slack channels about the new release, also preannouncing the WordPress VIP release.
+
+**2. Merge trunk back into develop**
 - [ ] [Create a PR](https://github.com/Parsely/wp-parsely/compare/trunk?expand=1) that merges `trunk` into `develop`, named _Merge trunk into develop after the wp-parsely x.y.z release_.
 - [ ] Merge the PR into `develop`.
 
-**Manage milestones**
+**3. Manage milestones**
 - [ ] Close the current milestone.
 - [ ] If needed, open a new milestone for the next release.
 
-**Communicate and release to other platforms**
-- [ ] Write an internal P2 post about the release.
-- [ ] Inform any applicable Slack channels about the new release.
-- [ ] Release the plugin for WordPress VIP and write a release lobby post.
+**4. Release to other platforms**
+- [ ] Update the `vip-go-mu-plugins` submodule to the latest version.
+- [ ] Release the plugin for WordPress VIP.
 - [ ] Release the plugin for WordPress.com.

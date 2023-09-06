@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely;
 
 use Parsely\UI\Metadata_Renderer;
+use Parsely\UI\Settings_Page;
 use WP_Post;
 
 /**
@@ -39,6 +40,15 @@ use WP_Post;
  *   metadata_secret: string,
  *   disable_autotrack: bool,
  *   plugin_version: string,
+ * }
+ *
+ * @phpstan-type WP_HTTP_Request_Args array{
+ *   method: string,
+ *   timeout: float,
+ *   blocking: bool,
+ *   headers: array<string, string>,
+ *   body: string,
+ *   data_format: string,
  * }
  *
  * @phpstan-import-type Metadata_Attributes from Metadata
@@ -131,9 +141,23 @@ class Parsely {
 	 *
 	 * @since 3.9.0
 	 * @access private
+	 *
 	 * @var bool
 	 */
 	public $are_credentials_managed;
+
+	/**
+	 * Holds the managed options and their values.
+	 *
+	 * This allows hosting providers to provide a more customized experience for
+	 * the plugin by handling options automatically.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 *
+	 * @var array<empty>|array<string, bool|string|null>
+	 */
+	public $managed_options = array();
 
 	/**
 	 * Constructor.
@@ -142,6 +166,7 @@ class Parsely {
 		self::$all_supported_types = array_merge( self::SUPPORTED_JSONLD_POST_TYPES, self::SUPPORTED_JSONLD_NON_POST_TYPES );
 
 		$this->are_credentials_managed = $this->are_credentials_managed();
+		$this->set_managed_options();
 	}
 
 	/**
@@ -321,26 +346,30 @@ class Parsely {
 
 		$parsely_api_endpoint    = self::PUBLIC_API_BASE_URL . '/metadata/posts';
 		$parsely_metadata_secret = $parsely_options['metadata_secret'];
-		$headers                 = array(
-			'Content-Type' => 'application/json',
-		);
-		$body                    = wp_json_encode(
+
+		$headers = array( 'Content-Type' => 'application/json' );
+		$body    = wp_json_encode(
 			array(
 				'secret'   => $parsely_metadata_secret,
 				'apikey'   => $this->get_site_id(),
 				'metadata' => $endpoint_metadata,
 			)
 		);
-		$response                = wp_remote_post(
-			$parsely_api_endpoint,
-			array(
-				'method'      => 'POST',
-				'headers'     => $headers,
-				'blocking'    => false,
-				'body'        => $body,
-				'data_format' => 'body',
-			)
+
+		/**
+		 * POST request options.
+		 *
+		 * @var WP_HTTP_Request_Args $options
+		*/
+		$options = array(
+			'method'      => 'POST',
+			'headers'     => $headers,
+			'blocking'    => false,
+			'body'        => $body,
+			'data_format' => 'body',
 		);
+
+		$response = wp_remote_post( $parsely_api_endpoint, $options );
 
 		if ( ! is_wp_error( $response ) ) {
 			$current_timestamp = time();
@@ -371,14 +400,15 @@ class Parsely {
 		}
 
 		/**
-		 * Final options including any managed credentials.
+		 * Final options including managed credentials and options.
 		 *
 		 * @var Parsely_Options
 		 */
 		return array_merge(
 			$this->option_defaults,
 			$options,
-			$this->get_managed_credentials()
+			$this->get_managed_credentials(),
+			$this->managed_options
 		);
 	}
 
@@ -650,5 +680,136 @@ class Parsely {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Sets the values of managed options.
+	 *
+	 * This function won't accept managing credentials or certain plugin options
+	 * that are being managed through other means. For managing credentials,
+	 * please use the `wp_parsely_credentials` filter.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 */
+	private function set_managed_options(): void {
+		$managed_options = apply_filters( 'wp_parsely_managed_options', false );
+
+		if ( ! is_array( $managed_options ) ) {
+			return;
+		}
+
+		// Don't allow certain options to be set as managed.
+		unset(
+			$managed_options['apikey'],
+			$managed_options['api_secret'],
+			$managed_options['metadata_secret'],
+			$managed_options['track_post_types'],
+			$managed_options['track_page_types'],
+			$managed_options['plugin_version']
+		);
+
+		if ( 0 === count( $managed_options ) ) {
+			return;
+		}
+
+		/**
+		 * Current options.
+		 *
+		 * @var Parsely_Options $current_options
+		 */
+		$current_options = get_option( self::OPTIONS_KEY, array() );
+
+		// Set managed options values.
+		foreach ( $managed_options as $key => $value ) {
+			$is_option_valid = isset( $this->option_defaults[ $key ] );
+
+			if ( $is_option_valid ) {
+				if ( null === $value ) {
+					// When null, the option gets its value from the database.
+					$this->managed_options[ $key ] =
+						$current_options[ $key ] ?? $this->option_defaults[ $key ];
+				} else {
+					$this->managed_options[ $key ] =
+						$this->sanitize_managed_option( $key, $value );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Sanitizes the value of the passed managed option.
+	 *
+	 * @since 3.9.0
+	 * @access private
+	 *
+	 * @param string      $option_id The option's ID.
+	 * @param bool|string $value The option's value.
+	 *
+	 * @return bool|string The sanitized option value.
+	 */
+	private function sanitize_managed_option( string $option_id, $value ) {
+		$option_value_type = gettype( $this->option_defaults[ $option_id ] );
+
+		if ( 'boolean' === $option_value_type && ! is_bool( $value ) ) {
+			_doing_it_wrong(
+				__FUNCTION__,
+				esc_html(
+					sprintf( /* translators: 1: Option ID */
+						__( 'The value of the managed option `%1$s` must be of type `boolean`.', 'wp-parsely' ),
+						$option_id
+					)
+				),
+				''
+			);
+
+			return false;
+		}
+
+		if ( 'string' === $option_value_type ) {
+			if ( ! is_string( $value ) ) {
+				_doing_it_wrong(
+					__FUNCTION__,
+					esc_html(
+						sprintf( /* translators: 1: Option ID */
+							__( 'The value of the managed option `%1$s` must be of type `string`.', 'wp-parsely' ),
+							$option_id
+						)
+					),
+					''
+				);
+
+				$value = strval( $value );
+			}
+
+			// String options that are restricted to specific values.
+			$restricted_value_options = array(
+				'custom_taxonomy_section' => Settings_Page::get_section_taxonomies(),
+				'meta_type'               => array( 'json_ld', 'repeated_metas' ),
+			);
+
+			// Verify that the above values are respected.
+			foreach ( $restricted_value_options as $option_key => $valid_values ) {
+				if ( $option_id === $option_key ) {
+					if ( ! in_array( $value, $valid_values, true ) ) {
+						_doing_it_wrong(
+							__FUNCTION__,
+							esc_html(
+								sprintf( /* translators: 1: Option value 2: Option ID */
+									__( 'The value `%1$s` is not allowed for the managed option `%2$s`.', 'wp-parsely' ),
+									$value,
+									$option_id
+								)
+							),
+							''
+						);
+
+						$value = $this->option_defaults[ $option_id ];
+					}
+				}
+			}
+		}
+
+		return $value;
 	}
 }

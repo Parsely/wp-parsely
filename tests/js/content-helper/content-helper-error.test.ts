@@ -21,6 +21,11 @@ describe( 'ContentHelperError class should set retryFetch to', () => {
 		expect( getRetryFetch( code ) ).toBe( true );
 	} );
 
+	test( 'true for HTTP errors', () => {
+		const code = ContentHelperErrorCode.HttpRequestFailed;
+		expect( getRetryFetch( code ) ).toBe( true );
+	} );
+
 	test( 'false for API Forbidden errors', () => {
 		const code = ContentHelperErrorCode.ParselyApiForbidden;
 		expect( getRetryFetch( code ) ).toBe( false );
