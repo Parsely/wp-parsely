@@ -45,3 +45,10 @@ jobs:
       - name: Stop WordPress environment
         run: |
           npm run dev:stop
+
+      - name: Archive e2e results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: test-results
+          path: artifacts
