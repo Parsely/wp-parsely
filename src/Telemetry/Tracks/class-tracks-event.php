@@ -103,7 +103,8 @@ class Tracks_Event {
 	 * @return stdClass The resulting event object with processed properties.
 	 */
 	protected static function process_properties(
-		string $event_name, array $event_properties
+		string $event_name,
+		array $event_properties
 	): stdClass {
 		$event = (object) self::sanitize_properties_array( $event_properties );
 		$event = self::set_user_properties( $event );

@@ -81,6 +81,7 @@ abstract class Telemetry_System {
 	 *                       WP_Error if recording the event failed.
 	 */
 	abstract public function record_event(
-		string $event_name, array $event_properties = array()
+		string $event_name,
+		array $event_properties = array()
 	);
 }

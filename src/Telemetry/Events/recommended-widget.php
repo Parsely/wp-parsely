@@ -30,8 +30,11 @@ const PARSELY_RECOMMENDED_WIDGET_BASE_ID = 'parsely_recommended_widget';
  * @param Telemetry_System $telemetry_system The Telemetry System to use.
  */
 function record_widget_deleted(
-	string $widget_id, string $sidebar_id, string $id_base, Telemetry_System $telemetry_system
-	): void {
+	string $widget_id,
+	string $sidebar_id,
+	string $id_base,
+	Telemetry_System $telemetry_system
+): void {
 	if ( PARSELY_RECOMMENDED_WIDGET_BASE_ID !== $id_base ) {
 		return;
 	}
@@ -56,9 +59,12 @@ function record_widget_deleted(
  * @return array<string, mixed>|false The updated widget settings.
  */
 function record_widget_updated(
-	$instance, ?array $new_instance, ?array $old_instance,
-	WP_Widget $widget_obj, Telemetry_System $telemetry_system
-	) {
+	$instance,
+	?array $new_instance,
+	?array $old_instance,
+	WP_Widget $widget_obj,
+	Telemetry_System $telemetry_system
+) {
 	if ( ! is_array( $instance ) ) {
 		return $instance;
 	}
@@ -95,7 +101,7 @@ function record_widget_updated(
 
 		$updated_keys = array_reduce(
 			$all_keys,
-			function( array $carry, string $key ) use ( $old_instance, $instance ) {
+			function ( array $carry, string $key ) use ( $old_instance, $instance ) {
 				if (
 					isset( $old_instance[ $key ] ) === isset( $instance[ $key ] ) &&
 					wp_json_encode( $old_instance[ $key ] ) === wp_json_encode( $instance[ $key ] )
