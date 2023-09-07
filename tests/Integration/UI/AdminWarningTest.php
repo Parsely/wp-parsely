@@ -120,7 +120,7 @@ final class AdminWarningTest extends TestCase {
 	public function test_admin_warning_should_not_be_displayed_when_credentials_are_managed(): void {
 		add_filter(
 			'wp_parsely_credentials',
-			function() {
+			function () {
 				return array(
 					'is_managed' => true,
 				);

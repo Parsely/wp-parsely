@@ -49,7 +49,7 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 		$itm_source = $this->itm_source;
 
 		return array_map(
-			static function( stdClass $item ) use ( $site_id, $itm_source ) {
+			static function ( stdClass $item ) use ( $site_id, $itm_source ) {
 				return (object) array(
 					'avgEngaged' => self::get_duration( (float) $item->avg_engaged ),
 					'dashUrl'    => Parsely::get_dash_url( $site_id, $item->url ),
@@ -80,7 +80,7 @@ final class Analytics_Post_Detail_API_Proxy extends Base_API_Proxy {
 		$seconds = absint( round( fmod( $time, 1 ) * 60 ) );
 
 		if ( 60 === $seconds ) {
-			$minutes++;
+			++$minutes;
 			$seconds = 0;
 		}
 
