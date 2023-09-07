@@ -28,7 +28,6 @@
 		"rector/rector": "^0.18.0",
 		"szepeviktor/phpstan-wordpress": "^1.0",
 		"tomasvotruba/type-coverage": "^0.2.0",
-		"wp-coding-standards/wpcs": "^3.0.0",
 		"yoast/wp-test-utils": "^1"
 	},
 	"config": {
