@@ -49,7 +49,7 @@ describe( 'Track Post Types as', () => {
 
 		await page.click( '#submit' );
 		await waitForWpAdmin();
-		await page.click( '.basic-section-tab' ); // Revert to initial state
+		await setSiteKeys( '' );
 	} );
 
 	/**
