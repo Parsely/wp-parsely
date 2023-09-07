@@ -7,7 +7,9 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
  * Internal dependencies
  */
 import {
+	VALID_API_SECRET,
 	saveSettingsAndHardRefresh,
+	setSiteKeys,
 	waitForWpAdmin,
 } from '../utils';
 
@@ -30,6 +32,7 @@ describe( 'Track Post Types as', () => {
 	 * Login, activate the Parse.ly plugin and show recrawl settings.
 	 */
 	beforeAll( async () => {
+		await setSiteKeys( 'e2etest.example.com', VALID_API_SECRET );
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 		await page.click( '.recrawl-section-tab' );
 	} );
@@ -46,7 +49,7 @@ describe( 'Track Post Types as', () => {
 
 		await page.click( '#submit' );
 		await waitForWpAdmin();
-		await page.click( '.basic-section-tab' ); // Revert to initial state
+		await setSiteKeys( '' );
 	} );
 
 	/**
