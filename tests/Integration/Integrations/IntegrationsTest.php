@@ -32,7 +32,7 @@ final class IntegrationsTest extends TestCase {
 	public function test_an_integration_can_be_registered_via_the_filter(): void {
 		add_action(
 			'wp_parsely_add_integration',
-			function( $integrations ) {
+			function ( $integrations ) {
 				$integrations->register( 'fake', new FakeIntegration() );
 
 				return $integrations;
@@ -57,7 +57,7 @@ final class IntegrationsTest extends TestCase {
 		// Use filter to override existing key.
 		add_action(
 			'wp_parsely_add_integration',
-			function( $integrations ) {
+			function ( $integrations ) {
 				$integrations->register( 'amp', new FakeIntegration() );
 
 				return $integrations;
@@ -67,7 +67,6 @@ final class IntegrationsTest extends TestCase {
 		self::assertCount( 3, $registered_integrations );
 		self::assertSame( array( 'amp', 'webstories', 'fake' ), array_keys( $registered_integrations ) );
 	}
-
 }
 
 // phpcs:disable Generic.Files.OneObjectStructurePerFile.MultipleFound

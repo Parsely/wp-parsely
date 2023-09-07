@@ -305,7 +305,7 @@ final class SettingsPageTest extends TestCase {
 
 		add_filter(
 			'wp_parsely_credentials',
-			function() {
+			function () {
 				return array(
 					'site_id'         => 'example.com',
 					'api_secret'      => 'test',
@@ -569,7 +569,7 @@ final class SettingsPageTest extends TestCase {
 		if ( 'ignore' !== $managed_options ) {
 			add_filter(
 				'wp_parsely_managed_options',
-				function() use ( $managed_options ) {
+				function () use ( $managed_options ) {
 					return $managed_options;
 				}
 			);
@@ -578,7 +578,7 @@ final class SettingsPageTest extends TestCase {
 		if ( 'ignore' !== $badge_options ) {
 			add_filter(
 				'wp_parsely_managed_options_badge',
-				function() use ( $badge_options ) {
+				function () use ( $badge_options ) {
 					return $badge_options;
 				}
 			);

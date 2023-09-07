@@ -94,8 +94,8 @@ final class IntegrationsTest extends TestCase {
 
 		$integrations->integrate();
 	}
-
 }
+
 // phpcs:disable Generic.Files.OneObjectStructurePerFile.MultipleFound
 /**
  * Class FakeIntegration

@@ -61,17 +61,17 @@ function get_default_category(): int {
  *
  * @since 3.7.0
  *
- * @param bool $default Default Value.
+ * @param bool $default_value Default Value.
  *
  * @return int|WP_Post
  */
-function get_page_for_posts( $default = false ) {
+function get_page_for_posts( $default_value = false ) {
 	/**
 	 * Variable.
 	 *
 	 * @var int|WP_Post
 	 */
-	return get_option( 'page_for_posts', $default );
+	return get_option( 'page_for_posts', $default_value );
 }
 
 /**
@@ -95,17 +95,17 @@ function get_page_on_front() {
  *
  * @since 3.7.0
  *
- * @param string $var Variable key to retrieve.
+ * @param string $key Variable key to retrieve.
  *
  * @return string
  */
-function get_string_query_var( $var ): string {
+function get_string_query_var( string $key ): string {
 	/**
 	 * Variable.
 	 *
 	 * @var string
 	 */
-	return get_query_var( $var );
+	return get_query_var( $key );
 }
 
 /**
@@ -210,11 +210,11 @@ function convert_to_associative_array( $obj ) {
  * Converts a string to a positive integer, removing any non-numeric
  * characters.
  *
- * @param string $string The string to be converted to an integer.
+ * @param string $value The string to be converted to an integer.
  * @return int The integer resulting from the conversion.
  */
-function convert_to_positive_integer( string $string ): int {
-	return (int) preg_replace( '/\D/', '', $string );
+function convert_to_positive_integer( string $value ): int {
+	return (int) preg_replace( '/\D/', '', $value );
 }
 
 /**
