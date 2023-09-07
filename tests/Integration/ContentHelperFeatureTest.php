@@ -60,7 +60,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 		if ( null !== $global_filter_value ) {
 			add_filter(
 				Content_Helper_Feature::get_global_filter_name(),
-				function() use ( $global_filter_value ) {
+				function () use ( $global_filter_value ) {
 					return $global_filter_value;
 				}
 			);
@@ -70,7 +70,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 		if ( null !== $feature_filter_value ) {
 			add_filter(
 				$feature_filter,
-				function() use ( $feature_filter_value ) {
+				function () use ( $feature_filter_value ) {
 					return $feature_filter_value;
 				}
 			);

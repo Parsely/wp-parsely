@@ -536,7 +536,9 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @return array<WP_Post>
 	 */
 	private function set_and_get_posts_data(
-		int $publish_num_of_posts = 1, int $draft_num_of_posts = 0, string $post_type = 'post'
+		int $publish_num_of_posts = 1,
+		int $draft_num_of_posts = 0,
+		string $post_type = 'post'
 	): array {
 		return array_merge(
 			$this->create_and_get_test_posts( $publish_num_of_posts ),
@@ -1193,7 +1195,10 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @return Parsely_Posts_Stats_Response|null
 	 */
 	private function get_parsely_stats_response(
-		array $posts = array(), string $post_type = 'post', $api_response = null, $api_params = null
+		array $posts = array(),
+		string $post_type = 'post',
+		$api_response = null,
+		$api_params = null
 	) {
 		$obj = $this->init_post_list_stats();
 
