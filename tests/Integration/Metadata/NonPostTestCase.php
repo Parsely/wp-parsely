@@ -34,7 +34,7 @@ abstract class NonPostTestCase extends TestCase {
 
 		array_walk(
 			$required_properties,
-			static function( $property ) use ( $structured_data ) {
+			static function ( $property ) use ( $structured_data ) {
 				self::assertArrayHasKey( $property, $structured_data, 'Data does not have required property: ' . $property );
 			}
 		);

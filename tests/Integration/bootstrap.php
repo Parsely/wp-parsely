@@ -7,8 +7,8 @@
 
 declare(strict_types=1);
 
+// phpcs:ignore Universal.Namespaces.DisallowCurlyBraceSyntax.Forbidden
 namespace Parsely\Tests\Integration {
-
 	use Yoast\WPTestUtils\WPIntegration;
 
 	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound
@@ -54,6 +54,7 @@ namespace Parsely\Tests\Integration {
 
 // Plugin root file is not included during tests, so define the namespaced
 // constants here.
+// phpcs:ignore Universal.Namespaces.DisallowCurlyBraceSyntax.Forbidden, Universal.Namespaces.OneDeclarationPerFile.MultipleFound
 namespace Parsely {
 	const PARSELY_VERSION = '123456.78.9';
 	const PARSELY_FILE    = __DIR__ . '/../../wp-parsely.php';
