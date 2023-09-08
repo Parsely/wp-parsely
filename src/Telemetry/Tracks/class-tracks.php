@@ -49,7 +49,8 @@ class Tracks extends Telemetry_System {
 	 *                       WP_Error if recording the event failed.
 	 */
 	public function record_event(
-		string $event_name, array $event_properties = array()
+		string $event_name,
+		array $event_properties = array()
 	) {
 		$event = new Tracks_Event( $event_name, $event_properties );
 		$pixel = Tracks_Pixel::instance();
@@ -72,7 +73,7 @@ class Tracks extends Telemetry_System {
 		foreach ( $this->events as $event ) {
 			if ( is_string( $event['action_hook'] ) && is_callable( $event['callable'] ) ) {
 				$accepted_args = $event['accepted_args'] ?? 1;
-				$func          = function() use ( $accepted_args, $event ) {
+				$func          = function () use ( $accepted_args, $event ) {
 					if ( $accepted_args > 1 ) {
 						$args   = func_get_args();
 						$args[] = $this;

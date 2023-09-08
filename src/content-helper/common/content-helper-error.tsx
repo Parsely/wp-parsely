@@ -20,6 +20,7 @@ import {
 export enum ContentHelperErrorCode {
 	CannotFormulateApiQuery = 'ch_cannot_formulate_api_query',
 	FetchError = 'fetch_error', // apiFetch() failure, possibly caused by ad blocker.
+	HttpRequestFailed = 'http_request_failed', // Parse.ly API is unreachable.
 	ParselyApiForbidden = 403, // Intentionally without quotes.
 	ParselyApiResponseContainsError = 'ch_response_contains_error',
 	ParselyApiReturnedNoData = 'ch_parsely_api_returned_no_data',
@@ -91,6 +92,12 @@ export class ContentHelperError extends Error {
 		if ( this.code === ContentHelperErrorCode.ParselyApiForbidden ) {
 			this.hint = this.Hint( __(
 				"Please ensure that the Site ID and API Secret given in the plugin's settings are correct.",
+				'wp-parsely'
+			) );
+		}
+		if ( this.code === ContentHelperErrorCode.HttpRequestFailed ) {
+			this.hint = this.Hint( __(
+				'The Parse.ly API cannot be reached. Please verify that you are online.',
 				'wp-parsely'
 			) );
 		}

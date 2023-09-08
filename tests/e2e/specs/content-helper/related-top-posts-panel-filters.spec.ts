@@ -14,7 +14,6 @@ import {
 	insertRecordIntoTaxonomy,
 	setSiteKeys,
 	setUserDisplayName,
-	startUpTest,
 } from '../../utils';
 
 /**
@@ -29,7 +28,6 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 	 */
 	beforeAll( async () => {
 		enablePageDialogAccept();
-		await startUpTest();
 		await setSiteKeys( 'blog.parsely.com', VALID_API_SECRET );
 	} );
 

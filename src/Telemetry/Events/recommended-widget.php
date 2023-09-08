@@ -30,8 +30,11 @@ const PARSELY_RECOMMENDED_WIDGET_BASE_ID = 'parsely_recommended_widget';
  * @param Telemetry_System $telemetry_system The Telemetry System to use.
  */
 function record_widget_deleted(
-	string $widget_id, string $sidebar_id, string $id_base, Telemetry_System $telemetry_system
-	): void {
+	string $widget_id,
+	string $sidebar_id,
+	string $id_base,
+	Telemetry_System $telemetry_system
+): void {
 	if ( PARSELY_RECOMMENDED_WIDGET_BASE_ID !== $id_base ) {
 		return;
 	}
@@ -47,18 +50,25 @@ function record_widget_deleted(
  *
  * @since 3.10.0
  *
- * @param array<string, mixed>      $instance The current widget instance's settings.
- * @param array<string, mixed>|null $new_instance Array of new widget settings.
- * @param array<string, mixed>|null $old_instance Array of old widget settings.
- * @param WP_Widget                 $widget_obj The current widget instance.
- * @param Telemetry_System          $telemetry_system The Telemetry System to use.
+ * @param array<string, mixed>|false $instance The current widget instance's settings.
+ * @param array<string, mixed>|null  $new_instance Array of new widget settings.
+ * @param array<string, mixed>|null  $old_instance Array of old widget settings.
+ * @param WP_Widget                  $widget_obj The current widget instance.
+ * @param Telemetry_System           $telemetry_system The Telemetry System to use.
  *
- * @return array<string, mixed> The updated widget settings
+ * @return array<string, mixed>|false The updated widget settings.
  */
 function record_widget_updated(
-	array $instance, ?array $new_instance, ?array $old_instance,
-	WP_Widget $widget_obj, Telemetry_System $telemetry_system
-	): array {
+	$instance,
+	?array $new_instance,
+	?array $old_instance,
+	WP_Widget $widget_obj,
+	Telemetry_System $telemetry_system
+) {
+	if ( ! is_array( $instance ) ) {
+		return $instance;
+	}
+
 	$id_base = $widget_obj->id_base;
 	if ( PARSELY_RECOMMENDED_WIDGET_BASE_ID !== $id_base ) {
 		return $instance;
@@ -91,7 +101,7 @@ function record_widget_updated(
 
 		$updated_keys = array_reduce(
 			$all_keys,
-			function( array $carry, string $key ) use ( $old_instance, $instance ) {
+			function ( array $carry, string $key ) use ( $old_instance, $instance ) {
 				if (
 					isset( $old_instance[ $key ] ) === isset( $instance[ $key ] ) &&
 					wp_json_encode( $old_instance[ $key ] ) === wp_json_encode( $instance[ $key ] )

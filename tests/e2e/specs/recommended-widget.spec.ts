@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import {
-	activateTheme,
+	enablePageDialogAccept,
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
@@ -10,8 +10,8 @@ import {
  * Internal dependencies
  */
 import {
+	activateTheme,
 	setSiteKeys,
-	startUpTest,
 	waitForWpAdmin,
 } from '../utils';
 
@@ -39,11 +39,8 @@ const getNonActiveWidgetText = async () => {
 
 describe( 'Recommended widget', () => {
 	beforeAll( async () => {
-		page.on( 'dialog', async function( dialog ) {
-			await dialog.accept();
-		} );
+		enablePageDialogAccept();
 
-		await startUpTest();
 		await activateTheme( 'twentytwentyone' );
 	} );
 
@@ -55,8 +52,8 @@ describe( 'Recommended widget', () => {
 		await setSiteKeys( '' );
 
 		await visitAdminPage( '/widgets.php', '' );
-		await waitForWpAdmin();
 
+		await waitForWpAdmin();
 		await closeWidgetScreenModal();
 		await insertParselyWidget();
 
@@ -67,8 +64,8 @@ describe( 'Recommended widget', () => {
 		await setSiteKeys();
 
 		await visitAdminPage( '/widgets.php', '' );
-		await waitForWpAdmin();
 
+		await waitForWpAdmin();
 		await closeWidgetScreenModal();
 		await insertParselyWidget();
 

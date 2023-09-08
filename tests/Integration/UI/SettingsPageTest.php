@@ -13,6 +13,8 @@ use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
 use Parsely\UI\Settings_Page;
 
+use const Parsely\PARSELY_FILE;
+
 const PARSELY_SETTINGS_URL = 'http://example.org/wp-admin/options-general.php?page=parsely';
 
 /**
@@ -303,7 +305,7 @@ final class SettingsPageTest extends TestCase {
 
 		add_filter(
 			'wp_parsely_credentials',
-			function() {
+			function () {
 				return array(
 					'site_id'         => 'example.com',
 					'api_secret'      => 'test',
@@ -517,6 +519,319 @@ final class SettingsPageTest extends TestCase {
 			PARSELY_SETTINGS_URL,
 			self::$parsely::get_settings_url(),
 			'The URL did not match the expected value for the main site with no $blog_id param after switching back.'
+		);
+	}
+
+	/**
+	 * Verifies that the HTML markup generated for managed option fields is as
+	 * expected.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::set_field_label_contents
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\UI\Settings_Page::__construct
+	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses \Parsely\UI\Settings_Page::get_section_taxonomies
+	 * @uses \Parsely\UI\Settings_Page::get_tracking_values_for_display
+	 * @uses \Parsely\UI\Settings_Page::initialize_advanced_section
+	 * @uses \Parsely\UI\Settings_Page::initialize_basic_section
+	 * @uses \Parsely\UI\Settings_Page::initialize_recrawl_section
+	 * @uses \Parsely\UI\Settings_Page::initialize_settings
+	 * @uses \Parsely\UI\Settings_Page::print_description_text
+	 * @uses \Parsely\UI\Settings_Page::print_filter_text
+	 * @uses \Parsely\UI\Settings_Page::print_media_single_image
+	 * @uses \Parsely\UI\Settings_Page::print_radio_tags
+	 * @uses \Parsely\UI\Settings_Page::print_select_tag
+	 * @uses \Parsely\UI\Settings_Page::print_text_tag
+	 * @uses \Parsely\UI\Settings_Page::print_track_post_types_table
+	 * @uses \Parsely\UI\Settings_Page::show_setting_tabs
+	 * @uses \Parsely\UI\Settings_Page::show_setting_tabs_content
+	 *
+	 * @param string $expected_html string The expected HTML markup.
+	 * @param mixed  $managed_options array The managed options to set.
+	 * @param mixed  $badge_options array The badge options to set.
+	 *
+	 * @dataProvider provide_test_managed_option_title_html_is_correct_data
+	 */
+	public function test_managed_option_title_html_is_correct(
+		string $expected_html,
+		$managed_options = 'ignore',
+		$badge_options = 'ignore'
+	): void {
+		if ( 'ignore' !== $managed_options ) {
+			add_filter(
+				'wp_parsely_managed_options',
+				function () use ( $managed_options ) {
+					return $managed_options;
+				}
+			);
+		}
+
+		if ( 'ignore' !== $badge_options ) {
+			add_filter(
+				'wp_parsely_managed_options_badge',
+				function () use ( $badge_options ) {
+					return $badge_options;
+				}
+			);
+		}
+
+		$settings_page                    = new Settings_Page( new Parsely() );
+		$GLOBALS['parsely_settings_page'] = $settings_page;
+
+		$settings_page->initialize_settings();
+		include plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings.php';
+		self::expectOutputContains( $expected_html );
+	}
+
+
+	/**
+	 * Provides data for the test_managed_option_title_html_is_correct test.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @return iterable<array<mixed>> The test data.
+	 */
+	public function provide_test_managed_option_title_html_is_correct_data(): iterable {
+		// Only set managed option. Badge with default options should be
+		// displayed.
+		yield 'managed option'                   => array(
+			'<th scope="row"><label for="parsely[meta_type]">Metadata Format&nbsp;&nbsp;<a class="managed-option-badge" href="https://www.parse.ly/getdemo/" target="_blank" rel="noopener">Upgrade</a></label></th><td>		<fieldset disabled>',
+			array( 'meta_type' => null ),
+		);
+
+		// Managed option with custom badge.
+		yield 'managed option with custom badge' => array(
+			'<th scope="row"><label for="parsely[meta_type]">Metadata Format&nbsp;&nbsp;<a class="managed-option-badge" href="https://www.parse.ly/getdemo-now/" target="_blank" rel="noopener">Upgrade Now!</a></label></th><td>		<fieldset disabled>',
+			array( 'meta_type' => null ),
+			array(
+				'text' => 'Upgrade Now!',
+				'url'  => 'https://www.parse.ly/getdemo-now/',
+			),
+		);
+
+		// Attempt some invalid values against wp_parsely_managed_options and
+		// wp_parsely_managed_options_badge filters.
+		$expected_option_html = '<th scope="row"><label for="parsely[meta_type]">Metadata Format</label></th><td>		<fieldset >';
+		$expected_badge_html  = '<th scope="row"><label for="parsely[meta_type]">Metadata Format</label></th><td>		<fieldset disabled>';
+		$badge_options        = array(
+			'text' => 'Test',
+			'url'  => 'https://www.parse.ly/getdemo-now/',
+		);
+
+		yield 'null passed to wp_parsely_managed_options' => array(
+			$expected_option_html,
+			null,
+			$badge_options,
+		);
+		yield 'null passed to wp_parsely_managed_options_badge' => array(
+			'<th scope="row"><label for="logo">Logo</label></th>',
+			array( 'logo' => null ),
+			null,
+		);
+
+		yield 'array() passed to wp_parsely_managed_options' => array(
+			$expected_option_html,
+			array(),
+			$badge_options,
+		);
+		yield 'array() passed to wp_parsely_managed_options_badge' => array(
+			$expected_badge_html,
+			array( 'meta_type' => 'json_ld' ),
+			array(),
+		);
+
+		yield 'true passed to wp_parsely_managed_options' => array(
+			$expected_option_html,
+			true,
+			$badge_options,
+		);
+		yield 'true passed to wp_parsely_managed_options_badge' => array(
+			'<th scope="row">Use Top-Level Categories for Section</th><td>		<fieldset disabled>',
+			array( 'use_top_level_cats' => false ),
+			true,
+		);
+
+		yield 'false passed to wp_parsely_managed_options' => array(
+			$expected_option_html,
+			false,
+			$badge_options,
+		);
+		yield 'false passed to wp_parsely_managed_options_badge' => array(
+			'<th scope="row"><label for="parsely[custom_taxonomy_section]">Use Custom Taxonomy for Section</label></th><td><fieldset disabled>',
+			array( 'custom_taxonomy_section' => 'category' ),
+			false,
+		);
+
+		yield 'string passed to wp_parsely_managed_options' => array(
+			$expected_option_html,
+			'string',
+			$badge_options,
+		);
+		yield 'string passed to wp_parsely_managed_options_badge' => array(
+			$expected_badge_html,
+			array( 'meta_type' => 'json_ld' ),
+			'string',
+		);
+
+		yield 'integer passed to wp_parsely_managed_options' => array(
+			$expected_option_html,
+			100,
+			$badge_options,
+		);
+		yield 'integer passed to wp_parsely_managed_options_badge' => array(
+			$expected_badge_html,
+			array( 'meta_type' => 'json_ld' ),
+			100,
+		);
+
+		// Verify that the badge is not displayed when its text has an invalid
+		// or empty value.
+		$expected = '<th scope="row"><label for="parsely[meta_type]">Metadata Format</label></th><td>		<fieldset disabled>';
+
+		yield 'no text passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => 'json_ld' ),
+			array(
+				'url' => 'https://www.parse.ly/getdemo/',
+			),
+		);
+
+		yield 'null text passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => 'repeated_metas' ),
+			array(
+				'text' => null,
+				'url'  => 'https://www.parse.ly/getdemo/',
+			),
+		);
+
+		yield 'empty text passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => null ),
+			array(
+				'text' => '',
+				'url'  => 'https://www.parse.ly/getdemo/',
+			),
+		);
+
+		yield 'array() text passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => null ),
+			array(
+				'text' => array(),
+				'url'  => 'https://www.parse.ly/getdemo/',
+			),
+		);
+
+		yield 'true text passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => null ),
+			array(
+				'text' => true,
+				'url'  => 'https://www.parse.ly/getdemo/',
+			),
+		);
+
+		yield 'false text passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => null ),
+			array(
+				'text' => false,
+				'url'  => 'https://www.parse.ly/getdemo/',
+			),
+		);
+
+		yield 'integer text passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => null ),
+			array(
+				'text' => 1,
+				'url'  => 'https://www.parse.ly/getdemo/',
+			),
+		);
+
+		// Verify that the badge is displayed as a span when its URL has an
+		// invalid or empty value.
+		$expected = '<th scope="row"><label for="parsely[meta_type]">Metadata Format&nbsp;&nbsp;<span class="managed-option-badge">Empty URL</span></label></th><td>		<fieldset disabled>';
+
+		yield 'no url passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => 'json_ld' ),
+			array( 'text' => 'Empty URL' ),
+		);
+
+		yield 'null url passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => 'repeated_metas' ),
+			array(
+				'text' => 'Empty URL',
+				'url'  => null,
+			),
+		);
+
+		yield 'empty url passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => null ),
+			array(
+				'text' => 'Empty URL',
+				'url'  => '',
+			),
+		);
+
+		yield 'array() url passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => null ),
+			array(
+				'text' => 'Empty URL',
+				'url'  => array(),
+			),
+		);
+
+		yield 'true url passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => null ),
+			array(
+				'text' => 'Empty URL',
+				'url'  => true,
+			),
+		);
+
+		yield 'false url passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => null ),
+			array(
+				'text' => 'Empty URL',
+				'url'  => false,
+			),
+		);
+
+		yield 'integer url passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => null ),
+			array(
+				'text' => 'Empty URL',
+				'url'  => 1,
+			),
+		);
+
+		// Verify that unknown keys passed to wp_parsely_managed_options_badge
+		// don't cause side-effects.
+		yield 'unknown key passed to wp_parsely_managed_options_badge' => array(
+			$expected,
+			array( 'meta_type' => null ),
+			array(
+				'text' => 'Empty URL',
+				'url2' => 'https://www.parse.ly/getdemo/',
+			),
 		);
 	}
 }

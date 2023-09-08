@@ -83,11 +83,11 @@ abstract class Content_Helper_Feature {
 	 * - Possible invalid filter values will resolve to false.
 	 *
 	 * @since 3.9.0
-	 * @param array<bool> ...$conditions Conditions that need to be met besides filters for the
-	 *                                   function to return true.
-	 * @return bool Whether the feature is enabled by filters.
+	 * @param bool ...$conditions Conditions that need to be met besides filters
+	 *                            for the function to return true.
+	 * @return bool Whether the feature can be enabled.
 	 */
-	protected function can_enable_feature( ...$conditions ): bool {
+	protected function can_enable_feature( bool ...$conditions ): bool {
 		// Get filter values.
 		$global  = apply_filters( self::get_global_filter_name(), null ); // phpcs:ignore
 		$feature = apply_filters( static::get_feature_filter_name(), null ); // phpcs:ignore

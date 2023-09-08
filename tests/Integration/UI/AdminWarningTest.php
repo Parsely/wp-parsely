@@ -51,7 +51,6 @@ final class AdminWarningTest extends TestCase {
 		}
 
 		$should_display_admin_warning = self::get_method( 'should_display_admin_warning', Admin_Warning::class );
-		self::set_options( array( 'apikey' => '' ) );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
 		self::assertTrue( $response );
@@ -69,7 +68,6 @@ final class AdminWarningTest extends TestCase {
 	 */
 	public function test_display_admin_warning_without_key_old_wp(): void {
 		$should_display_admin_warning = self::get_method( 'should_display_admin_warning', Admin_Warning::class );
-		self::set_options( array( 'apikey' => '' ) );
 		set_current_screen( 'settings_page_parsely' );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
@@ -85,7 +83,6 @@ final class AdminWarningTest extends TestCase {
 	 */
 	public function test_display_admin_warning_network_admin(): void {
 		$should_display_admin_warning = self::get_method( 'should_display_admin_warning', Admin_Warning::class );
-		self::set_options( array( 'apikey' => '' ) );
 		set_current_screen( 'dashboard-network' );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
@@ -107,6 +104,37 @@ final class AdminWarningTest extends TestCase {
 		self::set_options( array( 'apikey' => 'somekey' ) );
 
 		$response = $should_display_admin_warning->invoke( self::$admin_warning );
+		self::assertFalse( $response );
+	}
+
+	/**
+	 * Verifies that test_display_admin_warning action doesn't return a warning
+	 * when credentials are managed.
+	 *
+	 * @covers \Parsely\UI\Admin_Warning::should_display_admin_warning
+	 * @covers \Parsely\UI\Admin_Warning::__construct
+	 * @uses \Parsely\Parsely::site_id_is_missing
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\Parsely::get_options
+	 */
+	public function test_admin_warning_should_not_be_displayed_when_credentials_are_managed(): void {
+		add_filter(
+			'wp_parsely_credentials',
+			function () {
+				return array(
+					'is_managed' => true,
+				);
+			}
+		);
+
+		$should_display_admin_warning = self::get_method(
+			'should_display_admin_warning',
+			Admin_Warning::class
+		);
+
+		$response = $should_display_admin_warning->invoke(
+			new Admin_Warning( new Parsely() )
+		);
 		self::assertFalse( $response );
 	}
 }

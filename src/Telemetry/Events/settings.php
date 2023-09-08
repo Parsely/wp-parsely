@@ -21,14 +21,16 @@ namespace Parsely\Telemetry;
  * @param Telemetry_System     $telemetry_system The telemetry system to use.
  */
 function record_parsely_option_updated(
-		array $old_values, array $values, Telemetry_System $telemetry_system
-	): void {
+	array $old_values,
+	array $values,
+	Telemetry_System $telemetry_system
+): void {
 	$all_keys = array_unique( array_merge( array_keys( $old_values ), array_keys( $values ) ) );
 
 	// Get the option keys that got updated.
 	$updated_keys = array_reduce(
 		$all_keys,
-		function( array $carry, string $key ) use ( $old_values, $values ) {
+		function ( array $carry, string $key ) use ( $old_values, $values ) {
 			if ( (
 					// The old key and the new key have the same value.
 					isset( $old_values[ $key ] ) === isset( $values[ $key ] ) &&

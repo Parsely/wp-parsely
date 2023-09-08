@@ -11,12 +11,12 @@ namespace Parsely\Tests\Unit;
 
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
-use const Parsely\Utils\DATE_UTC_FORMAT;
-
 use function Parsely\Utils\convert_to_associative_array;
 use function Parsely\Utils\get_formatted_number;
 use function Parsely\Utils\get_formatted_time;
 use function Parsely\Utils\get_utc_date_format;
+
+use const Parsely\Utils\DATE_UTC_FORMAT;
 
 /**
  * Unit Tests: Util Functions
