@@ -150,18 +150,19 @@ function get_timestamp(): string {
 }
 
 /**
- * Gets number in formatted form i.e. express bigger numbers in form of thousands (K), millions (M), billions (B).
+ * Gets number in formatted form i.e. express bigger numbers in form of
+ * thousands (K), millions (M), billions (B).
  *
  * Example:
  *   - Represent 10000 as 10K.
  *
  * @since 3.7.0
  *
- * @param int|float $number Number that we have to format.
+ * @param int $number The number to format.
  *
  * @return string
  */
-function get_formatted_number( $number ): string {
+function get_formatted_number( int $number ): string {
 	$number_formatter = new NumberFormatter( 'en', NumberFormatter::PADDING_POSITION );
 	$formatted_number = $number_formatter->format( $number );
 
@@ -180,11 +181,11 @@ function get_formatted_number( $number ): string {
  *
  * @since 3.7.0
  *
- * @param int|float $seconds Time in seconds that we have to format.
+ * @param float $seconds Time in seconds to be formatted.
  *
  * @return string
  */
-function get_formatted_time( $seconds ): string {
+function get_formatted_time( float $seconds ): string {
 	$time_formatter = new NumberFormatter( 'en', NumberFormatter::DURATION );
 	$formatted_time = $time_formatter->format( $seconds );
 
