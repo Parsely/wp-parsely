@@ -101,6 +101,8 @@ final class UtilsTest extends TestCase {
 	 * @covers function \Parsely\Utils\get_formatted_number
 	 */
 	public function test_get_formatted_number(): void {
+		$this->mock_wordpress_functions();
+
 		/**
 		 * Variable.
 		 *
@@ -119,12 +121,12 @@ final class UtilsTest extends TestCase {
 			),
 			array(
 				'args'            => array( 'number' => 1000 ),
-				'expected_output' => '1K',
+				'expected_output' => '1k',
 				'msg'             => 'Should show number in thousands format.',
 			),
 			array(
 				'args'            => array( 'number' => 1100 ),
-				'expected_output' => '1.1K',
+				'expected_output' => '1.1k',
 				'msg'             => 'Should show number in thousands format.',
 			),
 			array(
@@ -141,7 +143,7 @@ final class UtilsTest extends TestCase {
 
 		foreach ( $tests_data as $t ) {
 			$args   = $t['args'];
-			$output = get_formatted_number( $args['number'] );
+			$output = get_formatted_number( (string) $args['number'] );
 
 			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}

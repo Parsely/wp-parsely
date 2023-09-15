@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Parsely\Utils;
 
-use NumberFormatter;
 use WP_Post;
 use WP_Error;
 
@@ -137,26 +136,68 @@ function get_time_format(): string {
 }
 
 /**
- * Gets number in formatted form i.e. express bigger numbers in form of thousands (K), millions (M), billions (B).
+ * Gets number in formatted form i.e. express bigger numbers in form of
+ * thousands (k), millions (M), billions (B).
+ *
+ * Note: This function is not made to process float numbers, and it is a PHP
+ * port of our formatToImpreciseNumber() TypeScript function.
  *
  * Example:
  *   - Represent 10000 as 10K.
  *
  * @since 3.7.0
  *
- * @param int|float $number Number that we have to format.
+ * @param string $value           The number to process. It can be formatted.
+ * @param int    $fraction_digits The number of desired fraction digits.
+ * @param string $glue            A string to put between the number and unit.
  *
- * @return string
+ * @return string The number formatted as an imprecise number.
  */
-function get_formatted_number( $number ): string {
-	$number_formatter = new NumberFormatter( 'en', NumberFormatter::PADDING_POSITION );
-	$formatted_number = $number_formatter->format( $number );
+function get_formatted_number( string $value, int $fraction_digits = 1, string $glue = '' ): string {
+	$number = (int) preg_replace( '/\D/', '', $value );
 
-	if ( false === $formatted_number ) {
-		return '';
+	if ( $number < 1000 ) {
+		return $value;
+	} elseif ( $number < 10000 ) {
+		$fraction_digits = 1;
 	}
 
-	return $formatted_number;
+	$unit_names               = array(
+		'1000'             => 'k',
+		'1000000'          => 'M',
+		'1000000000'       => 'B',
+		'1000000000000'    => 'T',
+		'1000000000000000' => 'Q',
+	);
+	$current_number           = $number;
+	$current_number_as_string = (string) $number;
+	$unit                     = '';
+	$previous_number          = 0;
+
+	foreach ( $unit_names as $thousands => $suffix ) {
+		$thousands_int = (int) preg_replace( '/\D/', '', (string) $thousands );
+
+		if ( $number >= $thousands_int ) {
+			$current_number = $number / $thousands_int;
+			$precision      = $fraction_digits;
+
+			// For over 10 units, we reduce the precision to 1 fraction digit.
+			if ( 0 !== $previous_number && $current_number % 1 > 1 / $previous_number ) {
+				$precision = $current_number > 10 ? 1 : 2;
+			}
+
+			// Precision override, where we want to show 2 fraction digits.
+			$zeroes                   = floatval( number_format( $current_number, 2 ) ) ===
+										floatval( number_format( $current_number, 0 ) );
+			$precision                = $zeroes ? 0 : $precision;
+			$current_number_as_string = number_format( $current_number, $precision, '.', '' );
+			$unit                     = $suffix;
+		}
+
+		$previous_number = $current_number;
+	}
+
+	return $current_number_as_string . $glue . $unit;
 }
 
 /**

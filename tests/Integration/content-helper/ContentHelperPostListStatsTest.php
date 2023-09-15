@@ -1139,12 +1139,12 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 					'avg_time'   => '59 sec. avg time', // 59 seconds.
 				),
 				'/2010/01/05/title-5-publish'  => array(
-					'page_views' => '1.1K page views',
+					'page_views' => '1.1k page views',
 					'visitors'   => '1.1M visitors',
 					'avg_time'   => '1:00 avg time', // 59.52 seconds.
 				),
 				'/2010/01/06/title-6-publish'  => array(
-					'page_views' => '1.1K page views',
+					'page_views' => '1.1k page views',
 					'visitors'   => '1.1M visitors',
 					'avg_time'   => '1:00 avg time', // 59.7 seconds.
 				),
@@ -1154,12 +1154,12 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 					'avg_time'   => '1:05 avg time', // 65 seconds.
 				),
 				'/2010/01/08/title-8-publish'  => array(
-					'page_views' => '1.1K page views',
+					'page_views' => '1.1k page views',
 					'visitors'   => '1.1M visitors',
 					'avg_time'   => '1:06 avg time', // 66 seconds.
 				),
 				'/2010/01/09/title-9-publish'  => array(
-					'page_views' => '1.1K page views',
+					'page_views' => '1.1k page views',
 					'visitors'   => '1.1M visitors',
 					'avg_time'   => '1:01:05 avg time', // 3665 seconds.
 				),
@@ -1224,7 +1224,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		self::assertSame(
 			array(
 				'/2010/01/01/title-1-publish' => array(
-					'page_views' => '1.1K page views',
+					'page_views' => '1.1k page views',
 					'visitors'   => '1.1M visitors',
 					'avg_time'   => '1:06 avg time',
 				),
