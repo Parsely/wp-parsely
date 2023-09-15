@@ -172,14 +172,31 @@ function get_formatted_number( $number ): string {
  * @return string
  */
 function get_formatted_time( $seconds ): string {
-	$time_formatter = new NumberFormatter( 'en', NumberFormatter::DURATION );
-	$formatted_time = $time_formatter->format( $seconds );
+	$seconds = round( $seconds );
+	$hours   = floor( $seconds / 3600 );
 
-	if ( false === $formatted_time ) {
-		return '';
+	if ( $hours >= 1 ) {
+		$seconds = $seconds - ( $hours * 3600 );
+		$minutes = floor( $seconds / 60 );
+		$seconds = round( $seconds % 60 );
+
+		return esc_html( /* translators: 1: Number of hours 2: Number of minutes 3: Number of seconds */
+			sprintf( __( '%1$d:%2$02d:%3$02d', 'wp-parsely' ), $hours, $minutes, $seconds )
+		);
 	}
 
-	return $formatted_time;
+	$minutes = floor( $seconds / 60 );
+	$seconds = round( $seconds % 60 );
+
+	if ( $minutes >= 1 ) {
+		return esc_html( /* translators: 1: Number of minutes 2: Number of seconds */
+			sprintf( __( '%1$d:%2$02d', 'wp-parsely' ), $minutes, $seconds )
+		);
+	}
+
+	return esc_html( /* translators: 1: Number of seconds */
+		sprintf( __( '%1$d sec.', 'wp-parsely' ), round( $seconds ) )
+	);
 }
 
 /**

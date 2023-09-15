@@ -352,7 +352,7 @@ class Post_List_Stats extends Content_Helper_Feature {
 			$metrics         = $post_analytics['metrics'];
 			$views           = $metrics['views'] ?? 0;
 			$visitors        = $metrics['visitors'] ?? 0;
-			$engaged_seconds = isset( $metrics['avg_engaged'] ) ? round( $metrics['avg_engaged'], 2 ) * 60 : 0;
+			$engaged_seconds = isset( $metrics['avg_engaged'] ) ? round( $metrics['avg_engaged'] * 60, 2 ) : 0;
 
 			/**
 			 * Variable.
