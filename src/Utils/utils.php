@@ -182,7 +182,8 @@ function get_formatted_number( string $value, int $fraction_digits = 1, string $
 			$precision      = $fraction_digits;
 
 			// For over 10 units, we reduce the precision to 1 fraction digit.
-			if ( 0 !== $previous_number && $current_number % 1 > 1 / $previous_number ) {
+			$modulo = (int) fmod( $current_number, 1 );
+			if ( 0 !== $previous_number && $modulo > 1 / $previous_number ) {
 				$precision = $current_number > 10 ? 1 : 2;
 			}
 
