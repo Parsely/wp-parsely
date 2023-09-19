@@ -1023,19 +1023,27 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 				'metrics' => array(
 					'views'       => 1,
 					'visitors'    => 1,
-					'avg_engaged' => 0.01,
+					'avg_engaged' => 0.005,
 				),
 			),
 			array(
 				'url'     => 'http://example.com/2010/01/03/title-3-publish',
 				'metrics' => array(
-					'views'       => 1100,
-					'visitors'    => 1100000,
-					'avg_engaged' => 1.1,
+					'views'       => 1,
+					'visitors'    => 1,
+					'avg_engaged' => 0.01,
 				),
 			),
 			array(
-				'url'     => 'http://example.com/2010/01/03/title-4-publish',
+				'url'     => 'http://example.com/2010/01/04/title-4-publish',
+				'metrics' => array(
+					'views'       => 1,
+					'visitors'    => 1,
+					'avg_engaged' => 0.9833,
+				),
+			),
+			array(
+				'url'     => 'http://example.com/2010/01/05/title-5-publish',
 				'metrics' => array(
 					'views'       => 1100,
 					'visitors'    => 1100000,
@@ -1043,7 +1051,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 				),
 			),
 			array(
-				'url'     => 'http://example.com/2010/01/03/title-5-publish',
+				'url'     => 'http://example.com/2010/01/06/title-6-publish',
 				'metrics' => array(
 					'views'       => 1100,
 					'visitors'    => 1100000,
@@ -1051,22 +1059,46 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 				),
 			),
 			array(
-				'url' => 'http://example.com/2010/01/04/title-6-publish',
+				'url'     => 'http://example.com/2010/01/07/title-7-publish',
+				'metrics' => array(
+					'views'       => 1,
+					'visitors'    => 1,
+					'avg_engaged' => 1.083,
+				),
 			),
 			array(
-				'url'     => 'http://example.com/2010/01/05/title-7-publish',
+				'url'     => 'http://example.com/2010/01/08/title-8-publish',
+				'metrics' => array(
+					'views'       => 1100,
+					'visitors'    => 1100000,
+					'avg_engaged' => 1.1,
+				),
+			),
+			array(
+				'url'     => 'http://example.com/2010/01/09/title-9-publish',
+				'metrics' => array(
+					'views'       => 1100,
+					'visitors'    => 1100000,
+					'avg_engaged' => 61.083,
+				),
+			),
+			array(
+				'url' => 'http://example.com/2010/01/10/title-10-publish',
+			),
+			array(
+				'url'     => 'http://example.com/2010/01/11/title-11-publish',
 				'metrics' => array(
 					'views' => 1,
 				),
 			),
 			array(
-				'url'     => 'http://example.com/2010/01/06/title-8-publish',
+				'url'     => 'http://example.com/2010/01/12/title-12-publish',
 				'metrics' => array(
 					'visitors' => 1,
 				),
 			),
 			array(
-				'url'     => 'http://example.com/2010/01/07/title-9-publish',
+				'url'     => 'http://example.com/2010/01/13/title-13-publish',
 				'metrics' => array(
 					'avg_engaged' => 0.01,
 				),
@@ -1086,45 +1118,65 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		self::assertNull( $res['error'] ?? null );
 		self::assertSame(
 			array(
-				'/2010/01/01/title-1-publish' => array(
+				'/2010/01/01/title-1-publish'  => array(
 					'page_views' => '0 page views',
 					'visitors'   => '0 visitors',
 					'avg_time'   => '0 sec. avg time',
 				),
-				'/2010/01/02/title-2-publish' => array(
+				'/2010/01/02/title-2-publish'  => array(
 					'page_views' => '1 page view',
 					'visitors'   => '1 visitor',
-					'avg_time'   => '1 sec. avg time',
+					'avg_time'   => '0 sec. avg time', // 0.3 seconds.
 				),
-				'/2010/01/03/title-3-publish' => array(
-					'page_views' => '1.1K page views',
+				'/2010/01/03/title-3-publish'  => array(
+					'page_views' => '1 page view',
+					'visitors'   => '1 visitor',
+					'avg_time'   => '1 sec. avg time', // 0.6 seconds.
+				),
+				'/2010/01/04/title-4-publish'  => array(
+					'page_views' => '1 page view',
+					'visitors'   => '1 visitor',
+					'avg_time'   => '59 sec. avg time', // 59 seconds.
+				),
+				'/2010/01/05/title-5-publish'  => array(
+					'page_views' => '1.1k page views',
 					'visitors'   => '1.1M visitors',
-					'avg_time'   => '1:06 avg time',
+					'avg_time'   => '1:00 avg time', // 59.52 seconds.
 				),
-				'/2010/01/03/title-4-publish' => array(
-					'page_views' => '1.1K page views',
+				'/2010/01/06/title-6-publish'  => array(
+					'page_views' => '1.1k page views',
 					'visitors'   => '1.1M visitors',
-					'avg_time'   => '59 sec. avg time',
+					'avg_time'   => '1:00 avg time', // 59.7 seconds.
 				),
-				'/2010/01/03/title-5-publish' => array(
-					'page_views' => '1.1K page views',
+				'/2010/01/07/title-7-publish'  => array(
+					'page_views' => '1 page view',
+					'visitors'   => '1 visitor',
+					'avg_time'   => '1:05 avg time', // 65 seconds.
+				),
+				'/2010/01/08/title-8-publish'  => array(
+					'page_views' => '1.1k page views',
 					'visitors'   => '1.1M visitors',
-					'avg_time'   => '1:00 avg time',
+					'avg_time'   => '1:06 avg time', // 66 seconds.
 				),
-				'/2010/01/05/title-7-publish' => array(
+				'/2010/01/09/title-9-publish'  => array(
+					'page_views' => '1.1k page views',
+					'visitors'   => '1.1M visitors',
+					'avg_time'   => '1:01:05 avg time', // 3665 seconds.
+				),
+				'/2010/01/11/title-11-publish' => array(
 					'page_views' => '1 page view',
 					'visitors'   => '0 visitors',
 					'avg_time'   => '0 sec. avg time',
 				),
-				'/2010/01/06/title-8-publish' => array(
+				'/2010/01/12/title-12-publish' => array(
 					'page_views' => '0 page views',
 					'visitors'   => '1 visitor',
 					'avg_time'   => '0 sec. avg time',
 				),
-				'/2010/01/07/title-9-publish' => array(
+				'/2010/01/13/title-13-publish' => array(
 					'page_views' => '0 page views',
 					'visitors'   => '0 visitors',
-					'avg_time'   => '1 sec. avg time',
+					'avg_time'   => '1 sec. avg time', // 0.6 seconds.
 				),
 			),
 			$res['data'] ?? null
@@ -1172,7 +1224,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		self::assertSame(
 			array(
 				'/2010/01/01/title-1-publish' => array(
-					'page_views' => '1.1K page views',
+					'page_views' => '1.1k page views',
 					'visitors'   => '1.1M visitors',
 					'avg_time'   => '1:06 avg time',
 				),
