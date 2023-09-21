@@ -182,8 +182,7 @@ final class OtherTest extends TestCase {
 		 */
 		set_error_handler( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 			static function ( int $errno, string $errstr ): never {
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				throw new \UnexpectedValueException( $errstr, $errno );
+				throw new \UnexpectedValueException( esc_html( $errstr ), intval( $errno ) );
 			},
 			E_USER_WARNING
 		);
