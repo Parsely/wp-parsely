@@ -15,6 +15,17 @@ import { TopPostsList } from './top-posts-list';
 
 const FETCH_RETRIES = 1;
 
+export enum Period {
+	Day = '1',
+	Week = '7',
+	Month = '30',
+}
+
+export enum Metric {
+	Views = 'views',
+	AvgEngaged = 'avg_engaged',
+}
+
 /**
  * List of the top posts.
  */
@@ -22,8 +33,8 @@ export function TopPosts() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ posts, setPosts ] = useState<TopPostData[]>( [] );
-	const [ period, setPeriodFilter ] = useState<string>( '7' );
-	const [ metric, setMetricFilter ] = useState<string>( 'views' );
+	const [ period, setPeriodFilter ] = useState<Period>( Period.Week );
+	const [ metric, setMetricFilter ] = useState<Metric>( Metric.Views );
 
 	useEffect( () => {
 		const provider = new DashboardWidgetProvider();
@@ -70,21 +81,25 @@ export function TopPosts() {
 				<Select
 					defaultValue={ period }
 					items={ [
-						[ '1', 'Last 24 hours' ],
-						[ '7', 'Last 7 days' ],
-						[ '30', 'Last 30 days' ],
+						[ Period.Day, 'Last 24 hours' ],
+						[ Period.Week, 'Last 7 days' ],
+						[ Period.Month, 'Last 30 days' ],
 					] }
 					onChange={ ( event ) => {
-						setPeriodFilter( event.target.value );
+						if ( Object.values( Period ).includes( event.target.value as Period ) ) {
+							setPeriodFilter( event.target.value as Period );
+						}
 					} }
 				/>
 				<Select
 					defaultValue={ metric }
 					items={ [
-						[ 'views', 'Page views' ],
-						[ 'avg_engaged', 'Avg. Time' ] ] }
+						[ Metric.Views, 'Page views' ],
+						[ Metric.AvgEngaged, 'Avg. Time' ] ] }
 					onChange={ ( event ) => {
-						setMetricFilter( event.target.value );
+						if ( Object.values( Metric ).includes( event.target.value as Metric ) ) {
+							setMetricFilter( event.target.value as Metric );
+						}
 					} }
 				/>
 			</div>

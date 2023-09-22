@@ -13,6 +13,7 @@ import {
 	ContentHelperErrorCode,
 } from '../common/content-helper-error';
 import { getApiPeriodParams } from '../common/utils/api';
+import { Metric, Period } from './components/top-posts';
 import { TopPostData } from './model';
 
 /**
@@ -35,7 +36,7 @@ export class DashboardWidgetProvider {
 	 *
 	 * @return {Promise<Array<TopPostData>>} Object containing message and posts.
 	 */
-	public async getTopPosts( period: string, metric: string ): Promise<TopPostData[]> {
+	public async getTopPosts( period: Period, metric: Metric ): Promise<TopPostData[]> {
 		let data: TopPostData[] = [];
 
 		try {
@@ -63,7 +64,7 @@ export class DashboardWidgetProvider {
 	 *
 	 * @return {Promise<Array<TopPostData>>} Array of fetched posts.
 	 */
-	private async fetchTopPostsFromWpEndpoint( period: string, metric: string ): Promise<TopPostData[]> {
+	private async fetchTopPostsFromWpEndpoint( period: Period, metric: Metric ): Promise<TopPostData[]> {
 		let response;
 
 		try {
