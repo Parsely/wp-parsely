@@ -11,7 +11,7 @@ import { ContentHelperError } from '../../common/content-helper-error';
 import { Select } from '../../common/select';
 import { TopPostData } from '../model';
 import { DashboardWidgetProvider } from '../provider';
-import { TopPostsList } from './top-posts-list';
+import { TopPostListItem } from './top-posts-list-item';
 
 const FETCH_RETRIES = 1;
 
@@ -105,10 +105,11 @@ export function TopPosts() {
 			</div>
 			{
 				loading ? ( spinner ) : (
-					<TopPostsList
-						posts={ posts }
-						metric={ metric }
-					/>
+					<ol className="parsely-top-posts">
+						{ posts.map( ( post: TopPostData ): JSX.Element =>
+							<TopPostListItem key={ post.id } metric={ metric } post={ post } />
+						) }
+					</ol>
 				)
 			}
 		</div>
