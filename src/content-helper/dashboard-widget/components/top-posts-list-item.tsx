@@ -144,7 +144,7 @@ function PostListItemMetric( { metric, post }: TopPostListItemProps ): JSX.Eleme
 
 	return (
 		<span className="parsely-top-post-metric-data">
-			{ __( 'Unsupported metric specified.', 'wp-parsely' ) }
+			{ __( '-', 'wp-parsely' ) }
 		</span>
 	);
 }
