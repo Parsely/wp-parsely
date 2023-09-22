@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { FilterSelectMetric, FilterSelectTime } from '../../common/filter-select';
+import { Select } from '../../common/select';
 
 /**
  * Defines the props structure for TopPostsFilters.
@@ -27,10 +27,20 @@ export function TopPostsFilters(
 ): JSX.Element {
 	return (
 		<div className="parsely-top-posts-filters">
-			<FilterSelectTime defaultValue={ selectedPeriod }
+			<Select
+				defaultValue={ selectedPeriod }
+				items={ [
+					[ '1', 'Last 24 hours' ],
+					[ '7', 'Last 7 days' ],
+					[ '30', 'Last 30 days' ],
+				] }
 				onChange={ onPeriodChange }
 			/>
-			<FilterSelectMetric defaultValue={ selectedMetric }
+			<Select
+				defaultValue={ selectedMetric }
+				items={ [
+					[ 'views', 'Page views' ],
+					[ 'avg_engaged', 'Avg. Time' ] ] }
 				onChange={ onMetricChange }
 			/>
 		</div>
