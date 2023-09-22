@@ -8,9 +8,9 @@ import { useEffect, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { ContentHelperError } from '../../common/content-helper-error';
+import { Select } from '../../common/select';
 import { TopPostData } from '../model';
 import { DashboardWidgetProvider } from '../provider';
-import { TopPostsFilters } from './top-posts-filters';
 import { TopPostsList } from './top-posts-list';
 
 const FETCH_RETRIES = 1;
@@ -66,16 +66,28 @@ export function TopPosts() {
 
 	return (
 		<div className="parsely-top-posts-wrapper">
-			<TopPostsFilters
-				selectedPeriod={ period }
-				onPeriodChange={ ( event ) => {
-					setPeriodFilter( event.target.value );
-				} }
-				selectedMetric={ metric }
-				onMetricChange={ ( event ) => {
-					setMetricFilter( event.target.value );
-				} }
-			/>
+			<div className="parsely-top-posts-filters">
+				<Select
+					defaultValue={ period }
+					items={ [
+						[ '1', 'Last 24 hours' ],
+						[ '7', 'Last 7 days' ],
+						[ '30', 'Last 30 days' ],
+					] }
+					onChange={ ( event ) => {
+						setPeriodFilter( event.target.value );
+					} }
+				/>
+				<Select
+					defaultValue={ metric }
+					items={ [
+						[ 'views', 'Page views' ],
+						[ 'avg_engaged', 'Avg. Time' ] ] }
+					onChange={ ( event ) => {
+						setMetricFilter( event.target.value );
+					} }
+				/>
+			</div>
 			{
 				loading ? ( spinner ) : (
 					<TopPostsList
