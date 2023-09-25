@@ -111,7 +111,7 @@ final class NetworkAdminSitesListTest extends TestCase {
 				);
 			} else {
 				self::assertSame(
-					'<em>Parse.ly Site ID is missing</em>',
+					'—',
 					$site_id_col_value,
 					'The default value was not printed and should have been.'
 				);

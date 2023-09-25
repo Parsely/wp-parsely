@@ -101,6 +101,8 @@ final class UtilsTest extends TestCase {
 	 * @covers function \Parsely\Utils\get_formatted_number
 	 */
 	public function test_get_formatted_number(): void {
+		$this->mock_wordpress_functions();
+
 		/**
 		 * Variable.
 		 *
@@ -119,12 +121,12 @@ final class UtilsTest extends TestCase {
 			),
 			array(
 				'args'            => array( 'number' => 1000 ),
-				'expected_output' => '1K',
+				'expected_output' => '1k',
 				'msg'             => 'Should show number in thousands format.',
 			),
 			array(
 				'args'            => array( 'number' => 1100 ),
-				'expected_output' => '1.1K',
+				'expected_output' => '1.1k',
 				'msg'             => 'Should show number in thousands format.',
 			),
 			array(
@@ -141,7 +143,7 @@ final class UtilsTest extends TestCase {
 
 		foreach ( $tests_data as $t ) {
 			$args   = $t['args'];
-			$output = get_formatted_number( $args['number'] );
+			$output = get_formatted_number( (string) $args['number'] );
 
 			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}
@@ -153,6 +155,8 @@ final class UtilsTest extends TestCase {
 	 * @covers function \Parsely\Utils\get_formatted_time
 	 */
 	public function test_get_formatted_time(): void {
+		$this->mock_wordpress_functions();
+
 		/**
 		 * Variable.
 		 *
@@ -166,12 +170,12 @@ final class UtilsTest extends TestCase {
 			),
 			array(
 				'args'            => array( 'seconds' => 0.5 ),
-				'expected_output' => '0 sec.',
+				'expected_output' => '1 sec.',
 				'msg'             => 'Should show seconds.',
 			),
 			array(
 				'args'            => array( 'seconds' => 0.5000 ),
-				'expected_output' => '0 sec.',
+				'expected_output' => '1 sec.',
 				'msg'             => 'Should show seconds.',
 			),
 			array(
@@ -256,5 +260,30 @@ final class UtilsTest extends TestCase {
 
 			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}
+	}
+
+	/**
+	 * Mocks some WordPress functions needed by the calling tests.
+	 *
+	 * @since 3.9.1
+	 */
+	public function mock_wordpress_functions(): void {
+		// Mock __() function.
+		\Brain\Monkey\Functions\expect( '__' )
+			->with( \Mockery::type( 'string' ) )
+			->andReturnUsing(
+				function ( string $str ): string {
+					return $str;
+				}
+			);
+
+		// Mock esc_html() function.
+		\Brain\Monkey\Functions\expect( 'esc_html' )
+			->with( \Mockery::type( 'string' ) )
+			->andReturnUsing(
+				function ( string $str ): string {
+					return $str;
+				}
+			);
 	}
 }
