@@ -256,7 +256,9 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 */
 	public function get_post( $post_id = null ): WP_Post {
 		if ( is_wp_error( $post_id ) ) {
-			throw new UnexpectedValueException( $post_id->get_error_message() );
+			throw new UnexpectedValueException(
+				esc_html( $post_id->get_error_message() )
+			);
 		}
 
 		if ( null === $post_id ) {
@@ -282,7 +284,9 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 */
 	public function get_post_in_array( $post_id ): array {
 		if ( is_wp_error( $post_id ) ) {
-			throw new UnexpectedValueException( $post_id->get_error_message() );
+			throw new UnexpectedValueException(
+				esc_html( $post_id->get_error_message() )
+			);
 		}
 
 		return get_post( $post_id, 'ARRAY_A' ) ?? array();
@@ -323,7 +327,9 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 */
 	public function get_permalink( $post_id ) {
 		if ( is_wp_error( $post_id ) ) {
-			throw new UnexpectedValueException( $post_id->get_error_message() );
+			throw new UnexpectedValueException(
+				esc_html( $post_id->get_error_message() )
+			);
 		}
 
 		return get_permalink( $post_id );

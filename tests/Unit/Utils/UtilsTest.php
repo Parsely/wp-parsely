@@ -11,12 +11,12 @@ namespace Parsely\Tests\Unit;
 
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
-use const Parsely\Utils\DATE_UTC_FORMAT;
-
 use function Parsely\Utils\convert_to_associative_array;
 use function Parsely\Utils\get_formatted_number;
 use function Parsely\Utils\get_formatted_time;
 use function Parsely\Utils\get_utc_date_format;
+
+use const Parsely\Utils\DATE_UTC_FORMAT;
 
 /**
  * Unit Tests: Util Functions
@@ -166,6 +166,21 @@ final class UtilsTest extends TestCase {
 			array(
 				'args'            => array( 'seconds' => 0 ),
 				'expected_output' => '0 sec.',
+				'msg'             => 'Should show seconds.',
+			),
+			array(
+				'args'            => array( 'seconds' => 0.5 ),
+				'expected_output' => '0 sec.',
+				'msg'             => 'Should show seconds.',
+			),
+			array(
+				'args'            => array( 'seconds' => 0.5000 ),
+				'expected_output' => '0 sec.',
+				'msg'             => 'Should show seconds.',
+			),
+			array(
+				'args'            => array( 'seconds' => 0.51 ),
+				'expected_output' => '1 sec.',
 				'msg'             => 'Should show seconds.',
 			),
 			array(

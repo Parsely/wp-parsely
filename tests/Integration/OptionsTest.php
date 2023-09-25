@@ -190,7 +190,7 @@ final class OptionsTest extends TestCase {
 
 		add_filter(
 			'wp_parsely_managed_options',
-			function() {
+			function () {
 				return array( 'meta_type' => 'repeated_metas' );
 			}
 		);
@@ -230,7 +230,7 @@ final class OptionsTest extends TestCase {
 
 		add_filter(
 			'wp_parsely_managed_options',
-			function() {
+			function () {
 				return array( 'meta_type' => null );
 			}
 		);
@@ -268,7 +268,7 @@ final class OptionsTest extends TestCase {
 	public function test_certain_options_cannot_be_set_as_managed(): void {
 		add_filter(
 			'wp_parsely_managed_options',
-			function() {
+			function () {
 				return array(
 					// Options that are not allowed to be managed.
 					'api_secret'       => 'abcde',
@@ -310,7 +310,7 @@ final class OptionsTest extends TestCase {
 	public function test_managed_options_get_sanitized(): void {
 		add_filter(
 			'wp_parsely_managed_options',
-			function() {
+			function () {
 				return array(
 					'custom_taxonomy_section' => 1, // Should be string.
 					'disable_javascript'      => 'string', // Should be boolean.
