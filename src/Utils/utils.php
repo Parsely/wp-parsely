@@ -242,6 +242,32 @@ function get_formatted_time( $seconds ): string {
 }
 
 /**
+ * Returns the passed float as a time duration in m:ss format.
+ *
+ * Examples:
+ *   - $time of 1.005 yields '1:00'.
+ *   - $time of 1.5 yields '1:30'.
+ *   - $time of 1.999 yields '2:00'.
+ *
+ * @since 3.6.0
+ *
+ * @param float $time The time as a float number.
+ *
+ * @return string The resulting formatted time duration.
+ */
+function get_formatted_duration( float $time ): string {
+	$minutes = absint( $time );
+	$seconds = absint( round( fmod( $time, 1 ) * 60 ) );
+
+	if ( 60 === $seconds ) {
+		++$minutes;
+		$seconds = 0;
+	}
+
+	return sprintf( '%d:%02d', $minutes, $seconds );
+}
+
+/**
  * Converts to associate array.
  *
  * @since 3.7.0
