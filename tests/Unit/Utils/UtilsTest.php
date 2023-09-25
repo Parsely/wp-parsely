@@ -170,12 +170,12 @@ final class UtilsTest extends TestCase {
 			),
 			array(
 				'args'            => array( 'seconds' => 0.5 ),
-				'expected_output' => '0 sec.',
+				'expected_output' => '1 sec.',
 				'msg'             => 'Should show seconds.',
 			),
 			array(
 				'args'            => array( 'seconds' => 0.5000 ),
-				'expected_output' => '0 sec.',
+				'expected_output' => '1 sec.',
 				'msg'             => 'Should show seconds.',
 			),
 			array(
