@@ -235,7 +235,6 @@ abstract class Base_API_Proxy {
 			}
 		}
 
-		ksort( $data );
 		return $data;
 	}
 
