@@ -107,7 +107,7 @@ final class OtherTest extends TestCase {
 		$headline = 'Completely New And Original Filtered Headline';
 		add_filter(
 			'wp_parsely_metadata',
-			function( $args ) use ( $headline ) {
+			function ( $args ) use ( $headline ) {
 				$args['headline'] = $headline;
 
 				return $args;
@@ -164,7 +164,7 @@ final class OtherTest extends TestCase {
 		// Try to change the post type to a supported value - BlogPosting.
 		add_filter(
 			'wp_parsely_post_type',
-			function() {
+			function () {
 				return 'BlogPosting';
 			}
 		);
@@ -182,7 +182,7 @@ final class OtherTest extends TestCase {
 		 */
 		set_error_handler( // phpcs:ignore WordPress.PHP.DevelopmentFunctions
 			static function ( int $errno, string $errstr ): never {
-				throw new \UnexpectedValueException( $errstr, $errno );
+				throw new \UnexpectedValueException( esc_html( $errstr ), intval( $errno ) );
 			},
 			E_USER_WARNING
 		);
@@ -190,7 +190,7 @@ final class OtherTest extends TestCase {
 		// Try to change the post type to a non-supported value - Not_Supported.
 		add_filter(
 			'wp_parsely_post_type',
-			function() {
+			function () {
 				return 'Not_Supported_Type';
 			}
 		);
@@ -281,7 +281,7 @@ final class OtherTest extends TestCase {
 		foreach ( $credential_sets as $credentials ) {
 			add_filter(
 				'wp_parsely_credentials',
-				function() use ( $credentials ) {
+				function () use ( $credentials ) {
 					return $credentials['input_values'];
 				}
 			);
