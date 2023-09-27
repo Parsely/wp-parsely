@@ -30,7 +30,6 @@ describe( 'Recommendations Block', () => {
 			<RecommendationsStore>
 				<ParselyRecommendations
 					// Passing default values taken from block.json
-					boost="views"
 					imagestyle="original"
 					isEditMode={ false }
 					limit={ 3 }
