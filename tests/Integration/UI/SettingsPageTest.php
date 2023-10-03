@@ -45,7 +45,7 @@ final class SettingsPageTest extends TestCase {
 		self::$parsely       = new Parsely();
 		self::$settings_page = new Settings_Page( self::$parsely );
 
-		add_filter( 'pre_http_request', array( $this, 'mock_success_request_to_remote_url' ), 10, 3 );
+		add_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10, 3 );
 	}
 
 	/**
@@ -53,7 +53,7 @@ final class SettingsPageTest extends TestCase {
 	 */
 	public function tear_down() {
 		parent::tear_down();
-		remove_filter( 'pre_http_request', array( $this, 'mock_success_request_to_remote_url' ), 10 );
+		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
 	}
 
 	/**
@@ -78,6 +78,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
 	 * @uses \Parsely\Validator::validate_site_id
+	 * @uses \Parsely\Validator::validate_api_credentials
 	 *
 	 * @group settings-page
 	 * @group settings-page-validation
@@ -114,6 +115,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
 	 * @uses \Parsely\Validator::validate_site_id
+	 * @uses \Parsely\Validator::validate_api_credentials
 	 *
 	 * @group settings-page
 	 * @group settings-page-validation
@@ -151,6 +153,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
 	 * @uses \Parsely\Validator::validate_api_secret
 	 * @uses \Parsely\Validator::validate_site_id
+	 * @uses \Parsely\Validator::validate_api_credentials
 	 *
 	 * @group settings-page
 	 * @group settings-page-validation
@@ -189,6 +192,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
 	 * @uses \Parsely\Validator::validate_api_secret
 	 * @uses \Parsely\Validator::validate_site_id
+	 * @uses \Parsely\Validator::validate_api_credentials
 	 *
 	 * @group settings-page
 	 * @group settings-page-validation
@@ -201,6 +205,90 @@ final class SettingsPageTest extends TestCase {
 
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Verifies that valid API credentials are retained when validated with the Validation API
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses   \Parsely\Parsely::__construct
+	 * @uses   \Parsely\Parsely::api_secret_is_set
+	 * @uses   \Parsely\Parsely::are_credentials_managed
+	 * @uses   \Parsely\Parsely::get_api_secret
+	 * @uses   \Parsely\Parsely::get_options
+	 * @uses   \Parsely\Parsely::get_managed_credentials
+	 * @uses   \Parsely\UI\Settings_Page::__construct
+	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses   \Parsely\UI\Settings_Page::validate_options
+	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses   \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses   \Parsely\Validator::validate_api_secret
+	 * @uses   \Parsely\Validator::validate_site_id
+	 * @uses   \Parsely\Validator::validate_api_credentials
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_valid_api_credentials_are_retained_when_validated(): void {
+		$options = self::$parsely->get_options();
+
+		$options['apikey']     = 'mydomain.com';
+		$options['api_secret'] = 'valid_api_secret_key_based_on_length';
+
+		$expected = $options;
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+	}
+
+	/**
+	 * Verifies that invalid API credentials are emptied when validated with the Validation API
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses   \Parsely\Parsely::__construct
+	 * @uses   \Parsely\Parsely::api_secret_is_set
+	 * @uses   \Parsely\Parsely::are_credentials_managed
+	 * @uses   \Parsely\Parsely::get_api_secret
+	 * @uses   \Parsely\Parsely::get_options
+	 * @uses   \Parsely\Parsely::get_managed_credentials
+	 * @uses   \Parsely\UI\Settings_Page::__construct
+	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses   \Parsely\UI\Settings_Page::validate_options
+	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses   \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses   \Parsely\Validator::validate_api_secret
+	 * @uses   \Parsely\Validator::validate_site_id
+	 * @uses   \Parsely\Validator::validate_api_credentials
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_invalid_api_credentials_are_emptied_when_validated(): void {
+		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
+		// Mock HTTP request to simulate a failed credentials validation.
+		add_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10, 3 );
+
+		$expected = self::$parsely->get_options();
+		$options  = self::$parsely->get_options();
+
+		$options['apikey']     = 'mydomain.com';
+		$options['api_secret'] = 'valid_api_secret_key_based_on_length';
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10 );
 	}
 
 	/**
@@ -672,6 +760,7 @@ final class SettingsPageTest extends TestCase {
 			'response'    => $response,
 			'status_code' => $response['code'],
 			'success'     => $response['success'],
+			'body'        => $this->wp_json_encode( $response ),
 		);
 	}
 
