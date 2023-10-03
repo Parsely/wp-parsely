@@ -32,12 +32,13 @@ export const setTextBoxValue = async ( id: string, value: string ) => {
  * Sets the Site ID and API Secret to the given values, using the plugin's
  * settings page.
  *
- * @param {string} siteId    The site ID to be saved to the database.
- * @param {string} apiSecret The API Secret to be saved to the database.
+ * @param {string}  siteId              The site ID to be saved to the database.
+ * @param {string}  apiSecret           The API Secret to be saved to the database.
+ * @param {boolean} bypassAPIValidation Whether to bypass API validation on Parse.ly API.
  * @return {Promise<void>}
  */
-export const setSiteKeys = async ( siteId = 'e2etest.example.com', apiSecret = '' ) => {
-	await visitAdminPage( '/options-general.php', '?page=parsely' );
+export const setSiteKeys = async ( siteId = 'e2etest.example.com', apiSecret = '', bypassAPIValidation = true ) => {
+	await visitAdminPage( '/options-general.php', '?page=parsely' + ( bypassAPIValidation ? '&e2e_parsely_skip_api_validate=y' : '' ) );
 
 	await setTextBoxValue( 'apikey', siteId );
 	await setTextBoxValue( 'api_secret', apiSecret );

@@ -58,7 +58,7 @@ class Validator {
 	 * @return bool True if the API Secret is valid, false otherwise.
 	 */
 	public static function validate_api_secret( string $api_secret ): bool {
-		return strlen( $api_secret ) > 30 || '' === $api_secret;
+		return strlen( $api_secret ) > 30;
 	}
 
 	/**
