@@ -3,7 +3,7 @@
  * Class for Validate API (`/validate`).
  *
  * @package Parsely
- * @since   3.2.0
+ * @since   3.11.0
  */
 
 declare(strict_types=1);
@@ -17,7 +17,7 @@ use function Parsely\Utils\convert_to_associative_array;
 /**
  * Class for credentials validation API (`/validate`).
  *
- * @since 3.2.0
+ * @since 3.11.0
  *
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
@@ -28,7 +28,7 @@ class Validate_API extends Remote_API_Base {
 	/**
 	 * Indicates whether the endpoint is public or protected behind permissions.
 	 *
-	 * @since 3.7.0
+	 * @since 3.11.0
 	 *
 	 * @var bool
 	 */
@@ -52,6 +52,8 @@ class Validate_API extends Remote_API_Base {
 
 	/**
 	 * Returns the response from the Parse.ly API credentials validation endpoint.
+	 *
+	 * @since 3.11.0
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @param bool                 $associative (optional) When TRUE, returned objects will be converted into associative arrays.

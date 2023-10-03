@@ -210,7 +210,7 @@ final class SettingsPageTest extends TestCase {
 	/**
 	 * Verifies that valid API credentials are retained when validated with the Validation API
 	 *
-	 * @since 3.9.0
+	 * @since 3.11.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
 	 * @uses   \Parsely\Parsely::__construct
@@ -250,7 +250,7 @@ final class SettingsPageTest extends TestCase {
 	/**
 	 * Verifies that invalid API credentials are emptied when validated with the Validation API
 	 *
-	 * @since 3.9.0
+	 * @since 3.11.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
 	 * @uses   \Parsely\Parsely::__construct
@@ -294,7 +294,7 @@ final class SettingsPageTest extends TestCase {
 	/**
 	 * Verifies that empty API Secret values are retained when validated.
 	 *
-	 * @since 3.9.0
+	 * @since 3.11.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
 	 * @uses   \Parsely\Parsely::__construct
