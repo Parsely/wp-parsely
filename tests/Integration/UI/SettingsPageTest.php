@@ -44,6 +44,16 @@ final class SettingsPageTest extends TestCase {
 		parent::set_up();
 		self::$parsely       = new Parsely();
 		self::$settings_page = new Settings_Page( self::$parsely );
+
+		add_filter( 'pre_http_request', array( $this, 'mock_success_request_to_remote_url' ), 10, 3 );
+	}
+
+	/**
+	 * Tear down method called after each test.
+	 */
+	public function tear_down() {
+		parent::tear_down();
+		remove_filter( 'pre_http_request', array( $this, 'mock_success_request_to_remote_url' ), 10 );
 	}
 
 	/**
@@ -592,6 +602,78 @@ final class SettingsPageTest extends TestCase {
 		self::expectOutputContains( $expected_html );
 	}
 
+
+	/**
+	 * Mocks a success response from the API credentials validation endpoint.
+	 *
+	 * @since 3.11.0
+	 *
+	 * @param string $response The response to mock.
+	 * @param array  $args The arguments passed to the request.
+	 * @param string $url The URL of the request.
+	 *
+	 * @return array<mixed>|false The mocked response.
+	 */
+	public function mock_request_api_credentials_validation_success( $response, $args, $url ) {
+		return $this->mock_request_api_credentials_validation( 'success', $args, $url );
+	}
+
+	/**
+	 * Mocks a failure response from the API credentials validation endpoint.
+	 *
+	 * @since 3.11.0
+	 *
+	 * @param string $response The response to mock.
+	 * @param array  $args The arguments passed to the request.
+	 * @param string $url The URL of the request.
+	 *
+	 * @return array<mixed>|false The mocked response.
+	 */
+	public function mock_request_api_credentials_validation_failure( $response, $args, $url ) {
+		return $this->mock_request_api_credentials_validation( 'forbidden', $args, $url );
+	}
+
+	/**
+	 * Mocks the response from the API credentials validation endpoint.
+	 *
+	 * @since 3.11.0
+	 *
+	 * @param string $result_type The type of result to mock.
+	 * @param array  $args The arguments passed to the request.
+	 * @param string $url The URL of the request.
+	 *
+	 * @return array<mixed>|false The mocked response.
+	 */
+	private function mock_request_api_credentials_validation( $result_type, $args, $url ) {
+		if ( ! str_contains( $url, 'validate/secret' ) ) {
+			return false;
+		}
+
+		$response = array(
+			'code'    => 400,
+			'message' => 'Unknown error',
+			'success' => false,
+		);
+
+		if ( 'success' === $result_type ) {
+			$response['code']    = 200;
+			$response['message'] = 'Valid credentials for example.com';
+			$response['success'] = true;
+		} elseif ( 'forbidden' === $result_type ) {
+			$response['code']    = 403;
+			$response['message'] = 'Forbidden';
+			$response['success'] = false;
+		}
+
+		return array(
+			'headers'     => array(),
+			'cookies'     => array(),
+			'filename'    => null,
+			'response'    => $response,
+			'status_code' => $response['code'],
+			'success'     => $response['success'],
+		);
+	}
 
 	/**
 	 * Provides data for the test_managed_option_title_html_is_correct test.

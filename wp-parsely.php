@@ -155,6 +155,7 @@ require_once __DIR__ . '/src/RemoteAPI/class-analytics-posts-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-analytics-post-detail-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-referrers-post-detail-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
+require_once __DIR__ . '/src/RemoteAPI/class-validate-api.php';
 
 require_once __DIR__ . '/src/Endpoints/class-base-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
