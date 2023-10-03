@@ -94,6 +94,8 @@ export function PostListItemMetric(
 /**
  * Gets edit url of the post.
  *
+ * @since 3.7.0
+ *
  * @param {number} postId ID of the post.
  *
  * @return {string} Edit url of the post.

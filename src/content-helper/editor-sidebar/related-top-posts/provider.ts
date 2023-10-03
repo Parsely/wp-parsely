@@ -102,6 +102,8 @@ export class RelatedTopPostsProvider {
 	/**
 	 * Generates the message that will be displayed above the related top posts.
 	 *
+	 * @since 3.11.0
+	 *
 	 * @param {boolean} dataIsEmpty     Whether the API returned no data.
 	 * @param {string}  period          The period for which data was fetched.
 	 * @param {string}  apiQueryMessage The message within the query.
