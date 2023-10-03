@@ -51,24 +51,21 @@ class Validate_API extends Remote_API_Base {
 	}
 
 	/**
-	 * Returns the response from the Parse.ly API credentials validation endpoint.
-	 *
-	 * @since 3.11.0
+	 * Queries the Parse.ly API credentials validation endpoint.
+	 * The API will return a 200 response if the credentials are valid and a 401 response if they are not.
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
-	 * @param bool                 $associative (optional) When TRUE, returned objects will be converted into associative arrays.
 	 *
-	 * @return WP_Error|array<string, mixed>|object|false
+	 * @return object|WP_Error The response from the remote API, or a WP_Error object if the response is an error.
 	 */
-	public function get_items( array $query, bool $associative = false ) {
-		$full_api_url = $this->get_api_url( $query );
+	private function api_validate_credentials( array $query ) {
 		/**
 		 * GET request options.
 		 *
 		 * @var WP_HTTP_Request_Args $options
 		 */
 		$options  = $this->get_request_options();
-		$response = wp_safe_remote_get( $full_api_url, $options );
+		$response = wp_safe_remote_get( $this->get_api_url( $query ), $options );
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
@@ -85,6 +82,21 @@ class Validate_API extends Remote_API_Base {
 			return new WP_Error( $decoded->code ?? 400, $decoded->message ?? __( 'Unable to read data from upstream API', 'wp-parsely' ) );
 		}
 
-		return $associative ? convert_to_associative_array( $decoded ) : $decoded;
+		return $decoded;
+	}
+
+	/**
+	 * Returns the response from the Parse.ly API credentials validation endpoint.
+	 *
+	 * @since 3.11.0
+	 *
+	 * @param array<string, mixed> $query The query arguments to send to the remote API.
+	 * @param bool                 $associative (optional) When TRUE, returned objects will be converted into associative arrays.
+	 *
+	 * @return WP_Error|array<string, mixed>|object|false
+	 */
+	public function get_items( array $query, bool $associative = false ) {
+		$api_request = $this->api_validate_credentials( $query );
+		return $associative ? convert_to_associative_array( $api_request ) : $api_request;
 	}
 }
