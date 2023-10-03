@@ -58,9 +58,9 @@ class Validate_API extends Remote_API_Base {
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @param bool                 $associative (optional) When TRUE, returned objects will be converted into associative arrays.
 	 *
-	 * @return WP_Error|array<string, mixed>
+	 * @return WP_Error|array<string, mixed>|object|false
 	 */
-	public function get_items( $query, $associative = false ) {
+	public function get_items( array $query, bool $associative = false ) {
 		$full_api_url = $this->get_api_url( $query );
 		/**
 		 * GET request options.

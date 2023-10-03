@@ -51,7 +51,7 @@ final class SettingsPageTest extends TestCase {
 	/**
 	 * Tear down method called after each test.
 	 */
-	public function tear_down() {
+	public function tear_down(): void {
 		parent::tear_down();
 		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
 	}
@@ -747,8 +747,10 @@ final class SettingsPageTest extends TestCase {
 	 * @param string $url The URL of the request.
 	 *
 	 * @return array<mixed>|false The mocked response.
+	 *
+	 * @phpstan-ignore-next-line
 	 */
-	public function mock_request_api_credentials_validation_success( $response, $args, $url ) {
+	public function mock_request_api_credentials_validation_success( string $response, array $args, string $url ) {
 		return $this->mock_request_api_credentials_validation( 'success', $args, $url );
 	}
 
@@ -762,8 +764,10 @@ final class SettingsPageTest extends TestCase {
 	 * @param string $url The URL of the request.
 	 *
 	 * @return array<mixed>|false The mocked response.
+	 *
+	 * @phpstan-ignore-next-line
 	 */
-	public function mock_request_api_credentials_validation_failure( $response, $args, $url ) {
+	public function mock_request_api_credentials_validation_failure( string $response, array $args, string $url ) {
 		return $this->mock_request_api_credentials_validation( 'forbidden', $args, $url );
 	}
 
@@ -776,9 +780,11 @@ final class SettingsPageTest extends TestCase {
 	 * @param array  $args The arguments passed to the request.
 	 * @param string $url The URL of the request.
 	 *
-	 * @return array<mixed>|false The mocked response.
+	 * @return array|false The mocked response.
+	 *
+	 * @phpstan-ignore-next-line
 	 */
-	private function mock_request_api_credentials_validation( $result_type, $args, $url ) {
+	private function mock_request_api_credentials_validation( string $result_type, array $args, string $url ) {
 		if ( ! str_contains( $url, 'validate/secret' ) ) {
 			return false;
 		}
