@@ -972,15 +972,6 @@ final class Settings_Page {
 			$api_secret          = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
 			$input['api_secret'] = $api_secret;
 
-			if ( '' === $input['apikey'] ) {
-				add_settings_error(
-					Parsely::OPTIONS_KEY,
-					'apikey',
-					__( 'Please specify the Site ID', 'wp-parsely' )
-				);
-				return $input;
-			}
-
 			$valid_credentials = Validator::validate_api_credentials( $this->parsely, $site_id, $api_secret );
 
 			// When running e2e tests, we need to update the API keys without validating them, as they will be invalid.
