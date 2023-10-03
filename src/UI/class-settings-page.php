@@ -273,7 +273,7 @@ final class Settings_Page {
 			);
 			add_settings_field(
 				$field_id,
-				__( 'API Secret <em>(required)</em>', 'wp-parsely' ),
+				__( 'API Secret', 'wp-parsely' ),
 				array( $this, 'print_text_tag' ),
 				Parsely::MENU_SLUG,
 				$section_key,

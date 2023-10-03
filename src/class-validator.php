@@ -50,7 +50,7 @@ class Validator {
 	 * Validates the passed API Secret.
 	 *
 	 * Currently, the API Secret is considered valid if it is longer than 30
-	 * characters.
+	 * characters, or empty.
 	 *
 	 * @since 3.9.0
 	 *
@@ -58,7 +58,7 @@ class Validator {
 	 * @return bool True if the API Secret is valid, false otherwise.
 	 */
 	public static function validate_api_secret( string $api_secret ): bool {
-		return strlen( $api_secret ) > 30;
+		return strlen( $api_secret ) > 30 || '' === $api_secret;
 	}
 
 	/**
@@ -84,7 +84,7 @@ class Validator {
 	 * @param Parsely $parsely The Parsely instance.
 	 * @param string  $site_id The Site ID to be validated.
 	 * @param string  $api_secret The API Secret to be validated.
-	 * @return WP_Error|bool True if the API Credentials are valid, false otherwise.
+	 * @return WP_Error|true True if the API Credentials are valid, false otherwise.
 	 */
 	public static function validate_api_credentials( Parsely $parsely, string $site_id, string $api_secret ) {
 		$wp_error = new WP_Error();
@@ -99,6 +99,12 @@ class Validator {
 
 		if ( $wp_error->has_errors() ) {
 			return $wp_error;
+		}
+
+		// If the API secret is empty, the validation endpoint will always fail. Since it's possible to use only the API
+		// key without the secret, we'll skip the validation and assume it's valid.
+		if ( '' === $api_secret ) {
+			return true;
 		}
 
 		$query_args = array(

@@ -292,6 +292,52 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that empty API Secret values are retained when validated.
+	 *
+	 * @since 3.9.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses   \Parsely\Parsely::__construct
+	 * @uses   \Parsely\Parsely::api_secret_is_set
+	 * @uses   \Parsely\Parsely::are_credentials_managed
+	 * @uses   \Parsely\Parsely::get_api_secret
+	 * @uses   \Parsely\Parsely::get_options
+	 * @uses   \Parsely\Parsely::get_managed_credentials
+	 * @uses   \Parsely\UI\Settings_Page::__construct
+	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses   \Parsely\UI\Settings_Page::validate_options
+	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses   \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses   \Parsely\Validator::validate_api_secret
+	 * @uses   \Parsely\Validator::validate_site_id
+	 * @uses   \Parsely\Validator::validate_api_credentials
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_empty_api_secret_is_retained_when_validated(): void {
+		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
+		// API Requests without a secret will *always* fail. Therefore, mock HTTP request to simulate a failed credentials' validation.
+		add_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10, 3 );
+
+		$options = self::$parsely->get_options();
+
+		$options['apikey']     = 'mydomain.com';
+		$options['api_secret'] = '';
+
+		$expected = $options;
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $expected, $actual );
+
+		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10 );
+	}
+
+	/**
 	 * Verifies that valid Metadata Secret values are retained when validated.
 	 *
 	 * @since 3.9.0
