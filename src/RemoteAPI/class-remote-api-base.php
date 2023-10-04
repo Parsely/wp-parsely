@@ -149,7 +149,7 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @param bool                 $associative When TRUE, returned objects will be converted into associative arrays.
 	 *
-	 * @return WP_Error|array<string, mixed>|object|false
+	 * @return array<string, mixed>|object|WP_Error
 	 */
 	public function get_items( array $query, bool $associative = false ) {
 		$full_api_url = $this->get_api_url( $query );

@@ -105,8 +105,8 @@ class Validator {
 			return $wp_error;
 		}
 
-		// If the API secret is empty, the validation endpoint will always fail. Since it's possible to use only the API
-		// key without the secret, we'll skip the validation and assume it's valid.
+		// If the API secret is empty, the validation endpoint will always fail. Since it's possible to
+		// use only the API key without the secret, we'll skip the validation and assume it's valid.
 		if ( '' === $api_secret ) {
 			return true;
 		}
@@ -120,7 +120,10 @@ class Validator {
 		$request      = $validate_api->get_items( $query_args );
 
 		if ( is_wp_error( $request ) ) {
-			$wp_error->add( self::INVALID_API_CREDENTIALS, __( 'Invalid API Credentials', 'wp-parsely' ) );
+			$wp_error->add(
+				self::INVALID_API_CREDENTIALS,
+				__( 'Invalid API Credentials', 'wp-parsely' )
+			);
 			return $wp_error;
 		}
 

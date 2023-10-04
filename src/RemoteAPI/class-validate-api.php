@@ -1,6 +1,6 @@
 <?php
 /**
- * Class for Validate API (`/validate`).
+ * Class for Validate API (`/validate`)
  *
  * @package Parsely
  * @since   3.11.0
@@ -75,11 +75,20 @@ class Validate_API extends Remote_API_Base {
 		$decoded = json_decode( $body );
 
 		if ( ! is_object( $decoded ) ) {
-			return new WP_Error( 400, __( 'Unable to decode upstream API response', 'wp-parsely' ) );
+			return new WP_Error(
+				400,
+				__(
+					'Unable to decode upstream API response',
+					'wp-parsely'
+				)
+			);
 		}
 
 		if ( ! property_exists( $decoded, 'success' ) || false === $decoded->success ) {
-			return new WP_Error( $decoded->code ?? 400, $decoded->message ?? __( 'Unable to read data from upstream API', 'wp-parsely' ) );
+			return new WP_Error(
+				$decoded->code ?? 400,
+				$decoded->message ?? __( 'Unable to read data from upstream API', 'wp-parsely' )
+			);
 		}
 
 		return $decoded;
@@ -91,9 +100,10 @@ class Validate_API extends Remote_API_Base {
 	 * @since 3.11.0
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
-	 * @param bool                 $associative (optional) When TRUE, returned objects will be converted into associative arrays.
+	 * @param bool                 $associative (optional) When TRUE, returned objects will be converted into
+	 *                             associative arrays.
 	 *
-	 * @return WP_Error|array<string, mixed>|object|false
+	 * @return array<string, mixed>|object|WP_Error
 	 */
 	public function get_items( array $query, bool $associative = false ) {
 		$api_request = $this->api_validate_credentials( $query );
