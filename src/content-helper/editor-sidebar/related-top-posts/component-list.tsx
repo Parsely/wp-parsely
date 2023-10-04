@@ -8,24 +8,36 @@ import { useEffect, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import { ContentHelperError } from '../../common/content-helper-error';
+import { PostData } from '../../common/utils/post';
 import { RelatedTopPostListItem } from './component-list-item';
-import { RelatedTopPostData } from './model';
 import { RelatedTopPostsProvider } from './provider';
 
 const FETCH_RETRIES = 1;
 
 /**
- * List of the related top posts.
+ * Defines the props structure for RelatedTopPostList.
+ *
+ * @since 3.11.0
  */
-export function RelatedTopPostList() {
+interface RelatedTopPostListProps {
+	period: string;
+	metric: string;
+}
+
+/**
+ * List of the related top posts.
+ *
+ * @param {RelatedTopPostListProps} props The component's props.
+ */
+export function RelatedTopPostList( { period, metric } : RelatedTopPostListProps ) {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ message, setMessage ] = useState<string>();
-	const [ posts, setPosts ] = useState<RelatedTopPostData[]>( [] );
+	const [ posts, setPosts ] = useState<PostData[]>( [] );
 
 	useEffect( () => {
 		const fetchPosts = async ( retries: number ) => {
-			RelatedTopPostsProvider.getRelatedTopPosts()
+			RelatedTopPostsProvider.getRelatedTopPosts( period, metric )
 				.then( ( result ): void => {
 					setPosts( result.posts );
 					setMessage( result.message );
@@ -51,7 +63,7 @@ export function RelatedTopPostList() {
 			setMessage( '' );
 			setError( undefined );
 		};
-	}, [] );
+	}, [ period, metric ] );
 
 	// Show error message.
 	if ( error ) {
@@ -61,7 +73,9 @@ export function RelatedTopPostList() {
 	// Show related top posts list.
 	const postList: JSX.Element = (
 		<ol className="parsely-top-posts">
-			{ posts.map( ( post: RelatedTopPostData ): JSX.Element => <RelatedTopPostListItem key={ post.id } post={ post } /> ) }
+			{ posts.map( ( post: PostData ): JSX.Element =>
+				<RelatedTopPostListItem key={ post.id } metric={ metric } post={ post } />
+			) }
 		</ol>
 	);
 

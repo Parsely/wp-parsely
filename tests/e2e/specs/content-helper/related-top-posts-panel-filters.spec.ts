@@ -39,7 +39,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 		await setUserDisplayName( 'admin', '' );
 
 		expect( await getTopRelatedPostsMessage( '', '', 500, messageSelector ) )
-			.toMatch( `The Parse.ly API did not return any results for related top posts by author "admin".` );
+			.toMatch( `No top posts by author "admin" were found for the specified period and metric.` );
 	} );
 
 	/**

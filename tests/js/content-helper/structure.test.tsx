@@ -14,7 +14,11 @@ import {
 import { ContentHelperError, ContentHelperErrorCode } from '../../../src/content-helper/common/content-helper-error';
 import { DASHBOARD_BASE_URL } from '../../../src/content-helper/common/utils/constants';
 import { RelatedTopPostList } from '../../../src/content-helper/editor-sidebar/related-top-posts/component-list';
-import { GetRelatedTopPostsResult, RELATED_POSTS_DEFAULT_LIMIT, RELATED_POSTS_DEFAULT_TIME_RANGE, RelatedTopPostsProvider } from '../../../src/content-helper/editor-sidebar/related-top-posts/provider';
+import {
+	GetRelatedTopPostsResult,
+	RELATED_POSTS_DEFAULT_LIMIT,
+	RelatedTopPostsProvider,
+} from '../../../src/content-helper/editor-sidebar/related-top-posts/provider';
 
 describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	test( 'should display spinner when starting', async () => {
@@ -24,7 +28,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList /> );
+			render( <RelatedTopPostList period="7" metric="views" /> );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
@@ -82,7 +86,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList /> );
+			render( <RelatedTopPostList period="7" metric="views" /> );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
@@ -97,12 +101,12 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 
 	test( 'should show a single top post with description and proper attributes', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: `Top posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
+			message: `Top posts in category "Developers" in last 7 days.`,
 			posts: getRelatedTopPostsMockData( 1 ),
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList /> );
+			render( <RelatedTopPostList period="7" metric="views" /> );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
@@ -112,7 +116,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		const topPostDesc = getTopPostDesc();
 		expect( topPostDesc ).toBeInTheDocument();
 		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc?.textContent ).toEqual( `Top posts in category "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
+		expect( topPostDesc?.textContent ).toEqual( `Top posts in category "Developers" in last 7 days.` );
 
 		const topPosts = getTopPosts();
 		expect( topPosts.length ).toEqual( 1 );
@@ -133,25 +137,25 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		expect( editPostLink?.getAttribute( 'href' ) ).toEqual( '/wp-admin/post.php?post=1&action=edit' );
 		expect( editPostLink?.getAttribute( 'title' ) ).toEqual( 'Edit Post (opens new tab)' );
 		expect( editPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-date' )?.textContent ).toEqual( 'Date Jan 1, 2022' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-author' )?.textContent ).toEqual( 'Author Name 1' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-views' )?.textContent ).toEqual( 'Number of Views 1' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-date' )?.textContent ).toMatch( 'Jan 1, 2022' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-author' )?.textContent ).toMatch( 'Name 1' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-metric-data' )?.textContent ).toMatch( '1' );
 	} );
 
 	test( 'should show 5 posts by default', async () => {
 		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: `Top posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.`,
+			message: `Top posts with tag "Developers" in last 7 days.`,
 			posts: getRelatedTopPostsMockData(),
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList /> );
+			render( <RelatedTopPostList period="7" metric="views" /> );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
 		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
-		expect( getTopPostDesc()?.textContent ).toEqual( `Top posts with tag "Developers" in last ${ RELATED_POSTS_DEFAULT_TIME_RANGE } days.` );
+		expect( getTopPostDesc()?.textContent ).toEqual( `Top posts with tag "Developers" in last 7 days.` );
 		expect( getTopPosts().length ).toEqual( 5 );
 	} );
 
@@ -183,11 +187,13 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		for ( let i = 1; i <= postsCount; i++ ) {
 			posts.push( {
 				author: `Name ${ i }`,
+				avgEngaged: `${ i }:00`,
+				dashUrl: `${ DASHBOARD_BASE_URL }/example.com/post-${ i }`,
 				date: `Jan ${ i }, 2022`,
 				id: i,
 				postId: i,
-				dashUrl: `${ DASHBOARD_BASE_URL }/example.com/post-${ i }`,
 				title: `Title ${ i }`,
+				thumbnailUrl: `http://example.com/post-${ i }.jpg`,
 				url: `http://example.com/post-${ i }`,
 				views: i,
 			} );
@@ -197,7 +203,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	}
 
 	async function verifyCredentialsNotSetMessage( getRelatedTopPostsFn: jest.SpyInstance<Promise<GetRelatedTopPostsResult>> ) {
-		render( <RelatedTopPostList /> );
+		render( <RelatedTopPostList period="7" metric="views" /> );
 		expect( getSpinner() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'empty-credentials-message' ), { timeout: 3000 } );
@@ -213,7 +219,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	}
 
 	async function verifyApiErrorMessage( getRelatedTopPostsFn: jest.SpyInstance<Promise<GetRelatedTopPostsResult>> ) {
-		render( <RelatedTopPostList /> );
+		render( <RelatedTopPostList period="7" metric="views" /> );
 		expect( getSpinner() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'error' ), { timeout: 3000 } );

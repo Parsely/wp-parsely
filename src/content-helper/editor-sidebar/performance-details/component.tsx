@@ -13,22 +13,35 @@ import { getApiPeriodStartDate } from '../../common/utils/api';
 import { getSmartShortDate } from '../../common/utils/date';
 import { formatToImpreciseNumber } from '../../common/utils/number';
 import { PerformanceData } from './model';
-import { PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE, PerformanceDetailsProvider } from './provider';
+import { PerformanceDetailsProvider } from './provider';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 1;
 
 /**
- * Specifies the form of component props.
+ * Defines the props structure for PerformanceDetails.
+ *
+ * @since 3.11.0
  */
-interface PerformanceSectionProps {
+interface PerformanceDetailsProps {
+	period: string;
+}
+
+/**
+ * Specifies props structure for PerformanceDetailsSections.
+ */
+interface PerformanceSectionProps extends PerformanceDetailsProps {
 	data: PerformanceData;
 }
 
 /**
  * Outputs the current post's details or shows an error message on failure.
+ *
+ * @param {PerformanceDetailsProps} props The component's props.
  */
-export function PerformanceDetails() {
+export function PerformanceDetails(
+	{ period }: PerformanceDetailsProps
+): JSX.Element {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ postDetailsData, setPostDetails ] = useState<PerformanceData>();
@@ -37,7 +50,7 @@ export function PerformanceDetails() {
 		const provider = new PerformanceDetailsProvider();
 
 		const fetchPosts = async ( retries: number ) => {
-			provider.getPerformanceDetails()
+			provider.getPerformanceDetails( period )
 				.then( ( result ) => {
 					setPostDetails( result );
 					setLoading( false );
@@ -55,7 +68,7 @@ export function PerformanceDetails() {
 
 		setLoading( true );
 		fetchPosts( FETCH_RETRIES );
-	}, [] );
+	}, [ period ] );
 
 	if ( error ) {
 		return error.Message();
@@ -69,7 +82,10 @@ export function PerformanceDetails() {
 				</div>
 			)
 			: (
-				<PerformanceDetailsSections data={ postDetailsData as PerformanceData } />
+				<PerformanceDetailsSections
+					data={ postDetailsData as PerformanceData }
+					period={ period }
+				/>
 			)
 	);
 }
@@ -82,7 +98,7 @@ export function PerformanceDetails() {
 function PerformanceDetailsSections( props: PerformanceSectionProps ) {
 	return (
 		<div className="performance-details-panel">
-			<DataPeriodSection />
+			<DataPeriodSection { ...props } />
 			<GeneralPerformanceSection { ...props } />
 			<ReferrerTypesSection { ...props } />
 			<TopReferrersSection { ...props } />
@@ -94,17 +110,27 @@ function PerformanceDetailsSections( props: PerformanceSectionProps ) {
 /**
  * Outputs the "Period" section, which denotes the period for which data is
  * shown.
+ *
+ * @param {PerformanceSectionProps} props The props needed to populate the section.
  */
-function DataPeriodSection(): JSX.Element {
+function DataPeriodSection( { period }: PerformanceSectionProps ): JSX.Element {
 	const periodStart = getSmartShortDate(
-		new Date( getApiPeriodStartDate( PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE ) ),
+		new Date( getApiPeriodStartDate( parseInt( period ) ) ),
 	);
+
+	if ( '1' === period ) {
+		return (
+			<div className="section period">
+				{ __( 'Last 24 Hours', 'wp-parsely' ) }
+			</div>
+		);
+	}
 
 	return (
 		<div className="section period">
 			{
 				/* translators: Number of days for which data is being shown */
-				sprintf( __( 'Last %d Days', 'wp-parsely' ), PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE )
+				sprintf( __( 'Last %d Days', 'wp-parsely' ), period )
 			}
 			<span>
 				{
