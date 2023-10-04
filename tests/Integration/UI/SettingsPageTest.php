@@ -57,6 +57,52 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that empty Site ID and API Secret values are retained when validated.
+	 *
+	 * @since 3.11.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses   \Parsely\Parsely::__construct
+	 * @uses   \Parsely\Parsely::api_secret_is_set
+	 * @uses   \Parsely\Parsely::are_credentials_managed
+	 * @uses   \Parsely\Parsely::get_api_secret
+	 * @uses   \Parsely\Parsely::get_options
+	 * @uses   \Parsely\Parsely::get_managed_credentials
+	 * @uses   \Parsely\UI\Settings_Page::__construct
+	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses   \Parsely\UI\Settings_Page::validate_options
+	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses   \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses   \Parsely\Validator::validate_site_id
+	 * @uses   \Parsely\Validator::validate_api_credentials
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_empty_site_id_api_secret_are_retained_when_validated(): void {
+		// First change the option to something valid to make sure they are set back to empty.
+		$options               = self::$parsely->get_options();
+		$options['apikey']     = 'mydomain.com';
+		$options['api_secret'] = 'valid_api_secret_key_based_on_length';
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $options, $actual );
+
+		// Now try to set it back to empty values.
+		$options = self::$parsely->get_options();
+
+		$options['apikey']     = '';
+		$options['api_secret'] = '';
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $options, $actual );
+	}
+
+	/**
 	 * Verifies that valid Site ID values are retained when validated.
 	 *
 	 * @since 3.9.0
