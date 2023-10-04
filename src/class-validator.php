@@ -41,6 +41,10 @@ class Validator {
 	 * @return bool
 	 */
 	public static function validate_site_id( string $site_id ): bool {
+		if ( '' === $site_id ) {
+			return true;
+		}
+
 		$key_format = '/^((\w+)\.)?(([\w-]+)?)(\.[\w-]+){1,2}$/';
 
 		return 1 === preg_match( $key_format, $site_id );
@@ -58,7 +62,7 @@ class Validator {
 	 * @return bool True if the API Secret is valid, false otherwise.
 	 */
 	public static function validate_api_secret( string $api_secret ): bool {
-		return strlen( $api_secret ) > 30;
+		return strlen( $api_secret ) > 30 || '' === $api_secret;
 	}
 
 	/**
