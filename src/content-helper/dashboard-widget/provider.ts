@@ -13,8 +13,8 @@ import {
 	ContentHelperErrorCode,
 } from '../common/content-helper-error';
 import { getApiPeriodParams } from '../common/utils/api';
-import { Metric, Period } from './components/top-posts';
-import { TopPostData } from './model';
+import { Metric, Period } from '../common/utils/constants';
+import { PostData } from '../common/utils/post';
 
 /**
  * The form of the response returned by the /stats/posts WordPress REST API
@@ -22,7 +22,7 @@ import { TopPostData } from './model';
  */
 interface TopPostsApiResponse {
 	error?: Error;
-	data?: TopPostData[];
+	data?: PostData[];
 }
 
 const TOP_POSTS_DEFAULT_LIMIT = 3;
@@ -34,10 +34,10 @@ export class DashboardWidgetProvider {
 	 * @param {string} period The period to fetch data for.
 	 * @param {string} metric The metric to sort by.
 	 *
-	 * @return {Promise<Array<TopPostData>>} Object containing message and posts.
+	 * @return {Promise<Array<PostData>>} Object containing message and posts.
 	 */
-	public async getTopPosts( period: Period, metric: Metric ): Promise<TopPostData[]> {
-		let data: TopPostData[] = [];
+	public async getTopPosts( period: Period, metric: Metric ): Promise<PostData[]> {
+		let data: PostData[] = [];
 
 		try {
 			data = await this.fetchTopPostsFromWpEndpoint( period, metric );
@@ -62,9 +62,9 @@ export class DashboardWidgetProvider {
 	 * @param {string} period The period to fetch data for.
 	 * @param {string} metric The metric to sort by.
 	 *
-	 * @return {Promise<Array<TopPostData>>} Array of fetched posts.
+	 * @return {Promise<Array<PostData>>} Array of fetched posts.
 	 */
-	private async fetchTopPostsFromWpEndpoint( period: Period, metric: Metric ): Promise<TopPostData[]> {
+	private async fetchTopPostsFromWpEndpoint( period: Period, metric: Metric ): Promise<PostData[]> {
 		let response;
 
 		try {

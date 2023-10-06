@@ -13,7 +13,7 @@ import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../../common/content-helper-error';
-import { ApiPeriodRange, getApiPeriodParams } from '../../common/utils/api';
+import { getApiPeriodParams } from '../../common/utils/api';
 import {
 	PerformanceData,
 	PerformanceReferrerData,
@@ -37,29 +37,21 @@ interface ReferrersApiResponse {
 	data: PerformanceReferrerData;
 }
 
-export const PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE = 7; // In days.
-
 /**
  * Provides current post details data for use in other components.
  */
 export class PerformanceDetailsProvider {
-	private apiPeriodRange: ApiPeriodRange;
 	private itmSource = 'wp-parsely-content-helper';
-
-	/**
-	 * Constructor.
-	 */
-	constructor() {
-		this.apiPeriodRange = getApiPeriodParams( PERFORMANCE_DETAILS_DEFAULT_TIME_RANGE );
-	}
 
 	/**
 	 * Returns details about the post that is currently being edited within the
 	 * WordPress Block Editor.
 	 *
+	 * @param {string} period The period for which to fetch data.
+	 *
 	 * @return {Promise<PerformanceData>} The current post's details.
 	 */
-	public async getPerformanceDetails(): Promise<PerformanceData> {
+	public async getPerformanceDetails( period: string ): Promise<PerformanceData> {
 		const editor = select( 'core/editor' );
 
 		// We cannot show data for non-published posts.
@@ -78,8 +70,12 @@ export class PerformanceDetailsProvider {
 		// Fetch all needed results using our WordPress endpoints.
 		let performanceData, referrerData;
 		try {
-			performanceData = await this.fetchPerformanceDataFromWpEndpoint( postUrl );
-			referrerData = await this.fetchReferrerDataFromWpEndpoint( postUrl, performanceData.views );
+			performanceData = await this.fetchPerformanceDataFromWpEndpoint(
+				period, postUrl
+			);
+			referrerData = await this.fetchReferrerDataFromWpEndpoint(
+				period, postUrl, performanceData.views
+			);
 		} catch ( contentHelperError ) {
 			return Promise.reject( contentHelperError );
 		}
@@ -91,19 +87,23 @@ export class PerformanceDetailsProvider {
 	 * Fetches the performance data for the current post from the WordPress REST
 	 * API.
 	 *
+	 * @param {string} period  The period for which to fetch data.
 	 * @param {string} postUrl
+	 *
 	 * @return {Promise<PerformanceData> } The current post's details.
 	 */
-	private async fetchPerformanceDataFromWpEndpoint( postUrl: string ): Promise<PerformanceData> {
+	private async fetchPerformanceDataFromWpEndpoint(
+		period: string, postUrl: string
+	): Promise<PerformanceData> {
 		let response;
 
 		try {
 			response = await apiFetch<AnalyticsApiResponse>( {
 				path: addQueryArgs(
 					'/wp-parsely/v1/stats/post/detail', {
-						url: postUrl,
-						...this.apiPeriodRange,
+						...getApiPeriodParams( parseInt( period ) ),
 						itm_source: this.itmSource,
+						url: postUrl,
 					} ),
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -147,12 +147,14 @@ export class PerformanceDetailsProvider {
 	/**
 	 * Fetches referrer data for the current post from the WordPress REST API.
 	 *
+	 * @param {string} period     The period for which to fetch data.
 	 * @param {string} postUrl    The post's URL.
 	 * @param {string} totalViews Total post views (including direct views).
+	 *
 	 * @return {Promise<PerformanceReferrerData>} The post's referrer data.
 	 */
 	private async fetchReferrerDataFromWpEndpoint(
-		postUrl: string, totalViews: string
+		period: string, postUrl: string, totalViews: string
 	): Promise<PerformanceReferrerData> {
 		let response;
 
@@ -160,10 +162,10 @@ export class PerformanceDetailsProvider {
 		try {
 			response = await apiFetch<ReferrersApiResponse>( { path: addQueryArgs(
 				'/wp-parsely/v1/referrers/post/detail', {
-					url: postUrl,
-					total_views: totalViews, // Needed to calculate direct views.
-					...this.apiPeriodRange,
+					...getApiPeriodParams( parseInt( period ) ),
 					itm_source: this.itmSource,
+					total_views: totalViews, // Needed to calculate direct views.
+					url: postUrl,
 				} ),
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any

@@ -16,7 +16,7 @@ import {
 	ContentHelperErrorCode,
 } from '../../common/content-helper-error';
 import { AnalyticsApiOptionalQueryParams, getApiPeriodParams } from '../../common/utils/api';
-import { RelatedTopPostData } from './model';
+import { PostData } from '../../common/utils/post';
 
 /**
  * The form of the query that gets posted to the analytics/posts WordPress REST
@@ -33,7 +33,7 @@ interface RelatedTopPostsApiQuery {
  */
 interface RelatedTopPostsApiResponse {
 	error?: Error;
-	data?: RelatedTopPostData[];
+	data?: PostData[];
 }
 
 /**
@@ -41,11 +41,10 @@ interface RelatedTopPostsApiResponse {
  */
 export interface GetRelatedTopPostsResult {
 	message: string;
-	posts: RelatedTopPostData[];
+	posts: PostData[];
 }
 
 export const RELATED_POSTS_DEFAULT_LIMIT = 5;
-export const RELATED_POSTS_DEFAULT_TIME_RANGE = 7; // In days.
 
 export class RelatedTopPostsProvider {
 	/**
@@ -55,9 +54,12 @@ export class RelatedTopPostsProvider {
 	 * The 'related' status is determined by the current post's Author, Category
 	 * or tag.
 	 *
+	 * @param {string} period The period for which to fetch data.
+	 * @param {string} metric The metric to sort by.
+	 *
 	 * @return {Promise<GetRelatedTopPostsResult>} Object containing message and posts.
 	 */
-	static async getRelatedTopPosts(): Promise<GetRelatedTopPostsResult> {
+	static async getRelatedTopPosts( period: string, metric: string ): Promise<GetRelatedTopPostsResult> {
 		const editor = select( 'core/editor' );
 
 		// Get post's author.
@@ -75,7 +77,9 @@ export class RelatedTopPostsProvider {
 		// Create API query.
 		let apiQuery;
 		try {
-			apiQuery = this.buildRelatedTopPostsApiQuery( author, category, tag );
+			apiQuery = this.buildRelatedTopPostsApiQuery(
+				period, metric, author, category, tag
+			);
 		} catch ( contentHelperError ) {
 			return Promise.reject( contentHelperError );
 		}
@@ -88,22 +92,59 @@ export class RelatedTopPostsProvider {
 			return Promise.reject( contentHelperError );
 		}
 
-		/* translators: %s: message such as "in category Foo", %d: number of days */
-		let message = sprintf( __( 'Top posts %1$s in last %2$d days.', 'wp-parsely' ), apiQuery.message, RELATED_POSTS_DEFAULT_TIME_RANGE );
-		if ( data.length === 0 ) {
-			message = `${ __( 'The Parse.ly API did not return any results for related top posts', 'wp-parsely' ) } ${ apiQuery.message }.`;
-		}
+		const message = this.generateMessage(
+			data.length === 0, period, apiQuery.message
+		);
 
 		return { message, posts: data };
+	}
+
+	/**
+	 * Generates the message that will be displayed above the related top posts.
+	 *
+	 * @since 3.11.0
+	 *
+	 * @param {boolean} dataIsEmpty     Whether the API returned no data.
+	 * @param {string}  period          The period for which data was fetched.
+	 * @param {string}  apiQueryMessage The message within the query.
+	 *
+	 * @return {string} The generated message.
+	 */
+	private static generateMessage(
+		dataIsEmpty: boolean, period: string, apiQueryMessage: string
+	): string {
+		if ( dataIsEmpty ) {
+			return sprintf(
+				/* translators: 1: message such as "in category Foo" */
+				__(
+					'No top posts %1$s were found for the specified period and metric.',
+					'wp-parsely'
+				), apiQueryMessage
+			);
+		}
+
+		if ( '1' === period ) {
+			return sprintf(
+				/* translators: 1: message such as "in category Foo" */
+				__( 'Top posts %1$s in last 24 hours.', 'wp-parsely' ),
+				apiQueryMessage, period
+			);
+		}
+
+		return sprintf(
+			/* translators: 1: message such as "in category Foo", 2: number of days */
+			__( 'Top posts %1$s in last %2$d days.', 'wp-parsely' ),
+			apiQueryMessage, period
+		);
 	}
 
 	/**
 	 * Fetches the related top posts data from the WordPress REST API.
 	 *
 	 * @param {RelatedTopPostsApiQuery} query
-	 * @return {Promise<Array<RelatedTopPostData>>} Array of fetched posts.
+	 * @return {Promise<Array<PostData>>} Array of fetched posts.
 	 */
-	private static async fetchRelatedTopPostsFromWpEndpoint( query: RelatedTopPostsApiQuery ): Promise<RelatedTopPostData[]> {
+	private static async fetchRelatedTopPostsFromWpEndpoint( query: RelatedTopPostsApiQuery ): Promise<PostData[]> {
 		let response;
 
 		try {
@@ -133,19 +174,27 @@ export class RelatedTopPostsProvider {
 	 * Builds the query object used in the API for performing the related
 	 * top posts request.
 	 *
+	 * @param {string}   period   The period for which to fetch data.
+	 * @param {string}   metric   The metric to sort by.
 	 * @param {User}     author   The post's author.
 	 * @param {Taxonomy} category The post's category.
 	 * @param {Taxonomy} tag      The post's tag.
+	 *
 	 * @return {RelatedTopPostsApiQuery} The query object.
 	 */
-	private static buildRelatedTopPostsApiQuery( author: User, category: Taxonomy, tag: Taxonomy ): RelatedTopPostsApiQuery {
-		const limit = RELATED_POSTS_DEFAULT_LIMIT;
-		const commonQueryParams = { ...getApiPeriodParams( RELATED_POSTS_DEFAULT_TIME_RANGE ) };
+	private static buildRelatedTopPostsApiQuery(
+		period: string, metric:string, author: User, category: Taxonomy, tag: Taxonomy
+	): RelatedTopPostsApiQuery {
+		const commonQueryParams = {
+			...getApiPeriodParams( parseInt( period ) ),
+			limit: RELATED_POSTS_DEFAULT_LIMIT,
+			sort: metric,
+		};
 
 		// A tag exists.
 		if ( tag?.name ) {
 			return ( {
-				query: { limit, tag: tag.name, ...commonQueryParams },
+				query: { tag: tag.name, ...commonQueryParams },
 				/* translators: %s: message such as "with tag Foo" */
 				message: sprintf( __( 'with tag "%1$s"', 'wp-parsely' ), tag.name ),
 			} );
@@ -154,7 +203,7 @@ export class RelatedTopPostsProvider {
 		// A category exists.
 		if ( category?.name ) {
 			return ( {
-				query: { limit, section: category.name, ...commonQueryParams },
+				query: { section: category.name, ...commonQueryParams },
 				/* translators: %s: message such as "in category Foo" */
 				message: sprintf( __( 'in category "%1$s"', 'wp-parsely' ), category.name ),
 			} );
@@ -163,7 +212,7 @@ export class RelatedTopPostsProvider {
 		// Fallback to author.
 		if ( author?.name ) {
 			return ( {
-				query: { limit, author: author.name, ...commonQueryParams },
+				query: { author: author.name, ...commonQueryParams },
 				/* translators: %s: message such as "by author John" */
 				message: sprintf( __( 'by author "%1$s"', 'wp-parsely' ), author.name ),
 			} );
