@@ -980,39 +980,14 @@ final class Settings_Page {
 				$valid_credentials = true;
 			}
 
-			if ( is_wp_error( $valid_credentials ) ) {
-				while ( $valid_credentials->has_errors() ) {
-					$error_code = $valid_credentials->get_error_code();
-
-					if ( Validator::INVALID_SITE_ID === $error_code ) {
-						add_settings_error(
-							Parsely::OPTIONS_KEY,
-							'apikey',
-							__( 'The Site ID was not saved because it is incorrect. It should look like "example.com".', 'wp-parsely' )
-						);
-						$input['apikey'] = $options['apikey'];
-					}
-
-					if ( Validator::INVALID_API_SECRET === $error_code ) {
-						add_settings_error(
-							Parsely::OPTIONS_KEY,
-							'api_secret',
-							__( 'The API Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
-						);
-						$input['api_secret'] = $options['api_secret'];
-					}
-
-					if ( Validator::INVALID_API_CREDENTIALS === $error_code ) {
-						add_settings_error(
-							Parsely::OPTIONS_KEY,
-							'api_secret',
-							__( 'The Site ID and API Secret weren\'t saved as they failed to authenticate with the Parse.ly API. Try again with different credentials or contact Parse.ly support', 'wp-parsely' )
-						);
-						$input['apikey']     = $options['apikey'];
-						$input['api_secret'] = $options['api_secret'];
-					}
-					$valid_credentials->remove( $error_code );
-				}
+			if ( is_wp_error( $valid_credentials ) && Validator::INVALID_API_CREDENTIALS === $valid_credentials->get_error_code() ) {
+				add_settings_error(
+					Parsely::OPTIONS_KEY,
+					'api_secret',
+					__( 'The Site ID and API Secret weren\'t saved as they failed to authenticate with the Parse.ly API. Try again with different credentials or contact Parse.ly support', 'wp-parsely' )
+				);
+				$input['apikey']     = $options['apikey'];
+				$input['api_secret'] = $options['api_secret'];
 			}
 
 			// Since the API secret is obfuscated, we need to make sure that the value
