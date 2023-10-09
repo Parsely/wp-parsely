@@ -23,7 +23,7 @@ use function Parsely\Utils\convert_to_associative_array;
  */
 class Validate_API extends Remote_API_Base {
 	protected const ENDPOINT     = '/validate/secret';
-	protected const QUERY_FILTER = 'wp_parsely_related_endpoint_args';
+	protected const QUERY_FILTER = 'wp_parsely_validate_secret_endpoint_args';
 
 	/**
 	 * Indicates whether the endpoint is public or protected behind permissions.

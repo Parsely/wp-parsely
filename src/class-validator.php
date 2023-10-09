@@ -44,13 +44,13 @@ class Validator {
 	 * @param Parsely $parsely The Parsely instance.
 	 * @param string  $site_id The Site ID to be validated.
 	 * @param string  $api_secret The API Secret to be validated.
-	 * @return WP_Error|true True if the API Credentials are valid, false otherwise.
+	 * @return true|WP_Error True if the API Credentials are valid, WP_Error otherwise.
 	 */
 	public static function validate_api_credentials( Parsely $parsely, string $site_id, string $api_secret ) {
-		$wp_error = new WP_Error();
 
 		// If the API secret is empty, the validation endpoint will always fail. Since it's possible to
-		// use only the API key without the secret, we'll skip the validation and assume it's valid.
+		// use the plugin without an API Secret, and providing only a Site ID (API key), we'll skip the validation and
+		// assume it's valid.
 		if ( '' === $api_secret ) {
 			return true;
 		}
@@ -64,11 +64,10 @@ class Validator {
 		$request      = $validate_api->get_items( $query_args );
 
 		if ( is_wp_error( $request ) ) {
-			$wp_error->add(
+			return new WP_Error(
 				self::INVALID_API_CREDENTIALS,
 				__( 'Invalid API Credentials', 'wp-parsely' )
 			);
-			return $wp_error;
 		}
 
 		return true;

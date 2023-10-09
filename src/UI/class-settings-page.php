@@ -968,9 +968,8 @@ final class Settings_Page {
 			$input['apikey']     = '';
 			$input['api_secret'] = '';
 		} else {
-			$site_id             = $this->sanitize_site_id( $input['apikey'] );
-			$api_secret          = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
-			$input['api_secret'] = $api_secret;
+			$site_id    = $this->sanitize_site_id( $input['apikey'] );
+			$api_secret = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
 
 			$valid_credentials = Validator::validate_api_credentials( $this->parsely, $site_id, $api_secret );
 

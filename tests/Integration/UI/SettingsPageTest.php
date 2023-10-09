@@ -57,7 +57,7 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that empty Site ID and API Secret values are retained when validated.
+	 * Verifies that empty API credentials are retained when validated.
 	 *
 	 * @since 3.11.0
 	 *
@@ -82,11 +82,11 @@ final class SettingsPageTest extends TestCase {
 	 * @group settings-page
 	 * @group settings-page-validation
 	 */
-	public function test_empty_site_id_api_secret_are_retained_when_validated(): void {
+	public function test_empty_api_credentials_are_retained_when_validated(): void {
 		// First change the option to something valid to make sure they are set back to empty.
 		$options               = self::$parsely->get_options();
 		$options['apikey']     = 'mydomain.com';
-		$options['api_secret'] = 'valid_api_secret_key_based_on_length';
+		$options['api_secret'] = 'valid_api_secret';
 
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $options, $actual );
@@ -102,7 +102,7 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that valid API credentials are retained when validated with the Validation API
+	 * Verifies that valid API credentials are retained when validated with the Validation API.
 	 *
 	 * @since 3.11.0
 	 *
@@ -131,7 +131,7 @@ final class SettingsPageTest extends TestCase {
 		$options = self::$parsely->get_options();
 
 		$options['apikey']     = 'mydomain.com';
-		$options['api_secret'] = 'valid_api_secret_key_based_on_length';
+		$options['api_secret'] = 'valid_api_secret';
 
 		$expected = $options;
 
@@ -140,7 +140,7 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that invalid API credentials are emptied when validated with the Validation API
+	 * Verifies that invalid API credentials are retained when validated with the Validation API.
 	 *
 	 * @since 3.11.0
 	 *
@@ -165,7 +165,7 @@ final class SettingsPageTest extends TestCase {
 	 * @group settings-page
 	 * @group settings-page-validation
 	 */
-	public function test_invalid_api_credentials_are_emptied_when_validated(): void {
+	public function test_invalid_api_credentials_are_retained_when_validated(): void {
 		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
 		// Mock HTTP request to simulate a failed credentials validation.
 		add_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10, 3 );
@@ -174,7 +174,7 @@ final class SettingsPageTest extends TestCase {
 		$options  = self::$parsely->get_options();
 
 		$options['apikey']     = 'mydomain.com';
-		$options['api_secret'] = 'valid_api_secret_key_based_on_length';
+		$options['api_secret'] = 'invalid_api_secret';
 
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );
@@ -247,7 +247,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
 	 * @uses \Parsely\Validator::validate_metadata_secret
-	 * @uses \Parsely\Validator::validate_api_credentials()
+	 * @uses \Parsely\Validator::validate_api_credentials
 	 *
 	 * @group settings-page
 	 * @group settings-page-validation
