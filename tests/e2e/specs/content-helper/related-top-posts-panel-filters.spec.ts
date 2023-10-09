@@ -53,7 +53,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 		const firstName = 'Andrew';
 		const lastName = 'Montalenti';
 		const categoryName = 'Parse.ly Tech';
-		const tagName = 'changelog';
+		const tagName = 'ga4';
 
 		await setUserDisplayName( firstName, lastName );
 		await insertRecordIntoTaxonomy( categoryName, 'category' );
