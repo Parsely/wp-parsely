@@ -31,8 +31,8 @@ export class DashboardWidgetProvider {
 	/**
 	 * Returns the site's top posts.
 	 *
-	 * @param {string} period The period to fetch data for.
-	 * @param {string} metric The metric to sort by.
+	 * @param {Period} period The period to fetch data for.
+	 * @param {Metric} metric The metric to sort by.
 	 *
 	 * @return {Promise<Array<PostData>>} Object containing message and posts.
 	 */
@@ -59,8 +59,8 @@ export class DashboardWidgetProvider {
 	/**
 	 * Fetches the site's top posts data from the WordPress REST API.
 	 *
-	 * @param {string} period The period to fetch data for.
-	 * @param {string} metric The metric to sort by.
+	 * @param {Period} period The period to fetch data for.
+	 * @param {Metric} metric The metric to sort by.
 	 *
 	 * @return {Promise<Array<PostData>>} Array of fetched posts.
 	 */
