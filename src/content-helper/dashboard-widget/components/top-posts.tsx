@@ -71,9 +71,9 @@ export function TopPosts() {
 				<Select
 					defaultValue={ period }
 					items={ [
-						[ Period.Day, 'Last 24 hours' ],
-						[ Period.Week, 'Last 7 days' ],
-						[ Period.Month, 'Last 30 days' ],
+						[ Period.Day, 'Last 24 Hours' ],
+						[ Period.Week, 'Last 7 Days' ],
+						[ Period.Month, 'Last 30 Days' ],
 					] }
 					onChange={ ( event ) => {
 						if ( isInEnum( event.target.value, Period ) ) {
