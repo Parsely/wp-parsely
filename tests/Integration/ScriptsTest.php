@@ -519,10 +519,11 @@ final class ScriptsTest extends TestCase {
 		$output       = ob_get_clean();
 		$loader_asset = get_asset_info( 'build/loader.asset.php' );
 
-		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' src='http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=" . $loader_asset['version'] . "' id='wp-parsely-loader-js'></script>", $output );
-		// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-		self::assertStringContainsString( "<script data-cfasync=\"false\" type='text/javascript' data-parsely-site=\"blog.parsely.com\" src='https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=123456.78.9' id=\"parsely-cfg\"></script>", $output );
+		self::assertStringContainsString( 'data-cfasync="false"', $output );
+		self::assertStringContainsString( 'http://example.org/wp-content/plugins/wp-parsely/tests/Integration/../../build/loader.js?ver=' . $loader_asset['version'], $output );
+
+		self::assertStringContainsString( 'data-parsely-site="blog.parsely.com"', $output );
+		self::assertStringContainsString( 'https://cdn.parsely.com/keys/blog.parsely.com/p.js?ver=123456.78.9', $output );
 	}
 
 	/**

@@ -9,36 +9,38 @@ import { __ } from '@wordpress/i18n';
 import { EditIcon } from '../../common/icons/edit-icon';
 import { OpenLinkIcon } from '../../common/icons/open-link-icon';
 import { getSmartShortDate } from '../../common/utils/date';
-import { formatToImpreciseNumber } from '../../common/utils/number';
-import { getPostEditUrl } from '../../common/utils/post';
-import { TopPostData } from './model';
+import {
+	PostData,
+	PostListItemMetric,
+	PostListItemProps,
+	getPostEditUrl,
+} from '../../common/utils/post';
 
-interface TopPostListItemProps {
-	post: TopPostData;
+/**
+ * Defines the props structure for components receiving only post data.
+ *
+ * @since 3.10.0
+ */
+interface TopPostDataProps {
+	post: PostData;
 }
 
 /**
  * Returns a single list item depicting a post.
  *
- * @param {TopPostData} post The Post to be shown.
+ * @param {PostListItemProps} props The component's props.
  */
-export function TopPostListItem( { post }: TopPostListItemProps ): JSX.Element {
+export function TopPostListItem( { metric, post }: PostListItemProps ): JSX.Element {
 	return (
-		<li className="parsely-top-post">
+		<li className="parsely-top-post" key={ post.id }>
 			<div className="parsely-top-post-content">
 
-				{ getPostThumbnailElement( { post } ) }
+				<ListItemThumbnail post={ post } />
 
 				<div className="parsely-top-post-data">
 
-					<span className="parsely-top-post-views">
-						<span className="screen-reader-text">
-							{ __( 'Number of Views', 'wp-parsely' ) }
-						</span>
-						{ formatToImpreciseNumber( post.views.toString() ) }
-					</span>
-
-					{ getPostTitleElement( { post } ) }
+					<PostListItemMetric metric={ metric } post={ post } />
+					<PostListItemTitle post={ post } />
 
 					<a className="parsely-top-post-icon-link" href={ post.url } target="_blank" rel="noreferrer">
 						<span className="screen-reader-text">
@@ -83,9 +85,9 @@ export function TopPostListItem( { post }: TopPostListItemProps ): JSX.Element {
  * Returns the Post thumbnail with its div container. Returns an empty div if
  * the post has no thumbnail.
  *
- * @param {TopPostData} post The Post from which to get the data.
+ * @param {PostData} post The Post from which to get the data.
  */
-function getPostThumbnailElement( { post }: TopPostListItemProps ): JSX.Element {
+function ListItemThumbnail( { post }: TopPostDataProps ): JSX.Element {
 	if ( post.thumbnailUrl ) {
 		return (
 			<div className="parsely-top-post-thumbnail">
@@ -108,9 +110,9 @@ function getPostThumbnailElement( { post }: TopPostListItemProps ): JSX.Element 
  * Returns the Post title as a link (for editing the Post) or a div if the Post
  * has no valid ID.
  *
- * @param {TopPostData} post The Post from which to get the data.
+ * @param {TopPostDataProps} props The component's props.
  */
-function getPostTitleElement( { post }: TopPostListItemProps ): JSX.Element {
+function PostListItemTitle( { post }: TopPostDataProps ): JSX.Element {
 	return (
 		<a className="parsely-top-post-title" href={ post.dashUrl } target="_blank" rel="noreferrer">
 			<span className="screen-reader-text">

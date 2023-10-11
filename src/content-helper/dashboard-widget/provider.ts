@@ -13,7 +13,8 @@ import {
 	ContentHelperErrorCode,
 } from '../common/content-helper-error';
 import { getApiPeriodParams } from '../common/utils/api';
-import { TopPostData } from './top-posts/model';
+import { Metric, Period } from '../common/utils/constants';
+import { PostData } from '../common/utils/post';
 
 /**
  * The form of the response returned by the /stats/posts WordPress REST API
@@ -21,23 +22,25 @@ import { TopPostData } from './top-posts/model';
  */
 interface TopPostsApiResponse {
 	error?: Error;
-	data?: TopPostData[];
+	data?: PostData[];
 }
 
 const TOP_POSTS_DEFAULT_LIMIT = 3;
-const TOP_POSTS_DEFAULT_TIME_RANGE = 7; // In days.
 
 export class DashboardWidgetProvider {
 	/**
 	 * Returns the site's top posts.
 	 *
-	 * @return {Promise<Array<TopPostData>>} Object containing message and posts.
+	 * @param {Period} period The period to fetch data for.
+	 * @param {Metric} metric The metric to sort by.
+	 *
+	 * @return {Promise<Array<PostData>>} Object containing message and posts.
 	 */
-	public async getTopPosts(): Promise<TopPostData[]> {
-		let data: TopPostData[] = [];
+	public async getTopPosts( period: Period, metric: Metric ): Promise<PostData[]> {
+		let data: PostData[] = [];
 
 		try {
-			data = await this.fetchTopPostsFromWpEndpoint();
+			data = await this.fetchTopPostsFromWpEndpoint( period, metric );
 		} catch ( contentHelperError ) {
 			return Promise.reject( contentHelperError );
 		}
@@ -56,16 +59,20 @@ export class DashboardWidgetProvider {
 	/**
 	 * Fetches the site's top posts data from the WordPress REST API.
 	 *
-	 * @return {Promise<Array<TopPostData>>} Array of fetched posts.
+	 * @param {Period} period The period to fetch data for.
+	 * @param {Metric} metric The metric to sort by.
+	 *
+	 * @return {Promise<Array<PostData>>} Array of fetched posts.
 	 */
-	private async fetchTopPostsFromWpEndpoint(): Promise<TopPostData[]> {
+	private async fetchTopPostsFromWpEndpoint( period: Period, metric: Metric ): Promise<PostData[]> {
 		let response;
 
 		try {
 			response = await apiFetch( {
-				path: addQueryArgs( '/wp-parsely/v1/stats/posts', {
+				path: addQueryArgs( '/wp-parsely/v1/stats/posts/', {
 					limit: TOP_POSTS_DEFAULT_LIMIT,
-					...getApiPeriodParams( TOP_POSTS_DEFAULT_TIME_RANGE ),
+					...getApiPeriodParams( parseInt( period ) ),
+					sort: metric,
 					itm_source: 'wp-parsely-content-helper',
 				} ),
 			} ) as TopPostsApiResponse;

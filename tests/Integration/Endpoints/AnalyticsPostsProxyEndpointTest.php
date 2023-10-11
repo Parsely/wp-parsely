@@ -269,7 +269,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 						'thumbnailUrl' => 'https://images.parsely.com/XCmTXuOf8yVbUYTxj2abQ4RSDkM=/85x85/smart/https%3A//blog.parse.ly/wp-content/uploads/2021/06/Web-Analytics-Tool.png%3Fw%3D150%26h%3D150%26crop%3D1',
 						'title'        => '9 Types of Web Analytics Tools — And How to Know Which Ones You Really Need',
 						'url'          => 'https://blog.parse.ly/web-analytics-software-tools/?itm_source=wp-parsely-content-helper',
-						'views'        => 142,
+						'views'        => '142',
 						'postId'       => 0,
 					),
 					(object) array(
@@ -280,7 +280,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 						'thumbnailUrl' => 'https://images.parsely.com/ap3YSufqxnLpz6zzQshoks3snXI=/85x85/smart/https%3A//blog.parse.ly/wp-content/uploads/2021/05/pexels-brett-jordan-998501-1024x768-2.jpeg%3Fw%3D150%26h%3D150%26crop%3D1',
 						'title'        => '5 Tagging Best Practices For Getting the Most Out of Your Content Strategy',
 						'url'          => 'https://blog.parse.ly/5-tagging-best-practices-content-strategy/?itm_source=wp-parsely-content-helper',
-						'views'        => 40,
+						'views'        => '40',
 						'postId'       => 0,
 					),
 				),

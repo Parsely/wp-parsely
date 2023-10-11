@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { Dashicon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -10,14 +11,13 @@ import { EditIcon } from '../../common/icons/edit-icon';
 import { OpenLinkIcon } from '../../common/icons/open-link-icon';
 import { ViewsIcon } from '../../common/icons/views-icon';
 import { getSmartShortDate } from '../../common/utils/date';
-import { getPostEditUrl } from '../../common/utils/post';
-import { RelatedTopPostData } from './model';
+import {
+	PostListItemMetric,
+	PostListItemProps,
+	getPostEditUrl,
+} from '../../common/utils/post';
 
-interface RelatedTopPostListItemProps {
-	post: RelatedTopPostData;
-}
-
-export function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ): JSX.Element {
+export function RelatedTopPostListItem( { metric, post }: PostListItemProps ): JSX.Element {
 	return (
 		<li className="parsely-top-post" data-testid="parsely-top-post">
 			<div className="parsely-top-post-title">
@@ -37,9 +37,20 @@ export function RelatedTopPostListItem( { post }: RelatedTopPostListItemProps ):
 				}
 			</div>
 			<p className="parsely-top-post-info">
-				<span className="parsely-top-post-date"><span className="screen-reader-text">Date </span>{ getSmartShortDate( new Date( post.date ) ) }</span>
-				<span className="parsely-top-post-author"><span className="screen-reader-text">Author </span>{ post.author }</span>
-				<span className="parsely-top-post-views"><span className="screen-reader-text">Number of Views </span><ViewsIcon />{ post.views }</span>
+				<span className="parsely-top-post-date">
+					<span className="screen-reader-text">{ __( 'Date', 'wp-parsely' ) }</span>
+					{ getSmartShortDate( new Date( post.date ) ) }
+				</span>
+				<span className="parsely-top-post-author">
+					<span className="screen-reader-text">{ __( 'Author', 'wp-parsely' ) }</span>
+					{ post.author }
+				</span>
+				<PostListItemMetric
+					metric={ metric }
+					post={ post }
+					viewsIcon={ <ViewsIcon /> }
+					avgEngagedIcon={ <Dashicon icon="clock" /> }
+				/>
 			</p>
 		</li>
 	);
