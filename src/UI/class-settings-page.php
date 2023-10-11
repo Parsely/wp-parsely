@@ -968,36 +968,31 @@ final class Settings_Page {
 			$input['apikey']     = '';
 			$input['api_secret'] = '';
 		} else {
-			if ( '' === $input['apikey'] ) {
-				add_settings_error(
-					Parsely::OPTIONS_KEY,
-					'apikey',
-					__( 'Please specify the Site ID', 'wp-parsely' )
-				);
-			} else {
-				$site_id = $this->sanitize_site_id( $input['apikey'] );
-				if ( false === Validator::validate_site_id( $site_id ) ) {
-					add_settings_error(
-						Parsely::OPTIONS_KEY,
-						'apikey',
-						__( 'The Site ID was not saved because it is incorrect. It should look like "example.com".', 'wp-parsely' )
-					);
-					$input['apikey'] = $options['apikey'];
-				} else {
-					$input['apikey'] = $site_id;
-				}
+			$site_id    = $this->sanitize_site_id( $input['apikey'] );
+			$api_secret = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
+
+			$valid_credentials = Validator::validate_api_credentials( $this->parsely, $site_id, $api_secret );
+
+			// When running e2e tests, we need to update the API keys without validating them, as they will be invalid.
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
+			if ( isset( $_POST['e2e_parsely_skip_api_validate'] ) && 'y' === $_POST['e2e_parsely_skip_api_validate'] ) {
+				$valid_credentials = true;
 			}
 
-			$input['api_secret'] = $this->get_unobfuscated_value( $input['api_secret'], $this->parsely->get_api_secret() );
-			$api_secret_length   = strlen( $input['api_secret'] );
-			if ( $api_secret_length > 0 &&
-					false === Validator::validate_api_secret( $input['api_secret'] ) ) {
+			if ( is_wp_error( $valid_credentials ) && Validator::INVALID_API_CREDENTIALS === $valid_credentials->get_error_code() ) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'api_secret',
-					__( 'The API Secret was not saved because it is incorrect. Please contact Parse.ly support!', 'wp-parsely' )
+					__( 'The Site ID and API Secret weren\'t saved as they failed to authenticate with the Parse.ly API. Try again with different credentials or contact Parse.ly support', 'wp-parsely' )
 				);
+				$input['apikey']     = $options['apikey'];
 				$input['api_secret'] = $options['api_secret'];
+			}
+
+			// Since the API secret is obfuscated, we need to make sure that the value
+			// is not changed when the credentials are valid.
+			if ( true === $valid_credentials && $input['api_secret'] !== $api_secret ) {
+				$input['api_secret'] = $api_secret;
 			}
 		}
 
