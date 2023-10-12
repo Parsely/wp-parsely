@@ -107,6 +107,15 @@ class Parsely {
 		'Report',
 		'Review',
 		'CreativeWork',
+		'OpinionNewsArticle',
+		'AnalysisNewsArticle',
+		'BackgroundNewsArticle',
+		'ReviewNewsArticle',
+		'ReportageNewsArticle',
+		'Recipe',
+		'AdvertiserContentArticle',
+		'MedicalWebPage',
+		'PodcastEpisode',
 	);
 
 	/**
@@ -360,7 +369,7 @@ class Parsely {
 		 * POST request options.
 		 *
 		 * @var WP_HTTP_Request_Args $options
-		*/
+		 */
 		$options = array(
 			'method'      => 'POST',
 			'headers'     => $headers,
