@@ -94,13 +94,17 @@ export const insertRecordIntoTaxonomy = async ( recordName: string, taxonomyType
  * Gets the message returned by the PHC Editor Sidebar Related Top Posts panel
  * according to the various conditions passed to the function.
  *
- * @param {string} category Name of the category to select in the Post Editor.
- * @param {string} tag      Name of the tag to select in the Post Editor.
- * @param {number} timeout  Milliseconds to wait after category/tag selection.
- * @param {string} selector The selector from which to extract the message.
+ * @param {string} category   Name of the category to select in the Post Editor.
+ * @param {string} tag        Name of the tag to select in the Post Editor.
+ * @param {string} filterType The filter type to select in the dropdown.
+ * @param {number} timeout    Milliseconds to wait after category/tag selection.
+ * @param {string} selector   The selector from which to extract the message.
+ *
  * @return {Promise<string>} The message returned.
  */
-export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeout = 500, selector = '.content-helper-error-message' ): Promise<string> => {
+export const getTopRelatedPostsMessage = async (
+	category = '', tag = '', filterType = '', timeout = 500, selector = '.content-helper-error-message'
+): Promise<string> => {
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
@@ -143,6 +147,12 @@ export const getTopRelatedPostsMessage = async ( category = '', tag = '', timeou
 	await page.click( pluginButton );
 	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Related Top Posts' );
 	await topRelatedPostsButton.click();
+	if ( '' !== filterType ) {
+		await page.waitForTimeout( 500 );
+		await page.keyboard.press( 'Tab' );
+		await page.keyboard.type( filterType.charAt( 0 ) );
+		await page.waitForTimeout( 1250 );
+	}
 	await page.waitForSelector( contentHelperMessageSelector );
 	await page.waitForFunction( // Wait for the message to appear.
 		'document.querySelector("' + contentHelperMessageSelector + '").innerText.length > 0',

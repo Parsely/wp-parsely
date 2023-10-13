@@ -15,7 +15,15 @@ import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../../common/content-helper-error';
-import { AnalyticsApiOptionalQueryParams, getApiPeriodParams } from '../../common/utils/api';
+import {
+	AnalyticsApiOptionalQueryParams,
+	getApiPeriodParams,
+} from '../../common/utils/api';
+import {
+	Metric,
+	Period,
+	PostFilterType,
+} from '../../common/utils/constants';
 import { PostData } from '../../common/utils/post';
 
 /**
@@ -54,31 +62,20 @@ export class RelatedTopPostsProvider {
 	 * The 'related' status is determined by the current post's Author, Category
 	 * or tag.
 	 *
-	 * @param {string} period The period for which to fetch data.
-	 * @param {string} metric The metric to sort by.
+	 * @param {Period}         period     The period for which to fetch data.
+	 * @param {Metric}         metric     The metric to sort by.
+	 * @param {PostFilterType} filterType The selected filter type.
 	 *
 	 * @return {Promise<GetRelatedTopPostsResult>} Object containing message and posts.
 	 */
-	static async getRelatedTopPosts( period: string, metric: string ): Promise<GetRelatedTopPostsResult> {
-		const editor = select( 'core/editor' );
-
-		// Get post's author.
-		const currentPost: Post = editor.getCurrentPost();
-		const author: User = select( 'core' ).getEntityRecord( 'root', 'user', currentPost.author );
-
-		// Get post's first category.
-		const categoryIds = editor.getEditedPostAttribute( 'categories' ) as Array<number>;
-		const category: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'category', categoryIds?.[ 0 ] );
-
-		// Get post's first tag.
-		const tagIds = editor.getEditedPostAttribute( 'tags' ) as Array<number>;
-		const tag: Taxonomy = select( 'core' ).getEntityRecord( 'taxonomy', 'post_tag', tagIds?.[ 0 ] );
-
+	static async getRelatedTopPosts(
+		period: Period, metric: Metric, filterType: PostFilterType
+	): Promise<GetRelatedTopPostsResult> {
 		// Create API query.
 		let apiQuery;
 		try {
 			apiQuery = this.buildRelatedTopPostsApiQuery(
-				period, metric, author, category, tag
+				period, metric, filterType
 			);
 		} catch ( contentHelperError ) {
 			return Promise.reject( contentHelperError );
@@ -105,13 +102,13 @@ export class RelatedTopPostsProvider {
 	 * @since 3.11.0
 	 *
 	 * @param {boolean} dataIsEmpty     Whether the API returned no data.
-	 * @param {string}  period          The period for which data was fetched.
+	 * @param {Period}  period          The period for which data was fetched.
 	 * @param {string}  apiQueryMessage The message within the query.
 	 *
 	 * @return {string} The generated message.
 	 */
 	private static generateMessage(
-		dataIsEmpty: boolean, period: string, apiQueryMessage: string
+		dataIsEmpty: boolean, period: Period, apiQueryMessage: string
 	): string {
 		if ( dataIsEmpty ) {
 			return sprintf(
@@ -174,25 +171,36 @@ export class RelatedTopPostsProvider {
 	 * Builds the query object used in the API for performing the related
 	 * top posts request.
 	 *
-	 * @param {string}   period   The period for which to fetch data.
-	 * @param {string}   metric   The metric to sort by.
-	 * @param {User}     author   The post's author.
-	 * @param {Taxonomy} category The post's category.
-	 * @param {Taxonomy} tag      The post's tag.
+	 * @param {Period}         period     The period for which to fetch data.
+	 * @param {Metric}         metric     The metric to sort by.
+	 * @param {PostFilterType} filterType The selected filter type.
 	 *
 	 * @return {RelatedTopPostsApiQuery} The query object.
 	 */
 	private static buildRelatedTopPostsApiQuery(
-		period: string, metric:string, author: User, category: Taxonomy, tag: Taxonomy
+		period: Period, metric:Metric, filterType: PostFilterType
 	): RelatedTopPostsApiQuery {
+		const core = select( 'core' );
+		const editor = select( 'core/editor' );
 		const commonQueryParams = {
 			...getApiPeriodParams( parseInt( period ) ),
 			limit: RELATED_POSTS_DEFAULT_LIMIT,
 			sort: metric,
 		};
 
-		// A tag exists.
-		if ( tag?.name ) {
+		if ( PostFilterType.Tag === filterType ) {
+			// Get post's first tag.
+			const tagIds = editor.getEditedPostAttribute( 'tags' ) as Array<number>;
+			const tag: Taxonomy = core.getEntityRecord( 'taxonomy', 'post_tag', tagIds?.[ 0 ] );
+
+			if ( undefined === tag ) {
+				throw new ContentHelperError(
+					__( 'No tags are assigned to this publication.', 'wp-parsely' ),
+					ContentHelperErrorCode.CannotFormulateApiQuery,
+					''
+				);
+			}
+
 			return ( {
 				query: { tag: tag.name, ...commonQueryParams },
 				/* translators: %s: message such as "with tag Foo" */
@@ -200,17 +208,39 @@ export class RelatedTopPostsProvider {
 			} );
 		}
 
-		// A category exists.
-		if ( category?.name ) {
+		if ( PostFilterType.Section === filterType ) {
+			// Get post's first category.
+			const categoryIds = editor.getEditedPostAttribute( 'categories' ) as Array<number>;
+			const category: Taxonomy = core.getEntityRecord( 'taxonomy', 'category', categoryIds?.[ 0 ] );
+
+			if ( undefined === category ) {
+				throw new ContentHelperError(
+					__( 'No section is assigned to this publication.', 'wp-parsely' ),
+					ContentHelperErrorCode.CannotFormulateApiQuery,
+					''
+				);
+			}
+
 			return ( {
 				query: { section: category.name, ...commonQueryParams },
 				/* translators: %s: message such as "in category Foo" */
-				message: sprintf( __( 'in category "%1$s"', 'wp-parsely' ), category.name ),
+				message: sprintf( __( 'in section "%1$s"', 'wp-parsely' ), category.name ),
 			} );
 		}
 
-		// Fallback to author.
-		if ( author?.name ) {
+		if ( PostFilterType.Author === filterType ) {
+			// Get post's author.
+			const currentPost: Post = editor.getCurrentPost();
+			const author: User = core.getEntityRecord( 'root', 'user', currentPost.author );
+
+			if ( undefined === author ) {
+				throw new ContentHelperError(
+					__( 'No author is assigned to this publication.', 'wp-parsely' ),
+					ContentHelperErrorCode.CannotFormulateApiQuery,
+					''
+				);
+			}
+
 			return ( {
 				query: { author: author.name, ...commonQueryParams },
 				/* translators: %s: message such as "by author John" */
@@ -218,9 +248,9 @@ export class RelatedTopPostsProvider {
 			} );
 		}
 
-		// No filter could be picked. The query cannot be formulated.
+		// No filter type has been specified. The query cannot be formulated.
 		throw new ContentHelperError(
-			__( "Cannot formulate query because the post's Tag, Category and Author are empty.", 'wp-parsely' ),
+			__( 'No valid filter type has been specified.', 'wp-parsely' ),
 			ContentHelperErrorCode.CannotFormulateApiQuery
 		);
 	}
