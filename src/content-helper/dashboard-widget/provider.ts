@@ -71,7 +71,7 @@ export class DashboardWidgetProvider {
 			response = await apiFetch( {
 				path: addQueryArgs( '/wp-parsely/v1/stats/posts/', {
 					limit: TOP_POSTS_DEFAULT_LIMIT,
-					...getApiPeriodParams( parseInt( period ) ),
+					...getApiPeriodParams( period ),
 					sort: metric,
 					itm_source: 'wp-parsely-content-helper',
 				} ),

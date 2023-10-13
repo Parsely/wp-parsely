@@ -23,6 +23,7 @@ import {
 	Metric,
 	Period,
 	PostFilterType,
+	getPeriodDescription,
 } from '../../common/utils/constants';
 import { PostData } from '../../common/utils/post';
 
@@ -120,18 +121,10 @@ export class RelatedTopPostsProvider {
 			);
 		}
 
-		if ( '1' === period ) {
-			return sprintf(
-				/* translators: 1: message such as "in category Foo" */
-				__( 'Top posts %1$s in last 24 hours.', 'wp-parsely' ),
-				apiQueryMessage, period
-			);
-		}
-
 		return sprintf(
-			/* translators: 1: message such as "in category Foo", 2: number of days */
-			__( 'Top posts %1$s in last %2$d days.', 'wp-parsely' ),
-			apiQueryMessage, period
+			/* translators: 1: message such as "in category Foo", 2: period such as "last 7 days"*/
+			__( 'Top posts %1$s in the %2$s.', 'wp-parsely' ),
+			apiQueryMessage, getPeriodDescription( period, true )
 		);
 	}
 
@@ -183,7 +176,7 @@ export class RelatedTopPostsProvider {
 		const core = select( 'core' );
 		const editor = select( 'core/editor' );
 		const commonQueryParams = {
-			...getApiPeriodParams( parseInt( period ) ),
+			...getApiPeriodParams( period ),
 			limit: RELATED_POSTS_DEFAULT_LIMIT,
 			sort: metric,
 		};

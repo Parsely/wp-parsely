@@ -37,7 +37,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList period={ Period.Week } metric={ Metric.Views } /> );
+			render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } /> );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
@@ -95,7 +95,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList period={ Period.Week } metric={ Metric.Views } /> );
+			render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } /> );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
@@ -115,7 +115,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList period={ Period.Week } metric={ Metric.Views } /> );
+			render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } /> );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
@@ -158,7 +158,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList period={ Period.Week } metric={ Metric.Views } /> );
+			render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } /> );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
@@ -212,7 +212,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	}
 
 	async function verifyCredentialsNotSetMessage( getRelatedTopPostsFn: jest.SpyInstance<Promise<GetRelatedTopPostsResult>> ) {
-		render( <RelatedTopPostList period={ Period.Week } metric={ Metric.Views } /> );
+		render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } /> );
 		expect( getSpinner() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'empty-credentials-message' ), { timeout: 3000 } );
@@ -228,7 +228,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	}
 
 	async function verifyApiErrorMessage( getRelatedTopPostsFn: jest.SpyInstance<Promise<GetRelatedTopPostsResult>> ) {
-		render( <RelatedTopPostList period={ Period.Week } metric={ Metric.Views } /> );
+		render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } /> );
 		expect( getSpinner() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'error' ), { timeout: 3000 } );
