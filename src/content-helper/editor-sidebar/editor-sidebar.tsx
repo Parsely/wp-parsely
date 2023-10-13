@@ -14,6 +14,7 @@ import { LeafIcon } from '../common/icons/leaf-icon';
 import {
 	Metric,
 	Period,
+	getMetricDescription,
 	getPeriodDescription,
 	isInEnum,
 } from '../common/utils/constants';
@@ -56,8 +57,13 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					} }
 					value={ metric }
 				>
-					<option value={ Metric.Views }>{ __( 'Page Views', 'wp-parsely' ) }</option>
-					<option value={ Metric.AvgEngaged }>{ __( 'Avg. Time', 'wp-parsely' ) }</option>
+					{
+						Object.values( Metric ).map( ( value ) =>
+							<option key={ value } value={ value }>
+								{ getMetricDescription( value ) }
+							</option>
+						)
+					}
 				</SelectControl>
 			</>
 		);

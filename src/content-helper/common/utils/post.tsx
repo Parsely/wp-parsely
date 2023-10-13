@@ -1,6 +1,7 @@
 /**
  * Internal dependencies
  */
+import { Metric } from './constants';
 import { formatToImpreciseNumber } from './number';
 
 /**
@@ -33,7 +34,7 @@ export interface PostData {
  * @since 3.11.0
  */
 export interface PostListItemProps {
-	metric: string;
+	metric: Metric;
 	post: PostData;
 }
 

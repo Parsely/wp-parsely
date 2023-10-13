@@ -12,6 +12,7 @@ import { Select } from '../../common/select';
 import {
 	Metric,
 	Period,
+	getMetricDescription,
 	getPeriodDescription,
 	isInEnum,
 } from '../../common/utils/constants';
@@ -88,9 +89,11 @@ export function TopPosts() {
 				/>
 				<Select
 					defaultValue={ metric }
-					items={ [
-						[ Metric.Views, 'Page views' ],
-						[ Metric.AvgEngaged, 'Avg. Time' ] ] }
+					items={
+						Object.values( Metric ).map(
+							( value ) => [ value, getMetricDescription( value ) ]
+						)
+					}
 					onChange={ ( event ) => {
 						if ( isInEnum( event.target.value, Metric ) ) {
 							setMetricFilter( event.target.value as Metric );
