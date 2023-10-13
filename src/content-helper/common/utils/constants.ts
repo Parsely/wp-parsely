@@ -105,3 +105,23 @@ export function getPeriodDescription(
 
 	return description;
 }
+
+/**
+ * Returns a text description representing the passed metric.
+ *
+ * @since 3.11.0
+ *
+ * @param {Metric} metric The metric for which to create the description.
+ *
+ * @return {string} The metric description.
+ */
+export function getMetricDescription( metric: Metric ): string {
+	switch ( metric ) {
+		case Metric.Views:
+			return __( 'Page Views', 'wp-parsely' );
+		case Metric.AvgEngaged:
+			return __( 'Avg. Time', 'wp-parsely' );
+		default:
+			return __( 'Unknown Metric', 'wp-parsely' );
+	}
+}
