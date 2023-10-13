@@ -43,7 +43,7 @@ export function PerformanceDetails(
 ): JSX.Element {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
-	const [ postDetailsData, setPostDetails ] = useState<PerformanceData>();
+	const [ postDetails, setPostDetails ] = useState<PerformanceData>();
 
 	useEffect( () => {
 		const provider = new PerformanceDetailsProvider();
@@ -67,6 +67,10 @@ export function PerformanceDetails(
 
 		setLoading( true );
 		fetchPosts( FETCH_RETRIES );
+
+		return (): void => {
+			setError( undefined );
+		};
 	}, [ period ] );
 
 	if ( error ) {
@@ -82,7 +86,7 @@ export function PerformanceDetails(
 			)
 			: (
 				<PerformanceDetailsSections
-					data={ postDetailsData as PerformanceData }
+					data={ postDetails as PerformanceData }
 					period={ period }
 				/>
 			)
