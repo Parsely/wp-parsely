@@ -61,43 +61,52 @@ export function TopPosts() {
 		};
 	}, [ period, metric ] );
 
+	const filters :JSX.Element = (
+		<div className="parsely-top-posts-filters">
+			<Select
+				defaultValue={ period }
+				items={
+					Object.values( Period ).map(
+						( value ) => [ value, getPeriodDescription( value ) ]
+					)
+				}
+				onChange={ ( event ) => {
+					if ( isInEnum( event.target.value, Period ) ) {
+						setPeriodFilter( event.target.value as Period );
+					}
+				} }
+			/>
+			<Select
+				defaultValue={ metric }
+				items={ [
+					[ Metric.Views, 'Page views' ],
+					[ Metric.AvgEngaged, 'Avg. Time' ] ] }
+				onChange={ ( event ) => {
+					if ( isInEnum( event.target.value, Metric ) ) {
+						setMetricFilter( event.target.value as Metric );
+					}
+				} }
+			/>
+		</div>
+	);
+
 	// Show error message.
 	if ( error ) {
-		return error.Message( { className: 'parsely-top-posts-descr' } );
+		return (
+			<>
+				{ filters }
+				{ error.Message() }
+			</>
+		);
 	}
 
-	const spinner = (
+	const spinner: JSX.Element = (
 		<div className="parsely-spinner-wrapper"><Spinner /></div>
 	);
 
 	return (
-		<div className="parsely-top-posts-wrapper">
-			<div className="parsely-top-posts-filters">
-				<Select
-					defaultValue={ period }
-					items={
-						Object.values( Period ).map(
-							( value ) => [ value, getPeriodDescription( value ) ]
-						)
-					}
-					onChange={ ( event ) => {
-						if ( isInEnum( event.target.value, Period ) ) {
-							setPeriodFilter( event.target.value as Period );
-						}
-					} }
-				/>
-				<Select
-					defaultValue={ metric }
-					items={ [
-						[ Metric.Views, 'Page views' ],
-						[ Metric.AvgEngaged, 'Avg. Time' ] ] }
-					onChange={ ( event ) => {
-						if ( isInEnum( event.target.value, Metric ) ) {
-							setMetricFilter( event.target.value as Metric );
-						}
-					} }
-				/>
-			</div>
+		<>
+			{ filters }
 			{
 				loading ? ( spinner ) : (
 					<ol className="parsely-top-posts">
@@ -107,6 +116,6 @@ export function TopPosts() {
 					</ol>
 				)
 			}
-		</div>
+		</>
 	);
 }

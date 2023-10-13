@@ -2,6 +2,8 @@
 @import "../common/css/functions";
 
 #wp-parsely-dashboard-widget {
+	font-family: var(--base-font);
+	color: var(--base-text);
 
 	.parsely-spinner-wrapper {
 		display: flex;
@@ -15,17 +17,12 @@
 	}
 
 	.content-helper-error-message {
-		margin-top: to_rem(15px) !important;
+		margin-top: to_rem(18px);
 	}
 
 	p.content-helper-error-message-hint {
 		color: var(--gray-700);
 	}
-}
-
-#wp-parsely-dashboard-widget .parsely-top-posts-wrapper {
-	font-family: var(--base-font);
-	color: var(--base-text);
 
 	.parsely-top-posts-filters {
 		margin-bottom: to_rem(10px);
