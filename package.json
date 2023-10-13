@@ -58,7 +58,7 @@
 		"@wordpress/components": "^25.7.0",
 		"@wordpress/compose": "^6.18.0",
 		"@wordpress/core-data": "^6.19.0",
-		"@wordpress/data": "^9.11.0",
+		"@wordpress/data": "^9.13.1",
 		"@wordpress/e2e-test-utils": "^10.14.0",
 		"@wordpress/edit-post": "^7.20.0",
 		"@wordpress/element": "^5.18.0",
