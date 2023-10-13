@@ -9,8 +9,7 @@ import { __, _n, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { ContentHelperError } from '../../common/content-helper-error';
-import { getApiPeriodStartDate } from '../../common/utils/api';
-import { getSmartShortDate } from '../../common/utils/date';
+import { Period, getPeriodDescription } from '../../common/utils/constants';
 import { formatToImpreciseNumber } from '../../common/utils/number';
 import { PerformanceData } from './model';
 import { PerformanceDetailsProvider } from './provider';
@@ -24,7 +23,7 @@ const FETCH_RETRIES = 1;
  * @since 3.11.0
  */
 interface PerformanceDetailsProps {
-	period: string;
+	period: Period;
 }
 
 /**
@@ -98,46 +97,13 @@ export function PerformanceDetails(
 function PerformanceDetailsSections( props: PerformanceSectionProps ) {
 	return (
 		<div className="performance-details-panel">
-			<DataPeriodSection { ...props } />
+			<div className="section period">
+				{ getPeriodDescription( props.period ) }
+			</div>
 			<GeneralPerformanceSection { ...props } />
 			<ReferrerTypesSection { ...props } />
 			<TopReferrersSection { ...props } />
 			<ActionsSection { ...props } />
-		</div>
-	);
-}
-
-/**
- * Outputs the "Period" section, which denotes the period for which data is
- * shown.
- *
- * @param {PerformanceSectionProps} props The props needed to populate the section.
- */
-function DataPeriodSection( { period }: PerformanceSectionProps ): JSX.Element {
-	const periodStart = getSmartShortDate(
-		new Date( getApiPeriodStartDate( parseInt( period ) ) ),
-	);
-
-	if ( '1' === period ) {
-		return (
-			<div className="section period">
-				{ __( 'Last 24 Hours', 'wp-parsely' ) }
-			</div>
-		);
-	}
-
-	return (
-		<div className="section period">
-			{
-				/* translators: Number of days for which data is being shown */
-				sprintf( __( 'Last %d Days', 'wp-parsely' ), period )
-			}
-			<span>
-				{
-					/* translators: Period starting date in short format */
-					sprintf( __( ' (%s - Today)', 'wp-parsely' ), periodStart )
-				}
-			</span>
 		</div>
 	);
 }

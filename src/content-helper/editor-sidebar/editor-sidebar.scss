@@ -135,13 +135,10 @@
 		}
 	}
 
-	// Data Period section (Last x days).
+	// Data Period section.
 	div.section.period {
 		margin-top: 0.8rem;
-
-		span {
-			color: var(--base-text-2);
-		}
+		color: var(--base-text-2);
 	}
 
 	// General Performance section (Views, Visitors, Time).

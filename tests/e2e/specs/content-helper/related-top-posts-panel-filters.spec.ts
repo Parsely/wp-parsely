@@ -54,6 +54,6 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 		const categoryName = 'Parse.ly Tips';
 
 		expect( await getTopRelatedPostsMessage( categoryName, '', 'section', 2000, messageSelector ) )
-			.toMatch( `Top posts in section "${ categoryName }" in last 7 days.` );
+			.toMatch( `Top posts in section "${ categoryName }" in the last 7 days.` );
 	} );
 } );

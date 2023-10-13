@@ -11,7 +11,12 @@ import { registerPlugin } from '@wordpress/plugins';
  * Internal dependencies
  */
 import { LeafIcon } from '../common/icons/leaf-icon';
-import { Metric, Period, isInEnum } from '../common/utils/constants';
+import {
+	Metric,
+	Period,
+	getPeriodDescription,
+	isInEnum,
+} from '../common/utils/constants';
 import { VerifyCredentials } from '../common/verify-credentials';
 import { PerformanceDetails } from './performance-details/component';
 import { RelatedTopPostList } from './related-top-posts/component-list';
@@ -19,7 +24,7 @@ import { RelatedTopPostList } from './related-top-posts/component-list';
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
 const ContentHelperEditorSidebar = (): JSX.Element => {
-	const [ period, setPeriod ] = useState<Period>( Period.Week );
+	const [ period, setPeriod ] = useState<Period>( Period.Days7 );
 	const [ metric, setMetric ] = useState<Metric>( Metric.Views );
 
 	const Settings = (): JSX.Element => {
@@ -34,9 +39,13 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					} }
 					value={ period }
 				>
-					<option value={ Period.Day }>{ __( 'Last 24 Hours', 'wp-parsely' ) }</option>
-					<option value={ Period.Week }>{ __( 'Last 7 Days', 'wp-parsely' ) }</option>
-					<option value={ Period.Month }>{ __( 'Last 30 Days', 'wp-parsely' ) }</option>
+					{
+						Object.values( Period ).map( ( value ) =>
+							<option key={ value } value={ value }>
+								{ getPeriodDescription( value ) }
+							</option>
+						)
+					}
 				</SelectControl>
 				<SelectControl
 					label={ __( 'Metric', 'wp-parsely' ) }

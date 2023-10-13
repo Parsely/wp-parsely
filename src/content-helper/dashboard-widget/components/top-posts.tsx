@@ -9,7 +9,12 @@ import { useEffect, useState } from '@wordpress/element';
  */
 import { ContentHelperError } from '../../common/content-helper-error';
 import { Select } from '../../common/select';
-import { Metric, Period, isInEnum } from '../../common/utils/constants';
+import {
+	Metric,
+	Period,
+	getPeriodDescription,
+	isInEnum,
+} from '../../common/utils/constants';
 import { PostData } from '../../common/utils/post';
 import { DashboardWidgetProvider } from '../provider';
 import { TopPostListItem } from './top-posts-list-item';
@@ -23,7 +28,7 @@ export function TopPosts() {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ posts, setPosts ] = useState<PostData[]>( [] );
-	const [ period, setPeriodFilter ] = useState<Period>( Period.Week );
+	const [ period, setPeriodFilter ] = useState<Period>( Period.Days7 );
 	const [ metric, setMetricFilter ] = useState<Metric>( Metric.Views );
 
 	useEffect( () => {
@@ -70,11 +75,11 @@ export function TopPosts() {
 			<div className="parsely-top-posts-filters">
 				<Select
 					defaultValue={ period }
-					items={ [
-						[ Period.Day, 'Last 24 Hours' ],
-						[ Period.Week, 'Last 7 Days' ],
-						[ Period.Month, 'Last 30 Days' ],
-					] }
+					items={
+						Object.values( Period ).map(
+							( value ) => [ value, getPeriodDescription( value ) ]
+						)
+					}
 					onChange={ ( event ) => {
 						if ( isInEnum( event.target.value, Period ) ) {
 							setPeriodFilter( event.target.value as Period );
