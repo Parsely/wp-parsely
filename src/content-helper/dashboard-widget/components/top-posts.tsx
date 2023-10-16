@@ -104,7 +104,7 @@ export function TopPosts() {
 				disabled={ page <= 1 }
 				onClick={ () => setPage( page - 1 ) }
 			>
-				{ '<<' } Previous
+				{ '<< ' + __( 'Previous', 'wp-parsely' ) }
 			</button>
 			{
 				sprintf( /* translators: 1: Current page */
