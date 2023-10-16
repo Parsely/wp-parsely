@@ -1174,6 +1174,7 @@ function TopPosts() {
       children: ['<<', " Previous"]
     }), (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.sprintf)( /* translators: 1: Current page */(0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Page %1$d', 'wp-parsely'), page), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("button", {
       className: "parsely-top-posts-navigation-next",
+      disabled: posts.length < _provider__WEBPACK_IMPORTED_MODULE_6__.TOP_POSTS_DEFAULT_LIMIT,
       onClick: function () {
         return setPage(page + 1);
       },
@@ -1202,7 +1203,7 @@ function TopPosts() {
           post: post
         }, post.id);
       })
-    }), posts.length >= 5 && navigation]
+    }), (posts.length >= 5 || page > 1) && navigation]
   });
 }
 

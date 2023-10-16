@@ -114,6 +114,7 @@ export function TopPosts() {
 			}
 			<button
 				className="parsely-top-posts-navigation-next"
+				disabled={ posts.length < TOP_POSTS_DEFAULT_LIMIT }
 				onClick={ () => setPage( page + 1 ) }
 			>
 				{ __( 'Next', 'wp-parsely' ) + ' >>' }
@@ -147,7 +148,7 @@ export function TopPosts() {
 					</ol>
 				)
 			}
-			{ posts.length >= 5 && navigation }
+			{ ( posts.length >= 5 || page > 1 ) && navigation }
 		</>
 	);
 }
