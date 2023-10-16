@@ -188,7 +188,7 @@ export class RelatedTopPostsProvider {
 
 			if ( undefined === tag ) {
 				throw new ContentHelperError(
-					__( 'No tags are assigned to this publication.', 'wp-parsely' ),
+					__( 'No tags are assigned to this page.', 'wp-parsely' ),
 					ContentHelperErrorCode.CannotFormulateApiQuery,
 					''
 				);
@@ -208,7 +208,7 @@ export class RelatedTopPostsProvider {
 
 			if ( undefined === category ) {
 				throw new ContentHelperError(
-					__( 'No section is assigned to this publication.', 'wp-parsely' ),
+					__( 'No section is assigned to this page.', 'wp-parsely' ),
 					ContentHelperErrorCode.CannotFormulateApiQuery,
 					''
 				);
@@ -228,7 +228,7 @@ export class RelatedTopPostsProvider {
 
 			if ( undefined === author ) {
 				throw new ContentHelperError(
-					__( 'No author is assigned to this publication.', 'wp-parsely' ),
+					__( 'No author is assigned to this page.', 'wp-parsely' ),
 					ContentHelperErrorCode.CannotFormulateApiQuery,
 					''
 				);
