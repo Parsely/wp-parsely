@@ -3,6 +3,7 @@
  */
 import { Spinner } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -17,7 +18,7 @@ import {
 	isInEnum,
 } from '../../common/utils/constants';
 import { PostData } from '../../common/utils/post';
-import { DashboardWidgetProvider } from '../provider';
+import { DashboardWidgetProvider, TOP_POSTS_DEFAULT_LIMIT } from '../provider';
 import { TopPostListItem } from './top-posts-list-item';
 
 const FETCH_RETRIES = 1;
@@ -31,12 +32,13 @@ export function TopPosts() {
 	const [ posts, setPosts ] = useState<PostData[]>( [] );
 	const [ period, setPeriodFilter ] = useState<Period>( Period.Days7 );
 	const [ metric, setMetricFilter ] = useState<Metric>( Metric.Views );
+	const [ page, setPage ] = useState<number>( 1 );
 
 	useEffect( () => {
 		const provider = new DashboardWidgetProvider();
 
 		const fetchPosts = async ( retries: number ) => {
-			provider.getTopPosts( period, metric )
+			provider.getTopPosts( period, metric, page )
 				.then( ( result ): void => {
 					setPosts( result );
 					setLoading( false );
@@ -60,7 +62,7 @@ export function TopPosts() {
 			setPosts( [] );
 			setError( undefined );
 		};
-	}, [ period, metric ] );
+	}, [ period, metric, page ] );
 
 	const filters :JSX.Element = (
 		<div className="parsely-top-posts-filters">
@@ -74,6 +76,7 @@ export function TopPosts() {
 				onChange={ ( event ) => {
 					if ( isInEnum( event.target.value, Period ) ) {
 						setPeriodFilter( event.target.value as Period );
+						setPage( 1 );
 					}
 				} }
 			/>
@@ -87,9 +90,34 @@ export function TopPosts() {
 				onChange={ ( event ) => {
 					if ( isInEnum( event.target.value, Metric ) ) {
 						setMetricFilter( event.target.value as Metric );
+						setPage( 1 );
 					}
 				} }
 			/>
+		</div>
+	);
+
+	const navigation: JSX.Element = (
+		<div className="parsely-top-posts-navigation">
+			<button
+				className="parsely-top-posts-navigation-prev"
+				disabled={ page <= 1 }
+				onClick={ () => setPage( page - 1 ) }
+			>
+				{ '<<' } Previous
+			</button>
+			{
+				sprintf( /* translators: 1: Current page */
+					__( 'Page %1$d', 'wp-parsely' ),
+					page
+				)
+			}
+			<button
+				className="parsely-top-posts-navigation-next"
+				onClick={ () => setPage( page + 1 ) }
+			>
+				{ __( 'Next', 'wp-parsely' ) + ' >>' }
+			</button>
 		</div>
 	);
 
@@ -112,13 +140,14 @@ export function TopPosts() {
 			{ filters }
 			{
 				loading ? ( spinner ) : (
-					<ol className="parsely-top-posts">
+					<ol className="parsely-top-posts" style={ { counterReset: 'item ' + ( ( page - 1 ) * TOP_POSTS_DEFAULT_LIMIT ) } }>
 						{ posts.map( ( post: PostData ): JSX.Element =>
 							<TopPostListItem key={ post.id } metric={ metric } post={ post } />
 						) }
 					</ol>
 				)
 			}
+			{ posts.length >= 5 && navigation }
 		</>
 	);
 }
