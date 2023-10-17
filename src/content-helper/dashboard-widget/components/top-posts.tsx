@@ -104,7 +104,7 @@ export function TopPosts() {
 				disabled={ page <= 1 }
 				onClick={ () => setPage( page - 1 ) }
 			>
-				{ '<< ' + __( 'Previous', 'wp-parsely' ) }
+				{ __( '<< Previous', 'wp-parsely' ) }
 			</button>
 			{
 				sprintf( /* translators: 1: Current page */
@@ -114,10 +114,10 @@ export function TopPosts() {
 			}
 			<button
 				className="parsely-top-posts-navigation-next"
-				disabled={ posts.length < TOP_POSTS_DEFAULT_LIMIT }
+				disabled={ ! loading && posts.length < TOP_POSTS_DEFAULT_LIMIT }
 				onClick={ () => setPage( page + 1 ) }
 			>
-				{ __( 'Next', 'wp-parsely' ) + ' >>' }
+				{ __( 'Next >>', 'wp-parsely' ) }
 			</button>
 		</div>
 	);
@@ -128,6 +128,7 @@ export function TopPosts() {
 			<>
 				{ filters }
 				{ error.Message() }
+				{ page > 1 && navigation }
 			</>
 		);
 	}
@@ -148,7 +149,7 @@ export function TopPosts() {
 					</ol>
 				)
 			}
-			{ ( posts.length >= 5 || page > 1 ) && navigation }
+			{ ( posts.length >= TOP_POSTS_DEFAULT_LIMIT || page > 1 ) && navigation }
 		</>
 	);
 }
