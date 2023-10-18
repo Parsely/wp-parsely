@@ -30,7 +30,9 @@ interface TopPostDataProps {
  *
  * @param {PostListItemProps} props The component's props.
  */
-export function TopPostListItem( { metric, post }: PostListItemProps ): JSX.Element {
+export function TopPostListItem(
+	{ metric, post }: Readonly<PostListItemProps>
+): JSX.Element {
 	return (
 		<li className="parsely-top-post" key={ post.id }>
 			<div className="parsely-top-post-content">
@@ -87,7 +89,7 @@ export function TopPostListItem( { metric, post }: PostListItemProps ): JSX.Elem
  *
  * @param {PostData} post The Post from which to get the data.
  */
-function ListItemThumbnail( { post }: TopPostDataProps ): JSX.Element {
+function ListItemThumbnail( { post }: Readonly<TopPostDataProps> ): JSX.Element {
 	if ( post.thumbnailUrl ) {
 		return (
 			<div className="parsely-top-post-thumbnail">
@@ -112,7 +114,7 @@ function ListItemThumbnail( { post }: TopPostDataProps ): JSX.Element {
  *
  * @param {TopPostDataProps} props The component's props.
  */
-function PostListItemTitle( { post }: TopPostDataProps ): JSX.Element {
+function PostListItemTitle( { post }: Readonly<TopPostDataProps> ): JSX.Element {
 	return (
 		<a className="parsely-top-post-title" href={ post.dashUrl } target="_blank" rel="noreferrer">
 			<span className="screen-reader-text">

@@ -29,7 +29,7 @@ export function ParselyRecommendations( {
 	showimages,
 	sort,
 	title,
-} : ParselyRecommendationsProps ) {
+} : Readonly<ParselyRecommendationsProps> ): JSX.Element {
 	const {
 		state: { error, isLoaded, recommendations },
 	} = useRecommendationsStore();

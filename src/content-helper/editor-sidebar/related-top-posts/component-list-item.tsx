@@ -17,7 +17,9 @@ import {
 	getPostEditUrl,
 } from '../../common/utils/post';
 
-export function RelatedTopPostListItem( { metric, post }: PostListItemProps ): JSX.Element {
+export function RelatedTopPostListItem(
+	{ metric, post }: Readonly<PostListItemProps>
+): JSX.Element {
 	return (
 		<li className="parsely-top-post" data-testid="parsely-top-post">
 			<div className="parsely-top-post-title">

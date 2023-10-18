@@ -61,7 +61,7 @@ interface PostListItemMetricProps extends PostListItemProps {
  * @return {JSX.Element} The resulting JSX Element.
  */
 export function PostListItemMetric(
-	{ metric, post, avgEngagedIcon, viewsIcon }: PostListItemMetricProps
+	{ metric, post, avgEngagedIcon, viewsIcon }: Readonly<PostListItemMetricProps>
 ): JSX.Element {
 	if ( 'views' === metric ) {
 		return (

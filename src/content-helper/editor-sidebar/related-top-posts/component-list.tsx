@@ -36,7 +36,9 @@ interface RelatedTopPostListProps {
  *
  * @param {RelatedTopPostListProps} props The component's props.
  */
-export function RelatedTopPostList( { period, metric } : RelatedTopPostListProps ) {
+export function RelatedTopPostList(
+	{ period, metric } : Readonly<RelatedTopPostListProps>
+): JSX.Element {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ message, setMessage ] = useState<string>();

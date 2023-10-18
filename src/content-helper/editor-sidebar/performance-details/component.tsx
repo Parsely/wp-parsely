@@ -39,7 +39,7 @@ interface PerformanceSectionProps extends PerformanceDetailsProps {
  * @param {PerformanceDetailsProps} props The component's props.
  */
 export function PerformanceDetails(
-	{ period }: PerformanceDetailsProps
+	{ period }: Readonly<PerformanceDetailsProps>
 ): JSX.Element {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
@@ -98,7 +98,9 @@ export function PerformanceDetails(
  *
  * @param {PerformanceSectionProps} props The props needed to populate the sections.
  */
-function PerformanceDetailsSections( props: PerformanceSectionProps ) {
+function PerformanceDetailsSections(
+	props: Readonly<PerformanceSectionProps>
+): JSX.Element {
 	return (
 		<div className="performance-details-panel">
 			<div className="section period">
@@ -117,7 +119,9 @@ function PerformanceDetailsSections( props: PerformanceSectionProps ) {
  *
  * @param {PerformanceSectionProps} props The props needed to populate the section.
  */
-function GeneralPerformanceSection( props: PerformanceSectionProps ) {
+function GeneralPerformanceSection(
+	props: Readonly<PerformanceSectionProps>
+): JSX.Element {
 	const data = props.data;
 
 	return (
@@ -147,7 +151,9 @@ function GeneralPerformanceSection( props: PerformanceSectionProps ) {
  *
  * @param {PerformanceSectionProps} props The props needed to populate the section.
  */
-function ReferrerTypesSection( props: PerformanceSectionProps ) {
+function ReferrerTypesSection(
+	props: Readonly<PerformanceSectionProps>
+): JSX.Element {
 	const data = props.data;
 
 	// Remove unneeded totals to simplify upcoming map() calls.
@@ -212,7 +218,9 @@ function ReferrerTypesSection( props: PerformanceSectionProps ) {
  *
  * @param {PerformanceSectionProps} props The props needed to populate the section.
  */
-function TopReferrersSection( props: PerformanceSectionProps ) {
+function TopReferrersSection(
+	props: Readonly<PerformanceSectionProps>
+): JSX.Element {
 	const data = props.data;
 	let totalViewsPercentage = 0;
 
@@ -274,7 +282,9 @@ function TopReferrersSection( props: PerformanceSectionProps ) {
  *
  * @param {PerformanceSectionProps} props The props needed to populate the section.
  */
-function ActionsSection( props: PerformanceSectionProps ) {
+function ActionsSection(
+	props: Readonly<PerformanceSectionProps>
+): JSX.Element {
 	const data = props.data;
 	const ariaOpensNewTab = <span className="screen-reader-text"> {
 		__( '(opens in new tab)', 'wp-parsely' ) }
