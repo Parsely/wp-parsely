@@ -21,17 +21,26 @@ export function RelatedTopPostListItem( { metric, post }: PostListItemProps ): J
 	return (
 		<li className="parsely-top-post" data-testid="parsely-top-post">
 			<div className="parsely-top-post-title">
-				<a className="parsely-top-post-stats-link" href={ post.dashUrl } target="_blank" rel="noreferrer" title={ __( 'View in Parse.ly (opens new tab)', 'wp-parsely' ) }>
+				<a className="parsely-top-post-stats-link" href={ post.dashUrl } target="_blank" rel="noreferrer">
+					<span className="screen-reader-text">
+						{ __( 'View in Parse.ly (opens new tab)', 'wp-parsely' ) }
+					</span>
 					{ post.title }
 				</a>
 
-				<a className="parsely-top-post-view-link" href={ post.url } target="_blank" rel="noreferrer" title={ __( 'View Post (opens new tab)', 'wp-parsely' ) }>
+				<a className="parsely-top-post-view-link" href={ post.url } target="_blank" rel="noreferrer">
+					<span className="screen-reader-text">
+						{ __( 'View Post (opens new tab)', 'wp-parsely' ) }
+					</span>
 					<OpenLinkIcon />
 				</a>
 
 				{
 					0 !== post.postId &&
-					<a className="parsely-top-post-edit-link" href={ getPostEditUrl( post.postId ) } target="_blank" rel="noreferrer" title={ __( 'Edit Post (opens new tab)', 'wp-parsely' ) }>
+					<a className="parsely-top-post-edit-link" href={ getPostEditUrl( post.postId ) } target="_blank" rel="noreferrer">
+						<span className="screen-reader-text">
+							{ __( 'Edit Post (opens new tab)', 'wp-parsely' ) }
+						</span>
 						<EditIcon />
 					</a>
 				}

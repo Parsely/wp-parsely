@@ -136,19 +136,19 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		const viewPostLink = firstTopPost.querySelector( '.parsely-top-post-view-link' );
 		const editPostLink = firstTopPost.querySelector( '.parsely-top-post-edit-link' );
 
-		expect( firstTopPost.querySelector( '.parsely-top-post-title' )?.textContent ).toEqual( 'Title 1' );
 		expect( statsLink?.getAttribute( 'href' ) ).toEqual( `${ DASHBOARD_BASE_URL }/example.com/post-1` );
-		expect( statsLink?.getAttribute( 'title' ) ).toEqual( 'View in Parse.ly (opens new tab)' );
 		expect( statsLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
+		expect( statsLink?.childNodes[ 0 ].textContent ).toEqual( 'View in Parse.ly (opens new tab)' );
+		expect( statsLink?.childNodes[ 1 ].textContent ).toEqual( 'Title 1' );
 		expect( viewPostLink?.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
-		expect( viewPostLink?.getAttribute( 'title' ) ).toEqual( 'View Post (opens new tab)' );
 		expect( viewPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
+		expect( viewPostLink?.childNodes[ 0 ].textContent ).toEqual( 'View Post (opens new tab)' );
 		expect( editPostLink?.getAttribute( 'href' ) ).toEqual( '/wp-admin/post.php?post=1&action=edit' );
-		expect( editPostLink?.getAttribute( 'title' ) ).toEqual( 'Edit Post (opens new tab)' );
 		expect( editPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-date' )?.textContent ).toMatch( 'Jan 1, 2022' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-author' )?.textContent ).toMatch( 'Name 1' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-metric-data' )?.textContent ).toMatch( '1' );
+		expect( editPostLink?.childNodes[ 0 ].textContent ).toEqual( 'Edit Post (opens new tab)' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-date' )?.childNodes[ 1 ].textContent ).toEqual( 'Jan 1, 2022' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-author' )?.childNodes[ 1 ].textContent ).toEqual( 'Name 1' );
+		expect( firstTopPost.querySelector( '.parsely-top-post-metric-data' )?.childNodes[ 2 ].textContent ).toEqual( '1' );
 	} );
 
 	test( 'should show 5 posts by default', async () => {
