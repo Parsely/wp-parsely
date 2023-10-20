@@ -6,7 +6,7 @@ Tested up to: 6.3
 Requires PHP: 7.2  
 License: GPLv2 or later  
 License URI: https://www.gnu.org/licenses/gpl-2.0.html  
-Tags: analytics, content marketing, parse.ly, parsely, parsley  
+Tags: analytics, statistics, stats, content marketing, parsely, parsley, parse.ly  
 Contributors: parsely, hbbtstar, jblz, mikeyarce, GaryJ, parsely_mike, acicovic, mehmoodak
 
 The Parse.ly plugin facilitates real-time and historical analytics to your content through a platform designed and built for digital publishing.
