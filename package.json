@@ -47,7 +47,7 @@
 		"@types/jest": "^29.5.6",
 		"@types/jest-environment-puppeteer": "^5.0.5",
 		"@types/wordpress__block-editor": "^11.5.5",
-		"@types/wordpress__components": "^23.0.4",
+		"@types/wordpress__components": "^23.0.5",
 		"@types/wordpress__edit-post": "^7.5.3",
 		"@types/wordpress__plugins": "^3.0.2",
 		"@typescript-eslint/eslint-plugin": "^6.8.0",
