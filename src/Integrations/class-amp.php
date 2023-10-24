@@ -129,7 +129,6 @@ class Amp extends Integration {
 	 * @since 2.6.0
 	 *
 	 * @param array<string, mixed>|null $analytics The analytics registry.
-	 *
 	 * @return Amp_Analytics|array<string, mixed> The analytics registry.
 	 */
 	public function register_parsely_for_amp_native_analytics( ?array $analytics ): array {

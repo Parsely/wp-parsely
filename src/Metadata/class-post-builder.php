@@ -275,7 +275,6 @@ class Post_Builder extends Metadata_Builder {
 	 *
 	 * @param WP_Post         $post_obj The object for the post.
 	 * @param Parsely_Options $parsely_options The parsely options.
-	 *
 	 * @return string Cleaned category name for the post in question.
 	 */
 	private function get_category_name( WP_Post $post_obj, $parsely_options ): string {

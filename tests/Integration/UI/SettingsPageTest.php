@@ -632,7 +632,6 @@ final class SettingsPageTest extends TestCase {
 	 * @param string $response The response to mock.
 	 * @param array  $args The arguments passed to the request.
 	 * @param string $url The URL of the request.
-	 *
 	 * @return array<mixed>|false The mocked response.
 	 *
 	 * @phpstan-ignore-next-line
@@ -649,7 +648,6 @@ final class SettingsPageTest extends TestCase {
 	 * @param string $response The response to mock.
 	 * @param array  $args The arguments passed to the request.
 	 * @param string $url The URL of the request.
-	 *
 	 * @return array<mixed>|false The mocked response.
 	 *
 	 * @phpstan-ignore-next-line
@@ -666,7 +664,6 @@ final class SettingsPageTest extends TestCase {
 	 * @param string $result_type The type of result to mock.
 	 * @param array  $args The arguments passed to the request.
 	 * @param string $url The URL of the request.
-	 *
 	 * @return array|false The mocked response.
 	 *
 	 * @phpstan-ignore-next-line

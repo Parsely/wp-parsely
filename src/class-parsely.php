@@ -315,7 +315,6 @@ class Parsely {
 	 *
 	 * @param array<string, mixed> $parsely_options parsely_options array.
 	 * @param WP_Post              $post object.
-	 *
 	 * @return Metadata_Attributes
 	 */
 	public function construct_parsely_metadata( array $parsely_options, WP_Post $post ) {
@@ -451,7 +450,6 @@ class Parsely {
 	 *
 	 * @param int|null $_blog_id The Blog ID for the multisite subsite to use
 	 *                           for context (Default null for current).
-	 *
 	 * @return string
 	 */
 	public static function get_settings_url( int $_blog_id = null ): string {
@@ -488,7 +486,6 @@ class Parsely {
 	 *
 	 * @param string      $url The URL to modify.
 	 * @param string|null $itm_source The value of the itm_source parameter.
-	 *
 	 * @return string The resulting URL.
 	 */
 	public static function get_url_with_itm_source( string $url, $itm_source ): string {
@@ -750,7 +747,6 @@ class Parsely {
 	 *
 	 * @param string      $option_id The option's ID.
 	 * @param bool|string $value The option's value.
-	 *
 	 * @return bool|string The sanitized option value.
 	 */
 	private function sanitize_managed_option( string $option_id, $value ) {

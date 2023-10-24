@@ -279,7 +279,6 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @param Widget_Settings $new_instance The new values for the db.
 	 * @param Widget_Settings $old_instance Values saved to the db.
-	 *
 	 * @return Widget_Settings
 	 */
 	public function update( $new_instance, $old_instance ) /* @phpstan-ignore-line */ {
@@ -315,7 +314,6 @@ final class Recommended_Widget extends WP_Widget {
 	 * @since 3.7.0
 	 *
 	 * @param array<string, mixed> $settings Widget Options.
-	 *
 	 * @return Widget_Settings
 	 */
 	public function get_widget_settings( array $settings ) {

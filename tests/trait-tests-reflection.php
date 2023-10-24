@@ -18,7 +18,6 @@ trait Tests_Reflection {
 	 *
 	 * @param string       $method_name Name of the method to get.
 	 * @param class-string $class_name  Name of the class the method is in.
-	 *
 	 * @return \ReflectionMethod
 	 * @throws \ReflectionException The method does not exist in the class.
 	 */

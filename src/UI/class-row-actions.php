@@ -69,7 +69,6 @@ final class Row_Actions {
 	 *
 	 * @param array<string, string> $actions The existing list of actions.
 	 * @param WP_Post               $post    The individual post object the actions apply to.
-	 *
 	 * @return array<string, string> The amended list of actions.
 	 */
 	public function row_actions_add_parsely_link( array $actions, WP_Post $post ): array {

@@ -85,7 +85,6 @@ class Metadata {
 	 * Creates Parse.ly metadata object from post metadata.
 	 *
 	 * @param WP_Post $post object.
-	 *
 	 * @return Metadata_Attributes
 	 */
 	public function construct_metadata( WP_Post $post ) {
