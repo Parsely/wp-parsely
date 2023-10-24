@@ -281,7 +281,7 @@ class Parsely {
 		 * @param bool $skip True if the password check should be skipped.
 		 * @param int|WP_Post $post Which post object or ID is being checked.
 		 *
-		 * @returns bool
+		 * @return bool
 		 */
 		$skip_password_check = apply_filters( 'wp_parsely_skip_post_password_check', false, $post );
 		if ( ! $skip_password_check && post_password_required( $post ) ) {
