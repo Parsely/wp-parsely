@@ -51,7 +51,7 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	 *
 	 * @var Parsely
 	 */
-	private $parsely;
+	protected $parsely;
 
 	/**
 	 * User capability based on which we should allow access to the endpoint.

@@ -31,6 +31,7 @@ use Parsely\Content_Helper\Editor_Sidebar;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
+use Parsely\Endpoints\ContentSuggestions\Write_Title_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Endpoints\Referrers_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Related_API_Proxy;
@@ -40,6 +41,7 @@ use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
 use Parsely\RemoteAPI\Analytics_Post_Detail_API;
 use Parsely\RemoteAPI\Analytics_Posts_API;
+use Parsely\RemoteAPI\ContentSuggestions\Write_Title_API;
 use Parsely\RemoteAPI\Referrers_Post_Detail_API;
 use Parsely\RemoteAPI\Related_API;
 use Parsely\RemoteAPI\Remote_API_Cache;
@@ -156,6 +158,8 @@ require_once __DIR__ . '/src/RemoteAPI/class-analytics-post-detail-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-referrers-post-detail-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
 require_once __DIR__ . '/src/RemoteAPI/class-validate-api.php';
+require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-content-suggestions-base-api.php';
+require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-write-title-api.php';
 
 require_once __DIR__ . '/src/Endpoints/class-base-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
@@ -163,6 +167,7 @@ require_once __DIR__ . '/src/Endpoints/class-analytics-posts-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-analytics-post-detail-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-referrers-post-detail-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-rest-metadata.php';
+require_once __DIR__ . '/src/Endpoints/content-suggestions/class-write-title-api-proxy.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
@@ -197,6 +202,12 @@ function parsely_rest_api_init(): void {
 	parsely_run_rest_api_endpoint(
 		Referrers_Post_Detail_API::class,
 		Referrers_Post_Detail_API_Proxy::class,
+		$wp_cache
+	);
+
+	parsely_run_rest_api_endpoint(
+		Write_Title_API::class,
+		Write_Title_API_Proxy::class,
 		$wp_cache
 	);
 }
