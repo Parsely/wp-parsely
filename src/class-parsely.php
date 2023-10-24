@@ -93,10 +93,10 @@ class Parsely {
 	/**
 	 * Declare post types that Parse.ly will process as "posts".
 	 *
-	 * @link https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages
-	 *
 	 * @since 2.5.0
 	 * @var string[]
+	 *
+	 * @link https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages
 	 */
 	public const SUPPORTED_JSONLD_POST_TYPES = array(
 		'NewsArticle',
@@ -121,10 +121,10 @@ class Parsely {
 	/**
 	 * Declare post types that Parse.ly will process as "non-posts".
 	 *
-	 * @link https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages
-	 *
 	 * @since 2.5.0
 	 * @var string[]
+	 *
+	 * @link https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages
 	 */
 	public const SUPPORTED_JSONLD_NON_POST_TYPES = array(
 		'WebPage',
@@ -150,7 +150,6 @@ class Parsely {
 	 *
 	 * @since 3.9.0
 	 * @access private
-	 *
 	 * @var bool
 	 */
 	public $are_credentials_managed;
@@ -163,7 +162,6 @@ class Parsely {
 	 *
 	 * @since 3.9.0
 	 * @access private
-	 *
 	 * @var array<empty>|array<string, bool|string|null>
 	 */
 	public $managed_options = array();
@@ -227,6 +225,7 @@ class Parsely {
 	 * head tag.
 	 *
 	 * @since 3.2.0
+	 *
 	 * @deprecated 3.3.0
 	 * @see Metadata_Renderer::render_metadata
 	 *
@@ -244,6 +243,7 @@ class Parsely {
 	 * head tag.
 	 *
 	 * @since 3.0.0
+	 *
 	 * @deprecated 3.3.0
 	 * @see Metadata_Renderer::render_metadata
 	 */
@@ -281,7 +281,7 @@ class Parsely {
 		 * @param bool $skip True if the password check should be skipped.
 		 * @param int|WP_Post $post Which post object or ID is being checked.
 		 *
-		 * @returns bool
+		 * @return bool
 		 */
 		$skip_password_check = apply_filters( 'wp_parsely_skip_post_password_check', false, $post );
 		if ( ! $skip_password_check && post_password_required( $post ) ) {

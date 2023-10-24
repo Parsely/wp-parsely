@@ -41,7 +41,6 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	 * Indicates whether the endpoint is public or protected behind permissions.
 	 *
 	 * @since 3.7.0
-	 *
 	 * @var bool
 	 */
 	protected $is_public_endpoint = false;

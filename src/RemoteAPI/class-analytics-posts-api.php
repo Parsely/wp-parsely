@@ -61,7 +61,6 @@ class Analytics_Posts_API extends Remote_API_Base {
 	 * Indicates whether the endpoint is public or protected behind permissions.
 	 *
 	 * @since 3.7.0
-	 *
 	 * @var bool
 	 */
 	protected $is_public_endpoint = false;
