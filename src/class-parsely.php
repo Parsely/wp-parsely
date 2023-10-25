@@ -225,7 +225,6 @@ class Parsely {
 	 * head tag.
 	 *
 	 * @since 3.2.0
-	 *
 	 * @deprecated 3.3.0
 	 * @see Metadata_Renderer::render_metadata
 	 *
@@ -243,7 +242,6 @@ class Parsely {
 	 * head tag.
 	 *
 	 * @since 3.0.0
-	 *
 	 * @deprecated 3.3.0
 	 * @see Metadata_Renderer::render_metadata
 	 */
