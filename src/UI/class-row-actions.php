@@ -65,7 +65,6 @@ final class Row_Actions {
 	 * @since 2.6.0
 	 *
 	 * @see https://developer.wordpress.org/reference/hooks/page_row_actions/
-	 * @see https://developer.wordpress.org/reference/hooks/post_row_actions/
 	 *
 	 * @param array<string, string> $actions The existing list of actions.
 	 * @param WP_Post               $post    The individual post object the actions apply to.

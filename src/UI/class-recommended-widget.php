@@ -77,11 +77,11 @@ final class Recommended_Widget extends WP_Widget {
 	/**
 	 * Gets the URL for the Recommendations API (GET /related).
 	 *
+	 * @since 2.5.0
+	 *
 	 * @see https://docs.parse.ly/content-recommendations/
 	 *
 	 * @internal While this is a public method now, this should be moved to a new class.
-	 *
-	 * @since 2.5.0
 	 *
 	 * @param string      $site_id          Publisher Site ID.
 	 * @param int|null    $published_within Publication filter start date; see https://docs.parse.ly/api-date-time/ for
