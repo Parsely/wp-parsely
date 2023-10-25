@@ -111,10 +111,9 @@ abstract class Remote_API_Base implements Remote_API_Interface {
 	 *
 	 * @since 3.2.0
 	 *
+	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @throws UnexpectedValueException If the endpoint constant is not defined.
 	 * @throws UnexpectedValueException If the query filter constant is not defined.
-	 *
-	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @return string
 	 */
 	public function get_api_url( array $query ): string {

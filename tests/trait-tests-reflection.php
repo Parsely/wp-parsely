@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace Parsely\Tests;
 
 use Parsely\Parsely;
+use ReflectionException;
+use ReflectionMethod;
 
 trait Tests_Reflection {
 	/**
@@ -18,8 +20,8 @@ trait Tests_Reflection {
 	 *
 	 * @param string       $method_name Name of the method to get.
 	 * @param class-string $class_name  Name of the class the method is in.
-	 * @return \ReflectionMethod
-	 * @throws \ReflectionException The method does not exist in the class.
+	 * @throws ReflectionException The method does not exist in the class.
+	 * @return ReflectionMethod
 	 */
 	public static function get_method( string $method_name, $class_name = Parsely::class ): \ReflectionMethod {
 		$method = ( new \ReflectionClass( $class_name ) )->getMethod( $method_name );

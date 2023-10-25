@@ -241,9 +241,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * This function ensures strict typing in our codebase.
 	 *
 	 * @param int|WP_Error $post_id Optional. Defaults to global $post.
-	 *
 	 * @throws UnexpectedValueException If $post_id is a WP_Error object.
-	 *
 	 * @return WP_Post
 	 */
 	public function get_post( $post_id = null ): WP_Post {
@@ -269,9 +267,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * This function ensures strict typing in our codebase.
 	 *
 	 * @param int|WP_Error $post_id ID of the posts.
-	 *
 	 * @throws UnexpectedValueException If $post_id is a WP_Error object.
-	 *
 	 * @return array<string, mixed>
 	 */
 	public function get_post_in_array( $post_id ): array {
@@ -311,9 +307,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * This function ensures strict typing in our codebase.
 	 *
 	 * @param int|WP_Error $post_id ID of the post.
-	 *
 	 * @throws UnexpectedValueException If $post_id is a WP_Error object.
-	 *
 	 * @return string|false
 	 */
 	public function get_permalink( $post_id ) {
@@ -460,7 +454,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string[] $true_hooks Optional. Actions that should have been present.
 	 * @param string[] $false_hooks Optional. Actions that should have not been present.
-	 *
 	 * @throws RiskyTestError If no assertions get passed to the function.
 	 */
 	private function assert_wp_hooks( array $true_hooks = array(), array $false_hooks = array() ): void {
@@ -527,7 +520,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *                                           'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
 	 * @param array<Script_Status> $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
 	 *                                           'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 *
 	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
 	 */
 	private function assert_script_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
@@ -594,7 +586,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
 	 * @param array<string> $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
 	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 *
 	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
 	 */
 	private function assert_style_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
