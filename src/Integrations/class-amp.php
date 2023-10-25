@@ -180,8 +180,9 @@ class Amp extends Integration {
 	 * consists of the site's Site ID if that's defined, or an empty array
 	 * otherwise.
 	 *
-	 * @link https://docs.parse.ly/google-amp/
 	 * @since 3.2.0
+	 *
+	 * @link https://docs.parse.ly/google-amp/
 	 *
 	 * @return array<string, array<string, string>>
 	 */
