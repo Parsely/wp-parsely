@@ -13,9 +13,6 @@ namespace Parsely\Endpoints;
 use stdClass;
 use WP_REST_Request;
 use WP_Error;
-use Parsely\Parsely;
-
-use function Parsely\Utils\get_date_format;
 
 /**
  * Configures the `/stats/posts` REST API endpoint.
