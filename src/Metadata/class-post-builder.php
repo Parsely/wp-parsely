@@ -96,11 +96,11 @@ class Post_Builder extends Metadata_Builder {
 		/**
 		 * Filters the JSON-LD @type.
 		 *
+		 * @since 2.5.0
+		 *
 		 * @param string $jsonld_type JSON-LD @type value, default is NewsArticle.
 		 * @param int $id Post ID.
 		 * @param string $post_type The Post type in WordPress.
-		 *
-		 * @since 2.5.0
 		 */
 		$type            = apply_filters( 'wp_parsely_post_type', 'NewsArticle', $this->post->ID, $this->post->post_type );
 		$supported_types = $this->parsely->get_all_supported_types();
@@ -230,10 +230,10 @@ class Post_Builder extends Metadata_Builder {
 		/**
 		 * Filters the post tags that are used as metadata keywords.
 		 *
+		 * @since 1.8.0
+		 *
 		 * @param array<string> $tags Post tags.
 		 * @param int $ID Post ID.
-		 *
-		 * @since 1.8.0
 		 */
 		$tags = apply_filters( 'wp_parsely_post_tags', $tags, $this->post->ID );
 		$tags = array_map( array( $this, 'clean_value' ), $tags );
@@ -275,7 +275,6 @@ class Post_Builder extends Metadata_Builder {
 	 *
 	 * @param WP_Post         $post_obj The object for the post.
 	 * @param Parsely_Options $parsely_options The parsely options.
-	 *
 	 * @return string Cleaned category name for the post in question.
 	 */
 	private function get_category_name( WP_Post $post_obj, $parsely_options ): string {
