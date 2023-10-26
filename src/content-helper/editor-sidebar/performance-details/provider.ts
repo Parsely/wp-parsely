@@ -66,7 +66,16 @@ export class PerformanceDetailsProvider {
 		}
 
 		// Get post URL.
-		const postUrl: string = editor.getPermalink();
+		const postUrl = editor.getPermalink();
+
+		if ( null === postUrl ) {
+			return Promise.reject(
+				new ContentHelperError( __(
+					"The post's URL returned null.",
+					'wp-parsely' ), ContentHelperErrorCode.PostIsNotPublished
+				)
+			);
+		}
 
 		// Fetch all needed results using our WordPress endpoints.
 		let performanceData, referrerData;
