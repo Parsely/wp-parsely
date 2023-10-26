@@ -83,7 +83,8 @@ final class SettingsPageTest extends TestCase {
 	 * @group settings-page-validation
 	 */
 	public function test_empty_api_credentials_are_retained_when_validated(): void {
-		// First change the option to something valid to make sure they are set back to empty.
+		// First, change the option to something valid to make sure they are set
+		// back to empty.
 		$options               = self::$parsely->get_options();
 		$options['apikey']     = 'mydomain.com';
 		$options['api_secret'] = 'valid_api_secret';
@@ -102,7 +103,8 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that valid API credentials are retained when validated with the Validation API.
+	 * Verifies that valid API credentials are retained when validated with the
+	 * Validation API.
 	 *
 	 * @since 3.11.0
 	 *
@@ -140,7 +142,8 @@ final class SettingsPageTest extends TestCase {
 	}
 
 	/**
-	 * Verifies that invalid API credentials are retained when validated with the Validation API.
+	 * Verifies that invalid API credentials are reset to their previous values
+	 * when validated with the Validation API.
 	 *
 	 * @since 3.11.0
 	 *
@@ -165,7 +168,7 @@ final class SettingsPageTest extends TestCase {
 	 * @group settings-page
 	 * @group settings-page-validation
 	 */
-	public function test_invalid_api_credentials_are_retained_when_validated(): void {
+	public function test_invalid_api_credentials_are_reset_to_their_previous_value_when_validated(): void {
 		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
 		// Mock HTTP request to simulate a failed credentials validation.
 		add_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10, 3 );
@@ -209,7 +212,8 @@ final class SettingsPageTest extends TestCase {
 	 */
 	public function test_empty_api_secret_is_retained_when_validated(): void {
 		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
-		// API Requests without a secret will *always* fail. Therefore, mock HTTP request to simulate a failed credentials' validation.
+		// API Requests without a secret will *always* fail. Therefore, mock the
+		// HTTP request to simulate a failed credentials' validation.
 		add_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10, 3 );
 
 		$options = self::$parsely->get_options();
@@ -632,7 +636,6 @@ final class SettingsPageTest extends TestCase {
 	 * @param string $response The response to mock.
 	 * @param array  $args The arguments passed to the request.
 	 * @param string $url The URL of the request.
-	 *
 	 * @return array<mixed>|false The mocked response.
 	 *
 	 * @phpstan-ignore-next-line
@@ -649,7 +652,6 @@ final class SettingsPageTest extends TestCase {
 	 * @param string $response The response to mock.
 	 * @param array  $args The arguments passed to the request.
 	 * @param string $url The URL of the request.
-	 *
 	 * @return array<mixed>|false The mocked response.
 	 *
 	 * @phpstan-ignore-next-line
@@ -666,7 +668,6 @@ final class SettingsPageTest extends TestCase {
 	 * @param string $result_type The type of result to mock.
 	 * @param array  $args The arguments passed to the request.
 	 * @param string $url The URL of the request.
-	 *
 	 * @return array|false The mocked response.
 	 *
 	 * @phpstan-ignore-next-line

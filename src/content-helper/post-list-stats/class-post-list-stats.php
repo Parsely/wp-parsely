@@ -173,7 +173,6 @@ class Post_List_Stats extends Content_Helper_Feature {
 	 * @since 3.7.0
 	 *
 	 * @param array<string, string> $columns Columns array which contain keys and labels.
-	 *
 	 * @return array<string, string>
 	 */
 	public function add_parsely_stats_column_on_list_view( array $columns ): array {
@@ -273,7 +272,6 @@ class Post_List_Stats extends Content_Helper_Feature {
 	 * @since 3.7.0
 	 *
 	 * @param Analytics_Posts_API $analytics_api Instance of Analytics_Posts_API.
-	 *
 	 * @return Parsely_Posts_Stats_Response|null
 	 */
 	public function get_parsely_stats_response( $analytics_api ) {
@@ -404,7 +402,6 @@ class Post_List_Stats extends Content_Helper_Feature {
 	 * @since 3.7.0
 	 *
 	 * @param Analytics_Post $analytics_post Post analytics obj returned from Parse.ly API.
-	 *
 	 * @return string
 	 */
 	private function get_unique_stats_key_from_analytics( $analytics_post ): string {
