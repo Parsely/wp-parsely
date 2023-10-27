@@ -21,6 +21,7 @@ import {
 import { VerifyCredentials } from '../common/verify-credentials';
 import { PerformanceDetails } from './performance-details/component';
 import { RelatedTopPostList } from './related-top-posts/component-list';
+import { WriteTitlesPanel } from './write-titles/component';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
@@ -105,6 +106,17 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 								period={ period }
 								metric={ metric }
 							/>
+						</VerifyCredentials>
+					}
+				</PanelBody>
+			</Panel>
+			<Panel>
+				<PanelBody
+					title={ __( 'Titles & Headlines', 'wp-parsely' ) }
+					initialOpen={ true }>
+					{
+						<VerifyCredentials>
+							<WriteTitlesPanel />
 						</VerifyCredentials>
 					}
 				</PanelBody>

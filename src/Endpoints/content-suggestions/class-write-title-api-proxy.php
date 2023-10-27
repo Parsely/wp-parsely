@@ -5,6 +5,7 @@
  * @package Parsely
  * @since   3.12.0
  */
+
 declare(strict_types=1);
 
 namespace Parsely\Endpoints\ContentSuggestions;
@@ -19,21 +20,31 @@ use WP_Error;
 /**
  * Configures the `/content-suggestions/write-title` REST API endpoint.
  *
- * @since 3.6.0
+ * @since 3.12.0
  */
 final class Write_Title_API_Proxy extends Base_API_Proxy {
 
 	/**
-	 * @var Write_Title_API
+	 * The Write Title API instance.
+	 *
+	 * @var Write_Title_API $write_title_api
 	 */
 	private $write_title_api;
 
+	/**
+	 * Initializes the class.
+	 *
+	 * @param Parsely $parsely The Parsely plugin instance.
+	 */
 	public function __construct( Parsely $parsely ) {
 		$this->write_title_api = new Write_Title_API( $parsely );
 		parent::__construct( $parsely, $this->write_title_api );
 	}
+
 	/**
 	 * Registers the endpoint's WP REST route.
+	 *
+	 * @since 3.12.0
 	 */
 	public function run(): void {
 		$this->register_endpoint( '/content-suggestions/write-title' );
@@ -41,6 +52,8 @@ final class Write_Title_API_Proxy extends Base_API_Proxy {
 
 	/**
 	 * Generates the final data from the passed response.
+	 *
+	 * @since 3.12.0
 	 *
 	 * @param array<stdClass> $response The response received by the proxy.
 	 *
@@ -52,6 +65,8 @@ final class Write_Title_API_Proxy extends Base_API_Proxy {
 
 	/**
 	 * Cached "proxy" to the Parse.ly API endpoint.
+	 *
+	 * @since 3.12.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 *
@@ -75,6 +90,8 @@ final class Write_Title_API_Proxy extends Base_API_Proxy {
 		}
 
 		/**
+		 * The post content to be sent to the API.
+		 *
 		 * @var string|null $post_content
 		 */
 		$post_content = $request->get_param( 'content' );
@@ -88,7 +105,7 @@ final class Write_Title_API_Proxy extends Base_API_Proxy {
 		}
 
 		$limit = intval( $request->get_param( 'limit' ) ); // @phpstan-ignore-line.
-		if ( 0 == $limit ) {
+		if ( 0 === $limit ) {
 			$limit = 3;
 		}
 

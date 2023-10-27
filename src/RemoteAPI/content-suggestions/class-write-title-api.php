@@ -1,15 +1,22 @@
 <?php
+/**
+ * Remote API: Content Suggestions Write Title API
+ *
+ * @package Parsely
+ * @since 3.12.0
+ */
 
 namespace Parsely\RemoteAPI\ContentSuggestions;
+
 use Parsely\Parsely;
 use stdClass;
 use WP_Error;
 use function Parsely\Utils\convert_to_associative_array;
 
 /**
- * TODO
+ * Remote API: Content Suggestions Write Title API
  *
- * @since 3.X.0
+ * @since 3.12.0
  *
  * @phpstan-type Remote_API_Error array{
  *   code: int,
@@ -25,23 +32,28 @@ class Write_Title_API extends Content_Suggestions_Base_API {
 
 	protected const QUERY_FILTER = 'content_suggestions_write_title_api';
 
-	protected $is_public_endpoint = true; //TODO: false
+	/**
+	 * If the endpoint is public or not.
+	 *
+	 * @var bool $is_public_endpoint Whether the endpoint is public or not.
+	 */
+	protected $is_public_endpoint = false;
 
 
 	/**
 	 * Gets the URL for the Parse.ly API credentials validation endpoint.
 	 *
-	 * @since 3.X.0
+	 * @since 3.12.0
 	 *
-	 * @param string $content The query arguments to send to the remote API.
-	 * @param int $limit The query arguments to send to the remote API.
+	 * @param  string $content The query arguments to send to the remote API.
+	 * @param  int    $limit The query arguments to send to the remote API.
 	 * @return array<string|mixed>|WP_Error The response from the remote API, or a WP_Error object if the response is an error.
 	 */
 	public function get_titles( string $content, int $limit ) {
 		$query = array(
 			'persona' => 'journalist',
-			'style' => 'neutral',
-			'limit' => $limit,
+			'style'   => 'neutral',
+			'limit'   => $limit,
 		);
 
 		$full_api_url = $this->get_api_url( $query );
@@ -51,10 +63,10 @@ class Write_Title_API extends Content_Suggestions_Base_API {
 		 *
 		 * @var WP_HTTP_Request_Args $options
 		 */
-		$options  = $this->get_request_options();
-		$options[ 'body' ] = wp_json_encode( array( 'text' => $content ) );
+		$options         = $this->get_request_options();
+		$options['body'] = wp_json_encode( array( 'text' => $content ) );
 
-		if ( $options['body'] === false ) {
+		if ( false === $options['body'] ) {
 			return new WP_Error( 400, __( 'Unable to encode request body', 'wp-parsely' ) );
 		}
 
@@ -80,6 +92,4 @@ class Write_Title_API extends Content_Suggestions_Base_API {
 
 		return $decoded->titles;
 	}
-
-
 }

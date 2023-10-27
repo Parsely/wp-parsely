@@ -1,11 +1,23 @@
 <?php
+/**
+ * Remote API: Base class for all Parse.ly Content Suggestion API endpoints
+ *
+ * @package Parsely
+ * @since   3.12.0
+ */
 
 declare(strict_types=1);
 
 namespace Parsely\RemoteAPI\ContentSuggestions;
+
 use Parsely\RemoteAPI\Remote_API_Base;
 use UnexpectedValueException;
 
+/**
+ * Base API for all Parse.ly Content Suggestion API endpoints.
+ *
+ * @since 3.12.0
+ */
 class Content_Suggestions_Base_API extends Remote_API_Base {
 
 	public const API_BASE_URL = 'http://api-recs-lb-267948692.us-east-1.elb.amazonaws.com';
@@ -13,23 +25,23 @@ class Content_Suggestions_Base_API extends Remote_API_Base {
 	/**
 	 * Returns the request's options for the remote API call.
 	 *
-	 * @return array<string, mixed> The array of options.
-	 * @since 3.9.0
+	 * @since 3.12.0
 	 *
+	 * @return array<string, mixed> The array of options.
 	 */
 	protected function get_request_options(): array {
 		return array(
-			'headers'     => array('Content-Type' => 'application/json; charset=utf-8'),
+			'headers'     => array( 'Content-Type' => 'application/json; charset=utf-8' ),
 			'data_format' => 'body',
-			'timeout'     => 60,
-			'body'        => "{}",
+			'timeout'     => 60, //phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
+			'body'        => '{}',
 		);
 	}
 
 	/**
 	 * Gets the URL for a particular Parse.ly API endpoint.
 	 *
-	 * @since 3.2.0
+	 * @since 3.12.0
 	 *
 	 * @throws UnexpectedValueException If the endpoint constant is not defined.
 	 * @throws UnexpectedValueException If the query filter constant is not defined.
@@ -38,7 +50,7 @@ class Content_Suggestions_Base_API extends Remote_API_Base {
 	 * @return string
 	 */
 	public function get_api_url( array $query ): string {
-		//TODO: duplicated from parent class due to API URL differences
+		// TODO: duplicated from parent class due to API URL differences.
 		if ( static::ENDPOINT === '' ) {
 			throw new UnexpectedValueException( 'ENDPOINT constant must be defined in child class.' );
 		}
@@ -59,5 +71,4 @@ class Content_Suggestions_Base_API extends Remote_API_Base {
 		$query = apply_filters( static::QUERY_FILTER, $query );
 		return add_query_arg( $query, self::API_BASE_URL . static::ENDPOINT );
 	}
-
 }
