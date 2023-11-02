@@ -77,11 +77,11 @@ final class Recommended_Widget extends WP_Widget {
 	/**
 	 * Gets the URL for the Recommendations API (GET /related).
 	 *
+	 * @since 2.5.0
+	 *
 	 * @see https://docs.parse.ly/content-recommendations/
 	 *
 	 * @internal While this is a public method now, this should be moved to a new class.
-	 *
-	 * @since 2.5.0
 	 *
 	 * @param string      $site_id          Publisher Site ID.
 	 * @param int|null    $published_within Publication filter start date; see https://docs.parse.ly/api-date-time/ for
@@ -279,7 +279,6 @@ final class Recommended_Widget extends WP_Widget {
 	 *
 	 * @param Widget_Settings $new_instance The new values for the db.
 	 * @param Widget_Settings $old_instance Values saved to the db.
-	 *
 	 * @return Widget_Settings
 	 */
 	public function update( $new_instance, $old_instance ) /* @phpstan-ignore-line */ {
@@ -315,7 +314,6 @@ final class Recommended_Widget extends WP_Widget {
 	 * @since 3.7.0
 	 *
 	 * @param array<string, mixed> $settings Widget Options.
-	 *
 	 * @return Widget_Settings
 	 */
 	public function get_widget_settings( array $settings ) {

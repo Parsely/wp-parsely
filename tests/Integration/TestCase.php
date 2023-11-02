@@ -61,7 +61,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string $post_type Optional. The post's type. Default is 'post'.
 	 * @param string $post_status Optional. The post's status. Default is 'publish'.
-	 *
 	 * @return array<string, mixed> An array of WP_Post fields.
 	 */
 	public function create_test_post_array( string $post_type = 'post', string $post_status = 'publish' ): array {
@@ -78,7 +77,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Creates a test category.
 	 *
 	 * @param string $name Category name.
-	 *
 	 * @return int
 	 */
 	public function create_test_category( string $name ): int {
@@ -98,7 +96,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string $user_login The user's login username.
 	 * @param string $user_role The user's role. Default is subscriber.
-	 *
 	 * @return int The newly created user's ID.
 	 */
 	public function create_test_user( string $user_login, string $user_role = 'subscriber' ): int {
@@ -117,7 +114,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $domain  Site second-level domain without a .com TLD e.g. 'example' will
 	 *                        result in a new subsite of 'http://example.com'.
 	 * @param int    $user_id User ID for the site administrator.
-	 *
 	 * @return int
 	 */
 	public function create_test_blog( string $domain, int $user_id ): int {
@@ -135,7 +131,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string $taxonomy_key Taxonomy key, must not exceed 32 characters.
 	 * @param string $term_name    The term name to add.
-	 *
 	 * @return int
 	 */
 	public function create_test_taxonomy( string $taxonomy_key, string $term_name ): int {
@@ -161,7 +156,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Creates a new post.
 	 *
 	 * @param string $post_status Optional. The post's status. Default is 'publish'.
-	 *
 	 * @return int The new post's ID.
 	 */
 	public function create_test_post( string $post_status = 'publish' ): int {
@@ -177,7 +171,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param int    $num_of_posts Optional. Number of posts we need to create.
 	 * @param string $post_type Optional. Type of the posts.
 	 * @param string $post_status Optional. Status of the posts.
-	 *
 	 * @return WP_Post[]
 	 */
 	public function create_and_get_test_posts( int $num_of_posts = 1, string $post_type = 'post', string $post_status = 'publish' ): array {
@@ -192,7 +185,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param int    $num_of_posts Optional. Number of posts we need to create.
 	 * @param string $post_type Optional. Type of the posts.
 	 * @param string $post_status Optional. Status of the posts.
-	 *
 	 * @return int[]
 	 */
 	private function create_posts_and_get_ids( int $num_of_posts = 1, string $post_type = 'post', string $post_status = 'publish' ): array {
@@ -249,9 +241,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * This function ensures strict typing in our codebase.
 	 *
 	 * @param int|WP_Error $post_id Optional. Defaults to global $post.
-	 *
 	 * @throws UnexpectedValueException If $post_id is a WP_Error object.
-	 *
 	 * @return WP_Post
 	 */
 	public function get_post( $post_id = null ): WP_Post {
@@ -277,9 +267,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * This function ensures strict typing in our codebase.
 	 *
 	 * @param int|WP_Error $post_id ID of the posts.
-	 *
 	 * @throws UnexpectedValueException If $post_id is a WP_Error object.
-	 *
 	 * @return array<string, mixed>
 	 */
 	public function get_post_in_array( $post_id ): array {
@@ -296,7 +284,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Gets given test posts.
 	 *
 	 * @param int[] $post_ids IDs of the posts.
-	 *
 	 * @return WP_Post[]
 	 */
 	private function get_test_posts( array $post_ids = array() ): array {
@@ -320,9 +307,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * This function ensures strict typing in our codebase.
 	 *
 	 * @param int|WP_Error $post_id ID of the post.
-	 *
 	 * @throws UnexpectedValueException If $post_id is a WP_Error object.
-	 *
 	 * @return string|false
 	 */
 	public function get_permalink( $post_id ) {
@@ -341,7 +326,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * This function ensures strict typing in our codebase.
 	 *
 	 * @param int $term_id ID of the term.
-	 *
 	 * @return WP_Term
 	 */
 	public function get_term( int $term_id ): WP_Term {
@@ -359,7 +343,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * This function ensures strict typing in our codebase.
 	 *
 	 * @param int $term_id ID of the term.
-	 *
 	 * @return array<string, mixed>
 	 */
 	public function get_term_in_array( int $term_id ): array {
@@ -377,7 +360,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * This function ensures strict typing in our codebase.
 	 *
 	 * @param int $term_id ID of the term.
-	 *
 	 * @return string
 	 */
 	public function get_term_link( int $term_id ): string {
@@ -397,7 +379,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string      $format Format to use for retrieving the time.
 	 * @param bool        $is_gmt Whether to retrieve the GMT time.
 	 * @param int|WP_Post $post WP_Post object or ID.
-	 *
 	 * @return int
 	 */
 	public function get_post_time_in_int( string $format, bool $is_gmt, $post ): int {
@@ -415,7 +396,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * This function ensures strict typing in our codebase.
 	 *
 	 * @param mixed $data — Variable (usually an array or object) to encode as JSON.
-	 *
 	 * @return string
 	 */
 	public function wp_json_encode( $data ): string {
@@ -428,7 +408,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Creates a new post and navigates to it.
 	 *
 	 * @param string $post_status Optional. The post's status. Default is 'publish'.
-	 *
 	 * @return int The new post's ID.
 	 */
 	public function go_to_new_post( string $post_status = 'publish' ): int {
@@ -475,7 +454,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param string[] $true_hooks Optional. Actions that should have been present.
 	 * @param string[] $false_hooks Optional. Actions that should have not been present.
-	 *
 	 * @throws RiskyTestError If no assertions get passed to the function.
 	 */
 	private function assert_wp_hooks( array $true_hooks = array(), array $false_hooks = array() ): void {
@@ -542,7 +520,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *                                           'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
 	 * @param array<Script_Status> $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
 	 *                                           'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 *
 	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
 	 */
 	private function assert_script_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
@@ -609,7 +586,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
 	 * @param array<string> $assert_false Optional. Statuses that should assert to false. Accepts 'enqueued',
 	 *                                    'registered', 'queue', 'to_do', and 'done'. Default is an empty array.
-	 *
 	 * @throws RiskyTestError If no assertions ($assert_true, $assert_false) get passed to the function.
 	 */
 	private function assert_style_statuses( string $handle, array $assert_true = array(), array $assert_false = array() ): void {
@@ -637,7 +613,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param class-string $class_name Name of the class.
 	 * @param string       $property_name Name of the property.
-	 *
 	 * @return ReflectionProperty
 	 */
 	public function get_private_property( string $class_name, string $property_name ): ReflectionProperty {
@@ -654,7 +629,6 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 *
 	 * @param class-string $class_name Name of the class.
 	 * @param string       $method Name of the method.
-	 *
 	 * @return ReflectionMethod
 	 */
 	public function get_private_method( string $class_name, string $method ): ReflectionMethod {

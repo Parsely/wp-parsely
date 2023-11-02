@@ -61,7 +61,6 @@ class Analytics_Posts_API extends Remote_API_Base {
 	 * Indicates whether the endpoint is public or protected behind permissions.
 	 *
 	 * @since 3.7.0
-	 *
 	 * @var bool
 	 */
 	protected $is_public_endpoint = false;
@@ -72,7 +71,6 @@ class Analytics_Posts_API extends Remote_API_Base {
 	 * Main purpose of this function is to enforce typing.
 	 *
 	 * @param Analytics_Post_API_Params $api_params Parameters of the API.
-	 *
 	 * @return Analytics_Post[]|WP_Error|null
 	 */
 	public function get_posts_analytics( $api_params ) {

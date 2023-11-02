@@ -55,7 +55,6 @@ class Validate_API extends Remote_API_Base {
 	 * The API will return a 200 response if the credentials are valid and a 401 response if they are not.
 	 *
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
-	 *
 	 * @return object|WP_Error The response from the remote API, or a WP_Error object if the response is an error.
 	 */
 	private function api_validate_credentials( array $query ) {
@@ -102,7 +101,6 @@ class Validate_API extends Remote_API_Base {
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @param bool                 $associative (optional) When TRUE, returned objects will be converted into
 	 *                             associative arrays.
-	 *
 	 * @return array<string, mixed>|object|WP_Error
 	 */
 	public function get_items( array $query, bool $associative = false ) {

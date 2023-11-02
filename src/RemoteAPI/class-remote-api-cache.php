@@ -50,7 +50,6 @@ class Remote_API_Cache implements Remote_API_Interface {
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @param bool                 $associative Always `false`, just present to make definition compatible
 	 *                             with interface.
-	 *
 	 * @return array<string, mixed>|object|WP_Error The response from the remote API, or false if the
 	 *                                              response is empty.
 	 */
