@@ -5,7 +5,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { select } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
 // eslint-disable-next-line import/named
-import { Post, Taxonomy, User } from '@wordpress/core-data';
+import { Taxonomy, User } from '@wordpress/core-data';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
@@ -183,6 +183,7 @@ export class RelatedTopPostsProvider {
 
 		if ( PostFilterType.Tag === filterType ) {
 			// Get post's first tag.
+			// @ts-ignore
 			const tagIds = editor.getEditedPostAttribute( 'tags' ) as Array<number>;
 			const tag: Taxonomy = core.getEntityRecord( 'taxonomy', 'post_tag', tagIds?.[ 0 ] );
 
@@ -203,6 +204,7 @@ export class RelatedTopPostsProvider {
 
 		if ( PostFilterType.Section === filterType ) {
 			// Get post's first category.
+			// @ts-ignore
 			const categoryIds = editor.getEditedPostAttribute( 'categories' ) as Array<number>;
 			const category: Taxonomy = core.getEntityRecord( 'taxonomy', 'category', categoryIds?.[ 0 ] );
 
@@ -223,7 +225,7 @@ export class RelatedTopPostsProvider {
 
 		if ( PostFilterType.Author === filterType ) {
 			// Get post's author.
-			const currentPost: Post = editor.getCurrentPost();
+			const currentPost = editor.getCurrentPost();
 			const author: User = core.getEntityRecord( 'root', 'user', currentPost.author );
 
 			if ( undefined === author ) {
