@@ -50,7 +50,7 @@ use WP_Error;
  *   visitors?: int,
  * }
  */
-class Analytics_Posts_API extends Remote_API_Base {
+class Analytics_Posts_API extends Base_Endpoint_Remote {
 	public const MAX_RECORDS_LIMIT        = 2000;
 	public const ANALYTICS_API_DAYS_LIMIT = 7;
 
