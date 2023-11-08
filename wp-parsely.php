@@ -32,6 +32,7 @@ use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
+use Parsely\Endpoints\Post_Data_Endpoint;
 use Parsely\Endpoints\Referrers_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Related_API_Proxy;
 use Parsely\Endpoints\Rest_Metadata;
@@ -148,11 +149,13 @@ function parsely_wp_admin_early_register(): void {
 
 // Endpoint base classes.
 require_once __DIR__ . '/src/Endpoints/class-base-endpoint.php';
+require_once __DIR__ . '/src/Endpoints/class-base-endpoint-local.php';
 require_once __DIR__ . '/src/Endpoints/class-base-api-proxy.php';
 
 // Endpoint classes.
 require_once __DIR__ . '/src/Endpoints/class-analytics-post-detail-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-analytics-posts-api-proxy.php';
+require_once __DIR__ . '/src/Endpoints/class-post-data-endpoint.php';
 require_once __DIR__ . '/src/Endpoints/class-referrers-post-detail-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-rest-metadata.php';
@@ -182,6 +185,8 @@ function parsely_rest_api_init(): void {
 	$wp_cache = new WordPress_Cache();
 	$rest     = new Rest_Metadata( $GLOBALS['parsely'] );
 	$rest->run();
+
+	( new Post_Data_Endpoint( $GLOBALS['parsely'] ) )->run();
 
 	parsely_run_rest_api_endpoint(
 		Related_API::class,

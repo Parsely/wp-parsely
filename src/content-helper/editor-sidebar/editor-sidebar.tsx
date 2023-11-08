@@ -1,11 +1,17 @@
 /**
  * WordPress dependencies
  */
+import apiFetch from '@wordpress/api-fetch';
 import { Panel, PanelBody, SelectControl } from '@wordpress/components';
+// eslint-disable-next-line import/named
+import { Taxonomy, store as coreStore } from '@wordpress/core-data';
+import { useSelect } from '@wordpress/data';
 import { PluginSidebar } from '@wordpress/edit-post';
-import { useState } from '@wordpress/element';
+import { store as editorStore } from '@wordpress/editor';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
+import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -24,10 +30,106 @@ import { RelatedTopPostList } from './related-top-posts/component-list';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
+/**
+ * Defines the data structure exposed by the Sidebar about the currently opened
+ * Post.
+ *
+ * @since 3.11.0
+ */
+export interface SidebarPostData {
+	authors: string[];
+	categories: string[];
+	tags: string[];
+}
+
+/**
+ * Defines typings for some non-exported Gutenberg functions to avoid
+ * intellisense errors in function calls.
+ *
+ * This can be removed once Gutenberg provides typings for these functions.
+ *
+ * @since 3.11.0
+ */
+interface GutenbergFunction {
+	getCurrentPostId(): number;
+	getEditedPostAttribute( attribute: string ): number[];
+}
+
+/**
+ * Returns the Content Helper Editor Sidebar.
+ *
+ * @since 3.4.0
+ *
+ * @return {JSX.Element} The Content Helper Editor Sidebar.
+ */
 const ContentHelperEditorSidebar = (): JSX.Element => {
 	const [ period, setPeriod ] = useState<Period>( Period.Days7 );
 	const [ metric, setMetric ] = useState<Metric>( Metric.Views );
+	const [ postData, setPostData ] = useState<SidebarPostData>( {
+		authors: [], categories: [], tags: [],
+	} );
 
+	/**
+	 * Returns the current Post's ID, tags and categories.
+	 *
+	 * @since 3.11.0
+	 */
+	const { postId, tags, categories } = useSelect( ( select ) => {
+		const { getCurrentPostId, getEditedPostAttribute } = select( editorStore ) as GutenbergFunction;
+		const { getEntityRecords } = select( coreStore );
+
+		const tagRecords: Taxonomy[]|null = getEntityRecords(
+			'taxonomy', 'post_tag', { include: getEditedPostAttribute( 'tags' ) }
+		);
+
+		const categoryRecords: Taxonomy[] | null = getEntityRecords(
+			'taxonomy', 'category', { include: getEditedPostAttribute( 'categories' ) }
+		);
+
+		return {
+			postId: getCurrentPostId(),
+			tags: tagRecords,
+			categories: categoryRecords,
+		};
+	}, [] );
+
+	/**
+	 * Returns the current Post's tag names.
+	 *
+	 * @since 3.11.0
+	 */
+	const tagNames = useMemo( () => {
+		return tags ? tags.map( ( t ) => t.name ) : [];
+	}, [ tags ] );
+
+	/**
+	 * Returns the current Post's category names.
+	 *
+	 * @since 3.11.0
+	 */
+	const categoryNames = useMemo( () => {
+		return categories ? categories.map( ( c ) => c.name ) : [];
+	}, [ categories ] );
+
+	useEffect( () => {
+		apiFetch<SidebarPostData>( {
+			path: addQueryArgs( '/wp-parsely/v1/post-data/', { postId } ),
+		} ).then( ( response ) => {
+			setPostData( {
+				authors: response.authors,
+				tags: tagNames,
+				categories: categoryNames,
+			} );
+		} );
+	}, [ postId, tagNames, categoryNames ] );
+
+	/**
+	 * Returns the settings pane of the Content Helper Sidebar.
+	 *
+	 * @since 3.11.0
+	 *
+	 * @return {JSX.Element} The settings pane of the Content Helper Sidebar.
+	 */
 	const Settings = (): JSX.Element => {
 		return (
 			<>
@@ -104,6 +206,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 							<RelatedTopPostList
 								period={ period }
 								metric={ metric }
+								postData={ postData }
 							/>
 						</VerifyCredentials>
 					}

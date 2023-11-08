@@ -380,7 +380,7 @@ class Post_Builder extends Metadata_Builder {
 	 * @param WP_Post $post The post object.
 	 * @return array<string>
 	 */
-	private function get_author_names( WP_Post $post ): array {
+	public function get_author_names( WP_Post $post ): array {
 		$authors = $this->get_coauthor_names( $post->ID );
 		if ( 0 === count( $authors ) ) {
 			$post_author = get_user_by( 'id', $post->post_author );
