@@ -17,4 +17,4 @@ sed -i '' "s/const PARSELY_VERSION = '.*'/const PARSELY_VERSION = '$1'/" wp-pars
 
 npm install # Update version number in package.lock.json.
 
-git add README.md package.json package-lock.json tests/e2e/utils.ts wp-parsely.php && git commit -m "Update wp-parsely version to $1"
+git add README.md package.json package-lock.json tests/e2e/utils.ts wp-parsely.php && git commit -m "Update wp-parsely version number to $1"
