@@ -1,17 +1,15 @@
 /**
  * WordPress dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
 import { Panel, PanelBody, SelectControl } from '@wordpress/components';
 // eslint-disable-next-line import/named
-import { Taxonomy, store as coreStore } from '@wordpress/core-data';
+import { Taxonomy, User, store as coreStore } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
-import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
@@ -51,7 +49,6 @@ export interface SidebarPostData {
  * @since 3.11.0
  */
 interface GutenbergFunction {
-	getCurrentPostId(): number;
 	getEditedPostAttribute( attribute: string ): number[];
 }
 
@@ -74,22 +71,26 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 	 *
 	 * @since 3.11.0
 	 */
-	const { postId, tags, categories } = useSelect( ( select ) => {
-		const { getCurrentPostId, getEditedPostAttribute } = select( editorStore ) as GutenbergFunction;
+	const { authors, categories, tags } = useSelect( ( select ) => {
+		const { getEditedPostAttribute } = select( editorStore ) as GutenbergFunction;
 		const { getEntityRecords } = select( coreStore );
 
-		const tagRecords: Taxonomy[]|null = getEntityRecords(
-			'taxonomy', 'post_tag', { include: getEditedPostAttribute( 'tags' ) }
+		const authorRecords: User[] | null = getEntityRecords(
+			'root', 'user', { include: getEditedPostAttribute( 'author' ) }
 		);
 
 		const categoryRecords: Taxonomy[] | null = getEntityRecords(
 			'taxonomy', 'category', { include: getEditedPostAttribute( 'categories' ) }
 		);
 
+		const tagRecords: Taxonomy[]|null = getEntityRecords(
+			'taxonomy', 'post_tag', { include: getEditedPostAttribute( 'tags' ) }
+		);
+
 		return {
-			postId: getCurrentPostId(),
-			tags: tagRecords,
+			authors: authorRecords,
 			categories: categoryRecords,
+			tags: tagRecords,
 		};
 	}, [] );
 
@@ -111,17 +112,22 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 		return categories ? categories.map( ( c ) => c.name ) : [];
 	}, [ categories ] );
 
+	/**
+	 * Returns the current Post's author names.
+	 *
+	 * @since 3.11.0
+	 */
+	const authorNames = useMemo( () => {
+		return authors ? authors.map( ( a ) => a.name ) : [];
+	}, [ authors ] );
+
 	useEffect( () => {
-		apiFetch<SidebarPostData>( {
-			path: addQueryArgs( '/wp-parsely/v1/post-data/', { postId } ),
-		} ).then( ( response ) => {
-			setPostData( {
-				authors: response.authors,
-				tags: tagNames,
-				categories: categoryNames,
-			} );
+		setPostData( {
+			authors: authorNames,
+			tags: tagNames,
+			categories: categoryNames,
 		} );
-	}, [ postId, tagNames, categoryNames ] );
+	}, [ authorNames, tagNames, categoryNames ] );
 
 	/**
 	 * Returns the settings pane of the Content Helper Sidebar.
