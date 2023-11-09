@@ -570,6 +570,17 @@ class Post_Builder extends Metadata_Builder {
 	private function get_custom_taxonomy_values( WP_Post $post_obj ): array {
 		// Filter out default WordPress taxonomies.
 		$all_taxonomies = array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) );
+
+		/**
+		 * Filter the taxonomies.
+		 *
+		 * @since
+		 *
+		 * @param array<string> $all_taxonomies Taxonomies.
+		 * @param WP_Post $post_obj    Post object.
+		 */
+		$all_taxonomies = apply_filters( 'wp_parsely_custom_taxonomies', $all_taxonomies, $post_obj );
+
 		$all_values     = array();
 
 		foreach ( $all_taxonomies as $taxonomy ) {
