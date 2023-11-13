@@ -11,7 +11,6 @@ import {
 import {
 	VALID_API_SECRET,
 	getTopRelatedPostsMessage,
-	insertRecordIntoTaxonomy,
 	setSiteKeys,
 	setUserDisplayName,
 } from '../../utils';
@@ -38,42 +37,8 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 	it( 'Should attempt to fetch results when a Site ID and API Secret are provided', async () => {
 		await setUserDisplayName( 'admin', '' );
 
-		expect( await getTopRelatedPostsMessage( '', '', 500, messageSelector ) )
+		expect( await getTopRelatedPostsMessage( '', '', 'author', 500, messageSelector ) )
 			.toMatch( `No top posts by author "admin" were found for the specified period and metric.` );
-	} );
-
-	/**
-	 * Verifies that the author > category > tag filter prioritization order is
-	 * respected, with author being the weakest and tag the strongest.
-	 *
-	 * Note: This test inserts the category/tag into the database before
-	 * selecting it in the WordPress Post Editor.
-	 */
-	it( 'Should be prioritized in the correct order', async () => {
-		const firstName = 'Andrew';
-		const lastName = 'Montalenti';
-		const categoryName = 'Parse.ly Tech';
-		const tagName = 'ga4';
-
-		await setUserDisplayName( firstName, lastName );
-		await insertRecordIntoTaxonomy( categoryName, 'category' );
-		await insertRecordIntoTaxonomy( tagName, 'post_tag' );
-
-		// Author.
-		expect( await getTopRelatedPostsMessage( '', '', 500, messageSelector ) )
-			.toMatch( `Top posts by author "${ firstName } ${ lastName }" in last 7 days.` );
-
-		// Author + category.
-		expect( await getTopRelatedPostsMessage( categoryName, '', 500, messageSelector ) )
-			.toMatch( `Top posts in category "${ categoryName }" in last 7 days.` );
-
-		// Author + tag.
-		expect( await getTopRelatedPostsMessage( '', tagName, 500, messageSelector ) )
-			.toMatch( `Top posts with tag "${ tagName }" in last 7 days.` );
-
-		// Author + category + tag.
-		expect( await getTopRelatedPostsMessage( categoryName, tagName, 500, messageSelector ) )
-			.toMatch( `Top posts with tag "${ tagName }" in last 7 days.` );
 	} );
 
 	/**
@@ -88,7 +53,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
 		const categoryName = 'Parse.ly Tips';
 
-		expect( await getTopRelatedPostsMessage( categoryName, '', 2000, messageSelector ) )
-			.toMatch( `Top posts in category "${ categoryName }" in last 7 days.` );
+		expect( await getTopRelatedPostsMessage( categoryName, '', 'section', 2000, messageSelector ) )
+			.toMatch( `Top posts in section "${ categoryName }" in the last 7 days.` );
 	} );
 } );

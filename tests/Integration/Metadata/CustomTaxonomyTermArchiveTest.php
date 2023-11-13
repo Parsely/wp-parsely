@@ -16,6 +16,7 @@ use Parsely\Parsely;
  * Integration Tests for Custom Taxonomy Term Archive pages metadata.
  *
  * @see https://docs.parse.ly/metadata-jsonld/
+ *
  * @covers \Parsely\Metadata::construct_metadata
  */
 class CustomTaxonomyTermArchiveTest extends NonPostTestCase {

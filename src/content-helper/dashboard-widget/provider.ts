@@ -25,7 +25,7 @@ interface TopPostsApiResponse {
 	data?: PostData[];
 }
 
-const TOP_POSTS_DEFAULT_LIMIT = 3;
+export const TOP_POSTS_DEFAULT_LIMIT = 5;
 
 export class DashboardWidgetProvider {
 	/**
@@ -33,14 +33,15 @@ export class DashboardWidgetProvider {
 	 *
 	 * @param {Period} period The period to fetch data for.
 	 * @param {Metric} metric The metric to sort by.
+	 * @param {number} page   The page to fetch, defaults to the first page.
 	 *
 	 * @return {Promise<Array<PostData>>} Object containing message and posts.
 	 */
-	public async getTopPosts( period: Period, metric: Metric ): Promise<PostData[]> {
+	public async getTopPosts( period: Period, metric: Metric, page: number = 1 ): Promise<PostData[]> {
 		let data: PostData[] = [];
 
 		try {
-			data = await this.fetchTopPostsFromWpEndpoint( period, metric );
+			data = await this.fetchTopPostsFromWpEndpoint( period, metric, page );
 		} catch ( contentHelperError ) {
 			return Promise.reject( contentHelperError );
 		}
@@ -61,18 +62,20 @@ export class DashboardWidgetProvider {
 	 *
 	 * @param {Period} period The period to fetch data for.
 	 * @param {Metric} metric The metric to sort by.
+	 * @param {number} page   The page to fetch.
 	 *
 	 * @return {Promise<Array<PostData>>} Array of fetched posts.
 	 */
-	private async fetchTopPostsFromWpEndpoint( period: Period, metric: Metric ): Promise<PostData[]> {
+	private async fetchTopPostsFromWpEndpoint( period: Period, metric: Metric, page: number ): Promise<PostData[]> {
 		let response;
 
 		try {
 			response = await apiFetch( {
 				path: addQueryArgs( '/wp-parsely/v1/stats/posts/', {
 					limit: TOP_POSTS_DEFAULT_LIMIT,
-					...getApiPeriodParams( parseInt( period ) ),
+					...getApiPeriodParams( period ),
 					sort: metric,
+					page,
 					itm_source: 'wp-parsely-content-helper',
 				} ),
 			} ) as TopPostsApiResponse;

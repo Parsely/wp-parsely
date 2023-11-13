@@ -828,7 +828,7 @@ If you are using the plugin without any code-level customizations (for instance,
 
 ## [2.2.1](https://github.com/Parsely/wp-parsely/compare/2.2...2.2.1) - 2020-12-18
 
-- Add logo to JSON LD publisher object.
+- Add logo to JSON-LD publisher object.
 
 ## [2.2](https://github.com/Parsely/wp-parsely/compare/2.1.3...2.2) - 2020-09-14
 
@@ -909,7 +909,7 @@ If you are using the plugin without any code-level customizations (for instance,
 
 ## [1.12](https://github.com/Parsely/wp-parsely/compare/1.11.2...1.12) - 2018-01-26
 
-- Add ability to use repeated meta tags instead of ld+json tags for metadata.
+- Add ability to use repeated meta tags instead of JSON-LD for metadata.
 - Cleanup code to conform to WordPress VIP standards.
 - Fix minor bugs.
 

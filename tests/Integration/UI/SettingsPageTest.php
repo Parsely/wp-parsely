@@ -44,153 +44,189 @@ final class SettingsPageTest extends TestCase {
 		parent::set_up();
 		self::$parsely       = new Parsely();
 		self::$settings_page = new Settings_Page( self::$parsely );
+
+		add_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10, 3 );
 	}
 
 	/**
-	 * Verifies that valid Site ID values are retained when validated.
+	 * Tear down method called after each test.
+	 */
+	public function tear_down(): void {
+		parent::tear_down();
+		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
+	}
+
+	/**
+	 * Verifies that empty API credentials are retained when validated.
 	 *
-	 * @since 3.9.0
+	 * @since 3.11.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::api_secret_is_set
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::get_api_secret
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_managed_credentials
-	 * @uses \Parsely\UI\Settings_Page::__construct
-	 * @uses \Parsely\UI\Settings_Page::get_logo_default
-	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
-	 * @uses \Parsely\UI\Settings_Page::validate_advanced_section
-	 * @uses \Parsely\UI\Settings_Page::validate_options
-	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
-	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
-	 * @uses \Parsely\Validator::validate_site_id
+	 * @uses   \Parsely\Parsely::__construct
+	 * @uses   \Parsely\Parsely::api_secret_is_set
+	 * @uses   \Parsely\Parsely::are_credentials_managed
+	 * @uses   \Parsely\Parsely::get_api_secret
+	 * @uses   \Parsely\Parsely::get_options
+	 * @uses   \Parsely\Parsely::get_managed_credentials
+	 * @uses   \Parsely\UI\Settings_Page::__construct
+	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses   \Parsely\UI\Settings_Page::validate_options
+	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses   \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses   \Parsely\Validator::validate_api_credentials
 	 *
 	 * @group settings-page
 	 * @group settings-page-validation
 	 */
-	public function test_valid_site_id_values_are_retained_when_validated(): void {
+	public function test_empty_api_credentials_are_retained_when_validated(): void {
+		// First, change the option to something valid to make sure they are set
+		// back to empty.
+		$options               = self::$parsely->get_options();
+		$options['apikey']     = 'mydomain.com';
+		$options['api_secret'] = 'valid_api_secret';
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $options, $actual );
+
+		// Now try to set it back to empty values.
 		$options = self::$parsely->get_options();
 
-		$options['apikey'] = 'mydomain.com';
-		$expected          = $options;
+		$options['apikey']     = '';
+		$options['api_secret'] = '';
+
+		$actual = self::$settings_page->validate_options( $options );
+		self::assertSame( $options, $actual );
+	}
+
+	/**
+	 * Verifies that valid API credentials are retained when validated with the
+	 * Validation API.
+	 *
+	 * @since 3.11.0
+	 *
+	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
+	 * @uses   \Parsely\Parsely::__construct
+	 * @uses   \Parsely\Parsely::api_secret_is_set
+	 * @uses   \Parsely\Parsely::are_credentials_managed
+	 * @uses   \Parsely\Parsely::get_api_secret
+	 * @uses   \Parsely\Parsely::get_options
+	 * @uses   \Parsely\Parsely::get_managed_credentials
+	 * @uses   \Parsely\UI\Settings_Page::__construct
+	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses   \Parsely\UI\Settings_Page::validate_options
+	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses   \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses   \Parsely\Validator::validate_api_credentials
+	 *
+	 * @group settings-page
+	 * @group settings-page-validation
+	 */
+	public function test_valid_api_credentials_are_retained_when_validated(): void {
+		$options = self::$parsely->get_options();
+
+		$options['apikey']     = 'mydomain.com';
+		$options['api_secret'] = 'valid_api_secret';
+
+		$expected = $options;
 
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );
 	}
 
 	/**
-	 * Verifies that invalid Site ID values are emptied when validated.
+	 * Verifies that invalid API credentials are reset to their previous values
+	 * when validated with the Validation API.
 	 *
-	 * @since 3.9.0
+	 * @since 3.11.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::api_secret_is_set
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::get_api_secret
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_managed_credentials
-	 * @uses \Parsely\UI\Settings_Page::__construct
-	 * @uses \Parsely\UI\Settings_Page::get_logo_default
-	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
-	 * @uses \Parsely\UI\Settings_Page::validate_advanced_section
-	 * @uses \Parsely\UI\Settings_Page::validate_options
-	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
-	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
-	 * @uses \Parsely\Validator::validate_site_id
+	 * @uses   \Parsely\Parsely::__construct
+	 * @uses   \Parsely\Parsely::api_secret_is_set
+	 * @uses   \Parsely\Parsely::are_credentials_managed
+	 * @uses   \Parsely\Parsely::get_api_secret
+	 * @uses   \Parsely\Parsely::get_options
+	 * @uses   \Parsely\Parsely::get_managed_credentials
+	 * @uses   \Parsely\UI\Settings_Page::__construct
+	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses   \Parsely\UI\Settings_Page::validate_options
+	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses   \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses   \Parsely\Validator::validate_api_credentials
 	 *
 	 * @group settings-page
 	 * @group settings-page-validation
 	 */
-	public function test_invalid_site_id_values_are_emptied_when_validated(): void {
+	public function test_invalid_api_credentials_are_reset_to_their_previous_value_when_validated(): void {
+		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
+		// Mock HTTP request to simulate a failed credentials validation.
+		add_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10, 3 );
+
 		$expected = self::$parsely->get_options();
 		$options  = self::$parsely->get_options();
 
-		$options['apikey'] = 'invalid';
+		$options['apikey']     = 'mydomain.com';
+		$options['api_secret'] = 'invalid_api_secret';
 
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );
+		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10 );
 	}
 
 	/**
-	 * Verifies that valid API Secret values are retained when validated.
+	 * Verifies that empty API Secret values are retained when validated.
 	 *
-	 * @since 3.9.0
+	 * @since 3.11.0
 	 *
 	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::api_secret_is_set
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::get_api_secret
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_managed_credentials
-	 * @uses \Parsely\UI\Settings_Page::__construct
-	 * @uses \Parsely\UI\Settings_Page::get_logo_default
-	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
-	 * @uses \Parsely\UI\Settings_Page::validate_advanced_section
-	 * @uses \Parsely\UI\Settings_Page::validate_options
-	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
-	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
-	 * @uses \Parsely\Validator::validate_api_secret
-	 * @uses \Parsely\Validator::validate_site_id
+	 * @uses   \Parsely\Parsely::__construct
+	 * @uses   \Parsely\Parsely::api_secret_is_set
+	 * @uses   \Parsely\Parsely::are_credentials_managed
+	 * @uses   \Parsely\Parsely::get_api_secret
+	 * @uses   \Parsely\Parsely::get_options
+	 * @uses   \Parsely\Parsely::get_managed_credentials
+	 * @uses   \Parsely\UI\Settings_Page::__construct
+	 * @uses   \Parsely\UI\Settings_Page::get_logo_default
+	 * @uses   \Parsely\UI\Settings_Page::get_obfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::get_unobfuscated_value
+	 * @uses   \Parsely\UI\Settings_Page::sanitize_site_id
+	 * @uses   \Parsely\UI\Settings_Page::validate_advanced_section
+	 * @uses   \Parsely\UI\Settings_Page::validate_options
+	 * @uses   \Parsely\UI\Settings_Page::validate_options_post_type_tracking
+	 * @uses   \Parsely\UI\Settings_Page::validate_recrawl_section
+	 * @uses   \Parsely\Validator::validate_api_credentials
 	 *
 	 * @group settings-page
 	 * @group settings-page-validation
 	 */
-	public function test_valid_api_secret_values_are_retained_when_validated(): void {
+	public function test_empty_api_secret_is_retained_when_validated(): void {
+		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_success' ), 10 );
+		// API Requests without a secret will *always* fail. Therefore, mock the
+		// HTTP request to simulate a failed credentials' validation.
+		add_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10, 3 );
+
 		$options = self::$parsely->get_options();
 
-		// More than 30 characters.
-		$options['api_secret'] = 'valid_api_secret_key_based_on_length';
-		$expected              = $options;
+		$options['apikey']     = 'mydomain.com';
+		$options['api_secret'] = '';
+
+		$expected = $options;
 
 		$actual = self::$settings_page->validate_options( $options );
 		self::assertSame( $expected, $actual );
-	}
 
-	/**
-	 * Verifies that invalid API Secret values are emptied when validated.
-	 *
-	 * @since 3.9.0
-	 *
-	 * @covers \Parsely\UI\Settings_Page::validate_basic_section
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::api_secret_is_set
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::get_api_secret
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::get_managed_credentials
-	 * @uses \Parsely\UI\Settings_Page::__construct
-	 * @uses \Parsely\UI\Settings_Page::get_logo_default
-	 * @uses \Parsely\UI\Settings_Page::get_obfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::get_unobfuscated_value
-	 * @uses \Parsely\UI\Settings_Page::sanitize_site_id
-	 * @uses \Parsely\UI\Settings_Page::validate_advanced_section
-	 * @uses \Parsely\UI\Settings_Page::validate_options
-	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
-	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
-	 * @uses \Parsely\Validator::validate_api_secret
-	 * @uses \Parsely\Validator::validate_site_id
-	 *
-	 * @group settings-page
-	 * @group settings-page-validation
-	 */
-	public function test_invalid_api_secret_values_are_emptied_when_validated(): void {
-		$expected = self::$parsely->get_options();
-		$options  = self::$parsely->get_options();
-
-		$options['api_secret'] = 'a'; // Less than 30 characters.
-
-		$actual = self::$settings_page->validate_options( $options );
-		self::assertSame( $expected, $actual );
+		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10 );
 	}
 
 	/**
@@ -215,7 +251,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
 	 * @uses \Parsely\Validator::validate_metadata_secret
-	 * @uses \Parsely\Validator::validate_site_id
+	 * @uses \Parsely\Validator::validate_api_credentials
 	 *
 	 * @group settings-page
 	 * @group settings-page-validation
@@ -252,7 +288,7 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
 	 * @uses \Parsely\Validator::validate_metadata_secret
-	 * @uses \Parsely\Validator::validate_site_id
+	 * @uses \Parsely\Validator::validate_api_credentials
 	 *
 	 * @group settings-page
 	 * @group settings-page-validation
@@ -294,7 +330,6 @@ final class SettingsPageTest extends TestCase {
 	 * @uses \Parsely\UI\Settings_Page::validate_options
 	 * @uses \Parsely\UI\Settings_Page::validate_options_post_type_tracking
 	 * @uses \Parsely\UI\Settings_Page::validate_recrawl_section
-	 * @uses \Parsely\Validator::validate_site_id
 	 *
 	 * @group settings-page
 	 * @group settings-page-validation
@@ -592,6 +627,82 @@ final class SettingsPageTest extends TestCase {
 		self::expectOutputContains( $expected_html );
 	}
 
+
+	/**
+	 * Mocks a success response from the API credentials validation endpoint.
+	 *
+	 * @since 3.11.0
+	 *
+	 * @param string $response The response to mock.
+	 * @param array  $args The arguments passed to the request.
+	 * @param string $url The URL of the request.
+	 * @return array<mixed>|false The mocked response.
+	 *
+	 * @phpstan-ignore-next-line
+	 */
+	public function mock_request_api_credentials_validation_success( string $response, array $args, string $url ) {
+		return $this->mock_request_api_credentials_validation( 'success', $args, $url );
+	}
+
+	/**
+	 * Mocks a failure response from the API credentials validation endpoint.
+	 *
+	 * @since 3.11.0
+	 *
+	 * @param string $response The response to mock.
+	 * @param array  $args The arguments passed to the request.
+	 * @param string $url The URL of the request.
+	 * @return array<mixed>|false The mocked response.
+	 *
+	 * @phpstan-ignore-next-line
+	 */
+	public function mock_request_api_credentials_validation_failure( string $response, array $args, string $url ) {
+		return $this->mock_request_api_credentials_validation( 'forbidden', $args, $url );
+	}
+
+	/**
+	 * Mocks the response from the API credentials validation endpoint.
+	 *
+	 * @since 3.11.0
+	 *
+	 * @param string $result_type The type of result to mock.
+	 * @param array  $args The arguments passed to the request.
+	 * @param string $url The URL of the request.
+	 * @return array|false The mocked response.
+	 *
+	 * @phpstan-ignore-next-line
+	 */
+	private function mock_request_api_credentials_validation( string $result_type, array $args, string $url ) {
+		if ( ! str_contains( $url, 'validate/secret' ) ) {
+			return false;
+		}
+
+		$response = array(
+			'code'    => 400,
+			'message' => 'Unknown error',
+			'success' => false,
+		);
+
+		if ( 'success' === $result_type ) {
+			$response['code']    = 200;
+			$response['message'] = 'Valid credentials for example.com';
+			$response['success'] = true;
+		} elseif ( 'forbidden' === $result_type ) {
+			$response['code']    = 403;
+			$response['message'] = 'Forbidden';
+			$response['success'] = false;
+		}
+
+		return array(
+			'headers'     => array(),
+			'cookies'     => array(),
+			'filename'    => null,
+			'response'    => $response,
+			'status_code' => $response['code'],
+			'success'     => $response['success'],
+			'body'        => $this->wp_json_encode( $response ),
+		);
+	}
 
 	/**
 	 * Provides data for the test_managed_option_title_html_is_correct test.

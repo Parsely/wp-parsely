@@ -71,9 +71,9 @@ final class RelatedRemoteAPITest extends RemoteAPITest {
 	/**
 	 * Verifies that the endpoint does not have filters that check user capability.
 	 *
-	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 *
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 */
 	public function test_related_endpoint_does_not_have_user_capability_filters(): void {
 		$api = new Related_API( new Parsely() );

@@ -14,6 +14,7 @@ import {
 	ContentHelperErrorCode,
 } from '../../common/content-helper-error';
 import { getApiPeriodParams } from '../../common/utils/api';
+import { Period } from '../../common/utils/constants';
 import {
 	PerformanceData,
 	PerformanceReferrerData,
@@ -47,11 +48,11 @@ export class PerformanceDetailsProvider {
 	 * Returns details about the post that is currently being edited within the
 	 * WordPress Block Editor.
 	 *
-	 * @param {string} period The period for which to fetch data.
+	 * @param {Period} period The period for which to fetch data.
 	 *
 	 * @return {Promise<PerformanceData>} The current post's details.
 	 */
-	public async getPerformanceDetails( period: string ): Promise<PerformanceData> {
+	public async getPerformanceDetails( period: Period ): Promise<PerformanceData> {
 		const editor = select( 'core/editor' );
 
 		// We cannot show data for non-published posts.
@@ -65,7 +66,16 @@ export class PerformanceDetailsProvider {
 		}
 
 		// Get post URL.
-		const postUrl: string = editor.getPermalink();
+		const postUrl = editor.getPermalink();
+
+		if ( null === postUrl ) {
+			return Promise.reject(
+				new ContentHelperError( __(
+					"The post's URL returned null.",
+					'wp-parsely' ), ContentHelperErrorCode.PostIsNotPublished
+				)
+			);
+		}
 
 		// Fetch all needed results using our WordPress endpoints.
 		let performanceData, referrerData;
@@ -87,13 +97,13 @@ export class PerformanceDetailsProvider {
 	 * Fetches the performance data for the current post from the WordPress REST
 	 * API.
 	 *
-	 * @param {string} period  The period for which to fetch data.
+	 * @param {Period} period  The period for which to fetch data.
 	 * @param {string} postUrl
 	 *
 	 * @return {Promise<PerformanceData> } The current post's details.
 	 */
 	private async fetchPerformanceDataFromWpEndpoint(
-		period: string, postUrl: string
+		period: Period, postUrl: string
 	): Promise<PerformanceData> {
 		let response;
 
@@ -101,7 +111,7 @@ export class PerformanceDetailsProvider {
 			response = await apiFetch<AnalyticsApiResponse>( {
 				path: addQueryArgs(
 					'/wp-parsely/v1/stats/post/detail', {
-						...getApiPeriodParams( parseInt( period ) ),
+						...getApiPeriodParams( period ),
 						itm_source: this.itmSource,
 						url: postUrl,
 					} ),
@@ -147,14 +157,14 @@ export class PerformanceDetailsProvider {
 	/**
 	 * Fetches referrer data for the current post from the WordPress REST API.
 	 *
-	 * @param {string} period     The period for which to fetch data.
+	 * @param {Period} period     The period for which to fetch data.
 	 * @param {string} postUrl    The post's URL.
 	 * @param {string} totalViews Total post views (including direct views).
 	 *
 	 * @return {Promise<PerformanceReferrerData>} The post's referrer data.
 	 */
 	private async fetchReferrerDataFromWpEndpoint(
-		period: string, postUrl: string, totalViews: string
+		period: Period, postUrl: string, totalViews: string
 	): Promise<PerformanceReferrerData> {
 		let response;
 
@@ -162,7 +172,7 @@ export class PerformanceDetailsProvider {
 		try {
 			response = await apiFetch<ReferrersApiResponse>( { path: addQueryArgs(
 				'/wp-parsely/v1/referrers/post/detail', {
-					...getApiPeriodParams( parseInt( period ) ),
+					...getApiPeriodParams( period ),
 					itm_source: this.itmSource,
 					total_views: totalViews, // Needed to calculate direct views.
 					url: postUrl,
