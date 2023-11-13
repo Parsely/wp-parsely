@@ -12,6 +12,7 @@ namespace Parsely\RemoteAPI;
 
 use Parsely\Parsely;
 use WP_Error;
+
 use function Parsely\Utils\convert_to_associative_array;
 
 /**
@@ -21,7 +22,7 @@ use function Parsely\Utils\convert_to_associative_array;
  *
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
-class Validate_API extends Remote_API_Base {
+class Validate_API extends Base_Endpoint_Remote {
 	protected const ENDPOINT     = '/validate/secret';
 	protected const QUERY_FILTER = 'wp_parsely_validate_secret_endpoint_args';
 
