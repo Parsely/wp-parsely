@@ -572,9 +572,9 @@ class Post_Builder extends Metadata_Builder {
 		$all_taxonomies = array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) );
 
 		/**
-		 * Filter the taxonomies.
+		 * Filters the taxonomies.
 		 *
-		 * @since
+		 * @since 3.11.0
 		 *
 		 * @param array<string> $all_taxonomies Taxonomies.
 		 * @param WP_Post $post_obj    Post object.
