@@ -580,7 +580,6 @@ class Post_Builder extends Metadata_Builder {
 		 * @param WP_Post $post_obj    Post object.
 		 */
 		$all_taxonomies = apply_filters( 'wp_parsely_custom_taxonomies', $all_taxonomies, $post_obj );
-
 		$all_values     = array();
 
 		foreach ( $all_taxonomies as $taxonomy ) {
