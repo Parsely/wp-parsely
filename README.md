@@ -115,13 +115,15 @@ Please visit the [changelog](https://github.com/parsely/wp-parsely/blob/trunk/CH
    ![Parse.ly Plugin - Recrawl Settings](.wordpress-org/screenshot-2.png)
 3. Parse.ly plugin advanced settings, to be used only if instructed by Parse.ly staff.  
    ![Parse.ly Plugin - Advanced Settings](.wordpress-org/screenshot-3.png)
-4. The Parse.ly Dashboard Widget, showing the website's top posts in the last 7 days.
+4. The Parse.ly Dashboard Widget, showing the website's top posts in the last 7 days.  
    ![Parse.ly Dashboard Widget](.wordpress-org/screenshot-4.png)
-5. The Parse.ly Stats Column (on the right), showing information about content that is being tracked as Posts.
+5. The Parse.ly Stats Column (on the right), showing information about content that is being tracked as Posts.  
    ![Parse.ly List Column](.wordpress-org/screenshot-5.png)
-6. The Parse.ly Editor Sidebar, featuring the Performance Details and Related Top Posts panels.  
-   ![Parse.ly Editor Sidebar](.wordpress-org/screenshot-6.png)
-7. The Recommendations Block, showcasing links to related content on your site.  
-   ![Parse.ly Recommendations Block](.wordpress-org/screenshot-7.png)
-8. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empower you to better understand how your content is performing.  
-   ![Parse.ly Dashboard Overview](.wordpress-org/screenshot-8.png)
+6. The Parse.ly Editor Sidebar, featuring the Performance Details panel.  
+   ![Parse.ly Editor Sidebar - Performance Details](.wordpress-org/screenshot-6.png)
+7. The Parse.ly Editor Sidebar, featuring the Related Top Posts panel.  
+   ![Parse.ly Editor Sidebar - Related Top Posts](.wordpress-org/screenshot-7.png)
+8. The Recommendations Block, showcasing links to related content on your site.  
+   ![Parse.ly Recommendations Block](.wordpress-org/screenshot-8.png)
+9. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empower you to better understand how your content is performing.  
+   ![Parse.ly Dashboard Overview](.wordpress-org/screenshot-9.png)
