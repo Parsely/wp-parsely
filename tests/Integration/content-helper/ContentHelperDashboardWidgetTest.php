@@ -87,9 +87,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
-	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\get_asset_info
 	 *
@@ -115,9 +115,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
-	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\get_asset_info
 	 *

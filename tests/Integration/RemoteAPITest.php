@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\RemoteAPI\Cache;
-use Parsely\RemoteAPI\Remote_API_Base;
+use Parsely\RemoteAPI\Base_Endpoint_Remote;
 use Parsely\RemoteAPI\Remote_API_Cache;
 
 /**
@@ -21,7 +21,7 @@ abstract class RemoteAPITest extends TestCase {
 	/**
 	 * Internal variable.
 	 *
-	 * @var Remote_API_Base $remote_api Holds an instance of the class being tested.
+	 * @var Base_Endpoint_Remote $remote_api Holds an instance of the class being tested.
 	 */
 	protected static $remote_api;
 
@@ -54,7 +54,7 @@ abstract class RemoteAPITest extends TestCase {
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 *
 	 * @param array<string, mixed> $query Test query arguments.
 	 * @param string               $url Expected generated URL.

@@ -47,7 +47,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @covers \Parsely\Endpoints\Analytics_Post_Detail_API_Proxy::run
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\Endpoints\Analytics_Post_Detail_API_Proxy::__construct
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 */
 	public function test_register_routes_by_default(): void {
 		parent::run_test_register_routes_by_default();
@@ -60,7 +60,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @covers \Parsely\Endpoints\Analytics_Post_Detail_API_Proxy::run
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\Endpoints\Analytics_Post_Detail_API_Proxy::__construct
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 */
 	public function test_verify_that_route_is_not_registered_when_proxy_is_disabled(): void {
 		parent::run_test_do_not_register_route_when_proxy_is_disabled();
@@ -80,7 +80,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 */
 	public function test_get_items_fails_when_site_id_is_not_set(): void {
 		$this->set_admin_user();
@@ -102,7 +102,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 */
 	public function test_get_items_fails_when_api_secret_is_not_set(): void {
 		$this->set_admin_user();
@@ -114,8 +114,8 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 *
 	 * @covers \Parsely\Endpoints\Analytics_Post_Detail_API_Proxy::permission_callback
 	 *
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 */
 	public function test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed(): void {
 		$this->login_as_contributor();
@@ -139,8 +139,8 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 *
 	 * @covers \Parsely\Endpoints\Analytics_Post_Detail_API_Proxy::permission_callback
 	 *
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 */
 	public function test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed(): void {
 		$this->login_as_contributor();
@@ -175,10 +175,10 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_api_url
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_items
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::get_request_options
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_items
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_request_options
 	 */
 	public function test_get_items(): void {
 		$this->set_admin_user();

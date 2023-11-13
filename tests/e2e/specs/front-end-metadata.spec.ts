@@ -48,7 +48,7 @@ describe( 'Front end metadata insertion', () => {
 		await setUserDisplayName( 'admin', '' );
 	} );
 
-	it( 'Should insert JSON LD on homepage', async () => {
+	it( 'Should insert JSON-LD on homepage', async () => {
 		await setMetadataFormat( 'json_ld' );
 
 		await page.goto( createURL( '/' ) );
@@ -60,7 +60,7 @@ describe( 'Front end metadata insertion', () => {
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
 
-	it( 'Should insert JSON LD on post page', async () => {
+	it( 'Should insert JSON-LD on post page', async () => {
 		await setMetadataFormat( 'json_ld' );
 
 		await page.goto( createURL( '/', '?p=1' ) );

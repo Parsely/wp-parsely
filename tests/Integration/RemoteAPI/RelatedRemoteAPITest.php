@@ -35,23 +35,21 @@ final class RelatedRemoteAPITest extends RemoteAPITest {
 				'apikey'         => 'my-key',
 				'pub_date_start' => '7d',
 				'sort'           => 'score',
-				'boost'          => 'views',
 				'limit'          => 5,
 			),
-			Parsely::PUBLIC_API_BASE_URL . '/related?apikey=my-key&boost=views&limit=5&pub_date_start=7d&sort=score',
+			Parsely::PUBLIC_API_BASE_URL . '/related?apikey=my-key&limit=5&pub_date_start=7d&sort=score',
 		);
 
 		yield 'published_within value of 0' => array(
 			array(
 				'apikey' => 'my-key',
 				'sort'   => 'score',
-				'boost'  => 'views',
 				'limit'  => 5,
 			),
-			Parsely::PUBLIC_API_BASE_URL . '/related?apikey=my-key&boost=views&limit=5&sort=score',
+			Parsely::PUBLIC_API_BASE_URL . '/related?apikey=my-key&limit=5&sort=score',
 		);
 
-		yield 'Sort on publish date (no boost param)' => array(
+		yield 'Sort on publish date' => array(
 			array(
 				'apikey' => 'my-key',
 				'sort'   => 'pub_date',
@@ -60,7 +58,7 @@ final class RelatedRemoteAPITest extends RemoteAPITest {
 			Parsely::PUBLIC_API_BASE_URL . '/related?apikey=my-key&limit=5&sort=pub_date',
 		);
 
-		yield 'Rank by relevance only (no boost param)' => array(
+		yield 'Rank by relevance only' => array(
 			array(
 				'apikey' => 'my-key',
 				'sort'   => 'score',
@@ -73,9 +71,9 @@ final class RelatedRemoteAPITest extends RemoteAPITest {
 	/**
 	 * Verifies that the endpoint does not have filters that check user capability.
 	 *
-	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 *
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 */
 	public function test_related_endpoint_does_not_have_user_capability_filters(): void {
 		$api = new Related_API( new Parsely() );
