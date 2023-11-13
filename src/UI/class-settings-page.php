@@ -949,7 +949,6 @@ final class Settings_Page {
 	 * Validates the options provided by the user.
 	 *
 	 * @param ParselySettingOptions $input Options from the settings page.
-	 *
 	 * @return ParselySettingOptions
 	 */
 	public function validate_options( $input ) {
@@ -964,7 +963,6 @@ final class Settings_Page {
 	 * Validates fields of Basic Section.
 	 *
 	 * @param ParselySettingOptions $input Options from the settings page.
-	 *
 	 * @return ParselySettingOptions Validated inputs.
 	 */
 	private function validate_basic_section( $input ) {
@@ -1060,7 +1058,6 @@ final class Settings_Page {
 	 * Validates fields of Recrawl Section.
 	 *
 	 * @param ParselySettingOptions $input Options from the settings page.
-	 *
 	 * @return ParselySettingOptions Validated inputs.
 	 */
 	private function validate_recrawl_section( $input ) {
@@ -1168,7 +1165,6 @@ final class Settings_Page {
 	 * Validates fields of Advanced Section.
 	 *
 	 * @param ParselySettingOptions $input Options from the settings page.
-	 *
 	 * @return ParselySettingOptions Validated inputs.
 	 */
 	private function validate_advanced_section( $input ) {
@@ -1212,7 +1208,6 @@ final class Settings_Page {
 	 * @since 3.3.0
 	 *
 	 * @param string $site_id The Site ID to be sanitized.
-	 *
 	 * @return string
 	 */
 	private function sanitize_site_id( string $site_id ): string {
@@ -1309,7 +1304,6 @@ final class Settings_Page {
 	 * Gets obfuscated value.
 	 *
 	 * @param string $current_value Current value of the field.
-	 *
 	 * @return string
 	 */
 	private function get_obfuscated_value( $current_value ): string {
@@ -1322,7 +1316,6 @@ final class Settings_Page {
 	 * @param string $current_value Current value of the field.
 	 * @param string $previous_value Previous value of the field. If current
 	 *                               value is obfuscated then we will use this.
-	 *
 	 * @return string
 	 */
 	private function get_unobfuscated_value( $current_value, $previous_value ): string {
@@ -1341,7 +1334,6 @@ final class Settings_Page {
 	 *
 	 * @param string $title The field's title.
 	 * @param string $option_id The option's ID.
-	 *
 	 * @return string The resulting content.
 	 */
 	public function set_field_label_contents( string $title, string $option_id ): string {

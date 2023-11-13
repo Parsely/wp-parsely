@@ -22,7 +22,6 @@ interface Remote_API_Interface {
 	 * @param array<string, mixed> $query The query arguments to send to the remote API.
 	 * @param bool                 $associative (optional) When TRUE, returned objects will be converted into
 	 *                             associative arrays.
-	 *
 	 * @return array<string, mixed>|object|WP_Error
 	 */
 	public function get_items( array $query, bool $associative = false );

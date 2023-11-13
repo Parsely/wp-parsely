@@ -69,12 +69,12 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * Asserts the enqueueing status of the feature's assets according to the
 	 * passed filter values.
 	 *
+	 * @since 3.9.0
+	 *
 	 * @param mixed $global_filter_value The value of the global filter.
 	 * @param mixed $feature_filter_value The value of the feature filter.
 	 * @param bool  $expected Whether the assets should be enqueued.
 	 * @param mixed ...$additional_args Any required additional arguments.
-	 *
-	 * @since 3.9.0
 	 */
 	protected function assert_enqueued_status(
 		$global_filter_value,
@@ -113,13 +113,13 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
-	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 * @covers \Parsely\Utils\convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 *
 	 * @group content-helper
 	 */
@@ -143,13 +143,13 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
-	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 * @covers \Parsely\Utils\convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 *
 	 * @group content-helper
 	 */
@@ -532,7 +532,6 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @param int    $publish_num_of_posts Number of publish posts that we have to create.
 	 * @param int    $draft_num_of_posts Number of draft posts that we have to create.
 	 * @param string $post_type Type of the post.
-	 *
 	 * @return array<WP_Post>
 	 */
 	private function set_and_get_posts_data(
@@ -551,7 +550,6 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @param array<WP_Post> $posts Available posts.
 	 * @param string         $post_type Type of the post.
-	 *
 	 * @return string
 	 */
 	private function get_content_of_parsely_stats_column( array $posts, string $post_type ): string {
@@ -584,7 +582,6 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * Gets placeholder content of Parse.ly stats column.
 	 *
 	 * @param string $key Stats Key.
-	 *
 	 * @return string
 	 */
 	private function get_parsely_stats_placeholder_content( string $key ): string {
@@ -595,7 +592,6 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * Gets utc_published_times property of given object.
 	 *
 	 * @param Post_List_Stats $obj Instance of Post_List_Stats.
-	 *
 	 * @return array<string>
 	 */
 	private function get_utc_published_times_property( Post_List_Stats $obj ): array {
@@ -772,7 +768,6 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * Mock function is_parsely_stats_column_hidden from class.
 	 *
 	 * @param bool $return_value Value that we have to return from mock function.
-	 *
 	 * @return Post_List_Stats
 	 */
 	private function mock_is_parsely_stats_column_hidden( bool $return_value = false ): Post_List_Stats {
@@ -1243,7 +1238,6 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @param string                              $post_type Type of the post.
 	 * @param array<Analytics_Post>|WP_Error|null $api_response Mocked response that we return on calling API.
 	 * @param Analytics_Post_API_Params|null      $api_params API Parameters.
-	 *
 	 * @return Parsely_Posts_Stats_Response|null
 	 */
 	private function get_parsely_stats_response(

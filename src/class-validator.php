@@ -47,10 +47,9 @@ class Validator {
 	 * @return true|WP_Error True if the API Credentials are valid, WP_Error otherwise.
 	 */
 	public static function validate_api_credentials( Parsely $parsely, string $site_id, string $api_secret ) {
-
-		// If the API secret is empty, the validation endpoint will always fail. Since it's possible to
-		// use the plugin without an API Secret, and providing only a Site ID (API key), we'll skip the validation and
-		// assume it's valid.
+		// If the API secret is empty, the validation endpoint will always fail.
+		// Since it's possible to use the plugin without an API Secret, we'll
+		// skip the validation and assume it's valid.
 		if ( '' === $api_secret ) {
 			return true;
 		}
