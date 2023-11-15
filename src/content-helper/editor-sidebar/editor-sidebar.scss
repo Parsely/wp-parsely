@@ -358,7 +358,7 @@
 		}
 	}
 
-	// Container for the title suggestions
+	// Container for the title suggestions.
 	.parsely-write-titles-title-suggestions-container {
 		margin: to_rem(10px) 0;
 
@@ -366,7 +366,7 @@
 			display: none;
 		}
 
-		// Single title suggestion
+		// Single title suggestion.
 		.parsely-write-titles-title-suggestion {
 			display: flex;
 
@@ -389,29 +389,27 @@
 				}
 
 				.is-pinned {
-					background-color: #586069;
+					background-color: var(--gray-600);
 					color: #fff;
-					box-shadow: inset 0 0 0 1px #1e1e1e;
-
+					box-shadow: inset 0 0 0 1px var(--sidebar-black);
 				}
 			}
 		}
 
 		.title-in-use {
-			color: #006400;
+			color: var(--green-900);
 		}
 
 		.original-title {
-			border: 1px solid #586069;
+			border: 1px solid var(--gray-600);
 			margin-bottom: to_rem(15px);
 		}
-
 	}
 
 	// Horizontal divider.
 	.parsely-write-titles-title-suggestion-divider {
 		margin: 1em 0;
-		border-bottom: 1px solid #f0f0f0;
+		border-bottom: 1px solid var(--gray-300);
 		border-top: none;
 	}
 }
