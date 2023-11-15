@@ -3,6 +3,7 @@ import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { check, closeSmall, pin, undo } from '@wordpress/icons';
 import { Title, TitleStore, TitleType } from './store';
+import { GutenbergFunction } from './types';
 
 export interface TitleSuggestionProps {
 	title: Title,
@@ -26,8 +27,7 @@ export const TitleSuggestion = ( props: TitleSuggestionProps ) => {
 		[ props.title, props.type ] );
 
 	const currentPostTitle = useSelect( ( select ) => {
-		const { getEditedPostAttribute } = select( 'core/editor' );
-		// @ts-ignore
+		const { getEditedPostAttribute } = select( 'core/editor' ) as GutenbergFunction;
 		return getEditedPostAttribute( 'title' );
 	}, [] );
 
@@ -52,7 +52,6 @@ export const TitleSuggestion = ( props: TitleSuggestionProps ) => {
 
 	const onClickRestore = async () => {
 		// Set current post title to the original title.
-		// @ts-ignore
 		dispatch( 'core/editor' ).editPost( { title: props.title.title } );
 
 		// Unset the original title prop by setting it to undefined.

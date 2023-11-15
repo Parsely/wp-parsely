@@ -4,6 +4,7 @@ import { __ } from '@wordpress/i18n';
 import { TitleSuggestion } from './component-title-suggestion';
 import { WriteTitleProvider } from './provider';
 import { TitleStore, TitleType } from './store';
+import { GutenbergFunction } from './types';
 
 export const WriteTitlesPanel = () => {
 	const {
@@ -34,14 +35,12 @@ export const WriteTitlesPanel = () => {
 	} = useDispatch( TitleStore );
 
 	const currentPostContent = useSelect( ( select ) => {
-		const { getEditedPostContent } = select( 'core/editor' );
-		// @ts-ignore
+		const { getEditedPostContent } = select( 'core/editor' ) as GutenbergFunction;
 		return getEditedPostContent();
 	}, [] );
 
 	const currentPostTitle = useSelect( ( select ) => {
-		const { getEditedPostAttribute } = select( 'core/editor' );
-		// @ts-ignore
+		const { getEditedPostAttribute } = select( 'core/editor' ) as GutenbergFunction;
 		return getEditedPostAttribute( 'title' );
 	}, [] );
 
@@ -70,7 +69,6 @@ export const WriteTitlesPanel = () => {
 		await setOriginalTitle( TitleType.PostTitle, currentPostTitle );
 
 		// Set the post title to the accepted title.
-		// @ts-ignore
 		dispatch( 'core/editor' ).editPost( { title: acceptedTitle?.title } );
 
 		// Pin the accepted title on the list of generated titles.
