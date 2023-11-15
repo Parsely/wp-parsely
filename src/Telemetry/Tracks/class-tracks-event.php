@@ -14,6 +14,7 @@ use stdClass;
 use WP_Error;
 
 use function Parsely\Utils\get_timestamp;
+use const Parsely\PARSELY_VERSION;
 
 /**
  * Class that creates and validates Tracks events.
@@ -133,6 +134,11 @@ class Tracks_Event {
 			if ( is_string( $app_environment ) && '' !== $app_environment ) {
 				$event->vipgo_env = $app_environment;
 			}
+		}
+
+		// Set the WP Parsely plugin version.
+		if ( defined( '\Parsely\PARSELY_VERSION' ) ) {
+			$event->parsely_version = PARSELY_VERSION;
 		}
 
 		return $event;
