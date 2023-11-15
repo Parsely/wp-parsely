@@ -380,7 +380,7 @@ class Post_Builder extends Metadata_Builder {
 	 * @param WP_Post $post The post object.
 	 * @return array<string>
 	 */
-	private function get_author_names( WP_Post $post ): array {
+	public function get_author_names( WP_Post $post ): array {
 		$authors = $this->get_coauthor_names( $post->ID );
 		if ( 0 === count( $authors ) ) {
 			$post_author = get_user_by( 'id', $post->post_author );
@@ -570,6 +570,16 @@ class Post_Builder extends Metadata_Builder {
 	private function get_custom_taxonomy_values( WP_Post $post_obj ): array {
 		// Filter out default WordPress taxonomies.
 		$all_taxonomies = array_diff( get_taxonomies(), array( 'post_tag', 'nav_menu', 'author', 'link_category', 'post_format' ) );
+
+		/**
+		 * Filters the taxonomies.
+		 *
+		 * @since 3.11.0
+		 *
+		 * @param array<string> $all_taxonomies Taxonomies.
+		 * @param WP_Post $post_obj    Post object.
+		 */
+		$all_taxonomies = apply_filters( 'wp_parsely_custom_taxonomies', $all_taxonomies, $post_obj );
 		$all_values     = array();
 
 		foreach ( $all_taxonomies as $taxonomy ) {

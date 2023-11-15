@@ -2,10 +2,7 @@
  * WordPress dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
-import { select } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
-// eslint-disable-next-line import/named
-import { Post, Taxonomy, User } from '@wordpress/core-data';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
@@ -22,6 +19,7 @@ import {
 import {
 	Metric,
 	Period,
+	PostFilter,
 	PostFilterType,
 	getPeriodDescription,
 } from '../../common/utils/constants';
@@ -63,20 +61,20 @@ export class RelatedTopPostsProvider {
 	 * The 'related' status is determined by the current post's Author, Category
 	 * or tag.
 	 *
-	 * @param {Period}         period     The period for which to fetch data.
-	 * @param {Metric}         metric     The metric to sort by.
-	 * @param {PostFilterType} filterType The selected filter type.
+	 * @param {Period}     period The period for which to fetch data.
+	 * @param {Metric}     metric The metric to sort by.
+	 * @param {PostFilter} filter The selected filter type and value to use.
 	 *
 	 * @return {Promise<GetRelatedTopPostsResult>} Object containing message and posts.
 	 */
 	static async getRelatedTopPosts(
-		period: Period, metric: Metric, filterType: PostFilterType
+		period: Period, metric: Metric, filter: PostFilter
 	): Promise<GetRelatedTopPostsResult> {
 		// Create API query.
 		let apiQuery;
 		try {
 			apiQuery = this.buildRelatedTopPostsApiQuery(
-				period, metric, filterType
+				period, metric, filter
 			);
 		} catch ( contentHelperError ) {
 			return Promise.reject( contentHelperError );
@@ -164,80 +162,42 @@ export class RelatedTopPostsProvider {
 	 * Builds the query object used in the API for performing the related
 	 * top posts request.
 	 *
-	 * @param {Period}         period     The period for which to fetch data.
-	 * @param {Metric}         metric     The metric to sort by.
-	 * @param {PostFilterType} filterType The selected filter type.
+	 * @param {Period}     period The period for which to fetch data.
+	 * @param {Metric}     metric The metric to sort by.
+	 * @param {PostFilter} filter The selected filter type and value to use.
 	 *
 	 * @return {RelatedTopPostsApiQuery} The query object.
 	 */
 	private static buildRelatedTopPostsApiQuery(
-		period: Period, metric:Metric, filterType: PostFilterType
+		period: Period, metric:Metric, filter: PostFilter
 	): RelatedTopPostsApiQuery {
-		const core = select( 'core' );
-		const editor = select( 'core/editor' );
 		const commonQueryParams = {
 			...getApiPeriodParams( period ),
 			limit: RELATED_POSTS_DEFAULT_LIMIT,
 			sort: metric,
 		};
 
-		if ( PostFilterType.Tag === filterType ) {
-			// Get post's first tag.
-			const tagIds = editor.getEditedPostAttribute( 'tags' ) as Array<number>;
-			const tag: Taxonomy = core.getEntityRecord( 'taxonomy', 'post_tag', tagIds?.[ 0 ] );
-
-			if ( undefined === tag ) {
-				throw new ContentHelperError(
-					__( 'No tags are assigned to this page.', 'wp-parsely' ),
-					ContentHelperErrorCode.CannotFormulateApiQuery,
-					''
-				);
-			}
-
+		if ( PostFilterType.Tag === filter.type ) {
 			return ( {
-				query: { tag: tag.name, ...commonQueryParams },
+				query: { tag: filter.value, ...commonQueryParams },
 				/* translators: %s: message such as "with tag Foo" */
-				message: sprintf( __( 'with tag "%1$s"', 'wp-parsely' ), tag.name ),
+				message: sprintf( __( 'with tag "%1$s"', 'wp-parsely' ), filter.value ),
 			} );
 		}
 
-		if ( PostFilterType.Section === filterType ) {
-			// Get post's first category.
-			const categoryIds = editor.getEditedPostAttribute( 'categories' ) as Array<number>;
-			const category: Taxonomy = core.getEntityRecord( 'taxonomy', 'category', categoryIds?.[ 0 ] );
-
-			if ( undefined === category ) {
-				throw new ContentHelperError(
-					__( 'No section is assigned to this page.', 'wp-parsely' ),
-					ContentHelperErrorCode.CannotFormulateApiQuery,
-					''
-				);
-			}
-
+		if ( PostFilterType.Section === filter.type ) {
 			return ( {
-				query: { section: category.name, ...commonQueryParams },
+				query: { section: filter.value, ...commonQueryParams },
 				/* translators: %s: message such as "in category Foo" */
-				message: sprintf( __( 'in section "%1$s"', 'wp-parsely' ), category.name ),
+				message: sprintf( __( 'in section "%1$s"', 'wp-parsely' ), filter.value ),
 			} );
 		}
 
-		if ( PostFilterType.Author === filterType ) {
-			// Get post's author.
-			const currentPost: Post = editor.getCurrentPost();
-			const author: User = core.getEntityRecord( 'root', 'user', currentPost.author );
-
-			if ( undefined === author ) {
-				throw new ContentHelperError(
-					__( 'No author is assigned to this page.', 'wp-parsely' ),
-					ContentHelperErrorCode.CannotFormulateApiQuery,
-					''
-				);
-			}
-
+		if ( PostFilterType.Author === filter.type ) {
 			return ( {
-				query: { author: author.name, ...commonQueryParams },
+				query: { author: filter.value, ...commonQueryParams },
 				/* translators: %s: message such as "by author John" */
-				message: sprintf( __( 'by author "%1$s"', 'wp-parsely' ), author.name ),
+				message: sprintf( __( 'by author "%1$s"', 'wp-parsely' ), filter.value ),
 			} );
 		}
 

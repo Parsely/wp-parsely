@@ -41,7 +41,18 @@ export enum Metric {
 export enum PostFilterType {
 	Author = 'author',
 	Section = 'section',
-	Tag = 'tag'
+	Tag = 'tag',
+	Unavailable = 'unavailable'
+}
+
+/**
+ * Defines the structure of Post filters.
+ *
+ * @since 3.11.0
+ */
+export interface PostFilter {
+	type: PostFilterType;
+	value: string;
 }
 
 /**

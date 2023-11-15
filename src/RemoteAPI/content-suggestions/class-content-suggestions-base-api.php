@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\RemoteAPI\ContentSuggestions;
 
-use Parsely\RemoteAPI\Remote_API_Base;
+use Parsely\RemoteAPI\Base_Endpoint_Remote;
 use UnexpectedValueException;
 
 /**
@@ -18,7 +18,7 @@ use UnexpectedValueException;
  *
  * @since 3.12.0
  */
-class Content_Suggestions_Base_API extends Remote_API_Base {
+class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 
 	public const API_BASE_URL = 'http://api-recs-lb-267948692.us-east-1.elb.amazonaws.com';
 

@@ -13,7 +13,7 @@ namespace Parsely\Content_Helper;
 use DateTime;
 use Parsely\Content_Helper\Content_Helper_Feature;
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Remote_API_Base;
+use Parsely\RemoteAPI\Base_Endpoint_Remote;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 use WP_Screen;
 
@@ -32,7 +32,7 @@ use const Parsely\Utils\DATE_UTC_FORMAT;
  *
  * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
  * @phpstan-import-type Analytics_Post from Analytics_Posts_API
- * @phpstan-import-type Remote_API_Error from Remote_API_Base
+ * @phpstan-import-type Remote_API_Error from Base_Endpoint_Remote
  *
  * @phpstan-type Parsely_Post_Stats array{
  *   page_views: string,

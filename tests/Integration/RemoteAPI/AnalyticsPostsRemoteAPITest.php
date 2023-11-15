@@ -43,9 +43,9 @@ final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 	/**
 	 * Verifies default user capability filter.
 	 *
-	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 *
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 */
 	public function test_user_is_allowed_to_make_api_call_if_default_user_capability_is_changed(): void {
 		$this->login_as_contributor();
@@ -64,9 +64,9 @@ final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 	/**
 	 * Verifies endpoint specific user capability filter.
 	 *
-	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 *
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 */
 	public function test_user_is_allowed_to_make_api_call_if_endpoint_specific_user_capability_is_changed(): void {
 		$this->login_as_contributor();
@@ -85,9 +85,9 @@ final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 	/**
 	 * Verifies that the endpoint specific user capability filter has more priority than the default capability filter.
 	 *
-	 * @covers \Parsely\RemoteAPI\Remote_API_Base::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 *
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 */
 	public function test_endpoint_specific_user_capability_filter_have_more_priority_than_default(): void {
 		$this->login_as_contributor();
