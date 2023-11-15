@@ -20,7 +20,7 @@ use UnexpectedValueException;
  */
 class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 
-	public const API_BASE_URL = 'http://api-recs-lb-267948692.us-east-1.elb.amazonaws.com';
+	public const API_BASE_URL = 'https://suggestion-api.parsely.com';
 
 	/**
 	 * Returns the request's options for the remote API call.
