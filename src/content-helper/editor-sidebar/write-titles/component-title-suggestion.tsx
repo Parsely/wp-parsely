@@ -78,13 +78,15 @@ export const TitleSuggestion = ( props: TitleSuggestionProps ) => {
 								icon={ pin }
 								label={ __( 'Pin Title', 'wp-parsely' ) }
 								onClick={ onClickPin }	/>
-							<Button size="small"
-								iconSize={ 15 }
-								disabled={ isPinned }
-								variant="secondary"
-								icon={ closeSmall }
-								label={ __( 'Remove Title', 'wp-parsely' ) }
-								onClick={ onClickRemove } />
+							{ ! isPinned &&
+								<Button size="small"
+									iconSize={ 15 }
+									variant="secondary"
+									icon={ closeSmall }
+									label={ __( 'Remove Title', 'wp-parsely' ) }
+									onClick={ onClickRemove }
+								/>
+							}
 						</ButtonGroup>
 					) : (
 						<ButtonGroup>
