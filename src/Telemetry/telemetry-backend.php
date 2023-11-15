@@ -13,6 +13,12 @@ use Parsely\Telemetry\Tracks;
 
 require_once __DIR__ . '/class-telemetry-system.php';
 
+// If in a VIP environment, disable the existing Telemetry implementation.
+// This avoids duplicate events being sent to Tracks.
+if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) ) {
+	add_filter( 'wp_parsely_enable_telemetry_backend', '__return_false' );
+}
+
 add_action(
 	'init',
 	function (): void {

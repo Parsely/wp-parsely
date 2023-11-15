@@ -48,7 +48,7 @@ abstract class Telemetry_System {
 	 * @return bool Whether backend telemetry is allowed to be enabled.
 	 */
 	public static function is_backend_telemetry_allowed(): bool {
-		return apply_filters( 'wp_parsely_enable_backend_telemetry', false );
+		return apply_filters( 'wp_parsely_enable_wpadmin_telemetry', false );
 	}
 
 	/**
