@@ -381,15 +381,13 @@
 				display: flex;
 				flex-direction: column;
 				width: 25px;
-				margin-top: to_rem(5px);
-				margin-right: to_rem(5px);
 
 				.components-button-group .components-button {
 					margin-left: 0;
 				}
 
 				.is-pinned {
-					background-color: var(--gray-600);
+					background-color: var(--gray-500);
 					color: #fff;
 					box-shadow: inset 0 0 0 1px var(--sidebar-black);
 				}
@@ -401,8 +399,12 @@
 		}
 
 		.original-title {
-			border: 1px solid var(--gray-600);
+			background-color: var(--gray-300);
 			margin-bottom: to_rem(15px);
+
+			button {
+				margin-top: to_rem(2px);
+			}
 		}
 	}
 
