@@ -35,13 +35,15 @@ function record_widget_deleted(
 	string $id_base,
 	Telemetry_System $telemetry_system
 ): void {
-	if ( PARSELY_RECOMMENDED_WIDGET_BASE_ID !== $id_base ) {
+	if ( strtolower( PARSELY_RECOMMENDED_WIDGET_BASE_ID ) !== strtolower( $id_base ) ) {
 		return;
 	}
 
 	$telemetry_system->record_event(
 		'wpparsely_delete_widget',
-		compact( 'id_base' )
+		array(
+			'id_base' => $id_base,
+		)
 	);
 }
 
@@ -119,7 +121,10 @@ function record_widget_updated(
 	if ( 0 < count( $updated_keys ) ) {
 		$telemetry_system->record_event(
 			'wpparsely_widget_updated',
-			compact( 'id_base', 'updated_keys' )
+			array(
+				'updated_keys' => $updated_keys,
+				'id_base'      => $id_base,
+			)
 		);
 	}
 

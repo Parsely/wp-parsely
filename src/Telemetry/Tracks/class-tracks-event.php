@@ -168,11 +168,17 @@ class Tracks_Event {
 		}
 
 		// All other environments.
-		$home_option = get_option( 'home' );
-		if ( ! is_string( $home_option ) || '' === $home_option ) {
-			return $event;
+		$wp_base_url = get_option( 'home' );
+		if ( ! is_string( $wp_base_url ) || '' === $wp_base_url ) {
+			$wp_base_url = get_option( 'siteurl' );
 		}
-		$event->_ui = md5( "$home_option|$wp_user_id" );
+
+		/**
+		 * The base URL of the site.
+		 *
+		 * @var string $wp_base_url
+		 */
+		$event->_ui = wp_hash( sprintf( '%s|%s', $wp_base_url, $wp_user_id ) );
 		$event->_ut = 'wpparsely:user_id';
 
 		return $event;

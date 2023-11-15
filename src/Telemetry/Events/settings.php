@@ -55,7 +55,9 @@ function record_parsely_option_updated(
 
 	$telemetry_system->record_event(
 		'wpparsely_option_updated',
-		compact( 'updated_keys' )
+		array(
+			'updated_keys' => $updated_keys,
+		)
 	);
 }
 
