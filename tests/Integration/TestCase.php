@@ -593,7 +593,15 @@ abstract class TestCase extends WPIntegrationTestCase {
 			throw new RiskyTestError( 'Function assert_style_statuses() has been used without any arguments' );
 		}
 
+		$valid_statuses = array( 'done', 'enqueued', 'queue', 'registered', 'to_do' );
+
 		foreach ( $assert_true as $status ) {
+			if ( ! in_array( $status, $valid_statuses, true ) ) {
+				throw new RiskyTestError(
+					'Invalid status ' . esc_html( $status ) . ' was passed to assert_style_statuses()'
+				);
+			}
+
 			self::assertTrue(
 				wp_style_is( $handle, $status ),
 				"Unexpected style status: $handle status should be '$status'"
@@ -601,6 +609,12 @@ abstract class TestCase extends WPIntegrationTestCase {
 		}
 
 		foreach ( $assert_false as $status ) {
+			if ( ! in_array( $status, $valid_statuses, true ) ) {
+				throw new RiskyTestError(
+					'Invalid status' . esc_html( $status ) . ' was passed to assert_style_statuses()'
+				);
+			}
+
 			self::assertFalse(
 				wp_style_is( $handle, $status ),
 				"Unexpected style status: $handle status should NOT be '$status'"
