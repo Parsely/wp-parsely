@@ -123,18 +123,18 @@ export const WriteTitlesPanel = () => {
 			<div className="parsely-write-titles-accepted-title">{ acceptedTitle?.title }</div>
 			<div className="parsely-write-titles-accepted-title-actions">
 				<Button
-					variant="primary"
-					onClick={ saveTitleOnClickHandler }
-				>
-					{ __( 'Replace', 'wp-parsely' ) }
-				</Button>
-				<Button
 					variant="secondary"
 					onClick={ () => {
 						setAcceptedTitle( TitleType.PostTitle, undefined );
 					} }
 				>
 					{ __( 'Cancel', 'wp-parsely' ) }
+				</Button>
+				<Button
+					variant="primary"
+					onClick={ saveTitleOnClickHandler }
+				>
+					{ __( 'Replace', 'wp-parsely' ) }
 				</Button>
 			</div>
 		</div>
