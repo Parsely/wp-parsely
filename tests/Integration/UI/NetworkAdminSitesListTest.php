@@ -46,7 +46,7 @@ final class NetworkAdminSitesListTest extends TestCase {
 
 		/** @var \WP_MS_Sites_List_Table|false $list_table */
 		$list_table = _get_list_table( 'WP_MS_Sites_List_Table', array( 'screen' => 'ms-sites' ) );
-		if ( false !== $list_table ) { // @phpstan-ignore-line
+		if ( false !== $list_table ) {
 			$this->table = $list_table;
 		}
 
