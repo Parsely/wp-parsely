@@ -1,8 +1,9 @@
 import { Button, PanelRow } from '@wordpress/components';
-import { TitleSuggestion } from './component-title-suggestion';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
-import { TitleStore, TitleType } from './store';
+import { __ } from '@wordpress/i18n';
+import { TitleSuggestion } from './component-title-suggestion';
 import { WriteTitleProvider } from './provider';
+import { TitleStore, TitleType } from './store';
 
 export const WriteTitlesPanel = () => {
 	const {
@@ -89,8 +90,8 @@ export const WriteTitlesPanel = () => {
 				onClick={ generateOnClickHandler }
 			>
 				{ loading && 'Generating Titles...' }
-				{ ! loading && titles.length > 0 && 'Generate More' }
-				{ ! loading && titles.length === 0 && 'Generate Titles' }
+				{ ! loading && titles.length > 0 && __( 'Generate More', 'wp-parsely' ) }
+				{ ! loading && titles.length === 0 && __( 'Generate Titles', 'wp-parsely' ) }
 			</Button>
 		</div>
 	);
@@ -114,7 +115,10 @@ export const WriteTitlesPanel = () => {
 	const acceptedTitleElement: JSX.Element = (
 		<div className="parsely-write-titles-accepted-title-container">
 			<div className="parsely-write-titles-text">
-				You have accepted the following title:
+				{ __(
+					'Replace the current post title with the following?',
+					'wp-parsely'
+				) }
 			</div>
 			<div className="parsely-write-titles-accepted-title">{ acceptedTitle?.title }</div>
 			<div className="parsely-write-titles-accepted-title-actions">
@@ -122,7 +126,7 @@ export const WriteTitlesPanel = () => {
 					variant="primary"
 					onClick={ saveTitleOnClickHandler }
 				>
-					Save as Post Title
+					{ __( 'Replace', 'wp-parsely' ) }
 				</Button>
 				<Button
 					variant="secondary"
@@ -130,7 +134,7 @@ export const WriteTitlesPanel = () => {
 						setAcceptedTitle( TitleType.PostTitle, undefined );
 					} }
 				>
-					I have changed my mind
+					{ __( 'Cancel', 'wp-parsely' ) }
 				</Button>
 			</div>
 		</div>
@@ -142,7 +146,10 @@ export const WriteTitlesPanel = () => {
 				{ 0 === titles.length && acceptedTitle === undefined && (
 					<>
 						<div className="parsely-write-titles-text">
-							Use Parse.ly AI to generate a title for your post.
+							{ __(
+								'Use Parse.ly AI to generate a title for your post.',
+								'wp-parsely'
+							) }
 						</div>
 						{ generateTitleButton }
 					</>
@@ -150,7 +157,10 @@ export const WriteTitlesPanel = () => {
 				{ 0 < titles.length && acceptedTitle === undefined && (
 					<>
 						<div className="parsely-write-titles-text">
-							We&apos;ve generated a few titles based on the content of your post.
+							{ __(
+								"We've generated a few titles based on the content of your post.",
+								'wp-parsely'
+							) }
 						</div>
 						{ titleSuggestionList }
 						{ generateTitleButton }

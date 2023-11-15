@@ -1,7 +1,9 @@
-import { Title, TitleStore, TitleType } from './store';
-import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 import { Button, ButtonGroup } from '@wordpress/components';
+import { dispatch, useDispatch, useSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 import { check, closeSmall, pin, undo } from '@wordpress/icons';
+import { Title, TitleStore, TitleType } from './store';
+
 export interface TitleSuggestionProps {
 	title: Title,
 	type: TitleType,
@@ -68,21 +70,21 @@ export const TitleSuggestion = ( props: TitleSuggestionProps ) => {
 								iconSize={ 15 }
 								variant="primary"
 								icon={ check }
-								label={ 'Accept Title' }
+								label={ __( 'Accept Title', 'wp-parsely' ) }
 								onClick={ onClickAccept } />
 							<Button size="small"
 								iconSize={ 15 }
 								className={ isPinned ? 'is-pinned' : '' }
 								variant="secondary"
 								icon={ pin }
-								label={ 'Pin Title' }
+								label={ __( 'Pin Title', 'wp-parsely' ) }
 								onClick={ onClickPin }	/>
 							<Button size="small"
 								iconSize={ 15 }
 								disabled={ isPinned }
 								variant="secondary"
 								icon={ closeSmall }
-								label={ 'Remove Title' }
+								label={ __( 'Remove Title', 'wp-parsely' ) }
 								onClick={ onClickRemove } />
 						</ButtonGroup>
 					) : (
@@ -91,7 +93,7 @@ export const TitleSuggestion = ( props: TitleSuggestionProps ) => {
 								iconSize={ 15 }
 								variant="primary"
 								icon={ undo }
-								label={ 'Restore Title' }
+								label={ __( 'Restore Title', 'wp-parsely' ) }
 								onClick={ onClickRestore } />
 						</ButtonGroup>
 					) }
