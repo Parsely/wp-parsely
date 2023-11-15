@@ -3,7 +3,7 @@
  * Telemetry: Telemetry System abstract class
  *
  * @package Parsely\Telemetry
- * @since   3.10.0
+ * @since   3.12.0
  */
 
 declare(strict_types=1);
@@ -15,7 +15,7 @@ use WP_Error;
 /**
  * Base class for all telemetry system implementations.
  *
- * @since 3.10.0
+ * @since 3.12.0
  */
 abstract class Telemetry_System {
 	/**
@@ -28,14 +28,14 @@ abstract class Telemetry_System {
 	/**
 	 * Registers the telemetry system.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 */
 	abstract public function run(): void;
 
 	/**
 	 * Activates event tracking.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 */
 	abstract protected function activate_tracking(): void;
 
@@ -43,7 +43,7 @@ abstract class Telemetry_System {
 	 * Returns whether back-end telemetry is allowed to be enabled. This is off
 	 * by default.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @return bool Whether backend telemetry is allowed to be enabled.
 	 */
@@ -57,7 +57,7 @@ abstract class Telemetry_System {
 	 * Note: All events must be registered before the run() function of this
 	 * class gets called.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param array<string, string|int> ...$events The events to register.
 	 */
@@ -70,7 +70,7 @@ abstract class Telemetry_System {
 	/**
 	 * Records the passed event.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param string               $event_name The event's name.
 	 * @param array<string, mixed> $event_properties Any additional properties

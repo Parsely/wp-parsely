@@ -3,7 +3,7 @@
  * Telemetry: Records events related to plugin options and settings page
  *
  * @package Parsely\Telemetry
- * @since   3.10.0
+ * @since   3.12.0
  */
 
 declare(strict_types=1);
@@ -14,7 +14,7 @@ namespace Parsely\Telemetry;
  * Records an event whenever the Parsely option gets updated. The changed
  * values are included in the event.
  *
- * @since 3.10.0
+ * @since 3.12.0
  *
  * @param array<string, mixed> $old_values  The old option values.
  * @param array<string, mixed> $values      The new option values.
@@ -64,7 +64,7 @@ function record_parsely_option_updated(
 /**
  * Records an event whenever the plugin settings page gets loaded.
  *
- * @since 3.10.0
+ * @since 3.12.0
  *
  * @param Telemetry_System $telemetry_system The telemetry system to use.
  */

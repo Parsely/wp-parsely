@@ -3,7 +3,7 @@
  * Telemetry: Records events related to the Recommended Widget
  *
  * @package Parsely\Telemetry
- * @since   3.10.0
+ * @since   3.12.0
  */
 
 declare(strict_types=1);
@@ -22,7 +22,7 @@ const PARSELY_RECOMMENDED_WIDGET_BASE_ID = 'parsely_recommended_widget';
 /**
  * Records an event whenever a Recommended Widget instance gets deleted.
  *
- * @since 3.10.0
+ * @since 3.12.0
  *
  * @param string           $widget_id ID of the widget marked for deletion.
  * @param string           $sidebar_id ID of the sidebar the widget was deleted from.
@@ -50,7 +50,7 @@ function record_widget_deleted(
 /**
  * Records an event whenever a Recommended Widget instance gets updated.
  *
- * @since 3.10.0
+ * @since 3.12.0
  *
  * @param array<string, mixed>|false $instance The current widget instance's settings.
  * @param array<string, mixed>|null  $new_instance Array of new widget settings.

@@ -3,7 +3,7 @@
  * Telemetry: Tracks Event class
  *
  * @package Parsely\Telemetry
- * @since   3.10.0
+ * @since   3.12.0
  */
 
 declare(strict_types=1);
@@ -59,7 +59,7 @@ class Tracks_Event {
 	/**
 	 * Returns the event's data.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @return stdClass|WP_Error Event object if the event was created successfully, WP_Error otherwise.
 	 */
@@ -70,7 +70,7 @@ class Tracks_Event {
 	/**
 	 * Returns whether the event can be recorded.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @return bool|WP_Error True if the event is recordable.
 	 *                       False if the event is not recordable.
@@ -96,7 +96,7 @@ class Tracks_Event {
 	/**
 	 * Processes the event's properties to get them ready for validation.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param string                            $event_name The event's name.
 	 * @param array<string, mixed>|array<empty> $event_properties Any event properties to be processed.
@@ -148,7 +148,7 @@ class Tracks_Event {
 	 * Sets the Tracks User ID and User ID Type depending on the current
 	 * environment.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param stdClass $event The event to annotate with identity information.
 	 *
@@ -193,7 +193,7 @@ class Tracks_Event {
 	/**
 	 * Validates the event object.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param stdClass $event Event object to validate.
 	 *
@@ -244,7 +244,7 @@ class Tracks_Event {
 	/**
 	 * Checks if the passed event name is valid.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param string $event_name The event's name.
 	 *
@@ -257,7 +257,7 @@ class Tracks_Event {
 	/**
 	 * Checks if the passed property name is valid.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param string $property_name The property's name.
 	 *
@@ -270,7 +270,7 @@ class Tracks_Event {
 	/**
 	 * Sanitizes the passed properties array.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param array<string, mixed>|array<empty> $event_properties The array to be sanitized.
 	 *

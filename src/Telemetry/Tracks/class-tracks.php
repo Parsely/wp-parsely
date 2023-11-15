@@ -3,7 +3,7 @@
  * Telemetry: Tracks class
  *
  * @package Parsely\Telemetry
- * @since   3.10.0
+ * @since   3.12.0
  */
 
 declare(strict_types=1);
@@ -16,13 +16,13 @@ use WP_Error;
  * This class comprises the mechanics of sending events to the Automattic Tracks
  * system.
  *
- * @since 3.10.0
+ * @since 3.12.0
  */
 class Tracks extends Telemetry_System {
 	/**
 	 * Registers the events into WordPress hooks to activate tracking.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @return void
 	 */
@@ -39,7 +39,7 @@ class Tracks extends Telemetry_System {
 	 *
 	 * If the event doesn't pass validation, it gets silently discarded.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param string                            $event_name The event name. Must be snake_case.
 	 * @param array<string, mixed>|array<empty> $event_properties Any additional properties to include with the event.
@@ -67,7 +67,7 @@ class Tracks extends Telemetry_System {
 	 * Registers the events into their respective WordPress hooks, so they
 	 * can be recorded when the hook fires.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 */
 	protected function activate_tracking(): void {
 		foreach ( $this->events as $event ) {

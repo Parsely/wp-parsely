@@ -3,7 +3,7 @@
  * Telemetry: Tracks Pixel class
  *
  * @package Parsely\Telemetry
- * @since   3.10.0
+ * @since   3.12.0
  */
 
 declare(strict_types=1);
@@ -17,7 +17,7 @@ use function Parsely\Utils\get_timestamp;
 /**
  * Handles all operations related to the Tracks pixel.
  *
- * @since 3.10.0
+ * @since 3.12.0
  */
 class Tracks_Pixel {
 	/**
@@ -66,7 +66,7 @@ class Tracks_Pixel {
 	/**
 	 * Enqueues an event to be recorded asynchronously.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param Tracks_Event $event The event to record.
 	 *
@@ -89,7 +89,7 @@ class Tracks_Pixel {
 	/**
 	 * Records an event synchronously (using a GET request).
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param Tracks_Event $event The event to record.
 	 *
@@ -138,7 +138,7 @@ class Tracks_Pixel {
 	/**
 	 * Outputs a Tracks pixel for every registered event.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 */
 	public function render_tracking_pixels(): void {
 		foreach ( $this->events as $event ) {
@@ -157,7 +157,7 @@ class Tracks_Pixel {
 	/**
 	 * Generates a Tracks pixel URL that will record an event when accessed.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 *
 	 * @param Tracks_Event $event The event for which to generate the pixel URL.
 	 *
@@ -184,7 +184,7 @@ class Tracks_Pixel {
 	/**
 	 * Records any remaining events synchronously.
 	 *
-	 * @since 3.10.0
+	 * @since 3.12.0
 	 */
 	public function record_remaining_events(): void {
 		foreach ( $this->events as $event ) {

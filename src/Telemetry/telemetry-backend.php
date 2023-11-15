@@ -3,7 +3,7 @@
  * Telemetry: Telemetry activation and event registration for PHP events
  *
  * @package Parsely\Telemetry
- * @since   3.10.0
+ * @since   3.12.0
  */
 
 declare(strict_types=1);
@@ -54,5 +54,5 @@ add_action(
 		);
 
 		$tracks->run();
-	} 
+	}
 );
