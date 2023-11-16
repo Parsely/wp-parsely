@@ -100,11 +100,6 @@ export const TitleSuggestion = ( props: TitleSuggestionProps ) => {
 					) }
 				</div>
 			</div>
-			{ ! props.isOriginal && (
-				<hr
-					aria-orientation="horizontal"
-					className="parsely-write-titles-title-suggestion-divider"
-				/> ) }
 		</>
 	);
 };

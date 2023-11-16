@@ -362,25 +362,23 @@
 	.parsely-write-titles-title-suggestions-container {
 		margin: to_rem(10px) 0;
 
-		hr:last-child {
-			display: none;
-		}
-
 		// Single title suggestion.
 		.parsely-write-titles-title-suggestion {
+			border-top: 1px solid var(--gray-300);
 			display: flex;
+			padding: 1rem 0;
 
 			.parsely-write-titles-suggested-title {
 				flex: 1;
 				font-weight: 600;
 				font-size: to_rem(14px);
-				padding: to_rem(5px);
+				padding: 0 to_rem(8px) 0 to_rem(5px);
 			}
 
 			.parsely-write-titles-suggested-title-actions {
 				display: flex;
 				flex-direction: column;
-				width: 25px;
+				width: to_rem(25px);
 
 				.components-button-group .components-button {
 					margin-left: 0;
@@ -399,19 +397,20 @@
 		}
 
 		.original-title {
-			background-color: var(--gray-300);
+			background-color: var(--gray-200);
+			border-top: none;
+			color: var(--gray-600);
 			margin-bottom: to_rem(15px);
+			padding: to_rem(5px);
+
+			.parsely-write-titles-suggested-title {
+				padding-bottom: to_rem(5px);
+				padding-top: to_rem(5px);
+			}
 
 			button {
 				margin-top: to_rem(2px);
 			}
 		}
-	}
-
-	// Horizontal divider.
-	.parsely-write-titles-title-suggestion-divider {
-		margin: 1em 0;
-		border-bottom: 1px solid var(--gray-300);
-		border-top: none;
 	}
 }
