@@ -61,7 +61,9 @@ export const WriteTitlesPanel = () => {
 	};
 
 	const generateOnClickHandler = async () => {
-		await generateTitles( TitleType.PostTitle, currentPostContent );
+		if ( false === loading ) {
+			await generateTitles( TitleType.PostTitle, currentPostContent );
+		}
 	};
 
 	const saveTitleOnClickHandler = async () => {
