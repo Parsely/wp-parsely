@@ -390,27 +390,27 @@
 					box-shadow: inset 0 0 0 1px var(--sidebar-black);
 				}
 			}
+
+			&.original-title {
+				background-color: var(--gray-200);
+				border: 0;
+				color: var(--gray-600);
+				margin-bottom: to_rem(15px);
+				padding: to_rem(5px);
+
+				.parsely-write-titles-suggested-title {
+					padding-bottom: to_rem(5px);
+					padding-top: to_rem(5px);
+				}
+
+				button {
+					margin-top: to_rem(2px);
+				}
+			}
 		}
 
 		.title-in-use {
 			color: var(--green-900);
-		}
-
-		.original-title {
-			background-color: var(--gray-200);
-			border-top: none;
-			color: var(--gray-600);
-			margin-bottom: to_rem(15px);
-			padding: to_rem(5px);
-
-			.parsely-write-titles-suggested-title {
-				padding-bottom: to_rem(5px);
-				padding-top: to_rem(5px);
-			}
-
-			button {
-				margin-top: to_rem(2px);
-			}
 		}
 	}
 }
