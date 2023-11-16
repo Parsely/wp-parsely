@@ -4,10 +4,11 @@ import { ContentHelperError, ContentHelperErrorCode } from '../../common/content
 
 interface WriteTitleApiResponse {
 	error?: Error;
-	data: Array<any>[], // eslint-disable-line @typescript-eslint/no-explicit-any
+	data: string[],
 }
+
 export class WriteTitleProvider {
-	public async generateTitles( content: string, limit: number = 3 ): Promise<Array<any>> { // eslint-disable-line @typescript-eslint/no-explicit-any
+	public async generateTitles( content: string, limit: number = 3 ): Promise<string[]> {
 		let response;
 
 		try {
