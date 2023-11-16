@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API;
 use Parsely\RemoteAPI\ContentSuggestions\Write_Title_API;
 use Parsely\Tests\Integration\RemoteAPITest;
 
@@ -56,7 +55,7 @@ final class WriteTitleAPITest extends RemoteAPITest {
 				'style'   => 'neutral',
 				'limit'   => 3,
 			),
-			Content_Suggestions_Base_API::API_BASE_URL .
+			Parsely::PUBLIC_SUGGESTIONS_API_BASE_URL .
 				'/write-title?apikey=my-key&limit=3&persona=journalist&secret=my-secret&style=neutral',
 		);
 	}

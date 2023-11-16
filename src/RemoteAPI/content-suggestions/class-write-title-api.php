@@ -9,9 +9,7 @@
 namespace Parsely\RemoteAPI\ContentSuggestions;
 
 use Parsely\Parsely;
-use stdClass;
 use WP_Error;
-use function Parsely\Utils\convert_to_associative_array;
 
 /**
  * Remote API: Content Suggestions Write Title API
@@ -27,10 +25,8 @@ use function Parsely\Utils\convert_to_associative_array;
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
 class Write_Title_API extends Content_Suggestions_Base_API {
-
-	protected const ENDPOINT = '/write-title';
-
-	protected const QUERY_FILTER = 'content_suggestions_write_title_api';
+	protected const ENDPOINT     = '/write-title';
+	protected const QUERY_FILTER = 'wp_parsely_write_title_endpoint_args';
 
 	/**
 	 * If the endpoint is public or not.
