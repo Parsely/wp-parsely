@@ -12,15 +12,9 @@ use Parsely\Parsely;
 use WP_Error;
 
 /**
- * Remote API: Content Suggestions Write Title API
+ * Class for Content Suggestions Write Title API.
  *
  * @since 3.12.0
- *
- * @phpstan-type Remote_API_Error array{
- *   code: int,
- *   message: string,
- *   htmlMessage: string,
- * }
  *
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
@@ -29,12 +23,12 @@ class Write_Title_API extends Content_Suggestions_Base_API {
 	protected const QUERY_FILTER = 'wp_parsely_write_title_endpoint_args';
 
 	/**
-	 * If the endpoint is public or not.
+	 * Indicates whether the endpoint is public or protected behind permissions.
 	 *
-	 * @var bool $is_public_endpoint Whether the endpoint is public or not.
+	 * @since 3.12.0
+	 * @var bool
 	 */
 	protected $is_public_endpoint = false;
-
 
 	/**
 	 * Gets the URL for the Parse.ly API credentials validation endpoint.
@@ -43,7 +37,8 @@ class Write_Title_API extends Content_Suggestions_Base_API {
 	 *
 	 * @param  string $content The query arguments to send to the remote API.
 	 * @param  int    $limit The query arguments to send to the remote API.
-	 * @return array<string|mixed>|WP_Error The response from the remote API, or a WP_Error object if the response is an error.
+	 * @return array<string>|WP_Error The response from the remote API, or a WP_Error
+	 *                                object if the response is an error.
 	 */
 	public function get_titles( string $content, int $limit ) {
 		$query = array(
