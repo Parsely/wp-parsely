@@ -29,6 +29,9 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'js', 'widgets', 'recommended' ),
 			path.resolve( __dirname, 'src', 'css', 'recommended-widget.scss' ),
 		],
+		'telemetry': [
+			path.resolve( __dirname, 'src', 'Telemetry', 'telemetry' ),
+		],
 	},
 	module: {
 		rules: defaultConfig.module.rules.concat(
