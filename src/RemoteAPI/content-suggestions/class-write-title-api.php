@@ -74,7 +74,9 @@ class Write_Title_API extends Content_Suggestions_Base_API {
 		}
 
 		if ( ! property_exists( $decoded, 'titles' ) ) {
-			return new WP_Error( $decoded->code ?? 400, $decoded->message ?? __( 'Unable to read titles from upstream API', 'wp-parsely' ) );
+			$error = $response['response'];
+
+			return new WP_Error( $error['code'], $error['message'] );
 		}
 
 		if ( ! is_array( $decoded->titles ) ) {

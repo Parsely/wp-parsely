@@ -1,12 +1,23 @@
+/**
+ * WordPress dependencies
+ */
 import { Button, PanelRow } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
+import { ContentHelperError } from '../../common/content-helper-error';
 import { TitleSuggestion } from './component-title-suggestion';
 import { WriteTitleProvider } from './provider';
 import { TitleStore, TitleType } from './store';
 import { GutenbergFunction } from './types';
 
 export const WriteTitlesPanel = () => {
+	const [ error, setError ] = useState<ContentHelperError>();
+
 	const {
 		loading,
 		titles,
@@ -52,9 +63,8 @@ export const WriteTitlesPanel = () => {
 		try {
 			const genTitles = await provider.generateTitles( content, 3 );
 			await setTitles( titleType, genTitles );
-		} catch ( error ) {
-			// TODO: handle error
-			throw error;
+		} catch ( err: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
+			setError( err );
 		}
 
 		await setLoading( false );
@@ -139,6 +149,10 @@ export const WriteTitlesPanel = () => {
 			</div>
 		</div>
 	);
+
+	if ( error ) {
+		return ( error.Message() );
+	}
 
 	return (
 		<PanelRow>
