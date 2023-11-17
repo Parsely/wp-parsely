@@ -1,16 +1,36 @@
+/**
+ * WordPress dependencies
+ */
 import { Button, ButtonGroup } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { check, closeSmall, pin, undo } from '@wordpress/icons';
+
+/**
+ * Internal dependencies
+ */
 import { Title, TitleStore, TitleType } from './store';
 import { GutenbergFunction } from './types';
 
-export interface TitleSuggestionProps {
+/**
+ * Defines the props structure for TitleSuggestion.
+ *
+ * @since 3.12.0
+ */
+interface TitleSuggestionProps {
 	title: Title,
 	type: TitleType,
 	isOriginal?: boolean,
 }
 
+/**
+ * Renders a single title suggestion.
+ *
+ * @since 3.12.0
+ *
+ * @param {TitleSuggestionProps} props The component's props.
+ * @return {JSX.Element} The title suggestion JSX Element.
+ */
 export const TitleSuggestion = ( props: TitleSuggestionProps ) => {
 	const {
 		removeTitle,
