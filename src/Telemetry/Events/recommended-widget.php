@@ -57,7 +57,6 @@ function record_widget_deleted(
  * @param array<string, mixed>|null  $old_instance Array of old widget settings.
  * @param WP_Widget                  $widget_obj The current widget instance.
  * @param Telemetry_System           $telemetry_system The Telemetry System to use.
- *
  * @return array<string, mixed>|false The updated widget settings.
  */
 function record_widget_updated(

@@ -18,6 +18,8 @@ use const Parsely\PARSELY_VERSION;
 
 /**
  * Class that creates and validates Tracks events.
+ *
+ * @since 3.12.0
  */
 class Tracks_Event {
 	/**
@@ -45,6 +47,8 @@ class Tracks_Event {
 
 	/**
 	 * Constructor.
+	 *
+	 * @since 3.12.0
 	 *
 	 * @param string                            $event_name The event's name.
 	 * @param array<string, mixed>|array<empty> $event_properties Any properties included in the event.
@@ -100,7 +104,6 @@ class Tracks_Event {
 	 *
 	 * @param string                            $event_name The event's name.
 	 * @param array<string, mixed>|array<empty> $event_properties Any event properties to be processed.
-	 *
 	 * @return stdClass The resulting event object with processed properties.
 	 */
 	protected static function process_properties(
@@ -151,7 +154,6 @@ class Tracks_Event {
 	 * @since 3.12.0
 	 *
 	 * @param stdClass $event The event to annotate with identity information.
-	 *
 	 * @return stdClass The new event object including identity information.
 	 */
 	protected static function set_user_properties( stdClass $event ): stdClass {
@@ -196,7 +198,6 @@ class Tracks_Event {
 	 * @since 3.12.0
 	 *
 	 * @param stdClass $event Event object to validate.
-	 *
 	 * @return ?WP_Error null if validation passed, error otherwise.
 	 */
 	protected static function get_event_validation_result( stdClass $event ): ?WP_Error {
@@ -247,7 +248,6 @@ class Tracks_Event {
 	 * @since 3.12.0
 	 *
 	 * @param string $event_name The event's name.
-	 *
 	 * @return bool Whether the event name is valid.
 	 */
 	protected static function event_name_is_valid( string $event_name ): bool {
@@ -260,7 +260,6 @@ class Tracks_Event {
 	 * @since 3.12.0
 	 *
 	 * @param string $property_name The property's name.
-	 *
 	 * @return bool Whether the property name is valid.
 	 */
 	protected static function property_name_is_valid( string $property_name ): bool {
@@ -273,7 +272,6 @@ class Tracks_Event {
 	 * @since 3.12.0
 	 *
 	 * @param array<string, mixed>|array<empty> $event_properties The array to be sanitized.
-	 *
 	 * @return array<string, mixed>|array<empty> The sanitized array.
 	 */
 	protected static function sanitize_properties_array( array $event_properties ): array {

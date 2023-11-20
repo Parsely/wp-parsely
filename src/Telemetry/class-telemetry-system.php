@@ -75,7 +75,6 @@ abstract class Telemetry_System {
 	 * @param string               $event_name The event's name.
 	 * @param array<string, mixed> $event_properties Any additional properties
 	 *                                               to include with the event.
-	 *
 	 * @return bool|WP_Error True if recording the event succeeded.
 	 *                       False if telemetry is disabled.
 	 *                       WP_Error if recording the event failed.
