@@ -31,8 +31,6 @@ module.exports = {
 		],
 		'telemetry': [
 			path.resolve( __dirname, 'src', 'js', 'telemetry', 'init' ),
-			// TODO: load all the typescript files in this directory with glob?
-			// path.resolve( __dirname, 'src', 'Telemetry', 'Events', 'block-change' ),
 		],
 	},
 	module: {
