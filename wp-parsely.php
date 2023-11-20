@@ -73,6 +73,7 @@ require_once __DIR__ . '/src/UI/class-admin-bar.php';
 require_once __DIR__ . '/src/UI/class-metadata-renderer.php';
 require_once __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
 require_once __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
+require_once __DIR__ . '/src/Telemetry/telemetry-init.php';
 
 require_once __DIR__ . '/src/class-metadata.php';
 require_once __DIR__ . '/src/Metadata/class-metadata-builder.php';
