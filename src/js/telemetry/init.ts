@@ -1,7 +1,14 @@
-import Telemetry from './telemetry';
+/**
+ * WordPress dependencies
+ */
 import { createElement, Fragment } from '@wordpress/element';
-import BlockChangeMonitor from './block-change';
 import { registerPlugin } from '@wordpress/plugins';
+
+/**
+ * Internal dependencies
+ */
+import Telemetry from './telemetry';
+import BlockChangeMonitor from './block-change';
 
 // Initialize the telemetry module.
 Telemetry.getInstance();

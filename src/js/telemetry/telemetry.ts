@@ -1,6 +1,13 @@
+/**
+ * WordPress dependencies
+ */
 import { createElement, Fragment } from '@wordpress/element';
-import BlockChangeMonitor from './block-change';
 import { registerPlugin } from '@wordpress/plugins';
+
+/**
+ * Internal dependencies
+ */
+import BlockChangeMonitor from './block-change';
 
 declare global {
 	interface Window {
@@ -39,30 +46,35 @@ export type EventProps = {
 export default class Telemetry {
 	/**
 	 * The prefix used for all events.
+	 * @since 3.12.0
 	 * @private
 	 */
 	private static readonly TRACKS_PREFIX = 'wpparsely_';
 
 	/**
 	 * The regex used to validate event names.
+	 * @since 3.12.0
 	 * @private
 	 */
 	private static readonly EVENT_NAME_REGEX = /^(([a-z0-9]+)_){2}([a-z0-9_]+)$/;
 
 	/**
 	 * The regex used to validate event properties.
+	 * @since 3.12.0
 	 * @private
 	 */
 	private static readonly PROPERTY_REGEX = /^[a-z_][a-z0-9_]*$/;
 
 	/**
 	 * The queue of events to be tracked.
+	 * @since 3.12.0
 	 * @private
 	 */
 	private _tkq: ( string | object )[] = [];
 
 	/**
 	 * Whether the tracking library has been loaded.
+	 * @since 3.12.0
 	 * @protected
 	 */
 	protected isLoaded: boolean = false;
@@ -74,7 +86,6 @@ export default class Telemetry {
 	 */
 	private constructor() {
 		this.loadTrackingLibrary();
-		console.log( 'Telemetry loaded' );
 	}
 
 	/**
