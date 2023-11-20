@@ -20,6 +20,7 @@ import {
 import { PostData } from '../../common/utils/post';
 import { DashboardWidgetProvider, TOP_POSTS_DEFAULT_LIMIT } from '../provider';
 import { TopPostListItem } from './top-posts-list-item';
+import Telemetry from '../../../js/telemetry/telemetry';
 
 const FETCH_RETRIES = 1;
 
@@ -64,6 +65,18 @@ export function TopPosts() {
 		};
 	}, [ period, metric, page ] );
 
+	/**
+	 * Tracks the filter changes.
+	 *
+	 * @since 3.12.0
+	 *
+	 * @param {string} filter The filter name.
+	 * @param {Object} props  The filter properties.
+	 */
+	const trackFilterChanges = ( filter: string, props: object ): void => {
+		Telemetry.trackEvent( 'dash_widget_filter_changed', { filter, ...props } );
+	};
+
 	const filters :JSX.Element = (
 		<div className="parsely-top-posts-filters">
 			<Select
@@ -76,6 +89,7 @@ export function TopPosts() {
 				onChange={ ( event ) => {
 					if ( isInEnum( event.target.value, Period ) ) {
 						setPeriodFilter( event.target.value as Period );
+						trackFilterChanges( 'period', { period: event.target.value } );
 						setPage( 1 );
 					}
 				} }
@@ -90,6 +104,7 @@ export function TopPosts() {
 				onChange={ ( event ) => {
 					if ( isInEnum( event.target.value, Metric ) ) {
 						setMetricFilter( event.target.value as Metric );
+						trackFilterChanges( 'metric', { metric: event.target.value } );
 						setPage( 1 );
 					}
 				} }
@@ -102,7 +117,13 @@ export function TopPosts() {
 			<button
 				className="parsely-top-posts-navigation-prev"
 				disabled={ page <= 1 }
-				onClick={ () => setPage( page - 1 ) }
+				onClick={ () => {
+					setPage( page - 1 );
+					Telemetry.trackEvent( 'dash_widget_navigation', {
+						navigation: 'previous',
+						to_page: page - 1,
+					} );
+				} }
 			>
 				{ __( '<< Previous', 'wp-parsely' ) }
 			</button>
@@ -115,7 +136,13 @@ export function TopPosts() {
 			<button
 				className="parsely-top-posts-navigation-next"
 				disabled={ ! loading && posts.length < TOP_POSTS_DEFAULT_LIMIT }
-				onClick={ () => setPage( page + 1 ) }
+				onClick={ () => {
+					setPage( page + 1 );
+					Telemetry.trackEvent( 'dash_widget_navigation', {
+						navigation: 'next',
+						to_page: page + 1,
+					} );
+				} }
 			>
 				{ __( 'Next >>', 'wp-parsely' ) }
 			</button>

@@ -1,5 +1,17 @@
+import { createElement, Fragment } from '@wordpress/element';
+import BlockChangeMonitor from './block-change';
+import { registerPlugin } from '@wordpress/plugins';
+
 declare global {
 	interface Window {
+		/**
+		 * Singleton instance of the Telemetry class.
+		 * This is attached to the global `window` object to ensure that the same instance
+		 * is used across different ES modules in the application.
+		 * @type {Telemetry}
+		 * @since 3.12.0
+		 */
+		wpParselyTelemetryInstance: Telemetry;
 		_tkq: EventProps[];
 		wpParselyTracksTelemetry: {
 			version: string,
@@ -16,7 +28,7 @@ declare global {
  * @since 3.12.0
  */
 export type EventProps = {
-	[ key: string ]: string;
+	[ key: string ]: string|number|boolean;
 }
 
 /**
@@ -44,12 +56,6 @@ export default class Telemetry {
 	private static readonly PROPERTY_REGEX = /^[a-z_][a-z0-9_]*$/;
 
 	/**
-	 * The singleton instance of the Telemetry class.
-	 * @private
-	 */
-	private static instance: Telemetry;
-
-	/**
 	 * The queue of events to be tracked.
 	 * @private
 	 */
@@ -68,6 +74,7 @@ export default class Telemetry {
 	 */
 	private constructor() {
 		this.loadTrackingLibrary();
+		console.log( 'Telemetry loaded' );
 	}
 
 	/**
@@ -77,10 +84,15 @@ export default class Telemetry {
 	 * @since 3.12.0
 	 */
 	public static getInstance(): Telemetry {
-		if ( ! Telemetry.instance ) {
-			Telemetry.instance = new Telemetry();
+		if ( ! window.wpParselyTelemetryInstance ) {
+			Object.defineProperty( window, 'wpParselyTelemetryInstance', {
+				value: new Telemetry(),
+				writable: false,
+				configurable: false,
+				enumerable: false, // This makes it not show up in console enumerations
+			} );
 		}
-		return Telemetry.instance;
+		return window.wpParselyTelemetryInstance;
 	}
 
 	/**
@@ -99,6 +111,18 @@ export default class Telemetry {
 		document.head.appendChild( script );
 	}
 
+	private setupEvents(): void {
+		const EventsComponent = createElement(
+			Fragment,
+			null,
+			createElement( BlockChangeMonitor ), // Block Changes monitor
+		);
+
+		registerPlugin( 'wp-parsely-tracks-js-events', {
+			render: () => EventsComponent,
+		} );
+	}
+
 	/**
 	 * Tracks an event.
 	 * This method is static, so it can be called directly from the class.
@@ -110,7 +134,7 @@ export default class Telemetry {
 	 * @return {Promise<void>}        A Promise that resolves when the event has been tracked.
 	 * @since 3.12.0
 	 */
-	public static async trackEvent( eventName: string, properties: EventProps ): Promise<void> {
+	public static async trackEvent( eventName: string, properties: EventProps = {} ): Promise<void> {
 		const telemetry: Telemetry = Telemetry.getInstance();
 		await Telemetry.waitUntilLoaded();
 		telemetry.trackEvent( eventName, properties );
@@ -255,7 +279,3 @@ export default class Telemetry {
 		return sanitizedProperties;
 	}
 }
-
-// Initialize the singleton
-Telemetry.getInstance();
-
