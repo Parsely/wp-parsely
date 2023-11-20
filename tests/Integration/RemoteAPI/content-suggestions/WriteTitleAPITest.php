@@ -61,14 +61,14 @@ final class WriteTitleAPITest extends RemoteAPITest {
 	}
 
 	/**
-	 * Mocks a successful HTTP response to the Content Suggestion write-titles API endpoint.
+	 * Mocks a successful HTTP response to the Content Suggestion write-titles
+	 * API endpoint.
 	 *
 	 * @since 3.12.0
 	 *
 	 * @param string $response  The response to mock.
 	 * @param array  $args      The arguments passed to the HTTP request.
 	 * @param string $url       The URL of the HTTP request.
-	 *
 	 * @return array|false The mocked response.
 	 *
 	 * @phpstan-ignore-next-line
@@ -124,8 +124,6 @@ final class WriteTitleAPITest extends RemoteAPITest {
 		add_filter( 'pre_http_request', array( $this, 'mock_successful_write_titles_response' ), 10, 3 );
 
 		// Test getting three titles.
-
-
 		$titles = self::$write_title_api->get_titles( $content, 3 );
 
 		self::assertIsArray( $titles );

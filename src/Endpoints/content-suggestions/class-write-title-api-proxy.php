@@ -1,6 +1,7 @@
 <?php
 /**
- * Endpoints: Parse.ly Content Suggestion `/write-title` API proxy endpoint class
+ * Endpoints: Parse.ly Content Suggestion `/write-title` API proxy endpoint
+ * class
  *
  * @package Parsely
  * @since   3.12.0
@@ -34,6 +35,8 @@ final class Write_Title_API_Proxy extends Base_API_Proxy {
 	/**
 	 * Initializes the class.
 	 *
+	 * @since 3.12.0
+	 *
 	 * @param Parsely $parsely The Parsely plugin instance.
 	 */
 	public function __construct( Parsely $parsely ) {
@@ -56,7 +59,6 @@ final class Write_Title_API_Proxy extends Base_API_Proxy {
 	 * @since 3.12.0
 	 *
 	 * @param array<stdClass> $response The response received by the proxy.
-	 *
 	 * @return array<stdClass> The generated data.
 	 */
 	protected function generate_data( $response ): array {
@@ -69,7 +71,6 @@ final class Write_Title_API_Proxy extends Base_API_Proxy {
 	 * @since 3.12.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 *
 	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	public function get_items( WP_REST_Request $request ) {

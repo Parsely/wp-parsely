@@ -15,7 +15,14 @@ import { WriteTitleProvider } from './provider';
 import { TitleStore, TitleType } from './store';
 import { GutenbergFunction } from './types';
 
-export const WriteTitlesPanel = () => {
+/**
+ * Title Suggestions Panel.
+ *
+ * @since 3.12.0
+ *
+ * @return {JSX.Element} The Title Suggestions Panel.
+ */
+export const WriteTitlesPanel = (): JSX.Element => {
 	const [ error, setError ] = useState<ContentHelperError>();
 
 	const {

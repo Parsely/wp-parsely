@@ -1,3 +1,6 @@
+/**
+ * WordPress dependencies
+ */
 import { createReduxStore, register } from '@wordpress/data';
 
 // Unique identifier for each title in the store

@@ -29,9 +29,10 @@ interface TitleSuggestionProps {
  * @since 3.12.0
  *
  * @param {TitleSuggestionProps} props The component's props.
+ *
  * @return {JSX.Element} The title suggestion JSX Element.
  */
-export const TitleSuggestion = ( props: TitleSuggestionProps ) => {
+export const TitleSuggestion = ( props: TitleSuggestionProps ): JSX.Element => {
 	const {
 		removeTitle,
 		setAcceptedTitle,
