@@ -81,7 +81,7 @@ class Tracks_Event {
 	 *                       WP_Error if the event is generating an error.
 	 */
 	public function is_recordable() {
-		if ( ! Telemetry_System::is_backend_telemetry_allowed() ) {
+		if ( ! Telemetry_System::is_wpadmin_telemetry_allowed() ) {
 			return false;
 		}
 
