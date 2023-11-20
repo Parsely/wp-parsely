@@ -23,7 +23,7 @@ add_action(
 	'init',
 	function (): void {
 		// Bail early if backend telemetry is not allowed.
-		if ( false === Telemetry_System::is_backend_telemetry_allowed() ) {
+		if ( false === Telemetry_System::is_wpadmin_telemetry_allowed() ) {
 			return;
 		}
 

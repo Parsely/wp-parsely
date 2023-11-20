@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\RemoteAPI;
 
+use Parsely\Parsely;
 use WP_Error;
 
 /**
@@ -54,6 +55,7 @@ class Analytics_Posts_API extends Base_Endpoint_Remote {
 	public const MAX_RECORDS_LIMIT        = 2000;
 	public const ANALYTICS_API_DAYS_LIMIT = 7;
 
+	protected const API_BASE_URL = Parsely::PUBLIC_API_BASE_URL;
 	protected const ENDPOINT     = '/analytics/posts';
 	protected const QUERY_FILTER = 'wp_parsely_analytics_posts_endpoint_args';
 

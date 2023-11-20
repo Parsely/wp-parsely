@@ -41,6 +41,8 @@ class Tracks_Pixel {
 
 	/**
 	 * Constructor.
+	 *
+	 * @since 3.12.0
 	 */
 	public function __construct() {
 		// Track events asynchronously (inject pixels in the footer).
@@ -52,6 +54,8 @@ class Tracks_Pixel {
 
 	/**
 	 * Instantiates the singleton.
+	 *
+	 * @since 3.12.0
 	 *
 	 * @return Tracks_Pixel
 	 */
@@ -69,7 +73,6 @@ class Tracks_Pixel {
 	 * @since 3.12.0
 	 *
 	 * @param Tracks_Event $event The event to record.
-	 *
 	 * @return bool|WP_Error True if the event was enqueued for recording.
 	 *                       False if the event is not recordable.
 	 *                       WP_Error if the event is generating an error.
@@ -92,7 +95,6 @@ class Tracks_Pixel {
 	 * @since 3.12.0
 	 *
 	 * @param Tracks_Event $event The event to record.
-	 *
 	 * @return bool|WP_Error True if recording the event succeeded.
 	 *                       False if the event is not recordable.
 	 *                       WP_Error if any error occurred.
@@ -160,7 +162,6 @@ class Tracks_Pixel {
 	 * @since 3.12.0
 	 *
 	 * @param Tracks_Event $event The event for which to generate the pixel URL.
-	 *
 	 * @return ?string The pixel URL or null if an error occurred.
 	 */
 	protected function generate_pixel_url( Tracks_Event $event ): ?string {

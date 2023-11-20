@@ -25,6 +25,7 @@ export enum ContentHelperErrorCode {
 	ParselyApiResponseContainsError = 'ch_response_contains_error',
 	ParselyApiReturnedNoData = 'ch_parsely_api_returned_no_data',
 	ParselyApiReturnedTooManyResults = 'ch_parsely_api_returned_too_many_results',
+	ParselyApiUnauthorized = 401, // Intentionally without quotes.
 	PluginCredentialsNotSetMessageDetected = 'parsely_credentials_not_set_message_detected',
 	PluginSettingsApiSecretNotSet = 'parsely_api_secret_not_set',
 	PluginSettingsSiteIdNotSet = 'parsely_site_id_not_set',
@@ -52,6 +53,7 @@ export class ContentHelperError extends Error {
 			ContentHelperErrorCode.ParselyApiResponseContainsError,
 			ContentHelperErrorCode.ParselyApiReturnedNoData,
 			ContentHelperErrorCode.ParselyApiReturnedTooManyResults,
+			ContentHelperErrorCode.ParselyApiUnauthorized,
 			ContentHelperErrorCode.PluginCredentialsNotSetMessageDetected,
 			ContentHelperErrorCode.PluginSettingsApiSecretNotSet,
 			ContentHelperErrorCode.PluginSettingsSiteIdNotSet,
@@ -100,6 +102,14 @@ export class ContentHelperError extends Error {
 				'The Parse.ly API cannot be reached. Please verify that you are online.',
 				'wp-parsely'
 			) );
+		}
+
+		// Errors that need rephrasing.
+		if ( this.code === ContentHelperErrorCode.ParselyApiUnauthorized ) {
+			this.message = __(
+				'This feature is accessible to select customers participating in its beta testing.',
+				'wp-parsely'
+			);
 		}
 
 		return (

@@ -26,8 +26,6 @@ class Tracks extends Telemetry_System {
 	 * Registers the events into WordPress hooks to activate tracking.
 	 *
 	 * @since 3.12.0
-	 *
-	 * @return void
 	 */
 	public function run(): void {
 		$this->activate_tracking();

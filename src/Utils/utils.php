@@ -138,7 +138,7 @@ function get_time_format(): string {
 /**
  * Returns the current time's timestamp.
  *
- * @since 3.10.0
+ * @since 3.12.0
  *
  * @return string
  */

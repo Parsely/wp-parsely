@@ -40,14 +40,14 @@ abstract class Telemetry_System {
 	abstract protected function activate_tracking(): void;
 
 	/**
-	 * Returns whether back-end telemetry is allowed to be enabled. This is off
+	 * Returns whether wp-admin telemetry is allowed to be enabled. This is off
 	 * by default.
 	 *
 	 * @since 3.12.0
 	 *
-	 * @return bool Whether backend telemetry is allowed to be enabled.
+	 * @return bool Whether wp-admin telemetry is allowed to be enabled.
 	 */
-	public static function is_backend_telemetry_allowed(): bool {
+	public static function is_wpadmin_telemetry_allowed(): bool {
 		return apply_filters( 'wp_parsely_enable_wpadmin_telemetry', false );
 	}
 
@@ -75,7 +75,6 @@ abstract class Telemetry_System {
 	 * @param string               $event_name The event's name.
 	 * @param array<string, mixed> $event_properties Any additional properties
 	 *                                               to include with the event.
-	 *
 	 * @return bool|WP_Error True if recording the event succeeded.
 	 *                       False if telemetry is disabled.
 	 *                       WP_Error if recording the event failed.
