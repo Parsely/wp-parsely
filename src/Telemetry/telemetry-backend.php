@@ -22,7 +22,7 @@ if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) ) {
 add_action(
 	'init',
 	function (): void {
-		// Bail early if backend telemetry is not allowed.
+		// Bail early if wp-admin telemetry is not allowed.
 		if ( false === Telemetry_System::is_wpadmin_telemetry_allowed() ) {
 			return;
 		}
