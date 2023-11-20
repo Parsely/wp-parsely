@@ -102,7 +102,7 @@ class Tracks extends Telemetry_System {
 	 */
 	public function init_js_tracking(): void {
 		// Bail early if backend telemetry is not allowed.
-		if ( ! self::is_backend_telemetry_allowed() ) {
+		if ( ! self::is_wpadmin_telemetry_allowed() ) {
 			return;
 		}
 

@@ -1,6 +1,8 @@
 import { useEffect } from '@wordpress/element';
 import { subscribe, select } from '@wordpress/data';
+// eslint-disable-next-line import/named
 import { BlockInstance } from '@wordpress/blocks';
+import Telemetry from './telemetry';
 /**
  * BlockChangeMonitor component.
  *
@@ -46,13 +48,13 @@ const BlockChangeMonitor = () => {
 						// block is a BlockInstance when blocks are added
 						const blockInstance = block as BlockInstance;
 						if ( blockInstance.name.startsWith( parselyBlockPrefix ) && ! lastBlockIds.has( blockInstance.clientId ) ) {
-							console.log( `Block added:`, blockInstance.clientId );
+							Telemetry.trackEvent( 'block_added', { block: blockInstance.name } );
 						}
 					} else {
 						// block is a string (client ID) when blocks are removed
 						const clientId = block as string;
 						if ( ! newBlockIds.has( clientId ) ) {
-							console.log( `Block removed:`, clientId );
+							Telemetry.trackEvent( 'block_removed', { block: clientId } );
 						}
 					}
 				}
