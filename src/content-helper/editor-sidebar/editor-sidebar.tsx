@@ -222,7 +222,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 			<Panel>
 				<PanelBody
 					title={ __( 'Title Suggestions (Beta)', 'wp-parsely' ) }
-					initialOpen={ true }>
+					initialOpen={ false }>
 					{
 						<VerifyCredentials>
 							<WriteTitlesPanel />
