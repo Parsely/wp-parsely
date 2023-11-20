@@ -25,6 +25,7 @@ import {
 import { VerifyCredentials } from '../common/verify-credentials';
 import { PerformanceDetails } from './performance-details/component';
 import { RelatedTopPostList } from './related-top-posts/component-list';
+import { TitleSuggestionsPanel } from './title-suggestions/component';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
@@ -214,6 +215,17 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 								metric={ metric }
 								postData={ postData }
 							/>
+						</VerifyCredentials>
+					}
+				</PanelBody>
+			</Panel>
+			<Panel>
+				<PanelBody
+					title={ __( 'Title Suggestions (Beta)', 'wp-parsely' ) }
+					initialOpen={ false }>
+					{
+						<VerifyCredentials>
+							<TitleSuggestionsPanel />
 						</VerifyCredentials>
 					}
 				</PanelBody>

@@ -23,6 +23,7 @@ use function Parsely\Utils\convert_to_associative_array;
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
 class Validate_API extends Base_Endpoint_Remote {
+	protected const API_BASE_URL = Parsely::PUBLIC_API_BASE_URL;
 	protected const ENDPOINT     = '/validate/secret';
 	protected const QUERY_FILTER = 'wp_parsely_validate_secret_endpoint_args';
 
@@ -48,7 +49,8 @@ class Validate_API extends Base_Endpoint_Remote {
 			'apikey' => $query['apikey'],
 			'secret' => $query['secret'],
 		);
-		return add_query_arg( $query, Parsely::PUBLIC_API_BASE_URL . static::ENDPOINT );
+
+		return add_query_arg( $query, static::API_BASE_URL . static::ENDPOINT );
 	}
 
 	/**

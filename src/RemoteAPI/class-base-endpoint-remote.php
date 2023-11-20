@@ -20,8 +20,8 @@ use function Parsely\Utils\convert_to_associative_array;
 /**
  * Base class for remote API endpoints.
  *
- * Child classes must add a protected `ENDPOINT` constant, and a protected
- * QUERY_FILTER constant.
+ * Child classes must add protected ENDPOINT, API_BASE_URL and QUERY_FILTER
+ * constants.
  *
  * @since 3.2.0 Introduced as Remote_API_Base.
  * @since 3.11.0 Renamed to Base_Endpoint_Remote and moved some members into Base_Endpoint.
@@ -35,6 +35,7 @@ use function Parsely\Utils\convert_to_associative_array;
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
 abstract class Base_Endpoint_Remote extends Base_Endpoint implements Remote_API_Interface {
+	protected const API_BASE_URL = '';
 	protected const QUERY_FILTER = '';
 
 	/**
@@ -77,7 +78,7 @@ abstract class Base_Endpoint_Remote extends Base_Endpoint implements Remote_API_
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Hook names are defined in child classes.
 		$query = apply_filters( static::QUERY_FILTER, $query );
-		return add_query_arg( $query, Parsely::PUBLIC_API_BASE_URL . static::ENDPOINT );
+		return add_query_arg( $query, static::API_BASE_URL . static::ENDPOINT );
 	}
 
 	/**
@@ -92,6 +93,7 @@ abstract class Base_Endpoint_Remote extends Base_Endpoint implements Remote_API_
 	 */
 	public function get_items( array $query, bool $associative = false ) {
 		$full_api_url = $this->get_api_url( $query );
+
 		/**
 		 * GET request options.
 		 *
