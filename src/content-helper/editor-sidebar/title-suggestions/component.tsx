@@ -22,7 +22,7 @@ import { GutenbergFunction } from './types';
  *
  * @return {JSX.Element} The Title Suggestions Panel.
  */
-export const WriteTitlesPanel = (): JSX.Element => {
+export const TitleSuggestionsPanel = (): JSX.Element => {
 	const [ error, setError ] = useState<ContentHelperError>();
 
 	const {
