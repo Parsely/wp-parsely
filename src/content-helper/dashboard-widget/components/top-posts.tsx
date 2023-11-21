@@ -20,7 +20,7 @@ import {
 import { PostData } from '../../common/utils/post';
 import { DashboardWidgetProvider, TOP_POSTS_DEFAULT_LIMIT } from '../provider';
 import { TopPostListItem } from './top-posts-list-item';
-import Telemetry from '../../../js/telemetry/telemetry';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 
 const FETCH_RETRIES = 1;
 

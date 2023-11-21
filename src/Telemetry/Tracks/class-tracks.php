@@ -94,7 +94,7 @@ class Tracks extends Telemetry_System {
 	 * Initializes JavaScript tracking.
 	 *
 	 * This method is responsible for setting up the JavaScript tracking for the plugin.
-	 * It first checks if backend telemetry is allowed, and if not, it returns early.
+	 * It first checks if wp-admin telemetry is allowed, and if not, it returns early.
 	 * Then, it adds an action to the 'admin_enqueue_scripts' hook to enqueue the telemetry script
 	 * and set up the script parameters.
 	 *
@@ -168,10 +168,10 @@ class Tracks extends Telemetry_System {
 					}
 				}
 
-				wp_localize_script(
+				wp_add_inline_script(
 					'wp-parsely-tracks-telemetry',
-					'wpParselyTracksTelemetry',
-					$script_params
+					'const wpParselyTracksTelemetry = ' . wp_json_encode( $script_params ) . ';',
+					'before'
 				);
 			}
 		);

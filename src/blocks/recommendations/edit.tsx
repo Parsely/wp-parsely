@@ -16,6 +16,7 @@ import './editor.scss';
 import { RecommendationsAttributes } from './models/RecommendationsAttributes';
 import { RecommendationsStore } from './recommendations-store';
 import './style.scss';
+
 interface ParselyRecommendationsEditProps {
 	clientId: string;
 	attributes: RecommendationsAttributes;

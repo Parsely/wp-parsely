@@ -9,7 +9,7 @@ import { BlockInstance } from '@wordpress/blocks';
 /**
  * Internal dependencies
  */
-import Telemetry from './telemetry';
+import { Telemetry } from './telemetry';
 
 /**
  * BlockChangeMonitor component.
@@ -19,18 +19,20 @@ import Telemetry from './telemetry';
  * when the component is mounted.
  * When the block editor changes, it checks if blocks have been added or removed by comparing the current
  * list of blocks with the previous one.
- * If a block has been added or removed, it logs a message to the console.
+ * If a block has been added or removed, it sends a telemetry event to the server.
  * When the component is unmounted, it unsubscribes from the block editor changes.
  *
  * @since 3.12.0
  */
-const BlockChangeMonitor = () => {
+export const BlockChangeMonitor = () => {
 	/**
 	 * The prefix of the block's name.
+	 *
 	 * @since 3.12.0
+	 *
 	 * @type {string}
 	 */
-	const parselyBlockPrefix = 'wp-parsely/';
+	const parselyBlockPrefix: string = 'wp-parsely/';
 
 	/**
 	 * The useEffect hook is used to subscribe to changes in the block editor when the component is mounted.
@@ -59,13 +61,13 @@ const BlockChangeMonitor = () => {
 
 				for ( const block of changedBlockList ) {
 					if ( blocksAdded ) {
-						// block is a BlockInstance when blocks are added
+						// block is a BlockInstance when blocks are added.
 						const blockInstance = block as BlockInstance;
 						if ( blockInstance.name.startsWith( parselyBlockPrefix ) && ! lastBlockIds.has( blockInstance.clientId ) ) {
 							Telemetry.trackEvent( 'block_added', { block: blockInstance.name } );
 						}
 					} else {
-						// block is a string (client ID) when blocks are removed
+						// block is a string (client ID) when blocks are removed.
 						const clientId = block as string;
 						if ( ! newBlockIds.has( clientId ) ) {
 							Telemetry.trackEvent( 'block_removed', { block: clientId } );
@@ -84,5 +86,3 @@ const BlockChangeMonitor = () => {
 
 	return null; // This component does not render anything
 };
-
-export default BlockChangeMonitor;

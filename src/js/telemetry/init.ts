@@ -7,8 +7,8 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
-import Telemetry from './telemetry';
-import BlockChangeMonitor from './block-change';
+import { Telemetry } from './telemetry';
+import { BlockChangeMonitor } from './block-change';
 
 // Initialize the telemetry module.
 Telemetry.getInstance();
