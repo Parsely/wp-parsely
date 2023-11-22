@@ -1,10 +1,10 @@
 /**
  * WordPress dependencies
  */
-import { useEffect } from '@wordpress/element';
-import { subscribe, select } from '@wordpress/data';
 // eslint-disable-next-line import/named
 import { BlockInstance } from '@wordpress/blocks';
+import { select, subscribe } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -29,8 +29,6 @@ export const BlockChangeMonitor = () => {
 	 * The prefix of the block's name.
 	 *
 	 * @since 3.12.0
-	 *
-	 * @type {string}
 	 */
 	const parselyBlockPrefix: string = 'wp-parsely/';
 
@@ -41,7 +39,7 @@ export const BlockChangeMonitor = () => {
 	 * When the block editor changes, it gets the new list of blocks and creates a new Set of the block IDs.
 	 * It checks if the size of the new block IDs Set is different from the last one, indicating that a block
 	 * has been added or removed.
-	 * If a block has been added or removed, it logs a message to the console.
+	 * If a block has been added or removed, it sends a telemetry event to the server.
 	 * Finally, it updates the last block IDs with the new block IDs for the next comparison.
 	 * When the component is unmounted, it unsubscribes from the block editor changes.
 	 *
@@ -84,5 +82,5 @@ export const BlockChangeMonitor = () => {
 		};
 	}, [] );
 
-	return null; // This component does not render anything
+	return null; // This component does not render anything.
 };

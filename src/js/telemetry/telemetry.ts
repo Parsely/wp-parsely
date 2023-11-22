@@ -17,8 +17,8 @@ declare global {
 		 * Singleton instance of the Telemetry class.
 		 * This is attached to the global `window` object to ensure that the same instance
 		 * is used across different ES modules in the application.
+		 *
 		 * @since 3.12.0
-		 * @type {Telemetry}
 		 */
 		wpParselyTelemetryInstance: Telemetry;
 		_tkq: EventProps[];
@@ -38,12 +38,11 @@ export type EventProps = {
  * Telemetry class.
  *
  * @since 3.12.0
- *
- * @class
  */
 export class Telemetry {
 	/**
 	 * The prefix used for all events.
+	 *
 	 * @since 3.12.0
 	 * @access private
 	 */
@@ -115,8 +114,6 @@ export class Telemetry {
 	 * Loads the tracking library.
 	 *
 	 * @since 3.12.0
-	 *
-	 * @return {void}
 	 */
 	private loadTrackingLibrary(): void {
 		const script = document.createElement( 'script' );
@@ -218,7 +215,7 @@ export class Telemetry {
 
 		properties = this.prepareProperties( properties );
 
-		// Push the event to the queue
+		// Push the event to the queue.
 		this._tkq?.push( [ 'recordEvent', eventName, properties ] );
 	}
 
@@ -277,7 +274,8 @@ export class Telemetry {
 
 	/**
 	 * Sanitizes the properties of an event.
-	 * This method creates a new object and copies over all valid properties from the original properties.
+	 * This method creates a new object and copies over all valid properties
+	 * from the original properties.
 	 *
 	 * @since 3.12.0
 	 *
