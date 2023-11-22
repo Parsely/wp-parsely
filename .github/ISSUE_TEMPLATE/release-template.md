@@ -13,7 +13,7 @@ The actual release of the plugin should be done on Mondays so we can catch the T
 ## Before releasing
 
 **1. Merge all outstanding work**
-- [ ] Merge any outstanding PRs due for this release to `develop`.
+- [ ] Merge any outstanding PRs due for this release to the target branch (usually `develop`).
 - [ ] Verify that all important PRs have an appropriate `Changelog` tag. Those who don't won't be added to the changelog.
 
 **2. Conduct additional testing**
@@ -36,14 +36,14 @@ The following additional tasks might be needed depending on the release and its 
 **1. Update version numbers and changelog**
 - [ ] Run `php bin/release.php $OLD_VERSION $NEW_VERSION` to update version numbers, the changelog, and to push the PR to GitHub. Copy the changelog's new release text for later use.
 - [ ] Verify that the PR code looks correct. You can amend it with new commits if needed.
-- [ ] Merge the PR into `develop`.
+- [ ] Merge the PR into the target branch (usually `develop`).
 
 **2. Merge develop into trunk**
-- [ ] [Create a PR](https://github.com/Parsely/wp-parsely/compare) that merges `develop` into `trunk`, named _Release wp-parsely x.y.z_.
+- [ ] [Create a PR](https://github.com/Parsely/wp-parsely/compare/trunk...develop?quick_pull=1&title=Release+wp-parsely+x.y.z&body=This+PR+merges+the+`develop`+branch+into+the+`trunk`+branch+in+order+to+release+wp-parsely+x.y.z.) that merges the target branch (usually `develop`) into `trunk`, named _Release wp-parsely x.y.z_.
 - [ ] Merge the PR into `trunk`.
 
 **3. Create the GitHub release**
-- [ ] [Create a GitHub release](https://github.com/Parsely/wp-parsely/releases/new) that targets `trunk`.
+- [ ] [Create a GitHub release](https://github.com/Parsely/wp-parsely/releases/new?target=trunk) that targets `trunk`.
 - [ ] For the release's text, use the changelog text that was posted by the `bin/release.php` script into the PR in step 1.
 - [ ] Verify that you're using the appropriate name and tag (should be the version that is being released, without a leading 'v' character), and publish the release.
 
@@ -57,7 +57,7 @@ The following additional tasks might be needed depending on the release and its 
 - [ ] Inform the concerned Slack channels about the new release, also preannouncing the WordPress VIP release.
 
 **2. Merge trunk back into develop**
-- [ ] [Create a PR](https://github.com/Parsely/wp-parsely/compare/trunk?expand=1) that merges `trunk` into `develop`, named _Merge trunk into develop after the wp-parsely x.y.z release_.
+- [ ] [Create a PR](https://github.com/Parsely/wp-parsely/compare/develop...trunk?quick_pull=1&title=Merge+trunk+into+develop+after+the+wp-parsely+x.y.z+release&body=This+PR+merges+the+`trunk`+branch+into+the+`develop`+branch+after+the+release+of+wp-parsely+x.y.z.) that merges `trunk` into `develop`, named _Merge trunk into develop after the wp-parsely x.y.z release_.
 - [ ] Merge the PR into `develop`.
 
 **3. Manage milestones**
