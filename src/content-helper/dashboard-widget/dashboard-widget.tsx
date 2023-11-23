@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { render } from '@wordpress/element';
+import { createRoot } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -12,12 +12,15 @@ import { TopPosts } from './components/top-posts';
 window.addEventListener(
 	'load',
 	function() {
-		render(
-			<VerifyCredentials>
-				<TopPosts />
-			</VerifyCredentials>,
-			document.querySelector( '#wp-parsely-dashboard-widget > .inside' )
-		);
+		const container = document.querySelector( '#wp-parsely-dashboard-widget > .inside' );
+		if ( null !== container ) {
+			const root = createRoot( container );
+			root.render(
+				<VerifyCredentials>
+					<TopPosts />
+				</VerifyCredentials>
+			);
+		}
 	},
 	false
 );
