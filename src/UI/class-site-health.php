@@ -114,6 +114,7 @@ final class Site_Health {
 	 */
 	public function options_debug_info( $args ) {
 		$options = $this->parsely->get_options();
+		unset( $options['api_secret'], $options['metadata_secret'] );
 
 		$args['parsely'] = array(
 			'label'       => __( 'Parse.ly Options', 'wp-parsely' ),
