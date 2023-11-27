@@ -81,13 +81,25 @@ export class Telemetry {
 	protected isLoaded: boolean = false;
 
 	/**
+	 * Whether the tracking is enabled.
+	 * Looks for the `wpParselyTracksTelemetry` global object. If it exists, telemetry is enabled.
+	 *
+	 * @since 3.12.0
+	 * @access protected
+	 */
+	protected isEnabled: boolean = false;
+
+	/**
 	 * Private constructor to prevent direct object creation.
 	 * This is necessary because this class is a singleton.
 	 *
 	 * @since 3.12.0
 	 */
 	private constructor() {
-		this.loadTrackingLibrary();
+		if ( typeof wpParselyTracksTelemetry !== 'undefined' ) {
+			this.isEnabled = true;
+			this.loadTrackingLibrary();
+		}
 	}
 
 	/**
@@ -129,8 +141,9 @@ export class Telemetry {
 	/**
 	 * Tracks an event.
 	 * This method is static, so it can be called directly from the class.
-	 * It first ensures that the telemetry library is loaded by calling `waitUntilLoaded`.
-	 * Then, it calls the `trackEvent` method on the singleton instance of the Telemetry class.
+	 * It first checks if the telemetry is enabled, and if not, it bails.
+	 * Then, ensures that the telemetry library is loaded by calling `waitUntilLoaded`.
+	 * Finally, it calls the `trackEvent` method on the singleton instance of the Telemetry class.
 	 *
 	 * @since 3.12.0
 	 *
@@ -141,6 +154,12 @@ export class Telemetry {
 	 */
 	public static async trackEvent( eventName: string, properties: EventProps = {} ): Promise<void> {
 		const telemetry: Telemetry = Telemetry.getInstance();
+
+		// If telemetry is not enabled, bail.
+		if ( ! telemetry.isTelemetryEnabled() ) {
+			return;
+		}
+
 		await Telemetry.waitUntilLoaded();
 		telemetry.trackEvent( eventName, properties );
 	}
@@ -158,6 +177,11 @@ export class Telemetry {
 	public static waitUntilLoaded(): Promise<void> {
 		return new Promise( ( resolve, reject ) => {
 			const telemetry: Telemetry = Telemetry.getInstance();
+
+			if ( ! telemetry.isTelemetryEnabled() ) {
+				reject( 'Telemetry not enabled' );
+				return;
+			}
 
 			if ( telemetry.isLoaded ) {
 				resolve();
@@ -217,6 +241,15 @@ export class Telemetry {
 
 		// Push the event to the queue.
 		this._tkq?.push( [ 'recordEvent', eventName, properties ] );
+	}
+
+	/**
+	 * Checks if the telemetry is enabled.
+	 *
+	 * @since 3.12.0
+	 */
+	public isTelemetryEnabled(): boolean {
+		return this.isEnabled;
 	}
 
 	/**
@@ -295,3 +328,5 @@ export class Telemetry {
 		return sanitizedProperties;
 	}
 }
+
+export const trackEvent = Telemetry.trackEvent;

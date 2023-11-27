@@ -93,19 +93,15 @@ class Tracks extends Telemetry_System {
 	/**
 	 * Initializes JavaScript tracking.
 	 *
-	 * This method is responsible for setting up the JavaScript tracking for the plugin.
-	 * It first checks if wp-admin telemetry is allowed, and if not, it returns early.
-	 * Then, it adds an action to the 'admin_enqueue_scripts' hook to enqueue the telemetry script
-	 * and set up the script parameters.
+	 * This method is responsible for setting up the JavaScript tracking for the application.
+	 * It enqueues the necessary scripts and sets up the parameters for the tracking script.
+	 *
+	 * If the user has disabled wp-admin telemetry, the script will be enqueued, however the
+	 * global object `wpParselyTracksTelemetry` will not be available.
 	 *
 	 * @since 3.12.0
 	 */
 	public function init_js_tracking(): void {
-		// Bail early if backend telemetry is not allowed.
-		if ( ! self::is_wpadmin_telemetry_allowed() ) {
-			return;
-		}
-
 		// Enqueue the JS file.
 		add_action(
 			'admin_enqueue_scripts',
@@ -113,6 +109,8 @@ class Tracks extends Telemetry_System {
 				$asset_php        = get_asset_info( 'build/telemetry.asset.php' );
 				$built_assets_url = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
+				// The Telemetry script is always enqueued in the admin.
+				// If the user has disabled wp-admin telemetry, the global object will not be available.
 				wp_enqueue_script(
 					'wp-parsely-tracks-telemetry',
 					$built_assets_url . 'telemetry.js',
@@ -120,6 +118,11 @@ class Tracks extends Telemetry_System {
 					$asset_php['version'],
 					true
 				);
+
+				// If the user has disabled wp-admin telemetry, return early.
+				if ( ! Telemetry_System::is_wpadmin_telemetry_allowed() ) {
+					return;
+				}
 
 				// Set the script params.
 				$script_params = array(
