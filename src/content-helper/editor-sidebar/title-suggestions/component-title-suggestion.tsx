@@ -11,6 +11,7 @@ import { check, closeSmall, pin, undo } from '@wordpress/icons';
  */
 import { Title, TitleStore, TitleType } from './store';
 import { GutenbergFunction } from './types';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 
 /**
  * Defines the props structure for TitleSuggestion.
@@ -56,10 +57,19 @@ export const TitleSuggestion = ( props: TitleSuggestionProps ): JSX.Element => {
 	const titleInUse = currentPostTitle === props.title.title;
 
 	const onClickAccept = async () => {
+		Telemetry.trackEvent( 'title_suggestion_accepted', {
+			title: props.title.title,
+			type: props.type,
+		} );
 		await setAcceptedTitle( props.type, props.title );
 	};
 
 	const onClickPin = async () => {
+		Telemetry.trackEvent( 'title_suggestion_pinned', {
+			pinned: ! isPinned,
+			type: props.type,
+			title: props.title.title,
+		} );
 		if ( isPinned ) {
 			await unpinTitle( props.type, props.title );
 		} else {
@@ -68,10 +78,20 @@ export const TitleSuggestion = ( props: TitleSuggestionProps ): JSX.Element => {
 	};
 
 	const onClickRemove = async () => {
+		Telemetry.trackEvent( 'title_suggestion_removed', {
+			type: props.type,
+			title: props.title.title,
+		} );
 		await removeTitle( props.type, props.title );
 	};
 
 	const onClickRestore = async () => {
+		Telemetry.trackEvent( 'title_suggestion_restored', {
+			type: props.type,
+			restored_title: props.title.title,
+			accepted_title: currentPostTitle,
+		} );
+
 		// Set current post title to the original title.
 		dispatch( 'core/editor' ).editPost( { title: props.title.title } );
 

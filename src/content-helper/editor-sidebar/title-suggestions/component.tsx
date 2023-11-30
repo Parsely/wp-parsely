@@ -14,6 +14,7 @@ import { TitleSuggestion } from './component-title-suggestion';
 import { WriteTitleProvider } from './provider';
 import { TitleStore, TitleType } from './store';
 import { GutenbergFunction } from './types';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 
 /**
  * Title Suggestions Panel.
@@ -79,6 +80,11 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 
 	const generateOnClickHandler = async () => {
 		if ( false === loading ) {
+			Telemetry.trackEvent( 'title_suggestions_generate_pressed', {
+				request_more: titles.length > 0,
+				total_titles: titles.length,
+				total_pinned: titles.filter( ( title ) => title.isPinned ).length,
+			} );
 			await generateTitles( TitleType.PostTitle, currentPostContent );
 		}
 	};
@@ -93,6 +99,10 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		// Pin the accepted title on the list of generated titles.
 		if ( acceptedTitle ) {
 			await dispatch( TitleStore ).pinTitle( TitleType.PostTitle, acceptedTitle );
+			Telemetry.trackEvent( 'title_suggestions_accepted', {
+				old_title: currentPostTitle,
+				new_title: acceptedTitle.title,
+			} );
 		}
 
 		// Remove the accepted title
@@ -143,6 +153,10 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 					variant="secondary"
 					onClick={ () => {
 						setAcceptedTitle( TitleType.PostTitle, undefined );
+						Telemetry.trackEvent( 'title_suggestions_cancel_pressed', {
+							original_title: currentPostTitle,
+							canceled_title: acceptedTitle?.title ?? '',
+						} );
 					} }
 				>
 					{ __( 'Cancel', 'wp-parsely' ) }
