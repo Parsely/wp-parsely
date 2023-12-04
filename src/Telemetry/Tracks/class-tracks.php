@@ -29,7 +29,6 @@ class Tracks extends Telemetry_System {
 	 */
 	public function run(): void {
 		$this->activate_tracking();
-		$this->init_js_tracking();
 	}
 
 	/**
@@ -88,92 +87,5 @@ class Tracks extends Telemetry_System {
 				add_filter( $event['action_hook'], $func, 10, (int) $accepted_args );
 			}
 		}
-	}
-
-	/**
-	 * Initializes JavaScript tracking.
-	 *
-	 * This method is responsible for setting up the JavaScript tracking for the plugin.
-	 * It first checks if wp-admin telemetry is allowed, and if not, it returns early.
-	 * Then, it adds an action to the 'admin_enqueue_scripts' hook to enqueue the telemetry script
-	 * and set up the script parameters.
-	 *
-	 * @since 3.12.0
-	 */
-	public function init_js_tracking(): void {
-		// Bail early if backend telemetry is not allowed.
-		if ( ! self::is_wpadmin_telemetry_allowed() ) {
-			return;
-		}
-
-		// Enqueue the JS file.
-		add_action(
-			'admin_enqueue_scripts',
-			function (): void {
-				$asset_php        = get_asset_info( 'build/telemetry.asset.php' );
-				$built_assets_url = plugin_dir_url( PARSELY_FILE ) . 'build/';
-
-				wp_enqueue_script(
-					'wp-parsely-tracks-telemetry',
-					$built_assets_url . 'telemetry.js',
-					$asset_php['dependencies'],
-					$asset_php['version'],
-					true
-				);
-
-				// Set the script params.
-				$script_params = array(
-					'version' => PARSELY_VERSION,
-					'user'    => array(),
-				);
-
-				// If it's a VIP environment, add the VIP environment to the script params.
-				if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) ) {
-					$app_environment = constant( 'VIP_GO_APP_ENVIRONMENT' );
-					if ( is_string( $app_environment ) && '' !== $app_environment ) {
-						$script_params['vipgo_env'] = $app_environment;
-					}
-				}
-
-				// Define user-specific params.
-				$wp_user_id = get_current_user_id();
-				if ( 0 !== $wp_user_id ) {
-					// If it's VIP environment, add the VIP user ID to the script params.
-					if ( defined( 'VIP_GO_APP_ID' ) ) {
-						$app_id = constant( 'VIP_GO_APP_ID' );
-						if ( is_integer( $app_id ) && 0 < $app_id ) {
-							$script_params['user'] = array(
-								'type' => 'vip_go_app_wp_user',
-								'id'   => $app_id . '_' . $wp_user_id,
-							);
-						}
-					}
-
-					// If not VIP, fallback to the generated parse.ly user ID.
-					if ( 0 === count( $script_params['user'] ) ) {
-						$wp_base_url = get_option( 'home' );
-						if ( ! is_string( $wp_base_url ) || '' === $wp_base_url ) {
-							$wp_base_url = get_option( 'siteurl' );
-						}
-
-						/**
-						 * The base URL of the site.
-						 *
-						 * @var string $wp_base_url
-						 */
-						$script_params['user'] = array(
-							'type' => 'wpparsely:user_id',
-							'id'   => wp_hash( sprintf( '%s|%s', $wp_base_url, $wp_user_id ) ),
-						);
-					}
-				}
-
-				wp_add_inline_script(
-					'wp-parsely-tracks-telemetry',
-					'const wpParselyTracksTelemetry = ' . wp_json_encode( $script_params ) . ';',
-					'before'
-				);
-			}
-		);
 	}
 }

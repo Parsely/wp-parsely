@@ -22,7 +22,10 @@ if ( defined( 'VIP_GO_APP_ENVIRONMENT' ) ) {
 add_action(
 	'init',
 	function (): void {
-		// Bail early if wp-admin telemetry is not allowed.
+		// Initialize the JS tracking. It will handle if telemetry is enabled or not by itself.
+		Telemetry_System::init_js_tracking();
+
+		// Bail if wp-admin telemetry is not allowed.
 		if ( false === Telemetry_System::is_wpadmin_telemetry_allowed() ) {
 			return;
 		}
