@@ -57,7 +57,7 @@ export const TitleSuggestion = ( props: TitleSuggestionProps ): JSX.Element => {
 	const titleInUse = currentPostTitle === props.title.title;
 
 	const onClickAccept = async () => {
-		Telemetry.trackEvent( 'title_suggestion_accepted', {
+		Telemetry.trackEvent( 'title_suggestion_applied', {
 			title: props.title.title,
 			type: props.type,
 		} );
