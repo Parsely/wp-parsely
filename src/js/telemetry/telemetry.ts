@@ -6,9 +6,10 @@ declare global {
 	 */
 	const wpParselyTracksTelemetry: {
 		version: string,
-			user: {
+		vipgo_env?: string,
+		user: {
 			type: string,
-				id: string,
+			id: string,
 		}
 	};
 
@@ -267,6 +268,11 @@ export class Telemetry {
 		if ( wpParselyTracksTelemetry.user ) {
 			properties._ut = wpParselyTracksTelemetry.user.type;
 			properties._ui = wpParselyTracksTelemetry.user.id;
+		}
+
+		// If VIP environment, set the vipgo_env property.
+		if ( wpParselyTracksTelemetry.vipgo_env ) {
+			properties.vipgo_env = wpParselyTracksTelemetry.vipgo_env;
 		}
 
 		return this.sanitizeProperties( properties );
