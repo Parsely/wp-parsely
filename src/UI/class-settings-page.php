@@ -211,7 +211,8 @@ final class Settings_Page {
 	public function initialize_settings(): void {
 		// Add the option first, to prevent double sanitization of the uninitialized option as reported
 		// in https://core.trac.wordpress.org/ticket/21989.
-		add_option( Parsely::OPTIONS_KEY, array() );
+		// The option will be initialized with the default values.
+		add_option( Parsely::OPTIONS_KEY, $this->parsely->get_options() );
 
 		// All our options are actually stored in one single array to reduce DB queries.
 		register_setting(
