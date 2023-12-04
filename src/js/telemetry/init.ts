@@ -11,24 +11,27 @@ import { Telemetry } from './telemetry';
 import { BlockChangeMonitor } from './block-change';
 
 // Initialize the telemetry module.
-Telemetry.getInstance();
+const telemetry = Telemetry.getInstance();
 
 // Set up the events.
-/**
- * The events to be tracked.
- *
- * @since 3.12.0
- */
-const events = [
-	BlockChangeMonitor,
-];
+if ( telemetry.isTelemetryEnabled() ) {
+	/**
+	 * The events to be tracked.
+	 *
+	 * @since 3.12.0
+	 */
+	const events = [
+		BlockChangeMonitor,
+	];
 
-const EventsComponent = createElement(
-	Fragment,
-	null,
-	...events.map( ( EventComponent ) => createElement( EventComponent ) )
-);
+	const EventsComponent = createElement(
+		Fragment,
+		null,
+		...events.map( ( EventComponent ) => createElement( EventComponent ) )
+	);
 
-registerPlugin( 'wp-parsely-tracks-js-events', {
-	render: () => EventsComponent,
-} );
+	registerPlugin( 'wp-parsely-tracks-js-events', {
+		render: () => EventsComponent,
+	} );
+}
+
