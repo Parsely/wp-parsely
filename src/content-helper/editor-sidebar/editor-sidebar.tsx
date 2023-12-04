@@ -273,7 +273,9 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 			<Panel>
 				<PanelBody
 					title={ __( 'Title Suggestions (Beta)', 'wp-parsely' ) }
-					initialOpen={ false }>
+					initialOpen={ false }
+					onToggle={ ( next ) => trackToggle( 'title_suggestions', next ) }
+				>
 					{
 						<VerifyCredentials>
 							<TitleSuggestionsPanel />
