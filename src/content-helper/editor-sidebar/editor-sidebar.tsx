@@ -25,6 +25,8 @@ import {
 import { VerifyCredentials } from '../common/verify-credentials';
 import { PerformanceDetails } from './performance-details/component';
 import { RelatedTopPostList } from './related-top-posts/component-list';
+import { Telemetry } from '../../js/telemetry/telemetry';
+import { TitleSuggestionsPanel } from './title-suggestions/component';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
@@ -130,6 +132,50 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 	}, [ authorNames, tagNames, categoryNames ] );
 
 	/**
+	 * Track sidebar opening.
+	 *
+	 * @since 3.12.0
+	 */
+	const activeComplementaryArea = useSelect( ( select ) => {
+		// @ts-ignore getActiveComplementaryArea exists in the interface store.
+		return select( 'core/interface' ).getActiveComplementaryArea( 'core/edit-post' );
+	}, [ ] );
+
+	useEffect( () => {
+		if ( activeComplementaryArea === 'wp-parsely-block-editor-sidebar/wp-parsely-content-helper' ) {
+			Telemetry.trackEvent( 'editor_sidebar_opened' );
+		}
+	}, [ activeComplementaryArea ] );
+
+	/**
+	 * Track sidebar panel opening and closing.
+	 *
+	 * @since 3.12.0
+	 *
+	 * @param {string}  panel The panel name.
+	 * @param {boolean} next  Whether the panel is open or closed.
+	 */
+	const trackToggle = ( panel: string, next: boolean ): void => {
+		if ( next ) {
+			Telemetry.trackEvent( 'editor_sidebar_panel_opened', { panel } );
+		} else {
+			Telemetry.trackEvent( 'editor_sidebar_panel_closed', { panel } );
+		}
+	};
+
+	/**
+	 * Track sidebar settings change.
+	 *
+	 * @since 3.12.0
+	 *
+	 * @param {string} filter The filter name.
+	 * @param {Object} props  The filter properties.
+	 */
+	const trackSettingsChange = ( filter: string, props: object ): void => {
+		Telemetry.trackEvent( 'editor_sidebar_settings_changed', { filter, ...props } );
+	};
+
+	/**
 	 * Returns the settings pane of the Content Helper Sidebar.
 	 *
 	 * @since 3.11.0
@@ -144,6 +190,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					onChange={ ( selection ) => {
 						if ( isInEnum( selection, Period ) ) {
 							setPeriod( selection as Period );
+							trackSettingsChange( 'period', { period: selection } );
 						}
 					} }
 					value={ period }
@@ -161,6 +208,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					onChange={ ( selection ) => {
 						if ( isInEnum( selection, Metric ) ) {
 							setMetric( selection as Metric );
+							trackSettingsChange( 'metric', { metric: selection } );
 						}
 					} }
 					value={ metric }
@@ -187,6 +235,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 				<PanelBody
 					title={ __( 'Settings', 'wp-parsely' ) }
 					initialOpen={ true }
+					onToggle={ ( next ) => trackToggle( 'settings', next ) }
 				>
 					<Settings />
 				</PanelBody>
@@ -195,6 +244,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 				<PanelBody
 					title={ __( 'Performance Details', 'wp-parsely' ) }
 					initialOpen={ true }
+					onToggle={ ( next ) => trackToggle( 'performance_details', next ) }
 				>
 					{
 						<VerifyCredentials>
@@ -206,7 +256,9 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 			<Panel>
 				<PanelBody
 					title={ __( 'Related Top Posts', 'wp-parsely' ) }
-					initialOpen={ false }>
+					initialOpen={ false }
+					onToggle={ ( next ) => trackToggle( 'related_top_posts', next ) }
+				>
 					{
 						<VerifyCredentials>
 							<RelatedTopPostList
@@ -214,6 +266,19 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 								metric={ metric }
 								postData={ postData }
 							/>
+						</VerifyCredentials>
+					}
+				</PanelBody>
+			</Panel>
+			<Panel>
+				<PanelBody
+					title={ __( 'Title Suggestions (Beta)', 'wp-parsely' ) }
+					initialOpen={ false }
+					onToggle={ ( next ) => trackToggle( 'title_suggestions', next ) }
+				>
+					{
+						<VerifyCredentials>
+							<TitleSuggestionsPanel />
 						</VerifyCredentials>
 					}
 				</PanelBody>

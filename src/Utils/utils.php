@@ -136,6 +136,19 @@ function get_time_format(): string {
 }
 
 /**
+ * Returns the current time's timestamp.
+ *
+ * @since 3.12.0
+ *
+ * @return string
+ */
+function get_timestamp(): string {
+	$timestamp = round( microtime( true ) * 1000 );
+
+	return number_format( $timestamp, 0, '', '' );
+}
+
+/**
  * Gets number in formatted form i.e. express bigger numbers in form of
  * thousands (k), millions (M), billions (B).
  *

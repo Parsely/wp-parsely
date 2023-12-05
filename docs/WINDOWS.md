@@ -10,7 +10,7 @@ In order to run the integration tests included in the plugin, you must first ins
 
 ### Prerequisites
 
-- The prerequisites described in [CONTRIBUTING.md](CONTRIBUTING.md).
+- The requirements described in [CONTRIBUTING.md](CONTRIBUTING.md#minimum-requirements).
 - An SVN client. Most SVN clients should do, but we've had success using [SlikSVN](https://sliksvn.com/download/). 
 
 Please note that:
@@ -60,7 +60,7 @@ When trying to make your first commit, you might receive errors telling you that
 
 To make this work:
 
-- Verify that composer is in your `Path` Environment Variable. 
+- Verify that `composer` is in your `Path` Environment Variable. 
 - In your composer installation directory, make a copy of `composer.phar` and rename it to `composer` (remove the extension).
 
 Now the pre-commit process should be able to pickup any `composer` commands normally.

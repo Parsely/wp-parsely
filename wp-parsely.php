@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://docs.parse.ly/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
- * Version:           3.11.1
+ * Version:           3.12.0
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -31,6 +31,7 @@ use Parsely\Content_Helper\Editor_Sidebar;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
+use Parsely\Endpoints\ContentSuggestions\Write_Title_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Endpoints\Referrers_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Related_API_Proxy;
@@ -40,6 +41,7 @@ use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
 use Parsely\RemoteAPI\Analytics_Post_Detail_API;
 use Parsely\RemoteAPI\Analytics_Posts_API;
+use Parsely\RemoteAPI\ContentSuggestions\Write_Title_API;
 use Parsely\RemoteAPI\Referrers_Post_Detail_API;
 use Parsely\RemoteAPI\Related_API;
 use Parsely\RemoteAPI\Remote_API_Cache;
@@ -60,7 +62,7 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.11.1';
+const PARSELY_VERSION = '3.12.0';
 const PARSELY_FILE    = __FILE__;
 
 require_once __DIR__ . '/src/class-parsely.php';
@@ -71,6 +73,7 @@ require_once __DIR__ . '/src/UI/class-admin-bar.php';
 require_once __DIR__ . '/src/UI/class-metadata-renderer.php';
 require_once __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
 require_once __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
+require_once __DIR__ . '/src/Telemetry/telemetry-init.php';
 
 require_once __DIR__ . '/src/class-metadata.php';
 require_once __DIR__ . '/src/Metadata/class-metadata-builder.php';
@@ -156,6 +159,7 @@ require_once __DIR__ . '/src/Endpoints/class-analytics-posts-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-referrers-post-detail-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-rest-metadata.php';
+require_once __DIR__ . '/src/Endpoints/content-suggestions/class-write-title-api-proxy.php';
 
 // RemoteAPI base classes.
 require_once __DIR__ . '/src/RemoteAPI/interface-cache.php';
@@ -163,6 +167,7 @@ require_once __DIR__ . '/src/RemoteAPI/interface-remote-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-remote-api-cache.php';
 require_once __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
 require_once __DIR__ . '/src/RemoteAPI/class-base-endpoint-remote.php';
+require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-content-suggestions-base-api.php';
 
 // RemoteAPI classes.
 require_once __DIR__ . '/src/RemoteAPI/class-analytics-post-detail-api.php';
@@ -170,6 +175,7 @@ require_once __DIR__ . '/src/RemoteAPI/class-analytics-posts-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-referrers-post-detail-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-related-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-validate-api.php';
+require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-write-title-api.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
@@ -204,6 +210,12 @@ function parsely_rest_api_init(): void {
 	parsely_run_rest_api_endpoint(
 		Referrers_Post_Detail_API::class,
 		Referrers_Post_Detail_API_Proxy::class,
+		$wp_cache
+	);
+
+	parsely_run_rest_api_endpoint(
+		Write_Title_API::class,
+		Write_Title_API_Proxy::class,
 		$wp_cache
 	);
 }

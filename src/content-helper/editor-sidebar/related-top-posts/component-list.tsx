@@ -23,6 +23,7 @@ import {
 } from './component-filter-selection-controls';
 import { RelatedTopPostListItem } from './component-list-item';
 import { RelatedTopPostsProvider } from './provider';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 
 const FETCH_RETRIES = 1;
 
@@ -72,6 +73,7 @@ export function RelatedTopPostList(
 			if ( PostFilterType.Author === type ) {
 				setFilter( { type, value: postData.authors[ 0 ] } );
 			}
+			Telemetry.trackEvent( 'related_top_posts_filter_type_changed', { filter_type: type } );
 		}
 	};
 

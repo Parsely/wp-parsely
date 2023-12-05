@@ -1,6 +1,6 @@
 # Parse.ly
 
-Stable tag: 3.11.1  
+Stable tag: 3.12.0  
 Requires at least: 5.2  
 Tested up to: 6.4  
 Requires PHP: 7.2  
@@ -45,7 +45,7 @@ The [Content Helper](https://docs.parse.ly/plugin-content-helper/) is a set of c
 
 #### The Parse.ly Recommendations Block
 
-The plugin includes a [Recommendations Block](https://docs.parse.ly/recommendations-block/) that displays a list of posts related to the currently viewed post/page. The Block is useful for showcasing related content to visitors, and it can also be used in Full Site Editing mode or as a [Block-based Widget](https://wordpress.org/documentation/article/block-based-widgets-editor/). 
+The plugin includes a [Recommendations Block](https://docs.parse.ly/recommendations-block/) that displays a list of posts related to the currently viewed post/page. The Block is useful for showcasing related content to visitors, and it can also be used in Site Editing mode or as a [Block-based Widget](https://wordpress.org/documentation/article/block-based-widgets-editor/). 
 
 #### Advanced integrations support
 
