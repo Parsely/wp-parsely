@@ -8,6 +8,7 @@ $html-font-size: 16px; // Used in functions.scss.
  */
 .settings_page_parsely,
 .wp-parsely-content-helper,
+.wp-parsely-excerpt-generator,
 #wp-parsely-dashboard-widget {
 
 	/** Layout section - base.scss. **/
@@ -46,4 +47,5 @@ $html-font-size: 16px; // Used in functions.scss.
 	--font-size--extra-large: 1.2rem;
 	--black: #000;
 	--sidebar-black: #1e1e1e;
+	--parsely-green: #5ba745;
 }
