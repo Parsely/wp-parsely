@@ -42,7 +42,7 @@
 		"js-cookie": "^3.0.5"
 	},
 	"devDependencies": {
-		"@testing-library/jest-dom": "^6.1.4",
+		"@testing-library/jest-dom": "^6.1.5",
 		"@testing-library/react": "^14.1.2",
 		"@types/jest": "^29.5.10",
 		"@types/jest-environment-puppeteer": "^5.0.6",
