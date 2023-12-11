@@ -73,7 +73,7 @@
 	<rule ref="WordPress.Files.FileName">
 		<exclude-pattern>tests/</exclude-pattern>
 		<properties>
-			<property name="custom_test_class_whitelist" type="array">
+			<property name="custom_test_classes" type="array">
 				<element value="TestCase"/>
 			</property>
 		</properties>
