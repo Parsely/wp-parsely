@@ -133,7 +133,7 @@ abstract class Base_API_Proxy {
 	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	protected function get_data( WP_REST_Request $request, bool $require_api_secret = true, string $param_item = null ) {
-		// Validate API key and secret.
+		// Validate Site ID and secret.
 		$validation = $this->validate_apikey_and_secret( $require_api_secret );
 		if ( is_wp_error( $validation ) ) {
 			return $validation;
@@ -162,7 +162,7 @@ abstract class Base_API_Proxy {
 	}
 
 	/**
-	 * Validates that the API key and secret are set.
+	 * Validates that the Site ID and secret are set.
 	 * If the API secret is not required, it will not be validated.
 	 *
 	 * @since 3.13.0
@@ -187,6 +187,7 @@ abstract class Base_API_Proxy {
 				array( 'status' => 403 )
 			);
 		}
+
 		return true;
 	}
 

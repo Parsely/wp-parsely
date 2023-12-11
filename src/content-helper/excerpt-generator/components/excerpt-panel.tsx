@@ -16,7 +16,13 @@ import { LeafIcon } from '../../common/icons/leaf-icon';
 import { ExcerptGeneratorProvider } from '../provider';
 import { ContentHelperError } from '../../common/content-helper-error';
 import { BetaBadge } from '../../common/components/beta-badge';
+import { GutenbergFunction } from '../../editor-sidebar/title-suggestions/types';
 
+/**
+ * The PostExcerptGenerator component displays the excerpt textarea and the Parse.ly AI controls.
+ *
+ * @since 3.13.0
+ */
 const PostExcerptGenerator = () => {
 	const [ isLoading, setLoading ] = useState<boolean>( false );
 	const [ generatedExcerpt, setGeneratedExcerpt ] = useState<string>( '' );
@@ -27,8 +33,7 @@ const PostExcerptGenerator = () => {
 
 	// Get the current excerpt, post content, and post title.
 	const { excerpt, postContent, postTitle } = useSelect( ( select ) => {
-		// @ts-ignore
-		const { getEditedPostAttribute, getEditedPostContent } = select( editorStore );
+		const { getEditedPostAttribute, getEditedPostContent } = select( editorStore ) as GutenbergFunction;
 
 		let content = getEditedPostContent();
 		if ( ! content ) {
@@ -66,6 +71,8 @@ const PostExcerptGenerator = () => {
 
 	/**
 	 * Generates an excerpt using the Parse.ly AI.
+	 *
+	 * @since 3.13.0
 	 */
 	const generateExcerpt = async () => {
 		setLoading( true );
@@ -81,6 +88,8 @@ const PostExcerptGenerator = () => {
 
 	/**
 	 * Accepts the generated excerpt and updates the post.
+	 *
+	 * @since 3.13.0
 	 */
 	const acceptGeneratedExcerpt = async () => {
 		await editPost( { excerpt: generatedExcerpt } );
@@ -89,6 +98,8 @@ const PostExcerptGenerator = () => {
 
 	/**
 	 * Discards the generated excerpt.
+	 *
+	 * @since 3.13.0
 	 */
 	const discardGeneratedExcerpt = async () => {
 		setGeneratedExcerpt( '' );
@@ -96,6 +107,8 @@ const PostExcerptGenerator = () => {
 
 	/**
 	 * Returns the value for the excerpt textarea.
+	 *
+	 * @since 3.13.0
 	 */
 	const getExcerptTextareaValue = (): string => {
 		if ( hasGeneratedExcerpt ) {
@@ -156,14 +169,14 @@ const PostExcerptGenerator = () => {
 								variant="secondary"
 								onClick={ acceptGeneratedExcerpt }
 							>
-								Accept
+								{ __( 'Accept', 'wp-parsely' ) }
 							</Button>
 							<Button
 								isDestructive={ true }
 								variant="secondary"
 								onClick={ discardGeneratedExcerpt }
 							>
-								Discard
+								{ __( 'Discard', 'wp-parsely' ) }
 							</Button>
 						</>
 					) : (
@@ -183,6 +196,10 @@ const PostExcerptGenerator = () => {
 	);
 };
 
+/**
+ * The ExcerptPanel component verifies that the current post type supports excerpts,
+ * and then renders the PostExcerptGenerator component.
+ */
 export const ExcerptPanel = () => {
 	return (
 		<PostTypeSupportCheck supportKeys="excerpt">

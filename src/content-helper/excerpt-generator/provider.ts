@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
@@ -9,12 +9,27 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { ContentHelperError, ContentHelperErrorCode } from '../common/content-helper-error';
 
+/**
+ * Specifies the form of the response returned by the
+ * `/content-suggestions/suggest-meta-description` WordPress REST API endpoint.
+ */
 interface ExcerptGeneratorApiResponse {
-	error?: Error;
-	data: string;
+ error?: Error;
+ data: string;
 }
 
+/**
+ * Provides the generate excerpt functionality to be used in other components.
+ */
 export class ExcerptGeneratorProvider {
+	/**
+	 * Generates an excerpt for a given post.
+	 *
+	 * @param {string} title   The title of the post.
+	 * @param {string} content The content of the post.
+	 *
+	 * @return {Promise<string>} The generated excerpt.
+	 */
 	public async generateExcerpt( title: string, content: string ): Promise<string> {
 		let response;
 		try {

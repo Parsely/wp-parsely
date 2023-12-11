@@ -1,3 +1,7 @@
+/**
+ * This global definition is used to declare global types for the plugin
+ * so that TypeScript knows about them.
+ */
 declare global {
 	interface Window {
 		// Jetpack Editor Initial State.

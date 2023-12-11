@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { addFilter, removeFilter } from '@wordpress/hooks';
 import { dispatch } from '@wordpress/data';
