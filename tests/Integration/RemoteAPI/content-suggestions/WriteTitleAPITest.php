@@ -83,6 +83,7 @@ final class WriteTitleAPITest extends RemoteAPITest {
 		}
 
 		$response = array(
+			'code'  => 200,
 			'titles' => array(
 				'Lorem Ipsum is a random title',
 				'Write better with Lorem Ipsum',
