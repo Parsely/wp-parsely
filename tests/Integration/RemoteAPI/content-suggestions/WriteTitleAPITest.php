@@ -96,7 +96,7 @@ final class WriteTitleAPITest extends RemoteAPITest {
 			'cookies'     => array(),
 			'filename'    => null,
 			'response'    => array(
-				'code'  => 200,
+				'code'    => 200,
 				'message' => 'OK',
 			),
 			'status_code' => 200,

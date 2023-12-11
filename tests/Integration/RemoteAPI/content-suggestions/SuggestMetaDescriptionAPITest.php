@@ -49,9 +49,9 @@ final class SuggestMetaDescriptionAPITest extends RemoteAPITest {
 	public function data_api_url(): iterable {
 		yield 'Basic (Expected data)' => array(
 			array(
-				'apikey'  => 'my-key',
-				'secret'  => 'my-secret',
-				'title' => 'This is a title',
+				'apikey' => 'my-key',
+				'secret' => 'my-secret',
+				'title'  => 'This is a title',
 			),
 			Parsely::PUBLIC_SUGGESTIONS_API_BASE_URL .
 			'/suggest-meta-description?apikey=my-key&secret=my-secret&title=This is a title',
@@ -112,19 +112,19 @@ final class SuggestMetaDescriptionAPITest extends RemoteAPITest {
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
 	 */
 	public function test_get_suggestion(): void {
-		$title = 'Lorem Ipsum is a random title';
+		$title   = 'Lorem Ipsum is a random title';
 		$content = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>';
 
 		// Mock API result.
-		add_filter('pre_http_request', array($this, 'mock_successful_suggest_meta_description_response'), 10, 3);
+		add_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_meta_description_response' ), 10, 3 );
 
 		// Test getting meta description.
-		$meta_description = self::$suggest_meta_description_api->get_suggestion($title, $content);
+		$meta_description = self::$suggest_meta_description_api->get_suggestion( $title, $content );
 
-		self::assertIsString($meta_description);
-		self::assertEquals('Lorem ipsum dolor sit amet, consectetur adipiscing elit.', $meta_description);
+		self::assertIsString( $meta_description );
+		self::assertEquals( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', $meta_description );
 
 		// Remove mock.
-		remove_filter('pre_http_request', array($this, 'mock_successful_suggest_meta_description_response'));
+		remove_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_meta_description_response' ) );
 	}
 }
