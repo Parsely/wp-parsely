@@ -1,10 +1,12 @@
 <?php
 /**
- * Remote API: Content Suggestions Suggest Meta Description  API
+ * Remote API: Content Suggestions Suggest Meta Description API
  *
  * @package Parsely
  * @since 3.13.0
  */
+
+declare(strict_types=1);
 
 namespace Parsely\RemoteAPI\ContentSuggestions;
 
@@ -38,7 +40,6 @@ class Suggest_Meta_Description_API extends Content_Suggestions_Base_API {
 	 *
 	 * @param string $title   The title of the content.
 	 * @param string $content The query arguments to send to the remote API.
-	 *
 	 * @return string|WP_Error The response from the remote API, or a WP_Error
 	 *                                object if the response is an error.
 	 */

@@ -128,10 +128,8 @@ abstract class Base_API_Proxy {
 	 * Cached "proxy" to the endpoint.
 	 *
 	 * @param WP_REST_Request $request            The request object.
-	 * @param bool            $require_api_secret Specifies if the API Secret is
-	 *                                            required.
-	 * @param string|null     $param_item         The param element to use to
-	 *                                       get the items.
+	 * @param bool            $require_api_secret Specifies if the API Secret is required.
+	 * @param string|null     $param_item         The param element to use to get the items.
 	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	protected function get_data( WP_REST_Request $request, bool $require_api_secret = true, string $param_item = null ) {

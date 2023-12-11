@@ -1,5 +1,5 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { PostTypeSupportCheck, store as editorStore } from '@wordpress/editor';

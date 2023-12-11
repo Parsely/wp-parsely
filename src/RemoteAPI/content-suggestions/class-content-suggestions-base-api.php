@@ -47,9 +47,10 @@ class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 	 * The response is either a WP_Error object in case of an error, or a decoded JSON object in case of a
 	 * successful request.
 	 *
+	 * @since 3.13.0
+	 *
 	 * @param array<string|int|bool> $query An associative array containing the query parameters for the API request.
 	 * @param array<string|int|bool> $body An associative array containing the body parameters for the API request.
-	 *
 	 * @return WP_Error|object Returns a WP_Error object in case of an error, or a decoded JSON object
 	 *                         case of a successful request.
 	 */
