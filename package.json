@@ -53,7 +53,7 @@
 		"@types/wordpress__editor": "^13.6.7",
 		"@types/wordpress__plugins": "^3.0.3",
 		"@types/wordpress__wordcount": "^2.4.5",
-		"@typescript-eslint/eslint-plugin": "^6.13.2",
+		"@typescript-eslint/eslint-plugin": "^6.14.0",
 		"@wordpress/api-fetch": "^6.38.0",
 		"@wordpress/babel-preset-default": "^7.31.0",
 		"@wordpress/block-editor": "^12.15.0",
@@ -78,7 +78,7 @@
 		"concurrently": "^8.2.2",
 		"eslint-plugin-jest": "^27.6.0",
 		"husky": "^8.0.3",
-		"prettier": "^3.1.0",
+		"prettier": "^3.1.1",
 		"ts-loader": "^9.5.1",
 		"typescript": "^5.3.3"
 	},
