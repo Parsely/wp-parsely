@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Meta_Description_API;
 use Parsely\RemoteAPI\ContentSuggestions\Write_Title_API;
 use Parsely\Tests\Integration\RemoteAPITest;
 

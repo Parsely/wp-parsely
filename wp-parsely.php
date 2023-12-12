@@ -179,8 +179,8 @@ require_once __DIR__ . '/src/RemoteAPI/class-analytics-posts-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-referrers-post-detail-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-related-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-validate-api.php';
-require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-write-title-api.php';
 require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-meta-description-api.php';
+require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-write-title-api.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**

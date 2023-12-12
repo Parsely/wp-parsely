@@ -12,6 +12,8 @@ import { ContentHelperError, ContentHelperErrorCode } from '../common/content-he
 /**
  * Specifies the form of the response returned by the
  * `/content-suggestions/suggest-meta-description` WordPress REST API endpoint.
+ *
+ * @since 3.13.0
  */
 interface ExcerptGeneratorApiResponse {
  error?: Error;
@@ -20,6 +22,8 @@ interface ExcerptGeneratorApiResponse {
 
 /**
  * Provides the generate excerpt functionality to be used in other components.
+ *
+ * @since 3.13.0
  */
 export class ExcerptGeneratorProvider {
 	/**

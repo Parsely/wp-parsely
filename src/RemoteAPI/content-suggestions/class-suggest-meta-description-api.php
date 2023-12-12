@@ -27,7 +27,7 @@ class Suggest_Meta_Description_API extends Content_Suggestions_Base_API {
 	/**
 	 * Indicates whether the endpoint is public or protected behind permissions.
 	 *
-	 * @since 3.12.0
+	 * @since 3.13.0
 	 * @var bool
 	 */
 	protected $is_public_endpoint = false;

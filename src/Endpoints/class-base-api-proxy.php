@@ -168,7 +168,6 @@ abstract class Base_API_Proxy {
 	 * @since 3.13.0
 	 *
 	 * @param bool $require_api_secret Specifies if the API Secret is required.
-	 *
 	 * @return WP_Error|bool
 	 */
 	protected function validate_apikey_and_secret( bool $require_api_secret = true ) {

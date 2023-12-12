@@ -199,6 +199,8 @@ const PostExcerptGenerator = () => {
 /**
  * The ExcerptPanel component verifies that the current post type supports excerpts,
  * and then renders the PostExcerptGenerator component.
+ *
+ * @since 3.13.0
  */
 export const ExcerptPanel = () => {
 	return (

@@ -24,6 +24,7 @@ type BetaBadgeProps = {
  * The BetaBadge component displays a badge with the specified text, color, and size.
  *
  * @param {BetaBadgeProps} props - The properties for the BetaBadge component.
+
  * @return {JSX.Element} The BetaBadge component.
  */
 export const BetaBadge = ( {
