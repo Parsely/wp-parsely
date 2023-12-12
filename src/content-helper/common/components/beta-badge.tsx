@@ -1,4 +1,5 @@
 import '../css/common.scss';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Properties for the BetaBadge component.
@@ -23,12 +24,14 @@ type BetaBadgeProps = {
 /**
  * The BetaBadge component displays a badge with the specified text, color, and size.
  *
+ * @since 3.13.0
+ *
  * @param {BetaBadgeProps} props - The properties for the BetaBadge component.
-
+ *
  * @return {JSX.Element} The BetaBadge component.
  */
 export const BetaBadge = ( {
-	text = 'Beta',
+	text = __( 'Beta', 'wp-parsely' ),
 	color = 'var(--parsely-green)',
 	size = '0.75rem',
 }: BetaBadgeProps ): JSX.Element => {

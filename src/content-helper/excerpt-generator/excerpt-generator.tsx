@@ -13,6 +13,15 @@ import { ExcerptPanel } from './components/excerpt-panel';
 // TODO: Get the plugin ID from the editor sidebar file.
 const PARSELY_SIDEBAR_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
+/**
+ * The ExcerptGenerator function registers the custom excerpt panel and removes
+ * the default excerpt panel.
+ *
+ * @since 3.13.0
+ *
+ * @param {never}  settings Settings from the plugins.registerPlugin filter. Not used.
+ * @param {string} name     The plugin name.
+ */
 const ExcerptGenerator = ( settings: never, name: string ) => {
 	if ( name !== PARSELY_SIDEBAR_PLUGIN_ID ) {
 		return settings;
@@ -41,4 +50,6 @@ const ExcerptGenerator = ( settings: never, name: string ) => {
 	return settings;
 };
 
+// Add the ExcerptGenerator function to the plugins.registerPlugin filter.
+// Priority is set to 1000 to ensure that the function runs as late as possible.
 addFilter( 'plugins.registerPlugin', 'wp-parsely-excerpt-generator', ExcerptGenerator, 1000 );
