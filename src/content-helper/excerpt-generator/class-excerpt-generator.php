@@ -66,6 +66,33 @@ class Excerpt_Generator extends Content_Helper_Feature {
 	}
 
 	/**
+	 * Returns whether the feature can be enabled.
+	 *
+	 * It checks if the filters and conditions of the feature can be met, by using the parent method and also checking
+	 * if the default excerpt generator should be disabled.
+	 *
+	 * @since 3.13.0
+	 *
+	 * @param bool ...$conditions Conditions that need to be met besides filters
+	 *                             for the function to return true.
+	 * @return bool Whether the feature can be enabled.
+	 */
+	protected function can_enable_feature( bool ...$conditions ): bool {
+		/**
+		 * Filter to enable/disable the default excerpt generator.
+		 *
+		 * This filter can be used to enable the default excerpt generator (or a different custom one) instead of the
+		 * one provided by the Content Helper plugin.
+		 *
+		 * @since 3.13.0
+		 *
+		 * @param bool $use_default_excerpt Whether to use the default excerpt generator. Default is false.
+		 */
+		$use_default_excerpt = apply_filters( 'wp_parsely_use_default_excerpt', false );
+		return ! $use_default_excerpt && parent::can_enable_feature( ...$conditions );
+	}
+
+	/**
 	 * Inserts Content Helper Excerpt Generator inline scripts.
 	 *
 	 * @since 3.13.0
