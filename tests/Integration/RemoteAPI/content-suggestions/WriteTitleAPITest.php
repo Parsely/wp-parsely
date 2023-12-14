@@ -84,9 +84,9 @@ final class WriteTitleAPITest extends RemoteAPITest {
 
 		$response = array(
 			'titles' => array(
-				'Lorem Ipsum is a random title',
-				'Write better with Lorem Ipsum',
-				'Lorem Ispsum? Dolor sit amet!',
+				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+				'Donec maximus metus sed urna maximus, et malesuada dui placerat.',
+				'Donec risus dui, dictum nec interdum eu, malesuada non diam.',
 			),
 		);
 
@@ -94,7 +94,10 @@ final class WriteTitleAPITest extends RemoteAPITest {
 			'headers'     => array(),
 			'cookies'     => array(),
 			'filename'    => null,
-			'response'    => $response,
+			'response'    => array(
+				'code'    => 200,
+				'message' => 'OK',
+			),
 			'status_code' => 200,
 			'success'     => true,
 			'body'        => $this->wp_json_encode( $response ),

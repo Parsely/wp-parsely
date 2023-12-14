@@ -28,10 +28,11 @@ class Write_Title_API extends Content_Suggestions_Base_API {
 	 * @since 3.12.0
 	 * @var bool
 	 */
-	protected $is_public_endpoint = false;
+	protected $is_public_endpoint = true;
 
 	/**
-	 * Gets the URL for the Parse.ly API credentials validation endpoint.
+	 * Generates titles for a given content using the Parse.ly
+	 * Content Suggestion API.
 	 *
 	 * @since 3.12.0
 	 *
@@ -47,39 +48,13 @@ class Write_Title_API extends Content_Suggestions_Base_API {
 			'limit'   => $limit,
 		);
 
-		$full_api_url = $this->get_api_url( $query );
+		$decoded = $this->post_request( $query, array( 'text' => $content ) );
 
-		/**
-		 * GET request options.
-		 *
-		 * @var WP_HTTP_Request_Args $options
-		 */
-		$options         = $this->get_request_options();
-		$options['body'] = wp_json_encode( array( 'text' => $content ) );
-
-		if ( false === $options['body'] ) {
-			return new WP_Error( 400, __( 'Unable to encode request body', 'wp-parsely' ) );
+		if ( is_wp_error( $decoded ) ) {
+			return $decoded;
 		}
 
-		$response = wp_safe_remote_post( $full_api_url, $options );
-		if ( is_wp_error( $response ) ) {
-			return $response;
-		}
-
-		$body    = wp_remote_retrieve_body( $response );
-		$decoded = json_decode( $body );
-
-		if ( ! is_object( $decoded ) ) {
-			return new WP_Error( 400, __( 'Unable to decode upstream API response', 'wp-parsely' ) );
-		}
-
-		if ( ! property_exists( $decoded, 'titles' ) ) {
-			$error = $response['response'];
-
-			return new WP_Error( $error['code'], $error['message'] );
-		}
-
-		if ( ! is_array( $decoded->titles ) ) {
+		if ( ! property_exists( $decoded, 'titles' ) || ! is_array( $decoded->titles ) ) {
 			return new WP_Error( 400, __( 'Unable to parse titles from upstream API', 'wp-parsely' ) );
 		}
 
