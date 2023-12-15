@@ -18,7 +18,7 @@ type BetaBadgeProps = {
 	/**
 	 * The size of the badge text. If not provided, defaults to '0.75rem'.
 	 */
-	size?: string;
+	fontSize?: string;
 };
 
 /**
@@ -33,11 +33,11 @@ type BetaBadgeProps = {
 export const BetaBadge = ( {
 	text = __( 'Beta', 'wp-parsely' ),
 	color = 'var(--parsely-green)',
-	size = '0.75rem',
+	fontSize = '0.75rem',
 }: BetaBadgeProps ): JSX.Element => {
 	const badgeStyle = {
 		backgroundColor: color,
-		fontSize: size,
+		fontSize,
 	};
 
 	return (

@@ -36,15 +36,17 @@ class Write_Title_API extends Content_Suggestions_Base_API {
 	 *
 	 * @since 3.12.0
 	 *
-	 * @param  string $content The query arguments to send to the remote API.
-	 * @param  int    $limit The query arguments to send to the remote API.
+	 * @param  string $content The content to generate titles for.
+	 * @param  int    $limit The number of titles to generate.
+	 * @param  string $persona The persona to use when generating titles.
+	 * @param  string $tone The tone to use when generating titles.
 	 * @return array<string>|WP_Error The response from the remote API, or a WP_Error
 	 *                                object if the response is an error.
 	 */
-	public function get_titles( string $content, int $limit ) {
+	public function get_titles( string $content, int $limit, string $persona = 'journalist', string $tone = 'neutral' ) {
 		$query = array(
-			'persona' => 'journalist',
-			'style'   => 'neutral',
+			'persona' => $persona,
+			'style'   => $tone,
 			'limit'   => $limit,
 		);
 

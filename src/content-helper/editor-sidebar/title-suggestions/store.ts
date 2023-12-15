@@ -2,6 +2,8 @@
  * WordPress dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
+import { ToneProp } from '../../common/components/tone-selector';
+import { PersonaProp } from '../../common/components/persona-selector';
 
 // Unique identifier for each title in the store
 let titleID = 0;
@@ -18,6 +20,8 @@ interface TitlesData {
 }
 interface TitlesState {
 	isLoading: boolean;
+	tone: ToneProp | undefined,
+	persona: PersonaProp | undefined,
 	postTitles: TitlesData;
 	headings: TitlesData;
 }
@@ -68,12 +72,24 @@ interface SetOriginalTitleAction {
 	title: string|undefined;
 }
 
+interface SetToneAction {
+	type: 'SET_TONE';
+	tone: ToneProp;
+}
+
+interface SetPersonaAction {
+	type: 'SET_PERSONA';
+	persona: PersonaProp;
+}
+
 type ActionTypes = SetLoadingAction | SetTitlesAction |
 	RemoveTitleAction | SetAcceptedTitleAction | PinTitleAction | UnpinTitleAction |
-	SetOriginalTitleAction;
+	SetOriginalTitleAction | SetToneAction | SetPersonaAction;
 
 const defaultState: TitlesState = {
 	isLoading: false,
+	tone: undefined,
+	persona: undefined,
 	postTitles: {
 		titles: [],
 	},
@@ -166,6 +182,16 @@ export const TitleStore = createReduxStore( 'wp-parsely/write-titles', {
 						originalTitle: action.title,
 					},
 				};
+			case 'SET_TONE':
+				return {
+					...state,
+					tone: action.tone,
+				};
+			case 'SET_PERSONA':
+				return {
+					...state,
+					persona: action.persona,
+				};
 			default:
 				return state;
 		}
@@ -219,6 +245,18 @@ export const TitleStore = createReduxStore( 'wp-parsely/write-titles', {
 				title,
 			};
 		},
+		setTone( tone: ToneProp ): SetToneAction {
+			return {
+				type: 'SET_TONE',
+				tone,
+			};
+		},
+		setPersona( persona: PersonaProp ): SetPersonaAction {
+			return {
+				type: 'SET_PERSONA',
+				persona,
+			};
+		},
 	},
 	selectors: {
 		getState( state: TitlesState ): TitlesState {
@@ -251,6 +289,12 @@ export const TitleStore = createReduxStore( 'wp-parsely/write-titles', {
 				};
 			}
 			return undefined;
+		},
+		getTone( state: TitlesState ): ToneProp | undefined {
+			return state.tone;
+		},
+		getPersona( state: TitlesState ): PersonaProp | undefined {
+			return state.persona;
 		},
 	},
 } );
