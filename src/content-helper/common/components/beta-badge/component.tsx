@@ -1,4 +1,4 @@
-import '../css/common.scss';
+import '../../css/common.scss';
 import { __ } from '@wordpress/i18n';
 
 /**
