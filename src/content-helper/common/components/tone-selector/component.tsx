@@ -2,8 +2,9 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Disabled, DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
+import { Disabled, DropdownMenu, MenuGroup, MenuItem, TextControl } from '@wordpress/components';
 import { Icon, chevronRight, megaphone } from '@wordpress/icons';
+import { useState } from '@wordpress/element';
 
 /**
  * List of the available tones.
@@ -50,22 +51,83 @@ export const PARSELY_TONES = {
 		label: __( 'Analytical', 'wp-parsely' ),
 		emoji: '🤓',
 	},
+	custom: {
+		label: __( 'Use a custom tone', 'wp-parsely' ),
+		emoji: '🔧',
+	},
 };
 
-export type ToneProp = keyof typeof PARSELY_TONES;
+export type ToneProp = keyof typeof PARSELY_TONES | string;
+type FixedToneProp = keyof typeof PARSELY_TONES;
 
 const TONE_LIST = Object.keys( PARSELY_TONES ) as ToneProp[];
 
 const DEFAULT_TONE = 'neutral';
 
 /**
+ * Returns the label for a given tone.
+ * @param {ToneProp} tone
+ */
+export const getLabel = ( tone: ToneProp ): string => {
+	if ( tone === 'custom' || tone === '' ) {
+		return PARSELY_TONES.custom.label;
+	}
+
+	if ( isCustomTone( tone ) ) {
+		return tone;
+	}
+
+	return PARSELY_TONES[ tone as FixedToneProp ].label;
+};
+
+/**
+ * Returns whether a given tone is a custom tone.
+ * @param {ToneProp} tone
+ */
+export const isCustomTone = ( tone: ToneProp ): boolean => {
+	return ! TONE_LIST.includes( tone ) || tone === 'custom';
+};
+
+/**
+ * Properties for the CustomTone component.
+ */
+type CustomToneProps = {
+	value: string,
+	onChange: ( tone: string ) => void
+}
+
+/**
+ * Custom Tone component.
+ *
+ * Allows the user to enter a custom tone.
+ *
+ * @param {CustomToneProps} props - The properties for the CustomTone component.
+ */
+const CustomTone = ( { value, onChange }: CustomToneProps ): JSX.Element => {
+	const [ customTone, setCustomTone ] = useState<string>( '' );
+	return (
+		<div className="parsely-tone-selector-custom">
+			<TextControl
+				value={ customTone || value }
+				onChange={ ( newTone ) => {
+					onChange( newTone );
+					setCustomTone( newTone );
+				} }
+				help={ __( 'Enter a custom tone', 'wp-parsely' ) }
+			/>
+		</div>
+	);
+};
+
+/**
  * Properties for the ToneSelector component.
  */
 type ToneSelectorProps = {
-	tone?: ToneProp;
-	onChange: ( tone: ToneProp ) => void;
+	tone?: ToneProp | string;
+	onChange: ( tone: ToneProp | string ) => void;
 	disabled?: boolean;
 	label?: string;
+	allowCustom?: boolean;
 };
 
 /**
@@ -80,6 +142,7 @@ export const ToneSelector = ( {
 	label = __( 'Select a tone', 'wp-parsely' ),
 	onChange,
 	disabled = false,
+	allowCustom = false,
 }: ToneSelectorProps ): JSX.Element => {
 	return (
 		<Disabled isDisabled={ disabled }>
@@ -105,7 +168,12 @@ export const ToneSelector = ( {
 					<MenuGroup label={ __( 'Select a tone', 'wp-parsely' ) }>
 						<>
 							{ TONE_LIST.map( ( singleTone ) => {
-								const toneData = PARSELY_TONES[ singleTone ];
+								if ( ! allowCustom && singleTone === 'custom' ) {
+									return null;
+								}
+
+								const toneData = PARSELY_TONES[ singleTone as FixedToneProp ];
+
 								return (
 									<MenuItem
 										key={ singleTone }
@@ -125,6 +193,21 @@ export const ToneSelector = ( {
 					</MenuGroup>
 				) }
 			</DropdownMenu>
+			{
+				allowCustom && isCustomTone( tone ) && (
+					<CustomTone
+						onChange={ ( currentTone ) => {
+							if ( '' === currentTone ) {
+								onChange( 'custom' );
+								return;
+							}
+
+							onChange( currentTone );
+						}	}
+						value={ tone === 'custom' ? '' : tone }
+					/>
+				)
+			}
 		</Disabled>
 	);
 };

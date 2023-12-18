@@ -329,6 +329,10 @@
 
 	.parsely-write-titles-text {
 		margin-bottom: to_rem(10px);
+
+		strong {
+			text-transform: lowercase;
+		}
 	}
 
 	// Generate Titles button.

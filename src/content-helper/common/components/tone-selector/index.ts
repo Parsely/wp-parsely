@@ -1,1 +1,6 @@
-export { ToneSelector, ToneProp, PARSELY_TONES } from './component';
+export {
+	ToneSelector,
+	ToneProp,
+	getLabel,
+	PARSELY_TONES,
+} from './component';

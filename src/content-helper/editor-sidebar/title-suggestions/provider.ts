@@ -11,8 +11,8 @@ import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../../common/content-helper-error';
-import { PARSELY_TONES, ToneProp } from '../../common/components/tone-selector';
-import { PARSELY_PERSONAS, PersonaProp } from '../../common/components/persona-selector';
+import { getLabel as getLabelForTone, ToneProp } from '../../common/components/tone-selector';
+import { getLabel as getLabelForPersona, PersonaProp } from '../../common/components/persona-selector';
 
 /**
  * Specifies the form of the response returned by the
@@ -48,8 +48,8 @@ export class WriteTitleProvider {
 		// We need to convert the tone and persona to their human-readable
 		// counterparts before sending them to the API, as they are used to
 		// build the AI prompt.
-		const humanReadableTone = PARSELY_TONES[ tone ]?.label ?? tone;
-		const humanReadablePersona = PARSELY_PERSONAS[ persona ]?.label ?? persona;
+		const humanReadableTone = getLabelForTone( tone ) ?? tone;
+		const humanReadablePersona = getLabelForPersona( persona ) ?? persona;
 
 		try {
 			response = await apiFetch<WriteTitleApiResponse>( {

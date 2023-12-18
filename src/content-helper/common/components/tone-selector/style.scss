@@ -24,6 +24,10 @@
 	.parsely-tone-selector-label {
 		flex-grow: 2;
 		text-align: left;
+
+		&::first-letter {
+			text-transform: uppercase;
+		}
 	}
 }
 

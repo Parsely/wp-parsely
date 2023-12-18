@@ -20,7 +20,7 @@ interface TitlesData {
 }
 interface TitlesState {
 	isLoading: boolean;
-	tone: ToneProp | undefined,
+	tone: ToneProp | string | undefined,
 	persona: PersonaProp | undefined,
 	postTitles: TitlesData;
 	headings: TitlesData;
@@ -245,13 +245,13 @@ export const TitleStore = createReduxStore( 'wp-parsely/write-titles', {
 				title,
 			};
 		},
-		setTone( tone: ToneProp ): SetToneAction {
+		setTone( tone: ToneProp | string ): SetToneAction {
 			return {
 				type: 'SET_TONE',
 				tone,
 			};
 		},
-		setPersona( persona: PersonaProp ): SetPersonaAction {
+		setPersona( persona: PersonaProp | string ): SetPersonaAction {
 			return {
 				type: 'SET_PERSONA',
 				persona,

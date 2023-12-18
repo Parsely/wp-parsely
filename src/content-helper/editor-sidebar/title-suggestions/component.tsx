@@ -16,8 +16,8 @@ import { TitleStore, TitleType } from './store';
 import { GutenbergFunction } from './types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { TitleSuggestionsSettings } from './component-settings';
-import { PARSELY_TONES, ToneProp } from '../../common/components/tone-selector';
-import { PARSELY_PERSONAS, PersonaProp } from '../../common/components/persona-selector';
+import { ToneProp, getLabel as getLabelForTone } from '../../common/components/tone-selector';
+import { PersonaProp, getLabel as getLabelForPersona } from '../../common/components/persona-selector';
 
 /**
  * Title Suggestions Panel.
@@ -74,8 +74,8 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		return getEditedPostAttribute( 'title' );
 	}, [] );
 
-	const toneLabel = tone ? PARSELY_TONES[ tone ].label : __( 'Neural', 'wp-parsely' );
-	const personaLabel = persona ? PARSELY_PERSONAS[ persona ].label : __( 'Journalist', 'wp-parsely' );
+	const toneLabel = tone ? getLabelForTone( tone ) : __( 'Neural', 'wp-parsely' );
+	const personaLabel = persona ? getLabelForPersona( persona ) : __( 'Journalist', 'wp-parsely' );
 
 	// This state stores the tone and persona label to be displayed when the list
 	// of generated titles is shown to the user.

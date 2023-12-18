@@ -1,1 +1,6 @@
-export { PersonaSelector, PersonaProp, PARSELY_PERSONAS } from './component';
+export {
+	PersonaSelector,
+	PersonaProp,
+	getLabel,
+	PARSELY_PERSONAS,
+} from './component';
