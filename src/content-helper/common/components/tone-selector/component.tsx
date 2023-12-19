@@ -143,6 +143,7 @@ const CustomTone = ( { value, onChange }: CustomToneProps ): JSX.Element => {
 type ToneSelectorProps = {
 	tone?: ToneProp | string;
 	onChange: ( tone: ToneProp | string ) => void;
+	onDropdownChange?: ( tone: ToneProp ) => void;
 	disabled?: boolean;
 	label?: string;
 	allowCustom?: boolean;
@@ -161,6 +162,7 @@ export const ToneSelector = ( {
 	tone = DEFAULT_TONE,
 	label = __( 'Select a tone', 'wp-parsely' ),
 	onChange,
+	onDropdownChange,
 	disabled = false,
 	allowCustom = false,
 }: ToneSelectorProps ): JSX.Element => {
@@ -201,6 +203,7 @@ export const ToneSelector = ( {
 										className={ singleTone === tone ? 'is-selected' : '' }
 										role="menuitemradio"
 										onClick={ () => {
+											onDropdownChange?.( singleTone as FixedToneProp );
 											onChange( singleTone );
 											onClose();
 										} }
