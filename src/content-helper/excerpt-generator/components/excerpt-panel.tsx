@@ -16,7 +16,7 @@ import { LeafIcon } from '../../common/icons/leaf-icon';
 import { ExcerptGeneratorProvider } from '../provider';
 import { ContentHelperError } from '../../common/content-helper-error';
 import { BetaBadge } from '../../common/components/beta-badge';
-import { GutenbergFunction } from '../../editor-sidebar/title-suggestions/types';
+import { GutenbergFunction } from '../../../@types/gutenberg/types';
 
 /**
  * The PostExcerptGenerator component displays the excerpt textarea and the Parse.ly AI controls.

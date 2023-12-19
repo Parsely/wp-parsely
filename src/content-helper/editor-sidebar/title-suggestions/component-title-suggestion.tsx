@@ -10,7 +10,7 @@ import { check, closeSmall, pin, undo } from '@wordpress/icons';
  * Internal dependencies
  */
 import { Title, TitleStore, TitleType } from './store';
-import { GutenbergFunction } from './types';
+import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 
 /**

@@ -14,6 +14,8 @@ import { useState } from '@wordpress/element';
 /**
  * List of the available personas.
  * Each persona has a label and an emoji.
+ *
+ * @since 3.13.0
  */
 export const PARSELY_PERSONAS = {
 	journalist: {
@@ -70,19 +72,13 @@ const PERSONAS_LIST = Object.keys( PARSELY_PERSONAS ) as PersonaProp[];
 const DEFAULT_PERSONA = 'journalist';
 
 /**
- * Properties for the PersonaSelector component.
- */
-type PersonaSelectorProps = {
-	persona?: PersonaProp;
-	onChange: ( persona: PersonaProp ) => void;
-	disabled?: boolean;
-	label?: string;
-	allowCustom?: boolean;
-};
-
-/**
  * Returns the label for a given persona.
+ *
+ * @since 3.13.0
+ *
  * @param {PersonaProp} persona
+ *
+ * @return {string} The label for the given persona.
  */
 export const getLabel = ( persona: PersonaProp ): string => {
 	if ( persona === 'custom' || persona === '' ) {
@@ -98,7 +94,12 @@ export const getLabel = ( persona: PersonaProp ): string => {
 
 /**
  * Returns whether a given persona is a custom persona.
+ *
+ * @since 3.13.0
+ *
  * @param {PersonaProp} persona
+ *
+ * @return {boolean} Whether the given persona is a custom persona.
  */
 export const isCustomPersona = ( persona: PersonaProp ): boolean => {
 	return ! PERSONAS_LIST.includes( persona ) || persona === 'custom';
@@ -106,6 +107,8 @@ export const isCustomPersona = ( persona: PersonaProp ): boolean => {
 
 /**
  * Properties for the CustomPersona component.
+ *
+ * @since 3.13.0
  */
 type CustomPersonaProps = {
 	value: string,
@@ -116,6 +119,8 @@ type CustomPersonaProps = {
  * CustomPersona component.
  *
  * Allows the user to enter a custom persona.
+ *
+ * @since 3.13.0
  *
  * @param {CustomPersonaProps} props - The properties for the CustomPersona component.
  */
@@ -136,9 +141,24 @@ const CustomPersona = ( { value, onChange }: CustomPersonaProps ): JSX.Element =
 };
 
 /**
+ * Properties for the PersonaSelector component.
+ *
+ * @since 3.13.0
+ */
+type PersonaSelectorProps = {
+	persona?: PersonaProp;
+	onChange: ( persona: PersonaProp ) => void;
+	disabled?: boolean;
+	label?: string;
+	allowCustom?: boolean;
+};
+
+/**
  * Persona Selector dropdown menu.
  *
  * Allows the user to select the persona for their AI generated content.
+ *
+ * @since 3.13.0
  *
  * @param {PersonaSelectorProps} props - The properties for the PersonaSelector component.
  */

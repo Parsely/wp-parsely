@@ -13,11 +13,11 @@ import { ContentHelperError } from '../../common/content-helper-error';
 import { TitleSuggestion } from './component-title-suggestion';
 import { WriteTitleProvider } from './provider';
 import { TitleStore, TitleType } from './store';
-import { GutenbergFunction } from './types';
+import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { TitleSuggestionsSettings } from './component-settings';
-import { ToneProp, getLabel as getLabelForTone } from '../../common/components/tone-selector';
-import { PersonaProp, getLabel as getLabelForPersona } from '../../common/components/persona-selector';
+import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
+import { PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
 
 /**
  * Title Suggestions Panel.
@@ -74,8 +74,8 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		return getEditedPostAttribute( 'title' );
 	}, [] );
 
-	const toneLabel = tone ? getLabelForTone( tone ) : __( 'Neural', 'wp-parsely' );
-	const personaLabel = persona ? getLabelForPersona( persona ) : __( 'Journalist', 'wp-parsely' );
+	const toneLabel = tone ? getToneLabel( tone ) : __( 'Neural', 'wp-parsely' );
+	const personaLabel = persona ? getPersonaLabel( persona ) : __( 'Journalist', 'wp-parsely' );
 
 	// This state stores the tone and persona label to be displayed when the list
 	// of generated titles is shown to the user.

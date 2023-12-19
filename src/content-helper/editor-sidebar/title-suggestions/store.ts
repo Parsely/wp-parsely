@@ -20,7 +20,7 @@ interface TitlesData {
 }
 interface TitlesState {
 	isLoading: boolean;
-	tone: ToneProp | string | undefined,
+	tone: ToneProp | undefined,
 	persona: PersonaProp | undefined,
 	postTitles: TitlesData;
 	headings: TitlesData;
