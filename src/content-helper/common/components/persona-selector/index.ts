@@ -1,6 +1,6 @@
 export {
 	PersonaSelector,
 	PersonaProp,
-	getLabel,
+	getLabel as getPersonaLabel,
 	PARSELY_PERSONAS,
 } from './component';

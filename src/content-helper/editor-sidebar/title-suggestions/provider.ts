@@ -11,8 +11,8 @@ import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../../common/content-helper-error';
-import { getLabel as getLabelForTone, ToneProp } from '../../common/components/tone-selector';
-import { getLabel as getLabelForPersona, PersonaProp } from '../../common/components/persona-selector';
+import { getToneLabel, ToneProp } from '../../common/components/tone-selector';
+import { getPersonaLabel, PersonaProp } from '../../common/components/persona-selector';
 
 /**
  * Specifies the form of the response returned by the
@@ -37,27 +37,21 @@ export class WriteTitleProvider {
 	 *
 	 * @param {string }     content The content to generate titles for.
 	 * @param {number}      limit   The number of titles to return. Defaults to 3.
-	 * @param {ToneProp}    tone    The tone to generate titles for.
-	 * @param {PersonaProp} persona The persona to generate titles for.
+	 * @param {ToneProp}    tone    The tone to use when generating the titles.
+	 * @param {PersonaProp} persona The persona to use when generating the titles.
 	 *
 	 * @return { Promise<string[]>} The resulting list of titles.
 	 */
 	public async generateTitles( content: string, limit: number = 3, tone: ToneProp, persona: PersonaProp ): Promise<string[]> {
 		let response;
 
-		// We need to convert the tone and persona to their human-readable
-		// counterparts before sending them to the API, as they are used to
-		// build the AI prompt.
-		const humanReadableTone = getLabelForTone( tone ) ?? tone;
-		const humanReadablePersona = getLabelForPersona( persona ) ?? persona;
-
 		try {
 			response = await apiFetch<WriteTitleApiResponse>( {
 				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/write-title', {
 					content,
 					limit,
-					tone: humanReadableTone,
-					persona: humanReadablePersona,
+					tone: getToneLabel( tone ),
+					persona: getPersonaLabel( persona ),
 				} ),
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any

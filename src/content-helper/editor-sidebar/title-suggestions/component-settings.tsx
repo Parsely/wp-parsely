@@ -9,10 +9,15 @@ import { useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { ToneSelector, ToneProp, getLabel as getLabelForTone } from '../../common/components/tone-selector';
-import { PersonaSelector, PersonaProp, getLabel as getLabelForPersona } from '../../common/components/persona-selector';
+import { ToneSelector, ToneProp, getToneLabel } from '../../common/components/tone-selector';
+import { PersonaSelector, PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 
+/**
+ * Props for the Title Suggestions Settings component.
+ *
+ * @since 3.13.0
+ */
 type TitleSuggestionsSettingsProps = {
 	tone?: ToneProp,
 	persona?: PersonaProp,
@@ -23,6 +28,8 @@ type TitleSuggestionsSettingsProps = {
 
 /**
  * Component that renders the settings for the Title Suggestions.
+ *
+ * @since 3.13.0
  *
  * @param {TitleSuggestionsSettingsProps} props The component props.
  */
@@ -60,14 +67,14 @@ export const TitleSuggestionsSettings = ( {
 				<div className="parsely-write-titles-settings-body">
 					<ToneSelector
 						tone={ tone }
-						label={ tone ? getLabelForTone( tone ) : __( 'Select a tone', 'wp-parsely' ) }
+						label={ tone ? getToneLabel( tone ) : __( 'Select a tone', 'wp-parsely' ) }
 						onChange={ ( selectedTone ) => onToneChange( selectedTone ) }
 						disabled={ isLoading }
 						allowCustom
 					/>
 					<PersonaSelector
 						persona={ persona }
-						label={ persona ? getLabelForPersona( persona ) : __( 'Select a persona', 'wp-parsely' ) }
+						label={ persona ? getPersonaLabel( persona ) : __( 'Select a persona', 'wp-parsely' ) }
 						onChange={ ( selectedPersona ) => onPersonaChange( selectedPersona ) }
 						disabled={ isLoading }
 						allowCustom

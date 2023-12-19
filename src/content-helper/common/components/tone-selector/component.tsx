@@ -9,6 +9,8 @@ import { useState } from '@wordpress/element';
 /**
  * List of the available tones.
  * Each tone has a label and an emoji.
+ *
+ * @since 3.13.0
  */
 export const PARSELY_TONES = {
 	neutral: {
@@ -66,7 +68,12 @@ const DEFAULT_TONE = 'neutral';
 
 /**
  * Returns the label for a given tone.
+ *
+ * @since 3.13.0
+ *
  * @param {ToneProp} tone
+ *
+ * @return {string} The label for the given tone.
  */
 export const getLabel = ( tone: ToneProp ): string => {
 	if ( tone === 'custom' || tone === '' ) {
@@ -82,7 +89,12 @@ export const getLabel = ( tone: ToneProp ): string => {
 
 /**
  * Returns whether a given tone is a custom tone.
+ *
+ * @since 3.13.0
+ *
  * @param {ToneProp} tone
+ *
+ * @return {boolean} Whether the given tone is a custom tone.
  */
 export const isCustomTone = ( tone: ToneProp ): boolean => {
 	return ! TONE_LIST.includes( tone ) || tone === 'custom';
@@ -90,6 +102,8 @@ export const isCustomTone = ( tone: ToneProp ): boolean => {
 
 /**
  * Properties for the CustomTone component.
+ *
+ * @since 3.13.0
  */
 type CustomToneProps = {
 	value: string,
@@ -100,6 +114,8 @@ type CustomToneProps = {
  * Custom Tone component.
  *
  * Allows the user to enter a custom tone.
+ *
+ * @since 3.13.0
  *
  * @param {CustomToneProps} props - The properties for the CustomTone component.
  */
@@ -121,6 +137,8 @@ const CustomTone = ( { value, onChange }: CustomToneProps ): JSX.Element => {
 
 /**
  * Properties for the ToneSelector component.
+ *
+ * @since 3.13.0
  */
 type ToneSelectorProps = {
 	tone?: ToneProp | string;
@@ -134,6 +152,8 @@ type ToneSelectorProps = {
  * Tone Selector dropdown menu.
  *
  * Allows the user to select a tone for their AI generated content.
+ *
+ * @since 3.13.0
  *
  * @param {ToneSelectorProps} props - The properties for the ToneSelector component.
  */

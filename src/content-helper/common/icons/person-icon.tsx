@@ -1,5 +1,9 @@
 import { SVG, Path, G } from '@wordpress/components';
 
+/**
+ * Person Icon.
+ * @since 3.13.0
+ */
 export const PersonIcon = () => (
 	<SVG
 		aria-hidden="true"
