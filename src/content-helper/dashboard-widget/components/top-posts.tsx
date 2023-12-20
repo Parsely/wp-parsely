@@ -1,13 +1,15 @@
 /**
  * WordPress dependencies
  */
+import apiFetch from '@wordpress/api-fetch';
 import { Spinner } from '@wordpress/components';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
+import { Telemetry } from '../../../js/telemetry/telemetry';
 import { ContentHelperError } from '../../common/content-helper-error';
 import { Select } from '../../common/select';
 import {
@@ -20,21 +22,95 @@ import {
 import { PostData } from '../../common/utils/post';
 import { DashboardWidgetProvider, TOP_POSTS_DEFAULT_LIMIT } from '../provider';
 import { TopPostListItem } from './top-posts-list-item';
-import { Telemetry } from '../../../js/telemetry/telemetry';
 
 const FETCH_RETRIES = 1;
 
 /**
- * List of the top posts.
+ * Defines the props structure for the TopPosts component.
+ *
+ * @since 3.13.0
  */
-export function TopPosts() {
+interface TopPostsProps {
+	settingsJson: string;
+}
+
+/**
+ * Defines the settings structure for the TopPosts component.
+ *
+ * @since 3.13.0
+ */
+interface TopPostsSettings {
+	period: Period;
+	metric: Metric;
+}
+
+/**
+ * Gets the settings from the passed JSON.
+ *
+ * If missing settings or invalid values are detected, they get set to their
+ * defaults.
+ *
+ * @since 3.13.0
+ *
+ * @param {string} settingsJson The JSON containing the settings.
+ *
+ * @return {TopPostsSettings} The resulting settings object.
+ */
+const getSettingsFromJson = ( settingsJson: string ): TopPostsSettings => {
+	const parsedSettings: TopPostsSettings = JSON.parse( settingsJson );
+
+	if ( ! isInEnum( parsedSettings.period, Period ) ) {
+		parsedSettings.period = Period.Days7;
+	}
+
+	if ( ! isInEnum( parsedSettings.metric, Metric ) ) {
+		parsedSettings.metric = Metric.Views;
+	}
+
+	return parsedSettings;
+};
+
+/**
+ * List of the top posts.
+ *
+ * @since 3.7.0
+ *
+ * @param {TopPostsProps} props The component's props.
+ */
+export function TopPosts( { settingsJson }: TopPostsProps ): JSX.Element {
+	const isFirstRender = useRef( true );
+	const settings = getSettingsFromJson( settingsJson );
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ posts, setPosts ] = useState<PostData[]>( [] );
-	const [ period, setPeriodFilter ] = useState<Period>( Period.Days7 );
-	const [ metric, setMetricFilter ] = useState<Metric>( Metric.Views );
+	const [ period, setPeriodFilter ] = useState<Period>( settings.period );
+	const [ metric, setMetricFilter ] = useState<Metric>( settings.metric );
 	const [ page, setPage ] = useState<number>( 1 );
 
+	/**
+	 * Saves the settings into the WordPress database whenever a setting change
+	 * occurs.
+	 *
+	 * @since 3.13.0
+	 */
+	useEffect( () => {
+		if ( isFirstRender.current ) {
+			isFirstRender.current = false;
+			return;
+		}
+
+		apiFetch( {
+			path: '/wp-parsely/v1/user-meta/content-helper/dashboard-widget',
+			method: 'PUT',
+			data: { period, metric },
+		} );
+	}, [ period, metric ] );
+
+	/**
+	 * Fetches the top posts.
+	 *
+	 * @since 3.7.0
+	 */
 	useEffect( () => {
 		const provider = new DashboardWidgetProvider();
 
