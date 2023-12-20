@@ -74,7 +74,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		return getEditedPostAttribute( 'title' );
 	}, [] );
 
-	const toneLabel = tone ? getToneLabel( tone ) : __( 'Neural', 'wp-parsely' );
+	const toneLabel = tone ? getToneLabel( tone ) : __( 'Neutral', 'wp-parsely' );
 	const personaLabel = persona ? getPersonaLabel( persona ) : __( 'Journalist', 'wp-parsely' );
 
 	// This state stores the tone and persona label to be displayed when the list
