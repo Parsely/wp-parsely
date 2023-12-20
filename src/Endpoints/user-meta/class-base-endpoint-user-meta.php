@@ -1,7 +1,7 @@
 <?php
 /**
  * Endpoints: Base endpoint class for saving and retrieving WordPress user meta
- * entries.
+ * entries
  *
  * @package Parsely
  * @since   3.13.0
