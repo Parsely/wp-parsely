@@ -141,7 +141,9 @@ abstract class ProxyEndpointTest extends TestCase {
 	 *
 	 * @param WP_REST_Request|null $request The request object to be used.
 	 */
-	public function run_test_get_items_fails_without_site_id_set( $request = null ): void {
+	public function run_test_get_items_fails_without_site_id_set(
+		?WP_REST_Request $request = null
+	): void {
 		$this->run_test_get_items_fails(
 			array( 'apikey' => '' ),
 			'parsely_site_id_not_set',
@@ -156,7 +158,9 @@ abstract class ProxyEndpointTest extends TestCase {
 	 *
 	 * @param WP_REST_Request|null $request The request object to be used.
 	 */
-	public function run_test_get_items_fails_without_api_secret_set( $request = null ): void {
+	public function run_test_get_items_fails_without_api_secret_set(
+		?WP_REST_Request $request = null
+	): void {
 		$this->run_test_get_items_fails(
 			array(
 				'apikey'     => 'example.com',
@@ -181,21 +185,12 @@ abstract class ProxyEndpointTest extends TestCase {
 		array $options,
 		string $expected_error_code,
 		string $expected_error_message,
-		$request = null
+		?WP_REST_Request $request = null
 	): void {
 		TestCase::set_options( $options );
 		if ( null === $request ) {
 			$request = new WP_REST_Request( 'GET', self::$route );
 		}
-
-		$dispatched = 0;
-		add_filter(
-			'pre_http_request',
-			function () use ( &$dispatched ) {
-				$dispatched++;
-				return null;
-			}
-		);
 
 		$response = rest_get_server()->dispatch( $request );
 		/**
