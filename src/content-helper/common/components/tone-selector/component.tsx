@@ -1,10 +1,16 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
-import { Disabled, DropdownMenu, MenuGroup, MenuItem, TextControl } from '@wordpress/components';
-import { Icon, chevronRight, megaphone } from '@wordpress/icons';
+import {
+	Disabled,
+	DropdownMenu,
+	MenuGroup,
+	MenuItem,
+	TextControl,
+} from '@wordpress/components';
 import { useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import { Icon, chevronRight, megaphone } from '@wordpress/icons';
 
 /**
  * List of the available tones.
@@ -71,7 +77,7 @@ export const DEFAULT_TONE = 'neutral';
  *
  * @since 3.13.0
  *
- * @param {ToneProp} tone
+ * @param {ToneProp} tone The tone to get the label for.
  *
  * @return {string} The label for the given tone.
  */
@@ -117,7 +123,7 @@ type CustomToneProps = {
  *
  * @since 3.13.0
  *
- * @param {CustomToneProps} props - The properties for the CustomTone component.
+ * @param {CustomToneProps} props The properties for the CustomTone component.
  */
 const CustomTone = ( { value, onChange }: CustomToneProps ): JSX.Element => {
 	const [ customTone, setCustomTone ] = useState<string>( '' );
@@ -155,7 +161,7 @@ type ToneSelectorProps = {
  *
  * @since 3.13.0
  *
- * @param {ToneSelectorProps} props - The properties for the ToneSelector component.
+ * @param {ToneSelectorProps} props The properties for the ToneSelector component.
  */
 export const ToneSelector = ( {
 	tone = DEFAULT_TONE,

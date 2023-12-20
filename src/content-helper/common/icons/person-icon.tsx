@@ -1,7 +1,11 @@
-import { SVG, Path, G } from '@wordpress/components';
+/**
+ * WordPress dependencies
+ */
+import { G, Path, SVG } from '@wordpress/components';
 
 /**
  * Person Icon.
+ *
  * @since 3.13.0
  */
 export const PersonIcon = () => (
