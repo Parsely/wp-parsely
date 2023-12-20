@@ -69,7 +69,7 @@ type FixedPersonaProp = keyof typeof PARSELY_PERSONAS;
 
 const PERSONAS_LIST = Object.keys( PARSELY_PERSONAS ) as PersonaProp[];
 
-const DEFAULT_PERSONA = 'journalist';
+export const DEFAULT_PERSONA = 'journalist';
 
 /**
  * Returns the label for a given persona.

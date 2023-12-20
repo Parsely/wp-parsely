@@ -20,8 +20,8 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
  * @since 3.13.0
  */
 type TitleSuggestionsSettingsProps = {
-	tone?: ToneProp,
-	persona?: PersonaProp,
+	tone: ToneProp,
+	persona: PersonaProp,
 	onToneChange: ( tone: ToneProp | string ) => void,
 	onPersonaChange: ( persona: PersonaProp | string ) => void,
 	isLoading?: boolean,
@@ -42,6 +42,8 @@ export const TitleSuggestionsSettings = ( {
 	isLoading,
 }: TitleSuggestionsSettingsProps ): JSX.Element => {
 	const [ isSettingActive, setIsSettingActive ] = useState<boolean>( false );
+	const [ isToneSelected, setIsToneSelected ] = useState<boolean>( false );
+	const [ isPersonaSelected, setIsPersonaSelected ] = useState<boolean>( false );
 
 	const toggleSetting = () => {
 		setIsSettingActive( ! isSettingActive );
@@ -71,8 +73,11 @@ export const TitleSuggestionsSettings = ( {
 				<div className="parsely-write-titles-settings-body">
 					<ToneSelector
 						tone={ tone }
-						label={ tone ? getToneLabel( tone ) : __( 'Select a tone', 'wp-parsely' ) }
-						onChange={ ( selectedTone ) => onToneChange( selectedTone ) }
+						label={ isToneSelected ? getToneLabel( tone ) : __( 'Select a tone', 'wp-parsely' ) }
+						onChange={ ( selectedTone ) => {
+							onToneChange( selectedTone );
+							setIsToneSelected( true );
+						} }
 						onDropdownChange={ ( selectedTone ) => {
 							Telemetry.trackEvent( 'title_suggestions_ai_tone_changed',
 								{ tone: selectedTone }
@@ -83,8 +88,11 @@ export const TitleSuggestionsSettings = ( {
 					/>
 					<PersonaSelector
 						persona={ persona }
-						label={ persona ? getPersonaLabel( persona ) : __( 'Select a persona', 'wp-parsely' ) }
-						onChange={ ( selectedPersona ) => onPersonaChange( selectedPersona ) }
+						label={ isPersonaSelected ? getPersonaLabel( persona ) : __( 'Select a persona', 'wp-parsely' ) }
+						onChange={ ( selectedPersona ) => {
+							onPersonaChange( selectedPersona );
+							setIsPersonaSelected( true );
+						} }
 						onDropdownChange={ ( selectedPersona ) => {
 							Telemetry.trackEvent( 'title_suggestions_ai_persona_changed',
 								{ persona: selectedPersona }

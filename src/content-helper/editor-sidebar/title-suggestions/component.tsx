@@ -74,8 +74,8 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		return getEditedPostAttribute( 'title' );
 	}, [] );
 
-	const toneLabel = tone ? getToneLabel( tone ) : __( 'Neural', 'wp-parsely' );
-	const personaLabel = persona ? getPersonaLabel( persona ) : __( 'Journalist', 'wp-parsely' );
+	const toneLabel = getToneLabel( tone );
+	const personaLabel = getPersonaLabel( persona );
 
 	// This state stores the tone and persona label to be displayed when the list
 	// of generated titles is shown to the user.
@@ -112,16 +112,16 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 				request_more: titles.length > 0,
 				total_titles: titles.length,
 				total_pinned: titles.filter( ( title ) => title.isPinned ).length,
-				tone: tone ? tone : 'neutral',
-				persona: persona ? persona : 'journalist',
+				tone,
+				persona,
 			} );
 
 			// Generate titles based on the current post content.
 			await generateTitles(
 				TitleType.PostTitle,
 				currentPostContent,
-				tone as ToneProp,
-				persona as PersonaProp
+				tone,
+				persona
 			);
 
 			// Store the current tone and persona label to be displayed later on.
@@ -184,7 +184,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 				<TitleSuggestion
 					key={ title.id }
 					title={ title }
-					type={ TitleType.PostTitle } // Specify that the title is a post title
+					type={ TitleType.PostTitle } // Specify that the title is a post title.
 				/>
 			) ) }
 		</div>
