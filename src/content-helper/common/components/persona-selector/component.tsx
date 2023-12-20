@@ -154,6 +154,7 @@ const CustomPersona = ( { value, onChange }: CustomPersonaProps ): JSX.Element =
 type PersonaSelectorProps = {
 	persona?: PersonaProp;
 	onChange: ( persona: PersonaProp ) => void;
+	onDropdownChange?: ( persona: PersonaProp ) => void;
 	disabled?: boolean;
 	label?: string;
 	allowCustom?: boolean;
@@ -172,6 +173,7 @@ export const PersonaSelector = ( {
 	persona = DEFAULT_PERSONA,
 	label = __( 'Select a persona', 'wp-parsely' ),
 	onChange,
+	onDropdownChange,
 	disabled = false,
 	allowCustom = false,
 }: PersonaSelectorProps ): JSX.Element => {
@@ -211,6 +213,7 @@ export const PersonaSelector = ( {
 										className={ singlePersona === persona ? 'is-selected' : '' }
 										role="menuitemradio"
 										onClick={ () => {
+											onDropdownChange?.( singlePersona as FixedPersonaProp );
 											onChange( singlePersona );
 											onClose();
 										} }

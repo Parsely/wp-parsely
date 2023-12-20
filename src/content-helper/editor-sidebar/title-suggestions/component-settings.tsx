@@ -12,6 +12,7 @@ import { useState } from '@wordpress/element';
 import { ToneSelector, ToneProp, getToneLabel } from '../../common/components/tone-selector';
 import { PersonaSelector, PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
 import { LeafIcon } from '../../common/icons/leaf-icon';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 
 /**
  * Props for the Title Suggestions Settings component.
@@ -46,6 +47,9 @@ export const TitleSuggestionsSettings = ( {
 
 	const toggleSetting = () => {
 		setIsSettingActive( ! isSettingActive );
+		Telemetry.trackEvent( 'title_suggestions_ai_settings_toggled', {
+			is_active: ! isSettingActive,
+		} );
 	};
 
 	return (
@@ -74,6 +78,11 @@ export const TitleSuggestionsSettings = ( {
 							onToneChange( selectedTone );
 							setIsToneSelected( true );
 						} }
+						onDropdownChange={ ( selectedTone ) => {
+							Telemetry.trackEvent( 'title_suggestions_ai_tone_changed',
+								{ tone: selectedTone }
+							);
+						} }
 						disabled={ isLoading }
 						allowCustom
 					/>
@@ -83,6 +92,11 @@ export const TitleSuggestionsSettings = ( {
 						onChange={ ( selectedPersona ) => {
 							onPersonaChange( selectedPersona );
 							setIsPersonaSelected( true );
+						} }
+						onDropdownChange={ ( selectedPersona ) => {
+							Telemetry.trackEvent( 'title_suggestions_ai_persona_changed',
+								{ persona: selectedPersona }
+							);
 						} }
 						disabled={ isLoading }
 						allowCustom

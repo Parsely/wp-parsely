@@ -17,6 +17,7 @@ import { ExcerptGeneratorProvider } from '../provider';
 import { ContentHelperError } from '../../common/content-helper-error';
 import { BetaBadge } from '../../common/components/beta-badge';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 
 /**
  * The PostExcerptGenerator component displays the excerpt textarea and the Parse.ly AI controls.
@@ -77,6 +78,7 @@ const PostExcerptGenerator = () => {
 	const generateExcerpt = async () => {
 		setLoading( true );
 		try {
+			Telemetry.trackEvent( 'excerpt_generator_pressed' );
 			const requestedExcerpt = await excerptGeneratorProvider.generateExcerpt( postTitle, postContent );
 			setGeneratedExcerpt( requestedExcerpt );
 		} catch ( err: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -94,6 +96,7 @@ const PostExcerptGenerator = () => {
 	const acceptGeneratedExcerpt = async () => {
 		await editPost( { excerpt: generatedExcerpt } );
 		setGeneratedExcerpt( '' );
+		Telemetry.trackEvent( 'excerpt_generator_accepted' );
 	};
 
 	/**
@@ -103,6 +106,7 @@ const PostExcerptGenerator = () => {
 	 */
 	const discardGeneratedExcerpt = async () => {
 		setGeneratedExcerpt( '' );
+		Telemetry.trackEvent( 'excerpt_generator_discarded' );
 	};
 
 	/**
