@@ -3,7 +3,7 @@
  */
 import { Button, PanelRow } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
-import { useState } from '@wordpress/element';
+import { createInterpolateElement, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -13,8 +13,11 @@ import { ContentHelperError } from '../../common/content-helper-error';
 import { TitleSuggestion } from './component-title-suggestion';
 import { WriteTitleProvider } from './provider';
 import { TitleStore, TitleType } from './store';
-import { GutenbergFunction } from './types';
+import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
+import { TitleSuggestionsSettings } from './component-settings';
+import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
+import { PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
 
 /**
  * Title Suggestions Panel.
@@ -31,11 +34,15 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		titles,
 		acceptedTitle,
 		originalTitle,
+		tone,
+		persona,
 	} = useSelect( ( select ) => {
 		const { isLoading,
 			getTitles,
 			getAcceptedTitle,
 			getOriginalTitle,
+			getTone,
+			getPersona,
 		} = select( TitleStore );
 
 		return {
@@ -43,6 +50,8 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 			loading: isLoading(),
 			titles: getTitles( TitleType.PostTitle ),
 			originalTitle: getOriginalTitle( TitleType.PostTitle ),
+			tone: getTone(),
+			persona: getPersona(),
 		};
 	}, [] );
 
@@ -51,6 +60,8 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		setLoading,
 		setAcceptedTitle,
 		setOriginalTitle,
+		setTone,
+		setPersona,
 	} = useDispatch( TitleStore );
 
 	const currentPostContent = useSelect( ( select ) => {
@@ -63,13 +74,30 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		return getEditedPostAttribute( 'title' );
 	}, [] );
 
-	const generateTitles = async ( titleType: TitleType, content: string ): Promise<void> => {
+	const toneLabel = getToneLabel( tone );
+	const personaLabel = getPersonaLabel( persona );
+
+	// This state stores the tone and persona label to be displayed when the list
+	// of generated titles is shown to the user.
+	const [ staticToneAndPersonaLabel, setStaticToneAndPersonaLabel ] = useState<{ tone: string, persona: string}>(
+		{
+			tone: toneLabel,
+			persona: personaLabel,
+		}
+	);
+
+	const generateTitles = async (
+		titleType: TitleType,
+		content: string,
+		selectedTone: ToneProp,
+		selectedPersona: PersonaProp,
+	): Promise<void> => {
 		await setLoading( true );
 
 		const provider = new WriteTitleProvider();
 
 		try {
-			const genTitles = await provider.generateTitles( content, 3 );
+			const genTitles = await provider.generateTitles( content, 3, selectedTone, selectedPersona );
 			await setTitles( titleType, genTitles );
 		} catch ( err: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			setError( err );
@@ -84,8 +112,23 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 				request_more: titles.length > 0,
 				total_titles: titles.length,
 				total_pinned: titles.filter( ( title ) => title.isPinned ).length,
+				tone,
+				persona,
 			} );
-			await generateTitles( TitleType.PostTitle, currentPostContent );
+
+			// Generate titles based on the current post content.
+			await generateTitles(
+				TitleType.PostTitle,
+				currentPostContent,
+				tone,
+				persona
+			);
+
+			// Store the current tone and persona label to be displayed later on.
+			setStaticToneAndPersonaLabel( {
+				tone: toneLabel,
+				persona: personaLabel,
+			} );
 		}
 	};
 
@@ -108,6 +151,14 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		// Remove the accepted title
 		await setAcceptedTitle( TitleType.PostTitle, undefined );
 	};
+
+	const parselyAISettings = <TitleSuggestionsSettings
+		tone={ tone }
+		persona={ persona }
+		onToneChange={ ( selectedTone ) => setTone( selectedTone ) }
+		onPersonaChange={ ( selectedPersona ) => setPersona( selectedPersona ) }
+		isLoading={ loading }
+	/>;
 
 	const generateTitleButton: JSX.Element = (
 		<div className="parsely-write-titles-generate-button">
@@ -133,7 +184,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 				<TitleSuggestion
 					key={ title.id }
 					title={ title }
-					type={ TitleType.PostTitle } // Specify that the title is a post title
+					type={ TitleType.PostTitle } // Specify that the title is a post title.
 				/>
 			) ) }
 		</div>
@@ -186,18 +237,29 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 								'wp-parsely'
 							) }
 						</div>
+						{ parselyAISettings }
 						{ generateTitleButton }
 					</>
 				) }
 				{ 0 < titles.length && acceptedTitle === undefined && (
 					<>
 						<div className="parsely-write-titles-text">
-							{ __(
-								"We've generated a few titles based on the content of your post.",
-								'wp-parsely'
-							) }
+							{
+								createInterpolateElement(
+									// translators: %1$s is the tone, %2$s is the persona.
+									__(
+										"We've generated a few <tone/> titles based on the content of your post, written as a <persona/>.",
+										'wp-parsely'
+									),
+									{
+										tone: <strong>{ staticToneAndPersonaLabel.tone }</strong>,
+										persona: <strong>{ staticToneAndPersonaLabel.persona }</strong>,
+									}
+								)
+							}
 						</div>
 						{ titleSuggestionList }
+						{ parselyAISettings }
 						{ generateTitleButton }
 					</>
 				) }
