@@ -2,8 +2,10 @@
  * WordPress dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
+import { DEFAULT_PERSONA, PersonaProp } from '../../common/components/persona-selector';
+import { DEFAULT_TONE, ToneProp } from '../../common/components/tone-selector';
 
-// Unique identifier for each title in the store
+// Unique identifier for each title in the store.
 let titleID = 0;
 
 export interface Title {
@@ -18,6 +20,8 @@ interface TitlesData {
 }
 interface TitlesState {
 	isLoading: boolean;
+	tone: ToneProp | undefined,
+	persona: PersonaProp | undefined,
 	postTitles: TitlesData;
 	headings: TitlesData;
 }
@@ -68,12 +72,24 @@ interface SetOriginalTitleAction {
 	title: string|undefined;
 }
 
+interface SetToneAction {
+	type: 'SET_TONE';
+	tone: ToneProp;
+}
+
+interface SetPersonaAction {
+	type: 'SET_PERSONA';
+	persona: PersonaProp;
+}
+
 type ActionTypes = SetLoadingAction | SetTitlesAction |
 	RemoveTitleAction | SetAcceptedTitleAction | PinTitleAction | UnpinTitleAction |
-	SetOriginalTitleAction;
+	SetOriginalTitleAction | SetToneAction | SetPersonaAction;
 
 const defaultState: TitlesState = {
 	isLoading: false,
+	tone: undefined,
+	persona: undefined,
 	postTitles: {
 		titles: [],
 	},
@@ -166,6 +182,16 @@ export const TitleStore = createReduxStore( 'wp-parsely/write-titles', {
 						originalTitle: action.title,
 					},
 				};
+			case 'SET_TONE':
+				return {
+					...state,
+					tone: action.tone,
+				};
+			case 'SET_PERSONA':
+				return {
+					...state,
+					persona: action.persona,
+				};
 			default:
 				return state;
 		}
@@ -219,6 +245,18 @@ export const TitleStore = createReduxStore( 'wp-parsely/write-titles', {
 				title,
 			};
 		},
+		setTone( tone: ToneProp | string ): SetToneAction {
+			return {
+				type: 'SET_TONE',
+				tone,
+			};
+		},
+		setPersona( persona: PersonaProp | string ): SetPersonaAction {
+			return {
+				type: 'SET_PERSONA',
+				persona,
+			};
+		},
 	},
 	selectors: {
 		getState( state: TitlesState ): TitlesState {
@@ -251,6 +289,18 @@ export const TitleStore = createReduxStore( 'wp-parsely/write-titles', {
 				};
 			}
 			return undefined;
+		},
+		getTone( state: TitlesState ): ToneProp {
+			if ( ! state.tone ) {
+				return DEFAULT_TONE;
+			}
+			return state.tone;
+		},
+		getPersona( state: TitlesState ): PersonaProp {
+			if ( ! state.persona ) {
+				return DEFAULT_PERSONA;
+			}
+			return state.persona;
 		},
 	},
 } );

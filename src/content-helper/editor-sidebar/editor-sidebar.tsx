@@ -27,6 +27,7 @@ import { PerformanceDetails } from './performance-details/component';
 import { RelatedTopPostList } from './related-top-posts/component-list';
 import { Telemetry } from '../../js/telemetry/telemetry';
 import { TitleSuggestionsPanel } from './title-suggestions/component';
+import { BetaBadge } from '../common/components/beta-badge';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
@@ -272,7 +273,8 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 			</Panel>
 			<Panel>
 				<PanelBody
-					title={ __( 'Title Suggestions (Beta)', 'wp-parsely' ) }
+					icon={ <BetaBadge /> }
+					title={ __( 'Title Suggestions', 'wp-parsely' ) }
 					initialOpen={ false }
 					onToggle={ ( next ) => trackToggle( 'title_suggestions', next ) }
 				>
