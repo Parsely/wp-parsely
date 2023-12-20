@@ -2,8 +2,8 @@
  * WordPress dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
-import { ToneProp } from '../../common/components/tone-selector';
-import { PersonaProp } from '../../common/components/persona-selector';
+import { ToneProp, DEFAULT_TONE } from '../../common/components/tone-selector';
+import { PersonaProp, DEFAULT_PERSONA } from '../../common/components/persona-selector';
 
 // Unique identifier for each title in the store
 let titleID = 0;
@@ -290,10 +290,16 @@ export const TitleStore = createReduxStore( 'wp-parsely/write-titles', {
 			}
 			return undefined;
 		},
-		getTone( state: TitlesState ): ToneProp | undefined {
+		getTone( state: TitlesState ): ToneProp {
+			if ( ! state.tone ) {
+				return DEFAULT_TONE;
+			}
 			return state.tone;
 		},
-		getPersona( state: TitlesState ): PersonaProp | undefined {
+		getPersona( state: TitlesState ): PersonaProp {
+			if ( ! state.persona ) {
+				return DEFAULT_PERSONA;
+			}
 			return state.persona;
 		},
 	},

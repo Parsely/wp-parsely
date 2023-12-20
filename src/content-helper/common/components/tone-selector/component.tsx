@@ -64,7 +64,7 @@ type FixedToneProp = keyof typeof PARSELY_TONES;
 
 const TONE_LIST = Object.keys( PARSELY_TONES ) as ToneProp[];
 
-const DEFAULT_TONE = 'neutral';
+export const DEFAULT_TONE = 'neutral';
 
 /**
  * Returns the label for a given tone.
