@@ -2,10 +2,10 @@
  * WordPress dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
-import { ToneProp, DEFAULT_TONE } from '../../common/components/tone-selector';
-import { PersonaProp, DEFAULT_PERSONA } from '../../common/components/persona-selector';
+import { DEFAULT_PERSONA, PersonaProp } from '../../common/components/persona-selector';
+import { DEFAULT_TONE, ToneProp } from '../../common/components/tone-selector';
 
-// Unique identifier for each title in the store
+// Unique identifier for each title in the store.
 let titleID = 0;
 
 export interface Title {

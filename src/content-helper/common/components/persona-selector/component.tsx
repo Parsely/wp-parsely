@@ -1,15 +1,21 @@
 /**
  * WordPress dependencies
  */
+import {
+	Disabled,
+	DropdownMenu,
+	MenuGroup,
+	MenuItem,
+	TextControl,
+} from '@wordpress/components';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Disabled, DropdownMenu, MenuGroup, MenuItem, TextControl } from '@wordpress/components';
 import { Icon, chevronRight } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
 import { PersonIcon } from '../../icons/person-icon';
-import { useState } from '@wordpress/element';
 
 /**
  * List of the available personas.
@@ -76,7 +82,7 @@ export const DEFAULT_PERSONA = 'journalist';
  *
  * @since 3.13.0
  *
- * @param {PersonaProp} persona
+ * @param {PersonaProp} persona The persona to get the label for.
  *
  * @return {string} The label for the given persona.
  */
@@ -122,7 +128,7 @@ type CustomPersonaProps = {
  *
  * @since 3.13.0
  *
- * @param {CustomPersonaProps} props - The properties for the CustomPersona component.
+ * @param {CustomPersonaProps} props The properties for the CustomPersona component.
  */
 const CustomPersona = ( { value, onChange }: CustomPersonaProps ): JSX.Element => {
 	const [ customPersona, setCustomPersona ] = useState<string>( '' );
@@ -161,7 +167,7 @@ type PersonaSelectorProps = {
  *
  * @since 3.13.0
  *
- * @param {PersonaSelectorProps} props - The properties for the PersonaSelector component.
+ * @param {PersonaSelectorProps} props The properties for the PersonaSelector component.
  */
 export const PersonaSelector = ( {
 	persona = DEFAULT_PERSONA,
