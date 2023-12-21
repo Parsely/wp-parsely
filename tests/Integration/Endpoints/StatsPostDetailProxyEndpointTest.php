@@ -193,7 +193,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 
 		add_filter(
 			'pre_http_request',
-			function () use ( &$dispatched ) {
+			function () use ( &$dispatched ): array {
 				$dispatched++;
 				return array(
 					'body' => '
