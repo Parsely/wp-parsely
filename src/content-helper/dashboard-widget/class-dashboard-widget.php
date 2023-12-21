@@ -154,13 +154,16 @@ class Dashboard_Widget extends Content_Helper_Feature {
 	 */
 	protected function inject_inline_scripts(): void {
 		parent::inject_inline_scripts();
+		$settings = '';
 
-		$settings = rest_do_request(
-			new WP_REST_Request(
-				'GET',
-				'/wp-parsely/v1' . Dashboard_Widget_Settings_Endpoint::get_route()
-			)
-		)->get_data();
+		if ( ! defined( 'INTEGRATION_TESTS_RUNNING' ) ) {
+			$settings = rest_do_request(
+				new WP_REST_Request(
+					'GET',
+					'/wp-parsely/v1' . Dashboard_Widget_Settings_Endpoint::get_route()
+				)
+			)->get_data();
+		}
 
 		if ( ! is_string( $settings ) ) {
 			$settings = '';
