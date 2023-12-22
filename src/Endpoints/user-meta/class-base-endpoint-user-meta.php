@@ -12,24 +12,15 @@ declare(strict_types=1);
 namespace Parsely\Endpoints\User_Meta;
 
 use Parsely\Endpoints\Base_Endpoint;
-use Parsely\Parsely;
 use WP_REST_Request;
 
 /**
- * Base class for all user meta endpoints.
+ * Base class for all user meta endpoints. Child classes must add a protected
+ * `ENDPOINT` constant.
  *
  * @since 3.13.0
  */
 abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
-	/**
-	 * Returns the endpoint's route.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @return string The endpoint's route.
-	 */
-	abstract public static function get_route(): string;
-
 	/**
 	 * Returns the meta entry's key.
 	 *
@@ -59,19 +50,6 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	abstract protected function get_valid_subvalues(): array;
 
 	/**
-	 * Constructor.
-	 *
-	 * @param Parsely $parsely The Parsely object instance.
-	 *
-	 * @since 3.13.0
-	 */
-	public function __construct( Parsely $parsely ) {
-		parent::__construct( $parsely );
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
-		define( 'ENDPOINT', static::get_route() );
-	}
-
-	/**
 	 * Registers the endpoint's WP REST route.
 	 *
 	 * @since 3.13.0
@@ -82,6 +60,17 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 			'process_request',
 			array( 'GET', 'PUT' )
 		);
+	}
+
+	/**
+	 * Returns the endpoint's route.
+	 *
+	 * @since 3.13.0
+	 *
+	 * @return string The endpoint's route.
+	 */
+	public static function get_route(): string {
+		return static::ENDPOINT;
 	}
 
 	/**

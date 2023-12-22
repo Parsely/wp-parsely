@@ -17,16 +17,7 @@ namespace Parsely\Endpoints\User_Meta;
  * @since 3.13.0
  */
 final class Dashboard_Widget_Settings_Endpoint extends Base_Endpoint_User_Meta {
-	/**
-	 * Returns the endpoint's route.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @return string The endpoint's route.
-	 */
-	public static function get_route(): string {
-		return '/user-meta/content-helper/dashboard-widget';
-	}
+	protected const ENDPOINT = '/user-meta/content-helper/dashboard-widget-settings';
 
 	/**
 	 * Returns the meta entry's key.
