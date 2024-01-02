@@ -145,6 +145,13 @@ export const getTopRelatedPostsMessage = async (
 	// Show the panel and get the displayed message.
 	await page.waitForSelector( pluginButton );
 	await page.click( pluginButton );
+
+	// Select 30 days to reduce the possibility of a "No top posts" message.
+	const settingsButton = await findSidebarPanelToggleButtonWithTitle( 'Settings' );
+	await settingsButton.focus();
+	await page.keyboard.press( 'Tab' );
+	await page.keyboard.type( 'l' );
+
 	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Related Top Posts' );
 	await topRelatedPostsButton.click();
 	if ( '' !== filterType ) {
