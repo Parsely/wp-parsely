@@ -10,8 +10,9 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration;
 
-use Parsely\Parsely;
 use Parsely\Endpoints\Base_API_Proxy;
+use Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta;
+use Parsely\Parsely;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
@@ -61,13 +62,10 @@ abstract class ProxyEndpointTest extends TestCase {
 
 	/**
 	 * Returns the endpoint to be used in tests.
+	 *
+	 * @return Base_API_Proxy|Base_Endpoint_User_Meta The endpoint to be tested.
 	 */
-	abstract public function get_endpoint(): Base_API_Proxy;
-
-	/**
-	 * Verifies that calls return results in the expected format.
-	 */
-	abstract public function test_get_items(): void;
+	abstract public function get_endpoint();
 
 	/**
 	 * Runs once before all tests.
@@ -109,12 +107,16 @@ abstract class ProxyEndpointTest extends TestCase {
 
 	/**
 	 * Verifies that the route is registered.
+	 *
+	 * @param array<string, bool> $methods The methods supported by the route.
 	 */
-	public function run_test_register_routes_by_default(): void {
+	public function run_test_register_routes_by_default(
+		array $methods = array( 'GET' => true )
+	): void {
 		$routes = rest_get_server()->get_routes();
 		self::assertArrayHasKey( self::$route, $routes );
 		self::assertCount( 1, $routes[ self::$route ] );
-		self::assertSame( array( 'GET' => true ), $routes[ self::$route ][0]['methods'] );
+		self::assertSame( $methods, $routes[ self::$route ][0]['methods'] );
 	}
 
 	/**
@@ -202,5 +204,41 @@ abstract class ProxyEndpointTest extends TestCase {
 		self::assertSame( 403, $response->get_status() );
 		self::assertSame( $expected_error_code, $error->get_error_code() );
 		self::assertSame( $expected_error_message, $error->get_error_message() );
+	}
+
+	/**
+	 * Verifies default user capability filter.
+	 */
+	public function run_test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed(): void {
+		$this->login_as_contributor();
+		add_filter(
+			'wp_parsely_user_capability_for_all_private_apis',
+			function () {
+				return 'edit_posts';
+			}
+		);
+
+		self::assertTrue( static::get_endpoint()->permission_callback() );
+	}
+
+	/**
+	 * Verifies endpoint specific user capability filter.
+	 *
+	 * @param string|null $filter_key The key to use for the filter.
+	 */
+	public function run_test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed(
+		$filter_key = null
+	): void {
+		$this->login_as_contributor();
+		$filter_key = $filter_key ?? static::$filter_key;
+
+		add_filter(
+			'wp_parsely_user_capability_for_' . $filter_key . '_api',
+			function () {
+				return 'edit_posts';
+			}
+		);
+
+		self::assertTrue( static::get_endpoint()->permission_callback() );
 	}
 }

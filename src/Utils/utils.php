@@ -325,7 +325,7 @@ function convert_to_positive_integer( string $value ): int {
  * @return string
  */
 function convert_endpoint_to_filter_key( string $endpoint ): string {
-	return trim( str_replace( '/', '_', $endpoint ), '_' );
+	return trim( str_replace( array( '-', '/' ), '_', $endpoint ), '_' );
 }
 
 /**

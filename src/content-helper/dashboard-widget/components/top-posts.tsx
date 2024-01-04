@@ -100,7 +100,7 @@ export function TopPosts( { settingsJson }: TopPostsProps ): JSX.Element {
 		}
 
 		apiFetch( {
-			path: '/wp-parsely/v1/user-meta/content-helper/dashboard-widget',
+			path: '/wp-parsely/v1/user-meta/content-helper/dashboard-widget-settings',
 			method: 'PUT',
 			data: { period, metric },
 		} );
