@@ -3,8 +3,9 @@
  */
 import { Path, SVG } from '@wordpress/components';
 
-export const LeafIcon = ( { size = 24 } ) => (
+export const LeafIcon = ( { size = 24, className = 'wp-parsely-icon' } ) => (
 	<SVG
+		className={ className }
 		height={ size }
 		viewBox="0 0 60 65"
 		width={ size }

@@ -1,3 +1,6 @@
+// eslint-disable-next-line import/named
+import { BlockInstance } from '@wordpress/blocks';
+
 /**
  * Defines typings for some non-exported Gutenberg functions to avoid
  * intellisense errors in function calls.
@@ -9,4 +12,8 @@
 export interface GutenbergFunction {
 	getEditedPostAttribute( attribute: string ): string;
 	getEditedPostContent(): string;
+	getSelectedBlock(): BlockInstance | null;
+	getBlock( clientId: string ): BlockInstance | null;
+	getBlocks(): BlockInstance[];
 }
+

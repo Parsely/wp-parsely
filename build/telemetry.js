@@ -1,1 +1,674 @@
-!function(){"use strict";var e=window.wp.element,t=window.wp.plugins,r=function(){function e(){this._tkq=[],this.isLoaded=!1,this.isEnabled=!1,"undefined"!=typeof wpParselyTracksTelemetry&&(this.isEnabled=!0,this.loadTrackingLibrary())}return e.getInstance=function(){return window.wpParselyTelemetryInstance||Object.defineProperty(window,"wpParselyTelemetryInstance",{value:new e,writable:!1,configurable:!1,enumerable:!1}),window.wpParselyTelemetryInstance},e.prototype.loadTrackingLibrary=function(){var e=this,t=document.createElement("script");t.async=!0,t.src="//stats.wp.com/w.js",t.onload=function(){e.isLoaded=!0,e._tkq=window._tkq||[]},document.head.appendChild(t)},e.trackEvent=function(t,r){return void 0===r&&(r={}),n=this,a=void 0,o=function(){var n;return function(e,t){var r,n,a,i,o={label:0,sent:function(){if(1&a[0])throw a[1];return a[1]},trys:[],ops:[]};return i={next:l(0),throw:l(1),return:l(2)},"function"==typeof Symbol&&(i[Symbol.iterator]=function(){return this}),i;function l(l){return function(s){return function(l){if(r)throw new TypeError("Generator is already executing.");for(;i&&(i=0,l[0]&&(o=0)),o;)try{if(r=1,n&&(a=2&l[0]?n.return:l[0]?n.throw||((a=n.return)&&a.call(n),0):n.next)&&!(a=a.call(n,l[1])).done)return a;switch(n=0,a&&(l=[2&l[0],a.value]),l[0]){case 0:case 1:a=l;break;case 4:return o.label++,{value:l[1],done:!1};case 5:o.label++,n=l[1],l=[0];continue;case 7:l=o.ops.pop(),o.trys.pop();continue;default:if(!((a=(a=o.trys).length>0&&a[a.length-1])||6!==l[0]&&2!==l[0])){o=0;continue}if(3===l[0]&&(!a||l[1]>a[0]&&l[1]<a[3])){o.label=l[1];break}if(6===l[0]&&o.label<a[1]){o.label=a[1],a=l;break}if(a&&o.label<a[2]){o.label=a[2],o.ops.push(l);break}a[2]&&o.ops.pop(),o.trys.pop();continue}l=t.call(e,o)}catch(e){l=[6,e],n=0}finally{r=a=0}if(5&l[0])throw l[1];return{value:l[0]?l[1]:void 0,done:!0}}([l,s])}}}(this,(function(a){switch(a.label){case 0:return(n=e.getInstance()).isTelemetryEnabled()?[4,e.waitUntilLoaded()]:[2];case 1:return a.sent(),n.trackEvent(t,r),[2]}}))},new((i=void 0)||(i=Promise))((function(e,t){function r(e){try{s(o.next(e))}catch(e){t(e)}}function l(e){try{s(o.throw(e))}catch(e){t(e)}}function s(t){var n;t.done?e(t.value):(n=t.value,n instanceof i?n:new i((function(e){e(n)}))).then(r,l)}s((o=o.apply(n,a||[])).next())}));var n,a,i,o},e.waitUntilLoaded=function(){return new Promise((function(t,r){var n=e.getInstance();if(n.isTelemetryEnabled())if(n.isLoaded)t();else var a=0,i=setInterval((function(){n.isLoaded&&(clearInterval(i),t()),(a+=100)>=1e4&&(clearInterval(i),r("Telemetry library not loaded"))}),100);else r("Telemetry not enabled")}))},e.prototype.trackEvent=function(t,r){var n;this.isLoaded?(0!==t.indexOf(e.TRACKS_PREFIX)&&(t=e.TRACKS_PREFIX+t),this.isEventNameValid(t)?(r=this.prepareProperties(r),null===(n=this._tkq)||void 0===n||n.push(["recordEvent",t,r])):console.error("Error tracking event: Invalid event name")):console.error("Error tracking event: Telemetry not loaded")},e.prototype.isTelemetryEnabled=function(){return this.isEnabled},e.prototype.isProprietyValid=function(t){return e.PROPERTY_REGEX.test(t)},e.prototype.isEventNameValid=function(t){return e.EVENT_NAME_REGEX.test(t)},e.prototype.prepareProperties=function(e){return(e=this.sanitizeProperties(e)).parsely_version=wpParselyTracksTelemetry.version,wpParselyTracksTelemetry.user&&(e._ut=wpParselyTracksTelemetry.user.type,e._ui=wpParselyTracksTelemetry.user.id),wpParselyTracksTelemetry.vipgo_env&&(e.vipgo_env=wpParselyTracksTelemetry.vipgo_env),this.sanitizeProperties(e)},e.prototype.sanitizeProperties=function(e){var t=this,r={};return Object.keys(e).forEach((function(n){t.isProprietyValid(n)&&(r[n]=e[n])})),r},e.TRACKS_PREFIX="wpparsely_",e.EVENT_NAME_REGEX=/^(([a-z0-9]+)_){2}([a-z0-9_]+)$/,e.PROPERTY_REGEX=/^[a-z_][a-z0-9_]*$/,e}(),n=(r.trackEvent,window.wp.data);if(r.getInstance().isTelemetryEnabled()){var a=[function(){return(0,e.useEffect)((function(){var e=function(){return(0,n.select)("core/block-editor").getBlocks()},t=new Set(e().map((function(e){return e.clientId}))),a=(0,n.subscribe)((function(){var n=e(),a=new Set(n.map((function(e){return e.clientId})));if(a.size!==t.size)for(var i=a.size>t.size,o=0,l=i?n:Array.from(t);o<l.length;o++){var s=l[o];if(i){var c=s;c.name.startsWith("wp-parsely/")&&!t.has(c.clientId)&&r.trackEvent("block_added",{block:c.name})}else{var u=s;a.has(u)||r.trackEvent("block_removed",{block:u})}}t=a}));return function(){a()}}),[]),null}],i=e.createElement.apply(void 0,function(e,t,r){if(r||2===arguments.length)for(var n,a=0,i=t.length;a<i;a++)!n&&a in t||(n||(n=Array.prototype.slice.call(t,0,a)),n[a]=t[a]);return e.concat(n||Array.prototype.slice.call(t))}([e.Fragment,null],a.map((function(t){return(0,e.createElement)(t)})),!1));(0,t.registerPlugin)("wp-parsely-tracks-js-events",{render:function(){return i}})}}();
+/******/ (function() { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/js/telemetry/block-change.tsx":
+/*!*******************************************!*\
+  !*** ./src/js/telemetry/block-change.tsx ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BlockChangeMonitor: function() { return /* binding */ BlockChangeMonitor; }
+/* harmony export */ });
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _telemetry__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./telemetry */ "./src/js/telemetry/telemetry.ts");
+
+
+/**
+ * Internal dependencies
+ */
+
+/**
+ * BlockChangeMonitor component.
+ *
+ * This is a React component that monitors changes in the WordPress block editor.
+ * It does not render anything, but it uses the useEffect hook to subscribe to changes in the block editor
+ * when the component is mounted.
+ * When the block editor changes, it checks if blocks have been added or removed by comparing the current
+ * list of blocks with the previous one.
+ * If a block has been added or removed, it sends a telemetry event to the server.
+ * When the component is unmounted, it unsubscribes from the block editor changes.
+ *
+ * @since 3.12.0
+ */
+var BlockChangeMonitor = function () {
+  /**
+   * The prefix of the block's name.
+   *
+   * @since 3.12.0
+   */
+  var parselyBlockPrefix = 'wp-parsely/';
+  /**
+   * The useEffect hook is used to subscribe to changes in the block editor when the component is mounted.
+   * It first gets the current list of blocks and creates a Set of the block IDs.
+   * Then, it subscribes to changes in the block editor.
+   * When the block editor changes, it gets the new list of blocks and creates a new Set of the block IDs.
+   * It checks if the size of the new block IDs Set is different from the last one, indicating that a block
+   * has been added or removed.
+   * If a block has been added or removed, it sends a telemetry event to the server.
+   * Finally, it updates the last block IDs with the new block IDs for the next comparison.
+   * When the component is unmounted, it unsubscribes from the block editor changes.
+   *
+   * @since 3.12.0
+   */
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
+    var getBlockList = function () {
+      return (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.select)('core/block-editor').getBlocks();
+    };
+    var lastBlockIds = new Set(getBlockList().map(function (block) {
+      return block.clientId;
+    }));
+    var unsubscribe = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_0__.subscribe)(function () {
+      var newBlockList = getBlockList();
+      var newBlockIds = new Set(newBlockList.map(function (block) {
+        return block.clientId;
+      }));
+      if (newBlockIds.size !== lastBlockIds.size) {
+        var blocksAdded = newBlockIds.size > lastBlockIds.size;
+        var changedBlockList = blocksAdded ? newBlockList : Array.from(lastBlockIds);
+        for (var _i = 0, changedBlockList_1 = changedBlockList; _i < changedBlockList_1.length; _i++) {
+          var block = changedBlockList_1[_i];
+          if (blocksAdded) {
+            // block is a BlockInstance when blocks are added.
+            var blockInstance = block;
+            if (blockInstance.name.startsWith(parselyBlockPrefix) && !lastBlockIds.has(blockInstance.clientId)) {
+              _telemetry__WEBPACK_IMPORTED_MODULE_2__.Telemetry.trackEvent('block_added', {
+                block: blockInstance.name
+              });
+            }
+          } else {
+            // block is a string (client ID) when blocks are removed.
+            var clientId = block;
+            if (!newBlockIds.has(clientId)) {
+              _telemetry__WEBPACK_IMPORTED_MODULE_2__.Telemetry.trackEvent('block_removed', {
+                block: clientId
+              });
+            }
+          }
+        }
+      }
+      lastBlockIds = newBlockIds;
+    });
+    return function () {
+      unsubscribe();
+    };
+  }, []);
+  return null; // This component does not render anything.
+};
+
+/***/ }),
+
+/***/ "./src/js/telemetry/telemetry.ts":
+/*!***************************************!*\
+  !*** ./src/js/telemetry/telemetry.ts ***!
+  \***************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Telemetry: function() { return /* binding */ Telemetry; },
+/* harmony export */   trackEvent: function() { return /* binding */ trackEvent; }
+/* harmony export */ });
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+var __generator = undefined && undefined.__generator || function (thisArg, body) {
+  var _ = {
+      label: 0,
+      sent: function () {
+        if (t[0] & 1) throw t[1];
+        return t[1];
+      },
+      trys: [],
+      ops: []
+    },
+    f,
+    y,
+    t,
+    g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+    while (g && (g = 0, op[0] && (_ = 0)), _) try {
+      if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+      if (y = 0, t) op = [op[0] & 2, t.value];
+      switch (op[0]) {
+        case 0:
+        case 1:
+          t = op;
+          break;
+        case 4:
+          _.label++;
+          return {
+            value: op[1],
+            done: false
+          };
+        case 5:
+          _.label++;
+          y = op[1];
+          op = [0];
+          continue;
+        case 7:
+          op = _.ops.pop();
+          _.trys.pop();
+          continue;
+        default:
+          if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+            _ = 0;
+            continue;
+          }
+          if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+            _.label = op[1];
+            break;
+          }
+          if (op[0] === 6 && _.label < t[1]) {
+            _.label = t[1];
+            t = op;
+            break;
+          }
+          if (t && _.label < t[2]) {
+            _.label = t[2];
+            _.ops.push(op);
+            break;
+          }
+          if (t[2]) _.ops.pop();
+          _.trys.pop();
+          continue;
+      }
+      op = body.call(thisArg, _);
+    } catch (e) {
+      op = [6, e];
+      y = 0;
+    } finally {
+      f = t = 0;
+    }
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
+/**
+ * Telemetry class.
+ *
+ * @since 3.12.0
+ */
+var Telemetry = /** @class */function () {
+  /**
+   * Private constructor to prevent direct object creation.
+   * This is necessary because this class is a singleton.
+   *
+   * @since 3.12.0
+   */
+  function Telemetry() {
+    /**
+     * The queue of events to be tracked.
+     *
+     * @since 3.12.0
+     * @access private
+     */
+    this._tkq = [];
+    /**
+     * Whether the tracking library has been loaded.
+     *
+     * @since 3.12.0
+     * @access protected
+     */
+    this.isLoaded = false;
+    /**
+     * Whether the tracking is enabled.
+     * Looks for the `wpParselyTracksTelemetry` global object. If it exists, telemetry is enabled.
+     *
+     * @since 3.12.0
+     * @access protected
+     */
+    this.isEnabled = false;
+    if (typeof wpParselyTracksTelemetry !== 'undefined') {
+      this.isEnabled = true;
+      this.loadTrackingLibrary();
+    }
+  }
+  /**
+   * Returns the singleton instance of the Telemetry class.
+   * If the instance does not exist, it is created.
+   *
+   * @since 3.12.0
+   *
+   * @return {Telemetry} The singleton instance of the Telemetry class.
+   */
+  Telemetry.getInstance = function () {
+    if (!window.wpParselyTelemetryInstance) {
+      Object.defineProperty(window, 'wpParselyTelemetryInstance', {
+        value: new Telemetry(),
+        writable: false,
+        configurable: false,
+        enumerable: false // This makes it not show up in console enumerations.
+      });
+    }
+
+    return window.wpParselyTelemetryInstance;
+  };
+  /**
+   * Loads the tracking library.
+   *
+   * @since 3.12.0
+   */
+  Telemetry.prototype.loadTrackingLibrary = function () {
+    var _this = this;
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = '//stats.wp.com/w.js';
+    script.onload = function () {
+      _this.isLoaded = true;
+      _this._tkq = window._tkq || [];
+    };
+    document.head.appendChild(script);
+  };
+  /**
+   * Tracks an event.
+   * This method is static, so it can be called directly from the class.
+   * It first checks if the telemetry is enabled, and if not, it bails.
+   * Then, ensures that the telemetry library is loaded by calling `waitUntilLoaded`.
+   * Finally, it calls the `trackEvent` method on the singleton instance of the Telemetry class.
+   *
+   * @since 3.12.0
+   *
+   * @param {string}     eventName  The name of the event to track.
+   * @param {EventProps} properties The properties of the event to track.
+   *
+   * @return {Promise<void>}        A Promise that resolves when the event has been tracked.
+   */
+  Telemetry.trackEvent = function (eventName, properties) {
+    if (properties === void 0) {
+      properties = {};
+    }
+    return __awaiter(this, void 0, void 0, function () {
+      var telemetry;
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            telemetry = Telemetry.getInstance();
+            // If telemetry is not enabled, bail.
+            if (!telemetry.isTelemetryEnabled()) {
+              return [2 /*return*/];
+            }
+
+            return [4 /*yield*/, Telemetry.waitUntilLoaded()];
+          case 1:
+            _a.sent();
+            telemetry.trackEvent(eventName, properties);
+            return [2 /*return*/];
+        }
+      });
+    });
+  };
+  /**
+   * Waits until the telemetry library is loaded.
+   * This method is static, so it can be called directly from the class.
+   * It checks every 100ms if the telemetry library is loaded, and resolves when it is.
+   * If the library is not loaded after 10 seconds, it rejects.
+   *
+   * @since 3.12.0
+   *
+   * @return {Promise<void>} A Promise that resolves when the telemetry library is loaded.
+   */
+  Telemetry.waitUntilLoaded = function () {
+    return new Promise(function (resolve, reject) {
+      var telemetry = Telemetry.getInstance();
+      if (!telemetry.isTelemetryEnabled()) {
+        reject('Telemetry not enabled');
+        return;
+      }
+      if (telemetry.isLoaded) {
+        resolve();
+        return;
+      }
+      var timeout = 0;
+      var interval = setInterval(function () {
+        if (telemetry.isLoaded) {
+          clearInterval(interval);
+          resolve();
+        }
+        timeout += 100;
+        if (timeout >= 10000) {
+          clearInterval(interval);
+          reject('Telemetry library not loaded');
+        }
+      }, 100);
+    });
+  };
+  /**
+   * Tracks an event.
+   * This method is called by the static `trackEvent` method.
+   * It first checks if the telemetry library is loaded.
+   * Then, it validates the event name and the event properties.
+   * Finally, it pushes the event to the `_tkq` array.
+   *
+   * @since 3.12.0
+   *
+   * @param {string}     eventName  The name of the event to track.
+   * @param {EventProps} properties The properties of the event to track.
+   */
+  Telemetry.prototype.trackEvent = function (eventName, properties) {
+    var _a;
+    if (!this.isLoaded) {
+      // eslint-disable-next-line no-console
+      console.error('Error tracking event: Telemetry not loaded');
+      return;
+    }
+    // Validate if the event name has the correct prefix, if not, append it.
+    if (eventName.indexOf(Telemetry.TRACKS_PREFIX) !== 0) {
+      eventName = Telemetry.TRACKS_PREFIX + eventName;
+    }
+    // Validate the event name.
+    if (!this.isEventNameValid(eventName)) {
+      // eslint-disable-next-line no-console
+      console.error('Error tracking event: Invalid event name');
+      return;
+    }
+    properties = this.prepareProperties(properties);
+    // Push the event to the queue.
+    (_a = this._tkq) === null || _a === void 0 ? void 0 : _a.push(['recordEvent', eventName, properties]);
+  };
+  /**
+   * Checks if the telemetry is enabled.
+   *
+   * @since 3.12.0
+   */
+  Telemetry.prototype.isTelemetryEnabled = function () {
+    return this.isEnabled;
+  };
+  /**
+   * Checks if a property is valid.
+   * A property is valid if it matches the PROPERTY_REGEX.
+   *
+   * @since 3.12.0
+   *
+   * @param {string} property The property to check.
+   *
+   * @return {boolean} `true` if the property is valid, `false` otherwise.
+   */
+  Telemetry.prototype.isProprietyValid = function (property) {
+    return Telemetry.PROPERTY_REGEX.test(property);
+  };
+  /**
+   * Checks if an event name is valid.
+   * An event name is valid if it matches the EVENT_NAME_REGEX.
+   *
+   * @since 3.12.0
+   *
+   * @param {string} eventName The event name to check.
+   *
+   * @return {boolean} `true` if the event name is valid, `false` otherwise.
+   */
+  Telemetry.prototype.isEventNameValid = function (eventName) {
+    return Telemetry.EVENT_NAME_REGEX.test(eventName);
+  };
+  /**
+   * Prepares the properties of an event.
+   * This method sanitizes the properties, sets the `parsely_version` property,
+   * and sets user-specific properties if they exist.
+   *
+   * @since 3.12.0
+   *
+   * @param {EventProps} properties The properties to prepare.
+   *
+   * @return {EventProps} The prepared properties.
+   */
+  Telemetry.prototype.prepareProperties = function (properties) {
+    properties = this.sanitizeProperties(properties);
+    properties.parsely_version = wpParselyTracksTelemetry.version;
+    // Set user-specific properties.
+    if (wpParselyTracksTelemetry.user) {
+      properties._ut = wpParselyTracksTelemetry.user.type;
+      properties._ui = wpParselyTracksTelemetry.user.id;
+    }
+    // If VIP environment, set the vipgo_env property.
+    if (wpParselyTracksTelemetry.vipgo_env) {
+      properties.vipgo_env = wpParselyTracksTelemetry.vipgo_env;
+    }
+    return this.sanitizeProperties(properties);
+  };
+  /**
+   * Sanitizes the properties of an event.
+   * This method creates a new object and copies over all valid properties
+   * from the original properties.
+   *
+   * @since 3.12.0
+   *
+   * @param {EventProps} properties The properties to sanitize.
+   *
+   * @return {EventProps} The sanitized properties.
+   */
+  Telemetry.prototype.sanitizeProperties = function (properties) {
+    var _this = this;
+    var sanitizedProperties = {};
+    Object.keys(properties).forEach(function (property) {
+      if (_this.isProprietyValid(property)) {
+        sanitizedProperties[property] = properties[property];
+      }
+    });
+    return sanitizedProperties;
+  };
+  /**
+   * The prefix used for all events.
+   *
+   * @since 3.12.0
+   * @access private
+   */
+  Telemetry.TRACKS_PREFIX = 'wpparsely_';
+  /**
+   * The regex used to validate event names.
+   *
+   * @since 3.12.0
+   * @access private
+   */
+  Telemetry.EVENT_NAME_REGEX = /^(([a-z0-9]+)_){2}([a-z0-9_]+)$/;
+  /**
+   * The regex used to validate event properties.
+   *
+   * @since 3.12.0
+   * @access private
+   */
+  Telemetry.PROPERTY_REGEX = /^[a-z_][a-z0-9_]*$/;
+  return Telemetry;
+}();
+
+var trackEvent = Telemetry.trackEvent;
+
+/***/ }),
+
+/***/ "@wordpress/data":
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+/***/ (function(module) {
+
+module.exports = window["wp"]["data"];
+
+/***/ }),
+
+/***/ "@wordpress/element":
+/*!*********************************!*\
+  !*** external ["wp","element"] ***!
+  \*********************************/
+/***/ (function(module) {
+
+module.exports = window["wp"]["element"];
+
+/***/ }),
+
+/***/ "@wordpress/plugins":
+/*!*********************************!*\
+  !*** external ["wp","plugins"] ***!
+  \*********************************/
+/***/ (function(module) {
+
+module.exports = window["wp"]["plugins"];
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function() { return module['default']; } :
+/******/ 				function() { return module; };
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	!function() {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = function(exports, definition) {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	!function() {
+/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	!function() {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = function(exports) {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+!function() {
+/*!**********************************!*\
+  !*** ./src/js/telemetry/init.ts ***!
+  \**********************************/
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/plugins */ "@wordpress/plugins");
+/* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _telemetry__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./telemetry */ "./src/js/telemetry/telemetry.ts");
+/* harmony import */ var _block_change__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./block-change */ "./src/js/telemetry/block-change.tsx");
+var __spreadArray = undefined && undefined.__spreadArray || function (to, from, pack) {
+  if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+    if (ar || !(i in from)) {
+      if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+      ar[i] = from[i];
+    }
+  }
+  return to.concat(ar || Array.prototype.slice.call(from));
+};
+/**
+ * WordPress dependencies
+ */
+
+
+/**
+ * Internal dependencies
+ */
+
+
+// Initialize the telemetry module.
+var telemetry = _telemetry__WEBPACK_IMPORTED_MODULE_2__.Telemetry.getInstance();
+// Set up the events.
+if (telemetry.isTelemetryEnabled()) {
+  /**
+   * The events to be tracked.
+   *
+   * @since 3.12.0
+   */
+  var events = [_block_change__WEBPACK_IMPORTED_MODULE_3__.BlockChangeMonitor];
+  var EventsComponent_1 = _wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement.apply(void 0, __spreadArray([_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null], events.map(function (EventComponent) {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(EventComponent);
+  }), false));
+  (0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_1__.registerPlugin)('wp-parsely-tracks-js-events', {
+    render: function () {
+      return EventsComponent_1;
+    }
+  });
+}
+}();
+/******/ })()
+;
+//# sourceMappingURL=telemetry.js.map

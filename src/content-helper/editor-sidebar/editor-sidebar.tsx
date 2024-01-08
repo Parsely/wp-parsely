@@ -28,6 +28,7 @@ import { RelatedTopPostList } from './related-top-posts/component-list';
 import { Telemetry } from '../../js/telemetry/telemetry';
 import { TitleSuggestionsPanel } from './title-suggestions/component';
 import { BetaBadge } from '../common/components/beta-badge';
+import { CrossLinkerPanel } from '../cross-linker/components/cross-linker-panel';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
@@ -282,6 +283,18 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 						<VerifyCredentials>
 							<TitleSuggestionsPanel />
 						</VerifyCredentials>
+					}
+				</PanelBody>
+			</Panel>
+			<Panel>
+				<PanelBody
+					icon={ <BetaBadge /> }
+					title={ __( 'Cross Links', 'wp-parsely' ) }
+					initialOpen={ false }
+					onToggle={ ( next ) => trackToggle( 'cross_links', next ) }
+				>
+					{
+						<CrossLinkerPanel />
 					}
 				</PanelBody>
 			</Panel>

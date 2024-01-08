@@ -9,6 +9,10 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'js', 'admin-settings' ),
 			path.resolve( __dirname, 'src', 'css', 'admin-settings.scss' ),
 		],
+		'content-helper/cross-linker': [
+			path.resolve( __dirname, 'src', 'content-helper', 'cross-linker', 'cross-linker' ),
+			path.resolve( __dirname, 'src', 'content-helper', 'cross-linker', 'cross-linker.scss' ),
+		],
 		'content-helper/dashboard-widget': [
 			path.resolve( __dirname, 'src', 'content-helper', 'dashboard-widget', 'dashboard-widget' ),
 			path.resolve( __dirname, 'src', 'content-helper', 'dashboard-widget', 'dashboard-widget.scss' ),

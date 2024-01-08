@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\Content_Helper\Cross_Linker;
 use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Content_Helper\Editor_Sidebar;
 use Parsely\Content_Helper\Excerpt_Generator;
@@ -265,6 +266,18 @@ add_action( 'init', __NAMESPACE__ . '\\init_content_helper_excerpt_generator' );
  */
 function init_content_helper_excerpt_generator(): void {
 	( new Excerpt_Generator( $GLOBALS['parsely'] ) )->run();
+}
+
+require_once __DIR__ . '/src/content-helper/cross-linker/class-cross-linker.php';
+
+add_action( 'init', __NAMESPACE__ . '\\init_content_helper_cross_linker' );
+/**
+ * Initializes and inserts the PCH Cross Linker.
+ *
+ * @since 3.13.0
+ */
+function init_content_helper_cross_linker(): void {
+	( new Cross_Linker( $GLOBALS['parsely'] ) )->run();
 }
 
 require_once __DIR__ . '/src/UI/class-recommended-widget.php';
