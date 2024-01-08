@@ -10,8 +10,8 @@ import { useDispatch, useSelect } from "@wordpress/data";
 /**
  * Internal dependencies
  */
-import { LeafIcon } from '../../common/icons/leaf-icon';
-import { Telemetry } from '../../../js/telemetry/telemetry';
+import { LeafIcon } from '../../../common/icons/leaf-icon';
+import { Telemetry } from '../../../../js/telemetry/telemetry';
 import { CrossLinkerStore } from "../store";
 
 type CrossLinkerSettingsProps = {

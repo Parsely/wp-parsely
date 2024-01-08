@@ -1,6 +1,6 @@
 import { Button, CheckboxControl, Disabled, PanelRow } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { GutenbergFunction } from '../../../../@types/gutenberg/types';
 import { CrossLinkerSettings } from './cross-linker-settings';
 import { __ } from '@wordpress/i18n';
 import { BlockOverlay } from './block-overlay';

@@ -439,6 +439,171 @@
 .parsely-panel-settings .parsely-panel-settings-header .parsely-panel-settings-header-label .components-base-control__field .components-base-control__label {
   margin-bottom: 0;
 }
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/content-helper/editor-sidebar/cross-linker/cross-linker.scss ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************/
+/** SASS variables **/
+/**
+ * This is a subset of the CSS variables defined in the Parse.ly dashboard. It
+ * is sourced from 1.44/src/styles/base.scss and defines some additional
+ * variables in the end of the file.
+ */
+.settings_page_parsely,
+.components-panel,
+.wp-parsely-content-helper,
+.wp-parsely-excerpt-generator,
+.wp-parsely-popover,
+#wp-parsely-dashboard-widget {
+  /** Layout section - base.scss. **/
+  --base-font: "source-sans-pro", arial, sans-serif;
+  --numeric-font: "ff-din-round-web", sans-serif;
+  /** Category colors section - base scss. **/
+  --parsely-green: hsl(107, 42%, 46%);
+  --gray-200: #f7f8f9;
+  --gray-300: #edeeef;
+  --gray-400: #d7dbdf;
+  --gray-500: #959da5;
+  --gray-600: #586069;
+  --gray-700: #444d56;
+  --gray-900: #24292e;
+  --blue-500: #44a8e5;
+  --blue-550: #2596db;
+  --green-500: #7bc01b;
+  --green-900: #3d6307;
+  --ref-direct: 205, 13%, 52%;
+  --ref-internal: 161, 91%, 41%;
+  --ref-social: 210, 72%, 41%;
+  --ref-search: 42, 100%, 50%;
+  --ref-other: 3, 76%, 58%;
+  /** Theme colors section - base.scss. **/
+  --base-text: var(--gray-900);
+  --base-text-2: var(--gray-600);
+  --base-3: var(--gray-400);
+  --border: var(--gray-400);
+  --data: var(--green-500);
+  --control: var(--blue-500);
+  /** Additional variables. **/
+  --font-size--large: 1rem;
+  --font-size--extra-large: 1.2rem;
+  --black: #000;
+  --sidebar-black: #1e1e1e;
+}
+
+/** SASS variables **/
+/**
+ * This is a subset of the CSS variables defined in the Parse.ly dashboard. It
+ * is sourced from 1.44/src/styles/base.scss and defines some additional
+ * variables in the end of the file.
+ */
+.settings_page_parsely,
+.components-panel,
+.wp-parsely-content-helper,
+.wp-parsely-excerpt-generator,
+.wp-parsely-popover,
+#wp-parsely-dashboard-widget {
+  /** Layout section - base.scss. **/
+  --base-font: "source-sans-pro", arial, sans-serif;
+  --numeric-font: "ff-din-round-web", sans-serif;
+  /** Category colors section - base scss. **/
+  --parsely-green: hsl(107, 42%, 46%);
+  --gray-200: #f7f8f9;
+  --gray-300: #edeeef;
+  --gray-400: #d7dbdf;
+  --gray-500: #959da5;
+  --gray-600: #586069;
+  --gray-700: #444d56;
+  --gray-900: #24292e;
+  --blue-500: #44a8e5;
+  --blue-550: #2596db;
+  --green-500: #7bc01b;
+  --green-900: #3d6307;
+  --ref-direct: 205, 13%, 52%;
+  --ref-internal: 161, 91%, 41%;
+  --ref-social: 210, 72%, 41%;
+  --ref-search: 42, 100%, 50%;
+  --ref-other: 3, 76%, 58%;
+  /** Theme colors section - base.scss. **/
+  --base-text: var(--gray-900);
+  --base-text-2: var(--gray-600);
+  --base-3: var(--gray-400);
+  --border: var(--gray-400);
+  --data: var(--green-500);
+  --control: var(--blue-500);
+  /** Additional variables. **/
+  --font-size--large: 1rem;
+  --font-size--extra-large: 1.2rem;
+  --black: #000;
+  --sidebar-black: #1e1e1e;
+}
+
+.wp-parsely-block-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.wp-parsely-block-overlay .wp-parsely-block-overlay-label {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.wp-parsely-block-overlay svg {
+  width: 1.5625rem;
+  height: 1.5625rem;
+}
+.wp-parsely-block-overlay.full-content-overlay {
+  z-index: 999;
+  font-size: 1.25rem;
+}
+.wp-parsely-block-overlay.full-content-overlay span {
+  margin-top: 0.9375rem;
+}
+.wp-parsely-block-overlay.full-content-overlay svg {
+  width: 3.125rem;
+  height: 3.125rem;
+}
+
+.wp-parsely-block-ai-controls .wp-parsely-icon {
+  order: -1;
+  margin-right: 0.3125rem;
+}
+
+.wp-parsely-cross-linker .components-panel__row {
+  flex-direction: column;
+}
+.wp-parsely-cross-linker .wp-parsely-cross-linker-text {
+  margin-bottom: 0.625rem;
+}
+.wp-parsely-cross-linker .wp-parsely-cross-linker-generate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.wp-parsely-cross-linker .wp-parsely-cross-linker-generate button {
+  margin: 0.625rem 0;
+}
+.wp-parsely-cross-linker .wp-parsely-cross-linker-generate .components-disabled .components-checkbox-control__label {
+  color: var(--gray-500);
+}
+.wp-parsely-cross-linker .wp-parsely-cross-linker-generate .components-button {
+  width: -moz-fit-content;
+  width: fit-content;
+  margin-bottom: 0.625rem;
+}
+.wp-parsely-cross-linker .wp-parsely-cross-linker-generate .components-base-control {
+  margin-bottom: 0 !important;
+}
+.wp-parsely-cross-linker .wp-parsely-cross-linker-generate .components-base-control .components-base-control__field {
+  display: flex;
+}
 /*!******************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./src/content-helper/editor-sidebar/editor-sidebar.scss ***!
   \******************************************************************************************************************************************************************************************************************************************************************************/

@@ -1664,10 +1664,128 @@ var VerifyCredentials = function (_a, errorMessageProps) {
 
 /***/ }),
 
-/***/ "./src/content-helper/cross-linker/components/cross-linker-panel.tsx":
-/*!***************************************************************************!*\
-  !*** ./src/content-helper/cross-linker/components/cross-linker-panel.tsx ***!
-  \***************************************************************************/
+/***/ "./src/content-helper/editor-sidebar/cross-linker/components/block-overlay.tsx":
+/*!*************************************************************************************!*\
+  !*** ./src/content-helper/editor-sidebar/cross-linker/components/block-overlay.tsx ***!
+  \*************************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BlockOverlay: function() { return /* binding */ BlockOverlay; },
+/* harmony export */   BlockOverlayContainer: function() { return /* binding */ BlockOverlayContainer; }
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../store */ "./src/content-helper/editor-sidebar/cross-linker/store.ts");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__);
+
+
+
+
+
+
+var BlockOverlay = function (_a) {
+  var selectedBlockClientId = _a.selectedBlockClientId,
+    label = _a.label;
+  var container = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useState)(document.createElement('div'))[0];
+  container.className = 'wp-parsely-block-overlay';
+  if (selectedBlockClientId === 'all') {
+    container.className += ' full-content-overlay';
+  }
+  // When clicking the overlay, we want the underlying block to be selected.
+  container.onclick = function () {
+    if (selectedBlockClientId === 'all') {
+      return;
+    }
+    (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.dispatch)('core/block-editor').selectBlock(selectedBlockClientId);
+  };
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.useEffect)(function () {
+    if (!selectedBlockClientId) {
+      return;
+    }
+    /**
+     * If the selected block is the "All content" block, we need to append the overlay
+     * to the editor element instead of the block element.
+     */
+    if (selectedBlockClientId === 'all') {
+      var editorElement_1 = document.querySelector('.interface-navigable-region.interface-interface-skeleton__content');
+      editorElement_1 === null || editorElement_1 === void 0 ? void 0 : editorElement_1.appendChild(container);
+      // Set overflow to hidden
+      editorElement_1 === null || editorElement_1 === void 0 ? void 0 : editorElement_1.setAttribute('style', 'overflow: hidden');
+      container.style.top = (editorElement_1 === null || editorElement_1 === void 0 ? void 0 : editorElement_1.scrollTop) + 'px';
+      return function () {
+        editorElement_1 === null || editorElement_1 === void 0 ? void 0 : editorElement_1.removeChild(container);
+        // Restore overflow
+        editorElement_1 === null || editorElement_1 === void 0 ? void 0 : editorElement_1.setAttribute('style', '');
+        container.style.top = '';
+      };
+    }
+    var blockElement = document.querySelector("[data-block=\"".concat(selectedBlockClientId, "\"]"));
+    // Disable changes on the block element
+    blockElement === null || blockElement === void 0 ? void 0 : blockElement.setAttribute('contenteditable', 'false');
+    blockElement === null || blockElement === void 0 ? void 0 : blockElement.setAttribute('aria-disabled', 'true');
+    // Disable interaction with the block
+    if (blockElement instanceof HTMLElement) {
+      //blockElement.style.pointerEvents = 'none';
+      blockElement.style.userSelect = 'none';
+    }
+    // Insert the container in the block element
+    blockElement === null || blockElement === void 0 ? void 0 : blockElement.appendChild(container);
+    // Remove the container on component unload
+    return function () {
+      // Enable changes on the block element
+      blockElement === null || blockElement === void 0 ? void 0 : blockElement.setAttribute('contenteditable', 'true');
+      blockElement === null || blockElement === void 0 ? void 0 : blockElement.removeAttribute('aria-disabled');
+      // Restore interaction
+      if (blockElement instanceof HTMLElement) {
+        //blockElement.style.pointerEvents = '';
+        blockElement.style.userSelect = '';
+      }
+      blockElement === null || blockElement === void 0 ? void 0 : blockElement.removeChild(container);
+    };
+  });
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_2__.createPortal)((0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    children: (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)("div", {
+      className: "wp-parsely-block-overlay-label",
+      children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Spinner, {}), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)("span", {
+        children: label
+      })]
+    })
+  }), container);
+};
+/**
+ * Draws the multiple block overlays that are currently listed in the Cross Linker store.
+ */
+var BlockOverlayContainer = function () {
+  var overlayBlocks = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(function (select) {
+    var getOverlayBlocks = select(_store__WEBPACK_IMPORTED_MODULE_4__.CrossLinkerStore).getOverlayBlocks;
+    return {
+      overlayBlocks: getOverlayBlocks()
+    };
+  }, []).overlayBlocks;
+  return (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    children: overlayBlocks.map(function (blockId, index) {
+      return (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(BlockOverlay, {
+        label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Generating cross links…', 'wp-parsely'),
+        selectedBlockClientId: blockId
+      }, index);
+    })
+  });
+};
+
+/***/ }),
+
+/***/ "./src/content-helper/editor-sidebar/cross-linker/components/cross-linker-panel.tsx":
+/*!******************************************************************************************!*\
+  !*** ./src/content-helper/editor-sidebar/cross-linker/components/cross-linker-panel.tsx ***!
+  \******************************************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1679,10 +1797,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _cross_linker_settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./cross-linker-settings */ "./src/content-helper/cross-linker/components/cross-linker-settings.tsx");
+/* harmony import */ var _cross_linker_settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./cross-linker-settings */ "./src/content-helper/editor-sidebar/cross-linker/components/cross-linker-settings.tsx");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../store */ "./src/content-helper/cross-linker/store.ts");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../store */ "./src/content-helper/editor-sidebar/cross-linker/store.ts");
 var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
   function adopt(value) {
     return value instanceof P ? value : new P(function (resolve) {
@@ -1939,10 +2057,10 @@ var CrossLinkerPanel = function (_a) {
 
 /***/ }),
 
-/***/ "./src/content-helper/cross-linker/components/cross-linker-settings.tsx":
-/*!******************************************************************************!*\
-  !*** ./src/content-helper/cross-linker/components/cross-linker-settings.tsx ***!
-  \******************************************************************************/
+/***/ "./src/content-helper/editor-sidebar/cross-linker/components/cross-linker-settings.tsx":
+/*!*********************************************************************************************!*\
+  !*** ./src/content-helper/editor-sidebar/cross-linker/components/cross-linker-settings.tsx ***!
+  \*********************************************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -1957,9 +2075,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/settings.js");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
 /* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _common_icons_leaf_icon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../common/icons/leaf-icon */ "./src/content-helper/common/icons/leaf-icon.tsx");
-/* harmony import */ var _js_telemetry_telemetry__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../js/telemetry/telemetry */ "./src/js/telemetry/telemetry.ts");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../store */ "./src/content-helper/cross-linker/store.ts");
+/* harmony import */ var _common_icons_leaf_icon__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../common/icons/leaf-icon */ "./src/content-helper/common/icons/leaf-icon.tsx");
+/* harmony import */ var _js_telemetry_telemetry__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../../js/telemetry/telemetry */ "./src/js/telemetry/telemetry.ts");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../store */ "./src/content-helper/editor-sidebar/cross-linker/store.ts");
 
 /**
  * WordPress dependencies
@@ -2050,10 +2168,101 @@ var CrossLinkerSettings = function (_a) {
 
 /***/ }),
 
-/***/ "./src/content-helper/cross-linker/store.ts":
-/*!**************************************************!*\
-  !*** ./src/content-helper/cross-linker/store.ts ***!
-  \**************************************************/
+/***/ "./src/content-helper/editor-sidebar/cross-linker/cross-linker.tsx":
+/*!*************************************************************************!*\
+  !*** ./src/content-helper/editor-sidebar/cross-linker/cross-linker.tsx ***!
+  \*************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   initCrossLinker: function() { return /* binding */ initCrossLinker; }
+/* harmony export */ });
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _wordpress_hooks__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/hooks */ "@wordpress/hooks");
+/* harmony import */ var _wordpress_hooks__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_hooks__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/compose */ "@wordpress/compose");
+/* harmony import */ var _wordpress_compose__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _common_components_beta_badge__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../common/components/beta-badge */ "./src/content-helper/common/components/beta-badge/index.ts");
+/* harmony import */ var _common_icons_leaf_icon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../common/icons/leaf-icon */ "./src/content-helper/common/icons/leaf-icon.tsx");
+/* harmony import */ var _components_cross_linker_panel__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/cross-linker-panel */ "./src/content-helper/editor-sidebar/cross-linker/components/cross-linker-panel.tsx");
+/* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/plugins */ "@wordpress/plugins");
+/* harmony import */ var _wordpress_plugins__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_plugins__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _components_block_overlay__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/block-overlay */ "./src/content-helper/editor-sidebar/cross-linker/components/block-overlay.tsx");
+/* harmony import */ var _cross_linker_scss__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./cross-linker.scss */ "./src/content-helper/editor-sidebar/cross-linker/cross-linker.scss");
+var __assign = undefined && undefined.__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+      for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+    }
+    return t;
+  };
+  return __assign.apply(this, arguments);
+};
+
+
+
+
+
+/**
+ * Internal dependencies
+ */
+
+
+
+
+
+
+/**
+ * Cross linker inspector control panel component
+ */
+var CrossLinkerInspectorControlPanel = (0,_wordpress_compose__WEBPACK_IMPORTED_MODULE_2__.createHigherOrderComponent)(function (BlockEdit) {
+  return function (props) {
+    if (props.name !== 'core/paragraph' || props.isSelected === false) {
+      return (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(BlockEdit, __assign({}, props));
+    }
+    return (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+      children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(BlockEdit, __assign({}, props)), (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, {
+        group: "list",
+        children: (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+          title: "Cross Linker",
+          className: "wp-parsely-block-ai-controls",
+          icon: (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+            children: [(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_common_icons_leaf_icon__WEBPACK_IMPORTED_MODULE_6__.LeafIcon, {}), " ", (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_common_components_beta_badge__WEBPACK_IMPORTED_MODULE_5__.BetaBadge, {})]
+          }),
+          children: (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx)(_components_cross_linker_panel__WEBPACK_IMPORTED_MODULE_7__.CrossLinkerPanel, {
+            selectedBlockClientId: props.clientId
+          })
+        })
+      })]
+    });
+  };
+}, 'withInspectorControl');
+var initCrossLinker = function () {
+  /**
+   * Add cross linker inspector control panel to paragraph block.
+   */
+  (0,_wordpress_hooks__WEBPACK_IMPORTED_MODULE_1__.addFilter)('editor.BlockEdit', 'my-plugin/with-inspector-controls', CrossLinkerInspectorControlPanel);
+  /**
+   * Register the block overlay container to allow drawing the overlay over the blocks
+   * that are being processed.
+   */
+  (0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_8__.registerPlugin)('wp-parsely-block-overlay', {
+    render: _components_block_overlay__WEBPACK_IMPORTED_MODULE_9__.BlockOverlayContainer
+  });
+};
+
+/***/ }),
+
+/***/ "./src/content-helper/editor-sidebar/cross-linker/store.ts":
+/*!*****************************************************************!*\
+  !*** ./src/content-helper/editor-sidebar/cross-linker/store.ts ***!
+  \*****************************************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
@@ -5638,6 +5847,18 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/content-helper/editor-sidebar/cross-linker/cross-linker.scss":
+/*!**************************************************************************!*\
+  !*** ./src/content-helper/editor-sidebar/cross-linker/cross-linker.scss ***!
+  \**************************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./node_modules/react/cjs/react-jsx-runtime.development.js":
 /*!*****************************************************************!*\
   !*** ./node_modules/react/cjs/react-jsx-runtime.development.js ***!
@@ -6997,6 +7218,16 @@ module.exports = window["wp"]["apiFetch"];
 
 /***/ }),
 
+/***/ "@wordpress/block-editor":
+/*!*************************************!*\
+  !*** external ["wp","blockEditor"] ***!
+  \*************************************/
+/***/ (function(module) {
+
+module.exports = window["wp"]["blockEditor"];
+
+/***/ }),
+
 /***/ "@wordpress/components":
 /*!************************************!*\
   !*** external ["wp","components"] ***!
@@ -7004,6 +7235,16 @@ module.exports = window["wp"]["apiFetch"];
 /***/ (function(module) {
 
 module.exports = window["wp"]["components"];
+
+/***/ }),
+
+/***/ "@wordpress/compose":
+/*!*********************************!*\
+  !*** external ["wp","compose"] ***!
+  \*********************************/
+/***/ (function(module) {
+
+module.exports = window["wp"]["compose"];
 
 /***/ }),
 
@@ -7054,6 +7295,16 @@ module.exports = window["wp"]["editor"];
 /***/ (function(module) {
 
 module.exports = window["wp"]["element"];
+
+/***/ }),
+
+/***/ "@wordpress/hooks":
+/*!*******************************!*\
+  !*** external ["wp","hooks"] ***!
+  \*******************************/
+/***/ (function(module) {
+
+module.exports = window["wp"]["hooks"];
 
 /***/ }),
 
@@ -7198,7 +7449,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _js_telemetry_telemetry__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../js/telemetry/telemetry */ "./src/js/telemetry/telemetry.ts");
 /* harmony import */ var _title_suggestions_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./title-suggestions/component */ "./src/content-helper/editor-sidebar/title-suggestions/component.tsx");
 /* harmony import */ var _common_components_beta_badge__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ../common/components/beta-badge */ "./src/content-helper/common/components/beta-badge/index.ts");
-/* harmony import */ var _cross_linker_components_cross_linker_panel__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ../cross-linker/components/cross-linker-panel */ "./src/content-helper/cross-linker/components/cross-linker-panel.tsx");
+/* harmony import */ var _cross_linker_components_cross_linker_panel__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./cross-linker/components/cross-linker-panel */ "./src/content-helper/editor-sidebar/cross-linker/components/cross-linker-panel.tsx");
+/* harmony import */ var _cross_linker_cross_linker__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./cross-linker/cross-linker */ "./src/content-helper/editor-sidebar/cross-linker/cross-linker.tsx");
 var __assign = undefined && undefined.__assign || function () {
   __assign = Object.assign || function (t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -7225,6 +7477,7 @@ var __assign = undefined && undefined.__assign || function () {
 /**
  * Internal dependencies
  */
+
 
 
 
@@ -7483,6 +7736,8 @@ var ContentHelperEditorSidebar = function () {
   icon: _common_icons_leaf_icon__WEBPACK_IMPORTED_MODULE_9__.LeafIcon,
   render: ContentHelperEditorSidebar
 });
+// Initialize cross linker.
+(0,_cross_linker_cross_linker__WEBPACK_IMPORTED_MODULE_18__.initCrossLinker)();
 }();
 // This entry need to be wrapped in an IIFE because it need to be isolated against other entry modules.
 !function() {

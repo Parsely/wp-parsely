@@ -6,11 +6,12 @@ import { PanelBody } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import { BetaBadge } from '../common/components/beta-badge';
-import { LeafIcon } from '../common/icons/leaf-icon';
+import { BetaBadge } from '../../common/components/beta-badge';
+import { LeafIcon } from '../../common/icons/leaf-icon';
 import { CrossLinkerPanel } from './components/cross-linker-panel';
-import { registerPlugin } from "@wordpress/plugins";
-import { BlockOverlayContainer } from "./components/block-overlay";
+import { registerPlugin } from '@wordpress/plugins';
+import { BlockOverlayContainer } from './components/block-overlay';
+import './cross-linker.scss';
 
 /**
  * Cross linker inspector control panel component
@@ -40,19 +41,23 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 	};
 }, 'withInspectorControl' );
 
-/**
- * Add cross linker inspector control panel to paragraph block.
- */
-addFilter(
-	'editor.BlockEdit',
-	'my-plugin/with-inspector-controls',
-	CrossLinkerInspectorControlPanel
-);
+export const initCrossLinker = () => {
+	/**
+	 * Add cross linker inspector control panel to paragraph block.
+	 */
+	addFilter(
+		'editor.BlockEdit',
+		'my-plugin/with-inspector-controls',
+		CrossLinkerInspectorControlPanel
+	);
 
-/**
- * Register the block overlay container to allow drawing the overlay over the blocks
- * that are being processed.
- */
-registerPlugin( 'wp-parsely-block-overlay', {
-	render: BlockOverlayContainer,
-} );
+	/**
+	 * Register the block overlay container to allow drawing the overlay over the blocks
+	 * that are being processed.
+	 */
+	registerPlugin( 'wp-parsely-block-overlay', {
+		render: BlockOverlayContainer,
+	} );
+};
+
+

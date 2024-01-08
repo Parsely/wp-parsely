@@ -28,7 +28,8 @@ import { RelatedTopPostList } from './related-top-posts/component-list';
 import { Telemetry } from '../../js/telemetry/telemetry';
 import { TitleSuggestionsPanel } from './title-suggestions/component';
 import { BetaBadge } from '../common/components/beta-badge';
-import { CrossLinkerPanel } from '../cross-linker/components/cross-linker-panel';
+import { CrossLinkerPanel } from './cross-linker/components/cross-linker-panel';
+import { initCrossLinker } from "./cross-linker/cross-linker";
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
@@ -307,3 +308,6 @@ registerPlugin( BLOCK_PLUGIN_ID, {
 	icon: LeafIcon,
 	render: ContentHelperEditorSidebar,
 } );
+
+// Initialize cross linker.
+initCrossLinker();

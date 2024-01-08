@@ -268,18 +268,6 @@ function init_content_helper_excerpt_generator(): void {
 	( new Excerpt_Generator( $GLOBALS['parsely'] ) )->run();
 }
 
-require_once __DIR__ . '/src/content-helper/cross-linker/class-cross-linker.php';
-
-add_action( 'init', __NAMESPACE__ . '\\init_content_helper_cross_linker' );
-/**
- * Initializes and inserts the PCH Cross Linker.
- *
- * @since 3.13.0
- */
-function init_content_helper_cross_linker(): void {
-	( new Cross_Linker( $GLOBALS['parsely'] ) )->run();
-}
-
 require_once __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
