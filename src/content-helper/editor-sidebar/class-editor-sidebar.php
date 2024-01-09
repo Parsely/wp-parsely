@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
+use Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint;
 use Parsely\Parsely;
 use Parsely\Content_Helper\Content_Helper_Feature;
+use WP_REST_Request;
 
 use function Parsely\Utils\get_asset_info;
 
@@ -96,6 +98,35 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			$built_assets_url . 'editor-sidebar.css',
 			array(),
 			$asset_php['version']
+		);
+	}
+
+	/**
+	 * Injects any required inline scripts.
+	 *
+	 * @since 3.13.0
+	 */
+	protected function inject_inline_scripts(): void {
+		parent::inject_inline_scripts();
+		$settings = '';
+
+		if ( ! defined( 'INTEGRATION_TESTS_RUNNING' ) ) {
+			$settings = rest_do_request(
+				new WP_REST_Request(
+					'GET',
+					'/wp-parsely/v1' . Editor_Sidebar_Settings_Endpoint::get_route()
+				)
+			)->get_data();
+		}
+
+		if ( ! is_string( $settings ) ) {
+			$settings = '';
+		}
+
+		wp_add_inline_script(
+			static::get_script_id(),
+			"window.wpParselyContentHelperSettings = '$settings';",
+			'before'
 		);
 	}
 }
