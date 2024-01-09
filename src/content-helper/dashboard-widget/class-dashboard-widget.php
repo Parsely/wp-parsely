@@ -13,7 +13,6 @@ namespace Parsely\Content_Helper;
 use Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
-use WP_REST_Request;
 
 use function Parsely\Utils\get_asset_info;
 
@@ -137,42 +136,13 @@ class Dashboard_Widget extends Content_Helper_Feature {
 			true
 		);
 
-		$this->inject_inline_scripts();
+		$this->inject_inline_scripts( Dashboard_Widget_Settings_Endpoint::get_route() );
 
 		wp_enqueue_style(
 			static::get_style_id(),
 			$built_assets_url . 'dashboard-widget.css',
 			array(),
 			$asset_php['version']
-		);
-	}
-
-	/**
-	 * Injects any required inline scripts.
-	 *
-	 * @since 3.13.0
-	 */
-	protected function inject_inline_scripts(): void {
-		parent::inject_inline_scripts();
-		$settings = '';
-
-		if ( ! defined( 'INTEGRATION_TESTS_RUNNING' ) ) {
-			$settings = rest_do_request(
-				new WP_REST_Request(
-					'GET',
-					'/wp-parsely/v1' . Dashboard_Widget_Settings_Endpoint::get_route()
-				)
-			)->get_data();
-		}
-
-		if ( ! is_string( $settings ) ) {
-			$settings = '';
-		}
-
-		wp_add_inline_script(
-			static::get_script_id(),
-			"window.wpParselyContentHelperSettings = '$settings';",
-			'before'
 		);
 	}
 }

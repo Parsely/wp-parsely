@@ -1,14 +1,13 @@
 /**
  * WordPress dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
 import { Panel, PanelBody, SelectControl } from '@wordpress/components';
 // eslint-disable-next-line import/named
 import { Taxonomy, User, store as coreStore } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { store as editorStore } from '@wordpress/editor';
-import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
 
@@ -19,6 +18,7 @@ import { Telemetry } from '../../js/telemetry/telemetry';
 import { BetaBadge } from '../common/components/beta-badge';
 import { PARSELY_PERSONAS } from '../common/components/persona-selector';
 import { PARSELY_TONES } from '../common/components/tone-selector';
+import { useSaveSettings } from '../common/hooks/useSaveSettings';
 import { LeafIcon } from '../common/icons/leaf-icon';
 import {
 	Metric,
@@ -159,7 +159,6 @@ const getSettingsFromJson = ( settingsJson: string ): SidebarSettings => {
  * @return {JSX.Element} The Content Helper Editor Sidebar.
  */
 const ContentHelperEditorSidebar = (): JSX.Element => {
-	const isFirstRender = useRef( true );
 	const [ settings, setSettings ] = useState<SidebarSettings>(
 		getSettingsFromJson( window.wpParselyContentHelperSettings )
 	);
@@ -260,18 +259,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 	 *
 	 * @since 3.13.0
 	 */
-	useEffect( () => {
-		if ( isFirstRender.current ) {
-			isFirstRender.current = false;
-			return;
-		}
-
-		apiFetch( {
-			path: '/wp-parsely/v1/user-meta/content-helper/editor-sidebar-settings',
-			method: 'PUT',
-			data: settings,
-		} );
-	}, [ settings ] );
+	useSaveSettings( 'editor-sidebar-settings', settings, [ settings ] );
 
 	useEffect( () => {
 		setPostData( {

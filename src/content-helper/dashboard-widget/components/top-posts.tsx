@@ -1,9 +1,8 @@
 /**
  * WordPress dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
 import { Spinner } from '@wordpress/components';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
@@ -11,6 +10,7 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { ContentHelperError } from '../../common/content-helper-error';
+import { useSaveSettings } from '../../common/hooks/useSaveSettings';
 import { Select } from '../../common/select';
 import {
 	Metric,
@@ -39,7 +39,7 @@ interface TopPostsProps {
  *
  * @since 3.13.0
  */
-interface TopPostsSettings {
+export interface TopPostsSettings {
 	period: Period;
 	metric: Metric;
 }
@@ -78,7 +78,6 @@ const getSettingsFromJson = ( settingsJson: string ): TopPostsSettings => {
  * @param {TopPostsProps} props The component's props.
  */
 export function TopPosts( { settingsJson }: TopPostsProps ): JSX.Element {
-	const isFirstRender = useRef( true );
 	const settings = getSettingsFromJson( settingsJson );
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
@@ -93,18 +92,9 @@ export function TopPosts( { settingsJson }: TopPostsProps ): JSX.Element {
 	 *
 	 * @since 3.13.0
 	 */
-	useEffect( () => {
-		if ( isFirstRender.current ) {
-			isFirstRender.current = false;
-			return;
-		}
-
-		apiFetch( {
-			path: '/wp-parsely/v1/user-meta/content-helper/dashboard-widget-settings',
-			method: 'PUT',
-			data: { period, metric },
-		} );
-	}, [ period, metric ] );
+	useSaveSettings(
+		'dashboard-widget-settings', { period, metric }, [ period, metric ]
+	);
 
 	/**
 	 * Fetches the top posts.
