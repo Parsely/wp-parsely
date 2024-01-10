@@ -192,7 +192,7 @@ export const TitleSuggestionsPanel = ( {
 				isBusy={ loading }
 				onClick={ generateOnClickHandler }
 			>
-				{ loading && 'Generating Titles...' }
+				{ loading && __( 'Generating Titles…', 'wp-parsely' ) }
 				{ ! loading && titles.length > 0 && __( 'Generate More', 'wp-parsely' ) }
 				{ ! loading && titles.length === 0 && __( 'Generate Titles', 'wp-parsely' ) }
 			</Button>
