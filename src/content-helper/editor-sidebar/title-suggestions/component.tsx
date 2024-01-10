@@ -9,15 +9,15 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { Telemetry } from '../../../js/telemetry/telemetry';
+import { PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
+import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
 import { ContentHelperError } from '../../common/content-helper-error';
+import { TitleSuggestionsSettings } from './component-settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { WriteTitleProvider } from './provider';
 import { TitleStore, TitleType } from './store';
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
-import { Telemetry } from '../../../js/telemetry/telemetry';
-import { TitleSuggestionsSettings } from './component-settings';
-import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
-import { PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
 
 /**
  * Title Suggestions Panel.
@@ -167,7 +167,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 				isBusy={ loading }
 				onClick={ generateOnClickHandler }
 			>
-				{ loading && 'Generating Titles...' }
+				{ loading && __( 'Generating Titles…', 'wp-parsely' ) }
 				{ ! loading && titles.length > 0 && __( 'Generate More', 'wp-parsely' ) }
 				{ ! loading && titles.length === 0 && __( 'Generate Titles', 'wp-parsely' ) }
 			</Button>
