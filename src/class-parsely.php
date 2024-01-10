@@ -830,14 +830,19 @@ class Parsely {
 			self::PUBLIC_SUGGESTIONS_API_BASE_URL,
 		);
 
-		add_filter( 'http_request_host_is_external', function ( $external, $host, $url ) use ( $allowed_urls ) {
-			// Check if the URL matches any URLs on the allowed list.
-			foreach ( $allowed_urls as $allowed_url ) {
-				if ( str_starts_with( $url, $allowed_url ) ) {
-					return true;
+		add_filter(
+			'http_request_host_is_external',
+			function ( $external, $host, $url ) use ( $allowed_urls ) {
+				// Check if the URL matches any URLs on the allowed list.
+				foreach ( $allowed_urls as $allowed_url ) {
+					if ( str_starts_with( $url, $allowed_url ) ) {
+						return true;
+					}
 				}
-			}
-			return $external;
-		}, 10, 3 );
+				return $external;
+			},
+			10,
+			3 
+		);
 	}
 }
