@@ -1,18 +1,18 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { BaseControl, Button } from '@wordpress/components';
-import { settings } from '@wordpress/icons';
 import { useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import { settings } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
-import { ToneSelector, ToneProp, getToneLabel } from '../../common/components/tone-selector';
-import { PersonaSelector, PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
-import { LeafIcon } from '../../common/icons/leaf-icon';
 import { Telemetry } from '../../../js/telemetry/telemetry';
+import { PersonaProp, PersonaSelector, getPersonaLabel } from '../../common/components/persona-selector';
+import { ToneProp, ToneSelector, getToneLabel } from '../../common/components/tone-selector';
+import { LeafIcon } from '../../common/icons/leaf-icon';
 
 /**
  * Props for the Title Suggestions Settings component.
@@ -40,7 +40,7 @@ export const TitleSuggestionsSettings = ( {
 	onToneChange,
 	onPersonaChange,
 	isLoading,
-}: TitleSuggestionsSettingsProps ): JSX.Element => {
+}: Readonly<TitleSuggestionsSettingsProps> ): JSX.Element => {
 	const [ isSettingActive, setIsSettingActive ] = useState<boolean>( false );
 	const [ isToneSelected, setIsToneSelected ] = useState<boolean>( false );
 	const [ isPersonaSelected, setIsPersonaSelected ] = useState<boolean>( false );

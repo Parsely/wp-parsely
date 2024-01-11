@@ -130,7 +130,9 @@ type CustomPersonaProps = {
  *
  * @param {CustomPersonaProps} props The properties for the CustomPersona component.
  */
-const CustomPersona = ( { value, onChange }: CustomPersonaProps ): JSX.Element => {
+const CustomPersona = (
+	{ value, onChange }: Readonly<CustomPersonaProps>
+): JSX.Element => {
 	const [ customPersona, setCustomPersona ] = useState<string>( '' );
 	return (
 		<div className="parsely-persona-selector-custom">
@@ -176,7 +178,7 @@ export const PersonaSelector = ( {
 	onDropdownChange,
 	disabled = false,
 	allowCustom = false,
-}: PersonaSelectorProps ): JSX.Element => {
+}: Readonly<PersonaSelectorProps> ): JSX.Element => {
 	return (
 		<Disabled isDisabled={ disabled }>
 			<DropdownMenu
