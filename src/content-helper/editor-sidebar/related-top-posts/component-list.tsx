@@ -152,8 +152,8 @@ export function RelatedTopPostList( {
 			setFilter( getInitialFilterSettings() );
 		} else if ( PostFilterType.Tag === filter.type &&
 					false === postData.tags.includes( filter.value ) ) {
-			// Deleted tag. Reset to the first tag and save it to the database.
-			updateFilterValue( postData.tags[ 0 ] );
+			// The tag is unavailable. Reset to the first available tag.
+			setFilter( { type: PostFilterType.Tag, value: postData.tags[ 0 ] } );
 		} else {
 			fetchPosts( FETCH_RETRIES );
 		}
