@@ -150,6 +150,10 @@ export function RelatedTopPostList( {
 		setLoading( true );
 		if ( PostFilterType.Unavailable === filter.type ) {
 			setFilter( getInitialFilterSettings() );
+		} else if ( PostFilterType.Tag === filter.type &&
+					false === postData.tags.includes( filter.value ) ) {
+			// Deleted tag. Reset to the first tag and save it to the database.
+			updateFilterValue( postData.tags[ 0 ] );
 		} else {
 			fetchPosts( FETCH_RETRIES );
 		}
