@@ -75,7 +75,7 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 			),
 			'TitleSuggestionsPersona'      => array(
 				'values'  => array(),
-				'default' => __( 'journalist', 'wp-parsely' ),
+				'default' => 'journalist',
 			),
 			'TitleSuggestionsSettingsOpen' => array(
 				'values'  => array( true, false ),
@@ -83,7 +83,7 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 			),
 			'TitleSuggestionsTone'         => array(
 				'values'  => array(),
-				'default' => __( 'neutral', 'wp-parsely' ),
+				'default' => 'neutral',
 			),
 		);
 	}
