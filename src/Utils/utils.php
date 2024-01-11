@@ -355,7 +355,7 @@ function get_asset_info( string $path ) {
  * @return bool Returns true if $haystack starts with $needle, false otherwise.
  */
 function str_starts_with( string $haystack, string $needle ): bool {
-	if ( ! function_exists( '\str_starts_with' ) ) {
+	if ( function_exists( '\str_starts_with' ) ) {
 		return \str_starts_with( $haystack, $needle );
 	}
 	return 0 === strpos( (string) $haystack, (string) $needle );
