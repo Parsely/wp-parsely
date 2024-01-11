@@ -259,7 +259,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 	 *
 	 * @since 3.13.0
 	 */
-	useSaveSettings( 'editor-sidebar-settings', settings, [ settings ] );
+	useSaveSettings( 'editor-sidebar-settings', settings );
 
 	useEffect( () => {
 		setPostData( {

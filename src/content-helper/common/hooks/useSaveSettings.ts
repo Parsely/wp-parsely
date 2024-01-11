@@ -14,7 +14,7 @@ import { SidebarSettings } from '../../editor-sidebar/editor-sidebar';
  * Custom types for brevity and for avoiding a "type React is undefined" error.
  */
 type Settings = SidebarSettings | TopPostsSettings;
-type ReactDeps = React.DependencyList;
+type ReactDeps = React.DependencyList | undefined;
 
 /**
  * Saves the settings into the WordPress database whenever a dependency update
@@ -22,14 +22,14 @@ type ReactDeps = React.DependencyList;
  *
  * @since 3.13.0
  *
- * @param {string}     endpoint The settings endpoint to send the data to.
- * @param {Settings}   data     The data to send.
- * @param {ReactDeps } deps     The deps array that triggers saving.
+ * @param {string}    endpoint The settings endpoint to send the data to.
+ * @param {Settings}  data     The data to send.
+ * @param {ReactDeps} deps     The deps array that triggers saving.
  */
 export const useSaveSettings = (
 	endpoint: string,
 	data: Settings,
-	deps: ReactDeps
+	deps: ReactDeps = undefined
 ) => {
 	const isFirstRender = useRef( true );
 
@@ -45,5 +45,5 @@ export const useSaveSettings = (
 			method: 'PUT',
 			data,
 		} );
-	}, deps ); // eslint-disable-line react-hooks/exhaustive-deps
+	}, deps ?? Object.values( data ) ); // eslint-disable-line react-hooks/exhaustive-deps
 };

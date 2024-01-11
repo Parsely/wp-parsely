@@ -92,9 +92,7 @@ export function TopPosts( { settingsJson }: TopPostsProps ): JSX.Element {
 	 *
 	 * @since 3.13.0
 	 */
-	useSaveSettings(
-		'dashboard-widget-settings', { period, metric }, [ period, metric ]
-	);
+	useSaveSettings( 'dashboard-widget-settings', { period, metric } );
 
 	/**
 	 * Fetches the top posts.
