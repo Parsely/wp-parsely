@@ -58,6 +58,9 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 * @uses \Parsely\Endpoints\Base_Endpoint::permission_callback
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
@@ -81,11 +84,14 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_route
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
+	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Parsely::__construct
 	 */
 	public function test_verify_that_route_is_not_registered_when_proxy_is_disabled(): void {
 		parent::run_test_do_not_register_route_when_proxy_is_disabled();
@@ -99,10 +105,13 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @covers \Parsely\Endpoints\Base_Endpoint::permission_callback
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
+	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Parsely::__construct
 	 */
 	public function test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed(): void {
 		parent::run_test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed();
@@ -116,10 +125,13 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @covers \Parsely\Endpoints\Base_Endpoint::permission_callback
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
+	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Parsely::__construct
 	 */
 	public function test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed(): void {
 		parent::run_test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed();
@@ -130,14 +142,15 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 *
 	 * @since 3.13.0
 	 *
+	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
+	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_value
-	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_default_value
-	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::process_request()
+	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
+	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::process_request
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 * @uses \Parsely\Endpoints\Base_Endpoint::permission_callback
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_meta_key
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_route
@@ -172,19 +185,21 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @param string $test_data The data to send in the PUT request.
 	 * @param string $expected The expected value of the setting after the PUT request.
 	 *
+	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_value
+	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::sanitize_subvalue
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::sanitize_value
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::set_value
-	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_default_value
-	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_valid_subvalues
+	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
 	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::process_request
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 * @uses \Parsely\Endpoints\Base_Endpoint::permission_callback
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_meta_key
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_route
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options

@@ -13,6 +13,7 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
 import { PersonaProp, PersonaSelector, getPersonaLabel } from '../../common/components/persona-selector';
 import { ToneProp, ToneSelector, getToneLabel } from '../../common/components/tone-selector';
 import { LeafIcon } from '../../common/icons/leaf-icon';
+import { SidebarSettings } from '../editor-sidebar';
 
 /**
  * Props for the Title Suggestions Settings component.
@@ -20,11 +21,13 @@ import { LeafIcon } from '../../common/icons/leaf-icon';
  * @since 3.13.0
  */
 type TitleSuggestionsSettingsProps = {
-	tone: ToneProp,
-	persona: PersonaProp,
-	onToneChange: ( tone: ToneProp | string ) => void,
-	onPersonaChange: ( persona: PersonaProp | string ) => void,
 	isLoading?: boolean,
+	isOpen: boolean,
+	onPersonaChange: ( persona: PersonaProp | string ) => void,
+	onSettingChange: ( key: keyof SidebarSettings, value: string|boolean ) => void,
+	onToneChange: ( tone: ToneProp | string ) => void,
+	persona: PersonaProp,
+	tone: ToneProp,
 };
 
 /**
@@ -35,17 +38,18 @@ type TitleSuggestionsSettingsProps = {
  * @param {TitleSuggestionsSettingsProps} props The component props.
  */
 export const TitleSuggestionsSettings = ( {
-	tone,
-	persona,
-	onToneChange,
-	onPersonaChange,
 	isLoading,
+	isOpen,
+	onPersonaChange,
+	onSettingChange,
+	onToneChange,
+	persona,
+	tone,
 }: Readonly<TitleSuggestionsSettingsProps> ): JSX.Element => {
-	const [ isSettingActive, setIsSettingActive ] = useState<boolean>( false );
-	const [ isToneSelected, setIsToneSelected ] = useState<boolean>( false );
-	const [ isPersonaSelected, setIsPersonaSelected ] = useState<boolean>( false );
+	const [ isSettingActive, setIsSettingActive ] = useState<boolean>( isOpen );
 
 	const toggleSetting = () => {
+		onSettingChange( 'TitleSuggestionsSettingsOpen', ! isSettingActive );
 		setIsSettingActive( ! isSettingActive );
 		Telemetry.trackEvent( 'title_suggestions_ai_settings_toggled', {
 			is_active: ! isSettingActive,
@@ -73,10 +77,9 @@ export const TitleSuggestionsSettings = ( {
 				<div className="parsely-write-titles-settings-body">
 					<ToneSelector
 						tone={ tone }
-						label={ isToneSelected ? getToneLabel( tone ) : __( 'Select a tone', 'wp-parsely' ) }
+						label={ getToneLabel( tone ) }
 						onChange={ ( selectedTone ) => {
 							onToneChange( selectedTone );
-							setIsToneSelected( true );
 						} }
 						onDropdownChange={ ( selectedTone ) => {
 							Telemetry.trackEvent( 'title_suggestions_ai_tone_changed',
@@ -88,10 +91,9 @@ export const TitleSuggestionsSettings = ( {
 					/>
 					<PersonaSelector
 						persona={ persona }
-						label={ isPersonaSelected ? getPersonaLabel( persona ) : __( 'Select a persona', 'wp-parsely' ) }
+						label={ getPersonaLabel( persona ) }
 						onChange={ ( selectedPersona ) => {
 							onPersonaChange( selectedPersona );
-							setIsPersonaSelected( true );
 						} }
 						onDropdownChange={ ( selectedPersona ) => {
 							Telemetry.trackEvent( 'title_suggestions_ai_persona_changed',

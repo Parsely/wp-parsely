@@ -75,8 +75,6 @@ type FixedPersonaProp = keyof typeof PARSELY_PERSONAS;
 
 const PERSONAS_LIST = Object.keys( PARSELY_PERSONAS ) as PersonaProp[];
 
-export const DEFAULT_PERSONA = 'journalist';
-
 /**
  * Returns the label for a given persona.
  *
@@ -154,7 +152,7 @@ const CustomPersona = (
  * @since 3.13.0
  */
 type PersonaSelectorProps = {
-	persona?: PersonaProp;
+	persona: PersonaProp;
 	onChange: ( persona: PersonaProp ) => void;
 	onDropdownChange?: ( persona: PersonaProp ) => void;
 	disabled?: boolean;
@@ -172,7 +170,7 @@ type PersonaSelectorProps = {
  * @param {PersonaSelectorProps} props The properties for the PersonaSelector component.
  */
 export const PersonaSelector = ( {
-	persona = DEFAULT_PERSONA,
+	persona,
 	label = __( 'Select a persona', 'wp-parsely' ),
 	onChange,
 	onDropdownChange,
