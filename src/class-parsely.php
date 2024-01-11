@@ -835,14 +835,14 @@ class Parsely {
 			function ( $external, $host, $url ) use ( $allowed_urls ) {
 				// Check if the URL matches any URLs on the allowed list.
 				foreach ( $allowed_urls as $allowed_url ) {
-					if ( str_starts_with( $url, $allowed_url ) ) {
+					if ( \Parsely\Utils\str_starts_with( $url, $allowed_url ) ) {
 						return true;
 					}
 				}
 				return $external;
 			},
 			10,
-			3 
+			3
 		);
 	}
 }
