@@ -351,7 +351,6 @@ function get_asset_info( string $path ) {
  *
  * @param string $haystack The string to search in.
  * @param string $needle The substring to search for at the start of $haystack.
- *
  * @return bool Returns true if $haystack starts with $needle, false otherwise.
  */
 function str_starts_with( string $haystack, string $needle ): bool {
