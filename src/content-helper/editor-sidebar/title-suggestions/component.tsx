@@ -9,24 +9,41 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { Telemetry } from '../../../js/telemetry/telemetry';
+import { PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
+import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
 import { ContentHelperError } from '../../common/content-helper-error';
+import { SidebarSettings } from '../editor-sidebar';
+import { TitleSuggestionsSettings } from './component-settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { WriteTitleProvider } from './provider';
 import { TitleStore, TitleType } from './store';
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
-import { Telemetry } from '../../../js/telemetry/telemetry';
-import { TitleSuggestionsSettings } from './component-settings';
-import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
-import { PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
+
+/**
+ * Defines the props structure for TitleSuggestionsPanel.
+ *
+ * @since 3.13.0
+ */
+interface TitleSuggestionsPanelProps {
+	initialPersona: PersonaProp;
+	initialSettingsOpen: boolean;
+	initialTone: ToneProp;
+	onSettingChange: ( key: keyof SidebarSettings, value: string | boolean ) => void;
+}
 
 /**
  * Title Suggestions Panel.
  *
  * @since 3.12.0
  *
+ * @param {TitleSuggestionsPanelProps} props The component's props.
+ *
  * @return {JSX.Element} The Title Suggestions Panel.
  */
-export const TitleSuggestionsPanel = (): JSX.Element => {
+export const TitleSuggestionsPanel = ( {
+	initialPersona, initialSettingsOpen, initialTone, onSettingChange,
+}: TitleSuggestionsPanelProps ): JSX.Element => {
 	const [ error, setError ] = useState<ContentHelperError>();
 
 	const {
@@ -50,10 +67,10 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 			loading: isLoading(),
 			titles: getTitles( TitleType.PostTitle ),
 			originalTitle: getOriginalTitle( TitleType.PostTitle ),
-			tone: getTone(),
-			persona: getPersona(),
+			tone: getTone() ?? initialTone,
+			persona: getPersona() ?? initialPersona,
 		};
-	}, [] );
+	}, [ initialTone, initialPersona ] );
 
 	const {
 		setTitles,
@@ -153,11 +170,19 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	};
 
 	const parselyAISettings = <TitleSuggestionsSettings
-		tone={ tone }
-		persona={ persona }
-		onToneChange={ ( selectedTone ) => setTone( selectedTone ) }
-		onPersonaChange={ ( selectedPersona ) => setPersona( selectedPersona ) }
 		isLoading={ loading }
+		isOpen={ initialSettingsOpen }
+		onPersonaChange={ ( selectedPersona ) => {
+			onSettingChange( 'TitleSuggestionsPersona', selectedPersona );
+			setPersona( selectedPersona );
+		} }
+		onSettingChange={ onSettingChange }
+		onToneChange={ ( selectedTone ) => {
+			onSettingChange( 'TitleSuggestionsTone', selectedTone );
+			setTone( selectedTone );
+		} }
+		persona={ initialPersona }
+		tone={ initialTone }
 	/>;
 
 	const generateTitleButton: JSX.Element = (
@@ -167,7 +192,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 				isBusy={ loading }
 				onClick={ generateOnClickHandler }
 			>
-				{ loading && 'Generating Titles...' }
+				{ loading && __( 'Generating Titles…', 'wp-parsely' ) }
 				{ ! loading && titles.length > 0 && __( 'Generate More', 'wp-parsely' ) }
 				{ ! loading && titles.length === 0 && __( 'Generate Titles', 'wp-parsely' ) }
 			</Button>

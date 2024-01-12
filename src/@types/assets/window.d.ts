@@ -22,11 +22,13 @@ declare global {
 			onload?: () => unknown,
 			onReady?: () => unknown,
 		},
-		wpParselySiteId: string,
+
+		wpParselyContentHelperSettings: string;
 		wpParselyDisableAutotrack?: boolean;
+		wpParselyEmptyCredentialsMessage: string;
 		wpParselyHooks?: _Hooks;
 		wpParselyPostsStatsResponse: string;
-		wpParselyEmptyCredentialsMessage: string;
+		wpParselySiteId: string,
 
 		/**
 		 * Jetpack Editor Initial State.

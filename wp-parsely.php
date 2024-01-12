@@ -40,6 +40,8 @@ use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Endpoints\Referrers_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Related_API_Proxy;
 use Parsely\Endpoints\Rest_Metadata;
+use Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint;
+use Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
@@ -158,6 +160,7 @@ function parsely_wp_admin_early_register(): void {
 // Endpoint base classes.
 require_once __DIR__ . '/src/Endpoints/class-base-endpoint.php';
 require_once __DIR__ . '/src/Endpoints/class-base-api-proxy.php';
+require_once __DIR__ . '/src/Endpoints/user-meta/class-base-endpoint-user-meta.php';
 
 // Endpoint classes.
 require_once __DIR__ . '/src/Endpoints/class-analytics-post-detail-api-proxy.php';
@@ -168,6 +171,8 @@ require_once __DIR__ . '/src/Endpoints/class-rest-metadata.php';
 require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-meta-description-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-links-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/content-suggestions/class-write-title-api-proxy.php';
+require_once __DIR__ . '/src/Endpoints/user-meta/class-dashboard-widget-settings-endpoint.php';
+require_once __DIR__ . '/src/Endpoints/user-meta/class-editor-sidebar-settings-endpoint.php';
 
 // RemoteAPI base classes.
 require_once __DIR__ . '/src/RemoteAPI/interface-cache.php';
@@ -198,6 +203,10 @@ function parsely_rest_api_init(): void {
 	$wp_cache = new WordPress_Cache();
 	$rest     = new Rest_Metadata( $GLOBALS['parsely'] );
 	$rest->run();
+
+	// Content Helper settings endpoints.
+	( new Dashboard_Widget_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
+	( new Editor_Sidebar_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
 
 	parsely_run_rest_api_endpoint(
 		Related_API::class,
