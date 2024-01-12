@@ -1,20 +1,25 @@
-import { addFilter } from '@wordpress/hooks';
-import { createHigherOrderComponent } from '@wordpress/compose';
+/**
+ * WordPress dependencies
+ */
 import { InspectorControls } from '@wordpress/block-editor';
 import { PanelBody } from '@wordpress/components';
+import { createHigherOrderComponent } from '@wordpress/compose';
+import { addFilter } from '@wordpress/hooks';
+import { registerPlugin } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
  */
 import { BetaBadge } from '../../common/components/beta-badge';
 import { LeafIcon } from '../../common/icons/leaf-icon';
-import { CrossLinkerPanel } from './components/cross-linker-panel';
-import { registerPlugin } from '@wordpress/plugins';
-import { BlockOverlayContainer } from './components/block-overlay';
+import { CrossLinkerPanel } from './component';
+import { BlockOverlayContainer } from './component-block-overlay';
 import './cross-linker.scss';
 
 /**
  * Cross linker inspector control panel component
+ *
+ * @since 3.13.0
  */
 const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit ) => {
 	return ( props ) => {
@@ -41,6 +46,12 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 	};
 }, 'withInspectorControl' );
 
+/**
+ * Initializes the cross linker, by adding the cross linker panel to the paragraph block.
+ * Also registers the block overlay container.
+ *
+ * @since 3.13.0
+ */
 export const initCrossLinker = () => {
 	/**
 	 * Add cross linker inspector control panel to paragraph block.
@@ -59,5 +70,3 @@ export const initCrossLinker = () => {
 		render: BlockOverlayContainer,
 	} );
 };
-
-

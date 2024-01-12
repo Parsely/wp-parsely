@@ -91,8 +91,9 @@ abstract class Base_API_Proxy {
 	 * Registers the endpoint's WP REST route.
 	 *
 	 * @param string $endpoint The endpoint's route (e.g. /stats/posts).
+	 * @param string $method   The HTTP method to use for the endpoint.
 	 */
-	protected function register_endpoint( string $endpoint ): void {
+	protected function register_endpoint( string $endpoint, string $method = WP_REST_Server::READABLE ): void {
 		if ( ! apply_filters( 'wp_parsely_enable_' . convert_endpoint_to_filter_key( $endpoint ) . '_api_proxy', true ) ) {
 			return;
 		}
@@ -113,7 +114,7 @@ abstract class Base_API_Proxy {
 
 		$rest_route_args = array(
 			array(
-				'methods'             => WP_REST_Server::READABLE,
+				'methods'             => $method,
 				'callback'            => array( $this, 'get_items' ),
 				'permission_callback' => array( $this, 'permission_callback' ),
 				'args'                => $get_items_args,

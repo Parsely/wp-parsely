@@ -36,3 +36,16 @@
 		}
 	}
 }
+
+.wp-parsely-content-helper-error {
+	margin: 0;
+	align-self: flex-start;
+
+	p {
+		margin: 0;
+	}
+
+	.content-helper-error-message {
+		margin: 0 !important;
+	}
+}

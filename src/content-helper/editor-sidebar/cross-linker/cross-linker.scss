@@ -19,6 +19,8 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		pointer-events: none;
+		user-select: none;
 	}
 
 	svg {
@@ -42,6 +44,7 @@
 }
 
 .wp-parsely-block-ai-controls {
+
 	.wp-parsely-icon {
 		order: -1;
 		margin-right: to_rem(5px);
@@ -49,6 +52,7 @@
 }
 
 .wp-parsely-cross-linker {
+
 	.components-panel__row {
 		flex-direction: column;
 	}
@@ -77,11 +81,16 @@
 
 		.components-base-control {
 			margin-bottom: 0 !important;
+			margin-top: to_rem(10px);
 
 			.components-base-control__field {
 				display: flex;
 			}
 		}
+	}
+
+	.wp-parsely-cross-linker-suggested-links {
+		margin: 0;
 	}
 
 }

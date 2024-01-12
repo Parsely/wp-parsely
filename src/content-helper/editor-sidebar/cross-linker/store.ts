@@ -1,5 +1,16 @@
-import { createReduxStore, register,  } from '@wordpress/data';
+/**
+ * WordPress dependencies
+ */
+import { createReduxStore, register } from '@wordpress/data';
 
+/**
+ * Internal dependencies
+ */
+import { LinkSuggestion } from './provider';
+
+/**
+ * The shape of the CrossLinker store state.
+ */
 type CrossLinkerState = {
 	isLoading: boolean;
 	settingsOpen: boolean;
@@ -8,10 +19,11 @@ type CrossLinkerState = {
 		maxLinkLength: number;
 		maxLinksPerPost: number;
 	}
+	suggestedLinks: LinkSuggestion[] | null;
 	overlayBlocks: string[];
-	generatingBlock: string;
 };
 
+/** Actions */
 interface SetLoadingAction {
 	type: 'SET_LOADING';
 	isLoading: boolean;
@@ -25,11 +37,6 @@ interface SetSettingsOpenAction {
 interface SetOverlayBlocksAction {
 	type: 'SET_OVERLAY_BLOCKS';
 	overlayBlocks: string[];
-}
-
-interface SetGeneratingBlockAction {
-	type: 'SET_GENERATING_BLOCK';
-	generatingBlock: string;
 }
 
 interface AddOverlayBlockAction {
@@ -55,22 +62,32 @@ interface SetSettingsAction {
 	};
 }
 
+interface SetSuggestedLinksAction {
+	type: 'SET_SUGGESTED_LINKS';
+	suggestedLinks: LinkSuggestion[] | null;
+}
+
 type ActionTypes = SetLoadingAction | SetSettingsOpenAction | SetOverlayBlocksAction |
-	SetGeneratingBlockAction | 	AddOverlayBlockAction | RemoveOverlayBlockAction |
-	SetFullContentAction | SetSettingsAction;
+	AddOverlayBlockAction | RemoveOverlayBlockAction |SetFullContentAction |
+	SetSettingsAction | SetSuggestedLinksAction;
 
 const defaultState: CrossLinkerState = {
 	isLoading: false,
 	fullContent: false,
 	settingsOpen: false,
+	suggestedLinks: null,
 	settings: {
 		maxLinkLength: 4,
 		maxLinksPerPost: 10,
 	},
 	overlayBlocks: [],
-	generatingBlock: '',
 };
 
+/**
+ * The CrossLinker store.
+ *
+ * @since 3.12.0
+ */
 export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 	initialState: defaultState,
 	reducer( state: CrossLinkerState = defaultState, action: ActionTypes ): CrossLinkerState {
@@ -89,11 +106,6 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 				return {
 					...state,
 					settingsOpen: action.settingsOpen,
-				};
-			case 'SET_GENERATING_BLOCK':
-				return {
-					...state,
-					generatingBlock: action.generatingBlock,
 				};
 			case 'ADD_OVERLAY_BLOCK':
 				return {
@@ -125,6 +137,11 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 						...action.settings,
 					},
 				};
+			case 'SET_SUGGESTED_LINKS':
+				return {
+					...state,
+					suggestedLinks: action.suggestedLinks,
+				};
 			default:
 				return state;
 		}
@@ -140,12 +157,6 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 			return {
 				type: 'SET_OVERLAY_BLOCKS',
 				overlayBlocks,
-			};
-		},
-		setGeneratingBlock( generatingBlock: string ): SetGeneratingBlockAction {
-			return {
-				type: 'SET_GENERATING_BLOCK',
-				generatingBlock,
 			};
 		},
 		addOverlayBlock( block: string ): AddOverlayBlockAction {
@@ -188,6 +199,12 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 				settingsOpen,
 			};
 		},
+		setSuggestedLinks( suggestedLinks: LinkSuggestion[] | null ): SetSuggestedLinksAction {
+			return {
+				type: 'SET_SUGGESTED_LINKS',
+				suggestedLinks,
+			};
+		},
 	},
 	selectors: {
 		isLoading( state: CrossLinkerState ): boolean {
@@ -202,14 +219,14 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 		getOverlayBlocks( state: CrossLinkerState ): string[] {
 			return state.overlayBlocks;
 		},
-		getGeneratingBlock( state: CrossLinkerState ): string {
-			return state.generatingBlock;
-		},
 		getMaxLinkLength( state: CrossLinkerState ): number {
 			return state.settings.maxLinkLength;
 		},
 		getMaxLinks( state: CrossLinkerState ): number {
 			return state.settings.maxLinksPerPost;
+		},
+		getSuggestedLinks( state: CrossLinkerState ): LinkSuggestion[] | null {
+			return state.suggestedLinks;
 		},
 	},
 } );

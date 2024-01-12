@@ -2,28 +2,39 @@
  * WordPress dependencies
  */
 import { BaseControl, Button, RangeControl } from '@wordpress/components';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { settings } from '@wordpress/icons';
-import { useState } from '@wordpress/element';
-import { useDispatch, useSelect } from "@wordpress/data";
 
 /**
  * Internal dependencies
  */
-import { LeafIcon } from '../../../common/icons/leaf-icon';
-import { Telemetry } from '../../../../js/telemetry/telemetry';
-import { CrossLinkerStore } from "../store";
+import { LeafIcon } from '../../common/icons/leaf-icon';
+import { CrossLinkerStore } from './store';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 
+/**
+ * Defines the props structure for CrossLinkerSettings.
+ *
+ * @since 3.13.0
+ */
 type CrossLinkerSettingsProps = {
-	disabled?: boolean,
-}
+	disabled?: boolean;
+};
 
-export const CrossLinkerSettings = ( { disabled = false }: CrossLinkerSettingsProps ) => {
-
+/**
+ * Settings for the Cross Linker.
+ *
+ * @since 3.13.0
+ *
+ * @param {CrossLinkerSettingsProps} props The component's props.
+ */
+export const CrossLinkerSettings = ( { disabled = false }: Readonly<CrossLinkerSettingsProps> ) => {
+	// Load the Cross Linker store.
 	const {
 		settingsOpen,
 		maxLinks,
-		maxLinkLength
+		maxLinkLength,
 	} = useSelect( ( select ) => {
 		const { getMaxLinks, getMaxLinkLength, areSettingsOpen } = select( CrossLinkerStore );
 
@@ -40,6 +51,11 @@ export const CrossLinkerSettings = ( { disabled = false }: CrossLinkerSettingsPr
 		setSettingsOpen,
 	} = useDispatch( CrossLinkerStore );
 
+	/**
+	 * Toggles the settings panel.
+	 *
+	 * @since 3.13.0
+	 */
 	const toggleSetting = () => {
 		setSettingsOpen( ! settingsOpen );
 		Telemetry.trackEvent( 'cross_linker_ai_settings_toggled', {

@@ -1,19 +1,38 @@
+/**
+ * WordPress dependencies
+ */
 import { Spinner } from '@wordpress/components';
-import { createPortal, useEffect, useState } from '@wordpress/element';
 import { dispatch, useSelect } from '@wordpress/data';
-import { CrossLinkerStore } from '../store';
-import { registerPlugin } from '@wordpress/plugins';
+import { createPortal, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
+/**
+ * Internal dependencies
+ */
+import { CrossLinkerStore } from './store';
+
+/**
+ * Defines the props structure for BlockOverlay.
+ *
+ * @since 3.13.0
+ */
 type BlockOverlayProps = {
 	selectedBlockClientId: string;
 	label: string;
-}
+};
 
+/**
+ * Draws an overlay over the selected block.
+ *
+ * @since 3.13.0
+ *
+ * @param {BlockOverlayProps} props The component's props.
+ */
 export const BlockOverlay = ( {
 	selectedBlockClientId,
 	label,
-}: BlockOverlayProps ) => {
+}: Readonly<BlockOverlayProps> ) => {
+	// Create a container element for the overlay.
 	const [ container ] = useState<HTMLDivElement>( document.createElement( 'div' ) );
 	container.className = 'wp-parsely-block-overlay';
 	if ( selectedBlockClientId === 'all' ) {
@@ -21,11 +40,20 @@ export const BlockOverlay = ( {
 	}
 
 	// When clicking the overlay, we want the underlying block to be selected.
-	container.onclick = () => {
+	container.onclick = ( e ) => {
+		e.stopPropagation();
+		e.stopImmediatePropagation();
+
 		if ( selectedBlockClientId === 'all' ) {
 			return;
 		}
-		dispatch( 'core/block-editor' ).selectBlock( selectedBlockClientId );
+
+		dispatch( 'core/block-editor' ).selectBlock( selectedBlockClientId, -1 );
+
+		// When nested blocks are selected, the block editor will focus the outermost block.
+		// We need to blur the focused element to avoid this.
+		const activeElement = container.ownerDocument.activeElement;
+		( activeElement as HTMLElement ).blur();
 	};
 
 	useEffect( () => {
@@ -46,7 +74,9 @@ export const BlockOverlay = ( {
 			container.style.top = editorElement?.scrollTop + 'px';
 
 			return () => {
-				editorElement?.removeChild( container );
+				if ( editorElement?.contains( container ) ) {
+					editorElement.removeChild( container );
+				}
 				// Restore overflow
 				editorElement?.setAttribute( 'style', '' );
 				container.style.top = '';
@@ -59,12 +89,6 @@ export const BlockOverlay = ( {
 		blockElement?.setAttribute( 'contenteditable', 'false' );
 		blockElement?.setAttribute( 'aria-disabled', 'true' );
 
-		// Disable interaction with the block
-		if ( blockElement instanceof HTMLElement ) {
-			//blockElement.style.pointerEvents = 'none';
-			blockElement.style.userSelect = 'none';
-		}
-
 		// Insert the container in the block element
 		blockElement?.appendChild( container );
 
@@ -74,13 +98,9 @@ export const BlockOverlay = ( {
 			blockElement?.setAttribute( 'contenteditable', 'true' );
 			blockElement?.removeAttribute( 'aria-disabled' );
 
-			// Restore interaction
-			if ( blockElement instanceof HTMLElement ) {
-				//blockElement.style.pointerEvents = '';
-				blockElement.style.userSelect = '';
+			if ( blockElement?.contains( container ) ) {
+				blockElement.removeChild( container );
 			}
-
-			blockElement?.removeChild( container );
 		};
 	} );
 
@@ -96,7 +116,9 @@ export const BlockOverlay = ( {
 };
 
 /**
- * Draws the multiple block overlays that are currently listed in the Cross Linker store.
+ * Draws the multiple block overlays that are currently stored in the Cross Linker store.
+ *
+ * @since 3.13.0
  */
 export const BlockOverlayContainer = ( ) => {
 	const { overlayBlocks } = useSelect( ( select ) => {
