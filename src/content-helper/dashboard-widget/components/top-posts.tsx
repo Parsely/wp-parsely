@@ -26,22 +26,13 @@ import { TopPostListItem } from './top-posts-list-item';
 const FETCH_RETRIES = 1;
 
 /**
- * Defines the props structure for the TopPosts component.
- *
- * @since 3.13.0
- */
-interface TopPostsProps {
-	settingsJson: string;
-}
-
-/**
  * Defines the settings structure for the TopPosts component.
  *
  * @since 3.13.0
  */
 export interface TopPostsSettings {
-	period: Period;
-	metric: Metric;
+	Metric: Metric;
+	Period: Period;
 }
 
 /**
@@ -57,14 +48,24 @@ export interface TopPostsSettings {
  * @return {TopPostsSettings} The resulting settings object.
  */
 const getSettingsFromJson = ( settingsJson: string ): TopPostsSettings => {
-	const parsedSettings: TopPostsSettings = JSON.parse( settingsJson );
+	let parsedSettings: TopPostsSettings;
 
-	if ( ! isInEnum( parsedSettings.period, Period ) ) {
-		parsedSettings.period = Period.Days7;
+	try {
+		parsedSettings = JSON.parse( settingsJson );
+	} catch ( e ) {
+		// Return defaults when parsing failed or the string is empty.
+		return {
+			Metric: Metric.Views,
+			Period: Period.Days7,
+		};
 	}
 
-	if ( ! isInEnum( parsedSettings.metric, Metric ) ) {
-		parsedSettings.metric = Metric.Views;
+	// Fix invalid values if any are found.
+	if ( ! isInEnum( parsedSettings?.Metric, Metric ) ) {
+		parsedSettings.Metric = Metric.Views;
+	}
+	if ( ! isInEnum( parsedSettings?.Period, Period ) ) {
+		parsedSettings.Period = Period.Days7;
 	}
 
 	return parsedSettings;
@@ -74,16 +75,14 @@ const getSettingsFromJson = ( settingsJson: string ): TopPostsSettings => {
  * List of the top posts.
  *
  * @since 3.7.0
- *
- * @param {TopPostsProps} props The component's props.
  */
-export function TopPosts( { settingsJson }: Readonly<TopPostsProps> ): JSX.Element {
-	const settings = getSettingsFromJson( settingsJson );
+export function TopPosts(): JSX.Element {
+	const [ settings, setSettings ] = useState<TopPostsSettings>(
+		getSettingsFromJson( window.wpParselyContentHelperSettings )
+	);
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ posts, setPosts ] = useState<PostData[]>( [] );
-	const [ period, setPeriodFilter ] = useState<Period>( settings.period );
-	const [ metric, setMetricFilter ] = useState<Metric>( settings.metric );
 	const [ page, setPage ] = useState<number>( 1 );
 
 	/**
@@ -92,7 +91,7 @@ export function TopPosts( { settingsJson }: Readonly<TopPostsProps> ): JSX.Eleme
 	 *
 	 * @since 3.13.0
 	 */
-	useSaveSettings( 'dashboard-widget-settings', { period, metric } );
+	useSaveSettings( 'dashboard-widget-settings', settings );
 
 	/**
 	 * Fetches the top posts.
@@ -103,7 +102,7 @@ export function TopPosts( { settingsJson }: Readonly<TopPostsProps> ): JSX.Eleme
 		const provider = new DashboardWidgetProvider();
 
 		const fetchPosts = async ( retries: number ) => {
-			provider.getTopPosts( period, metric, page )
+			provider.getTopPosts( settings, page )
 				.then( ( result ): void => {
 					setPosts( result );
 					setLoading( false );
@@ -127,7 +126,7 @@ export function TopPosts( { settingsJson }: Readonly<TopPostsProps> ): JSX.Eleme
 			setPosts( [] );
 			setError( undefined );
 		};
-	}, [ period, metric, page ] );
+	}, [ settings, page ] );
 
 	/**
 	 * Tracks the filter changes.
@@ -144,7 +143,7 @@ export function TopPosts( { settingsJson }: Readonly<TopPostsProps> ): JSX.Eleme
 	const filters :JSX.Element = (
 		<div className="parsely-top-posts-filters">
 			<Select
-				defaultValue={ period }
+				defaultValue={ settings.Period }
 				items={
 					Object.values( Period ).map(
 						( value ) => [ value, getPeriodDescription( value ) ]
@@ -152,14 +151,17 @@ export function TopPosts( { settingsJson }: Readonly<TopPostsProps> ): JSX.Eleme
 				}
 				onChange={ ( event ) => {
 					if ( isInEnum( event.target.value, Period ) ) {
-						setPeriodFilter( event.target.value as Period );
+						setSettings( {
+							...settings,
+							Period: event.target.value as Period,
+						} );
 						trackFilterChanges( 'period', { period: event.target.value } );
 						setPage( 1 );
 					}
 				} }
 			/>
 			<Select
-				defaultValue={ metric }
+				defaultValue={ settings.Metric }
 				items={
 					Object.values( Metric ).map(
 						( value ) => [ value, getMetricDescription( value ) ]
@@ -167,7 +169,10 @@ export function TopPosts( { settingsJson }: Readonly<TopPostsProps> ): JSX.Eleme
 				}
 				onChange={ ( event ) => {
 					if ( isInEnum( event.target.value, Metric ) ) {
-						setMetricFilter( event.target.value as Metric );
+						setSettings( {
+							...settings,
+							Metric: event.target.value as Metric,
+						} );
 						trackFilterChanges( 'metric', { metric: event.target.value } );
 						setPage( 1 );
 					}
@@ -235,7 +240,11 @@ export function TopPosts( { settingsJson }: Readonly<TopPostsProps> ): JSX.Eleme
 				loading ? ( spinner ) : (
 					<ol className="parsely-top-posts" style={ { counterReset: 'item ' + ( ( page - 1 ) * TOP_POSTS_DEFAULT_LIMIT ) } }>
 						{ posts.map( ( post: PostData ): JSX.Element =>
-							<TopPostListItem key={ post.id } metric={ metric } post={ post } />
+							<TopPostListItem
+								key={ post.id }
+								metric={ settings.Metric }
+								post={ post }
+							/>
 						) }
 					</ol>
 				)
