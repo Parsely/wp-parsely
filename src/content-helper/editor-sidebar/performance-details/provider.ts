@@ -66,9 +66,7 @@ export class PerformanceDetailsProvider {
 		}
 
 		// Get post URL.
-		//const postUrl = editor.getPermalink();
-		const postUrl = 'https://wpvip.com/2022/07/06/how-to-prepare-your-wordpress-site-for-php-8/';
-		// TODO: REVERT
+		const postUrl = editor.getPermalink();
 
 		if ( null === postUrl ) {
 			return Promise.reject(
