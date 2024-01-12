@@ -123,7 +123,9 @@ type CustomToneProps = {
  *
  * @param {CustomToneProps} props The properties for the CustomTone component.
  */
-const CustomTone = ( { value, onChange }: CustomToneProps ): JSX.Element => {
+const CustomTone = (
+	{ value, onChange }: Readonly<CustomToneProps>
+): JSX.Element => {
 	const [ customTone, setCustomTone ] = useState<string>( '' );
 	return (
 		<div className="parsely-tone-selector-custom">
@@ -169,7 +171,7 @@ export const ToneSelector = ( {
 	onDropdownChange,
 	disabled = false,
 	allowCustom = false,
-}: ToneSelectorProps ): JSX.Element => {
+}: Readonly<ToneSelectorProps> ): JSX.Element => {
 	return (
 		<Disabled isDisabled={ disabled }>
 			<DropdownMenu

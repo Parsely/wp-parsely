@@ -45,7 +45,7 @@ export const TitleSuggestionsSettings = ( {
 	onToneChange,
 	persona,
 	tone,
-}: TitleSuggestionsSettingsProps ): JSX.Element => {
+}: Readonly<TitleSuggestionsSettingsProps> ): JSX.Element => {
 	const [ isSettingActive, setIsSettingActive ] = useState<boolean>( isOpen );
 
 	const toggleSetting = () => {

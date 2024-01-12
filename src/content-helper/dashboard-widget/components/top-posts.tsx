@@ -77,7 +77,7 @@ const getSettingsFromJson = ( settingsJson: string ): TopPostsSettings => {
  *
  * @param {TopPostsProps} props The component's props.
  */
-export function TopPosts( { settingsJson }: TopPostsProps ): JSX.Element {
+export function TopPosts( { settingsJson }: Readonly<TopPostsProps> ): JSX.Element {
 	const settings = getSettingsFromJson( settingsJson );
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
