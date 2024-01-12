@@ -2,9 +2,8 @@
  * WordPress dependencies
  */
 import { Button, CheckboxControl, Disabled, Notice, PanelRow } from '@wordpress/components';
-import { dispatch, useDispatch, useSelect } from '@wordpress/data';
+import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -13,7 +12,6 @@ import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { CrossLinkerSettings } from './component-settings';
 import { CrossLinkerStore } from './store';
 import { CrossLinkerProvider, LinkSuggestion } from './provider';
-import { ContentHelperError } from '../../common/content-helper-error';
 import { escapeRegExp, replaceNthOccurrence } from './utils';
 
 /**
@@ -24,6 +22,13 @@ import { escapeRegExp, replaceNthOccurrence } from './utils';
 type CrossLinkerPanelProps = {
 	className?: string;
 	selectedBlockClientId?: string;
+	context?: CrossLinkerPanelContext;
+}
+
+export enum CrossLinkerPanelContext {
+	Unknown = 'unknown',
+	ContentHelperSidebar = 'content_helper_sidebar',
+	BlockInspector = 'block_inspector',
 }
 
 /**
@@ -33,9 +38,11 @@ type CrossLinkerPanelProps = {
  *
  * @param { Readonly<CrossLinkerPanelProps> } props The component's props.
  */
-export const CrossLinkerPanel = ( { className, selectedBlockClientId }: Readonly<CrossLinkerPanelProps> ) => {
-	const [ error, setError ] = useState<ContentHelperError>();
-
+export const CrossLinkerPanel = ( {
+	className,
+	selectedBlockClientId,
+	context = CrossLinkerPanelContext.Unknown,
+}: Readonly<CrossLinkerPanelProps> ) => {
 	/**
 	 * Load the Cross Linker store.
 	 */
@@ -43,20 +50,23 @@ export const CrossLinkerPanel = ( { className, selectedBlockClientId }: Readonly
 		loading,
 		fullContent,
 		overlayBlocks,
+		error,
 		suggestedLinks,
 		maxLinkLength,
 		maxLinks,
-	} = useSelect( ( select ) => {
+	} = useSelect( ( selectFn ) => {
 		const {
 			isLoading,
 			getOverlayBlocks,
 			getSuggestedLinks,
+			getError,
 			isFullContent,
 			getMaxLinkLength,
 			getMaxLinks,
-		} = select( CrossLinkerStore );
+		} = selectFn( CrossLinkerStore );
 		return {
 			loading: isLoading(),
+			error: getError(),
 			fullContent: isFullContent(),
 			overlayBlocks: getOverlayBlocks(),
 			suggestedLinks: getSuggestedLinks(),
@@ -68,6 +78,7 @@ export const CrossLinkerPanel = ( { className, selectedBlockClientId }: Readonly
 	const {
 		setLoading,
 		setFullContent,
+		setError,
 		setSuggestedLinks,
 		addOverlayBlock,
 		removeOverlayBlock,
@@ -76,9 +87,12 @@ export const CrossLinkerPanel = ( { className, selectedBlockClientId }: Readonly
 	/**
 	 * Load the selected block and post content.
 	 */
-	const { selectedBlock, postContent } = useSelect( ( select ) => {
-		const { getSelectedBlock, getBlock } = select( 'core/block-editor' ) as GutenbergFunction;
-		const { getEditedPostContent } = select( 'core/editor' ) as GutenbergFunction;
+	const {
+		selectedBlock,
+		postContent,
+	} = useSelect( ( selectFn ) => {
+		const { getSelectedBlock, getBlock } = selectFn( 'core/block-editor' ) as GutenbergFunction;
+		const { getEditedPostContent } = selectFn( 'core/editor' ) as GutenbergFunction;
 
 		return {
 			selectedBlock: selectedBlockClientId ? getBlock( selectedBlockClientId ) : getSelectedBlock(),
@@ -94,6 +108,8 @@ export const CrossLinkerPanel = ( { className, selectedBlockClientId }: Readonly
 	const generateCrossLinks = () => async () => {
 		await setLoading( true );
 		await setSuggestedLinks( null );
+		await setError( null );
+
 		const generatingFullContent = fullContent || ! selectedBlock;
 
 		// If selected block is not set, the overlay will be applied to the entire content.
@@ -122,9 +138,15 @@ export const CrossLinkerPanel = ( { className, selectedBlockClientId }: Readonly
 			await removeOverlay( fullContent ? 'all' : selectedBlock?.clientId );
 			clearTimeout( timeout );
 
-			// Select the block after generating cross-links.
-			if ( selectedBlock ) {
-				dispatch( 'core/block-editor' ).selectBlock( selectedBlock.clientId );
+			// Select the block after generating cross-links, if we're using the block inspector.
+			if ( context === CrossLinkerPanelContext.BlockInspector ) {
+				if ( selectedBlock && ! fullContent ) {
+					dispatch( 'core/block-editor' ).selectBlock( selectedBlock.clientId );
+				} else {
+					const firstBlock = select( 'core/block-editor' ).getBlockOrder()[ 0 ];
+					// Select the first block in the post.
+					dispatch( 'core/block-editor' ).selectBlock( firstBlock );
+				}
 			}
 		}
 	};
@@ -152,15 +174,26 @@ export const CrossLinkerPanel = ( { className, selectedBlockClientId }: Readonly
 				continue;
 			}
 
-			const anchor = `<a href="${ link.href }" title="${ link.title }">${ link.text }</a>`;
-
 			// Escape the link text to convert regex special characters to literal characters.
 			link.text = escapeRegExp( link.text );
 
+			// Checks if the amount of link.text occurrences in the newContent is bigger than the amount of
+			// link.text occurrences in the originalContent, if so, it means that we've introduced another
+			// occurrence of the link.text in the newContent, so we need to increase the offset.
+			const linkTextRegex = new RegExp( link.text, 'g' );
+			const newContentMatches = newContent.match( linkTextRegex );
+			const originalContentMatches = originalContent.match( linkTextRegex );
+			if ( ( newContentMatches && originalContentMatches ) &&
+				newContentMatches?.length > originalContentMatches?.length ) {
+				link.offset++;
+			}
+
+			const anchor = `<a href="${ link.href }" title="${ link.title }">${ link.text }</a>`;
+
 			// Regex that searches for the link.text, but if the text is inside an HTML anchor,
 			// the anchor itself is also selected and replaced with the new anchor.
-			const searchExpression = `(${ link.text }|<a[^>]*>${ link.text }</a>)`;
-			newContent = replaceNthOccurrence( newContent, searchExpression, anchor, link.offset );
+			const searchRegex = new RegExp( `(${ link.text }|<a[^>]*>${ link.text }<\/a>)` );
+			newContent = replaceNthOccurrence( newContent, searchRegex, anchor, link.offset );
 		}
 
 		// Either update the selected block or the entire post content.

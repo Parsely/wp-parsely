@@ -12,7 +12,7 @@ import { registerPlugin } from '@wordpress/plugins';
  */
 import { BetaBadge } from '../../common/components/beta-badge';
 import { LeafIcon } from '../../common/icons/leaf-icon';
-import { CrossLinkerPanel } from './component';
+import { CrossLinkerPanel, CrossLinkerPanelContext } from './component';
 import { BlockOverlayContainer } from './component-block-overlay';
 import './cross-linker.scss';
 
@@ -38,6 +38,7 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 					>
 						<CrossLinkerPanel
 							selectedBlockClientId={ props.clientId }
+							context={ CrossLinkerPanelContext.BlockInspector }
 						/>
 					</PanelBody>
 				</InspectorControls>

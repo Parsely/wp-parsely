@@ -79,6 +79,13 @@ export class ContentHelperError extends Error {
 				'wp-parsely'
 			);
 		}
+		if ( this.code === ContentHelperErrorCode.HttpRequestFailed &&
+			this.message.includes( 'cURL error 28' ) ) {
+			this.message = __(
+				'The Parse.ly API did not respond in a timely manner. Please try again later.',
+				'wp-parsely'
+			);
+		}
 	}
 
 	/**

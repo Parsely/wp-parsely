@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
+import { ContentHelperError } from '../../common/content-helper-error';
 
 /**
  * Internal dependencies
@@ -15,6 +16,7 @@ type CrossLinkerState = {
 	isLoading: boolean;
 	settingsOpen: boolean;
 	fullContent: boolean;
+	error: ContentHelperError | null;
 	settings: {
 		maxLinkLength: number;
 		maxLinksPerPost: number;
@@ -32,6 +34,11 @@ interface SetLoadingAction {
 interface SetSettingsOpenAction {
 	type: 'SET_SETTINGS_OPEN';
 	settingsOpen: boolean;
+}
+
+interface SetErrorAction {
+	type: 'SET_ERROR';
+	error: ContentHelperError | null;
 }
 
 interface SetOverlayBlocksAction {
@@ -69,13 +76,14 @@ interface SetSuggestedLinksAction {
 
 type ActionTypes = SetLoadingAction | SetSettingsOpenAction | SetOverlayBlocksAction |
 	AddOverlayBlockAction | RemoveOverlayBlockAction |SetFullContentAction |
-	SetSettingsAction | SetSuggestedLinksAction;
+	SetSettingsAction | SetSuggestedLinksAction | SetErrorAction;
 
 const defaultState: CrossLinkerState = {
 	isLoading: false,
 	fullContent: false,
 	settingsOpen: false,
 	suggestedLinks: null,
+	error: null,
 	settings: {
 		maxLinkLength: 4,
 		maxLinksPerPost: 10,
@@ -106,6 +114,11 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 				return {
 					...state,
 					settingsOpen: action.settingsOpen,
+				};
+			case 'SET_ERROR':
+				return {
+					...state,
+					error: action.error,
 				};
 			case 'ADD_OVERLAY_BLOCK':
 				return {
@@ -157,6 +170,12 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 			return {
 				type: 'SET_OVERLAY_BLOCKS',
 				overlayBlocks,
+			};
+		},
+		setError( error: ContentHelperError | null ): SetErrorAction {
+			return {
+				type: 'SET_ERROR',
+				error,
 			};
 		},
 		addOverlayBlock( block: string ): AddOverlayBlockAction {
@@ -212,6 +231,9 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 		},
 		isFullContent( state: CrossLinkerState ): boolean {
 			return state.fullContent;
+		},
+		getError( state: CrossLinkerState ): ContentHelperError | null {
+			return state.error;
 		},
 		areSettingsOpen( state: CrossLinkerState ): boolean {
 			return state.settingsOpen;

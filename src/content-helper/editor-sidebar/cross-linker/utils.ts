@@ -11,15 +11,22 @@
  *
  * @return {string} The modified string with the nth occurrence of the search string replaced. If the search string does not occur n times, the original string is returned.
  */
-export function replaceNthOccurrence( inputString: string, search: string, replacement: string, n: number ): string {
-	const match = new RegExp( search );
-	const matches = inputString.match( match );
-	if ( matches ) {
-		if ( matches.length > n ) {
-			const matchIndex = inputString.indexOf( matches[ n ] );
-			return inputString.slice( 0, matchIndex ) + inputString.slice( matchIndex ).replace( match, replacement );
+export function replaceNthOccurrence( inputString: string, search: RegExp, replacement: string, n: number ): string {
+	let match;
+	let i = 0;
+
+	// Ensure the global flag is set to find all occurrences
+	const globalSearch = new RegExp( search.source, 'g' + ( search.ignoreCase ? 'i' : '' ) + ( search.multiline ? 'm' : '' ) );
+
+	while ( ( match = globalSearch.exec( inputString ) ) !== null ) {
+		if ( i === n ) {
+			// Replace the nth occurrence
+			return inputString.substring( 0, match.index ) + replacement + inputString.substring( globalSearch.lastIndex );
 		}
+		i++;
 	}
+
+	// Return the original string if the nth occurrence is not found
 	return inputString;
 }
 
