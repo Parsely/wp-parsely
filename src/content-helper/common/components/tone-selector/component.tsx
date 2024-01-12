@@ -70,8 +70,6 @@ type FixedToneProp = keyof typeof PARSELY_TONES;
 
 const TONE_LIST = Object.keys( PARSELY_TONES ) as ToneProp[];
 
-export const DEFAULT_TONE = 'neutral';
-
 /**
  * Returns the label for a given tone.
  *
@@ -147,7 +145,7 @@ const CustomTone = ( { value, onChange }: CustomToneProps ): JSX.Element => {
  * @since 3.13.0
  */
 type ToneSelectorProps = {
-	tone?: ToneProp | string;
+	tone: ToneProp | string;
 	onChange: ( tone: ToneProp | string ) => void;
 	onDropdownChange?: ( tone: ToneProp ) => void;
 	disabled?: boolean;
@@ -165,7 +163,7 @@ type ToneSelectorProps = {
  * @param {ToneSelectorProps} props The properties for the ToneSelector component.
  */
 export const ToneSelector = ( {
-	tone = DEFAULT_TONE,
+	tone,
 	label = __( 'Select a tone', 'wp-parsely' ),
 	onChange,
 	onDropdownChange,

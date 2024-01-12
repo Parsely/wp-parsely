@@ -109,6 +109,7 @@ export const getTopRelatedPostsMessage = async (
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
 	const contentHelperMessageSelector = '.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector;
+	const periodSettingSelector = '#inspector-select-control-1';
 
 	// Run basic operations.
 	await createNewPost();
@@ -147,13 +148,11 @@ export const getTopRelatedPostsMessage = async (
 	await page.click( pluginButton );
 
 	// Select 30 days to reduce the possibility of a "No top posts" message.
-	const settingsButton = await findSidebarPanelToggleButtonWithTitle( 'Settings' );
-	await settingsButton.focus();
-	await page.keyboard.press( 'Tab' );
-	await page.keyboard.type( 'l' );
+	if ( ( await page.$( periodSettingSelector ) ) !== null ) {
+		await page.select( periodSettingSelector, '30d' );
+	}
 
-	const topRelatedPostsButton = await findSidebarPanelToggleButtonWithTitle( 'Related Top Posts' );
-	await topRelatedPostsButton.click();
+	setSidebarPanelExpanded( 'Related Top Posts', true );
 	if ( '' !== filterType ) {
 		await page.waitForTimeout( 500 );
 		await page.keyboard.press( 'Tab' );
@@ -210,4 +209,30 @@ export const activateTheme = async ( slug: string ): Promise<void> => {
 
 	await page.click( `div[data-slug="${ slug }"] .button.activate` );
 	await page.waitForSelector( `div[data-slug="${ slug }"].active` );
+};
+
+/**
+ * Expands or collapses the passed Sidebar panel.
+ *
+ * @since 3.13.0
+ *
+ * @param {string}  panelTitle The title of the panel to expand or collapse.
+ * @param {boolean} expand     Whether to expand or collapse the panel.
+ */
+export const setSidebarPanelExpanded = async (
+	panelTitle: string, expand: boolean
+): Promise<void> => {
+	const panelButton = await findSidebarPanelToggleButtonWithTitle( panelTitle );
+	const panelHandle = await page.evaluateHandle(
+		( el: HTMLElement ) => el, panelButton
+	);
+	const isPanelExpanded = await page.evaluate(
+		( el: HTMLElement ) => el.getAttribute( 'aria-expanded' ), panelHandle
+	);
+
+	if ( expand && isPanelExpanded === 'false' ) {
+		await panelButton.click();
+	} else if ( ! expand && isPanelExpanded === 'true' ) {
+		await panelButton.click();
+	}
 };
