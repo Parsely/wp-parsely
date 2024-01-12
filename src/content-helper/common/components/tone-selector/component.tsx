@@ -70,8 +70,6 @@ type FixedToneProp = keyof typeof PARSELY_TONES;
 
 const TONE_LIST = Object.keys( PARSELY_TONES ) as ToneProp[];
 
-export const DEFAULT_TONE = 'neutral';
-
 /**
  * Returns the label for a given tone.
  *
@@ -125,7 +123,9 @@ type CustomToneProps = {
  *
  * @param {CustomToneProps} props The properties for the CustomTone component.
  */
-const CustomTone = ( { value, onChange }: CustomToneProps ): JSX.Element => {
+const CustomTone = (
+	{ value, onChange }: Readonly<CustomToneProps>
+): JSX.Element => {
 	const [ customTone, setCustomTone ] = useState<string>( '' );
 	return (
 		<div className="parsely-tone-selector-custom">
@@ -147,7 +147,7 @@ const CustomTone = ( { value, onChange }: CustomToneProps ): JSX.Element => {
  * @since 3.13.0
  */
 type ToneSelectorProps = {
-	tone?: ToneProp | string;
+	tone: ToneProp | string;
 	onChange: ( tone: ToneProp | string ) => void;
 	onDropdownChange?: ( tone: ToneProp ) => void;
 	disabled?: boolean;
@@ -165,13 +165,13 @@ type ToneSelectorProps = {
  * @param {ToneSelectorProps} props The properties for the ToneSelector component.
  */
 export const ToneSelector = ( {
-	tone = DEFAULT_TONE,
+	tone,
 	label = __( 'Select a tone', 'wp-parsely' ),
 	onChange,
 	onDropdownChange,
 	disabled = false,
 	allowCustom = false,
-}: ToneSelectorProps ): JSX.Element => {
+}: Readonly<ToneSelectorProps> ): JSX.Element => {
 	return (
 		<Disabled isDisabled={ disabled }>
 			<DropdownMenu

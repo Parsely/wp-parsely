@@ -75,8 +75,6 @@ type FixedPersonaProp = keyof typeof PARSELY_PERSONAS;
 
 const PERSONAS_LIST = Object.keys( PARSELY_PERSONAS ) as PersonaProp[];
 
-export const DEFAULT_PERSONA = 'journalist';
-
 /**
  * Returns the label for a given persona.
  *
@@ -130,7 +128,9 @@ type CustomPersonaProps = {
  *
  * @param {CustomPersonaProps} props The properties for the CustomPersona component.
  */
-const CustomPersona = ( { value, onChange }: CustomPersonaProps ): JSX.Element => {
+const CustomPersona = (
+	{ value, onChange }: Readonly<CustomPersonaProps>
+): JSX.Element => {
 	const [ customPersona, setCustomPersona ] = useState<string>( '' );
 	return (
 		<div className="parsely-persona-selector-custom">
@@ -152,7 +152,7 @@ const CustomPersona = ( { value, onChange }: CustomPersonaProps ): JSX.Element =
  * @since 3.13.0
  */
 type PersonaSelectorProps = {
-	persona?: PersonaProp;
+	persona: PersonaProp;
 	onChange: ( persona: PersonaProp ) => void;
 	onDropdownChange?: ( persona: PersonaProp ) => void;
 	disabled?: boolean;
@@ -170,13 +170,13 @@ type PersonaSelectorProps = {
  * @param {PersonaSelectorProps} props The properties for the PersonaSelector component.
  */
 export const PersonaSelector = ( {
-	persona = DEFAULT_PERSONA,
+	persona,
 	label = __( 'Select a persona', 'wp-parsely' ),
 	onChange,
 	onDropdownChange,
 	disabled = false,
 	allowCustom = false,
-}: PersonaSelectorProps ): JSX.Element => {
+}: Readonly<PersonaSelectorProps> ): JSX.Element => {
 	return (
 		<Disabled isDisabled={ disabled }>
 			<DropdownMenu
