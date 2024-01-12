@@ -22,6 +22,9 @@ import {
 	PostFilter,
 } from '../../../src/content-helper/common/utils/constants';
 import {
+	SidebarPostData,
+} from '../../../src/content-helper/editor-sidebar/editor-sidebar';
+import {
 	RelatedTopPostList,
 } from '../../../src/content-helper/editor-sidebar/related-top-posts/component-list';
 import {
@@ -30,9 +33,8 @@ import {
 	RelatedTopPostsProvider,
 } from '../../../src/content-helper/editor-sidebar/related-top-posts/provider';
 
-const postData = {
+const postData: SidebarPostData = {
 	authors: [],
-	isPage: false,
 	categories: [],
 	tags: [],
 };
