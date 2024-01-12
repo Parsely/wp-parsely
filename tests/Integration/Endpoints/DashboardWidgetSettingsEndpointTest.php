@@ -169,8 +169,8 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 		)->get_data();
 		$expected = $this->wp_json_encode(
 			array(
-				'period' => '7d',
-				'metric' => 'views',
+				'Metric' => 'views',
+				'Period' => '7d',
 			)
 		);
 
@@ -223,8 +223,8 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @return iterable<string, mixed>
 	 */
 	public function provide_put_requests_data(): iterable {
-		$default_settings = $this->generate_json( '7d', 'views' );
-		$valid_settings   = $this->generate_json( '1h', 'avg_engaged' );
+		$default_settings = $this->generate_json( 'views', '7d' );
+		$valid_settings   = $this->generate_json( 'avg_engaged', '1h' );
 
 		// Valid non-default settings. They should be returned unmodified.
 		yield 'valid period and metric values' => array(
@@ -234,11 +234,11 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 
 		// Missing or problematic keys. Defaults for all values should be returned.
 		yield 'valid period value, no metric value' => array(
-			'test_data' => $this->generate_json( '1h' ),
+			'test_data' => $this->generate_json( null, '1h' ),
 			'expected'  => $default_settings,
 		);
 		yield 'valid metric value, no period value' => array(
-			'test_data' => $this->generate_json( null, 'avg_engaged' ),
+			'test_data' => $this->generate_json( 'avg_engaged' ),
 			'expected'  => $default_settings,
 		);
 		yield 'no values' => array(
@@ -248,12 +248,12 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 
 		// Invalid values. They should be adjusted to their defaults.
 		yield 'invalid period value' => array(
-			'test_data' => $this->generate_json( 'invalid', 'avg_engaged' ),
-			'expected'  => $this->generate_json( '7d', 'avg_engaged' ),
+			'test_data' => $this->generate_json( 'avg_engaged', 'invalid' ),
+			'expected'  => $this->generate_json( 'avg_engaged', '7d' ),
 		);
 		yield 'invalid metric value' => array(
-			'test_data' => $this->generate_json( '1h', 'invalid' ),
-			'expected'  => $this->generate_json( '1h', 'views' ),
+			'test_data' => $this->generate_json( 'invalid', '1h' ),
+			'expected'  => $this->generate_json( 'views', '1h' ),
 		);
 		yield 'invalid period and metric values' => array(
 			'test_data' => $this->generate_json( 'invalid', 'invalid' ),
@@ -263,16 +263,16 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 		// Invalid extra data passed. Any such data should be discarded.
 		yield 'invalid additional value' => array(
 			'test_data' => $this->generate_json(
-				'1h',
 				'avg_engaged',
+				'1h',
 				array( 'invalid' )
 			),
 			'expected'  => $valid_settings,
 		);
 		yield 'invalid additional key/value pair' => array(
 			'test_data' => $this->generate_json(
-				'1h',
 				'avg_engaged',
+				'1h',
 				array( 'invalid_key' => 'invalid_value' )
 			),
 			'expected'  => $valid_settings,
@@ -284,24 +284,24 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 *
 	 * @since 3.13.0
 	 *
-	 * @param string|null         $period The period value.
 	 * @param string|null         $metric The metric value.
+	 * @param string|null         $period The period value.
 	 * @param array<mixed, mixed> $extra_data Any Extra key/value pairs to add.
 	 * @return string The generated JSON string.
 	 */
 	protected function generate_json(
-		?string $period = null,
 		?string $metric = null,
+		?string $period = null,
 		array $extra_data = array()
 	): string {
 		$array = array();
 
-		if ( null !== $period ) {
-			$array['period'] = $period;
+		if ( null !== $metric ) {
+			$array['Metric'] = $metric;
 		}
 
-		if ( null !== $metric ) {
-			$array['metric'] = $metric;
+		if ( null !== $period ) {
+			$array['Period'] = $period;
 		}
 
 		return $this->wp_json_encode( array_merge( $array, $extra_data ) );

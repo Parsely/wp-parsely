@@ -17,7 +17,7 @@ window.addEventListener(
 			const root = createRoot( container );
 			root.render(
 				<VerifyCredentials>
-					<TopPosts settingsJson={ window.wpParselyContentHelperSettings } />
+					<TopPosts />
 				</VerifyCredentials>
 			);
 		}
