@@ -147,12 +147,15 @@ export function RelatedTopPostList( {
 				} );
 		};
 
+		const filterTypeIsTag = PostFilterType.Tag === filter.type;
+		const filterTypeIsUnavailable = PostFilterType.Unavailable === filter.type;
+		const noTagsExist = 0 === postData.tags.length;
+		const tagIsUnavailable = filterTypeIsTag && ! postData.tags.includes( filter.value );
+
 		setLoading( true );
-		if ( PostFilterType.Unavailable === filter.type ) {
+		if ( filterTypeIsUnavailable || ( filterTypeIsTag && noTagsExist ) ) {
 			setFilter( getInitialFilterSettings() );
-		} else if ( PostFilterType.Tag === filter.type &&
-					false === postData.tags.includes( filter.value ) ) {
-			// The tag is unavailable. Reset to the first available tag.
+		} else if ( tagIsUnavailable ) {
 			setFilter( { type: PostFilterType.Tag, value: postData.tags[ 0 ] } );
 		} else {
 			fetchPosts( FETCH_RETRIES );
