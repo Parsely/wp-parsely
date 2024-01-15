@@ -13,8 +13,7 @@ namespace Parsely\Tests\ContentHelper;
 use Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta;
 use Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint;
 use Parsely\Parsely;
-use Parsely\Tests\Integration\ProxyEndpointTest;
-use WP_REST_Request;
+use Parsely\Tests\Integration\BaseUserMetaEndpointTest;
 
 use function Parsely\Utils\convert_endpoint_to_filter_key;
 
@@ -23,15 +22,15 @@ use function Parsely\Utils\convert_endpoint_to_filter_key;
  *
  * @since 3.13.0
  */
-final class EditorSidebarSettingsEndpointTest extends ProxyEndpointTest {
+final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	/**
-	 * The endpoint's default settings.
+	 * The endpoint's default value.
 	 *
 	 * @since 3.13.0
 	 *
 	 * @var array<string, mixed>
 	 */
-	protected $default_settings = array(
+	protected $default_value = array(
 		'PerformanceDetailsOpen'       => true,
 		'RelatedTopPostsFilterBy'      => 'unavailable',
 		'RelatedTopPostsFilterValue'   => '',
@@ -185,19 +184,8 @@ final class EditorSidebarSettingsEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
 	 */
-	public function test_endpoint_returns_settings_on_get_request(): void {
-		$this->set_admin_user();
-		$settings = rest_do_request(
-			new WP_REST_Request(
-				'GET',
-				self::$route
-			)
-		)->get_data();
-		$expected = $this->wp_json_encode(
-			$this->default_settings
-		);
-
-		self::assertSame( $expected, $settings );
+	public function test_endpoint_returns_value_on_get_request(): void {
+		parent::run_test_endpoint_returns_value_on_get_request();
 	}
 
 	/**
@@ -235,72 +223,8 @@ final class EditorSidebarSettingsEndpointTest extends ProxyEndpointTest {
 		string $test_data,
 		string $expected
 	): void {
-		$settings = $this->send_put_request( $test_data );
-		self::assertSame( $expected, $settings );
-	}
-
-	/**
-	 * Provides data for testing PUT requests.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @return iterable<string, mixed>
-	 */
-	public function provide_put_requests_data(): iterable {
-		$default_settings = $this->generate_json( 'views', '7d' );
-		$valid_settings   = $this->generate_json( 'avg_engaged', '1h' );
-
-		// Valid non-default settings. They should be returned unmodified.
-		yield 'valid period and metric values' => array(
-			'test_data' => $valid_settings,
-			'expected'  => $valid_settings,
-		);
-
-		// Missing or problematic keys. Defaults for all values should be returned.
-		yield 'valid period value, no metric value' => array(
-			'test_data' => $this->generate_json( null, '1h' ),
-			'expected'  => $default_settings,
-		);
-		yield 'valid metric value, no period value' => array(
-			'test_data' => $this->generate_json( 'avg_engaged' ),
-			'expected'  => $default_settings,
-		);
-		yield 'no values' => array(
-			'test_data' => $this->generate_json(),
-			'expected'  => $default_settings,
-		);
-
-		// Invalid values. They should be adjusted to their defaults.
-		yield 'invalid period value' => array(
-			'test_data' => $this->generate_json( 'avg_engaged', 'invalid' ),
-			'expected'  => $this->generate_json( 'avg_engaged', '7d' ),
-		);
-		yield 'invalid metric value' => array(
-			'test_data' => $this->generate_json( 'invalid', '1h' ),
-			'expected'  => $this->generate_json( 'views', '1h' ),
-		);
-		yield 'invalid period and metric values' => array(
-			'test_data' => $this->generate_json( 'invalid', 'invalid' ),
-			'expected'  => $default_settings,
-		);
-
-		// Invalid extra data passed. Any such data should be discarded.
-		yield 'invalid additional value' => array(
-			'test_data' => $this->generate_json(
-				'avg_engaged',
-				'1h',
-				array( 'invalid' )
-			),
-			'expected'  => $valid_settings,
-		);
-		yield 'invalid additional key/value pair' => array(
-			'test_data' => $this->generate_json(
-				'avg_engaged',
-				'1h',
-				array( 'invalid_key' => 'invalid_value' )
-			),
-			'expected'  => $valid_settings,
-		);
+		$value = $this->send_put_request( $test_data );
+		self::assertSame( $expected, $value );
 	}
 
 	/**
@@ -318,7 +242,7 @@ final class EditorSidebarSettingsEndpointTest extends ProxyEndpointTest {
 		?string $settings_period = null,
 		array $extra_data = array()
 	): string {
-		$array = $this->default_settings;
+		$array = $this->default_value;
 		unset( $array['SettingsMetric'], $array['SettingsPeriod'] );
 
 		if ( null !== $settings_metric ) {
@@ -332,24 +256,5 @@ final class EditorSidebarSettingsEndpointTest extends ProxyEndpointTest {
 		ksort( $array );
 
 		return $this->wp_json_encode( array_merge( $array, $extra_data ) );
-	}
-
-	/**
-	 * Sends a PUT request to the endpoint.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @param string $data The data to be sent in the request.
-	 * @return string The response returned by the endpoint.
-	 */
-	protected function send_put_request( string $data ): string {
-		$this->set_admin_user();
-		$result = $this->send_wp_rest_request( 'PUT', self::$route, $data );
-
-		if ( ! is_string( $result ) ) {
-			return '';
-		}
-
-		return $result;
 	}
 }
