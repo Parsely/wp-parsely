@@ -62,6 +62,7 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
 	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
@@ -89,6 +90,7 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
 	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
@@ -109,6 +111,7 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
 	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
@@ -129,6 +132,7 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
 	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
@@ -155,6 +159,7 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_meta_key
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_route
 	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
@@ -201,6 +206,7 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_meta_key
 	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_route
 	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
@@ -284,8 +290,8 @@ final class DashboardWidgetSettingsEndpointTest extends ProxyEndpointTest {
 	 *
 	 * @since 3.13.0
 	 *
-	 * @param string|null         $metric The metric value.
-	 * @param string|null         $period The period value.
+	 * @param string|null         $metric The Metric value.
+	 * @param string|null         $period The Period value.
 	 * @param array<mixed, mixed> $extra_data Any Extra key/value pairs to add.
 	 * @return string The generated JSON string.
 	 */
