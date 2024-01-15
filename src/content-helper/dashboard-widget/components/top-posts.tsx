@@ -186,6 +186,7 @@ export function TopPosts(): JSX.Element {
 			<button
 				className="parsely-top-posts-navigation-prev"
 				disabled={ page <= 1 }
+				aria-label={ __( 'Previous page', 'wp-parsely' ) }
 				onClick={ () => {
 					setPage( page - 1 );
 					Telemetry.trackEvent( 'dash_widget_navigation', {
@@ -205,6 +206,7 @@ export function TopPosts(): JSX.Element {
 			<button
 				className="parsely-top-posts-navigation-next"
 				disabled={ ! loading && posts.length < TOP_POSTS_DEFAULT_LIMIT }
+				aria-label={ __( 'Next page', 'wp-parsely' ) }
 				onClick={ () => {
 					setPage( page + 1 );
 					Telemetry.trackEvent( 'dash_widget_navigation', {
