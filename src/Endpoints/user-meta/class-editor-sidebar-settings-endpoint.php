@@ -47,11 +47,11 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 			),
 			'RelatedTopPostsFilterBy'      => array(
 				'values'  => array( 'unavailable', 'tag', 'section', 'author' ),
-				'default' => array( 'unavailable' ),
+				'default' => 'unavailable',
 			),
 			'RelatedTopPostsFilterValue'   => array(
 				'values'  => array(),
-				'default' => array( '' ),
+				'default' => '',
 			),
 			'RelatedTopPostsOpen'          => array(
 				'values'  => array( true, false ),
