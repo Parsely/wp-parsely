@@ -78,7 +78,7 @@
 		"concurrently": "^8.2.2",
 		"eslint-plugin-jest": "^27.6.3",
 		"husky": "^8.0.3",
-		"prettier": "^3.1.1",
+		"prettier": "^3.2.2",
 		"ts-loader": "^9.5.1",
 		"typescript": "^5.3.3"
 	},
