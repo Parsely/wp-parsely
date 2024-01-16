@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
-use WP_REST_Server;
 
 use function Parsely\Utils\convert_endpoint_to_filter_key;
 
@@ -70,17 +69,27 @@ abstract class Base_Endpoint {
 	 * Constructor.
 	 *
 	 * @param Parsely $parsely Parsely instance.
+	 * @param bool    $enable_capability_filters Whether to allow capability
+	 *                                           filters usage for the endpoint.
 	 *
 	 * @since 3.2.0
 	 * @since 3.7.0 Added user capability checks based on `is_public_endpoint` attribute.
 	 * @since 3.11.0 Moved from Base_Endpoint_Remote into Base_Endpoint.
 	 */
-	public function __construct( Parsely $parsely ) {
+	public function __construct(
+		Parsely $parsely,
+		bool $enable_capability_filters = true
+	) {
 		$this->parsely = $parsely;
 
 		if ( $this->is_public_endpoint ) {
 			$this->user_capability = null;
 		} else {
+			if ( false === $enable_capability_filters ) {
+				// The endpoint doesn't allow capability filters usage.
+				return;
+			}
+
 			/**
 			 * Filter to change the default user capability for all private endpoints.
 			 *

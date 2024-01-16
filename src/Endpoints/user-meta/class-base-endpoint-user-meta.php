@@ -44,6 +44,15 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	protected $valid_subvalues = array();
 
 	/**
+	 * The current user's ID.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @var int
+	 */
+	protected $current_user_id = 0;
+
+	/**
 	 * Returns the meta entry's key.
 	 *
 	 * @since 3.13.0
@@ -69,7 +78,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * @param Parsely $parsely Parsely instance.
 	 */
 	public function __construct( Parsely $parsely ) {
-		parent::__construct( $parsely );
+		parent::__construct( $parsely, false );
 
 		$subvalues_specs = $this->get_subvalues_specs();
 
@@ -85,6 +94,10 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * @since 3.13.0
 	 */
 	public function run(): void {
+		// Initialize the current user ID here, as doing it in the constructor
+		// is too early.
+		$this->current_user_id = get_current_user_id();
+
 		$this->register_endpoint(
 			static::get_route(),
 			'process_request',
@@ -113,15 +126,25 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 */
 	public function process_request( WP_REST_Request $request ): string {
 		$request_method = $request->get_method();
-		$user_id        = get_current_user_id();
 
 		// Update the meta entry's value if the request method is PUT.
 		if ( 'PUT' === $request_method ) {
 			$meta_value = $request->get_json_params();
-			$this->set_value( $user_id, $meta_value );
+			$this->set_value( $meta_value );
 		}
 
-		return $this->get_value( $user_id );
+		return $this->get_value();
+	}
+
+	/**
+	 * Checks if the current user is allowed to make the API call.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @return bool
+	 */
+	public function is_user_allowed_to_make_api_call(): bool {
+		return current_user_can( 'edit_user', $this->current_user_id );
 	}
 
 	/**
@@ -129,12 +152,11 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 *
 	 * @since 3.13.0
 	 *
-	 * @param int $user_id The user ID to which the meta entry is assigned.
 	 * @return string The meta entry's value as JSON.
 	 */
-	protected function get_value( int $user_id ): string {
+	protected function get_value(): string {
 		$meta_key   = $this->get_meta_key();
-		$meta_value = get_user_meta( $user_id, $meta_key, true );
+		$meta_value = get_user_meta( $this->current_user_id, $meta_key, true );
 
 		if ( ! is_array( $meta_value ) || 0 === count( $meta_value ) ) {
 			$meta_value = $this->default_value;
@@ -150,15 +172,14 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 *
 	 * @since 3.13.0
 	 *
-	 * @param int                   $user_id The user ID to which the meta entry is assigned.
 	 * @param array<string, string> $meta_value The value to set the meta entry to.
 	 * @return bool Whether updating the meta entry's value was successful.
 	 */
-	protected function set_value( int $user_id, array $meta_value ): bool {
+	protected function set_value( array $meta_value ): bool {
 		$sanitized_value = $this->sanitize_value( $meta_value );
 
 		$update_meta = update_user_meta(
-			$user_id,
+			$this->current_user_id,
 			$this->get_meta_key(),
 			$sanitized_value
 		);
