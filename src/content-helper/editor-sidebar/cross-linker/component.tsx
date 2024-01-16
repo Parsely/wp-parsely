@@ -9,6 +9,7 @@ import { __, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 import { CrossLinkerSettings } from './component-settings';
 import { CrossLinkerStore } from './store';
 import { CrossLinkerProvider, LinkSuggestion } from './provider';
@@ -110,12 +111,24 @@ export const CrossLinkerPanel = ( {
 		await setSuggestedLinks( null );
 		await setError( null );
 
+		Telemetry.trackEvent( 'cross_linker_generate_pressed', {
+			is_full_content: fullContent,
+			selected_block: selectedBlock?.name ?? 'none',
+			context,
+		} );
+
 		// If selected block is not set, the overlay will be applied to the entire content.
 		await applyOverlay( fullContent ? 'all' : selectedBlock?.clientId );
 
 		// After 60 seconds without a response, timeout and remove any overlay.
 		const timeout = setTimeout( () => {
 			setLoading( false );
+			Telemetry.trackEvent( 'cross_linker_generate_timeout', {
+				is_full_content: fullContent,
+				selected_block: selectedBlock?.name ?? 'none',
+				context,
+			} );
+
 			// If selected block is not set, the overlay will be removed from the entire content.
 			removeOverlay( fullContent ? 'all' : selectedBlock?.clientId );
 		}, 60000 );
@@ -147,6 +160,13 @@ export const CrossLinkerPanel = ( {
 	 * @param {LinkSuggestion[]} links The cross-links to apply.
 	 */
 	const applyCrossLinks = ( links: LinkSuggestion[] ) => {
+		Telemetry.trackEvent( 'cross_linker_applied', {
+			is_full_content: fullContent,
+			selected_block: selectedBlock?.name ?? 'none',
+			links_count: links.length,
+			context,
+		} );
+
 		// Get the original content of the selected block or the entire post content.
 		let originalContent = '';
 		if ( selectedBlock && ! fullContent ) {

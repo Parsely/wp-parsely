@@ -32,7 +32,7 @@ import { VerifyCredentials } from '../common/verify-credentials';
 import { PerformanceDetails } from './performance-details/component';
 import { RelatedTopPostList } from './related-top-posts/component-list';
 import { TitleSuggestionsPanel } from './title-suggestions/component';
-import { CrossLinkerPanel } from './cross-linker/component';
+import { CrossLinkerPanel, CrossLinkerPanelContext } from './cross-linker/component';
 import { initCrossLinker } from './cross-linker/cross-linker';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
@@ -468,7 +468,9 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					onToggle={ ( next ) => trackToggle( 'cross_links', next ) }
 				>
 					{
-						<CrossLinkerPanel />
+						<CrossLinkerPanel
+							context={ CrossLinkerPanelContext.ContentHelperSidebar }
+						/>
 					}
 				</PanelBody>
 			</Panel>

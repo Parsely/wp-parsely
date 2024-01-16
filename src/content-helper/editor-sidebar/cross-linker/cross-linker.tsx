@@ -14,6 +14,7 @@ import { BetaBadge } from '../../common/components/beta-badge';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { CrossLinkerPanel, CrossLinkerPanelContext } from './component';
 import { BlockOverlayContainer } from './component-block-overlay';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 import './cross-linker.scss';
 
 /**
@@ -35,6 +36,9 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 						title="Cross Linker"
 						className="wp-parsely-block-ai-controls"
 						icon={ <><LeafIcon /> <BetaBadge /></> }
+						onToggle={ ( next ) => {
+							Telemetry.trackEvent( 'cross_linker_block_inspector_panel_toggled', { open: next } );
+						} }
 					>
 						<CrossLinkerPanel
 							selectedBlockClientId={ props.clientId }
