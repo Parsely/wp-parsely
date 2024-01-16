@@ -20,7 +20,7 @@ import './cross-linker.scss';
 /**
  * Cross linker inspector control panel component
  *
- * @since 3.13.0
+ * @since 3.14.0
  */
 const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit ) => {
 	return ( props ) => {
@@ -55,7 +55,7 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
  * Initializes the cross linker, by adding the cross linker panel to the paragraph block.
  * Also registers the block overlay container.
  *
- * @since 3.13.0
+ * @since 3.14.0
  */
 export const initCrossLinker = () => {
 	/**

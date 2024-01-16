@@ -4,7 +4,7 @@
  * class
  *
  * @package Parsely
- * @since   3.13.0
+ * @since   3.14.0
  */
 
 declare(strict_types=1);
@@ -21,7 +21,7 @@ use WP_Error;
 /**
  * Configures the `/content-suggestions/suggest-links` REST API endpoint.
  *
- * @since 3.13.0
+ * @since 3.14.0
  */
 final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 
@@ -35,7 +35,7 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 	/**
 	 * Initializes the class.
 	 *
-	 * @since 3.13.0
+	 * @since 3.14.0
 	 *
 	 * @param Parsely $parsely The Parsely plugin instance.
 	 */
@@ -47,7 +47,7 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 	/**
 	 * Registers the endpoint's WP REST route.
 	 *
-	 * @since 3.13.0
+	 * @since 3.14.0
 	 */
 	public function run(): void {
 		$this->register_endpoint( '/content-suggestions/suggest-links', 'POST' );
@@ -56,7 +56,7 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 	/**
 	 * Generates the final data from the passed response.
 	 *
-	 * @since 3.13.0
+	 * @since 3.14.0
 	 *
 	 * @param array<stdClass> $response The response received by the proxy.
 	 * @return array<stdClass> The generated data.
@@ -69,7 +69,7 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 	/**
 	 * Cached "proxy" to the Parse.ly API endpoint.
 	 *
-	 * @since 3.13.0
+	 * @since 3.14.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.

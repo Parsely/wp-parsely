@@ -18,7 +18,7 @@ import { escapeRegExp, replaceNthOccurrence } from './utils';
 /**
  * Defines the props structure for CrossLinkerPanel.
  *
- * @since 3.13.0
+ * @since 3.14.0
  */
 type CrossLinkerPanelProps = {
 	className?: string;
@@ -35,7 +35,7 @@ export enum CrossLinkerPanelContext {
 /**
  * Panel for the Cross Linker.
  *
- * @since 3.13.0
+ * @since 3.14.0
  *
  * @param { Readonly<CrossLinkerPanelProps> } props The component's props.
  */
@@ -104,7 +104,7 @@ export const CrossLinkerPanel = ( {
 	/**
 	 * Generates cross-links for the selected block or the entire post content.
 	 *
-	 * @since 3.13.0
+	 * @since 3.14.0
 	 */
 	const generateCrossLinks = () => async () => {
 		await setLoading( true );
@@ -155,7 +155,7 @@ export const CrossLinkerPanel = ( {
 	/**
 	 * Applies the cross-links to the selected block or the entire post content.
 	 *
-	 * @since 3.13.0
+	 * @since 3.14.0
 	 *
 	 * @param {LinkSuggestion[]} links The cross-links to apply.
 	 */

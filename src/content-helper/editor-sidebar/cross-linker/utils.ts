@@ -33,7 +33,7 @@ export function replaceNthOccurrence( inputString: string, search: RegExp, repla
 /**
  * Escapes special characters in a string for use in a regular expression.
  *
- * @since 3.12.0
+ * @since 3.14.0
  *
  * @param {string} string - The string to be escaped.
  *

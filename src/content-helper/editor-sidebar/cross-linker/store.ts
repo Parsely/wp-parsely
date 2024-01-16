@@ -94,7 +94,7 @@ const defaultState: CrossLinkerState = {
 /**
  * The CrossLinker store.
  *
- * @since 3.12.0
+ * @since 3.14.0
  */
 export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 	initialState: defaultState,

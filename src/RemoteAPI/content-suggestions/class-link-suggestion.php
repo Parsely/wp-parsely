@@ -17,7 +17,7 @@ namespace Parsely\RemoteAPI\ContentSuggestions;
  *
  * @package Parsely
  *
- * @since 3.13.0
+ * @since 3.14.0
  */
 class Link_Suggestion {
 	/**

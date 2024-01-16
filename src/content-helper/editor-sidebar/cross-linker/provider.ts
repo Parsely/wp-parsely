@@ -13,7 +13,7 @@ import { ContentHelperError, ContentHelperErrorCode } from '../../common/content
  * Structure of a link suggestion returned by the
  * `content-suggestions/suggest-links` endpoint.
  *
- * @since 3.12.0
+ * @since 3.14.0
  */
 export type LinkSuggestion = {
 	href: string;
@@ -26,7 +26,7 @@ export type LinkSuggestion = {
  * Specifies the form of the response returned by the
  * `content-suggestions/suggest-links` WordPress REST API endpoint.
  *
- * @since 3.12.0
+ * @since 3.14.0
  */
 interface CrossLinkerApiResponse {
 	error?: Error;
@@ -37,7 +37,7 @@ interface CrossLinkerApiResponse {
  * Returns data from the `content-suggestions/suggest-links` WordPress REST API
  * endpoint.
  *
- * @since 3.12.0
+ * @since 3.14.0
  */
 export class CrossLinkerProvider {
 	/**

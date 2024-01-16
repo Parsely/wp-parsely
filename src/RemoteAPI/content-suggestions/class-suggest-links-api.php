@@ -3,7 +3,7 @@
  * Remote API: Content Suggestions Suggest Links API
  *
  * @package Parsely
- * @since 3.13.0
+ * @since 3.14.0
  */
 
 declare(strict_types=1);
@@ -18,7 +18,7 @@ require_once __DIR__ . '/class-link-suggestion.php';
 /**
  * Class for Content Suggestions Suggest Links API.
  *
- * @since 3.13.0
+ * @since 3.14.0
  *
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
@@ -30,7 +30,7 @@ class Suggest_Links_API extends Content_Suggestions_Base_API {
 	/**
 	 * Indicates whether the endpoint is public or protected behind permissions.
 	 *
-	 * @since 3.13.0
+	 * @since 3.14.0
 	 * @var bool
 	 */
 	protected $is_public_endpoint = false;
@@ -38,7 +38,7 @@ class Suggest_Links_API extends Content_Suggestions_Base_API {
 	/**
 	 * Gets suggested cross-links for a given content using the Parse.ly
 	 *
-	 * @since 3.13.0
+	 * @since 3.14.0
 	 *
 	 * @param string $content The query arguments to send to the remote API.
 	 * @param int    $max_link_length The maximum length of the link text.

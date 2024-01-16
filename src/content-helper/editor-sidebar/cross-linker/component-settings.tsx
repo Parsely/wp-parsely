@@ -16,7 +16,7 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
 /**
  * Defines the props structure for CrossLinkerSettings.
  *
- * @since 3.13.0
+ * @since 3.14.0
  */
 type CrossLinkerSettingsProps = {
 	disabled?: boolean;
@@ -25,7 +25,7 @@ type CrossLinkerSettingsProps = {
 /**
  * Settings for the Cross Linker.
  *
- * @since 3.13.0
+ * @since 3.14.0
  *
  * @param {CrossLinkerSettingsProps} props The component's props.
  */
@@ -54,7 +54,7 @@ export const CrossLinkerSettings = ( { disabled = false }: Readonly<CrossLinkerS
 	/**
 	 * Toggles the settings panel.
 	 *
-	 * @since 3.13.0
+	 * @since 3.14.0
 	 */
 	const toggleSetting = () => {
 		setSettingsOpen( ! settingsOpen );

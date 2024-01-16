@@ -14,7 +14,7 @@ import { CrossLinkerStore } from './store';
 /**
  * Defines the props structure for BlockOverlay.
  *
- * @since 3.13.0
+ * @since 3.14.0
  */
 type BlockOverlayProps = {
 	selectedBlockClientId: string;
@@ -24,7 +24,7 @@ type BlockOverlayProps = {
 /**
  * Draws an overlay over the selected block.
  *
- * @since 3.13.0
+ * @since 3.14.0
  *
  * @param {BlockOverlayProps} props The component's props.
  */
@@ -116,7 +116,7 @@ export const BlockOverlay = ( {
 /**
  * Draws the multiple block overlays that are currently stored in the Cross Linker store.
  *
- * @since 3.13.0
+ * @since 3.14.0
  */
 export const BlockOverlayContainer = ( ) => {
 	const { overlayBlocks } = useSelect( ( select ) => {
