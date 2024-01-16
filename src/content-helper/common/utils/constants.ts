@@ -90,7 +90,7 @@ export function getPeriodDescription(
 	/* eslint-disable @wordpress/valid-sprintf */
 	switch ( timeUnit ) {
 		case 'm':
-			if ( timeValue === 1 ) {
+			if ( 1 === timeValue ) {
 				description = __( 'Last Minute', 'wp-parsely' );
 				break;
 			}
@@ -100,7 +100,7 @@ export function getPeriodDescription(
 			);
 			break;
 		case 'h':
-			if ( timeValue === 1 ) {
+			if ( 1 === timeValue ) {
 				description = __( 'Last Hour', 'wp-parsely' );
 				break;
 			}
@@ -110,7 +110,7 @@ export function getPeriodDescription(
 			);
 			break;
 		case 'd':
-			if ( timeValue === 1 ) {
+			if ( 1 === timeValue ) {
 				description = __( 'Last Day', 'wp-parsely' );
 				break;
 			}
