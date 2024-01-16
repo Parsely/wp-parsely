@@ -45,21 +45,19 @@ export const TitleSuggestionsPanel = ( {
 	initialPersona, initialSettingsOpen, initialTone, onSettingChange,
 }: TitleSuggestionsPanelProps ): JSX.Element => {
 	const [ error, setError ] = useState<ContentHelperError>();
+	const [ tone, setTone ] = useState<ToneProp>( initialTone );
+	const [ persona, setPersona ] = useState<PersonaProp>( initialPersona );
 
 	const {
 		loading,
 		titles,
 		acceptedTitle,
 		originalTitle,
-		tone,
-		persona,
 	} = useSelect( ( select ) => {
 		const { isLoading,
 			getTitles,
 			getAcceptedTitle,
 			getOriginalTitle,
-			getTone,
-			getPersona,
 		} = select( TitleStore );
 
 		return {
@@ -67,18 +65,14 @@ export const TitleSuggestionsPanel = ( {
 			loading: isLoading(),
 			titles: getTitles( TitleType.PostTitle ),
 			originalTitle: getOriginalTitle( TitleType.PostTitle ),
-			tone: getTone() ?? initialTone,
-			persona: getPersona() ?? initialPersona,
 		};
-	}, [ initialTone, initialPersona ] );
+	}, [] );
 
 	const {
 		setTitles,
 		setLoading,
 		setAcceptedTitle,
 		setOriginalTitle,
-		setTone,
-		setPersona,
 	} = useDispatch( TitleStore );
 
 	const currentPostContent = useSelect( ( select ) => {
@@ -90,18 +84,6 @@ export const TitleSuggestionsPanel = ( {
 		const { getEditedPostAttribute } = select( 'core/editor' ) as GutenbergFunction;
 		return getEditedPostAttribute( 'title' );
 	}, [] );
-
-	const toneLabel = getToneLabel( tone );
-	const personaLabel = getPersonaLabel( persona );
-
-	// This state stores the tone and persona label to be displayed when the list
-	// of generated titles is shown to the user.
-	const [ staticToneAndPersonaLabel, setStaticToneAndPersonaLabel ] = useState<{ tone: string, persona: string}>(
-		{
-			tone: toneLabel,
-			persona: personaLabel,
-		}
-	);
 
 	const generateTitles = async (
 		titleType: TitleType,
@@ -140,12 +122,6 @@ export const TitleSuggestionsPanel = ( {
 				tone,
 				persona
 			);
-
-			// Store the current tone and persona label to be displayed later on.
-			setStaticToneAndPersonaLabel( {
-				tone: toneLabel,
-				persona: personaLabel,
-			} );
 		}
 	};
 
@@ -277,8 +253,8 @@ export const TitleSuggestionsPanel = ( {
 										'wp-parsely'
 									),
 									{
-										tone: <strong>{ staticToneAndPersonaLabel.tone }</strong>,
-										persona: <strong>{ staticToneAndPersonaLabel.persona }</strong>,
+										tone: <strong>{ getToneLabel( tone ) }</strong>,
+										persona: <strong>{ getPersonaLabel( persona ) }</strong>,
 									}
 								)
 							}
