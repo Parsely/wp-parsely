@@ -86,7 +86,7 @@ export const CrossLinkerSettings = ( { disabled = false }: Readonly<CrossLinkerS
 						disabled={ disabled }
 						value={ maxLinks }
 						initialPosition={ maxLinks }
-						onChange={ ( value ) => setMaxLinks( value ? value : 1 ) }
+						onChange={ ( value ) => setMaxLinks( value ?? 1 ) }
 						label={ __( 'Links limit', 'wp-parsely' ) }
 						help={ __( 'The maximum number of cross links to add in the content.', 'wp-parsely' ) }
 						min={ 1 }
@@ -96,7 +96,7 @@ export const CrossLinkerSettings = ( { disabled = false }: Readonly<CrossLinkerS
 						disabled={ disabled }
 						value={ maxLinkLength }
 						initialPosition={ maxLinkLength }
-						onChange={ ( value ) => setMaxLinkLength( value ? value : 1 ) }
+						onChange={ ( value ) => setMaxLinkLength( value ?? 1 ) }
 						label={ __( 'Link length', 'wp-parsely' ) }
 						help={ __( 'The maximum length for the cross link.', 'wp-parsely' ) }
 						min={ 1 }

@@ -105,12 +105,10 @@ export const BlockOverlay = ( {
 	} );
 
 	return createPortal(
-		<>
-			<div className="wp-parsely-block-overlay-label">
-				<Spinner />
-				<span>{ label }</span>
-			</div>
-		</>,
+		<div className="wp-parsely-block-overlay-label">
+			<Spinner />
+			<span>{ label }</span>
+		</div>,
 		container
 	);
 };
@@ -131,11 +129,11 @@ export const BlockOverlayContainer = ( ) => {
 
 	return (
 		<>
-			{ overlayBlocks.map( ( blockId, index ) => (
+			{ overlayBlocks.map( ( blockId ) => (
 				<BlockOverlay
 					label={ __( 'Generating cross links…', 'wp-parsely' ) }
 					selectedBlockClientId={ blockId }
-					key={ index }
+					key={ blockId }
 				/>
 			) ) }
 		</>

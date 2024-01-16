@@ -110,8 +110,6 @@ export const CrossLinkerPanel = ( {
 		await setSuggestedLinks( null );
 		await setError( null );
 
-		const generatingFullContent = fullContent || ! selectedBlock;
-
 		// If selected block is not set, the overlay will be applied to the entire content.
 		await applyOverlay( fullContent ? 'all' : selectedBlock?.clientId );
 
@@ -123,6 +121,7 @@ export const CrossLinkerPanel = ( {
 		}, 60000 );
 
 		try {
+			const generatingFullContent = fullContent || ! selectedBlock;
 			let generatedLinks = [];
 			if ( selectedBlock?.originalContent && ! generatingFullContent ) {
 				generatedLinks = await CrossLinkerProvider.generateCrossLinks( selectedBlock?.originalContent, maxLinkLength, maxLinks );
@@ -137,17 +136,6 @@ export const CrossLinkerPanel = ( {
 			await setLoading( false );
 			await removeOverlay( fullContent ? 'all' : selectedBlock?.clientId );
 			clearTimeout( timeout );
-
-			// Select the block after generating cross-links, if we're using the block inspector.
-			if ( context === CrossLinkerPanelContext.BlockInspector ) {
-				if ( selectedBlock && ! fullContent ) {
-					dispatch( 'core/block-editor' ).selectBlock( selectedBlock.clientId );
-				} else {
-					const firstBlock = select( 'core/block-editor' ).getBlockOrder()[ 0 ];
-					// Select the first block in the post.
-					dispatch( 'core/block-editor' ).selectBlock( firstBlock );
-				}
-			}
 		}
 	};
 
@@ -192,7 +180,7 @@ export const CrossLinkerPanel = ( {
 
 			// Regex that searches for the link.text, but if the text is inside an HTML anchor,
 			// the anchor itself is also selected and replaced with the new anchor.
-			const searchRegex = new RegExp( `(${ link.text }|<a[^>]*>${ link.text }<\/a>)` );
+			const searchRegex = new RegExp( `(${ link.text }|<a[^>]*>${ link.text }</a>)` );
 			newContent = replaceNthOccurrence( newContent, searchRegex, anchor, link.offset );
 		}
 
@@ -223,6 +211,18 @@ export const CrossLinkerPanel = ( {
 	 */
 	const removeOverlay = async ( clientId: string = 'all' ) => {
 		await removeOverlayBlock( clientId );
+
+		// Select a block after removing the overlay, only if we're using the block inspector.
+		if ( context === CrossLinkerPanelContext.BlockInspector ) {
+			if ( 'all' !== clientId && ! fullContent ) {
+				dispatch( 'core/block-editor' ).selectBlock( clientId );
+			} else {
+				const firstBlock = select( 'core/block-editor' ).getBlockOrder()[ 0 ];
+				// Select the first block in the post.
+				dispatch( 'core/block-editor' ).selectBlock( firstBlock );
+			}
+		}
+
 		// If there are no more overlay blocks, enable save.
 		if ( overlayBlocks.length === 0 ) {
 			enableSave();
