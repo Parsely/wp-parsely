@@ -3,6 +3,7 @@
  */
 import { Button, CheckboxControl, Disabled, Notice, PanelRow } from '@wordpress/components';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
@@ -10,9 +11,10 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
+import { OnSettingChangeFunction, SidebarSettings } from '../editor-sidebar';
 import { CrossLinkerSettings } from './component-settings';
-import { CrossLinkerStore } from './store';
 import { CrossLinkerProvider, LinkSuggestion } from './provider';
+import { CrossLinkerStore } from './store';
 import { escapeRegExp, replaceNthOccurrence } from './utils';
 
 /**
@@ -24,6 +26,8 @@ type CrossLinkerPanelProps = {
 	className?: string;
 	selectedBlockClientId?: string;
 	context?: CrossLinkerPanelContext;
+	sidebarSettings: SidebarSettings;
+	onSettingChange: OnSettingChangeFunction;
 }
 
 export enum CrossLinkerPanelContext {
@@ -43,6 +47,8 @@ export const CrossLinkerPanel = ( {
 	className,
 	selectedBlockClientId,
 	context = CrossLinkerPanelContext.Unknown,
+	sidebarSettings,
+	onSettingChange,
 }: Readonly<CrossLinkerPanelProps> ) => {
 	/**
 	 * Load the Cross Linker store.
@@ -53,8 +59,8 @@ export const CrossLinkerPanel = ( {
 		overlayBlocks,
 		error,
 		suggestedLinks,
-		maxLinkLength,
 		maxLinks,
+		maxLinkLength,
 	} = useSelect( ( selectFn ) => {
 		const {
 			isLoading,
@@ -62,28 +68,37 @@ export const CrossLinkerPanel = ( {
 			getSuggestedLinks,
 			getError,
 			isFullContent,
-			getMaxLinkLength,
 			getMaxLinks,
+			getMaxLinkLength,
 		} = selectFn( CrossLinkerStore );
 		return {
 			loading: isLoading(),
 			error: getError(),
+			maxLinks: getMaxLinks(),
+			maxLinkLength: getMaxLinkLength(),
 			fullContent: isFullContent(),
 			overlayBlocks: getOverlayBlocks(),
 			suggestedLinks: getSuggestedLinks(),
-			maxLinkLength: getMaxLinkLength(),
-			maxLinks: getMaxLinks(),
 		};
 	}, [] );
 
 	const {
 		setLoading,
 		setFullContent,
+		setSettings,
 		setError,
 		setSuggestedLinks,
 		addOverlayBlock,
 		removeOverlayBlock,
 	} = useDispatch( CrossLinkerStore );
+
+	/**
+	 * Load and prepare the Cross Linker settings.
+	 */
+	useEffect( () => {
+		// Load the settings from the WordPress database and store them in the Cross Linker store.
+		setSettings( sidebarSettings );
+	}, [ setSettings, sidebarSettings ] );
 
 	/**
 	 * Load the selected block and post content.
@@ -137,9 +152,17 @@ export const CrossLinkerPanel = ( {
 			const generatingFullContent = fullContent || ! selectedBlock;
 			let generatedLinks = [];
 			if ( selectedBlock?.originalContent && ! generatingFullContent ) {
-				generatedLinks = await CrossLinkerProvider.generateCrossLinks( selectedBlock?.originalContent, maxLinkLength, maxLinks );
+				generatedLinks = await CrossLinkerProvider.generateCrossLinks(
+					selectedBlock?.originalContent,
+					maxLinkLength,
+					maxLinks
+				);
 			} else {
-				generatedLinks = await CrossLinkerProvider.generateCrossLinks( postContent, maxLinkLength, maxLinks );
+				generatedLinks = await CrossLinkerProvider.generateCrossLinks(
+					postContent,
+					maxLinkLength,
+					maxLinks
+				);
 			}
 			await setSuggestedLinks( generatedLinks );
 			applyCrossLinks( generatedLinks );
@@ -306,7 +329,10 @@ export const CrossLinkerPanel = ( {
 						}
 					</Notice>
 				) }
-				<CrossLinkerSettings disabled={ loading } />
+				<CrossLinkerSettings
+					disabled={ loading }
+					onSettingChange={ onSettingChange }
+				/>
 				<div className="wp-parsely-cross-linker-generate">
 					<Button
 						onClick={ generateCrossLinks() }
