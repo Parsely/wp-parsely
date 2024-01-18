@@ -70,9 +70,9 @@ export const CrossLinkerSettings = ( { disabled = false }: Readonly<CrossLinkerS
 				<BaseControl
 					id="parsely-cross-linker-settings"
 					className="parsely-panel-settings-header-label"
-					label={ __( 'Cross Linker Settings', 'wp-parsely' ) }>
+					label={ __( 'Smart Linking Settings', 'wp-parsely' ) }>
 					<Button
-						label={ __( 'Tweak the settings of the Cross Linker', 'wp-parsely' ) }
+						label={ __( 'Tweak the settings of the Smart Linking', 'wp-parsely' ) }
 						icon={ settings }
 						onClick={ toggleSetting }
 						isPressed={ settingsOpen }
@@ -88,7 +88,7 @@ export const CrossLinkerSettings = ( { disabled = false }: Readonly<CrossLinkerS
 						initialPosition={ maxLinks }
 						onChange={ ( value ) => setMaxLinks( value ?? 1 ) }
 						label={ __( 'Links limit', 'wp-parsely' ) }
-						help={ __( 'The maximum number of cross links to add in the content.', 'wp-parsely' ) }
+						help={ __( 'The maximum number of smart links to add in the content.', 'wp-parsely' ) }
 						min={ 1 }
 						max={ 20 }
 					/>
@@ -98,7 +98,7 @@ export const CrossLinkerSettings = ( { disabled = false }: Readonly<CrossLinkerS
 						initialPosition={ maxLinkLength }
 						onChange={ ( value ) => setMaxLinkLength( value ?? 1 ) }
 						label={ __( 'Link length', 'wp-parsely' ) }
-						help={ __( 'The maximum length for the cross link.', 'wp-parsely' ) }
+						help={ __( 'The maximum length (in words) for the smart link.', 'wp-parsely' ) }
 						min={ 1 }
 						max={ 8 }
 					/>

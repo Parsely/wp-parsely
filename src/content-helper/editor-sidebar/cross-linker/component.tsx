@@ -282,8 +282,11 @@ export const CrossLinkerPanel = ( {
 			<PanelRow className={ className }>
 				<div className="wp-parsely-cross-linker-text">
 					{ selectedBlock
-						? __( 'Generate cross links automatically for this block using Parse.ly AI.', 'wp-parsely' )
-						: __( 'Generate cross links for the content of this post using Parse.ly AI, or select an individual block to generate cross links for that block.', 'wp-parsely' ) }
+						? __( 'Automatically generate the most relevant links with organic search traffic ' +
+							'in past month for a block of text using the Parse.ly API.', 'wp-parsely' )
+						: __( 'Automatically generate the most relevant links with organic search traffic ' +
+							'in past month for the entire post using the Parse.ly API. You can also select a ' +
+							'specific block to generate cross links for.', 'wp-parsely' ) }
 				</div>
 				{ error && (
 					<Notice
@@ -302,7 +305,7 @@ export const CrossLinkerPanel = ( {
 					>
 						{
 							/* translators: 1 - number of cross links generte */
-							sprintf( __( 'Successfully generated %s cross links.', 'wp-parsely' ), suggestedLinks.length )
+							sprintf( __( 'Successfully added %s smart links.', 'wp-parsely' ), suggestedLinks.length )
 						}
 					</Notice>
 				) }
@@ -314,14 +317,14 @@ export const CrossLinkerPanel = ( {
 						isBusy={ loading }
 						disabled={ loading }
 					>
-						{ loading ? __( 'Generating…', 'wp-parsely' ) : __( 'Generate Cross Links', 'wp-parsely' ) }
+						{ loading ? __( 'Generating…', 'wp-parsely' ) : __( 'Add Smart Links', 'wp-parsely' ) }
 					</Button>
 					<Disabled isDisabled={ loading }>
 						<CheckboxControl
 							checked={ selectedBlock ? fullContent : true }
 							disabled={ loading }
 							onChange={ selectedBlock ? setFullContent : () => { /* empty */ } }
-							label={ __( 'Generate cross links for the entire content', 'wp-parsely' ) }
+							label={ __( 'Add smart links for the entire post', 'wp-parsely' ) }
 						/>
 					</Disabled>
 				</div>

@@ -33,7 +33,7 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 				{ /* @ts-ignore */ }
 				<InspectorControls group="list">
 					<PanelBody
-						title="Cross Linker"
+						title="Smart Linking"
 						className="wp-parsely-block-ai-controls"
 						icon={ <><LeafIcon /> <BetaBadge /></> }
 						onToggle={ ( next ) => {
