@@ -490,7 +490,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 			<Panel>
 				<PanelBody
 					icon={ <BetaBadge /> }
-					title={ __( 'Cross Links', 'wp-parsely' ) }
+					title={ __( 'Smart Linking', 'wp-parsely' ) }
 					initialOpen={ settings.CrossLinksOpen }
 					onToggle={ ( next ) => {
 						setSettings( {
