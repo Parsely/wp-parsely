@@ -19,7 +19,11 @@ import {
 	DASHBOARD_BASE_URL,
 	Metric,
 	Period,
+	PostFilter,
 } from '../../../src/content-helper/common/utils/constants';
+import {
+	SidebarPostData,
+} from '../../../src/content-helper/editor-sidebar/editor-sidebar';
 import {
 	RelatedTopPostList,
 } from '../../../src/content-helper/editor-sidebar/related-top-posts/component-list';
@@ -29,12 +33,21 @@ import {
 	RelatedTopPostsProvider,
 } from '../../../src/content-helper/editor-sidebar/related-top-posts/provider';
 
-const postData = {
+const postData: SidebarPostData = {
 	authors: [],
-	isPage: false,
 	categories: [],
 	tags: [],
 };
+
+const relatedTopPostList =
+	<RelatedTopPostList
+		initialFilter={ { type: 'tag', value: 'a tag' } as PostFilter }
+		metric={ Metric.Views }
+		onFilterChange={ () => {} }
+		period={ Period.Days7 }
+		postData={ postData }
+	/>
+;
 
 describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	test( 'should display spinner when starting', async () => {
@@ -44,7 +57,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } postData={ postData } /> );
+			render( relatedTopPostList );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
@@ -102,7 +115,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } postData={ postData } /> );
+			render( relatedTopPostList );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
@@ -122,7 +135,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } postData={ postData } /> );
+			render( relatedTopPostList );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
@@ -165,7 +178,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } postData={ postData } /> );
+			render( relatedTopPostList );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
@@ -219,7 +232,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	}
 
 	async function verifyCredentialsNotSetMessage( getRelatedTopPostsFn: jest.SpyInstance<Promise<GetRelatedTopPostsResult>> ) {
-		render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } postData={ postData } /> );
+		render( relatedTopPostList );
 		expect( getSpinner() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'empty-credentials-message' ), { timeout: 3000 } );
@@ -235,7 +248,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	}
 
 	async function verifyApiErrorMessage( getRelatedTopPostsFn: jest.SpyInstance<Promise<GetRelatedTopPostsResult>> ) {
-		render( <RelatedTopPostList period={ Period.Days7 } metric={ Metric.Views } postData={ postData } /> );
+		render( relatedTopPostList );
 		expect( getSpinner() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'error' ), { timeout: 3000 } );

@@ -113,50 +113,22 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * Verifies default user capability filter.
 	 *
 	 * @covers \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::permission_callback
-	 *
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 */
 	public function test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed(): void {
-		$this->login_as_contributor();
-		add_filter(
-			'wp_parsely_user_capability_for_all_private_apis',
-			function () {
-				return 'edit_posts';
-			}
-		);
-
-		$proxy_api = new Referrers_Post_Detail_API_Proxy(
-			new Parsely(),
-			new Referrers_Post_Detail_API( new Parsely() )
-		);
-
-		self::assertTrue( $proxy_api->permission_callback() );
+		parent::run_test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed();
 	}
 
 	/**
 	 * Verifies endpoint specific user capability filter.
 	 *
 	 * @covers \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::permission_callback
-	 *
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
 	 */
 	public function test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed(): void {
-		$this->login_as_contributor();
-		add_filter(
-			'wp_parsely_user_capability_for_referrers_post_detail_api',
-			function () {
-				return 'edit_posts';
-			}
-		);
-
-		$proxy_api = new Referrers_Post_Detail_API_Proxy(
-			new Parsely(),
-			new Referrers_Post_Detail_API( new Parsely() )
-		);
-
-		self::assertTrue( $proxy_api->permission_callback() );
+		parent::run_test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed();
 	}
 
 	/**
@@ -193,7 +165,7 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 
 		add_filter(
 			'pre_http_request',
-			function () use ( &$dispatched ) {
+			function () use ( &$dispatched ): array {
 				$dispatched++;
 				return array(
 					'body' => '{"data":[

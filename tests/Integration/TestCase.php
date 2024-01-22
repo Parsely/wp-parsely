@@ -20,6 +20,7 @@ use PHPUnit\Framework\RiskyTestError;
 use UnexpectedValueException;
 use WP_Error;
 use WP_Post;
+use WP_REST_Request;
 use WP_Term;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
 
@@ -652,5 +653,32 @@ abstract class TestCase extends WPIntegrationTestCase {
 		$method->setAccessible( true );
 
 		return $method;
+	}
+
+	/**
+	 * Sends a request to the WordPress REST API.
+	 *
+	 * @since 3.13.0
+	 *
+	 * @param string $method The HTTP method to use to send the request.
+	 * @param string $route The REST route to which the request will be sent.
+	 * @param string $data The data that will be sent in the request.
+	 * @param bool   $send_data_as_json Whether to send the data as JSON.
+	 * @return mixed The response data.
+	 */
+	public function send_wp_rest_request(
+		string $method,
+		string $route,
+		string $data,
+		bool $send_data_as_json = true
+	) {
+		$request = new WP_REST_Request( $method, $route );
+		$request->set_body( $data );
+
+		if ( $send_data_as_json ) {
+			$request->set_header( 'content-type', 'application/json' );
+		}
+
+		return rest_do_request( $request )->get_data();
 	}
 }
