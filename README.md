@@ -63,7 +63,7 @@ While the plugin works out of the box for basic integrations, it offers a host o
 - [Commonly Asked Questions](https://docs.parse.ly/plugin-common-questions/).
 - [Changelog](https://github.com/parsely/wp-parsely/blob/trunk/CHANGELOG.md).
 
-**IMPORTANT:** If you are a [WordPress VIP](https://wpvip.com/) customer, the plugin should be enabled by using an `mu-plugins` filter. Please consult the [WordPress VIP documentation](https://docs.wpvip.com/technical-references/plugins/parse-ly/) for more details.
+**IMPORTANT:** If you are a [WordPress VIP](https://wpvip.com/) customer, please consult the [WordPress VIP documentation](https://docs.wpvip.com/parse-ly/) for more details.
 
 ### Sample Parse.ly metadata
 
@@ -93,7 +93,7 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
 
 Development, code hosting and issue tracking of this plugin happens on the [wp-parsely GitHub repository](https://github.com/Parsely/wp-parsely/). Active development happens on the `develop` branch and releases are made off the `trunk` branch.
 
-To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](https://github.com/parsely/wp-parsely/blob/trunk/CONTRIBUTING.md) file.
+To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](https://github.com/Parsely/wp-parsely/blob/develop/docs/CONTRIBUTING.md) file.
 
 ## Installation
 
