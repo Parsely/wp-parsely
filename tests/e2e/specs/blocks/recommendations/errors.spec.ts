@@ -11,6 +11,8 @@ import {
  * Internal dependencies
  */
 import {
+	INVALID_SITE_ID,
+	VALID_SITE_ID,
 	setSiteKeys,
 } from '../../../utils';
 
@@ -30,7 +32,7 @@ describe( 'Recommendations Block', () => {
 	 * Verifies that the block will display an error when an invalid Site ID is provided.
 	 */
 	it( 'Should display an error when an invalid Site ID is provided', async () => {
-		await setSiteKeys();
+		await setSiteKeys( INVALID_SITE_ID, '' );
 		await createNewPost();
 		await insertBlock( 'Parse.ly' );
 
@@ -43,7 +45,7 @@ describe( 'Recommendations Block', () => {
 	 * Verifies that the block will display an error when an empty Site ID is provided.
 	 */
 	it( 'Should display an error when an empty Site ID is provided', async () => {
-		await setSiteKeys( '' );
+		await setSiteKeys( '', '' );
 		await createNewPost();
 		await insertBlock( 'Parse.ly' );
 
@@ -56,7 +58,7 @@ describe( 'Recommendations Block', () => {
 	 * Verifies that the block will display an error when the API is not accessible.
 	 */
 	it( 'Should display an error when the Parse.ly API is not accessible', async () => {
-		await setSiteKeys();
+		await setSiteKeys( VALID_SITE_ID, '' );
 		await createNewPost();
 		await page.setOfflineMode( true );
 		await insertBlock( 'Parse.ly' );

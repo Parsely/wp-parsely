@@ -10,6 +10,7 @@ import * as fs from 'fs';
 import {
 	PLUGIN_VERSION,
 	VALID_API_SECRET,
+	VALID_SITE_ID,
 	setSiteKeys,
 } from '../utils';
 
@@ -22,30 +23,30 @@ const getAssetVersion = () => {
 
 describe( 'Front end tracking code insertion', () => {
 	it( 'Should inject loading script homepage', async () => {
-		await setSiteKeys();
+		await setSiteKeys( VALID_SITE_ID, '' );
 
 		await page.goto( createURL( '/' ) );
 
 		const content = await page.content();
 
 		expect( content ).toContain( '<link rel="dns-prefetch" href="//cdn.parsely.com">' );
-		expect( content ).toContain( `<script data-parsely-site="e2etest.example.com" src="https://cdn.parsely.com/keys/e2etest.example.com/p.js?ver=${ PLUGIN_VERSION }" id="parsely-cfg"></script>` );
+		expect( content ).toContain( `<script data-parsely-site="${ VALID_SITE_ID }" src="https://cdn.parsely.com/keys/${ VALID_SITE_ID }/p.js?ver=${ PLUGIN_VERSION }" id="parsely-cfg"></script>` );
 		expect( content ).toContain( `<script src="http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ getAssetVersion() }" id="wp-parsely-loader-js"></script>` );
 		expect( content ).not.toContain( "<script id='wp-parsely-loader-js-before'>" );
 		expect( content ).not.toContain( 'window.wpParselySiteId =' );
 	} );
 
 	it( 'Should inject loading script homepage and extra variable', async () => {
-		await setSiteKeys( 'e2etest.example.com', VALID_API_SECRET );
+		await setSiteKeys( VALID_SITE_ID, VALID_API_SECRET );
 
 		await page.goto( createURL( '/' ) );
 
 		const content = await page.content();
 
 		expect( content ).toContain( '<link rel="dns-prefetch" href="//cdn.parsely.com">' );
-		expect( content ).toContain( `<script data-parsely-site="e2etest.example.com" src="https://cdn.parsely.com/keys/e2etest.example.com/p.js?ver=${ PLUGIN_VERSION }" id="parsely-cfg"></script>` );
+		expect( content ).toContain( `<script data-parsely-site="${ VALID_SITE_ID }" src="https://cdn.parsely.com/keys/${ VALID_SITE_ID }/p.js?ver=${ PLUGIN_VERSION }" id="parsely-cfg"></script>` );
 		expect( content ).toContain( `<script src="http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ getAssetVersion() }" id="wp-parsely-loader-js"></script>` );
 		expect( content ).toContain( '<script id="wp-parsely-loader-js-before">' );
-		expect( content ).toContain( "window.wpParselySiteId = 'e2etest.example.com'" );
+		expect( content ).toContain( `window.wpParselySiteId = '${ VALID_SITE_ID }'` );
 	} );
 } );
