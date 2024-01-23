@@ -42,8 +42,8 @@ The [Content Helper](https://docs.parse.ly/plugin-content-helper/) is a set of c
 - The [Parse.ly Editor Sidebar](https://docs.parse.ly/plugin-content-helper/#h-editor) - This sidebar is integrated into the WordPress Editor and offers insights about the content currently being edited such as:
   - [Performance Details](https://docs.parse.ly/plugin-content-helper/#h-performance-details) - Displays performance metrics about the content currently being edited.
   - [Related Top Posts](https://docs.parse.ly/plugin-content-helper/#h-related-top-posts) - Displays a list of the website’s most successful posts, similar to the post/page currently being edited.
-  - [Title Suggestions](https://docs.parse.ly/plugin-content-helper/#h-title-suggestions) - Generates title suggestions for the post/page currently being edited.
-- The Parse.ly Excerpt Generator - A Post Editor settings enhancement that generates an excerpt for the post/page currently being edited.
+  - [Title Suggestions](https://docs.parse.ly/plugin-content-helper/#h-title-suggestions-beta) - Generates title suggestions for the post/page currently being edited.
+- The [Parse.ly Excerpt Generator](https://docs.parse.ly/plugin-content-helper/#h-excerpt-generator-beta) - A Post Editor settings enhancement that generates an excerpt for the post/page currently being edited.
 
 #### The Parse.ly Recommendations Block
 
