@@ -11,8 +11,8 @@ import { __, sprintf } from '@wordpress/i18n';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { CrossLinkerSettings } from './component-settings';
-import { CrossLinkerStore } from './store';
 import { CrossLinkerProvider, LinkSuggestion } from './provider';
+import { CrossLinkerStore } from './store';
 import { escapeRegExp, replaceNthOccurrence } from './utils';
 
 /**
@@ -26,6 +26,11 @@ type CrossLinkerPanelProps = {
 	context?: CrossLinkerPanelContext;
 }
 
+/**
+ * Defines the possible contexts in which the Cross Linker panel can be used.
+ *
+ * @since 3.14.0
+ */
 export enum CrossLinkerPanelContext {
 	Unknown = 'unknown',
 	ContentHelperSidebar = 'content_helper_sidebar',
@@ -33,17 +38,19 @@ export enum CrossLinkerPanelContext {
 }
 
 /**
- * Panel for the Cross Linker.
+ * Cross Linker Panel.
  *
  * @since 3.14.0
  *
  * @param { Readonly<CrossLinkerPanelProps> } props The component's props.
+ *
+ * @return { JSX.Element } The JSX Element.
  */
 export const CrossLinkerPanel = ( {
 	className,
 	selectedBlockClientId,
 	context = CrossLinkerPanelContext.Unknown,
-}: Readonly<CrossLinkerPanelProps> ) => {
+}: Readonly<CrossLinkerPanelProps> ): JSX.Element => {
 	/**
 	 * Load the Cross Linker store.
 	 */
@@ -106,7 +113,7 @@ export const CrossLinkerPanel = ( {
 	 *
 	 * @since 3.14.0
 	 */
-	const generateCrossLinks = () => async () => {
+	const generateCrossLinks = () => async (): Promise<void> => {
 		await setLoading( true );
 		await setSuggestedLinks( null );
 		await setError( null );
@@ -159,7 +166,7 @@ export const CrossLinkerPanel = ( {
 	 *
 	 * @param {LinkSuggestion[]} links The cross-links to apply.
 	 */
-	const applyCrossLinks = ( links: LinkSuggestion[] ) => {
+	const applyCrossLinks = ( links: LinkSuggestion[] ): void => {
 		Telemetry.trackEvent( 'cross_linker_applied', {
 			is_full_content: fullContent,
 			selected_block: selectedBlock?.name ?? 'none',
@@ -177,7 +184,7 @@ export const CrossLinkerPanel = ( {
 
 		let newContent = originalContent; // Fallback to original content if no links are found.
 		for ( const link of links ) {
-			// Checks if the content already contains the link, skip if so.
+			// Check if the content already contains the link, skip if so.
 			if ( originalContent.includes( link.title ) && originalContent.includes( link.href ) ) {
 				continue;
 			}
@@ -185,7 +192,7 @@ export const CrossLinkerPanel = ( {
 			// Escape the link text to convert regex special characters to literal characters.
 			link.text = escapeRegExp( link.text );
 
-			// Checks if the amount of link.text occurrences in the newContent is bigger than the amount of
+			// Check if the amount of link.text occurrences in the newContent is bigger than the amount of
 			// link.text occurrences in the originalContent, if so, it means that we've introduced another
 			// occurrence of the link.text in the newContent, so we need to increase the offset.
 			const linkTextRegex = new RegExp( link.text, 'g' );
@@ -215,10 +222,12 @@ export const CrossLinkerPanel = ( {
 	/**
 	 * Applies the overlay to the selected block or the entire post content.
 	 *
+	 * @since 3.14.0
+	 *
 	 * @param {string} clientId The client ID of the block to apply the overlay to.\
 	 *                          If set to 'all', the overlay will be applied to the entire post content.
 	 */
-	const applyOverlay = async ( clientId: string = 'all' ) => {
+	const applyOverlay = async ( clientId: string = 'all' ): Promise<void> => {
 		await addOverlayBlock( clientId );
 		disableSave();
 	};
@@ -226,10 +235,12 @@ export const CrossLinkerPanel = ( {
 	/**
 	 * Removes the overlay from the selected block or the entire post content.
 	 *
+	 * @since 3.14.0
+	 *
 	 * @param {string} clientId The client ID of the block to remove the overlay from.
 	 *                          If set to 'all', the overlay will be removed from the entire post content.
 	 */
-	const removeOverlay = async ( clientId: string = 'all' ) => {
+	const removeOverlay = async ( clientId: string = 'all' ): Promise<void> => {
 		await removeOverlayBlock( clientId );
 
 		// Select a block after removing the overlay, only if we're using the block inspector.
@@ -250,9 +261,11 @@ export const CrossLinkerPanel = ( {
 	};
 
 	/**
-	 * Disables the save button and locks the post auto saving.
+	 * Disables the save button and locks post auto-saving.
+	 *
+	 * @since 3.14.0
 	 */
-	const disableSave = () => {
+	const disableSave = (): void => {
 		// Lock post saving.
 		dispatch( 'core/editor' ).lockPostSaving( 'wp-parsely-block-overlay' );
 
@@ -264,9 +277,11 @@ export const CrossLinkerPanel = ( {
 	};
 
 	/**
-	 * Enables the save button and unlocks the post auto saving.
+	 * Enables the save button and unlocks post auto-saving.
+	 *
+	 * @since 3.14.0
 	 */
-	const enableSave = () => {
+	const enableSave = (): void => {
 		// Enable save buttons.
 		const saveButtons = document.querySelectorAll( '.edit-post-header__settings>[type="button"]' );
 		saveButtons.forEach( ( button ) => {
@@ -304,7 +319,7 @@ export const CrossLinkerPanel = ( {
 						className="wp-parsely-cross-linker-suggested-links"
 					>
 						{
-							/* translators: 1 - number of cross links generte */
+							/* translators: 1 - number of cross links generated */
 							sprintf( __( 'Successfully added %s smart links.', 'wp-parsely' ), suggestedLinks.length )
 						}
 					</Notice>

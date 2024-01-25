@@ -9,9 +9,9 @@ import { settings } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
+import { Telemetry } from '../../../js/telemetry/telemetry';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { CrossLinkerStore } from './store';
-import { Telemetry } from '../../../js/telemetry/telemetry';
 
 /**
  * Defines the props structure for CrossLinkerSettings.
@@ -28,8 +28,12 @@ type CrossLinkerSettingsProps = {
  * @since 3.14.0
  *
  * @param {CrossLinkerSettingsProps} props The component's props.
+ *
+ * @return {JSX.Element} The JSX Element.
  */
-export const CrossLinkerSettings = ( { disabled = false }: Readonly<CrossLinkerSettingsProps> ) => {
+export const CrossLinkerSettings = (
+	{ disabled = false }: Readonly<CrossLinkerSettingsProps>
+): JSX.Element => {
 	// Load the Cross Linker store.
 	const {
 		settingsOpen,
@@ -56,7 +60,7 @@ export const CrossLinkerSettings = ( { disabled = false }: Readonly<CrossLinkerS
 	 *
 	 * @since 3.14.0
 	 */
-	const toggleSetting = () => {
+	const toggleSetting = (): void => {
 		setSettingsOpen( ! settingsOpen );
 		Telemetry.trackEvent( 'cross_linker_ai_settings_toggled', {
 			is_active: ! settingsOpen,

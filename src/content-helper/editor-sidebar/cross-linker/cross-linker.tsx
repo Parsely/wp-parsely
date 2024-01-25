@@ -10,15 +10,15 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
+import { Telemetry } from '../../../js/telemetry/telemetry';
 import { BetaBadge } from '../../common/components/beta-badge';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { CrossLinkerPanel, CrossLinkerPanelContext } from './component';
 import { BlockOverlayContainer } from './component-block-overlay';
-import { Telemetry } from '../../../js/telemetry/telemetry';
 import './cross-linker.scss';
 
 /**
- * Cross linker inspector control panel component
+ * Cross linker inspector control panel component.
  *
  * @since 3.14.0
  */
@@ -57,7 +57,7 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
  *
  * @since 3.14.0
  */
-export const initCrossLinker = () => {
+export const initCrossLinker = (): void => {
 	/**
 	 * Add cross linker inspector control panel to paragraph block.
 	 */

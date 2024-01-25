@@ -1,6 +1,6 @@
 <?php
 /**
- * Endpoints: Parse.ly Content Suggestion `/suggest-links` API proxy endpoint
+ * Endpoints: Parse.ly Content Suggestions `/suggest-links` API proxy endpoint
  * class
  *
  * @package Parsely
@@ -24,9 +24,8 @@ use WP_Error;
  * @since 3.14.0
  */
 final class Suggest_Links_API_Proxy extends Base_API_Proxy {
-
 	/**
-	 * The Write Title API instance.
+	 * The Suggest Links API instance.
 	 *
 	 * @var Suggest_Links_API $suggest_links_api
 	 */
@@ -72,7 +71,8 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 	 * @since 3.14.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
+	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error
+	 *                           object on failure.
 	 */
 	public function get_items( WP_REST_Request $request ) {
 		$validation = $this->validate_apikey_and_secret();
@@ -121,7 +121,11 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 			$max_links = 10;
 		}
 
-		$response = $this->suggest_links_api->get_links( $post_content, $max_link_length, $max_links );
+		$response = $this->suggest_links_api->get_links(
+			$post_content,
+			$max_link_length,
+			$max_links
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
