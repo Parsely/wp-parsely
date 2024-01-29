@@ -14,7 +14,7 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
 import { PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
 import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
 import { ContentHelperError } from '../../common/content-helper-error';
-import { SidebarSettings } from '../editor-sidebar';
+import { OnSettingChangeFunction } from '../editor-sidebar';
 import { TitleSuggestionsSettings } from './component-settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { WriteTitleProvider } from './provider';
@@ -29,7 +29,7 @@ interface TitleSuggestionsPanelProps {
 	initialPersona: PersonaProp;
 	initialSettingsOpen: boolean;
 	initialTone: ToneProp;
-	onSettingChange: ( key: keyof SidebarSettings, value: string | boolean ) => void;
+	onSettingChange: OnSettingChangeFunction;
 }
 
 /**

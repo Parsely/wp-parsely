@@ -41,6 +41,22 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 	 */
 	protected function get_subvalues_specs(): array {
 		return array(
+			'CrossLinksMaxLinkLength'      => array(
+				'values'  => array(),
+				'default' => 4,
+			),
+			'CrossLinksMaxLinks'           => array(
+				'values'  => array(),
+				'default' => 10,
+			),
+			'CrossLinksOpen'               => array(
+				'values'  => array( true, false ),
+				'default' => false,
+			),
+			'CrossLinksSettingsOpen'       => array(
+				'values'  => array( true, false ),
+				'default' => false,
+			),
 			'PerformanceDetailsOpen'       => array(
 				'values'  => array( true, false ),
 				'default' => true,

@@ -11,6 +11,7 @@ import { settings } from '@wordpress/icons';
  */
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { LeafIcon } from '../../common/icons/leaf-icon';
+import { OnSettingChangeFunction } from '../editor-sidebar';
 import { CrossLinkerStore } from './store';
 
 /**
@@ -20,6 +21,7 @@ import { CrossLinkerStore } from './store';
  */
 type CrossLinkerSettingsProps = {
 	disabled?: boolean;
+	onSettingChange: OnSettingChangeFunction
 };
 
 /**
@@ -31,21 +33,26 @@ type CrossLinkerSettingsProps = {
  *
  * @return {JSX.Element} The JSX Element.
  */
-export const CrossLinkerSettings = (
-	{ disabled = false }: Readonly<CrossLinkerSettingsProps>
-): JSX.Element => {
-	// Load the Cross Linker store.
+export const CrossLinkerSettings = ( {
+	disabled = false,
+	onSettingChange,
+}: Readonly<CrossLinkerSettingsProps> ): JSX.Element => {
+	/**
+	 * Gets the settings from the Cross Linker store.
+	 *
+	 * @since 3.14.0
+	 */
 	const {
-		settingsOpen,
 		maxLinks,
 		maxLinkLength,
+		settingsOpen,
 	} = useSelect( ( select ) => {
-		const { getMaxLinks, getMaxLinkLength, areSettingsOpen } = select( CrossLinkerStore );
+		const { getMaxLinkLength, getMaxLinks, areSettingsOpen } = select( CrossLinkerStore );
 
 		return {
-			settingsOpen: areSettingsOpen(),
 			maxLinks: getMaxLinks(),
 			maxLinkLength: getMaxLinkLength(),
+			settingsOpen: areSettingsOpen(),
 		};
 	}, [] );
 
@@ -61,7 +68,9 @@ export const CrossLinkerSettings = (
 	 * @since 3.14.0
 	 */
 	const toggleSetting = (): void => {
+		onSettingChange( 'CrossLinksSettingsOpen', ! settingsOpen );
 		setSettingsOpen( ! settingsOpen );
+
 		Telemetry.trackEvent( 'cross_linker_ai_settings_toggled', {
 			is_active: ! settingsOpen,
 		} );
@@ -90,7 +99,10 @@ export const CrossLinkerSettings = (
 						disabled={ disabled }
 						value={ maxLinks }
 						initialPosition={ maxLinks }
-						onChange={ ( value ) => setMaxLinks( value ?? 1 ) }
+						onChange={ ( value ) => {
+							setMaxLinks( value ?? 1 );
+							onSettingChange( 'CrossLinksMaxLinks', value ?? 10 );
+						} }
 						label={ __( 'Links limit', 'wp-parsely' ) }
 						help={ __( 'The maximum number of smart links to add in the content.', 'wp-parsely' ) }
 						min={ 1 }
@@ -100,7 +112,10 @@ export const CrossLinkerSettings = (
 						disabled={ disabled }
 						value={ maxLinkLength }
 						initialPosition={ maxLinkLength }
-						onChange={ ( value ) => setMaxLinkLength( value ?? 1 ) }
+						onChange={ ( value ) => {
+							setMaxLinkLength( value ?? 1 );
+							onSettingChange( 'CrossLinksMaxLinkLength', value ?? 4 );
+						} }
 						label={ __( 'Link length', 'wp-parsely' ) }
 						help={ __( 'The maximum length (in words) for the smart link.', 'wp-parsely' ) }
 						min={ 1 }
