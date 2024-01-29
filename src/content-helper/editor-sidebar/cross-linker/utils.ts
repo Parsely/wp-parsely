@@ -1,22 +1,27 @@
-
 /**
  * Replaces the nth occurrence of a substring within a string.
  *
- * @since 3.12.0
+ * If the search string does not occur n times, the original string is returned.
+ *
+ * @since 3.14.0
  *
  * @param {string} inputString The original string.
  * @param {string} search      The substring to search for.
- * @param {string} replacement The string to replace the nth occurrence of the search string.
+ * @param {string} replacement The replacement string.
  * @param {number} n           The 0-based index of the occurrence to replace.
  *
- * @return {string} The modified string with the nth occurrence of the search string replaced. If the search string does not occur n times, the original string is returned.
+ * @return {string} The string containing the replacement, or the original string.
  */
-export function replaceNthOccurrence( inputString: string, search: RegExp, replacement: string, n: number ): string {
+export function replaceNthOccurrence(
+	inputString: string, search: RegExp, replacement: string, n: number
+): string {
 	let match;
 	let i = 0;
 
-	// Ensure the global flag is set to find all occurrences
-	const globalSearch = new RegExp( search.source, 'g' + ( search.ignoreCase ? 'i' : '' ) + ( search.multiline ? 'm' : '' ) );
+	// Ensure the global flag is set to find all occurrences.
+	const globalSearch = new RegExp(
+		search.source, 'g' + ( search.ignoreCase ? 'i' : '' ) + ( search.multiline ? 'm' : '' )
+	);
 
 	while ( ( match = globalSearch.exec( inputString ) ) !== null ) {
 		if ( i === n ) {
@@ -26,7 +31,7 @@ export function replaceNthOccurrence( inputString: string, search: RegExp, repla
 		i++;
 	}
 
-	// Return the original string if the nth occurrence is not found
+	// Return the original string if the nth occurrence is not found.
 	return inputString;
 }
 
@@ -40,5 +45,5 @@ export function replaceNthOccurrence( inputString: string, search: RegExp, repla
  * @return {string} The escaped string.
  */
 export function escapeRegExp( string: string ): string {
-	return string.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' ); // $& means the whole matched string
+	return string.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' ); // $& means the whole matched string.
 }

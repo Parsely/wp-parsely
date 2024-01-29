@@ -20,7 +20,6 @@ use Parsely\Tests\Integration\RemoteAPITest;
  * @since 3.14.0
  */
 final class SuggestLinksAPITest extends RemoteAPITest {
-
 	/**
 	 * Internal variable.
 	 *

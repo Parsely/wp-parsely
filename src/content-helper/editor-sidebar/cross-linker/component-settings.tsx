@@ -9,9 +9,9 @@ import { settings } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
+import { Telemetry } from '../../../js/telemetry/telemetry';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { OnSettingChangeFunction } from '../editor-sidebar';
-import { Telemetry } from '../../../js/telemetry/telemetry';
 import { CrossLinkerStore } from './store';
 
 /**
@@ -30,13 +30,17 @@ type CrossLinkerSettingsProps = {
  * @since 3.14.0
  *
  * @param {CrossLinkerSettingsProps} props The component's props.
+ *
+ * @return {JSX.Element} The JSX Element.
  */
 export const CrossLinkerSettings = ( {
 	disabled = false,
 	onSettingChange,
-}: Readonly<CrossLinkerSettingsProps> ) => {
+}: Readonly<CrossLinkerSettingsProps> ): JSX.Element => {
 	/**
-	 * Get the settings from the Cross Linker store.
+	 * Gets the settings from the Cross Linker store.
+	 *
+	 * @since 3.14.0
 	 */
 	const {
 		maxLinks,
@@ -63,7 +67,7 @@ export const CrossLinkerSettings = ( {
 	 *
 	 * @since 3.14.0
 	 */
-	const toggleSetting = () => {
+	const toggleSetting = (): void => {
 		onSettingChange( 'CrossLinksSettingsOpen', ! settingsOpen );
 		setSettingsOpen( ! settingsOpen );
 

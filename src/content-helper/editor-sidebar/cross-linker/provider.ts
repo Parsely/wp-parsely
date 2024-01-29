@@ -44,7 +44,7 @@ export class CrossLinkerProvider {
 	 * Returns a list of suggested links for the given content.
 	 *
 	 * @param {string} content         The content to generate links for.
-	 * @param {number} maxLinkLength   The maximum length of the links to return.
+	 * @param {number} maxLinkLength   The maximum number of words in links.
 	 * @param {number} maxLinksPerPost The maximum number of links to return.
 	 *
 	 * @return {Promise<LinkSuggestion[]>} The resulting list of links.

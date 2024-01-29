@@ -27,11 +27,13 @@ type BlockOverlayProps = {
  * @since 3.14.0
  *
  * @param {BlockOverlayProps} props The component's props.
+ *
+ * @return {JSX.Element} The JSX Element.
  */
 export const BlockOverlay = ( {
 	selectedBlockClientId,
 	label,
-}: Readonly<BlockOverlayProps> ) => {
+}: Readonly<BlockOverlayProps> ): JSX.Element => {
 	// Create a container element for the overlay.
 	const [ container ] = useState<HTMLDivElement>( document.createElement( 'div' ) );
 	container.className = 'wp-parsely-block-overlay';
@@ -69,7 +71,7 @@ export const BlockOverlay = ( {
 			const editorElement = document.querySelector( '.interface-navigable-region.interface-interface-skeleton__content' );
 			editorElement?.appendChild( container );
 
-			// Set overflow to hidden
+			// Set overflow to hidden.
 			editorElement?.setAttribute( 'style', 'overflow: hidden' );
 			container.style.top = editorElement?.scrollTop + 'px';
 
@@ -77,7 +79,7 @@ export const BlockOverlay = ( {
 				if ( editorElement?.contains( container ) ) {
 					editorElement.removeChild( container );
 				}
-				// Restore overflow
+				// Restore overflow.
 				editorElement?.setAttribute( 'style', '' );
 				container.style.top = '';
 			};
@@ -85,16 +87,16 @@ export const BlockOverlay = ( {
 
 		const blockElement = document.querySelector( `[data-block="${ selectedBlockClientId }"]` );
 
-		// Disable changes on the block element
+		// Disable changes on the block element.
 		blockElement?.setAttribute( 'contenteditable', 'false' );
 		blockElement?.setAttribute( 'aria-disabled', 'true' );
 
-		// Insert the container in the block element
+		// Insert the container in the block element.
 		blockElement?.appendChild( container );
 
-		// Remove the container on component unload
+		// Remove the container on component unload.
 		return () => {
-			// Enable changes on the block element
+			// Enable changes on the block element.
 			blockElement?.setAttribute( 'contenteditable', 'true' );
 			blockElement?.removeAttribute( 'aria-disabled' );
 
@@ -117,8 +119,10 @@ export const BlockOverlay = ( {
  * Draws the multiple block overlays that are currently stored in the Cross Linker store.
  *
  * @since 3.14.0
+ *
+ * @return {JSX.Element} The JSX Element.
  */
-export const BlockOverlayContainer = ( ) => {
+export const BlockOverlayContainer = ( ): JSX.Element => {
 	const { overlayBlocks } = useSelect( ( select ) => {
 		const { getOverlayBlocks } = select( CrossLinkerStore );
 

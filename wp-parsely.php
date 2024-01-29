@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://docs.parse.ly/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
- * Version:           3.13.0
+ * Version:           3.13.1
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -70,7 +70,7 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.13.0';
+const PARSELY_VERSION = '3.13.1';
 const PARSELY_FILE    = __FILE__;
 
 require_once __DIR__ . '/src/class-parsely.php';
@@ -168,8 +168,8 @@ require_once __DIR__ . '/src/Endpoints/class-analytics-posts-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-referrers-post-detail-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/class-rest-metadata.php';
-require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-meta-description-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-links-api-proxy.php';
+require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-meta-description-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/content-suggestions/class-write-title-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/user-meta/class-dashboard-widget-settings-endpoint.php';
 require_once __DIR__ . '/src/Endpoints/user-meta/class-editor-sidebar-settings-endpoint.php';
@@ -188,8 +188,8 @@ require_once __DIR__ . '/src/RemoteAPI/class-analytics-posts-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-referrers-post-detail-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-related-api.php';
 require_once __DIR__ . '/src/RemoteAPI/class-validate-api.php';
-require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-meta-description-api.php';
 require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-links-api.php';
+require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-meta-description-api.php';
 require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-write-title-api.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
