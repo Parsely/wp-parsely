@@ -382,8 +382,8 @@ final class OtherTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 */
 	public function test_get_tracker_url(): void {
-		self::set_options( array( 'apikey' => 'blog.parsely.com' ) );
-		$expected = 'https://cdn.parsely.com/keys/blog.parsely.com/p.js';
+		self::set_options( array( 'apikey' => self::VALID_SITE_ID ) );
+		$expected = 'https://cdn.parsely.com/keys/' . self::VALID_SITE_ID . '/p.js';
 		self::assertSame( $expected, self::$parsely->get_tracker_url() );
 	}
 

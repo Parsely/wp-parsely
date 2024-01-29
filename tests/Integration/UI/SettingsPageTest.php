@@ -530,13 +530,13 @@ final class SettingsPageTest extends TestCase {
 		/** @var int $subsite_blog_id */
 		$subsite_blog_id = self::factory()->blog->create(
 			array(
-				'domain' => 'parselyrocks.example.org',
-				'path'   => '/vipvipvip',
+				'domain' => self::VALID_SITE_ID,
+				'path'   => '/vip',
 			)
 		);
 
 		self::assertSame(
-			'http://parselyrocks.example.org/vipvipvip/wp-admin/options-general.php?page=parsely',
+			'http://' . self::VALID_SITE_ID . '/vip/wp-admin/options-general.php?page=parsely',
 			self::$parsely::get_settings_url( $subsite_blog_id ),
 			'The URL did not match when passing $subsite_blog_id.'
 		);
@@ -544,7 +544,7 @@ final class SettingsPageTest extends TestCase {
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.switch_to_blog_switch_to_blog
 		switch_to_blog( $subsite_blog_id );
 		self::assertSame(
-			'http://parselyrocks.example.org/vipvipvip/wp-admin/options-general.php?page=parsely',
+			'http://' . self::VALID_SITE_ID . '/vip/wp-admin/options-general.php?page=parsely',
 			self::$parsely::get_settings_url(),
 			'The URL did not match the subsite without passing a $blog_id param.'
 		);

@@ -35,8 +35,10 @@ abstract class TestCase extends WPIntegrationTestCase {
 
 	use \Parsely\Tests\Tests_Reflection;
 
+	public const VALID_SITE_ID = 'demoaccount.parsely.com';
+
 	public const DEFAULT_OPTIONS = array(
-		'apikey'                    => 'blog.parsely.com',
+		'apikey'                    => self::VALID_SITE_ID,
 		'content_id_prefix'         => '',
 		'use_top_level_cats'        => false,
 		'cats_as_tags'              => false,
