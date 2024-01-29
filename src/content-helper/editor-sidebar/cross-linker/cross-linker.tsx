@@ -57,10 +57,10 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 		/**
 		 * Updates the passed setting.
 		 *
-		 * @since 3.13.0
+		 * @since 3.14.0
 		 *
 		 * @param {keyof SidebarSettings} setting The setting to be updated.
-		 * @param {string|boolean|number} value   The new settings value.
+		 * @param {string|boolean|number} value   The new setting value.
 		 */
 		const handleSettingChange = (
 			setting: keyof SidebarSettings, value: string|boolean|number

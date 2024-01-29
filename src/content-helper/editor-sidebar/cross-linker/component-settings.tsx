@@ -101,7 +101,7 @@ export const CrossLinkerSettings = ( {
 						initialPosition={ maxLinks }
 						onChange={ ( value ) => {
 							setMaxLinks( value ?? 1 );
-							onSettingChange( 'CrossLinksMaxLinks', value ?? 1 );
+							onSettingChange( 'CrossLinksMaxLinks', value ?? 10 );
 						} }
 						label={ __( 'Links limit', 'wp-parsely' ) }
 						help={ __( 'The maximum number of smart links to add in the content.', 'wp-parsely' ) }
@@ -114,7 +114,7 @@ export const CrossLinkerSettings = ( {
 						initialPosition={ maxLinkLength }
 						onChange={ ( value ) => {
 							setMaxLinkLength( value ?? 1 );
-							onSettingChange( 'CrossLinksMaxLinkLength', value ?? 1 );
+							onSettingChange( 'CrossLinksMaxLinkLength', value ?? 4 );
 						} }
 						label={ __( 'Link length', 'wp-parsely' ) }
 						help={ __( 'The maximum length (in words) for the smart link.', 'wp-parsely' ) }

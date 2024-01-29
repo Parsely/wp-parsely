@@ -29,11 +29,11 @@ import {
 	isInEnum,
 } from '../common/utils/constants';
 import { VerifyCredentials } from '../common/verify-credentials';
+import { CrossLinkerPanel, CrossLinkerPanelContext } from './cross-linker/component';
+import { initCrossLinker } from './cross-linker/cross-linker';
 import { PerformanceDetails } from './performance-details/component';
 import { RelatedTopPostList } from './related-top-posts/component-list';
 import { TitleSuggestionsPanel } from './title-suggestions/component';
-import { CrossLinkerPanel, CrossLinkerPanelContext } from './cross-linker/component';
-import { initCrossLinker } from './cross-linker/cross-linker';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
@@ -43,6 +43,10 @@ const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
  * @since 3.13.0
  */
 export interface SidebarSettings {
+	CrossLinksMaxLinkLength: number;
+	CrossLinksMaxLinks: number;
+	CrossLinksOpen: boolean;
+	CrossLinksSettingsOpen: boolean;
 	PerformanceDetailsOpen: boolean;
 	RelatedTopPostsFilterBy: string;
 	RelatedTopPostsFilterValue: string;
@@ -54,10 +58,6 @@ export interface SidebarSettings {
 	TitleSuggestionsPersona: string;
 	TitleSuggestionsSettingsOpen: boolean;
 	TitleSuggestionsTone: string;
-	CrossLinksOpen: boolean;
-	CrossLinksSettingsOpen: boolean;
-	CrossLinksMaxLinkLength: number;
-	CrossLinksMaxLinks: number;
 }
 
 export type OnSettingChangeFunction = ( key: keyof SidebarSettings, value: string | boolean | number ) => void;
@@ -112,6 +112,10 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	} catch ( e ) {
 		// Return defaults when parsing failed or the string is empty.
 		return {
+			CrossLinksMaxLinkLength: 4,
+			CrossLinksMaxLinks: 10,
+			CrossLinksOpen: false,
+			CrossLinksSettingsOpen: false,
 			PerformanceDetailsOpen: true,
 			RelatedTopPostsFilterBy: PostFilterType.Unavailable,
 			RelatedTopPostsFilterValue: '',
@@ -123,14 +127,22 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			TitleSuggestionsPersona: PARSELY_PERSONAS.journalist.label,
 			TitleSuggestionsSettingsOpen: false,
 			TitleSuggestionsTone: PARSELY_TONES.neutral.label,
-			CrossLinksOpen: false,
-			CrossLinksSettingsOpen: false,
-			CrossLinksMaxLinkLength: 4,
-			CrossLinksMaxLinks: 10,
 		};
 	}
 
 	// Fix invalid values if any are found.
+	if ( typeof parsedSettings?.CrossLinksMaxLinkLength !== 'number' ) {
+		parsedSettings.CrossLinksMaxLinkLength = 4;
+	}
+	if ( typeof parsedSettings?.CrossLinksMaxLinks !== 'number' ) {
+		parsedSettings.CrossLinksMaxLinks = 10;
+	}
+	if ( typeof parsedSettings?.CrossLinksOpen !== 'boolean' ) {
+		parsedSettings.CrossLinksOpen = false;
+	}
+	if ( typeof parsedSettings?.CrossLinksSettingsOpen !== 'boolean' ) {
+		parsedSettings.CrossLinksSettingsOpen = false;
+	}
 	if ( typeof parsedSettings?.PerformanceDetailsOpen !== 'boolean' ) {
 		parsedSettings.PerformanceDetailsOpen = true;
 	}
@@ -163,18 +175,6 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 	if ( typeof parsedSettings?.TitleSuggestionsTone !== 'string' ) {
 		parsedSettings.TitleSuggestionsTone = PARSELY_TONES.neutral.label;
-	}
-	if ( typeof parsedSettings?.CrossLinksOpen !== 'boolean' ) {
-		parsedSettings.CrossLinksOpen = false;
-	}
-	if ( typeof parsedSettings?.CrossLinksSettingsOpen !== 'boolean' ) {
-		parsedSettings.CrossLinksSettingsOpen = false;
-	}
-	if ( typeof parsedSettings?.CrossLinksMaxLinkLength !== 'number' ) {
-		parsedSettings.CrossLinksMaxLinkLength = 4;
-	}
-	if ( typeof parsedSettings?.CrossLinksMaxLinks !== 'number' ) {
-		parsedSettings.CrossLinksMaxLinks = 10;
 	}
 
 	return parsedSettings;
@@ -219,7 +219,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 	 * @since 3.13.0
 	 *
 	 * @param {keyof SidebarSettings} setting The setting to be updated.
-	 * @param {string|boolean|number} value   The new settings value.
+	 * @param {string|boolean|number} value   The new setting value.
 	 */
 	const handleSettingChange = (
 		setting: keyof SidebarSettings, value: string|boolean|number

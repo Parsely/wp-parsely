@@ -58,7 +58,9 @@ export const CrossLinkerPanel = ( {
 	onSettingChange,
 }: Readonly<CrossLinkerPanelProps> ): JSX.Element => {
 	/**
-	 * Load the Cross Linker store.
+	 * Loads the Cross Linker store.
+	 *
+	 * @since 3.14.0
 	 */
 	const {
 		loading,
@@ -89,6 +91,11 @@ export const CrossLinkerPanel = ( {
 		};
 	}, [] );
 
+	/**
+	 * Loads the Cross Linker store actions.
+	 *
+	 * @since 3.14.0
+	 */
 	const {
 		setLoading,
 		setFullContent,
@@ -100,7 +107,9 @@ export const CrossLinkerPanel = ( {
 	} = useDispatch( CrossLinkerStore );
 
 	/**
-	 * Load and prepare the Cross Linker settings.
+	 * Loads and prepares the Cross Linker settings.
+	 *
+	 * @since 3.14.0
 	 */
 	useEffect( () => {
 		// Load the settings from the WordPress database and store them in the Cross Linker store.
@@ -108,7 +117,9 @@ export const CrossLinkerPanel = ( {
 	}, [ setSettings, sidebarSettings ] );
 
 	/**
-	 * Load the selected block and post content.
+	 * Loads the selected block and post content.
+	 *
+	 * @since 3.14.0
 	 */
 	const {
 		selectedBlock,
