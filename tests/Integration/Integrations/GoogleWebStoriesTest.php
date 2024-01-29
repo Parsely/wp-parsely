@@ -77,13 +77,13 @@ final class GoogleWebStoriesTest extends TestCase {
 	public function test_render_amp_analytics_tracker(): void {
 		$expected = '			<amp-analytics type="parsely">
 				<script type="application/json">
-					{"vars":{"apikey":"blog.parsely.com"}}				</script>
+					{"vars":{"apikey":"' . self::VALID_SITE_ID . '"}}				</script>
 			</amp-analytics>
 			';
 
 		self::expectOutputString( $expected );
 
-		$this::set_options( array( 'apikey' => 'blog.parsely.com' ) );
+		$this::set_options( array( 'apikey' => self::VALID_SITE_ID ) );
 		$this::$google->render_amp_analytics_tracker();
 	}
 }

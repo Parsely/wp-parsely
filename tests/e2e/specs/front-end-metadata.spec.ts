@@ -10,6 +10,7 @@ import {
  * Internal dependencies
  */
 import {
+	VALID_SITE_ID,
 	setSiteKeys,
 	setUserDisplayName,
 	waitForWpAdmin,
@@ -41,7 +42,7 @@ async function setTrackLoggedInUsers( shouldTrack = false ) {
 
 describe( 'Front end metadata insertion', () => {
 	beforeAll( async () => {
-		await setSiteKeys();
+		await setSiteKeys( VALID_SITE_ID, '' );
 		await setTrackLoggedInUsers( true );
 
 		// Reset display name to compare metadata with default values.

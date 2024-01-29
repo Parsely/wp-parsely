@@ -7,13 +7,14 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
  * Internal dependencies
  */
 import {
+	VALID_SITE_ID,
 	setSiteKeys,
 	waitForWpAdmin,
 } from '../utils';
 
 describe( 'Activation flow', (): void => {
 	it( 'Should progress as intended', async (): Promise<void> => {
-		await setSiteKeys( '' );
+		await setSiteKeys( '', '' );
 
 		await visitAdminPage( '/options-general.php', '?page=parsely' );
 
@@ -30,7 +31,7 @@ describe( 'Activation flow', (): void => {
 			'The Parse.ly plugin is not active. You need to provide your Parse.ly Dash Site ID before things get cooking.'
 		);
 
-		await setSiteKeys();
+		await setSiteKeys( VALID_SITE_ID, '' );
 
 		await waitForWpAdmin();
 		expect( await page.$( '#message.error' ) ).toBe( null );

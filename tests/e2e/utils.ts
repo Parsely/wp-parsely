@@ -8,7 +8,9 @@ import {
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
-export const PLUGIN_VERSION = '3.13.1';
+export const PLUGIN_VERSION = '3.13.2';
+export const VALID_SITE_ID = 'demoaccount.parsely.com';
+export const INVALID_SITE_ID = 'invalid.parsely.com';
 export const VALID_API_SECRET = 'valid_api_secret';
 
 export const waitForWpAdmin = () => page.waitForSelector( 'body.wp-admin' );
@@ -37,7 +39,9 @@ export const setTextBoxValue = async ( id: string, value: string ) => {
  * @param {boolean} bypassAPIValidation Whether to bypass API validation on Parse.ly API.
  * @return {Promise<void>}
  */
-export const setSiteKeys = async ( siteId = 'e2etest.example.com', apiSecret = '', bypassAPIValidation = true ) => {
+export const setSiteKeys = async (
+	siteId: string, apiSecret: string, bypassAPIValidation = true
+) => {
 	await visitAdminPage( '/options-general.php', '?page=parsely' + ( bypassAPIValidation ? '&e2e_parsely_skip_api_validate=y' : '' ) );
 
 	await setTextBoxValue( 'apikey', siteId );

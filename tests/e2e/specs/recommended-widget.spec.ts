@@ -10,6 +10,7 @@ import {
  * Internal dependencies
  */
 import {
+	VALID_SITE_ID,
 	activateTheme,
 	setSiteKeys,
 	waitForWpAdmin,
@@ -49,7 +50,7 @@ describe( 'Recommended widget', () => {
 	} );
 
 	it( 'Widget should be available but inactive without Site ID and secret', async () => {
-		await setSiteKeys( '' );
+		await setSiteKeys( '', '' );
 
 		await visitAdminPage( '/widgets.php', '' );
 
@@ -61,7 +62,7 @@ describe( 'Recommended widget', () => {
 	} );
 
 	it( 'Widget should be available but inactive without api secret', async () => {
-		await setSiteKeys();
+		await setSiteKeys( VALID_SITE_ID, '' );
 
 		await visitAdminPage( '/widgets.php', '' );
 
