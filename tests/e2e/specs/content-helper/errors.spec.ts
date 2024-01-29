@@ -2,7 +2,9 @@
  * Internal dependencies
  */
 import {
+	INVALID_SITE_ID,
 	VALID_API_SECRET,
+	VALID_SITE_ID,
 	getTopRelatedPostsMessage,
 	setSiteKeys,
 } from '../../utils';
@@ -19,7 +21,7 @@ describe( 'PCH Editor Sidebar Related Top Posts panel', () => {
 	 * provided.
 	 */
 	it( 'Should display an error when an invalid Site ID is provided', async () => {
-		await setSiteKeys( 'e2etest.example.com', VALID_API_SECRET );
+		await setSiteKeys( INVALID_SITE_ID, VALID_API_SECRET );
 
 		expect( await getTopRelatedPostsMessage( '', '', 'author', 500, '.parsely-top-posts-descr' ) )
 			.toMatch( 'Error: Forbidden' );
@@ -40,7 +42,7 @@ describe( 'PCH Editor Sidebar Related Top Posts panel', () => {
 	 * Site ID is provided.
 	 */
 	it( 'Should display a "Contact Us" message when only the Site ID is provided', async () => {
-		await setSiteKeys( 'blog.parsely.com', '' );
+		await setSiteKeys( VALID_SITE_ID, '' );
 
 		expect( await getTopRelatedPostsMessage() ).toMatch( contactMessage );
 	} );
@@ -60,7 +62,7 @@ describe( 'PCH Editor Sidebar Related Top Posts panel', () => {
 	 * the Site ID and API Secret are provided.
 	 */
 	it( 'Should not display a "Contact Us" message when both the Site ID and API Secret are provided', async () => {
-		await setSiteKeys( 'blog.parsely.com', VALID_API_SECRET );
+		await setSiteKeys( VALID_SITE_ID, VALID_API_SECRET );
 
 		expect( await getTopRelatedPostsMessage() ).not.toMatch( contactMessage );
 	} );
