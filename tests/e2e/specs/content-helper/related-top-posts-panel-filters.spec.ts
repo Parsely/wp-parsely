@@ -10,6 +10,7 @@ import {
  */
 import {
 	VALID_API_SECRET,
+	VALID_SITE_ID,
 	getTopRelatedPostsMessage,
 	setSiteKeys,
 	setUserDisplayName,
@@ -27,7 +28,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 	 */
 	beforeAll( async () => {
 		enablePageDialogAccept();
-		await setSiteKeys( 'demoaccount.parsely.com', VALID_API_SECRET );
+		await setSiteKeys( VALID_SITE_ID, VALID_API_SECRET );
 	} );
 
 	/**
