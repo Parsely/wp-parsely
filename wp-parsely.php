@@ -266,7 +266,7 @@ function init_content_helper_editor_sidebar(): void {
 
 require_once __DIR__ . '/src/content-helper/excerpt-generator/class-excerpt-generator.php';
 
-add_action( 'init', __NAMESPACE__ . '\\init_content_helper_excerpt_generator' );
+add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_excerpt_generator' );
 /**
  * Initializes and inserts the PCH Excerpt Generator.
  *
