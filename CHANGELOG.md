@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.13.3](https://github.com/Parsely/wp-parsely/compare/3.13.2...3.13.3) - 2024-02-01
 
-
-## [3.13.3](https://github.com/Parsely/wp-parsely/compare/3.13.2...3.13.3) - 2024-02-01
-
 ### Fixed
 
 - PCH Excerpt Generator: Fix wrong initialization of the module ([#2179](https://github.com/Parsely/wp-parsely/pull/2179))
