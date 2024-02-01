@@ -266,7 +266,8 @@ function init_content_helper_editor_sidebar(): void {
 
 require_once __DIR__ . '/src/content-helper/excerpt-generator/class-excerpt-generator.php';
 
-add_action( 'init', __NAMESPACE__ . '\\init_content_helper_excerpt_generator' );
+// The priority of 9 is used to ensure that the Excerpt Generator is loaded before the PCH Editor Sidebar (10).
+add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_excerpt_generator', 9 );
 /**
  * Initializes and inserts the PCH Excerpt Generator.
  *
