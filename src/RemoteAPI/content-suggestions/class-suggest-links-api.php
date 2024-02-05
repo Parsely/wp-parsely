@@ -37,21 +37,21 @@ class Suggest_Links_API extends Content_Suggestions_Base_API {
 	/**
 	 * Gets suggested cross-links for the given content.
 	 *
-	 * @since 3.14.0
+	 * @param string $content        The content to generate links for.
+	 * @param int    $max_link_words The maximum number of words in links.
+	 * @param int    $max_links      The maximum number of links to return.
 	 *
-	 * @param string $content The content to generate links for.
-	 * @param int    $max_link_length The maximum number of words in links.
-	 * @param int    $max_links The maximum number of links to return.
 	 * @return Link_Suggestion[]|WP_Error The response from the remote API, or a WP_Error
 	 *                                    object if the response is an error.
+	 * @since 3.14.0
 	 */
 	public function get_links(
 		string $content,
-		int $max_link_length = 4,
+		int $max_link_words = 4,
 		int $max_links = 10
 	) {
 		$query = array(
-			'max_link_length' => $max_link_length,
+			'max_link_length' => $max_link_words,
 			'max_links'       => $max_links,
 		);
 

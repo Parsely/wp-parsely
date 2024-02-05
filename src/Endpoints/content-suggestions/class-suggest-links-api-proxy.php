@@ -49,7 +49,7 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 	 * @since 3.14.0
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/content-suggestions/suggest-links', 'POST' );
+		$this->register_endpoint( '/content-suggestions/suggest-links', array( 'POST' ) );
 	}
 
 	/**
@@ -88,14 +88,14 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 		$post_content = $request->get_param( 'content' );
 
 		/**
-		 * The maximum number of links to return.
+		 * The maximum amount of words of the link text.
 		 *
-		 * @var string|null $max_link_length
+		 * @var string|null $max_link_words
 		 */
-		$max_link_length = $request->get_param( 'max_link_length' );
+		$max_link_words = $request->get_param( 'max_link_words' );
 
 		/**
-		 * The maximum length of the link text.
+		 * The maximum number of links to return.
 		 *
 		 * @var string|null $max_links
 		 */
@@ -109,10 +109,10 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 			);
 		}
 
-		if ( is_numeric( $max_link_length ) ) {
-			$max_link_length = (int) $max_link_length;
+		if ( is_numeric( $max_link_words ) ) {
+			$max_link_words = (int) $max_link_words;
 		} else {
-			$max_link_length = 4;
+			$max_link_words = 4;
 		}
 
 		if ( is_numeric( $max_links ) ) {
@@ -123,7 +123,7 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 
 		$response = $this->suggest_links_api->get_links(
 			$post_content,
-			$max_link_length,
+			$max_link_words,
 			$max_links
 		);
 

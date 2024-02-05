@@ -69,7 +69,7 @@ export const CrossLinkerPanel = ( {
 		error,
 		suggestedLinks,
 		maxLinks,
-		maxLinkLength,
+		maxLinkWords,
 	} = useSelect( ( selectFn ) => {
 		const {
 			isLoading,
@@ -78,13 +78,13 @@ export const CrossLinkerPanel = ( {
 			getError,
 			isFullContent,
 			getMaxLinks,
-			getMaxLinkLength,
+			getMaxLinkWords,
 		} = selectFn( CrossLinkerStore );
 		return {
 			loading: isLoading(),
 			error: getError(),
 			maxLinks: getMaxLinks(),
-			maxLinkLength: getMaxLinkLength(),
+			maxLinkWords: getMaxLinkWords(),
 			fullContent: isFullContent(),
 			overlayBlocks: getOverlayBlocks(),
 			suggestedLinks: getSuggestedLinks(),
@@ -172,13 +172,13 @@ export const CrossLinkerPanel = ( {
 			if ( selectedBlock?.originalContent && ! generatingFullContent ) {
 				generatedLinks = await CrossLinkerProvider.generateCrossLinks(
 					selectedBlock?.originalContent,
-					maxLinkLength,
+					maxLinkWords,
 					maxLinks
 				);
 			} else {
 				generatedLinks = await CrossLinkerProvider.generateCrossLinks(
 					postContent,
-					maxLinkLength,
+					maxLinkWords,
 					maxLinks
 				);
 			}

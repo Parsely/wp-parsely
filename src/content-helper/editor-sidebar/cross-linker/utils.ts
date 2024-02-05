@@ -26,7 +26,9 @@ export function replaceNthOccurrence(
 	while ( ( match = globalSearch.exec( inputString ) ) !== null ) {
 		if ( i === n ) {
 			// Replace the nth occurrence
-			return inputString.substring( 0, match.index ) + replacement + inputString.substring( globalSearch.lastIndex );
+			const contentBefore = inputString.substring( 0, match.index );
+			const contentAfter = inputString.substring( globalSearch.lastIndex );
+			return contentBefore + replacement + contentAfter;
 		}
 		i++;
 	}

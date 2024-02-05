@@ -30,7 +30,7 @@ import {
 } from '../common/utils/constants';
 import { VerifyCredentials } from '../common/verify-credentials';
 import { CrossLinkerPanel, CrossLinkerPanelContext } from './cross-linker/component';
-import { initCrossLinker } from './cross-linker/cross-linker';
+import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS, initCrossLinker } from './cross-linker/cross-linker';
 import { PerformanceDetails } from './performance-details/component';
 import { RelatedTopPostList } from './related-top-posts/component-list';
 import { TitleSuggestionsPanel } from './title-suggestions/component';
@@ -43,7 +43,7 @@ const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
  * @since 3.13.0
  */
 export interface SidebarSettings {
-	CrossLinksMaxLinkLength: number;
+	CrossLinksMaxLinkWords: number;
 	CrossLinksMaxLinks: number;
 	CrossLinksOpen: boolean;
 	CrossLinksSettingsOpen: boolean;
@@ -112,8 +112,8 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	} catch ( e ) {
 		// Return defaults when parsing failed or the string is empty.
 		return {
-			CrossLinksMaxLinkLength: 4,
-			CrossLinksMaxLinks: 10,
+			CrossLinksMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
+			CrossLinksMaxLinks: DEFAULT_MAX_LINKS,
 			CrossLinksOpen: false,
 			CrossLinksSettingsOpen: false,
 			PerformanceDetailsOpen: true,
@@ -131,11 +131,11 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 
 	// Fix invalid values if any are found.
-	if ( typeof parsedSettings?.CrossLinksMaxLinkLength !== 'number' ) {
-		parsedSettings.CrossLinksMaxLinkLength = 4;
+	if ( typeof parsedSettings?.CrossLinksMaxLinkWords !== 'number' ) {
+		parsedSettings.CrossLinksMaxLinkWords = DEFAULT_MAX_LINK_WORDS;
 	}
 	if ( typeof parsedSettings?.CrossLinksMaxLinks !== 'number' ) {
-		parsedSettings.CrossLinksMaxLinks = 10;
+		parsedSettings.CrossLinksMaxLinks = DEFAULT_MAX_LINKS;
 	}
 	if ( typeof parsedSettings?.CrossLinksOpen !== 'boolean' ) {
 		parsedSettings.CrossLinksOpen = false;

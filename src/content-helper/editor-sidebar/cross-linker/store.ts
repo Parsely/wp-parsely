@@ -4,6 +4,7 @@
 import { createReduxStore, register } from '@wordpress/data';
 import { ContentHelperError } from '../../common/content-helper-error';
 import { SidebarSettings } from '../editor-sidebar';
+import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './cross-linker';
 
 /**
  * Internal dependencies
@@ -19,7 +20,7 @@ type CrossLinkerState = {
 	error: ContentHelperError | null;
 	sidebarSettings: SidebarSettings | null;
 	crossLinkerSettings: {
-		maxLinkLength?: number;
+		maxLinkWords?: number;
 		maxLinksPerPost?: number;
 		settingsOpen?: boolean;
 	}
@@ -67,7 +68,7 @@ interface SetCrossLinkerSettingsAction {
 	type: 'SET_CROSSLINKER_SETTINGS';
 	crossLinkerSettings: {
 		settingsOpen?: boolean
-		maxLinkLength?: number;
+		maxLinkWords?: number;
 		maxLinksPerPost?: number;
 	};
 }
@@ -202,11 +203,11 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 				sidebarSettings,
 			};
 		},
-		setMaxLinkLength( maxLinkLength: number ): SetCrossLinkerSettingsAction {
+		setMaxLinkWords( maxLinkWords: number ): SetCrossLinkerSettingsAction {
 			return {
 				type: 'SET_CROSSLINKER_SETTINGS',
 				crossLinkerSettings: {
-					maxLinkLength,
+					maxLinkWords,
 				},
 			};
 		},
@@ -252,11 +253,11 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 		areSettingsOpen( state: CrossLinkerState ): boolean {
 			return state.crossLinkerSettings.settingsOpen ?? state.sidebarSettings?.CrossLinksSettingsOpen ?? false;
 		},
-		getMaxLinkLength( state: CrossLinkerState ): number {
-			return state.crossLinkerSettings.maxLinkLength ?? state.sidebarSettings?.CrossLinksMaxLinkLength ?? 4;
+		getMaxLinkWords( state: CrossLinkerState ): number {
+			return state.crossLinkerSettings.maxLinkWords ?? state.sidebarSettings?.CrossLinksMaxLinkWords ?? DEFAULT_MAX_LINK_WORDS;
 		},
 		getMaxLinks( state: CrossLinkerState ): number {
-			return state.crossLinkerSettings.maxLinksPerPost ?? state.sidebarSettings?.CrossLinksMaxLinks ?? 10;
+			return state.crossLinkerSettings.maxLinksPerPost ?? state.sidebarSettings?.CrossLinksMaxLinks ?? DEFAULT_MAX_LINKS;
 		},
 		getSuggestedLinks( state: CrossLinkerState ): LinkSuggestion[] | null {
 			return state.suggestedLinks;

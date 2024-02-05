@@ -48,13 +48,13 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 	public function data_api_url(): iterable {
 		yield 'Basic (Expected data)' => array(
 			array(
-				'apikey'          => 'my-key',
-				'secret'          => 'my-secret',
-				'max_link_length' => '4',
-				'max_links'       => '10',
+				'apikey'         => 'my-key',
+				'secret'         => 'my-secret',
+				'max_link_words' => '4',
+				'max_links'      => '10',
 			),
 			Parsely::PUBLIC_SUGGESTIONS_API_BASE_URL .
-				'/suggest-links?apikey=my-key&max_link_length=4&max_links=10&secret=my-secret',
+				'/suggest-links?apikey=my-key&max_link_words=4&max_links=10&secret=my-secret',
 		);
 	}
 

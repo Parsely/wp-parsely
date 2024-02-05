@@ -12,6 +12,7 @@ import { settings } from '@wordpress/icons';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { OnSettingChangeFunction } from '../editor-sidebar';
+import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './cross-linker';
 import { CrossLinkerStore } from './store';
 
 /**
@@ -44,21 +45,21 @@ export const CrossLinkerSettings = ( {
 	 */
 	const {
 		maxLinks,
-		maxLinkLength,
+		maxLinkWords,
 		settingsOpen,
 	} = useSelect( ( select ) => {
-		const { getMaxLinkLength, getMaxLinks, areSettingsOpen } = select( CrossLinkerStore );
+		const { getMaxLinkWords, getMaxLinks, areSettingsOpen } = select( CrossLinkerStore );
 
 		return {
 			maxLinks: getMaxLinks(),
-			maxLinkLength: getMaxLinkLength(),
+			maxLinkWords: getMaxLinkWords(),
 			settingsOpen: areSettingsOpen(),
 		};
 	}, [] );
 
 	const {
 		setMaxLinks,
-		setMaxLinkLength,
+		setMaxLinkWords,
 		setSettingsOpen,
 	} = useDispatch( CrossLinkerStore );
 
@@ -101,7 +102,7 @@ export const CrossLinkerSettings = ( {
 						initialPosition={ maxLinks }
 						onChange={ ( value ) => {
 							setMaxLinks( value ?? 1 );
-							onSettingChange( 'CrossLinksMaxLinks', value ?? 10 );
+							onSettingChange( 'CrossLinksMaxLinks', value ?? DEFAULT_MAX_LINKS );
 						} }
 						label={ __( 'Links limit', 'wp-parsely' ) }
 						help={ __( 'The maximum number of smart links to add in the content.', 'wp-parsely' ) }
@@ -110,11 +111,11 @@ export const CrossLinkerSettings = ( {
 					/>
 					<RangeControl
 						disabled={ disabled }
-						value={ maxLinkLength }
-						initialPosition={ maxLinkLength }
+						value={ maxLinkWords }
+						initialPosition={ maxLinkWords }
 						onChange={ ( value ) => {
-							setMaxLinkLength( value ?? 1 );
-							onSettingChange( 'CrossLinksMaxLinkLength', value ?? 4 );
+							setMaxLinkWords( value ?? 1 );
+							onSettingChange( 'CrossLinksMaxLinkWords', value ?? DEFAULT_MAX_LINK_WORDS );
 						} }
 						label={ __( 'Link length', 'wp-parsely' ) }
 						help={ __( 'The maximum length (in words) for the smart link.', 'wp-parsely' ) }

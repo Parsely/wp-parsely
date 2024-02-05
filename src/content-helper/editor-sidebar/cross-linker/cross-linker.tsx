@@ -22,6 +22,9 @@ import { BlockOverlayContainer } from './component-block-overlay';
 import './cross-linker.scss';
 import { CrossLinkerStore } from './store';
 
+export const DEFAULT_MAX_LINKS = 10;
+
+export const DEFAULT_MAX_LINK_WORDS = 4;
 /**
  * Cross linker inspector control panel component.
  *
@@ -76,7 +79,7 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 					<PanelBody
 						title="Smart Linking"
 						initialOpen={ settings.CrossLinksOpen }
-						className="wp-parsely-block-ai-controls"
+						className="wp-parsely-panel wp-parsely-smart-linking-panel"
 						icon={ <><LeafIcon /> <BetaBadge /></> }
 						onToggle={ ( next ) => {
 							handleSettingChange( 'CrossLinksOpen', next );
