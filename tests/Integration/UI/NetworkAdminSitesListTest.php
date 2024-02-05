@@ -91,7 +91,7 @@ final class NetworkAdminSitesListTest extends TestCase {
 
 		self::$sites_list->run();
 
-		update_blog_option( $blog_id_with_site_id, Parsely::OPTIONS_KEY, array( 'apikey' => 'parselyrocks.example.com' ) );
+		update_blog_option( $blog_id_with_site_id, Parsely::OPTIONS_KEY, array( 'apikey' => self::VALID_SITE_ID ) );
 
 		$this->table->prepare_items();
 
@@ -106,7 +106,7 @@ final class NetworkAdminSitesListTest extends TestCase {
 
 			if ( $blog_id_with_site_id === (int) $site->blog_id ) {
 				self::assertSame(
-					'parselyrocks.example.com',
+					self::VALID_SITE_ID,
 					$site_id_col_value,
 					'The Site ID was not printed and should have been.'
 				);

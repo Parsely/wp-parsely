@@ -11,6 +11,7 @@ import {
  */
 import {
 	VALID_API_SECRET,
+	VALID_SITE_ID,
 	setSiteKeys,
 } from '../../utils';
 
@@ -29,7 +30,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	 * Secret are not provided.
 	 */
 	it( 'Should be displayed when the Site ID and API Secret are not provided', async () => {
-		expect( await testContentHelperIcon() )
+		expect( await testContentHelperIcon( '', '' ) )
 			.toMatch( emptyCredentialsMessage );
 	} );
 
@@ -38,7 +39,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	 * provided.
 	 */
 	it( 'Should be displayed when only the Site ID is provided.', async () => {
-		expect( await testContentHelperIcon( 'blog.parsely.com' ) )
+		expect( await testContentHelperIcon( VALID_SITE_ID, '' ) )
 			.toMatch( emptyCredentialsMessage );
 	} );
 
@@ -56,7 +57,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	 * API Secret are provided.
 	 */
 	it( 'Should be displayed when both the Site ID and API Secret are provided', async () => {
-		expect( await testContentHelperIcon( 'blog.parsely.com', VALID_API_SECRET ) )
+		expect( await testContentHelperIcon( VALID_SITE_ID, VALID_API_SECRET ) )
 			.toMatch( postNotPublishedMessage );
 	} );
 
@@ -66,7 +67,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	 * More information: https://github.com/Parsely/wp-parsely/issues/962
 	 */
 	it( 'Should not crash the editor', async () => {
-		await setSiteKeys( 'blog.parsely.com', VALID_API_SECRET );
+		await setSiteKeys( VALID_SITE_ID, VALID_API_SECRET );
 		await createNewPost();
 
 		// Close sidebar if it is opened.
@@ -94,7 +95,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
  * @param {string} apiSecret
  * @return {string} Text content found in the PCH Editor Sidebar.
  */
-async function testContentHelperIcon( siteId = '', apiSecret = '' ) {
+async function testContentHelperIcon( siteId: string, apiSecret: string ) {
 	await setSiteKeys( siteId, apiSecret );
 	await createNewPost();
 

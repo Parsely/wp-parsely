@@ -1,6 +1,6 @@
 # Parse.ly
 
-Stable tag: 3.12.0  
+Stable tag: 3.13.3  
 Requires at least: 5.2  
 Tested up to: 6.4  
 Requires PHP: 7.2  
@@ -42,8 +42,8 @@ The [Content Helper](https://docs.parse.ly/plugin-content-helper/) is a set of c
 - The [Parse.ly Editor Sidebar](https://docs.parse.ly/plugin-content-helper/#h-editor) - This sidebar is integrated into the WordPress Editor and offers insights about the content currently being edited such as:
   - [Performance Details](https://docs.parse.ly/plugin-content-helper/#h-performance-details) - Displays performance metrics about the content currently being edited.
   - [Related Top Posts](https://docs.parse.ly/plugin-content-helper/#h-related-top-posts) - Displays a list of the website’s most successful posts, similar to the post/page currently being edited.
-  - [Title Suggestions](https://docs.parse.ly/plugin-content-helper/#h-title-suggestions) - Generates title suggestions for the post/page currently being edited.
-- The Parse.ly Excerpt Generator - A Post Editor settings enhancement that generates an excerpt for the post/page currently being edited.
+  - [Title Suggestions](https://docs.parse.ly/plugin-content-helper/#h-title-suggestions-beta) - Generates title suggestions for the post/page currently being edited.
+- The [Parse.ly Excerpt Generator](https://docs.parse.ly/plugin-content-helper/#h-excerpt-generator-beta) - A Post Editor settings enhancement that generates an excerpt for the post/page currently being edited.
 
 #### The Parse.ly Recommendations Block
 
@@ -63,7 +63,7 @@ While the plugin works out of the box for basic integrations, it offers a host o
 - [Commonly Asked Questions](https://docs.parse.ly/plugin-common-questions/).
 - [Changelog](https://github.com/parsely/wp-parsely/blob/trunk/CHANGELOG.md).
 
-**IMPORTANT:** If you are a [WordPress VIP](https://wpvip.com/) customer, the plugin should be enabled by using an `mu-plugins` filter. Please consult the [WordPress VIP documentation](https://docs.wpvip.com/technical-references/plugins/parse-ly/) for more details.
+**IMPORTANT:** If you are a [WordPress VIP](https://wpvip.com/) customer, please consult the [WordPress VIP documentation](https://docs.wpvip.com/parse-ly/) for more details.
 
 ### Sample Parse.ly metadata
 
@@ -93,7 +93,7 @@ A sample `JSON-LD` meta tag and structured data for an article or post:
 
 Development, code hosting and issue tracking of this plugin happens on the [wp-parsely GitHub repository](https://github.com/Parsely/wp-parsely/). Active development happens on the `develop` branch and releases are made off the `trunk` branch.
 
-To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](https://github.com/parsely/wp-parsely/blob/trunk/CONTRIBUTING.md) file.
+To run the plugin locally or to contribute to it, please check the instructions in the [CONTRIBUTING](https://github.com/Parsely/wp-parsely/blob/develop/docs/CONTRIBUTING.md) file.
 
 ## Installation
 

@@ -10,6 +10,7 @@ import {
  */
 import {
 	VALID_API_SECRET,
+	VALID_SITE_ID,
 	getTopRelatedPostsMessage,
 	setSiteKeys,
 	setUserDisplayName,
@@ -27,7 +28,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 	 */
 	beforeAll( async () => {
 		enablePageDialogAccept();
-		await setSiteKeys( 'blog.parsely.com', VALID_API_SECRET );
+		await setSiteKeys( VALID_SITE_ID, VALID_API_SECRET );
 	} );
 
 	/**
@@ -51,7 +52,7 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 	 * into the database and then picked up by the Related Top Posts panel.
 	 */
 	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
-		const categoryName = 'Parse.ly Tips';
+		const categoryName = 'Analytics That Matter';
 
 		expect( await getTopRelatedPostsMessage( categoryName, '', 'section', 2000, messageSelector ) )
 			.toMatch( `Top posts in section "${ categoryName }" in the last 30 days.` );
