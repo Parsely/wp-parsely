@@ -14,7 +14,7 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
 import { PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
 import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
 import { ContentHelperError } from '../../common/content-helper-error';
-import { SidebarSettings } from '../editor-sidebar';
+import { SidebarSettings } from '../../common/settings';
 import { TitleSuggestionsSettings } from './component-settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { WriteTitleProvider } from './provider';
