@@ -42,9 +42,9 @@
 		"js-cookie": "^3.0.5"
 	},
 	"devDependencies": {
-		"@testing-library/jest-dom": "^6.2.0",
-		"@testing-library/react": "^14.1.2",
-		"@types/jest": "^29.5.11",
+		"@testing-library/jest-dom": "^6.4.2",
+		"@testing-library/react": "^14.2.1",
+		"@types/jest": "^29.5.12",
 		"@types/jest-environment-puppeteer": "^5.0.6",
 		"@types/wordpress__block-editor": "^11.5.9",
 		"@types/wordpress__blocks": "^12.5.13",
@@ -53,7 +53,7 @@
 		"@types/wordpress__editor": "^13.6.7",
 		"@types/wordpress__plugins": "^3.0.3",
 		"@types/wordpress__wordcount": "^2.4.5",
-		"@typescript-eslint/eslint-plugin": "^6.20.0",
+		"@typescript-eslint/eslint-plugin": "^6.21.0",
 		"@wordpress/api-fetch": "^6.38.0",
 		"@wordpress/babel-preset-default": "^7.32.0",
 		"@wordpress/block-editor": "^12.17.0",
