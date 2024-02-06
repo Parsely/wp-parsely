@@ -50,6 +50,7 @@ abstract class RemoteAPITest extends TestCase {
 	 * @dataProvider data_api_url
 	 * @covers \Parsely\RemoteAPI\Related_API::get_api_url
 	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::get_api_url
+	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_site_id
@@ -70,6 +71,7 @@ abstract class RemoteAPITest extends TestCase {
 	 *
 	 * @covers \Parsely\RemoteAPI\Remote_API_Cache::get_items
 	 * @covers \Parsely\RemoteAPI\Remote_API_Cache::__construct
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_endpoint
 	 */
 	public function test_remote_api_cache_returns_cached_value(): void {
 		$api_mock = $this->getMockBuilder( get_class( self::$remote_api ) )
@@ -114,6 +116,7 @@ abstract class RemoteAPITest extends TestCase {
 	 *
 	 * @covers \Parsely\RemoteAPI\Remote_API_Cache::get_items
 	 * @covers \Parsely\RemoteAPI\Remote_API_Cache::__construct
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_endpoint
 	 */
 	public function test_caching_decorator_returns_uncached_value(): void {
 		$api_mock = $this->getMockBuilder( get_class( self::$remote_api ) )

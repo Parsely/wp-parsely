@@ -123,11 +123,16 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 	 * @since 3.14.0
 	 *
 	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Links_API::get_links
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Links_API::__construct
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Links_API::get_links
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::__construct
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 *
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::site_id_is_set
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_request_options
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::post_request
 	 */
 	public function test_get_links(): void {
 		$content = '<p>
