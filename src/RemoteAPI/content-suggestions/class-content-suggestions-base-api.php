@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\RemoteAPI\ContentSuggestions;
 
+use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Base_Endpoint_Remote;
 use WP_Error;
@@ -21,8 +22,25 @@ use WP_Error;
  *
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
-class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
+abstract class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 	protected const API_BASE_URL = Parsely::PUBLIC_SUGGESTIONS_API_BASE_URL;
+
+	/**
+	 * Returns whether the endpoint is available for access by the current
+	 * user.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @return bool
+	 */
+	public function is_available_to_current_user(): bool {
+		return current_user_can(
+			// phpcs:ignore WordPress.WP.Capabilities.Undetermined
+			$this->apply_capability_filters(
+				Base_Endpoint::DEFAULT_ACCESS_CAPABILITY
+			)
+		);
+	}
 
 	/**
 	 * Returns the request's options for the remote API call.

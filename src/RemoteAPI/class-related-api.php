@@ -23,10 +23,14 @@ class Related_API extends Base_Endpoint_Remote {
 	protected const QUERY_FILTER = 'wp_parsely_related_endpoint_args';
 
 	/**
-	 * Indicates whether the endpoint is public or protected behind permissions.
+	 * Returns whether the endpoint is available for access by the current
+	 * user.
 	 *
-	 * @since 3.7.0
-	 * @var bool
+	 * @since 3.14.0
+	 *
+	 * @return bool
 	 */
-	protected $is_public_endpoint = true;
+	public function is_available_to_current_user(): bool {
+		return true;
+	}
 }

@@ -94,7 +94,7 @@ class Dashboard_Widget extends Content_Helper_Feature {
 
 		return $this->can_enable_feature(
 			null !== $screen && 'dashboard' === $screen->id,
-			$posts_api->is_user_allowed_to_make_api_call()
+			$posts_api->is_available_to_current_user()
 		);
 	}
 

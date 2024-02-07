@@ -78,7 +78,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * @param Parsely $parsely Parsely instance.
 	 */
 	public function __construct( Parsely $parsely ) {
-		parent::__construct( $parsely, false );
+		parent::__construct( $parsely );
 
 		$subvalues_specs = $this->get_subvalues_specs();
 
@@ -137,13 +137,14 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	}
 
 	/**
-	 * Checks if the current user is allowed to make the API call.
+	 * Returns whether the endpoint is available for access by the current
+	 * user.
 	 *
 	 * @since 3.14.0
 	 *
 	 * @return bool
 	 */
-	public function is_user_allowed_to_make_api_call(): bool {
+	public function is_available_to_current_user(): bool {
 		return current_user_can( 'edit_user', $this->current_user_id );
 	}
 

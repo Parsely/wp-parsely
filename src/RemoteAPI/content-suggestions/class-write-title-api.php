@@ -8,6 +8,7 @@
 
 namespace Parsely\RemoteAPI\ContentSuggestions;
 
+use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Parsely;
 use WP_Error;
 
@@ -21,14 +22,6 @@ use WP_Error;
 class Write_Title_API extends Content_Suggestions_Base_API {
 	protected const ENDPOINT     = '/write-title';
 	protected const QUERY_FILTER = 'wp_parsely_write_title_endpoint_args';
-
-	/**
-	 * Indicates whether the endpoint is public or protected behind permissions.
-	 *
-	 * @since 3.12.0
-	 * @var bool
-	 */
-	protected $is_public_endpoint = true;
 
 	/**
 	 * Generates titles for a given content using the Parse.ly
