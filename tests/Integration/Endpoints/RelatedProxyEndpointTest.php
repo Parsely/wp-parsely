@@ -74,7 +74,7 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::get_data
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
-	 * @uses \Parsely\Endpoints\Related_API_Proxy::permission_callback
+	 * @uses \Parsely\Endpoints\Related_API_Proxy::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::run
 	 * @uses \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -94,7 +94,7 @@ final class RelatedProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::__construct
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::generate_data
-	 * @uses \Parsely\Endpoints\Related_API_Proxy::permission_callback
+	 * @uses \Parsely\Endpoints\Related_API_Proxy::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Related_API_Proxy::run
 	 * @uses \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::site_id_is_set

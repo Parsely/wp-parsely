@@ -87,7 +87,7 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
-	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
@@ -115,7 +115,7 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
-	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key

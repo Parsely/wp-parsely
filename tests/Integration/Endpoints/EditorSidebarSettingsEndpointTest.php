@@ -75,11 +75,10 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_route
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 * @uses \Parsely\Endpoints\Base_Endpoint::permission_callback
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
@@ -115,50 +114,8 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
 	 */
-	public function test_verify_that_route_is_not_registered_when_proxy_is_disabled(): void {
+	public function test_verify_that_route_is_not_registered_when_endpoint_is_disabled(): void {
 		parent::run_test_do_not_register_route_when_proxy_is_disabled();
-	}
-
-	/**
-	 * Verifies default user capability filter.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @covers \Parsely\Endpoints\Base_Endpoint::permission_callback
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
-	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 */
-	public function test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed(): void {
-		parent::run_test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed();
-	}
-
-	/**
-	 * Verifies endpoint specific user capability filter.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @covers \Parsely\Endpoints\Base_Endpoint::permission_callback
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
-	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 */
-	public function test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed(): void {
-		parent::run_test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed();
 	}
 
 	/**
@@ -172,9 +129,8 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
 	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::process_request
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 * @uses \Parsely\Endpoints\Base_Endpoint::permission_callback
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_route
@@ -204,10 +160,9 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
 	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::process_request
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 * @uses \Parsely\Endpoints\Base_Endpoint::permission_callback
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_route
