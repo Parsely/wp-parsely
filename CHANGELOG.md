@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.12.1](https://github.com/Parsely/wp-parsely/compare/3.12.0...3.12.1) - 2024-02-07
+
+### Fixed
+
+- Backport some Tracks fixes from the 3.13 branch ([#2163](https://github.com/Parsely/wp-parsely/pull/2163), [#2178](https://github.com/Parsely/wp-parsely/pull/2178))
+
 ## [3.12.0](https://github.com/Parsely/wp-parsely/compare/3.11.1...3.12.0) - 2023-12-05
 
 ### Added
