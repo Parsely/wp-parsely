@@ -123,7 +123,6 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 	 * @since 3.14.0
 	 *
 	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Links_API::get_links
-	 *
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options

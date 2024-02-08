@@ -8,6 +8,7 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { ContentHelperError, ContentHelperErrorCode } from '../../common/content-helper-error';
+import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './cross-linker';
 
 /**
  * Structure of a link suggestion returned by the
@@ -51,8 +52,8 @@ export class CrossLinkerProvider {
 	 */
 	static async generateCrossLinks(
 		content: string,
-		maxLinkWords: number = 4,
-		maxLinksPerPost: number = 10,
+		maxLinkWords: number = DEFAULT_MAX_LINK_WORDS,
+		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
 	): Promise<LinkSuggestion[]> {
 		let response;
 
