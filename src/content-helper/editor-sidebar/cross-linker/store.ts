@@ -3,13 +3,18 @@
  */
 import { createReduxStore, register } from '@wordpress/data';
 import { ContentHelperError } from '../../common/content-helper-error';
-import { SidebarSettings } from '../../common/settings';
 import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './cross-linker';
 
 /**
  * Internal dependencies
  */
 import { LinkSuggestion } from './provider';
+
+export type CrossLinkerSettingsProps = {
+	settingsOpen?: boolean;
+	maxLinkWords?: number;
+	maxLinksPerPost?: number;
+};
 
 /**
  * The shape of the CrossLinker store state.
@@ -18,12 +23,7 @@ type CrossLinkerState = {
 	isLoading: boolean;
 	fullContent: boolean;
 	error: ContentHelperError | null;
-	sidebarSettings: SidebarSettings | null; //TODO: remove?
-	crossLinkerSettings: {
-		maxLinkWords?: number;
-		maxLinksPerPost?: number;
-		settingsOpen?: boolean;
-	}
+	settings: CrossLinkerSettingsProps;
 	suggestedLinks: LinkSuggestion[] | null;
 	overlayBlocks: string[];
 };
@@ -61,16 +61,7 @@ interface SetFullContentAction {
 
 interface SetSettingsAction {
 	type: 'SET_SETTINGS';
-	sidebarSettings: SidebarSettings;
-}
-
-interface SetCrossLinkerSettingsAction {
-	type: 'SET_CROSSLINKER_SETTINGS';
-	crossLinkerSettings: {
-		settingsOpen?: boolean
-		maxLinkWords?: number;
-		maxLinksPerPost?: number;
-	};
+	settings: CrossLinkerSettingsProps;
 }
 
 interface SetSuggestedLinksAction {
@@ -78,17 +69,16 @@ interface SetSuggestedLinksAction {
 	suggestedLinks: LinkSuggestion[] | null;
 }
 
-type ActionTypes = SetLoadingAction | SetOverlayBlocksAction | SetCrossLinkerSettingsAction |
+type ActionTypes = SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction |
 	AddOverlayBlockAction | RemoveOverlayBlockAction |SetFullContentAction |
-	SetSettingsAction | SetSuggestedLinksAction | SetErrorAction;
+	SetSuggestedLinksAction | SetErrorAction;
 
 const defaultState: CrossLinkerState = {
 	isLoading: false,
 	fullContent: false,
 	suggestedLinks: null,
 	error: null,
-	sidebarSettings: null,
-	crossLinkerSettings: { },
+	settings: { },
 	overlayBlocks: [],
 };
 
@@ -141,14 +131,9 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 			case 'SET_SETTINGS':
 				return {
 					...state,
-					sidebarSettings: action.sidebarSettings,
-				};
-			case 'SET_CROSSLINKER_SETTINGS':
-				return {
-					...state,
-					crossLinkerSettings: {
-						...state.crossLinkerSettings,
-						...action.crossLinkerSettings,
+					settings: {
+						...state.settings,
+						...action.settings,
 					},
 				};
 			case 'SET_SUGGESTED_LINKS':
@@ -197,32 +182,32 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 				fullContent,
 			};
 		},
-		setSettings( sidebarSettings: SidebarSettings ): SetSettingsAction {
+		setCrossLinkerSettings( settings: CrossLinkerSettingsProps ): SetSettingsAction {
 			return {
 				type: 'SET_SETTINGS',
-				sidebarSettings,
+				settings,
 			};
 		},
-		setMaxLinkWords( maxLinkWords: number ): SetCrossLinkerSettingsAction {
+		setMaxLinkWords( maxLinkWords: number ): SetSettingsAction {
 			return {
-				type: 'SET_CROSSLINKER_SETTINGS',
-				crossLinkerSettings: {
+				type: 'SET_SETTINGS',
+				settings: {
 					maxLinkWords,
 				},
 			};
 		},
-		setMaxLinks( maxLinksPerPost: number ): SetCrossLinkerSettingsAction {
+		setMaxLinks( maxLinksPerPost: number ): SetSettingsAction {
 			return {
-				type: 'SET_CROSSLINKER_SETTINGS',
-				crossLinkerSettings: {
+				type: 'SET_SETTINGS',
+				settings: {
 					maxLinksPerPost,
 				},
 			};
 		},
-		setSettingsOpen( settingsOpen: boolean ): SetCrossLinkerSettingsAction {
+		setSettingsOpen( settingsOpen: boolean ): SetSettingsAction {
 			return {
-				type: 'SET_CROSSLINKER_SETTINGS',
-				crossLinkerSettings: {
+				type: 'SET_SETTINGS',
+				settings: {
 					settingsOpen,
 				},
 			};
@@ -244,20 +229,20 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 		getError( state: CrossLinkerState ): ContentHelperError | null {
 			return state.error;
 		},
+		getCrossLinkerSettings( state: CrossLinkerState ): CrossLinkerSettingsProps {
+			return state.settings;
+		},
 		getOverlayBlocks( state: CrossLinkerState ): string[] {
 			return state.overlayBlocks;
 		},
-		getSettings( state: CrossLinkerState ): SidebarSettings | null {
-			return state.sidebarSettings;
-		},
 		areSettingsOpen( state: CrossLinkerState ): boolean {
-			return state.crossLinkerSettings.settingsOpen ?? state.sidebarSettings?.CrossLinksSettingsOpen ?? false;
+			return state.settings.settingsOpen ?? false;
 		},
 		getMaxLinkWords( state: CrossLinkerState ): number {
-			return state.crossLinkerSettings.maxLinkWords ?? state.sidebarSettings?.CrossLinksMaxLinkWords ?? DEFAULT_MAX_LINK_WORDS;
+			return state.settings.maxLinkWords ?? DEFAULT_MAX_LINK_WORDS;
 		},
 		getMaxLinks( state: CrossLinkerState ): number {
-			return state.crossLinkerSettings.maxLinksPerPost ?? state.sidebarSettings?.CrossLinksMaxLinks ?? DEFAULT_MAX_LINKS;
+			return state.settings.maxLinksPerPost ?? DEFAULT_MAX_LINKS;
 		},
 		getSuggestedLinks( state: CrossLinkerState ): LinkSuggestion[] | null {
 			return state.suggestedLinks;

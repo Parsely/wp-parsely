@@ -3,7 +3,7 @@
  */
 import { InspectorControls } from '@wordpress/block-editor';
 import { PanelBody } from '@wordpress/components';
-import { createHigherOrderComponent } from '@wordpress/compose';
+import { compose, createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter } from '@wordpress/hooks';
 import { registerPlugin } from '@wordpress/plugins';
 
@@ -23,6 +23,30 @@ import './cross-linker.scss';
 export const DEFAULT_MAX_LINKS = 10;
 
 export const DEFAULT_MAX_LINK_WORDS = 4;
+
+/**
+ * Higher order component to add the settings provider to the block edit component.
+ * This is required to provide the settings to the cross linker panel.
+ *
+ * @since 3.14.0
+ */
+const withSettingsProvider = createHigherOrderComponent( ( BlockEdit ) => {
+	return ( props ) => {
+		if ( ! props.isSelected || props.name !== 'core/paragraph' ) {
+			return <BlockEdit { ...props } />;
+		}
+
+		return (
+			<SettingsProvider
+				endpoint="editor-sidebar-settings"
+				defaultSettings={ getSettingsFromJson() }
+			>
+				<BlockEdit { ...props } />
+			</SettingsProvider>
+		);
+	};
+}, 'withSettingsProvider' );
+
 /**
  * Cross linker inspector control panel component.
  *
@@ -30,27 +54,13 @@ export const DEFAULT_MAX_LINK_WORDS = 4;
  */
 const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit ) => {
 	return ( props ) => {
+		if ( ! props.isSelected || props.name !== 'core/paragraph' ) {
+			return <BlockEdit { ...props } />;
+		}
+
 		const { settings, setSettings } = useSettings<SidebarSettings>();
-
-		/**
-		 * Updates the passed setting.
-		 *
-		 * @since 3.14.0
-		 *
-		 * @param {keyof SidebarSettings} setting The setting to be updated.
-		 * @param {string|boolean|number} value   The new setting value.
-		 */
-		const handleSettingChange = (
-			setting: keyof SidebarSettings, value: string|boolean|number
-		): void => {
-			setSettings( { ...settings, [ setting ]: value } );
-		};
-
 		return (
-			<SettingsProvider
-				endpoint="editor-sidebar-settings"
-				defaultSettings={ getSettingsFromJson() }
-			>
+			<>
 				<BlockEdit { ...props } />
 				{ /* @ts-ignore */ }
 				<InspectorControls group="list">
@@ -60,7 +70,7 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 						className="wp-parsely-panel wp-parsely-smart-linking-panel"
 						icon={ <><LeafIcon /> <BetaBadge /></> }
 						onToggle={ ( next ) => {
-							handleSettingChange( 'CrossLinksOpen', next );
+							setSettings( { CrossLinksOpen: next } );
 							Telemetry.trackEvent( 'cross_linker_block_inspector_panel_toggled', { open: next } );
 						} }
 					>
@@ -68,16 +78,25 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 							<CrossLinkerPanel
 								selectedBlockClientId={ props.clientId }
 								context={ CrossLinkerPanelContext.BlockInspector }
-								onSettingChange={ handleSettingChange }
-								sidebarSettings={ settings }
 							/>
 						</VerifyCredentials>
 					</PanelBody>
 				</InspectorControls>
-			</SettingsProvider>
+			</>
 		);
 	};
-}, 'withInspectorControl' );
+}, 'withCrossLinkerPanel' );
+
+/**
+ * The cross linker panel with settings provider.
+ * This is the final component that is added to the block inspector.
+ *
+ * @since 3.14.0
+ */
+const CrossLinkerPanelWithSettingsProvider = compose(
+	withSettingsProvider,
+	CrossLinkerInspectorControlPanel
+);
 
 /**
  * Initializes the cross linker, by adding the cross linker panel to the paragraph block.
@@ -91,8 +110,8 @@ export const initCrossLinker = (): void => {
 	 */
 	addFilter(
 		'editor.BlockEdit',
-		'my-plugin/with-inspector-controls',
-		CrossLinkerInspectorControlPanel
+		'wpparsely/cross-linker-inspector-control-panel',
+		CrossLinkerPanelWithSettingsProvider
 	);
 
 	/**

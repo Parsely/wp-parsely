@@ -369,110 +369,110 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 			className="wp-parsely-content-helper"
 			title={ __( 'Parse.ly Editor Sidebar', 'wp-parsely' ) }
 		>
-			<Panel>
-				<PanelBody
-					title={ __( 'Settings', 'wp-parsely' ) }
-					initialOpen={ settings.SettingsOpen }
-					onToggle={ ( next ) => {
-						setSettings( { SettingsOpen: next } );
-						trackToggle( 'settings', next );
-					} }
-				>
-					<Settings />
-				</PanelBody>
-			</Panel>
-			<Panel>
-				<PanelBody
-					title={ __( 'Performance Details', 'wp-parsely' ) }
-					initialOpen={ settings.PerformanceDetailsOpen }
-					onToggle={ ( next ) => {
-						setSettings( {
-							PerformanceDetailsOpen: next,
-						} );
-						trackToggle( 'performance_details', next );
-					} }
-				>
-					{
+			<SettingsProvider endpoint="editor-sidebar-settings" defaultSettings={ getSettingsFromJson() }>
+				<Panel>
+					<PanelBody
+						title={ __( 'Settings', 'wp-parsely' ) }
+						initialOpen={ settings.SettingsOpen }
+						onToggle={ ( next ) => {
+							setSettings( { SettingsOpen: next } );
+							trackToggle( 'settings', next );
+						} }
+					>
+						<Settings />
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody
+						title={ __( 'Performance Details', 'wp-parsely' ) }
+						initialOpen={ settings.PerformanceDetailsOpen }
+						onToggle={ ( next ) => {
+							setSettings( {
+								PerformanceDetailsOpen: next,
+							} );
+							trackToggle( 'performance_details', next );
+						} }
+					>
+						{
+							<VerifyCredentials>
+								<PerformanceDetails
+									period={ settings.SettingsPeriod }
+								/>
+							</VerifyCredentials>
+						}
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody
+						title={ __( 'Related Top Posts', 'wp-parsely' ) }
+						initialOpen={ settings.RelatedTopPostsOpen }
+						onToggle={ ( next ) => {
+							setSettings( {
+								RelatedTopPostsOpen: next,
+							} );
+							trackToggle( 'related_top_posts', next );
+						} }
+					>
+						{
+							<VerifyCredentials>
+								<RelatedTopPostList
+									initialFilter={ {
+										type: settings.RelatedTopPostsFilterBy as PostFilterType,
+										value: settings.RelatedTopPostsFilterValue,
+									} }
+									metric={ settings.SettingsMetric }
+									onFilterChange={ handleRelatedTopPostsFilterChange }
+									period={ settings.SettingsPeriod }
+									postData={ postData }
+								/>
+							</VerifyCredentials>
+						}
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody
+						icon={ <BetaBadge /> }
+						title={ __( 'Title Suggestions', 'wp-parsely' ) }
+						initialOpen={ settings.TitleSuggestionsOpen }
+						onToggle={ ( next ) => {
+							setSettings( {
+								TitleSuggestionsOpen: next,
+							} );
+							trackToggle( 'title_suggestions', next );
+						} }
+					>
+						{
+							<VerifyCredentials>
+								<TitleSuggestionsPanel
+									initialPersona={ settings.TitleSuggestionsPersona }
+									initialSettingsOpen={ settings.TitleSuggestionsSettingsOpen }
+									initialTone={ settings.TitleSuggestionsTone }
+									onSettingChange={ handleSettingChange }
+								/>
+							</VerifyCredentials>
+						}
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody
+						icon={ <BetaBadge /> }
+						title={ __( 'Smart Linking', 'wp-parsely' ) }
+						initialOpen={ settings.CrossLinksOpen }
+						onToggle={ ( next ) => {
+							setSettings( {
+								CrossLinksOpen: next,
+							} );
+							trackToggle( 'cross_links', next );
+						} }
+					>
 						<VerifyCredentials>
-							<PerformanceDetails
-								period={ settings.SettingsPeriod }
+							<CrossLinkerPanel
+								context={ CrossLinkerPanelContext.ContentHelperSidebar }
 							/>
 						</VerifyCredentials>
-					}
-				</PanelBody>
-			</Panel>
-			<Panel>
-				<PanelBody
-					title={ __( 'Related Top Posts', 'wp-parsely' ) }
-					initialOpen={ settings.RelatedTopPostsOpen }
-					onToggle={ ( next ) => {
-						setSettings( {
-							RelatedTopPostsOpen: next,
-						} );
-						trackToggle( 'related_top_posts', next );
-					} }
-				>
-					{
-						<VerifyCredentials>
-							<RelatedTopPostList
-								initialFilter={ {
-									type: settings.RelatedTopPostsFilterBy as PostFilterType,
-									value: settings.RelatedTopPostsFilterValue,
-								} }
-								metric={ settings.SettingsMetric }
-								onFilterChange={ handleRelatedTopPostsFilterChange }
-								period={ settings.SettingsPeriod }
-								postData={ postData }
-							/>
-						</VerifyCredentials>
-					}
-				</PanelBody>
-			</Panel>
-			<Panel>
-				<PanelBody
-					icon={ <BetaBadge /> }
-					title={ __( 'Title Suggestions', 'wp-parsely' ) }
-					initialOpen={ settings.TitleSuggestionsOpen }
-					onToggle={ ( next ) => {
-						setSettings( {
-							TitleSuggestionsOpen: next,
-						} );
-						trackToggle( 'title_suggestions', next );
-					} }
-				>
-					{
-						<VerifyCredentials>
-							<TitleSuggestionsPanel
-								initialPersona={ settings.TitleSuggestionsPersona }
-								initialSettingsOpen={ settings.TitleSuggestionsSettingsOpen }
-								initialTone={ settings.TitleSuggestionsTone }
-								onSettingChange={ handleSettingChange }
-							/>
-						</VerifyCredentials>
-					}
-				</PanelBody>
-			</Panel>
-			<Panel>
-				<PanelBody
-					icon={ <BetaBadge /> }
-					title={ __( 'Smart Linking', 'wp-parsely' ) }
-					initialOpen={ settings.CrossLinksOpen }
-					onToggle={ ( next ) => {
-						setSettings( {
-							...settings, CrossLinksOpen: next,
-						} );
-						trackToggle( 'cross_links', next );
-					} }
-				>
-					<VerifyCredentials>
-						<CrossLinkerPanel
-							context={ CrossLinkerPanelContext.ContentHelperSidebar }
-							sidebarSettings={ settings }
-							onSettingChange={ handleSettingChange }
-						/>
-					</VerifyCredentials>
-				</PanelBody>
-			</Panel>
+					</PanelBody>
+				</Panel>
+			</SettingsProvider>
 		</PluginSidebar>
 	);
 };
@@ -481,10 +481,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 registerPlugin( BLOCK_PLUGIN_ID, {
 	icon: LeafIcon,
 	render: () => (
-		<SettingsProvider
-			endpoint="editor-sidebar-settings"
-			defaultSettings={ getSettingsFromJson() }
-		>
+		<SettingsProvider endpoint="editor-sidebar-settings" defaultSettings={ getSettingsFromJson() }>
 			<ContentHelperEditorSidebar />
 		</SettingsProvider>
 	),

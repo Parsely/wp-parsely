@@ -11,11 +11,10 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { SidebarSettings } from '../../common/settings';
-import { OnSettingChangeFunction } from '../editor-sidebar';
+import { SidebarSettings, useSettings } from '../../common/settings';
 import { CrossLinkerSettings } from './component-settings';
 import { CrossLinkerProvider, LinkSuggestion } from './provider';
-import { CrossLinkerStore } from './store';
+import { CrossLinkerSettingsProps, CrossLinkerStore } from './store';
 import { escapeRegExp, replaceNthOccurrence } from './utils';
 
 /**
@@ -27,8 +26,6 @@ type CrossLinkerPanelProps = {
 	className?: string;
 	selectedBlockClientId?: string;
 	context?: CrossLinkerPanelContext;
-	sidebarSettings: SidebarSettings;
-	onSettingChange: OnSettingChangeFunction;
 }
 
 /**
@@ -55,9 +52,9 @@ export const CrossLinkerPanel = ( {
 	className,
 	selectedBlockClientId,
 	context = CrossLinkerPanelContext.Unknown,
-	sidebarSettings,
-	onSettingChange,
 }: Readonly<CrossLinkerPanelProps> ): JSX.Element => {
+	const { settings, setSettings } = useSettings<SidebarSettings>();
+
 	/**
 	 * Loads the Cross Linker store.
 	 *
@@ -71,6 +68,7 @@ export const CrossLinkerPanel = ( {
 		suggestedLinks,
 		maxLinks,
 		maxLinkWords,
+		crossLinkerSettings,
 	} = useSelect( ( selectFn ) => {
 		const {
 			isLoading,
@@ -80,6 +78,7 @@ export const CrossLinkerPanel = ( {
 			isFullContent,
 			getMaxLinks,
 			getMaxLinkWords,
+			getCrossLinkerSettings,
 		} = selectFn( CrossLinkerStore );
 		return {
 			loading: isLoading(),
@@ -89,6 +88,7 @@ export const CrossLinkerPanel = ( {
 			fullContent: isFullContent(),
 			overlayBlocks: getOverlayBlocks(),
 			suggestedLinks: getSuggestedLinks(),
+			crossLinkerSettings: getCrossLinkerSettings(),
 		};
 	}, [] );
 
@@ -100,22 +100,48 @@ export const CrossLinkerPanel = ( {
 	const {
 		setLoading,
 		setFullContent,
-		setSettings,
 		setError,
 		setSuggestedLinks,
 		addOverlayBlock,
 		removeOverlayBlock,
+		setCrossLinkerSettings,
 	} = useDispatch( CrossLinkerStore );
 
 	/**
-	 * Loads and prepares the Cross Linker settings.
+	 * Handles the change of a setting.
+	 *
+	 * Updates the settings in the Cross Linker store and the Settings Context.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @param { keyof SidebarSettings }     setting The setting to change.
+	 * @param { string | boolean | number } value   The new value of the setting.
+	 */
+	const onSettingChange = ( setting: keyof SidebarSettings, value: string|boolean|number ): void => {
+		setSettings( { [ setting ]: value } );
+		setCrossLinkerSettings( { [ setting ]: value } );
+	};
+
+	/**
+	 * Loads and prepares the Cross Linker settings from the Settings Context,
+	 * if they are not already loaded.
 	 *
 	 * @since 3.14.0
 	 */
 	useEffect( () => {
+		// If the crossLinkerSettings are not empty object, return early.
+		if ( Object.keys( crossLinkerSettings ).length > 0 ) {
+			return;
+		}
+
 		// Load the settings from the WordPress database and store them in the Cross Linker store.
-		setSettings( sidebarSettings );
-	}, [ setSettings, sidebarSettings ] );
+		const newCrossLinkerSettings: CrossLinkerSettingsProps = {
+			maxLinksPerPost: settings.CrossLinksMaxLinks,
+			maxLinkWords: settings.CrossLinksMaxLinkWords,
+			settingsOpen: settings.CrossLinksSettingsOpen,
+		};
+		setCrossLinkerSettings( newCrossLinkerSettings );
+	}, [ setCrossLinkerSettings, settings ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	/**
 	 * Loads the selected block and post content.
