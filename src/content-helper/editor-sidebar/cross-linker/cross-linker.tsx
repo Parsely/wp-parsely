@@ -4,7 +4,6 @@
 import { InspectorControls } from '@wordpress/block-editor';
 import { PanelBody } from '@wordpress/components';
 import { createHigherOrderComponent } from '@wordpress/compose';
-import { useDispatch, useSelect } from '@wordpress/data';
 import { addFilter } from '@wordpress/hooks';
 import { registerPlugin } from '@wordpress/plugins';
 
@@ -13,14 +12,13 @@ import { registerPlugin } from '@wordpress/plugins';
  */
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { BetaBadge } from '../../common/components/beta-badge';
-import { useSaveSettings } from '../../common/hooks/useSaveSettings';
 import { LeafIcon } from '../../common/icons/leaf-icon';
+import { SettingsProvider, SidebarSettings, useSettings } from '../../common/settings';
 import { VerifyCredentials } from '../../common/verify-credentials';
-import { getSettingsFromJson, SidebarSettings } from '../editor-sidebar';
+import { getSettingsFromJson } from '../editor-sidebar';
 import { CrossLinkerPanel, CrossLinkerPanelContext } from './component';
 import { BlockOverlayContainer } from './component-block-overlay';
 import './cross-linker.scss';
-import { CrossLinkerStore } from './store';
 
 export const DEFAULT_MAX_LINKS = 10;
 
@@ -32,30 +30,7 @@ export const DEFAULT_MAX_LINK_WORDS = 4;
  */
 const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit ) => {
 	return ( props ) => {
-		// Since we are outside the context of the EditorSidebar, we need to initialize the settings from
-		// the CrossLinkerStore.
-		const { settings } = useSelect( ( select ) => {
-			const { getSettings } = select( CrossLinkerStore );
-			return {
-				// Since we want the panel open by default in the block inspector context, set the initial
-				// CrossLinksOpen setting value to true.
-				settings: getSettings() ?? { ...getSettingsFromJson(), CrossLinksOpen: true },
-			};
-		}, [] );
-
-		const { setSettings } = useDispatch( CrossLinkerStore );
-
-		/**
-		 * Saves the settings into the WordPress database, when a setting changes.
-		 *
-		 * @since 3.14.0
-		 */
-		useSaveSettings( 'editor-sidebar-settings', settings );
-
-		// Only show the cross linker panel for the paragraph block.
-		if ( props.name !== 'core/paragraph' || props.isSelected === false ) {
-			return <BlockEdit { ...props } />;
-		}
+		const { settings, setSettings } = useSettings<SidebarSettings>();
 
 		/**
 		 * Updates the passed setting.
@@ -72,7 +47,10 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 		};
 
 		return (
-			<>
+			<SettingsProvider
+				endpoint="editor-sidebar-settings"
+				defaultSettings={ getSettingsFromJson() }
+			>
 				<BlockEdit { ...props } />
 				{ /* @ts-ignore */ }
 				<InspectorControls group="list">
@@ -96,7 +74,7 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 						</VerifyCredentials>
 					</PanelBody>
 				</InspectorControls>
-			</>
+			</SettingsProvider>
 		);
 	};
 }, 'withInspectorControl' );

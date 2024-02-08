@@ -18,8 +18,8 @@ import { Telemetry } from '../../js/telemetry/telemetry';
 import { BetaBadge } from '../common/components/beta-badge';
 import { PARSELY_PERSONAS } from '../common/components/persona-selector';
 import { PARSELY_TONES } from '../common/components/tone-selector';
-import { useSaveSettings } from '../common/hooks/useSaveSettings';
 import { LeafIcon } from '../common/icons/leaf-icon';
+import { SettingsProvider, SidebarSettings, useSettings } from '../common/settings';
 import {
 	Metric,
 	Period,
@@ -36,29 +36,6 @@ import { RelatedTopPostList } from './related-top-posts/component-list';
 import { TitleSuggestionsPanel } from './title-suggestions/component';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
-
-/**
- * Defines the settings structure for the ContentHelperEditorSidebar component.
- *
- * @since 3.13.0
- */
-export interface SidebarSettings {
-	CrossLinksMaxLinkWords: number;
-	CrossLinksMaxLinks: number;
-	CrossLinksOpen: boolean;
-	CrossLinksSettingsOpen: boolean;
-	PerformanceDetailsOpen: boolean;
-	RelatedTopPostsFilterBy: string;
-	RelatedTopPostsFilterValue: string;
-	RelatedTopPostsOpen: boolean;
-	SettingsMetric: Metric;
-	SettingsOpen: boolean;
-	SettingsPeriod: Period;
-	TitleSuggestionsOpen: boolean;
-	TitleSuggestionsPersona: string;
-	TitleSuggestionsSettingsOpen: boolean;
-	TitleSuggestionsTone: string;
-}
 
 export type OnSettingChangeFunction = ( key: keyof SidebarSettings, value: string | boolean | number ) => void;
 
@@ -188,12 +165,11 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
  * @return {JSX.Element} The Content Helper Editor Sidebar.
  */
 const ContentHelperEditorSidebar = (): JSX.Element => {
-	const [ settings, setSettings ] = useState<SidebarSettings>(
-		getSettingsFromJson( window.wpParselyContentHelperSettings )
-	);
 	const [ postData, setPostData ] = useState<SidebarPostData>( {
 		authors: [], categories: [], tags: [],
 	} );
+
+	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	/**
 	 * Updates all filter settings.
@@ -207,7 +183,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 		filter: PostFilterType, value: string
 	): void => {
 		setSettings( {
-			...settings,
 			RelatedTopPostsFilterBy: filter,
 			RelatedTopPostsFilterValue: value,
 		} );
@@ -224,7 +199,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 	const handleSettingChange = (
 		setting: keyof SidebarSettings, value: string|boolean|number
 	): void => {
-		setSettings( { ...settings, [ setting ]: value } );
+		setSettings( { [ setting ]: value } );
 	};
 
 	/**
@@ -281,14 +256,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 	const authorNames = useMemo( () => {
 		return authors ? authors.map( ( a ) => a.name ) : [];
 	}, [ authors ] );
-
-	/**
-	 * Saves the settings into the WordPress database whenever a setting change
-	 * occurs.
-	 *
-	 * @since 3.13.0
-	 */
-	useSaveSettings( 'editor-sidebar-settings', settings );
 
 	useEffect( () => {
 		setPostData( {
@@ -357,7 +324,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					onChange={ ( selection ) => {
 						if ( isInEnum( selection, Period ) ) {
 							setSettings( {
-								...settings,
 								SettingsPeriod: selection as Period,
 							} );
 							trackSettingsChange( 'period', { period: selection } );
@@ -378,7 +344,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					onChange={ ( selection ) => {
 						if ( isInEnum( selection, Metric ) ) {
 							setSettings( {
-								...settings,
 								SettingsMetric: selection as Metric,
 							} );
 							trackSettingsChange( 'metric', { metric: selection } );
@@ -409,7 +374,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					title={ __( 'Settings', 'wp-parsely' ) }
 					initialOpen={ settings.SettingsOpen }
 					onToggle={ ( next ) => {
-						setSettings( { ...settings, SettingsOpen: next } );
+						setSettings( { SettingsOpen: next } );
 						trackToggle( 'settings', next );
 					} }
 				>
@@ -422,7 +387,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					initialOpen={ settings.PerformanceDetailsOpen }
 					onToggle={ ( next ) => {
 						setSettings( {
-							...settings, PerformanceDetailsOpen: next,
+							PerformanceDetailsOpen: next,
 						} );
 						trackToggle( 'performance_details', next );
 					} }
@@ -442,7 +407,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					initialOpen={ settings.RelatedTopPostsOpen }
 					onToggle={ ( next ) => {
 						setSettings( {
-							...settings, RelatedTopPostsOpen: next,
+							RelatedTopPostsOpen: next,
 						} );
 						trackToggle( 'related_top_posts', next );
 					} }
@@ -470,7 +435,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					initialOpen={ settings.TitleSuggestionsOpen }
 					onToggle={ ( next ) => {
 						setSettings( {
-							...settings, TitleSuggestionsOpen: next,
+							TitleSuggestionsOpen: next,
 						} );
 						trackToggle( 'title_suggestions', next );
 					} }
@@ -515,7 +480,14 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 // Registering Plugin to WordPress Block Editor.
 registerPlugin( BLOCK_PLUGIN_ID, {
 	icon: LeafIcon,
-	render: ContentHelperEditorSidebar,
+	render: () => (
+		<SettingsProvider
+			endpoint="editor-sidebar-settings"
+			defaultSettings={ getSettingsFromJson() }
+		>
+			<ContentHelperEditorSidebar />
+		</SettingsProvider>
+	),
 } );
 
 // Initialize cross linker.

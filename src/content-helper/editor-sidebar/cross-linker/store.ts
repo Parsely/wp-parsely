@@ -3,7 +3,7 @@
  */
 import { createReduxStore, register } from '@wordpress/data';
 import { ContentHelperError } from '../../common/content-helper-error';
-import { SidebarSettings } from '../editor-sidebar';
+import { SidebarSettings } from '../../common/settings';
 import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './cross-linker';
 
 /**
@@ -18,7 +18,7 @@ type CrossLinkerState = {
 	isLoading: boolean;
 	fullContent: boolean;
 	error: ContentHelperError | null;
-	sidebarSettings: SidebarSettings | null;
+	sidebarSettings: SidebarSettings | null; //TODO: remove?
 	crossLinkerSettings: {
 		maxLinkWords?: number;
 		maxLinksPerPost?: number;

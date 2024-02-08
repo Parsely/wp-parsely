@@ -11,7 +11,8 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { OnSettingChangeFunction, SidebarSettings } from '../editor-sidebar';
+import { SidebarSettings } from '../../common/settings';
+import { OnSettingChangeFunction } from '../editor-sidebar';
 import { CrossLinkerSettings } from './component-settings';
 import { CrossLinkerProvider, LinkSuggestion } from './provider';
 import { CrossLinkerStore } from './store';
