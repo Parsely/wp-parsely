@@ -27,7 +27,7 @@ import { TitleStore, TitleType } from './store';
  *
  * @return {JSX.Element} The Title Suggestions Panel.
  */
-export const TitleSuggestionsPanel = ( {} ): JSX.Element => {
+export const TitleSuggestionsPanel = (): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ error, setError ] = useState<ContentHelperError>();
@@ -137,7 +137,7 @@ export const TitleSuggestionsPanel = ( {} ): JSX.Element => {
 
 	const parselyAISettings = <TitleSuggestionsSettings
 		isLoading={ loading }
-		isOpen={ settings.TitleSuggestionsOpen }
+		isOpen={ settings.TitleSuggestionsSettingsOpen }
 		onPersonaChange={ ( selectedPersona ) => {
 			onSettingChange( 'TitleSuggestionsPersona', selectedPersona );
 			setPersona( selectedPersona );

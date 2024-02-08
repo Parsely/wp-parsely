@@ -38,18 +38,20 @@ export const STORE_NAME = 'wpparsely/settings';
 // Reducer.
 const reducer = ( state: SettingsState = DEFAULT_STATE, action: ActionTypes ): SettingsState => {
 	switch ( action.type ) {
-		case 'SET_SETTINGS':
+		case 'SET_SETTINGS': {
 			return {
 				...state,
 				[ action.endpoint ]: action.settings,
 			};
-		case 'SET_PARTIAL_SETTINGS':
+		}
+		case 'SET_PARTIAL_SETTINGS': {
 			const currentSettings = state[ action.endpoint ] || {};
 			const updatedSettings = { ...currentSettings, ...action.partialSettings } as Settings;
 			return {
 				...state,
 				[ action.endpoint ]: updatedSettings,
 			};
+		}
 		default:
 			return state;
 	}
