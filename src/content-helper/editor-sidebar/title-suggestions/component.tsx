@@ -137,7 +137,7 @@ export const TitleSuggestionsPanel = ( {} ): JSX.Element => {
 
 	const parselyAISettings = <TitleSuggestionsSettings
 		isLoading={ loading }
-		isOpen={ settings.TitleSuggestionsOpen }
+		isOpen={ settings.TitleSuggestionsSettingsOpen }
 		onPersonaChange={ ( selectedPersona ) => {
 			onSettingChange( 'TitleSuggestionsPersona', selectedPersona );
 			setPersona( selectedPersona );
