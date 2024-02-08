@@ -147,37 +147,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	/**
-	 * Updates all filter settings.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @param {PostFilterType} filter The new filter type.
-	 * @param {string}         value  The new filter value.
-	 */
-	const handleRelatedTopPostsFilterChange = (
-		filter: PostFilterType, value: string
-	): void => {
-		setSettings( {
-			RelatedTopPostsFilterBy: filter,
-			RelatedTopPostsFilterValue: value,
-		} );
-	};
-
-	/**
-	 * Updates the passed setting.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @param {keyof SidebarSettings} setting The setting to be updated.
-	 * @param {string|boolean}        value   The new settings value.
-	 */
-	const handleSettingChange = (
-		setting: keyof SidebarSettings, value: string|boolean
-	): void => {
-		setSettings( { [ setting ]: value } );
-	};
-
-	/**
 	 * Returns the current Post's ID, tags and categories.
 	 *
 	 * @since 3.11.0
@@ -344,89 +313,82 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 			className="wp-parsely-content-helper"
 			title={ __( 'Parse.ly Editor Sidebar', 'wp-parsely' ) }
 		>
-			<Panel>
-				<PanelBody
-					title={ __( 'Settings', 'wp-parsely' ) }
-					initialOpen={ settings.SettingsOpen }
-					onToggle={ ( next ) => {
-						setSettings( { SettingsOpen: next } );
-						trackToggle( 'settings', next );
-					} }
-				>
-					<Settings />
-				</PanelBody>
-			</Panel>
-			<Panel>
-				<PanelBody
-					title={ __( 'Performance Details', 'wp-parsely' ) }
-					initialOpen={ settings.PerformanceDetailsOpen }
-					onToggle={ ( next ) => {
-						setSettings( {
-							PerformanceDetailsOpen: next,
-						} );
-						trackToggle( 'performance_details', next );
-					} }
-				>
-					{
+			<SettingsProvider
+				endpoint="editor-sidebar-settings"
+				defaultSettings={ getSettingsFromJson( window.wpParselyContentHelperSettings ) }
+			>
+				<Panel>
+					<PanelBody
+						title={ __( 'Settings', 'wp-parsely' ) }
+						initialOpen={ settings.SettingsOpen }
+						onToggle={ ( next ) => {
+							setSettings( { SettingsOpen: next } );
+							trackToggle( 'settings', next );
+						} }
+					>
+						<Settings />
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody
+						title={ __( 'Performance Details', 'wp-parsely' ) }
+						initialOpen={ settings.PerformanceDetailsOpen }
+						onToggle={ ( next ) => {
+							setSettings( {
+								PerformanceDetailsOpen: next,
+							} );
+							trackToggle( 'performance_details', next );
+						} }
+					>
+						{
+							<VerifyCredentials>
+								<PerformanceDetails
+									period={ settings.SettingsPeriod }
+								/>
+							</VerifyCredentials>
+						}
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody
+						title={ __( 'Related Top Posts', 'wp-parsely' ) }
+						initialOpen={ settings.RelatedTopPostsOpen }
+						onToggle={ ( next ) => {
+							setSettings( {
+								RelatedTopPostsOpen: next,
+							} );
+							trackToggle( 'related_top_posts', next );
+						} }
+					>
+						{
+							<VerifyCredentials>
+								<RelatedTopPostList
+									metric={ settings.SettingsMetric }
+									period={ settings.SettingsPeriod }
+									postData={ postData }
+								/>
+							</VerifyCredentials>
+						}
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody
+						icon={ <BetaBadge /> }
+						title={ __( 'Title Suggestions', 'wp-parsely' ) }
+						initialOpen={ settings.TitleSuggestionsOpen }
+						onToggle={ ( next ) => {
+							setSettings( {
+								TitleSuggestionsOpen: next,
+							} );
+							trackToggle( 'title_suggestions', next );
+						} }
+					>
 						<VerifyCredentials>
-							<PerformanceDetails
-								period={ settings.SettingsPeriod }
-							/>
+							<TitleSuggestionsPanel />
 						</VerifyCredentials>
-					}
-				</PanelBody>
-			</Panel>
-			<Panel>
-				<PanelBody
-					title={ __( 'Related Top Posts', 'wp-parsely' ) }
-					initialOpen={ settings.RelatedTopPostsOpen }
-					onToggle={ ( next ) => {
-						setSettings( {
-							RelatedTopPostsOpen: next,
-						} );
-						trackToggle( 'related_top_posts', next );
-					} }
-				>
-					{
-						<VerifyCredentials>
-							<RelatedTopPostList
-								initialFilter={ {
-									type: settings.RelatedTopPostsFilterBy as PostFilterType,
-									value: settings.RelatedTopPostsFilterValue,
-								} }
-								metric={ settings.SettingsMetric }
-								onFilterChange={ handleRelatedTopPostsFilterChange }
-								period={ settings.SettingsPeriod }
-								postData={ postData }
-							/>
-						</VerifyCredentials>
-					}
-				</PanelBody>
-			</Panel>
-			<Panel>
-				<PanelBody
-					icon={ <BetaBadge /> }
-					title={ __( 'Title Suggestions', 'wp-parsely' ) }
-					initialOpen={ settings.TitleSuggestionsOpen }
-					onToggle={ ( next ) => {
-						setSettings( {
-							TitleSuggestionsOpen: next,
-						} );
-						trackToggle( 'title_suggestions', next );
-					} }
-				>
-					{
-						<VerifyCredentials>
-							<TitleSuggestionsPanel
-								initialPersona={ settings.TitleSuggestionsPersona ?? PARSELY_PERSONAS.journalist.label }
-								initialSettingsOpen={ settings.TitleSuggestionsSettingsOpen ?? false }
-								initialTone={ settings.TitleSuggestionsTone ?? PARSELY_TONES.neutral.label }
-								onSettingChange={ handleSettingChange }
-							/>
-						</VerifyCredentials>
-					}
-				</PanelBody>
-			</Panel>
+					</PanelBody>
+				</Panel>
+			</SettingsProvider>
 		</PluginSidebar>
 	);
 };

@@ -19,7 +19,6 @@ import {
 	DASHBOARD_BASE_URL,
 	Metric,
 	Period,
-	PostFilter,
 } from '../../../src/content-helper/common/utils/constants';
 import {
 	SidebarPostData,
@@ -41,9 +40,7 @@ const postData: SidebarPostData = {
 
 const relatedTopPostList =
 	<RelatedTopPostList
-		initialFilter={ { type: 'tag', value: 'a tag' } as PostFilter }
 		metric={ Metric.Views }
-		onFilterChange={ () => {} }
 		period={ Period.Days7 }
 		postData={ postData }
 	/>
