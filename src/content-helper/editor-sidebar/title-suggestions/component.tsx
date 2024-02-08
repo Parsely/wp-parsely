@@ -27,7 +27,7 @@ import { TitleStore, TitleType } from './store';
  *
  * @return {JSX.Element} The Title Suggestions Panel.
  */
-export const TitleSuggestionsPanel = ( {} ): JSX.Element => {
+export const TitleSuggestionsPanel = (): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ error, setError ] = useState<ContentHelperError>();

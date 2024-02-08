@@ -3,7 +3,7 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 import { dispatch, useSelect } from '@wordpress/data';
-import { createContext, useContext, useEffect, useRef, useState } from '@wordpress/element';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import type { ReactNode } from 'react';
 
 /**
@@ -157,8 +157,13 @@ export const SettingsProvider = ( { children, endpoint, defaultSettings }: Setti
 	 */
 	useSaveSettings( endpoint, settings );
 
+	// Memoize the provider value to avoid unnecessary re-renders.
+	const providerValue = useMemo( () => (
+		{ settings, setSettings: updateSettings }
+	), [ settings, updateSettings ] );
+
 	return (
-		<SettingsContext.Provider value={ { settings, setSettings: updateSettings } }>
+		<SettingsContext.Provider value={ providerValue }>
 			{ children }
 		</SettingsContext.Provider>
 	);
