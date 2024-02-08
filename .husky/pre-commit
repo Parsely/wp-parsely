@@ -1,6 +1,3 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
 npm run lint
 composer cs
 vendor/bin/phpstan analyse --memory-limit=1G
