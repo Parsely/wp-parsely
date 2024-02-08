@@ -3,7 +3,7 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 import { dispatch, useSelect } from '@wordpress/data';
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import type { ReactNode } from 'react';
 
 /**
@@ -133,7 +133,7 @@ export const SettingsProvider = ( { children, endpoint, defaultSettings }: Setti
 	}, [ defaultSettings, endpoint ] );
 
 	// Internal state for storing the settings.
-	const [ settings, setInternalSettings ] = useState<Settings>( storedSettings );
+	const [ internalSettings, setInternalSettings ] = useState<Settings>( storedSettings );
 	const { setPartialSettings } = dispatch( SettingsStore );
 
 	/**
@@ -143,11 +143,10 @@ export const SettingsProvider = ( { children, endpoint, defaultSettings }: Setti
 	 *
 	 * @param {Partial<Settings>} updatedSettings The updated settings.
 	 */
-	const updateSettings = ( updatedSettings: Partial<Settings> ) => {
-		setInternalSettings( { ...settings, ...updatedSettings as Settings } );
-		// Update the settings in the store partially.
+	const updateSettings = useCallback( ( updatedSettings: Partial<Settings> ) => {
+		setInternalSettings( ( currentSettings ) => ( { ...currentSettings, ...updatedSettings } ) );
 		setPartialSettings( endpoint, updatedSettings );
-	};
+	}, [ endpoint, setPartialSettings ] );
 
 	/**
 	 * Saves the settings into the WordPress database whenever a setting change
@@ -155,12 +154,12 @@ export const SettingsProvider = ( { children, endpoint, defaultSettings }: Setti
 	 *
 	 * @since 3.14.0
 	 */
-	useSaveSettings( endpoint, settings );
+	useSaveSettings( endpoint, storedSettings );
 
 	// Memoize the provider value to avoid unnecessary re-renders.
 	const providerValue = useMemo( () => (
-		{ settings, setSettings: updateSettings }
-	), [ settings, updateSettings ] );
+		{ settings: internalSettings, setSettings: updateSettings }
+	), [ internalSettings, updateSettings ] );
 
 	return (
 		<SettingsContext.Provider value={ providerValue }>

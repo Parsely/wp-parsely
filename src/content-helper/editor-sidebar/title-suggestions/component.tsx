@@ -62,7 +62,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	} = useDispatch( TitleStore );
 
 	const onSettingChange = ( key: keyof SidebarSettings, value: string | boolean ) => {
-		setSettings( { ...settings, [ key ]: value } );
+		setSettings( { [ key ]: value } );
 	};
 
 	const currentPostContent = useSelect( ( select ) => {
