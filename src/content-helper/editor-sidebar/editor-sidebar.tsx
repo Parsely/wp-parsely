@@ -340,7 +340,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 		>
 			<SettingsProvider
 				endpoint="editor-sidebar-settings"
-				defaultSettings={ getSettingsFromJson() }
+				defaultSettings={ getSettingsFromJson( window.wpParselyContentHelperSettings ) }
 			>
 				<Panel>
 					<PanelBody
