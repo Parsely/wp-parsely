@@ -79,7 +79,7 @@ export const BlockChangeMonitor = (): null => {
 
 			// Debounce the checkBlocks function to save CPU cycles with the frequent editor updates.
 			const debouncedCheckBlocks = debounce( checkBlocks, debounceInterval );
-			unsubscribe = subscribe( debouncedCheckBlocks );
+			unsubscribe = subscribe( debouncedCheckBlocks, 'core/block-editor' );
 			return unsubscribe;
 		};
 
