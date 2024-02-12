@@ -45,14 +45,18 @@ export const BlockChangeMonitor = (): null => {
 	 * @since 3.14.0 Improved detection by comparing current and previous block states directly.
 	 */
 	useEffect( () => {
-		// Delay the initialization to avoid reacting to the initial block load.
-		const initializationDelay = 2500; // Delay in milliseconds.
 		// Debounce interval to save CPU cycles with the frequent editor updates.
 		const debounceInterval = 1000; // In milliseconds.
 
 		let unsubscribe: () => void;
 		const initialize = () => {
 			let previousBlocks = select( 'core/block-editor' ).getBlocks();
+
+			/**
+			 * Checks if blocks have been added or removed and sends telemetry events accordingly.
+			 *
+			 * @since 3.14.0
+			 */
 			const checkBlocks = () => {
 				const currentBlocks = select( 'core/block-editor' ).getBlocks();
 				const currentBlockIds = currentBlocks.map( ( block ) => block.clientId );
@@ -87,10 +91,27 @@ export const BlockChangeMonitor = (): null => {
 			return unsubscribe;
 		};
 
-		const timeoutId = setTimeout( initialize, initializationDelay );
+		/**
+		 * Checks if the editor is ready to be monitored.
+		 * It waits for the editor to be clean or to have at least one block, and it resolves when it's ready.
+		 *
+		 * @since 3.14.0
+		 */
+		const isEditorReady = async (): Promise<void> => {
+			return new Promise( ( resolve ) => {
+				const unsubscribeEditorReady = subscribe( () => {
+					if ( select( 'core/editor' ).isCleanNewPost() || select( 'core/block-editor' ).getBlockCount() > 0 ) {
+						unsubscribeEditorReady();
+						resolve();
+					}
+				} );
+			} );
+		};
+
+		// Initialize the block change monitor when the editor is ready.
+		isEditorReady().then( initialize );
 
 		return () => {
-			clearTimeout( timeoutId );
 			if ( unsubscribe ) {
 				unsubscribe();
 			}
