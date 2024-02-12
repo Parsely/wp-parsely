@@ -8,7 +8,7 @@ import { select, subscribe } from '@wordpress/data';
  * External dependencies
  */
 // eslint-disable-next-line import/no-extraneous-dependencies
-import debounce from 'lodash.debounce';
+import debounce from 'lodash/debounce';
 
 /**
  * Internal dependencies
@@ -20,11 +20,15 @@ import { Telemetry } from './telemetry';
  * It tracks the addition and removal of blocks that start with the 'wp-parsely/' prefix.
  * This component does not render anything.
  *
+ * @since 3.12.0
+ *
  * @return {null} This component does not render anything.
  */
 export const BlockChangeMonitor = (): null => {
 	/**
 	 * The prefix of the blocks to monitor.
+	 *
+	 * @since 3.12.0
 	 */
 	const parselyBlockPrefix: string = 'wp-parsely/';
 
@@ -42,7 +46,7 @@ export const BlockChangeMonitor = (): null => {
 	 */
 	useEffect( () => {
 		// Delay the initialization to avoid reacting to the initial block load.
-		const initializationDelay = 1000; // Delay in milliseconds.
+		const initializationDelay = 2500; // Delay in milliseconds.
 		// Debounce interval to save CPU cycles with the frequent editor updates.
 		const debounceInterval = 1000; // In milliseconds.
 
