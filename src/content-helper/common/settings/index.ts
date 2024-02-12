@@ -12,13 +12,13 @@ import { SettingsStore, STORE_NAME } from './store';
  * Exports
  */
 export { SettingsProvider, useSettings } from './provider';
-// Export all the settings types
+// Export all the settings types.
 export * from './types';
 
 /**
  * Initializes the settings store.
  *
- * @since 3.13.0
+ * @since 3.14.0
  */
 function initSettings() {
 	// Check if the store is already registered.
