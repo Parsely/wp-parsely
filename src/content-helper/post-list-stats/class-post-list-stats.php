@@ -123,7 +123,7 @@ class Post_List_Stats extends Content_Helper_Feature {
 		if ( ! $this->can_enable_feature(
 			$this->parsely->site_id_is_set(),
 			$this->parsely->api_secret_is_set(),
-			$this->analytics_api->is_user_allowed_to_make_api_call()
+			$this->analytics_api->is_available_to_current_user()
 		) ) {
 			return;
 		}

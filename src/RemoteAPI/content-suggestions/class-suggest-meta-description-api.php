@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\RemoteAPI\ContentSuggestions;
 
+use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Parsely;
 use WP_Error;
 
@@ -23,14 +24,6 @@ use WP_Error;
 class Suggest_Meta_Description_API extends Content_Suggestions_Base_API {
 	protected const ENDPOINT     = '/suggest-meta-description';
 	protected const QUERY_FILTER = 'wp_parsely_suggest_meta_description_endpoint_args';
-
-	/**
-	 * Indicates whether the endpoint is public or protected behind permissions.
-	 *
-	 * @since 3.13.0
-	 * @var bool
-	 */
-	protected $is_public_endpoint = false;
 
 	/**
 	 * Gets the meta description for a given content using the Parse.ly

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\RemoteAPI;
 
+use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Parsely;
 
 /**
@@ -23,10 +24,19 @@ class Analytics_Post_Detail_API extends Base_Endpoint_Remote {
 	protected const QUERY_FILTER = 'wp_parsely_analytics_post_detail_endpoint_args';
 
 	/**
-	 * Indicates whether the endpoint is public or protected behind permissions.
+	 * Returns whether the endpoint is available for access by the current
+	 * user.
 	 *
-	 * @since 3.7.0
-	 * @var bool
+	 * @since 3.14.0
+	 *
+	 * @return bool
 	 */
-	protected $is_public_endpoint = false;
+	public function is_available_to_current_user(): bool {
+		return current_user_can(
+			// phpcs:ignore WordPress.WP.Capabilities.Undetermined
+			$this->apply_capability_filters(
+				Base_Endpoint::DEFAULT_ACCESS_CAPABILITY
+			)
+		);
+	}
 }
