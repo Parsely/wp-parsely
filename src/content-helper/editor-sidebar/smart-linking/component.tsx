@@ -3,7 +3,7 @@
  */
 import { Button, CheckboxControl, Disabled, Notice, PanelRow } from '@wordpress/components';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
 /**
@@ -54,6 +54,7 @@ export const SmartLinkingPanel = ( {
 	context = SmartLinkingPanelContext.Unknown,
 }: Readonly<SmartLinkingPanelProps> ): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
+	const [ hint, setHint ] = useState<string|null>( null );
 
 	/**
 	 * Loads the Smart Linking store.
@@ -160,6 +161,13 @@ export const SmartLinkingPanel = ( {
 			postContent: getEditedPostContent(),
 		};
 	}, [ selectedBlockClientId ] );
+
+	/**
+	 * Resets the hint when the selected block changes.
+	 */
+	useEffect( () => {
+		setHint( null );
+	}, [ selectedBlock ] );
 
 	/**
 	 * Generates smart links for the selected block or the entire post content.
@@ -357,19 +365,17 @@ export const SmartLinkingPanel = ( {
 		<div className="wp-parsely-smart-linking">
 			<PanelRow className={ className }>
 				<div className="wp-parsely-smart-linking-text">
-					{ selectedBlock
-						? __( 'Automatically generate the most relevant links with organic search traffic ' +
-							'in past month for a block of text using the Parse.ly API.', 'wp-parsely' )
-						: __( 'Automatically generate the most relevant links with organic search traffic ' +
-							'in past month for the entire post using the Parse.ly API. You can also select a ' +
-							'specific block to generate smart links for.', 'wp-parsely' ) }
+					{ __(
+						'Automatically insert links to your most relevant, top performing content. ' +
+							'wp-parsely', 'wp-parsely'
+					)	}
+					&nbsp;
+					<a href="https://docs.parse.ly/plugin-content-helper/#h-smart-linking-beta">
+						{ __( 'Learn how Smart Linking works.', 'wp-parsely' ) }
+					</a>
 				</div>
 				{ error && (
-					<Notice
-						status="info"
-						isDismissible={ false }
-						className="wp-parsely-content-helper-error"
-					>
+					<Notice status="info" isDismissible={ false } className="wp-parsely-content-helper-error">
 						{ error.message }
 					</Notice>
 				) }
@@ -385,10 +391,7 @@ export const SmartLinkingPanel = ( {
 						}
 					</Notice>
 				) }
-				<SmartLinkingSettings
-					disabled={ loading }
-					onSettingChange={ onSettingChange }
-				/>
+				<SmartLinkingSettings disabled={ loading } onSettingChange={ onSettingChange } />
 				<div className="wp-parsely-smart-linking-generate">
 					<Button
 						onClick={ generateSmartLinks() }
@@ -398,11 +401,32 @@ export const SmartLinkingPanel = ( {
 					>
 						{ loading ? __( 'Generating…', 'wp-parsely' ) : __( 'Add Smart Links', 'wp-parsely' ) }
 					</Button>
+					{ hint &&
+					<Notice
+						status="warning"
+						isDismissible={ true }
+						onRemove={ () => setHint( null ) }
+						className="wp-parsely-smart-linking-hint"
+					>
+						<strong>{ __( 'Hint:', 'wp-parsely' ) }</strong> { hint }
+					</Notice> }
 					<Disabled isDisabled={ loading }>
 						<CheckboxControl
 							checked={ selectedBlock ? fullContent : true }
 							disabled={ loading }
-							onChange={ selectedBlock ? setFullContent : () => { /* empty */ } }
+							onClick={ () => {
+								if ( ! selectedBlock ) {
+									setHint( __( 'If you want to target a specific block, you should select it on the block editor.',
+										'wp-parsely' ) );
+								}
+							} }
+							onChange={
+								selectedBlock
+									? setFullContent
+									: () => {
+										/* empty */
+									}
+							}
 							label={ __( 'Add smart links for the entire post', 'wp-parsely' ) }
 						/>
 					</Disabled>
