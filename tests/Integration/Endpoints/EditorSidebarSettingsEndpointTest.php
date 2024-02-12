@@ -31,10 +31,6 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @var array<string, mixed>
 	 */
 	protected $default_value = array(
-		'SmartLinkingMaxLinkWords'     => 4,
-		'SmartLinkingMaxLinks'         => 10,
-		'SmartLinkingOpen'             => false,
-		'SmartLinkingSettingsOpen'     => false,
 		'PerformanceDetailsOpen'       => true,
 		'RelatedTopPostsFilterBy'      => 'unavailable',
 		'RelatedTopPostsFilterValue'   => '',
@@ -42,6 +38,10 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 		'SettingsMetric'               => 'views',
 		'SettingsOpen'                 => true,
 		'SettingsPeriod'               => '7d',
+		'SmartLinkingMaxLinkWords'     => 4,
+		'SmartLinkingMaxLinks'         => 10,
+		'SmartLinkingOpen'             => false,
+		'SmartLinkingSettingsOpen'     => false,
 		'TitleSuggestionsOpen'         => false,
 		'TitleSuggestionsPersona'      => 'journalist',
 		'TitleSuggestionsSettingsOpen' => false,
