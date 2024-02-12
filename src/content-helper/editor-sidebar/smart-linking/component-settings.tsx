@@ -12,34 +12,34 @@ import { settings } from '@wordpress/icons';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { OnSettingChangeFunction } from '../editor-sidebar';
-import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './cross-linker';
-import { CrossLinkerStore } from './store';
+import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
+import { SmartLinkingStore } from './store';
 
 /**
- * Defines the props structure for CrossLinkerSettings.
+ * Defines the props structure for SmartLinkingSettings.
  *
  * @since 3.14.0
  */
-type CrossLinkerSettingsProps = {
+type SmartLinkingSettingsProps = {
 	disabled?: boolean;
 	onSettingChange: OnSettingChangeFunction
 };
 
 /**
- * Settings for the Cross Linker.
+ * Settings for the Smart Linking.
  *
  * @since 3.14.0
  *
- * @param {CrossLinkerSettingsProps} props The component's props.
+ * @param {SmartLinkingSettingsProps} props The component's props.
  *
  * @return {JSX.Element} The JSX Element.
  */
-export const CrossLinkerSettings = ( {
+export const SmartLinkingSettings = ( {
 	disabled = false,
 	onSettingChange,
-}: Readonly<CrossLinkerSettingsProps> ): JSX.Element => {
+}: Readonly<SmartLinkingSettingsProps> ): JSX.Element => {
 	/**
-	 * Gets the settings from the Cross Linker store.
+	 * Gets the settings from the Smart Linking store.
 	 *
 	 * @since 3.14.0
 	 */
@@ -48,7 +48,7 @@ export const CrossLinkerSettings = ( {
 		maxLinkWords,
 		settingsOpen,
 	} = useSelect( ( select ) => {
-		const { getMaxLinkWords, getMaxLinks, areSettingsOpen } = select( CrossLinkerStore );
+		const { getMaxLinkWords, getMaxLinks, areSettingsOpen } = select( SmartLinkingStore );
 
 		return {
 			maxLinks: getMaxLinks(),
@@ -61,7 +61,7 @@ export const CrossLinkerSettings = ( {
 		setMaxLinks,
 		setMaxLinkWords,
 		setSettingsOpen,
-	} = useDispatch( CrossLinkerStore );
+	} = useDispatch( SmartLinkingStore );
 
 	/**
 	 * Toggles the settings panel.
@@ -69,10 +69,10 @@ export const CrossLinkerSettings = ( {
 	 * @since 3.14.0
 	 */
 	const toggleSetting = (): void => {
-		onSettingChange( 'CrossLinksSettingsOpen', ! settingsOpen );
+		onSettingChange( 'SmartLinkingSettingsOpen', ! settingsOpen );
 		setSettingsOpen( ! settingsOpen );
 
-		Telemetry.trackEvent( 'cross_linker_ai_settings_toggled', {
+		Telemetry.trackEvent( 'smart_linking_ai_settings_toggled', {
 			is_active: ! settingsOpen,
 		} );
 	};
@@ -82,7 +82,7 @@ export const CrossLinkerSettings = ( {
 			<div className="parsely-panel-settings-header">
 				<LeafIcon size={ 20 } />
 				<BaseControl
-					id="parsely-cross-linker-settings"
+					id="parsely-smart-linking-settings"
 					className="parsely-panel-settings-header-label"
 					label={ __( 'Smart Linking Settings', 'wp-parsely' ) }>
 					<Button
@@ -102,7 +102,7 @@ export const CrossLinkerSettings = ( {
 						initialPosition={ maxLinks }
 						onChange={ ( value ) => {
 							setMaxLinks( value ?? 1 );
-							onSettingChange( 'CrossLinksMaxLinks', value ?? DEFAULT_MAX_LINKS );
+							onSettingChange( 'SmartLinkingMaxLinks', value ?? DEFAULT_MAX_LINKS );
 						} }
 						label={ __( 'Links limit', 'wp-parsely' ) }
 						help={ __( 'The maximum number of smart links to add in the content.', 'wp-parsely' ) }
@@ -115,7 +115,7 @@ export const CrossLinkerSettings = ( {
 						initialPosition={ maxLinkWords }
 						onChange={ ( value ) => {
 							setMaxLinkWords( value ?? 1 );
-							onSettingChange( 'CrossLinksMaxLinkWords', value ?? DEFAULT_MAX_LINK_WORDS );
+							onSettingChange( 'SmartLinkingMaxLinkWords', value ?? DEFAULT_MAX_LINK_WORDS );
 						} }
 						label={ __( 'Link length', 'wp-parsely' ) }
 						help={ __( 'The maximum length (in words) for the smart link.', 'wp-parsely' ) }

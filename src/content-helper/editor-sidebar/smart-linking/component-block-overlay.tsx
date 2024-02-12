@@ -9,7 +9,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { CrossLinkerStore } from './store';
+import { SmartLinkingStore } from './store';
 
 /**
  * Defines the props structure for BlockOverlay.
@@ -116,7 +116,7 @@ export const BlockOverlay = ( {
 };
 
 /**
- * Draws the multiple block overlays that are currently stored in the Cross Linker store.
+ * Draws the multiple block overlays that are currently stored in the Smart Linking store.
  *
  * @since 3.14.0
  *
@@ -124,7 +124,7 @@ export const BlockOverlay = ( {
  */
 export const BlockOverlayContainer = ( ): JSX.Element => {
 	const { overlayBlocks } = useSelect( ( select ) => {
-		const { getOverlayBlocks } = select( CrossLinkerStore );
+		const { getOverlayBlocks } = select( SmartLinkingStore );
 
 		return {
 			overlayBlocks: getOverlayBlocks(),
@@ -135,7 +135,7 @@ export const BlockOverlayContainer = ( ): JSX.Element => {
 		<>
 			{ overlayBlocks.map( ( blockId ) => (
 				<BlockOverlay
-					label={ __( 'Generating cross links…', 'wp-parsely' ) }
+					label={ __( 'Generating Smart Links…', 'wp-parsely' ) }
 					selectedBlockClientId={ blockId }
 					key={ blockId }
 				/>

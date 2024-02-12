@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace Parsely;
 
-use Parsely\Content_Helper\Cross_Linker;
 use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Content_Helper\Editor_Sidebar;
 use Parsely\Content_Helper\Excerpt_Generator;

@@ -12,51 +12,51 @@ import { __, sprintf } from '@wordpress/i18n';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { SidebarSettings, useSettings } from '../../common/settings';
-import { CrossLinkerSettings } from './component-settings';
-import { CrossLinkerProvider, LinkSuggestion } from './provider';
-import { CrossLinkerSettingsProps, CrossLinkerStore } from './store';
+import { SmartLinkingSettings } from './component-settings';
+import { SmartLinkingProvider, LinkSuggestion } from './provider';
+import { SmartLinkingSettingsProps, SmartLinkingStore } from './store';
 import { escapeRegExp, replaceNthOccurrence } from './utils';
 
 /**
- * Defines the props structure for CrossLinkerPanel.
+ * Defines the props structure for SmartLinkingPanel.
  *
  * @since 3.14.0
  */
-type CrossLinkerPanelProps = {
+type SmartLinkingPanelProps = {
 	className?: string;
 	selectedBlockClientId?: string;
-	context?: CrossLinkerPanelContext;
+	context?: SmartLinkingPanelContext;
 }
 
 /**
- * Defines the possible contexts in which the Cross Linker panel can be used.
+ * Defines the possible contexts in which the Smart Linking panel can be used.
  *
  * @since 3.14.0
  */
-export enum CrossLinkerPanelContext {
+export enum SmartLinkingPanelContext {
 	Unknown = 'unknown',
 	ContentHelperSidebar = 'content_helper_sidebar',
 	BlockInspector = 'block_inspector',
 }
 
 /**
- * Cross Linker Panel.
+ * Smart Linking Panel.
  *
  * @since 3.14.0
  *
- * @param { Readonly<CrossLinkerPanelProps> } props The component's props.
+ * @param { Readonly<SmartLinkingPanelProps> } props The component's props.
  *
  * @return { JSX.Element } The JSX Element.
  */
-export const CrossLinkerPanel = ( {
+export const SmartLinkingPanel = ( {
 	className,
 	selectedBlockClientId,
-	context = CrossLinkerPanelContext.Unknown,
-}: Readonly<CrossLinkerPanelProps> ): JSX.Element => {
+	context = SmartLinkingPanelContext.Unknown,
+}: Readonly<SmartLinkingPanelProps> ): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	/**
-	 * Loads the Cross Linker store.
+	 * Loads the Smart Linking store.
 	 *
 	 * @since 3.14.0
 	 */
@@ -68,7 +68,7 @@ export const CrossLinkerPanel = ( {
 		suggestedLinks,
 		maxLinks,
 		maxLinkWords,
-		crossLinkerSettings,
+		smartLinkingSettings,
 	} = useSelect( ( selectFn ) => {
 		const {
 			isLoading,
@@ -78,8 +78,8 @@ export const CrossLinkerPanel = ( {
 			isFullContent,
 			getMaxLinks,
 			getMaxLinkWords,
-			getCrossLinkerSettings,
-		} = selectFn( CrossLinkerStore );
+			getSmartLinkingSettings,
+		} = selectFn( SmartLinkingStore );
 		return {
 			loading: isLoading(),
 			error: getError(),
@@ -88,12 +88,12 @@ export const CrossLinkerPanel = ( {
 			fullContent: isFullContent(),
 			overlayBlocks: getOverlayBlocks(),
 			suggestedLinks: getSuggestedLinks(),
-			crossLinkerSettings: getCrossLinkerSettings(),
+			smartLinkingSettings: getSmartLinkingSettings(),
 		};
 	}, [] );
 
 	/**
-	 * Loads the Cross Linker store actions.
+	 * Loads the Smart Linking store actions.
 	 *
 	 * @since 3.14.0
 	 */
@@ -104,13 +104,13 @@ export const CrossLinkerPanel = ( {
 		setSuggestedLinks,
 		addOverlayBlock,
 		removeOverlayBlock,
-		setCrossLinkerSettings,
-	} = useDispatch( CrossLinkerStore );
+		setSmartLinkingSettings,
+	} = useDispatch( SmartLinkingStore );
 
 	/**
 	 * Handles the change of a setting.
 	 *
-	 * Updates the settings in the Cross Linker store and the Settings Context.
+	 * Updates the settings in the Smart Linking store and the Settings Context.
 	 *
 	 * @since 3.14.0
 	 *
@@ -119,29 +119,29 @@ export const CrossLinkerPanel = ( {
 	 */
 	const onSettingChange = ( setting: keyof SidebarSettings, value: string|boolean|number ): void => {
 		setSettings( { [ setting ]: value } );
-		setCrossLinkerSettings( { [ setting ]: value } );
+		setSmartLinkingSettings( { [ setting ]: value } );
 	};
 
 	/**
-	 * Loads and prepares the Cross Linker settings from the Settings Context,
+	 * Loads and prepares the Smart Linking settings from the Settings Context,
 	 * if they are not already loaded.
 	 *
 	 * @since 3.14.0
 	 */
 	useEffect( () => {
-		// If the crossLinkerSettings are not empty object, return early.
-		if ( Object.keys( crossLinkerSettings ).length > 0 ) {
+		// If the smartLinkingSettings are not empty object, return early.
+		if ( Object.keys( smartLinkingSettings ).length > 0 ) {
 			return;
 		}
 
-		// Load the settings from the WordPress database and store them in the Cross Linker store.
-		const newCrossLinkerSettings: CrossLinkerSettingsProps = {
-			maxLinksPerPost: settings.CrossLinksMaxLinks,
-			maxLinkWords: settings.CrossLinksMaxLinkWords,
-			settingsOpen: settings.CrossLinksSettingsOpen,
+		// Load the settings from the WordPress database and store them in the Smart Linking store.
+		const newSmartLinkingSettings: SmartLinkingSettingsProps = {
+			maxLinksPerPost: settings.SmartLinkingMaxLinks,
+			maxLinkWords: settings.SmartLinkingMaxLinkWords,
+			settingsOpen: settings.SmartLinkingSettingsOpen,
 		};
-		setCrossLinkerSettings( newCrossLinkerSettings );
-	}, [ setCrossLinkerSettings, settings ] ); // eslint-disable-line react-hooks/exhaustive-deps
+		setSmartLinkingSettings( newSmartLinkingSettings );
+	}, [ setSmartLinkingSettings, settings ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	/**
 	 * Loads the selected block and post content.
@@ -162,16 +162,16 @@ export const CrossLinkerPanel = ( {
 	}, [ selectedBlockClientId ] );
 
 	/**
-	 * Generates cross-links for the selected block or the entire post content.
+	 * Generates smart links for the selected block or the entire post content.
 	 *
 	 * @since 3.14.0
 	 */
-	const generateCrossLinks = () => async (): Promise<void> => {
+	const generateSmartLinks = () => async (): Promise<void> => {
 		await setLoading( true );
 		await setSuggestedLinks( null );
 		await setError( null );
 
-		Telemetry.trackEvent( 'cross_linker_generate_pressed', {
+		Telemetry.trackEvent( 'smart_linking_generate_pressed', {
 			is_full_content: fullContent,
 			selected_block: selectedBlock?.name ?? 'none',
 			context,
@@ -183,7 +183,7 @@ export const CrossLinkerPanel = ( {
 		// After 60 seconds without a response, timeout and remove any overlay.
 		const timeout = setTimeout( () => {
 			setLoading( false );
-			Telemetry.trackEvent( 'cross_linker_generate_timeout', {
+			Telemetry.trackEvent( 'smart_linking_generate_timeout', {
 				is_full_content: fullContent,
 				selected_block: selectedBlock?.name ?? 'none',
 				context,
@@ -197,20 +197,20 @@ export const CrossLinkerPanel = ( {
 			const generatingFullContent = fullContent || ! selectedBlock;
 			let generatedLinks = [];
 			if ( selectedBlock?.originalContent && ! generatingFullContent ) {
-				generatedLinks = await CrossLinkerProvider.generateCrossLinks(
+				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
 					selectedBlock?.originalContent,
 					maxLinkWords,
 					maxLinks
 				);
 			} else {
-				generatedLinks = await CrossLinkerProvider.generateCrossLinks(
+				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
 					postContent,
 					maxLinkWords,
 					maxLinks
 				);
 			}
 			await setSuggestedLinks( generatedLinks );
-			applyCrossLinks( generatedLinks );
+			applySmartLinks( generatedLinks );
 		} catch ( e: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			setError( e );
 		} finally {
@@ -221,14 +221,14 @@ export const CrossLinkerPanel = ( {
 	};
 
 	/**
-	 * Applies the cross-links to the selected block or the entire post content.
+	 * Applies the smart links to the selected block or the entire post content.
 	 *
 	 * @since 3.14.0
 	 *
-	 * @param {LinkSuggestion[]} links The cross-links to apply.
+	 * @param {LinkSuggestion[]} links The smart links to apply.
 	 */
-	const applyCrossLinks = ( links: LinkSuggestion[] ): void => {
-		Telemetry.trackEvent( 'cross_linker_applied', {
+	const applySmartLinks = ( links: LinkSuggestion[] ): void => {
+		Telemetry.trackEvent( 'smart_linking_applied', {
 			is_full_content: fullContent,
 			selected_block: selectedBlock?.name ?? 'none',
 			links_count: links.length,
@@ -305,7 +305,7 @@ export const CrossLinkerPanel = ( {
 		await removeOverlayBlock( clientId );
 
 		// Select a block after removing the overlay, only if we're using the block inspector.
-		if ( context === CrossLinkerPanelContext.BlockInspector ) {
+		if ( context === SmartLinkingPanelContext.BlockInspector ) {
 			if ( 'all' !== clientId && ! fullContent ) {
 				dispatch( 'core/block-editor' ).selectBlock( clientId );
 			} else {
@@ -354,15 +354,15 @@ export const CrossLinkerPanel = ( {
 	};
 
 	return (
-		<div className="wp-parsely-cross-linker">
+		<div className="wp-parsely-smart-linking">
 			<PanelRow className={ className }>
-				<div className="wp-parsely-cross-linker-text">
+				<div className="wp-parsely-smart-linking-text">
 					{ selectedBlock
 						? __( 'Automatically generate the most relevant links with organic search traffic ' +
 							'in past month for a block of text using the Parse.ly API.', 'wp-parsely' )
 						: __( 'Automatically generate the most relevant links with organic search traffic ' +
 							'in past month for the entire post using the Parse.ly API. You can also select a ' +
-							'specific block to generate cross links for.', 'wp-parsely' ) }
+							'specific block to generate smart links for.', 'wp-parsely' ) }
 				</div>
 				{ error && (
 					<Notice
@@ -377,21 +377,21 @@ export const CrossLinkerPanel = ( {
 					<Notice
 						status="success"
 						isDismissible={ false }
-						className="wp-parsely-cross-linker-suggested-links"
+						className="wp-parsely-smart-linking-suggested-links"
 					>
 						{
-							/* translators: 1 - number of cross links generated */
+							/* translators: 1 - number of smart links generated */
 							sprintf( __( 'Successfully added %s smart links.', 'wp-parsely' ), suggestedLinks.length )
 						}
 					</Notice>
 				) }
-				<CrossLinkerSettings
+				<SmartLinkingSettings
 					disabled={ loading }
 					onSettingChange={ onSettingChange }
 				/>
-				<div className="wp-parsely-cross-linker-generate">
+				<div className="wp-parsely-smart-linking-generate">
 					<Button
-						onClick={ generateCrossLinks() }
+						onClick={ generateSmartLinks() }
 						variant="primary"
 						isBusy={ loading }
 						disabled={ loading }

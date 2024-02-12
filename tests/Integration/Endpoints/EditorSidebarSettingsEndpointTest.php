@@ -31,10 +31,10 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @var array<string, mixed>
 	 */
 	protected $default_value = array(
-		'CrossLinksMaxLinkWords'       => 4,
-		'CrossLinksMaxLinks'           => 10,
-		'CrossLinksOpen'               => false,
-		'CrossLinksSettingsOpen'       => false,
+		'SmartLinkingMaxLinkWords'     => 4,
+		'SmartLinkingMaxLinks'         => 10,
+		'SmartLinkingOpen'             => false,
+		'SmartLinkingSettingsOpen'     => false,
 		'PerformanceDetailsOpen'       => true,
 		'RelatedTopPostsFilterBy'      => 'unavailable',
 		'RelatedTopPostsFilterValue'   => '',

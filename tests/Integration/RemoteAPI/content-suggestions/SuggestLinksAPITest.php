@@ -118,7 +118,7 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 	}
 
 	/**
-	 * Tests getting cross-links suggestions from the API.
+	 * Tests getting smart links suggestions from the API.
 	 *
 	 * @since 3.14.0
 	 *

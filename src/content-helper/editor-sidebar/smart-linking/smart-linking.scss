@@ -51,17 +51,17 @@
 	}
 }
 
-.wp-parsely-cross-linker {
+.wp-parsely-smart-linking {
 
 	.components-panel__row {
 		flex-direction: column;
 	}
 
-	.wp-parsely-cross-linker-text {
+	.wp-parsely-smart-linking-text {
 		margin-bottom: to_rem(10px);
 	}
 
-	.wp-parsely-cross-linker-generate {
+	.wp-parsely-smart-linking-generate {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -89,7 +89,7 @@
 		}
 	}
 
-	.wp-parsely-cross-linker-suggested-links {
+	.wp-parsely-smart-linking-suggested-links {
 		margin: 0;
 	}
 }

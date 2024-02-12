@@ -3,27 +3,27 @@
  */
 import { createReduxStore, register } from '@wordpress/data';
 import { ContentHelperError } from '../../common/content-helper-error';
-import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './cross-linker';
+import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
 
 /**
  * Internal dependencies
  */
 import { LinkSuggestion } from './provider';
 
-export type CrossLinkerSettingsProps = {
+export type SmartLinkingSettingsProps = {
 	settingsOpen?: boolean;
 	maxLinkWords?: number;
 	maxLinksPerPost?: number;
 };
 
 /**
- * The shape of the CrossLinker store state.
+ * The shape of the SmartLinking store state.
  */
-type CrossLinkerState = {
+type SmartLinkingState = {
 	isLoading: boolean;
 	fullContent: boolean;
 	error: ContentHelperError | null;
-	settings: CrossLinkerSettingsProps;
+	settings: SmartLinkingSettingsProps;
 	suggestedLinks: LinkSuggestion[] | null;
 	overlayBlocks: string[];
 };
@@ -61,7 +61,7 @@ interface SetFullContentAction {
 
 interface SetSettingsAction {
 	type: 'SET_SETTINGS';
-	settings: CrossLinkerSettingsProps;
+	settings: SmartLinkingSettingsProps;
 }
 
 interface SetSuggestedLinksAction {
@@ -73,7 +73,7 @@ type ActionTypes = SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction
 	AddOverlayBlockAction | RemoveOverlayBlockAction |SetFullContentAction |
 	SetSuggestedLinksAction | SetErrorAction;
 
-const defaultState: CrossLinkerState = {
+const defaultState: SmartLinkingState = {
 	isLoading: false,
 	fullContent: false,
 	suggestedLinks: null,
@@ -83,13 +83,13 @@ const defaultState: CrossLinkerState = {
 };
 
 /**
- * The CrossLinker store.
+ * The SmartLinking store.
  *
  * @since 3.14.0
  */
-export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
+export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 	initialState: defaultState,
-	reducer( state: CrossLinkerState = defaultState, action: ActionTypes ): CrossLinkerState {
+	reducer( state: SmartLinkingState = defaultState, action: ActionTypes ): SmartLinkingState {
 		switch ( action.type ) {
 			case 'SET_LOADING':
 				return {
@@ -182,7 +182,7 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 				fullContent,
 			};
 		},
-		setCrossLinkerSettings( settings: CrossLinkerSettingsProps ): SetSettingsAction {
+		setSmartLinkingSettings( settings: SmartLinkingSettingsProps ): SetSettingsAction {
 			return {
 				type: 'SET_SETTINGS',
 				settings,
@@ -220,34 +220,34 @@ export const CrossLinkerStore = createReduxStore( 'wp-parsely/cross-linker', {
 		},
 	},
 	selectors: {
-		isLoading( state: CrossLinkerState ): boolean {
+		isLoading( state: SmartLinkingState ): boolean {
 			return state.isLoading;
 		},
-		isFullContent( state: CrossLinkerState ): boolean {
+		isFullContent( state: SmartLinkingState ): boolean {
 			return state.fullContent;
 		},
-		getError( state: CrossLinkerState ): ContentHelperError | null {
+		getError( state: SmartLinkingState ): ContentHelperError | null {
 			return state.error;
 		},
-		getCrossLinkerSettings( state: CrossLinkerState ): CrossLinkerSettingsProps {
+		getSmartLinkingSettings( state: SmartLinkingState ): SmartLinkingSettingsProps {
 			return state.settings;
 		},
-		getOverlayBlocks( state: CrossLinkerState ): string[] {
+		getOverlayBlocks( state: SmartLinkingState ): string[] {
 			return state.overlayBlocks;
 		},
-		areSettingsOpen( state: CrossLinkerState ): boolean {
+		areSettingsOpen( state: SmartLinkingState ): boolean {
 			return state.settings.settingsOpen ?? false;
 		},
-		getMaxLinkWords( state: CrossLinkerState ): number {
+		getMaxLinkWords( state: SmartLinkingState ): number {
 			return state.settings.maxLinkWords ?? DEFAULT_MAX_LINK_WORDS;
 		},
-		getMaxLinks( state: CrossLinkerState ): number {
+		getMaxLinks( state: SmartLinkingState ): number {
 			return state.settings.maxLinksPerPost ?? DEFAULT_MAX_LINKS;
 		},
-		getSuggestedLinks( state: CrossLinkerState ): LinkSuggestion[] | null {
+		getSuggestedLinks( state: SmartLinkingState ): LinkSuggestion[] | null {
 			return state.suggestedLinks;
 		},
 	},
 } );
 
-register( CrossLinkerStore );
+register( SmartLinkingStore );

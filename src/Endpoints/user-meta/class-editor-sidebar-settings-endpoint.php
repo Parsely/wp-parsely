@@ -41,19 +41,19 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 	 */
 	protected function get_subvalues_specs(): array {
 		return array(
-			'CrossLinksMaxLinkWords'       => array(
+			'SmartLinkingMaxLinkWords'     => array(
 				'values'  => array(),
 				'default' => 4,
 			),
-			'CrossLinksMaxLinks'           => array(
+			'SmartLinkingMaxLinks'         => array(
 				'values'  => array(),
 				'default' => 10,
 			),
-			'CrossLinksOpen'               => array(
+			'SmartLinkingOpen'             => array(
 				'values'  => array( true, false ),
 				'default' => false,
 			),
-			'CrossLinksSettingsOpen'       => array(
+			'SmartLinkingSettingsOpen'     => array(
 				'values'  => array( true, false ),
 				'default' => false,
 			),

@@ -29,8 +29,8 @@ import {
 	isInEnum,
 } from '../common/utils/constants';
 import { VerifyCredentials } from '../common/verify-credentials';
-import { CrossLinkerPanel, CrossLinkerPanelContext } from './cross-linker/component';
-import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS, initCrossLinker } from './cross-linker/cross-linker';
+import { SmartLinkingPanel, SmartLinkingPanelContext } from './smart-linking/component';
+import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS, initSmartLinking } from './smart-linking/smart-linking';
 import { PerformanceDetails } from './performance-details/component';
 import { RelatedTopPostList } from './related-top-posts/component-list';
 import { TitleSuggestionsPanel } from './title-suggestions/component';
@@ -89,10 +89,10 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	} catch ( e ) {
 		// Return defaults when parsing failed or the string is empty.
 		return {
-			CrossLinksMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
-			CrossLinksMaxLinks: DEFAULT_MAX_LINKS,
-			CrossLinksOpen: false,
-			CrossLinksSettingsOpen: false,
+			SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
+			SmartLinkingMaxLinks: DEFAULT_MAX_LINKS,
+			SmartLinkingOpen: false,
+			SmartLinkingSettingsOpen: false,
 			PerformanceDetailsOpen: true,
 			RelatedTopPostsFilterBy: PostFilterType.Unavailable,
 			RelatedTopPostsFilterValue: '',
@@ -108,17 +108,17 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 
 	// Fix invalid values if any are found.
-	if ( typeof parsedSettings?.CrossLinksMaxLinkWords !== 'number' ) {
-		parsedSettings.CrossLinksMaxLinkWords = DEFAULT_MAX_LINK_WORDS;
+	if ( typeof parsedSettings?.SmartLinkingMaxLinkWords !== 'number' ) {
+		parsedSettings.SmartLinkingMaxLinkWords = DEFAULT_MAX_LINK_WORDS;
 	}
-	if ( typeof parsedSettings?.CrossLinksMaxLinks !== 'number' ) {
-		parsedSettings.CrossLinksMaxLinks = DEFAULT_MAX_LINKS;
+	if ( typeof parsedSettings?.SmartLinkingMaxLinks !== 'number' ) {
+		parsedSettings.SmartLinkingMaxLinks = DEFAULT_MAX_LINKS;
 	}
-	if ( typeof parsedSettings?.CrossLinksOpen !== 'boolean' ) {
-		parsedSettings.CrossLinksOpen = false;
+	if ( typeof parsedSettings?.SmartLinkingOpen !== 'boolean' ) {
+		parsedSettings.SmartLinkingOpen = false;
 	}
-	if ( typeof parsedSettings?.CrossLinksSettingsOpen !== 'boolean' ) {
-		parsedSettings.CrossLinksSettingsOpen = false;
+	if ( typeof parsedSettings?.SmartLinkingSettingsOpen !== 'boolean' ) {
+		parsedSettings.SmartLinkingSettingsOpen = false;
 	}
 	if ( typeof parsedSettings?.PerformanceDetailsOpen !== 'boolean' ) {
 		parsedSettings.PerformanceDetailsOpen = true;
@@ -417,17 +417,17 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					<PanelBody
 						icon={ <BetaBadge /> }
 						title={ __( 'Smart Linking', 'wp-parsely' ) }
-						initialOpen={ settings.CrossLinksOpen }
+						initialOpen={ settings.SmartLinkingOpen }
 						onToggle={ ( next ) => {
 							setSettings( {
-								CrossLinksOpen: next,
+								SmartLinkingOpen: next,
 							} );
-							trackToggle( 'cross_links', next );
+							trackToggle( 'smart_linking', next );
 						} }
 					>
 						<VerifyCredentials>
-							<CrossLinkerPanel
-								context={ CrossLinkerPanelContext.ContentHelperSidebar }
+							<SmartLinkingPanel
+								context={ SmartLinkingPanelContext.ContentHelperSidebar }
 							/>
 						</VerifyCredentials>
 					</PanelBody>
@@ -447,5 +447,5 @@ registerPlugin( BLOCK_PLUGIN_ID, {
 	),
 } );
 
-// Initialize cross linker.
-initCrossLinker();
+// Initialize Smart Linking.
+initSmartLinking();

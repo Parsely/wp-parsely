@@ -8,7 +8,7 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { ContentHelperError, ContentHelperErrorCode } from '../../common/content-helper-error';
-import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './cross-linker';
+import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
 
 /**
  * Structure of a link suggestion returned by the
@@ -29,7 +29,7 @@ export type LinkSuggestion = {
  *
  * @since 3.14.0
  */
-interface CrossLinkerApiResponse {
+interface SmartLinkingApiResponse {
 	error?: Error;
 	data: LinkSuggestion[];
 }
@@ -40,7 +40,7 @@ interface CrossLinkerApiResponse {
  *
  * @since 3.14.0
  */
-export class CrossLinkerProvider {
+export class SmartLinkingProvider {
 	/**
 	 * Returns a list of suggested links for the given content.
 	 *
@@ -50,7 +50,7 @@ export class CrossLinkerProvider {
 	 *
 	 * @return {Promise<LinkSuggestion[]>} The resulting list of links.
 	 */
-	static async generateCrossLinks(
+	static async generateSmartLinks(
 		content: string,
 		maxLinkWords: number = DEFAULT_MAX_LINK_WORDS,
 		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
@@ -58,7 +58,7 @@ export class CrossLinkerProvider {
 		let response;
 
 		try {
-			response = await apiFetch<CrossLinkerApiResponse>( {
+			response = await apiFetch<SmartLinkingApiResponse>( {
 				method: 'POST',
 				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-links', {
 					max_link_words: maxLinkWords,

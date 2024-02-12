@@ -6,10 +6,10 @@ import { Metric, Period } from '../../utils/constants';
  * @since 3.13.0
  */
 export interface SidebarSettings {
-	CrossLinksMaxLinkWords: number;
-	CrossLinksMaxLinks: number;
-	CrossLinksOpen: boolean;
-	CrossLinksSettingsOpen: boolean;
+	SmartLinkingMaxLinkWords: number;
+	SmartLinkingMaxLinks: number;
+	SmartLinkingOpen: boolean;
+	SmartLinkingSettingsOpen: boolean;
 	PerformanceDetailsOpen: boolean;
 	RelatedTopPostsFilterBy: string;
 	RelatedTopPostsFilterValue: string;

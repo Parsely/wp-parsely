@@ -35,7 +35,7 @@ class Suggest_Links_API extends Content_Suggestions_Base_API {
 	protected $is_public_endpoint = false;
 
 	/**
-	 * Gets suggested cross-links for the given content.
+	 * Gets suggested smart links for the given content.
 	 *
 	 * @since 3.14.0
 	 *

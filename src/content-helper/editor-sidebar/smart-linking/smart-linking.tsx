@@ -16,9 +16,9 @@ import { LeafIcon } from '../../common/icons/leaf-icon';
 import { SettingsProvider, SidebarSettings, useSettings } from '../../common/settings';
 import { VerifyCredentials } from '../../common/verify-credentials';
 import { getSettingsFromJson } from '../editor-sidebar';
-import { CrossLinkerPanel, CrossLinkerPanelContext } from './component';
+import { SmartLinkingPanel, SmartLinkingPanelContext } from './component';
 import { BlockOverlayContainer } from './component-block-overlay';
-import './cross-linker.scss';
+import './smart-linking.scss';
 
 export const DEFAULT_MAX_LINKS = 10;
 
@@ -26,7 +26,7 @@ export const DEFAULT_MAX_LINK_WORDS = 4;
 
 /**
  * Higher order component to add the settings provider to the block edit component.
- * This is required to provide the settings to the cross linker panel.
+ * This is required to provide the settings to the smart linking panel.
  *
  * @since 3.14.0
  */
@@ -48,11 +48,11 @@ const withSettingsProvider = createHigherOrderComponent( ( BlockEdit ) => {
 }, 'withSettingsProvider' );
 
 /**
- * Cross linker inspector control panel component.
+ * Smart linking inspector control panel component.
  *
  * @since 3.14.0
  */
-const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit ) => {
+const SmartLinkingInspectorControlPanel = createHigherOrderComponent( ( BlockEdit ) => {
 	return ( props ) => {
 		if ( ! props.isSelected || props.name !== 'core/paragraph' ) {
 			return <BlockEdit { ...props } />;
@@ -66,18 +66,18 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 				<InspectorControls group="list">
 					<PanelBody
 						title="Smart Linking"
-						initialOpen={ settings.CrossLinksOpen }
+						initialOpen={ settings.SmartLinkingOpen }
 						className="wp-parsely-panel wp-parsely-smart-linking-panel"
 						icon={ <><LeafIcon /> <BetaBadge /></> }
 						onToggle={ ( next ) => {
-							setSettings( { CrossLinksOpen: next } );
-							Telemetry.trackEvent( 'cross_linker_block_inspector_panel_toggled', { open: next } );
+							setSettings( { SmartLinkingOpen: next } );
+							Telemetry.trackEvent( 'smart_linking_block_inspector_panel_toggled', { open: next } );
 						} }
 					>
 						<VerifyCredentials>
-							<CrossLinkerPanel
+							<SmartLinkingPanel
 								selectedBlockClientId={ props.clientId }
-								context={ CrossLinkerPanelContext.BlockInspector }
+								context={ SmartLinkingPanelContext.BlockInspector }
 							/>
 						</VerifyCredentials>
 					</PanelBody>
@@ -85,33 +85,33 @@ const CrossLinkerInspectorControlPanel = createHigherOrderComponent( ( BlockEdit
 			</>
 		);
 	};
-}, 'withCrossLinkerPanel' );
+}, 'withSmartLinkingPanel' );
 
 /**
- * The cross linker panel with settings provider.
+ * The smart linking panel with settings provider.
  * This is the final component that is added to the block inspector.
  *
  * @since 3.14.0
  */
-const CrossLinkerPanelWithSettingsProvider = compose(
+const SmartLinkingPanelWithSettingsProvider = compose(
 	withSettingsProvider,
-	CrossLinkerInspectorControlPanel
+	SmartLinkingInspectorControlPanel
 );
 
 /**
- * Initializes the cross linker, by adding the cross linker panel to the paragraph block.
+ * Initializes the smart linking, by adding the smart linking panel to the paragraph block.
  * Also registers the block overlay container.
  *
  * @since 3.14.0
  */
-export const initCrossLinker = (): void => {
+export const initSmartLinking = (): void => {
 	/**
-	 * Add cross linker inspector control panel to paragraph block.
+	 * Add smart linking inspector control panel to paragraph block.
 	 */
 	addFilter(
 		'editor.BlockEdit',
-		'wpparsely/cross-linker-inspector-control-panel',
-		CrossLinkerPanelWithSettingsProvider
+		'wpparsely/smart-linking-inspector-control-panel',
+		SmartLinkingPanelWithSettingsProvider
 	);
 
 	/**
