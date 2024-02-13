@@ -212,7 +212,7 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 			$array['SettingsPeriod'] = $settings_period;
 		}
 
-		ksort( $array );
+		ksort( $array, SORT_NATURAL | SORT_FLAG_CASE );
 
 		return $this->wp_json_encode( array_merge( $array, $extra_data ) );
 	}
