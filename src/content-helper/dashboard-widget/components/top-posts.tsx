@@ -10,8 +10,8 @@ import { __, sprintf } from '@wordpress/i18n';
  */
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { ContentHelperError } from '../../common/content-helper-error';
-import { useSaveSettings } from '../../common/hooks/useSaveSettings';
 import { Select } from '../../common/select';
+import { TopPostsSettings, useSettings } from '../../common/settings';
 import {
 	Metric,
 	Period,
@@ -26,72 +26,16 @@ import { TopPostListItem } from './top-posts-list-item';
 const FETCH_RETRIES = 1;
 
 /**
- * Defines the settings structure for the TopPosts component.
- *
- * @since 3.13.0
- */
-export interface TopPostsSettings {
-	Metric: Metric;
-	Period: Period;
-}
-
-/**
- * Gets the settings from the passed JSON.
- *
- * If missing settings or invalid values are detected, they get set to their
- * defaults.
- *
- * @since 3.13.0
- *
- * @param {string} settingsJson The JSON containing the settings.
- *
- * @return {TopPostsSettings} The resulting settings object.
- */
-const getSettingsFromJson = ( settingsJson: string ): TopPostsSettings => {
-	let parsedSettings: TopPostsSettings;
-
-	try {
-		parsedSettings = JSON.parse( settingsJson );
-	} catch ( e ) {
-		// Return defaults when parsing failed or the string is empty.
-		return {
-			Metric: Metric.Views,
-			Period: Period.Days7,
-		};
-	}
-
-	// Fix invalid values if any are found.
-	if ( ! isInEnum( parsedSettings?.Metric, Metric ) ) {
-		parsedSettings.Metric = Metric.Views;
-	}
-	if ( ! isInEnum( parsedSettings?.Period, Period ) ) {
-		parsedSettings.Period = Period.Days7;
-	}
-
-	return parsedSettings;
-};
-
-/**
  * List of the top posts.
  *
  * @since 3.7.0
  */
 export function TopPosts(): JSX.Element {
-	const [ settings, setSettings ] = useState<TopPostsSettings>(
-		getSettingsFromJson( window.wpParselyContentHelperSettings )
-	);
+	const { settings, setSettings } = useSettings<TopPostsSettings>();
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ posts, setPosts ] = useState<PostData[]>( [] );
 	const [ page, setPage ] = useState<number>( 1 );
-
-	/**
-	 * Saves the settings into the WordPress database whenever a setting change
-	 * occurs.
-	 *
-	 * @since 3.13.0
-	 */
-	useSaveSettings( 'dashboard-widget-settings', settings );
 
 	/**
 	 * Fetches the top posts.
@@ -152,7 +96,6 @@ export function TopPosts(): JSX.Element {
 				onChange={ ( event ) => {
 					if ( isInEnum( event.target.value, Period ) ) {
 						setSettings( {
-							...settings,
 							Period: event.target.value as Period,
 						} );
 						trackFilterChanges( 'period', { period: event.target.value } );
@@ -170,7 +113,6 @@ export function TopPosts(): JSX.Element {
 				onChange={ ( event ) => {
 					if ( isInEnum( event.target.value, Metric ) ) {
 						setSettings( {
-							...settings,
 							Metric: event.target.value as Metric,
 						} );
 						trackFilterChanges( 'metric', { metric: event.target.value } );

@@ -13,7 +13,7 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
 import { PersonaProp, PersonaSelector, getPersonaLabel } from '../../common/components/persona-selector';
 import { ToneProp, ToneSelector, getToneLabel } from '../../common/components/tone-selector';
 import { LeafIcon } from '../../common/icons/leaf-icon';
-import { SidebarSettings } from '../editor-sidebar';
+import { SidebarSettings } from '../../common/settings';
 
 /**
  * Props for the Title Suggestions Settings component.

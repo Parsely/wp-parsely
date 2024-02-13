@@ -14,39 +14,25 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
 import { PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
 import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
 import { ContentHelperError } from '../../common/content-helper-error';
-import { SidebarSettings } from '../editor-sidebar';
+import { SidebarSettings, useSettings } from '../../common/settings';
 import { TitleSuggestionsSettings } from './component-settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { WriteTitleProvider } from './provider';
 import { TitleStore, TitleType } from './store';
 
 /**
- * Defines the props structure for TitleSuggestionsPanel.
- *
- * @since 3.13.0
- */
-interface TitleSuggestionsPanelProps {
-	initialPersona: PersonaProp;
-	initialSettingsOpen: boolean;
-	initialTone: ToneProp;
-	onSettingChange: ( key: keyof SidebarSettings, value: string | boolean ) => void;
-}
-
-/**
  * Title Suggestions Panel.
  *
  * @since 3.12.0
  *
- * @param {TitleSuggestionsPanelProps} props The component's props.
- *
  * @return {JSX.Element} The Title Suggestions Panel.
  */
-export const TitleSuggestionsPanel = ( {
-	initialPersona, initialSettingsOpen, initialTone, onSettingChange,
-}: TitleSuggestionsPanelProps ): JSX.Element => {
+export const TitleSuggestionsPanel = (): JSX.Element => {
+	const { settings, setSettings } = useSettings<SidebarSettings>();
+
 	const [ error, setError ] = useState<ContentHelperError>();
-	const [ tone, setTone ] = useState<ToneProp>( initialTone );
-	const [ persona, setPersona ] = useState<PersonaProp>( initialPersona );
+	const [ tone, setTone ] = useState<ToneProp>( settings.TitleSuggestionsTone );
+	const [ persona, setPersona ] = useState<PersonaProp>( settings.TitleSuggestionsPersona );
 
 	const {
 		loading,
@@ -74,6 +60,10 @@ export const TitleSuggestionsPanel = ( {
 		setAcceptedTitle,
 		setOriginalTitle,
 	} = useDispatch( TitleStore );
+
+	const onSettingChange = ( key: keyof SidebarSettings, value: string | boolean ) => {
+		setSettings( { [ key ]: value } );
+	};
 
 	const currentPostContent = useSelect( ( select ) => {
 		const { getEditedPostContent } = select( 'core/editor' ) as GutenbergFunction;
@@ -147,7 +137,7 @@ export const TitleSuggestionsPanel = ( {
 
 	const parselyAISettings = <TitleSuggestionsSettings
 		isLoading={ loading }
-		isOpen={ initialSettingsOpen }
+		isOpen={ settings.TitleSuggestionsSettingsOpen }
 		onPersonaChange={ ( selectedPersona ) => {
 			onSettingChange( 'TitleSuggestionsPersona', selectedPersona );
 			setPersona( selectedPersona );
@@ -157,8 +147,8 @@ export const TitleSuggestionsPanel = ( {
 			onSettingChange( 'TitleSuggestionsTone', selectedTone );
 			setTone( selectedTone );
 		} }
-		persona={ initialPersona }
-		tone={ initialTone }
+		persona={ settings.TitleSuggestionsPersona }
+		tone={ settings.TitleSuggestionsTone }
 	/>;
 
 	const generateTitleButton: JSX.Element = (

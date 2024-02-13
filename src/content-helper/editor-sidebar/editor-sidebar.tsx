@@ -18,8 +18,8 @@ import { Telemetry } from '../../js/telemetry/telemetry';
 import { BetaBadge } from '../common/components/beta-badge';
 import { PARSELY_PERSONAS } from '../common/components/persona-selector';
 import { PARSELY_TONES } from '../common/components/tone-selector';
-import { useSaveSettings } from '../common/hooks/useSaveSettings';
 import { LeafIcon } from '../common/icons/leaf-icon';
+import { SettingsProvider, SidebarSettings, useSettings } from '../common/settings';
 import {
 	Metric,
 	Period,
@@ -34,25 +34,6 @@ import { RelatedTopPostList } from './related-top-posts/component-list';
 import { TitleSuggestionsPanel } from './title-suggestions/component';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
-
-/**
- * Defines the settings structure for the ContentHelperEditorSidebar component.
- *
- * @since 3.13.0
- */
-export interface SidebarSettings {
-	PerformanceDetailsOpen: boolean;
-	RelatedTopPostsFilterBy: string;
-	RelatedTopPostsFilterValue: string;
-	RelatedTopPostsOpen: boolean;
-	SettingsMetric: Metric;
-	SettingsOpen: boolean;
-	SettingsPeriod: Period;
-	TitleSuggestionsOpen: boolean;
-	TitleSuggestionsPersona: string;
-	TitleSuggestionsSettingsOpen: boolean;
-	TitleSuggestionsTone: string;
-}
 
 /**
  * Defines the data structure exposed by the Sidebar about the currently opened
@@ -91,7 +72,7 @@ interface GutenbergFunction {
  *
  * @return {SidebarSettings} The resulting settings object.
  */
-const getSettingsFromJson = ( settingsJson: string ): SidebarSettings => {
+export const getSettingsFromJson = ( settingsJson: string ): SidebarSettings => {
 	let parsedSettings: SidebarSettings;
 
 	try {
@@ -159,44 +140,11 @@ const getSettingsFromJson = ( settingsJson: string ): SidebarSettings => {
  * @return {JSX.Element} The Content Helper Editor Sidebar.
  */
 const ContentHelperEditorSidebar = (): JSX.Element => {
-	const [ settings, setSettings ] = useState<SidebarSettings>(
-		getSettingsFromJson( window.wpParselyContentHelperSettings )
-	);
 	const [ postData, setPostData ] = useState<SidebarPostData>( {
 		authors: [], categories: [], tags: [],
 	} );
 
-	/**
-	 * Updates all filter settings.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @param {PostFilterType} filter The new filter type.
-	 * @param {string}         value  The new filter value.
-	 */
-	const handleRelatedTopPostsFilterChange = (
-		filter: PostFilterType, value: string
-	): void => {
-		setSettings( {
-			...settings,
-			RelatedTopPostsFilterBy: filter,
-			RelatedTopPostsFilterValue: value,
-		} );
-	};
-
-	/**
-	 * Updates the passed setting.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @param {keyof SidebarSettings} setting The setting to be updated.
-	 * @param {string|boolean}        value   The new settings value.
-	 */
-	const handleSettingChange = (
-		setting: keyof SidebarSettings, value: string|boolean
-	): void => {
-		setSettings( { ...settings, [ setting ]: value } );
-	};
+	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	/**
 	 * Returns the current Post's ID, tags and categories.
@@ -252,14 +200,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 	const authorNames = useMemo( () => {
 		return authors ? authors.map( ( a ) => a.name ) : [];
 	}, [ authors ] );
-
-	/**
-	 * Saves the settings into the WordPress database whenever a setting change
-	 * occurs.
-	 *
-	 * @since 3.13.0
-	 */
-	useSaveSettings( 'editor-sidebar-settings', settings );
 
 	useEffect( () => {
 		setPostData( {
@@ -328,7 +268,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					onChange={ ( selection ) => {
 						if ( isInEnum( selection, Period ) ) {
 							setSettings( {
-								...settings,
 								SettingsPeriod: selection as Period,
 							} );
 							trackSettingsChange( 'period', { period: selection } );
@@ -349,7 +288,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 					onChange={ ( selection ) => {
 						if ( isInEnum( selection, Metric ) ) {
 							setSettings( {
-								...settings,
 								SettingsMetric: selection as Metric,
 							} );
 							trackSettingsChange( 'metric', { metric: selection } );
@@ -375,89 +313,82 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 			className="wp-parsely-content-helper"
 			title={ __( 'Parse.ly Editor Sidebar', 'wp-parsely' ) }
 		>
-			<Panel>
-				<PanelBody
-					title={ __( 'Settings', 'wp-parsely' ) }
-					initialOpen={ settings.SettingsOpen }
-					onToggle={ ( next ) => {
-						setSettings( { ...settings, SettingsOpen: next } );
-						trackToggle( 'settings', next );
-					} }
-				>
-					<Settings />
-				</PanelBody>
-			</Panel>
-			<Panel>
-				<PanelBody
-					title={ __( 'Performance Details', 'wp-parsely' ) }
-					initialOpen={ settings.PerformanceDetailsOpen }
-					onToggle={ ( next ) => {
-						setSettings( {
-							...settings, PerformanceDetailsOpen: next,
-						} );
-						trackToggle( 'performance_details', next );
-					} }
-				>
-					{
+			<SettingsProvider
+				endpoint="editor-sidebar-settings"
+				defaultSettings={ getSettingsFromJson( window.wpParselyContentHelperSettings ) }
+			>
+				<Panel>
+					<PanelBody
+						title={ __( 'Settings', 'wp-parsely' ) }
+						initialOpen={ settings.SettingsOpen }
+						onToggle={ ( next ) => {
+							setSettings( { SettingsOpen: next } );
+							trackToggle( 'settings', next );
+						} }
+					>
+						<Settings />
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody
+						title={ __( 'Performance Details', 'wp-parsely' ) }
+						initialOpen={ settings.PerformanceDetailsOpen }
+						onToggle={ ( next ) => {
+							setSettings( {
+								PerformanceDetailsOpen: next,
+							} );
+							trackToggle( 'performance_details', next );
+						} }
+					>
+						{
+							<VerifyCredentials>
+								<PerformanceDetails
+									period={ settings.SettingsPeriod }
+								/>
+							</VerifyCredentials>
+						}
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody
+						title={ __( 'Related Top Posts', 'wp-parsely' ) }
+						initialOpen={ settings.RelatedTopPostsOpen }
+						onToggle={ ( next ) => {
+							setSettings( {
+								RelatedTopPostsOpen: next,
+							} );
+							trackToggle( 'related_top_posts', next );
+						} }
+					>
+						{
+							<VerifyCredentials>
+								<RelatedTopPostList
+									metric={ settings.SettingsMetric }
+									period={ settings.SettingsPeriod }
+									postData={ postData }
+								/>
+							</VerifyCredentials>
+						}
+					</PanelBody>
+				</Panel>
+				<Panel>
+					<PanelBody
+						icon={ <BetaBadge /> }
+						title={ __( 'Title Suggestions', 'wp-parsely' ) }
+						initialOpen={ settings.TitleSuggestionsOpen }
+						onToggle={ ( next ) => {
+							setSettings( {
+								TitleSuggestionsOpen: next,
+							} );
+							trackToggle( 'title_suggestions', next );
+						} }
+					>
 						<VerifyCredentials>
-							<PerformanceDetails
-								period={ settings.SettingsPeriod }
-							/>
+							<TitleSuggestionsPanel />
 						</VerifyCredentials>
-					}
-				</PanelBody>
-			</Panel>
-			<Panel>
-				<PanelBody
-					title={ __( 'Related Top Posts', 'wp-parsely' ) }
-					initialOpen={ settings.RelatedTopPostsOpen }
-					onToggle={ ( next ) => {
-						setSettings( {
-							...settings, RelatedTopPostsOpen: next,
-						} );
-						trackToggle( 'related_top_posts', next );
-					} }
-				>
-					{
-						<VerifyCredentials>
-							<RelatedTopPostList
-								initialFilter={ {
-									type: settings.RelatedTopPostsFilterBy as PostFilterType,
-									value: settings.RelatedTopPostsFilterValue,
-								} }
-								metric={ settings.SettingsMetric }
-								onFilterChange={ handleRelatedTopPostsFilterChange }
-								period={ settings.SettingsPeriod }
-								postData={ postData }
-							/>
-						</VerifyCredentials>
-					}
-				</PanelBody>
-			</Panel>
-			<Panel>
-				<PanelBody
-					icon={ <BetaBadge /> }
-					title={ __( 'Title Suggestions', 'wp-parsely' ) }
-					initialOpen={ settings.TitleSuggestionsOpen }
-					onToggle={ ( next ) => {
-						setSettings( {
-							...settings, TitleSuggestionsOpen: next,
-						} );
-						trackToggle( 'title_suggestions', next );
-					} }
-				>
-					{
-						<VerifyCredentials>
-							<TitleSuggestionsPanel
-								initialPersona={ settings.TitleSuggestionsPersona }
-								initialSettingsOpen={ settings.TitleSuggestionsSettingsOpen }
-								initialTone={ settings.TitleSuggestionsTone }
-								onSettingChange={ handleSettingChange }
-							/>
-						</VerifyCredentials>
-					}
-				</PanelBody>
-			</Panel>
+					</PanelBody>
+				</Panel>
+			</SettingsProvider>
 		</PluginSidebar>
 	);
 };
@@ -465,5 +396,12 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 // Registering Plugin to WordPress Block Editor.
 registerPlugin( BLOCK_PLUGIN_ID, {
 	icon: LeafIcon,
-	render: ContentHelperEditorSidebar,
+	render: () => (
+		<SettingsProvider
+			endpoint="editor-sidebar-settings"
+			defaultSettings={ getSettingsFromJson( window.wpParselyContentHelperSettings ) }
+		>
+			<ContentHelperEditorSidebar />
+		</SettingsProvider>
+	),
 } );

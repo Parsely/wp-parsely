@@ -10,6 +10,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { ContentHelperError } from '../../common/content-helper-error';
+import { SidebarSettings, useSettings } from '../../common/settings';
 import {
 	Metric,
 	Period,
@@ -33,9 +34,7 @@ const FETCH_RETRIES = 1;
  * @since 3.11.0
  */
 interface RelatedTopPostListProps {
-	initialFilter: PostFilter;
 	metric: Metric;
-	onFilterChange: ( type: PostFilterType, value: string ) => void;
 	period: Period;
 	postData: SidebarPostData;
 }
@@ -46,13 +45,37 @@ interface RelatedTopPostListProps {
  * @param {RelatedTopPostListProps} props The component's props.
  */
 export function RelatedTopPostList( {
-	initialFilter, metric, onFilterChange, period, postData,
+	metric, period, postData,
 } : Readonly<RelatedTopPostListProps> ): JSX.Element {
+	const { settings, setSettings } = useSettings<SidebarSettings>();
+
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ message, setMessage ] = useState<string>();
 	const [ posts, setPosts ] = useState<PostData[]>( [] );
-	const [ filter, setFilter ] = useState<PostFilter>( initialFilter );
+	const [ filter, setFilter ] = useState<PostFilter>(
+		{
+			type: settings.RelatedTopPostsFilterBy as PostFilterType,
+			value: settings.RelatedTopPostsFilterValue,
+		}
+	);
+
+	/**
+	 * Updates all filter settings.
+	 *
+	 * @since 3.13.0
+	 * @since 3.14.0 Renamed from `handleRelatedTopPostsFilterChange` and
+	 * moved from the editor sidebar to the related top posts component.
+	 *
+	 * @param {PostFilterType} filterBy The new filter type.
+	 * @param {string}         value    The new filter value.
+	 */
+	const onFilterChange = ( filterBy: PostFilterType, value: string ): void => {
+		setSettings( {
+			RelatedTopPostsFilterBy: filterBy,
+			RelatedTopPostsFilterValue: value,
+		} );
+	};
 
 	/**
 	 * Updates the filter type and sets its default value.
