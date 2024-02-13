@@ -366,8 +366,8 @@ export const SmartLinkingPanel = ( {
 			<PanelRow className={ className }>
 				<div className="wp-parsely-smart-linking-text">
 					{ __(
-						'Automatically insert links to your most relevant, top performing content. ' +
-							'wp-parsely', 'wp-parsely'
+						'Automatically insert links to your most relevant, top performing content.',
+						'wp-parsely'
 					)	}
 					&nbsp;
 					<a href="https://docs.parse.ly/plugin-content-helper/#h-smart-linking-beta">
