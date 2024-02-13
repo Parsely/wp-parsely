@@ -51,7 +51,6 @@ abstract class RemoteAPITest extends TestCase {
 	 * @covers \Parsely\RemoteAPI\Related_API::get_api_url
 	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::get_api_url
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
