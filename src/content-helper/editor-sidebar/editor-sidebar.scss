@@ -18,6 +18,10 @@
 		margin-top: to_rem(15px) !important;
 	}
 
+	.wp-parsely-content-helper-error .content-helper-error-message {
+		margin-top: to_rem(15px) !important;
+	}
+
 	p.content-helper-error-message-hint {
 		color: var(--gray-700);
 	}
@@ -340,31 +344,6 @@
 		margin: to_rem(10px) 0;
 		justify-content: center;
 		display: flex;
-	}
-
-	.parsely-write-titles-settings {
-
-		.parsely-write-titles-settings-header {
-			margin: to_rem(10px) 0;
-			display: flex;
-			width: 100%;
-
-			.parsely-write-titles-settings-header-label {
-				margin-left: to_rem(5px);
-				flex-grow: 2;
-				text-align: left;
-
-				.components-base-control__field {
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
-
-					.components-base-control__label {
-						margin-bottom: 0;
-					}
-				}
-			}
-		}
 	}
 
 	// Accepted Title view.

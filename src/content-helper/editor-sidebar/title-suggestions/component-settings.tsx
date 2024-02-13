@@ -57,12 +57,12 @@ export const TitleSuggestionsSettings = ( {
 	};
 
 	return (
-		<div className="parsely-write-titles-settings">
-			<div className="parsely-write-titles-settings-header">
+		<div className="parsely-panel-settings">
+			<div className="parsely-panel-settings-header">
 				<LeafIcon size={ 20 } />
 				<BaseControl
 					id="parsely-write-titles-settings"
-					className="parsely-write-titles-settings-header-label"
+					className="parsely-panel-settings-header-label"
 					label={ __( 'Parse.ly AI Settings', 'wp-parsely' ) }>
 					<Button
 						label={ __( 'Change Tone & Persona', 'wp-parsely' ) }
@@ -74,7 +74,7 @@ export const TitleSuggestionsSettings = ( {
 				</BaseControl>
 			</div>
 			{ isSettingActive && (
-				<div className="parsely-write-titles-settings-body">
+				<div className="parsely-panel-settings-body">
 					<ToneSelector
 						tone={ tone }
 						label={ getToneLabel( tone ) }

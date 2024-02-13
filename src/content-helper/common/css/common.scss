@@ -7,3 +7,45 @@
 @import "../components/beta-badge/style";
 @import "../components/tone-selector/style";
 @import "../components/persona-selector/style";
+
+/**
+ * Common styles for the content helper.
+ */
+.parsely-panel-settings {
+	width: 100%;
+
+	.parsely-panel-settings-header {
+		margin: to_rem(10px) 0;
+		display: flex;
+		width: 100%;
+
+		.parsely-panel-settings-header-label {
+			margin: 0 0 0 to_rem(5px);
+			flex-grow: 2;
+			text-align: left;
+
+			.components-base-control__field {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+
+				.components-base-control__label {
+					margin-bottom: 0;
+				}
+			}
+		}
+	}
+}
+
+.wp-parsely-content-helper-error {
+	margin: 0;
+	align-self: flex-start;
+
+	p {
+		margin: 0;
+	}
+
+	.content-helper-error-message {
+		margin: 0 !important;
+	}
+}

@@ -31,9 +31,13 @@ import {
 import { VerifyCredentials } from '../common/verify-credentials';
 import { PerformanceDetails } from './performance-details/component';
 import { RelatedTopPostList } from './related-top-posts/component-list';
+import { SmartLinkingPanel, SmartLinkingPanelContext } from './smart-linking/component';
+import { DEFAULT_MAX_LINKS, DEFAULT_MAX_LINK_WORDS, initSmartLinking } from './smart-linking/smart-linking';
 import { TitleSuggestionsPanel } from './title-suggestions/component';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
+
+export type OnSettingChangeFunction = ( key: keyof SidebarSettings, value: string | boolean | number ) => void;
 
 /**
  * Defines the data structure exposed by the Sidebar about the currently opened
@@ -72,8 +76,13 @@ interface GutenbergFunction {
  *
  * @return {SidebarSettings} The resulting settings object.
  */
-export const getSettingsFromJson = ( settingsJson: string ): SidebarSettings => {
+export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSettings => {
 	let parsedSettings: SidebarSettings;
+
+	// If the settings are empty, try to get them from the global variable.
+	if ( '' === settingsJson ) {
+		settingsJson = window.wpParselyContentHelperSettings;
+	}
 
 	try {
 		parsedSettings = JSON.parse( settingsJson );
@@ -87,6 +96,10 @@ export const getSettingsFromJson = ( settingsJson: string ): SidebarSettings => 
 			SettingsMetric: Metric.Views,
 			SettingsOpen: true,
 			SettingsPeriod: Period.Days7,
+			SmartLinkingMaxLinks: DEFAULT_MAX_LINKS,
+			SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
+			SmartLinkingOpen: false,
+			SmartLinkingSettingsOpen: false,
 			TitleSuggestionsOpen: false,
 			TitleSuggestionsPersona: PARSELY_PERSONAS.journalist.label,
 			TitleSuggestionsSettingsOpen: false,
@@ -115,6 +128,18 @@ export const getSettingsFromJson = ( settingsJson: string ): SidebarSettings => 
 	}
 	if ( ! isInEnum( parsedSettings?.SettingsPeriod, Period ) ) {
 		parsedSettings.SettingsPeriod = Period.Days7;
+	}
+	if ( typeof parsedSettings?.SmartLinkingMaxLinks !== 'number' ) {
+		parsedSettings.SmartLinkingMaxLinks = DEFAULT_MAX_LINKS;
+	}
+	if ( typeof parsedSettings?.SmartLinkingMaxLinkWords !== 'number' ) {
+		parsedSettings.SmartLinkingMaxLinkWords = DEFAULT_MAX_LINK_WORDS;
+	}
+	if ( typeof parsedSettings?.SmartLinkingOpen !== 'boolean' ) {
+		parsedSettings.SmartLinkingOpen = false;
+	}
+	if ( typeof parsedSettings?.SmartLinkingSettingsOpen !== 'boolean' ) {
+		parsedSettings.SmartLinkingSettingsOpen = false;
 	}
 	if ( typeof parsedSettings?.TitleSuggestionsOpen !== 'boolean' ) {
 		parsedSettings.TitleSuggestionsOpen = false;
@@ -315,7 +340,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 		>
 			<SettingsProvider
 				endpoint="editor-sidebar-settings"
-				defaultSettings={ getSettingsFromJson( window.wpParselyContentHelperSettings ) }
+				defaultSettings={ getSettingsFromJson() }
 			>
 				<Panel>
 					<PanelBody
@@ -388,6 +413,25 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 						</VerifyCredentials>
 					</PanelBody>
 				</Panel>
+				<Panel>
+					<PanelBody
+						icon={ <BetaBadge /> }
+						title={ __( 'Smart Linking', 'wp-parsely' ) }
+						initialOpen={ settings.SmartLinkingOpen }
+						onToggle={ ( next ) => {
+							setSettings( {
+								SmartLinkingOpen: next,
+							} );
+							trackToggle( 'smart_linking', next );
+						} }
+					>
+						<VerifyCredentials>
+							<SmartLinkingPanel
+								context={ SmartLinkingPanelContext.ContentHelperSidebar }
+							/>
+						</VerifyCredentials>
+					</PanelBody>
+				</Panel>
 			</SettingsProvider>
 		</PluginSidebar>
 	);
@@ -399,9 +443,12 @@ registerPlugin( BLOCK_PLUGIN_ID, {
 	render: () => (
 		<SettingsProvider
 			endpoint="editor-sidebar-settings"
-			defaultSettings={ getSettingsFromJson( window.wpParselyContentHelperSettings ) }
+			defaultSettings={ getSettingsFromJson() }
 		>
 			<ContentHelperEditorSidebar />
 		</SettingsProvider>
 	),
 } );
+
+// Initialize Smart Linking.
+initSmartLinking();

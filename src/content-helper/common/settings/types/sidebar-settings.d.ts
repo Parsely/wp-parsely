@@ -14,6 +14,10 @@ export interface SidebarSettings {
 	SettingsMetric: Metric;
 	SettingsOpen: boolean;
 	SettingsPeriod: Period;
+	SmartLinkingMaxLinks: number;
+	SmartLinkingMaxLinkWords: number;
+	SmartLinkingOpen: boolean;
+	SmartLinkingSettingsOpen: boolean;
 	TitleSuggestionsOpen: boolean;
 	TitleSuggestionsPersona: string;
 	TitleSuggestionsSettingsOpen: boolean;

@@ -6,10 +6,10 @@ import { createRoot, render } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { SettingsProvider, TopPostsSettings } from '../common/settings';
-import { Metric, Period, isInEnum } from '../common/utils/constants';
 import { VerifyCredentials } from '../common/verify-credentials';
 import { TopPosts } from './components/top-posts';
+import { SettingsProvider, TopPostsSettings } from '../common/settings';
+import { isInEnum, Metric, Period } from '../common/utils/constants';
 
 /**
  * Gets the settings from the passed JSON.

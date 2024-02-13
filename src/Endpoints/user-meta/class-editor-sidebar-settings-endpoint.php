@@ -69,6 +69,22 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 				'values'  => array( '10m', '1h', '2h', '4h', '24h', '7d', '30d' ),
 				'default' => '7d',
 			),
+			'SmartLinkingMaxLinks'         => array(
+				'values'  => array(),
+				'default' => 10,
+			),
+			'SmartLinkingMaxLinkWords'     => array(
+				'values'  => array(),
+				'default' => 4,
+			),
+			'SmartLinkingOpen'             => array(
+				'values'  => array( true, false ),
+				'default' => false,
+			),
+			'SmartLinkingSettingsOpen'     => array(
+				'values'  => array( true, false ),
+				'default' => false,
+			),
 			'TitleSuggestionsOpen'         => array(
 				'values'  => array( true, false ),
 				'default' => false,
