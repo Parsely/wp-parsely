@@ -7,10 +7,6 @@ import { Metric, Period } from '../../utils/constants';
  * @since 3.14.0 Moved from `content-helper/editor-sidebar/editor-sidebar.tsx`.
  */
 export interface SidebarSettings {
-	SmartLinkingMaxLinkWords: number;
-	SmartLinkingMaxLinks: number;
-	SmartLinkingOpen: boolean;
-	SmartLinkingSettingsOpen: boolean;
 	PerformanceDetailsOpen: boolean;
 	RelatedTopPostsFilterBy: string;
 	RelatedTopPostsFilterValue: string;
@@ -18,6 +14,10 @@ export interface SidebarSettings {
 	SettingsMetric: Metric;
 	SettingsOpen: boolean;
 	SettingsPeriod: Period;
+	SmartLinkingMaxLinks: number;
+	SmartLinkingMaxLinkWords: number;
+	SmartLinkingOpen: boolean;
+	SmartLinkingSettingsOpen: boolean;
 	TitleSuggestionsOpen: boolean;
 	TitleSuggestionsPersona: string;
 	TitleSuggestionsSettingsOpen: boolean;

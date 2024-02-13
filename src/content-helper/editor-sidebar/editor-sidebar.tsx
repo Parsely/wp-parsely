@@ -29,10 +29,10 @@ import {
 	isInEnum,
 } from '../common/utils/constants';
 import { VerifyCredentials } from '../common/verify-credentials';
-import { SmartLinkingPanel, SmartLinkingPanelContext } from './smart-linking/component';
-import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS, initSmartLinking } from './smart-linking/smart-linking';
 import { PerformanceDetails } from './performance-details/component';
 import { RelatedTopPostList } from './related-top-posts/component-list';
+import { SmartLinkingPanel, SmartLinkingPanelContext } from './smart-linking/component';
+import { DEFAULT_MAX_LINKS, DEFAULT_MAX_LINK_WORDS, initSmartLinking } from './smart-linking/smart-linking';
 import { TitleSuggestionsPanel } from './title-suggestions/component';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
@@ -96,8 +96,8 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			SettingsMetric: Metric.Views,
 			SettingsOpen: true,
 			SettingsPeriod: Period.Days7,
-			SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
 			SmartLinkingMaxLinks: DEFAULT_MAX_LINKS,
+			SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
 			SmartLinkingOpen: false,
 			SmartLinkingSettingsOpen: false,
 			TitleSuggestionsOpen: false,
@@ -129,11 +129,11 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	if ( ! isInEnum( parsedSettings?.SettingsPeriod, Period ) ) {
 		parsedSettings.SettingsPeriod = Period.Days7;
 	}
-	if ( typeof parsedSettings?.SmartLinkingMaxLinkWords !== 'number' ) {
-		parsedSettings.SmartLinkingMaxLinkWords = DEFAULT_MAX_LINK_WORDS;
-	}
 	if ( typeof parsedSettings?.SmartLinkingMaxLinks !== 'number' ) {
 		parsedSettings.SmartLinkingMaxLinks = DEFAULT_MAX_LINKS;
+	}
+	if ( typeof parsedSettings?.SmartLinkingMaxLinkWords !== 'number' ) {
+		parsedSettings.SmartLinkingMaxLinkWords = DEFAULT_MAX_LINK_WORDS;
 	}
 	if ( typeof parsedSettings?.SmartLinkingOpen !== 'boolean' ) {
 		parsedSettings.SmartLinkingOpen = false;
