@@ -86,7 +86,7 @@ type ReactDeps = React.DependencyList | undefined;
 const useSaveSettings = (
 	endpoint: string,
 	data: Settings,
-	deps: ReactDeps = undefined
+	deps: ReactDeps
 ) => {
 	const isFirstRender = useRef( true );
 
@@ -102,7 +102,7 @@ const useSaveSettings = (
 			method: 'PUT',
 			data,
 		} );
-	}, deps ?? Object.values( data ) ); // eslint-disable-line react-hooks/exhaustive-deps
+	}, deps ); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
 /**
@@ -163,14 +163,17 @@ export const SettingsProvider = ( { children, endpoint, defaultSettings }: Setti
 	 * Saves the settings into the WordPress database whenever a setting change
 	 * occurs.
 	 *
+	 * internalSettings is the dependency, because we only want to save the settings
+	 * when they change, and save it with the value in the store (storedSettings).
+	 *
 	 * @since 3.14.0
 	 */
-	useSaveSettings( endpoint, storedSettings );
+	useSaveSettings( endpoint, storedSettings, [ internalSettings ] );
 
 	// Memoize the provider value to avoid unnecessary re-renders.
 	const providerValue = useMemo( () => (
-		{ settings: internalSettings, setSettings: updateSettings }
-	), [ internalSettings, updateSettings ] );
+		{ settings: storedSettings, setSettings: updateSettings }
+	), [ storedSettings, updateSettings ] );
 
 	return (
 		<SettingsContext.Provider value={ providerValue }>
