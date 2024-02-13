@@ -50,12 +50,13 @@ abstract class RemoteAPITest extends TestCase {
 	 * @dataProvider data_api_url
 	 * @covers \Parsely\RemoteAPI\Related_API::get_api_url
 	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::get_api_url
-	 * @uses \Parsely\Parsely::get_managed_credentials
-	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Parsely::api_secret_is_set
-	 * @uses \Parsely\Parsely::get_site_id
-	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::api_secret_is_set
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 *
 	 * @param array<string, mixed> $query Test query arguments.
 	 * @param string               $url Expected generated URL.

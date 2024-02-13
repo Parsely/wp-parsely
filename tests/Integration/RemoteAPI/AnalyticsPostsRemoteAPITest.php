@@ -43,9 +43,14 @@ final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 	/**
 	 * Verifies default user capability filter.
 	 *
-	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 *
+	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::apply_capability_filters
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
 	 */
 	public function test_user_is_allowed_to_make_api_call_if_default_user_capability_is_changed(): void {
 		$this->login_as_contributor();
@@ -58,15 +63,20 @@ final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 
 		$api = new Analytics_Posts_API( new Parsely() );
 
-		self::assertTrue( $api->is_user_allowed_to_make_api_call() );
+		self::assertTrue( $api->is_available_to_current_user() );
 	}
 
 	/**
 	 * Verifies endpoint specific user capability filter.
 	 *
-	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 *
+	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::apply_capability_filters
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
 	 */
 	public function test_user_is_allowed_to_make_api_call_if_endpoint_specific_user_capability_is_changed(): void {
 		$this->login_as_contributor();
@@ -79,15 +89,20 @@ final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 
 		$api = new Analytics_Posts_API( new Parsely() );
 
-		self::assertTrue( $api->is_user_allowed_to_make_api_call() );
+		self::assertTrue( $api->is_available_to_current_user() );
 	}
 
 	/**
 	 * Verifies that the endpoint specific user capability filter has more priority than the default capability filter.
 	 *
-	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 *
+	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
+	 * @uses \Parsely\Endpoints\Base_Endpoint::apply_capability_filters
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
 	 */
 	public function test_endpoint_specific_user_capability_filter_have_more_priority_than_default(): void {
 		$this->login_as_contributor();
@@ -108,6 +123,6 @@ final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
 
 		$api = new Analytics_Posts_API( new Parsely() );
 
-		self::assertTrue( $api->is_user_allowed_to_make_api_call() );
+		self::assertTrue( $api->is_available_to_current_user() );
 	}
 }

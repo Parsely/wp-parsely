@@ -68,12 +68,15 @@ abstract class Base_API_Proxy {
 	abstract public function get_items( WP_REST_Request $request );
 
 	/**
-	 * Determines if there are enough permissions to call the endpoint.
+	 * Returns whether the endpoint is available for access by the current
+	 * user.
+	 *
+	 * @since 3.14.0 Renamed from `permission_callback()`.
 	 *
 	 * @return bool
 	 */
-	public function permission_callback(): bool {
-		return $this->api->is_user_allowed_to_make_api_call();
+	public function is_available_to_current_user(): bool {
+		return $this->api->is_available_to_current_user();
 	}
 
 	/**
@@ -116,9 +119,9 @@ abstract class Base_API_Proxy {
 			array(
 				'methods'             => $methods,
 				'callback'            => array( $this, 'get_items' ),
-				'permission_callback' => array( $this, 'permission_callback' ),
+				'permission_callback' => array( $this, 'is_available_to_current_user' ),
 				'args'                => $get_items_args,
-				'show_in_index'       => $this->permission_callback(),
+				'show_in_index'       => $this->is_available_to_current_user(),
 			),
 		);
 

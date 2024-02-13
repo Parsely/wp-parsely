@@ -3,7 +3,15 @@
  */
 import apiFetch from '@wordpress/api-fetch';
 import { dispatch, useSelect } from '@wordpress/data';
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from '@wordpress/element';
 import type { ReactNode } from 'react';
 
 /**
@@ -39,6 +47,8 @@ const SettingsContext = createContext<SettingsContextType<Settings>>( {
  * Hook to get the settings from the context.
  * Should only be used within a SettingsProvider.
  *
+ * @since 3.14.0
+ *
  * @template T - The type of settings to retrieve, defaults to Settings.
  *
  * @return {SettingsContextType<T>} The settings context.
@@ -67,6 +77,7 @@ type ReactDeps = React.DependencyList | undefined;
  * occurs.
  *
  * @since 3.13.0
+ * @since 3.14.0 Moved from `content-helper/common/hooks/useSaveSettings.ts`.
  *
  * @param {string}    endpoint The settings endpoint to send the data to.
  * @param {Settings}  data     The data to send.
@@ -75,7 +86,7 @@ type ReactDeps = React.DependencyList | undefined;
 const useSaveSettings = (
 	endpoint: string,
 	data: Settings,
-	deps: ReactDeps = undefined
+	deps: ReactDeps
 ) => {
 	const isFirstRender = useRef( true );
 
@@ -91,7 +102,7 @@ const useSaveSettings = (
 			method: 'PUT',
 			data,
 		} );
-	}, deps ?? Object.values( data ) ); // eslint-disable-line react-hooks/exhaustive-deps
+	}, deps ); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
 /**
@@ -114,7 +125,7 @@ interface SettingsProviderProps {
  *
  * @since 3.14.0
  *
- * @param {SettingsProviderProps} props The component properties.
+ * @param {SettingsProviderProps} props The component's props.
  */
 export const SettingsProvider = ( { children, endpoint, defaultSettings }: SettingsProviderProps ) => {
 	// Get the current settings from the store.
@@ -152,14 +163,17 @@ export const SettingsProvider = ( { children, endpoint, defaultSettings }: Setti
 	 * Saves the settings into the WordPress database whenever a setting change
 	 * occurs.
 	 *
+	 * internalSettings is the dependency, because we only want to save the settings
+	 * when they change, and save it with the value in the store (storedSettings).
+	 *
 	 * @since 3.14.0
 	 */
-	useSaveSettings( endpoint, storedSettings );
+	useSaveSettings( endpoint, storedSettings, [ internalSettings ] );
 
 	// Memoize the provider value to avoid unnecessary re-renders.
 	const providerValue = useMemo( () => (
-		{ settings: internalSettings, setSettings: updateSettings }
-	), [ internalSettings, updateSettings ] );
+		{ settings: storedSettings, setSettings: updateSettings }
+	), [ storedSettings, updateSettings ] );
 
 	return (
 		<SettingsContext.Provider value={ providerValue }>

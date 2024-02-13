@@ -89,10 +89,6 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	} catch ( e ) {
 		// Return defaults when parsing failed or the string is empty.
 		return {
-			SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
-			SmartLinkingMaxLinks: DEFAULT_MAX_LINKS,
-			SmartLinkingOpen: false,
-			SmartLinkingSettingsOpen: false,
 			PerformanceDetailsOpen: true,
 			RelatedTopPostsFilterBy: PostFilterType.Unavailable,
 			RelatedTopPostsFilterValue: '',
@@ -100,6 +96,10 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			SettingsMetric: Metric.Views,
 			SettingsOpen: true,
 			SettingsPeriod: Period.Days7,
+			SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
+			SmartLinkingMaxLinks: DEFAULT_MAX_LINKS,
+			SmartLinkingOpen: false,
+			SmartLinkingSettingsOpen: false,
 			TitleSuggestionsOpen: false,
 			TitleSuggestionsPersona: PARSELY_PERSONAS.journalist.label,
 			TitleSuggestionsSettingsOpen: false,
@@ -108,18 +108,6 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 
 	// Fix invalid values if any are found.
-	if ( typeof parsedSettings?.SmartLinkingMaxLinkWords !== 'number' ) {
-		parsedSettings.SmartLinkingMaxLinkWords = DEFAULT_MAX_LINK_WORDS;
-	}
-	if ( typeof parsedSettings?.SmartLinkingMaxLinks !== 'number' ) {
-		parsedSettings.SmartLinkingMaxLinks = DEFAULT_MAX_LINKS;
-	}
-	if ( typeof parsedSettings?.SmartLinkingOpen !== 'boolean' ) {
-		parsedSettings.SmartLinkingOpen = false;
-	}
-	if ( typeof parsedSettings?.SmartLinkingSettingsOpen !== 'boolean' ) {
-		parsedSettings.SmartLinkingSettingsOpen = false;
-	}
 	if ( typeof parsedSettings?.PerformanceDetailsOpen !== 'boolean' ) {
 		parsedSettings.PerformanceDetailsOpen = true;
 	}
@@ -140,6 +128,18 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 	if ( ! isInEnum( parsedSettings?.SettingsPeriod, Period ) ) {
 		parsedSettings.SettingsPeriod = Period.Days7;
+	}
+	if ( typeof parsedSettings?.SmartLinkingMaxLinkWords !== 'number' ) {
+		parsedSettings.SmartLinkingMaxLinkWords = DEFAULT_MAX_LINK_WORDS;
+	}
+	if ( typeof parsedSettings?.SmartLinkingMaxLinks !== 'number' ) {
+		parsedSettings.SmartLinkingMaxLinks = DEFAULT_MAX_LINKS;
+	}
+	if ( typeof parsedSettings?.SmartLinkingOpen !== 'boolean' ) {
+		parsedSettings.SmartLinkingOpen = false;
+	}
+	if ( typeof parsedSettings?.SmartLinkingSettingsOpen !== 'boolean' ) {
+		parsedSettings.SmartLinkingSettingsOpen = false;
 	}
 	if ( typeof parsedSettings?.TitleSuggestionsOpen !== 'boolean' ) {
 		parsedSettings.TitleSuggestionsOpen = false;
@@ -340,7 +340,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 		>
 			<SettingsProvider
 				endpoint="editor-sidebar-settings"
-				defaultSettings={ getSettingsFromJson( window.wpParselyContentHelperSettings ) }
+				defaultSettings={ getSettingsFromJson() }
 			>
 				<Panel>
 					<PanelBody
@@ -441,7 +441,10 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 registerPlugin( BLOCK_PLUGIN_ID, {
 	icon: LeafIcon,
 	render: () => (
-		<SettingsProvider endpoint="editor-sidebar-settings" defaultSettings={ getSettingsFromJson() }>
+		<SettingsProvider
+			endpoint="editor-sidebar-settings"
+			defaultSettings={ getSettingsFromJson() }
+		>
 			<ContentHelperEditorSidebar />
 		</SettingsProvider>
 	),

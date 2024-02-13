@@ -75,7 +75,7 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::get_data
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::__construct
-	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::permission_callback
+	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::run
 	 * @uses \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -96,7 +96,7 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::get_data
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::__construct
-	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::permission_callback
+	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::run
 	 * @uses \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::site_id_is_set
@@ -112,9 +112,9 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	/**
 	 * Verifies default user capability filter.
 	 *
-	 * @covers \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::permission_callback
+	 * @covers \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
+	 * @uses \Parsely\RemoteAPI\Referrers_Post_Detail_API::is_available_to_current_user
 	 */
 	public function test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed(): void {
 		parent::run_test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed();
@@ -123,9 +123,9 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	/**
 	 * Verifies endpoint specific user capability filter.
 	 *
-	 * @covers \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::permission_callback
+	 * @covers \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
+	 * @uses \Parsely\RemoteAPI\Referrers_Post_Detail_API::is_available_to_current_user
 	 */
 	public function test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed(): void {
 		parent::run_test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed();
@@ -140,7 +140,7 @@ final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_API_Proxy::register_endpoint
 	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::__construct
 	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::generate_data
-	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::permission_callback
+	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Referrers_Post_Detail_API_Proxy::run
 	 * @uses \Parsely\Parsely::site_id_is_missing
 	 * @uses \Parsely\Parsely::site_id_is_set

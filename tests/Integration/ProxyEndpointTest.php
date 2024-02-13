@@ -218,7 +218,7 @@ abstract class ProxyEndpointTest extends TestCase {
 			}
 		);
 
-		self::assertTrue( static::get_endpoint()->permission_callback() );
+		self::assertTrue( static::get_endpoint()->is_available_to_current_user() );
 	}
 
 	/**
@@ -239,6 +239,6 @@ abstract class ProxyEndpointTest extends TestCase {
 			}
 		);
 
-		self::assertTrue( static::get_endpoint()->permission_callback() );
+		self::assertTrue( static::get_endpoint()->is_available_to_current_user() );
 	}
 }

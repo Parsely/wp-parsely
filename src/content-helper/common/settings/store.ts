@@ -33,7 +33,7 @@ type ActionTypes = SetSettingsAction | SetPartialSettingsAction;
 const DEFAULT_STATE: SettingsState = {};
 
 // Store name.
-export const STORE_NAME = 'wpparsely/settings';
+export const STORE_NAME = 'wp-parsely/settings';
 
 // Reducer.
 const reducer = ( state: SettingsState = DEFAULT_STATE, action: ActionTypes ): SettingsState => {

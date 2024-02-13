@@ -113,7 +113,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
-	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @covers \Parsely\Utils\convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -143,7 +143,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
-	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
+	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @covers \Parsely\Utils\convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
