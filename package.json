@@ -66,7 +66,7 @@
 		"@wordpress/data": "^9.19.0",
 		"@wordpress/e2e-test-utils": "^10.22.0",
 		"@wordpress/edit-post": "^7.24.0",
-		"@wordpress/editor": "^13.27.2",
+		"@wordpress/editor": "^13.28.1",
 		"@wordpress/element": "^5.25.0",
 		"@wordpress/env": "^9.3.0",
 		"@wordpress/eslint-plugin": "^17.7.0",
