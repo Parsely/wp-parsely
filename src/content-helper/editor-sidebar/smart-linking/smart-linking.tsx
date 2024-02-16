@@ -5,7 +5,6 @@ import { InspectorControls } from '@wordpress/block-editor';
 import { PanelBody } from '@wordpress/components';
 import { compose, createHigherOrderComponent } from '@wordpress/compose';
 import { addFilter } from '@wordpress/hooks';
-import { registerPlugin } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
@@ -17,7 +16,7 @@ import { SettingsProvider, SidebarSettings, useSettings } from '../../common/set
 import { VerifyCredentials } from '../../common/verify-credentials';
 import { getSettingsFromJson } from '../editor-sidebar';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from './component';
-import { BlockOverlayContainer } from './component-block-overlay';
+import { initBlockOverlay } from './component-block-overlay';
 import './smart-linking.scss';
 
 export const DEFAULT_MAX_LINKS = 10;
@@ -115,10 +114,7 @@ export const initSmartLinking = (): void => {
 	);
 
 	/**
-	 * Register the block overlay container to allow drawing the overlay over the blocks
-	 * that are being processed.
+	 * Initialize the block overlay component.
 	 */
-	registerPlugin( 'wp-parsely-block-overlay', {
-		render: BlockOverlayContainer,
-	} );
+	initBlockOverlay();
 };

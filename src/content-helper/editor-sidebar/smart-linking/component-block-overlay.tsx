@@ -2,9 +2,12 @@
  * WordPress dependencies
  */
 import { Spinner } from '@wordpress/components';
+import { createHigherOrderComponent } from '@wordpress/compose';
 import { dispatch, useSelect } from '@wordpress/data';
 import { createPortal, useEffect, useState } from '@wordpress/element';
+import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
+import { registerPlugin } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
@@ -116,13 +119,13 @@ export const BlockOverlay = ( {
 };
 
 /**
- * Draws the multiple block overlays that are currently stored in the Smart Linking store.
+ * Draws an overlay over the full block editor, when the "All content" is selected.
  *
  * @since 3.14.0
  *
  * @return {JSX.Element} The JSX Element.
  */
-export const BlockOverlayContainer = ( ): JSX.Element => {
+const BlockOverlayFullContent = ( ): JSX.Element => {
 	const { overlayBlocks } = useSelect( ( select ) => {
 		const { getOverlayBlocks } = select( SmartLinkingStore );
 
@@ -131,16 +134,62 @@ export const BlockOverlayContainer = ( ): JSX.Element => {
 		};
 	}, [] );
 
-	return (
-		<>
-			{ overlayBlocks.map( ( blockId ) => (
-				<BlockOverlay
-					label={ __( 'Generating Smart Links…', 'wp-parsely' ) }
-					selectedBlockClientId={ blockId }
-					key={ blockId }
-				/>
-			) ) }
-		</>
-	);
+	if ( overlayBlocks.includes( 'all' ) ) {
+		return (
+			<BlockOverlay
+				label={ __( 'Generating Smart Links…', 'wp-parsely' ) }
+				selectedBlockClientId={ 'all' }
+			/>
+		);
+	}
+
+	return <></>;
 };
 
+/**
+ * A higher-order component that adds a block overlay over a specific block, flagged by the Smart Linking store.
+ */
+export const withBlockOverlay = createHigherOrderComponent( ( BlockEdit ) => {
+	return ( props ) => {
+		const { overlayBlocks } = useSelect( ( select ) => {
+			const { getOverlayBlocks } = select( SmartLinkingStore );
+
+			return {
+				overlayBlocks: getOverlayBlocks(),
+			};
+		}, [] );
+
+		// If the block id is currently on the overlayBlocks array, we should render the overlay.
+		if ( ! overlayBlocks.includes( props.clientId ) ) {
+			return <BlockEdit { ...props } />;
+		}
+
+		return (
+			<>
+				<BlockOverlay
+					label={ __( 'Generating Smart Links…', 'wp-parsely' ) }
+					selectedBlockClientId={ props.clientId }
+				/>
+				<BlockEdit { ...props } />
+			</>
+		);
+	};
+}, 'withBlockOverlay' );
+
+/**
+ * Initializes the block overlay, by adding the filter for individual blocks and
+ * registering a plugin for the full content overlay.
+ *
+ * @since 3.14.0
+ */
+export const initBlockOverlay = (): void => {
+	addFilter(
+		'editor.BlockEdit',
+		'wpparsely/block-overlay',
+		withBlockOverlay
+	);
+
+	registerPlugin( 'wp-parsely-block-overlay', {
+		render: BlockOverlayFullContent,
+	} );
+};
