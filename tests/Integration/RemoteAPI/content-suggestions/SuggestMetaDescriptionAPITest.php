@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Meta_Description_API;
+use Parsely\RemoteAPI\ContentSuggestions\Suggest_Brief_API;
 use Parsely\Tests\Integration\RemoteAPITest;
 
 /**
@@ -24,7 +24,7 @@ final class SuggestMetaDescriptionAPITest extends RemoteAPITest {
 	/**
 	 * Internal variable.
 	 *
-	 * @var Suggest_Meta_Description_API $suggest_meta_description_api Holds an instance of the class being tested.
+	 * @var Suggest_Brief_API $suggest_meta_description_api Holds an instance of the class being tested.
 	 */
 	private static $suggest_meta_description_api;
 
@@ -34,7 +34,7 @@ final class SuggestMetaDescriptionAPITest extends RemoteAPITest {
 	 * @since 3.13.0
 	 */
 	public static function initialize(): void {
-		self::$remote_api = new Suggest_Meta_Description_API( new Parsely() );
+		self::$remote_api = new Suggest_Brief_API( new Parsely() );
 		// Required for PHPStan to recognize the type.
 		self::$suggest_meta_description_api = self::$remote_api;
 	}
@@ -50,7 +50,6 @@ final class SuggestMetaDescriptionAPITest extends RemoteAPITest {
 		yield 'Basic (Expected data)' => array(
 			array(
 				'apikey' => 'my-key',
-				'secret' => 'my-secret',
 				'title'  => 'This is a title',
 			),
 			Parsely::PUBLIC_SUGGESTIONS_API_BASE_URL .
@@ -104,9 +103,9 @@ final class SuggestMetaDescriptionAPITest extends RemoteAPITest {
 	 *
 	 * @since 3.13.0
 	 *
-	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Meta_Description_API::get_suggestion
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Meta_Description_API::__construct
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Meta_Description_API::get_suggestion
+	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Brief_API::get_suggestion
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Brief_API::__construct
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Brief_API::get_suggestion
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::__construct
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct

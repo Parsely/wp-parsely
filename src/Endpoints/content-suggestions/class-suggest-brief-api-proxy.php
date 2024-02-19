@@ -1,6 +1,6 @@
 <?php
 /**
- * Endpoints: Parse.ly Content Suggestion `/suggest-meta-description` API proxy endpoint
+ * Endpoints: Parse.ly Content Suggestion `/suggest-brief` API proxy endpoint
  * class
  *
  * @package Parsely
@@ -13,24 +13,25 @@ namespace Parsely\Endpoints\ContentSuggestions;
 
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Meta_Description_API;
+use Parsely\RemoteAPI\ContentSuggestions\Suggest_Brief_API;
 use stdClass;
 use WP_REST_Request;
 use WP_Error;
 
 /**
- * Configures the `/content-suggestions/suggest-meta-description` REST API endpoint.
+ * Configures the `/content-suggestions/suggest-brief` REST API endpoint.
  *
  * @since 3.13.0
+ * @since 3.14.0 Renamed from Suggest_Meta_Description_API_Proxy to Suggest_Brief_API_Proxy.
  */
-final class Suggest_Meta_Description_API_Proxy extends Base_API_Proxy {
+final class Suggest_Brief_API_Proxy extends Base_API_Proxy {
 
 	/**
 	 * The Write Title API instance.
 	 *
-	 * @var Suggest_Meta_Description_API $suggest_meta_description_api
+	 * @var Suggest_Brief_API $suggest_brief_api
 	 */
-	private $suggest_meta_description_api;
+	private $suggest_brief_api;
 
 	/**
 	 * Initializes the class.
@@ -40,8 +41,8 @@ final class Suggest_Meta_Description_API_Proxy extends Base_API_Proxy {
 	 * @param Parsely $parsely The Parsely plugin instance.
 	 */
 	public function __construct( Parsely $parsely ) {
-		$this->suggest_meta_description_api = new Suggest_Meta_Description_API( $parsely );
-		parent::__construct( $parsely, $this->suggest_meta_description_api );
+		$this->suggest_brief_api = new Suggest_Brief_API( $parsely );
+		parent::__construct( $parsely, $this->suggest_brief_api );
 	}
 
 	/**
@@ -50,7 +51,7 @@ final class Suggest_Meta_Description_API_Proxy extends Base_API_Proxy {
 	 * @since 3.13.0
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/content-suggestions/suggest-meta-description' );
+		$this->register_endpoint( '/content-suggestions/suggest-brief', array( 'POST' ) );
 	}
 
 	/**
@@ -94,6 +95,20 @@ final class Suggest_Meta_Description_API_Proxy extends Base_API_Proxy {
 		 */
 		$post_title = $request->get_param( 'title' );
 
+		/**
+		 * The persona to be sent to the API.
+		 *
+		 * @var string|null $persona
+		 */
+		$persona = $request->get_param( 'persona' );
+
+		/**
+		 * The style to be sent to the API.
+		 *
+		 * @var string|null $style
+		 */
+		$style = $request->get_param( 'style' );
+
 		if ( null === $post_content ) {
 			return new WP_Error(
 				'parsely_content_not_set',
@@ -110,7 +125,15 @@ final class Suggest_Meta_Description_API_Proxy extends Base_API_Proxy {
 			);
 		}
 
-		$response = $this->suggest_meta_description_api->get_suggestion( $post_title, $post_content );
+		if ( null === $persona ) {
+			$persona = 'journalist';
+		}
+
+		if ( null === $style ) {
+			$style = 'neutral';
+		}
+
+		$response = $this->suggest_brief_api->get_suggestion( $post_title, $post_content, $persona, $style );
 
 		if ( is_wp_error( $response ) ) {
 			return $response;

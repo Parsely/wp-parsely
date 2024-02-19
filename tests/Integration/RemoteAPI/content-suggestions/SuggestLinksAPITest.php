@@ -49,7 +49,6 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 		yield 'Basic (Expected data)' => array(
 			array(
 				'apikey'         => 'my-key',
-				'secret'         => 'my-secret',
 				'max_link_words' => '4',
 				'max_links'      => '10',
 			),
