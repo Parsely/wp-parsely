@@ -3,6 +3,8 @@
 .parsely-tone-selector-dropdown {
 	width: 100%;
 	margin-bottom: to_rem(10px);
+	overflow-wrap: break-word;
+	word-break: break-word;
 
 	&.is-disabled {
 		opacity: 0.5;
