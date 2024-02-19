@@ -1,6 +1,6 @@
 <?php
 /**
- * Remote API: Content Suggestions Write Title API
+ * Remote API: Content Suggestions Suggest Headline API
  *
  * @package Parsely
  * @since 3.12.0
@@ -13,15 +13,15 @@ use Parsely\Parsely;
 use WP_Error;
 
 /**
- * Class for Content Suggestions Write Title API.
+ * Class for Content Suggestions Suggest Headline API.
  *
  * @since 3.12.0
  *
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
-class Write_Title_API extends Content_Suggestions_Base_API {
-	protected const ENDPOINT     = '/write-title';
-	protected const QUERY_FILTER = 'wp_parsely_write_title_endpoint_args';
+class Suggest_Headline_API extends Content_Suggestions_Base_API {
+	protected const ENDPOINT     = '/suggest-headline';
+	protected const QUERY_FILTER = 'wp_parsely_suggest_headline_endpoint_args';
 
 	/**
 	 * Generates titles for a given content using the Parse.ly
@@ -37,22 +37,25 @@ class Write_Title_API extends Content_Suggestions_Base_API {
 	 *                                object if the response is an error.
 	 */
 	public function get_titles( string $content, int $limit, string $persona = 'journalist', string $tone = 'neutral' ) {
-		$query = array(
-			'persona' => $persona,
-			'style'   => $tone,
-			'limit'   => $limit,
+		$body = array(
+			'output_config' => array(
+				'persona'   => $persona,
+				'style'     => $tone,
+				'max_items' => $limit,
+			),
+			'text'          => $content,
 		);
 
-		$decoded = $this->post_request( $query, array( 'text' => $content ) );
+		$decoded = $this->post_request( array(), $body );
 
 		if ( is_wp_error( $decoded ) ) {
 			return $decoded;
 		}
 
-		if ( ! property_exists( $decoded, 'titles' ) || ! is_array( $decoded->titles ) ) {
+		if ( ! property_exists( $decoded, 'result' ) || ! is_array( $decoded->result ) ) {
 			return new WP_Error( 400, __( 'Unable to parse titles from upstream API', 'wp-parsely' ) );
 		}
 
-		return $decoded->titles;
+		return $decoded->result;
 	}
 }

@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Write_Title_API;
+use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
 use Parsely\Tests\Integration\RemoteAPITest;
 
 /**
@@ -24,7 +24,7 @@ final class WriteTitleAPITest extends RemoteAPITest {
 	/**
 	 * Internal variable.
 	 *
-	 * @var Write_Title_API $write_title_api Holds an instance of the class being tested.
+	 * @var Suggest_Headline_API $write_title_api Holds an instance of the class being tested.
 	 */
 	private static $write_title_api;
 
@@ -34,7 +34,7 @@ final class WriteTitleAPITest extends RemoteAPITest {
 	 * @since 3.12.0
 	 */
 	public static function initialize(): void {
-		self::$remote_api = new Write_Title_API( new Parsely() );
+		self::$remote_api = new Suggest_Headline_API( new Parsely() );
 		// Required for PHPStan to recognize the type.
 		self::$write_title_api = self::$remote_api;
 	}
@@ -109,9 +109,9 @@ final class WriteTitleAPITest extends RemoteAPITest {
 	 *
 	 * @since 3.12.0
 	 *
-	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Write_Title_API::get_titles
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Write_Title_API::__construct
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Write_Title_API::get_titles
+	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API::get_titles
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API::__construct
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API::get_titles
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::__construct
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct

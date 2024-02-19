@@ -1,6 +1,6 @@
 <?php
 /**
- * Endpoints: Parse.ly Content Suggestion `/write-title` API proxy endpoint
+ * Endpoints: Parse.ly Content Suggestion `/suggest-headline` API proxy endpoint
  * class
  *
  * @package Parsely
@@ -13,22 +13,22 @@ namespace Parsely\Endpoints\ContentSuggestions;
 
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Write_Title_API;
+use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
 use stdClass;
 use WP_REST_Request;
 use WP_Error;
 
 /**
- * Configures the `/content-suggestions/write-title` REST API endpoint.
+ * Configures the `/content-suggestions/suggest-headline` REST API endpoint.
  *
  * @since 3.12.0
  */
-final class Write_Title_API_Proxy extends Base_API_Proxy {
+final class Suggest_Headline_API_Proxy extends Base_API_Proxy {
 
 	/**
-	 * The Write Title API instance.
+	 * The Suggest Headline API instance.
 	 *
-	 * @var Write_Title_API $write_title_api
+	 * @var Suggest_Headline_API $write_title_api
 	 */
 	private $write_title_api;
 
@@ -40,7 +40,7 @@ final class Write_Title_API_Proxy extends Base_API_Proxy {
 	 * @param Parsely $parsely The Parsely plugin instance.
 	 */
 	public function __construct( Parsely $parsely ) {
-		$this->write_title_api = new Write_Title_API( $parsely );
+		$this->write_title_api = new Suggest_Headline_API( $parsely );
 		parent::__construct( $parsely, $this->write_title_api );
 	}
 
@@ -50,7 +50,7 @@ final class Write_Title_API_Proxy extends Base_API_Proxy {
 	 * @since 3.12.0
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/content-suggestions/write-title' );
+		$this->register_endpoint( '/content-suggestions/suggest-headline', array( 'POST' ) );
 	}
 
 	/**
@@ -75,20 +75,9 @@ final class Write_Title_API_Proxy extends Base_API_Proxy {
 	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	public function get_items( WP_REST_Request $request ) {
-		if ( false === $this->parsely->site_id_is_set() ) {
-			return new WP_Error(
-				'parsely_site_id_not_set',
-				__( 'A Parse.ly Site ID must be set in site options to use this endpoint', 'wp-parsely' ),
-				array( 'status' => 403 )
-			);
-		}
-
-		if ( false === $this->parsely->api_secret_is_set() ) {
-			return new WP_Error(
-				'parsely_api_secret_not_set',
-				__( 'A Parse.ly API Secret must be set in site options to use this endpoint', 'wp-parsely' ),
-				array( 'status' => 403 )
-			);
+		$validation = $this->validate_apikey_and_secret();
+		if ( is_wp_error( $validation ) ) {
+			return $validation;
 		}
 
 		/**

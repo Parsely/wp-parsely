@@ -47,7 +47,8 @@ export class WriteTitleProvider {
 
 		try {
 			response = await apiFetch<WriteTitleApiResponse>( {
-				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/write-title', {
+				method: 'POST',
+				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-headline', {
 					content,
 					limit,
 					tone: getToneLabel( tone ),
