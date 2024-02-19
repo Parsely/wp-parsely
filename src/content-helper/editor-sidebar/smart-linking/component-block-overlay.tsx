@@ -148,6 +148,8 @@ const BlockOverlayFullContent = ( ): JSX.Element => {
 
 /**
  * A higher-order component that adds a block overlay over a specific block, flagged by the Smart Linking store.
+ *
+ * @since 3.14.0
  */
 export const withBlockOverlay = createHigherOrderComponent( ( BlockEdit ) => {
 	return ( props ) => {
@@ -159,7 +161,7 @@ export const withBlockOverlay = createHigherOrderComponent( ( BlockEdit ) => {
 			};
 		}, [] );
 
-		// If the block id is currently on the overlayBlocks array, we should render the overlay.
+		// If the block ID is currently on the overlayBlocks array, we should render the overlay.
 		if ( ! overlayBlocks.includes( props.clientId ) ) {
 			return <BlockEdit { ...props } />;
 		}
