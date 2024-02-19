@@ -8,6 +8,7 @@ import {
 	MenuItem,
 	TextControl,
 } from '@wordpress/components';
+import { useDebounce } from '@wordpress/compose';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Icon, chevronRight, megaphone } from '@wordpress/icons';
@@ -127,12 +128,24 @@ const CustomTone = (
 	{ value, onChange }: Readonly<CustomToneProps>
 ): JSX.Element => {
 	const [ customTone, setCustomTone ] = useState<string>( '' );
+	const debouncedOnChange = useDebounce( onChange, 500 );
+
 	return (
 		<div className="parsely-tone-selector-custom">
 			<TextControl
 				value={ customTone || value }
 				onChange={ ( newTone ) => {
-					onChange( newTone );
+					// If the tone is empty, set it to an empty string, and avoid debouncing.
+					if ( '' === newTone ) {
+						onChange( '' );
+						setCustomTone( '' );
+						return;
+					}
+					// Truncate the tone to 32 characters.
+					if ( newTone.length > 32 ) {
+						newTone = newTone.slice( 0, 32 );
+					}
+					debouncedOnChange( newTone );
 					setCustomTone( newTone );
 				} }
 				help={ __( 'Enter a custom tone', 'wp-parsely' ) }

@@ -8,6 +8,7 @@ import {
 	MenuItem,
 	TextControl,
 } from '@wordpress/components';
+import { useDebounce } from '@wordpress/compose';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Icon, chevronRight } from '@wordpress/icons';
@@ -132,12 +133,23 @@ const CustomPersona = (
 	{ value, onChange }: Readonly<CustomPersonaProps>
 ): JSX.Element => {
 	const [ customPersona, setCustomPersona ] = useState<string>( '' );
+	const debouncedOnChange = useDebounce( onChange, 500 );
 	return (
 		<div className="parsely-persona-selector-custom">
 			<TextControl
 				value={ customPersona || value }
 				onChange={ ( newPersona ) => {
-					onChange( newPersona );
+					// If the persona is empty, set it to an empty string, and avoid debouncing.
+					if ( '' === newPersona ) {
+						onChange( '' );
+						setCustomPersona( '' );
+						return;
+					}
+					// Truncate the persona to 32 characters.
+					if ( newPersona.length > 32 ) {
+						newPersona = newPersona.slice( 0, 32 );
+					}
+					debouncedOnChange( newPersona );
 					setCustomPersona( newPersona );
 				} }
 				help={ __( 'Enter a custom persona', 'wp-parsely' ) }
