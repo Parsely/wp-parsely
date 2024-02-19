@@ -94,7 +94,7 @@ export class ContentHelperError extends Error {
 		} else if ( this.code === ContentHelperErrorCode.ParselyUpstreamMalformedResponse &&
 			this.message.includes( 'Insufficient Storage' ) ) {
 			this.message = __(
-				'The Parse.ly API couldn\'t find any relevant data to fulfill the request. Please try again later.',
+				'The Parse.ly API couldn\'t find any relevant data to fulfill the request. Please retry with a different input.',
 				'wp-parsely'
 			);
 		} else if ( this.code === ContentHelperErrorCode.ParselyUpstreamMalformedResponse ) {
