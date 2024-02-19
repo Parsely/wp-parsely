@@ -50,7 +50,7 @@ abstract class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 	 *
 	 * @return array<string, mixed> The array of options.
 	 */
-	protected function get_request_options(): array {
+	public function get_request_options(): array {
 		$options = array(
 			'headers'     => array( 'Content-Type' => 'application/json; charset=utf-8' ),
 			'data_format' => 'body',

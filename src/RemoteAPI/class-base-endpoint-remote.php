@@ -128,7 +128,7 @@ abstract class Base_Endpoint_Remote extends Base_Endpoint implements Remote_API_
 	 *
 	 * @return array<string, mixed> The array of options.
 	 */
-	protected function get_request_options(): array {
+	public function get_request_options(): array {
 		return array();
 	}
 

@@ -19,7 +19,7 @@ use Parsely\Tests\Integration\RemoteAPITest;
  *
  * @since 3.14.0
  */
-final class SuggestLinksAPITest extends RemoteAPITest {
+final class SuggestLinksAPITest extends BaseContentSuggestionsAPITest {
 	/**
 	 * Internal variable.
 	 *
@@ -41,19 +41,19 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 	/**
 	 * Provides data for test_api_url().
 	 *
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constrains
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
+
 	 * @since 3.14.0
-	 *
 	 * @return \ArrayIterator<string, mixed>
 	 */
 	public function data_api_url(): iterable {
 		yield 'Basic (Expected data)' => array(
 			array(
-				'apikey'         => 'my-key',
-				'max_link_words' => '4',
-				'max_links'      => '10',
+				'apikey' => 'my-key',
 			),
 			Parsely::PUBLIC_SUGGESTIONS_API_BASE_URL .
-				'/suggest-links?apikey=my-key&max_link_words=4&max_links=10&secret=my-secret',
+				'/suggest-linked-reference?apikey=my-key',
 		);
 	}
 
@@ -75,29 +75,29 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 		array $args,
 		string $url
 	) {
-		if ( ! str_contains( $url, 'suggest-links' ) ) {
+		if ( ! str_contains( $url, 'suggest-linked-reference' ) ) {
 			return false;
 		}
 
 		$response = array(
-			'links' => array(
+			'result' => array(
 				array(
-					'href'   => 'http://example.com/article-1',
-					'title'  => 'Cool article 1',
-					'text'   => 'Lorem ipsum',
-					'offset' => 0,
+					'canonical_url' => 'http://example.com/article-1',
+					'title'         => 'Cool article 1',
+					'text'          => 'Lorem ipsum',
+					'offset'        => 0,
 				),
 				array(
-					'href'   => 'http://example.com/article-2',
-					'title'  => 'A great article 2',
-					'text'   => 'maximus',
-					'offset' => 0,
+					'canonical_url' => 'http://example.com/article-2',
+					'title'         => 'A great article 2',
+					'text'          => 'maximus',
+					'offset'        => 0,
 				),
 				array(
-					'href'   => 'http://example.com/article-3',
-					'title'  => 'Yet another great article 3',
-					'text'   => 'maximus',
-					'offset' => 1,
+					'canonical_url' => 'http://example.com/article-3',
+					'title'         => 'Yet another great article 3',
+					'text'          => 'maximus',
+					'offset'        => 1,
 				),
 			),
 		);
@@ -131,6 +131,8 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_request_options
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::post_request
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constrains
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
 	 */
 	public function test_get_links(): void {
 		$content = '<p>
