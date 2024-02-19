@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration Tests: Parsely Content Suggestions Write Title API
+ * Integration Tests: Parsely Content Suggestions Suggest Headline API
  *
  * @package Parsely\Tests
  * @since   3.12.0
@@ -12,14 +12,13 @@ namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
 
 use Parsely\Parsely;
 use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
-use Parsely\Tests\Integration\RemoteAPITest;
 
 /**
- * Integration Tests for the Parse.ly Content Suggestions Write Title API.
+ * Integration Tests for the Parse.ly Content Suggestions Suggest Headline API.
  *
  * @since 3.12.0
  */
-final class WriteTitleAPITest extends RemoteAPITest {
+final class SuggestHeadlineAPITest extends BaseContentSuggestionsAPITest {
 
 	/**
 	 * Internal variable.
@@ -49,19 +48,15 @@ final class WriteTitleAPITest extends RemoteAPITest {
 	public function data_api_url(): iterable {
 		yield 'Basic (Expected data)' => array(
 			array(
-				'apikey'  => 'my-key',
-				'secret'  => 'my-secret',
-				'persona' => 'journalist',
-				'style'   => 'neutral',
-				'limit'   => 3,
+				'apikey' => 'my-key',
 			),
 			Parsely::PUBLIC_SUGGESTIONS_API_BASE_URL .
-				'/write-title?apikey=my-key&limit=3&persona=journalist&secret=my-secret&style=neutral',
+				'/suggest-headline?apikey=my-key',
 		);
 	}
 
 	/**
-	 * Mocks a successful HTTP response to the Content Suggestion write-titles
+	 * Mocks a successful HTTP response to the Content Suggestion suggest-headline
 	 * API endpoint.
 	 *
 	 * @since 3.12.0
@@ -78,12 +73,12 @@ final class WriteTitleAPITest extends RemoteAPITest {
 		array $args,
 		string $url
 	) {
-		if ( ! str_contains( $url, 'write-title' ) ) {
+		if ( ! str_contains( $url, 'suggest-headline' ) ) {
 			return false;
 		}
 
 		$response = array(
-			'titles' => array(
+			'result' => array(
 				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
 				'Donec maximus metus sed urna maximus, et malesuada dui placerat.',
 				'Donec risus dui, dictum nec interdum eu, malesuada non diam.',
