@@ -1,6 +1,6 @@
 <?php
 /**
- * Remote API: Content Suggestions Suggest Links API
+ * Remote API: Content Suggestions Suggest Linked Reference (Smart Links) API
  *
  * @package Parsely
  * @since   3.14.0
@@ -16,15 +16,15 @@ use WP_Error;
 require_once __DIR__ . '/class-link-suggestion.php';
 
 /**
- * Class for Content Suggestions Suggest Links API.
+ * Class for Content Suggestions Suggest Linked Reference (Smart Links) API.
  *
  * @since 3.14.0
  *
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
-class Suggest_Links_API extends Content_Suggestions_Base_API {
+class Suggest_Linked_Reference_API extends Content_Suggestions_Base_API {
 	protected const ENDPOINT     = '/suggest-linked-reference';
-	protected const QUERY_FILTER = 'wp_parsely_suggest_links_endpoint_args';
+	protected const QUERY_FILTER = 'wp_parsely_suggest_linked_reference_endpoint_args';
 
 	/**
 	 * Gets suggested smart links for the given content.
@@ -61,7 +61,7 @@ class Suggest_Links_API extends Content_Suggestions_Base_API {
 			! is_array( $decoded->result ) ) {
 			return new WP_Error(
 				400,
-				__( 'Unable to parse meta description from upstream API', 'wp-parsely' )
+				__( 'Unable to parse suggested links from upstream API', 'wp-parsely' )
 			);
 		}
 

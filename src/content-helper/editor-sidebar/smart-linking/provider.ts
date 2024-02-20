@@ -12,7 +12,7 @@ import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
 
 /**
  * Structure of a link suggestion returned by the
- * `content-suggestions/suggest-links` endpoint.
+ * `content-suggestions/suggest-linked-reference` endpoint.
  *
  * @since 3.14.0
  */
@@ -25,7 +25,7 @@ export type LinkSuggestion = {
 
 /**
  * Specifies the form of the response returned by the
- * `content-suggestions/suggest-links` WordPress REST API endpoint.
+ * `content-suggestions/suggest-linked-reference` WordPress REST API endpoint.
  *
  * @since 3.14.0
  */
@@ -35,7 +35,7 @@ interface SmartLinkingApiResponse {
 }
 
 /**
- * Returns data from the `content-suggestions/suggest-links` WordPress REST API
+ * Returns data from the `content-suggestions/suggest-linked-reference` WordPress REST API
  * endpoint.
  *
  * @since 3.14.0
@@ -60,7 +60,7 @@ export class SmartLinkingProvider {
 		try {
 			response = await apiFetch<SmartLinkingApiResponse>( {
 				method: 'POST',
-				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-links', {
+				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-linked-reference', {
 					max_link_words: maxLinkWords,
 					max_links: maxLinksPerPost,
 				} ),

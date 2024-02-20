@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration Tests: Parsely Content Suggestions Suggest Links API
+ * Integration Tests: Parsely Content Suggestions Suggest Linked Reference API
  *
  * @package Parsely\Tests
  * @since   3.14.0
@@ -11,20 +11,20 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Links_API;
+use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
 
 /**
- * Integration Tests for the Parse.ly Content Suggestions Suggest Links API.
+ * Integration Tests for the Parse.ly Content Suggestions Suggest Linked Reference API.
  *
  * @since 3.14.0
  */
-final class SuggestLinksAPITest extends BaseContentSuggestionsAPITest {
+final class SuggestLinkedReferenceAPITest extends BaseContentSuggestionsAPITest {
 	/**
 	 * Internal variable.
 	 *
-	 * @var Suggest_Links_API $suggest_links_api Holds an instance of the class being tested.
+	 * @var Suggest_Linked_Reference_API $suggest_linked_reference_api Holds an instance of the class being tested.
 	 */
-	private static $suggest_links_api;
+	private static $suggest_linked_reference_api;
 
 	/**
 	 * Initializes all required values for the test.
@@ -32,9 +32,9 @@ final class SuggestLinksAPITest extends BaseContentSuggestionsAPITest {
 	 * @since 3.14.0
 	 */
 	public static function initialize(): void {
-		self::$remote_api = new Suggest_Links_API( new Parsely() );
+		self::$remote_api = new Suggest_Linked_Reference_API( new Parsely() );
 		// Required for PHPStan to recognize the type.
-		self::$suggest_links_api = self::$remote_api;
+		self::$suggest_linked_reference_api = self::$remote_api;
 	}
 
 	/**
@@ -120,7 +120,7 @@ final class SuggestLinksAPITest extends BaseContentSuggestionsAPITest {
 	 *
 	 * @since 3.14.0
 	 *
-	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Links_API::get_links
+	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API::get_links
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
@@ -144,7 +144,7 @@ final class SuggestLinksAPITest extends BaseContentSuggestionsAPITest {
 		add_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_links_response' ), 10, 3 );
 
 		// Test getting three titles.
-		$suggested_links = self::$suggest_links_api->get_links( $content );
+		$suggested_links = self::$suggest_linked_reference_api->get_links( $content );
 
 		self::assertIsArray( $suggested_links );
 		self::assertEquals( 3, count( $suggested_links ) );

@@ -1,6 +1,6 @@
 <?php
 /**
- * Endpoints: Parse.ly Content Suggestions `/suggest-links` API proxy endpoint
+ * Endpoints: Parse.ly Content Suggestions `/suggest-linked-reference` API proxy endpoint
  * class
  *
  * @package Parsely
@@ -13,23 +13,23 @@ namespace Parsely\Endpoints\ContentSuggestions;
 
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Links_API;
+use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
 use stdClass;
 use WP_REST_Request;
 use WP_Error;
 
 /**
- * Configures the `/content-suggestions/suggest-links` REST API endpoint.
+ * Configures the `/content-suggestions/suggest-linked-reference` REST API endpoint.
  *
  * @since 3.14.0
  */
-final class Suggest_Links_API_Proxy extends Base_API_Proxy {
+final class Suggest_Linked_Reference_API_Proxy extends Base_API_Proxy {
 	/**
-	 * The Suggest Links API instance.
+	 * The Suggest Linked Reference API instance.
 	 *
-	 * @var Suggest_Links_API $suggest_links_api
+	 * @var Suggest_Linked_Reference_API $suggest_linked_reference_api
 	 */
-	private $suggest_links_api;
+	private $suggest_linked_reference_api;
 
 	/**
 	 * Initializes the class.
@@ -39,8 +39,8 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 	 * @param Parsely $parsely The Parsely plugin instance.
 	 */
 	public function __construct( Parsely $parsely ) {
-		$this->suggest_links_api = new Suggest_Links_API( $parsely );
-		parent::__construct( $parsely, $this->suggest_links_api );
+		$this->suggest_linked_reference_api = new Suggest_Linked_Reference_API( $parsely );
+		parent::__construct( $parsely, $this->suggest_linked_reference_api );
 	}
 
 	/**
@@ -49,7 +49,7 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 	 * @since 3.14.0
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/content-suggestions/suggest-links', array( 'POST' ) );
+		$this->register_endpoint( '/content-suggestions/suggest-linked-reference', array( 'POST' ) );
 	}
 
 	/**
@@ -121,7 +121,7 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 			$max_links = 10;
 		}
 
-		$response = $this->suggest_links_api->get_links(
+		$response = $this->suggest_linked_reference_api->get_links(
 			$post_content,
 			$max_link_words,
 			$max_links
