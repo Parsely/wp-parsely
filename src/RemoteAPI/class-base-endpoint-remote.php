@@ -60,7 +60,7 @@ abstract class Base_Endpoint_Remote extends Base_Endpoint implements Remote_API_
 	 * @return string
 	 */
 	public function get_api_url( array $query ): string {
-		$this->validate_required_constrains();
+		$this->validate_required_constraints();
 
 		$query['apikey'] = $this->parsely->get_site_id();
 		if ( $this->parsely->api_secret_is_set() ) {
@@ -135,9 +135,11 @@ abstract class Base_Endpoint_Remote extends Base_Endpoint implements Remote_API_
 	/**
 	 * Validates that required constants are defined.
 	 *
+	 * @since 3.14.0
+	 *
 	 * @throws UnexpectedValueException If any required constant is not defined.
 	 */
-	protected function validate_required_constrains(): void {
+	protected function validate_required_constraints(): void {
 		if ( static::ENDPOINT === '' ) {
 			throw new UnexpectedValueException( 'ENDPOINT constant must be defined in child class.' );
 		}

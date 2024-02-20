@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Parsely\RemoteAPI\ContentSuggestions;
 
-use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Parsely;
 use WP_Error;
 
@@ -25,7 +24,7 @@ use WP_Error;
  */
 class Suggest_Brief_API extends Content_Suggestions_Base_API {
 	protected const ENDPOINT     = '/suggest-brief';
-	protected const QUERY_FILTER = 'wp_parsely_suggest_summary_endpoint_args';
+	protected const QUERY_FILTER = 'wp_parsely_suggest_brief_endpoint_args';
 
 	/**
 	 * Gets the brief (meta description) for a given content using the Parse.ly
@@ -38,9 +37,14 @@ class Suggest_Brief_API extends Content_Suggestions_Base_API {
 	 * @param string $persona The persona to use for the suggestion.
 	 * @param string $style   The style to use for the suggestion.
 	 * @return string|WP_Error The response from the remote API, or a WP_Error
-	 *                                object if the response is an error.
+	 *                         object if the response is an error.
 	 */
-	public function get_suggestion( string $title, string $content, string $persona = 'journalist', string $style = 'neutral' ) {
+	public function get_suggestion(
+		string $title,
+		string $content,
+		string $persona = 'journalist',
+		string $style = 'neutral'
+	) {
 		$body = array(
 			'output_config' => array(
 				'persona' => $persona,
@@ -58,7 +62,10 @@ class Suggest_Brief_API extends Content_Suggestions_Base_API {
 
 		if ( ! property_exists( $decoded, 'result' ) ||
 			! is_string( $decoded->result ) ) {
-			return new WP_Error( 400, __( 'Unable to parse meta description from upstream API', 'wp-parsely' ) );
+			return new WP_Error(
+				400,
+				__( 'Unable to parse meta description from upstream API', 'wp-parsely' )
+			);
 		}
 
 		return $decoded->result;

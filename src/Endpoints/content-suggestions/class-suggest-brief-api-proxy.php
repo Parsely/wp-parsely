@@ -27,7 +27,7 @@ use WP_Error;
 final class Suggest_Brief_API_Proxy extends Base_API_Proxy {
 
 	/**
-	 * The Write Title API instance.
+	 * The Suggest Brief API instance.
 	 *
 	 * @var Suggest_Brief_API $suggest_brief_api
 	 */

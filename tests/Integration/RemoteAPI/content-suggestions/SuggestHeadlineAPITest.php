@@ -17,15 +17,16 @@ use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
  * Integration Tests for the Parse.ly Content Suggestions Suggest Headline API.
  *
  * @since 3.12.0
+ * @since 3.14.0 Renamed from WriteTitleAPITest to SuggestHeadlineAPITest.
  */
 final class SuggestHeadlineAPITest extends BaseContentSuggestionsAPITest {
 
 	/**
 	 * Internal variable.
 	 *
-	 * @var Suggest_Headline_API $write_title_api Holds an instance of the class being tested.
+	 * @var Suggest_Headline_API $suggest_headline_api Holds an instance of the class being tested.
 	 */
-	private static $write_title_api;
+	private static $suggest_headline_api;
 
 	/**
 	 * Initializes all required values for the test.
@@ -35,7 +36,7 @@ final class SuggestHeadlineAPITest extends BaseContentSuggestionsAPITest {
 	public static function initialize(): void {
 		self::$remote_api = new Suggest_Headline_API( new Parsely() );
 		// Required for PHPStan to recognize the type.
-		self::$write_title_api = self::$remote_api;
+		self::$suggest_headline_api = self::$remote_api;
 	}
 
 	/**
@@ -68,7 +69,7 @@ final class SuggestHeadlineAPITest extends BaseContentSuggestionsAPITest {
 	 *
 	 * @phpstan-ignore-next-line
 	 */
-	public function mock_successful_write_titles_response(
+	public function mock_successful_suggest_headline_response(
 		string $response,
 		array $args,
 		string $url
@@ -119,15 +120,15 @@ final class SuggestHeadlineAPITest extends BaseContentSuggestionsAPITest {
 			</p>';
 
 		// Mock API result.
-		add_filter( 'pre_http_request', array( $this, 'mock_successful_write_titles_response' ), 10, 3 );
+		add_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_headline_response' ), 10, 3 );
 
 		// Test getting three titles.
-		$titles = self::$write_title_api->get_titles( $content, 3 );
+		$titles = self::$suggest_headline_api->get_titles( $content, 3 );
 
 		self::assertIsArray( $titles );
 		self::assertEquals( 3, count( $titles ) );
 
 		// Remove mock.
-		remove_filter( 'pre_http_request', array( $this, 'mock_successful_write_titles_response' ) );
+		remove_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_headline_response' ) );
 	}
 }

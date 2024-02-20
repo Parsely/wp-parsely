@@ -12,7 +12,6 @@ namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
 
 use Parsely\Parsely;
 use Parsely\RemoteAPI\ContentSuggestions\Suggest_Links_API;
-use Parsely\Tests\Integration\RemoteAPITest;
 
 /**
  * Integration Tests for the Parse.ly Content Suggestions Suggest Links API.
@@ -41,7 +40,7 @@ final class SuggestLinksAPITest extends BaseContentSuggestionsAPITest {
 	/**
 	 * Provides data for test_api_url().
 	 *
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constrains
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
 
 	 * @since 3.14.0
@@ -131,7 +130,7 @@ final class SuggestLinksAPITest extends BaseContentSuggestionsAPITest {
 	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_request_options
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::post_request
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constrains
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
 	 */
 	public function test_get_links(): void {
@@ -158,6 +157,6 @@ final class SuggestLinksAPITest extends BaseContentSuggestionsAPITest {
 		}
 
 		// Remove mock.
-		remove_filter( 'pre_http_request', array( $this, 'mock_successful_write_titles_response' ) );
+		remove_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_links_response' ) );
 	}
 }

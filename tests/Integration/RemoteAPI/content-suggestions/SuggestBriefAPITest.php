@@ -17,15 +17,16 @@ use Parsely\RemoteAPI\ContentSuggestions\Suggest_Brief_API;
  * Integration Tests for the Parse.ly Content Suggestions Suggest Brief API.
  *
  * @since 3.13.0
+ * @since 3.14.0 Renamed from SuggestMetaDescriptionAPITest to SuggestBriefAPITest.
  */
 final class SuggestBriefAPITest extends BaseContentSuggestionsAPITest {
 
 	/**
 	 * Internal variable.
 	 *
-	 * @var Suggest_Brief_API $suggest_meta_description_api Holds an instance of the class being tested.
+	 * @var Suggest_Brief_API $suggest_brief_api Holds an instance of the class being tested.
 	 */
-	private static $suggest_meta_description_api;
+	private static $suggest_brief_api;
 
 	/**
 	 * Initializes all required values for the test.
@@ -35,7 +36,7 @@ final class SuggestBriefAPITest extends BaseContentSuggestionsAPITest {
 	public static function initialize(): void {
 		self::$remote_api = new Suggest_Brief_API( new Parsely() );
 		// Required for PHPStan to recognize the type.
-		self::$suggest_meta_description_api = self::$remote_api;
+		self::$suggest_brief_api = self::$remote_api;
 	}
 
 	/**
@@ -69,7 +70,7 @@ final class SuggestBriefAPITest extends BaseContentSuggestionsAPITest {
 	 *
 	 * @phpstan-ignore-next-line
 	 */
-	public function mock_successful_suggest_meta_description_response(
+	public function mock_successful_suggest_brief_response(
 		string $response,
 		array $args,
 		string $url
@@ -108,7 +109,7 @@ final class SuggestBriefAPITest extends BaseContentSuggestionsAPITest {
 	 * @uses \Parsely\Parsely::get_site_id()
 	 * @uses \Parsely\Parsely::set_default_track_as_values()
 	 * @uses \Parsely\Parsely::site_id_is_set()
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constrains()
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints()
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url()
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_request_options()
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::post_request()
@@ -120,15 +121,15 @@ final class SuggestBriefAPITest extends BaseContentSuggestionsAPITest {
 		$style   = 'neutral';
 
 		// Mock API result.
-		add_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_meta_description_response' ), 10, 3 );
+		add_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_brief_response' ), 10, 3 );
 
 		// Test getting meta description.
-		$meta_description = self::$suggest_meta_description_api->get_suggestion( $title, $content, $persona, $style );
+		$brief = self::$suggest_brief_api->get_suggestion( $title, $content, $persona, $style );
 
-		self::assertIsString( $meta_description );
-		self::assertEquals( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', $meta_description );
+		self::assertIsString( $brief );
+		self::assertEquals( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', $brief );
 
 		// Remove mock.
-		remove_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_meta_description_response' ) );
+		remove_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_brief_response' ) );
 	}
 }

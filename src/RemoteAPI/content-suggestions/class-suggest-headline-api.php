@@ -8,7 +8,6 @@
 
 namespace Parsely\RemoteAPI\ContentSuggestions;
 
-use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Parsely;
 use WP_Error;
 
@@ -16,6 +15,7 @@ use WP_Error;
  * Class for Content Suggestions Suggest Headline API.
  *
  * @since 3.12.0
+ * @since 3.14.0 Renamed from Write_Title_API to Suggest_Headline_API.
  *
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
@@ -36,7 +36,12 @@ class Suggest_Headline_API extends Content_Suggestions_Base_API {
 	 * @return array<string>|WP_Error The response from the remote API, or a WP_Error
 	 *                                object if the response is an error.
 	 */
-	public function get_titles( string $content, int $limit, string $persona = 'journalist', string $tone = 'neutral' ) {
+	public function get_titles(
+		string $content,
+		int $limit,
+		string $persona = 'journalist',
+		string $tone = 'neutral'
+	) {
 		$body = array(
 			'output_config' => array(
 				'persona'   => $persona,
@@ -53,7 +58,10 @@ class Suggest_Headline_API extends Content_Suggestions_Base_API {
 		}
 
 		if ( ! property_exists( $decoded, 'result' ) || ! is_array( $decoded->result ) ) {
-			return new WP_Error( 400, __( 'Unable to parse titles from upstream API', 'wp-parsely' ) );
+			return new WP_Error(
+				400,
+				__( 'Unable to parse titles from upstream API', 'wp-parsely' )
+			);
 		}
 
 		return $decoded->result;

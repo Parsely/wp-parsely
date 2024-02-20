@@ -22,15 +22,16 @@ use WP_Error;
  * Configures the `/content-suggestions/suggest-headline` REST API endpoint.
  *
  * @since 3.12.0
+ * @since 3.14.0 Renamed from Write_Title_API_Proxy to Suggest_Headline_API_Proxy.
  */
 final class Suggest_Headline_API_Proxy extends Base_API_Proxy {
 
 	/**
 	 * The Suggest Headline API instance.
 	 *
-	 * @var Suggest_Headline_API $write_title_api
+	 * @var Suggest_Headline_API $suggest_headline_api
 	 */
-	private $write_title_api;
+	private $suggest_headline_api;
 
 	/**
 	 * Initializes the class.
@@ -40,8 +41,8 @@ final class Suggest_Headline_API_Proxy extends Base_API_Proxy {
 	 * @param Parsely $parsely The Parsely plugin instance.
 	 */
 	public function __construct( Parsely $parsely ) {
-		$this->write_title_api = new Suggest_Headline_API( $parsely );
-		parent::__construct( $parsely, $this->write_title_api );
+		$this->suggest_headline_api = new Suggest_Headline_API( $parsely );
+		parent::__construct( $parsely, $this->suggest_headline_api );
 	}
 
 	/**
@@ -103,7 +104,7 @@ final class Suggest_Headline_API_Proxy extends Base_API_Proxy {
 			$limit = 3;
 		}
 
-		$response = $this->write_title_api->get_titles( $post_content, $limit, $persona, $tone );
+		$response = $this->suggest_headline_api->get_titles( $post_content, $limit, $persona, $tone );
 
 		if ( is_wp_error( $response ) ) {
 			return $response;

@@ -77,12 +77,13 @@ abstract class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 	 * @return string
 	 */
 	public function get_api_url( array $query = array() ): string {
-		$this->validate_required_constrains();
+		$this->validate_required_constraints();
 
 		$query['apikey'] = $this->parsely->get_site_id();
-		$query           = array_filter( $query );
 
-		// Sort by key so the query args are in alphabetical order.
+		// Remove empty entries and sort by key so the query args are in
+		// alphabetical order.
+		$query = array_filter( $query );
 		ksort( $query );
 
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Hook names are defined in child classes.
@@ -93,16 +94,18 @@ abstract class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 	/**
 	 * Sends a POST request to the Parse.ly Content Suggestion API.
 	 *
-	 * This method sends a POST request to the Parse.ly Content Suggestion API and returns the response.
-	 * The response is either a WP_Error object in case of an error, or a decoded JSON object in case of a
-	 * successful request.
+	 * This method sends a POST request to the Parse.ly Content Suggestion API and returns the
+	 * response. The response is either a WP_Error object in case of an error, or a decoded JSON
+	 * object in case of a successful request.
 	 *
 	 * @since 3.13.0
 	 *
-	 * @param array<string|int|bool>              $query An associative array containing the query parameters for the API request.
-	 * @param array<string|int|bool|array<mixed>> $body An associative array containing the body parameters for the API request.
-	 * @return WP_Error|object              Returns a WP_Error object in case of an error, or a decoded JSON object
-	 *                                      case of a successful request.
+	 * @param array<string|int|bool>              $query An associative array containing the query
+	 *                                                   parameters for the API request.
+	 * @param array<string|int|bool|array<mixed>> $body An associative array containing the body
+	 *                                                  parameters for the API request.
+	 * @return WP_Error|object Returns a WP_Error object in case of an error, or a decoded JSON
+	 *                         object in case of a successful request.
 	 */
 	protected function post_request( array $query = array(), array $body = array() ) {
 		$full_api_url = $this->get_api_url( $query );

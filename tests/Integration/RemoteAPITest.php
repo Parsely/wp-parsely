@@ -12,7 +12,6 @@ namespace Parsely\Tests\Integration;
 
 use Parsely\RemoteAPI\Cache;
 use Parsely\RemoteAPI\Base_Endpoint_Remote;
-use Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API;
 use Parsely\RemoteAPI\Remote_API_Cache;
 
 /**
@@ -57,7 +56,7 @@ abstract class RemoteAPITest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_site_id
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constrains
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
 	 *
 	 * @param array<string, mixed> $query Test query arguments.
