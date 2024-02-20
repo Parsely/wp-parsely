@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration Tests: Parsely Content Suggestions Suggest Links API
+ * Integration Tests: Parsely Content Suggestions Suggest Linked Reference API
  *
  * @package Parsely\Tests
  * @since   3.14.0
@@ -11,21 +11,20 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Links_API;
-use Parsely\Tests\Integration\RemoteAPITest;
+use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
 
 /**
- * Integration Tests for the Parse.ly Content Suggestions Suggest Links API.
+ * Integration Tests for the Parse.ly Content Suggestions Suggest Linked Reference API.
  *
  * @since 3.14.0
  */
-final class SuggestLinksAPITest extends RemoteAPITest {
+final class SuggestLinkedReferenceAPITest extends BaseContentSuggestionsAPITest {
 	/**
 	 * Internal variable.
 	 *
-	 * @var Suggest_Links_API $suggest_links_api Holds an instance of the class being tested.
+	 * @var Suggest_Linked_Reference_API $suggest_linked_reference_api Holds an instance of the class being tested.
 	 */
-	private static $suggest_links_api;
+	private static $suggest_linked_reference_api;
 
 	/**
 	 * Initializes all required values for the test.
@@ -33,28 +32,27 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 	 * @since 3.14.0
 	 */
 	public static function initialize(): void {
-		self::$remote_api = new Suggest_Links_API( new Parsely() );
+		self::$remote_api = new Suggest_Linked_Reference_API( new Parsely() );
 		// Required for PHPStan to recognize the type.
-		self::$suggest_links_api = self::$remote_api;
+		self::$suggest_linked_reference_api = self::$remote_api;
 	}
 
 	/**
 	 * Provides data for test_api_url().
 	 *
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
+
 	 * @since 3.14.0
-	 *
 	 * @return \ArrayIterator<string, mixed>
 	 */
 	public function data_api_url(): iterable {
 		yield 'Basic (Expected data)' => array(
 			array(
-				'apikey'         => 'my-key',
-				'secret'         => 'my-secret',
-				'max_link_words' => '4',
-				'max_links'      => '10',
+				'apikey' => 'my-key',
 			),
 			Parsely::PUBLIC_SUGGESTIONS_API_BASE_URL .
-				'/suggest-links?apikey=my-key&max_link_words=4&max_links=10&secret=my-secret',
+				'/suggest-linked-reference?apikey=my-key',
 		);
 	}
 
@@ -76,29 +74,29 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 		array $args,
 		string $url
 	) {
-		if ( ! str_contains( $url, 'suggest-links' ) ) {
+		if ( ! str_contains( $url, 'suggest-linked-reference' ) ) {
 			return false;
 		}
 
 		$response = array(
-			'links' => array(
+			'result' => array(
 				array(
-					'href'   => 'http://example.com/article-1',
-					'title'  => 'Cool article 1',
-					'text'   => 'Lorem ipsum',
-					'offset' => 0,
+					'canonical_url' => 'http://example.com/article-1',
+					'title'         => 'Cool article 1',
+					'text'          => 'Lorem ipsum',
+					'offset'        => 0,
 				),
 				array(
-					'href'   => 'http://example.com/article-2',
-					'title'  => 'A great article 2',
-					'text'   => 'maximus',
-					'offset' => 0,
+					'canonical_url' => 'http://example.com/article-2',
+					'title'         => 'A great article 2',
+					'text'          => 'maximus',
+					'offset'        => 0,
 				),
 				array(
-					'href'   => 'http://example.com/article-3',
-					'title'  => 'Yet another great article 3',
-					'text'   => 'maximus',
-					'offset' => 1,
+					'canonical_url' => 'http://example.com/article-3',
+					'title'         => 'Yet another great article 3',
+					'text'          => 'maximus',
+					'offset'        => 1,
 				),
 			),
 		);
@@ -122,7 +120,7 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 	 *
 	 * @since 3.14.0
 	 *
-	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Links_API::get_links
+	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API::get_links
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
@@ -132,6 +130,8 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_request_options
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::post_request
+	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
 	 */
 	public function test_get_links(): void {
 		$content = '<p>
@@ -144,7 +144,7 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 		add_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_links_response' ), 10, 3 );
 
 		// Test getting three titles.
-		$suggested_links = self::$suggest_links_api->get_links( $content );
+		$suggested_links = self::$suggest_linked_reference_api->get_links( $content );
 
 		self::assertIsArray( $suggested_links );
 		self::assertEquals( 3, count( $suggested_links ) );
@@ -157,6 +157,6 @@ final class SuggestLinksAPITest extends RemoteAPITest {
 		}
 
 		// Remove mock.
-		remove_filter( 'pre_http_request', array( $this, 'mock_successful_write_titles_response' ) );
+		remove_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_links_response' ) );
 	}
 }

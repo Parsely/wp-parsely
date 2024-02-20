@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration Tests: Parsely Content Suggestions Write Title API
+ * Integration Tests: Parsely Content Suggestions Suggest Headline API
  *
  * @package Parsely\Tests
  * @since   3.12.0
@@ -11,22 +11,22 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Write_Title_API;
-use Parsely\Tests\Integration\RemoteAPITest;
+use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
 
 /**
- * Integration Tests for the Parse.ly Content Suggestions Write Title API.
+ * Integration Tests for the Parse.ly Content Suggestions Suggest Headline API.
  *
  * @since 3.12.0
+ * @since 3.14.0 Renamed from WriteTitleAPITest to SuggestHeadlineAPITest.
  */
-final class WriteTitleAPITest extends RemoteAPITest {
+final class SuggestHeadlineAPITest extends BaseContentSuggestionsAPITest {
 
 	/**
 	 * Internal variable.
 	 *
-	 * @var Write_Title_API $write_title_api Holds an instance of the class being tested.
+	 * @var Suggest_Headline_API $suggest_headline_api Holds an instance of the class being tested.
 	 */
-	private static $write_title_api;
+	private static $suggest_headline_api;
 
 	/**
 	 * Initializes all required values for the test.
@@ -34,9 +34,9 @@ final class WriteTitleAPITest extends RemoteAPITest {
 	 * @since 3.12.0
 	 */
 	public static function initialize(): void {
-		self::$remote_api = new Write_Title_API( new Parsely() );
+		self::$remote_api = new Suggest_Headline_API( new Parsely() );
 		// Required for PHPStan to recognize the type.
-		self::$write_title_api = self::$remote_api;
+		self::$suggest_headline_api = self::$remote_api;
 	}
 
 	/**
@@ -49,19 +49,15 @@ final class WriteTitleAPITest extends RemoteAPITest {
 	public function data_api_url(): iterable {
 		yield 'Basic (Expected data)' => array(
 			array(
-				'apikey'  => 'my-key',
-				'secret'  => 'my-secret',
-				'persona' => 'journalist',
-				'style'   => 'neutral',
-				'limit'   => 3,
+				'apikey' => 'my-key',
 			),
 			Parsely::PUBLIC_SUGGESTIONS_API_BASE_URL .
-				'/write-title?apikey=my-key&limit=3&persona=journalist&secret=my-secret&style=neutral',
+				'/suggest-headline?apikey=my-key',
 		);
 	}
 
 	/**
-	 * Mocks a successful HTTP response to the Content Suggestion write-titles
+	 * Mocks a successful HTTP response to the Content Suggestion suggest-headline
 	 * API endpoint.
 	 *
 	 * @since 3.12.0
@@ -73,17 +69,17 @@ final class WriteTitleAPITest extends RemoteAPITest {
 	 *
 	 * @phpstan-ignore-next-line
 	 */
-	public function mock_successful_write_titles_response(
+	public function mock_successful_suggest_headline_response(
 		string $response,
 		array $args,
 		string $url
 	) {
-		if ( ! str_contains( $url, 'write-title' ) ) {
+		if ( ! str_contains( $url, 'suggest-headline' ) ) {
 			return false;
 		}
 
 		$response = array(
-			'titles' => array(
+			'result' => array(
 				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
 				'Donec maximus metus sed urna maximus, et malesuada dui placerat.',
 				'Donec risus dui, dictum nec interdum eu, malesuada non diam.',
@@ -109,9 +105,9 @@ final class WriteTitleAPITest extends RemoteAPITest {
 	 *
 	 * @since 3.12.0
 	 *
-	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Write_Title_API::get_titles
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Write_Title_API::__construct
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Write_Title_API::get_titles
+	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API::get_titles
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API::__construct
+	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API::get_titles
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::__construct
 	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
 	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
@@ -124,15 +120,15 @@ final class WriteTitleAPITest extends RemoteAPITest {
 			</p>';
 
 		// Mock API result.
-		add_filter( 'pre_http_request', array( $this, 'mock_successful_write_titles_response' ), 10, 3 );
+		add_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_headline_response' ), 10, 3 );
 
 		// Test getting three titles.
-		$titles = self::$write_title_api->get_titles( $content, 3 );
+		$titles = self::$suggest_headline_api->get_titles( $content, 3 );
 
 		self::assertIsArray( $titles );
 		self::assertEquals( 3, count( $titles ) );
 
 		// Remove mock.
-		remove_filter( 'pre_http_request', array( $this, 'mock_successful_write_titles_response' ) );
+		remove_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_headline_response' ) );
 	}
 }

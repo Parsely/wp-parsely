@@ -38,7 +38,8 @@ export class ExcerptGeneratorProvider {
 		let response;
 		try {
 			response = await apiFetch<ExcerptGeneratorApiResponse>( {
-				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-meta-description', {
+				method: 'POST',
+				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-brief', {
 					title,
 					content,
 				} ),

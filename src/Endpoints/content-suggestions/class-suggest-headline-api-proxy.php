@@ -1,10 +1,10 @@
 <?php
 /**
- * Endpoints: Parse.ly Content Suggestions `/suggest-links` API proxy endpoint
+ * Endpoints: Parse.ly Content Suggestion `/suggest-headline` API proxy endpoint
  * class
  *
  * @package Parsely
- * @since   3.14.0
+ * @since   3.12.0
  */
 
 declare(strict_types=1);
@@ -13,49 +13,51 @@ namespace Parsely\Endpoints\ContentSuggestions;
 
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Links_API;
+use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
 use stdClass;
 use WP_REST_Request;
 use WP_Error;
 
 /**
- * Configures the `/content-suggestions/suggest-links` REST API endpoint.
+ * Configures the `/content-suggestions/suggest-headline` REST API endpoint.
  *
- * @since 3.14.0
+ * @since 3.12.0
+ * @since 3.14.0 Renamed from Write_Title_API_Proxy to Suggest_Headline_API_Proxy.
  */
-final class Suggest_Links_API_Proxy extends Base_API_Proxy {
+final class Suggest_Headline_API_Proxy extends Base_API_Proxy {
+
 	/**
-	 * The Suggest Links API instance.
+	 * The Suggest Headline API instance.
 	 *
-	 * @var Suggest_Links_API $suggest_links_api
+	 * @var Suggest_Headline_API $suggest_headline_api
 	 */
-	private $suggest_links_api;
+	private $suggest_headline_api;
 
 	/**
 	 * Initializes the class.
 	 *
-	 * @since 3.14.0
+	 * @since 3.12.0
 	 *
 	 * @param Parsely $parsely The Parsely plugin instance.
 	 */
 	public function __construct( Parsely $parsely ) {
-		$this->suggest_links_api = new Suggest_Links_API( $parsely );
-		parent::__construct( $parsely, $this->suggest_links_api );
+		$this->suggest_headline_api = new Suggest_Headline_API( $parsely );
+		parent::__construct( $parsely, $this->suggest_headline_api );
 	}
 
 	/**
 	 * Registers the endpoint's WP REST route.
 	 *
-	 * @since 3.14.0
+	 * @since 3.12.0
 	 */
 	public function run(): void {
-		$this->register_endpoint( '/content-suggestions/suggest-links', array( 'POST' ) );
+		$this->register_endpoint( '/content-suggestions/suggest-headline', array( 'POST' ) );
 	}
 
 	/**
 	 * Generates the final data from the passed response.
 	 *
-	 * @since 3.14.0
+	 * @since 3.12.0
 	 *
 	 * @param array<stdClass> $response The response received by the proxy.
 	 * @return array<stdClass> The generated data.
@@ -68,11 +70,10 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 	/**
 	 * Cached "proxy" to the Parse.ly API endpoint.
 	 *
-	 * @since 3.14.0
+	 * @since 3.12.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error
-	 *                           object on failure.
+	 * @return stdClass|WP_Error stdClass containing the data or a WP_Error object on failure.
 	 */
 	public function get_items( WP_REST_Request $request ) {
 		$validation = $this->validate_apikey_and_secret();
@@ -87,20 +88,6 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 		 */
 		$post_content = $request->get_param( 'content' );
 
-		/**
-		 * The maximum amount of words of the link text.
-		 *
-		 * @var string|null $max_link_words
-		 */
-		$max_link_words = $request->get_param( 'max_link_words' );
-
-		/**
-		 * The maximum number of links to return.
-		 *
-		 * @var string|null $max_links
-		 */
-		$max_links = $request->get_param( 'max_links' );
-
 		if ( null === $post_content ) {
 			return new WP_Error(
 				'parsely_content_not_set',
@@ -109,23 +96,15 @@ final class Suggest_Links_API_Proxy extends Base_API_Proxy {
 			);
 		}
 
-		if ( is_numeric( $max_link_words ) ) {
-			$max_link_words = (int) $max_link_words;
-		} else {
-			$max_link_words = 4;
+		$limit   = is_numeric( $request->get_param( 'limit' ) ) ? intval( $request->get_param( 'limit' ) ) : 3;
+		$tone    = is_string( $request->get_param( 'tone' ) ) ? $request->get_param( 'tone' ) : 'neutral';
+		$persona = is_string( $request->get_param( 'persona' ) ) ? $request->get_param( 'persona' ) : 'journalist';
+
+		if ( 0 === $limit ) {
+			$limit = 3;
 		}
 
-		if ( is_numeric( $max_links ) ) {
-			$max_links = (int) $max_links;
-		} else {
-			$max_links = 10;
-		}
-
-		$response = $this->suggest_links_api->get_links(
-			$post_content,
-			$max_link_words,
-			$max_links
-		);
+		$response = $this->suggest_headline_api->get_titles( $post_content, $limit, $persona, $tone );
 
 		if ( is_wp_error( $response ) ) {
 			return $response;

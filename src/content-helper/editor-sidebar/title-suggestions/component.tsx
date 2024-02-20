@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { Button, PanelRow } from '@wordpress/components';
+import { Button, Notice, PanelRow } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 import { createInterpolateElement, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -90,12 +90,14 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 			await setTitles( titleType, genTitles );
 		} catch ( err: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			setError( err );
+			setTitles( titleType, [] );
 		}
 
 		await setLoading( false );
 	};
 
 	const generateOnClickHandler = async () => {
+		setError( undefined );
 		if ( false === loading ) {
 			Telemetry.trackEvent( 'title_suggestions_generate_pressed', {
 				request_more: titles.length > 0,
@@ -156,6 +158,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 			<Button
 				variant={ titles.length > 0 ? 'secondary' : 'primary' }
 				isBusy={ loading }
+				disabled={ loading || tone === 'custom' || persona === 'custom' }
 				onClick={ generateOnClickHandler }
 			>
 				{ loading && __( 'Generating Titles…', 'wp-parsely' ) }
@@ -213,10 +216,6 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		</div>
 	);
 
-	if ( error ) {
-		return ( error.Message() );
-	}
-
 	return (
 		<PanelRow>
 			<div className="parsely-write-titles-wrapper">
@@ -228,6 +227,11 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 								'wp-parsely'
 							) }
 						</div>
+						{ error && (
+							<Notice status="info" isDismissible={ false } className="wp-parsely-content-helper-error">
+								{ error.message }
+							</Notice>
+						) }
 						{ parselyAISettings }
 						{ generateTitleButton }
 					</>
@@ -249,6 +253,11 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 								)
 							}
 						</div>
+						{ error && (
+							<Notice status="info" isDismissible={ false } className="wp-parsely-content-helper-error">
+								{ error.message }
+							</Notice>
+						) }
 						{ titleSuggestionList }
 						{ parselyAISettings }
 						{ generateTitleButton }

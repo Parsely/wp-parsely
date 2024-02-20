@@ -27,6 +27,9 @@ export enum ContentHelperErrorCode {
 	ParselyApiReturnedTooManyResults = 'ch_parsely_api_returned_too_many_results',
 	ParselyApiUnauthorized = 401, // Intentionally without quotes.
 	ParselyInternalServerError = 500, // Intentionally without quotes.
+	ParselySchemaValidationFailed = 422, // Intentionally without quotes.
+	ParselyUpstreamMalformedResponse = 507, // Intentionally without quotes.
+	ParselyUpstreamNotAvailable = 503, // Intentionally without quotes.
 	PluginCredentialsNotSetMessageDetected = 'parsely_credentials_not_set_message_detected',
 	PluginSettingsApiSecretNotSet = 'parsely_api_secret_not_set',
 	PluginSettingsSiteIdNotSet = 'parsely_site_id_not_set',
@@ -72,17 +75,36 @@ export class ContentHelperError extends Error {
 				'This feature is accessible to select customers participating in its beta testing.',
 				'wp-parsely'
 			);
-		}
-		if ( this.code === ContentHelperErrorCode.ParselyInternalServerError ) {
+		} else if ( this.code === ContentHelperErrorCode.ParselyInternalServerError ) {
 			this.message = __(
 				'The Parse.ly API returned an internal server error. Please try again later.',
 				'wp-parsely'
 			);
-		}
-		if ( this.code === ContentHelperErrorCode.HttpRequestFailed &&
+		} else if ( this.code === ContentHelperErrorCode.HttpRequestFailed &&
 			this.message.includes( 'cURL error 28' ) ) {
 			this.message = __(
 				'The Parse.ly API did not respond in a timely manner. Please try again later.',
+				'wp-parsely'
+			);
+		} else if ( this.code === ContentHelperErrorCode.ParselySchemaValidationFailed ) {
+			this.message = __(
+				'The Parse.ly API returned a validation error. Please try again later.',
+				'wp-parsely'
+			);
+		} else if ( this.code === ContentHelperErrorCode.ParselyUpstreamMalformedResponse &&
+			this.message.includes( 'Insufficient Storage' ) ) {
+			this.message = __(
+				'The Parse.ly API couldn\'t find any relevant data to fulfill the request. Please retry with a different input.',
+				'wp-parsely'
+			);
+		} else if ( this.code === ContentHelperErrorCode.ParselyUpstreamMalformedResponse ) {
+			this.message = __(
+				'The Parse.ly API returned a malformed response. Please try again later.',
+				'wp-parsely'
+			);
+		} else if ( this.code === ContentHelperErrorCode.ParselyUpstreamNotAvailable ) {
+			this.message = __(
+				'The Parse.ly API is currently unavailable. Please try again later.',
 				'wp-parsely'
 			);
 		}

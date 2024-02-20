@@ -60,12 +60,7 @@ abstract class Base_Endpoint_Remote extends Base_Endpoint implements Remote_API_
 	 * @return string
 	 */
 	public function get_api_url( array $query ): string {
-		if ( static::ENDPOINT === '' ) {
-			throw new UnexpectedValueException( 'ENDPOINT constant must be defined in child class.' );
-		}
-		if ( static::QUERY_FILTER === '' ) {
-			throw new UnexpectedValueException( 'QUERY_FILTER constant must be defined in child class.' );
-		}
+		$this->validate_required_constraints();
 
 		$query['apikey'] = $this->parsely->get_site_id();
 		if ( $this->parsely->api_secret_is_set() ) {
@@ -133,7 +128,23 @@ abstract class Base_Endpoint_Remote extends Base_Endpoint implements Remote_API_
 	 *
 	 * @return array<string, mixed> The array of options.
 	 */
-	protected function get_request_options(): array {
+	public function get_request_options(): array {
 		return array();
+	}
+
+	/**
+	 * Validates that required constants are defined.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @throws UnexpectedValueException If any required constant is not defined.
+	 */
+	protected function validate_required_constraints(): void {
+		if ( static::ENDPOINT === '' ) {
+			throw new UnexpectedValueException( 'ENDPOINT constant must be defined in child class.' );
+		}
+		if ( static::QUERY_FILTER === '' ) {
+			throw new UnexpectedValueException( 'QUERY_FILTER constant must be defined in child class.' );
+		}
 	}
 }

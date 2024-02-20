@@ -1,6 +1,6 @@
 <?php
 /**
- * Remote API: Content Suggestions Suggest Links API
+ * Remote API: Content Suggestions Suggest Linked Reference (Smart Links) API
  *
  * @package Parsely
  * @since   3.14.0
@@ -16,23 +16,15 @@ use WP_Error;
 require_once __DIR__ . '/class-link-suggestion.php';
 
 /**
- * Class for Content Suggestions Suggest Links API.
+ * Class for Content Suggestions Suggest Linked Reference (Smart Links) API.
  *
  * @since 3.14.0
  *
  * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
-class Suggest_Links_API extends Content_Suggestions_Base_API {
-	protected const ENDPOINT     = '/suggest-links';
-	protected const QUERY_FILTER = 'wp_parsely_suggest_links_endpoint_args';
-
-	/**
-	 * Indicates whether the endpoint is public or protected behind permissions.
-	 *
-	 * @since 3.14.0
-	 * @var bool
-	 */
-	protected $is_public_endpoint = false;
+class Suggest_Linked_Reference_API extends Content_Suggestions_Base_API {
+	protected const ENDPOINT     = '/suggest-linked-reference';
+	protected const QUERY_FILTER = 'wp_parsely_suggest_linked_reference_endpoint_args';
 
 	/**
 	 * Gets suggested smart links for the given content.
@@ -51,30 +43,33 @@ class Suggest_Links_API extends Content_Suggestions_Base_API {
 		int $max_link_words = 4,
 		int $max_links = 10
 	) {
-		$query = array(
-			'max_link_length' => $max_link_words,
-			'max_links'       => $max_links,
+		$body = array(
+			'output_config' => array(
+				'max_link_words' => $max_link_words,
+				'max_items'      => $max_links,
+			),
+			'text'          => $content,
 		);
 
-		$decoded = $this->post_request( $query, array( 'text' => $content ) );
+		$decoded = $this->post_request( array(), $body );
 
 		if ( is_wp_error( $decoded ) ) {
 			return $decoded;
 		}
 
-		if ( ! property_exists( $decoded, 'links' ) ||
-			! is_array( $decoded->links ) ) {
+		if ( ! property_exists( $decoded, 'result' ) ||
+			! is_array( $decoded->result ) ) {
 			return new WP_Error(
 				400,
-				__( 'Unable to parse meta description from upstream API', 'wp-parsely' )
+				__( 'Unable to parse suggested links from upstream API', 'wp-parsely' )
 			);
 		}
 
 		// Convert the links to Link_Suggestion objects.
 		$links = array();
-		foreach ( $decoded->links as $link ) {
+		foreach ( $decoded->result as $link ) {
 			$link_obj         = new Link_Suggestion();
-			$link_obj->href   = $link->href;
+			$link_obj->href   = $link->canonical_url;
 			$link_obj->title  = $link->title;
 			$link_obj->text   = $link->text;
 			$link_obj->offset = $link->offset;

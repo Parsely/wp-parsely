@@ -13,6 +13,7 @@ namespace Parsely\RemoteAPI\ContentSuggestions;
 use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Base_Endpoint_Remote;
+use UnexpectedValueException;
 use WP_Error;
 
 /**
@@ -49,28 +50,62 @@ abstract class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 	 *
 	 * @return array<string, mixed> The array of options.
 	 */
-	protected function get_request_options(): array {
-		return array(
+	public function get_request_options(): array {
+		$options = array(
 			'headers'     => array( 'Content-Type' => 'application/json; charset=utf-8' ),
 			'data_format' => 'body',
 			'timeout'     => 60, //phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
 			'body'        => '{}',
 		);
+
+		// Add API key to request headers.
+		if ( $this->parsely->api_secret_is_set() ) {
+			$options['headers']['X-APIKEY-SECRET'] = $this->parsely->get_api_secret();
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Gets the URL for a particular Parse.ly API Content Suggestion endpoint.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @param array<string, mixed> $query The query arguments to send to the remote API.
+	 * @throws UnexpectedValueException If the endpoint constant is not defined.
+	 * @throws UnexpectedValueException If the query filter constant is not defined.
+	 * @return string
+	 */
+	public function get_api_url( array $query = array() ): string {
+		$this->validate_required_constraints();
+
+		$query['apikey'] = $this->parsely->get_site_id();
+
+		// Remove empty entries and sort by key so the query args are in
+		// alphabetical order.
+		$query = array_filter( $query );
+		ksort( $query );
+
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Hook names are defined in child classes.
+		$query = apply_filters( static::QUERY_FILTER, $query );
+		return add_query_arg( $query, static::API_BASE_URL . static::ENDPOINT );
 	}
 
 	/**
 	 * Sends a POST request to the Parse.ly Content Suggestion API.
 	 *
-	 * This method sends a POST request to the Parse.ly Content Suggestion API and returns the response.
-	 * The response is either a WP_Error object in case of an error, or a decoded JSON object in case of a
-	 * successful request.
+	 * This method sends a POST request to the Parse.ly Content Suggestion API and returns the
+	 * response. The response is either a WP_Error object in case of an error, or a decoded JSON
+	 * object in case of a successful request.
 	 *
 	 * @since 3.13.0
 	 *
-	 * @param array<string|int|bool> $query An associative array containing the query parameters for the API request.
-	 * @param array<string|int|bool> $body An associative array containing the body parameters for the API request.
-	 * @return WP_Error|object Returns a WP_Error object in case of an error, or a decoded JSON object
-	 *                         case of a successful request.
+	 * @param array<string|int|bool>              $query An associative array containing the query
+	 *                                                   parameters for the API request.
+	 * @param array<string|int|bool|array<mixed>> $body An associative array containing the body
+	 *                                                  parameters for the API request.
+	 * @return WP_Error|object Returns a WP_Error object in case of an error, or a decoded JSON
+	 *                         object in case of a successful request.
 	 */
 	protected function post_request( array $query = array(), array $body = array() ) {
 		$full_api_url = $this->get_api_url( $query );
