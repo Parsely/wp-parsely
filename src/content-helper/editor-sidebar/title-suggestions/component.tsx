@@ -17,7 +17,7 @@ import { ContentHelperError } from '../../common/content-helper-error';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { TitleSuggestionsSettings } from './component-settings';
 import { TitleSuggestion } from './component-title-suggestion';
-import { WriteTitleProvider } from './provider';
+import { TitleSuggestionsProvider } from './provider';
 import { TitleStore, TitleType } from './store';
 
 /**
@@ -83,7 +83,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	): Promise<void> => {
 		await setLoading( true );
 
-		const provider = new WriteTitleProvider();
+		const provider = new TitleSuggestionsProvider();
 
 		try {
 			const genTitles = await provider.generateTitles( content, 3, selectedTone, selectedPersona );

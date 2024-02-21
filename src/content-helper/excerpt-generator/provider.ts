@@ -11,7 +11,7 @@ import { ContentHelperError, ContentHelperErrorCode } from '../common/content-he
 
 /**
  * Specifies the form of the response returned by the
- * `/content-suggestions/suggest-meta-description` WordPress REST API endpoint.
+ * `/content-suggestions/suggest-brief` WordPress REST API endpoint.
  *
  * @since 3.13.0
  */
