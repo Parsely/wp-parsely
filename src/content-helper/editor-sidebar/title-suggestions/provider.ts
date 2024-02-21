@@ -49,11 +49,13 @@ export class WriteTitleProvider {
 			response = await apiFetch<WriteTitleApiResponse>( {
 				method: 'POST',
 				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-headline', {
-					content,
 					limit,
 					tone: getToneLabel( tone ),
 					persona: getPersonaLabel( persona ),
-				} ),
+				}, ),
+				data: {
+					content,
+				},
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			return Promise.reject( new ContentHelperError(

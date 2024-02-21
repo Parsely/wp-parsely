@@ -41,8 +41,10 @@ export class ExcerptGeneratorProvider {
 				method: 'POST',
 				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-brief', {
 					title,
-					content,
 				} ),
+				data: {
+					content,
+				},
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			return Promise.reject( new ContentHelperError( wpError.message, wpError.code ) );
