@@ -16,7 +16,7 @@ import {
 } from '../../utils';
 
 // Selectors.
-const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
+const pluginButton = 'button[aria-label="Parse.ly"]';
 
 /**
  * Tests for the PCH Editor Sidebar top bar icon.
