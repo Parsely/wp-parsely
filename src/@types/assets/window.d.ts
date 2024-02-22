@@ -28,6 +28,7 @@ declare global {
 		wpParselyEmptyCredentialsMessage: string;
 		wpParselyHooks?: _Hooks;
 		wpParselyPostsStatsResponse: string;
+		wpParselyPostUrl: string;
 		wpParselySiteId: string,
 
 		/**

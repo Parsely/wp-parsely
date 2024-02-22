@@ -3,6 +3,54 @@
 
 .wp-parsely-content-helper {
 
+	.wp-parsely-sidebar-header {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: to_rem(24px);
+		align-self: stretch;
+
+		.components-button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+		}
+	}
+
+	.wp-parsely-sidebar-main-panel {
+
+		.wp-parsely-sidebar-tabs {
+
+			.components-tab-panel__tabs {
+
+				// Individual tab.
+				button {
+					display: flex;
+					height: 48px;
+					flex-direction: column;
+					align-items: center;
+					flex: 1 0 0;
+				}
+
+				// Divider line.
+				.components-tab-panel__tabs-item::after {
+					height: calc(var(--wp-admin-border-width-focus) * 1);
+					outline: 2px solid transparent;
+					outline-offset: -1px;
+					background: var(--gray-400);
+				}
+
+				// Make the active tab divider WP blue.
+				.components-tab-panel__tabs-item.is-active::after {
+					background: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+				}
+			}
+
+
+		}
+	}
+
 	.parsely-spinner-wrapper {
 		display: flex;
 		justify-content: center;
