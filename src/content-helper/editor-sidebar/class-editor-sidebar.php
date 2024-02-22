@@ -74,15 +74,16 @@ class Editor_Sidebar extends Content_Helper_Feature {
 	/**
 	 * Returns the Parse.ly post dashboard URL for the current post.
 	 *
-	 * @param int|null|WP_Post $post_id The post ID or post object. Default is the current post.
+	 * @since 3.14.0
 	 *
-	 * @return bool|string The Parse.ly post dashboard URL, or false if the post ID is invalid.
+	 * @param int|null|WP_Post $post_id The post ID or post object. Default is the current post.
+	 * @return string|null The Parse.ly post dashboard URL, or false if the post ID is invalid.
 	 */
-	private function get_parsely_post_url( $post_id = null ) {
+	private function get_parsely_post_url( $post_id = null ): ?string {
 		// Get permalink for the post.
-		$post_id = null === $post_id ? get_the_ID() : $post_id;
+		$post_id = $post_id ?? get_the_ID();
 		if ( false === $post_id ) {
-			return false;
+			return null;
 		}
 
 		/**
@@ -93,8 +94,9 @@ class Editor_Sidebar extends Content_Helper_Feature {
 		$post = get_post( $post_id );
 
 		if ( ! Dashboard_Link::can_show_link( $post, $this->parsely ) ) {
-			return false;
+			return null;
 		}
+
 		return Dashboard_Link::generate_url( $post, $this->parsely->get_site_id(), 'wp-page-single', 'editor-sidebar' );
 	}
 
@@ -123,7 +125,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 
 		// Inject inline variables for the editor sidebar.
 		$parsely_post_url = $this->get_parsely_post_url();
-		if ( false !== $parsely_post_url ) {
+		if ( null !== $parsely_post_url ) {
 			wp_add_inline_script(
 				static::get_script_id(),
 				'wpParselyPostUrl = ' . wp_json_encode( $parsely_post_url ) . ';',
