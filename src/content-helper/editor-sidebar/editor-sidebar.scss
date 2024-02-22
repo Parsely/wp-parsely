@@ -1,7 +1,7 @@
 @import "../common/css/variables";
 @import "../common/css/functions";
 
-// Set the colors of the Sidebar icon.
+// Set the colors of the sidebar icon.
 .components-button[aria-controls="wp-parsely-block-editor-sidebar:wp-parsely-content-helper"] {
 
 	&:hover {
@@ -23,7 +23,7 @@
 	}
 }
 
-// Disables sidebar unpin button.
+// Disable sidebar unpin button.
 #wp-parsely-block-editor-sidebar\:wp-parsely-content-helper { // stylelint-disable selector-id-pattern
 
 	.components-button.interface-complementary-area__pin-unpin-item.is-pressed {
