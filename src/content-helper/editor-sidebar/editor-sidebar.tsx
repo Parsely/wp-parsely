@@ -280,6 +280,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 									'very well',
 									getPeriodDescription( settings.SettingsPeriod, true )
 								)
+								// TODO: Make the performance descriptor dynamic, and display a different message if the post is unpublished.
 							}
 							{ window.wpParselyPostUrl && (
 								<Button
