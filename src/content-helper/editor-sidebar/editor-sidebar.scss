@@ -1,6 +1,36 @@
 @import "../common/css/variables";
 @import "../common/css/functions";
 
+// Set the colors of the Sidebar icon.
+.components-button[aria-controls="wp-parsely-block-editor-sidebar:wp-parsely-content-helper"] {
+
+	&:hover {
+		background-color: #fff;
+	}
+
+	&:focus {
+		background-color: #fff;
+	}
+
+	&.is-pressed,
+	&.is-pressed:hover {
+
+		background-color: var(--parsely-green-65);
+
+		.wp-parsely-sidebar-icon path {
+			fill: var(--parsely-green-10);
+		}
+	}
+}
+
+// Disables sidebar unpin button.
+#wp-parsely-block-editor-sidebar\:wp-parsely-content-helper { // stylelint-disable selector-id-pattern
+
+	.components-button.interface-complementary-area__pin-unpin-item.is-pressed {
+		display: none;
+	}
+}
+
 .wp-parsely-content-helper {
 
 	.parsely-spinner-wrapper {

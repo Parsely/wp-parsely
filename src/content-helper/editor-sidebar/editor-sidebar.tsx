@@ -333,7 +333,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 	};
 
 	return (
-		<PluginSidebar icon={ <LeafIcon /> }
+		<PluginSidebar icon={ <LeafIcon className="wp-parsely-sidebar-icon" /> }
 			name="wp-parsely-content-helper"
 			className="wp-parsely-content-helper"
 			title={ __( 'Parse.ly Editor Sidebar', 'wp-parsely' ) }
