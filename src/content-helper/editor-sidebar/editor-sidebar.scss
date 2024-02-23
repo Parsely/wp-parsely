@@ -193,6 +193,42 @@
 	}
 }
 
+.wp-parsely-content-helper .wp-parsely-performance-panel {
+	padding: calc(16px);
+	border-top: 1px solid rgb(221, 221, 221);
+	margin-top: -1px;
+
+	.panel-header {
+		display: flex;
+		-webkit-box-align: center;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+		grid-column: 1 / -1;
+		margin-bottom: to_rem( 15px );
+	}
+
+	.panel-settings {
+
+		.components-input-control__prefix {
+			margin-left: to_rem( 8px );
+		}
+	}
+
+	.components-heading {
+		margin: 0;
+		font-weight: 500;
+		line-height: normal;
+		display: block;
+	}
+
+	.components-dropdown-menu {
+		line-height: 0;
+	}
+
+}
+
+/** TODO: remove? */
 .wp-parsely-content-helper .performance-details-panel {
 
 	// Generic styles for all sections.
