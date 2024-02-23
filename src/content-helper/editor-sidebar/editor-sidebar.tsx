@@ -6,10 +6,8 @@ import {
 	Panel,
 	PanelBody,
 	PanelRow,
-	SelectControl,
 	TabPanel,
 } from '@wordpress/components';
-// eslint-disable-next-line import/named
 import { useSelect } from '@wordpress/data';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { useEffect } from '@wordpress/element';
@@ -25,12 +23,15 @@ import { PARSELY_PERSONAS } from '../common/components/persona-selector';
 import { PARSELY_TONES } from '../common/components/tone-selector';
 import { EditIcon } from '../common/icons/edit-icon';
 import { LeafIcon } from '../common/icons/leaf-icon';
-import { SettingsProvider, SidebarSettings, useSettings } from '../common/settings';
+import {
+	SettingsProvider,
+	SidebarSettings,
+	useSettings,
+} from '../common/settings';
 import {
 	Metric,
 	Period,
 	PostFilterType,
-	getMetricDescription,
 	getPeriodDescription,
 	isInEnum,
 } from '../common/utils/constants';
@@ -84,13 +85,13 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	} catch ( e ) {
 		// Return defaults when parsing failed or the string is empty.
 		return {
-			PerformanceDetailsOpen: true,
-			RelatedTopPostsFilterBy: PostFilterType.Unavailable,
-			RelatedTopPostsFilterValue: '',
-			RelatedTopPostsOpen: false,
-			SettingsMetric: Metric.Views,
-			SettingsOpen: true,
-			SettingsPeriod: Period.Days7,
+			InitialTabName: 'tools',
+			PerformanceStatsPeriod: Period.Days7,
+			RelatedPostsFilterBy: PostFilterType.Unavailable,
+			RelatedPostsFilterValue: '',
+			RelatedPostsMetric: Metric.Views,
+			RelatedPostsOpen: false,
+			RelatedPostsPeriod: Period.Days7,
 			SmartLinkingMaxLinks: DEFAULT_MAX_LINKS,
 			SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
 			SmartLinkingOpen: false,
@@ -103,26 +104,26 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 
 	// Fix invalid values if any are found.
-	if ( typeof parsedSettings?.PerformanceDetailsOpen !== 'boolean' ) {
-		parsedSettings.PerformanceDetailsOpen = true;
+	if ( typeof parsedSettings?.InitialTabName !== 'string' ) {
+		parsedSettings.InitialTabName = 'tools';
 	}
-	if ( ! isInEnum( parsedSettings?.RelatedTopPostsFilterBy, PostFilterType ) ) {
-		parsedSettings.RelatedTopPostsFilterBy = PostFilterType.Unavailable;
+	if ( ! isInEnum( parsedSettings?.PerformanceStatsPeriod, Period ) ) {
+		parsedSettings.PerformanceStatsPeriod = Period.Days7;
 	}
-	if ( typeof parsedSettings?.RelatedTopPostsFilterValue !== 'string' ) {
-		parsedSettings.RelatedTopPostsFilterValue = '';
+	if ( ! isInEnum( parsedSettings?.RelatedPostsFilterBy, PostFilterType ) ) {
+		parsedSettings.RelatedPostsFilterBy = PostFilterType.Unavailable;
 	}
-	if ( typeof parsedSettings?.RelatedTopPostsOpen !== 'boolean' ) {
-		parsedSettings.RelatedTopPostsOpen = false;
+	if ( typeof parsedSettings?.RelatedPostsFilterValue !== 'string' ) {
+		parsedSettings.RelatedPostsFilterValue = '';
 	}
-	if ( ! isInEnum( parsedSettings?.SettingsMetric, Metric ) ) {
-		parsedSettings.SettingsMetric = Metric.Views;
+	if ( ! isInEnum( parsedSettings?.RelatedPostsMetric, Metric ) ) {
+		parsedSettings.RelatedPostsMetric = Metric.Views;
 	}
-	if ( typeof parsedSettings?.SettingsOpen !== 'boolean' ) {
-		parsedSettings.SettingsOpen = true;
+	if ( typeof parsedSettings?.RelatedPostsOpen !== 'boolean' ) {
+		parsedSettings.RelatedPostsOpen = false;
 	}
-	if ( ! isInEnum( parsedSettings?.SettingsPeriod, Period ) ) {
-		parsedSettings.SettingsPeriod = Period.Days7;
+	if ( ! isInEnum( parsedSettings?.RelatedPostsPeriod, Period ) ) {
+		parsedSettings.RelatedPostsPeriod = Period.Days7;
 	}
 	if ( typeof parsedSettings?.SmartLinkingMaxLinks !== 'number' ) {
 		parsedSettings.SmartLinkingMaxLinks = DEFAULT_MAX_LINKS;
@@ -194,73 +195,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 		}
 	};
 
-	/**
-	 * Track sidebar settings change.
-	 *
-	 * @since 3.12.0
-	 *
-	 * @param {string} filter The filter name.
-	 * @param {Object} props  The filter properties.
-	 */
-	const trackSettingsChange = ( filter: string, props: object ): void => {
-		Telemetry.trackEvent( 'editor_sidebar_settings_changed', { filter, ...props } );
-	};
-
-	/**
-	 * Returns the settings pane of the Content Helper Sidebar.
-	 *
-	 * @since 3.11.0
-	 *
-	 * @deprecated Will be removed soon.
-	 * @return {JSX.Element} The settings pane of the Content Helper Sidebar.
-	 */
-	const Settings = (): JSX.Element => {
-		return (
-			<>
-				<SelectControl
-					label={ __( 'Period', 'wp-parsely' ) }
-					onChange={ ( selection ) => {
-						if ( isInEnum( selection, Period ) ) {
-							setSettings( {
-								SettingsPeriod: selection as Period,
-							} );
-							trackSettingsChange( 'period', { period: selection } );
-						}
-					} }
-					value={ settings.SettingsPeriod }
-				>
-					{
-						Object.values( Period ).map( ( value ) =>
-							<option key={ value } value={ value }>
-								{ getPeriodDescription( value ) }
-							</option>
-						)
-					}
-				</SelectControl>
-				<SelectControl
-					label={ __( 'Metric', 'wp-parsely' ) }
-					onChange={ ( selection ) => {
-						if ( isInEnum( selection, Metric ) ) {
-							setSettings( {
-								SettingsMetric: selection as Metric,
-							} );
-							trackSettingsChange( 'metric', { metric: selection } );
-						}
-					} }
-					value={ settings.SettingsMetric }
-				>
-					{
-						Object.values( Metric ).map( ( value ) =>
-							<option key={ value } value={ value }>
-								{ getMetricDescription( value ) }
-							</option>
-						)
-					}
-				</SelectControl>
-			</>
-		);
-	};
-
 	return (
 		<PluginSidebar icon={ <LeafIcon className="wp-parsely-sidebar-icon" /> }
 			name="wp-parsely-content-helper"
@@ -278,7 +212,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 								/* translators: %1$s: how it performed, %2$s: period starting with 'last' */
 								sprintf( __( 'This post performed %1$s in the %2$s', 'wp-parsely' ),
 									'very well',
-									getPeriodDescription( settings.SettingsPeriod, true )
+									getPeriodDescription( settings.PerformanceStatsPeriod, true )
 								)
 								// TODO: Make the performance descriptor dynamic, and display a different message if the post is unpublished.
 							}
@@ -304,6 +238,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 				<Panel className="wp-parsely-sidebar-main-panel">
 					<TabPanel
 						className="wp-parsely-sidebar-tabs"
+						initialTabName={ settings.InitialTabName }
 						tabs={ [
 							{
 								icon: <EditIcon />,
@@ -317,6 +252,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 							},
 						] }
 						onSelect={ ( tabName ) => {
+							setSettings( { ...settings, InitialTabName: tabName } );
 							Telemetry.trackEvent( 'editor_sidebar_tab_selected', { tab: tabName } );
 						} }
 					>
@@ -327,24 +263,12 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 								) }
 								{ tab.name === 'performance' && (
 									<SidebarPerformanceTab
-										period={ settings.SettingsPeriod }
+										period={ settings.PerformanceStatsPeriod }
 									/>
 								) }
 							</>
 						) }
 					</TabPanel>
-				</Panel>
-				<Panel>
-					<PanelBody
-						title={ __( 'Settings (deprecated)', 'wp-parsely' ) }
-						initialOpen={ settings.SettingsOpen }
-						onToggle={ ( next ) => {
-							setSettings( { SettingsOpen: next } );
-							trackToggle( 'settings', next );
-						} }
-					>
-						<Settings />
-					</PanelBody>
 				</Panel>
 			</SettingsProvider>
 		</PluginSidebar>

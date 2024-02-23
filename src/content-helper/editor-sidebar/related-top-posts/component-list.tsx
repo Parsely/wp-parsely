@@ -55,8 +55,8 @@ export function RelatedTopPostList( {
 	const [ posts, setPosts ] = useState<PostData[]>( [] );
 	const [ filter, setFilter ] = useState<PostFilter>(
 		{
-			type: settings.RelatedTopPostsFilterBy as PostFilterType,
-			value: settings.RelatedTopPostsFilterValue,
+			type: settings.RelatedPostsFilterBy as PostFilterType,
+			value: settings.RelatedPostsFilterValue,
 		}
 	);
 
@@ -72,8 +72,8 @@ export function RelatedTopPostList( {
 	 */
 	const onFilterChange = ( filterBy: PostFilterType, value: string ): void => {
 		setSettings( {
-			RelatedTopPostsFilterBy: filterBy,
-			RelatedTopPostsFilterValue: value,
+			RelatedPostsFilterBy: filterBy,
+			RelatedPostsFilterValue: value,
 		} );
 	};
 
