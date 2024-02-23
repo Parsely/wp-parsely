@@ -10,10 +10,12 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
+use Parsely\Dashboard_Link;
 use Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint;
 use Parsely\Parsely;
 use Parsely\Content_Helper\Content_Helper_Feature;
 
+use WP_Post;
 use function Parsely\Utils\get_asset_info;
 
 use const Parsely\PARSELY_FILE;
@@ -70,6 +72,35 @@ class Editor_Sidebar extends Content_Helper_Feature {
 	}
 
 	/**
+	 * Returns the Parse.ly post dashboard URL for the current post.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @param int|null|WP_Post $post_id The post ID or post object. Default is the current post.
+	 * @return string|null The Parse.ly post dashboard URL, or false if the post ID is invalid.
+	 */
+	private function get_parsely_post_url( $post_id = null ): ?string {
+		// Get permalink for the post.
+		$post_id = $post_id ?? get_the_ID();
+		if ( false === $post_id ) {
+			return null;
+		}
+
+		/**
+		 * The post object.
+		 *
+		 * @var WP_Post $post
+		 */
+		$post = get_post( $post_id );
+
+		if ( ! Dashboard_Link::can_show_link( $post, $this->parsely ) ) {
+			return null;
+		}
+
+		return Dashboard_Link::generate_url( $post, $this->parsely->get_site_id(), 'wp-page-single', 'editor-sidebar' );
+	}
+
+	/**
 	 * Inserts the PCH Editor Sidebar assets.
 	 *
 	 * @since 3.5.0
@@ -91,6 +122,16 @@ class Editor_Sidebar extends Content_Helper_Feature {
 		);
 
 		$this->inject_inline_scripts( Editor_Sidebar_Settings_Endpoint::get_route() );
+
+		// Inject inline variables for the editor sidebar.
+		$parsely_post_url = $this->get_parsely_post_url();
+		if ( null !== $parsely_post_url ) {
+			wp_add_inline_script(
+				static::get_script_id(),
+				'wpParselyPostUrl = ' . wp_json_encode( $parsely_post_url ) . ';',
+				'before'
+			);
+		}
 
 		wp_enqueue_style(
 			static::get_style_id(),
