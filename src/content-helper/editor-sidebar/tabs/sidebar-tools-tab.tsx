@@ -5,17 +5,17 @@ import { Panel, PanelBody } from '@wordpress/components';
 // eslint-disable-next-line import/named
 import { store as coreStore, Taxonomy, User } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { store as editorStore } from '@wordpress/editor';
 
 /**
  * Internal dependencies
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { BetaBadge } from '../../common/components/beta-badge';
-import { VerifyCredentials } from '../../common/verify-credentials';
 import { SidebarSettings, useSettings } from '../../common/settings';
+import { VerifyCredentials } from '../../common/verify-credentials';
 import { SidebarPostData } from '../editor-sidebar';
 import { RelatedTopPostList } from '../related-top-posts/component-list';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from '../smart-linking/component';
@@ -150,10 +150,10 @@ export const SidebarToolsTab = ( { trackToggle }: SidebarToolsTabProps ) => {
 
 			<PanelBody
 				title={ __( 'Related Top Posts', 'wp-parsely' ) }
-				initialOpen={ settings.RelatedTopPostsOpen }
+				initialOpen={ settings.RelatedPostsOpen }
 				onToggle={ ( next ) => {
 					setSettings( {
-						RelatedTopPostsOpen: next,
+						RelatedPostsOpen: next,
 					} );
 					trackToggle( 'related_top_posts', next );
 				} }
@@ -161,8 +161,8 @@ export const SidebarToolsTab = ( { trackToggle }: SidebarToolsTabProps ) => {
 				{
 					<VerifyCredentials>
 						<RelatedTopPostList
-							metric={ settings.SettingsMetric }
-							period={ settings.SettingsPeriod }
+							metric={ settings.RelatedPostsMetric }
+							period={ settings.RelatedPostsPeriod }
 							postData={ postData }
 						/>
 					</VerifyCredentials>

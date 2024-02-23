@@ -31,13 +31,13 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @var array<string, mixed>
 	 */
 	protected $default_value = array(
-		'PerformanceDetailsOpen'       => true,
-		'RelatedTopPostsFilterBy'      => 'unavailable',
-		'RelatedTopPostsFilterValue'   => '',
-		'RelatedTopPostsOpen'          => false,
-		'SettingsMetric'               => 'views',
-		'SettingsOpen'                 => true,
-		'SettingsPeriod'               => '7d',
+		'InitialTabName'               => 'tools',
+		'PerformanceStatsPeriod'       => '7d',
+		'RelatedPostsFilterBy'         => 'unavailable',
+		'RelatedPostsFilterValue'      => '',
+		'RelatedPostsMetric'           => 'views',
+		'RelatedPostsOpen'             => false,
+		'RelatedPostsPeriod'           => '7d',
 		'SmartLinkingMaxLinks'         => 10,
 		'SmartLinkingMaxLinkWords'     => 4,
 		'SmartLinkingOpen'             => false,
@@ -191,25 +191,25 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 *
 	 * @since 3.13.0
 	 *
-	 * @param string|null         $settings_metric The SettingsMetric value.
-	 * @param string|null         $settings_period The SettingsPeriod value.
+	 * @param string|null         $metric The RelatedPostsMetric value.
+	 * @param string|null         $period The RelatedPostsPeriod value.
 	 * @param array<mixed, mixed> $extra_data Any Extra key/value pairs to add.
 	 * @return string The generated JSON string.
 	 */
 	protected function generate_json(
-		?string $settings_metric = null,
-		?string $settings_period = null,
+		?string $metric = null,
+		?string $period = null,
 		array $extra_data = array()
 	): string {
 		$array = $this->default_value;
-		unset( $array['SettingsMetric'], $array['SettingsPeriod'] );
+		unset( $array['RelatedPostsMetric'], $array['RelatedPostsPeriod'] );
 
-		if ( null !== $settings_metric ) {
-			$array['SettingsMetric'] = $settings_metric;
+		if ( null !== $metric ) {
+			$array['RelatedPostsMetric'] = $metric;
 		}
 
-		if ( null !== $settings_period ) {
-			$array['SettingsPeriod'] = $settings_period;
+		if ( null !== $period ) {
+			$array['RelatedPostsPeriod'] = $period;
 		}
 
 		ksort( $array, SORT_NATURAL | SORT_FLAG_CASE );
