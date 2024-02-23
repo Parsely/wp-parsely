@@ -97,30 +97,30 @@
 	}
 }
 
-.wp-parsely-content-helper .parsely-top-posts-wrapper {
+.wp-parsely-content-helper .parsely-related-posts-wrapper {
 
-	.parsely-top-posts {
+	.parsely-related-posts {
 		list-style-type: none;
 		margin: to_rem(22px) 0 0;
 	}
 
-	p.parsely-top-posts-descr {
+	p.parsely-related-posts-descr {
 		color: var(--gray-700);
 		margin-top: to_rem(15px);
 	}
 
-	.parsely-top-post {
+	.parsely-related-post {
 		border-top: 1px solid var(--gray-300);
 		margin-bottom: to_rem(5px);
 		padding: to_rem(10px) 0;
 	}
 
-	.parsely-top-post-title a {
+	.parsely-related-post-title a {
 		text-decoration: none;
 		line-height: 16px;
 	}
 
-	.parsely-top-post-stats-link {
+	.parsely-related-post-stats-link {
 		color: var(--black);
 		font-size: to_rem(14px);
 		margin-right: to_rem(7px);
@@ -130,7 +130,8 @@
 		}
 	}
 
-	.parsely-top-post-metric-data {
+	// Common class name shared with the PCH Dashboard Widget.
+	.parsely-post-metric-data {
 
 		svg,
 		span.dashicon {
@@ -148,8 +149,8 @@
 		}
 	}
 
-	.parsely-top-post-view-link,
-	.parsely-top-post-edit-link {
+	.parsely-related-post-view-link,
+	.parsely-related-post-edit-link {
 		display: inline-block;
 		width: 16px;
 		height: 16px;
@@ -167,7 +168,7 @@
 		}
 	}
 
-	.parsely-top-post-info {
+	.parsely-related-post-info {
 		display: flex;
 		margin: to_rem(5px) 0 0;
 		justify-content: space-between;

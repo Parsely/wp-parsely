@@ -23,30 +23,30 @@ import { SidebarPostData } from '../editor-sidebar';
 import {
 	FilterSelectionControls,
 } from './component-filter-selection-controls';
-import { RelatedTopPostListItem } from './component-list-item';
-import { RelatedTopPostsProvider } from './provider';
+import { RelatedPostListItem } from './component-list-item';
+import { RelatedPostsProvider } from './provider';
 
 const FETCH_RETRIES = 1;
 
 /**
- * Defines the props structure for RelatedTopPostList.
+ * Defines the props structure for RelatedPostList.
  *
  * @since 3.11.0
  */
-interface RelatedTopPostListProps {
+interface RelatedPostListProps {
 	metric: Metric;
 	period: Period;
 	postData: SidebarPostData;
 }
 
 /**
- * List of the related top posts.
+ * List of the related posts.
  *
- * @param {RelatedTopPostListProps} props The component's props.
+ * @param {RelatedPostListProps} props The component's props.
  */
-export function RelatedTopPostList( {
+export function RelatedPostList( {
 	metric, period, postData,
-} : Readonly<RelatedTopPostListProps> ): JSX.Element {
+} : Readonly<RelatedPostListProps> ): JSX.Element {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ loading, setLoading ] = useState<boolean>( true );
@@ -64,8 +64,8 @@ export function RelatedTopPostList( {
 	 * Updates all filter settings.
 	 *
 	 * @since 3.13.0
-	 * @since 3.14.0 Renamed from `handleRelatedTopPostsFilterChange` and
-	 * moved from the editor sidebar to the related top posts component.
+	 * @since 3.14.0 Renamed from `handleRelatedPostsFilterChange` and
+	 * moved from the editor sidebar to the related posts component.
 	 *
 	 * @param {PostFilterType} filterBy The new filter type.
 	 * @param {string}         value    The new filter value.
@@ -153,7 +153,7 @@ export function RelatedTopPostList( {
 		};
 
 		const fetchPosts = async ( retries: number ) => {
-			RelatedTopPostsProvider.getRelatedTopPosts( period, metric, filter )
+			RelatedPostsProvider.getRelatedPosts( period, metric, filter )
 				.then( ( result ): void => {
 					setPosts( result.posts );
 					setMessage( result.message );
@@ -213,7 +213,7 @@ export function RelatedTopPostList( {
 		return (
 			<>
 				{ filterSelectionControls }
-				{ error.Message( { className: 'parsely-top-posts-descr' } ) }
+				{ error.Message( { className: 'parsely-related-posts-descr' } ) }
 			</>
 		);
 	}
@@ -222,11 +222,11 @@ export function RelatedTopPostList( {
 		<>
 			{ filterSelectionControls }
 			{ loading ? ( spinner ) : (
-				<div className="parsely-top-posts-wrapper">
-					<p className="parsely-top-posts-descr" data-testid="parsely-top-posts-descr">{ message }</p>
-					<ol className="parsely-top-posts">
+				<div className="parsely-related-posts-wrapper">
+					<p className="parsely-related-posts-descr" data-testid="parsely-related-posts-descr">{ message }</p>
+					<ol className="parsely-related-posts">
 						{ posts.map( ( post: PostData ): JSX.Element =>
-							<RelatedTopPostListItem
+							<RelatedPostListItem
 								key={ post.id } metric={ metric } post={ post }
 							/>
 						) }

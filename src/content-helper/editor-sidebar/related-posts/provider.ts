@@ -29,7 +29,7 @@ import { PostData } from '../../common/utils/post';
  * The form of the query that gets posted to the analytics/posts WordPress REST
  * API endpoint.
  */
-interface RelatedTopPostsApiQuery {
+interface RelatedPostsApiQuery {
 	message: string; // Selected filter message to be displayed to the user.
 	query: AnalyticsApiOptionalQueryParams
 }
@@ -38,25 +38,25 @@ interface RelatedTopPostsApiQuery {
  * The form of the response returned by the /stats/posts WordPress REST API
  * endpoint.
  */
-interface RelatedTopPostsApiResponse {
+interface RelatedPostsApiResponse {
 	error?: Error;
 	data?: PostData[];
 }
 
 /**
- * The form of the result returned by the getRelatedTopPosts() function.
+ * The form of the result returned by the getRelatedPosts() function.
  */
-export interface GetRelatedTopPostsResult {
+export interface GetRelatedPostsResult {
 	message: string;
 	posts: PostData[];
 }
 
 export const RELATED_POSTS_DEFAULT_LIMIT = 5;
 
-export class RelatedTopPostsProvider {
+export class RelatedPostsProvider {
 	/**
-	 * Returns related top posts to the one that is currently being edited
-	 * within the WordPress Block Editor.
+	 * Returns related posts to the one that is currently being edited within
+	 * the WordPress Block Editor.
 	 *
 	 * The 'related' status is determined by the current post's Author, Category
 	 * or tag.
@@ -65,15 +65,15 @@ export class RelatedTopPostsProvider {
 	 * @param {Metric}     metric The metric to sort by.
 	 * @param {PostFilter} filter The selected filter type and value to use.
 	 *
-	 * @return {Promise<GetRelatedTopPostsResult>} Object containing message and posts.
+	 * @return {Promise<GetRelatedPostsResult>} Object containing message and posts.
 	 */
-	static async getRelatedTopPosts(
+	static async getRelatedPosts(
 		period: Period, metric: Metric, filter: PostFilter
-	): Promise<GetRelatedTopPostsResult> {
+	): Promise<GetRelatedPostsResult> {
 		// Create API query.
 		let apiQuery;
 		try {
-			apiQuery = this.buildRelatedTopPostsApiQuery(
+			apiQuery = this.buildRelatedPostsApiQuery(
 				period, metric, filter
 			);
 		} catch ( contentHelperError ) {
@@ -83,7 +83,7 @@ export class RelatedTopPostsProvider {
 		// Fetch results from API and set the message.
 		let data;
 		try {
-			data = await this.fetchRelatedTopPostsFromWpEndpoint( apiQuery );
+			data = await this.fetchRelatedPostsFromWpEndpoint( apiQuery );
 		} catch ( contentHelperError ) {
 			return Promise.reject( contentHelperError );
 		}
@@ -96,7 +96,7 @@ export class RelatedTopPostsProvider {
 	}
 
 	/**
-	 * Generates the message that will be displayed above the related top posts.
+	 * Generates the message that will be displayed above the related posts.
 	 *
 	 * @since 3.11.0
 	 *
@@ -113,7 +113,7 @@ export class RelatedTopPostsProvider {
 			return sprintf(
 				/* translators: 1: message such as "in category Foo" */
 				__(
-					'No top posts %1$s were found for the specified period and metric.',
+					'No related posts %1$s were found for the specified period and metric.',
 					'wp-parsely'
 				), apiQueryMessage
 			);
@@ -121,22 +121,22 @@ export class RelatedTopPostsProvider {
 
 		return sprintf(
 			/* translators: 1: message such as "in category Foo", 2: period such as "last 7 days"*/
-			__( 'Top posts %1$s in the %2$s.', 'wp-parsely' ),
+			__( 'Related posts %1$s in the %2$s.', 'wp-parsely' ),
 			apiQueryMessage, getPeriodDescription( period, true )
 		);
 	}
 
 	/**
-	 * Fetches the related top posts data from the WordPress REST API.
+	 * Fetches the related posts data from the WordPress REST API.
 	 *
-	 * @param {RelatedTopPostsApiQuery} query
+	 * @param {RelatedPostsApiQuery} query
 	 * @return {Promise<Array<PostData>>} Array of fetched posts.
 	 */
-	private static async fetchRelatedTopPostsFromWpEndpoint( query: RelatedTopPostsApiQuery ): Promise<PostData[]> {
+	private static async fetchRelatedPostsFromWpEndpoint( query: RelatedPostsApiQuery ): Promise<PostData[]> {
 		let response;
 
 		try {
-			response = await apiFetch<RelatedTopPostsApiResponse>( {
+			response = await apiFetch<RelatedPostsApiResponse>( {
 				path: addQueryArgs( '/wp-parsely/v1/stats/posts', {
 					...query.query,
 					itm_source: 'wp-parsely-content-helper',
@@ -160,17 +160,17 @@ export class RelatedTopPostsProvider {
 
 	/**
 	 * Builds the query object used in the API for performing the related
-	 * top posts request.
+	 * posts request.
 	 *
 	 * @param {Period}     period The period for which to fetch data.
 	 * @param {Metric}     metric The metric to sort by.
 	 * @param {PostFilter} filter The selected filter type and value to use.
 	 *
-	 * @return {RelatedTopPostsApiQuery} The query object.
+	 * @return {RelatedPostsApiQuery} The query object.
 	 */
-	private static buildRelatedTopPostsApiQuery(
+	private static buildRelatedPostsApiQuery(
 		period: Period, metric:Metric, filter: PostFilter
-	): RelatedTopPostsApiQuery {
+	): RelatedPostsApiQuery {
 		const commonQueryParams = {
 			...getApiPeriodParams( period ),
 			limit: RELATED_POSTS_DEFAULT_LIMIT,
