@@ -1,13 +1,7 @@
 /**
- * WordPress dependencies
- */
-import { Panel, PanelBody } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
-
-/**
  * Internal dependencies
  */
-import { SidebarSettings, useSettings } from '../../common/settings';
+import { Period } from '../../common/utils/constants';
 import { VerifyCredentials } from '../../common/verify-credentials';
 import { PerformanceDetails } from '../performance-details/component';
 
@@ -17,7 +11,7 @@ import { PerformanceDetails } from '../performance-details/component';
  * @since 3.14.0
  */
 type SidebarPerformanceTabProps = {
-	trackToggle: ( panel: string, next: boolean ) => void
+	period: Period;
 }
 
 /**
@@ -28,29 +22,12 @@ type SidebarPerformanceTabProps = {
  *
  * @param { SidebarPerformanceTabProps } props The component's props.
  */
-export const SidebarPerformanceTab = ( { trackToggle }: SidebarPerformanceTabProps ) => {
-	const { settings, setSettings } = useSettings<SidebarSettings>();
-
+export const SidebarPerformanceTab = ( { period }: SidebarPerformanceTabProps ) => {
 	return (
-		<Panel>
-			<PanelBody
-				title={ __( 'Performance Details', 'wp-parsely' ) }
-				initialOpen={ settings.PerformanceDetailsOpen }
-				onToggle={ ( next ) => {
-					setSettings( {
-						PerformanceDetailsOpen: next,
-					} );
-					trackToggle( 'performance_details', next );
-				} }
-			>
-				{
-					<VerifyCredentials>
-						<PerformanceDetails
-							period={ settings.SettingsPeriod }
-						/>
-					</VerifyCredentials>
-				}
-			</PanelBody>
-		</Panel>
+		<VerifyCredentials>
+			<PerformanceDetails
+				period={ period }
+			/>
+		</VerifyCredentials>
 	);
 };

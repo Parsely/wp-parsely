@@ -326,7 +326,9 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 									<SidebarToolsTab trackToggle={ trackToggle } />
 								) }
 								{ tab.name === 'performance' && (
-									<SidebarPerformanceTab trackToggle={ trackToggle } />
+									<SidebarPerformanceTab
+										period={ settings.SettingsPeriod }
+									/>
 								) }
 							</>
 						) }
