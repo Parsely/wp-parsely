@@ -1,23 +1,29 @@
 /**
  * WordPress dependencies
  */
-import { Panel, PanelBody, SelectControl } from '@wordpress/components';
+import {
+	Button,
+	Panel,
+	PanelBody,
+	PanelRow,
+	SelectControl,
+	TabPanel,
+} from '@wordpress/components';
 // eslint-disable-next-line import/named
-import { Taxonomy, User, store as coreStore } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
 import { PluginSidebar } from '@wordpress/edit-post';
-import { store as editorStore } from '@wordpress/editor';
-import { useEffect, useMemo, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { useEffect } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
+import { chartBar as ChartIcon } from '@wordpress/icons';
 import { registerPlugin } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
  */
 import { Telemetry } from '../../js/telemetry/telemetry';
-import { BetaBadge } from '../common/components/beta-badge';
 import { PARSELY_PERSONAS } from '../common/components/persona-selector';
 import { PARSELY_TONES } from '../common/components/tone-selector';
+import { EditIcon } from '../common/icons/edit-icon';
 import { LeafIcon } from '../common/icons/leaf-icon';
 import { SettingsProvider, SidebarSettings, useSettings } from '../common/settings';
 import {
@@ -28,12 +34,13 @@ import {
 	getPeriodDescription,
 	isInEnum,
 } from '../common/utils/constants';
-import { VerifyCredentials } from '../common/verify-credentials';
-import { PerformanceDetails } from './performance-details/component';
-import { RelatedTopPostList } from './related-top-posts/component-list';
-import { SmartLinkingPanel, SmartLinkingPanelContext } from './smart-linking/component';
-import { DEFAULT_MAX_LINKS, DEFAULT_MAX_LINK_WORDS, initSmartLinking } from './smart-linking/smart-linking';
-import { TitleSuggestionsPanel } from './title-suggestions/component';
+import {
+	DEFAULT_MAX_LINKS,
+	DEFAULT_MAX_LINK_WORDS,
+	initSmartLinking,
+} from './smart-linking/smart-linking';
+import { SidebarPerformanceTab } from './tabs/sidebar-performance-tab';
+import { SidebarToolsTab } from './tabs/sidebar-tools-tab';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
@@ -49,18 +56,6 @@ export interface SidebarPostData {
 	authors: string[];
 	categories: string[];
 	tags: string[];
-}
-
-/**
- * Defines typings for some non-exported Gutenberg functions to avoid
- * intellisense errors in function calls.
- *
- * This can be removed once Gutenberg provides typings for these functions.
- *
- * @since 3.11.0
- */
-interface GutenbergFunction {
-	getEditedPostAttribute( attribute: string ): number[];
 }
 
 /**
@@ -165,74 +160,7 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
  * @return {JSX.Element} The Content Helper Editor Sidebar.
  */
 const ContentHelperEditorSidebar = (): JSX.Element => {
-	const [ postData, setPostData ] = useState<SidebarPostData>( {
-		authors: [], categories: [], tags: [],
-	} );
-
 	const { settings, setSettings } = useSettings<SidebarSettings>();
-
-	/**
-	 * Returns the current Post's ID, tags and categories.
-	 *
-	 * @since 3.11.0
-	 */
-	const { authors, categories, tags } = useSelect( ( select ) => {
-		const { getEditedPostAttribute } = select( editorStore ) as GutenbergFunction;
-		const { getEntityRecords } = select( coreStore );
-
-		const authorRecords: User[] | null = getEntityRecords(
-			'root', 'user', { include: getEditedPostAttribute( 'author' ) }
-		);
-
-		const categoryRecords: Taxonomy[] | null = getEntityRecords(
-			'taxonomy', 'category', { include: getEditedPostAttribute( 'categories' ) }
-		);
-
-		const tagRecords: Taxonomy[]|null = getEntityRecords(
-			'taxonomy', 'post_tag', { include: getEditedPostAttribute( 'tags' ) }
-		);
-
-		return {
-			authors: authorRecords,
-			categories: categoryRecords,
-			tags: tagRecords,
-		};
-	}, [] );
-
-	/**
-	 * Returns the current Post's tag names.
-	 *
-	 * @since 3.11.0
-	 */
-	const tagNames = useMemo( () => {
-		return tags ? tags.map( ( t ) => t.name ) : [];
-	}, [ tags ] );
-
-	/**
-	 * Returns the current Post's category names.
-	 *
-	 * @since 3.11.0
-	 */
-	const categoryNames = useMemo( () => {
-		return categories ? categories.map( ( c ) => c.name ) : [];
-	}, [ categories ] );
-
-	/**
-	 * Returns the current Post's author names.
-	 *
-	 * @since 3.11.0
-	 */
-	const authorNames = useMemo( () => {
-		return authors ? authors.map( ( a ) => a.name ) : [];
-	}, [ authors ] );
-
-	useEffect( () => {
-		setPostData( {
-			authors: authorNames,
-			tags: tagNames,
-			categories: categoryNames,
-		} );
-	}, [ authorNames, tagNames, categoryNames ] );
 
 	/**
 	 * Track sidebar opening.
@@ -283,6 +211,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 	 *
 	 * @since 3.11.0
 	 *
+	 * @deprecated Will be removed soon.
 	 * @return {JSX.Element} The settings pane of the Content Helper Sidebar.
 	 */
 	const Settings = (): JSX.Element => {
@@ -336,15 +265,78 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 		<PluginSidebar icon={ <LeafIcon className="wp-parsely-sidebar-icon" /> }
 			name="wp-parsely-content-helper"
 			className="wp-parsely-content-helper"
-			title={ __( 'Parse.ly Editor Sidebar', 'wp-parsely' ) }
+			title={ __( 'Parse.ly', 'wp-parsely' ) }
 		>
 			<SettingsProvider
 				endpoint="editor-sidebar-settings"
 				defaultSettings={ getSettingsFromJson() }
 			>
 				<Panel>
+					<PanelBody>
+						<PanelRow className="wp-parsely-sidebar-header">
+							{
+								/* translators: %1$s: how it performed, %2$s: period starting with 'last' */
+								sprintf( __( 'This post performed %1$s in the %2$s', 'wp-parsely' ),
+									'very well',
+									getPeriodDescription( settings.SettingsPeriod, true )
+								)
+								// TODO: Make the performance descriptor dynamic, and display a different message if the post is unpublished.
+							}
+							{ window.wpParselyPostUrl && (
+								<Button
+									variant={ 'primary' }
+									onClick={ () => {
+										Telemetry.trackEvent( 'editor_sidebar_view_post_pressed' );
+									} }
+									href={ window.wpParselyPostUrl }
+									rel="noopener"
+									target="_blank"
+								>
+									{
+										/* translators: %s: Post type */
+										sprintf( __( 'View this %s in Parse.ly', 'wp-parsely' ), 'post' )
+									}
+								</Button>
+							) }
+						</PanelRow>
+					</PanelBody>
+				</Panel>
+				<Panel className="wp-parsely-sidebar-main-panel">
+					<TabPanel
+						className="wp-parsely-sidebar-tabs"
+						tabs={ [
+							{
+								icon: <EditIcon />,
+								name: 'tools',
+								title: __( 'Tools', 'wp-parsely' ),
+							},
+							{
+								icon: ChartIcon,
+								name: 'performance',
+								title: __( 'Performance', 'wp-parsely' ),
+							},
+						] }
+						onSelect={ ( tabName ) => {
+							Telemetry.trackEvent( 'editor_sidebar_tab_selected', { tab: tabName } );
+						} }
+					>
+						{ ( tab ) => (
+							<>
+								{ tab.name === 'tools' && (
+									<SidebarToolsTab trackToggle={ trackToggle } />
+								) }
+								{ tab.name === 'performance' && (
+									<SidebarPerformanceTab
+										period={ settings.SettingsPeriod }
+									/>
+								) }
+							</>
+						) }
+					</TabPanel>
+				</Panel>
+				<Panel>
 					<PanelBody
-						title={ __( 'Settings', 'wp-parsely' ) }
+						title={ __( 'Settings (deprecated)', 'wp-parsely' ) }
 						initialOpen={ settings.SettingsOpen }
 						onToggle={ ( next ) => {
 							setSettings( { SettingsOpen: next } );
@@ -352,84 +344,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 						} }
 					>
 						<Settings />
-					</PanelBody>
-				</Panel>
-				<Panel>
-					<PanelBody
-						title={ __( 'Performance Details', 'wp-parsely' ) }
-						initialOpen={ settings.PerformanceDetailsOpen }
-						onToggle={ ( next ) => {
-							setSettings( {
-								PerformanceDetailsOpen: next,
-							} );
-							trackToggle( 'performance_details', next );
-						} }
-					>
-						{
-							<VerifyCredentials>
-								<PerformanceDetails
-									period={ settings.SettingsPeriod }
-								/>
-							</VerifyCredentials>
-						}
-					</PanelBody>
-				</Panel>
-				<Panel>
-					<PanelBody
-						title={ __( 'Related Top Posts', 'wp-parsely' ) }
-						initialOpen={ settings.RelatedTopPostsOpen }
-						onToggle={ ( next ) => {
-							setSettings( {
-								RelatedTopPostsOpen: next,
-							} );
-							trackToggle( 'related_top_posts', next );
-						} }
-					>
-						{
-							<VerifyCredentials>
-								<RelatedTopPostList
-									metric={ settings.SettingsMetric }
-									period={ settings.SettingsPeriod }
-									postData={ postData }
-								/>
-							</VerifyCredentials>
-						}
-					</PanelBody>
-				</Panel>
-				<Panel>
-					<PanelBody
-						icon={ <BetaBadge /> }
-						title={ __( 'Title Suggestions', 'wp-parsely' ) }
-						initialOpen={ settings.TitleSuggestionsOpen }
-						onToggle={ ( next ) => {
-							setSettings( {
-								TitleSuggestionsOpen: next,
-							} );
-							trackToggle( 'title_suggestions', next );
-						} }
-					>
-						<VerifyCredentials>
-							<TitleSuggestionsPanel />
-						</VerifyCredentials>
-					</PanelBody>
-				</Panel>
-				<Panel>
-					<PanelBody
-						icon={ <BetaBadge /> }
-						title={ __( 'Smart Linking', 'wp-parsely' ) }
-						initialOpen={ settings.SmartLinkingOpen }
-						onToggle={ ( next ) => {
-							setSettings( {
-								SmartLinkingOpen: next,
-							} );
-							trackToggle( 'smart_linking', next );
-						} }
-					>
-						<VerifyCredentials>
-							<SmartLinkingPanel
-								context={ SmartLinkingPanelContext.ContentHelperSidebar }
-							/>
-						</VerifyCredentials>
 					</PanelBody>
 				</Panel>
 			</SettingsProvider>
