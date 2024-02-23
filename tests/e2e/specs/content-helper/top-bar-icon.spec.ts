@@ -22,8 +22,8 @@ const pluginButton = 'button[aria-label="Parse.ly"]';
  * Tests for the PCH Editor Sidebar top bar icon.
  */
 describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => {
-	const postNotPublishedMessage = 'SettingsPeriodLast 10 MinutesLast HourLast 2 HoursLast 4 HoursLast 24 HoursLast 7 DaysLast 30 DaysMetricPage ViewsAvg. TimePerformance DetailsThis post is not published, so its details are unavailable.Related Posts';
-	const emptyCredentialsMessage = 'SettingsPeriodLast 10 MinutesLast HourLast 2 HoursLast 4 HoursLast 24 HoursLast 7 DaysLast 30 DaysMetricPage ViewsAvg. TimePerformance DetailsContact us about advanced plugin features and the Parse.ly dashboard.Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in wp-parsely options.Related Posts';
+	const postNotPublishedMessage = 'This post performed very well in the last 7 daysTitle SuggestionsBetaSmart LinkingBetaRelated Posts';
+	const emptyCredentialsMessage = 'This post performed very well in the last 7 daysTitle SuggestionsBetaSmart LinkingBetaRelated PostsContact us about advanced plugin features and the Parse.ly dashboard.Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in wp-parsely options.';
 
 	/**
 	 * Verifies that the top bar icon gets displayed when the Site ID and API
