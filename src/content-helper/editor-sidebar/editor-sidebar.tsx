@@ -14,8 +14,8 @@ import { useSelect } from '@wordpress/data';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { useEffect } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { registerPlugin } from '@wordpress/plugins';
 import { chartBar as ChartIcon } from '@wordpress/icons';
+import { registerPlugin } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
@@ -301,18 +301,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 						</PanelRow>
 					</PanelBody>
 				</Panel>
-				<Panel>
-					<PanelBody
-						title={ __( 'Settings (deprecated)', 'wp-parsely' ) }
-						initialOpen={ settings.SettingsOpen }
-						onToggle={ ( next ) => {
-							setSettings( { SettingsOpen: next } );
-							trackToggle( 'settings', next );
-						} }
-					>
-						<Settings />
-					</PanelBody>
-				</Panel>
 				<Panel className="wp-parsely-sidebar-main-panel">
 					<TabPanel
 						className="wp-parsely-sidebar-tabs"
@@ -343,6 +331,18 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 							</>
 						) }
 					</TabPanel>
+				</Panel>
+				<Panel>
+					<PanelBody
+						title={ __( 'Settings (deprecated)', 'wp-parsely' ) }
+						initialOpen={ settings.SettingsOpen }
+						onToggle={ ( next ) => {
+							setSettings( { SettingsOpen: next } );
+							trackToggle( 'settings', next );
+						} }
+					>
+						<Settings />
+					</PanelBody>
 				</Panel>
 			</SettingsProvider>
 		</PluginSidebar>
