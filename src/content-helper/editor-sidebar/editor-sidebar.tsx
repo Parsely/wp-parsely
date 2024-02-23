@@ -85,6 +85,7 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	} catch ( e ) {
 		// Return defaults when parsing failed or the string is empty.
 		return {
+			InitialTabName: 'tools',
 			PerformanceStatsPeriod: Period.Days7,
 			RelatedPostsFilterBy: PostFilterType.Unavailable,
 			RelatedPostsFilterValue: '',
@@ -103,6 +104,9 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 
 	// Fix invalid values if any are found.
+	if ( typeof parsedSettings?.InitialTabName !== 'string' ) {
+		parsedSettings.InitialTabName = 'tools';
+	}
 	if ( ! isInEnum( parsedSettings?.PerformanceStatsPeriod, Period ) ) {
 		parsedSettings.PerformanceStatsPeriod = Period.Days7;
 	}
@@ -157,8 +161,6 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
  * @return {JSX.Element} The Content Helper Editor Sidebar.
  */
 const ContentHelperEditorSidebar = (): JSX.Element => {
-	// TODO: Check if setSettings can be removed here.
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	/**
@@ -236,6 +238,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 				<Panel className="wp-parsely-sidebar-main-panel">
 					<TabPanel
 						className="wp-parsely-sidebar-tabs"
+						initialTabName={ settings.InitialTabName }
 						tabs={ [
 							{
 								icon: <EditIcon />,
@@ -249,6 +252,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 							},
 						] }
 						onSelect={ ( tabName ) => {
+							setSettings( { ...settings, InitialTabName: tabName } );
 							Telemetry.trackEvent( 'editor_sidebar_tab_selected', { tab: tabName } );
 						} }
 					>

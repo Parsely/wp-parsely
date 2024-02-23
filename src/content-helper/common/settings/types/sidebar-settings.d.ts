@@ -7,6 +7,7 @@ import { Metric, Period } from '../../utils/constants';
  * @since 3.14.0 Moved from `content-helper/editor-sidebar/editor-sidebar.tsx`.
  */
 export interface SidebarSettings {
+	InitialTabName: string;
 	PerformanceStatsPeriod: Period;
 	RelatedPostsFilterBy: string;
 	RelatedPostsFilterValue: string;
