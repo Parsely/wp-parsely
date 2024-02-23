@@ -57,7 +57,7 @@
 				// Individual tab.
 				button {
 					display: flex;
-					height: 48px;
+					height: to_rem(48px);
 					flex-direction: column;
 					align-items: center;
 					flex: 1 0 0;
