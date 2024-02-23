@@ -7,13 +7,12 @@ import { Metric, Period } from '../../utils/constants';
  * @since 3.14.0 Moved from `content-helper/editor-sidebar/editor-sidebar.tsx`.
  */
 export interface SidebarSettings {
-	PerformanceDetailsOpen: boolean;
-	RelatedTopPostsFilterBy: string;
-	RelatedTopPostsFilterValue: string;
-	RelatedTopPostsOpen: boolean;
-	SettingsMetric: Metric;
-	SettingsOpen: boolean;
-	SettingsPeriod: Period;
+	PerformanceStatsPeriod: Period;
+	RelatedPostsFilterBy: string;
+	RelatedPostsFilterValue: string;
+	RelatedPostsMetric: Metric;
+	RelatedPostsOpen: boolean;
+	RelatedPostsPeriod: Period;
 	SmartLinkingMaxLinks: number;
 	SmartLinkingMaxLinkWords: number;
 	SmartLinkingOpen: boolean;

@@ -41,31 +41,27 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 	 */
 	protected function get_subvalues_specs(): array {
 		return array(
-			'PerformanceDetailsOpen'       => array(
-				'values'  => array( true, false ),
-				'default' => true,
+			'PerformanceStatsPeriod'       => array(
+				'values'  => array( '10m', '1h', '2h', '4h', '24h', '7d', '30d' ),
+				'default' => '7d',
 			),
-			'RelatedTopPostsFilterBy'      => array(
+			'RelatedPostsFilterBy'         => array(
 				'values'  => array( 'unavailable', 'tag', 'section', 'author' ),
 				'default' => 'unavailable',
 			),
-			'RelatedTopPostsFilterValue'   => array(
+			'RelatedPostsFilterValue'      => array(
 				'values'  => array(),
 				'default' => '',
 			),
-			'RelatedTopPostsOpen'          => array(
-				'values'  => array( true, false ),
-				'default' => false,
-			),
-			'SettingsMetric'               => array(
+			'RelatedPostsMetric'           => array(
 				'values'  => array( 'views', 'avg_engaged' ),
 				'default' => 'views',
 			),
-			'SettingsOpen'                 => array(
+			'RelatedPostsOpen'             => array(
 				'values'  => array( true, false ),
-				'default' => true,
+				'default' => false,
 			),
-			'SettingsPeriod'               => array(
+			'RelatedPostsPeriod'           => array(
 				'values'  => array( '10m', '1h', '2h', '4h', '24h', '7d', '30d' ),
 				'default' => '7d',
 			),
