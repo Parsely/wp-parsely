@@ -102,7 +102,7 @@ export function RelatedPostList( {
 			if ( '' !== value ) {
 				onFilterChange( type, value );
 				setFilter( { type, value } );
-				Telemetry.trackEvent( 'related_top_posts_filter_type_changed', { filter_type: type } );
+				Telemetry.trackEvent( 'related_posts_filter_type_changed', { filter_type: type } );
 			}
 		}
 	};
