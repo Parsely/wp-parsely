@@ -87,6 +87,11 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 		return {
 			InitialTabName: 'tools',
 			PerformanceStatsPeriod: Period.Days7,
+			PerformanceStatsSettings: {
+				Period: Period.Days7,
+				VisiblePanels: [ 'overview', 'categories', 'referrers' ],
+				VisibleDataPoints: [ 'views', 'visitors', 'avgEngaged', 'recirculation' ],
+			},
 			RelatedPostsFilterBy: PostFilterType.Unavailable,
 			RelatedPostsFilterValue: '',
 			RelatedPostsMetric: Metric.Views,
@@ -109,6 +114,22 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 	if ( ! isInEnum( parsedSettings?.PerformanceStatsPeriod, Period ) ) {
 		parsedSettings.PerformanceStatsPeriod = Period.Days7;
+	}
+	if ( typeof parsedSettings?.PerformanceStatsSettings !== 'object' ) {
+		parsedSettings.PerformanceStatsSettings = {
+			Period: Period.Days7,
+			VisiblePanels: [ 'overview', 'categories', 'referrers' ],
+			VisibleDataPoints: [ 'views', 'visitors', 'avgEngaged', 'recirculation' ],
+		};
+	}
+	if ( ! isInEnum( parsedSettings?.PerformanceStatsSettings?.Period, Period ) ) {
+		parsedSettings.PerformanceStatsSettings.Period = Period.Days7;
+	}
+	if ( ! Array.isArray( parsedSettings?.PerformanceStatsSettings?.VisiblePanels ) ) {
+		parsedSettings.PerformanceStatsSettings.VisiblePanels = [ 'overview', 'categories', 'referrers' ];
+	}
+	if ( ! Array.isArray( parsedSettings?.PerformanceStatsSettings?.VisibleDataPoints ) ) {
+		parsedSettings.PerformanceStatsSettings.VisibleDataPoints = [ 'views', 'visitors', 'avgEngaged', 'recirculation' ];
 	}
 	if ( ! isInEnum( parsedSettings?.RelatedPostsFilterBy, PostFilterType ) ) {
 		parsedSettings.RelatedPostsFilterBy = PostFilterType.Unavailable;
