@@ -123,6 +123,7 @@ export function RelatedPostList( {
 		}
 	};
 
+	useEffect( () => {
 	/**
 	 * Returns whether the post data passed into this component is empty.
 	 *
@@ -130,16 +131,11 @@ export function RelatedPostList( {
 	 *
 	 * @return {boolean} Whether the post data is empty.
 	 */
-	const isPostDataEmpty = (): boolean => {
-		return Object.values( postData ).every(
-			( value ) => 0 === value.length
-		);
-	};
-
-	useEffect( () => {
-		if ( isPostDataEmpty() ) {
-			return;
-		}
+		const isPostDataEmpty = (): boolean => {
+			return Object.values( postData ).every(
+				( value ) => 0 === value.length
+			);
+		};
 
 		/**
 		 * Returns the initial filter settings.
@@ -193,8 +189,11 @@ export function RelatedPostList( {
 		const tagIsUnavailable = filterTypeIsTag && ! postData.tags.includes( filter.value );
 
 		setLoading( true );
+
 		if ( filterTypeIsUnavailable || ( filterTypeIsTag && noTagsExist ) ) {
-			setFilter( getInitialFilterSettings() );
+			if ( ! isPostDataEmpty() ) {
+				setFilter( getInitialFilterSettings() );
+			}
 		} else if ( tagIsUnavailable ) {
 			setFilter( { type: PostFilterType.Tag, value: postData.tags[ 0 ] } );
 		} else {
