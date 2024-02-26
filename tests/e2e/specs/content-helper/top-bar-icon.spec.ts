@@ -23,7 +23,7 @@ const pluginButton = 'button[aria-label="Parse.ly"]';
  */
 describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => {
 	const postNotPublishedMessage = 'This post performed very well in the last 7 daysTitle SuggestionsBetaSmart LinkingBetaRelated Posts';
-	const emptyCredentialsMessage = 'This post performed very well in the last 7 daysTitle SuggestionsBetaSmart LinkingBetaRelated PostsContact us about advanced plugin features and the Parse.ly dashboard.Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in wp-parsely options.';
+	const emptyCredentialsMessage = 'Contact us about advanced plugin features and the Parse.ly dashboard.Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in wp-parsely options.';
 
 	/**
 	 * Verifies that the top bar icon gets displayed when the Site ID and API
@@ -57,7 +57,10 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	 * API Secret are provided.
 	 */
 	it( 'Should be displayed when both the Site ID and API Secret are provided', async () => {
-		expect( await testContentHelperIcon( VALID_SITE_ID, VALID_API_SECRET ) )
+		expect( await testContentHelperIcon(
+			VALID_SITE_ID, VALID_API_SECRET,
+			'div.wp-parsely-content-helper'
+		) )
 			.toMatch( postNotPublishedMessage );
 	} );
 
@@ -93,9 +96,12 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
  *
  * @param {string} siteId
  * @param {string} apiSecret
+ * @param {string} selector
  * @return {string} Text content found in the PCH Editor Sidebar.
  */
-async function testContentHelperIcon( siteId: string, apiSecret: string ) {
+async function testContentHelperIcon(
+	siteId: string, apiSecret: string, selector = 'div.content-helper-error-message'
+) {
 	await setSiteKeys( siteId, apiSecret );
 	await createNewPost();
 
@@ -110,9 +116,9 @@ async function testContentHelperIcon( siteId: string, apiSecret: string ) {
 	}
 
 	// Get the text content of the sidebar.
-	await page.waitForSelector( 'div.wp-parsely-content-helper', { visible: true } );
+	await page.waitForSelector( selector, { visible: true } );
 	const text = await page.$eval(
-		'div.wp-parsely-content-helper',
+		selector,
 		( element: Element ) => element.textContent
 	);
 
