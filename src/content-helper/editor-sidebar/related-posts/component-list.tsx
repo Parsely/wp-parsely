@@ -124,13 +124,13 @@ export function RelatedPostList( {
 	};
 
 	useEffect( () => {
-	/**
-	 * Returns whether the post data passed into this component is empty.
-	 *
-	 * @since 3.14.0
-	 *
-	 * @return {boolean} Whether the post data is empty.
-	 */
+		/**
+		 * Returns whether the post data passed into this component is empty.
+		 *
+		 * @since 3.14.0
+		 *
+		 * @return {boolean} Whether the post data is empty.
+		 */
 		const isPostDataEmpty = (): boolean => {
 			return Object.values( postData ).every(
 				( value ) => 0 === value.length
