@@ -137,7 +137,8 @@
 		}
 	}
 
-	.parsely-top-post-metric-data {
+	// Common class name shared with the PCH Editor Sidebar.
+	.parsely-post-metric-data {
 		float: right;
 		font-family: var(--numeric-font);
 		font-size: to_rem(18px);
