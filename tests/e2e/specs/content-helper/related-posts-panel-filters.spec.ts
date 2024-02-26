@@ -11,15 +11,15 @@ import {
 import {
 	VALID_API_SECRET,
 	VALID_SITE_ID,
-	getTopRelatedPostsMessage,
+	getRelatedPostsMessage,
 	setSiteKeys,
 	setUserDisplayName,
 } from '../../utils';
 
 /**
- * Tests for the PCH Editor Sidebar Related Top Post filters.
+ * Tests for the PCH Editor Sidebar Related Post filters.
  */
-describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
+describe( 'PCH Editor Sidebar Related Post panel filters', () => {
 	const messageSelector = '.parsely-top-posts-descr';
 
 	/**
@@ -38,23 +38,23 @@ describe( 'PCH Editor Sidebar Related Top Post panel filters', () => {
 	it( 'Should attempt to fetch results when a Site ID and API Secret are provided', async () => {
 		await setUserDisplayName( 'admin', '' );
 
-		expect( await getTopRelatedPostsMessage( '', '', 'author', 500, messageSelector ) )
-			.toMatch( `No top posts by author "admin" were found for the specified period and metric.` );
+		expect( await getRelatedPostsMessage( '', '', 'author', 500, messageSelector ) )
+			.toMatch( `No related posts by author "admin" were found for the specified period and metric.` );
 	} );
 
 	/**
-	 * Verifies that the Related Top Posts panel will work correctly when a new
+	 * Verifies that the Related Posts panel will work correctly when a new
 	 * taxonomy is added from within the WordPress Post Editor.
 	 *
 	 * Note: This test does not insert the taxonomy into the database before
 	 * selecting it in the WordPress Post Editor. As such, a delay in
 	 * intercepting the new value is expected, since it must first be stored
-	 * into the database and then picked up by the Related Top Posts panel.
+	 * into the database and then picked up by the Related Posts panel.
 	 */
 	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
 		const categoryName = 'Analytics That Matter';
 
-		expect( await getTopRelatedPostsMessage( categoryName, '', 'section', 2000, messageSelector ) )
-			.toMatch( `Top posts in section "${ categoryName }" in the last 30 days.` );
+		expect( await getRelatedPostsMessage( categoryName, '', 'section', 2000, messageSelector ) )
+			.toMatch( `Related posts in section "${ categoryName }" in the last 30 days.` );
 	} );
 } );

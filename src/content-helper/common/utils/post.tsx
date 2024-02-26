@@ -65,7 +65,7 @@ export function PostListItemMetric(
 ): JSX.Element {
 	if ( 'views' === metric ) {
 		return (
-			<span className="parsely-top-post-metric-data">
+			<span className="parsely-post-metric-data">
 				<span className="screen-reader-text">
 					{ __( 'Number of Views', 'wp-parsely' ) }
 				</span>
@@ -76,7 +76,7 @@ export function PostListItemMetric(
 
 	if ( 'avg_engaged' === metric ) {
 		return (
-			<span className="parsely-top-post-metric-data">
+			<span className="parsely-post-metric-data">
 				<span className="screen-reader-text">
 					{ __( 'Average Time', 'wp-parsely' ) }
 				</span>
@@ -86,7 +86,7 @@ export function PostListItemMetric(
 	}
 
 	return (
-		<span className="parsely-top-post-metric-data">
+		<span className="parsely-post-metric-data">
 			-
 		</span>
 	);

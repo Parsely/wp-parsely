@@ -24,13 +24,13 @@ import {
 	SidebarPostData,
 } from '../../../src/content-helper/editor-sidebar/editor-sidebar';
 import {
-	RelatedTopPostList,
-} from '../../../src/content-helper/editor-sidebar/related-top-posts/component-list';
+	RelatedPostList,
+} from '../../../src/content-helper/editor-sidebar/related-posts/component-list';
 import {
-	GetRelatedTopPostsResult,
+	GetRelatedPostsResult,
 	RELATED_POSTS_DEFAULT_LIMIT,
-	RelatedTopPostsProvider,
-} from '../../../src/content-helper/editor-sidebar/related-top-posts/provider';
+	RelatedPostsProvider,
+} from '../../../src/content-helper/editor-sidebar/related-posts/provider';
 
 const postData: SidebarPostData = {
 	authors: [],
@@ -38,64 +38,64 @@ const postData: SidebarPostData = {
 	tags: [],
 };
 
-const relatedTopPostList =
-	<RelatedTopPostList
+const relatedPostList =
+	<RelatedPostList
 		metric={ Metric.Views }
 		period={ Period.Days7 }
 		postData={ postData }
 	/>
 ;
 
-describe( 'PCH Editor Sidebar Related Top Post panel', () => {
+describe( 'PCH Editor Sidebar Related Post panel', () => {
 	test( 'should display spinner when starting', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
+		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( {
 			message: 'Testing that the spinner appears and disappears.',
 			posts: [],
 		} ) );
 
 		await waitFor( async () => {
-			render( relatedTopPostList );
+			render( relatedPostList );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
-		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
+		expect( getRelatedPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 	} );
 
 	test( 'should show contact us message when Parse.ly Site ID is not set', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( new ContentHelperError(
+		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.reject( new ContentHelperError(
 			'Error message.',
 			ContentHelperErrorCode.PluginSettingsSiteIdNotSet
 		) ) );
 
-		expect( await verifyCredentialsNotSetMessage( getRelatedTopPostsFn ) ).toBeTruthy();
+		expect( await verifyCredentialsNotSetMessage( getRelatedPostsFn ) ).toBeTruthy();
 	} );
 
 	test( 'should show contact us message when Parse.ly API Secret is not set', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( new ContentHelperError(
+		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.reject( new ContentHelperError(
 			'Error message.',
 			ContentHelperErrorCode.PluginSettingsApiSecretNotSet
 		) ) );
 
-		expect( await verifyCredentialsNotSetMessage( getRelatedTopPostsFn ) ).toBeTruthy();
+		expect( await verifyCredentialsNotSetMessage( getRelatedPostsFn ) ).toBeTruthy();
 	} );
 
 	test( 'should show error message when API returns the error', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( new ContentHelperError(
+		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.reject( new ContentHelperError(
 			'Fake error from API.',
 			ContentHelperErrorCode.ParselyApiResponseContainsError
 		) ) );
 
-		expect( await verifyApiErrorMessage( getRelatedTopPostsFn ) ).toBeTruthy();
+		expect( await verifyApiErrorMessage( getRelatedPostsFn ) ).toBeTruthy();
 	} );
 
 	test( 'should show error message and hint when API fetch is failed', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.reject( new ContentHelperError(
+		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.reject( new ContentHelperError(
 			'Fake error from API.',
 			ContentHelperErrorCode.FetchError
 		) ) );
 
-		expect( await verifyApiErrorMessage( getRelatedTopPostsFn ) ).toBeTruthy();
+		expect( await verifyApiErrorMessage( getRelatedPostsFn ) ).toBeTruthy();
 
 		const apiErrorHint = screen.queryByTestId( 'content-helper-error-message-hint' );
 		expect( apiErrorHint ).toBeInTheDocument();
@@ -106,52 +106,52 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	} );
 
 	test( 'should show no results message when there is no tag, category or author in the post', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: 'The Parse.ly API did not return any results for top posts by "author".',
+		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( {
+			message: 'The Parse.ly API did not return any results for posts by "author".',
 			posts: [],
 		} ) );
 
 		await waitFor( async () => {
-			render( relatedTopPostList );
+			render( relatedPostList );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
-		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
+		expect( getRelatedPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 
 		const topPostDesc = getTopPostDesc();
 		expect( topPostDesc ).toBeInTheDocument();
 		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc?.textContent ).toEqual( 'The Parse.ly API did not return any results for top posts by "author".' );
+		expect( topPostDesc?.textContent ).toEqual( 'The Parse.ly API did not return any results for posts by "author".' );
 	} );
 
-	test( 'should show a single top post with description and proper attributes', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: `Top posts in category "Developers" in last 7 days.`,
-			posts: getRelatedTopPostsMockData( 1 ),
+	test( 'should show a single post with description and proper attributes', async () => {
+		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( {
+			message: `Posts in category "Developers" in last 7 days.`,
+			posts: getRelatedPostsMockData( 1 ),
 		} ) );
 
 		await waitFor( async () => {
-			render( relatedTopPostList );
+			render( relatedPostList );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
-		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
+		expect( getRelatedPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 
 		const topPostDesc = getTopPostDesc();
 		expect( topPostDesc ).toBeInTheDocument();
 		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc?.textContent ).toEqual( `Top posts in category "Developers" in last 7 days.` );
+		expect( topPostDesc?.textContent ).toEqual( `Posts in category "Developers" in last 7 days.` );
 
 		const topPosts = getTopPosts();
 		expect( topPosts.length ).toEqual( 1 );
 
-		// test top post attributes
+		// test post attributes
 		const firstTopPost = topPosts[ 0 ];
-		const statsLink = firstTopPost.querySelector( '.parsely-top-post-stats-link' );
-		const viewPostLink = firstTopPost.querySelector( '.parsely-top-post-view-link' );
-		const editPostLink = firstTopPost.querySelector( '.parsely-top-post-edit-link' );
+		const statsLink = firstTopPost.querySelector( '.parsely-related-post-stats-link' );
+		const viewPostLink = firstTopPost.querySelector( '.parsely-related-post-view-link' );
+		const editPostLink = firstTopPost.querySelector( '.parsely-related-post-edit-link' );
 
 		expect( statsLink?.getAttribute( 'href' ) ).toEqual( `${ DASHBOARD_BASE_URL }/example.com/post-1` );
 		expect( statsLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
@@ -163,25 +163,25 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		expect( editPostLink?.getAttribute( 'href' ) ).toEqual( '/wp-admin/post.php?post=1&action=edit' );
 		expect( editPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
 		expect( editPostLink?.childNodes[ 0 ].textContent ).toEqual( 'Edit Post (opens new tab)' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-date' )?.childNodes[ 1 ].textContent ).toEqual( 'Jan 1, 2022' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-author' )?.childNodes[ 1 ].textContent ).toEqual( 'Name 1' );
-		expect( firstTopPost.querySelector( '.parsely-top-post-metric-data' )?.childNodes[ 2 ].textContent ).toEqual( '1' );
+		expect( firstTopPost.querySelector( '.parsely-related-post-date' )?.childNodes[ 1 ].textContent ).toEqual( 'Jan 1, 2022' );
+		expect( firstTopPost.querySelector( '.parsely-related-post-author' )?.childNodes[ 1 ].textContent ).toEqual( 'Name 1' );
+		expect( firstTopPost.querySelector( '.parsely-post-metric-data' )?.childNodes[ 2 ].textContent ).toEqual( '1' );
 	} );
 
 	test( 'should show 5 posts by default', async () => {
-		const getRelatedTopPostsFn = getRelatedTopPostsMockFn( () => Promise.resolve( {
-			message: `Top posts with tag "Developers" in last 7 days.`,
-			posts: getRelatedTopPostsMockData(),
+		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( {
+			message: `Posts with tag "Developers" in last 7 days.`,
+			posts: getRelatedPostsMockData(),
 		} ) );
 
 		await waitFor( async () => {
-			render( relatedTopPostList );
+			render( relatedPostList );
 			expect( getSpinner() ).toBeInTheDocument();
 		} );
 
-		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
+		expect( getRelatedPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
-		expect( getTopPostDesc()?.textContent ).toEqual( `Top posts with tag "Developers" in last 7 days.` );
+		expect( getTopPostDesc()?.textContent ).toEqual( `Posts with tag "Developers" in last 7 days.` );
 		expect( getTopPosts().length ).toEqual( 5 );
 	} );
 
@@ -190,24 +190,24 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 	}
 
 	function getTopPostDesc() {
-		return screen.queryByTestId( 'parsely-top-posts-descr' );
+		return screen.queryByTestId( 'parsely-related-posts-descr' );
 	}
 
 	function getTopPosts() {
-		return screen.queryAllByTestId( 'parsely-top-post' );
+		return screen.queryAllByTestId( 'parsely-related-post' );
 	}
 
 	function getCredentialsNotSetMessage() {
 		return screen.queryByTestId( 'empty-credentials-message' );
 	}
 
-	function getRelatedTopPostsMockFn( mockFn: () => Promise<GetRelatedTopPostsResult> ) {
+	function getRelatedPostsMockFn( mockFn: () => Promise<GetRelatedPostsResult> ) {
 		return jest
-			.spyOn( RelatedTopPostsProvider, 'getRelatedTopPosts' )
+			.spyOn( RelatedPostsProvider, 'getRelatedPosts' )
 			.mockImplementation( mockFn );
 	}
 
-	function getRelatedTopPostsMockData( postsCount = RELATED_POSTS_DEFAULT_LIMIT ) {
+	function getRelatedPostsMockData( postsCount = RELATED_POSTS_DEFAULT_LIMIT ) {
 		const posts = [];
 
 		for ( let i = 1; i <= postsCount; i++ ) {
@@ -228,13 +228,13 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		return posts;
 	}
 
-	async function verifyCredentialsNotSetMessage( getRelatedTopPostsFn: jest.SpyInstance<Promise<GetRelatedTopPostsResult>> ) {
-		render( relatedTopPostList );
+	async function verifyCredentialsNotSetMessage( getRelatedPostsFn: jest.SpyInstance<Promise<GetRelatedPostsResult>> ) {
+		render( relatedPostList );
 		expect( getSpinner() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'empty-credentials-message' ), { timeout: 3000 } );
 
-		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
+		expect( getRelatedPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 
 		const contactUsMessage = getCredentialsNotSetMessage();
@@ -244,13 +244,13 @@ describe( 'PCH Editor Sidebar Related Top Post panel', () => {
 		return true;
 	}
 
-	async function verifyApiErrorMessage( getRelatedTopPostsFn: jest.SpyInstance<Promise<GetRelatedTopPostsResult>> ) {
-		render( relatedTopPostList );
+	async function verifyApiErrorMessage( getRelatedPostsFn: jest.SpyInstance<Promise<GetRelatedPostsResult>> ) {
+		render( relatedPostList );
 		expect( getSpinner() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'error' ), { timeout: 3000 } );
 
-		expect( getRelatedTopPostsFn ).toHaveBeenCalled();
+		expect( getRelatedPostsFn ).toHaveBeenCalled();
 		expect( getSpinner() ).toBeNull();
 
 		const apiError = screen.queryByTestId( 'error' );

@@ -17,7 +17,7 @@ import { BetaBadge } from '../../common/components/beta-badge';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { VerifyCredentials } from '../../common/verify-credentials';
 import { SidebarPostData } from '../editor-sidebar';
-import { RelatedTopPostList } from '../related-top-posts/component-list';
+import { RelatedPostList } from '../related-posts/component-list';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from '../smart-linking/component';
 import { TitleSuggestionsPanel } from '../title-suggestions/component';
 
@@ -149,7 +149,7 @@ export const SidebarToolsTab = ( { trackToggle }: SidebarToolsTabProps ) => {
 			</PanelBody>
 
 			<PanelBody
-				title={ __( 'Related Top Posts', 'wp-parsely' ) }
+				title={ __( 'Related Posts', 'wp-parsely' ) }
 				initialOpen={ settings.RelatedPostsOpen }
 				onToggle={ ( next ) => {
 					setSettings( {
@@ -160,7 +160,7 @@ export const SidebarToolsTab = ( { trackToggle }: SidebarToolsTabProps ) => {
 			>
 				{
 					<VerifyCredentials>
-						<RelatedTopPostList
+						<RelatedPostList
 							metric={ settings.RelatedPostsMetric }
 							period={ settings.RelatedPostsPeriod }
 							postData={ postData }
