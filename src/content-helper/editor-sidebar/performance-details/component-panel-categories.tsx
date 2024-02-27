@@ -3,7 +3,6 @@
  */
 import { SelectControl, Spinner } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
-import { settings } from '@wordpress/icons';
 import { useState } from '@wordpress/element';
 
 /**
@@ -64,7 +63,6 @@ export const PerformanceCategoriesPanel = ( {
 	return (
 		<PerformanceStatPanel
 			title={ __( 'Categories', 'wp-parsely' ) }
-			icon={ settings }
 			level={ 3 }
 			subtitle={ subtitle }
 			isOpen={ isOpen }

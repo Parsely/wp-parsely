@@ -14,7 +14,7 @@ import type { ReactNode } from 'react';
  */
 type PerformanceStatPanelProps = {
 	title: string;
-	icon: JSX.Element;
+	icon?: JSX.Element;
 	subtitle?: string;
 	level?: Parameters<typeof Heading>[0]['level'];
 	children: ReactNode;

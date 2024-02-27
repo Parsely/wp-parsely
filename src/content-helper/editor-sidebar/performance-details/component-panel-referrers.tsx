@@ -3,7 +3,6 @@
  */
 import { SelectControl, Spinner } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
-import { settings } from '@wordpress/icons';
 import { useState } from '@wordpress/element';
 
 /**
@@ -41,7 +40,6 @@ export const PerformanceReferrersPanel = ( {
 	return (
 		<PerformanceStatPanel
 			title={ __( 'Referrers', 'wp-parsely' ) }
-			icon={ settings }
 			subtitle={ subtitle }
 			level={ 3 }
 			isOpen={ isOpen }
