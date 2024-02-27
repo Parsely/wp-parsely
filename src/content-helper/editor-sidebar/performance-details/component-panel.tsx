@@ -75,7 +75,7 @@ export const PerformanceStatPanel = (
 						children={ dropdownChildren }
 					/>
 				) }
-				{ ! dropdownChildren && ! controls && (
+				{ icon && ! dropdownChildren && ! controls && (
 					<Button
 						icon={ icon }
 						isSmall
