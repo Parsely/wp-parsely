@@ -47,13 +47,8 @@ final class OptionsTest extends TestCase {
 	 * @since 3.0.0
 	 *
 	 * @covers \Parsely\Parsely::get_options
-	 * @covers \Parsely\Parsely::get_default_options
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::set_default_track_as_values
-	 * @uses \Parsely\Parsely::set_managed_options
 	 */
 	public function test_default_options_are_returned_when_options_are_corrupted_or_not_set(): void {
 		add_option( Parsely::OPTIONS_KEY, 'someinvalidvalue' );
@@ -73,10 +68,6 @@ final class OptionsTest extends TestCase {
 	 * @covers \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::set_default_track_as_values
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::set_managed_options
 	 */
 	public function test_get_options_returns_correct_track_as_defaults(): void {
 		$options = self::$parsely->get_options();
@@ -92,11 +83,6 @@ final class OptionsTest extends TestCase {
 	 *
 	 * @covers \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_managed_credentials
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::set_default_track_as_values
-	 * @uses \Parsely\Parsely::set_managed_options
 	 */
 	public function test_set_default_track_as_values_should_not_be_called_when_saved_options_exist(): void {
 		$options                     = self::$parsely->get_options();
@@ -117,12 +103,8 @@ final class OptionsTest extends TestCase {
 	 * @since 3.9.0
 	 *
 	 * @covers \Parsely\Parsely::get_options
-	 * @covers \Parsely\Parsely::set_default_track_as_values
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_managed_credentials
-	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 */
 	public function test_get_options_track_as_defaults_when_cpts_are_registered(): void {
 		$custom_post_types = array(
@@ -201,8 +183,6 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::sanitize_managed_option
 	 * @uses \Parsely\Parsely::set_default_track_as_values
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\UI\Settings_Page::get_section_taxonomies
 	 */
 	public function test_set_managed_options_override_all_other_option_types(): void {
 		$default_options = self::$parsely->get_default_options();
@@ -243,7 +223,6 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::sanitize_managed_option
 	 * @uses \Parsely\Parsely::set_default_track_as_values
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 */
 	public function test_null_managed_options_get_their_value_from_the_database_or_defaults(): void {
 		$default_options = self::$parsely->get_default_options();
@@ -285,7 +264,6 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::sanitize_managed_option
 	 * @uses \Parsely\Parsely::set_default_track_as_values
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 */
 	public function test_certain_options_cannot_be_set_as_managed(): void {
 		add_filter(
@@ -326,7 +304,6 @@ final class OptionsTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\UI\Settings_Page::get_section_taxonomies
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 *
 	 * @expectedIncorrectUsage sanitize_managed_option
 	 */
