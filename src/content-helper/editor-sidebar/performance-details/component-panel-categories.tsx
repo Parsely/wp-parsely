@@ -60,8 +60,9 @@ export const PerformanceCategoriesPanel = ( {
 						} }
 					>
 						{ Object.values( Metric ).map( ( value ) => (
-							<option key={ value } value={ value }>
+							<option key={ value } value={ value } disabled={ 'avg_engaged' === value }>
 								{ getMetricDescription( value ) }
+								{ 'avg_engaged' === value && __( ' (coming soon)', 'wp-parsely' ) }
 							</option>
 						) ) }
 					</SelectControl>

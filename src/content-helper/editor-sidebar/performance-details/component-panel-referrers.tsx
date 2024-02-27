@@ -42,14 +42,15 @@ export const PerformanceReferrersPanel = ( {
 						} }
 					>
 						{ Object.values( Metric ).map( ( value ) => (
-							<option key={ value } value={ value }>
+							<option key={ value } value={ value } disabled={ 'avg_engaged' === value }>
 								{ getMetricDescription( value ) }
+								{ 'avg_engaged' === value && __( ' (coming soon)', 'wp-parsely' ) }
 							</option>
 						) ) }
 					</SelectControl>
 				</div>
 			) }
-			{ ( isLoading ? (
+			{ isLoading ? (
 				<div className="parsely-spinner-wrapper" data-testid="parsely-spinner-wrapper">
 					<Spinner />
 				</div>
@@ -87,7 +88,7 @@ export const PerformanceReferrersPanel = ( {
 						);
 					} ) }
 				</div>
-			) ) }
+			) }
 		</PerformanceStatPanel>
 	);
 };
