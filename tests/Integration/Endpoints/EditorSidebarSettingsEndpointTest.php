@@ -32,7 +32,6 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 */
 	protected $default_value = array(
 		'InitialTabName'               => 'tools',
-		'PerformanceStatsPeriod'       => '7d',
 		'RelatedPostsFilterBy'         => 'unavailable',
 		'RelatedPostsFilterValue'      => '',
 		'RelatedPostsMetric'           => 'views',

@@ -6,7 +6,7 @@ import {
 } from '@wordpress/components';
 import { Period } from '../../common/utils/constants';
 import { VerifyCredentials } from '../../common/verify-credentials';
-import { PerformanceStats } from '../performance-details/component-new';
+import { PerformanceStats } from '../performance-details/component';
 
 /**
  * SidebarPerformanceTab component props.
