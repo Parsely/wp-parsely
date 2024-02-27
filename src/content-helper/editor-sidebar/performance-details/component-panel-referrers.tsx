@@ -31,7 +31,6 @@ export const PerformanceReferrersPanel = ( {
 	data,
 	isLoading,
 }: Readonly<PerformanceReferrersPanelProps> ) => {
-	// TEMP STATE
 	const [ metric, setMetric ] = useState<Metric>( Metric.Views );
 	const [ isOpen, setIsOpen ] = useState<boolean>( false );
 

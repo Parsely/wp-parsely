@@ -1,9 +1,9 @@
 /**
  * WordPress dependencies
  */
-import { MenuGroup, MenuItem, SelectControl } from '@wordpress/components';
+import { Button, MenuGroup, MenuItem, SelectControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import {
 	check,
 	moreVertical,
@@ -234,6 +234,23 @@ export const PerformanceStats = ( { period }: PerformanceStatsProps ) => {
 						) ) }
 					</SelectControl>
 				</div>
+				{ window.wpParselyPostUrl && (
+					<Button
+						className="wp-parsely-view-post"
+						variant={ 'primary' }
+						onClick={ () => {
+							Telemetry.trackEvent( 'editor_sidebar_view_post_pressed' );
+						} }
+						href={ window.wpParselyPostUrl }
+						rel="noopener"
+						target="_blank"
+					>
+						{
+							/* translators: %s: Post type */
+							sprintf( __( 'View this %s in Parse.ly', 'wp-parsely' ), 'post' )
+						}
+					</Button>
+				) }
 			</PerformanceStatPanel>
 
 			{ error ? (

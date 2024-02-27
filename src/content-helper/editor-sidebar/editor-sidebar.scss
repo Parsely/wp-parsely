@@ -193,6 +193,14 @@
 
 	.panel-body {
 		width: 100%;
+
+		/** View in Parse.ly button */
+		.components-button.wp-parsely-view-post {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+		}
 	}
 
 	.performance-stat-panel {

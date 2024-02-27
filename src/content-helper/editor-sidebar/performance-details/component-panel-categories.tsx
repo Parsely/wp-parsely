@@ -36,7 +36,6 @@ export const PerformanceCategoriesPanel = ( {
 	data,
 	isLoading,
 }: Readonly<PerformanceCategoriesPanelProps> ) => {
-	// TEMP STATE
 	const [ metric, setMetric ] = useState<Metric>( Metric.Views );
 	const [ isOpen, setIsOpen ] = useState<boolean>( false );
 
