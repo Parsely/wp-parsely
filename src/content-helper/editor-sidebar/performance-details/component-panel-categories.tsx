@@ -1,16 +1,38 @@
+/**
+ * WordPress dependencies
+ */
 import { SelectControl, Spinner } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { settings } from '@wordpress/icons';
-import { getMetricDescription, isInEnum, Metric } from '../../common/utils/constants';
-import { formatToImpreciseNumber } from '../../common/utils/number';
-import { PerformanceStatPanel } from './component-panel';
-import { PerformanceData } from './model';
+import { useState } from '@wordpress/element';
 
+/**
+ * Internal dependencies
+ */
+import { PerformanceData } from './model';
+import { PerformanceStatPanel } from './component-panel';
+import { formatToImpreciseNumber } from '../../common/utils/number';
+import { getMetricDescription, isInEnum, Metric } from '../../common/utils/constants';
+
+/**
+ * PerformanceCategoriesPanel component props.
+ *
+ * @since 3.14.0
+ */
 type PerformanceCategoriesPanelProps = {
 	data: PerformanceData;
 	isLoading: boolean;
 }
+
+/**
+ * The PerformanceCategoriesPanel component.
+ *
+ * Renders the Categories panel in the Performance tab.
+ *
+ * @since 3.14.0
+ *
+ * @param { PerformanceCategoriesPanelProps } props The component's props.
+ */
 export const PerformanceCategoriesPanel = ( {
 	data,
 	isLoading,

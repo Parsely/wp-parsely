@@ -1,16 +1,33 @@
+/**
+ * WordPress dependencies
+ */
 import { SelectControl, Spinner } from '@wordpress/components';
-import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { settings } from '@wordpress/icons';
-import { getMetricDescription, isInEnum, Metric } from '../../common/utils/constants';
-import { PerformanceStatPanel } from './component-panel';
-import { PerformanceData } from './model';
+import { useState } from '@wordpress/element';
 
+/**
+ * Internal dependencies
+ */
+import { PerformanceData } from './model';
+import { PerformanceStatPanel } from './component-panel';
+import { getMetricDescription, isInEnum, Metric } from '../../common/utils/constants';
+
+/**
+ * PerformanceReferrersPanel component props.
+ */
 type PerformanceReferrersPanelProps = {
 	data: PerformanceData;
 	isLoading: boolean;
 }
 
+/**
+ * The Referrers panel for the Performance Stats sidebar.
+ *
+ * @since 3.14.0
+ *
+ * @param { PerformanceReferrersPanelProps } props The component's props.
+ */
 export const PerformanceReferrersPanel = ( {
 	data,
 	isLoading,

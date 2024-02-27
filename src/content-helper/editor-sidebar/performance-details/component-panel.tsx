@@ -1,3 +1,6 @@
+/**
+ * WordPress dependencies
+ */
 import {
 	__experimentalHeading as Heading,
 	__experimentalHStack as HStack,
@@ -6,6 +9,9 @@ import {
 } from '@wordpress/components';
 import type { ReactNode } from 'react';
 
+/**
+ * PerformanceStatPanel component props.
+ */
 type PerformanceStatPanelProps = {
 	title: string;
 	icon: JSX.Element;
@@ -18,6 +24,18 @@ type PerformanceStatPanelProps = {
 	isOpen?: boolean;
 	isLoading?: boolean;
 }
+
+/**
+ * The PerformanceStatPanel component.
+ * This component is the raw panel used to display performance stats.
+ *
+ * If `dropdownChildren` is set, it will be used as the DropdownMenu.
+ * if `controls` is set, it will be used to render the DropdownMenu.
+ *
+ * @since 3.14.0
+ *
+ * @param { PerformanceStatPanelProps } props The component's props.
+ */
 export const PerformanceStatPanel = (
 	{ title,
 		icon,

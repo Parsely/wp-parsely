@@ -1,27 +1,35 @@
+/**
+ * WordPress dependencies
+ */
 import { MenuGroup, MenuItem, SelectControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	check,
-	moreVertical, reset,
+	moreVertical,
+	reset,
 } from '@wordpress/icons';
+
+/**
+ * Internal dependencies
+ */
 import { ContentHelperError } from '../../common/content-helper-error';
-import { SidebarSettings, useSettings } from '../../common/settings';
-import { getPeriodDescription, isInEnum, Period } from '../../common/utils/constants';
 import { PerformanceCategoriesPanel } from './component-panel-categories';
-import { PerformanceOverviewPanel } from './component-panel-overview';
-import { PerformanceStatPanel } from './component-panel';
-import { PerformanceReferrersPanel } from './component-panel-referrers';
 import { PerformanceData } from './model';
 import { PerformanceDetailsProvider } from './provider';
+import { PerformanceOverviewPanel } from './component-panel-overview';
+import { PerformanceReferrersPanel } from './component-panel-referrers';
+import { PerformanceStatPanel } from './component-panel';
+import { SidebarSettings, useSettings } from '../../common/settings';
+import { getPeriodDescription, isInEnum, Period } from '../../common/utils/constants';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 1;
 
-type PerformanceStatsProps = {
-	period: Period;
-}
-
+/**
+ * List of available panels to display in the Performance Stats menu.
+ * @since 3.14.0
+ */
 const availablePanels = [
 	{
 		name: 'overview',
@@ -38,13 +46,36 @@ const availablePanels = [
 	},
 ];
 
+/**
+ * Checks if a panel is visible in the sidebar settings.
+ *
+ * @since 3.14.0
+ *
+ * @param { SidebarSettings } settings The sidebar settings.
+ * @param { string }          panel    The name of the panel.
+ */
 const isPanelVisible = ( settings: SidebarSettings, panel: string ): boolean => {
 	return settings.PerformanceStatsSettings.VisiblePanels.includes( panel );
 };
 
+/**
+ * PerformanceStatsMenu dropdown menu component.
+ *
+ * @since 3.14.0
+ *
+ * @param {Function} onClose Callback to close the dropdown menu.
+ */
 const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
+	/**
+	 * Toggles a panel's visibility in the sidebar settings.
+	 * If the panel is forced, it will not be toggled.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @param { string } panel The name of the panel to toggle.
+	 */
 	const togglePanel = ( panel: string ) => {
 		// Do not toggle panels that are forced to be visible
 		if ( availablePanels.find( ( p ) => p.name === panel )?.forced ) {
@@ -52,7 +83,7 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 		}
 
 		// Check if the panel is in the settings.PerformanceStatsSettings.VisiblePanels array
-		// If it is, remove it with setSettings, if not, add it
+		// If it is, remove it with setSettings, if not, add it.
 		if ( isPanelVisible( settings, panel ) ) {
 			setSettings( {
 				PerformanceStatsSettings: {
@@ -70,6 +101,13 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 		}
 	};
 
+	/**
+	 * Handles the click event on a menu item.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @param { string } selection The name of the selected panel.
+	 */
 	const onClick = ( selection: string ) => {
 		togglePanel( selection );
 		onClose();
@@ -96,6 +134,22 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 	);
 };
 
+/**
+ * PerformanceStats component properties.
+ *
+ * @since 3.14.0
+ */
+type PerformanceStatsProps = {
+	period: Period;
+}
+
+/**
+ * PerformanceStats component.
+ *
+ * @since 3.14.0
+ *
+ * @param { PerformanceStatsProps } props The component's properties.
+ */
 export const PerformanceStats = ( { period }: PerformanceStatsProps ) => {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
