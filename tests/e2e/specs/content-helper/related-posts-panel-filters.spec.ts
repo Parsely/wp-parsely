@@ -20,7 +20,7 @@ import {
  * Tests for the PCH Editor Sidebar Related Post filters.
  */
 describe( 'PCH Editor Sidebar Related Post panel filters', () => {
-	const messageSelector = '.parsely-top-posts-descr';
+	const messageSelector = '.parsely-related-posts-descr';
 
 	/**
 	 * Prevents browser from locking with dialogs, logs in to WordPress,
@@ -55,6 +55,7 @@ describe( 'PCH Editor Sidebar Related Post panel filters', () => {
 		const categoryName = 'Analytics That Matter';
 
 		expect( await getRelatedPostsMessage( categoryName, '', 'section', 2000, messageSelector ) )
-			.toMatch( `Related posts in section "${ categoryName }" in the last 30 days.` );
+			// TODO: update this after the Related Posts panel revamp.
+			.toMatch( `Related posts in section "${ categoryName }" in the last 7 days.` );
 	} );
 } );

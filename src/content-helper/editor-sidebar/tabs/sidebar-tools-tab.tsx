@@ -6,14 +6,13 @@ import { Panel, PanelBody } from '@wordpress/components';
 import { store as coreStore, Taxonomy, User } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
-import { BetaBadge } from '../../common/components/beta-badge';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { VerifyCredentials } from '../../common/verify-credentials';
 import { SidebarPostData } from '../editor-sidebar';
@@ -74,49 +73,22 @@ export const SidebarToolsTab = ( { trackToggle }: SidebarToolsTabProps ) => {
 		};
 	}, [] );
 
-	/**
-	 * Returns the current Post's tag names.
-	 *
-	 * @since 3.11.0
-	 * @since 3.14.0 Moved from `editor-sidebar.tsx`
-	 */
-	const tagNames = useMemo( () => {
-		return tags ? tags.map( ( t ) => t.name ) : [];
-	}, [ tags ] );
-
-	/**
-	 * Returns the current Post's category names.
-	 *
-	 * @since 3.11.0
-	 * @since 3.14.0 Moved from `editor-sidebar.tsx`
-	 */
-	const categoryNames = useMemo( () => {
-		return categories ? categories.map( ( c ) => c.name ) : [];
-	}, [ categories ] );
-
-	/**
-	 * Returns the current Post's author names.
-	 *
-	 * @since 3.11.0
-	 * @since 3.14.0 Moved from `editor-sidebar.tsx`
-	 */
-	const authorNames = useMemo( () => {
-		return authors ? authors.map( ( a ) => a.name ) : [];
-	}, [ authors ] );
-
 	useEffect( () => {
-		setPostData( {
-			authors: authorNames,
-			tags: tagNames,
-			categories: categoryNames,
-		} );
-	}, [ authorNames, tagNames, categoryNames ] );
+		// Set the post data only when all required properties have become
+		// available.
+		if ( authors && categories && tags ) {
+			setPostData( {
+				authors: authors.map( ( a ) => a.name ),
+				categories: categories.map( ( c ) => c.name ),
+				tags: tags.map( ( t ) => t.name ),
+			} );
+		}
+	}, [ authors, categories, tags ] );
 
 	return (
 		<Panel>
 			<PanelBody
-				icon={ <BetaBadge /> }
-				title={ __( 'Title Suggestions', 'wp-parsely' ) }
+				title={ __( 'Title Suggestions (Beta)', 'wp-parsely' ) }
 				initialOpen={ settings.TitleSuggestionsOpen }
 				onToggle={ ( next ) => {
 					setSettings( {
@@ -131,8 +103,7 @@ export const SidebarToolsTab = ( { trackToggle }: SidebarToolsTabProps ) => {
 			</PanelBody>
 
 			<PanelBody
-				icon={ <BetaBadge /> }
-				title={ __( 'Smart Linking', 'wp-parsely' ) }
+				title={ __( 'Smart Linking (Beta)', 'wp-parsely' ) }
 				initialOpen={ settings.SmartLinkingOpen }
 				onToggle={ ( next ) => {
 					setSettings( {
