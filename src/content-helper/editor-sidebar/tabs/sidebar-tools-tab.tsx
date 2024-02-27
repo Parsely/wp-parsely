@@ -13,7 +13,6 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
-import { BetaBadge } from '../../common/components/beta-badge';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { VerifyCredentials } from '../../common/verify-credentials';
 import { SidebarPostData } from '../editor-sidebar';
@@ -89,8 +88,7 @@ export const SidebarToolsTab = ( { trackToggle }: SidebarToolsTabProps ) => {
 	return (
 		<Panel>
 			<PanelBody
-				icon={ <BetaBadge /> }
-				title={ __( 'Title Suggestions', 'wp-parsely' ) }
+				title={ __( 'Title Suggestions (Beta)', 'wp-parsely' ) }
 				initialOpen={ settings.TitleSuggestionsOpen }
 				onToggle={ ( next ) => {
 					setSettings( {
@@ -105,8 +103,7 @@ export const SidebarToolsTab = ( { trackToggle }: SidebarToolsTabProps ) => {
 			</PanelBody>
 
 			<PanelBody
-				icon={ <BetaBadge /> }
-				title={ __( 'Smart Linking', 'wp-parsely' ) }
+				title={ __( 'Smart Linking (Beta)', 'wp-parsely' ) }
 				initialOpen={ settings.SmartLinkingOpen }
 				onToggle={ ( next ) => {
 					setSettings( {
