@@ -9,6 +9,7 @@ import {
 	moreVertical,
 	reset,
 } from '@wordpress/icons';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 
 /**
  * Internal dependencies
@@ -91,6 +92,7 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 					VisiblePanels: settings.PerformanceStatsSettings.VisiblePanels.filter( ( p ) => p !== panel ),
 				},
 			} );
+			Telemetry.trackEvent( 'editor_sidebar_performance_panel_closed', { panel } );
 		} else {
 			setSettings( {
 				PerformanceStatsSettings: {
@@ -98,6 +100,7 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 					VisiblePanels: [ ...settings.PerformanceStatsSettings.VisiblePanels, panel ],
 				},
 			} );
+			Telemetry.trackEvent( 'editor_sidebar_performance_panel_opened', { panel } );
 		}
 	};
 
@@ -125,6 +128,7 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 				VisiblePanels: availablePanels.map( ( panel ) => panel.name ),
 			},
 		} );
+		Telemetry.trackEvent( 'editor_sidebar_performance_panel_reset' );
 		onClose();
 	};
 
@@ -219,7 +223,7 @@ export const PerformanceStats = ( { period }: PerformanceStatsProps ) => {
 										Period: selection as Period,
 									},
 								} );
-								//trackSettingsChange( 'period', { period: selection } );
+								Telemetry.trackEvent( 'editor_sidebar_performance_period_changed', { period: selection } );
 							}
 						} }
 					>

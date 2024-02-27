@@ -12,6 +12,7 @@ import {
 	rotateLeft,
 	seen,
 } from '@wordpress/icons';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 
 /**
  * Internal dependencies
@@ -166,6 +167,7 @@ const OverviewMenu = ( { onClose }: OverviewMenuProps ) => {
 					VisibleDataPoints: settings.PerformanceStatsSettings.VisibleDataPoints.filter( ( p ) => p !== dataPoint ),
 				},
 			} );
+			Telemetry.trackEvent( 'editor_sidebar_performance_datapoint_hidden', { dataPoint } );
 		} else {
 			setSettings( {
 				PerformanceStatsSettings: {
@@ -173,6 +175,7 @@ const OverviewMenu = ( { onClose }: OverviewMenuProps ) => {
 					VisibleDataPoints: [ ...settings.PerformanceStatsSettings.VisibleDataPoints, dataPoint ],
 				},
 			} );
+			Telemetry.trackEvent( 'editor_sidebar_performance_datapoint_shown', { dataPoint } );
 		}
 	};
 
@@ -192,6 +195,7 @@ const OverviewMenu = ( { onClose }: OverviewMenuProps ) => {
 				VisibleDataPoints: [ 'views', 'visitors', 'avgEngaged', 'recirculation' ],
 			},
 		} );
+		Telemetry.trackEvent( 'editor_sidebar_performance_datapoints_reset' );
 		onClose();
 	};
 
