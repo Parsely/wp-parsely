@@ -113,6 +113,21 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 		onClose();
 	};
 
+	/**
+	 * Resets all panels to their default visibility.
+	 *
+	 * @since 3.14.0
+	 */
+	const resetAll = () => {
+		setSettings( {
+			PerformanceStatsSettings: {
+				...settings.PerformanceStatsSettings,
+				VisiblePanels: availablePanels.map( ( panel ) => panel.name ),
+			},
+		} );
+		onClose();
+	};
+
 	return (
 		<>
 			<MenuGroup label={ __( 'Performance Stats', 'wp-parsely' ) }>
@@ -120,7 +135,7 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 					<MenuItem
 						key={ item.name }
 						disabled={ item.forced }
-						icon={ isPanelVisible( settings, item.name ) ? reset : check }
+						icon={ isPanelVisible( settings, item.name ) ? check : reset }
 						onClick={ () => onClick( item.name ) }
 					>
 						{ item.label }
@@ -128,7 +143,7 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 				) ) }
 			</MenuGroup>
 			<MenuGroup>
-				<MenuItem>Reset all</MenuItem>
+				<MenuItem onClick={ resetAll }>Reset all</MenuItem>
 			</MenuGroup>
 		</>
 	);
