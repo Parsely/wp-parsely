@@ -6,7 +6,7 @@ import { Panel, PanelBody } from '@wordpress/components';
 import { store as coreStore, Taxonomy, User } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
 import { store as editorStore } from '@wordpress/editor';
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -73,43 +73,17 @@ export const SidebarToolsTab = ( { trackToggle }: SidebarToolsTabProps ) => {
 		};
 	}, [] );
 
-	/**
-	 * Returns the current Post's tag names.
-	 *
-	 * @since 3.11.0
-	 * @since 3.14.0 Moved from `editor-sidebar.tsx`
-	 */
-	const tagNames = useMemo( () => {
-		return tags ? tags.map( ( t ) => t.name ) : [];
-	}, [ tags ] );
-
-	/**
-	 * Returns the current Post's category names.
-	 *
-	 * @since 3.11.0
-	 * @since 3.14.0 Moved from `editor-sidebar.tsx`
-	 */
-	const categoryNames = useMemo( () => {
-		return categories ? categories.map( ( c ) => c.name ) : [];
-	}, [ categories ] );
-
-	/**
-	 * Returns the current Post's author names.
-	 *
-	 * @since 3.11.0
-	 * @since 3.14.0 Moved from `editor-sidebar.tsx`
-	 */
-	const authorNames = useMemo( () => {
-		return authors ? authors.map( ( a ) => a.name ) : [];
-	}, [ authors ] );
-
 	useEffect( () => {
-		setPostData( {
-			authors: authorNames,
-			tags: tagNames,
-			categories: categoryNames,
-		} );
-	}, [ authorNames, tagNames, categoryNames ] );
+		// Set the post data only when all required properties have become
+		// available.
+		if ( authors && categories && tags ) {
+			setPostData( {
+				authors: authors.map( ( a ) => a.name ),
+				categories: categories.map( ( c ) => c.name ),
+				tags: tags.map( ( t ) => t.name ),
+			} );
+		}
+	}, [ authors, categories, tags ] );
 
 	return (
 		<Panel>

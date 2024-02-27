@@ -153,6 +153,7 @@ export const getRelatedPostsMessage = async (
 
 	// Select 30 days to reduce the possibility of a "No related posts" message.
 	if ( ( await page.$( periodSettingSelector ) ) !== null ) {
+		// TODO: update this after the Related Posts panel revamp.
 		await page.select( periodSettingSelector, '30d' );
 	}
 
