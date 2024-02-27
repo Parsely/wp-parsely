@@ -2,16 +2,13 @@
  * WordPress dependencies
  */
 import {
-	Button,
 	Panel,
-	PanelBody,
-	PanelRow,
 	TabPanel,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { useEffect } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { chartBar as ChartIcon } from '@wordpress/icons';
 import { registerPlugin } from '@wordpress/plugins';
 
@@ -32,7 +29,6 @@ import {
 	Metric,
 	Period,
 	PostFilterType,
-	getPeriodDescription,
 	isInEnum,
 } from '../common/utils/constants';
 import {
@@ -205,36 +201,6 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 				endpoint="editor-sidebar-settings"
 				defaultSettings={ getSettingsFromJson() }
 			>
-				<Panel>
-					<PanelBody>
-						<PanelRow className="wp-parsely-sidebar-header">
-							{
-								/* translators: %1$s: how it performed, %2$s: period starting with 'last' */
-								sprintf( __( 'This post performed %1$s in the %2$s', 'wp-parsely' ),
-									'very well',
-									getPeriodDescription( settings.PerformanceStatsPeriod, true )
-								)
-								// TODO: Make the performance descriptor dynamic, and display a different message if the post is unpublished.
-							}
-							{ window.wpParselyPostUrl && (
-								<Button
-									variant={ 'primary' }
-									onClick={ () => {
-										Telemetry.trackEvent( 'editor_sidebar_view_post_pressed' );
-									} }
-									href={ window.wpParselyPostUrl }
-									rel="noopener"
-									target="_blank"
-								>
-									{
-										/* translators: %s: Post type */
-										sprintf( __( 'View this %s in Parse.ly', 'wp-parsely' ), 'post' )
-									}
-								</Button>
-							) }
-						</PanelRow>
-					</PanelBody>
-				</Panel>
 				<Panel className="wp-parsely-sidebar-main-panel">
 					<TabPanel
 						className="wp-parsely-sidebar-tabs"
