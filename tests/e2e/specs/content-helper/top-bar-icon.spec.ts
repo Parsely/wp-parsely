@@ -12,6 +12,7 @@ import {
 import {
 	VALID_API_SECRET,
 	VALID_SITE_ID,
+	setSidebarPanelExpanded,
 	setSiteKeys,
 } from '../../utils';
 
@@ -106,27 +107,20 @@ async function testContentHelperIcon(
 
 	await setSiteKeys( siteId, apiSecret );
 	await createNewPost();
+	await page.waitForTimeout( 1000 );
 
-	// Open the sidebar by clicking on the icon, to verify that it is visible and
-	// working as expected.
-	await page.waitForSelector( pluginButton, { visible: true } );
-	const toggleSidebarButton = await page.$(
-		pluginButton
-	);
-	if ( toggleSidebarButton ) {
-		await toggleSidebarButton.click();
-	}
+	// Show the panel and get the displayed message.
+	await page.waitForSelector( pluginButton );
+	await page.click( pluginButton );
 
 	// Get the text content of the Related Posts panel.
+	setSidebarPanelExpanded( 'Related Posts', true );
 	await page.waitForSelector( contentHelperMessageSelector );
 	await page.waitForFunction( // Wait for the message to appear.
 		'document.querySelector("' + contentHelperMessageSelector + '").innerText.length > 0',
 		{ polling: 'mutation', timeout: 5000 }
 	);
 	const text = await page.$eval( contentHelperMessageSelector, ( element: Element ): string => element.textContent ?? '' );
-
-	// Close the sidebar for the next test.
-	await toggleSidebarButton?.click();
 
 	return text;
 }
