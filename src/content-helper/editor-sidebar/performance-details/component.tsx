@@ -3,7 +3,7 @@
  */
 import { Button, MenuGroup, MenuItem, SelectControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import {
 	check,
 	moreVertical,
@@ -265,10 +265,7 @@ export const PerformanceStats = (
 						rel="noopener"
 						target="_blank"
 					>
-						{
-							/* translators: %s: Post type */
-							sprintf( __( 'View this %s in Parse.ly', 'wp-parsely' ), 'post' )
-						}
+						{	__( 'View this in Parse.ly', 'wp-parsely' ) }
 					</Button>
 				) }
 			</PerformanceStatPanel>

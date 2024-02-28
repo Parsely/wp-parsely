@@ -48,9 +48,20 @@ $html-font-size: 16px; // Used in functions.scss.
 	--data: var(--green-500);
 	--control: var(--blue-500);
 
+	/** Grid section **/
+	--grid-unit-5: 0.25rem; // 4px.
+	--grid-unit-10: 0.5rem; // 8px.
+	--grid-unit-15: 0.75rem; // 12px.
+	--grid-unit-20: 1rem; // 16px.
+
+
 	/** Additional variables. **/
-	--font-size--large: 1rem;
+	--font-size--smaller: 0.688rem; // 11px.
+	--font-size--small: 0.75rem; // 12px.
+	--font-size--medium: 0.875rem; // 14px.
+	--font-size--large: 1rem; // 16px.
 	--font-size--extra-large: 1.2rem;
 	--black: #000;
 	--sidebar-black: #1e1e1e;
+	--sidebar-white: #f0f0f0;
 }

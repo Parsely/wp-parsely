@@ -208,7 +208,7 @@
 		padding: to_rem(6px) 0 to_rem(16px) 0;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: 8px;
+		gap: to_rem(8px);
 		align-self: stretch;
 
 		.panel-header {
@@ -216,7 +216,7 @@
 			height: to_rem(16px);
 			width: 100%;
 			align-items: center;
-			gap: 6px;
+			gap: to_rem(6px);
 			margin-bottom: 0;
 
 			/** Level 2 heading */
@@ -235,7 +235,7 @@
 					margin-bottom: 0;
 					line-height: to_rem(16px);
 					font-family: "SF Pro Text", sans-serif;
-					font-size: 11px;
+					font-size: var(--font-size--smaller, to_rem(11px));
 					font-style: normal;
 					font-weight: 600;
 					text-transform: uppercase;
@@ -246,18 +246,18 @@
 		.panel-subtitle {
 			display: flex;
 			flex: 1 0 0;
-			height: 16px;
+			height: to_rem(16px);
 			align-items: center;
-			gap: 6px;
+			gap: to_rem(6px);
 			align-self: stretch;
 			color: var(--Gutenberg-Gray-700, #757575);
 
 			/* Label */
 			font-family: "SF Pro Text", sans-serif;
-			font-size: 11px;
+			font-size: var(--font-size--smaller, to_rem(11px));
 			font-style: normal;
 			font-weight: 600;
-			line-height: 16px; /* 145.455% */
+			line-height: to_rem(16px); /* 145.455% */
 			text-transform: uppercase;
 		}
 	}
@@ -267,7 +267,7 @@
 		.components-select-control {
 			display: flex;
 			align-items: flex-start;
-			gap: 16px;
+			gap: to_rem(16px);
 			align-self: stretch;
 		}
 
@@ -277,7 +277,7 @@
 
 		.components-input-control {
 			display: flex;
-			height: 36px;
+			height: to_rem(36px);
 			padding: var(--grid-unit-15, 12px) var(--grid-unit-10, 8px) var(--grid-unit-15, 12px) var(--grid-unit-20, 16px);
 			align-items: center;
 			gap: var(--grid-unit-05, 4px);
@@ -300,7 +300,7 @@
 		display: flex;
 		align-items: flex-start;
 		align-content: flex-start;
-		gap: 16px var(--grid-unit-20, 16px);
+		gap: to_rem(16px) var(--grid-unit-20, to_rem(16px));
 
 		align-self: stretch;
 		flex-wrap: wrap;
@@ -308,45 +308,45 @@
 		.data-point {
 			display: flex;
 			min-width: 100px;
-			padding: 16px 8px;
+			padding: var(--grid-unit-20, to_rem(16px)) var(--grid-unit-10, to_rem(8px));
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
-			gap: 4px;
+			gap: var(--grid-unit-05, to_rem(4px));
 			flex: 1 0 0;
 
-			border-radius: 4px;
-			background: #f0f0f0;
+			border-radius: to_rem(4px);
+			background: var(--sidebar-white, #f0f0f0);
 
 			svg {
 				display: flex;
 				align-items: flex-start;
-				border-radius: 2px;
+				border-radius: to_rem(2px);
 			}
 
 			.data-point-title {
 				align-self: stretch;
-				color: #1e1e1e;
+				color: var(--sidebar-black, #1e1e1e);
 				text-align: center;
 				font-family: "SF Pro", sans-serif;
-				font-size: 12px;
+				font-size: to_rem(12px);
 				font-style: normal;
 				font-weight: 400;
-				line-height: 16px; /* 133.333% */
+				line-height: to_rem(16px); /* 133.333% */
 			}
 
 			.data-point-value {
 				align-self: stretch;
-				color: #1e1e1e;
+				color: var(--sidebar-black, #1e1e1e);
 				text-align: center;
 				font-family: "SF Pro", sans-serif;
-				font-size: 20px;
+				font-size: to_rem(20px);
 				font-style: normal;
 				font-weight: 590;
-				line-height: 28px; /* 140% */
+				line-height: to_rem(28px); /* 140% */
 
 				&.is-small {
-					font-size: 13px;
+					font-size: var(--font-size--medium, to_rem(14px));
 				}
 			}
 		}
@@ -359,7 +359,7 @@
 		height: to_rem(16px);
 		align-items: flex-start;
 		align-self: stretch;
-		border-radius: 2px;
+		border-radius: to_rem(2px);
 		margin: to_rem(16px) 0;
 
 		.bar-fill {
@@ -400,7 +400,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--grid-unit-20, 16px);
+		gap: var(--grid-unit-20, to_rem(16px));
 		align-self: stretch;
 
 		.single-label {
@@ -447,24 +447,24 @@
 				-webkit-line-clamp: 1;
 				flex: 1 0 0;
 				overflow: hidden;
-				color: #1e1e1e;
+				color: var(--sidebar-black, #1e1e1e);
 				font-feature-settings: "ss06" on;
 				text-overflow: ellipsis;
 				font-family: "SF Pro", sans-serif;
-				font-size: 12px;
+				font-size: var(--font-size--small, to_rem(12px));
 				font-style: normal;
 				font-weight: 400;
-				line-height: 16px; /* 133.333% */
+				line-height: to_rem(16px); /* 133.333% */
 			}
 
 			.label-value {
-				color: #1e1e1e;
+				color: var(--sidebar-black, #1e1e1e);
 				text-align: right;
 				font-family: "SF Pro", sans-serif;
-				font-size: 12px;
+				font-size: var(--font-size--small, to_rem(12px));
 				font-style: normal;
 				font-weight: 590;
-				line-height: 16px; /* 133.333% */
+				line-height: to_rem(16px) /* 133.333% */
 			}
 		}
 	}
@@ -473,7 +473,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--grid-unit-20, 16px);
+		gap: var(--grid-unit-20, to_rem(16px));
 		align-self: stretch;
 		margin: to_rem(16px) 0;
 
@@ -481,7 +481,7 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			gap: 8px;
+			gap: var(--grid-unit-10, to_rem(8px));
 			align-self: stretch;
 
 			.referrers-row-title {
@@ -490,27 +490,27 @@
 				-webkit-line-clamp: 1;
 				flex: 1;
 				overflow: hidden;
-				color: #1e1e1e;
+				color: var(--sidebar-black, #1e1e1e);
 				font-feature-settings: "ss06" on;
 				text-overflow: ellipsis;
 				font-family: "SF Pro", sans-serif;
-				font-size: 12px;
+				font-size: var(--font-size--small, to_rem(12px));
 				font-style: normal;
 				font-weight: 400;
-				line-height: 16px; /* 133.333% */
+				line-height: to_rem(16px); /* 133.333% */
 			}
 
 			.referrers-row-bar {
 				display: flex;
-				max-width: 100px;
+				max-width: to_rem(100px);
 				flex-direction: column;
 				justify-content: center;
-				gap: 10px;
+				gap: to_rem(10px);
 				flex: 1;
 
 				.percentage-bar {
 					// Bar background.
-					--radius: 1.5px;
+					--radius: to_rem(1.5px);
 					background: var(--gray-400, #d7dbdf);
 					border-radius: var(--radius);
 					display: flex;
@@ -532,225 +532,13 @@
 			.referrers-row-value {
 				flex-shrink: 0;
 				min-width: to_rem(50px);
-				color: #1e1e1e;
+				color: var(--sidebar-black, #1e1e1e);
 				text-align: right;
 				font-family: "SF Pro", sans-serif;
-				font-size: 12px;
+				font-size: var(--font-size--small, to_rem(12px));
 				font-style: normal;
 				font-weight: 590;
-				line-height: 16px; /* 133.333% */
-			}
-		}
-	}
-}
-
-/** TODO: remove? */
-.wp-parsely-content-helper .performance-details-panel {
-
-	// Generic styles for all sections.
-	div.section {
-		font-family: var(--base-font);
-		margin-top: 1.8rem;
-
-		table {
-			border-collapse: collapse;
-			width: 100%;
-
-			th {
-				font-weight: 400;
-				text-align: left;
-			}
-		}
-
-		// Generic styles for section titles.
-		div.section-title {
-			color: var(--base-text-2);
-			margin-bottom: 0.5rem;
-		}
-	}
-
-	// Data Period section.
-	div.section.period {
-		margin-top: 0.8rem;
-		color: var(--base-text-2);
-	}
-
-	// General Performance section (Views, Visitors, Time).
-	div.section.general-performance {
-
-		table {
-
-			// Metrics.
-			tbody tr {
-				font-family: var(--numeric-font);
-				font-size: var(--font-size--extra-large);
-				font-weight: 500;
-			}
-
-			// Titles.
-			tfoot tr {
-				color: var(--gray-700);
-				height: 1.4rem;
-				vertical-align: bottom;
-			}
-		}
-	}
-
-	// Referrer	Types section.
-	div.section.referrer-types {
-
-		// Multi-percentage bar.
-		div.multi-percentage-bar {
-			--radius: 2px;
-			display: flex;
-			height: 0.5rem;
-
-			.bar-fill {
-
-				// Border radiuses for first and last bar-fills.
-				&:first-child {
-					border-radius: var(--radius) 0 0 var(--radius);
-				}
-
-				&:last-child {
-					border-radius: 0 var(--radius) var(--radius) 0;
-				}
-
-				// Bar-fill colors by referrer type.
-				&.direct {
-					background-color: hsl(var(--ref-direct));
-				}
-
-				&.internal {
-					background-color: hsl(var(--ref-internal));
-				}
-
-				&.search {
-					background-color: hsl(var(--ref-search));
-				}
-
-				&.social {
-					background-color: hsl(var(--ref-social));
-				}
-
-				&.other {
-					background-color: hsl(var(--ref-other));
-				}
-			}
-		}
-
-		// Table showing referrer types and metrics.
-		table {
-			margin-top: 0.5rem;
-
-			// Metrics.
-			tbody tr {
-				font-family: var(--numeric-font);
-				font-size: var(--font-size--large);
-				height: 1.4rem;
-				vertical-align: bottom;
-			}
-		}
-	}
-
-	// Top Referrers section.
-	div.section.top-referrers {
-
-		table {
-
-			// Titles (Top Referrers, Page Views).
-			thead tr {
-				color: var(--base-text-2);
-				height: 1.6rem;
-				vertical-align: top;
-
-				th:last-child {
-					text-align: right;
-				}
-			}
-
-			// Table rows.
-			tbody {
-
-				tr {
-					border: 1px solid var(--border);
-					border-left: 0;
-					border-right: 0;
-					height: 2rem;
-
-					// Referrer name column.
-					th:first-child {
-						--width: 8rem;
-						// Use min and max width for text truncation to work.
-						max-width: var(--width);
-						min-width: var(--width);
-						overflow: hidden;
-						padding-right: 1rem;
-						text-overflow: ellipsis;
-						white-space: nowrap;
-					}
-
-					// Percentage bar column.
-					td:nth-child(2) {
-						width: 100%;
-					}
-
-					// Views column.
-					td:last-child {
-						padding-left: 1rem;
-						text-align: right;
-					}
-				}
-
-				// Percentage bar.
-				div.percentage-bar {
-					// Bar background.
-					--radius: 4px;
-					background-color: var(--base-3);
-					border-radius: var(--radius);
-					display: flex;
-					height: 0.4rem;
-					margin: 0;
-					overflow: hidden;
-
-					// Bar fill.
-					&::after {
-						background-color: var(--data);
-						border-radius: var(--radius);
-						content: "";
-						height: 100%;
-						width: var(--bar-fill);
-					}
-				}
-			}
-		}
-
-		// Percentage text below table.
-		div:last-child {
-			color: var(--base-text-2);
-			margin-top: 0.6rem;
-		}
-	}
-
-	// Actions section (Visit Post, View in Parse.ly buttons).
-	div.section.actions {
-		display: inline-flex;
-		justify-content: space-between;
-		width: 100%;
-
-		a.components-button {
-			border-radius: 4px;
-			text-transform: uppercase;
-
-			// Visit Post.
-			&.is-secondary {
-				box-shadow: inset 0 0 0 1px var(--border);
-				color: var(--sidebar-black);
-			}
-
-			// View in Parse.ly.
-			&.is-primary {
-				background-color: var(--control);
+				line-height: to_rem(16px); /* 133.333% */
 			}
 		}
 	}
