@@ -95,10 +95,11 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
  * Tests the top bar icon by clicking on it and verifying that the PCH Editor
  * Sidebar opens.
  *
- * @param {string} siteId
- * @param {string} apiSecret
- * @param {string} selector
- * @return {string} Text content found in the PCH Editor Sidebar.
+ * @param { string } siteId    The Site ID to use for the test.
+ * @param { string } apiSecret The API Secret to use for the test.
+ * @param { string } selector  The selector from which to get the text content.
+ *
+ * @return { string } Text content found in the PCH Editor Sidebar.
  */
 async function testContentHelperIcon(
 	siteId: string, apiSecret: string, selector = '.content-helper-error-message'
@@ -107,20 +108,22 @@ async function testContentHelperIcon(
 
 	await setSiteKeys( siteId, apiSecret );
 	await createNewPost();
-	await page.waitForTimeout( 1000 );
 
-	// Show the panel and get the displayed message.
+	// Click the top bar icon.
 	await page.waitForSelector( pluginButton );
 	await page.click( pluginButton );
 
-	// Get the text content of the Related Posts panel.
+	// Expand the Related Posts panel and get its text content.
 	setSidebarPanelExpanded( 'Related Posts', true );
 	await page.waitForSelector( contentHelperMessageSelector );
 	await page.waitForFunction( // Wait for the message to appear.
 		'document.querySelector("' + contentHelperMessageSelector + '").innerText.length > 0',
 		{ polling: 'mutation', timeout: 5000 }
 	);
-	const text = await page.$eval( contentHelperMessageSelector, ( element: Element ): string => element.textContent ?? '' );
+	const text = await page.$eval(
+		contentHelperMessageSelector,
+		( element: Element ): string => element.textContent ?? ''
+	);
 
 	return text;
 }
