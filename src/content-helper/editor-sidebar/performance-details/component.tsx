@@ -32,15 +32,25 @@ import { PerformanceDetailsProvider } from './provider';
 const FETCH_RETRIES = 1;
 
 /**
+ * Panel metadata descriptor.
+ *
+ * @since 3.14.0
+ */
+type PanelDescriptor = {
+	name: string;
+	label: string;
+	forced?: boolean;
+};
+
+/**
  * List of available panels to display in the Performance Stats menu.
  *
  * @since 3.14.0
  */
-const availablePanels = [
+const availablePanels: PanelDescriptor[] = [
 	{
 		name: 'overview',
 		label: __( 'Overview', 'wp-parsely' ),
-		forced: true,
 	},
 	{
 		name: 'categories',
