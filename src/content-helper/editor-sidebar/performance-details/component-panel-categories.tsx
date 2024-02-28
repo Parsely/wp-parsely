@@ -2,16 +2,16 @@
  * WordPress dependencies
  */
 import { SelectControl, Spinner } from '@wordpress/components';
-import { __, sprintf } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { PerformanceData } from './model';
-import { PerformanceStatPanel } from './component-panel';
-import { formatToImpreciseNumber } from '../../common/utils/number';
 import { getMetricDescription, isInEnum, Metric } from '../../common/utils/constants';
+import { formatToImpreciseNumber } from '../../common/utils/number';
+import { PerformanceStatPanel } from './component-panel';
+import { PerformanceData } from './model';
 
 /**
  * PerformanceCategoriesPanel component props.
@@ -31,11 +31,13 @@ type PerformanceCategoriesPanelProps = {
  * @since 3.14.0
  *
  * @param { PerformanceCategoriesPanelProps } props The component's props.
+ *
+ * @return { JSX.Element } The PerformanceCategoriesPanel JSX Element.
  */
 export const PerformanceCategoriesPanel = ( {
 	data,
 	isLoading,
-}: Readonly<PerformanceCategoriesPanelProps> ) => {
+}: Readonly<PerformanceCategoriesPanelProps> ): JSX.Element => {
 	const [ metric, setMetric ] = useState<Metric>( Metric.Views );
 	const [ isOpen, setIsOpen ] = useState<boolean>( false );
 

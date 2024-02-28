@@ -19,13 +19,17 @@ type SidebarPerformanceTabProps = {
 
 /**
  * SidebarPerformanceTab component.
- * Renders the Performance tab in the Content Helper sidebar.
+ * Renders the Performance tab in the Content Helper Sidebar.
  *
  * @since 3.14.0
  *
  * @param { SidebarPerformanceTabProps } props The component's props.
+ *
+ * @return { JSX.Element } The SidebarPerformanceTab JSX Element.
  */
-export const SidebarPerformanceTab = ( { period }: SidebarPerformanceTabProps ) => {
+export const SidebarPerformanceTab = (
+	{ period }: Readonly<SidebarPerformanceTabProps>
+): JSX.Element => {
 	return (
 		<Panel>
 			<VerifyCredentials>

@@ -53,17 +53,8 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 				),
 				'default' => array(
 					'Period'            => '7d',
-					'VisiblePanels'     => array(
-						'overview',
-						'categories',
-						'referrers',
-					),
-					'VisibleDataPoints' => array(
-						'views',
-						'visitors',
-						'avgEngaged',
-						'recirculation',
-					),
+					'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
+					'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
 				),
 			),
 			'RelatedPostsFilterBy'         => array(

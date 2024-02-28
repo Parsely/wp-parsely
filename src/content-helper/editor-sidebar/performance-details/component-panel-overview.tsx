@@ -18,10 +18,10 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
  * Internal dependencies
  */
 import { ClockIcon } from '../../common/icons/clock-icon';
-import { PerformanceData } from './model';
-import { PerformanceStatPanel } from './component-panel';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { formatToImpreciseNumber } from '../../common/utils/number';
+import { PerformanceStatPanel } from './component-panel';
+import { PerformanceData } from './model';
 
 /**
  * List of available data points to display in the Overview panel.
@@ -59,6 +59,8 @@ const availableDataPoints = [
  *
  * @param { SidebarSettings } settings The sidebar settings.
  * @param { string }          name     The name of the data point.
+ *
+ * @return { boolean } Whether the data point is visible.
  */
 const isDataPointVisible = ( settings: SidebarSettings, name: string ): boolean => {
 	return settings.PerformanceStatsSettings.VisibleDataPoints.includes( name );
@@ -82,9 +84,13 @@ type DataPointProps = {
  *
  * @since 3.14.0
  *
- * @param { DataPointProps } props The component props.
+ * @param { DataPointProps } props The component's props.
+ *
+ * @return { JSX.Element | null } The DataPoint JSX Element, or null if it's not visible.
  */
-const DataPoint = ( { title, value, icon, smallText, isVisible = true }: DataPointProps ) => {
+const DataPoint = (
+	{ title, value, icon, smallText, isVisible = true }: Readonly<DataPointProps>
+): JSX.Element | null => {
 	if ( ! isVisible ) {
 		return null;
 	}
@@ -112,9 +118,11 @@ type PerformanceDataPointsProp = {
  *
  * @since 3.14.0
  *
- * @param { PerformanceDataPointsProp } props The component props.
+ * @param { PerformanceDataPointsProp } props The component's props.
  */
-const PerformanceDataPoints = ( { dataPoints }: PerformanceDataPointsProp ) => {
+const PerformanceDataPoints = (
+	{ dataPoints }: Readonly<PerformanceDataPointsProp>
+): JSX.Element => {
 	return (
 		<div className="performance-data-points">
 			{ dataPoints.map( ( { title, value, icon, smallText, isVisible } ) => (
@@ -145,9 +153,11 @@ type OverviewMenuProps = {
  *
  * @since 3.14.0
  *
- * @param { OverviewMenuProps } props The component props.
+ * @param { OverviewMenuProps } props The component's props.
  */
-const OverviewMenu = ( { onClose }: OverviewMenuProps ) => {
+const OverviewMenu = (
+	{ onClose }: Readonly<OverviewMenuProps>
+): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	/**
@@ -157,14 +167,16 @@ const OverviewMenu = ( { onClose }: OverviewMenuProps ) => {
 	 *
 	 * @param { string } dataPoint The name of the data point.
 	 */
-	const toggleDataPoint = ( dataPoint: string ) => {
+	const toggleDataPoint = ( dataPoint: string ): void => {
 		// Check if the dataPoint is in the settings.PerformanceStatsSettings.VisibleDataPoints array
 		// If it is, remove it with setSettings, if not, add it.
 		if ( isDataPointVisible( settings, dataPoint ) ) {
 			setSettings( {
 				PerformanceStatsSettings: {
 					...settings.PerformanceStatsSettings,
-					VisibleDataPoints: settings.PerformanceStatsSettings.VisibleDataPoints.filter( ( p ) => p !== dataPoint ),
+					VisibleDataPoints: settings.PerformanceStatsSettings.VisibleDataPoints.filter(
+						( p ) => p !== dataPoint
+					),
 				},
 			} );
 			Telemetry.trackEvent( 'editor_sidebar_performance_datapoint_hidden', { dataPoint } );
@@ -179,16 +191,24 @@ const OverviewMenu = ( { onClose }: OverviewMenuProps ) => {
 		}
 	};
 
-	const onClick = ( selection: string ) => {
+	/**
+	 * Handles a click on a menu item.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @param { string } selection
+	 */
+	const onClick = ( selection: string ): void => {
 		toggleDataPoint( selection );
 		onClose();
 	};
 
 	/**
 	 * Resets all data points to their default visibility.
+	 *
 	 * @since 3.14.0
 	 */
-	const resetAll = () => {
+	const resetAll = (): void => {
 		setSettings( {
 			PerformanceStatsSettings: {
 				...settings.PerformanceStatsSettings,
@@ -214,7 +234,9 @@ const OverviewMenu = ( { onClose }: OverviewMenuProps ) => {
 				) ) }
 			</MenuGroup>
 			<MenuGroup>
-				<MenuItem onClick={ resetAll }>Reset all</MenuItem>
+				<MenuItem onClick={ resetAll }>
+					{ __( 'Reset all', 'wp-parsely' ) }
+				</MenuItem>
 			</MenuGroup>
 		</>
 	);
@@ -231,16 +253,16 @@ type PerformanceOverviewPanelProps = {
 }
 
 /**
- * The Overview panel for the Performance Stats sidebar.
+ * The Overview panel for the Performance Stats Sidebar.
  *
  * @since 3.14.0
  *
- * @param { PerformanceOverviewPanelProps } props The component props.
+ * @param { PerformanceOverviewPanelProps } props The component's props.
  */
 export const PerformanceOverviewPanel = ( {
 	data,
 	isLoading = false,
-}: Readonly<PerformanceOverviewPanelProps> ) => {
+}: Readonly<PerformanceOverviewPanelProps> ): JSX.Element => {
 	const { settings } = useSettings<SidebarSettings>();
 
 	let dataPointsWithValues: DataPointProps[] = [];
@@ -258,7 +280,7 @@ export const PerformanceOverviewPanel = ( {
 					value = data.avgEngaged;
 					break;
 				default:
-					value = 'Coming soon!';
+					value = __( 'Coming soon!', 'wp-parsely' );
 					break;
 			}
 			return {

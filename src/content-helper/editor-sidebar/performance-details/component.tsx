@@ -15,20 +15,25 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
  * Internal dependencies
  */
 import { ContentHelperError } from '../../common/content-helper-error';
+import { SidebarSettings, useSettings } from '../../common/settings';
+import {
+	Period,
+	getPeriodDescription,
+	isInEnum,
+} from '../../common/utils/constants';
+import { PerformanceStatPanel } from './component-panel';
 import { PerformanceCategoriesPanel } from './component-panel-categories';
-import { PerformanceData } from './model';
-import { PerformanceDetailsProvider } from './provider';
 import { PerformanceOverviewPanel } from './component-panel-overview';
 import { PerformanceReferrersPanel } from './component-panel-referrers';
-import { PerformanceStatPanel } from './component-panel';
-import { SidebarSettings, useSettings } from '../../common/settings';
-import { getPeriodDescription, isInEnum, Period } from '../../common/utils/constants';
+import { PerformanceData } from './model';
+import { PerformanceDetailsProvider } from './provider';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 1;
 
 /**
  * List of available panels to display in the Performance Stats menu.
+ *
  * @since 3.14.0
  */
 const availablePanels = [
@@ -54,6 +59,8 @@ const availablePanels = [
  *
  * @param { SidebarSettings } settings The sidebar settings.
  * @param { string }          panel    The name of the panel.
+ *
+ * @return { boolean } True if the panel is visible, false otherwise.
  */
 const isPanelVisible = ( settings: SidebarSettings, panel: string ): boolean => {
 	return settings.PerformanceStatsSettings.VisiblePanels.includes( panel );
@@ -64,9 +71,13 @@ const isPanelVisible = ( settings: SidebarSettings, panel: string ): boolean => 
  *
  * @since 3.14.0
  *
- * @param {Function} onClose Callback to close the dropdown menu.
+ * @param { Function } onClose Callback to close the dropdown menu.
+ *
+ * @return { JSX.Element } The dropdown menu JSX Element.
  */
-const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
+const PerformanceStatsMenu = (
+	{ onClose }: { onClose: () => void }
+): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	/**
@@ -77,8 +88,8 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 	 *
 	 * @param { string } panel The name of the panel to toggle.
 	 */
-	const togglePanel = ( panel: string ) => {
-		// Do not toggle panels that are forced to be visible
+	const togglePanel = ( panel: string ): void => {
+		// Do not toggle panels that are forced to be visible.
 		if ( availablePanels.find( ( p ) => p.name === panel )?.forced ) {
 			return;
 		}
@@ -89,7 +100,9 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 			setSettings( {
 				PerformanceStatsSettings: {
 					...settings.PerformanceStatsSettings,
-					VisiblePanels: settings.PerformanceStatsSettings.VisiblePanels.filter( ( p ) => p !== panel ),
+					VisiblePanels: settings.PerformanceStatsSettings.VisiblePanels.filter(
+						( p ) => p !== panel
+					),
 				},
 			} );
 			Telemetry.trackEvent( 'editor_sidebar_performance_panel_closed', { panel } );
@@ -111,7 +124,7 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 	 *
 	 * @param { string } selection The name of the selected panel.
 	 */
-	const onClick = ( selection: string ) => {
+	const onClick = ( selection: string ): void => {
 		togglePanel( selection );
 		onClose();
 	};
@@ -121,7 +134,7 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 	 *
 	 * @since 3.14.0
 	 */
-	const resetAll = () => {
+	const resetAll = (): void => {
 		setSettings( {
 			PerformanceStatsSettings: {
 				...settings.PerformanceStatsSettings,
@@ -147,7 +160,9 @@ const PerformanceStatsMenu = ( { onClose }: { onClose: () => void } ) => {
 				) ) }
 			</MenuGroup>
 			<MenuGroup>
-				<MenuItem onClick={ resetAll }>Reset all</MenuItem>
+				<MenuItem onClick={ resetAll }>
+					{ __( 'Reset all', 'wp-parsely' ) }
+				</MenuItem>
 			</MenuGroup>
 		</>
 	);
@@ -169,7 +184,9 @@ type PerformanceStatsProps = {
  *
  * @param { PerformanceStatsProps } props The component's properties.
  */
-export const PerformanceStats = ( { period }: PerformanceStatsProps ) => {
+export const PerformanceStats = (
+	{ period }: PerformanceStatsProps
+): JSX.Element => {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ postDetails, setPostDetails ] = useState<PerformanceData>();
@@ -223,7 +240,10 @@ export const PerformanceStats = ( { period }: PerformanceStatsProps ) => {
 										Period: selection as Period,
 									},
 								} );
-								Telemetry.trackEvent( 'editor_sidebar_performance_period_changed', { period: selection } );
+								Telemetry.trackEvent(
+									'editor_sidebar_performance_period_changed',
+									{ period: selection }
+								);
 							}
 						} }
 					>
@@ -258,13 +278,22 @@ export const PerformanceStats = ( { period }: PerformanceStatsProps ) => {
 			) : (
 				<>
 					{ isPanelVisible( settings, 'overview' ) && (
-						<PerformanceOverviewPanel data={ postDetails as PerformanceData } isLoading={ loading } />
+						<PerformanceOverviewPanel
+							data={ postDetails as PerformanceData }
+							isLoading={ loading }
+						/>
 					) }
 					{ isPanelVisible( settings, 'categories' ) && (
-						<PerformanceCategoriesPanel data={ postDetails as PerformanceData } isLoading={ loading } />
+						<PerformanceCategoriesPanel
+							data={ postDetails as PerformanceData }
+							isLoading={ loading }
+						/>
 					) }
 					{ isPanelVisible( settings, 'referrers' ) && (
-						<PerformanceReferrersPanel data={ postDetails as PerformanceData } isLoading={ loading } />
+						<PerformanceReferrersPanel
+							data={ postDetails as PerformanceData }
+							isLoading={ loading }
+						/>
 					) }
 				</>
 			) }

@@ -2,15 +2,18 @@
  * WordPress dependencies
  */
 import {
-	__experimentalHeading as Heading,
-	__experimentalHStack as HStack,
 	Button,
-	DropdownMenu, Spinner,
+	DropdownMenu,
+	__experimentalHStack as HStack,
+	__experimentalHeading as Heading,
+	Spinner,
 } from '@wordpress/components';
 import type { ReactNode } from 'react';
 
 /**
  * PerformanceStatPanel component props.
+ *
+ * @since 3.14.0
  */
 type PerformanceStatPanelProps = {
 	title: string;
@@ -35,6 +38,8 @@ type PerformanceStatPanelProps = {
  * @since 3.14.0
  *
  * @param { PerformanceStatPanelProps } props The component's props.
+ *
+ * @return { JSX.Element } The PerformanceStatPanel JSX Element.
  */
 export const PerformanceStatPanel = (
 	{ title,
@@ -46,8 +51,8 @@ export const PerformanceStatPanel = (
 		onClick,
 		isOpen,
 		isLoading,
-		dropdownChildren }: PerformanceStatPanelProps
-) => {
+		dropdownChildren }: Readonly<PerformanceStatPanelProps>
+): JSX.Element => {
 	return (
 		<div className="performance-stat-panel">
 			<HStack className={ 'panel-header level-' + level }>
@@ -86,7 +91,10 @@ export const PerformanceStatPanel = (
 			</HStack>
 			<div className="panel-body">
 				{ isLoading ? (
-					<div className="parsely-spinner-wrapper" data-testid="parsely-spinner-wrapper">
+					<div
+						className="parsely-spinner-wrapper"
+						data-testid="parsely-spinner-wrapper"
+					>
 						<Spinner />
 					</div>
 				) : ( children ) }

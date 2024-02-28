@@ -2,18 +2,20 @@
  * WordPress dependencies
  */
 import { SelectControl, Spinner } from '@wordpress/components';
-import { __, sprintf } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { PerformanceData } from './model';
-import { PerformanceStatPanel } from './component-panel';
 import { getMetricDescription, isInEnum, Metric } from '../../common/utils/constants';
+import { PerformanceStatPanel } from './component-panel';
+import { PerformanceData } from './model';
 
 /**
  * PerformanceReferrersPanel component props.
+ *
+ * @since 3.14.0
  */
 type PerformanceReferrersPanelProps = {
 	data: PerformanceData;
@@ -21,16 +23,18 @@ type PerformanceReferrersPanelProps = {
 }
 
 /**
- * The Referrers panel for the Performance Stats sidebar.
+ * The Referrers panel for the Performance Stats Sidebar.
  *
  * @since 3.14.0
  *
  * @param { PerformanceReferrersPanelProps } props The component's props.
+ *
+ * @return { JSX.Element } The PerformanceReferrersPanel JSX Element.
  */
 export const PerformanceReferrersPanel = ( {
 	data,
 	isLoading,
-}: Readonly<PerformanceReferrersPanelProps> ) => {
+}: Readonly<PerformanceReferrersPanelProps> ): JSX.Element => {
 	const [ metric, setMetric ] = useState<Metric>( Metric.Views );
 	const [ isOpen, setIsOpen ] = useState<boolean>( false );
 
