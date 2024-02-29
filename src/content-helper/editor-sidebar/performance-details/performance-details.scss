@@ -44,9 +44,9 @@
 				}
 			}
 
+			/** Level 3 heading */
 			&.level-3 {
 
-				/** Level 3 heading */
 				h3 {
 					margin-bottom: 0;
 					line-height: to_rem(16px);
@@ -176,6 +176,7 @@
 
 		.bar-fill {
 			align-self: stretch;
+
 			// Border radiuses for first and last bar-fills.
 			&:first-child {
 				border-radius: var(--radius) 0 0 var(--radius);
