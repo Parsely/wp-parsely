@@ -228,7 +228,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 								'wp-parsely'
 							) }
 							<Button
-								href="https://www.parse.ly/help/ai-title-suggestions/" // TODO: link
+								href="https://docs.parse.ly/plugin-content-helper/#h-title-suggestions-beta" // TODO: link
 								target="_blank"
 								variant="link"
 							>
