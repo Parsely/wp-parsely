@@ -1097,7 +1097,8 @@ final class Settings_Page {
 		if ( ! isset( $input['full_metadata_in_non_posts'] ) ) {
 			$input['full_metadata_in_non_posts'] = true;
 		} else {
-			$input['full_metadata_in_non_posts'] = 'true' === $input['full_metadata_in_non_posts'];
+			// phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
+			$input['full_metadata_in_non_posts'] = 'true' == $input['full_metadata_in_non_posts'];
 		}
 
 		// Allow for Top-level categories setting to be conditionally included on the page.
