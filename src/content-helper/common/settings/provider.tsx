@@ -127,7 +127,9 @@ interface SettingsProviderProps {
  *
  * @param {SettingsProviderProps} props The component's props.
  */
-export const SettingsProvider = ( { children, endpoint, defaultSettings }: SettingsProviderProps ) => {
+export const SettingsProvider = (
+	{ children, endpoint, defaultSettings }: Readonly<SettingsProviderProps>
+) => {
 	// Get the current settings from the store.
 	const { storedSettings } = useSelect( ( select ) => {
 		let settings = select( SettingsStore ).getSettings( endpoint );
