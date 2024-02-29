@@ -51,12 +51,14 @@ class Page_Builder extends Metadata_Builder {
 		$this->build_headline();
 		$this->build_url();
 
-		$this->build_thumbnail_url( $this->post );
-		$this->build_image( $this->post );
-		$this->build_article_section( $this->post );
-		$this->build_author( $this->post );
-		$this->build_keywords( $this->post );
-		$this->build_metadata_post_times( $this->post );
+		if ( true === $this->parsely->get_options()['full_metadata_in_non_posts'] ) {
+			$this->build_thumbnail_url( $this->post );
+			$this->build_image( $this->post );
+			$this->build_article_section( $this->post );
+			$this->build_author( $this->post );
+			$this->build_keywords( $this->post );
+			$this->build_metadata_post_times( $this->post );
+		}
 
 		return $this->metadata;
 	}

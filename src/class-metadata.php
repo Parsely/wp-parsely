@@ -87,7 +87,7 @@ class Metadata {
 	 * @param WP_Post $post object.
 	 * @return Metadata_Attributes
 	 */
-	public function construct_metadata( WP_Post $post ) {
+	public function construct_metadata( WP_Post $post ): array {
 		$options           = $this->parsely->get_options();
 		$queried_object_id = get_queried_object_id();
 
@@ -121,9 +121,9 @@ class Metadata {
 		}
 
 		if ( isset( $builder ) ) {
-			$parsely_page = $builder->get_metadata();
+			$current_metadata = $builder->get_metadata();
 		} else {
-			$parsely_page = array();
+			$current_metadata = array();
 		}
 
 		/**
@@ -132,11 +132,11 @@ class Metadata {
 		 * @since 2.5.0
 		 * @var mixed
 		 *
-		 * @param array $parsely_page Existing structured metadata for a page.
+		 * @param array $current_metadata The currently generated metadata.
 		 * @param WP_Post $post Post object.
 		 * @param array $options The Parse.ly options.
 		 */
-		$filtered = apply_filters( 'wp_parsely_metadata', $parsely_page, $post, $options );
+		$filtered = apply_filters( 'wp_parsely_metadata', $current_metadata, $post, $options );
 		if ( is_array( $filtered ) ) {
 			return $filtered;
 		}
