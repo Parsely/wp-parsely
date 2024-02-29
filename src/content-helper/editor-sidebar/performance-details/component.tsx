@@ -264,20 +264,6 @@ export const PerformanceStats = (
 						) ) }
 					</SelectControl>
 				</div>
-				{ window.wpParselyPostUrl && (
-					<Button
-						className="wp-parsely-view-post"
-						variant={ 'primary' }
-						onClick={ () => {
-							Telemetry.trackEvent( 'editor_sidebar_view_post_pressed' );
-						} }
-						href={ window.wpParselyPostUrl }
-						rel="noopener"
-						target="_blank"
-					>
-						{	__( 'View this in Parse.ly', 'wp-parsely' ) }
-					</Button>
-				) }
 			</PerformanceStatPanel>
 
 			{ error ? (
@@ -303,6 +289,20 @@ export const PerformanceStats = (
 						/>
 					) }
 				</>
+			) }
+			{ window.wpParselyPostUrl && (
+				<Button
+					className="wp-parsely-view-post"
+					variant={ 'primary' }
+					onClick={ () => {
+						Telemetry.trackEvent( 'editor_sidebar_view_post_pressed' );
+					} }
+					href={ window.wpParselyPostUrl }
+					rel="noopener"
+					target="_blank"
+				>
+					{	__( 'View this in Parse.ly', 'wp-parsely' ) }
+				</Button>
 			) }
 		</div>
 	);

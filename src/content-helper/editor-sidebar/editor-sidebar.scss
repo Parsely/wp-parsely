@@ -191,16 +191,17 @@
 	border-top: 1px solid rgb(221, 221, 221);
 	margin-top: -1px;
 
+
+	/** View in Parse.ly button */
+	.components-button.wp-parsely-view-post {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+	}
+
 	.panel-body {
 		width: 100%;
-
-		/** View in Parse.ly button */
-		.components-button.wp-parsely-view-post {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			width: 100%;
-		}
 	}
 
 	.performance-stat-panel {
