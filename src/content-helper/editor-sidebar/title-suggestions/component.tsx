@@ -3,7 +3,7 @@
  */
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
-import { createInterpolateElement, useState } from '@wordpress/element';
+import { createInterpolateElement, useEffect, useState } from "@wordpress/element";
 import { __ } from '@wordpress/i18n';
 import { external, Icon } from '@wordpress/icons';
 
@@ -16,10 +16,12 @@ import { PersonaProp, getPersonaLabel } from '../../common/components/persona-se
 import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
 import { ContentHelperError } from '../../common/content-helper-error';
 import { SidebarSettings, useSettings } from '../../common/settings';
+import { PinnedTitleSuggestions } from './component-pinned';
 import { TitleSuggestionsSettings } from './component-settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { TitleSuggestionsProvider } from './provider';
 import { TitleStore, TitleType } from './store';
+import './title-suggestions.scss';
 
 /**
  * Title Suggestions Panel.
@@ -38,6 +40,8 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	const {
 		loading,
 		titles,
+		pinnedTitles,
+		allTitles,
 		acceptedTitle,
 		originalTitle,
 	} = useSelect( ( select ) => {
@@ -47,10 +51,15 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 			getOriginalTitle,
 		} = select( TitleStore );
 
+		// eslint-disable-next-line @typescript-eslint/no-shadow
+		const allTitles = getTitles( TitleType.PostTitle );
+
 		return {
 			acceptedTitle: getAcceptedTitle( TitleType.PostTitle ),
 			loading: isLoading(),
-			titles: getTitles( TitleType.PostTitle ),
+			titles: allTitles.filter( ( title ) => ! title.isPinned ),
+			pinnedTitles: allTitles.filter( ( title ) => title.isPinned ),
+			allTitles,
 			originalTitle: getOriginalTitle( TitleType.PostTitle ),
 		};
 	}, [] );
@@ -119,15 +128,30 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	};
 
 	const saveTitleOnClickHandler = async () => {
+
+	};
+
+	/**
+	 * Handle the accepted title change.
+	 *
+	 * @since 3.14.0
+	 */
+	useEffect( () => {
+		if ( ! acceptedTitle ) {
+			return;
+		}
+
+		console.log( 'acceptedTitle', acceptedTitle );
+
 		// Save the original title.
-		await setOriginalTitle( TitleType.PostTitle, currentPostTitle );
+		setOriginalTitle( TitleType.PostTitle, currentPostTitle );
 
 		// Set the post title to the accepted title.
 		dispatch( 'core/editor' ).editPost( { title: acceptedTitle?.title } );
 
 		// Pin the accepted title on the list of generated titles.
 		if ( acceptedTitle ) {
-			await dispatch( TitleStore ).pinTitle( TitleType.PostTitle, acceptedTitle );
+			dispatch( TitleStore ).pinTitle( TitleType.PostTitle, acceptedTitle );
 			Telemetry.trackEvent( 'title_suggestions_accept_pressed', {
 				old_title: currentPostTitle,
 				new_title: acceptedTitle.title,
@@ -135,8 +159,8 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		}
 
 		// Remove the accepted title
-		await setAcceptedTitle( TitleType.PostTitle, undefined );
-	};
+		setAcceptedTitle( TitleType.PostTitle, undefined );
+	}, [ acceptedTitle, currentPostTitle, setAcceptedTitle, setOriginalTitle ] );
 
 	const parselyAISettings = <TitleSuggestionsSettings
 		isLoading={ loading }
@@ -155,22 +179,22 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	/>;
 
 	const generateTitleButton: JSX.Element = (
-		<div className="parsely-write-titles-generate-button">
+		<div className="title-suggestions-generate">
 			<Button
-				variant={ titles.length > 0 ? 'secondary' : 'primary' }
+				variant="primary"
 				isBusy={ loading }
 				disabled={ loading || tone === 'custom' || persona === 'custom' }
 				onClick={ generateOnClickHandler }
 			>
 				{ loading && __( 'Generating Titles…', 'wp-parsely' ) }
-				{ ! loading && titles.length > 0 && __( 'Generate More', 'wp-parsely' ) }
-				{ ! loading && titles.length === 0 && __( 'Generate Titles', 'wp-parsely' ) }
+				{ ! loading && allTitles.length > 0 && __( 'Generate More', 'wp-parsely' ) }
+				{ ! loading && allTitles.length === 0 && __( 'Generate Titles', 'wp-parsely' ) }
 			</Button>
 		</div>
 	);
 
 	const titleSuggestionList: JSX.Element = (
-		<div className="parsely-write-titles-title-suggestions-container">
+		<div className="wp-parsely-title-suggestions-container">
 			{ ( originalTitle !== undefined ) && (
 				<TitleSuggestion title={ originalTitle } type={ TitleType.PostTitle } isOriginal={ true } />
 			) }
@@ -185,9 +209,10 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		</div>
 	);
 
+	// TODO: remove
 	const acceptedTitleElement: JSX.Element = (
 		<div className="parsely-write-titles-accepted-title-container">
-			<div className="parsely-write-titles-text">
+			<div className="title-suggestions-header">
 				{ __(
 					'Replace the current post title with the following?',
 					'wp-parsely'
@@ -219,64 +244,48 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 
 	return (
 		<PanelRow>
-			<div className="parsely-write-titles-wrapper">
-				{ 0 === titles.length && acceptedTitle === undefined && (
+			<div className="wp-parsely-title-suggestions-wrapper">
+				<div className="title-suggestions-header">
+					{ __(
+						'Use Parse.ly AI to generate a title for your post.',
+						'wp-parsely'
+					) }
+					<Button
+						href="https://docs.parse.ly/plugin-content-helper/#h-title-suggestions-beta"
+						target="_blank"
+						variant="link"
+					>
+						{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
+						<Icon
+							icon={ external }
+							size={ 18 }
+							className="parsely-external-link-icon"
+						/>
+					</Button>
+				</div>
+				{ error && (
+					<Notice status="info" isDismissible={ false } className="wp-parsely-content-helper-error">
+						{ error.message }
+					</Notice>
+				) }
+				{ 0 < allTitles.length && (
 					<>
-						<div className="parsely-write-titles-text">
-							{ __(
-								'Use Parse.ly AI to generate a title for your post.',
-								'wp-parsely'
-							) }
-							<Button
-								href="https://docs.parse.ly/plugin-content-helper/#h-title-suggestions-beta"
-								target="_blank"
-								variant="link"
-							>
-								{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
-								<Icon
-									icon={ external }
-									size={ 18 }
-									className="parsely-external-link-icon"
-								/>
-							</Button>
-						</div>
 						{ error && (
 							<Notice status="info" isDismissible={ false } className="wp-parsely-content-helper-error">
 								{ error.message }
 							</Notice>
 						) }
-						{ parselyAISettings }
-						{ generateTitleButton }
-					</>
-				) }
-				{ 0 < titles.length && acceptedTitle === undefined && (
-					<>
-						<div className="parsely-write-titles-text">
-							{
-								createInterpolateElement(
-									// translators: %1$s is the tone, %2$s is the persona.
-									__(
-										"We've generated a few <tone/> titles based on the content of your post, written as a <persona/>.",
-										'wp-parsely'
-									),
-									{
-										tone: <strong>{ getToneLabel( tone ) }</strong>,
-										persona: <strong>{ getPersonaLabel( persona ) }</strong>,
-									}
-								)
-							}
-						</div>
-						{ error && (
-							<Notice status="info" isDismissible={ false } className="wp-parsely-content-helper-error">
-								{ error.message }
-							</Notice>
+						{ pinnedTitles.length > 0 && (
+							<PinnedTitleSuggestions
+								pinnedTitles={ pinnedTitles }
+								originalTitle={ originalTitle }
+							/>
 						) }
 						{ titleSuggestionList }
-						{ parselyAISettings }
-						{ generateTitleButton }
 					</>
 				) }
-				{ acceptedTitle !== undefined && ( acceptedTitleElement ) }
+				{ parselyAISettings }
+				{ generateTitleButton }
 			</div>
 		</PanelRow>
 	);

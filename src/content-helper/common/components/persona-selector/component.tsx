@@ -187,7 +187,7 @@ export const PersonaSelector = ( {
 }: Readonly<PersonaSelectorProps> ): JSX.Element => {
 	return (
 		<Disabled isDisabled={ disabled }>
-			{ label && <div className="parsely-dropdown-label">{ label }</div> }
+			{ label && <div className="wp-parsely-dropdown-label">{ label }</div> }
 			<DropdownMenu
 				label={ __( 'Persona', 'wp-parsely' ) }
 				className={ 'parsely-persona-selector-dropdown' + ( disabled ? ' is-disabled' : '' ) }

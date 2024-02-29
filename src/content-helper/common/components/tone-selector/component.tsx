@@ -186,7 +186,7 @@ export const ToneSelector = ( {
 }: Readonly<ToneSelectorProps> ): JSX.Element => {
 	return (
 		<Disabled isDisabled={ disabled }>
-			<div className="parsely-dropdown-label">{ label }</div>
+			<div className="wp-parsely-dropdown-label">{ label }</div>
 			<DropdownMenu
 				label={ __( 'Tone', 'wp-parsely' ) }
 				className={ 'parsely-tone-selector-dropdown' + ( disabled ? ' is-disabled' : '' ) }

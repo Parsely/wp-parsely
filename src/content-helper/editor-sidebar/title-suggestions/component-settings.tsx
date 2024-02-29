@@ -36,7 +36,7 @@ export const TitleSuggestionsSettings = ( {
 	tone,
 }: Readonly<TitleSuggestionsSettingsProps> ): JSX.Element => {
 	return (
-		<div className="parsely-panel-settings">
+		<div className="title-suggestions-settings">
 			<ToneSelector
 				tone={ tone }
 				value={ getToneLabel( tone ) }
