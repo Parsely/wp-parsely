@@ -27,6 +27,7 @@ import { PerformanceOverviewPanel } from './component-panel-overview';
 import { PerformanceReferrersPanel } from './component-panel-referrers';
 import { PerformanceData } from './model';
 import { PerformanceDetailsProvider } from './provider';
+import './performance-details.scss';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 1;
