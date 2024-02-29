@@ -11,63 +11,57 @@ import {
 import { useDebounce } from '@wordpress/compose';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Icon, chevronRight } from '@wordpress/icons';
+import { Icon, edit } from '@wordpress/icons';
+import { MoreArrow } from '../../icons/more-arrow';
 
 /**
  * Internal dependencies
  */
-import { PersonIcon } from '../../icons/person-icon';
+type PersonaMetadata = {
+	label: string,
+	icon?: JSX.Element,
+};
 
 /**
  * List of the available personas.
- * Each persona has a label and an emoji.
+ * Each persona has a value and an icon.
  *
  * @since 3.13.0
  */
-export const PARSELY_PERSONAS = {
+export const PARSELY_PERSONAS: Record<string, PersonaMetadata> = {
 	journalist: {
 		label: __( 'Journalist', 'wp-parsely' ),
-		emoji: '📰',
 	},
 	editorialWriter: {
 		label: __( 'Editorial Writer', 'wp-parsely' ),
-		emoji: '✍️',
 	},
 	investigativeReporter: {
 		label: __( 'Investigative Reporter', 'wp-parsely' ),
-		emoji: '🕵️',
 	},
 	techAnalyst: {
 		label: __( 'Tech Analyst', 'wp-parsely' ),
-		emoji: '💻',
 	},
 	businessAnalyst: {
 		label: __( 'Business Analyst', 'wp-parsely' ),
-		emoji: '📈',
 	},
 	culturalCommentator: {
 		label: __( 'Cultural Commentator', 'wp-parsely' ),
-		emoji: '🌍',
 	},
 	scienceCorrespondent: {
 		label: __( 'Science Correspondent', 'wp-parsely' ),
-		emoji: '🔬',
 	},
 	politicalAnalyst: {
 		label: __( 'Political Analyst', 'wp-parsely' ),
-		emoji: '🏛️',
 	},
 	healthWellnessAdvocate: {
 		label: __( 'Health and Wellness Advocate', 'wp-parsely' ),
-		emoji: '🍏',
 	},
 	environmentalJournalist: {
 		label: __( 'Environmental Journalist', 'wp-parsely' ),
-		emoji: '🌳',
 	},
 	custom: {
-		label: __( 'Use a custom persona', 'wp-parsely' ),
-		emoji: '🔧',
+		label: __( 'Custom Persona', 'wp-parsely' ),
+		icon: edit,
 	},
 };
 
@@ -77,13 +71,13 @@ type FixedPersonaProp = keyof typeof PARSELY_PERSONAS;
 const PERSONAS_LIST = Object.keys( PARSELY_PERSONAS ) as PersonaProp[];
 
 /**
- * Returns the label for a given persona.
+ * Returns the value for a given persona.
  *
  * @since 3.13.0
  *
- * @param {PersonaProp} persona The persona to get the label for.
+ * @param {PersonaProp} persona The persona to get the value for.
  *
- * @return {string} The label for the given persona.
+ * @return {string} The value for the given persona.
  */
 export const getLabel = ( persona: PersonaProp ): string => {
 	if ( persona === 'custom' || persona === '' ) {
@@ -138,6 +132,7 @@ const CustomPersona = (
 		<div className="parsely-persona-selector-custom">
 			<TextControl
 				value={ customPersona || value }
+				placeholder={ __( 'Enter a custom persona…', 'wp-parsely' ) }
 				onChange={ ( newPersona ) => {
 					// If the persona is empty, set it to an empty string, and avoid debouncing.
 					if ( '' === newPersona ) {
@@ -152,7 +147,6 @@ const CustomPersona = (
 					debouncedOnChange( newPersona );
 					setCustomPersona( newPersona );
 				} }
-				help={ __( 'Enter a custom persona', 'wp-parsely' ) }
 			/>
 		</div>
 	);
@@ -168,6 +162,7 @@ type PersonaSelectorProps = {
 	onChange: ( persona: PersonaProp ) => void;
 	onDropdownChange?: ( persona: PersonaProp ) => void;
 	disabled?: boolean;
+	value?: string;
 	label?: string;
 	allowCustom?: boolean;
 };
@@ -183,7 +178,8 @@ type PersonaSelectorProps = {
  */
 export const PersonaSelector = ( {
 	persona,
-	label = __( 'Select a persona', 'wp-parsely' ),
+	value = __( 'Select a persona…', 'wp-parsely' ),
+	label = __( 'Persona', 'wp-parsely' ),
 	onChange,
 	onDropdownChange,
 	disabled = false,
@@ -191,9 +187,9 @@ export const PersonaSelector = ( {
 }: Readonly<PersonaSelectorProps> ): JSX.Element => {
 	return (
 		<Disabled isDisabled={ disabled }>
+			{ label && <div className="parsely-dropdown-label">{ label }</div> }
 			<DropdownMenu
 				label={ __( 'Persona', 'wp-parsely' ) }
-				icon={ PersonIcon }
 				className={ 'parsely-persona-selector-dropdown' + ( disabled ? ' is-disabled' : '' ) }
 				popoverProps={ {
 					className: 'wp-parsely-popover',
@@ -202,15 +198,15 @@ export const PersonaSelector = ( {
 					children: (
 						<>
 							<div className="parsely-persona-selector-label">
-								{ label }
+								{ isCustomPersona( persona ) ? PARSELY_PERSONAS.custom.label : value }
 							</div>
-							<Icon icon={ chevronRight } />
+							<MoreArrow />
 						</>
 					),
 				} }
 			>
 				{ ( { onClose } ) => (
-					<MenuGroup label={ __( 'Select a persona', 'wp-parsely' ) }>
+					<MenuGroup label={ __( 'Persona', 'wp-parsely' ) }>
 						<>
 							{ PERSONAS_LIST.map( ( singlePersona ) => {
 								if ( ! allowCustom && singlePersona === 'custom' ) {
@@ -218,11 +214,12 @@ export const PersonaSelector = ( {
 								}
 
 								const personaData = PARSELY_PERSONAS[ singlePersona as FixedPersonaProp ];
+								const isSelected = singlePersona === persona || ( isCustomPersona( persona ) && singlePersona === 'custom' );
 								return (
 									<MenuItem
 										key={ singlePersona }
-										isSelected={ singlePersona === persona }
-										className={ singlePersona === persona ? 'is-selected' : '' }
+										isSelected={ isSelected }
+										className={ isSelected ? 'is-selected' : '' }
 										role="menuitemradio"
 										onClick={ () => {
 											onDropdownChange?.( singlePersona as FixedPersonaProp );
@@ -230,7 +227,8 @@ export const PersonaSelector = ( {
 											onClose();
 										} }
 									>
-										{ personaData.emoji } { personaData.label }
+										{ personaData.icon && <Icon icon={ personaData.icon } /> }
+										{ personaData.label }
 									</MenuItem>
 								);
 							} ) }

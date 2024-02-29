@@ -5,6 +5,7 @@ import { Button, Notice, PanelRow } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 import { createInterpolateElement, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { external, Icon } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -226,6 +227,18 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 								'Use Parse.ly AI to generate a title for your post.',
 								'wp-parsely'
 							) }
+							<Button
+								href="https://www.parse.ly/help/ai-title-suggestions/" // TODO: link
+								target="_blank"
+								variant="link"
+							>
+								{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
+								<Icon
+									icon={ external }
+									size={ 18 }
+									className="parsely-external-link-icon"
+								/>
+							</Button>
 						</div>
 						{ error && (
 							<Notice status="info" isDismissible={ false } className="wp-parsely-content-helper-error">

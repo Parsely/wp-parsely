@@ -1,18 +1,9 @@
 /**
- * WordPress dependencies
- */
-import { BaseControl, Button } from '@wordpress/components';
-import { useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
-import { settings } from '@wordpress/icons';
-
-/**
  * Internal dependencies
  */
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { PersonaProp, PersonaSelector, getPersonaLabel } from '../../common/components/persona-selector';
-import { ToneProp, ToneSelector, getToneLabel } from '../../common/components/tone-selector';
-import { LeafIcon } from '../../common/icons/leaf-icon';
+import { getPersonaLabel, PersonaProp, PersonaSelector } from '../../common/components/persona-selector';
+import { getToneLabel, ToneProp, ToneSelector } from '../../common/components/tone-selector';
 import { SidebarSettings } from '../../common/settings';
 
 /**
@@ -39,72 +30,41 @@ type TitleSuggestionsSettingsProps = {
  */
 export const TitleSuggestionsSettings = ( {
 	isLoading,
-	isOpen,
 	onPersonaChange,
-	onSettingChange,
 	onToneChange,
 	persona,
 	tone,
 }: Readonly<TitleSuggestionsSettingsProps> ): JSX.Element => {
-	const [ isSettingActive, setIsSettingActive ] = useState<boolean>( isOpen );
-
-	const toggleSetting = () => {
-		onSettingChange( 'TitleSuggestionsSettingsOpen', ! isSettingActive );
-		setIsSettingActive( ! isSettingActive );
-		Telemetry.trackEvent( 'title_suggestions_ai_settings_toggled', {
-			is_active: ! isSettingActive,
-		} );
-	};
-
 	return (
 		<div className="parsely-panel-settings">
-			<div className="parsely-panel-settings-header">
-				<LeafIcon size={ 20 } />
-				<BaseControl
-					id="parsely-write-titles-settings"
-					className="parsely-panel-settings-header-label"
-					label={ __( 'Parse.ly AI Settings', 'wp-parsely' ) }>
-					<Button
-						label={ __( 'Change Tone & Persona', 'wp-parsely' ) }
-						icon={ settings }
-						onClick={ toggleSetting }
-						isPressed={ isSettingActive }
-						size="small"
-					/>
-				</BaseControl>
-			</div>
-			{ isSettingActive && (
-				<div className="parsely-panel-settings-body">
-					<ToneSelector
-						tone={ tone }
-						label={ getToneLabel( tone ) }
-						onChange={ ( selectedTone ) => {
-							onToneChange( selectedTone );
-						} }
-						onDropdownChange={ ( selectedTone ) => {
-							Telemetry.trackEvent( 'title_suggestions_ai_tone_changed',
-								{ tone: selectedTone }
-							);
-						} }
-						disabled={ isLoading }
-						allowCustom
-					/>
-					<PersonaSelector
-						persona={ persona }
-						label={ getPersonaLabel( persona ) }
-						onChange={ ( selectedPersona ) => {
-							onPersonaChange( selectedPersona );
-						} }
-						onDropdownChange={ ( selectedPersona ) => {
-							Telemetry.trackEvent( 'title_suggestions_ai_persona_changed',
-								{ persona: selectedPersona }
-							);
-						} }
-						disabled={ isLoading }
-						allowCustom
-					/>
-				</div>
-			) }
+			<ToneSelector
+				tone={ tone }
+				value={ getToneLabel( tone ) }
+				onChange={ ( selectedTone ) => {
+					onToneChange( selectedTone );
+				} }
+				onDropdownChange={ ( selectedTone ) => {
+					Telemetry.trackEvent( 'title_suggestions_ai_tone_changed',
+						{ tone: selectedTone }
+					);
+				} }
+				disabled={ isLoading }
+				allowCustom
+			/>
+			<PersonaSelector
+				persona={ persona }
+				value={ getPersonaLabel( persona ) }
+				onChange={ ( selectedPersona ) => {
+					onPersonaChange( selectedPersona );
+				} }
+				onDropdownChange={ ( selectedPersona ) => {
+					Telemetry.trackEvent( 'title_suggestions_ai_persona_changed',
+						{ persona: selectedPersona }
+					);
+				} }
+				disabled={ isLoading }
+				allowCustom
+			/>
 		</div>
 	);
 };

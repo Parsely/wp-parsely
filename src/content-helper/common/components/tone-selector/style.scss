@@ -2,9 +2,23 @@
 
 .parsely-tone-selector-dropdown {
 	width: 100%;
-	margin-bottom: to_rem(10px);
 	overflow-wrap: break-word;
 	word-break: break-word;
+	height: 36px;
+	align-items: center;
+	gap: var(--grid-unit-05, 4px);
+	align-self: stretch;
+	border-radius: 2px;
+	border: 1px solid var(--Gutenberg-Gray-600, #949494);
+	background: var(--Gutenberg-White, #fff);
+
+	button {
+		height: 33px;
+	}
+
+	.components-dropdown-menu__toggle.has-icon svg:nth-child(1) {
+		display: none;
+	}
 
 	&.is-disabled {
 		opacity: 0.5;
@@ -25,6 +39,7 @@
 	.parsely-tone-selector-label {
 		flex-grow: 2;
 		text-align: left;
+		padding: 0 var(--grid-unit-10, to_rem(8px));
 
 		&::first-letter {
 			text-transform: uppercase;
@@ -32,16 +47,18 @@
 	}
 }
 
-.wp-parsely-popover {
+.parsely-persona-selector-custom {
+	width: 100%;
 
-	button.components-button.components-menu-item__button.is-selected {
-		outline: 3px solid transparent;
-		box-shadow: 0 0 0 2px var(--parsely-green);
-
-		&:focus {
-			outline: 3px solid transparent;
-			box-shadow: 0 0 0 2px var(--parsely-green);
-		}
+	.components-base-control__field input {
+		display: flex;
+		height: 40px;
+		padding: var(--grid-unit-15, 12px) var(--grid-unit-20, 16px);
+		align-items: center;
+		gap: var(--grid-unit-05, 4px);
+		align-self: stretch;
+		border-radius: 2px;
+		border: 1px solid var(--Gutenberg-Gray-600, #949494);
 	}
 }
 

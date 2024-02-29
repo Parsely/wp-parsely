@@ -402,19 +402,74 @@
 	display: flex;
 	flex-direction: column;
 
-	.parsely-write-titles-text {
-		margin-bottom: to_rem(10px);
+	.parsely-panel-settings {
 
-		strong {
-			text-transform: lowercase;
+		display: flex;
+		padding: to_rem(6px) 0 var(--grid-unit-20, to_rem(16px)) 0;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--grid-unit-20, to_rem(16px));
+		align-self: stretch;
+
+		// stylelint-disable-next-line no-descending-specificity
+		> div {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--grid-unit-10, to_rem(8px));
+			align-self: stretch;
 		}
+	}
+
+	.parsely-write-titles-text {
+		display: flex;
+		padding-bottom: var(--grid-unit-20, 16px);
+		flex-direction: column;
+		align-items: flex-start;
+		gap: to_rem(10px);
+		align-self: stretch;
 	}
 
 	// Generate Titles button.
 	.parsely-write-titles-generate-button {
-		margin: to_rem(10px) 0;
-		justify-content: center;
 		display: flex;
+		padding-top: to_rem(6px);
+		flex-direction: column;
+		align-items: flex-start;
+		align-self: stretch;
+
+		.components-button {
+			height: to_rem(40px);
+			display: flex;
+			padding: var(--grid-unit-10, 8px) var(--grid-unit-15, 12px);
+			justify-content: center;
+			align-items: center;
+			align-self: stretch;
+			border-radius: 2px;
+		}
+	}
+
+	.parsely-dropdown-label {
+		align-self: stretch;
+		color: var(--sidebar-black, #1e1e1e);
+		font-size: var(--font-size-smaller, to_rem(11px));
+		font-style: normal;
+		font-weight: 600;
+		line-height: var(--grid-unit-20, to_rem(16px));
+		text-transform: uppercase;
+	}
+
+	.wp-parsely-popover {
+
+		button.components-button.components-menu-item__button.is-selected {
+			outline: 3px solid transparent;
+			box-shadow: 0 0 0 2px var(--parsely-green);
+
+			&:focus {
+				outline: 3px solid transparent;
+				box-shadow: 0 0 0 2px var(--parsely-green);
+			}
+		}
 	}
 
 	// Accepted Title view.
