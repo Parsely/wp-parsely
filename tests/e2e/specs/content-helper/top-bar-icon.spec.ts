@@ -12,6 +12,7 @@ import {
 import {
 	VALID_API_SECRET,
 	VALID_SITE_ID,
+	setSidebarPanelExpanded,
 	setSiteKeys,
 } from '../../utils';
 
@@ -22,7 +23,7 @@ const pluginButton = 'button[aria-label="Parse.ly"]';
  * Tests for the PCH Editor Sidebar top bar icon.
  */
 describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => {
-	const postNotPublishedMessage = 'This post performed very well in the last 7 daysTitle SuggestionsBetaSmart LinkingBetaRelated Posts';
+	const noRelatedPostsMessage = 'No related posts by author "admin" were found for the specified period and metric.';
 	const emptyCredentialsMessage = 'Contact us about advanced plugin features and the Parse.ly dashboard.Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in wp-parsely options.';
 
 	/**
@@ -59,9 +60,9 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	it( 'Should be displayed when both the Site ID and API Secret are provided', async () => {
 		expect( await testContentHelperIcon(
 			VALID_SITE_ID, VALID_API_SECRET,
-			'div.wp-parsely-content-helper'
+			'.parsely-related-posts-descr'
 		) )
-			.toMatch( postNotPublishedMessage );
+			.toMatch( noRelatedPostsMessage );
 	} );
 
 	/**
@@ -94,36 +95,35 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
  * Tests the top bar icon by clicking on it and verifying that the PCH Editor
  * Sidebar opens.
  *
- * @param {string} siteId
- * @param {string} apiSecret
- * @param {string} selector
- * @return {string} Text content found in the PCH Editor Sidebar.
+ * @param { string } siteId    The Site ID to use for the test.
+ * @param { string } apiSecret The API Secret to use for the test.
+ * @param { string } selector  The selector from which to get the text content.
+ *
+ * @return { string } Text content found in the PCH Editor Sidebar.
  */
 async function testContentHelperIcon(
-	siteId: string, apiSecret: string, selector = 'div.content-helper-error-message'
+	siteId: string, apiSecret: string, selector = '.content-helper-error-message'
 ) {
+	const contentHelperMessageSelector = '.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector;
+
 	await setSiteKeys( siteId, apiSecret );
 	await createNewPost();
 
-	// Open the sidebar by clicking on the icon, to verify that it is visible and
-	// working as expected.
-	await page.waitForSelector( pluginButton, { visible: true } );
-	const toggleSidebarButton = await page.$(
-		pluginButton
-	);
-	if ( toggleSidebarButton ) {
-		await toggleSidebarButton.click();
-	}
+	// Click the top bar icon.
+	await page.waitForSelector( pluginButton );
+	await page.click( pluginButton );
 
-	// Get the text content of the sidebar.
-	await page.waitForSelector( selector, { visible: true } );
+	// Expand the Related Posts panel and get its text content.
+	setSidebarPanelExpanded( 'Related Posts', true );
+	await page.waitForSelector( contentHelperMessageSelector );
+	await page.waitForFunction( // Wait for the message to appear.
+		'document.querySelector("' + contentHelperMessageSelector + '").innerText.length > 0',
+		{ polling: 'mutation', timeout: 5000 }
+	);
 	const text = await page.$eval(
-		selector,
-		( element: Element ) => element.textContent
+		contentHelperMessageSelector,
+		( element: Element ): string => element.textContent ?? ''
 	);
-
-	// Close the sidebar for the next test.
-	await toggleSidebarButton?.click();
 
 	return text;
 }
