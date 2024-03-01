@@ -46,9 +46,15 @@ final class OptionsTest extends TestCase {
 	 *
 	 * @since 3.0.0
 	 *
+	 * @covers \Parsely\Parsely::get_default_options
 	 * @covers \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
 	 */
 	public function test_default_options_are_returned_when_options_are_corrupted_or_not_set(): void {
 		add_option( Parsely::OPTIONS_KEY, 'someinvalidvalue' );
@@ -66,8 +72,13 @@ final class OptionsTest extends TestCase {
 	 * @since 3.9.0
 	 *
 	 * @covers \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
 	 */
 	public function test_get_options_returns_correct_track_as_defaults(): void {
 		$options = self::$parsely->get_options();
@@ -82,7 +93,13 @@ final class OptionsTest extends TestCase {
 	 * @since 3.9.0
 	 *
 	 * @covers \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
 	 */
 	public function test_set_default_track_as_values_should_not_be_called_when_saved_options_exist(): void {
 		$options                     = self::$parsely->get_options();
@@ -103,8 +120,13 @@ final class OptionsTest extends TestCase {
 	 * @since 3.9.0
 	 *
 	 * @covers \Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_managed_credentials
-	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::set_managed_options
 	 */
 	public function test_get_options_track_as_defaults_when_cpts_are_registered(): void {
 		$custom_post_types = array(
@@ -170,6 +192,202 @@ final class OptionsTest extends TestCase {
 	}
 
 	/**
+	 * Verifies that get_options() returns the correct full_metadata_in_non_posts
+	 * option default value.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
+	 */
+	public function test_get_options_returns_correct_full_metadata_in_non_posts_default_value(): void {
+		$options = self::$parsely->get_options();
+		self::assertSame( true, $options['full_metadata_in_non_posts'] );
+	}
+
+	/**
+	 * Verifies that the set_default_full_metadata_in_non_posts() function
+	 * doesn't get called when saved plugin options exist.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
+	 */
+	public function test_set_default_full_metadata_in_non_posts_values_should_not_be_called_when_saved_options_exist(): void {
+		$option_key             = 'full_metadata_in_non_posts';
+		$options                = self::$parsely->get_options();
+		$options[ $option_key ] = false;
+
+		add_option( Parsely::OPTIONS_KEY, $options );
+		$saved_options = self::$parsely->get_options();
+
+		self::assertSame( false, $saved_options[ $option_key ] );
+	}
+
+	/**
+	 * Verifies that the set_default_full_metadata_in_non_posts() function
+	 * returns the expected value under different circumstances:
+	 *
+	 * - Option is saved (get value from database).
+	 * - Option isn't saved (get value from defaults).
+	 * - Option value is influenced by a metadata filter (modify default value).
+	 *
+	 * @since 3.14.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_default_options
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::sanitize_managed_option
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
+	 */
+	public function test_set_default_full_metadata_in_non_posts_returns_expected_values(): void {
+		$option_key      = 'full_metadata_in_non_posts';
+		$default_options = self::$parsely->get_default_options();
+		self::assertSame( true, $default_options[ $option_key ] );
+
+		// Add a filter that will make the default value to return false.
+		add_filter( 'wp_parsely_metadata', '__return_true' );
+
+		// No options are saved. Should get the value from option defaults.
+		self::assertSame(
+			false,
+			( new Parsely() )->get_options()[ $option_key ]
+		);
+
+		// Options are saved. Should get the value from the saved option.
+		add_option( Parsely::OPTIONS_KEY, $default_options );
+		self::assertSame(
+			true,
+			( new Parsely() )->get_options()[ $option_key ]
+		);
+	}
+
+	/**
+	 * Verifies that the set_default_full_metadata_in_non_posts() function
+	 * returns false when different metadata filters are being used.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
+	 */
+	public function test_set_default_full_metadata_in_non_posts_returns_false_when_metadata_filters_are_used(): void {
+		$option_key = 'full_metadata_in_non_posts';
+
+		// Filter tags and how they should influence the expected value of the
+		// full_metadata_in_non_posts option.
+		$filters = array(
+			'wp_parsely_metadata'          => false,
+			'imaginary_filter'             => true, // Fake filter tag that should have no effect.
+			'wp_parsely_post_tags'         => false,
+			'wp_parsely_load_js_tracker'   => true, // Real filter tag that should have no effect.
+			'wp_parsely_permalink'         => false,
+			'wp_parsely_enable_admin_bar'  => true, // Real filter tag that should have no effect.
+			'wp_parsely_post_category'     => false,
+			'wp_parsely_pre_authors'       => false,
+			'wp_parsely_post_authors'      => false,
+			'wp_parsely_custom_taxonomies' => false,
+			'wp_parsely_post_type'         => false,
+		);
+
+		/**
+		 * Fake callback to be used when adding filters.
+		 */
+		$callback_function = function (): bool {
+			return true;
+		};
+
+		foreach ( $filters as $filter_name => $expected_value ) {
+			// Filter is not in use yet, so the result should always be true.
+			self::assertSame(
+				true,
+				( new Parsely() )->get_options()[ $option_key ]
+			);
+
+			// Filter is being used now, so the result should be equal to the
+			// expected value.
+			add_filter( $filter_name, $callback_function );
+			self::assertSame(
+				$expected_value,
+				( new Parsely() )->get_options()[ $option_key ]
+			);
+
+			// Remove the last used filter for the next round.
+			remove_filter( $filter_name, $callback_function );
+		}
+	}
+
+	/**
+	 * Verifies that the full_metadata_in_non_posts option gets set to true when
+	 * it does not exist in the options array.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
+	 */
+	public function test_full_metadata_in_non_posts_gets_set_to_true_when_it_does_not_exist_in_options_array(): void {
+		$option_key = 'full_metadata_in_non_posts';
+		$options    = self::$parsely->get_options();
+		unset( $options[ $option_key ] );
+		self::assertSame( true, self::$parsely->get_options()[ $option_key ] );
+	}
+
+	/**
+	 * Verifies that the full_metadata_in_non_posts option gets set to false
+	 * when it does not exist in the options array and a metadata filter is in
+	 * use.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
+	 */
+	public function test_full_metadata_in_non_posts_gets_set_to_false_when_it_does_not_exist_in_options_array_and_a_metadata_filter_is_used(): void {
+		$option_key = 'full_metadata_in_non_posts';
+		$options    = self::$parsely->get_options();
+		unset( $options[ $option_key ] );
+		add_filter( 'wp_parsely_metadata', '__return_true' );
+		self::assertSame( false, self::$parsely->get_options()[ $option_key ] );
+	}
+
+	/**
 	 * Verifies that managed options with a value different than null override
 	 * default and saved options.
 	 *
@@ -178,11 +396,14 @@ final class OptionsTest extends TestCase {
 	 * @covers \Parsely\Parsely::get_options
 	 * @covers \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_default_options
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::sanitize_managed_option
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\UI\Settings_Page::get_section_taxonomies
 	 */
 	public function test_set_managed_options_override_all_other_option_types(): void {
 		$default_options = self::$parsely->get_default_options();
@@ -218,10 +439,12 @@ final class OptionsTest extends TestCase {
 	 * @covers \Parsely\Parsely::get_options
 	 * @covers \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_default_options
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::sanitize_managed_option
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 */
 	public function test_null_managed_options_get_their_value_from_the_database_or_defaults(): void {
@@ -259,10 +482,12 @@ final class OptionsTest extends TestCase {
 	 * @covers \Parsely\Parsely::get_options
 	 * @covers \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_default_options
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::sanitize_managed_option
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 */
 	public function test_certain_options_cannot_be_set_as_managed(): void {
@@ -300,8 +525,10 @@ final class OptionsTest extends TestCase {
 	 * @covers \Parsely\Parsely::sanitize_managed_option
 	 * @covers \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\UI\Settings_Page::get_section_taxonomies
 	 *
