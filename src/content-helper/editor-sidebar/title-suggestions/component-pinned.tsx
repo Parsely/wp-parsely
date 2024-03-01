@@ -4,6 +4,7 @@
 import { Panel, PanelBody } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { Telemetry } from '../../../js/telemetry/telemetry';
 
 /**
  * Internal dependencies
@@ -41,6 +42,10 @@ export const PinnedTitleSuggestions = ( {
 	const toggleCollapse = () => {
 		setIsCollapsed( ! isCollapsed );
 		onSettingChange( 'PinnedOpen', ! isCollapsed );
+		Telemetry.trackEvent( 'title_suggestions_pinned_toggle', {
+			isOpen: ! isCollapsed,
+			pinnedTitles: pinnedTitles.length,
+		} );
 	};
 
 	return (
