@@ -4,11 +4,11 @@
 import { Panel, PanelBody } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Telemetry } from '../../../js/telemetry/telemetry';
 
 /**
  * Internal dependencies
  */
+import { Telemetry } from '../../../js/telemetry/telemetry';
 import { TitleSuggestionsSettings } from '../../common/settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { Title, TitleType } from './store';
@@ -64,6 +64,5 @@ export const PinnedTitleSuggestions = ( {
 				) ) }
 			</PanelBody>
 		</Panel>
-
 	);
 };

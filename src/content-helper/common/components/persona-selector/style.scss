@@ -5,9 +5,9 @@
 	width: 100%;
 	overflow-wrap: break-word;
 	word-break: break-word;
-	height: 36px;
+	height: to_rem(36px);
 	align-items: center;
-	gap: var(--grid-unit-05, 4px);
+	gap: var(--grid-unit-05, to_rem(4px));
 	align-self: stretch;
 	border-radius: 2px;
 	border: 1px solid var(--Gutenberg-Gray-600, #949494);
@@ -18,7 +18,7 @@
 	}
 
 	button {
-		height: 33px;
+		height: to_rem(33px);
 	}
 
 	&.is-disabled {
@@ -48,10 +48,10 @@
 
 	.components-base-control__field input {
 		display: flex;
-		height: 40px;
-		padding: var(--grid-unit-15, 12px) var(--grid-unit-20, 16px);
+		height: to_rem(40px);
+		padding: var(--grid-unit-15, to_rem(12px)) var(--grid-unit-20, to_rem(16px));
 		align-items: center;
-		gap: var(--grid-unit-05, 4px);
+		gap: var(--grid-unit-05, to_rem(4px));
 		align-self: stretch;
 		border-radius: 2px;
 		border: 1px solid var(--Gutenberg-Gray-600, #949494);

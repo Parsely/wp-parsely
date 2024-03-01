@@ -13,8 +13,8 @@ import type { TopPostsSettings } from './top-posts-settings';
  */
 export type {
 	SidebarSettings,
-	TitleSuggestionsSettings, // Part of SidebarSettings type
-	PerformanceStatsSettings, // Part of SidebarSettings type
+	TitleSuggestionsSettings, // Part of SidebarSettings type.
+	PerformanceStatsSettings, // Part of SidebarSettings type.
 	TopPostsSettings,
 };
 

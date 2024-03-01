@@ -12,9 +12,17 @@ import { useDebounce } from '@wordpress/compose';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Icon, edit } from '@wordpress/icons';
-import { MoreArrow } from '../../icons/more-arrow';
-import { PARSELY_PERSONAS } from '../persona-selector';
 
+/**
+ * Internal dependencies
+ */
+import { MoreArrow } from '../../icons/more-arrow';
+
+/**
+ * Represents a single tone in the PARSELY_TONES list.
+ *
+ * @since 3.14.0
+ */
 type ToneMetadata = {
 	label: string,
 	icon?: JSX.Element,
@@ -73,7 +81,7 @@ const TONE_LIST = Object.keys( PARSELY_TONES ) as ToneProp[];
  *
  * @since 3.13.0
  *
- * @param {ToneProp} tone The tone to get the value for.
+ * @param {ToneProp} tone The tone to get the label for.
  *
  * @return {string} The value for the given tone.
  */
@@ -197,7 +205,7 @@ export const ToneSelector = ( {
 					children: (
 						<>
 							<div className="parsely-tone-selector-label">
-								{ isCustomTone( tone ) ? PARSELY_PERSONAS.custom.label : value }
+								{ isCustomTone( tone ) ? PARSELY_TONES.custom.label : value }
 							</div>
 							<MoreArrow />
 						</>

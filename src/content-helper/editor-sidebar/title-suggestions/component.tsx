@@ -135,7 +135,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	};
 
 	/**
-	 * Handle the accepted title changing, and apply the accepted title to the post.
+	 * Handles the accepted title changing, and apply the accepted title to the post.
 	 *
 	 * @since 3.14.0
 	 */
@@ -185,7 +185,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	}, [ acceptedTitle ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	/**
-	 * Display a snackbar notification when an error occurs.
+	 * Displays a snackbar notification when an error occurs.
 	 *
 	 * @since 3.14.0
 	 */

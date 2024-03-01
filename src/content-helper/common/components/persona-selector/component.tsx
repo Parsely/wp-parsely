@@ -12,10 +12,16 @@ import { useDebounce } from '@wordpress/compose';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Icon, edit } from '@wordpress/icons';
-import { MoreArrow } from '../../icons/more-arrow';
 
 /**
  * Internal dependencies
+ */
+import { MoreArrow } from '../../icons/more-arrow';
+
+/**
+ * Represents a single persona in the PARSELY_PERSONAS list.
+ *
+ * @since 3.14.0
  */
 type PersonaMetadata = {
 	label: string,
@@ -75,7 +81,7 @@ const PERSONAS_LIST = Object.keys( PARSELY_PERSONAS ) as PersonaProp[];
  *
  * @since 3.13.0
  *
- * @param {PersonaProp} persona The persona to get the value for.
+ * @param {PersonaProp} persona The persona to get the label for.
  *
  * @return {string} The value for the given persona.
  */
