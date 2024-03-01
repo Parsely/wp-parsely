@@ -80,7 +80,9 @@ final class SuggestBriefAPITest extends BaseContentSuggestionsAPITest {
 		}
 
 		$response = array(
-			'result' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+			'result' => array(
+				'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+			),
 		);
 
 		return array(
