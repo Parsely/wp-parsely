@@ -167,6 +167,7 @@
 
 	// Multi-percentage bar.
 	div.multi-percentage-bar {
+		position: relative;
 		display: flex;
 		height: to_rem(16px);
 		align-items: flex-start;
@@ -175,7 +176,16 @@
 		margin: to_rem(16px) 0;
 
 		.bar-fill {
+			position: relative;
 			align-self: stretch;
+			transition: filter 0.1s ease, transform 0.1s ease;
+
+			&:hover {
+				filter: brightness(1);
+				transform: scaleX(1.05) scaleY(1.2);
+				border-radius: to_rem(2px);
+				z-index: 2;
+			}
 
 			// Border radiuses for first and last bar-fills.
 			&:first-child {
@@ -206,6 +216,10 @@
 			&.other {
 				background-color: hsl(var(--ref-other));
 			}
+		}
+
+		&:hover .bar-fill {
+			filter: brightness(0.8);
 		}
 	}
 

@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { SelectControl, Spinner } from '@wordpress/components';
+import { SelectControl, Spinner, Tooltip } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
@@ -89,42 +89,43 @@ export const PerformanceCategoriesPanel = ( {
 					</SelectControl>
 				</div>
 			) }
-			{
-				( isLoading ? (
-					<div className="parsely-spinner-wrapper" data-testid="parsely-spinner-wrapper">
-						<Spinner />
-					</div>
-				) : (
-					<div>
-						<div className="multi-percentage-bar">{
-							Object.entries( data.referrers.types ).map( ( [ key, value ] ) => {
-								const ariaLabel = sprintf(
-									/* translators: 1: Referrer type, 2: Percentage value, %%: Escaped percent sign */
-									__( '%1$s: %2$s%%', 'wp-parsely' ),
-									getKeyTitle( key ), value.viewsPercentage
-								);
+			{ isLoading ? (
+				<div className="parsely-spinner-wrapper" data-testid="parsely-spinner-wrapper">
+					<Spinner />
+				</div>
+			) : (
+				<div>
+					<div className="multi-percentage-bar">
+						{ Object.entries( data.referrers.types ).map( ( [ key, value ] ) => {
+							const ariaLabel = sprintf(
+								/* translators: 1: Referrer type, 2: Percentage value, %%: Escaped percent sign */
+								__( '%1$s: %2$s%%', 'wp-parsely' ),
+								getKeyTitle( key ),
+								value.viewsPercentage,
+							);
 
-								return (
-									<div aria-label={ ariaLabel }
-										className={ 'bar-fill ' + key } key={ key }
-										style={ { width: value.viewsPercentage + '%' } }>
-									</div>
-								);
-							} ) }
-						</div>
-						<div className="percentage-bar-labels">
-							{
-								Object.entries( data.referrers.types ).map( ( [ key, value ] ) => (
-									<div className={ 'single-label ' + key } key={ key }>
-										<div className={ 'label-color ' + key }></div>
-										<div className="label-text">{ getKeyTitle( key ) }</div>
-										<div className="label-value">{ formatToImpreciseNumber( value.views ) }</div>
-									</div>
-								) )
-							}
-						</div>
+							return (
+								<Tooltip text={ `${ getKeyTitle( key ) } - ${ value.viewsPercentage }%` } delay={ 150 } key={ key }>
+									<div
+										aria-label={ ariaLabel }
+										className={ 'bar-fill ' + key }
+										style={ { width: value.viewsPercentage + '%' } }
+									></div>
+								</Tooltip>
+							);
+						} ) }
 					</div>
-				) )	}
+					<div className="percentage-bar-labels">
+						{ Object.entries( data.referrers.types ).map( ( [ key, value ] ) => (
+							<div className={ 'single-label ' + key } key={ key }>
+								<div className={ 'label-color ' + key }></div>
+								<div className="label-text">{ getKeyTitle( key ) }</div>
+								<div className="label-value">{ formatToImpreciseNumber( value.views ) }</div>
+							</div>
+						) ) }
+					</div>
+				</div>
+			) }
 		</PerformanceStatPanel>
 	);
 };
