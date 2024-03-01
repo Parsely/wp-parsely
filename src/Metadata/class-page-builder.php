@@ -52,10 +52,13 @@ class Page_Builder extends Metadata_Builder {
 		$this->build_url();
 
 		if ( true === $this->parsely->get_options()['full_metadata_in_non_posts'] ) {
+			$this->build_type( $this->post, 'non-post' );
+			$this->build_main_entity( 'post' );
 			$this->build_thumbnail_url( $this->post );
 			$this->build_image( $this->post );
 			$this->build_article_section( $this->post );
 			$this->build_author( $this->post );
+			$this->build_publisher();
 			$this->build_keywords( $this->post );
 			$this->build_metadata_post_times( $this->post );
 		}
