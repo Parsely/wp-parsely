@@ -1,9 +1,12 @@
 /**
  * Internal dependencies
  */
+import {
+	Panel,
+} from '@wordpress/components';
 import { Period } from '../../common/utils/constants';
 import { VerifyCredentials } from '../../common/verify-credentials';
-import { PerformanceDetails } from '../performance-details/component';
+import { PerformanceStats } from '../performance-details/component';
 
 /**
  * SidebarPerformanceTab component props.
@@ -16,18 +19,22 @@ type SidebarPerformanceTabProps = {
 
 /**
  * SidebarPerformanceTab component.
- * Renders the Performance tab in the Content Helper sidebar.
+ * Renders the Performance tab in the Content Helper Sidebar.
  *
  * @since 3.14.0
  *
  * @param { SidebarPerformanceTabProps } props The component's props.
+ *
+ * @return { JSX.Element } The SidebarPerformanceTab JSX Element.
  */
-export const SidebarPerformanceTab = ( { period }: SidebarPerformanceTabProps ) => {
+export const SidebarPerformanceTab = (
+	{ period }: Readonly<SidebarPerformanceTabProps>
+): JSX.Element => {
 	return (
-		<VerifyCredentials>
-			<PerformanceDetails
-				period={ period }
-			/>
-		</VerifyCredentials>
+		<Panel>
+			<VerifyCredentials>
+				<PerformanceStats period={ period } />
+			</VerifyCredentials>
+		</Panel>
 	);
 };

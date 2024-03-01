@@ -45,6 +45,8 @@
 		"@typescript-eslint/prefer-nullish-coalescing": ["error"],
 		// Enabling TS rule and disabling Base rule as it can report incorrect errors.
 		"no-shadow": "off",
-		"@typescript-eslint/no-shadow": ["error"]
+		"@typescript-eslint/no-shadow": ["error"],
+		// Allow usage of Gutenberg experimental components.
+		"@wordpress/no-unsafe-wp-apis": "off"
 	}
 }

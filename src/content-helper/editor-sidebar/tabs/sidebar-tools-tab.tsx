@@ -37,7 +37,9 @@ type SidebarToolsTabProps = {
  *
  * @param { SidebarToolsTabProps } props The component's props.
  */
-export const SidebarToolsTab = ( { trackToggle }: SidebarToolsTabProps ) => {
+export const SidebarToolsTab = (
+	{ trackToggle }: Readonly<SidebarToolsTabProps>
+): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ postData, setPostData ] = useState<SidebarPostData>( {
