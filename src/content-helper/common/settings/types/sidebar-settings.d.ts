@@ -18,10 +18,7 @@ export interface SidebarSettings {
 	SmartLinkingMaxLinkWords: number;
 	SmartLinkingOpen: boolean;
 	SmartLinkingSettingsOpen: boolean;
-	TitleSuggestionsOpen: boolean;
-	TitleSuggestionsPersona: string;
-	TitleSuggestionsSettingsOpen: boolean;
-	TitleSuggestionsTone: string;
+	TitleSuggestionsSettings: TitleSuggestionsSettings;
 }
 
 /**
@@ -29,8 +26,20 @@ export interface SidebarSettings {
  *
  * @since 3.14.0
  */
-interface PerformanceStatsSettings {
+export interface PerformanceStatsSettings {
 	Period: Period;
 	VisiblePanels: string[];
 	VisibleDataPoints: string[];
+}
+
+/**
+ * Defines the settings structure for the TitleSuggestions component.
+ *
+ * @since 3.14.0
+ */
+export interface TitleSuggestionsSettings {
+	Open: boolean;
+	Persona: string;
+	Tone: string;
+	PinnedOpen: boolean;
 }

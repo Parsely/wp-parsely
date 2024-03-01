@@ -4,7 +4,14 @@
 import { Button, ButtonGroup } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { check, closeSmall, Icon, reset, starEmpty, undo } from '@wordpress/icons';
+import {
+	check,
+	closeSmall,
+	Icon,
+	reset,
+	starEmpty,
+	undo,
+} from '@wordpress/icons';
 
 /**
  * Internal dependencies

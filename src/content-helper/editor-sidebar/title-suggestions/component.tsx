@@ -34,8 +34,8 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ error, setError ] = useState<ContentHelperError>();
-	const [ tone, setTone ] = useState<ToneProp>( settings.TitleSuggestionsTone );
-	const [ persona, setPersona ] = useState<PersonaProp>( settings.TitleSuggestionsPersona );
+	const [ tone, setTone ] = useState<ToneProp>( settings.TitleSuggestionsSettings.Tone );
+	const [ persona, setPersona ] = useState<PersonaProp>( settings.TitleSuggestionsSettings.Persona );
 
 	const {
 		loading,
@@ -73,8 +73,13 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 
 	const { createNotice } = useDispatch( 'core/notices' );
 
-	const onSettingChange = ( key: keyof SidebarSettings, value: string | boolean ) => {
-		setSettings( { [ key ]: value } );
+	const onSettingChange = ( key: keyof SidebarSettings[ 'TitleSuggestionsSettings' ], value: string | boolean ) => {
+		setSettings( {
+			TitleSuggestionsSettings: {
+				...settings.TitleSuggestionsSettings,
+				[ key ]: value,
+			},
+		} );
 	};
 
 	const currentPostContent = useSelect( ( select ) => {
@@ -130,7 +135,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	};
 
 	/**
-	 * Handle the accepted title change.
+	 * Handle the accepted title changing, and apply the accepted title to the post.
 	 *
 	 * @since 3.14.0
 	 */
@@ -181,6 +186,8 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 
 	/**
 	 * Display a snackbar notification when an error occurs.
+	 *
+	 * @since 3.14.0
 	 */
 	useEffect( () => {
 		if ( undefined === error ) {
@@ -197,53 +204,6 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 			}
 		);
 	}, [ error ] ); // eslint-disable-line react-hooks/exhaustive-deps
-
-	const parselyAISettings = <TitleSuggestionsSettings
-		isLoading={ loading }
-		isOpen={ settings.TitleSuggestionsSettingsOpen }
-		onPersonaChange={ ( selectedPersona ) => {
-			onSettingChange( 'TitleSuggestionsPersona', selectedPersona );
-			setPersona( selectedPersona );
-		} }
-		onSettingChange={ onSettingChange }
-		onToneChange={ ( selectedTone ) => {
-			onSettingChange( 'TitleSuggestionsTone', selectedTone );
-			setTone( selectedTone );
-		} }
-		persona={ settings.TitleSuggestionsPersona }
-		tone={ settings.TitleSuggestionsTone }
-	/>;
-
-	const generateTitleButton: JSX.Element = (
-		<div className="title-suggestions-generate">
-			<Button
-				variant="primary"
-				isBusy={ loading }
-				disabled={ loading || tone === 'custom' || persona === 'custom' }
-				onClick={ generateOnClickHandler }
-			>
-				{ loading && __( 'Generating Titles…', 'wp-parsely' ) }
-				{ ! loading && allTitles.length > 0 && __( 'Generate More', 'wp-parsely' ) }
-				{ ! loading && allTitles.length === 0 && __( 'Generate Titles', 'wp-parsely' ) }
-			</Button>
-		</div>
-	);
-
-	const titleSuggestionList: JSX.Element = (
-		<div className="wp-parsely-title-suggestions-container">
-			{ ( originalTitle !== undefined ) && (
-				<TitleSuggestion title={ originalTitle } type={ TitleType.PostTitle } isOriginal={ true } />
-			) }
-
-			{ titles.map( ( title ) => (
-				<TitleSuggestion
-					key={ title.id }
-					title={ title }
-					type={ TitleType.PostTitle } // Specify that the title is a post title.
-				/>
-			) ) }
-		</div>
-	);
 
 	return (
 		<PanelRow>
@@ -273,22 +233,58 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 				) }
 				{ 0 < allTitles.length && (
 					<>
-						{ error && (
-							<Notice status="info" isDismissible={ false } className="wp-parsely-content-helper-error">
-								{ error.message }
-							</Notice>
-						) }
 						{ pinnedTitles.length > 0 && (
 							<PinnedTitleSuggestions
 								pinnedTitles={ pinnedTitles }
 								originalTitle={ originalTitle }
+								onSettingChange={ onSettingChange }
+								isOpen={ settings.TitleSuggestionsSettings.PinnedOpen }
 							/>
 						) }
-						{ titleSuggestionList }
+						<div className="wp-parsely-title-suggestions-container">
+							{ ( originalTitle !== undefined ) && (
+								<TitleSuggestion
+									title={ originalTitle }
+									type={ TitleType.PostTitle }
+									isOriginal={ true } />
+							) }
+
+							{ titles.map( ( title ) => (
+								<TitleSuggestion
+									key={ title.id }
+									title={ title }
+									type={ TitleType.PostTitle } // Specify that the title is a post title.
+								/>
+							) ) }
+						</div>
 					</>
 				) }
-				{ parselyAISettings }
-				{ generateTitleButton }
+				<TitleSuggestionsSettings
+					isLoading={ loading }
+					onPersonaChange={ ( selectedPersona ) => {
+						onSettingChange( 'Persona', selectedPersona );
+						setPersona( selectedPersona );
+					} }
+					onSettingChange={ onSettingChange }
+					onToneChange={ ( selectedTone ) => {
+						onSettingChange( 'Tone', selectedTone );
+						setTone( selectedTone );
+					} }
+					persona={ settings.TitleSuggestionsSettings.Persona }
+					tone={ settings.TitleSuggestionsSettings.Tone }
+				/>
+				<div className="title-suggestions-generate">
+					<Button
+						variant="primary"
+						isBusy={ loading }
+						disabled={ loading || tone === 'custom' || persona === 'custom' }
+						onClick={ generateOnClickHandler }
+					>
+						{ loading && __( 'Generating Titles…', 'wp-parsely' ) }
+						{ ! loading && allTitles.length > 0 && __( 'Generate More', 'wp-parsely' ) }
+						{ ! loading && allTitles.length === 0 && __( 'Generate Titles', 'wp-parsely' ) }
+					</Button>
+				</div>
 			</div>
 		</PanelRow>
 	);

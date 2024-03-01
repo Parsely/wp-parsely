@@ -96,10 +96,12 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
 			SmartLinkingOpen: false,
 			SmartLinkingSettingsOpen: false,
-			TitleSuggestionsOpen: false,
-			TitleSuggestionsPersona: PARSELY_PERSONAS.journalist.label,
-			TitleSuggestionsSettingsOpen: false,
-			TitleSuggestionsTone: PARSELY_TONES.neutral.label,
+			TitleSuggestionsSettings: {
+				Open: false,
+				Tone: PARSELY_TONES.neutral.label,
+				Persona: PARSELY_PERSONAS.journalist.label,
+				PinnedOpen: true,
+			},
 		};
 	}
 
@@ -150,17 +152,25 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	if ( typeof parsedSettings?.SmartLinkingSettingsOpen !== 'boolean' ) {
 		parsedSettings.SmartLinkingSettingsOpen = false;
 	}
-	if ( typeof parsedSettings?.TitleSuggestionsOpen !== 'boolean' ) {
-		parsedSettings.TitleSuggestionsOpen = false;
+	if ( typeof parsedSettings?.TitleSuggestionsSettings !== 'object' ) {
+		parsedSettings.TitleSuggestionsSettings = {
+			Open: false,
+			Tone: PARSELY_TONES.neutral.label,
+			Persona: PARSELY_PERSONAS.journalist.label,
+			PinnedOpen: true,
+		};
 	}
-	if ( typeof parsedSettings?.TitleSuggestionsPersona !== 'string' ) {
-		parsedSettings.TitleSuggestionsPersona = PARSELY_PERSONAS.journalist.label;
+	if ( typeof parsedSettings?.TitleSuggestionsSettings?.Open !== 'boolean' ) {
+		parsedSettings.TitleSuggestionsSettings.Open = false;
 	}
-	if ( typeof parsedSettings?.TitleSuggestionsSettingsOpen !== 'boolean' ) {
-		parsedSettings.TitleSuggestionsSettingsOpen = false;
+	if ( typeof parsedSettings?.TitleSuggestionsSettings?.Tone !== 'string' ) {
+		parsedSettings.TitleSuggestionsSettings.Tone = PARSELY_TONES.neutral.label;
 	}
-	if ( typeof parsedSettings?.TitleSuggestionsTone !== 'string' ) {
-		parsedSettings.TitleSuggestionsTone = PARSELY_TONES.neutral.label;
+	if ( typeof parsedSettings?.TitleSuggestionsSettings?.Persona !== 'string' ) {
+		parsedSettings.TitleSuggestionsSettings.Persona = PARSELY_PERSONAS.journalist.label;
+	}
+	if ( typeof parsedSettings?.TitleSuggestionsSettings?.PinnedOpen !== 'boolean' ) {
+		parsedSettings.TitleSuggestionsSettings.PinnedOpen = true;
 	}
 
 	return parsedSettings;

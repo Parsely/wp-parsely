@@ -10,12 +10,15 @@ import { SidebarSettings } from '../../common/settings';
  * Props for the Title Suggestions Settings component.
  *
  * @since 3.13.0
+ * @since 3.14.0 Removed isOpen prop.
  */
 type TitleSuggestionsSettingsProps = {
 	isLoading?: boolean,
-	isOpen: boolean,
 	onPersonaChange: ( persona: PersonaProp | string ) => void,
-	onSettingChange: ( key: keyof SidebarSettings, value: string|boolean ) => void,
+	onSettingChange: (
+		key: keyof SidebarSettings[ 'TitleSuggestionsSettings'],
+		value: string|boolean
+	) => void,
 	onToneChange: ( tone: ToneProp | string ) => void,
 	persona: PersonaProp,
 	tone: ToneProp,
@@ -25,6 +28,7 @@ type TitleSuggestionsSettingsProps = {
  * Component that renders the settings for the Title Suggestions.
  *
  * @since 3.13.0
+ * @since 3.14.0 Removed isOpen prop as the component is no longer collapsible.
  *
  * @param {TitleSuggestionsSettingsProps} props The component props.
  */
