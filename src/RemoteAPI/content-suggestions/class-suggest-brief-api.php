@@ -27,8 +27,8 @@ class Suggest_Brief_API extends Content_Suggestions_Base_API {
 	protected const QUERY_FILTER = 'wp_parsely_suggest_brief_endpoint_args';
 
 	/**
-	 * Gets the brief (meta description) for a given content using the Parse.ly
-	 * Content Suggestion API.
+	 * Gets the first brief (meta description) for a given content using the
+	 * Parse.ly Content Suggestion API.
 	 *
 	 * @since 3.13.0
 	 *
@@ -61,13 +61,13 @@ class Suggest_Brief_API extends Content_Suggestions_Base_API {
 		}
 
 		if ( ! property_exists( $decoded, 'result' ) ||
-			! is_string( $decoded->result ) ) {
+			! is_string( $decoded->result[0] ) ) {
 			return new WP_Error(
 				400,
 				__( 'Unable to parse meta description from upstream API', 'wp-parsely' )
 			);
 		}
 
-		return $decoded->result;
+		return $decoded->result[0];
 	}
 }
