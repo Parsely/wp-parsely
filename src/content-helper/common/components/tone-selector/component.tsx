@@ -30,7 +30,7 @@ type ToneMetadata = {
 
 /**
  * List of the available tones.
- * Each tone has a value and an icon.
+ * Each tone has a label and an optional icon.
  *
  * @since 3.13.0
  */

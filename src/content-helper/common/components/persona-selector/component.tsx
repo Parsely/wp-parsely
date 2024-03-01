@@ -30,7 +30,7 @@ type PersonaMetadata = {
 
 /**
  * List of the available personas.
- * Each persona has a value and an icon.
+ * Each persona has a label and an optional icon.
  *
  * @since 3.13.0
  */
