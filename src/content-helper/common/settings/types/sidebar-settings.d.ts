@@ -8,7 +8,7 @@ import { Metric, Period } from '../../utils/constants';
  */
 export interface SidebarSettings {
 	InitialTabName: string;
-	PerformanceStatsPeriod: Period;
+	PerformanceStatsSettings: PerformanceStatsSettings;
 	RelatedPostsFilterBy: string;
 	RelatedPostsFilterValue: string;
 	RelatedPostsMetric: Metric;
@@ -22,4 +22,15 @@ export interface SidebarSettings {
 	TitleSuggestionsPersona: string;
 	TitleSuggestionsSettingsOpen: boolean;
 	TitleSuggestionsTone: string;
+}
+
+/**
+ * Defines the settings structure for the PerformanceStats component.
+ *
+ * @since 3.14.0
+ */
+interface PerformanceStatsSettings {
+	Period: Period;
+	VisiblePanels: string[];
+	VisibleDataPoints: string[];
 }

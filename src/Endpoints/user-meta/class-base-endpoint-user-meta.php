@@ -196,6 +196,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * Sanitizes the passed meta value.
 	 *
 	 * @since 3.13.0
+	 * @since 3.14.0 Added support for nested arrays.
 	 *
 	 * @param array<string, mixed> $meta_value The meta value to sanitize.
 	 * @return array<string, mixed> The sanitized meta as an array of subvalues.
@@ -211,11 +212,12 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 				continue;
 			}
 
+			// Use the enhanced sanitize_subvalue method.
 			$sanitized_value[ $key ] = $this->sanitize_subvalue( $key, $value );
 		}
 
 		// If not all subvalues are set, return the default meta value.
-		if ( 0 !== count( array_diff_key( $this->valid_subvalues, $sanitized_value ) ) ) {
+		if ( count( array_diff_key( $this->valid_subvalues, $sanitized_value ) ) !== 0 ) {
 			return $this->default_value;
 		}
 
@@ -226,22 +228,36 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * Sanitizes the passed subvalue.
 	 *
 	 * @since 3.13.0
+	 * @since 3.14.0 Added support for nested arrays.
 	 *
 	 * @param string $key The subvalue's key.
 	 * @param mixed  $value The value to sanitize.
 	 * @return mixed The sanitized subvalue.
 	 */
 	protected function sanitize_subvalue( string $key, $value ) {
+		// Handle nested arrays recursively.
+		if ( is_array( $value ) ) {
+			$sanitized_array = array();
+			foreach ( $value as $subkey => $subvalue ) {
+				// Sanitize keys of nested arrays.
+				$sanitized_subkey = sanitize_text_field( $subkey );
+				// Recursively sanitize each value in the nested array.
+				$sanitized_array[ $sanitized_subkey ] = $this->sanitize_subvalue( $sanitized_subkey, $subvalue );
+			}
+			return $sanitized_array;
+		}
+
+		// Sanitize simple values.
 		if ( is_string( $value ) ) {
 			$value = sanitize_text_field( $value );
 		}
 
 		// Allow any value when no valid subvalues are given.
-		if ( 0 === count( $this->valid_subvalues[ $key ] ) ) {
+		if ( ! isset( $this->valid_subvalues[ $key ] ) || count( $this->valid_subvalues[ $key ] ) === 0 ) {
 			return $value;
 		}
 
-		// If the value is not valid, use the default value.
+		// Use default value if the actual value is not valid.
 		if ( ! in_array( $value, $this->valid_subvalues[ $key ], true ) ) {
 			$value = $this->default_value[ $key ];
 		}

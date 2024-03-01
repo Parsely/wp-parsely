@@ -45,9 +45,17 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 				'values'  => array( 'tools', 'performance' ),
 				'default' => 'tools',
 			),
-			'PerformanceStatsPeriod'       => array(
-				'values'  => array( '10m', '1h', '2h', '4h', '24h', '7d', '30d' ),
-				'default' => '7d',
+			'PerformanceStatsSettings'     => array(
+				'values'  => array(
+					'Period'            => array( '10m', '1h', '2h', '4h', '24h', '7d', '30d' ),
+					'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
+					'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
+				),
+				'default' => array(
+					'Period'            => '7d',
+					'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
+					'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
+				),
 			),
 			'RelatedPostsFilterBy'         => array(
 				'values'  => array( 'unavailable', 'tag', 'section', 'author' ),
