@@ -3,7 +3,7 @@
  */
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
-import { createInterpolateElement, useEffect, useState } from "@wordpress/element";
+import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { external, Icon } from '@wordpress/icons';
 
@@ -12,8 +12,8 @@ import { external, Icon } from '@wordpress/icons';
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
-import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
+import { PersonaProp } from '../../common/components/persona-selector';
+import { ToneProp } from '../../common/components/tone-selector';
 import { ContentHelperError } from '../../common/content-helper-error';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { PinnedTitleSuggestions } from './component-pinned';
@@ -71,6 +71,8 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		setOriginalTitle,
 	} = useDispatch( TitleStore );
 
+	const { createNotice } = useDispatch( 'core/notices' );
+
 	const onSettingChange = ( key: keyof SidebarSettings, value: string | boolean ) => {
 		setSettings( { [ key ]: value } );
 	};
@@ -127,10 +129,6 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		}
 	};
 
-	const saveTitleOnClickHandler = async () => {
-
-	};
-
 	/**
 	 * Handle the accepted title change.
 	 *
@@ -140,8 +138,6 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		if ( ! acceptedTitle ) {
 			return;
 		}
-
-		console.log( 'acceptedTitle', acceptedTitle );
 
 		// Save the original title.
 		setOriginalTitle( TitleType.PostTitle, currentPostTitle );
@@ -158,9 +154,49 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 			} );
 		}
 
-		// Remove the accepted title
+		// Remove the accepted title.
 		setAcceptedTitle( TitleType.PostTitle, undefined );
-	}, [ acceptedTitle, currentPostTitle, setAcceptedTitle, setOriginalTitle ] );
+
+		// Show snackbar notification.
+		createNotice(
+			'success',
+			__( 'Title suggestion applied.', 'wp-parsely' ),
+			{
+				type: 'snackbar',
+				className: 'parsely-title-suggestion-applied',
+				explicitDismiss: true,
+				actions: [
+					{
+						label: __( 'Undo', 'wp-parsely' ),
+						onClick: () => {
+							// Restore the original title.
+							dispatch( 'core/editor' ).editPost( { title: currentPostTitle } );
+							setOriginalTitle( TitleType.PostTitle, undefined );
+						},
+					},
+				],
+			}
+		);
+	}, [ acceptedTitle ] ); // eslint-disable-line react-hooks/exhaustive-deps
+
+	/**
+	 * Display a snackbar notification when an error occurs.
+	 */
+	useEffect( () => {
+		if ( undefined === error ) {
+			return;
+		}
+
+		createNotice(
+			'error',
+			__( 'There was an error generating title suggestions.', 'wp-parsely' ),
+			{
+				type: 'snackbar',
+				className: 'parsely-title-suggestion-error',
+				isDismissible: true,
+			}
+		);
+	}, [ error ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const parselyAISettings = <TitleSuggestionsSettings
 		isLoading={ loading }
@@ -206,39 +242,6 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 					type={ TitleType.PostTitle } // Specify that the title is a post title.
 				/>
 			) ) }
-		</div>
-	);
-
-	// TODO: remove
-	const acceptedTitleElement: JSX.Element = (
-		<div className="parsely-write-titles-accepted-title-container">
-			<div className="title-suggestions-header">
-				{ __(
-					'Replace the current post title with the following?',
-					'wp-parsely'
-				) }
-			</div>
-			<div className="parsely-write-titles-accepted-title">{ acceptedTitle?.title }</div>
-			<div className="parsely-write-titles-accepted-title-actions">
-				<Button
-					variant="secondary"
-					onClick={ () => {
-						setAcceptedTitle( TitleType.PostTitle, undefined );
-						Telemetry.trackEvent( 'title_suggestions_cancel_pressed', {
-							original_title: currentPostTitle,
-							canceled_title: acceptedTitle?.title ?? '',
-						} );
-					} }
-				>
-					{ __( 'Cancel', 'wp-parsely' ) }
-				</Button>
-				<Button
-					variant="primary"
-					onClick={ saveTitleOnClickHandler }
-				>
-					{ __( 'Replace', 'wp-parsely' ) }
-				</Button>
-			</div>
 		</div>
 	);
 

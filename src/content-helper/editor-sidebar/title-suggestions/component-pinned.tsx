@@ -1,6 +1,6 @@
 import { Panel, PanelBody } from '@wordpress/components';
 import { useState } from '@wordpress/element';
-import { __ } from "@wordpress/i18n";
+import { __ } from '@wordpress/i18n';
 import { TitleSuggestion } from './component-title-suggestion';
 import { Title, TitleType } from './store';
 

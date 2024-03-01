@@ -15,7 +15,6 @@
 		gap: var(--grid-unit-20, to_rem(16px));
 		align-self: stretch;
 
-		// stylelint-disable-next-line no-descending-specificity
 		> div {
 			display: flex;
 			flex-direction: column;
@@ -105,7 +104,7 @@
 		align-self: stretch;
 
 		.suggested-title {
-			color: #1E1E1E;
+			color: #1e1e1e;
 			font-size: 12px;
 			font-style: normal;
 			font-weight: 700;
@@ -133,7 +132,7 @@
 				text-decoration-line: underline;
 
 				&:hover {
-					color: #1D35B4;
+					color: #00618c;
 				}
 			}
 
@@ -151,62 +150,6 @@
 		align-items: flex-start;
 		gap: var(--grid-unit-20, 16px);
 		align-self: stretch;
-
-
-		/*
-
-		margin: to_rem(10px) 0 0;
-
-		// Single title suggestion.
-		.parsely-write-titles-title-suggestion {
-			border-top: 1px solid var(--gray-300);
-			display: flex;
-			padding: 1rem 0;
-
-			.parsely-write-titles-suggested-title {
-				flex: 1;
-				font-weight: 600;
-				font-size: to_rem(14px);
-				padding: 0 to_rem(8px) 0 to_rem(5px);
-			}
-
-			.parsely-write-titles-suggested-title-actions {
-				display: flex;
-				flex-direction: column;
-				width: to_rem(25px);
-
-				.components-button-group .components-button {
-					margin-left: 0;
-				}
-
-				.is-pinned {
-					background-color: var(--gray-500);
-					color: #fff;
-					box-shadow: inset 0 0 0 1px var(--sidebar-black);
-				}
-			}
-
-			&.original-title {
-				background-color: var(--gray-200);
-				border: 0;
-				color: var(--gray-600);
-				margin-bottom: to_rem(15px);
-				padding: to_rem(5px);
-
-				.parsely-write-titles-suggested-title {
-					padding-bottom: to_rem(5px);
-					padding-top: to_rem(5px);
-				}
-
-				button {
-					margin-top: to_rem(2px);
-				}
-			}
-		}
-
-		.title-in-use {
-			color: var(--green-900);
-		}*/
 	}
 
 	.wp-parsely-pinned-suggestions {
@@ -224,10 +167,17 @@
 			gap: var(--grid-unit-20, 16px);
 			align-self: stretch;
 			border-radius: 2px;
-			background: #F0F0F0;
+			background: #f0f0f0;
 			border-bottom: none;
 			border-top: none;
 			margin: 0;
+
+			.components-panel__body-title {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				align-self: stretch;
+			}
 
 			&.is-opened {
 
@@ -238,16 +188,9 @@
 				}
 			}
 
-			.components-panel__body-title {
-				display: flex;
-				align-items: center;
-				gap: 8px;
-				align-self: stretch;
-			}
-
 			.components-panel__body-toggle.components-button {
 				padding: 0;
-				color: var(--Gutenberg-Gray-900, #1E1E1E);
+				color: var(--Gutenberg-Gray-900, #1e1e1e);
 				font-size: 11px;
 				font-style: normal;
 				font-weight: 600;
