@@ -91,10 +91,13 @@ export const SidebarToolsTab = (
 		<Panel>
 			<PanelBody
 				title={ __( 'Title Suggestions (Beta)', 'wp-parsely' ) }
-				initialOpen={ settings.TitleSuggestionsOpen }
+				initialOpen={ settings.TitleSuggestionsSettings.Open }
 				onToggle={ ( next ) => {
 					setSettings( {
-						TitleSuggestionsOpen: next,
+						TitleSuggestionsSettings: {
+							...settings.TitleSuggestionsSettings,
+							Open: next,
+						},
 					} );
 					trackToggle( 'title_suggestions', next );
 				} }

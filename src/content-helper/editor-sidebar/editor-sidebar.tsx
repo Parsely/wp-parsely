@@ -16,8 +16,6 @@ import { registerPlugin } from '@wordpress/plugins';
  * Internal dependencies
  */
 import { Telemetry } from '../../js/telemetry/telemetry';
-import { PARSELY_PERSONAS } from '../common/components/persona-selector';
-import { PARSELY_TONES } from '../common/components/tone-selector';
 import { EditIcon } from '../common/icons/edit-icon';
 import { LeafIcon } from '../common/icons/leaf-icon';
 import {
@@ -69,101 +67,107 @@ export interface SidebarPostData {
  * @return {SidebarSettings} The resulting settings object.
  */
 export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSettings => {
-	let parsedSettings: SidebarSettings;
+	// Default settings object.
+	const defaultSettings: SidebarSettings = {
+		InitialTabName: 'tools',
+		PerformanceStatsSettings: {
+			Period: Period.Days7,
+			VisiblePanels: [ 'overview', 'categories', 'referrers' ],
+			VisibleDataPoints: [ 'views', 'visitors', 'avgEngaged', 'recirculation' ],
+		},
+		RelatedPostsFilterBy: PostFilterType.Unavailable,
+		RelatedPostsFilterValue: '',
+		RelatedPostsMetric: Metric.Views,
+		RelatedPostsOpen: false,
+		RelatedPostsPeriod: Period.Days7,
+		SmartLinkingMaxLinks: DEFAULT_MAX_LINKS,
+		SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
+		SmartLinkingOpen: false,
+		SmartLinkingSettingsOpen: false,
+		TitleSuggestionsSettings: {
+			Open: false,
+			Tone: 'neutral',
+			Persona: 'journalist',
+			PinnedOpen: true,
+		},
+	};
 
 	// If the settings are empty, try to get them from the global variable.
 	if ( '' === settingsJson ) {
 		settingsJson = window.wpParselyContentHelperSettings;
 	}
 
+	let parsedSettings: SidebarSettings;
 	try {
 		parsedSettings = JSON.parse( settingsJson );
 	} catch ( e ) {
 		// Return defaults when parsing failed or the string is empty.
-		return {
-			InitialTabName: 'tools',
-			PerformanceStatsSettings: {
-				Period: Period.Days7,
-				VisiblePanels: [ 'overview', 'categories', 'referrers' ],
-				VisibleDataPoints: [ 'views', 'visitors', 'avgEngaged', 'recirculation' ],
-			},
-			RelatedPostsFilterBy: PostFilterType.Unavailable,
-			RelatedPostsFilterValue: '',
-			RelatedPostsMetric: Metric.Views,
-			RelatedPostsOpen: false,
-			RelatedPostsPeriod: Period.Days7,
-			SmartLinkingMaxLinks: DEFAULT_MAX_LINKS,
-			SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
-			SmartLinkingOpen: false,
-			SmartLinkingSettingsOpen: false,
-			TitleSuggestionsOpen: false,
-			TitleSuggestionsPersona: PARSELY_PERSONAS.journalist.label,
-			TitleSuggestionsSettingsOpen: false,
-			TitleSuggestionsTone: PARSELY_TONES.neutral.label,
-		};
+		return defaultSettings;
 	}
+
+	// Merge parsed settings with default settings.
+	const mergedSettings = { ...defaultSettings, ...parsedSettings };
 
 	// Fix invalid values if any are found.
-	if ( typeof parsedSettings?.InitialTabName !== 'string' ) {
-		parsedSettings.InitialTabName = 'tools';
+	if ( typeof mergedSettings.InitialTabName !== 'string' ) {
+		mergedSettings.InitialTabName = defaultSettings.InitialTabName;
 	}
-	if ( typeof parsedSettings?.PerformanceStatsSettings !== 'object' ) {
-		parsedSettings.PerformanceStatsSettings = {
-			Period: Period.Days7,
-			VisiblePanels: [ 'overview', 'categories', 'referrers' ],
-			VisibleDataPoints: [ 'views', 'visitors', 'avgEngaged', 'recirculation' ],
-		};
+	if ( typeof mergedSettings.PerformanceStatsSettings !== 'object' ) {
+		mergedSettings.PerformanceStatsSettings = defaultSettings.PerformanceStatsSettings;
 	}
-	if ( ! isInEnum( parsedSettings?.PerformanceStatsSettings?.Period, Period ) ) {
-		parsedSettings.PerformanceStatsSettings.Period = Period.Days7;
+	if ( ! isInEnum( mergedSettings.PerformanceStatsSettings.Period, Period ) ) {
+		mergedSettings.PerformanceStatsSettings.Period = defaultSettings.PerformanceStatsSettings.Period;
 	}
-	if ( ! Array.isArray( parsedSettings?.PerformanceStatsSettings?.VisiblePanels ) ) {
-		parsedSettings.PerformanceStatsSettings.VisiblePanels = [ 'overview', 'categories', 'referrers' ];
+	if ( ! Array.isArray( mergedSettings.PerformanceStatsSettings.VisiblePanels ) ) {
+		mergedSettings.PerformanceStatsSettings.VisiblePanels = defaultSettings.PerformanceStatsSettings.VisiblePanels;
 	}
-	if ( ! Array.isArray( parsedSettings?.PerformanceStatsSettings?.VisibleDataPoints ) ) {
-		parsedSettings.PerformanceStatsSettings.VisibleDataPoints = [ 'views', 'visitors', 'avgEngaged', 'recirculation' ];
+	if ( ! Array.isArray( mergedSettings.PerformanceStatsSettings.VisibleDataPoints ) ) {
+		mergedSettings.PerformanceStatsSettings.VisibleDataPoints = defaultSettings.PerformanceStatsSettings.VisibleDataPoints;
 	}
-	if ( ! isInEnum( parsedSettings?.RelatedPostsFilterBy, PostFilterType ) ) {
-		parsedSettings.RelatedPostsFilterBy = PostFilterType.Unavailable;
+	if ( ! isInEnum( mergedSettings.RelatedPostsFilterBy, PostFilterType ) ) {
+		mergedSettings.RelatedPostsFilterBy = defaultSettings.RelatedPostsFilterBy;
 	}
-	if ( typeof parsedSettings?.RelatedPostsFilterValue !== 'string' ) {
-		parsedSettings.RelatedPostsFilterValue = '';
+	if ( typeof mergedSettings.RelatedPostsFilterValue !== 'string' ) {
+		mergedSettings.RelatedPostsFilterValue = defaultSettings.RelatedPostsFilterValue;
 	}
-	if ( ! isInEnum( parsedSettings?.RelatedPostsMetric, Metric ) ) {
-		parsedSettings.RelatedPostsMetric = Metric.Views;
+	if ( ! isInEnum( mergedSettings.RelatedPostsMetric, Metric ) ) {
+		mergedSettings.RelatedPostsMetric = defaultSettings.RelatedPostsMetric;
 	}
-	if ( typeof parsedSettings?.RelatedPostsOpen !== 'boolean' ) {
-		parsedSettings.RelatedPostsOpen = false;
+	if ( typeof mergedSettings.RelatedPostsOpen !== 'boolean' ) {
+		mergedSettings.RelatedPostsOpen = defaultSettings.RelatedPostsOpen;
 	}
-	if ( ! isInEnum( parsedSettings?.RelatedPostsPeriod, Period ) ) {
-		parsedSettings.RelatedPostsPeriod = Period.Days7;
+	if ( ! isInEnum( mergedSettings.RelatedPostsPeriod, Period ) ) {
+		mergedSettings.RelatedPostsPeriod = defaultSettings.RelatedPostsPeriod;
 	}
-	if ( typeof parsedSettings?.SmartLinkingMaxLinks !== 'number' ) {
-		parsedSettings.SmartLinkingMaxLinks = DEFAULT_MAX_LINKS;
+	if ( typeof mergedSettings.SmartLinkingMaxLinks !== 'number' ) {
+		mergedSettings.SmartLinkingMaxLinks = defaultSettings.SmartLinkingMaxLinks;
 	}
-	if ( typeof parsedSettings?.SmartLinkingMaxLinkWords !== 'number' ) {
-		parsedSettings.SmartLinkingMaxLinkWords = DEFAULT_MAX_LINK_WORDS;
+	if ( typeof mergedSettings.SmartLinkingMaxLinkWords !== 'number' ) {
+		mergedSettings.SmartLinkingMaxLinkWords = defaultSettings.SmartLinkingMaxLinkWords;
 	}
-	if ( typeof parsedSettings?.SmartLinkingOpen !== 'boolean' ) {
-		parsedSettings.SmartLinkingOpen = false;
+	if ( typeof mergedSettings.SmartLinkingOpen !== 'boolean' ) {
+		mergedSettings.SmartLinkingOpen = defaultSettings.SmartLinkingOpen;
 	}
-	if ( typeof parsedSettings?.SmartLinkingSettingsOpen !== 'boolean' ) {
-		parsedSettings.SmartLinkingSettingsOpen = false;
+	if ( typeof mergedSettings.SmartLinkingSettingsOpen !== 'boolean' ) {
+		mergedSettings.SmartLinkingSettingsOpen = defaultSettings.SmartLinkingSettingsOpen;
 	}
-	if ( typeof parsedSettings?.TitleSuggestionsOpen !== 'boolean' ) {
-		parsedSettings.TitleSuggestionsOpen = false;
+	if ( typeof mergedSettings.TitleSuggestionsSettings !== 'object' ) {
+		mergedSettings.TitleSuggestionsSettings = defaultSettings.TitleSuggestionsSettings;
 	}
-	if ( typeof parsedSettings?.TitleSuggestionsPersona !== 'string' ) {
-		parsedSettings.TitleSuggestionsPersona = PARSELY_PERSONAS.journalist.label;
+	if ( typeof mergedSettings.TitleSuggestionsSettings.Open !== 'boolean' ) {
+		mergedSettings.TitleSuggestionsSettings.Open = defaultSettings.TitleSuggestionsSettings.Open;
 	}
-	if ( typeof parsedSettings?.TitleSuggestionsSettingsOpen !== 'boolean' ) {
-		parsedSettings.TitleSuggestionsSettingsOpen = false;
+	if ( typeof mergedSettings.TitleSuggestionsSettings.Tone !== 'string' ) {
+		mergedSettings.TitleSuggestionsSettings.Tone = defaultSettings.TitleSuggestionsSettings.Tone;
 	}
-	if ( typeof parsedSettings?.TitleSuggestionsTone !== 'string' ) {
-		parsedSettings.TitleSuggestionsTone = PARSELY_TONES.neutral.label;
+	if ( typeof mergedSettings.TitleSuggestionsSettings.Persona !== 'string' ) {
+		mergedSettings.TitleSuggestionsSettings.Persona = defaultSettings.TitleSuggestionsSettings.Persona;
+	}
+	if ( typeof mergedSettings.TitleSuggestionsSettings.PinnedOpen !== 'boolean' ) {
+		mergedSettings.TitleSuggestionsSettings.PinnedOpen = defaultSettings.TitleSuggestionsSettings.PinnedOpen;
 	}
 
-	return parsedSettings;
+	return mergedSettings;
 };
 
 /**

@@ -4,7 +4,14 @@
 import { Button, ButtonGroup } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { check, closeSmall, pin, undo } from '@wordpress/icons';
+import {
+	check,
+	closeSmall,
+	Icon,
+	pin,
+	reset,
+	undo,
+} from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -58,7 +65,11 @@ export const TitleSuggestion = (
 	// Flag if the current title has been accepted and applied to the post.
 	const titleInUse = currentPostTitle === props.title.title;
 
-	const onClickAccept = async () => {
+	const onClickApply = async () => {
+		if ( titleInUse ) {
+			return;
+		}
+
 		Telemetry.trackEvent( 'title_suggestion_applied', {
 			title: props.title.title,
 			type: props.type,
@@ -103,45 +114,45 @@ export const TitleSuggestion = (
 
 	return (
 		<>
-			<div className={ `parsely-write-titles-title-suggestion	${ titleInUse && 'title-in-use' } ${ props.isOriginal && 'original-title' }` }>
-				<div className="parsely-write-titles-suggested-title">{ props.title.title }</div>
-				<div className="parsely-write-titles-suggested-title-actions">
-					{ ( ! props.isOriginal ) ? (
-						<ButtonGroup>
-							<Button size="small"
-								iconSize={ 15 }
-								variant="primary"
-								icon={ check }
-								label={ __( 'Accept Title', 'wp-parsely' ) }
-								onClick={ onClickAccept } />
-							<Button size="small"
-								iconSize={ 15 }
-								className={ isPinned ? 'is-pinned' : '' }
-								variant="secondary"
-								icon={ pin }
-								label={ __( 'Pin Title', 'wp-parsely' ) }
-								onClick={ onClickPin }	/>
-							{ ! isPinned &&
-								<Button size="small"
-									iconSize={ 15 }
-									variant="secondary"
-									icon={ closeSmall }
-									label={ __( 'Remove Title', 'wp-parsely' ) }
-									onClick={ onClickRemove }
-								/>
-							}
-						</ButtonGroup>
-					) : (
-						<ButtonGroup>
-							<Button size="small"
-								iconSize={ 15 }
-								variant="primary"
-								icon={ undo }
-								label={ __( 'Restore Title', 'wp-parsely' ) }
-								onClick={ onClickRestore } />
-						</ButtonGroup>
+			<div className={
+				`wp-parsely-title-suggestion${ titleInUse ? ' title-in-use' : '' }${ props.isOriginal ? ' original-title' : '' }`
+			}>
+				<div className="suggested-title">{ props.title.title }</div>
+
+				<ButtonGroup className="suggested-title-actions">
+					{ ( ! props.isOriginal ) && (
+						<>
+							<Button	variant="link" onClick={ onClickApply } disabled={ titleInUse } >
+								{ ( titleInUse )
+									? __( 'Applied', 'wp-parsely' )
+									: __( 'Apply', 'wp-parsely' )
+								}
+								<Icon size={ 18 } icon={ check } />
+							</Button>
+							<Button	variant="link" onClick={ onClickRemove } >
+								{ __( 'Discard', 'wp-parsely' ) }
+								<Icon size={ 18 } icon={ closeSmall } />
+							</Button>
+							{ ( isPinned ) ? (
+								<Button	variant="link" onClick={ onClickPin } >
+									{ __( 'Unpin', 'wp-parsely' ) }
+									<Icon size={ 18 } icon={ reset } />
+								</Button>
+							) : (
+								<Button	variant="link" onClick={ onClickPin } >
+									{ __( 'Pin', 'wp-parsely' ) }
+									<Icon size={ 18 } icon={ pin } />
+								</Button>
+							) }
+						</>
 					) }
-				</div>
+					{ ( props.isOriginal ) && (
+						<Button	variant="link" onClick={ onClickRestore } >
+							{ __( 'Restore', 'wp-parsely' ) }
+							<Icon size={ 18 } icon={ undo } />
+						</Button>
+					) }
+				</ButtonGroup>
 			</div>
 		</>
 	);

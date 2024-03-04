@@ -31,25 +31,27 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @var array<string, mixed>
 	 */
 	protected $default_value = array(
-		'InitialTabName'               => 'tools',
-		'PerformanceStatsSettings'     => array(
+		'InitialTabName'           => 'tools',
+		'PerformanceStatsSettings' => array(
 			'Period'            => '7d',
 			'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
 			'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
 		),
-		'RelatedPostsFilterBy'         => 'unavailable',
-		'RelatedPostsFilterValue'      => '',
-		'RelatedPostsMetric'           => 'views',
-		'RelatedPostsOpen'             => false,
-		'RelatedPostsPeriod'           => '7d',
-		'SmartLinkingMaxLinks'         => 10,
-		'SmartLinkingMaxLinkWords'     => 4,
-		'SmartLinkingOpen'             => false,
-		'SmartLinkingSettingsOpen'     => false,
-		'TitleSuggestionsOpen'         => false,
-		'TitleSuggestionsPersona'      => 'journalist',
-		'TitleSuggestionsSettingsOpen' => false,
-		'TitleSuggestionsTone'         => 'neutral',
+		'RelatedPostsFilterBy'     => 'unavailable',
+		'RelatedPostsFilterValue'  => '',
+		'RelatedPostsMetric'       => 'views',
+		'RelatedPostsOpen'         => false,
+		'RelatedPostsPeriod'       => '7d',
+		'SmartLinkingMaxLinks'     => 10,
+		'SmartLinkingMaxLinkWords' => 4,
+		'SmartLinkingOpen'         => false,
+		'SmartLinkingSettingsOpen' => false,
+		'TitleSuggestionsSettings' => array(
+			'Open'       => false,
+			'Persona'    => 'journalist',
+			'PinnedOpen' => true,
+			'Tone'       => 'neutral',
+		),
 	);
 
 	/**
