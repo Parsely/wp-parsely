@@ -5,7 +5,7 @@ import { Button, Notice, PanelRow } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { external, Icon } from '@wordpress/icons';
+import { Icon, external } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -135,7 +135,8 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	};
 
 	/**
-	 * Handles the accepted title changing, and apply the accepted title to the post.
+	 * Handles the accepted title changing, and applies the accepted title to
+	 * the post.
 	 *
 	 * @since 3.14.0
 	 */
