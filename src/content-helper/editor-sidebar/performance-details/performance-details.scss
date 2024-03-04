@@ -172,19 +172,17 @@
 		height: to_rem(16px);
 		align-items: flex-start;
 		align-self: stretch;
-		border-radius: to_rem(2px);
 		margin: to_rem(16px) 0;
 
 		.bar-fill {
+			--radius: 2px;
 			position: relative;
 			align-self: stretch;
 			transition: filter 0.1s ease, transform 0.1s ease;
 
 			&:hover {
-				filter: brightness(1);
-				transform: scaleX(1.05) scaleY(1.2);
-				border-radius: to_rem(2px);
-				z-index: 2;
+				filter: opacity(1) !important;
+				transform: scaleX(1) scaleY(1) !important;
 			}
 
 			// Border radiuses for first and last bar-fills.
@@ -219,7 +217,8 @@
 		}
 
 		&:hover .bar-fill {
-			filter: brightness(0.8);
+			filter: opacity(0.5);
+			transform: scaleX(1) scaleY(0.7);
 		}
 	}
 
