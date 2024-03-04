@@ -105,7 +105,12 @@ export const PerformanceCategoriesPanel = ( {
 							);
 
 							return (
-								<Tooltip text={ `${ getKeyTitle( key ) } - ${ value.viewsPercentage }%` } delay={ 150 } key={ key }>
+								<Tooltip
+									/* translators: %s: percentage value */
+									text={ `${ getKeyTitle( key ) } - ${ sprintf( __( '%s%%', 'wp-parsely' ), value.viewsPercentage ) }` } // eslint-disable-line @wordpress/valid-sprintf
+									delay={ 150 }
+									key={ key }
+								>
 									<div
 										aria-label={ ariaLabel }
 										className={ 'bar-fill ' + key }
