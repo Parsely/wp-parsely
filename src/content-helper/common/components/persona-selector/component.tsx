@@ -134,6 +134,7 @@ const CustomPersona = (
 ): JSX.Element => {
 	const [ customPersona, setCustomPersona ] = useState<string>( '' );
 	const debouncedOnChange = useDebounce( onChange, 500 );
+
 	return (
 		<div className="parsely-persona-selector-custom">
 			<TextControl
@@ -231,6 +232,16 @@ export const PersonaSelector = ( {
 											onDropdownChange?.( singlePersona as FixedPersonaProp );
 											onChange( singlePersona );
 											onClose();
+											// Focus the input when the custom persona is selected.
+											if ( singlePersona === 'custom' ) {
+												// Wait for the input to be rendered.
+												setTimeout( () => {
+													const inputElement = document.querySelector( `.parsely-persona-selector-custom input` ) as HTMLInputElement;
+													if ( inputElement ) {
+														inputElement.focus();
+													}
+												}, 0 );
+											}
 										} }
 									>
 										{ personaData.icon && <Icon icon={ personaData.icon } /> }

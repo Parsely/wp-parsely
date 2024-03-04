@@ -232,6 +232,16 @@ export const ToneSelector = ( {
 											onDropdownChange?.( singleTone as FixedToneProp );
 											onChange( singleTone );
 											onClose();
+											// Focus the input when the custom tone is selected.
+											if ( singleTone === 'custom' ) {
+												// Wait for the input to be rendered.
+												setTimeout( () => {
+													const inputElement = document.querySelector( `.parsely-tone-selector-custom input` ) as HTMLInputElement;
+													if ( inputElement ) {
+														inputElement.focus();
+													}
+												}, 0 );
+											}
 										} }
 									>
 										{ toneData.icon && <Icon icon={ toneData.icon } /> }
