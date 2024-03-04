@@ -8,8 +8,8 @@ import {
 	check,
 	closeSmall,
 	Icon,
+	pin,
 	reset,
-	starEmpty,
 	undo,
 } from '@wordpress/icons';
 
@@ -135,13 +135,13 @@ export const TitleSuggestion = (
 							</Button>
 							{ ( isPinned ) ? (
 								<Button	variant="link" onClick={ onClickPin } >
-									{ __( 'Remove', 'wp-parsely' ) }
+									{ __( 'Unpin', 'wp-parsely' ) }
 									<Icon size={ 18 } icon={ reset } />
 								</Button>
 							) : (
 								<Button	variant="link" onClick={ onClickPin } >
-									{ __( 'Favorite', 'wp-parsely' ) }
-									<Icon size={ 18 } icon={ starEmpty } />
+									{ __( 'Pin', 'wp-parsely' ) }
+									<Icon size={ 18 } icon={ pin } />
 								</Button>
 							) }
 						</>
