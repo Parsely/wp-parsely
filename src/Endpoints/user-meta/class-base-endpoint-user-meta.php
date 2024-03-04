@@ -179,6 +179,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	protected function set_value( array $meta_value ): bool {
 		$sanitized_value = $this->sanitize_value( $meta_value );
 
+
 		$update_meta = update_user_meta(
 			$this->current_user_id,
 			$this->get_meta_key(),
