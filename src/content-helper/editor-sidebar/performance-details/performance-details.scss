@@ -333,7 +333,7 @@
 
 				.percentage-bar {
 					// Bar background.
-					--radius: to_rem(1.5px);
+					--radius: 1.5px;
 					background: var(--gray-400, #d7dbdf);
 					border-radius: var(--radius);
 					display: flex;
