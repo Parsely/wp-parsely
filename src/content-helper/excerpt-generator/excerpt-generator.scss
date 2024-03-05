@@ -8,7 +8,7 @@
 }
 
 .editor-post-excerpt__textarea {
-	margin-bottom: to_rem(8px);
+	margin-bottom: var(--grid-unit-10, to_rem(8px));
 
 	textarea:read-only {
 		background-color: var(--Gutenberg-White, #fff);
@@ -41,15 +41,15 @@
 
 	.wp-parsely-excerpt-generator-controls {
 		display: flex;
-		gap: to_rem(8px);
+		gap: var(--grid-unit-10, to_rem(8px));
 
 		button {
 			flex-grow: 1;
 			height: to_rem(40px);
 			justify-content: center;
-			margin-bottom: to_rem(8px);
-			margin-top: to_rem(8px);
-			padding: var(--grid-unit-10, 8px) var(--grid-unit-15, 12px);
+			margin-bottom: var(--grid-unit-10, to_rem(8px));
+			margin-top: var(--grid-unit-10, to_rem(8px));
+			padding: var(--grid-unit-10, to_rem(8px)) var(--grid-unit-15, to_rem(12px));
 		}
 	}
 }
