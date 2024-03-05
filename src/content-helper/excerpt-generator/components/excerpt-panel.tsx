@@ -2,10 +2,10 @@
  * WordPress dependencies
  */
 import {
+	Animate,
 	Button,
-	ExternalLink,
+	Icon,
 	Notice,
-	Spinner,
 	TextareaControl,
 } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -18,9 +18,9 @@ import { count } from '@wordpress/wordcount';
 /**
  * Internal dependencies
  */
+import { external } from '@wordpress/icons';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { BetaBadge } from '../../common/components/beta-badge';
 import { ContentHelperError } from '../../common/content-helper-error';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { ExcerptGeneratorProvider } from '../provider';
@@ -33,6 +33,7 @@ import { ExcerptGeneratorProvider } from '../provider';
 const PostExcerptGenerator = () => {
 	const [ isLoading, setLoading ] = useState<boolean>( false );
 	const [ generatedExcerpt, setGeneratedExcerpt ] = useState<string>( '' );
+	const [ generatedExcerptCount, setGeneratedExcerptCount ] = useState<number>( 0 );
 	const [ error, setError ] = useState<ContentHelperError>();
 
 	const { editPost } = useDispatch( editorStore );
@@ -84,6 +85,7 @@ const PostExcerptGenerator = () => {
 	const generateExcerpt = async () => {
 		setLoading( true );
 		setError( undefined );
+		setGeneratedExcerptCount( generatedExcerptCount + 1 );
 
 		try {
 			Telemetry.trackEvent( 'excerpt_generator_pressed' );
@@ -134,8 +136,8 @@ const PostExcerptGenerator = () => {
 		<div className="editor-post-excerpt" >
 			<div style={ { position: 'relative' } }>
 				{ isLoading && (
-					<div className={ 'editor-post-excerpt__spinner' + ( wordCount > 0 ? ' has-word-count' : '' ) }>
-						<Spinner />
+					<div className={ 'editor-post-excerpt__loading_animation' }>
+						<LoadingAnimation />
 					</div>
 				) }
 				<TextareaControl
@@ -143,27 +145,33 @@ const PostExcerptGenerator = () => {
 					label={ __( 'Write an excerpt (optional)', 'wp-parsely' ) }
 					className="editor-post-excerpt__textarea"
 					onChange={ ( value ) => editPost( { excerpt: value } ) }
-					disabled={ isLoading || hasGeneratedExcerpt }
-					value={ getExcerptTextareaValue() }
+					readOnly={ isLoading || hasGeneratedExcerpt }
+					value={ isLoading ? '' : getExcerptTextareaValue() }
 					help={ wordCount ? wordCountString : null }
 				/>
 			</div>
-			<ExternalLink
+			<Button
 				href={ __(
 					'https://wordpress.org/documentation/article/page-post-settings-sidebar/#excerpt',
 					'wp-parsely',
 				) }
+				target="_blank"
+				variant="link"
 			>
 				{ __( 'Learn more about manual excerpts', 'wp-parsely' ) }
-			</ExternalLink>
-
+				<Icon
+					icon={ external }
+					size={ 18 }
+					className="parsely-external-link-icon"
+				/>
+			</Button>
 			<div className="wp-parsely-excerpt-generator">
 				<div className="wp-parsely-excerpt-generator-header">
-					<LeafIcon size={ 20 } />
+					<LeafIcon size={ 16 } />
 					<div className="wp-parsely-excerpt-generator-header-label">
-						{ __( 'Parse.ly AI', 'wp-parsely' ) }
+						{ __( 'Generate With Parse.ly', 'wp-parsely' ) }
+						<span className="beta-label">{ __( 'Beta', 'wp-parsely' ) }</span>
 					</div>
-					<BetaBadge />
 				</div>
 				{ error && (
 					<Notice
@@ -198,13 +206,45 @@ const PostExcerptGenerator = () => {
 							isBusy={ isLoading }
 							disabled={ isLoading }
 						>
-							{ isLoading ? __( 'Generating…', 'wp-parsely' )
-								: __( 'Generate Excerpt', 'wp-parsely' ) }
+							{ isLoading && __( 'Generating Excerpt…', 'wp-parsely' ) }
+							{ ! isLoading && generatedExcerptCount > 0 && __( 'Regenerate Excerpt', 'wp-parsely' ) }
+							{ ! isLoading && generatedExcerptCount === 0 && __( 'Generate Excerpt', 'wp-parsely' ) }
 						</Button>
 					) }
 				</div>
+				<Button
+					href="https://docs.parse.ly/plugin-content-helper/#h-excerpt-generator-beta"
+					target="_blank"
+					variant="link"
+				>
+					{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
+					<Icon
+						icon={ external }
+						size={ 18 }
+						className="parsely-external-link-icon"
+					/>
+				</Button>
 			</div>
 		</div>
+	);
+};
+
+/**
+ * Component that renders a loading animation.
+ *
+ * @since 3.14.0
+ *
+ * @return {JSX.Element} The loading animation component.
+ */
+const LoadingAnimation = (): JSX.Element => {
+	return (
+		<Animate type="loading">
+			{ ( { className } ) => (
+				<span className={ className }>
+					{ __( 'Generating…', 'wp-parsely' ) }
+				</span>
+			) }
+		</Animate>
 	);
 };
 
