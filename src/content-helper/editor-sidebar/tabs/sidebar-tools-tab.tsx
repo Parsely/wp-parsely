@@ -16,6 +16,7 @@ import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { VerifyCredentials } from '../../common/verify-credentials';
 import { SidebarPostData } from '../editor-sidebar';
+import { RelatedPostsPanel } from '../related-posts/component';
 import { RelatedPostList } from '../related-posts/component-list';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from '../smart-linking/component';
 import { TitleSuggestionsPanel } from '../title-suggestions/component';
@@ -41,51 +42,6 @@ export const SidebarToolsTab = (
 	{ trackToggle }: Readonly<SidebarToolsTabProps>
 ): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
-
-	const [ postData, setPostData ] = useState<SidebarPostData>( {
-		authors: [], categories: [], tags: [],
-	} );
-
-	/**
-	 * Returns the current Post's ID, tags and categories.
-	 *
-	 * @since 3.11.0
-	 * @since 3.14.0 Moved from `editor-sidebar.tsx`
-	 */
-	const { authors, categories, tags } = useSelect( ( select ) => {
-		const { getEditedPostAttribute } = select( editorStore ) as GutenbergFunction;
-		const { getEntityRecords } = select( coreStore );
-
-		const authorRecords: User[] | null = getEntityRecords(
-			'root', 'user', { include: getEditedPostAttribute( 'author' ) }
-		);
-
-		const categoryRecords: Taxonomy[] | null = getEntityRecords(
-			'taxonomy', 'category', { include: getEditedPostAttribute( 'categories' ) }
-		);
-
-		const tagRecords: Taxonomy[]|null = getEntityRecords(
-			'taxonomy', 'post_tag', { include: getEditedPostAttribute( 'tags' ) }
-		);
-
-		return {
-			authors: authorRecords,
-			categories: categoryRecords,
-			tags: tagRecords,
-		};
-	}, [] );
-
-	useEffect( () => {
-		// Set the post data only when all required properties have become
-		// available.
-		if ( authors && categories && tags ) {
-			setPostData( {
-				authors: authors.map( ( a ) => a.name ),
-				categories: categories.map( ( c ) => c.name ),
-				tags: tags.map( ( t ) => t.name ),
-			} );
-		}
-	}, [ authors, categories, tags ] );
 
 	return (
 		<Panel>
@@ -136,11 +92,7 @@ export const SidebarToolsTab = (
 			>
 				{
 					<VerifyCredentials>
-						<RelatedPostList
-							metric={ settings.RelatedPostsMetric }
-							period={ settings.RelatedPostsPeriod }
-							postData={ postData }
-						/>
+						<RelatedPostsPanel />
 					</VerifyCredentials>
 				}
 			</PanelBody>

@@ -1,0 +1,202 @@
+@import "../../common/css/variables";
+@import "../../common/css/functions";
+
+.wp-parsely-related-posts {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+
+	.related-posts-description {
+		display: flex;
+		padding: 6px 0 var(--grid-unit-20, 16px) 0;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 10px;
+		align-self: stretch;
+		/* Helper Text */
+		color: var(--Gutenberg-Gray-700, #757575);
+		font-size: 12px;
+		font-style: normal;
+		font-weight: 400;
+		line-height: 16px; /* 133.333% */
+	}
+
+	.related-posts-body {
+		display: flex;
+		flex-direction: column;
+		padding: 6px 0 16px 0;
+		align-items: flex-start;
+		gap: 16px;
+		align-self: stretch;
+
+		> div {
+			width: 100%;
+		}
+
+		.related-posts-settings {
+			width: 100%;
+
+			.components-select-control {
+				display: flex;
+				align-items: flex-start;
+				gap: to_rem(16px);
+				align-self: stretch;
+			}
+
+			.components-input-control__prefix {
+				margin-left: to_rem(8px);
+			}
+
+			.components-input-control {
+				display: flex;
+				height: to_rem(36px);
+				padding: var(--grid-unit-15, 12px) var(--grid-unit-10, 8px) var(--grid-unit-15, 12px) var(--grid-unit-20, 16px);
+				align-items: center;
+				gap: var(--grid-unit-05, 4px);
+				align-self: stretch;
+			}
+		}
+
+		.related-posts-filter-settings {
+			display: flex;
+			flex-direction: column;
+			gap: var(--grid-unit-20, to_rem(16px));
+			width: 100%;
+
+			.related-posts-filter-types {
+				width: 100%;
+
+				.components-toggle-group-control {
+					height: 40px;
+				}
+			}
+
+			.related-posts-filter-values {
+				width: 100%;
+
+				.components-combobox-control__suggestions-container .components-flex {
+					height: 36px;
+
+					input {
+						margin: 0 var(--grid-unit-15, 12px);
+					}
+				}
+			}
+		}
+
+		.related-posts-wrapper {
+
+			.related-posts-descr {
+				font-size: 12px;
+				font-style: normal;
+				font-weight: 400;
+				line-height: 16px; /* 133.333% */
+			}
+
+			.related-posts-loading-message,
+			.related-posts-empty {
+				overflow: hidden;
+				color: var(--Gutenberg-Gray-900, #1E1E1E);
+				text-overflow: ellipsis;
+				font-size: 12px;
+				font-style: normal;
+				font-weight: 700;
+				line-height: 16px; /* 133.333% */
+			}
+		}
+
+		.related-posts-list {
+			display: flex;
+			padding: 6px 0 var(--grid-unit-20, 16px) 0;
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--grid-unit-20, 16px);
+			align-self: stretch;
+
+			.related-post-single {
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 4px;
+				align-self: stretch;
+
+				.related-post-title {
+					overflow: hidden;
+					text-overflow: ellipsis;
+					font-size: 12px;
+					font-style: normal;
+					font-weight: 700;
+					line-height: 16px; /* 133.333% */
+					text-decoration-line: underline;
+				}
+
+				.related-post-info {
+					display: flex;
+					align-items: flex-start;
+					gap: 8px;
+					align-self: stretch;
+
+					overflow: hidden;
+					text-overflow: ellipsis;
+					font-size: 12px;
+					font-style: normal;
+					font-weight: 400;
+					line-height: 16px; /* 133.333% */
+
+					.related-post-date {
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 1;
+						flex: 1 0 0;
+					}
+
+					.related-post-author {
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 1;
+						flex: 1 0 0;
+						text-align: right;
+					}
+				}
+
+				.related-post-links {
+					display: flex;
+					align-items: flex-start;
+					align-content: flex-start;
+					gap: 8px;
+					align-self: stretch;
+					flex-wrap: wrap;
+					font-size: 12px;
+					font-style: normal;
+					font-weight: 400;
+					line-height: 18px;
+					justify-content: space-between;
+
+					.parsely-post-metric-data {
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						gap: 4px;
+					}
+					.related-post-linked,
+					.related-post-metric,
+					.related-post-copy-url {
+						flex-grow: 1;
+						display: flex;
+						align-items: center;
+						gap: var(--grid-unit-05, 4px);
+						justify-content: center;
+					}
+
+					.related-post-linked {
+						justify-content: flex-start;
+					}
+
+					.related-post-copy-url {
+						justify-content: flex-end;
+					}
+				}
+			}
+		}
+	}
+}
