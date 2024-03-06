@@ -81,6 +81,62 @@ abstract class Metadata_Builder {
 	}
 
 	/**
+	 * Populates the @type field in the metadata object.
+	 *
+	 * @param WP_Post $post The post/page for which to populate the field.
+	 * @param string  $parsely_type Parse.ly post type. Can be 'post' or 'non-post'.
+	 *
+	 * @since 3.4.0
+	 * @since 3.14.0 Moved from `Post_Builder` to `Metadata_Builder`.
+	 */
+	protected function build_type( WP_Post $post, string $parsely_type ): void {
+		$default_type = 'post' === $parsely_type ? 'NewsArticle' : 'WebPage';
+
+		/**
+		 * Filters the JSON-LD @type.
+		 *
+		 * @since 2.5.0
+		 *
+		 * @param string $jsonld_type JSON-LD @type value, default is NewsArticle.
+		 * @param int $id Post ID.
+		 * @param string $post_type The Post type in WordPress.
+		 */
+		$type            = apply_filters( 'wp_parsely_post_type', $default_type, $post->ID, $post->post_type );
+		$supported_types = $this->parsely->get_all_supported_types();
+
+		// Validate type before passing it further as an invalid type will not be recognized by Parse.ly.
+		if ( ! in_array( $type, $supported_types, true ) ) {
+			$error = sprintf(
+			/* translators: 1: JSON @type like NewsArticle, 2: URL */
+				__( '@type %1$s is not supported by Parse.ly. Please use a type mentioned in %2$s', 'wp-parsely' ),
+				$type,
+				'https://docs.parse.ly/metadata-jsonld/#distinguishing-between-posts-and-non-posts-pages'
+			);
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error
+			trigger_error( esc_html( $error ), E_USER_WARNING );
+			$type = $default_type;
+		}
+
+		$this->metadata['@type'] = $type;
+	}
+
+	/**
+	 * Populates the mainEntityOfPage field in the metadata object.
+	 *
+	 * @param string $build_url_type Parse.ly post type to use for building the
+	 *                               URL. Can be 'post' or 'non-post'.
+	 *
+	 * @since 3.4.0
+	 * @since 3.14.0 Moved from `Post_Builder` to `Metadata_Builder`.
+	 */
+	protected function build_main_entity( string $build_url_type ): void {
+		$this->metadata['mainEntityOfPage'] = array(
+			'@type' => 'WebPage',
+			'@id'   => $this->get_current_url( $build_url_type ),
+		);
+	}
+
+	/**
 	 * Populates the author and creator fields in the metadata object.
 	 *
 	 * @since 3.4.0
@@ -100,6 +156,20 @@ abstract class Metadata_Builder {
 		}
 		$this->metadata['author']  = $author_objects;
 		$this->metadata['creator'] = $authors;
+	}
+
+	/**
+	 * Populates the publisher field in the metadata object.
+	 *
+	 * @since 3.4.0
+	 * @since 3.14.0 Moved from `Post_Builder` to `Metadata_Builder`.
+	 */
+	protected function build_publisher(): void {
+		$this->metadata['publisher'] = array(
+			'@type' => 'Organization',
+			'name'  => get_bloginfo( 'name' ),
+			'logo'  => $this->parsely->get_options()['logo'],
+		);
 	}
 
 	/**

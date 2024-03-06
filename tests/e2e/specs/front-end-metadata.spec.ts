@@ -82,7 +82,7 @@ describe( 'Front end metadata insertion', () => {
 		const content = await page.content();
 
 		expect( content ).toContain( '<script type="application/ld+json">' );
-		expect( content ).toContain( '{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"Sample Page","url":"http:\\/\\/localhost:8889\\/?page_id=2","thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"keywords":[],"' );
+		expect( content ).toContain( '{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"Sample Page","url":"http:\\/\\/localhost:8889\\/?page_id=2","mainEntityOfPage":{"@type":"WebPage","@id":"http:\\/\\/localhost:8889\\/?page_id=2"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"' );
 
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
