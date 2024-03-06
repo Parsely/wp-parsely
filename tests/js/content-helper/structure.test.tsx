@@ -17,34 +17,18 @@ import {
 } from '../../../src/content-helper/common/content-helper-error';
 import {
 	DASHBOARD_BASE_URL,
-	Metric,
-	Period,
 } from '../../../src/content-helper/common/utils/constants';
 import {
-	SidebarPostData,
-} from '../../../src/content-helper/editor-sidebar/editor-sidebar';
-import {
-	RelatedPostList,
-} from '../../../src/content-helper/editor-sidebar/related-posts/component-list';
+	RelatedPostsPanel,
+} from '../../../src/content-helper/editor-sidebar/related-posts/component';
 import {
 	GetRelatedPostsResult,
 	RELATED_POSTS_DEFAULT_LIMIT,
 	RelatedPostsProvider,
 } from '../../../src/content-helper/editor-sidebar/related-posts/provider';
 
-const postData: SidebarPostData = {
-	authors: [],
-	categories: [],
-	tags: [],
-};
-
 const relatedPostList =
-	<RelatedPostList
-		metric={ Metric.Views }
-		period={ Period.Days7 }
-		postData={ postData }
-	/>
-;
+	<RelatedPostsPanel />;
 
 describe( 'PCH Editor Sidebar Related Post panel', () => {
 	test( 'should display spinner when starting', async () => {
@@ -221,6 +205,7 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 				title: `Title ${ i }`,
 				thumbnailUrl: `http://example.com/post-${ i }.jpg`,
 				url: `http://example.com/post-${ i }`,
+				rawURL: `http://example.com/post-${ i }`,
 				views: i,
 			} );
 		}

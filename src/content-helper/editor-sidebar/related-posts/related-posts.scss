@@ -13,12 +13,12 @@
 		align-items: flex-start;
 		gap: 10px;
 		align-self: stretch;
+
 		/* Helper Text */
-		color: var(--Gutenberg-Gray-700, #757575);
-		font-size: 12px;
+		font-size: 13px;
 		font-style: normal;
 		font-weight: 400;
-		line-height: 16px; /* 133.333% */
+		line-height: 20px; /* 153.846% */
 	}
 
 	.related-posts-body {
@@ -35,12 +35,25 @@
 
 		.related-posts-settings {
 			width: 100%;
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+			align-self: stretch;
+
+			.components-base-control__field {
+				margin-bottom: 0;
+			}
 
 			.components-select-control {
 				display: flex;
 				align-items: flex-start;
 				gap: to_rem(16px);
 				align-self: stretch;
+				height: 36px;
+
+				.components-input-control__container {
+					padding: to_rem(3px);
+				}
 			}
 
 			.components-input-control__prefix {
@@ -87,16 +100,16 @@
 		.related-posts-wrapper {
 
 			.related-posts-descr {
-				font-size: 12px;
+				font-size: 13px;
 				font-style: normal;
 				font-weight: 400;
-				line-height: 16px; /* 133.333% */
+				line-height: 20px; /* 153.846% */
 			}
 
 			.related-posts-loading-message,
 			.related-posts-empty {
 				overflow: hidden;
-				color: var(--Gutenberg-Gray-900, #1E1E1E);
+				color: var(--Gutenberg-Gray-900, #1e1e1e);
 				text-overflow: ellipsis;
 				font-size: 12px;
 				font-style: normal;
@@ -117,83 +130,84 @@
 				display: flex;
 				flex-direction: column;
 				align-items: flex-start;
-				gap: 4px;
 				align-self: stretch;
+				border-radius: 2px;
+				border: 1px solid var(--Gutenberg-Gray-400, #ccc);
 
 				.related-post-title {
+					display: flex;
+					padding: var(--grid-unit-20, 16px);
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					gap: 8px;
+					align-self: stretch;
 					overflow: hidden;
 					text-overflow: ellipsis;
-					font-size: 12px;
+					font-size: 14px;
 					font-style: normal;
-					font-weight: 700;
-					line-height: 16px; /* 133.333% */
+					font-weight: 600;
+					line-height: 20px; /* 142.857% */
 					text-decoration-line: underline;
 				}
 
-				.related-post-info {
+				.related-post-actions {
 					display: flex;
-					align-items: flex-start;
-					gap: 8px;
-					align-self: stretch;
-
-					overflow: hidden;
-					text-overflow: ellipsis;
-					font-size: 12px;
-					font-style: normal;
-					font-weight: 400;
-					line-height: 16px; /* 133.333% */
-
-					.related-post-date {
-						display: -webkit-box;
-						-webkit-box-orient: vertical;
-						-webkit-line-clamp: 1;
-						flex: 1 0 0;
-					}
-
-					.related-post-author {
-						display: -webkit-box;
-						-webkit-box-orient: vertical;
-						-webkit-line-clamp: 1;
-						flex: 1 0 0;
-						text-align: right;
-					}
-				}
-
-				.related-post-links {
-					display: flex;
-					align-items: flex-start;
-					align-content: flex-start;
-					gap: 8px;
+					padding: 0 8px;
+					align-items: center;
+					gap: 16px;
 					align-self: stretch;
 					flex-wrap: wrap;
-					font-size: 12px;
-					font-style: normal;
-					font-weight: 400;
-					line-height: 18px;
-					justify-content: space-between;
+					border-top: 1px solid var(--Gutenberg-Gray-400, #ccc);
 
-					.parsely-post-metric-data {
+					.related-post-info {
 						display: flex;
-						align-items: center;
-						justify-content: center;
-						gap: 4px;
-					}
-					.related-post-linked,
-					.related-post-metric,
-					.related-post-copy-url {
 						flex-grow: 1;
-						display: flex;
+						gap: 8px;
 						align-items: center;
-						gap: var(--grid-unit-05, 4px);
-						justify-content: center;
-					}
 
-					.related-post-linked {
-						justify-content: flex-start;
-					}
+						> div:first-child {
+							flex: 1;
+							display: flex;
+							gap: 8px;
+						}
 
-					.related-post-copy-url {
-						justify-content: flex-end;
+						> div:last-child {
+							display: flex;
+							gap: 8px;
+						}
+
+						.related-post-metric {
+							display: flex;
+							align-items: center;
+
+							.parsely-post-metric-data {
+								display: flex;
+								align-items: center;
+								gap: 4px;
+							}
+						}
+
+						.related-post-linked {
+							display: flex;
+							align-items: center;
+							margin-left: auto;
+							fill: #008a20;
+						}
+
+						.wp-parsely-icon {
+
+							path {
+								fill: #1e1e1e;
+							}
+
+							&:hover {
+
+								path {
+									fill: #0073aa;
+								}
+							}
+						}
 					}
 				}
 			}

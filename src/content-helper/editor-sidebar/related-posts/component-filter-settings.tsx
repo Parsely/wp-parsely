@@ -1,18 +1,39 @@
+/**
+ * WordPress dependencies
+ */
 import {
 	__experimentalToggleGroupControl as ToggleGroupControl,
-	__experimentalToggleGroupControlOption as ToggleGroupControlOption, ComboboxControl
-} from "@wordpress/components";
-import { ComboboxControlOption } from "@wordpress/components/build-types/combobox-control/types";
+	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
+	ComboboxControl,
+} from '@wordpress/components';
+import { ComboboxControlOption } from '@wordpress/components/build-types/combobox-control/types';
 import { __ } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
 import { PostFilter, PostFilterType } from '../../common/utils/constants';
 import { SidebarPostData } from '../editor-sidebar';
 
+/**
+ * Defines the props structure for FilterTypes.
+ *
+ * @since 3.14.0
+ */
 type FilterTypesProps = {
 	filter: PostFilter;
 	label?: string;
 	onFilterTypeChange: ( selection: string ) => void;
 	postData: SidebarPostData;
-}
+};
+
+/**
+ * Returns the filter types ToggleGroupControl component.
+ *
+ * @since 3.14.0
+ *
+ * @param {FilterTypesProps} props The component's props.
+ */
 const FilterTypes = (
 	{ filter, label, postData, ...props }: Readonly<FilterTypesProps>
 ): JSX.Element => {
@@ -46,18 +67,30 @@ const FilterTypes = (
 	);
 };
 
+/**
+ * Defines the props structure for FilterValues.
+ *
+ * @since 3.14.0
+ */
 type FilterValuesProps = {
 	filter: PostFilter;
 	label?: string;
 	onFilterValueChange: ( selection: string | null | undefined ) => void;
 	postData: SidebarPostData;
 }
+
+/**
+ * Returns the filter values ComboboxControl component.
+ *
+ * @since 3.14.0
+ *
+ * @param {FilterValuesProps} props The component's props.
+ */
 const FilterValues = ( {
 	filter,
 	postData,
 	...props
-}: Readonly<FilterValuesProps>): JSX.Element => {
-
+}: Readonly<FilterValuesProps> ): JSX.Element => {
 	/**
 	 * Returns the options that will populate the ComboboxControl.
 	 *
@@ -99,6 +132,9 @@ const FilterValues = ( {
 	);
 };
 
+/**
+ * Defines the props structure for FilterControls.
+ */
 type FilterControlsProps = {
 	filter: PostFilter;
 	label?: string;
@@ -107,6 +143,13 @@ type FilterControlsProps = {
 	postData: SidebarPostData;
 }
 
+/**
+ * Returns the filter settings component.
+ *
+ * @since 3.14.0
+ *
+ * @param {FilterControlsProps} props The component's props.
+ */
 export const RelatedPostsFilterSettings = ( {
 	filter,
 	postData,

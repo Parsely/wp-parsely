@@ -2,22 +2,14 @@
  * WordPress dependencies
  */
 import { Panel, PanelBody } from '@wordpress/components';
-// eslint-disable-next-line import/named
-import { store as coreStore, Taxonomy, User } from '@wordpress/core-data';
-import { useSelect } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
-import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { VerifyCredentials } from '../../common/verify-credentials';
-import { SidebarPostData } from '../editor-sidebar';
 import { RelatedPostsPanel } from '../related-posts/component';
-import { RelatedPostList } from '../related-posts/component-list';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from '../smart-linking/component';
 import { TitleSuggestionsPanel } from '../title-suggestions/component';
 

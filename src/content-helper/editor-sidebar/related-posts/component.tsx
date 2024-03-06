@@ -1,15 +1,25 @@
-import './related-posts.scss';
-import { Button, SelectControl, Spinner } from '@wordpress/components';
+/**
+ * WordPress dependencies
+ */
+import { SelectControl } from '@wordpress/components';
+import { useDebounce } from '@wordpress/compose';
+// eslint-disable-next-line import/named
 import { store as coreStore, Taxonomy, User } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { store as editorStore } from '@wordpress/editor';
+import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { ContentHelperError } from '../../common/content-helper-error';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import {
-	getMetricDescription, getPeriodDescription,
+	getMetricDescription,
+	getPeriodDescription,
 	isInEnum,
 	Metric,
 	Period,
@@ -19,12 +29,17 @@ import {
 import { PostData } from '../../common/utils/post';
 import { SidebarPostData } from '../editor-sidebar';
 import { RelatedPostsFilterSettings } from './component-filter-settings';
-import { RelatedPostListItem } from './component-list-item';
+import { RelatedPostItem } from './component-item';
 import { RelatedPostsProvider } from './provider';
-import { store as editorStore } from '@wordpress/editor';
+import './related-posts.scss';
 
 const FETCH_RETRIES = 1;
 
+/**
+ * The Related Posts panel in the Editor Sidebar.
+ *
+ * @since 3.14.0
+ */
 export const RelatedPostsPanel = (): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
@@ -87,6 +102,13 @@ export const RelatedPostsPanel = (): JSX.Element => {
 		}
 	);
 
+	const [ postContent, setPostContent ] = useState<string|undefined>( undefined );
+	const debouncedSetPostContent = useDebounce( setPostContent, 1000 );
+	useSelect( ( select ) => {
+		const { getEditedPostContent } = select( 'core/editor' ) as GutenbergFunction;
+		debouncedSetPostContent( getEditedPostContent() );
+	}, [ debouncedSetPostContent ] );
+
 	/**
 	 * Updates all filter settings.
 	 *
@@ -104,33 +126,46 @@ export const RelatedPostsPanel = (): JSX.Element => {
 		} );
 	};
 
+	/**
+	 * Updates the metric setting.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @param {string} selection The new metric.
+	 */
 	const onMetricChange = ( selection: string ) => {
 		if ( isInEnum( selection, Metric ) ) {
 			setSettings( {
 				RelatedPostsMetric: selection as Metric,
 			} );
-			//trackSettingsChange( 'metric', { metric: selection } );
+			Telemetry.trackEvent( 'related_posts_metric_changed', { metric: selection } );
 		}
 	};
 
+	/**
+	 * Updates the period setting.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @param {string} selection The new period.
+	 */
 	const onPeriodChange = ( selection: string ) => {
 		if ( isInEnum( selection, Period ) ) {
 			setSettings( {
 				RelatedPostsPeriod: selection as Period,
 			} );
-			//trackSettingsChange( 'period', { period: selection } );
+			Telemetry.trackEvent( 'related_posts_period_changed', { period: selection } );
 		}
 	};
 
 	/**
 	 * Updates the filter type and sets its default value.
 	 *
-	 * @param {string} newFilterType The new filter type.
-	 *
 	 * @since 3.11.0
+	 *
+	 * @param {string} newFilterType The new filter type.
 	 */
 	const updateFilterType = ( newFilterType: string ): void => {
-		console.log( 'updateFilterType', newFilterType );
 		if ( isInEnum( newFilterType, PostFilterType ) ) {
 			let value = '';
 			const type = newFilterType as PostFilterType;
@@ -266,7 +301,7 @@ export const RelatedPostsPanel = (): JSX.Element => {
 	 * If the filter is by Section: "Top related posts in the [section_name] section in the [period]."
 	 * If the filter is by Tag: "Top related posts with the “[wp_term name]” tag in the [period]."
 	 *
-	 * @since 3.11.0
+	 * @since 3.14.0
 	 */
 	const getTopRelatedPostsMessage = (): string => {
 		if ( PostFilterType.Tag === filter.type ) {
@@ -296,12 +331,6 @@ export const RelatedPostsPanel = (): JSX.Element => {
 		// Fallback to the default message.
 		return message ?? '';
 	};
-
-	const spinner: JSX.Element = (
-		<div className="parsely-spinner-wrapper" data-testid="parsely-spinner-wrapper">
-			<Spinner />
-		</div>
-	);
 
 	return (
 		<div className="wp-parsely-related-posts">
@@ -349,12 +378,15 @@ export const RelatedPostsPanel = (): JSX.Element => {
 							{ getTopRelatedPostsMessage() }
 						</p>
 					</div>
+					{ error && (
+						error.Message()
+					) }
 					{ loading && (
 						<div className="related-posts-loading-message">
 							{ __( 'Loading …', 'wp-parsely' ) }
 						</div>
 					) }
-					{ ! loading && posts.length === 0 && (
+					{ ! loading && ! error && posts.length === 0 && (
 						<div className="related-posts-empty">
 							{ __( 'No related posts found.', 'wp-parsely' ) }
 						</div>
@@ -362,7 +394,12 @@ export const RelatedPostsPanel = (): JSX.Element => {
 					{ ! loading && posts.length > 0 && (
 						<div className="related-posts-list">
 							{ posts.map( ( post: PostData ) => (
-								<RelatedPostListItem key={ post.id } metric={ metric } post={ post } />
+								<RelatedPostItem
+									key={ post.id }
+									metric={ metric }
+									post={ post }
+									postContent={ postContent }
+								/>
 							) ) }
 						</div>
 					) }
