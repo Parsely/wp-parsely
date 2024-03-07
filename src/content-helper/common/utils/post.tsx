@@ -25,7 +25,7 @@ export interface PostData {
 	thumbnailUrl: string;
 	title: string;
 	url: string;
-	rawURL: string;
+	rawUrl: string;
 	views: number;
 }
 
