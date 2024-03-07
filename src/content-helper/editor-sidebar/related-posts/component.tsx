@@ -382,8 +382,11 @@ export const RelatedPostsPanel = (): JSX.Element => {
 						error.Message()
 					) }
 					{ loading && (
-						<div className="related-posts-loading-message">
-							{ __( 'Loading …', 'wp-parsely' ) }
+						<div
+							className="related-posts-loading-message"
+							data-testid="parsely-related-posts-loading-message"
+						>
+							{ __( 'Loading…', 'wp-parsely' ) }
 						</div>
 					) }
 					{ ! loading && ! error && posts.length === 0 && (
