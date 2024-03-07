@@ -89,10 +89,6 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 				'values'  => array( true, false ),
 				'default' => false,
 			),
-			'SmartLinkingSettingsOpen' => array(
-				'values'  => array( true, false ),
-				'default' => false,
-			),
 			'TitleSuggestionsSettings' => array(
 				'values'  => array(
 					'Open'       => array( true, false ),

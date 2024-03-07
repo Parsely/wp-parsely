@@ -17,7 +17,6 @@ export interface SidebarSettings {
 	SmartLinkingMaxLinks: number;
 	SmartLinkingMaxLinkWords: number;
 	SmartLinkingOpen: boolean;
-	SmartLinkingSettingsOpen: boolean;
 	TitleSuggestionsSettings: TitleSuggestionsSettings;
 }
 

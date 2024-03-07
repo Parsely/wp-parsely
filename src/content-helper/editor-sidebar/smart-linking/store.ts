@@ -11,7 +11,6 @@ import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
 import { LinkSuggestion } from './provider';
 
 export type SmartLinkingSettingsProps = {
-	settingsOpen?: boolean;
 	maxLinkWords?: number;
 	maxLinksPerPost?: number;
 };
@@ -26,6 +25,7 @@ type SmartLinkingState = {
 	settings: SmartLinkingSettingsProps;
 	suggestedLinks: LinkSuggestion[] | null;
 	overlayBlocks: string[];
+	wasAlreadyClicked: boolean;
 };
 
 /** Actions */
@@ -69,9 +69,14 @@ interface SetSuggestedLinksAction {
 	suggestedLinks: LinkSuggestion[] | null;
 }
 
+interface SetWasAlreadyClickedAction {
+	type: 'SET_WAS_ALREADY_CLICKED';
+	wasAlreadyClicked: boolean;
+}
+
 type ActionTypes = SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction |
 	AddOverlayBlockAction | RemoveOverlayBlockAction |SetFullContentAction |
-	SetSuggestedLinksAction | SetErrorAction;
+	SetSuggestedLinksAction | SetErrorAction| SetWasAlreadyClickedAction;
 
 const defaultState: SmartLinkingState = {
 	isLoading: false,
@@ -80,6 +85,7 @@ const defaultState: SmartLinkingState = {
 	error: null,
 	settings: { },
 	overlayBlocks: [],
+	wasAlreadyClicked: false,
 };
 
 /**
@@ -140,6 +146,11 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				return {
 					...state,
 					suggestedLinks: action.suggestedLinks,
+				};
+			case 'SET_WAS_ALREADY_CLICKED':
+				return {
+					...state,
+					wasAlreadyClicked: action.wasAlreadyClicked,
 				};
 			default:
 				return state;
@@ -204,18 +215,16 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				},
 			};
 		},
-		setSettingsOpen( settingsOpen: boolean ): SetSettingsAction {
-			return {
-				type: 'SET_SETTINGS',
-				settings: {
-					settingsOpen,
-				},
-			};
-		},
 		setSuggestedLinks( suggestedLinks: LinkSuggestion[] | null ): SetSuggestedLinksAction {
 			return {
 				type: 'SET_SUGGESTED_LINKS',
 				suggestedLinks,
+			};
+		},
+		setAlreadyClicked( wasAlreadyClicked: boolean ): SetWasAlreadyClickedAction {
+			return {
+				type: 'SET_WAS_ALREADY_CLICKED',
+				wasAlreadyClicked,
 			};
 		},
 	},
@@ -235,9 +244,6 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		getOverlayBlocks( state: SmartLinkingState ): string[] {
 			return state.overlayBlocks;
 		},
-		areSettingsOpen( state: SmartLinkingState ): boolean {
-			return state.settings.settingsOpen ?? false;
-		},
 		getMaxLinkWords( state: SmartLinkingState ): number {
 			return state.settings.maxLinkWords ?? DEFAULT_MAX_LINK_WORDS;
 		},
@@ -246,6 +252,9 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		},
 		getSuggestedLinks( state: SmartLinkingState ): LinkSuggestion[] | null {
 			return state.suggestedLinks;
+		},
+		wasAlreadyClicked( state: SmartLinkingState ): boolean {
+			return state.wasAlreadyClicked;
 		},
 	},
 } );
