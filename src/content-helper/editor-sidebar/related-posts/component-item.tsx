@@ -4,7 +4,7 @@
 import { Button, Dashicon, Rect, SVG, Tooltip } from '@wordpress/components';
 import { useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
-import { copySmall, external, Icon, link, seen } from '@wordpress/icons';
+import { Icon, copySmall, external, link, seen } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -34,7 +34,7 @@ export const RelatedPostItem = (
 
 	let isLinked = false;
 	if ( postContent ) {
-		isLinked = postContent.includes( post.rawURL );
+		isLinked = postContent.includes( post.rawUrl );
 	}
 
 	return (
@@ -88,7 +88,7 @@ export const RelatedPostItem = (
 							icon={ copySmall }
 							iconSize={ 24 }
 							onClick={ () => {
-								navigator.clipboard.writeText( post.rawURL ).then( () => {
+								navigator.clipboard.writeText( post.rawUrl ).then( () => {
 									createNotice(
 										'success',
 										__( 'URL copied to clipboard', 'wp-parsely' ),

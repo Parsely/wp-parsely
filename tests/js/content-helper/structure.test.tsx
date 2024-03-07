@@ -205,7 +205,7 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 				title: `Title ${ i }`,
 				thumbnailUrl: `http://example.com/post-${ i }.jpg`,
 				url: `http://example.com/post-${ i }`,
-				rawURL: `http://example.com/post-${ i }`,
+				rawUrl: `http://example.com/post-${ i }`,
 				views: i,
 			} );
 		}
