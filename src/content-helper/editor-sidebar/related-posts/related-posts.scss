@@ -81,6 +81,35 @@
 
 				.components-toggle-group-control {
 					height: 40px;
+
+					/**
+					 * Workaround for the ToggleGroupControl animation:
+					 * Prevents the animation from exiting the container.
+					 */
+					overflow: hidden;
+
+					/**
+					 * Workaround animation bug with ToggleGroupControl.
+					 * This works by setting the button background to transparent and
+					 * then setting the active item background to the sidebar black color.
+					 * The background should only pop-up as visible after 0.5s, therefore
+					 * hiding any janky animation.
+					 */
+					button {
+						background: transparent;
+						outline: transparent solid 2px;
+						outline-offset: -3px;
+
+						&[data-active-item] {
+							background: var(--sidebar-black, #1e1e1e);
+							transition:
+								background 0s 0.5s,
+								border-radius 0s 0.5s,
+								box-shadow 0s 0.5s;
+							box-shadow: 0 -3px 0 0 #fff, 0 3px 0 0 #fff;
+							border-radius: 3px;
+						}
+					}
 				}
 			}
 
