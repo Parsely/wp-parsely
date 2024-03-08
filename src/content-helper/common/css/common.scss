@@ -80,6 +80,7 @@
 		.components-panel__icon, svg {
 			order: -1;
 			margin-right: to_rem(8px);
+			margin-left: 0;
 		}
 
 		&:hover {
@@ -89,6 +90,10 @@
 
 	&.is-opened {
 		padding: 0;
+
+		> div:first-of-type {
+			margin-top: calc(-1 * var(--grid-unit-20, 16px));
+		}
 
 		.components-panel__body-title {
 			padding: var(--grid-unit-15, 12px) var(--grid-unit-20, 16px) var(--grid-unit-20, 16px) var(--grid-unit-20, 16px);

@@ -1,7 +1,11 @@
 /**
  * WordPress dependencies
  */
-import { Button, ButtonGroup } from '@wordpress/components';
+import {
+	__experimentalHeading as Heading,
+	Button,
+	Rect,
+	SVG, } from "@wordpress/components";
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import {
@@ -9,9 +13,9 @@ import {
 	closeSmall,
 	Icon,
 	pin,
-	reset,
-	undo,
-} from '@wordpress/icons';
+	reset, trash,
+	undo
+} from "@wordpress/icons";
 
 /**
  * Internal dependencies
@@ -30,6 +34,19 @@ interface TitleSuggestionProps {
 	type: TitleType,
 	isOriginal?: boolean,
 }
+
+/**
+ * Returns a vertical divider.
+ *
+ * @since 3.14.0
+ */
+const VerticalDivider = (): JSX.Element => {
+	return (
+		<SVG xmlns="http://www.w3.org/2000/svg" width="1" height="40" viewBox="0 0 1 40" fill="none">
+			<Rect width="1" height="40" fill="#cccccc" />
+		</SVG>
+	);
+};
 
 /**
  * Renders a single title suggestion.
@@ -120,42 +137,66 @@ export const TitleSuggestion = (
 				( props.isOriginal ? ' original-title' : '' ) +
 				( isPinned ? ' pinned-title' : '' )
 			}>
-				<div className="suggested-title">{ props.title.title }</div>
-
-				<ButtonGroup className="suggested-title-actions">
-					{ ( ! props.isOriginal ) && (
-						<>
-							<Button	variant="link" onClick={ onClickApply } disabled={ titleInUse } >
-								{ ( titleInUse )
-									? __( 'Applied', 'wp-parsely' )
-									: __( 'Apply', 'wp-parsely' )
-								}
-								<Icon size={ 18 } icon={ check } />
-							</Button>
-							<Button	variant="link" onClick={ onClickRemove } >
-								{ __( 'Discard', 'wp-parsely' ) }
-								<Icon size={ 18 } icon={ closeSmall } />
-							</Button>
-							{ ( isPinned ) ? (
-								<Button	variant="link" onClick={ onClickPin } >
-									{ __( 'Unpin', 'wp-parsely' ) }
-									<Icon size={ 18 } icon={ reset } />
-								</Button>
-							) : (
-								<Button	variant="link" onClick={ onClickPin } >
-									{ __( 'Pin', 'wp-parsely' ) }
-									<Icon size={ 18 } icon={ pin } />
-								</Button>
-							) }
-						</>
-					) }
+				<div className="suggested-title">
 					{ ( props.isOriginal ) && (
-						<Button	variant="link" onClick={ onClickRestore } >
-							{ __( 'Restore', 'wp-parsely' ) }
-							<Icon size={ 18 } icon={ undo } />
-						</Button>
+						<Heading
+							className="suggested-title-original"
+							level={ 3 }
+						>
+							{ __( 'Original', 'wp-parsely' ) }
+						</Heading>
 					) }
-				</ButtonGroup>
+					{ props.title.title }
+				</div>
+				<div className="suggested-title-actions">
+					<div className="suggested-title-actions-container">
+						{ ( props.isOriginal ) && (
+							<Button
+								onClick={ onClickRestore }
+								icon={ undo }
+								label={ __( 'Restore', 'wp-parsely' ) }
+							/>
+						) }
+						{ ( ! props.isOriginal ) && (
+							<>
+								<div className="suggested-title-actions-left">
+									<Button
+										onClick={ onClickApply }
+										disabled={ titleInUse }
+										icon={ check }
+										label={ ( titleInUse )
+											? __( 'Applied', 'wp-parsely' )
+											: __( 'Apply', 'wp-parsely' )
+										}
+									/>
+									{ ! isPinned && (
+										<Button
+											onClick={ onClickRemove }
+											icon={ trash }
+											label={ __( 'Remove', 'wp-parsely' ) }
+										/>
+									) }
+								</div>
+								<VerticalDivider />
+								<div className="suggested-title-actions-right">
+									{ ( isPinned ) ? (
+										<Button
+											onClick={ onClickPin }
+											icon={ reset }
+											label={ __( 'Unpin', 'wp-parsely' ) }
+										/>
+									) : (
+										<Button
+											onClick={ onClickPin }
+											icon={ pin }
+											label={ __( 'Pin', 'wp-parsely' ) }
+										/>
+									) }
+								</div>
+							</>
+						) }
+					</div>
+				</div>
 			</div>
 		</>
 	);
