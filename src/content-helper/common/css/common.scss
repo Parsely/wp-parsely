@@ -93,7 +93,7 @@
 		padding: 0;
 
 		> div:first-of-type {
-			margin-top: calc(-1 * var(--grid-unit-20, 16px));
+			margin-top: calc(-1 * var(--grid-unit-20, to_rem(16px)));
 		}
 
 		.components-panel__body-title {
