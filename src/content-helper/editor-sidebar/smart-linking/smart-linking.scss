@@ -53,39 +53,99 @@
 
 .wp-parsely-smart-linking {
 
+	/* Override the default block inspector styles for the panel. */
 	.components-panel__row {
 		flex-direction: column;
+		margin-bottom: 0;
 	}
 
-	.wp-parsely-smart-linking-text {
-		margin-bottom: to_rem(10px);
+	.components-base-control {
+		margin-bottom: 0;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		.components-panel__row {
+			margin-bottom: 0;
+		}
 	}
 
-	.wp-parsely-smart-linking-generate {
+	.smart-linking-text {
 		display: flex;
+		padding: to_rem(6px) 0 var(--grid-unit-20, to_rem(16px)) 0;
 		flex-direction: column;
-		align-items: center;
+		align-items: flex-start;
+		gap: to_rem(10px);
+		align-self: stretch;
+	}
 
-		button {
-			margin: to_rem(10px) 0;
-		}
+	.parsely-panel-settings-body {
 
-		.components-disabled .components-checkbox-control__label {
-			color: var(--gray-500);
-		}
+		.smart-linking-block-select {
+			display: flex;
+			padding: to_rem(6px) 0 var(--grid-unit-20, to_rem(16px)) 0;
+			flex-direction: column;
+			gap: to_rem(24px);
+			align-self: stretch;
 
-		.components-button {
-			width: fit-content;
-			margin-bottom: to_rem(10px);
-		}
+			.components-toggle-group-control {
+				height: 40px;
 
-		.components-base-control {
-			margin-bottom: 0 !important;
-			margin-top: to_rem(10px);
+				/**
+				 * Workaround for the ToggleGroupControl animation:
+				 * Prevents the animation from exiting the container.
+				 */
+				overflow: hidden;
 
-			.components-base-control__field {
-				display: flex;
+				/**
+				 * Workaround animation bug with ToggleGroupControl.
+				 * This works by setting the button background to transparent and
+				 * then setting the active item background to the sidebar black color.
+				 * The background should only pop-up as visible after 0.5s, therefore
+				 * hiding any janky animation.
+				 */
+				button {
+					background: transparent;
+					outline: transparent solid 2px;
+					outline-offset: -3px;
+
+					&[data-active-item] {
+						background: var(--sidebar-black, #1e1e1e);
+						transition:
+							background 0s 0.5s,
+							border-radius 0s 0.5s,
+							box-shadow 0s 0.5s;
+						box-shadow: 0 -3px 0 0 #fff, 0 3px 0 0 #fff;
+						border-radius: 3px;
+					}
+				}
 			}
+		}
+
+		.smart-linking-settings {
+			display: flex;
+			flex-direction: column;
+			gap: var(--grid-unit-20, to_rem(16px));
+			align-self: stretch;
+		}
+
+	}
+
+
+	.smart-linking-generate {
+		display: flex;
+		padding: to_rem(6px) 0 var(--grid-unit-20, to_rem(16px)) 0;
+		flex-direction: column;
+		align-self: stretch;
+
+		/* stylelint-disable-next-line no-descending-specificity */
+		button {
+			display: flex;
+			align-items: center;
+			align-self: stretch;
+			width: 100%;
+			justify-content: center;
 		}
 	}
 
