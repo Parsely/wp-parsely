@@ -181,3 +181,27 @@
 	}
 
 }
+
+.wp-parsely-suggested-title-modal {
+	display: flex;
+	width: to_rem(320px);
+	flex-direction: column;
+	align-items: flex-start;
+
+	h2 {
+		color: var(--sidebar-black, #1e1e1e);
+		font-size: 16px;
+		font-style: normal;
+		font-weight: 600;
+		line-height: 24px; /* 150% */
+	}
+
+	.suggested-title-modal-actions {
+		display: flex;
+		margin-top: to_rem(24px);
+		justify-content: flex-end;
+		align-items: center;
+		gap: var(--grid-unit-15, 12px);
+		align-self: stretch;
+	}
+}
