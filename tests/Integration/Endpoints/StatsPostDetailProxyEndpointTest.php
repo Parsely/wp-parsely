@@ -195,6 +195,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 						'url'        => 'https://example.com',
 						'views'      => '2,158',
 						'visitors'   => '1,537',
+						'rawUrl'     => 'https://example.com',
 					),
 				),
 			),

@@ -22,7 +22,7 @@ describe( 'PCH Editor Sidebar Related Posts panel', () => {
 	it( 'Should display an error when an invalid Site ID is provided', async () => {
 		await setSiteKeys( INVALID_SITE_ID, VALID_API_SECRET );
 
-		expect( await getRelatedPostsMessage( '', '', 'author', 500, '.parsely-related-posts-descr' ) )
+		expect( await getRelatedPostsMessage( '', '', 'author', 500, '.content-helper-error-message' ) )
 			.toMatch( 'Error: Forbidden' );
 	} );
 
@@ -63,6 +63,6 @@ describe( 'PCH Editor Sidebar Related Posts panel', () => {
 	it( 'Should not display a "Contact Us" message when both the Site ID and API Secret are provided', async () => {
 		await setSiteKeys( VALID_SITE_ID, VALID_API_SECRET );
 
-		expect( await getRelatedPostsMessage( '', '', 'author', 500, '.parsely-related-posts-descr' ) ).not.toMatch( contactMessage );
+		expect( await getRelatedPostsMessage( '', '', 'author', 500, '.related-posts-descr' ) ).not.toMatch( contactMessage );
 	} );
 } );

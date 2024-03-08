@@ -23,7 +23,7 @@ const pluginButton = 'button[aria-label="Parse.ly"]';
  * Tests for the PCH Editor Sidebar top bar icon.
  */
 describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => {
-	const noRelatedPostsMessage = 'No related posts by author "admin" were found for the specified period and metric.';
+	const noRelatedPostsMessage = 'No related posts found.';
 	const emptyCredentialsMessage = 'Contact us about advanced plugin features and the Parse.ly dashboard.Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in wp-parsely options.';
 
 	/**
@@ -60,7 +60,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	it( 'Should be displayed when both the Site ID and API Secret are provided', async () => {
 		expect( await testContentHelperIcon(
 			VALID_SITE_ID, VALID_API_SECRET,
-			'.parsely-related-posts-descr'
+			'.related-posts-empty'
 		) )
 			.toMatch( noRelatedPostsMessage );
 	} );

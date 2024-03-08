@@ -25,6 +25,7 @@ export interface PostData {
 	thumbnailUrl: string;
 	title: string;
 	url: string;
+	rawUrl: string;
 	views: number;
 }
 
@@ -36,6 +37,7 @@ export interface PostData {
 export interface PostListItemProps {
 	metric: Metric;
 	post: PostData;
+	postContent?: string;
 }
 
 /**

@@ -17,34 +17,17 @@ import {
 } from '../../../src/content-helper/common/content-helper-error';
 import {
 	DASHBOARD_BASE_URL,
-	Metric,
-	Period,
 } from '../../../src/content-helper/common/utils/constants';
 import {
-	SidebarPostData,
-} from '../../../src/content-helper/editor-sidebar/editor-sidebar';
-import {
-	RelatedPostList,
-} from '../../../src/content-helper/editor-sidebar/related-posts/component-list';
+	RelatedPostsPanel,
+} from '../../../src/content-helper/editor-sidebar/related-posts/component';
 import {
 	GetRelatedPostsResult,
 	RELATED_POSTS_DEFAULT_LIMIT,
 	RelatedPostsProvider,
 } from '../../../src/content-helper/editor-sidebar/related-posts/provider';
 
-const postData: SidebarPostData = {
-	authors: [],
-	categories: [],
-	tags: [],
-};
-
-const relatedPostList =
-	<RelatedPostList
-		metric={ Metric.Views }
-		period={ Period.Days7 }
-		postData={ postData }
-	/>
-;
+const relatedPostsPanel = <RelatedPostsPanel />;
 
 describe( 'PCH Editor Sidebar Related Post panel', () => {
 	test( 'should display spinner when starting', async () => {
@@ -54,12 +37,12 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( relatedPostList );
-			expect( getSpinner() ).toBeInTheDocument();
+			render( relatedPostsPanel );
+			expect( getLoadingMessage() ).toBeInTheDocument();
 		} );
 
 		expect( getRelatedPostsFn ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
+		expect( getLoadingMessage() ).toBeNull();
 	} );
 
 	test( 'should show contact us message when Parse.ly Site ID is not set', async () => {
@@ -112,17 +95,17 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( relatedPostList );
-			expect( getSpinner() ).toBeInTheDocument();
+			render( relatedPostsPanel );
+			expect( getLoadingMessage() ).toBeInTheDocument();
 		} );
 
 		expect( getRelatedPostsFn ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
+		expect( getLoadingMessage() ).toBeNull();
 
-		const topPostDesc = getTopPostDesc();
-		expect( topPostDesc ).toBeInTheDocument();
-		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc?.textContent ).toEqual( 'The Parse.ly API did not return any results for posts by "author".' );
+		const relatedPostDescr = getRelatedPostDescr();
+		expect( relatedPostDescr ).toBeInTheDocument();
+		expect( relatedPostDescr ).toBeVisible();
+		expect( relatedPostDescr?.textContent ).toEqual( 'The Parse.ly API did not return any results for posts by "author".' );
 	} );
 
 	test( 'should show a single post with description and proper attributes', async () => {
@@ -132,40 +115,37 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( relatedPostList );
-			expect( getSpinner() ).toBeInTheDocument();
+			render( relatedPostsPanel );
+			expect( getLoadingMessage() ).toBeInTheDocument();
 		} );
 
 		expect( getRelatedPostsFn ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
+		expect( getLoadingMessage() ).toBeNull();
 
-		const topPostDesc = getTopPostDesc();
-		expect( topPostDesc ).toBeInTheDocument();
-		expect( topPostDesc ).toBeVisible();
-		expect( topPostDesc?.textContent ).toEqual( `Posts in category "Developers" in last 7 days.` );
+		const relatedPostDescr = getRelatedPostDescr();
+		expect( relatedPostDescr ).toBeInTheDocument();
+		expect( relatedPostDescr ).toBeVisible();
+		expect( relatedPostDescr?.textContent ).toEqual( `Posts in category "Developers" in last 7 days.` );
 
-		const topPosts = getTopPosts();
-		expect( topPosts.length ).toEqual( 1 );
+		const relatedPosts = getRelatedPosts();
+		expect( relatedPosts.length ).toEqual( 1 );
+		const firstPost = relatedPosts[ 0 ];
 
-		// test post attributes
-		const firstTopPost = topPosts[ 0 ];
-		const statsLink = firstTopPost.querySelector( '.parsely-related-post-stats-link' );
-		const viewPostLink = firstTopPost.querySelector( '.parsely-related-post-view-link' );
-		const editPostLink = firstTopPost.querySelector( '.parsely-related-post-edit-link' );
-
-		expect( statsLink?.getAttribute( 'href' ) ).toEqual( `${ DASHBOARD_BASE_URL }/example.com/post-1` );
-		expect( statsLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( statsLink?.childNodes[ 0 ].textContent ).toEqual( 'View in Parse.ly (opens new tab)' );
-		expect( statsLink?.childNodes[ 1 ].textContent ).toEqual( 'Title 1' );
+		// Post title that links to the post in the website.
+		const viewPostLink = firstPost.querySelector( 'div.related-post-title a' );
 		expect( viewPostLink?.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
 		expect( viewPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( viewPostLink?.childNodes[ 0 ].textContent ).toEqual( 'View Post (opens new tab)' );
-		expect( editPostLink?.getAttribute( 'href' ) ).toEqual( '/wp-admin/post.php?post=1&action=edit' );
-		expect( editPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( editPostLink?.childNodes[ 0 ].textContent ).toEqual( 'Edit Post (opens new tab)' );
-		expect( firstTopPost.querySelector( '.parsely-related-post-date' )?.childNodes[ 1 ].textContent ).toEqual( 'Jan 1, 2022' );
-		expect( firstTopPost.querySelector( '.parsely-related-post-author' )?.childNodes[ 1 ].textContent ).toEqual( 'Name 1' );
-		expect( firstTopPost.querySelector( '.parsely-post-metric-data' )?.childNodes[ 2 ].textContent ).toEqual( '1' );
+		expect( viewPostLink?.childNodes[ 0 ].textContent ).toEqual( 'View on website (opens new tab)' );
+
+		// Parse.ly icon that links to the post in the Parse.ly dashboard.
+		const viewInDashLink = firstPost.querySelector( 'div.related-post-info > div:nth-child(3) > a:nth-child(2)' );
+		expect( viewInDashLink?.getAttribute( 'href' ) ).toEqual( `${ DASHBOARD_BASE_URL }/example.com/post-1` );
+		expect( viewInDashLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
+		expect( viewInDashLink?.getAttribute( 'aria-label' ) ).toEqual( 'View in Parse.ly' );
+
+		// Copy URL button that copies the post's URL to the clipboard.
+		const copyUrlButton = firstPost.querySelector( 'div.related-post-info > div:nth-child(3) > button' );
+		expect( copyUrlButton?.getAttribute( 'aria-label' ) ).toEqual( 'Copy URL to clipboard' );
 	} );
 
 	test( 'should show 5 posts by default', async () => {
@@ -175,26 +155,26 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		} ) );
 
 		await waitFor( async () => {
-			render( relatedPostList );
-			expect( getSpinner() ).toBeInTheDocument();
+			render( relatedPostsPanel );
+			expect( getLoadingMessage() ).toBeInTheDocument();
 		} );
 
 		expect( getRelatedPostsFn ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
-		expect( getTopPostDesc()?.textContent ).toEqual( `Posts with tag "Developers" in last 7 days.` );
-		expect( getTopPosts().length ).toEqual( 5 );
+		expect( getLoadingMessage() ).toBeNull();
+		expect( getRelatedPostDescr()?.textContent ).toEqual( `Posts with tag "Developers" in last 7 days.` );
+		expect( getRelatedPosts().length ).toEqual( 5 );
 	} );
 
-	function getSpinner() {
-		return screen.queryByTestId( 'parsely-spinner-wrapper' );
+	function getLoadingMessage() {
+		return screen.queryByTestId( 'parsely-related-posts-loading-message' );
 	}
 
-	function getTopPostDesc() {
+	function getRelatedPostDescr() {
 		return screen.queryByTestId( 'parsely-related-posts-descr' );
 	}
 
-	function getTopPosts() {
-		return screen.queryAllByTestId( 'parsely-related-post' );
+	function getRelatedPosts() {
+		return screen.queryAllByTestId( 'related-post-single' );
 	}
 
 	function getCredentialsNotSetMessage() {
@@ -221,6 +201,7 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 				title: `Title ${ i }`,
 				thumbnailUrl: `http://example.com/post-${ i }.jpg`,
 				url: `http://example.com/post-${ i }`,
+				rawUrl: `http://example.com/post-${ i }`,
 				views: i,
 			} );
 		}
@@ -229,13 +210,13 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 	}
 
 	async function verifyCredentialsNotSetMessage( getRelatedPostsFn: jest.SpyInstance<Promise<GetRelatedPostsResult>> ) {
-		render( relatedPostList );
-		expect( getSpinner() ).toBeInTheDocument();
+		render( relatedPostsPanel );
+		expect( getLoadingMessage() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'empty-credentials-message' ), { timeout: 3000 } );
 
 		expect( getRelatedPostsFn ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
+		expect( getLoadingMessage() ).toBeNull();
 
 		const contactUsMessage = getCredentialsNotSetMessage();
 		expect( contactUsMessage ).toBeInTheDocument();
@@ -245,13 +226,13 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 	}
 
 	async function verifyApiErrorMessage( getRelatedPostsFn: jest.SpyInstance<Promise<GetRelatedPostsResult>> ) {
-		render( relatedPostList );
-		expect( getSpinner() ).toBeInTheDocument();
+		render( relatedPostsPanel );
+		expect( getLoadingMessage() ).toBeInTheDocument();
 
 		await waitFor( () => screen.findByTestId( 'error' ), { timeout: 3000 } );
 
 		expect( getRelatedPostsFn ).toHaveBeenCalled();
-		expect( getSpinner() ).toBeNull();
+		expect( getLoadingMessage() ).toBeNull();
 
 		const apiError = screen.queryByTestId( 'error' );
 		expect( apiError ).toBeInTheDocument();

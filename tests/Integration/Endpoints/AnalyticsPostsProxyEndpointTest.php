@@ -242,6 +242,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 						'url'          => 'https://blog.parse.ly/web-analytics-software-tools/?itm_source=wp-parsely-content-helper',
 						'views'        => '142',
 						'postId'       => 0,
+						'rawUrl'       => 'https://blog.parse.ly/web-analytics-software-tools/',
 					),
 					(object) array(
 						'author'       => 'Stephanie Schwartz and Andrew Butler',
@@ -253,6 +254,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 						'url'          => 'https://blog.parse.ly/5-tagging-best-practices-content-strategy/?itm_source=wp-parsely-content-helper',
 						'views'        => '40',
 						'postId'       => 0,
+						'rawUrl'       => 'https://blog.parse.ly/5-tagging-best-practices-content-strategy/',
 					),
 				),
 			),
