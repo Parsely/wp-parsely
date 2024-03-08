@@ -25,7 +25,7 @@ type TitleSuggestionsProps = {
 };
 
 /**
- * Renders the Title Suggestions collapsable panel.
+ * Renders the Title Suggestions collapsible panel.
  *
  * @since 3.14.0
  *
@@ -38,6 +38,11 @@ export const TitleSuggestions = ( {
 }: Readonly<TitleSuggestionsProps> ): JSX.Element => {
 	const [ isCollapsed, setIsCollapsed ] = useState<boolean>( isOpen );
 
+	/**
+	 * Toggles the collapse state of the panel.
+	 *
+	 * @since 3.14.0
+	 */
 	const toggleCollapse = () => {
 		setIsCollapsed( ! isCollapsed );
 		Telemetry.trackEvent( 'title_suggestions_toggle', {
@@ -49,7 +54,7 @@ export const TitleSuggestions = ( {
 	return (
 		<Panel className="wp-parsely-title-suggestions">
 			<PanelBody
-				className="wp-parsely-collapsable-panel"
+				className="wp-parsely-collapsible-panel"
 				title={ __( 'Suggestions', 'wp-parsely' ) }
 				icon={ <AiIcon className="components-panel__icon" /> }
 				onToggle={ toggleCollapse }

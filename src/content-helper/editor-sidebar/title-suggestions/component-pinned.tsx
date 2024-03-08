@@ -36,6 +36,11 @@ export const PinnedTitleSuggestions = ( {
 }: Readonly<PinnedTitleSuggestionsProps> ): JSX.Element => {
 	const [ isCollapsed, setIsCollapsed ] = useState<boolean>( isOpen );
 
+	/**
+	 * Toggles the collapse state of the panel.
+	 *
+	 * @since 3.14.0
+	 */
 	const toggleCollapse = () => {
 		setIsCollapsed( ! isCollapsed );
 		Telemetry.trackEvent( 'title_suggestions_pinned_toggle', {
@@ -47,7 +52,7 @@ export const PinnedTitleSuggestions = ( {
 	return (
 		<Panel className="wp-parsely-pinned-suggestions">
 			<PanelBody
-				className="wp-parsely-collapsable-panel"
+				className="wp-parsely-collapsible-panel"
 				icon={ pinSmall }
 				title={ __( 'Pinned', 'wp-parsely' ) }
 				onToggle={ toggleCollapse }

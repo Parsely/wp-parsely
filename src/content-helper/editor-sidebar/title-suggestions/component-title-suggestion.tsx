@@ -88,6 +88,11 @@ export const TitleSuggestion = (
 	// Flag if the current title has been accepted and applied to the post.
 	const titleInUse = currentPostTitle === props.title.title;
 
+	/**
+	 * Handles the click event for the Apply button.
+	 *
+	 * @since 3.14.0
+	 */
 	const onClickApply = () => {
 		if ( titleInUse ) {
 			return;
@@ -96,6 +101,11 @@ export const TitleSuggestion = (
 		openModal();
 	};
 
+	/**
+	 * Handles the click event for the Replace button.
+	 *
+	 * @since 3.14.0
+	 */
 	const onClickReplace = async () => {
 		if ( titleInUse ) {
 			return;
@@ -110,6 +120,11 @@ export const TitleSuggestion = (
 		closeModal();
 	};
 
+	/**
+	 * Handles the click event for the Pin button.
+	 *
+	 * @since 3.14.0
+	 */
 	const onClickPin = async () => {
 		Telemetry.trackEvent( 'title_suggestion_pinned', {
 			pinned: ! isPinned,
@@ -123,6 +138,11 @@ export const TitleSuggestion = (
 		}
 	};
 
+	/**
+	 * Handles the click event for the Remove button.
+	 *
+	 * @since 3.14.0
+	 */
 	const onClickRemove = async () => {
 		Telemetry.trackEvent( 'title_suggestion_removed', {
 			type: props.type,
@@ -131,6 +151,11 @@ export const TitleSuggestion = (
 		await removeTitle( props.type, props.title );
 	};
 
+	/**
+	 * Handles the click event for the Restore button.
+	 *
+	 * @since 3.14.0
+	 */
 	const onClickRestore = async () => {
 		Telemetry.trackEvent( 'title_suggestion_restored', {
 			type: props.type,
