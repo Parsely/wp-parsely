@@ -46,10 +46,9 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 		'SmartLinkingMaxLinkWords' => 4,
 		'SmartLinkingOpen'         => false,
 		'TitleSuggestionsSettings' => array(
-			'Open'       => false,
-			'Persona'    => 'journalist',
-			'PinnedOpen' => true,
-			'Tone'       => 'neutral',
+			'Open'    => false,
+			'Persona' => 'journalist',
+			'Tone'    => 'neutral',
 		),
 	);
 

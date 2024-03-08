@@ -10,7 +10,6 @@ import { __ } from '@wordpress/i18n';
  */
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { AiIcon } from '../../common/icons/ai-icon';
-import { TitleSuggestionsSettings } from '../../common/settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { Title, TitleType } from './store';
 
@@ -22,7 +21,6 @@ import { Title, TitleType } from './store';
 type TitleSuggestionsProps = {
 	suggestions: Title[];
 	isOpen: boolean;
-	onSettingChange: ( key: keyof TitleSuggestionsSettings, value: string|boolean ) => void;
 	isLoading?: boolean;
 };
 
@@ -36,14 +34,12 @@ type TitleSuggestionsProps = {
 export const TitleSuggestions = ( {
 	suggestions,
 	isOpen,
-	onSettingChange,
 	isLoading = false,
 }: Readonly<TitleSuggestionsProps> ): JSX.Element => {
 	const [ isCollapsed, setIsCollapsed ] = useState<boolean>( isOpen );
 
 	const toggleCollapse = () => {
 		setIsCollapsed( ! isCollapsed );
-		onSettingChange( 'SuggestionsOpen', ! isCollapsed );
 		Telemetry.trackEvent( 'title_suggestions_toggle', {
 			isOpen: ! isCollapsed,
 

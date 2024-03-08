@@ -10,7 +10,6 @@ import { pinSmall } from '@wordpress/icons';
  * Internal dependencies
  */
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { TitleSuggestionsSettings } from '../../common/settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { Title, TitleType } from './store';
 
@@ -22,7 +21,6 @@ import { Title, TitleType } from './store';
 type PinnedTitleSuggestionsProps = {
 	pinnedTitles: Title[];
 	isOpen: boolean;
-	onSettingChange: ( key: keyof TitleSuggestionsSettings, value: string|boolean ) => void;
 };
 
 /**
@@ -35,13 +33,11 @@ type PinnedTitleSuggestionsProps = {
 export const PinnedTitleSuggestions = ( {
 	pinnedTitles,
 	isOpen,
-	onSettingChange,
 }: Readonly<PinnedTitleSuggestionsProps> ): JSX.Element => {
 	const [ isCollapsed, setIsCollapsed ] = useState<boolean>( isOpen );
 
 	const toggleCollapse = () => {
 		setIsCollapsed( ! isCollapsed );
-		onSettingChange( 'PinnedOpen', ! isCollapsed );
 		Telemetry.trackEvent( 'title_suggestions_pinned_toggle', {
 			isOpen: ! isCollapsed,
 			pinnedTitles: pinnedTitles.length,

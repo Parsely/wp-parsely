@@ -87,8 +87,6 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			Open: false,
 			Tone: 'neutral',
 			Persona: 'journalist',
-			PinnedOpen: true,
-			SuggestionsOpen: true,
 		},
 	};
 
@@ -159,12 +157,6 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 	if ( typeof mergedSettings.TitleSuggestionsSettings.Persona !== 'string' ) {
 		mergedSettings.TitleSuggestionsSettings.Persona = defaultSettings.TitleSuggestionsSettings.Persona;
-	}
-	if ( typeof mergedSettings.TitleSuggestionsSettings.PinnedOpen !== 'boolean' ) {
-		mergedSettings.TitleSuggestionsSettings.PinnedOpen = defaultSettings.TitleSuggestionsSettings.PinnedOpen;
-	}
-	if ( typeof mergedSettings.TitleSuggestionsSettings.SuggestionsOpen !== 'boolean' ) {
-		mergedSettings.TitleSuggestionsSettings.SuggestionsOpen = defaultSettings.TitleSuggestionsSettings.SuggestionsOpen;
 	}
 
 	return mergedSettings;

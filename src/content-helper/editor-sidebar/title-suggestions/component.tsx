@@ -262,15 +262,13 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 						{ pinnedTitles.length > 0 && (
 							<PinnedTitleSuggestions
 								pinnedTitles={ pinnedTitles }
-								onSettingChange={ onSettingChange }
-								isOpen={ settings.TitleSuggestionsSettings.PinnedOpen }
+								isOpen={ true }
 							/>
 						) }
 						{ titles.length > 0 && (
 							<TitleSuggestions
 								suggestions={ titles }
-								isOpen={ settings.TitleSuggestionsSettings.SuggestionsOpen }
-								onSettingChange={ onSettingChange }
+								isOpen={ true }
 								isLoading={ loading }
 							/>
 						) }
