@@ -3,7 +3,7 @@
  */
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { createInterpolateElement, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Icon, external } from '@wordpress/icons';
 
@@ -12,12 +12,13 @@ import { Icon, external } from '@wordpress/icons';
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { PersonaProp } from '../../common/components/persona-selector';
-import { ToneProp } from '../../common/components/tone-selector';
+import { getPersonaLabel, PersonaProp } from '../../common/components/persona-selector';
+import { getToneLabel, ToneProp } from '../../common/components/tone-selector';
 import { ContentHelperError } from '../../common/content-helper-error';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { PinnedTitleSuggestions } from './component-pinned';
 import { TitleSuggestionsSettings } from './component-settings';
+import { TitleSuggestions } from './component-suggestions';
 import { TitleSuggestion } from './component-title-suggestion';
 import { TitleSuggestionsProvider } from './provider';
 import { TitleStore, TitleType } from './store';
@@ -210,9 +211,27 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		<PanelRow>
 			<div className="wp-parsely-title-suggestions-wrapper">
 				<div className="title-suggestions-header">
-					{ __(
-						'Use Parse.ly AI to generate a title for your post.',
-						'wp-parsely'
+					{ allTitles.length > 0 ? (
+						<span className="parsely-write-titles-text">
+							{
+								createInterpolateElement(
+									// translators: %1$s is the tone, %2$s is the persona.
+									__(
+										"We've generated a few <tone/> titles based on the content of your post, written as a <persona/>.",
+										'wp-parsely'
+									),
+									{
+										tone: <strong>{ getToneLabel( tone ) }</strong>,
+										persona: <strong>{ getPersonaLabel( persona ) }</strong>,
+									}
+								)
+							}
+						</span>
+					) : (
+						__(
+							'Use Parse.ly AI to generate a title for your post.',
+							'wp-parsely'
+						)
 					) }
 					<Button
 						href="https://docs.parse.ly/plugin-content-helper/#h-title-suggestions-beta"
@@ -232,32 +251,27 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 						{ error.message }
 					</Notice>
 				) }
+				{ ( originalTitle !== undefined ) && (
+					<TitleSuggestion
+						title={ originalTitle }
+						type={ TitleType.PostTitle }
+						isOriginal={ true } />
+				) }
 				{ 0 < allTitles.length && (
 					<>
 						{ pinnedTitles.length > 0 && (
 							<PinnedTitleSuggestions
 								pinnedTitles={ pinnedTitles }
-								originalTitle={ originalTitle }
-								onSettingChange={ onSettingChange }
-								isOpen={ settings.TitleSuggestionsSettings.PinnedOpen }
+								isOpen={ true }
 							/>
 						) }
-						<div className="wp-parsely-title-suggestions-container">
-							{ ( originalTitle !== undefined ) && (
-								<TitleSuggestion
-									title={ originalTitle }
-									type={ TitleType.PostTitle }
-									isOriginal={ true } />
-							) }
-
-							{ titles.map( ( title ) => (
-								<TitleSuggestion
-									key={ title.id }
-									title={ title }
-									type={ TitleType.PostTitle } // Specify that the title is a post title.
-								/>
-							) ) }
-						</div>
+						{ titles.length > 0 && (
+							<TitleSuggestions
+								suggestions={ titles }
+								isOpen={ true }
+								isLoading={ loading }
+							/>
+						) }
 					</>
 				) }
 				<TitleSuggestionsSettings
