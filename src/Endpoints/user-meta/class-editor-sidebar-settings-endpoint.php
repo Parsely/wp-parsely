@@ -91,16 +91,14 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 			),
 			'TitleSuggestionsSettings' => array(
 				'values'  => array(
-					'Open'       => array( true, false ),
-					'Persona'    => array(),
-					'Tone'       => array(),
-					'PinnedOpen' => array( true, false ),
+					'Open'    => array( true, false ),
+					'Persona' => array(),
+					'Tone'    => array(),
 				),
 				'default' => array(
-					'Open'       => false,
-					'Persona'    => 'journalist',
-					'PinnedOpen' => true,
-					'Tone'       => 'neutral',
+					'Open'    => false,
+					'Persona' => 'journalist',
+					'Tone'    => 'neutral',
 				),
 			),
 		);

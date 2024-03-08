@@ -4,12 +4,12 @@
 import { Panel, PanelBody } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { pinSmall } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { TitleSuggestionsSettings } from '../../common/settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { Title, TitleType } from './store';
 
@@ -21,8 +21,6 @@ import { Title, TitleType } from './store';
 type PinnedTitleSuggestionsProps = {
 	pinnedTitles: Title[];
 	isOpen: boolean;
-	onSettingChange: ( key: keyof TitleSuggestionsSettings, value: string|boolean ) => void;
-	originalTitle: Title|undefined;
 };
 
 /**
@@ -35,13 +33,16 @@ type PinnedTitleSuggestionsProps = {
 export const PinnedTitleSuggestions = ( {
 	pinnedTitles,
 	isOpen,
-	onSettingChange,
 }: Readonly<PinnedTitleSuggestionsProps> ): JSX.Element => {
 	const [ isCollapsed, setIsCollapsed ] = useState<boolean>( isOpen );
 
+	/**
+	 * Toggles the collapse state of the panel.
+	 *
+	 * @since 3.14.0
+	 */
 	const toggleCollapse = () => {
 		setIsCollapsed( ! isCollapsed );
-		onSettingChange( 'PinnedOpen', ! isCollapsed );
 		Telemetry.trackEvent( 'title_suggestions_pinned_toggle', {
 			isOpen: ! isCollapsed,
 			pinnedTitles: pinnedTitles.length,
@@ -51,8 +52,9 @@ export const PinnedTitleSuggestions = ( {
 	return (
 		<Panel className="wp-parsely-pinned-suggestions">
 			<PanelBody
-				className="pinned-suggestions-body"
-				title={ __( 'Pinned Suggestions', 'wp-parsely' ) }
+				className="wp-parsely-collapsible-panel"
+				icon={ pinSmall }
+				title={ __( 'Pinned', 'wp-parsely' ) }
 				onToggle={ toggleCollapse }
 				opened={ isCollapsed }>
 				{ pinnedTitles.map( ( title ) => (
