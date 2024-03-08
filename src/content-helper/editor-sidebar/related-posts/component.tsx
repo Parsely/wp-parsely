@@ -54,7 +54,7 @@ export const RelatedPostsPanel = (): JSX.Element => {
 	 * Returns the current Post's ID, tags and categories.
 	 *
 	 * @since 3.11.0
-	 * @since 3.14.0 Moved from `editor-sidebar.tsx`
+	 * @since 3.14.0 Moved from `editor-sidebar.tsx`.
 	 */
 	const { authors, categories, tags } = useSelect( ( select ) => {
 		const { getEditedPostAttribute } = select( editorStore ) as GutenbergFunction;
@@ -298,7 +298,7 @@ export const RelatedPostsPanel = (): JSX.Element => {
 	 * Returns the top related posts message.
 	 *
 	 * If the filter is by Author: "Top related posts by [post_author] in the [period]."
-	 * If the filter is by Section: "Top related posts in the [section_name] section in the [period]."
+	 * If the filter is by Section: "Top related posts in the “[section_name]” section in the [period]."
 	 * If the filter is by Tag: "Top related posts with the “[wp_term name]” tag in the [period]."
 	 *
 	 * @since 3.14.0
@@ -315,7 +315,7 @@ export const RelatedPostsPanel = (): JSX.Element => {
 		if ( PostFilterType.Section === filter.type ) {
 			return sprintf(
 				/* translators: 1: section name, 2: period */
-				__( 'Top related posts in the %1$s section in the %2$s.', 'wp-parsely' ),
+				__( 'Top related posts in the “%1$s” section in the %2$s.', 'wp-parsely' ),
 				filter.value, getPeriodDescription( period, true )
 			);
 		}

@@ -135,19 +135,13 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		const viewPostLink = firstPost.querySelector( 'div.related-post-title a' );
 		expect( viewPostLink?.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
 		expect( viewPostLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( viewPostLink?.childNodes[ 0 ].textContent ).toEqual( 'View in Parse.ly (opens new tab)' );
+		expect( viewPostLink?.childNodes[ 0 ].textContent ).toEqual( 'View on website (opens new tab)' );
 
 		// Parse.ly icon that links to the post in the Parse.ly dashboard.
-		const viewInDashLink = firstPost.querySelector( 'div.related-post-info > div:nth-child(3) > a:nth-child(1)' );
+		const viewInDashLink = firstPost.querySelector( 'div.related-post-info > div:nth-child(3) > a:nth-child(2)' );
 		expect( viewInDashLink?.getAttribute( 'href' ) ).toEqual( `${ DASHBOARD_BASE_URL }/example.com/post-1` );
 		expect( viewInDashLink?.getAttribute( 'target' ) ).toEqual( '_blank' );
 		expect( viewInDashLink?.getAttribute( 'aria-label' ) ).toEqual( 'View in Parse.ly' );
-
-		// External link icon that links to the post in the website.
-		const viewPostIcon = firstPost.querySelector( 'div.related-post-info > div:nth-child(3) > a:nth-child(2)' );
-		expect( viewPostIcon?.getAttribute( 'href' ) ).toEqual( 'http://example.com/post-1' );
-		expect( viewPostIcon?.getAttribute( 'target' ) ).toEqual( '_blank' );
-		expect( viewPostIcon?.getAttribute( 'aria-label' ) ).toEqual( 'View on website' );
 
 		// Copy URL button that copies the post's URL to the clipboard.
 		const copyUrlButton = firstPost.querySelector( 'div.related-post-info > div:nth-child(3) > button' );

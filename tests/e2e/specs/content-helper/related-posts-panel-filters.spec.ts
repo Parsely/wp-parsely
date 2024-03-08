@@ -53,6 +53,6 @@ describe( 'PCH Editor Sidebar Related Post panel filters', () => {
 		const categoryName = 'Analytics That Matter';
 
 		expect( await getRelatedPostsMessage( categoryName, '', 'section', 2000, '.related-posts-descr' ) )
-			.toMatch( `Top related posts in the ${ categoryName } section in the last 7 days.` );
+			.toMatch( `Top related posts in the “${ categoryName }” section in the last 7 days.` );
 	} );
 } );

@@ -2,9 +2,9 @@
  * WordPress dependencies
  */
 import {
+	ComboboxControl,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
-	ComboboxControl,
 } from '@wordpress/components';
 import { ComboboxControlOption } from '@wordpress/components/build-types/combobox-control/types';
 import { __ } from '@wordpress/i18n';
@@ -134,6 +134,8 @@ const FilterValues = ( {
 
 /**
  * Defines the props structure for FilterControls.
+ *
+ * @since 3.14.0
  */
 type FilterControlsProps = {
 	filter: PostFilter;
