@@ -20,8 +20,6 @@ import {
  * Tests for the PCH Editor Sidebar Related Post filters.
  */
 describe( 'PCH Editor Sidebar Related Post panel filters', () => {
-	const messageSelector = '.parsely-related-posts-descr';
-
 	/**
 	 * Prevents browser from locking with dialogs, logs in to WordPress,
 	 * activates the Parse.ly plugin, and sets valid site keys.
@@ -38,8 +36,8 @@ describe( 'PCH Editor Sidebar Related Post panel filters', () => {
 	it( 'Should attempt to fetch results when a Site ID and API Secret are provided', async () => {
 		await setUserDisplayName( 'admin', '' );
 
-		expect( await getRelatedPostsMessage( '', '', 'author', 500, messageSelector ) )
-			.toMatch( `No related posts by author "admin" were found for the specified period and metric.` );
+		expect( await getRelatedPostsMessage( '', '', 'author', 500, '.related-posts-empty' ) )
+			.toMatch( `No related posts found.` );
 	} );
 
 	/**
@@ -54,8 +52,7 @@ describe( 'PCH Editor Sidebar Related Post panel filters', () => {
 	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
 		const categoryName = 'Analytics That Matter';
 
-		expect( await getRelatedPostsMessage( categoryName, '', 'section', 2000, messageSelector ) )
-			// TODO: update this after the Related Posts panel revamp.
-			.toMatch( `Related posts in section "${ categoryName }" in the last 7 days.` );
+		expect( await getRelatedPostsMessage( categoryName, '', 'section', 2000, '.related-posts-descr' ) )
+			.toMatch( `Top related posts in the “${ categoryName }” section in the last 7 days.` );
 	} );
 } );
