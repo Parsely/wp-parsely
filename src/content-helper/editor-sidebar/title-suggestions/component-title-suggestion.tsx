@@ -3,7 +3,8 @@
  */
 import {
 	__experimentalHeading as Heading,
-	Button, Modal,
+	Button,
+	Modal,
 	Rect,
 	SVG,
 } from '@wordpress/components';
@@ -12,10 +13,9 @@ import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	check,
-	closeSmall,
-	Icon,
 	pin,
-	reset, trash,
+	reset,
+	trash,
 	undo,
 } from '@wordpress/icons';
 

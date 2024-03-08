@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { Panel, PanelBody, Spinner } from "@wordpress/components";
+import { Panel, PanelBody, Spinner } from '@wordpress/components';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
@@ -9,7 +9,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { AiIcon } from "../../common/icons/ai-icon";
+import { AiIcon } from '../../common/icons/ai-icon';
 import { TitleSuggestionsSettings } from '../../common/settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { Title, TitleType } from './store';
