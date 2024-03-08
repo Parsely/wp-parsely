@@ -115,7 +115,10 @@ export const TitleSuggestion = (
 	return (
 		<>
 			<div className={
-				`wp-parsely-title-suggestion${ titleInUse ? ' title-in-use' : '' }${ props.isOriginal ? ' original-title' : '' }`
+				'wp-parsely-title-suggestion' +
+				( titleInUse ? ' title-in-use' : '' ) +
+				( props.isOriginal ? ' original-title' : '' ) +
+				( isPinned ? ' pinned-title' : '' )
 			}>
 				<div className="suggested-title">{ props.title.title }</div>
 

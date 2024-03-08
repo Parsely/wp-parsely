@@ -41,4 +41,5 @@ export interface TitleSuggestionsSettings {
 	Persona: string;
 	Tone: string;
 	PinnedOpen: boolean;
+	SuggestionsOpen: boolean;
 }

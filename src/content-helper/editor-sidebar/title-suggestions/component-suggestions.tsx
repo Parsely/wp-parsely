@@ -1,50 +1,52 @@
 /**
  * WordPress dependencies
  */
-import { Panel, PanelBody } from '@wordpress/components';
+import { Panel, PanelBody, Spinner } from "@wordpress/components";
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { pin, pinSmall } from "@wordpress/icons";
 
 /**
  * Internal dependencies
  */
 import { Telemetry } from '../../../js/telemetry/telemetry';
+import { AiIcon } from "../../common/icons/ai-icon";
 import { TitleSuggestionsSettings } from '../../common/settings';
 import { TitleSuggestion } from './component-title-suggestion';
 import { Title, TitleType } from './store';
 
 /**
- * Props for the Pinned Title Suggestions component.
+ * Props for the Title Suggestions component.
  *
  * @since 3.14.0
  */
-type PinnedTitleSuggestionsProps = {
-	pinnedTitles: Title[];
+type TitleSuggestionsProps = {
+	suggestions: Title[];
 	isOpen: boolean;
 	onSettingChange: ( key: keyof TitleSuggestionsSettings, value: string|boolean ) => void;
+	isLoading?: boolean;
 };
 
 /**
- * Renders the Pinned Title Suggestions panel.
+ * Renders the Title Suggestions collapsable panel.
  *
  * @since 3.14.0
  *
- * @param {PinnedTitleSuggestionsProps} props The component's props.
+ * @param {TitleSuggestionsProps} props The component's props.
  */
-export const PinnedTitleSuggestions = ( {
-	pinnedTitles,
+export const TitleSuggestions = ( {
+	suggestions,
 	isOpen,
 	onSettingChange,
-}: Readonly<PinnedTitleSuggestionsProps> ): JSX.Element => {
+	isLoading = false,
+}: Readonly<TitleSuggestionsProps> ): JSX.Element => {
 	const [ isCollapsed, setIsCollapsed ] = useState<boolean>( isOpen );
 
 	const toggleCollapse = () => {
 		setIsCollapsed( ! isCollapsed );
-		onSettingChange( 'PinnedOpen', ! isCollapsed );
-		Telemetry.trackEvent( 'title_suggestions_pinned_toggle', {
+		onSettingChange( 'SuggestionsOpen', ! isCollapsed );
+		Telemetry.trackEvent( 'title_suggestions_toggle', {
 			isOpen: ! isCollapsed,
-			pinnedTitles: pinnedTitles.length,
+
 		} );
 	};
 
@@ -52,11 +54,17 @@ export const PinnedTitleSuggestions = ( {
 		<Panel className="wp-parsely-pinned-suggestions">
 			<PanelBody
 				className="wp-parsely-collapsable-panel"
-				icon={ pinSmall }
-				title={ __( 'Pinned', 'wp-parsely' ) }
+				title={ __( 'Suggestions', 'wp-parsely' ) }
+				icon={ <AiIcon className="components-panel__icon" /> }
 				onToggle={ toggleCollapse }
 				opened={ isCollapsed }>
-				{ pinnedTitles.map( ( title ) => (
+				{ isLoading && (
+					<div className={ 'wp-parsely-loading-overlay' }>
+						<Spinner />
+						{ __( 'Loading…', 'wp-parsely' ) }
+					</div>
+				) }
+				{ suggestions.map( ( title ) => (
 					<TitleSuggestion
 						key={ title.title }
 						title={ title }
