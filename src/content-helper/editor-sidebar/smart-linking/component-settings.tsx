@@ -2,9 +2,9 @@
  * WordPress dependencies
  */
 import {
+	Disabled,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
-	Disabled,
 } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useRef, useState } from '@wordpress/element';
@@ -45,6 +45,8 @@ export const SmartLinkingSettings = ( {
 }: Readonly<SmartLinkingSettingsProps> ): JSX.Element => {
 	/**
 	 * Gets the value for the ToggleGroupControl.
+	 *
+	 * @since 3.14.0
 	 */
 	const getToggleGroupValue = ( ) => {
 		if ( fullContent ) {
@@ -171,7 +173,7 @@ export const SmartLinkingSettings = ( {
 							setMaxLinks( value ?? 1 );
 							onSettingChange( 'SmartLinkingMaxLinks', value ?? DEFAULT_MAX_LINKS );
 						} }
-						label={ __( 'Max Number Of Links', 'wp-parsely' ) }
+						label={ __( 'Max Number of Links', 'wp-parsely' ) }
 						suffix={ __( 'Links', 'wp-parsely' ) }
 						min={ 1 }
 						max={ 20 }

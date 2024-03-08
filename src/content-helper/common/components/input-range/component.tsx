@@ -9,6 +9,8 @@ import {
 
 /**
  * Defines the props structure for InputRange.
+ *
+ * @since 3.14.0
  */
 type InputRangeProps = {
 	value: number;
@@ -25,6 +27,8 @@ type InputRangeProps = {
 /**
  * Component that renders a hybrid input range control.
  * On one side you have the number control and on the other side the range control.
+ *
+ * @since 3.14.0
  *
  * @param {InputRangeProps} props The component's props.
  */

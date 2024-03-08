@@ -3,13 +3,18 @@
  */
 import { createReduxStore, register } from '@wordpress/data';
 import { ContentHelperError } from '../../common/content-helper-error';
-import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
+import { DEFAULT_MAX_LINKS, DEFAULT_MAX_LINK_WORDS } from './smart-linking';
 
 /**
  * Internal dependencies
  */
 import { LinkSuggestion } from './provider';
 
+/**
+ * Defines the props structure for SmartLinkingSettings.
+ *
+ * @since 3.14.0
+ */
 export type SmartLinkingSettingsProps = {
 	maxLinkWords?: number;
 	maxLinksPerPost?: number;
@@ -17,6 +22,8 @@ export type SmartLinkingSettingsProps = {
 
 /**
  * The shape of the SmartLinking store state.
+ *
+ * @since 3.14.0
  */
 type SmartLinkingState = {
 	isLoading: boolean;
