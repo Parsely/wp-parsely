@@ -83,7 +83,6 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 		SmartLinkingMaxLinks: DEFAULT_MAX_LINKS,
 		SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
 		SmartLinkingOpen: false,
-		SmartLinkingSettingsOpen: false,
 		TitleSuggestionsSettings: {
 			Open: false,
 			Tone: 'neutral',
@@ -147,9 +146,6 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 	if ( typeof mergedSettings.SmartLinkingOpen !== 'boolean' ) {
 		mergedSettings.SmartLinkingOpen = defaultSettings.SmartLinkingOpen;
-	}
-	if ( typeof mergedSettings.SmartLinkingSettingsOpen !== 'boolean' ) {
-		mergedSettings.SmartLinkingSettingsOpen = defaultSettings.SmartLinkingSettingsOpen;
 	}
 	if ( typeof mergedSettings.TitleSuggestionsSettings !== 'object' ) {
 		mergedSettings.TitleSuggestionsSettings = defaultSettings.TitleSuggestionsSettings;
