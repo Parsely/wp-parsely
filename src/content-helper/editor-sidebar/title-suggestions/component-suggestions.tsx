@@ -51,26 +51,28 @@ export const TitleSuggestions = ( {
 	};
 
 	return (
-		<Panel className="wp-parsely-pinned-suggestions">
+		<Panel className="wp-parsely-title-suggestions">
 			<PanelBody
 				className="wp-parsely-collapsable-panel"
 				title={ __( 'Suggestions', 'wp-parsely' ) }
 				icon={ <AiIcon className="components-panel__icon" /> }
 				onToggle={ toggleCollapse }
 				opened={ isCollapsed }>
-				{ isLoading && (
-					<div className={ 'wp-parsely-loading-overlay' }>
-						<Spinner />
-						{ __( 'Loading…', 'wp-parsely' ) }
-					</div>
-				) }
-				{ suggestions.map( ( title ) => (
-					<TitleSuggestion
-						key={ title.title }
-						title={ title }
-						type={ TitleType.PostTitle }
-					/>
-				) ) }
+				<div className="title-suggestions-container">
+					{ isLoading && (
+						<div className={ 'wp-parsely-loading-overlay' }>
+							<Spinner />
+							{ __( 'Loading…', 'wp-parsely' ) }
+						</div>
+					) }
+					{ suggestions.map( ( title ) => (
+						<TitleSuggestion
+							key={ title.title }
+							title={ title }
+							type={ TitleType.PostTitle }
+						/>
+					) ) }
+				</div>
 			</PanelBody>
 		</Panel>
 	);

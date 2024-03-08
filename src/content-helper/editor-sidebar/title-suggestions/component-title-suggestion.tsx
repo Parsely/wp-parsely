@@ -106,6 +106,8 @@ export const TitleSuggestion = (
 			type: props.type,
 		} );
 		await setAcceptedTitle( props.type, props.title );
+
+		closeModal();
 	};
 
 	const onClickPin = async () => {
