@@ -8,25 +8,25 @@
 
 	.related-posts-description {
 		display: flex;
-		padding: 6px 0 var(--grid-unit-20, 16px) 0;
+		padding: to_rem(6px) 0 var(--grid-unit-20, to_rem(16px)) 0;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: 10px;
+		gap: to_rem(10px);
 		align-self: stretch;
 
 		/* Helper Text */
-		font-size: 13px;
+		font-size: to_rem(13px);
 		font-style: normal;
 		font-weight: 400;
-		line-height: 20px; /* 153.846% */
+		line-height: to_rem(20px); /* 153.846% */
 	}
 
 	.related-posts-body {
 		display: flex;
 		flex-direction: column;
-		padding: 6px 0 16px 0;
+		padding: to_rem(6px) 0 var(--grid-unit-20, to_rem(16px)) 0;
 		align-items: flex-start;
-		gap: 16px;
+		gap: to_rem(16px);
 		align-self: stretch;
 
 		> div {
@@ -37,7 +37,7 @@
 			width: 100%;
 			display: flex;
 			flex-direction: column;
-			gap: 16px;
+			gap: to_rem(16px);
 			align-self: stretch;
 
 			.components-base-control__field {
@@ -49,7 +49,7 @@
 				align-items: flex-start;
 				gap: to_rem(16px);
 				align-self: stretch;
-				height: 36px;
+				height: to_rem(36px);
 
 				.components-input-control__container {
 					padding: to_rem(3px);
@@ -63,9 +63,9 @@
 			.components-input-control {
 				display: flex;
 				height: to_rem(36px);
-				padding: var(--grid-unit-15, 12px) var(--grid-unit-10, 8px) var(--grid-unit-15, 12px) var(--grid-unit-20, 16px);
+				padding: var(--grid-unit-15, to_rem(12px)) var(--grid-unit-10, to_rem(8px)) var(--grid-unit-15, to_rem(12px)) var(--grid-unit-20, to_rem(16px));
 				align-items: center;
-				gap: var(--grid-unit-05, 4px);
+				gap: var(--grid-unit-5, to_rem(4px));
 				align-self: stretch;
 			}
 		}
@@ -80,7 +80,7 @@
 				width: 100%;
 
 				.components-toggle-group-control {
-					height: 40px;
+					height: to_rem(40px);
 
 					/**
 					 * Workaround for the ToggleGroupControl animation:
@@ -117,10 +117,10 @@
 				width: 100%;
 
 				.components-combobox-control__suggestions-container .components-flex {
-					height: 36px;
+					height: to_rem(36px);
 
 					input {
-						margin: 0 var(--grid-unit-15, 12px);
+						margin: 0 var(--grid-unit-15, to_rem(12px));
 					}
 				}
 			}
@@ -129,23 +129,24 @@
 		.related-posts-wrapper {
 
 			.related-posts-descr {
-				font-size: 13px;
+				font-size: to_rem(13px);
 				font-style: normal;
 				font-weight: 400;
-				line-height: 20px; /* 153.846% */
+				line-height: to_rem(20px); /* 153.846% */
 			}
 
 			.related-posts-loading-message,
 			.related-posts-empty {
 				overflow: hidden;
-				color: var(--Gutenberg-Gray-900, #1e1e1e);
+				color: var(--gray-900, #1e1e1e);
 				text-overflow: ellipsis;
-				font-size: 12px;
+				font-size: to_rem(12px);
 				font-style: normal;
 				font-weight: 700;
-				line-height: 16px; /* 133.333% */
+				line-height: var(--grid-unit-20, to_rem(16px)); /* 133.333% */
 			}
 		}
+
 
 		.related-posts-list {
 			display: flex;
@@ -169,41 +170,41 @@
 					flex-direction: column;
 					justify-content: center;
 					align-items: center;
-					gap: 8px;
+					gap: to_rem(8px);
 					align-self: stretch;
 					overflow: hidden;
 					text-overflow: ellipsis;
 					font-size: 14px;
 					font-style: normal;
 					font-weight: 600;
-					line-height: 20px; /* 142.857% */
+					line-height: to_rem(20px); /* 142.857% */
 					text-decoration-line: underline;
 				}
 
 				.related-post-actions {
 					display: flex;
-					padding: 0 8px;
+					padding: 0 var(--grid-unit-10, to_rem(8px));
 					align-items: center;
-					gap: 16px;
+					gap: var(--grid-unit-20, to_rem(16px));
 					align-self: stretch;
 					flex-wrap: wrap;
-					border-top: 1px solid var(--Gutenberg-Gray-400, #ccc);
+					border-top: 1px solid var(--gray-400, #ccc);
 
 					.related-post-info {
 						display: flex;
 						flex-grow: 1;
-						gap: 8px;
+						gap: var(--grid-unit-10, to_rem(8px));
 						align-items: center;
 
 						> div:first-child {
 							flex: 1;
 							display: flex;
-							gap: 8px;
+							gap: var(--grid-unit-10, to_rem(8px));
 						}
 
 						> div:last-child {
 							display: flex;
-							gap: 8px;
+							gap: var(--grid-unit-10, to_rem(8px));
 						}
 
 						.related-post-metric {
@@ -213,7 +214,7 @@
 							.parsely-post-metric-data {
 								display: flex;
 								align-items: center;
-								gap: 4px;
+								gap: var(--grid-unit-5, to_rem(4px));
 							}
 						}
 
