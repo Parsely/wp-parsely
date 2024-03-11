@@ -4,6 +4,7 @@
 import {
 	__experimentalHeading as Heading,
 	__experimentalNumberControl as NumberControl,
+	__experimentalInputControlSuffixWrapper as InputControlSuffixWrapper,
 	RangeControl,
 } from '@wordpress/components';
 
@@ -22,6 +23,7 @@ type InputRangeProps = {
 	initialPosition: number;
 	disabled: boolean;
 	className?: string;
+	size?: 'small' | 'default' | 'compact' | '__unstable-large',
 };
 
 /**
@@ -38,6 +40,7 @@ export const InputRange = ( {
 	max,
 	min,
 	suffix,
+	size,
 	label,
 	initialPosition,
 	disabled,
@@ -50,7 +53,8 @@ export const InputRange = ( {
 				<NumberControl
 					disabled={ disabled }
 					value={ value }
-					suffix={ suffix }
+					suffix={ <InputControlSuffixWrapper>{ suffix }</InputControlSuffixWrapper> }
+					size={ size ?? '__unstable-large' }
 					min={ min }
 					max={ max }
 					onChange={ ( newValue ) => {

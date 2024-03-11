@@ -76,29 +76,6 @@
 		}
 	}
 
-	.panel-settings {
-
-		.components-select-control {
-			display: flex;
-			align-items: flex-start;
-			gap: to_rem(16px);
-			align-self: stretch;
-		}
-
-		.components-input-control__prefix {
-			margin-left: to_rem(8px);
-		}
-
-		.components-input-control {
-			display: flex;
-			height: to_rem(36px);
-			padding: var(--grid-unit-15, 12px) var(--grid-unit-10, 8px) var(--grid-unit-15, 12px) var(--grid-unit-20, 16px);
-			align-items: center;
-			gap: var(--grid-unit-05, 4px);
-			align-self: stretch;
-		}
-	}
-
 	.components-heading {
 		margin: 0;
 		font-weight: 500;

@@ -1,7 +1,10 @@
 /**
  * WordPress dependencies
  */
-import { SelectControl } from '@wordpress/components';
+import {
+	__experimentalInputControlPrefixWrapper as InputControlPrefixWrapper,
+	SelectControl,
+} from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 // eslint-disable-next-line import/named
 import { store as coreStore, Taxonomy, User } from '@wordpress/core-data';
@@ -340,8 +343,11 @@ export const RelatedPostsPanel = (): JSX.Element => {
 			<div className="related-posts-body">
 				<div className="related-posts-settings">
 					<SelectControl
+						size="__unstable-large"
 						onChange={ ( value ) => onMetricChange( value ) }
-						prefix={ __( 'Metric: ', 'wp-parsely' ) }
+						prefix={
+							<InputControlPrefixWrapper>{ __( 'Metric: ', 'wp-parsely' ) }</InputControlPrefixWrapper>
+						}
 						value={ metric }
 					>
 						{ Object.values( Metric ).map( ( value ) => (
@@ -351,8 +357,11 @@ export const RelatedPostsPanel = (): JSX.Element => {
 						) ) }
 					</SelectControl>
 					<SelectControl
+						size="__unstable-large"
 						value={ period }
-						prefix={ __( 'Period: ', 'wp-parsely' ) }
+						prefix={
+							<InputControlPrefixWrapper>{ __( 'Period: ', 'wp-parsely' ) } </InputControlPrefixWrapper>
+						}
 						onChange={ ( selection ) => onPeriodChange( selection ) }
 					>
 						{ Object.values( Period ).map( ( value ) => (

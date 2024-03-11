@@ -44,30 +44,7 @@
 				margin-bottom: 0;
 			}
 
-			.components-select-control {
-				display: flex;
-				align-items: flex-start;
-				gap: to_rem(16px);
-				align-self: stretch;
-				height: to_rem(36px);
 
-				.components-input-control__container {
-					padding: to_rem(3px);
-				}
-			}
-
-			.components-input-control__prefix {
-				margin-left: to_rem(8px);
-			}
-
-			.components-input-control {
-				display: flex;
-				height: to_rem(36px);
-				padding: var(--grid-unit-15, to_rem(12px)) var(--grid-unit-10, to_rem(8px)) var(--grid-unit-15, to_rem(12px)) var(--grid-unit-20, to_rem(16px));
-				align-items: center;
-				gap: var(--grid-unit-5, to_rem(4px));
-				align-self: stretch;
-			}
 		}
 
 		.related-posts-filter-settings {
