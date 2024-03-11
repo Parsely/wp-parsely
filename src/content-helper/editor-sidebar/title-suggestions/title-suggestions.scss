@@ -181,7 +181,6 @@
 
 	.wp-parsely-pinned-suggestions {
 		display: flex;
-		padding: to_rem(6px) 0 var(--grid-unit-20, to_rem(16px)) 0;
 		flex-direction: column;
 		align-items: flex-start;
 		align-self: stretch;
@@ -189,7 +188,7 @@
 
 }
 
-.wp-parsely-popover .components-popover__content{
+.wp-parsely-popover .components-popover__content {
 	width: to_rem(248px);
 }
 
