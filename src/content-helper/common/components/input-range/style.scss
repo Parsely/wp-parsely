@@ -21,11 +21,7 @@
 
 		.components-input-control {
 			display: flex;
-			align-items: center;
-			gap: var(--grid-unit-05, to_rem(4px));
 			flex: 1 0 0;
-			align-self: stretch;
-
 
 			/* For Chrome, Safari, Edge */
 			input[type="number"]::-webkit-inner-spin-button,
@@ -41,18 +37,9 @@
 
 			.components-base-control__field {
 				flex-grow: 1;
-
-				.components-flex {
-					height: to_rem(40px);
-				}
-
-				input[type="number"] {
-					padding-left: to_rem(16px);
-				}
 			}
 
 			.components-input-control__suffix {
-				padding-right: to_rem(10px);
 				color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
 			}
 		}
