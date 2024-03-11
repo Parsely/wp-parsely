@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { Button, Notice, PanelRow } from '@wordpress/components';
+import { useDebounce } from "@wordpress/compose";
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
@@ -55,6 +56,8 @@ export const SmartLinkingPanel = ( {
 	context = SmartLinkingPanelContext.Unknown,
 }: Readonly<SmartLinkingPanelProps> ): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
+	const setSettingsDebounced = useDebounce( setSettings, 500 );
+
 	const [ hint, setHint ] = useState<string|null>( null );
 
 	const { createNotice } = useDispatch( 'core/notices' );
@@ -121,7 +124,7 @@ export const SmartLinkingPanel = ( {
 	 * @param { string | boolean | number } value   The new value of the setting.
 	 */
 	const onSettingChange = ( setting: keyof SidebarSettings, value: string|boolean|number ): void => {
-		setSettings( { [ setting ]: value } );
+		setSettingsDebounced( { [ setting ]: value } );
 		setSmartLinkingSettings( { [ setting ]: value } );
 	};
 
