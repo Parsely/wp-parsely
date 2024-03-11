@@ -1,7 +1,13 @@
 /**
  * WordPress dependencies
  */
-import { Button, MenuGroup, MenuItem, SelectControl } from '@wordpress/components';
+import {
+	__experimentalInputControlPrefixWrapper as InputControlPrefixWrapper,
+	Button,
+	MenuGroup,
+	MenuItem,
+	SelectControl,
+} from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
@@ -241,8 +247,13 @@ export const PerformanceStats = (
 			>
 				<div className="panel-settings">
 					<SelectControl
+						size="__unstable-large"
 						value={ settings.PerformanceStatsSettings.Period }
-						prefix={ __( 'Period: ', 'wp-parsely' ) }
+						prefix={
+							<InputControlPrefixWrapper>
+								{ __( 'Period: ', 'wp-parsely' ) }
+							</InputControlPrefixWrapper>
+						}
 						onChange={ ( selection ) => {
 							if ( isInEnum( selection, Period ) ) {
 								setSettings( {
