@@ -66,19 +66,6 @@
 		text-transform: uppercase;
 	}
 
-	.wp-parsely-popover {
-
-		button.components-button.components-menu-item__button.is-selected {
-			outline: 3px solid transparent;
-			box-shadow: 0 0 0 2px var(--parsely-green);
-
-			&:focus {
-				outline: 3px solid transparent;
-				box-shadow: 0 0 0 2px var(--parsely-green);
-			}
-		}
-	}
-
 	// Accepted Title view.
 	// TODO: Remove, unused?
 	.parsely-write-titles-accepted-title-container {
@@ -200,6 +187,10 @@
 		align-self: stretch;
 	}
 
+}
+
+.wp-parsely-popover .components-popover__content{
+	width: to_rem(248px);
 }
 
 .wp-parsely-suggested-title-modal {
