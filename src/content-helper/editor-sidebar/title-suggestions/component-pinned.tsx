@@ -57,13 +57,15 @@ export const PinnedTitleSuggestions = ( {
 				title={ __( 'Pinned', 'wp-parsely' ) }
 				onToggle={ toggleCollapse }
 				opened={ isCollapsed }>
-				{ pinnedTitles.map( ( title ) => (
-					<TitleSuggestion
-						key={ title.title }
-						title={ title }
-						type={ TitleType.PostTitle }
-					/>
-				) ) }
+				<div className="title-suggestions-container">
+					{ pinnedTitles.map( ( title ) => (
+						<TitleSuggestion
+							key={ title.title }
+							title={ title }
+							type={ TitleType.PostTitle }
+						/>
+					) ) }
+				</div>
 			</PanelBody>
 		</Panel>
 	);
