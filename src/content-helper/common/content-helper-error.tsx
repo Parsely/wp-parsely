@@ -72,7 +72,8 @@ export class ContentHelperError extends Error {
 		// Errors that need rephrasing.
 		if ( this.code === ContentHelperErrorCode.ParselyApiUnauthorized ) {
 			this.message = __(
-				'This feature is accessible to select customers participating in its beta testing.',
+				'This AI-powered feature is opt-in. To gain access, please submit a request ' +
+				'<a href="https://wpvip.com/parsely-content-helper/" target="_blank" rel="noreferrer">here</a>.',
 				'wp-parsely'
 			);
 		} else if ( this.code === ContentHelperErrorCode.ParselyInternalServerError ) {

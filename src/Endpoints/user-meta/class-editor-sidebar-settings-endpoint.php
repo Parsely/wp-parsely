@@ -41,65 +41,65 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 	 */
 	protected function get_subvalues_specs(): array {
 		return array(
-			'PerformanceDetailsOpen'       => array(
-				'values'  => array( true, false ),
-				'default' => true,
+			'InitialTabName'           => array(
+				'values'  => array( 'tools', 'performance' ),
+				'default' => 'tools',
 			),
-			'RelatedTopPostsFilterBy'      => array(
+			'PerformanceStatsSettings' => array(
+				'values'  => array(
+					'Period'            => array( '10m', '1h', '2h', '4h', '24h', '7d', '30d' ),
+					'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
+					'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
+				),
+				'default' => array(
+					'Period'            => '7d',
+					'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
+					'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
+				),
+			),
+			'RelatedPostsFilterBy'     => array(
 				'values'  => array( 'unavailable', 'tag', 'section', 'author' ),
 				'default' => 'unavailable',
 			),
-			'RelatedTopPostsFilterValue'   => array(
+			'RelatedPostsFilterValue'  => array(
 				'values'  => array(),
 				'default' => '',
 			),
-			'RelatedTopPostsOpen'          => array(
-				'values'  => array( true, false ),
-				'default' => false,
-			),
-			'SettingsMetric'               => array(
+			'RelatedPostsMetric'       => array(
 				'values'  => array( 'views', 'avg_engaged' ),
 				'default' => 'views',
 			),
-			'SettingsOpen'                 => array(
+			'RelatedPostsOpen'         => array(
 				'values'  => array( true, false ),
-				'default' => true,
+				'default' => false,
 			),
-			'SettingsPeriod'               => array(
+			'RelatedPostsPeriod'       => array(
 				'values'  => array( '10m', '1h', '2h', '4h', '24h', '7d', '30d' ),
 				'default' => '7d',
 			),
-			'SmartLinkingMaxLinks'         => array(
+			'SmartLinkingMaxLinks'     => array(
 				'values'  => array(),
 				'default' => 10,
 			),
-			'SmartLinkingMaxLinkWords'     => array(
+			'SmartLinkingMaxLinkWords' => array(
 				'values'  => array(),
 				'default' => 4,
 			),
-			'SmartLinkingOpen'             => array(
+			'SmartLinkingOpen'         => array(
 				'values'  => array( true, false ),
 				'default' => false,
 			),
-			'SmartLinkingSettingsOpen'     => array(
-				'values'  => array( true, false ),
-				'default' => false,
-			),
-			'TitleSuggestionsOpen'         => array(
-				'values'  => array( true, false ),
-				'default' => false,
-			),
-			'TitleSuggestionsPersona'      => array(
-				'values'  => array(),
-				'default' => 'journalist',
-			),
-			'TitleSuggestionsSettingsOpen' => array(
-				'values'  => array( true, false ),
-				'default' => false,
-			),
-			'TitleSuggestionsTone'         => array(
-				'values'  => array(),
-				'default' => 'neutral',
+			'TitleSuggestionsSettings' => array(
+				'values'  => array(
+					'Open'    => array( true, false ),
+					'Persona' => array(),
+					'Tone'    => array(),
+				),
+				'default' => array(
+					'Open'    => false,
+					'Persona' => 'journalist',
+					'Tone'    => 'neutral',
+				),
 			),
 		);
 	}

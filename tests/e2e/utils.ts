@@ -95,7 +95,7 @@ export const insertRecordIntoTaxonomy = async ( recordName: string, taxonomyType
 };
 
 /**
- * Gets the message returned by the PHC Editor Sidebar Related Top Posts panel
+ * Gets the message returned by the PHC Editor Sidebar Related Posts panel
  * according to the various conditions passed to the function.
  *
  * @param {string} category   Name of the category to select in the Post Editor.
@@ -106,12 +106,12 @@ export const insertRecordIntoTaxonomy = async ( recordName: string, taxonomyType
  *
  * @return {Promise<string>} The message returned.
  */
-export const getTopRelatedPostsMessage = async (
+export const getRelatedPostsMessage = async (
 	category = '', tag = '', filterType = '', timeout = 500, selector = '.content-helper-error-message'
 ): Promise<string> => {
 	// Selectors
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
-	const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
+	const pluginButton = 'button[aria-label="Parse.ly"]';
 	const contentHelperMessageSelector = '.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector;
 	const periodSettingSelector = '#inspector-select-control-1';
 
@@ -151,12 +151,13 @@ export const getTopRelatedPostsMessage = async (
 	await page.waitForSelector( pluginButton );
 	await page.click( pluginButton );
 
-	// Select 30 days to reduce the possibility of a "No top posts" message.
+	// Select 30 days to reduce the possibility of a "No related posts" message.
 	if ( ( await page.$( periodSettingSelector ) ) !== null ) {
+		// TODO: update this after the Related Posts panel revamp.
 		await page.select( periodSettingSelector, '30d' );
 	}
 
-	setSidebarPanelExpanded( 'Related Top Posts', true );
+	setSidebarPanelExpanded( 'Related Posts', true );
 	if ( '' !== filterType ) {
 		await page.waitForTimeout( 500 );
 		await page.keyboard.press( 'Tab' );

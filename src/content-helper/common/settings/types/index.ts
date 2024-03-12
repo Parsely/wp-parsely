@@ -1,7 +1,11 @@
 /**
  * Import the settings types.
  */
-import type { SidebarSettings } from './sidebar-settings';
+import type {
+	SidebarSettings,
+	TitleSuggestionsSettings,
+	PerformanceStatsSettings,
+} from './sidebar-settings';
 import type { TopPostsSettings } from './top-posts-settings';
 
 /**
@@ -9,6 +13,8 @@ import type { TopPostsSettings } from './top-posts-settings';
  */
 export type {
 	SidebarSettings,
+	TitleSuggestionsSettings, // Part of SidebarSettings type.
+	PerformanceStatsSettings, // Part of SidebarSettings type.
 	TopPostsSettings,
 };
 

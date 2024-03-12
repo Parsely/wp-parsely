@@ -237,7 +237,8 @@ abstract class Base_API_Proxy {
 		if ( isset( $item->url ) ) {
 			$site_id = $this->parsely->get_site_id();
 			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
-			$post_id = url_to_postid( $item->url ); // 0 if the post cannot be found.
+			$post_id        = url_to_postid( $item->url ); // 0 if the post cannot be found.
+			$data['rawUrl'] = Parsely::get_url_with_itm_source( $item->url, null );
 
 			$data['dashUrl'] = Parsely::get_dash_url( $site_id, $item->url );
 			$data['id']      = Parsely::get_url_with_itm_source( $item->url, null ); // Unique.

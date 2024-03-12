@@ -12,18 +12,19 @@ import {
 import {
 	VALID_API_SECRET,
 	VALID_SITE_ID,
+	setSidebarPanelExpanded,
 	setSiteKeys,
 } from '../../utils';
 
 // Selectors.
-const pluginButton = 'button[aria-label="Parse.ly Editor Sidebar"]';
+const pluginButton = 'button[aria-label="Parse.ly"]';
 
 /**
  * Tests for the PCH Editor Sidebar top bar icon.
  */
 describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => {
-	const postNotPublishedMessage = 'SettingsPeriodLast 10 MinutesLast HourLast 2 HoursLast 4 HoursLast 24 HoursLast 7 DaysLast 30 DaysMetricPage ViewsAvg. TimePerformance DetailsThis post is not published, so its details are unavailable.Related Top Posts';
-	const emptyCredentialsMessage = 'SettingsPeriodLast 10 MinutesLast HourLast 2 HoursLast 4 HoursLast 24 HoursLast 7 DaysLast 30 DaysMetricPage ViewsAvg. TimePerformance DetailsContact us about advanced plugin features and the Parse.ly dashboard.Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in wp-parsely options.Related Top Posts';
+	const noRelatedPostsMessage = 'No related posts found.';
+	const emptyCredentialsMessage = 'Contact us about advanced plugin features and the Parse.ly dashboard.Existing Parse.ly customers can enable this feature by setting their Site ID and API Secret in wp-parsely options.';
 
 	/**
 	 * Verifies that the top bar icon gets displayed when the Site ID and API
@@ -57,8 +58,11 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 	 * API Secret are provided.
 	 */
 	it( 'Should be displayed when both the Site ID and API Secret are provided', async () => {
-		expect( await testContentHelperIcon( VALID_SITE_ID, VALID_API_SECRET ) )
-			.toMatch( postNotPublishedMessage );
+		expect( await testContentHelperIcon(
+			VALID_SITE_ID, VALID_API_SECRET,
+			'.related-posts-empty'
+		) )
+			.toMatch( noRelatedPostsMessage );
 	} );
 
 	/**
@@ -91,33 +95,35 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
  * Tests the top bar icon by clicking on it and verifying that the PCH Editor
  * Sidebar opens.
  *
- * @param {string} siteId
- * @param {string} apiSecret
- * @return {string} Text content found in the PCH Editor Sidebar.
+ * @param { string } siteId    The Site ID to use for the test.
+ * @param { string } apiSecret The API Secret to use for the test.
+ * @param { string } selector  The selector from which to get the text content.
+ *
+ * @return { string } Text content found in the PCH Editor Sidebar.
  */
-async function testContentHelperIcon( siteId: string, apiSecret: string ) {
+async function testContentHelperIcon(
+	siteId: string, apiSecret: string, selector = '.content-helper-error-message'
+) {
+	const contentHelperMessageSelector = '.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector;
+
 	await setSiteKeys( siteId, apiSecret );
 	await createNewPost();
 
-	// Open the sidebar by clicking on the icon, to verify that it is visible and
-	// working as expected.
-	await page.waitForSelector( pluginButton, { visible: true } );
-	const toggleSidebarButton = await page.$(
-		pluginButton
-	);
-	if ( toggleSidebarButton ) {
-		await toggleSidebarButton.click();
-	}
+	// Click the top bar icon.
+	await page.waitForSelector( pluginButton );
+	await page.click( pluginButton );
 
-	// Get the text content of the sidebar.
-	await page.waitForSelector( 'div.wp-parsely-content-helper', { visible: true } );
+	// Expand the Related Posts panel and get its text content.
+	setSidebarPanelExpanded( 'Related Posts', true );
+	await page.waitForSelector( contentHelperMessageSelector );
+	await page.waitForFunction( // Wait for the message to appear.
+		'document.querySelector("' + contentHelperMessageSelector + '").innerText.length > 0',
+		{ polling: 'mutation', timeout: 5000 }
+	);
 	const text = await page.$eval(
-		'div.wp-parsely-content-helper',
-		( element: Element ) => element.textContent
+		contentHelperMessageSelector,
+		( element: Element ): string => element.textContent ?? ''
 	);
-
-	// Close the sidebar for the next test.
-	await toggleSidebarButton?.click();
 
 	return text;
 }

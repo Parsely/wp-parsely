@@ -7,19 +7,37 @@ import { Metric, Period } from '../../utils/constants';
  * @since 3.14.0 Moved from `content-helper/editor-sidebar/editor-sidebar.tsx`.
  */
 export interface SidebarSettings {
-	PerformanceDetailsOpen: boolean;
-	RelatedTopPostsFilterBy: string;
-	RelatedTopPostsFilterValue: string;
-	RelatedTopPostsOpen: boolean;
-	SettingsMetric: Metric;
-	SettingsOpen: boolean;
-	SettingsPeriod: Period;
+	InitialTabName: string;
+	PerformanceStatsSettings: PerformanceStatsSettings;
+	RelatedPostsFilterBy: string;
+	RelatedPostsFilterValue: string;
+	RelatedPostsMetric: Metric;
+	RelatedPostsOpen: boolean;
+	RelatedPostsPeriod: Period;
 	SmartLinkingMaxLinks: number;
 	SmartLinkingMaxLinkWords: number;
 	SmartLinkingOpen: boolean;
-	SmartLinkingSettingsOpen: boolean;
-	TitleSuggestionsOpen: boolean;
-	TitleSuggestionsPersona: string;
-	TitleSuggestionsSettingsOpen: boolean;
-	TitleSuggestionsTone: string;
+	TitleSuggestionsSettings: TitleSuggestionsSettings;
+}
+
+/**
+ * Defines the settings structure for the PerformanceStats component.
+ *
+ * @since 3.14.0
+ */
+export interface PerformanceStatsSettings {
+	Period: Period;
+	VisiblePanels: string[];
+	VisibleDataPoints: string[];
+}
+
+/**
+ * Defines the settings structure for the TitleSuggestions component.
+ *
+ * @since 3.14.0
+ */
+export interface TitleSuggestionsSettings {
+	Open: boolean;
+	Persona: string;
+	Tone: string;
 }

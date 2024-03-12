@@ -1,16 +1,19 @@
 /**
  * WordPress dependencies
  */
-import { BaseControl, Button, RangeControl } from '@wordpress/components';
+import {
+	Disabled,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
+} from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { settings } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
-import { Telemetry } from '../../../js/telemetry/telemetry';
-import { LeafIcon } from '../../common/icons/leaf-icon';
+import { InputRange } from '../../common/components/input-range';
 import { OnSettingChangeFunction } from '../editor-sidebar';
 import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
 import { SmartLinkingStore } from './store';
@@ -22,6 +25,7 @@ import { SmartLinkingStore } from './store';
  */
 type SmartLinkingSettingsProps = {
 	disabled?: boolean;
+	selectedBlock?: string;
 	onSettingChange: OnSettingChangeFunction
 };
 
@@ -36,8 +40,29 @@ type SmartLinkingSettingsProps = {
  */
 export const SmartLinkingSettings = ( {
 	disabled = false,
+	selectedBlock,
 	onSettingChange,
 }: Readonly<SmartLinkingSettingsProps> ): JSX.Element => {
+	/**
+	 * Gets the value for the ToggleGroupControl.
+	 *
+	 * @since 3.14.0
+	 */
+	const getToggleGroupValue = ( ) => {
+		if ( fullContent ) {
+			return 'all';
+		}
+
+		if ( selectedBlock && selectedBlock !== 'all' ) {
+			return 'selected';
+		}
+		return 'all';
+	};
+
+	const toggleGroupRef = useRef<HTMLDivElement>();
+	const [ applyTo, setApplyTo ] = useState( getToggleGroupValue() );
+	const [ wasProgrammaticallyClicked, setWasProgrammaticallyClicked ] = useState( false );
+
 	/**
 	 * Gets the settings from the Smart Linking store.
 	 *
@@ -46,84 +71,130 @@ export const SmartLinkingSettings = ( {
 	const {
 		maxLinks,
 		maxLinkWords,
-		settingsOpen,
+		fullContent,
+		alreadyClicked,
 	} = useSelect( ( select ) => {
-		const { getMaxLinkWords, getMaxLinks, areSettingsOpen } = select( SmartLinkingStore );
+		const { getMaxLinkWords, getMaxLinks, isFullContent, wasAlreadyClicked } = select( SmartLinkingStore );
 
 		return {
 			maxLinks: getMaxLinks(),
 			maxLinkWords: getMaxLinkWords(),
-			settingsOpen: areSettingsOpen(),
+			fullContent: isFullContent(),
+			alreadyClicked: wasAlreadyClicked(),
 		};
 	}, [] );
 
 	const {
 		setMaxLinks,
 		setMaxLinkWords,
-		setSettingsOpen,
+		setFullContent,
+		setAlreadyClicked,
 	} = useDispatch( SmartLinkingStore );
 
 	/**
-	 * Toggles the settings panel.
+	 * Handles the change event of the ToggleGroupControl.
+	 * It updates the settings based on the selected value.
 	 *
 	 * @since 3.14.0
+	 *
+	 * @param {string|number|undefined} value The selected value.
 	 */
-	const toggleSetting = (): void => {
-		onSettingChange( 'SmartLinkingSettingsOpen', ! settingsOpen );
-		setSettingsOpen( ! settingsOpen );
+	const onToggleGroupChange = ( value: string|number|undefined ) => {
+		// Ignore the onToggleGroupChange event if it was triggered programmatically.
+		if ( wasProgrammaticallyClicked ) {
+			setWasProgrammaticallyClicked( false );
+			return;
+		}
 
-		Telemetry.trackEvent( 'smart_linking_ai_settings_toggled', {
-			is_active: ! settingsOpen,
-		} );
+		if ( disabled ) {
+			return;
+		}
+
+		// Update the settings based on the selected value.
+		if ( value === 'all' ) {
+			setFullContent( true );
+		} else {
+			setFullContent( false );
+		}
+		setApplyTo( value as string );
 	};
+
+	useEffect( () => {
+		if ( disabled ) {
+			return;
+		}
+		const value = getToggleGroupValue();
+		setApplyTo( value );
+
+		// The first time selectedBlock changes, for some reason the ToggleGroupControl
+		// doesn't update the value. This workaround programmatically clicks the button
+		// to set the correct value.
+		if ( toggleGroupRef.current && value && ! alreadyClicked && selectedBlock ) {
+			const targetButton = toggleGroupRef.current.querySelector( `button[data-value="${ value }"]` ) as HTMLButtonElement;
+			if ( targetButton && targetButton.getAttribute( 'aria-checked' ) !== 'true' ) {
+				// Simulate a click on the button to set the correct value.
+				targetButton.click();
+				// Flag that the button was clicked programmatically.
+				setWasProgrammaticallyClicked( true );
+				// Flag that the button was already clicked as it's only needed on the first time.
+				setAlreadyClicked( true );
+			}
+		}
+	}, [ selectedBlock, fullContent, disabled ] ); // eslint-disable-line
 
 	return (
 		<div className="parsely-panel-settings">
-			<div className="parsely-panel-settings-header">
-				<LeafIcon size={ 20 } />
-				<BaseControl
-					id="parsely-smart-linking-settings"
-					className="parsely-panel-settings-header-label"
-					label={ __( 'Smart Linking Settings', 'wp-parsely' ) }>
-					<Button
-						label={ __( 'Tweak the settings of the Smart Linking', 'wp-parsely' ) }
-						icon={ settings }
-						onClick={ toggleSetting }
-						isPressed={ settingsOpen }
-						size="small"
-					/>
-				</BaseControl>
-			</div>
-			{ settingsOpen && (
-				<div className="parsely-panel-settings-body">
-					<RangeControl
-						disabled={ disabled }
+			<div className="parsely-panel-settings-body">
+				<div className="smart-linking-block-select">
+					<Disabled isDisabled={ disabled }	>
+						<ToggleGroupControl
+							ref={ toggleGroupRef }
+							__nextHasNoMarginBottom
+							__next40pxDefaultSize
+							isBlock
+							value={ fullContent ? 'all' : applyTo }
+							label={ __( 'Apply Smart Links to', 'wp-parsely' ) }
+							onChange={ onToggleGroupChange }
+						>
+							<ToggleGroupControlOption
+								label={ __( 'Selected Block', 'wp-parsely' ) }
+								disabled={ ! selectedBlock }
+								value="selected" />
+							<ToggleGroupControlOption
+								label={ __( 'All Blocks', 'wp-parsely' ) }
+								value="all" />
+						</ToggleGroupControl>
+					</Disabled>
+				</div>
+				<div className="smart-linking-settings">
+					<InputRange
 						value={ maxLinks }
-						initialPosition={ maxLinks }
 						onChange={ ( value ) => {
 							setMaxLinks( value ?? 1 );
 							onSettingChange( 'SmartLinkingMaxLinks', value ?? DEFAULT_MAX_LINKS );
 						} }
-						label={ __( 'Links limit', 'wp-parsely' ) }
-						help={ __( 'The maximum number of smart links to add in the content.', 'wp-parsely' ) }
+						label={ __( 'Max Number of Links', 'wp-parsely' ) }
+						suffix={ __( 'Links', 'wp-parsely' ) }
 						min={ 1 }
 						max={ 20 }
-					/>
-					<RangeControl
+						initialPosition={ maxLinks }
 						disabled={ disabled }
+					/>
+					<InputRange
 						value={ maxLinkWords }
-						initialPosition={ maxLinkWords }
 						onChange={ ( value ) => {
 							setMaxLinkWords( value ?? 1 );
 							onSettingChange( 'SmartLinkingMaxLinkWords', value ?? DEFAULT_MAX_LINK_WORDS );
 						} }
-						label={ __( 'Link length', 'wp-parsely' ) }
-						help={ __( 'The maximum length (in words) for the smart link.', 'wp-parsely' ) }
+						label={ __( 'Max Link Length', 'wp-parsely' ) }
+						suffix={ __( 'Words', 'wp-parsely' ) }
 						min={ 1 }
 						max={ 8 }
+						initialPosition={ maxLinkWords }
+						disabled={ disabled }
 					/>
 				</div>
-			) }
+			</div>
 		</div>
 	);
 };
