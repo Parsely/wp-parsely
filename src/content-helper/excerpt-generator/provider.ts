@@ -11,7 +11,7 @@ import { ContentHelperError, ContentHelperErrorCode } from '../common/content-he
 
 /**
  * Specifies the form of the response returned by the
- * `/content-suggestions/suggest-meta-description` WordPress REST API endpoint.
+ * `/content-suggestions/suggest-brief` WordPress REST API endpoint.
  *
  * @since 3.13.0
  */
@@ -38,10 +38,13 @@ export class ExcerptGeneratorProvider {
 		let response;
 		try {
 			response = await apiFetch<ExcerptGeneratorApiResponse>( {
-				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-meta-description', {
+				method: 'POST',
+				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-brief', {
 					title,
-					content,
 				} ),
+				data: {
+					content,
+				},
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			return Promise.reject( new ContentHelperError( wpError.message, wpError.code ) );

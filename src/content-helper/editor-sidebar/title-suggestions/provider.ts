@@ -16,22 +16,22 @@ import { getPersonaLabel, PersonaProp } from '../../common/components/persona-se
 
 /**
  * Specifies the form of the response returned by the
- * `content-suggestions/write-title` WordPress REST API endpoint.
+ * `content-suggestions/suggest-headline` WordPress REST API endpoint.
  *
  * @since 3.12.0
  */
-interface WriteTitleApiResponse {
+interface SuggestHeadlineApiResponse {
 	error?: Error;
 	data: string[],
 }
 
 /**
- * Returns data from the `content-suggestions/write-title` WordPress REST API
+ * Returns data from the `content-suggestions/suggest-headline` WordPress REST API
  * endpoint.
  *
  * @since 3.12.0
  */
-export class WriteTitleProvider {
+export class TitleSuggestionsProvider {
 	/**
 	 * Returns a list of suggested titles for the given content.
 	 *
@@ -46,13 +46,16 @@ export class WriteTitleProvider {
 		let response;
 
 		try {
-			response = await apiFetch<WriteTitleApiResponse>( {
-				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/write-title', {
-					content,
+			response = await apiFetch<SuggestHeadlineApiResponse>( {
+				method: 'POST',
+				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-headline', {
 					limit,
 					tone: getToneLabel( tone ),
 					persona: getPersonaLabel( persona ),
-				} ),
+				}, ),
+				data: {
+					content,
+				},
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			return Promise.reject( new ContentHelperError(

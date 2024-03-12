@@ -27,9 +27,12 @@ interface Remote_API_Interface {
 	public function get_items( array $query, bool $associative = false );
 
 	/**
-	 * Checks if the current user is allowed to make the API call.
+	 * Returns whether the endpoint is available for access by the current
+	 * user.
+	 *
+	 * @since 3.14.0 Renamed from `is_user_allowed_to_make_api_call()`.
 	 *
 	 * @return bool
 	 */
-	public function is_user_allowed_to_make_api_call(): bool;
+	public function is_available_to_current_user(): bool;
 }

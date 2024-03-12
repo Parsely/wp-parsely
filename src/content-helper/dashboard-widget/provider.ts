@@ -14,7 +14,7 @@ import {
 } from '../common/content-helper-error';
 import { getApiPeriodParams } from '../common/utils/api';
 import { PostData } from '../common/utils/post';
-import { TopPostsSettings } from './components/top-posts';
+import { TopPostsSettings } from '../common/settings';
 
 /**
  * The form of the response returned by the /stats/posts WordPress REST API

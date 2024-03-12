@@ -1,10 +1,23 @@
 /**
  * WordPress dependencies
  */
-import { Button, ButtonGroup } from '@wordpress/components';
+import {
+	__experimentalHeading as Heading,
+	Button,
+	Modal,
+	Rect,
+	SVG,
+} from '@wordpress/components';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { check, closeSmall, pin, undo } from '@wordpress/icons';
+import {
+	check,
+	pin,
+	reset,
+	trash,
+	undo,
+} from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -25,6 +38,19 @@ interface TitleSuggestionProps {
 }
 
 /**
+ * Returns a vertical divider.
+ *
+ * @since 3.14.0
+ */
+const VerticalDivider = (): JSX.Element => {
+	return (
+		<SVG xmlns="http://www.w3.org/2000/svg" width="1" height="40" viewBox="0 0 1 40" fill="none">
+			<Rect width="1" height="40" fill="#cccccc" />
+		</SVG>
+	);
+};
+
+/**
  * Renders a single title suggestion.
  *
  * @since 3.12.0
@@ -36,6 +62,10 @@ interface TitleSuggestionProps {
 export const TitleSuggestion = (
 	props: Readonly<TitleSuggestionProps>
 ): JSX.Element => {
+	const [ isModalOpen, setIsModalOpen ] = useState<boolean>( false );
+	const openModal = () => setIsModalOpen( true );
+	const closeModal = () => setIsModalOpen( false );
+
 	const {
 		removeTitle,
 		setAcceptedTitle,
@@ -58,14 +88,43 @@ export const TitleSuggestion = (
 	// Flag if the current title has been accepted and applied to the post.
 	const titleInUse = currentPostTitle === props.title.title;
 
-	const onClickAccept = async () => {
+	/**
+	 * Handles the click event for the Apply button.
+	 *
+	 * @since 3.14.0
+	 */
+	const onClickApply = () => {
+		if ( titleInUse ) {
+			return;
+		}
+
+		openModal();
+	};
+
+	/**
+	 * Handles the click event for the Replace button.
+	 *
+	 * @since 3.14.0
+	 */
+	const onClickReplace = async () => {
+		if ( titleInUse ) {
+			return;
+		}
+
 		Telemetry.trackEvent( 'title_suggestion_applied', {
 			title: props.title.title,
 			type: props.type,
 		} );
 		await setAcceptedTitle( props.type, props.title );
+
+		closeModal();
 	};
 
+	/**
+	 * Handles the click event for the Pin button.
+	 *
+	 * @since 3.14.0
+	 */
 	const onClickPin = async () => {
 		Telemetry.trackEvent( 'title_suggestion_pinned', {
 			pinned: ! isPinned,
@@ -79,6 +138,11 @@ export const TitleSuggestion = (
 		}
 	};
 
+	/**
+	 * Handles the click event for the Remove button.
+	 *
+	 * @since 3.14.0
+	 */
 	const onClickRemove = async () => {
 		Telemetry.trackEvent( 'title_suggestion_removed', {
 			type: props.type,
@@ -87,6 +151,11 @@ export const TitleSuggestion = (
 		await removeTitle( props.type, props.title );
 	};
 
+	/**
+	 * Handles the click event for the Restore button.
+	 *
+	 * @since 3.14.0
+	 */
 	const onClickRestore = async () => {
 		Telemetry.trackEvent( 'title_suggestion_restored', {
 			type: props.type,
@@ -103,46 +172,76 @@ export const TitleSuggestion = (
 
 	return (
 		<>
-			<div className={ `parsely-write-titles-title-suggestion	${ titleInUse && 'title-in-use' } ${ props.isOriginal && 'original-title' }` }>
-				<div className="parsely-write-titles-suggested-title">{ props.title.title }</div>
-				<div className="parsely-write-titles-suggested-title-actions">
-					{ ( ! props.isOriginal ) ? (
-						<ButtonGroup>
-							<Button size="small"
-								iconSize={ 15 }
-								variant="primary"
-								icon={ check }
-								label={ __( 'Accept Title', 'wp-parsely' ) }
-								onClick={ onClickAccept } />
-							<Button size="small"
-								iconSize={ 15 }
-								className={ isPinned ? 'is-pinned' : '' }
-								variant="secondary"
-								icon={ pin }
-								label={ __( 'Pin Title', 'wp-parsely' ) }
-								onClick={ onClickPin }	/>
-							{ ! isPinned &&
-								<Button size="small"
-									iconSize={ 15 }
-									variant="secondary"
-									icon={ closeSmall }
-									label={ __( 'Remove Title', 'wp-parsely' ) }
-									onClick={ onClickRemove }
-								/>
-							}
-						</ButtonGroup>
-					) : (
-						<ButtonGroup>
-							<Button size="small"
-								iconSize={ 15 }
-								variant="primary"
-								icon={ undo }
-								label={ __( 'Restore Title', 'wp-parsely' ) }
-								onClick={ onClickRestore } />
-						</ButtonGroup>
+			<div
+				className={
+					'wp-parsely-title-suggestion' +
+					( titleInUse ? ' title-in-use' : '' ) +
+					( props.isOriginal ? ' original-title' : '' ) +
+					( isPinned ? ' pinned-title' : '' )
+				}
+			>
+				<div className="suggested-title">
+					{ props.isOriginal && (
+						<Heading className="suggested-title-original" level={ 3 }>
+							{ __( 'Original', 'wp-parsely' ) }
+						</Heading>
 					) }
+					{ props.title.title }
+				</div>
+				<div className="suggested-title-actions">
+					<div className="suggested-title-actions-container">
+						{ props.isOriginal && (
+							<Button onClick={ onClickRestore } icon={ undo } label={ __( 'Restore', 'wp-parsely' ) } />
+						) }
+						{ ! props.isOriginal && (
+							<>
+								<div className="suggested-title-actions-left">
+									<Button
+										onClick={ onClickApply }
+										disabled={ titleInUse }
+										icon={ check }
+										label={ titleInUse ? __( 'Applied', 'wp-parsely' ) : __( 'Apply', 'wp-parsely' ) }
+									/>
+									{ ! isPinned && (
+										<Button
+											onClick={ onClickRemove }
+											icon={ trash }
+											label={ __( 'Remove', 'wp-parsely' ) }
+										/>
+									) }
+								</div>
+								<VerticalDivider />
+								<div className="suggested-title-actions-right">
+									{ isPinned ? (
+										<Button onClick={ onClickPin } icon={ reset } label={ __( 'Unpin', 'wp-parsely' ) } />
+									) : (
+										<Button onClick={ onClickPin } icon={ pin } label={ __( 'Pin', 'wp-parsely' ) } />
+									) }
+								</div>
+							</>
+						) }
+					</div>
 				</div>
 			</div>
+			{ isModalOpen && (
+				<Modal title={ __( 'Replace Title?', 'wp-parsely' ) } onRequestClose={ closeModal }>
+					<div className="wp-parsely-suggested-title-modal">
+						<h2>{ props.title.title }</h2>
+						{ __(
+							"You'll still be able to restore your original title until you exit the editor.",
+							'wp-parsely',
+						) }
+						<div className="suggested-title-modal-actions">
+							<Button onClick={ closeModal } variant="secondary">
+								{ __( 'Cancel', 'wp-parsely' ) }
+							</Button>
+							<Button onClick={ onClickReplace } variant="primary">
+								{ __( 'Replace', 'wp-parsely' ) }
+							</Button>
+						</div>
+					</div>
+				</Modal>
+			) }
 		</>
 	);
 };

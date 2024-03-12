@@ -31,17 +31,25 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @var array<string, mixed>
 	 */
 	protected $default_value = array(
-		'PerformanceDetailsOpen'       => true,
-		'RelatedTopPostsFilterBy'      => 'unavailable',
-		'RelatedTopPostsFilterValue'   => '',
-		'RelatedTopPostsOpen'          => false,
-		'SettingsMetric'               => 'views',
-		'SettingsOpen'                 => true,
-		'SettingsPeriod'               => '7d',
-		'TitleSuggestionsOpen'         => false,
-		'TitleSuggestionsPersona'      => 'journalist',
-		'TitleSuggestionsSettingsOpen' => false,
-		'TitleSuggestionsTone'         => 'neutral',
+		'InitialTabName'           => 'tools',
+		'PerformanceStatsSettings' => array(
+			'Period'            => '7d',
+			'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
+			'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
+		),
+		'RelatedPostsFilterBy'     => 'unavailable',
+		'RelatedPostsFilterValue'  => '',
+		'RelatedPostsMetric'       => 'views',
+		'RelatedPostsOpen'         => false,
+		'RelatedPostsPeriod'       => '7d',
+		'SmartLinkingMaxLinks'     => 10,
+		'SmartLinkingMaxLinkWords' => 4,
+		'SmartLinkingOpen'         => false,
+		'TitleSuggestionsSettings' => array(
+			'Open'    => false,
+			'Persona' => 'journalist',
+			'Tone'    => 'neutral',
+		),
 	);
 
 	/**
@@ -75,11 +83,10 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_route
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 * @uses \Parsely\Endpoints\Base_Endpoint::permission_callback
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
@@ -115,50 +122,8 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
 	 */
-	public function test_verify_that_route_is_not_registered_when_proxy_is_disabled(): void {
+	public function test_verify_that_route_is_not_registered_when_endpoint_is_disabled(): void {
 		parent::run_test_do_not_register_route_when_proxy_is_disabled();
-	}
-
-	/**
-	 * Verifies default user capability filter.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @covers \Parsely\Endpoints\Base_Endpoint::permission_callback
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
-	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 */
-	public function test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed(): void {
-		parent::run_test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed();
-	}
-
-	/**
-	 * Verifies endpoint specific user capability filter.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @covers \Parsely\Endpoints\Base_Endpoint::permission_callback
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
-	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 */
-	public function test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed(): void {
-		parent::run_test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed();
 	}
 
 	/**
@@ -172,9 +137,8 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
 	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::process_request
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 * @uses \Parsely\Endpoints\Base_Endpoint::permission_callback
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_route
@@ -204,10 +168,9 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
 	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::process_request
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 * @uses \Parsely\Endpoints\Base_Endpoint::permission_callback
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_route
@@ -228,32 +191,90 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	}
 
 	/**
+	 * Tests that the endpoint can correctly handle PUT requests with valid
+	 * nested PerformanceStatsSettings values.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::sanitize_subvalue
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct()
+	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_route()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_value()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::process_request()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::sanitize_value()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::set_value()
+	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key()
+	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs()
+	 * @uses \Parsely\Parsely::__construct()
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests()
+	 * @uses \Parsely\Parsely::are_credentials_managed()
+	 * @uses \Parsely\Parsely::set_managed_options()
+	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key()
+	 */
+	public function test_valid_nested_performance_stats_settings_period(): void {
+		$this->set_admin_user();
+
+		$value = $this->send_put_request(
+			$this->generate_json(
+				'views',
+				'7d',
+				array(
+					'PerformanceStatsSettings' => array(
+						'Period'            => '1h',
+						'VisiblePanels'     => array( 'overview', 'referrers' ),
+						'VisibleDataPoints' => array( 'views', 'avgEngaged', 'recirculation' ),
+					),
+				)
+			)
+		);
+
+		$expected = $this->wp_json_encode(
+			array_merge(
+				$this->default_value,
+				array(
+					'PerformanceStatsSettings' => array(
+						'Period'            => '1h',
+						'VisiblePanels'     => array( 'overview', 'referrers' ),
+						'VisibleDataPoints' => array( 'views', 'avgEngaged', 'recirculation' ),
+					),
+				)
+			)
+		);
+
+		self::assertSame( $expected, $value );
+	}
+
+	/**
 	 * Generates a JSON string for the passed period, metric, and extra data.
 	 *
 	 * @since 3.13.0
 	 *
-	 * @param string|null         $settings_metric The SettingsMetric value.
-	 * @param string|null         $settings_period The SettingsPeriod value.
+	 * @param string|null         $metric The RelatedPostsMetric value.
+	 * @param string|null         $period The RelatedPostsPeriod value.
 	 * @param array<mixed, mixed> $extra_data Any Extra key/value pairs to add.
 	 * @return string The generated JSON string.
 	 */
 	protected function generate_json(
-		?string $settings_metric = null,
-		?string $settings_period = null,
+		?string $metric = null,
+		?string $period = null,
 		array $extra_data = array()
 	): string {
 		$array = $this->default_value;
-		unset( $array['SettingsMetric'], $array['SettingsPeriod'] );
+		unset( $array['RelatedPostsMetric'], $array['RelatedPostsPeriod'] );
 
-		if ( null !== $settings_metric ) {
-			$array['SettingsMetric'] = $settings_metric;
+		if ( null !== $metric ) {
+			$array['RelatedPostsMetric'] = $metric;
 		}
 
-		if ( null !== $settings_period ) {
-			$array['SettingsPeriod'] = $settings_period;
+		if ( null !== $period ) {
+			$array['RelatedPostsPeriod'] = $period;
 		}
 
-		ksort( $array );
+		ksort( $array, SORT_NATURAL | SORT_FLAG_CASE );
 
 		return $this->wp_json_encode( array_merge( $array, $extra_data ) );
 	}

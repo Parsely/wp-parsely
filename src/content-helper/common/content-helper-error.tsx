@@ -26,6 +26,10 @@ export enum ContentHelperErrorCode {
 	ParselyApiReturnedNoData = 'ch_parsely_api_returned_no_data',
 	ParselyApiReturnedTooManyResults = 'ch_parsely_api_returned_too_many_results',
 	ParselyApiUnauthorized = 401, // Intentionally without quotes.
+	ParselyInternalServerError = 500, // Intentionally without quotes.
+	ParselySchemaValidationFailed = 422, // Intentionally without quotes.
+	ParselyUpstreamMalformedResponse = 507, // Intentionally without quotes.
+	ParselyUpstreamNotAvailable = 503, // Intentionally without quotes.
 	PluginCredentialsNotSetMessageDetected = 'parsely_credentials_not_set_message_detected',
 	PluginSettingsApiSecretNotSet = 'parsely_api_secret_not_set',
 	PluginSettingsSiteIdNotSet = 'parsely_site_id_not_set',
@@ -64,6 +68,47 @@ export class ContentHelperError extends Error {
 
 		// Set the prototype explicitly.
 		Object.setPrototypeOf( this, ContentHelperError.prototype );
+
+		// Errors that need rephrasing.
+		if ( this.code === ContentHelperErrorCode.ParselyApiUnauthorized ) {
+			this.message = __(
+				'This AI-powered feature is opt-in. To gain access, please submit a request ' +
+				'<a href="https://wpvip.com/parsely-content-helper/" target="_blank" rel="noreferrer">here</a>.',
+				'wp-parsely'
+			);
+		} else if ( this.code === ContentHelperErrorCode.ParselyInternalServerError ) {
+			this.message = __(
+				'The Parse.ly API returned an internal server error. Please try again later.',
+				'wp-parsely'
+			);
+		} else if ( this.code === ContentHelperErrorCode.HttpRequestFailed &&
+			this.message.includes( 'cURL error 28' ) ) {
+			this.message = __(
+				'The Parse.ly API did not respond in a timely manner. Please try again later.',
+				'wp-parsely'
+			);
+		} else if ( this.code === ContentHelperErrorCode.ParselySchemaValidationFailed ) {
+			this.message = __(
+				'The Parse.ly API returned a validation error. Please try again later.',
+				'wp-parsely'
+			);
+		} else if ( this.code === ContentHelperErrorCode.ParselyUpstreamMalformedResponse &&
+			this.message.includes( 'Insufficient Storage' ) ) {
+			this.message = __(
+				'The Parse.ly API couldn\'t find any relevant data to fulfill the request. Please retry with a different input.',
+				'wp-parsely'
+			);
+		} else if ( this.code === ContentHelperErrorCode.ParselyUpstreamMalformedResponse ) {
+			this.message = __(
+				'The Parse.ly API returned a malformed response. Please try again later.',
+				'wp-parsely'
+			);
+		} else if ( this.code === ContentHelperErrorCode.ParselyUpstreamNotAvailable ) {
+			this.message = __(
+				'The Parse.ly API is currently unavailable. Please try again later.',
+				'wp-parsely'
+			);
+		}
 	}
 
 	/**
@@ -102,14 +147,6 @@ export class ContentHelperError extends Error {
 				'The Parse.ly API cannot be reached. Please verify that you are online.',
 				'wp-parsely'
 			) );
-		}
-
-		// Errors that need rephrasing.
-		if ( this.code === ContentHelperErrorCode.ParselyApiUnauthorized ) {
-			this.message = __(
-				'This feature is accessible to select customers participating in its beta testing.',
-				'wp-parsely'
-			);
 		}
 
 		return (

@@ -33,6 +33,7 @@ use WP_Post;
  *   track_post_types: string[],
  *   track_page_types: string[],
  *   track_post_types_as?: array<string, string>,
+ *   full_metadata_in_non_posts: ?bool,
  *   disable_javascript: bool,
  *   disable_amp: bool,
  *   meta_type: string,
@@ -63,7 +64,7 @@ class Parsely {
 	public const CAPABILITY                      = 'manage_options'; // The capability required to administer settings.
 	public const DASHBOARD_BASE_URL              = 'https://dash.parsely.com';
 	public const PUBLIC_API_BASE_URL             = 'https://api.parsely.com/v2';
-	public const PUBLIC_SUGGESTIONS_API_BASE_URL = 'https://content-suggestions-beta.parsely-recspod.net';
+	public const PUBLIC_SUGGESTIONS_API_BASE_URL = 'https://content-suggestions-api.parsely.net/prod';
 
 	/**
 	 * Declare some class properties
@@ -71,24 +72,25 @@ class Parsely {
 	 * @var Parsely_Options $option_defaults The defaults we need for the class.
 	 */
 	private $option_defaults = array(
-		'apikey'                    => '',
-		'content_id_prefix'         => '',
-		'api_secret'                => '',
-		'use_top_level_cats'        => false,
-		'custom_taxonomy_section'   => 'category',
-		'cats_as_tags'              => false,
-		'track_authenticated_users' => false,
-		'lowercase_tags'            => true,
-		'force_https_canonicals'    => false,
-		'track_post_types'          => array(),
-		'track_page_types'          => array(),
-		'disable_javascript'        => false,
-		'disable_amp'               => false,
-		'meta_type'                 => 'json_ld',
-		'logo'                      => '',
-		'metadata_secret'           => '',
-		'disable_autotrack'         => false,
-		'plugin_version'            => self::VERSION,
+		'apikey'                     => '',
+		'content_id_prefix'          => '',
+		'api_secret'                 => '',
+		'use_top_level_cats'         => false,
+		'custom_taxonomy_section'    => 'category',
+		'cats_as_tags'               => false,
+		'track_authenticated_users'  => false,
+		'lowercase_tags'             => true,
+		'force_https_canonicals'     => false,
+		'track_post_types'           => array(),
+		'track_page_types'           => array(),
+		'full_metadata_in_non_posts' => true,
+		'disable_javascript'         => false,
+		'disable_amp'                => false,
+		'meta_type'                  => 'json_ld',
+		'logo'                       => '',
+		'metadata_secret'            => '',
+		'disable_autotrack'          => false,
+		'plugin_version'             => self::VERSION,
 	);
 
 	/**
@@ -403,8 +405,13 @@ class Parsely {
 		 */
 		$options = get_option( self::OPTIONS_KEY, null );
 
+		if ( is_array( $options ) && ! isset( $options['full_metadata_in_non_posts'] ) ) {
+			$this->set_default_full_metadata_in_non_posts();
+		}
+
 		if ( ! is_array( $options ) ) {
 			$this->set_default_track_as_values();
+			$this->set_default_full_metadata_in_non_posts();
 			$options = $this->option_defaults;
 		}
 
@@ -442,6 +449,35 @@ class Parsely {
 				$this->option_defaults['track_page_types'][] = $post_type;
 			} else {
 				$this->option_defaults['track_post_types'][] = $post_type;
+			}
+		}
+	}
+
+	/**
+	 * Sets the default value for the full_metadata_in_non_posts option.
+	 *
+	 * @since 3.14.0
+	 */
+	public function set_default_full_metadata_in_non_posts(): void {
+		$this->option_defaults['full_metadata_in_non_posts'] = true;
+
+		// Usage of any of these filters will result in the setting being set
+		// to false.
+		$filter_tags = array(
+			'wp_parsely_metadata',
+			'wp_parsely_post_tags',
+			'wp_parsely_permalink',
+			'wp_parsely_post_category',
+			'wp_parsely_pre_authors',
+			'wp_parsely_post_authors',
+			'wp_parsely_custom_taxonomies',
+			'wp_parsely_post_type',
+		);
+
+		foreach ( $filter_tags as $filter_tag ) {
+			if ( has_filter( $filter_tag ) ) {
+				$this->option_defaults['full_metadata_in_non_posts'] = false;
+				break;
 			}
 		}
 	}

@@ -71,14 +71,18 @@ final class RelatedRemoteAPITest extends RemoteAPITest {
 	/**
 	 * Verifies that the endpoint does not have filters that check user capability.
 	 *
-	 * @covers \Parsely\Endpoints\Base_Endpoint::is_user_allowed_to_make_api_call
-	 *
+	 * @covers \Parsely\RemoteAPI\Related_API::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::set_managed_options
 	 */
 	public function test_related_endpoint_does_not_have_user_capability_filters(): void {
 		$api = new Related_API( new Parsely() );
 
-		self::assertTrue( $api->is_user_allowed_to_make_api_call() );
+		self::assertTrue( $api->is_available_to_current_user() );
 		$this->assert_wp_hooks_availability(
 			array(
 				'wp_parsely_user_capability_for_all_private_apis',

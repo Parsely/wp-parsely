@@ -51,11 +51,23 @@ class Page_Builder extends Metadata_Builder {
 		$this->build_headline();
 		$this->build_url();
 
+		if ( true === $this->parsely->get_options()['full_metadata_in_non_posts'] ) {
+			$this->build_type( $this->post, 'non-post' );
+			$this->build_main_entity( 'post' );
+			$this->build_thumbnail_url( $this->post );
+			$this->build_image( $this->post );
+			$this->build_article_section( $this->post );
+			$this->build_author( $this->post );
+			$this->build_publisher();
+			$this->build_keywords( $this->post );
+			$this->build_metadata_post_times( $this->post );
+		}
+
 		return $this->metadata;
 	}
 
 	/**
-	 * Populates the `headline` field in the metadata object.
+	 * Populates the headline field in the metadata object.
 	 *
 	 * @since 3.4.0
 	 */
@@ -64,7 +76,7 @@ class Page_Builder extends Metadata_Builder {
 	}
 
 	/**
-	 * Populates the `url` field in the metadata object by getting the current page's URL.
+	 * Populates the url field in the metadata object by getting the current page's URL.
 	 *
 	 * @since 3.4.0
 	 */

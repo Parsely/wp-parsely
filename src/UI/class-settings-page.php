@@ -55,6 +55,7 @@ use const Parsely\PARSELY_FILE;
  *   track_post_types_as?: array<string, string>,
  *   track_post_types: string[],
  *   track_page_types: string[],
+ *   full_metadata_in_non_posts: ?bool,
  *   content_id_prefix?: string,
  *   use_top_level_cats?:bool|string,
  *   custom_taxonomy_section?: string,
@@ -428,6 +429,25 @@ final class Settings_Page {
 				'option_key' => $field_id,
 				'help_text'  => $field_help,
 				'filter'     => 'wp_parsely_trackable_statuses',
+			)
+		);
+
+		// Use full metadata in non-posts.
+		$field_id = 'full_metadata_in_non_posts';
+		add_settings_field(
+			$field_id,
+			$this->set_field_label_contents( __( 'Use Full Metadata in Non-Posts', 'wp-parsely' ), $field_id ),
+			array( $this, 'print_radio_tags' ),
+			Parsely::MENU_SLUG,
+			$section_key,
+			array(
+				'title'         => __( 'Use Full Metadata in Non-Posts', 'wp-parsely' ), // Passed for legend element.
+				'option_key'    => $field_id,
+				'radio_options' => array(
+					'true'  => __( 'Yes, add full metadata to Post Types being tracked as Non-Posts.', 'wp-parsely' ),
+					'false' => __( 'No, we have code that modifies metadata and that has not been tested for compatibility yet.', 'wp-parsely' ),
+				),
+				'help_text'     => __( '<strong><span style="color:#d63638">Important: This setting will be removed in the future, force-enabling this behavior.</span></strong> If you\'re using any code that modifies metadata in a way that conflicts with this setting when it is enabled, please apply any needed fixes.', 'wp-parsely' ),
 			)
 		);
 
@@ -1071,6 +1091,14 @@ final class Settings_Page {
 			$input['content_id_prefix'] = $options['content_id_prefix'];
 		} else {
 			$input['content_id_prefix'] = sanitize_text_field( $input['content_id_prefix'] );
+		}
+
+		// Full metadata in non-posts.
+		if ( ! isset( $input['full_metadata_in_non_posts'] ) ) {
+			$input['full_metadata_in_non_posts'] = true;
+		} else {
+			// phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
+			$input['full_metadata_in_non_posts'] = 'true' == $input['full_metadata_in_non_posts'];
 		}
 
 		// Allow for Top-level categories setting to be conditionally included on the page.

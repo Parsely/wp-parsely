@@ -61,7 +61,7 @@ describe( 'Front end metadata insertion', () => {
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
 
-	it( 'Should insert JSON-LD on post page', async () => {
+	it( 'Should insert JSON-LD on post', async () => {
 		await setMetadataFormat( 'json_ld' );
 
 		await page.goto( createURL( '/', '?p=1' ) );
@@ -70,6 +70,19 @@ describe( 'Front end metadata insertion', () => {
 
 		expect( content ).toContain( '<script type="application/ld+json">' );
 		expect( content ).toContain( '{"@context":"https:\\/\\/schema.org","@type":"NewsArticle","headline":"Hello world!","url":"http:\\/\\/localhost:8889\\/?p=1","mainEntityOfPage":{"@type":"WebPage","@id":"http:\\/\\/localhost:8889\\/?p=1"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"' );
+
+		expect( content ).not.toContain( '<meta name="parsely-title" ' );
+	} );
+
+	it( 'Should insert JSON-LD on page', async () => {
+		await setMetadataFormat( 'json_ld' );
+
+		await page.goto( createURL( '/', '?p=2' ) );
+
+		const content = await page.content();
+
+		expect( content ).toContain( '<script type="application/ld+json">' );
+		expect( content ).toContain( '{"@context":"https:\\/\\/schema.org","@type":"WebPage","headline":"Sample Page","url":"http:\\/\\/localhost:8889\\/?page_id=2","mainEntityOfPage":{"@type":"WebPage","@id":"http:\\/\\/localhost:8889\\/?page_id=2"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[{"@type":"Person","name":"admin"}],"creator":["admin"],"publisher":{"@type":"Organization","name":"wp-parsely","logo":""},"keywords":[],"' );
 
 		expect( content ).not.toContain( '<meta name="parsely-title" ' );
 	} );
@@ -85,10 +98,13 @@ describe( 'Front end metadata insertion', () => {
 		expect( content ).toContain( '<meta name="parsely-link" content="http://localhost:8889">' );
 		expect( content ).toContain( '<meta name="parsely-type" content="index">' );
 
+		expect( content ).not.toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
+		expect( content ).not.toContain( '<meta name="parsely-section" content="Uncategorized">' );
+		expect( content ).not.toContain( '<meta name="parsely-author" content="admin">' );
 		expect( content ).not.toContain( '<script type="application/ld+json">' );
 	} );
 
-	it( 'Should insert repeated metas on post page', async () => {
+	it( 'Should insert repeated metas on post', async () => {
 		await setMetadataFormat( 'repeated_metas' );
 
 		await page.goto( createURL( '/', '?p=1' ) );
@@ -98,6 +114,23 @@ describe( 'Front end metadata insertion', () => {
 		expect( content ).toContain( '<meta name="parsely-title" content="Hello world!">' );
 		expect( content ).toContain( '<meta name="parsely-link" content="http://localhost:8889/?p=1">' );
 		expect( content ).toContain( '<meta name="parsely-type" content="post">' );
+		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
+		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
+		expect( content ).toContain( '<meta name="parsely-author" content="admin">' );
+
+		expect( content ).not.toContain( '<script type="application/ld+json">' );
+	} );
+
+	it( 'Should insert repeated metas on page', async () => {
+		await setMetadataFormat( 'repeated_metas' );
+
+		await page.goto( createURL( '/', '?p=2' ) );
+
+		const content = await page.content();
+
+		expect( content ).toContain( '<meta name="parsely-title" content="Sample Page">' );
+		expect( content ).toContain( '<meta name="parsely-link" content="http://localhost:8889/?page_id=2">' );
+		expect( content ).toContain( '<meta name="parsely-type" content="index">' );
 		expect( content ).toMatch( /<meta name="parsely-pub-date" content=".*Z">/ );
 		expect( content ).toContain( '<meta name="parsely-section" content="Uncategorized">' );
 		expect( content ).toContain( '<meta name="parsely-author" content="admin">' );

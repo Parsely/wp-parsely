@@ -25,6 +25,7 @@ export interface PostData {
 	thumbnailUrl: string;
 	title: string;
 	url: string;
+	rawUrl: string;
 	views: number;
 }
 
@@ -36,6 +37,7 @@ export interface PostData {
 export interface PostListItemProps {
 	metric: Metric;
 	post: PostData;
+	postContent?: string;
 }
 
 /**
@@ -65,7 +67,7 @@ export function PostListItemMetric(
 ): JSX.Element {
 	if ( 'views' === metric ) {
 		return (
-			<span className="parsely-top-post-metric-data">
+			<span className="parsely-post-metric-data">
 				<span className="screen-reader-text">
 					{ __( 'Number of Views', 'wp-parsely' ) }
 				</span>
@@ -76,7 +78,7 @@ export function PostListItemMetric(
 
 	if ( 'avg_engaged' === metric ) {
 		return (
-			<span className="parsely-top-post-metric-data">
+			<span className="parsely-post-metric-data">
 				<span className="screen-reader-text">
 					{ __( 'Average Time', 'wp-parsely' ) }
 				</span>
@@ -86,7 +88,7 @@ export function PostListItemMetric(
 	}
 
 	return (
-		<span className="parsely-top-post-metric-data">
+		<span className="parsely-post-metric-data">
 			-
 		</span>
 	);
