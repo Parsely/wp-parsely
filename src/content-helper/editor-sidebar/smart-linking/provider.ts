@@ -57,6 +57,7 @@ export class SmartLinkingProvider {
 	): Promise<LinkSuggestion[]> {
 		let response;
 
+		//return [{"href":"http:\/\/wpvip.com\/2022\/02\/10\/cha-ching-how-the-wordpress-and-ecommerce-combo-pays-off\/","title":"cha-ching! how the wordpress and ecommerce combo pays off","text":"digital landscape, businesses are constantly seeking ways to enhance their online presence","offset":0},{"href":"http:\/\/wpvip.com\/2019\/09\/26\/decoupled-platform-for-60000-contributors-with-wordpress\/","title":"creating an open platform for 60,000 contributors with wordpress and thrive global","text":"WordPress, with its diverse ecosystem, has emerged as a powerful platform","offset":0},{"href":"http:\/\/wpvip.com\/2023\/06\/09\/best-practices-for-building-an-enterprise-wordpress-website\/","title":"best practices for building an enterprise wordpress website","text":"WordPress Enterprise, VIP, and performance","offset":0}];
 		try {
 			response = await apiFetch<SmartLinkingApiResponse>( {
 				method: 'POST',
