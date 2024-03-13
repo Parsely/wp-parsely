@@ -74,6 +74,9 @@ abstract class BaseContentSuggestionsAPITest extends RemoteAPITest {
 			'output_params' => array(
 				'some_param'  => true,
 				'other_param' => 'Hello',
+				'recursive'   => array(
+					'key' => 'value',
+				),
 			),
 			'text'          => $this->generate_content_with_length( 30000 ),
 			'something'     => 'else',
@@ -85,6 +88,13 @@ abstract class BaseContentSuggestionsAPITest extends RemoteAPITest {
 		self::assertArrayHasKey( 'output_params', $truncated_array );
 		self::assertArrayHasKey( 'text', $truncated_array );
 		self::assertLessThanOrEqual( 25000, strlen( $truncated_array['text'] ) );
+
+		// Assert that the truncated text is the beginning of the original text.
+		self::assertStringStartsWith( $truncated_array['text'], $body['text'] );
+
+		// Assert that the other keys are the same in both arrays.
+		self::assertEquals( $body['output_params'], $truncated_array['output_params'] );
+		self::assertEquals( $body['something'], $truncated_array['something'] );
 	}
 
 	/**

@@ -172,9 +172,9 @@ abstract class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 	public function truncate_array_content( $content ) {
 		if ( is_array( $content ) ) {
 			// If the content is an array, iterate over its elements.
-			foreach ( $content as &$value ) {
+			foreach ( $content as $key => $value ) {
 				// Recursively process/truncate each element of the array.
-				$value = $this->truncate_array_content( $value );
+				$content[ $key ] = $this->truncate_array_content( $value );
 			}
 			return $content;
 		} elseif ( is_string( $content ) ) {
