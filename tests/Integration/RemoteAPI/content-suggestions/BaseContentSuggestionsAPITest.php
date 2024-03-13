@@ -58,4 +58,72 @@ abstract class BaseContentSuggestionsAPITest extends RemoteAPITest {
 		self::assertArrayHasKey( 'X-APIKEY-SECRET', $headers );
 		self::assertEquals( 'my-secret', $headers['X-APIKEY-SECRET'] );
 	}
+
+	/**
+	 * Verifies that the truncate function is properly truncated long content on the body array.
+	 *
+	 * @since 3.14.1
+	 *
+	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::truncate_array_content
+	 */
+	public function test_truncate_body_content(): void {
+		/**
+		 * @var Content_Suggestions_Base_API $remote_api
+		 */
+		$remote_api = self::$remote_api;
+
+		$body = array(
+			'output_params' => array(
+				'some_param'  => true,
+				'other_param' => 'Hello',
+				'recursive'   => array(
+					'key' => 'value',
+				),
+			),
+			'text'          => $this->generate_content_with_length( 30000 ),
+			'something'     => 'else',
+		);
+
+		$truncated_array = $remote_api->truncate_array_content( $body );
+
+		self::assertIsArray( $truncated_array );
+		self::assertArrayHasKey( 'output_params', $truncated_array );
+		self::assertArrayHasKey( 'text', $truncated_array );
+		self::assertLessThanOrEqual( 25000, strlen( $truncated_array['text'] ) );
+
+		// Assert that the truncated text is the beginning of the original text.
+		self::assertStringStartsWith( $truncated_array['text'], $body['text'] );
+
+		// Assert that the other keys are the same in both arrays.
+		self::assertEquals( $body['output_params'], $truncated_array['output_params'] );
+		self::assertEquals( $body['something'], $truncated_array['something'] );
+	}
+
+	/**
+	 * Generate content with a specific length.
+	 *
+	 * @since 3.14.1
+	 *
+	 * @param int $length Length of the generated content.
+	 *
+	 * @return string The generated content.
+	 */
+	private function generate_content_with_length( int $length ): string {
+		$words          = array( 'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit' );
+		$string         = '';
+		$current_length = 0;
+		while ( $current_length < $length ) {
+			$word = $words[ array_rand( $words ) ];
+			if ( $current_length > 0 ) {
+				if ( $current_length + strlen( $word ) + 1 > $length ) {
+					break;
+				}
+				$string .= ' ';
+				++$current_length;
+			}
+			$string         .= $word;
+			$current_length += strlen( $word );
+		}
+		return $string;
+	}
 }
