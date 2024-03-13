@@ -301,6 +301,7 @@ export const SmartLinkingPanel = ( {
 
 	/**
 	 * Iterates through blocks of content to apply smart link suggestions.
+	 *
 	 * This function parses the content of each block, looking for text nodes that match the provided link suggestions.
 	 * When a match is found, it creates an anchor element (`<a>`) around the matching text with the specified href and
 	 * title from the link suggestion.
@@ -340,25 +341,25 @@ export const SmartLinkingPanel = ( {
 										occurrenceCounts[ link.text ] = { encountered: 0, linked: 0 };
 									}
 
-									// Increment the encountered count every time the text is found
+									// Increment the encountered count every time the text is found.
 									occurrenceCounts[ link.text ].encountered++;
 
-									// Check if the encountered count minus linked count matches the link's offset
+									// Check if the encountered count minus linked count matches the link's offset.
 									if ( occurrenceCounts[ link.text ].encountered - occurrenceCounts[ link.text ].linked - 1 === link.offset ) {
-										// Create a new anchor element for the link
+										// Create a new anchor element for the link.
 										const anchor = document.createElement( 'a' );
 										anchor.href = link.href;
 										anchor.title = link.title;
 										anchor.textContent = match[ 0 ];
 
-										// Replace the matched text with the new anchor element
+										// Replace the matched text with the new anchor element.
 										const range = document.createRange();
 										range.setStart( node, match.index );
 										range.setEnd( node, match.index + match[ 0 ].length );
 										range.deleteContents();
 										range.insertNode( anchor );
 
-										// Adjust the text node if there's text remaining after the link
+										// Adjust the text node if there's text remaining after the link.
 										if ( node.textContent && match.index + match[ 0 ].length < node.textContent.length ) {
 											const remainingText = document.createTextNode(
 												node.textContent.slice( match.index + match[ 0 ].length )
@@ -366,7 +367,7 @@ export const SmartLinkingPanel = ( {
 											node.parentNode?.insertBefore( remainingText, anchor.nextSibling );
 										}
 
-										// Increment the linked count only when a link is applied
+										// Increment the linked count only when a link is applied.
 										occurrenceCounts[ link.text ].linked++;
 									}
 								}
@@ -374,14 +375,14 @@ export const SmartLinkingPanel = ( {
 						} );
 					} );
 
-					// Update the block content with the modified HTML
+					// Update the block content with the modified HTML.
 					if ( contentElement && block.attributes.content ) {
 						block.attributes.content = contentElement.innerHTML;
 					}
 				}
 			}
 
-			// Recursively apply links to any inner blocks
+			// Recursively apply links to any inner blocks.
 			if ( block.innerBlocks && block.innerBlocks.length ) {
 				applyLinksToBlocks( block.innerBlocks, links, occurrenceCounts );
 			}
@@ -390,6 +391,7 @@ export const SmartLinkingPanel = ( {
 
 	/**
 	 * Updates the content of a block with the modified HTML.
+	 *
 	 * This function updates the originalContent attribute of the block with the modified HTML.
 	 * It also recursively updates the content of any inner blocks.
 	 *
