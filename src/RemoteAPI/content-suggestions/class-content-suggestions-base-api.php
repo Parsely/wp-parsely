@@ -166,6 +166,8 @@ abstract class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 	/**
 	 * Truncates the content of an array to a maximum length.
 	 *
+	 * @since 3.14.1
+	 *
 	 * @param string|array|mixed $content The content to truncate.
 	 * @return string|array|mixed The truncated content.
 	 */

@@ -62,6 +62,8 @@ abstract class BaseContentSuggestionsAPITest extends RemoteAPITest {
 	/**
 	 * Verifies that the truncate function is properly truncated long content on the body array.
 	 *
+	 * @since 3.14.1
+	 *
 	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::truncate_array_content
 	 */
 	public function test_truncate_body_content(): void {
