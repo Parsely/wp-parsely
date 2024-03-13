@@ -164,12 +164,12 @@ abstract class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 	}
 
 	/**
-	 * Truncate the content of an array to a maximum length.
+	 * Truncates the content of an array to a maximum length.
 	 *
-	 * @param string|array|mixed $content The array to truncate.
-	 * @return string|array|mixed The truncated array.
+	 * @param string|array|mixed $content The content to truncate.
+	 * @return string|array|mixed The truncated content.
 	 */
-	public function truncate_array_content( &$content ) {
+	public function truncate_array_content( $content ) {
 		if ( is_array( $content ) ) {
 			// If the content is an array, iterate over its elements.
 			foreach ( $content as &$value ) {
