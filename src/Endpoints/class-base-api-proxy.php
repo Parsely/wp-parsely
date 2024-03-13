@@ -20,6 +20,7 @@ use WP_REST_Server;
 use function Parsely\Utils\convert_endpoint_to_filter_key;
 use function Parsely\Utils\get_date_format;
 use function Parsely\Utils\get_formatted_duration;
+use function Parsely\Utils\parsely_is_https_supported;
 
 /**
  * Configures a REST API endpoint for use.
@@ -240,7 +241,7 @@ abstract class Base_API_Proxy {
 			$post_id = url_to_postid( $item->url ); // 0 if the post cannot be found.
 
 			$post_url = Parsely::get_url_with_itm_source( $item->url, null );
-			if ( wp_is_using_https() ) {
+			if ( parsely_is_https_supported() ) {
 				$post_url = str_replace( 'http://', 'https://', $post_url );
 			}
 
