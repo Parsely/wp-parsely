@@ -106,7 +106,7 @@ abstract class BaseContentSuggestionsAPITest extends RemoteAPITest {
 	 *
 	 * @param int $length Length of the generated content.
 	 *
-	 * @return string The generated content
+	 * @return string The generated content.
 	 */
 	private function generate_content_with_length( int $length ): string {
 		$words          = array( 'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit' );
