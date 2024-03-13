@@ -39,7 +39,7 @@ export const RelatedPostItem = (
 
 	let isLinked = false;
 	if ( postContent ) {
-		isLinked = postContent.includes( post.rawUrl );
+		isLinked = postContent.includes( post.rawUrl.replace( /^(http:\/\/|https:\/\/)/i, '' ) );
 	}
 
 	return (
