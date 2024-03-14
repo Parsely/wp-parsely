@@ -38,6 +38,16 @@ export const RelatedPostItem = (
 ): JSX.Element => {
 	const { createNotice } = useDispatch( 'core/notices' );
 
+	/**
+	 * Checks if a hyperlink is present in the content by using a regular expression.
+	 *
+	 * @since 3.14.1
+	 *
+	 * @param { string } content
+	 * @param { string } rawUrl
+	 *
+	 * @return { boolean } Whether the link is present in the content.
+	 */
 	const isLinkPresentInContent = ( content: string, rawUrl: string ): boolean => {
 		const escapedUrl = escapeRegExp( rawUrl );
 		const regexPattern = new RegExp(
