@@ -1,15 +1,4 @@
-/**
- * Escapes special characters in a string for use in a regular expression.
- *
- * @since 3.14.0
- *
- * @param {string} string - The string to be escaped.
- *
- * @return {string} The escaped string.
- */
-export function escapeRegExp( string: string ): string {
-	return string.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' ); // $& means the whole matched string.
-}
+export { escapeRegExp } from '../../common/utils/functions';
 
 /**
  * Finds all text nodes in an element that contain a given search text and are not within an anchor tag.
