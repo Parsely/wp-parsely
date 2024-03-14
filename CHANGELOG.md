@@ -20,7 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PCH Related Posts: Use HTTPS URLs when the site is using HTTPS ([#2287](https://github.com/Parsely/wp-parsely/pull/2287))
 - PCH Smart Linking: Fix issues applying Smart Links ([#2285](https://github.com/Parsely/wp-parsely/pull/2285))
 
-
 ## [3.14.0](https://github.com/Parsely/wp-parsely/compare/3.13.3...3.14.0) - 2024-03-12
 
 ### Added
