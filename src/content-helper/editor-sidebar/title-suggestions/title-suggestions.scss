@@ -188,6 +188,9 @@
 		align-self: stretch;
 	}
 
+	.wp-parsely-content-helper-error.components-notice {
+		margin-bottom: var(--grid-unit-10, to_rem(8px));
+	}
 }
 
 .wp-parsely-popover .components-popover__content {
