@@ -105,7 +105,7 @@ export class ContentHelperError extends Error {
 			);
 		} else if ( this.code === ContentHelperErrorCode.ParselySuggestionsApiSchemaError ) {
 			this.message = __(
-				'The Parse.ly API returned a validation error. Please try again later.',
+				'The Parse.ly API returned a validation error. Please try again with different parameters.',
 				'wp-parsely'
 			);
 		} else if ( this.code === ContentHelperErrorCode.ParselySuggestionsApiNoData ) {
