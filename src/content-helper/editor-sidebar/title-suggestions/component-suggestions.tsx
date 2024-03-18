@@ -45,9 +45,9 @@ export const TitleSuggestions = ( {
 	 */
 	const toggleCollapse = () => {
 		setIsCollapsed( ! isCollapsed );
-		Telemetry.trackEvent( 'title_suggestions_toggle', {
+		Telemetry.trackEvent( 'title_suggestions_suggestions_toggled', {
 			isOpen: ! isCollapsed,
-
+			suggestions: suggestions.length,
 		} );
 	};
 

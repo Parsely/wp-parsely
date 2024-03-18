@@ -43,7 +43,7 @@ export const PinnedTitleSuggestions = ( {
 	 */
 	const toggleCollapse = () => {
 		setIsCollapsed( ! isCollapsed );
-		Telemetry.trackEvent( 'title_suggestions_pinned_toggle', {
+		Telemetry.trackEvent( 'title_suggestions_pinned_toggled', {
 			isOpen: ! isCollapsed,
 			pinnedTitles: pinnedTitles.length,
 		} );
