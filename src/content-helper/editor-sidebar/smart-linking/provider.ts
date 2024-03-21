@@ -21,7 +21,6 @@ export type LinkSuggestion = {
 	text: string;
 	title: string;
 	offset: number;
-	linked?: boolean;
 };
 
 /**

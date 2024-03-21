@@ -332,7 +332,8 @@ export const SmartLinkingPanel = ( {
 	 * @param {LinkOccurrenceCounts} occurrenceCounts An object to keep track of the number of times each link text has
 	 *                                                been applied across all blocks.
 	 * @param {BlockUpdate[]}        updatedBlocks    An array of updated blocks with the new content.
-	 *                                                This array is be updated in place.
+	 *                                                This array is modified in place and will contain the updated blocks
+	 *                                                after the function has been called.
 	 */
 	const applyLinksToBlocks = (
 		blocks: Readonly<BlockInstance>[],
