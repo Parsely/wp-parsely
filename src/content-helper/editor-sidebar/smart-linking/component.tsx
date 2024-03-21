@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 // eslint-disable-next-line import/named
-import { BlockInstance, getSaveContent } from '@wordpress/blocks';
+import { Block, BlockInstance, getSaveContent } from "@wordpress/blocks";
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
@@ -233,6 +233,8 @@ export const SmartLinkingPanel = ( {
 			applySmartLinks( generatedLinks );
 		} catch ( e: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			setError( e );
+			// eslint-disable-next-line no-console
+			console.error( e );
 			createNotice( 'error', __( 'There was a problem applying smart links.', 'wp-parsely' ), {
 				type: 'snackbar',
 				isDismissible: true,
@@ -259,6 +261,11 @@ export const SmartLinkingPanel = ( {
 		};
 	};
 
+	type BlockUpdate = {
+		clientId: string;
+		newContent: string;
+	};
+
 	/**
 	 * Applies the smart links to the selected block or the entire post content.
 	 *
@@ -279,19 +286,18 @@ export const SmartLinkingPanel = ( {
 		if ( selectedBlock && ! isFullContent ) {
 			blocks = [ selectedBlock ];
 		} else {
-			blocks = allBlocks;
+			blocks = allBlocks.map( ( block ) => block );
 		}
 
 		// An object to keep track of the number of times each link text has been found across all blocks.
 		const occurrenceCounts: LinkOccurrenceCounts = {};
+		const updatedBlocks: BlockUpdate[] = [];
 
 		// Apply the smart links to the content.
-		applyLinksToBlocks( blocks, links, occurrenceCounts );
+		applyLinksToBlocks( blocks, links, occurrenceCounts, updatedBlocks );
 
 		// Update the content of each block.
-		blocks.forEach( ( block ) => {
-			updateBlockContent( block );
-		} );
+		updateBlockContent( updatedBlocks );
 
 		createNotice( 'success', `${ links.length } smart links successfully applied.`, {
 			type: 'snackbar',
@@ -310,18 +316,25 @@ export const SmartLinkingPanel = ( {
 	 * @since 3.14.1
 	 *
 	 * @param {BlockInstance[]}  blocks           The blocks of content where links should be applied.
-	 *                                            This array is modified in place and will contain the updated
-	 *                                            content after the function is called.
 	 * @param {LinkSuggestion[]} links            An array of link suggestions to apply to the content.
 	 * @param {Object}           occurrenceCounts An object to keep track of the number of times each link text has
 	 *                                            been applied across all blocks.
+	 * @param updatedBlocks
 	 */
 	const applyLinksToBlocks = (
 		blocks: BlockInstance[],
 		links: LinkSuggestion[],
-		occurrenceCounts: LinkOccurrenceCounts
+		occurrenceCounts: LinkOccurrenceCounts,
+		updatedBlocks: BlockUpdate[],
 	): void => {
 		blocks.forEach( ( block ) => {
+			let blockUpdated = false;
+			// Recursively apply links to any inner blocks.
+			if ( block.innerBlocks && block.innerBlocks.length ) {
+				applyLinksToBlocks( block.innerBlocks, links, occurrenceCounts, updatedBlocks );
+				return;
+			}
+
 			if ( block.originalContent ) {
 				const blockContent: string = block.originalContent;
 				const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
@@ -344,8 +357,8 @@ export const SmartLinkingPanel = ( {
 									// Increment the encountered count every time the text is found.
 									occurrenceCounts[ link.text ].encountered++;
 
-									// Check if the encountered count minus linked count matches the link's offset.
-									if ( occurrenceCounts[ link.text ].encountered - occurrenceCounts[ link.text ].linked - 1 === link.offset ) {
+									// Check if the link is in the correct position to be applied.
+									if ( occurrenceCounts[ link.text ].encountered === link.offset + 1 ) {
 										// Create a new anchor element for the link.
 										const anchor = document.createElement( 'a' );
 										anchor.href = link.href;
@@ -369,22 +382,23 @@ export const SmartLinkingPanel = ( {
 
 										// Increment the linked count only when a link is applied.
 										occurrenceCounts[ link.text ].linked++;
+
+										// Flag the block as updated.
+										blockUpdated = true;
 									}
 								}
 							}
 						} );
 					} );
 
-					// Update the block content with the modified HTML.
-					if ( contentElement && block.attributes.content ) {
-						block.attributes.content = contentElement.innerHTML;
+					// Save the updated content if the block was updated.
+					if ( blockUpdated ) {
+						updatedBlocks.push( {
+							clientId: block.clientId,
+							newContent: contentElement.innerHTML,
+						} );
 					}
 				}
-			}
-
-			// Recursively apply links to any inner blocks.
-			if ( block.innerBlocks && block.innerBlocks.length ) {
-				applyLinksToBlocks( block.innerBlocks, links, occurrenceCounts );
 			}
 		} );
 	};
@@ -397,27 +411,32 @@ export const SmartLinkingPanel = ( {
 	 *
 	 * @since 3.14.1
 	 *
-	 * @param {BlockInstance} block The block to update.
+	 * @param {Object[]} blockUpdates
 	 */
-	const updateBlockContent = ( block: BlockInstance ) => {
-		const { updateBlock } = dispatch( 'core/block-editor' );
+	const updateBlockContent = ( blockUpdates: BlockUpdate[] ) => {
+		const { getBlock } = select( 'core/block-editor' );
+		const updatedBlocks: { [clientId: string]: object } = {};
 
-		// Update the top-level block.
-		if ( block.attributes.content ) {
-			updateBlock( block.clientId, {
-				attributes: {
-					content: block.attributes.content,
-				},
-				originalContent: getSaveContent( block.name, block.attributes, block.innerBlocks ),
-			} );
-		}
+		// Prepare the updated blocks object.
+		blockUpdates.forEach( ( blockUpdate ) => {
+			const block = getBlock( blockUpdate.clientId );
 
-		// Recursively update nested blocks if any.
-		if ( block.innerBlocks ) {
-			block.innerBlocks.forEach( ( innerBlock ) => {
-				updateBlockContent( innerBlock );
-			} );
-		}
+			if ( ! block ) {
+				return;
+			}
+
+			updatedBlocks[ block.clientId ] = {
+				content: blockUpdate.newContent,
+			};
+		} );
+
+		// Update the blocks attributes.
+		dispatch( 'core/block-editor' ).updateBlockAttributes(
+			Object.keys( updatedBlocks ),
+			updatedBlocks,
+			// @ts-ignore - The uniqueByBlock parameter is not available in the type definition.
+			true,
+		);
 	};
 
 	/**
