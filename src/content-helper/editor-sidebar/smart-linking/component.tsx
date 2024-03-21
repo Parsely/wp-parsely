@@ -292,7 +292,7 @@ export const SmartLinkingPanel = ( {
 		if ( selectedBlock && ! isFullContent ) {
 			blocks = [ selectedBlock ];
 		} else {
-			blocks = allBlocks.map( ( block ) => block );
+			blocks = allBlocks;
 		}
 
 		// An object to keep track of the number of times each link text has been found across all blocks.
