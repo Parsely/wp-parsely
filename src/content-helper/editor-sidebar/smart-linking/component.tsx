@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 // eslint-disable-next-line import/named
-import { Block, BlockInstance, getSaveContent } from "@wordpress/blocks";
+import { BlockInstance } from '@wordpress/blocks';
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
@@ -20,6 +20,31 @@ import { SmartLinkingSettings } from './component-settings';
 import { LinkSuggestion, SmartLinkingProvider } from './provider';
 import { SmartLinkingSettingsProps, SmartLinkingStore } from './store';
 import { escapeRegExp, findTextNodesNotInAnchor } from './utils';
+
+/**
+ * Represents the counts of occurrences and applications of links within text content.
+ *
+ * - `encountered`: The number of times a specific link text is encountered in the content.
+ * - `linked`: The number of times a link has been successfully applied for a specific link text.
+ *
+ * @since 3.14.1
+ */
+type LinkOccurrenceCounts = {
+	[key: string]: {
+		encountered: number;
+		linked: number;
+	};
+};
+
+/**
+ * Represents an update to a block's content.
+ *
+ * @since 3.14.3
+ */
+type BlockUpdate = {
+	clientId: string;
+	newContent: string;
+};
 
 /**
  * Defines the props structure for SmartLinkingPanel.
@@ -61,6 +86,7 @@ export const SmartLinkingPanel = ( {
 	const setSettingsDebounced = useDebounce( setSettings, 500 );
 
 	const [ hint, setHint ] = useState<string | null>( null );
+	const [ numAddedLinks, setNumAddedLinks ] = useState<number>( 0 );
 
 	const { createNotice } = useDispatch( 'core/notices' );
 
@@ -247,26 +273,6 @@ export const SmartLinkingPanel = ( {
 	};
 
 	/**
-	 * Represents the counts of occurrences and applications of links within text content.
-	 *
-	 * - `encountered`: The number of times a specific link text is encountered in the content.
-	 * - `linked`: The number of times a link has been successfully applied for a specific link text.
-	 *
-	 * @since 3.14.1
-	 */
-	type LinkOccurrenceCounts = {
-		[key: string]: {
-			encountered: number;
-			linked: number;
-		};
-	};
-
-	type BlockUpdate = {
-		clientId: string;
-		newContent: string;
-	};
-
-	/**
 	 * Applies the smart links to the selected block or the entire post content.
 	 *
 	 * @since 3.14.0
@@ -297,9 +303,14 @@ export const SmartLinkingPanel = ( {
 		applyLinksToBlocks( blocks, links, occurrenceCounts, updatedBlocks );
 
 		// Update the content of each block.
-		updateBlockContent( updatedBlocks );
+		updateBlocksContent( updatedBlocks );
 
-		createNotice( 'success', `${ links.length } smart links successfully applied.`, {
+		const numberOfUpdatedLinks = Object.values( occurrenceCounts ).reduce( ( acc, occurrenceCount ) => {
+			return acc + occurrenceCount.linked;
+		}, 0 );
+		setNumAddedLinks( numberOfUpdatedLinks );
+
+		createNotice( 'success', `${ numberOfUpdatedLinks } smart links successfully applied.`, {
 			type: 'snackbar',
 			isDismissible: true,
 		} );
@@ -315,14 +326,15 @@ export const SmartLinkingPanel = ( {
 	 *
 	 * @since 3.14.1
 	 *
-	 * @param {BlockInstance[]}  blocks           The blocks of content where links should be applied.
-	 * @param {LinkSuggestion[]} links            An array of link suggestions to apply to the content.
-	 * @param {Object}           occurrenceCounts An object to keep track of the number of times each link text has
-	 *                                            been applied across all blocks.
-	 * @param updatedBlocks
+	 * @param {BlockInstance[]}      blocks           The blocks of content where links should be applied.
+	 * @param {LinkSuggestion[]}     links            An array of link suggestions to apply to the content.
+	 * @param {LinkOccurrenceCounts} occurrenceCounts An object to keep track of the number of times each link text has
+	 *                                                been applied across all blocks.
+	 * @param {BlockUpdate[]}        updatedBlocks    An array of updated blocks with the new content.
+	 *                                                This array is be updated in place.
 	 */
 	const applyLinksToBlocks = (
-		blocks: BlockInstance[],
+		blocks: Readonly<BlockInstance>[],
 		links: LinkSuggestion[],
 		occurrenceCounts: LinkOccurrenceCounts,
 		updatedBlocks: BlockUpdate[],
@@ -353,21 +365,17 @@ export const SmartLinkingPanel = ( {
 							if ( node.textContent ) {
 								const occurrenceCount = occurrenceCounts[ occurrenceKey ];
 								if ( occurrenceCount.linked >= 1 ) {
+									// The link has already been applied, skip this occurrence.
 									return;
 								}
 
 								const regex = new RegExp( escapeRegExp( link.text ), 'g' );
 								let match;
-
 								while ( ( match = regex.exec( node.textContent ) ) !== null ) {
-									if ( ! occurrenceCounts[ link.text ] ) {
-										occurrenceCounts[ link.text ] = { encountered: 0, linked: 0 };
-									}
-
 									// Increment the encountered count every time the text is found.
 									occurrenceCount.encountered++;
 
-									// Check if the link is in the correct position to be applied.
+									// Check if the link is in the correct position (offset) to be applied.
 									if ( occurrenceCount.encountered === link.offset + 1 ) {
 										// Create a new anchor element for the link.
 										const anchor = document.createElement( 'a' );
@@ -420,10 +428,11 @@ export const SmartLinkingPanel = ( {
 	 * It also recursively updates the content of any inner blocks.
 	 *
 	 * @since 3.14.1
+	 * @since 3.14.3 Rename the function from updateBlockContent to updateBlocksContent.
 	 *
-	 * @param {Object[]} blockUpdates
+	 * @param {BlockUpdate[]} blockUpdates An array of block updates.
 	 */
-	const updateBlockContent = ( blockUpdates: BlockUpdate[] ) => {
+	const updateBlocksContent = ( blockUpdates: BlockUpdate[] ) => {
 		const { getBlock } = select( 'core/block-editor' );
 		const updatedBlocks: { [clientId: string]: object } = {};
 
@@ -552,7 +561,7 @@ export const SmartLinkingPanel = ( {
 					>
 						{
 							/* translators: 1 - number of smart links generated */
-							sprintf( __( 'Successfully added %s smart links.', 'wp-parsely' ), suggestedLinks.length )
+							sprintf( __( 'Successfully added %s smart links.', 'wp-parsely' ), numAddedLinks )
 						}
 					</Notice>
 				) }

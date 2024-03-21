@@ -57,44 +57,6 @@ export class SmartLinkingProvider {
 		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
 	): Promise<LinkSuggestion[]> {
 		let response;
-		return[
-			{
-				"href": "http:\/\/wpvip.com\/2023\/06\/09\/best-practices-for-building-an-enterprise-wordpress-website\/",
-				"title": "best practices for building an enterprise wordpress website",
-				"text": "enterprise-level solutions",
-				"offset": 0
-			},
-			{
-				"href": "http:\/\/wpvip.com\/2023\/08\/28\/optimize-developer-experience\/",
-				"title": "meet our new tools to optimize the developer experience",
-				"text": "The VIP Experience",
-				"offset": 0
-			},
-			{
-				"href": "http:\/\/wpvip.com\/2022\/08\/03\/wordpress-vip-top-tier-review-signal\/",
-				"title": "when speed, performance, and uptime count, wordpress vip is again a top tier choice",
-				"text": "Scalability",
-				"offset": 0
-			},
-			{
-				"href": "http:\/\/wpvip.com\/2023\/03\/13\/boosting-front-end-site-performance-on-wordpress\/",
-				"title": "boosting front end site performance on wordpress",
-				"text": "Performance Optimization",
-				"offset": 0
-			},
-			{
-				"href": "http:\/\/wpvip.com\/2023\/07\/19\/wordpress-security-features\/",
-				"title": "security 1",
-				"text": "Security",
-				"offset": 0
-			},
-			{
-				"href": "http:\/\/wpvip.com\/2023\/07\/19\/wordpress-security-features\/",
-				"title": "security 2",
-				"text": "Security",
-				"offset": 1
-			}
-		];
 		try {
 			response = await apiFetch<SmartLinkingApiResponse>( {
 				method: 'POST',
