@@ -343,9 +343,19 @@ export const SmartLinkingPanel = ( {
 				if ( contentElement && contentElement instanceof HTMLElement ) {
 					links.forEach( ( link ) => {
 						const textNodes = findTextNodesNotInAnchor( contentElement, link.text );
+						const occurrenceKey = `${ link.text }#${ link.offset }`;
+
+						if ( ! occurrenceCounts[ occurrenceKey ] ) {
+							occurrenceCounts[ occurrenceKey ] = { encountered: 0, linked: 0 };
+						}
 
 						textNodes.forEach( ( node ) => {
 							if ( node.textContent ) {
+								const occurrenceCount = occurrenceCounts[ occurrenceKey ];
+								if ( occurrenceCount.linked >= 1 ) {
+									return;
+								}
+
 								const regex = new RegExp( escapeRegExp( link.text ), 'g' );
 								let match;
 
@@ -355,10 +365,10 @@ export const SmartLinkingPanel = ( {
 									}
 
 									// Increment the encountered count every time the text is found.
-									occurrenceCounts[ link.text ].encountered++;
+									occurrenceCount.encountered++;
 
 									// Check if the link is in the correct position to be applied.
-									if ( occurrenceCounts[ link.text ].encountered === link.offset + 1 ) {
+									if ( occurrenceCount.encountered === link.offset + 1 ) {
 										// Create a new anchor element for the link.
 										const anchor = document.createElement( 'a' );
 										anchor.href = link.href;
@@ -381,7 +391,7 @@ export const SmartLinkingPanel = ( {
 										}
 
 										// Increment the linked count only when a link is applied.
-										occurrenceCounts[ link.text ].linked++;
+										occurrenceCount.linked++;
 
 										// Flag the block as updated.
 										blockUpdated = true;
