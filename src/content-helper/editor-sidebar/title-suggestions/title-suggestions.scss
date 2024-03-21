@@ -9,24 +9,24 @@
 	.title-suggestions-settings {
 
 		display: flex;
-		padding: to_rem(6px) 0 var(--grid-unit-20, to_rem(16px)) 0;
+		padding: to_rem(6px) 0 var(--grid-unit-20) 0;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--grid-unit-20, to_rem(16px));
+		gap: var(--grid-unit-20);
 		align-self: stretch;
 
 		> div {
 			display: flex;
 			flex-direction: column;
 			align-items: flex-start;
-			gap: var(--grid-unit-10, to_rem(8px));
+			gap: var(--grid-unit-10);
 			align-self: stretch;
 		}
 	}
 
 	.title-suggestions-header {
 		display: flex;
-		padding-bottom: var(--grid-unit-20, to_rem(16px));
+		padding-bottom: var(--grid-unit-20);
 		flex-direction: column;
 		align-items: flex-start;
 		gap: to_rem(10px);
@@ -48,7 +48,7 @@
 		.components-button {
 			height: to_rem(40px);
 			display: flex;
-			padding: var(--grid-unit-10, to_rem(8px)) var(--grid-unit-15, to_rem(12px));
+			padding: var(--grid-unit-10) var(--grid-unit-15);
 			justify-content: center;
 			align-items: center;
 			align-self: stretch;
@@ -58,11 +58,11 @@
 
 	.wp-parsely-dropdown-label {
 		align-self: stretch;
-		color: var(--sidebar-black, #1e1e1e);
-		font-size: var(--font-size-smaller, to_rem(11px));
+		color: var(--sidebar-black);
+		font-size: var(--font-size-smaller);
 		font-style: normal;
 		font-weight: 600;
-		line-height: var(--grid-unit-20, to_rem(16px));
+		line-height: var(--grid-unit-20);
 		text-transform: uppercase;
 	}
 
@@ -91,7 +91,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--grid-unit-10, to_rem(8px));
+		gap: var(--grid-unit-10);
 		align-self: stretch;
 		border-radius: 2px;
 		border: 1px solid var(--Gutenberg-Gray-400, #ccc);
@@ -104,14 +104,14 @@
 			color: #1e1e1e;
 			display: flex;
 			padding:
-				var(--grid-unit-15, to_rem(12px))
-				var(--grid-unit-15, to_rem(12px))
+				var(--grid-unit-15)
+				var(--grid-unit-15)
 				0
-				var(--grid-unit-15, to_rem(12px));
+				var(--grid-unit-15);
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
-			gap: var(--grid-unit-10, to_rem(8px));
+			gap: var(--grid-unit-10);
 			align-self: stretch;
 			font-size: to_rem(12px);
 			font-style: normal;
@@ -126,9 +126,9 @@
 
 		.suggested-title-actions {
 			display: flex;
-			padding: 0 var(--grid-unit-10, to_rem(8px));
+			padding: 0 var(--grid-unit-10);
 			align-items: center;
-			gap: var(--grid-unit-20, to_rem(16px));
+			gap: var(--grid-unit-20);
 			align-self: stretch;
 			flex-wrap: wrap;
 			border-top: 1px solid var(--Gutenberg-Gray-400, #ccc);
@@ -137,13 +137,13 @@
 			.suggested-title-actions-container {
 				display: flex;
 				flex-grow: 1;
-				gap: var(--grid-unit-10, to_rem(8px));
+				gap: var(--grid-unit-10);
 				align-items: center;
 
 				.suggested-title-actions-left,
 				.suggested-title-actions-right {
 					display: flex;
-					gap: var(--grid-unit-10, to_rem(8px));
+					gap: var(--grid-unit-10);
 				}
 			}
 		}
@@ -154,9 +154,9 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--grid-unit-20, to_rem(16px));
+		gap: var(--grid-unit-20);
 		align-self: stretch;
-		margin-bottom: var(--grid-unit-20, to_rem(16px));
+		margin-bottom: var(--grid-unit-20);
 		position: relative;
 
 		.wp-parsely-loading-overlay {
@@ -169,7 +169,7 @@
 			justify-content: center;
 			align-items: center;
 			flex-direction: column;
-			gap: var(--grid-unit-10, to_rem(8px));
+			gap: var(--grid-unit-10);
 			background-color: rgba(255, 255, 255, 0.9);
 			z-index: 1;
 
@@ -187,7 +187,7 @@
 	}
 
 	.wp-parsely-content-helper-error.components-notice {
-		margin-bottom: var(--grid-unit-10, to_rem(8px));
+		margin-bottom: var(--grid-unit-10);
 	}
 }
 
@@ -202,7 +202,7 @@
 	align-items: flex-start;
 
 	h2 {
-		color: var(--sidebar-black, #1e1e1e);
+		color: var(--sidebar-black);
 		font-size: to_rem(16px);
 		font-style: normal;
 		font-weight: 600;
@@ -214,7 +214,7 @@
 		margin-top: to_rem(24px);
 		justify-content: flex-end;
 		align-items: center;
-		gap: var(--grid-unit-15, to_rem(12px));
+		gap: var(--grid-unit-15);
 		align-self: stretch;
 	}
 }
