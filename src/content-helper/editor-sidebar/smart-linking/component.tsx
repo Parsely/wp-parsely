@@ -308,6 +308,7 @@ export const SmartLinkingPanel = ( {
 		const numberOfUpdatedLinks = Object.values( occurrenceCounts ).reduce( ( acc, occurrenceCount ) => {
 			return acc + occurrenceCount.linked;
 		}, 0 );
+
 		setNumAddedLinks( numberOfUpdatedLinks );
 
 		createNotice( 'success', `${ numberOfUpdatedLinks } smart links successfully applied.`, {
@@ -561,7 +562,8 @@ export const SmartLinkingPanel = ( {
 					>
 						{
 							/* translators: 1 - number of smart links generated */
-							sprintf( __( 'Successfully added %s smart links.', 'wp-parsely' ), numAddedLinks )
+							sprintf( __( 'Successfully added %s smart links.', 'wp-parsely' ),
+								numAddedLinks > 0 ? numAddedLinks : suggestedLinks.length )
 						}
 					</Notice>
 				) }
