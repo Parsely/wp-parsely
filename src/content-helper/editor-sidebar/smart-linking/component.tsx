@@ -556,7 +556,11 @@ export const SmartLinkingPanel = ( {
 					</Button>
 				</div>
 				{ error && (
-					<Notice status="info" isDismissible={ true } className="wp-parsely-content-helper-error">
+					<Notice
+						status="info"
+						isDismissible={ true }
+						onRemove={ () => setError( null ) }
+						className="wp-parsely-content-helper-error">
 						{ error.Message() }
 					</Notice>
 				) }
@@ -564,6 +568,7 @@ export const SmartLinkingPanel = ( {
 					<Notice
 						status="success"
 						isDismissible={ true }
+						onRemove={ () => setSuggestedLinks( null ) }
 						className="wp-parsely-smart-linking-suggested-links"
 					>
 						{
