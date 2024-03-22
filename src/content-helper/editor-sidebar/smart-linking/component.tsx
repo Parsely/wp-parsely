@@ -556,14 +556,14 @@ export const SmartLinkingPanel = ( {
 					</Button>
 				</div>
 				{ error && (
-					<Notice status="info" isDismissible={ false } className="wp-parsely-content-helper-error">
+					<Notice status="info" isDismissible={ true } className="wp-parsely-content-helper-error">
 						{ error.Message() }
 					</Notice>
 				) }
 				{ suggestedLinks !== null && (
 					<Notice
 						status="success"
-						isDismissible={ false }
+						isDismissible={ true }
 						className="wp-parsely-smart-linking-suggested-links"
 					>
 						{
