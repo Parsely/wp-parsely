@@ -582,6 +582,7 @@ export const SmartLinkingPanel = ( {
 					disabled={ loading }
 					selectedBlock={ selectedBlock?.clientId }
 					onSettingChange={ onSettingChange }
+					setHint={ setHint }
 				/>
 				<div className="smart-linking-generate">
 					<Button
@@ -595,14 +596,9 @@ export const SmartLinkingPanel = ( {
 							: __( 'Add Smart Links', 'wp-parsely' ) }
 					</Button>
 					{ hint && (
-						<Notice
-							status="warning"
-							isDismissible={ true }
-							onRemove={ () => setHint( null ) }
-							className="wp-parsely-smart-linking-hint"
-						>
+						<div className="wp-parsely-smart-linking-hint" >
 							<strong>{ __( 'Hint:', 'wp-parsely' ) }</strong> { hint }
-						</Notice>
+						</div>
 					) }
 				</div>
 			</PanelRow>

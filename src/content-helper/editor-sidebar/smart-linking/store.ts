@@ -21,12 +21,23 @@ export type SmartLinkingSettingsProps = {
 };
 
 /**
+ * Enum for the applyTo setting.
+ *
+ * @since 3.14.3
+ */
+export enum ApplyToOptions {
+	AUTO = 'auto',
+	ALL = 'all',
+	SELECTED = 'selected',
+}
+/**
  * The shape of the SmartLinking store state.
  *
  * @since 3.14.0
  */
 type SmartLinkingState = {
 	isLoading: boolean;
+	applyTo: ApplyToOptions;
 	fullContent: boolean;
 	error: ContentHelperError | null;
 	settings: SmartLinkingSettingsProps;
@@ -81,12 +92,18 @@ interface SetWasAlreadyClickedAction {
 	wasAlreadyClicked: boolean;
 }
 
+interface SetApplyToAction {
+	type: 'SET_APPLY_TO';
+	applyTo: ApplyToOptions;
+}
+
 type ActionTypes = SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction |
 	AddOverlayBlockAction | RemoveOverlayBlockAction |SetFullContentAction |
-	SetSuggestedLinksAction | SetErrorAction| SetWasAlreadyClickedAction;
+	SetSuggestedLinksAction | SetErrorAction| SetWasAlreadyClickedAction | SetApplyToAction;
 
 const defaultState: SmartLinkingState = {
 	isLoading: false,
+	applyTo: ApplyToOptions.AUTO,
 	fullContent: false,
 	suggestedLinks: null,
 	error: null,
@@ -158,6 +175,11 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				return {
 					...state,
 					wasAlreadyClicked: action.wasAlreadyClicked,
+				};
+			case 'SET_APPLY_TO':
+				return {
+					...state,
+					applyTo: action.applyTo,
 				};
 			default:
 				return state;
@@ -234,6 +256,12 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				wasAlreadyClicked,
 			};
 		},
+		setApplyTo( applyTo: ApplyToOptions ): SetApplyToAction {
+			return {
+				type: 'SET_APPLY_TO',
+				applyTo,
+			};
+		},
 	},
 	selectors: {
 		isLoading( state: SmartLinkingState ): boolean {
@@ -241,6 +269,9 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		},
 		isFullContent( state: SmartLinkingState ): boolean {
 			return state.fullContent;
+		},
+		getApplyTo( state: SmartLinkingState ): ApplyToOptions {
+			return state.applyTo;
 		},
 		getError( state: SmartLinkingState ): ContentHelperError | null {
 			return state.error;

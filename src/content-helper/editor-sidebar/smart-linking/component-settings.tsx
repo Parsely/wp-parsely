@@ -27,6 +27,7 @@ type SmartLinkingSettingsProps = {
 	disabled?: boolean;
 	selectedBlock?: string;
 	onSettingChange: OnSettingChangeFunction
+	setHint: ( hint: string ) => void;
 };
 
 /**
@@ -42,6 +43,7 @@ export const SmartLinkingSettings = ( {
 	disabled = false,
 	selectedBlock,
 	onSettingChange,
+	setHint,
 }: Readonly<SmartLinkingSettingsProps> ): JSX.Element => {
 	/**
 	 * Gets the value for the ToggleGroupControl.
@@ -60,6 +62,7 @@ export const SmartLinkingSettings = ( {
 	};
 
 	const toggleGroupRef = useRef<HTMLDivElement>();
+	const allBlocksButtonRef = useRef<HTMLButtonElement>();
 	const [ applyTo, setApplyTo ] = useState( getToggleGroupValue() );
 
 	/**
@@ -103,9 +106,20 @@ export const SmartLinkingSettings = ( {
 			return;
 		}
 
+		setHint( '' );
+
 		// Update the settings based on the selected value.
-		setFullContent( value === 'all' );
+		//setFullContent( value === 'all' );
 		setApplyTo( value as string );
+
+		// If there isn't a selected block, after 500ms move the focus to the
+		// "All Blocks" button and set the hint to the user.
+		if ( ! selectedBlock && value === 'selected' ) {
+			setTimeout( () => {
+				setHint( __( 'No block selected. Select a block to apply smart links.', 'wp-parsely' ) );
+				allBlocksButtonRef.current?.click();
+			}, 500 );
+		}
 	};
 
 	useEffect( () => {
@@ -139,15 +153,15 @@ export const SmartLinkingSettings = ( {
 							__nextHasNoMarginBottom
 							__next40pxDefaultSize
 							isBlock
-							value={ fullContent ? 'all' : applyTo }
+							value={ applyTo }
 							label={ __( 'Apply Smart Links to', 'wp-parsely' ) }
 							onChange={ onToggleGroupChange }
 						>
 							<ToggleGroupControlOption
 								label={ __( 'Selected Block', 'wp-parsely' ) }
-								disabled={ ! selectedBlock }
 								value="selected" />
 							<ToggleGroupControlOption
+								ref={ allBlocksButtonRef }
 								label={ __( 'All Blocks', 'wp-parsely' ) }
 								value="all" />
 						</ToggleGroupControl>
