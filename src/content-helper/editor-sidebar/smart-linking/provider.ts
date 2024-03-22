@@ -56,7 +56,6 @@ export class SmartLinkingProvider {
 		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
 	): Promise<LinkSuggestion[]> {
 		let response;
-
 		try {
 			response = await apiFetch<SmartLinkingApiResponse>( {
 				method: 'POST',
