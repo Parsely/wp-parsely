@@ -311,10 +311,15 @@ export const SmartLinkingPanel = ( {
 
 		setNumAddedLinks( numberOfUpdatedLinks );
 
-		createNotice( 'success', `${ numberOfUpdatedLinks } smart links successfully applied.`, {
-			type: 'snackbar',
-			isDismissible: true,
-		} );
+		createNotice(
+			'success',
+			/* translators: %d: number of smart links applied */
+			sprintf( __( '%s smart links successfully applied.', 'wp-parsely' ), numberOfUpdatedLinks ),
+			{
+				type: 'snackbar',
+				isDismissible: true,
+			}
+		);
 	};
 
 	/**
