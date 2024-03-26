@@ -65,9 +65,7 @@ export const PerformanceStatPanel = (
 					<DropdownMenu
 						icon={ icon }
 						label={ __( 'Settings', 'wp-parsely' ) }
-						toggleProps={ {
-							isSmall: true,
-						} }
+						className="panel-settings-button"
 						controls={ controls }
 					/>
 				) }
@@ -75,16 +73,14 @@ export const PerformanceStatPanel = (
 					<DropdownMenu
 						icon={ icon }
 						label={ __( 'Settings', 'wp-parsely' ) }
-						toggleProps={ {
-							isSmall: true,
-						} }
+						className="panel-settings-button"
 						children={ dropdownChildren }
 					/>
 				) }
 				{ icon && ! dropdownChildren && ! controls && (
 					<Button
 						icon={ icon }
-						isSmall
+						className="panel-settings-button"
 						isPressed={ isOpen }
 						onClick={ onClick }
 					/>
