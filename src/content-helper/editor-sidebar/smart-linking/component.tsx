@@ -185,17 +185,23 @@ export const SmartLinkingPanel = ( {
 	 *
 	 * @since 3.14.0
 	 */
-	const { selectedBlock, postContent, allBlocks } = useSelect(
+	const {
+		allBlocks,
+		selectedBlock,
+		postContent,
+		postPermalink,
+	} = useSelect(
 		( selectFn ) => {
 			const { getSelectedBlock, getBlock, getBlocks } = selectFn(
 				'core/block-editor',
 			) as GutenbergFunction;
-			const { getEditedPostContent } = selectFn( 'core/editor' ) as GutenbergFunction;
+			const { getEditedPostContent, getCurrentPostAttribute } = selectFn( 'core/editor' ) as GutenbergFunction;
 
 			return {
 				allBlocks: getBlocks(),
 				selectedBlock: selectedBlockClientId ? getBlock( selectedBlockClientId ) : getSelectedBlock(),
 				postContent: getEditedPostContent(),
+				postPermalink: getCurrentPostAttribute( 'link' ),
 			};
 		},
 		[ selectedBlockClientId ],
@@ -242,17 +248,21 @@ export const SmartLinkingPanel = ( {
 		try {
 			const generatingFullContent = isFullContent || ! selectedBlock;
 			let generatedLinks = [];
+			const urlExclusionList: string[] = [ postPermalink ];
+
 			if ( selectedBlock?.originalContent && ! generatingFullContent ) {
 				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
 					selectedBlock?.originalContent,
 					maxLinkWords,
 					maxLinks,
+					urlExclusionList
 				);
 			} else {
 				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
 					postContent,
 					maxLinkWords,
 					maxLinks,
+					urlExclusionList
 				);
 			}
 			await setSuggestedLinks( generatedLinks );
