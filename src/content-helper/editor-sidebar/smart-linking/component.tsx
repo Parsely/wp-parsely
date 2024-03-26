@@ -16,6 +16,7 @@ import { Icon, external } from '@wordpress/icons';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { SidebarSettings, useSettings } from '../../common/settings';
+import { generateProtocolVariants } from '../../common/utils/functions';
 import { SmartLinkingSettings } from './component-settings';
 import { LinkSuggestion, SmartLinkingProvider } from './provider';
 import { SmartLinkingSettingsProps, SmartLinkingStore } from './store';
@@ -248,7 +249,7 @@ export const SmartLinkingPanel = ( {
 		try {
 			const generatingFullContent = isFullContent || ! selectedBlock;
 			let generatedLinks = [];
-			const urlExclusionList: string[] = [ postPermalink ];
+			const urlExclusionList = generateProtocolVariants( postPermalink );
 
 			if ( selectedBlock?.originalContent && ! generatingFullContent ) {
 				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
