@@ -26,7 +26,6 @@ export type SmartLinkingSettingsProps = {
  * @since 3.14.3
  */
 export enum ApplyToOptions {
-	AUTO = 'auto',
 	ALL = 'all',
 	SELECTED = 'selected',
 }
@@ -37,7 +36,7 @@ export enum ApplyToOptions {
  */
 type SmartLinkingState = {
 	isLoading: boolean;
-	applyTo: ApplyToOptions;
+	applyTo: ApplyToOptions|null;
 	fullContent: boolean;
 	error: ContentHelperError | null;
 	settings: SmartLinkingSettingsProps;
@@ -94,7 +93,7 @@ interface SetWasAlreadyClickedAction {
 
 interface SetApplyToAction {
 	type: 'SET_APPLY_TO';
-	applyTo: ApplyToOptions;
+	applyTo: ApplyToOptions|null;
 }
 
 type ActionTypes = SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction |
@@ -103,7 +102,7 @@ type ActionTypes = SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction
 
 const defaultState: SmartLinkingState = {
 	isLoading: false,
-	applyTo: ApplyToOptions.AUTO,
+	applyTo: null,
 	fullContent: false,
 	suggestedLinks: null,
 	error: null,
@@ -256,7 +255,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				wasAlreadyClicked,
 			};
 		},
-		setApplyTo( applyTo: ApplyToOptions ): SetApplyToAction {
+		setApplyTo( applyTo: ApplyToOptions|null ): SetApplyToAction {
 			return {
 				type: 'SET_APPLY_TO',
 				applyTo,
@@ -270,7 +269,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		isFullContent( state: SmartLinkingState ): boolean {
 			return state.fullContent;
 		},
-		getApplyTo( state: SmartLinkingState ): ApplyToOptions {
+		getApplyTo( state: SmartLinkingState ): ApplyToOptions|null {
 			return state.applyTo;
 		},
 		getError( state: SmartLinkingState ): ContentHelperError | null {

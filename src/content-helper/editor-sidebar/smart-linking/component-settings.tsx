@@ -16,7 +16,7 @@ import { __ } from '@wordpress/i18n';
 import { InputRange } from '../../common/components/input-range';
 import { OnSettingChangeFunction } from '../editor-sidebar';
 import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
-import { SmartLinkingStore } from './store';
+import { ApplyToOptions, SmartLinkingStore } from './store';
 
 /**
  * Defines the props structure for SmartLinkingSettings.
@@ -45,25 +45,8 @@ export const SmartLinkingSettings = ( {
 	onSettingChange,
 	setHint,
 }: Readonly<SmartLinkingSettingsProps> ): JSX.Element => {
-	/**
-	 * Gets the value for the ToggleGroupControl.
-	 *
-	 * @since 3.14.0
-	 */
-	const getToggleGroupValue = ( ) => {
-		if ( fullContent ) {
-			return 'all';
-		}
-
-		if ( selectedBlock && selectedBlock !== 'all' ) {
-			return 'selected';
-		}
-		return 'all';
-	};
-
 	const toggleGroupRef = useRef<HTMLDivElement>();
-	const allBlocksButtonRef = useRef<HTMLButtonElement>();
-	const [ applyTo, setApplyTo ] = useState( getToggleGroupValue() );
+	const [ animationIsRunning, setAnimationIsRunning ] = useState( false );
 
 	/**
 	 * Gets the settings from the Smart Linking store.
@@ -75,14 +58,16 @@ export const SmartLinkingSettings = ( {
 		maxLinkWords,
 		fullContent,
 		alreadyClicked,
+		applyTo,
 	} = useSelect( ( select ) => {
-		const { getMaxLinkWords, getMaxLinks, isFullContent, wasAlreadyClicked } = select( SmartLinkingStore );
+		const { getMaxLinkWords, getMaxLinks, isFullContent, wasAlreadyClicked, getApplyTo } = select( SmartLinkingStore );
 
 		return {
 			maxLinks: getMaxLinks(),
 			maxLinkWords: getMaxLinkWords(),
 			fullContent: isFullContent(),
 			alreadyClicked: wasAlreadyClicked(),
+			applyTo: getApplyTo(),
 		};
 	}, [] );
 
@@ -91,7 +76,18 @@ export const SmartLinkingSettings = ( {
 		setMaxLinkWords,
 		setFullContent,
 		setAlreadyClicked,
+		setApplyTo,
 	} = useDispatch( SmartLinkingStore );
+
+	/**
+	 * The value to apply the smart links to.
+	 *
+	 * It defaults to 'selected' if there is a selected block, otherwise it defaults to 'all'.
+	 * Used in the ToggleGroupControl value prop.
+	 *
+	 * @since 3.14.3
+	 */
+	const applyToValue = applyTo as string ?? ( selectedBlock ? 'selected' : 'all' );
 
 	/**
 	 * Handles the change event of the ToggleGroupControl.
@@ -101,47 +97,77 @@ export const SmartLinkingSettings = ( {
 	 *
 	 * @param {string|number|undefined} value The selected value.
 	 */
-	const onToggleGroupChange = ( value: string|number|undefined ) => {
+	const onToggleGroupChange = async ( value: string|number|undefined ) => {
 		if ( disabled ) {
 			return;
 		}
-
-		setHint( '' );
+		// Flag to identify if the button animation is running.
+		setAnimationIsRunning( true );
 
 		// Update the settings based on the selected value.
-		//setFullContent( value === 'all' );
-		setApplyTo( value as string );
+		await setFullContent( value === 'all' );
+		await setApplyTo( value as ApplyToOptions );
 
-		// If there isn't a selected block, after 500ms move the focus to the
-		// "All Blocks" button and set the hint to the user.
-		if ( ! selectedBlock && value === 'selected' ) {
-			setTimeout( () => {
-				setHint( __( 'No block selected. Select a block to apply smart links.', 'wp-parsely' ) );
-				allBlocksButtonRef.current?.click();
-			}, 500 );
-		}
+		// Wait for the button animation to finish before setting the flag to false.
+		setTimeout( () => {
+			setAnimationIsRunning( false );
+		}, 500 );
 	};
 
+	/**
+	 * Handles changing the button position and showing a hint if there is no selected block.
+	 *
+	 * @since 3.14.3
+	 */
 	useEffect( () => {
 		if ( disabled ) {
 			return;
 		}
-		const value = getToggleGroupValue();
-		setApplyTo( value );
+
+		const moveButtonAndShowHint = () => {
+			setTimeout( () => {
+				setHint( __( 'No block selected. Select a block to apply smart links.', 'wp-parsely' ) );
+			}, 100 );
+			setApplyTo( null );
+		};
+
+		// If there isn't a selected block, move the focus to the
+		// "All Blocks" button and set the hint to the user.
+		if ( ! selectedBlock && applyTo === 'selected' ) {
+			// If the button changing animation is running, wait for it to finish.
+			if ( animationIsRunning ) {
+				console.log( 'animation is running' );
+				setTimeout( moveButtonAndShowHint, 500 );
+			} else {
+				console.log( 'animation is not running' );
+				moveButtonAndShowHint();
+			}
+		}
+	}, [animationIsRunning, applyTo, disabled, selectedBlock, setApplyTo, setHint] );
+
+	/**
+	 * Applies workaround to set the value of the ToggleGroupControl programmatically.
+	 * This is needed because the ToggleGroupControl doesn't update the value when the
+	 * selectedBlock changes for the first time.
+	 *
+	 * @since 3.14.0
+	 */
+	useEffect( () => {
+		if ( disabled ) {
+			return;
+		}
 
 		// The first time selectedBlock changes, for some reason the ToggleGroupControl
-		// doesn't update the value. This workaround programmatically clicks the button
-		// to set the correct value.
-		if ( toggleGroupRef.current && value && ! alreadyClicked && selectedBlock ) {
-			const targetButton = toggleGroupRef.current.querySelector( `button[data-value="${ value }"]` ) as HTMLButtonElement;
+		// doesn't update the value. This workaround sets the value programmatically.
+		if ( toggleGroupRef.current && applyToValue && ! alreadyClicked && selectedBlock ) {
+			const targetButton = toggleGroupRef.current.querySelector( `button[data-value="${ applyToValue }"]` ) as HTMLButtonElement;
 			if ( targetButton && targetButton.getAttribute( 'aria-checked' ) !== 'true' ) {
-				// Simulate a click on the button to set the correct value.
-				targetButton.click();
-				// Flag that the button was already clicked as it's only needed on the first time.
+				setApplyTo( applyToValue as ApplyToOptions );
+				// Flag that the button was already set as it's only needed on the first time.
 				setAlreadyClicked( true );
 			}
 		}
-	}, [ selectedBlock, fullContent, disabled ] ); // eslint-disable-line
+	}, [ selectedBlock, fullContent, disabled, applyTo ] ); // eslint-disable-line
 
 	return (
 		<div className="parsely-panel-settings">
@@ -153,7 +179,7 @@ export const SmartLinkingSettings = ( {
 							__nextHasNoMarginBottom
 							__next40pxDefaultSize
 							isBlock
-							value={ applyTo }
+							value={ applyToValue }
 							label={ __( 'Apply Smart Links to', 'wp-parsely' ) }
 							onChange={ onToggleGroupChange }
 						>
@@ -161,7 +187,6 @@ export const SmartLinkingSettings = ( {
 								label={ __( 'Selected Block', 'wp-parsely' ) }
 								value="selected" />
 							<ToggleGroupControlOption
-								ref={ allBlocksButtonRef }
 								label={ __( 'All Blocks', 'wp-parsely' ) }
 								value="all" />
 						</ToggleGroupControl>
