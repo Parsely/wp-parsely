@@ -8,7 +8,7 @@ import { useDebounce } from '@wordpress/compose';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { Icon, external } from '@wordpress/icons';
+import { external, Icon } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -18,7 +18,7 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { SmartLinkingSettings } from './component-settings';
 import { LinkSuggestion, SmartLinkingProvider } from './provider';
-import { SmartLinkingSettingsProps, SmartLinkingStore } from './store';
+import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
 import { escapeRegExp, findTextNodesNotInAnchor } from './utils';
 
 /**
@@ -104,6 +104,7 @@ export const SmartLinkingPanel = ( {
 		maxLinks,
 		maxLinkWords,
 		smartLinkingSettings,
+		applyTo,
 	} = useSelect( ( selectFn ) => {
 		const {
 			isLoading,
@@ -115,6 +116,7 @@ export const SmartLinkingPanel = ( {
 			getMaxLinks,
 			getMaxLinkWords,
 			getSmartLinkingSettings,
+			getApplyTo,
 		} = selectFn( SmartLinkingStore );
 		return {
 			loading: isLoading(),
@@ -125,6 +127,7 @@ export const SmartLinkingPanel = ( {
 			overlayBlocks: getOverlayBlocks(),
 			suggestedLinks: getSuggestedLinks(),
 			smartLinkingSettings: getSmartLinkingSettings(),
+			applyTo: getApplyTo(),
 		};
 	}, [] );
 
@@ -140,6 +143,7 @@ export const SmartLinkingPanel = ( {
 		addOverlayBlock,
 		removeOverlayBlock,
 		setSmartLinkingSettings,
+		setApplyTo,
 	} = useDispatch( SmartLinkingStore );
 
 	/**
@@ -239,8 +243,11 @@ export const SmartLinkingPanel = ( {
 			removeOverlay( isFullContent ? 'all' : selectedBlock?.clientId );
 		}, 60000 );
 
+		const previousApplyTo = applyTo;
 		try {
 			const generatingFullContent = isFullContent || ! selectedBlock;
+			await setApplyTo( generatingFullContent ? ApplyToOptions.ALL : ApplyToOptions.SELECTED );
+
 			let generatedLinks = [];
 			if ( selectedBlock?.originalContent && ! generatingFullContent ) {
 				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
@@ -267,6 +274,7 @@ export const SmartLinkingPanel = ( {
 			} );
 		} finally {
 			await setLoading( false );
+			await setApplyTo( previousApplyTo );
 			await removeOverlay( isFullContent ? 'all' : selectedBlock?.clientId );
 			clearTimeout( timeout );
 		}

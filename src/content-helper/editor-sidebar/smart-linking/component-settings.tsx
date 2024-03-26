@@ -46,7 +46,8 @@ export const SmartLinkingSettings = ( {
 	setHint,
 }: Readonly<SmartLinkingSettingsProps> ): JSX.Element => {
 	const toggleGroupRef = useRef<HTMLDivElement>();
-	const [ animationIsRunning, setAnimationIsRunning ] = useState( false );
+	const [ animationIsRunning, setAnimationIsRunning ] = useState<boolean>( false );
+	const [ , setForceUpdate ] = useState<boolean>( false );
 
 	/**
 	 * Gets the settings from the Smart Linking store.
@@ -105,7 +106,7 @@ export const SmartLinkingSettings = ( {
 		setAnimationIsRunning( true );
 
 		// Update the settings based on the selected value.
-		await setFullContent( value === 'all' );
+		await setFullContent( ApplyToOptions.ALL === value );
 		await setApplyTo( value as ApplyToOptions );
 
 		// Wait for the button animation to finish before setting the flag to false.
@@ -125,25 +126,35 @@ export const SmartLinkingSettings = ( {
 		}
 
 		const moveButtonAndShowHint = () => {
-			setTimeout( () => {
-				setHint( __( 'No block selected. Select a block to apply smart links.', 'wp-parsely' ) );
-			}, 100 );
+			// Do not move the button if the interaction is disabled.
+			if ( disabled ) {
+				return;
+			}
+
+			if ( applyTo === ApplyToOptions.SELECTED ) {
+				setTimeout( () => {
+					setHint( __( 'No block selected. Select a block to apply smart links.', 'wp-parsely' ) );
+				}, 100 );
+			}
 			setApplyTo( null );
+
+			// Force update to re-render the ToggleGroupControl.
+			setForceUpdate( ( force ) => ! force );
 		};
 
 		// If there isn't a selected block, move the focus to the
 		// "All Blocks" button and set the hint to the user.
-		if ( ! selectedBlock && applyTo === 'selected' ) {
+		if ( ! selectedBlock && applyTo !== ApplyToOptions.ALL ) {
 			// If the button changing animation is running, wait for it to finish.
 			if ( animationIsRunning ) {
-				console.log( 'animation is running' );
 				setTimeout( moveButtonAndShowHint, 500 );
 			} else {
-				console.log( 'animation is not running' );
 				moveButtonAndShowHint();
 			}
 		}
-	}, [animationIsRunning, applyTo, disabled, selectedBlock, setApplyTo, setHint] );
+
+		setFullContent( ApplyToOptions.ALL === applyToValue );
+	}, [ animationIsRunning, applyTo, applyToValue, disabled, selectedBlock, setApplyTo, setFullContent, setHint ] );
 
 	/**
 	 * Applies workaround to set the value of the ToggleGroupControl programmatically.
