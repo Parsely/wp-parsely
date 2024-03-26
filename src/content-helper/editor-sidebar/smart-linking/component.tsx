@@ -357,6 +357,19 @@ export const SmartLinkingPanel = ( {
 		occurrenceCounts: LinkOccurrenceCounts,
 		updatedBlocks: BlockUpdate[],
 	): void => {
+		// Check if any of the links being applied is a self-reference, and remove it if it is.
+		const strippedPermalink = postPermalink
+			.replace( /^https?:\/\//, '' ) // Remove HTTP(s)
+			.replace( /\/+$/, '' ); // Remove trailing slash
+		links = links.filter( ( link ) => {
+			if ( link.href.includes( strippedPermalink ) ) {
+				// eslint-disable-next-line no-console
+				console.warn( `PCH Smart Linking: Skipping self-reference link: ${ link.href }` );
+				return false;
+			}
+			return true;
+		} );
+
 		blocks.forEach( ( block ) => {
 			let blockUpdated = false;
 			// Recursively apply links to any inner blocks.
