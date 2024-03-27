@@ -253,7 +253,7 @@ export const SmartLinkingPanel = ( {
 		const previousApplyTo = applyTo;
 		try {
 			const generatingFullContent = isFullContent || ! selectedBlock;
-			await setApplyTo( generatingFullContent ? ApplyToOptions.ALL : ApplyToOptions.SELECTED );
+			await setApplyTo( generatingFullContent ? ApplyToOptions.All : ApplyToOptions.Selected );
 
 			let generatedLinks = [];
 			const urlExclusionList = generateProtocolVariants( postPermalink );

@@ -26,8 +26,8 @@ export type SmartLinkingSettingsProps = {
  * @since 3.14.3
  */
 export enum ApplyToOptions {
-	ALL = 'all',
-	SELECTED = 'selected',
+	All = 'all',
+	Selected = 'selected',
 }
 /**
  * The shape of the SmartLinking store state.
@@ -46,51 +46,102 @@ type SmartLinkingState = {
 };
 
 /** Actions */
+
+/**
+ * Interface for the SetLoadingAction.
+ *
+ * @since 3.14.0
+ */
 interface SetLoadingAction {
 	type: 'SET_LOADING';
 	isLoading: boolean;
 }
 
+/**
+ * Interface for the SetErrorAction.
+ *
+ * @since 3.14.0
+ */
 interface SetErrorAction {
 	type: 'SET_ERROR';
 	error: ContentHelperError | null;
 }
 
+/**
+ * Interface for the SetOverlayBlocksAction.
+ *
+ * @since 3.14.0
+ */
 interface SetOverlayBlocksAction {
 	type: 'SET_OVERLAY_BLOCKS';
 	overlayBlocks: string[];
 }
 
+/**
+ * Interface for the AddOverlayBlockAction.
+ *
+ * @since 3.14.0
+ */
 interface AddOverlayBlockAction {
 	type: 'ADD_OVERLAY_BLOCK';
 	block: string;
 }
 
+/**
+ * Interface for the RemoveOverlayBlockAction.
+ *
+ * @since 3.14.0
+ */
 interface RemoveOverlayBlockAction {
 	type: 'REMOVE_OVERLAY_BLOCK';
 	block: string;
 }
 
+/**
+ * Interface for the SetFullContentAction.
+ *
+ * @since 3.14.0
+ */
 interface SetFullContentAction {
 	type: 'SET_FULL_CONTENT';
 	fullContent: boolean;
 }
 
+/**
+ * Interface for the SetSettingsAction.
+ *
+ * @since 3.14.0
+ */
 interface SetSettingsAction {
 	type: 'SET_SETTINGS';
 	settings: SmartLinkingSettingsProps;
 }
 
+/**
+ * Interface for the SetSuggestedLinksAction.
+ *
+ * @since 3.14.0
+ */
 interface SetSuggestedLinksAction {
 	type: 'SET_SUGGESTED_LINKS';
 	suggestedLinks: LinkSuggestion[] | null;
 }
 
+/**
+ * Interface for the SetWasAlreadyClickedAction.
+ *
+ * @since 3.14.0
+ */
 interface SetWasAlreadyClickedAction {
 	type: 'SET_WAS_ALREADY_CLICKED';
 	wasAlreadyClicked: boolean;
 }
 
+/**
+ * Interface for the SetApplyToAction.
+ *
+ * @since 3.14.3
+ */
 interface SetApplyToAction {
 	type: 'SET_APPLY_TO';
 	applyTo: ApplyToOptions|null;

@@ -106,7 +106,7 @@ export const SmartLinkingSettings = ( {
 		setAnimationIsRunning( true );
 
 		// Update the settings based on the selected value.
-		await setFullContent( ApplyToOptions.ALL === value );
+		await setFullContent( ApplyToOptions.All === value );
 		await setApplyTo( value as ApplyToOptions );
 
 		// Wait for the button animation to finish before setting the flag to false.
@@ -131,7 +131,7 @@ export const SmartLinkingSettings = ( {
 				return;
 			}
 
-			if ( applyTo === ApplyToOptions.SELECTED ) {
+			if ( applyTo === ApplyToOptions.Selected ) {
 				setTimeout( () => {
 					setHint( __( 'No block selected. Select a block to apply smart links.', 'wp-parsely' ) );
 				}, 100 );
@@ -144,7 +144,7 @@ export const SmartLinkingSettings = ( {
 
 		// If there isn't a selected block, move the focus to the
 		// "All Blocks" button and set the hint to the user.
-		if ( ! selectedBlock && applyTo !== ApplyToOptions.ALL ) {
+		if ( ! selectedBlock && applyTo !== ApplyToOptions.All ) {
 			// If the button changing animation is running, wait for it to finish.
 			if ( animationIsRunning ) {
 				setTimeout( moveButtonAndShowHint, 500 );
@@ -153,7 +153,7 @@ export const SmartLinkingSettings = ( {
 			}
 		}
 
-		setFullContent( ApplyToOptions.ALL === applyToValue );
+		setFullContent( ApplyToOptions.All === applyToValue );
 	}, [ animationIsRunning, applyTo, applyToValue, disabled, selectedBlock, setApplyTo, setFullContent, setHint ] );
 
 	/**
