@@ -81,7 +81,7 @@ export const SmartLinkingSettings = ( {
 	} = useDispatch( SmartLinkingStore );
 
 	/**
-	 * The value to apply the smart links to.
+	 * The area to apply the smart links to.
 	 *
 	 * It defaults to 'selected' if there is a selected block, otherwise it defaults to 'all'.
 	 * Used in the ToggleGroupControl value prop.
@@ -158,6 +158,7 @@ export const SmartLinkingSettings = ( {
 
 	/**
 	 * Applies workaround to set the value of the ToggleGroupControl programmatically.
+	 *
 	 * This is needed because the ToggleGroupControl doesn't update the value when the
 	 * selectedBlock changes for the first time.
 	 *
