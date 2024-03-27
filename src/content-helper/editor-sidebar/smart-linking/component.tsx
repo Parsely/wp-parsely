@@ -16,6 +16,7 @@ import { external, Icon } from '@wordpress/icons';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { SidebarSettings, useSettings } from '../../common/settings';
+import { generateProtocolVariants } from '../../common/utils/functions';
 import { SmartLinkingSettings } from './component-settings';
 import { LinkSuggestion, SmartLinkingProvider } from './provider';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
@@ -189,17 +190,23 @@ export const SmartLinkingPanel = ( {
 	 *
 	 * @since 3.14.0
 	 */
-	const { selectedBlock, postContent, allBlocks } = useSelect(
+	const {
+		allBlocks,
+		selectedBlock,
+		postContent,
+		postPermalink,
+	} = useSelect(
 		( selectFn ) => {
 			const { getSelectedBlock, getBlock, getBlocks } = selectFn(
 				'core/block-editor',
 			) as GutenbergFunction;
-			const { getEditedPostContent } = selectFn( 'core/editor' ) as GutenbergFunction;
+			const { getEditedPostContent, getCurrentPostAttribute } = selectFn( 'core/editor' ) as GutenbergFunction;
 
 			return {
 				allBlocks: getBlocks(),
 				selectedBlock: selectedBlockClientId ? getBlock( selectedBlockClientId ) : getSelectedBlock(),
 				postContent: getEditedPostContent(),
+				postPermalink: getCurrentPostAttribute( 'link' ),
 			};
 		},
 		[ selectedBlockClientId ],
@@ -249,17 +256,21 @@ export const SmartLinkingPanel = ( {
 			await setApplyTo( generatingFullContent ? ApplyToOptions.ALL : ApplyToOptions.SELECTED );
 
 			let generatedLinks = [];
+			const urlExclusionList = generateProtocolVariants( postPermalink );
+
 			if ( selectedBlock?.originalContent && ! generatingFullContent ) {
 				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
 					selectedBlock?.originalContent,
 					maxLinkWords,
 					maxLinks,
+					urlExclusionList
 				);
 			} else {
 				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
 					postContent,
 					maxLinkWords,
 					maxLinks,
+					urlExclusionList
 				);
 			}
 			await setSuggestedLinks( generatedLinks );
@@ -354,6 +365,19 @@ export const SmartLinkingPanel = ( {
 		occurrenceCounts: LinkOccurrenceCounts,
 		updatedBlocks: BlockUpdate[],
 	): void => {
+		// Check if any of the links being applied is a self-reference, and remove it if it is.
+		const strippedPermalink = postPermalink
+			.replace( /^https?:\/\//, '' ) // Remove HTTP(S).
+			.replace( /\/+$/, '' ); // Remove trailing slash.
+		links = links.filter( ( link ) => {
+			if ( link.href.includes( strippedPermalink ) ) {
+				// eslint-disable-next-line no-console
+				console.warn( `PCH Smart Linking: Skipping self-reference link: ${ link.href }` );
+				return false;
+			}
+			return true;
+		} );
+
 		blocks.forEach( ( block ) => {
 			let blockUpdated = false;
 			// Recursively apply links to any inner blocks.
