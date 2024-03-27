@@ -50,7 +50,7 @@
 		"@types/lodash.debounce": "^4.0.9",
 		"@types/wordpress__block-editor": "^11.5.13",
 		"@types/wordpress__blocks": "^12.5.13",
-		"@types/wordpress__components": "^23.0.11",
+		"@types/wordpress__components": "^23.0.12",
 		"@types/wordpress__edit-post": "^7.5.5",
 		"@types/wordpress__editor": "^13.6.7",
 		"@types/wordpress__plugins": "^3.0.3",
