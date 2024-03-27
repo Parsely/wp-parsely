@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/coderabbit-overrides.v2.json
+language: "en"
+chat:
+    auto_reply: true
+reviews:
+    request_changes_workflow: true
+    high_level_summary: true
+    poem: false
+    review_status: false
+    collapse_walkthrough: true
+    path_filters:
+        - "!build/**"
+    auto_review:
+        enabled: true
+        drafts: false
+        base_branches:
+            - "develop"
+            - "add/.*"
+            - "fix/.*"
+            - "update/.*"
+    path_instructions:
+        - path: "**/*.{js,ts,tsx,jsx}"
+          instructions: |
+              "Review the code and ensure that it is well-structured and follows best practices.
+              It should follow the WordPress coding standards and be well-documented.
+              Ensure that the code is secure and that it does not contain any vulnerabilities.
+              Check that the code is optimized for performance and that it does not contain any unnecessary code.
+              Validate the JSDoc comments and ensure that they are accurate, up to date, and follow WordPress coding standards
+              for comments. Also check that each line comment ends with a period.
+              Check that each JSDoc comment has a @since tag that specifies the next version of the plugin that the code will be included in.
+              Ensure that the code is compatible with the latest version of WordPress and that it does not use deprecated functions or features."
+        - path: "**/*.{css,scss}"
+          instructions: |
+              "Review the SCSS code and ensure that it is well-structured and follows best practices.
+              Ensure that each dimension that is >= 3px is converted to rem units using `to_rem`.
+              For sizes and colors that are defined in `src/content-helper/common/css/variables.scss`,
+              ensure that the corresponding variable is used instead of hardcoding the value."
+        - path: "**/*.{html,php}"
+          instructions: |
+              "Review the HTML and PHP code and ensure that it is well-structured and follows best practices.
+              It should follow the WordPress coding standards and be well-documented.
+              Ensure that the code is secure and that it does not contain any vulnerabilities.
+              Check that the code is optimized for performance and that it does not contain any unnecessary code.
+              Validate the comments and ensure that they are accurate, up to date, and follow WordPress coding standards
+              for comments. Also check that each line comment ends with a period.
+              Ensure that the code is compatible with the latest version of WordPress and that it does not use deprecated functions or features."
