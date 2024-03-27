@@ -359,8 +359,8 @@ export const SmartLinkingPanel = ( {
 	): void => {
 		// Check if any of the links being applied is a self-reference, and remove it if it is.
 		const strippedPermalink = postPermalink
-			.replace( /^https?:\/\//, '' ) // Remove HTTP(s)
-			.replace( /\/+$/, '' ); // Remove trailing slash
+			.replace( /^https?:\/\//, '' ) // Remove HTTP(S).
+			.replace( /\/+$/, '' ); // Remove trailing slash.
 		links = links.filter( ( link ) => {
 			if ( link.href.includes( strippedPermalink ) ) {
 				// eslint-disable-next-line no-console
