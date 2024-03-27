@@ -166,6 +166,6 @@
 	}
 
 	.wp-parsely-smart-linking-hint {
-		margin-top: var(--grid-unit-20);
+		margin-top: calc(var(--grid-unit-10) * -1);
 	}
 }

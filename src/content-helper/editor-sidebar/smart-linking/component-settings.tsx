@@ -27,7 +27,6 @@ type SmartLinkingSettingsProps = {
 	disabled?: boolean;
 	selectedBlock?: string;
 	onSettingChange: OnSettingChangeFunction
-	setHint: ( hint: string ) => void;
 };
 
 /**
@@ -43,9 +42,9 @@ export const SmartLinkingSettings = ( {
 	disabled = false,
 	selectedBlock,
 	onSettingChange,
-	setHint,
 }: Readonly<SmartLinkingSettingsProps> ): JSX.Element => {
 	const toggleGroupRef = useRef<HTMLDivElement>();
+	const [ hint, setHint ] = useState<string|null>( '' );
 	const [ animationIsRunning, setAnimationIsRunning ] = useState<boolean>( false );
 	const [ , setForceUpdate ] = useState<boolean>( false );
 
@@ -181,6 +180,16 @@ export const SmartLinkingSettings = ( {
 		}
 	}, [ selectedBlock, fullContent, disabled, applyTo ] ); // eslint-disable-line
 
+	/**
+	 * Resets the hint when the selected block changes.
+	 *
+	 * @since 3.14.0
+	 * @since 3.14.3 Moved from 'component.tsx' to 'component-settings.tsx'.
+	 */
+	useEffect( () => {
+		setHint( null );
+	}, [ selectedBlock ] );
+
 	return (
 		<div className="parsely-panel-settings">
 			<div className="parsely-panel-settings-body">
@@ -203,6 +212,11 @@ export const SmartLinkingSettings = ( {
 								value="all" />
 						</ToggleGroupControl>
 					</Disabled>
+					{ hint && (
+						<div className="wp-parsely-smart-linking-hint" >
+							<strong>{ __( 'Hint:', 'wp-parsely' ) }</strong> { hint }
+						</div>
+					) }
 				</div>
 				<div className="smart-linking-settings">
 					<InputRange

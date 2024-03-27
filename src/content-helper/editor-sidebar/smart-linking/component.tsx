@@ -86,7 +86,6 @@ export const SmartLinkingPanel = ( {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 	const setSettingsDebounced = useDebounce( setSettings, 500 );
 
-	const [ hint, setHint ] = useState<string | null>( null );
 	const [ numAddedLinks, setNumAddedLinks ] = useState<number>( 0 );
 
 	const { createNotice } = useDispatch( 'core/notices' );
@@ -211,13 +210,6 @@ export const SmartLinkingPanel = ( {
 		},
 		[ selectedBlockClientId ],
 	);
-
-	/**
-	 * Resets the hint when the selected block changes.
-	 */
-	useEffect( () => {
-		setHint( null );
-	}, [ selectedBlock ] );
 
 	/**
 	 * Generates smart links for the selected block or the entire post content.
@@ -614,7 +606,6 @@ export const SmartLinkingPanel = ( {
 					disabled={ loading }
 					selectedBlock={ selectedBlock?.clientId }
 					onSettingChange={ onSettingChange }
-					setHint={ setHint }
 				/>
 				<div className="smart-linking-generate">
 					<Button
@@ -627,11 +618,6 @@ export const SmartLinkingPanel = ( {
 							? __( 'Adding Smart Links…', 'wp-parsely' )
 							: __( 'Add Smart Links', 'wp-parsely' ) }
 					</Button>
-					{ hint && (
-						<div className="wp-parsely-smart-linking-hint" >
-							<strong>{ __( 'Hint:', 'wp-parsely' ) }</strong> { hint }
-						</div>
-					) }
 				</div>
 			</PanelRow>
 		</div>
