@@ -75,9 +75,9 @@ class Suggest_Linked_Reference_API extends Content_Suggestions_Base_API {
 		$links = array();
 		foreach ( $decoded->result as $link ) {
 			$link_obj         = new Link_Suggestion();
-			$link_obj->href   = $link->canonical_url;
-			$link_obj->title  = $link->title;
-			$link_obj->text   = $link->text;
+			$link_obj->href   = esc_url( $link->canonical_url );
+			$link_obj->title  = esc_attr( $link->title );
+			$link_obj->text   = wp_kses_post( $link->text );
 			$link_obj->offset = $link->offset;
 			$links[]          = $link_obj;
 		}
