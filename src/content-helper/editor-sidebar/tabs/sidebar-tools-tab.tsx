@@ -74,10 +74,13 @@ export const SidebarToolsTab = (
 
 			<PanelBody
 				title={ __( 'Related Posts', 'wp-parsely' ) }
-				initialOpen={ settings.RelatedPostsOpen }
+				initialOpen={ settings.RelatedPosts.Open }
 				onToggle={ ( next ) => {
 					setSettings( {
-						RelatedPostsOpen: next,
+						RelatedPosts: {
+							...settings.RelatedPosts,
+							Open: next,
+						},
 					} );
 					trackToggle( 'related_top_posts', next );
 				} }

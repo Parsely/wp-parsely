@@ -57,25 +57,21 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 					'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
 				),
 			),
-			'RelatedPostsFilterBy'     => array(
-				'values'  => array( 'unavailable', 'tag', 'section', 'author' ),
-				'default' => 'unavailable',
-			),
-			'RelatedPostsFilterValue'  => array(
-				'values'  => array(),
-				'default' => '',
-			),
-			'RelatedPostsMetric'       => array(
-				'values'  => array( 'views', 'avg_engaged' ),
-				'default' => 'views',
-			),
-			'RelatedPostsOpen'         => array(
-				'values'  => array( true, false ),
-				'default' => false,
-			),
-			'RelatedPostsPeriod'       => array(
-				'values'  => array( '10m', '1h', '2h', '4h', '24h', '7d', '30d' ),
-				'default' => '7d',
+			'RelatedPosts'             => array(
+				'values'  => array(
+					'FilterBy'    => array( 'unavailable', 'tag', 'section', 'author' ),
+					'FilterValue' => array(),
+					'Metric'      => array( 'views', 'avg_engaged' ),
+					'Open'        => array( true, false ),
+					'Period'      => array( '10m', '1h', '2h', '4h', '24h', '7d', '30d' ),
+				),
+				'default' => array(
+					'FilterBy'    => 'unavailable',
+					'FilterValue' => '',
+					'Metric'      => 'views',
+					'Open'        => false,
+					'Period'      => '7d',
+				),
 			),
 			'SmartLinkingMaxLinks'     => array(
 				'values'  => array(),

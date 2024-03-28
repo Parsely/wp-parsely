@@ -75,11 +75,13 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			VisiblePanels: [ 'overview', 'categories', 'referrers' ],
 			VisibleDataPoints: [ 'views', 'visitors', 'avgEngaged', 'recirculation' ],
 		},
-		RelatedPostsFilterBy: PostFilterType.Unavailable,
-		RelatedPostsFilterValue: '',
-		RelatedPostsMetric: Metric.Views,
-		RelatedPostsOpen: false,
-		RelatedPostsPeriod: Period.Days7,
+		RelatedPosts: {
+			FilterBy: PostFilterType.Unavailable,
+			FilterValue: '',
+			Metric: Metric.Views,
+			Open: false,
+			Period: Period.Days7,
+		},
 		SmartLinkingMaxLinks: DEFAULT_MAX_LINKS,
 		SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
 		SmartLinkingOpen: false,
@@ -122,20 +124,20 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	if ( ! Array.isArray( mergedSettings.PerformanceStatsSettings.VisibleDataPoints ) ) {
 		mergedSettings.PerformanceStatsSettings.VisibleDataPoints = defaultSettings.PerformanceStatsSettings.VisibleDataPoints;
 	}
-	if ( ! isInEnum( mergedSettings.RelatedPostsFilterBy, PostFilterType ) ) {
-		mergedSettings.RelatedPostsFilterBy = defaultSettings.RelatedPostsFilterBy;
+	if ( ! isInEnum( mergedSettings.RelatedPosts.FilterBy, PostFilterType ) ) {
+		mergedSettings.RelatedPosts.FilterBy = defaultSettings.RelatedPosts.FilterBy;
 	}
-	if ( typeof mergedSettings.RelatedPostsFilterValue !== 'string' ) {
-		mergedSettings.RelatedPostsFilterValue = defaultSettings.RelatedPostsFilterValue;
+	if ( typeof mergedSettings.RelatedPosts.FilterValue !== 'string' ) {
+		mergedSettings.RelatedPosts.FilterValue = defaultSettings.RelatedPosts.FilterValue;
 	}
-	if ( ! isInEnum( mergedSettings.RelatedPostsMetric, Metric ) ) {
-		mergedSettings.RelatedPostsMetric = defaultSettings.RelatedPostsMetric;
+	if ( ! isInEnum( mergedSettings.RelatedPosts.Metric, Metric ) ) {
+		mergedSettings.RelatedPosts.Metric = defaultSettings.RelatedPosts.Metric;
 	}
-	if ( typeof mergedSettings.RelatedPostsOpen !== 'boolean' ) {
-		mergedSettings.RelatedPostsOpen = defaultSettings.RelatedPostsOpen;
+	if ( typeof mergedSettings.RelatedPosts.Open !== 'boolean' ) {
+		mergedSettings.RelatedPosts.Open = defaultSettings.RelatedPosts.Open;
 	}
-	if ( ! isInEnum( mergedSettings.RelatedPostsPeriod, Period ) ) {
-		mergedSettings.RelatedPostsPeriod = defaultSettings.RelatedPostsPeriod;
+	if ( ! isInEnum( mergedSettings.RelatedPosts.Period, Period ) ) {
+		mergedSettings.RelatedPosts.Period = defaultSettings.RelatedPosts.Period;
 	}
 	if ( typeof mergedSettings.SmartLinkingMaxLinks !== 'number' ) {
 		mergedSettings.SmartLinkingMaxLinks = defaultSettings.SmartLinkingMaxLinks;
