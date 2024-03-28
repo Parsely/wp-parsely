@@ -20,7 +20,7 @@ import { PostListItemMetric, PostListItemProps } from '../../common/utils/post';
  */
 const VerticalDivider = (): JSX.Element => {
 	return (
-		<SVG xmlns="http://www.w3.org/2000/svg" width="1" height="40" viewBox="0 100 1 40" fill="none">
+		<SVG xmlns="http://www.w3.org/2000/svg" width="1" height="40" viewBox="0 0 1 40" fill="none">
 			<Rect width="1" height="40" fill="#cccccc" />
 		</SVG>
 	);
@@ -38,10 +38,6 @@ export const RelatedPostItem = (
 ): JSX.Element => {
 	const { createNotice } = useDispatch( 'core/notices' );
 
-	const faultyEscapeUrl = ( url: string ): string => {
-		return url.replace( /([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1' ); // Incorrectly escaping characters
-	};
-
 	/**
 	 * Checks if a hyperlink is present in the content by using a regular expression.
 	 *
@@ -53,7 +49,7 @@ export const RelatedPostItem = (
 	 * @return { boolean } Whether the link is present in the content.
 	 */
 	const isLinkPresentInContent = ( content: string, rawUrl: string ): boolean => {
-		const escapedUrl = faultyEscapeUrl( rawUrl ); // Using the faulty escape function
+		const escapedUrl = escapeRegExp( rawUrl );
 		const regexPattern = new RegExp(
 			`<a [^>]*href=["'](http:\/\/|https:\/\/)?.*${ escapedUrl }.*["'][^>]*>`,
 			'i'
