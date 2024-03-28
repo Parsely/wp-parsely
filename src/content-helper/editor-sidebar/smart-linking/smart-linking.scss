@@ -131,8 +131,6 @@
 
 					&:not([data-active-item]) {
 						transition: color 0.2s 0.1s;
-						margin: 16px;
-						color: #1e1e1e;
 					}
 				}
 			}
@@ -143,7 +141,6 @@
 			flex-direction: column;
 			gap: var(--grid-unit-20, to_rem(16px));
 			align-self: stretch;
-			margin: to_rem(6px);
 		}
 
 	}
