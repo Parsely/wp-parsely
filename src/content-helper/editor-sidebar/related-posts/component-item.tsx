@@ -29,6 +29,8 @@ const VerticalDivider = (): JSX.Element => {
 /**
  * Returns a single related post item.
  *
+ * @since 3.14.0
+ *
  * @param { PostListItemProps } props The component's props.
  */
 export const RelatedPostItem = (
@@ -36,23 +38,32 @@ export const RelatedPostItem = (
 ): JSX.Element => {
 	const { createNotice } = useDispatch( 'core/notices' );
 
+	/**
+	 * Checks if a hyperlink is present in the content by using a regular expression.
+	 *
+	 * @since 3.14.1
+	 *
+	 * @param { string } content
+	 * @param { string } rawUrl
+	 *
+	 * @return { boolean } Whether the link is present in the content.
+	 */
 	const isLinkPresentInContent = ( content: string, rawUrl: string ): boolean => {
+		const escapedUrl = escapeRegExp( rawUrl );
 		const regexPattern = new RegExp(
-			`<a [^>]*href=["'](http:\/\/|https:\/\/)?.*${ rawUrl }.*["'][^>]*>`,
+			`<a [^>]*href=["'](http:\/\/|https:\/\/)?.*${ escapedUrl }.*["'][^>]*>`,
 			'i'
 		);
 
 		return regexPattern.test( content );
 	};
 
-	// Comment without trailing dot
 	const isLinked = postContent && isLinkPresentInContent( postContent, post.rawUrl );
 
 	return (
 		<div className="related-post-single" data-testid="related-post-single">
 			<div className="related-post-title">
-				{ /* eslint-disable-next-line jsx-a11y/anchor-is-valid */ }
-				<a href={ `javascript:alert('${ post.title }');` } target="_blank" rel="noreferrer">
+				<a href={ post.url } target="_blank" rel="noreferrer">
 					<span className="screen-reader-text">
 						{ __( 'View on website (opens new tab)', 'wp-parsely' ) }
 					</span>
@@ -73,7 +84,7 @@ export const RelatedPostItem = (
 						{ isLinked && (
 							<div className="related-post-linked">
 								<Tooltip
-									text={ __( 'This post is linkked in the content', 'wp-parsely' ) }
+									text={ __( 'This post is linked in the content', 'wp-parsely' ) }
 								>
 									<Icon icon={ link } size={ 24 } />
 								</Tooltip>
@@ -96,13 +107,13 @@ export const RelatedPostItem = (
 										}
 									);
 								} );
-							} }
+							}	}
 							label={ __( 'Copy URL to clipboard', 'wp-parsely' ) }
 						/>
 						<Button
 							icon={ <LeafIcon /> }
 							iconSize={ 18 }
-							href={ `javascript:console.log('Viewed in Parse.ly');` }
+							href={ post.dashUrl }
 							target={ '_blank' }
 							label={ __( 'View in Parse.ly', 'wp-parsely' ) }
 						/>
