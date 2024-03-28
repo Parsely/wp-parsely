@@ -46,8 +46,8 @@ const FETCH_RETRIES = 1;
 export const RelatedPostsPanel = (): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
-	const period = settings.RelatedPostsPeriod;
-	const metric = settings.RelatedPostsMetric;
+	const period = settings.RelatedPosts.Period;
+	const metric = settings.RelatedPosts.Metric;
 
 	const [ postData, setPostData ] = useState<SidebarPostData>( {
 		authors: [], categories: [], tags: [],
@@ -100,8 +100,8 @@ export const RelatedPostsPanel = (): JSX.Element => {
 	const [ posts, setPosts ] = useState<PostData[]>( [] );
 	const [ filter, setFilter ] = useState<PostFilter>(
 		{
-			type: settings.RelatedPostsFilterBy as PostFilterType,
-			value: settings.RelatedPostsFilterValue,
+			type: settings.RelatedPosts.FilterBy as PostFilterType,
+			value: settings.RelatedPosts.FilterValue,
 		}
 	);
 
@@ -124,8 +124,11 @@ export const RelatedPostsPanel = (): JSX.Element => {
 	 */
 	const onFilterChange = ( filterBy: PostFilterType, value: string ): void => {
 		setSettings( {
-			RelatedPostsFilterBy: filterBy,
-			RelatedPostsFilterValue: value,
+			RelatedPosts: {
+				...settings.RelatedPosts,
+				FilterBy: filterBy,
+				FilterValue: value,
+			},
 		} );
 	};
 
@@ -139,7 +142,10 @@ export const RelatedPostsPanel = (): JSX.Element => {
 	const onMetricChange = ( selection: string ) => {
 		if ( isInEnum( selection, Metric ) ) {
 			setSettings( {
-				RelatedPostsMetric: selection as Metric,
+				RelatedPosts: {
+					...settings.RelatedPosts,
+					Metric: selection as Metric,
+				},
 			} );
 			Telemetry.trackEvent( 'related_posts_metric_changed', { metric: selection } );
 		}
@@ -155,7 +161,10 @@ export const RelatedPostsPanel = (): JSX.Element => {
 	const onPeriodChange = ( selection: string ) => {
 		if ( isInEnum( selection, Period ) ) {
 			setSettings( {
-				RelatedPostsPeriod: selection as Period,
+				RelatedPosts: {
+					...settings.RelatedPosts,
+					Period: selection as Period,
+				},
 			} );
 			Telemetry.trackEvent( 'related_posts_period_changed', { period: selection } );
 		}
