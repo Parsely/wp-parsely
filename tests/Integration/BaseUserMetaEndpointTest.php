@@ -80,14 +80,14 @@ abstract class BaseUserMetaEndpointTest extends ProxyEndpointTest {
 			'expected'  => $valid_value,
 		);
 
-		// Missing or problematic keys. Defaults for all values should be returned.
+		// Missing or problematic keys. Defaults should be used for the missing or problematic keys.
 		yield 'valid period value, no metric value' => array(
 			'test_data' => $this->generate_json( null, '1h' ),
-			'expected'  => $default_value,
+			'expected'  => $this->generate_json( 'views', '1h' ),
 		);
 		yield 'valid metric value, no period value' => array(
 			'test_data' => $this->generate_json( 'avg_engaged' ),
-			'expected'  => $default_value,
+			'expected'  => $this->generate_json( 'avg_engaged', '7d' ),
 		);
 		yield 'no values' => array(
 			'test_data' => $this->generate_json(),
