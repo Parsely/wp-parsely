@@ -225,7 +225,7 @@ export const SmartLinkingSettings = ( {
 							setMaxLinks( value ?? 1 );
 							onSettingChange( 'SmartLinkingMaxLinks', value ?? DEFAULT_MAX_LINKS );
 						} }
-						label={ __( 'Max Number of Links', 'wp-parsely' ) }
+						label={ __( 'Target Number of Links', 'wp-parsely' ) }
 						suffix={ __( 'Links', 'wp-parsely' ) }
 						min={ 1 }
 						max={ 20 }
@@ -238,7 +238,7 @@ export const SmartLinkingSettings = ( {
 							setMaxLinkWords( value ?? 1 );
 							onSettingChange( 'SmartLinkingMaxLinkWords', value ?? DEFAULT_MAX_LINK_WORDS );
 						} }
-						label={ __( 'Max Link Length', 'wp-parsely' ) }
+						label={ __( 'Target Link Length', 'wp-parsely' ) }
 						suffix={ __( 'Words', 'wp-parsely' ) }
 						min={ 1 }
 						max={ 8 }
