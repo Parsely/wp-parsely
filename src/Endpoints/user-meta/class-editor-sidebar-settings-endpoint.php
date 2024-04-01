@@ -73,17 +73,17 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 					'Period'      => '7d',
 				),
 			),
-			'SmartLinkingMaxLinks'     => array(
-				'values'  => array(),
-				'default' => 10,
-			),
-			'SmartLinkingMaxLinkWords' => array(
-				'values'  => array(),
-				'default' => 4,
-			),
-			'SmartLinkingOpen'         => array(
-				'values'  => array( true, false ),
-				'default' => false,
+			'SmartLinking'             => array(
+				'values'  => array(
+					'MaxLinks'     => array(),
+					'MaxLinkWords' => array(),
+					'Open'         => array( true, false ),
+				),
+				'default' => array(
+					'MaxLinks'     => 10,
+					'MaxLinkWords' => 4,
+					'Open'         => false,
+				),
 			),
 			'TitleSuggestionsSettings' => array(
 				'values'  => array(

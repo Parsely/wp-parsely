@@ -5,6 +5,7 @@ import type {
 	PerformanceStatsSettings,
 	RelatedPostsSettings,
 	SidebarSettings,
+	SmartLinkingSettings,
 	TitleSuggestionsSettings,
 } from './sidebar-settings';
 import type { TopPostsSettings } from './top-posts-settings';
@@ -16,6 +17,7 @@ export type {
 	PerformanceStatsSettings, // Part of SidebarSettings type.
 	RelatedPostsSettings, // Part of SidebarSettings type.
 	SidebarSettings,
+	SmartLinkingSettings, // Part of SidebarSettings type.
 	TitleSuggestionsSettings, // Part of SidebarSettings type.
 	TopPostsSettings,
 };

@@ -82,9 +82,11 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			Open: false,
 			Period: Period.Days7,
 		},
-		SmartLinkingMaxLinks: DEFAULT_MAX_LINKS,
-		SmartLinkingMaxLinkWords: DEFAULT_MAX_LINK_WORDS,
-		SmartLinkingOpen: false,
+		SmartLinking: {
+			MaxLinks: DEFAULT_MAX_LINKS,
+			MaxLinkWords: DEFAULT_MAX_LINK_WORDS,
+			Open: false,
+		},
 		TitleSuggestionsSettings: {
 			Open: false,
 			Tone: 'neutral',
@@ -139,14 +141,14 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	if ( ! isInEnum( mergedSettings.RelatedPosts.Period, Period ) ) {
 		mergedSettings.RelatedPosts.Period = defaultSettings.RelatedPosts.Period;
 	}
-	if ( typeof mergedSettings.SmartLinkingMaxLinks !== 'number' ) {
-		mergedSettings.SmartLinkingMaxLinks = defaultSettings.SmartLinkingMaxLinks;
+	if ( typeof mergedSettings.SmartLinking.MaxLinks !== 'number' ) {
+		mergedSettings.SmartLinking.MaxLinks = defaultSettings.SmartLinking.MaxLinks;
 	}
-	if ( typeof mergedSettings.SmartLinkingMaxLinkWords !== 'number' ) {
-		mergedSettings.SmartLinkingMaxLinkWords = defaultSettings.SmartLinkingMaxLinkWords;
+	if ( typeof mergedSettings.SmartLinking.MaxLinkWords !== 'number' ) {
+		mergedSettings.SmartLinking.MaxLinkWords = defaultSettings.SmartLinking.MaxLinkWords;
 	}
-	if ( typeof mergedSettings.SmartLinkingOpen !== 'boolean' ) {
-		mergedSettings.SmartLinkingOpen = defaultSettings.SmartLinkingOpen;
+	if ( typeof mergedSettings.SmartLinking.Open !== 'boolean' ) {
+		mergedSettings.SmartLinking.Open = defaultSettings.SmartLinking.Open;
 	}
 	if ( typeof mergedSettings.TitleSuggestionsSettings !== 'object' ) {
 		mergedSettings.TitleSuggestionsSettings = defaultSettings.TitleSuggestionsSettings;

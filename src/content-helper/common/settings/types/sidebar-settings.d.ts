@@ -10,9 +10,7 @@ export interface SidebarSettings {
 	InitialTabName: string;
 	PerformanceStatsSettings: PerformanceStatsSettings;
 	RelatedPosts: RelatedPostsSettings;
-	SmartLinkingMaxLinks: number;
-	SmartLinkingMaxLinkWords: number;
-	SmartLinkingOpen: boolean;
+	SmartLinking: SmartLinkingSettings;
 	TitleSuggestionsSettings: TitleSuggestionsSettings;
 }
 
@@ -49,4 +47,15 @@ export interface RelatedPostsSettings {
 	Metric: Metric;
 	Open: boolean;
 	Period: Period;
+}
+
+/**
+ * Defines the settings structure for the SmartLinking component.
+ *
+ * @since 3.14.3
+ */
+export interface SmartLinkingSettings {
+	MaxLinks: number;
+	MaxLinkWords: number;
+	Open: boolean;
 }

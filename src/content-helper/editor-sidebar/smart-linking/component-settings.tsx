@@ -14,7 +14,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { InputRange } from '../../common/components/input-range';
-import { OnSettingChangeFunction } from '../editor-sidebar';
+import { SmartLinkingSettings as Settings } from '../../common/settings';
 import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
 import { ApplyToOptions, SmartLinkingStore } from './store';
 
@@ -26,7 +26,7 @@ import { ApplyToOptions, SmartLinkingStore } from './store';
 type SmartLinkingSettingsProps = {
 	disabled?: boolean;
 	selectedBlock?: string;
-	onSettingChange: OnSettingChangeFunction
+	onSettingChange: ( setting: keyof Settings, value: number ) => void;
 };
 
 /**
@@ -223,7 +223,7 @@ export const SmartLinkingSettings = ( {
 						value={ maxLinks }
 						onChange={ ( value ) => {
 							setMaxLinks( value ?? 1 );
-							onSettingChange( 'SmartLinkingMaxLinks', value ?? DEFAULT_MAX_LINKS );
+							onSettingChange( 'MaxLinks', value ?? DEFAULT_MAX_LINKS );
 						} }
 						label={ __( 'Max Number of Links', 'wp-parsely' ) }
 						suffix={ __( 'Links', 'wp-parsely' ) }
@@ -236,7 +236,7 @@ export const SmartLinkingSettings = ( {
 						value={ maxLinkWords }
 						onChange={ ( value ) => {
 							setMaxLinkWords( value ?? 1 );
-							onSettingChange( 'SmartLinkingMaxLinkWords', value ?? DEFAULT_MAX_LINK_WORDS );
+							onSettingChange( 'MaxLinkWords', value ?? DEFAULT_MAX_LINK_WORDS );
 						} }
 						label={ __( 'Max Link Length', 'wp-parsely' ) }
 						suffix={ __( 'Words', 'wp-parsely' ) }

@@ -57,10 +57,13 @@ export const SidebarToolsTab = (
 
 			<PanelBody
 				title={ __( 'Smart Linking (Beta)', 'wp-parsely' ) }
-				initialOpen={ settings.SmartLinkingOpen }
+				initialOpen={ settings.SmartLinking.Open }
 				onToggle={ ( next ) => {
 					setSettings( {
-						SmartLinkingOpen: next,
+						SmartLinking: {
+							...settings.SmartLinking,
+							Open: next,
+						},
 					} );
 					trackToggle( 'smart_linking', next );
 				} }
