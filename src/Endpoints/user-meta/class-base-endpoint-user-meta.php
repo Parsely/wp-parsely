@@ -195,8 +195,8 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	/**
 	 * Sanitizes the passed meta value.
 	 *
-	 * @since 3.14.0 Added support for nested arrays.
 	 * @since 3.13.0
+	 * @since 3.14.0 Added support for nested arrays.
 	 *
 	 * @param array<string, mixed> $meta_value The meta value to sanitize.
 	 * @param string               $parent_key  The parent key for the current level of the meta.
@@ -285,7 +285,9 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	}
 
 	/**
-	 * Check if a given composite key is valid.
+	 * Checks if a given composite key is valid.
+	 *
+	 * @since 3.14.3
 	 *
 	 * @param string|mixed $composite_key The composite key representing the nested path.
 	 * @return bool Whether the key is valid.
@@ -314,10 +316,12 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	}
 
 	/**
-	 * Get the valid values for a given setting path.
+	 * Gets the valid values for a given setting path.
 	 *
-	 * @param string[] $keys The path to the setting.
-	 * @return mixed[] The valid values for the setting path.
+	 * @since 3.14.3
+	 *
+	 * @param array<string> $keys The path to the setting.
+	 * @return array<mixed> The valid values for the setting path.
 	 */
 	protected function get_valid_values( array $keys ): array {
 		$current = $this->valid_subvalues;
@@ -337,10 +341,12 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	}
 
 	/**
-	 * Get the default value for a given setting path.
+	 * Gets the default value for a given setting path.
 	 *
-	 * @param string[] $keys The path to the setting.
-	 * @return mixed|mixed[]|null The default value for the setting path.
+	 * @since 3.14.3
+	 *
+	 * @param array<string> $keys The path to the setting.
+	 * @return mixed|array<mixed>|null The default value for the setting path.
 	 */
 	protected function get_default( array $keys ) {
 		$current = $this->default_value;
@@ -361,10 +367,12 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 
 
 	/**
-	 * Get the specifications for nested settings based on a composite key.
+	 * Gets the specifications for nested settings based on a composite key.
+	 *
+	 * @since 3.14.3
 	 *
 	 * @param string $composite_key The composite key representing the nested path.
-	 * @return mixed[] The specifications for the nested path.
+	 * @return array<mixed> The specifications for the nested path.
 	 */
 	protected function get_nested_specs( string $composite_key ): array {
 		$keys  = explode( '.', $composite_key );

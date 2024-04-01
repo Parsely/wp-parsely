@@ -159,6 +159,8 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	/**
 	 * Verifies that the endpoint can correctly handle PUT requests.
 	 *
+	 * @since 3.13.0
+	 *
 	 * @param string $test_data The data to send in the PUT request.
 	 * @param string $expected The expected value of the setting after the PUT request.
 	 *
@@ -169,12 +171,14 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::set_value
 	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
 	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::process_request
-	 * @since 3.13.0
-	 *
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_default
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_nested_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_valid_values
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_valid_key
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_route
@@ -183,10 +187,6 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_valid_values
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_valid_key
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_default
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_nested_specs
 	 * @dataProvider provide_put_requests_data
 	 */
 	public function test_endpoint_correctly_handles_put_requests(
