@@ -17,7 +17,7 @@ Designed and built for digital publishers, Parse.ly helps you understand how you
 
 Thousands of writers, editors, site managers, and technologists already use Parse.ly to understand what content draws in website visitors, and why. Using our powerful dashboards and APIs, customers build successful digital strategies that allow them to grow and engage a loyal audience.
 
-Join industry leaders -- like NBA, Slate, News Corp, and Conde Nast -- who already use Parse.ly to bring clarity to content, audience, and analytics.
+Join industry leaders -- like NBA, Slate, News Corp, and Condé Nast -- who already use Parse.ly to bring clarity to content, audience, and analytics.
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
 
@@ -41,7 +41,7 @@ The [Content Helper](https://docs.parse.ly/plugin-content-helper/) is a set of c
 - The [Parse.ly Stats Column](https://docs.parse.ly/plugin-content-helper/#h-posts) - Displays published post performance for the last 7 days in Post Lists.
 - The [Parse.ly Editor Sidebar](https://docs.parse.ly/plugin-content-helper/#h-editor) - This sidebar is integrated into the WordPress Editor and offers insights about the content currently being edited such as:
   - [Title Suggestions](https://docs.wpvip.com/parse-ly/wp-parsely-features/title-suggestions/) - Generates title suggestions for the post/page currently being edited.
-  - [Smart Linking](https://docs.wpvip.com/parse-ly/wp-parsely-features/smart-linking/) - Automatically adds links to the current content that point to the most relevant and top performing posts.
+  - [Smart Linking](https://docs.wpvip.com/parse-ly/wp-parsely-features/smart-linking/) - Automatically adds links to the current content that point to the most relevant and top-performing posts.
   - [Related Posts](https://docs.parse.ly/plugin-content-helper/#h-related-posts) - Displays a list of the website’s most successful posts, similar to the post/page currently being edited.
   - [Performance Stats](https://docs.parse.ly/plugin-content-helper/#h-see-performance-details) - Displays performance metrics about the content currently being edited.
 - The [Parse.ly Excerpt Generator](https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/) - A Post Editor settings enhancement that generates an excerpt for the post/page currently being edited.
