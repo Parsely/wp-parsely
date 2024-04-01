@@ -11,7 +11,7 @@ export interface SidebarSettings {
 	PerformanceStats: PerformanceStatsSettings;
 	RelatedPosts: RelatedPostsSettings;
 	SmartLinking: SmartLinkingSettings;
-	TitleSuggestionsSettings: TitleSuggestionsSettings;
+	TitleSuggestions: TitleSuggestionsSettings;
 }
 
 /**

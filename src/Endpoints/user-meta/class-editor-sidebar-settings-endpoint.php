@@ -41,11 +41,11 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 	 */
 	protected function get_subvalues_specs(): array {
 		return array(
-			'InitialTabName'           => array(
+			'InitialTabName'   => array(
 				'values'  => array( 'tools', 'performance' ),
 				'default' => 'tools',
 			),
-			'PerformanceStats'         => array(
+			'PerformanceStats' => array(
 				'values'  => array(
 					'Period'            => array( '10m', '1h', '2h', '4h', '24h', '7d', '30d' ),
 					'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
@@ -57,7 +57,7 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 					'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
 				),
 			),
-			'RelatedPosts'             => array(
+			'RelatedPosts'     => array(
 				'values'  => array(
 					'FilterBy'    => array( 'unavailable', 'tag', 'section', 'author' ),
 					'FilterValue' => array(),
@@ -73,7 +73,7 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 					'Period'      => '7d',
 				),
 			),
-			'SmartLinking'             => array(
+			'SmartLinking'     => array(
 				'values'  => array(
 					'MaxLinks'     => array(),
 					'MaxLinkWords' => array(),
@@ -85,7 +85,7 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 					'Open'         => false,
 				),
 			),
-			'TitleSuggestionsSettings' => array(
+			'TitleSuggestions' => array(
 				'values'  => array(
 					'Open'    => array( true, false ),
 					'Persona' => array(),

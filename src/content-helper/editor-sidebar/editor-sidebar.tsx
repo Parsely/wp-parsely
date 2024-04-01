@@ -87,7 +87,7 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			MaxLinkWords: DEFAULT_MAX_LINK_WORDS,
 			Open: false,
 		},
-		TitleSuggestionsSettings: {
+		TitleSuggestions: {
 			Open: false,
 			Tone: 'neutral',
 			Persona: 'journalist',
@@ -150,17 +150,17 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	if ( typeof mergedSettings.SmartLinking.Open !== 'boolean' ) {
 		mergedSettings.SmartLinking.Open = defaultSettings.SmartLinking.Open;
 	}
-	if ( typeof mergedSettings.TitleSuggestionsSettings !== 'object' ) {
-		mergedSettings.TitleSuggestionsSettings = defaultSettings.TitleSuggestionsSettings;
+	if ( typeof mergedSettings.TitleSuggestions !== 'object' ) {
+		mergedSettings.TitleSuggestions = defaultSettings.TitleSuggestions;
 	}
-	if ( typeof mergedSettings.TitleSuggestionsSettings.Open !== 'boolean' ) {
-		mergedSettings.TitleSuggestionsSettings.Open = defaultSettings.TitleSuggestionsSettings.Open;
+	if ( typeof mergedSettings.TitleSuggestions.Open !== 'boolean' ) {
+		mergedSettings.TitleSuggestions.Open = defaultSettings.TitleSuggestions.Open;
 	}
-	if ( typeof mergedSettings.TitleSuggestionsSettings.Tone !== 'string' ) {
-		mergedSettings.TitleSuggestionsSettings.Tone = defaultSettings.TitleSuggestionsSettings.Tone;
+	if ( typeof mergedSettings.TitleSuggestions.Tone !== 'string' ) {
+		mergedSettings.TitleSuggestions.Tone = defaultSettings.TitleSuggestions.Tone;
 	}
-	if ( typeof mergedSettings.TitleSuggestionsSettings.Persona !== 'string' ) {
-		mergedSettings.TitleSuggestionsSettings.Persona = defaultSettings.TitleSuggestionsSettings.Persona;
+	if ( typeof mergedSettings.TitleSuggestions.Persona !== 'string' ) {
+		mergedSettings.TitleSuggestions.Persona = defaultSettings.TitleSuggestions.Persona;
 	}
 
 	return mergedSettings;
