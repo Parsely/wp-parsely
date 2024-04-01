@@ -17,7 +17,7 @@ Designed and built for digital publishers, Parse.ly helps you understand how you
 
 Thousands of writers, editors, site managers, and technologists already use Parse.ly to understand what content draws in website visitors, and why. Using our powerful dashboards and APIs, customers build successful digital strategies that allow them to grow and engage a loyal audience.
 
-Join industry leaders -- like NBA, Slate, News Corp, and Conde Nast -- who already use Parse.ly to bring clarity to content, audience, and analytics.
+Join industry leaders -- like NBA, Slate, News Corp, and Condé Nast -- who already use Parse.ly to bring clarity to content, audience, and analytics.
 
 Feedback, suggestions, questions or concerns? Open a new [GitHub issue](https://github.com/Parsely/wp-parsely/issues) or email us at [support@parsely.com](mailto:support@parsely.com). We always want to hear from you!
 
@@ -40,11 +40,11 @@ The [Content Helper](https://docs.parse.ly/plugin-content-helper/) is a set of c
 - The [Parse.ly Dashboard Widget](https://docs.parse.ly/plugin-content-helper/#h-dashboard) - Displays the site's top posts in the WordPress Dashboard.
 - The [Parse.ly Stats Column](https://docs.parse.ly/plugin-content-helper/#h-posts) - Displays published post performance for the last 7 days in Post Lists.
 - The [Parse.ly Editor Sidebar](https://docs.parse.ly/plugin-content-helper/#h-editor) - This sidebar is integrated into the WordPress Editor and offers insights about the content currently being edited such as:
-  - [Title Suggestions](https://docs.parse.ly/plugin-content-helper/#h-title-suggestions-beta) - Generates title suggestions for the post/page currently being edited.
-  - [Smart Linking](https://docs.parse.ly/plugin-content-helper/#h-smart-linking-beta) - Automatically adds links to the current content that point to the most relevant and top performing posts.
-  - [Related Posts](https://docs.parse.ly/plugin-content-helper/#h-related-top-posts) - Displays a list of the website’s most successful posts, similar to the post/page currently being edited.
-  - [Performance Stats](https://docs.parse.ly/plugin-content-helper/#h-performance-details) - Displays performance metrics about the content currently being edited.
-- The [Parse.ly Excerpt Generator](https://docs.parse.ly/plugin-content-helper/#h-excerpt-generator-beta) - A Post Editor settings enhancement that generates an excerpt for the post/page currently being edited.
+  - [Title Suggestions](https://docs.wpvip.com/parse-ly/wp-parsely-features/title-suggestions/) - Generates title suggestions for the post/page currently being edited.
+  - [Smart Linking](https://docs.wpvip.com/parse-ly/wp-parsely-features/smart-linking/) - Automatically adds links to the current content that point to the most relevant and top-performing posts.
+  - [Related Posts](https://docs.parse.ly/plugin-content-helper/#h-related-posts) - Displays a list of the website’s most successful posts, similar to the post/page currently being edited.
+  - [Performance Stats](https://docs.parse.ly/plugin-content-helper/#h-see-performance-details) - Displays performance metrics about the content currently being edited.
+- The [Parse.ly Excerpt Generator](https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/) - A Post Editor settings enhancement that generates an excerpt for the post/page currently being edited.
 
 #### The Parse.ly Recommendations Block
 
@@ -53,9 +53,9 @@ The plugin includes a [Recommendations Block](https://docs.parse.ly/recommendati
 #### Advanced integrations support
 
 While the plugin works out of the box for basic integrations, it offers a host of features that easily allow for advanced integration scenarios:
-- Support for [Google Tag Manager, AMP, Google Web Stories and Cloudflare](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-amp-facebook-instant-articles-or-google-web-stories) is included.
+- Support for [Google Tag Manager, AMP, Google Web Stories and Cloudflare](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-amp-or-google-web-stories) is included.
 - The plugin exposes the `wpParselyOnLoad` and `wpParselyOnReady` JavaScript hooks that allow for advanced integrations requiring JavaScript, such as [Dynamic Tracking](https://docs.parse.ly/plugin-dynamic-tracking/).
-- Support for WordPress [network/multisite](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-wordpress-network-multisite) and [decoupled/headless](https://docs.parse.ly/plugin-decoupled-headless-support/) (GraphQL and WP Rest API) setups is included.
+- Support for WordPress [network/multisite](https://docs.parse.ly/plugin-common-questions/#h-is-wp-parsely-compatible-with-wordpress-network-multisite) and [decoupled/headless](https://docs.parse.ly/decoupled-set-up/) (GraphQL and WP Rest API) setups is included.
 - Last but not least, a wide range of hooks is available in order to customize the plugin's functionality even further.
 
 ### Documentation and resources
