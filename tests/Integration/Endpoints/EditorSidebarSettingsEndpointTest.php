@@ -32,7 +32,7 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 */
 	protected $default_value = array(
 		'InitialTabName'           => 'tools',
-		'PerformanceStatsSettings' => array(
+		'PerformanceStats'         => array(
 			'Period'            => '7d',
 			'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
 			'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
@@ -195,7 +195,7 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 
 	/**
 	 * Tests that the endpoint can correctly handle PUT requests with valid
-	 * nested PerformanceStatsSettings values.
+	 * nested PerformanceStats values.
 	 *
 	 * @since 3.14.0
 	 *
@@ -228,7 +228,7 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 				'views',
 				'7d',
 				array(
-					'PerformanceStatsSettings' => array(
+					'PerformanceStats' => array(
 						'Period'            => '1h',
 						'VisiblePanels'     => array( 'overview', 'referrers' ),
 						'VisibleDataPoints' => array( 'views', 'avgEngaged', 'recirculation' ),
@@ -241,7 +241,7 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 			array_merge(
 				$this->default_value,
 				array(
-					'PerformanceStatsSettings' => array(
+					'PerformanceStats' => array(
 						'Period'            => '1h',
 						'VisiblePanels'     => array( 'overview', 'referrers' ),
 						'VisibleDataPoints' => array( 'views', 'avgEngaged', 'recirculation' ),

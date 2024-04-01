@@ -8,7 +8,7 @@ import { Metric, Period } from '../../utils/constants';
  */
 export interface SidebarSettings {
 	InitialTabName: string;
-	PerformanceStatsSettings: PerformanceStatsSettings;
+	PerformanceStats: PerformanceStatsSettings;
 	RelatedPosts: RelatedPostsSettings;
 	SmartLinking: SmartLinkingSettings;
 	TitleSuggestionsSettings: TitleSuggestionsSettings;

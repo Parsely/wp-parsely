@@ -70,7 +70,7 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	// Default settings object.
 	const defaultSettings: SidebarSettings = {
 		InitialTabName: 'tools',
-		PerformanceStatsSettings: {
+		PerformanceStats: {
 			Period: Period.Days7,
 			VisiblePanels: [ 'overview', 'categories', 'referrers' ],
 			VisibleDataPoints: [ 'views', 'visitors', 'avgEngaged', 'recirculation' ],
@@ -114,17 +114,17 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	if ( typeof mergedSettings.InitialTabName !== 'string' ) {
 		mergedSettings.InitialTabName = defaultSettings.InitialTabName;
 	}
-	if ( typeof mergedSettings.PerformanceStatsSettings !== 'object' ) {
-		mergedSettings.PerformanceStatsSettings = defaultSettings.PerformanceStatsSettings;
+	if ( typeof mergedSettings.PerformanceStats !== 'object' ) {
+		mergedSettings.PerformanceStats = defaultSettings.PerformanceStats;
 	}
-	if ( ! isInEnum( mergedSettings.PerformanceStatsSettings.Period, Period ) ) {
-		mergedSettings.PerformanceStatsSettings.Period = defaultSettings.PerformanceStatsSettings.Period;
+	if ( ! isInEnum( mergedSettings.PerformanceStats.Period, Period ) ) {
+		mergedSettings.PerformanceStats.Period = defaultSettings.PerformanceStats.Period;
 	}
-	if ( ! Array.isArray( mergedSettings.PerformanceStatsSettings.VisiblePanels ) ) {
-		mergedSettings.PerformanceStatsSettings.VisiblePanels = defaultSettings.PerformanceStatsSettings.VisiblePanels;
+	if ( ! Array.isArray( mergedSettings.PerformanceStats.VisiblePanels ) ) {
+		mergedSettings.PerformanceStats.VisiblePanels = defaultSettings.PerformanceStats.VisiblePanels;
 	}
-	if ( ! Array.isArray( mergedSettings.PerformanceStatsSettings.VisibleDataPoints ) ) {
-		mergedSettings.PerformanceStatsSettings.VisibleDataPoints = defaultSettings.PerformanceStatsSettings.VisibleDataPoints;
+	if ( ! Array.isArray( mergedSettings.PerformanceStats.VisibleDataPoints ) ) {
+		mergedSettings.PerformanceStats.VisibleDataPoints = defaultSettings.PerformanceStats.VisibleDataPoints;
 	}
 	if ( ! isInEnum( mergedSettings.RelatedPosts.FilterBy, PostFilterType ) ) {
 		mergedSettings.RelatedPosts.FilterBy = defaultSettings.RelatedPosts.FilterBy;
@@ -246,7 +246,7 @@ const ContentHelperEditorSidebar = (): JSX.Element => {
 								) }
 								{ tab.name === 'performance' && (
 									<SidebarPerformanceTab
-										period={ settings.PerformanceStatsSettings.Period }
+										period={ settings.PerformanceStats.Period }
 									/>
 								) }
 							</>
