@@ -222,7 +222,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 				$value = $meta_value[ $key ];
 			} else {
 				// Key is missing in the input, use the default value from the specifications.
-				$value = $spec['default'];
+				$value = $this->get_default( explode( '.', $composite_key ) );
 			}
 
 			/**

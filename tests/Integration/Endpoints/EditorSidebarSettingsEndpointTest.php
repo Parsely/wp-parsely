@@ -31,21 +31,25 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @var array<string, mixed>
 	 */
 	protected $default_value = array(
-		'InitialTabName'           => 'tools',
-		'PerformanceStats'         => array(
+		'InitialTabName'   => 'tools',
+		'PerformanceStats' => array(
 			'Period'            => '7d',
-			'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
 			'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
+			'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
 		),
-		'RelatedPostsFilterBy'     => 'unavailable',
-		'RelatedPostsFilterValue'  => '',
-		'RelatedPostsMetric'       => 'views',
-		'RelatedPostsOpen'         => false,
-		'RelatedPostsPeriod'       => '7d',
-		'SmartLinkingMaxLinks'     => 10,
-		'SmartLinkingMaxLinkWords' => 4,
-		'SmartLinkingOpen'         => false,
-		'TitleSuggestions'         => array(
+		'RelatedPosts'     => array(
+			'FilterBy'    => 'unavailable',
+			'FilterValue' => '',
+			'Metric'      => 'views',
+			'Open'        => false,
+			'Period'      => '7d',
+		),
+		'SmartLinking'     => array(
+			'MaxLinks'     => 10,
+			'MaxLinkWords' => 4,
+			'Open'         => false,
+		),
+		'TitleSuggestions' => array(
 			'Open'    => false,
 			'Persona' => 'journalist',
 			'Tone'    => 'neutral',
@@ -230,8 +234,8 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 				array(
 					'PerformanceStats' => array(
 						'Period'            => '1h',
-						'VisiblePanels'     => array( 'overview', 'referrers' ),
 						'VisibleDataPoints' => array( 'views', 'avgEngaged', 'recirculation' ),
+						'VisiblePanels'     => array( 'overview', 'referrers' ),
 					),
 				)
 			)
@@ -243,8 +247,8 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 				array(
 					'PerformanceStats' => array(
 						'Period'            => '1h',
-						'VisiblePanels'     => array( 'overview', 'referrers' ),
 						'VisibleDataPoints' => array( 'views', 'avgEngaged', 'recirculation' ),
+						'VisiblePanels'     => array( 'overview', 'referrers' ),
 					),
 				)
 			)
@@ -269,18 +273,39 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 		array $extra_data = array()
 	): string {
 		$array = $this->default_value;
-		unset( $array['RelatedPostsMetric'], $array['RelatedPostsPeriod'] );
+		assert( is_array( $array['RelatedPosts'] ) );
+
+		unset( $array['RelatedPosts']['Metric'], $array['RelatedPosts']['Period'] );
 
 		if ( null !== $metric ) {
-			$array['RelatedPostsMetric'] = $metric;
+			$array['RelatedPosts']['Metric'] = $metric;
 		}
 
 		if ( null !== $period ) {
-			$array['RelatedPostsPeriod'] = $period;
+			$array['RelatedPosts']['Period'] = $period;
 		}
 
-		ksort( $array, SORT_NATURAL | SORT_FLAG_CASE );
+		$merged_array = array_merge( $array, $extra_data );
 
-		return $this->wp_json_encode( array_merge( $array, $extra_data ) );
+		$this->ksortRecursive( $merged_array, SORT_NATURAL | SORT_FLAG_CASE );
+
+		return $this->wp_json_encode( $merged_array );
+	}
+
+	/**
+	 * Recursively sorts an array by key using a specified sort flag.
+	 *
+	 * @since 3.14.3
+	 *
+	 * @param array<mixed, mixed|array> &$unsorted_array The array to be sorted, passed by reference.
+	 * @param int                       $sort_flags Optional sorting flags. Defaults to SORT_REGULAR.
+	 */
+	private function ksortRecursive( array &$unsorted_array, int $sort_flags = SORT_REGULAR ): void {
+		ksort( $unsorted_array, $sort_flags );
+		foreach ( $unsorted_array as &$value ) {
+			if ( is_array( $value ) ) {
+				$this->ksortRecursive( $value, $sort_flags );
+			}
+		}
 	}
 }
