@@ -18,7 +18,7 @@ The actual release of the plugin should be done on Mondays so we can catch the T
 
 **2. Conduct additional testing**
 We've got automated testing in place and also test under our local development environment during development. For impactful releases we should also:
-- [ ] Conduct an additional smoke test under our local development environment.
+- [ ] Conduct an additional [smoke test](https://github.com/Parsely/wp-parsely/blob/develop/docs/TESTING.md#manual-smoke-test) under our local development environment.
 - [ ] Test under a regular non-local WordPress installation.
 - [ ] Test under a real WordPress VIP environment.
 

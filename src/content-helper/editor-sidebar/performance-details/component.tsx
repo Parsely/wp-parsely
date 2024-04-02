@@ -80,7 +80,7 @@ const availablePanels: PanelDescriptor[] = [
  * @return { boolean } True if the panel is visible, false otherwise.
  */
 const isPanelVisible = ( settings: SidebarSettings, panel: string ): boolean => {
-	return settings.PerformanceStatsSettings.VisiblePanels.includes( panel );
+	return settings.PerformanceStats.VisiblePanels.includes( panel );
 };
 
 /**
@@ -111,13 +111,13 @@ const PerformanceStatsMenu = (
 			return;
 		}
 
-		// Check if the panel is in the settings.PerformanceStatsSettings.VisiblePanels array
+		// Check if the panel is in the settings.PerformanceStats.VisiblePanels array
 		// If it is, remove it with setSettings, if not, add it.
 		if ( isPanelVisible( settings, panel ) ) {
 			setSettings( {
-				PerformanceStatsSettings: {
-					...settings.PerformanceStatsSettings,
-					VisiblePanels: settings.PerformanceStatsSettings.VisiblePanels.filter(
+				PerformanceStats: {
+					...settings.PerformanceStats,
+					VisiblePanels: settings.PerformanceStats.VisiblePanels.filter(
 						( p ) => p !== panel
 					),
 				},
@@ -125,9 +125,9 @@ const PerformanceStatsMenu = (
 			Telemetry.trackEvent( 'editor_sidebar_performance_panel_closed', { panel } );
 		} else {
 			setSettings( {
-				PerformanceStatsSettings: {
-					...settings.PerformanceStatsSettings,
-					VisiblePanels: [ ...settings.PerformanceStatsSettings.VisiblePanels, panel ],
+				PerformanceStats: {
+					...settings.PerformanceStats,
+					VisiblePanels: [ ...settings.PerformanceStats.VisiblePanels, panel ],
 				},
 			} );
 			Telemetry.trackEvent( 'editor_sidebar_performance_panel_opened', { panel } );
@@ -153,8 +153,8 @@ const PerformanceStatsMenu = (
 	 */
 	const resetAll = (): void => {
 		setSettings( {
-			PerformanceStatsSettings: {
-				...settings.PerformanceStatsSettings,
+			PerformanceStats: {
+				...settings.PerformanceStats,
 				VisiblePanels: availablePanels.map( ( panel ) => panel.name ),
 			},
 		} );
@@ -248,7 +248,7 @@ export const PerformanceStats = (
 				<div className="panel-settings">
 					<SelectControl
 						size="__unstable-large"
-						value={ settings.PerformanceStatsSettings.Period }
+						value={ settings.PerformanceStats.Period }
 						prefix={
 							<InputControlPrefixWrapper>
 								{ __( 'Period: ', 'wp-parsely' ) }
@@ -257,8 +257,8 @@ export const PerformanceStats = (
 						onChange={ ( selection ) => {
 							if ( isInEnum( selection, Period ) ) {
 								setSettings( {
-									PerformanceStatsSettings: {
-										...settings.PerformanceStatsSettings,
+									PerformanceStats: {
+										...settings.PerformanceStats,
 										Period: selection as Period,
 									},
 								} );
