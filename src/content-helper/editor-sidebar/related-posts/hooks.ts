@@ -12,9 +12,10 @@ import { store as editorStore } from '@wordpress/editor';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 
 export interface PostDataStore {
-	authors: User[],
-	categories: Taxonomy[],
-	tags: Taxonomy[],
+	authors: User[] | undefined;
+	categories: Taxonomy[] | undefined;
+	tags: Taxonomy[] | undefined;
+	isReady: boolean;
 }
 
 /**
@@ -24,27 +25,41 @@ export interface PostDataStore {
  *
  * @return {PostDataStore} The post data for the current post.
  */
+
 export function usePostData(): PostDataStore {
-	return useSelect( ( select ) => {
+	const { authors, categories, tags, isReady } = useSelect( ( select ) => {
 		const { getEditedPostAttribute } = select( editorStore ) as GutenbergFunction;
 		const { getEntityRecords } = select( coreStore );
 
-		const authorRecords: User[] | null = getEntityRecords(
-			'root', 'user', { include: getEditedPostAttribute( 'author' ) }
-		);
+		const authorId = getEditedPostAttribute( 'author' );
+		const categoryIds = getEditedPostAttribute( 'categories' );
+		const tagIds = getEditedPostAttribute( 'tags' );
 
-		const categoryRecords: Taxonomy[] | null = getEntityRecords(
-			'taxonomy', 'category', { include: getEditedPostAttribute( 'categories' ) }
-		);
+		const authorRecords: User[] | undefined = getEntityRecords(
+			'root', 'user', { include: [ authorId ] }
+		) ?? undefined; // Coalescing null to undefined
 
-		const tagRecords: Taxonomy[]|null = getEntityRecords(
-			'taxonomy', 'post_tag', { include: getEditedPostAttribute( 'tags' ) }
+		const categoryRecords: Taxonomy[] | undefined = getEntityRecords(
+			'taxonomy', 'category', { include: categoryIds }
+		) ?? undefined; // Coalescing null to undefined
+
+		const tagRecords: Taxonomy[] | undefined = getEntityRecords(
+			'taxonomy', 'post_tag', { include: tagIds }
+		) ?? undefined; // Coalescing null to undefined
+
+		const isPostDataReady: boolean = (
+			authorRecords !== undefined &&
+			categoryRecords !== undefined &&
+			tagRecords !== undefined
 		);
 
 		return {
-			authors: authorRecords ?? [],
-			categories: categoryRecords ?? [],
-			tags: tagRecords ?? [],
+			authors: authorRecords,
+			categories: categoryRecords,
+			tags: tagRecords,
+			isReady: isPostDataReady,
 		};
 	}, [] );
+
+	return { authors, categories, tags, isReady };
 }

@@ -59,7 +59,12 @@ export const RelatedPostsPanel = (): JSX.Element => {
 	 * @since 3.14.0 Moved from `editor-sidebar.tsx`.
 	 * @since 3.14.3 Moved to a custom usePostData hook in `hooks.ts`.
 	 */
-	const { authors, categories, tags } = usePostData();
+	const {
+		authors,
+		categories,
+		tags,
+		isReady: isPostDataReady,
+	} = usePostData();
 
 	useEffect( () => {
 		// Set the post data only when all required properties have become
@@ -71,7 +76,7 @@ export const RelatedPostsPanel = (): JSX.Element => {
 				tags: tags.map( ( t ) => t.name ),
 			} );
 		}
-	}, [ authors, categories, tags ] );
+	}, [ authors, categories, tags, isPostDataReady ] );
 
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
