@@ -15,9 +15,9 @@ import { external, Icon } from '@wordpress/icons';
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { SidebarSettings, useSettings } from '../../common/settings';
+import { SmartLinkingSettings, SidebarSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
-import { SmartLinkingSettings } from './component-settings';
+import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
 import { LinkSuggestion, SmartLinkingProvider } from './provider';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
 import { escapeRegExp, findTextNodesNotInAnchor } from './utils';
@@ -144,6 +144,8 @@ export const SmartLinkingPanel = ( {
 		removeOverlayBlock,
 		setSmartLinkingSettings,
 		setApplyTo,
+		setMaxLinkWords,
+		setMaxLinks,
 	} = useDispatch( SmartLinkingStore );
 
 	/**
@@ -153,15 +155,26 @@ export const SmartLinkingPanel = ( {
 	 *
 	 * @since 3.14.0
 	 *
-	 * @param { keyof SidebarSettings }     setting The setting to change.
-	 * @param { string | boolean | number } value   The new value of the setting.
+	 * @param { keyof SmartLinkingSettingsComponent } setting The setting to change.
+	 * @param { string | boolean | number }           value   The new value of the setting.
 	 */
 	const onSettingChange = (
-		setting: keyof SidebarSettings,
+		setting: keyof SmartLinkingSettings,
 		value: string | boolean | number,
 	): void => {
-		setSettingsDebounced( { [ setting ]: value } );
-		setSmartLinkingSettings( { [ setting ]: value } );
+		setSettingsDebounced(
+			{
+				SmartLinking: {
+					...settings.SmartLinking,
+					[ setting ]: value,
+				},
+			}
+		);
+		if ( setting === 'MaxLinks' ) {
+			setMaxLinks( value as number );
+		} else if ( setting === 'MaxLinkWords' ) {
+			setMaxLinkWords( value as number );
+		}
 	};
 
 	/**
@@ -178,8 +191,8 @@ export const SmartLinkingPanel = ( {
 
 		// Load the settings from the WordPress database and store them in the Smart Linking store.
 		const newSmartLinkingSettings: SmartLinkingSettingsProps = {
-			maxLinksPerPost: settings.SmartLinkingMaxLinks,
-			maxLinkWords: settings.SmartLinkingMaxLinkWords,
+			maxLinksPerPost: settings.SmartLinking.MaxLinks,
+			maxLinkWords: settings.SmartLinking.MaxLinkWords,
 		};
 		setSmartLinkingSettings( newSmartLinkingSettings );
 	}, [ setSmartLinkingSettings, settings ] ); // eslint-disable-line react-hooks/exhaustive-deps
@@ -602,7 +615,7 @@ export const SmartLinkingPanel = ( {
 						}
 					</Notice>
 				) }
-				<SmartLinkingSettings
+				<SmartLinkingSettingsComponent
 					disabled={ loading }
 					selectedBlock={ selectedBlock?.clientId }
 					onSettingChange={ onSettingChange }

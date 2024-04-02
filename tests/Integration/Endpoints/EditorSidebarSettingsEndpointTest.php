@@ -31,21 +31,25 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @var array<string, mixed>
 	 */
 	protected $default_value = array(
-		'InitialTabName'           => 'tools',
-		'PerformanceStatsSettings' => array(
+		'InitialTabName'   => 'tools',
+		'PerformanceStats' => array(
 			'Period'            => '7d',
-			'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
 			'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
+			'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
 		),
-		'RelatedPostsFilterBy'     => 'unavailable',
-		'RelatedPostsFilterValue'  => '',
-		'RelatedPostsMetric'       => 'views',
-		'RelatedPostsOpen'         => false,
-		'RelatedPostsPeriod'       => '7d',
-		'SmartLinkingMaxLinks'     => 10,
-		'SmartLinkingMaxLinkWords' => 4,
-		'SmartLinkingOpen'         => false,
-		'TitleSuggestionsSettings' => array(
+		'RelatedPosts'     => array(
+			'FilterBy'    => 'unavailable',
+			'FilterValue' => '',
+			'Metric'      => 'views',
+			'Open'        => false,
+			'Period'      => '7d',
+		),
+		'SmartLinking'     => array(
+			'MaxLinks'     => 10,
+			'MaxLinkWords' => 4,
+			'Open'         => false,
+		),
+		'TitleSuggestions' => array(
 			'Open'    => false,
 			'Persona' => 'journalist',
 			'Tone'    => 'neutral',
@@ -170,7 +174,11 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_default
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_nested_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_valid_values
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_valid_key
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_route
@@ -179,7 +187,6 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 *
 	 * @dataProvider provide_put_requests_data
 	 */
 	public function test_endpoint_correctly_handles_put_requests(
@@ -192,7 +199,7 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 
 	/**
 	 * Tests that the endpoint can correctly handle PUT requests with valid
-	 * nested PerformanceStatsSettings values.
+	 * nested PerformanceStats values.
 	 *
 	 * @since 3.14.0
 	 *
@@ -209,6 +216,8 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::set_value()
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key()
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_nested_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_valid_values
 	 * @uses \Parsely\Parsely::__construct()
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests()
 	 * @uses \Parsely\Parsely::are_credentials_managed()
@@ -223,10 +232,10 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 				'views',
 				'7d',
 				array(
-					'PerformanceStatsSettings' => array(
+					'PerformanceStats' => array(
 						'Period'            => '1h',
-						'VisiblePanels'     => array( 'overview', 'referrers' ),
 						'VisibleDataPoints' => array( 'views', 'avgEngaged', 'recirculation' ),
+						'VisiblePanels'     => array( 'overview', 'referrers' ),
 					),
 				)
 			)
@@ -236,10 +245,10 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 			array_merge(
 				$this->default_value,
 				array(
-					'PerformanceStatsSettings' => array(
+					'PerformanceStats' => array(
 						'Period'            => '1h',
-						'VisiblePanels'     => array( 'overview', 'referrers' ),
 						'VisibleDataPoints' => array( 'views', 'avgEngaged', 'recirculation' ),
+						'VisiblePanels'     => array( 'overview', 'referrers' ),
 					),
 				)
 			)
@@ -264,18 +273,39 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 		array $extra_data = array()
 	): string {
 		$array = $this->default_value;
-		unset( $array['RelatedPostsMetric'], $array['RelatedPostsPeriod'] );
+		assert( is_array( $array['RelatedPosts'] ) );
+
+		unset( $array['RelatedPosts']['Metric'], $array['RelatedPosts']['Period'] );
 
 		if ( null !== $metric ) {
-			$array['RelatedPostsMetric'] = $metric;
+			$array['RelatedPosts']['Metric'] = $metric;
 		}
 
 		if ( null !== $period ) {
-			$array['RelatedPostsPeriod'] = $period;
+			$array['RelatedPosts']['Period'] = $period;
 		}
 
-		ksort( $array, SORT_NATURAL | SORT_FLAG_CASE );
+		$merged_array = array_merge( $array, $extra_data );
 
-		return $this->wp_json_encode( array_merge( $array, $extra_data ) );
+		$this->ksortRecursive( $merged_array, SORT_NATURAL | SORT_FLAG_CASE );
+
+		return $this->wp_json_encode( $merged_array );
+	}
+
+	/**
+	 * Recursively sorts an array by key using a specified sort flag.
+	 *
+	 * @since 3.14.3
+	 *
+	 * @param array<mixed, mixed|array> &$unsorted_array The array to be sorted, passed by reference.
+	 * @param int                       $sort_flags Optional sorting flags. Defaults to SORT_REGULAR.
+	 */
+	private function ksortRecursive( array &$unsorted_array, int $sort_flags = SORT_REGULAR ): void {
+		ksort( $unsorted_array, $sort_flags );
+		foreach ( $unsorted_array as &$value ) {
+			if ( is_array( $value ) ) {
+				$this->ksortRecursive( $value, $sort_flags );
+			}
+		}
 	}
 }
