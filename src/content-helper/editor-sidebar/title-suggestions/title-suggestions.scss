@@ -12,14 +12,14 @@
 		padding: to_rem(6px) 0 var(--grid-unit-20) 0;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--grid-unit-20);
+		gap: $base-unit-20;
 		align-self: stretch;
 
 		> div {
 			display: flex;
 			flex-direction: column;
 			align-items: flex-start;
-			gap: var(--grid-unit-10);
+			gap: $base-unit-10;
 			align-self: stretch;
 		}
 	}
@@ -59,7 +59,7 @@
 	.wp-parsely-dropdown-label {
 		align-self: stretch;
 		color: var(--sidebar-black);
-		font-size: var(--font-size-smaller);
+		font-size: var(--font-size--smaller);
 		font-style: normal;
 		font-weight: 600;
 		line-height: var(--grid-unit-20);
@@ -91,7 +91,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--grid-unit-10);
+		gap: $base-unit-10;
 		align-self: stretch;
 		border-radius: 2px;
 		border: 1px solid var(--Gutenberg-Gray-400, #ccc);
@@ -111,7 +111,7 @@
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
-			gap: var(--grid-unit-10);
+			gap: $base-unit-10;
 			align-self: stretch;
 			font-size: to_rem(12px);
 			font-style: normal;
@@ -128,7 +128,7 @@
 			display: flex;
 			padding: 0 var(--grid-unit-10);
 			align-items: center;
-			gap: var(--grid-unit-20);
+			gap: $base-unit-20;
 			align-self: stretch;
 			flex-wrap: wrap;
 			border-top: 1px solid var(--Gutenberg-Gray-400, #ccc);
@@ -137,13 +137,13 @@
 			.suggested-title-actions-container {
 				display: flex;
 				flex-grow: 1;
-				gap: var(--grid-unit-10);
+				gap: $base-unit-10;
 				align-items: center;
 
 				.suggested-title-actions-left,
 				.suggested-title-actions-right {
 					display: flex;
-					gap: var(--grid-unit-10);
+					gap: $base-unit-10;
 				}
 			}
 		}
@@ -154,7 +154,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--grid-unit-20);
+		gap: $base-unit-20;
 		align-self: stretch;
 		margin-bottom: var(--grid-unit-20);
 		position: relative;
@@ -169,7 +169,7 @@
 			justify-content: center;
 			align-items: center;
 			flex-direction: column;
-			gap: var(--grid-unit-10);
+			gap: $base-unit-10;
 			background-color: rgba(255, 255, 255, 0.9);
 			z-index: 1;
 
@@ -214,7 +214,7 @@
 		margin-top: to_rem(24px);
 		justify-content: flex-end;
 		align-items: center;
-		gap: var(--grid-unit-15);
+		gap: $base-unit-15;
 		align-self: stretch;
 	}
 }
