@@ -200,7 +200,6 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 *
 	 * @param array<string, mixed> $meta_value The meta value to sanitize.
 	 * @param string               $parent_key  The parent key for the current level of the meta.
-	 *
 	 * @return array<string, mixed> The sanitized meta as an array of subvalues.
 	 */
 	protected function sanitize_value( array $meta_value, string $parent_key = '' ): array {
@@ -250,7 +249,6 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 *
 	 * @param string $composite_key The subvalue's key.
 	 * @param mixed  $value The value to sanitize.
-	 *
 	 * @return mixed The sanitized subvalue.
 	 */
 	protected function sanitize_subvalue( string $composite_key, $value ) {
