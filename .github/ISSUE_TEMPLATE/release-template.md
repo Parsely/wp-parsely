@@ -6,7 +6,7 @@ labels: 'Type: Maintenance'
 
 ---
 
-This is an issue for tracking the next `wp-parsely` release. This ticket is to be opened the week before the actual release so we have enough time to complete all the related tasks.
+This is an issue for tracking the next `wp-parsely` release. This ticket is to be opened the week before the actual release, so we have enough time to complete all the related tasks.
 
 The actual release of the plugin should be done on Mondays so we can catch the Tuesday WordPress VIP release window.
 
@@ -14,7 +14,7 @@ The actual release of the plugin should be done on Mondays so we can catch the T
 
 **1. Merge all outstanding work**
 - [ ] Merge any outstanding PRs due for this release to the target branch (usually `develop`).
-- [ ] Verify that all important PRs have an appropriate `Changelog` tag. Those who don't won't be added to the changelog.
+- [ ] Verify that all important PRs have an appropriate `Changelog` tag. PRs without a `Changelog` tag won't be added to the changelog.
 
 **2. Conduct additional testing**
 We've got automated testing in place and also test under our local development environment during development. For impactful releases we should also:
