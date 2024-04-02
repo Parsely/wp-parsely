@@ -27,9 +27,65 @@ import {
 	RelatedPostsProvider,
 } from '../../../src/content-helper/editor-sidebar/related-posts/provider';
 
+// Mock the SettingsProvider component.
+jest.mock( '../../../src/content-helper/common/settings/provider', () => ( {
+	SettingsProvider: ( { children }: { children: React.ReactNode } ) => children,
+	useSettings: () => ( {
+		settings: {
+			RelatedPosts: {
+				FilterBy: 'tag',
+				FilterValue: '',
+				Metric: 'views',
+				Open: true,
+				Period: '7d',
+			},
+		},
+		setSettings: jest.fn(),
+	} ),
+} ) );
+
+/**
+ * Structure of the mock post data.
+ *
+ * @since 3.14.3
+ */
+type MockPostData = {
+	authors: {
+		name: string;
+	}[];
+	categories: {
+		name: string;
+	}[];
+	tags: {
+		name: string;
+	}[];
+};
+
+/**
+ * Initial mock post data to be returned by the usePostData hook.
+ *
+ * @since 3.14.3
+ */
+const mockPostData: MockPostData = {
+	authors: [ { name: 'admin' } ],
+	categories: [],
+	tags: [],
+};
+jest.mock( '../../../src/content-helper/editor-sidebar/related-posts/hooks', () => {
+	return {
+		...jest.requireActual( '../../../src/content-helper/editor-sidebar/related-posts/hooks' ),
+		usePostData: jest.fn( () => mockPostData ),
+	};
+} );
+
 const relatedPostsPanel = <RelatedPostsPanel />;
 
 describe( 'PCH Editor Sidebar Related Post panel', () => {
+	afterEach( () => {
+		jest.clearAllMocks();
+		setMockPostData( [ 'admin' ], [], [] );
+	} );
+
 	test( 'should display spinner when starting', async () => {
 		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( {
 			message: 'Testing that the spinner appears and disappears.',
@@ -88,11 +144,13 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		);
 	} );
 
-	test( 'should show no results message when there is no tag, category or author in the post', async () => {
+	test( 'should show no results message when there is no tag or category in the post', async () => {
 		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( {
 			message: 'The Parse.ly API did not return any results for posts by "author".',
 			posts: [],
 		} ) );
+
+		setMockPostData( [ 'admin' ], [], [] );
 
 		await waitFor( async () => {
 			render( relatedPostsPanel );
@@ -105,7 +163,10 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		const relatedPostDescr = getRelatedPostDescr();
 		expect( relatedPostDescr ).toBeInTheDocument();
 		expect( relatedPostDescr ).toBeVisible();
-		expect( relatedPostDescr?.textContent ).toEqual( 'The Parse.ly API did not return any results for posts by "author".' );
+
+		// When there is no tag or category in the post, it should fallback to the author.
+		expect( relatedPostDescr?.textContent ).toEqual( 'Top related posts by admin in the last 7 days.' );
+		expect( getRelatedPostsEmptyMessage() ).toBeInTheDocument();
 	} );
 
 	test( 'should show a single post with description and proper attributes', async () => {
@@ -114,6 +175,8 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 			posts: getRelatedPostsMockData( 1 ),
 		} ) );
 
+		setMockPostData( [], [ 'Developers' ], [] );
+
 		await waitFor( async () => {
 			render( relatedPostsPanel );
 			expect( getLoadingMessage() ).toBeInTheDocument();
@@ -125,7 +188,7 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 		const relatedPostDescr = getRelatedPostDescr();
 		expect( relatedPostDescr ).toBeInTheDocument();
 		expect( relatedPostDescr ).toBeVisible();
-		expect( relatedPostDescr?.textContent ).toEqual( `Posts in category "Developers" in last 7 days.` );
+		expect( relatedPostDescr?.textContent ).toEqual( `Top related posts in the “Developers” section in the last 7 days.` );
 
 		const relatedPosts = getRelatedPosts();
 		expect( relatedPosts.length ).toEqual( 1 );
@@ -150,9 +213,11 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 
 	test( 'should show 5 posts by default', async () => {
 		const getRelatedPostsFn = getRelatedPostsMockFn( () => Promise.resolve( {
-			message: `Posts with tag "Developers" in last 7 days.`,
+			message: `Top related posts with the “Developers” tag in the last 7 days.`,
 			posts: getRelatedPostsMockData(),
 		} ) );
+
+		setMockPostData( [ 'admin' ], [ 'Developers' ], [ 'Developers' ] );
 
 		await waitFor( async () => {
 			render( relatedPostsPanel );
@@ -161,9 +226,24 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 
 		expect( getRelatedPostsFn ).toHaveBeenCalled();
 		expect( getLoadingMessage() ).toBeNull();
-		expect( getRelatedPostDescr()?.textContent ).toEqual( `Posts with tag "Developers" in last 7 days.` );
+		expect( getRelatedPostDescr()?.textContent ).toEqual( `Top related posts with the “Developers” tag in the last 7 days.` );
 		expect( getRelatedPosts().length ).toEqual( 5 );
 	} );
+
+	/**
+	 * Sets the mock post data to be returned by the usePostData hook.
+	 *
+	 * @since 3.14.3
+	 *
+	 * @param { string[] } authors    The authors of the post.
+	 * @param { string[] } categories The categories of the post.
+	 * @param { string[] } tags       The tags of the post.
+	 */
+	function setMockPostData( authors: string[], categories: string[], tags: string[] ) {
+		mockPostData.authors = authors.map( ( name ) => ( { name } ) );
+		mockPostData.categories = categories.map( ( name ) => ( { name } ) );
+		mockPostData.tags = tags.map( ( name ) => ( { name } ) );
+	}
 
 	function getLoadingMessage() {
 		return screen.queryByTestId( 'parsely-related-posts-loading-message' );
@@ -175,6 +255,10 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 
 	function getRelatedPosts() {
 		return screen.queryAllByTestId( 'related-post-single' );
+	}
+
+	function getRelatedPostsEmptyMessage() {
+		return screen.queryByTestId( 'parsely-related-posts-empty' );
 	}
 
 	function getCredentialsNotSetMessage() {
