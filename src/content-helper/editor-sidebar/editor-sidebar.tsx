@@ -126,6 +126,9 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	if ( ! Array.isArray( mergedSettings.PerformanceStats.VisibleDataPoints ) ) {
 		mergedSettings.PerformanceStats.VisibleDataPoints = defaultSettings.PerformanceStats.VisibleDataPoints;
 	}
+	if ( typeof mergedSettings.RelatedPosts !== 'object' ) {
+		mergedSettings.RelatedPosts = defaultSettings.RelatedPosts;
+	}
 	if ( ! isInEnum( mergedSettings.RelatedPosts.FilterBy, PostFilterType ) ) {
 		mergedSettings.RelatedPosts.FilterBy = defaultSettings.RelatedPosts.FilterBy;
 	}
@@ -140,6 +143,9 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 	if ( ! isInEnum( mergedSettings.RelatedPosts.Period, Period ) ) {
 		mergedSettings.RelatedPosts.Period = defaultSettings.RelatedPosts.Period;
+	}
+	if ( typeof mergedSettings.SmartLinking !== 'object' ) {
+		mergedSettings.SmartLinking = defaultSettings.SmartLinking;
 	}
 	if ( typeof mergedSettings.SmartLinking.MaxLinks !== 'number' ) {
 		mergedSettings.SmartLinking.MaxLinks = defaultSettings.SmartLinking.MaxLinks;
