@@ -7,9 +7,7 @@ import {
 } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 // eslint-disable-next-line import/named
-import { store as coreStore, Taxonomy, User } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
@@ -33,6 +31,7 @@ import { PostData } from '../../common/utils/post';
 import { SidebarPostData } from '../editor-sidebar';
 import { RelatedPostsFilterSettings } from './component-filter-settings';
 import { RelatedPostItem } from './component-item';
+import { usePostData } from './hooks';
 import { RelatedPostsProvider } from './provider';
 import './related-posts.scss';
 
@@ -58,29 +57,9 @@ export const RelatedPostsPanel = (): JSX.Element => {
 	 *
 	 * @since 3.11.0
 	 * @since 3.14.0 Moved from `editor-sidebar.tsx`.
+	 * @since 3.14.3 Moved to a custom usePostData hook in `hooks.ts`.
 	 */
-	const { authors, categories, tags } = useSelect( ( select ) => {
-		const { getEditedPostAttribute } = select( editorStore ) as GutenbergFunction;
-		const { getEntityRecords } = select( coreStore );
-
-		const authorRecords: User[] | null = getEntityRecords(
-			'root', 'user', { include: getEditedPostAttribute( 'author' ) }
-		);
-
-		const categoryRecords: Taxonomy[] | null = getEntityRecords(
-			'taxonomy', 'category', { include: getEditedPostAttribute( 'categories' ) }
-		);
-
-		const tagRecords: Taxonomy[]|null = getEntityRecords(
-			'taxonomy', 'post_tag', { include: getEditedPostAttribute( 'tags' ) }
-		);
-
-		return {
-			authors: authorRecords,
-			categories: categoryRecords,
-			tags: tagRecords,
-		};
-	}, [] );
+	const { authors, categories, tags } = usePostData();
 
 	useEffect( () => {
 		// Set the post data only when all required properties have become
@@ -269,7 +248,6 @@ export const RelatedPostsPanel = (): JSX.Element => {
 		const sectionIsUnavailable = filterTypeIsSection && ! postData.categories.includes( filter.value );
 
 		setLoading( true );
-
 		if ( filterTypeIsUnavailable || ( filterTypeIsTag && noTagsExist ) || ( filterTypeIsSection && noCategoriesExist ) ) {
 			if ( ! isPostDataEmpty() ) {
 				setFilter( getInitialFilterSettings() );
@@ -411,7 +389,7 @@ export const RelatedPostsPanel = (): JSX.Element => {
 						</div>
 					) }
 					{ ! loading && ! error && posts.length === 0 && (
-						<div className="related-posts-empty">
+						<div className="related-posts-empty" data-testid="parsely-related-posts-empty">
 							{ __( 'No related posts found.', 'wp-parsely' ) }
 						</div>
 					) }
