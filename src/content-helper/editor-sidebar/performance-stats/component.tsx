@@ -32,8 +32,8 @@ import { PerformanceCategoriesPanel } from './component-panel-categories';
 import { PerformanceOverviewPanel } from './component-panel-overview';
 import { PerformanceReferrersPanel } from './component-panel-referrers';
 import { PerformanceData } from './model';
-import './performance-details.scss';
-import { PerformanceDetailsProvider } from './provider';
+import './performance-stats.scss';
+import { PerformanceStatsProvider } from './provider';
 
 // Number of attempts to fetch the data before displaying an error.
 const FETCH_RETRIES = 1;
@@ -211,10 +211,10 @@ export const PerformanceStats = (
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	useEffect( () => {
-		const provider = new PerformanceDetailsProvider();
+		const provider = new PerformanceStatsProvider();
 
 		const fetchPosts = async ( retries: number ) => {
-			provider.getPerformanceDetails( period )
+			provider.getPerformanceStats( period )
 				.then( ( result ) => {
 					setPostDetails( result );
 					setLoading( false );
