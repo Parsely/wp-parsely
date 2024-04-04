@@ -76,7 +76,7 @@
 		"@wordpress/plugins": "^6.20.0",
 		"@wordpress/scripts": "^27.5.0",
 		"@wordpress/url": "^3.56.0",
-		"@wordpress/wordcount": "^3.54.0",
+		"@wordpress/wordcount": "^3.55.0",
 		"concurrently": "^8.2.2",
 		"eslint-plugin-jest": "^27.9.0",
 		"husky": "^9.0.11",
