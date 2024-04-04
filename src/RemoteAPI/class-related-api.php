@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\RemoteAPI;
 
 use Parsely\Parsely;
+use WP_REST_Request;
 
 /**
  * Class for Related API (`/related`).
@@ -27,10 +28,12 @@ class Related_API extends Base_Endpoint_Remote {
 	 * user.
 	 *
 	 * @since 3.14.0
+	 * @since 3.15.0 Added the `$request` parameter.
 	 *
+	 * @param WP_REST_Request|null $request The request object.
 	 * @return bool
 	 */
-	public function is_available_to_current_user(): bool {
+	public function is_available_to_current_user( $request = null ): bool {
 		return true;
 	}
 }
