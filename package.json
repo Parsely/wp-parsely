@@ -53,7 +53,6 @@
 		"@types/wordpress__components": "^23.0.12",
 		"@types/wordpress__edit-post": "^7.5.5",
 		"@types/wordpress__editor": "^13.6.8",
-		"@types/wordpress__plugins": "^6.0.0",
 		"@types/wordpress__wordcount": "^2.4.5",
 		"@typescript-eslint/eslint-plugin": "^6.21.0",
 		"@wordpress/api-fetch": "^6.38.0",
