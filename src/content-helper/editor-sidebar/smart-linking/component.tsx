@@ -322,21 +322,14 @@ export const SmartLinkingPanel = ( {
 
 			const urlExclusionList = generateProtocolVariants( postPermalink );
 
-			if ( selectedBlock?.originalContent && ! generatingFullContent ) {
-				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
-					selectedBlock?.originalContent,
-					maxLinkWords,
-					maxLinks,
-					urlExclusionList
-				);
-			} else {
-				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
-					postContent,
-					maxLinkWords,
-					maxLinks,
-					urlExclusionList
-				);
-			}
+			generatedLinks = await SmartLinkingProvider.generateSmartLinks(
+				( selectedBlock?.originalContent && ! generatingFullContent )
+					? selectedBlock.originalContent
+					: postContent,
+				maxLinkWords,
+				maxLinks,
+				urlExclusionList
+			);
 		} catch ( err: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			// If the request was aborted, throw the AbortError to be handled elsewhere.
 			if ( err.code && err.code === ContentHelperErrorCode.ParselyAborted ) {
