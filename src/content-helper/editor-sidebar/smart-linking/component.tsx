@@ -259,7 +259,7 @@ export const SmartLinkingPanel = ( {
 		// If selected block is not set, the overlay will be applied to the entire content.
 		await applyOverlay( isFullContent ? 'all' : selectedBlock?.clientId );
 
-		// After 60 seconds without a response, timeout and remove any overlay.
+		// After 60 * MAX_NUMBER_OR_RETRIES seconds without a response, timeout and remove any overlay.
 		const timeout = setTimeout( () => {
 			setLoading( false );
 			Telemetry.trackEvent( 'smart_linking_generate_timeout', {
@@ -270,7 +270,7 @@ export const SmartLinkingPanel = ( {
 
 			// If selected block is not set, the overlay will be removed from the entire content.
 			removeOverlay( isFullContent ? 'all' : selectedBlock?.clientId );
-		}, 60000 );
+		}, 60000 * MAX_NUMBER_OF_RETRIES );
 
 		const previousApplyTo = applyTo;
 		try {
