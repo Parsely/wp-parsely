@@ -106,7 +106,7 @@
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
-			gap: $base-unit-5;
+			gap: var(--grid-unit-5);
 			flex: 1 0 0;
 
 			border-radius: to_rem(4px);
@@ -206,7 +206,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: $base-unit-20;
+		gap: var(--grid-unit-20);
 		align-self: stretch;
 
 		.single-label {
@@ -277,7 +277,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: $base-unit-20;
+		gap: var(--grid-unit-20);
 		align-self: stretch;
 		margin: to_rem(16px) 0;
 
@@ -285,7 +285,7 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			gap: $base-unit-10;
+			gap: var(--grid-unit-10);
 			align-self: stretch;
 
 			.referrers-row-title {

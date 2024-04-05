@@ -41,7 +41,7 @@
 
 	.wp-parsely-excerpt-generator-controls {
 		display: flex;
-		gap: $base-unit-10;
+		gap: var(--grid-unit-10);
 
 		button {
 			flex-grow: 1;

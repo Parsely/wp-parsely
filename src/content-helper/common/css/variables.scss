@@ -2,8 +2,7 @@
 $html-font-size: 16px; // Used in functions.scss.
 
 /**
- * Base units for internal use in this file. To be used externally only if var()
- * is unsupported by the calling CSS property (e.g. gap).
+ * Base units for internal use in this file.
  */
 $base-unit-5: 0.25rem; // 4px.
 $base-unit-10: 0.5rem; // 8px.
@@ -21,6 +20,7 @@ $base-unit-20: 1rem; // 16px.
 .wp-parsely-excerpt-generator,
 .editor-post-excerpt,
 .wp-parsely-popover,
+.wp-parsely-suggested-title-modal,
 .components-button[aria-controls="wp-parsely-block-editor-sidebar:wp-parsely-content-helper"], // Sidebar icon.
 #wp-parsely-dashboard-widget {
 

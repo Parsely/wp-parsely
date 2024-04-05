@@ -62,7 +62,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: $base-unit-20;
+	gap: var(--grid-unit-20);
 	align-self: stretch;
 	border-radius: 2px;
 	border-bottom: none;
@@ -74,7 +74,12 @@
 	.components-panel__body-title {
 		display: flex;
 		align-items: center;
-		gap: $base-unit-10;
+
+		/**
+		 * TODO: If no UI glitches are observed, remove commented gaps in all
+		 * SCSS files.
+		 */
+		// gap: var(--grid-unit-10);
 		align-self: stretch;
 		margin: 0 to_rem(-16px) to_rem(6px);
 		padding: 0;

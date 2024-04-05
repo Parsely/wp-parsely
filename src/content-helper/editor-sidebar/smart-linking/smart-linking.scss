@@ -139,7 +139,7 @@
 		.smart-linking-settings {
 			display: flex;
 			flex-direction: column;
-			gap: $base-unit-20;
+			gap: var(--grid-unit-20);
 			align-self: stretch;
 		}
 

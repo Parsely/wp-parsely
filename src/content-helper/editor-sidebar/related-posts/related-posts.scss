@@ -50,7 +50,7 @@
 		.related-posts-filter-settings {
 			display: flex;
 			flex-direction: column;
-			gap: $base-unit-20;
+			gap: var(--grid-unit-20);
 			width: 100%;
 
 			.related-posts-filter-types {
@@ -130,7 +130,7 @@
 			padding: to_rem(6px) 0 var(--grid-unit-20) 0;
 			flex-direction: column;
 			align-items: flex-start;
-			gap: $base-unit-20;
+			gap: var(--grid-unit-20);
 			align-self: stretch;
 
 			.related-post-single {
@@ -162,7 +162,7 @@
 					display: flex;
 					padding: 0 var(--grid-unit-10);
 					align-items: center;
-					gap: $base-unit-20;
+					// gap: var(--grid-unit-20);
 					align-self: stretch;
 					flex-wrap: wrap;
 					border-top: 1px solid var(--gray-400);
@@ -170,17 +170,17 @@
 					.related-post-info {
 						display: flex;
 						flex-grow: 1;
-						gap: $base-unit-10;
+						gap: var(--grid-unit-10);
 						align-items: center;
 
 						> div:first-child {
 							display: flex;
-							gap: $base-unit-10;
+							gap: var(--grid-unit-10);
 						}
 
 						> div:last-child {
 							display: flex;
-							gap: $base-unit-10;
+							gap: var(--grid-unit-10);
 						}
 
 						.related-post-metric {
@@ -190,7 +190,7 @@
 							.parsely-post-metric-data {
 								display: flex;
 								align-items: center;
-								gap: $base-unit-5;
+								gap: var(--grid-unit-5);
 							}
 						}
 
