@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { Button } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
+import { select, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 
@@ -12,6 +12,22 @@ import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { ContentAmplifierProvider } from './provider';
 
 export const ContentAmplifierPanel = (): JSX.Element => {
+	const editor = select( 'core/editor' );
+
+	// We cannot show data for non-published posts.
+	if ( false === editor.isCurrentPostPublished() ) {
+		return (
+			<div className="wp-parsely-content-amplifier">
+				<p>
+					{ __(
+						'You must publish the post before you can use the Content Amplifier.',
+						'wp-parsely',
+					) }
+				</p>
+			</div>
+		);
+	}
+
 	const onClickUpdatePost = async () => {
 		ContentAmplifierProvider.updateExternalPost( 97441, postPermalink );
 	};
