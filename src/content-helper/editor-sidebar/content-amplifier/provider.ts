@@ -24,13 +24,15 @@ export interface GetContentAmplifierResult {
 }
 
 export class ContentAmplifierProvider {
-	static async updateExternalPost( postId: number ): Promise<boolean> {
+	static async updateExternalPost( postId: number, permalink: string ): Promise<boolean> {
 		let response;
 
 		try {
 			response = await apiFetch<ContentAmplifierApiResponse>( {
+				method: 'POST',
 				path: addQueryArgs( `/wp-parsely/v1/smart-linking/${ postId }/apply-smart-links`, {
 					itm_source: 'wp-parsely-content-helper',
+					permalink,
 				} ),
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any

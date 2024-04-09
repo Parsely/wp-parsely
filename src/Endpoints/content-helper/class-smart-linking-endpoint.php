@@ -97,6 +97,22 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 						return $post_id;
 					},
 				),
+				'permalink' => array(
+					'description' => 'The permalink to use for the smart link.',
+					'type'        => 'string',
+					'required'    => true,
+					'validate_callback' => function ( $param, $request, $key ) {
+						if ( ! filter_var( $param, FILTER_VALIDATE_URL ) ) {
+							return new \WP_Error(
+								'rest_invalid_param',
+								__( 'The permalink must be a valid URL.', 'parsely' ),
+								array( 'status' => 400 )
+							);
+						}
+
+						return true;
+					},
+				),
 			)
 		);
 
@@ -133,14 +149,16 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		// Clean up any HTML from the post content
 		$post_content = wp_strip_all_tags( $post_content );
 
+		$permalink = $request->get_param( 'permalink' );
+
 		$words = explode( ' ', $post_content );
 		$words_count = count( $words );
-		$random_index = rand( 0, $words_count - 4 );
+		$random_index = wp_rand( 0, $words_count - 4 );
 
 		$random_sentence = implode( ' ', array_slice( $words, $random_index, 4 ) );
 
 		// Search the post content for the random sentence and replace with a hyperlink
-		$post_content = str_replace( $random_sentence, '<a href="https://www.google.com">' . $random_sentence . '</a>', $this->current_post->post_content );
+		$post_content = str_replace( $random_sentence, '<a href="' . esc_url( $permalink ) . '">' . $random_sentence . '</a>', $this->current_post->post_content );
 
 		// Save the post content with the hyperlink
 		$updated = wp_update_post( array(
