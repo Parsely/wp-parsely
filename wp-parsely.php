@@ -72,6 +72,9 @@ if ( class_exists( Parsely::class ) ) {
 const PARSELY_VERSION = '3.14.3';
 const PARSELY_FILE    = __FILE__;
 
+require_once __DIR__ . '/src/Models/class-base-model.php';
+require_once __DIR__ . '/src/Models/class-smart-link.php';
+
 require_once __DIR__ . '/src/class-parsely.php';
 require_once __DIR__ . '/src/class-scripts.php';
 require_once __DIR__ . '/src/class-dashboard-link.php';
@@ -206,6 +209,9 @@ function parsely_rest_api_init(): void {
 	// Content Helper settings endpoints.
 	( new Dashboard_Widget_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
 	( new Editor_Sidebar_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
+
+	// Internal Content Helper endpoints.
+
 
 	parsely_run_rest_api_endpoint(
 		Related_API::class,

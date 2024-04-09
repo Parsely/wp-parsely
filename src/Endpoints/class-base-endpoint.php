@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
+use WP_REST_Request;
 
 use function Parsely\Utils\convert_endpoint_to_filter_key;
 
@@ -57,10 +58,12 @@ abstract class Base_Endpoint {
 	 * user.
 	 *
 	 * @since 3.14.0 Replaced `is_public_endpoint`, `user_capability` and `permission_callback()`.
+	 * @since 3.15.0 Added the `$request` parameter.
 	 *
+	 * @param WP_REST_Request|null $request The request object.
 	 * @return bool
 	 */
-	abstract public function is_available_to_current_user(): bool;
+	abstract public function is_available_to_current_user( $request = null ): bool;
 
 	/**
 	 * Constructor.
