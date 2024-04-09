@@ -9,6 +9,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { VerifyCredentials } from '../../common/verify-credentials';
+import { ContentAmplifierPanel } from '../content-amplifier/component';
 import { RelatedPostsPanel } from '../related-posts/component';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from '../smart-linking/component';
 import { TitleSuggestionsPanel } from '../title-suggestions/component';
@@ -91,6 +92,16 @@ export const SidebarToolsTab = (
 				{
 					<VerifyCredentials>
 						<RelatedPostsPanel />
+					</VerifyCredentials>
+				}
+			</PanelBody>
+			<PanelBody
+				title={ __( 'Content Amplifier', 'wp-parsely' ) }
+				initialOpen={ true }
+			>
+				{
+					<VerifyCredentials>
+						<ContentAmplifierPanel />
 					</VerifyCredentials>
 				}
 			</PanelBody>
