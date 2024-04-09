@@ -32,6 +32,7 @@ use Parsely\Content_Helper\Excerpt_Generator;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
+use Parsely\Endpoints\ContentHelper\Smart_Linking_Endpoint;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Brief_API_Proxy;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Headline_API_Proxy;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Linked_Reference_API_Proxy;
@@ -194,6 +195,9 @@ require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-brief-a
 require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-headline-api.php';
 require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-linked-reference-api.php';
 
+// Content Helper API classes.
+require_once __DIR__ . '/src/Endpoints/content-helper/class-smart-linking-endpoint.php';
+
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
  * Registers REST Endpoints that act as a proxy to the Parse.ly API.
@@ -211,7 +215,7 @@ function parsely_rest_api_init(): void {
 	( new Editor_Sidebar_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
 
 	// Internal Content Helper endpoints.
-
+	( new Smart_Linking_Endpoint( $GLOBALS['parsely'] ) )->run();
 
 	parsely_run_rest_api_endpoint(
 		Related_API::class,

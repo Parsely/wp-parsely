@@ -123,11 +123,13 @@ abstract class Base_Endpoint {
 	 * @param string        $endpoint The endpoint's route.
 	 * @param string        $callback The callback function to call when the endpoint is hit.
 	 * @param array<string> $methods The HTTP methods to allow for the endpoint.
+	 * @param array         $args    The arguments to pass to the endpoint.
 	 */
 	public function register_endpoint(
 		string $endpoint,
 		string $callback,
-		array $methods = array( 'GET' )
+		array $methods = array( 'GET' ),
+		array $args = array()
 	): void {
 		if ( ! apply_filters( 'wp_parsely_enable_' . convert_endpoint_to_filter_key( $endpoint ) . '_api_proxy', true ) ) {
 			return;
@@ -146,6 +148,8 @@ abstract class Base_Endpoint {
 				},
 			),
 		);
+
+		$get_items_args = array_merge( $get_items_args, $args );
 
 		$rest_route_args = array(
 			array(
