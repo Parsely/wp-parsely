@@ -1,15 +1,18 @@
 /**
  * WordPress dependencies
  */
-import { Button, __experimentalNumberControl as NumberControl } from '@wordpress/components';
+import { Button, __experimentalNumberControl as NumberControl, Notice } from '@wordpress/components';
 import { select, useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { addQueryArgs } from '@wordpress/url';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
+
 /**
  * Internal dependencies
  */
 import { ContentAmplifierProvider } from './provider';
+import './content-amplifier.scss';
 
 export const ContentAmplifierPanel = (): JSX.Element => {
 	const [ postId, setPostId ] = useState<number>( 1 );
@@ -52,8 +55,25 @@ export const ContentAmplifierPanel = (): JSX.Element => {
 		);
 	}
 
+	const editURL = addQueryArgs( 'post.php', {
+		post: postId,
+		action: 'edit',
+	} );
+
 	return (
 		<div className="wp-parsely-content-amplifier">
+			{ isUpdated &&
+				<Notice status="success">
+					{ __( 'Post updated successfully. ', 'wp-parsely' ) }
+					<Button
+						variant={ 'link' }
+						href={ editURL }
+						target="_blank"
+					>
+						{ __( 'View post', 'wp-parsely' ) }
+					</Button>
+				</Notice>
+			}
 			<NumberControl
 				label={ __( 'Post ID', 'wp-parsely' ) }
 				min={ 1 }
@@ -63,11 +83,14 @@ export const ContentAmplifierPanel = (): JSX.Element => {
 				} }
 				value={ postId }
 			/>
-			<Button variant="primary" onClick={ onClickUpdatePost }>
+			<Button
+				__next40pxDefaultSize
+				variant="primary"
+				onClick={ onClickUpdatePost }
+			>
 				{ __( 'Update that Post', 'wp-parsely' ) }
 			</Button>
 			{ isLoading && <p>{ __( 'Updating post…', 'wp-parsely' ) }</p> }
-			{ isUpdated && <p>{ __( 'Post updated!', 'wp-parsely' ) }</p> }
 		</div>
 	);
 };

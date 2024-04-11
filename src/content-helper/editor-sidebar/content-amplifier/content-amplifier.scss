@@ -1,0 +1,14 @@
+@import "../../common/css/variables";
+@import "../../common/css/functions";
+
+.wp-parsely-content-amplifier {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	gap: to_rem(16px);
+
+	.components-button {
+		justify-content: center;
+	}
+
+}
