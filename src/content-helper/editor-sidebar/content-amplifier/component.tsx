@@ -1,21 +1,28 @@
 /**
  * WordPress dependencies
  */
-import { Button } from '@wordpress/components';
+import { Button, __experimentalNumberControl as NumberControl } from '@wordpress/components';
 import { select, useSelect } from '@wordpress/data';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
-
 /**
  * Internal dependencies
  */
 import { ContentAmplifierProvider } from './provider';
 
 export const ContentAmplifierPanel = (): JSX.Element => {
+	const [ postId, setPostId ] = useState<number>( 1 );
+	const [ isLoading, setIsLoading ] = useState<boolean>( false );
+	const [ isUpdated, setIsUpdated ] = useState<boolean>( false );
 	const editor = select( 'core/editor' );
 
 	const onClickUpdatePost = async () => {
-		ContentAmplifierProvider.updateExternalPost( 97441, postPermalink );
+		setIsLoading( true );
+		ContentAmplifierProvider.updateExternalPost( postId, postPermalink ).then( () => {
+			setIsLoading( false );
+			setIsUpdated( true );
+		} );
 	};
 
 	/**
@@ -47,16 +54,20 @@ export const ContentAmplifierPanel = (): JSX.Element => {
 
 	return (
 		<div className="wp-parsely-content-amplifier">
-			<p>
-				{ __(
-					'Clicking this button will update another post using a custom WP endpoint.',
-					'wp-parsely',
-				) }
-			</p>
+			<NumberControl
+				label={ __( 'Post ID', 'wp-parsely' ) }
+				min={ 1 }
+				onChange={ ( value ) => {
+					const numericValue = parseInt( value as string, 10 );
+					setPostId( numericValue );
+				} }
+				value={ postId }
+			/>
 			<Button variant="primary" onClick={ onClickUpdatePost }>
-				{ ' ' }
-				{ __( 'Update the External Post', 'wp-parsely' ) }{ ' ' }
+				{ __( 'Update that Post', 'wp-parsely' ) }
 			</Button>
+			{ isLoading && <p>{ __( 'Updating post…', 'wp-parsely' ) }</p> }
+			{ isUpdated && <p>{ __( 'Post updated!', 'wp-parsely' ) }</p> }
 		</div>
 	);
 };
