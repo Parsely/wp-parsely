@@ -44,14 +44,13 @@
 	},
 	"devDependencies": {
 		"@testing-library/jest-dom": "^6.4.2",
-		"@testing-library/react": "^14.2.2",
+		"@testing-library/react": "^15.0.2",
 		"@types/jest": "^29.5.12",
 		"@types/jest-environment-puppeteer": "^5.0.6",
 		"@types/lodash.debounce": "^4.0.9",
 		"@types/wordpress__block-editor": "^11.5.14",
 		"@types/wordpress__blocks": "^12.5.14",
-		"@types/wordpress__components": "^23.0.12",
-		"@types/wordpress__edit-post": "^7.5.5",
+		"@types/wordpress__edit-post": "^7.5.7",
 		"@types/wordpress__editor": "^13.6.8",
 		"@types/wordpress__wordcount": "^2.4.5",
 		"@typescript-eslint/eslint-plugin": "^6.21.0",
@@ -77,11 +76,11 @@
 		"@wordpress/url": "^3.56.0",
 		"@wordpress/wordcount": "^3.55.0",
 		"concurrently": "^8.2.2",
-		"eslint-plugin-jest": "^27.9.0",
+		"eslint-plugin-jest": "^28.2.0",
 		"husky": "^9.0.11",
 		"prettier": "^3.2.5",
 		"ts-loader": "^9.5.1",
-		"typescript": "^5.4.3"
+		"typescript": "^5.4.5"
 	},
 	"scripts": {
 		"build": "wp-scripts build",
