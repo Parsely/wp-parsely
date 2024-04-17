@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { Spinner } from '@wordpress/components';
+import { Button, Spinner } from '@wordpress/components';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { dispatch, useSelect } from '@wordpress/data';
 import { createPortal, useEffect, useState } from '@wordpress/element';
@@ -12,6 +12,7 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
+import { SmartLinkingProvider } from './provider';
 import { SmartLinkingStore } from './store';
 
 /**
@@ -37,6 +38,16 @@ export const BlockOverlay = ( {
 	selectedBlockClientId,
 	label,
 }: Readonly<BlockOverlayProps> ): JSX.Element => {
+	const {
+		retrying,
+	} = useSelect( ( select ) => {
+		const { isRetrying } = select( SmartLinkingStore );
+
+		return {
+			retrying: isRetrying(),
+		};
+	}, [] );
+
 	// Create a container element for the overlay.
 	const [ container ] = useState<HTMLDivElement>( document.createElement( 'div' ) );
 	container.className = 'wp-parsely-block-overlay';
@@ -46,6 +57,13 @@ export const BlockOverlay = ( {
 
 	// When clicking the overlay, we want the underlying block to be selected.
 	container.onclick = ( e ) => {
+		// Allow the cancel button to be clicked.
+		const cancelButton = document.querySelector( '.wp-parsely-block-overlay-cancel' );
+		if ( cancelButton && e.target === cancelButton ) {
+			e.stopPropagation();
+			return;
+		}
+
 		e.stopPropagation();
 		e.stopImmediatePropagation();
 
@@ -112,7 +130,24 @@ export const BlockOverlay = ( {
 	return createPortal(
 		<div className="wp-parsely-block-overlay-label">
 			<Spinner />
-			<span>{ label }</span>
+			{ ! retrying && <span>{ label }</span> }
+			{ retrying && (
+				<>
+					<span>
+						{ __( 'Retrying to Generate Smart Links…', 'wp-parsely' ) }
+						&nbsp;
+						<Button
+							className={ 'wp-parsely-block-overlay-cancel' }
+							variant="link"
+							onClick={ () => {
+								SmartLinkingProvider.cancelRequest();
+							} }
+						>
+							{ __( 'Cancel', 'wp-parsely' ) }
+						</Button>
+					</span>
+				</>
+			) }
 		</div>,
 		container
 	);
