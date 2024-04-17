@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
@@ -42,6 +43,23 @@ interface SmartLinkingApiResponse {
  */
 export class SmartLinkingProvider {
 	/**
+	 * The AbortController instance used to cancel the fetch request.
+	 *
+	 * @since 3.15.0
+	 */
+	private static abortController: AbortController = new AbortController();
+
+	/**
+	 * Cancels the fetch request.
+	 *
+	 * @since 3.15.0
+	 */
+	static cancelRequest(): void {
+		SmartLinkingProvider.abortController.abort();
+		SmartLinkingProvider.abortController = new AbortController();
+	}
+
+	/**
 	 * Returns a list of suggested links for the given content.
 	 *
 	 * @param {string}   content          The content to generate links for.
@@ -69,8 +87,17 @@ export class SmartLinkingProvider {
 					url_exclusion_list: urlExclusionList,
 					text: content,
 				},
+				signal: SmartLinkingProvider.abortController.signal,
 			} );
 		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
+			if ( wpError.name === 'AbortError' ) {
+				return Promise.reject(
+					new ContentHelperError(
+						__( 'The operation was aborted.', 'wp-parsely' ),
+						ContentHelperErrorCode.ParselyAborted,
+					),
+				);
+			}
 			return Promise.reject( new ContentHelperError( wpError.message, wpError.code ) );
 		}
 
