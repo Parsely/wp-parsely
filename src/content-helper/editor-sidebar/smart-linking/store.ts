@@ -29,6 +29,7 @@ export enum ApplyToOptions {
 	All = 'all',
 	Selected = 'selected',
 }
+
 /**
  * The shape of the SmartLinking store state.
  *
@@ -43,9 +44,11 @@ type SmartLinkingState = {
 	suggestedLinks: LinkSuggestion[] | null;
 	overlayBlocks: string[];
 	wasAlreadyClicked: boolean;
+	isRetrying: boolean;
+	retryAttempt: number;
 };
 
-/** Actions */
+/********** Actions ********** /
 
 /**
  * Interface for the SetLoadingAction.
@@ -147,9 +150,29 @@ interface SetApplyToAction {
 	applyTo: ApplyToOptions|null;
 }
 
+/**
+ * Interface for the SetIsRetryingAction.
+ *
+ * @since 3.15.0
+ */
+interface SetIsRetryingAction {
+	type: 'SET_IS_RETRYING';
+	isRetrying: boolean;
+}
+
+/**
+ * Interface for the IncrementRetryAttemptAction.
+ *
+ * @since 3.15.0
+ */
+interface IncrementRetryAttemptAction {
+	type: 'INCREMENT_RETRY_ATTEMPT';
+}
+
 type ActionTypes = SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction |
 	AddOverlayBlockAction | RemoveOverlayBlockAction |SetFullContentAction |
-	SetSuggestedLinksAction | SetErrorAction| SetWasAlreadyClickedAction | SetApplyToAction;
+	SetSuggestedLinksAction | SetErrorAction| SetWasAlreadyClickedAction | SetApplyToAction |
+	IncrementRetryAttemptAction | SetIsRetryingAction;
 
 const defaultState: SmartLinkingState = {
 	isLoading: false,
@@ -160,6 +183,8 @@ const defaultState: SmartLinkingState = {
 	settings: { },
 	overlayBlocks: [],
 	wasAlreadyClicked: false,
+	isRetrying: false,
+	retryAttempt: 0,
 };
 
 /**
@@ -230,6 +255,17 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				return {
 					...state,
 					applyTo: action.applyTo,
+				};
+			case 'SET_IS_RETRYING':
+				return {
+					...state,
+					isRetrying: action.isRetrying,
+					retryAttempt: action.isRetrying === state.isRetrying ? state.retryAttempt : 0,
+				};
+			case 'INCREMENT_RETRY_ATTEMPT':
+				return {
+					...state,
+					retryAttempt: state.retryAttempt + 1,
 				};
 			default:
 				return state;
@@ -312,6 +348,17 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				applyTo,
 			};
 		},
+		setIsRetrying( isRetrying: boolean ): SetIsRetryingAction {
+			return {
+				type: 'SET_IS_RETRYING',
+				isRetrying,
+			};
+		},
+		incrementRetryAttempt(): IncrementRetryAttemptAction {
+			return {
+				type: 'INCREMENT_RETRY_ATTEMPT',
+			};
+		},
 	},
 	selectors: {
 		isLoading( state: SmartLinkingState ): boolean {
@@ -343,6 +390,12 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		},
 		wasAlreadyClicked( state: SmartLinkingState ): boolean {
 			return state.wasAlreadyClicked;
+		},
+		isRetrying( state: SmartLinkingState ): boolean {
+			return state.isRetrying;
+		},
+		getRetryAttempt( state: SmartLinkingState ): number {
+			return state.retryAttempt;
 		},
 	},
 } );
