@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import apiFetch from '@wordpress/api-fetch';
+import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
@@ -92,7 +93,7 @@ export class SmartLinkingProvider {
 			if ( wpError.name === 'AbortError' ) {
 				return Promise.reject(
 					new ContentHelperError(
-						'The operation was aborted.',
+						__( 'The operation was aborted.', 'wp-parsely' ),
 						ContentHelperErrorCode.ParselyAborted,
 					),
 				);
