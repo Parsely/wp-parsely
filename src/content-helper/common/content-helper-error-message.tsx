@@ -1,4 +1,9 @@
 /**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
  * Defines the props structure for ContentHelperErrorMessage.
  *
  * @since 3.9.0
@@ -58,7 +63,10 @@ export const EmptyCredentialsMessage = (
 		<ContentHelperErrorMessage
 			className={ props?.className }
 			testId="empty-credentials-message">
-			{ window.wpParselyEmptyCredentialsMessage }
+			{ window.wpParselyEmptyCredentialsMessage ?? __(
+				"Please ensure that the Site ID and API Secret given in the plugin's settings are correct.",
+				'wp-parsely'
+			) }
 		</ContentHelperErrorMessage>
 	);
 };
