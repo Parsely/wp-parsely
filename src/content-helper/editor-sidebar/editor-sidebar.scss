@@ -82,7 +82,7 @@ p.content-helper-error-message-hint {
 		.wp-parsely-sidebar-tabs {
 			// Error messages that are not contained within a panel.
 			.components-panel > .content-helper-error-message {
-				margin: var(--grid-unit-20, to_rem(16px));
+				margin: var(--grid-unit-20);
 			}
 
 			.components-tab-panel__tabs {
