@@ -1,13 +1,13 @@
 /**
  * WordPress dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
 import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
  */
+import { BaseProvider } from '../common/base-provider';
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
@@ -16,18 +16,31 @@ import { getApiPeriodParams } from '../common/utils/api';
 import { PostData } from '../common/utils/post';
 import { TopPostsSettings } from '../common/settings';
 
-/**
- * The form of the response returned by the /stats/posts WordPress REST API
- * endpoint.
- */
-interface TopPostsApiResponse {
-	error?: Error;
-	data?: PostData[];
-}
-
 export const TOP_POSTS_DEFAULT_LIMIT = 5;
 
-export class DashboardWidgetProvider {
+export class DashboardWidgetProvider extends BaseProvider {
+	/**
+	 * The singleton instance of the DashboardWidgetProvider.
+	 *
+	 * @since 3.15.0
+	 */
+	private static instance: DashboardWidgetProvider;
+
+	/**
+	 * Returns the singleton instance of the DashboardWidgetProvider.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @return {DashboardWidgetProvider} The singleton instance.
+	 */
+	public static getInstance(): DashboardWidgetProvider {
+		if ( ! this.instance ) {
+			this.instance = new DashboardWidgetProvider();
+		}
+
+		return this.instance;
+	}
+
 	/**
 	 * Returns the site's top posts.
 	 *
@@ -69,31 +82,16 @@ export class DashboardWidgetProvider {
 	private async fetchTopPostsFromWpEndpoint(
 		settings: TopPostsSettings, page: number
 	): Promise<PostData[]> {
-		let response;
+		const response = this.fetch<PostData[]>( {
+			path: addQueryArgs( '/wp-parsely/v1/stats/posts/', {
+				limit: TOP_POSTS_DEFAULT_LIMIT,
+				...getApiPeriodParams( settings.Period ),
+				sort: settings.Metric,
+				page,
+				itm_source: 'wp-parsely-content-helper',
+			} ),
+		} );
 
-		try {
-			response = await apiFetch( {
-				path: addQueryArgs( '/wp-parsely/v1/stats/posts/', {
-					limit: TOP_POSTS_DEFAULT_LIMIT,
-					...getApiPeriodParams( settings.Period ),
-					sort: settings.Metric,
-					page,
-					itm_source: 'wp-parsely-content-helper',
-				} ),
-			} ) as TopPostsApiResponse;
-		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			return Promise.reject( new ContentHelperError(
-				wpError.message, wpError.code
-			) );
-		}
-
-		if ( response?.error ) {
-			return Promise.reject( new ContentHelperError(
-				response.error.message,
-				ContentHelperErrorCode.ParselyApiResponseContainsError
-			) );
-		}
-
-		return response?.data ?? [];
+		return response ?? [];
 	}
 }
