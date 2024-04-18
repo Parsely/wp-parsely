@@ -132,9 +132,6 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 				tone,
 				persona
 			);
-		} else {
-			// Cancel the request.
-			TitleSuggestionsProvider.getInstance().cancelRequest();
 		}
 	};
 
@@ -295,7 +292,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 					<Button
 						variant="primary"
 						isBusy={ loading }
-						disabled={ tone === 'custom' || persona === 'custom' }
+						disabled={ loading || tone === 'custom' || persona === 'custom' }
 						onClick={ generateOnClickHandler }
 					>
 						{ loading && __( 'Generating Titles…', 'wp-parsely' ) }
