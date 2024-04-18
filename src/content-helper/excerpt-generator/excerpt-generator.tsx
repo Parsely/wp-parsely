@@ -1,8 +1,8 @@
 /**
  * WordPress dependencies
  */
-import { addFilter, removeFilter } from '@wordpress/hooks';
 import { dispatch } from '@wordpress/data';
+import { addFilter, removeFilter } from '@wordpress/hooks';
 import { registerPlugin } from '@wordpress/plugins';
 
 /**
@@ -44,8 +44,13 @@ const ExcerptGenerator = ( settings: never, name: string ) => {
 		render: ExcerptPanel,
 	} );
 
-	// Remove the excerpt panel by dispatching an action.
-	dispatch( 'core/edit-post' )?.removeEditorPanel( 'post-excerpt' );
+	/* Remove the excerpt panel by dispatching an action. */ // @ts-ignore
+	if ( dispatch( 'core/editor' )?.removeEditorPanel ) { // @ts-ignore
+		dispatch( 'core/editor' )?.removeEditorPanel( 'post-excerpt' );
+	} else {
+		// Deprecated in WordPress 6.5.
+		dispatch( 'core/edit-post' )?.removeEditorPanel( 'post-excerpt' );
+	}
 
 	return settings;
 };
