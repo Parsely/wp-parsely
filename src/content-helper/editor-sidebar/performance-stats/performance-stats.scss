@@ -53,7 +53,7 @@
 				h3 {
 					margin-bottom: 0;
 					line-height: to_rem(16px);
-					font-size: var(--font-size--smaller, to_rem(11px));
+					font-size: var(--font-size--smaller);
 					font-style: normal;
 					font-weight: 600;
 					text-transform: uppercase;
@@ -71,7 +71,7 @@
 			color: var(--Gutenberg-Gray-700, #757575);
 
 			/* Label */
-			font-size: var(--font-size--smaller, to_rem(11px));
+			font-size: var(--font-size--smaller);
 			font-style: normal;
 			font-weight: 600;
 			line-height: to_rem(16px); /* 145.455% */
@@ -94,7 +94,7 @@
 		display: flex;
 		align-items: flex-start;
 		align-content: flex-start;
-		gap: to_rem(16px) var(--grid-unit-20, to_rem(16px));
+		gap: to_rem(16px) var(--grid-unit-20);
 
 		align-self: stretch;
 		flex-wrap: wrap;
@@ -102,15 +102,15 @@
 		.data-point {
 			display: flex;
 			min-width: 100px;
-			padding: var(--grid-unit-20, to_rem(16px)) var(--grid-unit-10, to_rem(8px));
+			padding: var(--grid-unit-20) var(--grid-unit-10);
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
-			gap: var(--grid-unit-05, to_rem(4px));
+			gap: var(--grid-unit-5);
 			flex: 1 0 0;
 
 			border-radius: to_rem(4px);
-			background: var(--sidebar-white, #f0f0f0);
+			background: var(--sidebar-white);
 
 			svg {
 				display: flex;
@@ -120,7 +120,7 @@
 
 			.data-point-title {
 				align-self: stretch;
-				color: var(--sidebar-black, #1e1e1e);
+				color: var(--sidebar-black);
 				text-align: center;
 				font-size: to_rem(12px);
 				font-style: normal;
@@ -130,7 +130,7 @@
 
 			.data-point-value {
 				align-self: stretch;
-				color: var(--sidebar-black, #1e1e1e);
+				color: var(--sidebar-black);
 				text-align: center;
 				font-size: to_rem(20px);
 				font-style: normal;
@@ -138,7 +138,7 @@
 				line-height: to_rem(28px); /* 140% */
 
 				&.is-small {
-					font-size: var(--font-size--medium, to_rem(14px));
+					font-size: var(--font-size--medium);
 				}
 			}
 		}
@@ -206,7 +206,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--grid-unit-20, to_rem(16px));
+		gap: var(--grid-unit-20);
 		align-self: stretch;
 
 		.single-label {
@@ -253,19 +253,19 @@
 				-webkit-line-clamp: 1;
 				flex: 1 0 0;
 				overflow: hidden;
-				color: var(--sidebar-black, #1e1e1e);
+				color: var(--sidebar-black);
 				font-feature-settings: "ss06" on;
 				text-overflow: ellipsis;
-				font-size: var(--font-size--small, to_rem(12px));
+				font-size: var(--font-size--small);
 				font-style: normal;
 				font-weight: 400;
 				line-height: to_rem(16px); /* 133.333% */
 			}
 
 			.label-value {
-				color: var(--sidebar-black, #1e1e1e);
+				color: var(--sidebar-black);
 				text-align: right;
-				font-size: var(--font-size--small, to_rem(12px));
+				font-size: var(--font-size--small);
 				font-style: normal;
 				font-weight: 590;
 				line-height: to_rem(16px) /* 133.333% */
@@ -277,7 +277,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: var(--grid-unit-20, to_rem(16px));
+		gap: var(--grid-unit-20);
 		align-self: stretch;
 		margin: to_rem(16px) 0;
 
@@ -285,7 +285,7 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			gap: var(--grid-unit-10, to_rem(8px));
+			gap: var(--grid-unit-10);
 			align-self: stretch;
 
 			.referrers-row-title {
@@ -294,10 +294,10 @@
 				-webkit-line-clamp: 1;
 				flex: 1;
 				overflow: hidden;
-				color: var(--sidebar-black, #1e1e1e);
+				color: var(--sidebar-black);
 				font-feature-settings: "ss06" on;
 				text-overflow: ellipsis;
-				font-size: var(--font-size--small, to_rem(12px));
+				font-size: var(--font-size--small);
 				font-style: normal;
 				font-weight: 400;
 				line-height: to_rem(16px); /* 133.333% */
@@ -314,7 +314,7 @@
 				.percentage-bar {
 					// Bar background.
 					--radius: 1.5px;
-					background: var(--gray-400, #d7dbdf);
+					background: var(--gray-400);
 					border-radius: var(--radius);
 					display: flex;
 					height: to_rem(3px);
@@ -335,9 +335,9 @@
 			.referrers-row-value {
 				flex-shrink: 0;
 				min-width: to_rem(50px);
-				color: var(--sidebar-black, #1e1e1e);
+				color: var(--sidebar-black);
 				text-align: right;
-				font-size: var(--font-size--small, to_rem(12px));
+				font-size: var(--font-size--small);
 				font-style: normal;
 				font-weight: 590;
 				line-height: to_rem(16px); /* 133.333% */
