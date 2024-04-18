@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
 import { select } from '@wordpress/data';
 import { __, sprintf } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
@@ -9,6 +8,7 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * Internal dependencies
  */
+import { BaseProvider } from '../../common/base-provider';
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
@@ -21,27 +21,9 @@ import {
 } from './model';
 
 /**
- * Specifies the form of the response returned by the `/stats/post/detail`
- * WordPress REST API endpoint.
- */
- interface AnalyticsApiResponse {
-	error?: Error;
-	data: PerformanceData[];
-}
-
-/**
- * Specifies the form of the response returned by the `/referrers/post/detail`
- * WordPress REST API endpoint.
- */
-interface ReferrersApiResponse {
-	error?: Error;
-	data: PerformanceReferrerData;
-}
-
-/**
  * Provides current post details data for use in other components.
  */
-export class PerformanceStatsProvider {
+export class PerformanceStatsProvider extends BaseProvider {
 	private itmSource = 'wp-parsely-content-helper';
 
 	/**
@@ -105,32 +87,17 @@ export class PerformanceStatsProvider {
 	private async fetchPerformanceDataFromWpEndpoint(
 		period: Period, postUrl: string
 	): Promise<PerformanceData> {
-		let response;
-
-		try {
-			response = await apiFetch<AnalyticsApiResponse>( {
-				path: addQueryArgs(
-					'/wp-parsely/v1/stats/post/detail', {
-						...getApiPeriodParams( period ),
-						itm_source: this.itmSource,
-						url: postUrl,
-					} ),
-			} );
-		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			return Promise.reject( new ContentHelperError(
-				wpError.message, wpError.code
-			) );
-		}
-
-		if ( response?.error ) {
-			return Promise.reject( new ContentHelperError(
-				response.error.message,
-				ContentHelperErrorCode.ParselyApiResponseContainsError
-			) );
-		}
+		const response = await BaseProvider.fetch<PerformanceData[]>( {
+			path: addQueryArgs(
+				'/wp-parsely/v1/stats/post/detail', {
+					...getApiPeriodParams( period ),
+					itm_source: this.itmSource,
+					url: postUrl,
+				} ),
+		} );
 
 		// No data was returned.
-		if ( response.data.length === 0 ) {
+		if ( response.length === 0 ) {
 			return Promise.reject( new ContentHelperError(
 				sprintf(
 					/* translators: URL of the published post */
@@ -141,7 +108,7 @@ export class PerformanceStatsProvider {
 		}
 
 		// Data for multiple URLs was returned.
-		if ( response.data.length > 1 ) {
+		if ( response.length > 1 ) {
 			return Promise.reject( new ContentHelperError(
 				sprintf(
 					/* translators: URL of the published post */
@@ -151,7 +118,7 @@ export class PerformanceStatsProvider {
 			) );
 		}
 
-		return response.data[ 0 ];
+		return response[ 0 ];
 	}
 
 	/**
@@ -166,31 +133,16 @@ export class PerformanceStatsProvider {
 	private async fetchReferrerDataFromWpEndpoint(
 		period: Period, postUrl: string, totalViews: string
 	): Promise<PerformanceReferrerData> {
-		let response;
-
-		// Query WordPress API endpoint.
-		try {
-			response = await apiFetch<ReferrersApiResponse>( { path: addQueryArgs(
+		const response = await BaseProvider.fetch<PerformanceReferrerData>( {
+			path: addQueryArgs(
 				'/wp-parsely/v1/referrers/post/detail', {
 					...getApiPeriodParams( period ),
 					itm_source: this.itmSource,
 					total_views: totalViews, // Needed to calculate direct views.
 					url: postUrl,
 				} ),
-			} );
-		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			return Promise.reject( new ContentHelperError(
-				wpError.message, wpError.code
-			) );
-		}
+		} );
 
-		if ( response?.error ) {
-			return Promise.reject( new ContentHelperError(
-				response.error.message,
-				ContentHelperErrorCode.ParselyApiResponseContainsError
-			) );
-		}
-
-		return response.data;
+		return response;
 	}
 }
