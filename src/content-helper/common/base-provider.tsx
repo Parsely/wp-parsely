@@ -20,6 +20,11 @@ export interface ContentHelperAPIResponse<T> {
 	data: T;
 }
 
+type GetAbortControllerResult = {
+	abortController: AbortController;
+	abortId: string;
+};
+
 /**
  * Base class for all providers.
  *
@@ -90,11 +95,14 @@ export abstract class BaseProvider {
 	 *
 	 * @param {string?} id The (optional) ID of the request.
 	 *
-	 * @return {AbortController} The AbortController instance.
+	 * @return {GetAbortControllerResult} The AbortController and its ID.
 	 */
-	private getOrCreateController( id?: string ): AbortController {
+	private getOrCreateController( id?: string ): GetAbortControllerResult {
 		if ( id && this.abortControllers.has( id ) ) {
-			return this.abortControllers.get( id ) as AbortController;
+			return {
+				abortController: this.abortControllers.get( id )!,
+				abortId: id,
+			};
 		}
 
 		// If no ID is provided, generate one.
@@ -104,7 +112,10 @@ export abstract class BaseProvider {
 		// Store the AbortController.
 		this.abortControllers.set( abortId, controller );
 
-		return controller;
+		return {
+			abortController: controller,
+			abortId,
+		};
 	}
 
 	/**
@@ -118,7 +129,8 @@ export abstract class BaseProvider {
 	 * @return {Promise<ContentHelperAPIResponse<any>>} The fetched data
 	 */
 	protected async fetch<T>( options: APIFetchOptions, id?: string ): Promise<T> {
-		options.signal = this.getOrCreateController( id ).signal;
+		const { abortController, abortId } = this.getOrCreateController( id );
+		options.signal = abortController.signal;
 		try {
 			const response = await apiFetch<ContentHelperAPIResponse<T>>( options );
 
@@ -143,6 +155,9 @@ export abstract class BaseProvider {
 				);
 			}
 			return Promise.reject( new ContentHelperError( wpError.message, wpError.code ) );
+		} finally {
+			// Clean-up the AbortController after a successful request.
+			this.abortControllers.delete( abortId );
 		}
 	}
 }
