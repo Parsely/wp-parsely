@@ -18,6 +18,28 @@ import { getPersonaLabel, PersonaProp } from '../../common/components/persona-se
  */
 export class TitleSuggestionsProvider extends BaseProvider {
 	/**
+	 * The singleton instance of the TitleSuggestionsProvider.
+	 *
+	 * @since 3.15.0
+	 */
+	private static instance: TitleSuggestionsProvider;
+
+	/**
+	 * Returns the singleton instance of the TitleSuggestionsProvider.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @return {TitleSuggestionsProvider} The singleton instance.
+	 */
+	public static getInstance(): TitleSuggestionsProvider {
+		if ( ! this.instance ) {
+			this.instance = new TitleSuggestionsProvider();
+		}
+
+		return this.instance;
+	}
+
+	/**
 	 * Returns a list of suggested titles for the given content.
 	 *
 	 * @param { string }      content The content to generate titles for.
@@ -28,7 +50,7 @@ export class TitleSuggestionsProvider extends BaseProvider {
 	 * @return { Promise<string[]> } The resulting list of titles.
 	 */
 	public async generateTitles( content: string, limit: number = 3, tone: ToneProp, persona: PersonaProp ): Promise<string[]> {
-		const response = BaseProvider.fetch<string[]>( {
+		const response = this.fetch<string[]>( {
 			method: 'POST',
 			path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-headline', {
 				limit,

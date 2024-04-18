@@ -140,7 +140,7 @@ export const BlockOverlay = ( {
 							className={ 'wp-parsely-block-overlay-cancel' }
 							variant="link"
 							onClick={ () => {
-								SmartLinkingProvider.cancelRequest();
+								SmartLinkingProvider.getInstance().cancelRequest();
 							} }
 						>
 							{ __( 'Cancel', 'wp-parsely' ) }

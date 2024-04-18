@@ -20,22 +20,91 @@ export interface ContentHelperAPIResponse<T> {
 	data: T;
 }
 
+/**
+ * Base class for all providers.
+ *
+ * Provides a common interface for fetching data from the API, with support
+ * for cancelling requests.
+ *
+ * @since 3.15.0
+ */
 export abstract class BaseProvider {
 	/**
-	 * The AbortController instance used to cancel the fetch request.
+	 * A map of AbortControllers used to cancel fetch requests.
 	 *
 	 * @since 3.15.0
 	 */
-	private static abortController: AbortController = new AbortController();
+	private abortControllers: Map<string, AbortController> = new Map();
+
+	/**
+	 * Protected empty constructor to prevent instantiation.
+	 *
+	 * @since 3.15.0
+	 */
+	protected constructor() {} // eslint-disable-line no-useless-constructor
 
 	/**
 	 * Cancels the fetch request.
 	 *
+	 * If an ID is provided, it cancels the request with that ID.
+	 * If no ID is provided, it cancels the most recent request.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @param {string?} id The (optional) ID of the request to cancel.
+	 */
+	public cancelRequest( id?: string ): void {
+		// If an ID is provided, cancel the request with that ID.
+		if ( id ) {
+			const controller = this.abortControllers.get( id );
+			if ( controller ) {
+				controller.abort();
+				this.abortControllers.delete( id );
+			}
+			return;
+		}
+
+		// Otherwise, cancel the most recent request.
+		const lastKey = Array.from( this.abortControllers.keys() ).pop();
+		if ( lastKey ) {
+			const controller = this.abortControllers.get( lastKey );
+			if ( controller ) {
+				controller.abort();
+				this.abortControllers.delete( lastKey );
+			}
+		}
+	}
+
+	/**
+	 * Cancels all fetch requests for the provider.
+	 *
 	 * @since 3.15.0
 	 */
-	public static cancelRequest(): void {
-		BaseProvider.abortController.abort();
-		BaseProvider.abortController = new AbortController();
+	public cancelAll(): void {
+		this.abortControllers.forEach( ( controller ) => controller.abort() );
+		this.abortControllers.clear();
+	}
+
+	/**
+	 * Private method to manage creating and storing AbortControllers.
+	 *
+	 * @param {string?} id The (optional) ID of the request.
+	 *
+	 * @return {AbortController} The AbortController instance.
+	 */
+	private getOrCreateController( id?: string ): AbortController {
+		if ( id && this.abortControllers.has( id ) ) {
+			return this.abortControllers.get( id ) as AbortController;
+		}
+
+		// If no ID is provided, generate one.
+		const abortId = id ?? 'auto-' + Date.now();
+		// Create a new AbortController.
+		const controller = new AbortController();
+		// Store the AbortController.
+		this.abortControllers.set( abortId, controller );
+
+		return controller;
 	}
 
 	/**
@@ -43,12 +112,13 @@ export abstract class BaseProvider {
 	 *
 	 * This method is a wrapper around apiFetch() that automatically adds the AbortController signal.
 	 *
-	 * @param { APIFetchOptions } options The options to pass to apiFetch
+	 * @param {APIFetchOptions} options The options to pass to apiFetch
+	 * @param {string?}         id      The (optional) ID of the request
 	 *
-	 * @return { Promise<ContentHelperAPIResponse<any>> } The fetched data
+	 * @return {Promise<ContentHelperAPIResponse<any>>} The fetched data
 	 */
-	protected static async fetch<T>( options: APIFetchOptions ): Promise<T> {
-		options.signal = BaseProvider.abortController.signal;
+	protected async fetch<T>( options: APIFetchOptions, id?: string ): Promise<T> {
+		options.signal = this.getOrCreateController( id ).signal;
 		try {
 			const response = await apiFetch<ContentHelperAPIResponse<T>>( options );
 

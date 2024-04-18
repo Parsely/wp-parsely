@@ -267,7 +267,7 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 
 	function getRelatedPostsMockFn( mockFn: () => Promise<GetRelatedPostsResult> ) {
 		return jest
-			.spyOn( RelatedPostsProvider, 'getRelatedPosts' )
+			.spyOn( RelatedPostsProvider.getInstance(), 'getRelatedPosts' )
 			.mockImplementation( mockFn );
 	}
 

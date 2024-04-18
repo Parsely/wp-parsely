@@ -46,6 +46,27 @@ export const RELATED_POSTS_DEFAULT_LIMIT = 5;
 
 export class RelatedPostsProvider extends BaseProvider {
 	/**
+	 * The singleton instance of the RelatedPostsProvider.
+	 *
+	 * @since 3.15.0
+	 */
+	private static instance: RelatedPostsProvider;
+
+	/**
+	 * Returns the singleton instance of the RelatedPostsProvider.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @return {RelatedPostsProvider} The singleton instance.
+	 */
+	public static getInstance(): RelatedPostsProvider {
+		if ( ! this.instance ) {
+			this.instance = new RelatedPostsProvider();
+		}
+		return this.instance;
+	}
+
+	/**
 	 * Returns related posts to the one that is currently being edited within
 	 * the WordPress Block Editor.
 	 *
@@ -58,7 +79,7 @@ export class RelatedPostsProvider extends BaseProvider {
 	 *
 	 * @return {Promise<GetRelatedPostsResult>} Object containing message and posts.
 	 */
-	static async getRelatedPosts(
+	public async getRelatedPosts(
 		period: Period, metric: Metric, filter: PostFilter
 	): Promise<GetRelatedPostsResult> {
 		// Create API query.
@@ -97,7 +118,7 @@ export class RelatedPostsProvider extends BaseProvider {
 	 *
 	 * @return {string} The generated message.
 	 */
-	private static generateMessage(
+	private generateMessage(
 		dataIsEmpty: boolean, period: Period, apiQueryMessage: string
 	): string {
 		if ( dataIsEmpty ) {
@@ -123,8 +144,8 @@ export class RelatedPostsProvider extends BaseProvider {
 	 * @param {RelatedPostsApiQuery} query
 	 * @return {Promise<Array<PostData>>} Array of fetched posts.
 	 */
-	private static async fetchRelatedPostsFromWpEndpoint( query: RelatedPostsApiQuery ): Promise<PostData[]> {
-		const response = BaseProvider.fetch<PostData[]>( {
+	private async fetchRelatedPostsFromWpEndpoint( query: RelatedPostsApiQuery ): Promise<PostData[]> {
+		const response = this.fetch<PostData[]>( {
 			path: addQueryArgs( '/wp-parsely/v1/stats/posts', {
 				...query.query,
 				itm_source: 'wp-parsely-content-helper',
@@ -144,7 +165,7 @@ export class RelatedPostsProvider extends BaseProvider {
 	 *
 	 * @return {RelatedPostsApiQuery} The query object.
 	 */
-	private static buildRelatedPostsApiQuery(
+	private buildRelatedPostsApiQuery(
 		period: Period, metric:Metric, filter: PostFilter
 	): RelatedPostsApiQuery {
 		const commonQueryParams = {

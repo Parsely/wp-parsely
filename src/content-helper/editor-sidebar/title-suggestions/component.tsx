@@ -101,7 +101,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	): Promise<void> => {
 		await setLoading( true );
 
-		const provider = new TitleSuggestionsProvider();
+		const provider = TitleSuggestionsProvider.getInstance();
 
 		try {
 			const genTitles = await provider.generateTitles( content, 3, selectedTone, selectedPersona );
@@ -132,6 +132,9 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 				tone,
 				persona
 			);
+		} else {
+			// Cancel the request.
+			TitleSuggestionsProvider.getInstance().cancelRequest();
 		}
 	};
 
@@ -292,7 +295,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 					<Button
 						variant="primary"
 						isBusy={ loading }
-						disabled={ loading || tone === 'custom' || persona === 'custom' }
+						disabled={ tone === 'custom' || persona === 'custom' }
 						onClick={ generateOnClickHandler }
 					>
 						{ loading && __( 'Generating Titles…', 'wp-parsely' ) }

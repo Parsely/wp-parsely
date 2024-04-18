@@ -27,6 +27,27 @@ export class PerformanceStatsProvider extends BaseProvider {
 	private itmSource = 'wp-parsely-content-helper';
 
 	/**
+	 * The singleton instance of the PerformanceStatsProvider.
+	 *
+	 * @since 3.15.0
+	 */
+	private static instance: PerformanceStatsProvider;
+
+	/**
+	 * Returns the singleton instance of the PerformanceStatsProvider.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @return {PerformanceStatsProvider} The singleton instance.
+	 */
+	public static getInstance(): PerformanceStatsProvider {
+		if ( ! this.instance ) {
+			this.instance = new PerformanceStatsProvider();
+		}
+		return this.instance;
+	}
+
+	/**
 	 * Returns details about the post that is currently being edited within the
 	 * WordPress Block Editor.
 	 *
@@ -87,7 +108,7 @@ export class PerformanceStatsProvider extends BaseProvider {
 	private async fetchPerformanceDataFromWpEndpoint(
 		period: Period, postUrl: string
 	): Promise<PerformanceData> {
-		const response = await BaseProvider.fetch<PerformanceData[]>( {
+		const response = await this.fetch<PerformanceData[]>( {
 			path: addQueryArgs(
 				'/wp-parsely/v1/stats/post/detail', {
 					...getApiPeriodParams( period ),
@@ -133,7 +154,7 @@ export class PerformanceStatsProvider extends BaseProvider {
 	private async fetchReferrerDataFromWpEndpoint(
 		period: Period, postUrl: string, totalViews: string
 	): Promise<PerformanceReferrerData> {
-		const response = await BaseProvider.fetch<PerformanceReferrerData>( {
+		const response = await this.fetch<PerformanceReferrerData>( {
 			path: addQueryArgs(
 				'/wp-parsely/v1/referrers/post/detail', {
 					...getApiPeriodParams( period ),
