@@ -1,13 +1,13 @@
 /**
  * WordPress dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
 import { __, sprintf } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
  */
+import { BaseProvider } from '../../common/base-provider';
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
@@ -35,15 +35,6 @@ interface RelatedPostsApiQuery {
 }
 
 /**
- * The form of the response returned by the /stats/posts WordPress REST API
- * endpoint.
- */
-interface RelatedPostsApiResponse {
-	error?: Error;
-	data?: PostData[];
-}
-
-/**
  * The form of the result returned by the getRelatedPosts() function.
  */
 export interface GetRelatedPostsResult {
@@ -53,7 +44,7 @@ export interface GetRelatedPostsResult {
 
 export const RELATED_POSTS_DEFAULT_LIMIT = 5;
 
-export class RelatedPostsProvider {
+export class RelatedPostsProvider extends BaseProvider {
 	/**
 	 * Returns related posts to the one that is currently being edited within
 	 * the WordPress Block Editor.
@@ -133,29 +124,14 @@ export class RelatedPostsProvider {
 	 * @return {Promise<Array<PostData>>} Array of fetched posts.
 	 */
 	private static async fetchRelatedPostsFromWpEndpoint( query: RelatedPostsApiQuery ): Promise<PostData[]> {
-		let response;
+		const response = BaseProvider.fetch<PostData[]>( {
+			path: addQueryArgs( '/wp-parsely/v1/stats/posts', {
+				...query.query,
+				itm_source: 'wp-parsely-content-helper',
+			} ),
+		} );
 
-		try {
-			response = await apiFetch<RelatedPostsApiResponse>( {
-				path: addQueryArgs( '/wp-parsely/v1/stats/posts', {
-					...query.query,
-					itm_source: 'wp-parsely-content-helper',
-				} ),
-			} );
-		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			return Promise.reject( new ContentHelperError(
-				wpError.message, wpError.code
-			) );
-		}
-
-		if ( response?.error ) {
-			return Promise.reject( new ContentHelperError(
-				response.error.message,
-				ContentHelperErrorCode.ParselyApiResponseContainsError
-			) );
-		}
-
-		return response?.data ?? [];
+		return response ?? [];
 	}
 
 	/**
