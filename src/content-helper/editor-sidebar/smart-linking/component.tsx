@@ -82,9 +82,9 @@ export const MAX_NUMBER_OF_RETRIES = 3;
  *
  * @since 3.14.0
  *
- * @param { Readonly<SmartLinkingPanelProps> } props The component's props.
+ * @param {Readonly<SmartLinkingPanelProps>} props The component's props.
  *
- * @return { JSX.Element } The JSX Element.
+ * @return {JSX.Element} The JSX Element.
  */
 export const SmartLinkingPanel = ( {
 	className,
@@ -171,8 +171,8 @@ export const SmartLinkingPanel = ( {
 	 *
 	 * @since 3.14.0
 	 *
-	 * @param { keyof SmartLinkingSettingsComponent } setting The setting to change.
-	 * @param { string | boolean | number }           value   The new value of the setting.
+	 * @param {keyof SmartLinkingSettingsComponent} setting The setting to change.
+	 * @param {string | boolean | number}           value   The new value of the setting.
 	 */
 	const onSettingChange = (
 		setting: keyof SmartLinkingSettings,
@@ -309,9 +309,9 @@ export const SmartLinkingPanel = ( {
 	 *
 	 * @since 3.15.0
 	 *
-	 * @param { number } retries The number of retries remaining.
+	 * @param {number} retries The number of retries remaining.
 	 *
-	 * @return { Promise<LinkSuggestion[]> } The generated smart links.
+	 * @return {Promise<LinkSuggestion[]>} The generated smart links.
 	 */
 	const generateSmartLinksWithRetry = async ( retries: number ): Promise<LinkSuggestion[]> => {
 		let generatedLinks: LinkSuggestion[] = [];

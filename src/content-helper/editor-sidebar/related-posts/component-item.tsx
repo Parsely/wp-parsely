@@ -31,7 +31,7 @@ const VerticalDivider = (): JSX.Element => {
  *
  * @since 3.14.0
  *
- * @param { PostListItemProps } props The component's props.
+ * @param {PostListItemProps} props The component's props.
  */
 export const RelatedPostItem = (
 	{ metric, post, postContent }: Readonly<PostListItemProps>
@@ -43,10 +43,10 @@ export const RelatedPostItem = (
 	 *
 	 * @since 3.14.1
 	 *
-	 * @param { string } content
-	 * @param { string } rawUrl
+	 * @param {string} content
+	 * @param {string} rawUrl
 	 *
-	 * @return { boolean } Whether the link is present in the content.
+	 * @return {boolean} Whether the link is present in the content.
 	 */
 	const isLinkPresentInContent = ( content: string, rawUrl: string ): boolean => {
 		const escapedUrl = escapeRegExp( rawUrl );
