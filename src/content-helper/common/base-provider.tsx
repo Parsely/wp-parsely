@@ -67,10 +67,12 @@ export abstract class BaseProvider {
 		// If an ID is provided, cancel the request with that ID.
 		if ( id ) {
 			const controller = this.abortControllers.get( id );
+
 			if ( controller ) {
 				controller.abort();
 				this.abortControllers.delete( id );
 			}
+
 			return;
 		}
 
@@ -78,6 +80,7 @@ export abstract class BaseProvider {
 		const lastKey = Array.from( this.abortControllers.keys() ).pop();
 		if ( lastKey ) {
 			const controller = this.abortControllers.get( lastKey );
+
 			if ( controller ) {
 				controller.abort();
 				this.abortControllers.delete( lastKey );
@@ -97,6 +100,8 @@ export abstract class BaseProvider {
 
 	/**
 	 * Private method to manage creating and storing AbortControllers.
+	 *
+	 * @since 3.15.0
 	 *
 	 * @param {string?} id The (optional) ID of the request.
 	 *
@@ -124,9 +129,13 @@ export abstract class BaseProvider {
 	}
 
 	/**
-	 * Fetches data from the API. Either resolves with the data or rejects with an error.
+	 * Fetches data from the API. Either resolves with the data or rejects with
+	 * an error.
 	 *
-	 * This method is a wrapper around apiFetch() that automatically adds the AbortController signal.
+	 * This method is a wrapper around apiFetch() that automatically adds the
+	 * AbortController signal.
+	 *
+	 * @since 3.15.0
 	 *
 	 * @param {APIFetchOptions} options The options to pass to apiFetch
 	 * @param {string?}         id      The (optional) ID of the request
@@ -136,6 +145,7 @@ export abstract class BaseProvider {
 	protected async fetch<T>( options: APIFetchOptions, id?: string ): Promise<T> {
 		const { abortController, abortId } = this.getOrCreateController( id );
 		options.signal = abortController.signal;
+
 		try {
 			const response = await apiFetch<ContentHelperAPIResponse<T>>( options );
 
@@ -159,6 +169,7 @@ export abstract class BaseProvider {
 					),
 				);
 			}
+
 			return Promise.reject( new ContentHelperError( wpError.message, wpError.code ) );
 		} finally {
 			// Clean-up the AbortController after a successful request.
