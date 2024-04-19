@@ -30,9 +30,9 @@ type PerformanceCategoriesPanelProps = {
  *
  * @since 3.14.0
  *
- * @param { PerformanceCategoriesPanelProps } props The component's props.
+ * @param {PerformanceCategoriesPanelProps} props The component's props.
  *
- * @return { JSX.Element } The PerformanceCategoriesPanel JSX Element.
+ * @return {JSX.Element} The PerformanceCategoriesPanel JSX Element.
  */
 export const PerformanceCategoriesPanel = ( {
 	data,

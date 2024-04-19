@@ -7,12 +7,12 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * Internal dependencies
  */
+import { PersonaProp, getPersonaLabel } from '../../common/components/persona-selector';
+import { ToneProp, getToneLabel } from '../../common/components/tone-selector';
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
 } from '../../common/content-helper-error';
-import { getToneLabel, ToneProp } from '../../common/components/tone-selector';
-import { getPersonaLabel, PersonaProp } from '../../common/components/persona-selector';
 
 /**
  * Specifies the form of the response returned by the
@@ -40,7 +40,7 @@ export class TitleSuggestionsProvider {
 	 * @param {ToneProp}    tone    The tone to use when generating the titles.
 	 * @param {PersonaProp} persona The persona to use when generating the titles.
 	 *
-	 * @return { Promise<string[]>} The resulting list of titles.
+	 * @return {Promise<string[]>} The resulting list of titles.
 	 */
 	public async generateTitles( content: string, limit: number = 3, tone: ToneProp, persona: PersonaProp ): Promise<string[]> {
 		let response;

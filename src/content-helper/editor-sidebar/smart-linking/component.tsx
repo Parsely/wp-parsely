@@ -7,8 +7,8 @@ import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
-import { __, sprintf, _n } from '@wordpress/i18n';
-import { external, Icon } from '@wordpress/icons';
+import { __, _n, sprintf } from '@wordpress/i18n';
+import { Icon, external } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -16,7 +16,7 @@ import { external, Icon } from '@wordpress/icons';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { ContentHelperErrorCode } from '../../common/content-helper-error';
-import { SmartLinkingSettings, SidebarSettings, useSettings } from '../../common/settings';
+import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
 import { LinkSuggestion, SmartLinkingProvider } from './provider';
@@ -82,9 +82,9 @@ export const MAX_NUMBER_OF_RETRIES = 3;
  *
  * @since 3.14.0
  *
- * @param { Readonly<SmartLinkingPanelProps> } props The component's props.
+ * @param {Readonly<SmartLinkingPanelProps>} props The component's props.
  *
- * @return { JSX.Element } The JSX Element.
+ * @return {JSX.Element} The JSX Element.
  */
 export const SmartLinkingPanel = ( {
 	className,
@@ -171,8 +171,8 @@ export const SmartLinkingPanel = ( {
 	 *
 	 * @since 3.14.0
 	 *
-	 * @param { keyof SmartLinkingSettingsComponent } setting The setting to change.
-	 * @param { string | boolean | number }           value   The new value of the setting.
+	 * @param {keyof SmartLinkingSettingsComponent} setting The setting to change.
+	 * @param {string | boolean | number}           value   The new value of the setting.
 	 */
 	const onSettingChange = (
 		setting: keyof SmartLinkingSettings,
@@ -310,9 +310,9 @@ export const SmartLinkingPanel = ( {
 	 *
 	 * @since 3.15.0
 	 *
-	 * @param { number } retries The number of retries remaining.
+	 * @param {number} retries The number of retries remaining.
 	 *
-	 * @return { Promise<LinkSuggestion[]> } The generated smart links.
+	 * @return {Promise<LinkSuggestion[]>} The generated smart links.
 	 */
 	const generateSmartLinksWithRetry = async ( retries: number ): Promise<LinkSuggestion[]> => {
 		let generatedLinks: LinkSuggestion[] = [];

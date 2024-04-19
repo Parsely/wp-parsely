@@ -74,10 +74,10 @@ const availablePanels: PanelDescriptor[] = [
  *
  * @since 3.14.0
  *
- * @param { SidebarSettings } settings The sidebar settings.
- * @param { string }          panel    The name of the panel.
+ * @param {SidebarSettings} settings The sidebar settings.
+ * @param {string}          panel    The name of the panel.
  *
- * @return { boolean } True if the panel is visible, false otherwise.
+ * @return {boolean} True if the panel is visible, false otherwise.
  */
 const isPanelVisible = ( settings: SidebarSettings, panel: string ): boolean => {
 	return settings.PerformanceStats.VisiblePanels.includes( panel );
@@ -88,9 +88,9 @@ const isPanelVisible = ( settings: SidebarSettings, panel: string ): boolean => 
  *
  * @since 3.14.0
  *
- * @param { Function } onClose Callback to close the dropdown menu.
+ * @param {Function} onClose Callback to close the dropdown menu.
  *
- * @return { JSX.Element } The dropdown menu JSX Element.
+ * @return {JSX.Element} The dropdown menu JSX Element.
  */
 const PerformanceStatsMenu = (
 	{ onClose }: { onClose: () => void }
@@ -103,7 +103,7 @@ const PerformanceStatsMenu = (
 	 *
 	 * @since 3.14.0
 	 *
-	 * @param { string } panel The name of the panel to toggle.
+	 * @param {string} panel The name of the panel to toggle.
 	 */
 	const togglePanel = ( panel: string ): void => {
 		// Do not toggle panels that are forced to be visible.
@@ -139,7 +139,7 @@ const PerformanceStatsMenu = (
 	 *
 	 * @since 3.14.0
 	 *
-	 * @param { string } selection The name of the selected panel.
+	 * @param {string} selection The name of the selected panel.
 	 */
 	const onClick = ( selection: string ): void => {
 		togglePanel( selection );
@@ -199,7 +199,7 @@ type PerformanceStatsProps = {
  *
  * @since 3.14.0
  *
- * @param { PerformanceStatsProps } props The component's properties.
+ * @param {PerformanceStatsProps} props The component's properties.
  */
 export const PerformanceStats = (
 	{ period }: PerformanceStatsProps
