@@ -71,7 +71,7 @@
 		"@wordpress/hooks": "^3.54.0",
 		"@wordpress/i18n": "^4.41.0",
 		"@wordpress/icons": "^9.47.0",
-		"@wordpress/plugins": "^6.20.0",
+		"@wordpress/plugins": "^6.24.0",
 		"@wordpress/scripts": "^27.7.0",
 		"@wordpress/url": "^3.57.0",
 		"@wordpress/wordcount": "^3.56.0",
