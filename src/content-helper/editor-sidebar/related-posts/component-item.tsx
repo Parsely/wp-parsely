@@ -103,7 +103,6 @@ export const RelatedPostItem = (
 										__( 'URL copied to clipboard', 'wp-parsely' ),
 										{
 											type: 'snackbar',
-											isDismissible: true,
 										}
 									);
 								} );
