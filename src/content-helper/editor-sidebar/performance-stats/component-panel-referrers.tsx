@@ -27,9 +27,9 @@ type PerformanceReferrersPanelProps = {
  *
  * @since 3.14.0
  *
- * @param { PerformanceReferrersPanelProps } props The component's props.
+ * @param {PerformanceReferrersPanelProps} props The component's props.
  *
- * @return { JSX.Element } The PerformanceReferrersPanel JSX Element.
+ * @return {JSX.Element} The PerformanceReferrersPanel JSX Element.
  */
 export const PerformanceReferrersPanel = ( {
 	data,

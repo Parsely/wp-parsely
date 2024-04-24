@@ -23,9 +23,9 @@ type SidebarPerformanceTabProps = {
  *
  * @since 3.14.0
  *
- * @param { SidebarPerformanceTabProps } props The component's props.
+ * @param {SidebarPerformanceTabProps} props The component's props.
  *
- * @return { JSX.Element } The SidebarPerformanceTab JSX Element.
+ * @return {JSX.Element} The SidebarPerformanceTab JSX Element.
  */
 export const SidebarPerformanceTab = (
 	{ period }: Readonly<SidebarPerformanceTabProps>
