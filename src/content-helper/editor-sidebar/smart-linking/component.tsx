@@ -7,8 +7,8 @@ import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
-import { __, sprintf, _n } from '@wordpress/i18n';
-import { external, Icon } from '@wordpress/icons';
+import { __, _n, sprintf } from '@wordpress/i18n';
+import { Icon, external } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -16,7 +16,7 @@ import { external, Icon } from '@wordpress/icons';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { ContentHelperErrorCode } from '../../common/content-helper-error';
-import { SmartLinkingSettings, SidebarSettings, useSettings } from '../../common/settings';
+import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
 import { LinkSuggestion, SmartLinkingProvider } from './provider';
@@ -293,7 +293,6 @@ export const SmartLinkingPanel = ( {
 			await setError( e );
 			createNotice( 'error', snackBarMessage, {
 				type: 'snackbar',
-				isDismissible: true,
 			} );
 		} finally {
 			await setLoading( false );
@@ -397,7 +396,6 @@ export const SmartLinkingPanel = ( {
 			sprintf( __( '%s smart links successfully applied.', 'wp-parsely' ), numberOfUpdatedLinks ),
 			{
 				type: 'snackbar',
-				isDismissible: true,
 			},
 		);
 	};
@@ -676,7 +674,6 @@ export const SmartLinkingPanel = ( {
 				{ error && (
 					<Notice
 						status="info"
-						isDismissible={ true }
 						onRemove={ () => setError( null ) }
 						className="wp-parsely-content-helper-error"
 					>
@@ -686,7 +683,6 @@ export const SmartLinkingPanel = ( {
 				{ suggestedLinks !== null && (
 					<Notice
 						status="success"
-						isDismissible={ true }
 						onRemove={ () => setSuggestedLinks( null ) }
 						className="wp-parsely-smart-linking-suggested-links"
 					>
