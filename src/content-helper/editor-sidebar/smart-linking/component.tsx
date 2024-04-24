@@ -293,7 +293,6 @@ export const SmartLinkingPanel = ( {
 			await setError( e );
 			createNotice( 'error', snackBarMessage, {
 				type: 'snackbar',
-				isDismissible: true,
 			} );
 		} finally {
 			await setLoading( false );
@@ -397,7 +396,6 @@ export const SmartLinkingPanel = ( {
 			sprintf( __( '%s smart links successfully applied.', 'wp-parsely' ), numberOfUpdatedLinks ),
 			{
 				type: 'snackbar',
-				isDismissible: true,
 			},
 		);
 	};
@@ -676,7 +674,6 @@ export const SmartLinkingPanel = ( {
 				{ error && (
 					<Notice
 						status="info"
-						isDismissible={ true }
 						onRemove={ () => setError( null ) }
 						className="wp-parsely-content-helper-error"
 					>
@@ -686,7 +683,6 @@ export const SmartLinkingPanel = ( {
 				{ suggestedLinks !== null && (
 					<Notice
 						status="success"
-						isDismissible={ true }
 						onRemove={ () => setSuggestedLinks( null ) }
 						className="wp-parsely-smart-linking-suggested-links"
 					>
