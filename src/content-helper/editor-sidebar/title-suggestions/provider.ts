@@ -47,15 +47,7 @@ export class TitleSuggestionsProvider extends BaseProvider {
 	 * @param { ToneProp }    tone    The tone to use when generating the titles.
 	 * @param { PersonaProp } persona The persona to use when generating the titles.
 	 *
-	                                  <<<<<<< HEAD
-	                                  <<<<<<< HEAD
-	 * @return { Promise<string[]> } The resulting list of titles.
-	  =======
 	 * @return {Promise<string[]>} The resulting list of titles.
-	  >>>>>>> 3696940e (TypeScript DocBlocks: Remove spaces in braces)
-	  =======
-	 * @return {Promise<string[]>} The resulting list of titles.
-	  >>>>>>> develop
 	 */
 	public async generateTitles( content: string, limit: number = 3, tone: ToneProp, persona: PersonaProp ): Promise<string[]> {
 		const response = this.fetch<string[]>( {
