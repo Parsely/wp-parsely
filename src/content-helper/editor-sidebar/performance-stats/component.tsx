@@ -211,7 +211,7 @@ export const PerformanceStats = (
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	useEffect( () => {
-		const provider = new PerformanceStatsProvider();
+		const provider = PerformanceStatsProvider.getInstance();
 
 		const fetchPosts = async ( retries: number ) => {
 			provider.getPerformanceStats( period )

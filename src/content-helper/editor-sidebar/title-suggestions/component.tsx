@@ -101,7 +101,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	): Promise<void> => {
 		await setLoading( true );
 
-		const provider = new TitleSuggestionsProvider();
+		const provider = TitleSuggestionsProvider.getInstance();
 
 		try {
 			const genTitles = await provider.generateTitles( content, 3, selectedTone, selectedPersona );

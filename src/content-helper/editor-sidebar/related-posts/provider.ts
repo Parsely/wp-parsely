@@ -1,13 +1,13 @@
 /**
  * WordPress dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
 import { __, sprintf } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
  */
+import { BaseProvider } from '../../common/base-provider';
 import {
 	ContentHelperError,
 	ContentHelperErrorCode,
@@ -35,15 +35,6 @@ interface RelatedPostsApiQuery {
 }
 
 /**
- * The form of the response returned by the /stats/posts WordPress REST API
- * endpoint.
- */
-interface RelatedPostsApiResponse {
-	error?: Error;
-	data?: PostData[];
-}
-
-/**
  * The form of the result returned by the getRelatedPosts() function.
  */
 export interface GetRelatedPostsResult {
@@ -53,7 +44,28 @@ export interface GetRelatedPostsResult {
 
 export const RELATED_POSTS_DEFAULT_LIMIT = 5;
 
-export class RelatedPostsProvider {
+export class RelatedPostsProvider extends BaseProvider {
+	/**
+	 * The singleton instance of the RelatedPostsProvider.
+	 *
+	 * @since 3.15.0
+	 */
+	private static instance: RelatedPostsProvider;
+
+	/**
+	 * Returns the singleton instance of the RelatedPostsProvider.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @return {RelatedPostsProvider} The singleton instance.
+	 */
+	public static getInstance(): RelatedPostsProvider {
+		if ( ! this.instance ) {
+			this.instance = new RelatedPostsProvider();
+		}
+		return this.instance;
+	}
+
 	/**
 	 * Returns related posts to the one that is currently being edited within
 	 * the WordPress Block Editor.
@@ -67,7 +79,7 @@ export class RelatedPostsProvider {
 	 *
 	 * @return {Promise<GetRelatedPostsResult>} Object containing message and posts.
 	 */
-	static async getRelatedPosts(
+	public async getRelatedPosts(
 		period: Period, metric: Metric, filter: PostFilter
 	): Promise<GetRelatedPostsResult> {
 		// Create API query.
@@ -106,7 +118,7 @@ export class RelatedPostsProvider {
 	 *
 	 * @return {string} The generated message.
 	 */
-	private static generateMessage(
+	private generateMessage(
 		dataIsEmpty: boolean, period: Period, apiQueryMessage: string
 	): string {
 		if ( dataIsEmpty ) {
@@ -132,30 +144,15 @@ export class RelatedPostsProvider {
 	 * @param {RelatedPostsApiQuery} query
 	 * @return {Promise<Array<PostData>>} Array of fetched posts.
 	 */
-	private static async fetchRelatedPostsFromWpEndpoint( query: RelatedPostsApiQuery ): Promise<PostData[]> {
-		let response;
+	private async fetchRelatedPostsFromWpEndpoint( query: RelatedPostsApiQuery ): Promise<PostData[]> {
+		const response = this.fetch<PostData[]>( {
+			path: addQueryArgs( '/wp-parsely/v1/stats/posts', {
+				...query.query,
+				itm_source: 'wp-parsely-content-helper',
+			} ),
+		} );
 
-		try {
-			response = await apiFetch<RelatedPostsApiResponse>( {
-				path: addQueryArgs( '/wp-parsely/v1/stats/posts', {
-					...query.query,
-					itm_source: 'wp-parsely-content-helper',
-				} ),
-			} );
-		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			return Promise.reject( new ContentHelperError(
-				wpError.message, wpError.code
-			) );
-		}
-
-		if ( response?.error ) {
-			return Promise.reject( new ContentHelperError(
-				response.error.message,
-				ContentHelperErrorCode.ParselyApiResponseContainsError
-			) );
-		}
-
-		return response?.data ?? [];
+		return response ?? [];
 	}
 
 	/**
@@ -168,7 +165,7 @@ export class RelatedPostsProvider {
 	 *
 	 * @return {RelatedPostsApiQuery} The query object.
 	 */
-	private static buildRelatedPostsApiQuery(
+	private buildRelatedPostsApiQuery(
 		period: Period, metric:Metric, filter: PostFilter
 	): RelatedPostsApiQuery {
 		const commonQueryParams = {

@@ -43,7 +43,7 @@ export function TopPosts(): JSX.Element {
 	 * @since 3.7.0
 	 */
 	useEffect( () => {
-		const provider = new DashboardWidgetProvider();
+		const provider = DashboardWidgetProvider.getInstance();
 
 		const fetchPosts = async ( retries: number ) => {
 			provider.getTopPosts( settings, page )

@@ -321,7 +321,7 @@ export const SmartLinkingPanel = ( {
 
 			const urlExclusionList = generateProtocolVariants( postPermalink );
 
-			generatedLinks = await SmartLinkingProvider.generateSmartLinks(
+			generatedLinks = await SmartLinkingProvider.getInstance().generateSmartLinks(
 				( selectedBlock?.originalContent && ! generatingFullContent )
 					? selectedBlock.originalContent
 					: postContent,
