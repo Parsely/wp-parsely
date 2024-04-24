@@ -42,10 +42,10 @@ export class TitleSuggestionsProvider extends BaseProvider {
 	/**
 	 * Returns a list of suggested titles for the given content.
 	 *
-	 * @param { string }      content The content to generate titles for.
-	 * @param { number }      limit   The number of titles to return. Defaults to 3.
-	 * @param { ToneProp }    tone    The tone to use when generating the titles.
-	 * @param { PersonaProp } persona The persona to use when generating the titles.
+	 * @param {string}      content The content to generate titles for.
+	 * @param {number}      limit   The number of titles to return. Defaults to 3.
+	 * @param {ToneProp}    tone    The tone to use when generating the titles.
+	 * @param {PersonaProp} persona The persona to use when generating the titles.
 	 *
 	 * @return {Promise<string[]>} The resulting list of titles.
 	 */
