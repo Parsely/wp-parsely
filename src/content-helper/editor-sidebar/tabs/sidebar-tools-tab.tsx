@@ -28,7 +28,7 @@ type SidebarToolsTabProps = {
  *
  * @since 3.14.0
  *
- * @param { SidebarToolsTabProps } props The component's props.
+ * @param {SidebarToolsTabProps} props The component's props.
  */
 export const SidebarToolsTab = (
 	{ trackToggle }: Readonly<SidebarToolsTabProps>

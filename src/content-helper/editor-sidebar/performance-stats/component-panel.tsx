@@ -38,9 +38,9 @@ type PerformanceStatPanelProps = {
  *
  * @since 3.14.0
  *
- * @param { PerformanceStatPanelProps } props The component's props.
+ * @param {PerformanceStatPanelProps} props The component's props.
  *
- * @return { JSX.Element } The PerformanceStatPanel JSX Element.
+ * @return {JSX.Element} The PerformanceStatPanel JSX Element.
  */
 export const PerformanceStatPanel = (
 	{ title,
