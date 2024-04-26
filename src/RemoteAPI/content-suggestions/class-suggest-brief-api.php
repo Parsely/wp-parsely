@@ -51,7 +51,7 @@ class Suggest_Brief_API extends Content_Suggestions_Base_API {
 				'style'   => $style,
 			),
 			'title'         => $title,
-			'text'          => $content,
+			'text'          => wp_strip_all_tags( $content ),
 		);
 
 		$decoded = $this->post_request( array(), $body );
