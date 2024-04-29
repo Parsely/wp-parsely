@@ -2,6 +2,14 @@
 $html-font-size: 16px; // Used in functions.scss.
 
 /**
+ * Base units for internal use in this file.
+ */
+$base-unit-5: 0.25rem; // 4px.
+$base-unit-10: 0.5rem; // 8px.
+$base-unit-15: 0.75rem; // 12px.
+$base-unit-20: 1rem; // 16px.
+
+/**
  * This is a subset of the CSS variables defined in the Parse.ly dashboard. It
  * is sourced from 1.44/src/styles/base.scss and defines some additional
  * variables in the end of the file.
@@ -10,7 +18,10 @@ $html-font-size: 16px; // Used in functions.scss.
 .wp-parsely-panel,
 .wp-parsely-content-helper,
 .wp-parsely-excerpt-generator,
+.editor-post-excerpt,
 .wp-parsely-popover,
+.wp-parsely-suggested-title-modal,
+.wp-parsely-block-overlay,
 .components-button[aria-controls="wp-parsely-block-editor-sidebar:wp-parsely-content-helper"], // Sidebar icon.
 #wp-parsely-dashboard-widget {
 
@@ -49,17 +60,16 @@ $html-font-size: 16px; // Used in functions.scss.
 	--control: var(--blue-500);
 
 	/** Grid section **/
-	--grid-unit-5: 0.25rem; // 4px.
-	--grid-unit-10: 0.5rem; // 8px.
-	--grid-unit-15: 0.75rem; // 12px.
-	--grid-unit-20: 1rem; // 16px.
-
+	--grid-unit-5: #{$base-unit-5}; // 4px.
+	--grid-unit-10: #{$base-unit-10}; // 8px.
+	--grid-unit-15: #{$base-unit-15}; // 12px.
+	--grid-unit-20: #{$base-unit-20}; // 16px.
 
 	/** Additional variables. **/
 	--font-size--smaller: 0.688rem; // 11px.
-	--font-size--small: 0.75rem; // 12px.
+	--font-size--small: #{$base-unit-15}; // 12px.
 	--font-size--medium: 0.875rem; // 14px.
-	--font-size--large: 1rem; // 16px.
+	--font-size--large: #{$base-unit-20}; // 16px.
 	--font-size--extra-large: 1.2rem;
 	--black: #000;
 	--sidebar-black: #1e1e1e;

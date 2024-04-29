@@ -79,9 +79,9 @@ type ReactDeps = React.DependencyList | undefined;
  * @since 3.13.0
  * @since 3.14.0 Moved from `content-helper/common/hooks/useSaveSettings.ts`.
  *
- * @param { string }    endpoint The settings endpoint to send the data to.
- * @param { Settings }  data     The data to send.
- * @param { ReactDeps } deps     The deps array that triggers saving.
+ * @param {string}    endpoint The settings endpoint to send the data to.
+ * @param {Settings}  data     The data to send.
+ * @param {ReactDeps} deps     The deps array that triggers saving.
  */
 const useSaveSettings = (
 	endpoint: string, data: Settings, deps: ReactDeps
@@ -123,9 +123,9 @@ interface SettingsProviderProps {
  *
  * @since 3.14.0
  *
- * @param { SettingsProviderProps } props The component's props.
+ * @param {SettingsProviderProps} props The component's props.
  *
- * @return { JSX.Element } The SettingsProvider component.
+ * @return {JSX.Element} The SettingsProvider component.
  */
 export const SettingsProvider = (
 	{ children, endpoint, defaultSettings }: Readonly<SettingsProviderProps>

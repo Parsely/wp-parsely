@@ -38,7 +38,7 @@
 
 	.parsely-panel-settings-body {
 		display: flex;
-		padding: to_rem(6px) 0 var(--grid-unit-20, to_rem(16px)) 0;
+		padding: to_rem(6px) 0 var(--grid-unit-20) 0;
 		flex-direction: column;
 		gap: to_rem(10px);
 		align-self: stretch;
@@ -62,7 +62,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: var(--grid-unit-20, to_rem(16px));
+	gap: var(--grid-unit-20);
 	align-self: stretch;
 	border-radius: 2px;
 	border-bottom: none;
@@ -74,7 +74,12 @@
 	.components-panel__body-title {
 		display: flex;
 		align-items: center;
-		gap: var(--grid-unit-10, to_rem(8px));
+
+		/**
+		 * TODO: If no UI glitches are observed, remove commented gaps in all
+		 * SCSS files.
+		 */
+		// gap: var(--grid-unit-10);
 		align-self: stretch;
 		margin: 0 to_rem(-16px) to_rem(6px);
 		padding: 0;
@@ -82,7 +87,7 @@
 		.components-panel__icon,
 		svg {
 			order: -1;
-			margin-right: var(--grid-unit-10, to_rem(8px));
+			margin-right: var(--grid-unit-10);
 			margin-left: 0;
 		}
 
@@ -95,17 +100,17 @@
 		padding: 0;
 
 		> div:first-of-type {
-			margin-top: calc(-1 * var(--grid-unit-20, to_rem(16px)));
+			margin-top: calc(-1 * var(--grid-unit-20));
 		}
 
 		.components-panel__body-title {
-			margin: 0 calc(-1 * var(--grid-unit-20, to_rem(16px))) to_rem(6px);
+			margin: 0 calc(-1 * var(--grid-unit-20)) to_rem(6px);
 			padding-bottom: 0;
 		}
 	}
 
 	.components-panel__body-toggle.components-button {
-		padding: var(--grid-unit-20, to_rem(16px)) var(--grid-unit-20, to_rem(16px));
+		padding: var(--grid-unit-20) var(--grid-unit-20);
 		color: var(--Gutenberg-Gray-900, #1e1e1e);
 		font-size: to_rem(11px);
 		font-style: normal;

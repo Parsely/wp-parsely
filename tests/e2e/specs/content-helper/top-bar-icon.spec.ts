@@ -95,11 +95,11 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
  * Tests the top bar icon by clicking on it and verifying that the PCH Editor
  * Sidebar opens.
  *
- * @param { string } siteId    The Site ID to use for the test.
- * @param { string } apiSecret The API Secret to use for the test.
- * @param { string } selector  The selector from which to get the text content.
+ * @param {string} siteId    The Site ID to use for the test.
+ * @param {string} apiSecret The API Secret to use for the test.
+ * @param {string} selector  The selector from which to get the text content.
  *
- * @return { string } Text content found in the PCH Editor Sidebar.
+ * @return {string} Text content found in the PCH Editor Sidebar.
  */
 async function testContentHelperIcon(
 	siteId: string, apiSecret: string, selector = '.content-helper-error-message'

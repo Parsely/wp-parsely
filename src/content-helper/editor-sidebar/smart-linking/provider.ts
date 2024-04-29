@@ -1,13 +1,12 @@
 /**
  * WordPress dependencies
  */
-import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
  */
-import { ContentHelperError, ContentHelperErrorCode } from '../../common/content-helper-error';
+import { BaseProvider } from '../../common/base-provider';
 import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
 
 /**
@@ -24,23 +23,33 @@ export type LinkSuggestion = {
 };
 
 /**
- * Specifies the form of the response returned by the
- * `content-suggestions/suggest-linked-reference` WordPress REST API endpoint.
- *
- * @since 3.14.0
- */
-interface SmartLinkingApiResponse {
-	error?: Error;
-	data: LinkSuggestion[];
-}
-
-/**
  * Returns data from the `content-suggestions/suggest-linked-reference` WordPress REST API
  * endpoint.
  *
  * @since 3.14.0
  */
-export class SmartLinkingProvider {
+export class SmartLinkingProvider extends BaseProvider {
+	/**
+	 * The singleton instance of the SmartLinkingProvider.
+	 *
+	 * @since 3.15.0
+	 */
+	private static instance: SmartLinkingProvider;
+
+	/**
+	 * Returns the singleton instance of the SmartLinkingProvider.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @return {SmartLinkingProvider} The singleton instance.
+	 */
+	public static getInstance(): SmartLinkingProvider {
+		if ( ! this.instance ) {
+			this.instance = new SmartLinkingProvider();
+		}
+		return this.instance;
+	}
+
 	/**
 	 * Returns a list of suggested links for the given content.
 	 *
@@ -51,38 +60,24 @@ export class SmartLinkingProvider {
 	 *
 	 * @return {Promise<LinkSuggestion[]>} The resulting list of links.
 	 */
-	static async generateSmartLinks(
+	public async generateSmartLinks(
 		content: string,
 		maxLinkWords: number = DEFAULT_MAX_LINK_WORDS,
 		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
 		urlExclusionList: string[] = [],
 	): Promise<LinkSuggestion[]> {
-		let response;
-		try {
-			response = await apiFetch<SmartLinkingApiResponse>( {
-				method: 'POST',
-				path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-linked-reference', {
-					max_link_words: maxLinkWords,
-					max_links: maxLinksPerPost,
-				} ),
-				data: {
-					url_exclusion_list: urlExclusionList,
-					text: content,
-				},
-			} );
-		} catch ( wpError: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			return Promise.reject( new ContentHelperError( wpError.message, wpError.code ) );
-		}
+		const response = await this.fetch<LinkSuggestion[]>( {
+			method: 'POST',
+			path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-linked-reference', {
+				max_link_words: maxLinkWords,
+				max_links: maxLinksPerPost,
+			} ),
+			data: {
+				url_exclusion_list: urlExclusionList,
+				text: content,
+			},
+		} );
 
-		if ( response?.error ) {
-			return Promise.reject(
-				new ContentHelperError(
-					response.error.message,
-					ContentHelperErrorCode.ParselyApiResponseContainsError,
-				),
-			);
-		}
-
-		return response.data ?? [];
+		return response ?? [];
 	}
 }

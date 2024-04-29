@@ -48,7 +48,7 @@ class Suggest_Headline_API extends Content_Suggestions_Base_API {
 				'style'     => $tone,
 				'max_items' => $limit,
 			),
-			'text'          => $content,
+			'text'          => wp_strip_all_tags( $content ),
 		);
 
 		$decoded = $this->post_request( array(), $body );

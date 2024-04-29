@@ -23,9 +23,8 @@ export interface PostDataStore {
  *
  * @since 3.14.3
  *
- * @return { PostDataStore } The post data for the current post.
+ * @return {PostDataStore} The post data for the current post.
  */
-
 export function usePostData(): PostDataStore {
 	const { authors, categories, tags, isReady } = useSelect( ( select ) => {
 		const { getEditedPostAttribute } = select( editorStore ) as GutenbergFunction;
