@@ -16,6 +16,7 @@ import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
  * @since 3.14.0
  */
 export type LinkSuggestion = {
+	uid?: string;
 	href: string;
 	text: string;
 	title: string;
@@ -66,6 +67,30 @@ export class SmartLinkingProvider extends BaseProvider {
 		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
 		urlExclusionList: string[] = [],
 	): Promise<LinkSuggestion[]> {
+		return [
+			{
+				uid: '9befadbab33de885cf9a739ab0b50f0d',
+				href: 'http:\/\/wpvip.com\/2022\/06\/08\/wordpress-myths\/',
+				title: 'busting 10 myths about wordpress and wordpress vip',
+				text: 'WordPress VIP is the gold standard',
+				offset: 0,
+			},
+			{
+				uid: '74217439c37f4659e1e7ae8fb328e11d',
+				href: 'http:\/\/wpvip.com\/2022\/11\/02\/avoiding-cms-disaster-raising-your-wordpress-security-to-the-next-level\/',
+				title: 'avoiding cms disaster: raising your wordpress security to the next level',
+				text: 'Its core strengths lie in',
+				offset: 0,
+			},
+			{
+				uid: '9b4b3a564dcce2235a30907b9e2a9c98',
+				href: 'http:\/\/wpvip.com\/2021\/04\/09\/how-the-wordpress-gutenberg-block-editor-empowers-enterprise-content-creators\/',
+				title: 'how the wordpress gutenberg block editor empowers enterprise content creators',
+				text: 'a robust suite of digital publishing tools',
+				offset: 0,
+			},
+		];
+
 		const response = await this.fetch<LinkSuggestion[]>( {
 			method: 'POST',
 			path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-linked-reference', {

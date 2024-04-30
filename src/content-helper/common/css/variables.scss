@@ -8,6 +8,9 @@ $base-unit-5: 0.25rem; // 4px.
 $base-unit-10: 0.5rem; // 8px.
 $base-unit-15: 0.75rem; // 12px.
 $base-unit-20: 1rem; // 16px.
+$base-unit-25: 1.25rem; // 20px.
+$base-unit-30: 1.5rem; // 24px.
+$base-unit-40: 2rem; // 32px.
 
 /**
  * This is a subset of the CSS variables defined in the Parse.ly dashboard. It
@@ -21,6 +24,7 @@ $base-unit-20: 1rem; // 16px.
 .editor-post-excerpt,
 .wp-parsely-popover,
 .wp-parsely-suggested-title-modal,
+.wp-parsely-smart-linking-review-modal,
 .wp-parsely-block-overlay,
 .components-button[aria-controls="wp-parsely-block-editor-sidebar:wp-parsely-content-helper"], // Sidebar icon.
 #wp-parsely-dashboard-widget {
@@ -64,6 +68,7 @@ $base-unit-20: 1rem; // 16px.
 	--grid-unit-10: #{$base-unit-10}; // 8px.
 	--grid-unit-15: #{$base-unit-15}; // 12px.
 	--grid-unit-20: #{$base-unit-20}; // 16px.
+	--grid-unit-30: #{$base-unit-30}; // 24px.
 
 	/** Additional variables. **/
 	--font-size--smaller: 0.688rem; // 11px.

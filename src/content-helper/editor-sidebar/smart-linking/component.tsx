@@ -6,7 +6,7 @@ import { BlockInstance } from '@wordpress/blocks';
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, external } from '@wordpress/icons';
 
@@ -18,6 +18,7 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
 import { ContentHelperErrorCode } from '../../common/content-helper-error';
 import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
+import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
 import { LinkSuggestion, SmartLinkingProvider } from './provider';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
@@ -95,6 +96,7 @@ export const SmartLinkingPanel = ( {
 	const setSettingsDebounced = useDebounce( setSettings, 500 );
 
 	const [ numAddedLinks, setNumAddedLinks ] = useState<number>( 0 );
+	const [ isReviewModalOpen, setIsReviewModalOpen ] = useState<boolean>( false );
 
 	const { createNotice } = useDispatch( 'core/notices' );
 
@@ -244,12 +246,13 @@ export const SmartLinkingPanel = ( {
 	 * Generates smart links for the selected block or the entire post content.
 	 *
 	 * @since 3.14.0
-	 * @since 3.15.0 Renamed from `generateSmartLinks` to `generateAndApplySmartLinks`.
+	 * @since 3.15.0 Renamed from `generateSmartLinks` to `generateSmartLinks`.
 	 */
-	const generateAndApplySmartLinks = () => async (): Promise<void> => {
+	const generateSmartLinks = async () => {
 		await setLoading( true );
 		await setSuggestedLinks( null );
 		await setError( null );
+
 		Telemetry.trackEvent( 'smart_linking_generate_pressed', {
 			is_full_content: isFullContent,
 			selected_block: selectedBlock?.name ?? 'none',
@@ -275,9 +278,11 @@ export const SmartLinkingPanel = ( {
 		const previousApplyTo = applyTo;
 		try {
 			const generatedLinks = await generateSmartLinksWithRetry( MAX_NUMBER_OF_RETRIES );
-			applySmartLinks( generatedLinks );
+			await setSuggestedLinks( generatedLinks );
+			setIsReviewModalOpen( true );
+			//applySmartLinks( generatedLinks );
 		} catch ( e: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			let snackBarMessage = __( 'There was a problem applying smart links.', 'wp-parsely' );
+			let snackBarMessage = __( 'There was a problem generating smart links.', 'wp-parsely' );
 
 			// Handle the case where the operation was aborted by the user.
 			if ( e.code && e.code === ContentHelperErrorCode.ParselyAborted ) {
@@ -347,7 +352,6 @@ export const SmartLinkingPanel = ( {
 			throw err;
 		}
 
-		await setSuggestedLinks( generatedLinks );
 		return generatedLinks;
 	};
 
@@ -649,7 +653,7 @@ export const SmartLinkingPanel = ( {
 			);
 		}
 		if ( loading ) {
-			return __( 'Adding Smart Links…', 'wp-parsely' );
+			return __( 'Generating Smart Links…', 'wp-parsely' );
 		}
 		return __( 'Add Smart Links', 'wp-parsely' );
 	};
@@ -702,7 +706,7 @@ export const SmartLinkingPanel = ( {
 				/>
 				<div className="smart-linking-generate">
 					<Button
-						onClick={ generateAndApplySmartLinks() }
+						onClick={ generateSmartLinks }
 						variant="primary"
 						isBusy={ loading }
 						disabled={ loading }
@@ -711,6 +715,13 @@ export const SmartLinkingPanel = ( {
 					</Button>
 				</div>
 			</PanelRow>
+
+			<SmartLinkingReviewModal
+				selectedBlock={ selectedBlock ?? undefined }
+				isOpen={ isReviewModalOpen }
+				onClose={ () => setIsReviewModalOpen( false ) }
+				links={ suggestedLinks }
+			/>
 		</div>
 	);
 };
