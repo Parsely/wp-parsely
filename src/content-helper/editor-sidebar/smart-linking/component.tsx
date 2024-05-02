@@ -242,6 +242,33 @@ export const SmartLinkingPanel = ( {
 		[ selectedBlockClientId ],
 	);
 
+	const processSmartLinks = async ( links: LinkSuggestion[] ) => {
+		// An object to keep track of the number of times each link text has been found across all blocks.
+		const occurrenceCounts: LinkOccurrenceCounts = {};
+
+		// Apply the smart links to the content.
+
+		/**
+		 * Given a list of blocks, find the links in the blocks HTML content, and update the links with the matches.
+		 * The position of the link must take into consideration the HTML structure of the block.
+		 *
+		 * @param blocks
+		 * @param links
+		 * @param occurrenceCounts
+		 */
+		const findLinksInBlocks = ( blocks: Readonly<BlockInstance>[], links: LinkSuggestion[], occurrenceCounts: LinkOccurrenceCounts ) => {
+			// Loop all the blocks
+			blocks.forEach( ( block ) => {
+
+			} );
+		};
+
+		applyLinksToBlocks( allBlocks, links, occurrenceCounts );
+
+		// Update the link suggestions with the new matches
+		await setSuggestedLinks( links );
+	};
+
 	/**
 	 * Generates smart links for the selected block or the entire post content.
 	 *
@@ -252,6 +279,8 @@ export const SmartLinkingPanel = ( {
 		await setLoading( true );
 		await setSuggestedLinks( null );
 		await setError( null );
+
+		console.log( 'generateSmartLinks' );
 
 		Telemetry.trackEvent( 'smart_linking_generate_pressed', {
 			is_full_content: isFullContent,
@@ -278,9 +307,8 @@ export const SmartLinkingPanel = ( {
 		const previousApplyTo = applyTo;
 		try {
 			const generatedLinks = await generateSmartLinksWithRetry( MAX_NUMBER_OF_RETRIES );
-			await setSuggestedLinks( generatedLinks );
+			await processSmartLinks( generatedLinks );
 			setIsReviewModalOpen( true );
-			//applySmartLinks( generatedLinks );
 		} catch ( e: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			let snackBarMessage = __( 'There was a problem generating smart links.', 'wp-parsely' );
 
@@ -383,7 +411,7 @@ export const SmartLinkingPanel = ( {
 		const updatedBlocks: BlockUpdate[] = [];
 
 		// Apply the smart links to the content.
-		applyLinksToBlocks( blocks, links, occurrenceCounts, updatedBlocks );
+		applyLinksToBlocks( blocks, links, occurrenceCounts );
 
 		// Update the content of each block.
 		updateBlocksContent( updatedBlocks );
@@ -418,15 +446,11 @@ export const SmartLinkingPanel = ( {
 	 * @param {LinkSuggestion[]}     links            An array of link suggestions to apply to the content.
 	 * @param {LinkOccurrenceCounts} occurrenceCounts An object to keep track of the number of times each link text has
 	 *                                                been applied across all blocks.
-	 * @param {BlockUpdate[]}        updatedBlocks    An array of updated blocks with the new content.
-	 *                                                This array is modified in place and will contain the updated blocks
-	 *                                                after the function has been called.
 	 */
 	const applyLinksToBlocks = (
 		blocks: Readonly<BlockInstance>[],
 		links: LinkSuggestion[],
 		occurrenceCounts: LinkOccurrenceCounts,
-		updatedBlocks: BlockUpdate[],
 	): void => {
 		// Check if any of the links being applied is a self-reference, and remove it if it is.
 		const strippedPermalink = postPermalink
@@ -442,10 +466,9 @@ export const SmartLinkingPanel = ( {
 		} );
 
 		blocks.forEach( ( block ) => {
-			let blockUpdated = false;
 			// Recursively apply links to any inner blocks.
 			if ( block.innerBlocks && block.innerBlocks.length ) {
-				applyLinksToBlocks( block.innerBlocks, links, occurrenceCounts, updatedBlocks );
+				applyLinksToBlocks( block.innerBlocks, links, occurrenceCounts );
 				return;
 			}
 
@@ -480,13 +503,23 @@ export const SmartLinkingPanel = ( {
 									// Check if the link is in the correct position (offset) to be applied.
 									if ( occurrenceCount.encountered === link.offset + 1 ) {
 										// Create a new anchor element for the link.
-										const anchor = document.createElement( 'a' );
+										/*const anchor = document.createElement( 'a' );
 										anchor.href = link.href;
 										anchor.title = link.title;
-										anchor.textContent = match[ 0 ];
+										anchor.textContent = match[ 0 ];*/
+
+										// Increment the linked count only when a link is applied.
+										occurrenceCount.linked++;
+
+										// Update the LinkSuggestion to include the match
+										link.match = {
+											blockId: block.clientId,
+											startAt: getNodeOffset( contentElement, node ) + match.index,
+											endAt: getNodeOffset( contentElement, node ) + match.index + match[ 0 ].length,
+										};
 
 										// Replace the matched text with the new anchor element.
-										const range = document.createRange();
+										/*const range = document.createRange();
 										range.setStart( node, match.index );
 										range.setEnd( node, match.index + match[ 0 ].length );
 										range.deleteContents();
@@ -501,29 +534,33 @@ export const SmartLinkingPanel = ( {
 												node.textContent.slice( match.index + match[ 0 ].length )
 											);
 											node.parentNode?.insertBefore( remainingText, anchor.nextSibling );
-										}
-
-										// Increment the linked count only when a link is applied.
-										occurrenceCount.linked++;
-
-										// Flag the block as updated.
-										blockUpdated = true;
+										}*/
 									}
 								}
 							}
 						} );
 					} );
-
-					// Save the updated content if the block was updated.
-					if ( blockUpdated ) {
-						updatedBlocks.push( {
-							clientId: block.clientId,
-							newContent: contentElement.innerHTML,
-						} );
-					}
 				}
 			}
 		} );
+	};
+
+	const getNodeOffset = ( parent: HTMLElement, node: Node ): number => {
+		let offset = 0;
+		let currentNode: Node | null = parent.firstChild;
+
+		while ( currentNode !== node && currentNode !== null ) {
+			if ( currentNode.nodeType === Node.TEXT_NODE ) {
+				offset += ( currentNode.textContent || '' ).length;
+			} else if ( currentNode.nodeType === Node.ELEMENT_NODE ) {
+				// Using outerHTML property for HTMLElement nodes
+				const html = ( currentNode as HTMLElement ).outerHTML || '';
+				offset += html.length;
+			}
+			currentNode = currentNode.nextSibling;
+		}
+
+		return offset;
 	};
 
 	/**
@@ -586,17 +623,6 @@ export const SmartLinkingPanel = ( {
 	 */
 	const removeOverlay = async ( clientId: string = 'all' ): Promise<void> => {
 		await removeOverlayBlock( clientId );
-
-		// Select a block after removing the overlay, only if we're using the block inspector.
-		if ( context === SmartLinkingPanelContext.BlockInspector ) {
-			if ( 'all' !== clientId && ! isFullContent ) {
-				dispatch( 'core/block-editor' ).selectBlock( clientId );
-			} else {
-				const firstBlock = select( 'core/block-editor' ).getBlockOrder()[ 0 ];
-				// Select the first block in the post.
-				dispatch( 'core/block-editor' ).selectBlock( firstBlock );
-			}
-		}
 
 		// If there are no more overlay blocks, enable save.
 		if ( overlayBlocks.length === 0 ) {
@@ -717,10 +743,9 @@ export const SmartLinkingPanel = ( {
 			</PanelRow>
 
 			<SmartLinkingReviewModal
-				selectedBlock={ selectedBlock ?? undefined }
 				isOpen={ isReviewModalOpen }
 				onClose={ () => setIsReviewModalOpen( false ) }
-				links={ suggestedLinks }
+				links={ suggestedLinks ?? [] }
 			/>
 		</div>
 	);

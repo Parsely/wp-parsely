@@ -238,27 +238,107 @@
 
 			.components-menu-item__shortcut {
 				padding-left: var(--grid-unit-10);
-				color: var(--Gutenberg-Blueberry, #3858E9);
+				color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9))
 			}
 		}
 	}
 
 	.smart-linking-review-suggestion {
+		max-width: to_rem(452px);
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
 		gap: 16px;
-		flex: 1 0 0;
+		flex: 1;
 		align-self: stretch;
+
+		.review-suggestions-breadcrumbs {
+			font-size: to_rem(12px);
+
+			.breadcrumbs-parent-separator {
+				margin: 0 var(--grid-unit-5);
+			}
+
+			.breadcrumbs-parent-block {
+				color: var(--Gutenberg-Gray-700, #757575);
+			}
+
+			.breadcrumbs-current-block {
+				color: var(--sidebar-black);
+
+				.breadcrumbs-current-block-name {
+					margin-left: var(--grid-unit-10);
+				}
+			}
+		}
+
+		.components-divider {
+			width: to_rem(452px);
+			height: 1px;
+			border-color: #CCC;
+		}
+
+		.wp-parsely-link-suggestion-link-details {
+			text-align: left;
+			height: auto;
+			margin-bottom: var(--grid-unit-20);
+
+			.components-menu-item__item {
+				word-wrap: break-word;
+				white-space: normal;
+			}
+		}
+
+		.review-controls {
+			display: flex;
+			width: 452px;
+			justify-content: space-between;
+			align-items: center;
+			flex-shrink: 0;
+			align-self: stretch;
+			margin: 0 var(--grid-unit-20);
+
+			.reviews-controls-middle {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				gap: var(--grid-unit-20, 16px);
+				flex: 1 0 0;
+			}
+
+			.wp-parsely-review-suggestion-previous,
+			.wp-parsely-review-suggestion-next {
+				color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+			}
+
+			.wp-parsely-review-suggestion-reject {
+				border-radius: 2px;
+				box-shadow: inset 0 0 0 1px var(--Gutenberg-Alert-Red, #CC1818);
+				background: var(--Gutenberg-White, #FFF);
+				color: var(--Gutenberg-Alert-Red, #CC1818);
+			}
+		}
 	}
 }
 
 .wp-parsely-preview-editor {
 	.block-editor-block-list__block {
-		pointer-events: none; /* Disables clicking and typing */
+		//pointer-events: none; /* Disables clicking and typing */
 	}
 
 	&.editor-styles-wrapper {
 		padding-bottom: 0;
+		font-size: var(--font-size--medium);
+	}
+
+	p[role="document"] {
+		margin: 0;
+	}
+
+	.smart-linking-highlight {
+		border-radius: 2px;
+		background: hsla( var(--parsely-green-components), 0.5);
+		mix-blend-mode: multiply;
+		text-decoration-line: underline;
 	}
 }
