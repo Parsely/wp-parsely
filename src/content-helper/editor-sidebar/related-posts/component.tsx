@@ -382,7 +382,7 @@ export const RelatedPostsPanel = (): JSX.Element => {
 			<div className="wp-parsely-related-posts">
 				<div className="related-posts-body">
 					{ __(
-						'Error: No author, section, or categories could be found for this post.',
+						'Error: No author, section, or tags could be found for this post.',
 						'wp-parsely'
 					) }
 				</div>
