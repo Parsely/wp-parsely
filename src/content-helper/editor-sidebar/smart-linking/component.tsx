@@ -449,7 +449,7 @@ export const SmartLinkingPanel = ( {
 				return;
 			}
 
-			const blockContent = getBlockContent( block );
+			const blockContent: string = getBlockContent( block );
 			const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
 
 			const contentElement = doc.body.firstChild;

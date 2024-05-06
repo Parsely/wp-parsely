@@ -45,21 +45,49 @@ jest.mock( '../../../src/content-helper/common/settings/provider', () => ( {
 } ) );
 
 /**
+ * Structure defining the common fields of User and Taxonomy classes.
+ *
+ * Only the `name` field's value is of practical importance. The other fields
+ * are present only for schema validation purposes.
+ *
+ * @since 3.14.4
+ */
+type UserOrTaxonomy = {
+	name: string;
+	id: string;
+	slug: string;
+	description: string;
+	link: string;
+};
+
+/**
  * Structure of the mock post data.
  *
  * @since 3.14.3
  */
 type MockPostData = {
-	authors: {
-		name: string;
-	}[];
-	categories: {
-		name: string;
-	}[];
-	tags: {
-		name: string;
-	}[];
+	authors: UserOrTaxonomy[];
+	categories: UserOrTaxonomy[];
+	tags: UserOrTaxonomy[];
+	isReady: boolean;
 };
+
+/**
+ * Creates a UserOrTaxonomy object, using the passed name property.
+ *
+ * @since 3.14.4
+ *
+ * @param {string} name The name to be assigned to the object.
+ *
+ * @return {UserOrTaxonomy} The created UserOrTaxonomy object.
+ */
+const createUserOrTaxonomy = ( name: string ): UserOrTaxonomy => ( {
+	name,
+	id: 'test',
+	slug: 'test',
+	description: 'test',
+	link: 'test',
+} );
 
 /**
  * Initial mock post data to be returned by the usePostData hook.
@@ -67,9 +95,10 @@ type MockPostData = {
  * @since 3.14.3
  */
 const mockPostData: MockPostData = {
-	authors: [ { name: 'admin' } ],
+	authors: [ createUserOrTaxonomy( 'admin' ) ],
 	categories: [],
 	tags: [],
+	isReady: true,
 };
 jest.mock( '../../../src/content-helper/editor-sidebar/related-posts/hooks', () => {
 	return {
@@ -240,9 +269,9 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 	 * @param {string[]} tags       The tags of the post.
 	 */
 	function setMockPostData( authors: string[], categories: string[], tags: string[] ) {
-		mockPostData.authors = authors.map( ( name ) => ( { name } ) );
-		mockPostData.categories = categories.map( ( name ) => ( { name } ) );
-		mockPostData.tags = tags.map( ( name ) => ( { name } ) );
+		mockPostData.authors = authors.map( ( name ) => ( createUserOrTaxonomy( name ) ) );
+		mockPostData.categories = categories.map( ( name ) => ( createUserOrTaxonomy( name ) ) );
+		mockPostData.tags = tags.map( ( name ) => ( createUserOrTaxonomy( name ) ) );
 	}
 
 	function getLoadingMessage() {
