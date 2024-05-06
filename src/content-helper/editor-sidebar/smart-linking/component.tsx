@@ -745,7 +745,6 @@ export const SmartLinkingPanel = ( {
 			<SmartLinkingReviewModal
 				isOpen={ isReviewModalOpen }
 				onClose={ () => setIsReviewModalOpen( false ) }
-				links={ suggestedLinks ?? [] }
 			/>
 		</div>
 	);

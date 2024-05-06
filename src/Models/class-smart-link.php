@@ -54,6 +54,13 @@ class Smart_Link extends Base_Model {
 	public $uid;
 
 	/**
+	 * Whether the link has been applied.
+	 *
+	 * @var bool Whether the link has been applied.
+	 */
+	public $applied;
+
+	/**
 	 * Smart Link constructor.
 	 *
 	 * @since 3.15.0
@@ -68,6 +75,7 @@ class Smart_Link extends Base_Model {
 		$this->title = $title;
 		$this->text = $text;
 		$this->offset = $offset;
+		$this->applied = false;
 
 		parent::__construct();
 	}
@@ -101,6 +109,7 @@ class Smart_Link extends Base_Model {
 			'title' => $this->title,
 			'text' => $this->text,
 			'offset' => $this->offset,
+			'applied' => $this->applied
 		) );
 
 		if ( false === $json ) {

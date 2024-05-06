@@ -1,53 +1,107 @@
 import { BlockInstance } from '@wordpress/blocks';
 import { Button, Modal } from '@wordpress/components';
+import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 import { LinkSuggestion } from '../provider';
+import { SmartLinkingStore } from '../store';
+import { applyNodeToBlock } from '../utils';
 import { ReviewModalSidebar } from './component-sidebar';
 import { ReviewSuggestion } from './component-suggestion';
 
 export type SmartLinkingReviewModalProps = {
-	links: LinkSuggestion[],
 	onClose: () => void,
 	isOpen: boolean,
 };
 
 export const SmartLinkingReviewModal = ( {
-	links,
 	onClose,
 	isOpen,
 }: SmartLinkingReviewModalProps ): JSX.Element => {
 	const [ showCloseDialog, setShowCloseDialog ] = useState<boolean>( false );
 	const [ isModalOpen, setIsModalOpen ] = useState<boolean>( isOpen );
-	const [ selectedLink, setSelectedLink ] = useState<LinkSuggestion>( links[ 0 ] );
-	const [ suggestedLinks, setSuggestedLinks ] = useState<LinkSuggestion[]>( links );
-	//console.log( links, selectedLink );
+
+	/**
+	 * Loads the Smart Linking store selectors.
+	 *
+	 * @since 3.15.0
+	 */
+	const {
+		suggestedLinks,
+	} = useSelect( ( selectFn ) => {
+		const { getSuggestedLinks } = selectFn( SmartLinkingStore );
+		return {
+			suggestedLinks: getSuggestedLinks(),
+		};
+	}, [] );
+
+	const [ selectedLink, setSelectedLink ] = useState<LinkSuggestion>( suggestedLinks[ 0 ] );
+
+	/**
+	 * Loads the Smart Linking store actions.
+	 *
+	 * @since 3.15.0
+	 */
+	const {
+		setSuggestedLinks,
+	} = useDispatch( SmartLinkingStore );
 
 	// Set the first link as the selected link when the links are loaded.
 	useEffect( () => {
+		//console.log( suggestedLinks );
 		// Filter out any links without a match
-		const filteredLinks = links.filter( ( link ) => link.match );
-		setSuggestedLinks( filteredLinks );
-		setSelectedLink( filteredLinks[ 0 ] );
-	}, [ links ] );
+		//const filteredLinks = links.filter( ( link ) => link.match );
+		//setSuggestedLinks( filteredLinks );
+		setSelectedLink( suggestedLinks[ 0 ] );
+	}, [ suggestedLinks ] );
 
 	const showConfirmCloseDialog = () => setShowCloseDialog( true );
 	const hideConfirmCloseDialog = () => setShowCloseDialog( false );
 
 	/**
-	 * Update the modal state when the `isOpen` prop changes.
+	 * Updates the modal state when the `isOpen` prop changes.
 	 */
 	useEffect( () => {
 		setIsModalOpen( isOpen );
 	}, [ isOpen ] );
 
+	/**
+	 * Applies the link to the block.
+	 *
+	 * @param {string}         blockId        The block instance to apply the link to.
+	 * @param {LinkSuggestion} linkSuggestion The link suggestion to apply.
+	 */
+	const applyLinkToBlock = async ( blockId: string, linkSuggestion: LinkSuggestion ) => {
+		const anchor = document.createElement( 'a' );
+		anchor.href = linkSuggestion.href;
+		anchor.title = linkSuggestion.title;
+		// Add data-smartlink attribute to the anchor tag
+		anchor.setAttribute( 'data-smartlink', 'true' );
+
+		const block = select( 'core/block-editor' ).getBlock( blockId );
+		if ( ! block ) {
+			return;
+		}
+
+		applyNodeToBlock( block, linkSuggestion, anchor );
+
+		// Update the block
+		dispatch( 'core/block-editor' ).updateBlock( blockId, block );
+
+		linkSuggestion.applied = true;
+
+		// Update the link suggestions.
+		await setSuggestedLinks( suggestedLinks );
+	};
+
 	const onCloseHandler = () => {
-		console.log( 'onCloseHandler' );
+		const pendingLinks = suggestedLinks.filter( ( link ) => ! link.applied );
+
 		// Hide the modal.
 		setIsModalOpen( false );
 
-		if ( links ) {
+		if ( suggestedLinks && pendingLinks.length > 0 ) {
 			showConfirmCloseDialog();
 			console.log( showCloseDialog );
 			return;
@@ -98,10 +152,42 @@ export const SmartLinkingReviewModal = ( {
 								setSelectedLink( suggestedLinks[ previousIndex ] );
 							} }
 							onAccept={ () => {
-								console.log( 'onAccept' );
+								if ( ! selectedLink.match ) {
+									return;
+								}
+								applyLinkToBlock( selectedLink.match.blockId, selectedLink )
+									.then( () => {
+										const currentIndex = suggestedLinks.indexOf( selectedLink );
+										const nextIndex = currentIndex + 1;
+
+										// If there is a next link, select it, otherwise close the modal.
+										if ( suggestedLinks[ nextIndex ] ) {
+											setSelectedLink( suggestedLinks[ nextIndex ] );
+										} else {
+											onCloseHandler();
+										}
+									} );
 							} }
 							onReject={ () => {
-								console.log( 'onReject' );
+								// Change to the next link.
+								const currentIndex = suggestedLinks.indexOf( selectedLink );
+								const nextIndex = currentIndex + 1;
+
+								// Check if it exists. If not, try to go for the first one on the array.
+								// If there isn't any, close the modal
+								if ( ! suggestedLinks[ nextIndex ] ) {
+									if ( suggestedLinks[ 0 ] ) {
+										setSelectedLink( suggestedLinks[ 0 ] );
+									} else {
+										onCloseHandler();
+									}
+								} else {
+									setSelectedLink( suggestedLinks[ nextIndex ] );
+								}
+
+								// Delete the rejected link from the list.
+								suggestedLinks.splice( currentIndex, 1 );
+								setSuggestedLinks( suggestedLinks );
 							} }
 						/>
 					</div>

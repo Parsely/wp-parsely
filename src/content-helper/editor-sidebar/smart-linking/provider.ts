@@ -21,6 +21,7 @@ export type LinkSuggestion = {
 	text: string;
 	title: string;
 	offset: number;
+	applied: boolean;
 	match?: LinkSuggestionMatch;
 };
 
@@ -108,13 +109,14 @@ export class SmartLinkingProvider extends BaseProvider {
 				offset: 0,
 			},
 		];*/
-		return [
+		/*return [
 			{
 				uid: 'cf71c5c475bc7578013b7e6234832de4',
 				href: 'http:\/\/wpvip.com\/2023\/02\/16\/wordpress-org-vs-wordpress-com-vs-wordpress-vip-whats-the-difference\/',
 				title: 'wordpress.org vs wordpress.com vs wordpress vip: what\u2019s the difference?',
 				text: 'WordPress Enterprise',
 				offset: 0,
+				applied: false,
 			},
 			{
 				uid: 'f16cb0363e8705c4d2e8f7c94412b192',
@@ -122,6 +124,7 @@ export class SmartLinkingProvider extends BaseProvider {
 				title: 'wordpress.org vs wordpress.com vs wordpress vip: what\u2019s the difference?',
 				text: 'WordPress VIP',
 				offset: 1,
+				applied: false,
 			},
 			{
 				uid: '8809b316cced142250c66d35d2681f1e',
@@ -129,6 +132,7 @@ export class SmartLinkingProvider extends BaseProvider {
 				title: 'busting 10 myths about wordpress and wordpress vip',
 				text: 'scalability',
 				offset: 0,
+				applied: false,
 			},
 			{
 				uid: '0ecd03591abebc70c1b9ee6a8110b9a3',
@@ -136,6 +140,33 @@ export class SmartLinkingProvider extends BaseProvider {
 				title: 'a guide to choosing the most secure wordpress hosting',
 				text: 'custom development, security, scalability, and high performance',
 				offset: 0,
+				applied: false,
+			},
+		];*/
+		return [
+			{
+				uid: '6e507388132fe7a97f2efac112ed2ebd',
+				href: 'http:\/\/wpvip.com\/2021\/12\/23\/secure-wordpress-hosting\/',
+				title: 'a guide to choosing the most secure wordpress hosting',
+				text: 'platform',
+				offset: 0,
+				applied: false,
+			},
+			{
+				uid: 'db7a115cc2ef900f2c066a897db4cf28',
+				href: 'http:\/\/wpvip.com\/2021\/06\/14\/yet-another-top-tier-award-for-wordpress-vip-in-hosting-performance-review\/',
+				title: '\u201cyet another\u201d top tier award for wordpress vip in hosting performance review',
+				text: 'performance',
+				offset: 1,
+				applied: false,
+			},
+			{
+				uid: '751b0938f1ecc0ae17f1bc196c42ba98',
+				href: 'http:\/\/wpvip.com\/2021\/09\/15\/six-questions-with-zephr-about-first-party-data-and-the-customer-journey\/',
+				title: 'six questions with zephr about first-party data and the customer journey',
+				text: 'performance',
+				offset: 0,
+				applied: false,
 			},
 		];
 		const response = await this.fetch<LinkSuggestion[]>( {

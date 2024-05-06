@@ -309,6 +309,10 @@
 			.wp-parsely-review-suggestion-previous,
 			.wp-parsely-review-suggestion-next {
 				color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+
+				&:disabled {
+					visibility: hidden;
+				}
 			}
 
 			.wp-parsely-review-suggestion-reject {
@@ -322,9 +326,6 @@
 }
 
 .wp-parsely-preview-editor {
-	.block-editor-block-list__block {
-		//pointer-events: none; /* Disables clicking and typing */
-	}
 
 	&.editor-styles-wrapper {
 		padding-bottom: 0;

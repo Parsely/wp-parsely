@@ -22,7 +22,7 @@ export const ReviewModalSidebar = ( {
 				{ links?.map( ( link ) => (
 					<MenuItem
 						key={ link.uid }
-						shortcut="NEW"
+						shortcut={ ! link.applied ? 'NEW' : undefined }
 						isSelected={ activeLink?.uid === link.uid }
 						onClick={ () => {
 							setSelectedLink( link );

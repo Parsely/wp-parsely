@@ -66,7 +66,7 @@ type StylesProps = {
 	}[],
 };
 const Styles = ( { styles }: StylesProps ): JSX.Element => {
-	// CSS Only styles
+	// Get onlt the theme and user styles.
 	const filteredStyles = styles
 		.filter( ( style ) => {
 			return (
@@ -75,6 +75,7 @@ const Styles = ( { styles }: StylesProps ): JSX.Element => {
 			) && style.css;
 		} );
 
+	// Returns the styles, but replaces the body selector with the block editor selector.
 	return (
 		<>
 			{ filteredStyles.map( ( style, index ) => (
@@ -94,29 +95,17 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 	/**
 	 * Runs when the block is updated.
 	 * It will update the cloned block with the new block.
+	 *
+	 * @since 3.15.0
 	 */
 	useEffect( () => {
-		console.log( 'Updating cloned block' );
 		setClonedBlock( cloneBlock( block ) );
 	}, [ block, link ] );
 
 	/**
-	 * Applies the link to the block.
-	 *
-	 * @param {BlockInstance}  blockInstance  The block instance to apply the link to.
-	 * @param {LinkSuggestion} linkSuggestion The link suggestion to apply.
-	 */
-	const applyLinkToBlock = ( blockInstance: BlockInstance, linkSuggestion: LinkSuggestion ) => {
-		const anchor = document.createElement( 'a' );
-		anchor.href = link.href;
-		anchor.title = link.title;
-		// Add data-smartlink attribute to the anchor tag
-		anchor.setAttribute( 'data-smartlink', 'true' );
-		applyNodeToBlock( blockInstance, linkSuggestion, anchor );
-	};
-
-	/**
 	 * Highlights the link in the block.
+	 *
+	 * @since 3.15.0
 	 *
 	 * @param {BlockInstance}  blockInstance  The block instance to highlight the link in.
 	 * @param {LinkSuggestion} linkSuggestion The link suggestion to highlight.
@@ -130,12 +119,13 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 	/**
 	 * Runs when the block is rendered in the DOM.
 	 * It will set the block element to be non-editable.
+	 *
+	 * @since 3.15.0
 	 */
 	useEffect( () => {
 		const blockPreviewElement = document.querySelector( '.wp-parsely-preview-editor' );
 
 		if ( ! blockPreviewElement ) {
-			console.log( 'Block preview element not found' );
 			return;
 		}
 

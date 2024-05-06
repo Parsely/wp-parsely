@@ -385,8 +385,8 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		getMaxLinks( state: SmartLinkingState ): number {
 			return state.settings.maxLinksPerPost ?? DEFAULT_MAX_LINKS;
 		},
-		getSuggestedLinks( state: SmartLinkingState ): LinkSuggestion[] | null {
-			return state.suggestedLinks;
+		getSuggestedLinks( state: SmartLinkingState ): LinkSuggestion[] {
+			return state.suggestedLinks ?? [];
 		},
 		wasAlreadyClicked( state: SmartLinkingState ): boolean {
 			return state.wasAlreadyClicked;
@@ -396,6 +396,10 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		},
 		getRetryAttempt( state: SmartLinkingState ): number {
 			return state.retryAttempt;
+		},
+		hasUnappliedLinks( state: SmartLinkingState ): boolean {
+			console.log( 'hasUnappliedLinks', state.suggestedLinks?.filter( ( link ) => ! link.applied ) );
+			return state.suggestedLinks?.some( ( link ) => ! link.applied ) ?? false;
 		},
 	},
 } );
