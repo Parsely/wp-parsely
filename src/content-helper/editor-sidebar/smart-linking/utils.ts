@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/named
 import { BlockInstance, getBlockContent } from '@wordpress/blocks';
-import { LinkSuggestion } from './provider';
+import { SmartLink } from './provider';
 import { escapeRegExp } from '../../common/utils/functions';
 
 export { escapeRegExp } from '../../common/utils/functions';
@@ -10,8 +10,6 @@ export { escapeRegExp } from '../../common/utils/functions';
  * This is useful for finding text nodes that should be linked.
  *
  * @since 3.14.1
- *
- * @TODO: REMOVE
  *
  * @param {HTMLElement} element    - The element to search within.
  * @param {string}      searchText - The text to search for.
@@ -97,10 +95,10 @@ function findTextNodesNotInSimilarNode( element: Node, searchText: string, refer
  * @since 3.15.0
  *
  * @param {BlockInstance}  block    The block instance to apply the link to.
- * @param {LinkSuggestion} link     The link suggestion to apply.
+ * @param {SmartLink} link     The link suggestion to apply.
  * @param {HTMLElement}    htmlNode The HTML node to apply to the block.
  */
-export function applyNodeToBlock( block: BlockInstance, link: LinkSuggestion, htmlNode: HTMLElement ) {
+export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNode: HTMLElement ) {
 	const blockContent: string = getBlockContent( block );
 
 	const doc = new DOMParser().parseFromString( blockContent, 'text/html' );

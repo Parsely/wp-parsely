@@ -5,12 +5,12 @@ import { useEffect, useState } from '@wordpress/element';
 import { arrowLeft, arrowRight, check, closeSmall, Icon, page } from '@wordpress/icons';
 import { filterURLForDisplay } from '@wordpress/url';
 import { GutenbergFunction } from '../../../../@types/gutenberg/types';
-import { LinkSuggestion } from '../provider';
+import { SmartLink } from '../provider';
 import { BlockEditorProvider, BlockList, ObserveTyping, WritingFlow } from '@wordpress/block-editor';
 import { applyNodeToBlock } from '../utils';
 
 type SuggestionBreadcrumbProps = {
-	link: LinkSuggestion,
+	link: SmartLink,
 };
 const SuggestionBreadcrumb = ( { link }: SuggestionBreadcrumbProps ): JSX.Element => {
 	const blockId = link.match?.blockId;
@@ -87,7 +87,7 @@ const Styles = ( { styles }: StylesProps ): JSX.Element => {
 
 type BlockPreviewProps = {
 	block: BlockInstance,
-	link: LinkSuggestion,
+	link: SmartLink,
 }
 const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 	const [ clonedBlock, setClonedBlock ] = useState<BlockInstance>( cloneBlock( block ) );
@@ -108,9 +108,9 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 	 * @since 3.15.0
 	 *
 	 * @param {BlockInstance}  blockInstance  The block instance to highlight the link in.
-	 * @param {LinkSuggestion} linkSuggestion The link suggestion to highlight.
+	 * @param {SmartLink} linkSuggestion The link suggestion to highlight.
 	 */
-	const highlightLinkInBlock = ( blockInstance: BlockInstance, linkSuggestion: LinkSuggestion ) => {
+	const highlightLinkInBlock = ( blockInstance: BlockInstance, linkSuggestion: SmartLink ) => {
 		const mark = document.createElement( 'mark' );
 		mark.className = 'smart-linking-highlight';
 		applyNodeToBlock( blockInstance, linkSuggestion, mark );
@@ -186,7 +186,7 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 	);
 };
 
-const LinkDetails = ( { link }: { link: LinkSuggestion } ): JSX.Element => {
+const LinkDetails = ( { link }: { link: SmartLink } ): JSX.Element => {
 	// Get the post type by the permalink
 	const displayUrl = filterURLForDisplay( link.href, 30 );
 
@@ -204,11 +204,13 @@ const LinkDetails = ( { link }: { link: LinkSuggestion } ): JSX.Element => {
 };
 
 type ReviewSuggestionProps = {
-	link: LinkSuggestion,
+	link: SmartLink,
 	onNext: () => void,
 	onPrevious: () => void,
 	onAccept: () => void,
 	onReject: () => void,
+	onRemove: () => void,
+	onSelectInEditor: () => void,
 	hasPrevious: boolean,
 	hasNext: boolean,
 };
@@ -219,6 +221,8 @@ export const ReviewSuggestion = ( {
 	onPrevious,
 	onAccept,
 	onReject,
+	onRemove,
+	onSelectInEditor,
 	hasPrevious,
 	hasNext,
 }: ReviewSuggestionProps ): JSX.Element => {
@@ -229,6 +233,7 @@ export const ReviewSuggestion = ( {
 	const blockId = link.match.blockId;
 	// Get the block
 	const block = selectFn( 'core/block-editor' ).getBlock( blockId );
+	const isApplied = link.applied;
 
 	if ( ! block ) {
 		return <>No block!</>;
@@ -249,21 +254,43 @@ export const ReviewSuggestion = ( {
 					onClick={ onPrevious }
 					icon={ arrowLeft }>Previous</Button>
 				<div className="reviews-controls-middle">
-					<Button
-						className="wp-parsely-review-suggestion-reject"
-						icon={ closeSmall }
-						onClick={ onReject }
-						variant={ 'secondary' }>
-						Reject
-					</Button>
-					<Button
-						className="wp-parsely-review-suggestion-accept"
-						icon={ check }
-						onClick={ onAccept }
-						variant="secondary"
-					>
-						Accept
-					</Button>
+					{ ! isApplied && (
+						<>
+							<Button
+								className="wp-parsely-review-suggestion-reject"
+								icon={ closeSmall }
+								onClick={ onReject }
+								variant={ 'secondary' }>
+								Reject
+							</Button>
+							<Button
+								className="wp-parsely-review-suggestion-accept"
+								icon={ check }
+								onClick={ onAccept }
+								variant="secondary"
+							>
+								Accept
+							</Button>
+						</>
+					) }
+					{ isApplied && (
+						<>
+							<Button
+								className="wp-parsely-review-suggestion-reject"
+								icon={ closeSmall }
+								onClick={ onRemove }
+								variant={ 'secondary' }>
+								Remove
+							</Button>
+							<Button
+								className="wp-parsely-review-suggestion-accept"
+								onClick={ onSelectInEditor }
+								variant="secondary"
+							>
+								Select in Editor
+							</Button>
+						</>
+					) }
 				</div>
 				<Button
 					disabled={ ! hasNext }

@@ -1,10 +1,10 @@
 import { MenuItem } from '@wordpress/components';
-import { LinkSuggestion } from '../provider';
+import { SmartLink } from '../provider';
 
 type ReviewModalSidebarProps = {
-	activeLink: LinkSuggestion | null,
-	links: LinkSuggestion[] | null,
-	setSelectedLink: ( link: LinkSuggestion ) => void,
+	activeLink: SmartLink | null,
+	links: SmartLink[] | null,
+	setSelectedLink: ( link: SmartLink ) => void,
 };
 
 export const ReviewModalSidebar = ( {

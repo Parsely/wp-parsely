@@ -8,7 +8,7 @@ import { DEFAULT_MAX_LINKS, DEFAULT_MAX_LINK_WORDS } from './smart-linking';
 /**
  * Internal dependencies
  */
-import { LinkSuggestion } from './provider';
+import { SmartLink } from './provider';
 
 /**
  * Defines the props structure for SmartLinkingSettings.
@@ -41,7 +41,7 @@ type SmartLinkingState = {
 	fullContent: boolean;
 	error: ContentHelperError | null;
 	settings: SmartLinkingSettingsProps;
-	suggestedLinks: LinkSuggestion[] | null;
+	suggestedLinks: SmartLink[] | null;
 	overlayBlocks: string[];
 	wasAlreadyClicked: boolean;
 	isRetrying: boolean;
@@ -127,7 +127,7 @@ interface SetSettingsAction {
  */
 interface SetSuggestedLinksAction {
 	type: 'SET_SUGGESTED_LINKS';
-	suggestedLinks: LinkSuggestion[] | null;
+	suggestedLinks: SmartLink[] | null;
 }
 
 /**
@@ -330,7 +330,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				},
 			};
 		},
-		setSuggestedLinks( suggestedLinks: LinkSuggestion[] | null ): SetSuggestedLinksAction {
+		setSuggestedLinks( suggestedLinks: SmartLink[] | null ): SetSuggestedLinksAction {
 			return {
 				type: 'SET_SUGGESTED_LINKS',
 				suggestedLinks,
@@ -385,7 +385,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		getMaxLinks( state: SmartLinkingState ): number {
 			return state.settings.maxLinksPerPost ?? DEFAULT_MAX_LINKS;
 		},
-		getSuggestedLinks( state: SmartLinkingState ): LinkSuggestion[] {
+		getSuggestedLinks( state: SmartLinkingState ): SmartLink[] {
 			return state.suggestedLinks ?? [];
 		},
 		wasAlreadyClicked( state: SmartLinkingState ): boolean {

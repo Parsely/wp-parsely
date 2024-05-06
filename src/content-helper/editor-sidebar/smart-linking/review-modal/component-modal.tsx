@@ -1,10 +1,10 @@
-import { BlockInstance } from '@wordpress/blocks';
+import { BlockInstance, getBlockContent } from '@wordpress/blocks';
 import { Button, Modal } from '@wordpress/components';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
-import { LinkSuggestion } from '../provider';
+import { SmartLink } from '../provider';
 import { SmartLinkingStore } from '../store';
 import { applyNodeToBlock } from '../utils';
 import { ReviewModalSidebar } from './component-sidebar';
@@ -13,11 +13,13 @@ import { ReviewSuggestion } from './component-suggestion';
 export type SmartLinkingReviewModalProps = {
 	onClose: () => void,
 	isOpen: boolean,
+	onAppliedLink: ( link: SmartLink ) => void,
 };
 
 export const SmartLinkingReviewModal = ( {
 	onClose,
 	isOpen,
+	onAppliedLink,
 }: SmartLinkingReviewModalProps ): JSX.Element => {
 	const [ showCloseDialog, setShowCloseDialog ] = useState<boolean>( false );
 	const [ isModalOpen, setIsModalOpen ] = useState<boolean>( isOpen );
@@ -36,7 +38,7 @@ export const SmartLinkingReviewModal = ( {
 		};
 	}, [] );
 
-	const [ selectedLink, setSelectedLink ] = useState<LinkSuggestion>( suggestedLinks[ 0 ] );
+	const [ selectedLink, setSelectedLink ] = useState<SmartLink>( suggestedLinks[ 0 ] );
 
 	/**
 	 * Loads the Smart Linking store actions.
@@ -69,15 +71,15 @@ export const SmartLinkingReviewModal = ( {
 	/**
 	 * Applies the link to the block.
 	 *
-	 * @param {string}         blockId        The block instance to apply the link to.
-	 * @param {LinkSuggestion} linkSuggestion The link suggestion to apply.
+	 * @param {string}    blockId        The block instance to apply the link to.
+	 * @param {SmartLink} linkSuggestion The link suggestion to apply.
 	 */
-	const applyLinkToBlock = async ( blockId: string, linkSuggestion: LinkSuggestion ) => {
+	const applyLinkToBlock = async ( blockId: string, linkSuggestion: SmartLink ) => {
 		const anchor = document.createElement( 'a' );
 		anchor.href = linkSuggestion.href;
 		anchor.title = linkSuggestion.title;
-		// Add data-smartlink attribute to the anchor tag
-		anchor.setAttribute( 'data-smartlink', 'true' );
+		// Add data-smartlink attribute to the anchor tag.
+		anchor.setAttribute( 'data-smartlink', linkSuggestion.uid );
 
 		const block = select( 'core/block-editor' ).getBlock( blockId );
 		if ( ! block ) {
@@ -86,13 +88,55 @@ export const SmartLinkingReviewModal = ( {
 
 		applyNodeToBlock( block, linkSuggestion, anchor );
 
-		// Update the block
+		// Update the block.
 		dispatch( 'core/block-editor' ).updateBlock( blockId, block );
 
 		linkSuggestion.applied = true;
 
 		// Update the link suggestions.
 		await setSuggestedLinks( suggestedLinks );
+	};
+
+	/**
+	 * Removes a Smart Link from a block.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @param {BlockInstance} block          The block instance to remove the link from.
+	 * @param {SmartLink}     linkSuggestion The link suggestion to remove.
+	 */
+	const removeLinkFromBlock = ( block: BlockInstance, linkSuggestion: SmartLink ) => {
+		const blockId = block.clientId;
+		if ( ! block ) {
+			return;
+		}
+
+		const blockContent: string = getBlockContent( block );
+		const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
+		const contentElement = doc.body.firstChild as HTMLElement;
+
+		if ( ! contentElement ) {
+			return;
+		}
+
+		let anchors = Array.from( contentElement.querySelectorAll( 'a' ) );
+		anchors = anchors.filter( ( anchor ) => anchor.href === linkSuggestion.href && anchor.textContent?.includes( linkSuggestion.text ) );
+
+		if ( anchors.length > linkSuggestion.offset ) {
+			const anchorToRemove = anchors[ linkSuggestion.offset ];
+			if ( anchorToRemove ) {
+				const parentNode = anchorToRemove.parentNode;
+				if ( parentNode ) {
+					// Replace the anchor with its text content
+					const textNode = document.createTextNode( anchorToRemove.textContent || '' );
+					parentNode.replaceChild( textNode, anchorToRemove );
+
+					// Update the block content
+					block.attributes.content = contentElement.innerHTML;
+					dispatch( 'core/block-editor' ).updateBlock( blockId, block );
+				}
+			}
+		}
 	};
 
 	const onCloseHandler = () => {
@@ -103,15 +147,14 @@ export const SmartLinkingReviewModal = ( {
 
 		if ( suggestedLinks && pendingLinks.length > 0 ) {
 			showConfirmCloseDialog();
-			console.log( showCloseDialog );
 			return;
 		}
 
+		// Close after 200ms.
 		onClose();
 	};
 
 	const onCloseConfirmCloseDialog = ( shouldClose: boolean ) => {
-		console.log( 'onCloseConfirmCloseDialog' );
 		hideConfirmCloseDialog();
 		if ( shouldClose ) {
 			setIsModalOpen( false );
@@ -155,6 +198,7 @@ export const SmartLinkingReviewModal = ( {
 								if ( ! selectedLink.match ) {
 									return;
 								}
+								onAppliedLink( selectedLink );
 								applyLinkToBlock( selectedLink.match.blockId, selectedLink )
 									.then( () => {
 										const currentIndex = suggestedLinks.indexOf( selectedLink );
@@ -188,6 +232,34 @@ export const SmartLinkingReviewModal = ( {
 								// Delete the rejected link from the list.
 								suggestedLinks.splice( currentIndex, 1 );
 								setSuggestedLinks( suggestedLinks );
+							} }
+							onRemove={ () => {
+								if ( ! selectedLink.match ) {
+									return;
+								}
+
+								const block = select( 'core/block-editor' ).getBlock( selectedLink.match.blockId );
+								if ( block ) {
+									removeLinkFromBlock( block, selectedLink );
+
+									// Remove the link suggestion from the list
+									suggestedLinks.splice( suggestedLinks.indexOf( selectedLink ), 1 );
+									setSuggestedLinks( suggestedLinks );
+								}
+							} }
+							onSelectInEditor={ () => {
+								if ( ! selectedLink.match ) {
+									return;
+								}
+
+								const block = select( 'core/block-editor' ).getBlock( selectedLink.match.blockId );
+								if ( block ) {
+									// Select the block in the editor
+									dispatch( 'core/block-editor' ).selectBlock( block.clientId );
+
+									// Close the modal
+									onCloseHandler();
+								}
 							} }
 						/>
 					</div>

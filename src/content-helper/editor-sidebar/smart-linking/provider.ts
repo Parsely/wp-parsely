@@ -15,24 +15,22 @@ import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
  *
  * @since 3.14.0
  */
-export type LinkSuggestion = {
-	uid?: string;
+export type SmartLink = {
+	uid: string;
 	href: string;
 	text: string;
 	title: string;
 	offset: number;
 	applied: boolean;
-	match?: LinkSuggestionMatch;
+	match?: SmartLinkMatch;
 };
 
 /**
  * Structure of a link suggestion match, that is filled in by the
  * processing of the smart links.
  */
-export type LinkSuggestionMatch = {
+export type SmartLinkMatch = {
 	blockId: string;
-	startAt: number;
-	endAt: number;
 }
 
 /**
@@ -71,14 +69,14 @@ export class SmartLinkingProvider extends BaseProvider {
 	 * @param {number}   maxLinksPerPost  The maximum number of links to return.
 	 * @param {string[]} urlExclusionList A list of URLs to exclude from the suggestions.
 	 *
-	 * @return {Promise<LinkSuggestion[]>} The resulting list of links.
+	 * @return {Promise<SmartLink[]>} The resulting list of links.
 	 */
 	public async generateSmartLinks(
 		content: string,
 		maxLinkWords: number = DEFAULT_MAX_LINK_WORDS,
 		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
 		urlExclusionList: string[] = [],
-	): Promise<LinkSuggestion[]> {
+	): Promise<SmartLink[]> {
 		/*return [
 			{
 				uid: '3ba4e35e2eca3002207b63fac3c0911b',
@@ -169,7 +167,7 @@ export class SmartLinkingProvider extends BaseProvider {
 				applied: false,
 			},
 		];
-		const response = await this.fetch<LinkSuggestion[]>( {
+		const response = await this.fetch<SmartLink[]>( {
 			method: 'POST',
 			path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-linked-reference', {
 				max_link_words: maxLinkWords,

@@ -2,11 +2,11 @@
  * WordPress dependencies
  */
 // eslint-disable-next-line import/named
-import { BlockInstance } from '@wordpress/blocks';
+import { BlockInstance, getBlockContent } from '@wordpress/blocks';
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
-import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
-import { useCallback, useEffect, useState } from '@wordpress/element';
+import { dispatch, useDispatch, useSelect } from '@wordpress/data';
+import { useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, external } from '@wordpress/icons';
 
@@ -20,7 +20,7 @@ import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common
 import { generateProtocolVariants } from '../../common/utils/functions';
 import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
-import { LinkSuggestion, SmartLinkingProvider } from './provider';
+import { SmartLink, SmartLinkingProvider } from './provider';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
 import { escapeRegExp, findTextNodesNotInAnchor } from './utils';
 
@@ -37,16 +37,6 @@ type LinkOccurrenceCounts = {
 		encountered: number;
 		linked: number;
 	};
-};
-
-/**
- * Represents an update to a block's content.
- *
- * @since 3.14.3
- */
-type BlockUpdate = {
-	clientId: string;
-	newContent: string;
 };
 
 /**
@@ -96,9 +86,29 @@ export const SmartLinkingPanel = ( {
 	const setSettingsDebounced = useDebounce( setSettings, 500 );
 
 	const [ numAddedLinks, setNumAddedLinks ] = useState<number>( 0 );
+	const [ isReviewDone, setIsReviewDone ] = useState<boolean>( false );
 	const [ isReviewModalOpen, setIsReviewModalOpen ] = useState<boolean>( false );
 
 	const { createNotice } = useDispatch( 'core/notices' );
+
+	/**
+	 * Handles the ending of the review process.
+	 */
+	useEffect( () => {
+		console.log( isReviewDone, numAddedLinks );
+		if ( ! isReviewDone ) {
+			setNumAddedLinks( 0 );
+		} else {
+			createNotice(
+				'success',
+				/* translators: %d: number of smart links applied */
+				sprintf( __( '%s smart links successfully applied.', 'wp-parsely' ), numAddedLinks ),
+				{
+					type: 'snackbar',
+				},
+			);
+		}
+	}, [ isReviewDone ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	/**
 	 * Loads the Smart Linking store.
@@ -242,28 +252,12 @@ export const SmartLinkingPanel = ( {
 		[ selectedBlockClientId ],
 	);
 
-	const processSmartLinks = async ( links: LinkSuggestion[] ) => {
+	const processSmartLinks = async ( links: SmartLink[] ) => {
 		// An object to keep track of the number of times each link text has been found across all blocks.
 		const occurrenceCounts: LinkOccurrenceCounts = {};
 
 		// Apply the smart links to the content.
-
-		/**
-		 * Given a list of blocks, find the links in the blocks HTML content, and update the links with the matches.
-		 * The position of the link must take into consideration the HTML structure of the block.
-		 *
-		 * @param blocks
-		 * @param links
-		 * @param occurrenceCounts
-		 */
-		const findLinksInBlocks = ( blocks: Readonly<BlockInstance>[], links: LinkSuggestion[], occurrenceCounts: LinkOccurrenceCounts ) => {
-			// Loop all the blocks
-			blocks.forEach( ( block ) => {
-
-			} );
-		};
-
-		applyLinksToBlocks( allBlocks, links, occurrenceCounts );
+		calculateSmartLinkingMatches( allBlocks, links, occurrenceCounts );
 
 		// Update the link suggestions with the new matches
 		await setSuggestedLinks( links );
@@ -273,14 +267,12 @@ export const SmartLinkingPanel = ( {
 	 * Generates smart links for the selected block or the entire post content.
 	 *
 	 * @since 3.14.0
-	 * @since 3.15.0 Renamed from `generateSmartLinks` to `generateSmartLinks`.
 	 */
 	const generateSmartLinks = async () => {
 		await setLoading( true );
 		await setSuggestedLinks( null );
 		await setError( null );
-
-		console.log( 'generateSmartLinks' );
+		setIsReviewDone( false );
 
 		Telemetry.trackEvent( 'smart_linking_generate_pressed', {
 			is_full_content: isFullContent,
@@ -344,10 +336,10 @@ export const SmartLinkingPanel = ( {
 	 *
 	 * @param {number} retries The number of retries remaining.
 	 *
-	 * @return {Promise<LinkSuggestion[]>} The generated smart links.
+	 * @return {Promise<SmartLink[]>} The generated smart links.
 	 */
-	const generateSmartLinksWithRetry = async ( retries: number ): Promise<LinkSuggestion[]> => {
-		let generatedLinks: LinkSuggestion[] = [];
+	const generateSmartLinksWithRetry = async ( retries: number ): Promise<SmartLink[]> => {
+		let generatedLinks: SmartLink[] = [];
 		try {
 			const generatingFullContent = isFullContent || ! selectedBlock;
 			await setApplyTo( generatingFullContent ? ApplyToOptions.All : ApplyToOptions.Selected );
@@ -384,78 +376,31 @@ export const SmartLinkingPanel = ( {
 	};
 
 	/**
-	 * Applies the smart links to the selected block or the entire post content.
+	 * Iterates through blocks of content to apply smart link suggestions based on their text content and specific offset.
 	 *
-	 * @since 3.14.0
-	 * @since 3.14.1 Moved applyLinksToBlocks to a separate function.
+	 * This function processes each block's content to identify and handle text nodes that match provided link suggestions.
+	 * It filters out self-referencing links based on the given post permalink, avoids inserting links within existing anchor
+	 * elements, and respects the specified offset for each link to determine the correct block.
 	 *
-	 * @param {LinkSuggestion[]} links The smart links to apply.
+	 * Note: The function is recursive for blocks containing inner blocks, ensuring all nested content is processed.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @param {Readonly<BlockInstance>[]} blocks           The blocks of content where links should be applied.
+	 * @param {SmartLink[]}          links            An array of link suggestions to apply to the content.
+	 * @param {LinkOccurrenceCounts}      occurrenceCounts An object to keep track of the number of times each link text has
+	 *                                                     been encountered and applied across all blocks.
 	 */
-	const applySmartLinks = ( links: LinkSuggestion[] ): void => {
-		Telemetry.trackEvent( 'smart_linking_applied', {
-			is_full_content: isFullContent || ! selectedBlock,
-			selected_block: selectedBlock?.name ?? 'none',
-			links_count: links.length,
-			context,
-		} );
-
-		let blocks;
-		if ( selectedBlock && ! isFullContent ) {
-			blocks = [ selectedBlock ];
-		} else {
-			blocks = allBlocks;
-		}
-
-		// An object to keep track of the number of times each link text has been found across all blocks.
-		const occurrenceCounts: LinkOccurrenceCounts = {};
-		const updatedBlocks: BlockUpdate[] = [];
-
-		// Apply the smart links to the content.
-		applyLinksToBlocks( blocks, links, occurrenceCounts );
-
-		// Update the content of each block.
-		updateBlocksContent( updatedBlocks );
-
-		const numberOfUpdatedLinks = Object.values( occurrenceCounts ).reduce( ( acc, occurrenceCount ) => {
-			return acc + occurrenceCount.linked;
-		}, 0 );
-
-		setNumAddedLinks( numberOfUpdatedLinks );
-
-		createNotice(
-			'success',
-			/* translators: %d: number of smart links applied */
-			sprintf( __( '%s smart links successfully applied.', 'wp-parsely' ), numberOfUpdatedLinks ),
-			{
-				type: 'snackbar',
-			},
-		);
-	};
-
-	/**
-	 * Iterates through blocks of content to apply smart link suggestions.
-	 *
-	 * This function parses the content of each block, looking for text nodes that match the provided link suggestions.
-	 * When a match is found, it creates an anchor element (`<a>`) around the matching text with the specified href and
-	 * title from the link suggestion.
-	 * It carefully avoids inserting links within existing anchor elements and handles various inline HTML elements gracefully.
-	 *
-	 * @since 3.14.1
-	 *
-	 * @param {BlockInstance[]}      blocks           The blocks of content where links should be applied.
-	 * @param {LinkSuggestion[]}     links            An array of link suggestions to apply to the content.
-	 * @param {LinkOccurrenceCounts} occurrenceCounts An object to keep track of the number of times each link text has
-	 *                                                been applied across all blocks.
-	 */
-	const applyLinksToBlocks = (
+	const calculateSmartLinkingMatches = (
 		blocks: Readonly<BlockInstance>[],
-		links: LinkSuggestion[],
+		links: SmartLink[],
 		occurrenceCounts: LinkOccurrenceCounts,
 	): void => {
-		// Check if any of the links being applied is a self-reference, and remove it if it is.
+		// Simplify permalink stripping.
 		const strippedPermalink = postPermalink
-			.replace( /^https?:\/\//, '' ) // Remove HTTP(S).
-			.replace( /\/+$/, '' ); // Remove trailing slash.
+			.replace( /^https?:\/\//, '' ).replace( /\/+$/, '' );
+
+		// Filter out self-referencing links.
 		links = links.filter( ( link ) => {
 			if ( link.href.includes( strippedPermalink ) ) {
 				// eslint-disable-next-line no-console
@@ -466,138 +411,44 @@ export const SmartLinkingPanel = ( {
 		} );
 
 		blocks.forEach( ( block ) => {
-			// Recursively apply links to any inner blocks.
-			if ( block.innerBlocks && block.innerBlocks.length ) {
-				applyLinksToBlocks( block.innerBlocks, links, occurrenceCounts );
+			// Handle inner blocks.
+			if ( block.innerBlocks?.length ) {
+				calculateSmartLinkingMatches( block.innerBlocks, links, occurrenceCounts );
 				return;
 			}
 
-			if ( block.originalContent ) {
-				const blockContent: string = block.originalContent;
-				const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
+			// Skip blocks without original content.
+			if ( ! block.originalContent ) {
+				return;
+			}
 
-				const contentElement = doc.body.firstChild;
-				if ( contentElement && contentElement instanceof HTMLElement ) {
-					links.forEach( ( link ) => {
-						const textNodes = findTextNodesNotInAnchor( contentElement, link.text );
-						const occurrenceKey = `${ link.text }#${ link.offset }`;
+			const blockContent: string = getBlockContent( block );
+			const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
+			const contentElement = doc.body.firstChild;
 
-						if ( ! occurrenceCounts[ occurrenceKey ] ) {
-							occurrenceCounts[ occurrenceKey ] = { encountered: 0, linked: 0 };
+			if ( ! ( contentElement instanceof HTMLElement ) ) {
+				return;
+			}
+
+			links.forEach( ( link ) => {
+				const textNodes = findTextNodesNotInAnchor( contentElement, link.text );
+				const occurrenceKey = `${ link.text }#${ link.offset }`;
+				occurrenceCounts[ occurrenceKey ] = occurrenceCounts[ occurrenceKey ] || { encountered: 0, linked: 0 };
+
+				textNodes.forEach( ( node ) => {
+					const regex = new RegExp( escapeRegExp( link.text ), 'g' );
+					while ( regex.exec( node.textContent ?? '' ) !== null ) {
+						const occurrenceCount = occurrenceCounts[ occurrenceKey ];
+						occurrenceCount.encountered++;
+
+						if ( occurrenceCount.encountered === link.offset + 1 && occurrenceCount.linked < 1 ) {
+							occurrenceCount.linked++;
+							link.match = { blockId: block.clientId };
 						}
-
-						textNodes.forEach( ( node ) => {
-							if ( node.textContent ) {
-								const occurrenceCount = occurrenceCounts[ occurrenceKey ];
-								if ( occurrenceCount.linked >= 1 ) {
-									// The link has already been applied, skip this occurrence.
-									return;
-								}
-
-								const regex = new RegExp( escapeRegExp( link.text ), 'g' );
-								let match;
-								while ( ( match = regex.exec( node.textContent ) ) !== null ) {
-									// Increment the encountered count every time the text is found.
-									occurrenceCount.encountered++;
-
-									// Check if the link is in the correct position (offset) to be applied.
-									if ( occurrenceCount.encountered === link.offset + 1 ) {
-										// Create a new anchor element for the link.
-										/*const anchor = document.createElement( 'a' );
-										anchor.href = link.href;
-										anchor.title = link.title;
-										anchor.textContent = match[ 0 ];*/
-
-										// Increment the linked count only when a link is applied.
-										occurrenceCount.linked++;
-
-										// Update the LinkSuggestion to include the match
-										link.match = {
-											blockId: block.clientId,
-											startAt: getNodeOffset( contentElement, node ) + match.index,
-											endAt: getNodeOffset( contentElement, node ) + match.index + match[ 0 ].length,
-										};
-
-										// Replace the matched text with the new anchor element.
-										/*const range = document.createRange();
-										range.setStart( node, match.index );
-										range.setEnd( node, match.index + match[ 0 ].length );
-										range.deleteContents();
-										range.insertNode( anchor );
-
-										// Adjust the text node if there's text remaining after the link.
-										if (
-											node.textContent &&
-											match.index + match[ 0 ].length < node.textContent.length
-										) {
-											const remainingText = document.createTextNode(
-												node.textContent.slice( match.index + match[ 0 ].length )
-											);
-											node.parentNode?.insertBefore( remainingText, anchor.nextSibling );
-										}*/
-									}
-								}
-							}
-						} );
-					} );
-				}
-			}
+					}
+				} );
+			} );
 		} );
-	};
-
-	const getNodeOffset = ( parent: HTMLElement, node: Node ): number => {
-		let offset = 0;
-		let currentNode: Node | null = parent.firstChild;
-
-		while ( currentNode !== node && currentNode !== null ) {
-			if ( currentNode.nodeType === Node.TEXT_NODE ) {
-				offset += ( currentNode.textContent || '' ).length;
-			} else if ( currentNode.nodeType === Node.ELEMENT_NODE ) {
-				// Using outerHTML property for HTMLElement nodes
-				const html = ( currentNode as HTMLElement ).outerHTML || '';
-				offset += html.length;
-			}
-			currentNode = currentNode.nextSibling;
-		}
-
-		return offset;
-	};
-
-	/**
-	 * Updates the content of a block with the modified HTML.
-	 *
-	 * This function updates the originalContent attribute of the block with the modified HTML.
-	 * It also recursively updates the content of any inner blocks.
-	 *
-	 * @since 3.14.1
-	 * @since 3.14.3 Rename the function from updateBlockContent to updateBlocksContent.
-	 *
-	 * @param {BlockUpdate[]} blockUpdates An array of block updates.
-	 */
-	const updateBlocksContent = ( blockUpdates: BlockUpdate[] ) => {
-		const { getBlock } = select( 'core/block-editor' );
-		const updatedBlocks: { [clientId: string]: object } = {};
-
-		// Prepare the updated blocks object.
-		blockUpdates.forEach( ( blockUpdate ) => {
-			const block = getBlock( blockUpdate.clientId );
-
-			if ( ! block ) {
-				return;
-			}
-
-			updatedBlocks[ block.clientId ] = {
-				content: blockUpdate.newContent,
-			};
-		} );
-
-		// Update the blocks attributes.
-		dispatch( 'core/block-editor' ).updateBlockAttributes(
-			Object.keys( updatedBlocks ),
-			updatedBlocks,
-			// @ts-ignore - The uniqueByBlock parameter is not available in the type definition.
-			true,
-		);
 	};
 
 	/**
@@ -710,10 +561,10 @@ export const SmartLinkingPanel = ( {
 						{ error.Message() }
 					</Notice>
 				) }
-				{ suggestedLinks !== null && (
+				{ ( isReviewDone && numAddedLinks > 0 ) && (
 					<Notice
 						status="success"
-						onRemove={ () => setSuggestedLinks( null ) }
+						onRemove={ () => setIsReviewDone( false ) }
 						className="wp-parsely-smart-linking-suggested-links"
 					>
 						{
@@ -744,7 +595,14 @@ export const SmartLinkingPanel = ( {
 
 			<SmartLinkingReviewModal
 				isOpen={ isReviewModalOpen }
-				onClose={ () => setIsReviewModalOpen( false ) }
+				onAppliedLink={ () => {
+					console.log( 'Link applied' );
+					setNumAddedLinks( ( num ) => num + 1 );
+				}	}
+				onClose={ () => {
+					setIsReviewDone( true );
+					setIsReviewModalOpen( false );
+				} }
 			/>
 		</div>
 	);
