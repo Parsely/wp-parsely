@@ -3,8 +3,9 @@ import { Button, Modal } from '@wordpress/components';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { GutenbergFunction } from '../../../../@types/gutenberg/types';
 
-import { SmartLink } from '../provider';
+import { SmartLink, SmartLinkingProvider } from '../provider';
 import { SmartLinkingStore } from '../store';
 import { applyNodeToBlock } from '../utils';
 import { ReviewModalSidebar } from './component-sidebar';
@@ -23,6 +24,13 @@ export const SmartLinkingReviewModal = ( {
 }: SmartLinkingReviewModalProps ): JSX.Element => {
 	const [ showCloseDialog, setShowCloseDialog ] = useState<boolean>( false );
 	const [ isModalOpen, setIsModalOpen ] = useState<boolean>( isOpen );
+
+	const { postId } = useSelect( ( selectFn ) => {
+		const { getCurrentPostId } = selectFn( 'core/editor' ) as GutenbergFunction;
+		return {
+			postId: getCurrentPostId(),
+		};
+	}, [] );
 
 	/**
 	 * Loads the Smart Linking store selectors.
@@ -95,6 +103,12 @@ export const SmartLinkingReviewModal = ( {
 
 		// Update the link suggestions.
 		await setSuggestedLinks( suggestedLinks );
+
+		// Notify the API that the link was applied.
+		if ( postId ) {
+			const addedLink = await SmartLinkingProvider.getInstance().addSmartLink( postId, linkSuggestion );
+			console.log( addedLink );
+		}
 	};
 
 	/**

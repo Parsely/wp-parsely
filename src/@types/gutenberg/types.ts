@@ -18,5 +18,6 @@ export interface GutenbergFunction {
 	getBlocks(): BlockInstance[];
 	getBlockParents( clientId: string ): string[];
 	getPermalink(): string | null;
+	getCurrentPostId(): number | undefined;
 }
 

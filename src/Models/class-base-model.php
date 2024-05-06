@@ -70,4 +70,13 @@ abstract class Base_Model {
 	 * @return Base_Model The deserialized model.
 	 */
 	abstract static public function deserialize( string $json ): Base_Model;
+
+	/**
+	 * Saves the model to the database.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @return bool True if the model was saved successfully, false otherwise.
+	 */
+	abstract public function save(): bool;
 }

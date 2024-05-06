@@ -1,8 +1,16 @@
 <?php
 
+declare(strict_types=1);
 
+namespace Parsely\Endpoints\Content_Helper;
+
+use InvalidArgumentException;
 use Parsely\Endpoints\Base_Endpoint;
+use Parsely\Models\Smart_Link;
+use Parsely\Parsely;
+use WP_Post;
 use WP_REST_Request;
+use WP_REST_Response;
 
 class Smart_Linking_Endpoint extends Base_Endpoint {
 
@@ -14,6 +22,15 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * @var string
 	 */
 	protected const ENDPOINT = '/smart-linking';
+
+	/**
+	 * The post meta key for storing smart links.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @var string
+	 */
+	protected const POST_META_KEY = '_parsely_smart_links';
 
 
 	/**
@@ -58,14 +75,14 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 
 	public function run(): void {
 		// Endpoint "[post-id]/set"
-		$this->register_endpoint(
-			static::ENDPOINT .
+		/*$this->register_endpoint(
+			static::ENDPOINT . '/(?P<post_id>\d+)/set',
 			'set_smart_links',
 			array( 'POST' )
 		);
 
 		$this->register_endpoint(
-			static::ENDPOINT . '/add-smart-link',
+			static::ENDPOINT . '/add',
 			'add_smart_link',
 			array( 'POST' )
 		);
@@ -80,15 +97,101 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			static::ENDPOINT . '/get-smart-links',
 			'get_smart_links',
 			array( 'GET' )
-		);
+		);*/
+		register_rest_route('wp-parsely/v1', '/smart-linking/(?P<post_id>\d+)/add', array(
+			'methods' => 'POST',
+			'callback' => array( $this, 'add_smart_link' ),
+			'permission_callback' => array( $this, 'is_available_to_current_user' ),
+		));
 	}
 
 	public function set_smart_links( WP_REST_Request $request ): string {
         return 'set_smart_links';
 	}
 
-	public function add_smart_link( WP_REST_Request $request ): string {
-        return 'add_smart_link';
+	/**
+	 * Validates the request parameters.
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool True if the request is valid, false otherwise.
+	 */
+	private function validate_request( WP_REST_Request $request ): bool {
+		$post_id = $request->get_param( 'post_id' );
+
+		if ( ! is_numeric( $post_id ) ) {
+			throw new InvalidArgumentException( 'Invalid post ID' );
+		}
+
+		// Check if post exists.
+		$post = get_post( intval( $post_id ) );
+		if ( null === $post ) {
+			throw new InvalidArgumentException( 'Invalid post ID' );
+		}
+
+		return true;
+	}
+
+	public function add_smart_link( WP_REST_Request $request ): WP_REST_Response {
+		try {
+			$this->validate_request( $request );
+
+			$post_id = $request->get_param( 'post_id' );
+			if ( is_numeric( $post_id ) ) {
+				$post_id = intval( $post_id );
+			} else {
+				// Validate makes sure it's numeric, so this should never happen.
+				$post_id = 0;
+			}
+
+			$json_body = $request->get_body();
+			$body_data = json_decode( $json_body, true );
+
+			if ( !is_array( $body_data ) || ! isset( $body_data['link'] ) ) {
+				return new WP_REST_Response( array(
+					'error' => array(
+						'name' => 'invalid_request',
+						'message' => 'Invalid request body.',
+					),
+				), 400 );
+			}
+
+			$encoded_data = wp_json_encode( $body_data['link'] );
+			if ( false === $encoded_data ) {
+				return new WP_REST_Response( array(
+					'error' => array(
+						'name' => 'invalid_request',
+						'message' => 'Invalid request body.',
+					),
+				), 400 );
+			}
+
+			/**
+			 * @var Smart_Link $smart_link The smart link object.
+			 */
+			$smart_link = Smart_Link::deserialize( $encoded_data );
+			$smart_link->set_post_id( $post_id );
+
+			// Save the smart link to the post meta.
+			if ( ! $smart_link->save() ) {
+				return new WP_REST_Response( array(
+					'error' => array(
+						'name' => 'add_smart_link_failed',
+						'message' => 'Failed to add smart link.',
+					),
+				), 500 );
+			}
+
+			return new WP_REST_Response( array(
+				'data' => json_decode( $smart_link->serialize() ),
+			), 200 );
+		} catch ( \InvalidArgumentException $e ) {
+			return new WP_REST_Response( array(
+				'error' => array(
+					'name' => 'invalid_request',
+					'message' => $e->getMessage(),
+				),
+			), 400 );
+		}
 	}
 
 	public function delete_smart_link( WP_REST_Request $request ): string {

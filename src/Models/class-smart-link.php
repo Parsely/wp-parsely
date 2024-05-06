@@ -19,6 +19,13 @@ namespace Parsely\Models;
  */
 class Smart_Link extends Base_Model {
 	/**
+	 * The post ID of the suggested link.
+	 *
+	 * @var int|false The post ID of the suggested link, false if not set.
+	 */
+	public $post_id = false;
+
+	/**
 	 * The URL of the suggested link.
 	 *
 	 * @var string The URL of the suggested link.
@@ -120,6 +127,17 @@ class Smart_Link extends Base_Model {
 	}
 
 	/**
+	 * Sets the post ID of the suggested link.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @param int $post_id The post ID of the suggested link.
+	 */
+	public function set_post_id( int $post_id ): void {
+		$this->post_id = $post_id;
+	}
+
+	/**
 	 * Deserializes a JSON string to a model.
 	 *
 	 * @since 3.15.0
@@ -136,6 +154,27 @@ class Smart_Link extends Base_Model {
 		}
 
 		return new Smart_Link( $data['href'], $data['title'], $data['text'], $data['offset'] );
+	}
+
+	/**
+	 * Saves the smart link to the post meta.
+	 *
+	 * @return bool True if the smart link was saved successfully, false otherwise.
+	 */
+	public function save(): bool {
+		if ( false === $this->post_id) {
+			return false;
+		}
+
+		$post_meta_key = '_wp_parsely_smart_link_' . $this->uid;
+		$existing_meta = get_post_meta( $this->post_id, $post_meta_key, true );
+
+		if ( false !== $existing_meta ) {
+			update_post_meta( $this->post_id, $post_meta_key, $this->serialize() );
+			return true;
+		}
+
+		return add_post_meta( $this->post_id, $post_meta_key, $this->serialize(), true ) !== false;
 	}
 
 }

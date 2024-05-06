@@ -181,4 +181,17 @@ export class SmartLinkingProvider extends BaseProvider {
 
 		return response ?? [];
 	}
+
+	public async addSmartLink( postID: number, linkSuggestion: SmartLink ) {
+		// /wp-parsely/v1/smart-linking/[post-id]/add
+		const response = await this.fetch<SmartLink>( {
+			method: 'POST',
+			path: `/wp-parsely/v1/smart-linking/${ postID }/add`,
+			data: {
+				link: linkSuggestion,
+			},
+		} );
+
+		return response;
+	}
 }
