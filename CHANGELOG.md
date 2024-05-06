@@ -12,7 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PCH Smart Linking: Fix removal of existing Smart Links on subsequent runs ([#2436](https://github.com/Parsely/wp-parsely/pull/2436))
 - PCH Related Posts: Fix hang under edge cases ([#2432](https://github.com/Parsely/wp-parsely/pull/2432))
 
-
 ## [3.14.3](https://github.com/Parsely/wp-parsely/compare/3.14.2...3.14.3) - 2024-04-03
 
 ### Added
