@@ -203,6 +203,7 @@
 	.smart-linking-review-sidebar {
 		display: flex;
 		min-width: to_rem(220px);
+		max-height: to_rem(400px);
 		overflow-y: auto;
 		padding: 3px;
 		flex-direction: column;
