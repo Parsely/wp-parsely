@@ -114,7 +114,6 @@ export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNod
 
 	textNodes.forEach( ( node ) => {
 		if ( ! node.textContent || isInsideSimilarNode( node, htmlNode ) || hasAddedNode ) {
-			console.log( 'skip' );
 			return;
 		}
 
@@ -148,4 +147,22 @@ export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNod
 
 	// Update the block content with the new content.
 	block.attributes.content = contentElement.innerHTML;
+}
+
+export function sortSmartLinks( smartLinks: SmartLink[] ): SmartLink[] {
+	// Break-down in two buckets: applied and not applied
+	const appliedLinks = smartLinks.filter( ( link ) => link.applied );
+	const notAppliedLinks = smartLinks.filter( ( link ) => ! link.applied );
+
+	const sortByBlockPosition = ( a: SmartLink, b:SmartLink ) => {
+		if ( a.match!.blockPosition === b.match!.blockPosition ) {
+			return a.match!.blockOffset - b.match!.blockOffset;
+		}
+		return a.match!.blockPosition - b.match!.blockPosition;
+	};
+
+	appliedLinks.sort( sortByBlockPosition );
+	notAppliedLinks.sort( sortByBlockPosition );
+
+	return [ ...notAppliedLinks, ...appliedLinks ];
 }

@@ -31,6 +31,7 @@ export type SmartLink = {
  */
 export type SmartLinkMatch = {
 	blockId: string;
+	blockPosition: number;
 	blockOffset: number;
 }
 
@@ -168,7 +169,7 @@ export class SmartLinkingProvider extends BaseProvider {
 				offset: 0,
 				applied: false,
 			},
-		];*/
+		];*//*
 		return [
 			{
 				uid: '06187a56038c3aa8242b0fb98a1b5e5b',
@@ -250,7 +251,7 @@ export class SmartLinkingProvider extends BaseProvider {
 				offset: 5,
 				applied: false,
 			},
-		];
+		];*/
 		const response = await this.fetch<SmartLink[]>( {
 			method: 'POST',
 			path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-linked-reference', {

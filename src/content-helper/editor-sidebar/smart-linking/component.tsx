@@ -279,12 +279,11 @@ export const SmartLinkingPanel = ( {
 		} );
 
 		// Calculate the smart links matches for each block.
-		links = calculateSmartLinkingMatches( allBlocks, links, {} );
+		links = calculateSmartLinkingMatches( allBlocks, links, {} )
+			// Filter out links without a match.
+			.filter( ( link ) => link.match );
 
-		// Filter out links without a match.
-		links = links.filter( ( link ) => link.match );
-
-		// Update the link suggestions with the new matches
+		// Update the link suggestions with the new matches.
 		await addSmartLinks( links );
 	};
 
@@ -415,6 +414,7 @@ export const SmartLinkingPanel = ( {
 	 * @param {SmartLink[]}               links            An array of link suggestions to apply to the content.
 	 * @param {LinkOccurrenceCounts}      occurrenceCounts An object to keep track of the number of times each link text has
 	 *                                                     been encountered and applied across all blocks.
+	 * @param {number}                    currentIndex     The current index of the block being processed.
 	 *
 	 * @return {SmartLink[]} The filtered array of link suggestions that have been successfully applied to the content.
 	 */
@@ -422,11 +422,13 @@ export const SmartLinkingPanel = ( {
 		blocks: Readonly<BlockInstance>[],
 		links: SmartLink[],
 		occurrenceCounts: LinkOccurrenceCounts,
+		currentIndex: number = 0
 	): SmartLink[] => {
-		blocks.forEach( ( block ) => {
+		blocks.forEach( ( block, index ) => {
+			const currentBlockIndex = currentIndex + index;
 			// Handle inner blocks.
 			if ( block.innerBlocks?.length ) {
-				calculateSmartLinkingMatches( block.innerBlocks, links, occurrenceCounts );
+				calculateSmartLinkingMatches( block.innerBlocks, links, occurrenceCounts, currentBlockIndex );
 				return;
 			}
 
@@ -458,7 +460,11 @@ export const SmartLinkingPanel = ( {
 
 						if ( occurrenceCount.encountered === link.offset + 1 && occurrenceCount.linked < 1 ) {
 							occurrenceCount.linked++;
-							link.match = { blockId: block.clientId, blockOffset: localCount - 1 };
+							link.match = {
+								blockId: block.clientId,
+								blockOffset: localCount - 1,
+								blockPosition: currentBlockIndex,
+							};
 						}
 					}
 				} );

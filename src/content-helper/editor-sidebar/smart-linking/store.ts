@@ -9,6 +9,7 @@ import { DEFAULT_MAX_LINKS, DEFAULT_MAX_LINK_WORDS } from './smart-linking';
  * Internal dependencies
  */
 import { SmartLink } from './provider';
+import { sortSmartLinks } from './utils';
 
 /**
  * Defines the props structure for SmartLinkingSettings.
@@ -280,7 +281,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 			case 'SET_SMART_LINKS':
 				return {
 					...state,
-					smartLinks: action.smartLinks,
+					smartLinks: sortSmartLinks( action.smartLinks ),
 				};
 			case 'ADD_SMART_LINK':
 				// If the UID is already there, just update it, otherwise add it.
@@ -290,12 +291,12 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 					newSmartLinks[ existingIndex ] = action.smartLink;
 					return {
 						...state,
-						smartLinks: newSmartLinks,
+						smartLinks: sortSmartLinks( newSmartLinks ),
 					};
 				}
 				return {
 					...state,
-					smartLinks: [ ...state.smartLinks, action.smartLink ],
+					smartLinks: sortSmartLinks( [ ...state.smartLinks, action.smartLink ] ),
 				};
 			case 'ADD_SMART_LINKS':
 				// If the UID is already there, just update it, otherwise add it.
@@ -311,17 +312,19 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				} );
 				return {
 					...state,
-					smartLinks: newSmartLinks,
+					smartLinks: sortSmartLinks( newSmartLinks ),
 				};
 			case 'REMOVE_SMART_LINK':
 				return {
 					...state,
-					smartLinks: state.smartLinks.filter( ( link ) => link.uid !== action.uid ),
+					smartLinks:
+						sortSmartLinks( state.smartLinks.filter( ( link ) => link.uid !== action.uid ) ),
 				};
 			case 'PURGE_SMART_LINKS_SUGGESTIONS':
 				return {
 					...state,
-					smartLinks: state.smartLinks.filter( ( link ) => link.applied ),
+					smartLinks:
+						sortSmartLinks( state.smartLinks.filter( ( link ) => link.applied ) ),
 				};
 			default:
 				return state;

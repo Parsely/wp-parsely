@@ -1,4 +1,5 @@
 import { MenuItem } from '@wordpress/components';
+import { useEffect, useState } from '@wordpress/element';
 import { SmartLink } from '../provider';
 
 type ReviewModalSidebarProps = {

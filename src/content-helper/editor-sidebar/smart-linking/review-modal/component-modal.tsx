@@ -63,21 +63,6 @@ const SmartLinkingReviewModalComponent = ( {
 	} = useDispatch( SmartLinkingStore );
 
 	/**
-	 * Sorts the smartLinks by the applied status.
-	 */
-	useEffect( () => {
-		smartLinks.sort( ( a, b ) => {
-			if ( a.applied && ! b.applied ) {
-				return 1;
-			}
-			if ( ! a.applied && b.applied ) {
-				return -1;
-			}
-			return 0;
-		} );
-	}, [ smartLinks ] );
-
-	/**
 	 * Sets the selected link when the suggested links change.
 	 *
 	 * @since 3.15.0
@@ -312,8 +297,6 @@ const SmartLinkingReviewModalComponent = ( {
 		if ( ! selectedLink.match ) {
 			return;
 		}
-
-		console.log( selectedLink );
 
 		const block = select( 'core/block-editor' ).getBlock( selectedLink.match.blockId );
 		if ( block ) {
