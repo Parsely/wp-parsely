@@ -83,13 +83,13 @@ const SmartLinkingReviewModalComponent = ( {
 	 * @since 3.15.0
 	 */
 	useEffect( () => {
-		if ( smartLinks.length === 0 ) {
+		if ( isModalOpen && smartLinks.length === 0 ) {
 			onClose();
 			return;
 		}
 
 		setSelectedLink( smartLinks[ 0 ] );
-	}, [ onClose, smartLinks ] );
+	}, [ isModalOpen, onClose, smartLinks ] );
 
 	const showConfirmCloseDialog = () => setShowCloseDialog( true );
 	const hideConfirmCloseDialog = () => setShowCloseDialog( false );
