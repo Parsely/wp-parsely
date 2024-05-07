@@ -41,7 +41,7 @@ type SmartLinkingState = {
 	fullContent: boolean;
 	error: ContentHelperError | null;
 	settings: SmartLinkingSettingsProps;
-	suggestedLinks: SmartLink[] | null;
+	smartLinks: SmartLink[];
 	overlayBlocks: string[];
 	wasAlreadyClicked: boolean;
 	isRetrying: boolean;
@@ -121,16 +121,6 @@ interface SetSettingsAction {
 }
 
 /**
- * Interface for the SetSuggestedLinksAction.
- *
- * @since 3.14.0
- */
-interface SetSuggestedLinksAction {
-	type: 'SET_SUGGESTED_LINKS';
-	suggestedLinks: SmartLink[] | null;
-}
-
-/**
  * Interface for the SetWasAlreadyClickedAction.
  *
  * @since 3.14.0
@@ -160,6 +150,30 @@ interface SetIsRetryingAction {
 	isRetrying: boolean;
 }
 
+interface SetSmartLinksAction {
+	type: 'SET_SMART_LINKS';
+	smartLinks: SmartLink[];
+}
+
+interface AddSmartLinkAction {
+	type: 'ADD_SMART_LINK';
+	smartLink: SmartLink;
+}
+
+interface AddSmartLinksAction {
+	type: 'ADD_SMART_LINKS';
+	smartLinks: SmartLink[];
+}
+
+interface RemoveSmartLinkAction {
+	type: 'REMOVE_SMART_LINK';
+	uid: string;
+}
+
+interface PurgeSmartLinksSuggestionsAction {
+	type: 'PURGE_SMART_LINKS_SUGGESTIONS';
+}
+
 /**
  * Interface for the IncrementRetryAttemptAction.
  *
@@ -171,14 +185,15 @@ interface IncrementRetryAttemptAction {
 
 type ActionTypes = SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction |
 	AddOverlayBlockAction | RemoveOverlayBlockAction |SetFullContentAction |
-	SetSuggestedLinksAction | SetErrorAction| SetWasAlreadyClickedAction | SetApplyToAction |
-	IncrementRetryAttemptAction | SetIsRetryingAction;
+	SetErrorAction| SetWasAlreadyClickedAction | SetApplyToAction | IncrementRetryAttemptAction |
+	SetIsRetryingAction | SetSmartLinksAction | AddSmartLinkAction | AddSmartLinksAction | RemoveSmartLinkAction |
+	PurgeSmartLinksSuggestionsAction;
 
 const defaultState: SmartLinkingState = {
 	isLoading: false,
 	applyTo: null,
 	fullContent: false,
-	suggestedLinks: null,
+	smartLinks: [],
 	error: null,
 	settings: { },
 	overlayBlocks: [],
@@ -241,11 +256,6 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 						...action.settings,
 					},
 				};
-			case 'SET_SUGGESTED_LINKS':
-				return {
-					...state,
-					suggestedLinks: action.suggestedLinks,
-				};
 			case 'SET_WAS_ALREADY_CLICKED':
 				return {
 					...state,
@@ -266,6 +276,52 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				return {
 					...state,
 					retryAttempt: state.retryAttempt + 1,
+				};
+			case 'SET_SMART_LINKS':
+				return {
+					...state,
+					smartLinks: action.smartLinks,
+				};
+			case 'ADD_SMART_LINK':
+				// If the UID is already there, just update it, otherwise add it.
+				const existingIndex = state.smartLinks.findIndex( ( link ) => link.uid === action.smartLink.uid );
+				if ( existingIndex !== -1 ) {
+					const newSmartLinks = [ ...state.smartLinks ];
+					newSmartLinks[ existingIndex ] = action.smartLink;
+					return {
+						...state,
+						smartLinks: newSmartLinks,
+					};
+				}
+				return {
+					...state,
+					smartLinks: [ ...state.smartLinks, action.smartLink ],
+				};
+			case 'ADD_SMART_LINKS':
+				// If the UID is already there, just update it, otherwise add it.
+				const newSmartLinks = [ ...state.smartLinks ];
+				action.smartLinks.forEach( ( link ) => {
+					// eslint-disable-next-line @typescript-eslint/no-shadow
+					const existingIndex = state.smartLinks.findIndex( ( l ) => l.uid === link.uid );
+					if ( existingIndex !== -1 ) {
+						newSmartLinks[ existingIndex ] = link;
+					} else {
+						newSmartLinks.push( link );
+					}
+				} );
+				return {
+					...state,
+					smartLinks: newSmartLinks,
+				};
+			case 'REMOVE_SMART_LINK':
+				return {
+					...state,
+					smartLinks: state.smartLinks.filter( ( link ) => link.uid !== action.uid ),
+				};
+			case 'PURGE_SMART_LINKS_SUGGESTIONS':
+				return {
+					...state,
+					smartLinks: state.smartLinks.filter( ( link ) => link.applied ),
 				};
 			default:
 				return state;
@@ -330,12 +386,6 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				},
 			};
 		},
-		setSuggestedLinks( suggestedLinks: SmartLink[] | null ): SetSuggestedLinksAction {
-			return {
-				type: 'SET_SUGGESTED_LINKS',
-				suggestedLinks,
-			};
-		},
 		setAlreadyClicked( wasAlreadyClicked: boolean ): SetWasAlreadyClickedAction {
 			return {
 				type: 'SET_WAS_ALREADY_CLICKED',
@@ -357,6 +407,42 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		incrementRetryAttempt(): IncrementRetryAttemptAction {
 			return {
 				type: 'INCREMENT_RETRY_ATTEMPT',
+			};
+		},
+		setSmartLinks( smartLinks: SmartLink[] ): SetSmartLinksAction {
+			return {
+				type: 'SET_SMART_LINKS',
+				smartLinks,
+			};
+		},
+		addSmartLink( smartLink: SmartLink ): AddSmartLinkAction {
+			return {
+				type: 'ADD_SMART_LINK',
+				smartLink,
+			};
+		},
+		updateSmartLink( smartLink: SmartLink ): AddSmartLinkAction {
+			// Alias of addSmartLink
+			return {
+				type: 'ADD_SMART_LINK',
+				smartLink,
+			};
+		},
+		addSmartLinks( smartLinks: SmartLink[] ): AddSmartLinksAction {
+			return {
+				type: 'ADD_SMART_LINKS',
+				smartLinks,
+			};
+		},
+		removeSmartLink( uid: string ): RemoveSmartLinkAction {
+			return {
+				type: 'REMOVE_SMART_LINK',
+				uid,
+			};
+		},
+		purgeSmartLinksSuggestions(): PurgeSmartLinksSuggestionsAction {
+			return {
+				type: 'PURGE_SMART_LINKS_SUGGESTIONS',
 			};
 		},
 	},
@@ -386,7 +472,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 			return state.settings.maxLinksPerPost ?? DEFAULT_MAX_LINKS;
 		},
 		getSuggestedLinks( state: SmartLinkingState ): SmartLink[] {
-			return state.suggestedLinks ?? [];
+			return state.smartLinks.filter( ( link ) => ! link.applied );
 		},
 		wasAlreadyClicked( state: SmartLinkingState ): boolean {
 			return state.wasAlreadyClicked;
@@ -398,8 +484,10 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 			return state.retryAttempt;
 		},
 		hasUnappliedLinks( state: SmartLinkingState ): boolean {
-			console.log( 'hasUnappliedLinks', state.suggestedLinks?.filter( ( link ) => ! link.applied ) );
-			return state.suggestedLinks?.some( ( link ) => ! link.applied ) ?? false;
+			return state.smartLinks.some( ( link ) => ! link.applied );
+		},
+		getSmartLinks( state: SmartLinkingState ): SmartLink[] {
+			return state.smartLinks;
 		},
 	},
 } );

@@ -94,9 +94,9 @@ function findTextNodesNotInSimilarNode( element: Node, searchText: string, refer
  *
  * @since 3.15.0
  *
- * @param {BlockInstance}  block    The block instance to apply the link to.
- * @param {SmartLink} link     The link suggestion to apply.
- * @param {HTMLElement}    htmlNode The HTML node to apply to the block.
+ * @param {BlockInstance} block    The block instance to apply the link to.
+ * @param {SmartLink}     link     The link suggestion to apply.
+ * @param {HTMLElement}   htmlNode The HTML node to apply to the block.
  */
 export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNode: HTMLElement ) {
 	const blockContent: string = getBlockContent( block );
@@ -114,13 +114,14 @@ export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNod
 
 	textNodes.forEach( ( node ) => {
 		if ( ! node.textContent || isInsideSimilarNode( node, htmlNode ) || hasAddedNode ) {
+			console.log( 'skip' );
 			return;
 		}
 
 		const regex = new RegExp( escapeRegExp( link.text ), 'g' );
 		let match;
 		while ( ( match = regex.exec( node.textContent ) ) !== null ) {
-			if ( occurrenceCount === link.offset ) {
+			if ( occurrenceCount === link.match?.blockOffset ) {
 				const anchor: HTMLElement = htmlNode.cloneNode( true ) as HTMLElement;
 				anchor.textContent = match[ 0 ];
 

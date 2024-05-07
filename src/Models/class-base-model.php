@@ -59,7 +59,24 @@ abstract class Base_Model {
 	 *
 	 * @return string The serialized model.
 	 */
-	abstract public function serialize(): string;
+	public function serialize(): string {
+		$json = wp_json_encode( $this->to_array() );
+
+		if ( false === $json ) {
+			$json = '{}';
+		}
+
+		return $json;
+	}
+
+	/**
+	 * Converts the model to an array.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @return array<mixed> The model as an array.
+	 */
+	abstract public function to_array(): array;
 
 	/**
 	 * Deserializes a JSON string to a model.

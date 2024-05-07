@@ -88,6 +88,7 @@ export const SmartLinkingPanel = ( {
 	const [ numAddedLinks, setNumAddedLinks ] = useState<number>( 0 );
 	const [ isReviewDone, setIsReviewDone ] = useState<boolean>( false );
 	const [ isReviewModalOpen, setIsReviewModalOpen ] = useState<boolean>( false );
+	const [ isManageButtonVisible, setIsManageButtonVisible ] = useState<boolean>( false );
 
 	const { createNotice } = useDispatch( 'core/notices' );
 
@@ -95,10 +96,9 @@ export const SmartLinkingPanel = ( {
 	 * Handles the ending of the review process.
 	 */
 	useEffect( () => {
-		console.log( isReviewDone, numAddedLinks );
 		if ( ! isReviewDone ) {
 			setNumAddedLinks( 0 );
-		} else {
+		} else if ( numAddedLinks > 0 ) {
 			createNotice(
 				'success',
 				/* translators: %d: number of smart links applied */
@@ -127,6 +127,8 @@ export const SmartLinkingPanel = ( {
 		applyTo,
 		retrying,
 		retryAttempt,
+		smartLinks,
+		getSmartLinksFn,
 	} = useSelect( ( selectFn ) => {
 		const {
 			isLoading,
@@ -141,6 +143,7 @@ export const SmartLinkingPanel = ( {
 			getApplyTo,
 			isRetrying,
 			getRetryAttempt,
+			getSmartLinks,
 		} = selectFn( SmartLinkingStore );
 		return {
 			loading: isLoading(),
@@ -154,6 +157,8 @@ export const SmartLinkingPanel = ( {
 			applyTo: getApplyTo(),
 			retrying: isRetrying(),
 			retryAttempt: getRetryAttempt(),
+			smartLinks: getSmartLinks(),
+			getSmartLinksFn: getSmartLinks,
 		};
 	}, [] );
 
@@ -165,7 +170,7 @@ export const SmartLinkingPanel = ( {
 	const {
 		setLoading,
 		setError,
-		setSuggestedLinks,
+		addSmartLinks,
 		addOverlayBlock,
 		removeOverlayBlock,
 		setSmartLinkingSettings,
@@ -174,6 +179,7 @@ export const SmartLinkingPanel = ( {
 		setMaxLinks,
 		setIsRetrying,
 		incrementRetryAttempt,
+		purgeSmartLinksSuggestions,
 	} = useDispatch( SmartLinkingStore );
 
 	/**
@@ -253,14 +259,33 @@ export const SmartLinkingPanel = ( {
 	);
 
 	const processSmartLinks = async ( links: SmartLink[] ) => {
-		// An object to keep track of the number of times each link text has been found across all blocks.
-		const occurrenceCounts: LinkOccurrenceCounts = {};
+		// Exclude the links that have been applied already.
+		links = links.filter(
+			( link ) => ! smartLinks.find( ( sl ) => sl.uid === link.uid && sl.applied )
+		);
 
-		// Apply the smart links to the content.
-		calculateSmartLinkingMatches( allBlocks, links, occurrenceCounts );
+		// Strip the protocol and trailing slashes from the post permalink.
+		const strippedPermalink = postPermalink
+			.replace( /^https?:\/\//, '' ).replace( /\/+$/, '' );
+
+		// Filter out self-referencing links.
+		links = links.filter( ( link ) => {
+			if ( link.href.includes( strippedPermalink ) ) {
+				// eslint-disable-next-line no-console
+				console.warn( `PCH Smart Linking: Skipping self-reference link: ${ link.href }` );
+				return false;
+			}
+			return true;
+		} );
+
+		// Calculate the smart links matches for each block.
+		links = calculateSmartLinkingMatches( allBlocks, links, {} );
+
+		// Filter out links without a match.
+		links = links.filter( ( link ) => link.match );
 
 		// Update the link suggestions with the new matches
-		await setSuggestedLinks( links );
+		await addSmartLinks( links );
 	};
 
 	/**
@@ -270,7 +295,7 @@ export const SmartLinkingPanel = ( {
 	 */
 	const generateSmartLinks = async () => {
 		await setLoading( true );
-		await setSuggestedLinks( null );
+		await purgeSmartLinksSuggestions();
 		await setError( null );
 		setIsReviewDone( false );
 
@@ -387,29 +412,17 @@ export const SmartLinkingPanel = ( {
 	 * @since 3.15.0
 	 *
 	 * @param {Readonly<BlockInstance>[]} blocks           The blocks of content where links should be applied.
-	 * @param {SmartLink[]}          links            An array of link suggestions to apply to the content.
+	 * @param {SmartLink[]}               links            An array of link suggestions to apply to the content.
 	 * @param {LinkOccurrenceCounts}      occurrenceCounts An object to keep track of the number of times each link text has
 	 *                                                     been encountered and applied across all blocks.
+	 *
+	 * @return {SmartLink[]} The filtered array of link suggestions that have been successfully applied to the content.
 	 */
 	const calculateSmartLinkingMatches = (
 		blocks: Readonly<BlockInstance>[],
 		links: SmartLink[],
 		occurrenceCounts: LinkOccurrenceCounts,
-	): void => {
-		// Simplify permalink stripping.
-		const strippedPermalink = postPermalink
-			.replace( /^https?:\/\//, '' ).replace( /\/+$/, '' );
-
-		// Filter out self-referencing links.
-		links = links.filter( ( link ) => {
-			if ( link.href.includes( strippedPermalink ) ) {
-				// eslint-disable-next-line no-console
-				console.warn( `PCH Smart Linking: Skipping self-reference link: ${ link.href }` );
-				return false;
-			}
-			return true;
-		} );
-
+	): SmartLink[] => {
 		blocks.forEach( ( block ) => {
 			// Handle inner blocks.
 			if ( block.innerBlocks?.length ) {
@@ -434,21 +447,25 @@ export const SmartLinkingPanel = ( {
 				const textNodes = findTextNodesNotInAnchor( contentElement, link.text );
 				const occurrenceKey = `${ link.text }#${ link.offset }`;
 				occurrenceCounts[ occurrenceKey ] = occurrenceCounts[ occurrenceKey ] || { encountered: 0, linked: 0 };
+				let localCount = 0;
 
 				textNodes.forEach( ( node ) => {
 					const regex = new RegExp( escapeRegExp( link.text ), 'g' );
 					while ( regex.exec( node.textContent ?? '' ) !== null ) {
 						const occurrenceCount = occurrenceCounts[ occurrenceKey ];
 						occurrenceCount.encountered++;
+						localCount++;
 
 						if ( occurrenceCount.encountered === link.offset + 1 && occurrenceCount.linked < 1 ) {
 							occurrenceCount.linked++;
-							link.match = { blockId: block.clientId };
+							link.match = { blockId: block.clientId, blockOffset: localCount - 1 };
 						}
 					}
 				} );
 			} );
 		} );
+
+		return links;
 	};
 
 	/**
@@ -591,17 +608,32 @@ export const SmartLinkingPanel = ( {
 						{ getGenerateButtonMessage() }
 					</Button>
 				</div>
+				{ isManageButtonVisible && (
+					<div className="smart-linking-manage">
+						<Button
+							onClick={ () => setIsReviewModalOpen( true ) }
+							variant="secondary"
+						>
+							{ __( 'Review Smart Links', 'wp-parsely' ) }
+						</Button>
+					</div>
+				) }
 			</PanelRow>
 
 			<SmartLinkingReviewModal
 				isOpen={ isReviewModalOpen }
 				onAppliedLink={ () => {
-					console.log( 'Link applied' );
 					setNumAddedLinks( ( num ) => num + 1 );
 				}	}
 				onClose={ () => {
 					setIsReviewDone( true );
 					setIsReviewModalOpen( false );
+
+					if ( getSmartLinksFn().length > 0 ) {
+						setIsManageButtonVisible( true );
+					} else {
+						setIsManageButtonVisible( false );
+					}
 				} }
 			/>
 		</div>

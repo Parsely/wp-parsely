@@ -109,15 +109,15 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @return string The serialized model.
 	 */
-	public function serialize(): string {
-		$json = wp_json_encode( array (
+	public function to_array(): array {
+		$json = array (
 			'uid' => $this->uid,
 			'href' => $this->href,
 			'title' => $this->title,
 			'text' => $this->text,
 			'offset' => $this->offset,
 			'applied' => $this->applied
-		) );
+		);
 
 		if ( false === $json ) {
 			$json = '{}';

@@ -107,8 +107,8 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 	 *
 	 * @since 3.15.0
 	 *
-	 * @param {BlockInstance}  blockInstance  The block instance to highlight the link in.
-	 * @param {SmartLink} linkSuggestion The link suggestion to highlight.
+	 * @param {BlockInstance} blockInstance  The block instance to highlight the link in.
+	 * @param {SmartLink}     linkSuggestion The link suggestion to highlight.
 	 */
 	const highlightLinkInBlock = ( blockInstance: BlockInstance, linkSuggestion: SmartLink ) => {
 		const mark = document.createElement( 'mark' );

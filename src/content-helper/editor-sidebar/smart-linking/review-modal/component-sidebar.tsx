@@ -22,6 +22,8 @@ export const ReviewModalSidebar = ( {
 				{ links?.map( ( link ) => (
 					<MenuItem
 						key={ link.uid }
+						className={ activeLink?.uid === link.uid ? 'is-selected' : '' }
+						role="menuitemradio"
 						shortcut={ ! link.applied ? 'NEW' : undefined }
 						isSelected={ activeLink?.uid === link.uid }
 						onClick={ () => {
