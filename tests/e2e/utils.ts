@@ -8,7 +8,7 @@ import {
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
-export const PLUGIN_VERSION = '3.14.4';
+export const PLUGIN_VERSION = '3.14.5';
 export const VALID_SITE_ID = 'demoaccount.parsely.com';
 export const INVALID_SITE_ID = 'invalid.parsely.com';
 export const VALID_API_SECRET = 'valid_api_secret';
