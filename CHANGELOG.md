@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix: Make PCH Related Posts filters work for non-admins ([#2467](https://github.com/Parsely/wp-parsely/pull/2467))
 
-
 ## [3.14.4](https://github.com/Parsely/wp-parsely/compare/3.14.3...3.14.4) - 2024-05-06
 
 ### Fixed
