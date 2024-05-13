@@ -6,7 +6,7 @@ import { BlockInstance, getBlockContent } from '@wordpress/blocks';
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, external } from '@wordpress/icons';
 
@@ -22,7 +22,7 @@ import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
 import { SmartLink, SmartLinkingProvider } from './provider';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
-import { escapeRegExp, findTextNodesNotInAnchor } from './utils';
+import { escapeRegExp, findTextNodesNotInAnchor, getAllSmartLinksInPost } from './utils';
 
 /**
  * Represents the counts of occurrences and applications of links within text content.
@@ -93,29 +93,12 @@ export const SmartLinkingPanel = ( {
 	const { createNotice } = useDispatch( 'core/notices' );
 
 	/**
-	 * Handles the ending of the review process.
-	 */
-	useEffect( () => {
-		if ( ! isReviewDone ) {
-			setNumAddedLinks( 0 );
-		} else if ( numAddedLinks > 0 ) {
-			createNotice(
-				'success',
-				/* translators: %d: number of smart links applied */
-				sprintf( __( '%s smart links successfully applied.', 'wp-parsely' ), numAddedLinks ),
-				{
-					type: 'snackbar',
-				},
-			);
-		}
-	}, [ isReviewDone ] ); // eslint-disable-line react-hooks/exhaustive-deps
-
-	/**
 	 * Loads the Smart Linking store.
 	 *
 	 * @since 3.14.0
 	 */
 	const {
+		ready,
 		loading,
 		isFullContent,
 		overlayBlocks,
@@ -131,6 +114,7 @@ export const SmartLinkingPanel = ( {
 		getSmartLinksFn,
 	} = useSelect( ( selectFn ) => {
 		const {
+			isReady,
 			isLoading,
 			getOverlayBlocks,
 			getSuggestedLinks,
@@ -146,6 +130,7 @@ export const SmartLinkingPanel = ( {
 			getSmartLinks,
 		} = selectFn( SmartLinkingStore );
 		return {
+			ready: isReady(),
 			loading: isLoading(),
 			error: getError(),
 			maxLinks: getMaxLinks(),
@@ -162,12 +147,15 @@ export const SmartLinkingPanel = ( {
 		};
 	}, [] );
 
+	const appliedLinks = useMemo( () => smartLinks.filter( ( link ) => link.applied ), [ smartLinks ] );
+
 	/**
 	 * Loads the Smart Linking store actions.
 	 *
 	 * @since 3.14.0
 	 */
 	const {
+		setIsReady,
 		setLoading,
 		setError,
 		addSmartLinks,
@@ -181,6 +169,37 @@ export const SmartLinkingPanel = ( {
 		incrementRetryAttempt,
 		purgeSmartLinksSuggestions,
 	} = useDispatch( SmartLinkingStore );
+
+	/**
+	 * Handles the initialization of the Smart Linking existing links.
+	 *
+	 * @since 3.15.0
+	 */
+	useEffect( () => {
+		if ( ! ready ) {
+			const existingSmartLinks = getAllSmartLinksInPost();
+			addSmartLinks( existingSmartLinks );
+			setIsReady( true );
+		}
+	}, [ ready, setIsReady ] );
+
+	/**
+	 * Handles the ending of the review process.
+	 */
+	useEffect( () => {
+		if ( ! isReviewDone ) {
+			setNumAddedLinks( 0 );
+		} else if ( numAddedLinks > 0 ) {
+			createNotice(
+				'success',
+				/* translators: %d: number of smart links applied */
+				sprintf( __( '%s smart links successfully applied.', 'wp-parsely' ), numAddedLinks ),
+				{
+					type: 'snackbar',
+				},
+			);
+		}
+	}, [ isReviewDone ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	/**
 	 * Handles the change of a setting.
@@ -614,10 +633,15 @@ export const SmartLinkingPanel = ( {
 						{ getGenerateButtonMessage() }
 					</Button>
 				</div>
-				{ isManageButtonVisible && (
+				{ appliedLinks.length > 0 && (
 					<div className="smart-linking-manage">
 						<Button
-							onClick={ () => setIsReviewModalOpen( true ) }
+							onClick={ async () => {
+								// Update the smart links in the store.
+								const existingSmartLinks = getAllSmartLinksInPost();
+								await addSmartLinks( existingSmartLinks );
+								setIsReviewModalOpen( true );
+							} }
 							variant="secondary"
 						>
 							{ __( 'Review Smart Links', 'wp-parsely' ) }

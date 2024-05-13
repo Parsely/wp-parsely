@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/named
-import { BlockInstance, getBlockContent } from '@wordpress/blocks';
+import { BlockInstance, getBlockContent, serialize } from '@wordpress/blocks';
+import { select } from '@wordpress/data';
 import { SmartLink } from './provider';
 import { escapeRegExp } from '../../common/utils/functions';
 
@@ -165,4 +166,120 @@ export function sortSmartLinks( smartLinks: SmartLink[] ): SmartLink[] {
 	notAppliedLinks.sort( sortByBlockPosition );
 
 	return [ ...notAppliedLinks, ...appliedLinks ];
+}
+
+/**
+ * Recursively collect all blocks into a flat array.
+ * @param blocks     The array of blocks to flatten.
+ * @param flatList   The array to collect into.
+ * @param startIndex The starting index for the blocks at this level.
+ * @return A flat array of all blocks with their position.
+ */
+function flattenBlocks( blocks: BlockInstance[], flatList: BlockInstance[] = [], startIndex: number = 0 ): BlockInstance[] {
+	blocks.forEach( ( block ) => {
+		if ( block.innerBlocks.length ) {
+			return flattenBlocks( block.innerBlocks, flatList );
+		}
+		flatList.push( block );
+	} );
+	return flatList;
+}
+
+export function getAllSmartLinksInPost(): SmartLink[] {
+	const blocks = flattenBlocks( select( 'core/block-editor' ).getBlocks() );
+	const smartLinks: SmartLink[] = [];
+
+	blocks.forEach( ( block: BlockInstance, blockIndex: number ) => {
+		const blockContent = getBlockContent( block );
+		const parser = new DOMParser();
+		const doc = parser.parseFromString( blockContent, 'text/html' );
+		const links = Array.from( doc.querySelectorAll( 'a[data-smartlink]' ) as NodeListOf<HTMLAnchorElement> );
+
+		links.forEach( ( link ) => {
+			const uid = link.getAttribute( 'data-smartlink' ) ?? '';
+			const href = link.href;
+			const text = link.textContent ?? '';
+			const title = link.title;
+
+			const smartLink: SmartLink = {
+				uid,
+				href,
+				text,
+				title,
+				applied: true,
+				offset: -1,
+				match: {
+					blockId: block.clientId,
+					blockPosition: blockIndex,
+					blockOffset: -1,
+				},
+			};
+
+			smartLinks.push( smartLink );
+		} );
+	} );
+
+	return smartLinks;
+}
+
+/**
+ * Count the occurrences of a substring in a string.
+ * @param {string} string    The string to search within.
+ * @param {string} substring The substring to count.
+ * @return {number} The number of occurrences.
+ */
+function countOccurrences( string: string, substring: string ): number {
+	return string.split( substring ).length - 1;
+}
+
+/**
+ * Calculate the offset of a link in a block. The offset represents the number of the occurrence of the link text in the block content.
+ * @param link
+ * @param block
+ * @param content
+ */
+function calculateOffset( link: SmartLink, content: string ): number {
+	const parser = new DOMParser();
+	const doc = parser.parseFromString( content, 'text/html' );
+	const body = doc.body;
+
+	// Function to recursively collect all text nodes
+	function collectTextNodes( element: Node, textNodes: Text[] ): void {
+		for ( let node = element.firstChild; node; node = node.nextSibling ) {
+			if ( node.nodeType === Node.TEXT_NODE ) {
+				textNodes.push( node as Text );
+			} else if ( node.nodeType === Node.ELEMENT_NODE ) {
+				collectTextNodes( node, textNodes );
+			}
+		}
+	}
+
+	const textNodes: Text[] = [];
+	collectTextNodes( body, textNodes );
+
+	let occurrence = 0;
+	let foundTargetLink = false;
+
+	// Check each text node for occurrences of the link's text
+	textNodes.forEach( ( node ) => {
+		const parentElement = node.parentNode as Element;
+		const index = node.textContent!.indexOf( link.text );
+		if ( index !== -1 ) {
+			// Check if this text node is part of an <a> element with the correct UID
+			if ( parentElement.tagName === 'A' && parentElement.getAttribute( 'data-smartlink' ) === link.uid ) {
+				foundTargetLink = true;
+			}
+
+			if ( ! foundTargetLink ) {
+				occurrence++;
+			}
+		}
+	} );
+
+	if ( ! foundTargetLink ) {
+		console.error( 'Link with the specified UID not found' );
+		return -1;
+	}
+
+	return occurrence;
 }

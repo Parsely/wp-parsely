@@ -1,4 +1,4 @@
-import { BlockInstance, cloneBlock, getBlockType } from '@wordpress/blocks';
+import { BlockInstance, cloneBlock, getBlockContent, getBlockType } from '@wordpress/blocks';
 import { Button, __experimentalDivider as Divider, Disabled, ExternalLink, MenuItem } from '@wordpress/components';
 import { select as selectFn, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
@@ -111,9 +111,29 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 	 * @param {SmartLink}     linkSuggestion The link suggestion to highlight.
 	 */
 	const highlightLinkInBlock = ( blockInstance: BlockInstance, linkSuggestion: SmartLink ) => {
-		const mark = document.createElement( 'mark' );
-		mark.className = 'smart-linking-highlight';
-		applyNodeToBlock( blockInstance, linkSuggestion, mark );
+		// If the link is not applied, add a highlight with a new mark element.
+		if ( ! link.applied ) {
+			const mark = document.createElement( 'mark' );
+			mark.className = 'smart-linking-highlight';
+			applyNodeToBlock( blockInstance, linkSuggestion, mark );
+			return;
+		}
+
+		// Otherwise, if the link is applied, add a highlight class to the link element with the link uid
+		const blockContent: string = getBlockContent( blockInstance );
+
+		const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
+		const contentElement = doc.body.firstChild as HTMLElement;
+		if ( ! contentElement ) {
+			return;
+		}
+
+		const anchor = contentElement.querySelector<HTMLAnchorElement>( `a[data-smartlink="${ linkSuggestion.uid }"]` );
+		if ( anchor ) {
+			anchor.classList.add( 'smart-linking-highlight' );
+		}
+
+		blockInstance.attributes.content = contentElement.innerHTML;
 	};
 
 	/**

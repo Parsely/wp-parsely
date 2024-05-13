@@ -37,6 +37,7 @@ export enum ApplyToOptions {
  * @since 3.14.0
  */
 type SmartLinkingState = {
+	isReady: boolean;
 	isLoading: boolean;
 	applyTo: ApplyToOptions|null;
 	fullContent: boolean;
@@ -49,8 +50,17 @@ type SmartLinkingState = {
 	retryAttempt: number;
 };
 
-/********** Actions ********** /
+/********** Actions **********/
 
+/**
+ * Interface for the SetIsReadyAction.
+ *
+ * @since 3.15.0
+ */
+interface SetIsReadyAction {
+	type: 'SET_IS_READY';
+	isReady: boolean;
+}
 /**
  * Interface for the SetLoadingAction.
  *
@@ -184,13 +194,14 @@ interface IncrementRetryAttemptAction {
 	type: 'INCREMENT_RETRY_ATTEMPT';
 }
 
-type ActionTypes = SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction |
+type ActionTypes = SetIsReadyAction | SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction |
 	AddOverlayBlockAction | RemoveOverlayBlockAction |SetFullContentAction |
 	SetErrorAction| SetWasAlreadyClickedAction | SetApplyToAction | IncrementRetryAttemptAction |
 	SetIsRetryingAction | SetSmartLinksAction | AddSmartLinkAction | AddSmartLinksAction | RemoveSmartLinkAction |
 	PurgeSmartLinksSuggestionsAction;
 
 const defaultState: SmartLinkingState = {
+	isReady: false,
 	isLoading: false,
 	applyTo: null,
 	fullContent: false,
@@ -212,6 +223,11 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 	initialState: defaultState,
 	reducer( state: SmartLinkingState = defaultState, action: ActionTypes ): SmartLinkingState {
 		switch ( action.type ) {
+			case 'SET_IS_READY':
+				return {
+					...state,
+					isReady: action.isReady,
+				};
 			case 'SET_LOADING':
 				return {
 					...state,
@@ -331,6 +347,12 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		}
 	},
 	actions: {
+		setIsReady( isReady: boolean ): SetIsReadyAction {
+			return {
+				type: 'SET_IS_READY',
+				isReady,
+			};
+		},
 		setLoading( isLoading: boolean ): SetLoadingAction {
 			return {
 				type: 'SET_LOADING',
@@ -450,6 +472,9 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		},
 	},
 	selectors: {
+		isReady( state: SmartLinkingState ): boolean {
+			return state.isReady;
+		},
 		isLoading( state: SmartLinkingState ): boolean {
 			return state.isLoading;
 		},
