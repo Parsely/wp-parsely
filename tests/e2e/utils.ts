@@ -112,7 +112,7 @@ export const getRelatedPostsMessage = async (
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly"]';
 	const contentHelperMessageSelector = '.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector;
-	const periodSettingSelector = '#inspector-select-control-1';
+	const periodSettingSelector = 'div.related-posts-settings div:nth-child(2) select';
 
 	// Run basic operations.
 	await createNewPost();
