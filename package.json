@@ -20,8 +20,8 @@
 		"url": "https://github.com/Parsely/wp-parsely/issues"
 	},
 	"engines": {
-		"node": ">=16",
-		"npm": ">=7"
+		"node": ">=18",
+		"npm": ">=8.3"
 	},
 	"directories": {
 		"test": "tests"
