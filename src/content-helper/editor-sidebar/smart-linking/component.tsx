@@ -626,22 +626,24 @@ export const SmartLinkingPanel = ( {
 				) }
 			</PanelRow>
 
-			<SmartLinkingReviewModal
-				isOpen={ isReviewModalOpen }
-				onAppliedLink={ () => {
-					setNumAddedLinks( ( num ) => num + 1 );
-				}	}
-				onClose={ () => {
-					setIsReviewDone( true );
-					setIsReviewModalOpen( false );
+			{ isReviewModalOpen && (
+				<SmartLinkingReviewModal
+					isOpen={ isReviewModalOpen }
+					onAppliedLink={ () => {
+						setNumAddedLinks( ( num ) => num + 1 );
+					}	}
+					onClose={ () => {
+						setIsReviewDone( true );
+						setIsReviewModalOpen( false );
 
-					if ( getSmartLinksFn().length > 0 ) {
-						setIsManageButtonVisible( true );
-					} else {
-						setIsManageButtonVisible( false );
-					}
-				} }
-			/>
+						if ( getSmartLinksFn().length > 0 ) {
+							setIsManageButtonVisible( true );
+						} else {
+							setIsManageButtonVisible( false );
+						}
+					} }
+				/>
+			) }
 		</div>
 	);
 };
