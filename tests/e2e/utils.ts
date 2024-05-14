@@ -4,11 +4,10 @@
 import {
 	createNewPost,
 	ensureSidebarOpened,
-	findSidebarPanelToggleButtonWithTitle,
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
-export const PLUGIN_VERSION = '3.14.5';
+export const PLUGIN_VERSION = '3.15.0';
 export const VALID_SITE_ID = 'demoaccount.parsely.com';
 export const INVALID_SITE_ID = 'invalid.parsely.com';
 export const VALID_API_SECRET = 'valid_api_secret';
@@ -113,7 +112,7 @@ export const getRelatedPostsMessage = async (
 	const addCategoryButton = 'button.components-button.editor-post-taxonomies__hierarchical-terms-add.is-link';
 	const pluginButton = 'button[aria-label="Parse.ly"]';
 	const contentHelperMessageSelector = '.wp-parsely-content-helper div.components-panel__body.is-opened ' + selector;
-	const periodSettingSelector = '#inspector-select-control-1';
+	const periodSettingSelector = 'div.related-posts-settings div:nth-child(2) select';
 
 	// Run basic operations.
 	await createNewPost();
@@ -227,7 +226,7 @@ export const activateTheme = async ( slug: string ): Promise<void> => {
 export const setSidebarPanelExpanded = async (
 	panelTitle: string, expand: boolean
 ): Promise<void> => {
-	const panelButton = await findSidebarPanelToggleButtonWithTitle( panelTitle );
+	const panelButton = await findSidebarPanelToggleButtonWithTitle( panelTitle, 'wp-parsely-sidebar-tabs' );
 	const panelHandle = await page.evaluateHandle(
 		( el: HTMLElement ) => el, panelButton
 	);
@@ -240,4 +239,26 @@ export const setSidebarPanelExpanded = async (
 	} else if ( ! expand && isPanelExpanded === 'true' ) {
 		await panelButton.click();
 	}
+};
+
+/**
+ * Overrides the findSidebarPanelToggleButtonWithTitle() function of the
+ * wordpress/e2e-test-utils package, as we started having issues with it and
+ * some tests were failing.
+ *
+ * @since 3.15.0
+ *
+ * @param {string} title          The title of the element to find.
+ * @param {string} containerClass The class of one of the element's containers.
+ *
+ * @return {Promise<Element>} The found element.
+ */
+const findSidebarPanelToggleButtonWithTitle = async (
+	title: string, containerClass: string = 'edit-post-sidebar'
+) => {
+	const [ button ] = await page.$x(
+		`//div[contains(@class,"${ containerClass }")]//button[@class="components-button components-panel__body-toggle"][contains(text(),"${ title }")]`
+	);
+
+	return button;
 };

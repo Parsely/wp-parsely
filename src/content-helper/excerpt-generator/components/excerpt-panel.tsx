@@ -176,7 +176,6 @@ const PostExcerptGenerator = () => {
 				{ error && (
 					<Notice
 						status="info"
-						isDismissible={ false }
 						className="wp-parsely-excerpt-generator-error"
 					>
 						{ error.Message() }

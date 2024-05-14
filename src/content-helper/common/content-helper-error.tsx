@@ -21,6 +21,7 @@ export enum ContentHelperErrorCode {
 	CannotFormulateApiQuery = 'ch_cannot_formulate_api_query',
 	FetchError = 'fetch_error', // apiFetch() failure, possibly caused by ad blocker.
 	HttpRequestFailed = 'http_request_failed', // Parse.ly API is unreachable.
+	ParselyAborted = 'ch_parsely_aborted', // The request was aborted.
 	ParselyApiForbidden = 403, // Intentionally without quotes.
 	ParselyApiResponseContainsError = 'ch_response_contains_error',
 	ParselyApiReturnedNoData = 'ch_parsely_api_returned_no_data',
@@ -73,9 +74,6 @@ export class ContentHelperError extends Error {
 			ContentHelperErrorCode.ParselySuggestionsApiNoAuthentication,
 			ContentHelperErrorCode.ParselySuggestionsApiNoAuthorization,
 			ContentHelperErrorCode.ParselySuggestionsApiNoData,
-			ContentHelperErrorCode.ParselySuggestionsApiOpenAiError,
-			ContentHelperErrorCode.ParselySuggestionsApiOpenAiSchema,
-			ContentHelperErrorCode.ParselySuggestionsApiOpenAiUnavailable,
 			ContentHelperErrorCode.ParselySuggestionsApiSchemaError,
 		];
 

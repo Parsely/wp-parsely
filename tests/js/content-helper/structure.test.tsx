@@ -264,9 +264,9 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 	 *
 	 * @since 3.14.3
 	 *
-	 * @param { string[] } authors    The authors of the post.
-	 * @param { string[] } categories The categories of the post.
-	 * @param { string[] } tags       The tags of the post.
+	 * @param {string[]} authors    The authors of the post.
+	 * @param {string[]} categories The categories of the post.
+	 * @param {string[]} tags       The tags of the post.
 	 */
 	function setMockPostData( authors: string[], categories: string[], tags: string[] ) {
 		mockPostData.authors = authors.map( ( name ) => ( createUserOrTaxonomy( name ) ) );
@@ -296,7 +296,7 @@ describe( 'PCH Editor Sidebar Related Post panel', () => {
 
 	function getRelatedPostsMockFn( mockFn: () => Promise<GetRelatedPostsResult> ) {
 		return jest
-			.spyOn( RelatedPostsProvider, 'getRelatedPosts' )
+			.spyOn( RelatedPostsProvider.getInstance(), 'getRelatedPosts' )
 			.mockImplementation( mockFn );
 	}
 

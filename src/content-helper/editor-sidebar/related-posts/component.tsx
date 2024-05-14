@@ -270,7 +270,7 @@ export const RelatedPostsPanel = (): JSX.Element => {
 		};
 
 		const fetchPosts = async ( retries: number ) => {
-			RelatedPostsProvider.getRelatedPosts( period, metric, filter )
+			RelatedPostsProvider.getInstance().getRelatedPosts( period, metric, filter )
 				.then( ( result ): void => {
 					setPosts( result.posts );
 					setMessage( result.message );

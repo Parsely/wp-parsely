@@ -57,10 +57,10 @@ const availableDataPoints = [
  *
  * @since 3.14.0
  *
- * @param { SidebarSettings } settings The sidebar settings.
- * @param { string }          name     The name of the data point.
+ * @param {SidebarSettings} settings The sidebar settings.
+ * @param {string}          name     The name of the data point.
  *
- * @return { boolean } Whether the data point is visible.
+ * @return {boolean} Whether the data point is visible.
  */
 const isDataPointVisible = ( settings: SidebarSettings, name: string ): boolean => {
 	return settings.PerformanceStats.VisibleDataPoints.includes( name );
@@ -84,9 +84,9 @@ type DataPointProps = {
  *
  * @since 3.14.0
  *
- * @param { DataPointProps } props The component's props.
+ * @param {DataPointProps} props The component's props.
  *
- * @return { JSX.Element | null } The DataPoint JSX Element, or null if it's not visible.
+ * @return {JSX.Element | null} The DataPoint JSX Element, or null if it's not visible.
  */
 const DataPoint = (
 	{ title, value, icon, smallText, isVisible = true }: Readonly<DataPointProps>
@@ -118,7 +118,7 @@ type PerformanceDataPointsProp = {
  *
  * @since 3.14.0
  *
- * @param { PerformanceDataPointsProp } props The component's props.
+ * @param {PerformanceDataPointsProp} props The component's props.
  */
 const PerformanceDataPoints = (
 	{ dataPoints }: Readonly<PerformanceDataPointsProp>
@@ -153,7 +153,7 @@ type OverviewMenuProps = {
  *
  * @since 3.14.0
  *
- * @param { OverviewMenuProps } props The component's props.
+ * @param {OverviewMenuProps} props The component's props.
  */
 const OverviewMenu = (
 	{ onClose }: Readonly<OverviewMenuProps>
@@ -165,7 +165,7 @@ const OverviewMenu = (
 	 *
 	 * @since 3.14.0
 	 *
-	 * @param { string } dataPoint The name of the data point.
+	 * @param {string} dataPoint The name of the data point.
 	 */
 	const toggleDataPoint = ( dataPoint: string ): void => {
 		// Check if the dataPoint is in the settings.PerformanceStats.VisibleDataPoints array
@@ -200,7 +200,7 @@ const OverviewMenu = (
 	 *
 	 * @since 3.14.0
 	 *
-	 * @param { string } selection
+	 * @param {string} selection
 	 */
 	const onClick = ( selection: string ): void => {
 		toggleDataPoint( selection );
@@ -261,7 +261,7 @@ type PerformanceOverviewPanelProps = {
  *
  * @since 3.14.0
  *
- * @param { PerformanceOverviewPanelProps } props The component's props.
+ * @param {PerformanceOverviewPanelProps} props The component's props.
  */
 export const PerformanceOverviewPanel = ( {
 	data,

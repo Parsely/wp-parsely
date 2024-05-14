@@ -50,7 +50,7 @@ class Suggest_Linked_Reference_API extends Content_Suggestions_Base_API {
 				'max_link_words' => $max_link_words,
 				'max_items'      => $max_links,
 			),
-			'text'          => $content,
+			'text'          => wp_strip_all_tags( $content ),
 		);
 
 		if ( count( $url_exclusion_list ) > 0 ) {

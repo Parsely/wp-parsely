@@ -101,7 +101,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 	): Promise<void> => {
 		await setLoading( true );
 
-		const provider = new TitleSuggestionsProvider();
+		const provider = TitleSuggestionsProvider.getInstance();
 
 		try {
 			const genTitles = await provider.generateTitles( content, 3, selectedTone, selectedPersona );
@@ -202,7 +202,6 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 			{
 				type: 'snackbar',
 				className: 'parsely-title-suggestion-error',
-				isDismissible: true,
 			}
 		);
 	}, [ error ] ); // eslint-disable-line react-hooks/exhaustive-deps
@@ -247,7 +246,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 					</Button>
 				</div>
 				{ error && (
-					<Notice status="info" isDismissible={ false } className="wp-parsely-content-helper-error">
+					<Notice status="info" className="wp-parsely-content-helper-error">
 						{ error.Message() }
 					</Notice>
 				) }

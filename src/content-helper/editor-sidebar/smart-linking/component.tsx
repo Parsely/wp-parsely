@@ -7,15 +7,16 @@ import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
-import { external, Icon } from '@wordpress/icons';
+import { __, _n, sprintf } from '@wordpress/i18n';
+import { Icon, external } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { SmartLinkingSettings, SidebarSettings, useSettings } from '../../common/settings';
+import { ContentHelperErrorCode } from '../../common/content-helper-error';
+import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
 import { LinkSuggestion, SmartLinkingProvider } from './provider';
@@ -70,13 +71,20 @@ export enum SmartLinkingPanelContext {
 }
 
 /**
+ * The maximum number of retries for fetching smart links.
+ *
+ * @since 3.15.0
+ */
+export const MAX_NUMBER_OF_RETRIES = 3;
+
+/**
  * Smart Linking Panel.
  *
  * @since 3.14.0
  *
- * @param { Readonly<SmartLinkingPanelProps> } props The component's props.
+ * @param {Readonly<SmartLinkingPanelProps>} props The component's props.
  *
- * @return { JSX.Element } The JSX Element.
+ * @return {JSX.Element} The JSX Element.
  */
 export const SmartLinkingPanel = ( {
 	className,
@@ -105,6 +113,8 @@ export const SmartLinkingPanel = ( {
 		maxLinkWords,
 		smartLinkingSettings,
 		applyTo,
+		retrying,
+		retryAttempt,
 	} = useSelect( ( selectFn ) => {
 		const {
 			isLoading,
@@ -117,6 +127,8 @@ export const SmartLinkingPanel = ( {
 			getMaxLinkWords,
 			getSmartLinkingSettings,
 			getApplyTo,
+			isRetrying,
+			getRetryAttempt,
 		} = selectFn( SmartLinkingStore );
 		return {
 			loading: isLoading(),
@@ -128,6 +140,8 @@ export const SmartLinkingPanel = ( {
 			suggestedLinks: getSuggestedLinks(),
 			smartLinkingSettings: getSmartLinkingSettings(),
 			applyTo: getApplyTo(),
+			retrying: isRetrying(),
+			retryAttempt: getRetryAttempt(),
 		};
 	}, [] );
 
@@ -146,6 +160,8 @@ export const SmartLinkingPanel = ( {
 		setApplyTo,
 		setMaxLinkWords,
 		setMaxLinks,
+		setIsRetrying,
+		incrementRetryAttempt,
 	} = useDispatch( SmartLinkingStore );
 
 	/**
@@ -155,21 +171,19 @@ export const SmartLinkingPanel = ( {
 	 *
 	 * @since 3.14.0
 	 *
-	 * @param { keyof SmartLinkingSettingsComponent } setting The setting to change.
-	 * @param { string | boolean | number }           value   The new value of the setting.
+	 * @param {keyof SmartLinkingSettingsComponent} setting The setting to change.
+	 * @param {string | boolean | number}           value   The new value of the setting.
 	 */
 	const onSettingChange = (
 		setting: keyof SmartLinkingSettings,
 		value: string | boolean | number,
 	): void => {
-		setSettingsDebounced(
-			{
-				SmartLinking: {
-					...settings.SmartLinking,
-					[ setting ]: value,
-				},
-			}
-		);
+		setSettingsDebounced( {
+			SmartLinking: {
+				...settings.SmartLinking,
+				[ setting ]: value,
+			},
+		} );
 		if ( setting === 'MaxLinks' ) {
 			setMaxLinks( value as number );
 		} else if ( setting === 'MaxLinkWords' ) {
@@ -212,7 +226,9 @@ export const SmartLinkingPanel = ( {
 			const { getSelectedBlock, getBlock, getBlocks } = selectFn(
 				'core/block-editor',
 			) as GutenbergFunction;
-			const { getEditedPostContent, getCurrentPostAttribute } = selectFn( 'core/editor' ) as GutenbergFunction;
+			const { getEditedPostContent, getCurrentPostAttribute } = selectFn(
+				'core/editor',
+			) as GutenbergFunction;
 
 			return {
 				allBlocks: getBlocks(),
@@ -228,8 +244,9 @@ export const SmartLinkingPanel = ( {
 	 * Generates smart links for the selected block or the entire post content.
 	 *
 	 * @since 3.14.0
+	 * @since 3.15.0 Renamed from `generateSmartLinks` to `generateAndApplySmartLinks`.
 	 */
-	const generateSmartLinks = () => async (): Promise<void> => {
+	const generateAndApplySmartLinks = () => async (): Promise<void> => {
 		await setLoading( true );
 		await setSuggestedLinks( null );
 		await setError( null );
@@ -242,7 +259,7 @@ export const SmartLinkingPanel = ( {
 		// If selected block is not set, the overlay will be applied to the entire content.
 		await applyOverlay( isFullContent ? 'all' : selectedBlock?.clientId );
 
-		// After 60 seconds without a response, timeout and remove any overlay.
+		// After 60 * MAX_NUMBER_OR_RETRIES seconds without a response, timeout and remove any overlay.
 		const timeout = setTimeout( () => {
 			setLoading( false );
 			Telemetry.trackEvent( 'smart_linking_generate_timeout', {
@@ -253,47 +270,85 @@ export const SmartLinkingPanel = ( {
 
 			// If selected block is not set, the overlay will be removed from the entire content.
 			removeOverlay( isFullContent ? 'all' : selectedBlock?.clientId );
-		}, 60000 );
+		}, 60000 * MAX_NUMBER_OF_RETRIES );
 
 		const previousApplyTo = applyTo;
 		try {
-			const generatingFullContent = isFullContent || ! selectedBlock;
-			await setApplyTo( generatingFullContent ? ApplyToOptions.All : ApplyToOptions.Selected );
-
-			let generatedLinks = [];
-			const urlExclusionList = generateProtocolVariants( postPermalink );
-
-			if ( selectedBlock && ! generatingFullContent ) {
-				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
-					getBlockContent( selectedBlock ),
-					maxLinkWords,
-					maxLinks,
-					urlExclusionList
-				);
-			} else {
-				generatedLinks = await SmartLinkingProvider.generateSmartLinks(
-					postContent,
-					maxLinkWords,
-					maxLinks,
-					urlExclusionList
-				);
-			}
-			await setSuggestedLinks( generatedLinks );
+			const generatedLinks = await generateSmartLinksWithRetry( MAX_NUMBER_OF_RETRIES );
 			applySmartLinks( generatedLinks );
 		} catch ( e: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			setError( e );
-			// eslint-disable-next-line no-console
-			console.error( e );
-			createNotice( 'error', __( 'There was a problem applying smart links.', 'wp-parsely' ), {
+			let snackBarMessage = __( 'There was a problem applying smart links.', 'wp-parsely' );
+
+			// Handle the case where the operation was aborted by the user.
+			if ( e.code && e.code === ContentHelperErrorCode.ParselyAborted ) {
+				snackBarMessage = sprintf(
+					/* translators: %d: number of retry attempts, %s: attempt plural */
+					__( 'The Smart Linking process was cancelled after %1$d %2$s.', 'wp-parsely' ),
+					e.numRetries,
+					_n( 'attempt', 'attempts', e.numRetries, 'wp-parsely' )
+				);
+				e.message = snackBarMessage;
+			}
+
+			await setError( e );
+			createNotice( 'error', snackBarMessage, {
 				type: 'snackbar',
-				isDismissible: true,
 			} );
 		} finally {
 			await setLoading( false );
 			await setApplyTo( previousApplyTo );
+			await setIsRetrying( false );
 			await removeOverlay( isFullContent ? 'all' : selectedBlock?.clientId );
 			clearTimeout( timeout );
 		}
+	};
+
+	/**
+	 * Generates smart links for the selected block or the entire post content,
+	 * and retries the fetch if it fails.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @param {number} retries The number of retries remaining.
+	 *
+	 * @return {Promise<LinkSuggestion[]>} The generated smart links.
+	 */
+	const generateSmartLinksWithRetry = async ( retries: number ): Promise<LinkSuggestion[]> => {
+		let generatedLinks: LinkSuggestion[] = [];
+		try {
+			const generatingFullContent = isFullContent || ! selectedBlock;
+			await setApplyTo( generatingFullContent ? ApplyToOptions.All : ApplyToOptions.Selected );
+
+			const urlExclusionList = generateProtocolVariants( postPermalink );
+
+			generatedLinks = await SmartLinkingProvider.getInstance().generateSmartLinks(
+				( selectedBlock && ! generatingFullContent )
+					? getBlockContent( selectedBlock )
+					: postContent,
+				maxLinkWords,
+				maxLinks,
+				urlExclusionList
+			);
+		} catch ( err: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
+			// If the request was aborted, throw the AbortError to be handled elsewhere.
+			if ( err.code && err.code === ContentHelperErrorCode.ParselyAborted ) {
+				err.numRetries = MAX_NUMBER_OF_RETRIES - retries;
+				throw err;
+			}
+			// If the error is a retryable fetch error, retry the fetch.
+			if ( retries > 0 && err.retryFetch ) {
+				// Print the error to the console to help with debugging.
+				console.error( err ); // eslint-disable-line no-console
+				await setIsRetrying( true );
+				await incrementRetryAttempt();
+				return await generateSmartLinksWithRetry( retries - 1 );
+			}
+			// Throw the error to be handled elsewhere.
+			throw err;
+		}
+
+		await setSuggestedLinks( generatedLinks );
+		return generatedLinks;
 	};
 
 	/**
@@ -341,8 +396,7 @@ export const SmartLinkingPanel = ( {
 			sprintf( __( '%s smart links successfully applied.', 'wp-parsely' ), numberOfUpdatedLinks ),
 			{
 				type: 'snackbar',
-				isDismissible: true,
-			}
+			},
 		);
 	};
 
@@ -394,6 +448,7 @@ export const SmartLinkingPanel = ( {
 			if ( ! block.originalContent ) {
 				return;
 			}
+
 			const blockContent: string = getBlockContent( block );
 			const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
 
@@ -437,7 +492,10 @@ export const SmartLinkingPanel = ( {
 									range.insertNode( anchor );
 
 									// Adjust the text node if there's text remaining after the link.
-									if ( node.textContent && match.index + match[ 0 ].length < node.textContent.length ) {
+									if (
+										node.textContent &&
+										match.index + match[ 0 ].length < node.textContent.length
+									) {
 										const remainingText = document.createTextNode(
 											node.textContent.slice( match.index + match[ 0 ].length )
 										);
@@ -576,6 +634,28 @@ export const SmartLinkingPanel = ( {
 		dispatch( 'core/editor' ).unlockPostSaving( 'wp-parsely-block-overlay' );
 	};
 
+	/**
+	 * Returns the message for the generate button.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @return {string} The message for the generate button.
+	 */
+	const getGenerateButtonMessage = (): string => {
+		if ( retrying ) {
+			return sprintf(
+				/* translators: %1$d: number of retry attempts, %2$d: maximum number of retries */
+				__( 'Retrying… Attempt %1$d of %2$d', 'wp-parsely' ),
+				retryAttempt,
+				MAX_NUMBER_OF_RETRIES
+			);
+		}
+		if ( loading ) {
+			return __( 'Adding Smart Links…', 'wp-parsely' );
+		}
+		return __( 'Add Smart Links', 'wp-parsely' );
+	};
+
 	return (
 		<div className="wp-parsely-smart-linking">
 			<PanelRow className={ className }>
@@ -596,23 +676,24 @@ export const SmartLinkingPanel = ( {
 				{ error && (
 					<Notice
 						status="info"
-						isDismissible={ true }
 						onRemove={ () => setError( null ) }
-						className="wp-parsely-content-helper-error">
+						className="wp-parsely-content-helper-error"
+					>
 						{ error.Message() }
 					</Notice>
 				) }
 				{ suggestedLinks !== null && (
 					<Notice
 						status="success"
-						isDismissible={ true }
 						onRemove={ () => setSuggestedLinks( null ) }
 						className="wp-parsely-smart-linking-suggested-links"
 					>
 						{
-							/* translators: 1 - number of smart links generated */
-							sprintf( __( 'Successfully added %s smart links.', 'wp-parsely' ),
-								numAddedLinks > 0 ? numAddedLinks : suggestedLinks.length )
+							sprintf(
+								/* translators: 1 - number of smart links generated */
+								__( 'Successfully added %s smart links.', 'wp-parsely' ),
+								numAddedLinks > 0 ? numAddedLinks : suggestedLinks.length,
+							)
 						}
 					</Notice>
 				) }
@@ -623,14 +704,12 @@ export const SmartLinkingPanel = ( {
 				/>
 				<div className="smart-linking-generate">
 					<Button
-						onClick={ generateSmartLinks() }
+						onClick={ generateAndApplySmartLinks() }
 						variant="primary"
 						isBusy={ loading }
 						disabled={ loading }
 					>
-						{ loading
-							? __( 'Adding Smart Links…', 'wp-parsely' )
-							: __( 'Add Smart Links', 'wp-parsely' ) }
+						{ getGenerateButtonMessage() }
 					</Button>
 				</div>
 			</PanelRow>
