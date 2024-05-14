@@ -151,6 +151,7 @@ export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNod
 }
 
 export function sortSmartLinks( smartLinks: SmartLink[] ): SmartLink[] {
+	console.log( 'sorting smart links' );
 	// Break-down in two buckets: applied and not applied
 	const appliedLinks = smartLinks.filter( ( link ) => link.applied );
 	const notAppliedLinks = smartLinks.filter( ( link ) => ! link.applied );

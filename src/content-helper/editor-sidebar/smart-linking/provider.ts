@@ -23,6 +23,8 @@ export type SmartLink = {
 	offset: number;
 	applied: boolean;
 	match?: SmartLinkMatch;
+	post_id?: number|false;
+	post_type?: string;
 };
 
 /**
@@ -278,5 +280,17 @@ export class SmartLinkingProvider extends BaseProvider {
 		} );
 
 		return response;
+	}
+
+	public async getPostTypeByURL( url: string ): Promise<string> {
+		const response = await this.fetch<{ post_type: string }>( {
+			method: 'POST',
+			path: '/wp-parsely/v1/smart-linking/url-to-post-type',
+			data: {
+				url,
+			},
+		} );
+
+		return response.post_type;
 	}
 }

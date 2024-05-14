@@ -41,10 +41,13 @@ const SmartLinkingReviewModalComponent = ( {
 	const {
 		smartLinks,
 		suggestedLinks,
+		getSmartLinks,
 	} = useSelect( ( selectFn ) => {
+		// eslint-disable-next-line @typescript-eslint/no-shadow
 		const { getSmartLinks, getSuggestedLinks } = selectFn( SmartLinkingStore );
 		return {
 			smartLinks: getSmartLinks(),
+			getSmartLinks,
 			suggestedLinks: getSuggestedLinks,
 		};
 	}, [] );
@@ -70,10 +73,7 @@ const SmartLinkingReviewModalComponent = ( {
 	useEffect( () => {
 		if ( isModalOpen && smartLinks.length === 0 ) {
 			onClose();
-			return;
 		}
-
-		setSelectedLink( smartLinks[ 0 ] );
 	}, [ isModalOpen, onClose, smartLinks ] );
 
 	const showConfirmCloseDialog = () => setShowCloseDialog( true );
@@ -116,12 +116,6 @@ const SmartLinkingReviewModalComponent = ( {
 
 		// Update the block.
 		dispatch( 'core/block-editor' ).updateBlock( blockId, block );
-
-		// Notify the API that the link was applied.
-		//if ( postId ) {
-		//	const addedLink = await SmartLinkingProvider.getInstance().addSmartLink( postId, linkSuggestion );
-		//	console.log( addedLink );
-		//}
 	};
 
 	/**
@@ -147,7 +141,9 @@ const SmartLinkingReviewModalComponent = ( {
 		}
 
 		// Select anchors by 'data-smartlink' attribute matching the UID.
-		const anchors = Array.from( contentElement.querySelectorAll( `a[data-smartlink="${ linkSuggestion.uid }"]` ) );
+		const anchors = Array.from(
+			contentElement.querySelectorAll( `a[data-smartlink="${ linkSuggestion.uid }"]` ),
+		);
 
 		// Check if we found the anchor with the specified UID.
 		if ( anchors.length > 0 ) {
@@ -223,14 +219,14 @@ const SmartLinkingReviewModalComponent = ( {
 	};
 
 	const handlePrevious = () => {
-		const currentIndex = smartLinks.indexOf( selectedLink );
+		const currentIndex = getSmartLinks().indexOf( selectedLink );
 		const previousIndex = currentIndex - 1;
 
-		if ( ! smartLinks[ previousIndex ] ) {
+		if ( ! getSmartLinks()[ previousIndex ] ) {
 			return;
 		}
 
-		setSelectedLink( smartLinks[ previousIndex ] );
+		setSelectedLink( getSmartLinks()[ previousIndex ] );
 	};
 
 	/**
@@ -300,7 +296,20 @@ const SmartLinkingReviewModalComponent = ( {
 
 		const block = select( 'core/block-editor' ).getBlock( selectedLink.match.blockId );
 		if ( block ) {
+			let currentSmartLinks = getSmartLinks();
+
+			// Get the selected link index, and set the selected link as the previous one, or the first one if no previous.
+			const currentIndex = currentSmartLinks.indexOf( selectedLink );
+			const previousIndex = currentIndex - 1;
+
 			removeLinkFromBlock( block, selectedLink );
+
+			currentSmartLinks = getSmartLinks();
+			if ( currentSmartLinks[ previousIndex ] ) {
+				setSelectedLink( currentSmartLinks[ previousIndex ] );
+			} else {
+				setSelectedLink( currentSmartLinks[ 0 ] );
+			}
 		}
 	};
 
@@ -363,8 +372,8 @@ const SmartLinkingReviewModalComponent = ( {
 						/>
 						<ReviewSuggestion
 							link={ selectedLink }
-							hasNext={ smartLinks.indexOf( selectedLink ) < smartLinks.length - 1 }
-							hasPrevious={ smartLinks.indexOf( selectedLink ) > 0 }
+							hasNext={ getSmartLinks().indexOf( selectedLink ) < getSmartLinks().length - 1 }
+							hasPrevious={ getSmartLinks().indexOf( selectedLink ) > 0 }
 							onNext={ handleNext	}
 							onPrevious={ handlePrevious }
 							onAccept={ onAcceptHandler }
@@ -405,4 +414,3 @@ const SmartLinkingReviewModalComponent = ( {
 };
 
 export const SmartLinkingReviewModal = memo( SmartLinkingReviewModalComponent );
-

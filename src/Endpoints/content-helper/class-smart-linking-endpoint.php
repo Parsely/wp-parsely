@@ -54,14 +54,18 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * @return bool
 	 */
 	public function is_available_to_current_user( $request = null ): bool {
-		if ( ! $request ) {
+		if ( null === $request ) {
 			return false;
 		}
 
 		$post_id = $request->get_param( 'post_id' );
 
-		// Check if the current user has edit capabilities for the post.
-		$can_edit = current_user_can( 'edit_post', $post_id );
+		if ( $post_id ) {
+			// Check if the current user has edit capabilities for the post.
+			$can_edit = current_user_can( 'edit_post', $post_id );
+		} else {
+			$can_edit = current_user_can( 'edit_posts' );
+		}
 
 		// Check if the current user has the smart linking capability.
 		$has_capability = current_user_can(
@@ -74,6 +78,11 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	}
 
 	public function run(): void {
+		$this->register_endpoint(
+			static::ENDPOINT . '/url-to-post-type',
+			'url_to_post_type',
+			array( 'POST' )
+		);
 		// Endpoint "[post-id]/set"
 		/*$this->register_endpoint(
 			static::ENDPOINT . '/(?P<post_id>\d+)/set',
@@ -103,6 +112,46 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			'callback' => array( $this, 'add_smart_link' ),
 			'permission_callback' => array( $this, 'is_available_to_current_user' ),
 		));
+
+	}
+
+	public function url_to_post_type( WP_REST_Request $request ): WP_REST_Response {
+		$url = $request->get_param( 'url' );
+
+		if ( ! is_string( $url ) ) {
+			return new WP_REST_Response( array(
+				'error' => array(
+					'name' => 'invalid_request',
+					'message' => 'Invalid request body.',
+				),
+			), 400 );
+		}
+
+		$post_id = 0;
+
+		if ( ( $cache = wp_cache_get( $url, 'wp_parsely_smart_link_url_to_postid' ) ) === false ) {
+			$post_id = $cache;
+		} else if ( function_exists( 'wpcom_vip_url_to_postid' ) ) {
+			$post_id =  wpcom_vip_url_to_postid( $url );
+		} else {
+			$post_id = url_to_postid( $url ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
+		}
+
+		if ( 0 === $post_id ) {
+			return new WP_REST_Response( array(
+				'error' => array(
+					'name' => 'invalid_url',
+					'message' => 'Invalid URL',
+				),
+			), 400 );
+		}
+
+		return new WP_REST_Response( array(
+			'data' => array(
+				'post_id' => $post_id,
+				'post_type' => get_post_type( $post_id ),
+			),
+		), 200 );
 	}
 
 	public function set_smart_links( WP_REST_Request $request ): string {

@@ -231,23 +231,59 @@
 
 		.components-button.components-menu-item__button {
 			width: to_rem(220px);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			&:focus {
+				outline: none;
+				box-shadow: none;
+			}
 
 			&.is-selected {
-				border: 1px solid var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+				background-color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+				color: #fff;
+
+				.smart-linking-menu-label{
+					color: #fff;
+				}
 			}
 
 			.components-menu-item__item {
+				width: 100%;
+				padding-right: 0;
+			}
+
+			.smart-linking-menu-item {
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
 				display: inline;
 				text-align: left;
+				flex-grow: 1;
+				//margin-right: 10px;
 			}
 
-			.components-menu-item__shortcut {
+			.smart-linking-menu-label {
+				display: flex;
+				align-items: center;
+				white-space: nowrap;
 				padding-left: var(--grid-unit-10);
 				color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9))
 			}
+
+			/*.components-menu-item__item {
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				display: inline;
+				text-align: left;
+			}*/
+
+			/*.components-menu-item__shortcut {
+				padding-left: var(--grid-unit-10);
+				color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9))
+			}*/
 		}
 	}
 

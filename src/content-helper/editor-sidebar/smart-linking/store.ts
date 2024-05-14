@@ -303,11 +303,15 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				// If the UID is already there, just update it, otherwise add it.
 				const existingIndex = state.smartLinks.findIndex( ( link ) => link.uid === action.smartLink.uid );
 				if ( existingIndex !== -1 ) {
-					const newSmartLinks = [ ...state.smartLinks ];
+					let newSmartLinks = [ ...state.smartLinks ];
 					newSmartLinks[ existingIndex ] = action.smartLink;
+					// If the block id changed, sort the links again.
+					if ( action.smartLink.match?.blockId !== state.smartLinks[ existingIndex ].match?.blockId ) {
+						newSmartLinks = sortSmartLinks( newSmartLinks );
+					}
 					return {
 						...state,
-						smartLinks: sortSmartLinks( newSmartLinks ),
+						smartLinks: newSmartLinks,
 					};
 				}
 				return {
@@ -316,19 +320,29 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				};
 			case 'ADD_SMART_LINKS':
 				// If the UID is already there, just update it, otherwise add it.
-				const newSmartLinks = [ ...state.smartLinks ];
+				let newSmartLinks = [ ...state.smartLinks ];
+				let hasChanges = false;
 				action.smartLinks.forEach( ( link ) => {
 					// eslint-disable-next-line @typescript-eslint/no-shadow
 					const existingIndex = state.smartLinks.findIndex( ( l ) => l.uid === link.uid );
 					if ( existingIndex !== -1 ) {
-						newSmartLinks[ existingIndex ] = link;
+						newSmartLinks[ existingIndex ] = { ...newSmartLinks[ existingIndex ], ...link };
+						// If the block id changed, sort the links again.
+						if ( link.match?.blockId !== state.smartLinks[ existingIndex ].match?.blockId ) {
+							hasChanges = true;
+						}
 					} else {
 						newSmartLinks.push( link );
+						hasChanges = true;
 					}
 				} );
+
+				if ( hasChanges ) {
+					newSmartLinks = sortSmartLinks( newSmartLinks );
+				}
 				return {
 					...state,
-					smartLinks: sortSmartLinks( newSmartLinks ),
+					smartLinks: newSmartLinks,
 				};
 			case 'REMOVE_SMART_LINK':
 				return {

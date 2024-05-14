@@ -68,6 +68,13 @@ class Smart_Link extends Base_Model {
 	public $applied;
 
 	/**
+	 * The post type of the suggested link.
+	 *
+	 * @var string The post type of the suggested link.
+	 */
+	public $post_type;
+
+	/**
 	 * Smart Link constructor.
 	 *
 	 * @since 3.15.0
@@ -84,7 +91,47 @@ class Smart_Link extends Base_Model {
 		$this->offset = $offset;
 		$this->applied = false;
 
+		$this->post_id = $this->get_post_id_by_url( $href );
+
+		if ( false === $this->post_id ) {
+			$this->post_type = 'external';
+		} else {
+			$post_type = get_post_type( $this->post_id );
+			if ( false !== $post_type ) {
+				$this->post_type = $post_type;
+			} else {
+				$this->post_type = 'external';
+			}
+		}
+
 		parent::__construct();
+	}
+
+	/**
+	 * Gets the post ID by URL.
+	 *
+	 * @since 3.15.0
+	 *
+	 * @param string $url The URL to get the post ID for.
+	 * @return int|false The post ID of the URL, false if not found.
+	 */
+	private function get_post_id_by_url( string $url ) {
+		if ( ( $cache = wp_cache_get( $url, 'wp_parsely_smart_link_url_to_postid' ) ) === false ) {
+			return $cache;
+		}
+
+		if ( function_exists( 'wpcom_vip_url_to_postid' ) ) {
+			$post_id =  wpcom_vip_url_to_postid( $url );
+		} else {
+			$post_id = url_to_postid( $url ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
+		}
+
+		if ( 0 === $post_id ) {
+			return false;
+		}
+
+		wp_cache_set( $url, $post_id, 'wp_parsely_smart_link_url_to_postid' );
+		return $post_id;
 	}
 
 	/**
@@ -107,23 +154,19 @@ class Smart_Link extends Base_Model {
 	 *
 	 * @since 3.15.0
 	 *
-	 * @return string The serialized model.
+	 * @return array<mixed> The serialized model.
 	 */
 	public function to_array(): array {
-		$json = array (
+		return array (
 			'uid' => $this->uid,
 			'href' => $this->href,
 			'title' => $this->title,
 			'text' => $this->text,
 			'offset' => $this->offset,
-			'applied' => $this->applied
+			'applied' => $this->applied,
+			'post_type' => $this->post_type,
+			'post_id' => $this->post_id,
 		);
-
-		if ( false === $json ) {
-			$json = '{}';
-		}
-
-		return $json;
 	}
 
 	/**

@@ -88,7 +88,6 @@ export const SmartLinkingPanel = ( {
 	const [ numAddedLinks, setNumAddedLinks ] = useState<number>( 0 );
 	const [ isReviewDone, setIsReviewDone ] = useState<boolean>( false );
 	const [ isReviewModalOpen, setIsReviewModalOpen ] = useState<boolean>( false );
-	const [ isManageButtonVisible, setIsManageButtonVisible ] = useState<boolean>( false );
 
 	const { createNotice } = useDispatch( 'core/notices' );
 
@@ -111,7 +110,6 @@ export const SmartLinkingPanel = ( {
 		retrying,
 		retryAttempt,
 		smartLinks,
-		getSmartLinksFn,
 	} = useSelect( ( selectFn ) => {
 		const {
 			isReady,
@@ -143,7 +141,6 @@ export const SmartLinkingPanel = ( {
 			retrying: isRetrying(),
 			retryAttempt: getRetryAttempt(),
 			smartLinks: getSmartLinks(),
-			getSmartLinksFn: getSmartLinks,
 		};
 	}, [] );
 
@@ -181,7 +178,7 @@ export const SmartLinkingPanel = ( {
 			addSmartLinks( existingSmartLinks );
 			setIsReady( true );
 		}
-	}, [ ready, setIsReady ] );
+	}, [ addSmartLinks, ready, setIsReady ] );
 
 	/**
 	 * Handles the ending of the review process.
@@ -659,12 +656,6 @@ export const SmartLinkingPanel = ( {
 					onClose={ () => {
 						setIsReviewDone( true );
 						setIsReviewModalOpen( false );
-
-						if ( getSmartLinksFn().length > 0 ) {
-							setIsManageButtonVisible( true );
-						} else {
-							setIsManageButtonVisible( false );
-						}
 					} }
 				/>
 			) }
