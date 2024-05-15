@@ -112,6 +112,8 @@ const SmartLinkingReviewModalComponent = ( {
 		linkSuggestion.applied = true;
 		await updateSmartLink( linkSuggestion );
 
+		console.log( 'applying link to block', block, linkSuggestion, anchor );
+
 		applyNodeToBlock( block, linkSuggestion, anchor );
 
 		// Update the block.

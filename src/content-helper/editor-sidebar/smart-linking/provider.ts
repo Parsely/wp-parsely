@@ -35,6 +35,7 @@ export type SmartLinkMatch = {
 	blockId: string;
 	blockPosition: number;
 	blockOffset: number;
+	blockLinkPosition: number;
 }
 
 /**

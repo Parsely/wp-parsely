@@ -65,23 +65,22 @@ function isInsideSimilarNode( node: Node, referenceNode: HTMLElement ): boolean 
 }
 
 /**
- * Finds all text nodes in an element that contain a given search text and are not within a similar node.
+ * Finds all text nodes in an element that contain a given search text.
  *
  * @since 3.15.0
  *
- * @param {Node}        element       The element to search within.
- * @param {string}      searchText    The text to search for.
- * @param {HTMLElement} referenceNode The reference node to compare against.
+ * @param {Node}   element    The element to search within.
+ * @param {string} searchText The text to search for.
  *
  * @return {Node[]} The text nodes that match the search text and are not within a similar node.
  */
-function findTextNodesNotInSimilarNode( element: Node, searchText: string, referenceNode: HTMLElement ): Node[] {
+function findTextNodes( element: Node, searchText: string ): Node[] {
 	const textNodes: Node[] = [];
 	const walker = document.createTreeWalker( element, NodeFilter.SHOW_TEXT, null );
 
 	while ( walker.nextNode() ) {
 		const node = walker.currentNode;
-		if ( node.textContent && node.textContent.includes( searchText ) && ! isInsideSimilarNode( node, referenceNode ) ) {
+		if ( node.textContent && node.textContent.includes( searchText ) ) {
 			textNodes.push( node );
 		}
 	}
@@ -109,12 +108,21 @@ export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNod
 		return;
 	}
 
-	const textNodes = findTextNodesNotInSimilarNode( contentElement, link.text, htmlNode );
+	const textNodes = findTextNodes( contentElement, link.text );
+
 	let occurrenceCount = 0;
 	let hasAddedNode = false;
 
 	textNodes.forEach( ( node ) => {
-		if ( ! node.textContent || isInsideSimilarNode( node, htmlNode ) || hasAddedNode ) {
+		if ( ! node.textContent || hasAddedNode ) {
+			return;
+		}
+
+		if ( isInsideSimilarNode( node, htmlNode ) ) {
+			// Check if the node content contains the link text, and if so increase the occurrence count.
+			if ( node.textContent?.includes( link.text ) ) {
+				occurrenceCount++;
+			}
 			return;
 		}
 
@@ -151,14 +159,13 @@ export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNod
 }
 
 export function sortSmartLinks( smartLinks: SmartLink[] ): SmartLink[] {
-	console.log( 'sorting smart links' );
 	// Break-down in two buckets: applied and not applied
 	const appliedLinks = smartLinks.filter( ( link ) => link.applied );
 	const notAppliedLinks = smartLinks.filter( ( link ) => ! link.applied );
 
-	const sortByBlockPosition = ( a: SmartLink, b:SmartLink ) => {
+	const sortByBlockPosition = ( a: SmartLink, b: SmartLink ) => {
 		if ( a.match!.blockPosition === b.match!.blockPosition ) {
-			return a.match!.blockOffset - b.match!.blockOffset;
+			return a.match!.blockLinkPosition - b.match!.blockLinkPosition;
 		}
 		return a.match!.blockPosition - b.match!.blockPosition;
 	};
@@ -171,12 +178,15 @@ export function sortSmartLinks( smartLinks: SmartLink[] ): SmartLink[] {
 
 /**
  * Recursively collect all blocks into a flat array.
- * @param blocks     The array of blocks to flatten.
- * @param flatList   The array to collect into.
- * @param startIndex The starting index for the blocks at this level.
- * @return A flat array of all blocks with their position.
+ *
+ * @since 3.16.0
+ *
+ * @param {BlockInstance[]} blocks   The blocks to flatten.
+ * @param {BlockInstance[]} flatList The flat list of blocks.
+ *
+ * @return {BlockInstance[]} The flat list of blocks.
  */
-function flattenBlocks( blocks: BlockInstance[], flatList: BlockInstance[] = [], startIndex: number = 0 ): BlockInstance[] {
+function flattenBlocks( blocks: BlockInstance[], flatList: BlockInstance[] = [] ): BlockInstance[] {
 	blocks.forEach( ( block ) => {
 		if ( block.innerBlocks.length ) {
 			return flattenBlocks( block.innerBlocks, flatList );
@@ -186,101 +196,189 @@ function flattenBlocks( blocks: BlockInstance[], flatList: BlockInstance[] = [],
 	return flatList;
 }
 
-export function getAllSmartLinksInPost(): SmartLink[] {
-	const blocks = flattenBlocks( select( 'core/block-editor' ).getBlocks() );
-	const smartLinks: SmartLink[] = [];
+/**
+ * Represents the counts of occurrences and applications of links within text content.
+ *
+ * - `encountered`: The number of times a specific link text is encountered in the content.
+ * - `linked`: The number of times a link has been successfully applied for a specific link text.
+ *
+ * @since 3.14.1
+ */
+type LinkOccurrenceCounts = {
+	[key: string]: {
+		encountered: number;
+		linked: number;
+	};
+};
 
-	blocks.forEach( ( block: BlockInstance, blockIndex: number ) => {
-		const blockContent = getBlockContent( block );
-		const parser = new DOMParser();
-		const doc = parser.parseFromString( blockContent, 'text/html' );
-		const links = Array.from( doc.querySelectorAll( 'a[data-smartlink]' ) as NodeListOf<HTMLAnchorElement> );
+/**
+ * Iterates through blocks of content to apply smart link suggestions based on their text content and specific offset.
+ *
+ * This function processes each block's content to identify and handle text nodes that match provided link suggestions.
+ * It filters out self-referencing links based on the given post permalink, avoids inserting links within existing anchor
+ * elements, and respects the specified offset for each link to determine the correct block.
+ *
+ * Note: The function is recursive for blocks containing inner blocks, ensuring all nested content is processed.
+ *
+ * @since 3.15.0
+ *
+ * @param {Readonly<BlockInstance>[]} blocks           The blocks of content where links should be applied.
+ * @param {SmartLink[]}               links            An array of link suggestions to apply to the content.
+ * @param {LinkOccurrenceCounts}      occurrenceCounts An object to keep track of the number of times each link text has
+ *                                                     been encountered and applied across all blocks.
+ * @param {number}                    currentIndex     The current index of the block being processed.
+ *
+ * @return {SmartLink[]} The filtered array of link suggestions that have been successfully applied to the content.
+ */
+export function calculateSmartLinkingMatches(
+	blocks: Readonly<BlockInstance>[],
+	links: SmartLink[],
+	occurrenceCounts: LinkOccurrenceCounts = {},
+	currentIndex: number = 0
+): SmartLink[] {
+	blocks.forEach( ( block, index ) => {
+		const currentBlockIndex = currentIndex + index;
+
+		if ( block.innerBlocks?.length ) {
+			calculateSmartLinkingMatches( block.innerBlocks, links, occurrenceCounts, currentBlockIndex );
+			return;
+		}
+
+		if ( ! block.originalContent ) {
+			return;
+		}
+
+		const blockContent: string = getBlockContent( block );
+		const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
+		const contentElement = doc.body.firstChild;
+
+		if ( ! ( contentElement instanceof HTMLElement ) ) {
+			return;
+		}
+
+		const fullContent = contentElement.innerHTML;
 
 		links.forEach( ( link ) => {
-			const uid = link.getAttribute( 'data-smartlink' ) ?? '';
-			const href = link.href;
-			const text = link.textContent ?? '';
-			const title = link.title;
+			const textNodes = findTextNodesNotInAnchor( contentElement, link.text );
+			const occurrenceKey = `${ link.text }#${ link.offset }`;
+			occurrenceCounts[ occurrenceKey ] = occurrenceCounts[ occurrenceKey ] || { encountered: 0, linked: 0 };
 
-			const smartLink: SmartLink = {
-				uid,
-				href,
-				text,
-				title,
-				applied: true,
-				offset: -1,
-				match: {
-					blockId: block.clientId,
-					blockPosition: blockIndex,
-					blockOffset: -1,
-				},
-			};
+			let cumulativeTextLength = 0;
+			let blockOffsetCounter = 0;
 
-			smartLinks.push( smartLink );
+			textNodes.forEach( ( node ) => {
+				const regex = new RegExp( escapeRegExp( link.text ), 'g' );
+				let match;
+				const nodeText = node.textContent ?? '';
+				const startPosition = fullContent.indexOf( nodeText, cumulativeTextLength );
+
+				while ( ( match = regex.exec( nodeText ) ) !== null ) {
+					const occurrenceCount = occurrenceCounts[ occurrenceKey ];
+					occurrenceCount.encountered++;
+					blockOffsetCounter++;
+
+					if ( occurrenceCount.encountered - 1 === link.offset && occurrenceCount.linked < 1 ) {
+						occurrenceCount.linked++;
+						link.match = {
+							blockId: block.clientId,
+							blockOffset: blockOffsetCounter - 1,
+							blockPosition: currentBlockIndex,
+							blockLinkPosition: startPosition + match.index,
+						};
+					}
+				}
+
+				cumulativeTextLength += nodeText.length;
+			} );
 		} );
 	} );
 
-	return smartLinks;
+	return links;
 }
 
-/**
- * Count the occurrences of a substring in a string.
- * @param {string} string    The string to search within.
- * @param {string} substring The substring to count.
- * @return {number} The number of occurrences.
- */
-function countOccurrences( string: string, substring: string ): number {
-	return string.split( substring ).length - 1;
-}
-
-/**
- * Calculate the offset of a link in a block. The offset represents the number of the occurrence of the link text in the block content.
- * @param link
- * @param block
- * @param content
- */
-function calculateOffset( link: SmartLink, content: string ): number {
+export function getAllSmartLinksInPost(): SmartLink[] {
+	const blocks = flattenBlocks( select( 'core/block-editor' ).getBlocks() );
+	const postContent = select( 'core/editor' ).getEditedPostContent();
 	const parser = new DOMParser();
-	const doc = parser.parseFromString( content, 'text/html' );
-	const body = doc.body;
+	const doc = parser.parseFromString( postContent, 'text/html' );
+	const allLinks = Array.from( doc.querySelectorAll( 'a[data-smartlink]' ) as NodeListOf<HTMLAnchorElement> );
+	const smartLinks: SmartLink[] = [];
 
-	// Function to recursively collect all text nodes
-	function collectTextNodes( element: Node, textNodes: Text[] ): void {
-		for ( let node = element.firstChild; node; node = node.nextSibling ) {
-			if ( node.nodeType === Node.TEXT_NODE ) {
-				textNodes.push( node as Text );
-			} else if ( node.nodeType === Node.ELEMENT_NODE ) {
-				collectTextNodes( node, textNodes );
-			}
+	allLinks.forEach( ( link ) => {
+		const uid = link.getAttribute( 'data-smartlink' ) ?? '';
+		const href = link.href;
+		const text = link.textContent ?? '';
+		const title = link.title;
+
+		// Find the block this link belongs to.
+		const block = blocks.find(
+			( blockInstance ) => getBlockContent( blockInstance ).includes( uid )
+		);
+
+		if ( ! block ) {
+			return;
 		}
-	}
 
-	const textNodes: Text[] = [];
-	collectTextNodes( body, textNodes );
+		const blockIndex = blocks.indexOf( block );
 
-	let occurrence = 0;
-	let foundTargetLink = false;
+		const smartLink: SmartLink = {
+			uid,
+			href,
+			text,
+			title,
+			applied: true,
+			offset: getLinkOffset( link, doc ),
+			match: {
+				blockId: block?.clientId ?? '',
+				blockPosition: blockIndex,
+				blockOffset: -1,
+				blockLinkPosition: -1,
+			},
+		};
 
-	// Check each text node for occurrences of the link's text
-	textNodes.forEach( ( node ) => {
-		const parentElement = node.parentNode as Element;
-		const index = node.textContent!.indexOf( link.text );
-		if ( index !== -1 ) {
-			// Check if this text node is part of an <a> element with the correct UID
-			if ( parentElement.tagName === 'A' && parentElement.getAttribute( 'data-smartlink' ) === link.uid ) {
-				foundTargetLink = true;
-			}
-
-			if ( ! foundTargetLink ) {
-				occurrence++;
-			}
-		}
+		smartLinks.push( smartLink );
 	} );
 
-	if ( ! foundTargetLink ) {
-		console.error( 'Link with the specified UID not found' );
+	return calculateSmartLinkingMatches( blocks, smartLinks );
+}
+
+function getLinkOffset( link: HTMLAnchorElement, document: Document ): number {
+	const smartLinkValue = link.dataset.smartlink;
+	const linkText = link.textContent?.trim();
+
+	if ( ! smartLinkValue ) {
+		return -1;
+	}
+	if ( ! linkText ) {
 		return -1;
 	}
 
-	return occurrence;
+	let occurrence = 0;
+
+	const treeWalker = document.createTreeWalker( document.body, NodeFilter.SHOW_TEXT );
+	while ( treeWalker.nextNode() ) {
+		const textNode = treeWalker.currentNode as Text;
+		const nodeValue = textNode.nodeValue ?? '';
+		let pos = nodeValue.indexOf( linkText );
+
+		while ( pos !== -1 ) {
+			if ( isLinkAtNode( textNode, smartLinkValue ) ) {
+				return occurrence;
+			}
+
+			// Move to next occurrence of linkText in the current text node
+			pos = nodeValue.indexOf( linkText, pos + linkText.length );
+			occurrence++;
+		}
+	}
+
+	return -1;
+}
+
+function isLinkAtNode( textNode: Text, smartLinkValue: string ): boolean {
+	let parentNode: Node | null = textNode;
+	while ( parentNode && ! ( parentNode instanceof HTMLAnchorElement ) ) {
+		parentNode = parentNode.parentNode;
+	}
+	return parentNode instanceof HTMLAnchorElement && parentNode.dataset.smartlink === smartLinkValue;
 }

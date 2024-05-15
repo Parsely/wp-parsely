@@ -2,7 +2,6 @@
  * WordPress dependencies
  */
 // eslint-disable-next-line import/named
-import { BlockInstance, getBlockContent } from '@wordpress/blocks';
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
 import { dispatch, useDispatch, useSelect } from '@wordpress/data';
@@ -22,22 +21,7 @@ import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
 import { SmartLink, SmartLinkingProvider } from './provider';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
-import { escapeRegExp, findTextNodesNotInAnchor, getAllSmartLinksInPost } from './utils';
-
-/**
- * Represents the counts of occurrences and applications of links within text content.
- *
- * - `encountered`: The number of times a specific link text is encountered in the content.
- * - `linked`: The number of times a link has been successfully applied for a specific link text.
- *
- * @since 3.14.1
- */
-type LinkOccurrenceCounts = {
-	[key: string]: {
-		encountered: number;
-		linked: number;
-	};
-};
+import { calculateSmartLinkingMatches, getAllSmartLinksInPost } from './utils';
 
 /**
  * Defines the props structure for SmartLinkingPanel.
@@ -175,8 +159,9 @@ export const SmartLinkingPanel = ( {
 	useEffect( () => {
 		if ( ! ready ) {
 			const existingSmartLinks = getAllSmartLinksInPost();
-			addSmartLinks( existingSmartLinks );
-			setIsReady( true );
+			addSmartLinks( existingSmartLinks ).then( () => {
+				setIsReady( true );
+			} );
 		}
 	}, [ addSmartLinks, ready, setIsReady ] );
 
@@ -413,81 +398,6 @@ export const SmartLinkingPanel = ( {
 		}
 
 		return generatedLinks;
-	};
-
-	/**
-	 * Iterates through blocks of content to apply smart link suggestions based on their text content and specific offset.
-	 *
-	 * This function processes each block's content to identify and handle text nodes that match provided link suggestions.
-	 * It filters out self-referencing links based on the given post permalink, avoids inserting links within existing anchor
-	 * elements, and respects the specified offset for each link to determine the correct block.
-	 *
-	 * Note: The function is recursive for blocks containing inner blocks, ensuring all nested content is processed.
-	 *
-	 * @since 3.15.0
-	 *
-	 * @param {Readonly<BlockInstance>[]} blocks           The blocks of content where links should be applied.
-	 * @param {SmartLink[]}               links            An array of link suggestions to apply to the content.
-	 * @param {LinkOccurrenceCounts}      occurrenceCounts An object to keep track of the number of times each link text has
-	 *                                                     been encountered and applied across all blocks.
-	 * @param {number}                    currentIndex     The current index of the block being processed.
-	 *
-	 * @return {SmartLink[]} The filtered array of link suggestions that have been successfully applied to the content.
-	 */
-	const calculateSmartLinkingMatches = (
-		blocks: Readonly<BlockInstance>[],
-		links: SmartLink[],
-		occurrenceCounts: LinkOccurrenceCounts,
-		currentIndex: number = 0
-	): SmartLink[] => {
-		blocks.forEach( ( block, index ) => {
-			const currentBlockIndex = currentIndex + index;
-			// Handle inner blocks.
-			if ( block.innerBlocks?.length ) {
-				calculateSmartLinkingMatches( block.innerBlocks, links, occurrenceCounts, currentBlockIndex );
-				return;
-			}
-
-			// Skip blocks without original content.
-			if ( ! block.originalContent ) {
-				return;
-			}
-
-			const blockContent: string = getBlockContent( block );
-			const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
-			const contentElement = doc.body.firstChild;
-
-			if ( ! ( contentElement instanceof HTMLElement ) ) {
-				return;
-			}
-
-			links.forEach( ( link ) => {
-				const textNodes = findTextNodesNotInAnchor( contentElement, link.text );
-				const occurrenceKey = `${ link.text }#${ link.offset }`;
-				occurrenceCounts[ occurrenceKey ] = occurrenceCounts[ occurrenceKey ] || { encountered: 0, linked: 0 };
-				let localCount = 0;
-
-				textNodes.forEach( ( node ) => {
-					const regex = new RegExp( escapeRegExp( link.text ), 'g' );
-					while ( regex.exec( node.textContent ?? '' ) !== null ) {
-						const occurrenceCount = occurrenceCounts[ occurrenceKey ];
-						occurrenceCount.encountered++;
-						localCount++;
-
-						if ( occurrenceCount.encountered === link.offset + 1 && occurrenceCount.linked < 1 ) {
-							occurrenceCount.linked++;
-							link.match = {
-								blockId: block.clientId,
-								blockOffset: localCount - 1,
-								blockPosition: currentBlockIndex,
-							};
-						}
-					}
-				} );
-			} );
-		} );
-
-		return links;
 	};
 
 	/**
