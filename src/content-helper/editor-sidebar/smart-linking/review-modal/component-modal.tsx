@@ -108,16 +108,12 @@ const SmartLinkingReviewModalComponent = ( {
 			return;
 		}
 
+		// Apply and updates the block content.
+		applyNodeToBlock( block, linkSuggestion, anchor );
+
 		// Update the smart link in the store
 		linkSuggestion.applied = true;
 		await updateSmartLink( linkSuggestion );
-
-		console.log( 'applying link to block', block, linkSuggestion, anchor );
-
-		applyNodeToBlock( block, linkSuggestion, anchor );
-
-		// Update the block.
-		dispatch( 'core/block-editor' ).updateBlock( blockId, block );
 	};
 
 	/**
@@ -128,7 +124,7 @@ const SmartLinkingReviewModalComponent = ( {
 	 * @param {BlockInstance} block          The block instance to remove the link from.
 	 * @param {SmartLink}     linkSuggestion The link suggestion to remove.
 	 */
-	const removeLinkFromBlock = ( block: BlockInstance, linkSuggestion: SmartLink ) => {
+	const removeLinkFromBlock = async ( block: BlockInstance, linkSuggestion: SmartLink ) => {
 		const blockId = block.clientId;
 		if ( ! block ) {
 			return;
@@ -157,13 +153,12 @@ const SmartLinkingReviewModalComponent = ( {
 				parentNode.replaceChild( textNode, anchorToRemove );
 
 				// Update the block content
-				block.attributes.content = contentElement.innerHTML;
-				dispatch( 'core/block-editor' ).updateBlock( blockId, block );
+				dispatch( 'core/block-editor' ).updateBlockAttributes( blockId, { content: contentElement.innerHTML } );
 			}
 		}
 
 		// Remove the link from the store.
-		removeSmartLink( linkSuggestion.uid );
+		await removeSmartLink( linkSuggestion.uid );
 	};
 
 	/**
@@ -236,29 +231,29 @@ const SmartLinkingReviewModalComponent = ( {
 	 *
 	 * @since 3.15.0
 	 */
-	const onAcceptHandler = () => {
+	const onAcceptHandler = async () => {
 		if ( ! selectedLink.match ) {
 			return;
 		}
+
 		onAppliedLink( selectedLink );
-		applyLinkToBlock( selectedLink.match.blockId, selectedLink )
-			.then( () => {
-				// If there are no more suggested links, close the modal.
-				if ( suggestedLinks().length === 0 ) {
-					onCloseHandler();
-					return;
-				}
+		await applyLinkToBlock( selectedLink.match.blockId, selectedLink );
 
-				const currentIndex = smartLinks.indexOf( selectedLink );
-				const nextIndex = currentIndex + 1;
+		// If there are no more suggested links, close the modal.
+		if ( suggestedLinks().length === 0 ) {
+			onCloseHandler();
+			return;
+		}
 
-				// If there is a next link, select it, otherwise select the first link
-				if ( smartLinks[ nextIndex ] ) {
-					setSelectedLink( smartLinks[ nextIndex ] );
-				} else {
-					setSelectedLink( smartLinks[ 0 ] );
-				}
-			} );
+		const currentIndex = smartLinks.indexOf( selectedLink );
+		const nextIndex = currentIndex + 1;
+
+		// If there is a next link, select it, otherwise select the first link
+		if ( smartLinks[ nextIndex ] ) {
+			setSelectedLink( smartLinks[ nextIndex ] );
+		} else {
+			setSelectedLink( smartLinks[ 0 ] );
+		}
 	};
 
 	/**
@@ -266,7 +261,7 @@ const SmartLinkingReviewModalComponent = ( {
 	 *
 	 * @since 3.15.0
 	 */
-	const onRejectHandler = () => {
+	const onRejectHandler = async () => {
 		// Change to the next link.
 		const currentIndex = smartLinks.indexOf( selectedLink );
 		const nextIndex = currentIndex + 1;
@@ -283,7 +278,7 @@ const SmartLinkingReviewModalComponent = ( {
 			setSelectedLink( smartLinks[ nextIndex ] );
 		}
 
-		removeSmartLink( selectedLink.uid );
+		await removeSmartLink( selectedLink.uid );
 	};
 
 	/**
@@ -291,7 +286,7 @@ const SmartLinkingReviewModalComponent = ( {
 	 *
 	 * @since 3.15.0
 	 */
-	const onRemoveHandler = () => {
+	const onRemoveHandler = async () => {
 		if ( ! selectedLink.match ) {
 			return;
 		}
@@ -304,7 +299,7 @@ const SmartLinkingReviewModalComponent = ( {
 			const currentIndex = currentSmartLinks.indexOf( selectedLink );
 			const previousIndex = currentIndex - 1;
 
-			removeLinkFromBlock( block, selectedLink );
+			await removeLinkFromBlock( block, selectedLink );
 
 			currentSmartLinks = getSmartLinks();
 			if ( currentSmartLinks[ previousIndex ] ) {

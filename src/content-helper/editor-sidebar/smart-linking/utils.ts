@@ -1,8 +1,9 @@
 // eslint-disable-next-line import/named
-import { BlockInstance, getBlockContent, serialize } from '@wordpress/blocks';
-import { select } from '@wordpress/data';
-import { SmartLink } from './provider';
+import { BlockInstance, getBlockContent } from '@wordpress/blocks';
+import { dispatch, select } from '@wordpress/data';
+import { SmartLink, SmartLinkingProvider } from './provider';
 import { escapeRegExp } from '../../common/utils/functions';
+import { SmartLinkingStore } from './store';
 
 export { escapeRegExp } from '../../common/utils/functions';
 
@@ -40,6 +41,24 @@ export function findTextNodesNotInAnchor( element: HTMLElement, searchText: stri
 		textNodes.push( node );
 	}
 	return textNodes;
+}
+
+/**
+ * Checks if a smart link is present in a text node.
+ *
+ * @since 3.16.0
+ *
+ * @param {Text}   textNode     The text node to check.
+ * @param {string} smartLinkUID The smart link uid to check for.
+ *
+ * @return {boolean} Whether the smart link is present in the text node.
+ */
+function isLinkAtNode( textNode: Text, smartLinkUID: string ): boolean {
+	let parentNode: Node | null = textNode;
+	while ( parentNode && ! ( parentNode instanceof HTMLAnchorElement ) ) {
+		parentNode = parentNode.parentNode;
+	}
+	return parentNode instanceof HTMLAnchorElement && parentNode.dataset.smartlink === smartLinkUID;
 }
 
 /**
@@ -154,8 +173,9 @@ export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNod
 		}
 	} );
 
-	// Update the block content with the new content.
-	block.attributes.content = contentElement.innerHTML;
+	// Update the block content with the new content
+	dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { content: contentElement.innerHTML } );
+	return contentElement.innerHTML;
 }
 
 export function sortSmartLinks( smartLinks: SmartLink[] ): SmartLink[] {
@@ -343,10 +363,10 @@ export function getAllSmartLinksInPost(): SmartLink[] {
 }
 
 function getLinkOffset( link: HTMLAnchorElement, document: Document ): number {
-	const smartLinkValue = link.dataset.smartlink;
+	const smartLinkUID = link.dataset.smartlink;
 	const linkText = link.textContent?.trim();
 
-	if ( ! smartLinkValue ) {
+	if ( ! smartLinkUID ) {
 		return -1;
 	}
 	if ( ! linkText ) {
@@ -362,7 +382,7 @@ function getLinkOffset( link: HTMLAnchorElement, document: Document ): number {
 		let pos = nodeValue.indexOf( linkText );
 
 		while ( pos !== -1 ) {
-			if ( isLinkAtNode( textNode, smartLinkValue ) ) {
+			if ( isLinkAtNode( textNode, smartLinkUID ) ) {
 				return occurrence;
 			}
 
@@ -375,10 +395,116 @@ function getLinkOffset( link: HTMLAnchorElement, document: Document ): number {
 	return -1;
 }
 
-function isLinkAtNode( textNode: Text, smartLinkValue: string ): boolean {
-	let parentNode: Node | null = textNode;
-	while ( parentNode && ! ( parentNode instanceof HTMLAnchorElement ) ) {
-		parentNode = parentNode.parentNode;
+/**
+ * Validates and fixes smart links in a specific content.
+ *
+ * This function checks if the smart links in the store are still present in the post content.
+ * If a smart link is not found in the post content, it tries to find a link that matches the text,
+ * title and href of the smart link.
+ * And if the link is found, it restores the missing fields from the link (data-smartlink and title).
+ *
+ * @since 3.16.0
+ *
+ * @param {string}       content The post content to validate and fix smart links.
+ * @param {string|false} blockId The block ID to filter the smart links by.
+ *
+ * @return {Promise<SmartLink[]>} The missing smart links that were not found in the post content.
+ */
+export async function validateAndFixSmartLinks( content: string, blockId: string|false = false ): Promise<SmartLink[]> {
+	// Get the post content and all the smart links from the store
+	let smartLinks = select( SmartLinkingStore ).getSmartLinks();
+
+	// If a blockId is provided, filter out all the smart links that don't belong to the block
+	if ( blockId ) {
+		smartLinks = smartLinks.filter( ( smartLink ) => smartLink.match?.blockId === blockId );
 	}
-	return parentNode instanceof HTMLAnchorElement && parentNode.dataset.smartlink === smartLinkValue;
+
+	// Create a DOM from the post content
+	const parser = new DOMParser();
+	const doc = parser.parseFromString( content, 'text/html' );
+
+	const missingSmartLinks: SmartLink[] = [];
+
+	// Check for each smart link UID in the post content
+	smartLinks.forEach( ( smartLink ) => {
+		// Search for the link with the UID in the post content
+		const link = doc.querySelector( `a[data-smartlink="${ smartLink.uid }"]` );
+
+		// If the link is not found, add it to the missing smart links array
+		if ( ! link ) {
+			missingSmartLinks.push( smartLink );
+		}
+	} );
+
+	// For each missing smart link, try to find a link that matches the text, title and href
+	missingSmartLinks.forEach( ( missingSmartLink ) => {
+		if ( ! missingSmartLink.match?.blockId ) {
+			return;
+		}
+
+		// Get the block that contains the smart link
+		const block = select( 'core/block-editor' ).getBlock( missingSmartLink.match?.blockId );
+
+		if ( ! block ) {
+			return;
+		}
+
+		const blockContent: string = getBlockContent( block );
+		const blockDoc = new DOMParser().parseFromString( blockContent, 'text/html' );
+
+		const link = Array.from( blockDoc.querySelectorAll( 'a' ) ).find( ( a ) => {
+			return a.textContent === missingSmartLink.text &&
+				a.href === missingSmartLink.href &&
+				! a.hasAttribute( 'data-smartlink' );
+		} );
+
+		if ( ! link ) {
+			return;
+		}
+
+		// If the link is found, remove it from the missing smart links array
+		missingSmartLinks.splice( missingSmartLinks.indexOf( missingSmartLink ), 1 );
+
+		// Restore the missing fields from the link (data-smartlink and title).
+		link.setAttribute( 'data-smartlink', missingSmartLink.uid );
+		link.title = missingSmartLink.title;
+
+		// Update the block content with the new content
+		const paragraph = blockDoc.body.firstChild as HTMLElement;
+		dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { content: paragraph.innerHTML } );
+	} );
+
+	return missingSmartLinks;
+}
+
+/**
+ * Validates and fixes smart links in the post content.
+ *
+ * @since 3.16.0
+ */
+export async function validateAndFixSmartLinksInPost(): Promise<void> {
+	const postContent = select( 'core/editor' ).getEditedPostContent();
+	const missingLinks = await validateAndFixSmartLinks( postContent );
+
+	// Remove any missing smart-links that are not in the store
+	missingLinks.forEach( ( missingLink ) => {
+		dispatch( SmartLinkingStore ).removeSmartLink( missingLink.uid );
+	} );
+}
+
+/**
+ * Validates and fixes smart links in a block content.
+ *
+ * @since 3.16.0
+ *
+ * @param {BlockInstance} block The block instance to validate and fix smart links.
+ */
+export async function validateAndFixSmartLinksInBlock( block: BlockInstance ): Promise<void> {
+	const blockContent: string = getBlockContent( block );
+	const missingLinks = await validateAndFixSmartLinks( blockContent, block.clientId );
+
+	// Remove any missing smart-links that are not in the store
+	missingLinks.forEach( ( missingLink ) => {
+		dispatch( SmartLinkingStore ).removeSmartLink( missingLink.uid );
+	} );
 }

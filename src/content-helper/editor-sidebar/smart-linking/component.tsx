@@ -17,11 +17,18 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
 import { ContentHelperErrorCode } from '../../common/content-helper-error';
 import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
+import { LinkMonitor } from './component-link-monitor';
+import { useAfterSave, useValidateSmartLinksBeforeSave } from './hooks';
 import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
 import { SmartLink, SmartLinkingProvider } from './provider';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
-import { calculateSmartLinkingMatches, getAllSmartLinksInPost } from './utils';
+import {
+	calculateSmartLinkingMatches,
+	getAllSmartLinksInPost,
+	validateAndFixSmartLinksInBlock,
+	validateAndFixSmartLinksInPost,
+} from './utils';
 
 /**
  * Defines the props structure for SmartLinkingPanel.
@@ -67,6 +74,10 @@ export const SmartLinkingPanel = ( {
 	context = SmartLinkingPanelContext.Unknown,
 }: Readonly<SmartLinkingPanelProps> ): JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
+
+	// Saving hooks.
+	useValidateSmartLinksBeforeSave();
+
 	const setSettingsDebounced = useDebounce( setSettings, 500 );
 
 	const [ numAddedLinks, setNumAddedLinks ] = useState<number>( 0 );
@@ -486,6 +497,13 @@ export const SmartLinkingPanel = ( {
 
 	return (
 		<div className="wp-parsely-smart-linking">
+			<LinkMonitor
+				isDetectingEnabled={ false }
+				onLinkRemove={ ( changes ) => {
+					// When a link is removed, validate and fix any smart-link that got the data-smartlink attribute removed.
+					validateAndFixSmartLinksInBlock( changes.block );
+				} }
+			/>
 			<PanelRow className={ className }>
 				<div className="smart-linking-text">
 					{ __(
@@ -545,6 +563,7 @@ export const SmartLinkingPanel = ( {
 						<Button
 							onClick={ async () => {
 								// Update the smart links in the store.
+								await validateAndFixSmartLinksInPost();
 								const existingSmartLinks = getAllSmartLinksInPost();
 								await addSmartLinks( existingSmartLinks );
 								setIsReviewModalOpen( true );

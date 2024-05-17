@@ -117,7 +117,7 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 		if ( ! link.applied ) {
 			const mark = document.createElement( 'mark' );
 			mark.className = 'smart-linking-highlight';
-			applyNodeToBlock( blockInstance, linkSuggestion, mark );
+			blockInstance.attributes.content = applyNodeToBlock( blockInstance, linkSuggestion, mark );
 			return;
 		}
 
@@ -182,7 +182,7 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 		} );
 
 		return () => observer.disconnect();
-	}, [ clonedBlock, link ] );
+	}, [ clonedBlock, highlightLinkInBlock, link ] );
 
 	if ( ! block ) {
 		return <></>;

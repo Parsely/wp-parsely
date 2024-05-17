@@ -19,5 +19,8 @@ export interface GutenbergFunction {
 	getBlockParents( clientId: string ): string[];
 	getPermalink(): string | null;
 	getCurrentPostId(): number | undefined;
+	isSavingPost(): boolean;
+	isAutosavingPost(): boolean;
+	hasMetaBoxes(): boolean;
 }
 

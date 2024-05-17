@@ -18,7 +18,6 @@ import { getSettingsFromJson } from '../editor-sidebar';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from './component';
 import { initBlockOverlay } from './component-block-overlay';
 import './smart-linking.scss';
-import { getAllSmartLinksInPost } from './utils';
 
 export const DEFAULT_MAX_LINKS = 10;
 
@@ -112,9 +111,6 @@ const SmartLinkingPanelWithSettingsProvider = compose(
  * @since 3.14.0
  */
 export const initSmartLinking = (): void => {
-	//console.log( 'initSmartLinking' );
-	//const test = getAllSmartLinksInPost();
-	//console.log( test );
 	/**
 	 * Add smart linking inspector control panel to paragraph block.
 	 */
