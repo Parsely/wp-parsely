@@ -82,7 +82,6 @@ export const SmartLinkingPanel = ( {
 
 	const [ numAddedLinks, setNumAddedLinks ] = useState<number>( 0 );
 	const [ isReviewDone, setIsReviewDone ] = useState<boolean>( false );
-	const [ isReviewModalOpen, setIsReviewModalOpen ] = useState<boolean>( false );
 
 	const { createNotice } = useDispatch( 'core/notices' );
 
@@ -94,6 +93,7 @@ export const SmartLinkingPanel = ( {
 	const {
 		ready,
 		loading,
+		reviewModalIsOpen,
 		isFullContent,
 		overlayBlocks,
 		error,
@@ -109,6 +109,7 @@ export const SmartLinkingPanel = ( {
 		const {
 			isReady,
 			isLoading,
+			isReviewModalOpen,
 			getOverlayBlocks,
 			getSuggestedLinks,
 			getError,
@@ -125,6 +126,7 @@ export const SmartLinkingPanel = ( {
 		return {
 			ready: isReady(),
 			loading: isLoading(),
+			reviewModalIsOpen: isReviewModalOpen(),
 			error: getError(),
 			maxLinks: getMaxLinks(),
 			maxLinkWords: getMaxLinkWords(),
@@ -160,6 +162,7 @@ export const SmartLinkingPanel = ( {
 		setIsRetrying,
 		incrementRetryAttempt,
 		purgeSmartLinksSuggestions,
+		setIsReviewModalOpen,
 	} = useDispatch( SmartLinkingStore );
 
 	/**
@@ -576,9 +579,9 @@ export const SmartLinkingPanel = ( {
 				) }
 			</PanelRow>
 
-			{ isReviewModalOpen && (
+			{ reviewModalIsOpen && (
 				<SmartLinkingReviewModal
-					isOpen={ isReviewModalOpen }
+					isOpen={ reviewModalIsOpen }
 					onAppliedLink={ () => {
 						setNumAddedLinks( ( num ) => num + 1 );
 					}	}

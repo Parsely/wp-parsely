@@ -48,6 +48,7 @@ type SmartLinkingState = {
 	wasAlreadyClicked: boolean;
 	isRetrying: boolean;
 	retryAttempt: number;
+	isReviewModalOpen: boolean;
 };
 
 /********** Actions **********/
@@ -194,11 +195,16 @@ interface IncrementRetryAttemptAction {
 	type: 'INCREMENT_RETRY_ATTEMPT';
 }
 
+interface SetIsReviewModalOpenAction {
+	type: 'SET_IS_REVIEW_MODAL_OPEN';
+	isReviewModalOpen: boolean;
+}
+
 type ActionTypes = SetIsReadyAction | SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction |
 	AddOverlayBlockAction | RemoveOverlayBlockAction |SetFullContentAction |
 	SetErrorAction| SetWasAlreadyClickedAction | SetApplyToAction | IncrementRetryAttemptAction |
 	SetIsRetryingAction | SetSmartLinksAction | AddSmartLinkAction | AddSmartLinksAction | RemoveSmartLinkAction |
-	PurgeSmartLinksSuggestionsAction;
+	PurgeSmartLinksSuggestionsAction | SetIsReviewModalOpenAction;
 
 const defaultState: SmartLinkingState = {
 	isReady: false,
@@ -211,6 +217,7 @@ const defaultState: SmartLinkingState = {
 	overlayBlocks: [],
 	wasAlreadyClicked: false,
 	isRetrying: false,
+	isReviewModalOpen: false,
 	retryAttempt: 0,
 };
 
@@ -342,6 +349,11 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 					smartLinks:
 						sortSmartLinks( state.smartLinks.filter( ( link ) => link.applied ) ),
 				};
+			case 'SET_IS_REVIEW_MODAL_OPEN':
+				return {
+					...state,
+					isReviewModalOpen: action.isReviewModalOpen,
+				};
 			default:
 				return state;
 		}
@@ -470,6 +482,12 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				type: 'PURGE_SMART_LINKS_SUGGESTIONS',
 			};
 		},
+		setIsReviewModalOpen( isReviewModalOpen: boolean ): SetIsReviewModalOpenAction {
+			return {
+				type: 'SET_IS_REVIEW_MODAL_OPEN',
+				isReviewModalOpen,
+			};
+		},
 	},
 	selectors: {
 		isReady( state: SmartLinkingState ): boolean {
@@ -480,6 +498,9 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		},
 		isFullContent( state: SmartLinkingState ): boolean {
 			return state.fullContent;
+		},
+		isReviewModalOpen( state: SmartLinkingState ): boolean {
+			return state.isReviewModalOpen;
 		},
 		getApplyTo( state: SmartLinkingState ): ApplyToOptions|null {
 			return state.applyTo;
