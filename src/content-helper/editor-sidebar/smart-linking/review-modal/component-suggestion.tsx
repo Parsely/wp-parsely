@@ -1,5 +1,11 @@
 import { BlockInstance, cloneBlock, getBlockContent, getBlockType } from '@wordpress/blocks';
-import { Button, __experimentalDivider as Divider, Disabled, ExternalLink, MenuItem } from '@wordpress/components';
+import {
+	Button,
+	__experimentalDivider as Divider,
+	Disabled,
+	MenuItem,
+	Tooltip,
+} from '@wordpress/components';
 import { select as selectFn, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -7,7 +13,7 @@ import { arrowLeft, arrowRight, check, closeSmall, Icon, page } from '@wordpress
 import { filterURLForDisplay } from '@wordpress/url';
 import { GutenbergFunction } from '../../../../@types/gutenberg/types';
 import { SmartLink, SmartLinkingProvider } from '../provider';
-import { BlockEditorProvider, BlockList, ObserveTyping, WritingFlow } from '@wordpress/block-editor';
+import { BlockEditorProvider, BlockList } from '@wordpress/block-editor';
 import { SmartLinkingStore } from '../store';
 import { applyNodeToBlock } from '../utils';
 
@@ -290,58 +296,70 @@ export const ReviewSuggestion = ( {
 			<Divider />
 			<LinkDetails link={ link } />
 			<div className="review-controls">
-				<Button
-					disabled={ ! hasPrevious }
-					className="wp-parsely-review-suggestion-previous"
-					onClick={ onPrevious }
-					icon={ arrowLeft }>Previous</Button>
+				<Tooltip shortcut="←" text={ __( 'Previous', 'wp-parsely' ) } >
+					<Button
+						disabled={ ! hasPrevious }
+						className="wp-parsely-review-suggestion-previous"
+						onClick={ onPrevious }
+						icon={ arrowLeft }>
+						{ __( 'Previous', 'wp-parsely' ) }
+					</Button>
+				</Tooltip>
 				<div className="reviews-controls-middle">
 					{ ! isApplied && (
 						<>
-							<Button
-								className="wp-parsely-review-suggestion-reject"
-								icon={ closeSmall }
-								onClick={ onReject }
-								variant={ 'secondary' }>
-								Reject
-							</Button>
-							<Button
-								className="wp-parsely-review-suggestion-accept"
-								icon={ check }
-								onClick={ onAccept }
-								variant="secondary"
-							>
-								Accept
-							</Button>
+							<Tooltip shortcut="R" text={ __( 'Reject', 'wp-parsely' ) } >
+								<Button
+									className="wp-parsely-review-suggestion-reject"
+									icon={ closeSmall }
+									onClick={ onReject }
+									variant={ 'secondary' }>
+									{ __( 'Reject', 'wp-parsely' ) }
+								</Button>
+							</Tooltip>
+							<Tooltip shortcut="A" text={ __( 'Accept', 'wp-parsely' ) } >
+								<Button
+									className="wp-parsely-review-suggestion-accept"
+									icon={ check }
+									onClick={ onAccept }
+									variant="secondary"
+								>
+									{ __( 'Accept', 'wp-parsely' ) }
+								</Button>
+							</Tooltip>
 						</>
 					) }
 					{ isApplied && (
 						<>
-							<Button
-								className="wp-parsely-review-suggestion-reject"
-								icon={ closeSmall }
-								onClick={ onRemove }
-								variant={ 'secondary' }>
-								Remove
-							</Button>
+							<Tooltip shortcut="R" text={ __( 'Remove', 'wp-parsely' ) } >
+								<Button
+									className="wp-parsely-review-suggestion-reject"
+									icon={ closeSmall }
+									onClick={ onRemove }
+									variant={ 'secondary' }>
+									{ __( 'Remove', 'wp-parsely' ) }
+								</Button>
+							</Tooltip>
 							<Button
 								className="wp-parsely-review-suggestion-accept"
 								onClick={ onSelectInEditor }
 								variant="secondary"
 							>
-								Select in Editor
+								{ __( 'Select in Editor', 'wp-parsely' ) }
 							</Button>
 						</>
 					) }
 				</div>
-				<Button
-					disabled={ ! hasNext }
-					onClick={ onNext }
-					className="wp-parsely-review-suggestion-next"
-				>
-					Next
-					<Icon icon={ arrowRight } />
-				</Button>
+				<Tooltip shortcut="→" text={ __( 'Next', 'wp-parsely' ) } >
+					<Button
+						disabled={ ! hasNext }
+						onClick={ onNext }
+						className="wp-parsely-review-suggestion-next"
+					>
+						{ __( 'Next', 'wp-parsely' ) }
+						<Icon icon={ arrowRight } />
+					</Button>
+				</Tooltip>
 			</div>
 		</div>
 	);
