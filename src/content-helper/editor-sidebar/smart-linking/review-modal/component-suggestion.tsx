@@ -11,7 +11,7 @@ import {
 	Tooltip,
 } from '@wordpress/components';
 import { select as selectFn, useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { arrowLeft, arrowRight, check, closeSmall, Icon, page } from '@wordpress/icons';
 import { filterURLForDisplay } from '@wordpress/url';
@@ -23,7 +23,7 @@ import { GutenbergFunction } from '../../../../@types/gutenberg/types';
 import { SmartLink, SmartLinkingProvider } from '../provider';
 import { BlockEditorProvider, BlockList } from '@wordpress/block-editor';
 import { SmartLinkingStore } from '../store';
-import { applyNodeToBlock } from '../utils';
+import { applyNodeToBlock, trimURLForDisplay } from '../utils';
 
 /**
  * The props for the SuggestionBreadcrumb component.
@@ -274,9 +274,9 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
  */
 const LinkDetails = ( { link }: { link: SmartLink } ): JSX.Element => {
 	// Get the post type by the permalink
-	const displayUrl = filterURLForDisplay( link.href, 30 );
-
+	const [ displayUrl, setDisplayUrl ] = useState<string>( link.href );
 	const [ postType, setPostType ] = useState<string|undefined>( link.post_type );
+	const linkRef = useRef<HTMLButtonElement>( null );
 
 	const {
 		updateSmartLink,
@@ -290,20 +290,45 @@ const LinkDetails = ( { link }: { link: SmartLink } ): JSX.Element => {
 	 */
 	useEffect( () => {
 		if ( ! link.post_type ) {
+			setPostType( __( 'External', 'wp-parsely' ) );
 			SmartLinkingProvider.getInstance().getPostTypeByURL( link.href ).then( ( type ) => {
-				if ( ! type ) {
-					type = __( 'External', 'wp-parsely' );
+				if ( type ) {
+					setPostType( type );
 				}
-
-				setPostType( type );
 				link.post_type = type ?? 'external';
 				updateSmartLink( link );
 			} );
+		} else {
+			setPostType( link.post_type );
 		}
+	}, [ link, updateSmartLink ] );
+
+	/**
+	 * Trims the URL for display based on the container width.
+	 *
+	 * @since 3.16.0
+	 */
+	useEffect( () => {
+		const calculateTrimSize = () => {
+			if ( linkRef.current ) {
+				const containerWidth = linkRef.current.offsetWidth;
+				const averageCharWidth = 8; // Estimate or adjust based on actual character width
+				const maxLength = Math.floor( containerWidth / averageCharWidth );
+				setDisplayUrl( trimURLForDisplay( link.href, maxLength ) );
+			}
+		};
+
+		calculateTrimSize();
+
+		window.addEventListener( 'resize', calculateTrimSize );
+		return () => {
+			window.removeEventListener( 'resize', calculateTrimSize );
+		};
 	}, [ link ] );
 
 	return (
 		<MenuItem
+			ref={ linkRef }
 			info={ displayUrl }
 			iconPosition="left"
 			icon={ page }

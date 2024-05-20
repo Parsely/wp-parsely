@@ -328,8 +328,11 @@
 			margin-bottom: var(--grid-unit-20);
 
 			.components-menu-item__item {
-				word-wrap: break-word;
-				white-space: normal;
+				display: inline-block;
+				max-width: 100%; /* Adjust based on the container size */
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
 		}
 

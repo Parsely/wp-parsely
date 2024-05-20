@@ -508,3 +508,20 @@ export async function validateAndFixSmartLinksInBlock( block: BlockInstance ): P
 		dispatch( SmartLinkingStore ).removeSmartLink( missingLink.uid );
 	} );
 }
+
+export function trimURLForDisplay( url: string, maxLength: number ): string {
+	// Remove protocol (http, https) and www
+	const strippedUrl = url.replace( /(^\w+:|^)\/\//, '' ).replace( /^www\./, '' );
+
+	// If no maxLength is specified or the URL length is already less than maxLength, return the stripped URL
+	if ( ! maxLength || strippedUrl.length <= maxLength ) {
+		return strippedUrl;
+	}
+
+	// Calculate part lengths for trimming
+	const partLength = Math.floor( ( maxLength - 3 ) / 2 );
+	const start = strippedUrl.substring( 0, partLength );
+	const end = strippedUrl.substring( strippedUrl.length - partLength );
+
+	return `${ start }...${ end }`;
+}

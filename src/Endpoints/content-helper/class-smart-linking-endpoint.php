@@ -129,29 +129,28 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 
 		$post_id = 0;
 
-		if ( ( $cache = wp_cache_get( $url, 'wp_parsely_smart_link_url_to_postid' ) ) === false ) {
+		if ( ( $cache = wp_cache_get( $url, 'wp_parsely_smart_link_url_to_postid' ) ) !== false ) {
 			$post_id = $cache;
 		} else if ( function_exists( 'wpcom_vip_url_to_postid' ) ) {
 			$post_id =  wpcom_vip_url_to_postid( $url );
 		} else {
 			$post_id = url_to_postid( $url ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
+			wp_cache_set( $url, $post_id, 'wp_parsely_smart_link_url_to_postid' );
 		}
 
-		if ( 0 === $post_id ) {
-			return new WP_REST_Response( array(
-				'error' => array(
-					'name' => 'invalid_url',
-					'message' => 'Invalid URL',
-				),
-			), 400 );
-		}
-
-		return new WP_REST_Response( array(
+		$response = array(
 			'data' => array(
-				'post_id' => $post_id,
-				'post_type' => get_post_type( $post_id ),
+				'post_id' => false,
+				'post_type' => false,
 			),
-		), 200 );
+		);
+
+		if ( 0 !== $post_id ) {
+			$response['data']['post_id'] = $post_id;
+			$response['data']['post_type'] = get_post_type( $post_id );
+		}
+
+		return new WP_REST_Response( $response, 200 );
 	}
 
 	public function set_smart_links( WP_REST_Request $request ): string {
