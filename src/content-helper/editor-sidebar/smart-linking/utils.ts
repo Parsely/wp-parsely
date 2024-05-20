@@ -1,10 +1,16 @@
+/**
+ * WordPress dependencies
+ */
 // eslint-disable-next-line import/named
 import { BlockInstance, getBlockContent } from '@wordpress/blocks';
 import { dispatch, select } from '@wordpress/data';
-import { SmartLink, SmartLinkingProvider } from './provider';
+
+/**
+ * Internal dependencies
+ */
+import { SmartLink } from './provider';
 import { escapeRegExp } from '../../common/utils/functions';
 import { SmartLinkingStore } from './store';
-
 export { escapeRegExp } from '../../common/utils/functions';
 
 /**
@@ -74,7 +80,7 @@ function isLinkAtNode( textNode: Text, smartLinkUID: string ): boolean {
 function isInsideSimilarNode( node: Node, referenceNode: HTMLElement ): boolean {
 	let currentNode = node.parentNode;
 	while ( currentNode ) {
-		// Check by nodeName or any specific attribute
+		// Check by nodeName or any specific attribute.
 		if ( currentNode.nodeName === referenceNode.nodeName ) {
 			return true;
 		}
@@ -178,8 +184,19 @@ export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNod
 	return contentElement.innerHTML;
 }
 
+/**
+ * Sorts smart links based on their block position and link position within the block.
+ *
+ * The applied links are sorted after the not applied links.
+ *
+ * @since 3.16.0
+ *
+ * @param {SmartLink[]} smartLinks The smart links to sort.
+ *
+ * @return {SmartLink[]} The sorted smart links.
+ */
 export function sortSmartLinks( smartLinks: SmartLink[] ): SmartLink[] {
-	// Break-down in two buckets: applied and not applied
+	// Break-down in two buckets: applied and not applied.
 	const appliedLinks = smartLinks.filter( ( link ) => link.applied );
 	const notAppliedLinks = smartLinks.filter( ( link ) => ! link.applied );
 
@@ -223,6 +240,7 @@ function flattenBlocks( blocks: BlockInstance[], flatList: BlockInstance[] = [] 
  * - `linked`: The number of times a link has been successfully applied for a specific link text.
  *
  * @since 3.14.1
+ * @since 3.16.0 Moved from `content-helper/editor-sidebar/smart-linking/component.tsx`.
  */
 type LinkOccurrenceCounts = {
 	[key: string]: {
@@ -232,15 +250,15 @@ type LinkOccurrenceCounts = {
 };
 
 /**
- * Iterates through blocks of content to apply smart link suggestions based on their text content and specific offset.
+ * Iterates through blocks of content to calculate the correct block and offset for each link suggestion.
  *
  * This function processes each block's content to identify and handle text nodes that match provided link suggestions.
- * It filters out self-referencing links based on the given post permalink, avoids inserting links within existing anchor
- * elements, and respects the specified offset for each link to determine the correct block.
+ * It avoids inserting links within existing anchor and respects the specified offset for each link to determine the
+ * correct block.
  *
  * Note: The function is recursive for blocks containing inner blocks, ensuring all nested content is processed.
  *
- * @since 3.15.0
+ * @since 3.16.0
  *
  * @param {Readonly<BlockInstance>[]} blocks           The blocks of content where links should be applied.
  * @param {SmartLink[]}               links            An array of link suggestions to apply to the content.
@@ -248,7 +266,7 @@ type LinkOccurrenceCounts = {
  *                                                     been encountered and applied across all blocks.
  * @param {number}                    currentIndex     The current index of the block being processed.
  *
- * @return {SmartLink[]} The filtered array of link suggestions that have been successfully applied to the content.
+ * @return {SmartLink[]} The array of link suggestions that have been successfully applied to the content.
  */
 export function calculateSmartLinkingMatches(
 	blocks: Readonly<BlockInstance>[],
@@ -316,6 +334,18 @@ export function calculateSmartLinkingMatches(
 	return links;
 }
 
+/**
+ * Gets all smart links in the post content.
+ *
+ * This function parses the post content to find all the smart links in the post content. Each smart link is
+ * identified by the `data-smartlink` attribute in the anchor tag.
+ *
+ * After finding all the smart links, it calculates the correct block and offset for each link suggestion.
+ *
+ * @since 3.16.0
+ *
+ * @return {SmartLink[]} The smart links in the post content.
+ */
 export function getAllSmartLinksInPost(): SmartLink[] {
 	const blocks = flattenBlocks( select( 'core/block-editor' ).getBlocks() );
 	const postContent = select( 'core/editor' ).getEditedPostContent();
@@ -351,8 +381,8 @@ export function getAllSmartLinksInPost(): SmartLink[] {
 			match: {
 				blockId: block?.clientId ?? '',
 				blockPosition: blockIndex,
-				blockOffset: -1,
-				blockLinkPosition: -1,
+				blockOffset: -1, // Will be calculated later.
+				blockLinkPosition: -1, // Will be calculated later.
 			},
 		};
 
@@ -362,6 +392,19 @@ export function getAllSmartLinksInPost(): SmartLink[] {
 	return calculateSmartLinkingMatches( blocks, smartLinks );
 }
 
+/**
+ * Gets the offset of a link in the post content.
+ *
+ * This function calculates the offset of a link in the post content by counting the number of times the link text
+ * is encountered before the link in the post content.
+ *
+ * @since 3.16.0
+ *
+ * @param {HTMLAnchorElement} link     The link to calculate the offset for.
+ * @param {Document}          document The document to search the link in.
+ *
+ * @return {number} The offset of the link in the post content.
+ */
 function getLinkOffset( link: HTMLAnchorElement, document: Document ): number {
 	const smartLinkUID = link.dataset.smartlink;
 	const linkText = link.textContent?.trim();
@@ -386,7 +429,7 @@ function getLinkOffset( link: HTMLAnchorElement, document: Document ): number {
 				return occurrence;
 			}
 
-			// Move to next occurrence of linkText in the current text node
+			// Move to next occurrence of linkText in the current text node.
 			pos = nodeValue.indexOf( linkText, pos + linkText.length );
 			occurrence++;
 		}
@@ -411,38 +454,38 @@ function getLinkOffset( link: HTMLAnchorElement, document: Document ): number {
  * @return {Promise<SmartLink[]>} The missing smart links that were not found in the post content.
  */
 export async function validateAndFixSmartLinks( content: string, blockId: string|false = false ): Promise<SmartLink[]> {
-	// Get the post content and all the smart links from the store
+	// Get the post content and all the smart links from the store.
 	let smartLinks = select( SmartLinkingStore ).getSmartLinks();
 
-	// If a blockId is provided, filter out all the smart links that don't belong to the block
+	// If a blockId is provided, filter out all the smart links that don't belong to the block.
 	if ( blockId ) {
 		smartLinks = smartLinks.filter( ( smartLink ) => smartLink.match?.blockId === blockId );
 	}
 
-	// Create a DOM from the post content
+	// Create a DOM from the post content.
 	const parser = new DOMParser();
 	const doc = parser.parseFromString( content, 'text/html' );
 
 	const missingSmartLinks: SmartLink[] = [];
 
-	// Check for each smart link UID in the post content
+	// Check for each smart link UID in the post content.
 	smartLinks.forEach( ( smartLink ) => {
-		// Search for the link with the UID in the post content
+		// Search for the link with the UID in the post content.
 		const link = doc.querySelector( `a[data-smartlink="${ smartLink.uid }"]` );
 
-		// If the link is not found, add it to the missing smart links array
+		// If the link is not found, add it to the missing smart links array.
 		if ( ! link ) {
 			missingSmartLinks.push( smartLink );
 		}
 	} );
 
-	// For each missing smart link, try to find a link that matches the text, title and href
+	// For each missing smart link, try to find a link that matches the text, title and href.
 	missingSmartLinks.forEach( ( missingSmartLink ) => {
 		if ( ! missingSmartLink.match?.blockId ) {
 			return;
 		}
 
-		// Get the block that contains the smart link
+		// Get the block that contains the smart link.
 		const block = select( 'core/block-editor' ).getBlock( missingSmartLink.match?.blockId );
 
 		if ( ! block ) {
@@ -462,14 +505,14 @@ export async function validateAndFixSmartLinks( content: string, blockId: string
 			return;
 		}
 
-		// If the link is found, remove it from the missing smart links array
+		// If the link is found, remove it from the missing smart links array.
 		missingSmartLinks.splice( missingSmartLinks.indexOf( missingSmartLink ), 1 );
 
 		// Restore the missing fields from the link (data-smartlink and title).
 		link.setAttribute( 'data-smartlink', missingSmartLink.uid );
 		link.title = missingSmartLink.title;
 
-		// Update the block content with the new content
+		// Update the block content with the new content.
 		const paragraph = blockDoc.body.firstChild as HTMLElement;
 		dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { content: paragraph.innerHTML } );
 	} );
@@ -486,7 +529,7 @@ export async function validateAndFixSmartLinksInPost(): Promise<void> {
 	const postContent = select( 'core/editor' ).getEditedPostContent();
 	const missingLinks = await validateAndFixSmartLinks( postContent );
 
-	// Remove any missing smart-links that are not in the store
+	// Remove any missing smart-links that are not in the store.
 	missingLinks.forEach( ( missingLink ) => {
 		dispatch( SmartLinkingStore ).removeSmartLink( missingLink.uid );
 	} );
@@ -503,22 +546,32 @@ export async function validateAndFixSmartLinksInBlock( block: BlockInstance ): P
 	const blockContent: string = getBlockContent( block );
 	const missingLinks = await validateAndFixSmartLinks( blockContent, block.clientId );
 
-	// Remove any missing smart-links that are not in the store
+	// Remove any missing smart-links that are not in the store.
 	missingLinks.forEach( ( missingLink ) => {
 		dispatch( SmartLinkingStore ).removeSmartLink( missingLink.uid );
 	} );
 }
 
+/**
+ * Trims a URL for display, ensuring it fits within the specified maximum length.
+ *
+ * @since 3.16.0
+ *
+ * @param {string} url       The URL to trim.
+ * @param {number} maxLength The maximum length of the URL.
+ *
+ * @return {string} The trimmed URL.
+ */
 export function trimURLForDisplay( url: string, maxLength: number ): string {
-	// Remove protocol (http, https) and www
+	// Remove protocol (http, https) and www.
 	const strippedUrl = url.replace( /(^\w+:|^)\/\//, '' ).replace( /^www\./, '' );
 
-	// If no maxLength is specified or the URL length is already less than maxLength, return the stripped URL
+	// If no maxLength is specified or the URL length is already less than maxLength, return the stripped URL.
 	if ( ! maxLength || strippedUrl.length <= maxLength ) {
 		return strippedUrl;
 	}
 
-	// Calculate part lengths for trimming
+	// Calculate part lengths for trimming.
 	const partLength = Math.floor( ( maxLength - 3 ) / 2 );
 	const start = strippedUrl.substring( 0, partLength );
 	const end = strippedUrl.substring( strippedUrl.length - partLength );

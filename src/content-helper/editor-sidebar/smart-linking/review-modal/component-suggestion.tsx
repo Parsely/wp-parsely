@@ -14,7 +14,6 @@ import { select as selectFn, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { arrowLeft, arrowRight, check, closeSmall, Icon, page } from '@wordpress/icons';
-import { filterURLForDisplay } from '@wordpress/url';
 
 /**
  * Internal dependencies

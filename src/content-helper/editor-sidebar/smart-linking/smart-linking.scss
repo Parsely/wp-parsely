@@ -200,6 +200,20 @@
 		align-self: stretch;
 	}
 
+	.wp-parsely-link-suggestion-link-details {
+		text-align: left;
+		height: auto;
+		margin-bottom: var(--grid-unit-20);
+
+		.components-menu-item__item {
+			display: inline-block;
+			max-width: 100%; /* Adjust based on the container size */
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	}
+
 	.smart-linking-review-sidebar {
 		display: flex;
 		min-width: to_rem(220px);
@@ -240,11 +254,19 @@
 				box-shadow: none;
 			}
 
+			.smart-linking-menu-label {
+				display: flex;
+				align-items: center;
+				white-space: nowrap;
+				padding-left: var(--grid-unit-10);
+				color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+			}
+
 			&.is-selected {
 				background-color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
 				color: #fff;
 
-				.smart-linking-menu-label{
+				.smart-linking-menu-label {
 					color: #fff;
 				}
 			}
@@ -263,27 +285,6 @@
 				flex-grow: 1;
 				//margin-right: 10px;
 			}
-
-			.smart-linking-menu-label {
-				display: flex;
-				align-items: center;
-				white-space: nowrap;
-				padding-left: var(--grid-unit-10);
-				color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9))
-			}
-
-			/*.components-menu-item__item {
-				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-				display: inline;
-				text-align: left;
-			}*/
-
-			/*.components-menu-item__shortcut {
-				padding-left: var(--grid-unit-10);
-				color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9))
-			}*/
 		}
 	}
 
@@ -319,21 +320,7 @@
 		.components-divider {
 			width: to_rem(452px);
 			height: 1px;
-			border-color: #CCC;
-		}
-
-		.wp-parsely-link-suggestion-link-details {
-			text-align: left;
-			height: auto;
-			margin-bottom: var(--grid-unit-20);
-
-			.components-menu-item__item {
-				display: inline-block;
-				max-width: 100%; /* Adjust based on the container size */
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-			}
+			border-color: #ccc;
 		}
 
 		.review-controls {
@@ -365,9 +352,9 @@
 
 			.wp-parsely-review-suggestion-reject {
 				border-radius: 2px;
-				box-shadow: inset 0 0 0 1px var(--Gutenberg-Alert-Red, #CC1818);
-				background: var(--Gutenberg-White, #FFF);
-				color: var(--Gutenberg-Alert-Red, #CC1818);
+				box-shadow: inset 0 0 0 1px var(--Gutenberg-Alert-Red, #cc1818);
+				background: var(--Gutenberg-White, #fff);
+				color: var(--Gutenberg-Alert-Red, #cc1818);
 			}
 		}
 	}
@@ -402,7 +389,7 @@
 
 	.smart-linking-highlight {
 		border-radius: 2px;
-		background: hsla( var(--parsely-green-components), 0.5);
+		background: hsla(var(--parsely-green-components), 0.5);
 		mix-blend-mode: multiply;
 		text-decoration-line: underline;
 		color: var(--sidebar-black);

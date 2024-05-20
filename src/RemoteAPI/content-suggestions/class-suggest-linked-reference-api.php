@@ -73,13 +73,13 @@ class Suggest_Linked_Reference_API extends Content_Suggestions_Base_API {
 		// Convert the links to Smart_Link objects.
 		$links = array();
 		foreach ( $decoded->result as $link ) {
-			$link_obj         = new Smart_Link(
+			$link_obj = new Smart_Link(
 				esc_url( $link->canonical_url ),
 				esc_attr( $link->title ),
 				wp_kses_post( $link->text ),
 				$link->offset
 			);
-			$links[]          = $link_obj;
+			$links[]  = $link_obj;
 		}
 
 		return $links;

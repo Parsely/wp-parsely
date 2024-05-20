@@ -159,4 +159,37 @@ abstract class Base_Endpoint {
 
 		register_rest_route( 'wp-parsely/v1', $endpoint, $rest_route_args );
 	}
+
+	/**
+	 * Registers the endpoint's WP REST route with arguments.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param string                      $endpoint The endpoint's route.
+	 * @param string                      $callback The callback function to call when the endpoint is hit.
+	 * @param array<string>               $methods The HTTP methods to allow for the endpoint.
+	 * @param array<WP_HTTP_Request_Args> $args The arguments for the endpoint.
+	 */
+	public function register_endpoint_with_args(
+		string $endpoint,
+		string $callback,
+		array $methods = array( 'GET' ),
+		array $args = array()
+	): void {
+		if ( ! apply_filters( 'wp_parsely_enable_' . convert_endpoint_to_filter_key( $endpoint ) . '_endpoint', true ) ) {
+			return;
+		}
+
+		$rest_route_args = array(
+			array(
+				'methods'             => $methods,
+				'callback'            => array( $this, $callback ),
+				'permission_callback' => array( $this, 'is_available_to_current_user' ),
+				'args'                => $args,
+				'show_in_index'       => static::is_available_to_current_user(),
+			),
+		);
+
+		register_rest_route( 'wp-parsely/v1', $endpoint, $rest_route_args );
+	}
 }
