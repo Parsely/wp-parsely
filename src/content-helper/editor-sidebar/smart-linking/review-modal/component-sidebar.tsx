@@ -1,6 +1,13 @@
+/**
+ * WordPress dependencies
+ */
 import { MenuItem } from '@wordpress/components';
 import { useEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
 import { AiIcon } from '../../../common/icons/ai-icon';
 import { SmartLink } from '../provider';
 
@@ -10,6 +17,13 @@ type ReviewModalSidebarProps = {
 	setSelectedLink: ( link: SmartLink ) => void,
 };
 
+/**
+ * Sidebar component for the review modal.
+ *
+ * @since 3.16.0
+ *
+ * @param {ReviewModalSidebarProps} props The component props.
+ */
 export const ReviewModalSidebar = ( {
 	activeLink,
 	links,
@@ -20,6 +34,8 @@ export const ReviewModalSidebar = ( {
 
 	/**
 	 * Handles the scroll of the sidebar to the active link.
+	 *
+	 * @since 3.16.0
 	 */
 	useEffect( () => {
 		if ( activeLink ) {
@@ -45,6 +61,7 @@ export const ReviewModalSidebar = ( {
 			}
 		}
 	}, [ activeLink, links ] );
+
 	const label = (
 		<span className="smart-linking-menu-label">
 			{ __( 'NEW', 'wp-parsely' ) }

@@ -2,14 +2,14 @@
  * WordPress dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
-import { ContentHelperError } from '../../common/content-helper-error';
-import { DEFAULT_MAX_LINKS, DEFAULT_MAX_LINK_WORDS } from './smart-linking';
 
 /**
  * Internal dependencies
  */
+import { ContentHelperError } from '../../common/content-helper-error';
 import { SmartLink } from './provider';
 import { sortSmartLinks } from './utils';
+import { DEFAULT_MAX_LINKS, DEFAULT_MAX_LINK_WORDS } from './smart-linking';
 
 /**
  * Defines the props structure for SmartLinkingSettings.
@@ -56,7 +56,7 @@ type SmartLinkingState = {
 /**
  * Interface for the SetIsReadyAction.
  *
- * @since 3.15.0
+ * @since 3.16.0
  */
 interface SetIsReadyAction {
 	type: 'SET_IS_READY';
@@ -155,33 +155,58 @@ interface SetApplyToAction {
 /**
  * Interface for the SetIsRetryingAction.
  *
- * @since 3.15.0
+ * @since 3.16.0
  */
 interface SetIsRetryingAction {
 	type: 'SET_IS_RETRYING';
 	isRetrying: boolean;
 }
 
+/**
+ * Interface for the SetSmartLinksAction.
+ *
+ * @since 3.16.0
+ */
 interface SetSmartLinksAction {
 	type: 'SET_SMART_LINKS';
 	smartLinks: SmartLink[];
 }
 
+/**
+ * Interface for the AddSmartLinkAction.
+ *
+ * @since 3.16.0
+ */
 interface AddSmartLinkAction {
 	type: 'ADD_SMART_LINK';
 	smartLink: SmartLink;
 }
 
+/**
+ * Interface for the AddSmartLinksAction.
+ *
+ * @since 3.16.0
+ */
 interface AddSmartLinksAction {
 	type: 'ADD_SMART_LINKS';
 	smartLinks: SmartLink[];
 }
 
+/**
+ * Interface for the RemoveSmartLinkAction.
+ *
+ * @since 3.16.0
+ */
 interface RemoveSmartLinkAction {
 	type: 'REMOVE_SMART_LINK';
 	uid: string;
 }
 
+/**
+ * Interface for the PurgeSmartLinksSuggestionsAction.
+ *
+ * @since 3.16.0
+ */
 interface PurgeSmartLinksSuggestionsAction {
 	type: 'PURGE_SMART_LINKS_SUGGESTIONS';
 }
@@ -195,6 +220,11 @@ interface IncrementRetryAttemptAction {
 	type: 'INCREMENT_RETRY_ATTEMPT';
 }
 
+/**
+ * Interface for the SetIsReviewModalOpenAction.
+ *
+ * @since 3.16.0
+ */
 interface SetIsReviewModalOpenAction {
 	type: 'SET_IS_REVIEW_MODAL_OPEN';
 	isReviewModalOpen: boolean;
@@ -459,7 +489,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 			};
 		},
 		updateSmartLink( smartLink: SmartLink ): AddSmartLinkAction {
-			// Alias of addSmartLink
+			// Alias of addSmartLink.
 			return {
 				type: 'ADD_SMART_LINK',
 				smartLink,

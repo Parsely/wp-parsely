@@ -1,9 +1,22 @@
+/**
+ * WordPress dependencies
+ */
+// eslint-disable-next-line import/named
 import { BlockInstance } from '@wordpress/blocks';
 import { useEffect, useRef } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { debounce } from '@wordpress/compose';
 
+/**
+ * Internal dependencies
+ */
+import { GutenbergFunction } from '../../../@types/gutenberg/types';
+
+/**
+ * Defines the structure of a block change.
+ *
+ * @since 3.16.0
+ */
 type BlockChange = {
 	block: BlockInstance;
 	prevBlock: BlockInstance;
@@ -12,7 +25,18 @@ type BlockChange = {
 	changedLinks: HTMLAnchorElement[];
 };
 
-// Function to check blocks and detect changes
+/**
+ * Checks for changes in the blocks and calls the appropriate callback functions.
+ *
+ * The function compares the current blocks with the previous blocks and detects changes in the smart links.
+ *
+ * @since 3.16.0
+ *
+ * @param {BlockInstance[]} currentBlocks  The current blocks.
+ * @param {BlockInstance[]} previousBlocks The previous blocks.
+ *
+ * @return {BlockChange[]} The list of changes detected.
+ */
 const checkBlocks = (
 	currentBlocks: BlockInstance[],
 	previousBlocks: BlockInstance[]
@@ -27,7 +51,7 @@ const checkBlocks = (
 				return;
 			}
 
-			// Check inner blocks recursively
+			// Check inner blocks recursively.
 			if ( block.innerBlocks.length > 0 ) {
 				return traverseBlocks( block.innerBlocks, prevBlocks[ index ].innerBlocks );
 			}
@@ -38,11 +62,11 @@ const checkBlocks = (
 				const blockDOM = domParser.parseFromString( block.attributes.content || '', 'text/html' );
 				const prevBlockDOM = domParser.parseFromString( prevBlock?.attributes.content || '', 'text/html' );
 
-				// Get all smart links in the block and previous block
+				// Get all smart links in the block and previous block.
 				const smartLinks = Array.from( blockDOM.querySelectorAll( 'a[data-smartlink]' ) ) as HTMLAnchorElement[];
 				const prevSmartLinks = Array.from( prevBlockDOM.querySelectorAll( 'a[data-smartlink]' ) ) as HTMLAnchorElement[];
 
-				// Compare and make a list of added, removed, and changed smart links
+				// Compare and make a list of added, removed, and changed smart links.
 				const addedLinks = smartLinks.filter(
 					( link ) => ! prevSmartLinks.some(
 						( prevLink ) => prevLink.dataset.smartlink === link.dataset.smartlink
@@ -72,8 +96,18 @@ const checkBlocks = (
 	return changesDetected;
 };
 
+/**
+ * Defines the callback function for the block change.
+ *
+ * @since 3.16.0
+ */
 type onChangeCallback = ( change: BlockChange ) => void;
 
+/**
+ * The LinkMonitor component props.
+ *
+ * @since 3.16.0
+ */
 type LinkMonitorProps = {
 	isDetectingEnabled: boolean;
 	onLinkChange?: onChangeCallback;
@@ -82,6 +116,15 @@ type LinkMonitorProps = {
 	debounceValue?: number;
 };
 
+/**
+ * The LinkMonitor component.
+ *
+ * This component monitors the changes in the blocks and detects the changes in the smart links.
+ *
+ * @since 3.16.0
+ *
+ * @param {LinkMonitorProps} props The component props.
+ */
 export const LinkMonitor = ( {
 	isDetectingEnabled,
 	onLinkChange,
@@ -138,7 +181,7 @@ export const LinkMonitor = ( {
 		return () => {
 			debouncedCheckBlocks.cancel();
 		};
-	}, [ blocks, isDetectingEnabled, onLinkAdd, onLinkChange, onLinkRemove ] );
+	}, [ blocks, debounceValue, isDetectingEnabled, onLinkAdd, onLinkChange, onLinkRemove ] );
 
 	return null;
 };

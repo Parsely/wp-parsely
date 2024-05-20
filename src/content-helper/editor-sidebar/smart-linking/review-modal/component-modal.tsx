@@ -1,23 +1,40 @@
+/**
+ * WordPress dependencies
+ */
 // eslint-disable-next-line import/named
 import { BlockInstance, getBlockContent } from '@wordpress/blocks';
 import { Button, KeyboardShortcuts, Modal } from '@wordpress/components';
 import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
 import { memo, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { GutenbergFunction } from '../../../../@types/gutenberg/types';
 
+/**
+ * Internal dependencies
+ */
 import { SmartLink } from '../provider';
 import { SmartLinkingStore } from '../store';
 import { applyNodeToBlock } from '../utils';
 import { ReviewModalSidebar } from './component-sidebar';
 import { ReviewSuggestion } from './component-suggestion';
 
+/**
+ * The props for the SmartLinkingReviewModal component.
+ *
+ * @since 3.16.0
+ */
 export type SmartLinkingReviewModalProps = {
 	onClose: () => void,
 	isOpen: boolean,
 	onAppliedLink: ( link: SmartLink ) => void,
 };
 
+/**
+ * The SmartLinkingReviewModal component displays a modal to review and apply smart links.
+ *
+ * @since 3.16.0
+ *
+ * @param {SmartLinkingReviewModalProps} props The component props.
+ */
 const SmartLinkingReviewModalComponent = ( {
 	onClose,
 	isOpen,
@@ -26,17 +43,10 @@ const SmartLinkingReviewModalComponent = ( {
 	const [ showCloseDialog, setShowCloseDialog ] = useState<boolean>( false );
 	const [ isModalOpen, setIsModalOpen ] = useState<boolean>( isOpen );
 
-	const { postId } = useSelect( ( selectFn ) => {
-		const { getCurrentPostId } = selectFn( 'core/editor' ) as GutenbergFunction;
-		return {
-			postId: getCurrentPostId(),
-		};
-	}, [] );
-
 	/**
 	 * Loads the Smart Linking store selectors.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 */
 	const {
 		smartLinks,
@@ -57,7 +67,7 @@ const SmartLinkingReviewModalComponent = ( {
 	/**
 	 * Loads the Smart Linking store actions.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 */
 	const {
 		purgeSmartLinksSuggestions,
@@ -68,7 +78,7 @@ const SmartLinkingReviewModalComponent = ( {
 	/**
 	 * Sets the selected link when the suggested links change.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 */
 	useEffect( () => {
 		if ( isModalOpen && smartLinks.length === 0 ) {
@@ -82,7 +92,7 @@ const SmartLinkingReviewModalComponent = ( {
 	/**
 	 * Updates the modal state when the `isOpen` prop changes.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 */
 	useEffect( () => {
 		setIsModalOpen( isOpen );
@@ -91,7 +101,7 @@ const SmartLinkingReviewModalComponent = ( {
 	/**
 	 * Applies the link to the block.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 *
 	 * @param {string}    blockId        The block instance to apply the link to.
 	 * @param {SmartLink} linkSuggestion The link suggestion to apply.
@@ -111,7 +121,7 @@ const SmartLinkingReviewModalComponent = ( {
 		// Apply and updates the block content.
 		applyNodeToBlock( block, linkSuggestion, anchor );
 
-		// Update the smart link in the store
+		// Update the smart link in the store.
 		linkSuggestion.applied = true;
 		await updateSmartLink( linkSuggestion );
 	};
@@ -119,7 +129,7 @@ const SmartLinkingReviewModalComponent = ( {
 	/**
 	 * Removes a Smart Link from a block, using the unique identifier.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 *
 	 * @param {BlockInstance} block          The block instance to remove the link from.
 	 * @param {SmartLink}     linkSuggestion The link suggestion to remove.
@@ -145,14 +155,14 @@ const SmartLinkingReviewModalComponent = ( {
 
 		// Check if we found the anchor with the specified UID.
 		if ( anchors.length > 0 ) {
-			const anchorToRemove = anchors[ 0 ]; // Assuming UID is unique and there's only one match.
+			const anchorToRemove = anchors[ 0 ];
 			const parentNode = anchorToRemove.parentNode;
 			if ( parentNode ) {
-				// Replace the anchor with its text content
+				// Replace the anchor with its text content.
 				const textNode = document.createTextNode( anchorToRemove.textContent ?? '' );
 				parentNode.replaceChild( textNode, anchorToRemove );
 
-				// Update the block content
+				// Update the block content.
 				dispatch( 'core/block-editor' ).updateBlockAttributes( blockId, { content: contentElement.innerHTML } );
 			}
 		}
@@ -167,7 +177,7 @@ const SmartLinkingReviewModalComponent = ( {
 	 * If there are any pending links, a confirmation dialog is shown.
 	 * When the modal is closed, any pending suggestions are purged.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 */
 	const onCloseHandler = () => {
 		// Hide the modal.
@@ -188,7 +198,7 @@ const SmartLinkingReviewModalComponent = ( {
 	 *
 	 * If the user confirms the closing, the modal is closed.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 *
 	 * @param {boolean} shouldClose Whether the modal should be closed.
 	 */
@@ -204,6 +214,11 @@ const SmartLinkingReviewModalComponent = ( {
 		}
 	};
 
+	/**
+	 * Handles the selection of the next smart link.
+	 *
+	 * @since 3.16.0
+	 */
 	const handleNext = () => {
 		const currentIndex = smartLinks.indexOf( selectedLink );
 		const nextIndex = currentIndex + 1;
@@ -215,6 +230,11 @@ const SmartLinkingReviewModalComponent = ( {
 		setSelectedLink( smartLinks[ nextIndex ] );
 	};
 
+	/**
+	 * Handles the selection of the previous smart link.
+	 *
+	 * @since 3.16.0
+	 */
 	const handlePrevious = () => {
 		const currentIndex = getSmartLinks().indexOf( selectedLink );
 		const previousIndex = currentIndex - 1;
@@ -229,7 +249,7 @@ const SmartLinkingReviewModalComponent = ( {
 	/**
 	 * Handles the acceptance of a smart link.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 */
 	const onAcceptHandler = async () => {
 		if ( ! selectedLink.match ) {
@@ -248,7 +268,7 @@ const SmartLinkingReviewModalComponent = ( {
 		const currentIndex = smartLinks.indexOf( selectedLink );
 		const nextIndex = currentIndex + 1;
 
-		// If there is a next link, select it, otherwise select the first link
+		// If there is a next link, select it, otherwise select the first link.
 		if ( smartLinks[ nextIndex ] ) {
 			setSelectedLink( smartLinks[ nextIndex ] );
 		} else {
@@ -259,7 +279,7 @@ const SmartLinkingReviewModalComponent = ( {
 	/**
 	 * Handles the rejection of a smart link.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 */
 	const onRejectHandler = async () => {
 		// Change to the next link.
@@ -267,7 +287,7 @@ const SmartLinkingReviewModalComponent = ( {
 		const nextIndex = currentIndex + 1;
 
 		// Check if it exists. If not, try to go for the first one on the array.
-		// If there isn't any, close the modal
+		// If there isn't any, close the modal.
 		if ( ! smartLinks[ nextIndex ] ) {
 			if ( smartLinks[ 0 ] ) {
 				setSelectedLink( smartLinks[ 0 ] );
@@ -284,7 +304,7 @@ const SmartLinkingReviewModalComponent = ( {
 	/**
 	 * Handles the removal of a smart link.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 */
 	const onRemoveHandler = async () => {
 		if ( ! selectedLink.match ) {
@@ -313,19 +333,20 @@ const SmartLinkingReviewModalComponent = ( {
 	/**
 	 * Selects the link into the block editor.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 */
 	const onSelectedInEditorHandler = () => {
 		if ( ! selectedLink.match ) {
 			return;
 		}
+		// TODO
 
 		const block = select( 'core/block-editor' ).getBlock( selectedLink.match.blockId );
 		if ( block ) {
-			// Select the block in the editor
+			// Select the block in the editor.
 			dispatch( 'core/block-editor' ).selectBlock( block.clientId );
 
-			// Close the modal
+			// Close the modal.
 			onCloseHandler();
 		}
 	};
@@ -410,4 +431,9 @@ const SmartLinkingReviewModalComponent = ( {
 	);
 };
 
+/**
+ * The SmartLinkingReviewModal component, memoized for performance.
+ *
+ * @since 3.16.0
+ */
 export const SmartLinkingReviewModal = memo( SmartLinkingReviewModalComponent );

@@ -1,3 +1,7 @@
+/**
+ * WordPress dependencies
+ */
+// eslint-disable-next-line import/named
 import { BlockInstance, cloneBlock, getBlockContent, getBlockType } from '@wordpress/blocks';
 import {
 	Button,
@@ -11,15 +15,34 @@ import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { arrowLeft, arrowRight, check, closeSmall, Icon, page } from '@wordpress/icons';
 import { filterURLForDisplay } from '@wordpress/url';
+
+/**
+ * Internal dependencies
+ */
 import { GutenbergFunction } from '../../../../@types/gutenberg/types';
 import { SmartLink, SmartLinkingProvider } from '../provider';
 import { BlockEditorProvider, BlockList } from '@wordpress/block-editor';
 import { SmartLinkingStore } from '../store';
 import { applyNodeToBlock } from '../utils';
 
+/**
+ * The props for the SuggestionBreadcrumb component.
+ *
+ * @since 3.16.0
+ */
 type SuggestionBreadcrumbProps = {
 	link: SmartLink,
 };
+
+/**
+ * Displays the breadcrumb for the suggestion.
+ *
+ * It shows the parent blocks of the block where the link is found.
+ *
+ * @since 3.16.0
+ *
+ * @param {SuggestionBreadcrumbProps} props The component props.
+ */
 const SuggestionBreadcrumb = ( { link }: SuggestionBreadcrumbProps ): JSX.Element => {
 	const blockId = link.match?.blockId;
 
@@ -66,6 +89,11 @@ const SuggestionBreadcrumb = ( { link }: SuggestionBreadcrumbProps ): JSX.Elemen
 	);
 };
 
+/**
+ * The props for the Styles component.
+ *
+ * @since 3.16.0
+ */
 type StylesProps = {
 	styles: {
 		css?: string,
@@ -73,6 +101,16 @@ type StylesProps = {
 		__unstableType?: string,
 	}[],
 };
+
+/**
+ * The Styles component, which renders the editor styles for the block preview.
+ *
+ * This component replaces the body selector with the block editor selector.
+ *
+ * @since 3.16.0
+ *
+ * @param {StylesProps} props The component props.
+ */
 const Styles = ( { styles }: StylesProps ): JSX.Element => {
 	// Get onlt the theme and user styles.
 	const filteredStyles = styles
@@ -93,10 +131,23 @@ const Styles = ( { styles }: StylesProps ): JSX.Element => {
 	);
 };
 
+/**
+ * The props for the BlockPreview component.
+ *
+ * @since 3.16.0
+ */
 type BlockPreviewProps = {
 	block: BlockInstance,
 	link: SmartLink,
 }
+
+/**
+ * The BlockPreview component, which renders the block preview for the suggestion.
+ *
+ * @since 3.16.0
+ *
+ * @param {BlockPreviewProps} props The component props.
+ */
 const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 	const [ clonedBlock, setClonedBlock ] = useState<BlockInstance>( cloneBlock( block ) );
 
@@ -104,51 +155,17 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 	 * Runs when the block is updated.
 	 * It will update the cloned block with the new block.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 */
 	useEffect( () => {
 		setClonedBlock( cloneBlock( block ) );
 	}, [ block, link ] );
 
 	/**
-	 * Highlights the link in the block.
-	 *
-	 * @since 3.15.0
-	 *
-	 * @param {BlockInstance} blockInstance  The block instance to highlight the link in.
-	 * @param {SmartLink}     linkSuggestion The link suggestion to highlight.
-	 */
-	const highlightLinkInBlock = ( blockInstance: BlockInstance, linkSuggestion: SmartLink ) => {
-		// If the link is not applied, add a highlight with a new mark element.
-		if ( ! link.applied ) {
-			const mark = document.createElement( 'mark' );
-			mark.className = 'smart-linking-highlight';
-			blockInstance.attributes.content = applyNodeToBlock( blockInstance, linkSuggestion, mark );
-			return;
-		}
-
-		// Otherwise, if the link is applied, add a highlight class to the link element with the link uid
-		const blockContent: string = getBlockContent( blockInstance );
-
-		const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
-		const contentElement = doc.body.firstChild as HTMLElement;
-		if ( ! contentElement ) {
-			return;
-		}
-
-		const anchor = contentElement.querySelector<HTMLAnchorElement>( `a[data-smartlink="${ linkSuggestion.uid }"]` );
-		if ( anchor ) {
-			anchor.classList.add( 'smart-linking-highlight' );
-		}
-
-		blockInstance.attributes.content = contentElement.innerHTML;
-	};
-
-	/**
 	 * Runs when the block is rendered in the DOM.
-	 * It will set the block element to be non-editable.
+	 * It will set the block element to be non-editable and highlight the link in the block.
 	 *
-	 * @since 3.15.0
+	 * @since 3.16.0
 	 */
 	useEffect( () => {
 		const blockPreviewElement = document.querySelector( '.wp-parsely-preview-editor' );
@@ -156,6 +173,40 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 		if ( ! blockPreviewElement ) {
 			return;
 		}
+
+		/**
+		 * Highlights the link in the block.
+		 *
+		 * @since 3.16.0
+		 *
+		 * @param {BlockInstance} blockInstance  The block instance to highlight the link in.
+		 * @param {SmartLink}     linkSuggestion The link suggestion to highlight.
+		 */
+		const highlightLinkInBlock = ( blockInstance: BlockInstance, linkSuggestion: SmartLink ) => {
+			// If the link is not applied, add a highlight with a new mark element.
+			if ( ! link.applied ) {
+				const mark = document.createElement( 'mark' );
+				mark.className = 'smart-linking-highlight';
+				blockInstance.attributes.content = applyNodeToBlock( blockInstance, linkSuggestion, mark );
+				return;
+			}
+
+			// Otherwise, if the link is applied, add a highlight class to the link element with the link uid
+			const blockContent: string = getBlockContent( blockInstance );
+
+			const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
+			const contentElement = doc.body.firstChild as HTMLElement;
+			if ( ! contentElement ) {
+				return;
+			}
+
+			const anchor = contentElement.querySelector<HTMLAnchorElement>( `a[data-smartlink="${ linkSuggestion.uid }"]` );
+			if ( anchor ) {
+				anchor.classList.add( 'smart-linking-highlight' );
+			}
+
+			blockInstance.attributes.content = contentElement.innerHTML;
+		};
 
 		highlightLinkInBlock( clonedBlock, link );
 
@@ -188,7 +239,7 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 		} );
 
 		return () => observer.disconnect();
-	}, [ clonedBlock, highlightLinkInBlock, link ] );
+	}, [ clonedBlock, link ] );
 
 	if ( ! block ) {
 		return <></>;
@@ -214,6 +265,13 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 	);
 };
 
+/**
+ * The LinkDetails component, which renders the details of the link suggestion.
+ *
+ * @since 3.16.0
+ *
+ * @param {{link: SmartLink}} props The component props.
+ */
 const LinkDetails = ( { link }: { link: SmartLink } ): JSX.Element => {
 	// Get the post type by the permalink
 	const displayUrl = filterURLForDisplay( link.href, 30 );
@@ -224,6 +282,12 @@ const LinkDetails = ( { link }: { link: SmartLink } ): JSX.Element => {
 		updateSmartLink,
 	} = useDispatch( SmartLinkingStore );
 
+	/**
+	 * Fetches the post type by the permalink using the SmartLinkingProvider.
+	 * If the post type is not found, it will default to 'External'.
+	 *
+	 * @since 3.16.0
+	 */
 	useEffect( () => {
 		if ( ! link.post_type ) {
 			SmartLinkingProvider.getInstance().getPostTypeByURL( link.href ).then( ( type ) => {
@@ -251,6 +315,11 @@ const LinkDetails = ( { link }: { link: SmartLink } ): JSX.Element => {
 	);
 };
 
+/**
+ * The props for the ReviewSuggestion component.
+ *
+ * @since 3.16.0
+ */
 type ReviewSuggestionProps = {
 	link: SmartLink,
 	onNext: () => void,
@@ -263,6 +332,13 @@ type ReviewSuggestionProps = {
 	hasNext: boolean,
 };
 
+/**
+ * The ReviewSuggestion component, which renders the review suggestion UI.
+ *
+ * @since 3.16.0
+ *
+ * @param {ReviewSuggestionProps} props The component props.
+ */
 export const ReviewSuggestion = ( {
 	link,
 	onNext,

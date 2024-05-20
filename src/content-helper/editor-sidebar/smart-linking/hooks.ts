@@ -1,8 +1,15 @@
+/**
+ * WordPress dependencies
+ */
 import { useRef, useState, useEffect } from '@wordpress/element';
-import { dispatch, useDispatch, useSelect } from '@wordpress/data';
+import { dispatch, useSelect } from '@wordpress/data';
+import { store as editorStore } from '@wordpress/editor';
+
+/**
+ * Internal dependencies
+ */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { validateAndFixSmartLinksInPost } from './utils';
-import { store as editorStore } from '@wordpress/editor';
 
 /**
  * Returns `true` if the post is done saving, `false` otherwise.
