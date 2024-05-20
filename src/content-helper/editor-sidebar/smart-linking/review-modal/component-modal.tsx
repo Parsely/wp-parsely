@@ -339,12 +339,34 @@ const SmartLinkingReviewModalComponent = ( {
 		if ( ! selectedLink.match ) {
 			return;
 		}
-		// TODO
 
 		const block = select( 'core/block-editor' ).getBlock( selectedLink.match.blockId );
 		if ( block ) {
 			// Select the block in the editor.
 			dispatch( 'core/block-editor' ).selectBlock( block.clientId );
+
+			// Find the link element within the block.
+			const blockContent = document.querySelector( `[data-block="${ block.clientId }"]` );
+			if ( blockContent ) {
+				const ownerDocument = blockContent.ownerDocument;
+				const linkElement = blockContent.querySelector( `a[data-smartlink="${ selectedLink.uid }"]` ) as HTMLElement;
+				if ( linkElement ) {
+					// Set focus to the link element.
+					linkElement.focus();
+
+					// Select the link.
+					const range = ownerDocument.createRange();
+					if ( linkElement.firstChild ) {
+						range.setStart( linkElement.firstChild, 0 ); // Start at the beginning of the link text
+						range.setEndAfter( linkElement.firstChild );
+						const sel = ownerDocument.getSelection();
+						if ( sel ) {
+							sel.removeAllRanges();
+							sel.addRange( range );
+						}
+					}
+				}
+			}
 
 			// Close the modal.
 			onCloseHandler();
