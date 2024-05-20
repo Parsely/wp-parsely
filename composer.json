@@ -27,7 +27,7 @@
 		"phpstan/phpstan": "^1.4",
 		"rector/rector": "^1.0.0",
 		"szepeviktor/phpstan-wordpress": "^1.0",
-		"tomasvotruba/type-coverage": "^0.2.0",
+		"tomasvotruba/type-coverage": "^0.3.0",
 		"yoast/wp-test-utils": "^1"
 	},
 	"config": {

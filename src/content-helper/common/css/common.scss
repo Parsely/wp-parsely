@@ -74,12 +74,6 @@
 	.components-panel__body-title {
 		display: flex;
 		align-items: center;
-
-		/**
-		 * TODO: If no UI glitches are observed, remove commented gaps in all
-		 * SCSS files.
-		 */
-		// gap: var(--grid-unit-10);
 		align-self: stretch;
 		margin: 0 to_rem(-16px) to_rem(6px);
 		padding: 0;

@@ -1,5 +1,6 @@
 parameters:
-  checkGenericClassInNonGenericObjectType: false
+  ignoreErrors:
+    - identifier: missingType.generics
   level: 9
   paths:
     - bin/
