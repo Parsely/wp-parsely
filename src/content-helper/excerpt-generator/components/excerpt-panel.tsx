@@ -26,15 +26,33 @@ import { LeafIcon } from '../../common/icons/leaf-icon';
 import { ExcerptGeneratorProvider } from '../provider';
 
 /**
+ * Defines the structure of an object that holds excerpt data.
+ *
+ * @since 3.16.0
+ */
+interface ExcerptData {
+	currentExcerpt: string;
+	newExcerptGenerated: boolean;
+	newExcerptGeneratedCount: number;
+	oldExcerpt: string;
+}
+
+/**
  * The PostExcerptGenerator component displays the excerpt textarea and the Parse.ly AI controls.
  *
  * @since 3.13.0
  */
 const PostExcerptGenerator = () => {
 	const [ isLoading, setLoading ] = useState<boolean>( false );
-	const [ generatedExcerpt, setGeneratedExcerpt ] = useState<string>( '' );
-	const [ generatedExcerptCount, setGeneratedExcerptCount ] = useState<number>( 0 );
 	const [ error, setError ] = useState<ContentHelperError>();
+	const [ onChangeFired, setOnChangeFired ] = useState<boolean>( false );
+	const [ wordCountString, setWordCountString ] = useState<string>( '' );
+	const [ excerptData, setExcerptData ] = useState<ExcerptData>( {
+		currentExcerpt: '',
+		newExcerptGenerated: false,
+		newExcerptGeneratedCount: 0,
+		oldExcerpt: '',
+	} );
 
 	const { editPost } = useDispatch( editorStore );
 	const excerptGeneratorProvider = new ExcerptGeneratorProvider();
@@ -61,13 +79,31 @@ const PostExcerptGenerator = () => {
 		};
 	}, [] );
 
-	const hasGeneratedExcerpt = generatedExcerpt.length > 0;
-	const wordCount = count( generatedExcerpt || excerpt, 'words', {} );
-	const wordCountString = sprintf(
-		// Translators: %1$s the number of words in the excerpt.
-		_n( '%1$s word', '%1$s words', wordCount, 'wp-parsely' ),
-		wordCount
-	);
+	// Update the word count string when the excerpt changes.
+	useEffect( () => {
+		/**
+		 * Returns a descriptive text for the textarea's word count.
+		 *
+		 * @since 3.16.0
+		 *
+		 * @return {string} The word count string.
+		 */
+		const getWordCountString = (): string => {
+			const wordCount = count( excerptData.currentExcerpt || excerpt, 'words', {} );
+
+			if ( wordCount > 0 ) {
+				return sprintf(
+					// Translators: %1$s the number of words in the excerpt.
+					_n( '%1$s word', '%1$s words', wordCount, 'wp-parsely' ),
+					wordCount
+				);
+			}
+
+			return '';
+		};
+
+		setWordCountString( getWordCountString() );
+	}, [ excerptData.currentExcerpt, excerpt ] );
 
 	// Scroll the textarea to the top when the generated excerpt changes.
 	useEffect( () => {
@@ -75,10 +111,10 @@ const PostExcerptGenerator = () => {
 		if ( textarea ) {
 			textarea.scrollTop = 0;
 		}
-	}, [ generatedExcerpt ] );
+	}, [ excerptData.newExcerptGenerated ] );
 
 	/**
-	 * Generates an excerpt using the Parse.ly AI.
+	 * Generates an excerpt using Parse.ly AI.
 	 *
 	 * @since 3.13.0
 	 */
@@ -89,8 +125,12 @@ const PostExcerptGenerator = () => {
 		try {
 			Telemetry.trackEvent( 'excerpt_generator_pressed' );
 			const requestedExcerpt = await excerptGeneratorProvider.generateExcerpt( postTitle, postContent );
-			setGeneratedExcerpt( requestedExcerpt );
-			setGeneratedExcerptCount( generatedExcerptCount + 1 );
+			setExcerptData( {
+				currentExcerpt: requestedExcerpt,
+				newExcerptGenerated: true,
+				newExcerptGeneratedCount: excerptData.newExcerptGeneratedCount + 1,
+				oldExcerpt: excerpt,
+			} );
 		} catch ( err: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
 			setError( err );
 		} finally {
@@ -104,8 +144,8 @@ const PostExcerptGenerator = () => {
 	 * @since 3.13.0
 	 */
 	const acceptGeneratedExcerpt = async () => {
-		await editPost( { excerpt: generatedExcerpt } );
-		setGeneratedExcerpt( '' );
+		await editPost( { excerpt: excerptData.currentExcerpt } );
+		setExcerptData( { ...excerptData, newExcerptGenerated: false } );
 		Telemetry.trackEvent( 'excerpt_generator_accepted' );
 	};
 
@@ -115,7 +155,12 @@ const PostExcerptGenerator = () => {
 	 * @since 3.13.0
 	 */
 	const discardGeneratedExcerpt = async () => {
-		setGeneratedExcerpt( '' );
+		editPost( { excerpt: excerptData.oldExcerpt } );
+		setExcerptData( {
+			...excerptData,
+			currentExcerpt: excerptData.oldExcerpt, // Updates word count in UI.
+			newExcerptGenerated: false,
+		} );
 		Telemetry.trackEvent( 'excerpt_generator_discarded' );
 	};
 
@@ -125,8 +170,8 @@ const PostExcerptGenerator = () => {
 	 * @since 3.13.0
 	 */
 	const getExcerptTextareaValue = (): string => {
-		if ( hasGeneratedExcerpt ) {
-			return generatedExcerpt;
+		if ( excerptData.newExcerptGenerated ) {
+			return excerptData.currentExcerpt;
 		}
 
 		return excerpt;
@@ -144,10 +189,24 @@ const PostExcerptGenerator = () => {
 					__nextHasNoMarginBottom
 					label={ __( 'Write an excerpt (optional)', 'wp-parsely' ) }
 					className="editor-post-excerpt__textarea"
-					onChange={ ( value ) => editPost( { excerpt: value } ) }
-					readOnly={ isLoading || hasGeneratedExcerpt }
+					onChange={ ( value ) => {
+						setOnChangeFired( true );
+						editPost( { excerpt: value } );
+						setExcerptData( { ...excerptData, currentExcerpt: value } );
+					} }
+					onKeyUp={ () => { // Make word count work with Keyboard shortcuts.
+						if ( onChangeFired ) {
+							setOnChangeFired( false );
+							return;
+						}
+
+						const textarea = document.querySelector( '.editor-post-excerpt textarea' );
+						const value = textarea?.textContent ?? '';
+
+						setExcerptData( { ...excerptData, currentExcerpt: value } );
+					} }
 					value={ isLoading ? '' : getExcerptTextareaValue() }
-					help={ wordCount ? wordCountString : null }
+					help={ wordCountString ? wordCountString : null }
 				/>
 			</div>
 			<Button
@@ -182,7 +241,7 @@ const PostExcerptGenerator = () => {
 					</Notice>
 				) }
 				<div className="wp-parsely-excerpt-generator-controls">
-					{ hasGeneratedExcerpt ? (
+					{ excerptData.newExcerptGenerated ? (
 						<>
 							<Button
 								variant="secondary"
@@ -206,8 +265,12 @@ const PostExcerptGenerator = () => {
 							disabled={ isLoading }
 						>
 							{ isLoading && __( 'Generating Excerpt…', 'wp-parsely' ) }
-							{ ! isLoading && generatedExcerptCount > 0 && __( 'Regenerate Excerpt', 'wp-parsely' ) }
-							{ ! isLoading && generatedExcerptCount === 0 && __( 'Generate Excerpt', 'wp-parsely' ) }
+							{ ! isLoading && excerptData.newExcerptGeneratedCount > 0 &&
+								__( 'Regenerate Excerpt', 'wp-parsely' )
+							}
+							{ ! isLoading && excerptData.newExcerptGeneratedCount === 0 &&
+								__( 'Generate Excerpt', 'wp-parsely' )
+							}
 						</Button>
 					) }
 				</div>
