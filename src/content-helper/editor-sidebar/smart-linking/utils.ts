@@ -438,6 +438,10 @@ function getLinkOffset( link: HTMLAnchorElement, document: Document ): number {
 	return -1;
 }
 
+type ValidateAndFixSmartLinksReturnType = {
+	missingSmartLinks: SmartLink[],
+	didAnyFixes: boolean
+};
 /**
  * Validates and fixes smart links in a specific content.
  *
@@ -451,9 +455,9 @@ function getLinkOffset( link: HTMLAnchorElement, document: Document ): number {
  * @param {string}       content The post content to validate and fix smart links.
  * @param {string|false} blockId The block ID to filter the smart links by.
  *
- * @return {Promise<SmartLink[]>} The missing smart links that were not found in the post content.
+ * @return {ValidateAndFixSmartLinksReturnType} The missing smart links and whether any fixes were made.
  */
-export async function validateAndFixSmartLinks( content: string, blockId: string|false = false ): Promise<SmartLink[]> {
+export async function validateAndFixSmartLinks( content: string, blockId: string|false = false ): Promise<ValidateAndFixSmartLinksReturnType> {
 	// Get the post content and all the smart links from the store.
 	let smartLinks = select( SmartLinkingStore ).getSmartLinks();
 
@@ -479,17 +483,21 @@ export async function validateAndFixSmartLinks( content: string, blockId: string
 		}
 	} );
 
+	// Flag to check if any fixes were made.
+	let didAnyFixes = false;
+
 	// For each missing smart link, try to find a link that matches the text, title and href.
-	missingSmartLinks.forEach( ( missingSmartLink ) => {
+	for ( let i = 0; i < missingSmartLinks.length; i++ ) {
+		const missingSmartLink = missingSmartLinks[ i ];
 		if ( ! missingSmartLink.match?.blockId ) {
-			return;
+			continue;
 		}
 
 		// Get the block that contains the smart link.
 		const block = select( 'core/block-editor' ).getBlock( missingSmartLink.match?.blockId );
 
 		if ( ! block ) {
-			return;
+			continue;
 		}
 
 		const blockContent: string = getBlockContent( block );
@@ -502,11 +510,11 @@ export async function validateAndFixSmartLinks( content: string, blockId: string
 		} );
 
 		if ( ! link ) {
-			return;
+			continue;
 		}
 
 		// If the link is found, remove it from the missing smart links array.
-		missingSmartLinks.splice( missingSmartLinks.indexOf( missingSmartLink ), 1 );
+		missingSmartLinks.splice( i--, 1 );
 
 		// Restore the missing fields from the link (data-smartlink and title).
 		link.setAttribute( 'data-smartlink', missingSmartLink.uid );
@@ -515,24 +523,29 @@ export async function validateAndFixSmartLinks( content: string, blockId: string
 		// Update the block content with the new content.
 		const paragraph = blockDoc.body.firstChild as HTMLElement;
 		dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { content: paragraph.innerHTML } );
-	} );
+		didAnyFixes = true;
+	}
 
-	return missingSmartLinks;
+	return { missingSmartLinks, didAnyFixes };
 }
 
 /**
  * Validates and fixes smart links in the post content.
  *
  * @since 3.16.0
+ *
+ * @return {boolean} Whether any fixes were made.
  */
-export async function validateAndFixSmartLinksInPost(): Promise<void> {
+export async function validateAndFixSmartLinksInPost(): Promise<boolean> {
 	const postContent = select( 'core/editor' ).getEditedPostContent();
-	const missingLinks = await validateAndFixSmartLinks( postContent );
+	const { missingSmartLinks, didAnyFixes } = await validateAndFixSmartLinks( postContent );
 
 	// Remove any missing smart-links that are not in the store.
-	missingLinks.forEach( ( missingLink ) => {
+	missingSmartLinks.forEach( ( missingLink ) => {
 		dispatch( SmartLinkingStore ).removeSmartLink( missingLink.uid );
 	} );
+
+	return didAnyFixes;
 }
 
 /**
@@ -541,15 +554,19 @@ export async function validateAndFixSmartLinksInPost(): Promise<void> {
  * @since 3.16.0
  *
  * @param {BlockInstance} block The block instance to validate and fix smart links.
+ *
+ * @return {boolean} Whether any fixes were made.
  */
-export async function validateAndFixSmartLinksInBlock( block: BlockInstance ): Promise<void> {
+export async function validateAndFixSmartLinksInBlock( block: BlockInstance ): Promise<boolean> {
 	const blockContent: string = getBlockContent( block );
-	const missingLinks = await validateAndFixSmartLinks( blockContent, block.clientId );
+	const { missingSmartLinks, didAnyFixes } = await validateAndFixSmartLinks( blockContent, block.clientId );
 
 	// Remove any missing smart-links that are not in the store.
-	missingLinks.forEach( ( missingLink ) => {
+	missingSmartLinks.forEach( ( missingLink ) => {
 		dispatch( SmartLinkingStore ).removeSmartLink( missingLink.uid );
 	} );
+
+	return didAnyFixes;
 }
 
 /**

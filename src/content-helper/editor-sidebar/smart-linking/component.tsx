@@ -18,7 +18,7 @@ import { ContentHelperErrorCode } from '../../common/content-helper-error';
 import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
 import { LinkMonitor } from './component-link-monitor';
-import { useValidateSmartLinksBeforeSave } from './hooks';
+import { useSmartLinksValidation } from './hooks';
 import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
 import { SmartLink, SmartLinkingProvider } from './provider';
@@ -76,7 +76,7 @@ export const SmartLinkingPanel = ( {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	// Saving hooks.
-	useValidateSmartLinksBeforeSave();
+	useSmartLinksValidation();
 
 	const setSettingsDebounced = useDebounce( setSettings, 500 );
 
@@ -524,7 +524,7 @@ export const SmartLinkingPanel = ( {
 	return (
 		<div className="wp-parsely-smart-linking">
 			<LinkMonitor
-				isDetectingEnabled={ false }
+				isDetectingEnabled={ ! reviewModalIsOpen } // Disable link detection when the review modal is open.
 				onLinkRemove={ ( changes ) => {
 					// When a link is removed, validate and fix any smart-link that got the data-smartlink attribute removed.
 					validateAndFixSmartLinksInBlock( changes.block );

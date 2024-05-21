@@ -69,7 +69,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 
 		$post_id = $request->get_param( 'post_id' );
 
-		if ( null === $post_id ) {
+		if ( null !== $post_id ) {
 			// Check if the current user has edit capabilities for the post.
 			$can_edit = current_user_can( 'edit_post', $post_id );
 		} else {
