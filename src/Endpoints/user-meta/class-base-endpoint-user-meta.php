@@ -141,7 +141,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * user.
 	 *
 	 * @since 3.14.0
-	 * @since 3.15.0 Added the `$request` parameter.
+	 * @since 3.16.0 Added the `$request` parameter.
 	 *
 	 * @param WP_REST_Request|null $request The request object.
 	 * @return bool

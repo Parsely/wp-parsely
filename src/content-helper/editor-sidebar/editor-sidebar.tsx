@@ -6,6 +6,7 @@ import {
 	TabPanel,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
+import domReady from '@wordpress/dom-ready';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -278,4 +279,8 @@ registerPlugin( BLOCK_PLUGIN_ID, {
 } );
 
 // Initialize Smart Linking.
-initSmartLinking();
+domReady( () => {
+	if ( initSmartLinking ) {
+		initSmartLinking();
+	}
+} );

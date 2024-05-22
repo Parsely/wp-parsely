@@ -589,10 +589,17 @@ export function trimURLForDisplay( url: string, maxLength: number ): string {
 		return strippedUrl;
 	}
 
+	// Get the domain name and path from the URL
+	const domain = strippedUrl.split( '/' )[ 0 ];
+	const path = strippedUrl.substring( domain.length );
+
+	// Update the maxLength to account for the domain name, plus a slash.
+	maxLength -= domain.length;
+
 	// Calculate part lengths for trimming.
 	const partLength = Math.floor( ( maxLength - 3 ) / 2 );
-	const start = strippedUrl.substring( 0, partLength );
-	const end = strippedUrl.substring( strippedUrl.length - partLength );
+	const start = path.substring( 0, partLength );
+	const end = path.substring( path.length - partLength );
 
-	return `${ start }...${ end }`;
+	return `${ domain }${ start }...${ end }`;
 }

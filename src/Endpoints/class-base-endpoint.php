@@ -58,7 +58,7 @@ abstract class Base_Endpoint {
 	 * user.
 	 *
 	 * @since 3.14.0 Replaced `is_public_endpoint`, `user_capability` and `permission_callback()`.
-	 * @since 3.15.0 Added the `$request` parameter.
+	 * @since 3.16.0 Added the `$request` parameter.
 	 *
 	 * @param WP_REST_Request|null $request The request object.
 	 * @return bool
