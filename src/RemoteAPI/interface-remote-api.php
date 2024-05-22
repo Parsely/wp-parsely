@@ -31,7 +31,7 @@ interface Remote_API_Interface {
 	 * user.
 	 *
 	 * @since 3.14.0 Renamed from `is_user_allowed_to_make_api_call()`.
-	 * @since 3.15.0 Added the `$request` parameter.
+	 * @since 3.16.0 Added the `$request` parameter.
 	 *
 	 * @param WP_REST_Request|null $request The request object.
 	 * @return bool
