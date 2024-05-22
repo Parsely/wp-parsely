@@ -110,7 +110,6 @@ export const SmartLinkingPanel = ( {
 		error,
 		suggestedLinks,
 		maxLinks,
-		maxLinkWords,
 		smartLinkingSettings,
 		applyTo,
 		retrying,
@@ -124,7 +123,6 @@ export const SmartLinkingPanel = ( {
 			// eslint-disable-next-line @typescript-eslint/no-shadow
 			isFullContent,
 			getMaxLinks,
-			getMaxLinkWords,
 			getSmartLinkingSettings,
 			getApplyTo,
 			isRetrying,
@@ -134,7 +132,6 @@ export const SmartLinkingPanel = ( {
 			loading: isLoading(),
 			error: getError(),
 			maxLinks: getMaxLinks(),
-			maxLinkWords: getMaxLinkWords(),
 			isFullContent: isFullContent(),
 			overlayBlocks: getOverlayBlocks(),
 			suggestedLinks: getSuggestedLinks(),
@@ -158,7 +155,6 @@ export const SmartLinkingPanel = ( {
 		removeOverlayBlock,
 		setSmartLinkingSettings,
 		setApplyTo,
-		setMaxLinkWords,
 		setMaxLinks,
 		setIsRetrying,
 		incrementRetryAttempt,
@@ -186,8 +182,6 @@ export const SmartLinkingPanel = ( {
 		} );
 		if ( setting === 'MaxLinks' ) {
 			setMaxLinks( value as number );
-		} else if ( setting === 'MaxLinkWords' ) {
-			setMaxLinkWords( value as number );
 		}
 	};
 
@@ -206,7 +200,6 @@ export const SmartLinkingPanel = ( {
 		// Load the settings from the WordPress database and store them in the Smart Linking store.
 		const newSmartLinkingSettings: SmartLinkingSettingsProps = {
 			maxLinksPerPost: settings.SmartLinking.MaxLinks,
-			maxLinkWords: settings.SmartLinking.MaxLinkWords,
 		};
 		setSmartLinkingSettings( newSmartLinkingSettings );
 	}, [ setSmartLinkingSettings, settings ] ); // eslint-disable-line react-hooks/exhaustive-deps
@@ -325,7 +318,6 @@ export const SmartLinkingPanel = ( {
 				( selectedBlock && ! generatingFullContent )
 					? getBlockContent( selectedBlock )
 					: postContent,
-				maxLinkWords,
 				maxLinks,
 				urlExclusionList
 			);
