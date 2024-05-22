@@ -14,6 +14,7 @@ import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
  * `content-suggestions/suggest-linked-reference` endpoint.
  *
  * @since 3.14.0
+ * @since 3.16.0 Added the `applied`, `match`, `post_id`, and `post_type` properties.
  */
 export type SmartLink = {
 	uid: string;
@@ -30,6 +31,8 @@ export type SmartLink = {
 /**
  * Structure of a link suggestion match, that is filled in by the
  * processing of the smart links.
+ *
+ * @since 3.16.0
  */
 export type SmartLinkMatch = {
 	blockId: string;

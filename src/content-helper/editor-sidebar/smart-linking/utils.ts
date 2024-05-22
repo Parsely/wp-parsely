@@ -294,7 +294,7 @@ export function calculateSmartLinkingMatches(
 			return;
 		}
 
-		const fullContent = contentElement.innerHTML;
+		const fullContentPlain = contentElement.textContent;
 
 		links.forEach( ( link ) => {
 			const textNodes = findTextNodesNotInAnchor( contentElement, link.text );
@@ -308,7 +308,7 @@ export function calculateSmartLinkingMatches(
 				const regex = new RegExp( escapeRegExp( link.text ), 'g' );
 				let match;
 				const nodeText = node.textContent ?? '';
-				const startPosition = fullContent.indexOf( nodeText, cumulativeTextLength );
+				const startPosition = fullContentPlain?.indexOf( nodeText, cumulativeTextLength ) ?? 0;
 
 				while ( ( match = regex.exec( nodeText ) ) !== null ) {
 					const occurrenceCount = occurrenceCounts[ occurrenceKey ];
@@ -442,6 +442,7 @@ type ValidateAndFixSmartLinksReturnType = {
 	missingSmartLinks: SmartLink[],
 	didAnyFixes: boolean
 };
+
 /**
  * Validates and fixes smart links in a specific content.
  *

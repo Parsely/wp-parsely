@@ -11,7 +11,7 @@ import {
 	Tooltip,
 } from '@wordpress/components';
 import { select as selectFn, useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { arrowLeft, arrowRight, check, closeSmall, Icon, page } from '@wordpress/icons';
 
@@ -148,17 +148,16 @@ type BlockPreviewProps = {
  * @param {BlockPreviewProps} props The component props.
  */
 const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
-	const [ clonedBlock, setClonedBlock ] = useState<BlockInstance>( cloneBlock( block ) );
-
 	/**
-	 * Runs when the block is updated.
-	 * It will update the cloned block with the new block.
+	 * Clones the block to prevent editing the original block.
+	 * The memoized block is used to prevent unnecessary re-renders.
+	 *
+	 * It updates when the block or link changes.
 	 *
 	 * @since 3.16.0
 	 */
-	useEffect( () => {
-		setClonedBlock( cloneBlock( block ) );
-	}, [ block, link ] );
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const clonedBlock = useMemo( () => cloneBlock( block ), [ block, link ] );
 
 	/**
 	 * Runs when the block is rendered in the DOM.
