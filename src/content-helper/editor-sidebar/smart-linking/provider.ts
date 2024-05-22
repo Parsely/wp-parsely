@@ -7,7 +7,7 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { BaseProvider } from '../../common/base-provider';
-import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
+import { DEFAULT_MAX_LINKS } from './smart-linking';
 
 /**
  * Structure of a link suggestion returned by the
@@ -73,7 +73,6 @@ export class SmartLinkingProvider extends BaseProvider {
 	 * Returns a list of suggested links for the given content.
 	 *
 	 * @param {string}   content          The content to generate links for.
-	 * @param {number}   maxLinkWords     The maximum number of words in links.
 	 * @param {number}   maxLinksPerPost  The maximum number of links to return.
 	 * @param {string[]} urlExclusionList A list of URLs to exclude from the suggestions.
 	 *
@@ -81,14 +80,12 @@ export class SmartLinkingProvider extends BaseProvider {
 	 */
 	public async generateSmartLinks(
 		content: string,
-		maxLinkWords: number = DEFAULT_MAX_LINK_WORDS,
 		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
 		urlExclusionList: string[] = [],
 	): Promise<SmartLink[]> {
 		const response = await this.fetch<SmartLink[]>( {
 			method: 'POST',
 			path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-linked-reference', {
-				max_link_words: maxLinkWords,
 				max_links: maxLinksPerPost,
 			} ),
 			data: {
