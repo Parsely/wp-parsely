@@ -52,7 +52,7 @@ abstract class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 	 * user.
 	 *
 	 * @since 3.14.0
-	 * @since 3.15.0 Added the `$request` parameter.
+	 * @since 3.16.0 Added the `$request` parameter.
 	 *
 	 * @param WP_REST_Request|null $request The request object.
 	 * @return bool
