@@ -31,7 +31,6 @@ import {
 } from '../common/utils/constants';
 import {
 	DEFAULT_MAX_LINKS,
-	DEFAULT_MAX_LINK_WORDS,
 	initSmartLinking,
 } from './smart-linking/smart-linking';
 import { SidebarPerformanceTab } from './tabs/sidebar-performance-tab';
@@ -84,7 +83,6 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 		},
 		SmartLinking: {
 			MaxLinks: DEFAULT_MAX_LINKS,
-			MaxLinkWords: DEFAULT_MAX_LINK_WORDS,
 			Open: false,
 		},
 		TitleSuggestions: {
@@ -149,9 +147,6 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 	if ( typeof mergedSettings.SmartLinking.MaxLinks !== 'number' ) {
 		mergedSettings.SmartLinking.MaxLinks = defaultSettings.SmartLinking.MaxLinks;
-	}
-	if ( typeof mergedSettings.SmartLinking.MaxLinkWords !== 'number' ) {
-		mergedSettings.SmartLinking.MaxLinkWords = defaultSettings.SmartLinking.MaxLinkWords;
 	}
 	if ( typeof mergedSettings.SmartLinking.Open !== 'boolean' ) {
 		mergedSettings.SmartLinking.Open = defaultSettings.SmartLinking.Open;

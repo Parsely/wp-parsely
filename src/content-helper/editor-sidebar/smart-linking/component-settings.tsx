@@ -15,7 +15,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { InputRange } from '../../common/components/input-range';
 import { SmartLinkingSettings as Settings } from '../../common/settings';
-import { DEFAULT_MAX_LINK_WORDS, DEFAULT_MAX_LINKS } from './smart-linking';
+import { DEFAULT_MAX_LINKS } from './smart-linking';
 import { ApplyToOptions, SmartLinkingStore } from './store';
 
 /**
@@ -55,16 +55,14 @@ export const SmartLinkingSettings = ( {
 	 */
 	const {
 		maxLinks,
-		maxLinkWords,
 		fullContent,
 		alreadyClicked,
 		applyTo,
 	} = useSelect( ( select ) => {
-		const { getMaxLinkWords, getMaxLinks, isFullContent, wasAlreadyClicked, getApplyTo } = select( SmartLinkingStore );
+		const { getMaxLinks, isFullContent, wasAlreadyClicked, getApplyTo } = select( SmartLinkingStore );
 
 		return {
 			maxLinks: getMaxLinks(),
-			maxLinkWords: getMaxLinkWords(),
 			fullContent: isFullContent(),
 			alreadyClicked: wasAlreadyClicked(),
 			applyTo: getApplyTo(),
@@ -73,7 +71,6 @@ export const SmartLinkingSettings = ( {
 
 	const {
 		setMaxLinks,
-		setMaxLinkWords,
 		setFullContent,
 		setAlreadyClicked,
 		setApplyTo,
@@ -230,19 +227,6 @@ export const SmartLinkingSettings = ( {
 						min={ 1 }
 						max={ 20 }
 						initialPosition={ maxLinks }
-						disabled={ disabled }
-					/>
-					<InputRange
-						value={ maxLinkWords }
-						onChange={ ( value ) => {
-							setMaxLinkWords( value ?? 1 );
-							onSettingChange( 'MaxLinkWords', value ?? DEFAULT_MAX_LINK_WORDS );
-						} }
-						label={ __( 'Target Link Length', 'wp-parsely' ) }
-						suffix={ __( 'Words', 'wp-parsely' ) }
-						min={ 1 }
-						max={ 8 }
-						initialPosition={ maxLinkWords }
 						disabled={ disabled }
 					/>
 				</div>
