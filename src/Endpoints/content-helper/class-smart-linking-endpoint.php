@@ -31,7 +31,6 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * The endpoint base path.
 	 *
 	 * @since 3.16.0
-	 *
 	 * @var string
 	 */
 	protected const ENDPOINT = '/smart-linking';
@@ -40,7 +39,6 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * The post meta key for storing smart links.
 	 *
 	 * @since 3.16.0
-	 *
 	 * @var string
 	 */
 	protected const POST_META_KEY = '_parsely_smart_links';
@@ -49,7 +47,6 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * The current post.
 	 *
 	 * @since 3.16.0
-	 *
 	 * @var WP_Post|null
 	 */
 	protected $current_post;

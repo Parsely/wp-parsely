@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Models;
 
 /**
- * Base model class for all Parse.ly models
+ * Base model class for all Parse.ly models.
  *
  * @since 3.16.0
  */
@@ -19,6 +19,7 @@ abstract class Base_Model {
 	/**
 	 * The unique ID of the model.
 	 *
+	 * @since 3.16.0
 	 * @var string The unique ID of the model.
 	 */
 	public $uid;
