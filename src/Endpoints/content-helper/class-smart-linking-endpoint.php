@@ -1,6 +1,6 @@
 <?php
 /**
- * Smart Linking endpoint: Provides endpoints for managing smart links.
+ * Smart Linking endpoint: Provides endpoints for managing smart links
  *
  * @package Parsely
  * @since   3.16.0
@@ -19,7 +19,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 
 /**
- * Smart Linking endpoint class
+ * Smart Linking endpoint class.
  *
  * Provides endpoints for managing smart links.
  *
@@ -45,11 +45,12 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 */
 	protected const POST_META_KEY = '_parsely_smart_links';
 
-
 	/**
-	 * Current post
+	 * The current post.
 	 *
-	 * @var WP_Post|null $current_post The current post.
+	 * @since 3.16.0
+	 *
+	 * @var WP_Post|null
 	 */
 	protected $current_post;
 
@@ -109,6 +110,8 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	/**
 	 * Converts a URL to a post type.
 	 *
+	 * @since 3.16.0
+	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response The response object.
 	 */
@@ -158,6 +161,8 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	/**
 	 * Validates the request parameters.
 	 *
+	 * @since 3.16.0
+	 *
 	 * @throws InvalidArgumentException If the request is invalid.
 	 *
 	 * @param WP_REST_Request $request The request object.
@@ -181,6 +186,8 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 
 	/**
 	 * Adds a smart link to a post.
+	 *
+	 * @since 3.16.0
 	 *
 	 * @param WP_REST_Request $request The request object.
 	 * @return WP_REST_Response The response object.

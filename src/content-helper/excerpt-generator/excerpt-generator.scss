@@ -9,10 +9,6 @@
 
 .editor-post-excerpt__textarea {
 	margin-bottom: var(--grid-unit-10);
-
-	textarea:read-only {
-		background-color: var(--Gutenberg-White, #fff);
-	}
 }
 
 .wp-parsely-excerpt-generator {
