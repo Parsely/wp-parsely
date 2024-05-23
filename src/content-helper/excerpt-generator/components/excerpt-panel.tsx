@@ -32,7 +32,7 @@ import { ExcerptGeneratorProvider } from '../provider';
  */
 interface ExcerptData {
 	currentExcerpt: string;
-	newExcerptGenerated: boolean;
+	isUnderReview: boolean;
 	newExcerptGeneratedCount: number;
 	oldExcerpt: string;
 }
@@ -49,7 +49,7 @@ const PostExcerptGenerator = () => {
 	const [ wordCountString, setWordCountString ] = useState<string>( '' );
 	const [ excerptData, setExcerptData ] = useState<ExcerptData>( {
 		currentExcerpt: '',
-		newExcerptGenerated: false,
+		isUnderReview: false,
 		newExcerptGeneratedCount: 0,
 		oldExcerpt: '',
 	} );
@@ -111,7 +111,7 @@ const PostExcerptGenerator = () => {
 		if ( textarea ) {
 			textarea.scrollTop = 0;
 		}
-	}, [ excerptData.newExcerptGenerated ] );
+	}, [ excerptData.newExcerptGeneratedCount ] );
 
 	/**
 	 * Generates an excerpt using Parse.ly AI.
@@ -127,7 +127,7 @@ const PostExcerptGenerator = () => {
 			const requestedExcerpt = await excerptGeneratorProvider.generateExcerpt( postTitle, postContent );
 			setExcerptData( {
 				currentExcerpt: requestedExcerpt,
-				newExcerptGenerated: true,
+				isUnderReview: true,
 				newExcerptGeneratedCount: excerptData.newExcerptGeneratedCount + 1,
 				oldExcerpt: excerpt,
 			} );
@@ -145,7 +145,7 @@ const PostExcerptGenerator = () => {
 	 */
 	const acceptGeneratedExcerpt = async () => {
 		await editPost( { excerpt: excerptData.currentExcerpt } );
-		setExcerptData( { ...excerptData, newExcerptGenerated: false } );
+		setExcerptData( { ...excerptData, isUnderReview: false } );
 		Telemetry.trackEvent( 'excerpt_generator_accepted' );
 	};
 
@@ -159,7 +159,7 @@ const PostExcerptGenerator = () => {
 		setExcerptData( {
 			...excerptData,
 			currentExcerpt: excerptData.oldExcerpt, // Updates word count in UI.
-			newExcerptGenerated: false,
+			isUnderReview: false,
 		} );
 		Telemetry.trackEvent( 'excerpt_generator_discarded' );
 	};
@@ -170,7 +170,7 @@ const PostExcerptGenerator = () => {
 	 * @since 3.13.0
 	 */
 	const getExcerptTextareaValue = (): string => {
-		if ( excerptData.newExcerptGenerated ) {
+		if ( excerptData.isUnderReview ) {
 			return excerptData.currentExcerpt;
 		}
 
@@ -190,9 +190,11 @@ const PostExcerptGenerator = () => {
 					label={ __( 'Write an excerpt (optional)', 'wp-parsely' ) }
 					className="editor-post-excerpt__textarea"
 					onChange={ ( value ) => {
-						setOnChangeFired( true );
-						editPost( { excerpt: value } );
+						if ( ! excerptData.isUnderReview ) {
+							editPost( { excerpt: value } );
+						}
 						setExcerptData( { ...excerptData, currentExcerpt: value } );
+						setOnChangeFired( true );
 					} }
 					onKeyUp={ () => { // Make word count work with Keyboard shortcuts.
 						if ( onChangeFired ) {
@@ -241,7 +243,7 @@ const PostExcerptGenerator = () => {
 					</Notice>
 				) }
 				<div className="wp-parsely-excerpt-generator-controls">
-					{ excerptData.newExcerptGenerated ? (
+					{ excerptData.isUnderReview ? (
 						<>
 							<Button
 								variant="secondary"
