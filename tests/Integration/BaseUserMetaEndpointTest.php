@@ -149,13 +149,15 @@ abstract class BaseUserMetaEndpointTest extends ProxyEndpointTest {
 	/**
 	 * Verifies that the route is not registered when the respective filter is
 	 * set to false.
+	 *
+	 * @since 3.16.0
 	 */
 	public function run_test_do_not_register_route_when_proxy_is_disabled(): void {
 		// Override some setup steps in order to set the filter to false.
 		remove_action( 'rest_api_init', $this->rest_api_init_proxy );
 		$endpoint                  = $this->get_endpoint();
 		$this->rest_api_init_proxy = static function () use ( $endpoint ) {
-			add_filter( 'wp_parsely_enable_' . self::$filter_key . '_endpoint', '__return_false' );
+			add_filter( 'wp_parsely_enable_' . self::$filter_key . '_api_proxy', '__return_false' );
 			$endpoint->run();
 		};
 		add_action( 'rest_api_init', $this->rest_api_init_proxy );

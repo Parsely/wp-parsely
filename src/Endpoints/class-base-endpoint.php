@@ -176,7 +176,7 @@ abstract class Base_Endpoint {
 		array $methods = array( 'GET' ),
 		array $args = array()
 	): void {
-		if ( ! apply_filters( 'wp_parsely_enable_' . convert_endpoint_to_filter_key( $endpoint ) . '_endpoint', true ) ) {
+		if ( ! apply_filters( 'wp_parsely_enable_' . convert_endpoint_to_filter_key( $endpoint ) . '_api_proxy', true ) ) {
 			return;
 		}
 
