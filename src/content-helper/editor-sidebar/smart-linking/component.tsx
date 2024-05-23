@@ -293,7 +293,7 @@ export const SmartLinkingPanel = ( {
 	const processSmartLinks = async ( links: SmartLink[] ) => {
 		// Exclude the links that have been applied already.
 		links = links.filter(
-			( link ) => ! smartLinks.find( ( sl ) => sl.uid === link.uid && sl.applied )
+			( link ) => ! smartLinks.some( ( sl ) => sl.uid === link.uid && sl.applied )
 		);
 
 		// Strip the protocol and trailing slashes from the post permalink.
