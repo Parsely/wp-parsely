@@ -42,8 +42,8 @@ export type SmartLinkMatch = {
 }
 
 /**
- * Returns data from the `content-suggestions/suggest-linked-reference` WordPress REST API
- * endpoint.
+ * Returns data from the `content-suggestions/suggest-linked-reference`
+ * WordPress REST API endpoint.
  *
  * @since 3.14.0
  */
@@ -112,6 +112,8 @@ export class SmartLinkingProvider extends BaseProvider {
 
 	/**
 	 * Get the post type of post by its URL.
+	 *
+	 * @since 3.16.0
 	 *
 	 * @param {string} url The URL of the post.
 	 *
