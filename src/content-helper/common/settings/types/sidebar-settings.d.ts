@@ -56,6 +56,5 @@ export interface RelatedPostsSettings {
  */
 export interface SmartLinkingSettings {
 	MaxLinks: number;
-	MaxLinkWords: number;
 	Open: boolean;
 }
