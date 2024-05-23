@@ -12,6 +12,7 @@ namespace Parsely\RemoteAPI;
 
 use WP_Error;
 use WP_REST_Request;
+
 /**
  * Remote API Interface.
  */

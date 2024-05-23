@@ -1,6 +1,7 @@
 /**
  * WordPress dependencies
  */
+import { getBlockContent } from '@wordpress/blocks';
 // eslint-disable-next-line import/named
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
@@ -292,7 +293,7 @@ export const SmartLinkingPanel = ( {
 	const processSmartLinks = async ( links: SmartLink[] ) => {
 		// Exclude the links that have been applied already.
 		links = links.filter(
-			( link ) => ! smartLinks.find( ( sl ) => sl.uid === link.uid && sl.applied )
+			( link ) => ! smartLinks.some( ( sl ) => sl.uid === link.uid && sl.applied )
 		);
 
 		// Strip the protocol and trailing slashes from the post permalink.
@@ -313,6 +314,31 @@ export const SmartLinkingPanel = ( {
 		links = calculateSmartLinkingMatches( allBlocks, links, {} )
 			// Filter out links without a match.
 			.filter( ( link ) => link.match );
+
+		// Filter out links without match and smart links being inserted inside another smart link.
+		links = links.filter( ( link ) => {
+			// If the link text and offset are the same, we want to keep the link, so it can replace the old smart link.
+			if ( smartLinks.some( ( sl ) => sl.text === link.text && sl.offset === link.offset ) ) {
+				// TODO: Flag smart link as updated, for now we just remove the old one.
+				return false;
+			}
+
+			if ( ! link.match ) {
+				return false;
+			}
+			const linkStart = link.match.blockLinkPosition;
+			const linkEnd = linkStart + link.text.length;
+
+			return ! smartLinks.some( ( sl ) => {
+				if ( link.match!.blockId !== sl.match!.blockId ) {
+					return false;
+				}
+				const slStart = sl.match!.blockLinkPosition;
+				const slEnd = slStart + sl.text.length;
+
+				return ( linkStart >= slStart && linkEnd <= slEnd );
+			} );
+		} );
 
 		// Update the link suggestions with the new matches.
 		await addSmartLinks( links );
@@ -402,8 +428,8 @@ export const SmartLinkingPanel = ( {
 			const urlExclusionList = generateProtocolVariants( postPermalink );
 
 			generatedLinks = await SmartLinkingProvider.getInstance().generateSmartLinks(
-				( selectedBlock?.originalContent && ! generatingFullContent )
-					? selectedBlock.originalContent
+				( selectedBlock && ! generatingFullContent )
+					? getBlockContent( selectedBlock )
 					: postContent,
 				maxLinks,
 				urlExclusionList
