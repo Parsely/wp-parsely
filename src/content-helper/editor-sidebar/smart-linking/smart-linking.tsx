@@ -21,8 +21,6 @@ import './smart-linking.scss';
 
 export const DEFAULT_MAX_LINKS = 10;
 
-export const DEFAULT_MAX_LINK_WORDS = 4;
-
 /**
  * Higher order component to add the settings provider to the block edit component.
  * This is required to provide the settings to the smart linking panel.

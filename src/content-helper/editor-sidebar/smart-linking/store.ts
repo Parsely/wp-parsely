@@ -3,7 +3,7 @@
  */
 import { createReduxStore, register } from '@wordpress/data';
 import { ContentHelperError } from '../../common/content-helper-error';
-import { DEFAULT_MAX_LINKS, DEFAULT_MAX_LINK_WORDS } from './smart-linking';
+import { DEFAULT_MAX_LINKS } from './smart-linking';
 
 /**
  * Internal dependencies
@@ -16,7 +16,6 @@ import { LinkSuggestion } from './provider';
  * @since 3.14.0
  */
 export type SmartLinkingSettingsProps = {
-	maxLinkWords?: number;
 	maxLinksPerPost?: number;
 };
 
@@ -314,14 +313,6 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				settings,
 			};
 		},
-		setMaxLinkWords( maxLinkWords: number ): SetSettingsAction {
-			return {
-				type: 'SET_SETTINGS',
-				settings: {
-					maxLinkWords,
-				},
-			};
-		},
 		setMaxLinks( maxLinksPerPost: number ): SetSettingsAction {
 			return {
 				type: 'SET_SETTINGS',
@@ -378,9 +369,6 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		},
 		getOverlayBlocks( state: SmartLinkingState ): string[] {
 			return state.overlayBlocks;
-		},
-		getMaxLinkWords( state: SmartLinkingState ): number {
-			return state.settings.maxLinkWords ?? DEFAULT_MAX_LINK_WORDS;
 		},
 		getMaxLinks( state: SmartLinkingState ): number {
 			return state.settings.maxLinksPerPost ?? DEFAULT_MAX_LINKS;
