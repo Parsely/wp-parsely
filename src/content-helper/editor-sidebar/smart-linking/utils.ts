@@ -8,19 +8,21 @@ import { dispatch, select } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { SmartLink } from './provider';
 import { escapeRegExp } from '../../common/utils/functions';
+import { SmartLink } from './provider';
 import { SmartLinkingStore } from './store';
 export { escapeRegExp } from '../../common/utils/functions';
 
 /**
- * Finds all text nodes in an element that contain a given search text and are not within an anchor tag.
+ * Finds all text nodes in an element that contain a given search text and are
+ * not within an anchor tag.
+ *
  * This is useful for finding text nodes that should be linked.
  *
  * @since 3.14.1
  *
- * @param {HTMLElement} element    - The element to search within.
- * @param {string}      searchText - The text to search for.
+ * @param {HTMLElement} element    The element to search within.
+ * @param {string}      searchText The text to search for.
  *
  * @return {Node[]} The text nodes that match the search text and are not within an anchor tag.
  */
@@ -55,7 +57,7 @@ export function findTextNodesNotInAnchor( element: HTMLElement, searchText: stri
  * @since 3.16.0
  *
  * @param {Text}   textNode     The text node to check.
- * @param {string} smartLinkUID The smart link uid to check for.
+ * @param {string} smartLinkUID The smart link UID to check for.
  *
  * @return {boolean} Whether the smart link is present in the text node.
  */
@@ -70,7 +72,7 @@ function isLinkAtNode( textNode: Text, smartLinkUID: string ): boolean {
 /**
  * Checks if a node is inside a similar node to a reference node.
  *
- * @since 3.15.0
+ * @since 3.16.0
  *
  * @param {Node}        node          The node to check.
  * @param {HTMLElement} referenceNode The reference node to compare against.
@@ -92,7 +94,7 @@ function isInsideSimilarNode( node: Node, referenceNode: HTMLElement ): boolean 
 /**
  * Finds all text nodes in an element that contain a given search text.
  *
- * @since 3.15.0
+ * @since 3.16.0
  *
  * @param {Node}   element    The element to search within.
  * @param {string} searchText The text to search for.
@@ -114,10 +116,12 @@ function findTextNodes( element: Node, searchText: string ): Node[] {
 }
 
 /**
- * Applies an HTML node to a block's content, replacing the text of the link with the HTML node.
+ * Applies an HTML node to a block's content, replacing the text of the link
+ * with the HTML node.
+ *
  * This is useful for applying a link to a block's content.
  *
- * @since 3.15.0
+ * @since 3.16.0
  *
  * @param {BlockInstance} block    The block instance to apply the link to.
  * @param {SmartLink}     link     The link suggestion to apply.
@@ -144,7 +148,8 @@ export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNod
 		}
 
 		if ( isInsideSimilarNode( node, htmlNode ) ) {
-			// Check if the node content contains the link text, and if so increase the occurrence count.
+			// Check if the node content contains the link text, and if so
+			// increase the occurrence count.
 			if ( node.textContent?.includes( link.text ) ) {
 				occurrenceCount++;
 			}
@@ -179,13 +184,14 @@ export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNod
 		}
 	} );
 
-	// Update the block content with the new content
+	// Update the block content with the new content.
 	dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { content: contentElement.innerHTML } );
 	return contentElement.innerHTML;
 }
 
 /**
- * Sorts smart links based on their block position and link position within the block.
+ * Sorts smart links based on their block position and link position within the
+ * block.
  *
  * The applied links are sorted after the not applied links.
  *
@@ -234,10 +240,13 @@ function flattenBlocks( blocks: BlockInstance[], flatList: BlockInstance[] = [] 
 }
 
 /**
- * Represents the counts of occurrences and applications of links within text content.
+ * Represents the counts of occurrences and applications of links within text
+ * content.
  *
- * - `encountered`: The number of times a specific link text is encountered in the content.
- * - `linked`: The number of times a link has been successfully applied for a specific link text.
+ * - `encountered`: The number of times a specific link text is encountered in
+ *    the content.
+ * - `linked`: The number of times a link has been successfully applied for a
+ *    specific link text.
  *
  * @since 3.14.1
  * @since 3.16.0 Moved from `content-helper/editor-sidebar/smart-linking/component.tsx`.
@@ -250,20 +259,23 @@ type LinkOccurrenceCounts = {
 };
 
 /**
- * Iterates through blocks of content to calculate the correct block and offset for each link suggestion.
+ * Iterates through blocks of content to calculate the correct block and offset
+ * for each link suggestion.
  *
- * This function processes each block's content to identify and handle text nodes that match provided link suggestions.
- * It avoids inserting links within existing anchor and respects the specified offset for each link to determine the
- * correct block.
+ * This function processes each block's content to identify and handle text
+ * nodes that match provided link suggestions. It avoids inserting links within
+ * existing anchor and respects the specified offset for each link to determine
+ * the correct block.
  *
- * Note: The function is recursive for blocks containing inner blocks, ensuring all nested content is processed.
+ * Note: The function is recursive for blocks containing inner blocks, ensuring
+ * all nested content is processed.
  *
  * @since 3.16.0
  *
  * @param {Readonly<BlockInstance>[]} blocks           The blocks of content where links should be applied.
  * @param {SmartLink[]}               links            An array of link suggestions to apply to the content.
- * @param {LinkOccurrenceCounts}      occurrenceCounts An object to keep track of the number of times each link text has
- *                                                     been encountered and applied across all blocks.
+ * @param {LinkOccurrenceCounts}      occurrenceCounts An object to keep track of the number of times each link
+ *                                                     text has been encountered and applied across all blocks.
  * @param {number}                    currentIndex     The current index of the block being processed.
  *
  * @return {SmartLink[]} The array of link suggestions that have been successfully applied to the content.
@@ -337,10 +349,12 @@ export function calculateSmartLinkingMatches(
 /**
  * Gets all smart links in the post content.
  *
- * This function parses the post content to find all the smart links in the post content. Each smart link is
- * identified by the `data-smartlink` attribute in the anchor tag.
+ * This function parses the post content to find all the smart links in the post
+ * content. Each smart link is identified by the `data-smartlink` attribute in
+ * the anchor tag.
  *
- * After finding all the smart links, it calculates the correct block and offset for each link suggestion.
+ * After finding all the smart links, it calculates the correct block and offset
+ * for each link suggestion.
  *
  * @since 3.16.0
  *
@@ -395,8 +409,9 @@ export function getAllSmartLinksInPost(): SmartLink[] {
 /**
  * Gets the offset of a link in the post content.
  *
- * This function calculates the offset of a link in the post content by counting the number of times the link text
- * is encountered before the link in the post content.
+ * This function calculates the offset of a link in the post content by counting
+ * the number of times the link text is encountered before the link in the post
+ * content.
  *
  * @since 3.16.0
  *
@@ -446,10 +461,11 @@ type ValidateAndFixSmartLinksReturnType = {
 /**
  * Validates and fixes smart links in a specific content.
  *
- * This function checks if the smart links in the store are still present in the post content.
- * If a smart link is not found in the post content, it tries to find a link that matches the text,
- * title and href of the smart link.
- * And if the link is found, it restores the missing fields from the link (data-smartlink and title).
+ * This function checks if the smart links in the store are still present in the
+ * post content. If a smart link is not found in the post content, it tries to
+ * find a link that matches the text, title and href of the smart link. And if
+ * the link is found, it restores the missing fields from the link
+ * (data-smartlink and title).
  *
  * @since 3.16.0
  *
@@ -458,7 +474,10 @@ type ValidateAndFixSmartLinksReturnType = {
  *
  * @return {ValidateAndFixSmartLinksReturnType} The missing smart links and whether any fixes were made.
  */
-export async function validateAndFixSmartLinks( content: string, blockId: string|false = false ): Promise<ValidateAndFixSmartLinksReturnType> {
+export async function validateAndFixSmartLinks(
+	content: string,
+	blockId: string|false = false
+): Promise<ValidateAndFixSmartLinksReturnType> {
 	// Get the post content and all the smart links from the store.
 	let smartLinks = select( SmartLinkingStore ).getSmartLinks();
 
@@ -523,7 +542,9 @@ export async function validateAndFixSmartLinks( content: string, blockId: string
 
 		// Update the block content with the new content.
 		const paragraph = blockDoc.body.firstChild as HTMLElement;
-		dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { content: paragraph.innerHTML } );
+		dispatch( 'core/block-editor' ).updateBlockAttributes(
+			block.clientId, { content: paragraph.innerHTML }
+		);
 		didAnyFixes = true;
 	}
 
@@ -584,7 +605,8 @@ export function trimURLForDisplay( url: string, maxLength: number ): string {
 	// Remove protocol (http, https) and www.
 	const strippedUrl = url.replace( /(^\w+:|^)\/\//, '' ).replace( /^www\./, '' );
 
-	// If no maxLength is specified or the URL length is already less than maxLength, return the stripped URL.
+	// If no maxLength is specified or the URL length is already less than
+	// maxLength, return the stripped URL.
 	if ( ! maxLength || strippedUrl.length <= maxLength ) {
 		return strippedUrl;
 	}
