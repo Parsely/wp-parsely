@@ -562,7 +562,7 @@ export async function validateAndFixSmartLinksInPost(): Promise<boolean> {
 	const postContent = select( 'core/editor' ).getEditedPostContent();
 	const { missingSmartLinks, didAnyFixes } = await validateAndFixSmartLinks( postContent );
 
-	// Remove any missing smart-links that are not in the store.
+	// Remove any missing smart links that are not in the store.
 	missingSmartLinks.forEach( ( missingLink ) => {
 		dispatch( SmartLinkingStore ).removeSmartLink( missingLink.uid );
 	} );
@@ -583,7 +583,7 @@ export async function validateAndFixSmartLinksInBlock( block: BlockInstance ): P
 	const blockContent: string = getBlockContent( block );
 	const { missingSmartLinks, didAnyFixes } = await validateAndFixSmartLinks( blockContent, block.clientId );
 
-	// Remove any missing smart-links that are not in the store.
+	// Remove any missing smart links that are not in the store.
 	missingSmartLinks.forEach( ( missingLink ) => {
 		dispatch( SmartLinkingStore ).removeSmartLink( missingLink.uid );
 	} );
