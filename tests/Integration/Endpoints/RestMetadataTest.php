@@ -472,7 +472,8 @@ final class RestMetadataTest extends TestCase {
 <meta name="parsely-link" content="http://example.org/?p=' . $post_id . '" />
 <meta name="parsely-type" content="post" />
 <meta name="parsely-pub-date" content="' . $date . '" />
-<meta name="parsely-section" content="Uncategorized" />';
+<meta name="parsely-section" content="Uncategorized" />
+<meta name="parsely-metadata" content="{&quot;postID&quot;:19}" />';
 		self::assertSame( $expected, $meta_string );
 	}
 
