@@ -120,6 +120,14 @@ abstract class Metadata_Builder {
 		$this->metadata['@type'] = $type;
 	}
 
+	protected function build_post_id( WP_Post $post ): void {
+		$this->metadata['custom_metadata'] = wp_json_encode(
+			array(
+				'postID' => $post->ID,
+			)
+		);
+	}
+
 	/**
 	 * Populates the mainEntityOfPage field in the metadata object.
 	 *
