@@ -688,4 +688,15 @@ abstract class Metadata_Builder {
 
 		return $all_values;
 	}
+
+	/**
+	 * Populates all the fields related to post ID.
+	 *
+	 * @param WP_Post $post The post/page for which to populate the field.
+	 *
+	 * @since 3.0.x
+	 */
+	protected function build_post_ids( WP_Post $post ): void {
+		$this->metadata['postID']   = $post->ID;
+	}
 }
