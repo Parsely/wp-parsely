@@ -697,6 +697,6 @@ abstract class Metadata_Builder {
 	 * @since 3.0.x
 	 */
 	protected function build_post_ids( WP_Post $post ): void {
-		$this->metadata['postID']   = $post->ID;
+		$this->metadata['postID'] = $post->ID;
 	}
 }
