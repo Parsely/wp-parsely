@@ -42,6 +42,16 @@ export type SmartLinkMatch = {
 }
 
 /**
+ * Structure of the response from the `smart-linking/[post-id]/add-multiple` endpoint.
+ *
+ * @since 3.16.0
+ */
+type AddMultipleSmartLinksResponse = {
+	added: SmartLink[],
+	failed: SmartLink[],
+}
+
+/**
  * Returns data from the `content-suggestions/suggest-linked-reference` WordPress REST API
  * endpoint.
  *
@@ -97,6 +107,14 @@ export class SmartLinkingProvider extends BaseProvider {
 		return response ?? [];
 	}
 
+	/**
+	 * Adds a smart link to a post.
+	 *
+	 * @param {number}    postID         The ID of the post to add the link to.
+	 * @param {SmartLink} linkSuggestion The link suggestion to add.
+	 *
+	 * @return {Promise<SmartLink>} The added link.
+	 */
 	public async addSmartLink( postID: number, linkSuggestion: SmartLink ) {
 		// /wp-parsely/v1/smart-linking/[post-id]/add
 		const response = await this.fetch<SmartLink>( {
@@ -104,6 +122,27 @@ export class SmartLinkingProvider extends BaseProvider {
 			path: `/wp-parsely/v1/smart-linking/${ postID }/add`,
 			data: {
 				link: linkSuggestion,
+			},
+		} );
+
+		return response;
+	}
+
+	/**
+	 * Adds multiple smart links to a post.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param {number}      postID          The ID of the post to add the links to.
+	 * @param {SmartLink[]} linkSuggestions The list of link suggestions to add.
+	 */
+	public async addSmartLinks( postID: number, linkSuggestions: SmartLink[] ) {
+		// /wp-parsely/v1/smart-linking/[post-id]/add-multiple
+		const response = await this.fetch<AddMultipleSmartLinksResponse>( {
+			method: 'POST',
+			path: `/wp-parsely/v1/smart-linking/${ postID }/add-multiple`,
+			data: {
+				links: linkSuggestions,
 			},
 		} );
 
@@ -119,7 +158,7 @@ export class SmartLinkingProvider extends BaseProvider {
 	 */
 	public async getPostTypeByURL( url: string ): Promise<string> {
 		const response = await this.fetch<{ post_type: string }>( {
-			method: 'POST',
+			method: 'GET',
 			path: '/wp-parsely/v1/smart-linking/url-to-post-type',
 			data: {
 				url,

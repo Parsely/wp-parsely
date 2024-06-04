@@ -86,6 +86,13 @@ export const SmartLinkingPanel = ( {
 
 	const { createNotice } = useDispatch( 'core/notices' );
 
+	const { postId } = useSelect( ( select ) => {
+		const { getCurrentPostId } = select( 'core/editor' ) as GutenbergFunction;
+		return {
+			postId: getCurrentPostId(),
+		};
+	}, [] );
+
 	/**
 	 * Loads the Smart Linking store.
 	 *

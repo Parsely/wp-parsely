@@ -94,20 +94,108 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * @since 3.16.0
 	 */
 	public function run(): void {
+		/**
+		 * GET /smart-linking/url-to-post-type
+		 * Converts a URL to a post type.
+		 */
 		$this->register_endpoint(
 			static::ENDPOINT . '/url-to-post-type',
 			'url_to_post_type',
-			array( 'POST' )
+			array( 'GET' )
 		);
 
+		/**
+		 * GET /smart-linking/{post_id}/get
+		 * Gets the smart links for a post.
+		 */
+		$this->register_endpoint_with_args(
+			static::ENDPOINT . '/(?P<post_id>\d+)/get',
+			'get_smart_links',
+			array( 'GET' ),
+			array(
+				'post_id' => array(
+					'required'          => true,
+					'description'       => 'The post ID.',
+					'validate_callback' => array( $this, '_api_request_validate_post_id' ),
+				),
+			)
+		);
+
+		/**
+		 * POST /smart-linking/{post_id}/add
+		 * Adds a smart link to a post.
+		 */
 		$this->register_endpoint_with_args(
 			static::ENDPOINT . '/(?P<post_id>\d+)/add',
 			'add_smart_link',
-			array( 'POST' )
+			array( 'POST' ),
+			array(
+				'post_id' => array(
+					'required'          => true,
+					'description'       => 'The post ID.',
+					'validate_callback' => array( $this, '_api_request_validate_post_id' ),
+				),
+				'link' => array(
+					'required'          => true,
+					'type' 	            => 'array',
+					'description'       => 'The smart link data.',
+					'validate_callback' => array( $this, '_api_request_validate_smart_link_params' ),
+				),
+				'update' => array(
+					'type'              => 'boolean',
+					'description'       => 'Whether to update the existing smart link.',
+					'default'           => false,
+				),
+			)
+		);
+
+		/**
+		 * POST /smart-linking/{post_id}/add-multiple
+		 * Adds multiple smart links to a post.
+		 */
+		$this->register_endpoint_with_args(
+			static::ENDPOINT . '/(?P<post_id>\d+)/add-multiple',
+			'add_multiple_smart_links',
+			array( 'POST' ),
+			array(
+				'post_id' => array(
+					'required'          => true,
+					'description'       => 'The post ID.',
+					'validate_callback' => array( $this, '_api_request_validate_post_id' ),
+				),
+				'links' => array(
+					'required'          => true,
+					'type' 	            => 'array',
+					'description'       => 'The multiple smart links data to add.',
+					'validate_callback' => function( array $param, WP_REST_Request $request ) {
+						$smart_links = array();
+
+						foreach ( $param as $link ) {
+							if ( $this->_api_request_validate_smart_link_params( $link, $request ) ) {
+								$smart_link = $request->get_param( 'smart_link' );
+								$smart_links[] = $smart_link;
+							} else {
+								return false;
+							}
+						}
+						$request->set_param( 'smart_link', null );
+						$request->set_param( 'smart_links', $smart_links );
+
+						return true;
+					},
+				),
+				'update' => array(
+					'type'              => 'boolean',
+					'description'       => 'Whether to update the existing smart link.',
+					'default'           => false,
+				),
+			)
 		);
 	}
 
 	/**
+	 * API Endpoint: `POST /smart-linking/url-to-post-type`.
+	 *
 	 * Converts a URL to a post type.
 	 *
 	 * @since 3.16.0
@@ -158,34 +246,42 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		return new WP_REST_Response( $response, 200 );
 	}
 
+
 	/**
-	 * Validates the request parameters.
+	 * API Endpoint: `GET /smart-linking/{post_id}/get`.
+	 *
+	 * Gets the smart links for a post.
 	 *
 	 * @since 3.16.0
 	 *
-	 * @throws InvalidArgumentException If the request is invalid.
-	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return bool True if the request is valid, false otherwise.
+	 * @return WP_REST_Response The response object.
 	 */
-	private function validate_request( WP_REST_Request $request ): bool {
-		$post_id = $request->get_param( 'post_id' );
+	public function get_smart_links( WP_REST_Request $request ): WP_REST_Response {
+		/**
+		 * The post object.
+		 *
+		 * @var WP_Post $post
+		 */
+		$post = $request->get_param( 'post' );
 
-		if ( ! is_numeric( $post_id ) ) {
-			throw new InvalidArgumentException( 'Invalid post ID' );
-		}
-
-		// Check if post exists.
-		$post = get_post( intval( $post_id ) );
-		if ( null === $post ) {
-			throw new InvalidArgumentException( 'Invalid post ID' );
-		}
-
-		return true;
+		$links = Smart_Link::get_smart_links_in_post( $post->ID );
+		return new WP_REST_Response(
+			array(
+				'links' => array_map( function( Smart_Link $link ) {
+					return json_decode( $link->serialize() );
+				}, $links ),
+			),
+			200
+		);
 	}
 
+
 	/**
+	 * API Endpoint: `POST /smart-linking/{post_id}/add`.
+	 *
 	 * Adds a smart link to a post.
+	 * If the update parameter is set to true, the existing smart link will be updated.
 	 *
 	 * @since 3.16.0
 	 *
@@ -193,82 +289,185 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * @return WP_REST_Response The response object.
 	 */
 	public function add_smart_link( WP_REST_Request $request ): WP_REST_Response {
-		try {
-			$this->validate_request( $request );
+		/**
+		 * The Smart Link model.
+		 *
+		 * @var Smart_Link $smart_link
+		 */
+		$smart_link = $request->get_param( 'smart_link' );
+		$should_update = $request->get_param( 'update' ) === true;
 
-			$post_id = $request->get_param( 'post_id' );
-			if ( is_numeric( $post_id ) ) {
-				$post_id = intval( $post_id );
-			} else {
-				// Validate makes sure it's numeric, so this should never happen.
-				$post_id = 0;
-			}
-
-			$json_body = $request->get_body();
-			$body_data = json_decode( $json_body, true );
-
-			if ( ! is_array( $body_data ) || ! isset( $body_data['link'] ) ) {
-				return new WP_REST_Response(
-					array(
-						'error' => array(
-							'name'    => 'invalid_request',
-							'message' => 'Invalid request body.',
-						),
-					),
-					400
-				);
-			}
-
-			$encoded_data = wp_json_encode( $body_data['link'] );
-			if ( false === $encoded_data ) {
-				return new WP_REST_Response(
-					array(
-						'error' => array(
-							'name'    => 'invalid_request',
-							'message' => 'Invalid request body.',
-						),
-					),
-					400
-				);
-			}
-
-			/**
-			 * Smart link object.
-			 *
-			 * @var Smart_Link $smart_link The smart link object.
-			 */
-			$smart_link = Smart_Link::deserialize( $encoded_data );
-			$smart_link->set_post_id( $post_id );
-
-			// Save the smart link to the post meta.
-			if ( ! $smart_link->save() ) {
-				return new WP_REST_Response(
-					array(
-						'error' => array(
-							'name'    => 'add_smart_link_failed',
-							'message' => 'Failed to add smart link.',
-						),
-					),
-					500
-				);
-			}
-
-			return new WP_REST_Response(
-				array(
-					'data' => json_decode( $smart_link->serialize() ),
-				),
-				200
-			);
-		} catch ( \InvalidArgumentException $e ) {
+		if ( $smart_link->exists() && ! $should_update ) {
 			return new WP_REST_Response(
 				array(
 					'error' => array(
-						'name'    => 'invalid_request',
-						'message' => $e->getMessage(),
+						'name'    => 'smart_link_exists',
+						'message' => __( 'Smart link already exists.', 'wp-parsely' ),
 					),
 				),
-				400
+				409 // HTTP Conflict.
 			);
 		}
+
+		// The smart link proprieties are set in the validate callback.
+		$saved = $smart_link->save();
+		if ( ! $saved ) {
+			return new WP_REST_Response(
+				array(
+					'error' => array(
+						'name'    => 'add_smart_link_failed',
+						'message' => __( 'Failed to add the smart link.', 'wp-parsely' ),
+					),
+				),
+				500
+			);
+		}
+
+		return new WP_REST_Response(
+			array(
+				'data' => json_decode( $smart_link->serialize() ),
+			),
+			200
+		);
+	}
+
+	/**
+	 * API Endpoint: `POST /smart-linking/{post_id}/add_multiple`.
+	 *
+	 * Adds multiple smart links to a post.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
+	 */
+	public function add_multiple_smart_links( WP_REST_Request $request ): WP_REST_Response {
+		/**
+		 * Array of Smart Link models.
+		 *
+		 * @var Smart_Link[] $smart_links
+		 */
+		$smart_links = $request->get_param( 'smart_links' );
+		$should_update = $request->get_param( 'update' ) === true;
+
+		$added_links = array();
+		$updated_links = array();
+		$failed_links = array();
+
+		foreach ( $smart_links as $smart_link ) {
+			if ( $smart_link->exists() && ! $should_update ) {
+				$failed_links[] = $smart_link;
+				continue;
+			}
+
+			$updated_link = $smart_link->exists() && $should_update;
+
+			var_dump($smart_link->serialize());
+			// The smart link proprieties are set in the validate callback.
+			$saved = $smart_link->save();
+
+			if ( ! $saved ) {
+				$failed_links[] = $smart_link;
+				continue;
+			}
+
+			if ( $updated_link ) {
+				$updated_links[] = $smart_link;
+			} else {
+				$added_links[] = $smart_link;
+			}
+		}
+
+		// If no link was added, return an error response
+		if ( count( $added_links ) === 0 && count( $updated_links) === 0 ) {
+			return new WP_REST_Response(
+				array(
+					'error' => array(
+						'name'    => 'add_smart_link_failed',
+						'message' => __( 'Failed to add all the smart links.', 'wp-parsely' ),
+					),
+				),
+				500
+			);
+		}
+
+		$response = [];
+		if ( count( $added_links ) > 0 ) {
+			$response['added'] = array_map( function( Smart_Link $link ) {
+				return json_decode( $link->serialize() );
+			}, $added_links );
+		}
+		if ( count( $failed_links ) > 0 ) {
+			$response['failed'] = array_map( function( Smart_Link $link ) {
+				return json_decode( $link->serialize() );
+			}, $failed_links );
+		}
+		if ( count( $updated_links ) > 0 ) {
+			$response['updated'] = array_map( function( Smart_Link $link ) {
+				return json_decode( $link->serialize() );
+			}, $updated_links );
+		}
+
+		return new WP_REST_Response( $response, 200 );
+	}
+
+	/**
+	 * Validates the post ID parameter.
+	 *
+	 * The callback sets the post object in the request object if the parameter is valid.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param string         $param   The parameter value.
+	 * @param WP_REST_Request $request The request object.
+	 * @access private
+	 * @return bool Whether the parameter is valid.
+	 */
+	public function _api_request_validate_post_id( string $param, WP_REST_Request $request ) {
+		// Validate if the post ID exists
+		$post = get_post( intval( $param ) );
+		// Set the post attribute in the request.
+		$request->set_param( 'post', $post );
+
+		return is_numeric( $param ) && null !== $post;
+	}
+
+	/**
+	 * Validates the smart link parameters.
+	 *
+	 * The callback sets the smart link object in the request object if the parameters are valid.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param array         $params  The parameters.
+	 * @param WP_REST_Request $request The request object.
+	 * @access private
+	 * @return bool Whether the parameters are valid.
+	 */
+	public function _api_request_validate_smart_link_params( array $params, WP_REST_Request $request ): bool {
+		$required_params = array( 'href', 'title', 'text', 'offset' );
+
+		foreach ($required_params as $param) {
+			if ( ! isset($params[$param] ) ) {
+				return false;
+			}
+		}
+
+		$encoded_data = wp_json_encode( $params );
+		if ( false === $encoded_data ) {
+			return false;
+		}
+
+		/**
+		 * The Smart Link model.
+		 * @var Smart_Link $smart_link
+		 */
+		$smart_link = Smart_Link::deserialize( $encoded_data );
+		if ( is_numeric( $request->get_param( 'post_id' ) ) ) {
+			$smart_link->set_source_post_id( intval( $request->get_param( 'post_id' ) ) );
+		}
+
+		$request->set_param( 'smart_link', $smart_link );
+		return true;
 	}
 }

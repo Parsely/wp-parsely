@@ -106,6 +106,14 @@ function parsely_initialize_plugin(): void {
 	$GLOBALS['parsely'] = new Parsely();
 	$GLOBALS['parsely']->run();
 
+	/**
+	 * The Editor Sidebar instance.
+	 *
+	 * @since 3.16.0
+	 * @var Editor_Sidebar $GLOBALS['parsely_editor_sidebar']
+	 */
+	$GLOBALS['parsely_editor_sidebar'] = new Editor_Sidebar( $GLOBALS['parsely'] );
+
 	if ( class_exists( 'WPGraphQL' ) ) {
 		$graphql = new GraphQL_Metadata( $GLOBALS['parsely'] );
 		$graphql->run();
@@ -279,10 +287,20 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helpe
  * @since 3.9.0 Renamed from init_content_helper().
  */
 function init_content_helper_editor_sidebar(): void {
-	( new Editor_Sidebar( $GLOBALS['parsely'] ) )->run();
+	$GLOBALS['parsely_editor_sidebar']->run();
 }
 
 require_once __DIR__ . '/src/content-helper/excerpt-generator/class-excerpt-generator.php';
+
+add_action( 'init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
+/**
+ * Initializes the PCH Editor Sidebar features.
+ *
+ * @since 3.16.0
+ */
+function parsely_content_helper_editor_sidebar_features(): void {
+	$GLOBALS['parsely_editor_sidebar']->init_features();
+}
 
 // The priority of 9 is used to ensure that the Excerpt Generator is loaded before the PCH Editor Sidebar (10).
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_excerpt_generator', 9 );
