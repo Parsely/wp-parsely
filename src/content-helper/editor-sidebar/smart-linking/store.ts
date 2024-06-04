@@ -154,7 +154,7 @@ interface SetApplyToAction {
 /**
  * Interface for the SetIsRetryingAction.
  *
- * @since 3.16.0
+ * @since 3.15.0
  */
 interface SetIsRetryingAction {
 	type: 'SET_IS_RETRYING';

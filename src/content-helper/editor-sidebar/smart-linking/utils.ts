@@ -126,8 +126,14 @@ function findTextNodes( element: Node, searchText: string ): Node[] {
  * @param {BlockInstance} block    The block instance to apply the link to.
  * @param {SmartLink}     link     The link suggestion to apply.
  * @param {HTMLElement}   htmlNode The HTML node to apply to the block.
+ *
+ * @return {string|undefined} The updated block content, or `undefined` if the block content could not be updated.
  */
-export function applyNodeToBlock( block: BlockInstance, link: SmartLink, htmlNode: HTMLElement ) {
+export function applyNodeToBlock(
+	block: BlockInstance,
+	link: SmartLink,
+	htmlNode: HTMLElement
+): string|undefined {
 	const blockContent: string = getBlockContent( block );
 
 	const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
@@ -453,6 +459,11 @@ function getLinkOffset( link: HTMLAnchorElement, document: Document ): number {
 	return -1;
 }
 
+/**
+ * Represents the return type of the `validateAndFixSmartLinks` function.
+ *
+ * @since 3.16.0
+ */
 type ValidateAndFixSmartLinksReturnType = {
 	missingSmartLinks: SmartLink[],
 	didAnyFixes: boolean

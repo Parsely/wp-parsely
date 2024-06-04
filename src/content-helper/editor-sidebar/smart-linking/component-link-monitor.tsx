@@ -174,7 +174,6 @@ export const LinkMonitor = ( {
 			}
 		}, debounceValue );
 
-		//console.log( 'Debounced check blocks', isDetectingEnabled );
 		debouncedCheckBlocks( isDetectingEnabled );
 
 		// Clean up the debounced function on component unmount.

@@ -383,7 +383,7 @@ export const ReviewSuggestion = ( {
 	hasNext,
 }: ReviewSuggestionProps ): JSX.Element => {
 	if ( ! link?.match ) {
-		return <>No match!</>;
+		return <>{ __( 'This Smart Link does not have any matches in the current content.', 'wp-parsely' ) }</>;
 	}
 
 	const blockId = link.match.blockId;
@@ -392,7 +392,7 @@ export const ReviewSuggestion = ( {
 	const isApplied = link.applied;
 
 	if ( ! block ) {
-		return <>No block!</>;
+		return <>{ __( 'No block is selected.', 'wp-parsely' ) }</>;
 	}
 
 	return (
