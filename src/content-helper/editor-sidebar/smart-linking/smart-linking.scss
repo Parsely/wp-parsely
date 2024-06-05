@@ -207,7 +207,7 @@
 
 		.components-menu-item__item {
 			display: inline-block;
-			max-width: 100%; /* Adjust based on the container size */
+			max-width: 100%;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			white-space: nowrap;
@@ -219,7 +219,7 @@
 		min-width: to_rem(220px);
 		max-height: to_rem(400px);
 		overflow-y: auto;
-		padding: 3px;
+		padding: to_rem(3px);
 		flex-direction: column;
 		align-items: flex-start;
 		gap: var(--grid-unit-20);
@@ -229,10 +229,10 @@
 			margin-bottom: var(--grid-unit-15);
 			display: flex;
 			align-items: center;
-			gap: 6px;
+			gap: to_rem(6px);
 			align-self: stretch;
 			color: var(--sidebar-black);
-			font-size: 11px;
+			font-size: to_rem(11px);
 			font-style: normal;
 			font-weight: 600;
 			line-height: var(--grid-unit-20);
@@ -292,7 +292,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: 16px;
+		gap: to_rem(16px);
 		flex: 1;
 		align-self: stretch;
 
@@ -324,7 +324,7 @@
 
 		.review-controls {
 			display: flex;
-			width: 452px;
+			width: to_rem(452px);
 			justify-content: space-between;
 			align-items: center;
 			flex-shrink: 0;
@@ -336,7 +336,7 @@
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				gap: var(--grid-unit-20, 16px);
+				gap: var(--grid-unit-20);
 				flex: 1 0 0;
 			}
 

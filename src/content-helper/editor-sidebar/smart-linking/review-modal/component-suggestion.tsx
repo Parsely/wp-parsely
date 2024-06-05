@@ -5,22 +5,22 @@
 import { BlockInstance, cloneBlock, getBlockContent, getBlockType } from '@wordpress/blocks';
 import {
 	Button,
-	__experimentalDivider as Divider,
 	Disabled,
+	__experimentalDivider as Divider,
 	MenuItem,
 	Tooltip,
 } from '@wordpress/components';
 import { select as selectFn, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { arrowLeft, arrowRight, check, closeSmall, Icon, page } from '@wordpress/icons';
+import { Icon, arrowLeft, arrowRight, check, closeSmall, page } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
+import { BlockEditorProvider, BlockList } from '@wordpress/block-editor';
 import { GutenbergFunction } from '../../../../@types/gutenberg/types';
 import { SmartLink, SmartLinkingProvider } from '../provider';
-import { BlockEditorProvider, BlockList } from '@wordpress/block-editor';
 import { SmartLinkingStore } from '../store';
 import { applyNodeToBlock, trimURLForDisplay } from '../utils';
 
@@ -45,7 +45,7 @@ type SuggestionBreadcrumbProps = {
 const SuggestionBreadcrumb = ( { link }: SuggestionBreadcrumbProps ): JSX.Element => {
 	const blockId = link.match?.blockId;
 
-	// Fetch block details and parent IDs using the blockId
+	// Fetch block details and parent IDs using the blockId.
 	const { block, parents } = useSelect(
 		( select ) => {
 			const { getBlock, getBlockParents } = select( 'core/block-editor' ) as GutenbergFunction;
@@ -111,7 +111,7 @@ type StylesProps = {
  * @param {StylesProps} props The component props.
  */
 const Styles = ( { styles }: StylesProps ): JSX.Element => {
-	// Get onlt the theme and user styles.
+	// Get only the theme and user styles.
 	const filteredStyles = styles
 		.filter( ( style ) => {
 			return (
@@ -141,7 +141,8 @@ type BlockPreviewProps = {
 }
 
 /**
- * The BlockPreview component, which renders the block preview for the suggestion.
+ * The BlockPreview component, which renders the block preview for the
+ * suggestion.
  *
  * @since 3.16.0
  *
@@ -161,7 +162,9 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 
 	/**
 	 * Runs when the block is rendered in the DOM.
-	 * It will set the block element to be non-editable and highlight the link in the block.
+	 *
+	 * It will set the block element to be non-editable and highlight the link
+	 * in the block.
 	 *
 	 * @since 3.16.0
 	 */
@@ -189,7 +192,8 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 				return;
 			}
 
-			// Otherwise, if the link is applied, add a highlight class to the link element with the link uid
+			// Otherwise, if the link is applied, add a highlight class to the
+			// link element with the link UID.
 			const blockContent: string = getBlockContent( blockInstance );
 
 			const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
@@ -198,7 +202,9 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 				return;
 			}
 
-			const anchor = contentElement.querySelector<HTMLAnchorElement>( `a[data-smartlink="${ linkSuggestion.uid }"]` );
+			const anchor = contentElement.querySelector<HTMLAnchorElement>(
+				`a[data-smartlink="${ linkSuggestion.uid }"]`
+			);
 			if ( anchor ) {
 				anchor.classList.add( 'smart-linking-highlight' );
 			}
@@ -216,7 +222,9 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 
 					mutation.addedNodes.forEach( ( node ) => {
 						if ( node instanceof HTMLElement ) {
-							const blockElement = document.querySelector<HTMLElement>( `.wp-parsely-preview-editor [data-block="${ clonedBlock.clientId }"]` );
+							const blockElement = document.querySelector<HTMLElement>(
+								`.wp-parsely-preview-editor [data-block="${ clonedBlock.clientId }"]`
+							);
 
 							if ( blockElement ) {
 								// Disable editing on the block element.
@@ -271,7 +279,7 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
  * @param {{link: SmartLink}} props The component props.
  */
 const LinkDetails = ( { link }: { link: SmartLink } ): JSX.Element => {
-	// Get the post type by the permalink
+	// Get the post type by the permalink.
 	const [ displayUrl, setDisplayUrl ] = useState<string>( link.href );
 	const [ postType, setPostType ] = useState<string|undefined>( link.post_type );
 	const linkRef = useRef<HTMLButtonElement>( null );
@@ -282,6 +290,7 @@ const LinkDetails = ( { link }: { link: SmartLink } ): JSX.Element => {
 
 	/**
 	 * Fetches the post type by the permalink using the SmartLinkingProvider.
+	 *
 	 * If the post type is not found, it will default to 'External'.
 	 *
 	 * @since 3.16.0
@@ -310,7 +319,7 @@ const LinkDetails = ( { link }: { link: SmartLink } ): JSX.Element => {
 		const calculateTrimSize = () => {
 			if ( linkRef.current ) {
 				const containerWidth = linkRef.current.offsetWidth;
-				const averageCharWidth = 8; // Estimate or adjust based on actual character width
+				const averageCharWidth = 8; // Estimate or adjust based on actual character width.
 				const maxLength = Math.floor( containerWidth / averageCharWidth );
 				setDisplayUrl( trimURLForDisplay( link.href, maxLength ) );
 			}
@@ -374,16 +383,16 @@ export const ReviewSuggestion = ( {
 	hasNext,
 }: ReviewSuggestionProps ): JSX.Element => {
 	if ( ! link?.match ) {
-		return <>No match!</>;
+		return <>{ __( 'This Smart Link does not have any matches in the current content.', 'wp-parsely' ) }</>;
 	}
 
 	const blockId = link.match.blockId;
-	// Get the block
+	// Get the block.
 	const block = selectFn( 'core/block-editor' ).getBlock( blockId );
 	const isApplied = link.applied;
 
 	if ( ! block ) {
-		return <>No block!</>;
+		return <>{ __( 'No block is selected.', 'wp-parsely' ) }</>;
 	}
 
 	return (

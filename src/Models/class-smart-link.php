@@ -1,6 +1,7 @@
 <?php
 /**
- * Smart Link model: Represents a smart link suggestion returned by the Smart Linking API.
+ * Smart Link model: Represents a smart link suggestion returned by the Smart
+ * Linking API
  *
  * @package Parsely
  * @since   3.16.0
@@ -13,7 +14,7 @@ namespace Parsely\Models;
 use InvalidArgumentException;
 
 /**
- * Smart Link class
+ * Smart Link class.
  *
  * Represents a smart link suggestion returned by the Smart Linking API.
  *
@@ -23,6 +24,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The internal ID of the smart link custom post type object.
 	 *
+	 * @since 3.16.0
 	 * @var int The ID of the smart link.
 	 */
 	private $smart_link_id = 0;
@@ -30,6 +32,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The post ID of the suggested link (link source)
 	 *
+	 * @since 3.16.0
 	 * @var int The post ID of the suggested link, 0 if not set.
 	 */
 	public $source_post_id = 0;
@@ -37,6 +40,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The post ID of the link destination.
 	 *
+	 * @since 3.16.0
 	 * @var int The post ID of the link destination, 0 if not set.
 	 */
 	public $destination_post_id = 0;
@@ -44,6 +48,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The post type of the suggested link.
 	 *
+	 * @since 3.16.0
 	 * @var string The post type of the suggested link.
 	 */
 	public $destination_post_type = 'external';
@@ -51,6 +56,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The URL of the suggested link.
 	 *
+	 * @since 3.16.0
 	 * @var string The URL of the suggested link.
 	 */
 	public $href;
@@ -58,6 +64,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The title of the suggested link.
 	 *
+	 * @since 3.16.0
 	 * @var string The title of the suggested link.
 	 */
 	public $title;
@@ -65,6 +72,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The text of the suggested link.
 	 *
+	 * @since 3.16.0
 	 * @var string The text of the suggested link.
 	 */
 	public $text;
@@ -72,6 +80,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The offset/position for the suggested link.
 	 *
+	 * @since 3.16.0
 	 * @var int The offset/position for the suggested link.
 	 */
 	public $offset;
@@ -79,6 +88,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * The unique ID of the suggested link.
 	 *
+	 * @since 3.16.0
 	 * @var string The unique ID of the suggested link.
 	 */
 	public $uid;
@@ -86,6 +96,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Whether the link has been applied.
 	 *
+	 * @since 3.16.0
 	 * @var bool Whether the link has been applied.
 	 */
 	public $applied = false;
@@ -93,6 +104,7 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Whether the smart link exists on the database.
 	 *
+	 * @since 3.16.0
 	 * @var bool Whether the link exists.
 	 */
 	private $exists = false;
@@ -346,8 +358,8 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Generates a unique ID for the suggested link.
 	 *
-	 * It takes the href, title, text, and offset properties and concatenates them
-	 * to create a unique ID. This ID is hashed to ensure it is unique.
+	 * It takes the href, title, text, and offset properties and concatenates
+	 * them to create a unique ID. This ID is hashed to ensure it is unique.
 	 *
 	 * @since 3.16.0
 	 *
