@@ -45,7 +45,7 @@ interface PostData {
 export function usePostData(): PostData {
 	const { authors, categories, tags, isReady } = useSelect( ( select ) => {
 		const { getEditedPostAttribute } = select( editorStore ) as GutenbergFunction;
-		const { getEntityRecords } = select( coreStore );
+		const { getEntityRecords } = select( coreStore ) as GutenbergFunction;
 		let authorRecords: User[] | null | undefined;
 		let categoryRecords: Taxonomy[] | null | undefined;
 		let tagRecords: Taxonomy[] | null | undefined;
