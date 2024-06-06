@@ -13,12 +13,18 @@ import { dispatch } from '@wordpress/data';
 export interface GutenbergFunction {
 	editPost( edits: Record<string, unknown> ): void;
 	getBlock( clientId: string ): BlockInstance | null;
+	getBlockParents( clientId: string ): string[];
 	getBlocks(): BlockInstance[];
 	getCurrentPostAttribute( attribute: string ): string;
+	getCurrentPostId(): number | undefined;
 	getEditedPostAttribute( attribute: string ): string;
 	getEditedPostContent(): string;
 	getPermalink(): string | null;
+	getPermalink(): string | null;
 	getSelectedBlock(): BlockInstance | null;
+	hasMetaBoxes(): boolean;
+	isAutosavingPost(): boolean;
+	isSavingPost(): boolean;
 	lockPostSaving( lockName: string ): void;
 	removeEditorPanel( panelName: string ): void;
 	selectBlock( clientId: string, initialPosition?: number ): void;

@@ -141,10 +141,12 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * user.
 	 *
 	 * @since 3.14.0
+	 * @since 3.16.0 Added the `$request` parameter.
 	 *
+	 * @param WP_REST_Request|null $request The request object.
 	 * @return bool
 	 */
-	public function is_available_to_current_user(): bool {
+	public function is_available_to_current_user( $request = null ): bool {
 		return current_user_can( 'edit_user', $this->current_user_id );
 	}
 

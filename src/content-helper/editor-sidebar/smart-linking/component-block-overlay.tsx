@@ -204,11 +204,11 @@ export const withBlockOverlay = createHigherOrderComponent( ( BlockEdit ) => {
 
 		return (
 			<>
+				<BlockEdit { ...props } />
 				<BlockOverlay
 					label={ __( 'Generating Smart Links…', 'wp-parsely' ) }
 					selectedBlockClientId={ props.clientId }
 				/>
-				<BlockEdit { ...props } />
 			</>
 		);
 	};

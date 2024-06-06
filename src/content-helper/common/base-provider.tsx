@@ -17,6 +17,7 @@ import { ContentHelperError, ContentHelperErrorCode } from './content-helper-err
  */
 export interface ContentHelperAPIResponse<T> {
 	error?: Error;
+	message?: string;
 	data: T;
 }
 
