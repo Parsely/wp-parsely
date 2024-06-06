@@ -5,7 +5,8 @@ import { getBlockContent } from '@wordpress/blocks';
 // eslint-disable-next-line import/named
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
-import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
+import { select, useDispatch, useSelect } from '@wordpress/data';
+//import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, external } from '@wordpress/icons';
@@ -13,7 +14,7 @@ import { Icon, external } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { GutenbergFunction, dispatchCoreEditor } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { ContentHelperErrorCode } from '../../common/content-helper-error';
 import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
@@ -526,7 +527,7 @@ export const SmartLinkingPanel = ( {
 	 */
 	const disableSave = (): void => {
 		// Lock post saving.
-		dispatch( 'core/editor' ).lockPostSaving( 'wp-parsely-block-overlay' );
+		dispatchCoreEditor.lockPostSaving( 'wp-parsely-block-overlay' );
 
 		// Disable save buttons.
 		const saveButtons = document.querySelectorAll( '.edit-post-header__settings>[type="button"]' );
@@ -548,7 +549,7 @@ export const SmartLinkingPanel = ( {
 		} );
 
 		// Unlock post saving.
-		dispatch( 'core/editor' ).unlockPostSaving( 'wp-parsely-block-overlay' );
+		dispatchCoreEditor.unlockPostSaving( 'wp-parsely-block-overlay' );
 	};
 
 	/**

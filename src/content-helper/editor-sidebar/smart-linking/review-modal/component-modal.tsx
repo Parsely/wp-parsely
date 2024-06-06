@@ -4,13 +4,14 @@
 // eslint-disable-next-line import/named
 import { BlockInstance, getBlockContent } from '@wordpress/blocks';
 import { Button, KeyboardShortcuts, Modal } from '@wordpress/components';
-import { dispatch, select, useDispatch, useSelect } from '@wordpress/data';
+import { select, useDispatch, useSelect } from '@wordpress/data';
 import { memo, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
+import { dispatchCoreBlockEditor } from '../../../../@types/gutenberg/types';
 import { SmartLink } from '../provider';
 import { SmartLinkingStore } from '../store';
 import { applyNodeToBlock } from '../utils';
@@ -163,7 +164,7 @@ const SmartLinkingReviewModalComponent = ( {
 				parentNode.replaceChild( textNode, anchorToRemove );
 
 				// Update the block content.
-				dispatch( 'core/block-editor' ).updateBlockAttributes( blockId, { content: contentElement.innerHTML } );
+				dispatchCoreBlockEditor.updateBlockAttributes( blockId, { content: contentElement.innerHTML } );
 			}
 		}
 
@@ -344,7 +345,7 @@ const SmartLinkingReviewModalComponent = ( {
 		const block = select( 'core/block-editor' ).getBlock( selectedLink.match.blockId );
 		if ( block ) {
 			// Select the block in the editor.
-			dispatch( 'core/block-editor' ).selectBlock( block.clientId );
+			dispatchCoreBlockEditor.selectBlock( block.clientId );
 
 			// Find the link element within the block.
 			const blockContent = document.querySelector( `[data-block="${ block.clientId }"]` );
