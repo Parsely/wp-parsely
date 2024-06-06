@@ -90,6 +90,14 @@ export const useSmartLinksValidation = (): boolean => {
 	return isPostSaved;
 };
 
+/**
+ * Handles the smart links saving process, which will save the smart links after the post has been saved.
+ *
+ * This hook is used to save the smart links after the post has been saved. It will save the smart links to
+ * the database, using the SmartLinkingProvider, after the post has been saved.
+ *
+ * @since 3.16.0
+ */
 export const useSaveSmartLinksOnPostSave = (): void => {
 	const { isSavingPost } = useSelect( ( selectFn ) => {
 		const coreEditorSelect = selectFn( 'core/editor' ) as GutenbergFunction;

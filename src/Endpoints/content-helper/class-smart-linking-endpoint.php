@@ -76,7 +76,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 */
 	public function run(): void {
 		/**
-		 * GET /smart-linking/url-to-post-type
+		 * POST /smart-linking/url-to-post-type
 		 * Converts a URL to a post type.
 		 */
 		$this->register_endpoint(
@@ -159,7 +159,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		);
 
 		/**
-		 * POST /smart-linking/{post_id}/update
+		 * POST /smart-linking/{post_id}/set
 		 * Updates the smart links of a given post and removes the ones that are not in the request.
 		 */
 		$this->register_endpoint_with_args(
