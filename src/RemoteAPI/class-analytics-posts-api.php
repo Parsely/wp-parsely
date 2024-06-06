@@ -13,6 +13,7 @@ namespace Parsely\RemoteAPI;
 use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Parsely;
 use WP_Error;
+use WP_REST_Request;
 
 /**
  * Class for Analytics Posts API (`/analytics/posts`).
@@ -65,10 +66,12 @@ class Analytics_Posts_API extends Base_Endpoint_Remote {
 	 * user.
 	 *
 	 * @since 3.14.0
+	 * @since 3.16.0 Added the `$request` parameter.
 	 *
+	 * @param WP_REST_Request|null $request The request object.
 	 * @return bool
 	 */
-	public function is_available_to_current_user(): bool {
+	public function is_available_to_current_user( $request = null ): bool {
 		return current_user_can(
 			// phpcs:ignore WordPress.WP.Capabilities.Undetermined
 			$this->apply_capability_filters(

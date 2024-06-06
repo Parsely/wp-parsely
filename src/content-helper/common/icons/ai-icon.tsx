@@ -1,6 +1,6 @@
 import { Path, SVG } from '@wordpress/components';
 
-export const AiIcon = ( { size = 24, className = 'wp-parsely-icon' }: { size?: number, className: string } ): JSX.Element => {
+export const AiIcon = ( { size = 24, className = 'wp-parsely-icon' }: { size?: number, className?: string } ): JSX.Element => {
 	return (
 		<SVG xmlns="http://www.w3.org/2000/svg"
 			className={ className }
