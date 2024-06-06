@@ -3,7 +3,7 @@
  */
 import { Button, Spinner } from '@wordpress/components';
 import { createHigherOrderComponent } from '@wordpress/compose';
-import { dispatch, useSelect } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
 import { createPortal, useEffect, useState } from '@wordpress/element';
 import { addFilter } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
@@ -12,6 +12,7 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
+import { dispatchCoreBlockEditor } from '../../../@types/gutenberg/types';
 import { SmartLinkingProvider } from './provider';
 import { SmartLinkingStore } from './store';
 
@@ -71,7 +72,7 @@ export const BlockOverlay = ( {
 			return;
 		}
 
-		dispatch( 'core/block-editor' ).selectBlock( selectedBlockClientId, -1 );
+		dispatchCoreBlockEditor.selectBlock( selectedBlockClientId, -1 );
 
 		// When nested blocks are selected, the block editor will focus the outermost block.
 		// We need to blur the focused element to avoid this.

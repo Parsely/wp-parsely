@@ -8,6 +8,7 @@ import { dispatch, select } from '@wordpress/data';
 /**
  * Internal dependencies
  */
+import { dispatchCoreBlockEditor } from '../../../@types/gutenberg/types';
 import { escapeRegExp } from '../../common/utils/functions';
 import { SmartLink } from './provider';
 import { SmartLinkingStore } from './store';
@@ -191,7 +192,7 @@ export function applyNodeToBlock(
 	} );
 
 	// Update the block content with the new content.
-	dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { content: contentElement.innerHTML } );
+	dispatchCoreBlockEditor.updateBlockAttributes( block.clientId, { content: contentElement.innerHTML } );
 	return contentElement.innerHTML;
 }
 
@@ -553,7 +554,7 @@ export async function validateAndFixSmartLinks(
 
 		// Update the block content with the new content.
 		const paragraph = blockDoc.body.firstChild as HTMLElement;
-		dispatch( 'core/block-editor' ).updateBlockAttributes(
+		dispatchCoreBlockEditor.updateBlockAttributes(
 			block.clientId, { content: paragraph.innerHTML }
 		);
 		didAnyFixes = true;
