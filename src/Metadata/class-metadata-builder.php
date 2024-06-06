@@ -121,11 +121,11 @@ abstract class Metadata_Builder {
 	}
 
 	/**
-	 * Populates all the fields related to post ID.
+	 * Populates the custom metadata field with the current post's/page's ID.
+	 *
+	 * @since 3.16.0
 	 *
 	 * @param WP_Post $post The post/page for which to populate the field.
-	 *
-	 * @since 3.0.x
 	 */
 	protected function build_post_id( WP_Post $post ): void {
 		$this->metadata['custom_metadata'] = wp_json_encode(
