@@ -9,6 +9,8 @@ import { store as editorStore } from '@wordpress/editor';
  * Internal dependencies
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { SmartLinkingProvider } from './provider';
+import { SmartLinkingStore as store } from './store';
 import { validateAndFixSmartLinksInPost } from './utils';
 
 /**
@@ -86,4 +88,34 @@ export const useSmartLinksValidation = (): boolean => {
 	}, [ didAnyFixes, isPostSaved ] );
 
 	return isPostSaved;
+};
+
+export const useSaveSmartLinksOnPostSave = (): void => {
+	const { isSavingPost } = useSelect( ( selectFn ) => {
+		const coreEditorSelect = selectFn( 'core/editor' ) as GutenbergFunction;
+		return {
+			isSavingPost: coreEditorSelect.isSavingPost(),
+		};
+	}, [] );
+
+	const { postId } = useSelect( ( selectFn ) => {
+		const { getCurrentPostId } = selectFn( 'core/editor' ) as GutenbergFunction;
+		return {
+			postId: getCurrentPostId(),
+		};
+	}, [] );
+
+	const { getSmartLinks } = useSelect( ( selectFn ) => {
+		return {
+			getSmartLinks: selectFn( store ).getSmartLinks,
+		};
+	}, [] );
+
+	useEffect( () => {
+		if ( isSavingPost && postId ) {
+			SmartLinkingProvider.getInstance().setSmartLinks( postId, getSmartLinks() ).catch( () => {
+				console.error( 'WP Parse.ly: Failed to save smart links on post save.' );
+			} );
+		}
+	}, [ getSmartLinks, isSavingPost, postId ] );
 };

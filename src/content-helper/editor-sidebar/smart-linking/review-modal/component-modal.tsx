@@ -183,14 +183,15 @@ const SmartLinkingReviewModalComponent = ( {
 		// Hide the modal.
 		setIsModalOpen( false );
 
-		const pendingLinks = smartLinks.filter( ( link ) => ! link.applied );
+		const currentSmartLinks = getSmartLinks();
+
+		const pendingLinks = currentSmartLinks.filter( ( link ) => ! link.applied );
 		if ( pendingLinks.length > 0 ) {
 			showConfirmCloseDialog();
 			return;
 		}
 
-		// Purge any remaining suggestions.
-		purgeSmartLinksSuggestions().then( () => onClose() );
+		onClose();
 	};
 
 	/**
@@ -207,7 +208,7 @@ const SmartLinkingReviewModalComponent = ( {
 		if ( shouldClose ) {
 			setIsModalOpen( false );
 			purgeSmartLinksSuggestions().then( () => {
-				onClose();
+				onCloseHandler();
 			} );
 		} else {
 			setIsModalOpen( true );

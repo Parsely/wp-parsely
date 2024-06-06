@@ -1,12 +1,14 @@
 /**
  * WordPress dependencies
  */
+import { __ } from '@wordpress/i18n';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
  */
 import { BaseProvider } from '../../common/base-provider';
+import { ContentHelperError, ContentHelperErrorCode } from '../../common/content-helper-error';
 import { DEFAULT_MAX_LINKS } from './smart-linking';
 
 /**
@@ -14,7 +16,7 @@ import { DEFAULT_MAX_LINKS } from './smart-linking';
  * `content-suggestions/suggest-linked-reference` endpoint.
  *
  * @since 3.14.0
- * @since 3.16.0 Added the `applied`, `match`, `post_id`, and `post_type` properties.
+ * @since 3.16.0 Added the `applied`, `match`, `source` and `destination` properties.
  */
 export type SmartLink = {
 	uid: string;
@@ -24,8 +26,8 @@ export type SmartLink = {
 	offset: number;
 	applied: boolean;
 	match?: SmartLinkMatch;
-	post_id?: number|false;
-	post_type?: string;
+	source?: LinkedPost;
+	destination?: LinkedPost;
 };
 
 /**
@@ -42,6 +44,17 @@ export type SmartLinkMatch = {
 }
 
 /**
+ * Structure of a linked post object. To be used with source and destination
+ * properties of the SmartLink object.
+ *
+ * @since 3.16.0
+ */
+type LinkedPost = {
+	post_id: number;
+	post_type: string;
+}
+
+/**
  * Structure of the response from the `smart-linking/[post-id]/add-multiple` endpoint.
  *
  * @since 3.16.0
@@ -49,6 +62,16 @@ export type SmartLinkMatch = {
 type AddMultipleSmartLinksResponse = {
 	added: SmartLink[],
 	failed: SmartLink[],
+}
+
+/**
+ * Structure of the response from the `smart-linking/[post-id]/get` endpoint.
+ *
+ * @since 3.16.0
+ */
+type GetSmartLinksResponse = {
+	outbound: SmartLink[],
+	inbound: SmartLink[],
 }
 
 /**
@@ -116,16 +139,13 @@ export class SmartLinkingProvider extends BaseProvider {
 	 * @return {Promise<SmartLink>} The added link.
 	 */
 	public async addSmartLink( postID: number, linkSuggestion: SmartLink ) {
-		// /wp-parsely/v1/smart-linking/[post-id]/add
-		const response = await this.fetch<SmartLink>( {
+		return await this.fetch<SmartLink>( {
 			method: 'POST',
 			path: `/wp-parsely/v1/smart-linking/${ postID }/add`,
 			data: {
 				link: linkSuggestion,
 			},
 		} );
-
-		return response;
 	}
 
 	/**
@@ -137,16 +157,68 @@ export class SmartLinkingProvider extends BaseProvider {
 	 * @param {SmartLink[]} linkSuggestions The list of link suggestions to add.
 	 */
 	public async addSmartLinks( postID: number, linkSuggestions: SmartLink[] ) {
-		// /wp-parsely/v1/smart-linking/[post-id]/add-multiple
-		const response = await this.fetch<AddMultipleSmartLinksResponse>( {
+		if ( postID === 0 ) {
+			throw new ContentHelperError(
+				__( 'Invalid post ID.', 'wp-parsely' ),
+				ContentHelperErrorCode.PostIsNotPublished,
+			);
+		}
+
+		return await this.fetch<AddMultipleSmartLinksResponse>( {
 			method: 'POST',
 			path: `/wp-parsely/v1/smart-linking/${ postID }/add-multiple`,
 			data: {
 				links: linkSuggestions,
 			},
 		} );
+	}
 
-		return response;
+	/**
+	 * Sets the smart links for a post, by saving the list of smart links.
+	 *
+	 * This method will replace the existing smart links for the post with the new list.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param {number}      postID     The ID of the post to set the links for.
+	 * @param {SmartLink[]} smartLinks The list of smart links to set.
+	 *
+	 * @return {Promise<AddMultipleSmartLinksResponse>} The response from the API.
+	 */
+	public async setSmartLinks(
+		postID: number,
+		smartLinks: SmartLink[],
+	): Promise<AddMultipleSmartLinksResponse> {
+		if ( postID === 0 ) {
+			throw new ContentHelperError(
+				__( 'Invalid post ID.', 'wp-parsely' ),
+				ContentHelperErrorCode.PostIsNotPublished,
+			);
+		}
+
+		return await this.fetch<AddMultipleSmartLinksResponse>( {
+			method: 'POST',
+			path: `/wp-parsely/v1/smart-linking/${ postID }/set`,
+			data: {
+				links: smartLinks,
+			},
+		} );
+	}
+
+	/**
+	 * Gets the smart links for a post.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param {number} postID The ID of the post to get the links for.
+	 *
+	 * @return {Promise<SmartLink[]>} The list of smart links for the post.
+	 */
+	public async getSmartLinks( postID: number ): Promise<GetSmartLinksResponse> {
+		return await this.fetch<GetSmartLinksResponse>( {
+			method: 'GET',
+			path: `/wp-parsely/v1/smart-linking/${ postID }/get`,
+		} );
 	}
 
 	/**
@@ -158,15 +230,13 @@ export class SmartLinkingProvider extends BaseProvider {
 	 *
 	 * @return {Promise<string>} The post type of the post.
 	 */
-	public async getPostTypeByURL( url: string ): Promise<string> {
-		const response = await this.fetch<{ post_type: string }>( {
-			method: 'GET',
+	public async getPostTypeByURL( url: string ): Promise<LinkedPost> {
+		return await this.fetch<LinkedPost>( {
+			method: 'POST',
 			path: '/wp-parsely/v1/smart-linking/url-to-post-type',
 			data: {
 				url,
 			},
 		} );
-
-		return response.post_type;
 	}
 }
