@@ -10,7 +10,7 @@ import { external, Icon } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { dispatchCoreEditor, GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { getPersonaLabel, PersonaProp } from '../../common/components/persona-selector';
 import { getToneLabel, ToneProp } from '../../common/components/tone-selector';
@@ -150,7 +150,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		setOriginalTitle( TitleType.PostTitle, currentPostTitle );
 
 		// Set the post title to the accepted title.
-		dispatch( 'core/editor' ).editPost( { title: acceptedTitle?.title } );
+		dispatchCoreEditor.editPost( { title: acceptedTitle?.title } );
 
 		// Pin the accepted title on the list of generated titles.
 		if ( acceptedTitle ) {
@@ -177,7 +177,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 						label: __( 'Undo', 'wp-parsely' ),
 						onClick: () => {
 							// Restore the original title.
-							dispatch( 'core/editor' ).editPost( { title: currentPostTitle } );
+							dispatchCoreEditor.editPost( { title: currentPostTitle } );
 							setOriginalTitle( TitleType.PostTitle, undefined );
 						},
 					},
