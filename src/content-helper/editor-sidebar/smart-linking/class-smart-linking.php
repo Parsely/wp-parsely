@@ -12,6 +12,7 @@ namespace Parsely\Content_Helper\Editor_Sidebar;
 
 use Parsely\Content_Helper\Content_Helper_Feature;
 use Parsely\Content_Helper\Editor_Sidebar;
+use WP_Query;
 
 /**
  * Class for Smart Linking feature in the editor sidebar.
@@ -29,6 +30,8 @@ class Smart_Linking extends Content_Helper_Feature {
 	 */
 	public function __construct( Editor_Sidebar $editor_sidebar ) {
 		$this->parsely = $editor_sidebar->parsely;
+
+		add_action( 'delete_post', array( $this, 'purge_smart_links' ) );
 	}
 
 	/**
@@ -156,5 +159,48 @@ class Smart_Linking extends Content_Helper_Feature {
 				),
 			)
 		);
+	}
+
+	/**
+	 * Purges all outbound smart links associated with a post when the post is deleted.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param int $post_id The ID of the post being deleted.
+	 */
+	public function purge_smart_links( int $post_id ): void {
+		$post = get_post( $post_id );
+		if ( null === $post ) {
+			return;
+		}
+
+		$smart_links_query = new WP_Query(
+			array(
+				'post_type'      => 'parsely_smart_link',
+				'post_status'    => 'any',
+				'posts_per_page' => - 1,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+				'tax_query'      => array(
+					array(
+						'taxonomy' => 'smart_link_source',
+						'field'    => 'slug',
+						'terms'    => $post_id,
+					),
+				),
+			)
+		);
+
+		while ( $smart_links_query->have_posts() ) {
+			$smart_links_query->the_post();
+			$smart_link_post_id = get_the_ID();
+
+			if ( ! is_int( $smart_link_post_id ) ) {
+				continue;
+			}
+
+			wp_delete_post( $smart_link_post_id, true );
+		}
+
+		wp_reset_postdata();
 	}
 }
