@@ -5,6 +5,7 @@
  * @package Parsely
  * @since   3.16.0
  */
+
 declare( strict_types = 1 );
 
 namespace Parsely\Content_Helper\Editor_Sidebar;
@@ -39,7 +40,7 @@ class Smart_Linking extends Content_Helper_Feature {
 	 * @return string The filter name.
 	 */
 	public static function get_feature_filter_name(): string {
-		 return self::get_global_filter_name() . '_smart_linking';
+		return self::get_global_filter_name() . '_smart_linking';
 	}
 
 	/**
@@ -76,51 +77,51 @@ class Smart_Linking extends Content_Helper_Feature {
 			return;
 		}
 
-		// Register private custom post type for the Smart Links
+		// Register private custom post type for the Smart Links.
 		register_post_type(
 			'parsely_smart_link',
 			array(
 				'labels'              => array(
-					'name'          => __( 'Smart Links', 'parsely' ),
-					'singular_name' => __( 'Smart Link', 'parsely' ),
+					'name'          => __( 'Smart Links', 'wp-parsely' ),
+					'singular_name' => __( 'Smart Link', 'wp-parsely' ),
 				),
-				'supports'              => array( 'title', 'custom-fields' ),
-				'taxonomies'            => array( 'smart_link_source', 'smart_link_destination' ),
-				'hierarchical'          => false,
-				'public'                => false,
-				'show_ui'               => false,
-				'show_in_menu'          => false,
-				'show_in_admin_bar'     => false,
-				'show_in_nav_menus'     => false,
-				'can_export'            => true,
-				'has_archive'           => false,
-				'exclude_from_search'   => true,
-				'publicly_queryable'    => false,
-				'rewrite'               => false,
-				'capability_type'       => 'post',
-				'show_in_rest'          => false,
+				'supports'            => array( 'title', 'custom-fields' ),
+				'taxonomies'          => array( 'smart_link_source', 'smart_link_destination' ),
+				'hierarchical'        => false,
+				'public'              => false,
+				'show_ui'             => false,
+				'show_in_menu'        => false,
+				'show_in_admin_bar'   => false,
+				'show_in_nav_menus'   => false,
+				'can_export'          => true,
+				'has_archive'         => false,
+				'exclude_from_search' => true,
+				'publicly_queryable'  => false,
+				'rewrite'             => false,
+				'capability_type'     => 'post',
+				'show_in_rest'        => false,
 			)
 		);
-		// Register the taxonomies for the Smart Links
+		// Register the taxonomies for the Smart Links.
 		register_taxonomy(
 			'smart_link_source',
 			'parsely_smart_link',
 			array(
-				'labels' => array(
-					'name'          => __( 'Smart Link Source', 'parsely' ),
-					'singular_name' => __( 'Smart Link Source', 'parsely' ),
+				'labels'             => array(
+					'name'          => __( 'Smart Link Source', 'wp-parsely' ),
+					'singular_name' => __( 'Smart Link Source', 'wp-parsely' ),
 				),
-				'public'                => false,
-				'show_ui'               => false,
-				'show_in_menu'          => false,
-				'show_in_nav_menus'     => false,
-				'show_tagcloud'         => false,
-				'show_in_quick_edit'    => false,
-				'show_admin_column'     => false,
-				'show_in_rest'          => false,
-				'hierarchical'          => false,
-				'rewrite'               => false,
-				'capabilities'          => array(
+				'public'             => false,
+				'show_ui'            => false,
+				'show_in_menu'       => false,
+				'show_in_nav_menus'  => false,
+				'show_tagcloud'      => false,
+				'show_in_quick_edit' => false,
+				'show_admin_column'  => false,
+				'show_in_rest'       => false,
+				'hierarchical'       => false,
+				'rewrite'            => false,
+				'capabilities'       => array(
 					'manage_terms' => 'edit_posts',
 					'edit_terms'   => 'edit_posts',
 					'delete_terms' => 'edit_posts',
@@ -129,27 +130,31 @@ class Smart_Linking extends Content_Helper_Feature {
 			)
 		);
 
-		register_taxonomy( 'smart_link_destination', 'parsely_smart_link', array(
-			'labels' => array(
-				'name'          => __( 'Smart Link Destinations', 'parsely' ),
-				'singular_name' => __( 'Smart Link Destination', 'parsely' ),
-			),
-			'public'                => false,
-			'show_ui'               => false,
-			'show_in_menu'          => false,
-			'show_in_nav_menus'     => false,
-			'show_tagcloud'         => false,
-			'show_in_quick_edit'    => false,
-			'show_admin_column'     => false,
-			'show_in_rest'          => false,
-			'hierarchical'          => false,
-			'rewrite'               => false,
-			'capabilities'          => array(
-				'manage_terms' => 'edit_posts',
-				'edit_terms'   => 'edit_posts',
-				'delete_terms' => 'edit_posts',
-				'assign_terms' => 'edit_posts',
-			),
-		) );
+		register_taxonomy(
+			'smart_link_destination',
+			'parsely_smart_link',
+			array(
+				'labels'             => array(
+					'name'          => __( 'Smart Link Destinations', 'wp-parsely' ),
+					'singular_name' => __( 'Smart Link Destination', 'wp-parsely' ),
+				),
+				'public'             => false,
+				'show_ui'            => false,
+				'show_in_menu'       => false,
+				'show_in_nav_menus'  => false,
+				'show_tagcloud'      => false,
+				'show_in_quick_edit' => false,
+				'show_admin_column'  => false,
+				'show_in_rest'       => false,
+				'hierarchical'       => false,
+				'rewrite'            => false,
+				'capabilities'       => array(
+					'manage_terms' => 'edit_posts',
+					'edit_terms'   => 'edit_posts',
+					'delete_terms' => 'edit_posts',
+					'assign_terms' => 'edit_posts',
+				),
+			)
+		);
 	}
 }

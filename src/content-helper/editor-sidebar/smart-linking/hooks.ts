@@ -114,6 +114,7 @@ export const useSaveSmartLinksOnPostSave = (): void => {
 	useEffect( () => {
 		if ( isSavingPost && postId ) {
 			SmartLinkingProvider.getInstance().setSmartLinks( postId, getSmartLinks() ).catch( () => {
+				// eslint-disable-next-line no-console
 				console.error( 'WP Parse.ly: Failed to save smart links on post save.' );
 			} );
 		}

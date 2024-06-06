@@ -36,22 +36,6 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	protected const ENDPOINT = '/smart-linking';
 
 	/**
-	 * The post meta key for storing smart links.
-	 *
-	 * @since 3.16.0
-	 * @var string
-	 */
-	protected const POST_META_KEY = '_parsely_smart_links';
-
-	/**
-	 * The current post.
-	 *
-	 * @since 3.16.0
-	 * @var WP_Post|null
-	 */
-	protected $current_post;
-
-	/**
 	 * Returns whether the endpoint is available for access by the current
 	 * user.
 	 *
@@ -113,7 +97,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 				'post_id' => array(
 					'required'          => true,
 					'description'       => 'The post ID.',
-					'validate_callback' => array( $this, '_api_request_validate_post_id' ),
+					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
 				),
 			)
 		);
@@ -130,18 +114,18 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 				'post_id' => array(
 					'required'          => true,
 					'description'       => 'The post ID.',
-					'validate_callback' => array( $this, '_api_request_validate_post_id' ),
+					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
 				),
-				'link' => array(
+				'link'    => array(
 					'required'          => true,
-					'type' 	            => 'array',
+					'type'              => 'array',
 					'description'       => 'The smart link data.',
-					'validate_callback' => array( $this, '_api_request_validate_smart_link_params' ),
+					'validate_callback' => array( $this, 'private_api_request_validate_smart_link_params' ),
 				),
-				'update' => array(
-					'type'              => 'boolean',
-					'description'       => 'Whether to update the existing smart link.',
-					'default'           => false,
+				'update'  => array(
+					'type'        => 'boolean',
+					'description' => 'Whether to update the existing smart link.',
+					'default'     => false,
 				),
 			)
 		);
@@ -158,18 +142,18 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 				'post_id' => array(
 					'required'          => true,
 					'description'       => 'The post ID.',
-					'validate_callback' => array( $this, '_api_request_validate_post_id' ),
+					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
 				),
-				'links' => array(
+				'links'   => array(
 					'required'          => true,
-					'type' 	            => 'array',
+					'type'              => 'array',
 					'description'       => 'The multiple smart links data to add.',
-					'validate_callback' => array( $this, '_api_request_validate_multiple_smart_links' ),
+					'validate_callback' => array( $this, 'private_api_request_validate_multiple_smart_links' ),
 				),
-				'update' => array(
-					'type'              => 'boolean',
-					'description'       => 'Whether to update the existing smart link.',
-					'default'           => false,
+				'update'  => array(
+					'type'        => 'boolean',
+					'description' => 'Whether to update the existing smart link.',
+					'default'     => false,
 				),
 			)
 		);
@@ -186,13 +170,13 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 				'post_id' => array(
 					'required'          => true,
 					'description'       => 'The post ID.',
-					'validate_callback' => array( $this, '_api_request_validate_post_id' ),
+					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
 				),
-				'links' => array(
+				'links'   => array(
 					'required'          => true,
-					'type' 	            => 'array',
+					'type'              => 'array',
 					'description'       => 'The multiple smart links data to update.',
-					'validate_callback' => array( $this, '_api_request_validate_multiple_smart_links' ),
+					'validate_callback' => array( $this, 'private_api_request_validate_multiple_smart_links' ),
 				),
 			)
 		);
@@ -274,15 +258,21 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		$inbound_links  = Smart_Link::get_inbound_smart_links( $post->ID );
 
 		$response = array(
-			'outbound' => array_map( function( Smart_Link $link ) {
-				return json_decode( $link->serialize() );
-			}, $outbound_links ),
-			'inbound' => array_map( function( Smart_Link $link ) {
-				return json_decode( $link->serialize() );
-			}, $inbound_links ),
+			'outbound' => array_map(
+				function ( Smart_Link $link ) {
+					return json_decode( $link->serialize() );
+				},
+				$outbound_links
+			),
+			'inbound'  => array_map(
+				function ( Smart_Link $link ) {
+					return json_decode( $link->serialize() );
+				},
+				$inbound_links
+			),
 		);
 
-		return new WP_REST_Response( array( 'data' => $response ),	200	);
+		return new WP_REST_Response( array( 'data' => $response ), 200 );
 	}
 
 
@@ -303,7 +293,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		 *
 		 * @var Smart_Link $smart_link
 		 */
-		$smart_link = $request->get_param( 'smart_link' );
+		$smart_link    = $request->get_param( 'smart_link' );
 		$should_update = $request->get_param( 'update' ) === true;
 
 		if ( $smart_link->exists() && ! $should_update ) {
@@ -356,12 +346,12 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		 *
 		 * @var Smart_Link[] $smart_links
 		 */
-		$smart_links = $request->get_param( 'smart_links' );
+		$smart_links   = $request->get_param( 'smart_links' );
 		$should_update = $request->get_param( 'update' ) === true;
 
-		$added_links = array();
+		$added_links   = array();
 		$updated_links = array();
-		$failed_links = array();
+		$failed_links  = array();
 
 		foreach ( $smart_links as $smart_link ) {
 			if ( $smart_link->exists() && ! $should_update ) {
@@ -386,8 +376,8 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			}
 		}
 
-		// If no link was added, return an error response
-		if ( count( $added_links ) === 0 && count( $updated_links) === 0 ) {
+		// If no link was added, return an error response.
+		if ( count( $added_links ) === 0 && count( $updated_links ) === 0 ) {
 			return new WP_REST_Response(
 				array(
 					'error' => array(
@@ -399,21 +389,30 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			);
 		}
 
-		$response = [];
+		$response = array();
 		if ( count( $added_links ) > 0 ) {
-			$response['added'] = array_map( function( Smart_Link $link ) {
-				return json_decode( $link->serialize() );
-			}, $added_links );
+			$response['added'] = array_map(
+				function ( Smart_Link $link ) {
+					return json_decode( $link->serialize() );
+				},
+				$added_links
+			);
 		}
 		if ( count( $failed_links ) > 0 ) {
-			$response['failed'] = array_map( function( Smart_Link $link ) {
-				return json_decode( $link->serialize() );
-			}, $failed_links );
+			$response['failed'] = array_map(
+				function ( Smart_Link $link ) {
+					return json_decode( $link->serialize() );
+				},
+				$failed_links
+			);
 		}
 		if ( count( $updated_links ) > 0 ) {
-			$response['updated'] = array_map( function( Smart_Link $link ) {
-				return json_decode( $link->serialize() );
-			}, $updated_links );
+			$response['updated'] = array_map(
+				function ( Smart_Link $link ) {
+					return json_decode( $link->serialize() );
+				},
+				$updated_links
+			);
 		}
 
 		return new WP_REST_Response( array( 'data' => $response ), 200 );
@@ -446,7 +445,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 
 		// Get the current stored smart links.
 		$existing_links = Smart_Link::get_outbound_smart_links( $post->ID );
-		$removed_links = array();
+		$removed_links  = array();
 
 		foreach ( $existing_links as $existing_link ) {
 			$found = false;
@@ -463,7 +462,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			}
 		}
 
-		$saved_links = array();
+		$saved_links  = array();
 		$failed_links = array();
 
 		foreach ( $smart_links as $smart_link ) {
@@ -479,18 +478,27 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		}
 
 		$response = array(
-			'saved' => array_map( function( Smart_Link $link ) {
-				return json_decode( $link->serialize() );
-			}, $saved_links ),
-			'removed' => array_map( function( Smart_Link $link ) {
-				return json_decode( $link->serialize() );
-			}, $removed_links ),
+			'saved'   => array_map(
+				function ( Smart_Link $link ) {
+					return json_decode( $link->serialize() );
+				},
+				$saved_links
+			),
+			'removed' => array_map(
+				function ( Smart_Link $link ) {
+					return json_decode( $link->serialize() );
+				},
+				$removed_links
+			),
 		);
 
 		if ( count( $failed_links ) > 0 ) {
-			$response['failed'] = array_map( function( Smart_Link $link ) {
-				return json_decode( $link->serialize() );
-			}, $failed_links );
+			$response['failed'] = array_map(
+				function ( Smart_Link $link ) {
+					return json_decode( $link->serialize() );
+				},
+				$failed_links
+			);
 		}
 
 		return new WP_REST_Response( array( 'data' => $response ), 200 );
@@ -502,13 +510,14 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * The callback sets the post object in the request object if the parameter is valid.
 	 *
 	 * @since 3.16.0
+	 * @access private
 	 *
 	 * @param string          $param   The parameter value.
 	 * @param WP_REST_Request $request The request object.
 	 * @return bool Whether the parameter is valid.
 	 */
-	public function _api_request_validate_post_id( string $param, WP_REST_Request $request ) {
-		// Validate if the post ID exists
+	public function private_api_request_validate_post_id( string $param, WP_REST_Request $request ) {
+		// Validate if the post ID exists.
 		$post = get_post( intval( $param ) );
 		// Set the post attribute in the request.
 		$request->set_param( 'post', $post );
@@ -522,16 +531,17 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * The callback sets the smart link object in the request object if the parameters are valid.
 	 *
 	 * @since 3.16.0
+	 * @access private
 	 *
 	 * @param array<mixed>    $params  The parameters.
 	 * @param WP_REST_Request $request The request object.
 	 * @return bool Whether the parameters are valid.
 	 */
-	public function _api_request_validate_smart_link_params( array $params, WP_REST_Request $request ): bool {
+	public function private_api_request_validate_smart_link_params( array $params, WP_REST_Request $request ): bool {
 		$required_params = array( 'uid', 'href', 'title', 'text', 'offset' );
 
-		foreach ($required_params as $param) {
-			if ( ! isset($params[$param] ) ) {
+		foreach ( $required_params as $param ) {
+			if ( ! isset( $params[ $param ] ) ) {
 				return false;
 			}
 		}
@@ -550,17 +560,18 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			return false;
 		}
 
-		// Try to get the smart link from the UID
+		// Try to get the smart link from the UID.
 		$smart_link = Smart_Link::get_smart_link( $params['uid'], intval( $post_id ) );
 		if ( $smart_link->exists() ) {
-			// Update the smart link with the new data
+			// Update the smart link with the new data.
 			$smart_link->set_href( $params['href'] );
-			$smart_link->title = $params['title'];
-			$smart_link->text = $params['text'];
+			$smart_link->title  = $params['title'];
+			$smart_link->text   = $params['text'];
 			$smart_link->offset = $params['offset'];
 		} else {
 			/**
 			 * The Smart Link model.
+			 *
 			 * @var Smart_Link $smart_link
 			 */
 			$smart_link = Smart_Link::deserialize( $encoded_data );
@@ -579,17 +590,18 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * The callback sets the smart links object in the request object if the parameters are valid.
 	 *
 	 * @since 3.16.0
+	 * @access private
 	 *
-	 * @param array<mixed>    $param   The parameter value.
-	 * @param WP_REST_Request $request The request object.
+	 * @param array<array<mixed>> $param   The parameter value.
+	 * @param WP_REST_Request     $request The request object.
 	 * @return bool Whether the parameter is valid.
 	 */
-	function _api_request_validate_multiple_smart_links( array $param, WP_REST_Request $request ): bool {
+	public function private_api_request_validate_multiple_smart_links( array $param, WP_REST_Request $request ): bool {
 		$smart_links = array();
 
 		foreach ( $param as $link ) {
-			if ( $this->_api_request_validate_smart_link_params( $link, $request ) ) {
-				$smart_link = $request->get_param( 'smart_link' );
+			if ( $this->private_api_request_validate_smart_link_params( $link, $request ) ) {
+				$smart_link    = $request->get_param( 'smart_link' );
 				$smart_links[] = $smart_link;
 			} else {
 				return false;
