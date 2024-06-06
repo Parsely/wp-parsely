@@ -18,7 +18,7 @@ import type { ReactNode } from 'react';
  */
 type PerformanceStatPanelProps = {
 	title: string;
-	icon?: JSX.Element;
+	icon?: React.JSX.Element;
 	subtitle?: string;
 	level?: Parameters<typeof Heading>[0]['level'];
 	children: ReactNode;
@@ -40,7 +40,7 @@ type PerformanceStatPanelProps = {
  *
  * @param {PerformanceStatPanelProps} props The component's props.
  *
- * @return {JSX.Element} The PerformanceStatPanel JSX Element.
+ * @return {import('react').JSX.Element} The PerformanceStatPanel JSX Element.
  */
 export const PerformanceStatPanel = (
 	{ title,
@@ -53,7 +53,7 @@ export const PerformanceStatPanel = (
 		isOpen,
 		isLoading,
 		dropdownChildren }: Readonly<PerformanceStatPanelProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	return (
 		<div className="performance-stat-panel">
 			<HStack className={ 'panel-header level-' + level }>

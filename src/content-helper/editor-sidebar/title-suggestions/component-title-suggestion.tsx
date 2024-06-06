@@ -43,11 +43,11 @@ interface TitleSuggestionProps {
  *
  * @param {TitleSuggestionProps} props The component's props.
  *
- * @return {JSX.Element} The title suggestion JSX Element.
+ * @return {import('react').JSX.Element} The title suggestion JSX Element.
  */
 export const TitleSuggestion = (
 	props: Readonly<TitleSuggestionProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	const [ isModalOpen, setIsModalOpen ] = useState<boolean>( false );
 	const openModal = () => setIsModalOpen( true );
 	const closeModal = () => setIsModalOpen( false );

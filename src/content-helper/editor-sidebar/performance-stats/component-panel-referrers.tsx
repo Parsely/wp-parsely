@@ -29,12 +29,12 @@ type PerformanceReferrersPanelProps = {
  *
  * @param {PerformanceReferrersPanelProps} props The component's props.
  *
- * @return {JSX.Element} The PerformanceReferrersPanel JSX Element.
+ * @return {import('react').JSX.Element} The PerformanceReferrersPanel JSX Element.
  */
 export const PerformanceReferrersPanel = ( {
 	data,
 	isLoading,
-}: Readonly<PerformanceReferrersPanelProps> ): JSX.Element => {
+}: Readonly<PerformanceReferrersPanelProps> ): React.JSX.Element => {
 	const [ metric, setMetric ] = useState<Metric>( Metric.Views );
 	const [ isOpen, setIsOpen ] = useState<boolean>( false );
 

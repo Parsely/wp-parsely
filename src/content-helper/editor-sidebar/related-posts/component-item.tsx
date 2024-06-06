@@ -23,7 +23,7 @@ import { PostListItemMetric, PostListItemProps } from '../../common/utils/post';
  */
 export const RelatedPostItem = (
 	{ metric, post, postContent }: Readonly<PostListItemProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	const { createNotice } = useDispatch( 'core/notices' );
 
 	/**

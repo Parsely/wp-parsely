@@ -25,7 +25,7 @@ import { MoreArrow } from '../../icons/more-arrow';
  */
 type PersonaMetadata = {
 	label: string,
-	icon?: JSX.Element,
+	icon?: React.JSX.Element,
 };
 
 /**
@@ -131,7 +131,7 @@ type CustomPersonaProps = {
  */
 const CustomPersona = (
 	{ value, onChange }: Readonly<CustomPersonaProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	const [ customPersona, setCustomPersona ] = useState<string>( '' );
 	const debouncedOnChange = useDebounce( onChange, 500 );
 
@@ -191,7 +191,7 @@ export const PersonaSelector = ( {
 	onDropdownChange,
 	disabled = false,
 	allowCustom = false,
-}: Readonly<PersonaSelectorProps> ): JSX.Element => {
+}: Readonly<PersonaSelectorProps> ): React.JSX.Element => {
 	return (
 		<Disabled isDisabled={ disabled }>
 			{ label && <div className="wp-parsely-dropdown-label">{ label }</div> }

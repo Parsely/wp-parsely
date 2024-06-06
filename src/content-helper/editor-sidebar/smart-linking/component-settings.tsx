@@ -36,13 +36,13 @@ type SmartLinkingSettingsProps = {
  *
  * @param {SmartLinkingSettingsProps} props The component's props.
  *
- * @return {JSX.Element} The JSX Element.
+ * @return {import('react').JSX.Element} The JSX Element.
  */
 export const SmartLinkingSettings = ( {
 	disabled = false,
 	selectedBlock,
 	onSettingChange,
-}: Readonly<SmartLinkingSettingsProps> ): JSX.Element => {
+}: Readonly<SmartLinkingSettingsProps> ): React.JSX.Element => {
 	const toggleGroupRef = useRef<HTMLDivElement>();
 	const [ hint, setHint ] = useState<string|null>( '' );
 	const [ animationIsRunning, setAnimationIsRunning ] = useState<boolean>( false );

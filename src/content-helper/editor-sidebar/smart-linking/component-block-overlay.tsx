@@ -33,12 +33,12 @@ type BlockOverlayProps = {
  *
  * @param {BlockOverlayProps} props The component's props.
  *
- * @return {JSX.Element} The JSX Element.
+ * @return {import('react').JSX.Element} The JSX Element.
  */
 export const BlockOverlay = ( {
 	selectedBlockClientId,
 	label,
-}: Readonly<BlockOverlayProps> ): JSX.Element => {
+}: Readonly<BlockOverlayProps> ): React.JSX.Element => {
 	const {
 		retrying,
 	} = useSelect( ( select ) => {
@@ -159,9 +159,9 @@ export const BlockOverlay = ( {
  *
  * @since 3.14.0
  *
- * @return {JSX.Element} The JSX Element.
+ * @return {import('react').JSX.Element} The JSX Element.
  */
-const BlockOverlayFullContent = ( ): JSX.Element => {
+const BlockOverlayFullContent = ( ): React.JSX.Element => {
 	const { overlayBlocks } = useSelect( ( select ) => {
 		const { getOverlayBlocks } = select( SmartLinkingStore );
 

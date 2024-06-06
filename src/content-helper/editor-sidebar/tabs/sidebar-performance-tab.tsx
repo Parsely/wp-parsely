@@ -25,11 +25,11 @@ type SidebarPerformanceTabProps = {
  *
  * @param {SidebarPerformanceTabProps} props The component's props.
  *
- * @return {JSX.Element} The SidebarPerformanceTab JSX Element.
+ * @return {import('react').JSX.Element} The SidebarPerformanceTab JSX Element.
  */
 export const SidebarPerformanceTab = (
 	{ period }: Readonly<SidebarPerformanceTabProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	return (
 		<Panel>
 			<VerifyCredentials>
