@@ -42,7 +42,7 @@ interface TitleSuggestionProps {
  *
  * @since 3.14.0
  */
-const VerticalDivider = (): JSX.Element => {
+const VerticalDivider = (): React.JSX.Element => {
 	return (
 		<SVG xmlns="http://www.w3.org/2000/svg" width="1" height="40" viewBox="0 0 1 40" fill="none">
 			<Rect width="1" height="40" fill="#cccccc" />
@@ -57,11 +57,11 @@ const VerticalDivider = (): JSX.Element => {
  *
  * @param {TitleSuggestionProps} props The component's props.
  *
- * @return {JSX.Element} The title suggestion JSX Element.
+ * @return {import('react').JSX.Element} The title suggestion JSX Element.
  */
 export const TitleSuggestion = (
 	props: Readonly<TitleSuggestionProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	const [ isModalOpen, setIsModalOpen ] = useState<boolean>( false );
 	const openModal = () => setIsModalOpen( true );
 	const closeModal = () => setIsModalOpen( false );

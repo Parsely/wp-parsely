@@ -42,7 +42,7 @@ const FETCH_RETRIES = 1;
  *
  * @since 3.14.0
  */
-export const RelatedPostsPanel = (): JSX.Element => {
+export const RelatedPostsPanel = (): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const period = settings.RelatedPosts.Period;

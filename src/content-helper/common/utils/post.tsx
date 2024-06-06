@@ -46,8 +46,8 @@ export interface PostListItemProps {
  * @since 3.10.0
  */
 interface PostListItemMetricProps extends PostListItemProps {
-	avgEngagedIcon?: JSX.Element;
-	viewsIcon?: JSX.Element;
+	avgEngagedIcon?: React.JSX.Element;
+	viewsIcon?: React.JSX.Element;
 }
 
 /**
@@ -60,11 +60,11 @@ interface PostListItemMetricProps extends PostListItemProps {
  *
  * @param {PostListItemMetricProps} props The component's props.
  *
- * @return {JSX.Element} The resulting JSX Element.
+ * @return {import('react').JSX.Element} The resulting JSX Element.
  */
 export function PostListItemMetric(
 	{ metric, post, avgEngagedIcon, viewsIcon }: Readonly<PostListItemMetricProps>
-): JSX.Element {
+): React.JSX.Element {
 	if ( 'views' === metric ) {
 		return (
 			<span className="parsely-post-metric-data">

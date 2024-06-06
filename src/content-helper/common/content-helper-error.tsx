@@ -129,9 +129,9 @@ export class ContentHelperError extends Error {
 	 *
 	 * @param {ContentHelperErrorMessageProps|null} props The props needed for the function.
 	 *
-	 * @return {JSX.Element} The resulting JSX Element.
+	 * @return {import('react').JSX.Element} The resulting JSX Element.
 	 */
-	public Message( props: ContentHelperErrorMessageProps|null = null ): JSX.Element {
+	public Message( props: ContentHelperErrorMessageProps|null = null ): React.JSX.Element {
 		// Handle cases where credentials are not set.
 		const CredentialsNotSetErrorCodes = [
 			ContentHelperErrorCode.PluginCredentialsNotSetMessageDetected,

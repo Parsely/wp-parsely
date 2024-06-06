@@ -36,7 +36,7 @@ type FilterTypesProps = {
  */
 const FilterTypes = (
 	{ filter, label, postData, ...props }: Readonly<FilterTypesProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	return (
 		<div className="related-posts-filter-types">
 			<ToggleGroupControl
@@ -94,7 +94,7 @@ const FilterValues = ( {
 	label,
 	postData,
 	...props
-}: Readonly<FilterValuesProps> ): JSX.Element => {
+}: Readonly<FilterValuesProps> ): React.JSX.Element => {
 	/**
 	 * Returns the options that will populate the ComboboxControl.
 	 *
@@ -163,7 +163,7 @@ export const RelatedPostsFilterSettings = ( {
 	postData,
 	label,
 	...props
-}: Readonly<FilterControlsProps> ): JSX.Element | null => {
+}: Readonly<FilterControlsProps> ): React.JSX.Element | null => {
 	/**
 	 * Returns whether the filter settings should be displayed.
 	 *

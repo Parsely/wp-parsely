@@ -173,9 +173,9 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
  *
  * @since 3.4.0
  *
- * @return {JSX.Element} The Content Helper Editor Sidebar.
+ * @return {import('react').JSX.Element} The Content Helper Editor Sidebar.
  */
-const ContentHelperEditorSidebar = (): JSX.Element => {
+const ContentHelperEditorSidebar = (): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	/**

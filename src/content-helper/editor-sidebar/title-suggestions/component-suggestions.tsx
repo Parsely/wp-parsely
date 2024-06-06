@@ -35,7 +35,7 @@ export const TitleSuggestions = ( {
 	suggestions,
 	isOpen,
 	isLoading = false,
-}: Readonly<TitleSuggestionsProps> ): JSX.Element => {
+}: Readonly<TitleSuggestionsProps> ): React.JSX.Element => {
 	const [ isCollapsed, setIsCollapsed ] = useState<boolean>( isOpen );
 
 	/**
