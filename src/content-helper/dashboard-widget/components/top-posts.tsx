@@ -30,7 +30,7 @@ const FETCH_RETRIES = 1;
  *
  * @since 3.7.0
  */
-export function TopPosts(): JSX.Element {
+export function TopPosts(): React.JSX.Element {
 	const { settings, setSettings } = useSettings<TopPostsSettings>();
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
@@ -84,7 +84,7 @@ export function TopPosts(): JSX.Element {
 		Telemetry.trackEvent( 'dash_widget_filter_changed', { filter, ...props } );
 	};
 
-	const filters :JSX.Element = (
+	const filters: React.JSX.Element = (
 		<div className="parsely-top-posts-filters">
 			<Select
 				defaultValue={ settings.Period }
@@ -123,7 +123,7 @@ export function TopPosts(): JSX.Element {
 		</div>
 	);
 
-	const navigation: JSX.Element = (
+	const navigation: React.JSX.Element = (
 		<div className="parsely-top-posts-navigation">
 			<button
 				className="parsely-top-posts-navigation-prev"
@@ -173,7 +173,7 @@ export function TopPosts(): JSX.Element {
 		);
 	}
 
-	const spinner: JSX.Element = (
+	const spinner: React.JSX.Element = (
 		<div className="parsely-spinner-wrapper"><Spinner /></div>
 	);
 
@@ -183,7 +183,7 @@ export function TopPosts(): JSX.Element {
 			{
 				loading ? ( spinner ) : (
 					<ol className="parsely-top-posts" style={ { counterReset: 'item ' + ( ( page - 1 ) * TOP_POSTS_DEFAULT_LIMIT ) } }>
-						{ posts.map( ( post: PostData ): JSX.Element =>
+						{ posts.map( ( post: PostData ): React.JSX.Element =>
 							<TopPostListItem
 								key={ post.id }
 								metric={ settings.Metric }

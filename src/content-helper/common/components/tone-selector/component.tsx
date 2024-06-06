@@ -25,7 +25,7 @@ import { MoreArrow } from '../../icons/more-arrow';
  */
 type ToneMetadata = {
 	label: string,
-	icon?: JSX.Element,
+	icon?: React.JSX.Element,
 };
 
 /**
@@ -131,7 +131,7 @@ type CustomToneProps = {
  */
 const CustomTone = (
 	{ value, onChange }: Readonly<CustomToneProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	const [ customTone, setCustomTone ] = useState<string>( '' );
 	const debouncedOnChange = useDebounce( onChange, 500 );
 
@@ -191,7 +191,7 @@ export const ToneSelector = ( {
 	onDropdownChange,
 	disabled = false,
 	allowCustom = false,
-}: Readonly<ToneSelectorProps> ): JSX.Element => {
+}: Readonly<ToneSelectorProps> ): React.JSX.Element => {
 	return (
 		<Disabled isDisabled={ disabled }>
 			<div className="wp-parsely-dropdown-label">{ label }</div>

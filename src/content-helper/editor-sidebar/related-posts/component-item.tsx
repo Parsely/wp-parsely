@@ -18,7 +18,7 @@ import { PostListItemMetric, PostListItemProps } from '../../common/utils/post';
  *
  * @since 3.14.0
  */
-const VerticalDivider = (): JSX.Element => {
+const VerticalDivider = (): React.JSX.Element => {
 	return (
 		<SVG xmlns="http://www.w3.org/2000/svg" width="1" height="40" viewBox="0 0 1 40" fill="none">
 			<Rect width="1" height="40" fill="#cccccc" />
@@ -35,7 +35,7 @@ const VerticalDivider = (): JSX.Element => {
  */
 export const RelatedPostItem = (
 	{ metric, post, postContent }: Readonly<PostListItemProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	const { createNotice } = useDispatch( 'core/notices' );
 
 	/**

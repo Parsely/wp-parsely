@@ -16,11 +16,11 @@ interface FilterSelectProps {
  *
  * @param {FilterSelectProps} props The component's props.
  *
- * @return {JSX.Element} The JSX Element.
+ * @return {import('react').JSX.Element} The JSX Element.
  */
 export const Select = (
 	{ defaultValue, items, onChange }: FilterSelectProps
-): JSX.Element => {
+): React.JSX.Element => {
 	return (
 		<select onChange={ onChange } value={ defaultValue }>
 			{ items.map( ( item ) => (

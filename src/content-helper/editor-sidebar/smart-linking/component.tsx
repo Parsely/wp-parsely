@@ -19,10 +19,10 @@ import { ContentHelperErrorCode } from '../../common/content-helper-error';
 import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
 import { LinkMonitor } from './component-link-monitor';
-import { useSmartLinksValidation } from './hooks';
-import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
+import { useSmartLinksValidation } from './hooks';
 import { SmartLink, SmartLinkingProvider } from './provider';
+import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
 import {
 	calculateSmartLinkingMatches,
@@ -67,13 +67,13 @@ export const MAX_NUMBER_OF_RETRIES = 3;
  *
  * @param {Readonly<SmartLinkingPanelProps>} props The component's props.
  *
- * @return {JSX.Element} The JSX Element.
+ * @return {import('react').JSX.Element} The JSX Element.
  */
 export const SmartLinkingPanel = ( {
 	className,
 	selectedBlockClientId,
 	context = SmartLinkingPanelContext.Unknown,
-}: Readonly<SmartLinkingPanelProps> ): JSX.Element => {
+}: Readonly<SmartLinkingPanelProps> ): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	// Saving hooks.

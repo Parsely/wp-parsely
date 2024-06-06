@@ -32,7 +32,7 @@ interface TopPostDataProps {
  */
 export function TopPostListItem(
 	{ metric, post }: Readonly<PostListItemProps>
-): JSX.Element {
+): React.JSX.Element {
 	return (
 		<li className="parsely-top-post" key={ post.id }>
 			<div className="parsely-top-post-content">
@@ -89,7 +89,7 @@ export function TopPostListItem(
  *
  * @param {PostData} post The Post from which to get the data.
  */
-function ListItemThumbnail( { post }: Readonly<TopPostDataProps> ): JSX.Element {
+function ListItemThumbnail( { post }: Readonly<TopPostDataProps> ): React.JSX.Element {
 	if ( post.thumbnailUrl ) {
 		return (
 			<div className="parsely-top-post-thumbnail">
@@ -114,7 +114,7 @@ function ListItemThumbnail( { post }: Readonly<TopPostDataProps> ): JSX.Element 
  *
  * @param {TopPostDataProps} props The component's props.
  */
-function PostListItemTitle( { post }: Readonly<TopPostDataProps> ): JSX.Element {
+function PostListItemTitle( { post }: Readonly<TopPostDataProps> ): React.JSX.Element {
 	return (
 		<a className="parsely-top-post-title" href={ post.dashUrl } target="_blank" rel="noreferrer">
 			<span className="screen-reader-text">

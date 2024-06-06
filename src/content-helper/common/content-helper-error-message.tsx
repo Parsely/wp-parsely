@@ -23,11 +23,11 @@ export interface ContentHelperErrorMessageProps {
  *
  * @param {ContentHelperErrorMessageProps} props The error message's props.
  *
- * @return {JSX.Element} The error message JSX Element.
+ * @return {import('react').JSX.Element} The error message JSX Element.
  */
 export const ContentHelperErrorMessage = (
 	props: ContentHelperErrorMessageProps|null = null
-): JSX.Element => {
+): React.JSX.Element => {
 	let innerHtml = '';
 	if ( props?.children ) {
 		innerHtml = props.children;
@@ -54,11 +54,11 @@ export const ContentHelperErrorMessage = (
  *
  * @param {ContentHelperErrorMessageProps|null} props The error message's props.
  *
- * @return {JSX.Element} The error message JSX Element.
+ * @return {import('react').JSX.Element} The error message JSX Element.
  */
 export const EmptyCredentialsMessage = (
 	props: ContentHelperErrorMessageProps|null = null
-): JSX.Element => {
+): React.JSX.Element => {
 	return (
 		<ContentHelperErrorMessage
 			className={ props?.className }
