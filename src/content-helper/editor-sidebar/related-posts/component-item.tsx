@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { Button, Dashicon, Rect, SVG, Tooltip } from '@wordpress/components';
+import { Button, Dashicon, Tooltip } from '@wordpress/components';
 import { useDispatch } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { Icon, copySmall, link, seen } from '@wordpress/icons';
@@ -9,22 +9,10 @@ import { Icon, copySmall, link, seen } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
+import { VerticalDivider } from '../../common/components/vertical-divider/component';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { escapeRegExp } from '../../common/utils/functions';
 import { PostListItemMetric, PostListItemProps } from '../../common/utils/post';
-
-/**
- * Returns a vertical divider.
- *
- * @since 3.14.0
- */
-const VerticalDivider = (): JSX.Element => {
-	return (
-		<SVG xmlns="http://www.w3.org/2000/svg" width="1" height="40" viewBox="0 0 1 40" fill="none">
-			<Rect width="1" height="40" fill="#cccccc" />
-		</SVG>
-	);
-};
 
 /**
  * Returns a single related post item.
