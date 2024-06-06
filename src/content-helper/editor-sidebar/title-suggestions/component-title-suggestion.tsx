@@ -8,7 +8,7 @@ import {
 	Rect,
 	SVG,
 } from '@wordpress/components';
-import { dispatch, useDispatch, useSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
@@ -22,7 +22,7 @@ import {
 /**
  * Internal dependencies
  */
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { dispatchCoreEditor, GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { Title, TitleStore, TitleType } from './store';
 
@@ -164,7 +164,7 @@ export const TitleSuggestion = (
 		} );
 
 		// Set current post title to the original title.
-		dispatch( 'core/editor' ).editPost( { title: props.title.title } );
+		dispatchCoreEditor.editPost( { title: props.title.title } );
 
 		// Unset the original title prop by setting it to undefined.
 		await setOriginalTitle( props.type, undefined );
