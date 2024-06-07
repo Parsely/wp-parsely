@@ -116,56 +116,6 @@ export class SmartLinkingProvider extends BaseProvider {
 		maxLinksPerPost: number = DEFAULT_MAX_LINKS,
 		urlExclusionList: string[] = [],
 	): Promise<SmartLink[]> {
-		return [
-			{
-				uid: '5ea5aaf57ff4071e73efa67590fea687',
-				href: 'http:\/\/wpvip.com\/2022\/06\/28\/wordpress-cdn\/',
-				title: 'wordpress cdn: do you need one?',
-				text: 'websites',
-				offset: 0,
-				applied: false,
-				source: {
-					post_type: 'external',
-					post_id: 0,
-				},
-				destination: {
-					post_type: 'external',
-					post_id: 0,
-				},
-			},
-			{
-				uid: '17e460435dc1f2cdcfa1fca7900390c8',
-				href: 'http:\/\/wpvip.com\/2018\/01\/30\/wordpress-hosting-2018-fastest\/',
-				title: 'independent speed and performance analysis finds wordpress vip fastest among top tier hosts',
-				text: 'performance optimization',
-				offset: 0,
-				applied: false,
-				source: {
-					post_type: 'external',
-					post_id: 0,
-				},
-				destination: {
-					post_type: 'external',
-					post_id: 0,
-				},
-			},
-			{
-				uid: 'be7c55410a08dd3360d32aad62749a53',
-				href: 'http:\/\/wpvip.com\/2023\/04\/28\/wp-query-performance\/',
-				title: 'how to improve wordpress `wp_query` performance',
-				text: 'Performance Optimization',
-				offset: 0,
-				applied: false,
-				source: {
-					post_type: 'external',
-					post_id: 0,
-				},
-				destination: {
-					post_type: 'external',
-					post_id: 0,
-				},
-			},
-		];
 		const response = await this.fetch<SmartLink[]>( {
 			method: 'POST',
 			path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-linked-reference', {
