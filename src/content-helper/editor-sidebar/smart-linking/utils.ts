@@ -218,10 +218,10 @@ export function sortSmartLinks( smartLinks: SmartLink[] ): SmartLink[] {
 			return 0;
 		}
 
-		if ( a.match!.blockPosition === b.match!.blockPosition ) {
-			return a.match!.blockLinkPosition - b.match!.blockLinkPosition;
+		if ( a.match.blockPosition === b.match.blockPosition ) {
+			return a.match.blockLinkPosition - b.match.blockLinkPosition;
 		}
-		return a.match!.blockPosition - b.match!.blockPosition;
+		return a.match.blockPosition - b.match.blockPosition;
 	};
 
 	appliedLinks.sort( sortByBlockPosition );

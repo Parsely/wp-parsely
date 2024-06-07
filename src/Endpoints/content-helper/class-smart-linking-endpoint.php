@@ -258,18 +258,8 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		$inbound_links  = Smart_Link::get_inbound_smart_links( $post->ID );
 
 		$response = array(
-			'outbound' => array_map(
-				function ( Smart_Link $link ) {
-					return json_decode( $link->serialize() );
-				},
-				$outbound_links
-			),
-			'inbound'  => array_map(
-				function ( Smart_Link $link ) {
-					return json_decode( $link->serialize() );
-				},
-				$inbound_links
-			),
+			'outbound' => $this->serialize_smart_links( $outbound_links ),
+			'inbound'  => $this->serialize_smart_links( $inbound_links ),
 		);
 
 		return new WP_REST_Response( array( 'data' => $response ), 200 );
@@ -391,28 +381,13 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 
 		$response = array();
 		if ( count( $added_links ) > 0 ) {
-			$response['added'] = array_map(
-				function ( Smart_Link $link ) {
-					return json_decode( $link->serialize() );
-				},
-				$added_links
-			);
+			$response['added'] = $this->serialize_smart_links( $added_links );
 		}
 		if ( count( $failed_links ) > 0 ) {
-			$response['failed'] = array_map(
-				function ( Smart_Link $link ) {
-					return json_decode( $link->serialize() );
-				},
-				$failed_links
-			);
+			$response['failed'] = $this->serialize_smart_links( $failed_links );
 		}
 		if ( count( $updated_links ) > 0 ) {
-			$response['updated'] = array_map(
-				function ( Smart_Link $link ) {
-					return json_decode( $link->serialize() );
-				},
-				$updated_links
-			);
+			$response['updated'] = $this->serialize_smart_links( $updated_links );
 		}
 
 		return new WP_REST_Response( array( 'data' => $response ), 200 );
@@ -478,27 +453,12 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		}
 
 		$response = array(
-			'saved'   => array_map(
-				function ( Smart_Link $link ) {
-					return json_decode( $link->serialize() );
-				},
-				$saved_links
-			),
-			'removed' => array_map(
-				function ( Smart_Link $link ) {
-					return json_decode( $link->serialize() );
-				},
-				$removed_links
-			),
+			'saved'   => $this->serialize_smart_links( $saved_links ),
+			'removed' => $this->serialize_smart_links( $removed_links ),
 		);
 
 		if ( count( $failed_links ) > 0 ) {
-			$response['failed'] = array_map(
-				function ( Smart_Link $link ) {
-					return json_decode( $link->serialize() );
-				},
-				$failed_links
-			);
+			$response['failed'] = $this->serialize_smart_links( $failed_links );
 		}
 
 		return new WP_REST_Response( array( 'data' => $response ), 200 );
@@ -516,7 +476,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * @param WP_REST_Request $request The request object.
 	 * @return bool Whether the parameter is valid.
 	 */
-	public function private_api_request_validate_post_id( string $param, WP_REST_Request $request ) {
+	public function private_api_request_validate_post_id( string $param, WP_REST_Request $request ): bool {
 		// Validate if the post ID exists.
 		$post = get_post( intval( $param ) );
 		// Set the post attribute in the request.
@@ -611,5 +571,22 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		$request->set_param( 'smart_links', $smart_links );
 
 		return true;
+	}
+
+	/**
+	 * Serializes an array of Smart Links.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param Smart_Link[] $links The Smart Links to serialize.
+	 * @return array<mixed> The serialized Smart Links.
+	 */
+	private function serialize_smart_links( array $links ): array {
+		return array_map(
+			function ( Smart_Link $link ) {
+				return json_decode( $link->serialize(), true );
+			},
+			$links
+		);
 	}
 }

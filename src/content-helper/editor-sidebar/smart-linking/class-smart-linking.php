@@ -81,77 +81,65 @@ class Smart_Linking extends Content_Helper_Feature {
 		}
 
 		// Register private custom post type for the Smart Links.
+		$this->register_post_type();
+
+		// Register the taxonomies for the Smart Links.
+		$this->register_taxonomy( 'smart_link_source', __( 'Smart Link Source', 'wp-parsely' ) );
+		$this->register_taxonomy( 'smart_link_destination', __( 'Smart Link Destination', 'wp-parsely' ) );
+	}
+
+	/**
+	 * Registers the custom post type for the Smart Links.
+	 *
+	 * @since 3.16.0
+	 */
+	private function register_post_type(): void {
 		register_post_type(
 			'parsely_smart_link',
 			array(
-				'labels'              => array(
+				'labels'          => array(
 					'name'          => __( 'Smart Links', 'wp-parsely' ),
 					'singular_name' => __( 'Smart Link', 'wp-parsely' ),
 				),
-				'supports'            => array( 'title', 'custom-fields' ),
-				'taxonomies'          => array( 'smart_link_source', 'smart_link_destination' ),
-				'hierarchical'        => false,
-				'public'              => false,
-				'show_ui'             => false,
-				'show_in_menu'        => false,
-				'show_in_admin_bar'   => false,
-				'show_in_nav_menus'   => false,
-				'can_export'          => true,
-				'has_archive'         => false,
-				'exclude_from_search' => true,
-				'publicly_queryable'  => false,
-				'rewrite'             => false,
-				'capability_type'     => 'post',
-				'show_in_rest'        => false,
+				'supports'        => array( 'title', 'custom-fields' ),
+				'taxonomies'      => array( 'smart_link_source', 'smart_link_destination' ),
+				'hierarchical'    => false,
+				'public'          => false,
+				'show_ui'         => false,
+				'can_export'      => true,
+				'has_archive'     => false,
+				'rewrite'         => false,
+				'capability_type' => 'post',
+				'show_in_rest'    => false,
 			)
 		);
-		// Register the taxonomies for the Smart Links.
-		register_taxonomy(
-			'smart_link_source',
-			'parsely_smart_link',
-			array(
-				'labels'             => array(
-					'name'          => __( 'Smart Link Source', 'wp-parsely' ),
-					'singular_name' => __( 'Smart Link Source', 'wp-parsely' ),
-				),
-				'public'             => false,
-				'show_ui'            => false,
-				'show_in_menu'       => false,
-				'show_in_nav_menus'  => false,
-				'show_tagcloud'      => false,
-				'show_in_quick_edit' => false,
-				'show_admin_column'  => false,
-				'show_in_rest'       => false,
-				'hierarchical'       => false,
-				'rewrite'            => false,
-				'capabilities'       => array(
-					'manage_terms' => 'edit_posts',
-					'edit_terms'   => 'edit_posts',
-					'delete_terms' => 'edit_posts',
-					'assign_terms' => 'edit_posts',
-				),
-			)
-		);
+	}
 
+	/**
+	 * Registers a taxonomy for the Smart Links.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param string $taxonomy      The taxonomy name.
+	 * @param string $singular_name The singular name of the taxonomy.
+	 */
+	private function register_taxonomy( string $taxonomy, string $singular_name ): void {
 		register_taxonomy(
-			'smart_link_destination',
+			$taxonomy,
 			'parsely_smart_link',
 			array(
-				'labels'             => array(
-					'name'          => __( 'Smart Link Destinations', 'wp-parsely' ),
-					'singular_name' => __( 'Smart Link Destination', 'wp-parsely' ),
+				'labels'            => array(
+					'name'          => $singular_name,
+					'singular_name' => $singular_name,
 				),
-				'public'             => false,
-				'show_ui'            => false,
-				'show_in_menu'       => false,
-				'show_in_nav_menus'  => false,
-				'show_tagcloud'      => false,
-				'show_in_quick_edit' => false,
-				'show_admin_column'  => false,
-				'show_in_rest'       => false,
-				'hierarchical'       => false,
-				'rewrite'            => false,
-				'capabilities'       => array(
+				'public'            => false,
+				'show_ui'           => false,
+				'show_tagcloud'     => false,
+				'show_admin_column' => false,
+				'show_in_rest'      => false,
+				'hierarchical'      => false,
+				'rewrite'           => false,
+				'capabilities'      => array(
 					'manage_terms' => 'edit_posts',
 					'edit_terms'   => 'edit_posts',
 					'delete_terms' => 'edit_posts',
