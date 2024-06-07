@@ -657,6 +657,7 @@ export const SmartLinkingPanel = ( {
 								setIsReviewModalOpen( true );
 							} }
 							variant="secondary"
+							disabled={ loading }
 						>
 							{ __( 'Review Smart Links', 'wp-parsely' ) }
 						</Button>
