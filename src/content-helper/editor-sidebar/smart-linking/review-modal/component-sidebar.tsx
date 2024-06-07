@@ -28,7 +28,7 @@ export const ReviewModalSidebar = ( {
 	activeLink,
 	links,
 	setSelectedLink,
-}: ReviewModalSidebarProps ): JSX.Element => {
+}: ReviewModalSidebarProps ): React.JSX.Element => {
 	const sidebarRef = useRef<HTMLDivElement>( null );
 	const itemRefs = useRef<( HTMLButtonElement | null )[]>( [] );
 

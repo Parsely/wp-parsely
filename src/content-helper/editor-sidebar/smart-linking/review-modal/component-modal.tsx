@@ -40,7 +40,7 @@ const SmartLinkingReviewModalComponent = ( {
 	onClose,
 	isOpen,
 	onAppliedLink,
-}: SmartLinkingReviewModalProps ): JSX.Element => {
+}: SmartLinkingReviewModalProps ): React.JSX.Element => {
 	const [ showCloseDialog, setShowCloseDialog ] = useState<boolean>( false );
 	const [ isModalOpen, setIsModalOpen ] = useState<boolean>( isOpen );
 

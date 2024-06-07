@@ -12,7 +12,7 @@ import {
  * @since 3.9.0
  */
 interface VerifyCredentialsProps {
-	children: JSX.Element|JSX.Element[];
+	children: React.JSX.Element|JSX.Element[];
 }
 
 /**
@@ -24,12 +24,12 @@ interface VerifyCredentialsProps {
  * @param {VerifyCredentialsProps}              props             The component's props.
  * @param {ContentHelperErrorMessageProps|null} errorMessageProps The error message's props.
  *
- * @return {JSX.Element} The passed JSX Element or the error message JSX Element.
+ * @return {import('react').JSX.Element} The passed JSX Element or the error message JSX Element.
  */
 export const VerifyCredentials = (
 	{ children }: VerifyCredentialsProps,
 	errorMessageProps: ContentHelperErrorMessageProps|null = null
-): JSX.Element => {
+): React.JSX.Element => {
 	if ( window.wpParselyEmptyCredentialsMessage ) {
 		return <EmptyCredentialsMessage { ...errorMessageProps } />;
 	}

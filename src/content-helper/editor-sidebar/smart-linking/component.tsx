@@ -67,13 +67,13 @@ export const MAX_NUMBER_OF_RETRIES = 3;
  *
  * @param {Readonly<SmartLinkingPanelProps>} props The component's props.
  *
- * @return {JSX.Element} The JSX Element.
+ * @return {import('react').JSX.Element} The JSX Element.
  */
 export const SmartLinkingPanel = ( {
 	className,
 	selectedBlockClientId,
 	context = SmartLinkingPanelContext.Unknown,
-}: Readonly<SmartLinkingPanelProps> ): JSX.Element => {
+}: Readonly<SmartLinkingPanelProps> ): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	// Saving hooks.

@@ -33,7 +33,7 @@ type PinnedTitleSuggestionsProps = {
 export const PinnedTitleSuggestions = ( {
 	pinnedTitles,
 	isOpen,
-}: Readonly<PinnedTitleSuggestionsProps> ): JSX.Element => {
+}: Readonly<PinnedTitleSuggestionsProps> ): React.JSX.Element => {
 	const [ isCollapsed, setIsCollapsed ] = useState<boolean>( isOpen );
 
 	/**

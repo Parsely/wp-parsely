@@ -32,7 +32,7 @@ type SidebarToolsTabProps = {
  */
 export const SidebarToolsTab = (
 	{ trackToggle }: Readonly<SidebarToolsTabProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	return (

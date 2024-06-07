@@ -125,11 +125,11 @@ interface SettingsProviderProps {
  *
  * @param {SettingsProviderProps} props The component's props.
  *
- * @return {JSX.Element} The SettingsProvider component.
+ * @return {import('react').JSX.Element} The SettingsProvider component.
  */
 export const SettingsProvider = (
 	{ children, endpoint, defaultSettings }: Readonly<SettingsProviderProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	// Get the current settings from the store.
 	const { storedSettings } = useSelect( ( select ) => {
 		let settings = select( SettingsStore ).getSettings( endpoint );

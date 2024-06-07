@@ -42,7 +42,7 @@ type SuggestionBreadcrumbProps = {
  *
  * @param {SuggestionBreadcrumbProps} props The component props.
  */
-const SuggestionBreadcrumb = ( { link }: SuggestionBreadcrumbProps ): JSX.Element => {
+const SuggestionBreadcrumb = ( { link }: SuggestionBreadcrumbProps ): React.JSX.Element => {
 	const blockId = link.match?.blockId;
 
 	// Fetch block details and parent IDs using the blockId.
@@ -110,7 +110,7 @@ type StylesProps = {
  *
  * @param {StylesProps} props The component props.
  */
-const Styles = ( { styles }: StylesProps ): JSX.Element => {
+const Styles = ( { styles }: StylesProps ): React.JSX.Element => {
 	// Get only the theme and user styles.
 	const filteredStyles = styles
 		.filter( ( style ) => {
@@ -278,7 +278,7 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
  *
  * @param {{link: SmartLink}} props The component props.
  */
-const LinkDetails = ( { link }: { link: SmartLink } ): JSX.Element => {
+const LinkDetails = ( { link }: { link: SmartLink } ): React.JSX.Element => {
 	// Get the post type by the permalink.
 	const [ displayUrl, setDisplayUrl ] = useState<string>( link.href );
 	const [ postType, setPostType ] = useState<string|undefined>( link.destination?.post_type );
@@ -381,7 +381,7 @@ export const ReviewSuggestion = ( {
 	onSelectInEditor,
 	hasPrevious,
 	hasNext,
-}: ReviewSuggestionProps ): JSX.Element => {
+}: ReviewSuggestionProps ): React.JSX.Element => {
 	if ( ! link?.match ) {
 		return <>{ __( 'This Smart Link does not have any matches in the current content.', 'wp-parsely' ) }</>;
 	}

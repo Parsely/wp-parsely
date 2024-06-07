@@ -29,9 +29,9 @@ import './title-suggestions.scss';
  *
  * @since 3.12.0
  *
- * @return {JSX.Element} The Title Suggestions Panel.
+ * @return {import('react').JSX.Element} The Title Suggestions Panel.
  */
-export const TitleSuggestionsPanel = (): JSX.Element => {
+export const TitleSuggestionsPanel = (): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ error, setError ] = useState<ContentHelperError>();

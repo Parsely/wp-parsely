@@ -32,12 +32,12 @@ type PerformanceCategoriesPanelProps = {
  *
  * @param {PerformanceCategoriesPanelProps} props The component's props.
  *
- * @return {JSX.Element} The PerformanceCategoriesPanel JSX Element.
+ * @return {import('react').JSX.Element} The PerformanceCategoriesPanel JSX Element.
  */
 export const PerformanceCategoriesPanel = ( {
 	data,
 	isLoading,
-}: Readonly<PerformanceCategoriesPanelProps> ): JSX.Element => {
+}: Readonly<PerformanceCategoriesPanelProps> ): React.JSX.Element => {
 	const [ metric, setMetric ] = useState<Metric>( Metric.Views );
 	const [ isOpen, setIsOpen ] = useState<boolean>( false );
 

@@ -38,7 +38,7 @@ export const TitleSuggestionsSettings = ( {
 	onToneChange,
 	persona,
 	tone,
-}: Readonly<TitleSuggestionsSettingsProps> ): JSX.Element => {
+}: Readonly<TitleSuggestionsSettingsProps> ): React.JSX.Element => {
 	return (
 		<div className="title-suggestions-settings">
 			<ToneSelector
