@@ -310,8 +310,11 @@ export const SmartLinkingPanel = ( {
 			return true;
 		} );
 
+		// Depending on the context, we may need to process all blocks or just the selected one.
+		const blocksToProcess = isFullContent ? allBlocks : [ selectedBlock! ];
+
 		// Calculate the smart links matches for each block.
-		links = calculateSmartLinkingMatches( allBlocks, links, {} )
+		links = calculateSmartLinkingMatches( blocksToProcess, links, {} )
 			// Filter out links without a match.
 			.filter( ( link ) => link.match );
 
