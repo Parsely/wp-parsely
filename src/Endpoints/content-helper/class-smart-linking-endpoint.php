@@ -477,12 +477,16 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * @return bool Whether the parameter is valid.
 	 */
 	public function private_api_request_validate_post_id( string $param, WP_REST_Request $request ): bool {
+		if ( ! is_numeric( $param ) ) {
+			return false;
+		}
+
 		// Validate if the post ID exists.
 		$post = get_post( intval( $param ) );
 		// Set the post attribute in the request.
 		$request->set_param( 'post', $post );
 
-		return is_numeric( $param ) && null !== $post;
+		return null !== $post;
 	}
 
 	/**
