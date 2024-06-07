@@ -23,11 +23,12 @@ import { validateAndFixSmartLinksInPost } from './utils';
  * This is a fallback for the validation step in the LinkMonitor component. If for some reason the validation step
  * is not triggered, this hook will fix the smart links before saving the post.
  *
+ * @param {Function} setValidationComplete The function to set the validation completion state.
  * @since 3.16.0
  *
  * @return {boolean} Whether the post is saved.
  */
-export const useSmartLinksValidation = (): boolean => {
+export const useSmartLinksValidation = ( setValidationComplete: ( value: boolean ) => void ): boolean => {
 	const [ isPostSaved, setIsPostSaved ] = useState( false );
 	const [ didAnyFixes, setDidAnyFixes ] = useState( false );
 	const isPostSavingInProgress = useRef( false );
@@ -52,9 +53,13 @@ export const useSmartLinksValidation = (): boolean => {
 				const validationFixed = await validateAndFixSmartLinksInPost();
 				setDidAnyFixes( validationFixed );
 				hasValidatedLinks.current = true;
+				setValidationComplete( true );
 			} )();
+		} else {
+			hasValidatedLinks.current = false;
+			setValidationComplete( false );
 		}
-	}, [ isSavingPost ] );
+	}, [ isSavingPost, setValidationComplete ] );
 
 	/**
 	 * Handles the post saving state tracking.
@@ -97,8 +102,12 @@ export const useSmartLinksValidation = (): boolean => {
  * the database, using the SmartLinkingProvider, after the post has been saved.
  *
  * @since 3.16.0
+ *
+ * @param {boolean} validationCompleted Whether the validation process has been completed.
  */
-export const useSaveSmartLinksOnPostSave = (): void => {
+export const useSaveSmartLinksOnPostSave = (
+	validationCompleted: boolean,
+): void => {
 	const { isSavingPost } = useSelect( ( selectFn ) => {
 		const coreEditorSelect = selectFn( 'core/editor' ) as GutenbergFunction;
 		return {
@@ -120,11 +129,11 @@ export const useSaveSmartLinksOnPostSave = (): void => {
 	}, [] );
 
 	useEffect( () => {
-		if ( isSavingPost && postId ) {
+		if ( isSavingPost && postId && validationCompleted ) {
 			SmartLinkingProvider.getInstance().setSmartLinks( postId, getSmartLinks() ).catch( () => {
 				// eslint-disable-next-line no-console
 				console.error( 'WP Parse.ly: Failed to save smart links on post save.' );
 			} );
 		}
-	}, [ getSmartLinks, isSavingPost, postId ] );
+	}, [ getSmartLinks, isSavingPost, postId, validationCompleted ] );
 };

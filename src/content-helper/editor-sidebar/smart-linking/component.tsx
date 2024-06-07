@@ -76,9 +76,16 @@ export const SmartLinkingPanel = ( {
 }: Readonly<SmartLinkingPanelProps> ): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
-	// Saving hooks.
-	useSmartLinksValidation();
-	useSaveSmartLinksOnPostSave();
+	/**
+	 * Saving hooks.
+	 *
+	 * The useSmartLinksValidation hook will validate the smart links before saving the post,
+	 * and the useSaveSmartLinksOnPostSave hook will save the smart links when the post is saved,
+	 * only after the validation is complete.
+	 */
+	const [ validationComplete, setValidationComplete ] = useState<boolean>( false );
+	useSmartLinksValidation( setValidationComplete );
+	useSaveSmartLinksOnPostSave( validationComplete );
 
 	const setSettingsDebounced = useDebounce( setSettings, 500 );
 
