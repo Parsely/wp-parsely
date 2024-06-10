@@ -106,7 +106,7 @@ describe( 'src/content-helper/post-list-stats', () => {
  *
  * @param {number} numOfPlaceholders Number of placeholders which we are going to show in page.
  */
-function getPageContent( numOfPlaceholders: number ): JSX.Element {
+function getPageContent( numOfPlaceholders: number ): React.JSX.Element {
 	return (
 		<>
 			{ /* WP have this element before admin notices and we need this to test the API error */ }
@@ -116,8 +116,8 @@ function getPageContent( numOfPlaceholders: number ): JSX.Element {
 	);
 }
 
-function getParselyStatsPlaceholders( numOfPlaceholders: number ): JSX.Element[] {
-	const placeholders: JSX.Element[] = [];
+function getParselyStatsPlaceholders( numOfPlaceholders: number ): React.JSX.Element[] {
+	const placeholders: React.JSX.Element[] = [];
 
 	for ( let i = 1; i <= numOfPlaceholders; i++ ) {
 		placeholders.push(

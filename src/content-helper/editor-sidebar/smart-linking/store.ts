@@ -2,13 +2,14 @@
  * WordPress dependencies
  */
 import { createReduxStore, register } from '@wordpress/data';
-import { ContentHelperError } from '../../common/content-helper-error';
-import { DEFAULT_MAX_LINKS } from './smart-linking';
 
 /**
  * Internal dependencies
  */
-import { LinkSuggestion } from './provider';
+import { ContentHelperError } from '../../common/content-helper-error';
+import { DEFAULT_MAX_LINKS } from './smart-linking';
+import { SmartLink } from './provider';
+import { sortSmartLinks } from './utils';
 
 /**
  * Defines the props structure for SmartLinkingSettings.
@@ -35,20 +36,31 @@ export enum ApplyToOptions {
  * @since 3.14.0
  */
 type SmartLinkingState = {
+	isReady: boolean;
 	isLoading: boolean;
 	applyTo: ApplyToOptions|null;
 	fullContent: boolean;
 	error: ContentHelperError | null;
 	settings: SmartLinkingSettingsProps;
-	suggestedLinks: LinkSuggestion[] | null;
+	smartLinks: SmartLink[];
 	overlayBlocks: string[];
 	wasAlreadyClicked: boolean;
 	isRetrying: boolean;
 	retryAttempt: number;
+	isReviewModalOpen: boolean;
 };
 
-/********** Actions ********** /
+/********** Actions **********/
 
+/**
+ * Interface for the SetIsReadyAction.
+ *
+ * @since 3.16.0
+ */
+interface SetIsReadyAction {
+	type: 'SET_IS_READY';
+	isReady: boolean;
+}
 /**
  * Interface for the SetLoadingAction.
  *
@@ -120,16 +132,6 @@ interface SetSettingsAction {
 }
 
 /**
- * Interface for the SetSuggestedLinksAction.
- *
- * @since 3.14.0
- */
-interface SetSuggestedLinksAction {
-	type: 'SET_SUGGESTED_LINKS';
-	suggestedLinks: LinkSuggestion[] | null;
-}
-
-/**
  * Interface for the SetWasAlreadyClickedAction.
  *
  * @since 3.14.0
@@ -160,6 +162,55 @@ interface SetIsRetryingAction {
 }
 
 /**
+ * Interface for the SetSmartLinksAction.
+ *
+ * @since 3.16.0
+ */
+interface SetSmartLinksAction {
+	type: 'SET_SMART_LINKS';
+	smartLinks: SmartLink[];
+}
+
+/**
+ * Interface for the AddSmartLinkAction.
+ *
+ * @since 3.16.0
+ */
+interface AddSmartLinkAction {
+	type: 'ADD_SMART_LINK';
+	smartLink: SmartLink;
+}
+
+/**
+ * Interface for the AddSmartLinksAction.
+ *
+ * @since 3.16.0
+ */
+interface AddSmartLinksAction {
+	type: 'ADD_SMART_LINKS';
+	smartLinks: SmartLink[];
+}
+
+/**
+ * Interface for the RemoveSmartLinkAction.
+ *
+ * @since 3.16.0
+ */
+interface RemoveSmartLinkAction {
+	type: 'REMOVE_SMART_LINK';
+	uid: string;
+}
+
+/**
+ * Interface for the PurgeSmartLinksSuggestionsAction.
+ *
+ * @since 3.16.0
+ */
+interface PurgeSmartLinksSuggestionsAction {
+	type: 'PURGE_SMART_LINKS_SUGGESTIONS';
+}
+
+/**
  * Interface for the IncrementRetryAttemptAction.
  *
  * @since 3.15.0
@@ -168,21 +219,34 @@ interface IncrementRetryAttemptAction {
 	type: 'INCREMENT_RETRY_ATTEMPT';
 }
 
-type ActionTypes = SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction |
+/**
+ * Interface for the SetIsReviewModalOpenAction.
+ *
+ * @since 3.16.0
+ */
+interface SetIsReviewModalOpenAction {
+	type: 'SET_IS_REVIEW_MODAL_OPEN';
+	isReviewModalOpen: boolean;
+}
+
+type ActionTypes = SetIsReadyAction | SetLoadingAction | SetOverlayBlocksAction | SetSettingsAction |
 	AddOverlayBlockAction | RemoveOverlayBlockAction |SetFullContentAction |
-	SetSuggestedLinksAction | SetErrorAction| SetWasAlreadyClickedAction | SetApplyToAction |
-	IncrementRetryAttemptAction | SetIsRetryingAction;
+	SetErrorAction| SetWasAlreadyClickedAction | SetApplyToAction | IncrementRetryAttemptAction |
+	SetIsRetryingAction | SetSmartLinksAction | AddSmartLinkAction | AddSmartLinksAction | RemoveSmartLinkAction |
+	PurgeSmartLinksSuggestionsAction | SetIsReviewModalOpenAction;
 
 const defaultState: SmartLinkingState = {
+	isReady: false,
 	isLoading: false,
 	applyTo: null,
 	fullContent: false,
-	suggestedLinks: null,
+	smartLinks: [],
 	error: null,
 	settings: { },
 	overlayBlocks: [],
 	wasAlreadyClicked: false,
 	isRetrying: false,
+	isReviewModalOpen: false,
 	retryAttempt: 0,
 };
 
@@ -195,6 +259,11 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 	initialState: defaultState,
 	reducer( state: SmartLinkingState = defaultState, action: ActionTypes ): SmartLinkingState {
 		switch ( action.type ) {
+			case 'SET_IS_READY':
+				return {
+					...state,
+					isReady: action.isReady,
+				};
 			case 'SET_LOADING':
 				return {
 					...state,
@@ -240,11 +309,6 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 						...action.settings,
 					},
 				};
-			case 'SET_SUGGESTED_LINKS':
-				return {
-					...state,
-					suggestedLinks: action.suggestedLinks,
-				};
 			case 'SET_WAS_ALREADY_CLICKED':
 				return {
 					...state,
@@ -266,11 +330,70 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 					...state,
 					retryAttempt: state.retryAttempt + 1,
 				};
+			case 'SET_SMART_LINKS':
+				return {
+					...state,
+					smartLinks: sortSmartLinks( action.smartLinks ),
+				};
+			case 'ADD_SMART_LINK':
+				// If the UID is already there, just update it, otherwise add it.
+				const existingIndex = state.smartLinks.findIndex( ( link ) => link.uid === action.smartLink.uid );
+				if ( existingIndex !== -1 ) {
+					const newSmartLinks = [ ...state.smartLinks ];
+					newSmartLinks[ existingIndex ] = action.smartLink;
+					return {
+						...state,
+						smartLinks: sortSmartLinks( newSmartLinks ),
+					};
+				}
+				return {
+					...state,
+					smartLinks: sortSmartLinks( [ ...state.smartLinks, action.smartLink ] ),
+				};
+			case 'ADD_SMART_LINKS':
+				// If the UID is already there, just update it, otherwise add it.
+				const newSmartLinks = [ ...state.smartLinks ];
+				action.smartLinks.forEach( ( link ) => {
+					// eslint-disable-next-line @typescript-eslint/no-shadow
+					const existingIndex = state.smartLinks.findIndex( ( l ) => l.uid === link.uid );
+					if ( existingIndex !== -1 ) {
+						newSmartLinks[ existingIndex ] = { ...newSmartLinks[ existingIndex ], ...link };
+					} else {
+						newSmartLinks.push( link );
+					}
+				} );
+				return {
+					...state,
+					smartLinks: sortSmartLinks( newSmartLinks ),
+				};
+			case 'REMOVE_SMART_LINK':
+				return {
+					...state,
+					smartLinks:
+						sortSmartLinks( state.smartLinks.filter( ( link ) => link.uid !== action.uid ) ),
+				};
+			case 'PURGE_SMART_LINKS_SUGGESTIONS':
+				return {
+					...state,
+					smartLinks:
+						sortSmartLinks( state.smartLinks.filter( ( link ) => link.applied ) ),
+				};
+			case 'SET_IS_REVIEW_MODAL_OPEN':
+				return {
+					...state,
+					isReviewModalOpen: action.isReviewModalOpen,
+				};
 			default:
 				return state;
 		}
 	},
 	actions: {
+		setIsReady( isReady: boolean ): SetIsReadyAction {
+			return {
+				type: 'SET_IS_READY',
+				isReady,
+			};
+		},
 		setLoading( isLoading: boolean ): SetLoadingAction {
 			return {
 				type: 'SET_LOADING',
@@ -321,12 +444,6 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				},
 			};
 		},
-		setSuggestedLinks( suggestedLinks: LinkSuggestion[] | null ): SetSuggestedLinksAction {
-			return {
-				type: 'SET_SUGGESTED_LINKS',
-				suggestedLinks,
-			};
-		},
 		setAlreadyClicked( wasAlreadyClicked: boolean ): SetWasAlreadyClickedAction {
 			return {
 				type: 'SET_WAS_ALREADY_CLICKED',
@@ -350,13 +467,61 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				type: 'INCREMENT_RETRY_ATTEMPT',
 			};
 		},
+		setSmartLinks( smartLinks: SmartLink[] ): SetSmartLinksAction {
+			return {
+				type: 'SET_SMART_LINKS',
+				smartLinks,
+			};
+		},
+		addSmartLink( smartLink: SmartLink ): AddSmartLinkAction {
+			return {
+				type: 'ADD_SMART_LINK',
+				smartLink,
+			};
+		},
+		updateSmartLink( smartLink: SmartLink ): AddSmartLinkAction {
+			// Alias of addSmartLink.
+			return {
+				type: 'ADD_SMART_LINK',
+				smartLink,
+			};
+		},
+		addSmartLinks( smartLinks: SmartLink[] ): AddSmartLinksAction {
+			return {
+				type: 'ADD_SMART_LINKS',
+				smartLinks,
+			};
+		},
+		removeSmartLink( uid: string ): RemoveSmartLinkAction {
+			return {
+				type: 'REMOVE_SMART_LINK',
+				uid,
+			};
+		},
+		purgeSmartLinksSuggestions(): PurgeSmartLinksSuggestionsAction {
+			return {
+				type: 'PURGE_SMART_LINKS_SUGGESTIONS',
+			};
+		},
+		setIsReviewModalOpen( isReviewModalOpen: boolean ): SetIsReviewModalOpenAction {
+			return {
+				type: 'SET_IS_REVIEW_MODAL_OPEN',
+				isReviewModalOpen,
+			};
+		},
 	},
 	selectors: {
+		isReady( state: SmartLinkingState ): boolean {
+			return state.isReady;
+		},
 		isLoading( state: SmartLinkingState ): boolean {
 			return state.isLoading;
 		},
 		isFullContent( state: SmartLinkingState ): boolean {
 			return state.fullContent;
+		},
+		isReviewModalOpen( state: SmartLinkingState ): boolean {
+			return state.isReviewModalOpen;
 		},
 		getApplyTo( state: SmartLinkingState ): ApplyToOptions|null {
 			return state.applyTo;
@@ -373,8 +538,8 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		getMaxLinks( state: SmartLinkingState ): number {
 			return state.settings.maxLinksPerPost ?? DEFAULT_MAX_LINKS;
 		},
-		getSuggestedLinks( state: SmartLinkingState ): LinkSuggestion[] | null {
-			return state.suggestedLinks;
+		getSuggestedLinks( state: SmartLinkingState ): SmartLink[] {
+			return state.smartLinks.filter( ( link ) => ! link.applied );
 		},
 		wasAlreadyClicked( state: SmartLinkingState ): boolean {
 			return state.wasAlreadyClicked;
@@ -384,6 +549,12 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		},
 		getRetryAttempt( state: SmartLinkingState ): number {
 			return state.retryAttempt;
+		},
+		hasUnappliedLinks( state: SmartLinkingState ): boolean {
+			return state.smartLinks.some( ( link ) => ! link.applied );
+		},
+		getSmartLinks( state: SmartLinkingState ): SmartLink[] {
+			return state.smartLinks;
 		},
 	},
 } );

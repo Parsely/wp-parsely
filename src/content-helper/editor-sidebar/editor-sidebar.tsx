@@ -6,6 +6,7 @@ import {
 	TabPanel,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
+import domReady from '@wordpress/dom-ready';
 import { PluginSidebar } from '@wordpress/edit-post';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -172,9 +173,9 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
  *
  * @since 3.4.0
  *
- * @return {JSX.Element} The Content Helper Editor Sidebar.
+ * @return {import('react').JSX.Element} The Content Helper Editor Sidebar.
  */
-const ContentHelperEditorSidebar = (): JSX.Element => {
+const ContentHelperEditorSidebar = (): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	/**
@@ -273,4 +274,8 @@ registerPlugin( BLOCK_PLUGIN_ID, {
 } );
 
 // Initialize Smart Linking.
-initSmartLinking();
+domReady( () => {
+	if ( initSmartLinking ) {
+		initSmartLinking();
+	}
+} );

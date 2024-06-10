@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
 
+use Parsely\Models\Smart_Link;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
 
@@ -153,7 +154,7 @@ final class SuggestLinkedReferenceAPITest extends BaseContentSuggestionsAPITest 
 		// instance.
 		foreach ( $suggested_links as $suggested_link ) {
 			self::assertIsObject( $suggested_link );
-			self::assertInstanceOf( 'Parsely\RemoteAPI\ContentSuggestions\Link_Suggestion', $suggested_link );
+			self::assertInstanceOf( Smart_Link::class, $suggested_link );
 		}
 
 		// Remove mock.

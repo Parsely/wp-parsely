@@ -32,6 +32,7 @@ use Parsely\Content_Helper\Excerpt_Generator;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
+use Parsely\Endpoints\Content_Helper\Smart_Linking_Endpoint;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Brief_API_Proxy;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Headline_API_Proxy;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Linked_Reference_API_Proxy;
@@ -71,6 +72,9 @@ if ( class_exists( Parsely::class ) ) {
 
 const PARSELY_VERSION = '3.15.0';
 const PARSELY_FILE    = __FILE__;
+
+require_once __DIR__ . '/src/Models/class-base-model.php';
+require_once __DIR__ . '/src/Models/class-smart-link.php';
 
 require_once __DIR__ . '/src/class-parsely.php';
 require_once __DIR__ . '/src/class-scripts.php';
@@ -172,6 +176,7 @@ require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-headlin
 require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-linked-reference-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/user-meta/class-dashboard-widget-settings-endpoint.php';
 require_once __DIR__ . '/src/Endpoints/user-meta/class-editor-sidebar-settings-endpoint.php';
+require_once __DIR__ . '/src/Endpoints/content-helper/class-smart-linking-endpoint.php';
 
 // RemoteAPI base classes.
 require_once __DIR__ . '/src/RemoteAPI/interface-cache.php';
@@ -206,6 +211,9 @@ function parsely_rest_api_init(): void {
 	// Content Helper settings endpoints.
 	( new Dashboard_Widget_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
 	( new Editor_Sidebar_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
+
+	// Internal Content Helper endpoints.
+	( new Smart_Linking_Endpoint( $GLOBALS['parsely'] ) )->run();
 
 	parsely_run_rest_api_endpoint(
 		Related_API::class,

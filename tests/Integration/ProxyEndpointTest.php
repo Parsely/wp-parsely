@@ -38,7 +38,7 @@ abstract class ProxyEndpointTest extends TestCase {
 	 *
 	 * @var callable $rest_api_init_proxy
 	 */
-	private $rest_api_init_proxy;
+	protected $rest_api_init_proxy;
 
 	/**
 	 * Route of the WP REST endpoint.

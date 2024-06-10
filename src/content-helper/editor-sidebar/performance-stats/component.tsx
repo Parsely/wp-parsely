@@ -90,11 +90,11 @@ const isPanelVisible = ( settings: SidebarSettings, panel: string ): boolean => 
  *
  * @param {Function} onClose Callback to close the dropdown menu.
  *
- * @return {JSX.Element} The dropdown menu JSX Element.
+ * @return {import('react').JSX.Element} The dropdown menu JSX Element.
  */
 const PerformanceStatsMenu = (
 	{ onClose }: { onClose: () => void }
-): JSX.Element => {
+): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	/**
@@ -203,7 +203,7 @@ type PerformanceStatsProps = {
  */
 export const PerformanceStats = (
 	{ period }: PerformanceStatsProps
-): JSX.Element => {
+): React.JSX.Element => {
 	const [ loading, setLoading ] = useState<boolean>( true );
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ postDetails, setPostDetails ] = useState<PerformanceData>();

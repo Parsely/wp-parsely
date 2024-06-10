@@ -8,6 +8,7 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
+import { dispatchCoreEditPost } from '../../@types/gutenberg/types';
 import { ExcerptPanel } from './components/excerpt-panel';
 
 // TODO: Get the plugin ID from the editor sidebar file.
@@ -49,7 +50,7 @@ const ExcerptGenerator = ( settings: never, name: string ) => {
 		dispatch( 'core/editor' )?.removeEditorPanel( 'post-excerpt' );
 	} else {
 		// Deprecated in WordPress 6.5.
-		dispatch( 'core/edit-post' )?.removeEditorPanel( 'post-excerpt' );
+		dispatchCoreEditPost?.removeEditorPanel( 'post-excerpt' );
 	}
 
 	return settings;

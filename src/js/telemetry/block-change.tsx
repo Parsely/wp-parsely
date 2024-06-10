@@ -1,8 +1,10 @@
 /**
  * WordPress dependencies
  */
-import { useEffect } from '@wordpress/element';
+// eslint-disable-next-line import/named
+import { BlockInstance } from '@wordpress/blocks';
 import { select, subscribe } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
 
 /**
  * External dependencies
@@ -58,9 +60,13 @@ export const BlockChangeMonitor = (): null => {
 			 * @since 3.14.0
 			 */
 			const checkBlocks = () => {
-				const currentBlocks = select( 'core/block-editor' ).getBlocks();
+				const currentBlocks: BlockInstance[] = select(
+					'core/block-editor'
+				).getBlocks();
 				const currentBlockIds = currentBlocks.map( ( block ) => block.clientId );
-				const previousBlockIds = previousBlocks.map( ( block ) => block.clientId );
+				const previousBlockIds = previousBlocks.map(
+					( block: BlockInstance ) => block.clientId
+				);
 
 				// Find added blocks.
 				const addedBlocks = currentBlocks.filter(
@@ -73,9 +79,13 @@ export const BlockChangeMonitor = (): null => {
 				} );
 
 				// Find removed blocks.
-				const removedBlockIds = previousBlockIds.filter( ( id ) => ! currentBlockIds.includes( id ) );
-				removedBlockIds.forEach( ( id ) => {
-					const removedBlock = previousBlocks.find( ( block ) => block.clientId === id );
+				const removedBlockIds = previousBlockIds.filter(
+					( id: string ) => ! currentBlockIds.includes( id )
+				);
+				removedBlockIds.forEach( ( id: string ) => {
+					const removedBlock = previousBlocks.find(
+						( block: BlockInstance ) => block.clientId === id
+					);
 					if ( removedBlock && removedBlock.name.startsWith( parselyBlockPrefix ) ) {
 						Telemetry.trackEvent( 'block_removed', { block: removedBlock.name } );
 					}

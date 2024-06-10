@@ -298,9 +298,9 @@ const PostExcerptGenerator = () => {
  *
  * @since 3.14.0
  *
- * @return {JSX.Element} The loading animation component.
+ * @return {import('react').JSX.Element} The loading animation component.
  */
-const LoadingAnimation = (): JSX.Element => {
+const LoadingAnimation = (): React.JSX.Element => {
 	return (
 		<Animate type="loading">
 			{ ( { className } ) => (
