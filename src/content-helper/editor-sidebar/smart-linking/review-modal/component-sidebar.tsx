@@ -45,6 +45,8 @@ export const ReviewModalSidebar = ( {
 				const activeItem = itemRefs.current[ activeIndex ];
 
 				if ( activeItem ) {
+					activeItem.focus();
+
 					if ( activeIndex === 0 ) {
 						sidebar.scrollTop = 0;
 						return;
