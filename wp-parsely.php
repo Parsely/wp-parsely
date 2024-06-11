@@ -75,6 +75,7 @@ const PARSELY_FILE    = __FILE__;
 
 require_once __DIR__ . '/src/Models/class-base-model.php';
 require_once __DIR__ . '/src/Models/class-smart-link.php';
+require_once __DIR__ . '/src/Models/class-inbound-smart-link.php';
 
 require_once __DIR__ . '/src/class-parsely.php';
 require_once __DIR__ . '/src/class-scripts.php';

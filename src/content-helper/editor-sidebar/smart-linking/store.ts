@@ -8,7 +8,7 @@ import { createReduxStore, register } from '@wordpress/data';
  */
 import { ContentHelperError } from '../../common/content-helper-error';
 import { DEFAULT_MAX_LINKS } from './smart-linking';
-import { SmartLink } from './provider';
+import { InboundSmartLink, SmartLink } from './provider';
 import { sortSmartLinks } from './utils';
 
 /**
@@ -47,7 +47,7 @@ enum SmartLinkType {
  */
 type SmartLinks = {
 	outbound: SmartLink[];
-	inbound: SmartLink[];
+	inbound: InboundSmartLink[];
 };
 
 /**
@@ -517,7 +517,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				smartLinkType: SmartLinkType.Outbound,
 			};
 		},
-		setInboundSmartLinks( smartLinks: SmartLink[] ): SetSmartLinksAction {
+		setInboundSmartLinks( smartLinks: InboundSmartLink[] ): SetSmartLinksAction {
 			return {
 				type: 'SET_SMART_LINKS',
 				smartLinks,
@@ -531,7 +531,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				smartLinkType: SmartLinkType.Outbound,
 			};
 		},
-		addInboundSmartLink( smartLink: SmartLink ): AddSmartLinkAction {
+		addInboundSmartLink( smartLink: InboundSmartLink ): AddSmartLinkAction {
 			return {
 				type: 'ADD_SMART_LINK',
 				smartLink,
@@ -546,7 +546,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				smartLinkType: SmartLinkType.Outbound,
 			};
 		},
-		updateInboundSmartLink( smartLink: SmartLink ): AddSmartLinkAction {
+		updateInboundSmartLink( smartLink: InboundSmartLink ): AddSmartLinkAction {
 			// Alias of addInboundSmartLink.
 			return {
 				type: 'ADD_SMART_LINK',
@@ -555,13 +555,20 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 			};
 		},
 		addSmartLinks( smartLinks: SmartLink[], type = SmartLinkType.Outbound ): AddSmartLinksAction {
+			if ( type === SmartLinkType.Inbound ) {
+				return {
+					type: 'ADD_SMART_LINKS',
+					smartLinks: smartLinks as InboundSmartLink[],
+					smartLinkType: SmartLinkType.Inbound,
+				};
+			}
 			return {
 				type: 'ADD_SMART_LINKS',
 				smartLinks,
-				smartLinkType: type,
+				smartLinkType: SmartLinkType.Outbound,
 			};
 		},
-		addInboundSmartLinks( smartLinks: SmartLink[] ): AddSmartLinksAction {
+		addInboundSmartLinks( smartLinks: InboundSmartLink[] ): AddSmartLinksAction {
 			return {
 				type: 'ADD_SMART_LINKS',
 				smartLinks,
@@ -629,13 +636,16 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 		hasUnappliedLinks( state: SmartLinkingState ): boolean {
 			return state.smartLinks.outbound.some( ( link ) => ! link.applied );
 		},
-		getSmartLinks( state: SmartLinkingState, type = SmartLinkType.Outbound ): SmartLink[] {
-			return state.smartLinks[ type ];
+		getSmartLinks( state: SmartLinkingState, type = SmartLinkType.Outbound ): SmartLink[]|InboundSmartLink[] {
+			if ( type === SmartLinkType.Inbound ) {
+				return state.smartLinks.inbound as InboundSmartLink[];
+			}
+			return state.smartLinks.outbound;
 		},
 		getOutboundSmartLinks( state: SmartLinkingState ): SmartLink[] {
 			return state.smartLinks.outbound;
 		},
-		getInboundSmartLinks( state: SmartLinkingState ): SmartLink[] {
+		getInboundSmartLinks( state: SmartLinkingState ): InboundSmartLink[] {
 			return state.smartLinks.inbound;
 		},
 	},

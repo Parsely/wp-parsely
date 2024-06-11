@@ -10,9 +10,22 @@ import { dispatch, select } from '@wordpress/data';
  */
 import { dispatchCoreBlockEditor } from '../../../@types/gutenberg/types';
 import { escapeRegExp } from '../../common/utils/functions';
-import { SmartLink } from './provider';
+import { InboundSmartLink, SmartLink } from './provider';
 import { SmartLinkingStore } from './store';
 export { escapeRegExp } from '../../common/utils/functions';
+
+/**
+ * Checks if a smart link is an inbound smart link.
+ *
+ * @since 3.16.0
+ *
+ * @param {SmartLink|InboundSmartLink} link The smart link to check.
+ *
+ * @return {link is InboundSmartLink} Whether the smart link is an inbound smart link.
+ */
+export function isInboundSmartLink( link: SmartLink | InboundSmartLink ): link is InboundSmartLink {
+	return ( link as InboundSmartLink ).post_data !== undefined;
+}
 
 /**
  * Finds all text nodes in an element that contain a given search text and are

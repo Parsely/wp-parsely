@@ -31,6 +31,23 @@ export type SmartLink = {
 };
 
 /**
+ * Structure of an inbound smart link, which is a smart link in a different post,
+ * that links to the current post.
+ *
+ * @since 3.16.0
+ */
+export type InboundSmartLink = SmartLink & {
+	post_data?: {
+		id: number;
+		type: string;
+		title: string;
+		paragraph: string;
+		permalink: string;
+		edit_link: string;
+	};
+}
+
+/**
  * Structure of a link suggestion match, that is filled in by the
  * processing of the smart links.
  *
@@ -71,7 +88,7 @@ type AddMultipleSmartLinksResponse = {
  */
 type GetSmartLinksResponse = {
 	outbound: SmartLink[],
-	inbound: SmartLink[],
+	inbound: InboundSmartLink[],
 }
 
 /**

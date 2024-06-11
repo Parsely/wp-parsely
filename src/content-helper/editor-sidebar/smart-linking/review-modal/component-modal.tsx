@@ -12,9 +12,10 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { dispatchCoreBlockEditor } from '../../../../@types/gutenberg/types';
-import { SmartLink } from '../provider';
+import { InboundSmartLink, SmartLink } from '../provider';
 import { SmartLinkingStore } from '../store';
-import { applyNodeToBlock } from '../utils';
+import { applyNodeToBlock, isInboundSmartLink } from '../utils';
+import { InboundLinkDetails } from './component-inbound-link';
 import { ReviewModalSidebar } from './component-sidebar';
 import { ReviewSuggestion } from './component-suggestion';
 
@@ -49,32 +50,37 @@ const SmartLinkingReviewModalComponent = ( {
 	 *
 	 * @since 3.16.0
 	 */
-	const {
-		smartLinks,
-		suggestedLinks,
-		getSmartLinks,
-	} = useSelect( ( selectFn ) => {
-		// eslint-disable-next-line @typescript-eslint/no-shadow
-		const { getSmartLinks, getSuggestedLinks } = selectFn( SmartLinkingStore );
-		return {
-			smartLinks: getSmartLinks(),
-			getSmartLinks,
-			suggestedLinks: getSuggestedLinks,
-		};
-	}, [] );
+	const { allSmartLinks, smartLinks, inboundSmartLinks, suggestedLinks, getSmartLinks } = useSelect(
+		( selectFn ) => {
+			const {
+				getInboundSmartLinks,
+				getOutboundSmartLinks,
+				getSuggestedLinks,
+				// eslint-disable-next-line @typescript-eslint/no-shadow
+				getSmartLinks,
+			} = selectFn( SmartLinkingStore );
+			const outbound = getOutboundSmartLinks();
+			const inbound = getInboundSmartLinks();
+			return {
+				smartLinks: outbound,
+				inboundSmartLinks: inbound,
+				allSmartLinks: outbound.concat( inbound ),
+				getSmartLinks,
+				suggestedLinks: getSuggestedLinks,
+			};
+		},
+		[],
+	);
 
-	const [ selectedLink, setSelectedLink ] = useState<SmartLink>( smartLinks[ 0 ] );
+	const [ selectedLink, setSelectedLink ] = useState<SmartLink | InboundSmartLink>( smartLinks[ 0 ] );
 
 	/**
 	 * Loads the Smart Linking store actions.
 	 *
 	 * @since 3.16.0
 	 */
-	const {
-		purgeSmartLinksSuggestions,
-		updateSmartLink,
-		removeSmartLink,
-	} = useDispatch( SmartLinkingStore );
+	const { purgeSmartLinksSuggestions, updateSmartLink, removeSmartLink } =
+		useDispatch( SmartLinkingStore );
 
 	/**
 	 * Sets the selected link when the suggested links change.
@@ -82,10 +88,10 @@ const SmartLinkingReviewModalComponent = ( {
 	 * @since 3.16.0
 	 */
 	useEffect( () => {
-		if ( isModalOpen && smartLinks.length === 0 ) {
+		if ( isModalOpen && allSmartLinks.length === 0 ) {
 			onClose();
 		}
-	}, [ isModalOpen, onClose, smartLinks ] );
+	}, [ isModalOpen, onClose, allSmartLinks ] );
 
 	const showConfirmCloseDialog = () => setShowCloseDialog( true );
 	const hideConfirmCloseDialog = () => setShowCloseDialog( false );
@@ -164,7 +170,9 @@ const SmartLinkingReviewModalComponent = ( {
 				parentNode.replaceChild( textNode, anchorToRemove );
 
 				// Update the block content.
-				dispatchCoreBlockEditor.updateBlockAttributes( blockId, { content: contentElement.innerHTML } );
+				dispatchCoreBlockEditor.updateBlockAttributes( blockId, {
+					content: contentElement.innerHTML,
+				} );
 			}
 		}
 
@@ -351,7 +359,9 @@ const SmartLinkingReviewModalComponent = ( {
 			const blockContent = document.querySelector( `[data-block="${ block.clientId }"]` );
 			if ( blockContent ) {
 				const ownerDocument = blockContent.ownerDocument;
-				const linkElement = blockContent.querySelector( `a[data-smartlink="${ selectedLink.uid }"]` ) as HTMLElement;
+				const linkElement = blockContent.querySelector(
+					`a[data-smartlink="${ selectedLink.uid }"]`,
+				) as HTMLElement;
 				if ( linkElement ) {
 					// Set focus to the link element.
 					linkElement.focus();
@@ -385,44 +395,35 @@ const SmartLinkingReviewModalComponent = ( {
 					shouldCloseOnClickOutside={ false }
 					shouldCloseOnEsc={ false }
 				>
-					<KeyboardShortcuts shortcuts={ {
-						left: handlePrevious,
-						right: handleNext,
-						up: handlePrevious,
-						down: handleNext,
-						a: () => {
-							if ( selectedLink && ! selectedLink.applied ) {
-								onAcceptHandler();
-							}
-						},
-						r: () => {
-							if ( ! selectedLink ) {
-								return;
-							}
-							if ( selectedLink.applied ) {
-								onRemoveHandler();
-							} else {
-								onRejectHandler();
-							}
-						},
-					} } />
 					<div className="smart-linking-modal-body">
 						<ReviewModalSidebar
-							links={ smartLinks }
+							outboundLinks={ smartLinks }
+							inboundLinks={ inboundSmartLinks }
 							activeLink={ selectedLink }
 							setSelectedLink={ setSelectedLink }
 						/>
-						<ReviewSuggestion
-							link={ selectedLink }
-							hasNext={ getSmartLinks().indexOf( selectedLink ) < getSmartLinks().length - 1 }
-							hasPrevious={ getSmartLinks().indexOf( selectedLink ) > 0 }
-							onNext={ handleNext	}
-							onPrevious={ handlePrevious }
-							onAccept={ onAcceptHandler }
-							onReject={ onRejectHandler }
-							onRemove={ onRemoveHandler }
-							onSelectInEditor={ onSelectedInEditorHandler }
-						/>
+						{ selectedLink &&
+							( isInboundSmartLink( selectedLink ) ? (
+								<InboundLinkDetails
+									link={ selectedLink }
+									onNext={ handleNext }
+									onPrevious={ handlePrevious }
+									hasNext={ getSmartLinks().indexOf( selectedLink ) < getSmartLinks().length - 1 }
+									hasPrevious={ getSmartLinks().indexOf( selectedLink ) > 0 }
+								/>
+							) : (
+								<ReviewSuggestion
+									link={ selectedLink }
+									hasNext={ getSmartLinks().indexOf( selectedLink ) < getSmartLinks().length - 1 }
+									hasPrevious={ getSmartLinks().indexOf( selectedLink ) > 0 }
+									onNext={ handleNext }
+									onPrevious={ handlePrevious }
+									onAccept={ onAcceptHandler }
+									onReject={ onRejectHandler }
+									onRemove={ onRemoveHandler }
+									onSelectInEditor={ onSelectedInEditorHandler }
+								/>
+							) ) }
 					</div>
 				</Modal>
 			) }
@@ -433,25 +434,21 @@ const SmartLinkingReviewModalComponent = ( {
 					onRequestClose={ () => onCloseConfirmCloseDialog( false ) }
 					className="wp-parsely-smart-linking-close-dialog"
 				>
-					{ __( 'Are you sure you want to close? All un-accepted smart links will not be added.', 'wp-parsely' ) }
+					{ __(
+						'Are you sure you want to close? All un-accepted smart links will not be added.',
+						'wp-parsely',
+					) }
 					<div className="smart-linking-close-dialog-actions">
-						<Button
-							variant="secondary"
-							onClick={ () => onCloseConfirmCloseDialog( false ) }
-						>
+						<Button variant="secondary" onClick={ () => onCloseConfirmCloseDialog( false ) }>
 							{ __( 'Go Back', 'wp-parsely' ) }
 						</Button>
-						<Button
-							variant="primary"
-							onClick={ () => onCloseConfirmCloseDialog( true ) }
-						>
+						<Button variant="primary" onClick={ () => onCloseConfirmCloseDialog( true ) }>
 							{ __( 'Close', 'wp-parsely' ) }
 						</Button>
 					</div>
 				</Modal>
 			) }
 		</>
-
 	);
 };
 

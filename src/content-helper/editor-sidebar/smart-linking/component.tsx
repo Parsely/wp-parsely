@@ -113,6 +113,7 @@ export const SmartLinkingPanel = ( {
 		retrying,
 		retryAttempt,
 		smartLinks,
+		inboundSmartLinks,
 	} = useSelect( ( selectFn ) => {
 		const {
 			isReady,
@@ -128,6 +129,7 @@ export const SmartLinkingPanel = ( {
 			isRetrying,
 			getRetryAttempt,
 			getSmartLinks,
+			getInboundSmartLinks,
 		} = selectFn( SmartLinkingStore );
 		return {
 			ready: isReady(),
@@ -143,6 +145,7 @@ export const SmartLinkingPanel = ( {
 			retrying: isRetrying(),
 			retryAttempt: getRetryAttempt(),
 			smartLinks: getSmartLinks(),
+			inboundSmartLinks: getInboundSmartLinks(),
 		};
 	}, [] );
 
@@ -165,6 +168,7 @@ export const SmartLinkingPanel = ( {
 		setLoading,
 		setError,
 		addSmartLinks,
+		addInboundSmartLinks,
 		addOverlayBlock,
 		removeOverlayBlock,
 		setSmartLinkingSettings,
@@ -200,14 +204,17 @@ export const SmartLinkingPanel = ( {
 
 		// Get the Smart Links from the database and store them in the Smart Linking store.
 		if ( postId ) {
-			SmartLinkingProvider.getInstance().getSmartLinks( postId ).then( ( savedSmartLinks ) => {
+			SmartLinkingProvider.getInstance().getSmartLinks( postId ).then( async ( savedSmartLinks ) => {
+				console.log( savedSmartLinks );
 				let outboundLinks = savedSmartLinks.outbound;
+				const inboundLinks = savedSmartLinks.inbound;
 
 				// Calculate the smart links matches for each block.
 				const blocks = select( 'core/block-editor' ).getBlocks();
 				outboundLinks = calculateSmartLinkingMatches( blocks, outboundLinks );
 
 				// Add the saved smart links to the store.
+				await addInboundSmartLinks( inboundLinks );
 				return addSmartLinks( outboundLinks );
 			} ).then( () => {
 				// Add the existing smart links to the store.
@@ -646,7 +653,7 @@ export const SmartLinkingPanel = ( {
 						{ getGenerateButtonMessage() }
 					</Button>
 				</div>
-				{ appliedLinks.length > 0 && (
+				{ ( appliedLinks.length > 0 || inboundSmartLinks.length > 0 ) && (
 					<div className="smart-linking-manage">
 						<Button
 							onClick={ async () => {

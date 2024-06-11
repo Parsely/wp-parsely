@@ -59,7 +59,7 @@ class Smart_Link extends Base_Model {
 	 * @since 3.16.0
 	 * @var string The URL of the suggested link.
 	 */
-	private $href;
+	protected $href;
 
 	/**
 	 * The title of the suggested link.
@@ -613,7 +613,7 @@ class Smart_Link extends Base_Model {
 	 * @since 3.16.0
 	 *
 	 * @param int $post_id The post ID to get the smart links for.
-	 * @return array<Smart_Link> The smart links in the post.
+	 * @return array<Inbound_Smart_Link> The smart links in the post.
 	 */
 	public static function get_inbound_smart_links( int $post_id ): array {
 		$smart_links = new \WP_Query(
@@ -639,7 +639,7 @@ class Smart_Link extends Base_Model {
 				continue;
 			}
 			$smart_link = self::get_smart_link_by_id( $smart_link_id );
-			$links[]    = $smart_link;
+			$links[]    = Inbound_Smart_Link::from_smart_link( $smart_link );
 		}
 
 		return $links;
