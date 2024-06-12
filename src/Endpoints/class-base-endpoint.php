@@ -165,10 +165,10 @@ abstract class Base_Endpoint {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @param string                      $endpoint The endpoint's route.
-	 * @param string                      $callback The callback function to call when the endpoint is hit.
-	 * @param array<string>               $methods The HTTP methods to allow for the endpoint.
-	 * @param array<WP_HTTP_Request_Args> $args The arguments for the endpoint.
+	 * @param string        $endpoint The endpoint's route.
+	 * @param string        $callback The callback function to call when the endpoint is hit.
+	 * @param array<string> $methods The HTTP methods to allow for the endpoint.
+	 * @param array<mixed>  $args The arguments for the endpoint.
 	 */
 	public function register_endpoint_with_args(
 		string $endpoint,

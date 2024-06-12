@@ -281,7 +281,7 @@ const BlockPreview = ( { block, link }: BlockPreviewProps ) => {
 const LinkDetails = ( { link }: { link: SmartLink } ): React.JSX.Element => {
 	// Get the post type by the permalink.
 	const [ displayUrl, setDisplayUrl ] = useState<string>( link.href );
-	const [ postType, setPostType ] = useState<string|undefined>( link.post_type );
+	const [ postType, setPostType ] = useState<string|undefined>( link.destination?.post_type );
 	const linkRef = useRef<HTMLButtonElement>( null );
 
 	const {
@@ -296,17 +296,17 @@ const LinkDetails = ( { link }: { link: SmartLink } ): React.JSX.Element => {
 	 * @since 3.16.0
 	 */
 	useEffect( () => {
-		if ( ! link.post_type ) {
+		if ( ! link.destination ) {
 			setPostType( __( 'External', 'wp-parsely' ) );
 			SmartLinkingProvider.getInstance().getPostTypeByURL( link.href ).then( ( type ) => {
 				if ( type ) {
-					setPostType( type );
+					setPostType( type.post_type );
 				}
-				link.post_type = type ?? 'external';
+				link.destination = type;
 				updateSmartLink( link );
 			} );
 		} else {
-			setPostType( link.post_type );
+			setPostType( link.destination.post_type );
 		}
 	}, [ link, updateSmartLink ] );
 

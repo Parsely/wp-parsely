@@ -5,7 +5,7 @@ import { getBlockContent } from '@wordpress/blocks';
 // eslint-disable-next-line import/named
 import { Button, Notice, PanelRow } from '@wordpress/components';
 import { useDebounce } from '@wordpress/compose';
-import { useDispatch, useSelect } from '@wordpress/data';
+import { select, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, external } from '@wordpress/icons';
@@ -19,10 +19,10 @@ import { ContentHelperErrorCode } from '../../common/content-helper-error';
 import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
 import { LinkMonitor } from './component-link-monitor';
-import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
-import { useSmartLinksValidation } from './hooks';
-import { SmartLink, SmartLinkingProvider } from './provider';
+import { useSaveSmartLinksOnPostSave, useSmartLinksValidation } from './hooks';
 import { SmartLinkingReviewModal } from './review-modal/component-modal';
+import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
+import { SmartLink, SmartLinkingProvider } from './provider';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
 import {
 	calculateSmartLinkingMatches,
@@ -76,8 +76,16 @@ export const SmartLinkingPanel = ( {
 }: Readonly<SmartLinkingPanelProps> ): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
-	// Saving hooks.
-	useSmartLinksValidation();
+	/**
+	 * Saving hooks.
+	 *
+	 * The useSmartLinksValidation hook will validate the smart links before saving the post,
+	 * and the useSaveSmartLinksOnPostSave hook will save the smart links when the post is saved,
+	 * only after the validation is complete.
+	 */
+	const [ validationComplete, setValidationComplete ] = useState<boolean>( false );
+	useSmartLinksValidation( setValidationComplete );
+	useSaveSmartLinksOnPostSave( validationComplete );
 
 	const setSettingsDebounced = useDebounce( setSettings, 500 );
 
@@ -168,19 +176,52 @@ export const SmartLinkingPanel = ( {
 		setIsReviewModalOpen,
 	} = useDispatch( SmartLinkingStore );
 
+	const { postId } = useSelect( ( selectFn ) => {
+		const { getCurrentPostId } = selectFn( 'core/editor' ) as GutenbergFunction;
+		return {
+			postId: getCurrentPostId(),
+		};
+	}, [] );
+
 	/**
-	 * Handles the initialization of the Smart Linking existing links.
+	 * Handles the initialization of the Smart Linking existing links by getting the
+	 * existing smart links from the post content and the database.
 	 *
 	 * @since 3.16.0
 	 */
 	useEffect( () => {
-		if ( ! ready ) {
-			const existingSmartLinks = getAllSmartLinksInPost();
+		if ( ready ) {
+			// Return early if the Smart Linking store is already initialized.
+			return;
+		}
+
+		// Get the existing smart links from the post content.
+		const existingSmartLinks = getAllSmartLinksInPost();
+
+		// Get the Smart Links from the database and store them in the Smart Linking store.
+		if ( postId ) {
+			SmartLinkingProvider.getInstance().getSmartLinks( postId ).then( ( savedSmartLinks ) => {
+				let outboundLinks = savedSmartLinks.outbound;
+
+				// Calculate the smart links matches for each block.
+				const blocks = select( 'core/block-editor' ).getBlocks();
+				outboundLinks = calculateSmartLinkingMatches( blocks, outboundLinks );
+
+				// Add the saved smart links to the store.
+				return addSmartLinks( outboundLinks );
+			} ).then( () => {
+				// Add the existing smart links to the store.
+				return addSmartLinks( existingSmartLinks );
+			} ).then( () => {
+				setIsReady( true );
+			} );
+		} else {
+			// If there is no post ID, just add the existing smart links to the store.
 			addSmartLinks( existingSmartLinks ).then( () => {
 				setIsReady( true );
 			} );
 		}
-	}, [ addSmartLinks, ready, setIsReady ] );
+	}, [ addSmartLinks, postId, ready, setIsReady ] );
 
 	/**
 	 * Handles the ending of the review process.

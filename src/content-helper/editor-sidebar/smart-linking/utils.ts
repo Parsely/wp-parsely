@@ -214,10 +214,14 @@ export function sortSmartLinks( smartLinks: SmartLink[] ): SmartLink[] {
 	const notAppliedLinks = smartLinks.filter( ( link ) => ! link.applied );
 
 	const sortByBlockPosition = ( a: SmartLink, b: SmartLink ) => {
-		if ( a.match!.blockPosition === b.match!.blockPosition ) {
-			return a.match!.blockLinkPosition - b.match!.blockLinkPosition;
+		if ( ! a.match || ! b.match ) {
+			return 0;
 		}
-		return a.match!.blockPosition - b.match!.blockPosition;
+
+		if ( a.match.blockPosition === b.match.blockPosition ) {
+			return a.match.blockLinkPosition - b.match.blockLinkPosition;
+		}
+		return a.match.blockPosition - b.match.blockPosition;
 	};
 
 	appliedLinks.sort( sortByBlockPosition );
