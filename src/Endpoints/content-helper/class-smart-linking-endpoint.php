@@ -96,7 +96,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			array(
 				'post_id' => array(
 					'required'          => true,
-					'description'       => 'The post ID.',
+					'description'       => __( 'The post ID.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
 				),
 			)
@@ -113,18 +113,18 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			array(
 				'post_id' => array(
 					'required'          => true,
-					'description'       => 'The post ID.',
+					'description'       => __( 'The post ID.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
 				),
 				'link'    => array(
 					'required'          => true,
 					'type'              => 'array',
-					'description'       => 'The smart link data.',
+					'description'       => __( 'The smart link data to add.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'private_api_request_validate_smart_link_params' ),
 				),
 				'update'  => array(
 					'type'        => 'boolean',
-					'description' => 'Whether to update the existing smart link.',
+					'description' => __( 'Whether to update the existing smart link.', 'wp-parsely' ),
 					'default'     => false,
 				),
 			)
@@ -141,18 +141,18 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			array(
 				'post_id' => array(
 					'required'          => true,
-					'description'       => 'The post ID.',
+					'description'       => __( 'The post ID.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
 				),
 				'links'   => array(
 					'required'          => true,
 					'type'              => 'array',
-					'description'       => 'The multiple smart links data to add.',
+					'description'       => __( 'The multiple smart links data to add.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'private_api_request_validate_multiple_smart_links' ),
 				),
 				'update'  => array(
 					'type'        => 'boolean',
-					'description' => 'Whether to update the existing smart link.',
+					'description' => __( 'Whether to update the existing smart links.', 'wp-parsely' ),
 					'default'     => false,
 				),
 			)
@@ -169,13 +169,13 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			array(
 				'post_id' => array(
 					'required'          => true,
-					'description'       => 'The post ID.',
+					'description'       => __( 'The post ID.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
 				),
 				'links'   => array(
 					'required'          => true,
 					'type'              => 'array',
-					'description'       => 'The multiple smart links data to update.',
+					'description'       => __( 'The smart links data to set.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'private_api_request_validate_multiple_smart_links' ),
 				),
 			)
@@ -183,7 +183,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	}
 
 	/**
-	 * API Endpoint: `POST /smart-linking/url-to-post-type`.
+	 * API Endpoint: POST /smart-linking/url-to-post-type.
 	 *
 	 * Converts a URL to a post type.
 	 *
@@ -200,7 +200,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 				array(
 					'error' => array(
 						'name'    => 'invalid_request',
-						'message' => 'Invalid request body.',
+						'message' => __( 'Invalid request body.', 'wp-parsely' ),
 					),
 				),
 				400
@@ -237,7 +237,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 
 
 	/**
-	 * API Endpoint: `GET /smart-linking/{post_id}/get`.
+	 * API Endpoint: GET /smart-linking/{post_id}/get.
 	 *
 	 * Gets the smart links for a post.
 	 *
@@ -267,7 +267,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 
 
 	/**
-	 * API Endpoint: `POST /smart-linking/{post_id}/add`.
+	 * API Endpoint: POST /smart-linking/{post_id}/add.
 	 *
 	 * Adds a smart link to a post.
 	 * If the update parameter is set to true, the existing smart link will be updated.
@@ -298,7 +298,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			);
 		}
 
-		// The smart link proprieties are set in the validate callback.
+		// The smart link properties are set in the validate callback.
 		$saved = $smart_link->save();
 		if ( ! $saved ) {
 			return new WP_REST_Response(
@@ -321,7 +321,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	}
 
 	/**
-	 * API Endpoint: `POST /smart-linking/{post_id}/add_multiple`.
+	 * API Endpoint: POST /smart-linking/{post_id}/add_multiple.
 	 *
 	 * Adds multiple smart links to a post.
 	 *
@@ -351,7 +351,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 
 			$updated_link = $smart_link->exists() && $should_update;
 
-			// The smart link proprieties are set in the validate callback.
+			// The smart link properties are set in the validate callback.
 			$saved = $smart_link->save();
 
 			if ( ! $saved ) {
@@ -394,7 +394,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	}
 
 	/**
-	 * API Endpoint: `POST /smart-linking/{post_id}/set`.
+	 * API Endpoint: POST /smart-linking/{post_id}/set.
 	 *
 	 * Updates the smart links of a given post and removes the ones that are not in the request.
 	 *
@@ -441,7 +441,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		$failed_links = array();
 
 		foreach ( $smart_links as $smart_link ) {
-			// The smart link proprieties are set in the validate callback.
+			// The smart link properties are set in the validate callback.
 			$saved = $smart_link->save();
 
 			if ( ! $saved ) {
@@ -481,8 +481,14 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			return false;
 		}
 
+		$param = filter_var( $param, FILTER_VALIDATE_INT );
+
+		if ( false === $param ) {
+			return false;
+		}
+
 		// Validate if the post ID exists.
-		$post = get_post( intval( $param ) );
+		$post = get_post( $param );
 		// Set the post attribute in the request.
 		$request->set_param( 'post', $post );
 

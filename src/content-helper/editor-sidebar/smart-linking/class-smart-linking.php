@@ -1,6 +1,6 @@
 <?php
 /**
- * Class for Smart Linking feature in the editor sidebar.
+ * Class for Smart Linking feature in the editor sidebar
  *
  * @package Parsely
  * @since   3.16.0

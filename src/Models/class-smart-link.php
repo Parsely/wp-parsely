@@ -30,7 +30,7 @@ class Smart_Link extends Base_Model {
 	private $smart_link_id = 0;
 
 	/**
-	 * The post ID of the suggested link (link source)
+	 * The post ID of the suggested link (link source).
 	 *
 	 * @since 3.16.0
 	 * @var int The post ID of the suggested link, 0 if not set.
@@ -338,11 +338,11 @@ class Smart_Link extends Base_Model {
 	}
 
 	/**
-	 * Checks if the smart link is saved on the database.
+	 * Checks if the smart link is saved in the database.
 	 *
 	 * @since 3.16.0
 	 *
-	 * @return bool
+	 * @return bool True if the smart link exists, false otherwise.
 	 */
 	public function exists(): bool {
 		if ( $this->exists ) {
@@ -366,11 +366,11 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Gets a string meta value from the smart link post.
 	 *
+	 * @since 3.16.0
+	 *
 	 * @param string $meta_key The meta key to get the value for.
 	 * @param string $default_value The default value to return if the meta value is not a string.
-	 *
 	 * @return string The meta value.
-	 * @since 3.16.0
 	 */
 	private function get_string_meta( string $meta_key, string $default_value = '' ): string {
 		$meta_value = get_post_meta( $this->smart_link_id, $meta_key, true );
@@ -380,11 +380,11 @@ class Smart_Link extends Base_Model {
 	/**
 	 * Gets an integer meta value from the smart link post.
 	 *
+	 * @since 3.16.0
+	 *
 	 * @param string $meta_key The meta key to get the value for.
 	 * @param int    $default_value The default value to return if the meta value is not an integer.
-	 *
 	 * @return int The meta value.
-	 * @since 3.16.0
 	 */
 	private function get_int_meta( string $meta_key, int $default_value = 0 ): int {
 		$meta_value = get_post_meta( $this->smart_link_id, $meta_key, true );

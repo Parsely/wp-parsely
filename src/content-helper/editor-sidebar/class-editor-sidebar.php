@@ -33,7 +33,6 @@ require_once __DIR__ . '/smart-linking/class-smart-linking.php';
  * @since 3.9.0 Renamed FQCN from `Parsely\Content_Helper` to `Parsely\Content_Helper\Editor_Sidebar`.
  */
 class Editor_Sidebar extends Content_Helper_Feature {
-
 	/**
 	 * Instance of Parsely class.
 	 *

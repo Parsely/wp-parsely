@@ -23,8 +23,9 @@ import { validateAndFixSmartLinksInPost } from './utils';
  * This is a fallback for the validation step in the LinkMonitor component. If for some reason the validation step
  * is not triggered, this hook will fix the smart links before saving the post.
  *
- * @param {Function} setValidationComplete The function to set the validation completion state.
  * @since 3.16.0
+ *
+ * @param {Function} setValidationComplete The function to set the validation completion state.
  *
  * @return {boolean} Whether the post is saved.
  */

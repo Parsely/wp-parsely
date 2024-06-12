@@ -13,7 +13,7 @@ import { DEFAULT_MAX_LINKS } from './smart-linking';
 
 /**
  * Structure of a link suggestion returned by the
- * `content-suggestions/suggest-linked-reference` endpoint.
+ * 'content-suggestions/suggest-linked-reference' endpoint.
  *
  * @since 3.14.0
  * @since 3.16.0 Added the `applied`, `match`, `source` and `destination` properties.
@@ -55,7 +55,7 @@ type LinkedPost = {
 }
 
 /**
- * Structure of the response from the `smart-linking/[post-id]/add-multiple` endpoint.
+ * Structure of the response from the 'smart-linking/[post-id]/add-multiple' endpoint.
  *
  * @since 3.16.0
  */
@@ -65,7 +65,7 @@ type AddMultipleSmartLinksResponse = {
 }
 
 /**
- * Structure of the response from the `smart-linking/[post-id]/get` endpoint.
+ * Structure of the response from the 'smart-linking/[post-id]/get' endpoint.
  *
  * @since 3.16.0
  */
@@ -75,7 +75,7 @@ type GetSmartLinksResponse = {
 }
 
 /**
- * Returns data from the `content-suggestions/suggest-linked-reference`
+ * Returns data from the 'content-suggestions/suggest-linked-reference'
  * WordPress REST API endpoint.
  *
  * @since 3.14.0
@@ -133,12 +133,14 @@ export class SmartLinkingProvider extends BaseProvider {
 	/**
 	 * Adds a smart link to a post.
 	 *
+	 * @since 3.16.0
+	 *
 	 * @param {number}    postID         The ID of the post to add the link to.
 	 * @param {SmartLink} linkSuggestion The link suggestion to add.
 	 *
 	 * @return {Promise<SmartLink>} The added link.
 	 */
-	public async addSmartLink( postID: number, linkSuggestion: SmartLink ) {
+	public async addSmartLink( postID: number, linkSuggestion: SmartLink ): Promise<SmartLink> {
 		return await this.fetch<SmartLink>( {
 			method: 'POST',
 			path: `/wp-parsely/v1/smart-linking/${ postID }/add`,
@@ -155,8 +157,13 @@ export class SmartLinkingProvider extends BaseProvider {
 	 *
 	 * @param {number}      postID          The ID of the post to add the links to.
 	 * @param {SmartLink[]} linkSuggestions The list of link suggestions to add.
+	 *
+	 * @return {Promise<AddMultipleSmartLinksResponse>} The response from the API.
 	 */
-	public async addSmartLinks( postID: number, linkSuggestions: SmartLink[] ) {
+	public async addSmartLinks(
+		postID: number,
+		linkSuggestions: SmartLink[]
+	): Promise<AddMultipleSmartLinksResponse> {
 		if ( postID === 0 ) {
 			throw new ContentHelperError(
 				__( 'Invalid post ID.', 'wp-parsely' ),
