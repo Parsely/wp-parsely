@@ -105,21 +105,36 @@ export const ReviewModalSidebar = ( {
 	);
 
 	// Build the tabs array.
-	const tabs = [
-		{
+	let tabs = [];
+
+	if ( outboundLinks && outboundLinks.length > 0 ) {
+		tabs.push( {
 			name: 'outbound',
-			title: __( 'Outbound Smart Links', 'wp-parsely' ),
-		},
-	];
+			title: __( 'Outbound', 'wp-parsely' ),
+		} );
+	}
 
 	if ( inboundLinks && inboundLinks.length > 0 ) {
-		// Change the title of the outbound tab to "Outbound" if there are inbound links.
-		tabs[ 0 ].title = __( 'Outbound', 'wp-parsely' );
 		tabs.push( {
 			name: 'inbound',
 			title: __( 'Inbound', 'wp-parsely' ),
 		} );
 	}
+
+	let initialTabName = 'outbound';
+
+	// Change the titles of the tabs to the extended titles if there are no links.
+	tabs = tabs.filter( ( tab ) => {
+		if ( tab.name === 'outbound' && inboundLinks && inboundLinks.length === 0 ) {
+			tab.title = __( 'Outbound Smart Links', 'wp-parsely' );
+			initialTabName = 'outbound';
+		}
+		if ( tab.name === 'inbound' && outboundLinks && outboundLinks.length === 0 ) {
+			tab.title = __( 'Inbound Smart Links', 'wp-parsely' );
+			initialTabName = 'inbound';
+		}
+		return tab;
+	} );
 
 	return (
 		<div className="smart-linking-review-sidebar" ref={ sidebarRef }>
@@ -129,7 +144,7 @@ export const ReviewModalSidebar = ( {
 			} } />
 			<TabPanel
 				className="smart-linking-review-sidebar-tabs"
-				initialTabName="outbound"
+				initialTabName={ initialTabName }
 				tabs={ tabs }
 				onSelect={ ( tabName: string ) => {
 					// If outbound, select the first outbound link
