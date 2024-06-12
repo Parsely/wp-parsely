@@ -654,3 +654,41 @@ export function trimURLForDisplay( url: string, maxLength: number ): string {
 
 	return `${ domain }${ start }...${ end }`;
 }
+
+/**
+ * Selects a smart link in the block content.
+ *
+ * This function sets focus to the link element, selects the link text, and
+ * scrolls the viewport to the link element.
+ *
+ * @since 3.16.0
+ *
+ * @param {HTMLElement} blockContent   The block content to select the smart link in.
+ * @param {string}      smartLinkValue The smart link value to select.
+ */
+export const selectSmartLink = ( blockContent: HTMLElement, smartLinkValue: string ): void => {
+	const linkElement = blockContent.querySelector(
+		`a[data-smartlink="${ smartLinkValue }"]`,
+	) as HTMLElement;
+
+	if ( linkElement ) {
+		// Set focus to the link element.
+		linkElement.focus();
+
+		// Select the link.
+		const ownerDocument = blockContent.ownerDocument;
+		const range = ownerDocument.createRange();
+		if ( linkElement.firstChild ) {
+			range.setStart( linkElement.firstChild, 0 ); // Start at the beginning of the link text
+			range.setEndAfter( linkElement.firstChild );
+			const sel = ownerDocument.getSelection();
+			if ( sel ) {
+				sel.removeAllRanges();
+				sel.addRange( range );
+			}
+		}
+
+		// Scroll the viewport to the link element.
+		linkElement.scrollIntoView( { behavior: 'smooth', block: 'center' } );
+	}
+};

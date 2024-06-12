@@ -67,12 +67,30 @@ class Inbound_Smart_Link extends Smart_Link {
 		// Get the paragraph that has the smart link uid
 		$paragraph = $this->get_paragraph( $content );
 
+		$author_name = get_the_author();
+		if ( "" === $author_name ) {
+			// If the author name is empty, use the author login name.
+			$author_name = get_the_author_meta( 'user_login', intval($post->post_author) );
+		}
+
+		$post_type = get_post_type_object( $post->post_type );
+		$post_type_label = '';
+		if ( null !== $post_type ) {
+			$post_type_label = $post_type->labels->singular_name;
+		}
+
 		return array(
 			'id'        => $post->ID,
 			'title'     => $post->post_title,
-			'paragraph' => $paragraph,
+			'type'      => $post_type_label,
+			'paragraph' => $paragraph['paragraph'],
 			'permalink' => get_permalink( $post ),
-			'edit_link' => get_edit_post_link( $post ),
+			'edit_link' => get_edit_post_link( $post, 'html' ),
+			'is_first_paragraph' => $paragraph['is_first_paragraph'],
+			'is_last_paragraph'  => $paragraph['is_last_paragraph'],
+			'author'   => $author_name,
+			'date'     => get_the_date( '', $post ),
+			'image'   => get_the_post_thumbnail_url( $post, 'medium' ),
 		);
 	}
 
@@ -80,9 +98,10 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * Get the HTML paragraph that has the smart link uid.
 	 *
 	 * @param string $content The post content
-	 * @return string The paragraph that has the smart link uid
+	 * @return array The paragraph that has the smart link uid, and if it is the first or last paragraph.
+	 * @phpstan-return array{paragraph: string, is_first_paragraph: bool, is_last_paragraph: bool}
 	 */
-	private function get_paragraph(string $content): string {
+	private function get_paragraph(string $content): array {
 		$paragraph = '';
 
 		$dom = new DOMDocument();
@@ -92,6 +111,9 @@ class Inbound_Smart_Link extends Smart_Link {
 		// Fetch all paragraph tags.
 		$paragraphs = $dom->getElementsByTagName('p');
 
+		$is_first_paragraph = true;
+		$is_last_paragraph = false;
+
 		foreach ($paragraphs as $p) {
 			// Check each anchor tag within the paragraph.
 			$anchors = $p->getElementsByTagName('a');
@@ -99,13 +121,19 @@ class Inbound_Smart_Link extends Smart_Link {
 				// Check if the data-smartlink attribute contains the UID.
 				if ($anchor->hasAttribute('data-smartlink') && stripos($anchor->getAttribute('data-smartlink'), $this->uid) !== false) {
 					// Save the outer HTML of the paragraph.
+					$is_first_paragraph = $p === $paragraphs->item(0);
+					$is_last_paragraph = $p === $paragraphs->item($paragraphs->length - 1);
 					$paragraph = $dom->saveHTML($p);
 					break 2;
 				}
 			}
 		}
 
-		return $paragraph;
+		return array(
+			'paragraph' => $paragraph,
+			'is_first_paragraph' => $is_first_paragraph,
+			'is_last_paragraph' => $is_last_paragraph,
+		);
 	}
 
 	public static function from_smart_link( Smart_Link $smart_link ): Inbound_Smart_Link {

@@ -1,20 +1,65 @@
 import { BlockInstance, parse } from '@wordpress/blocks';
-import { __experimentalDivider as Divider, Button, Tooltip } from '@wordpress/components';
+import { __experimentalDivider as Divider, Button, KeyboardShortcuts, Tooltip } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { arrowLeft, arrowRight, check, closeSmall, Icon } from '@wordpress/icons';
+import { arrowLeft, arrowRight, Icon, page } from '@wordpress/icons';
 import { InboundSmartLink } from '../provider';
 import { BlockPreview } from './component-block-preview';
 
-type InboundLinkDetailsProps = {
-	link: InboundSmartLink,
-	onPrevious: () => void,
-	onNext: () => void,
-	hasPrevious: boolean,
-	hasNext: boolean,
+type ThreeDotsProps = {
+	topOrBottom: 'top' | 'bottom';
 };
 
-export const InboundLinkDetails = (	{
+const ThreeDots: React.FC<ThreeDotsProps> = ( { topOrBottom } ): React.JSX.Element => {
+	return (
+		<div className={ `three-dots ${ topOrBottom === 'top' ? 'is-top' : 'is-bottom' }` }>
+			( &#8230; )
+		</div>
+	);
+};
+
+const LinkingPostDetails = ( { link }: { link: InboundSmartLink } ): React.JSX.Element => {
+	return (
+		<div className="linking-post-details">
+			<div className="linking-post-image">
+				{ link.post_data?.image ? (
+					<img
+						className="linking-post-image"
+						src={ link.post_data.image }
+						alt={ link.post_data.title }
+						width={ 64 }
+					/>
+				) : (
+					<div className="icon-container">
+						<Icon icon={ page } size={ 24 } />
+					</div>
+				) }
+			</div>
+			<div className="linking-post-info">
+				<div className="linking-post-title">
+					<a href={ link.post_data?.permalink }
+						target="_blank"
+						rel="noreferrer">
+						{ link.post_data?.title }
+					</a></div>
+				<div className="linking-post-meta">
+					{ link.post_data?.date } by { link.post_data?.author }
+				</div>
+			</div>
+			<div className="linking-post-type">{ link.post_data?.type }</div>
+		</div>
+	);
+};
+
+type InboundLinkDetailsProps = {
+	link: InboundSmartLink;
+	onPrevious: () => void;
+	onNext: () => void;
+	hasPrevious: boolean;
+	hasNext: boolean;
+};
+
+export const InboundLinkDetails = ( {
 	link,
 	onPrevious,
 	onNext,
@@ -39,26 +84,41 @@ ${ paragraph ?? '<p></p>' }
 
 	return (
 		<div className="smart-linking-review-suggestion">
-			<div className="review-suggestion-post-title">
-				{ link.post_data?.title }
-			</div>
+			<KeyboardShortcuts
+				shortcuts={ {
+					left: onPrevious,
+					right: onNext,
+					up: onPrevious,
+					down: onNext,
+				} }
+			/>
+			<div className="review-suggestion-post-title">{ link.post_data?.title }</div>
 			<div className="review-suggestion-preview">
+				{ ! link.post_data?.is_first_paragraph && <ThreeDots topOrBottom="top" /> }
 				<BlockPreview block={ blocks[ 0 ] } link={ link } useOriginalBlock />
+				{ ! link.post_data?.is_last_paragraph && <ThreeDots topOrBottom="bottom" /> }
 			</div>
 			<Divider />
-
+			<LinkingPostDetails link={ link } />
 			<div className="review-controls">
 				<Tooltip shortcut="←" text={ __( 'Previous', 'wp-parsely' ) }>
 					<Button
 						disabled={ ! hasPrevious }
 						className="wp-parsely-review-suggestion-previous"
 						onClick={ onPrevious }
-						icon={ arrowLeft }>
+						icon={ arrowLeft }
+					>
 						{ __( 'Previous', 'wp-parsely' ) }
 					</Button>
 				</Tooltip>
 				<div className="reviews-controls-middle">
-					Hey
+					<Button
+						target="_blank"
+						href={ link.post_data?.edit_link + '&smart-link=' + link.uid }
+						variant="secondary"
+					>
+						{ __( 'Open in the Editor', 'wp-parsely' ) }
+					</Button>
 				</div>
 				<Tooltip shortcut="→" text={ __( 'Next', 'wp-parsely' ) }>
 					<Button

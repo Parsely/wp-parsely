@@ -205,7 +205,6 @@ export const SmartLinkingPanel = ( {
 		// Get the Smart Links from the database and store them in the Smart Linking store.
 		if ( postId ) {
 			SmartLinkingProvider.getInstance().getSmartLinks( postId ).then( async ( savedSmartLinks ) => {
-				console.log( savedSmartLinks );
 				let outboundLinks = savedSmartLinks.outbound;
 				const inboundLinks = savedSmartLinks.inbound;
 

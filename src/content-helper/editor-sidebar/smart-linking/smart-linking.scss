@@ -214,16 +214,111 @@
 		}
 	}
 
+	.linking-post-details {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 100%;
+
+		.linking-post-image {
+			margin-right: 10px;
+			max-width: 50px;
+
+			.icon-container {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				width: 50px;
+				height: 50px;
+			}
+		}
+
+		.linking-post-title {
+			color: var(--sidebar-black);
+
+			a {
+				text-decoration: none;
+			}
+		}
+
+		.linking-post-info {
+			display: flex;
+			flex-direction: column;
+			flex-grow: 1;
+
+			.linking-post-meta {
+				font-size: 0.9em;
+				color: var(--Gutenberg-Gray-700, #757575);
+			}
+		}
+
+		.linking-post-type {
+			margin-left: 10px;
+			white-space: nowrap;
+			color: var(--Gutenberg-Gray-700, #757575);
+		}
+	}
+
 	.smart-linking-review-sidebar {
 		display: flex;
 		min-width: to_rem(220px);
-		max-height: to_rem(400px);
-		overflow-y: auto;
 		padding: to_rem(3px);
 		flex-direction: column;
 		align-items: flex-start;
 		gap: var(--grid-unit-20);
 		align-self: stretch;
+
+		.smart-linking-review-sidebar-tabs {
+
+			.components-tab-panel__tabs {
+				margin-bottom: var(--grid-unit-20);
+
+				button {
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					flex: 1 0 0;
+					height: var(--grid-unit-40);
+				}
+			}
+
+			.components-tab-panel__tabs-item {
+				color: var(--sidebar-black);
+				font-size: to_rem(11px);
+				font-style: normal;
+				font-weight: 600;
+				line-height: var(--grid-unit-20);
+				text-transform: uppercase;
+
+				&:focus-visible:before {
+					box-shadow: none;
+					outline: none;
+				}
+			}
+
+			.components-tab-panel__tab-content {
+				max-height: to_rem(370px);
+				overflow-y: auto;
+			}
+
+		}
+
+		.review-sidebar-tip {
+			font-size: 12px;
+			padding: 5px;
+			margin-top: -9px;
+			margin-bottom: 5px;
+			display: flex;
+			align-items: center;
+
+
+			.review-sidebar-tip svg {
+				margin-left: auto;
+				width: 24px; /* Ensure the width is set */
+				height: 24px; /* Ensure the height is set */
+				flex-shrink: 0; /* Prevent the SVG from shrinking */
+			}
+		}
 
 		.review-sidebar-header {
 			margin-bottom: var(--grid-unit-15);
@@ -316,10 +411,31 @@
 			}
 		}
 
+		.review-suggestion-post-title {
+			font-size: var(--font-size--large);
+			line-height: to_rem(24px);
+			font-weight: 500;
+		}
+
 		.components-divider {
 			width: to_rem(452px);
 			height: 1px;
 			border-color: #ccc;
+		}
+
+		.three-dots {
+			text-align: center;
+			font-size: 16px;
+			color: #cccccc;
+			user-select: none;
+
+			&.is-top {
+				margin-bottom: 12px;
+			}
+
+			&.is-bottom {
+				margin-top: 12px;
+			}
 		}
 
 		.review-controls {

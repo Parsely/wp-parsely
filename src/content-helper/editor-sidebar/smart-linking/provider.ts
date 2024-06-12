@@ -39,11 +39,16 @@ export type SmartLink = {
 export type InboundSmartLink = SmartLink & {
 	post_data?: {
 		id: number;
-		type: string;
 		title: string;
+		type: string;
 		paragraph: string;
+		is_first_paragraph: boolean;
+		is_last_paragraph: boolean;
 		permalink: string;
 		edit_link: string;
+		author: string,
+		date: string,
+		image: string|false,
 	};
 }
 

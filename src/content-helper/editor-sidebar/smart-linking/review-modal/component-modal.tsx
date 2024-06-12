@@ -3,7 +3,7 @@
  */
 // eslint-disable-next-line import/named
 import { BlockInstance, getBlockContent } from '@wordpress/blocks';
-import { Button, KeyboardShortcuts, Modal } from '@wordpress/components';
+import { Button, Modal } from '@wordpress/components';
 import { select, useDispatch, useSelect } from '@wordpress/data';
 import { memo, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -14,7 +14,7 @@ import { __ } from '@wordpress/i18n';
 import { dispatchCoreBlockEditor } from '../../../../@types/gutenberg/types';
 import { InboundSmartLink, SmartLink } from '../provider';
 import { SmartLinkingStore } from '../store';
-import { applyNodeToBlock, isInboundSmartLink } from '../utils';
+import { applyNodeToBlock, isInboundSmartLink, selectSmartLink } from '../utils';
 import { InboundLinkDetails } from './component-inbound-link';
 import { ReviewModalSidebar } from './component-sidebar';
 import { ReviewSuggestion } from './component-suggestion';
@@ -230,14 +230,27 @@ const SmartLinkingReviewModalComponent = ( {
 	 * @since 3.16.0
 	 */
 	const handleNext = () => {
-		const currentIndex = smartLinks.indexOf( selectedLink );
-		const nextIndex = currentIndex + 1;
+		const isInbound = isInboundSmartLink( selectedLink );
 
-		if ( ! smartLinks[ nextIndex ] ) {
-			return;
+		if ( isInbound ) {
+			const currentIndex = inboundSmartLinks.indexOf( selectedLink );
+			const nextIndex = currentIndex + 1;
+
+			if ( ! inboundSmartLinks[ nextIndex ] ) {
+				return;
+			}
+
+			setSelectedLink( inboundSmartLinks[ nextIndex ] );
+		} else {
+			const currentIndex = smartLinks.indexOf( selectedLink );
+			const nextIndex = currentIndex + 1;
+
+			if ( ! smartLinks[ nextIndex ] ) {
+				return;
+			}
+
+			setSelectedLink( smartLinks[ nextIndex ] );
 		}
-
-		setSelectedLink( smartLinks[ nextIndex ] );
 	};
 
 	/**
@@ -246,14 +259,27 @@ const SmartLinkingReviewModalComponent = ( {
 	 * @since 3.16.0
 	 */
 	const handlePrevious = () => {
-		const currentIndex = getSmartLinks().indexOf( selectedLink );
-		const previousIndex = currentIndex - 1;
+		const isInbound = isInboundSmartLink( selectedLink );
 
-		if ( ! getSmartLinks()[ previousIndex ] ) {
-			return;
+		if ( isInbound ) {
+			const currentIndex = inboundSmartLinks.indexOf( selectedLink );
+			const previousIndex = currentIndex - 1;
+
+			if ( ! inboundSmartLinks[ previousIndex ] ) {
+				return;
+			}
+
+			setSelectedLink( inboundSmartLinks[ previousIndex ] );
+		} else {
+			const currentIndex = smartLinks.indexOf( selectedLink );
+			const previousIndex = currentIndex - 1;
+
+			if ( ! smartLinks[ previousIndex ] ) {
+				return;
+			}
+
+			setSelectedLink( smartLinks[ previousIndex ] );
 		}
-
-		setSelectedLink( getSmartLinks()[ previousIndex ] );
 	};
 
 	/**
@@ -358,26 +384,7 @@ const SmartLinkingReviewModalComponent = ( {
 			// Find the link element within the block.
 			const blockContent = document.querySelector( `[data-block="${ block.clientId }"]` );
 			if ( blockContent ) {
-				const ownerDocument = blockContent.ownerDocument;
-				const linkElement = blockContent.querySelector(
-					`a[data-smartlink="${ selectedLink.uid }"]`,
-				) as HTMLElement;
-				if ( linkElement ) {
-					// Set focus to the link element.
-					linkElement.focus();
-
-					// Select the link.
-					const range = ownerDocument.createRange();
-					if ( linkElement.firstChild ) {
-						range.setStart( linkElement.firstChild, 0 ); // Start at the beginning of the link text
-						range.setEndAfter( linkElement.firstChild );
-						const sel = ownerDocument.getSelection();
-						if ( sel ) {
-							sel.removeAllRanges();
-							sel.addRange( range );
-						}
-					}
-				}
+				selectSmartLink( blockContent as HTMLElement, selectedLink.uid );
 			}
 
 			// Close the modal.
@@ -408,8 +415,8 @@ const SmartLinkingReviewModalComponent = ( {
 									link={ selectedLink }
 									onNext={ handleNext }
 									onPrevious={ handlePrevious }
-									hasNext={ getSmartLinks().indexOf( selectedLink ) < getSmartLinks().length - 1 }
-									hasPrevious={ getSmartLinks().indexOf( selectedLink ) > 0 }
+									hasNext={ inboundSmartLinks.indexOf( selectedLink ) < inboundSmartLinks.length - 1 }
+									hasPrevious={ inboundSmartLinks.indexOf( selectedLink ) > 0 }
 								/>
 							) : (
 								<ReviewSuggestion

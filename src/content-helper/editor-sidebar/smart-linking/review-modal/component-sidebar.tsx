@@ -1,9 +1,10 @@
 /**
  * WordPress dependencies
  */
-import { MenuItem } from '@wordpress/components';
+import { Icon, KeyboardShortcuts, MenuItem, TabPanel } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { help, next } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -49,7 +50,10 @@ export const ReviewModalSidebar = ( {
 	useEffect( () => {
 		if ( activeLink ) {
 			const activeIndex = allLinks?.findIndex( ( link ) => link.uid === activeLink.uid );
+
 			if ( activeIndex !== undefined && activeIndex !== -1 && sidebarRef.current && itemRefs.current[ activeIndex ] ) {
+				//console.log( activeIndex, sidebarRef.current, itemRefs.current[ activeIndex ] );
+
 				const sidebar = sidebarRef.current;
 				const activeItem = itemRefs.current[ activeIndex ];
 
@@ -73,6 +77,26 @@ export const ReviewModalSidebar = ( {
 		}
 	}, [ activeLink, allLinks ] );
 
+	/**
+	 * Handles the tab press to move to the next tab.
+	 *
+	 * @since 3.16.0
+	 */
+	const handleTabPress = () => {
+		// Move to the next tab considering that the active tab has the data-active-item attribute.
+		const activeTab = document.querySelector( '.smart-linking-review-sidebar-tabs [data-active-item]' );
+		let nextTab = activeTab?.nextElementSibling;
+
+		// If there is no next tab, move to the first tab.
+		if ( ! nextTab ) {
+			nextTab = document.querySelector( '.smart-linking-review-sidebar-tabs [role="tab"]' );
+		}
+
+		if ( nextTab ) {
+			( nextTab as HTMLElement ).click();
+		}
+	};
+
 	const label = (
 		<span className="smart-linking-menu-label">
 			{ __( 'NEW', 'wp-parsely' ) }
@@ -80,52 +104,94 @@ export const ReviewModalSidebar = ( {
 		</span>
 	);
 
+	// Build the tabs array.
+	const tabs = [
+		{
+			name: 'outbound',
+			title: __( 'Outbound Smart Links', 'wp-parsely' ),
+		},
+	];
+
+	if ( inboundLinks && inboundLinks.length > 0 ) {
+		// Change the title of the outbound tab to "Outbound" if there are inbound links.
+		tabs[ 0 ].title = __( 'Outbound', 'wp-parsely' );
+		tabs.push( {
+			name: 'inbound',
+			title: __( 'Inbound', 'wp-parsely' ),
+		} );
+	}
+
 	return (
 		<div className="smart-linking-review-sidebar" ref={ sidebarRef }>
-			<div>
-				{ outboundLinks && outboundLinks.length > 0 && (
+			<KeyboardShortcuts shortcuts={ {
+				tab: () => handleTabPress(),
+				'shift+tab': () => handleTabPress(),
+			} } />
+			<TabPanel
+				className="smart-linking-review-sidebar-tabs"
+				initialTabName="outbound"
+				tabs={ tabs }
+				onSelect={ ( tabName: string ) => {
+					// If outbound, select the first outbound link
+					if ( tabName === 'outbound' && outboundLinks && outboundLinks.length > 0 ) {
+						setSelectedLink( outboundLinks[ 0 ] );
+					}
+					// If inbound, select the first inbound link
+					if ( tabName === 'inbound' && inboundLinks && inboundLinks.length > 0 ) {
+						setSelectedLink( inboundLinks[ 0 ] );
+					}
+				} }
+			>
+				{ ( tab ) => (
 					<>
-						<div className="review-sidebar-header">
-							{ __( 'Outbound Smart Links', 'wp-parsely' ) }
-							<span>{ outboundLinks.length }</span>
-						</div>
-						{ outboundLinks.map( ( link, index ) => (
-							<MenuItem
-								key={ link.uid }
-								ref={ ( el ) => itemRefs.current[ index ] = el }
-								className={ activeLink?.uid === link.uid ? 'is-selected' : '' }
-								role="menuitemradio"
-								isSelected={ activeLink?.uid === link.uid }
-								onClick={ () => setSelectedLink( link ) }
-							>
-								<span className="smart-linking-menu-item">{ link.text }</span>
-								{ ! link.applied && label }
-							</MenuItem>
-						) ) }
+						{ tab.name === 'outbound' && (
+							<>
+								{ ! outboundLinks || outboundLinks.length === 0 ? (
+									<> { __( 'No outbound links found.', 'wp-parsely' ) }</>
+								) : (
+									( outboundLinks.map( ( link, index ) => (
+										<MenuItem
+											key={ link.uid }
+											ref={ ( el ) => itemRefs.current[ index ] = el }
+											className={ activeLink?.uid === link.uid ? 'is-selected' : '' }
+											role="menuitemradio"
+											isSelected={ activeLink?.uid === link.uid }
+											onClick={ () => setSelectedLink( link ) }
+										>
+											<span className="smart-linking-menu-item">{ link.text }</span>
+											{ ! link.applied && label }
+										</MenuItem>
+									) ) )
+								) }
+							</>
+						) }
+						{ tab.name === 'inbound' && (
+							<>
+								<div className="review-sidebar-tip">
+									{ __( 'This section shows external posts that link back to the current post.', 'wp-parsely' ) }
+									<Icon icon={ help } size={ 24 } />
+								</div>
+								{ ! inboundLinks || inboundLinks.length === 0 ? (
+									<> { __( 'No inbound links found.', 'wp-parsely' ) }</>
+								) : (
+									( inboundLinks.map( ( link, index ) => (
+										<MenuItem
+											key={ link.uid }
+											ref={ ( el ) => itemRefs.current[ ( outboundLinks ? outboundLinks.length : 0 ) + index ] = el }
+											className={ activeLink?.uid === link.uid ? 'is-selected' : '' }
+											role="menuitemradio"
+											isSelected={ activeLink?.uid === link.uid }
+											onClick={ () => setSelectedLink( link ) }
+										>
+											<span className="smart-linking-menu-item">{ link.post_data?.title }</span>
+										</MenuItem>
+									) ) )
+								) }
+							</>
+						) }
 					</>
 				) }
-
-				{ inboundLinks && inboundLinks.length > 0 && (
-					<>
-						<div className="review-sidebar-header">
-							{ __( 'Inbound Smart Links', 'wp-parsely' ) }
-							<span>{ inboundLinks.length }</span>
-						</div>
-						{ inboundLinks.map( ( link, index ) => (
-							<MenuItem
-								key={ link.uid }
-								ref={ ( el ) => itemRefs.current[ inboundLinks.length + index ] = el }
-								className={ activeLink?.uid === link.uid ? 'is-selected' : '' }
-								role="menuitemradio"
-								isSelected={ activeLink?.uid === link.uid }
-								onClick={ () => setSelectedLink( link ) }
-							>
-								<span className="smart-linking-menu-item">{ link.post_data?.title }</span>
-							</MenuItem>
-						) ) }
-					</>
-				) }
-			</div>
+			</TabPanel>
 		</div>
 	);
 };

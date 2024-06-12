@@ -4,6 +4,7 @@
 import { InspectorControls } from '@wordpress/block-editor';
 import { PanelBody } from '@wordpress/components';
 import { compose, createHigherOrderComponent } from '@wordpress/compose';
+import domReady from '@wordpress/dom-ready';
 import { addFilter } from '@wordpress/hooks';
 
 /**
@@ -18,6 +19,7 @@ import { getSettingsFromJson } from '../editor-sidebar';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from './component';
 import { initBlockOverlay } from './component-block-overlay';
 import './smart-linking.scss';
+import { selectSmartLink } from './utils';
 
 export const DEFAULT_MAX_LINKS = 10;
 
@@ -122,4 +124,35 @@ export const initSmartLinking = (): void => {
 	 * Initialize the block overlay component.
 	 */
 	initBlockOverlay();
+
+	/**
+	 * If the smart-link query parameter is present, select the smart link in the editor.
+	 * This is used to highlight the smart link in the editor when the user clicks on a smart link
+	 * in the review modal, on a different page.
+	 */
+	domReady( () => {
+		console.log( 'Smart linking initialized.' );
+
+		// Check if the smart-link query parameter is present.
+		const urlParams = new URLSearchParams( window.location.search );
+		const smartLinkValue = urlParams.get( 'smart-link' );
+
+		if ( smartLinkValue ) {
+			const maxExecutions = 25; // 2.5 seconds (100ms x 25).
+			let executionCount = 0;
+
+			// Wait for the editor to load only if the query parameter is set.
+			const interval = setInterval( () => {
+				const editorContent = document.querySelector( '.wp-block-post-content' );
+				executionCount++;
+
+				if ( editorContent ) {
+					clearInterval( interval );
+					selectSmartLink( editorContent as HTMLElement, smartLinkValue );
+				} else if ( executionCount >= maxExecutions ) {
+					clearInterval( interval );
+				}
+			}, 100 );
+		}
+	} );
 };
