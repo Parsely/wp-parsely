@@ -5,8 +5,6 @@ import {
 	Button,
 	__experimentalHeading as Heading,
 	Modal,
-	Rect,
-	SVG,
 } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
@@ -24,6 +22,7 @@ import {
  */
 import { dispatchCoreEditor, GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
+import { VerticalDivider } from '../../common/components/vertical-divider/component';
 import { Title, TitleStore, TitleType } from './store';
 
 /**
@@ -36,19 +35,6 @@ interface TitleSuggestionProps {
 	type: TitleType,
 	isOriginal?: boolean,
 }
-
-/**
- * Returns a vertical divider.
- *
- * @since 3.14.0
- */
-const VerticalDivider = (): React.JSX.Element => {
-	return (
-		<SVG xmlns="http://www.w3.org/2000/svg" width="1" height="40" viewBox="0 0 1 40" fill="none">
-			<Rect width="1" height="40" fill="#cccccc" />
-		</SVG>
-	);
-};
 
 /**
  * Renders a single title suggestion.
