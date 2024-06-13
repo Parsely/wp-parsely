@@ -620,6 +620,19 @@ class Parsely {
 	}
 
 	/**
+	 * Returns whether the Conversions API Secret is set in the plugin's options.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return bool True if the API Secret is set, false if not set.
+	 */
+	public function conversions_api_secret_is_set(): bool {
+		$options = $this->get_options();
+
+		return '' !== $options['conversions_api_secret'];
+	}
+
+	/**
 	 * Returns the API Secret stored in the plugin's options.
 	 *
 	 * @since 3.4.0
@@ -630,6 +643,19 @@ class Parsely {
 		$options = $this->get_options();
 
 		return $this->api_secret_is_set() ? $options['api_secret'] : '';
+	}
+
+	/**
+	 * Returns the Conversions API Secret stored in the plugin's options.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return string The Conversions API Secret, empty string if the Conversions API secret is not set.
+	 */
+	public function get_conversions_api_secret(): string {
+		$options = $this->get_options();
+
+		return $this->conversions_api_secret_is_set() ? $options['conversions_api_secret'] : '';
 	}
 
 	/**

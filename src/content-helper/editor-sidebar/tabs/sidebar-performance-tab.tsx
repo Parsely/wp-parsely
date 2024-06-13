@@ -6,6 +6,7 @@ import {
 } from '@wordpress/components';
 import { Period } from '../../common/utils/constants';
 import { VerifyCredentials } from '../../common/verify-credentials';
+import { ConversionMetricsPanel } from '../conversion-metrics/component';
 import { PerformanceStats } from '../performance-stats/component';
 
 /**
@@ -35,6 +36,7 @@ export const SidebarPerformanceTab = (
 			<VerifyCredentials>
 				<PerformanceStats period={ period } />
 			</VerifyCredentials>
+			<ConversionMetricsPanel />
 		</Panel>
 	);
 };

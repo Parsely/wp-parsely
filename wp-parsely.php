@@ -35,6 +35,7 @@ use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Brief_API_Proxy;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Headline_API_Proxy;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Linked_Reference_API_Proxy;
+use Parsely\Endpoints\Conversions\Conversions_Metric_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Endpoints\Referrers_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Related_API_Proxy;
@@ -49,6 +50,7 @@ use Parsely\RemoteAPI\Analytics_Posts_API;
 use Parsely\RemoteAPI\ContentSuggestions\Suggest_Brief_API;
 use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
 use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
+use Parsely\RemoteAPI\Conversions\Conversions_Metric_API;
 use Parsely\RemoteAPI\Referrers_Post_Detail_API;
 use Parsely\RemoteAPI\Related_API;
 use Parsely\RemoteAPI\Remote_API_Cache;
@@ -170,6 +172,7 @@ require_once __DIR__ . '/src/Endpoints/class-rest-metadata.php';
 require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-brief-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-headline-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-linked-reference-api-proxy.php';
+require_once __DIR__ . '/src/Endpoints/conversions/class-conversions-metric-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/user-meta/class-dashboard-widget-settings-endpoint.php';
 require_once __DIR__ . '/src/Endpoints/user-meta/class-editor-sidebar-settings-endpoint.php';
 
@@ -180,6 +183,7 @@ require_once __DIR__ . '/src/RemoteAPI/class-remote-api-cache.php';
 require_once __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
 require_once __DIR__ . '/src/RemoteAPI/class-base-endpoint-remote.php';
 require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-content-suggestions-base-api.php';
+require_once __DIR__ . '/src/RemoteAPI/conversions/class-conversions-base-api.php';
 
 // RemoteAPI classes.
 require_once __DIR__ . '/src/RemoteAPI/class-analytics-post-detail-api.php';
@@ -190,6 +194,7 @@ require_once __DIR__ . '/src/RemoteAPI/class-validate-api.php';
 require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-brief-api.php';
 require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-headline-api.php';
 require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-linked-reference-api.php';
+require_once __DIR__ . '/src/RemoteAPI/conversions/class-conversion-metrics-api.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
@@ -246,6 +251,12 @@ function parsely_rest_api_init(): void {
 	parsely_run_rest_api_endpoint(
 		Suggest_Linked_Reference_API::class,
 		Suggest_Linked_Reference_API_Proxy::class,
+		$wp_cache
+	);
+
+	parsely_run_rest_api_endpoint(
+		Conversions_Metric_API::class,
+		Conversions_Metric_API_Proxy::class,
 		$wp_cache
 	);
 }

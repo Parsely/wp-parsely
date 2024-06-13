@@ -288,6 +288,26 @@ final class Settings_Page {
 				$section_key,
 				$field_args
 			);
+
+			// API Secret.
+			$field_id   = 'conversions_api_secret';
+			$field_args = array(
+				'option_key'    => $field_id,
+				'help_text'     => __( 'Your Conversions API secret is your secret code to <a href="https://docs.parse.ly/the-parsely-api/">access our conversions API</a>. It can be found at <code>dash.parsely.com/<var>yoursitedomain</var>/settings/api</code> (replace <var>yoursitedomain</var> with your domain name, e.g. <samp>mydomain.com</samp>).<br />If you haven\'t purchased access to the API and would like to do so, email your account manager or <a href="mailto:support@parsely.com">support@parsely.com</a>.', 'wp-parsely' ),
+				'label_for'     => $field_id,
+				'optional_args' => array(
+					'type'                => 'password',
+					'is_obfuscated_value' => true,
+				),
+			);
+			add_settings_field(
+				$field_id,
+				__( 'Conversions API Secret', 'wp-parsely' ),
+				array( $this, 'print_text_tag' ),
+				Parsely::MENU_SLUG,
+				$section_key,
+				$field_args
+			);
 		}
 
 		// Metadata Format.
