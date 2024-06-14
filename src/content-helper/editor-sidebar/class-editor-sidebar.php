@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
+use Parsely\Content_Helper\Editor_Sidebar\Smart_Linking;
 use Parsely\Dashboard_Link;
 use Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint;
 use Parsely\Parsely;
@@ -21,12 +22,26 @@ use function Parsely\Utils\get_asset_info;
 use const Parsely\PARSELY_FILE;
 
 /**
+ * Features requires for the PCH Editor Sidebar.
+ */
+require_once __DIR__ . '/smart-linking/class-smart-linking.php';
+
+/**
  * Class that generates and manages the PCH Editor Sidebar.
  *
  * @since 3.5.0
  * @since 3.9.0 Renamed FQCN from `Parsely\Content_Helper` to `Parsely\Content_Helper\Editor_Sidebar`.
  */
 class Editor_Sidebar extends Content_Helper_Feature {
+	/**
+	 * Instance of Parsely class.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @var array<Content_Helper_Feature>
+	 */
+	protected $features;
+
 	/**
 	 * Constructor.
 	 *
@@ -36,6 +51,11 @@ class Editor_Sidebar extends Content_Helper_Feature {
 	 */
 	public function __construct( Parsely $parsely ) {
 		$this->parsely = $parsely;
+
+		// Instantiate the features.
+		$this->features = array(
+			'Smart_Linking' => new Smart_Linking( $this ),
+		);
 	}
 
 	/**
@@ -98,6 +118,22 @@ class Editor_Sidebar extends Content_Helper_Feature {
 		}
 
 		return Dashboard_Link::generate_url( $post, $this->parsely->get_site_id(), 'wp-page-single', 'editor-sidebar' );
+	}
+
+	/**
+	 * Initializes the features.
+	 *
+	 * @since 3.16.0
+	 */
+	public function init_features(): void {
+		if ( ! $this->can_enable_feature() ) {
+			return;
+		}
+
+		// Initialize the features.
+		foreach ( $this->features as $feature ) {
+			$feature->run();
+		}
 	}
 
 	/**

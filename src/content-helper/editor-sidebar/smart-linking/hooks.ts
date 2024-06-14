@@ -9,6 +9,8 @@ import { store as editorStore } from '@wordpress/editor';
  * Internal dependencies
  */
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { SmartLinkingProvider } from './provider';
+import { SmartLinkingStore as store } from './store';
 import { validateAndFixSmartLinksInPost } from './utils';
 
 /**
@@ -23,9 +25,11 @@ import { validateAndFixSmartLinksInPost } from './utils';
  *
  * @since 3.16.0
  *
+ * @param {Function} setValidationComplete The function to set the validation completion state.
+ *
  * @return {boolean} Whether the post is saved.
  */
-export const useSmartLinksValidation = (): boolean => {
+export const useSmartLinksValidation = ( setValidationComplete: ( value: boolean ) => void ): boolean => {
 	const [ isPostSaved, setIsPostSaved ] = useState( false );
 	const [ didAnyFixes, setDidAnyFixes ] = useState( false );
 	const isPostSavingInProgress = useRef( false );
@@ -50,9 +54,13 @@ export const useSmartLinksValidation = (): boolean => {
 				const validationFixed = await validateAndFixSmartLinksInPost();
 				setDidAnyFixes( validationFixed );
 				hasValidatedLinks.current = true;
+				setValidationComplete( true );
 			} )();
+		} else {
+			hasValidatedLinks.current = false;
+			setValidationComplete( false );
 		}
-	}, [ isSavingPost ] );
+	}, [ isSavingPost, setValidationComplete ] );
 
 	/**
 	 * Handles the post saving state tracking.
@@ -86,4 +94,47 @@ export const useSmartLinksValidation = (): boolean => {
 	}, [ didAnyFixes, isPostSaved ] );
 
 	return isPostSaved;
+};
+
+/**
+ * Handles the smart links saving process, which will save the smart links after the post has been saved.
+ *
+ * This hook is used to save the smart links after the post has been saved. It will save the smart links to
+ * the database, using the SmartLinkingProvider, after the post has been saved.
+ *
+ * @since 3.16.0
+ *
+ * @param {boolean} validationCompleted Whether the validation process has been completed.
+ */
+export const useSaveSmartLinksOnPostSave = (
+	validationCompleted: boolean,
+): void => {
+	const { isSavingPost } = useSelect( ( selectFn ) => {
+		const coreEditorSelect = selectFn( 'core/editor' ) as GutenbergFunction;
+		return {
+			isSavingPost: coreEditorSelect.isSavingPost(),
+		};
+	}, [] );
+
+	const { postId } = useSelect( ( selectFn ) => {
+		const { getCurrentPostId } = selectFn( 'core/editor' ) as GutenbergFunction;
+		return {
+			postId: getCurrentPostId(),
+		};
+	}, [] );
+
+	const { getSmartLinks } = useSelect( ( selectFn ) => {
+		return {
+			getSmartLinks: selectFn( store ).getSmartLinks,
+		};
+	}, [] );
+
+	useEffect( () => {
+		if ( isSavingPost && postId && validationCompleted ) {
+			SmartLinkingProvider.getInstance().setSmartLinks( postId, getSmartLinks() ).catch( () => {
+				// eslint-disable-next-line no-console
+				console.error( 'WP Parse.ly: Failed to save smart links on post save.' );
+			} );
+		}
+	}, [ getSmartLinks, isSavingPost, postId, validationCompleted ] );
 };
