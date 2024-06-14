@@ -221,15 +221,15 @@
 		width: 100%;
 
 		.linking-post-image {
-			margin-right: 10px;
-			max-width: 50px;
+			margin-right: to_rem(10px);
+			max-width: to_rem(50px);
 
 			.icon-container {
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				width: 50px;
-				height: 50px;
+				width: to_rem(50px);
+				height: to_rem(50px);
 			}
 		}
 
@@ -253,7 +253,7 @@
 		}
 
 		.linking-post-type {
-			margin-left: 10px;
+			margin-left: to_rem(10px);
 			white-space: nowrap;
 			color: var(--Gutenberg-Gray-700, #757575);
 		}
@@ -305,19 +305,18 @@
 		}
 
 		.review-sidebar-tip {
-			font-size: 12px;
-			padding: 5px;
-			margin-top: -9px;
-			margin-bottom: 5px;
+			font-size: var(--font-size--small);
+			padding: to_rem(5px);
+			margin-top: to_rem(-9px);
+			margin-bottom: to_rem(5px);
 			display: flex;
 			align-items: center;
 
-
 			.review-sidebar-tip svg {
 				margin-left: auto;
-				width: 24px; /* Ensure the width is set */
-				height: 24px; /* Ensure the height is set */
-				flex-shrink: 0; /* Prevent the SVG from shrinking */
+				width: to_rem(24px);
+				height: to_rem(24px);
+				flex-shrink: 0;
 			}
 		}
 
@@ -426,16 +425,16 @@
 
 		.three-dots {
 			text-align: center;
-			font-size: 16px;
+			font-size: to_rem(16px);
 			color: #ccc;
 			user-select: none;
 
 			&.is-top {
-				margin-bottom: 12px;
+				margin-bottom: to_rem(12px);
 			}
 
 			&.is-bottom {
-				margin-top: 12px;
+				margin-top: to_rem(12px);
 			}
 		}
 
