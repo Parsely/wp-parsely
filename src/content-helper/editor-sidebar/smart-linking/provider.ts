@@ -225,11 +225,14 @@ export class SmartLinkingProvider extends BaseProvider {
 			);
 		}
 
+		// Filter out any smart links that are not applied yet.
+		const appliedSmartLinks = smartLinks.filter( ( link ) => link.applied );
+
 		return await this.fetch<AddMultipleSmartLinksResponse>( {
 			method: 'POST',
 			path: `/wp-parsely/v1/smart-linking/${ postID }/set`,
 			data: {
-				links: smartLinks,
+				links: appliedSmartLinks,
 			},
 		} );
 	}

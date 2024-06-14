@@ -26,6 +26,8 @@ export interface GutenbergFunction {
 	isAutosavingPost(): boolean;
 	isSavingPost(): boolean;
 	lockPostSaving( lockName: string ): void;
+	lockPostAutosaving( lockName: string ): void;
+	unlockPostAutosaving( lockName: string ): void;
 	removeEditorPanel( panelName: string ): void;
 	selectBlock( clientId: string, initialPosition?: number ): void;
 	unlockPostSaving( lockName: string ): void;

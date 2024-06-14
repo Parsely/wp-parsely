@@ -642,7 +642,16 @@ class Smart_Link extends Base_Model {
 				continue;
 			}
 			$smart_link = self::get_smart_link_by_id( $smart_link_id );
-			$links[]    = Inbound_Smart_Link::from_smart_link( $smart_link );
+			$smart_link = Inbound_Smart_Link::from_smart_link( $smart_link );
+
+			// Check if this inbound smart link is still linked to a post.
+			// If not, do not add it to the array, and instead remove it.
+			if ( ! $smart_link->is_linked() ) {
+				$smart_link->delete();
+				continue;
+			}
+
+			$links[] = $smart_link;
 		}
 
 		return $links;

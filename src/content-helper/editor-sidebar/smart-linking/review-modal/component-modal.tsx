@@ -5,13 +5,13 @@
 import { BlockInstance, getBlockContent } from '@wordpress/blocks';
 import { Button, Modal } from '@wordpress/components';
 import { select, useDispatch, useSelect } from '@wordpress/data';
-import { memo, useEffect, useState } from '@wordpress/element';
+import { memo, useCallback, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { dispatchCoreBlockEditor } from '../../../../@types/gutenberg/types';
+import { dispatchCoreBlockEditor, dispatchCoreEditor } from '../../../../@types/gutenberg/types';
 import { InboundSmartLink, SmartLink } from '../provider';
 import { SmartLinkingStore } from '../store';
 import { applyNodeToBlock, isInboundSmartLink, selectSmartLink } from '../utils';
@@ -50,14 +50,23 @@ const SmartLinkingReviewModalComponent = ( {
 	 *
 	 * @since 3.16.0
 	 */
-	const { allSmartLinks, smartLinks, inboundSmartLinks, suggestedLinks, getSmartLinks } = useSelect(
+	const {
+		allSmartLinks,
+		smartLinks,
+		inboundSmartLinks,
+		getSuggestedLinks,
+		getSmartLinks,
+		getOutboundSmartLinks,
+	} = useSelect(
 		( selectFn ) => {
 			const {
 				getInboundSmartLinks,
-				getOutboundSmartLinks,
+				// eslint-disable-next-line @typescript-eslint/no-shadow
 				getSuggestedLinks,
 				// eslint-disable-next-line @typescript-eslint/no-shadow
 				getSmartLinks,
+				// eslint-disable-next-line @typescript-eslint/no-shadow
+				getOutboundSmartLinks,
 			} = selectFn( SmartLinkingStore );
 			const outbound = getOutboundSmartLinks();
 			const inbound = getInboundSmartLinks();
@@ -66,7 +75,8 @@ const SmartLinkingReviewModalComponent = ( {
 				inboundSmartLinks: inbound,
 				allSmartLinks: outbound.concat( inbound ),
 				getSmartLinks,
-				suggestedLinks: getSuggestedLinks,
+				getOutboundSmartLinks,
+				getSuggestedLinks,
 			};
 		},
 		[],
@@ -79,31 +89,14 @@ const SmartLinkingReviewModalComponent = ( {
 	 *
 	 * @since 3.16.0
 	 */
-	const { purgeSmartLinksSuggestions, updateSmartLink, removeSmartLink } =
-		useDispatch( SmartLinkingStore );
-
-	/**
-	 * Sets the selected link when the suggested links change.
-	 *
-	 * @since 3.16.0
-	 */
-	useEffect( () => {
-		if ( isModalOpen && allSmartLinks.length === 0 ) {
-			onClose();
-		}
-	}, [ isModalOpen, onClose, allSmartLinks ] );
+	const {
+		purgeSmartLinksSuggestions,
+		updateSmartLink,
+		removeSmartLink,
+	} =	useDispatch( SmartLinkingStore );
 
 	const showConfirmCloseDialog = () => setShowCloseDialog( true );
 	const hideConfirmCloseDialog = () => setShowCloseDialog( false );
-
-	/**
-	 * Updates the modal state when the `isOpen` prop changes.
-	 *
-	 * @since 3.16.0
-	 */
-	useEffect( () => {
-		setIsModalOpen( isOpen );
-	}, [ isOpen ] );
 
 	/**
 	 * Applies the link to the block.
@@ -188,11 +181,11 @@ const SmartLinkingReviewModalComponent = ( {
 	 *
 	 * @since 3.16.0
 	 */
-	const onCloseHandler = () => {
+	const onCloseHandler = useCallback( () => {
 		// Hide the modal.
 		setIsModalOpen( false );
 
-		const currentSmartLinks = getSmartLinks();
+		const currentSmartLinks = getOutboundSmartLinks();
 
 		const pendingLinks = currentSmartLinks.filter( ( link ) => ! link.applied );
 		if ( pendingLinks.length > 0 ) {
@@ -200,8 +193,11 @@ const SmartLinkingReviewModalComponent = ( {
 			return;
 		}
 
+		// Re-enable autosave when the modal is closed.
+		dispatchCoreEditor.unlockPostAutosaving( 'smart-linking-review-modal' );
+
 		onClose();
-	};
+	}, [ getOutboundSmartLinks, onClose ] );
 
 	/**
 	 * Handles the closing of the closing confirmation dialog.
@@ -296,7 +292,7 @@ const SmartLinkingReviewModalComponent = ( {
 		await applyLinkToBlock( selectedLink.match.blockId, selectedLink );
 
 		// If there are no more suggested links, close the modal.
-		if ( suggestedLinks().length === 0 ) {
+		if ( getSuggestedLinks().length === 0 ) {
 			onCloseHandler();
 			return;
 		}
@@ -358,11 +354,27 @@ const SmartLinkingReviewModalComponent = ( {
 			await removeLinkFromBlock( block, selectedLink );
 
 			currentSmartLinks = getSmartLinks();
+
+			// If there are no more smart links, set the first inbound link
+			if ( currentSmartLinks.length === 0 && inboundSmartLinks.length > 0 ) {
+				setSelectedLink( inboundSmartLinks[ 0 ] );
+				return;
+			}
+
+			// If there are no more smart links, close the modal.
+			if ( currentSmartLinks.length === 0 && inboundSmartLinks.length === 0 ) {
+				onCloseHandler();
+				return;
+			}
+
+			// If there is a previous link, select it, otherwise select the first link.
 			if ( currentSmartLinks[ previousIndex ] ) {
 				setSelectedLink( currentSmartLinks[ previousIndex ] );
-			} else {
-				setSelectedLink( currentSmartLinks[ 0 ] );
+				return;
 			}
+
+			// Otherwise, select the first link.
+			setSelectedLink( currentSmartLinks[ 0 ] );
 		}
 	};
 
@@ -391,6 +403,33 @@ const SmartLinkingReviewModalComponent = ( {
 			onCloseHandler();
 		}
 	};
+
+	/**
+	 * Sets the selected link when the suggested links change.
+	 *
+	 * @since 3.16.0
+	 */
+	useEffect( () => {
+		// When the modal is open, disable autosave
+		if ( isModalOpen ) {
+			dispatchCoreEditor.lockPostAutosaving( 'smart-linking-review-modal' );
+			return;
+		}
+
+		// If the modal is open, but there are no more smart links, close the modal.
+		if ( isModalOpen && allSmartLinks.length === 0 ) {
+			onCloseHandler();
+		}
+	}, [ isModalOpen, onClose, allSmartLinks, onCloseHandler ] );
+
+	/**
+	 * Updates the modal state when the `isOpen` prop changes.
+	 *
+	 * @since 3.16.0
+	 */
+	useEffect( () => {
+		setIsModalOpen( isOpen );
+	}, [ isOpen ] );
 
 	return (
 		<>

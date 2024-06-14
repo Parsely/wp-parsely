@@ -29,6 +29,21 @@ class Inbound_Smart_Link extends Smart_Link {
 	private $source_post;
 
 	/**
+	 * The paragraph data.
+	 *
+	 * @var array<string,mixed>|null The paragraph data.
+	 * @phpstan-var array{paragraph: string, is_first_paragraph: bool, is_last_paragraph: bool}|null
+	 */
+	private $paragraph_data;
+
+	/**
+	 * The post data.
+	 *
+	 * @var array<string,mixed>|null The post data.
+	 */
+	private $post_data;
+
+	/**
 	 * Serializes the model to a JSON string, and adds extra data.
 	 *
 	 * @since 3.16.0
@@ -38,10 +53,24 @@ class Inbound_Smart_Link extends Smart_Link {
 	public function to_array(): array {
 		$data = parent::to_array();
 
-		$data['inbound']   = true;
 		$data['post_data'] = $this->get_post_data();
 
 		return $data;
+	}
+
+	/**
+	 * Checks if the Smart Link is linked to a post.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @return bool True if the Smart Link is linked to a post, false otherwise.
+	 */
+	public function is_linked(): bool {
+		$object_exists  = parent::exists();
+		$paragraph_data = $this->get_post_data();
+
+		// If the paragraph is empty, we assume that the Smart Link is not linked to a post.
+		return $object_exists && '' !== $paragraph_data['paragraph'];
 	}
 
 	/**
@@ -52,6 +81,10 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @return array<mixed> The post data.
 	 */
 	private function get_post_data(): array {
+		if ( null !== $this->post_data ) {
+			return $this->post_data;
+		}
+
 		if ( null === $this->source_post ) {
 			$this->source_post = get_post( $this->source_post_id );
 		}
@@ -79,7 +112,7 @@ class Inbound_Smart_Link extends Smart_Link {
 			$post_type_label = $post_type->labels->singular_name;
 		}
 
-		return array(
+		$this->post_data = array(
 			'id'                 => $post->ID,
 			'title'              => $post->post_title,
 			'type'               => $post_type_label,
@@ -92,6 +125,8 @@ class Inbound_Smart_Link extends Smart_Link {
 			'date'               => get_the_date( '', $post ),
 			'image'              => get_the_post_thumbnail_url( $post, 'medium' ),
 		);
+
+		return $this->post_data;
 	}
 
 	/**
@@ -102,6 +137,10 @@ class Inbound_Smart_Link extends Smart_Link {
 	 * @phpstan-return array{paragraph: string, is_first_paragraph: bool, is_last_paragraph: bool}
 	 */
 	private function get_paragraph( string $content ): array {
+		if ( null !== $this->paragraph_data ) {
+			return $this->paragraph_data;
+		}
+
 		$paragraph = '';
 		if ( ! class_exists( 'DOMDocument' ) ) {
 			return array(
@@ -140,11 +179,13 @@ class Inbound_Smart_Link extends Smart_Link {
 			$paragraph = '<p>' . __( 'Unable to fetch paragraph.', 'wp-parsely' ) . '</p>';
 		}
 
-		return array(
+		$this->paragraph_data = array(
 			'paragraph'          => $paragraph,
 			'is_first_paragraph' => $is_first_paragraph,
 			'is_last_paragraph'  => $is_last_paragraph,
 		);
+
+		return $this->paragraph_data;
 	}
 
 	/**
