@@ -621,41 +621,6 @@ export async function validateAndFixSmartLinksInBlock( block: BlockInstance ): P
 }
 
 /**
- * Trims a URL for display, ensuring it fits within the specified maximum length.
- *
- * @since 3.16.0
- *
- * @param {string} url       The URL to trim.
- * @param {number} maxLength The maximum length of the URL.
- *
- * @return {string} The trimmed URL.
- */
-export function trimURLForDisplay( url: string, maxLength: number ): string {
-	// Remove protocol (http, https) and www.
-	const strippedUrl = url.replace( /(^\w+:|^)\/\//, '' ).replace( /^www\./, '' );
-
-	// If no maxLength is specified or the URL length is already less than
-	// maxLength, return the stripped URL.
-	if ( ! maxLength || strippedUrl.length <= maxLength ) {
-		return strippedUrl;
-	}
-
-	// Get the domain name and path from the URL
-	const domain = strippedUrl.split( '/' )[ 0 ];
-	const path = strippedUrl.substring( domain.length );
-
-	// Update the maxLength to account for the domain name, plus a slash.
-	maxLength -= domain.length;
-
-	// Calculate part lengths for trimming.
-	const partLength = Math.floor( ( maxLength - 3 ) / 2 );
-	const start = path.substring( 0, partLength );
-	const end = path.substring( path.length - partLength );
-
-	return `${ domain }${ start }...${ end }`;
-}
-
-/**
  * Selects a smart link in the block content.
  *
  * This function sets focus to the link element, selects the link text, and
@@ -692,3 +657,38 @@ export const selectSmartLink = ( blockContent: HTMLElement, smartLinkValue: stri
 		linkElement.scrollIntoView( { behavior: 'smooth', block: 'center' } );
 	}
 };
+
+/**
+ * Trims a URL for display, ensuring it fits within the specified maximum length.
+ *
+ * @since 3.16.0
+ *
+ * @param {string} url       The URL to trim.
+ * @param {number} maxLength The maximum length of the URL.
+ *
+ * @return {string} The trimmed URL.
+ */
+export function trimURLForDisplay( url: string, maxLength: number ): string {
+	// Remove protocol (http, https) and www.
+	const strippedUrl = url.replace( /(^\w+:|^)\/\//, '' ).replace( /^www\./, '' );
+
+	// If no maxLength is specified or the URL length is already less than
+	// maxLength, return the stripped URL.
+	if ( ! maxLength || strippedUrl.length <= maxLength ) {
+		return strippedUrl;
+	}
+
+	// Get the domain name and path from the URL
+	const domain = strippedUrl.split( '/' )[ 0 ];
+	const path = strippedUrl.substring( domain.length );
+
+	// Update the maxLength to account for the domain name, plus a slash.
+	maxLength -= domain.length;
+
+	// Calculate part lengths for trimming.
+	const partLength = Math.floor( ( maxLength - 3 ) / 2 );
+	const start = path.substring( 0, partLength );
+	const end = path.substring( path.length - partLength );
+
+	return `${ domain }${ start }...${ end }`;
+}

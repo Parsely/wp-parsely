@@ -273,6 +273,7 @@
 			.components-tab-panel__tabs {
 				margin-bottom: var(--grid-unit-20);
 
+				// stylelint-disable-next-line no-descending-specificity
 				button {
 					display: flex;
 					flex-direction: column;
@@ -290,7 +291,7 @@
 				line-height: var(--grid-unit-20);
 				text-transform: uppercase;
 
-				&:focus-visible:before {
+				&:focus-visible::before {
 					box-shadow: none;
 					outline: none;
 				}
@@ -426,7 +427,7 @@
 		.three-dots {
 			text-align: center;
 			font-size: 16px;
-			color: #cccccc;
+			color: #ccc;
 			user-select: none;
 
 			&.is-top {

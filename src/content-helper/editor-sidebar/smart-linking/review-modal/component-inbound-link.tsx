@@ -1,16 +1,38 @@
+/**
+ * WordPress dependencies
+ */
+// eslint-disable-next-line import/named
 import { BlockInstance, parse } from '@wordpress/blocks';
 import { __experimentalDivider as Divider, Button, KeyboardShortcuts, Tooltip } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { arrowLeft, arrowRight, Icon, page } from '@wordpress/icons';
+
+/**
+ * Internal dependencies
+ */
 import { InboundSmartLink } from '../provider';
 import { BlockPreview } from './component-block-preview';
 
+/**
+ * The props for the ThreeDots component.
+ *
+ * @since 3.16.0
+ */
 type ThreeDotsProps = {
 	topOrBottom: 'top' | 'bottom';
 };
 
-const ThreeDots: React.FC<ThreeDotsProps> = ( { topOrBottom } ): React.JSX.Element => {
+/**
+ * Displays three dots.
+ *
+ * @since 3.16.0
+ *
+ * @param {ThreeDotsProps} props The component props.
+ */
+const ThreeDots: React.FC<ThreeDotsProps> = ( {
+	topOrBottom,
+}: ThreeDotsProps ): React.JSX.Element => {
 	return (
 		<div className={ `three-dots ${ topOrBottom === 'top' ? 'is-top' : 'is-bottom' }` }>
 			( &#8230; )
@@ -18,7 +40,23 @@ const ThreeDots: React.FC<ThreeDotsProps> = ( { topOrBottom } ): React.JSX.Eleme
 	);
 };
 
-const LinkingPostDetails = ( { link }: { link: InboundSmartLink } ): React.JSX.Element => {
+/**
+ * The props for the LinkingPostDetails component.
+ *
+ * @since 3.16.0
+ */
+type LinkingPostDetailsProps = {
+	link: InboundSmartLink;
+};
+
+/**
+ * Displays the linking post details.
+ *
+ * @since 3.16.0
+ *
+ * @param {LinkingPostDetailsProps} props The component props.
+ */
+const LinkingPostDetails = ( { link }: LinkingPostDetailsProps ): React.JSX.Element => {
 	return (
 		<div className="linking-post-details">
 			<div className="linking-post-image">
@@ -51,6 +89,11 @@ const LinkingPostDetails = ( { link }: { link: InboundSmartLink } ): React.JSX.E
 	);
 };
 
+/**
+ * The props for the InboundLinkDetails component.
+ *
+ * @since 3.16.0
+ */
 type InboundLinkDetailsProps = {
 	link: InboundSmartLink;
 	onPrevious: () => void;
@@ -59,6 +102,13 @@ type InboundLinkDetailsProps = {
 	hasNext: boolean;
 };
 
+/**
+ * Displays the inbound smart link details.
+ *
+ * @since 3.16.0
+ *
+ * @param {InboundLinkDetailsProps} props The component props.
+ */
 export const InboundLinkDetails = ( {
 	link,
 	onPrevious,

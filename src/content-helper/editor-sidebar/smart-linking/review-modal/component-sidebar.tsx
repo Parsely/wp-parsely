@@ -1,10 +1,9 @@
 /**
  * WordPress dependencies
  */
-import { Icon, KeyboardShortcuts, MenuItem, TabPanel } from '@wordpress/components';
+import { KeyboardShortcuts, MenuItem, TabPanel } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { help, next } from '@wordpress/icons';
 
 /**
  * Internal dependencies
@@ -184,7 +183,6 @@ export const ReviewModalSidebar = ( {
 							<>
 								<div className="review-sidebar-tip">
 									{ __( 'This section shows external posts that link back to the current post.', 'wp-parsely' ) }
-									<Icon icon={ help } size={ 24 } />
 								</div>
 								{ ! inboundLinks || inboundLinks.length === 0 ? (
 									<> { __( 'No inbound links found.', 'wp-parsely' ) }</>

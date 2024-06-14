@@ -6,7 +6,7 @@ import { BlockEditorProvider, BlockList } from '@wordpress/block-editor';
 import { BlockInstance, cloneBlock, getBlockContent } from '@wordpress/blocks';
 import { Disabled } from '@wordpress/components';
 import { select } from '@wordpress/data';
-import { useEffect, useMemo } from '@wordpress/element';
+import { useCallback, useEffect, useMemo } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -84,14 +84,49 @@ export const BlockPreview = ( { block, link, useOriginalBlock }: BlockPreviewPro
 	 *
 	 * @since 3.16.0
 	 */
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-
 	const clonedBlock = useMemo( () => {
 		if ( useOriginalBlock ) {
 			return block;
 		}
 		return cloneBlock( block );
-	}, [ block, link ] );
+	}, [ link, block, useOriginalBlock ] ); // eslint-disable-line react-hooks/exhaustive-deps
+
+	/**
+	 * Highlights the link in the block.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param {BlockInstance} blockInstance  The block instance to highlight the link in.
+	 * @param {SmartLink}     linkSuggestion The link suggestion to highlight.
+	 */
+	const highlightLinkInBlock = useCallback( ( blockInstance: BlockInstance, linkSuggestion: SmartLink ) => {
+		// If the link is not applied, add a highlight with a new mark element.
+		if ( ! link.applied ) {
+			const mark = document.createElement( 'mark' );
+			mark.className = 'smart-linking-highlight';
+			blockInstance.attributes.content = applyNodeToBlock( blockInstance, linkSuggestion, mark );
+			return;
+		}
+
+		// Otherwise, if the link is applied, add a highlight class to the
+		// link element with the link UID.
+		const blockContent: string = getBlockContent( blockInstance );
+
+		const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
+		const contentElement = doc.body.firstChild as HTMLElement;
+		if ( ! contentElement ) {
+			return;
+		}
+
+		const anchor = contentElement.querySelector<HTMLAnchorElement>(
+			`a[data-smartlink="${ linkSuggestion.uid }"]`
+		);
+		if ( anchor ) {
+			anchor.classList.add( 'smart-linking-highlight' );
+		}
+
+		blockInstance.attributes.content = contentElement.innerHTML;
+	}, [ link.applied ] );
 
 	/**
 	 * Runs when the block is rendered in the DOM.
@@ -107,43 +142,6 @@ export const BlockPreview = ( { block, link, useOriginalBlock }: BlockPreviewPro
 		if ( ! blockPreviewElement ) {
 			return;
 		}
-
-		/**
-		 * Highlights the link in the block.
-		 *
-		 * @since 3.16.0
-		 *
-		 * @param {BlockInstance} blockInstance  The block instance to highlight the link in.
-		 * @param {SmartLink}     linkSuggestion The link suggestion to highlight.
-		 */
-		const highlightLinkInBlock = ( blockInstance: BlockInstance, linkSuggestion: SmartLink ) => {
-			// If the link is not applied, add a highlight with a new mark element.
-			if ( ! link.applied ) {
-				const mark = document.createElement( 'mark' );
-				mark.className = 'smart-linking-highlight';
-				blockInstance.attributes.content = applyNodeToBlock( blockInstance, linkSuggestion, mark );
-				return;
-			}
-
-			// Otherwise, if the link is applied, add a highlight class to the
-			// link element with the link UID.
-			const blockContent: string = getBlockContent( blockInstance );
-
-			const doc = new DOMParser().parseFromString( blockContent, 'text/html' );
-			const contentElement = doc.body.firstChild as HTMLElement;
-			if ( ! contentElement ) {
-				return;
-			}
-
-			const anchor = contentElement.querySelector<HTMLAnchorElement>(
-				`a[data-smartlink="${ linkSuggestion.uid }"]`
-			);
-			if ( anchor ) {
-				anchor.classList.add( 'smart-linking-highlight' );
-			}
-
-			blockInstance.attributes.content = contentElement.innerHTML;
-		};
 
 		highlightLinkInBlock( clonedBlock, link );
 
@@ -178,7 +176,7 @@ export const BlockPreview = ( { block, link, useOriginalBlock }: BlockPreviewPro
 		} );
 
 		return () => observer.disconnect();
-	}, [ clonedBlock, link ] );
+	}, [ clonedBlock, highlightLinkInBlock, link ] );
 
 	if ( ! block ) {
 		return <></>;

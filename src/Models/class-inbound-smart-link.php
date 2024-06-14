@@ -5,12 +5,12 @@
  * @package Parsely
  * @since   3.16.0
  */
+
 declare( strict_types = 1 );
 
 namespace Parsely\Models;
 
 use DOMDocument;
-use Parsely\Models\Smart_Link;
 use ReflectionClass;
 use WP_Post;
 
@@ -38,7 +38,7 @@ class Inbound_Smart_Link extends Smart_Link {
 	public function to_array(): array {
 		$data = parent::to_array();
 
-		$data['inbound'] = true;
+		$data['inbound']   = true;
 		$data['post_data'] = $this->get_post_data();
 
 		return $data;
@@ -47,9 +47,9 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * Gets the post data for the smart link.
 	 *
-	 * @return array<mixed> The post data.
 	 * @since 3.16.0
 	 *
+	 * @return array<mixed> The post data.
 	 */
 	private function get_post_data(): array {
 		if ( null === $this->source_post ) {
@@ -62,91 +62,113 @@ class Inbound_Smart_Link extends Smart_Link {
 			return array();
 		}
 
-		// Get the post content
+		// Get the post content.
 		$content = $post->post_content;
-		// Get the paragraph that has the smart link uid
+		// Get the paragraph that has the smart link uid.
 		$paragraph = $this->get_paragraph( $content );
 
 		$author_name = get_the_author();
-		if ( "" === $author_name ) {
+		if ( '' === $author_name ) {
 			// If the author name is empty, use the author login name.
-			$author_name = get_the_author_meta( 'user_login', intval($post->post_author) );
+			$author_name = get_the_author_meta( 'user_login', intval( $post->post_author ) );
 		}
 
-		$post_type = get_post_type_object( $post->post_type );
+		$post_type       = get_post_type_object( $post->post_type );
 		$post_type_label = '';
 		if ( null !== $post_type ) {
 			$post_type_label = $post_type->labels->singular_name;
 		}
 
 		return array(
-			'id'        => $post->ID,
-			'title'     => $post->post_title,
-			'type'      => $post_type_label,
-			'paragraph' => $paragraph['paragraph'],
-			'permalink' => get_permalink( $post ),
-			'edit_link' => get_edit_post_link( $post, 'html' ),
+			'id'                 => $post->ID,
+			'title'              => $post->post_title,
+			'type'               => $post_type_label,
+			'paragraph'          => $paragraph['paragraph'],
+			'permalink'          => get_permalink( $post ),
+			'edit_link'          => get_edit_post_link( $post, 'html' ),
 			'is_first_paragraph' => $paragraph['is_first_paragraph'],
 			'is_last_paragraph'  => $paragraph['is_last_paragraph'],
-			'author'   => $author_name,
-			'date'     => get_the_date( '', $post ),
-			'image'   => get_the_post_thumbnail_url( $post, 'medium' ),
+			'author'             => $author_name,
+			'date'               => get_the_date( '', $post ),
+			'image'              => get_the_post_thumbnail_url( $post, 'medium' ),
 		);
 	}
 
 	/**
 	 * Get the HTML paragraph that has the smart link uid.
 	 *
-	 * @param string $content The post content
+	 * @param string $content The post content.
 	 * @return array The paragraph that has the smart link uid, and if it is the first or last paragraph.
 	 * @phpstan-return array{paragraph: string, is_first_paragraph: bool, is_last_paragraph: bool}
 	 */
-	private function get_paragraph(string $content): array {
+	private function get_paragraph( string $content ): array {
 		$paragraph = '';
+		if ( ! class_exists( 'DOMDocument' ) ) {
+			return array(
+				'paragraph'          =>
+					'<p>' . __( 'Unable to fetch paragraph. DOMDocument is not available.', 'wp-parsely' ) . '</p>',
+				'is_first_paragraph' => true,
+				'is_last_paragraph'  => true,
+			);
+		}
 
 		$dom = new DOMDocument();
-
-		@$dom->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+		$dom->loadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' ), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
 
 		// Fetch all paragraph tags.
-		$paragraphs = $dom->getElementsByTagName('p');
+		$paragraphs = $dom->getElementsByTagName( 'p' );
 
 		$is_first_paragraph = true;
-		$is_last_paragraph = false;
+		$is_last_paragraph  = false;
 
-		foreach ($paragraphs as $p) {
+		foreach ( $paragraphs as $p ) {
 			// Check each anchor tag within the paragraph.
-			$anchors = $p->getElementsByTagName('a');
-			foreach ($anchors as $anchor) {
+			$anchors = $p->getElementsByTagName( 'a' );
+			foreach ( $anchors as $anchor ) {
 				// Check if the data-smartlink attribute contains the UID.
-				if ($anchor->hasAttribute('data-smartlink') && stripos($anchor->getAttribute('data-smartlink'), $this->uid) !== false) {
+				if ( $anchor->hasAttribute( 'data-smartlink' ) && stripos( $anchor->getAttribute( 'data-smartlink' ), $this->uid ) !== false ) {
 					// Save the outer HTML of the paragraph.
-					$is_first_paragraph = $p === $paragraphs->item(0);
-					$is_last_paragraph = $p === $paragraphs->item($paragraphs->length - 1);
-					$paragraph = $dom->saveHTML($p);
+					$is_first_paragraph = $p === $paragraphs->item( 0 );
+					$is_last_paragraph  = $p === $paragraphs->item( $paragraphs->length - 1 );
+					$paragraph          = $dom->saveHTML( $p );
 					break 2;
 				}
 			}
 		}
 
+		if ( false === $paragraph ) {
+			$paragraph = '<p>' . __( 'Unable to fetch paragraph.', 'wp-parsely' ) . '</p>';
+		}
+
 		return array(
-			'paragraph' => $paragraph,
+			'paragraph'          => $paragraph,
 			'is_first_paragraph' => $is_first_paragraph,
-			'is_last_paragraph' => $is_last_paragraph,
+			'is_last_paragraph'  => $is_last_paragraph,
 		);
 	}
 
+	/**
+	 * Creates a new instance of an Inbound Smart Link from a Smart Link object.
+	 *
+	 * This is used to convert a Smart Link object to an Inbound Smart Link object.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param Smart_Link $smart_link The Smart Link object.
+	 * @return Inbound_Smart_Link The Inbound Smart Link object.
+	 */
 	public static function from_smart_link( Smart_Link $smart_link ): Inbound_Smart_Link {
-		$inbound_smart_link = new self('', '', '', 0);  // Create an instance with null values
-		$reflectionClass = new ReflectionClass($smart_link);
+		$inbound_smart_link = new self( '', '', '', 0 );
+		$reflection_class   = new ReflectionClass( $smart_link );
 
-		foreach ($reflectionClass->getProperties() as $property) {
-			$property->setAccessible(true); // Make the property accessible
-			$value = $property->getValue($smart_link);
-			$property->setValue($inbound_smart_link, $value); // Copy the property value
+		foreach ( $reflection_class->getProperties() as $property ) {
+			// Make the property accessible.
+			$property->setAccessible( true );
+			$value = $property->getValue( $smart_link );
+			// Copy the property value.
+			$property->setValue( $inbound_smart_link, $value );
 		}
 
 		return $inbound_smart_link;
 	}
-
 }

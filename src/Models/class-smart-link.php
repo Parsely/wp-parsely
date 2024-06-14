@@ -239,7 +239,7 @@ class Smart_Link extends Base_Model {
 		// Get the post type of the destination post.
 		$post_type = get_post_type( $this->destination_post_id );
 		if ( false !== $post_type ) {
-			$post_type_object           = get_post_type_object( $post_type );
+			$post_type_object = get_post_type_object( $post_type );
 			if ( null !== $post_type_object ) {
 				$this->destination_post_type = $post_type_object->labels->singular_name;
 			}

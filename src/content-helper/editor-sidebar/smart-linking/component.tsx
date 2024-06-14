@@ -9,7 +9,6 @@ import { select, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { Icon, external } from '@wordpress/icons';
-import { remove } from 'js-cookie';
 
 /**
  * Internal dependencies
@@ -228,7 +227,7 @@ export const SmartLinkingPanel = ( {
 				setIsReady( true );
 			} );
 		}
-	}, [ addSmartLinks, postId, ready, setIsReady ] );
+	}, [ addInboundSmartLinks, addSmartLinks, postId, ready, setIsReady ] );
 
 	/**
 	 * Handles the ending of the review process.

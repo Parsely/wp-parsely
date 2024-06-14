@@ -2,27 +2,25 @@
  * WordPress dependencies
  */
 // eslint-disable-next-line import/named
-import { BlockInstance, cloneBlock, getBlockContent, getBlockType, parse } from '@wordpress/blocks';
+import { BlockInstance, getBlockType } from '@wordpress/blocks';
 import {
 	Button,
-	Disabled,
 	__experimentalDivider as Divider,
 	MenuItem,
 	Tooltip, KeyboardShortcuts,
 } from '@wordpress/components';
 import { select as selectFn, useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Icon, arrowLeft, arrowRight, check, closeSmall, page } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
-import { BlockEditorProvider, BlockList } from '@wordpress/block-editor';
 import { GutenbergFunction } from '../../../../@types/gutenberg/types';
 import { InboundSmartLink, SmartLink, SmartLinkingProvider } from '../provider';
 import { SmartLinkingStore } from '../store';
-import { applyNodeToBlock, trimURLForDisplay } from '../utils';
+import { trimURLForDisplay } from '../utils';
 import { BlockPreview } from './component-block-preview';
 import { InboundLinkDetails } from './component-inbound-link';
 
