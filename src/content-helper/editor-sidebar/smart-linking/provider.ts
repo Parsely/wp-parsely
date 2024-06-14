@@ -118,10 +118,10 @@ export class SmartLinkingProvider extends BaseProvider {
 	 * @return {SmartLinkingProvider} The singleton instance.
 	 */
 	public static getInstance(): SmartLinkingProvider {
-		if ( ! this.instance ) {
-			this.instance = new SmartLinkingProvider();
+		if ( ! SmartLinkingProvider.instance ) {
+			SmartLinkingProvider.instance = new SmartLinkingProvider();
 		}
-		return this.instance;
+		return SmartLinkingProvider.instance;
 	}
 
 	/**
