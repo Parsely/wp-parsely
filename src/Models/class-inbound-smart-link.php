@@ -151,8 +151,21 @@ class Inbound_Smart_Link extends Smart_Link {
 			);
 		}
 
+		libxml_use_internal_errors( true );
+
 		$dom = new DOMDocument();
 		$dom->loadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' ), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+
+		$errors = libxml_get_errors();
+		if ( count( $errors ) > 0 ) {
+			libxml_clear_errors();
+			return array(
+				'paragraph'          =>
+					'<p>' . __( 'Unable to fetch paragraph. Error loading HTML.', 'wp-parsely' ) . '</p>',
+				'is_first_paragraph' => true,
+				'is_last_paragraph'  => true,
+			);
+		}
 
 		// Fetch all paragraph tags.
 		$paragraphs = $dom->getElementsByTagName( 'p' );

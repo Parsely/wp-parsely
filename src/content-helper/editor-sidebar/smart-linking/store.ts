@@ -281,8 +281,6 @@ const defaultState: SmartLinkingState = {
 export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 	initialState: defaultState,
 	reducer( state: SmartLinkingState = defaultState, action: ActionTypes ): SmartLinkingState {
-		let smartLinks: SmartLink[];
-
 		switch ( action.type ) {
 			case 'SET_IS_READY':
 				return {
@@ -363,9 +361,9 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 						[ action.smartLinkType ]: sortSmartLinks( action.smartLinks ),
 					},
 				};
-			case 'ADD_SMART_LINK':
+			case 'ADD_SMART_LINK': {
 				// If the UID is already there, just update it, otherwise add it.
-				smartLinks = state.smartLinks[ action.smartLinkType ];
+				const smartLinks = state.smartLinks[ action.smartLinkType ];
 				const existingIndex = smartLinks.findIndex( ( link ) => link.uid === action.smartLink.uid );
 				if ( existingIndex !== -1 ) {
 					const newSmartLinks = [ ...smartLinks ];
@@ -385,9 +383,10 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 						[ action.smartLinkType ]: sortSmartLinks( [ ...smartLinks, action.smartLink ] ),
 					},
 				};
-			case 'ADD_SMART_LINKS':
+			}
+			case 'ADD_SMART_LINKS': {
 				// If the UID is already there, just update it, otherwise add it.
-				smartLinks = state.smartLinks[ action.smartLinkType ];
+				const smartLinks = state.smartLinks[ action.smartLinkType ];
 				const newSmartLinks = [ ...smartLinks ];
 				action.smartLinks.forEach( ( link ) => {
 					// eslint-disable-next-line @typescript-eslint/no-shadow
@@ -405,6 +404,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 						[ action.smartLinkType ]: sortSmartLinks( newSmartLinks ),
 					},
 				};
+			}
 			case 'REMOVE_SMART_LINK':
 				return {
 					...state,

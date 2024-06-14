@@ -14,6 +14,7 @@ import { __ } from '@wordpress/i18n';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { SettingsProvider, SidebarSettings, useSettings } from '../../common/settings';
+import { isEditorReady } from '../../common/utils/functions';
 import { VerifyCredentials } from '../../common/verify-credentials';
 import { getSettingsFromJson } from '../editor-sidebar';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from './component';
@@ -138,21 +139,10 @@ export const initSmartLinking = (): void => {
 		const smartLinkValue = urlParams.get( 'smart-link' );
 
 		if ( smartLinkValue ) {
-			const maxExecutions = 25; // 2.5 seconds (100ms x 25).
-			let executionCount = 0;
-
-			// Wait for the editor to load only if the query parameter is set.
-			const interval = setInterval( () => {
+			isEditorReady().then( () => {
 				const editorContent = document.querySelector( '.wp-block-post-content' );
-				executionCount++;
-
-				if ( editorContent ) {
-					clearInterval( interval );
-					selectSmartLink( editorContent as HTMLElement, smartLinkValue );
-				} else if ( executionCount >= maxExecutions ) {
-					clearInterval( interval );
-				}
-			}, 100 );
+				selectSmartLink( editorContent as HTMLElement, smartLinkValue );
+			} );
 		}
 	} );
 };

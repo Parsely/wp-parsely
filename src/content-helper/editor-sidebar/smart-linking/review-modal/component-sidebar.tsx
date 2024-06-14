@@ -166,7 +166,9 @@ export const ReviewModalSidebar = ( {
 									( outboundLinks.map( ( link, index ) => (
 										<MenuItem
 											key={ link.uid }
-											ref={ ( el ) => itemRefs.current[ index ] = el }
+											ref={ ( el ) => {
+												itemRefs.current[ index ] = el;
+											} }
 											className={ activeLink?.uid === link.uid ? 'is-selected' : '' }
 											role="menuitemradio"
 											isSelected={ activeLink?.uid === link.uid }
@@ -190,7 +192,9 @@ export const ReviewModalSidebar = ( {
 									( inboundLinks.map( ( link, index ) => (
 										<MenuItem
 											key={ link.uid }
-											ref={ ( el ) => itemRefs.current[ ( outboundLinks ? outboundLinks.length : 0 ) + index ] = el }
+											ref={ ( el ) => {
+												itemRefs.current[ ( outboundLinks ? outboundLinks.length : 0 ) + index ] = el;
+											} }
 											className={ activeLink?.uid === link.uid ? 'is-selected' : '' }
 											role="menuitemradio"
 											isSelected={ activeLink?.uid === link.uid }

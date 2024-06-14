@@ -14,7 +14,8 @@
 	"require": {
 		"php": ">=7.2",
 		"composer/installers": "^2",
-		"ext-dom": "*"
+		"ext-dom": "*",
+		"ext-libxml": "*"
 	},
 	"require-dev": {
 		"automattic/vipwpcs": "^3.0.0",
