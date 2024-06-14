@@ -27,6 +27,7 @@ use WP_Post;
  *   use_top_level_cats: bool,
  *   custom_taxonomy_section: string,
  *   cats_as_tags: bool,
+ *   content_helper: Parsely_Options_Content_Helper,
  *   track_authenticated_users: bool,
  *   lowercase_tags: bool,
  *   force_https_canonicals: bool,
@@ -41,6 +42,22 @@ use WP_Post;
  *   metadata_secret: string,
  *   disable_autotrack: bool,
  *   plugin_version: string,
+ * }
+ *
+ * @phpstan-type Parsely_Options_Content_Helper array{
+ *   ai_features_enabled: bool,
+ *   smart_linking: array{
+ *      enabled: bool,
+ *      allowed_user_roles: string[],
+ *   },
+ *   title_suggestions: array{
+ *      enabled: bool,
+ *      allowed_user_roles: string[],
+ *   },
+ *   excerpt_suggestions: array{
+ *      enabled: bool,
+ *      allowed_user_roles: string[],
+ *   },
  * }
  *
  * @phpstan-type WP_HTTP_Request_Args array{
@@ -78,6 +95,21 @@ class Parsely {
 		'use_top_level_cats'         => false,
 		'custom_taxonomy_section'    => 'category',
 		'cats_as_tags'               => false,
+		'content_helper'             => array(
+			'ai_features_enabled' => true,
+			'smart_linking'       => array(
+				'enabled'            => true,
+				'allowed_user_roles' => array(),
+			),
+			'title_suggestions'   => array(
+				'enabled'            => true,
+				'allowed_user_roles' => array(),
+			),
+			'excerpt_suggestions' => array(
+				'enabled'            => true,
+				'allowed_user_roles' => array(),
+			),
+		),
 		'track_authenticated_users'  => false,
 		'lowercase_tags'             => true,
 		'force_https_canonicals'     => false,
@@ -426,6 +458,28 @@ class Parsely {
 			$this->get_managed_credentials(),
 			$this->managed_options
 		);
+	}
+
+	/**
+	 * Returns the value of a nested option.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string          $option  The option to get.
+	 * @param Parsely_Options $options The options to get the value from.
+	 * @return mixed The value of the nested option.
+	 */
+	public static function get_nested_option_value( $option, $options ): mixed {
+		$keys  = explode( '[', str_replace( ']', '', $option ) );
+		$value = $options;
+
+		foreach ( $keys as $key ) {
+			if ( isset( $value[ $key ] ) ) {
+				$value = $value[ $key ];
+			}
+		}
+
+		return $value;
 	}
 
 	/**

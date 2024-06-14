@@ -25,6 +25,8 @@ use const Parsely\PARSELY_FILE;
  * @phpstan-import-type Parsely_Options from Parsely
  *
  * @phpstan-type Setting_Arguments array{
+ *   add_fieldset?: bool,
+ *   legend?: string,
  *   option_key: string,
  *   label_for: string,
  *   title?: string,
@@ -60,10 +62,27 @@ use const Parsely\PARSELY_FILE;
  *   use_top_level_cats?:bool|string,
  *   custom_taxonomy_section?: string,
  *   cats_as_tags?: bool|string,
+ *   content_helper: array{
+ *      ai_features_enabled?: bool,
+ *      smart_linking: array{
+ *         enabled?: bool,
+ *         allowed_user_roles?: string[],
+ *      },
+ *      title_suggestions: array{
+ *         enabled?: bool,
+ *         allowed_user_roles?: string[],
+ *      },
+ *      excerpt_suggestions: array{
+ *         enabled?: bool,
+ *         allowed_user_roles?: string[],
+ *      },
+ *   },
  *   lowercase_tags?: bool,
  *   force_https_canonicals?: bool,
  *   disable_autotrack?: bool|string,
  * }
+ *
+ * @phpstan-import-type Parsely_Options from Parsely
  */
 final class Settings_Page {
 	/**
@@ -90,6 +109,19 @@ final class Settings_Page {
 	 * @var array<string, mixed>
 	 */
 	private $managed_options_badge = array();
+
+	/**
+	 * The Content Helper features that can be configured in the settings page.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @var string[]
+	 */
+	private $configurable_pch_features = array(
+		'smart_linking',
+		'title_suggestions',
+		'excerpt_suggestions',
+	);
 
 	/**
 	 * Constructor.
@@ -226,6 +258,7 @@ final class Settings_Page {
 		);
 
 		$this->initialize_basic_section();
+		$this->initialize_content_helper_section();
 		$this->initialize_recrawl_section();
 		$this->initialize_advanced_section();
 	}
@@ -391,6 +424,88 @@ final class Settings_Page {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Registers the Content Helper section and its settings.
+	 *
+	 * @since 3.17.0
+	 */
+	private function initialize_content_helper_section(): void {
+		$section_key = 'content-helper-section';
+
+		add_settings_section(
+			$section_key,
+			__( 'Content Helper', 'wp-parsely' ),
+			'__return_null',
+			Parsely::MENU_SLUG
+		);
+
+		// AI Features.
+		$field_id   = 'content_helper[ai_features_enabled]';
+		$field_args = array(
+			'option_key'   => $field_id,
+			'label_for'    => $field_id,
+			'yes_text'     => __( 'Enabled', 'wp-parsely' ),
+			'add_fieldset' => true,
+			'legend'       => __( 'AI Features', 'wp-parsely' ),
+		);
+		add_settings_field(
+			$field_id,
+			__( 'AI Features', 'wp-parsely' ),
+			array( $this, 'print_checkbox_tag' ),
+			Parsely::MENU_SLUG,
+			$section_key,
+			$field_args
+		);
+
+		// Smart Linking.
+		$field_id   = 'content_helper[smart_linking]';
+		$field_args = array(
+			'option_key' => $field_id,
+			'label_for'  => $field_id,
+			'legend'     => __( 'Smart Linking', 'wp-parsely' ),
+		);
+		add_settings_field(
+			$field_id,
+			__( 'Smart Linking', 'wp-parsely' ),
+			array( $this, 'print_content_helper_ai_feature_section' ),
+			Parsely::MENU_SLUG,
+			$section_key,
+			$field_args
+		);
+
+		// Title Suggestions.
+		$field_id   = 'content_helper[title_suggestions]';
+		$field_args = array(
+			'option_key' => $field_id,
+			'label_for'  => $field_id,
+			'legend'     => __( 'Title Suggestions', 'wp-parsely' ),
+		);
+		add_settings_field(
+			$field_id,
+			__( 'Title Suggestions', 'wp-parsely' ),
+			array( $this, 'print_content_helper_ai_feature_section' ),
+			Parsely::MENU_SLUG,
+			$section_key,
+			$field_args
+		);
+
+		// Excerpt Suggestions.
+		$field_id   = 'content_helper[excerpt_suggestions]';
+		$field_args = array(
+			'option_key' => $field_id,
+			'label_for'  => $field_id,
+			'legend'     => __( 'Excerpt Suggestions', 'wp-parsely' ),
+		);
+		add_settings_field(
+			$field_id,
+			__( 'Excerpt Suggestions', 'wp-parsely' ),
+			array( $this, 'print_content_helper_ai_feature_section' ),
+			Parsely::MENU_SLUG,
+			$section_key,
+			$field_args
+		);
 	}
 
 	/**
@@ -746,28 +861,143 @@ final class Settings_Page {
 	}
 
 	/**
-	 * Prints a checkbox tag in the settings page.
+	 * Prints a checkbox tag.
 	 *
-	 * @param Setting_Arguments $args Arguments to print to checkbox tag.
+	 * @since 3.17.0
+	 *
+	 * @param Setting_Arguments    $args Arguments for the checkbox tag.
+	 * @param Parsely_Options|null $options The options to use.
 	 */
-	public function print_checkbox_tag( $args ): void {
-		$options  = $this->parsely->get_options();
-		$name     = $args['option_key'];
-		$value    = $options[ $name ];
-		$id       = esc_attr( $name );
-		$name     = Parsely::OPTIONS_KEY . "[$id]";
-		$yes_text = $args['yes_text'] ?? '';
+	public function print_checkbox_tag( $args, $options = null ): void {
+		$options      = $options ?? $this->parsely->get_options();
+		$name         = $args['option_key'];
+		$has_fieldset = isset( $args['add_fieldset'] ) && true === $args['add_fieldset'];
+		$html_id      = rtrim( str_replace( array( '[', ']', '__' ), '_', $name ), '_' );
+		$html_name    = str_replace(
+			'content_helper',
+			'[content_helper]',
+			Parsely::OPTIONS_KEY . esc_attr( $name )
+		);
+		$yes_text     = $args['yes_text'] ?? '';
 
-		$is_managed = key_exists( $id, $this->parsely->managed_options );
-		echo '<fieldset', $is_managed ? ' disabled>' : '>';
-		printf( "<input type='checkbox' name='%s' id='%s_true' value='true' ", esc_attr( $name ), esc_attr( $id ) );
-		if ( isset( $args['help_text'] ) ) {
-			echo ' aria-describedby="' . esc_attr( $id ) . '-description"';
+		// Get option value.
+		if ( false === strpos( $name, '[' ) ) {
+			$value = $options[ $name ];
+		} else {
+			$value = Parsely::get_nested_option_value( $name, $options );
 		}
-		echo checked( true === $value, true, false );
-		printf( " /> <label for='%s_true'>%s</label><fieldset>", esc_attr( $id ), esc_html( $yes_text ) );
+
+		// Fieldset start.
+		if ( $has_fieldset ) {
+			echo '<fieldset>';
+			if ( isset( $args['legend'] ) ) {
+				echo '<legend class="screen-reader-text"><span>';
+				echo esc_html( $args['legend'] ) . '</span></legend>';
+			}
+		}
+
+		// Label and contained checkbox.
+		printf( '<label for="%s">', esc_attr( $html_id ) );
+		printf(
+			'<input type="checkbox" name="%s" id="%s" value="true" ',
+			esc_attr( $html_name ),
+			esc_attr( $html_id )
+		);
+		if ( isset( $args['help_text'] ) ) {
+			echo ' aria-describedby="' . esc_attr( $html_id ) . '-description"';
+		}
+		checked( true === $value, true );
+		printf( ' /> %s</label>', esc_html( $yes_text ) );
+
+		// Fieldset end.
+		if ( $has_fieldset ) {
+			echo '</fieldset>';
+		}
 
 		$this->print_description_text( $args );
+	}
+
+	/**
+	 * Prints a Content Helper AI feature section.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param Setting_Arguments $args The arguments for the section.
+	 */
+	public function print_content_helper_ai_feature_section( $args ): void {
+		$options    = $this->parsely->get_options();
+		$feature_id = str_replace(
+			array( 'content_helper[', ']' ),
+			'',
+			$args['option_key']
+		);
+
+		// Convert user role settings to make them work in the settings page.
+		$option = &$options['content_helper'][ $feature_id ];
+		if ( isset( $option['allowed_user_roles'] ) ) {
+			foreach ( $option['allowed_user_roles'] as $role ) {
+				$option['allowed_user_roles'][ $role ] = true;
+			}
+		}
+
+		// Feature "Enabled" checkbox.
+		$enabled_args = array(
+			'option_key'   => $args['option_key'] . '[enabled]',
+			'label_for'    => $args['option_key'] . '[enabled]',
+			'yes_text'     => __( 'Enabled', 'wp-parsely' ),
+			'add_fieldset' => true,
+		);
+		if ( isset( $args['legend'] ) ) {
+			$enabled_args['legend'] = $args['legend'];
+		}
+		$this->print_checkbox_tag( $enabled_args, $options );
+
+		// User role permissions fieldset.
+		echo '<p>' . esc_html__( 'User Permissions', 'wp-parsely' ) . '</p>';
+		echo '<fieldset class="user-role-permissions">';
+		echo '<legend class="screen-reader-text"><span>';
+		printf(
+			/* translators: %s: Feature name */
+			esc_html__( '%s User Permissions', 'wp-parsely' ),
+			esc_html( $args['legend'] ?? __( 'Feature', 'wp-parsely' ) )
+		);
+		echo '</span></legend>';
+
+		// User role checkboxes.
+		$user_roles = $this->get_user_roles_with_edit_posts_cap();
+		foreach ( $user_roles as $key => $role ) {
+			$option_key = $args['option_key'] . '[allowed_user_roles][' . $key . ']';
+			$role_args  = array(
+				'option_key' => $option_key,
+				'label_for'  => $option_key,
+				'yes_text'   => translate_user_role( $role ),
+			);
+
+			$this->print_checkbox_tag( $role_args, $options );
+		}
+
+		echo '</fieldset>';
+	}
+
+	/**
+	 * Returns the user roles that have the edit_posts capability, including
+	 * custom user roles.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return array<int, string> The user roles having the edit_posts capability.
+	 */
+	private function get_user_roles_with_edit_posts_cap(): array {
+		$result = array();
+		$roles  = get_editable_roles();
+
+		foreach ( $roles as $key => $role ) {
+			if ( isset( $role['capabilities']['edit_posts'] ) ) {
+				$result[ $key ] = $role['name'];
+			}
+		}
+
+		return $result;
 	}
 
 	/**
@@ -974,6 +1204,7 @@ final class Settings_Page {
 	 */
 	public function validate_options( $input ) {
 		$input = $this->validate_basic_section( $input );
+		$input = $this->validate_content_helper_section( $input );
 		$input = $this->validate_recrawl_section( $input );
 		$input = $this->validate_advanced_section( $input );
 
@@ -1071,6 +1302,62 @@ final class Settings_Page {
 		} else {
 			$input['disable_amp'] = 'true' === $input['disable_amp'];
 		}
+
+		return $input;
+	}
+
+	/**
+	 * Validates the fields of the Content Helper section.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param ParselySettingOptions $input The settings page options.
+	 * @return ParselySettingOptions The validated input.
+	 */
+	private function validate_content_helper_section( $input ) {
+		/**
+		 * Sanitizes the Content Helper data.
+		 *
+		 * @since 3.17.0
+		 */
+		$sanitize = function ( $input ) use ( &$sanitize ) {
+			foreach ( $input as $key => $value ) {
+				if ( is_array( $value ) ) {
+					if ( 'allowed_user_roles' === $key && count( $input[ $key ] ) > 0 ) {
+						// Create an indexed array of the user roles passed as
+						// an associative array.
+						$input[ $key ] = array_keys( $input[ $key ] );
+					} else {
+						// Recurse when we have an array that's not user roles.
+						$input[ $key ] = $sanitize( $value );
+					}
+				} else {
+					// Enforce a boolean value.
+					$input[ $key ] = 'true' === $value || true === $value;
+				}
+			}
+
+			return $input;
+		};
+
+		// Add any missing data due to unchecked checkboxes.
+		if ( ! isset( $input['content_helper']['ai_features_enabled'] ) ) {
+			$input['content_helper']['ai_features_enabled'] = false;
+		}
+		foreach ( $this->configurable_pch_features as $feature_id ) {
+			if ( ! isset( $input['content_helper'][ $feature_id ] ) ) {
+				$input['content_helper'][ $feature_id ] = array(
+					'enabled'            => false,
+					'allowed_user_roles' => array(),
+				);
+			}
+		}
+
+		// Produce the final array.
+		$options = $this->parsely->get_options()['content_helper'];
+		$merged  = array_merge( $options, $input['content_helper'] );
+
+		$input['content_helper'] = $sanitize( $merged );
 
 		return $input;
 	}
