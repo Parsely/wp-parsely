@@ -361,7 +361,7 @@ const SmartLinkingReviewModalComponent = ( {
 	};
 
 	/**
-	 * TODO: Doc
+	 * Disables autosave when the modal is open, and closes the modal when there are no more smart links.
 	 *
 	 * @since 3.16.0
 	 */
