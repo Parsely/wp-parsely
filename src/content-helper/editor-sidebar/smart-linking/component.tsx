@@ -26,7 +26,8 @@ import { SmartLink, SmartLinkingProvider } from './provider';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
 import {
 	calculateSmartLinkingMatches,
-	getAllSmartLinksInPost, getAllSmartLinksURLs,
+	getAllSmartLinksInPost, 
+	getAllSmartLinksURLs,
 	validateAndFixSmartLinksInBlock,
 	validateAndFixSmartLinksInPost,
 } from './utils';
