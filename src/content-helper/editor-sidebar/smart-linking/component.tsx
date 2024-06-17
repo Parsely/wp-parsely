@@ -374,6 +374,10 @@ export const SmartLinkingPanel = ( {
 			const linkEnd = linkStart + link.text.length;
 
 			return ! smartLinks.some( ( sl ) => {
+				if ( ! sl.match ) {
+					return false;
+				}
+
 				if ( link.match!.blockId !== sl.match!.blockId ) {
 					return false;
 				}
@@ -456,6 +460,7 @@ export const SmartLinkingPanel = ( {
 				e.message = snackBarMessage;
 			}
 
+			console.error( e ); // eslint-disable-line no-console
 			await setError( e );
 			createNotice( 'error', snackBarMessage, {
 				type: 'snackbar',
