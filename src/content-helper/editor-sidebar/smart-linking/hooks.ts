@@ -102,6 +102,8 @@ export const useSmartLinksValidation = ( setValidationComplete: ( value: boolean
  * This hook is used to save the smart links after the post has been saved. It will save the smart links to
  * the database, using the SmartLinkingProvider, after the post has been saved.
  *
+ * This hook will not save the smart links if the post is being autosaved.
+ *
  * @since 3.16.0
  *
  * @param {boolean} validationCompleted Whether the validation process has been completed.
@@ -109,10 +111,11 @@ export const useSmartLinksValidation = ( setValidationComplete: ( value: boolean
 export const useSaveSmartLinksOnPostSave = (
 	validationCompleted: boolean,
 ): void => {
-	const { isSavingPost } = useSelect( ( selectFn ) => {
+	const { isSavingPost, isAutosavingPost } = useSelect( ( selectFn ) => {
 		const coreEditorSelect = selectFn( 'core/editor' ) as GutenbergFunction;
 		return {
 			isSavingPost: coreEditorSelect.isSavingPost(),
+			isAutosavingPost: coreEditorSelect.isAutosavingPost(),
 		};
 	}, [] );
 
@@ -130,11 +133,11 @@ export const useSaveSmartLinksOnPostSave = (
 	}, [] );
 
 	useEffect( () => {
-		if ( isSavingPost && postId && validationCompleted ) {
+		if ( isSavingPost && ! isAutosavingPost && postId && validationCompleted ) {
 			SmartLinkingProvider.getInstance().setSmartLinks( postId, getSmartLinks() ).catch( () => {
 				// eslint-disable-next-line no-console
 				console.error( 'WP Parse.ly: Failed to save smart links on post save.' );
 			} );
 		}
-	}, [ getSmartLinks, isSavingPost, postId, validationCompleted ] );
+	}, [ getSmartLinks, isAutosavingPost, isSavingPost, postId, validationCompleted ] );
 };

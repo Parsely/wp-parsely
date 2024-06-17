@@ -5,14 +5,14 @@
 import { BlockInstance, getBlockContent } from '@wordpress/blocks';
 import { Button, KeyboardShortcuts, Modal } from '@wordpress/components';
 import { select, useDispatch, useSelect } from '@wordpress/data';
-import { memo, useEffect, useState } from '@wordpress/element';
+import { memo, useCallback, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { dispatchCoreBlockEditor } from '../../../../@types/gutenberg/types';
 import { SmartLink } from '../provider';
+import { dispatchCoreBlockEditor, dispatchCoreEditor } from '../../../../@types/gutenberg/types';
 import { SmartLinkingStore } from '../store';
 import { applyNodeToBlock } from '../utils';
 import { ReviewModalSidebar } from './component-sidebar';
@@ -76,28 +76,8 @@ const SmartLinkingReviewModalComponent = ( {
 		removeSmartLink,
 	} = useDispatch( SmartLinkingStore );
 
-	/**
-	 * Sets the selected link when the suggested links change.
-	 *
-	 * @since 3.16.0
-	 */
-	useEffect( () => {
-		if ( isModalOpen && smartLinks.length === 0 ) {
-			onClose();
-		}
-	}, [ isModalOpen, onClose, smartLinks ] );
-
 	const showConfirmCloseDialog = () => setShowCloseDialog( true );
 	const hideConfirmCloseDialog = () => setShowCloseDialog( false );
-
-	/**
-	 * Updates the modal state when the `isOpen` prop changes.
-	 *
-	 * @since 3.16.0
-	 */
-	useEffect( () => {
-		setIsModalOpen( isOpen );
-	}, [ isOpen ] );
 
 	/**
 	 * Applies the link to the block.
@@ -164,7 +144,9 @@ const SmartLinkingReviewModalComponent = ( {
 				parentNode.replaceChild( textNode, anchorToRemove );
 
 				// Update the block content.
-				dispatchCoreBlockEditor.updateBlockAttributes( blockId, { content: contentElement.innerHTML } );
+				dispatchCoreBlockEditor.updateBlockAttributes( blockId, {
+					content: contentElement.innerHTML,
+				} );
 			}
 		}
 
@@ -180,7 +162,7 @@ const SmartLinkingReviewModalComponent = ( {
 	 *
 	 * @since 3.16.0
 	 */
-	const onCloseHandler = () => {
+	const onCloseHandler = useCallback( () => {
 		// Hide the modal.
 		setIsModalOpen( false );
 
@@ -192,8 +174,11 @@ const SmartLinkingReviewModalComponent = ( {
 			return;
 		}
 
+		// Re-enable autosave when the modal is closed.
+		dispatchCoreEditor.unlockPostAutosaving( 'smart-linking-review-modal' );
+
 		onClose();
-	};
+	}, [ getSmartLinks, onClose ] );
 
 	/**
 	 * Handles the closing of the closing confirmation dialog.
@@ -374,6 +359,33 @@ const SmartLinkingReviewModalComponent = ( {
 			onCloseHandler();
 		}
 	};
+
+	/**
+	 * Disables autosave when the modal is open, and closes the modal when there are no more smart links.
+	 *
+	 * @since 3.16.0
+	 */
+	useEffect( () => {
+		// When the modal is open, disable autosave
+		if ( isModalOpen ) {
+			dispatchCoreEditor.lockPostAutosaving( 'smart-linking-review-modal' );
+			return;
+		}
+
+		// If the modal is open, but there are no more smart links, close the modal.
+		if ( isModalOpen && smartLinks.length === 0 ) {
+			onCloseHandler();
+		}
+	}, [ isModalOpen, onClose, smartLinks, onCloseHandler ] );
+
+	/**
+	 * Updates the modal state when the `isOpen` prop changes.
+	 *
+	 * @since 3.16.0
+	 */
+	useEffect( () => {
+		setIsModalOpen( isOpen );
+	}, [ isOpen ] );
 
 	return (
 		<>
