@@ -469,7 +469,7 @@ class Parsely {
 	 * @param Parsely_Options $options The options to get the value from.
 	 * @return mixed The value of the nested option.
 	 */
-	public static function get_nested_option_value( $option, $options ): mixed {
+	public static function get_nested_option_value( $option, $options ) {
 		$keys  = explode( '[', str_replace( ']', '', $option ) );
 		$value = $options;
 
