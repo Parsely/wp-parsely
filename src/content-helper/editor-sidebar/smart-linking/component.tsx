@@ -374,6 +374,10 @@ export const SmartLinkingPanel = ( {
 			const linkEnd = linkStart + link.text.length;
 
 			return ! smartLinks.some( ( sl ) => {
+				if ( ! sl.match ) {
+					return false;
+				}
+
 				if ( link.match!.blockId !== sl.match!.blockId ) {
 					return false;
 				}
@@ -404,6 +408,22 @@ export const SmartLinkingPanel = ( {
 			selected_block: selectedBlock?.name ?? 'none',
 			context,
 		} );
+
+		// When the Freeform block is present, applying Smart Links does not work reliably.
+		// If the selected block is a Freeform block or if the Freeform block is present in
+		// the content, and the user wants to apply Smart Links to the entire content,
+		// show an error message and return early.
+		const hasFreeformBlocks = allBlocks.some( ( block ) => block.name === 'core/freeform' );
+		if (
+			( selectedBlock?.name === 'core/freeform' && ! isFullContent ) ||
+			( hasFreeformBlocks && isFullContent )
+		) {
+			createNotice( 'error', __( 'Smart Linking is not supported for the Freeform block.', 'wp-parsely' ), {
+				type: 'snackbar',
+			} );
+			setLoading( false );
+			return;
+		}
 
 		// If selected block is not set, the overlay will be applied to the entire content.
 		await applyOverlay( isFullContent ? 'all' : selectedBlock?.clientId );
@@ -440,6 +460,7 @@ export const SmartLinkingPanel = ( {
 				e.message = snackBarMessage;
 			}
 
+			console.error( e ); // eslint-disable-line no-console
 			await setError( e );
 			createNotice( 'error', snackBarMessage, {
 				type: 'snackbar',
