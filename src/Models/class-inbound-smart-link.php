@@ -24,12 +24,16 @@ class Inbound_Smart_Link extends Smart_Link {
 	/**
 	 * The source post object.
 	 *
+	 * @since 3.16.0
+	 *
 	 * @var WP_Post|null The source post.
 	 */
 	private $source_post;
 
 	/**
 	 * The paragraph data.
+	 *
+	 * @since 3.16.0
 	 *
 	 * @var array<string,mixed>|null The paragraph data.
 	 * @phpstan-var array{paragraph: string, is_first_paragraph: bool, is_last_paragraph: bool}|null
@@ -38,6 +42,8 @@ class Inbound_Smart_Link extends Smart_Link {
 
 	/**
 	 * The post data.
+	 *
+	 * @since 3.16.0
 	 *
 	 * @var array<string,mixed>|null The post data.
 	 */

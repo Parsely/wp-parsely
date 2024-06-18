@@ -127,9 +127,8 @@ export const initSmartLinking = (): void => {
 	initBlockOverlay();
 
 	/**
-	 * If the smart-link query parameter is present, select the smart link in the editor.
-	 * This is used to highlight the smart link in the editor when the user clicks on a smart link
-	 * in the review modal, on a different page.
+	 * If the smart-link query parameter is present, it will select that smart link, and scroll to it.
+	 * This is used when the "Open in Editor" button is clicked from the inbound smart link details page.
 	 *
 	 * @since 3.16.0
 	 */

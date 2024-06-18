@@ -51,8 +51,6 @@ export const ReviewModalSidebar = ( {
 			const activeIndex = allLinks?.findIndex( ( link ) => link.uid === activeLink.uid );
 
 			if ( activeIndex !== undefined && activeIndex !== -1 && sidebarRef.current && itemRefs.current[ activeIndex ] ) {
-				//console.log( activeIndex, sidebarRef.current, itemRefs.current[ activeIndex ] );
-
 				const sidebar = sidebarRef.current;
 				const activeItem = itemRefs.current[ activeIndex ];
 
