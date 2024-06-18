@@ -11,6 +11,7 @@ import { useEffect } from '@wordpress/element';
  */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import debounce from 'lodash/debounce';
+import { isEditorReady } from '../../content-helper/common/utils/functions';
 
 /**
  * Internal dependencies
@@ -99,23 +100,6 @@ export const BlockChangeMonitor = (): null => {
 			const debouncedCheckBlocks = debounce( checkBlocks, debounceInterval );
 			unsubscribe = subscribe( debouncedCheckBlocks, 'core/block-editor' );
 			return unsubscribe;
-		};
-
-		/**
-		 * Checks if the editor is ready to be monitored.
-		 * It waits for the editor to be clean or to have at least one block, and it resolves when it's ready.
-		 *
-		 * @since 3.14.0
-		 */
-		const isEditorReady = async (): Promise<void> => {
-			return new Promise( ( resolve ) => {
-				const unsubscribeEditorReady = subscribe( () => {
-					if ( select( 'core/editor' ).isCleanNewPost() || select( 'core/block-editor' ).getBlockCount() > 0 ) {
-						unsubscribeEditorReady();
-						resolve();
-					}
-				} );
-			} );
 		};
 
 		// Initialize the block change monitor when the editor is ready.

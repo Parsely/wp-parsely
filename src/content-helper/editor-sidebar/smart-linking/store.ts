@@ -8,7 +8,7 @@ import { createReduxStore, register } from '@wordpress/data';
  */
 import { ContentHelperError } from '../../common/content-helper-error';
 import { DEFAULT_MAX_LINKS } from './smart-linking';
-import { SmartLink } from './provider';
+import { InboundSmartLink, SmartLink } from './provider';
 import { sortSmartLinks } from './utils';
 
 /**
@@ -31,6 +31,26 @@ export enum ApplyToOptions {
 }
 
 /**
+ * Enum for the smart link types.
+ *
+ * @since 3.16.0
+ */
+enum SmartLinkType {
+	Inbound = 'inbound',
+	Outbound = 'outbound',
+}
+
+/**
+ * Structure to store different types of smart links.
+ *
+ * @since 3.16.0
+ */
+type SmartLinks = {
+	outbound: SmartLink[];
+	inbound: InboundSmartLink[];
+};
+
+/**
  * The shape of the SmartLinking store state.
  *
  * @since 3.14.0
@@ -42,7 +62,7 @@ type SmartLinkingState = {
 	fullContent: boolean;
 	error: ContentHelperError | null;
 	settings: SmartLinkingSettingsProps;
-	smartLinks: SmartLink[];
+	smartLinks: SmartLinks;
 	overlayBlocks: string[];
 	wasAlreadyClicked: boolean;
 	isRetrying: boolean;
@@ -169,6 +189,7 @@ interface SetIsRetryingAction {
 interface SetSmartLinksAction {
 	type: 'SET_SMART_LINKS';
 	smartLinks: SmartLink[];
+	smartLinkType: SmartLinkType;
 }
 
 /**
@@ -179,6 +200,7 @@ interface SetSmartLinksAction {
 interface AddSmartLinkAction {
 	type: 'ADD_SMART_LINK';
 	smartLink: SmartLink;
+	smartLinkType: SmartLinkType;
 }
 
 /**
@@ -189,6 +211,7 @@ interface AddSmartLinkAction {
 interface AddSmartLinksAction {
 	type: 'ADD_SMART_LINKS';
 	smartLinks: SmartLink[];
+	smartLinkType: SmartLinkType;
 }
 
 /**
@@ -240,7 +263,7 @@ const defaultState: SmartLinkingState = {
 	isLoading: false,
 	applyTo: null,
 	fullContent: false,
-	smartLinks: [],
+	smartLinks: { inbound: [], outbound: [] },
 	error: null,
 	settings: { },
 	overlayBlocks: [],
@@ -333,29 +356,41 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 			case 'SET_SMART_LINKS':
 				return {
 					...state,
-					smartLinks: sortSmartLinks( action.smartLinks ),
+					smartLinks: {
+						...state.smartLinks,
+						[ action.smartLinkType ]: sortSmartLinks( action.smartLinks ),
+					},
 				};
-			case 'ADD_SMART_LINK':
+			case 'ADD_SMART_LINK': {
 				// If the UID is already there, just update it, otherwise add it.
-				const existingIndex = state.smartLinks.findIndex( ( link ) => link.uid === action.smartLink.uid );
+				const smartLinks = state.smartLinks[ action.smartLinkType ];
+				const existingIndex = smartLinks.findIndex( ( link ) => link.uid === action.smartLink.uid );
 				if ( existingIndex !== -1 ) {
-					const newSmartLinks = [ ...state.smartLinks ];
+					const newSmartLinks = [ ...smartLinks ];
 					newSmartLinks[ existingIndex ] = action.smartLink;
 					return {
 						...state,
-						smartLinks: sortSmartLinks( newSmartLinks ),
+						smartLinks: {
+							...state.smartLinks,
+							[ action.smartLinkType ]: sortSmartLinks( newSmartLinks ),
+						},
 					};
 				}
 				return {
 					...state,
-					smartLinks: sortSmartLinks( [ ...state.smartLinks, action.smartLink ] ),
+					smartLinks: {
+						...state.smartLinks,
+						[ action.smartLinkType ]: sortSmartLinks( [ ...smartLinks, action.smartLink ] ),
+					},
 				};
-			case 'ADD_SMART_LINKS':
+			}
+			case 'ADD_SMART_LINKS': {
 				// If the UID is already there, just update it, otherwise add it.
-				const newSmartLinks = [ ...state.smartLinks ];
+				const smartLinks = state.smartLinks[ action.smartLinkType ];
+				const newSmartLinks = [ ...smartLinks ];
 				action.smartLinks.forEach( ( link ) => {
 					// eslint-disable-next-line @typescript-eslint/no-shadow
-					const existingIndex = state.smartLinks.findIndex( ( l ) => l.uid === link.uid );
+					const existingIndex = smartLinks.findIndex( ( l ) => l.uid === link.uid );
 					if ( existingIndex !== -1 ) {
 						newSmartLinks[ existingIndex ] = { ...newSmartLinks[ existingIndex ], ...link };
 					} else {
@@ -364,19 +399,27 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 				} );
 				return {
 					...state,
-					smartLinks: sortSmartLinks( newSmartLinks ),
+					smartLinks: {
+						...state.smartLinks,
+						[ action.smartLinkType ]: sortSmartLinks( newSmartLinks ),
+					},
 				};
+			}
 			case 'REMOVE_SMART_LINK':
 				return {
 					...state,
-					smartLinks:
-						sortSmartLinks( state.smartLinks.filter( ( link ) => link.uid !== action.uid ) ),
+					smartLinks: {
+						...state.smartLinks,
+						outbound: sortSmartLinks( state.smartLinks.outbound.filter( ( link ) => link.uid !== action.uid ) ),
+					},
 				};
 			case 'PURGE_SMART_LINKS_SUGGESTIONS':
 				return {
 					...state,
-					smartLinks:
-						sortSmartLinks( state.smartLinks.filter( ( link ) => link.applied ) ),
+					smartLinks: {
+						...state.smartLinks,
+						outbound: state.smartLinks.outbound.filter( ( link ) => link.applied ),
+					},
 				};
 			case 'SET_IS_REVIEW_MODAL_OPEN':
 				return {
@@ -471,12 +514,28 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 			return {
 				type: 'SET_SMART_LINKS',
 				smartLinks,
+				smartLinkType: SmartLinkType.Outbound,
+			};
+		},
+		setInboundSmartLinks( smartLinks: InboundSmartLink[] ): SetSmartLinksAction {
+			return {
+				type: 'SET_SMART_LINKS',
+				smartLinks,
+				smartLinkType: SmartLinkType.Inbound,
 			};
 		},
 		addSmartLink( smartLink: SmartLink ): AddSmartLinkAction {
 			return {
 				type: 'ADD_SMART_LINK',
 				smartLink,
+				smartLinkType: SmartLinkType.Outbound,
+			};
+		},
+		addInboundSmartLink( smartLink: InboundSmartLink ): AddSmartLinkAction {
+			return {
+				type: 'ADD_SMART_LINK',
+				smartLink,
+				smartLinkType: SmartLinkType.Inbound,
 			};
 		},
 		updateSmartLink( smartLink: SmartLink ): AddSmartLinkAction {
@@ -484,12 +543,36 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 			return {
 				type: 'ADD_SMART_LINK',
 				smartLink,
+				smartLinkType: SmartLinkType.Outbound,
 			};
 		},
-		addSmartLinks( smartLinks: SmartLink[] ): AddSmartLinksAction {
+		updateInboundSmartLink( smartLink: InboundSmartLink ): AddSmartLinkAction {
+			// Alias of addInboundSmartLink.
+			return {
+				type: 'ADD_SMART_LINK',
+				smartLink,
+				smartLinkType: SmartLinkType.Inbound,
+			};
+		},
+		addSmartLinks( smartLinks: SmartLink[], type = SmartLinkType.Outbound ): AddSmartLinksAction {
+			if ( type === SmartLinkType.Inbound ) {
+				return {
+					type: 'ADD_SMART_LINKS',
+					smartLinks: smartLinks as InboundSmartLink[],
+					smartLinkType: SmartLinkType.Inbound,
+				};
+			}
 			return {
 				type: 'ADD_SMART_LINKS',
 				smartLinks,
+				smartLinkType: SmartLinkType.Outbound,
+			};
+		},
+		addInboundSmartLinks( smartLinks: InboundSmartLink[] ): AddSmartLinksAction {
+			return {
+				type: 'ADD_SMART_LINKS',
+				smartLinks,
+				smartLinkType: SmartLinkType.Inbound,
 			};
 		},
 		removeSmartLink( uid: string ): RemoveSmartLinkAction {
@@ -539,7 +622,7 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 			return state.settings.maxLinksPerPost ?? DEFAULT_MAX_LINKS;
 		},
 		getSuggestedLinks( state: SmartLinkingState ): SmartLink[] {
-			return state.smartLinks.filter( ( link ) => ! link.applied );
+			return state.smartLinks.outbound.filter( ( link ) => ! link.applied );
 		},
 		wasAlreadyClicked( state: SmartLinkingState ): boolean {
 			return state.wasAlreadyClicked;
@@ -551,10 +634,19 @@ export const SmartLinkingStore = createReduxStore( 'wp-parsely/smart-linking', {
 			return state.retryAttempt;
 		},
 		hasUnappliedLinks( state: SmartLinkingState ): boolean {
-			return state.smartLinks.some( ( link ) => ! link.applied );
+			return state.smartLinks.outbound.some( ( link ) => ! link.applied );
 		},
-		getSmartLinks( state: SmartLinkingState ): SmartLink[] {
-			return state.smartLinks;
+		getSmartLinks( state: SmartLinkingState, type = SmartLinkType.Outbound ): SmartLink[]|InboundSmartLink[] {
+			if ( type === SmartLinkType.Inbound ) {
+				return state.smartLinks.inbound as InboundSmartLink[];
+			}
+			return state.smartLinks.outbound;
+		},
+		getOutboundSmartLinks( state: SmartLinkingState ): SmartLink[] {
+			return state.smartLinks.outbound;
+		},
+		getInboundSmartLinks( state: SmartLinkingState ): InboundSmartLink[] {
+			return state.smartLinks.inbound;
 		},
 	},
 } );

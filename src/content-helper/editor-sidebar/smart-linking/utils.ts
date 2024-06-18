@@ -10,9 +10,22 @@ import { dispatch, select } from '@wordpress/data';
  */
 import { dispatchCoreBlockEditor } from '../../../@types/gutenberg/types';
 import { escapeRegExp } from '../../common/utils/functions';
-import { SmartLink } from './provider';
+import { InboundSmartLink, SmartLink } from './provider';
 import { SmartLinkingStore } from './store';
 export { escapeRegExp } from '../../common/utils/functions';
+
+/**
+ * Checks if a smart link is an inbound smart link.
+ *
+ * @since 3.16.0
+ *
+ * @param {SmartLink|InboundSmartLink} link The smart link to check.
+ *
+ * @return {link is InboundSmartLink} Whether the smart link is an inbound smart link.
+ */
+export function isInboundSmartLink( link: SmartLink | InboundSmartLink ): link is InboundSmartLink {
+	return ( link as InboundSmartLink ).post_data !== undefined;
+}
 
 /**
  * Finds all text nodes in an element that contain a given search text and are
@@ -606,6 +619,44 @@ export async function validateAndFixSmartLinksInBlock( block: BlockInstance ): P
 
 	return didAnyFixes;
 }
+
+/**
+ * Selects a smart link in the block content.
+ *
+ * This function sets focus to the link element, selects the link text, and
+ * scrolls the viewport to the link element.
+ *
+ * @since 3.16.0
+ *
+ * @param {HTMLElement} blockContent   The block content to select the smart link in.
+ * @param {string}      smartLinkValue The smart link value to select.
+ */
+export const selectSmartLink = ( blockContent: HTMLElement, smartLinkValue: string ): void => {
+	const linkElement = blockContent.querySelector(
+		`a[data-smartlink="${ smartLinkValue }"]`,
+	) as HTMLElement;
+
+	if ( linkElement ) {
+		// Set focus to the link element.
+		linkElement.focus();
+
+		// Select the link.
+		const ownerDocument = blockContent.ownerDocument;
+		const range = ownerDocument.createRange();
+		if ( linkElement.firstChild ) {
+			range.setStart( linkElement.firstChild, 0 ); // Start at the beginning of the link text
+			range.setEndAfter( linkElement.firstChild );
+			const sel = ownerDocument.getSelection();
+			if ( sel ) {
+				sel.removeAllRanges();
+				sel.addRange( range );
+			}
+		}
+
+		// Scroll the viewport to the link element.
+		linkElement.scrollIntoView( { behavior: 'smooth', block: 'center' } );
+	}
+};
 
 /**
  * Trims a URL for display, ensuring it fits within the specified maximum length.
