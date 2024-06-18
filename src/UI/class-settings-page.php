@@ -983,9 +983,12 @@ final class Settings_Page {
 	 * Returns the user roles that have the edit_posts capability, including
 	 * custom user roles.
 	 *
+	 * The user roles are returned as an associative array where the key is the
+	 * user role key, and the value is the user role name.
+	 *
 	 * @since 3.17.0
 	 *
-	 * @return array<int, string> The user roles having the edit_posts capability.
+	 * @return array<string, string> The user roles having the edit_posts capability.
 	 */
 	private function get_user_roles_with_edit_posts_cap(): array {
 		$result = array();
@@ -1324,9 +1327,23 @@ final class Settings_Page {
 			foreach ( $input as $key => $value ) {
 				if ( is_array( $value ) ) {
 					if ( 'allowed_user_roles' === $key && count( $input[ $key ] ) > 0 ) {
-						// Create an indexed array of the user roles passed as
-						// an associative array.
-						$input[ $key ] = array_keys( $input[ $key ] );
+						$passed_roles    = array_keys( $input[ $key ] );
+						$valid_roles     = array_keys( $this->get_user_roles_with_edit_posts_cap() );
+						$sanitized_roles = array();
+
+						// Sanitize passed user roles and remove invalid ones.
+						foreach ( $passed_roles as $user_role ) {
+							if ( ! is_string( $user_role ) ) {
+								continue;
+							}
+
+							$user_role = sanitize_text_field( $user_role );
+							if ( in_array( $user_role, $valid_roles, true ) ) {
+								$sanitized_roles[] = $user_role;
+							}
+						}
+
+						$input[ $key ] = $sanitized_roles;
 					} else {
 						// Recurse when we have an array that's not user roles.
 						$input[ $key ] = $sanitize( $value );
