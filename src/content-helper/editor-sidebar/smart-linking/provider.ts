@@ -31,6 +31,28 @@ export type SmartLink = {
 };
 
 /**
+ * Structure of an inbound smart link, which is a smart link in a different post,
+ * that links to the current post.
+ *
+ * @since 3.16.0
+ */
+export type InboundSmartLink = SmartLink & {
+	post_data?: {
+		id: number;
+		title: string;
+		type: string;
+		paragraph: string;
+		is_first_paragraph: boolean;
+		is_last_paragraph: boolean;
+		permalink: string;
+		edit_link: string;
+		author: string,
+		date: string,
+		image: string|false,
+	};
+}
+
+/**
  * Structure of a link suggestion match, that is filled in by the
  * processing of the smart links.
  *
@@ -71,7 +93,7 @@ type AddMultipleSmartLinksResponse = {
  */
 type GetSmartLinksResponse = {
 	outbound: SmartLink[],
-	inbound: SmartLink[],
+	inbound: InboundSmartLink[],
 }
 
 /**
@@ -96,10 +118,10 @@ export class SmartLinkingProvider extends BaseProvider {
 	 * @return {SmartLinkingProvider} The singleton instance.
 	 */
 	public static getInstance(): SmartLinkingProvider {
-		if ( ! this.instance ) {
-			this.instance = new SmartLinkingProvider();
+		if ( ! SmartLinkingProvider.instance ) {
+			SmartLinkingProvider.instance = new SmartLinkingProvider();
 		}
-		return this.instance;
+		return SmartLinkingProvider.instance;
 	}
 
 	/**
