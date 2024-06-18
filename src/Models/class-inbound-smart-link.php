@@ -97,7 +97,7 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		// Get the post content.
 		$content = $post->post_content;
-		// Get the paragraph that has the smart link uid.
+		// Get the paragraph that has the smart link UID.
 		$paragraph = $this->get_paragraph( $content );
 
 		$author_name = get_the_author();
@@ -130,7 +130,9 @@ class Inbound_Smart_Link extends Smart_Link {
 	}
 
 	/**
-	 * Get the HTML paragraph that has the smart link uid.
+	 * Get the HTML paragraph that has the smart link UID.
+	 *
+	 * @since 3.16.0
 	 *
 	 * @param string $content The post content.
 	 * @return array The paragraph that has the smart link uid, and if it is the first or last paragraph.

@@ -146,11 +146,11 @@ export const ReviewModalSidebar = ( {
 				initialTabName={ initialTabName }
 				tabs={ tabs }
 				onSelect={ ( tabName: string ) => {
-					// If outbound, select the first outbound link
+					// If outbound, select the first outbound link.
 					if ( tabName === 'outbound' && outboundLinks && outboundLinks.length > 0 ) {
 						setSelectedLink( outboundLinks[ 0 ] );
 					}
-					// If inbound, select the first inbound link
+					// If inbound, select the first inbound link.
 					if ( tabName === 'inbound' && inboundLinks && inboundLinks.length > 0 ) {
 						setSelectedLink( inboundLinks[ 0 ] );
 					}

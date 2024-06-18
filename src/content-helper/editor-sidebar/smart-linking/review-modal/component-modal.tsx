@@ -355,7 +355,7 @@ const SmartLinkingReviewModalComponent = ( {
 
 			currentSmartLinks = getSmartLinks();
 
-			// If there are no more smart links, set the first inbound link
+			// If there are no more smart links, set the first inbound link.
 			if ( currentSmartLinks.length === 0 && inboundSmartLinks.length > 0 ) {
 				setSelectedLink( inboundSmartLinks[ 0 ] );
 				return;
