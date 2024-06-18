@@ -692,3 +692,16 @@ export function trimURLForDisplay( url: string, maxLength: number ): string {
 
 	return `${ domain }${ start }...${ end }`;
 }
+
+/**
+ * Gets all the URLs from an array of smart links.
+ *
+ * @since 3.16.0
+ *
+ * @param {SmartLink[]} smartLinks The smart links to get the URLs from.
+ *
+ * @return {string[]} The URLs from the smart links.
+ */
+export function getAllSmartLinksURLs( smartLinks: SmartLink[] ): string[] {
+	return smartLinks.map( ( link ) => link.href );
+}

@@ -27,6 +27,7 @@ import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './
 import {
 	calculateSmartLinkingMatches,
 	getAllSmartLinksInPost,
+	getAllSmartLinksURLs,
 	validateAndFixSmartLinksInBlock,
 	validateAndFixSmartLinksInPost,
 } from './utils';
@@ -357,6 +358,28 @@ export const SmartLinkingPanel = ( {
 			return true;
 		} );
 
+		// Exclude Smart Links text and URLs that are already in the post, to avoid duplicates.
+		links = links.filter( ( link ) => {
+			return ! smartLinks.some( ( sl ) => {
+				if ( sl.href === link.href ) {
+					// eslint-disable-next-line no-console
+					console.warn( `PCH Smart Linking: Skipping duplicate link: ${ link.href }` );
+					return true;
+				}
+				if ( sl.text === link.text ) {
+					// If the offset is the same, we want to keep the link, so it can replace the old smart link.
+					if ( sl.offset === link.offset ) {
+						// TODO: Flag smart link as updated.
+						return false;
+					}
+					// eslint-disable-next-line no-console
+					console.warn( `PCH Smart Linking: Skipping duplicate link text: ${ link.text }` );
+					return true;
+				}
+				return false;
+			} );
+		} );
+
 		// Depending on the context, we may need to process all blocks or just the selected one.
 		const blocksToProcess = isFullContent ? allBlocks : [ selectedBlock! ];
 
@@ -367,12 +390,6 @@ export const SmartLinkingPanel = ( {
 
 		// Filter out links without match and smart links being inserted inside another smart link.
 		links = links.filter( ( link ) => {
-			// If the link text and offset are the same, we want to keep the link, so it can replace the old smart link.
-			if ( smartLinks.some( ( sl ) => sl.text === link.text && sl.offset === link.offset ) ) {
-				// TODO: Flag smart link as updated, for now we just remove the old one.
-				return false;
-			}
-
 			if ( ! link.match ) {
 				return false;
 			}
@@ -497,6 +514,11 @@ export const SmartLinkingPanel = ( {
 			await setApplyTo( generatingFullContent ? ApplyToOptions.All : ApplyToOptions.Selected );
 
 			const urlExclusionList = generateProtocolVariants( postPermalink );
+
+			// Get all the existing smart links URLs to exclude them from the new smart links.
+			const existingSmartLinksURLs = getAllSmartLinksURLs( smartLinks );
+
+			urlExclusionList.push( ...existingSmartLinksURLs );
 
 			generatedLinks = await SmartLinkingProvider.getInstance().generateSmartLinks(
 				( selectedBlock && ! generatingFullContent )
