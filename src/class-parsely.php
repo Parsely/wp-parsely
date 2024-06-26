@@ -46,18 +46,14 @@ use WP_Post;
  *
  * @phpstan-type Parsely_Options_Content_Helper array{
  *   ai_features_enabled: bool,
- *   smart_linking: array{
- *      enabled: bool,
- *      allowed_user_roles: string[],
- *   },
- *   title_suggestions: array{
- *      enabled: bool,
- *      allowed_user_roles: string[],
- *   },
- *   excerpt_suggestions: array{
- *      enabled: bool,
- *      allowed_user_roles: string[],
- *   },
+ *   smart_linking: Parsely_Options_Content_Helper_Feature,
+ *   title_suggestions: Parsely_Options_Content_Helper_Feature,
+ *   excerpt_suggestions: Parsely_Options_Content_Helper_Feature,
+ * }
+ *
+ * @phpstan-type Parsely_Options_Content_Helper_Feature array{
+ *   enabled: bool,
+ *   allowed_user_roles: string[],
  * }
  *
  * @phpstan-type WP_HTTP_Request_Args array{

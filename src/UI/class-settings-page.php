@@ -63,24 +63,22 @@ use const Parsely\PARSELY_FILE;
  *   use_top_level_cats?:bool|string,
  *   custom_taxonomy_section?: string,
  *   cats_as_tags?: bool|string,
- *   content_helper: array{
- *      ai_features_enabled?: bool,
- *      smart_linking: array{
- *         enabled?: bool,
- *         allowed_user_roles?: string[],
- *      },
- *      title_suggestions: array{
- *         enabled?: bool,
- *         allowed_user_roles?: string[],
- *      },
- *      excerpt_suggestions: array{
- *         enabled?: bool,
- *         allowed_user_roles?: string[],
- *      },
- *   },
+ *   content_helper: Parsely_Settings_Options_Content_Helper,
  *   lowercase_tags?: bool,
  *   force_https_canonicals?: bool,
  *   disable_autotrack?: bool|string,
+ * }
+ *
+ * @phpstan-type Parsely_Settings_Options_Content_Helper array{
+ *   ai_features_enabled?: bool,
+ *   smart_linking?: Parsely_Settings_Options_Content_Helper_Feature,
+ *   title_suggestions?: Parsely_Settings_Options_Content_Helper_Feature,
+ *   excerpt_suggestions?: Parsely_Settings_Options_Content_Helper_Feature,
+ * }
+ *
+ * @phpstan-type Parsely_Settings_Options_Content_Helper_Feature array{
+ *   enabled?: bool,
+ *   allowed_user_roles?: string[],
  * }
  *
  * @phpstan-import-type Parsely_Options from Parsely
