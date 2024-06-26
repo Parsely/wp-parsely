@@ -198,7 +198,7 @@ export const TitleSuggestionsPanel = (): React.JSX.Element => {
 
 		createNotice(
 			'error',
-			__( 'There was an error generating title suggestions.', 'wp-parsely' ),
+			error.message,
 			{
 				type: 'snackbar',
 				className: 'parsely-title-suggestion-error',

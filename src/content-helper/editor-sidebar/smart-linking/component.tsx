@@ -15,14 +15,14 @@ import { Icon, external } from '@wordpress/icons';
  */
 import { GutenbergFunction, dispatchCoreEditor } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { ContentHelperErrorCode } from '../../common/content-helper-error';
+import { ContentHelperError, ContentHelperErrorCode } from '../../common/content-helper-error';
 import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
 import { LinkMonitor } from './component-link-monitor';
-import { useSaveSmartLinksOnPostSave, useSmartLinksValidation } from './hooks';
-import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
+import { useSaveSmartLinksOnPostSave, useSmartLinksValidation } from './hooks';
 import { SmartLink, SmartLinkingProvider } from './provider';
+import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
 import {
 	calculateSmartLinkingMatches,
@@ -470,7 +470,11 @@ export const SmartLinkingPanel = ( {
 			await processSmartLinks( generatedLinks );
 			setIsReviewModalOpen( true );
 		} catch ( e: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			let snackBarMessage = __( 'There was a problem generating smart links.', 'wp-parsely' );
+			const contentHelperError = new ContentHelperError(
+				e.message ?? 'An unknown error has occurred.',
+				e.code ?? ContentHelperErrorCode.UnknownError
+			);
+			let snackBarMessage = contentHelperError.message;
 
 			// Handle the case where the operation was aborted by the user.
 			if ( e.code && e.code === ContentHelperErrorCode.ParselyAborted ) {
@@ -483,7 +487,6 @@ export const SmartLinkingPanel = ( {
 				e.message = snackBarMessage;
 			}
 
-			console.error( e ); // eslint-disable-line no-console
 			await setError( e );
 			createNotice( 'error', snackBarMessage, {
 				type: 'snackbar',
@@ -533,6 +536,7 @@ export const SmartLinkingPanel = ( {
 				err.numRetries = MAX_NUMBER_OF_RETRIES - retries;
 				throw err;
 			}
+
 			// If the error is a retryable fetch error, retry the fetch.
 			if ( retries > 0 && err.retryFetch ) {
 				// Print the error to the console to help with debugging.
@@ -541,6 +545,7 @@ export const SmartLinkingPanel = ( {
 				await incrementRetryAttempt();
 				return await generateSmartLinksWithRetry( retries - 1 );
 			}
+
 			// Throw the error to be handled elsewhere.
 			throw err;
 		}
