@@ -113,7 +113,7 @@ final class Settings_Page {
 	/**
 	 * The Content Helper features that can be configured in the settings page.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 *
 	 * @var string[]
 	 */
@@ -429,7 +429,7 @@ final class Settings_Page {
 	/**
 	 * Registers the Content Helper section and its settings.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 */
 	private function initialize_content_helper_section(): void {
 		$section_key = 'content-helper-section';
@@ -863,7 +863,7 @@ final class Settings_Page {
 	/**
 	 * Prints a checkbox tag.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 *
 	 * @param Setting_Arguments    $args Arguments for the checkbox tag.
 	 * @param Parsely_Options|null $options The options to use.
@@ -920,7 +920,7 @@ final class Settings_Page {
 	/**
 	 * Prints a Content Helper AI feature section.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 *
 	 * @param Setting_Arguments $args The arguments for the section.
 	 */
@@ -986,7 +986,7 @@ final class Settings_Page {
 	 * The user roles are returned as an associative array where the key is the
 	 * user role key, and the value is the user role name.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 *
 	 * @return array<string, string> The user roles having the edit_posts capability.
 	 */
@@ -1312,7 +1312,7 @@ final class Settings_Page {
 	/**
 	 * Validates the fields of the Content Helper section.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 *
 	 * @param ParselySettingOptions $input The settings page options.
 	 * @return ParselySettingOptions The validated input.
@@ -1321,7 +1321,7 @@ final class Settings_Page {
 		/**
 		 * Sanitizes the Content Helper data.
 		 *
-		 * @since 3.17.0
+		 * @since 3.16.0
 		 */
 		$sanitize = function ( $input ) use ( &$sanitize ) {
 			foreach ( $input as $key => $value ) {

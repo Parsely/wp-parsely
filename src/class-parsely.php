@@ -463,7 +463,7 @@ class Parsely {
 	/**
 	 * Returns the value of a nested option.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 *
 	 * @param string          $option  The option to get.
 	 * @param Parsely_Options $options The options to get the value from.

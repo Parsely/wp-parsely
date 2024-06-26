@@ -57,7 +57,7 @@ function selectImage( event: Event ) {
 /**
  * Adds the necessary event handlers to the Content Helper tab.
  *
- * @since 3.17.0
+ * @since 3.16.0
  */
 function addContentHelperTabEventHandlers(): void {
 	// Selectors.
@@ -88,7 +88,7 @@ function addContentHelperTabEventHandlers(): void {
 	/**
 	 * Turns on/off all AI feature sections in the UI.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 */
 	function updateAllFeatureSections(): void {
 		if ( ! aiFeaturesCheckbox ) {
@@ -127,7 +127,7 @@ function addContentHelperTabEventHandlers(): void {
 	/**
 	 * Turns on/off a specific feature section in the UI.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 *
 	 * @param {HTMLInputElement} checkbox The checkbox controlling the feature.
 	 */
@@ -151,7 +151,7 @@ function addContentHelperTabEventHandlers(): void {
 	 *
 	 * This is done by injecting a class into the element, which is used in CSS.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 *
 	 * @param {Element} element The target element.
 	 * @param {boolean} status  true to prevent disabled style, false to allow.
@@ -167,7 +167,7 @@ function addContentHelperTabEventHandlers(): void {
 	/**
 	 * Sets the disabled attribute on an element.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 *
 	 * @param {Element | Element[]} element The target element.
 	 * @param {boolean}             status  true to disable, false to enable.
@@ -196,7 +196,7 @@ function addContentHelperTabEventHandlers(): void {
 	 * whole data. It also prevents styling changes while the data is being
 	 * submitted, in order to avoid visual glitches.
 	 *
-	 * @since 3.17.0
+	 * @since 3.16.0
 	 */
 	function enableAllFormFieldsOnSubmit(): void {
 		document.querySelector( '.wp-admin form[name="parsely"]' )
