@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
+use Parsely\Permissions;
 use Parsely\Validator;
 
 use function Parsely\Utils\get_asset_info;
@@ -964,43 +965,19 @@ final class Settings_Page {
 		echo '</span></legend>';
 
 		// User role checkboxes.
-		$user_roles = $this->get_user_roles_with_edit_posts_cap();
-		foreach ( $user_roles as $key => $role ) {
+		$user_roles = Permissions::get_user_roles_with_edit_posts_cap();
+		foreach ( $user_roles as $key => $name ) {
 			$option_key = $args['option_key'] . '[allowed_user_roles][' . $key . ']';
 			$role_args  = array(
 				'option_key' => $option_key,
 				'label_for'  => $option_key,
-				'yes_text'   => translate_user_role( $role ),
+				'yes_text'   => translate_user_role( $name ),
 			);
 
 			$this->print_checkbox_tag( $role_args, $options );
 		}
 
 		echo '</fieldset>';
-	}
-
-	/**
-	 * Returns the user roles that have the edit_posts capability, including
-	 * custom user roles.
-	 *
-	 * The user roles are returned as an associative array where the key is the
-	 * user role key, and the value is the user role name.
-	 *
-	 * @since 3.16.0
-	 *
-	 * @return array<string, string> The user roles having the edit_posts capability.
-	 */
-	private function get_user_roles_with_edit_posts_cap(): array {
-		$result = array();
-		$roles  = get_editable_roles();
-
-		foreach ( $roles as $key => $role ) {
-			if ( isset( $role['capabilities']['edit_posts'] ) ) {
-				$result[ $key ] = $role['name'];
-			}
-		}
-
-		return $result;
 	}
 
 	/**
@@ -1328,7 +1305,9 @@ final class Settings_Page {
 				if ( is_array( $value ) ) {
 					if ( 'allowed_user_roles' === $key && count( $input[ $key ] ) > 0 ) {
 						$passed_roles    = array_keys( $input[ $key ] );
-						$valid_roles     = array_keys( $this->get_user_roles_with_edit_posts_cap() );
+						$valid_roles     = array_keys(
+							Permissions::get_user_roles_with_edit_posts_cap()
+						);
 						$sanitized_roles = array();
 
 						// Sanitize passed user roles and remove invalid ones.
