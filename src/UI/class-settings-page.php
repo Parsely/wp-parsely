@@ -1367,6 +1367,15 @@ final class Settings_Page {
 					'enabled'            => false,
 					'allowed_user_roles' => array(),
 				);
+			} else {
+				if ( ! isset( $input['content_helper'][ $feature_id ]['enabled'] ) ) {
+					// @phpstan-ignore-next-line
+					$input['content_helper'][ $feature_id ]['enabled'] = false;
+				}
+				if ( ! isset( $input['content_helper'][ $feature_id ]['allowed_user_roles'] ) ) {
+					// @phpstan-ignore-next-line
+					$input['content_helper'][ $feature_id ]['allowed_user_roles'] = array();
+				}
 			}
 		}
 
