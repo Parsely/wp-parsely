@@ -63,7 +63,7 @@
 		"@wordpress/core-data": "^7.0.0",
 		"@wordpress/data": "^10.0.0",
 		"@wordpress/e2e-test-utils": "^11.2.0",
-		"@wordpress/edit-post": "^8.1.0",
+		"@wordpress/edit-post": "^8.2.0",
 		"@wordpress/editor": "^14.0.0",
 		"@wordpress/element": "^6.2.0",
 		"@wordpress/env": "^10.2.0",
