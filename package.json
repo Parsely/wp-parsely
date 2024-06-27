@@ -80,7 +80,7 @@
 		"husky": "^9.0.11",
 		"prettier": "^3.3.2",
 		"ts-loader": "^9.5.1",
-		"typescript": "^5.4.5"
+		"typescript": "^5.5.2"
 	},
 	"devDependenciesComments": {
 		"@wordpress/babel-preset-default": "Don't upgrade to v8 or greater until the plugin requires WordPress 6.6. See https://github.com/WordPress/gutenberg/pull/62265/files",
