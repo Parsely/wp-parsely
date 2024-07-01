@@ -474,23 +474,19 @@ export const SmartLinkingPanel = ( {
 				e.message ?? 'An unknown error has occurred.',
 				e.code ?? ContentHelperErrorCode.UnknownError
 			);
-			let snackBarMessage = contentHelperError.message;
 
 			// Handle the case where the operation was aborted by the user.
 			if ( e.code && e.code === ContentHelperErrorCode.ParselyAborted ) {
-				snackBarMessage = sprintf(
+				contentHelperError.message = sprintf(
 					/* translators: %d: number of retry attempts, %s: attempt plural */
 					__( 'The Smart Linking process was cancelled after %1$d %2$s.', 'wp-parsely' ),
 					e.numRetries,
 					_n( 'attempt', 'attempts', e.numRetries, 'wp-parsely' )
 				);
-				e.message = snackBarMessage;
 			}
 
-			await setError( e );
-			createNotice( 'error', snackBarMessage, {
-				type: 'snackbar',
-			} );
+			await setError( contentHelperError );
+			contentHelperError.createErrorSnackbar();
 		} finally {
 			await setLoading( false );
 			await setApplyTo( previousApplyTo );

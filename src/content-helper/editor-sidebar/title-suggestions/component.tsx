@@ -196,14 +196,7 @@ export const TitleSuggestionsPanel = (): React.JSX.Element => {
 			return;
 		}
 
-		createNotice(
-			'error',
-			error.message,
-			{
-				type: 'snackbar',
-				className: 'parsely-title-suggestion-error',
-			}
-		);
+		error.createErrorSnackbar();
 	}, [ error ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
