@@ -81,7 +81,7 @@ function addContentHelperTabEventHandlers(): void {
 
 	featureCheckboxes.forEach( ( checkbox ): void => {
 		checkbox.addEventListener( 'change', (): void => {
-			UpdateFeatureSection( checkbox );
+			updateFeatureSection( checkbox );
 		} );
 	} );
 
@@ -105,7 +105,7 @@ function addContentHelperTabEventHandlers(): void {
 				setDisabled( fieldset, false );
 
 				featureCheckboxes.forEach( ( checkbox ): void => {
-					UpdateFeatureSection( checkbox );
+					updateFeatureSection( checkbox );
 				} );
 			} );
 		} else {
@@ -131,7 +131,7 @@ function addContentHelperTabEventHandlers(): void {
 	 *
 	 * @param {HTMLInputElement} checkbox The checkbox controlling the feature.
 	 */
-	function UpdateFeatureSection( checkbox: HTMLInputElement ): void {
+	function updateFeatureSection( checkbox: HTMLInputElement ): void {
 		const userRolesFieldset = checkbox
 			.closest( 'fieldset' )?.nextSibling?.nextSibling as HTMLElement;
 
