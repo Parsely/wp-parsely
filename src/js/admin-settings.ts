@@ -60,15 +60,21 @@ function selectImage( event: Event ) {
  * @since 3.16.0
  */
 function addContentHelperTabEventHandlers(): void {
-	// Selectors.
+	// Selector for the checkbox that enables/disables all AI features.
 	const aiFeaturesCheckbox = document.querySelector<HTMLInputElement>(
 		'input#content_helper_ai_features_enabled'
 	);
 
+	// Selector for the checkboxes that enable/disable individual AI features.
 	const featureCheckboxes = document.querySelectorAll<HTMLInputElement>(
 		'input#content_helper_smart_linking_enabled, ' +
 		'input#content_helper_title_suggestions_enabled, ' +
 		'input#content_helper_excerpt_suggestions_enabled'
+	);
+
+	// Selector for all fieldsets in the Content Helper section.
+	const fieldsets = document.querySelectorAll(
+		'div.content-helper-section fieldset'
 	);
 
 	// Event handlers.
@@ -94,10 +100,6 @@ function addContentHelperTabEventHandlers(): void {
 		if ( ! aiFeaturesCheckbox ) {
 			return;
 		}
-
-		const fieldsets = document.querySelectorAll(
-			'div.content-helper-section fieldset'
-		);
 
 		if ( aiFeaturesCheckbox.checked ) {
 			// Enable all applicable fieldsets.
