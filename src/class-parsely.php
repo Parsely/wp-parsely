@@ -34,7 +34,7 @@ use WP_Post;
  *   track_post_types: string[],
  *   track_page_types: string[],
  *   track_post_types_as?: array<string, string>,
- *   full_metadata_in_non_posts: ?bool,
+ *   full_metadata_in_non_posts: bool,
  *   disable_javascript: bool,
  *   disable_amp: bool,
  *   meta_type: string,
@@ -95,15 +95,15 @@ class Parsely {
 			'ai_features_enabled' => true,
 			'smart_linking'       => array(
 				'enabled'            => true,
-				'allowed_user_roles' => array(),
+				'allowed_user_roles' => array( 'administrator' ),
 			),
 			'title_suggestions'   => array(
 				'enabled'            => true,
-				'allowed_user_roles' => array(),
+				'allowed_user_roles' => array( 'administrator' ),
 			),
 			'excerpt_suggestions' => array(
 				'enabled'            => true,
-				'allowed_user_roles' => array(),
+				'allowed_user_roles' => array( 'administrator' ),
 			),
 		),
 		'track_authenticated_users'  => false,
@@ -433,10 +433,19 @@ class Parsely {
 		 */
 		$options = get_option( self::OPTIONS_KEY, null );
 
+		// @phpstan-ignore isset.offset, booleanAnd.alwaysFalse
 		if ( is_array( $options ) && ! isset( $options['full_metadata_in_non_posts'] ) ) {
+			// Existing plugin installation without full metadata option.
 			$this->set_default_full_metadata_in_non_posts();
 		}
 
+		// @phpstan-ignore isset.offset, booleanAnd.alwaysFalse
+		if ( is_array( $options ) && ! isset( $options['content_helper'] ) ) {
+			// Existing plugin installation without Content Helper options.
+			$this->set_default_content_helper_settings_values();
+		}
+
+		// New plugin installation that hasn't saved its options yet.
 		if ( ! is_array( $options ) ) {
 			$this->set_default_track_as_values();
 			$this->set_default_full_metadata_in_non_posts();
@@ -530,6 +539,22 @@ class Parsely {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * Sets the default values for Content Helper options.
+	 *
+	 * Gives PCH access to all users having the edit_posts capability, to keep
+	 * consistent behavior with plugin versions prior to 3.16.0.
+	 *
+	 * @since 3.16.0
+	 */
+	public function set_default_content_helper_settings_values(): void {
+		$this->option_defaults['content_helper'] =
+		Permissions::build_pch_permissions_settings_array(
+			true,
+			array_keys( Permissions::get_user_roles_with_edit_posts_cap() )
+		);
 	}
 
 	/**

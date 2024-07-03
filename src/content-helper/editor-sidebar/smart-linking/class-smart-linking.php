@@ -12,6 +12,7 @@ namespace Parsely\Content_Helper\Editor_Sidebar;
 
 use Parsely\Content_Helper\Content_Helper_Feature;
 use Parsely\Content_Helper\Editor_Sidebar;
+use Parsely\Permissions;
 use WP_Query;
 
 /**
@@ -86,6 +87,27 @@ class Smart_Linking extends Content_Helper_Feature {
 		// Register the taxonomies for the Smart Links.
 		$this->register_taxonomy( 'smart_link_source', __( 'Smart Link Source', 'wp-parsely' ) );
 		$this->register_taxonomy( 'smart_link_destination', __( 'Smart Link Destination', 'wp-parsely' ) );
+	}
+
+	/**
+	 * Returns whether the feature can be enabled for the current user.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param bool ...$conditions Conditions that need to be met besides filters
+	 *                            for the function to return true.
+	 * @return bool Whether the feature can be enabled.
+	 */
+	protected function can_enable_feature( bool ...$conditions ): bool {
+		if ( ! parent::can_enable_feature( ...$conditions ) ) {
+			return false;
+		}
+
+		return Permissions::current_user_can_use_pch_feature(
+			'smart_linking',
+			$this->parsely->get_options()['content_helper'],
+			get_the_ID()
+		);
 	}
 
 	/**
