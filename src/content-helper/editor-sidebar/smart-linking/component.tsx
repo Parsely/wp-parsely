@@ -18,6 +18,7 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
 import { ContentHelperError, ContentHelperErrorCode } from '../../common/content-helper-error';
 import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
+import { ContentHelperPermissions } from '../../common/utils/permissions';
 import { LinkMonitor } from './component-link-monitor';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
 import { useSaveSmartLinksOnPostSave, useSmartLinksValidation } from './hooks';
@@ -41,6 +42,7 @@ type SmartLinkingPanelProps = {
 	className?: string;
 	selectedBlockClientId?: string;
 	context?: SmartLinkingPanelContext;
+	permissions: ContentHelperPermissions;
 }
 
 /**
@@ -74,6 +76,7 @@ export const SmartLinkingPanel = ( {
 	className,
 	selectedBlockClientId,
 	context = SmartLinkingPanelContext.Unknown,
+	permissions,
 }: Readonly<SmartLinkingPanelProps> ): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
@@ -195,6 +198,10 @@ export const SmartLinkingPanel = ( {
 	 * @since 3.16.0
 	 */
 	useEffect( () => {
+		if ( true !== permissions.SmartLinking ) {
+			return;
+		}
+
 		if ( ready ) {
 			// Return early if the Smart Linking store is already initialized.
 			return;
@@ -228,7 +235,14 @@ export const SmartLinkingPanel = ( {
 				setIsReady( true );
 			} );
 		}
-	}, [ addInboundSmartLinks, addSmartLinks, postId, ready, setIsReady ] );
+	}, [
+		addInboundSmartLinks,
+		addSmartLinks,
+		postId,
+		ready,
+		setIsReady,
+		permissions.SmartLinking,
+	] );
 
 	/**
 	 * Handles the ending of the review process.
@@ -485,6 +499,7 @@ export const SmartLinkingPanel = ( {
 				);
 			}
 
+			console.error( e ); // eslint-disable-line no-console
 			await setError( contentHelperError );
 			contentHelperError.createErrorSnackbar();
 		} finally {
