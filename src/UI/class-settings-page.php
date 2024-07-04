@@ -79,7 +79,7 @@ use const Parsely\PARSELY_FILE;
  *
  * @phpstan-type Parsely_Settings_Options_Content_Helper_Feature array{
  *   enabled?: bool,
- *   allowed_user_roles?: string[],
+ *   allowed_user_roles?: array<string, string>|array<string, bool>
  * }
  *
  * @phpstan-import-type Parsely_Options from Parsely

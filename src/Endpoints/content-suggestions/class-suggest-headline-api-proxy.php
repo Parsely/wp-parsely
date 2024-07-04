@@ -13,6 +13,7 @@ namespace Parsely\Endpoints\ContentSuggestions;
 
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Parsely;
+use Parsely\Permissions;
 use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
 use stdClass;
 use WP_REST_Request;
@@ -79,6 +80,11 @@ final class Suggest_Headline_API_Proxy extends Base_API_Proxy {
 		$validation = $this->validate_apikey_and_secret();
 		if ( is_wp_error( $validation ) ) {
 			return $validation;
+		}
+
+		$pch_options = $this->parsely->get_options()['content_helper'];
+		if ( ! Permissions::current_user_can_use_pch_feature( 'title_suggestions', $pch_options ) ) {
+			return new WP_Error( 'ch_access_to_feature_disabled', '', array( 'status' => 403 ) );
 		}
 
 		/**

@@ -10,10 +10,9 @@ declare(strict_types=1);
 
 namespace Parsely\Endpoints\Content_Helper;
 
-use InvalidArgumentException;
 use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Models\Smart_Link;
-use Parsely\Parsely;
+use Parsely\Permissions;
 use WP_Post;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -45,18 +44,19 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * @return bool
 	 */
 	public function is_available_to_current_user( $request = null ): bool {
-		if ( null === $request ) {
-			return false;
+		$post_id = false;
+		if ( $request instanceof WP_REST_Request ) {
+			$temp_post_id = $request->get_param( 'post_id' );
+			if ( is_numeric( $temp_post_id ) ) {
+				$post_id = intval( $temp_post_id );
+			}
 		}
 
-		$post_id = $request->get_param( 'post_id' );
-
-		if ( null !== $post_id ) {
-			// Check if the current user has edit capabilities for the post.
-			$can_edit = current_user_can( 'edit_post', $post_id );
-		} else {
-			$can_edit = current_user_can( 'edit_posts' );
-		}
+		$can_access_pch = Permissions::current_user_can_use_pch_feature(
+			'smart_linking',
+			$this->parsely->get_options()['content_helper'],
+			$post_id
+		);
 
 		// Check if the current user has the smart linking capability.
 		$has_capability = current_user_can(
@@ -66,7 +66,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 			)
 		);
 
-		return $can_edit && $has_capability;
+		return $can_access_pch && $has_capability;
 	}
 
 	/**

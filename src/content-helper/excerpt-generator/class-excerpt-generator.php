@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace Parsely\Content_Helper;
 
 use Parsely\Parsely;
+use Parsely\Permissions;
+
 use function Parsely\Utils\get_asset_info;
 use const Parsely\PARSELY_FILE;
 
@@ -93,6 +95,27 @@ class Excerpt_Generator extends Content_Helper_Feature {
 			$built_assets_url . 'excerpt-generator.css',
 			array(),
 			$asset_php['version']
+		);
+	}
+
+	/**
+	 * Returns whether the feature can be enabled for the current user.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param bool ...$conditions Conditions that need to be met besides filters
+	 *                            for the function to return true.
+	 * @return bool Whether the feature can be enabled.
+	 */
+	protected function can_enable_feature( bool ...$conditions ): bool {
+		if ( ! parent::can_enable_feature( ...$conditions ) ) {
+			return false;
+		}
+
+		return Permissions::current_user_can_use_pch_feature(
+			'excerpt_suggestions',
+			$this->parsely->get_options()['content_helper'],
+			get_the_ID()
 		);
 	}
 }

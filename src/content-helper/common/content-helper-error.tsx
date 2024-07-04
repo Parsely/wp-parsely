@@ -18,6 +18,7 @@ import {
  * Helper should start with a "ch_" prefix.
  */
 export enum ContentHelperErrorCode {
+	AccessToFeatureDisabled = 'ch_access_to_feature_disabled',
 	CannotFormulateApiQuery = 'ch_cannot_formulate_api_query',
 	FetchError = 'fetch_error', // apiFetch() failure, possibly caused by ad blocker.
 	HttpRequestFailed = 'http_request_failed', // Parse.ly API is unreachable.
@@ -70,6 +71,7 @@ export class ContentHelperError extends Error {
 
 		// Errors for which we should not retry a fetch operation.
 		const noRetryFetchErrors: Array<ContentHelperErrorCode> = [
+			ContentHelperErrorCode.AccessToFeatureDisabled,
 			ContentHelperErrorCode.ParselyApiForbidden,
 			ContentHelperErrorCode.ParselyApiResponseContainsError,
 			ContentHelperErrorCode.ParselyApiReturnedNoData,
@@ -95,7 +97,12 @@ export class ContentHelperError extends Error {
 		Object.setPrototypeOf( this, ContentHelperError.prototype );
 
 		// Errors that need rephrasing.
-		if ( this.code === ContentHelperErrorCode.ParselySuggestionsApiNoAuthorization ) {
+		if ( this.code === ContentHelperErrorCode.AccessToFeatureDisabled ) {
+			this.message = __(
+				'Access to this feature is disabled by the site\'s administration.',
+				'wp-parsely'
+			);
+		} else if ( this.code === ContentHelperErrorCode.ParselySuggestionsApiNoAuthorization ) {
 			this.message = __(
 				'This AI-powered feature is opt-in. To gain access, please submit a request ' +
 				'<a href="https://wpvip.com/parsely-content-helper/" target="_blank" rel="noreferrer">here</a>.',
