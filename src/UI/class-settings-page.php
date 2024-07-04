@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\UI;
 
+use Parsely\Content_Helper\Excerpt_Generator;
 use Parsely\Parsely;
 use Parsely\Permissions;
 use Parsely\Validator;
@@ -496,6 +497,7 @@ final class Settings_Page {
 			'option_key' => $field_id,
 			'label_for'  => $field_id,
 			'legend'     => __( 'Excerpt Suggestions', 'wp-parsely' ),
+			'filter'     => Excerpt_Generator::get_feature_filter_name(),
 		);
 		add_settings_field(
 			$field_id,
@@ -976,6 +978,8 @@ final class Settings_Page {
 		}
 
 		echo '</fieldset>';
+
+		$this->print_filter_text( $args );
 	}
 
 	/**
