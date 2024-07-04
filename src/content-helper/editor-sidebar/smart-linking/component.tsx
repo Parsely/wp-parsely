@@ -487,6 +487,7 @@ export const SmartLinkingPanel = ( {
 				e.message = snackBarMessage;
 			}
 
+			console.error( e ); // eslint-disable-line no-console
 			await setError( e );
 			createNotice( 'error', snackBarMessage, {
 				type: 'snackbar',
