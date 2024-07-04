@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
+import { dispatch } from '@wordpress/data';
 import {
 	ContentHelperErrorMessage,
 	ContentHelperErrorMessageProps,
@@ -198,5 +199,27 @@ export class ContentHelperError extends Error {
 	 */
 	protected Hint( hint: string ): string {
 		return `<p className="content-helper-error-message-hint" data-testid="content-helper-error-message-hint"><strong>${ __( 'Hint:', 'wp-parsely' ) }</strong> ${ hint }</p>`;
+	}
+
+	/**
+	 * Creates an error Snackbar Notice, unless the error message contains links.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @link https://github.com/Parsely/wp-parsely/issues/2424#issuecomment-2196196232
+	 */
+	public createErrorSnackbar(): void {
+		if ( /<a.*?>/.test( this.message ) ) {
+			return;
+		}
+
+		// @ts-ignore
+		dispatch( 'core/notices' ).createNotice(
+			'error',
+			this.message,
+			{
+				type: 'snackbar',
+			}
+		);
 	}
 }
