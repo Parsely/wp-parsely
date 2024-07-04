@@ -16,12 +16,20 @@ export interface ContentHelperPermissions {
  * @return {ContentHelperPermissions} The current user's permissions.
  */
 export function getContentHelperPermissions(): ContentHelperPermissions {
-	if ( ! window.wpParselyContentHelperPermissions ) {
-		return {
-			SmartLinking: false,
-			TitleSuggestions: false,
-		};
-	}
+	const defaultPermissions: ContentHelperPermissions = {
+		SmartLinking: false,
+		TitleSuggestions: false,
+	};
 
-	return JSON.parse( window.wpParselyContentHelperPermissions );
+	try {
+		const permissions = JSON.parse( window.wpParselyContentHelperPermissions );
+
+		if ( 'object' !== typeof permissions || null === permissions ) {
+			return defaultPermissions;
+		}
+
+		return permissions;
+	} catch ( e ) {
+		return defaultPermissions;
+	}
 }
