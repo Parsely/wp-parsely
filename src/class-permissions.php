@@ -132,7 +132,7 @@ class Permissions {
 
 		$result = wp_json_encode( $permissions );
 
-		return is_string( $result ) ? $result : '';
+		return is_string( $result ) ? $result : '{}';
 	}
 
 	/**
