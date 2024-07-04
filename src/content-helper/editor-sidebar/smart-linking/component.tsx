@@ -700,10 +700,15 @@ export const SmartLinkingPanel = ( {
 						<Button
 							onClick={ async () => {
 								// Update the smart links in the store.
-								await validateAndFixSmartLinksInPost();
+								const fixedSmartLinks = await validateAndFixSmartLinksInPost();
 								const existingSmartLinks = getAllSmartLinksInPost();
 								await addSmartLinks( existingSmartLinks );
 								setIsReviewModalOpen( true );
+								Telemetry.trackEvent( 'smart_linking_review_pressed', {
+									num_smart_links: smartLinks.length,
+									has_fixed_links: fixedSmartLinks,
+									context,
+								} );
 							} }
 							variant="secondary"
 							disabled={ loading }
