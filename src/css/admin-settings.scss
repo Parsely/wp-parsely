@@ -4,6 +4,25 @@
 .settings_page_parsely {
 	--padding-default: 15px;
 
+	fieldset.user-role-permissions {
+
+		label {
+			margin-right: to_rem(16px) !important;
+		}
+	}
+
+	.disabled-before-posting,
+	fieldset:disabled,
+	tr:has(fieldset:disabled) {
+
+		label:not(.prevent-disable),
+		p,
+		th {
+			color: var(--gray-500);
+			cursor: default;
+		}
+	}
+
 	#track-post-types {
 		max-width: 550px;
 		width: 100%;
@@ -32,15 +51,6 @@
 
 		thead th:nth-child(3) {
 			word-break: break-word;
-		}
-	}
-
-	fieldset:disabled,
-	tr:has(fieldset:disabled) {
-
-		* {
-			color: var(--gray-500);
-			cursor: default;
 		}
 	}
 

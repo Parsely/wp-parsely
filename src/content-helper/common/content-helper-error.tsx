@@ -30,6 +30,7 @@ export enum ContentHelperErrorCode {
 	PluginSettingsApiSecretNotSet = 'parsely_api_secret_not_set',
 	PluginSettingsSiteIdNotSet = 'parsely_site_id_not_set',
 	PostIsNotPublished = 'ch_post_not_published',
+	UnknownError = 'ch_unknown_error',
 
 	// Suggestions API.
 	ParselySuggestionsApiAuthUnavailable = 'AUTH_UNAVAILABLE', // HTTP Code 503.
@@ -52,8 +53,18 @@ export class ContentHelperError extends Error {
 	protected hint: string | null = null;
 	public retryFetch: boolean;
 
-	constructor( message: string, code: ContentHelperErrorCode, prefix = __( 'Error: ', 'wp-parsely' ) ) {
-		super( prefix + message );
+	constructor(
+		message: string,
+		code: ContentHelperErrorCode,
+		messagePrefix = __( 'Error: ', 'wp-parsely' )
+	) {
+		// Avoid double message prefix.
+		if ( message.startsWith( messagePrefix ) ) {
+			messagePrefix = '';
+		}
+
+		// Initialization.
+		super( messagePrefix + message );
 		this.name = this.constructor.name;
 		this.code = code;
 
@@ -67,6 +78,7 @@ export class ContentHelperError extends Error {
 			ContentHelperErrorCode.PluginSettingsApiSecretNotSet,
 			ContentHelperErrorCode.PluginSettingsSiteIdNotSet,
 			ContentHelperErrorCode.PostIsNotPublished,
+			ContentHelperErrorCode.UnknownError,
 
 			// Don't perform any fetch retries for the Suggestions API due to
 			// its time-consuming operations.

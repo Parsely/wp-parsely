@@ -198,7 +198,7 @@ export const TitleSuggestionsPanel = (): React.JSX.Element => {
 
 		createNotice(
 			'error',
-			__( 'There was an error generating title suggestions.', 'wp-parsely' ),
+			error.message,
 			{
 				type: 'snackbar',
 				className: 'parsely-title-suggestion-error',
@@ -246,7 +246,11 @@ export const TitleSuggestionsPanel = (): React.JSX.Element => {
 					</Button>
 				</div>
 				{ error && (
-					<Notice status="info" className="wp-parsely-content-helper-error">
+					<Notice
+						className="wp-parsely-content-helper-error"
+						onRemove={ () => setError( undefined ) }
+						status="info"
+					>
 						{ error.Message() }
 					</Notice>
 				) }
