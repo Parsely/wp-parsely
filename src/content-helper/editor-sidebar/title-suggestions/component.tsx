@@ -246,7 +246,11 @@ export const TitleSuggestionsPanel = (): React.JSX.Element => {
 					</Button>
 				</div>
 				{ error && (
-					<Notice status="info" className="wp-parsely-content-helper-error">
+					<Notice
+						className="wp-parsely-content-helper-error"
+						onRemove={ () => setError( undefined ) }
+						status="info"
+					>
 						{ error.Message() }
 					</Notice>
 				) }
