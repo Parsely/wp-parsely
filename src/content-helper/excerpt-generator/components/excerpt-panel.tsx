@@ -236,8 +236,9 @@ const PostExcerptGenerator = () => {
 				</div>
 				{ error && (
 					<Notice
-						status="info"
 						className="wp-parsely-excerpt-generator-error"
+						onRemove={ () => setError( undefined ) }
+						status="info"
 					>
 						{ error.Message() }
 					</Notice>

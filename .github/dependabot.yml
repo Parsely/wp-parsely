@@ -6,7 +6,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
-    open-pull-requests-limit: 15
+    open-pull-requests-limit: 50
 
   - package-ecosystem: 'composer'
     reviewers:
