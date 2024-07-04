@@ -30,6 +30,7 @@ import {
 	PostFilterType,
 	isInEnum,
 } from '../common/utils/constants';
+import { getContentHelperPermissions } from '../common/utils/permissions';
 import {
 	DEFAULT_MAX_LINKS,
 	initSmartLinking,
@@ -177,6 +178,7 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
  */
 const ContentHelperEditorSidebar = (): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
+	const permissions = getContentHelperPermissions();
 
 	/**
 	 * Track sidebar opening.
@@ -244,7 +246,10 @@ const ContentHelperEditorSidebar = (): React.JSX.Element => {
 						{ ( tab ) => (
 							<>
 								{ tab.name === 'tools' && (
-									<SidebarToolsTab trackToggle={ trackToggle } />
+									<SidebarToolsTab
+										permissions={ permissions }
+										trackToggle={ trackToggle }
+									/>
 								) }
 								{ tab.name === 'performance' && (
 									<SidebarPerformanceTab

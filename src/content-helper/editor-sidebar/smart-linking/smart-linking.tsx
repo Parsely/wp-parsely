@@ -15,6 +15,7 @@ import { Telemetry } from '../../../js/telemetry/telemetry';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { SettingsProvider, SidebarSettings, useSettings } from '../../common/settings';
 import { isEditorReady } from '../../common/utils/functions';
+import { getContentHelperPermissions } from '../../common/utils/permissions';
 import { VerifyCredentials } from '../../common/verify-credentials';
 import { getSettingsFromJson } from '../editor-sidebar';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from './component';
@@ -23,6 +24,7 @@ import './smart-linking.scss';
 import { selectSmartLink } from './utils';
 
 export const DEFAULT_MAX_LINKS = 10;
+const permissions = getContentHelperPermissions();
 
 /**
  * Higher order component to add the settings provider to the block edit component.
@@ -85,6 +87,7 @@ const SmartLinkingInspectorControlPanel = createHigherOrderComponent( ( BlockEdi
 							<SmartLinkingPanel
 								selectedBlockClientId={ props.clientId }
 								context={ SmartLinkingPanelContext.BlockInspector }
+								permissions={ permissions }
 							/>
 						</VerifyCredentials>
 					</PanelBody>
@@ -112,6 +115,10 @@ const SmartLinkingPanelWithSettingsProvider = compose(
  * @since 3.14.0
  */
 export const initSmartLinking = (): void => {
+	if ( true !== permissions.SmartLinking ) {
+		return;
+	}
+
 	/**
 	 * Add smart linking inspector control panel to paragraph block.
 	 */

@@ -15,14 +15,15 @@ import { Icon, external } from '@wordpress/icons';
  */
 import { GutenbergFunction, dispatchCoreEditor } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { ContentHelperErrorCode } from '../../common/content-helper-error';
+import { ContentHelperError, ContentHelperErrorCode } from '../../common/content-helper-error';
 import { SidebarSettings, SmartLinkingSettings, useSettings } from '../../common/settings';
 import { generateProtocolVariants } from '../../common/utils/functions';
+import { ContentHelperPermissions } from '../../common/utils/permissions';
 import { LinkMonitor } from './component-link-monitor';
-import { useSaveSmartLinksOnPostSave, useSmartLinksValidation } from './hooks';
-import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { SmartLinkingSettings as SmartLinkingSettingsComponent } from './component-settings';
+import { useSaveSmartLinksOnPostSave, useSmartLinksValidation } from './hooks';
 import { SmartLink, SmartLinkingProvider } from './provider';
+import { SmartLinkingReviewModal } from './review-modal/component-modal';
 import { ApplyToOptions, SmartLinkingSettingsProps, SmartLinkingStore } from './store';
 import {
 	calculateSmartLinkingMatches,
@@ -41,6 +42,7 @@ type SmartLinkingPanelProps = {
 	className?: string;
 	selectedBlockClientId?: string;
 	context?: SmartLinkingPanelContext;
+	permissions: ContentHelperPermissions;
 }
 
 /**
@@ -74,6 +76,7 @@ export const SmartLinkingPanel = ( {
 	className,
 	selectedBlockClientId,
 	context = SmartLinkingPanelContext.Unknown,
+	permissions,
 }: Readonly<SmartLinkingPanelProps> ): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
@@ -195,6 +198,10 @@ export const SmartLinkingPanel = ( {
 	 * @since 3.16.0
 	 */
 	useEffect( () => {
+		if ( true !== permissions.SmartLinking ) {
+			return;
+		}
+
 		if ( ready ) {
 			// Return early if the Smart Linking store is already initialized.
 			return;
@@ -228,7 +235,14 @@ export const SmartLinkingPanel = ( {
 				setIsReady( true );
 			} );
 		}
-	}, [ addInboundSmartLinks, addSmartLinks, postId, ready, setIsReady ] );
+	}, [
+		addInboundSmartLinks,
+		addSmartLinks,
+		postId,
+		ready,
+		setIsReady,
+		permissions.SmartLinking,
+	] );
 
 	/**
 	 * Handles the ending of the review process.
@@ -470,24 +484,24 @@ export const SmartLinkingPanel = ( {
 			await processSmartLinks( generatedLinks );
 			setIsReviewModalOpen( true );
 		} catch ( e: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			let snackBarMessage = __( 'There was a problem generating smart links.', 'wp-parsely' );
+			const contentHelperError = new ContentHelperError(
+				e.message ?? 'An unknown error has occurred.',
+				e.code ?? ContentHelperErrorCode.UnknownError
+			);
 
 			// Handle the case where the operation was aborted by the user.
 			if ( e.code && e.code === ContentHelperErrorCode.ParselyAborted ) {
-				snackBarMessage = sprintf(
+				contentHelperError.message = sprintf(
 					/* translators: %d: number of retry attempts, %s: attempt plural */
 					__( 'The Smart Linking process was cancelled after %1$d %2$s.', 'wp-parsely' ),
 					e.numRetries,
 					_n( 'attempt', 'attempts', e.numRetries, 'wp-parsely' )
 				);
-				e.message = snackBarMessage;
 			}
 
 			console.error( e ); // eslint-disable-line no-console
-			await setError( e );
-			createNotice( 'error', snackBarMessage, {
-				type: 'snackbar',
-			} );
+			await setError( contentHelperError );
+			contentHelperError.createErrorSnackbar();
 		} finally {
 			await setLoading( false );
 			await setApplyTo( previousApplyTo );
@@ -533,6 +547,7 @@ export const SmartLinkingPanel = ( {
 				err.numRetries = MAX_NUMBER_OF_RETRIES - retries;
 				throw err;
 			}
+
 			// If the error is a retryable fetch error, retry the fetch.
 			if ( retries > 0 && err.retryFetch ) {
 				// Print the error to the console to help with debugging.
@@ -541,6 +556,7 @@ export const SmartLinkingPanel = ( {
 				await incrementRetryAttempt();
 				return await generateSmartLinksWithRetry( retries - 1 );
 			}
+
 			// Throw the error to be handled elsewhere.
 			throw err;
 		}

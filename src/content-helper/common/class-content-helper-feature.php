@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Content_Helper;
 
 use Parsely\Parsely;
+use Parsely\Permissions;
 use WP_REST_Request;
 
 /**
@@ -128,6 +129,17 @@ abstract class Content_Helper_Feature {
 		$are_credentials_set = $this->parsely->site_id_is_set() &&
 			$this->parsely->api_secret_is_set();
 
+		// Inject Content Helper permissions.
+		$permissions_json = Permissions::get_pch_permissions_json(
+			$this->parsely->get_options()['content_helper']
+		);
+		wp_add_inline_script(
+			static::get_script_id(),
+			"window.wpParselyContentHelperPermissions = '$permissions_json';",
+			'before'
+		);
+
+		// Inject a message if the required credentials are not set.
 		if ( ! $are_credentials_set ) {
 			$message = $this->get_credentials_not_set_message();
 

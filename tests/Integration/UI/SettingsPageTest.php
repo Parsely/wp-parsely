@@ -21,6 +21,8 @@ const PARSELY_SETTINGS_URL = 'http://example.org/wp-admin/options-general.php?pa
  * Integration Tests for the plugin's wp-admin Settings page.
  *
  * @since 3.1.0
+ *
+ * @phpstan-import-type ParselySettingOptions from Settings_Page
  */
 final class SettingsPageTest extends TestCase {
 	/**
@@ -89,7 +91,9 @@ final class SettingsPageTest extends TestCase {
 		$options['apikey']     = 'mydomain.com';
 		$options['api_secret'] = 'valid_api_secret';
 
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $options, $actual );
 
 		// Now try to set it back to empty values.
@@ -98,7 +102,9 @@ final class SettingsPageTest extends TestCase {
 		$options['apikey']     = '';
 		$options['api_secret'] = '';
 
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $options, $actual );
 	}
 
@@ -137,7 +143,9 @@ final class SettingsPageTest extends TestCase {
 
 		$expected = $options;
 
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $expected, $actual );
 	}
 
@@ -179,7 +187,9 @@ final class SettingsPageTest extends TestCase {
 		$options['apikey']     = 'mydomain.com';
 		$options['api_secret'] = 'invalid_api_secret';
 
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $expected, $actual );
 		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10 );
 	}
@@ -223,7 +233,9 @@ final class SettingsPageTest extends TestCase {
 
 		$expected = $options;
 
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $expected, $actual );
 
 		remove_filter( 'pre_http_request', array( $this, 'mock_request_api_credentials_validation_failure' ), 10 );
@@ -262,7 +274,9 @@ final class SettingsPageTest extends TestCase {
 		$options['metadata_secret'] = 'goodlength'; // 10 characters.
 		$expected                   = $options;
 
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $expected, $actual );
 	}
 
@@ -299,12 +313,16 @@ final class SettingsPageTest extends TestCase {
 
 		$options['metadata_secret'] = 'too_short'; // Less than 10 characters.
 
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $expected, $actual );
 
 		$options['metadata_secret'] = 'too_lengthy'; // More than 10 characters.
 
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $expected, $actual );
 	}
 
@@ -349,7 +367,9 @@ final class SettingsPageTest extends TestCase {
 			}
 		);
 
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $expected, $actual );
 	}
 
@@ -376,7 +396,9 @@ final class SettingsPageTest extends TestCase {
 			'attachment' => 'post',
 		);
 
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( array( 'post', 'attachment' ), $actual['track_post_types'] );
 		self::assertSame( array( 'page' ), $actual['track_page_types'] );
 	}
@@ -407,7 +429,9 @@ final class SettingsPageTest extends TestCase {
 			'non_existent_post_type' => 'post',
 		);
 
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $expected, $actual );
 	}
 
@@ -430,7 +454,9 @@ final class SettingsPageTest extends TestCase {
 		$options  = self::$parsely->get_options();
 
 		unset( $options['track_post_types_as'] );
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $expected, $actual );
 	}
 
@@ -453,7 +479,9 @@ final class SettingsPageTest extends TestCase {
 		$options  = self::$parsely->get_options();
 
 		$options['track_post_types_as'] = array();
-		$actual                         = self::$settings_page->validate_options( $options );
+		$actual                         = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $expected, $actual );
 	}
 
@@ -476,7 +504,10 @@ final class SettingsPageTest extends TestCase {
 		$options  = self::$parsely->get_options();
 
 		$options['track_post_types_as'] = 'string';
-		$actual                         = self::$settings_page->validate_options( $options ); // @phpstan-ignore-line
+		$actual                         = self::$settings_page->validate_options(
+			// @phpstan-ignore argument.type
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertSame( $expected, $actual );
 	}
 
@@ -499,7 +530,9 @@ final class SettingsPageTest extends TestCase {
 		$options  = self::$parsely->get_options();
 
 		unset( $options['disable_autotrack'] );
-		$actual = self::$settings_page->validate_options( $options );
+		$actual = self::$settings_page->validate_options(
+			$this->transform_pch_options_for_validation( $options )
+		);
 		self::assertEquals( $expected, $actual );
 	}
 
@@ -702,6 +735,23 @@ final class SettingsPageTest extends TestCase {
 			'success'     => $response['success'],
 			'body'        => $this->wp_json_encode( $response ),
 		);
+	}
+
+	/**
+	 * Transforms Content Helper options to the format expected by the
+	 * validation function of the Settings_Page class.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param ParselySettingOptions $options The options to transform.
+	 * @return ParselySettingOptions The transformed options.
+	 */
+	private function transform_pch_options_for_validation( $options ) {
+		$options['content_helper']['smart_linking']['allowed_user_roles']       = array( 'administrator' => true );
+		$options['content_helper']['title_suggestions']['allowed_user_roles']   = array( 'administrator' => true );
+		$options['content_helper']['excerpt_suggestions']['allowed_user_roles'] = array( 'administrator' => true );
+
+		return $options;
 	}
 
 	/**
