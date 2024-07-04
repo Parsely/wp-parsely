@@ -52,8 +52,18 @@ export class ContentHelperError extends Error {
 	protected hint: string | null = null;
 	public retryFetch: boolean;
 
-	constructor( message: string, code: ContentHelperErrorCode, prefix = __( 'Error: ', 'wp-parsely' ) ) {
-		super( prefix + message );
+	constructor(
+		message: string,
+		code: ContentHelperErrorCode,
+		messagePrefix = __( 'Error: ', 'wp-parsely' )
+	) {
+		// Avoid double message prefix.
+		if ( message.startsWith( messagePrefix ) ) {
+			messagePrefix = '';
+		}
+
+		// Initialization.
+		super( messagePrefix + message );
 		this.name = this.constructor.name;
 		this.code = code;
 
