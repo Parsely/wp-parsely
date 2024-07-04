@@ -108,14 +108,6 @@ function parsely_initialize_plugin(): void {
 	$GLOBALS['parsely'] = new Parsely();
 	$GLOBALS['parsely']->run();
 
-	/**
-	 * The Editor Sidebar instance.
-	 *
-	 * @since 3.16.0
-	 * @var Editor_Sidebar $GLOBALS['parsely_editor_sidebar']
-	 */
-	$GLOBALS['parsely_editor_sidebar'] = new Editor_Sidebar( $GLOBALS['parsely'] );
-
 	if ( class_exists( 'WPGraphQL' ) ) {
 		$graphql = new GraphQL_Metadata( $GLOBALS['parsely'] );
 		$graphql->run();
@@ -294,13 +286,20 @@ function init_content_helper_editor_sidebar(): void {
 
 require_once __DIR__ . '/src/content-helper/excerpt-generator/class-excerpt-generator.php';
 
-add_action( 'init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
+add_action( 'admin_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
 /**
  * Initializes the PCH Editor Sidebar features.
  *
  * @since 3.16.0
  */
 function parsely_content_helper_editor_sidebar_features(): void {
+	/**
+	 * The Editor Sidebar instance.
+	 *
+	 * @since 3.16.0
+	 * @var Editor_Sidebar $GLOBALS['parsely_editor_sidebar']
+	 */
+	$GLOBALS['parsely_editor_sidebar'] = new Editor_Sidebar( $GLOBALS['parsely'] );
 	$GLOBALS['parsely_editor_sidebar']->init_features();
 }
 
