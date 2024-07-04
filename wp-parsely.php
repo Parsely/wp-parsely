@@ -78,6 +78,7 @@ require_once __DIR__ . '/src/Models/class-smart-link.php';
 require_once __DIR__ . '/src/Models/class-inbound-smart-link.php';
 
 require_once __DIR__ . '/src/class-parsely.php';
+require_once __DIR__ . '/src/class-permissions.php';
 require_once __DIR__ . '/src/class-scripts.php';
 require_once __DIR__ . '/src/class-dashboard-link.php';
 require_once __DIR__ . '/src/class-validator.php';
