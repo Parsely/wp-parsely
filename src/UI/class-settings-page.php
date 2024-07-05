@@ -158,31 +158,33 @@ final class Settings_Page {
 	/**
 	 * Enqueues all needed scripts and styles for Parse.ly plugin settings page.
 	 *
-	 * @param string $hook_suffix The current page being loaded.
+	 * @param string|null $hook_suffix The current page being loaded.
 	 */
-	public function enqueue_settings_assets( string $hook_suffix ): void {
-		if ( 'settings_page_parsely' === $hook_suffix ) {
-			add_filter( 'media_library_months_with_files', '__return_empty_array' );
-			wp_enqueue_media();
-
-			$admin_settings_asset = get_asset_info( 'build/admin-settings.asset.php' );
-			$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
-
-			wp_enqueue_script(
-				'parsely-admin-settings',
-				$built_assets_url . 'admin-settings.js',
-				$admin_settings_asset['dependencies'],
-				$admin_settings_asset['version'],
-				true
-			);
-
-			wp_enqueue_style(
-				'parsely-admin-settings',
-				$built_assets_url . 'admin-settings.css',
-				$admin_settings_asset['dependencies'],
-				$admin_settings_asset['version']
-			);
+	public function enqueue_settings_assets( ?string $hook_suffix ): void {
+		if ( ! is_string( $hook_suffix ) || 'settings_page_parsely' !== $hook_suffix ) {
+			return;
 		}
+
+		add_filter( 'media_library_months_with_files', '__return_empty_array' );
+		wp_enqueue_media();
+
+		$admin_settings_asset = get_asset_info( 'build/admin-settings.asset.php' );
+		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
+
+		wp_enqueue_script(
+			'parsely-admin-settings',
+			$built_assets_url . 'admin-settings.js',
+			$admin_settings_asset['dependencies'],
+			$admin_settings_asset['version'],
+			true
+		);
+
+		wp_enqueue_style(
+			'parsely-admin-settings',
+			$built_assets_url . 'admin-settings.css',
+			$admin_settings_asset['dependencies'],
+			$admin_settings_asset['version']
+		);
 	}
 
 	/**
