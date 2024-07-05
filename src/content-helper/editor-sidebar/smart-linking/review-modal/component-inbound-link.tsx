@@ -7,6 +7,7 @@ import { __experimentalDivider as Divider, Button, KeyboardShortcuts, Tooltip } 
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { arrowLeft, arrowRight, Icon, page } from '@wordpress/icons';
+import { Telemetry } from '../../../../js/telemetry/telemetry';
 
 /**
  * Internal dependencies
@@ -166,6 +167,12 @@ ${ paragraph ?? '<p></p>' }
 						target="_blank"
 						href={ link.post_data?.edit_link + '&smart-link=' + link.uid }
 						variant="secondary"
+						onClick={ () => {
+							Telemetry.trackEvent( 'smart_linking_open_in_editor_pressed', {
+								type: 'inbound',
+								uid: link.uid,
+							} );
+						} }
 					>
 						{ __( 'Open in the Editor', 'wp-parsely' ) }
 					</Button>

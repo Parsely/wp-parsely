@@ -4,6 +4,7 @@
 import { KeyboardShortcuts, MenuItem, TabPanel } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { Telemetry } from '../../../../js/telemetry/telemetry';
 
 /**
  * Internal dependencies
@@ -152,6 +153,12 @@ export const ReviewModalSidebar = ( {
 					if ( tabName === 'inbound' && inboundLinks && inboundLinks.length > 0 ) {
 						setSelectedLink( inboundLinks[ 0 ] );
 					}
+
+					Telemetry.trackEvent( 'smart_linking_modal_tab_selected', {
+						tab: tabName,
+						total_inbound: inboundLinks?.length ?? 0,
+						total_outbound: outboundLinks?.length ?? 0,
+					} );
 				} }
 			>
 				{ ( tab ) => (
