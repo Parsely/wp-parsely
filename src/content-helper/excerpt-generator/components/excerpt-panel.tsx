@@ -21,7 +21,7 @@ import { count } from '@wordpress/wordcount';
 import { external } from '@wordpress/icons';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { ContentHelperError } from '../../common/content-helper-error';
+import { ContentHelperError, ContentHelperErrorCode } from '../../common/content-helper-error';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { ExcerptGeneratorProvider } from '../provider';
 
@@ -55,7 +55,6 @@ const PostExcerptGenerator = () => {
 	} );
 
 	const { editPost } = useDispatch( editorStore );
-	const excerptGeneratorProvider = new ExcerptGeneratorProvider();
 
 	// Get the current excerpt, post content, and post title.
 	const { excerpt, postContent, postTitle } = useSelect( ( select ) => {
@@ -124,15 +123,23 @@ const PostExcerptGenerator = () => {
 
 		try {
 			Telemetry.trackEvent( 'excerpt_generator_pressed' );
-			const requestedExcerpt = await excerptGeneratorProvider.generateExcerpt( postTitle, postContent );
+			const requestedExcerpt = await ExcerptGeneratorProvider.getInstance().generateExcerpt(
+				postTitle,
+				postContent
+			);
 			setExcerptData( {
 				currentExcerpt: requestedExcerpt,
 				isUnderReview: true,
 				newExcerptGeneratedCount: excerptData.newExcerptGeneratedCount + 1,
 				oldExcerpt: excerpt,
 			} );
-		} catch ( err: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			setError( err );
+		} catch ( err: unknown ) {
+			if ( err instanceof ContentHelperError ) {
+				setError( err );
+			} else {
+				setError( new ContentHelperError( __( 'An unknown error occurred.', 'wp-parsely' ), ContentHelperErrorCode.UnknownError ) );
+				console.error( err ); // eslint-disable-line no-console
+			}
 		} finally {
 			setLoading( false );
 		}
@@ -265,7 +272,7 @@ const PostExcerptGenerator = () => {
 							onClick={ generateExcerpt }
 							variant="primary"
 							isBusy={ isLoading }
-							disabled={ isLoading }
+							disabled={ isLoading || ! postContent }
 						>
 							{ isLoading && __( 'Generating Excerpt…', 'wp-parsely' ) }
 							{ ! isLoading && excerptData.newExcerptGeneratedCount > 0 &&

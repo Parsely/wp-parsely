@@ -171,7 +171,13 @@ export abstract class BaseProvider {
 				);
 			}
 
-			return Promise.reject( new ContentHelperError( wpError.message, wpError.code ) );
+			let errorMessage = wpError.message;
+			// The error message might be an object with multiple messages.
+			if ( typeof wpError.message === 'object' && wpError.message[ 0 ].msg ) {
+				errorMessage = wpError.message[ 0 ].msg;
+			}
+
+			return Promise.reject( new ContentHelperError( errorMessage, wpError.code ) );
 		} finally {
 			// Clean-up the AbortController after a successful request.
 			this.abortControllers.delete( abortId );
