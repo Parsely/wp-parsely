@@ -287,6 +287,8 @@ function init_content_helper_editor_sidebar(): void {
 require_once __DIR__ . '/src/content-helper/excerpt-generator/class-excerpt-generator.php';
 
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
+add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
+
 /**
  * Initializes the PCH Editor Sidebar features.
  *
