@@ -12,6 +12,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { dispatchCoreBlockEditor, dispatchCoreEditor } from '../../../../@types/gutenberg/types';
+import { Telemetry } from '../../../../js/telemetry/telemetry';
 import { InboundSmartLink, SmartLink } from '../provider';
 import { SmartLinkingStore } from '../store';
 import { applyNodeToBlock, isInboundSmartLink, selectSmartLink } from '../utils';
@@ -291,6 +292,13 @@ const SmartLinkingReviewModalComponent = ( {
 		onAppliedLink( selectedLink );
 		await applyLinkToBlock( selectedLink.match.blockId, selectedLink );
 
+		Telemetry.trackEvent( 'smart_linking_link_accepted', {
+			link: selectedLink.href,
+			title: selectedLink.title,
+			text: selectedLink.text,
+			uid: selectedLink.uid,
+		} );
+
 		// If there are no more suggested links, close the modal.
 		if ( getSuggestedLinks().length === 0 ) {
 			onCloseHandler();
@@ -331,6 +339,13 @@ const SmartLinkingReviewModalComponent = ( {
 		}
 
 		await removeSmartLink( selectedLink.uid );
+
+		Telemetry.trackEvent( 'smart_linking_link_rejected', {
+			link: selectedLink.href,
+			title: selectedLink.title,
+			text: selectedLink.text,
+			uid: selectedLink.uid,
+		} );
 	};
 
 	/**
@@ -352,6 +367,13 @@ const SmartLinkingReviewModalComponent = ( {
 			const previousIndex = currentIndex - 1;
 
 			await removeLinkFromBlock( block, selectedLink );
+
+			Telemetry.trackEvent( 'smart_linking_link_removed', {
+				link: selectedLink.href,
+				title: selectedLink.title,
+				text: selectedLink.text,
+				uid: selectedLink.uid,
+			} );
 
 			currentSmartLinks = getSmartLinks();
 
@@ -398,6 +420,11 @@ const SmartLinkingReviewModalComponent = ( {
 			if ( blockContent ) {
 				selectSmartLink( blockContent as HTMLElement, selectedLink.uid );
 			}
+
+			Telemetry.trackEvent( 'smart_linking_select_in_editor_pressed', {
+				type: 'outbound',
+				uid: selectedLink.uid,
+			} );
 
 			// Close the modal.
 			onCloseHandler();
