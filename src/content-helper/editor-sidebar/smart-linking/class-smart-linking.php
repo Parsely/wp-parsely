@@ -44,7 +44,7 @@ class Smart_Linking extends Content_Helper_Feature {
 	 * @return string The filter name.
 	 */
 	public static function get_feature_filter_name(): string {
-		return self::get_global_filter_name() . '_smart_linking';
+		return ''; // Not in use for this feature.
 	}
 
 	/**
