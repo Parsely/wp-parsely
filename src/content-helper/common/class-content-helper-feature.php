@@ -91,8 +91,16 @@ abstract class Content_Helper_Feature {
 	 */
 	protected function can_enable_feature( bool ...$conditions ): bool {
 		// Get filter values.
-		$global  = apply_filters( self::get_global_filter_name(), null ); // phpcs:ignore
-		$feature = apply_filters( static::get_feature_filter_name(), null ); // phpcs:ignore
+		$global  = null;
+		$feature = null;
+
+		if ( '' !== self::get_global_filter_name() ) {
+			$global  = apply_filters( self::get_global_filter_name(), null ); // phpcs:ignore
+		}
+
+		if ( '' !== static::get_feature_filter_name() ) {
+			$feature = apply_filters( static::get_feature_filter_name(), null ); // phpcs:ignore
+		}
 
 		// If not set, the feature filter will get its value from the global
 		// filter.
