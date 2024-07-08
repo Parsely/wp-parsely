@@ -331,7 +331,7 @@ export const ExcerptPanel = () => {
 		<PostTypeSupportCheck supportKeys="excerpt">
 			<PluginDocumentSettingPanel
 				name="parsely-post-excerpt"
-				title="Excerpt"
+				title={ __( 'Excerpt', 'wp-parsely' ) }
 			>
 				<PostExcerptGenerator />
 			</PluginDocumentSettingPanel>

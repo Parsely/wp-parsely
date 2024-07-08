@@ -34,7 +34,7 @@ export const ParselyRecommendationsInspectorControls = ( {
 	}
 
 	return <InspectorControls>
-		<PanelBody title="Settings" initialOpen={ true }>
+		<PanelBody title={ __( 'Settings', 'wp-parsely' ) } initialOpen={ true }>
 			<PanelRow>
 				<TextControl
 					label={ __( 'Title', 'wp-parsely' ) }
