@@ -10,10 +10,9 @@ declare(strict_types=1);
 
 namespace Parsely\RemoteAPI\ContentSuggestions;
 
+use Parsely\Models\Smart_Link;
 use Parsely\Parsely;
 use WP_Error;
-
-require_once __DIR__ . '/class-link-suggestion.php';
 
 /**
  * Class for Content Suggestions Suggest Linked Reference (Smart Links) API.
@@ -36,7 +35,7 @@ class Suggest_Linked_Reference_API extends Content_Suggestions_Base_API {
 	 * @param int      $max_links           The maximum number of links to return.
 	 * @param string[] $url_exclusion_list  A list of URLs to exclude from the suggestions.
 	 *
-	 * @return Link_Suggestion[]|WP_Error The response from the remote API, or a WP_Error
+	 * @return Smart_Link[]|WP_Error The response from the remote API, or a WP_Error
 	 *                                    object if the response is an error.
 	 */
 	public function get_links(
@@ -71,15 +70,17 @@ class Suggest_Linked_Reference_API extends Content_Suggestions_Base_API {
 			);
 		}
 
-		// Convert the links to Link_Suggestion objects.
+		// Convert the links to Smart_Link objects.
 		$links = array();
 		foreach ( $decoded->result as $link ) {
-			$link_obj         = new Link_Suggestion();
-			$link_obj->href   = esc_url( $link->canonical_url );
-			$link_obj->title  = esc_attr( $link->title );
-			$link_obj->text   = wp_kses_post( $link->text );
-			$link_obj->offset = $link->offset;
-			$links[]          = $link_obj;
+			$link     = apply_filters( 'wp_parsely_suggest_linked_reference_link', $link );
+			$link_obj = new Smart_Link(
+				esc_url( $link->canonical_url ),
+				esc_attr( $link->title ),
+				wp_kses_post( $link->text ),
+				$link->offset
+			);
+			$links[]  = $link_obj;
 		}
 
 		return $links;

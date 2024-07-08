@@ -4,6 +4,7 @@
 import { InspectorControls } from '@wordpress/block-editor';
 import { PanelBody } from '@wordpress/components';
 import { compose, createHigherOrderComponent } from '@wordpress/compose';
+import domReady from '@wordpress/dom-ready';
 import { addFilter } from '@wordpress/hooks';
 
 /**
@@ -13,15 +14,17 @@ import { __ } from '@wordpress/i18n';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { SettingsProvider, SidebarSettings, useSettings } from '../../common/settings';
+import { isEditorReady } from '../../common/utils/functions';
+import { getContentHelperPermissions } from '../../common/utils/permissions';
 import { VerifyCredentials } from '../../common/verify-credentials';
 import { getSettingsFromJson } from '../editor-sidebar';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from './component';
 import { initBlockOverlay } from './component-block-overlay';
 import './smart-linking.scss';
+import { selectSmartLink } from './utils';
 
 export const DEFAULT_MAX_LINKS = 10;
-
-export const DEFAULT_MAX_LINK_WORDS = 4;
+const permissions = getContentHelperPermissions();
 
 /**
  * Higher order component to add the settings provider to the block edit component.
@@ -84,6 +87,7 @@ const SmartLinkingInspectorControlPanel = createHigherOrderComponent( ( BlockEdi
 							<SmartLinkingPanel
 								selectedBlockClientId={ props.clientId }
 								context={ SmartLinkingPanelContext.BlockInspector }
+								permissions={ permissions }
 							/>
 						</VerifyCredentials>
 					</PanelBody>
@@ -111,6 +115,10 @@ const SmartLinkingPanelWithSettingsProvider = compose(
  * @since 3.14.0
  */
 export const initSmartLinking = (): void => {
+	if ( true !== permissions.SmartLinking ) {
+		return;
+	}
+
 	/**
 	 * Add smart linking inspector control panel to paragraph block.
 	 */
@@ -124,4 +132,23 @@ export const initSmartLinking = (): void => {
 	 * Initialize the block overlay component.
 	 */
 	initBlockOverlay();
+
+	/**
+	 * If the smart-link query parameter is present, it will select that smart link, and scroll to it.
+	 * This is used when the "Open in Editor" button is clicked from the inbound smart link details page.
+	 *
+	 * @since 3.16.0
+	 */
+	domReady( () => {
+		// Check if the smart-link query parameter is present.
+		const urlParams = new URLSearchParams( window.location.search );
+		const smartLinkValue = urlParams.get( 'smart-link' );
+
+		if ( smartLinkValue ) {
+			isEditorReady().then( () => {
+				const editorContent = document.querySelector( '.wp-block-post-content' );
+				selectSmartLink( editorContent as HTMLElement, smartLinkValue );
+			} );
+		}
+	} );
 };

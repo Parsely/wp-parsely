@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\Content_Helper;
 
 use Parsely\Parsely;
+use Parsely\Permissions;
 use WP_REST_Request;
 
 /**
@@ -90,8 +91,16 @@ abstract class Content_Helper_Feature {
 	 */
 	protected function can_enable_feature( bool ...$conditions ): bool {
 		// Get filter values.
-		$global  = apply_filters( self::get_global_filter_name(), null ); // phpcs:ignore
-		$feature = apply_filters( static::get_feature_filter_name(), null ); // phpcs:ignore
+		$global  = null;
+		$feature = null;
+
+		if ( '' !== self::get_global_filter_name() ) {
+			$global  = apply_filters( self::get_global_filter_name(), null ); // phpcs:ignore
+		}
+
+		if ( '' !== static::get_feature_filter_name() ) {
+			$feature = apply_filters( static::get_feature_filter_name(), null ); // phpcs:ignore
+		}
 
 		// If not set, the feature filter will get its value from the global
 		// filter.
@@ -128,6 +137,17 @@ abstract class Content_Helper_Feature {
 		$are_credentials_set = $this->parsely->site_id_is_set() &&
 			$this->parsely->api_secret_is_set();
 
+		// Inject Content Helper permissions.
+		$permissions_json = Permissions::get_pch_permissions_json(
+			$this->parsely->get_options()['content_helper']
+		);
+		wp_add_inline_script(
+			static::get_script_id(),
+			"window.wpParselyContentHelperPermissions = '$permissions_json';",
+			'before'
+		);
+
+		// Inject a message if the required credentials are not set.
 		if ( ! $are_credentials_set ) {
 			$message = $this->get_credentials_not_set_message();
 

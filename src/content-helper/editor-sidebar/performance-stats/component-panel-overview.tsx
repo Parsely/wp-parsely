@@ -74,7 +74,7 @@ const isDataPointVisible = ( settings: SidebarSettings, name: string ): boolean 
 type DataPointProps = {
 	title: string;
 	value: string;
-	icon: JSX.Element;
+	icon: React.JSX.Element;
 	smallText?: boolean;
 	isVisible?: boolean;
 }
@@ -90,7 +90,7 @@ type DataPointProps = {
  */
 const DataPoint = (
 	{ title, value, icon, smallText, isVisible = true }: Readonly<DataPointProps>
-): JSX.Element | null => {
+): React.JSX.Element | null => {
 	if ( ! isVisible ) {
 		return null;
 	}
@@ -122,7 +122,7 @@ type PerformanceDataPointsProp = {
  */
 const PerformanceDataPoints = (
 	{ dataPoints }: Readonly<PerformanceDataPointsProp>
-): JSX.Element => {
+): React.JSX.Element => {
 	return (
 		<div className="performance-data-points">
 			{ dataPoints.map( ( { title, value, icon, smallText, isVisible } ) => (
@@ -157,7 +157,7 @@ type OverviewMenuProps = {
  */
 const OverviewMenu = (
 	{ onClose }: Readonly<OverviewMenuProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	/**
@@ -266,7 +266,7 @@ type PerformanceOverviewPanelProps = {
 export const PerformanceOverviewPanel = ( {
 	data,
 	isLoading = false,
-}: Readonly<PerformanceOverviewPanelProps> ): JSX.Element => {
+}: Readonly<PerformanceOverviewPanelProps> ): React.JSX.Element => {
 	const { settings } = useSettings<SidebarSettings>();
 
 	let dataPointsWithValues: DataPointProps[] = [];

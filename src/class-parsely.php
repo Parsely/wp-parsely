@@ -27,13 +27,14 @@ use WP_Post;
  *   use_top_level_cats: bool,
  *   custom_taxonomy_section: string,
  *   cats_as_tags: bool,
+ *   content_helper: Parsely_Options_Content_Helper,
  *   track_authenticated_users: bool,
  *   lowercase_tags: bool,
  *   force_https_canonicals: bool,
  *   track_post_types: string[],
  *   track_page_types: string[],
  *   track_post_types_as?: array<string, string>,
- *   full_metadata_in_non_posts: ?bool,
+ *   full_metadata_in_non_posts: bool,
  *   disable_javascript: bool,
  *   disable_amp: bool,
  *   meta_type: string,
@@ -41,6 +42,18 @@ use WP_Post;
  *   metadata_secret: string,
  *   disable_autotrack: bool,
  *   plugin_version: string,
+ * }
+ *
+ * @phpstan-type Parsely_Options_Content_Helper array{
+ *   ai_features_enabled: bool,
+ *   smart_linking: Parsely_Options_Content_Helper_Feature,
+ *   title_suggestions: Parsely_Options_Content_Helper_Feature,
+ *   excerpt_suggestions: Parsely_Options_Content_Helper_Feature,
+ * }
+ *
+ * @phpstan-type Parsely_Options_Content_Helper_Feature array{
+ *   enabled: bool,
+ *   allowed_user_roles: string[],
  * }
  *
  * @phpstan-type WP_HTTP_Request_Args array{
@@ -78,6 +91,21 @@ class Parsely {
 		'use_top_level_cats'         => false,
 		'custom_taxonomy_section'    => 'category',
 		'cats_as_tags'               => false,
+		'content_helper'             => array(
+			'ai_features_enabled' => true,
+			'smart_linking'       => array(
+				'enabled'            => true,
+				'allowed_user_roles' => array( 'administrator' ),
+			),
+			'title_suggestions'   => array(
+				'enabled'            => true,
+				'allowed_user_roles' => array( 'administrator' ),
+			),
+			'excerpt_suggestions' => array(
+				'enabled'            => true,
+				'allowed_user_roles' => array( 'administrator' ),
+			),
+		),
 		'track_authenticated_users'  => false,
 		'lowercase_tags'             => true,
 		'force_https_canonicals'     => false,
@@ -405,10 +433,19 @@ class Parsely {
 		 */
 		$options = get_option( self::OPTIONS_KEY, null );
 
+		// @phpstan-ignore isset.offset, booleanAnd.alwaysFalse
 		if ( is_array( $options ) && ! isset( $options['full_metadata_in_non_posts'] ) ) {
+			// Existing plugin installation without full metadata option.
 			$this->set_default_full_metadata_in_non_posts();
 		}
 
+		// @phpstan-ignore isset.offset, booleanAnd.alwaysFalse
+		if ( is_array( $options ) && ! isset( $options['content_helper'] ) ) {
+			// Existing plugin installation without Content Helper options.
+			$this->set_default_content_helper_settings_values();
+		}
+
+		// New plugin installation that hasn't saved its options yet.
 		if ( ! is_array( $options ) ) {
 			$this->set_default_track_as_values();
 			$this->set_default_full_metadata_in_non_posts();
@@ -426,6 +463,28 @@ class Parsely {
 			$this->get_managed_credentials(),
 			$this->managed_options
 		);
+	}
+
+	/**
+	 * Returns the value of a nested option.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param string          $option  The option to get.
+	 * @param Parsely_Options $options The options to get the value from.
+	 * @return mixed The value of the nested option.
+	 */
+	public static function get_nested_option_value( $option, $options ) {
+		$keys  = explode( '[', str_replace( ']', '', $option ) );
+		$value = $options;
+
+		foreach ( $keys as $key ) {
+			if ( isset( $value[ $key ] ) ) {
+				$value = $value[ $key ];
+			}
+		}
+
+		return $value;
 	}
 
 	/**
@@ -480,6 +539,22 @@ class Parsely {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * Sets the default values for Content Helper options.
+	 *
+	 * Gives PCH access to all users having the edit_posts capability, to keep
+	 * consistent behavior with plugin versions prior to 3.16.0.
+	 *
+	 * @since 3.16.0
+	 */
+	public function set_default_content_helper_settings_values(): void {
+		$this->option_defaults['content_helper'] =
+		Permissions::build_pch_permissions_settings_array(
+			true,
+			array_keys( Permissions::get_user_roles_with_edit_posts_cap() )
+		);
 	}
 
 	/**

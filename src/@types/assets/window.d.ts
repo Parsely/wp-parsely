@@ -24,6 +24,7 @@ declare global {
 		},
 
 		wpParselyContentHelperSettings: string;
+		wpParselyContentHelperPermissions: string;
 		wpParselyDisableAutotrack?: boolean;
 		wpParselyEmptyCredentialsMessage: string;
 		wpParselyHooks?: _Hooks;

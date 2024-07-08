@@ -21,9 +21,21 @@ import { count } from '@wordpress/wordcount';
 import { external } from '@wordpress/icons';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { ContentHelperError } from '../../common/content-helper-error';
+import { ContentHelperError, ContentHelperErrorCode } from '../../common/content-helper-error';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import { ExcerptGeneratorProvider } from '../provider';
+
+/**
+ * Defines the structure of an object that holds excerpt data.
+ *
+ * @since 3.16.0
+ */
+interface ExcerptData {
+	currentExcerpt: string;
+	isUnderReview: boolean;
+	newExcerptGeneratedCount: number;
+	oldExcerpt: string;
+}
 
 /**
  * The PostExcerptGenerator component displays the excerpt textarea and the Parse.ly AI controls.
@@ -32,12 +44,17 @@ import { ExcerptGeneratorProvider } from '../provider';
  */
 const PostExcerptGenerator = () => {
 	const [ isLoading, setLoading ] = useState<boolean>( false );
-	const [ generatedExcerpt, setGeneratedExcerpt ] = useState<string>( '' );
-	const [ generatedExcerptCount, setGeneratedExcerptCount ] = useState<number>( 0 );
 	const [ error, setError ] = useState<ContentHelperError>();
+	const [ onChangeFired, setOnChangeFired ] = useState<boolean>( false );
+	const [ wordCountString, setWordCountString ] = useState<string>( '' );
+	const [ excerptData, setExcerptData ] = useState<ExcerptData>( {
+		currentExcerpt: '',
+		isUnderReview: false,
+		newExcerptGeneratedCount: 0,
+		oldExcerpt: '',
+	} );
 
 	const { editPost } = useDispatch( editorStore );
-	const excerptGeneratorProvider = new ExcerptGeneratorProvider();
 
 	// Get the current excerpt, post content, and post title.
 	const { excerpt, postContent, postTitle } = useSelect( ( select ) => {
@@ -61,13 +78,31 @@ const PostExcerptGenerator = () => {
 		};
 	}, [] );
 
-	const hasGeneratedExcerpt = generatedExcerpt.length > 0;
-	const wordCount = count( generatedExcerpt || excerpt, 'words', {} );
-	const wordCountString = sprintf(
-		// Translators: %1$s the number of words in the excerpt.
-		_n( '%1$s word', '%1$s words', wordCount, 'wp-parsely' ),
-		wordCount
-	);
+	// Update the word count string when the excerpt changes.
+	useEffect( () => {
+		/**
+		 * Returns a descriptive text for the textarea's word count.
+		 *
+		 * @since 3.16.0
+		 *
+		 * @return {string} The word count string.
+		 */
+		const getWordCountString = (): string => {
+			const wordCount = count( excerptData.currentExcerpt || excerpt, 'words', {} );
+
+			if ( wordCount > 0 ) {
+				return sprintf(
+					// Translators: %1$s the number of words in the excerpt.
+					_n( '%1$s word', '%1$s words', wordCount, 'wp-parsely' ),
+					wordCount
+				);
+			}
+
+			return '';
+		};
+
+		setWordCountString( getWordCountString() );
+	}, [ excerptData.currentExcerpt, excerpt ] );
 
 	// Scroll the textarea to the top when the generated excerpt changes.
 	useEffect( () => {
@@ -75,10 +110,10 @@ const PostExcerptGenerator = () => {
 		if ( textarea ) {
 			textarea.scrollTop = 0;
 		}
-	}, [ generatedExcerpt ] );
+	}, [ excerptData.newExcerptGeneratedCount ] );
 
 	/**
-	 * Generates an excerpt using the Parse.ly AI.
+	 * Generates an excerpt using Parse.ly AI.
 	 *
 	 * @since 3.13.0
 	 */
@@ -88,11 +123,23 @@ const PostExcerptGenerator = () => {
 
 		try {
 			Telemetry.trackEvent( 'excerpt_generator_pressed' );
-			const requestedExcerpt = await excerptGeneratorProvider.generateExcerpt( postTitle, postContent );
-			setGeneratedExcerpt( requestedExcerpt );
-			setGeneratedExcerptCount( generatedExcerptCount + 1 );
-		} catch ( err: any ) { // eslint-disable-line @typescript-eslint/no-explicit-any
-			setError( err );
+			const requestedExcerpt = await ExcerptGeneratorProvider.getInstance().generateExcerpt(
+				postTitle,
+				postContent
+			);
+			setExcerptData( {
+				currentExcerpt: requestedExcerpt,
+				isUnderReview: true,
+				newExcerptGeneratedCount: excerptData.newExcerptGeneratedCount + 1,
+				oldExcerpt: excerpt,
+			} );
+		} catch ( err: unknown ) {
+			if ( err instanceof ContentHelperError ) {
+				setError( err );
+			} else {
+				setError( new ContentHelperError( __( 'An unknown error occurred.', 'wp-parsely' ), ContentHelperErrorCode.UnknownError ) );
+				console.error( err ); // eslint-disable-line no-console
+			}
 		} finally {
 			setLoading( false );
 		}
@@ -104,8 +151,8 @@ const PostExcerptGenerator = () => {
 	 * @since 3.13.0
 	 */
 	const acceptGeneratedExcerpt = async () => {
-		await editPost( { excerpt: generatedExcerpt } );
-		setGeneratedExcerpt( '' );
+		await editPost( { excerpt: excerptData.currentExcerpt } );
+		setExcerptData( { ...excerptData, isUnderReview: false } );
 		Telemetry.trackEvent( 'excerpt_generator_accepted' );
 	};
 
@@ -115,7 +162,12 @@ const PostExcerptGenerator = () => {
 	 * @since 3.13.0
 	 */
 	const discardGeneratedExcerpt = async () => {
-		setGeneratedExcerpt( '' );
+		editPost( { excerpt: excerptData.oldExcerpt } );
+		setExcerptData( {
+			...excerptData,
+			currentExcerpt: excerptData.oldExcerpt, // Updates word count in UI.
+			isUnderReview: false,
+		} );
 		Telemetry.trackEvent( 'excerpt_generator_discarded' );
 	};
 
@@ -125,8 +177,8 @@ const PostExcerptGenerator = () => {
 	 * @since 3.13.0
 	 */
 	const getExcerptTextareaValue = (): string => {
-		if ( hasGeneratedExcerpt ) {
-			return generatedExcerpt;
+		if ( excerptData.isUnderReview ) {
+			return excerptData.currentExcerpt;
 		}
 
 		return excerpt;
@@ -144,10 +196,26 @@ const PostExcerptGenerator = () => {
 					__nextHasNoMarginBottom
 					label={ __( 'Write an excerpt (optional)', 'wp-parsely' ) }
 					className="editor-post-excerpt__textarea"
-					onChange={ ( value ) => editPost( { excerpt: value } ) }
-					readOnly={ isLoading || hasGeneratedExcerpt }
+					onChange={ ( value ) => {
+						if ( ! excerptData.isUnderReview ) {
+							editPost( { excerpt: value } );
+						}
+						setExcerptData( { ...excerptData, currentExcerpt: value } );
+						setOnChangeFired( true );
+					} }
+					onKeyUp={ () => { // Make word count work with Keyboard shortcuts.
+						if ( onChangeFired ) {
+							setOnChangeFired( false );
+							return;
+						}
+
+						const textarea = document.querySelector( '.editor-post-excerpt textarea' );
+						const value = textarea?.textContent ?? '';
+
+						setExcerptData( { ...excerptData, currentExcerpt: value } );
+					} }
 					value={ isLoading ? '' : getExcerptTextareaValue() }
-					help={ wordCount ? wordCountString : null }
+					help={ wordCountString ? wordCountString : null }
 				/>
 			</div>
 			<Button
@@ -175,14 +243,15 @@ const PostExcerptGenerator = () => {
 				</div>
 				{ error && (
 					<Notice
-						status="info"
 						className="wp-parsely-excerpt-generator-error"
+						onRemove={ () => setError( undefined ) }
+						status="info"
 					>
 						{ error.Message() }
 					</Notice>
 				) }
 				<div className="wp-parsely-excerpt-generator-controls">
-					{ hasGeneratedExcerpt ? (
+					{ excerptData.isUnderReview ? (
 						<>
 							<Button
 								variant="secondary"
@@ -203,11 +272,15 @@ const PostExcerptGenerator = () => {
 							onClick={ generateExcerpt }
 							variant="primary"
 							isBusy={ isLoading }
-							disabled={ isLoading }
+							disabled={ isLoading || ! postContent }
 						>
 							{ isLoading && __( 'Generating Excerpt…', 'wp-parsely' ) }
-							{ ! isLoading && generatedExcerptCount > 0 && __( 'Regenerate Excerpt', 'wp-parsely' ) }
-							{ ! isLoading && generatedExcerptCount === 0 && __( 'Generate Excerpt', 'wp-parsely' ) }
+							{ ! isLoading && excerptData.newExcerptGeneratedCount > 0 &&
+								__( 'Regenerate Excerpt', 'wp-parsely' )
+							}
+							{ ! isLoading && excerptData.newExcerptGeneratedCount === 0 &&
+								__( 'Generate Excerpt', 'wp-parsely' )
+							}
 						</Button>
 					) }
 				</div>
@@ -233,9 +306,9 @@ const PostExcerptGenerator = () => {
  *
  * @since 3.14.0
  *
- * @return {JSX.Element} The loading animation component.
+ * @return {import('react').JSX.Element} The loading animation component.
  */
-const LoadingAnimation = (): JSX.Element => {
+const LoadingAnimation = (): React.JSX.Element => {
 	return (
 		<Animate type="loading">
 			{ ( { className } ) => (
@@ -258,7 +331,7 @@ export const ExcerptPanel = () => {
 		<PostTypeSupportCheck supportKeys="excerpt">
 			<PluginDocumentSettingPanel
 				name="parsely-post-excerpt"
-				title="Excerpt"
+				title={ __( 'Excerpt', 'wp-parsely' ) }
 			>
 				<PostExcerptGenerator />
 			</PluginDocumentSettingPanel>

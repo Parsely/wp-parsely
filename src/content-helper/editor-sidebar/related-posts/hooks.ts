@@ -4,12 +4,11 @@
 // eslint-disable-next-line import/named
 import { store as coreStore, Taxonomy, User } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
-import { store as editorStore } from '@wordpress/editor';
+import { GutenbergFunction } from '../../../@types/gutenberg/types';
 
 /**
  * Internal dependencies
  */
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
 
 /**
  * Defines the states of post data as handled in the usePostData() function.
@@ -44,15 +43,15 @@ interface PostData {
  */
 export function usePostData(): PostData {
 	const { authors, categories, tags, isReady } = useSelect( ( select ) => {
-		const { getEditedPostAttribute } = select( editorStore ) as GutenbergFunction;
 		const { getEntityRecords } = select( coreStore );
 		let authorRecords: User[] | null | undefined;
 		let categoryRecords: Taxonomy[] | null | undefined;
 		let tagRecords: Taxonomy[] | null | undefined;
 
-		const authorId = getEditedPostAttribute( 'author' );
-		const categoryIds = getEditedPostAttribute( 'categories' );
-		const tagIds = getEditedPostAttribute( 'tags' );
+		const editor = select( 'core/editor' ) as GutenbergFunction;
+		const authorId = editor.getEditedPostAttribute( 'author' );
+		const categoryIds = editor.getEditedPostAttribute( 'categories' );
+		const tagIds = editor.getEditedPostAttribute( 'tags' );
 
 		if ( Number.isInteger( authorId ) ) {
 			authorRecords = getEntityRecords(

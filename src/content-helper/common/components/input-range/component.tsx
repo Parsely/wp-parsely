@@ -3,8 +3,8 @@
  */
 import {
 	__experimentalHeading as Heading,
-	__experimentalNumberControl as NumberControl,
 	__experimentalInputControlSuffixWrapper as InputControlSuffixWrapper,
+	__experimentalNumberControl as NumberControl,
 	RangeControl,
 } from '@wordpress/components';
 
@@ -45,7 +45,7 @@ export const InputRange = ( {
 	initialPosition,
 	disabled,
 	className,
-}: Readonly<InputRangeProps> ): JSX.Element => {
+}: Readonly<InputRangeProps> ): React.JSX.Element => {
 	return (
 		<div className={ `parsely-inputrange-control ${ className ? className : '' }` }>
 			<Heading className={ 'parsely-inputrange-control__label' } level={ 3 }>{ label }</Heading>

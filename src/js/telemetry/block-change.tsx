@@ -1,14 +1,17 @@
 /**
  * WordPress dependencies
  */
-import { useEffect } from '@wordpress/element';
+// eslint-disable-next-line import/named
+import { BlockInstance } from '@wordpress/blocks';
 import { select, subscribe } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
 
 /**
  * External dependencies
  */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import debounce from 'lodash/debounce';
+import { isEditorReady } from '../../content-helper/common/utils/functions';
 
 /**
  * Internal dependencies
@@ -58,9 +61,13 @@ export const BlockChangeMonitor = (): null => {
 			 * @since 3.14.0
 			 */
 			const checkBlocks = () => {
-				const currentBlocks = select( 'core/block-editor' ).getBlocks();
+				const currentBlocks: BlockInstance[] = select(
+					'core/block-editor'
+				).getBlocks();
 				const currentBlockIds = currentBlocks.map( ( block ) => block.clientId );
-				const previousBlockIds = previousBlocks.map( ( block ) => block.clientId );
+				const previousBlockIds = previousBlocks.map(
+					( block: BlockInstance ) => block.clientId
+				);
 
 				// Find added blocks.
 				const addedBlocks = currentBlocks.filter(
@@ -73,9 +80,13 @@ export const BlockChangeMonitor = (): null => {
 				} );
 
 				// Find removed blocks.
-				const removedBlockIds = previousBlockIds.filter( ( id ) => ! currentBlockIds.includes( id ) );
-				removedBlockIds.forEach( ( id ) => {
-					const removedBlock = previousBlocks.find( ( block ) => block.clientId === id );
+				const removedBlockIds = previousBlockIds.filter(
+					( id: string ) => ! currentBlockIds.includes( id )
+				);
+				removedBlockIds.forEach( ( id: string ) => {
+					const removedBlock = previousBlocks.find(
+						( block: BlockInstance ) => block.clientId === id
+					);
 					if ( removedBlock && removedBlock.name.startsWith( parselyBlockPrefix ) ) {
 						Telemetry.trackEvent( 'block_removed', { block: removedBlock.name } );
 					}
@@ -89,23 +100,6 @@ export const BlockChangeMonitor = (): null => {
 			const debouncedCheckBlocks = debounce( checkBlocks, debounceInterval );
 			unsubscribe = subscribe( debouncedCheckBlocks, 'core/block-editor' );
 			return unsubscribe;
-		};
-
-		/**
-		 * Checks if the editor is ready to be monitored.
-		 * It waits for the editor to be clean or to have at least one block, and it resolves when it's ready.
-		 *
-		 * @since 3.14.0
-		 */
-		const isEditorReady = async (): Promise<void> => {
-			return new Promise( ( resolve ) => {
-				const unsubscribeEditorReady = subscribe( () => {
-					if ( select( 'core/editor' ).isCleanNewPost() || select( 'core/block-editor' ).getBlockCount() > 0 ) {
-						unsubscribeEditorReady();
-						resolve();
-					}
-				} );
-			} );
 		};
 
 		// Initialize the block change monitor when the editor is ready.

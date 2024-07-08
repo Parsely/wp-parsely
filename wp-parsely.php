@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://docs.parse.ly/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
- * Version:           3.15.0
+ * Version:           3.16.0
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -32,6 +32,7 @@ use Parsely\Content_Helper\Excerpt_Generator;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
+use Parsely\Endpoints\Content_Helper\Smart_Linking_Endpoint;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Brief_API_Proxy;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Headline_API_Proxy;
 use Parsely\Endpoints\ContentSuggestions\Suggest_Linked_Reference_API_Proxy;
@@ -69,10 +70,15 @@ if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.15.0';
+const PARSELY_VERSION = '3.16.0';
 const PARSELY_FILE    = __FILE__;
 
+require_once __DIR__ . '/src/Models/class-base-model.php';
+require_once __DIR__ . '/src/Models/class-smart-link.php';
+require_once __DIR__ . '/src/Models/class-inbound-smart-link.php';
+
 require_once __DIR__ . '/src/class-parsely.php';
+require_once __DIR__ . '/src/class-permissions.php';
 require_once __DIR__ . '/src/class-scripts.php';
 require_once __DIR__ . '/src/class-dashboard-link.php';
 require_once __DIR__ . '/src/class-validator.php';
@@ -172,6 +178,7 @@ require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-headlin
 require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-linked-reference-api-proxy.php';
 require_once __DIR__ . '/src/Endpoints/user-meta/class-dashboard-widget-settings-endpoint.php';
 require_once __DIR__ . '/src/Endpoints/user-meta/class-editor-sidebar-settings-endpoint.php';
+require_once __DIR__ . '/src/Endpoints/content-helper/class-smart-linking-endpoint.php';
 
 // RemoteAPI base classes.
 require_once __DIR__ . '/src/RemoteAPI/interface-cache.php';
@@ -206,6 +213,9 @@ function parsely_rest_api_init(): void {
 	// Content Helper settings endpoints.
 	( new Dashboard_Widget_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
 	( new Editor_Sidebar_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
+
+	// Internal Content Helper endpoints.
+	( new Smart_Linking_Endpoint( $GLOBALS['parsely'] ) )->run();
 
 	parsely_run_rest_api_endpoint(
 		Related_API::class,
@@ -271,10 +281,29 @@ add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helpe
  * @since 3.9.0 Renamed from init_content_helper().
  */
 function init_content_helper_editor_sidebar(): void {
-	( new Editor_Sidebar( $GLOBALS['parsely'] ) )->run();
+	$GLOBALS['parsely_editor_sidebar']->run();
 }
 
 require_once __DIR__ . '/src/content-helper/excerpt-generator/class-excerpt-generator.php';
+
+add_action( 'admin_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
+add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
+
+/**
+ * Initializes the PCH Editor Sidebar features.
+ *
+ * @since 3.16.0
+ */
+function parsely_content_helper_editor_sidebar_features(): void {
+	/**
+	 * The Editor Sidebar instance.
+	 *
+	 * @since 3.16.0
+	 * @var Editor_Sidebar $GLOBALS['parsely_editor_sidebar']
+	 */
+	$GLOBALS['parsely_editor_sidebar'] = new Editor_Sidebar( $GLOBALS['parsely'] );
+	$GLOBALS['parsely_editor_sidebar']->init_features();
+}
 
 // The priority of 9 is used to ensure that the Excerpt Generator is loaded before the PCH Editor Sidebar (10).
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_excerpt_generator', 9 );

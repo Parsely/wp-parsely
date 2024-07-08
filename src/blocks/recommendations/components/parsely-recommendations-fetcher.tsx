@@ -28,7 +28,7 @@ const updateDelay = 300; // The Block's update delay in the Block Editor when se
 
 export const ParselyRecommendationsFetcher = (
 	{ limit, sort, isEditMode } : Readonly<ParselyRecommendationsFetcherProps>
-): JSX.Element | null => {
+): React.JSX.Element | null => {
 	const {	dispatch } = useRecommendationsStore();
 
 	const query = useMemo( () => ( {

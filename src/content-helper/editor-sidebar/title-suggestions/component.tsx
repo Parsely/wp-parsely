@@ -10,7 +10,7 @@ import { external, Icon } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { dispatchCoreEditor, GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
 import { getPersonaLabel, PersonaProp } from '../../common/components/persona-selector';
 import { getToneLabel, ToneProp } from '../../common/components/tone-selector';
@@ -29,9 +29,9 @@ import './title-suggestions.scss';
  *
  * @since 3.12.0
  *
- * @return {JSX.Element} The Title Suggestions Panel.
+ * @return {import('react').JSX.Element} The Title Suggestions Panel.
  */
-export const TitleSuggestionsPanel = (): JSX.Element => {
+export const TitleSuggestionsPanel = (): React.JSX.Element => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ error, setError ] = useState<ContentHelperError>();
@@ -150,7 +150,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 		setOriginalTitle( TitleType.PostTitle, currentPostTitle );
 
 		// Set the post title to the accepted title.
-		dispatch( 'core/editor' ).editPost( { title: acceptedTitle?.title } );
+		dispatchCoreEditor.editPost( { title: acceptedTitle?.title } );
 
 		// Pin the accepted title on the list of generated titles.
 		if ( acceptedTitle ) {
@@ -177,7 +177,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 						label: __( 'Undo', 'wp-parsely' ),
 						onClick: () => {
 							// Restore the original title.
-							dispatch( 'core/editor' ).editPost( { title: currentPostTitle } );
+							dispatchCoreEditor.editPost( { title: currentPostTitle } );
 							setOriginalTitle( TitleType.PostTitle, undefined );
 						},
 					},
@@ -196,14 +196,7 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 			return;
 		}
 
-		createNotice(
-			'error',
-			__( 'There was an error generating title suggestions.', 'wp-parsely' ),
-			{
-				type: 'snackbar',
-				className: 'parsely-title-suggestion-error',
-			}
-		);
+		error.createErrorSnackbar();
 	}, [ error ] ); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
@@ -246,7 +239,11 @@ export const TitleSuggestionsPanel = (): JSX.Element => {
 					</Button>
 				</div>
 				{ error && (
-					<Notice status="info" className="wp-parsely-content-helper-error">
+					<Notice
+						className="wp-parsely-content-helper-error"
+						onRemove={ () => setError( undefined ) }
+						status="info"
+					>
 						{ error.Message() }
 					</Notice>
 				) }

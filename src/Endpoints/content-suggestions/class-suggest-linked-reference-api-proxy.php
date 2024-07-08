@@ -13,6 +13,7 @@ namespace Parsely\Endpoints\ContentSuggestions;
 
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Parsely;
+use Parsely\Permissions;
 use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
 use stdClass;
 use WP_REST_Request;
@@ -80,6 +81,11 @@ final class Suggest_Linked_Reference_API_Proxy extends Base_API_Proxy {
 			return $validation;
 		}
 
+		$pch_options = $this->parsely->get_options()['content_helper'];
+		if ( ! Permissions::current_user_can_use_pch_feature( 'smart_linking', $pch_options ) ) {
+			return new WP_Error( 'ch_access_to_feature_disabled', '', array( 'status' => 403 ) );
+		}
+
 		/**
 		 * The post content to be sent to the API.
 		 *
@@ -143,8 +149,14 @@ final class Suggest_Linked_Reference_API_Proxy extends Base_API_Proxy {
 			return $response;
 		}
 
+		// Convert the smart links to an array of objects.
+		$smart_links = array();
+		foreach ( $response as $link ) {
+			$smart_links[] = $link->to_array();
+		}
+
 		return (object) array(
-			'data' => $response,
+			'data' => $smart_links,
 		);
 	}
 }

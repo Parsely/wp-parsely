@@ -2,13 +2,11 @@
  * WordPress dependencies
  */
 import {
-	__experimentalHeading as Heading,
 	Button,
+	__experimentalHeading as Heading,
 	Modal,
-	Rect,
-	SVG,
 } from '@wordpress/components';
-import { dispatch, useDispatch, useSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
@@ -22,8 +20,9 @@ import {
 /**
  * Internal dependencies
  */
-import { GutenbergFunction } from '../../../@types/gutenberg/types';
+import { dispatchCoreEditor, GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
+import { VerticalDivider } from '../../common/components/vertical-divider/component';
 import { Title, TitleStore, TitleType } from './store';
 
 /**
@@ -38,30 +37,17 @@ interface TitleSuggestionProps {
 }
 
 /**
- * Returns a vertical divider.
- *
- * @since 3.14.0
- */
-const VerticalDivider = (): JSX.Element => {
-	return (
-		<SVG xmlns="http://www.w3.org/2000/svg" width="1" height="40" viewBox="0 0 1 40" fill="none">
-			<Rect width="1" height="40" fill="#cccccc" />
-		</SVG>
-	);
-};
-
-/**
  * Renders a single title suggestion.
  *
  * @since 3.12.0
  *
  * @param {TitleSuggestionProps} props The component's props.
  *
- * @return {JSX.Element} The title suggestion JSX Element.
+ * @return {import('react').JSX.Element} The title suggestion JSX Element.
  */
 export const TitleSuggestion = (
 	props: Readonly<TitleSuggestionProps>
-): JSX.Element => {
+): React.JSX.Element => {
 	const [ isModalOpen, setIsModalOpen ] = useState<boolean>( false );
 	const openModal = () => setIsModalOpen( true );
 	const closeModal = () => setIsModalOpen( false );
@@ -164,7 +150,7 @@ export const TitleSuggestion = (
 		} );
 
 		// Set current post title to the original title.
-		dispatch( 'core/editor' ).editPost( { title: props.title.title } );
+		dispatchCoreEditor.editPost( { title: props.title.title } );
 
 		// Unset the original title prop by setting it to undefined.
 		await setOriginalTitle( props.type, undefined );
