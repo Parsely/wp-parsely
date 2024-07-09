@@ -8,18 +8,19 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\Endpoints\Proxy;
 
-use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
+use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Post_Detail_API;
+use Parsely\Tests\Integration\TestCase;
 use WP_REST_Request;
 
 /**
  * Integration Tests for the Stats Post Detail API Proxy Endpoint.
  */
-final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
+final class StatsPostDetailProxyEndpointTest extends BaseProxyEndpointTest {
 
 	/**
 	 * Initializes all required values for the test.

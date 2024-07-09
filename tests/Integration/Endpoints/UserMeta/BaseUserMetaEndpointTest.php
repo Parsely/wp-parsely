@@ -8,8 +8,9 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\Endpoints\UserMeta;
 
+use Parsely\Tests\Integration\Endpoints\Proxy\BaseProxyEndpointTest;
 use WP_REST_Request;
 
 /**
@@ -17,7 +18,7 @@ use WP_REST_Request;
  *
  * @since 3.13.0
  */
-abstract class BaseUserMetaEndpointTest extends ProxyEndpointTest {
+abstract class BaseUserMetaEndpointTest extends BaseProxyEndpointTest {
 	/**
 	 * The endpoint's default value.
 	 *

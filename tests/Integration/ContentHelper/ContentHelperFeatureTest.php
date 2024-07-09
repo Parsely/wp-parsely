@@ -8,10 +8,10 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\ContentHelper;
+namespace Parsely\Tests\Integration\ContentHelper;
 
-use Parsely\Tests\Integration\TestCase;
 use Parsely\Content_Helper\Content_Helper_Feature;
+use Parsely\Tests\Integration\TestCase;
 
 /**
  * Base class for all Content Helper feature integration tests.

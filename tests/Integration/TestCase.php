@@ -12,18 +12,17 @@ namespace Parsely\Tests\Integration;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
-use ReflectionClass;
-use ReflectionProperty;
-use ReflectionMethod;
 use Parsely\Parsely;
 use PHPUnit\Framework\RiskyTestError;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionProperty;
 use UnexpectedValueException;
 use WP_Error;
 use WP_Post;
 use WP_REST_Request;
 use WP_Term;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
-
 use const Parsely\Utils\WP_DATE_TIME_FORMAT;
 
 /**
@@ -33,7 +32,7 @@ use const Parsely\Utils\WP_DATE_TIME_FORMAT;
  */
 abstract class TestCase extends WPIntegrationTestCase {
 
-	use \Parsely\Tests\Tests_Reflection;
+	use \Parsely\Tests\Traits\TestsReflection;
 
 	public const VALID_SITE_ID = 'demoaccount.parsely.com';
 

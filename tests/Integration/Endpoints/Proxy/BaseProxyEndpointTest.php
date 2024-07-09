@@ -8,11 +8,12 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\Endpoints\Proxy;
 
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta;
 use Parsely\Parsely;
+use Parsely\Tests\Integration\TestCase;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
@@ -22,7 +23,7 @@ use WP_REST_Server;
  *
  * @phpstan-import-type Parsely_Options from Parsely
  */
-abstract class ProxyEndpointTest extends TestCase {
+abstract class BaseProxyEndpointTest extends TestCase {
 
 	/**
 	 * Holds a reference to the global $wp_rest_server object to restore in
