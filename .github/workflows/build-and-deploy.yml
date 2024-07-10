@@ -37,7 +37,7 @@ jobs:
 
       - name: Merge current branch into built-test
         run: |
-          git merge origin/$GITHUB_HEAD_REF
+          git merge remote/origin/$GITHUB_HEAD_REF
 
       - name: Build
         run: |
