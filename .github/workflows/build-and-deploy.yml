@@ -20,7 +20,7 @@ jobs:
           cache: npm
 
       - name: Build
-        run: >
+        run: |
           npm ci
           npm run build
           composer install --no-dev --optimize-autoloader --classmap-authoritative
