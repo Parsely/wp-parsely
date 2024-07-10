@@ -61,7 +61,7 @@ jobs:
           git add -Af vendor/
           git status -s
           VERSION=$(jq -r .version < package.json)
-          git commit -m "Build plugin v${{ VERSION }} (${{ github.ref_name }})" --no-verify
+          git commit -m "Build plugin v$VERSION (${{ github.ref_name }})" --no-verify
           git push origin built-test
 
   tag_and_release:
