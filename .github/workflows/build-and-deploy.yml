@@ -70,7 +70,6 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       VERSION: ${{ steps.get_version.outputs.VERSION }}
-      UPLOAD_URL: ${{ steps.github_release.outputs.upload_url }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -145,7 +144,7 @@ jobs:
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          VERSION: ${{ needs.tag_and_release.outputs.VERSION }}
+          VERSION: test-${{ needs.tag_and_release.outputs.VERSION }}
 
       - name: Print ZIP file path
         run: |
@@ -164,5 +163,3 @@ jobs:
           updateOnlyUnreleased: true
           artifacts: ${{ steps.wporg_deploy.outputs.zip-path }}
           artifactContentType: application/zip
-
-
