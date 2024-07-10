@@ -59,7 +59,7 @@ jobs:
 
       - name: Extract Changelog
         id: extract_changelog
-        run: >
+        run: |
           VERSION=${{ env.VERSION }}
           START_LINE=$(grep -n "## \[${VERSION}\]" CHANGELOG.md | cut -d: -f1)
           TAIL_LINE=$(tail -n +$((START_LINE + 1)) CHANGELOG.md | grep -n "^## " | head -n 1 | cut -d: -f1)
