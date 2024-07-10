@@ -7,10 +7,11 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\Metadata;
 
 use Parsely\Metadata\Front_Page_Builder;
 use Parsely\Parsely;
+use Parsely\Tests\Integration\TestCase;
 
 /**
  * Integration Tests for \Parsely\MetadataMetadata_Builder->get_current_url().
