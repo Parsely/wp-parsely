@@ -113,3 +113,41 @@ jobs:
           bodyFile: ./release_notes.md
           draft: true
           prerelease: true
+
+  deploy:
+    name: Deploy to WordPress.org
+    needs: tag_and_release
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          tag: test-${{ env.VERSION }}
+
+      - name: WordPress Plugin Deploy
+        id: wporg_deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          dry-run: true
+          generate-zip: true
+        env:
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+
+      - name: Print ZIP file path
+        run: |
+          echo "ZIP file path: ${{ steps.wporg_deploy.outputs.zip-path }}"
+
+      - name: Update release with ZIP file
+        uses: ncipollo/release-action@v1
+        with:
+          tag: test-${{ env.VERSION }}
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+          omitDraftDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          removeArtifacts: true
+          updateOnlyUnreleased: true
+          artifacts: ${{ steps.wporg_deploy.outputs.zip-path }}
+
+
