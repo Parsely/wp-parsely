@@ -29,9 +29,14 @@ jobs:
             git checkout -b built-test
           fi
 
+      - name: Debug Branch Info
+        run: |
+          echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"
+          git branch -a
+
       - name: Merge current branch into built-test
         run: |
-          git merge $GITHUB_HEAD_REF
+          git merge origin/$GITHUB_HEAD_REF
 
       - name: Build
         run: |
