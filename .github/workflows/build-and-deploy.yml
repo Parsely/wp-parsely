@@ -70,6 +70,7 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       VERSION: ${{ steps.get_version.outputs.VERSION }}
+      UPLOAD_URL: ${{ steps.github_release.outputs.upload_url }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -117,6 +118,7 @@ jobs:
         shell: bash
 
       - name: Create a GitHub release
+        id: github_release
         uses: ncipollo/release-action@v1
         with:
           tag: test-${{ env.VERSION }}
@@ -152,7 +154,7 @@ jobs:
       - name: Update release with ZIP file
         uses: ncipollo/release-action@v1
         with:
-          tag: test-${{ env.VERSION }}
+          tag: test-${{ needs.tag_and_release.outputs.VERSION }}
           allowUpdates: true
           omitBodyDuringUpdate: true
           omitNameDuringUpdate: true
@@ -161,5 +163,6 @@ jobs:
           removeArtifacts: true
           updateOnlyUnreleased: true
           artifacts: ${{ steps.wporg_deploy.outputs.zip-path }}
+          artifactContentType: application/zip
 
 
