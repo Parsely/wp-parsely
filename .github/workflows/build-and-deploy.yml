@@ -19,13 +19,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      - name: Build
-        run: |
-          npm ci
-          npm run build
-          composer install --no-dev --optimize-autoloader --classmap-authoritative
-
-      - name: Fetch built branch
+      - name: Fetch built-test branch
         run: |
           if git ls-remote --exit-code origin built-test; then
             git fetch origin built-test:built-test
@@ -34,6 +28,16 @@ jobs:
           else
             git checkout -b built-test
           fi
+
+      - name: Merge current branch into built-test
+        run: |
+          git merge $GITHUB_HEAD_REF
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+          composer install --no-dev --optimize-autoloader --classmap-authoritative
 
       - name: Commit built files
         run: |
