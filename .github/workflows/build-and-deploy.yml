@@ -90,12 +90,21 @@ jobs:
       - name: Extract Changelog
         id: extract_changelog
         run: |
+          set -e
           VERSION=${{ env.VERSION }}
           START_LINE=$(grep -n "## \[${VERSION}\]" CHANGELOG.md | cut -d: -f1)
-          TAIL_LINE=$(tail -n +$((START_LINE + 1)) CHANGELOG.md | grep -n "^## " | head -n 1 | cut -d: -f1)
-          END_LINE=$((START_LINE + TAIL_LINE - 1))
-          if [ -z "$TAIL_LINE" ]; then END_LINE=$(wc -l < CHANGELOG.md); fi
+          if [ -z "$START_LINE" ]; then
+            echo "Version not found in CHANGELOG.md" >&2
+            exit 1
+          fi
+          TAIL_LINE=$(tail -n +$((START_LINE + 1)) CHANGELOG.md | grep -n "^## " | head -n 1 | cut -d: -f1 || true)
+          if [ -z "$TAIL_LINE" ]; then
+            END_LINE=$(wc -l < CHANGELOG.md)
+          else
+            END_LINE=$((START_LINE + TAIL_LINE - 1))
+          fi
           sed -n "${START_LINE},${END_LINE}p" CHANGELOG.md | sed '$d' > release_notes.md
+          cat release_notes.md
         shell: bash
 
       - name: Format Changelog
