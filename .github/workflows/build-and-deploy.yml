@@ -68,6 +68,8 @@ jobs:
     name: Tag and Release
     needs: build
     runs-on: ubuntu-20.04
+    outputs:
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -79,13 +81,13 @@ jobs:
         run: |
           VERSION=$(jq -r .version < package.json)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "::set-output name=VERSION::$VERSION"
           echo "The version is $VERSION"
 
       - name: Tag the commit
         run: |
-          VERSION=$(jq -r .version < package.json)
-          git tag test-${VERSION}
-          git push origin test-${VERSION}
+          git tag test-${{ env.VERSION }}
+          git push origin test-${{ env.VERSION }}
 
       - name: Extract Changelog
         id: extract_changelog
@@ -130,7 +132,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: test-${{ env.VERSION }}
+          ref: test-${{ needs.tag_and_release.outputs.VERSION }}
 
       - name: WordPress Plugin Deploy
         id: wporg_deploy
@@ -141,6 +143,7 @@ jobs:
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          VERSION: ${{ needs.tag_and_release.outputs.VERSION }}
 
       - name: Print ZIP file path
         run: |
