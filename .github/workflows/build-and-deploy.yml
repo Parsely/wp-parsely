@@ -27,6 +27,7 @@ jobs:
 
       - name: Fetch built-test branch
         run: |
+          git fetch origin $GITHUB_REF:$GITHUB_REF
           if git ls-remote --exit-code origin built-test; then
             git fetch origin built-test:built-test
             git checkout built-test
