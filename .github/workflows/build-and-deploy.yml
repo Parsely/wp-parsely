@@ -73,7 +73,7 @@ jobs:
         uses: actions/create-release@v1
         with:
           tag_name: test-${{ env.VERSION }}
-          release_name: "[TEST] Release v${{ env.VERSION }}"
+          release_name: TEST Release v${{ env.VERSION }}
           body_path: ./release_notes.md
           draft: true
           prerelease: true
