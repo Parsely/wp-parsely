@@ -22,8 +22,8 @@ jobs:
       - name: Debug Branch Info
         run: |
           echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"
+          echo "GITHUB_REF: $GITHUB_REF"
           git branch -a
-
 
       - name: Fetch built-test branch
         run: |
@@ -37,7 +37,7 @@ jobs:
 
       - name: Merge current branch into built-test
         run: |
-          git merge remote/$GITHUB_HEAD_REF
+          git merge $GITHUB_REF
 
       - name: Build
         run: |
