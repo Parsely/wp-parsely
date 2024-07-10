@@ -27,9 +27,13 @@ jobs:
 
       - name: Fetch built branch
         run: |
-          git fetch origin built:built || true
-          git checkout built || git checkout -b built
-          git pull origin built || true
+          if git ls-remote --exit-code origin built-test; then
+            git fetch origin built-test:built-test
+            git checkout built-test
+            git pull origin built-test
+          else
+            git checkout -b built-test
+          fi
 
       - name: Commit built files
         run: |
