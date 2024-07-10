@@ -60,6 +60,7 @@ jobs:
         run: |
           git add -Af vendor/
           git status -s
+          VERSION=$(jq -r .version < package.json)
           git commit -m "Build plugin from ${{ github.ref_name }} v${{ env.VERSION }}" --no-verify
           git push origin built-test
 
@@ -69,6 +70,9 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: built-test
+          fetch-depth: 0
 
       - name: Get version from package.json
         id: get_version
@@ -77,13 +81,18 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "The version is $VERSION"
 
+      - name: Tag the commit
+        run: |
+          VERSION=$(jq -r .version < package.json)
+          git tag test-${VERSION}
+          git push origin test-${VERSION}
+
       - name: Extract Changelog
         id: extract_changelog
         run: |
           VERSION=${{ env.VERSION }}
           START_LINE=$(grep -n "## \[${VERSION}\]" CHANGELOG.md | cut -d: -f1)
           TAIL_LINE=$(tail -n +$((START_LINE + 1)) CHANGELOG.md | grep -n "^## " | head -n 1 | cut -d: -f1)
-          END_LINE=$((START_LINE + TAIL_LINE - 1))
           if [ -z "$TAIL_LINE" ]; then END_LINE=$(wc -l < CHANGELOG.md); fi
           sed -n "${START_LINE},${END_LINE}p" CHANGELOG.md | sed '$d' > release_notes.md
         shell: bash
