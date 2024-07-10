@@ -121,7 +121,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          tag: test-${{ env.VERSION }}
+          ref: test-${{ env.VERSION }}
 
       - name: WordPress Plugin Deploy
         id: wporg_deploy
