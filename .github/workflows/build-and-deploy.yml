@@ -1,36 +1,40 @@
+---
 name: TEST Build and Deploy
 on:
-  workflow_dispatch:
-  pull_request:
+  workflow_dispatch: null
+  pull_request: null
 jobs:
   build:
     name: Build and Commit
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-
       - name: Read .nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
-
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
-
       - name: Build
-        run: |
+        run: >
           npm ci
-          npm run build
-          composer install --no-dev --optimize-autoloader --classmap-authoritative
 
+          npm run build
+
+          composer install --no-dev --optimize-autoloader --classmap-authoritative
       - name: Commit built files
-        run: |
+        run: >
           git config --global user.name 'github-actions[bot]'
+
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
           git checkout -b built-test
+
           git add -Af vendor/autoload.php vendor/composer/
+
           git commit -m "Build plugin" --no-verify
+
           git push origin built-test
   tag_and_release:
     name: Tag and Release
@@ -38,37 +42,38 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-
       - name: Get version from package.json
         id: get_version
         run: |
           VERSION=$(jq -r .version < package.json)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "The version is $VERSION"
-
       - name: Extract Changelog
         id: extract_changelog
-        run: |
+        run: >
           VERSION=${{ env.VERSION }}
+
           START_LINE=$(grep -n "## \[${VERSION}\]" CHANGELOG.md | cut -d: -f1)
+
           TAIL_LINE=$(tail -n +$((START_LINE + 1)) CHANGELOG.md | grep -n "^## " | head -n 1 | cut -d: -f1)
+
           END_LINE=$((START_LINE + TAIL_LINE - 1))
+
           if [ -z "$TAIL_LINE" ]; then END_LINE=$(wc -l < CHANGELOG.md); fi
+
           sed -n "${START_LINE},${END_LINE}p" CHANGELOG.md | sed '$d' > release_notes.md
         shell: bash
-
       - name: Format Changelog
         id: format_changelog
         run: |
           sed -i '1d' release_notes.md # Remove the first line
           sed -i 's/###/##/g' release_notes.md # Change headers from ### to ##
         shell: bash
-
       - name: Create a GitHub release
         uses: actions/create-release@v1
         with:
           tag_name: test-${{ env.VERSION }}
-          release_name: [TEST] Release v${{ env.VERSION }}
+          release_name: "[TEST] Release v${{ env.VERSION }}"
           body_path: ./release_notes.md
           draft: true
           prerelease: true
