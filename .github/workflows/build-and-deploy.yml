@@ -8,7 +8,10 @@ jobs:
     name: Build and Commit
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout the specific branch/ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
 
       - name: Read .nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
@@ -19,26 +22,15 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      - name: Debug Branch Info
+      - name: Fetch and checkout built-test branch
         run: |
-          echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"
-          echo "GITHUB_REF: $GITHUB_REF"
-          git branch -a
-
-      - name: Fetch built-test branch
-        run: |
-          git fetch origin $GITHUB_REF:$GITHUB_REF
-          if git ls-remote --exit-code origin built-test; then
-            git fetch origin built-test:built-test
-            git checkout built-test
-            git pull origin built-test
-          else
-            git checkout -b built-test
-          fi
+          git fetch origin built-test:built-test || git fetch origin built-test
+          git checkout built-test || git checkout -b built-test
+          git pull origin built-test
 
       - name: Merge current branch into built-test
         run: |
-          git merge $GITHUB_REF
+          git merge ${{ github.ref }}
 
       - name: Build
         run: |
@@ -51,7 +43,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add -Af vendor/
-          git commit -m "Build plugin v${{ env.VERSION }}" --no-verify
+          git commit -m "Build plugin from ${{ github.ref }} v${{ env.VERSION }}" --no-verify
           git push origin built-test
 
   tag_and_release:
