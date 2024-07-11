@@ -31,7 +31,8 @@ jobs:
 
       - name: Merge current branch into built-test
         run: |
-          git merge --no-ff $GITHUB_SHA
+          git merge --squash $GITHUB_SHA
+          git commit -m "Merge $GITHUB_SHA into built-test" --no-verify
 
       - name: Get list of changed files
         run: |
