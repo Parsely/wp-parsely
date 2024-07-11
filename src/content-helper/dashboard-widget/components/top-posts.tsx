@@ -81,6 +81,7 @@ export function TopPosts(): React.JSX.Element {
 	 * @param {Object} props  The filter properties.
 	 */
 	const trackFilterChanges = ( filter: string, props: object ): void => {
+		console.log( 'test' ); // eslint-disable-line no-console
 		Telemetry.trackEvent( 'dash_widget_filter_changed', { filter, ...props } );
 	};
 
