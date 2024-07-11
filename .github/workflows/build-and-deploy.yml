@@ -21,7 +21,7 @@ jobs:
             git checkout built-test
             git pull origin built-test
           else
-            git checkout -b built-test
+            git checkout -b built-test develop
           fi
 
       - name: Configure Git
@@ -82,7 +82,7 @@ jobs:
         run: |
           VERSION=$(jq -r .version < package.json)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "::set-output name=VERSION::$VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "The version is $VERSION"
 
       - name: Tag the commit
