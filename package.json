@@ -65,7 +65,7 @@
 		"@wordpress/e2e-test-utils": "^11.2.0",
 		"@wordpress/edit-post": "^8.2.0",
 		"@wordpress/editor": "^14.0.0",
-		"@wordpress/element": "^6.2.0",
+		"@wordpress/element": "^6.3.0",
 		"@wordpress/env": "^10.2.0",
 		"@wordpress/eslint-plugin": "^19.2.0",
 		"@wordpress/hooks": "^4.0.0",
