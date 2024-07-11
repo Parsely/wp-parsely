@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\RemoteAPI;
 
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
@@ -16,7 +16,7 @@ use Parsely\RemoteAPI\Analytics_Posts_API;
 /**
  * Integration Tests for the Parsely `/analytics/posts` Remote API.
  */
-final class AnalyticsPostsRemoteAPITest extends RemoteAPITest {
+final class AnalyticsPostsRemoteAPITest extends BaseRemoteAPITest {
 
 	/**
 	 * Initializes all required values for the test.

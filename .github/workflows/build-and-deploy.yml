@@ -1,0 +1,165 @@
+---
+name: TEST Build and Deploy
+on:
+  workflow_dispatch: null
+  pull_request: null
+jobs:
+  build:
+    name: Build and Commit
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout the specific branch/ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - name: Fetch and checkout built-test branch
+        run: |
+          if git ls-remote --exit-code origin built-test; then
+            git fetch origin built-test
+            git checkout built-test
+            git pull origin built-test
+          else
+            git checkout -b built-test
+          fi
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Merge current branch into built-test
+        run: |
+          git merge --no-ff $GITHUB_SHA
+
+      - name: Get list of changed files
+        run: |
+          git status -s
+
+      - name: Read .nvmrc
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+          composer install --no-dev --optimize-autoloader --classmap-authoritative
+
+      - name: Get list of changed files
+        run: |
+          git status -s
+
+      - name: Commit built files
+        run: |
+          git add -Af vendor/
+          git status -s
+          VERSION=$(jq -r .version < package.json)
+          git commit -m "Build plugin v$VERSION (${{ github.ref_name }})" --no-verify
+          git push origin built-test
+
+  tag_and_release:
+    name: Tag and Release
+    needs: build
+    runs-on: ubuntu-20.04
+    outputs:
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: built-test
+          fetch-depth: 0
+
+      - name: Get version from package.json
+        id: get_version
+        run: |
+          VERSION=$(jq -r .version < package.json)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "::set-output name=VERSION::$VERSION"
+          echo "The version is $VERSION"
+
+      - name: Tag the commit
+        run: |
+          git tag test-${{ env.VERSION }}
+          git push origin test-${{ env.VERSION }}
+
+      - name: Extract Changelog
+        id: extract_changelog
+        run: |
+          set -e
+          VERSION=${{ env.VERSION }}
+          START_LINE=$(grep -n "## \[${VERSION}\]" CHANGELOG.md | cut -d: -f1)
+          if [ -z "$START_LINE" ]; then
+            echo "Version not found in CHANGELOG.md" >&2
+            exit 1
+          fi
+          TAIL_LINE=$(tail -n +$((START_LINE + 1)) CHANGELOG.md | grep -n "^## " | head -n 1 | cut -d: -f1 || true)
+          if [ -z "$TAIL_LINE" ]; then
+            END_LINE=$(wc -l < CHANGELOG.md)
+          else
+            END_LINE=$((START_LINE + TAIL_LINE - 1))
+          fi
+          sed -n "${START_LINE},${END_LINE}p" CHANGELOG.md | sed '$d' > release_notes.md
+          cat release_notes.md
+        shell: bash
+
+      - name: Format Changelog
+        id: format_changelog
+        run: |
+          sed -i '1d' release_notes.md # Remove the first line
+          sed -i 's/###/##/g' release_notes.md # Change headers from ### to ##
+        shell: bash
+
+      - name: Create a GitHub release
+        id: github_release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: test-${{ env.VERSION }}
+          name: ${{ env.VERSION }}
+          bodyFile: ./release_notes.md
+          draft: true
+          prerelease: true
+
+  deploy:
+    name: Deploy to WordPress.org
+    needs: tag_and_release
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: test-${{ needs.tag_and_release.outputs.VERSION }}
+
+      - name: WordPress Plugin Deploy
+        id: wporg_deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          dry-run: true
+          generate-zip: true
+        env:
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          VERSION: test-${{ needs.tag_and_release.outputs.VERSION }}
+
+      - name: Print ZIP file path
+        run: |
+          echo "ZIP file path: ${{ steps.wporg_deploy.outputs.zip-path }}"
+
+      - name: Update release with ZIP file
+        uses: ncipollo/release-action@v1
+        with:
+          tag: test-${{ needs.tag_and_release.outputs.VERSION }}
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+          omitDraftDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          removeArtifacts: true
+          updateOnlyUnreleased: true
+          artifacts: ${{ steps.wporg_deploy.outputs.zip-path }}
+          artifactContentType: application/zip

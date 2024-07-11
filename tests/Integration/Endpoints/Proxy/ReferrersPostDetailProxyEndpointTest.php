@@ -8,18 +8,19 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\Endpoints\Proxy;
 
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Endpoints\Referrers_Post_Detail_API_Proxy;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Referrers_Post_Detail_API;
+use Parsely\Tests\Integration\TestCase;
 use WP_REST_Request;
 
 /**
  * Integration Tests for the Referrers Post Detail API Proxy Endpoint.
  */
-final class ReferrersPostDetailProxyEndpointTest extends ProxyEndpointTest {
+final class ReferrersPostDetailProxyEndpointTest extends BaseProxyEndpointTest {
 
 	/**
 	 * Initializes all required values for the test.

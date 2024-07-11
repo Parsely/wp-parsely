@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\RemoteAPI;
 
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Related_API;
@@ -15,7 +15,7 @@ use Parsely\RemoteAPI\Related_API;
 /**
  * Integration Tests for the Parsely `/related` Remote API.
  */
-final class RelatedRemoteAPITest extends RemoteAPITest {
+final class RelatedRemoteAPITest extends BaseRemoteAPITest {
 
 	/**
 	 * Initializes all required values for the test.

@@ -7,13 +7,12 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\ContentHelper;
+namespace Parsely\Tests\Integration\ContentHelper;
 
 use Mockery;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
-use Parsely\Tests\ContentHelper\ContentHelperFeatureTest;
 use Parsely\Tests\Integration\TestCase;
 use WP_Error;
 use WP_Post;

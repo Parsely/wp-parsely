@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration Tests: PCH Dashboard Widget Settings Endpoint
+ * Integration Tests: PCH Editor Sidebar Settings Endpoint
  *
  * @package Parsely\Tests
  * @since   3.13.0
@@ -8,21 +8,19 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\ContentHelper;
+namespace Parsely\Tests\Integration\Endpoints\UserMeta;
 
 use Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta;
-use Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint;
+use Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint;
 use Parsely\Parsely;
-use Parsely\Tests\Integration\BaseUserMetaEndpointTest;
-
 use function Parsely\Utils\convert_endpoint_to_filter_key;
 
 /**
- * Integration Tests for the PCH Dashboard Widget Settings Endpoint.
+ * Integration Tests for the PCH Editor Sidebar Settings Endpoint.
  *
  * @since 3.13.0
  */
-final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest {
+final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	/**
 	 * The endpoint's default value.
 	 *
@@ -31,8 +29,29 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	 * @var array<string, mixed>
 	 */
 	protected $default_value = array(
-		'Metric' => 'views',
-		'Period' => '7d',
+		'InitialTabName'   => 'tools',
+		'PerformanceStats' => array(
+			'Period'            => '7d',
+			'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
+			'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
+		),
+		'RelatedPosts'     => array(
+			'FilterBy'    => 'unavailable',
+			'FilterValue' => '',
+			'Metric'      => 'views',
+			'Open'        => false,
+			'Period'      => '7d',
+		),
+		'SmartLinking'     => array(
+			'MaxLinks'     => 10,
+			'MaxLinkWords' => 4,
+			'Open'         => false,
+		),
+		'TitleSuggestions' => array(
+			'Open'    => false,
+			'Persona' => 'journalist',
+			'Tone'    => 'neutral',
+		),
 	);
 
 	/**
@@ -41,7 +60,7 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	 * @since 3.13.0
 	 */
 	public static function initialize(): void {
-		$route = Dashboard_Widget_Settings_Endpoint::get_route();
+		$route = Editor_Sidebar_Settings_Endpoint::get_route();
 
 		self::$route      = '/wp-parsely/v1' . $route;
 		self::$filter_key = convert_endpoint_to_filter_key( $route );
@@ -55,7 +74,7 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	 * @return Base_Endpoint_User_Meta The endpoint to be used in tests.
 	 */
 	public function get_endpoint(): Base_Endpoint_User_Meta {
-		return new Dashboard_Widget_Settings_Endpoint( new Parsely() );
+		return new Editor_Sidebar_Settings_Endpoint( new Parsely() );
 	}
 
 	/**
@@ -70,7 +89,7 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
@@ -98,7 +117,7 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_route
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
-	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
@@ -117,14 +136,14 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_subvalues_specs
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_value
-	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
-	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::process_request
+	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
+	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::process_request
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
-	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_meta_key
-	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_route
+	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key
+	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_route
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
@@ -148,21 +167,24 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::sanitize_subvalue
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::sanitize_value
 	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::set_value
-	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_subvalues_specs
-	 * @covers \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::process_request
+	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs
+	 * @covers \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::process_request
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_default
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_nested_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_valid_values
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_valid_key
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
-	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_meta_key
-	 * @uses \Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint::get_route
+	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key
+	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_route
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 *
 	 * @dataProvider provide_put_requests_data
 	 */
 	public function test_endpoint_correctly_handles_put_requests(
@@ -174,12 +196,72 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	}
 
 	/**
+	 * Tests that the endpoint can correctly handle PUT requests with valid
+	 * nested PerformanceStats values.
+	 *
+	 * @since 3.14.0
+	 *
+	 * @covers \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::sanitize_subvalue
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct()
+	 * @uses \Parsely\Endpoints\Base_Endpoint::register_endpoint()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::__construct()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_route()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_value()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::process_request()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::sanitize_value()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::set_value()
+	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key()
+	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_subvalues_specs()
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_nested_specs
+	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_valid_values
+	 * @uses \Parsely\Parsely::__construct()
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests()
+	 * @uses \Parsely\Parsely::are_credentials_managed()
+	 * @uses \Parsely\Parsely::set_managed_options()
+	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key()
+	 */
+	public function test_valid_nested_performance_stats_settings_period(): void {
+		$this->set_admin_user();
+
+		$value = $this->send_put_request(
+			$this->generate_json(
+				'views',
+				'7d',
+				array(
+					'PerformanceStats' => array(
+						'Period'            => '1h',
+						'VisibleDataPoints' => array( 'views', 'avgEngaged', 'recirculation' ),
+						'VisiblePanels'     => array( 'overview', 'referrers' ),
+					),
+				)
+			)
+		);
+
+		$expected = $this->wp_json_encode(
+			array_merge(
+				$this->default_value,
+				array(
+					'PerformanceStats' => array(
+						'Period'            => '1h',
+						'VisibleDataPoints' => array( 'views', 'avgEngaged', 'recirculation' ),
+						'VisiblePanels'     => array( 'overview', 'referrers' ),
+					),
+				)
+			)
+		);
+
+		self::assertSame( $expected, $value );
+	}
+
+	/**
 	 * Generates a JSON string for the passed period, metric, and extra data.
 	 *
 	 * @since 3.13.0
 	 *
-	 * @param string|null         $metric The Metric value.
-	 * @param string|null         $period The Period value.
+	 * @param string|null         $metric The RelatedPostsMetric value.
+	 * @param string|null         $period The RelatedPostsPeriod value.
 	 * @param array<mixed, mixed> $extra_data Any Extra key/value pairs to add.
 	 * @return string The generated JSON string.
 	 */
@@ -189,18 +271,39 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 		array $extra_data = array()
 	): string {
 		$array = $this->default_value;
-		unset( $array['Metric'], $array['Period'] );
+		assert( is_array( $array['RelatedPosts'] ) );
+
+		unset( $array['RelatedPosts']['Metric'], $array['RelatedPosts']['Period'] );
 
 		if ( null !== $metric ) {
-			$array['Metric'] = $metric;
+			$array['RelatedPosts']['Metric'] = $metric;
 		}
 
 		if ( null !== $period ) {
-			$array['Period'] = $period;
+			$array['RelatedPosts']['Period'] = $period;
 		}
 
-		ksort( $array );
+		$merged_array = array_merge( $array, $extra_data );
 
-		return $this->wp_json_encode( array_merge( $array, $extra_data ) );
+		$this->ksortRecursive( $merged_array, SORT_NATURAL | SORT_FLAG_CASE );
+
+		return $this->wp_json_encode( $merged_array );
+	}
+
+	/**
+	 * Recursively sorts an array by key using a specified sort flag.
+	 *
+	 * @since 3.14.3
+	 *
+	 * @param array<mixed, mixed|array> &$unsorted_array The array to be sorted, passed by reference.
+	 * @param int                       $sort_flags Optional sorting flags. Defaults to SORT_REGULAR.
+	 */
+	private function ksortRecursive( array &$unsorted_array, int $sort_flags = SORT_REGULAR ): void {
+		ksort( $unsorted_array, $sort_flags );
+		foreach ( $unsorted_array as &$value ) {
+			if ( is_array( $value ) ) {
+				$this->ksortRecursive( $value, $sort_flags );
+			}
+		}
 	}
 }

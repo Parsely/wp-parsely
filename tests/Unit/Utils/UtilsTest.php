@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Unit;
+namespace Parsely\Tests\Unit\Utils;
 
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
 
