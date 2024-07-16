@@ -86,6 +86,11 @@ class Permissions {
 			return false;
 		}
 
+		// Current user's role is not set correctly.
+		if ( ! isset( $current_user->roles[0] ) ) {
+			return false;
+		}
+
 		// Check that the user's role has the capability to edit posts.
 		$current_user_role = $current_user->roles[0];
 		$valid_roles       = array_keys( self::get_user_roles_with_edit_posts_cap() );
