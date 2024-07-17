@@ -492,6 +492,7 @@
 	&.editor-styles-wrapper {
 		padding-bottom: 0;
 		font-size: var(--font-size--medium);
+		background: inherit;
 	}
 
 	p[role="document"] {
