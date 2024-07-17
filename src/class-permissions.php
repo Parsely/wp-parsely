@@ -107,7 +107,7 @@ class Permissions {
 			return current_user_can( 'edit_post', $post_id );
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
