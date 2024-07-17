@@ -90,7 +90,7 @@ const Styles = ( { styles }: StylesProps ): React.JSX.Element => {
 			return `${ prefixedSelectors } {${ properties }}`;
 		} );
 
-		return prefixedRules.join( '}' );
+		return prefixedRules.join( ' ' );
 	};
 
 	const [ processedStyles, setProcessedStyles ] = useState<Style[]>( [] );
@@ -104,7 +104,7 @@ const Styles = ( { styles }: StylesProps ): React.JSX.Element => {
 			} );
 
 			const processed = filteredStyles.map( ( style ) => {
-				const prefixedCss = prefixSelectors( style.css ?? '', '.wp-parsely-preview-editor' );
+				const prefixedCss = prefixSelectors( style.css ?? '', '.review-suggestion-preview' );
 				return { ...style, css: prefixedCss };
 			} );
 
