@@ -104,7 +104,7 @@ const Styles = ( { styles }: StylesProps ): React.JSX.Element => {
 			} );
 
 			const processed = filteredStyles.map( ( style ) => {
-				const prefixedCss = prefixSelectors( style.css ?? '', '.review-suggestion-preview' );
+				const prefixedCss = prefixSelectors( style.css ?? '', '.wp-parsely-preview-editor' );
 				return { ...style, css: prefixedCss };
 			} );
 
@@ -252,19 +252,21 @@ export const BlockPreview = ( { block, link, useOriginalBlock }: BlockPreviewPro
 	const settings = select( 'core/block-editor' ).getSettings();
 
 	return (
-		<Disabled className="wp-block-post-content editor-styles-wrapper wp-parsely-preview-editor" >
-			<BlockEditorProvider
-				value={ [ clonedBlock ] }
-				settings={ {
-					...settings,
-					// @ts-ignore __unstableIsPreviewMode is not in the types.
-					__unstableIsPreviewMode: true,
-					templateLock: 'all',
-				} }
-			>
-				<Styles styles={ settings.styles } />
-				<BlockList />
-			</BlockEditorProvider>
-		</Disabled>
+		<div className="wp-parsely-preview-editor">
+			<Disabled className="wp-block-post-content editor-styles-wrapper" >
+				<BlockEditorProvider
+					value={ [ clonedBlock ] }
+					settings={ {
+						...settings,
+						// @ts-ignore __unstableIsPreviewMode is not in the types.
+						__unstableIsPreviewMode: true,
+						templateLock: 'all',
+					} }
+				>
+					<Styles styles={ settings.styles } />
+					<BlockList />
+				</BlockEditorProvider>
+			</Disabled>
+		</div>
 	);
 };
