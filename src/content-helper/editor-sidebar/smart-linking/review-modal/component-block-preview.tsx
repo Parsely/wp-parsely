@@ -17,7 +17,7 @@ import { applyNodeToBlock } from '../utils';
 /**
  * The style object, a derivative from Gutenberg's `Style` type.
  *
- * @since 3.16.0
+ * @since 3.16.1
  */
 type Style = {
 	css?: string,
@@ -29,6 +29,7 @@ type Style = {
  * The props for the Styles component.
  *
  * @since 3.16.0
+ * @since 3.16.1 Extracted the styles prop to a new `Style` type.
  */
 type StylesProps = {
 	styles: Style[],
@@ -49,7 +50,7 @@ const Styles = ( { styles }: StylesProps ): React.JSX.Element => {
 	 *
 	 * It also replaces the `body` selector with the prefix itself.
 	 *
-	 * @since 3.16.0
+	 * @since 3.16.1
 	 *
 	 * @param {string} css    The CSS to prefix.
 	 * @param {string} prefix The prefix to use.
@@ -95,6 +96,11 @@ const Styles = ( { styles }: StylesProps ): React.JSX.Element => {
 
 	const [ processedStyles, setProcessedStyles ] = useState<Style[]>( [] );
 
+	/**
+	 * Processes the styles to prefix all the Editor styles selectors with the Preview Editor wrapper class.
+	 *
+	 * @since 3.16.1
+	 */
 	useEffect( () => {
 		const processStyles = () => {
 			const filteredStyles = styles.filter( ( style ) => {
