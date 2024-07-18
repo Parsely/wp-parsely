@@ -249,7 +249,7 @@ export const setSidebarPanelExpanded = async (
  * wordpress/e2e-test-utils package, as the original function contains erroneous
  * selectors
  *
- * @since 3.16.0
+ * @since 3.16.1
  *
  * @param {'open' | 'close' | undefined} waitFor Whether it should wait for the menu to open or close.
  *                                               If `undefined`, it won't wait for anything.
