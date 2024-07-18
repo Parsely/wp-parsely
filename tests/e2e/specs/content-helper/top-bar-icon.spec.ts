@@ -1,10 +1,7 @@
 /**
  * WordPress dependencies
  */
-import {
-	createNewPost,
-	toggleMoreMenu,
-} from '@wordpress/e2e-test-utils';
+import { createNewPost } from '@wordpress/e2e-test-utils';
 
 /**
  * Internal dependencies
@@ -14,6 +11,7 @@ import {
 	VALID_SITE_ID,
 	setSidebarPanelExpanded,
 	setSiteKeys,
+	toggleMoreMenu,
 } from '../../utils';
 
 // Selectors.
@@ -84,7 +82,7 @@ describe( 'PCH Editor Sidebar top bar icon in the WordPress Post Editor', () => 
 		}
 
 		// Ensure that the menu opens without crashing the Post Editor.
-		await toggleMoreMenu();
+		await toggleMoreMenu( 'open' );
 		await page.waitForSelector( 'div.components-dropdown-menu__menu', { visible: true } );
 		const text = await page.$eval( 'div.components-dropdown-menu__menu', ( element: Element ) => element.textContent );
 		expect( await text ).toMatch( 'Parse.ly' );
