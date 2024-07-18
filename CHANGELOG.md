@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PCH Smart Linking: Use the post title as the Smart Link title. ([#2650](https://github.com/Parsely/wp-parsely/pull/2650))
 - Permissions: Fix PHP Warning when the user role is invalid ([#2649](https://github.com/Parsely/wp-parsely/pull/2649))
 
-
 ## [3.16.0](https://github.com/Parsely/wp-parsely/compare/3.15.0...3.16.0) - 2024-07-08
 
 ### Added
