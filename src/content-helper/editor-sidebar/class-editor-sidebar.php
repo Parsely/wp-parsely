@@ -98,10 +98,10 @@ class Editor_Sidebar extends Content_Helper_Feature {
 	 * @since 3.16.1 Added the $show_utm_params parameter.
 	 *
 	 * @param int|null|WP_Post $post_id The post ID or post object. Default is the current post.
-	 * @param bool             $show_utm_params Whether to show UTM parameters in the URL.
+	 * @param bool             $add_utm_params Whether to add UTM parameters in the URL.
 	 * @return string|null The Parse.ly post dashboard URL, or false if the post ID is invalid.
 	 */
-	private function get_parsely_post_url( $post_id = null, bool $show_utm_params = true ): ?string {
+	private function get_parsely_post_url( $post_id = null, bool $add_utm_params = true ): ?string {
 		// Get permalink for the post.
 		$post_id = $post_id ?? get_the_ID();
 		if ( false === $post_id ) {
@@ -119,7 +119,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			return null;
 		}
 
-		if ( ! $show_utm_params ) {
+		if ( ! $add_utm_params ) {
 			return Dashboard_Link::generate_url( $post, $this->parsely->get_site_id() );
 		}
 
