@@ -37,7 +37,7 @@ interface PostData {
  *
  * @since 3.14.3
  * @since 3.14.4 Implemented checks to reduce risk of invalid data being processed.
- * @since 3.16.2 Added a timeout to ensure the hook returns after X seconds.
+ * @since 3.16.2 Added a timeout to ensure the hook returns after `timeoutDurationMs` milliseconds.
  *
  * @see https://github.com/Parsely/wp-parsely/issues/2423
  *
@@ -134,7 +134,7 @@ export function usePostData( timeoutDurationMs: number = 200 ): PostData {
 	}, [ postAttributes, isTimeout ] );
 
 	/**
-	 * Sets a timeout to ensure the hook returns after 5 seconds.
+	 * Sets a timeout to ensure the hook returns after `timeoutDurationMs` milliseconds.
 	 *
 	 * @since 3.16.2
 	 */
