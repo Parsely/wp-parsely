@@ -4,6 +4,7 @@
 // eslint-disable-next-line import/named
 import { store as coreStore, Taxonomy, User } from '@wordpress/core-data';
 import { useSelect } from '@wordpress/data';
+import { useEffect, useState } from '@wordpress/element';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 
 /**
@@ -36,13 +37,31 @@ interface PostData {
  *
  * @since 3.14.3
  * @since 3.14.4 Implemented checks to reduce risk of invalid data being processed.
+ * @since 3.16.2 Added a timeout to ensure the hook returns after X seconds.
  *
  * @see https://github.com/Parsely/wp-parsely/issues/2423
  *
+ * @param {number} timeoutDurationMs The duration in milliseconds before the hook times out and
+ *                                   returns the data as is.
+ *
  * @return {PostData} The post data for the current post.
  */
-export function usePostData(): PostData {
-	const { authors, categories, tags, isReady } = useSelect( ( select ) => {
+export function usePostData( timeoutDurationMs: number = 200 ): PostData {
+	const [ isTimeout, setIsTimeout ] = useState<boolean>( false );
+	const [ postData, setPostData ] = useState<PostData>( {
+		authors: undefined,
+		categories: undefined,
+		tags: undefined,
+		isReady: false,
+	} );
+
+	/**
+	 * Fetches the post attributes from the editor.
+	 * This includes the author, categories, and tags, and if the data is not available, it will be set to `null`.
+	 *
+	 * @since 3.14.4
+	 */
+	const postAttributes = useSelect( ( select ) => {
 		const { getEntityRecords } = select( coreStore );
 		let authorRecords: User[] | null | undefined;
 		let categoryRecords: Taxonomy[] | null | undefined;
@@ -81,19 +100,51 @@ export function usePostData(): PostData {
 			tagRecords = null;
 		}
 
+		return { authorRecords, categoryRecords, tagRecords };
+	}, [] );
+
+	/**
+	 * Sets the post data when all the data is ready.
+	 * This is done when all the data is fetched or when the timeout is reached.
+	 *
+	 * @since 3.16.2
+	 */
+	useEffect( () => {
+		const {
+			authorRecords,
+			categoryRecords,
+			tagRecords,
+		} = postAttributes;
+
+		// Check if all the data is ready or if the timeout has been reached.
 		const isPostDataReady: boolean = (
 			authorRecords !== undefined &&
 			categoryRecords !== undefined &&
 			tagRecords !== undefined
-		);
+		) || isTimeout;
 
-		return {
-			authors: authorRecords,
-			categories: categoryRecords,
-			tags: tagRecords,
-			isReady: isPostDataReady,
-		};
-	}, [] );
+		if ( isPostDataReady ) {
+			setPostData( {
+				authors: authorRecords,
+				categories: categoryRecords,
+				tags: tagRecords,
+				isReady: true,
+			} );
+		}
+	}, [ postAttributes, isTimeout ] );
 
-	return { authors, categories, tags, isReady };
+	/**
+	 * Sets a timeout to ensure the hook returns after 5 seconds.
+	 *
+	 * @since 3.16.2
+	 */
+	useEffect( () => {
+		const timeout = setTimeout( () => {
+			setIsTimeout( true );
+		}, timeoutDurationMs );
+
+		return () => clearTimeout( timeout );
+	} );
+
+	return postData;
 }
