@@ -104,7 +104,7 @@ class Permissions {
 			$post_id
 		);
 
-		if ( $filtered_current_user_can_use_pch_feature ) {
+		if ( true === $filtered_current_user_can_use_pch_feature ) {
 			return true;
 		}
 
