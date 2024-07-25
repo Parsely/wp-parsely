@@ -38,7 +38,7 @@ interface PostData {
  * @since 3.14.3
  * @since 3.14.4 Implemented checks to reduce risk of invalid data being processed.
  * @since 3.16.2 Added `isLoading` and `hasResolved` to check if the data is still being fetched or if it
- * 							 has been resolved.
+ *               has been resolved.
  *
  * @see https://github.com/Parsely/wp-parsely/issues/2423
  *
@@ -58,7 +58,7 @@ export function usePostData(): PostData {
 	 *
 	 * @since 3.14.4
 	 * @since 3.16.2 Added `isLoading` and `hasResolved` to check if the data is still being fetched or if it
-	 * 							 has been resolved.
+	 *               has been resolved.
 	 */
 	const postAttributes = useSelect( ( select ) => {
 		// @ts-ignore `hasFinishedResolution` and `isResolving` are not part of the core-data store type.
