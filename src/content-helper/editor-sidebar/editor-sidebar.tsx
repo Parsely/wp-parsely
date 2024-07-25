@@ -186,11 +186,13 @@ const ContentHelperEditorSidebar = (): React.JSX.Element => {
 	 * @since 3.12.0
 	 */
 	const activeComplementaryArea = useSelect( ( select ) => {
-		// @ts-ignore getActiveComplementaryArea exists in the interface store.
-		const activeArea = select( 'core/interface' ).getActiveComplementaryArea( 'core' );
-		if ( activeArea ) {
-			return activeArea;
+		// By checking for the PluginSidebar, we can determine if the new unified editor is being used, and that the
+		// WordPress version is 6.6 or higher.
+		if ( window.wp.editor?.PluginSidebar ) {
+			// @ts-ignore getActiveComplementaryArea exists in the interface store.
+			return select( 'core/interface' ).getActiveComplementaryArea( 'core' );
 		}
+
 		// Fallback for WordPress <= 6.5.
 		// See https://make.wordpress.org/core/2024/03/05/unification-of-the-site-and-post-editors-in-6-5/
 		// @ts-ignore getActiveComplementaryArea exists in the interface store.

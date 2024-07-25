@@ -9,8 +9,6 @@
  * @see https://make.wordpress.org/core/2024/06/18/editor-unified-extensibility-apis-in-6-6/
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare const wp: any;
-
 import type { ComponentType } from 'react';
 
 // Import the original Gutenberg components.
@@ -28,9 +26,11 @@ let PluginDocumentSettingPanel: ComponentType<PluginDocumentSettingPanelProps>;
 let PluginSidebar: ComponentType<PluginSidebarProps>;
 
 // Use the correct Gutenberg components based on the environment.
-if ( typeof wp !== 'undefined' ) {
-	PluginDocumentSettingPanel = wp.editor?.PluginDocumentSettingPanel ?? ( wp.editPost?.PluginDocumentSettingPanel ?? wp.editSite?.PluginDocumentSettingPanel );
-	PluginSidebar = wp.editor?.PluginSidebar ?? ( wp.editPost?.PluginSidebar ?? wp.editSite?.PluginSidebar );
+if ( typeof window.wp !== 'undefined' ) {
+	PluginDocumentSettingPanel = window.wp.editor?.PluginDocumentSettingPanel ??
+		( window.wp.editPost?.PluginDocumentSettingPanel ?? window.wp.editSite?.PluginDocumentSettingPanel );
+	PluginSidebar = window.wp.editor?.PluginSidebar ??
+		( window.wp.editPost?.PluginSidebar ?? window.wp.editSite?.PluginSidebar );
 }
 
 // Export the wrapped Gutenberg components.
