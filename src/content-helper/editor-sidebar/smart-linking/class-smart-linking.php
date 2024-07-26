@@ -44,24 +44,7 @@ class Smart_Linking extends Content_Helper_Feature {
 		$this->parsely = $editor_sidebar->parsely;
 
 		add_action( 'delete_post', array( $this, 'purge_smart_links' ) );
-		add_action(
-			'admin_enqueue_scripts',
-			function () {
-				/**
-				 * Filters the allowed blocks for the Smart Linking feature.
-				 *
-				 * @since 3.16.2
-				 *
-				 * @param array $allowed_blocks The allowed blocks for the Smart Linking feature.
-				 */
-				$allowed_blocks = apply_filters( 'wp_parsely_smart_linking_allowed_blocks', self::BLOCKS_ALLOWED );
-				wp_add_inline_script(
-					Editor_Sidebar::get_script_id(),
-					'window.wpParselySmartLinkingAllowedBlocks = ' . wp_json_encode( $allowed_blocks ) . ';',
-					'before'
-				);
-			}
-		);
+		add_action( 'admin_enqueue_scripts', array( $this, 'add_inline_script' ) );
 	}
 
 	/**
@@ -197,6 +180,27 @@ class Smart_Linking extends Content_Helper_Feature {
 					'assign_terms' => 'edit_posts',
 				),
 			)
+		);
+	}
+
+	/**
+	 * Adds inline script with Smart Linking specific data.
+	 *
+	 * @since 3.16.2
+	 */
+	public function add_inline_script(): void {
+		/**
+		 * Filters the allowed blocks for the Smart Linking feature.
+		 *
+		 * @since 3.16.2
+		 *
+		 * @param array $allowed_blocks The allowed blocks for the Smart Linking feature.
+		 */
+		$allowed_blocks = apply_filters( 'wp_parsely_smart_linking_allowed_blocks', self::BLOCKS_ALLOWED );
+		wp_add_inline_script(
+			Editor_Sidebar::get_script_id(),
+			'window.wpParselySmartLinkingAllowedBlocks = ' . wp_json_encode( $allowed_blocks ) . ';',
+			'before'
 		);
 	}
 
