@@ -210,7 +210,7 @@ abstract class ProxyEndpointTest extends TestCase {
 	 * Verifies default user capability filter.
 	 */
 	public function run_test_user_is_allowed_to_make_proxy_api_call_if_default_user_capability_is_changed(): void {
-		$this->login_as_contributor();
+		$this->set_current_user_to_contributor();
 		add_filter(
 			'wp_parsely_user_capability_for_all_private_apis',
 			function () {
@@ -229,7 +229,7 @@ abstract class ProxyEndpointTest extends TestCase {
 	public function run_test_user_is_allowed_to_make_proxy_api_call_if_endpoint_specific_user_capability_is_changed(
 		$filter_key = null
 	): void {
-		$this->login_as_contributor();
+		$this->set_current_user_to_contributor();
 		$filter_key = $filter_key ?? static::$filter_key;
 
 		add_filter(
