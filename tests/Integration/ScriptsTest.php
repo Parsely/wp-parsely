@@ -176,7 +176,7 @@ final class ScriptsTest extends TestCase {
 	 * @group scripts
 	 */
 	public function test_should_not_enqueue_tracker_scripts_for_drafted_posts(): void {
-		$this->set_admin_user();
+		$this->set_current_user_to_admin();
 		$this->go_to_new_post( 'draft' );
 
 		self::$scripts->register_scripts();
@@ -206,7 +206,7 @@ final class ScriptsTest extends TestCase {
 	public function test_should_not_enqueue_tracker_scripts_for_published_posts_in_preview_mode(): void {
 		$post_id = $this->create_test_post();
 
-		$this->set_admin_user();
+		$this->set_current_user_to_admin();
 		$this->go_to( "/?p={$post_id}&preview=true" );
 
 		self::$scripts->register_scripts();
@@ -471,7 +471,7 @@ final class ScriptsTest extends TestCase {
 			( new Parsely() )->get_default_options()
 		);
 
-		$this->set_admin_user();
+		$this->set_current_user_to_admin();
 		$this->go_to_new_post();
 		self::$scripts->register_scripts();
 		self::$scripts->enqueue_js_tracker();
