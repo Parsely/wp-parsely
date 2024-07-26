@@ -106,6 +106,29 @@ function isInsideSimilarNode( node: Node, referenceNode: HTMLElement ): boolean 
 }
 
 /**
+ * Checks if a node is inside a heading (h1, h2, h3, etc.) or a caption element.
+ *
+ * @since 3.16.2
+ *
+ * @param {Node} node The DOM node to check.
+ *
+ * @return {boolean} True if the node is inside a heading or a caption, false otherwise.
+ */
+function isInsideHeadingOrCaption( node: Node ): boolean {
+	let currentNode: Node | null = node;
+	while ( currentNode ) {
+		if (
+			currentNode.nodeName.match( /^H[1-6]$/i ) ||
+			currentNode.nodeName.toLowerCase() === 'figcaption'
+		) {
+			return true;
+		}
+		currentNode = currentNode.parentNode;
+	}
+	return false;
+}
+
+/**
  * Finds all text nodes in an element that contain a given search text.
  *
  * @since 3.16.0
@@ -341,6 +364,11 @@ export function calculateSmartLinkingMatches(
 			let blockOffsetCounter = 0;
 
 			textNodes.forEach( ( node ) => {
+				// Skip if the node is inside a heading or a caption.
+				if ( isInsideHeadingOrCaption( node ) ) {
+					return;
+				}
+
 				const regex = new RegExp( escapeRegExp( link.text ), 'g' );
 				let match;
 				const nodeText = node.textContent ?? '';
