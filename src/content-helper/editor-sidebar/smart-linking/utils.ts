@@ -118,7 +118,7 @@ function isInsideHeadingOrCaption( node: Node ): boolean {
 	let currentNode: Node | null = node;
 	while ( currentNode ) {
 		if (
-			currentNode.nodeName.match( /^H[1-6]$/i ) ||
+			currentNode.nodeName.match( /^H[1-6]$/i ) ??
 			currentNode.nodeName.toLowerCase() === 'figcaption'
 		) {
 			return true;
