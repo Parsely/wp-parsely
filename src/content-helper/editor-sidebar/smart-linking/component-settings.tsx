@@ -17,8 +17,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { InputRange } from '../../common/components/input-range';
 import { SmartLinkingSettings as Settings } from '../../common/settings';
-import { ALLOWED_BLOCKS } from './component';
-import { DEFAULT_MAX_LINKS } from './smart-linking';
+import { ALLOWED_BLOCKS, DEFAULT_MAX_LINKS } from './smart-linking';
 import { ApplyToOptions, SmartLinkingStore } from './store';
 
 /**

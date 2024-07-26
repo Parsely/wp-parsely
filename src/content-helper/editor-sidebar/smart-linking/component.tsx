@@ -64,13 +64,6 @@ export enum SmartLinkingPanelContext {
 export const MAX_NUMBER_OF_RETRIES = 3;
 
 /**
- * The allowed blocks for Smart Linking.
- *
- * @since 3.16.0
- */
-export const ALLOWED_BLOCKS = window.wpParselySmartLinkingAllowedBlocks;
-
-/**
  * Smart Linking Panel.
  *
  * @since 3.14.0
