@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 // eslint-disable-next-line import/named
-import { BlockInstance } from '@wordpress/blocks';
+import { BlockInstance, getBlockType } from '@wordpress/blocks';
 import {
 	Disabled,
 	__experimentalToggleGroupControl as ToggleGroupControl,
@@ -10,7 +10,7 @@ import {
 } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useRef, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -181,7 +181,9 @@ export const SmartLinkingSettings = ( {
 		// If the selected block is not allowed, move the focus to the
 		// "All Blocks" button and set the hint to the user.
 		if ( selectedBlock && applyTo !== ApplyToOptions.All && ! ALLOWED_BLOCKS.includes( selectedBlock.name ) ) {
-			moveButtonAndShowHint( __( 'This individual block is not supported for Smart Links.', 'wp-parsely' ) );
+			const blockName = getBlockType( selectedBlock.name )?.title ?? selectedBlock.name;
+			/* translators: %s: block name */
+			moveButtonAndShowHint( sprintf( __( '%s blocks are not supported for Smart Links.', 'wp-parsely' ), blockName ) );
 		}
 
 		setFullContent( ApplyToOptions.All === applyToValue );
