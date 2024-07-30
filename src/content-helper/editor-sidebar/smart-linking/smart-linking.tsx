@@ -33,7 +33,7 @@ export const DEFAULT_MAX_LINKS = 10;
 /**
  * The allowed blocks for Smart Linking.
  *
- * @since 3.16.0
+ * @since 3.16.2
  */
 export const ALLOWED_BLOCKS = window.wpParselySmartLinkingAllowedBlocks;
 
