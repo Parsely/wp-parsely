@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Permissions: Allow overriding of PCH feature permissions ([#2663](https://github.com/Parsely/wp-parsely/pull/2663))
 - PCH Smart Linking: Fix bug causing ‘No smart links’ error despite valid API response ([#2662](https://github.com/Parsely/wp-parsely/pull/2662))
 
-
 ## [3.16.1](https://github.com/Parsely/wp-parsely/compare/3.16.0...3.16.1) - 2024-07-18
 
 ### Fixed
