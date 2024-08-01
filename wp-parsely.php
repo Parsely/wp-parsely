@@ -77,6 +77,7 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require __DIR__ . '/vendor/autoload.php';
 }
 
+add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
  * Registers the basic classes to initialize the plugin.
  */
@@ -98,9 +99,8 @@ function parsely_initialize_plugin(): void {
 	$metadata_renderer = new Metadata_Renderer( $GLOBALS['parsely'] );
 	$metadata_renderer->run();
 }
-add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 
-
+add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
 /**
  * Registers the Parse.ly wp-admin warnings, plugin actions and row actions.
  */
@@ -114,9 +114,8 @@ function parsely_admin_init_register(): void {
 	( new Site_Health( $parsely ) )->run();
 	( new Dashboard_Widget( $parsely ) )->run();
 }
-add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
 
-
+add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
  * Registers the additions the Parse.ly wp-admin settings page and Multisite
  * Network Admin Sites List table.
@@ -128,8 +127,8 @@ function parsely_wp_admin_early_register(): void {
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
 }
-add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 
+add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
  * Registers REST Endpoints that act as a proxy to the Parse.ly API.
  * This is needed to get around CORS issues with Firefox.
@@ -190,8 +189,8 @@ function parsely_rest_api_init(): void {
 		$wp_cache
 	);
 }
-add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 
+add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 /**
  * Registers the Recommendations Block.
  */
@@ -199,9 +198,8 @@ function init_recommendations_block(): void {
 	$recommendations_block = new Recommendations_Block();
 	$recommendations_block->run();
 }
-add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 
-
+add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_editor_sidebar' );
 /**
  * Inserts the PCH Editor Sidebar.
  *
@@ -211,8 +209,9 @@ add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 function init_content_helper_editor_sidebar(): void {
 	$GLOBALS['parsely_editor_sidebar']->run();
 }
-add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_editor_sidebar' );
 
+add_action( 'admin_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
+add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
 /**
  * Initializes the PCH Editor Sidebar features.
  *
@@ -229,10 +228,8 @@ function parsely_content_helper_editor_sidebar_features(): void {
 	$GLOBALS['parsely_editor_sidebar']->init_features();
 }
 
-add_action( 'admin_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
-add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
-
-
+// The priority of 9 is used to ensure that the Excerpt Generator is loaded before the PCH Editor Sidebar (10).
+add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_excerpt_generator', 9 );
 /**
  * Initializes and inserts the PCH Excerpt Generator.
  *
@@ -241,18 +238,17 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_content_helper_editor_si
 function init_content_helper_excerpt_generator(): void {
 	( new Excerpt_Generator( $GLOBALS['parsely'] ) )->run();
 }
-// The priority of 9 is used to ensure that the Excerpt Generator is loaded before the PCH Editor Sidebar (10).
-add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_excerpt_generator', 9 );
 
 
+add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
  * Registers the Parse.ly Recommended widget.
  */
 function parsely_recommended_widget_register(): void {
 	register_widget( new Recommended_Widget( $GLOBALS['parsely'] ) );
 }
-add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 
+add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' ); // @phpstan-ignore-line
 /**
  * Instantiates Integrations collection and registers built-in integrations.
  *
@@ -277,7 +273,6 @@ function parsely_integrations( $parsely = null ): Integrations {
 
 	return $parsely_integrations;
 }
-add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' ); // @phpstan-ignore-line
 
 /**
  * Instantiates and runs the specified API endpoint.
@@ -296,7 +291,7 @@ function parsely_run_rest_api_endpoint(
 	/**
 	 * Internal Variable.
 	 *
-	 * @var RemoteAPI\Base_Endpoint_Remote
+	 * @var RemoteAPI\Base_Endpoint_Remote $remote_api
 	 */
 	$remote_api       = new $api_class_name( $GLOBALS['parsely'] );
 	$remote_api_cache = new Remote_API_Cache( $remote_api, $wp_cache );
@@ -304,7 +299,7 @@ function parsely_run_rest_api_endpoint(
 	/**
 	 * Internal Variable.
 	 *
-	 * @var Endpoints\Base_API_Proxy
+	 * @var Endpoints\Base_API_Proxy $remote_api_proxy
 	 */
 	$remote_api_proxy = new $proxy_api_class_name( $GLOBALS['parsely'], $remote_api_cache );
 	$remote_api_proxy->run();
