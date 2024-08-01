@@ -50,7 +50,7 @@ final class AnalyticsPostsRemoteAPITest extends BaseRemoteAPITest {
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_user_is_allowed_to_make_api_call_if_default_user_capability_is_changed(): void {
 		$this->set_current_user_to_contributor();
@@ -76,7 +76,7 @@ final class AnalyticsPostsRemoteAPITest extends BaseRemoteAPITest {
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_user_is_allowed_to_make_api_call_if_endpoint_specific_user_capability_is_changed(): void {
 		$this->set_current_user_to_contributor();
@@ -102,7 +102,7 @@ final class AnalyticsPostsRemoteAPITest extends BaseRemoteAPITest {
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_endpoint_specific_user_capability_filter_have_more_priority_than_default(): void {
 		$this->set_current_user_to_contributor();

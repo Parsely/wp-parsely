@@ -12,9 +12,8 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
+use Parsely\Utils\Utils;
 use WP_Widget;
-
-use function Parsely\Utils\get_asset_info;
 
 use const Parsely\PARSELY_FILE;
 
@@ -154,7 +153,7 @@ final class Recommended_Widget extends WP_Widget {
 
 		<?php
 
-		$recommended_widget_script_asset = get_asset_info( 'build/recommended-widget.asset.php' );
+		$recommended_widget_script_asset = Utils::get_asset_info( 'build/recommended-widget.asset.php' );
 
 		wp_register_script(
 			'wp-parsely-recommended-widget',

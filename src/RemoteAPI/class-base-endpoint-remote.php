@@ -12,10 +12,9 @@ namespace Parsely\RemoteAPI;
 
 use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Parsely;
+use Parsely\Utils\Utils;
 use UnexpectedValueException;
 use WP_Error;
-
-use function Parsely\Utils\convert_to_associative_array;
 
 /**
  * Base class for remote API endpoints.
@@ -118,7 +117,7 @@ abstract class Base_Endpoint_Remote extends Base_Endpoint implements Remote_API_
 
 		$data = $decoded->data;
 
-		return $associative ? convert_to_associative_array( $data ) : $data;
+		return $associative ? Utils::convert_to_associative_array( $data ) : $data;
 	}
 
 	/**

@@ -13,7 +13,7 @@ namespace Parsely\Content_Helper;
 use Parsely\Parsely;
 use Parsely\Permissions;
 
-use function Parsely\Utils\get_asset_info;
+use Parsely\Utils\Utils;
 use const Parsely\PARSELY_FILE;
 
 /**
@@ -77,7 +77,7 @@ class Excerpt_Generator extends Content_Helper_Feature {
 			return;
 		}
 
-		$asset_php        = get_asset_info( 'build/content-helper/excerpt-generator.asset.php' );
+		$asset_php        = Utils::get_asset_info( 'build/content-helper/excerpt-generator.asset.php' );
 		$built_assets_url = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_script(
