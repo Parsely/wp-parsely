@@ -100,6 +100,9 @@
 		"testwp-ms": [
 			"@putenv WP_MULTISITE=1",
 			"@composer testwp"
+		],
+		"gen-autoload": [
+			"@composer dump-autoload --classmap-authoritative"
 		]
 	},
 	"scripts-descriptions": {
@@ -115,6 +118,7 @@
 		"test": "Run the unit tests for the Parse.ly plugin.",
 		"test-ms": "Run the unit tests for the Parse.ly plugin on a multisite install.",
 		"testwp": "Run the integration tests for the Parse.ly plugin.",
-		"testwp-ms": "Run the integration tests for the Parse.ly plugin on a multisite install."
+		"testwp-ms": "Run the integration tests for the Parse.ly plugin on a multisite install.",
+		"gen-autoload": "Generates the autoload class map with authoritative class maps."
 	}
 }
