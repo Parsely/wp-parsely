@@ -11,27 +11,26 @@ import { dispatch } from '@wordpress/data';
  * @since 3.12.0
  */
 export interface GutenbergFunction {
-	editPost( edits: Record<string, unknown> ): void;
-	getBlock( clientId: string ): BlockInstance | null;
-	getBlockParents( clientId: string ): string[];
-	getBlocks(): BlockInstance[];
-	getCurrentPostAttribute( attribute: string ): string;
-	getCurrentPostId(): number | undefined;
-	getEditedPostAttribute( attribute: string ): string;
-	getEditedPostContent(): string;
-	getPermalink(): string | null;
-	getPermalink(): string | null;
-	getSelectedBlock(): BlockInstance | null;
-	hasMetaBoxes(): boolean;
-	isAutosavingPost(): boolean;
-	isSavingPost(): boolean;
-	lockPostSaving( lockName: string ): void;
-	lockPostAutosaving( lockName: string ): void;
-	unlockPostAutosaving( lockName: string ): void;
-	removeEditorPanel( panelName: string ): void;
-	selectBlock( clientId: string, initialPosition?: number ): void;
-	unlockPostSaving( lockName: string ): void;
-	updateBlockAttributes( clientId: string, attributes: Record<string, unknown> ): void;
+	editPost: ( edits: Record<string, unknown> ) => void;
+	getBlock: ( clientId: string ) => BlockInstance | null;
+	getBlockParents: ( clientId: string ) => string[];
+	getBlocks: () => BlockInstance[];
+	getCurrentPostAttribute: ( attribute: string ) => string;
+	getCurrentPostId: () => number | undefined;
+	getEditedPostAttribute: ( attribute: string ) => string;
+	getEditedPostContent: () => string;
+	getPermalink: () => string | null;
+	getSelectedBlock: () => BlockInstance | null;
+	hasMetaBoxes: () => boolean;
+	isAutosavingPost: () => boolean;
+	isSavingPost: () => boolean;
+	lockPostSaving: ( lockName: string ) => void;
+	lockPostAutosaving: ( lockName: string ) => void;
+	unlockPostAutosaving: ( lockName: string ) => void;
+	removeEditorPanel: ( panelName: string ) => void;
+	selectBlock: ( clientId: string, initialPosition?: number ) => void;
+	unlockPostSaving: ( lockName: string ) => void;
+	updateBlockAttributes: ( clientId: string, attributes: Record<string, unknown> ) => void;
 }
 
 /**

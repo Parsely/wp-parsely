@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.16.2](https://github.com/Parsely/wp-parsely/compare/3.16.1...3.16.2) - 2024-07-30
+
+### Fixed
+
+- PCH Smart Linking: Prevent suggesting links in unexpected blocks ([#2673](https://github.com/Parsely/wp-parsely/pull/2673))
+- PCH Related Posts: Prevent Related Posts indefinite loading ([#2666](https://github.com/Parsely/wp-parsely/pull/2666))
+- Permissions: Allow overriding of PCH feature permissions ([#2663](https://github.com/Parsely/wp-parsely/pull/2663))
+- PCH Smart Linking: Fix bug causing ‘No smart links’ error despite valid API response ([#2662](https://github.com/Parsely/wp-parsely/pull/2662))
+
+## [3.16.1](https://github.com/Parsely/wp-parsely/compare/3.16.0...3.16.1) - 2024-07-18
+
+### Fixed
+
+- PCH Performance Stats: Remove UTM parameters from the 'View in Parse.ly' button ([#2655](https://github.com/Parsely/wp-parsely/pull/2655))
+- PCH Smart Linking: Show error when API returns empty list of Smart Link suggestions ([#2654](https://github.com/Parsely/wp-parsely/pull/2654))
+- PCH Smart Linking: Fix CSS leaking from the Block Preview ([#2652](https://github.com/Parsely/wp-parsely/pull/2652))
+- PCH Smart Linking: Use the post title as the Smart Link title. ([#2650](https://github.com/Parsely/wp-parsely/pull/2650))
+- Permissions: Fix PHP Warning when the user role is invalid ([#2649](https://github.com/Parsely/wp-parsely/pull/2649))
+
 ## [3.16.0](https://github.com/Parsely/wp-parsely/compare/3.15.0...3.16.0) - 2024-07-08
 
 ### Added

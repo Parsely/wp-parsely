@@ -80,30 +80,59 @@ class Permissions {
 			return false;
 		}
 
-		// Current user's role is not yet set.
 		$current_user = wp_get_current_user();
-		if ( 0 === count( $current_user->roles ) ) {
-			return false;
-		}
+		$user_roles   = $current_user->roles;
 
-		// Check that the user's role has the capability to edit posts.
-		$current_user_role = $current_user->roles[0];
-		$valid_roles       = array_keys( self::get_user_roles_with_edit_posts_cap() );
-		if ( ! in_array( $current_user_role, $valid_roles, true ) ) {
-			return false;
-		}
+		/**
+		 * Filters whether the current user can use the specified Content Helper
+		 * feature.
+		 *
+		 * This filter can be used to override the default permissions check.
+		 *
+		 * @since 3.16.2
+		 *
+		 * @param bool   $current_user_can_use_pch_feature Whether the current user can use the feature.
+		 * @param string $feature_name The feature's name.
+		 * @param \WP_User $current_user The current user object.
+		 * @param int|false $post_id The post ID, if the check is for a specific post.
+		 */
+		$filtered_current_user_can_use_pch_feature = apply_filters(
+			'wp_parsely_current_user_can_use_pch_feature',
+			false,
+			$feature_name,
+			$current_user,
+			$post_id
+		);
 
-		// Check that the user's role has access to the specific feature/post.
-		$allowed_roles = $feature_options['allowed_user_roles'];
-		if ( in_array( $current_user_role, $allowed_roles, true ) ) {
-			if ( (int) $post_id > 0 ) {
-				return current_user_can( 'edit_post', $post_id );
-			}
-
+		if ( true === $filtered_current_user_can_use_pch_feature ) {
 			return true;
 		}
 
-		return false;
+		// Current user's role is not yet set.
+		if ( 0 === count( $user_roles ) ) {
+			return false;
+		}
+
+		// Get the roles with the capability to edit posts.
+		$valid_roles = array_keys( self::get_user_roles_with_edit_posts_cap() );
+
+		// Check that at least one of the user's roles has the capability to edit posts.
+		if ( 0 === count( array_intersect( $user_roles, $valid_roles ) ) ) {
+			return false;
+		}
+
+		// Check that at least one of the user's roles has access to the specific feature/post.
+		$allowed_roles = $feature_options['allowed_user_roles'];
+		if ( 0 === count( array_intersect( $user_roles, $allowed_roles ) ) ) {
+			return false;
+		}
+
+		// Check if the user can edit the post.
+		if ( (int) $post_id > 0 ) {
+			return current_user_can( 'edit_post', $post_id );
+		}
+
+		return true;
 	}
 
 	/**

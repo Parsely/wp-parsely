@@ -223,7 +223,7 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key()
 	 */
 	public function test_valid_nested_performance_stats_settings_period(): void {
-		$this->set_admin_user();
+		$this->set_current_user_to_admin();
 
 		$value = $this->send_put_request(
 			$this->generate_json(

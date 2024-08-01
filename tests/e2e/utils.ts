@@ -4,10 +4,11 @@
 import {
 	createNewPost,
 	ensureSidebarOpened,
+	findSidebarPanelToggleButtonWithTitle,
 	visitAdminPage,
 } from '@wordpress/e2e-test-utils';
 
-export const PLUGIN_VERSION = '3.16.0';
+export const PLUGIN_VERSION = '3.16.2';
 export const VALID_SITE_ID = 'demoaccount.parsely.com';
 export const INVALID_SITE_ID = 'invalid.parsely.com';
 export const VALID_API_SECRET = 'valid_api_secret';
@@ -242,23 +243,40 @@ export const setSidebarPanelExpanded = async (
 };
 
 /**
- * Overrides the findSidebarPanelToggleButtonWithTitle() function of the
- * wordpress/e2e-test-utils package, as we started having issues with it and
- * some tests were failing.
+ * Toggles the More Menu.
  *
- * @since 3.15.0
+ * This function overrides the toggleMoreMenu() function of the
+ * wordpress/e2e-test-utils package, as the original function contains erroneous
+ * selectors
  *
- * @param {string} title          The title of the element to find.
- * @param {string} containerClass The class of one of the element's containers.
+ * @since 3.16.1
  *
- * @return {Promise<Element>} The found element.
+ * @param {'open' | 'close' | undefined} waitFor Whether it should wait for the menu to open or close.
+ *                                               If `undefined`, it won't wait for anything.
  */
-const findSidebarPanelToggleButtonWithTitle = async (
-	title: string, containerClass: string = 'edit-post-sidebar'
-) => {
-	const [ button ] = await page.$x(
-		`//div[contains(@class,"${ containerClass }")]//button[@class="components-button components-panel__body-toggle"][contains(text(),"${ title }")]`
-	);
+export async function toggleMoreMenu(
+	waitFor: 'open' | 'close' | undefined = undefined
+): Promise<void> {
+	const menuSelector = 'button[aria-haspopup="true"][aria-label="Options"]';
+	const menuToggle = await page.waitForSelector( menuSelector );
+	const isOpen = await menuToggle.evaluate( ( el ) => el.getAttribute( 'aria-expanded' ) );
 
-	return button;
-};
+	// If opening and it's already open then exit early.
+	if ( isOpen === 'true' && waitFor === 'open' ) {
+		return;
+	}
+
+	// If closing and it's already closed then exit early.
+	if ( isOpen === 'false' && waitFor === 'close' ) {
+		return;
+	}
+	await page.click( menuSelector );
+	if ( waitFor ) {
+		const opts = waitFor === 'close' ? {
+			hidden: true,
+		} : {};
+		const menuContentSelector = 'div.components-dropdown-menu__menu[role="menu"][aria-label="Options"]';
+		await page.waitForSelector( menuContentSelector, opts );
+	}
+}
+

@@ -49,7 +49,7 @@ abstract class BaseUserMetaEndpointTest extends BaseProxyEndpointTest {
 	 * @since 3.13.0
 	 */
 	public function run_test_endpoint_returns_value_on_get_request(): void {
-		$this->set_admin_user();
+		$this->set_current_user_to_admin();
 
 		$value = rest_do_request(
 			new WP_REST_Request(
@@ -137,7 +137,7 @@ abstract class BaseUserMetaEndpointTest extends BaseProxyEndpointTest {
 	 * @return string The response returned by the endpoint.
 	 */
 	protected function send_put_request( string $data ): string {
-		$this->set_admin_user();
+		$this->set_current_user_to_admin();
 		$result = $this->send_wp_rest_request( 'PUT', self::$route, $data );
 
 		if ( ! is_string( $result ) ) {

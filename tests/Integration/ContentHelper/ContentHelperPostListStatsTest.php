@@ -52,7 +52,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		parent::set_up();
 
 		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%' );
-		$this->set_admin_user();
+		$this->set_current_user_to_admin();
 	}
 
 	/**
@@ -70,23 +70,22 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param mixed $global_filter_value The value of the global filter.
-	 * @param mixed $feature_filter_value The value of the feature filter.
-	 * @param bool  $expected Whether the assets should be enqueued.
-	 * @param mixed ...$additional_args Any required additional arguments.
+	 * @param mixed                $global_filter_value The value of the global filter.
+	 * @param mixed                $feature_filter_value The value of the feature filter.
+	 * @param bool                 $expected Whether the assets should be enqueued.
+	 * @param string               $user_login The current user's login.
+	 * @param string               $user_role The current user's role.
+	 * @param array<string, mixed> $additional_args Any required additional arguments.
 	 */
 	protected function assert_enqueued_status(
 		$global_filter_value,
 		$feature_filter_value,
 		bool $expected,
-		...$additional_args
+		string $user_login,
+		string $user_role,
+		array $additional_args = array()
 	): void {
-		/**
-		 * The WordPress screen on which the test will run.
-		 *
-		 * @var string
-		 */
-		$screen = $additional_args[0] ?? 'edit-post';
+		$this->set_current_user_to( $user_login, $user_role );
 
 		parent::set_filters(
 			Post_List_Stats::get_feature_filter_name(),
@@ -95,8 +94,18 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		);
 
 		$this->set_valid_conditions_for_parsely_stats();
-		set_current_screen( $screen ); // Overrides screen set by previous function.
+
+		// Override the screen set by previous function.
+		set_current_screen(
+			self::get_string_value_from_array(
+				$additional_args,
+				'screen',
+				'edit-post'
+			)
+		);
+
 		$this->mock_parsely_stats_response( array() );
+
 		$this->assert_parsely_stats_admin_script( $expected );
 		$this->assert_parsely_stats_admin_styles( $expected );
 	}
@@ -123,8 +132,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @group content-helper
 	 */
 	public function test_assets_do_not_get_enqueued_when_user_has_not_enough_capabilities(): void {
-		$this->login_as_contributor();
-		self::assert_enqueued_status( null, null, false );
+		self::assert_enqueued_status( null, null, false, 'test_contributor', 'contributor' );
 	}
 
 	/**
@@ -153,7 +161,14 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @group content-helper
 	 */
 	public function test_assets_do_not_get_enqueued_when_page_is_not_post_list(): void {
-		$this->assert_enqueued_status( null, null, false, 'dashboard' );
+		$this->assert_enqueued_status(
+			null,
+			null,
+			false,
+			'admin',
+			'administrator',
+			array( 'screen' => 'dashboard' )
+		);
 	}
 
 	/**
