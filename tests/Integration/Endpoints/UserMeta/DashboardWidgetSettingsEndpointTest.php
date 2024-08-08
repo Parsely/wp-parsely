@@ -8,14 +8,12 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\ContentHelper;
+namespace Parsely\Tests\Integration\Endpoints\UserMeta;
 
 use Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta;
 use Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint;
 use Parsely\Parsely;
-use Parsely\Tests\Integration\BaseUserMetaEndpointTest;
-
-use function Parsely\Utils\convert_endpoint_to_filter_key;
+use Parsely\Utils\Utils;
 
 /**
  * Integration Tests for the PCH Dashboard Widget Settings Endpoint.
@@ -44,7 +42,7 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 		$route = Dashboard_Widget_Settings_Endpoint::get_route();
 
 		self::$route      = '/wp-parsely/v1' . $route;
-		self::$filter_key = convert_endpoint_to_filter_key( $route );
+		self::$filter_key = Utils::convert_endpoint_to_filter_key( $route );
 	}
 
 	/**
@@ -75,7 +73,7 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_register_routes_by_default(): void {
 		parent::run_test_register_routes_by_default(
@@ -103,7 +101,7 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_verify_that_route_is_not_registered_when_endpoint_is_disabled(): void {
 		parent::run_test_do_not_register_route_when_proxy_is_disabled();
@@ -129,7 +127,7 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_endpoint_returns_value_on_get_request(): void {
 		parent::run_test_endpoint_returns_value_on_get_request();
@@ -161,7 +159,7 @@ final class DashboardWidgetSettingsEndpointTest extends BaseUserMetaEndpointTest
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 *
 	 * @dataProvider provide_put_requests_data
 	 */

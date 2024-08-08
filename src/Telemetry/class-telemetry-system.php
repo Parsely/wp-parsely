@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely\Telemetry;
 
+use Parsely\Utils\Utils;
 use WP_Error;
-use function Parsely\Utils\get_asset_info;
 use const Parsely\PARSELY_FILE;
 use const Parsely\PARSELY_VERSION;
 
@@ -103,7 +103,7 @@ abstract class Telemetry_System {
 		add_action(
 			'admin_enqueue_scripts',
 			function (): void {
-				$asset_php        = get_asset_info( 'build/telemetry.asset.php' );
+				$asset_php        = Utils::get_asset_info( 'build/telemetry.asset.php' );
 				$built_assets_url = plugin_dir_url( PARSELY_FILE ) . 'build/';
 
 				// The Telemetry script is always enqueued in the admin.

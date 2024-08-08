@@ -11,9 +11,8 @@ declare(strict_types=1);
 namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
+use Parsely\Utils\Utils;
 use WP_REST_Request;
-
-use function Parsely\Utils\convert_endpoint_to_filter_key;
 
 /**
  * Base class for API endpoints.
@@ -108,7 +107,7 @@ abstract class Base_Endpoint {
 			 * @var string
 			 */
 			$endpoint_specific_user_capability = apply_filters(
-				'wp_parsely_user_capability_for_' . convert_endpoint_to_filter_key( static::ENDPOINT ) . '_api',
+				'wp_parsely_user_capability_for_' . Utils::convert_endpoint_to_filter_key( static::ENDPOINT ) . '_api',
 				$default_user_capability
 			);
 
@@ -129,7 +128,7 @@ abstract class Base_Endpoint {
 		string $callback,
 		array $methods = array( 'GET' )
 	): void {
-		if ( ! apply_filters( 'wp_parsely_enable_' . convert_endpoint_to_filter_key( $endpoint ) . '_api_proxy', true ) ) {
+		if ( ! apply_filters( 'wp_parsely_enable_' . Utils::convert_endpoint_to_filter_key( $endpoint ) . '_api_proxy', true ) ) {
 			return;
 		}
 
@@ -176,7 +175,7 @@ abstract class Base_Endpoint {
 		array $methods = array( 'GET' ),
 		array $args = array()
 	): void {
-		if ( ! apply_filters( 'wp_parsely_enable_' . convert_endpoint_to_filter_key( $endpoint ) . '_api_proxy', true ) ) {
+		if ( ! apply_filters( 'wp_parsely_enable_' . Utils::convert_endpoint_to_filter_key( $endpoint ) . '_api_proxy', true ) ) {
 			return;
 		}
 

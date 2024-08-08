@@ -8,21 +8,21 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\Endpoints\Proxy;
 
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
+use Parsely\Tests\Integration\TestCase;
+use Parsely\Utils\Utils;
 use WP_Error;
 use WP_REST_Request;
-
-use function Parsely\Utils\get_date_format;
 
 /**
  * Integration Tests for the Analytics Posts API Proxy Endpoint.
  */
-final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
+final class AnalyticsPostsProxyEndpointTest extends BaseProxyEndpointTest {
 
 	/**
 	 * Initializes all required values for the test.
@@ -193,7 +193,7 @@ final class AnalyticsPostsProxyEndpointTest extends ProxyEndpointTest {
 		);
 
 		$dispatched  = 0;
-		$date_format = get_date_format();
+		$date_format = Utils::get_date_format();
 
 		add_filter(
 			'pre_http_request',
