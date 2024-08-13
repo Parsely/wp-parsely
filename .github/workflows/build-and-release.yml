@@ -32,10 +32,6 @@ jobs:
           git merge --squash $GITHUB_SHA
           git commit -m "Merge $GITHUB_SHA into built" --no-verify
 
-      - name: Get list of changed files
-        run: |
-          git status -s
-
       - name: Read .nvmrc
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
 
