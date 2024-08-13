@@ -8,10 +8,10 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\ContentHelper;
+namespace Parsely\Tests\Integration\ContentHelper;
 
-use Parsely\Tests\Integration\TestCase;
 use Parsely\Content_Helper\Content_Helper_Feature;
+use Parsely\Tests\Integration\TestCase;
 
 /**
  * Base class for all Content Helper feature integration tests.
@@ -183,8 +183,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -240,8 +240,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -285,8 +285,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -330,8 +330,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -388,8 +388,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -433,8 +433,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -478,8 +478,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -535,8 +535,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -587,8 +587,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -632,8 +632,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -677,8 +677,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -734,8 +734,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -780,8 +780,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -837,8 +837,8 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */

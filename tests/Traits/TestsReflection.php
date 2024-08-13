@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests;
+namespace Parsely\Tests\Traits;
 
 use Parsely\Parsely;
 use ReflectionException;
 use ReflectionMethod;
 
-trait Tests_Reflection {
+trait TestsReflection {
 	/**
 	 * Gets a method from a class. This should be used when trying to access a
 	 * private method for testing.

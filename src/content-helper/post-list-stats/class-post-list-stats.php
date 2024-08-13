@@ -15,14 +15,10 @@ use Parsely\Content_Helper\Content_Helper_Feature;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Base_Endpoint_Remote;
 use Parsely\RemoteAPI\Analytics_Posts_API;
+use Parsely\Utils\Utils;
 use WP_Screen;
 
-use function Parsely\Utils\get_asset_info;
-use function Parsely\Utils\get_formatted_number;
-use function Parsely\Utils\get_formatted_time;
-
 use const Parsely\PARSELY_FILE;
-use const Parsely\Utils\DATE_UTC_FORMAT;
 
 /**
  * Class for adding `Parse.ly Stats` on admin columns.
@@ -156,7 +152,7 @@ class Post_List_Stats extends Content_Helper_Feature {
 			return;
 		}
 
-		$admin_settings_asset = get_asset_info( 'build/content-helper/post-list-stats.asset.php' );
+		$admin_settings_asset = Utils::get_asset_info( 'build/content-helper/post-list-stats.asset.php' );
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_style(
@@ -235,7 +231,7 @@ class Post_List_Stats extends Content_Helper_Feature {
 			return;
 		}
 
-		$admin_settings_asset = get_asset_info( 'build/content-helper/post-list-stats.asset.php' );
+		$admin_settings_asset = Utils::get_asset_info( 'build/content-helper/post-list-stats.asset.php' );
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_script(
@@ -358,9 +354,9 @@ class Post_List_Stats extends Content_Helper_Feature {
 			 * @var Parsely_Post_Stats
 			 */
 			$stats = array(
-				'page_views' => get_formatted_number( (string) $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ),
-				'visitors'   => get_formatted_number( (string) $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ),
-				'avg_time'   => get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ),
+				'page_views' => Utils::get_formatted_number( (string) $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ),
+				'visitors'   => Utils::get_formatted_number( (string) $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ),
+				'avg_time'   => Utils::get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ),
 			);
 
 			$parsely_stats_map[ $key ] = $stats;
@@ -389,8 +385,8 @@ class Post_List_Stats extends Content_Helper_Feature {
 		}
 
 		return array(
-			'pub_date_start' => ( new DateTime( min( $published_times ) ) )->format( DATE_UTC_FORMAT ),
-			'pub_date_end'   => ( new DateTime( max( $published_times ) ) )->format( DATE_UTC_FORMAT ),
+			'pub_date_start' => ( new DateTime( min( $published_times ) ) )->format( Utils::DATE_UTC_FORMAT ),
+			'pub_date_end'   => ( new DateTime( max( $published_times ) ) )->format( Utils::DATE_UTC_FORMAT ),
 		);
 	}
 

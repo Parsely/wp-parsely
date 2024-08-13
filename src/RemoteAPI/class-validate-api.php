@@ -12,10 +12,9 @@ namespace Parsely\RemoteAPI;
 
 use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Parsely;
+use Parsely\Utils\Utils;
 use WP_Error;
 use WP_REST_Request;
-
-use function Parsely\Utils\convert_to_associative_array;
 
 /**
  * Class for credentials validation API (`/validate`).
@@ -120,6 +119,6 @@ class Validate_API extends Base_Endpoint_Remote {
 	 */
 	public function get_items( array $query, bool $associative = false ) {
 		$api_request = $this->api_validate_credentials( $query );
-		return $associative ? convert_to_associative_array( $api_request ) : $api_request;
+		return $associative ? Utils::convert_to_associative_array( $api_request ) : $api_request;
 	}
 }

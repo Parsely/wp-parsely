@@ -7,18 +7,19 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\Endpoints\Proxy;
 
 use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Endpoints\Related_API_Proxy;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Related_API;
+use Parsely\Tests\Integration\TestCase;
 use WP_REST_Request;
 
 /**
  * Integration Tests for the Related API Proxy Endpoint.
  */
-final class RelatedProxyEndpointTest extends ProxyEndpointTest {
+final class RelatedProxyEndpointTest extends BaseProxyEndpointTest {
 
 	/**
 	 * Initializes all required values for the test.

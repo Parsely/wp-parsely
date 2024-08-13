@@ -10,10 +10,10 @@ declare(strict_types=1);
 
 namespace Parsely\Telemetry;
 
+use Parsely\Utils\Utils;
 use stdClass;
 use WP_Error;
 
-use function Parsely\Utils\get_timestamp;
 use const Parsely\PARSELY_VERSION;
 
 /**
@@ -122,7 +122,7 @@ class Tracks_Event {
 
 		// Set event timestamp.
 		if ( ! isset( $event->_ts ) ) {
-			$event->_ts = get_timestamp();
+			$event->_ts = Utils::get_timestamp();
 		}
 
 		// Remove non-routable IPs to prevent record from being discarded.

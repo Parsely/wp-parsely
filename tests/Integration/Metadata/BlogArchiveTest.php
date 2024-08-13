@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration\StructuredData;
+namespace Parsely\Tests\Integration\Metadata;
 
 use Parsely\Metadata;
 use Parsely\Parsely;
@@ -35,6 +35,17 @@ final class BlogArchiveTest extends NonPostTestCase {
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
+	 * @uses \Parsely\Utils\Utils::get_page_on_front
+	 * @uses \Parsely\Utils\Utils::get_page_for_posts
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_content_helper_settings_values
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
 	 * @group metadata
 	 */
 	public function test_blog_page_for_posts_paged(): void {

@@ -8,16 +8,17 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\RemoteAPI;
 
-use Parsely\RemoteAPI\Cache;
 use Parsely\RemoteAPI\Base_Endpoint_Remote;
+use Parsely\RemoteAPI\Cache;
 use Parsely\RemoteAPI\Remote_API_Cache;
+use Parsely\Tests\Integration\TestCase;
 
 /**
  * Integration Tests for the Parse.ly Remote API.
  */
-abstract class RemoteAPITest extends TestCase {
+abstract class BaseRemoteAPITest extends TestCase {
 	/**
 	 * Internal variable.
 	 *

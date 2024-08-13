@@ -14,7 +14,7 @@ use Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 
-use function Parsely\Utils\get_asset_info;
+use Parsely\Utils\Utils;
 
 use const Parsely\PARSELY_FILE;
 
@@ -125,7 +125,7 @@ class Dashboard_Widget extends Content_Helper_Feature {
 			return;
 		}
 
-		$asset_php        = get_asset_info( 'build/content-helper/dashboard-widget.asset.php' );
+		$asset_php        = Utils::get_asset_info( 'build/content-helper/dashboard-widget.asset.php' );
 		$built_assets_url = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_script(

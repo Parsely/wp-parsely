@@ -12,19 +12,18 @@ namespace Parsely\Tests\Integration;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
-use ReflectionClass;
-use ReflectionProperty;
-use ReflectionMethod;
 use Parsely\Parsely;
+use Parsely\Utils\Utils;
 use PHPUnit\Framework\RiskyTestError;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionProperty;
 use UnexpectedValueException;
 use WP_Error;
 use WP_Post;
 use WP_REST_Request;
 use WP_Term;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
-
-use const Parsely\Utils\WP_DATE_TIME_FORMAT;
 
 /**
  * Abstract base class for all test case implementations.
@@ -33,7 +32,7 @@ use const Parsely\Utils\WP_DATE_TIME_FORMAT;
  */
 abstract class TestCase extends WPIntegrationTestCase {
 
-	use \Parsely\Tests\Tests_Reflection;
+	use \Parsely\Tests\Traits\TestsReflection;
 
 	public const VALID_SITE_ID = 'demoaccount.parsely.com';
 
@@ -226,8 +225,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 					'post_title'    => "Title $i-($post_status)",
 					'post_author'   => $i,
 					'post_content'  => "Content $i",
-					'post_date'     => $post_date->format( WP_DATE_TIME_FORMAT ),
-					'post_date_gmt' => gmdate( WP_DATE_TIME_FORMAT, $post_date->getTimestamp() ),
+					'post_date'     => $post_date->format( Utils::WP_DATE_TIME_FORMAT ),
+					'post_date_gmt' => gmdate( Utils::WP_DATE_TIME_FORMAT, $post_date->getTimestamp() ),
 				)
 			);
 

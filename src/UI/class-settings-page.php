@@ -13,9 +13,8 @@ namespace Parsely\UI;
 use Parsely\Content_Helper\Excerpt_Generator;
 use Parsely\Parsely;
 use Parsely\Permissions;
+use Parsely\Utils\Utils;
 use Parsely\Validator;
-
-use function Parsely\Utils\get_asset_info;
 
 use const Parsely\PARSELY_FILE;
 
@@ -168,7 +167,7 @@ final class Settings_Page {
 		add_filter( 'media_library_months_with_files', '__return_empty_array' );
 		wp_enqueue_media();
 
-		$admin_settings_asset = get_asset_info( 'build/admin-settings.asset.php' );
+		$admin_settings_asset = Utils::get_asset_info( 'build/admin-settings.asset.php' );
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
 
 		wp_enqueue_script(

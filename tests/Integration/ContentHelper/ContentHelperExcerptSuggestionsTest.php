@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\ContentHelper;
+namespace Parsely\Tests\Integration\ContentHelper;
 
 use Parsely\Content_Helper\Excerpt_Generator;
 use Parsely\Parsely;

@@ -11,7 +11,7 @@
  * Plugin Name:       Parse.ly
  * Plugin URI:        https://docs.parse.ly/wordpress
  * Description:       This plugin makes it a snap to add Parse.ly tracking code and metadata to your WordPress blog.
- * Version:           3.16.2
+ * Version:           3.16.3
  * Author:            Parse.ly
  * Author URI:        https://www.parse.ly
  * Text Domain:       wp-parsely
@@ -64,41 +64,16 @@ use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
 use Parsely\UI\Site_Health;
 
-require_once __DIR__ . '/src/Utils/utils.php';
-
 if ( class_exists( Parsely::class ) ) {
 	return;
 }
 
-const PARSELY_VERSION = '3.16.2';
+const PARSELY_VERSION = '3.16.3';
 const PARSELY_FILE    = __FILE__;
 
-require_once __DIR__ . '/src/Models/class-base-model.php';
-require_once __DIR__ . '/src/Models/class-smart-link.php';
-require_once __DIR__ . '/src/Models/class-inbound-smart-link.php';
-
-require_once __DIR__ . '/src/class-parsely.php';
-require_once __DIR__ . '/src/class-permissions.php';
-require_once __DIR__ . '/src/class-scripts.php';
-require_once __DIR__ . '/src/class-dashboard-link.php';
-require_once __DIR__ . '/src/class-validator.php';
-require_once __DIR__ . '/src/UI/class-admin-bar.php';
-require_once __DIR__ . '/src/UI/class-metadata-renderer.php';
-require_once __DIR__ . '/src/Endpoints/class-metadata-endpoint.php';
-require_once __DIR__ . '/src/Endpoints/class-graphql-metadata.php';
-require_once __DIR__ . '/src/Telemetry/telemetry-init.php';
-
-require_once __DIR__ . '/src/class-metadata.php';
-require_once __DIR__ . '/src/Metadata/class-metadata-builder.php';
-require_once __DIR__ . '/src/Metadata/class-author-archive-builder.php';
-require_once __DIR__ . '/src/Metadata/class-category-builder.php';
-require_once __DIR__ . '/src/Metadata/class-date-builder.php';
-require_once __DIR__ . '/src/Metadata/class-front-page-builder.php';
-require_once __DIR__ . '/src/Metadata/class-page-builder.php';
-require_once __DIR__ . '/src/Metadata/class-page-for-posts-builder.php';
-require_once __DIR__ . '/src/Metadata/class-paginated-front-page-builder.php';
-require_once __DIR__ . '/src/Metadata/class-post-builder.php';
-require_once __DIR__ . '/src/Metadata/class-tag-builder.php';
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+}
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
@@ -123,14 +98,6 @@ function parsely_initialize_plugin(): void {
 	$metadata_renderer->run();
 }
 
-require_once __DIR__ . '/src/content-helper/common/class-content-helper-feature.php';
-require_once __DIR__ . '/src/content-helper/post-list-stats/class-post-list-stats.php';
-require_once __DIR__ . '/src/UI/class-admin-warning.php';
-require_once __DIR__ . '/src/UI/class-plugins-actions.php';
-require_once __DIR__ . '/src/UI/class-row-actions.php';
-require_once __DIR__ . '/src/UI/class-site-health.php';
-require_once __DIR__ . '/src/content-helper/dashboard-widget/class-dashboard-widget.php';
-
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_admin_init_register' );
 /**
  * Registers the Parse.ly wp-admin warnings, plugin actions and row actions.
@@ -146,9 +113,6 @@ function parsely_admin_init_register(): void {
 	( new Dashboard_Widget( $parsely ) )->run();
 }
 
-require_once __DIR__ . '/src/UI/class-settings-page.php';
-require_once __DIR__ . '/src/UI/class-network-admin-sites-list.php';
-
 add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
 /**
  * Registers the additions the Parse.ly wp-admin settings page and Multisite
@@ -161,42 +125,6 @@ function parsely_wp_admin_early_register(): void {
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
 }
-
-// Endpoint base classes.
-require_once __DIR__ . '/src/Endpoints/class-base-endpoint.php';
-require_once __DIR__ . '/src/Endpoints/class-base-api-proxy.php';
-require_once __DIR__ . '/src/Endpoints/user-meta/class-base-endpoint-user-meta.php';
-
-// Endpoint classes.
-require_once __DIR__ . '/src/Endpoints/class-analytics-post-detail-api-proxy.php';
-require_once __DIR__ . '/src/Endpoints/class-analytics-posts-api-proxy.php';
-require_once __DIR__ . '/src/Endpoints/class-referrers-post-detail-api-proxy.php';
-require_once __DIR__ . '/src/Endpoints/class-related-api-proxy.php';
-require_once __DIR__ . '/src/Endpoints/class-rest-metadata.php';
-require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-brief-api-proxy.php';
-require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-headline-api-proxy.php';
-require_once __DIR__ . '/src/Endpoints/content-suggestions/class-suggest-linked-reference-api-proxy.php';
-require_once __DIR__ . '/src/Endpoints/user-meta/class-dashboard-widget-settings-endpoint.php';
-require_once __DIR__ . '/src/Endpoints/user-meta/class-editor-sidebar-settings-endpoint.php';
-require_once __DIR__ . '/src/Endpoints/content-helper/class-smart-linking-endpoint.php';
-
-// RemoteAPI base classes.
-require_once __DIR__ . '/src/RemoteAPI/interface-cache.php';
-require_once __DIR__ . '/src/RemoteAPI/interface-remote-api.php';
-require_once __DIR__ . '/src/RemoteAPI/class-remote-api-cache.php';
-require_once __DIR__ . '/src/RemoteAPI/class-wordpress-cache.php';
-require_once __DIR__ . '/src/RemoteAPI/class-base-endpoint-remote.php';
-require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-content-suggestions-base-api.php';
-
-// RemoteAPI classes.
-require_once __DIR__ . '/src/RemoteAPI/class-analytics-post-detail-api.php';
-require_once __DIR__ . '/src/RemoteAPI/class-analytics-posts-api.php';
-require_once __DIR__ . '/src/RemoteAPI/class-referrers-post-detail-api.php';
-require_once __DIR__ . '/src/RemoteAPI/class-related-api.php';
-require_once __DIR__ . '/src/RemoteAPI/class-validate-api.php';
-require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-brief-api.php';
-require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-headline-api.php';
-require_once __DIR__ . '/src/RemoteAPI/content-suggestions/class-suggest-linked-reference-api.php';
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
 /**
@@ -260,8 +188,6 @@ function parsely_rest_api_init(): void {
 	);
 }
 
-require_once __DIR__ . '/src/blocks/recommendations/class-recommendations-block.php';
-
 add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
 /**
  * Registers the Recommendations Block.
@@ -270,8 +196,6 @@ function init_recommendations_block(): void {
 	$recommendations_block = new Recommendations_Block();
 	$recommendations_block->run();
 }
-
-require_once __DIR__ . '/src/content-helper/editor-sidebar/class-editor-sidebar.php';
 
 add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_editor_sidebar' );
 /**
@@ -284,11 +208,8 @@ function init_content_helper_editor_sidebar(): void {
 	$GLOBALS['parsely_editor_sidebar']->run();
 }
 
-require_once __DIR__ . '/src/content-helper/excerpt-generator/class-excerpt-generator.php';
-
 add_action( 'admin_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_content_helper_editor_sidebar_features' );
-
 /**
  * Initializes the PCH Editor Sidebar features.
  *
@@ -318,7 +239,6 @@ function init_content_helper_excerpt_generator(): void {
 	( new Excerpt_Generator( $GLOBALS['parsely'] ) )->run();
 }
 
-require_once __DIR__ . '/src/UI/class-recommended-widget.php';
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
@@ -327,11 +247,6 @@ add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_regist
 function parsely_recommended_widget_register(): void {
 	register_widget( new Recommended_Widget( $GLOBALS['parsely'] ) );
 }
-
-require_once __DIR__ . '/src/Integrations/class-integration.php';
-require_once __DIR__ . '/src/Integrations/class-integrations.php';
-require_once __DIR__ . '/src/Integrations/class-amp.php';
-require_once __DIR__ . '/src/Integrations/class-google-web-stories.php';
 
 add_action( 'init', __NAMESPACE__ . '\\parsely_integrations' ); // @phpstan-ignore-line
 /**
@@ -376,7 +291,7 @@ function parsely_run_rest_api_endpoint(
 	/**
 	 * Internal Variable.
 	 *
-	 * @var RemoteAPI\Base_Endpoint_Remote
+	 * @var RemoteAPI\Base_Endpoint_Remote $remote_api
 	 */
 	$remote_api       = new $api_class_name( $GLOBALS['parsely'] );
 	$remote_api_cache = new Remote_API_Cache( $remote_api, $wp_cache );
@@ -384,7 +299,7 @@ function parsely_run_rest_api_endpoint(
 	/**
 	 * Internal Variable.
 	 *
-	 * @var Endpoints\Base_API_Proxy
+	 * @var Endpoints\Base_API_Proxy $remote_api_proxy
 	 */
 	$remote_api_proxy = new $proxy_api_class_name( $GLOBALS['parsely'], $remote_api_cache );
 	$remote_api_proxy->run();

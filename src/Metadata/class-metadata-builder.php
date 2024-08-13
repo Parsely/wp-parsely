@@ -11,10 +11,9 @@ declare(strict_types=1);
 namespace Parsely\Metadata;
 
 use Parsely\Parsely;
+use Parsely\Utils\Utils;
 use WP_Post;
 use WP_User;
-
-use function Parsely\Utils\get_default_category;
 
 /**
  * Abstract class that implements modular builders for Metadata.
@@ -366,7 +365,7 @@ abstract class Metadata_Builder {
 		// Get top-level taxonomy name for chosen taxonomy and assign to $parent_name; it will be used
 		// as the category value if 'use_top_level_cats' option is checked.
 		// Assign as the default category name if no value is checked for the chosen taxonomy.
-		$category_name = get_cat_name( get_default_category() );
+		$category_name = get_cat_name( Utils::get_default_category() );
 		if ( false !== $taxonomy_dropdown_choice && ! is_wp_error( $taxonomy_dropdown_choice ) ) {
 			if ( $parsely_options['use_top_level_cats'] ) {
 				$first_term = array_shift( $taxonomy_dropdown_choice );
@@ -645,7 +644,7 @@ abstract class Metadata_Builder {
 		}
 
 		// Remove default category name from tags if needed.
-		$default_category_name = get_cat_name( get_default_category() );
+		$default_category_name = get_cat_name( Utils::get_default_category() );
 		return array_diff( $tags, array( $default_category_name ) );
 	}
 
