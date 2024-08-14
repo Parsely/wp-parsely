@@ -60,7 +60,7 @@
 		"@wordpress/blocks": "^13.3.0",
 		"@wordpress/components": "^28.3.0",
 		"@wordpress/compose": "^7.0.0",
-		"@wordpress/core-data": "^7.3.0",
+		"@wordpress/core-data": "^7.5.0",
 		"@wordpress/data": "^10.3.0",
 		"@wordpress/e2e-test-utils": "^11.3.0",
 		"@wordpress/edit-post": "^8.3.0",
