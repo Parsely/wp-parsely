@@ -3,6 +3,6 @@ export interface RecommendationsAttributes {
 	limit: number;
 	openlinksinnewtab: boolean;
 	showimages: boolean;
-	sort: string;
+	sort: 'score' | 'pub_date';
 	title: string;
 }
