@@ -9,8 +9,8 @@ import {
 	TextareaControl,
 } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
 import { PostTypeSupportCheck, store as editorStore } from '@wordpress/editor';
+import { PluginDocumentSettingPanel } from '../../../@types/gutenberg/wrapper';
 import { useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { count } from '@wordpress/wordcount';

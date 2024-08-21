@@ -10,9 +10,9 @@ declare(strict_types=1);
 
 namespace Parsely\Telemetry;
 
+use Parsely\Utils\Utils;
 use WP_Error;
 
-use function Parsely\Utils\get_timestamp;
 
 /**
  * Handles all operations related to the Tracks pixel.
@@ -118,7 +118,7 @@ class Tracks_Pixel {
 
 		// Add the Request Timestamp and URL terminator just before the HTTP
 		// request.
-		$pixel_url .= '&_rt=' . get_timestamp() . '&_=_';
+		$pixel_url .= '&_rt=' . Utils::get_timestamp() . '&_=_';
 
 		$request = wp_safe_remote_get(
 			$pixel_url,

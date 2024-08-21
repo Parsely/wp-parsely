@@ -8,18 +8,19 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration;
+namespace Parsely\Tests\Integration\Endpoints\Proxy;
 
-use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
+use Parsely\Endpoints\Base_API_Proxy;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Post_Detail_API;
+use Parsely\Tests\Integration\TestCase;
 use WP_REST_Request;
 
 /**
  * Integration Tests for the Stats Post Detail API Proxy Endpoint.
  */
-final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
+final class StatsPostDetailProxyEndpointTest extends BaseProxyEndpointTest {
 
 	/**
 	 * Initializes all required values for the test.
@@ -83,7 +84,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 */
 	public function test_get_items_fails_when_site_id_is_not_set(): void {
-		$this->set_admin_user();
+		$this->set_current_user_to_admin();
 		parent::run_test_get_items_fails_without_site_id_set();
 	}
 
@@ -105,7 +106,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 */
 	public function test_get_items_fails_when_api_secret_is_not_set(): void {
-		$this->set_admin_user();
+		$this->set_current_user_to_admin();
 		parent::run_test_get_items_fails_without_api_secret_set();
 	}
 
@@ -151,7 +152,7 @@ final class StatsPostDetailProxyEndpointTest extends ProxyEndpointTest {
 	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_request_options
 	 */
 	public function test_get_items(): void {
-		$this->set_admin_user();
+		$this->set_current_user_to_admin();
 		TestCase::set_options(
 			array(
 				'apikey'     => 'example.com',

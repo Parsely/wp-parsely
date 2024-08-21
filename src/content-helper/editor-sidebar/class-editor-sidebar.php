@@ -16,8 +16,8 @@ use Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint;
 use Parsely\Parsely;
 use Parsely\Content_Helper\Content_Helper_Feature;
 
+use Parsely\Utils\Utils;
 use WP_Post;
-use function Parsely\Utils\get_asset_info;
 
 use const Parsely\PARSELY_FILE;
 
@@ -152,7 +152,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			return;
 		}
 
-		$asset_php        = get_asset_info( 'build/content-helper/editor-sidebar.asset.php' );
+		$asset_php        = Utils::get_asset_info( 'build/content-helper/editor-sidebar.asset.php' );
 		$built_assets_url = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_script(

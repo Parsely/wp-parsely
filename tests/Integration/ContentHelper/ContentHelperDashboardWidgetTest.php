@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\ContentHelper;
+namespace Parsely\Tests\Integration\ContentHelper;
 
 use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Parsely;
@@ -21,17 +21,18 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 */
 	public function set_up(): void {
 		$GLOBALS['parsely'] = new Parsely();
-		self::set_admin_user();
 	}
 
 	/**
 	 * Asserts the enqueueing status of the feature's assets according to the
 	 * passed filter values.
 	 *
-	 * @param mixed $global_filter_value The value of the global filter.
-	 * @param mixed $feature_filter_value The value of the feature filter.
-	 * @param bool  $expected Whether the assets should be enqueued.
-	 * @param mixed ...$additional_args Any required additional arguments.
+	 * @param mixed                $global_filter_value The value of the global filter.
+	 * @param mixed                $feature_filter_value The value of the feature filter.
+	 * @param bool                 $expected Whether the assets should be enqueued.
+	 * @param string               $user_login The current user's login.
+	 * @param string               $user_role The current user's role.
+	 * @param array<string, mixed> $additional_args Any required additional arguments.
 	 *
 	 * @since 3.9.0
 	 */
@@ -39,37 +40,34 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 		$global_filter_value,
 		$feature_filter_value,
 		bool $expected,
-		...$additional_args
+		string $user_login,
+		string $user_role,
+		array $additional_args = array()
 	): void {
-		/**
-		 * The WordPress screen on which the test will run.
-		 *
-		 * @var string
-		 */
-		$screen = $additional_args[0] ?? 'dashboard';
-
-		$script_id = Dashboard_Widget::get_script_id();
-		$style_id  = Dashboard_Widget::get_style_id();
+		$feature = new Dashboard_Widget( $GLOBALS['parsely'] );
+		$this->set_current_user_to( $user_login, $user_role );
 
 		parent::set_filters(
-			Dashboard_Widget::get_feature_filter_name(),
+			$feature::get_feature_filter_name(),
 			$global_filter_value,
 			$feature_filter_value
 		);
 
-		// Dequeue and deregister assets.
-		wp_dequeue_script( $script_id );
-		wp_deregister_script( $script_id );
-		wp_dequeue_style( $style_id );
-		wp_deregister_style( $style_id );
+		set_current_screen(
+			self::get_string_value_from_array(
+				$additional_args,
+				'screen',
+				'dashboard'
+			)
+		);
+
+		self::deregister_feature_assets_and_run( $feature );
 
 		// Force the feature's enqueueing code to run.
-		set_current_screen( $screen );
-		( new Dashboard_Widget( $GLOBALS['parsely'] ) )->run();
 		do_action( 'admin_enqueue_scripts' ); // phpcs:ignore
 
-		self::assertSame( $expected, wp_script_is( $script_id ) );
-		self::assertSame( $expected, wp_style_is( $style_id ) );
+		self::assertSame( $expected, wp_script_is( $feature::get_script_id() ) );
+		self::assertSame( $expected, wp_style_is( $feature::get_script_id() ) );
 	}
 
 	/**
@@ -90,14 +88,13 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
 	public function test_assets_do_not_get_enqueued_when_user_has_not_enough_capabilities(): void {
-		$this->login_as_contributor();
-		self::assert_enqueued_status( null, null, false );
+		self::assert_enqueued_status( null, null, false, 'test_contributor', 'contributor' );
 	}
 
 	/**
@@ -118,12 +115,19 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Utils\convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils\get_asset_info
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
 	public function test_assets_do_not_get_enqueued_when_page_is_not_dashboard(): void {
-		$this->assert_enqueued_status( null, null, false, 'edit-page' );
+		$this->assert_enqueued_status(
+			null,
+			null,
+			false,
+			'admin',
+			'administrator',
+			array( 'screen' => 'edit-page' )
+		);
 	}
 }

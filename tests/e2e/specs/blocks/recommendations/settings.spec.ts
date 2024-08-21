@@ -81,7 +81,7 @@ describe( 'Recommendations Block', () => {
 		expect( arraysEqual( originalImagesUrls, await getResultImageUrls() ) ).toBe( false );
 
 		// Verify that toggling "Show Images" works.
-		await showImagesLabel.click( );
+		await showImagesLabel.click();
 		expect( await resultsContainImage() ).toBe( false );
 	} );
 } );

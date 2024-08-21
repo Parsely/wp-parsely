@@ -7,7 +7,6 @@
 	flex-direction: column;
 
 	.title-suggestions-settings {
-
 		display: flex;
 		padding: to_rem(6px) 0 var(--grid-unit-20) 0;
 		flex-direction: column;
@@ -69,7 +68,6 @@
 	// Accepted Title view.
 	// TODO: Remove, unused?
 	.parsely-write-titles-accepted-title-container {
-
 		.parsely-write-titles-accepted-title {
 			font-weight: 600;
 			font-size: to_rem(16px);

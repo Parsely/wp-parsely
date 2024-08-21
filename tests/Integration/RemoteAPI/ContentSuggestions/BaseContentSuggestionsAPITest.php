@@ -9,14 +9,14 @@
 namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
 
 use Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API;
-use Parsely\Tests\Integration\RemoteAPITest;
+use Parsely\Tests\Integration\RemoteAPI\BaseRemoteAPITest;
 
 /**
  * Integration Tests for the Parse.ly Content Suggestions API endpoints.
  *
  * @since 3.14.0
  */
-abstract class BaseContentSuggestionsAPITest extends RemoteAPITest {
+abstract class BaseContentSuggestionsAPITest extends BaseRemoteAPITest {
 	/**
 	 * Verifies the basic generation of the API headers.
 	 *

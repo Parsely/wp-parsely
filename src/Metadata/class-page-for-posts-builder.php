@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Metadata;
 
-use function Parsely\Utils\get_page_for_posts;
+use Parsely\Utils\Utils;
 
 /**
  * Implements abstract Metadata Builder class to generate the metadata array
@@ -41,6 +41,6 @@ class Page_For_Posts_Builder extends Metadata_Builder {
 	 * @since 3.4.0
 	 */
 	private function build_headline(): void {
-		$this->metadata['headline'] = get_the_title( get_page_for_posts( true ) );
+		$this->metadata['headline'] = get_the_title( Utils::get_page_for_posts( true ) );
 	}
 }

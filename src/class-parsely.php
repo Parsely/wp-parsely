@@ -12,6 +12,7 @@ namespace Parsely;
 
 use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Settings_Page;
+use Parsely\Utils\Utils;
 use WP_Post;
 
 /**
@@ -946,7 +947,7 @@ class Parsely {
 			function ( $external, $host, $url ) use ( $allowed_urls ) {
 				// Check if the URL matches any URLs on the allowed list.
 				foreach ( $allowed_urls as $allowed_url ) {
-					if ( \Parsely\Utils\str_starts_with( $url, $allowed_url ) ) {
+					if ( Utils::str_starts_with( $url, $allowed_url ) ) {
 						return true;
 					}
 				}

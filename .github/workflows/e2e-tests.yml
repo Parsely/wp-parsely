@@ -23,8 +23,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Refresh Composer autoload files
+        run: composer dump-autoload --classmap-authoritative
+
       - name: Use desired version of NodeJS
-        uses: actions/setup-node@v4.0.2
+        uses: actions/setup-node@v4.0.3
         with:
           node-version: 16
           cache: npm

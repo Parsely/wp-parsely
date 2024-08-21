@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration\StructuredData;
+namespace Parsely\Tests\Integration\Metadata;
 
 use Parsely\Metadata;
 use Parsely\Parsely;
@@ -53,7 +53,7 @@ final class SinglePageTest extends NonPostTestCase {
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Utils\get_default_category
+	 * @uses \Parsely\Utils\Utils::get_default_category
 	 * @group metadata
 	 */
 	public function test_single_page(): void {
@@ -93,7 +93,7 @@ final class SinglePageTest extends NonPostTestCase {
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Utils\get_default_category
+	 * @uses \Parsely\Utils\Utils::get_default_category
 	 * @group metadata
 	 */
 	public function test_single_page_with_author(): void {
@@ -133,7 +133,7 @@ final class SinglePageTest extends NonPostTestCase {
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Utils\get_default_category
+	 * @uses \Parsely\Utils\Utils::get_default_category
 	 * @group metadata
 	 */
 	public function test_single_page_with_category(): void {
@@ -173,7 +173,7 @@ final class SinglePageTest extends NonPostTestCase {
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Utils\get_default_category
+	 * @uses \Parsely\Utils\Utils::get_default_category
 	 * @group metadata
 	 */
 	public function test_single_page_with_tag(): void {
@@ -213,7 +213,7 @@ final class SinglePageTest extends NonPostTestCase {
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Utils\get_default_category
+	 * @uses \Parsely\Utils\Utils::get_default_category
 	 * @group metadata
 	 */
 	public function test_single_page_with_tag_lowercase_off(): void {
@@ -253,7 +253,7 @@ final class SinglePageTest extends NonPostTestCase {
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Utils\get_default_category
+	 * @uses \Parsely\Utils\Utils::get_default_category
 	 * @group metadata
 	 */
 	public function test_single_page_with_author_and_category(): void {
@@ -293,7 +293,7 @@ final class SinglePageTest extends NonPostTestCase {
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Utils\get_default_category
+	 * @uses \Parsely\Utils\Utils::get_default_category
 	 * @group metadata
 	 */
 	public function test_single_page_with_author_and_tag(): void {
@@ -333,7 +333,7 @@ final class SinglePageTest extends NonPostTestCase {
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Utils\get_default_category
+	 * @uses \Parsely\Utils\Utils::get_default_category
 	 * @group metadata
 	 */
 	public function test_single_page_with_category_and_tag(): void {
@@ -373,7 +373,7 @@ final class SinglePageTest extends NonPostTestCase {
 	 * @uses \Parsely\Parsely::post_has_trackable_status
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::update_metadata_endpoint
-	 * @uses \Parsely\Utils\get_default_category
+	 * @uses \Parsely\Utils\Utils::get_default_category
 	 * @group metadata
 	 */
 	public function test_single_page_with_author_and_category_and_tag(): void {

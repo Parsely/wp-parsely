@@ -12,15 +12,11 @@ namespace Parsely\Endpoints;
 
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Remote_API_Interface;
+use Parsely\Utils\Utils;
 use stdClass;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Server;
-
-use function Parsely\Utils\convert_endpoint_to_filter_key;
-use function Parsely\Utils\get_date_format;
-use function Parsely\Utils\get_formatted_duration;
-use function Parsely\Utils\parsely_is_https_supported;
 
 /**
  * Configures a REST API endpoint for use.
@@ -98,7 +94,7 @@ abstract class Base_API_Proxy {
 	 * @param array<string> $methods   The HTTP methods to use for the endpoint.
 	 */
 	protected function register_endpoint( string $endpoint, array $methods = array( WP_REST_Server::READABLE ) ): void {
-		if ( ! apply_filters( 'wp_parsely_enable_' . convert_endpoint_to_filter_key( $endpoint ) . '_api_proxy', true ) ) {
+		if ( ! apply_filters( 'wp_parsely_enable_' . Utils::convert_endpoint_to_filter_key( $endpoint ) . '_api_proxy', true ) ) {
 			return;
 		}
 
@@ -224,11 +220,11 @@ abstract class Base_API_Proxy {
 		// endpoint and passed sort/url parameters.
 		$avg_engaged = $item->metrics->avg_engaged ?? $item->avg_engaged ?? null;
 		if ( null !== $avg_engaged ) {
-			$data['avgEngaged'] = get_formatted_duration( (float) $avg_engaged );
+			$data['avgEngaged'] = Utils::get_formatted_duration( (float) $avg_engaged );
 		}
 
 		if ( isset( $item->pub_date ) ) {
-			$data['date'] = wp_date( get_date_format(), strtotime( $item->pub_date ) );
+			$data['date'] = wp_date( Utils::get_date_format(), strtotime( $item->pub_date ) );
 		}
 
 		if ( isset( $item->title ) ) {
@@ -241,7 +237,7 @@ abstract class Base_API_Proxy {
 			$post_id = url_to_postid( $item->url ); // 0 if the post cannot be found.
 
 			$post_url = Parsely::get_url_with_itm_source( $item->url, null );
-			if ( parsely_is_https_supported() ) {
+			if ( Utils::parsely_is_https_supported() ) {
 				$post_url = str_replace( 'http://', 'https://', $post_url );
 			}
 
