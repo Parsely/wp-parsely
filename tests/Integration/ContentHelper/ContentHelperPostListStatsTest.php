@@ -85,7 +85,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		string $user_role,
 		array $additional_args = array()
 	): void {
-		$this->set_current_user_to( $user_login, $user_role );
+		self::set_current_user_to( $user_login, $user_role );
 
 		parent::set_filters(
 			Post_List_Stats::get_feature_filter_name(),
