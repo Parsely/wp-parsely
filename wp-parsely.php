@@ -54,6 +54,7 @@ use Parsely\RemoteAPI\Referrers_Post_Detail_API;
 use Parsely\RemoteAPI\Related_API;
 use Parsely\RemoteAPI\Remote_API_Cache;
 use Parsely\RemoteAPI\WordPress_Cache;
+use Parsely\REST_API\REST_API_Controller;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Metadata_Renderer;
@@ -124,6 +125,11 @@ function parsely_wp_admin_early_register(): void {
 
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
+
+	// START OF PARSE.LY REST API REFACTOR (TODO: make the rest of the plugin use this).
+	$rest_api_controller = new REST_API_Controller( $GLOBALS['parsely'] );
+	$rest_api_controller->init();
+	// END OF PARSE.LY REST API REFACTOR.
 }
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
