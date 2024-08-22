@@ -129,10 +129,9 @@ class BaseEndpointTest extends TestCase {
 			 *
 			 * @since 3.17.0
 			 *
-			 * @param WP_REST_Request $request The request object.
 			 * @return array<mixed>
 			 */
-			public function get_test_data( WP_REST_Request $request ): array {
+			public function get_test_data(): array {
 				return array( 'data' => 'test' );
 			}
 		};

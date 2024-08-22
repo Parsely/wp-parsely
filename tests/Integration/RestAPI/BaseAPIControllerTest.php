@@ -146,7 +146,6 @@ class BaseAPIControllerTest extends TestCase {
 	 * @uses \Parsely\REST_API\Base_API_Controller::register_endpoint
 	 */
 	public function test_register_endpoint(): void {
-		$parsely  = self::createMock( Parsely::class );
 		$endpoint = self::createMock( Base_Endpoint::class );
 		$endpoint->expects( self::once() )->method( 'init' );
 
