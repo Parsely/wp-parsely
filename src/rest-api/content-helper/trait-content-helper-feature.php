@@ -3,8 +3,8 @@
  * API Content Helper Feature Trait
  * To be used with content helper endpoints that require a feature to be enabled.
  *
- * @since 3.17.0
  * @package Parsely
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Parsely\REST_API\Content_Helper;
 
 use Parsely\Permissions;
-use Parsely\REST_API\Base_Endpoint;
 use WP_Error;
 use WP_REST_Request;
 

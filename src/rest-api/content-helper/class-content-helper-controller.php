@@ -20,7 +20,6 @@ use Parsely\REST_API\REST_API_Controller;
  * @since 3.17.0
  */
 class Content_Helper_Controller extends REST_API_Controller {
-
 	/**
 	 * Gets the prefix for this API route.
 	 *
