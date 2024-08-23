@@ -348,12 +348,12 @@ final class PermissionsTest extends TestCase {
 
 		// Filter set to true.
 		add_filter( 'wp_parsely_current_user_can_use_pch_feature', '__return_true' );
-			self::assertFalse(
-				Permissions::current_user_can_use_pch_feature(
-					$feature,
-					$pch_options // @phpstan-ignore-line
-				)
-			);
+		self::assertFalse(
+			Permissions::current_user_can_use_pch_feature(
+				$feature,
+				$pch_options // @phpstan-ignore-line
+			)
+		);
 		remove_filter( 'wp_parsely_current_user_can_use_pch_feature', '__return_true' );
 
 		// Filter set to false.
