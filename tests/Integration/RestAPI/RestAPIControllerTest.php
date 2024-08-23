@@ -50,9 +50,9 @@ class RestAPIControllerTest extends TestCase {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\REST_API_Controller::__construct
-	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_full_namespace
 	 */
 	public function test_constructor_sets_up_namespace_and_version(): void {
-		self::assertEquals( 'wp-parsely/v2', $this->test_controller->get_namespace() );
+		self::assertEquals( 'wp-parsely/v2', $this->test_controller->get_full_namespace() );
 	}
 }

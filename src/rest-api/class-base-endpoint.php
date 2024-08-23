@@ -12,7 +12,6 @@ namespace Parsely\REST_API;
 
 use Parsely\Parsely;
 use Parsely\Utils\Utils;
-use UnexpectedValueException;
 use WP_Error;
 use WP_REST_Request;
 
@@ -25,24 +24,6 @@ use WP_REST_Request;
  * @since 3.17.0
  */
 abstract class Base_Endpoint {
-	/**
-	 * The endpoint.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @var string|false
-	 */
-	protected const ENDPOINT = false;
-
-	/**
-	 * The default user capability needed to access endpoints.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @var string
-	 */
-	public const DEFAULT_ACCESS_CAPABILITY = 'publish_posts';
-
 	/**
 	 * The Parsely instance.
 	 *
@@ -59,7 +40,7 @@ abstract class Base_Endpoint {
 	 *
 	 * @var Base_API_Controller $api_controller
 	 */
-	public $api_controller;
+	protected $api_controller;
 
 	/**
 	 * The registered routes.
@@ -79,31 +60,25 @@ abstract class Base_Endpoint {
 	 */
 	public function __construct( Base_API_Controller $controller ) {
 		$this->api_controller = $controller;
-		$this->parsely        = $controller->parsely;
+		$this->parsely        = $controller->get_parsely();
 	}
 
 	/**
-	 * Initialize the API endpoint, by registering the routes.
+	 * Initializes the API endpoint, by registering the routes.
 	 *
 	 * Allows for the endpoint to be disabled via the
 	 * `wp_parsely_api_{endpoint}_endpoint_enabled` filter.
 	 *
 	 * @since 3.17.0
-	 *
-	 * @throws UnexpectedValueException If the ENDPOINT constant is not defined.
 	 */
 	public function init(): void {
-		if ( false === static::ENDPOINT ) {
-			throw new UnexpectedValueException( 'ENDPOINT constant must be defined in child class.' );
-		}
-
 		/**
 		 * Filter to enable/disable the endpoint.
 		 *
 		 * @return bool
 		 */
 		$filter_name = 'wp_parsely_api_' .
-						Utils::convert_endpoint_to_filter_key( static::ENDPOINT ) .
+						Utils::convert_endpoint_to_filter_key( $this->get_endpoint_name() ) .
 						'_endpoint_enabled';
 		if ( ! apply_filters( $filter_name, true ) ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 			return;
@@ -111,6 +86,33 @@ abstract class Base_Endpoint {
 
 		// Register the routes.
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+	}
+
+
+	/**
+	 * Returns the endpoint name.
+	 *
+	 * This method should be overridden by child classes and used to return the
+	 * endpoint name.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string
+	 */
+	abstract public function get_endpoint_name(): string;
+
+	/**
+	 * Returns the default access capability for the endpoint.
+	 *
+	 * This method can be overridden by child classes to return a different
+	 * default access capability.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string
+	 */
+	protected function get_default_access_capability(): string {
+		return 'publish_posts';
 	}
 
 	/**
@@ -135,18 +137,17 @@ abstract class Base_Endpoint {
 	 * @since 3.17.0
 	 */
 	public function register_rest_route( string $route, array $methods, callable $callback, array $args = array() ): void {
-		// Trim any possible slashes from the route
-		// .
+		// Trim any possible slashes from the route.
 		$route = trim( $route, '/' );
 		// Store the route for later reference.
 		$this->registered_routes[] = $route;
 
 		// Create the full route for the endpoint.
-		$route = $this->get_endpoint() . '/' . $route;
+		$route = $this->get_endpoint_name() . '/' . $route;
 
 		// Register the route.
 		register_rest_route(
-			$this->api_controller->get_namespace(),
+			$this->api_controller->get_full_namespace(),
 			$this->api_controller->prefix_route( $route ),
 			array(
 				array(
@@ -160,20 +161,6 @@ abstract class Base_Endpoint {
 		);
 	}
 
-	/**
-	 * Returns the endpoint name.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @return string
-	 */
-	public function get_endpoint(): string {
-		if ( false === static::ENDPOINT ) {
-			return '';
-		}
-		return static::ENDPOINT;
-	}
-
 
 	/**
 	 * Returns the full endpoint path for a given route.
@@ -184,10 +171,10 @@ abstract class Base_Endpoint {
 	 * @return string
 	 */
 	public function get_full_endpoint( string $route = '' ): string {
-		$route = $this->get_endpoint() . '/' . $route;
+		$route = $this->get_endpoint_name() . '/' . $route;
 
 		return '/' .
-				$this->api_controller->get_namespace() .
+				$this->api_controller->get_full_namespace() .
 				'/' .
 				$this->api_controller->prefix_route( $route );
 	}
@@ -223,7 +210,7 @@ abstract class Base_Endpoint {
 		}
 
 		// Validate the user capability.
-		$capability = static::DEFAULT_ACCESS_CAPABILITY;
+		$capability = $this->get_default_access_capability();
 		return current_user_can(
 			// phpcs:ignore WordPress.WP.Capabilities.Undetermined
 			$this->apply_capability_filters( $capability )
@@ -234,7 +221,7 @@ abstract class Base_Endpoint {
 	 * Returns the user capability allowing access to the endpoint, after having
 	 * applied capability filters.
 	 *
-	 * `DEFAULT_ACCESS_CAPABILITY` is not passed here by default, to allow for
+	 * The default access capability is not passed here by default, to allow for
 	 * a more explicit declaration in child classes.
 	 *
 	 * @since 3.14.0
@@ -242,7 +229,6 @@ abstract class Base_Endpoint {
 	 *
 	 * @param string $capability The original capability allowing access.
 	 * @return string The capability allowing access after applying the filters.
-	 * @throws UnexpectedValueException If the ENDPOINT constant is not defined.
 	 */
 	public function apply_capability_filters( string $capability ): string {
 		/**
@@ -255,10 +241,6 @@ abstract class Base_Endpoint {
 			$capability
 		);
 
-		if ( false === static::ENDPOINT ) {
-			throw new UnexpectedValueException( 'ENDPOINT constant must be defined in child class.' );
-		}
-
 		/**
 		 * Filter to change the user capability for the specific endpoint.
 		 *
@@ -266,8 +248,8 @@ abstract class Base_Endpoint {
 		 */
 		$endpoint_specific_user_capability = apply_filters(
 			'wp_parsely_user_capability_for_' .
-				Utils::convert_endpoint_to_filter_key( static::ENDPOINT ) .
-				'_api',
+				Utils::convert_endpoint_to_filter_key( $this->get_endpoint_name() ) .
+			'_api',
 			$default_user_capability
 		);
 

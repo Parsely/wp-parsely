@@ -16,9 +16,7 @@ use Parsely\REST_API\Base_Endpoint;
 use Parsely\REST_API\REST_API_Controller;
 use Parsely\Tests\Integration\TestCase;
 use ReflectionException;
-use UnexpectedValueException;
 use WP_Error;
-use WP_REST_Request;
 
 /**
  * Integration tests for the Base_Endpoint class.
@@ -109,7 +107,17 @@ class BaseEndpointTest extends TestCase {
 
 		// Create a concrete class for testing purposes.
 		$this->test_endpoint = new class($this->api_controller) extends Base_Endpoint {
-			protected const ENDPOINT = 'test-endpoint';
+
+			/**
+			 * Get the endpoint name.
+			 *
+			 * @since 3.17.0
+			 *
+			 * @return string
+			 */
+			public function get_endpoint_name(): string {
+				return 'test';
+			}
 
 			/**
 			 * Register the test route.
@@ -164,40 +172,6 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Test the init method throws an exception if ENDPOINT is not defined.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @covers \Parsely\REST_API\Base_Endpoint::init
-	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
-	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 */
-	public function test_init_throws_exception_without_endpoint(): void {
-		self::expectException( UnexpectedValueException::class );
-		self::expectExceptionMessage( 'ENDPOINT constant must be defined in child class.' );
-
-		// Create an endpoint with no ENDPOINT constant defined.
-		$endpoint_without_endpoint = new class($this->api_controller) extends Base_Endpoint {
-			/**
-			 * Register the routes.
-			 *
-			 * @since 3.17.0
-			 */
-			public function register_routes(): void {
-				// Mock method for testing.
-			}
-		};
-
-		$endpoint_without_endpoint->init();
-	}
-
-	/**
 	 * Test that the route is correctly registered in WordPress.
 	 *
 	 * @since 3.17.0
@@ -206,7 +180,7 @@ class BaseEndpointTest extends TestCase {
 	 * @covers \Parsely\REST_API\Base_Endpoint::register_routes
 	 * @covers \Parsely\REST_API\Base_Endpoint::get_full_endpoint
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
-	 * @uses \Parsely\REST_API\Base_API_Controller::get_namespace
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_full_namespace
 	 * @uses \Parsely\REST_API\Base_API_Controller::prefix_route
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
@@ -226,7 +200,7 @@ class BaseEndpointTest extends TestCase {
 		$routes = rest_get_server()->get_routes();
 
 		// Check that the namespace route is registered.
-		$expected_namespace = '/' . $this->api_controller->get_namespace();
+		$expected_namespace = '/' . $this->api_controller->get_full_namespace();
 		self::assertArrayHasKey( $expected_namespace, $routes );
 
 		// Check that the test route is registered.
@@ -262,10 +236,10 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
 	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
-	 * @uses \Parsely\REST_API\Base_API_Controller::get_namespace
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_full_namespace
 	 * @uses \Parsely\REST_API\Base_API_Controller::prefix_route
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
-	 * @uses \Parsely\REST_API\Base_Endpoint::get_endpoint
+	 * @uses \Parsely\REST_API\Base_Endpoint::get_endpoint_name
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
 	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
 	 * @uses \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
@@ -273,7 +247,7 @@ class BaseEndpointTest extends TestCase {
 	 */
 	public function test_endpoint_is_registered_based_on_filter(): void {
 		$filter_name = 'wp_parsely_api_' .
-						\Parsely\Utils\Utils::convert_endpoint_to_filter_key( $this->get_endpoint()->get_endpoint() ) .
+						\Parsely\Utils\Utils::convert_endpoint_to_filter_key( $this->get_endpoint()->get_endpoint_name() ) .
 						'_endpoint_enabled';
 
 		// Test when the filter allows the endpoint to be enabled.

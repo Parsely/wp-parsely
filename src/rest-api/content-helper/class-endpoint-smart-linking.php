@@ -30,15 +30,6 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	use Content_Helper_Feature;
 
 	/**
-	 * The endpoint.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @var string
-	 */
-	protected const ENDPOINT = 'smart-linking';
-
-	/**
 	 * The Suggest Linked Reference API instance.
 	 *
 	 * @since 3.17.0
@@ -57,6 +48,17 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	public function __construct( Content_Helper_Controller $controller ) {
 		parent::__construct( $controller );
 		$this->suggest_linked_reference_api = new Suggest_Linked_Reference_API( $this->parsely );
+	}
+
+	/**
+	 * Returns the name of the endpoint.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string The endpoint name.
+	 */
+	public function get_endpoint_name(): string {
+		return 'smart-linking';
 	}
 
 	/**

@@ -43,8 +43,28 @@ class BaseAPIControllerTest extends TestCase {
 		TestCase::set_options();
 		$parsely               = self::createMock( Parsely::class );
 		$this->test_controller = new class($parsely) extends Base_API_Controller {
-			public const NAMESPACE = 'test';
-			public const VERSION   = 'v1';
+
+			/**
+			 * Get the namespace for the API.
+			 *
+			 * @since 3.17.0
+			 *
+			 * @return string The namespace.
+			 */
+			protected function get_namespace(): string {
+				return 'test';
+			}
+
+			/**
+			 * Get the version for the API.
+			 *
+			 * @since 3.17.0
+			 *
+			 * @return string The version.
+			 */
+			protected function get_version(): string {
+				return 'v1';
+			}
 
 			/**
 			 * Initialize the test controller.
@@ -74,39 +94,15 @@ class BaseAPIControllerTest extends TestCase {
 	}
 
 	/**
-	 * Test that the constructor throws an exception if the NAMESPACE is not defined.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @covers \Parsely\REST_API\Base_API_Controller::__construct
-	 */
-	public function test_constructor_throws_exception_without_namespace(): void {
-		self::expectException( \UnexpectedValueException::class );
-		self::expectExceptionMessage( 'The API controller must define a namespace.' );
-
-		$parsely = self::createMock( Parsely::class );
-
-		// Use an anonymous class to avoid implementing abstract methods.
-		new class($parsely) extends Base_API_Controller {
-			/**
-			 * Initialize the test controller.
-			 *
-			 * @since 3.17.0
-			 */
-			protected function init(): void {}
-		};
-	}
-
-	/**
 	 * Test the get_namespace method.
 	 *
 	 * @since 3.17.0
 	 *
-	 * @covers \Parsely\REST_API\Base_API_Controller::get_namespace
+	 * @covers \Parsely\REST_API\Base_API_Controller::get_full_namespace
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 */
 	public function test_get_namespace(): void {
-		self::assertEquals( 'test/v1', $this->test_controller->get_namespace() );
+		self::assertEquals( 'test/v1', $this->test_controller->get_full_namespace() );
 	}
 
 	/**
@@ -122,15 +118,34 @@ class BaseAPIControllerTest extends TestCase {
 		$parsely = self::createMock( Parsely::class );
 
 		$controller_with_prefix = new class($parsely) extends Base_API_Controller {
-			public const NAMESPACE    = 'test';
-			public const ROUTE_PREFIX = 'prefix';
-
 			/**
 			 * Initialize the test controller.
 			 *
 			 * @since 3.17.0
 			 */
 			protected function init(): void {}
+
+			/**
+			 * Get the namespace for the API.
+			 *
+			 * @since 3.17.0
+			 *
+			 * @return string The namespace.
+			 */
+			protected function get_namespace(): string {
+				return 'test';
+			}
+
+			/**
+			 * Get the version for the API.
+			 *
+			 * @since 3.17.0
+			 *
+			 * @return string The version.
+			 */
+			public function get_route_prefix(): string {
+				return 'prefix';
+			}
 		};
 
 		self::assertEquals( 'prefix/my-route', $controller_with_prefix->prefix_route( 'my-route' ) );
@@ -151,8 +166,9 @@ class BaseAPIControllerTest extends TestCase {
 
 		$this->test_controller->testable_register_endpoint( $endpoint ); // @phpstan-ignore-line
 
-		self::assertCount( 1, $this->test_controller->endpoints );
-		self::assertSame( $endpoint, $this->test_controller->endpoints[0] );
+		$endpoints = $this->test_controller->get_endpoints();
+		self::assertCount( 1, $endpoints );
+		self::assertSame( $endpoint, $endpoints[0] );
 	}
 
 	/**
@@ -174,8 +190,10 @@ class BaseAPIControllerTest extends TestCase {
 
 		$this->test_controller->testable_register_endpoints( array( $endpoint1, $endpoint2 ) ); // @phpstan-ignore-line
 
-		self::assertCount( 2, $this->test_controller->endpoints );
-		self::assertSame( $endpoint1, $this->test_controller->endpoints[0] );
-		self::assertSame( $endpoint2, $this->test_controller->endpoints[1] );
+		$endpoints = $this->test_controller->get_endpoints();
+
+		self::assertCount( 2, $endpoints );
+		self::assertSame( $endpoint1, $endpoints[0] );
+		self::assertSame( $endpoint2, $endpoints[1] );
 	}
 }

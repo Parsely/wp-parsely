@@ -21,24 +21,6 @@ use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
  */
 class REST_API_Controller extends Base_API_Controller {
 	/**
-	 * The API namespace.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @var string
-	 */
-	public const NAMESPACE = 'wp-parsely';
-
-	/**
-	 * The API version.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @var string
-	 */
-	public const VERSION = 'v2';
-
-	/**
 	 * The controllers for each namespace.
 	 *
 	 * @since 3.17.0
@@ -48,6 +30,28 @@ class REST_API_Controller extends Base_API_Controller {
 	public $controllers = array();
 
 	/**
+	 * Gets the namespace for the API.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string The namespace.
+	 */
+	protected function get_namespace(): string {
+		return 'wp-parsely';
+	}
+
+	/**
+	 * Gets the version for the API.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string The version.
+	 */
+	protected function get_version(): string {
+		return 'v2';
+	}
+
+	/**
 	 * Initializes the REST API controller.
 	 *
 	 * @since 3.17.0
@@ -55,7 +59,7 @@ class REST_API_Controller extends Base_API_Controller {
 	public function init(): void {
 		// Register the controllers for each namespace.
 		$controllers = array(
-			new Content_Helper_Controller( $this->parsely ),
+			new Content_Helper_Controller( $this->get_parsely() ),
 		);
 
 		// Initialize the controllers.

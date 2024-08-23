@@ -81,10 +81,10 @@ class EndpointTitleSuggestionsTest extends BaseEndpointTest {
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
 	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
-	 * @uses \Parsely\REST_API\Base_API_Controller::get_namespace
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_full_namespace
 	 * @uses \Parsely\REST_API\Base_API_Controller::prefix_route
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
-	 * @uses \Parsely\REST_API\Base_Endpoint::get_endpoint
+	 * @uses \Parsely\REST_API\Base_Endpoint::get_endpoint_name
 	 * @uses \Parsely\REST_API\Base_Endpoint::get_full_endpoint
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user

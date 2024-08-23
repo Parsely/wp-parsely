@@ -28,15 +28,6 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 	use Content_Helper_Feature;
 
 	/**
-	 * The endpoint.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @var string
-	 */
-	protected const ENDPOINT = 'excerpt-generator';
-
-	/**
 	 * The Suggest Brief API instance.
 	 *
 	 * @since 3.17.0
@@ -55,6 +46,17 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 	public function __construct( Content_Helper_Controller $controller ) {
 		parent::__construct( $controller );
 		$this->suggest_brief_api = new Suggest_Brief_API( $this->parsely );
+	}
+
+	/**
+	 * Returns the name of the endpoint.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string The endpoint name.
+	 */
+	public function get_endpoint_name(): string {
+		return 'excerpt-generator';
 	}
 
 	/**

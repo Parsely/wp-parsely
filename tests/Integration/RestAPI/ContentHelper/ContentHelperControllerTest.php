@@ -54,10 +54,10 @@ class ContentHelperControllerTest extends RestAPIControllerTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Controller::__construct
-	 * @uses \Parsely\REST_API\Content_Helper\Content_Helper_Controller::get_namespace
+	 * @uses \Parsely\REST_API\Content_Helper\Content_Helper_Controller::get_full_namespace
 	 */
 	public function test_constructor_sets_up_namespace_and_version(): void {
-		self::assertEquals( 'wp-parsely/v2', $this->content_helper_controller->get_namespace() );
+		self::assertEquals( 'wp-parsely/v2', $this->content_helper_controller->get_full_namespace() );
 	}
 
 	/**
@@ -68,7 +68,7 @@ class ContentHelperControllerTest extends RestAPIControllerTest {
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Controller::ROUTE_PREFIX
 	 */
 	public function test_route_prefix(): void {
-		self::assertEquals( 'content-helper', Content_Helper_Controller::ROUTE_PREFIX );
+		self::assertEquals( 'content-helper', $this->content_helper_controller->get_route_prefix() );
 	}
 
 	/**
@@ -90,10 +90,11 @@ class ContentHelperControllerTest extends RestAPIControllerTest {
 	 */
 	public function test_init_registers_endpoints(): void {
 		$this->content_helper_controller->init();
+		$endpoints = $this->content_helper_controller->get_endpoints();
 
-		self::assertCount( 3, $this->content_helper_controller->endpoints );
-		self::assertInstanceOf( Endpoint_Smart_Linking::class, $this->content_helper_controller->endpoints[0] );
-		self::assertInstanceOf( Endpoint_Excerpt_Generator::class, $this->content_helper_controller->endpoints[1] );
-		self::assertInstanceOf( Endpoint_Title_Suggestions::class, $this->content_helper_controller->endpoints[2] );
+		self::assertCount( 3, $endpoints );
+		self::assertInstanceOf( Endpoint_Smart_Linking::class, $endpoints[0] );
+		self::assertInstanceOf( Endpoint_Excerpt_Generator::class, $endpoints[1] );
+		self::assertInstanceOf( Endpoint_Title_Suggestions::class, $endpoints[2] );
 	}
 }

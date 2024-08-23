@@ -51,6 +51,17 @@ class Endpoint_Title_Suggestions extends Base_Endpoint {
 	}
 
 	/**
+	 * Returns the name of the endpoint.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string The endpoint name.
+	 */
+	public function get_endpoint_name(): string {
+		return 'title-suggestions';
+	}
+
+	/**
 	 * Returns the name of the feature associated with the current endpoint.
 	 *
 	 * @since 3.17.0

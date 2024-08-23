@@ -22,13 +22,15 @@ use Parsely\REST_API\REST_API_Controller;
 class Content_Helper_Controller extends REST_API_Controller {
 
 	/**
-	 * The route prefix, which acts as a namespace for the endpoints.
+	 * Gets the prefix for this API route.
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var string
+	 * @return string The namespace.
 	 */
-	public const ROUTE_PREFIX = 'content-helper';
+	public function get_route_prefix(): string {
+		return 'content-helper';
+	}
 
 	/**
 	 * Initializes the Content Helper API endpoints.
@@ -36,6 +38,7 @@ class Content_Helper_Controller extends REST_API_Controller {
 	 * @since 3.17.0
 	 */
 	public function init(): void {
+
 		$endpoints = array(
 			new Endpoint_Smart_Linking( $this ),
 			new Endpoint_Excerpt_Generator( $this ),
