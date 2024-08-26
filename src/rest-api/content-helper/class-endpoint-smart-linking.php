@@ -101,10 +101,10 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 					'type'              => 'array',
 					'description'       => __( 'The list of URLs to exclude from the smart links.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'validate_url_exclusion_list' ),
+					'default'           => array(),
 				),
 			)
 		);
-
 
 		/**
 		 * GET /smart-linking/{post_id}/get
@@ -584,7 +584,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	 *
 	 * The callback sets the URL exclusion list in the request object if the parameter is valid.
 	 *
-	 * @since 3.16.0
+	 * @since 3.17.0
 	 * @access private
 	 *
 	 * @param mixed           $param   The parameter value.

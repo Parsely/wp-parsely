@@ -73,9 +73,6 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 	/**
 	 * Registers the routes for the endpoint.
 	 *
-	 * This method should be overridden by child classes and used to register
-	 * the routes for the endpoint.
-	 *
 	 * @since 3.17.0
 	 */
 	public function register_routes(): void {

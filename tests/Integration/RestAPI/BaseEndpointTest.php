@@ -242,7 +242,7 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\REST_API\Base_Endpoint::get_endpoint_name
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
 	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
-	 * @uses \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_endpoint_is_registered_based_on_filter(): void {
@@ -283,7 +283,7 @@ class BaseEndpointTest extends TestCase {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
-	 * @covers \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
+	 * @covers \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
@@ -322,7 +322,7 @@ class BaseEndpointTest extends TestCase {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
-	 * @covers \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
+	 * @covers \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
@@ -385,7 +385,7 @@ class BaseEndpointTest extends TestCase {
 	/**
 	 * Test validate_apikey_and_secret returns true when API key and secret are set.
 	 *
-	 * @covers \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
+	 * @covers \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
@@ -404,7 +404,7 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
-	public function test_validate_api_key_and_secret_returns_true(): void {
+	public function test_validate_site_id_and_secret_returns_true(): void {
 		TestCase::set_options(
 			array(
 				'apikey'     => 'test-apikey',
@@ -412,7 +412,7 @@ class BaseEndpointTest extends TestCase {
 			)
 		);
 
-		$result = $this->get_endpoint()->validate_apikey_and_secret();
+		$result = $this->get_endpoint()->validate_site_id_and_secret();
 
 		self::assertTrue( $result );
 	}

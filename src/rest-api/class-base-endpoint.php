@@ -18,8 +18,8 @@ use WP_REST_Request;
 /**
  * Base class for API endpoints.
  *
- * Most endpoint classes should derive from this class. Child classes must add a
- * protected `ENDPOINT` constant.
+ * Most endpoint classes should derive from this class. Child classes should
+ * implement the `get_endpoint_name` and `register_routes` methods.
  *
  * @since 3.17.0
  */
@@ -88,7 +88,6 @@ abstract class Base_Endpoint {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 	}
 
-
 	/**
 	 * Returns the endpoint name.
 	 *
@@ -128,13 +127,13 @@ abstract class Base_Endpoint {
 	/**
 	 * Registers a REST route.
 	 *
+	 * @since 3.17.0
+	 *
 	 * @param string       $route The route to register.
 	 * @param string[]     $methods Array with the allowed methods.
 	 * @param callable     $callback Callback function to call when the endpoint is hit.
 	 * @param array<mixed> $args The endpoint arguments definition.
-	 *
 	 * @return void
-	 * @since 3.17.0
 	 */
 	public function register_rest_route( string $route, array $methods, callable $callback, array $args = array() ): void {
 		// Trim any possible slashes from the route.
@@ -160,7 +159,6 @@ abstract class Base_Endpoint {
 			)
 		);
 	}
-
 
 	/**
 	 * Returns the full endpoint path for a given route.
@@ -202,9 +200,8 @@ abstract class Base_Endpoint {
 	 * @return WP_Error|bool True if the endpoint is available.
 	 */
 	public function is_available_to_current_user( ?WP_REST_Request $request = null ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
-
 		// Validate the API key and secret.
-		$api_key_validation = $this->validate_apikey_and_secret();
+		$api_key_validation = $this->validate_site_id_and_secret();
 		if ( is_wp_error( $api_key_validation ) ) {
 			return $api_key_validation;
 		}
@@ -261,11 +258,12 @@ abstract class Base_Endpoint {
 	 * If the API secret is not required, it will not be validated.
 	 *
 	 * @since 3.13.0
+	 * @since 3.17.0 Moved to the new API structure and renamed from `validate_apikey_and_secret`.
 	 *
 	 * @param bool $require_api_secret Specifies if the API Secret is required.
 	 * @return WP_Error|bool
 	 */
-	public function validate_apikey_and_secret( bool $require_api_secret = true ) {
+	public function validate_site_id_and_secret( bool $require_api_secret = true ) {
 		if ( false === $this->parsely->site_id_is_set() ) {
 			return new WP_Error(
 				'parsely_site_id_not_set',

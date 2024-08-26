@@ -21,7 +21,6 @@ use Parsely\Parsely;
  * @since 3.17.0
  */
 abstract class Base_API_Controller {
-
 	/**
 	 * The endpoints.
 	 *

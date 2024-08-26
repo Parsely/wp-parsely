@@ -101,7 +101,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
 	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
-	 * @uses \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_route_is_registered(): void {
@@ -246,7 +246,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
 	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
-	 * @uses \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_add_smart_link_returns_valid_response(): void {
@@ -343,7 +343,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
 	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
-	 * @uses \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_add_multiple_smart_links_returns_valid_response(): void {

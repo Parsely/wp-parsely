@@ -1,7 +1,8 @@
 <?php
 /**
  * API Content Helper Feature Trait
- * To be used with content helper endpoints that require a feature to be enabled.
+ * Provides a trait for Content Helper endpoints that require a feature to be enabled, by
+ * providing a method to check if the current user has permission to use the feature.
  *
  * @package Parsely
  * @since   3.17.0
@@ -21,7 +22,6 @@ use WP_REST_Request;
  * @since 3.17.0
  */
 trait Content_Helper_Feature {
-
 	/**
 	 * Returns the name of the feature associated with the current endpoint.
 	 *
@@ -51,10 +51,10 @@ trait Content_Helper_Feature {
 	 * Overrides the method in the Base_Endpoint class to check if the
 	 * current user has permission to use the feature.
 	 *
-	 * @param WP_REST_Request|null $request The request object.
-	 *
-	 * @return bool|WP_Error True if the endpoint is available.
 	 * @since 3.17.0
+	 *
+	 * @param WP_REST_Request|null $request The request object.
+	 * @return bool|WP_Error True if the endpoint is available.
 	 */
 	public function is_available_to_current_user( WP_REST_Request $request = null ) {
 		$can_use_feature = $this->is_pch_feature_enabled_for_user();
