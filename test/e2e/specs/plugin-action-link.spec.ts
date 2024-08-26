@@ -10,6 +10,6 @@ test.describe( 'Plugin action link', () => {
 
 		// Check loaded page's URL and heading.
 		await page.waitForURL( '**/wp-admin/options-general.php?page=parsely' );
-		await expect( page.getByText( 'Parse.ly Settings version' ) ).toBeVisible();
+		await expect( page.getByText( 'Parse.ly Settings' ) ).toBeVisible();
 	} );
 } );
