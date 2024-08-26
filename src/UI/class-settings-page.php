@@ -23,8 +23,6 @@ use const Parsely\PARSELY_FILE;
  *
  * @since 3.0.0
  *
- * @phpstan-import-type Parsely_Options from Parsely
- *
  * @phpstan-type Setting_Arguments array{
  *   add_fieldset?: bool,
  *   legend?: string,
