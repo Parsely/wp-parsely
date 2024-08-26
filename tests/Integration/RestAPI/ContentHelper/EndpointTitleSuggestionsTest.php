@@ -131,7 +131,7 @@ class EndpointTitleSuggestionsTest extends BaseEndpointTest {
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/title-suggestions/generate' );
-		$request->set_param( 'content', 'Test content' );
+		$request->set_param( 'text', 'Test content' );
 		$request->set_param( 'limit', 3 );
 		$request->set_param( 'style', 'neutral' );
 		$request->set_param( 'persona', 'journalist' );
@@ -179,7 +179,7 @@ class EndpointTitleSuggestionsTest extends BaseEndpointTest {
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/title-suggestions/generate' );
-		$request->set_param( 'content', 'Test content' );
+		$request->set_param( 'text', 'Test content' );
 		$request->set_param( 'limit', 3 );
 		$request->set_param( 'style', 'neutral' );
 		$request->set_param( 'persona', 'journalist' );

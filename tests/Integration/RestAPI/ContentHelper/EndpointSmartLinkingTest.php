@@ -148,7 +148,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/smart-linking/generate' );
-		$request->set_param( 'content', 'Test content' );
+		$request->set_param( 'text', 'Test content' );
 		$request->set_param( 'max_links', 2 );
 		$request->set_param( 'url_exclusion_list', array( 'http://excluded.com' ) );
 
@@ -193,7 +193,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/smart-linking/generate' );
-		$request->set_param( 'content', 'Test content' );
+		$request->set_param( 'text', 'Test content' );
 		$request->set_param( 'max_links', 2 );
 		$request->set_param( 'url_exclusion_list', array( 'http://excluded.com' ) );
 

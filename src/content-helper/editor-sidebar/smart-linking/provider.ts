@@ -145,7 +145,7 @@ export class SmartLinkingProvider extends BaseProvider {
 			} ),
 			data: {
 				url_exclusion_list: urlExclusionList,
-				content,
+				text: content,
 			},
 		} );
 

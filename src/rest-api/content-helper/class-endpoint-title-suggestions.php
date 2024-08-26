@@ -85,7 +85,7 @@ class Endpoint_Title_Suggestions extends Base_Endpoint {
 			array( 'POST' ),
 			array( $this, 'generate_titles' ),
 			array(
-				'content' => array(
+				'text'    => array(
 					'description' => __( 'The content for which to generate titles.', 'wp-parsely' ),
 					'required'    => true,
 					'type'        => 'string',
@@ -128,7 +128,7 @@ class Endpoint_Title_Suggestions extends Base_Endpoint {
 		 *
 		 * @var string $post_content
 		 */
-		$post_content = $request->get_param( 'content' );
+		$post_content = $request->get_param( 'text' );
 
 		/**
 		 * The maximum number of titles to generate.

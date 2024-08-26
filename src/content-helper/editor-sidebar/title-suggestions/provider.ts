@@ -58,7 +58,7 @@ export class TitleSuggestionsProvider extends BaseProvider {
 				persona: getPersonaLabel( persona ),
 			} ),
 			data: {
-				content,
+				text: content,
 			},
 		} );
 

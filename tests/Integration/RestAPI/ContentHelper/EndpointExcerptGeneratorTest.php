@@ -132,7 +132,7 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/excerpt-generator/generate' );
-		$request->set_param( 'content', 'Test content' );
+		$request->set_param( 'text', 'Test content' );
 		$request->set_param( 'title', 'Test title' );
 		$request->set_param( 'persona', 'journalist' );
 		$request->set_param( 'style', 'neutral' );
@@ -178,7 +178,7 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/excerpt-generator/generate' );
-		$request->set_param( 'content', 'Test content' );
+		$request->set_param( 'text', 'Test content' );
 		$request->set_param( 'title', 'Test title' );
 		$request->set_param( 'persona', 'journalist' );
 		$request->set_param( 'style', 'neutral' );

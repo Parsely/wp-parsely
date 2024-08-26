@@ -55,7 +55,7 @@ export class ExcerptGeneratorProvider extends BaseProvider {
 				title,
 			} ),
 			data: {
-				content,
+				text: content,
 			},
 		} );
 	}

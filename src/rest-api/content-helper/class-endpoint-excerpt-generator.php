@@ -85,7 +85,7 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 			array( 'POST' ),
 			array( $this, 'generate_excerpt' ),
 			array(
-				'content' => array(
+				'text'    => array(
 					'description' => __( 'The text to generate the excerpt from.', 'wp-parsely' ),
 					'type'        => 'string',
 					'required'    => true,
@@ -127,7 +127,7 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 		 *
 		 * @var string $post_content
 		 */
-		$post_content = $request->get_param( 'content' );
+		$post_content = $request->get_param( 'text' );
 
 		/**
 		 * The post title to be sent to the API.

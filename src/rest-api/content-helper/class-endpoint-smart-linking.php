@@ -87,7 +87,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 			array( 'POST' ),
 			array( $this, 'generate_smart_links' ),
 			array(
-				'content'            => array(
+				'text'               => array(
 					'required'    => true,
 					'type'        => 'string',
 					'description' => __( 'The text to generate smart links for.', 'wp-parsely' ),
@@ -229,7 +229,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		 *
 		 * @var string $post_content
 		 */
-		$post_content = $request->get_param( 'content' );
+		$post_content = $request->get_param( 'text' );
 
 		/**
 		 * The maximum number of smart links to generate.
