@@ -66,10 +66,9 @@ trait Post_Data_Trait {
 	private function get_itm_source_param_args(): array {
 		return array(
 			'itm_source' => array(
-				'description'       => __( 'The source of the item.', 'wp-parsely' ),
-				'type'              => 'string',
-				'required'          => false,
-				'validate_callback' => array( $this, 'validate_itm_source' ),
+				'description' => __( 'The source of the item.', 'wp-parsely' ),
+				'type'        => 'string',
+				'required'    => false,
 			),
 		);
 	}

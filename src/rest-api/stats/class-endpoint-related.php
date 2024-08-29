@@ -104,9 +104,9 @@ class Endpoint_Related extends Base_Endpoint {
 	 * @since 3.17.0
 	 *
 	 * @param WP_REST_Request|null $request The request object.
-	 * @return bool
+	 * @return bool|WP_Error
 	 */
-	public function is_available_to_current_user( ?WP_REST_Request $request = null ): bool {
-		return true;
+	public function is_available_to_current_user( ?WP_REST_Request $request = null ) {
+		return $this->validate_site_id_and_secret( false );
 	}
 }
