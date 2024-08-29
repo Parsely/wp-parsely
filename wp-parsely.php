@@ -132,37 +132,12 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
  * @since 3.2.0
  */
 function parsely_rest_api_init(): void {
-	$wp_cache = new WordPress_Cache();
-	$rest     = new Rest_Metadata( $GLOBALS['parsely'] );
+	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
 	$rest->run();
 
 	// Content Helper settings endpoints.
 	( new Dashboard_Widget_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
 	( new Editor_Sidebar_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
-
-	parsely_run_rest_api_endpoint(
-		Related_API::class,
-		Related_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Analytics_Posts_API::class,
-		Analytics_Posts_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Analytics_Post_Detail_API::class,
-		Analytics_Post_Detail_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Referrers_Post_Detail_API::class,
-		Referrers_Post_Detail_API_Proxy::class,
-		$wp_cache
-	);
 }
 
 add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
