@@ -238,11 +238,19 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::get_full_namespace
 	 * @uses \Parsely\REST_API\Base_API_Controller::prefix_route
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_route_prefix
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::get_endpoint_name
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
 	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
 	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
+	 * @uses \Parsely\REST_API\Base_Endpoint::apply_capability_filters
+	 * @uses  \Parsely\REST_API\Base_Endpoint::get_default_access_capability
+	 * @uses \Parsely\REST_API\Content_Helper\Content_Helper_Controller::get_route_prefix
+	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_endpoint_is_registered_based_on_filter(): void {
@@ -285,6 +293,7 @@ class BaseEndpointTest extends TestCase {
 	 * @covers \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
 	 * @covers \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
@@ -324,6 +333,7 @@ class BaseEndpointTest extends TestCase {
 	 * @covers \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
 	 * @covers \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -361,6 +371,7 @@ class BaseEndpointTest extends TestCase {
 	 *
 	 * @covers \Parsely\REST_API\Base_Endpoint::apply_capability_filters
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
@@ -387,6 +398,7 @@ class BaseEndpointTest extends TestCase {
 	 *
 	 * @covers \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set

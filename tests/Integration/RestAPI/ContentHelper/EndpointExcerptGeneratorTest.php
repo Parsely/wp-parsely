@@ -68,29 +68,28 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Excerpt_Generator::register_routes
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
-	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::set_default_content_helper_settings_values
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
-	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
 	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::get_full_namespace
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\REST_API\Base_API_Controller::prefix_route
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
-	 * @uses \Parsely\REST_API\Base_Endpoint::get_endpoint_name
 	 * @uses \Parsely\REST_API\Base_Endpoint::get_full_endpoint
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
 	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
 	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
+	 * @uses \Parsely\REST_API\Content_Helper\Content_Helper_Controller::get_route_prefix
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_route_is_registered(): void {
@@ -114,12 +113,11 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Excerpt_Generator::generate_excerpt
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_generate_excerpt_returns_valid_response(): void {
 		// Mock the Suggest_Brief_API to control the response.
@@ -160,12 +158,11 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Excerpt_Generator::generate_excerpt
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_generate_excerpt_returns_error_on_failure(): void {
 		// Mock the Suggest_Brief_API to simulate a failure.
