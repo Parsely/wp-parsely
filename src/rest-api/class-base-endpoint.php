@@ -169,7 +169,13 @@ abstract class Base_Endpoint {
 	 * @return string
 	 */
 	public function get_full_endpoint( string $route = '' ): string {
-		$route = $this->get_endpoint_name() . '/' . $route;
+		$route = trim( $route, '/' );
+
+		if ( '' !== $route ) {
+			$route = $this->get_endpoint_name() . '/' . $route;
+		} else {
+			$route = $this->get_endpoint_name();
+		}
 
 		return '/' .
 				$this->api_controller->get_full_namespace() .

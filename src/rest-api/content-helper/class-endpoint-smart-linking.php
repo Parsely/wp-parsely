@@ -14,6 +14,7 @@ namespace Parsely\REST_API\Content_Helper;
 use Parsely\Models\Smart_Link;
 use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
 use Parsely\REST_API\Base_Endpoint;
+use Parsely\REST_API\Use_Post_ID_Parameter_Trait;
 use WP_Error;
 use WP_Post;
 use WP_REST_Request;
@@ -28,6 +29,7 @@ use WP_REST_Response;
  */
 class Endpoint_Smart_Linking extends Base_Endpoint {
 	use Content_Helper_Feature;
+	use Use_Post_ID_Parameter_Trait;
 
 	/**
 	 * The Suggest Linked Reference API instance.
@@ -110,40 +112,28 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		 * GET /smart-linking/{post_id}/get
 		 * Gets the smart links for a post.
 		 */
-		$this->register_rest_route(
-			'(?P<post_id>\d+)/get',
+		$this->register_rest_route_with_post_id(
+			'/get',
 			array( 'GET' ),
-			array( $this, 'get_smart_links' ),
-			array(
-				'post_id' => array(
-					'required'          => true,
-					'description'       => __( 'The post ID.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'validate_post_id' ),
-				),
-			)
+			array( $this, 'get_smart_links' )
 		);
 
 		/**
 		 * POST /smart-linking/{post_id}/add
 		 * Adds a smart link to a post.
 		 */
-		$this->register_rest_route(
-			'(?P<post_id>\d+)/add',
+		$this->register_rest_route_with_post_id(
+			'/add',
 			array( 'POST' ),
 			array( $this, 'add_smart_link' ),
 			array(
-				'post_id' => array(
-					'required'          => true,
-					'description'       => __( 'The post ID.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'validate_post_id' ),
-				),
-				'link'    => array(
+				'link'   => array(
 					'required'          => true,
 					'type'              => 'object',
 					'description'       => __( 'The smart link data to add.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'validate_smart_link_params' ),
 				),
-				'update'  => array(
+				'update' => array(
 					'type'        => 'boolean',
 					'description' => __( 'Whether to update the existing smart link.', 'wp-parsely' ),
 					'default'     => false,
@@ -155,23 +145,18 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		 * POST /smart-linking/{post_id}/add-multiple
 		 * Adds multiple smart links to a post.
 		 */
-		$this->register_rest_route(
-			'(?P<post_id>\d+)/add-multiple',
+		$this->register_rest_route_with_post_id(
+			'/add-multiple',
 			array( 'POST' ),
 			array( $this, 'add_multiple_smart_links' ),
 			array(
-				'post_id' => array(
-					'required'          => true,
-					'description'       => __( 'The post ID.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'validate_post_id' ),
-				),
-				'links'   => array(
+				'links'  => array(
 					'required'          => true,
 					'type'              => 'array',
 					'description'       => __( 'The multiple smart links data to add.', 'wp-parsely' ),
 					'validate_callback' => array( $this, 'validate_multiple_smart_links' ),
 				),
-				'update'  => array(
+				'update' => array(
 					'type'        => 'boolean',
 					'description' => __( 'Whether to update the existing smart links.', 'wp-parsely' ),
 					'default'     => false,
@@ -183,17 +168,12 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		 * POST /smart-linking/{post_id}/set
 		 * Updates the smart links of a given post and removes the ones that are not in the request.
 		 */
-		$this->register_rest_route(
-			'(?P<post_id>\d+)/set',
+		$this->register_rest_route_with_post_id(
+			'/set',
 			array( 'POST' ),
 			array( $this, 'set_smart_links' ),
 			array(
-				'post_id' => array(
-					'required'          => true,
-					'description'       => __( 'The post ID.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'validate_post_id' ),
-				),
-				'links'   => array(
+				'links' => array(
 					'required'          => true,
 					'type'              => 'array',
 					'description'       => __( 'The smart links data to set.', 'wp-parsely' ),
@@ -546,37 +526,6 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		}
 
 		return new WP_REST_Response( $response, 200 );
-	}
-
-	/**
-	 * Validates the post ID parameter.
-	 *
-	 * The callback sets the post object in the request object if the parameter is valid.
-	 *
-	 * @since 3.16.0
-	 * @access private
-	 *
-	 * @param string          $param   The parameter value.
-	 * @param WP_REST_Request $request The request object.
-	 * @return bool Whether the parameter is valid.
-	 */
-	public function validate_post_id( string $param, WP_REST_Request $request ): bool {
-		if ( ! is_numeric( $param ) ) {
-			return false;
-		}
-
-		$param = filter_var( $param, FILTER_VALIDATE_INT );
-
-		if ( false === $param ) {
-			return false;
-		}
-
-		// Validate if the post ID exists.
-		$post = get_post( $param );
-		// Set the post attribute in the request.
-		$request->set_param( 'post', $post );
-
-		return null !== $post;
 	}
 
 	/**

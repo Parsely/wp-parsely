@@ -108,7 +108,11 @@ abstract class Base_Endpoint_Remote extends Base_Endpoint implements Remote_API_
 		}
 
 		if ( ! property_exists( $decoded, 'data' ) ) {
-			return new WP_Error( $decoded->code ?? 400, $decoded->message ?? __( 'Unable to read data from upstream API', 'wp-parsely' ) );
+			return new WP_Error(
+				$decoded->code ?? 400,
+				$decoded->message ?? __( 'Unable to read data from upstream API', 'wp-parsely' ),
+				array( 'status' => $decoded->code ?? 400 )
+			);
 		}
 
 		if ( ! is_array( $decoded->data ) ) {
