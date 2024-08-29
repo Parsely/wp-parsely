@@ -94,7 +94,7 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Set up the test environment.
+	 * Sets up the test environment.
 	 *
 	 * @since 3.17.0
 	 */
@@ -109,7 +109,7 @@ class BaseEndpointTest extends TestCase {
 		$this->test_endpoint = new class($this->api_controller) extends Base_Endpoint {
 
 			/**
-			 * Get the endpoint name.
+			 * Gets the endpoint name.
 			 *
 			 * @since 3.17.0
 			 *
@@ -120,7 +120,7 @@ class BaseEndpointTest extends TestCase {
 			}
 
 			/**
-			 * Register the test route.
+			 * Registers the test route.
 			 *
 			 * @since 3.17.0
 			 */
@@ -133,7 +133,7 @@ class BaseEndpointTest extends TestCase {
 			}
 
 			/**
-			 * Get test data.
+			 * Gets test data.
 			 *
 			 * @since 3.17.0
 			 *
@@ -148,7 +148,7 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Tear down the test environment.
+	 * Tears down the test environment.
 	 *
 	 * @since 3.17.0
 	 */
@@ -161,7 +161,7 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Return the test endpoint instance.
+	 * Returns the test endpoint instance.
 	 *
 	 * @since 3.17.0
 	 *
@@ -172,7 +172,7 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Test that the route is correctly registered in WordPress.
+	 * Tests that the route is correctly registered in WordPress.
 	 *
 	 * @since 3.17.0
 	 *
@@ -213,7 +213,7 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Test that the route is correctly registered in WordPress, depending on the filter.
+	 * Tests that the route is correctly registered in WordPress, depending on the filter.
 	 *
 	 * @since 3.17.0
 	 *
@@ -278,7 +278,7 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Test is_available_to_current_user returns WP_Error if API key or secret is not set.
+	 * Tests is_available_to_current_user returns WP_Error if API key or secret is not set.
 	 *
 	 * @since 3.17.0
 	 *
@@ -317,7 +317,7 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Test is_available_to_current_user returns WP_Error if API key or secret is not set.
+	 * Tests is_available_to_current_user returns WP_Error if API key or secret is not set.
 	 *
 	 * @since 3.17.0
 	 *
@@ -357,7 +357,7 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Test apply_capability_filters method.
+	 * Tests apply_capability_filters method.
 	 *
 	 * @covers \Parsely\REST_API\Base_Endpoint::apply_capability_filters
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
@@ -383,7 +383,7 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Test validate_apikey_and_secret returns true when API key and secret are set.
+	 * Tests validate_apikey_and_secret returns true when API key and secret are set.
 	 *
 	 * @covers \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
@@ -439,7 +439,7 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Initialize the REST endpoint.
+	 * Initializes the REST endpoint.
 	 *
 	 * @since 3.17.0
 	 */

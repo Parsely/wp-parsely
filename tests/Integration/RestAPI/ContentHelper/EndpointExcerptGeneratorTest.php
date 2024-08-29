@@ -3,7 +3,7 @@
  * Integration tests for the Endpoint_Excerpt_Generator class.
  *
  * @package Parsely
- * @since 3.17.0
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
@@ -38,7 +38,7 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 	private $endpoint;
 
 	/**
-	 * Set up the test environment.
+	 * Sets up the test environment.
 	 *
 	 * @since 3.17.0
 	 */
@@ -51,7 +51,7 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Get the test endpoint instance.
+	 * Gets the test endpoint instance.
 	 *
 	 * @since 3.17.0
 	 *
@@ -62,7 +62,7 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Test that the endpoint is correctly registered.
+	 * Tests that the endpoint is correctly registered.
 	 *
 	 * @since 3.17.0
 	 *
@@ -108,7 +108,7 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Test that the generate_excerpt method returns a valid response.
+	 * Tests that the generate_excerpt method returns a valid response.
 	 *
 	 * @since 3.17.0
 	 *
@@ -154,7 +154,7 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Test that the generate_excerpt method returns an error if Suggest_Brief_API fails.
+	 * Tests that the generate_excerpt method returns an error if Suggest_Brief_API fails.
 	 *
 	 * @since 3.17.0
 	 *

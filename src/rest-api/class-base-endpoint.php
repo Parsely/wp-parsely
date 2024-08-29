@@ -133,11 +133,11 @@ abstract class Base_Endpoint {
 	 * @param string[]     $methods Array with the allowed methods.
 	 * @param callable     $callback Callback function to call when the endpoint is hit.
 	 * @param array<mixed> $args The endpoint arguments definition.
-	 * @return void
 	 */
 	public function register_rest_route( string $route, array $methods, callable $callback, array $args = array() ): void {
 		// Trim any possible slashes from the route.
 		$route = trim( $route, '/' );
+
 		// Store the route for later reference.
 		$this->registered_routes[] = $route;
 

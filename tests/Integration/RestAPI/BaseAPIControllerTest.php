@@ -38,14 +38,13 @@ class BaseAPIControllerTest extends TestCase {
 	 *
 	 * @since 3.17.0
 	 */
-	public function setUp(): void {
-		parent::setUp();
+	public function set_up(): void {
+		parent::set_up();
 		TestCase::set_options();
 		$parsely               = self::createMock( Parsely::class );
 		$this->test_controller = new class($parsely) extends Base_API_Controller {
-
 			/**
-			 * Get the namespace for the API.
+			 * Gets the namespace for the API.
 			 *
 			 * @since 3.17.0
 			 *
@@ -56,7 +55,7 @@ class BaseAPIControllerTest extends TestCase {
 			}
 
 			/**
-			 * Get the version for the API.
+			 * Gets the version for the API.
 			 *
 			 * @since 3.17.0
 			 *
@@ -67,14 +66,14 @@ class BaseAPIControllerTest extends TestCase {
 			}
 
 			/**
-			 * Initialize the test controller.
+			 * Initializes the test controller.
 			 *
 			 * @since 3.17.0
 			 */
 			protected function init(): void {}
 
 			/**
-			 * Expose the protected method for testing.
+			 * Exposes the protected method for testing.
 			 *
 			 * @param Base_Endpoint[] $endpoints The endpoints to register.
 			 */
@@ -83,7 +82,7 @@ class BaseAPIControllerTest extends TestCase {
 			}
 
 			/**
-			 * Expose the protected method for testing.
+			 * Exposes the protected method for testing.
 			 *
 			 * @param Base_Endpoint $endpoint The endpoint to register.
 			 */
@@ -94,7 +93,7 @@ class BaseAPIControllerTest extends TestCase {
 	}
 
 	/**
-	 * Test the get_namespace method.
+	 * Tests the get_namespace method.
 	 *
 	 * @since 3.17.0
 	 *
@@ -106,7 +105,7 @@ class BaseAPIControllerTest extends TestCase {
 	}
 
 	/**
-	 * Test the prefix_route method.
+	 * Tests the prefix_route method.
 	 *
 	 * @since 3.17.0
 	 *
@@ -152,7 +151,7 @@ class BaseAPIControllerTest extends TestCase {
 	}
 
 	/**
-	 * Test that endpoints are registered correctly.
+	 * Tests that endpoints are registered correctly.
 	 *
 	 * @since 3.17.0
 	 *
@@ -172,7 +171,7 @@ class BaseAPIControllerTest extends TestCase {
 	}
 
 	/**
-	 * Test that multiple endpoints are registered correctly using a helper method.
+	 * Tests that multiple endpoints are registered correctly using a helper method.
 	 *
 	 * @since 3.17.0
 	 *

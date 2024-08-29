@@ -33,19 +33,19 @@ class RestAPIControllerTest extends TestCase {
 	private $test_controller = null;
 
 	/**
-	 * Set up the test controller.
+	 * Sets up the test controller.
 	 *
 	 * @since 3.17.0
 	 */
-	public function setUp(): void {
-		parent::setUp();
+	public function set_up(): void {
+		parent::set_up();
 		TestCase::set_options();
 		$parsely               = self::createMock( Parsely::class );
 		$this->test_controller = new REST_API_Controller( $parsely );
 	}
 
 	/**
-	 * Test the constructor sets up the correct namespace and version.
+	 * Tests the constructor sets up the correct namespace and version.
 	 *
 	 * @since 3.17.0
 	 *

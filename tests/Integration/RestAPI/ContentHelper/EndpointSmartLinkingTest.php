@@ -3,7 +3,7 @@
  * Integration tests for the Endpoint_Smart_Linking class.
  *
  * @package Parsely
- * @since 3.17.0
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
@@ -41,7 +41,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	private $endpoint;
 
 	/**
-	 * Set up the test environment.
+	 * Sets up the test environment.
 	 *
 	 * @since 3.17.0
 	 */
@@ -62,7 +62,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Get the test endpoint instance.
+	 * Gets the test endpoint instance.
 	 *
 	 * @since 3.17.0
 	 *
@@ -73,7 +73,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Test that the endpoint is correctly registered.
+	 * Tests that the endpoint is correctly registered.
 	 *
 	 * @since 3.17.0
 	 *
@@ -119,7 +119,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Test that the generate_smart_links method returns a valid response.
+	 * Tests that the generate_smart_links method returns a valid response.
 	 *
 	 * @since 3.17.0
 	 *
@@ -169,7 +169,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Test that the generate_smart_links method returns an error if Suggest_Linked_Reference_API fails.
+	 * Tests that the generate_smart_links method returns an error if Suggest_Linked_Reference_API fails.
 	 *
 	 * @since 3.17.0
 	 *
@@ -206,7 +206,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Test that the add_smart_link method returns a valid response when adding a new smart link.
+	 * Tests that the add_smart_link method returns a valid response when adding a new smart link.
 	 *
 	 * @since 3.17.0
 	 *
@@ -307,7 +307,6 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::add_multiple_smart_links
-	 *
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Models\Base_Model::__construct
 	 * @uses \Parsely\Models\Base_Model::serialize
