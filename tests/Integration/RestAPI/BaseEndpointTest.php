@@ -78,8 +78,12 @@ class BaseEndpointTest extends TestCase {
 	 * Constructor that initializes the Parsely and API controller instances.
 	 *
 	 * @since 3.17.0
+	 *
+	 * @param string|null  $name The name of the test.
+	 * @param array<mixed> $data The data for the test.
+	 * @param string       $data_name The name of the data.
 	 */
-	public function __construct() {
+	public function __construct( $name = null, array $data = array(), $data_name = '' ) {
 		// Create Parsely class, if not already created (by an inherited class).
 		if ( null === $this->parsely ) {
 			$this->parsely = new Parsely();
@@ -90,7 +94,7 @@ class BaseEndpointTest extends TestCase {
 			$this->api_controller = new REST_API_Controller( $this->parsely );
 		}
 
-		parent::__construct();
+		parent::__construct( $name, $data, $data_name );
 	}
 
 	/**

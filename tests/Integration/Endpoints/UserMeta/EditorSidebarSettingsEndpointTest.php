@@ -176,7 +176,6 @@ final class EditorSidebarSettingsEndpointTest extends BaseUserMetaEndpointTest {
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_nested_specs
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::get_valid_values
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::is_valid_key
 	 * @uses \Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta::run
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_meta_key
 	 * @uses \Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint::get_route
