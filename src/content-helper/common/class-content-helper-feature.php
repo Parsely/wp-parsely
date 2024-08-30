@@ -166,14 +166,16 @@ abstract class Content_Helper_Feature {
 				$settings = rest_do_request(
 					new WP_REST_Request(
 						'GET',
-						'/wp-parsely/v1' . $settings_route
+						'/wp-parsely/v2/settings/' . $settings_route
 					)
 				)->get_data();
 			}
 
-			if ( ! is_string( $settings ) ) {
-				$settings = '';
+			if ( ! is_array( $settings ) ) {
+				$settings = array();
 			}
+
+			$settings = wp_json_encode( $settings );
 
 			wp_add_inline_script(
 				static::get_script_id(),

@@ -10,14 +10,12 @@ declare(strict_types=1);
 
 namespace Parsely\REST_API\Settings;
 
-use Parsely\Endpoints\User_Meta\Base_Endpoint_User_Meta;
-
 /**
  * Endpoint for saving and retrieving Content Helper Dashboard Widget settings.
  *
  * @since 3.17.0
  *
- * @phpstan-import-type Subvalue_Spec from Base_Endpoint_User_Meta
+ * @phpstan-import-type Subvalue_Spec from Base_Settings_Endpoint
  */
 class Endpoint_Dashboard_Widget_Settings extends Base_Settings_Endpoint {
 	/**
