@@ -94,12 +94,8 @@ export const getRelatedPostsMessage = async (
 		await page.keyboard.type( filterType.charAt( 0 ) );
 	}
 
-	// Wait for innerText changes in the targeted selector.
-	await page.locator( contentHelperMessageSelector ).waitFor();
-	await page.waitForFunction( // Wait for the message to appear.
-		'document.querySelector("' + contentHelperMessageSelector + '").innerText.length > 0',
-		{ polling: 'mutation', timeout: 5000 }
-	);
+	// Wait for results to show in the UI.
+	await page.getByText( 'Loading…' ).isHidden();
 
 	return await page.locator( contentHelperMessageSelector ).textContent() ?? '';
 };
