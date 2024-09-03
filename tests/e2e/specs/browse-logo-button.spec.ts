@@ -19,8 +19,6 @@ import {
 test.describe( 'Browse for logo button', () => {
 	// General initializations.
 	const uploadedImagePattern = /\/wp-content\/uploads\/\d{4}\/\d{2}\/icon-256x256-?\d*\.png$/;
-	const filePathInput = '#media-single-image-logo input.file-path';
-	const modalAttachment = 'li.attachment';
 
 	// Media library modal selectors.
 	const modalMediaLibrary = 'div.media-modal-content';
@@ -69,7 +67,7 @@ test.describe( 'Browse for logo button', () => {
 		await page.click( modalConfirmButton );
 
 		// Verify that the image path has been updated.
-		await expect( page.locator( filePathInput ) )
+		await expect( page.getByLabel( 'Logo' ) )
 			.toHaveValue( uploadedImagePattern );
 	} );
 
@@ -80,12 +78,12 @@ test.describe( 'Browse for logo button', () => {
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
 	test( 'Should set the file path when an existing image is selected and confirmed', async ( { page } ) => {
-		// Select the existing and confirm the dialog.
-		await page.click( modalAttachment );
+		// Select the existing uploaded image, and confirm the dialog.
+		await page.getByRole( 'checkbox' ).first().check();
 		await page.click( modalConfirmButton );
 
 		// Verify that the image path has been updated.
-		await expect( page.locator( filePathInput ) )
+		await expect( page.getByLabel( 'Logo' ) )
 			.toHaveValue( uploadedImagePattern );
 	} );
 
@@ -96,12 +94,12 @@ test.describe( 'Browse for logo button', () => {
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
 	test( 'Should not set the file path when dismissing the modal', async ( { page } ) => {
-		// Select the existing image but cancel the dialog.
-		await page.click( modalAttachment );
+		// Select the existing uploaded image but cancel the dialog.
+		await page.getByRole( 'checkbox' ).first().check();
 		await page.keyboard.press( 'Escape' );
 
 		// Verify that the image path is empty.
-		await expect( page.locator( filePathInput ) )
+		await expect( page.getByLabel( 'Logo' ) )
 			.toHaveValue( '' );
 	} );
 } );

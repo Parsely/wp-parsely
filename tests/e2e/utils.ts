@@ -81,7 +81,6 @@ export const getRelatedPostsMessage = async (
 
 	// Show the Content Helper Sidebar.
 	await page.getByRole( 'button', { name: 'Parse.ly' } ).click();
-	await setSidebarPanelExpanded( page, 'Related Posts', true );
 
 	// Select 30 days to reduce the possibility of a "No related posts" message.
 	if ( await page.getByLabel( 'Period' ).isVisible() ) {
@@ -89,6 +88,7 @@ export const getRelatedPostsMessage = async (
 	}
 
 	// Set the filter type.
+	await setSidebarPanelExpanded( page, 'Related Posts', true );
 	if ( '' !== filterType ) {
 		await page.keyboard.press( 'Tab' );
 		await page.keyboard.type( filterType.charAt( 0 ) );
