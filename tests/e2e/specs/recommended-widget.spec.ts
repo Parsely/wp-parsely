@@ -118,6 +118,10 @@ class Utils {
 
 		await this.admin.visitAdminPage( '/widgets.php' );
 
+		if ( await page.getByText( 'Welcome to block Widgets', { exact: true } ).isVisible() ) {
+			await page.getByRole( 'button', { name: 'Close', exact: true } ).click();
+		}
+
 		await page.getByRole( 'button', { name: 'Add block' } ).click();
 		await page.getByPlaceholder( 'Search' ).fill( 'parse.ly recommended widget' );
 		await page.getByText(
