@@ -84,7 +84,7 @@ export const getRelatedPostsMessage = async (
 	await setSidebarPanelExpanded( page, 'Related Posts', true );
 
 	// Select 30 days to reduce the possibility of a "No related posts" message.
-	if ( ( await page.$( 'div.related-posts-settings div:nth-child(2) select' ) ) !== null ) {
+	if ( await page.getByLabel( 'Period' ).isVisible() ) {
 		await page.getByLabel( 'Period' ).selectOption( '30d' );
 	}
 
