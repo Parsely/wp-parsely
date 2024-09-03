@@ -45,21 +45,16 @@ jobs:
           npm run dev:start
 
       - name: Running E2E tests
-        run: |
-          npm run test:e2e -- --listTests > ~/.jest-e2e-tests
-          npm run test:e2e
-
-      - name: Running Playwright E2E tests
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
         run: |
-          npm run test:e2e:playwright
+          npm run test:e2e
 
       - name: Stop WordPress environment
         run: |
           npm run dev:stop
 
-      - name: Archive e2e results
+      - name: Archive E2E results
         uses: actions/upload-artifact@v4
         if: failure()
         with:
