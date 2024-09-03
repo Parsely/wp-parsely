@@ -19,7 +19,6 @@ import {
 test.describe( 'Browse for logo button', () => {
 	// General initializations.
 	const uploadedImagePattern = /\/wp-content\/uploads\/\d{4}\/\d{2}\/icon-256x256-?\d*\.png$/;
-	const modalAttachment = 'li.attachment';
 
 	// Media library modal selectors.
 	const modalMediaLibrary = 'div.media-modal-content';
@@ -80,7 +79,6 @@ test.describe( 'Browse for logo button', () => {
 	 */
 	test( 'Should set the file path when an existing image is selected and confirmed', async ( { page } ) => {
 		// Select the existing uploaded image, and confirm the dialog.
-		await page.waitForSelector( modalAttachment );
 		await page.getByRole( 'checkbox' ).first().check();
 		await page.click( modalConfirmButton );
 
@@ -97,7 +95,6 @@ test.describe( 'Browse for logo button', () => {
 	 */
 	test( 'Should not set the file path when dismissing the modal', async ( { page } ) => {
 		// Select the existing uploaded image but cancel the dialog.
-		await page.waitForSelector( modalAttachment );
 		await page.getByRole( 'checkbox' ).first().check();
 		await page.keyboard.press( 'Escape' );
 

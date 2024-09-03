@@ -80,7 +80,6 @@ export const getRelatedPostsMessage = async (
 	}
 
 	// Show the Content Helper Sidebar.
-	await page.waitForSelector( 'button[aria-label="Parse.ly"]' );
 	await page.getByRole( 'button', { name: 'Parse.ly' } ).click();
 
 	// Select 30 days to reduce the possibility of a "No related posts" message.
