@@ -118,9 +118,10 @@ class Utils {
 
 		await this.admin.visitAdminPage( '/widgets.php' );
 
-		await page.getByRole( 'button', { name: 'Toggle Block Inserter' } ).click();
+		await page.getByRole( 'button', { name: 'Add block' } ).click();
 		await page.getByPlaceholder( 'Search' ).fill( 'parse.ly recommended widget' );
-		await page.getByText( 'Parse.ly Recommended Widget', { exact: true } ).click();
-		await page.getByRole( 'button', { name: 'Toggle Block Inserter' } ).click();
+		await page.getByText(
+			'Parse.ly Recommended Widget', { exact: true }
+		).click();
 	}
 }
