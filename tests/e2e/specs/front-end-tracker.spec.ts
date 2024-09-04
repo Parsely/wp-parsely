@@ -39,11 +39,12 @@ test.describe( 'Front-end tracking code injection', () => {
 
 		await page.goto( '/' );
 
+		const assetVersion = await utils.getAssetVersion();
 		const content = await page.content();
 
 		expect( content ).toContain( '<link rel="dns-prefetch" href="//cdn.parsely.com">' );
 		expect( content ).toContain( `<script data-parsely-site="${ VALID_SITE_ID }" src="https://cdn.parsely.com/keys/${ VALID_SITE_ID }/p.js?ver=${ PLUGIN_VERSION }" id="parsely-cfg"></script>` );
-		expect( content ).toContain( `<script src="http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ utils.getAssetVersion() }" id="wp-parsely-loader-js"></script>` );
+		expect( content ).toContain( `<script src="http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ assetVersion }" id="wp-parsely-loader-js"></script>` );
 		expect( content ).not.toContain( "<script id='wp-parsely-loader-js-before'>" );
 		expect( content ).not.toContain( 'window.wpParselySiteId =' );
 	} );
@@ -60,11 +61,12 @@ test.describe( 'Front-end tracking code injection', () => {
 
 		await page.goto( '/' );
 
+		const assetVersion = await utils.getAssetVersion();
 		const content = await page.content();
 
 		expect( content ).toContain( '<link rel="dns-prefetch" href="//cdn.parsely.com">' );
 		expect( content ).toContain( `<script data-parsely-site="${ VALID_SITE_ID }" src="https://cdn.parsely.com/keys/${ VALID_SITE_ID }/p.js?ver=${ PLUGIN_VERSION }" id="parsely-cfg"></script>` );
-		expect( content ).toContain( `<script src="http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ utils.getAssetVersion() }" id="wp-parsely-loader-js"></script>` );
+		expect( content ).toContain( `<script src="http://localhost:8889/wp-content/plugins/wp-parsely/build/loader.js?ver=${ assetVersion }" id="wp-parsely-loader-js"></script>` );
 		expect( content ).toContain( '<script id="wp-parsely-loader-js-before">' );
 		expect( content ).toContain( `window.wpParselySiteId = '${ VALID_SITE_ID }'` );
 	} );
@@ -83,11 +85,11 @@ class Utils {
 	 *
 	 * @return {string} The version of the loader asset.
 	 */
-	getAssetVersion = (): string => {
-		const data = fs.readFileSync(
+	async getAssetVersion(): Promise<string> {
+		const data = await fs.promises.readFile(
 			'build/loader.asset.php', { encoding: 'utf8', flag: 'r' }
 		);
 
 		return data.match( /'version' => '(.*)'/ )?.[ 1 ] ?? '';
-	};
+	}
 }
