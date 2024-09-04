@@ -58,6 +58,6 @@ test.describe( 'PCH Editor Sidebar Related Post panel filters', () => {
 
 		expect( await getRelatedPostsMessage(
 			admin, categoryName, '', 'section', '.related-posts-descr'
-		) ).toMatch( `Top related posts in the “${ categoryName }” section in the last 30 days.` );
+		) ).toMatch( `Top related posts in the “${ categoryName }” section in the last 7 days.` );
 	} );
 } );

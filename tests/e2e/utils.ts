@@ -83,21 +83,10 @@ export const getRelatedPostsMessage = async (
 	await page.getByRole( 'button', { name: 'Parse.ly' } ).click();
 	await setSidebarPanelExpanded( page, 'Related Posts', true );
 
-	// Select 30 days to reduce the possibility of a "No related posts" message.
-	if ( await page.getByLabel( 'Period' ).isVisible() ) {
-		await page.getByLabel( 'Period' ).selectOption( '30d' );
-	}
-
 	// Set the filter type.
 	if ( '' !== filterType ) {
 		await page.keyboard.press( 'Tab' );
 		await page.keyboard.type( filterType.charAt( 0 ) );
-	}
-
-	if ( await page.locator( '.related-posts-descr' ).isVisible() ) {
-		await page.waitForFunction(
-			'document.querySelector(".related-posts-descr").innerText.endsWith("in the last 30 days.")'
-		);
 	}
 
 	return await page.locator( contentHelperMessageSelector ).textContent() ?? '';
