@@ -94,8 +94,11 @@ export const getRelatedPostsMessage = async (
 		await page.keyboard.type( filterType.charAt( 0 ) );
 	}
 
-	// Wait for results to show in the UI.
-	await page.getByText( 'Loading…' ).isHidden();
+	if ( await page.locator( '.related-posts-descr' ).isVisible() ) {
+		await page.waitForFunction(
+			'document.querySelector(".related-posts-descr").innerText.endsWith("in the last 30 days.")'
+		);
+	}
 
 	return await page.locator( contentHelperMessageSelector ).textContent() ?? '';
 };
