@@ -61,7 +61,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 		string $user_login,
 		string $user_role
 	): void {
-		$this->set_current_user_to( $user_login, $user_role );
+		self::set_current_user_to( $user_login, $user_role );
 
 		self::set_filters(
 			$feature::get_feature_filter_name(),

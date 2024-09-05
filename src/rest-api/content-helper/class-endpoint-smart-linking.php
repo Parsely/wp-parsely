@@ -1,103 +1,124 @@
 <?php
 /**
- * Smart Linking endpoint: Provides endpoints for managing smart links
+ * Endpoint: Smart Linking
+ * Parse.ly Content Helper `/smart-linking` API endpoint class
  *
  * @package Parsely
- * @since   3.16.0
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
 
-namespace Parsely\Endpoints\Content_Helper;
+namespace Parsely\REST_API\Content_Helper;
 
-use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Models\Smart_Link;
-use Parsely\Permissions;
+use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
+use Parsely\REST_API\Base_Endpoint;
+use WP_Error;
 use WP_Post;
 use WP_REST_Request;
 use WP_REST_Response;
 
 /**
- * Smart Linking endpoint class.
+ * The Smart Linking API.
  *
- * Provides endpoints for managing smart links.
+ * Provides an endpoint for generating smart links for the given content.
  *
- * @since 3.16.0
+ * @since 3.17.0
  */
-class Smart_Linking_Endpoint extends Base_Endpoint {
+class Endpoint_Smart_Linking extends Base_Endpoint {
+	use Content_Helper_Feature;
 
 	/**
-	 * The endpoint base path.
+	 * The Suggest Linked Reference API instance.
 	 *
-	 * @since 3.16.0
-	 * @var string
+	 * @since 3.17.0
+	 *
+	 * @var Suggest_Linked_Reference_API $suggest_linked_reference_api
 	 */
-	protected const ENDPOINT = '/smart-linking';
+	private $suggest_linked_reference_api;
 
 	/**
-	 * Returns whether the endpoint is available for access by the current
-	 * user.
+	 * Initializes the class.
 	 *
-	 * @since 3.16.0
+	 * @since 3.17.0
 	 *
-	 * @param WP_REST_Request|null $request The request object.
-	 * @return bool
+	 * @param Content_Helper_Controller $controller The content helper controller.
 	 */
-	public function is_available_to_current_user( $request = null ): bool {
-		$post_id = false;
-		if ( $request instanceof WP_REST_Request ) {
-			$temp_post_id = $request->get_param( 'post_id' );
-			if ( is_numeric( $temp_post_id ) ) {
-				$post_id = intval( $temp_post_id );
-			}
-		}
-
-		$can_access_pch = Permissions::current_user_can_use_pch_feature(
-			'smart_linking',
-			$this->parsely->get_options()['content_helper'],
-			$post_id
-		);
-
-		// Check if the current user has the smart linking capability.
-		$has_capability = current_user_can(
-			// phpcs:ignore WordPress.WP.Capabilities.Undetermined
-			$this->apply_capability_filters(
-				Base_Endpoint::DEFAULT_ACCESS_CAPABILITY
-			)
-		);
-
-		return $can_access_pch && $has_capability;
+	public function __construct( Content_Helper_Controller $controller ) {
+		parent::__construct( $controller );
+		$this->suggest_linked_reference_api = new Suggest_Linked_Reference_API( $this->parsely );
 	}
 
 	/**
-	 * Registers the endpoints.
+	 * Returns the name of the endpoint.
 	 *
-	 * @since 3.16.0
+	 * @since 3.17.0
+	 *
+	 * @return string The endpoint name.
 	 */
-	public function run(): void {
+	public function get_endpoint_name(): string {
+		return 'smart-linking';
+	}
+
+	/**
+	 * Returns the name of the feature associated with the current endpoint.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string The feature name.
+	 */
+	public function get_pch_feature_name(): string {
+		return 'smart_linking';
+	}
+
+	/**
+	 * Registers the routes for the endpoint.
+	 *
+	 * @since 3.17.0
+	 */
+	public function register_routes(): void {
 		/**
-		 * POST /smart-linking/url-to-post-type
-		 * Converts a URL to a post type.
+		 * GET /smart-linking/generate
+		 * Generates smart links for a post.
 		 */
-		$this->register_endpoint(
-			static::ENDPOINT . '/url-to-post-type',
-			'url_to_post_type',
-			array( 'POST' )
+		$this->register_rest_route(
+			'generate',
+			array( 'POST' ),
+			array( $this, 'generate_smart_links' ),
+			array(
+				'text'               => array(
+					'required'    => true,
+					'type'        => 'string',
+					'description' => __( 'The text to generate smart links for.', 'wp-parsely' ),
+				),
+				'max_links'          => array(
+					'type'        => 'integer',
+					'description' => __( 'The maximum number of smart links to generate.', 'wp-parsely' ),
+					'default'     => 10,
+				),
+				'url_exclusion_list' => array(
+					'type'              => 'array',
+					'description'       => __( 'The list of URLs to exclude from the smart links.', 'wp-parsely' ),
+					'validate_callback' => array( $this, 'validate_url_exclusion_list' ),
+					'default'           => array(),
+				),
+			)
 		);
 
 		/**
 		 * GET /smart-linking/{post_id}/get
 		 * Gets the smart links for a post.
 		 */
-		$this->register_endpoint_with_args(
-			static::ENDPOINT . '/(?P<post_id>\d+)/get',
-			'get_smart_links',
+		$this->register_rest_route(
+			'(?P<post_id>\d+)/get',
 			array( 'GET' ),
+			array( $this, 'get_smart_links' ),
 			array(
 				'post_id' => array(
 					'required'          => true,
 					'description'       => __( 'The post ID.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
+					'validate_callback' => array( $this, 'validate_post_id' ),
 				),
 			)
 		);
@@ -106,21 +127,21 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		 * POST /smart-linking/{post_id}/add
 		 * Adds a smart link to a post.
 		 */
-		$this->register_endpoint_with_args(
-			static::ENDPOINT . '/(?P<post_id>\d+)/add',
-			'add_smart_link',
+		$this->register_rest_route(
+			'(?P<post_id>\d+)/add',
 			array( 'POST' ),
+			array( $this, 'add_smart_link' ),
 			array(
 				'post_id' => array(
 					'required'          => true,
 					'description'       => __( 'The post ID.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
+					'validate_callback' => array( $this, 'validate_post_id' ),
 				),
 				'link'    => array(
 					'required'          => true,
-					'type'              => 'array',
+					'type'              => 'object',
 					'description'       => __( 'The smart link data to add.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'private_api_request_validate_smart_link_params' ),
+					'validate_callback' => array( $this, 'validate_smart_link_params' ),
 				),
 				'update'  => array(
 					'type'        => 'boolean',
@@ -134,21 +155,21 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		 * POST /smart-linking/{post_id}/add-multiple
 		 * Adds multiple smart links to a post.
 		 */
-		$this->register_endpoint_with_args(
-			static::ENDPOINT . '/(?P<post_id>\d+)/add-multiple',
-			'add_multiple_smart_links',
+		$this->register_rest_route(
+			'(?P<post_id>\d+)/add-multiple',
 			array( 'POST' ),
+			array( $this, 'add_multiple_smart_links' ),
 			array(
 				'post_id' => array(
 					'required'          => true,
 					'description'       => __( 'The post ID.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
+					'validate_callback' => array( $this, 'validate_post_id' ),
 				),
 				'links'   => array(
 					'required'          => true,
 					'type'              => 'array',
 					'description'       => __( 'The multiple smart links data to add.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'private_api_request_validate_multiple_smart_links' ),
+					'validate_callback' => array( $this, 'validate_multiple_smart_links' ),
 				),
 				'update'  => array(
 					'type'        => 'boolean',
@@ -162,79 +183,88 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		 * POST /smart-linking/{post_id}/set
 		 * Updates the smart links of a given post and removes the ones that are not in the request.
 		 */
-		$this->register_endpoint_with_args(
-			static::ENDPOINT . '/(?P<post_id>\d+)/set',
-			'set_smart_links',
+		$this->register_rest_route(
+			'(?P<post_id>\d+)/set',
 			array( 'POST' ),
+			array( $this, 'set_smart_links' ),
 			array(
 				'post_id' => array(
 					'required'          => true,
 					'description'       => __( 'The post ID.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'private_api_request_validate_post_id' ),
+					'validate_callback' => array( $this, 'validate_post_id' ),
 				),
 				'links'   => array(
 					'required'          => true,
 					'type'              => 'array',
 					'description'       => __( 'The smart links data to set.', 'wp-parsely' ),
-					'validate_callback' => array( $this, 'private_api_request_validate_multiple_smart_links' ),
+					'validate_callback' => array( $this, 'validate_multiple_smart_links' ),
 				),
 			)
+		);
+
+		/**
+		 * POST /smart-linking/url-to-post-type
+		 * Converts a URL to a post type.
+		 */
+		$this->register_rest_route(
+			'url-to-post-type',
+			array( 'POST' ),
+			array( $this, 'url_to_post_type' )
 		);
 	}
 
 	/**
-	 * API Endpoint: POST /smart-linking/url-to-post-type.
+	 * API Endpoint: GET /smart-linking/generate.
 	 *
-	 * Converts a URL to a post type.
+	 * Generates smart links for a post.
 	 *
 	 * @since 3.16.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
-	public function url_to_post_type( WP_REST_Request $request ): WP_REST_Response {
-		$url = $request->get_param( 'url' );
+	public function generate_smart_links( WP_REST_Request $request ) {
+		/**
+		 * The text to generate smart links for.
+		 *
+		 * @var string $post_content
+		 */
+		$post_content = $request->get_param( 'text' );
 
-		if ( ! is_string( $url ) ) {
-			return new WP_REST_Response(
-				array(
-					'error' => array(
-						'name'    => 'invalid_request',
-						'message' => __( 'Invalid request body.', 'wp-parsely' ),
-					),
-				),
-				400
-			);
-		}
+		/**
+		 * The maximum number of smart links to generate.
+		 *
+		 * @var int $max_links
+		 */
+		$max_links = $request->get_param( 'max_links' );
 
-		$post_id = 0;
-		$cache   = wp_cache_get( $url, 'wp_parsely_smart_link_url_to_postid' );
+		/**
+		 * The URL exclusion list.
+		 *
+		 * @var array<string> $url_exclusion_list
+		 */
+		$url_exclusion_list = $request->get_param( 'url_exclusion_list' ) ?? array();
 
-		if ( is_integer( $cache ) ) {
-			$post_id = $cache;
-		} elseif ( function_exists( 'wpcom_vip_url_to_postid' ) ) {
-			$post_id = wpcom_vip_url_to_postid( $url );
-		} else {
-			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
-			$post_id = url_to_postid( $url );
-			wp_cache_set( $url, $post_id, 'wp_parsely_smart_link_url_to_postid' );
-		}
-
-		$response = array(
-			'data' => array(
-				'post_id'   => false,
-				'post_type' => false,
-			),
+		$response = $this->suggest_linked_reference_api->get_links(
+			$post_content,
+			4, // TODO: will be removed after API refactoring.
+			$max_links,
+			$url_exclusion_list
 		);
 
-		if ( 0 !== $post_id ) {
-			$response['data']['post_id']   = $post_id;
-			$response['data']['post_type'] = get_post_type( $post_id );
+		if ( is_wp_error( $response ) ) {
+			return $response;
 		}
 
-		return new WP_REST_Response( $response, 200 );
-	}
+		$smart_links = array_map(
+			function ( Smart_Link $link ) {
+				return $link->to_array();
+			},
+			$response
+		);
 
+		return new WP_REST_Response( array( 'data' => $smart_links ), 200 );
+	}
 
 	/**
 	 * API Endpoint: GET /smart-linking/{post_id}/get.
@@ -464,6 +494,60 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 		return new WP_REST_Response( array( 'data' => $response ), 200 );
 	}
 
+
+	/**
+	 * API Endpoint: POST /smart-linking/url-to-post-type.
+	 *
+	 * Converts a URL to a post type.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
+	 */
+	public function url_to_post_type( WP_REST_Request $request ): WP_REST_Response {
+		$url = $request->get_param( 'url' );
+
+		if ( ! is_string( $url ) ) {
+			return new WP_REST_Response(
+				array(
+					'error' => array(
+						'name'    => 'invalid_request',
+						'message' => __( 'Invalid request body.', 'wp-parsely' ),
+					),
+				),
+				400
+			);
+		}
+
+		$post_id = 0;
+		$cache   = wp_cache_get( $url, 'wp_parsely_smart_link_url_to_postid' );
+
+		if ( is_integer( $cache ) ) {
+			$post_id = $cache;
+		} elseif ( function_exists( 'wpcom_vip_url_to_postid' ) ) {
+			$post_id = wpcom_vip_url_to_postid( $url );
+		} else {
+			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
+			$post_id = url_to_postid( $url );
+			wp_cache_set( $url, $post_id, 'wp_parsely_smart_link_url_to_postid' );
+		}
+
+		$response = array(
+			'data' => array(
+				'post_id'   => false,
+				'post_type' => false,
+			),
+		);
+
+		if ( 0 !== $post_id ) {
+			$response['data']['post_id']   = $post_id;
+			$response['data']['post_type'] = get_post_type( $post_id );
+		}
+
+		return new WP_REST_Response( $response, 200 );
+	}
+
 	/**
 	 * Validates the post ID parameter.
 	 *
@@ -476,7 +560,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * @param WP_REST_Request $request The request object.
 	 * @return bool Whether the parameter is valid.
 	 */
-	public function private_api_request_validate_post_id( string $param, WP_REST_Request $request ): bool {
+	public function validate_post_id( string $param, WP_REST_Request $request ): bool {
 		if ( ! is_numeric( $param ) ) {
 			return false;
 		}
@@ -496,6 +580,35 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	}
 
 	/**
+	 * Validates the URL exclusion list parameter.
+	 *
+	 * The callback sets the URL exclusion list in the request object if the parameter is valid.
+	 *
+	 * @since 3.17.0
+	 * @access private
+	 *
+	 * @param mixed           $param   The parameter value.
+	 * @param WP_REST_Request $request The request object.
+	 * @return true|WP_Error Whether the parameter is valid.
+	 */
+	public function validate_url_exclusion_list( $param, WP_REST_Request $request ) {
+		if ( ! is_array( $param ) ) {
+			return new WP_Error( 'invalid_url_exclusion_list', __( 'The URL exclusion list must be an array.', 'wp-parsely' ) );
+		}
+
+		$valid_urls = array_filter(
+			$param,
+			function ( $url ) {
+				return is_string( $url ) && false !== filter_var( $url, FILTER_VALIDATE_URL );
+			}
+		);
+
+		$request->set_param( 'url_exclusion_list', $valid_urls );
+
+		return true;
+	}
+
+	/**
 	 * Validates the smart link parameters.
 	 *
 	 * The callback sets the smart link object in the request object if the parameters are valid.
@@ -507,7 +620,7 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * @param WP_REST_Request $request The request object.
 	 * @return bool Whether the parameters are valid.
 	 */
-	public function private_api_request_validate_smart_link_params( array $params, WP_REST_Request $request ): bool {
+	public function validate_smart_link_params( array $params, WP_REST_Request $request ): bool {
 		$required_params = array( 'uid', 'href', 'title', 'text', 'offset' );
 
 		foreach ( $required_params as $param ) {
@@ -566,11 +679,11 @@ class Smart_Linking_Endpoint extends Base_Endpoint {
 	 * @param WP_REST_Request     $request The request object.
 	 * @return bool Whether the parameter is valid.
 	 */
-	public function private_api_request_validate_multiple_smart_links( array $param, WP_REST_Request $request ): bool {
+	public function validate_multiple_smart_links( array $param, WP_REST_Request $request ): bool {
 		$smart_links = array();
 
 		foreach ( $param as $link ) {
-			if ( $this->private_api_request_validate_smart_link_params( $link, $request ) ) {
+			if ( $this->validate_smart_link_params( $link, $request ) ) {
 				$smart_link    = $request->get_param( 'smart_link' );
 				$smart_links[] = $smart_link;
 			} else {

@@ -45,7 +45,7 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 		array $additional_args = array()
 	): void {
 		$feature = new Dashboard_Widget( $GLOBALS['parsely'] );
-		$this->set_current_user_to( $user_login, $user_role );
+		self::set_current_user_to( $user_login, $user_role );
 
 		parent::set_filters(
 			$feature::get_feature_filter_name(),

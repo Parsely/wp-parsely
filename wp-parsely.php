@@ -32,10 +32,6 @@ use Parsely\Content_Helper\Excerpt_Generator;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Analytics_Posts_API_Proxy;
-use Parsely\Endpoints\Content_Helper\Smart_Linking_Endpoint;
-use Parsely\Endpoints\ContentSuggestions\Suggest_Brief_API_Proxy;
-use Parsely\Endpoints\ContentSuggestions\Suggest_Headline_API_Proxy;
-use Parsely\Endpoints\ContentSuggestions\Suggest_Linked_Reference_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Endpoints\Referrers_Post_Detail_API_Proxy;
 use Parsely\Endpoints\Related_API_Proxy;
@@ -47,13 +43,11 @@ use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
 use Parsely\RemoteAPI\Analytics_Post_Detail_API;
 use Parsely\RemoteAPI\Analytics_Posts_API;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Brief_API;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
 use Parsely\RemoteAPI\Referrers_Post_Detail_API;
 use Parsely\RemoteAPI\Related_API;
 use Parsely\RemoteAPI\Remote_API_Cache;
 use Parsely\RemoteAPI\WordPress_Cache;
+use Parsely\REST_API\REST_API_Controller;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Metadata_Renderer;
@@ -124,6 +118,10 @@ function parsely_wp_admin_early_register(): void {
 
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
+
+	// Initialize the REST API Controller.
+	$rest_api_controller = new REST_API_Controller( $GLOBALS['parsely'] );
+	$rest_api_controller->init();
 }
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
@@ -141,9 +139,6 @@ function parsely_rest_api_init(): void {
 	// Content Helper settings endpoints.
 	( new Dashboard_Widget_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
 	( new Editor_Sidebar_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
-
-	// Internal Content Helper endpoints.
-	( new Smart_Linking_Endpoint( $GLOBALS['parsely'] ) )->run();
 
 	parsely_run_rest_api_endpoint(
 		Related_API::class,
@@ -166,24 +161,6 @@ function parsely_rest_api_init(): void {
 	parsely_run_rest_api_endpoint(
 		Referrers_Post_Detail_API::class,
 		Referrers_Post_Detail_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Suggest_Headline_API::class,
-		Suggest_Headline_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Suggest_Brief_API::class,
-		Suggest_Brief_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Suggest_Linked_Reference_API::class,
-		Suggest_Linked_Reference_API_Proxy::class,
 		$wp_cache
 	);
 }
