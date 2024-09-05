@@ -1,9 +1,9 @@
 <?php
 /**
- * Integration test for the Stats API endpoint, `Endpoint_Post` class.
+ * Integration test for the Stats API endpoint, Endpoint_Post class.
  *
  * @package Parsely
- * @since 3.17.0
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
@@ -19,11 +19,9 @@ use WP_Error;
 use WP_REST_Request;
 
 /**
- * Integration test for the Stats API endpoint, `Endpoint_Post` class.
+ * Integration test for the Stats API endpoint, Endpoint_Post class.
  *
  * @since 3.17.0
- *
- * @coversDefaultClass \Parsely\REST_API\Stats\Endpoint_Post
  */
 class EndpointPostTest extends BaseEndpointTest {
 	/**
@@ -36,7 +34,7 @@ class EndpointPostTest extends BaseEndpointTest {
 	private $endpoint;
 
 	/**
-	 * Set up the test environment.
+	 * Setup method called before each test.
 	 *
 	 * @since 3.17.0
 	 */
@@ -49,7 +47,7 @@ class EndpointPostTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Get the test endpoint instance.
+	 * Gets the test endpoint instance.
 	 *
 	 * @since 3.17.0
 	 *
@@ -60,7 +58,7 @@ class EndpointPostTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Test that the route is registered.
+	 * Verifies that the route is registered.
 	 *
 	 * @since 3.17.0
 	 *
@@ -112,7 +110,7 @@ class EndpointPostTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Test that the endpoint is not available if the API key is not set.
+	 * Verifies that the endpoint is not available if the API Secret is not set.
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Post::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
@@ -166,7 +164,6 @@ class EndpointPostTest extends BaseEndpointTest {
 			$error->get_error_message()
 		);
 	}
-
 
 	/**
 	 * Verifies forbidden error when current user doesn't have proper
@@ -235,8 +232,8 @@ class EndpointPostTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Verifies that calls to the `stats/{post_id}/details` return the expected data, in the
-	 * expected format.
+	 * Verifies that calls to the stats/{post_id}/details endpoint return the
+	 * expected data, in the expected format.
 	 *
 	 * @since 3.17.0
 	 *
@@ -348,8 +345,8 @@ class EndpointPostTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Verifies that calls to the `stats/{post_id}/referrers` return the expected data, in the
-	 * expected format.
+	 * Verifies that calls to the stats/{post_id}/referrers endpoint return the
+	 * expected data, in the expected format.
 	 *
 	 * @since 3.17.0
 	 *
@@ -556,10 +553,9 @@ class EndpointPostTest extends BaseEndpointTest {
 		);
 	}
 
-
 	/**
-	 * Verifies that calls to the `stats/{post_id}/related` return the expected data, in the
-	 * expected format.
+	 * Verifies that calls to the stats/{post_id}/related endpoint return the
+	 * expected data, in the expected format.
 	 *
 	 * @since 3.17.0
 	 *

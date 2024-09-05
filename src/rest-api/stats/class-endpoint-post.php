@@ -25,8 +25,8 @@ use WP_REST_Response;
 /**
  * The Stats API Post endpoint.
  *
- * Provides an endpoint for retrieving post details, referrers, and related posts for
- * a given post.
+ * Provides an endpoint for retrieving post details, referrers, and related
+ * posts for a given post.
  *
  * @since 3.17.0
  */
@@ -203,12 +203,12 @@ class Endpoint_Post extends Base_Endpoint {
 			$post_data[] = $this->extract_post_data( $data );
 		}
 
-		$response = array(
+		$response_data = array(
 			'params' => $request->get_params(),
 			'data'   => $post_data,
 		);
 
-		return new WP_REST_Response( $response, 200 );
+		return new WP_REST_Response( $response_data, 200 );
 	}
 
 	/**
@@ -242,7 +242,7 @@ class Endpoint_Post extends Base_Endpoint {
 
 		$this->total_views = $total_views;
 
-		// Do the analytics request.
+		// Get the data from the API.
 		$analytics_request = $this->referrers_post_detail_api->get_items(
 			array(
 				'url'          => $permalink,
@@ -308,6 +308,7 @@ class Endpoint_Post extends Base_Endpoint {
 			'params' => $request->get_params(),
 			'data'   => $related_posts,
 		);
+
 		return new WP_REST_Response( $response_data, 200 );
 	}
 

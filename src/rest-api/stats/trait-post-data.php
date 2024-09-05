@@ -1,9 +1,10 @@
 <?php
 /**
- * Post data trait, that provides methods to handle post data and the itm_source parameter.
+ * Post data trait, that provides methods to handle post data and the itm_source
+ * parameter
  *
  * @package Parsely
- * @since 3.17.0
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
@@ -16,13 +17,14 @@ use stdClass;
 use WP_REST_Request;
 
 /**
- * Post data trait, that provides methods to handle post data and the itm_source parameter.
+ * Post data trait, that provides methods to handle post data and the itm_source
+ * parameter.
  *
  * @since 3.17.0
  */
 trait Post_Data_Trait {
 	/**
-	 * The itm_source of for the post URL.
+	 * The itm_source of the post's URL.
 	 *
 	 * @since 3.17.0
 	 *
@@ -79,7 +81,7 @@ trait Post_Data_Trait {
 	 * Should only be used with endpoints that return post data.
 	 *
 	 * @since 3.10.0
-	 * @since 3.17.0 Moved from the old `Base_API_Proxy` class.
+	 * @since 3.17.0 Moved from the `Base_API_Proxy` class.
 	 *
 	 * @param stdClass $item The object to extract the data from.
 	 * @return array<string, mixed> The extracted data.

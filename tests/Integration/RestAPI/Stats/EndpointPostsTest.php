@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration test for the Stats API, `Endpoint_Posts` class.
+ * Integration test for the Stats API, Endpoint_Posts class
  *
  * @package Parsely
  * @since 3.17.0
@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration\RestAPI\Stats;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Analytics_Posts_API;
 use Parsely\REST_API\Stats\Endpoint_Posts;
 use Parsely\REST_API\Stats\Stats_Controller;
 use Parsely\Tests\Integration\RestAPI\BaseEndpointTest;
@@ -21,11 +20,9 @@ use WP_Error;
 use WP_REST_Request;
 
 /**
- * Integration test for the Stats API, `Endpoint_Posts` class.
+ * Integration test for the Stats API, Endpoint_Posts class.
  *
  * @since 3.17.0
- *
- * @covers \Parsely\REST_API\Stats\Endpoint_Posts
  */
 class EndpointPostsTest extends BaseEndpointTest {
 	/**
@@ -38,7 +35,7 @@ class EndpointPostsTest extends BaseEndpointTest {
 	private $endpoint;
 
 	/**
-	 * Set up the test environment.
+	 * Setup method called before each test.
 	 *
 	 * @since 3.17.0
 	 */
@@ -51,7 +48,7 @@ class EndpointPostsTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Get the test endpoint instance.
+	 * Gets the test endpoint instance.
 	 *
 	 * @since 3.17.0
 	 *
@@ -62,7 +59,7 @@ class EndpointPostsTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Test the route is registered.
+	 * Verifies that the route is registered.
 	 *
 	 * @since 3.17.0
 	 *
@@ -94,17 +91,17 @@ class EndpointPostsTest extends BaseEndpointTest {
 	public function test_route_is_registered(): void {
 		$routes = rest_get_server()->get_routes();
 
-		// Check that the excerpt-generator/generate route is registered.
+		// Check that the route is registered.
 		$expected_route = $this->get_endpoint()->get_full_endpoint( '/' );
 		self::assertArrayHasKey( $expected_route, $routes );
 
-		// Check that the route is associated with the POST method.
+		// Check that the route is associated with the GET method.
 		$route_data = $routes[ $expected_route ];
 		self::assertArrayHasKey( 'GET', $route_data[0]['methods'] );
 	}
 
 	/**
-	 * Test that the endpoint is not available if the API key is not set.
+	 * Verifies that the endpoint is not available if the API Secret is not set.
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Posts::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
@@ -150,7 +147,6 @@ class EndpointPostsTest extends BaseEndpointTest {
 			$error->get_error_message()
 		);
 	}
-
 
 	/**
 	 * Verifies forbidden error when current user doesn't have proper

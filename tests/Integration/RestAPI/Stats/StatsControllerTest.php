@@ -16,11 +16,9 @@ use Parsely\Tests\Integration\RestAPI\RestAPIControllerTest;
 use Parsely\Tests\Integration\TestCase;
 
 /**
- * Stats API Controller Test
+ * Stats API Controller Test.
  *
  * @since 3.17.0
- *
- * @coversDefaultClass \Parsely\REST_API\Stats\Stats_Controller
  */
 class StatsControllerTest extends RestAPIControllerTest {
 	/**
@@ -33,19 +31,19 @@ class StatsControllerTest extends RestAPIControllerTest {
 	private $stats_controller = null;
 
 	/**
-	 * Set up the test controller.
+	 * Setup method called before each test.
 	 *
 	 * @since 3.17.0
 	 */
-	public function setUp(): void {
-		parent::setUp();
+	public function set_up(): void {
+		parent::set_up();
 		TestCase::set_options();
-		$parsely                = self::createMock( Parsely::class );
-		$this->stats_controller = new Stats_Controller( $parsely );
+
+		$this->stats_controller = new Stats_Controller( new Parsely() );
 	}
 
 	/**
-	 * Test the constructor sets up the correct namespace and version.
+	 * Verifies that the constructor sets up the correct namespace and version.
 	 *
 	 * @since 3.17.0
 	 *
@@ -55,6 +53,9 @@ class StatsControllerTest extends RestAPIControllerTest {
 	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
 	 */
 	public function test_constructor_sets_up_namespace_and_version(): void {
-		self::assertEquals( 'wp-parsely/v2', $this->stats_controller->get_full_namespace() );
+		self::assertEquals(
+			'wp-parsely/v2',
+			$this->stats_controller->get_full_namespace()
+		);
 	}
 }

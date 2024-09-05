@@ -1,9 +1,9 @@
 <?php
 /**
- * Related Posts Trait, providing the related posts functionality.
+ * Related Posts Trait, providing the related posts functionality
  *
  * @package Parsely
- * @since 3.17.0
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
@@ -48,7 +48,6 @@ trait Related_Posts_Trait {
 	 * @param WP_REST_Request $request The request object.
 	 */
 	abstract protected function set_itm_source_from_request( WP_REST_Request $request );
-
 
 	/**
 	 * Returns the API arguments for the related posts endpoint.
@@ -105,7 +104,7 @@ trait Related_Posts_Trait {
 					'required'    => false,
 				),
 			),
-			$this->get_itm_source_param_args() 
+			$this->get_itm_source_param_args()
 		);
 	}
 
@@ -122,9 +121,8 @@ trait Related_Posts_Trait {
 		// Set the itm_source parameter.
 		$this->set_itm_source_from_request( $request );
 
-		// Get the data from the API.
 		/**
-		 * The related posts request.
+		 * The raw related posts data, received by the API.
 		 *
 		 * @var array<stdClass>|WP_Error $related_posts_request
 		 */

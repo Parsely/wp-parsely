@@ -20,7 +20,7 @@ use stdClass;
 /**
  * The Stats API Posts endpoint.
  *
- * Provides an endpoint for retrieving the top related posts.
+ * Provides an endpoint for retrieving posts.
  *
  * @since 3.17.0
  */
@@ -35,7 +35,7 @@ class Endpoint_Posts extends Base_Endpoint {
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var string[]
+	 * @var array<int, string>
 	 * @see https://docs.parse.ly/api-available-metrics/
 	 */
 	public const SORT_METRICS = array(
@@ -95,11 +95,13 @@ class Endpoint_Posts extends Base_Endpoint {
 
 	/**
 	 * Registers the routes for the objects of the controller.
+	 *
+	 * @since 3.17.0
 	 */
 	public function register_routes(): void {
 		/**
 		 * GET /posts
-		 * Retrieves the top posts for the given period.
+		 * Retrieves posts for the given criteria.
 		 */
 		$this->register_rest_route(
 			'/',
@@ -175,7 +177,7 @@ class Endpoint_Posts extends Base_Endpoint {
 						'required'    => false,
 					),
 				),
-				$this->get_itm_source_param_args() 
+				$this->get_itm_source_param_args()
 			)
 		);
 	}
@@ -183,11 +185,12 @@ class Endpoint_Posts extends Base_Endpoint {
 	/**
 	 * API Endpoint: GET /stats/posts
 	 *
-	 * Retrieves the top posts for the given query parameters.
+	 * Retrieves the posts with the given query parameters.
+	 *
+	 * @since 3.17.0
 	 *
 	 * @param WP_REST_Request $request The request.
-	 *
-	 * @return stdClass[]|WP_Error|WP_REST_Response
+	 * @return array<string, stdClass>|WP_Error|WP_REST_Response
 	 */
 	public function get_posts( WP_REST_Request $request ) {
 		$params = $request->get_params();
@@ -206,11 +209,10 @@ class Endpoint_Posts extends Base_Endpoint {
 		}
 		// TODO END.
 
-		// Do the analytics request.
 		/**
-		 * The raw analytics data.
+		 * The raw analytics data, received by the API.
 		 *
-		 * @var stdClass[]|WP_Error $analytics_request
+		 * @var array<stdClass>|WP_Error $analytics_request
 		 */
 		$analytics_request = $this->analytics_posts_api->get_items(
 			array(
@@ -239,11 +241,11 @@ class Endpoint_Posts extends Base_Endpoint {
 			$posts[] = $this->extract_post_data( $item );
 		}
 
-		$response = array(
+		$response_data = array(
 			'params' => $params,
 			'data'   => $posts,
 		);
 
-		return new WP_REST_Response( $response, 200 );
+		return new WP_REST_Response( $response_data, 200 );
 	}
 }

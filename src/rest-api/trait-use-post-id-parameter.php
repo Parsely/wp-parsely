@@ -1,9 +1,9 @@
 <?php
 /**
- * Provides a trait to register a REST route with a post ID parameter.
+ * Trait allowing to register a REST route with a post ID parameter
  *
  * @package Parsely
- * @since 3.17.0
+ * @since   3.17.0
  */
 
 declare( strict_types = 1 );
@@ -18,7 +18,6 @@ use WP_REST_Request;
  * @since 3.17.0
  */
 trait Use_Post_ID_Parameter_Trait {
-
 	/**
 	 * Registers a REST route with a post ID parameter in the route.
 	 *
@@ -61,6 +60,7 @@ trait Use_Post_ID_Parameter_Trait {
 	 * The callback sets the post object in the request object if the parameter is valid.
 	 *
 	 * @since 3.16.0
+	 * @since 3.17.0 Moved from the `Smart_Linking_Endpoint` class.
 	 * @access private
 	 *
 	 * @param string          $param   The parameter value.
@@ -80,6 +80,7 @@ trait Use_Post_ID_Parameter_Trait {
 
 		// Validate if the post ID exists.
 		$post = get_post( $param );
+
 		// Set the post attribute in the request.
 		$request->set_param( 'post', $post );
 

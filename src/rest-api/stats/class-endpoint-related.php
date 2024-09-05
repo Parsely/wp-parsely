@@ -1,9 +1,9 @@
 <?php
 /**
- * Stats API Endpoint: Related Posts.
+ * Stats API Endpoint: Related Posts
  *
  * @package Parsely
- * @since 3.17.0
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
