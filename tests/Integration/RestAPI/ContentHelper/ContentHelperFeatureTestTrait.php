@@ -190,18 +190,21 @@ trait ContentHelperFeatureTestTrait {
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Feature::is_available_to_current_user
 	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
-	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
 	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::apply_capability_filters
+	 * @uses \Parsely\REST_API\Base_Endpoint::get_default_access_capability
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_is_available_to_current_user_returns_error_if_no_user(): void {

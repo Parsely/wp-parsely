@@ -55,6 +55,8 @@ class ContentHelperControllerTest extends RestAPIControllerTest {
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Controller::__construct
 	 * @uses \Parsely\REST_API\Content_Helper\Content_Helper_Controller::get_full_namespace
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
+	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
 	 */
 	public function test_constructor_sets_up_namespace_and_version(): void {
 		self::assertEquals( 'wp-parsely/v2', $this->content_helper_controller->get_full_namespace() );
@@ -77,16 +79,21 @@ class ContentHelperControllerTest extends RestAPIControllerTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Controller::init
-	 * @uses \Parsely\REST_API\Content_Helper\Content_Helper_Controller::register_endpoints
-	 * @uses Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses Parsely\REST_API\Base_API_Controller::__construct
-	 * @uses Parsely\REST_API\Base_API_Controller::register_endpoint
-	 * @uses Parsely\REST_API\Base_Endpoint::__construct
-	 * @uses Parsely\REST_API\Base_Endpoint::init
-	 * @uses Parsely\REST_API\Content_Helper\Excerpt_Generator_Endpoint::__construct
-	 * @uses Parsely\REST_API\Content_Helper\Smart_Linking_Endpoint::__construct
-	 * @uses Parsely\REST_API\Content_Helper\Title_Suggestions_Endpoint::__construct
-	 * @uses Parsely\Utils\Utils::convert_endpoint_to_filter_key
+	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_endpoints
+	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
+	 * @uses \Parsely\REST_API\Base_API_Controller::register_endpoint
+	 * @uses \Parsely\REST_API\Base_API_Controller::register_endpoints
+	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
+	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Excerpt_Generator::__construct
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Excerpt_Generator::get_endpoint_name
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::__construct
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::get_endpoint_name
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Title_Suggestions::__construct
+	 * @uses \Parsely\REST_API\Content_Helper\Endpoint_Title_Suggestions::get_endpoint_name
+	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_init_registers_endpoints(): void {
 		$this->content_helper_controller->init();
