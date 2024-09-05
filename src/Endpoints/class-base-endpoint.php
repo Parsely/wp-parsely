@@ -91,25 +91,25 @@ abstract class Base_Endpoint {
 	 * @return string The capability allowing access after applying the filters.
 	 */
 	protected function apply_capability_filters( string $capability ): string {
-			/**
-			 * Filter to change the default user capability for all private endpoints.
-			 *
-			 * @var string
-			 */
-			$default_user_capability = apply_filters(
-				'wp_parsely_user_capability_for_all_private_apis',
-				$capability
-			);
+		/**
+		 * Filter to change the default user capability for all private endpoints.
+		 *
+		 * @var string
+		 */
+		$default_user_capability = apply_filters(
+			'wp_parsely_user_capability_for_all_private_apis',
+			$capability
+		);
 
-			/**
-			 * Filter to change the user capability for the specific endpoint.
-			 *
-			 * @var string
-			 */
-			$endpoint_specific_user_capability = apply_filters(
-				'wp_parsely_user_capability_for_' . Utils::convert_endpoint_to_filter_key( static::ENDPOINT ) . '_api',
-				$default_user_capability
-			);
+		/**
+		 * Filter to change the user capability for the specific endpoint.
+		 *
+		 * @var string
+		 */
+		$endpoint_specific_user_capability = apply_filters(
+			'wp_parsely_user_capability_for_' . Utils::convert_endpoint_to_filter_key( static::ENDPOINT ) . '_api',
+			$default_user_capability
+		);
 
 		return $endpoint_specific_user_capability;
 	}
