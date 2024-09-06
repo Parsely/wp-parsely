@@ -301,16 +301,15 @@ class EndpointRelatedTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Verifies that the endpoint is not available if the API secret is not set.
+	 * Verifies that the endpoint is not available if the API Secret is not set.
 	 *
-	 * This test is disabled since the endpoint does not requires the API secret.
+	 * This test is disabled since the endpoint does not require an API Secret.
 	 *
 	 * @since 3.17.0
 	 *
 	 * @coversNothing
 	 */
 	public function test_is_available_to_current_user_returns_error_api_secret_not_set(): void {
-		// This test is disabled since the endpoint does not requires the API secret.
 		self::assertTrue( true );
 	}
 }

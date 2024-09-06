@@ -23,7 +23,6 @@ use Parsely\Tests\Integration\TestCase;
  * @covers \Parsely\REST_API\Base_API_Controller
  */
 class BaseAPIControllerTest extends TestCase {
-
 	/**
 	 * The test controller instance.
 	 *

@@ -26,7 +26,6 @@ use Parsely\Tests\Integration\TestCase;
  * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Controller
  */
 class ContentHelperControllerTest extends RestAPIControllerTest {
-
 	/**
 	 * The test controller instance.
 	 *

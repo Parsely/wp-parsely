@@ -196,7 +196,7 @@ abstract class BaseSettingsEndpointTest extends BaseEndpointTest {
 	/**
 	 * Verifies that the endpoint is not available if the API Secret is not set.
 	 *
-	 * This test is disabled since the endpoint does not require an API secret.
+	 * This test is disabled since the endpoint does not require an API Secret.
 	 *
 	 * @since 3.17.0
 	 *
@@ -209,7 +209,7 @@ abstract class BaseSettingsEndpointTest extends BaseEndpointTest {
 	/**
 	 * Verifies that the endpoint is not available if the Site ID is not set.
 	 *
-	 * This test is disabled since the endpoint does not require a site ID.
+	 * This test is disabled since the endpoint does not require a Site ID.
 	 *
 	 * @since 3.17.0
 	 *

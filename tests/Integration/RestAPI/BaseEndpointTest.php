@@ -26,7 +26,6 @@ use WP_Error;
  * @covers \Parsely\REST_API\Base_Endpoint
  */
 class BaseEndpointTest extends TestCase {
-
 	/**
 	 * The test endpoint instance.
 	 *
