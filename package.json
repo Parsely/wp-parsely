@@ -45,7 +45,7 @@
 	"devDependencies": {
 		"@playwright/test": "^1.46.1",
 		"@testing-library/jest-dom": "^6.5.0",
-		"@testing-library/react": "^16.0.0",
+		"@testing-library/react": "^16.0.1",
 		"@types/jest": "^29.5.12",
 		"@types/lodash.debounce": "^4.0.9",
 		"@types/wordpress__block-editor": "^11.5.15",
