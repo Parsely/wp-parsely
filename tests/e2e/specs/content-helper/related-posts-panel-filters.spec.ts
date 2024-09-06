@@ -2,8 +2,9 @@
  * WordPress dependencies
  */
 import {
-	enablePageDialogAccept,
-} from '@wordpress/e2e-test-utils';
+	expect,
+	test,
+} from '@wordpress/e2e-test-utils-playwright';
 
 /**
  * Internal dependencies
@@ -13,46 +14,50 @@ import {
 	VALID_SITE_ID,
 	getRelatedPostsMessage,
 	setSiteKeys,
-	setUserDisplayName,
 } from '../../utils';
 
 /**
  * Tests for the PCH Editor Sidebar Related Post filters.
+ *
+ * @since 3.17.0 Migrated to Playwright.
  */
-describe( 'PCH Editor Sidebar Related Post panel filters', () => {
+test.describe( 'PCH Editor Sidebar Related Post panel filters', () => {
 	/**
-	 * Prevents browser from locking with dialogs, logs in to WordPress,
-	 * activates the Parse.ly plugin, and sets valid site keys.
+	 * Sets a valid Site ID and API Secret.
+	 *
+	 * Runs before all tests.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	beforeAll( async () => {
-		enablePageDialogAccept();
-		await setSiteKeys( VALID_SITE_ID, VALID_API_SECRET );
+	test.beforeAll( async ( { browser } ) => {
+		const page = await browser.newPage();
+
+		await setSiteKeys( page, VALID_SITE_ID, VALID_API_SECRET );
 	} );
 
 	/**
 	 * Verifies that an attempt to fetch results is made when a Site ID and API
 	 * Secret are provided.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	it( 'Should attempt to fetch results when a Site ID and API Secret are provided', async () => {
-		await setUserDisplayName( 'admin', '' );
-
-		expect( await getRelatedPostsMessage( '', '', 'author', 500, '.related-posts-empty' ) )
-			.toMatch( `No related posts found.` );
+	test( 'Should attempt to fetch results when a Site ID and API Secret are provided', async ( { admin } ) => {
+		expect( await getRelatedPostsMessage(
+			admin, '', '', 'author', '.related-posts-empty'
+		) ).toMatch( `No related posts found.` );
 	} );
 
 	/**
 	 * Verifies that the Related Posts panel will work correctly when a new
 	 * taxonomy is added from within the WordPress Post Editor.
 	 *
-	 * Note: This test does not insert the taxonomy into the database before
-	 * selecting it in the WordPress Post Editor. As such, a delay in
-	 * intercepting the new value is expected, since it must first be stored
-	 * into the database and then picked up by the Related Posts panel.
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	it( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async () => {
+	test( 'Should work correctly when a taxonomy is added from within the WordPress Post Editor', async ( { admin } ) => {
 		const categoryName = 'Analytics That Matter';
 
-		expect( await getRelatedPostsMessage( categoryName, '', 'section', 2000, '.related-posts-descr' ) )
-			.toMatch( `Top related posts in the “${ categoryName }” section in the last 30 days.` );
+		expect( await getRelatedPostsMessage(
+			admin, categoryName, '', 'section', '.related-posts-descr'
+		) ).toMatch( `Top related posts in the “${ categoryName }” section in the last 7 days.` );
 	} );
 } );
