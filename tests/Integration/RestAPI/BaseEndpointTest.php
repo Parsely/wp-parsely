@@ -98,7 +98,7 @@ class BaseEndpointTest extends TestCase {
 	}
 
 	/**
-	 * Sets up the test environment.
+	 * Setup method called before each test.
 	 *
 	 * @since 3.17.0
 	 */
@@ -252,7 +252,7 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
 	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\REST_API\Base_Endpoint::apply_capability_filters
-	 * @uses  \Parsely\REST_API\Base_Endpoint::get_default_access_capability
+	 * @uses \Parsely\REST_API\Base_Endpoint::get_default_access_capability
 	 * @uses \Parsely\REST_API\Content_Helper\Content_Helper_Controller::get_route_prefix
 	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key

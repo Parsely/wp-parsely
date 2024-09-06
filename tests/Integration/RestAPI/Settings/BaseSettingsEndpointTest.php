@@ -1,6 +1,6 @@
 <?php
 /**
- * Base class for testing settings endpoints.
+ * Base class for testing settings endpoints
  *
  * @package Parsely
  * @since   3.13.0
@@ -58,7 +58,7 @@ abstract class BaseSettingsEndpointTest extends BaseEndpointTest {
 		$expected_route = $this->get_endpoint()->get_full_endpoint( '/' );
 		self::assertArrayHasKey( $expected_route, $routes );
 
-		// Check that the route is associated with the POST method.
+		// Check that the route is associated with the GET and PUT methods.
 		$route_data = $routes[ $expected_route ];
 		self::assertArrayHasKey( 'GET', $route_data[0]['methods'] );
 		self::assertArrayHasKey( 'PUT', $route_data[0]['methods'] );
@@ -194,26 +194,28 @@ abstract class BaseSettingsEndpointTest extends BaseEndpointTest {
 	}
 
 	/**
-	 * Test that the endpoint is not available if the API secret is not set.
-	 * This test should be disabled since the endpoint does not requires the API secret.
+	 * Verifies that the endpoint is not available if the API Secret is not set.
+	 *
+	 * This test is disabled since the endpoint does not require an API secret.
 	 *
 	 * @since 3.17.0
+	 *
 	 * @coversNothing
 	 */
 	public function test_is_available_to_current_user_returns_error_api_secret_not_set(): void {
-		// This test is disabled since the endpoint does not requires the API secret.
 		self::assertTrue( true );
 	}
 
 	/**
-	 * Test that the endpoint is not available if the site ID is not set.
-	 * This test should be disabled since the endpoint does not requires the site ID.
+	 * Verifies that the endpoint is not available if the Site ID is not set.
+	 *
+	 * This test is disabled since the endpoint does not require a site ID.
 	 *
 	 * @since 3.17.0
+	 *
 	 * @coversNothing
 	 */
 	public function test_is_available_to_current_user_returns_error_site_id_not_set(): void {
-		// This test is disabled since the endpoint does not requires the site ID.
 		self::assertTrue( true );
 	}
 }

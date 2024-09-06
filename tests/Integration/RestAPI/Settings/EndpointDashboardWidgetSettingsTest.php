@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration tests for the Endpoint_Dashboard_Widget_Settings class.
+ * Integration tests for the Endpoint_Dashboard_Widget_Settings class
  *
  * @package Parsely
  * @since   3.17.0
@@ -29,7 +29,7 @@ class EndpointDashboardWidgetSettingsTest extends BaseSettingsEndpointTest {
 	private $endpoint;
 
 	/**
-	 * Sets up the test environment.
+	 * Setup method called before each test.
 	 *
 	 * @since 3.17.0
 	 */
@@ -70,6 +70,7 @@ class EndpointDashboardWidgetSettingsTest extends BaseSettingsEndpointTest {
 	 * Generates a JSON array for the passed period, metric, and extra data.
 	 *
 	 * @since 3.13.0
+	 * @since 3.17.0 Moved from old test class.
 	 *
 	 * @param string|null         $metric The Metric value.
 	 * @param string|null         $period The Period value.

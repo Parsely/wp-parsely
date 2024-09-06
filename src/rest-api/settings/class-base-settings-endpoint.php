@@ -83,7 +83,7 @@ abstract class Base_Settings_Endpoint extends Base_Endpoint {
 	 * @since 3.13.0
 	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
-	 * @param Base_API_Controller $controller Parsely instance.
+	 * @param Base_API_Controller $controller The REST API controller.
 	 */
 	public function __construct( Base_API_Controller $controller ) {
 		parent::__construct( $controller );
@@ -201,7 +201,7 @@ abstract class Base_Settings_Endpoint extends Base_Endpoint {
 		if ( ! is_array( $meta_value ) ) { // @phpstan-ignore-line
 			return new WP_Error(
 				'ch_settings_invalid_format',
-				__( 'Settings must be an valid JSON array', 'wp-parsely' )
+				__( 'Settings must be a valid JSON array', 'wp-parsely' )
 			);
 		}
 

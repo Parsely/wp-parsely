@@ -1,6 +1,6 @@
 <?php
 /**
- * Integration tests for the Endpoint_Editor_Sidebar_Settings class.
+ * Integration tests for the Endpoint_Editor_Sidebar_Settings class
  *
  * @package Parsely
  * @since   3.17.0
@@ -17,8 +17,6 @@ use Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings;
  * Integration tests for the Endpoint_Editor_Sidebar_Settings class.
  *
  * @since 3.17.0
- *
- * @covers \Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings
  */
 class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 	/**
@@ -31,7 +29,7 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 	private $endpoint;
 
 	/**
-	 * Sets up the test environment.
+	 * Setup method called before each test.
 	 *
 	 * @since 3.17.0
 	 */
