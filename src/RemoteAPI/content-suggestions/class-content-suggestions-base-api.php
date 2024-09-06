@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Parsely\RemoteAPI\ContentSuggestions;
 
-use Parsely\Endpoints\Base_Endpoint;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Base_Endpoint_Remote;
 use UnexpectedValueException;
@@ -61,7 +60,7 @@ abstract class Content_Suggestions_Base_API extends Base_Endpoint_Remote {
 		return current_user_can(
 			// phpcs:ignore WordPress.WP.Capabilities.Undetermined
 			$this->apply_capability_filters(
-				Base_Endpoint::DEFAULT_ACCESS_CAPABILITY
+				self::DEFAULT_ACCESS_CAPABILITY
 			)
 		);
 	}

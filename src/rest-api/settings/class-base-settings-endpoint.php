@@ -1,7 +1,6 @@
 <?php
 /**
- * Endpoints: Base endpoint class for saving and retrieving WordPress user meta
- * entries
+ * Base class for all settings endpoints.
  *
  * @package Parsely
  * @since   3.13.0
@@ -9,25 +8,29 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Endpoints\User_Meta;
+namespace Parsely\REST_API\Settings;
 
-use Parsely\Endpoints\Base_Endpoint;
-use Parsely\Parsely;
+use Parsely\REST_API\Base_API_Controller;
+use Parsely\REST_API\Base_Endpoint;
 use WP_REST_Request;
+use WP_REST_Response;
+use WP_Error;
 
 /**
- * Base class for all user meta endpoints. Child classes must add a protected
- * `ENDPOINT` constant.
+ * Base class for all settings endpoints.
+ *
+ * Settings endpoints are used to manage user meta data.
  *
  * @since 3.13.0
  *
  * @phpstan-type Subvalue_Spec array{values: array<mixed>, default: mixed}
  */
-abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
+abstract class Base_Settings_Endpoint extends Base_Endpoint {
 	/**
 	 * The meta entry's default value. Initialized in the constructor.
 	 *
 	 * @since 3.13.0
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
 	 * @var array<string, mixed>
 	 */
@@ -38,6 +41,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * constructor.
 	 *
 	 * @since 3.13.0
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
 	 * @var array<string, array<int, mixed>>
 	 */
@@ -47,6 +51,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * The current user's ID.
 	 *
 	 * @since 3.14.0
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
 	 * @var int
 	 */
@@ -56,6 +61,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * Returns the meta entry's key.
 	 *
 	 * @since 3.13.0
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
 	 * @return string The meta entry's key.
 	 */
@@ -65,6 +71,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * Returns the endpoint's subvalues specifications.
 	 *
 	 * @since 3.13.0
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
 	 * @return array<string, Subvalue_Spec>
 	 */
@@ -74,11 +81,12 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * Constructor.
 	 *
 	 * @since 3.13.0
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
-	 * @param Parsely $parsely Parsely instance.
+	 * @param Base_API_Controller $controller The REST API controller.
 	 */
-	public function __construct( Parsely $parsely ) {
-		parent::__construct( $parsely );
+	public function __construct( Base_API_Controller $controller ) {
+		parent::__construct( $controller );
 
 		$subvalues_specs = $this->get_subvalues_specs();
 
@@ -89,51 +97,136 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	}
 
 	/**
-	 * Registers the endpoint's WP REST route.
+	 * Initializes the endpoint and sets the current user ID.
 	 *
-	 * @since 3.13.0
+	 * @since 3.17.0
 	 */
-	public function run(): void {
-		// Initialize the current user ID here, as doing it in the constructor
-		// is too early.
+	public function init(): void {
+		parent::init();
 		$this->current_user_id = get_current_user_id();
+	}
 
-		$this->register_endpoint(
-			static::get_route(),
-			'process_request',
-			array( 'GET', 'PUT' )
+	/**
+	 * Registers the routes for the endpoint.
+	 *
+	 * @since 3.17.0
+	 */
+	public function register_routes(): void {
+		/**
+		 * GET settings/{endpoint}/get
+		 * Retrieves the settings for the current user.
+		 */
+		$this->register_rest_route(
+			'/get',
+			array( 'GET' ),
+			array( $this, 'get_settings' )
+		);
+
+		/**
+		 * PUT settings/{endpoint}/set
+		 * Updates the settings for the current user.
+		 */
+		$this->register_rest_route(
+			'/set',
+			array( 'PUT' ),
+			array( $this, 'set_settings' )
+		);
+
+		/**
+		 * GET|PUT settings/{endpoint}
+		 * Handles direct requests to the endpoint.
+		 */
+		$this->register_rest_route(
+			'/',
+			array( 'GET', 'PUT' ),
+			array( $this, 'process_request' )
 		);
 	}
 
 	/**
-	 * Returns the endpoint's route.
+	 * API Endpoint: GET|PUT settings/{endpoint}/
 	 *
-	 * @since 3.13.0
+	 * Processes the requests sent directly to the main endpoint.
 	 *
-	 * @return string The endpoint's route.
-	 */
-	public static function get_route(): string {
-		return static::ENDPOINT;
-	}
-
-	/**
-	 * Processes the requests sent to the endpoint.
-	 *
-	 * @since 3.13.0
+	 * @since 3.17.0
 	 *
 	 * @param WP_REST_Request $request The request sent to the endpoint.
-	 * @return string The meta entry's value as JSON.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
-	public function process_request( WP_REST_Request $request ): string {
+	public function process_request( WP_REST_Request $request ) {
 		$request_method = $request->get_method();
 
 		// Update the meta entry's value if the request method is PUT.
 		if ( 'PUT' === $request_method ) {
-			$meta_value = $request->get_json_params();
-			$this->set_value( $meta_value );
+			return $this->set_settings( $request );
 		}
 
-		return $this->get_value();
+		return $this->get_settings();
+	}
+
+	/**
+	 * API Endpoint: GET settings/{endpoint}/get
+	 *
+	 * Retrieves the settings for the current user.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return WP_REST_Response The response object.
+	 */
+	public function get_settings(): WP_REST_Response {
+		$meta_key = $this->get_meta_key();
+		$settings = get_user_meta( $this->current_user_id, $meta_key, true );
+
+		if ( ! is_array( $settings ) || 0 === count( $settings ) ) {
+			$settings = $this->default_value;
+		}
+
+		return new WP_REST_Response( $settings, 200 );
+	}
+
+	/**
+	 * API Endpoint: PUT settings/{endpoint}/set
+	 *
+	 * Updates the settings for the current user.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response|WP_Error The response object.
+	 */
+	public function set_settings( WP_REST_Request $request ) {
+		$meta_value = $request->get_json_params();
+
+		// Validates the settings format.
+		if ( ! is_array( $meta_value ) ) { // @phpstan-ignore-line
+			return new WP_Error(
+				'ch_settings_invalid_format',
+				__( 'Settings must be a valid JSON array', 'wp-parsely' )
+			);
+		}
+
+		$sanitized_value = $this->sanitize_value( $meta_value );
+
+		// If the current settings are the same as the new settings, return early.
+		$current_settings = $this->get_settings();
+		if ( $current_settings->get_data() === $sanitized_value ) {
+			return $current_settings;
+		}
+
+		$update_meta = update_user_meta(
+			$this->current_user_id,
+			$this->get_meta_key(),
+			$sanitized_value
+		);
+
+		if ( false === $update_meta ) {
+			return new WP_Error(
+				'ch_settings_update_failed',
+				__( 'Failed to update settings', 'wp-parsely' )
+			);
+		}
+
+		return new WP_REST_Response( $sanitized_value, 200 );
 	}
 
 	/**
@@ -142,56 +235,13 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 *
 	 * @since 3.14.0
 	 * @since 3.16.0 Added the `$request` parameter.
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
 	 * @param WP_REST_Request|null $request The request object.
 	 * @return bool
 	 */
-	public function is_available_to_current_user( $request = null ): bool {
+	public function is_available_to_current_user( ?WP_REST_Request $request = null ): bool {
 		return current_user_can( 'edit_user', $this->current_user_id );
-	}
-
-	/**
-	 * Returns the meta entry's value as JSON.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @return string The meta entry's value as JSON.
-	 */
-	protected function get_value(): string {
-		$meta_key   = $this->get_meta_key();
-		$meta_value = get_user_meta( $this->current_user_id, $meta_key, true );
-
-		if ( ! is_array( $meta_value ) || 0 === count( $meta_value ) ) {
-			$meta_value = $this->default_value;
-		}
-
-		$result = wp_json_encode( $meta_value );
-
-		return false !== $result ? $result : '';
-	}
-
-	/**
-	 * Sets the meta entry's value.
-	 *
-	 * @since 3.13.0
-	 *
-	 * @param array<string, string> $meta_value The value to set the meta entry to.
-	 * @return bool Whether updating the meta entry's value was successful.
-	 */
-	protected function set_value( array $meta_value ): bool {
-		$sanitized_value = $this->sanitize_value( $meta_value );
-
-		$update_meta = update_user_meta(
-			$this->current_user_id,
-			$this->get_meta_key(),
-			$sanitized_value
-		);
-
-		if ( false !== $update_meta ) {
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
@@ -199,6 +249,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 *
 	 * @since 3.13.0
 	 * @since 3.14.0 Added support for nested arrays.
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
 	 * @param array<string, mixed> $meta_value The meta value to sanitize.
 	 * @param string               $parent_key  The parent key for the current level of the meta.
@@ -246,8 +297,9 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	/**
 	 * Sanitizes the passed subvalue.
 	 *
-	 * @since 3.14.0 Added support for nested arrays.
 	 * @since 3.13.0
+	 * @since 3.14.0 Added support for nested arrays.
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
 	 * @param string $composite_key The subvalue's key.
 	 * @param mixed  $value The value to sanitize.
@@ -285,40 +337,10 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	}
 
 	/**
-	 * Checks if a given composite key is valid.
-	 *
-	 * @since 3.14.3
-	 *
-	 * @param string|mixed $composite_key The composite key representing the nested path.
-	 * @return bool Whether the key is valid.
-	 */
-	protected function is_valid_key( $composite_key ): bool {
-		if ( ! is_string( $composite_key ) ) {
-			return false; // Key path is not a string.
-		}
-
-		$keys    = explode( '.', $composite_key );
-		$current = $this->valid_subvalues;
-
-		foreach ( $keys as $key ) {
-			if ( ! is_array( $current ) || ! isset( $current[ $key ] ) ) {
-				return false; // Key path is invalid.
-			}
-
-			if ( isset( $current[ $key ]['values'] ) ) {
-				$current = $current[ $key ]['values'];
-			} else {
-				$current = $current[ $key ];
-			}
-		}
-
-		return true;
-	}
-
-	/**
 	 * Gets the valid values for a given setting path.
 	 *
 	 * @since 3.14.3
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
 	 * @param array<string> $keys The path to the setting.
 	 * @return array<mixed> The valid values for the setting path.
@@ -344,6 +366,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * Gets the default value for a given setting path.
 	 *
 	 * @since 3.14.3
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
 	 * @param array<string> $keys The path to the setting.
 	 * @return mixed|array<mixed>|null The default value for the setting path.
@@ -370,6 +393,7 @@ abstract class Base_Endpoint_User_Meta extends Base_Endpoint {
 	 * Gets the specifications for nested settings based on a composite key.
 	 *
 	 * @since 3.14.3
+	 * @since 3.17.0 Moved from Base_Endpoint_User_Meta.
 	 *
 	 * @param string $composite_key The composite key representing the nested path.
 	 * @return array<mixed> The specifications for the nested path.

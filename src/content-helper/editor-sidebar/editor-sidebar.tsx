@@ -228,7 +228,7 @@ const ContentHelperEditorSidebar = (): React.JSX.Element => {
 			title={ __( 'Parse.ly', 'wp-parsely' ) }
 		>
 			<SettingsProvider
-				endpoint="editor-sidebar-settings"
+				endpoint="editor-sidebar"
 				defaultSettings={ getSettingsFromJson() }
 			>
 				<Panel className="wp-parsely-sidebar-main-panel">
@@ -279,7 +279,7 @@ registerPlugin( BLOCK_PLUGIN_ID, {
 	icon: LeafIcon,
 	render: () => (
 		<SettingsProvider
-			endpoint="editor-sidebar-settings"
+			endpoint="editor-sidebar"
 			defaultSettings={ getSettingsFromJson() }
 		>
 			<ContentHelperEditorSidebar />

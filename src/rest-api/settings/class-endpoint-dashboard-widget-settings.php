@@ -1,30 +1,39 @@
 <?php
 /**
- * Endpoints: Endpoint for saving and retrieving Content Helper Dashboard Widget
- * settings
+ * API Endpoint: Dashboard Widget Settings
  *
  * @package Parsely
- * @since   3.13.0
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
 
-namespace Parsely\Endpoints\User_Meta;
+namespace Parsely\REST_API\Settings;
 
 /**
  * Endpoint for saving and retrieving Content Helper Dashboard Widget settings.
  *
- * @since 3.13.0
+ * @since 3.17.0
  *
- * @phpstan-import-type Subvalue_Spec from Base_Endpoint_User_Meta
+ * @phpstan-import-type Subvalue_Spec from Base_Settings_Endpoint
  */
-final class Dashboard_Widget_Settings_Endpoint extends Base_Endpoint_User_Meta {
-	protected const ENDPOINT = '/user-meta/content-helper/dashboard-widget-settings';
+class Endpoint_Dashboard_Widget_Settings extends Base_Settings_Endpoint {
+	/**
+	 * Returns the endpoint name.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string
+	 */
+	public function get_endpoint_name(): string {
+		return 'dashboard-widget';
+	}
 
 	/**
 	 * Returns the meta entry's key.
 	 *
 	 * @since 3.13.0
+	 * @since 3.17.0 Moved from Dashboard_Widget_Settings_Endpoint.
 	 *
 	 * @return string The meta entry's key.
 	 */
@@ -36,6 +45,7 @@ final class Dashboard_Widget_Settings_Endpoint extends Base_Endpoint_User_Meta {
 	 * Returns the endpoint's subvalues specifications.
 	 *
 	 * @since 3.13.0
+	 * @since 3.17.0 Moved from Dashboard_Widget_Settings_Endpoint.
 	 *
 	 * @return array<string, Subvalue_Spec>
 	 */

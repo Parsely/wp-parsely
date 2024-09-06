@@ -78,8 +78,12 @@ class BaseEndpointTest extends TestCase {
 	 * Constructor that initializes the Parsely and API controller instances.
 	 *
 	 * @since 3.17.0
+	 *
+	 * @param string|null  $name The name of the test.
+	 * @param array<mixed> $data The data for the test.
+	 * @param string       $data_name The name of the data.
 	 */
-	public function __construct() {
+	public function __construct( $name = null, array $data = array(), $data_name = '' ) {
 		// Create Parsely class, if not already created (by an inherited class).
 		if ( null === $this->parsely ) {
 			$this->parsely = new Parsely();
@@ -90,11 +94,11 @@ class BaseEndpointTest extends TestCase {
 			$this->api_controller = new REST_API_Controller( $this->parsely );
 		}
 
-		parent::__construct();
+		parent::__construct( $name, $data, $data_name );
 	}
 
 	/**
-	 * Sets up the test environment.
+	 * Setup method called before each test.
 	 *
 	 * @since 3.17.0
 	 */
@@ -248,7 +252,7 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
 	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\REST_API\Base_Endpoint::apply_capability_filters
-	 * @uses  \Parsely\REST_API\Base_Endpoint::get_default_access_capability
+	 * @uses \Parsely\REST_API\Base_Endpoint::get_default_access_capability
 	 * @uses \Parsely\REST_API\Content_Helper\Content_Helper_Controller::get_route_prefix
 	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key

@@ -1,30 +1,39 @@
 <?php
 /**
- * Endpoints: Endpoint for saving and retrieving Content Helper Sidebar
- * settings
+ * API Endpoint: Editor Sidebar Settings
  *
  * @package Parsely
- * @since   3.13.0
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
 
-namespace Parsely\Endpoints\User_Meta;
+namespace Parsely\REST_API\Settings;
 
 /**
- * Endpoint for saving and retrieving Content Helper Sidebar settings.
+ * Endpoint for saving and retrieving Content Helper Editor Sidebar settings.
  *
- * @since 3.13.0
+ * @since 3.17.0
  *
- * @phpstan-import-type Subvalue_Spec from Base_Endpoint_User_Meta
+ * @phpstan-import-type Subvalue_Spec from Base_Settings_Endpoint
  */
-final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
-	protected const ENDPOINT = '/user-meta/content-helper/editor-sidebar-settings';
+class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
+	/**
+	 * Returns the endpoint name.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string
+	 */
+	public function get_endpoint_name(): string {
+		return 'editor-sidebar';
+	}
 
 	/**
 	 * Returns the meta entry's key.
 	 *
 	 * @since 3.13.0
+	 * @since 3.17.0 Moved from Editor_Sidebar_Settings_Endpoint.
 	 *
 	 * @return string The meta entry's key.
 	 */
@@ -36,6 +45,7 @@ final class Editor_Sidebar_Settings_Endpoint extends Base_Endpoint_User_Meta {
 	 * Returns the endpoint's subvalues specifications.
 	 *
 	 * @since 3.13.0
+	 * @since 3.17.0 Moved from Editor_Sidebar_Settings_Endpoint.
 	 *
 	 * @return array<string, Subvalue_Spec>
 	 */
