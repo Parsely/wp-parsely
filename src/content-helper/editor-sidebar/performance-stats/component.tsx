@@ -251,7 +251,7 @@ export const PerformanceStats = (
 						value={ settings.PerformanceStats.Period }
 						prefix={
 							<InputControlPrefixWrapper>
-								{ __( 'Period: ', 'wp-parsely' ) }
+								{ __( 'Period:', 'wp-parsely' ) }
 							</InputControlPrefixWrapper>
 						}
 						onChange={ ( selection ) => {

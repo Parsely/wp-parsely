@@ -8,6 +8,6 @@ module.exports = {
 	globals: { TextEncoder, TextDecoder },
 	setupFiles: [ './jest.setup.js' ],
 	transformIgnorePatterns: [
-		'node_modules/(?!(client-zip)/)',
+		'node_modules/(?!(client-zip|parsel-js)/)',
 	],
 };
