@@ -41,10 +41,14 @@ export class ExcerptGeneratorProvider extends BaseProvider {
 	 *
 	 * @param {string} title   The title of the post.
 	 * @param {string} content The content of the post.
+	 * @param {string} persona The persona to use for the suggestion.
+	 * @param {string} tone    The tone to use for the suggestion.
 	 *
 	 * @return {Promise<string>} The generated excerpt.
 	 */
-	public async generateExcerpt( title: string, content: string ): Promise<string> {
+	public async generateExcerpt(
+		title: string, content: string, persona: string, tone: string
+	): Promise<string> {
 		if ( '' === title ) {
 			title = 'Untitled';
 		}
@@ -53,6 +57,8 @@ export class ExcerptGeneratorProvider extends BaseProvider {
 			method: 'POST',
 			path: addQueryArgs( '/wp-parsely/v2/content-helper/excerpt-generator/generate', {
 				title,
+				persona,
+				style: tone,
 			} ),
 			data: {
 				text: content,

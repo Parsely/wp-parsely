@@ -40,6 +40,7 @@ class Settings_Controller extends REST_API_Controller {
 		$endpoints = array(
 			new Endpoint_Dashboard_Widget_Settings( $this ),
 			new Endpoint_Editor_Sidebar_Settings( $this ),
+			new Endpoint_Excerpt_Suggestions_Settings( $this ),
 		);
 
 		$this->register_endpoints( $endpoints );

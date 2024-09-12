@@ -1,6 +1,7 @@
 /**
  * Import the settings types.
  */
+import type { ExcerptSuggestionsSettings } from './excerpt-suggestions-settings';
 import type {
 	PerformanceStatsSettings,
 	RelatedPostsSettings,
@@ -14,6 +15,7 @@ import type { TopPostsSettings } from './top-posts-settings';
  * Export the settings types.
  */
 export type {
+	ExcerptSuggestionsSettings,
 	PerformanceStatsSettings, // Part of SidebarSettings type.
 	RelatedPostsSettings, // Part of SidebarSettings type.
 	SidebarSettings,
@@ -23,5 +25,5 @@ export type {
 };
 
 // Generic type for settings.
-export type Settings = SidebarSettings | TopPostsSettings;
-
+export type Settings = SidebarSettings | TopPostsSettings |
+	ExcerptSuggestionsSettings;
