@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import * as path from 'path';
+import { resolve } from 'path';
 
 /**
  * WordPress dependencies
@@ -56,7 +56,7 @@ test.describe( 'Browse for logo button', () => {
 	 * @since 3.17.0 Migrated to Playwright.
 	 */
 	test( 'Should set the file path when a new image is uploaded and confirmed', async ( { page } ) => {
-		const imageLocalPath: string = path.resolve(
+		const imageLocalPath: string = resolve(
 			__dirname, '../../../.wordpress-org/icon-256x256.png'
 		);
 
