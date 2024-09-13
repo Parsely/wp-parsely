@@ -63,6 +63,7 @@ use Parsely\UI\Recommended_Widget;
 use Parsely\UI\Row_Actions;
 use Parsely\UI\Settings_Page;
 use Parsely\UI\Site_Health;
+use Parsely\Utils\Utils;
 
 if ( class_exists( Parsely::class ) ) {
 	return;
@@ -124,6 +125,18 @@ function parsely_wp_admin_early_register(): void {
 
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
+
+	if ( ! wp_script_is( 'react-jsx-runtime', 'registered' ) ) {
+		$asset_php = Utils::get_asset_info( 'build/react-jsx-runtime.asset.php' );
+
+		wp_register_script(
+			'react-jsx-runtime',
+			plugin_dir_url( PARSELY_FILE ) . 'build/react-jsx-runtime.js',
+			array( 'react' ),
+			$asset_php['version'],
+			true
+		);
+	}
 }
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
