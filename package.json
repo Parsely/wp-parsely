@@ -58,7 +58,7 @@
 		"@wordpress/babel-preset-default": "^7.42.0",
 		"@wordpress/block-editor": "^14.2.0",
 		"@wordpress/blocks": "^13.7.0",
-		"@wordpress/components": "^28.7.0",
+		"@wordpress/components": "^28.8.0",
 		"@wordpress/compose": "^7.7.0",
 		"@wordpress/core-data": "^7.7.0",
 		"@wordpress/data": "^10.8.0",
