@@ -43,7 +43,7 @@
 		"lodash.debounce": "^4.0.8"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.47.1",
+		"@playwright/test": "^1.47.2",
 		"@testing-library/jest-dom": "^6.5.0",
 		"@testing-library/react": "^16.0.1",
 		"@types/jest": "^29.5.13",
