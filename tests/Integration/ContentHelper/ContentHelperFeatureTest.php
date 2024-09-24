@@ -154,12 +154,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
@@ -211,12 +211,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
@@ -268,12 +268,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
@@ -313,12 +313,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
@@ -359,12 +359,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
@@ -416,12 +416,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
@@ -461,12 +461,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
@@ -506,12 +506,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
@@ -563,12 +563,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
@@ -615,12 +615,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
@@ -660,12 +660,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
@@ -705,12 +705,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles
@@ -763,12 +763,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
@@ -808,12 +808,12 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_script_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::get_style_id
 	 * @covers \Parsely\Content_Helper\Editor_Sidebar::run
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::__construct
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::can_enable_feature
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_feature_filter_name
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_script_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::get_style_id
-	 * @covers \Parsely\Content_Helper\Excerpt_Generator::run
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::__construct
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::can_enable_feature
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_feature_filter_name
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_script_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::get_style_id
+	 * @covers \Parsely\Content_Helper\Excerpt_Suggestions::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_script_with_data
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::enqueue_parsely_stats_styles

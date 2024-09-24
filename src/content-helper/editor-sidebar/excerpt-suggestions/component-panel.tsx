@@ -35,7 +35,7 @@ import {
 	useSettings,
 } from '../../common/settings';
 import { getSettingsFromJson } from '../editor-sidebar';
-import { ExcerptGeneratorProvider } from './provider';
+import { ExcerptSuggestionsProvider } from './provider';
 import { ExcerptSuggestionsSettings } from './component-panel-settings';
 
 /**
@@ -51,11 +51,11 @@ interface ExcerptData {
 }
 
 /**
- * The PostExcerptGenerator component displays the excerpt textarea and the Parse.ly AI controls.
+ * The PostExcerptSuggestions component displays the excerpt textarea and the Parse.ly AI controls.
  *
  * @since 3.13.0
  */
-const PostExcerptGenerator = () => {
+const PostExcerptSuggestions = () => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ error, setError ] = useState<ContentHelperError>();
@@ -148,7 +148,7 @@ const PostExcerptGenerator = () => {
 
 		try {
 			Telemetry.trackEvent( 'excerpt_generator_pressed' );
-			const requestedExcerpt = await ExcerptGeneratorProvider
+			const requestedExcerpt = await ExcerptSuggestionsProvider
 				.getInstance()
 				.generateExcerpt( postTitle, postContent, persona, tone );
 
@@ -369,7 +369,7 @@ const LoadingAnimation = (): React.JSX.Element => {
 
 /**
  * The ExcerptPanel component verifies that the current post type supports excerpts,
- * and then renders the PostExcerptGenerator component.
+ * and then renders the PostExcerptSuggestions component.
  *
  * @since 3.13.0
  */
@@ -386,7 +386,7 @@ export const ExcerptPanel = () => {
 						window.wpParselyContentHelperSettings
 					) }
 				>
-					<PostExcerptGenerator />
+					<PostExcerptSuggestions />
 				</SettingsProvider>
 			</PluginDocumentSettingPanel>
 		</PostTypeSupportCheck>

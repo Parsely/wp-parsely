@@ -31,7 +31,7 @@ import {
 	isInEnum,
 } from '../common/utils/constants';
 import { getContentHelperPermissions } from '../common/utils/permissions';
-import { initExcerptGenerator } from './excerpt-generator/excerpt-generator';
+import { initExcerptSuggestions } from './excerpt-suggestions/excerpt-suggestions';
 import {
 	DEFAULT_MAX_LINKS,
 	initSmartLinking,
@@ -280,9 +280,9 @@ const ContentHelperEditorSidebar = (): React.JSX.Element => {
 	);
 };
 
-// Initialize Excerpt Generator.
-if ( initExcerptGenerator ) {
-	initExcerptGenerator();
+// Initialize Excerpt Suggestions.
+if ( initExcerptSuggestions ) {
+	initExcerptSuggestions();
 }
 
 // Registering Plugin to WordPress Block Editor.

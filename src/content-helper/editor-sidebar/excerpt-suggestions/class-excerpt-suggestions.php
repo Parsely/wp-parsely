@@ -21,7 +21,7 @@ use const Parsely\PARSELY_FILE;
  *
  * @since 3.13.0
  */
-class Excerpt_Generator extends Content_Helper_Feature {
+class Excerpt_Suggestions extends Content_Helper_Feature {
 
 	/**
 	 * Constructor.
@@ -42,7 +42,7 @@ class Excerpt_Generator extends Content_Helper_Feature {
 	 * @return string The filter name.
 	 */
 	public static function get_feature_filter_name(): string {
-		return self::get_global_filter_name() . '_excerpt_generator';
+		return self::get_global_filter_name() . '_excerpt_suggestions';
 	}
 	/**
 	 * Returns the feature's script ID.

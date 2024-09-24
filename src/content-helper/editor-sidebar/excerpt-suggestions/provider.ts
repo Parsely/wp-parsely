@@ -13,24 +13,24 @@ import { BaseProvider } from '../../common/base-provider';
  *
  * @since 3.13.0
  */
-export class ExcerptGeneratorProvider extends BaseProvider {
+export class ExcerptSuggestionsProvider extends BaseProvider {
 	/**
-	 * The singleton instance of the ExcerptGeneratorProvider.
+	 * The singleton instance of the ExcerptSuggestionsProvider.
 	 *
 	 * @since 3.16.0
 	 */
-	private static instance: ExcerptGeneratorProvider;
+	private static instance: ExcerptSuggestionsProvider;
 
 	/**
 	 * Returns the singleton instance of the TitleSuggestionsProvider.
 	 *
 	 * @since 3.16.0
 	 *
-	 * @return {ExcerptGeneratorProvider} The singleton instance.
+	 * @return {ExcerptSuggestionsProvider} The singleton instance.
 	 */
-	public static getInstance(): ExcerptGeneratorProvider {
+	public static getInstance(): ExcerptSuggestionsProvider {
 		if ( ! this.instance ) {
-			this.instance = new ExcerptGeneratorProvider();
+			this.instance = new ExcerptSuggestionsProvider();
 		}
 
 		return this.instance;

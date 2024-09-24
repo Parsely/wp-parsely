@@ -28,7 +28,7 @@ namespace Parsely;
 
 use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Content_Helper\Editor_Sidebar;
-use Parsely\Content_Helper\Excerpt_Generator;
+use Parsely\Content_Helper\Excerpt_Suggestions;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Endpoints\Rest_Metadata;

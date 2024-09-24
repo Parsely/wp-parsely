@@ -12,13 +12,13 @@ import { dispatchCoreEditPost } from '../../../@types/gutenberg/types';
 import { SettingsProvider } from '../../common/settings';
 import { ExcerptPanel } from './component-panel';
 import { getSettingsFromJson } from '../editor-sidebar';
-import './excerpt-generator.scss';
+import './excerpt-suggestions.scss';
 
 // TODO: Get the plugin ID from the editor sidebar file.
 const PARSELY_SIDEBAR_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
 /**
- * The ExcerptGenerator function registers the custom excerpt panel and removes
+ * The ExcerptSuggestions function registers the custom excerpt panel and removes
  * the default excerpt panel.
  *
  * @since 3.13.0
@@ -26,7 +26,7 @@ const PARSELY_SIDEBAR_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
  * @param {never}  settings Settings from the plugins.registerPlugin filter. Not used.
  * @param {string} name     The plugin name.
  */
-const ExcerptGenerator = ( settings: never, name: string ) => {
+const ExcerptSuggestions = ( settings: never, name: string ) => {
 	if ( name !== PARSELY_SIDEBAR_PLUGIN_ID ) {
 		return settings;
 	}
@@ -44,7 +44,7 @@ const ExcerptGenerator = ( settings: never, name: string ) => {
 	}
 
 	// Register the custom excerpt panel.
-	registerPlugin( 'wp-parsely-excerpt-generator', {
+	registerPlugin( 'wp-parsely-excerpt-suggestions', {
 		render: () => (
 			<SettingsProvider
 				endpoint="editor-sidebar"
@@ -68,8 +68,8 @@ const ExcerptGenerator = ( settings: never, name: string ) => {
 	return settings;
 };
 
-export function initExcerptGenerator() {
-	// Add the ExcerptGenerator function to the plugins.registerPlugin filter.
+export function initExcerptSuggestions() {
+	// Add the ExcerptSuggestions function to the plugins.registerPlugin filter.
 	// Priority is set to 1000 to ensure that the function runs as late as possible.
-	addFilter( 'plugins.registerPlugin', 'wp-parsely-excerpt-generator', ExcerptGenerator, 1000 );
+	addFilter( 'plugins.registerPlugin', 'wp-parsely-excerpt-suggestions', ExcerptSuggestions, 1000 );
 }
