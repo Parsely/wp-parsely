@@ -20,11 +20,6 @@ use WP_Post;
 use const Parsely\PARSELY_FILE;
 
 /**
- * Features requires for the PCH Editor Sidebar.
- */
-require_once __DIR__ . '/smart-linking/class-smart-linking.php';
-
-/**
  * Class that generates and manages the PCH Editor Sidebar.
  *
  * @since 3.5.0
@@ -52,7 +47,8 @@ class Editor_Sidebar extends Content_Helper_Feature {
 
 		// Instantiate the features.
 		$this->features = array(
-			'Smart_Linking' => new Smart_Linking( $this ),
+			'Smart_Linking'     => new Smart_Linking( $this ),
+			'Excerpt_Generator' => new Excerpt_Generator( $this->parsely ),
 		);
 	}
 

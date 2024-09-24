@@ -6,7 +6,7 @@ import { addQueryArgs } from '@wordpress/url';
 /**
  * Internal dependencies
  */
-import { BaseProvider } from '../common/base-provider';
+import { BaseProvider } from '../../common/base-provider';
 
 /**
  * Provides the generate excerpt functionality to be used in other components.

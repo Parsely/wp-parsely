@@ -60,26 +60,32 @@ class EndpointEditorSidebarSettingsTest extends BaseSettingsEndpointTest {
 	 * @return array<string, mixed> The default value for the endpoint.
 	 */
 	public function get_default_value(): array {
+		// Note: Array keys should be sorted alphabetically.
 		return array(
-			'InitialTabName'   => 'tools',
-			'PerformanceStats' => array(
+			'ExcerptSuggestions' => array(
+				'Open'    => false,
+				'Persona' => 'journalist',
+				'Tone'    => 'neutral',
+			),
+			'InitialTabName'     => 'tools',
+			'PerformanceStats'   => array(
 				'Period'            => '7d',
 				'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
 				'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
 			),
-			'RelatedPosts'     => array(
+			'RelatedPosts'       => array(
 				'FilterBy'    => 'unavailable',
 				'FilterValue' => '',
 				'Metric'      => 'views',
 				'Open'        => false,
 				'Period'      => '7d',
 			),
-			'SmartLinking'     => array(
+			'SmartLinking'       => array(
 				'MaxLinks'     => 10,
 				'MaxLinkWords' => 4,
 				'Open'         => false,
 			),
-			'TitleSuggestions' => array(
+			'TitleSuggestions'   => array(
 				'Open'    => false,
 				'Persona' => 'journalist',
 				'Tone'    => 'neutral',

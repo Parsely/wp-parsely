@@ -29,11 +29,14 @@ import {
 } from '../../common/content-helper-error';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import {
-	ExcerptSuggestionsSettings as Settings,
+	SidebarSettings,
+	ExcerptSuggestionsSettings as ExcerptSuggestionsSettingsType,
+	SettingsProvider,
 	useSettings,
 } from '../../common/settings';
-import { ExcerptGeneratorProvider } from '../provider';
-import { ExcerptSuggestionsSettings } from './excerpt-panel-settings';
+import { getSettingsFromJson } from '../editor-sidebar';
+import { ExcerptGeneratorProvider } from './provider';
+import { ExcerptSuggestionsSettings } from './component-panel-settings';
 
 /**
  * Defines the structure of an object that holds excerpt data.
@@ -53,7 +56,7 @@ interface ExcerptData {
  * @since 3.13.0
  */
 const PostExcerptGenerator = () => {
-	const { settings, setSettings } = useSettings<Settings>();
+	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ error, setError ] = useState<ContentHelperError>();
 	const [ excerptData, setExcerptData ] = useState<ExcerptData>( {
@@ -64,16 +67,17 @@ const PostExcerptGenerator = () => {
 	} );
 	const [ isLoading, setLoading ] = useState<boolean>( false );
 	const [ onChangeFired, setOnChangeFired ] = useState<boolean>( false );
-	const [ persona, setPersona ] = useState<PersonaProp>( settings.Persona );
-	const [ tone, setTone ] = useState<ToneProp>( settings.Tone );
+	const [ persona, setPersona ] = useState<PersonaProp>( settings.ExcerptSuggestions.Persona );
+	const [ tone, setTone ] = useState<ToneProp>( settings.ExcerptSuggestions.Tone );
 	const [ wordCountString, setWordCountString ] = useState<string>( '' );
 
 	const { editPost } = useDispatch( editorStore );
 
-	const onSettingChange = ( key: keyof Settings, value: string | boolean ) => {
+	const onSettingChange = ( key: keyof ExcerptSuggestionsSettingsType, value: string | boolean ) => {
 		setSettings( {
-			...settings,
-			[ key ]: value,
+			ExcerptSuggestions: {
+				...settings.ExcerptSuggestions,
+				[ key ]: value },
 		} );
 	};
 
@@ -305,8 +309,8 @@ const PostExcerptGenerator = () => {
 								onSettingChange( 'Tone', selectedTone );
 								setTone( selectedTone );
 							} }
-							persona={ settings.Persona }
-							tone={ settings.Tone }
+							persona={ settings.ExcerptSuggestions.Persona }
+							tone={ settings.ExcerptSuggestions.Tone }
 						/>
 						{ generateWithParselyHeader }
 						<div className="excerpt-suggestions-generate">
@@ -318,10 +322,10 @@ const PostExcerptGenerator = () => {
 							>
 								{ isLoading && __( 'Generating Excerpt…', 'wp-parsely' ) }
 								{ ! isLoading && excerptData.newExcerptGeneratedCount > 0 &&
-								__( 'Regenerate Excerpt', 'wp-parsely' )
+									__( 'Regenerate Excerpt', 'wp-parsely' )
 								}
 								{ ! isLoading && excerptData.newExcerptGeneratedCount === 0 &&
-								__( 'Generate Excerpt', 'wp-parsely' )
+									__( 'Generate Excerpt', 'wp-parsely' )
 								}
 							</Button>
 						</div>
@@ -376,7 +380,14 @@ export const ExcerptPanel = () => {
 				name="parsely-post-excerpt"
 				title={ __( 'Excerpt', 'wp-parsely' ) }
 			>
-				<PostExcerptGenerator />
+				<SettingsProvider
+					endpoint="editor-sidebar"
+					defaultSettings={ getSettingsFromJson(
+						window.wpParselyContentHelperSettings
+					) }
+				>
+					<PostExcerptGenerator />
+				</SettingsProvider>
 			</PluginDocumentSettingPanel>
 		</PostTypeSupportCheck>
 	);

@@ -8,57 +8,14 @@ import { registerPlugin } from '@wordpress/plugins';
 /**
  * Internal dependencies
  */
-import { dispatchCoreEditPost } from '../../@types/gutenberg/types';
-import {
-	ExcerptSuggestionsSettings,
-	SettingsProvider,
-} from '../common/settings';
-import { ExcerptPanel } from './components/excerpt-panel';
+import { dispatchCoreEditPost } from '../../../@types/gutenberg/types';
+import { SettingsProvider } from '../../common/settings';
+import { ExcerptPanel } from './component-panel';
+import { getSettingsFromJson } from '../editor-sidebar';
+import './excerpt-generator.scss';
 
 // TODO: Get the plugin ID from the editor sidebar file.
 const PARSELY_SIDEBAR_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
-
-/**
- * Gets the settings from the passed JSON.
- *
- * If missing settings or invalid values are detected, they get set to their
- * defaults.
- *
- * @since 3.17.0
- *
- * @param {string} settingsJson The JSON containing the settings.
- *
- * @return {ExcerptSuggestionsSettings} The resulting settings object.
- */
-const getSettingsFromJson = (
-	settingsJson: string
-): ExcerptSuggestionsSettings => {
-	let parsedSettings: ExcerptSuggestionsSettings;
-
-	try {
-		parsedSettings = JSON.parse( settingsJson );
-	} catch ( e ) {
-		// Return defaults when parsing failed or the string is empty.
-		return {
-			Open: false,
-			Persona: 'journalist',
-			Tone: 'neutral',
-		};
-	}
-
-	// Fix invalid values if any are found.
-	if ( typeof parsedSettings?.Open !== 'boolean' ) {
-		parsedSettings.Open = false;
-	}
-	if ( typeof parsedSettings?.Persona !== 'string' ) {
-		parsedSettings.Persona = 'journalist';
-	}
-	if ( typeof parsedSettings?.Tone !== 'string' ) {
-		parsedSettings.Tone = 'neutral';
-	}
-
-	return parsedSettings;
-};
 
 /**
  * The ExcerptGenerator function registers the custom excerpt panel and removes
@@ -90,7 +47,7 @@ const ExcerptGenerator = ( settings: never, name: string ) => {
 	registerPlugin( 'wp-parsely-excerpt-generator', {
 		render: () => (
 			<SettingsProvider
-				endpoint="excerpt-suggestions"
+				endpoint="editor-sidebar"
 				defaultSettings={ getSettingsFromJson(
 					window.wpParselyContentHelperSettings
 				) }
@@ -111,6 +68,8 @@ const ExcerptGenerator = ( settings: never, name: string ) => {
 	return settings;
 };
 
-// Add the ExcerptGenerator function to the plugins.registerPlugin filter.
-// Priority is set to 1000 to ensure that the function runs as late as possible.
-addFilter( 'plugins.registerPlugin', 'wp-parsely-excerpt-generator', ExcerptGenerator, 1000 );
+export function initExcerptGenerator() {
+	// Add the ExcerptGenerator function to the plugins.registerPlugin filter.
+	// Priority is set to 1000 to ensure that the function runs as late as possible.
+	addFilter( 'plugins.registerPlugin', 'wp-parsely-excerpt-generator', ExcerptGenerator, 1000 );
+}

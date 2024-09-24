@@ -31,6 +31,7 @@ import {
 	isInEnum,
 } from '../common/utils/constants';
 import { getContentHelperPermissions } from '../common/utils/permissions';
+import { initExcerptGenerator } from './excerpt-generator/excerpt-generator';
 import {
 	DEFAULT_MAX_LINKS,
 	initSmartLinking,
@@ -91,6 +92,11 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			Open: false,
 			Tone: 'neutral',
 			Persona: 'journalist',
+		},
+		ExcerptSuggestions: {
+			Open: false,
+			Persona: 'journalist',
+			Tone: 'neutral',
 		},
 	};
 
@@ -273,6 +279,11 @@ const ContentHelperEditorSidebar = (): React.JSX.Element => {
 		</PluginSidebar>
 	);
 };
+
+// Initialize Excerpt Generator.
+if ( initExcerptGenerator ) {
+	initExcerptGenerator();
+}
 
 // Registering Plugin to WordPress Block Editor.
 registerPlugin( BLOCK_PLUGIN_ID, {
