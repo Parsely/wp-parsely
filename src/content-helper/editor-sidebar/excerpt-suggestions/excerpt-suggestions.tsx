@@ -9,6 +9,7 @@ import { registerPlugin } from '@wordpress/plugins';
  * Internal dependencies
  */
 import { dispatchCoreEditPost } from '../../../@types/gutenberg/types';
+import { getContentHelperPermissions } from '../../common/utils/permissions';
 import { ExcerptPanel } from './component-panel';
 import './excerpt-suggestions.scss';
 
@@ -26,6 +27,12 @@ const PARSELY_SIDEBAR_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
  */
 const ExcerptSuggestions = ( settings: never, name: string ) => {
 	if ( name !== PARSELY_SIDEBAR_PLUGIN_ID ) {
+		return settings;
+	}
+
+	// Check if the user has the necessary permissions to use the ExcerptSuggestions feature.
+	const permissions = getContentHelperPermissions();
+	if ( ! permissions.ExcerptSuggestions ) {
 		return settings;
 	}
 
