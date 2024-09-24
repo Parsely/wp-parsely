@@ -9,9 +9,7 @@ import { registerPlugin } from '@wordpress/plugins';
  * Internal dependencies
  */
 import { dispatchCoreEditPost } from '../../../@types/gutenberg/types';
-import { SettingsProvider } from '../../common/settings';
 import { ExcerptPanel } from './component-panel';
-import { getSettingsFromJson } from '../editor-sidebar';
 import './excerpt-suggestions.scss';
 
 // TODO: Get the plugin ID from the editor sidebar file.
@@ -46,14 +44,7 @@ const ExcerptSuggestions = ( settings: never, name: string ) => {
 	// Register the custom excerpt panel.
 	registerPlugin( 'wp-parsely-excerpt-suggestions', {
 		render: () => (
-			<SettingsProvider
-				endpoint="editor-sidebar"
-				defaultSettings={ getSettingsFromJson(
-					window.wpParselyContentHelperSettings
-				) }
-			>
-				<ExcerptPanel />
-			</SettingsProvider>
+			<ExcerptPanel />
 		),
 	} );
 
