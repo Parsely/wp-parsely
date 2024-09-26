@@ -11,8 +11,19 @@
 	margin-bottom: var(--grid-unit-10);
 }
 
+.editor-post-excerpt .excerpt-suggestions-text {
+	display: flex;
+	padding: to_rem(6px) 0 var(--grid-unit-20) 0;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: to_rem(10px);
+	align-self: stretch;
+}
+
 .wp-parsely-excerpt-generator {
-	margin-top: to_rem(20px);
+	&.is-doc-set-panel {
+		margin-top: to_rem(20px);
+	}
 
 	// Suggestion settings.
 	.excerpt-suggestions-settings {
