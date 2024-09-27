@@ -118,7 +118,7 @@ class BaseEndpointTest extends TestCase {
 			 *
 			 * @return string
 			 */
-			public function get_endpoint_name(): string {
+			public static function get_endpoint_name(): string {
 				return 'test';
 			}
 
@@ -258,7 +258,7 @@ class BaseEndpointTest extends TestCase {
 	 */
 	public function test_endpoint_is_registered_based_on_filter(): void {
 		$filter_name = 'wp_parsely_api_' .
-						\Parsely\Utils\Utils::convert_endpoint_to_filter_key( $this->get_endpoint()->get_endpoint_name() ) .
+						\Parsely\Utils\Utils::convert_endpoint_to_filter_key( $this->get_endpoint()::get_endpoint_name() ) .
 						'_endpoint_enabled';
 
 		// Test when the filter allows the endpoint to be enabled.

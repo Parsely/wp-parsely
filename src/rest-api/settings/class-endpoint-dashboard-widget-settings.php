@@ -25,7 +25,7 @@ class Endpoint_Dashboard_Widget_Settings extends Base_Settings_Endpoint {
 	 *
 	 * @return string
 	 */
-	public function get_endpoint_name(): string {
+	public static function get_endpoint_name(): string {
 		return 'dashboard-widget';
 	}
 

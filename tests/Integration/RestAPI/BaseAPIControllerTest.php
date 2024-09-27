@@ -141,7 +141,7 @@ class BaseAPIControllerTest extends TestCase {
 			 *
 			 * @return string The version.
 			 */
-			public function get_route_prefix(): string {
+			public static function get_route_prefix(): string {
 				return 'prefix';
 			}
 		};
