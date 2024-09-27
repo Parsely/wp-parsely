@@ -91,19 +91,19 @@ class Endpoint_Title_Suggestions extends Base_Endpoint {
 					'type'        => 'string',
 				),
 				'limit'   => array(
-					'description' => __( 'The maximum number of titles to generate.', 'wp-parsely' ),
+					'description' => __( 'The maximum number of titles to be suggested.', 'wp-parsely' ),
 					'required'    => false,
 					'type'        => 'integer',
 					'default'     => 3,
 				),
 				'style'   => array(
-					'description' => __( 'The style  of the titles to generate.', 'wp-parsely' ),
+					'description' => __( 'The style of the titles to be suggested.', 'wp-parsely' ),
 					'required'    => false,
 					'type'        => 'string',
 					'default'     => 'neutral',
 				),
 				'persona' => array(
-					'description' => __( 'The persona of the titles to generate.', 'wp-parsely' ),
+					'description' => __( 'The persona of the titles to be suggested.', 'wp-parsely' ),
 					'required'    => false,
 					'type'        => 'string',
 					'default'     => 'journalist',
