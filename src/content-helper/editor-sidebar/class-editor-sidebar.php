@@ -14,6 +14,7 @@ use Parsely\Content_Helper\Editor_Sidebar\Smart_Linking;
 use Parsely\Dashboard_Link;
 use Parsely\Parsely;
 
+use Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings;
 use Parsely\Utils\Utils;
 use WP_Post;
 
@@ -161,7 +162,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			true
 		);
 
-		$this->inject_inline_scripts( 'editor-sidebar' );
+		$this->inject_inline_scripts( Endpoint_Editor_Sidebar_Settings::get_endpoint_name() );
 
 		// Inject inline variables for the editor sidebar, without UTM parameters.
 		$parsely_post_url = $this->get_parsely_post_url( null, false );
