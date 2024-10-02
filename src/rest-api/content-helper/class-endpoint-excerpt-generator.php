@@ -55,7 +55,7 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 	 *
 	 * @return string The endpoint name.
 	 */
-	public function get_endpoint_name(): string {
+	public static function get_endpoint_name(): string {
 		return 'excerpt-generator';
 	}
 
@@ -96,13 +96,13 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 					'required'    => true,
 				),
 				'persona' => array(
-					'description' => __( 'The persona of the content.', 'wp-parsely' ),
+					'description' => __( 'The persona to use for the suggestion.', 'wp-parsely' ),
 					'type'        => 'string',
 					'required'    => false,
 					'default'     => 'journalist',
 				),
 				'style'   => array(
-					'description' => __( 'The style of the content.', 'wp-parsely' ),
+					'description' => __( 'The style to use for the suggestion.', 'wp-parsely' ),
 					'type'        => 'string',
 					'required'    => false,
 					'default'     => 'neutral',

@@ -83,7 +83,7 @@ class Endpoint_Post extends Base_Endpoint {
 	 *
 	 * @return string The endpoint name.
 	 */
-	public function get_endpoint_name(): string {
+	public static function get_endpoint_name(): string {
 		return 'post';
 	}
 

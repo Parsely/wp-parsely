@@ -13,6 +13,7 @@ namespace Parsely\Content_Helper;
 use Parsely\Parsely;
 use Parsely\RemoteAPI\Analytics_Posts_API;
 
+use Parsely\REST_API\Settings\Endpoint_Dashboard_Widget_Settings;
 use Parsely\Utils\Utils;
 
 use const Parsely\PARSELY_FILE;
@@ -135,7 +136,7 @@ class Dashboard_Widget extends Content_Helper_Feature {
 			true
 		);
 
-		$this->inject_inline_scripts( 'dashboard-widget' );
+		$this->inject_inline_scripts( Endpoint_Dashboard_Widget_Settings::get_endpoint_name() );
 
 		wp_enqueue_style(
 			static::get_style_id(),

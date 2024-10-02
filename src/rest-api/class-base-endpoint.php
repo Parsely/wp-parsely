@@ -78,7 +78,7 @@ abstract class Base_Endpoint {
 		 * @return bool
 		 */
 		$filter_name = 'wp_parsely_api_' .
-						Utils::convert_endpoint_to_filter_key( $this->get_endpoint_name() ) .
+						Utils::convert_endpoint_to_filter_key( static::get_endpoint_name() ) .
 						'_endpoint_enabled';
 		if ( ! apply_filters( $filter_name, true ) ) { // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound
 			return;
@@ -98,7 +98,7 @@ abstract class Base_Endpoint {
 	 *
 	 * @return string
 	 */
-	abstract public function get_endpoint_name(): string;
+	abstract public static function get_endpoint_name(): string;
 
 	/**
 	 * Returns the default access capability for the endpoint.
@@ -142,7 +142,7 @@ abstract class Base_Endpoint {
 		$this->registered_routes[] = $route;
 
 		// Create the full route for the endpoint.
-		$route = $this->get_endpoint_name() . '/' . $route;
+		$route = static::get_endpoint_name() . '/' . $route;
 
 		// Register the route.
 		register_rest_route(
@@ -172,9 +172,9 @@ abstract class Base_Endpoint {
 		$route = trim( $route, '/' );
 
 		if ( '' !== $route ) {
-			$route = $this->get_endpoint_name() . '/' . $route;
+			$route = static::get_endpoint_name() . '/' . $route;
 		} else {
-			$route = $this->get_endpoint_name();
+			$route = static::get_endpoint_name();
 		}
 
 		return '/' .
@@ -251,7 +251,7 @@ abstract class Base_Endpoint {
 		 */
 		$endpoint_specific_user_capability = apply_filters(
 			'wp_parsely_user_capability_for_' .
-				Utils::convert_endpoint_to_filter_key( $this->get_endpoint_name() ) .
+				Utils::convert_endpoint_to_filter_key( static::get_endpoint_name() ) .
 			'_api',
 			$default_user_capability
 		);

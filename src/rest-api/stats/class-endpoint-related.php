@@ -46,7 +46,7 @@ class Endpoint_Related extends Base_Endpoint {
 	 *
 	 * @return string
 	 */
-	public function get_endpoint_name(): string {
+	public static function get_endpoint_name(): string {
 		return 'related';
 	}
 
