@@ -27,6 +27,15 @@ import {
 	RelatedPostsProvider,
 } from '../../../src/content-helper/editor-sidebar/related-posts/provider';
 
+// Avoid "ReferenceError: ResizeObserver is not defined" error.
+window.ResizeObserver =
+	window.ResizeObserver ||
+	jest.fn().mockImplementation( () => ( {
+		disconnect: jest.fn(),
+		observe: jest.fn(),
+		unobserve: jest.fn(),
+	} ) );
+
 // Mock the SettingsProvider component.
 jest.mock( '../../../src/content-helper/common/settings/provider', () => ( {
 	SettingsProvider: ( { children }: { children: React.ReactNode } ) => children,
