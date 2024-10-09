@@ -2,74 +2,130 @@
  * WordPress dependencies
  */
 import {
-	enablePageDialogAccept,
-	visitAdminPage,
-} from '@wordpress/e2e-test-utils';
+	type Admin,
+	expect,
+	test,
+} from '@wordpress/e2e-test-utils-playwright';
 
 /**
  * Internal dependencies
  */
 import {
 	VALID_SITE_ID,
-	activateTheme,
 	setSiteKeys,
-	waitForWpAdmin,
 } from '../utils';
 
-const deactivatedPluginWidgetText = 'The Parse.ly Site ID and Parse.ly API Secret fields need to be populated on the Parse.ly settings page for this widget to work.';
+/**
+ * Tests for the (legacy) Recommended Widget.
+ *
+ * @since 3.17.0 Migrated to Playwright.
+ */
+test.describe( 'Recommended Widget', () => {
+	const deactivatedWidgetMessage = 'The Parse.ly Site ID and Parse.ly API Secret fields need to be populated on the Parse.ly settings page for this widget to work.';
 
-const closeWidgetScreenModal = () => page.keyboard.press( 'Escape' );
-
-const insertParselyWidget = async () => {
-	await page.waitForTimeout( 500 );
-	await page.click( '.block-editor-button-block-appender' );
-	await page.waitForTimeout( 500 );
-	await page.keyboard.type( 'parse.ly recommended widget' );
-	await page.keyboard.press( 'Tab' );
-	await page.keyboard.press( 'Tab' );
-	await page.keyboard.press( 'Enter' );
-	await page.waitForTimeout( 500 );
-};
-
-const getNonActiveWidgetText = async () => {
-	const [ h3 ] = await page.$x( "//h3[contains(., 'Parse.ly Recommended Widget')]" );
-
-	const widgetContent = await page.evaluateHandle( ( el: HTMLElement ) => el.nextElementSibling, h3 );
-	return page.evaluate( ( el: HTMLElement ) => el.textContent, widgetContent );
-};
-
-describe( 'Recommended widget', () => {
-	beforeAll( async () => {
-		enablePageDialogAccept();
-
-		await activateTheme( 'twentytwentyone' );
+	/**
+	 * Activates a theme that supports legacy Widgets.
+	 *
+	 * Runs before all tests.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
+	 */
+	test.beforeAll( async ( { requestUtils } ) => {
+		await requestUtils.activateTheme( 'twentytwentyone' );
 	} );
 
-	afterAll( async () => {
-		await activateTheme( 'twentytwentytwo' );
+	/**
+	 * Restores the default theme.
+	 *
+	 * Runs after all tests.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
+	 */
+	test.afterAll( async ( { requestUtils } ) => {
+		await requestUtils.activateTheme( 'twentytwentyfour' );
 	} );
 
-	it( 'Widget should be available but inactive without Site ID and secret', async () => {
-		await setSiteKeys( '', '' );
+	/**
+	 * Verifies that the Widget is available but deactivated when the Site ID
+	 * and API Secret are not provided.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
+	 */
+	test( 'Should be available but deactivated without Site ID and API Secret', async ( { admin } ) => {
+		const page = admin.page;
+		const utils = new Utils( admin );
 
-		await visitAdminPage( '/widgets.php', '' );
+		await setSiteKeys( page, '', '' );
 
-		await waitForWpAdmin();
-		await closeWidgetScreenModal();
-		await insertParselyWidget();
+		await utils.insertRecommendedWidget();
 
-		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
+		await expect(
+			page.getByText( deactivatedWidgetMessage, { exact: true } )
+		).toBeVisible();
 	} );
 
-	it( 'Widget should be available but inactive without api secret', async () => {
-		await setSiteKeys( VALID_SITE_ID, '' );
+	/**
+	 * Verifies that the Widget is available but deactivated when only the Site
+	 * ID is provided.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
+	 */
+	test( 'Should be available but deactivated without API secret', async ( { admin } ) => {
+		const page = admin.page;
+		const utils = new Utils( admin );
 
-		await visitAdminPage( '/widgets.php', '' );
+		await setSiteKeys( page, VALID_SITE_ID, '' );
 
-		await waitForWpAdmin();
-		await closeWidgetScreenModal();
-		await insertParselyWidget();
+		await utils.insertRecommendedWidget();
 
-		expect( await getNonActiveWidgetText() ).toContain( deactivatedPluginWidgetText );
+		await expect(
+			page.getByText( deactivatedWidgetMessage, { exact: true } )
+		).toBeVisible();
 	} );
 } );
+
+/**
+ * Provides utility functions for the tests in this file.
+ *
+ * @since 3.17.0 Migrated utility functions to Playwright.
+ */
+class Utils {
+	/**
+	 * The Admin object of the calling function.
+	 *
+	 * @since 3.17.0
+	 */
+	readonly admin: Admin;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.17.0.
+	 *
+	 * @param {Admin} admin The Admin object of the calling function.
+	 */
+	constructor( admin: Admin ) {
+		this.admin = admin;
+	}
+
+	/**
+	 * Inserts the (legacy) Recommended Widget into the Widgets area.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
+	 */
+	async insertRecommendedWidget() {
+		const page = this.admin.page;
+
+		await this.admin.visitAdminPage( '/widgets.php' );
+
+		if ( await page.getByText( 'Welcome to block Widgets', { exact: true } ).isVisible() ) {
+			await page.getByRole( 'button', { name: 'Close', exact: true } ).click();
+		}
+
+		await page.getByRole( 'button', { name: 'Add block' } ).click();
+		await page.getByPlaceholder( 'Search' ).fill( 'parse.ly recommended widget' );
+		await page.getByText(
+			'Parse.ly Recommended Widget', { exact: true }
+		).click();
+	}
+}
