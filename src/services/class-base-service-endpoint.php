@@ -13,7 +13,7 @@ abstract class Base_Service_Endpoint {
 	 *
 	 * @var Base_API_Service
 	 */
-	private $api_service;
+	protected $api_service;
 
 	/**
 	 * Flag to truncate the content of the request body.

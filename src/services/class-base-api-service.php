@@ -37,11 +37,23 @@ abstract class Base_API_Service {
 		$this->endpoints[ $endpoint->get_endpoint() ] = $endpoint;
 	}
 
+	/**
+	 * Registers a cached endpoint with the service.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param Base_Service_Endpoint $endpoint The endpoint to register.
+	 * @param int $ttl The time-to-live for the cache, in seconds.
+	 */
+	protected function register_cached_endpoint( Base_Service_Endpoint $endpoint, int $ttl ): void {
+		$this->endpoints[ $endpoint->get_endpoint() ] = new Cached_Service_Endpoint( $endpoint, $ttl );
+	}
+
 	protected function get_endpoint( string $endpoint ): Base_Service_Endpoint {
 		return $this->endpoints[ $endpoint ];
 	}
 
-	protected abstract function get_base_url(): string;
+	public abstract function get_base_url(): string;
 	protected abstract function register_endpoints(): void;
 
 	public function get_api_url(): string {

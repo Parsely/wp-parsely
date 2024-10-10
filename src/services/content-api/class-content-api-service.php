@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Parsely\Services\ContentAPI;
 
-use Automattic\Jetpack\Import\Endpoints\End;
 use Parsely\Services\Base_API_Service;
+use Parsely\Services\Base_Service_Endpoint;
 use WP_Error;
 
 class Content_API_Service extends Base_API_Service {
@@ -16,7 +16,7 @@ class Content_API_Service extends Base_API_Service {
 	 *
 	 * @return string
 	 */
-	protected function get_base_url(): string {
+	public function get_base_url(): string {
 		return "https://api.parsely.com/v2";
 	}
 
@@ -26,16 +26,35 @@ class Content_API_Service extends Base_API_Service {
 	 * @since 3.17.0
 	 */
 	protected function register_endpoints(): void {
+		/**
+		 * The endpoints for the Parse.ly Content API.
+		 *
+		 * @var Base_Service_Endpoint[] $endpoints
+		 */
 		$endpoints = array(
-			new Endpoints\Endpoint_Analytics_Post_Details( $this ),
-			new Endpoints\Endpoint_Referrers_Post_Detail( $this ),
-			new Endpoints\Endpoint_Related( $this ),
-			new Endpoints\Endpoint_Analytics_Posts( $this ),
 			new Endpoints\Endpoint_Validate( $this ),
 		);
 
 		foreach ( $endpoints as $endpoint ) {
 			$this->register_endpoint( $endpoint );
+		}
+
+		/**
+		 * The cached endpoints.
+		 *
+		 * The second element in the array is the time-to-live for the cache, in seconds.
+		 *
+		 * @var array<array{0: Base_Service_Endpoint, 1: int}> $cached_endpoints
+		 */
+		$cached_endpoints = array(
+			array( new Endpoints\Endpoint_Analytics_Posts( $this ), 300 ), // 5 minutes.
+			array( new Endpoints\Endpoint_Related( $this ), 600 ), // 10 minutes.
+			array( new Endpoints\Endpoint_Referrers_Post_Detail( $this ), 300 ), // 5 minutes.
+			array( new Endpoints\Endpoint_Analytics_Post_Details( $this ), 300 ), // 5 minutes.
+		);
+
+		foreach ( $cached_endpoints as $cached_endpoint ) {
+			$this->register_cached_endpoint( $cached_endpoint[0], $cached_endpoint[1] );
 		}
 	}
 
