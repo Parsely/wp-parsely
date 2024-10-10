@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely\REST_API\Stats;
 
-use Parsely\RemoteAPI\Analytics_Posts_API;
 use Parsely\REST_API\Base_Endpoint;
+use Parsely\Services\ContentAPI\Content_API_Service;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -62,13 +62,13 @@ class Endpoint_Posts extends Base_Endpoint {
 	);
 
 	/**
-	 * The Analytics Posts API.
+	 * The Parse.ly Content API service.
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var Analytics_Posts_API
+	 * @var Content_API_Service
 	 */
-	public $analytics_posts_api;
+	public $content_api;
 
 	/**
 	 * Constructor.
@@ -79,7 +79,7 @@ class Endpoint_Posts extends Base_Endpoint {
 	 */
 	public function __construct( Stats_Controller $controller ) {
 		parent::__construct( $controller );
-		$this->analytics_posts_api = new Analytics_Posts_API( $this->parsely );
+		$this->content_api		= $this->parsely->get_content_api();
 	}
 
 	/**
@@ -149,27 +149,25 @@ class Endpoint_Posts extends Base_Endpoint {
 						'default'     => 1,
 					),
 					'author'         => array(
-						'description' => 'The author to filter by.',
-						'type'        => 'array',
-						'items'       => array(
-							'type' => 'string',
-						),
-						'required'    => false,
-						'maxItems'    => 5,
-					),
-					'section'        => array(
-						'description' => 'The section to filter by.',
+						'description' => 'Comma-separated list of authors to filter by.',
 						'type'        => 'string',
 						'required'    => false,
+						'validate_callback' => array( $this, 'validate_max_length_is_5' ),
+						'sanitize_callback' => array( $this, 'sanitize_string_to_array' ),
+					),
+					'section'        => array(
+						'description' => 'Comma-separated list of sections to filter by.',
+						'type'        => 'string',
+						'required'    => false,
+						'validate_callback' => array( $this, 'validate_max_length_is_5' ),
+						'sanitize_callback' => array( $this, 'sanitize_string_to_array' ),
 					),
 					'tag'            => array(
-						'description' => 'The tag to filter by.',
-						'type'        => 'array',
-						'items'       => array(
-							'type' => 'string',
-						),
+						'description' => 'Comma-separated list of tags to filter by.',
+						'type'        => 'string',
 						'required'    => false,
-						'maxItems'    => 5,
+						'validate_callback' => array( $this, 'validate_max_length_is_5' ),
+						'sanitize_callback' => array( $this, 'sanitize_string_to_array' ),
 					),
 					'segment'        => array(
 						'description' => 'The segment to filter by.',
@@ -180,6 +178,42 @@ class Endpoint_Posts extends Base_Endpoint {
 				$this->get_itm_source_param_args()
 			)
 		);
+	}
+
+	/**
+	 * Sanitizes a string to an array, splitting it by commas.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string|array<string> $string The string to sanitize.
+	 * @return array<string>
+	 */
+	public function sanitize_string_to_array( $string ): array {
+		if ( is_array( $string ) ) {
+			return $string;
+		}
+
+		return explode( ',', $string );
+	}
+
+	/**
+	 * Validates that the parameter has at most 5 items.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string|array<string> $string_or_array The string or array to validate.
+	 * @return true|WP_Error
+	 */
+	public function validate_max_length_is_5( $string_or_array ) {
+		if ( is_string( $string_or_array ) ) {
+			$string_or_array = $this->sanitize_string_to_array( $string_or_array );
+		}
+
+		if ( count( $string_or_array ) > 5 ) {
+			return new WP_Error( 'invalid_param', 'The parameter must have at most 5 items.' );
+		}
+
+		return true;
 	}
 
 	/**
@@ -198,23 +232,12 @@ class Endpoint_Posts extends Base_Endpoint {
 		// Setup the itm_source if it is provided.
 		$this->set_itm_source_from_request( $request );
 
-		// TODO: Needed before the Public API refactor.
-		// Convert array of authors to a string with the first element.
-		if ( isset( $params['author'] ) && is_array( $params['author'] ) ) {
-			$params['author'] = $params['author'][0];
-		}
-		// Convert array of tags to a string with the first element.
-		if ( isset( $params['tag'] ) && is_array( $params['tag'] ) ) {
-			$params['tag'] = $params['tag'][0];
-		}
-		// TODO END.
-
 		/**
 		 * The raw analytics data, received by the API.
 		 *
 		 * @var array<stdClass>|WP_Error $analytics_request
 		 */
-		$analytics_request = $this->analytics_posts_api->get_items(
+		$analytics_request = $this->content_api->get_posts(
 			array(
 				'period_start'   => $params['period_start'] ?? null,
 				'period_end'     => $params['period_end'] ?? null,

@@ -11,8 +11,6 @@ declare(strict_types=1);
 namespace Parsely\Content_Helper;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Analytics_Posts_API;
-
 use Parsely\Utils\Utils;
 
 use const Parsely\PARSELY_FILE;
@@ -89,11 +87,12 @@ class Dashboard_Widget extends Content_Helper_Feature {
 	 */
 	public function can_enable_widget(): bool {
 		$screen    = get_current_screen();
-		$posts_api = new Analytics_Posts_API( $GLOBALS['parsely'] );
 
 		return $this->can_enable_feature(
 			null !== $screen && 'dashboard' === $screen->id,
-			$posts_api->is_available_to_current_user()
+			$this->parsely->get_rest_api_controller()->is_available_to_current_user(
+				'/stats/posts'
+			)
 		);
 	}
 

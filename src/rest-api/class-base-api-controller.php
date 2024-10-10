@@ -26,7 +26,7 @@ abstract class Base_API_Controller {
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var Base_Endpoint[]
+	 * @var array<string, Base_Endpoint>
 	 */
 	private $endpoints;
 
@@ -147,7 +147,7 @@ abstract class Base_API_Controller {
 	 * @param Base_Endpoint $endpoint The endpoint to register.
 	 */
 	protected function register_endpoint( Base_Endpoint $endpoint ): void {
-		$this->endpoints[] = $endpoint;
+		$this->endpoints[ $endpoint->get_endpoint_slug() ] = $endpoint;
 		$endpoint->init();
 	}
 
@@ -179,4 +179,26 @@ abstract class Base_API_Controller {
 
 		return $this->get_route_prefix() . '/' . $route;
 	}
+
+	/**
+	 * Returns a specific endpoint by name.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string $endpoint
+	 * @return Base_Endpoint|null
+	 */
+	protected function get_endpoint( string $endpoint ): ?Base_Endpoint {
+		return $this->endpoints[ $endpoint ] ?? null;
+	}
+
+	/**
+	 * Checks if a specific endpoint is available to the current user.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string $endpoint The endpoint to check.
+	 * @return bool True if the controller is available to the current user, false otherwise.
+	 */
+	public abstract function is_available_to_current_user( string $endpoint ): bool;
 }

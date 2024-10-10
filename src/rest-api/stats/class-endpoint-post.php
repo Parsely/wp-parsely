@@ -10,11 +10,9 @@ declare(strict_types=1);
 
 namespace Parsely\REST_API\Stats;
 
-use Parsely\RemoteAPI\Analytics_Post_Detail_API;
-use Parsely\RemoteAPI\Referrers_Post_Detail_API;
-use Parsely\RemoteAPI\Related_API;
 use Parsely\REST_API\Base_Endpoint;
 use Parsely\REST_API\Use_Post_ID_Parameter_Trait;
+use Parsely\Services\ContentAPI\Content_API_Service;
 use Parsely\Utils\Utils;
 use stdClass;
 use WP_Error;
@@ -36,22 +34,13 @@ class Endpoint_Post extends Base_Endpoint {
 	use Related_Posts_Trait;
 
 	/**
-	 * The API for fetching post details.
+	 * The Parse.ly Content API service.
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var Analytics_Post_Detail_API $analytics_post_detail_api
+	 * @var Content_API_Service $content_api
 	 */
-	public $analytics_post_detail_api;
-
-	/**
-	 * The API for fetching post referrers.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @var Referrers_Post_Detail_API $referrers_post_detail_api
-	 */
-	public $referrers_post_detail_api;
+	public $content_api;
 
 	/**
 	 * The total views of the post.
@@ -71,9 +60,7 @@ class Endpoint_Post extends Base_Endpoint {
 	 */
 	public function __construct( Stats_Controller $controller ) {
 		parent::__construct( $controller );
-		$this->analytics_post_detail_api = new Analytics_Post_Detail_API( $this->parsely );
-		$this->referrers_post_detail_api = new Referrers_Post_Detail_API( $this->parsely );
-		$this->related_posts_api         = new Related_API( $this->parsely );
+		$this->content_api 			     = $this->parsely->get_content_api();
 	}
 
 	/**
@@ -177,16 +164,18 @@ class Endpoint_Post extends Base_Endpoint {
 		$post      = $request->get_param( 'post' );
 		$permalink = get_permalink( $post->ID );
 
+		if ( ! is_string( $permalink ) ) {
+			return new WP_Error( 'invalid_post', __( 'Invalid post.', 'wp-parsely' ), array( 'status' => 404 ) );
+		}
+
 		// Set the itm_source parameter.
 		$this->set_itm_source_from_request( $request );
 
 		// Get the data from the API.
-		$analytics_request = $this->analytics_post_detail_api->get_items(
-			array(
-				'url'          => $permalink,
-				'period_start' => $request->get_param( 'period_start' ),
-				'period_end'   => $request->get_param( 'period_end' ),
-			)
+		$analytics_request = $this->content_api->get_post_details(
+			$permalink,
+			$request->get_param( 'period_start' ),
+			$request->get_param( 'period_end' )
 		);
 
 		if ( is_wp_error( $analytics_request ) ) {
@@ -230,6 +219,10 @@ class Endpoint_Post extends Base_Endpoint {
 		$post      = $request->get_param( 'post' );
 		$permalink = get_permalink( $post->ID );
 
+		if ( ! is_string( $permalink ) ) {
+			return new WP_Error( 'invalid_post', __( 'Invalid post.', 'wp-parsely' ), array( 'status' => 404 ) );
+		}
+
 		// Set the itm_source parameter.
 		$this->set_itm_source_from_request( $request );
 
@@ -243,12 +236,10 @@ class Endpoint_Post extends Base_Endpoint {
 		$this->total_views = $total_views;
 
 		// Get the data from the API.
-		$analytics_request = $this->referrers_post_detail_api->get_items(
-			array(
-				'url'          => $permalink,
-				'period_start' => $request->get_param( 'period_start' ),
-				'period_end'   => $request->get_param( 'period_end' ),
-			)
+		$analytics_request = $this->content_api->get_post_referrers(
+			$permalink,
+			$request->get_param( 'period_start' ),
+			$request->get_param( 'period_end' )
 		);
 
 		if ( is_wp_error( $analytics_request ) ) {

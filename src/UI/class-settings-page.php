@@ -1198,7 +1198,7 @@ final class Settings_Page {
 	 * @param ParselySettingOptions $input Options from the settings page.
 	 * @return ParselySettingOptions Validated inputs.
 	 */
-	private function validate_basic_section( $input ) {
+	private function validate_basic_section( $input ): array {
 		$are_credentials_managed = $this->parsely->are_credentials_managed;
 		$options                 = $this->parsely->get_options();
 
