@@ -21,6 +21,8 @@ use WP_Error;
  * }
  *
  * @phpstan-type Content_API_Response = Content_API_Valid_Response|Content_API_Error_Response
+ *
+ * @phpstan-import-type WP_HTTP_Response from Base_Service_Endpoint
  */
 abstract class Content_API_Base_Endpoint extends Base_Service_Endpoint {
 	/**
@@ -36,8 +38,6 @@ abstract class Content_API_Base_Endpoint extends Base_Service_Endpoint {
 	protected function get_query_args( array $args = array() ): array {
 		$query_args = parent::get_query_args( $args );
 
-		$query_args['timeout'] = 30; // phpcs:ignore WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout
-
 		// Set up the API key and secret.
 		$query_args['apikey'] = $this->get_parsely()->get_site_id();
 		if ( $this->get_parsely()->api_secret_is_set() ) {
@@ -50,14 +50,14 @@ abstract class Content_API_Base_Endpoint extends Base_Service_Endpoint {
 	/**
 	 * Processes the response from the remote API.
 	 *
-	 * @param array<mixed>|WP_Error $response The response from the remote API.
+	 * @param WP_HTTP_Response|WP_Error $response The response from the remote API.
 	 *
 	 * @return array<mixed>|WP_Error The processed response.
 	 */
 	protected function process_response( $response ) {
 		$response = parent::process_response( $response );
 
-		if ( is_wp_error( $response ) || ! is_array( $response ) ) {
+		if ( is_wp_error( $response ) ) {
 			/** @var WP_Error $response */
 			return $response;
 		}

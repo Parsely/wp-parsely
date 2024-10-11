@@ -12,7 +12,6 @@ namespace Parsely\Content_Helper;
 
 use DateTime;
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Base_Endpoint_Remote;
 use Parsely\Services\ContentAPI\Content_API_Service;
 use Parsely\Services\ContentAPI\Endpoints\Endpoint_Analytics_Posts;
 use Parsely\Utils\Utils;
@@ -28,7 +27,12 @@ use const Parsely\PARSELY_FILE;
  *
  * @phpstan-import-type Analytics_Posts_API_Params from Endpoint_Analytics_Posts
  * @phpstan-import-type Analytics_Post from Endpoint_Analytics_Posts
- * @phpstan-import-type Remote_API_Error from Base_Endpoint_Remote
+ *
+ * @phpstan-type Remote_API_Error array{
+ *   code: int,
+ *   message: string,
+ *   htmlMessage: string,
+ * }
  *
  * @phpstan-type Parsely_Post_Stats array{
  *   page_views: string,

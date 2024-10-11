@@ -12,6 +12,7 @@ namespace Parsely;
 
 use Parsely\REST_API\REST_API_Controller;
 use Parsely\Services\ContentAPI\Content_API_Service;
+use Parsely\Services\SuggestionsAPI\Suggestions_API_Service;
 use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Settings_Page;
 use Parsely\Utils\Utils;
@@ -85,9 +86,16 @@ class Parsely {
 	/**
 	 * The Content API service.
 	 *
-	 * @var Content_API_Service $content_api_service
+	 * @var ?Content_API_Service $content_api_service
 	 */
 	private $content_api_service;
+
+	/**
+	 * The Suggestions API service.
+	 *
+	 * @var ?Suggestions_API_Service $suggestions_api_service
+	 */
+	private $suggestions_api_service;
 
 	/**
 	 * The Parse.ly internal REST API controller.
@@ -222,7 +230,6 @@ class Parsely {
 
 		$this->are_credentials_managed = $this->are_credentials_managed();
 		$this->set_managed_options();
-		$this->init_external_services();
 
 		$this->allow_parsely_remote_requests();
 	}
@@ -255,18 +262,6 @@ class Parsely {
 	}
 
 	/**
-	 * Initializes external services.
-	 *
-	 * This method initializes all the relevant external services for the plugin, such as the
-	 * Content API service, and the Suggestions API service.
-	 *
-	 * @since 3.17.0
-	 */
-	private function init_external_services(): void {
-		$this->content_api_service = new Content_API_Service( $this );
-	}
-
-	/**
 	 * Returns the Content API service.
 	 *
 	 * This method returns the Content API service, which is used to interact with the Parse.ly Content API.
@@ -276,7 +271,28 @@ class Parsely {
 	 * @return Content_API_Service
 	 */
 	public function get_content_api(): Content_API_Service {
+		if ( ! isset( $this->content_api_service ) ) {
+			$this->content_api_service = new Content_API_Service( $this );
+		}
+
 		return $this->content_api_service;
+	}
+
+	/**
+	 * Returns the Suggestions API service.
+	 *
+	 * This method returns the Suggestions API service, which is used to interact with the Parse.ly Suggestions API.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return Suggestions_API_Service
+	 */
+	public function get_suggestions_api(): Suggestions_API_Service {
+		if ( ! isset( $this->suggestions_api_service ) ) {
+			$this->suggestions_api_service = new Suggestions_API_Service( $this );
+		}
+
+		return $this->suggestions_api_service;
 	}
 
 	/**

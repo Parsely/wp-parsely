@@ -7,6 +7,22 @@ use Parsely\Parsely;
 use Parsely\Services\Cached_Service_Endpoint;
 use WP_Error;
 
+/**
+ * Base class for API service endpoints.
+ *
+ * @since 3.17.0
+ *
+ * @phpstan-type WP_HTTP_Response array{
+ *      headers: array<string, string>,
+ *      body: string,
+ *      response: array{
+ *       code: int|false,
+ *       message: string|false,
+ *      },
+ *      cookies: array<string, string>,
+ *      http_response: \WP_HTTP_Requests_Response|null,
+ *  }
+ */
 abstract class Base_Service_Endpoint {
 	/**
 	 * The API service that this endpoint belongs to.
@@ -116,6 +132,7 @@ abstract class Base_Service_Endpoint {
 			}
 		}
 
+		/** @var WP_HTTP_Response|WP_Error $response */
 		$response = wp_safe_remote_request( $request_url, $request_options );
 
 		return $this->process_response( $response );
@@ -145,7 +162,7 @@ abstract class Base_Service_Endpoint {
 	/**
 	 * Processes the response from the remote API.
 	 *
-	 * @param array<mixed>|WP_Error $response The response from the remote API.
+	 * @param WP_HTTP_Response|WP_Error $response The response from the remote API.
 	 * @return array<mixed>|WP_Error The processed response.
 	 */
 	protected function process_response( $response ) {

@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Parsely\REST_API\Content_Helper;
 
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Brief_API;
 use Parsely\REST_API\Base_Endpoint;
+use Parsely\Services\SuggestionsAPI\Suggestions_API_Service;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -28,13 +28,13 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 	use Content_Helper_Feature;
 
 	/**
-	 * The Suggest Brief API instance.
+	 * The Suggestions API service.
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var Suggest_Brief_API $suggest_brief_api
+	 * @var Suggestions_API_Service $suggestions_api
 	 */
-	protected $suggest_brief_api;
+	protected $suggestions_api;
 
 	/**
 	 * Initializes the class.
@@ -45,7 +45,7 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 	 */
 	public function __construct( Content_Helper_Controller $controller ) {
 		parent::__construct( $controller );
-		$this->suggest_brief_api = new Suggest_Brief_API( $this->parsely );
+		$this->suggestions_api = $controller->get_parsely()->get_suggestions_api();
 	}
 
 	/**
@@ -107,6 +107,18 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 					'required'    => false,
 					'default'     => 'neutral',
 				),
+				'max_items' => array(
+					'description' => __( 'The maximum number of items to generate.', 'wp-parsely' ),
+					'type'        => 'integer',
+					'required'    => false,
+					'default'     => 1,
+				),
+				'max_characters' => array(
+					'description' => __( 'The maximum number of characters to generate.', 'wp-parsely' ),
+					'type'        => 'integer',
+					'required'    => false,
+					'default'     => 160,
+				),
 			)
 		);
 	}
@@ -150,12 +162,38 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 		 */
 		$style = $request->get_param( 'style' );
 
-		$response = $this->suggest_brief_api->get_suggestion( $post_title, $post_content, $persona, $style );
+		/**
+		 * The maximum number of items to generate.
+		 *
+		 * @var int $max_items
+		 */
+		$max_items = $request->get_param( 'max_items' );
+
+		/**
+		 * The maximum number of characters to generate.
+		 *
+		 * @var int $max_characters
+		 */
+		$max_characters = $request->get_param( 'max_characters' );
+
+		$response = $this->suggestions_api->get_brief_suggestions(
+			$post_title,
+			$post_content,
+			array(
+				'persona'   => $persona,
+				'style'     => $style,
+				'max_items' => $max_items,
+				'max_characters' => $max_characters,
+			)
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
 		}
 
+		// TODO: For now, only return the first suggestion. When the UI is ready to handle multiple suggestions, we can
+		// TODO: return the entire array.
+		$response = $response[0] ?? '';
 		return new WP_REST_Response( array( 'data' => $response ), 200 );
 	}
 }

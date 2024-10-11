@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Parsely\REST_API\Content_Helper;
 
 use Parsely\Models\Smart_Link;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
 use Parsely\REST_API\Base_Endpoint;
 use Parsely\REST_API\Use_Post_ID_Parameter_Trait;
+use Parsely\Services\SuggestionsAPI\Suggestions_API_Service;
 use WP_Error;
 use WP_Post;
 use WP_REST_Request;
@@ -32,13 +32,13 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	use Use_Post_ID_Parameter_Trait;
 
 	/**
-	 * The Suggest Linked Reference API instance.
+	 * The Suggestions API service.
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var Suggest_Linked_Reference_API $suggest_linked_reference_api
+	 * @var Suggestions_API_Service $suggestions_api
 	 */
-	private $suggest_linked_reference_api;
+	protected $suggestions_api;
 
 	/**
 	 * Initializes the class.
@@ -49,7 +49,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 	 */
 	public function __construct( Content_Helper_Controller $controller ) {
 		parent::__construct( $controller );
-		$this->suggest_linked_reference_api = new Suggest_Linked_Reference_API( $this->parsely );
+		$this->suggestions_api = $controller->get_parsely()->get_suggestions_api();
 	}
 
 	/**
@@ -225,10 +225,11 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		 */
 		$url_exclusion_list = $request->get_param( 'url_exclusion_list' ) ?? array();
 
-		$response = $this->suggest_linked_reference_api->get_links(
+		$response = $this->suggestions_api->get_smart_links(
 			$post_content,
-			4, // TODO: will be removed after API refactoring.
-			$max_links,
+			array(
+				'max_items'      => $max_links,
+			),
 			$url_exclusion_list
 		);
 
