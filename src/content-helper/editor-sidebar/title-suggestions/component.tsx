@@ -226,7 +226,7 @@ export const TitleSuggestionsPanel = (): React.JSX.Element => {
 						)
 					) }
 					<Button
-						href="https://docs.parse.ly/plugin-content-helper/#h-title-suggestions-beta"
+						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/title-suggestions/"
 						target="_blank"
 						variant="link"
 					>
