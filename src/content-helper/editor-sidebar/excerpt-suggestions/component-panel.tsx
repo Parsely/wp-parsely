@@ -237,6 +237,7 @@ export const ExcerptSuggestionsPanel = ( {
 						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/"
 						target="_blank"
 						variant="link"
+						rel="noopener"
 					>
 						{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
 						<Icon icon={ external } size={ 18 } className="parsely-external-link-icon" />
@@ -283,6 +284,7 @@ export const ExcerptSuggestionsPanel = ( {
 					) }
 					target="_blank"
 					variant="link"
+					rel="noopener"
 				>
 					{ __( 'Learn more about manual excerpts', 'wp-parsely' ) }
 					<Icon
@@ -363,6 +365,7 @@ export const ExcerptSuggestionsPanel = ( {
 						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/"
 						target="_blank"
 						variant="link"
+						rel="noopener"
 					>
 						{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
 						<Icon
