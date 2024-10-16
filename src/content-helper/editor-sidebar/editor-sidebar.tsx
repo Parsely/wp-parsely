@@ -40,6 +40,7 @@ import { SidebarPerformanceTab } from './tabs/sidebar-performance-tab';
 import { SidebarToolsTab } from './tabs/sidebar-tools-tab';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
+export { BLOCK_PLUGIN_ID as PARSELY_SIDEBAR_PLUGIN_ID };
 
 export type OnSettingChangeFunction = ( key: keyof SidebarSettings, value: string | boolean | number ) => void;
 

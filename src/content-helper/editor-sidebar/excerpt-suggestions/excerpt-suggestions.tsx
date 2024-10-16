@@ -14,12 +14,9 @@ import { dispatchCoreEditPost } from '../../../@types/gutenberg/types';
 import { PluginDocumentSettingPanel } from '../../../@types/gutenberg/wrapper';
 import { SettingsProvider } from '../../common/settings';
 import { getContentHelperPermissions } from '../../common/utils/permissions';
-import { getSettingsFromJson } from '../editor-sidebar';
+import { getSettingsFromJson, PARSELY_SIDEBAR_PLUGIN_ID } from '../editor-sidebar';
 import './excerpt-suggestions.scss';
 import { ExcerptSuggestionsPanel } from './component-panel';
-
-// TODO: Get the plugin ID from the editor sidebar file.
-const PARSELY_SIDEBAR_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
 /**
  * The ExcerptDocumentSettingPanel component verifies that the current post type supports excerpts,
