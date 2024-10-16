@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
+use Parsely\Content_Helper\Editor_Sidebar\Editor_Sidebar_Feature;
 use Parsely\Content_Helper\Editor_Sidebar\Smart_Linking;
 use Parsely\Dashboard_Link;
 use Parsely\Parsely;
@@ -31,7 +32,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @var array<Content_Helper_Feature>
+	 * @var array<Editor_Sidebar_Feature>
 	 */
 	protected $features;
 
@@ -48,7 +49,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 		// Instantiate the features.
 		$this->features = array(
 			'Smart_Linking'     => new Smart_Linking( $this ),
-			'Excerpt_Generator' => new Excerpt_Suggestions( $this->parsely ),
+			'Excerpt_Generator' => new Excerpt_Suggestions( $this ),
 		);
 	}
 
@@ -132,7 +133,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 
 		// Initialize the features.
 		foreach ( $this->features as $feature ) {
-			$feature->run();
+				$feature->run();
 		}
 	}
 

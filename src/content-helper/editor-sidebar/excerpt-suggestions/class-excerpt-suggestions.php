@@ -10,60 +10,90 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
-use Parsely\Parsely;
-use Parsely\Permissions;
-
-use Parsely\Utils\Utils;
-use const Parsely\PARSELY_FILE;
+use Parsely\Content_Helper\Editor_Sidebar\Editor_Sidebar_Feature;
 
 /**
  * Content Helper: Excerpt Generator feature class
  *
  * @since 3.13.0
+ * @since 3.17.0 Renamed to Excerpt Suggestions and converted to an Editor Sidebar feature.
  */
-class Excerpt_Suggestions extends Content_Helper_Feature {
-
+class Excerpt_Suggestions extends Editor_Sidebar_Feature {
 	/**
-	 * Constructor.
+	 * Returns the feature's name.
 	 *
-	 * @since 3.13.0
+	 * @since 3.17.0
 	 *
-	 * @param Parsely $parsely Instance of Parsely class.
+	 * @return string
 	 */
-	public function __construct( Parsely $parsely ) {
-		$this->parsely = $parsely;
+	public static function get_feature_name(): string {
+		return 'excerpt_suggestions';
 	}
 
 	/**
 	 * Returns the feature's filter name.
 	 *
-	 * @since 3.13.0
+	 * This is deprecated in favor of the new wp_parsely_current_user_can_use_pch_feature filter.
+	 *
+	 * @since 3.17.0
 	 *
 	 * @return string The filter name.
 	 */
 	public static function get_feature_filter_name(): string {
-		return self::get_global_filter_name() . '_excerpt_suggestions';
-	}
-	/**
-	 * Returns the feature's script ID.
-	 *
-	 * @since 3.16.0
-	 *
-	 * @return string The script ID.
-	 */
-	public static function get_script_id(): string {
-		return ''; // Not in use for this feature.
+		return self::get_global_filter_name() . '_excerpt_generator';
 	}
 
 	/**
-	 * Returns the feature's style ID.
+	 * Constructor.
 	 *
-	 * @since 3.16.0
+	 * @since 3.17.0
 	 *
-	 * @return string The style ID.
+	 * @param Editor_Sidebar $editor_sidebar Instance of Editor_Sidebar class.
 	 */
-	public static function get_style_id(): string {
-		return ''; // Not in use for this feature.
+	public function __construct( Editor_Sidebar $editor_sidebar ) {
+		parent::__construct( $editor_sidebar );
+
+		// Check if the feature is disabled using the global and feature filters.
+		if ( has_filter( self::get_feature_filter_name() ) ) {
+			add_filter(
+				'wp_parsely_current_user_can_use_pch_feature',
+				array( $this, 'callback_disable_feature_via_filters' ),
+				10,
+				2
+			);
+		}
+	}
+
+	/**
+	 * Checks and disables the feature if it is disabled via the global or feature filters.
+	 *
+	 * This throws a deprecated notice if the feature filter name is in use.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param ?bool  $current_user_can_use_pch_feature Whether the current user can use the feature.
+	 * @param string $feature_name The feature's name.
+	 * @return ?bool  Returns false if the feature is disabled via filters.
+	 */
+	public function callback_disable_feature_via_filters(
+		?bool $current_user_can_use_pch_feature,
+		string $feature_name
+	): ?bool {
+		if ( static::get_feature_name() === $feature_name ) {
+			// Check if the feature is disabled using the global and feature filters.
+			$feature_enabled_with_filter = apply_filters_deprecated(
+				self::get_feature_filter_name(),
+				array( true ),
+				'3.17.0',
+				'wp_parsely_current_user_can_use_pch_feature'
+			);
+
+			// If the feature is disabled via the global or feature filters, return false.
+			if ( false === $feature_enabled_with_filter ) {
+				return false;
+			}
+		}
+		return $current_user_can_use_pch_feature;
 	}
 
 	/**
@@ -73,26 +103,5 @@ class Excerpt_Suggestions extends Content_Helper_Feature {
 	 */
 	public function run(): void {
 		// Do nothing.
-	}
-
-	/**
-	 * Returns whether the feature can be enabled for the current user.
-	 *
-	 * @since 3.16.0
-	 *
-	 * @param bool ...$conditions Conditions that need to be met besides filters
-	 *                            for the function to return true.
-	 * @return bool Whether the feature can be enabled.
-	 */
-	protected function can_enable_feature( bool ...$conditions ): bool {
-		if ( ! parent::can_enable_feature( ...$conditions ) ) {
-			return false;
-		}
-
-		return Permissions::current_user_can_use_pch_feature(
-			'excerpt_suggestions',
-			$this->parsely->get_options()['content_helper'],
-			get_the_ID()
-		);
 	}
 }
