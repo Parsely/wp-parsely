@@ -25,7 +25,7 @@ const PARSELY_SIDEBAR_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
  * The ExcerptSuggestionsPanel component verifies that the current post type supports excerpts,
  * and then renders the PostExcerptSuggestions component.
  *
- * @since 3.13.0
+ * @since 3.17.0
  */
 export const ExcerptDocumentSettingPanel = () => {
 	return (

@@ -55,7 +55,7 @@ type ExcerptSuggestionsPanelProps = {
  * The PostExcerptSuggestions component displays the excerpt textarea and the Parse.ly AI controls.
  *
  * @since 3.13.0
- * @since 3.17.0 Renamed from `PostExcerptSuggestions` and added the isDocumentSettingPanel prop.
+ * @since 3.17.0 Renamed from `PostExcerptSuggestions` and added the `isDocumentSettingPanel` prop.
  *
  * @param {ExcerptSuggestionsPanelProps} props The component's props.
  */
@@ -224,10 +224,9 @@ export const ExcerptSuggestionsPanel = ( {
 			</div>
 		</div>;
 
-	let textareaLabel = __( 'Excerpt', 'wp-parsely' );
-	if ( isDocumentSettingPanel ) {
-		textareaLabel = __( 'Write an excerpt (optional)', 'wp-parsely' );
-	}
+	const textareaLabel = isDocumentSettingPanel
+		? __( 'Write an excerpt (optional)', 'wp-parsely' )
+		: __( 'Excerpt', 'wp-parsely' );
 
 	return (
 		<div className="editor-post-excerpt" >
@@ -235,7 +234,7 @@ export const ExcerptSuggestionsPanel = ( {
 				<div className="excerpt-suggestions-text">
 					{ __( 'Use Parse.ly AI to generate a concise, engaging excerpt for your post.', 'wp-parsely' ) }
 					<Button
-						href="https://docs.parse.ly/plugin-content-helper/#h-smart-linking-beta"
+						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/"
 						target="_blank"
 						variant="link"
 					>
@@ -279,9 +278,8 @@ export const ExcerptSuggestionsPanel = ( {
 
 			{ isDocumentSettingPanel && (
 				<Button
-					href={ __(
-						'https://wordpress.org/documentation/article/page-post-settings-sidebar/#excerpt',
-						'wp-parsely',
+					href={ __( // eslint-disable-line @wordpress/i18n-text-domain
+						'https://wordpress.org/documentation/article/page-post-settings-sidebar/#excerpt'
 					) }
 					target="_blank"
 					variant="link"
@@ -362,7 +360,7 @@ export const ExcerptSuggestionsPanel = ( {
 
 				{ isDocumentSettingPanel && (
 					<Button
-						href="https://docs.parse.ly/plugin-content-helper/#h-excerpt-generator-beta"
+						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/"
 						target="_blank"
 						variant="link"
 					>
