@@ -99,7 +99,7 @@ class Excerpt_Suggestions extends Editor_Sidebar_Feature {
 	/**
 	 * Inserts Content Helper Excerpt Generator inline scripts.
 	 *
-	 * @since 3.13.0
+	 * @since 3.17.0
 	 */
 	public function run(): void {
 		// Do nothing.
