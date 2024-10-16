@@ -22,8 +22,8 @@ import { ExcerptSuggestionsPanel } from './component-panel';
 const PARSELY_SIDEBAR_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
 
 /**
- * The ExcerptSuggestionsPanel component verifies that the current post type supports excerpts,
- * and then renders the PostExcerptSuggestions component.
+ * The ExcerptDocumentSettingPanel component verifies that the current post type supports excerpts,
+ * and then renders the ExcerptSuggestionsPanel component.
  *
  * @since 3.17.0
  */
