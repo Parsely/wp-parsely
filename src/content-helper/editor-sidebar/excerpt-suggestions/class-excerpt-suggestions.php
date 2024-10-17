@@ -57,7 +57,7 @@ class Excerpt_Suggestions extends Editor_Sidebar_Feature {
 		if ( has_filter( self::get_feature_filter_name() ) ) {
 			add_filter(
 				'wp_parsely_current_user_can_use_pch_feature',
-				array( $this, 'callback_disable_feature_via_filters' ),
+				array( $this, 'callback_is_feature_enabled' ),
 				10,
 				2
 			);
@@ -75,7 +75,7 @@ class Excerpt_Suggestions extends Editor_Sidebar_Feature {
 	 * @param string $feature_name The feature's name.
 	 * @return ?bool  Returns false if the feature is disabled via filters.
 	 */
-	public function callback_disable_feature_via_filters(
+	public function callback_is_feature_enabled(
 		?bool $current_user_can_use_pch_feature,
 		string $feature_name
 	): ?bool {
@@ -93,6 +93,7 @@ class Excerpt_Suggestions extends Editor_Sidebar_Feature {
 				return false;
 			}
 		}
+
 		return $current_user_can_use_pch_feature;
 	}
 

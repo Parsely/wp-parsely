@@ -62,21 +62,19 @@ abstract class Editor_Sidebar_Feature extends Content_Helper_Feature {
 		);
 	}
 
-
 	/**
 	 * Returns the feature's filter name. The feature filter controls the
 	 * enabled/disabled state of a particular Content Helper feature.
 	 *
 	 * Not in use for Editor Sidebar features.
 	 *
-	 * @since 3.16.0
+	 * @since 3.17.0
 	 *
 	 * @return string The filter name.
 	 */
 	public static function get_feature_filter_name(): string {
 		return ''; // Not in use for this feature.
 	}
-
 
 	/**
 	 * Returns the feature's script ID.

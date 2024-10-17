@@ -133,7 +133,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 
 		// Initialize the features.
 		foreach ( $this->features as $feature ) {
-				$feature->run();
+			$feature->run();
 		}
 	}
 
