@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Content API Service class.
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\ContentAPI;
@@ -7,6 +14,13 @@ use Parsely\Services\Base_API_Service;
 use Parsely\Services\Base_Service_Endpoint;
 use WP_Error;
 
+/**
+ * The Parse.ly Content API Service class.
+ *
+ * This class is responsible for handling the API requests to the Parse.ly Content API.
+ *
+ * @since 3.17.0
+ */
 class Content_API_Service extends Base_API_Service {
 
 	/**
@@ -17,7 +31,7 @@ class Content_API_Service extends Base_API_Service {
 	 * @return string
 	 */
 	public function get_base_url(): string {
-		return "https://api.parsely.com/v2";
+		return 'https://api.parsely.com/v2';
 	}
 
 	/**
@@ -67,7 +81,7 @@ class Content_API_Service extends Base_API_Service {
 	 *
 	 * @link https://docs.parse.ly/api-analytics-endpoint/#2-get-analytics-post-detail
 	 *
-	 * @param string $url The URL of the post.
+	 * @param string      $url The URL of the post.
 	 * @param string|null $period_start The start date of the period to get the data for.
 	 * @param string|null $period_end The end date of the period to get the data for.
 	 * @return array<mixed>|WP_Error Returns the post details or a WP_Error object in case of an error.
@@ -81,9 +95,9 @@ class Content_API_Service extends Base_API_Service {
 		$endpoint = $this->get_endpoint( '/analytics/post/detail' );
 
 		$args = array(
-			'url' => $url,
+			'url'          => $url,
 			'period_start' => $period_start,
-			'period_end' => $period_end,
+			'period_end'   => $period_end,
 		);
 
 		return $endpoint->call( $args );
@@ -96,7 +110,7 @@ class Content_API_Service extends Base_API_Service {
 	 *
 	 * @link https://docs.parse.ly/api-referrers-endpoint/#3-get-referrers-post-detail
 	 *
-	 * @param string $url The URL of the post.
+	 * @param string      $url The URL of the post.
 	 * @param string|null $period_start The start date of the period to get the data for.
 	 * @param string|null $period_end The end date of the period to get the data for.
 	 * @return array<mixed>|WP_Error Returns the referrers or a WP_Error object in case of an error.
@@ -110,9 +124,9 @@ class Content_API_Service extends Base_API_Service {
 		$endpoint = $this->get_endpoint( '/referrers/post/detail' );
 
 		$args = array(
-			'url' => $url,
+			'url'          => $url,
 			'period_start' => $period_start,
-			'period_end' => $period_end,
+			'period_end'   => $period_end,
 		);
 
 		return $endpoint->call( $args );
@@ -125,7 +139,7 @@ class Content_API_Service extends Base_API_Service {
 	 *
 	 * @link https://docs.parse.ly/content-recommendations/#h-get-related
 	 *
-	 * @param string $url The URL of the post.
+	 * @param string              $url The URL of the post.
 	 * @param array<string,mixed> $params The parameters to pass to the API request.
 	 * @return array<mixed>|WP_Error Returns the related posts or a WP_Error object in case of an error.
 	 */
@@ -150,7 +164,7 @@ class Content_API_Service extends Base_API_Service {
 	 *
 	 * @link https://docs.parse.ly/content-recommendations/#h-get-related
 	 *
-	 * @param string $uuid The UUID of the user.
+	 * @param string              $uuid The UUID of the user.
 	 * @param array<string,mixed> $params The parameters to pass to the API request.
 	 * @return array<mixed>|WP_Error Returns the related posts or a WP_Error object in case of an error.
 	 */

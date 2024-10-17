@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Suggestions API Endpoint: Suggest Brief
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\SuggestionsAPI\Endpoints;
@@ -18,10 +25,8 @@ use WP_Error;
  *     max_characters?: int,
  *     max_items?: int,
  * }
- *
  */
-class Endpoint_Suggest_Brief extends Base_Suggestions_API_Endpoint {
-
+class Endpoint_Suggest_Brief extends Suggestions_API_Base_Endpoint {
 	/**
 	 * Returns the endpoint for the API request.
 	 *
@@ -39,8 +44,8 @@ class Endpoint_Suggest_Brief extends Base_Suggestions_API_Endpoint {
 	 *
 	 * @since 3.13.0
 	 *
-	 * @param string $title   The title of the content.
-	 * @param string $content The query arguments to send to the remote API.
+	 * @param string                         $title   The title of the content.
+	 * @param string                         $content The query arguments to send to the remote API.
 	 * @param Endpoint_Suggest_Brief_Options $options The options to pass to the API request.
 	 * @return array<string>|WP_Error The response from the remote API, or a WP_Error
 	 *                         object if the response is an error.
@@ -48,14 +53,14 @@ class Endpoint_Suggest_Brief extends Base_Suggestions_API_Endpoint {
 	public function get_suggestion(
 		string $title,
 		string $content,
-		array $options = array()
+		$options = array()
 	) {
 		$request_body = array(
 			'output_config' => array(
-				'persona' => $options['persona'] ?? 'journalist',
-				'style'   => $options['style'] ?? 'neutral',
+				'persona'        => $options['persona'] ?? 'journalist',
+				'style'          => $options['style'] ?? 'neutral',
 				'max_characters' => $options['max_characters'] ?? 160,
-				'max_items' => $options['max_items'] ?? 1,
+				'max_items'      => $options['max_items'] ?? 1,
 			),
 			'title'         => $title,
 			'text'          => wp_strip_all_tags( $content ),
@@ -85,6 +90,4 @@ class Endpoint_Suggest_Brief extends Base_Suggestions_API_Endpoint {
 
 		return $this->get_suggestion( $title, $content, $options );
 	}
-
-
 }

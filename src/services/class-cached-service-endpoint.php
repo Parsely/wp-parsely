@@ -1,16 +1,39 @@
 <?php
+/**
+ * Cached Service Endpoint class.
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services;
 
 use WP_Error;
 
+/**
+ * Cached Service Endpoint class.
+ *
+ * This class is a wrapper around a service endpoint that caches the response
+ * from the API request.
+ *
+ * @since 3.17.0
+ */
 class Cached_Service_Endpoint extends Base_Service_Endpoint {
-
+	/**
+	 * The cache group for the API requests.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @var string
+	 */
 	private const CACHE_GROUP = 'wp-parsely';
 
 	/**
 	 * The service endpoint object.
+	 *
+	 * @since 3.17.0
 	 *
 	 * @var Base_Service_Endpoint
 	 */
@@ -19,6 +42,8 @@ class Cached_Service_Endpoint extends Base_Service_Endpoint {
 	/**
 	 * The cache time-to-live, in milliseconds.
 	 *
+	 * @since 3.17.0
+	 *
 	 * @var int
 	 */
 	private $cache_ttl;
@@ -26,12 +51,14 @@ class Cached_Service_Endpoint extends Base_Service_Endpoint {
 	/**
 	 * Constructor.
 	 *
+	 * @since 3.17.0
+	 *
 	 * @param Base_Service_Endpoint $service_endpoint The service endpoint object.
-	 * @param int $cache_ttl The cache time-to-live.
+	 * @param int                   $cache_ttl The cache time-to-live.
 	 */
 	public function __construct( Base_Service_Endpoint $service_endpoint, int $cache_ttl ) {
 		$this->service_endpoint = $service_endpoint;
-		$this->cache_ttl = $cache_ttl;
+		$this->cache_ttl        = $cache_ttl;
 
 		parent::__construct( $service_endpoint->api_service );
 	}
@@ -39,17 +66,18 @@ class Cached_Service_Endpoint extends Base_Service_Endpoint {
 	/**
 	 * Returns the cache key for the API request.
 	 *
-	 * @param array<mixed> $args The arguments to pass to the API request.
+	 * @since 3.17.0
 	 *
+	 * @param array<mixed> $args The arguments to pass to the API request.
 	 * @return string The cache key for the API request.
 	 */
 	private function get_cache_key( array $args ): string {
 		$api_service = $this->service_endpoint->api_service;
 
 		$cache_key = 'parsely_api_' .
-		             wp_hash( $api_service->get_base_url() ) . '_' .
-			         wp_hash( $this->get_endpoint() ) . '_' .
-			         wp_hash( (string) wp_json_encode( $args ) );
+					wp_hash( $api_service->get_base_url() ) . '_' .
+					wp_hash( $this->get_endpoint() ) . '_' .
+					wp_hash( (string) wp_json_encode( $args ) );
 
 		return $cache_key;
 	}
@@ -67,7 +95,7 @@ class Cached_Service_Endpoint extends Base_Service_Endpoint {
 	 */
 	public function call( array $args = array() ) {
 		$cache_key = $this->get_cache_key( $args );
-		$cache = wp_cache_get( $cache_key, self::CACHE_GROUP );
+		$cache     = wp_cache_get( $cache_key, self::CACHE_GROUP );
 
 		if ( false !== $cache ) {
 			// @phpstan-ignore-next-line

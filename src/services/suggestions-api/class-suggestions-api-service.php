@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Suggestions API service class.
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\SuggestionsAPI;
@@ -16,10 +23,13 @@ use WP_Error;
  *
  * @phpstan-import-type Endpoint_Suggest_Brief_Options from Endpoints\Endpoint_Suggest_Brief
  * @phpstan-import-type Endpoint_Suggest_Headline_Options from Endpoints\Endpoint_Suggest_Headline
+ * @phpstan-import-type Endpoint_Suggest_Linked_Reference_Options from Endpoints\Endpoint_Suggest_Linked_Reference
  */
 class Suggestions_API_Service extends Base_API_Service {
 	/**
 	 * Returns the base URL for the API service.
+	 *
+	 * @since 3.17.0
 	 *
 	 * @return string
 	 */
@@ -29,6 +39,8 @@ class Suggestions_API_Service extends Base_API_Service {
 
 	/**
 	 * Registers the endpoints for the service.
+	 *
+	 * @since 3.17.0
 	 */
 	protected function register_endpoints(): void {
 		$endpoints = array(
@@ -49,13 +61,13 @@ class Suggestions_API_Service extends Base_API_Service {
 	 * @since 3.13.0
 	 * @since 3.17.0 Updated to use the new API service.
 	 *
-	 * @param string $title   The title of the content.
-	 * @param string $content The query arguments to send to the remote API.
+	 * @param string                         $title   The title of the content.
+	 * @param string                         $content The query arguments to send to the remote API.
 	 * @param Endpoint_Suggest_Brief_Options $options The options to pass to the API request.
 	 * @return array<string>|WP_Error The response from the remote API, or a WP_Error
 	 *                         object if the response is an error.
 	 */
-	public function get_brief_suggestions( string $title, string $content, array $options = array() ) {
+	public function get_brief_suggestions( string $title, string $content, $options = array() ) {
 		/** @var Endpoints\Endpoint_Suggest_Brief $endpoint */
 		$endpoint = $this->get_endpoint( '/suggest-brief' );
 
@@ -69,12 +81,12 @@ class Suggestions_API_Service extends Base_API_Service {
 	 * @since 3.13.0
 	 * @since 3.17.0 Updated to use the new API service.
 	 *
-	 * @param string $content The query arguments to send to the remote API.
+	 * @param string                            $content The query arguments to send to the remote API.
 	 * @param Endpoint_Suggest_Headline_Options $options The options to pass to the API request.
 	 * @return array<string>|WP_Error The response from the remote API, or a WP_Error
 	 *                         object if the response is an error.
 	 */
-	public function get_title_suggestions( string $content, array $options = array() ) {
+	public function get_title_suggestions( string $content, $options = array() ) {
 		/** @var Endpoints\Endpoint_Suggest_Headline $endpoint */
 		$endpoint = $this->get_endpoint( '/suggest-headline' );
 
@@ -87,18 +99,17 @@ class Suggestions_API_Service extends Base_API_Service {
 	 * @since 3.14.0
 	 * @since 3.17.0 Updated to use the new API service.
 	 *
-	 * @param string   $content             The content to generate links for.
-	 * @param array $options The options to pass to the API request.
-	 * @param string[] $url_exclusion_list  A list of URLs to exclude from the suggestions.
+	 * @param string                                    $content             The content to generate links for.
+	 * @param Endpoint_Suggest_Linked_Reference_Options $options             The options to pass to the API request.
+	 * @param string[]                                  $url_exclusion_list  A list of URLs to exclude from the suggestions.
 	 *
 	 * @return Smart_Link[]|WP_Error The response from the remote API, or a WP_Error
 	 *                                    object if the response is an error.
 	 */
-	public function get_smart_links( string $content, array $options = array(), array $url_exclusion_list = array() ) {
+	public function get_smart_links( string $content, $options = array(), array $url_exclusion_list = array() ) {
 		/** @var Endpoints\Endpoint_Suggest_Linked_Reference $endpoint */
 		$endpoint = $this->get_endpoint( '/suggest-linked-reference' );
 
 		return $endpoint->get_links( $content, $options, $url_exclusion_list );
 	}
 }
-

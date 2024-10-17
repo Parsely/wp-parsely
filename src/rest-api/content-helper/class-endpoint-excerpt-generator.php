@@ -85,29 +85,29 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 			array( 'POST' ),
 			array( $this, 'generate_excerpt' ),
 			array(
-				'text'    => array(
+				'text'           => array(
 					'description' => __( 'The text to generate the excerpt from.', 'wp-parsely' ),
 					'type'        => 'string',
 					'required'    => true,
 				),
-				'title'   => array(
+				'title'          => array(
 					'description' => __( 'The title of the content.', 'wp-parsely' ),
 					'type'        => 'string',
 					'required'    => true,
 				),
-				'persona' => array(
+				'persona'        => array(
 					'description' => __( 'The persona of the content.', 'wp-parsely' ),
 					'type'        => 'string',
 					'required'    => false,
 					'default'     => 'journalist',
 				),
-				'style'   => array(
+				'style'          => array(
 					'description' => __( 'The style of the content.', 'wp-parsely' ),
 					'type'        => 'string',
 					'required'    => false,
 					'default'     => 'neutral',
 				),
-				'max_items' => array(
+				'max_items'      => array(
 					'description' => __( 'The maximum number of items to generate.', 'wp-parsely' ),
 					'type'        => 'integer',
 					'required'    => false,
@@ -180,9 +180,9 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 			$post_title,
 			$post_content,
 			array(
-				'persona'   => $persona,
-				'style'     => $style,
-				'max_items' => $max_items,
+				'persona'        => $persona,
+				'style'          => $style,
+				'max_items'      => $max_items,
 				'max_characters' => $max_characters,
 			)
 		);

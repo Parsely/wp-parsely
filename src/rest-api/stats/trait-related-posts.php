@@ -115,7 +115,7 @@ trait Related_Posts_Trait {
 		/**
 		 * The raw related posts data, received by the API.
 		 *
-		 * @var array<stdClass>|WP_Error $related_posts_request
+		 * @var array<mixed>|WP_Error $related_posts_request
 		 */
 		$related_posts_request = $this->content_api->get_related_posts_with_url(
 			$url,
@@ -140,7 +140,7 @@ trait Related_Posts_Trait {
 
 		$related_posts = array_map(
 			static function ( array $item ) use ( $itm_source ) {
-				return (object) array(
+				return array(
 					'image_url'        => $item['image_url'],
 					'thumb_url_medium' => $item['thumb_url_medium'],
 					'title'            => $item['title'],

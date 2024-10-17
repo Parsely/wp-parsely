@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Content API Endpoint: Referrers Post Detail
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\ContentAPI\Endpoints;
@@ -40,5 +47,4 @@ class Endpoint_Referrers_Post_Detail extends Content_API_Base_Endpoint {
 
 		return $this->request( 'GET', $query_args );
 	}
-
 }

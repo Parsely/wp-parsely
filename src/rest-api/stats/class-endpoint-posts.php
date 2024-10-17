@@ -79,7 +79,7 @@ class Endpoint_Posts extends Base_Endpoint {
 	 */
 	public function __construct( Stats_Controller $controller ) {
 		parent::__construct( $controller );
-		$this->content_api		= $this->parsely->get_content_api();
+		$this->content_api = $this->parsely->get_content_api();
 	}
 
 	/**
@@ -149,23 +149,23 @@ class Endpoint_Posts extends Base_Endpoint {
 						'default'     => 1,
 					),
 					'author'         => array(
-						'description' => 'Comma-separated list of authors to filter by.',
-						'type'        => 'string',
-						'required'    => false,
+						'description'       => 'Comma-separated list of authors to filter by.',
+						'type'              => 'string',
+						'required'          => false,
 						'validate_callback' => array( $this, 'validate_max_length_is_5' ),
 						'sanitize_callback' => array( $this, 'sanitize_string_to_array' ),
 					),
 					'section'        => array(
-						'description' => 'Comma-separated list of sections to filter by.',
-						'type'        => 'string',
-						'required'    => false,
+						'description'       => 'Comma-separated list of sections to filter by.',
+						'type'              => 'string',
+						'required'          => false,
 						'validate_callback' => array( $this, 'validate_max_length_is_5' ),
 						'sanitize_callback' => array( $this, 'sanitize_string_to_array' ),
 					),
 					'tag'            => array(
-						'description' => 'Comma-separated list of tags to filter by.',
-						'type'        => 'string',
-						'required'    => false,
+						'description'       => 'Comma-separated list of tags to filter by.',
+						'type'              => 'string',
+						'required'          => false,
 						'validate_callback' => array( $this, 'validate_max_length_is_5' ),
 						'sanitize_callback' => array( $this, 'sanitize_string_to_array' ),
 					),
@@ -185,15 +185,15 @@ class Endpoint_Posts extends Base_Endpoint {
 	 *
 	 * @since 3.17.0
 	 *
-	 * @param string|array<string> $string The string to sanitize.
-	 * @return array<string>
+	 * @param string|array<string> $str The string to sanitize.
+	 * @return array<string> The sanitized array.
 	 */
-	public function sanitize_string_to_array( $string ): array {
-		if ( is_array( $string ) ) {
-			return $string;
+	public function sanitize_string_to_array( $str ): array {
+		if ( is_array( $str ) ) {
+			return $str;
 		}
 
-		return explode( ',', $string );
+		return explode( ',', $str );
 	}
 
 	/**
@@ -260,6 +260,11 @@ class Endpoint_Posts extends Base_Endpoint {
 
 		// Process the data.
 		$posts = array();
+		/**
+		 * The analytics data object.
+		 *
+		 * @var array<string,array<mixed>> $analytics_request
+		 */
 		foreach ( $analytics_request as $item ) {
 			$posts[] = $this->extract_post_data( $item );
 		}

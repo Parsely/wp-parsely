@@ -77,7 +77,7 @@ class Post_List_Stats extends Content_Helper_Feature {
 	 * @param Parsely $parsely Instance of Parsely class.
 	 */
 	public function __construct( Parsely $parsely ) {
-		$this->parsely = $parsely;
+		$this->parsely     = $parsely;
 		$this->content_api = $parsely->get_content_api();
 	}
 

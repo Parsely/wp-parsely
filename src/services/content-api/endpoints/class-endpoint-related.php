@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Content API Endpoint: Related
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\ContentAPI\Endpoints;
@@ -39,5 +46,4 @@ class Endpoint_Related extends Content_API_Base_Endpoint {
 
 		return $this->request( 'GET', $args );
 	}
-
 }

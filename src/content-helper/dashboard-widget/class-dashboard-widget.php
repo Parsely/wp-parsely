@@ -86,7 +86,7 @@ class Dashboard_Widget extends Content_Helper_Feature {
 	 * @return bool Whether the Dashboard Widget can be enabled.
 	 */
 	public function can_enable_widget(): bool {
-		$screen    = get_current_screen();
+		$screen = get_current_screen();
 
 		return $this->can_enable_feature(
 			null !== $screen && 'dashboard' === $screen->id,

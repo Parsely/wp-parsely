@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Content API Base Endpoint
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\ContentAPI\Endpoints;
@@ -66,7 +73,7 @@ abstract class Content_API_Base_Endpoint extends Base_Service_Endpoint {
 			/** @var Content_API_Error_Response $response */
 			return new WP_Error(
 				$response['code'] ?? 400,
-					$response['message'] ?? __( 'Unable to read data from upstream API', 'wp-parsely' ),
+				$response['message'] ?? __( 'Unable to read data from upstream API', 'wp-parsely' ),
 				array( 'status' => $response['code'] ?? 400 )
 			);
 		}
@@ -78,6 +85,4 @@ abstract class Content_API_Base_Endpoint extends Base_Service_Endpoint {
 		/** @var Content_API_Valid_Response $response */
 		return $response['data'];
 	}
-
-
 }

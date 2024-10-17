@@ -61,12 +61,12 @@ use WP_Post;
  * }
  *
  * @phpstan-type WP_HTTP_Request_Args array{
- *   method: string,
- *   timeout: float,
- *   blocking: bool,
- *   headers: array<string, string>,
- *   body: string,
- *   data_format: string,
+ *   method?: string,
+ *   timeout?: float,
+ *   blocking?: bool,
+ *   headers?: array<string, string>,
+ *   body?: string,
+ *   data_format?: string,
  * }
  *
  * @phpstan-import-type Metadata_Attributes from Metadata

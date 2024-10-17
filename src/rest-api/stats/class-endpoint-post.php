@@ -60,7 +60,7 @@ class Endpoint_Post extends Base_Endpoint {
 	 */
 	public function __construct( Stats_Controller $controller ) {
 		parent::__construct( $controller );
-		$this->content_api 			     = $this->parsely->get_content_api();
+		$this->content_api = $this->parsely->get_content_api();
 	}
 
 	/**
@@ -183,10 +183,11 @@ class Endpoint_Post extends Base_Endpoint {
 		}
 
 		$post_data = array();
+
 		/**
 		 * The analytics data object.
 		 *
-		 * @var array<string,stdClass> $analytics_request
+		 * @var array<string,array<mixed>> $analytics_request
 		 */
 		foreach ( $analytics_request as $data ) {
 			$post_data[] = $this->extract_post_data( $data );

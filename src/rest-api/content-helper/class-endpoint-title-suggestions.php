@@ -155,11 +155,14 @@ class Endpoint_Title_Suggestions extends Base_Endpoint {
 			$limit = 3;
 		}
 
-		$response = $this->suggestions_api->get_title_suggestions( $post_content, array(
-			'persona'   => $persona,
-			'style'     => $style,
-			'max_items' => $limit,
-		) );
+		$response = $this->suggestions_api->get_title_suggestions(
+			$post_content,
+			array(
+				'persona'   => $persona,
+				'style'     => $style,
+				'max_items' => $limit,
+			) 
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;

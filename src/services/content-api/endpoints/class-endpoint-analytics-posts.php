@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Content API Endpoint: Analytics Posts
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\ContentAPI\Endpoints;
@@ -110,13 +117,13 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 		$query_args = array_filter( $args );
 
 		// If the period_start is set to 'max_days', set it to the maximum days limit.
-		if ( $query_args['period_start'] === 'max_days' ) {
+		if ( 'max_days' === $query_args['period_start'] ) {
 			$query_args['period_start'] = self::ANALYTICS_API_DAYS_LIMIT . 'd';
 		}
 
 		// If the limit is set to 'max' or greater than the maximum records limit,
 		// set it to the maximum records limit.
-		if ( $query_args['limit'] === 'max' || $query_args['limit'] > self::MAX_RECORDS_LIMIT) {
+		if ( 'max' === $query_args['limit'] || $query_args['limit'] > self::MAX_RECORDS_LIMIT ) {
 			$query_args['limit'] = self::MAX_RECORDS_LIMIT;
 		}
 
@@ -130,9 +137,9 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 	 * This is required because the Parsely API requires the multiple values for the author, tag,
 	 * and section parameters to share the same key.
 	 *
-	 * @param string $url The URL to append the parameters to.
+	 * @param string        $url The URL to append the parameters to.
 	 * @param array<string> $params The parameters to append.
-	 * @param string $param_name The name of the parameter.
+	 * @param string        $param_name The name of the parameter.
 	 * @return string The URL with the appended parameters.
 	 */
 	protected function append_multiple_params_to_url( string $url, array $params, string $param_name ): string {
@@ -146,5 +153,4 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 		}
 		return $url;
 	}
-
 }

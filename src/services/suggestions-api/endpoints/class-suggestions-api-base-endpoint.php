@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Suggestions API endpoint base class.
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\SuggestionsAPI\Endpoints;
@@ -11,12 +18,20 @@ use WP_Error;
  *
  * @since 3.17.0
  *
- * @link https://docs.parse.ly/api-suggestions-endpoint/
+ * @link https://content-suggestions-api.parsely.net/prod/docs
  *
  * @phpstan-import-type WP_HTTP_Response from Base_Service_Endpoint
+ * @phpstan-import-type WP_HTTP_Request_Args from Base_Service_Endpoint
  */
-abstract class Base_Suggestions_API_Endpoint extends Base_Service_Endpoint {
-
+abstract class Suggestions_API_Base_Endpoint extends Base_Service_Endpoint {
+	/**
+	 * Returns the request options for the remote API request.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string $method The HTTP method to use for the request.
+	 * @return WP_HTTP_Request_Args The request options for the remote API request.
+	 */
 	protected function get_request_options( string $method ): array {
 		$options = array(
 			'method'      => $method,
@@ -93,5 +108,4 @@ abstract class Base_Suggestions_API_Endpoint extends Base_Service_Endpoint {
 
 		return $decoded['result'];
 	}
-
 }

@@ -228,7 +228,7 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		$response = $this->suggestions_api->get_smart_links(
 			$post_content,
 			array(
-				'max_items'      => $max_links,
+				'max_items' => $max_links,
 			),
 			$url_exclusion_list
 		);

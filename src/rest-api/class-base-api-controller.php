@@ -185,8 +185,8 @@ abstract class Base_API_Controller {
 	 *
 	 * @since 3.17.0
 	 *
-	 * @param string $endpoint
-	 * @return Base_Endpoint|null
+	 * @param string $endpoint The endpoint name/path.
+	 * @return Base_Endpoint|null The endpoint object, or null if not found.
 	 */
 	protected function get_endpoint( string $endpoint ): ?Base_Endpoint {
 		return $this->endpoints[ $endpoint ] ?? null;
@@ -200,5 +200,5 @@ abstract class Base_API_Controller {
 	 * @param string $endpoint The endpoint to check.
 	 * @return bool True if the controller is available to the current user, false otherwise.
 	 */
-	public abstract function is_available_to_current_user( string $endpoint ): bool;
+	abstract public function is_available_to_current_user( string $endpoint ): bool;
 }

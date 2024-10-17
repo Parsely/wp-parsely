@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Suggestions API Endpoint: Suggest Linked Reference
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\SuggestionsAPI\Endpoints;
@@ -25,8 +32,7 @@ use WP_Error;
  *     traffic_sources?: array<int, Traffic_Source>
  * }
  */
-class Endpoint_Suggest_Linked_Reference extends Base_Suggestions_API_Endpoint {
-
+class Endpoint_Suggest_Linked_Reference extends Suggestions_API_Base_Endpoint {
 	/**
 	 * Returns the endpoint for the API request.
 	 *
@@ -44,16 +50,16 @@ class Endpoint_Suggest_Linked_Reference extends Base_Suggestions_API_Endpoint {
 	 * @since 3.14.0
 	 * @since 3.17.0 Updated to use the new API service.
 	 *
-	 * @param string   $content             The content to generate links for.
+	 * @param string                                    $content             The content to generate links for.
 	 * @param Endpoint_Suggest_Linked_Reference_Options $options The options to pass to the API request.
-	 * @param string[] $url_exclusion_list  A list of URLs to exclude from the suggestions.
+	 * @param string[]                                  $url_exclusion_list  A list of URLs to exclude from the suggestions.
 	 *
 	 * @return Smart_Link[]|WP_Error The response from the remote API, or a WP_Error
 	 *                                    object if the response is an error.
 	 */
 	public function get_links(
 		string $content,
-		array $options = array(),
+		$options = array(),
 		array $url_exclusion_list = array()
 	) {
 		$request_body = array(
@@ -108,6 +114,4 @@ class Endpoint_Suggest_Linked_Reference extends Base_Suggestions_API_Endpoint {
 
 		return $this->get_links( $content, $options, $url_exclusion_list );
 	}
-
-
 }

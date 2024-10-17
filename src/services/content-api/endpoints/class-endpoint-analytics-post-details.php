@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Content API Endpoint: Analytics Post Details
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\ContentAPI\Endpoints;
@@ -40,5 +47,4 @@ class Endpoint_Analytics_Post_Details extends Content_API_Base_Endpoint {
 
 		return $this->request( 'GET', $query_args );
 	}
-
 }

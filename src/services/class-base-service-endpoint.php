@@ -1,10 +1,16 @@
 <?php
+/**
+ * External Service API endpoint base class.
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services;
 
 use Parsely\Parsely;
-use Parsely\Services\Cached_Service_Endpoint;
 use WP_Error;
 
 /**
@@ -22,6 +28,8 @@ use WP_Error;
  *      cookies: array<string, string>,
  *      http_response: \WP_HTTP_Requests_Response|null,
  *  }
+ *
+ * @phpstan-import-type WP_HTTP_Request_Args from Parsely
  */
 abstract class Base_Service_Endpoint {
 	/**
@@ -36,6 +44,7 @@ abstract class Base_Service_Endpoint {
 	 * If set to true, the content of the request body will be truncated to a maximum length.
 	 *
 	 * @since 3.14.1
+	 * @since 3.17.0 Moved to the Base_Service_Endpoint class.
 	 *
 	 * @var bool
 	 */
@@ -45,25 +54,48 @@ abstract class Base_Service_Endpoint {
 	 * The maximum length of the content of the request body.
 	 *
 	 * @since 3.14.1
+	 * @since 3.17.0 Moved to the Base_Service_Endpoint class.
 	 *
 	 * @var int
 	 */
 	protected const TRUNCATE_CONTENT_LENGTH = 25000;
 
+	/**
+	 * Initializes the class.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param Base_API_Service $api_service The API service that this endpoint belongs to.
+	 */
 	public function __construct( Base_API_Service $api_service ) {
 		$this->api_service = $api_service;
 	}
 
-	protected function get_headers() {
+	/**
+	 * Returns the headers to send with the request.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return array<string, string> The headers to send with the request.
+	 */
+	protected function get_headers(): array {
 		return array(
 			'Content-Type' => 'application/json',
 		);
 	}
 
+	/**
+	 * Returns the request options for the remote API request.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string $method The HTTP method to use for the request.
+	 * @return WP_HTTP_Request_Args The request options for the remote API request.
+	 */
 	protected function get_request_options( string $method ): array {
 		$options = array(
-			'headers'     => $this->get_headers(),
-			'method'      => $method,
+			'headers' => $this->get_headers(),
+			'method'  => $method,
 		);
 
 		return $options;
@@ -92,7 +124,7 @@ abstract class Base_Service_Endpoint {
 	 * @param array<mixed> $args The arguments to pass to the API request.
 	 * @return WP_Error|array<mixed> The response from the API.
 	 */
-	public abstract function call( array $args = array() );
+	abstract public function call( array $args = array() );
 
 	/**
 	 * Returns the endpoint for the API request.
@@ -104,14 +136,14 @@ abstract class Base_Service_Endpoint {
 	 *
 	 * @return string The endpoint for the API request.
 	 */
-	public abstract function get_endpoint(): string;
+	abstract public function get_endpoint(): string;
 
 	/**
 	 * Sends a request to the remote API.
 	 *
 	 * @since 3.17.0
 	 *
-	 * @param string $method The HTTP method to use for the request.
+	 * @param string       $method The HTTP method to use for the request.
 	 * @param array<mixed> $query_args The query arguments to send to the remote API.
 	 * @param array<mixed> $data The data to send in the request body.
 	 * @return WP_Error|array<mixed> The response from the remote API.
@@ -162,6 +194,8 @@ abstract class Base_Service_Endpoint {
 	/**
 	 * Processes the response from the remote API.
 	 *
+	 * @since 3.17.0
+	 *
 	 * @param WP_HTTP_Response|WP_Error $response The response from the remote API.
 	 * @return array<mixed>|WP_Error The processed response.
 	 */
@@ -171,7 +205,7 @@ abstract class Base_Service_Endpoint {
 			return $response;
 		}
 
-		$body = wp_remote_retrieve_body( $response );
+		$body    = wp_remote_retrieve_body( $response );
 		$decoded = json_decode( $body, true );
 
 		if ( ! is_array( $decoded ) ) {
@@ -181,6 +215,13 @@ abstract class Base_Service_Endpoint {
 		return $decoded;
 	}
 
+	/**
+	 * Returns the Parsely instance.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return Parsely The Parsely instance.
+	 */
 	public function get_parsely(): Parsely {
 		return $this->api_service->get_parsely();
 	}
@@ -189,6 +230,7 @@ abstract class Base_Service_Endpoint {
 	 * Truncates the content of an array to a maximum length.
 	 *
 	 * @since 3.14.1
+	 * @since 3.17.0 Moved to the Base_Service_Endpoint class.
 	 *
 	 * @param string|array|mixed $content The content to truncate.
 	 * @return string|array|mixed The truncated content.
@@ -213,5 +255,4 @@ abstract class Base_Service_Endpoint {
 		}
 		return $content;
 	}
-
 }

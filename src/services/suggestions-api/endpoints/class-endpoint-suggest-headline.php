@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Suggestions API Endpoint: Suggest Headline
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\SuggestionsAPI\Endpoints;
@@ -25,8 +32,7 @@ use WP_Error;
  *     traffic_sources?: array<int, Traffic_Source>
  * }
  */
-class Endpoint_Suggest_Headline extends Base_Suggestions_API_Endpoint {
-
+class Endpoint_Suggest_Headline extends Suggestions_API_Base_Endpoint {
 	/**
 	 * Returns the endpoint for the API request.
 	 *
@@ -45,19 +51,19 @@ class Endpoint_Suggest_Headline extends Base_Suggestions_API_Endpoint {
 	 * @since 3.13.0
 	 * @since 3.17.0 Updated to use the new API service.
 	 *
-	 * @param string $content The query arguments to send to the remote API.
+	 * @param string                            $content The query arguments to send to the remote API.
 	 * @param Endpoint_Suggest_Headline_Options $options The options to pass to the API request.
 	 * @return array<string>|WP_Error The response from the remote API, or a WP_Error
 	 *                         object if the response is an error.
 	 */
 	public function get_headlines(
 		string $content,
-		array $options = array()
+		$options = array()
 	) {
 		$request_body = array(
 			'output_config' => array(
-				'persona' => $options['persona'] ?? 'journalist',
-				'style'   => $options['style'] ?? 'neutral',
+				'persona'   => $options['persona'] ?? 'journalist',
+				'style'     => $options['style'] ?? 'neutral',
 				'max_items' => $options['max_items'] ?? 1,
 			),
 			'text'          => wp_strip_all_tags( $content ),
@@ -87,6 +93,4 @@ class Endpoint_Suggest_Headline extends Base_Suggestions_API_Endpoint {
 
 		return $this->get_headlines( $content, $options );
 	}
-
-
 }

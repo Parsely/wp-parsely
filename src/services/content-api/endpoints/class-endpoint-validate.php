@@ -1,4 +1,11 @@
 <?php
+/**
+ * Parse.ly Content API Endpoint: Validate
+ *
+ * @package Parsely
+ * @since   3.17.0
+ */
+
 declare(strict_types=1);
 
 namespace Parsely\Services\ContentAPI\Endpoints;
@@ -10,6 +17,8 @@ use WP_Error;
  * The endpoint for credentials validation.
  *
  * @since 3.17.0
+ *
+ * @phpstan-import-type WP_HTTP_Response from Base_Service_Endpoint
  */
 class Endpoint_Validate extends Content_API_Base_Endpoint {
 	/**
@@ -75,7 +84,7 @@ class Endpoint_Validate extends Content_API_Base_Endpoint {
 	 *
 	 * @since 3.17.0
 	 *
-	 * @param array<mixed>|WP_Error $response The response from the remote API.
+	 * @param WP_HTTP_Response|WP_Error $response The response from the remote API.
 	 * @return array<mixed>|WP_Error The processed response.
 	 */
 	protected function process_response( $response ) {
@@ -92,9 +101,8 @@ class Endpoint_Validate extends Content_API_Base_Endpoint {
 		/** @var string $api_key */
 		$api_key = $args['apikey'];
 		/** @var string $secret */
-		$secret  = $args['secret'];
+		$secret = $args['secret'];
 
 		return $this->api_validate_credentials( $api_key, $secret );
 	}
-
 }

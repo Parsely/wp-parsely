@@ -55,7 +55,7 @@ class Validator {
 		}
 
 		$content_api = $parsely->get_content_api();
-		$is_valid = $content_api->validate_credentials( $site_id, $api_secret );
+		$is_valid    = $content_api->validate_credentials( $site_id, $api_secret );
 
 		if ( is_wp_error( $is_valid ) ) {
 			return new WP_Error(
