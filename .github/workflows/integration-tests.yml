@@ -83,17 +83,17 @@ jobs:
         run: composer prepare-ci --no-interaction
 
       - name: Run integration tests (single site)
-        if: ${{ matrix.php != 8.0 && ! matrix.experimental }}
+        if: ${{ matrix.php != 8.2 && ! matrix.experimental }}
         run: composer testwp --no-interaction
 
-      - name: Run integration tests experimental
+      - name: Run integration tests (single site) experimental
         if: ${{ matrix.experimental }}
         run: composer testwp-experimental --no-interaction
 
-      - name: Run integration tests (multi site)
-        if: ${{ matrix.php != 8.0 && ! matrix.experimental }}
+      - name: Run integration tests (multisite)
+        if: ${{ matrix.php != 8.2 && ! matrix.experimental }}
         run: composer testwp-ms --no-interaction
 
       - name: Run integration tests (multisite site with code coverage)
-        if: ${{ matrix.php == 8.1 }}
+        if: ${{ matrix.php == 8.2 }} # To prevent unneeded test runs, use this version in the above if clauses.
         run: composer coveragewp-ci --no-interaction
