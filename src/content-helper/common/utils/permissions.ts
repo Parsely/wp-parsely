@@ -6,6 +6,7 @@
 export interface ContentHelperPermissions {
 	SmartLinking: boolean;
 	TitleSuggestions: boolean;
+	ExcerptSuggestions: boolean;
 }
 
 /**
@@ -19,6 +20,7 @@ export function getContentHelperPermissions(): ContentHelperPermissions {
 	const defaultPermissions: ContentHelperPermissions = {
 		SmartLinking: false,
 		TitleSuggestions: false,
+		ExcerptSuggestions: false,
 	};
 
 	try {

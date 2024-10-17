@@ -21,10 +21,6 @@ module.exports = {
 			path.resolve( __dirname, 'src', 'content-helper', 'post-list-stats', 'post-list-stats' ),
 			path.resolve( __dirname, 'src', 'content-helper', 'post-list-stats', 'post-list-stats.scss' ),
 		],
-		'content-helper/excerpt-generator': [
-			path.resolve( __dirname, 'src', 'content-helper', 'excerpt-generator', 'excerpt-generator' ),
-			path.resolve( __dirname, 'src', 'content-helper', 'excerpt-generator', 'excerpt-generator.scss' ),
-		],
 		loader: [
 			path.resolve( __dirname, 'src', 'js', 'lib', 'loader' ),
 			path.resolve( __dirname, 'src', 'js', 'lib', 'uuid-profile-call' ),

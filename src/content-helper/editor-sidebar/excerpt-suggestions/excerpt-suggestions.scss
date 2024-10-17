@@ -1,5 +1,5 @@
-@import "../common/css/variables";
-@import "../common/css/functions";
+@import "../../common/css/variables";
+@import "../../common/css/functions";
 
 .editor-post-excerpt__loading_animation {
 	position: absolute;
@@ -14,6 +14,25 @@
 .wp-parsely-excerpt-generator {
 	margin-top: to_rem(20px);
 
+	// Suggestion settings.
+	.excerpt-suggestions-settings {
+		display: flex;
+		padding: to_rem(6px) 0 var(--grid-unit-20) 0;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--grid-unit-20);
+		align-self: stretch;
+
+		> div {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			gap: var(--grid-unit-10);
+			align-self: stretch;
+		}
+	}
+
+	// "Generate with Parse.ly" header.
 	.wp-parsely-excerpt-generator-header {
 		align-items: center;
 		display: flex;
@@ -35,7 +54,27 @@
 		}
 	}
 
-	.wp-parsely-excerpt-generator-controls {
+	// "Generate Excerpt" button.
+	.excerpt-suggestions-generate {
+		display: flex;
+		margin: var(--grid-unit-10) 0;
+		flex-direction: column;
+		align-items: flex-start;
+		align-self: stretch;
+
+		.components-button {
+			height: to_rem(40px);
+			display: flex;
+			padding: var(--grid-unit-10) var(--grid-unit-15);
+			justify-content: center;
+			align-items: center;
+			align-self: stretch;
+			border-radius: 2px;
+		}
+	}
+
+	// Suggestion review controls.
+	.wp-parsely-excerpt-suggestions-review-controls {
 		display: flex;
 		gap: var(--grid-unit-10);
 

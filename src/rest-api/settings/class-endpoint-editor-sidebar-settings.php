@@ -51,11 +51,23 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 	 */
 	protected function get_subvalues_specs(): array {
 		return array(
-			'InitialTabName'   => array(
+			'ExcerptSuggestions' => array(
+				'values'  => array(
+					'Open'    => array( true, false ),
+					'Persona' => array(),
+					'Tone'    => array(),
+				),
+				'default' => array(
+					'Open'    => false,
+					'Persona' => 'journalist',
+					'Tone'    => 'neutral',
+				),
+			),
+			'InitialTabName'     => array(
 				'values'  => array( 'tools', 'performance' ),
 				'default' => 'tools',
 			),
-			'PerformanceStats' => array(
+			'PerformanceStats'   => array(
 				'values'  => array(
 					'Period'            => array( '10m', '1h', '2h', '4h', '24h', '7d', '30d' ),
 					'VisibleDataPoints' => array( 'views', 'visitors', 'avgEngaged', 'recirculation' ),
@@ -67,7 +79,7 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 					'VisiblePanels'     => array( 'overview', 'categories', 'referrers' ),
 				),
 			),
-			'RelatedPosts'     => array(
+			'RelatedPosts'       => array(
 				'values'  => array(
 					'FilterBy'    => array( 'unavailable', 'tag', 'section', 'author' ),
 					'FilterValue' => array(),
@@ -83,7 +95,7 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 					'Period'      => '7d',
 				),
 			),
-			'SmartLinking'     => array(
+			'SmartLinking'       => array(
 				'values'  => array(
 					'MaxLinks'     => array(),
 					'MaxLinkWords' => array(),
@@ -95,7 +107,7 @@ class Endpoint_Editor_Sidebar_Settings extends Base_Settings_Endpoint {
 					'Open'         => false,
 				),
 			),
-			'TitleSuggestions' => array(
+			'TitleSuggestions'   => array(
 				'values'  => array(
 					'Open'    => array( true, false ),
 					'Persona' => array(),

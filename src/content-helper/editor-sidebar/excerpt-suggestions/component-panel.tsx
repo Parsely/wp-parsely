@@ -9,21 +9,34 @@ import {
 	TextareaControl,
 } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { PostTypeSupportCheck, store as editorStore } from '@wordpress/editor';
-import { PluginDocumentSettingPanel } from '../../../@types/gutenberg/wrapper';
+import { store as editorStore, PostTypeSupportCheck } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
+import { external } from '@wordpress/icons';
 import { count } from '@wordpress/wordcount';
+import { PluginDocumentSettingPanel } from '../../../@types/gutenberg/wrapper';
+import { PersonaProp } from '../../common/components/persona-selector';
+import { ToneProp } from '../../common/components/tone-selector';
 
 /**
  * Internal dependencies
  */
-import { external } from '@wordpress/icons';
 import { GutenbergFunction } from '../../../@types/gutenberg/types';
 import { Telemetry } from '../../../js/telemetry/telemetry';
-import { ContentHelperError, ContentHelperErrorCode } from '../../common/content-helper-error';
+import {
+	ContentHelperError,
+	ContentHelperErrorCode,
+} from '../../common/content-helper-error';
 import { LeafIcon } from '../../common/icons/leaf-icon';
-import { ExcerptGeneratorProvider } from '../provider';
+import {
+	SidebarSettings,
+	ExcerptSuggestionsSettings as ExcerptSuggestionsSettingsType,
+	SettingsProvider,
+	useSettings,
+} from '../../common/settings';
+import { getSettingsFromJson } from '../editor-sidebar';
+import { ExcerptSuggestionsProvider } from './provider';
+import { ExcerptSuggestionsSettings } from './component-panel-settings';
 
 /**
  * Defines the structure of an object that holds excerpt data.
@@ -38,23 +51,35 @@ interface ExcerptData {
 }
 
 /**
- * The PostExcerptGenerator component displays the excerpt textarea and the Parse.ly AI controls.
+ * The PostExcerptSuggestions component displays the excerpt textarea and the Parse.ly AI controls.
  *
  * @since 3.13.0
  */
-const PostExcerptGenerator = () => {
-	const [ isLoading, setLoading ] = useState<boolean>( false );
+const PostExcerptSuggestions = () => {
+	const { settings, setSettings } = useSettings<SidebarSettings>();
+
 	const [ error, setError ] = useState<ContentHelperError>();
-	const [ onChangeFired, setOnChangeFired ] = useState<boolean>( false );
-	const [ wordCountString, setWordCountString ] = useState<string>( '' );
 	const [ excerptData, setExcerptData ] = useState<ExcerptData>( {
 		currentExcerpt: '',
 		isUnderReview: false,
 		newExcerptGeneratedCount: 0,
 		oldExcerpt: '',
 	} );
+	const [ isLoading, setLoading ] = useState<boolean>( false );
+	const [ onChangeFired, setOnChangeFired ] = useState<boolean>( false );
+	const [ persona, setPersona ] = useState<PersonaProp>( settings.ExcerptSuggestions.Persona );
+	const [ tone, setTone ] = useState<ToneProp>( settings.ExcerptSuggestions.Tone );
+	const [ wordCountString, setWordCountString ] = useState<string>( '' );
 
 	const { editPost } = useDispatch( editorStore );
+
+	const onSettingChange = ( key: keyof ExcerptSuggestionsSettingsType, value: string | boolean ) => {
+		setSettings( {
+			ExcerptSuggestions: {
+				...settings.ExcerptSuggestions,
+				[ key ]: value },
+		} );
+	};
 
 	// Get the current excerpt, post content, and post title.
 	const { excerpt, postContent, postTitle } = useSelect( ( select ) => {
@@ -123,10 +148,10 @@ const PostExcerptGenerator = () => {
 
 		try {
 			Telemetry.trackEvent( 'excerpt_generator_pressed' );
-			const requestedExcerpt = await ExcerptGeneratorProvider.getInstance().generateExcerpt(
-				postTitle,
-				postContent
-			);
+			const requestedExcerpt = await ExcerptSuggestionsProvider
+				.getInstance()
+				.generateExcerpt( postTitle, postContent, persona, tone );
+
 			setExcerptData( {
 				currentExcerpt: requestedExcerpt,
 				isUnderReview: true,
@@ -184,6 +209,15 @@ const PostExcerptGenerator = () => {
 		return excerpt;
 	};
 
+	const generateWithParselyHeader =
+		<div className="wp-parsely-excerpt-generator-header">
+			<LeafIcon size={ 16 } />
+			<div className="wp-parsely-excerpt-generator-header-label">
+				{ __( 'Generate With Parse.ly', 'wp-parsely' ) }
+				<span className="beta-label">{ __( 'Beta', 'wp-parsely' ) }</span>
+			</div>
+		</div>;
+
 	return (
 		<div className="editor-post-excerpt" >
 			<div style={ { position: 'relative' } }>
@@ -234,13 +268,6 @@ const PostExcerptGenerator = () => {
 				/>
 			</Button>
 			<div className="wp-parsely-excerpt-generator">
-				<div className="wp-parsely-excerpt-generator-header">
-					<LeafIcon size={ 16 } />
-					<div className="wp-parsely-excerpt-generator-header-label">
-						{ __( 'Generate With Parse.ly', 'wp-parsely' ) }
-						<span className="beta-label">{ __( 'Beta', 'wp-parsely' ) }</span>
-					</div>
-				</div>
 				{ error && (
 					<Notice
 						className="wp-parsely-excerpt-generator-error"
@@ -250,9 +277,10 @@ const PostExcerptGenerator = () => {
 						{ error.Message() }
 					</Notice>
 				) }
-				<div className="wp-parsely-excerpt-generator-controls">
-					{ excerptData.isUnderReview ? (
-						<>
+				{ excerptData.isUnderReview ? (
+					<>
+						{ generateWithParselyHeader }
+						<div className="wp-parsely-excerpt-suggestions-review-controls">
 							<Button
 								variant="secondary"
 								onClick={ acceptGeneratedExcerpt }
@@ -266,24 +294,43 @@ const PostExcerptGenerator = () => {
 							>
 								{ __( 'Discard', 'wp-parsely' ) }
 							</Button>
-						</>
-					) : (
-						<Button
-							onClick={ generateExcerpt }
-							variant="primary"
-							isBusy={ isLoading }
-							disabled={ isLoading || ! postContent }
-						>
-							{ isLoading && __( 'Generating Excerpt…', 'wp-parsely' ) }
-							{ ! isLoading && excerptData.newExcerptGeneratedCount > 0 &&
-								__( 'Regenerate Excerpt', 'wp-parsely' )
-							}
-							{ ! isLoading && excerptData.newExcerptGeneratedCount === 0 &&
-								__( 'Generate Excerpt', 'wp-parsely' )
-							}
-						</Button>
-					) }
-				</div>
+						</div>
+					</>
+				) : (
+					<>
+						<ExcerptSuggestionsSettings
+							isLoading={ isLoading }
+							onPersonaChange={ ( selectedPersona ) => {
+								onSettingChange( 'Persona', selectedPersona );
+								setPersona( selectedPersona );
+							} }
+							onSettingChange={ onSettingChange }
+							onToneChange={ ( selectedTone ) => {
+								onSettingChange( 'Tone', selectedTone );
+								setTone( selectedTone );
+							} }
+							persona={ settings.ExcerptSuggestions.Persona }
+							tone={ settings.ExcerptSuggestions.Tone }
+						/>
+						{ generateWithParselyHeader }
+						<div className="excerpt-suggestions-generate">
+							<Button
+								onClick={ generateExcerpt }
+								variant="primary"
+								isBusy={ isLoading }
+								disabled={ isLoading || ! postContent }
+							>
+								{ isLoading && __( 'Generating Excerpt…', 'wp-parsely' ) }
+								{ ! isLoading && excerptData.newExcerptGeneratedCount > 0 &&
+									__( 'Regenerate Excerpt', 'wp-parsely' )
+								}
+								{ ! isLoading && excerptData.newExcerptGeneratedCount === 0 &&
+									__( 'Generate Excerpt', 'wp-parsely' )
+								}
+							</Button>
+						</div>
+					</>
+				) }
 				<Button
 					href="https://docs.parse.ly/plugin-content-helper/#h-excerpt-generator-beta"
 					target="_blank"
@@ -322,7 +369,7 @@ const LoadingAnimation = (): React.JSX.Element => {
 
 /**
  * The ExcerptPanel component verifies that the current post type supports excerpts,
- * and then renders the PostExcerptGenerator component.
+ * and then renders the PostExcerptSuggestions component.
  *
  * @since 3.13.0
  */
@@ -333,7 +380,14 @@ export const ExcerptPanel = () => {
 				name="parsely-post-excerpt"
 				title={ __( 'Excerpt', 'wp-parsely' ) }
 			>
-				<PostExcerptGenerator />
+				<SettingsProvider
+					endpoint="editor-sidebar"
+					defaultSettings={ getSettingsFromJson(
+						window.wpParselyContentHelperSettings
+					) }
+				>
+					<PostExcerptSuggestions />
+				</SettingsProvider>
 			</PluginDocumentSettingPanel>
 		</PostTypeSupportCheck>
 	);
