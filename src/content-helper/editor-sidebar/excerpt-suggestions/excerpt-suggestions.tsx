@@ -2,19 +2,49 @@
  * WordPress dependencies
  */
 import { dispatch } from '@wordpress/data';
+import { PostTypeSupportCheck } from '@wordpress/editor';
 import { addFilter, removeFilter } from '@wordpress/hooks';
+import { __ } from '@wordpress/i18n';
 import { registerPlugin } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
  */
 import { dispatchCoreEditPost } from '../../../@types/gutenberg/types';
+import { PluginDocumentSettingPanel } from '../../../@types/gutenberg/wrapper';
+import { SettingsProvider } from '../../common/settings';
 import { getContentHelperPermissions } from '../../common/utils/permissions';
-import { ExcerptPanel } from './component-panel';
+import { getSettingsFromJson, PARSELY_SIDEBAR_PLUGIN_ID } from '../editor-sidebar';
 import './excerpt-suggestions.scss';
+import { ExcerptSuggestionsPanel } from './component-panel';
 
-// TODO: Get the plugin ID from the editor sidebar file.
-const PARSELY_SIDEBAR_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
+/**
+ * The ExcerptDocumentSettingPanel component verifies that the current post type supports excerpts,
+ * and then renders the ExcerptSuggestionsPanel component.
+ *
+ * @since 3.17.0
+ */
+export const ExcerptDocumentSettingPanel = () => {
+	return (
+		<PostTypeSupportCheck supportKeys="excerpt">
+			<PluginDocumentSettingPanel
+				name="parsely-post-excerpt"
+				title={ __( 'Excerpt', 'wp-parsely' ) }
+			>
+				<SettingsProvider
+					endpoint="editor-sidebar"
+					defaultSettings={ getSettingsFromJson(
+						window.wpParselyContentHelperSettings
+					) }
+				>
+					<ExcerptSuggestionsPanel
+						isDocumentSettingPanel={ true }
+					/>
+				</SettingsProvider>
+			</PluginDocumentSettingPanel>
+		</PostTypeSupportCheck>
+	);
+};
 
 /**
  * The ExcerptSuggestions function registers the custom excerpt panel and removes
@@ -51,7 +81,7 @@ const ExcerptSuggestions = ( settings: never, name: string ) => {
 	// Register the custom excerpt panel.
 	registerPlugin( 'wp-parsely-excerpt-suggestions', {
 		render: () => (
-			<ExcerptPanel />
+			<ExcerptDocumentSettingPanel />
 		),
 	} );
 

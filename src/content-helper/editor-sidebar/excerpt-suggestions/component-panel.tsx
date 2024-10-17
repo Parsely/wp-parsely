@@ -9,12 +9,11 @@ import {
 	TextareaControl,
 } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { store as editorStore, PostTypeSupportCheck } from '@wordpress/editor';
+import { store as editorStore } from '@wordpress/editor';
 import { useEffect, useState } from '@wordpress/element';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { external } from '@wordpress/icons';
 import { count } from '@wordpress/wordcount';
-import { PluginDocumentSettingPanel } from '../../../@types/gutenberg/wrapper';
 import { PersonaProp } from '../../common/components/persona-selector';
 import { ToneProp } from '../../common/components/tone-selector';
 
@@ -31,10 +30,8 @@ import { LeafIcon } from '../../common/icons/leaf-icon';
 import {
 	SidebarSettings,
 	ExcerptSuggestionsSettings as ExcerptSuggestionsSettingsType,
-	SettingsProvider,
 	useSettings,
 } from '../../common/settings';
-import { getSettingsFromJson } from '../editor-sidebar';
 import { ExcerptSuggestionsProvider } from './provider';
 import { ExcerptSuggestionsSettings } from './component-panel-settings';
 
@@ -50,12 +47,21 @@ interface ExcerptData {
 	oldExcerpt: string;
 }
 
+type ExcerptSuggestionsPanelProps = {
+	isDocumentSettingPanel?: boolean;
+};
+
 /**
  * The PostExcerptSuggestions component displays the excerpt textarea and the Parse.ly AI controls.
  *
  * @since 3.13.0
+ * @since 3.17.0 Renamed from `PostExcerptSuggestions` and added the `isDocumentSettingPanel` prop.
+ *
+ * @param {ExcerptSuggestionsPanelProps} props The component's props.
  */
-const PostExcerptSuggestions = () => {
+export const ExcerptSuggestionsPanel = ( {
+	isDocumentSettingPanel = false,
+}: Readonly<ExcerptSuggestionsPanelProps> ) => {
 	const { settings, setSettings } = useSettings<SidebarSettings>();
 
 	const [ error, setError ] = useState<ContentHelperError>();
@@ -218,8 +224,26 @@ const PostExcerptSuggestions = () => {
 			</div>
 		</div>;
 
+	const textareaLabel = isDocumentSettingPanel
+		? __( 'Write an excerpt (optional)', 'wp-parsely' )
+		: __( 'Excerpt', 'wp-parsely' );
+
 	return (
 		<div className="editor-post-excerpt" >
+			{ ! isDocumentSettingPanel && (
+				<div className="excerpt-suggestions-text">
+					{ __( 'Use Parse.ly AI to generate a concise, engaging excerpt for your post.', 'wp-parsely' ) }
+					<Button
+						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/"
+						target="_blank"
+						variant="link"
+						rel="noopener"
+					>
+						{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
+						<Icon icon={ external } size={ 18 } className="parsely-external-link-icon" />
+					</Button>
+				</div>
+			) }
 			<div style={ { position: 'relative' } }>
 				{ isLoading && (
 					<div className={ 'editor-post-excerpt__loading_animation' }>
@@ -228,7 +252,7 @@ const PostExcerptSuggestions = () => {
 				) }
 				<TextareaControl
 					__nextHasNoMarginBottom
-					label={ __( 'Write an excerpt (optional)', 'wp-parsely' ) }
+					label={ textareaLabel }
 					className="editor-post-excerpt__textarea"
 					onChange={ ( value ) => {
 						if ( ! excerptData.isUnderReview ) {
@@ -252,22 +276,26 @@ const PostExcerptSuggestions = () => {
 					help={ wordCountString ? wordCountString : null }
 				/>
 			</div>
-			<Button
-				href={ __(
-					'https://wordpress.org/documentation/article/page-post-settings-sidebar/#excerpt',
-					'wp-parsely',
-				) }
-				target="_blank"
-				variant="link"
-			>
-				{ __( 'Learn more about manual excerpts', 'wp-parsely' ) }
-				<Icon
-					icon={ external }
-					size={ 18 }
-					className="parsely-external-link-icon"
-				/>
-			</Button>
-			<div className="wp-parsely-excerpt-generator">
+
+			{ isDocumentSettingPanel && (
+				<Button
+					href={ __( // eslint-disable-line @wordpress/i18n-text-domain
+						'https://wordpress.org/documentation/article/page-post-settings-sidebar/#excerpt'
+					) }
+					target="_blank"
+					variant="link"
+					rel="noopener"
+				>
+					{ __( 'Learn more about manual excerpts', 'wp-parsely' ) }
+					<Icon
+						icon={ external }
+						size={ 18 }
+						className="parsely-external-link-icon"
+					/>
+				</Button>
+			) }
+
+			<div className={ 'wp-parsely-excerpt-generator' + ( isDocumentSettingPanel ? ' is-doc-set-panel' : '' ) }>
 				{ error && (
 					<Notice
 						className="wp-parsely-excerpt-generator-error"
@@ -279,7 +307,7 @@ const PostExcerptSuggestions = () => {
 				) }
 				{ excerptData.isUnderReview ? (
 					<>
-						{ generateWithParselyHeader }
+						{ isDocumentSettingPanel && generateWithParselyHeader }
 						<div className="wp-parsely-excerpt-suggestions-review-controls">
 							<Button
 								variant="secondary"
@@ -312,7 +340,7 @@ const PostExcerptSuggestions = () => {
 							persona={ settings.ExcerptSuggestions.Persona }
 							tone={ settings.ExcerptSuggestions.Tone }
 						/>
-						{ generateWithParselyHeader }
+						{ isDocumentSettingPanel && generateWithParselyHeader }
 						<div className="excerpt-suggestions-generate">
 							<Button
 								onClick={ generateExcerpt }
@@ -331,18 +359,22 @@ const PostExcerptSuggestions = () => {
 						</div>
 					</>
 				) }
-				<Button
-					href="https://docs.parse.ly/plugin-content-helper/#h-excerpt-generator-beta"
-					target="_blank"
-					variant="link"
-				>
-					{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
-					<Icon
-						icon={ external }
-						size={ 18 }
-						className="parsely-external-link-icon"
-					/>
-				</Button>
+
+				{ isDocumentSettingPanel && (
+					<Button
+						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/"
+						target="_blank"
+						variant="link"
+						rel="noopener"
+					>
+						{ __( 'Learn more about Parse.ly AI', 'wp-parsely' ) }
+						<Icon
+							icon={ external }
+							size={ 18 }
+							className="parsely-external-link-icon"
+						/>
+					</Button>
+				) }
 			</div>
 		</div>
 	);
@@ -367,28 +399,3 @@ const LoadingAnimation = (): React.JSX.Element => {
 	);
 };
 
-/**
- * The ExcerptPanel component verifies that the current post type supports excerpts,
- * and then renders the PostExcerptSuggestions component.
- *
- * @since 3.13.0
- */
-export const ExcerptPanel = () => {
-	return (
-		<PostTypeSupportCheck supportKeys="excerpt">
-			<PluginDocumentSettingPanel
-				name="parsely-post-excerpt"
-				title={ __( 'Excerpt', 'wp-parsely' ) }
-			>
-				<SettingsProvider
-					endpoint="editor-sidebar"
-					defaultSettings={ getSettingsFromJson(
-						window.wpParselyContentHelperSettings
-					) }
-				>
-					<PostExcerptSuggestions />
-				</SettingsProvider>
-			</PluginDocumentSettingPanel>
-		</PostTypeSupportCheck>
-	);
-};
