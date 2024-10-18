@@ -5,7 +5,6 @@ parameters:
   paths:
     - bin/
     - src/
-    - views/
     - tests/
     - wp-parsely.php
     - uninstall.php
