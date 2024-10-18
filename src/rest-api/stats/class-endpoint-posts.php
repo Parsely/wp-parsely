@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\REST_API\Stats;
 
 use Parsely\REST_API\Base_Endpoint;
-use Parsely\Services\ContentAPI\Content_API_Service;
+use Parsely\Services\Content_API\Content_API_Service;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;

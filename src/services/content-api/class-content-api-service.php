@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Services\ContentAPI;
+namespace Parsely\Services\Content_API;
 
 use Parsely\Services\Base_API_Service;
 use Parsely\Services\Base_Service_Endpoint;

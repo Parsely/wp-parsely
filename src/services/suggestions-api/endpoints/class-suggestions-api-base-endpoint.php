@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Services\SuggestionsAPI\Endpoints;
+namespace Parsely\Services\Suggestions_API\Endpoints;
 
 use Parsely\Services\Base_Service_Endpoint;
 use WP_Error;

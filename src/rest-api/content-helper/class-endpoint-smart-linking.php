@@ -14,7 +14,7 @@ namespace Parsely\REST_API\Content_Helper;
 use Parsely\Models\Smart_Link;
 use Parsely\REST_API\Base_Endpoint;
 use Parsely\REST_API\Use_Post_ID_Parameter_Trait;
-use Parsely\Services\SuggestionsAPI\Suggestions_API_Service;
+use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use WP_Error;
 use WP_Post;
 use WP_REST_Request;

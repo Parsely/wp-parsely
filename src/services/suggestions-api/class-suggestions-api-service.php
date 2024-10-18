@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Services\SuggestionsAPI;
+namespace Parsely\Services\Suggestions_API;
 
 use Parsely\Models\Smart_Link;
 use Parsely\Services\Base_API_Service;

@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Services\SuggestionsAPI\Endpoints;
+namespace Parsely\Services\Suggestions_API\Endpoints;
 
 use Parsely\Models\Smart_Link;
 use WP_Error;

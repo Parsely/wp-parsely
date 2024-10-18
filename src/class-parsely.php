@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace Parsely;
 
 use Parsely\REST_API\REST_API_Controller;
-use Parsely\Services\ContentAPI\Content_API_Service;
-use Parsely\Services\SuggestionsAPI\Suggestions_API_Service;
+use Parsely\Services\Content_API\Content_API_Service;
+use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Settings_Page;
 use Parsely\Utils\Utils;

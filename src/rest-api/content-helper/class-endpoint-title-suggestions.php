@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Parsely\REST_API\Content_Helper;
 
 use Parsely\REST_API\Base_Endpoint;
-use Parsely\Services\SuggestionsAPI\Suggestions_API_Service;
+use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -161,7 +161,7 @@ class Endpoint_Title_Suggestions extends Base_Endpoint {
 				'persona'   => $persona,
 				'style'     => $style,
 				'max_items' => $limit,
-			) 
+			)
 		);
 
 		if ( is_wp_error( $response ) ) {

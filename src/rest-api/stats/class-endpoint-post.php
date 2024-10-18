@@ -12,7 +12,7 @@ namespace Parsely\REST_API\Stats;
 
 use Parsely\REST_API\Base_Endpoint;
 use Parsely\REST_API\Use_Post_ID_Parameter_Trait;
-use Parsely\Services\ContentAPI\Content_API_Service;
+use Parsely\Services\Content_API\Content_API_Service;
 use Parsely\Utils\Utils;
 use stdClass;
 use WP_Error;

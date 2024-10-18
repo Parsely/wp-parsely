@@ -12,8 +12,8 @@ namespace Parsely\Content_Helper;
 
 use DateTime;
 use Parsely\Parsely;
-use Parsely\Services\ContentAPI\Content_API_Service;
-use Parsely\Services\ContentAPI\Endpoints\Endpoint_Analytics_Posts;
+use Parsely\Services\Content_API\Content_API_Service;
+use Parsely\Services\Content_API\Endpoints\Endpoint_Analytics_Posts;
 use Parsely\Utils\Utils;
 use WP_Screen;
 
