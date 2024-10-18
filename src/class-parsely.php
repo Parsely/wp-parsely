@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\REST_API\REST_API_Controller;
+use Parsely\Services\Content_API\Content_API_Service;
+use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Settings_Page;
 use Parsely\Utils\Utils;
@@ -58,12 +61,12 @@ use WP_Post;
  * }
  *
  * @phpstan-type WP_HTTP_Request_Args array{
- *   method: string,
- *   timeout: float,
- *   blocking: bool,
- *   headers: array<string, string>,
- *   body: string,
- *   data_format: string,
+ *   method?: string,
+ *   timeout?: float,
+ *   blocking?: bool,
+ *   headers?: array<string, string>,
+ *   body?: string,
+ *   data_format?: string,
  * }
  *
  * @phpstan-import-type Metadata_Attributes from Metadata
@@ -79,6 +82,27 @@ class Parsely {
 	public const DASHBOARD_BASE_URL              = 'https://dash.parsely.com';
 	public const PUBLIC_API_BASE_URL             = 'https://api.parsely.com/v2';
 	public const PUBLIC_SUGGESTIONS_API_BASE_URL = 'https://content-suggestions-api.parsely.net/prod';
+
+	/**
+	 * The Content API service.
+	 *
+	 * @var ?Content_API_Service $content_api_service
+	 */
+	private $content_api_service;
+
+	/**
+	 * The Suggestions API service.
+	 *
+	 * @var ?Suggestions_API_Service $suggestions_api_service
+	 */
+	private $suggestions_api_service;
+
+	/**
+	 * The Parse.ly internal REST API controller.
+	 *
+	 * @var REST_API_Controller|null $rest_api_controller
+	 */
+	private $rest_api_controller;
 
 	/**
 	 * Declare some class properties
@@ -235,6 +259,57 @@ class Parsely {
 		}
 
 		add_action( 'save_post', array( $this, 'update_metadata_endpoint' ) );
+	}
+
+	/**
+	 * Returns the Content API service.
+	 *
+	 * This method returns the Content API service, which is used to interact with the Parse.ly Content API.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return Content_API_Service
+	 */
+	public function get_content_api(): Content_API_Service {
+		if ( ! isset( $this->content_api_service ) ) {
+			$this->content_api_service = new Content_API_Service( $this );
+		}
+
+		return $this->content_api_service;
+	}
+
+	/**
+	 * Returns the Suggestions API service.
+	 *
+	 * This method returns the Suggestions API service, which is used to interact with the Parse.ly Suggestions API.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return Suggestions_API_Service
+	 */
+	public function get_suggestions_api(): Suggestions_API_Service {
+		if ( ! isset( $this->suggestions_api_service ) ) {
+			$this->suggestions_api_service = new Suggestions_API_Service( $this );
+		}
+
+		return $this->suggestions_api_service;
+	}
+
+	/**
+	 * Gets the REST API controller.
+	 *
+	 * If the controller is not set, a new instance is created.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return REST_API_Controller
+	 */
+	public function get_rest_api_controller(): REST_API_Controller {
+		if ( ! isset( $this->rest_api_controller ) ) {
+			$this->rest_api_controller = new REST_API_Controller( $this );
+		}
+
+		return $this->rest_api_controller;
 	}
 
 	/**

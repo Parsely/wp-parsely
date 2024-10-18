@@ -184,6 +184,22 @@ abstract class Base_Endpoint {
 	}
 
 	/**
+	 * Returns the endpoint slug.
+	 *
+	 * The slug is the endpoint name prefixed with the route prefix, from
+	 * the API controller.
+	 *
+	 * Used as an identifier for the endpoint, when registering routes.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string
+	 */
+	public function get_endpoint_slug(): string {
+		return $this->api_controller->prefix_route( '' ) . $this->get_endpoint_name();
+	}
+
+	/**
 	 * Returns the registered routes.
 	 *
 	 * @since 3.17.0
