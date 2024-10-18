@@ -640,7 +640,7 @@ class Parsely {
 	 *                           for context (Default null for current).
 	 * @return string
 	 */
-	public static function get_settings_url( int $_blog_id = null ): string {
+	public static function get_settings_url( ?int $_blog_id = null ): string {
 		return get_admin_url( $_blog_id, 'options-general.php?page=' . self::MENU_SLUG );
 	}
 

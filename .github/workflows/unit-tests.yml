@@ -25,25 +25,24 @@ jobs:
       WP_VERSION: latest
 
     strategy:
-      # PHP 7.2 uses PHPUnit 8.5.21
-      # PHP 7.3 uses PHPUnit 9.5.10
-      # PHP 7.4 uses PHPUnit 9.5.10
-      # PHP 8.0 uses PHPUnit 9.5.10
-      # PHP 8.1 uses PHPUnit 9.5.10
+      # Note: Different PHP versions use different PHPUnit versions.
       # Keys:
       # - coverage: Whether to run the tests with code coverage.
       # - experimental: Whether the build is "allowed to fail".
       matrix:
-        php: ['7.2', '7.3', '7.4', '8.0', '8.2', '8.3']
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.3']
         coverage: [none]
         experimental: [false]
         include:
           # Run code coverage for only one PHP version
-          - php: '8.1'
-            coverage: pcov
+          - php: '8.2'
+            coverage: pcov # Warning: PCOV might not work for PHP 8.4 or newer according to https://thephp.cc/articles/pcov-or-xdebug.
             extensions: pcov
             ini-values: pcov.directory=., "pcov.exclude=\"~(vendor|tests)~\""
             experimental: false
+          - php: '8.4'
+            coverage: none
+            experimental: true
       fail-fast: false
     continue-on-error: ${{ matrix.experimental }}
     steps:
