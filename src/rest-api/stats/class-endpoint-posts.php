@@ -16,6 +16,7 @@ use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 use stdClass;
+use const _PHPStan_4f7beffdf\__;
 
 /**
  * The Stats API Posts endpoint.
@@ -210,7 +211,7 @@ class Endpoint_Posts extends Base_Endpoint {
 		}
 
 		if ( count( $string_or_array ) > 5 ) {
-			return new WP_Error( 'invalid_param', 'The parameter must have at most 5 items.' );
+			return new WP_Error( 'invalid_param', __( 'The parameter must have at most 5 items.', 'wp-parsely' ) );
 		}
 
 		return true;
@@ -260,6 +261,7 @@ class Endpoint_Posts extends Base_Endpoint {
 
 		// Process the data.
 		$posts = array();
+
 		/**
 		 * The analytics data object.
 		 *

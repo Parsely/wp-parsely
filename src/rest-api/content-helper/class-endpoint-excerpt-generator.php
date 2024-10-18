@@ -191,8 +191,7 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 			return $response;
 		}
 
-		// TODO: For now, only return the first suggestion. When the UI is ready to handle multiple suggestions, we can
-		// TODO: return the entire array.
+		// TODO: For now, only return the first suggestion. When the UI is ready to handle multiple suggestions, we can return the entire array.
 		$response = $response[0] ?? '';
 		return new WP_REST_Response( array( 'data' => $response ), 200 );
 	}

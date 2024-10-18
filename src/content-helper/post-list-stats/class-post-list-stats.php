@@ -301,10 +301,10 @@ class Post_List_Stats extends Content_Helper_Feature {
 
 		$response = $this->content_api->get_posts(
 			array(
-				'period_start'   => 'max_days',
+				'period_start'   => Endpoint_Analytics_Posts::MAX_PERIOD,
 				'pub_date_start' => $date_params['pub_date_start'] ?? '',
 				'pub_date_end'   => $date_params['pub_date_end'] ?? '',
-				'limit'          => 'max',
+				'limit'          => Endpoint_Analytics_Posts::MAX_LIMIT,
 				'sort'           => 'avg_engaged', // Note: API sends different stats on different sort options.
 			)
 		);

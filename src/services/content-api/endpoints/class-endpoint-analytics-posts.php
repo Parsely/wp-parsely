@@ -53,8 +53,27 @@ use WP_Error;
  *  }
  */
 class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
-	public const MAX_RECORDS_LIMIT        = 2000;
-	public const ANALYTICS_API_DAYS_LIMIT = 7;
+	private const MAX_RECORDS_LIMIT        = 2000;
+	private const ANALYTICS_API_DAYS_LIMIT = 7;
+
+	/**
+	 * Maximum limit for the number of records to return, to be
+	 * used in the `limit` parameter.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @var string
+	 */
+	public const MAX_LIMIT = 'max';
+
+	/**
+	 * Maximum period for the API request, to be used in the `period_start` parameter.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @var string
+	 */
+	public const MAX_PERIOD = 'max_days';
 
 	/**
 	 * Returns the endpoint for the API request.
@@ -117,13 +136,13 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 		$query_args = array_filter( $args );
 
 		// If the period_start is set to 'max_days', set it to the maximum days limit.
-		if ( 'max_days' === $query_args['period_start'] ) {
+		if ( self::MAX_PERIOD === $query_args['period_start'] ) {
 			$query_args['period_start'] = self::ANALYTICS_API_DAYS_LIMIT . 'd';
 		}
 
 		// If the limit is set to 'max' or greater than the maximum records limit,
 		// set it to the maximum records limit.
-		if ( 'max' === $query_args['limit'] || $query_args['limit'] > self::MAX_RECORDS_LIMIT ) {
+		if ( self::MAX_LIMIT === $query_args['limit'] || $query_args['limit'] > self::MAX_RECORDS_LIMIT ) {
 			$query_args['limit'] = self::MAX_RECORDS_LIMIT;
 		}
 
