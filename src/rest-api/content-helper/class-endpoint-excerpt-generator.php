@@ -95,14 +95,14 @@ class Endpoint_Excerpt_Generator extends Base_Endpoint {
 					'type'        => 'string',
 					'required'    => true,
 				),
-				'persona'        => array(
-					'description' => __( 'The persona of the content.', 'wp-parsely' ),
+				'persona' => array(
+					'description' => __( 'The persona to use for the suggestion.', 'wp-parsely' ),
 					'type'        => 'string',
 					'required'    => false,
 					'default'     => 'journalist',
 				),
-				'style'          => array(
-					'description' => __( 'The style of the content.', 'wp-parsely' ),
+				'style'   => array(
+					'description' => __( 'The style to use for the suggestion.', 'wp-parsely' ),
 					'type'        => 'string',
 					'required'    => false,
 					'default'     => 'neutral',

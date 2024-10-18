@@ -69,7 +69,7 @@ class ContentHelperControllerTest extends RestAPIControllerTest {
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Controller::ROUTE_PREFIX
 	 */
 	public function test_route_prefix(): void {
-		self::assertEquals( 'content-helper', $this->content_helper_controller->get_route_prefix() );
+		self::assertEquals( 'content-helper', $this->content_helper_controller::get_route_prefix() );
 	}
 
 	/**

@@ -96,7 +96,7 @@ abstract class Base_API_Controller {
 	 *
 	 * @return string The route prefix.
 	 */
-	public function get_route_prefix(): string {
+	public static function get_route_prefix(): string {
 		return '';
 	}
 
@@ -173,11 +173,11 @@ abstract class Base_API_Controller {
 	 * @return string The prefixed route.
 	 */
 	public function prefix_route( string $route ): string {
-		if ( '' === $this->get_route_prefix() ) {
+		if ( '' === static::get_route_prefix() ) {
 			return $route;
 		}
 
-		return $this->get_route_prefix() . '/' . $route;
+		return static::get_route_prefix() . '/' . $route;
 	}
 
 	/**
