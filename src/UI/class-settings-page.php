@@ -1217,7 +1217,10 @@ final class Settings_Page {
 				$valid_credentials = true;
 			}
 
-			if ( is_wp_error( $valid_credentials ) && Validator::INVALID_API_CREDENTIALS === $valid_credentials->get_error_code() ) {
+			if (
+				( is_wp_error( $valid_credentials ) && Validator::INVALID_API_CREDENTIALS === $valid_credentials->get_error_code() ) ||
+				( is_bool( $valid_credentials ) && ! $valid_credentials )
+			) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'api_secret',
