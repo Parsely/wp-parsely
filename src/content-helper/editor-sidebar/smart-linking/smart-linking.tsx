@@ -53,7 +53,7 @@ const withSettingsProvider = createHigherOrderComponent( ( BlockEdit ) => {
 
 		return (
 			<SettingsProvider
-				endpoint="editor-sidebar-settings"
+				endpoint="editor-sidebar"
 				defaultSettings={ getSettingsFromJson() }
 			>
 				<BlockEdit { ...props } />

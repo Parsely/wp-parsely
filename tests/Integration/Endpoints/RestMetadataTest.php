@@ -14,7 +14,6 @@ use Parsely\Parsely;
 use Parsely\Endpoints\Rest_Metadata;
 use Parsely\Tests\Integration\TestCase;
 
-
 /**
  * Integration Tests for the REST API Metadata Endpoint.
  */

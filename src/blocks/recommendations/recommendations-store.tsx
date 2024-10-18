@@ -9,12 +9,14 @@ import { createContext, useContext, useMemo, useReducer } from '@wordpress/eleme
 import { RecommendationsAction } from './constants';
 import { Recommendation } from './models/Recommendation';
 
+type RecommendationError = Error & { code: string|number, data?: { status?: string|number } };
+
 interface RecommendationState {
 	isLoaded: boolean;
 	recommendations: Recommendation[];
 	uuid: string | null;
 	clientId: string | null;
-	error: Error | null;
+	error: RecommendationError | null;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

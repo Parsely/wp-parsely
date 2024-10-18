@@ -78,6 +78,7 @@ type ReactDeps = React.DependencyList | undefined;
  *
  * @since 3.13.0
  * @since 3.14.0 Moved from `content-helper/common/hooks/useSaveSettings.ts`.
+ * @since 3.17.0 Updated to the new API endpoints.
  *
  * @param {string}    endpoint The settings endpoint to send the data to.
  * @param {Settings}  data     The data to send.
@@ -96,7 +97,7 @@ const useSaveSettings = (
 		}
 
 		apiFetch( {
-			path: '/wp-parsely/v1/user-meta/content-helper/' + endpoint,
+			path: '/wp-parsely/v2/settings/' + endpoint,
 			method: 'PUT',
 			data,
 		} );

@@ -51,11 +51,11 @@ export class ExcerptGeneratorProvider extends BaseProvider {
 
 		return await this.fetch<string>( {
 			method: 'POST',
-			path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-brief', {
+			path: addQueryArgs( '/wp-parsely/v2/content-helper/excerpt-generator/generate', {
 				title,
 			} ),
 			data: {
-				content,
+				text: content,
 			},
 		} );
 	}

@@ -140,7 +140,7 @@ export class SmartLinkingProvider extends BaseProvider {
 	): Promise<SmartLink[]> {
 		const response = await this.fetch<SmartLink[]>( {
 			method: 'POST',
-			path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-linked-reference', {
+			path: addQueryArgs( '/wp-parsely/v2/content-helper/smart-linking/generate', {
 				max_links: maxLinksPerPost,
 			} ),
 			data: {
@@ -165,7 +165,7 @@ export class SmartLinkingProvider extends BaseProvider {
 	public async addSmartLink( postID: number, linkSuggestion: SmartLink ): Promise<SmartLink> {
 		return await this.fetch<SmartLink>( {
 			method: 'POST',
-			path: `/wp-parsely/v1/smart-linking/${ postID }/add`,
+			path: `/wp-parsely/v2/content-helper/smart-linking/${ postID }/add`,
 			data: {
 				link: linkSuggestion,
 			},
@@ -195,7 +195,7 @@ export class SmartLinkingProvider extends BaseProvider {
 
 		return await this.fetch<AddMultipleSmartLinksResponse>( {
 			method: 'POST',
-			path: `/wp-parsely/v1/smart-linking/${ postID }/add-multiple`,
+			path: `/wp-parsely/v2/content-helper/smart-linking/${ postID }/add-multiple`,
 			data: {
 				links: linkSuggestions,
 			},
@@ -230,7 +230,7 @@ export class SmartLinkingProvider extends BaseProvider {
 
 		return await this.fetch<AddMultipleSmartLinksResponse>( {
 			method: 'POST',
-			path: `/wp-parsely/v1/smart-linking/${ postID }/set`,
+			path: `/wp-parsely/v2/content-helper/smart-linking/${ postID }/set`,
 			data: {
 				links: appliedSmartLinks,
 			},
@@ -249,7 +249,7 @@ export class SmartLinkingProvider extends BaseProvider {
 	public async getSmartLinks( postID: number ): Promise<GetSmartLinksResponse> {
 		return await this.fetch<GetSmartLinksResponse>( {
 			method: 'GET',
-			path: `/wp-parsely/v1/smart-linking/${ postID }/get`,
+			path: `/wp-parsely/v2/content-helper/smart-linking/${ postID }/get`,
 		} );
 	}
 
@@ -265,7 +265,7 @@ export class SmartLinkingProvider extends BaseProvider {
 	public async getPostTypeByURL( url: string ): Promise<LinkedPost> {
 		return await this.fetch<LinkedPost>( {
 			method: 'POST',
-			path: '/wp-parsely/v1/smart-linking/url-to-post-type',
+			path: '/wp-parsely/v2/content-helper/smart-linking/url-to-post-type',
 			data: {
 				url,
 			},

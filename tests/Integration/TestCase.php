@@ -100,7 +100,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $user_role The user's role. Default is subscriber.
 	 * @return int The newly created user's ID.
 	 */
-	public function create_test_user( string $user_login, string $user_role = 'subscriber' ): int {
+	public static function create_test_user( string $user_login, string $user_role = 'subscriber' ): int {
 		/** @var int */
 		return self::factory()->user->create(
 			array(
@@ -427,15 +427,15 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $user_login The user's login.
 	 * @param string $user_role The user's role.
 	 */
-	public function set_current_user_to( string $user_login, string $user_role ): void {
+	public static function set_current_user_to( string $user_login, string $user_role ): void {
 		$user = get_user_by( 'login', $user_login );
 		if ( false === $user ) {
-			$user_id = $this->create_test_user( $user_login, $user_role );
+			$user_id = self::create_test_user( $user_login, $user_role );
 			$user    = get_user_by( 'id', $user_id );
 		}
 
 		if ( false === $user ) {
-			$this::fail( 'Invalid user.' );
+			self::fail( 'Invalid user.' );
 		}
 
 		wp_set_current_user( $user->ID );
@@ -445,14 +445,14 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * Changes the current user to the built-in admin account.
 	 */
 	public function set_current_user_to_admin(): void {
-		$this->set_current_user_to( 'admin', 'administrator' );
+		self::set_current_user_to( 'admin', 'administrator' );
 	}
 
 	/**
 	 * Changes the current user to a contributor account.
 	 */
 	public function set_current_user_to_contributor(): void {
-		$this->set_current_user_to( 'test_contributor', 'contributor' );
+		self::set_current_user_to( 'test_contributor', 'contributor' );
 	}
 
 	/**

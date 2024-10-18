@@ -41,7 +41,7 @@ export function ParselyRecommendations( {
 
 		if ( httpError ) {
 			message = __( 'The Parse.ly Recommendations API is not accessible. You may be offline.', 'wp-parsely' );
-		} else if ( message.includes( 'Error: {"code":403,"message":"Forbidden","data":null}' ) ) {
+		} else if (	error.message === 'Forbidden' && error.data?.status === 403 && error.code === 403 ) {
 			message = __( 'Access denied. Please verify that your Site ID is valid.', 'wp-parsely' );
 		} else if ( message.startsWith( 'Error: {"code":"parsely_site_id_not_set"' ) ) {
 			message = __( 'To use this Block, a Parse.ly Site ID must be set in the plugin\'s options', 'wp-parsely' );
