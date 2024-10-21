@@ -55,36 +55,6 @@
 		}
 	}
 
-	.wp-parsely-dropdown-label {
-		align-self: stretch;
-		color: var(--sidebar-black);
-		font-size: var(--font-size--smaller);
-		font-style: normal;
-		font-weight: 600;
-		line-height: var(--grid-unit-20);
-		text-transform: uppercase;
-	}
-
-	// Accepted Title view.
-	// TODO: Remove, unused?
-	.parsely-write-titles-accepted-title-container {
-		.parsely-write-titles-accepted-title {
-			font-weight: 600;
-			font-size: to_rem(16px);
-			line-height: to_rem(20px);
-			margin: 0 0 to_rem(15px) 0;
-			text-align: center;
-		}
-
-		// Accepted Title actions.
-		.parsely-write-titles-accepted-title-actions {
-			margin: to_rem(10px) 0;
-			justify-content: center;
-			display: flex;
-			gap: to_rem(10px);
-		}
-	}
-
 	.wp-parsely-title-suggestion {
 		display: flex;
 		flex-direction: column;

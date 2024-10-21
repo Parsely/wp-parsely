@@ -28,7 +28,7 @@ namespace Parsely;
 
 use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Content_Helper\Editor_Sidebar;
-use Parsely\Content_Helper\Excerpt_Generator;
+use Parsely\Content_Helper\Excerpt_Suggestions;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Endpoints\Rest_Metadata;
@@ -167,18 +167,6 @@ function parsely_content_helper_editor_sidebar_features(): void {
 		$GLOBALS['parsely_editor_sidebar']->init_features();
 	}
 }
-
-// The priority of 9 is used to ensure that the Excerpt Generator is loaded before the PCH Editor Sidebar (10).
-add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_excerpt_generator', 9 );
-/**
- * Initializes and inserts the PCH Excerpt Generator.
- *
- * @since 3.13.0
- */
-function init_content_helper_excerpt_generator(): void {
-	( new Excerpt_Generator( $GLOBALS['parsely'] ) )->run();
-}
-
 
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**

@@ -20,7 +20,17 @@ use WP_Query;
  *
  * @since 3.16.0
  */
-class Smart_Linking extends Content_Helper_Feature {
+class Smart_Linking extends Editor_Sidebar_Feature {
+	/**
+	 * Returns the feature's name.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return string
+	 */
+	public static function get_feature_name(): string {
+		return 'smart_linking';
+	}
 
 	/**
 	 * Allowed blocks for the Smart Linking feature.
@@ -34,51 +44,17 @@ class Smart_Linking extends Content_Helper_Feature {
 	);
 
 	/**
-	 * Instance of Editor_Sidebar class.
+	 * Constructor.
 	 *
 	 * @since 3.16.0
 	 *
 	 * @param Editor_Sidebar $editor_sidebar Instance of Editor_Sidebar class.
 	 */
 	public function __construct( Editor_Sidebar $editor_sidebar ) {
-		$this->parsely = $editor_sidebar->parsely;
+		parent::__construct( $editor_sidebar );
 
 		add_action( 'delete_post', array( $this, 'purge_smart_links' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_inline_script' ) );
-	}
-
-	/**
-	 * Returns the feature's filter name. The feature filter controls the
-	 * enabled/disabled state of a particular Content Helper feature.
-	 *
-	 * @since 3.16.0
-	 *
-	 * @return string The filter name.
-	 */
-	public static function get_feature_filter_name(): string {
-		return ''; // Not in use for this feature.
-	}
-
-	/**
-	 * Returns the feature's script ID.
-	 *
-	 * @since 3.16.0
-	 *
-	 * @return string The script ID.
-	 */
-	public static function get_script_id(): string {
-		return ''; // Not in use for this feature.
-	}
-
-	/**
-	 * Returns the feature's style ID.
-	 *
-	 * @since 3.16.0
-	 *
-	 * @return string The style ID.
-	 */
-	public static function get_style_id(): string {
-		return ''; // Not in use for this feature.
 	}
 
 	/**
@@ -99,27 +75,6 @@ class Smart_Linking extends Content_Helper_Feature {
 		// Register the taxonomies for the Smart Links.
 		$this->register_taxonomy( 'smart_link_source', __( 'Smart Link Source', 'wp-parsely' ) );
 		$this->register_taxonomy( 'smart_link_destination', __( 'Smart Link Destination', 'wp-parsely' ) );
-	}
-
-	/**
-	 * Returns whether the feature can be enabled for the current user.
-	 *
-	 * @since 3.16.0
-	 *
-	 * @param bool ...$conditions Conditions that need to be met besides filters
-	 *                            for the function to return true.
-	 * @return bool Whether the feature can be enabled.
-	 */
-	protected function can_enable_feature( bool ...$conditions ): bool {
-		if ( ! parent::can_enable_feature( ...$conditions ) ) {
-			return false;
-		}
-
-		return Permissions::current_user_can_use_pch_feature(
-			'smart_linking',
-			$this->parsely->get_options()['content_helper'],
-			get_the_ID()
-		);
 	}
 
 	/**

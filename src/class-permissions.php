@@ -154,8 +154,9 @@ class Permissions {
 	public static function get_pch_permissions_json( $pch_options ): string {
 		$permissions = array();
 		$features    = array(
-			'SmartLinking'     => 'smart_linking',
-			'TitleSuggestions' => 'title_suggestions',
+			'SmartLinking'       => 'smart_linking',
+			'TitleSuggestions'   => 'title_suggestions',
+			'ExcerptSuggestions' => 'excerpt_suggestions',
 		);
 
 		foreach ( $features as $key => $value ) {

@@ -12,6 +12,7 @@ export interface SidebarSettings {
 	RelatedPosts: RelatedPostsSettings;
 	SmartLinking: SmartLinkingSettings;
 	TitleSuggestions: TitleSuggestionsSettings;
+	ExcerptSuggestions: ExcerptSuggestionsSettings;
 }
 
 /**
@@ -57,4 +58,15 @@ export interface RelatedPostsSettings {
 export interface SmartLinkingSettings {
 	MaxLinks: number;
 	Open: boolean;
+}
+
+/**
+ * Defines the settings structure for the PostExcerptSuggestions component.
+ *
+ * @since 3.17.0
+ */
+export interface ExcerptSuggestionsSettings {
+	Open: boolean;
+	Persona: string;
+	Tone: string;
 }
