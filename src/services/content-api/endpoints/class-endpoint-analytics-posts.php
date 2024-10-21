@@ -13,7 +13,7 @@ namespace Parsely\Services\Content_API\Endpoints;
 use WP_Error;
 
 /**
- * The endpoint for the analytics/posts API request.
+ * The endpoint for the /analytics/posts API request.
  *
  * @since 3.17.0
  *
@@ -58,7 +58,7 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 
 	/**
 	 * Maximum limit for the number of records to return, to be
-	 * used in the `limit` parameter.
+	 * used in the limit parameter.
 	 *
 	 * @since 3.17.0
 	 *
@@ -67,7 +67,7 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 	public const MAX_LIMIT = 'max';
 
 	/**
-	 * Maximum period for the API request, to be used in the `period_start` parameter.
+	 * Maximum period for the API request, to be used in the period_start parameter.
 	 *
 	 * @since 3.17.0
 	 *
@@ -89,9 +89,9 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 	/**
 	 * Returns the endpoint URL for the API request.
 	 *
-	 * This method appends the author, tag, and section parameters to the endpoint URL,
-	 * if they are set. Since Parsely API needs the multiple values for these parameters to share
-	 * the same key, we need to append them manually.
+	 * This method appends the author, tag, and section parameters to the
+	 * endpoint URL, if they are set. Since the Parse.ly API needs a key for
+	 * every value (e.g. tag=tag1&tag=tag2), we need to append them manually.
 	 *
 	 * @since 3.17.0
 	 *
@@ -128,6 +128,8 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 	/**
 	 * Executes the API request.
 	 *
+	 * @since 3.17.0
+	 *
 	 * @param array<mixed> $args The arguments to pass to the API request.
 	 * @return WP_Error|array<mixed> The response from the API request.
 	 */
@@ -156,6 +158,8 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 	 * This is required because the Parsely API requires the multiple values for the author, tag,
 	 * and section parameters to share the same key.
 	 *
+	 * @since 3.17.0
+	 *
 	 * @param string        $url The URL to append the parameters to.
 	 * @param array<string> $params The parameters to append.
 	 * @param string        $param_name The name of the parameter.
@@ -170,6 +174,7 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 				$url .= '&' . $param_name . '=' . $param;
 			}
 		}
+
 		return $url;
 	}
 }

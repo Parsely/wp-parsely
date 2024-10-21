@@ -22,7 +22,6 @@ use WP_Error;
  * @since 3.17.0
  */
 class Content_API_Service extends Base_API_Service {
-
 	/**
 	 * Returns the base URL for the Parse.ly Content API, aka Public API.
 	 *

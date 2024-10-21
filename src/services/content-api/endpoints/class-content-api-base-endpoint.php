@@ -57,8 +57,9 @@ abstract class Content_API_Base_Endpoint extends Base_Service_Endpoint {
 	/**
 	 * Processes the response from the remote API.
 	 *
-	 * @param WP_HTTP_Response|WP_Error $response The response from the remote API.
+	 * @since 3.17.0
 	 *
+	 * @param WP_HTTP_Response|WP_Error $response The response from the remote API.
 	 * @return array<mixed>|WP_Error The processed response.
 	 */
 	protected function process_response( $response ) {

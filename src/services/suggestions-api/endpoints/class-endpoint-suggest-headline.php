@@ -13,7 +13,7 @@ namespace Parsely\Services\Suggestions_API\Endpoints;
 use WP_Error;
 
 /**
- * The endpoint for the suggest headline API request.
+ * The endpoint for the /suggest-headline API request.
  *
  * @since 3.17.0
  *
@@ -45,8 +45,8 @@ class Endpoint_Suggest_Headline extends Suggestions_API_Base_Endpoint {
 	}
 
 	/**
-	 * Generates titles (headlines) for a given content using the
-	 * Parse.ly Content Suggestion API.
+	 * Gets titles (headlines) for a given content using the Parse.ly Content
+	 * Suggestion API.
 	 *
 	 * @since 3.13.0
 	 * @since 3.17.0 Updated to use the new API service.

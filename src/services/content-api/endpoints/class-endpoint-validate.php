@@ -35,7 +35,8 @@ class Endpoint_Validate extends Content_API_Base_Endpoint {
 	/**
 	 * Returns the query arguments for the API request.
 	 *
-	 * We want to validate the API key and secret, so we don't need to send any query arguments.
+	 * We want to validate the API key and secret, so we don't need to send any
+	 * query arguments.
 	 *
 	 * @since 3.17.0
 	 *
@@ -48,7 +49,9 @@ class Endpoint_Validate extends Content_API_Base_Endpoint {
 
 	/**
 	 * Queries the Parse.ly API credentials validation endpoint.
-	 * The API will return a 200 response if the credentials are valid and a 403 response if they are not.
+	 *
+	 * The API will return a 200 response if the credentials are valid and a 403
+	 * response if they are not.
 	 *
 	 * @since 3.17.0
 	 *
@@ -67,7 +70,6 @@ class Endpoint_Validate extends Content_API_Base_Endpoint {
 		if ( is_wp_error( $response ) ) {
 			return $response;
 		}
-
 
 		if ( false === $response['success'] ) {
 			return new WP_Error(
@@ -93,6 +95,8 @@ class Endpoint_Validate extends Content_API_Base_Endpoint {
 
 	/**
 	 * Executes the API request.
+	 *
+	 * @since 3.17.0
 	 *
 	 * @param array<mixed> $args The arguments to pass to the API request.
 	 * @return WP_Error|array<mixed> The response from the API request.

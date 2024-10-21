@@ -35,12 +35,15 @@ abstract class Base_Service_Endpoint {
 	/**
 	 * The API service that this endpoint belongs to.
 	 *
+	 * @since 3.17.0
+	 *
 	 * @var Base_API_Service
 	 */
 	protected $api_service;
 
 	/**
 	 * Flag to truncate the content of the request body.
+	 *
 	 * If set to true, the content of the request body will be truncated to a maximum length.
 	 *
 	 * @since 3.14.1

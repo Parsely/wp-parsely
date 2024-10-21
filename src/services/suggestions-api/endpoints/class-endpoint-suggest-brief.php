@@ -13,7 +13,7 @@ namespace Parsely\Services\Suggestions_API\Endpoints;
 use WP_Error;
 
 /**
- * The endpoint for the suggest-brief API request.
+ * The endpoint for the /suggest-brief API request.
  *
  * @since 3.17.0
  *
