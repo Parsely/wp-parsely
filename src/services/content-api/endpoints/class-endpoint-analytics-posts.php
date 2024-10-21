@@ -93,10 +93,10 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 	 * endpoint URL, if they are set. Since the Parse.ly API needs a key for
 	 * every value (e.g. tag=tag1&tag=tag2), we need to append them manually.
 	 *
-	 * @param array<mixed> $query_args The arguments to pass to the API request.
-	 *
-	 * @return string The endpoint URL for the API request.
 	 * @since 3.17.0
+	 *
+	 * @param array<mixed> $query_args The arguments to pass to the API request.
+	 * @return string The endpoint URL for the API request.
 	 */
 	public function get_endpoint_url( array $query_args = array() ): string {
 		// Store the author, tag, and section parameters.
