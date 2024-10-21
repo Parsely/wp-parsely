@@ -656,7 +656,7 @@ final class SettingsPageTest extends TestCase {
 		$GLOBALS['parsely_settings_page'] = $settings_page;
 
 		$settings_page->initialize_settings();
-		include plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings.php';
+		include plugin_dir_path( PARSELY_FILE ) . 'src/UI/settings-page.php';
 		self::expectOutputContains( $expected_html );
 	}
 

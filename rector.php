@@ -22,7 +22,6 @@ return static function ( RectorConfig $rector_config ): void {
 		array(
 			__DIR__ . '/src',
 			__DIR__ . '/tests',
-			__DIR__ . '/views',
 			__DIR__ . '/uninstall.php',
 			__DIR__ . '/wp-parsely.php',
 		)
