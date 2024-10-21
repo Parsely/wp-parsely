@@ -87,8 +87,8 @@ class Content_API_Service extends Base_API_Service {
 	 */
 	public function get_post_details(
 		string $url,
-		string $period_start = null,
-		string $period_end = null
+		?string $period_start = null,
+		?string $period_end = null
 	) {
 		/** @var Endpoints\Endpoint_Analytics_Post_Details $endpoint */
 		$endpoint = $this->get_endpoint( '/analytics/post/detail' );
@@ -116,8 +116,8 @@ class Content_API_Service extends Base_API_Service {
 	 */
 	public function get_post_referrers(
 		string $url,
-		string $period_start = null,
-		string $period_end = null
+		?string $period_start = null,
+		?string $period_end = null
 	) {
 		/** @var Endpoints\Endpoint_Referrers_Post_Detail $endpoint */
 		$endpoint = $this->get_endpoint( '/referrers/post/detail' );
