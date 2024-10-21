@@ -83,7 +83,7 @@ abstract class Base_API_Service {
 	 * @param string $endpoint The name of the endpoint.
 	 * @return Base_Service_Endpoint The endpoint.
 	 */
-	protected function get_endpoint( string $endpoint ): Base_Service_Endpoint {
+	public function get_endpoint( string $endpoint ): Base_Service_Endpoint {
 		return $this->endpoints[ $endpoint ];
 	}
 
@@ -97,7 +97,7 @@ abstract class Base_API_Service {
 	 *
 	 * @return string
 	 */
-	abstract public function get_base_url(): string;
+	abstract public static function get_base_url(): string;
 
 	/**
 	 * Registers the endpoints for the service.
@@ -117,7 +117,7 @@ abstract class Base_API_Service {
 	 * @return string
 	 */
 	public function get_api_url(): string {
-		return $this->get_base_url();
+		return static::get_base_url();
 	}
 
 	/**

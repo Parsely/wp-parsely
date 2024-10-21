@@ -29,7 +29,7 @@ class Content_API_Service extends Base_API_Service {
 	 *
 	 * @return string
 	 */
-	public function get_base_url(): string {
+	public static function get_base_url(): string {
 		return 'https://api.parsely.com/v2';
 	}
 

@@ -93,29 +93,29 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 	 * endpoint URL, if they are set. Since the Parse.ly API needs a key for
 	 * every value (e.g. tag=tag1&tag=tag2), we need to append them manually.
 	 *
-	 * @since 3.17.0
+	 * @param array<mixed> $query_args The arguments to pass to the API request.
 	 *
-	 * @param array<mixed> $args The arguments to pass to the API request.
 	 * @return string The endpoint URL for the API request.
+	 * @since 3.17.0
 	 */
-	protected function get_endpoint_url( array $args = array() ): string {
+	public function get_endpoint_url( array $query_args = array() ): string {
 		// Store the author, tag, and section parameters.
 		/** @var array<string> $authors */
-		$authors = $args['author'] ?? array();
+		$authors = $query_args['author'] ?? array();
 
 		/** @var array<string> $tags */
-		$tags = $args['tag'] ?? array();
+		$tags = $query_args['tag'] ?? array();
 
 		/** @var array<string> $sections */
-		$sections = $args['section'] ?? array();
+		$sections = $query_args['section'] ?? array();
 
 		// Remove the author, tag, and section parameters from the query args.
-		unset( $args['author'] );
-		unset( $args['tag'] );
-		unset( $args['section'] );
+		unset( $query_args['author'] );
+		unset( $query_args['tag'] );
+		unset( $query_args['section'] );
 
 		// Generate the endpoint URL.
-		$endpoint_url = parent::get_endpoint_url( $args );
+		$endpoint_url = parent::get_endpoint_url( $query_args );
 
 		// Append the author, tag, and section parameters to the endpoint URL.
 		$endpoint_url = $this->append_multiple_params_to_url( $endpoint_url, $authors, 'author' );
