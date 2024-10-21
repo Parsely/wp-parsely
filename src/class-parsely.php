@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace Parsely;
 
+use Parsely\REST_API\REST_API_Controller;
+use Parsely\Services\Content_API\Content_API_Service;
+use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Settings_Page;
 use Parsely\Utils\Utils;
@@ -58,12 +61,12 @@ use WP_Post;
  * }
  *
  * @phpstan-type WP_HTTP_Request_Args array{
- *   method: string,
- *   timeout: float,
- *   blocking: bool,
- *   headers: array<string, string>,
- *   body: string,
- *   data_format: string,
+ *   method?: string,
+ *   timeout?: float,
+ *   blocking?: bool,
+ *   headers?: array<string, string>,
+ *   body?: string,
+ *   data_format?: string,
  * }
  *
  * @phpstan-import-type Metadata_Attributes from Metadata
@@ -72,13 +75,32 @@ class Parsely {
 	/**
 	 * Declare our constants
 	 */
-	public const VERSION                         = PARSELY_VERSION;
-	public const MENU_SLUG                       = 'parsely'; // The page param passed to options-general.php.
-	public const OPTIONS_KEY                     = 'parsely'; // The key used to store options in the WP database.
-	public const CAPABILITY                      = 'manage_options'; // The capability required to administer settings.
-	public const DASHBOARD_BASE_URL              = 'https://dash.parsely.com';
-	public const PUBLIC_API_BASE_URL             = 'https://api.parsely.com/v2';
-	public const PUBLIC_SUGGESTIONS_API_BASE_URL = 'https://content-suggestions-api.parsely.net/prod';
+	public const VERSION            = PARSELY_VERSION;
+	public const MENU_SLUG          = 'parsely'; // The page param passed to options-general.php.
+	public const OPTIONS_KEY        = 'parsely'; // The key used to store options in the WP database.
+	public const CAPABILITY         = 'manage_options'; // The capability required to administer settings.
+	public const DASHBOARD_BASE_URL = 'https://dash.parsely.com';
+
+	/**
+	 * The Content API service.
+	 *
+	 * @var ?Content_API_Service $content_api_service
+	 */
+	private $content_api_service;
+
+	/**
+	 * The Suggestions API service.
+	 *
+	 * @var ?Suggestions_API_Service $suggestions_api_service
+	 */
+	private $suggestions_api_service;
+
+	/**
+	 * The Parse.ly internal REST API controller.
+	 *
+	 * @var REST_API_Controller|null $rest_api_controller
+	 */
+	private $rest_api_controller;
 
 	/**
 	 * Declare some class properties
@@ -238,6 +260,57 @@ class Parsely {
 	}
 
 	/**
+	 * Returns the Content API service.
+	 *
+	 * This method returns the Content API service, which is used to interact with the Parse.ly Content API.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return Content_API_Service
+	 */
+	public function get_content_api(): Content_API_Service {
+		if ( ! isset( $this->content_api_service ) ) {
+			$this->content_api_service = new Content_API_Service( $this );
+		}
+
+		return $this->content_api_service;
+	}
+
+	/**
+	 * Returns the Suggestions API service.
+	 *
+	 * This method returns the Suggestions API service, which is used to interact with the Parse.ly Suggestions API.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return Suggestions_API_Service
+	 */
+	public function get_suggestions_api(): Suggestions_API_Service {
+		if ( ! isset( $this->suggestions_api_service ) ) {
+			$this->suggestions_api_service = new Suggestions_API_Service( $this );
+		}
+
+		return $this->suggestions_api_service;
+	}
+
+	/**
+	 * Gets the REST API controller.
+	 *
+	 * If the controller is not set, a new instance is created.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return REST_API_Controller
+	 */
+	public function get_rest_api_controller(): REST_API_Controller {
+		if ( ! isset( $this->rest_api_controller ) ) {
+			$this->rest_api_controller = new REST_API_Controller( $this );
+		}
+
+		return $this->rest_api_controller;
+	}
+
+	/**
 	 * Gets the full URL of the JavaScript tracker file for the site. If an API
 	 * key is not set, return an empty string.
 	 *
@@ -384,7 +457,8 @@ class Parsely {
 			'tags'          => $metadata['keywords'] ?? '',
 		);
 
-		$parsely_api_endpoint    = self::PUBLIC_API_BASE_URL . '/metadata/posts';
+		$parsely_api_base_url    = Content_API_Service::get_base_url();
+		$parsely_api_endpoint    = $parsely_api_base_url . '/metadata/posts';
 		$parsely_metadata_secret = $parsely_options['metadata_secret'];
 
 		$headers = array( 'Content-Type' => 'application/json' );
@@ -938,8 +1012,8 @@ class Parsely {
 	private function allow_parsely_remote_requests(): void {
 		$allowed_urls = array(
 			self::DASHBOARD_BASE_URL,
-			self::PUBLIC_API_BASE_URL,
-			self::PUBLIC_SUGGESTIONS_API_BASE_URL,
+			Content_API_Service::get_base_url(),
+			Suggestions_API_Service::get_base_url(),
 		);
 
 		add_filter(

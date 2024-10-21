@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Parsely\REST_API\Content_Helper;
 
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
 use Parsely\REST_API\Base_Endpoint;
+use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -28,13 +28,13 @@ class Endpoint_Title_Suggestions extends Base_Endpoint {
 	use Content_Helper_Feature;
 
 	/**
-	 * The Suggest Headline API.
+	 * The Suggestions API service.
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var Suggest_Headline_API $suggest_headline_api
+	 * @var Suggestions_API_Service $suggestions_api
 	 */
-	private $suggest_headline_api;
+	protected $suggestions_api;
 
 	/**
 	 * Initializes the class.
@@ -45,7 +45,7 @@ class Endpoint_Title_Suggestions extends Base_Endpoint {
 	 */
 	public function __construct( Content_Helper_Controller $controller ) {
 		parent::__construct( $controller );
-		$this->suggest_headline_api = new Suggest_Headline_API( $this->parsely );
+		$this->suggestions_api = $controller->get_parsely()->get_suggestions_api();
 	}
 
 	/**
@@ -120,7 +120,7 @@ class Endpoint_Title_Suggestions extends Base_Endpoint {
 	 * @since 3.17.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response|\WP_Error The response object or a WP_Error object on failure.
+	 * @return WP_REST_Response|WP_Error The response object or a WP_Error object on failure.
 	 */
 	public function generate_titles( WP_REST_Request $request ) {
 		/**
@@ -155,7 +155,14 @@ class Endpoint_Title_Suggestions extends Base_Endpoint {
 			$limit = 3;
 		}
 
-		$response = $this->suggest_headline_api->get_titles( $post_content, $limit, $persona, $style );
+		$response = $this->suggestions_api->get_title_suggestions(
+			$post_content,
+			array(
+				'persona'   => $persona,
+				'style'     => $style,
+				'max_items' => $limit,
+			)
+		);
 
 		if ( is_wp_error( $response ) ) {
 			return $response;

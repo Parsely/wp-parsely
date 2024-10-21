@@ -73,4 +73,55 @@ class REST_API_Controller extends Base_API_Controller {
 
 		$this->controllers = $controllers;
 	}
+
+	/**
+	 * Determines if the specified endpoint is available to the current user.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string $endpoint The endpoint to check.
+	 * @return bool True if the endpoint is available to the current user, false otherwise.
+	 */
+	public function is_available_to_current_user( string $endpoint ): bool {
+		// Remove any forward or trailing slashes.
+		$endpoint = trim( $endpoint, '/' );
+
+		// Get the controller for the endpoint.
+		$controller = $this->get_controller_for_endpoint( $endpoint );
+		if ( null === $controller ) {
+			return false;
+		}
+
+		// Get the endpoint object.
+		$endpoint_obj = $controller->get_endpoint( $endpoint );
+		if ( null === $endpoint_obj ) {
+			return false;
+		}
+
+		// Check if the endpoint is available to the current user.
+		$is_available = $endpoint_obj->is_available_to_current_user();
+		if ( is_wp_error( $is_available ) ) {
+			return false;
+		}
+
+		return $is_available;
+	}
+
+	/**
+	 * Gets the controller for the specified endpoint.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string $endpoint The endpoint to get the controller for.
+	 * @return Base_API_Controller|null The controller for the specified endpoint.
+	 */
+	private function get_controller_for_endpoint( string $endpoint ): ?Base_API_Controller {
+		foreach ( $this->controllers as $controller ) {
+			if ( null !== $controller->get_endpoint( $endpoint ) ) {
+				return $controller;
+			}
+		}
+
+		return null;
+	}
 }

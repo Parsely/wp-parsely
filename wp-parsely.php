@@ -57,6 +57,10 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
 }
 
+// Load Telemetry classes.
+require_once __DIR__ . '/src/Telemetry/telemetry-init.php';
+
+
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
  * Registers the basic classes to initialize the plugin.
@@ -108,7 +112,7 @@ function parsely_wp_admin_early_register(): void {
 	$network_admin_sites_list->run();
 
 	// Initialize the REST API Controller.
-	$rest_api_controller = new REST_API_Controller( $GLOBALS['parsely'] );
+	$rest_api_controller = $GLOBALS['parsely']->get_rest_api_controller();
 	$rest_api_controller->init();
 }
 

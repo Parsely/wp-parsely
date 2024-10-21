@@ -83,45 +83,45 @@ trait Post_Data_Trait {
 	 * @since 3.10.0
 	 * @since 3.17.0 Moved from the `Base_API_Proxy` class.
 	 *
-	 * @param stdClass $item The object to extract the data from.
+	 * @param array<mixed> $item The object to extract the data from.
 	 * @return array<string, mixed> The extracted data.
 	 */
-	protected function extract_post_data( stdClass $item ): array {
+	protected function extract_post_data( array $item ): array {
 		$data = array();
 
-		if ( isset( $item->author ) ) {
-			$data['author'] = $item->author;
+		if ( isset( $item['author'] ) ) {
+			$data['author'] = $item['author'];
 		}
 
-		if ( isset( $item->metrics->views ) ) {
-			$data['views'] = number_format_i18n( $item->metrics->views );
+		if ( isset( $item['metrics']['views'] ) ) {
+			$data['views'] = number_format_i18n( $item['metrics']['views'] );
 		}
 
-		if ( isset( $item->metrics->visitors ) ) {
-			$data['visitors'] = number_format_i18n( $item->metrics->visitors );
+		if ( isset( $item['metrics']['visitors'] ) ) {
+			$data['visitors'] = number_format_i18n( $item['metrics']['visitors'] );
 		}
 
 		// The avg_engaged metric can be in different locations depending on the
 		// endpoint and passed sort/url parameters.
-		$avg_engaged = $item->metrics->avg_engaged ?? $item->avg_engaged ?? null;
+		$avg_engaged = $item['metrics']['avg_engaged'] ?? $item['avg_engaged'] ?? null;
 		if ( null !== $avg_engaged ) {
 			$data['avgEngaged'] = Utils::get_formatted_duration( (float) $avg_engaged );
 		}
 
-		if ( isset( $item->pub_date ) ) {
-			$data['date'] = wp_date( Utils::get_date_format(), strtotime( $item->pub_date ) );
+		if ( isset( $item['pub_date'] ) ) {
+			$data['date'] = wp_date( Utils::get_date_format(), strtotime( $item['pub_date'] ) );
 		}
 
-		if ( isset( $item->title ) ) {
-			$data['title'] = $item->title;
+		if ( isset( $item['title'] ) ) {
+			$data['title'] = $item['title'];
 		}
 
-		if ( isset( $item->url ) ) {
+		if ( isset( $item['url'] ) ) {
 			$site_id = $this->parsely->get_site_id();
 			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
-			$post_id = url_to_postid( $item->url ); // 0 if the post cannot be found.
+			$post_id = url_to_postid( $item['url'] ); // 0 if the post cannot be found.
 
-			$post_url = Parsely::get_url_with_itm_source( $item->url, null );
+			$post_url = Parsely::get_url_with_itm_source( $item['url'], null );
 			if ( Utils::parsely_is_https_supported() ) {
 				$post_url = str_replace( 'http://', 'https://', $post_url );
 			}
@@ -136,8 +136,8 @@ trait Post_Data_Trait {
 			$thumbnail_url = get_the_post_thumbnail_url( $post_id, 'thumbnail' );
 			if ( false !== $thumbnail_url ) {
 				$data['thumbnailUrl'] = $thumbnail_url;
-			} elseif ( isset( $item->thumb_url_medium ) ) {
-				$data['thumbnailUrl'] = $item->thumb_url_medium;
+			} elseif ( isset( $item['thumb_url_medium'] ) ) {
+				$data['thumbnailUrl'] = $item['thumb_url_medium'];
 			}
 		}
 

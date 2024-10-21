@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace Parsely\REST_API\Stats;
 
-use Parsely\RemoteAPI\Related_API;
 use Parsely\REST_API\Base_Endpoint;
+use Parsely\Services\Content_API\Content_API_Service;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -28,6 +28,15 @@ class Endpoint_Related extends Base_Endpoint {
 	use Related_Posts_Trait;
 
 	/**
+	 * The Parse.ly Content API service.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @var Content_API_Service $content_api
+	 */
+	public $content_api;
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 3.17.0
@@ -36,7 +45,7 @@ class Endpoint_Related extends Base_Endpoint {
 	 */
 	public function __construct( Stats_Controller $controller ) {
 		parent::__construct( $controller );
-		$this->related_posts_api = new Related_API( $this->parsely );
+		$this->content_api = $this->parsely->get_content_api();
 	}
 
 	/**
