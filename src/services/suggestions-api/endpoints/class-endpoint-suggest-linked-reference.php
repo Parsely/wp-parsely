@@ -18,7 +18,7 @@ use WP_Error;
  *
  * @since 3.17.0
  *
- * @link https://content-suggestions-api.parsely.net/prod/docs#/default/suggest_headline_suggest_headline_post
+ * @link https://content-suggestions-api.parsely.net/prod/docs#/default/suggest_linked_reference_suggest_linked_reference_post
  *
  * @phpstan-type Traffic_Source = array{
  *     source: string,
@@ -45,16 +45,16 @@ class Endpoint_Suggest_Linked_Reference extends Suggestions_API_Base_Endpoint {
 	}
 
 	/**
-	 * Gets suggested smart links for the given content.
+	 * Gets suggested smart links for the given content using the Parse.ly
+	 * Content Suggestion API.
 	 *
 	 * @since 3.14.0
 	 * @since 3.17.0 Updated to use the new API service.
 	 *
 	 * @param string                                    $content             The content to generate links for.
 	 * @param Endpoint_Suggest_Linked_Reference_Options $options The options to pass to the API request.
-	 * @param string[]                                  $url_exclusion_list  A list of URLs to exclude from the suggestions.
-	 *
-	 * @return Smart_Link[]|WP_Error The response from the remote API, or a WP_Error
+	 * @param array<string>                             $url_exclusion_list  A list of URLs to exclude from the suggestions.
+	 * @return array<Smart_Link>|WP_Error The response from the remote API, or a WP_Error
 	 *                                    object if the response is an error.
 	 */
 	public function get_links(

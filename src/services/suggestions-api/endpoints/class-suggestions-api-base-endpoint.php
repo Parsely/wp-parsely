@@ -52,7 +52,7 @@ abstract class Suggestions_API_Base_Endpoint extends Base_Service_Endpoint {
 	/**
 	 * Returns the common query arguments to send to the remote API.
 	 *
-	 * This method append the API key and secret to the query arguments.
+	 * This method appends the API key and secret to the query arguments.
 	 *
 	 * @since 3.17.0
 	 *
@@ -71,8 +71,9 @@ abstract class Suggestions_API_Base_Endpoint extends Base_Service_Endpoint {
 	/**
 	 * Processes the response from the remote API.
 	 *
-	 * @param WP_HTTP_Response|WP_Error $response The response from the remote API.
+	 * @since 3.17.0
 	 *
+	 * @param WP_HTTP_Response|WP_Error $response The response from the remote API.
 	 * @return array<mixed>|WP_Error The processed response.
 	 */
 	protected function process_response( $response ) {

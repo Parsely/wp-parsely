@@ -35,12 +35,15 @@ abstract class Base_Service_Endpoint {
 	/**
 	 * The API service that this endpoint belongs to.
 	 *
+	 * @since 3.17.0
+	 *
 	 * @var Base_API_Service
 	 */
 	protected $api_service;
 
 	/**
 	 * Flag to truncate the content of the request body.
+	 *
 	 * If set to true, the content of the request body will be truncated to a maximum length.
 	 *
 	 * @since 3.14.1
@@ -139,6 +142,27 @@ abstract class Base_Service_Endpoint {
 	abstract public function get_endpoint(): string;
 
 	/**
+	 * Returns the full URL for the API request, including the endpoint and query arguments.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param array<mixed> $query_args The query arguments to send to the remote API.
+	 * @return string The full URL for the API request.
+	 */
+	public function get_endpoint_url( array $query_args = array() ): string {
+		// Get the base URL from the API service.
+		$base_url = $this->api_service->get_api_url();
+
+		// Append the endpoint to the base URL.
+		$base_url .= $this->get_endpoint();
+
+		// Append any necessary query arguments.
+		$endpoint = add_query_arg( $this->get_query_args( $query_args ), $base_url );
+
+		return $endpoint;
+	}
+
+	/**
 	 * Sends a request to the remote API.
 	 *
 	 * @since 3.17.0
@@ -168,27 +192,6 @@ abstract class Base_Service_Endpoint {
 		$response = wp_safe_remote_request( $request_url, $request_options );
 
 		return $this->process_response( $response );
-	}
-
-	/**
-	 * Returns the full URL for the API request, including the endpoint and query arguments.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @param array<mixed> $query_args The query arguments to send to the remote API.
-	 * @return string The full URL for the API request.
-	 */
-	protected function get_endpoint_url( array $query_args = array() ): string {
-		// Get the base URL from the API service.
-		$base_url = $this->api_service->get_api_url();
-
-		// Append the endpoint to the base URL.
-		$base_url .= $this->get_endpoint();
-
-		// Append any necessary query arguments.
-		$endpoint = add_query_arg( $this->get_query_args( $query_args ), $base_url );
-
-		return $endpoint;
 	}
 
 	/**

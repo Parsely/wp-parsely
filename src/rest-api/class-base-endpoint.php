@@ -196,7 +196,7 @@ abstract class Base_Endpoint {
 	 * @return string
 	 */
 	public function get_endpoint_slug(): string {
-		return $this->api_controller->prefix_route( '' ) . $this->get_endpoint_name();
+		return $this->api_controller->prefix_route( '' ) . static::get_endpoint_name();
 	}
 
 	/**

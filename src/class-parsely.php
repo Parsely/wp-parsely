@@ -75,13 +75,11 @@ class Parsely {
 	/**
 	 * Declare our constants
 	 */
-	public const VERSION                         = PARSELY_VERSION;
-	public const MENU_SLUG                       = 'parsely'; // The page param passed to options-general.php.
-	public const OPTIONS_KEY                     = 'parsely'; // The key used to store options in the WP database.
-	public const CAPABILITY                      = 'manage_options'; // The capability required to administer settings.
-	public const DASHBOARD_BASE_URL              = 'https://dash.parsely.com';
-	public const PUBLIC_API_BASE_URL             = 'https://api.parsely.com/v2';
-	public const PUBLIC_SUGGESTIONS_API_BASE_URL = 'https://content-suggestions-api.parsely.net/prod';
+	public const VERSION            = PARSELY_VERSION;
+	public const MENU_SLUG          = 'parsely'; // The page param passed to options-general.php.
+	public const OPTIONS_KEY        = 'parsely'; // The key used to store options in the WP database.
+	public const CAPABILITY         = 'manage_options'; // The capability required to administer settings.
+	public const DASHBOARD_BASE_URL = 'https://dash.parsely.com';
 
 	/**
 	 * The Content API service.
@@ -459,7 +457,8 @@ class Parsely {
 			'tags'          => $metadata['keywords'] ?? '',
 		);
 
-		$parsely_api_endpoint    = self::PUBLIC_API_BASE_URL . '/metadata/posts';
+		$parsely_api_base_url    = Content_API_Service::get_base_url();
+		$parsely_api_endpoint    = $parsely_api_base_url . '/metadata/posts';
 		$parsely_metadata_secret = $parsely_options['metadata_secret'];
 
 		$headers = array( 'Content-Type' => 'application/json' );
@@ -1013,8 +1012,8 @@ class Parsely {
 	private function allow_parsely_remote_requests(): void {
 		$allowed_urls = array(
 			self::DASHBOARD_BASE_URL,
-			self::PUBLIC_API_BASE_URL,
-			self::PUBLIC_SUGGESTIONS_API_BASE_URL,
+			Content_API_Service::get_base_url(),
+			Suggestions_API_Service::get_base_url(),
 		);
 
 		add_filter(

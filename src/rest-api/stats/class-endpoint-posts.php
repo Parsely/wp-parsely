@@ -16,7 +16,6 @@ use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 use stdClass;
-use const _PHPStan_4f7beffdf\__;
 
 /**
  * The Stats API Posts endpoint.

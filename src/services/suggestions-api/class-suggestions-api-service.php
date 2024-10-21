@@ -33,7 +33,7 @@ class Suggestions_API_Service extends Base_API_Service {
 	 *
 	 * @return string
 	 */
-	public function get_base_url(): string {
+	public static function get_base_url(): string {
 		return 'https://content-suggestions-api.parsely.net/prod';
 	}
 
@@ -75,8 +75,8 @@ class Suggestions_API_Service extends Base_API_Service {
 	}
 
 	/**
-	 * Generates titles (headlines) for a given content using the
-	 * Parse.ly Content Suggestion API.
+	 * Gets titles (headlines) for a given content using the Parse.ly Content
+	 * Suggestion API.
 	 *
 	 * @since 3.13.0
 	 * @since 3.17.0 Updated to use the new API service.
@@ -101,9 +101,9 @@ class Suggestions_API_Service extends Base_API_Service {
 	 *
 	 * @param string                                    $content             The content to generate links for.
 	 * @param Endpoint_Suggest_Linked_Reference_Options $options             The options to pass to the API request.
-	 * @param string[]                                  $url_exclusion_list  A list of URLs to exclude from the suggestions.
+	 * @param array<string>                             $url_exclusion_list  A list of URLs to exclude from the suggestions.
 	 *
-	 * @return Smart_Link[]|WP_Error The response from the remote API, or a WP_Error
+	 * @return array<Smart_Link>|WP_Error The response from the remote API, or a WP_Error
 	 *                                    object if the response is an error.
 	 */
 	public function get_smart_links( string $content, $options = array(), array $url_exclusion_list = array() ) {

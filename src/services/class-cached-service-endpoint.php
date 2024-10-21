@@ -75,7 +75,7 @@ class Cached_Service_Endpoint extends Base_Service_Endpoint {
 		$api_service = $this->service_endpoint->api_service;
 
 		$cache_key = 'parsely_api_' .
-					wp_hash( $api_service->get_base_url() ) . '_' .
+					wp_hash( $api_service->get_api_url() ) . '_' .
 					wp_hash( $this->get_endpoint() ) . '_' .
 					wp_hash( (string) wp_json_encode( $args ) );
 
