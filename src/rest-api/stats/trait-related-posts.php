@@ -115,7 +115,7 @@ trait Related_Posts_Trait {
 		/**
 		 * The raw related posts data, received by the API.
 		 *
-		 * @var array<mixed>|WP_Error $related_posts_request
+		 * @var array<array<string, string>>|WP_Error $related_posts_request
 		 */
 		$related_posts_request = $this->content_api->get_related_posts_with_url(
 			$url,
