@@ -12,7 +12,7 @@ namespace Parsely\Tests\Integration\RestAPI\ContentHelper;
 
 use Parsely\REST_API\Content_Helper\Endpoint_Excerpt_Generator;
 use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Brief_API;
+use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use Parsely\Tests\Integration\RestAPI\BaseEndpointTest;
 use WP_Error;
 use WP_REST_Request;
@@ -67,7 +67,6 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Excerpt_Generator::register_routes
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
@@ -112,21 +111,28 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Excerpt_Generator::generate_excerpt
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
+	 * @uses \Parsely\Parsely::get_suggestions_api
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\Services\Base_API_Service::__construct
+	 * @uses \Parsely\Services\Base_API_Service::register_endpoint
+	 * @uses \Parsely\Services\Base_Service_Endpoint::__construct
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Brief::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Headline::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Linked_Reference::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::register_endpoints
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_generate_excerpt_returns_valid_response(): void {
 		// Mock the Suggest_Brief_API to control the response.
-		$mock_suggest_api = $this->createMock( Suggest_Brief_API::class );
-		$mock_suggest_api->expects( self::once() )
-						->method( 'get_suggestion' )
-						->willReturn( array( 'summary' => 'This is a test excerpt.' ) );
+		$mock_suggestions_api = $this->createMock( Suggestions_API_Service::class );
+		$mock_suggestions_api->expects( self::once() )
+						->method( 'get_brief_suggestions' )
+						->willReturn( array( array( 'summary' => 'This is a test excerpt.' ) ) );
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggest_brief_api', $mock_suggest_api );
+		$this->set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/excerpt-generator/generate' );
@@ -157,21 +163,28 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Excerpt_Generator::generate_excerpt
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
+	 * @uses \Parsely\Parsely::get_suggestions_api
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\Services\Base_API_Service::__construct
+	 * @uses \Parsely\Services\Base_API_Service::register_endpoint
+	 * @uses \Parsely\Services\Base_Service_Endpoint::__construct
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Brief::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Headline::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Linked_Reference::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::register_endpoints
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_generate_excerpt_returns_error_on_failure(): void {
 		// Mock the Suggest_Brief_API to simulate a failure.
-		$mock_suggest_api = $this->createMock( Suggest_Brief_API::class );
-		$mock_suggest_api->expects( self::once() )
-						->method( 'get_suggestion' )
+		$mock_suggestions_api = $this->createMock( Suggestions_API_Service::class );
+		$mock_suggestions_api->expects( self::once() )
+						->method( 'get_brief_suggestions' )
 						->willReturn( new WP_Error( 'api_error', 'API request failed' ) );
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggest_brief_api', $mock_suggest_api );
+		$this->set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/excerpt-generator/generate' );

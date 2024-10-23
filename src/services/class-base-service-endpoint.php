@@ -180,7 +180,9 @@ abstract class Base_Service_Endpoint {
 		$request_options = $this->get_request_options( $method );
 
 		if ( count( $data ) > 0 ) {
-			$data = $this->truncate_array_content( $data );
+			if ( true === static::TRUNCATE_CONTENT ) {
+				$data = $this->truncate_array_content( $data );
+			}
 
 			$request_options['body'] = wp_json_encode( $data );
 			if ( false === $request_options['body'] ) {
@@ -247,12 +249,9 @@ abstract class Base_Service_Endpoint {
 			}
 			return $content;
 		} elseif ( is_string( $content ) ) {
-			// If the content is a string, truncate it.
-			if ( static::TRUNCATE_CONTENT ) {
-				// Check if the string length exceeds the maximum and truncate if necessary.
-				if ( mb_strlen( $content ) > self::TRUNCATE_CONTENT_LENGTH ) {
-					return mb_substr( $content, 0, self::TRUNCATE_CONTENT_LENGTH );
-				}
+			// Check if the string length exceeds the maximum and truncate if necessary.
+			if ( mb_strlen( $content ) > self::TRUNCATE_CONTENT_LENGTH ) {
+				return mb_substr( $content, 0, self::TRUNCATE_CONTENT_LENGTH );
 			}
 			return $content;
 		}

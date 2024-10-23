@@ -85,11 +85,8 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
-	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -112,11 +109,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
-	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */

@@ -224,7 +224,6 @@ class BaseEndpointTest extends TestCase {
 	 * @covers \Parsely\REST_API\Base_Endpoint::register_routes
 	 * @covers \Parsely\REST_API\Base_Endpoint::get_full_endpoint
 	 * @covers \Parsely\REST_API\Base_Endpoint::get_registered_routes
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -308,7 +307,6 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
 	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
@@ -349,7 +347,6 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
 	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
@@ -380,7 +377,6 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 */
@@ -414,7 +410,6 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
 	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key

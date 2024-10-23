@@ -27,6 +27,25 @@ use WP_REST_Response;
  * posts for a given post.
  *
  * @since 3.17.0
+ *
+ * @phpstan-type ReferrerData array{
+ *     metrics: array{
+ *         referrers_views?: int
+ *     },
+ *     type?: string,
+ *     name?: string
+ * }
+ *
+ * @phpstan-type ReferrerTypeData array{
+ *     views: string,
+ *     viewsPercentage: string
+ * }
+ *
+ * @phpstan-type ReferrersDataItem array{
+ *     views: string,
+ *     viewsPercentage: string,
+ *     datasetViewsPercentage: string
+ * }
  */
 class Endpoint_Post extends Base_Endpoint {
 	use Use_Post_ID_Parameter_Trait;
@@ -250,11 +269,11 @@ class Endpoint_Post extends Base_Endpoint {
 		/**
 		 * The analytics data object.
 		 *
-		 * @var array<stdClass> $analytics_request
+		 * @var array<ReferrerData> $analytics_request
 		 */
 		$referrers_types = $this->generate_referrer_types_data( $analytics_request );
 		$direct_views    = Utils::convert_to_positive_integer(
-			$referrers_types->direct->views ?? '0'
+			$referrers_types['direct']['views'] ?? '0'
 		);
 		$referrers_top   = $this->generate_referrers_data( 5, $analytics_request, $direct_views );
 
@@ -314,73 +333,68 @@ class Endpoint_Post extends Base_Endpoint {
 	 * - `internal`: Views coming from linking pages of the same website.
 	 *
 	 * Returned object properties:
-	 * - `views`:          The number of views.
-	 * - `viewPercentage`: The number of views as a percentage, compared to the
-	 *                     total views of all referrer types.
+	 * - `views`:           The number of views.
+	 * - `viewsPercentage`: The number of views as a percentage, compared to the
+	 *                      total views of all referrer types.
 	 *
 	 * @since 3.6.0
 	 * @since 3.17.0 Moved from the `Referrers_Post_Detail_API_Proxy` class.
 	 *
-	 * @param array<stdClass> $response The response received by the proxy.
-	 * @return stdClass The generated data.
+	 * @param array<ReferrerData> $response The response received by the proxy.
+	 * @return array<string, ReferrerTypeData> The generated data.
 	 */
-	private function generate_referrer_types_data( array $response ): stdClass {
-		$result               = new stdClass();
+	private function generate_referrer_types_data( array $response ): array {
+		$result               = array();
 		$total_referrer_views = 0; // Views from all referrer types combined.
 
 		// Set referrer type order as it is displayed in the Parse.ly dashboard.
 		$referrer_type_keys = array( 'social', 'search', 'other', 'internal', 'direct' );
 		foreach ( $referrer_type_keys as $key ) {
-			$result->$key = (object) array( 'views' => 0 );
+			$result[ $key ] = array( 'views' => 0 );
 		}
 
 		// Set views and views totals.
 		foreach ( $response as $referrer_data ) {
 			/**
-			 * Variable.
-			 *
-			 * @var int
+			 * @var int $current_views
 			 */
-			$current_views         = $referrer_data->metrics->referrers_views ?? 0;
+			$current_views         = $referrer_data['metrics']['referrers_views'] ?? 0;
 			$total_referrer_views += $current_views;
 
 			/**
-			 * Variable.
-			 *
-			 * @var string
+			 * @var string $current_key
 			 */
-			$current_key = $referrer_data->type ?? '';
+			$current_key = $referrer_data['type'] ?? '';
 			if ( '' !== $current_key ) {
-				if ( ! isset( $result->$current_key->views ) ) {
-					$result->$current_key = (object) array( 'views' => 0 );
+				if ( ! isset( $result[ $current_key ]['views'] ) ) {
+					$result[ $current_key ] = array( 'views' => 0 );
 				}
 
-				$result->$current_key->views += $current_views;
+				$result[ $current_key ]['views'] += $current_views;
 			}
 		}
 
 		// Add direct and total views to the object.
-		$result->direct->views = $this->total_views - $total_referrer_views;
-		$result->totals        = (object) array( 'views' => $this->total_views );
+		$result['direct']['views'] = $this->total_views - $total_referrer_views;
+		$result['totals']          = array( 'views' => $this->total_views );
 
 		// Remove referrer types without views.
 		foreach ( $referrer_type_keys as $key ) {
-			if ( 0 === $result->$key->views ) {
-				unset( $result->$key );
+			if ( 0 === $result[ $key ]['views'] ) {
+				unset( $result[ $key ] );
 			}
 		}
 
 		// Set percentage values and format numbers.
-		// @phpstan-ignore-next-line.
 		foreach ( $result as $key => $value ) {
 			// Set and format percentage values.
-			$result->{ $key }->viewsPercentage = $this->get_i18n_percentage(
-				absint( $value->views ),
+			$result[ $key ]['viewsPercentage'] = $this->get_i18n_percentage(
+				absint( $value['views'] ),
 				$this->total_views
 			);
 
 			// Format views values.
-			$result->{ $key }->views = number_format_i18n( $result->{ $key }->views );
+			$result[ $key ]['views'] = number_format_i18n( $result[ $key ]['views'] );
 		}
 
 		return $result;
@@ -390,25 +404,25 @@ class Endpoint_Post extends Base_Endpoint {
 	 * Generates the top referrers data.
 	 *
 	 * Returned object properties:
-	 * - `views`:          The number of views.
-	 * - `viewPercentage`: The number of views as a percentage, compared to the
-	 *                     total views of all referrer types.
-	 * - `datasetViewsPercentage: The number of views as a percentage, compared
-	 *                            to the total views of the current dataset.
+	 * - `views`:                  The number of views.
+	 * - `viewsPercentage`:        The number of views as a percentage, compared to the
+	 *                             total views of all referrer types.
+	 * - `datasetViewsPercentage`: The number of views as a percentage, compared
+	 *                             to the total views of the current dataset.
 	 *
 	 * @since 3.6.0
 	 * @since 3.17.0 Moved from the `Referrers_Post_Detail_API_Proxy` class.
 	 *
-	 * @param int             $limit The limit of returned referrers.
-	 * @param array<stdClass> $response The response received by the proxy.
-	 * @param int             $direct_views The count of direct views.
-	 * @return stdClass The generated data.
+	 * @param int                 $limit        The limit of returned referrers.
+	 * @param array<ReferrerData> $response     The response received by the proxy.
+	 * @param int                 $direct_views The count of direct views.
+	 * @return array<string, ReferrersDataItem>   The generated data.
 	 */
 	private function generate_referrers_data(
 		int $limit,
 		array $response,
 		int $direct_views
-	): stdClass {
+	): array {
 		$temp_views     = array();
 		$totals         = 0;
 		$referrer_count = count( $response );
@@ -419,14 +433,12 @@ class Endpoint_Post extends Base_Endpoint {
 			$data = $response[ $i ];
 
 			/**
-			 * Variable.
-			 *
-			 * @var int
+			 * @var int $referrer_views
 			 */
-			$referrer_views = $data->metrics->referrers_views ?? 0;
+			$referrer_views = $data['metrics']['referrers_views'] ?? 0;
 			$totals        += $referrer_views;
-			if ( isset( $data->name ) ) {
-				$temp_views[ $data->name ] = $referrer_views;
+			if ( isset( $data['name'] ) ) {
+				$temp_views[ $data['name'] ] = $referrer_views;
 			}
 		}
 
@@ -441,27 +453,26 @@ class Endpoint_Post extends Base_Endpoint {
 		}
 
 		// Convert temporary array to result object and add totals.
-		$result = new stdClass();
+		$result = array();
 		foreach ( $temp_views as $key => $value ) {
-			$result->$key = (object) array( 'views' => $value );
+			$result[ $key ] = array( 'views' => $value );
 		}
-		$result->totals = (object) array( 'views' => $totals );
+		$result['totals'] = array( 'views' => $totals );
 
-		// Set percentages values and format numbers.
-		// @phpstan-ignore-next-line.
+		// Set percentage values and format numbers.
 		foreach ( $result as $key => $value ) {
 			// Percentage against all referrer views, even those not included
 			// in the dataset due to the $limit argument.
-			$result->{ $key }->viewsPercentage = $this
-				->get_i18n_percentage( absint( $value->views ), $this->total_views );
+			$result[ $key ]['viewsPercentage'] = $this
+				->get_i18n_percentage( absint( $value['views'] ), $this->total_views );
 
 			// Percentage against the current dataset that is limited due to the
 			// $limit argument.
-			$result->{ $key }->datasetViewsPercentage = $this
-				->get_i18n_percentage( absint( $value->views ), $totals );
+			$result[ $key ]['datasetViewsPercentage'] = $this
+				->get_i18n_percentage( absint( $value['views'] ), $totals );
 
 			// Format views values.
-			$result->{ $key }->views = number_format_i18n( $result->{ $key }->views );
+			$result[ $key ]['views'] = number_format_i18n( $result[ $key ]['views'] );
 		}
 
 		return $result;
@@ -475,7 +486,7 @@ class Endpoint_Post extends Base_Endpoint {
 	 * @since 3.17.0 Moved from the `Referrers_Post_Detail_API_Proxy` class.
 	 *
 	 * @param int $number The number to be calculated as a percentage.
-	 * @param int $total The total number to compare against.
+	 * @param int $total  The total number to compare against.
 	 * @return string|false The internationalized percentage or false on error.
 	 */
 	private function get_i18n_percentage( int $number, int $total ) {

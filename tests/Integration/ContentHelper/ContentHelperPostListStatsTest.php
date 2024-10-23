@@ -12,7 +12,8 @@ namespace Parsely\Tests\Integration\ContentHelper;
 use Mockery;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Analytics_Posts_API;
+use Parsely\Services\Content_API\Content_API_Service;
+use Parsely\Services\Content_API\Endpoints\Endpoint_Analytics_Posts;
 use Parsely\Tests\Integration\TestCase;
 use WP_Error;
 use WP_Post;
@@ -23,8 +24,7 @@ use WP_Scripts;
  *
  * @since 3.7.0
  *
- * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
- * @phpstan-import-type Analytics_Post from Analytics_Posts_API
+ * @phpstan-import-type Analytics_Post from Endpoint_Analytics_Posts
  * @phpstan-import-type Parsely_Posts_Stats_Response from Post_List_Stats
  */
 final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
@@ -121,13 +121,11 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
-	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @covers \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 *
 	 * @group content-helper
 	 */
@@ -150,13 +148,11 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
-	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @covers \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 *
 	 * @group content-helper
 	 */
@@ -1251,7 +1247,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @param array<WP_Post>                      $posts Available Posts.
 	 * @param string                              $post_type Type of the post.
 	 * @param array<Analytics_Post>|WP_Error|null $api_response Mocked response that we return on calling API.
-	 * @param Analytics_Post_API_Params|null      $api_params API Parameters.
+	 * @param array<string,mixed>|null            $api_params API Parameters.
 	 * @return Parsely_Posts_Stats_Response|null
 	 */
 	private function get_parsely_stats_response(
@@ -1266,7 +1262,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		$this->show_content_on_parsely_stats_column( $posts, $post_type );
 		ob_get_clean(); // Discard output to keep console clean while running tests.
 
-		$api = Mockery::mock( Analytics_Posts_API::class, array( new Parsely() ) )->makePartial();
+		$api = Mockery::mock( Content_API_Service::class, array( new Parsely() ) )->makePartial();
 		if ( ! is_null( $api_params ) ) {
 			$api->shouldReceive( 'get_posts_analytics' )
 				->once()
@@ -1276,8 +1272,8 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 							$api_params,
 							// Params which will not change.
 							array(
-								'period_start' => Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT . 'd',
-								'limit'        => 2000,
+								'period_start' => Endpoint_Analytics_Posts::MAX_PERIOD,
+								'limit'        => Endpoint_Analytics_Posts::MAX_LIMIT,
 								'sort'         => 'avg_engaged',
 							)
 						),
@@ -1288,7 +1284,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 			$api->shouldReceive( 'get_posts_analytics' )->once()->andReturn( $api_response );
 		}
 
-		return $obj->get_parsely_stats_response( $api );
+		return $obj->get_parsely_stats_response();
 	}
 
 	/**

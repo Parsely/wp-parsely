@@ -13,6 +13,8 @@ namespace Parsely\Tests\Integration\RestAPI\ContentHelper;
 use Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking;
 use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
 use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
+use Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Linked_Reference;
+use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use Parsely\Tests\Integration\RestAPI\BaseEndpointTest;
 use Parsely\Models\Smart_Link;
 use Parsely\Tests\Integration\TestCase;
@@ -78,7 +80,6 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::register_routes
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
@@ -125,7 +126,6 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::generate_smart_links
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Models\Base_Model::__construct
 	 * @uses \Parsely\Models\Smart_Link::__construct
 	 * @uses \Parsely\Models\Smart_Link::generate_uid
@@ -139,10 +139,10 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_generate_smart_links_returns_valid_response(): void {
-		// Mock the Suggest_Linked_Reference_API to control the response.
-		$mock_suggest_api = $this->createMock( Suggest_Linked_Reference_API::class );
-		$mock_suggest_api->expects( self::once() )
-						->method( 'get_links' )
+		// Create a mocked Suggestions API that returns two smart links.
+		$mock_suggestions_api = $this->createMock( Suggestions_API_Service::class );
+		$mock_suggestions_api->expects( self::once() )
+						->method( 'get_smart_links' )
 						->willReturn(
 							array(
 								new Smart_Link( 'link1', 'http://example.com/1', 'Example 1', 0, 0 ),
@@ -150,7 +150,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 							)
 						);
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggest_linked_reference_api', $mock_suggest_api );
+		$this->set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/smart-linking/generate' );
@@ -180,7 +180,6 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::generate_smart_links
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
@@ -188,13 +187,13 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_generate_smart_links_returns_error_on_failure(): void {
-		// Mock the Suggest_Linked_Reference_API to simulate a failure.
-		$mock_suggest_api = $this->createMock( Suggest_Linked_Reference_API::class );
-		$mock_suggest_api->expects( self::once() )
-						->method( 'get_links' )
-						->willReturn( new WP_Error( 'api_error', 'API request failed' ) );
+		// Mock the Suggestions API `get_smart_links` method to return a WP_Error.
+		$mock_suggestions_api = $this->createMock( Suggestions_API_Service::class );
+		$mock_suggestions_api->expects( self::once() )
+							->method( 'get_smart_links' )
+							->willReturn( new WP_Error( 'api_error', 'API request failed' ) );
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggest_linked_reference_api', $mock_suggest_api );
+		$this->set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/smart-linking/generate' );
@@ -216,7 +215,6 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::add_smart_link
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Models\Base_Model::__construct
 	 * @uses \Parsely\Models\Base_Model::serialize
 	 * @uses \Parsely\Models\Smart_Link::__construct
@@ -316,7 +314,6 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Smart_Linking::add_multiple_smart_links
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Models\Base_Model::__construct
 	 * @uses \Parsely\Models\Base_Model::serialize
 	 * @uses \Parsely\Models\Smart_Link::__construct
