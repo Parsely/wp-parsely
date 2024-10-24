@@ -1,48 +1,41 @@
 <?php
 /**
- * Integration Tests: Parsely Content Suggestions Suggest Headline API
+ * Parse.ly Suggestions API Endpoint Test: Suggest Headline
  *
- * @package Parsely\Tests
- * @since   3.12.0
+ * @package Parsely
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
+namespace Parsely\Tests\Integration\Services\SuggestionsAPI\Endpoints;
 
-use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
+use Parsely\Services\Base_Service_Endpoint;
+use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 
 /**
- * Integration Tests for the Parse.ly Content Suggestions Suggest Headline API.
+ * Tests the Endpoint_Suggest_Headline class.
  *
- * @since 3.12.0
- * @since 3.14.0 Renamed from WriteTitleAPITest to SuggestHeadlineAPITest.
+ * @since 3.17.0
+ *
+ * @covers \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Headline
  */
-final class SuggestHeadlineAPITest extends BaseContentSuggestionsAPITest {
-
+class EndpointSuggestHeadlineTest extends SuggestionsAPIBaseEndpointTestCase {
 	/**
-	 * Internal variable.
+	 * Returns the endpoint for the API request.
 	 *
-	 * @var Suggest_Headline_API $suggest_headline_api Holds an instance of the class being tested.
-	 */
-	private static $suggest_headline_api;
-
-	/**
-	 * Initializes all required values for the test.
+	 * @since 3.17.0
 	 *
-	 * @since 3.12.0
+	 * @return Base_Service_Endpoint
 	 */
-	public static function initialize(): void {
-		self::$remote_api = new Suggest_Headline_API( new Parsely() );
-		// Required for PHPStan to recognize the type.
-		self::$suggest_headline_api = self::$remote_api;
+	public function get_service_endpoint(): Base_Service_Endpoint {
+		return $this->get_suggestions_api()->get_endpoint( '/suggest-headline' );
 	}
 
 	/**
 	 * Provides data for test_api_url().
 	 *
-	 * @since 3.12.0
+	 * @since 3.17.0
 	 *
 	 * @return \ArrayIterator<string, mixed>
 	 */
@@ -51,8 +44,7 @@ final class SuggestHeadlineAPITest extends BaseContentSuggestionsAPITest {
 			array(
 				'apikey' => 'my-key',
 			),
-			Parsely::PUBLIC_SUGGESTIONS_API_BASE_URL .
-				'/suggest-headline?apikey=my-key',
+			Suggestions_API_Service::get_base_url() . '/suggest-headline?apikey=my-key',
 		);
 	}
 
@@ -60,7 +52,7 @@ final class SuggestHeadlineAPITest extends BaseContentSuggestionsAPITest {
 	 * Mocks a successful HTTP response to the Content Suggestion suggest-headline
 	 * API endpoint.
 	 *
-	 * @since 3.12.0
+	 * @since 3.17.0
 	 *
 	 * @param string $response  The response to mock.
 	 * @param array  $args      The arguments passed to the HTTP request.
@@ -103,14 +95,11 @@ final class SuggestHeadlineAPITest extends BaseContentSuggestionsAPITest {
 	/**
 	 * Tests getting titles from the API with some generic content.
 	 *
-	 * @since 3.12.0
+	 * @since 3.17.0
 	 *
-	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API::get_titles
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API::__construct
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API::get_titles
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::__construct
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
-	 * @uses \Parsely\RemoteAPI\Remote_API_Base::__construct
+	 * @covers \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_title_suggestions
+	 * @covers \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Headline::get_headlines
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Headline::call
 	 */
 	public function test_get_titles(): void {
 		$content = '<p>
@@ -123,7 +112,12 @@ final class SuggestHeadlineAPITest extends BaseContentSuggestionsAPITest {
 		add_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_headline_response' ), 10, 3 );
 
 		// Test getting three titles.
-		$titles = self::$suggest_headline_api->get_titles( $content, 3 );
+		$titles = $this->get_suggestions_api()->get_title_suggestions(
+			$content,
+			array(
+				'max_items' => 3,
+			)
+		);
 
 		self::assertIsArray( $titles );
 		self::assertEquals( 3, count( $titles ) );

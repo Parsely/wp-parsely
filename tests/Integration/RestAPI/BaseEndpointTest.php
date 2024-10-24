@@ -15,7 +15,7 @@ use Parsely\REST_API\Base_API_Controller;
 use Parsely\REST_API\Base_Endpoint;
 use Parsely\REST_API\REST_API_Controller;
 use Parsely\Tests\Integration\TestCase;
-use ReflectionException;
+use Parsely\Tests\Traits\TestsReflection;
 use WP_Error;
 
 /**
@@ -26,6 +26,8 @@ use WP_Error;
  * @covers \Parsely\REST_API\Base_Endpoint
  */
 class BaseEndpointTest extends TestCase {
+	use TestsReflection;
+
 	/**
 	 * The test endpoint instance.
 	 *
@@ -224,7 +226,6 @@ class BaseEndpointTest extends TestCase {
 	 * @covers \Parsely\REST_API\Base_Endpoint::register_routes
 	 * @covers \Parsely\REST_API\Base_Endpoint::get_full_endpoint
 	 * @covers \Parsely\REST_API\Base_Endpoint::get_registered_routes
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -308,7 +309,6 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
 	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
@@ -349,7 +349,6 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
 	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
@@ -380,7 +379,6 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::are_credentials_managed
 	 * @uses \Parsely\Parsely::set_managed_options
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 */
@@ -414,7 +412,6 @@ class BaseEndpointTest extends TestCase {
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
 	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
@@ -430,27 +427,6 @@ class BaseEndpointTest extends TestCase {
 		$result = $this->get_endpoint()->validate_site_id_and_secret();
 
 		self::assertTrue( $result );
-	}
-
-	/**
-	 * Sets the value of a protected or private property on a given object using reflection.
-	 *
-	 * This method is useful for testing purposes where you need to modify or inject dependencies
-	 * into protected or private properties of a class.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @param object $obj The object instance on which the property should be set.
-	 * @param string $property_name The name of the property to be set.
-	 * @param mixed  $value The value to set on the property.
-	 *
-	 * @throws ReflectionException If the property does not exist.
-	 */
-	protected function set_protected_property( $obj, string $property_name, $value ): void {
-		$reflection = new \ReflectionClass( $obj );
-		$property   = $reflection->getProperty( $property_name );
-		$property->setAccessible( true );
-		$property->setValue( $obj, $value );
 	}
 
 	/**

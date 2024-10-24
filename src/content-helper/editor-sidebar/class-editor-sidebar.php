@@ -21,11 +21,6 @@ use WP_Post;
 use const Parsely\PARSELY_FILE;
 
 /**
- * Features requires for the PCH Editor Sidebar.
- */
-require_once __DIR__ . '/smart-linking/class-smart-linking.php';
-
-/**
  * Class that generates and manages the PCH Editor Sidebar.
  *
  * @since 3.5.0

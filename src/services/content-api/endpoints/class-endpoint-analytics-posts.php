@@ -138,13 +138,15 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 		$query_args = array_filter( $args );
 
 		// If the period_start is set to 'max_days', set it to the maximum days limit.
-		if ( self::MAX_PERIOD === $query_args['period_start'] ) {
+		if ( isset( $query_args['period_start'] ) && self::MAX_PERIOD === $query_args['period_start'] ) {
 			$query_args['period_start'] = self::ANALYTICS_API_DAYS_LIMIT . 'd';
 		}
 
 		// If the limit is set to 'max' or greater than the maximum records limit,
 		// set it to the maximum records limit.
-		if ( self::MAX_LIMIT === $query_args['limit'] || $query_args['limit'] > self::MAX_RECORDS_LIMIT ) {
+		if ( isset( $query_args['limit'] ) && (
+			self::MAX_LIMIT === $query_args['limit'] || $query_args['limit'] > self::MAX_RECORDS_LIMIT )
+		) {
 			$query_args['limit'] = self::MAX_RECORDS_LIMIT;
 		}
 

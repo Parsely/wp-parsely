@@ -13,6 +13,7 @@ namespace Parsely\Tests\Integration\RestAPI\ContentHelper;
 use Parsely\REST_API\Content_Helper\Endpoint_Title_Suggestions;
 use Parsely\REST_API\Content_Helper\Content_Helper_Controller;
 use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
+use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use Parsely\Tests\Integration\RestAPI\BaseEndpointTest;
 use WP_Error;
 use WP_REST_Request;
@@ -53,8 +54,9 @@ class EndpointTitleSuggestionsTest extends BaseEndpointTest {
 	/**
 	 * Gets the test endpoint instance.
 	 *
-	 * @return Endpoint_Title_Suggestions
 	 * @since 3.17.0
+	 *
+	 * @return Endpoint_Title_Suggestions
 	 */
 	public function get_endpoint(): \Parsely\REST_API\Base_Endpoint {
 		return $this->endpoint;
@@ -66,30 +68,7 @@ class EndpointTitleSuggestionsTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Title_Suggestions::register_routes
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Parsely::api_secret_is_set
-	 * @uses \Parsely\Parsely::get_managed_credentials
-	 * @uses \Parsely\Parsely::get_options
-	 * @uses \Parsely\Parsely::set_default_content_helper_settings_values
-	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
-	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
-	 * @uses \Parsely\Permissions::current_user_can_use_pch_feature
-	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
-	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
-	 * @uses \Parsely\REST_API\Base_API_Controller::get_full_namespace
-	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
-	 * @uses \Parsely\REST_API\Base_API_Controller::prefix_route
-	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::get_full_endpoint
-	 * @uses \Parsely\REST_API\Base_Endpoint::init
-	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
-	 * @uses \Parsely\REST_API\Base_Endpoint::register_rest_route
-	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
-	 * @uses \Parsely\REST_API\Content_Helper\Content_Helper_Controller::get_route_prefix
-	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
-	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
-	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_route_is_registered(): void {
 		$routes = rest_get_server()->get_routes();
@@ -109,25 +88,28 @@ class EndpointTitleSuggestionsTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Title_Suggestions::generate_titles
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Parsely::get_suggestions_api
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\Services\Base_API_Service::__construct
+	 * @uses \Parsely\Services\Base_API_Service::register_endpoint
+	 * @uses \Parsely\Services\Base_Service_Endpoint::__construct
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Brief::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Headline::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Linked_Reference::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::register_endpoints
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_generate_titles_returns_valid_response(): void {
-		// Mock the Suggest_Headline_API to control the response.
-		$mock_suggest_api = $this->createMock( Suggest_Headline_API::class );
-		$mock_suggest_api->expects( self::once() )
-						->method( 'get_titles' )
-						->willReturn( array( 'title1', 'title2', 'title3' ) );
+		// Mock the Suggestions API `get_title_suggestions` method to return a list of titles.
+		$mock_suggestions_api = $this->createMock( Suggestions_API_Service::class );
+		$mock_suggestions_api->expects( self::once() )
+			->method( 'get_title_suggestions' )
+			->willReturn( array( 'title1', 'title2', 'title3' ) );
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggest_headline_api', $mock_suggest_api );
+		self::set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/title-suggestions/generate' );
@@ -158,25 +140,28 @@ class EndpointTitleSuggestionsTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Endpoint_Title_Suggestions::generate_titles
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
-	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
-	 * @uses \Parsely\Parsely::are_credentials_managed
-	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Parsely::get_suggestions_api
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
 	 * @uses \Parsely\REST_API\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
+	 * @uses \Parsely\Services\Base_API_Service::__construct
+	 * @uses \Parsely\Services\Base_API_Service::register_endpoint
+	 * @uses \Parsely\Services\Base_Service_Endpoint::__construct
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Brief::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Headline::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Linked_Reference::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Suggestions_API_Service::register_endpoints
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_generate_titles_returns_error_on_failure(): void {
-		// Mock the Suggest_Headline_API to simulate a failure.
-		$mock_suggest_api = $this->createMock( Suggest_Headline_API::class );
-		$mock_suggest_api->expects( self::once() )
-						->method( 'get_titles' )
-						->willReturn( new WP_Error( 'api_error', 'API request failed' ) );
+		// Mock the Suggestions API `get_title_suggestions` method to return an error.
+		$mock_suggestions_api = $this->createMock( Suggestions_API_Service::class );
+		$mock_suggestions_api->expects( self::once() )
+							->method( 'get_title_suggestions' )
+							->willReturn( new WP_Error( 'api_error', 'API request failed' ) );
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggest_headline_api', $mock_suggest_api );
+		self::set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/title-suggestions/generate' );

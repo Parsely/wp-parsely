@@ -172,7 +172,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::get_credentials_not_set_message
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::inject_inline_scripts
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -184,7 +183,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -229,7 +228,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::get_credentials_not_set_message
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::inject_inline_scripts
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -241,7 +239,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -277,7 +275,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -286,7 +283,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -322,7 +319,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -331,7 +327,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -377,7 +373,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::get_credentials_not_set_message
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::inject_inline_scripts
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -389,7 +384,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -425,7 +420,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -434,7 +428,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -470,7 +464,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -479,7 +472,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -524,7 +517,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::get_credentials_not_set_message
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::inject_inline_scripts
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -536,7 +528,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -579,7 +571,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -588,7 +579,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -624,7 +615,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -633,7 +623,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -669,7 +659,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -678,7 +667,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -723,7 +712,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::get_credentials_not_set_message
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::inject_inline_scripts
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -735,7 +723,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -772,7 +760,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -781,7 +768,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -826,7 +813,6 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::get_credentials_not_set_message
 	 * @uses \Parsely\Content_Helper\Content_Helper_Feature::inject_inline_scripts
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -838,7 +824,7 @@ abstract class ContentHelperFeatureTest extends TestCase {
 	 * @uses \Parsely\Parsely::set_managed_options
 	 * @uses \Parsely\Parsely::site_id_is_set
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */

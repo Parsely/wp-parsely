@@ -28,7 +28,6 @@ trait ContentHelperFeatureTestTrait {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Feature::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -47,7 +46,7 @@ trait ContentHelperFeatureTestTrait {
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\REST_API\Base_Endpoint::apply_capability_filters
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
-	 * @uses \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_is_available_to_current_user_returns_true_if_feature_enabled(): void {
@@ -64,7 +63,6 @@ trait ContentHelperFeatureTestTrait {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Feature::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -83,7 +81,7 @@ trait ContentHelperFeatureTestTrait {
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\REST_API\Base_Endpoint::apply_capability_filters
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
-	 * @uses \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_is_available_to_current_user_returns_error_if_feature_disabled(): void {
@@ -100,7 +98,6 @@ trait ContentHelperFeatureTestTrait {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Feature::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -119,7 +116,7 @@ trait ContentHelperFeatureTestTrait {
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\REST_API\Base_Endpoint::apply_capability_filters
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
-	 * @uses \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_is_available_to_current_user_returns_true_if_has_permissions(): void {
@@ -146,7 +143,6 @@ trait ContentHelperFeatureTestTrait {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Feature::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
 	 * @uses \Parsely\Parsely::api_secret_is_set
@@ -165,7 +161,7 @@ trait ContentHelperFeatureTestTrait {
 	 * @uses \Parsely\REST_API\Base_Endpoint::init
 	 * @uses \Parsely\REST_API\Base_Endpoint::apply_capability_filters
 	 * @uses \Parsely\REST_API\Base_Endpoint::is_available_to_current_user
-	 * @uses \Parsely\REST_API\Base_Endpoint::validate_apikey_and_secret
+	 * @uses \Parsely\REST_API\Base_Endpoint::validate_site_id_and_secret
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_is_available_to_current_user_returns_error_if_no_permissions(): void {
@@ -189,7 +185,6 @@ trait ContentHelperFeatureTestTrait {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Feature::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options

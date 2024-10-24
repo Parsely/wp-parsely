@@ -42,7 +42,7 @@ class Content_API_Service extends Base_API_Service {
 		/**
 		 * The endpoints for the Parse.ly Content API.
 		 *
-		 * @var Base_Service_Endpoint[] $endpoints
+		 * @var array<Base_Service_Endpoint> $endpoints
 		 */
 		$endpoints = array(
 			new Endpoints\Endpoint_Validate( $this ),

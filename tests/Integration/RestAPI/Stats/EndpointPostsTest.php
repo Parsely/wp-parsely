@@ -64,7 +64,6 @@ class EndpointPostsTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Posts::register_routes
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
@@ -104,7 +103,6 @@ class EndpointPostsTest extends BaseEndpointTest {
 	 * Verifies that the endpoint is not available if the API Secret is not set.
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Posts::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
@@ -153,7 +151,6 @@ class EndpointPostsTest extends BaseEndpointTest {
 	 * capabilities.
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Posts::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
@@ -211,7 +208,6 @@ class EndpointPostsTest extends BaseEndpointTest {
 	 * expected format.
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Posts::get_posts
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_dash_url
@@ -238,10 +234,6 @@ class EndpointPostsTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\REST_API_Controller::get_namespace
 	 * @uses \Parsely\REST_API\REST_API_Controller::get_version
 	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
-	 * @uses \Parsely\RemoteAPI\Analytics_Posts_API::get_request_options
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_items
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_date_format
 	 * @uses \Parsely\Utils\Utils::parsely_is_https_supported

@@ -78,7 +78,6 @@ class ContentHelperControllerTest extends RestAPIControllerTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Content_Helper\Content_Helper_Controller::init
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::get_endpoints
 	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
@@ -99,8 +98,9 @@ class ContentHelperControllerTest extends RestAPIControllerTest {
 		$endpoints = $this->content_helper_controller->get_endpoints();
 
 		self::assertCount( 3, $endpoints );
-		self::assertInstanceOf( Endpoint_Smart_Linking::class, $endpoints[0] );
-		self::assertInstanceOf( Endpoint_Excerpt_Generator::class, $endpoints[1] );
-		self::assertInstanceOf( Endpoint_Title_Suggestions::class, $endpoints[2] );
+
+		self::assertInstanceOf( Endpoint_Smart_Linking::class, $endpoints['content-helper/smart-linking'] );
+		self::assertInstanceOf( Endpoint_Excerpt_Generator::class, $endpoints['content-helper/excerpt-generator'] );
+		self::assertInstanceOf( Endpoint_Title_Suggestions::class, $endpoints['content-helper/title-suggestions'] );
 	}
 }
