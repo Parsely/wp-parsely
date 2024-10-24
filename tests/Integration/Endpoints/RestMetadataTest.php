@@ -404,7 +404,8 @@ final class RestMetadataTest extends TestCase {
 		$this->go_to( (string) $this->get_permalink( $post_id ) );
 
 		$meta_string = self::$rest->get_rendered_meta( 'json_ld' );
-		$expected    = '<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"NewsArticle","headline":"My test_get_rendered_meta_json_ld title","url":"http:\/\/example.org\/?p=' . $post_id . '","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=' . $post_id . '"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[],"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '"}</script>';
+		$expected    = '<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"NewsArticle","headline":"My test_get_rendered_meta_json_ld title","url":"http:\/\/example.org\/?p=' . $post_id . '","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/?p=' . $post_id . '"},"thumbnailUrl":"","image":{"@type":"ImageObject","url":""},"articleSection":"Uncategorized","author":[],"creator":[],"publisher":{"@type":"Organization","name":"Test Blog","logo":""},"keywords":[],"dateCreated":"' . $date . '","datePublished":"' . $date . '","dateModified":"' . $date . '","custom_metadata":"{\\"wpParselyPostID\\":' . $post_id . '}"}</script>' .
+			'<meta name="parsely-metadata" content="{&quot;wpParselyPostID&quot;:' . $post_id . '}" />';
 		self::assertSame( $expected, $meta_string );
 	}
 
@@ -472,7 +473,8 @@ final class RestMetadataTest extends TestCase {
 <meta name="parsely-link" content="http://example.org/?p=' . $post_id . '" />
 <meta name="parsely-type" content="post" />
 <meta name="parsely-pub-date" content="' . $date . '" />
-<meta name="parsely-section" content="Uncategorized" />';
+<meta name="parsely-section" content="Uncategorized" />
+<meta name="parsely-metadata" content="{&quot;wpParselyPostID&quot;:' . $post_id . '}" />';
 		self::assertSame( $expected, $meta_string );
 	}
 

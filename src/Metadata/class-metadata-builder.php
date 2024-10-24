@@ -120,6 +120,21 @@ abstract class Metadata_Builder {
 	}
 
 	/**
+	 * Populates the custom metadata field with the current post's/page's ID.
+	 *
+	 * @since 3.16.0
+	 *
+	 * @param WP_Post $post The post/page for which to populate the field.
+	 */
+	protected function build_post_id( WP_Post $post ): void {
+		$this->metadata['custom_metadata'] = wp_json_encode(
+			array(
+				'wpParselyPostID' => $post->ID,
+			)
+		);
+	}
+
+	/**
 	 * Populates the mainEntityOfPage field in the metadata object.
 	 *
 	 * @param string $build_url_type Parse.ly post type to use for building the

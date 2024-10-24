@@ -60,6 +60,7 @@ class Post_Builder extends Metadata_Builder {
 		$this->build_publisher();
 		$this->build_keywords( $this->post );
 		$this->build_metadata_post_times( $this->post );
+		$this->build_post_id( $this->post );
 
 		return $this->metadata;
 	}
