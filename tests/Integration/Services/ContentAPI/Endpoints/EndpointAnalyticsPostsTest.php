@@ -19,7 +19,6 @@ use Parsely\Services\Content_API\Content_API_Service;
  * @since 3.17.0
  */
 class EndpointAnalyticsPostsTest extends ContentAPIBaseEndpointTestCase {
-
 	/**
 	 * Returns the endpoint for the API request.
 	 *
@@ -31,9 +30,10 @@ class EndpointAnalyticsPostsTest extends ContentAPIBaseEndpointTestCase {
 		return $this->get_content_api()->get_endpoint( '/analytics/posts' );
 	}
 
-
 	/**
 	 * Provides data for test_api_url().
+	 *
+	 * @since 3.17.0
 	 *
 	 * @return \ArrayIterator<string, mixed>
 	 */

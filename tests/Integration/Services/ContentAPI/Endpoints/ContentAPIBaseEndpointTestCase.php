@@ -23,6 +23,8 @@ use Parsely\Tests\Integration\Services\BaseServiceEndpointTestCase;
 abstract class ContentAPIBaseEndpointTestCase extends BaseServiceEndpointTestCase {
 	/**
 	 * Initializes all required values for the test.
+	 *
+	 * @since 3.17.0
 	 */
 	public static function initialize(): void {
 		self::$api_service = new Content_API_Service( new Parsely() );
@@ -30,6 +32,8 @@ abstract class ContentAPIBaseEndpointTestCase extends BaseServiceEndpointTestCas
 
 	/**
 	 * Returns the Suggestions API service.
+	 *
+	 * @since 3.17.0
 	 *
 	 * @return Content_API_Service
 	 */
@@ -40,6 +44,8 @@ abstract class ContentAPIBaseEndpointTestCase extends BaseServiceEndpointTestCas
 
 	/**
 	 * Verifies the basic generation of the API URL.
+	 *
+	 * @since 3.17.0
 	 *
 	 * @dataProvider data_api_url
 	 * @covers \Parsely\Services\Base_API_Service::get_endpoint
@@ -78,6 +84,8 @@ abstract class ContentAPIBaseEndpointTestCase extends BaseServiceEndpointTestCas
 
 	/**
 	 * Verifies the basic generation of the API headers.
+	 *
+	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\Tests\Integration\Services\ContentAPI\Endpoints\Content_API_Base_Endpoint::get_request_options
 	 */

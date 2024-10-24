@@ -30,7 +30,6 @@ abstract class SuggestionsAPIBaseEndpointTestCase extends BaseServiceEndpointTes
 		self::$api_service = new Suggestions_API_Service( new Parsely() );
 	}
 
-
 	/**
 	 * Returns the Suggestions API service.
 	 *
