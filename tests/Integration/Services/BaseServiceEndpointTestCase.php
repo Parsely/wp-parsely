@@ -63,7 +63,6 @@ abstract class BaseServiceEndpointTestCase extends TestCase {
 		static::initialize();
 	}
 
-
 	/**
 	 * Verifies that the truncate function is properly truncated long content on the body array.
 	 *
@@ -106,7 +105,7 @@ abstract class BaseServiceEndpointTestCase extends TestCase {
 	}
 
 	/**
-	 * Generate content with a specific length.
+	 * Generates content with a specific length.
 	 *
 	 * @since 3.17.0
 	 *
@@ -117,6 +116,7 @@ abstract class BaseServiceEndpointTestCase extends TestCase {
 		$words          = array( 'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit' );
 		$string         = '';
 		$current_length = 0;
+
 		while ( $current_length < $length ) {
 			$word = $words[ array_rand( $words ) ];
 			if ( $current_length > 0 ) {
@@ -129,6 +129,7 @@ abstract class BaseServiceEndpointTestCase extends TestCase {
 			$string         .= $word;
 			$current_length += strlen( $word );
 		}
+
 		return $string;
 	}
 }

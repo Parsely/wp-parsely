@@ -16,12 +16,11 @@ use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 /**
  * Tests the Endpoint_Suggest_Brief class.
  *
- * @since 3.12.0
+ * @since 3.17.0
  *
  * @covers \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Brief
  */
 class EndpointSuggestBriefTest extends SuggestionsAPIBaseEndpointTestCase {
-
 	/**
 	 * Returns the endpoint for the API request.
 	 *

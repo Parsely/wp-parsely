@@ -56,12 +56,13 @@ class BaseAPIControllerTest extends TestCase {
 			/**
 			 * Gets the route prefix, which acts as a namespace for the endpoints.
 			 *
+			 * @since 3.17.0
+			 *
 			 * @return string The route prefix.
 			 */
 			public static function get_route_prefix(): string {
 				return 'test';
 			}
-
 
 			/**
 			 * Gets the version for the API.
@@ -84,6 +85,8 @@ class BaseAPIControllerTest extends TestCase {
 			/**
 			 * Exposes the protected method for testing.
 			 *
+			 * @since 3.17.0
+			 *
 			 * @param Base_Endpoint[] $endpoints The endpoints to register.
 			 */
 			public function testable_register_endpoints( array $endpoints ): void {
@@ -93,6 +96,8 @@ class BaseAPIControllerTest extends TestCase {
 			/**
 			 * Exposes the protected method for testing.
 			 *
+			 * @since 3.17.0
+			 *
 			 * @param Base_Endpoint $endpoint The endpoint to register.
 			 */
 			public function testable_register_endpoint( Base_Endpoint $endpoint ): void {
@@ -101,6 +106,8 @@ class BaseAPIControllerTest extends TestCase {
 
 			/**
 			 * Checks if a specific endpoint is available to the current user.
+			 *
+			 * @since 3.17.0
 			 *
 			 * @param string $endpoint The endpoint to check.
 			 * @return bool True if the controller is available to the current user, false otherwise.
@@ -156,6 +163,8 @@ class BaseAPIControllerTest extends TestCase {
 
 			/**
 			 * Checks if a specific endpoint is available to the current user.
+			 *
+			 * @since 3.17.0
 			 *
 			 * @param string $endpoint The endpoint to check.
 			 * @return bool True if the controller is available to the current user, false otherwise.

@@ -40,6 +40,8 @@ class ContentApiServiceTestCase extends BaseAPIServiceTestCase {
 
 	/**
 	 * Initializes all required values for the test.
+	 *
+	 * @since 3.17.0
 	 */
 	public static function initialize(): void {
 		self::$api_service = new Content_API_Service( new Parsely() );
@@ -59,6 +61,8 @@ class ContentApiServiceTestCase extends BaseAPIServiceTestCase {
 	 * Provides data for test_endpoint_is_registered().
 	 *
 	 * Should return an array of arrays, each containing the endpoint name and class.
+	 *
+	 * @since 3.17.0
 	 *
 	 * @return array<string, array<string, string>>
 	 */

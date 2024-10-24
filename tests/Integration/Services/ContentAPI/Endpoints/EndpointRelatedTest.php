@@ -19,7 +19,6 @@ use Parsely\Services\Content_API\Content_API_Service;
  * @since 3.17.0
  */
 class EndpointRelatedTest extends ContentAPIBaseEndpointTestCase {
-
 	/**
 	 * Returns the endpoint for the API request.
 	 *
@@ -30,7 +29,6 @@ class EndpointRelatedTest extends ContentAPIBaseEndpointTestCase {
 	public function get_service_endpoint(): Base_Service_Endpoint {
 		return $this->get_content_api()->get_endpoint( '/related' );
 	}
-
 
 	/**
 	 * Provides data for test_api_url().
