@@ -11,6 +11,7 @@ namespace Parsely\Tests\Integration\ContentHelper;
 
 use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Parsely;
+use Parsely\Tests\Integration\TestCase;
 
 /**
  * Integration Tests for the PCH Dashboard Widget.
@@ -21,6 +22,14 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 */
 	public function set_up(): void {
 		$GLOBALS['parsely'] = new Parsely();
+		$GLOBALS['parsely']->get_rest_api_controller()->init();
+
+		TestCase::set_options(
+			array(
+				'apikey'     => 'test_apikey',
+				'api_secret' => 'test_secret',
+			) 
+		);
 	}
 
 	/**
@@ -44,8 +53,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 		string $user_role,
 		array $additional_args = array()
 	): void {
-		$feature = new Dashboard_Widget( $GLOBALS['parsely'] );
 		self::set_current_user_to( $user_login, $user_role );
+
+		$feature = new Dashboard_Widget( $GLOBALS['parsely'] );
 
 		parent::set_filters(
 			$feature::get_feature_filter_name(),

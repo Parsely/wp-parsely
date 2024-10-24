@@ -89,6 +89,10 @@ class Dashboard_Widget extends Content_Helper_Feature {
 	public function can_enable_widget(): bool {
 		$screen = get_current_screen();
 
+		$this->parsely->get_rest_api_controller()->is_available_to_current_user(
+			'/stats/posts'
+		);
+
 		return $this->can_enable_feature(
 			null !== $screen && 'dashboard' === $screen->id,
 			$this->parsely->get_rest_api_controller()->is_available_to_current_user(
