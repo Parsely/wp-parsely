@@ -17,19 +17,41 @@ use Parsely\Tests\Integration\TestCase;
  * Integration Tests for the PCH Dashboard Widget.
  */
 final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
+
+	/**
+	 * Internal variable.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @var Parsely $parsely Holds the Parsely object.
+	 */
+	private static $parsely;
+
 	/**
 	 * Setup method called before each test.
 	 */
 	public function set_up(): void {
-		$GLOBALS['parsely'] = new Parsely();
-		$GLOBALS['parsely']->get_rest_api_controller()->init();
+		parent::set_up();
+
+		self::$parsely = new Parsely();
+		self::$parsely->get_rest_api_controller()->init();
 
 		TestCase::set_options(
 			array(
 				'apikey'     => 'test_apikey',
 				'api_secret' => 'test_secret',
-			) 
+			)
 		);
+	}
+
+	/**
+	 * Tear down method called after each test.
+	 *
+	 * @since 3.17.0
+	 */
+	public function tear_down(): void {
+		parent::tear_down();
+		TestCase::set_options();
 	}
 
 	/**
@@ -53,9 +75,8 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 		string $user_role,
 		array $additional_args = array()
 	): void {
+		$feature = new Dashboard_Widget( self::$parsely );
 		self::set_current_user_to( $user_login, $user_role );
-
-		$feature = new Dashboard_Widget( $GLOBALS['parsely'] );
 
 		parent::set_filters(
 			$feature::get_feature_filter_name(),

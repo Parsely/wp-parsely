@@ -120,8 +120,6 @@ class Post_List_Stats extends Content_Helper_Feature {
 	 * @since 3.7.0
 	 */
 	public function run(): void {
-		$this->parsely->get_rest_api_controller()->is_available_to_current_user( '/stats/posts' );
-
 		if ( ! $this->can_enable_feature(
 			$this->parsely->site_id_is_set(),
 			$this->parsely->api_secret_is_set(),
