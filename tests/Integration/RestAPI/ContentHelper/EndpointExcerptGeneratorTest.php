@@ -132,7 +132,7 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 						->method( 'get_brief_suggestions' )
 						->willReturn( array( array( 'summary' => 'This is a test excerpt.' ) ) );
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
+		self::set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/excerpt-generator/generate' );
@@ -184,7 +184,7 @@ class EndpointExcerptGeneratorTest extends BaseEndpointTest {
 						->method( 'get_brief_suggestions' )
 						->willReturn( new WP_Error( 'api_error', 'API request failed' ) );
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
+		self::set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/excerpt-generator/generate' );

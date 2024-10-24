@@ -17,6 +17,7 @@ use Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Headline;
 use Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Linked_Reference;
 use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use Parsely\Tests\Integration\Services\BaseAPIServiceTestCase;
+use Parsely\Tests\Traits\TestsReflection;
 
 /**
  * Integration tests for the Suggestions_API_Service class.
@@ -26,12 +27,14 @@ use Parsely\Tests\Integration\Services\BaseAPIServiceTestCase;
  * @covers \Parsely\Services\Suggestions_API\Suggestions_API_Service
  */
 class SuggestionsApiServiceTestCase extends BaseAPIServiceTestCase {
+	use TestsReflection;
+
 	/**
 	 * The registered endpoints for this service.
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var Base_Service_Endpoint[]
+	 * @var array<Base_Service_Endpoint>
 	 */
 	private static $endpoints;
 
@@ -44,11 +47,10 @@ class SuggestionsApiServiceTestCase extends BaseAPIServiceTestCase {
 		self::$api_service = new Suggestions_API_Service( new Parsely() );
 
 		// Get the endpoints from the protected $endpoints property using reflection.
-		$reflection = new \ReflectionClass( self::$api_service );
-		$property   = $reflection->getProperty( 'endpoints' );
-		$property->setAccessible( true );
-		/** @var Base_Service_Endpoint[] $endpoints */
-		$endpoints = $property->getValue( self::$api_service );
+		$endpoints_prop = self::get_property( 'endpoints', self::$api_service );
+
+		/** @var array<Base_Service_Endpoint> $endpoints */
+		$endpoints = $endpoints_prop->getValue( self::$api_service );
 
 		// Store it.
 		self::$endpoints = $endpoints;

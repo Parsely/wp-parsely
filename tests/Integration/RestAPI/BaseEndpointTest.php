@@ -15,7 +15,7 @@ use Parsely\REST_API\Base_API_Controller;
 use Parsely\REST_API\Base_Endpoint;
 use Parsely\REST_API\REST_API_Controller;
 use Parsely\Tests\Integration\TestCase;
-use ReflectionException;
+use Parsely\Tests\Traits\TestsReflection;
 use WP_Error;
 
 /**
@@ -26,6 +26,8 @@ use WP_Error;
  * @covers \Parsely\REST_API\Base_Endpoint
  */
 class BaseEndpointTest extends TestCase {
+	use TestsReflection;
+
 	/**
 	 * The test endpoint instance.
 	 *
@@ -425,27 +427,6 @@ class BaseEndpointTest extends TestCase {
 		$result = $this->get_endpoint()->validate_site_id_and_secret();
 
 		self::assertTrue( $result );
-	}
-
-	/**
-	 * Sets the value of a protected or private property on a given object using reflection.
-	 *
-	 * This method is useful for testing purposes where you need to modify or inject dependencies
-	 * into protected or private properties of a class.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @param object $obj The object instance on which the property should be set.
-	 * @param string $property_name The name of the property to be set.
-	 * @param mixed  $value The value to set on the property.
-	 *
-	 * @throws ReflectionException If the property does not exist.
-	 */
-	protected function set_protected_property( $obj, string $property_name, $value ): void {
-		$reflection = new \ReflectionClass( $obj );
-		$property   = $reflection->getProperty( $property_name );
-		$property->setAccessible( true );
-		$property->setValue( $obj, $value );
 	}
 
 	/**

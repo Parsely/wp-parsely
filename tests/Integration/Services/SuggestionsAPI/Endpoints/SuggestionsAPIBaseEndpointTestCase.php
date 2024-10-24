@@ -14,6 +14,7 @@ use Parsely\Parsely;
 use Parsely\Services\Base_Service_Endpoint;
 use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 use Parsely\Tests\Integration\Services\BaseServiceEndpointTestCase;
+use Parsely\Tests\Traits\TestsReflection;
 
 /**
  * Base class for Suggestions API endpoint tests.
@@ -21,6 +22,8 @@ use Parsely\Tests\Integration\Services\BaseServiceEndpointTestCase;
  * @since 3.17.0
  */
 abstract class SuggestionsAPIBaseEndpointTestCase extends BaseServiceEndpointTestCase {
+	use TestsReflection;
+
 	/**
 	 * Initializes all required values for the test.
 	 *
@@ -107,10 +110,8 @@ abstract class SuggestionsAPIBaseEndpointTestCase extends BaseServiceEndpointTes
 		);
 
 		// Call the protected method get_request_options() using reflection.
-		$reflection = new \ReflectionClass( $endpoint );
-		$method     = $reflection->getMethod( 'get_request_options' );
-		$method->setAccessible( true );
-		$request_options = $method->invoke( $endpoint, 'GET' );
+		$get_request_options = self::get_method( 'get_request_options', $endpoint );
+		$request_options     = $get_request_options->invoke( $endpoint, 'GET' );
 
 		// Ensure that $request_options is an array and 'headers' key exists.
 		self::assertIsArray( $request_options );

@@ -103,13 +103,13 @@ class EndpointTitleSuggestionsTest extends BaseEndpointTest {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_generate_titles_returns_valid_response(): void {
-		// Mock the Suggestions API to return a list of titles.
+		// Mock the Suggestions API `get_title_suggestions` method to return a list of titles.
 		$mock_suggestions_api = $this->createMock( Suggestions_API_Service::class );
 		$mock_suggestions_api->expects( self::once() )
 			->method( 'get_title_suggestions' )
 			->willReturn( array( 'title1', 'title2', 'title3' ) );
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
+		self::set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/title-suggestions/generate' );
@@ -155,13 +155,13 @@ class EndpointTitleSuggestionsTest extends BaseEndpointTest {
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_generate_titles_returns_error_on_failure(): void {
-		// Mock the Suggestions API to return a list of titles.
+		// Mock the Suggestions API `get_title_suggestions` method to return an error.
 		$mock_suggestions_api = $this->createMock( Suggestions_API_Service::class );
 		$mock_suggestions_api->expects( self::once() )
 							->method( 'get_title_suggestions' )
 							->willReturn( new WP_Error( 'api_error', 'API request failed' ) );
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
+		self::set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/title-suggestions/generate' );

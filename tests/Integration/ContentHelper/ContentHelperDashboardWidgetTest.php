@@ -17,7 +17,6 @@ use Parsely\Tests\Integration\TestCase;
  * Integration Tests for the PCH Dashboard Widget.
  */
 final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
-
 	/**
 	 * Internal variable.
 	 *
@@ -29,6 +28,8 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 
 	/**
 	 * Setup method called before each test.
+	 *
+	 * @since 3.17.0
 	 */
 	public function set_up(): void {
 		parent::set_up();
@@ -45,7 +46,7 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	}
 
 	/**
-	 * Tear down method called after each test.
+	 * Teardown method called after each test.
 	 *
 	 * @since 3.17.0
 	 */

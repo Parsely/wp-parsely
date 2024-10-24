@@ -14,6 +14,7 @@ use Parsely\Parsely;
 use Parsely\Services\Base_Service_Endpoint;
 use Parsely\Services\Content_API\Content_API_Service;
 use Parsely\Tests\Integration\Services\BaseServiceEndpointTestCase;
+use Parsely\Tests\Traits\TestsReflection;
 
 /**
  * Base class for testing Content API service endpoints.
@@ -21,6 +22,8 @@ use Parsely\Tests\Integration\Services\BaseServiceEndpointTestCase;
  * @since 3.17.0
  */
 abstract class ContentAPIBaseEndpointTestCase extends BaseServiceEndpointTestCase {
+	use TestsReflection;
+
 	/**
 	 * Initializes all required values for the test.
 	 *
@@ -109,10 +112,8 @@ abstract class ContentAPIBaseEndpointTestCase extends BaseServiceEndpointTestCas
 		);
 
 		// Call the protected method get_query_args() using reflection.
-		$reflection = new \ReflectionClass( $endpoint );
-		$method     = $reflection->getMethod( 'get_query_args' );
-		$method->setAccessible( true );
-		$query_args = $method->invoke( $endpoint );
+		$get_query_args = self::get_method( 'get_query_args', $endpoint );
+		$query_args     = $get_query_args->invoke( $endpoint );
 
 		// Ensure that $query_args is an array.
 		self::assertIsArray( $query_args );

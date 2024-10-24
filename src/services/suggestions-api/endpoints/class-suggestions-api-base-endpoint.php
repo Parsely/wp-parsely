@@ -31,7 +31,7 @@ abstract class Suggestions_API_Base_Endpoint extends Base_Service_Endpoint {
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var true
+	 * @var bool
 	 */
 	protected const TRUNCATE_CONTENT = true;
 

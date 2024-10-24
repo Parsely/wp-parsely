@@ -13,6 +13,7 @@ namespace Parsely\Tests\Integration\Services;
 use Parsely\Services\Base_API_Service;
 use Parsely\Services\Base_Service_Endpoint;
 use Parsely\Tests\Integration\TestCase;
+use Parsely\Tests\Traits\TestsReflection;
 
 /**
  * Base class for testing API service endpoints.
@@ -20,6 +21,8 @@ use Parsely\Tests\Integration\TestCase;
  * @since 3.17.0
  */
 abstract class BaseServiceEndpointTestCase extends TestCase {
+	use TestsReflection;
+
 	/**
 	 * The API Service instance
 	 *
@@ -64,7 +67,8 @@ abstract class BaseServiceEndpointTestCase extends TestCase {
 	}
 
 	/**
-	 * Verifies that the truncate function is properly truncated long content on the body array.
+	 * Tests if the `truncate_array_content` method truncates long text in any
+	 * member of the array.
 	 *
 	 * @since 3.17.0
 	 *
@@ -85,11 +89,8 @@ abstract class BaseServiceEndpointTestCase extends TestCase {
 			'something'     => 'else',
 		);
 
-		// Call private method using reflection.
-		$reflection = new \ReflectionClass( $endpoint );
-		$method     = $reflection->getMethod( 'truncate_array_content' );
-		$method->setAccessible( true );
-		$truncated_array = $method->invoke( $endpoint, $body );
+		$truncate_array_content = self::get_method( 'truncate_array_content', $endpoint );
+		$truncated_array        = $truncate_array_content->invoke( $endpoint, $body );
 
 		self::assertIsArray( $truncated_array );
 		self::assertArrayHasKey( 'output_params', $truncated_array );

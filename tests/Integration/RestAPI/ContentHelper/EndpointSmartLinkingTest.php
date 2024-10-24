@@ -150,7 +150,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 							)
 						);
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
+		self::set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/smart-linking/generate' );
@@ -193,7 +193,7 @@ class EndpointSmartLinkingTest extends BaseEndpointTest {
 							->method( 'get_smart_links' )
 							->willReturn( new WP_Error( 'api_error', 'API request failed' ) );
 
-		$this->set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
+		self::set_protected_property( $this->get_endpoint(), 'suggestions_api', $mock_suggestions_api );
 
 		// Create a mock request.
 		$request = new WP_REST_Request( 'POST', '/smart-linking/generate' );

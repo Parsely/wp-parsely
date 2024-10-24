@@ -20,6 +20,7 @@ use Parsely\Services\Content_API\Endpoints\Endpoint_Referrers_Post_Detail;
 use Parsely\Services\Content_API\Endpoints\Endpoint_Related;
 use Parsely\Services\Content_API\Endpoints\Endpoint_Validate;
 use Parsely\Tests\Integration\Services\BaseAPIServiceTestCase;
+use Parsely\Tests\Traits\TestsReflection;
 
 /**
  * Integration tests for the Content_API_Service class.
@@ -29,12 +30,14 @@ use Parsely\Tests\Integration\Services\BaseAPIServiceTestCase;
  * @covers \Parsely\Services\Content_API\Content_API_Service
  */
 class ContentApiServiceTestCase extends BaseAPIServiceTestCase {
+	use TestsReflection;
+
 	/**
 	 * The registered endpoints for this service.
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var Base_Service_Endpoint[]
+	 * @var array<Base_Service_Endpoint>
 	 */
 	private static $endpoints;
 
@@ -47,11 +50,9 @@ class ContentApiServiceTestCase extends BaseAPIServiceTestCase {
 		self::$api_service = new Content_API_Service( new Parsely() );
 
 		// Get the endpoints from the protected $endpoints property using reflection.
-		$reflection = new \ReflectionClass( self::$api_service );
-		$property   = $reflection->getProperty( 'endpoints' );
-		$property->setAccessible( true );
-		/** @var Base_Service_Endpoint[] $endpoints */
-		$endpoints = $property->getValue( self::$api_service );
+		$endpoints_prop = self::get_property( 'endpoints', self::$api_service );
+		/** @var array<Base_Service_Endpoint> $endpoints */
+		$endpoints = $endpoints_prop->getValue( self::$api_service );
 
 		// Store it.
 		self::$endpoints = $endpoints;
@@ -98,8 +99,8 @@ class ContentApiServiceTestCase extends BaseAPIServiceTestCase {
 	 *
 	 * @covers \Parsely\Services\Suggestions_API\Suggestions_API_Service::register_endpoint
 	 */
-	public function test_endpoints_are_registered(): void {
-		// Verify that the endpoints are registered.
+	public function test_number_of_registered_endpoints_is_as_expected(): void {
+		// Verify if the number of endpoints is as expected.
 		self::assertSameSize( $this->data_registered_endpoints(), self::$endpoints );
 	}
 

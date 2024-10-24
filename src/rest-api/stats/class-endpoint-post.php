@@ -28,7 +28,7 @@ use WP_REST_Response;
  *
  * @since 3.17.0
  *
- * @phpstan-type ReferrerData array{
+ * @phpstan-type Referrer_Data array{
  *     metrics: array{
  *         referrers_views?: int
  *     },
@@ -36,12 +36,12 @@ use WP_REST_Response;
  *     name?: string
  * }
  *
- * @phpstan-type ReferrerTypeData array{
+ * @phpstan-type Referrer_Type_Data array{
  *     views: string,
  *     viewsPercentage: string
  * }
  *
- * @phpstan-type ReferrersDataItem array{
+ * @phpstan-type Referrers_Data_Item array{
  *     views: string,
  *     viewsPercentage: string,
  *     datasetViewsPercentage: string
@@ -269,7 +269,7 @@ class Endpoint_Post extends Base_Endpoint {
 		/**
 		 * The analytics data object.
 		 *
-		 * @var array<ReferrerData> $analytics_request
+		 * @var array<Referrer_Data> $analytics_request
 		 */
 		$referrers_types = $this->generate_referrer_types_data( $analytics_request );
 		$direct_views    = Utils::convert_to_positive_integer(
@@ -340,8 +340,8 @@ class Endpoint_Post extends Base_Endpoint {
 	 * @since 3.6.0
 	 * @since 3.17.0 Moved from the `Referrers_Post_Detail_API_Proxy` class.
 	 *
-	 * @param array<ReferrerData> $response The response received by the proxy.
-	 * @return array<string, ReferrerTypeData> The generated data.
+	 * @param array<Referrer_Data> $response The response received by the proxy.
+	 * @return array<string, Referrer_Type_Data> The generated data.
 	 */
 	private function generate_referrer_types_data( array $response ): array {
 		$result               = array();
@@ -413,10 +413,10 @@ class Endpoint_Post extends Base_Endpoint {
 	 * @since 3.6.0
 	 * @since 3.17.0 Moved from the `Referrers_Post_Detail_API_Proxy` class.
 	 *
-	 * @param int                 $limit        The limit of returned referrers.
-	 * @param array<ReferrerData> $response     The response received by the proxy.
-	 * @param int                 $direct_views The count of direct views.
-	 * @return array<string, ReferrersDataItem>   The generated data.
+	 * @param int                  $limit        The limit of returned referrers.
+	 * @param array<Referrer_Data> $response     The response received by the proxy.
+	 * @param int                  $direct_views The count of direct views.
+	 * @return array<string, Referrers_Data_Item>   The generated data.
 	 */
 	private function generate_referrers_data(
 		int $limit,
