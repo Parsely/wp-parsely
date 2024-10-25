@@ -679,19 +679,17 @@ export const SmartLinkingPanel = ( {
 						{ error.Message() }
 					</Notice>
 				) }
-				{ ( isReviewDone && numAddedLinks > 0 ) && (
+				{ isReviewDone && numAddedLinks > 0 && (
 					<Notice
 						status="success"
 						onRemove={ () => setIsReviewDone( false ) }
 						className="wp-parsely-smart-linking-suggested-links"
 					>
-						{
-							sprintf(
-								/* translators: 1 - number of smart links generated */
-								__( 'Successfully added %s smart links.', 'wp-parsely' ),
-								numAddedLinks > 0 ? numAddedLinks : suggestedLinks.length,
-							)
-						}
+						{ sprintf(
+							/* translators: 1 - number of smart links generated */
+							__( 'Successfully added %s smart links.', 'wp-parsely' ),
+							numAddedLinks > 0 ? numAddedLinks : suggestedLinks.length,
+						) }
 					</Notice>
 				) }
 				<SmartLinkingSettingsComponent
@@ -738,7 +736,7 @@ export const SmartLinkingPanel = ( {
 					isOpen={ reviewModalIsOpen }
 					onAppliedLink={ () => {
 						setNumAddedLinks( ( num ) => num + 1 );
-					}	}
+					} }
 					onClose={ () => {
 						setIsReviewDone( true );
 						setIsReviewModalOpen( false );

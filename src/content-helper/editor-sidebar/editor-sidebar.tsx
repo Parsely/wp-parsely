@@ -31,6 +31,7 @@ import {
 	isInEnum,
 } from '../common/utils/constants';
 import { getContentHelperPermissions } from '../common/utils/permissions';
+import { initExcerptSuggestions } from './excerpt-suggestions/excerpt-suggestions';
 import {
 	DEFAULT_MAX_LINKS,
 	initSmartLinking,
@@ -39,6 +40,7 @@ import { SidebarPerformanceTab } from './tabs/sidebar-performance-tab';
 import { SidebarToolsTab } from './tabs/sidebar-tools-tab';
 
 const BLOCK_PLUGIN_ID = 'wp-parsely-block-editor-sidebar';
+export { BLOCK_PLUGIN_ID as PARSELY_SIDEBAR_PLUGIN_ID };
 
 export type OnSettingChangeFunction = ( key: keyof SidebarSettings, value: string | boolean | number ) => void;
 
@@ -91,6 +93,11 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 			Open: false,
 			Tone: 'neutral',
 			Persona: 'journalist',
+		},
+		ExcerptSuggestions: {
+			Open: false,
+			Persona: 'journalist',
+			Tone: 'neutral',
 		},
 	};
 
@@ -164,6 +171,18 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	}
 	if ( typeof mergedSettings.TitleSuggestions.Persona !== 'string' ) {
 		mergedSettings.TitleSuggestions.Persona = defaultSettings.TitleSuggestions.Persona;
+	}
+	if ( typeof mergedSettings.ExcerptSuggestions !== 'object' ) {
+		mergedSettings.ExcerptSuggestions = defaultSettings.ExcerptSuggestions;
+	}
+	if ( typeof mergedSettings.ExcerptSuggestions.Open !== 'boolean' ) {
+		mergedSettings.ExcerptSuggestions.Open = defaultSettings.ExcerptSuggestions.Open;
+	}
+	if ( typeof mergedSettings.ExcerptSuggestions.Tone !== 'string' ) {
+		mergedSettings.ExcerptSuggestions.Tone = defaultSettings.ExcerptSuggestions.Tone;
+	}
+	if ( typeof mergedSettings.ExcerptSuggestions.Persona !== 'string' ) {
+		mergedSettings.ExcerptSuggestions.Persona = defaultSettings.ExcerptSuggestions.Persona;
 	}
 
 	return mergedSettings;
@@ -273,6 +292,11 @@ const ContentHelperEditorSidebar = (): React.JSX.Element => {
 		</PluginSidebar>
 	);
 };
+
+// Initialize Excerpt Suggestions.
+if ( initExcerptSuggestions ) {
+	initExcerptSuggestions();
+}
 
 // Registering Plugin to WordPress Block Editor.
 registerPlugin( BLOCK_PLUGIN_ID, {
