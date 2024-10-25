@@ -19,6 +19,8 @@ use WP_Error;
  * from the API request.
  *
  * @since 3.17.0
+ *
+ * @phpstan-import-type WP_HTTP_Request_Args from Base_Service_Endpoint
  */
 class Cached_Service_Endpoint extends Base_Service_Endpoint {
 	/**
@@ -120,5 +122,44 @@ class Cached_Service_Endpoint extends Base_Service_Endpoint {
 	 */
 	public function get_endpoint(): string {
 		return $this->service_endpoint->get_endpoint();
+	}
+
+	/**
+	 * Returns the uncached endpoint for the API request.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @return Base_Service_Endpoint The uncached endpoint for the API request.
+	 */
+	public function get_uncached_endpoint(): Base_Service_Endpoint {
+		return $this->service_endpoint;
+	}
+
+	/**
+	 * Returns the request options for the remote API request.
+	 *
+	 * Gets the request options from the uncached service endpoint.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string $method The HTTP method to use for the request.
+	 * @return WP_HTTP_Request_Args The request options for the remote API request.
+	 */
+	protected function get_request_options( string $method ): array {
+		return $this->service_endpoint->get_request_options( $method );
+	}
+
+	/**
+	 * Returns the common query arguments to send to the remote API.
+	 *
+	 * Gets the query arguments from the uncached service endpoint.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param array<mixed> $args Additional query arguments to send to the remote API.
+	 * @return array<mixed> The query arguments to send to the remote API.
+	 */
+	protected function get_query_args( array $args = array() ): array {
+		return $this->service_endpoint->get_query_args( $args );
 	}
 }

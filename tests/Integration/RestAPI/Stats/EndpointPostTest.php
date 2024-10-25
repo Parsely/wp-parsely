@@ -63,7 +63,6 @@ class EndpointPostTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Post::register_routes
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
@@ -113,7 +112,6 @@ class EndpointPostTest extends BaseEndpointTest {
 	 * Verifies that the endpoint is not available if the API Secret is not set.
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Post::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
@@ -170,7 +168,6 @@ class EndpointPostTest extends BaseEndpointTest {
 	 * capabilities.
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Post::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
@@ -238,7 +235,6 @@ class EndpointPostTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Post::get_post_details
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_dash_url
@@ -275,10 +271,6 @@ class EndpointPostTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
 	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::register_rest_route_with_post_id
 	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::validate_post_id
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_items
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_request_options
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::get_formatted_duration
 	 * @uses \Parsely\Utils\Utils::parsely_is_https_supported
@@ -351,7 +343,6 @@ class EndpointPostTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Post::get_post_referrers
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_managed_credentials
@@ -388,10 +379,6 @@ class EndpointPostTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
 	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::register_rest_route_with_post_id
 	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::validate_post_id
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_items
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_request_options
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Utils\Utils::convert_to_positive_integer
 	 */
@@ -470,61 +457,61 @@ class EndpointPostTest extends BaseEndpointTest {
 			}
 		);
 
-		$expected_top = (object) array(
-			'direct'        => (object) array(
+		$expected_top = array(
+			'direct'        => array(
 				'views'                  => '770',
 				'viewsPercentage'        => '30.80',
 				'datasetViewsPercentage' => '31.43',
 			),
-			'google'        => (object) array(
+			'google'        => array(
 				'views'                  => '1,500',
 				'viewsPercentage'        => '60.00',
 				'datasetViewsPercentage' => '61.22',
 			),
-			'blog.parse.ly' => (object) array(
+			'blog.parse.ly' => array(
 				'views'                  => '100',
 				'viewsPercentage'        => '4.00',
 				'datasetViewsPercentage' => '4.08',
 			),
-			'bing'          => (object) array(
+			'bing'          => array(
 				'views'                  => '50',
 				'viewsPercentage'        => '2.00',
 				'datasetViewsPercentage' => '2.04',
 			),
-			'facebook.com'  => (object) array(
+			'facebook.com'  => array(
 				'views'                  => '30',
 				'viewsPercentage'        => '1.20',
 				'datasetViewsPercentage' => '1.22',
 			),
-			'totals'        => (object) array(
+			'totals'        => array(
 				'views'                  => '2,450',
 				'viewsPercentage'        => '98.00',
 				'datasetViewsPercentage' => '100.00',
 			),
 		);
 
-		$expected_types = (object) array(
-			'social'   => (object) array(
+		$expected_types = array(
+			'social'   => array(
 				'views'           => '30',
 				'viewsPercentage' => '1.20',
 			),
-			'search'   => (object) array(
+			'search'   => array(
 				'views'           => '1,570',
 				'viewsPercentage' => '62.80',
 			),
-			'other'    => (object) array(
+			'other'    => array(
 				'views'           => '20',
 				'viewsPercentage' => '0.80',
 			),
-			'internal' => (object) array(
+			'internal' => array(
 				'views'           => '110',
 				'viewsPercentage' => '4.40',
 			),
-			'direct'   => (object) array(
+			'direct'   => array(
 				'views'           => '770',
 				'viewsPercentage' => '30.80',
 			),
-			'totals'   => (object) array(
+			'totals'   => array(
 				'views'           => '2,500',
 				'viewsPercentage' => '100.00',
 			),
@@ -560,7 +547,6 @@ class EndpointPostTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Post::get_related_posts
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_managed_credentials
@@ -596,10 +582,6 @@ class EndpointPostTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
 	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::register_rest_route_with_post_id
 	 * @uses \Parsely\REST_API\Use_Post_ID_Parameter_Trait::validate_post_id
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_items
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_request_options
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_get_related_posts(): void {
@@ -651,13 +633,13 @@ class EndpointPostTest extends BaseEndpointTest {
 		self::assertSame( 200, $response->get_status() );
 		self::assertEquals(
 			array(
-				(object) array(
+				array(
 					'image_url'        => 'https://example.com/img.png',
 					'thumb_url_medium' => 'https://example.com/thumb.png',
 					'title'            => 'something',
 					'url'              => 'https://example.com',
 				),
-				(object) array(
+				array(
 					'image_url'        => 'https://example.com/img2.png',
 					'thumb_url_medium' => 'https://example.com/thumb2.png',
 					'title'            => 'something2',

@@ -25,6 +25,17 @@ use WP_Error;
  */
 abstract class Suggestions_API_Base_Endpoint extends Base_Service_Endpoint {
 	/**
+	 * Flag to truncate the content of the request body.
+	 *
+	 * By setting it to true, the content of the request body will be truncated to a maximum length.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @var bool
+	 */
+	protected const TRUNCATE_CONTENT = true;
+
+	/**
 	 * Returns the request options for the remote API request.
 	 *
 	 * @since 3.17.0
