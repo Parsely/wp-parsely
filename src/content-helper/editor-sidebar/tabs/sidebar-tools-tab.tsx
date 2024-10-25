@@ -11,7 +11,7 @@ import { __ } from '@wordpress/i18n';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { ContentHelperPermissions } from '../../common/utils/permissions';
 import { VerifyCredentials } from '../../common/verify-credentials';
-import { ExcerptSuggestionsPanel } from '../excerpt-suggestions/component-panel';
+import { PostExcerptSuggestions } from '../excerpt-suggestions/component-panel';
 import { RelatedPostsPanel } from '../related-posts/component';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from '../smart-linking/component';
 import { TitleSuggestionsPanel } from '../title-suggestions/component';
@@ -78,7 +78,7 @@ export const SidebarToolsTab = (
 						} }
 					>
 						<VerifyCredentials>
-							<ExcerptSuggestionsPanel />
+							<PostExcerptSuggestions />
 						</VerifyCredentials>
 					</PanelBody>
 				</PostTypeSupportCheck>
