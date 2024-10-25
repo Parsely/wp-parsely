@@ -85,7 +85,8 @@ class Amp extends Integration {
 	}
 
 	/**
-	 * Adds AMP actions.
+	 * Adds AMP actions and deregisters any scripts that create AMP validation
+	 * issues.
 	 *
 	 * @since 2.6.0
 	 */
@@ -93,6 +94,16 @@ class Amp extends Integration {
 		if ( $this->can_handle_amp_request() ) {
 			add_filter( 'amp_post_template_analytics', array( $this, 'register_parsely_for_amp_analytics' ) );
 			add_filter( 'amp_analytics_entries', array( $this, 'register_parsely_for_amp_native_analytics' ) );
+
+			// The tracker script isn't needed here, since tracking is done via
+			// the amp-analytics tag. Including the tracker creates an AMP
+			// validation issue.
+			wp_deregister_script( 'wp-parsely-tracker' );
+
+			// Our loader script creates an AMP validation issue, and it might
+			// not be useful under the AMP context. If we get feedback that it's
+			// needed, we can consider adding it under AMP.
+			wp_deregister_script( 'wp-parsely-loader' );
 		}
 	}
 

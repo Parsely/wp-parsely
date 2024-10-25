@@ -1,50 +1,45 @@
 <?php
 /**
- * Integration Tests: Parsely Content Suggestions Suggest Linked Reference API
+ * Suggestions API Endpoint Suggest Linked Reference Test
  *
- * @package Parsely\Tests
- * @since   3.14.0
+ * @package Parsely
+ * @since   3.17.0
  */
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration\RemoteAPI\ContentSuggestions;
+namespace Parsely\Tests\Integration\Services\SuggestionsAPI\Endpoints;
 
 use Parsely\Models\Smart_Link;
-use Parsely\Parsely;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
+use Parsely\Services\Base_Service_Endpoint;
+use Parsely\Services\Suggestions_API\Suggestions_API_Service;
 
 /**
- * Integration Tests for the Parse.ly Content Suggestions Suggest Linked Reference API.
+ * Tests the Endpoint_Suggest_Linked_Reference class.
  *
- * @since 3.14.0
+ * @since 3.17.0
+ *
+ * @covers \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Linked_Reference
+ * @uses Smart_Link
+ * @uses Suggestions_API_Service
  */
-final class SuggestLinkedReferenceAPITest extends BaseContentSuggestionsAPITest {
+class EndpointSuggestLinkedReferenceTest extends SuggestionsAPIBaseEndpointTestCase {
 	/**
-	 * Internal variable.
+	 * Returns the endpoint for the API request.
 	 *
-	 * @var Suggest_Linked_Reference_API $suggest_linked_reference_api Holds an instance of the class being tested.
-	 */
-	private static $suggest_linked_reference_api;
-
-	/**
-	 * Initializes all required values for the test.
+	 * @since 3.17.0
 	 *
-	 * @since 3.14.0
+	 * @return Base_Service_Endpoint
 	 */
-	public static function initialize(): void {
-		self::$remote_api = new Suggest_Linked_Reference_API( new Parsely() );
-		// Required for PHPStan to recognize the type.
-		self::$suggest_linked_reference_api = self::$remote_api;
+	public function get_service_endpoint(): Base_Service_Endpoint {
+		return $this->get_suggestions_api()->get_endpoint( '/suggest-linked-reference' );
 	}
 
 	/**
 	 * Provides data for test_api_url().
 	 *
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
-
-	 * @since 3.14.0
+	 * @since 3.17.0
+	 *
 	 * @return \ArrayIterator<string, mixed>
 	 */
 	public function data_api_url(): iterable {
@@ -52,8 +47,7 @@ final class SuggestLinkedReferenceAPITest extends BaseContentSuggestionsAPITest 
 			array(
 				'apikey' => 'my-key',
 			),
-			Parsely::PUBLIC_SUGGESTIONS_API_BASE_URL .
-				'/suggest-linked-reference?apikey=my-key',
+			Suggestions_API_Service::get_base_url() . '/suggest-linked-reference?apikey=my-key',
 		);
 	}
 
@@ -61,7 +55,7 @@ final class SuggestLinkedReferenceAPITest extends BaseContentSuggestionsAPITest 
 	 * Mocks a successful HTTP response to the Content Suggestion suggest-links
 	 * API endpoint.
 	 *
-	 * @since 3.14.0
+	 * @since 3.17.0
 	 *
 	 * @param string $response  The response to mock.
 	 * @param array  $args      The arguments passed to the HTTP request.
@@ -119,20 +113,35 @@ final class SuggestLinkedReferenceAPITest extends BaseContentSuggestionsAPITest 
 	/**
 	 * Tests getting smart links suggestions from the API.
 	 *
-	 * @since 3.14.0
+	 * @since 3.17.0
 	 *
-	 * @covers \Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API::get_links
+	 * @covers \Parsely\Services\Suggestions_API\Suggestions_API_Service::get_smart_links
+	 * @uses \Parsely\Models\Base_Model::__construct
+	 * @uses Smart_Link::__construct
+	 * @uses Smart_Link::generate_uid
+	 * @uses Smart_Link::get_post_id_by_url
+	 * @uses Smart_Link::set_href
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_managed_credentials
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::get_site_id
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
 	 * @uses \Parsely\Parsely::set_default_track_as_values
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_request_options
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::post_request
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
-	 * @uses \Parsely\RemoteAPI\ContentSuggestions\Content_Suggestions_Base_API::get_api_url
+	 * @uses \Parsely\Services\Base_API_Service::get_api_url
+	 * @uses \Parsely\Services\Base_API_Service::get_endpoint
+	 * @uses \Parsely\Services\Base_API_Service::get_parsely
+	 * @uses Base_Service_Endpoint::get_endpoint_url
+	 * @uses Base_Service_Endpoint::get_parsely
+	 * @uses Base_Service_Endpoint::get_query_args
+	 * @uses Base_Service_Endpoint::request
+	 * @uses Base_Service_Endpoint::truncate_array_content
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Linked_Reference::get_endpoint
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Endpoint_Suggest_Linked_Reference::get_links
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Suggestions_API_Base_Endpoint::get_query_args
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Suggestions_API_Base_Endpoint::get_request_options
+	 * @uses \Parsely\Services\Suggestions_API\Endpoints\Suggestions_API_Base_Endpoint::process_response
+	 * @uses Suggestions_API_Service::get_base_url
 	 */
 	public function test_get_links(): void {
 		$content = '<p>
@@ -145,7 +154,7 @@ final class SuggestLinkedReferenceAPITest extends BaseContentSuggestionsAPITest 
 		add_filter( 'pre_http_request', array( $this, 'mock_successful_suggest_links_response' ), 10, 3 );
 
 		// Test getting three titles.
-		$suggested_links = self::$suggest_linked_reference_api->get_links( $content );
+		$suggested_links = $this->get_suggestions_api()->get_smart_links( $content );
 
 		self::assertIsArray( $suggested_links );
 		self::assertEquals( 3, count( $suggested_links ) );
