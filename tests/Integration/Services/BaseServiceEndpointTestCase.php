@@ -67,8 +67,8 @@ abstract class BaseServiceEndpointTestCase extends TestCase {
 	}
 
 	/**
-	 * Tests if the `truncate_array_content` method truncates long text in any
-	 * member of the array.
+	 * Verifies that the truncate_array_content() method truncates long text in
+	 * any member of the array.
 	 *
 	 * @since 3.17.0
 	 *
