@@ -14,8 +14,6 @@ use Parsely\Metadata;
 use Parsely\Parsely;
 use WP_Post;
 
-use const Parsely\PARSELY_FILE;
-
 /**
  * Renders metadata in the WordPress front-end header.
  *
@@ -115,30 +113,47 @@ final class Metadata_Renderer {
 		} else {
 			// Assume `meta_type` is `repeated_metas`.
 			$parsely_post_type = $this->parsely->convert_jsonld_to_parsely_type( $metadata['@type'] ?? '' );
+			$tags              = '';
 
 			// @phpstan-ignore-next-line
 			if ( isset( $metadata['keywords'] ) && is_array( $metadata['keywords'] ) ) {
-				$metadata['keywords'] = implode( ',', $metadata['keywords'] );
+				$tags = implode( ',', $metadata['keywords'] );
 			}
 
 			$parsely_metas = array(
 				'title'     => $metadata['headline'],
-				'link'      => $metadata['url'] ?? null,
+				'link'      => $metadata['url'] ?? '',
 				'type'      => $parsely_post_type,
-				'image-url' => $metadata['thumbnailUrl'] ?? null,
-				'pub-date'  => $metadata['datePublished'] ?? null,
-				'section'   => $metadata['articleSection'] ?? null,
-				'tags'      => $metadata['keywords'] ?? null,
-				'author'    => isset( $metadata['author'] ),
+				'image-url' => $metadata['thumbnailUrl'] ?? '',
+				'pub-date'  => $metadata['datePublished'] ?? '',
+				'section'   => $metadata['articleSection'] ?? '',
+				'tags'      => $tags,
 			);
 			$parsely_metas = array_filter( $parsely_metas, array( $this, 'filter_empty_and_not_string_from_array' ) );
 
+			// Output metas.
+			foreach ( $parsely_metas as $parsely_meta_key => $parsely_meta_val ) {
+				printf(
+					'<meta name="%s" content="%s" />%s',
+					esc_attr( 'parsely-' . $parsely_meta_key ),
+					esc_attr( $parsely_meta_val ),
+					"\n"
+				);
+			}
+
+			// Output author metas (they can be multiple).
 			if ( isset( $metadata['author'] ) ) {
 				$parsely_page_authors = wp_list_pluck( $metadata['author'], 'name' );
 				$parsely_page_authors = array_filter( $parsely_page_authors, array( $this, 'filter_empty_and_not_string_from_array' ) );
-			}
 
-			include plugin_dir_path( PARSELY_FILE ) . 'views/repeated-metas.php';
+				foreach ( $parsely_page_authors as $parsely_author_name ) {
+					printf(
+						'<meta name="parsely-author" content="%s" />%s',
+						esc_attr( $parsely_author_name ),
+						"\n"
+					);
+				}
+			}
 		}
 
 		// Add any custom metadata.
