@@ -144,14 +144,14 @@ export class PerformanceStatsProvider extends BaseProvider {
 	/**
 	 * Fetches referrer data for the current post from the WordPress REST API.
 	 *
-	 * @param {Period} period     The period for which to fetch data.
-	 * @param {number} postId     The post's ID.
-	 * @param {string} totalViews Total post views (including direct views).
+	 * @param {Period}        period     The period for which to fetch data.
+	 * @param {string|number} postId     The post's ID.
+	 * @param {string}        totalViews Total post views (including direct views).
 	 *
 	 * @return {Promise<PerformanceReferrerData>} The post's referrer data.
 	 */
 	private async fetchReferrerDataFromWpEndpoint(
-		period: Period, postId: string, totalViews: string
+		period: Period, postId: string|number, totalViews: string
 	): Promise<PerformanceReferrerData> {
 		const response = await this.fetch<PerformanceReferrerData>( {
 			path: addQueryArgs(
