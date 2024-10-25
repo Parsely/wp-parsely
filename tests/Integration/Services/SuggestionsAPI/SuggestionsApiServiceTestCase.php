@@ -59,7 +59,8 @@ class SuggestionsApiServiceTestCase extends BaseAPIServiceTestCase {
 	/**
 	 * Provides data for test_endpoint_is_registered().
 	 *
-	 * Should return an array of arrays, each containing the endpoint name and class.
+	 * Should return an array of arrays, each containing the endpoint name and
+	 * class.
 	 *
 	 * @since 3.17.0
 	 *
@@ -83,19 +84,19 @@ class SuggestionsApiServiceTestCase extends BaseAPIServiceTestCase {
 	}
 
 	/**
-	 * Tests that the endpoints are registered and the correct number of endpoints are registered.
+	 * Verifies that the number of registered endpoints is as expected.
 	 *
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\Services\Suggestions_API\Suggestions_API_Service::register_endpoint
 	 */
-	public function test_endpoints_are_registered(): void {
-		// Verify that the endpoints are registered.
+	public function test_number_of_registered_endpoints_is_as_expected(): void {
 		self::assertSameSize( $this->data_registered_endpoints(), self::$endpoints );
 	}
 
 	/**
-	 * Tests that the endpoint is registered and is an instance of the expected class.
+	 * Tests that the endpoint is registered and is an instance of the expected
+	 * class.
 	 *
 	 * @since 3.17.0
 	 *

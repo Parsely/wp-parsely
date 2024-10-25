@@ -51,6 +51,7 @@ class ContentApiServiceTestCase extends BaseAPIServiceTestCase {
 
 		// Get the endpoints from the protected $endpoints property using reflection.
 		$endpoints_prop = self::get_property( 'endpoints', self::$api_service );
+
 		/** @var array<Base_Service_Endpoint> $endpoints */
 		$endpoints = $endpoints_prop->getValue( self::$api_service );
 
@@ -61,7 +62,8 @@ class ContentApiServiceTestCase extends BaseAPIServiceTestCase {
 	/**
 	 * Provides data for test_endpoint_is_registered().
 	 *
-	 * Should return an array of arrays, each containing the endpoint name and class.
+	 * Should return an array of arrays, each containing the endpoint name and
+	 * class.
 	 *
 	 * @since 3.17.0
 	 *
@@ -93,14 +95,13 @@ class ContentApiServiceTestCase extends BaseAPIServiceTestCase {
 	}
 
 	/**
-	 * Tests that the endpoints are registered and the correct number of endpoints are registered.
+	 * Verifies that the number of registered endpoints is as expected.
 	 *
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\Services\Suggestions_API\Suggestions_API_Service::register_endpoint
 	 */
 	public function test_number_of_registered_endpoints_is_as_expected(): void {
-		// Verify if the number of endpoints is as expected.
 		self::assertSameSize( $this->data_registered_endpoints(), self::$endpoints );
 	}
 
