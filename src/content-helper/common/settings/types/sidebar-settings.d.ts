@@ -61,7 +61,7 @@ export interface SmartLinkingSettings {
 }
 
 /**
- * Defines the settings structure for the PostExcerptGenerator component.
+ * Defines the settings structure for the PostExcerptSuggestions component.
  *
  * @since 3.17.0
  */

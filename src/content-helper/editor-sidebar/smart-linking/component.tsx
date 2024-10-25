@@ -662,7 +662,7 @@ export const SmartLinkingPanel = ( {
 						'wp-parsely',
 					) }
 					<Button
-						href="https://docs.parse.ly/plugin-content-helper/#h-smart-linking-beta"
+						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/smart-linking/"
 						target="_blank"
 						variant="link"
 					>

@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Parsely\REST_API\Stats;
 
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Related_API;
+use Parsely\Services\Content_API\Content_API_Service;
 use stdClass;
 use WP_Error;
 use WP_REST_Request;
@@ -22,15 +22,6 @@ use WP_REST_Request;
  * @since 3.17.0
  */
 trait Related_Posts_Trait {
-	/**
-	 * The API for fetching related posts.
-	 *
-	 * @since 3.17.0
-	 *
-	 * @var Related_API $related_posts_api
-	 */
-	public $related_posts_api;
-
 	/**
 	 * The itm_source of for the post URL.
 	 *
@@ -124,9 +115,10 @@ trait Related_Posts_Trait {
 		/**
 		 * The raw related posts data, received by the API.
 		 *
-		 * @var array<stdClass>|WP_Error $related_posts_request
+		 * @var array<array<string, string>>|WP_Error $related_posts_request
 		 */
-		$related_posts_request = $this->related_posts_api->get_items(
+		$related_posts_request = $this->content_api->get_related_posts_with_url(
+			$url,
 			array(
 				'url'            => $url,
 				'sort'           => $request->get_param( 'sort' ),
@@ -147,12 +139,12 @@ trait Related_Posts_Trait {
 		$itm_source = $this->itm_source;
 
 		$related_posts = array_map(
-			static function ( stdClass $item ) use ( $itm_source ) {
-				return (object) array(
-					'image_url'        => $item->image_url,
-					'thumb_url_medium' => $item->thumb_url_medium,
-					'title'            => $item->title,
-					'url'              => Parsely::get_url_with_itm_source( $item->url, $itm_source ),
+			static function ( array $item ) use ( $itm_source ) {
+				return array(
+					'image_url'        => $item['image_url'],
+					'thumb_url_medium' => $item['thumb_url_medium'],
+					'title'            => $item['title'],
+					'url'              => Parsely::get_url_with_itm_source( $item['url'], $itm_source ),
 				);
 			},
 			$related_posts_request

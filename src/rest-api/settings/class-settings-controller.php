@@ -27,7 +27,7 @@ class Settings_Controller extends REST_API_Controller {
 	 *
 	 * @return string The namespace.
 	 */
-	public function get_route_prefix(): string {
+	public static function get_route_prefix(): string {
 		return 'settings';
 	}
 

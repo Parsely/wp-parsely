@@ -172,6 +172,18 @@ export const getSettingsFromJson = ( settingsJson: string = '' ): SidebarSetting
 	if ( typeof mergedSettings.TitleSuggestions.Persona !== 'string' ) {
 		mergedSettings.TitleSuggestions.Persona = defaultSettings.TitleSuggestions.Persona;
 	}
+	if ( typeof mergedSettings.ExcerptSuggestions !== 'object' ) {
+		mergedSettings.ExcerptSuggestions = defaultSettings.ExcerptSuggestions;
+	}
+	if ( typeof mergedSettings.ExcerptSuggestions.Open !== 'boolean' ) {
+		mergedSettings.ExcerptSuggestions.Open = defaultSettings.ExcerptSuggestions.Open;
+	}
+	if ( typeof mergedSettings.ExcerptSuggestions.Tone !== 'string' ) {
+		mergedSettings.ExcerptSuggestions.Tone = defaultSettings.ExcerptSuggestions.Tone;
+	}
+	if ( typeof mergedSettings.ExcerptSuggestions.Persona !== 'string' ) {
+		mergedSettings.ExcerptSuggestions.Persona = defaultSettings.ExcerptSuggestions.Persona;
+	}
 
 	return mergedSettings;
 };

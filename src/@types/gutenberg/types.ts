@@ -3,15 +3,14 @@ import { BlockInstance } from '@wordpress/blocks';
 import { dispatch } from '@wordpress/data';
 
 /**
- * Defines typings for some non-exported Gutenberg functions to avoid
- * intellisense errors in function calls.
+ * Defines typings for core/block-editor functions, to avoid intellisense errors
+ * in function calls.
  *
  * This can be removed once Gutenberg provides typings for these functions.
  *
  * @since 3.12.0
  */
 export interface GutenbergFunction {
-	editPost: ( edits: Record<string, unknown> ) => void;
 	getBlock: ( clientId: string ) => BlockInstance | null;
 	getBlockParents: ( clientId: string ) => string[];
 	getBlocks: () => BlockInstance[];
@@ -24,13 +23,25 @@ export interface GutenbergFunction {
 	hasMetaBoxes: () => boolean;
 	isAutosavingPost: () => boolean;
 	isSavingPost: () => boolean;
-	lockPostSaving: ( lockName: string ) => void;
-	lockPostAutosaving: ( lockName: string ) => void;
-	unlockPostAutosaving: ( lockName: string ) => void;
 	removeEditorPanel: ( panelName: string ) => void;
 	selectBlock: ( clientId: string, initialPosition?: number ) => void;
-	unlockPostSaving: ( lockName: string ) => void;
 	updateBlockAttributes: ( clientId: string, attributes: Record<string, unknown> ) => void;
+}
+
+/**
+ * Defines typings for core/editor functions, to avoid intellisense errors in
+ * function calls.
+ *
+ * This can be removed once Gutenberg provides typings for these functions.
+ *
+ * @since 3.17.0 Moved from the GutenbergFunction interface.
+ */
+export interface GutenbergCoreEditorFunction {
+	editPost: ( edits: Record<string, unknown> ) => void;
+	lockPostAutosaving: ( lockName: string ) => void;
+	lockPostSaving: ( lockName: string ) => void;
+	unlockPostAutosaving: ( lockName: string ) => void;
+	unlockPostSaving: ( lockName: string ) => void;
 }
 
 /**
@@ -46,7 +57,7 @@ export const dispatchCoreBlockEditor = dispatch( 'core/block-editor' ) as Gutenb
  *
  * @since 3.16.0
  */
-export const dispatchCoreEditor = dispatch( 'core/editor' ) as GutenbergFunction;
+export const dispatchCoreEditor = dispatch( 'core/editor' ) as unknown as GutenbergCoreEditorFunction;
 
 /**
  * Alias for dispatch( 'core/edit-post' ) calls that prevents intellisense
@@ -54,4 +65,4 @@ export const dispatchCoreEditor = dispatch( 'core/editor' ) as GutenbergFunction
  *
  * @since 3.16.0
  */
-export const dispatchCoreEditPost = dispatch( 'core/edit-post' ) as GutenbergFunction;
+export const dispatchCoreEditPost = dispatch( 'core/edit-post' );

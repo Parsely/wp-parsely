@@ -26,7 +26,7 @@ abstract class Base_API_Controller {
 	 *
 	 * @since 3.17.0
 	 *
-	 * @var Base_Endpoint[]
+	 * @var array<string, Base_Endpoint>
 	 */
 	private $endpoints;
 
@@ -96,7 +96,7 @@ abstract class Base_API_Controller {
 	 *
 	 * @return string The route prefix.
 	 */
-	public function get_route_prefix(): string {
+	public static function get_route_prefix(): string {
 		return '';
 	}
 
@@ -147,7 +147,7 @@ abstract class Base_API_Controller {
 	 * @param Base_Endpoint $endpoint The endpoint to register.
 	 */
 	protected function register_endpoint( Base_Endpoint $endpoint ): void {
-		$this->endpoints[] = $endpoint;
+		$this->endpoints[ $endpoint->get_endpoint_slug() ] = $endpoint;
 		$endpoint->init();
 	}
 
@@ -173,10 +173,32 @@ abstract class Base_API_Controller {
 	 * @return string The prefixed route.
 	 */
 	public function prefix_route( string $route ): string {
-		if ( '' === $this->get_route_prefix() ) {
+		if ( '' === static::get_route_prefix() ) {
 			return $route;
 		}
 
-		return $this->get_route_prefix() . '/' . $route;
+		return static::get_route_prefix() . '/' . $route;
 	}
+
+	/**
+	 * Returns a specific endpoint by name.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string $endpoint The endpoint name/path.
+	 * @return Base_Endpoint|null The endpoint object, or null if not found.
+	 */
+	protected function get_endpoint( string $endpoint ): ?Base_Endpoint {
+		return $this->endpoints[ $endpoint ] ?? null;
+	}
+
+	/**
+	 * Checks if a specific endpoint is available to the current user.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param string $endpoint The endpoint to check.
+	 * @return bool True if the controller is available to the current user, false otherwise.
+	 */
+	abstract public function is_available_to_current_user( string $endpoint ): bool;
 }

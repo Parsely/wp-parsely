@@ -10,10 +10,11 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
+use Parsely\Content_Helper\Editor_Sidebar\Editor_Sidebar_Feature;
 use Parsely\Content_Helper\Editor_Sidebar\Smart_Linking;
 use Parsely\Dashboard_Link;
 use Parsely\Parsely;
-
+use Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings;
 use Parsely\Utils\Utils;
 use WP_Post;
 
@@ -31,7 +32,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @var array<Content_Helper_Feature>
+	 * @var array<Editor_Sidebar_Feature>
 	 */
 	protected $features;
 
@@ -48,7 +49,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 		// Instantiate the features.
 		$this->features = array(
 			'Smart_Linking'     => new Smart_Linking( $this ),
-			'Excerpt_Generator' => new Excerpt_Suggestions( $this->parsely ),
+			'Excerpt_Generator' => new Excerpt_Suggestions( $this ),
 		);
 	}
 
@@ -157,7 +158,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			true
 		);
 
-		$this->inject_inline_scripts( 'editor-sidebar' );
+		$this->inject_inline_scripts( Endpoint_Editor_Sidebar_Settings::get_endpoint_name() );
 
 		// Inject inline variables for the editor sidebar, without UTM parameters.
 		$parsely_post_url = $this->get_parsely_post_url( null, false );

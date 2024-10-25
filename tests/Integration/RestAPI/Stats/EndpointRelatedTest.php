@@ -61,7 +61,6 @@ class EndpointRelatedTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Related::register_routes
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::__construct
 	 * @uses \Parsely\REST_API\Base_API_Controller::get_full_namespace
 	 * @uses \Parsely\REST_API\Base_API_Controller::get_parsely
@@ -99,7 +98,6 @@ class EndpointRelatedTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Related::is_available_to_current_user
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_managed_credentials
@@ -130,10 +128,6 @@ class EndpointRelatedTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_of_url
 	 * @uses \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_param_args
 	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_items
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_request_options
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_access_of_related_posts_is_available_to_everyone(): void {
@@ -196,7 +190,6 @@ class EndpointRelatedTest extends BaseEndpointTest {
 	 * @since 3.17.0
 	 *
 	 * @covers \Parsely\REST_API\Stats\Endpoint_Related::get_related_posts
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_api_secret
 	 * @uses \Parsely\Parsely::get_managed_credentials
@@ -227,10 +220,6 @@ class EndpointRelatedTest extends BaseEndpointTest {
 	 * @uses \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_of_url
 	 * @uses \Parsely\REST_API\Stats\Related_Posts_Trait::get_related_posts_param_args
 	 * @uses \Parsely\REST_API\Stats\Stats_Controller::get_route_prefix
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_api_url
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_items
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::get_request_options
-	 * @uses \Parsely\RemoteAPI\Base_Endpoint_Remote::validate_required_constraints
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 */
 	public function test_get_related_posts(): void {
@@ -283,13 +272,13 @@ class EndpointRelatedTest extends BaseEndpointTest {
 		self::assertSame( 200, $response->get_status() );
 		self::assertEquals(
 			array(
-				(object) array(
+				array(
 					'image_url'        => 'https://example.com/img.png',
 					'thumb_url_medium' => 'https://example.com/thumb.png',
 					'title'            => 'something',
 					'url'              => 'https://example.com',
 				),
-				(object) array(
+				array(
 					'image_url'        => 'https://example.com/img2.png',
 					'thumb_url_medium' => 'https://example.com/thumb2.png',
 					'title'            => 'something2',

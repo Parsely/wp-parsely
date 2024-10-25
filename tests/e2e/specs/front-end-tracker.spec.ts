@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import * as fs from 'fs';
+import { readFile } from 'fs/promises';
 
 /**
  * WordPress dependencies
@@ -86,7 +86,7 @@ class Utils {
 	 * @return {string} The version of the loader asset.
 	 */
 	async getAssetVersion(): Promise<string> {
-		const data = await fs.promises.readFile(
+		const data = await readFile(
 			'build/loader.asset.php', { encoding: 'utf8', flag: 'r' }
 		);
 

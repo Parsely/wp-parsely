@@ -16,11 +16,11 @@ import { SettingsProvider } from '../../common/settings';
 import { getContentHelperPermissions } from '../../common/utils/permissions';
 import { getSettingsFromJson, PARSELY_SIDEBAR_PLUGIN_ID } from '../editor-sidebar';
 import './excerpt-suggestions.scss';
-import { ExcerptSuggestionsPanel } from './component-panel';
+import { PostExcerptSuggestions } from './component-panel';
 
 /**
  * The ExcerptDocumentSettingPanel component verifies that the current post type supports excerpts,
- * and then renders the ExcerptSuggestionsPanel component.
+ * and then renders the PostExcerptSuggestions component.
  *
  * @since 3.17.0
  */
@@ -37,7 +37,7 @@ export const ExcerptDocumentSettingPanel = () => {
 						window.wpParselyContentHelperSettings
 					) }
 				>
-					<ExcerptSuggestionsPanel
+					<PostExcerptSuggestions
 						isDocumentSettingPanel={ true }
 					/>
 				</SettingsProvider>
