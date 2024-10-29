@@ -146,7 +146,7 @@ export class RelatedPostsProvider extends BaseProvider {
 	 */
 	private async fetchRelatedPostsFromWpEndpoint( query: RelatedPostsApiQuery ): Promise<PostData[]> {
 		const response = this.fetch<PostData[]>( {
-			path: addQueryArgs( '/wp-parsely/v1/stats/posts', {
+			path: addQueryArgs( '/wp-parsely/v2/stats/posts', {
 				...query.query,
 				itm_source: 'wp-parsely-content-helper',
 			} ),

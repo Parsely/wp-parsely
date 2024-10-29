@@ -347,7 +347,7 @@ final class ScriptsTest extends TestCase {
 				'track_authenticated_users' => true,
 			)
 		);
-		$new_user_id = $this->create_test_user( 'bill_brasky' );
+		$new_user_id = self::create_test_user( 'bill_brasky' );
 		wp_set_current_user( $new_user_id );
 		$this->go_to_new_post();
 		self::$scripts->register_scripts();
@@ -390,10 +390,10 @@ final class ScriptsTest extends TestCase {
 		}
 
 		// Set up users and blogs.
-		$first_blog_admin  = $this->create_test_user( 'optimus_prime' );
-		$second_blog_admin = $this->create_test_user( 'megatron' );
-		$first_blog        = $this->create_test_blog( 'autobots', $first_blog_admin );
-		$second_blog       = $this->create_test_blog( 'decepticons', $second_blog_admin );
+		$first_blog_admin  = self::create_test_user( 'optimus_prime' );
+		$second_blog_admin = self::create_test_user( 'megatron' );
+		$first_blog        = self::create_test_blog( 'autobots', $first_blog_admin );
+		$second_blog       = self::create_test_blog( 'decepticons', $second_blog_admin );
 
 		// These custom options will be used for both blogs.
 		$custom_options = array(

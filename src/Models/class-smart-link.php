@@ -127,7 +127,9 @@ class Smart_Link extends Base_Model {
 		int $offset,
 		int $post_id = 0
 	) {
-		$this->set_href( $href );
+		if ( '' !== $href ) {
+			$this->set_href( $href );
+		}
 
 		// Set the title to be the destination post title if the destination post ID is set.
 		if ( 0 !== $this->destination_post_id ) {

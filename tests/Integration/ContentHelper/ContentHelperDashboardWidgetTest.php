@@ -11,16 +11,48 @@ namespace Parsely\Tests\Integration\ContentHelper;
 
 use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Parsely;
+use Parsely\Tests\Integration\TestCase;
 
 /**
  * Integration Tests for the PCH Dashboard Widget.
  */
 final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	/**
+	 * Internal variable.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @var Parsely $parsely Holds the Parsely object.
+	 */
+	private static $parsely;
+
+	/**
 	 * Setup method called before each test.
+	 *
+	 * @since 3.17.0
 	 */
 	public function set_up(): void {
-		$GLOBALS['parsely'] = new Parsely();
+		parent::set_up();
+
+		self::$parsely = new Parsely();
+		self::$parsely->get_rest_api_controller()->init();
+
+		TestCase::set_options(
+			array(
+				'apikey'     => 'test_apikey',
+				'api_secret' => 'test_secret',
+			)
+		);
+	}
+
+	/**
+	 * Teardown method called after each test.
+	 *
+	 * @since 3.17.0
+	 */
+	public function tear_down(): void {
+		parent::tear_down();
+		TestCase::set_options();
 	}
 
 	/**
@@ -44,8 +76,8 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 		string $user_role,
 		array $additional_args = array()
 	): void {
-		$feature = new Dashboard_Widget( $GLOBALS['parsely'] );
-		$this->set_current_user_to( $user_login, $user_role );
+		$feature = new Dashboard_Widget( self::$parsely );
+		self::set_current_user_to( $user_login, $user_role );
 
 		parent::set_filters(
 			$feature::get_feature_filter_name(),
@@ -85,11 +117,8 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
-	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */
@@ -112,11 +141,9 @@ final class ContentHelperDashboardWidgetTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_script_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::get_style_id
 	 * @covers \Parsely\Content_Helper\Dashboard_Widget::run
-	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @uses \Parsely\Parsely::__construct
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 * @uses \Parsely\Utils\Utils::convert_endpoint_to_filter_key
-	 * @uses \Parsely\Utils::get_asset_info
+	 * @uses \Parsely\Utils\Utils::get_asset_info
 	 *
 	 * @group content-helper
 	 */

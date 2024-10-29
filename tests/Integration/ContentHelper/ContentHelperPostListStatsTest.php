@@ -12,8 +12,10 @@ namespace Parsely\Tests\Integration\ContentHelper;
 use Mockery;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Analytics_Posts_API;
+use Parsely\Services\Content_API\Content_API_Service;
+use Parsely\Services\Content_API\Endpoints\Endpoint_Analytics_Posts;
 use Parsely\Tests\Integration\TestCase;
+use ReflectionProperty;
 use WP_Error;
 use WP_Post;
 use WP_Scripts;
@@ -23,11 +25,17 @@ use WP_Scripts;
  *
  * @since 3.7.0
  *
- * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
- * @phpstan-import-type Analytics_Post from Analytics_Posts_API
+ * @phpstan-import-type Analytics_Post from Endpoint_Analytics_Posts
  * @phpstan-import-type Parsely_Posts_Stats_Response from Post_List_Stats
  */
 final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
+	/**
+	 * The Parsely instance.
+	 *
+	 * @var Parsely
+	 */
+	private static $parsely;
+
 	/**
 	 * Internal variable.
 	 *
@@ -50,6 +58,9 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 */
 	public function set_up(): void {
 		parent::set_up();
+
+		self::$parsely = new Parsely();
+		self::$parsely->get_rest_api_controller()->init();
 
 		$this->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%' );
 		$this->set_current_user_to_admin();
@@ -85,7 +96,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		string $user_role,
 		array $additional_args = array()
 	): void {
-		$this->set_current_user_to( $user_login, $user_role );
+		self::set_current_user_to( $user_login, $user_role );
 
 		parent::set_filters(
 			Post_List_Stats::get_feature_filter_name(),
@@ -121,13 +132,11 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::__construct
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::get_feature_filter_name
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
-	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @covers \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 *
 	 * @group content-helper
 	 */
@@ -150,13 +159,11 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::is_tracked_as_post_type
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::run
 	 * @covers \Parsely\Content_Helper\Post_List_Stats::set_current_screen
-	 * @covers \Parsely\RemoteAPI\Analytics_Posts_API::is_available_to_current_user
 	 * @covers \Parsely\Utils\Utils::convert_endpoint_to_filter_key
 	 * @uses \Parsely\Parsely::__construct
 	 * @uses \Parsely\Parsely::api_secret_is_set
 	 * @uses \Parsely\Parsely::get_options
 	 * @uses \Parsely\Parsely::site_id_is_set
-	 * @uses \Parsely\Endpoints\Base_Endpoint::__construct
 	 *
 	 * @group content-helper
 	 */
@@ -754,7 +761,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @return Post_List_Stats
 	 */
 	private function mock_parsely_stats_response( ?array $return_value ): Post_List_Stats {
-		$obj = Mockery::mock( Post_List_Stats::class, array( new Parsely() ) )->makePartial();
+		$obj = Mockery::mock( Post_List_Stats::class, array( self::$parsely ) )->makePartial();
 		$obj->shouldReceive( 'get_parsely_stats_response' )->once()->andReturn( $return_value );
 		$obj->run();
 
@@ -785,7 +792,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @return Post_List_Stats
 	 */
 	private function mock_is_parsely_stats_column_hidden( bool $return_value = false ): Post_List_Stats {
-		$obj = Mockery::mock( Post_List_Stats::class, array( new Parsely() ) )->makePartial();
+		$obj = Mockery::mock( Post_List_Stats::class, array( self::$parsely ) )->makePartial();
 		$obj->shouldReceive( 'is_parsely_stats_column_hidden' )->once()->andReturn( $return_value );
 		$obj->run();
 
@@ -1251,7 +1258,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @param array<WP_Post>                      $posts Available Posts.
 	 * @param string                              $post_type Type of the post.
 	 * @param array<Analytics_Post>|WP_Error|null $api_response Mocked response that we return on calling API.
-	 * @param Analytics_Post_API_Params|null      $api_params API Parameters.
+	 * @param array<string,mixed>|null            $api_params API Parameters.
 	 * @return Parsely_Posts_Stats_Response|null
 	 */
 	private function get_parsely_stats_response(
@@ -1266,9 +1273,13 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 		$this->show_content_on_parsely_stats_column( $posts, $post_type );
 		ob_get_clean(); // Discard output to keep console clean while running tests.
 
-		$api = Mockery::mock( Analytics_Posts_API::class, array( new Parsely() ) )->makePartial();
+		if ( null === $api_response ) {
+			$api_response = self::$parsely_api_empty_response;
+		}
+
+		$api = Mockery::mock( Content_API_Service::class, array( self::$parsely ) )->makePartial();
 		if ( ! is_null( $api_params ) ) {
-			$api->shouldReceive( 'get_posts_analytics' )
+			$api->shouldReceive( 'get_posts' )
 				->once()
 				->withArgs(
 					array(
@@ -1276,8 +1287,8 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 							$api_params,
 							// Params which will not change.
 							array(
-								'period_start' => Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT . 'd',
-								'limit'        => 2000,
+								'period_start' => Endpoint_Analytics_Posts::MAX_PERIOD,
+								'limit'        => Endpoint_Analytics_Posts::MAX_LIMIT,
 								'sort'         => 'avg_engaged',
 							)
 						),
@@ -1285,10 +1296,15 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 				)
 				->andReturn( $api_response );
 		} else {
-			$api->shouldReceive( 'get_posts_analytics' )->once()->andReturn( $api_response );
+			$api->shouldReceive( 'get_posts' )->once()->andReturn( $api_response );
 		}
 
-		return $obj->get_parsely_stats_response( $api );
+		// Replace the original API with the mock, using reflection.
+		$api_reflection = new ReflectionProperty( $obj, 'content_api' );
+		$api_reflection->setAccessible( true );
+		$api_reflection->setValue( $obj, $api );
+
+		return $obj->get_parsely_stats_response();
 	}
 
 	/**
@@ -1309,7 +1325,7 @@ final class ContentHelperPostListStatsTest extends ContentHelperFeatureTest {
 	 * @return Post_List_Stats
 	 */
 	private function init_post_list_stats(): Post_List_Stats {
-		$obj = new Post_List_Stats( new Parsely() );
+		$obj = new Post_List_Stats( self::$parsely );
 		$obj->run();
 
 		return $obj;

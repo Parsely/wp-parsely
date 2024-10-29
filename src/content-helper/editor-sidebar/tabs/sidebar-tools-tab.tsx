@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { Panel, PanelBody } from '@wordpress/components';
+import { PostTypeSupportCheck } from '@wordpress/editor';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -10,6 +11,7 @@ import { __ } from '@wordpress/i18n';
 import { SidebarSettings, useSettings } from '../../common/settings';
 import { ContentHelperPermissions } from '../../common/utils/permissions';
 import { VerifyCredentials } from '../../common/verify-credentials';
+import { PostExcerptSuggestions } from '../excerpt-suggestions/component-panel';
 import { RelatedPostsPanel } from '../related-posts/component';
 import { SmartLinkingPanel, SmartLinkingPanelContext } from '../smart-linking/component';
 import { TitleSuggestionsPanel } from '../title-suggestions/component';
@@ -57,6 +59,29 @@ export const SidebarToolsTab = (
 						<TitleSuggestionsPanel />
 					</VerifyCredentials>
 				</PanelBody>
+			}
+
+			{
+				permissions.ExcerptSuggestions &&
+				<PostTypeSupportCheck supportKeys="excerpt">
+					<PanelBody
+						title={ __( 'Excerpt Suggestions (Beta)', 'wp-parsely' ) }
+						initialOpen={ settings.ExcerptSuggestions.Open }
+						onToggle={ ( next ) => {
+							setSettings( {
+								ExcerptSuggestions: {
+									...settings.ExcerptSuggestions,
+									Open: next,
+								},
+							} );
+							trackToggle( 'excerpt_suggestions', next );
+						} }
+					>
+						<VerifyCredentials>
+							<PostExcerptSuggestions />
+						</VerifyCredentials>
+					</PanelBody>
+				</PostTypeSupportCheck>
 			}
 
 			{ permissions.SmartLinking &&

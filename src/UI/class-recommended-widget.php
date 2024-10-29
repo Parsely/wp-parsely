@@ -92,7 +92,7 @@ final class Recommended_Widget extends WP_Widget {
 	 * @return string API URL.
 	 */
 	private function get_api_url( string $site_id, ?int $published_within, ?string $sort, int $return_limit ): string {
-		$related_api_endpoint = Parsely::PUBLIC_API_BASE_URL . '/related';
+		$related_api_endpoint = $this->parsely->get_content_api()->get_endpoint( '/related' );
 
 		$query_args = array(
 			'apikey' => $site_id,
@@ -104,7 +104,7 @@ final class Recommended_Widget extends WP_Widget {
 			$query_args['pub_date_start'] = $published_within . 'd';
 		}
 
-		return add_query_arg( $query_args, $related_api_endpoint );
+		return $related_api_endpoint->get_endpoint_url( $query_args );
 	}
 
 	/**

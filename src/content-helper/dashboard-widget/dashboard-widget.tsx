@@ -56,7 +56,7 @@ window.addEventListener(
 		if ( null !== container ) {
 			const component =
 				<SettingsProvider
-					endpoint="dashboard-widget-settings"
+					endpoint="dashboard-widget"
 					defaultSettings={ getSettingsFromJson( window.wpParselyContentHelperSettings ) }
 				>
 					<VerifyCredentials>

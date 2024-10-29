@@ -28,32 +28,14 @@ namespace Parsely;
 
 use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Content_Helper\Editor_Sidebar;
-use Parsely\Content_Helper\Excerpt_Generator;
+use Parsely\Content_Helper\Excerpt_Suggestions;
 use Parsely\Content_Helper\Post_List_Stats;
-use Parsely\Endpoints\Analytics_Post_Detail_API_Proxy;
-use Parsely\Endpoints\Analytics_Posts_API_Proxy;
-use Parsely\Endpoints\Content_Helper\Smart_Linking_Endpoint;
-use Parsely\Endpoints\ContentSuggestions\Suggest_Brief_API_Proxy;
-use Parsely\Endpoints\ContentSuggestions\Suggest_Headline_API_Proxy;
-use Parsely\Endpoints\ContentSuggestions\Suggest_Linked_Reference_API_Proxy;
 use Parsely\Endpoints\GraphQL_Metadata;
-use Parsely\Endpoints\Referrers_Post_Detail_API_Proxy;
-use Parsely\Endpoints\Related_API_Proxy;
 use Parsely\Endpoints\Rest_Metadata;
-use Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint;
-use Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
-use Parsely\RemoteAPI\Analytics_Post_Detail_API;
-use Parsely\RemoteAPI\Analytics_Posts_API;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Brief_API;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Headline_API;
-use Parsely\RemoteAPI\ContentSuggestions\Suggest_Linked_Reference_API;
-use Parsely\RemoteAPI\Referrers_Post_Detail_API;
-use Parsely\RemoteAPI\Related_API;
-use Parsely\RemoteAPI\Remote_API_Cache;
-use Parsely\RemoteAPI\WordPress_Cache;
+use Parsely\REST_API\REST_API_Controller;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
 use Parsely\UI\Metadata_Renderer;
@@ -74,6 +56,10 @@ const PARSELY_FILE    = __FILE__;
 if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
 }
+
+// Load Telemetry classes.
+require_once __DIR__ . '/src/Telemetry/telemetry-init.php';
+
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
@@ -124,6 +110,10 @@ function parsely_wp_admin_early_register(): void {
 
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
+
+	// Initialize the REST API Controller.
+	$rest_api_controller = $GLOBALS['parsely']->get_rest_api_controller();
+	$rest_api_controller->init();
 }
 
 add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
@@ -134,58 +124,8 @@ add_action( 'rest_api_init', __NAMESPACE__ . '\\parsely_rest_api_init' );
  * @since 3.2.0
  */
 function parsely_rest_api_init(): void {
-	$wp_cache = new WordPress_Cache();
-	$rest     = new Rest_Metadata( $GLOBALS['parsely'] );
+	$rest = new Rest_Metadata( $GLOBALS['parsely'] );
 	$rest->run();
-
-	// Content Helper settings endpoints.
-	( new Dashboard_Widget_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
-	( new Editor_Sidebar_Settings_Endpoint( $GLOBALS['parsely'] ) )->run();
-
-	// Internal Content Helper endpoints.
-	( new Smart_Linking_Endpoint( $GLOBALS['parsely'] ) )->run();
-
-	parsely_run_rest_api_endpoint(
-		Related_API::class,
-		Related_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Analytics_Posts_API::class,
-		Analytics_Posts_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Analytics_Post_Detail_API::class,
-		Analytics_Post_Detail_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Referrers_Post_Detail_API::class,
-		Referrers_Post_Detail_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Suggest_Headline_API::class,
-		Suggest_Headline_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Suggest_Brief_API::class,
-		Suggest_Brief_API_Proxy::class,
-		$wp_cache
-	);
-
-	parsely_run_rest_api_endpoint(
-		Suggest_Linked_Reference_API::class,
-		Suggest_Linked_Reference_API_Proxy::class,
-		$wp_cache
-	);
 }
 
 add_action( 'init', __NAMESPACE__ . '\\init_recommendations_block' );
@@ -228,18 +168,6 @@ function parsely_content_helper_editor_sidebar_features(): void {
 	}
 }
 
-// The priority of 9 is used to ensure that the Excerpt Generator is loaded before the PCH Editor Sidebar (10).
-add_action( 'enqueue_block_editor_assets', __NAMESPACE__ . '\\init_content_helper_excerpt_generator', 9 );
-/**
- * Initializes and inserts the PCH Excerpt Generator.
- *
- * @since 3.13.0
- */
-function init_content_helper_excerpt_generator(): void {
-	( new Excerpt_Generator( $GLOBALS['parsely'] ) )->run();
-}
-
-
 add_action( 'widgets_init', __NAMESPACE__ . '\\parsely_recommended_widget_register' );
 /**
  * Registers the Parse.ly Recommended widget.
@@ -272,35 +200,4 @@ function parsely_integrations( $parsely = null ): Integrations {
 	$parsely_integrations->integrate();
 
 	return $parsely_integrations;
-}
-
-/**
- * Instantiates and runs the specified API endpoint.
- *
- * @since 3.6.0
- *
- * @param string          $api_class_name The proxy class to instantiate.
- * @param string          $proxy_api_class_name The API proxy class to instantiate and run.
- * @param WordPress_Cache $wp_cache The WordPress cache instance to be used.
- */
-function parsely_run_rest_api_endpoint(
-	string $api_class_name,
-	string $proxy_api_class_name,
-	WordPress_Cache &$wp_cache
-): void {
-	/**
-	 * Internal Variable.
-	 *
-	 * @var RemoteAPI\Base_Endpoint_Remote $remote_api
-	 */
-	$remote_api       = new $api_class_name( $GLOBALS['parsely'] );
-	$remote_api_cache = new Remote_API_Cache( $remote_api, $wp_cache );
-
-	/**
-	 * Internal Variable.
-	 *
-	 * @var Endpoints\Base_API_Proxy $remote_api_proxy
-	 */
-	$remote_api_proxy = new $proxy_api_class_name( $GLOBALS['parsely'], $remote_api_cache );
-	$remote_api_proxy->run();
 }
