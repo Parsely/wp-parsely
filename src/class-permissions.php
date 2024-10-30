@@ -116,7 +116,7 @@ class Permissions {
 		}
 
 		// If the user is a super admin, they can access the feature.
-		if ( is_super_admin() ) {
+		if ( is_multisite() && is_super_admin( $current_user->ID ) ) {
 			return true;
 		}
 
