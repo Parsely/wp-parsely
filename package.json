@@ -37,7 +37,7 @@
 	],
 	"dependencies": {
 		"@types/js-cookie": "^3.0.6",
-		"@wordpress/dom-ready": "^4.10.0",
+		"@wordpress/dom-ready": "^4.11.0",
 		"js-cookie": "^3.0.5",
 		"lodash.debounce": "^4.0.8"
 	},
