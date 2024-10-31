@@ -165,10 +165,18 @@ class Editor_Sidebar extends Content_Helper_Feature {
 		if ( null !== $parsely_post_url ) {
 			wp_add_inline_script(
 				static::get_script_id(),
-				'wpParselyPostUrl = ' . wp_json_encode( $parsely_post_url ) . ';',
+				'window.wpParselyPostUrl = ' . wp_json_encode( $parsely_post_url ) . ';',
 				'before'
 			);
 		}
+
+		// Inject the trackable statuses.
+		$trackable_statuses = Parsely::get_trackable_statuses();
+		wp_add_inline_script(
+			static::get_script_id(),
+			'window.wpParselyTrackableStatuses = ' . wp_json_encode( $trackable_statuses ) . ';',
+			'before'
+		);
 
 		wp_enqueue_style(
 			static::get_style_id(),

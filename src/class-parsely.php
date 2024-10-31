@@ -233,6 +233,32 @@ class Parsely {
 	}
 
 	/**
+	 * Gets the allowed post statuses for tracking.
+	 *
+	 * Uses the `wp_parsely_trackable_statuses` filter to determine which post statuses are allowed to be tracked.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param WP_Post|int|null $post The post object.
+	 * @return array<string> The allowed post statuses.
+	 */
+	public static function get_trackable_statuses( $post = null ): array {
+		/**
+		 * Filters the statuses that are permitted to be tracked.
+		 *
+		 * By default, the only status tracked is 'publish'. Use this filter if
+		 * you have other published content that has a different (custom) status.
+		 *
+		 * @since 2.5.0
+		 * @since 3.17.0 Filter extracted to a separate method.
+		 *
+		 * @param string[]         $trackable_statuses The list of post statuses that are allowed to be tracked.
+		 * @param WP_Post|int|null $post               Which post object or ID is being checked.
+		 */
+		return apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
+	}
+
+	/**
 	 * Registers action and filter hook callbacks, and immediately upgrades
 	 * options if needed.
 	 */
@@ -394,18 +420,7 @@ class Parsely {
 			return false;
 		}
 
-		/**
-		 * Filters the statuses that are permitted to be tracked.
-		 *
-		 * By default, the only status tracked is 'publish'. Use this filter if
-		 * you have other published content that has a different (custom) status.
-		 *
-		 * @since 2.5.0
-		 *
-		 * @param string[]    $trackable_statuses The list of post statuses that are allowed to be tracked.
-		 * @param int|WP_Post $post               Which post object or ID is being checked.
-		 */
-		$statuses          = apply_filters( 'wp_parsely_trackable_statuses', array( 'publish' ), $post );
+		$statuses          = self::get_trackable_statuses( $post );
 		$cache[ $post_id ] = in_array( get_post_status( $post ), $statuses, true );
 		return $cache[ $post_id ];
 	}

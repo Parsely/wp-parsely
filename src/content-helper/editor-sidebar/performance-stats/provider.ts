@@ -58,8 +58,12 @@ export class PerformanceStatsProvider extends BaseProvider {
 	public async getPerformanceStats( period: Period ): Promise<PerformanceData> {
 		const editor = select( 'core/editor' );
 
-		// We cannot show data for non-published posts.
-		if ( false === editor.isCurrentPostPublished() ) {
+		// Get the current post's status.
+		const currentPostStatus = editor.getEditedPostAttribute( 'status' ) ?? 'draft';
+		const trackableStatuses = window.wpParselyTrackableStatuses ?? [ 'publish' ];
+
+		// We cannot show data for non-published posts that are not in the trackable statuses.
+		if ( ! editor.isCurrentPostPublished() && ! trackableStatuses.includes( currentPostStatus ) ) {
 			return Promise.reject(
 				new ContentHelperError( __(
 					'This post is not published, so its details are unavailable.',
@@ -118,11 +122,12 @@ export class PerformanceStatsProvider extends BaseProvider {
 
 		// No data was returned.
 		if ( response.length === 0 ) {
+			const postTitle = select( 'core/editor' ).getEditedPostAttribute( 'title' ) ?? '';
 			return Promise.reject( new ContentHelperError(
 				sprintf(
-					/* translators: URL of the published post */
-					__( 'The post %d has 0 views, or the Parse.ly API returned no data.',
-						'wp-parsely' ), postId
+					/* translators: Title of the published post */
+					__( '<strong>%s</strong> has 0 views, or the Parse.ly API returned no data.',
+						'wp-parsely' ), postTitle
 				), ContentHelperErrorCode.ParselyApiReturnedNoData, ''
 			) );
 		}
