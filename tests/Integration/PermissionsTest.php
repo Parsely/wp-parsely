@@ -154,8 +154,10 @@ final class PermissionsTest extends TestCase {
 	public function test_disallowed_user_role_attempts_to_access_enabled_pch_features(): void {
 		$user_disallowed = Permissions::build_pch_permissions_settings_array(
 			true,
-			array( 'editor' )
+			array( 'administrator' )
 		);
+
+		self::set_current_user_to( 'editor', 'editor' );
 
 		foreach ( $this->features_to_test as $feature ) {
 			self::assertFalse(
@@ -173,6 +175,87 @@ final class PermissionsTest extends TestCase {
 			$this->assert_current_user_access_to_pch_feature_with_unset_options(
 				$feature,
 				$user_disallowed
+			);
+		}
+	}
+
+	/**
+	 * Verifies that permissions are correct when a super admin tries to access
+	 * disabled Content Helper features.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @covers \Parsely\Permissions::current_user_can_use_pch_feature
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
+	 */
+	public function test_super_admin_attempts_to_access_disabled_pch_features(): void {
+		$features_disabled = Permissions::build_pch_permissions_settings_array(
+			false,
+			array( 'administrator' )
+		);
+
+		foreach ( $this->features_to_test as $feature ) {
+			self::assertFalse(
+				Permissions::current_user_can_use_pch_feature(
+					$feature,
+					$features_disabled
+				)
+			);
+
+			$this->assert_current_user_access_to_pch_feature_with_filter(
+				$feature,
+				$features_disabled
+			);
+
+			$this->assert_current_user_access_to_pch_feature_with_unset_options(
+				$feature,
+				$features_disabled
+			);
+		}
+	}
+
+	/**
+	 * Verifies that permissions are correct when a super admin tries to access
+	 * enabled Content Helper features, but with all the roles disallowed.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @covers \Parsely\Permissions::current_user_can_use_pch_feature
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @uses \Parsely\Permissions::get_user_roles_with_edit_posts_cap
+	 */
+	public function test_super_admin_attempts_to_access_enabled_pch_features_without_permissions(): void {
+		$features_enabled = Permissions::build_pch_permissions_settings_array(
+			true,
+			array()
+		);
+
+		foreach ( $this->features_to_test as $feature ) {
+			if ( is_multisite() ) {
+				self::assertTrue(
+					Permissions::current_user_can_use_pch_feature(
+						$feature,
+						$features_enabled
+					)
+				);
+			} else {
+				self::assertFalse(
+					Permissions::current_user_can_use_pch_feature(
+						$feature,
+						$features_enabled
+					)
+				);
+			}
+
+			$this->assert_current_user_access_to_pch_feature_with_filter(
+				$feature,
+				$features_enabled
+			);
+
+			$this->assert_current_user_access_to_pch_feature_with_unset_options(
+				$feature,
+				$features_enabled
 			);
 		}
 	}
