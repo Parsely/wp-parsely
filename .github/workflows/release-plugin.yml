@@ -108,6 +108,12 @@ jobs:
     outputs:
       tag_name: ${{ steps.tag.outputs.tag_name }}
     steps:
+      - name: Checkout the specific branch/ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_REF }}
+          fetch-depth: 0
+
       - name: Tag the release
         if: ${{ env.DRY_RUN == false }}
         run: |
