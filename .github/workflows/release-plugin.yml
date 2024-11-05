@@ -75,10 +75,10 @@ jobs:
 
   integration_tests:
     needs: validate_version
-    if: ${{ needs.validate_version.result == 'success' && env.SKIP_TESTS != true }}
+    if: ${{ needs.validate_version.result == 'success' && github.event.inputs.skip_tests != true }}
     uses: ./.github/workflows/integration-tests.yml
 
   e2e_tests:
     needs: validate_version
-    if: ${{ needs.validate_version.result == 'success' && env.SKIP_TESTS != true }}
+    if: ${{ needs.validate_version.result == 'success' && github.event.inputs.skip_tests != true }}
     uses: ./.github/workflows/e2e-tests.yml
