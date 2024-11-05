@@ -116,7 +116,6 @@ jobs:
 
       - name: Tag the release
         id: tag
-        if: ${{ env.DRY_RUN == false }}
         run: |
           TAG_NAME="{{ env.VERSION }}"
           echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
