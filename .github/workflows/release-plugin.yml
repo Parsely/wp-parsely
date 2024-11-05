@@ -123,6 +123,7 @@ jobs:
             # If the tag already exists, delete the tag
             if git tag --list | grep -q "${TAG_NAME}"; then
               git tag -d "${TAG_NAME}"
+            fi
           fi
 
           # Set the tag name as an output
