@@ -115,6 +115,7 @@ jobs:
           fetch-depth: 0
 
       - name: Tag the release
+        id: tag
         if: ${{ env.DRY_RUN == false }}
         run: |
           TAG_NAME="{{ env.VERSION }}"
