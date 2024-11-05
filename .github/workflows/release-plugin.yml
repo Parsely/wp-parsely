@@ -28,7 +28,7 @@ env:
     VERSION: ${{ github.event.inputs.version }}
 
 jobs:
-  output_inputs:
+  validate_version:
     runs-on: ubuntu-latest
     steps:
       - name: Output Inputs
@@ -72,3 +72,13 @@ jobs:
             echo "Version '${{ env.VERSION }}' has already been released."
             exit 1
           fi
+
+  integration_tests:
+    needs: validate_version
+    if: ${{ needs.validate_version.result == 'success' && env.SKIP_TESTS != true }}
+    uses: ./.github/workflows/integration-tests.yml
+
+  e2e_tests:
+    needs: validate_version
+    if: ${{ needs.validate_version.result == 'success' && env.SKIP_TESTS != true }}
+    uses: ./.github/workflows/e2e-tests.yml
