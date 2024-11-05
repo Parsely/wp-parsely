@@ -1,0 +1,33 @@
+name: Release wp-parsely
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to release'
+        required: false
+        default: 'trunk'
+      skip_tests:
+        description: 'Skip tests'
+        required: false
+        type: boolean
+        default: false
+      dry_run:
+        description: 'Dry run deployment'
+        required: false
+        type: boolean
+        default: true
+      version:
+        description: 'Version to release'
+        required: true
+
+jobs:
+  output_inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output Inputs
+        run: |
+          echo "Branch: ${{ github.event.inputs.branch }}"
+          echo "Skip Tests: ${{ github.event.inputs.skip_tests }}"
+          echo "Dry Run: ${{ github.event.inputs.dry_run }}"
+          echo "Version: ${{ github.event.inputs.version }}"
