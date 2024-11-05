@@ -7,19 +7,19 @@ on:
         description: 'Branch to release'
         required: false
         default: 'trunk'
+      version:
+        description: 'Version to release (eg. 3.16.0)'
+        required: true
       skip_tests:
         description: 'Skip tests'
         required: false
         type: boolean
         default: false
       dry_run:
-        description: 'Dry run deployment'
+        description: 'Dry-run the release'
         required: false
         type: boolean
         default: true
-      version:
-        description: 'Version to release'
-        required: true
 
 jobs:
   output_inputs:
@@ -31,3 +31,23 @@ jobs:
           echo "Skip Tests: ${{ github.event.inputs.skip_tests }}"
           echo "Dry Run: ${{ github.event.inputs.dry_run }}"
           echo "Version: ${{ github.event.inputs.version }}"
+
+      - name: Check if version is semver
+        run: |
+          if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Version `${{ github.event.inputs.version }}` is not a valid semver version."
+            exit 1
+          fi
+
+      - name: Checks if the version matches the version in wp-parsely.php and package.json
+        run: |
+          if [[ "${{ github.event.inputs.version }}" != $(grep -oP 'Version: \K[0-9]+\.[0-9]+\.[0-9]+' wp-parsely.php) ]]; then
+            echo "Version `${{ github.event.inputs.version }}` does not match the version in wp-parsely.php"
+            echo "Did you mean `$(grep -oP 'Version: \K[0-9]+\.[0-9]+\.[0-9]+' wp-parsely.php)`?"
+            exit 1
+          fi
+          if [[ "${{ github.event.inputs.version }}" != $(jq -r '.version' package.json) ]]; then
+              echo "Version `${{ github.event.inputs.version }}` does not match the version in package.json."
+              echo "Did you mean `$(jq -r '.version' package.json)`?"
+              exit 1
+          fi
