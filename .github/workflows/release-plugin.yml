@@ -135,8 +135,7 @@ jobs:
           echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
           echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
 
-
-          git tag -a "${TAG_NAME}"
+          git tag "${TAG_NAME}"
           git push origin "${TAG_NAME}"
 
           echo "Tagged release with tag '${TAG_NAME}'"
