@@ -100,30 +100,10 @@ jobs:
     if: github.event.inputs.skip_tests == false
     uses: ./.github/workflows/e2e-tests.yml
 
-  check_tests:
-    name: Check if tests passed
-    needs: [ validate_version, integration_tests, e2e_tests ]
-    if: ${{ !failure() && !cancelled() }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checks if tests passed or were skipped
-        run: |
-          if [[ "${{ github.event.inputs.skip_tests }}" == "true" ]]; then
-              echo "Tests were skipped."
-              return 0
-          fi
-
-          if [[ "${{ needs.integration_tests.result }}" == "success" && "${{ needs.e2e_tests.result }}" == "success" ]]; then
-              echo "All tests passed."
-              return 0
-          fi
-
-          echo "Tests failed."
-          exit 1
-
   tag_and_release:
     name: Tag and Release
-    needs: check_tests
+    needs: [ validate_version, integration_tests, e2e_tests ]
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
     outputs:
       tag_name: ${{ steps.tag.outputs.tag_name }}
