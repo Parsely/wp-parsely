@@ -79,6 +79,13 @@ jobs:
               exit 1
           fi
 
+      - name: Checks if the version is in the CHANGELOG.md file
+        run: |
+          if ! grep -q "## \[${{ env.VERSION }}\]" CHANGELOG.md; then
+            echo "Version '${{ env.VERSION }}' is not in the CHANGELOG.md file."
+            exit 1
+          fi
+
       - name: Checks if the version was already released
         if: ${{ env.DRY_RUN == false }}
         run: |
@@ -180,4 +187,3 @@ jobs:
           bodyFile: ./release_notes.md
           draft: true
           prerelease: false
-
