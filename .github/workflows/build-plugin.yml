@@ -6,15 +6,10 @@ on:
       - develop
       - temp-testing-branch
   workflow_dispatch:
-    inputs:
-      ref:
-        description: 'Branch or tag to build'
-        required: false
-        default: 'develop'
 env:
-  SOURCE_REF: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.ref || github.ref_name }}
+  SOURCE_REF: ${{ github.ref_name }}
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name == 'workflow_dispatch' && github.event.inputs.ref || github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: true
 jobs:
   build:
