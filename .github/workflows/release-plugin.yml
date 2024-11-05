@@ -67,6 +67,7 @@ jobs:
           fi
 
       - name: Checks if the version was already released
+        if: ${{ env.DRY_RUN == false }}
         run: |
           if git tag --list | grep -q "${{ env.VERSION }}"; then
             echo "Version '${{ env.VERSION }}' has already been released."
