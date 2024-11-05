@@ -56,7 +56,7 @@ trait Content_Helper_Feature {
 	 * @param WP_REST_Request|null $request The request object.
 	 * @return bool|WP_Error True if the endpoint is available.
 	 */
-	public function is_available_to_current_user( WP_REST_Request $request = null ) {
+	public function is_available_to_current_user( ?WP_REST_Request $request = null ) {
 		$can_use_feature = $this->is_pch_feature_enabled_for_user();
 
 		if ( ! $can_use_feature ) {

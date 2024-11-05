@@ -115,6 +115,11 @@ class Permissions {
 			return false;
 		}
 
+		// If the user is a super admin, they can access the feature.
+		if ( is_multisite() && is_super_admin( $current_user->ID ) ) {
+			return true;
+		}
+
 		// Current user's role is not yet set.
 		if ( 0 === count( $user_roles ) ) {
 			return false;
