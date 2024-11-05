@@ -51,7 +51,15 @@ jobs:
           ref: ${{ env.SOURCE_REF }}
           fetch-depth: 0
 
+      - name: Validate if the branch is built by checking if the vendor/autoload.php file exists
+        run: |
+          if [[ ! -f vendor/autoload.php ]]; then
+            echo "The branch '${{ env.SOURCE_REF }}' is not a built branch."
+            exit 1
+          fi
+
       - name: Checks if the version matches the version in wp-parsely.php and package.json
+        if: ${{ env.DRY_RUN == false }}
         run: |
           PHP_VERSION=$(grep -E "^ \* Version:" wp-parsely.php | awk '{print $3}')
           JSON_VERSION=$(jq -r '.version' package.json)
@@ -74,6 +82,7 @@ jobs:
             exit 1
           fi
 
+
   integration_tests:
     needs: validate_version
     if: ${{ needs.validate_version.result == 'success' && github.event.inputs.skip_tests != true }}
@@ -83,3 +92,62 @@ jobs:
     needs: validate_version
     if: ${{ needs.validate_version.result == 'success' && github.event.inputs.skip_tests != true }}
     uses: ./.github/workflows/e2e-tests.yml
+
+  tag_and_release:
+    needs: [validate_version, integration_tests, e2e_tests]
+    runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.tag.outputs.tag_name }}
+    steps:
+      - name: Tag the release
+        if: ${{ env.DRY_RUN == false }}
+        run: |
+          TAG_NAME="{{ env.VERSION }}"
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
+          if {{ env.DRY_RUN == true }}; then
+            TAG_NAME="dry-run-${{ env.VERSION }}"
+          fi
+
+          git tag -a "${TAG_NAME}"
+          git push origin "${TAG_NAME}"
+
+          echo "Tagged release with tag '${TAG_NAME}'"
+
+      - name: Extract Changelog
+        id: extract_changelog
+        run: |
+          set -e
+          VERSION=${{ env.VERSION }}
+          START_LINE=$(grep -n "## \[${VERSION}\]" CHANGELOG.md | cut -d: -f1)
+          if [ -z "$START_LINE" ]; then
+            echo "Version not found in CHANGELOG.md" >&2
+            exit 1
+          fi
+          TAIL_LINE=$(tail -n +$((START_LINE + 1)) CHANGELOG.md | grep -n "^## " | head -n 1 | cut -d: -f1 || true)
+          if [ -z "$TAIL_LINE" ]; then
+            END_LINE=$(wc -l < CHANGELOG.md)
+          else
+            END_LINE=$((START_LINE + TAIL_LINE - 1))
+          fi
+          sed -n "${START_LINE},${END_LINE}p" CHANGELOG.md | sed '$d' > release_notes.md
+          cat release_notes.md
+        shell: bash
+
+      - name: Format Changelog
+        id: format_changelog
+        run: |
+          sed -i '1d' release_notes.md # Remove the first line
+          sed -i 's/###/##/g' release_notes.md # Change headers from ### to ##
+        shell: bash
+
+      - name: Create a GitHub release
+        id: github_release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag.outputs.tag_name }}
+          name: ${{ env.VERSION }}
+          bodyFile: ./release_notes.md
+          draft: true
+          prerelease: false
+
