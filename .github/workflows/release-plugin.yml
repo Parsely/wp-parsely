@@ -120,11 +120,15 @@ jobs:
           TAG_NAME="${{ env.VERSION }}"
           if {{ env.DRY_RUN == true }}; then
             TAG_NAME="dry-run-${{ env.VERSION }}"
+            # If the tag already exists, delete the tag
+            if git tag --list | grep -q "${TAG_NAME}"; then
+              git tag -d "${TAG_NAME}"
           fi
 
           # Set the tag name as an output
           echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
           echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
+
 
           git tag -a "${TAG_NAME}"
           git push origin "${TAG_NAME}"
