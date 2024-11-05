@@ -118,11 +118,13 @@ jobs:
         id: tag
         run: |
           TAG_NAME="{{ env.VERSION }}"
-          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
-          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
           if {{ env.DRY_RUN == true }}; then
             TAG_NAME="dry-run-${{ env.VERSION }}"
           fi
+
+          # Set the tag name as an output
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
 
           git tag -a "${TAG_NAME}"
           git push origin "${TAG_NAME}"
