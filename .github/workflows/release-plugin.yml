@@ -129,6 +129,10 @@ jobs:
 
           echo "Tagged release with tag '${TAG_NAME}'"
 
+      - name: Print changelog
+        run: |
+          cat CHANGELOG.md
+
       - name: Extract Changelog
         id: extract_changelog
         run: |
