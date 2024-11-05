@@ -33,6 +33,7 @@ env:
 
 jobs:
   validate_version:
+    name: Validate Version & Branch
     runs-on: ubuntu-latest
     steps:
       - name: Output Inputs
@@ -88,19 +89,22 @@ jobs:
 
 
   integration_tests:
+    name: Integration Tests
     needs: validate_version
     if: github.event.inputs.skip_tests == false
     uses: ./.github/workflows/integration-tests.yml
 
   e2e_tests:
+    name: End-to-end Tests
     needs: validate_version
     if: github.event.inputs.skip_tests == false
     uses: ./.github/workflows/e2e-tests.yml
 
   check_tests:
+    name: Check if tests passed
     needs: [ validate_version, integration_tests, e2e_tests ]
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-latest
-    if: needs.validate_version.result == 'success' && (github.event.inputs.skip_tests || (needs.integration_tests.result == 'success' && needs.e2e_tests.result == 'success'))
     steps:
       - name: Checks if tests passed or were skipped
         run: |
@@ -118,7 +122,8 @@ jobs:
           exit 1
 
   tag_and_release:
-    needs: [check_tests]
+    name: Tag and Release
+    needs: check_tests
     runs-on: ubuntu-latest
     outputs:
       tag_name: ${{ steps.tag.outputs.tag_name }}
