@@ -65,3 +65,10 @@ jobs:
               echo "Did you mean '${JSON_VERSION}'?"
               exit 1
           fi
+
+      - name: Checks if the version was already released
+        run: |
+          if git tag --list | grep -q "${{ env.VERSION }}"; then
+            echo "Version '${{ env.VERSION }}' has already been released."
+            exit 1
+          fi
