@@ -191,6 +191,7 @@ jobs:
   deploy:
     name: Deploy to WordPress.org
     needs: tag_and_release
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
