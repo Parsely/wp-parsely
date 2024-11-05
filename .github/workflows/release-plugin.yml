@@ -53,13 +53,15 @@ jobs:
 
       - name: Checks if the version matches the version in wp-parsely.php and package.json
         run: |
-          if [[ "${{ env.VERSION }}" != $(grep -oP 'Version: \K[0-9]+\.[0-9]+\.[0-9]+' wp-parsely.php) ]]; then
-            echo "Version `${{ env.VERSION }}` does not match the version in wp-parsely.php"
-            echo "Did you mean `$(grep -oP 'Version: \K[0-9]+\.[0-9]+\.[0-9]+' wp-parsely.php)`?"
+          PHP_VERSION=$(grep -oP 'Version: \K[0-9]+\.[0-9]+\.[0-9]+' wp-parsely.php)
+          JSON_VERSION=$(jq -r '.version' package.json)
+          if [[ "${{ env.VERSION }}" != "${PHP_VERSION}" ]]; then
+            echo "Version '${{ env.VERSION }}' does not match the version in wp-parsely.php"
+            echo "Did you mean '${PHP_VERSION}'?"
             exit 1
           fi
-          if [[ "${{ env.VERSION }}" != $(jq -r '.version' package.json) ]]; then
-              echo "Version `${{ env.VERSION }}` does not match the version in package.json."
-              echo "Did you mean `$(jq -r '.version' package.json)`?"
+          if [[ "${{ env.VERSION }}" != "${JSON_VERSION}" ]]; then
+              echo "Version '${{ env.VERSION }}' does not match the version in package.json."
+              echo "Did you mean '${JSON_VERSION}'?"
               exit 1
           fi
