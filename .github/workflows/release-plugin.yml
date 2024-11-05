@@ -185,5 +185,5 @@ jobs:
           tag: ${{ steps.tag.outputs.tag_name }}
           name: ${{ env.VERSION }}
           bodyFile: ./release_notes.md
-          draft: true
+          draft: ${{ env.DRY_RUN }}
           prerelease: false
