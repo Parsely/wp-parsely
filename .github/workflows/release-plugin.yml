@@ -108,6 +108,11 @@ jobs:
     outputs:
       tag_name: ${{ steps.tag.outputs.tag_name }}
     steps:
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
       - name: Checkout the specific branch/ref
         uses: actions/checkout@v4
         with:
@@ -118,7 +123,7 @@ jobs:
         id: tag
         run: |
           TAG_NAME="${{ env.VERSION }}"
-          if {{ env.DRY_RUN == true }}; then
+          if ${{ env.DRY_RUN }}; then
             TAG_NAME="dry-run-${{ env.VERSION }}"
             # If the tag already exists, delete the tag
             if git tag --list | grep -q "${TAG_NAME}"; then
