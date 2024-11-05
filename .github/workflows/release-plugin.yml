@@ -21,6 +21,10 @@ on:
         type: boolean
         default: true
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 env:
     SOURCE_REF: ${{ github.event.inputs.branch }}
     DRY_RUN: ${{ github.event.inputs.dry_run }}
@@ -35,7 +39,7 @@ jobs:
         run: |
           echo "Branch: ${{ env.SOURCE_REF }}"
           echo "Dry Run: ${{ env.DRY_RUN }}"
-          echo "Skip Tests: ${{ env.KIP_TESTS }}"
+          echo "Skip Tests: ${{ env.SKIP_TESTS }}"
           echo "Version: ${{ env.VERSION }}"
 
       - name: Check if version is semver
