@@ -117,7 +117,7 @@ jobs:
       - name: Tag the release
         id: tag
         run: |
-          TAG_NAME="{{ env.VERSION }}"
+          TAG_NAME="${{ env.VERSION }}"
           if {{ env.DRY_RUN == true }}; then
             TAG_NAME="dry-run-${{ env.VERSION }}"
           fi
