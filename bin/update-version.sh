@@ -1,3 +1,11 @@
+#!/usr/bin/env bash
+
+# Cross-platform script which updates the wp-parsely version number.
+# It will create a new branch and commit the changes.
+#
+# Usage: Specify the version to update to. For example:
+#   `bin/update-version.sh 3.12.0`
+
 set -e
 
 export LC_ALL=C
@@ -13,9 +21,11 @@ git checkout -b update/wp-parsely-version-to-$VERSION
 
 # Detect OS to set the proper sed command
 if [[ "$(uname)" == "Darwin" ]]; then
-  SED_CMD=('sed' '-i' '')
+  # MacOS/BSD sed
+  SED_CMD=('sed' '-i' '' '-e')
 else
-  SED_CMD=('sed' '-i')
+  # GNU sed (Linux)
+  SED_CMD=('sed' '-i' '-e')
 fi
 
 # Update version in files
@@ -25,6 +35,6 @@ fi
 "${SED_CMD[@]}" "s/ \* Version:           .*$/ \* Version:           $VERSION/" wp-parsely.php
 "${SED_CMD[@]}" "s/const PARSELY_VERSION = '.*'/const PARSELY_VERSION = '$VERSION'/" wp-parsely.php
 
- npm install # Update package-lock.json with the new version
+npm install # Update package-lock.json with the new version
 
- git add README.md package.json package-lock.json tests/e2e/utils.ts wp-parsely.php && git commit -m "Update wp-parsely version number to $VERSION"
+git add README.md package.json package-lock.json tests/e2e/utils.ts wp-parsely.php && git commit -m "Update wp-parsely version number to $VERSION"
