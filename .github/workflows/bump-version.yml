@@ -109,11 +109,12 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
       - name: Create PR
         run: |
-          gh pr create
-            --title "Update version number and changelog for ${{ env.NEW_VERSION }} release"
-            --body "$PARSELY_RELEASE_LOG"
-            --base ${{ github.ref_name }}
+          gh pr create \
+            --title "Update version number and changelog for ${{ env.NEW_VERSION }} release" \
+            --body "$PARSELY_RELEASE_LOG" \
+            --base ${{ github.ref_name }} \
             --head update/wp-parsely-version-to-${{ env.NEW_VERSION }}
+            --assignee ${{ github.actor }}
 
       - name: Create Pull Request
         if: false
