@@ -98,13 +98,13 @@ jobs:
   integration_tests:
     name: Integration Tests
     needs: validate_version
-    if: ${{ !failure() && !cancelled() }}
+    if: ${{ github.event.inputs.skip_tests == 'false' }}
     uses: ./.github/workflows/integration-tests.yml
 
   e2e_tests:
     name: End-to-end Tests
     needs: validate_version
-    if: ${{ !failure() && !cancelled() }}
+    if: ${{ github.event.inputs.skip_tests == 'false' }}
     uses: ./.github/workflows/e2e-tests.yml
 
   tag_and_release:
