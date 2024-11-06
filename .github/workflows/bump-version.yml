@@ -1,0 +1,19 @@
+name: Bump wp-parsely version
+
+on:
+  workflow_dispatch:
+    inputs:
+      new_version:
+        description: 'The new plugin version'
+        required: true
+        type: string
+
+jobs:
+  display_version:
+    name: Display New Version
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Output the new version
+        run: |
+          echo "New version: ${{ github.event.inputs.new_version }}"
