@@ -93,13 +93,7 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --optimize-autoloader --classmap-authoritative
 
-      - name: Test - Run the update-version script
-        run: |
-          cat bin/update-version.sh
-          ./bin/update-version.sh ${{ env.NEW_VERSION }}
-
       - name: Run bin/release.php script
-        if: false
         run: |
          echo "Running 'php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}'"
          echo "n" | php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}
@@ -108,7 +102,6 @@ jobs:
          echo "The release log is $PARSELY_RELEASE_LOG"
 
       - name: Create PR
-        if: false
         run: |
           echo ${{env.PARSELY_RELEASE_LOG}}
 
