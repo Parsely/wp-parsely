@@ -47,7 +47,7 @@ The following additional tasks might be needed depending on the release and its 
 - [ ] [Run the Release wp-parsely](https://github.com/Parsely/wp-parsely/actions/workflows/release-plugin.yml) GitHub Action, on the `trunk-built` branch, inputting the new version number, and without selecting Dry run.
 - [ ] Check the action logs for any errors. If there are any, fix them and rerun the action.
 - [ ] Check the new release on the [GitHub releases page](https://github.com/Parsely/wp-parsely/releases) and verify that it is correct.
-- [ ] Verify that the release was successful by checking the [WordPress.org plugin page](https://wordpress.org/plugins/parsely/).
+- [ ] Verify that the release was successful by checking the [WordPress.org plugin page](https://wordpress.org/plugins/wp-parsely/).
 
 ## After releasing
 
