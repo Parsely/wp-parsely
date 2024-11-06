@@ -1,5 +1,5 @@
 name: Release wp-parsely
-
+run-name: Release wp-parsely ${{ github.event.inputs.version }}${{ github.event.inputs.dry_run && ' (dry-run)' || '' }}
 on:
   workflow_dispatch:
     inputs:
