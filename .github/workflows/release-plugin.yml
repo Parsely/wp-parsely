@@ -1,5 +1,5 @@
 name: Release wp-parsely
-
+run-name: Release wp-parsely ${{ github.event.inputs.version }}${{ github.event.inputs.dry_run && ' (dry-run)' || '' }}
 on:
   workflow_dispatch:
     inputs:
@@ -7,27 +7,227 @@ on:
         description: 'Branch to release'
         required: false
         default: 'trunk'
+      version:
+        description: 'Version to release (eg. 3.16.0)'
+        required: true
       skip_tests:
         description: 'Skip tests'
         required: false
         type: boolean
         default: false
       dry_run:
-        description: 'Dry run deployment'
+        description: 'Dry-run the release'
         required: false
         type: boolean
         default: true
-      version:
-        description: 'Version to release'
-        required: true
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+env:
+    SOURCE_REF: ${{ github.event.inputs.branch }}
+    DRY_RUN: ${{ github.event.inputs.dry_run }}
+    SKIP_TESTS: ${{ github.event.inputs.skip_tests }}
+    VERSION: ${{ github.event.inputs.version }}
 
 jobs:
-  output_inputs:
+  validate_version:
+    name: Validate Version & Branch
     runs-on: ubuntu-latest
     steps:
       - name: Output Inputs
         run: |
-          echo "Branch: ${{ github.event.inputs.branch }}"
-          echo "Skip Tests: ${{ github.event.inputs.skip_tests }}"
-          echo "Dry Run: ${{ github.event.inputs.dry_run }}"
-          echo "Version: ${{ github.event.inputs.version }}"
+          echo "Branch: ${{ env.SOURCE_REF }}"
+          echo "Dry Run: ${{ env.DRY_RUN }}"
+          echo "Skip Tests: ${{ env.SKIP_TESTS }}"
+          echo "Version: ${{ env.VERSION }}"
+
+      - name: Check if version is semver
+        run: |
+          if [[ ! "${{ env.VERSION }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Version `${{ env.VERSION }}` is not a valid semver version."
+            exit 1
+          fi
+
+      - name: Checkout the specific branch/ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_REF }}
+          fetch-depth: 0
+
+      - name: Validate if the branch is built by checking if the vendor/autoload.php file exists
+        run: |
+          if [[ ! -f vendor/autoload.php ]]; then
+            echo "The branch '${{ env.SOURCE_REF }}' is not a built branch."
+            exit 1
+          fi
+
+      - name: Checks if the version matches the version in wp-parsely.php and package.json
+        if: ${{ env.DRY_RUN == false }}
+        run: |
+          PHP_VERSION=$(grep -E "^ \* Version:" wp-parsely.php | awk '{print $3}')
+          JSON_VERSION=$(jq -r '.version' package.json)
+          if [[ "${{ env.VERSION }}" != "${PHP_VERSION}" ]]; then
+            echo "Version '${{ env.VERSION }}' does not match the version in wp-parsely.php"
+            echo "Did you mean '${PHP_VERSION}'?"
+            exit 1
+          fi
+          if [[ "${{ env.VERSION }}" != "${JSON_VERSION}" ]]; then
+              echo "Version '${{ env.VERSION }}' does not match the version in package.json."
+              echo "Did you mean '${JSON_VERSION}'?"
+              exit 1
+          fi
+
+      - name: Checks if the version is in the CHANGELOG.md file
+        run: |
+          if ! grep -q "## \[${{ env.VERSION }}\]" CHANGELOG.md; then
+            echo "Version '${{ env.VERSION }}' is not in the CHANGELOG.md file."
+            exit 1
+          fi
+
+      - name: Checks if the version was already released
+        if: ${{ env.DRY_RUN == false }}
+        run: |
+          if git tag --list | grep -q "${{ env.VERSION }}"; then
+            echo "Version '${{ env.VERSION }}' has already been released."
+            exit 1
+          fi
+
+
+  integration_tests:
+    name: Integration Tests
+    needs: validate_version
+    if: ${{ github.event.inputs.skip_tests == 'false' }}
+    uses: ./.github/workflows/integration-tests.yml
+
+  e2e_tests:
+    name: End-to-end Tests
+    needs: validate_version
+    if: ${{ github.event.inputs.skip_tests == 'false' }}
+    uses: ./.github/workflows/e2e-tests.yml
+
+  tag_and_release:
+    name: Tag and Release
+    needs: [ validate_version, integration_tests, e2e_tests ]
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.tag.outputs.tag_name }}
+    steps:
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Checkout the specific branch/ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_REF }}
+          fetch-depth: 0
+
+      - name: Tag the release
+        id: tag
+        run: |
+          TAG_NAME="${{ env.VERSION }}"
+          if ${{ env.DRY_RUN }}; then
+            TAG_NAME="dry-run-${{ env.VERSION }}"
+            # If the tag already exists, delete the tag
+            if git tag --list | grep -q "${TAG_NAME}"; then
+              git tag -d "${TAG_NAME}"
+            fi
+          fi
+
+          # Set the tag name as an output
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_OUTPUT
+
+          git tag "${TAG_NAME}"
+          git push origin "${TAG_NAME}"
+
+          echo "Tagged release with tag '${TAG_NAME}'"
+
+      - name: Print changelog
+        run: |
+          cat CHANGELOG.md
+
+      - name: Extract Changelog
+        id: extract_changelog
+        run: |
+          set -e
+          VERSION=${{ env.VERSION }}
+          START_LINE=$(grep -n "## \[${VERSION}\]" CHANGELOG.md | cut -d: -f1)
+          if [ -z "$START_LINE" ]; then
+            echo "Version not found in CHANGELOG.md" >&2
+            exit 1
+          fi
+          TAIL_LINE=$(tail -n +$((START_LINE + 1)) CHANGELOG.md | grep -n "^## " | head -n 1 | cut -d: -f1 || true)
+          if [ -z "$TAIL_LINE" ]; then
+            END_LINE=$(wc -l < CHANGELOG.md)
+          else
+            END_LINE=$((START_LINE + TAIL_LINE - 1))
+          fi
+          sed -n "${START_LINE},${END_LINE}p" CHANGELOG.md | sed '$d' > release_notes.md
+          cat release_notes.md
+        shell: bash
+
+      - name: Format Changelog
+        id: format_changelog
+        run: |
+          sed -i '1d' release_notes.md # Remove the first line
+          sed -i 's/###/##/g' release_notes.md # Change headers from ### to ##
+        shell: bash
+
+      - name: Create a GitHub release
+        id: github_release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag.outputs.tag_name }}
+          name: ${{ env.VERSION }}
+          bodyFile: ./release_notes.md
+          draft: true
+          prerelease: false
+          allowUpdates: true
+
+  deploy:
+    name: Deploy to WordPress.org
+    needs: tag_and_release
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Deploy Details
+        run: |
+          echo "Tag Name: ${{ needs.tag_and_release.outputs.tag_name }}"
+          echo "Dry Run: ${{ env.DRY_RUN }}"
+          echo "Skip Tests: ${{ env.SKIP_TESTS }}"
+          echo "Version: ${{ env.VERSION }}"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.tag_and_release.outputs.tag_name }}
+
+      - name: WordPress Plugin Deploy
+        id: wporg_deploy
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        with:
+          dry-run: ${{ env.DRY_RUN }}
+          generate-zip: true
+        env:
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          VERSION: ${{ env.VERSION }}
+
+      - name: Update release with ZIP file
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ needs.tag_and_release.outputs.tag_name }}
+          allowUpdates: true
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+          omitDraftDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          removeArtifacts: true
+          updateOnlyUnreleased: true
+          draft: ${{ env.DRY_RUN }}
+          artifacts: ${{ steps.wporg_deploy.outputs.zip-path }}
+          artifactContentType: application/zip
