@@ -99,6 +99,7 @@ jobs:
          echo "n" | php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}
          # The script exports the release log to the PARSELY_RELEASE_LOG environment variable
          echo "PARSELY_RELEASE_LOG=$PARSELY_RELEASE_LOG" >> $GITHUB_ENV
+         echo "The release log is $PARSELY_RELEASE_LOG"
 
       - name: Create PR
         run: |
