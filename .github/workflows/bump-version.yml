@@ -26,6 +26,12 @@ jobs:
             exit 1
           fi
 
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, json
+
       - name: Checkout `develop` branch
         uses: actions/checkout@v4
         with:
@@ -42,13 +48,21 @@ jobs:
           echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
           echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
 
-      - name: Checks if the new version is bigger than the current one
+      - name: Check if the new version is greater than the current version
         run: |
-            if [[ "${{ env.NEW_VERSION }}" == "${{ steps.get_current_version.outputs.current_version }}" ]]; then
-                echo "The new version is the same as the current version."
-                exit 1
-            fi
-
+          php -r '
+          $current = "${{ env.CURRENT_VERSION }}";
+          $new = "${{ env.NEW_VERSION }}";
+          if ( version_compare( $new, $current, "==" ) ) {
+                echo "The new version (${new}) is the same as the current version (${current}).\n";
+              exit( 1 );
+          }
+          if ( ! version_compare( $new, $current, ">" ) ) {
+              echo "The new version (${new}) must be greater than the current version (${current}).\n";
+              exit( 1 );
+          }
+          echo "The new version is greater.\n";
+          '
 
   run_release_php_script:
     name: Runs the bin/release.php script
