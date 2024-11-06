@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Branch to release'
+        description: 'Built branch to release'
         required: false
-        default: 'trunk'
+        default: 'trunk-built'
       version:
         description: 'Version to release (eg. 3.16.0)'
         required: true
