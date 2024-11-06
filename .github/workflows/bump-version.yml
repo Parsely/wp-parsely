@@ -84,7 +84,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Checkout `develop` branch
+      - name: Checkout branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
@@ -111,9 +111,11 @@ jobs:
         run: |
           gh pr create \
             --title "Update version number and changelog for ${{ env.NEW_VERSION }} release" \
-            --body "$PARSELY_RELEASE_LOG" \
+            --body "This PR updates the plugin's version number and changelog in preparation for the ${{ env.NEW_VERSION }} release.
+
+            $PARSELY_RELEASE_LOG" \
             --base ${{ github.ref_name }} \
-            --head update/wp-parsely-version-to-${{ env.NEW_VERSION }}
+            --head update/wp-parsely-version-to-${{ env.NEW_VERSION }} \
             --assignee ${{ github.actor }}
 
       - name: Create Pull Request
