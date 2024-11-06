@@ -113,7 +113,7 @@ jobs:
         with:
           sign-commits: true
           branch: "update/wp-parsely-version-to-${{ env.NEW_VERSION }}"
-          base: develop
+          base: ${{ github.ref_name }}
           title: "Update version number and changelog for ${{ env.NEW_VERSION }} release"
           milestone: ${{ env.NEW_VERSION }}
           assignees: ${{ github.actor }}
