@@ -97,13 +97,25 @@ jobs:
         run: |
          echo "Running 'php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}'"
          echo "n" | php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}
+         git push --set-upstream origin update/wp-parsely-version-to-${{ env.NEW_VERSION }}
 
       - name: Format the version changelog
         run: |
           PARSELY_RELEASE_LOG=$(printf '%s' "$PARSELY_RELEASE_LOG" | sed 's/###/##/g')
           echo $PARSELY_RELEASE_LOG
+          echo "PARSELY_RELEASE_LOG=$PARSELY_RELEASE_LOG" >> $GITHUB_ENV
 
-      - name: Create the PR
-        run: |
-          echo $PARSELY_RELEASE_LOG
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7.0.5
+        with:
+          sign-commits: true
+          branch: "update/wp-parsely-version-to-${{ env.NEW_VERSION }}"
+          base: develop
+          title: "Update version number and changelog for ${{ env.NEW_VERSION }} release"
+          milestone: ${{ env.NEW_VERSION }}
+          assignees: ${{ github.actor }}
+          body: |
+            This PR updates the plugin's version number and changelog in preparation for the ${{ env.NEW_VERSION }} release.
+
+            ${{ env.PARSELY_RELEASE_LOG }}
 
