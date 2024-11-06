@@ -95,6 +95,7 @@ jobs:
 
       - name: Test - Run the update-version script
         run: |
+          cat bin/update-version.sh
           ./bin/update-version.sh ${{ env.NEW_VERSION }}
 
       - name: Run bin/release.php script
