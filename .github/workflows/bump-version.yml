@@ -8,12 +8,67 @@ on:
         required: true
         type: string
 
+env:
+  NEW_VERSION: ${{ github.event.inputs.new_version }}
+
 jobs:
-  display_version:
-    name: Display New Version
+  validate_version:
+    name: Validates the new version
     runs-on: ubuntu-latest
+    outputs:
+      current_version: ${{ steps.get_current_version.outputs.current_version }}
 
     steps:
-      - name: Output the new version
+      - name: Checks if the new version is valid
         run: |
-          echo "New version: ${{ github.event.inputs.new_version }}"
+          if [[ ! ${{ env.NEW_VERSION }} =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version format. Please use the format x.y.z"
+            exit 1
+          fi
+
+      - name: Get the current version
+        id: get_current_version
+        run: |
+          CURRENT_VERSION=$(grep -E "^ \* Version:" wp-parsely.php | awk '{print $3}')
+          echo "Current version is $CURRENT_VERSION"
+          echo "New version is ${{ env.NEW_VERSION }}"
+
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+
+      - name: Checks if the new version is bigger than the current one
+        run: |
+          if [[ ${{ env.NEW_VERSION }} == ${{ env.CURRENT_VERSION }} ]]; then
+            echo "The new version is the same as the current one"
+            exit 1
+          fi
+
+
+  run_release_php_script:
+    name: Runs the bin/release.php script
+    needs: validate_version
+    runs-on: ubuntu-latest
+    env:
+      CURRENT_VERSION: ${{ needs.validate_version.outputs.current_version }}
+
+    steps:
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, json
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Checkout `develop` branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Run bin/release.php script
+        run: |
+         echo "should run 'php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}'"
