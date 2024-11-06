@@ -103,7 +103,10 @@ jobs:
         run: |
           PARSELY_RELEASE_LOG=$(printf '%s' "$PARSELY_RELEASE_LOG" | sed 's/###/##/g')
           echo $PARSELY_RELEASE_LOG
-          echo "PARSELY_RELEASE_LOG=$PARSELY_RELEASE_LOG" >> $GITHUB_ENV
+          # Write the multiline variable to $GITHUB_ENV using the correct syntax
+          echo "PARSELY_RELEASE_LOG<<EOF" >> $GITHUB_ENV
+          echo "$PARSELY_RELEASE_LOG" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7.0.5
