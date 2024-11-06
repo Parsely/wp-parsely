@@ -48,6 +48,10 @@ shell_exec(
 );
 echo "DONE! Please review the changes and amend if needed\n";
 
+// Save the changelog to a environment variable for GitHub Actions.
+putenv( 'PARSELY_RELEASE_LOG=' . $release_log );
+
+
 // Show a prompt to create a PR on GitHub.
 echo 'Do you want to create a release PR on GitHub? [y/n]';
 $confirmation = trim( (string) fgets( STDIN ) );
