@@ -1,4 +1,5 @@
 name: Bump wp-parsely version
+run-name: Bump wp-parsely version to ${{ github.event.inputs.new_version }}
 
 on:
   workflow_dispatch:
@@ -8,12 +9,111 @@ on:
         required: true
         type: string
 
+env:
+  NEW_VERSION: ${{ github.event.inputs.new_version }}
+
 jobs:
-  display_version:
-    name: Display New Version
+  validate_version:
+    name: Validate the new version
     runs-on: ubuntu-latest
+    outputs:
+      current_version: ${{ steps.get_current_version.outputs.current_version }}
 
     steps:
-      - name: Output the new version
+      - name: Checks if the new version is valid
         run: |
-          echo "New version: ${{ github.event.inputs.new_version }}"
+          if [[ ! ${{ env.NEW_VERSION }} =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version format. Please use the format x.y.z"
+            exit 1
+          fi
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, json
+
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Get the current version
+        id: get_current_version
+        run: |
+          CURRENT_VERSION=$(grep -E "^ \* Version:" wp-parsely.php | awk '{print $3}')
+          echo "Current version is $CURRENT_VERSION"
+          echo "New version is ${{ env.NEW_VERSION }}"
+
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+
+      - name: Check if the new version is greater than the current version
+        run: |
+          php -r '
+          $current = "${{ env.CURRENT_VERSION }}";
+          $new = "${{ env.NEW_VERSION }}";
+          if ( version_compare( $new, $current, "==" ) ) {
+                echo "The new version (${new}) is the same as the current version (${current}).\n";
+              exit( 1 );
+          }
+          if ( ! version_compare( $new, $current, ">" ) ) {
+              echo "The new version (${new}) must be greater than the current version (${current}).\n";
+              exit( 1 );
+          }
+          echo "The new version is greater.\n";
+          '
+
+  run_release_php_script:
+    name: Bump the version and create the PR
+    needs: validate_version
+    runs-on: ubuntu-latest
+    env:
+      CURRENT_VERSION: ${{ needs.validate_version.outputs.current_version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: mbstring, json
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Install Composer dependencies
+        run: composer install --optimize-autoloader --classmap-authoritative
+
+      - name: Run bin/release.php script
+        run: |
+         echo "Running 'php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}'"
+         echo "n" | php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}
+         git push --set-upstream origin update/wp-parsely-version-to-${{ env.NEW_VERSION }}
+
+      - name: Format the version changelog
+        run: |
+          PARSELY_RELEASE_LOG=$(printf '%s' "$PARSELY_RELEASE_LOG" | sed 's/###/##/g')
+          echo $PARSELY_RELEASE_LOG
+          # Write the multiline variable to $GITHUB_ENV using the correct syntax
+          echo "PARSELY_RELEASE_LOG<<EOF" >> $GITHUB_ENV
+          echo "$PARSELY_RELEASE_LOG" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+      - name: Create PR
+        run: |
+          gh pr create \
+            --title "Update version number and changelog for ${{ env.NEW_VERSION }} release" \
+            --body "This PR updates the plugin's version number and changelog in preparation for the ${{ env.NEW_VERSION }} release.
+
+            $PARSELY_RELEASE_LOG" \
+            --base ${{ github.ref_name }} \
+            --head update/wp-parsely-version-to-${{ env.NEW_VERSION }} \
+            --assignee ${{ github.actor }}
