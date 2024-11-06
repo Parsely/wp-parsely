@@ -66,7 +66,7 @@ jobs:
           '
 
   run_release_php_script:
-    name: Runs the bin/release.php script
+    name: Bump the version and create the PR
     needs: validate_version
     runs-on: ubuntu-latest
     env:
@@ -97,11 +97,13 @@ jobs:
         run: |
          echo "Running 'php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}'"
          echo "n" | php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}
-         echo "The release log is $PARSELY_RELEASE_LOG"
-         echo "or is it ${{ env.PARSELY_RELEASE_LOG }}?"
 
-      - name: Create PR
+      - name: Format the version changelog
         run: |
-          echo "$PARSELY_RELEASE_LOG"
-          echo "or is it ${{ env.PARSELY_RELEASE_LOG }}?"
+          PARSELY_RELEASE_LOG=$(printf '%s' "$PARSELY_RELEASE_LOG" | sed 's/###/##/g')
+          echo $PARSELY_RELEASE_LOG
+
+      - name: Create the PR
+        run: |
+          echo $PARSELY_RELEASE_LOG
 
