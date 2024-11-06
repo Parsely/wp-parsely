@@ -17,7 +17,7 @@ fi
 
 VERSION=$1
 
-#git checkout -b update/wp-parsely-version-to-$VERSION
+git checkout -b update/wp-parsely-version-to-$VERSION
 
 # Function to perform in-place sed substitution
 sed_inplace() {
@@ -40,6 +40,6 @@ sed_inplace "s/export const PLUGIN_VERSION = '.*'/export const PLUGIN_VERSION = 
 sed_inplace "s/ \* Version:           .*$/ \* Version:           $VERSION/" wp-parsely.php
 sed_inplace "s/const PARSELY_VERSION = '.*'/const PARSELY_VERSION = '$VERSION'/" wp-parsely.php
 
-#npm install # Update package-lock.json with the new version
+npm install # Update package-lock.json with the new version
 
-#git add README.md package.json package-lock.json tests/e2e/utils.ts wp-parsely.php && git commit -m "Update wp-parsely version number to $VERSION"
+git add README.md package.json package-lock.json tests/e2e/utils.ts wp-parsely.php && git commit -m "Update wp-parsely version number to $VERSION"
