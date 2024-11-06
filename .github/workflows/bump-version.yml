@@ -13,7 +13,7 @@ env:
 
 jobs:
   validate_version:
-    name: Validates the new version
+    name: Validate the new version
     runs-on: ubuntu-latest
     outputs:
       current_version: ${{ steps.get_current_version.outputs.current_version }}
@@ -91,4 +91,5 @@ jobs:
 
       - name: Run bin/release.php script
         run: |
-         echo "should run 'php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}'"
+         echo "Running 'php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}'"
+         php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}
