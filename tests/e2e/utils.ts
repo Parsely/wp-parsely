@@ -8,7 +8,7 @@ import { type Page } from '@playwright/test';
  */
 import { Admin } from '@wordpress/e2e-test-utils-playwright';
 
-export const PLUGIN_VERSION = '3.16.4';
+export const PLUGIN_VERSION = '3.17.0';
 export const VALID_SITE_ID = 'demoaccount.parsely.com';
 export const INVALID_SITE_ID = 'invalid.parsely.com';
 export const VALID_API_SECRET = 'valid_api_secret';
