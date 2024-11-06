@@ -26,6 +26,12 @@ jobs:
             exit 1
           fi
 
+      - name: Checkout `develop` branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
       - name: Get the current version
         id: get_current_version
         run: |
@@ -38,10 +44,10 @@ jobs:
 
       - name: Checks if the new version is bigger than the current one
         run: |
-          if [[ ${{ env.NEW_VERSION }} == ${{ env.CURRENT_VERSION }} ]]; then
-            echo "The new version is the same as the current one"
-            exit 1
-          fi
+            if [[ "${{ env.NEW_VERSION }}" == "${{ steps.get_current_version.outputs.current_version }}" ]]; then
+                echo "The new version is the same as the current version."
+                exit 1
+            fi
 
 
   run_release_php_script:
