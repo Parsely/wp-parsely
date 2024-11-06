@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CURRENT_VERSION: ${{ needs.validate_version.outputs.current_version }}
-
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Setup PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
@@ -89,7 +89,10 @@ jobs:
           ref: develop
           fetch-depth: 0
 
+      - name: Install Composer dependencies
+        run: composer install --optimize-autoloader --classmap-authoritative
+
       - name: Run bin/release.php script
         run: |
          echo "Running 'php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}'"
-         php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}
+         echo "y" | php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}
