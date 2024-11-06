@@ -17,24 +17,29 @@ fi
 
 VERSION=$1
 
-git checkout -b update/wp-parsely-version-to-$VERSION
+#git checkout -b update/wp-parsely-version-to-$VERSION
 
-# Detect OS to set the proper sed command
-if [[ "$(uname)" == "Darwin" ]]; then
-  # MacOS/BSD sed
-  SED_CMD=('sed' '-i' '' '-e')
-else
-  # GNU sed (Linux)
-  SED_CMD=('sed' '-i' '-e')
-fi
+# Function to perform in-place sed substitution
+sed_inplace() {
+    local expression="$1"
+    local file="$2"
+
+    if [[ "$(uname)" == "Darwin" ]]; then
+        # MacOS/BSD sed
+        sed -i '' -e "$expression" "$file"
+    else
+        # GNU sed (Linux)
+        sed -i -e "$expression" "$file"
+    fi
+}
 
 # Update version in files
-"${SED_CMD[@]}" "s/Stable tag: .*  $/Stable tag: $VERSION  /" README.md
-"${SED_CMD[@]}" "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" package.json
-"${SED_CMD[@]}" "s/export const PLUGIN_VERSION = '.*'/export const PLUGIN_VERSION = '$VERSION'/" tests/e2e/utils.ts
-"${SED_CMD[@]}" "s/ \* Version:           .*$/ \* Version:           $VERSION/" wp-parsely.php
-"${SED_CMD[@]}" "s/const PARSELY_VERSION = '.*'/const PARSELY_VERSION = '$VERSION'/" wp-parsely.php
+sed_inplace "s/Stable tag: .*  $/Stable tag: $VERSION  /" README.md
+sed_inplace "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" package.json
+sed_inplace "s/export const PLUGIN_VERSION = '.*'/export const PLUGIN_VERSION = '$VERSION'/" tests/e2e/utils.ts
+sed_inplace "s/ \* Version:           .*$/ \* Version:           $VERSION/" wp-parsely.php
+sed_inplace "s/const PARSELY_VERSION = '.*'/const PARSELY_VERSION = '$VERSION'/" wp-parsely.php
 
-npm install # Update package-lock.json with the new version
+#npm install # Update package-lock.json with the new version
 
-git add README.md package.json package-lock.json tests/e2e/utils.ts wp-parsely.php && git commit -m "Update wp-parsely version number to $VERSION"
+#git add README.md package.json package-lock.json tests/e2e/utils.ts wp-parsely.php && git commit -m "Update wp-parsely version number to $VERSION"
