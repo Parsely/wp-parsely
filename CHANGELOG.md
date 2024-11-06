@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.17.0](https://github.com/Parsely/wp-parsely/compare/3.16.4...3.17.0) - 2024-11-06
+
+### Added
+
+- PCH Excerpt Suggestions: Add persona and tone settings ([#2890](https://github.com/Parsely/wp-parsely/pull/2890))
+- PCH Excerpt Suggestions: Add feature to the PCH sidebar ([#2811](https://github.com/Parsely/wp-parsely/pull/2811))
+
+### Changed
+
+- Allow Super Admins to use any PCH features unless they are explicitly disabled ([#2895](https://github.com/Parsely/wp-parsely/pull/2895))
+- PCH Performance Panel: Show stats for posts with a trackable status ([#2893](https://github.com/Parsely/wp-parsely/pull/2893))
+- PCH Refactor: Refactor Internal API and External Services ([#2889](https://github.com/Parsely/wp-parsely/pull/2889))
+- Migrate E2E tests to Playwright ([#2736](https://github.com/Parsely/wp-parsely/pull/2736))
+
+### Fixed
+
+- Fix AMP validation issues ([#2847](https://github.com/Parsely/wp-parsely/pull/2847))
+- Fix deprecation warnings in the browser console in WordPress 6.6 ([#2668](https://github.com/Parsely/wp-parsely/pull/2668))
+
+### Dependency Updates
+
+- The list of all dependency updates for this release is available [here](https://github.com/Parsely/wp-parsely/pulls?q=is%3Apr+is%3Amerged+milestone%3A3.17.0+label%3A%22Component%3A+Dependencies%22).
+
 ## [3.16.4](https://github.com/Parsely/wp-parsely/compare/3.16.3...3.16.4) - 2024-08-21
 
 ### Fixed
