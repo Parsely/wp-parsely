@@ -33,10 +33,10 @@ jobs:
           php-version: '8.1'
           extensions: mbstring, json
 
-      - name: Checkout `develop` branch
+      - name: Checkout current branch
         uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: ${{ github.ref }}
           fetch-depth: 0
 
       - name: Get the current version
