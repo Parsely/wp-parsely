@@ -41,7 +41,7 @@ The [Content Helper](https://docs.parse.ly/plugin-content-helper/) is a set of c
 - The [Parse.ly Stats Column](https://docs.parse.ly/plugin-content-helper/#h-posts) - Displays published post performance for the last 7 days in Post Lists.
 - The [Parse.ly Editor Sidebar](https://docs.parse.ly/plugin-content-helper/#h-editor) - This sidebar is integrated into the WordPress Editor and offers insights about the content currently being edited such as:
   - [Title Suggestions](https://docs.wpvip.com/parse-ly/wp-parsely-features/title-suggestions/) - Generates title suggestions for the post/page currently being edited.
-  - [Excerpt Suggestions](https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/) - Generates an excerpt suggestion for the post/page currently being edited.
+  - [Excerpt Suggestions](https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-suggestions/) - Generates an excerpt suggestion for the post/page currently being edited.
   - [Smart Linking](https://docs.wpvip.com/parse-ly/wp-parsely-features/smart-linking/) - Automatically adds links to the current content that point to the most relevant and top-performing posts.
   - [Related Posts](https://docs.parse.ly/plugin-content-helper/#h-related-posts) - Displays a list of the website’s most successful posts, similar to the post/page currently being edited.
   - [Performance Stats](https://docs.parse.ly/plugin-content-helper/#h-see-performance-details) - Displays performance metrics about the content currently being edited.
