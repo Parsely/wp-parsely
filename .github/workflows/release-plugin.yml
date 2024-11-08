@@ -69,7 +69,7 @@ jobs:
           PHP_VERSION=$(grep -E "^ \* Version:" wp-parsely.php | awk '{print $3}')
           JSON_VERSION=$(jq -r '.version' package.json)
           if [[ "${{ env.VERSION }}" != "${PHP_VERSION}" ]]; then
-            echo "Version '${{ env.VERSION }}' does not match the version in wp-parsely.php"
+            echo "Version '${{ env.VERSION }}' does not match the version in wp-parsely.php."
             echo "Did you mean '${PHP_VERSION}'?"
             exit 1
           fi
