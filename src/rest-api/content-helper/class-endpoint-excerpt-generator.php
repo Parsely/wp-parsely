@@ -1,6 +1,6 @@
 <?php
 /**
- * Endpoint: Excerpt Generator
+ * Endpoint: Excerpt Suggestions
  * Parse.ly Content Helper `/excerpt-generator` API endpoint class
  *
  * @package Parsely
@@ -18,7 +18,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 
 /**
- * The Excerpt Generator API.
+ * The Excerpt Suggestions API.
  *
  * Provides an endpoint for generating excerpts for the given content.
  *
