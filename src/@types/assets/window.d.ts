@@ -36,8 +36,8 @@ declare global {
 
 		/**
 		 * Jetpack Editor Initial State.
-		 * This is required for the Excerpt Generator feature to know if Jetpack
-		 * AI Content Lens is available and enabled.
+		 * This is required for the Excerpt Suggestions feature to know if
+		 * Jetpack AI Content Lens is available and enabled.
 		 *
 		 * @since 3.13.0
 		 *

@@ -28,12 +28,12 @@ import {
 } from '../../common/content-helper-error';
 import { LeafIcon } from '../../common/icons/leaf-icon';
 import {
-	SidebarSettings,
 	ExcerptSuggestionsSettings as ExcerptSuggestionsSettingsType,
+	SidebarSettings,
 	useSettings,
 } from '../../common/settings';
-import { ExcerptSuggestionsProvider } from './provider';
 import { ExcerptSuggestionsSettings } from './component-panel-settings';
+import { ExcerptSuggestionsProvider } from './provider';
 
 /**
  * Defines the structure of an object that holds excerpt data.
@@ -242,7 +242,7 @@ export const PostExcerptSuggestions = ( {
 				<div className="excerpt-suggestions-text">
 					{ __( 'Use Parse.ly AI to generate a concise, engaging excerpt for your post.', 'wp-parsely' ) }
 					<Button
-						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/"
+						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-suggestions/"
 						target="_blank"
 						variant="link"
 						rel="noopener"
@@ -370,7 +370,7 @@ export const PostExcerptSuggestions = ( {
 
 				{ isDocumentSettingPanel && (
 					<Button
-						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/"
+						href="https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-suggestions/"
 						target="_blank"
 						variant="link"
 						rel="noopener"
