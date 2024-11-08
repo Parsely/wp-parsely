@@ -81,7 +81,6 @@ jobs:
           git commit -F final_commit_message.txt --no-verify
           git push origin "${BUILT_BRANCH}"
 
-
       - name: Clean up commit message files
         run: |
           rm final_commit_message.txt

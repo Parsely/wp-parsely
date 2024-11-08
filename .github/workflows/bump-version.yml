@@ -27,13 +27,13 @@ jobs:
             exit 1
           fi
 
-      - name: Setup PHP ${{ matrix.php }}
+      - name: Setup PHP 8.1
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
           extensions: mbstring, json
 
-      - name: Checkout current branch
+      - name: Checkout ${{ github.ref_name }} branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
@@ -73,7 +73,7 @@ jobs:
       CURRENT_VERSION: ${{ needs.validate_version.outputs.current_version }}
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Setup PHP ${{ matrix.php }}
+      - name: Setup PHP 8.1
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
@@ -84,7 +84,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Checkout branch
+      - name: Checkout ${{ github.ref_name }} branch
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
@@ -97,6 +97,10 @@ jobs:
         run: |
          echo "Running 'php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}'"
          echo "n" | php bin/release.php ${{ env.CURRENT_VERSION }} ${{ env.NEW_VERSION }}
+         if [ $? -ne 0 ]; then
+           echo "Failed to run the release script"
+           exit 1
+         fi
          git push --set-upstream origin update/wp-parsely-version-to-${{ env.NEW_VERSION }}
 
       - name: Format the version changelog

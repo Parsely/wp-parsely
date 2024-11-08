@@ -33,7 +33,7 @@ env:
 
 jobs:
   validate_version:
-    name: Validate Version & Branch
+    name: Validate Version and Branch
     runs-on: ubuntu-latest
     steps:
       - name: Output Inputs
@@ -63,7 +63,7 @@ jobs:
             exit 1
           fi
 
-      - name: Checks if the version matches the version in wp-parsely.php and package.json
+      - name: Check if the version matches the version in wp-parsely.php and package.json
         if: ${{ env.DRY_RUN == false }}
         run: |
           PHP_VERSION=$(grep -E "^ \* Version:" wp-parsely.php | awk '{print $3}')
@@ -79,21 +79,20 @@ jobs:
               exit 1
           fi
 
-      - name: Checks if the version is in the CHANGELOG.md file
+      - name: Check if the version is in the CHANGELOG.md file
         run: |
           if ! grep -q "## \[${{ env.VERSION }}\]" CHANGELOG.md; then
             echo "Version '${{ env.VERSION }}' is not in the CHANGELOG.md file."
             exit 1
           fi
 
-      - name: Checks if the version was already released
+      - name: Check if the version was already released
         if: ${{ env.DRY_RUN == false }}
         run: |
           if git tag --list | grep -q "${{ env.VERSION }}"; then
             echo "Version '${{ env.VERSION }}' has already been released."
             exit 1
           fi
-
 
   integration_tests:
     name: Integration Tests
