@@ -1,5 +1,5 @@
 name: Release wp-parsely
-run-name: Release wp-parsely ${{ github.event.inputs.version }}${{ github.event.inputs.dry_run && ' (dry-run)' || '' }}
+run-name: Release wp-parsely ${{ github.event.inputs.version }}${{ 'true' == github.event.inputs.dry_run && ' (dry-run)' || '' }}
 on:
   workflow_dispatch:
     inputs:
@@ -26,10 +26,10 @@ concurrency:
   cancel-in-progress: true
 
 env:
-    SOURCE_REF: ${{ github.event.inputs.branch }}
-    DRY_RUN: ${{ github.event.inputs.dry_run }}
-    SKIP_TESTS: ${{ github.event.inputs.skip_tests }}
-    VERSION: ${{ github.event.inputs.version }}
+  SOURCE_REF: ${{ github.event.inputs.branch }}
+  DRY_RUN: ${{ github.event.inputs.dry_run == 'true' }}
+  SKIP_TESTS: ${{ github.event.inputs.skip_tests == 'true' }}
+  VERSION: ${{ github.event.inputs.version }}
 
 jobs:
   validate_version:
@@ -47,6 +47,7 @@ jobs:
         run: |
           if [[ ! "${{ env.VERSION }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Version `${{ env.VERSION }}` is not a valid semver version."
+            echo "::error title=Validate Version::Version `${{ env.VERSION }}` is not a valid semver version."
             exit 1
           fi
 
@@ -60,22 +61,25 @@ jobs:
         run: |
           if [[ ! -f vendor/autoload.php ]]; then
             echo "The branch '${{ env.SOURCE_REF }}' is not a built branch."
+            echo "::error title=Validate Branch::The branch '${{ env.SOURCE_REF }}' is not a built branch."
             exit 1
           fi
 
       - name: Check if the version matches the version in wp-parsely.php and package.json
-        if: ${{ env.DRY_RUN == false }}
+        if: ${{ env.DRY_RUN == 'false' }}
         run: |
           PHP_VERSION=$(grep -E "^ \* Version:" wp-parsely.php | awk '{print $3}')
           JSON_VERSION=$(jq -r '.version' package.json)
           if [[ "${{ env.VERSION }}" != "${PHP_VERSION}" ]]; then
             echo "Version '${{ env.VERSION }}' does not match the version in wp-parsely.php."
             echo "Did you mean '${PHP_VERSION}'?"
+            echo "::error file=wp-parsely.php,title=Validate Version::Version '${{ env.VERSION }}' does not match the version in wp-parsely.php (${PHP_VERSION})."
             exit 1
           fi
           if [[ "${{ env.VERSION }}" != "${JSON_VERSION}" ]]; then
               echo "Version '${{ env.VERSION }}' does not match the version in package.json."
               echo "Did you mean '${JSON_VERSION}'?"
+              echo "::error file=package.json,title=Validate Version::Version '${{ env.VERSION }}' does not match the version in package.json (${JSON_VERSION})."
               exit 1
           fi
 
@@ -83,14 +87,21 @@ jobs:
         run: |
           if ! grep -q "## \[${{ env.VERSION }}\]" CHANGELOG.md; then
             echo "Version '${{ env.VERSION }}' is not in the CHANGELOG.md file."
-            exit 1
+
+            if ${{ env.DRY_RUN }}; then
+              echo "::warning file=CHANGELOG.md,title=Validate Version::Version '${{ env.VERSION }}' is not in the CHANGELOG.md file. The dry-run will proceed with an empty changelog entry."
+            else
+              echo "::error file=CHANGELOG.md,title=Validate Version::Version '${{ env.VERSION }}' is not in the CHANGELOG.md file."
+              exit 1
+            fi
           fi
 
       - name: Check if the version was already released
-        if: ${{ env.DRY_RUN == false }}
+        if: ${{ env.DRY_RUN == 'false' }}
         run: |
           if git tag --list | grep -q "${{ env.VERSION }}"; then
             echo "Version '${{ env.VERSION }}' has already been released."
+            echo "::error title=Validate Version::Version '${{ env.VERSION }}' has already been released."
             exit 1
           fi
 
@@ -155,10 +166,16 @@ jobs:
         run: |
           set -e
           VERSION=${{ env.VERSION }}
-          START_LINE=$(grep -n "## \[${VERSION}\]" CHANGELOG.md | cut -d: -f1)
+          START_LINE=$(grep -n "## \[${VERSION}\]" CHANGELOG.md | cut -d: -f1 || true)
           if [ -z "$START_LINE" ]; then
-            echo "Version not found in CHANGELOG.md" >&2
-            exit 1
+            if ${{ env.DRY_RUN }}; then
+              echo "::warning file=CHANGELOG.md,title=Extract Changelog::Version '${VERSION}' not found in CHANGELOG.md. The dry-run will proceed with an empty changelog entry."
+              echo -e "\nThere is no available changelog entry for the dry-run." > release_notes.md
+              exit 0
+            else
+              echo "::error file=CHANGELOG.md,title=Extract Changelog::Version '${VERSION}' not found in CHANGELOG.md"
+              exit 1
+            fi
           fi
           TAIL_LINE=$(tail -n +$((START_LINE + 1)) CHANGELOG.md | grep -n "^## " | head -n 1 | cut -d: -f1 || true)
           if [ -z "$TAIL_LINE" ]; then
@@ -173,6 +190,7 @@ jobs:
       - name: Format Changelog
         id: format_changelog
         run: |
+          cat release_notes.md
           sed -i '1d' release_notes.md # Remove the first line
           sed -i 's/###/##/g' release_notes.md # Change headers from ### to ##
         shell: bash
@@ -187,6 +205,7 @@ jobs:
           draft: true
           prerelease: false
           allowUpdates: true
+          omitBodyDuringUpdate: false
 
   deploy:
     name: Deploy to WordPress.org
@@ -214,6 +233,7 @@ jobs:
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          VERSION: ${{ needs.tag_and_release.outputs.tag_name }}
 
       - name: Update release with ZIP file
         uses: ncipollo/release-action@v1
