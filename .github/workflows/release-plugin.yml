@@ -214,7 +214,6 @@ jobs:
         env:
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          VERSION: ${{ env.VERSION }}
 
       - name: Update release with ZIP file
         uses: ncipollo/release-action@v1
