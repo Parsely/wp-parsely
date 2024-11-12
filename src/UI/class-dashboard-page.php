@@ -22,24 +22,6 @@ use const Parsely\PARSELY_FILE;
  */
 final class Dashboard_Page {
 	/**
-	 * Instance of Parsely class.
-	 *
-	 * @var Parsely
-	 */
-	private $parsely;
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param Parsely $parsely Instance of Parsely class.
-	 */
-	public function __construct( Parsely $parsely ) {
-		$this->parsely = $parsely;
-	}
-
-	/**
 	 * Registers the dashboard page.
 	 *
 	 * @since 3.18.0
