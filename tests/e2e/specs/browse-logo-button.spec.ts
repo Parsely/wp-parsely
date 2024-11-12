@@ -1,100 +1,111 @@
 /**
  * External dependencies
  */
-import {
-	enablePageDialogAccept,
-	visitAdminPage,
-} from '@wordpress/e2e-test-utils';
-import * as path from 'path';
-
-// General initializations.
-const imageLocalPath: string = path.resolve( __dirname, '../../../.wordpress-org/icon-256x256.png' );
-const uploadedImagePattern = /\/wp-content\/uploads\/\d{4}\/\d{2}\/icon-256x256-?\d*\.png$/;
-const filePathInput = '#media-single-image-logo input.file-path';
-const modalAttachment = 'li.attachment'; // Used in both modals.
-
-// Media library modal selectors.
-const modalMediaLibrary = 'div.media-modal-content';
-const modalSelectFilesButton = '#media-single-image-logo button.browse';
-const modalConfirmButton = `${ modalMediaLibrary } button.media-button-select`;
-const modalFileUploadInput = `${ modalMediaLibrary } input[type=file]`;
-
-// Edit attachment modal selectors.
-const modalEditAttachment = 'div.media-modal div.edit-attachment-frame';
-const modalDeleteAttachmentLink = `${ modalEditAttachment } button.delete-attachment`;
+import { resolve } from 'path';
 
 /**
- * Browse button tests
+ * WordPress dependencies
  */
-describe( 'Browse for logo button', () => {
-	/**
-	 * Remove the uploaded image.
-	 */
-	afterAll( async () => {
-		// Go to Media Library and select the image.
-		await visitAdminPage( '/upload.php' );
-		await page.waitForSelector( modalAttachment, { visible: true } );
-		await page.click( modalAttachment );
-		await page.waitForSelector( modalEditAttachment, { visible: true } );
+import {
+	expect,
+	test,
+} from '@wordpress/e2e-test-utils-playwright';
 
-		enablePageDialogAccept(); // Confirm image deletion.
-		await page.click( modalDeleteAttachmentLink );
+/**
+ * Tests the Settings page's Browse button behavior.
+ *
+ * @since 3.17.0 Migrated to Playwright.
+ */
+test.describe( 'Browse for logo button', () => {
+	// General initializations.
+	const uploadedImagePattern = /\/wp-content\/uploads\/\d{4}\/\d{2}\/icon-256x256-?\d*\.png$/;
+	const filePathInput = '#media-single-image-logo input.file-path';
+
+	// Media library modal selectors.
+	const modalMediaLibrary = 'div.media-modal-content';
+	const modalFileUploadInput = `${ modalMediaLibrary } input[type=file]`;
+
+	/**
+	 * Deletes all uploaded images.
+	 *
+	 * Runs after all tests.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
+	 */
+	test.afterAll( async ( { requestUtils } ) => {
+		await requestUtils.deleteAllMedia();
 	} );
 
 	/**
-	 * Go to settings page and click the browse button.
+	 * Clicks the Browse button in the Settings page, to show the Media Library.
+	 *
+	 * Runs before each test.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	beforeEach( async () => {
-		await visitAdminPage( '/options-general.php', '?page=parsely' );
+	test.beforeEach( async ( { admin } ) => {
+		await admin.visitAdminPage( '/options-general.php?page=parsely' );
 
-		// Click browse button and wait for Media Library to appear.
-		await page.click( modalSelectFilesButton );
-		await page.waitForSelector( modalMediaLibrary, { visible: true } );
+		await admin.page.getByRole( 'button', { name: 'Browse' } ).click();
 	} );
 
 	/**
-	 * Test: Click the Browse button, upload new image, select it and confirm.
+	 * Verifies that the image path gets set when a new image is uploaded and
+	 * confirmed.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	it( 'Should set the file path when a new image is uploaded and confirmed', async () => {
+	test( 'Should set the file path when a new image is uploaded and confirmed', async ( { page } ) => {
+		const imageLocalPath: string = resolve(
+			__dirname, '../../../.wordpress-org/icon-256x256.png'
+		);
+
 		// Upload an image file and confirm the dialog.
-		const fileInput = await page.$( modalFileUploadInput );
-		await fileInput?.uploadFile( imageLocalPath );
-		await page.waitForTimeout( 500 );
-		await page.click( modalConfirmButton );
+		await page.getByRole( 'tab', { name: 'Upload files', exact: true } )
+			.click();
+		await page.setInputFiles( modalFileUploadInput, imageLocalPath );
+		await page.getByRole( 'button', { name: 'Select', exact: true } )
+			.click();
 
 		// Verify that the image path has been updated.
-		await page.waitForTimeout( 500 );
-		const filePath = await page.evaluate( ( element ) => element.value, await page.$( filePathInput ) );
-		expect( filePath ).toMatch( uploadedImagePattern );
+		await expect( page.locator( filePathInput ) )
+			.toHaveValue( uploadedImagePattern );
 	} );
 
 	/**
-	 * Test: Click the Browse button, select an existing image and confirm.
+	 * Verifies that the image path gets set when an existing image is selected
+	 * and confirmed.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	it( 'Should set the file path when an existing image is selected and confirmed', async () => {
-		// Select the existing and confirm the dialog.
-		await page.waitForSelector( modalAttachment, { visible: true } );
-		await page.click( modalAttachment );
-		await page.click( modalConfirmButton );
+	test( 'Should set the file path when an existing image is selected and confirmed', async ( { page } ) => {
+		// Select the existing uploaded image and confirm the dialog.
+		await page.getByRole( 'tab', { name: 'Media Library', exact: true } )
+			.click();
+		await page.getByRole( 'checkbox' ).first().check();
+		await page.getByRole( 'button', { name: 'Select', exact: true } )
+			.click();
 
 		// Verify that the image path has been updated.
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const filePath = await page.$eval( filePathInput, ( input: any ) => input.value );
-		expect( filePath ).toMatch( uploadedImagePattern );
+		await expect( page.locator( filePathInput ) )
+			.toHaveValue( uploadedImagePattern );
 	} );
 
 	/**
-	 * Test: Click the Brows button, select an existing image and dismiss the modal.
+	 * Verifies that the image path doesn't get set when the Media Library modal
+	 * gets dismissed by the user.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	it( 'Should not set the file path when dismissing the modal', async () => {
-		// Select the existing image but cancel the dialog.
-		await page.waitForSelector( modalAttachment, { visible: true } );
-		await page.click( modalAttachment );
+	test( 'Should not set the file path when dismissing the modal', async ( { page } ) => {
+		// Select the existing uploaded image but cancel the dialog.
+		await page.getByRole( 'tab', { name: 'Media Library', exact: true } )
+			.click();
+		await page.getByRole( 'checkbox' ).first().check();
 		await page.keyboard.press( 'Escape' );
 
 		// Verify that the image path is empty.
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const filePath = await page.$eval( filePathInput, ( input: any ) => input.value );
-		expect( filePath ).toMatch( '' );
+		await expect( page.locator( filePathInput ) )
+			.toHaveValue( '' );
 	} );
 } );

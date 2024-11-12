@@ -83,7 +83,7 @@ export class DashboardWidgetProvider extends BaseProvider {
 		settings: TopPostsSettings, page: number
 	): Promise<PostData[]> {
 		const response = this.fetch<PostData[]>( {
-			path: addQueryArgs( '/wp-parsely/v1/stats/posts/', {
+			path: addQueryArgs( '/wp-parsely/v2/stats/posts/', {
 				limit: TOP_POSTS_DEFAULT_LIMIT,
 				...getApiPeriodParams( settings.Period ),
 				sort: settings.Metric,

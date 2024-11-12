@@ -10,21 +10,15 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
+use Parsely\Content_Helper\Editor_Sidebar\Editor_Sidebar_Feature;
 use Parsely\Content_Helper\Editor_Sidebar\Smart_Linking;
 use Parsely\Dashboard_Link;
-use Parsely\Endpoints\User_Meta\Editor_Sidebar_Settings_Endpoint;
 use Parsely\Parsely;
-use Parsely\Content_Helper\Content_Helper_Feature;
-
+use Parsely\REST_API\Settings\Endpoint_Editor_Sidebar_Settings;
+use Parsely\Utils\Utils;
 use WP_Post;
-use function Parsely\Utils\get_asset_info;
 
 use const Parsely\PARSELY_FILE;
-
-/**
- * Features requires for the PCH Editor Sidebar.
- */
-require_once __DIR__ . '/smart-linking/class-smart-linking.php';
 
 /**
  * Class that generates and manages the PCH Editor Sidebar.
@@ -38,7 +32,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 	 *
 	 * @since 3.16.0
 	 *
-	 * @var array<Content_Helper_Feature>
+	 * @var array<Editor_Sidebar_Feature>
 	 */
 	protected $features;
 
@@ -54,7 +48,8 @@ class Editor_Sidebar extends Content_Helper_Feature {
 
 		// Instantiate the features.
 		$this->features = array(
-			'Smart_Linking' => new Smart_Linking( $this ),
+			'Smart_Linking'     => new Smart_Linking( $this ),
+			'Excerpt_Generator' => new Excerpt_Suggestions( $this ),
 		);
 	}
 
@@ -152,7 +147,7 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			return;
 		}
 
-		$asset_php        = get_asset_info( 'build/content-helper/editor-sidebar.asset.php' );
+		$asset_php        = Utils::get_asset_info( 'build/content-helper/editor-sidebar.asset.php' );
 		$built_assets_url = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_script(
@@ -163,17 +158,25 @@ class Editor_Sidebar extends Content_Helper_Feature {
 			true
 		);
 
-		$this->inject_inline_scripts( Editor_Sidebar_Settings_Endpoint::get_route() );
+		$this->inject_inline_scripts( Endpoint_Editor_Sidebar_Settings::get_endpoint_name() );
 
 		// Inject inline variables for the editor sidebar, without UTM parameters.
 		$parsely_post_url = $this->get_parsely_post_url( null, false );
 		if ( null !== $parsely_post_url ) {
 			wp_add_inline_script(
 				static::get_script_id(),
-				'wpParselyPostUrl = ' . wp_json_encode( $parsely_post_url ) . ';',
+				'window.wpParselyPostUrl = ' . wp_json_encode( $parsely_post_url ) . ';',
 				'before'
 			);
 		}
+
+		// Inject the trackable statuses.
+		$trackable_statuses = Parsely::get_trackable_statuses();
+		wp_add_inline_script(
+			static::get_script_id(),
+			'window.wpParselyTrackableStatuses = ' . wp_json_encode( $trackable_statuses ) . ';',
+			'before'
+		);
 
 		wp_enqueue_style(
 			static::get_style_id(),

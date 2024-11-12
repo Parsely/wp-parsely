@@ -1,7 +1,15 @@
 /**
+ * External dependencies
+ */
+import { type Page } from '@playwright/test';
+
+/**
  * WordPress dependencies
  */
-import { visitAdminPage } from '@wordpress/e2e-test-utils';
+import {
+	expect,
+	test,
+} from '@wordpress/e2e-test-utils-playwright';
 
 /**
  * Internal dependencies
@@ -9,124 +17,154 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
 import {
 	VALID_API_SECRET,
 	VALID_SITE_ID,
-	saveSettingsAndHardRefresh,
 	setSiteKeys,
-	waitForWpAdmin,
 } from '../utils';
 
-// Radio button selectors.
-const radioPostAsPost = 'input#track_post_types_as_post_post';
-const radioPostAsPage = '#track_post_types_as_post_page';
-const radioPostAsNone = '#track_post_types_as_post_none';
-const radioPageAsPost = '#track_post_types_as_page_post';
-const radioPageAsPage = '#track_post_types_as_page_page';
-const radioPageAsNone = '#track_post_types_as_page_none';
-const radioAttachmentAsPost = '#track_post_types_as_attachment_post';
-const radioAttachmentAsPage = '#track_post_types_as_attachment_page';
-const radioAttachmentAsNone = '#track_post_types_as_attachment_none';
-
 /**
- * Tests for "Track Post Types as" settings.
+ * Tests for the "Track Post Types as" settings.
+ *
+ * @since 3.17.0 Migrated to Playwright.
  */
-describe( 'Track Post Types as', () => {
+test.describe( 'Track Post Types as', () => {
+	// Radio button selectors.
+	const radioPostAsPost = 'input#track_post_types_as_post_post';
+	const radioPostAsPage = '#track_post_types_as_post_page';
+	const radioPostAsNone = '#track_post_types_as_post_none';
+	const radioPageAsPost = '#track_post_types_as_page_post';
+	const radioPageAsPage = '#track_post_types_as_page_page';
+	const radioPageAsNone = '#track_post_types_as_page_none';
+	const radioAttachmentAsPost = '#track_post_types_as_attachment_post';
+	const radioAttachmentAsPage = '#track_post_types_as_attachment_page';
+	const radioAttachmentAsNone = '#track_post_types_as_attachment_none';
+
 	/**
-	 * Login, activate the Parse.ly plugin and show recrawl settings.
+	 * Sets a valid Site ID and API Secret.
+	 *
+	 * Runs before all tests.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	beforeAll( async () => {
-		await setSiteKeys( VALID_SITE_ID, VALID_API_SECRET );
-		await visitAdminPage( '/options-general.php', '?page=parsely' );
-		await page.click( '.recrawl-section-tab' );
+	test.beforeAll( async ( { browser } ) => {
+		const page = await browser.newPage();
+
+		await setSiteKeys( page, VALID_SITE_ID, VALID_API_SECRET );
 	} );
 
 	/**
 	 * Set default values and save.
+	 *
+	 * Runs after all tests.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	afterAll( async () => {
-		await waitForWpAdmin();
+	test.afterAll( async ( { browser } ) => {
+		const page = await browser.newPage();
+		const utils = new Utils( page );
+
+		await utils.activateRecrawlSection();
 
 		await page.click( radioPostAsPost );
 		await page.click( radioPageAsPage );
 		await page.click( radioAttachmentAsNone );
 
 		await page.click( '#submit' );
-		await waitForWpAdmin();
-		await setSiteKeys( '', '' );
+
+		await setSiteKeys( page, '', '' );
 	} );
 
 	/**
 	 * Wait for last radio button to be ready.
+	 *
+	 * Runs before each test.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	beforeEach( async () => {
-		await page.waitForSelector( radioAttachmentAsNone );
+	test.beforeEach( async ( { page } ) => {
+		const utils = new Utils( page );
+
+		await utils.activateRecrawlSection();
 	} );
 
 	/**
-	 * Test: Save selections in a non-default configuration.
+	 * Verifies that saving selections in a non-default configuration works.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	it( 'Should be able to save non-default selections', async () => {
-		// Set new radio values
-		await page.click( radioPostAsNone );
-		await page.click( radioPageAsPost );
-		await page.click( radioAttachmentAsPage );
+	test( 'Should be able to save non-default selections', async ( { page } ) => {
+		const utils = new Utils( page );
 
-		await saveSettingsAndHardRefresh();
+		// Set new radio values
+		await page.locator( radioPostAsNone ).click();
+		await page.locator( radioPageAsPost ).click();
+		await page.locator( radioAttachmentAsPage ).click();
+
+		await utils.saveSettingsAndHardRefresh();
 
 		// Verify that post is tracked as none.
-		expect( await page.$eval( radioPostAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioPostAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioPostAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
+		await expect( page.locator( radioPostAsPost ) ).not.toBeChecked();
+		await expect( page.locator( radioPostAsPage ) ).not.toBeChecked();
+		await expect( page.locator( radioPostAsNone ) ).toBeChecked();
 
 		// Verify that page is tracked as post
-		expect( await page.$eval( radioPageAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
-		expect( await page.$eval( radioPageAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioPageAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		await expect( page.locator( radioPageAsPost ) ).toBeChecked();
+		await expect( page.locator( radioPageAsPage ) ).not.toBeChecked();
+		await expect( page.locator( radioPageAsNone ) ).not.toBeChecked();
 
 		// Verify that attachment is tracked as page
-		expect( await page.$eval( radioAttachmentAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
-		expect( await page.$eval( radioAttachmentAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
+		await expect( page.locator( radioAttachmentAsPost ) ).not.toBeChecked();
+		await expect( page.locator( radioAttachmentAsPage ) ).toBeChecked();
+		await expect( page.locator( radioAttachmentAsNone ) ).not.toBeChecked();
 	} );
 
 	/**
-	 * Save all selections in a 'do not track' configuration.
+	 * Verifies that saving all selections as "do not track" works.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	it( 'Should be able to save everything as none', async () => {
-		// Set all radio values to none.
-		await page.click( radioPostAsNone );
-		await page.click( radioPageAsNone );
-		await page.click( radioAttachmentAsNone );
+	test( 'Should be able to save everything as none', async ( { page } ) => {
+		const utils = new Utils( page );
 
-		await saveSettingsAndHardRefresh();
+		// Set all radio values to none.
+		await page.locator( radioPostAsNone ).click();
+		await page.locator( radioPageAsNone ).click();
+		await page.locator( radioAttachmentAsNone ).click();
+
+		await utils.saveSettingsAndHardRefresh();
 
 		// Check that all selections are set to 'none'.
-		expect( await page.$eval( radioPostAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioPostAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioPostAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
-		expect( await page.$eval( radioPageAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioPageAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioPageAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
-		expect( await page.$eval( radioAttachmentAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
+		await expect( page.locator( radioPostAsPost ) ).not.toBeChecked();
+		await expect( page.locator( radioPostAsPage ) ).not.toBeChecked();
+		await expect( page.locator( radioPostAsNone ) ).toBeChecked();
+		await expect( page.locator( radioPageAsPost ) ).not.toBeChecked();
+		await expect( page.locator( radioPageAsPage ) ).not.toBeChecked();
+		await expect( page.locator( radioPageAsNone ) ).toBeChecked();
+		await expect( page.locator( radioAttachmentAsPost ) ).not.toBeChecked();
+		await expect( page.locator( radioAttachmentAsPage ) ).not.toBeChecked();
+		await expect( page.locator( radioAttachmentAsNone ) ).toBeChecked();
 	} );
 
 	/**
-	 * Verifies that radio buttons can be browsed correctly using the keyboard.
+	 * Verifies that radio buttons can be navigated and set using the keyboard.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	it( 'Should be browsable with arrow and tab keys', async () => {
-		// Set initial values so we can start from a known position for each radio.
-		await page.click( radioPostAsNone );
-		await page.click( radioPageAsNone );
-		await page.click( radioAttachmentAsNone );
-		await saveSettingsAndHardRefresh();
+	test( 'Should be navigable with arrow and tab keys', async ( { page } ) => {
+		const utils = new Utils( page );
 
-		// Scroll to table to make it easier to view in interactive mode.
+		// Set initial values so we can start from a known position for each radio.
+		await page.locator( radioPostAsNone ).click();
+		await page.locator( radioPageAsNone ).click();
+		await page.locator( radioAttachmentAsNone ).click();
+
+		await utils.saveSettingsAndHardRefresh();
+
+		// Scroll to table to make it easier to view when debugging.
 		await page.evaluate( () => {
 			document.querySelector( '#track-post-types' )?.scrollIntoView();
 		} );
 
 		// Make adjustments to values using keys and save.
-		await page.focus( '#track-post-types' );
+		await page.locator( '#track-post-types' ).focus();
 		await page.keyboard.press( 'Tab' );
 		await page.keyboard.press( 'ArrowLeft' );
 		await page.keyboard.press( 'ArrowLeft' );
@@ -135,17 +173,69 @@ describe( 'Track Post Types as', () => {
 		await page.keyboard.press( 'Tab' );
 		await page.keyboard.press( 'ArrowDown' );
 		await page.keyboard.press( 'ArrowDown' );
-		await saveSettingsAndHardRefresh();
+
+		await utils.saveSettingsAndHardRefresh();
 
 		// The above keys should set the default options. Verify that this is the case.
-		expect( await page.$eval( radioPostAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
-		expect( await page.$eval( radioPostAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioPostAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioPageAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioPageAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
-		expect( await page.$eval( radioPageAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsPost, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsPage, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeFalsy();
-		expect( await page.$eval( radioAttachmentAsNone, ( input: Element ) => input.getAttribute( 'checked' ) ) ).toBeTruthy();
+		await expect( page.locator( radioPostAsPost ) ).toBeChecked();
+		await expect( page.locator( radioPostAsPage ) ).not.toBeChecked();
+		await expect( page.locator( radioPostAsNone ) ).not.toBeChecked();
+		await expect( page.locator( radioPageAsPost ) ).not.toBeChecked();
+		await expect( page.locator( radioPageAsPage ) ).toBeChecked();
+		await expect( page.locator( radioPageAsNone ) ).not.toBeChecked();
+		await expect( page.locator( radioAttachmentAsPost ) ).not.toBeChecked();
+		await expect( page.locator( radioAttachmentAsPage ) ).not.toBeChecked();
+		await expect( page.locator( radioAttachmentAsNone ) ).toBeChecked();
 	} );
 } );
+
+/**
+ * Provides utility functions for the tests in this file.
+ *
+ * @since 3.17.0 Migrated utility functions to Playwright.
+ */
+class Utils {
+	/**
+	 * The Page object of the calling function.
+	 *
+	 * @since 3.17.0
+	 */
+	readonly page: Page;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param {Page} page The Page object of the calling function.
+	 */
+	constructor( page: Page ) {
+		this.page = page;
+	}
+
+	/**
+	 * Navigates to the plugin's Settings page and activates the Recrawl section.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
+	 */
+	async activateRecrawlSection(): Promise<void> {
+		await this.page.goto( '/wp-admin/options-general.php?page=parsely' );
+		await this.page.click( '.recrawl-section-tab' );
+	}
+
+	/**
+	 * Saves settings in the settings page and forces a hard refresh.
+	 *
+	 * @since 3.17.0 Moved from utils.js and migrated to Playwright.
+	 */
+	async saveSettingsAndHardRefresh(): Promise<void> {
+		const saveButton = this.page.getByRole( 'button', { name: 'Save Changes' } );
+
+		await saveButton.click();
+		await saveButton.waitFor();
+		await this.page.evaluate( () => {
+			location.reload();
+		} );
+		await saveButton.waitFor();
+	}
+}

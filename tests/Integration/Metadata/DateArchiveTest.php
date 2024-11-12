@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration\StructuredData;
+namespace Parsely\Tests\Integration\Metadata;
 
 use Parsely\Tests\Integration\TestCase;
 use Parsely\Metadata\Date_Builder;

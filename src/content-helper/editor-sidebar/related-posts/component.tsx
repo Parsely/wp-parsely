@@ -410,7 +410,7 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 						size="__unstable-large"
 						onChange={ ( value ) => onMetricChange( value ) }
 						prefix={
-							<InputControlPrefixWrapper>{ __( 'Metric: ', 'wp-parsely' ) }</InputControlPrefixWrapper>
+							<InputControlPrefixWrapper>{ __( 'Metric:', 'wp-parsely' ) }</InputControlPrefixWrapper>
 						}
 						value={ metric }
 					>
@@ -424,7 +424,7 @@ export const RelatedPostsPanel = (): React.JSX.Element => {
 						size="__unstable-large"
 						value={ period }
 						prefix={
-							<InputControlPrefixWrapper>{ __( 'Period: ', 'wp-parsely' ) } </InputControlPrefixWrapper>
+							<InputControlPrefixWrapper>{ __( 'Period:', 'wp-parsely' ) } </InputControlPrefixWrapper>
 						}
 						onChange={ ( selection ) => onPeriodChange( selection ) }
 					>

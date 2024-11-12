@@ -11,18 +11,13 @@ declare(strict_types=1);
 namespace Parsely\Content_Helper;
 
 use DateTime;
-use Parsely\Content_Helper\Content_Helper_Feature;
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Base_Endpoint_Remote;
-use Parsely\RemoteAPI\Analytics_Posts_API;
+use Parsely\Services\Content_API\Content_API_Service;
+use Parsely\Services\Content_API\Endpoints\Endpoint_Analytics_Posts;
+use Parsely\Utils\Utils;
 use WP_Screen;
 
-use function Parsely\Utils\get_asset_info;
-use function Parsely\Utils\get_formatted_number;
-use function Parsely\Utils\get_formatted_time;
-
 use const Parsely\PARSELY_FILE;
-use const Parsely\Utils\DATE_UTC_FORMAT;
 
 /**
  * Class for adding `Parse.ly Stats` on admin columns.
@@ -30,9 +25,14 @@ use const Parsely\Utils\DATE_UTC_FORMAT;
  * @since 3.7.0
  * @since 3.9.0 Renamed FQCN from `Parsely\UI\Admin_Columns_Parsely_Stats` to `Parsely\Content_Helper\Post_List_Stats`.
  *
- * @phpstan-import-type Analytics_Post_API_Params from Analytics_Posts_API
- * @phpstan-import-type Analytics_Post from Analytics_Posts_API
- * @phpstan-import-type Remote_API_Error from Base_Endpoint_Remote
+ * @phpstan-import-type Analytics_Posts_API_Params from Endpoint_Analytics_Posts
+ * @phpstan-import-type Analytics_Post from Endpoint_Analytics_Posts
+ *
+ * @phpstan-type Remote_API_Error array{
+ *   code: int,
+ *   message: string,
+ *   htmlMessage: string,
+ * }
  *
  * @phpstan-type Parsely_Post_Stats array{
  *   page_views: string,
@@ -46,12 +46,13 @@ use const Parsely\Utils\DATE_UTC_FORMAT;
  * }
  */
 class Post_List_Stats extends Content_Helper_Feature {
+
 	/**
-	 * Instance of Parsely Analytics Posts API.
+	 * Instance of Content API Service.
 	 *
-	 * @var Analytics_Posts_API
+	 * @var Content_API_Service
 	 */
-	private $analytics_api;
+	private $content_api;
 
 	/**
 	 * Internal Variable.
@@ -76,7 +77,8 @@ class Post_List_Stats extends Content_Helper_Feature {
 	 * @param Parsely $parsely Instance of Parsely class.
 	 */
 	public function __construct( Parsely $parsely ) {
-		$this->parsely = $parsely;
+		$this->parsely     = $parsely;
+		$this->content_api = $parsely->get_content_api();
 	}
 
 	/**
@@ -118,12 +120,10 @@ class Post_List_Stats extends Content_Helper_Feature {
 	 * @since 3.7.0
 	 */
 	public function run(): void {
-		$this->analytics_api = new Analytics_Posts_API( $this->parsely );
-
 		if ( ! $this->can_enable_feature(
 			$this->parsely->site_id_is_set(),
 			$this->parsely->api_secret_is_set(),
-			$this->analytics_api->is_available_to_current_user()
+			$this->parsely->get_rest_api_controller()->is_available_to_current_user( '/stats/posts' )
 		) ) {
 			return;
 		}
@@ -156,7 +156,7 @@ class Post_List_Stats extends Content_Helper_Feature {
 			return;
 		}
 
-		$admin_settings_asset = get_asset_info( 'build/content-helper/post-list-stats.asset.php' );
+		$admin_settings_asset = Utils::get_asset_info( 'build/content-helper/post-list-stats.asset.php' );
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_style(
@@ -229,13 +229,13 @@ class Post_List_Stats extends Content_Helper_Feature {
 			return; // Avoid calling the API if column is hidden.
 		}
 
-		$parsely_stats_response = $this->get_parsely_stats_response( $this->analytics_api );
+		$parsely_stats_response = $this->get_parsely_stats_response();
 
 		if ( null === $parsely_stats_response ) {
 			return;
 		}
 
-		$admin_settings_asset = get_asset_info( 'build/content-helper/post-list-stats.asset.php' );
+		$admin_settings_asset = Utils::get_asset_info( 'build/content-helper/post-list-stats.asset.php' );
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_script(
@@ -271,10 +271,9 @@ class Post_List_Stats extends Content_Helper_Feature {
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param Analytics_Posts_API $analytics_api Instance of Analytics_Posts_API.
 	 * @return Parsely_Posts_Stats_Response|null
 	 */
-	public function get_parsely_stats_response( $analytics_api ) {
+	public function get_parsely_stats_response(): ?array {
 		if ( ! $this->is_tracked_as_post_type() ) {
 			return null;
 		}
@@ -300,12 +299,12 @@ class Post_List_Stats extends Content_Helper_Feature {
 			return null;
 		}
 
-		$response = $analytics_api->get_posts_analytics(
+		$response = $this->content_api->get_posts(
 			array(
-				'period_start'   => Analytics_Posts_API::ANALYTICS_API_DAYS_LIMIT . 'd',
+				'period_start'   => Endpoint_Analytics_Posts::MAX_PERIOD,
 				'pub_date_start' => $date_params['pub_date_start'] ?? '',
 				'pub_date_end'   => $date_params['pub_date_end'] ?? '',
-				'limit'          => Analytics_Posts_API::MAX_RECORDS_LIMIT,
+				'limit'          => Endpoint_Analytics_Posts::MAX_LIMIT,
 				'sort'           => 'avg_engaged', // Note: API sends different stats on different sort options.
 			)
 		);
@@ -326,20 +325,14 @@ class Post_List_Stats extends Content_Helper_Feature {
 			);
 		}
 
-		if ( null === $response ) {
-			return array(
-				'data'  => array(),
-				'error' => null,
-			);
-		}
-
 		/**
-		 * Variable.
-		 *
-		 * @var array<string, Parsely_Post_Stats>
+		 * @var array<string, Parsely_Post_Stats> $parsely_stats_map
 		 */
 		$parsely_stats_map = array();
 
+		/**
+		 * @var Analytics_Post $post_analytics
+		 */
 		foreach ( $response as $post_analytics ) {
 			$key = $this->get_unique_stats_key_from_analytics( $post_analytics );
 
@@ -353,14 +346,12 @@ class Post_List_Stats extends Content_Helper_Feature {
 			$engaged_seconds = isset( $metrics['avg_engaged'] ) ? round( $metrics['avg_engaged'] * 60, 2 ) : 0;
 
 			/**
-			 * Variable.
-			 *
-			 * @var Parsely_Post_Stats
+			 * @var Parsely_Post_Stats $stats
 			 */
 			$stats = array(
-				'page_views' => get_formatted_number( (string) $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ),
-				'visitors'   => get_formatted_number( (string) $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ),
-				'avg_time'   => get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ),
+				'page_views' => Utils::get_formatted_number( (string) $views ) . ' ' . _n( 'page view', 'page views', $views, 'wp-parsely' ),
+				'visitors'   => Utils::get_formatted_number( (string) $visitors ) . ' ' . _n( 'visitor', 'visitors', $visitors, 'wp-parsely' ),
+				'avg_time'   => Utils::get_formatted_time( $engaged_seconds ) . ' ' . __( 'avg time', 'wp-parsely' ),
 			);
 
 			$parsely_stats_map[ $key ] = $stats;
@@ -379,7 +370,7 @@ class Post_List_Stats extends Content_Helper_Feature {
 	 *
 	 * @since 3.7.0
 	 *
-	 * @return Analytics_Post_API_Params|null
+	 * @return Analytics_Posts_API_Params|null
 	 */
 	private function get_publish_date_params_for_analytics_api() {
 		$published_times = $this->utc_published_times;
@@ -389,8 +380,8 @@ class Post_List_Stats extends Content_Helper_Feature {
 		}
 
 		return array(
-			'pub_date_start' => ( new DateTime( min( $published_times ) ) )->format( DATE_UTC_FORMAT ),
-			'pub_date_end'   => ( new DateTime( max( $published_times ) ) )->format( DATE_UTC_FORMAT ),
+			'pub_date_start' => ( new DateTime( min( $published_times ) ) )->format( Utils::DATE_UTC_FORMAT ),
+			'pub_date_end'   => ( new DateTime( max( $published_times ) ) )->format( Utils::DATE_UTC_FORMAT ),
 		);
 	}
 

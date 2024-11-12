@@ -45,6 +45,16 @@
 	}
 }
 
+.wp-parsely-dropdown-label {
+	align-self: stretch;
+	color: var(--sidebar-black);
+	font-size: var(--font-size--smaller);
+	font-style: normal;
+	font-weight: 600;
+	line-height: var(--grid-unit-20);
+	text-transform: uppercase;
+}
+
 .wp-parsely-content-helper-error {
 	margin: 0;
 	align-self: flex-start;
@@ -118,7 +128,6 @@
 	}
 
 	.components-panel__body {
-
 		&.is-opened {
 			padding: 0;
 		}

@@ -58,8 +58,12 @@ export class PerformanceStatsProvider extends BaseProvider {
 	public async getPerformanceStats( period: Period ): Promise<PerformanceData> {
 		const editor = select( 'core/editor' );
 
-		// We cannot show data for non-published posts.
-		if ( false === editor.isCurrentPostPublished() ) {
+		// Get the current post's status.
+		const currentPostStatus = editor.getEditedPostAttribute( 'status' ) ?? 'draft';
+		const trackableStatuses = window.wpParselyTrackableStatuses ?? [ 'publish' ];
+
+		// We cannot show data for non-published posts that are not in the trackable statuses.
+		if ( ! editor.isCurrentPostPublished() && ! trackableStatuses.includes( currentPostStatus ) ) {
 			return Promise.reject(
 				new ContentHelperError( __(
 					'This post is not published, so its details are unavailable.',
@@ -68,13 +72,13 @@ export class PerformanceStatsProvider extends BaseProvider {
 			);
 		}
 
-		// Get post URL.
-		const postUrl = editor.getPermalink();
+		// Get post ID.
+		const postID = editor.getCurrentPostId();
 
-		if ( null === postUrl ) {
+		if ( null === postID ) {
 			return Promise.reject(
 				new ContentHelperError( __(
-					"The post's URL returned null.",
+					"The post's ID returned null.",
 					'wp-parsely' ), ContentHelperErrorCode.PostIsNotPublished
 				)
 			);
@@ -84,10 +88,10 @@ export class PerformanceStatsProvider extends BaseProvider {
 		let performanceData, referrerData;
 		try {
 			performanceData = await this.fetchPerformanceDataFromWpEndpoint(
-				period, postUrl
+				period, postID
 			);
 			referrerData = await this.fetchReferrerDataFromWpEndpoint(
-				period, postUrl, performanceData.views
+				period, postID, performanceData.views
 			);
 		} catch ( contentHelperError ) {
 			return Promise.reject( contentHelperError );
@@ -100,30 +104,30 @@ export class PerformanceStatsProvider extends BaseProvider {
 	 * Fetches the performance data for the current post from the WordPress REST
 	 * API.
 	 *
-	 * @param {Period} period  The period for which to fetch data.
-	 * @param {string} postUrl
+	 * @param {Period} period The period for which to fetch data.
+	 * @param {number} postId The post's ID.
 	 *
 	 * @return {Promise<PerformanceData> } The current post's details.
 	 */
 	private async fetchPerformanceDataFromWpEndpoint(
-		period: Period, postUrl: string
+		period: Period, postId: number
 	): Promise<PerformanceData> {
 		const response = await this.fetch<PerformanceData[]>( {
 			path: addQueryArgs(
-				'/wp-parsely/v1/stats/post/detail', {
+				`/wp-parsely/v2/stats/post/${ postId }/details`, {
 					...getApiPeriodParams( period ),
 					itm_source: this.itmSource,
-					url: postUrl,
 				} ),
 		} );
 
 		// No data was returned.
 		if ( response.length === 0 ) {
+			const postTitle = select( 'core/editor' ).getEditedPostAttribute( 'title' ) ?? '';
 			return Promise.reject( new ContentHelperError(
 				sprintf(
-					/* translators: URL of the published post */
-					__( 'The post %s has 0 views, or the Parse.ly API returned no data.',
-						'wp-parsely' ), postUrl
+					/* translators: Title of the published post */
+					__( '<strong>%s</strong> has 0 views, or the Parse.ly API returned no data.',
+						'wp-parsely' ), postTitle
 				), ContentHelperErrorCode.ParselyApiReturnedNoData, ''
 			) );
 		}
@@ -133,8 +137,8 @@ export class PerformanceStatsProvider extends BaseProvider {
 			return Promise.reject( new ContentHelperError(
 				sprintf(
 					/* translators: URL of the published post */
-					__( 'Multiple results were returned for the post %s by the Parse.ly API.',
-						'wp-parsely' ), postUrl
+					__( 'Multiple results were returned for the post %d by the Parse.ly API.',
+						'wp-parsely' ), postId
 				), ContentHelperErrorCode.ParselyApiReturnedTooManyResults
 			) );
 		}
@@ -145,22 +149,21 @@ export class PerformanceStatsProvider extends BaseProvider {
 	/**
 	 * Fetches referrer data for the current post from the WordPress REST API.
 	 *
-	 * @param {Period} period     The period for which to fetch data.
-	 * @param {string} postUrl    The post's URL.
-	 * @param {string} totalViews Total post views (including direct views).
+	 * @param {Period}        period     The period for which to fetch data.
+	 * @param {string|number} postId     The post's ID.
+	 * @param {string}        totalViews Total post views (including direct views).
 	 *
 	 * @return {Promise<PerformanceReferrerData>} The post's referrer data.
 	 */
 	private async fetchReferrerDataFromWpEndpoint(
-		period: Period, postUrl: string, totalViews: string
+		period: Period, postId: string|number, totalViews: string
 	): Promise<PerformanceReferrerData> {
 		const response = await this.fetch<PerformanceReferrerData>( {
 			path: addQueryArgs(
-				'/wp-parsely/v1/referrers/post/detail', {
+				`/wp-parsely/v2/stats/post/${ postId }/referrers`, {
 					...getApiPeriodParams( period ),
 					itm_source: this.itmSource,
 					total_views: totalViews, // Needed to calculate direct views.
-					url: postUrl,
 				} ),
 		} );
 

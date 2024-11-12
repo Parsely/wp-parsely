@@ -19,10 +19,8 @@ use Parsely\Metadata\Page_For_Posts_Builder;
 use Parsely\Metadata\Paginated_Front_Page_Builder;
 use Parsely\Metadata\Post_Builder;
 use Parsely\Metadata\Tag_Builder;
+use Parsely\Utils\Utils;
 use WP_Post;
-
-use function Parsely\Utils\get_page_for_posts;
-use function Parsely\Utils\get_page_on_front;
 
 /**
  * Generates and inserts metadata readable by the Parse.ly Crawler.
@@ -97,12 +95,12 @@ class Metadata {
 			} else {
 				$builder = new Paginated_Front_Page_Builder( $this->parsely );
 			}
-		} elseif ( 'page' === get_option( 'show_on_front' ) && ! get_page_on_front() ) {
+		} elseif ( 'page' === get_option( 'show_on_front' ) && ! Utils::get_page_on_front() ) {
 			$builder = new Front_Page_Builder( $this->parsely );
 		} elseif (
 			is_home() && (
-				! ( 'page' === get_option( 'show_on_front' ) && ! get_page_on_front() ) ||
-				get_page_for_posts() === $queried_object_id
+				! ( 'page' === get_option( 'show_on_front' ) && ! Utils::get_page_on_front() ) ||
+				Utils::get_page_for_posts() === $queried_object_id
 			)
 		) {
 			$builder = new Page_For_Posts_Builder( $this->parsely );

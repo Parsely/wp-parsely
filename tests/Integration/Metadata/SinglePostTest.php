@@ -7,14 +7,13 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Integration\StructuredData;
+namespace Parsely\Tests\Integration\Metadata;
 
 use Parsely\Metadata;
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
+use Parsely\Utils\Utils;
 use WP_Post;
-
-use function Parsely\Utils\get_default_category;
 
 const TEST_CATEGORY_1        = 'Test Category 1';
 const POST_DATETIME          = '2021-12-30 20:11:42';
@@ -973,7 +972,7 @@ final class SinglePostTest extends TestCase {
 		$parsely_options['cats_as_tags'] = true;
 		update_option( 'parsely', $parsely_options );
 
-		$default_category_slug = $this->get_term( get_default_category() )->slug;
+		$default_category_slug = $this->get_term( Utils::get_default_category() )->slug;
 		wp_remove_object_terms( $post_id, $default_category_slug, 'category' );
 
 		// Go to current post to update WP_Query with correct data.

@@ -10,11 +10,9 @@ declare(strict_types=1);
 
 namespace Parsely\Content_Helper;
 
-use Parsely\Endpoints\User_Meta\Dashboard_Widget_Settings_Endpoint;
 use Parsely\Parsely;
-use Parsely\RemoteAPI\Analytics_Posts_API;
-
-use function Parsely\Utils\get_asset_info;
+use Parsely\Utils\Utils;
+use Parsely\REST_API\Settings\Endpoint_Dashboard_Widget_Settings;
 
 use const Parsely\PARSELY_FILE;
 
@@ -89,12 +87,13 @@ class Dashboard_Widget extends Content_Helper_Feature {
 	 * @return bool Whether the Dashboard Widget can be enabled.
 	 */
 	public function can_enable_widget(): bool {
-		$screen    = get_current_screen();
-		$posts_api = new Analytics_Posts_API( $GLOBALS['parsely'] );
+		$screen = get_current_screen();
 
 		return $this->can_enable_feature(
 			null !== $screen && 'dashboard' === $screen->id,
-			$posts_api->is_available_to_current_user()
+			$this->parsely->get_rest_api_controller()->is_available_to_current_user(
+				'/stats/posts'
+			)
 		);
 	}
 
@@ -125,7 +124,7 @@ class Dashboard_Widget extends Content_Helper_Feature {
 			return;
 		}
 
-		$asset_php        = get_asset_info( 'build/content-helper/dashboard-widget.asset.php' );
+		$asset_php        = Utils::get_asset_info( 'build/content-helper/dashboard-widget.asset.php' );
 		$built_assets_url = plugin_dir_url( PARSELY_FILE ) . 'build/content-helper/';
 
 		wp_enqueue_script(
@@ -136,7 +135,7 @@ class Dashboard_Widget extends Content_Helper_Feature {
 			true
 		);
 
-		$this->inject_inline_scripts( Dashboard_Widget_Settings_Endpoint::get_route() );
+		$this->inject_inline_scripts( Endpoint_Dashboard_Widget_Settings::get_endpoint_name() );
 
 		wp_enqueue_style(
 			static::get_style_id(),

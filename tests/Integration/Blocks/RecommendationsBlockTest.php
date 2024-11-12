@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Blocks;
+namespace Parsely\Tests\Integration\Blocks;
 
 use Parsely\Recommendations_Block;
 use Parsely\Tests\Integration\TestCase;

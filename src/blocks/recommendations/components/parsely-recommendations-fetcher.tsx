@@ -44,7 +44,7 @@ export const ParselyRecommendationsFetcher = (
 
 		try {
 			response = await apiFetch<Promise<ApiResponse>>( {
-				path: addQueryArgs( '/wp-parsely/v1/related', { query } ),
+				path: addQueryArgs( '/wp-parsely/v2/stats/related', query ),
 			} );
 		} catch ( wpError ) {
 			error = wpError;

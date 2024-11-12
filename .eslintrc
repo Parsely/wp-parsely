@@ -42,10 +42,11 @@
 			}
 		],
 		"@typescript-eslint/ban-ts-comment": "off",
-		"@typescript-eslint/prefer-nullish-coalescing": ["error"],
+		"@typescript-eslint/method-signature-style": "error", // Can be removed after we've updated to wp-scripts v28 or greater.
+		"@typescript-eslint/prefer-nullish-coalescing": "error",
 		// Enabling TS rule and disabling Base rule as it can report incorrect errors.
 		"no-shadow": "off",
-		"@typescript-eslint/no-shadow": ["error"],
+		"@typescript-eslint/no-shadow": "error",
 		// Allow usage of Gutenberg experimental components.
 		"@wordpress/no-unsafe-wp-apis": "off",
 		// Allow link tag in JSDocs.

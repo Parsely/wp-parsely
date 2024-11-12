@@ -52,13 +52,13 @@ export class TitleSuggestionsProvider extends BaseProvider {
 	public async generateTitles( content: string, limit: number = 3, tone: ToneProp, persona: PersonaProp ): Promise<string[]> {
 		const response = this.fetch<string[]>( {
 			method: 'POST',
-			path: addQueryArgs( '/wp-parsely/v1/content-suggestions/suggest-headline', {
+			path: addQueryArgs( '/wp-parsely/v2/content-helper/title-suggestions/generate', {
 				limit,
 				tone: getToneLabel( tone ),
 				persona: getPersonaLabel( persona ),
 			} ),
 			data: {
-				content,
+				text: content,
 			},
 		} );
 

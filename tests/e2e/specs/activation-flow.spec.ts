@@ -1,7 +1,10 @@
 /**
  * WordPress dependencies
  */
-import { visitAdminPage } from '@wordpress/e2e-test-utils';
+import {
+	expect,
+	test,
+} from '@wordpress/e2e-test-utils-playwright';
 
 /**
  * Internal dependencies
@@ -9,67 +12,96 @@ import { visitAdminPage } from '@wordpress/e2e-test-utils';
 import {
 	VALID_SITE_ID,
 	setSiteKeys,
-	waitForWpAdmin,
 } from '../utils';
 
-describe( 'Activation flow', (): void => {
-	it( 'Should progress as intended', async (): Promise<void> => {
-		await setSiteKeys( '', '' );
+/**
+ * Tests for the activation flow of the plugin.
+ *
+ * @since 3.17.0 Migrated to Playwright.
+ */
+test.describe( 'Activation flow', (): void => {
+	/**
+	 * Verifies that the plugin displays an error when the Site ID is not provided.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
+	 */
+	test( 'Should show an error message when no Site ID is provided', async ( { admin } ): Promise<void> => {
+		const page = admin.page;
 
-		await visitAdminPage( '/options-general.php', '?page=parsely' );
+		await setSiteKeys( page, '', '' );
 
-		const versionText: string = await page.$eval( '#wp-parsely_version', ( el : Element ) => el.textContent ?? '' );
-		expect( versionText ).toMatch( /^Version \d+.\d+/ );
+		await admin.visitAdminPage( '/options-general.php?page=parsely' );
 
-		const errorData = await page.$eval( '#wp-parsely-site-id-error-notice', ( el: Element ) => ( {
-			classes: el.classList.value,
-			message: el.textContent,
-		} ) );
-
-		expect( errorData.classes ).toBe( 'notice notice-error' );
-		expect( errorData.message ).toBe(
-			'The Parse.ly plugin is not active. You need to provide your Parse.ly Dash Site ID before things get cooking.'
+		const errorMessage = page.getByText(
+			'The Parse.ly plugin is not active. You need to provide your Parse.ly Dash Site ID before things get cooking.',
+			{ exact: true }
 		);
 
-		await setSiteKeys( VALID_SITE_ID, '' );
+		await expect( errorMessage ).toBeVisible();
 
-		await waitForWpAdmin();
-		expect( await page.$( '#message.error' ) ).toBe( null );
+		await setSiteKeys( page, VALID_SITE_ID, '' );
+
+		await expect( errorMessage ).toBeHidden();
 	} );
 
-	it( 'Should display all admin sections', async (): Promise<void> => {
-		await visitAdminPage( '/options-general.php', '?page=parsely' );
+	/**
+	 * Verifies that the Settings page behaves as expected.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
+	 */
+	test( 'Should present a settings page that behaves as expected', async ( { admin } ): Promise<void> => {
+		const page = admin.page;
 
-		// Default tab.
-		expect( page ).not.toBe( null );
-		await testSectionsVisibility( [ 'initial', 'none', 'none' ] );
+		await admin.visitAdminPage( '/options-general.php?page=parsely' );
 
-		// Basic Settings Tab.
-		await page.click( '.basic-section-tab' );
-		await testSectionsVisibility( [ 'initial', 'none', 'none' ] );
+		// Initialize locators.
+		const basicTab = page.getByRole( 'link', { name: 'Basic' } );
+		const basicSection = page.locator( '.basic-section' );
+		const contentHelperTab = page.getByRole( 'link', { name: 'Content Helper' } );
+		const contentHelperSection = page.locator( '.content-helper-section' );
+		const recrawlTab = page.getByRole( 'link', { name: 'Recrawl' } );
+		const recrawlSection = page.locator( '.recrawl-section' );
+		const advancedTab = page.getByRole( 'link', { name: 'Advanced' } );
+		const advancedSection = page.locator( '.advanced-section' );
 
-		// Recrawl Settings Tab.
-		await page.click( '.recrawl-section-tab' );
-		await testSectionsVisibility( [ 'none', 'initial', 'none' ] );
+		// Check that all tabs are present in the Settings page.
+		await expect( basicTab ).toBeVisible();
+		await expect( contentHelperTab ).toBeVisible();
+		await expect( recrawlTab ).toBeVisible();
+		await expect( advancedTab ).toBeVisible();
 
-		// Advanced Settings Tab.
-		await page.click( '.advanced-section-tab' );
-		await testSectionsVisibility( [ 'none', 'none', 'initial' ] );
+		// Check that by default, the Basic Settings section is active.
+		await expect( basicSection ).toBeVisible();
+		await expect( contentHelperSection ).toBeHidden();
+		await expect( recrawlSection ).toBeHidden();
+		await expect( advancedSection ).toBeHidden();
 
-		await page.click( '.basic-section-tab' ); // Revert to initial state
+		// Test section visibility when the Basic tab is clicked.
+		await basicSection.click();
+		await expect( basicSection ).toBeVisible();
+		await expect( contentHelperSection ).toBeHidden();
+		await expect( recrawlSection ).toBeHidden();
+		await expect( advancedSection ).toBeHidden();
+
+		// Test section visibility when the Content Helper tab is clicked.
+		await contentHelperTab.click();
+		await expect( basicSection ).toBeHidden();
+		await expect( contentHelperSection ).toBeVisible();
+		await expect( recrawlSection ).toBeHidden();
+		await expect( advancedSection ).toBeHidden();
+
+		// Test section visibility when the Recrawl tab is clicked.
+		await recrawlTab.click();
+		await expect( basicSection ).toBeHidden();
+		await expect( contentHelperSection ).toBeHidden();
+		await expect( recrawlSection ).toBeVisible();
+		await expect( advancedSection ).toBeHidden();
+
+		// Test section visibility when the Advanced tab is clicked.
+		await advancedTab.click();
+		await expect( basicSection ).toBeHidden();
+		await expect( contentHelperSection ).toBeHidden();
+		await expect( recrawlSection ).toBeHidden();
+		await expect( advancedSection ).toBeVisible();
 	} );
-
-	async function testSectionsVisibility( displayValues: string[] ): Promise<void> {
-		const basicSectionSelector = '.basic-section';
-		const recrawlSectionSelector = '.recrawl-section';
-		const advancedSectionSelector = '.advanced-section';
-
-		expect( await getSectionStyles( basicSectionSelector ) ).toContain( `display: ${ displayValues[ 0 ] }` );
-		expect( await getSectionStyles( recrawlSectionSelector ) ).toContain( `display: ${ displayValues[ 1 ] }` );
-		expect( await getSectionStyles( advancedSectionSelector ) ).toContain( `display: ${ displayValues[ 2 ] }` );
-	}
-
-	async function getSectionStyles( selector: string ): Promise<string> {
-		return await page.$eval( selector, ( e: Element ): string => e.getAttribute( 'style' ) ?? '' );
-	}
 } );

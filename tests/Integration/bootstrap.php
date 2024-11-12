@@ -45,11 +45,6 @@ namespace Parsely\Tests\Integration {
 		echo PHP_EOL, 'ERROR: Please check whether the WP_PLUGIN_DIR environment variable is set and set to the correct value. The unit test suite won\'t be able to run without it.', PHP_EOL;
 		exit( 1 );
 	}
-
-	// Additional necessary requires.
-	require_once dirname( __DIR__ ) . '/trait-tests-reflection.php';
-	require_once __DIR__ . '/TestCase.php';
-	require_once __DIR__ . '/Metadata/NonPostTestCase.php';
 }
 
 // Plugin root file is not included during tests, so define the namespaced

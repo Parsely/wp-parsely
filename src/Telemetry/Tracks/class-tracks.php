@@ -11,9 +11,6 @@ declare(strict_types=1);
 namespace Parsely\Telemetry;
 
 use WP_Error;
-use function Parsely\Utils\get_asset_info;
-use const Parsely\PARSELY_FILE;
-use const Parsely\PARSELY_VERSION;
 
 /**
  * This class comprises the mechanics of sending events to the Automattic Tracks

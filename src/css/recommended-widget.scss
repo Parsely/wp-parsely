@@ -56,7 +56,6 @@
 }
 
 @supports (display: grid) {
-
 	.parsely-recommended-widget-entry::after {
 		display: none;
 		clear: initial;

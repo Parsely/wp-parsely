@@ -2,10 +2,9 @@
  * WordPress dependencies
  */
 import {
-	createNewPost,
-	enablePageDialogAccept,
-	insertBlock,
-} from '@wordpress/e2e-test-utils';
+	expect,
+	test,
+} from '@wordpress/e2e-test-utils-playwright';
 
 /**
  * Internal dependencies
@@ -18,56 +17,65 @@ import {
 
 /**
  * Tests for the Recommendations Block.
+ *
+ * @since 3.17.0 Migrated to Playwright.
  */
-describe( 'Recommendations Block', () => {
-	/**
-	 * Prevents browser from locking with dialogs, logs in to WordPress,
-	 * and activates the Parse.ly plugin.
-	 */
-	beforeAll( async () => {
-		enablePageDialogAccept();
-	} );
-
+test.describe( 'Recommendations Block', () => {
 	/**
 	 * Verifies that the block will display an error when an invalid Site ID is provided.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	it( 'Should display an error when an invalid Site ID is provided', async () => {
-		await setSiteKeys( INVALID_SITE_ID, '' );
-		await createNewPost();
-		await insertBlock( 'Parse.ly' );
+	test( 'Should display an error when an invalid Site ID is provided', async ( { admin } ) => {
+		const page = admin.page;
 
-		await page.waitForSelector( '.parsely-recommendations-error' );
-		const text = await page.$eval( '.parsely-recommendations-error', ( element: Element ) => element.textContent );
-		expect( text ).toMatch( 'Access denied. Please verify that your Site ID is valid.' );
+		await setSiteKeys( page, INVALID_SITE_ID, '' );
+		await admin.createNewPost();
+		await admin.editor.insertBlock( { name: 'wp-parsely/recommendations' } );
+
+		await expect( page.getByText(
+			'Access denied. Please verify that your Site ID is valid.',
+			{ exact: true }
+		) ).toBeVisible();
 	} );
 
 	/**
 	 * Verifies that the block will display an error when an empty Site ID is provided.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	it( 'Should display an error when an empty Site ID is provided', async () => {
-		await setSiteKeys( '', '' );
-		await createNewPost();
-		await insertBlock( 'Parse.ly' );
+	test( 'Should display an error when an empty Site ID is provided', async ( { admin } ) => {
+		const page = admin.page;
 
-		await page.waitForSelector( '.parsely-recommendations-error' );
-		const text = await page.$eval( '.parsely-recommendations-error', ( element: Element ) => element.textContent );
-		expect( text ).toMatch( 'A Parse.ly Site ID must be set in site options to use this endpoint' );
+		await setSiteKeys( page, '', '' );
+		await admin.createNewPost();
+		await admin.editor.insertBlock( { name: 'wp-parsely/recommendations' } );
+
+		await expect( page.getByText(
+			'To use this Block, a Parse.ly Site ID must be set in the plugin\'s options',
+			{ exact: true }
+		) ).toBeVisible();
 	} );
 
 	/**
 	 * Verifies that the block will display an error when the API is not accessible.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
 	 */
-	it( 'Should display an error when the Parse.ly API is not accessible', async () => {
-		await setSiteKeys( VALID_SITE_ID, '' );
-		await createNewPost();
-		await page.setOfflineMode( true );
-		await insertBlock( 'Parse.ly' );
+	test( 'Should display an error when the Parse.ly API is not accessible', async ( { admin } ) => {
+		const page = admin.page;
+		const context = admin.context;
 
-		await page.waitForSelector( '.parsely-recommendations-error' );
-		const text = await page.$eval( '.parsely-recommendations-error', ( element: Element ) => element.textContent );
+		await setSiteKeys( page, VALID_SITE_ID, '' );
+		await admin.createNewPost();
+		await context.setOffline( true );
+		await admin.editor.insertBlock( { name: 'wp-parsely/recommendations' } );
 
-		expect( text ).toMatch( 'The Parse.ly Recommendations API is not accessible. You may be offline.' );
+		await expect( page.getByText(
+			'The Parse.ly Recommendations API is not accessible. You may be offline.',
+			{ exact: true }
+		) ).toBeVisible();
 
-		await page.setOfflineMode( false );
+		context.setOffline( false );
 	} );
 } );

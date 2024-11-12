@@ -52,7 +52,7 @@ export const PerformanceReferrersPanel = ( {
 				<div className="panel-settings">
 					<SelectControl
 						value={ metric }
-						prefix={ __( 'By: ', 'wp-parsely' ) }
+						prefix={ __( 'By:', 'wp-parsely' ) }
 						onChange={ ( selection ) => {
 							if ( isInEnum( selection, Metric ) ) {
 								setMetric( selection as Metric );
@@ -62,7 +62,7 @@ export const PerformanceReferrersPanel = ( {
 						{ Object.values( Metric ).map( ( value ) => (
 							<option key={ value } value={ value } disabled={ 'avg_engaged' === value }>
 								{ getMetricDescription( value ) }
-								{ 'avg_engaged' === value && __( ' (coming soon)', 'wp-parsely' ) }
+								{ 'avg_engaged' === value && ' ' + __( '(coming soon)', 'wp-parsely' ) }
 							</option>
 						) ) }
 					</SelectControl>

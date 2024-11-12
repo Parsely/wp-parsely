@@ -1,23 +1,33 @@
 /**
  * WordPress dependencies
  */
-import { visitAdminPage } from '@wordpress/e2e-test-utils';
+import {
+	expect,
+	test,
+} from '@wordpress/e2e-test-utils-playwright';
 
 /**
- * Internal dependencies
+ * Tests for the plugin entry in the WordPress Plugins page.
+ *
+ * @since 3.17.0 Migrated to Playwright.
  */
-import {
-	waitForWpAdmin,
-} from '../utils';
+test.describe( 'The plugin\'s entry in the WordPress Plugins page', () => {
+	/**
+	 * Verifies that the plugin is listed in the WordPress Plugins page, and
+	 * that it provides a link to its Settings page.
+	 *
+	 * @since 3.17.0 Migrated to Playwright.
+	 */
+	test( 'Should provide a link to the plugin\'s settings page', async ( { admin } ) => {
+		const page = admin.page;
 
-describe( 'Plugin action link', () => {
-	it( 'Should link to plugin settings page', async () => {
-		await visitAdminPage( '/plugins.php', '' );
+		await admin.visitAdminPage( '/plugins.php' );
+		await page.locator( '#the-list' ).getByRole( 'link', { name: 'Settings' } ).click();
 
-		await page.click( '[data-slug=wp-parsely] .settings>a' );
-		await waitForWpAdmin();
-
-		const versionText = await page.$eval( '#wp-parsely_version', ( el: Element ) => el.textContent );
-		expect( versionText ).toMatch( /^Version \d+.\d+/ );
+		// Check loaded page's URL and heading.
+		await page.waitForURL( '**/wp-admin/options-general.php?page=parsely' );
+		await expect(
+			page.getByText( 'Parse.ly Settings', { exact: true } )
+		).toBeVisible();
 	} );
 } );

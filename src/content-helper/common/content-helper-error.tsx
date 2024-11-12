@@ -58,7 +58,7 @@ export class ContentHelperError extends Error {
 	constructor(
 		message: string,
 		code: ContentHelperErrorCode,
-		messagePrefix = __( 'Error: ', 'wp-parsely' )
+		messagePrefix: string = __( 'Error:', 'wp-parsely' )
 	) {
 		// Avoid double message prefix.
 		if ( message.startsWith( messagePrefix ) ) {
@@ -66,7 +66,7 @@ export class ContentHelperError extends Error {
 		}
 
 		// Initialization.
-		super( messagePrefix + message );
+		super( messagePrefix.length > 0 ? `${ messagePrefix } ${ message }` : message );
 		this.name = this.constructor.name;
 		this.code = code;
 

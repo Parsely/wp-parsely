@@ -161,7 +161,7 @@ export const BlockOverlay = ( {
  *
  * @return {import('react').JSX.Element} The JSX Element.
  */
-const BlockOverlayFullContent = ( ): React.JSX.Element => {
+const BlockOverlayFullContent = (): React.JSX.Element => {
 	const { overlayBlocks } = useSelect( ( select ) => {
 		const { getOverlayBlocks } = select( SmartLinkingStore );
 

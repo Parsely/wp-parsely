@@ -1,8 +1,8 @@
 # Parse.ly
 
-Stable tag: 3.16.4  
+Stable tag: 3.17.0  
 Requires at least: 5.2  
-Tested up to: 6.5  
+Tested up to: 6.7  
 Requires PHP: 7.2  
 License: GPLv2 or later  
 License URI: https://www.gnu.org/licenses/gpl-2.0.html  
@@ -41,10 +41,10 @@ The [Content Helper](https://docs.parse.ly/plugin-content-helper/) is a set of c
 - The [Parse.ly Stats Column](https://docs.parse.ly/plugin-content-helper/#h-posts) - Displays published post performance for the last 7 days in Post Lists.
 - The [Parse.ly Editor Sidebar](https://docs.parse.ly/plugin-content-helper/#h-editor) - This sidebar is integrated into the WordPress Editor and offers insights about the content currently being edited such as:
   - [Title Suggestions](https://docs.wpvip.com/parse-ly/wp-parsely-features/title-suggestions/) - Generates title suggestions for the post/page currently being edited.
+  - [Excerpt Suggestions](https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-suggestions/) - Generates an excerpt suggestion for the post/page currently being edited.
   - [Smart Linking](https://docs.wpvip.com/parse-ly/wp-parsely-features/smart-linking/) - Automatically adds links to the current content that point to the most relevant and top-performing posts.
   - [Related Posts](https://docs.parse.ly/plugin-content-helper/#h-related-posts) - Displays a list of the website’s most successful posts, similar to the post/page currently being edited.
   - [Performance Stats](https://docs.parse.ly/plugin-content-helper/#h-see-performance-details) - Displays performance metrics about the content currently being edited.
-- The [Parse.ly Excerpt Generator](https://docs.wpvip.com/parse-ly/wp-parsely-features/excerpt-generator/) - A Post Editor settings enhancement that generates an excerpt for the post/page currently being edited.
 
 #### The Parse.ly Recommendations Block
 
@@ -124,8 +124,8 @@ Please visit the [changelog](https://github.com/parsely/wp-parsely/blob/trunk/CH
    ![Parse.ly Editor Sidebar - Related Posts](.wordpress-org/screenshot-5.png)
 6. The Parse.ly Editor Sidebar, featuring the Performance Stats panel.  
    ![Parse.ly Editor Sidebar - Performance Stats](.wordpress-org/screenshot-6.png)
-7. The Parse.ly Excerpt Generator in the Post Editor's settings.  
-   ![Parse.ly Excerpt Generator](.wordpress-org/screenshot-7.png)
+7. The Parse.ly Excerpt Suggestions in the Post Editor's settings. Also available in the Parse.ly Editor Sidebar.  
+   ![Parse.ly Excerpt Suggestions](.wordpress-org/screenshot-7.png)
 8. The Recommendations Block, showcasing links to related content on your site.  
    ![Parse.ly Recommendations Block](.wordpress-org/screenshot-8.png)
 9. A view of the Parse.ly Dashboard Overview. Parse.ly offers analytics that empower you to better understand how your content is performing.  

@@ -7,16 +7,10 @@
 
 declare(strict_types=1);
 
-namespace Parsely\Tests\Unit;
+namespace Parsely\Tests\Unit\Utils;
 
+use Parsely\Utils\Utils;
 use Yoast\WPTestUtils\BrainMonkey\TestCase;
-
-use function Parsely\Utils\convert_to_associative_array;
-use function Parsely\Utils\get_formatted_number;
-use function Parsely\Utils\get_formatted_time;
-use function Parsely\Utils\get_utc_date_format;
-
-use const Parsely\Utils\DATE_UTC_FORMAT;
 
 /**
  * Unit Tests: Util Functions
@@ -57,12 +51,12 @@ final class UtilsTest extends TestCase {
 	/**
 	 * Tests get_utc_date_format function.
 	 *
-	 * @covers function \Parsely\Utils\get_utc_date_format
+	 * @covers function \Parsely\Utils\Utils::get_utc_date_format
 	 */
 	public function test_get_utc_date_format(): void {
-		$current_date = gmdate( DATE_UTC_FORMAT );
-		$past_date    = gmdate( DATE_UTC_FORMAT, strtotime( '-1 days' ) );
-		$future_date  = gmdate( DATE_UTC_FORMAT, strtotime( '1 days' ) );
+		$current_date = gmdate( Utils::DATE_UTC_FORMAT );
+		$past_date    = gmdate( Utils::DATE_UTC_FORMAT, strtotime( '-1 days' ) );
+		$future_date  = gmdate( Utils::DATE_UTC_FORMAT, strtotime( '1 days' ) );
 
 		/**
 		 * Variable.
@@ -89,7 +83,7 @@ final class UtilsTest extends TestCase {
 
 		foreach ( $tests_data as $t ) {
 			$args   = $t['args'];
-			$output = get_utc_date_format( $args['days'] );
+			$output = Utils::get_utc_date_format( $args['days'] );
 
 			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}
@@ -98,7 +92,7 @@ final class UtilsTest extends TestCase {
 	/**
 	 * Tests get_formatted_number function.
 	 *
-	 * @covers function \Parsely\Utils\get_formatted_number
+	 * @covers function \Parsely\Utils\Utils::get_formatted_number
 	 */
 	public function test_get_formatted_number(): void {
 		$this->mock_wordpress_functions();
@@ -143,7 +137,7 @@ final class UtilsTest extends TestCase {
 
 		foreach ( $tests_data as $t ) {
 			$args   = $t['args'];
-			$output = get_formatted_number( (string) $args['number'] );
+			$output = Utils::get_formatted_number( (string) $args['number'] );
 
 			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}
@@ -152,7 +146,7 @@ final class UtilsTest extends TestCase {
 	/**
 	 * Tests get_formatted_time function.
 	 *
-	 * @covers function \Parsely\Utils\get_formatted_time
+	 * @covers function \Parsely\Utils\Utils::get_formatted_time
 	 */
 	public function test_get_formatted_time(): void {
 		$this->mock_wordpress_functions();
@@ -202,7 +196,7 @@ final class UtilsTest extends TestCase {
 
 		foreach ( $tests_data as $t ) {
 			$args   = $t['args'];
-			$output = get_formatted_time( $args['seconds'] );
+			$output = Utils::get_formatted_time( $args['seconds'] );
 
 			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}
@@ -211,7 +205,7 @@ final class UtilsTest extends TestCase {
 	/**
 	 * Tests convert_to_associative_array function.
 	 *
-	 * @covers function \Parsely\Utils\convert_to_associative_array
+	 * @covers function \Parsely\Utils\Utils::convert_to_associative_array
 	 */
 	public function test_convert_to_associative_array(): void {
 		/**
@@ -256,7 +250,7 @@ final class UtilsTest extends TestCase {
 
 		foreach ( $tests_data as $t ) {
 			$args   = $t['args'];
-			$output = convert_to_associative_array( $args['obj'] );
+			$output = Utils::convert_to_associative_array( $args['obj'] );
 
 			self::assertSame( $t['expected_output'], $output, $t['msg'] );
 		}

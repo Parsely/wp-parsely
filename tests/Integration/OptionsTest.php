@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Parsely\Tests\Integration;
 
 use Parsely\Parsely;
+use Parsely\Permissions;
 
 /**
  * Integration Tests for plugin options.
@@ -553,5 +554,113 @@ final class OptionsTest extends TestCase {
 		self::assertSame( false, $options['disable_javascript'] );
 		self::assertSame( 'json_ld', $options['meta_type'] );
 		self::assertSame( false, $options['use_top_level_cats'] );
+	}
+
+	/**
+	 * Verifies that default Content Helper permission options are set as
+	 * expected when we have a new plugin installation.
+	 *
+	 * In this case, the default Content Helper options should give AI feature
+	 * access to administrators only. This is the default behavior for plugin
+	 * versions 3.16.0 and newer.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 */
+	public function test_content_helper_options_in_a_new_plugin_install(): void {
+		delete_option( Parsely::OPTIONS_KEY );
+
+		$expected = Permissions::build_pch_permissions_settings_array(
+			true,
+			array( 'administrator' )
+		);
+
+		self::assertSame(
+			$expected,
+			( new Parsely() )->get_options()['content_helper']
+		);
+	}
+
+	/**
+	 * Verifies that default Content Helper permission options are set as
+	 * expected when an existing plugin install does not have any Content Helper
+	 * options (first run after upgrading to 3.16.0 or newer).
+	 *
+	 * In this case, the Content Helper permission options should be based on
+	 * the edit_posts capability, to keep the behavior consistent with plugin
+	 * versions prior to 3.16.0.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @covers \Parsely\Parsely::set_default_content_helper_settings_values
+	 * @covers \Parsely\Permissions::build_pch_permissions_settings_array
+	 * @covers \Parsely\Permissions::get_user_roles_with_edit_posts_cap
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
+	 */
+	public function test_content_helper_options_in_existing_plugin_install_first_run(): void {
+		$options = ( new Parsely() )->get_options();
+		unset( $options['content_helper'] );
+		add_option( Parsely::OPTIONS_KEY, $options );
+
+		$expected = Permissions::build_pch_permissions_settings_array(
+			true,
+			array_keys( Permissions::get_user_roles_with_edit_posts_cap() )
+		);
+
+		self::assertSame(
+			$expected,
+			( new Parsely() )->get_options()['content_helper']
+		);
+	}
+
+	/**
+	 * Verifies that Content Helper options are as expected when we have an
+	 * existing plugin installation with Content Helper options set.
+	 *
+	 * In this case, the options should be the ones fetched from the database,
+	 * not being overwritten by any defaults.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @covers \Parsely\Parsely::get_options
+	 * @uses \Parsely\Parsely::__construct
+	 * @uses \Parsely\Parsely::allow_parsely_remote_requests
+	 * @uses \Parsely\Parsely::are_credentials_managed
+	 * @uses \Parsely\Parsely::get_managed_credentials
+	 * @uses \Parsely\Parsely::set_default_full_metadata_in_non_posts
+	 * @uses \Parsely\Parsely::set_default_track_as_values
+	 * @uses \Parsely\Parsely::set_managed_options
+	 * @uses \Parsely\Permissions::build_pch_permissions_settings_array
+	 */
+	public function test_content_helper_options_in_existing_plugin_install_subsequent_runs(): void {
+		$options  = ( new Parsely() )->get_options();
+		$expected = Permissions::build_pch_permissions_settings_array(
+			true,
+			array( 'administrator', 'editor' )
+		);
+
+		$options['content_helper'] = $expected;
+		add_option( Parsely::OPTIONS_KEY, $options );
+
+		self::assertSame(
+			$expected,
+			( new Parsely() )->get_options()['content_helper']
+		);
 	}
 }

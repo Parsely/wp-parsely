@@ -4,7 +4,6 @@
 
 // Set the colors of the sidebar icon.
 .components-button[aria-controls="wp-parsely-block-editor-sidebar:wp-parsely-content-helper"] {
-
 	&:hover {
 		background-color: #fff;
 	}
@@ -38,7 +37,6 @@ p.content-helper-error-message-hint {
 
 // Notice components with errors that appear within Sidebar panels.
 .wp-parsely-content-helper-error.components-notice {
-
 	.components-notice__content {
 		margin: 0;
 
@@ -53,7 +51,6 @@ p.content-helper-error-message-hint {
 }
 
 .wp-parsely-content-helper {
-
 	.wp-parsely-sidebar-header {
 		display: flex;
 		flex-direction: column;
@@ -70,7 +67,6 @@ p.content-helper-error-message-hint {
 	}
 
 	.wp-parsely-sidebar-main-panel {
-
 		// Settings button for panels.
 		.components-panel button.panel-settings-button,
 		.components-panel .panel-settings-button > button {
@@ -86,7 +82,6 @@ p.content-helper-error-message-hint {
 			}
 
 			.components-tab-panel__tabs {
-
 				// Individual tab.
 				button {
 					display: flex;

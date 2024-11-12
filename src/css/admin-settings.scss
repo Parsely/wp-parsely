@@ -5,7 +5,6 @@
 	--padding-default: 15px;
 
 	fieldset.user-role-permissions {
-
 		label {
 			margin-right: to_rem(16px) !important;
 		}
@@ -14,7 +13,6 @@
 	.disabled-before-posting,
 	fieldset:disabled,
 	tr:has(fieldset:disabled) {
-
 		label:not(.prevent-disable),
 		p,
 		th {
@@ -75,9 +73,7 @@
 	}
 
 	@media only screen and (max-width: 380px) {
-
 		#track-post-types {
-
 			th,
 			td {
 				padding-left: 10px;

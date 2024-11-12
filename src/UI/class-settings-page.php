@@ -10,12 +10,11 @@ declare(strict_types=1);
 
 namespace Parsely\UI;
 
-use Parsely\Content_Helper\Excerpt_Generator;
+use Parsely\Content_Helper\Excerpt_Suggestions;
 use Parsely\Parsely;
 use Parsely\Permissions;
+use Parsely\Utils\Utils;
 use Parsely\Validator;
-
-use function Parsely\Utils\get_asset_info;
 
 use const Parsely\PARSELY_FILE;
 
@@ -23,8 +22,6 @@ use const Parsely\PARSELY_FILE;
  * Renders the wp-admin Parse.ly plugin settings page.
  *
  * @since 3.0.0
- *
- * @phpstan-import-type Parsely_Options from Parsely
  *
  * @phpstan-type Setting_Arguments array{
  *   add_fieldset?: bool,
@@ -168,7 +165,7 @@ final class Settings_Page {
 		add_filter( 'media_library_months_with_files', '__return_empty_array' );
 		wp_enqueue_media();
 
-		$admin_settings_asset = get_asset_info( 'build/admin-settings.asset.php' );
+		$admin_settings_asset = Utils::get_asset_info( 'build/admin-settings.asset.php' );
 		$built_assets_url     = plugin_dir_url( PARSELY_FILE ) . '/build/';
 
 		wp_enqueue_script(
@@ -237,7 +234,7 @@ final class Settings_Page {
 			wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'wp-parsely' ) );
 		}
 
-		include_once plugin_dir_path( PARSELY_FILE ) . 'views/parsely-settings.php';
+		include_once plugin_dir_path( PARSELY_FILE ) . 'src/UI/settings-page.php';
 	}
 
 	/**
@@ -499,7 +496,7 @@ final class Settings_Page {
 			'option_key' => $field_id,
 			'label_for'  => $field_id,
 			'legend'     => __( 'Excerpt Suggestions', 'wp-parsely' ),
-			'filter'     => Excerpt_Generator::get_feature_filter_name(),
+			'filter'     => Excerpt_Suggestions::get_feature_filter_name(),
 		);
 		add_settings_field(
 			$field_id,
@@ -1201,7 +1198,7 @@ final class Settings_Page {
 	 * @param ParselySettingOptions $input Options from the settings page.
 	 * @return ParselySettingOptions Validated inputs.
 	 */
-	private function validate_basic_section( $input ) {
+	private function validate_basic_section( $input ): array {
 		$are_credentials_managed = $this->parsely->are_credentials_managed;
 		$options                 = $this->parsely->get_options();
 
@@ -1220,7 +1217,10 @@ final class Settings_Page {
 				$valid_credentials = true;
 			}
 
-			if ( is_wp_error( $valid_credentials ) && Validator::INVALID_API_CREDENTIALS === $valid_credentials->get_error_code() ) {
+			if (
+				( is_wp_error( $valid_credentials ) && Validator::INVALID_API_CREDENTIALS === $valid_credentials->get_error_code() ) ||
+				( is_bool( $valid_credentials ) && ! $valid_credentials )
+			) {
 				add_settings_error(
 					Parsely::OPTIONS_KEY,
 					'api_secret',

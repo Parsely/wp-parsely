@@ -12,19 +12,18 @@ namespace Parsely\Tests\Integration;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
-use ReflectionClass;
-use ReflectionProperty;
-use ReflectionMethod;
 use Parsely\Parsely;
+use Parsely\Utils\Utils;
 use PHPUnit\Framework\RiskyTestError;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionProperty;
 use UnexpectedValueException;
 use WP_Error;
 use WP_Post;
 use WP_REST_Request;
 use WP_Term;
 use Yoast\WPTestUtils\WPIntegration\TestCase as WPIntegrationTestCase;
-
-use const Parsely\Utils\WP_DATE_TIME_FORMAT;
 
 /**
  * Abstract base class for all test case implementations.
@@ -33,7 +32,7 @@ use const Parsely\Utils\WP_DATE_TIME_FORMAT;
  */
 abstract class TestCase extends WPIntegrationTestCase {
 
-	use \Parsely\Tests\Tests_Reflection;
+	use \Parsely\Tests\Traits\TestsReflection;
 
 	public const VALID_SITE_ID = 'demoaccount.parsely.com';
 
@@ -101,7 +100,7 @@ abstract class TestCase extends WPIntegrationTestCase {
 	 * @param string $user_role The user's role. Default is subscriber.
 	 * @return int The newly created user's ID.
 	 */
-	public function create_test_user( string $user_login, string $user_role = 'subscriber' ): int {
+	public static function create_test_user( string $user_login, string $user_role = 'subscriber' ): int {
 		/** @var int */
 		return self::factory()->user->create(
 			array(
@@ -226,8 +225,8 @@ abstract class TestCase extends WPIntegrationTestCase {
 					'post_title'    => "Title $i-($post_status)",
 					'post_author'   => $i,
 					'post_content'  => "Content $i",
-					'post_date'     => $post_date->format( WP_DATE_TIME_FORMAT ),
-					'post_date_gmt' => gmdate( WP_DATE_TIME_FORMAT, $post_date->getTimestamp() ),
+					'post_date'     => $post_date->format( Utils::WP_DATE_TIME_FORMAT ),
+					'post_date_gmt' => gmdate( Utils::WP_DATE_TIME_FORMAT, $post_date->getTimestamp() ),
 				)
 			);
 
@@ -421,21 +420,39 @@ abstract class TestCase extends WPIntegrationTestCase {
 	}
 
 	/**
-	 * Sets current user as admin.
+	 * Changes the current user, creating the account if it doesn't exist.
 	 *
-	 * @param int $admin_user_id User ID for the site administrator.
-	 *                           Default is 1 which is assigned to first admin user while creating the site.
+	 * @since 3.17.0
+	 *
+	 * @param string $user_login The user's login.
+	 * @param string $user_role The user's role.
 	 */
-	public function set_admin_user( int $admin_user_id = 1 ): void {
-		wp_set_current_user( $admin_user_id );
+	public static function set_current_user_to( string $user_login, string $user_role ): void {
+		$user = get_user_by( 'login', $user_login );
+		if ( false === $user ) {
+			$user_id = self::create_test_user( $user_login, $user_role );
+			$user    = get_user_by( 'id', $user_id );
+		}
+
+		if ( false === $user ) {
+			self::fail( 'Invalid user.' );
+		}
+
+		wp_set_current_user( $user->ID );
 	}
 
 	/**
-	 * Creates a user with role `contributor` and login.
+	 * Changes the current user to the built-in admin account.
 	 */
-	public function login_as_contributor(): void {
-		$user_id = $this->create_test_user( 'test_contributor', 'contributor' );
-		wp_set_current_user( $user_id );
+	public function set_current_user_to_admin(): void {
+		self::set_current_user_to( 'admin', 'administrator' );
+	}
+
+	/**
+	 * Changes the current user to a contributor account.
+	 */
+	public function set_current_user_to_contributor(): void {
+		self::set_current_user_to( 'test_contributor', 'contributor' );
 	}
 
 	/**
@@ -682,5 +699,28 @@ abstract class TestCase extends WPIntegrationTestCase {
 		}
 
 		return rest_do_request( $request )->get_data();
+	}
+
+	/**
+	 * Returns the requested string value from an associative array. If
+	 * validation fails, the default value is returned.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param array<string, mixed> $data The array from which to get the string.
+	 * @param string               $key The key of the string in the array.
+	 * @param string               $default_value The value to return if validation fails.
+	 * @return string The string, or the default value if validation fails.
+	 */
+	protected static function get_string_value_from_array(
+		array $data,
+		string $key,
+		string $default_value
+	): string {
+		if ( ! isset( $data[ $key ] ) || ! is_string( $data[ $key ] ) ) {
+			return $default_value;
+		}
+
+		return $data[ $key ];
 	}
 }

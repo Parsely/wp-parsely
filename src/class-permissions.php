@@ -115,6 +115,11 @@ class Permissions {
 			return false;
 		}
 
+		// If the user is a super admin, they can access the feature.
+		if ( is_multisite() && is_super_admin( $current_user->ID ) ) {
+			return true;
+		}
+
 		// Current user's role is not yet set.
 		if ( 0 === count( $user_roles ) ) {
 			return false;
@@ -154,8 +159,9 @@ class Permissions {
 	public static function get_pch_permissions_json( $pch_options ): string {
 		$permissions = array();
 		$features    = array(
-			'SmartLinking'     => 'smart_linking',
-			'TitleSuggestions' => 'title_suggestions',
+			'SmartLinking'       => 'smart_linking',
+			'TitleSuggestions'   => 'title_suggestions',
+			'ExcerptSuggestions' => 'excerpt_suggestions',
 		);
 
 		foreach ( $features as $key => $value ) {

@@ -97,7 +97,7 @@ export const ParselyRecommendationsInspectorControls = ( {
 							value: 'pub_date',
 						},
 					] }
-					onChange={ ( value: string ): void => setAttributes( { sort: value } ) }
+					onChange={ ( value ): void => setAttributes( { sort: value } ) }
 				/>
 			</PanelRow>
 		</PanelBody>
