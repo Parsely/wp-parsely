@@ -62,7 +62,7 @@ final class Dashboard_Page {
 		add_menu_page(
 			'Parse.ly Dashboard Page',
 			'Parse.ly',
-			Parsely::CAPABILITY,
+			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
 			'parsely-dashboard-page',
 			array( $this, 'add_dashboard_page_placeholder' ),
 			$icon,
