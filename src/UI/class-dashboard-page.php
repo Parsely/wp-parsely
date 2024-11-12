@@ -62,7 +62,7 @@ final class Dashboard_Page {
 		add_menu_page(
 			'Parse.ly Dashboard Page',
 			'Parse.ly',
-			'manage_options',
+			Parsely::CAPABILITY,
 			'parsely-dashboard-page',
 			array( $this, 'add_dashboard_page_placeholder' ),
 			$icon,
