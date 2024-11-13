@@ -1,7 +1,8 @@
 @import "../../../common/css/functions";
 @import "../../../common/css/variables";
 
-.parsely-dashboard-page-content {
+.parsely-dashboard-page-body,
+.parsely-dashboard-page-header {
 	margin: 0 auto;
 	width: 100%;
 	padding: var(--grid-unit-40, 32px) var(--grid-unit-40, 32px) var(--grid-unit-60, 48px) var(--grid-unit-40, 32px);

@@ -1,3 +1,5 @@
+import { PageBody, PageContainer, PageHeader } from '../../components';
+
 /**
  * Settings page component.
  *
@@ -5,9 +7,13 @@
  */
 export const SettingsPage = () => {
 	return (
-		<>
-			<h1>Parse.ly Settings</h1>
-			<p>This is a page for settings.</p>
-		</>
+		<PageContainer name={ 'settings' }>
+			<PageHeader>
+				<h1>Parse.ly Settings</h1>
+			</PageHeader>
+			<PageBody>
+				<p>This is a page for settings.</p>
+			</PageBody>
+		</PageContainer>
 	);
 };

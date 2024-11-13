@@ -1,5 +1,6 @@
+import { PageContainer as PageContainer, PageBody } from '../../components';
 import { DashboardHeader } from './components/header-component';
-import { PARSELY_DASHBOARD_MAX_PAGE_WIDTH } from '../../dashboard-page';
+
 /**
  * The main dashboard page component.
  *
@@ -7,12 +8,11 @@ import { PARSELY_DASHBOARD_MAX_PAGE_WIDTH } from '../../dashboard-page';
  */
 export const DashboardPage = () => {
 	return (
-		<>
+		<PageContainer name="dashboard">
 			<DashboardHeader />
-			<div className="parsely-dashboard-page-content" style={ { maxWidth: PARSELY_DASHBOARD_MAX_PAGE_WIDTH + 'px' } }>
+			<PageBody>
 				<p>This is the dashboard page</p>
-			</div>
-
-		</>
+			</PageBody>
+		</PageContainer>
 	);
 };

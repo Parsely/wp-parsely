@@ -1,8 +1,22 @@
-import '../dashboard.scss';
+/**
+ * WordPress dependencies
+ */
 import { Button } from '@wordpress/components';
 import { Icon, link } from '@wordpress/icons';
-import { PARSELY_DASHBOARD_MAX_PAGE_WIDTH } from '../../../dashboard-page';
 
+/**
+ * Internal dependencies
+ */
+import { PageHeader } from '../../../components';
+import '../dashboard.scss';
+
+/**
+ * Header summary component.
+ *
+ * Renders a summary of the site performance.
+ *
+ * @since 3.18.0
+ */
 const HeaderSummary = () => {
 	return (
 		<div className="dashboard-header-summary">
@@ -18,6 +32,11 @@ const HeaderSummary = () => {
 	);
 };
 
+/**
+ * Type definition for the HeaderCard component.
+ *
+ * @since 3.18.0
+ */
 type HeaderCardProps = {
 	title?: string;
 	icon?: React.JSX.Element;
@@ -26,6 +45,14 @@ type HeaderCardProps = {
 	down?: boolean;
 	className?: string;
 };
+
+/**
+ * Single stat card component.
+ *
+ * @since 3.18.0
+ *
+ * @param {HeaderCardProps} props The component props.
+ */
 const StatCard = ( { title, value, change, down = false, icon, className }: HeaderCardProps ) => {
 	const changeIcon = down ? '↓' : '↑';
 
@@ -47,33 +74,36 @@ const StatCard = ( { title, value, change, down = false, icon, className }: Head
 	);
 };
 
+/**
+ * Dashboard header component.
+ *
+ * Renders the header of the main dashboard page.
+ *
+ * @since 3.18.0
+ */
 export const DashboardHeader = () => {
 	return (
 		<div className="dashboard-header-background">
-			<div className="parsely-dashboard-page-content" style={ { maxWidth: PARSELY_DASHBOARD_MAX_PAGE_WIDTH + 'px' } }>
-				<div className="dashboard-header">
-					<HeaderSummary />
-					<div className="dashboard-header-stats">
-						<div className="stats-top">
-							<StatCard className="stat-intro" title="Parse.ly Working For You" />
-							<StatCard title="Traffic Boost" value="14%" icon={ link } />
-							<StatCard title="Smart Link Clicks" value="784" icon={ link } />
-						</div>
-
-						{ [
-							{ title: 'Page Views', value: '4.6K', change: '24%' },
-							{ title: 'Visitors', value: '1.5K', change: '25%' },
-							{ title: 'Minutes', value: '32', change: '40%' },
-							{ title: 'Avg. Time', value: '32', change: '40%', down: true },
-							{ title: 'Soc. Interactions', value: '32', change: '40%' },
-							{ title: 'New Posts', value: '2', change: '40%' },
-						].map( ( metric, index ) => (
-							<StatCard key={ index } { ...metric } />
-						) ) }
-
+			<PageHeader className="dashboard-header">
+				<HeaderSummary />
+				<div className="dashboard-header-stats">
+					<div className="stats-top">
+						<StatCard className="stat-intro" title="Parse.ly Working For You" />
+						<StatCard title="Traffic Boost" value="14%" icon={ link } />
+						<StatCard title="Smart Link Clicks" value="784" icon={ link } />
 					</div>
+					{ [
+						{ title: 'Page Views', value: '4.6K', change: '24%' },
+						{ title: 'Visitors', value: '1.5K', change: '25%' },
+						{ title: 'Minutes', value: '32', change: '40%' },
+						{ title: 'Avg. Time', value: '32', change: '40%', down: true },
+						{ title: 'Soc. Interactions', value: '32', change: '40%' },
+						{ title: 'New Posts', value: '2', change: '40%' },
+					].map( ( metric, index ) => (
+						<StatCard key={ index } { ...metric } />
+					) ) }
 				</div>
-			</div>
+			</PageHeader>
 		</div>
 	);
 };
