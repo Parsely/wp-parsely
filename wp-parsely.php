@@ -28,16 +28,15 @@ namespace Parsely;
 
 use Parsely\Content_Helper\Dashboard_Widget;
 use Parsely\Content_Helper\Editor_Sidebar;
-use Parsely\Content_Helper\Excerpt_Suggestions;
 use Parsely\Content_Helper\Post_List_Stats;
 use Parsely\Endpoints\GraphQL_Metadata;
 use Parsely\Endpoints\Rest_Metadata;
 use Parsely\Integrations\Amp;
 use Parsely\Integrations\Google_Web_Stories;
 use Parsely\Integrations\Integrations;
-use Parsely\REST_API\REST_API_Controller;
 use Parsely\UI\Admin_Bar;
 use Parsely\UI\Admin_Warning;
+use Parsely\UI\Dashboard_Page;
 use Parsely\UI\Metadata_Renderer;
 use Parsely\UI\Network_Admin_Sites_List;
 use Parsely\UI\Plugins_Actions;
@@ -105,8 +104,13 @@ add_action( 'init', __NAMESPACE__ . '\\parsely_wp_admin_early_register' );
  * Network Admin Sites List table.
  */
 function parsely_wp_admin_early_register(): void {
+	// Plugin settings page.
 	$GLOBALS['parsely_settings_page'] = new Settings_Page( $GLOBALS['parsely'] );
 	$GLOBALS['parsely_settings_page']->run();
+
+	// Plugin dashboard page.
+	$GLOBALS['parsely_dashboard_page'] = new Dashboard_Page();
+	$GLOBALS['parsely_dashboard_page']->run();
 
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();
