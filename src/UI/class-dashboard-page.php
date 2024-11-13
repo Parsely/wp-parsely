@@ -29,6 +29,7 @@ final class Dashboard_Page {
 	public function run(): void {
 		add_action( 'admin_menu', array( $this, 'add_dashboard_page_to_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_dashboard_page_scripts' ) );
+		add_filter( 'parent_file', array( $this, 'fix_submenu_highlighting' ) );
 	}
 
 	/**
@@ -87,6 +88,28 @@ final class Dashboard_Page {
 	 */
 	public function add_dashboard_page_placeholder(): void {
 		echo '<div id="parsely-dashboard-page"></div>';
+	}
+
+	/**
+	 * Fixes the highlighting of the submenu items.
+	 *
+	 * This removes the highlighting from the submenu items when the dashboard page is active, so it can
+	 * later be added by the React app.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param string $parent_file The parent file.
+	 * @return string The parent file.
+	 */
+	public function fix_submenu_highlighting( string $parent_file ): string {
+		global $submenu_file, $current_screen;
+
+		if ( 'toplevel_page_parsely-dashboard-page' === $current_screen->base ) {
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			$submenu_file = 'non-existent-slug';
+		}
+
+		return $parent_file;
 	}
 
 	/**
