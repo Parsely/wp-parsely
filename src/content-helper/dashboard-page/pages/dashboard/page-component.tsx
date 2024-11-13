@@ -45,7 +45,7 @@ const getSettingsFromJson = ( settingsJson: string ): TrafficBoostSettings => {
 		mergedSettings.Setting1 = defaultSettings.Setting1;
 	}
 
-	return parsedSettings;
+	return mergedSettings;
 };
 
 /**
