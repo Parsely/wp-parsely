@@ -1,2 +1,6 @@
 @import "../common/css/variables";
 @import "../common/css/functions";
+
+.wp-parsely-dashboard-container {
+	margin-left: to_rem(-20px);
+}

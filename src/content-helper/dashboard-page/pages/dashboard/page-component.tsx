@@ -1,3 +1,5 @@
+import { DashboardHeader } from './components/header-component';
+import { PARSELY_DASHBOARD_MAX_PAGE_WIDTH } from '../../dashboard-page';
 /**
  * The main dashboard page component.
  *
@@ -6,8 +8,11 @@
 export const DashboardPage = () => {
 	return (
 		<>
-			<h1>Parse.ly Dashboard</h1>
-			<p>Welcome to the main Parse.ly dashboard page.</p>
+			<DashboardHeader />
+			<div className="parsely-dashboard-page-content" style={ { maxWidth: PARSELY_DASHBOARD_MAX_PAGE_WIDTH + 'px' } }>
+				<p>This is the dashboard page</p>
+			</div>
+
 		</>
 	);
 };
