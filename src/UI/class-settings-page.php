@@ -72,6 +72,7 @@ use const Parsely\PARSELY_FILE;
  *   smart_linking?: Parsely_Settings_Options_Content_Helper_Feature,
  *   title_suggestions?: Parsely_Settings_Options_Content_Helper_Feature,
  *   excerpt_suggestions?: Parsely_Settings_Options_Content_Helper_Feature,
+ *   traffic_boost?: Parsely_Settings_Options_Content_Helper_Feature,
  * }
  *
  * @phpstan-type Parsely_Settings_Options_Content_Helper_Feature array{
@@ -118,6 +119,7 @@ final class Settings_Page {
 		'smart_linking',
 		'title_suggestions',
 		'excerpt_suggestions',
+		'traffic_boost',
 	);
 
 	/**
@@ -501,6 +503,22 @@ final class Settings_Page {
 		add_settings_field(
 			$field_id,
 			__( 'Excerpt Suggestions', 'wp-parsely' ),
+			array( $this, 'print_content_helper_ai_feature_section' ),
+			Parsely::MENU_SLUG,
+			$section_key,
+			$field_args
+		);
+
+		// Traffic Boost.
+		$field_id   = 'content_helper[traffic_boost]';
+		$field_args = array(
+			'option_key' => $field_id,
+			'label_for'  => $field_id,
+			'legend'     => __( 'Traffic Boost', 'wp-parsely' ),
+		);
+		add_settings_field(
+			$field_id,
+			__( 'Traffic Boost', 'wp-parsely' ),
 			array( $this, 'print_content_helper_ai_feature_section' ),
 			Parsely::MENU_SLUG,
 			$section_key,

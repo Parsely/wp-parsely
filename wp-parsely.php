@@ -109,7 +109,7 @@ function parsely_wp_admin_early_register(): void {
 	$GLOBALS['parsely_settings_page']->run();
 
 	// Plugin dashboard page.
-	$GLOBALS['parsely_dashboard_page'] = new Dashboard_Page();
+	$GLOBALS['parsely_dashboard_page'] = new Dashboard_Page( $GLOBALS['parsely'] );
 	$GLOBALS['parsely_dashboard_page']->run();
 
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
