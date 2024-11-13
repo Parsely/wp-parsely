@@ -50,6 +50,34 @@ final class Dashboard_Page {
 			$icon,
 			30
 		);
+
+		// Register the subpages.
+		add_submenu_page(
+			'parsely-dashboard-page',
+			'Parse.ly Dashboard Page',
+			'Dashboard',
+			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
+			'parsely-dashboard-page',
+			'__return_null'
+		);
+
+		add_submenu_page(
+			'parsely-dashboard-page',
+			'Parse.ly Traffic Booster',
+			'Traffic Booster',
+			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
+			'parsely-dashboard-page#/traffic-booster',
+			'__return_null'
+		);
+
+		add_submenu_page(
+			'parsely-dashboard-page',
+			'Parse.ly Settings',
+			'Settings',
+			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
+			'parsely-dashboard-page#/settings',
+			'__return_null'
+		);
 	}
 
 	/**
