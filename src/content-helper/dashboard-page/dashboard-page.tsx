@@ -12,7 +12,7 @@ import { HashRouter as Router, Route, Routes, useLocation } from 'react-router-d
 /**
  * Internal dependencies
  */
-import { DashboardPage, SettingsPage, TrafficBoosterPage } from './pages';
+import { DashboardPage, SettingsPage, TrafficBoostPage } from './pages';
 
 domReady( () => {
 	const root = createRoot(
@@ -77,7 +77,7 @@ const ParselyDashboard = () => {
 	return (
 		<Routes>
 			<Route path="/" element={ <DashboardPage /> } />
-			<Route path="/traffic-booster" element={ <TrafficBoosterPage /> } />
+			<Route path="/traffic-boost" element={ <TrafficBoostPage /> } />
 			<Route path="/settings" element={ <SettingsPage /> } />
 		</Routes>
 	);

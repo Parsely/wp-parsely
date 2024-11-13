@@ -64,10 +64,10 @@ final class Dashboard_Page {
 
 		add_submenu_page(
 			'parsely-dashboard-page',
-			'Parse.ly Traffic Booster',
-			'Traffic Booster',
+			'Parse.ly Traffic Boost',
+			'Traffic Boost',
 			Parsely::CAPABILITY, // phpcs:ignore WordPress.WP.Capabilities.Undetermined
-			'parsely-dashboard-page#/traffic-booster',
+			'parsely-dashboard-page#/traffic-boost',
 			'__return_null'
 		);
 
