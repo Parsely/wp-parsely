@@ -69,7 +69,8 @@ function addContentHelperTabEventHandlers(): void {
 	const featureCheckboxes = document.querySelectorAll<HTMLInputElement>(
 		'input#content_helper_smart_linking_enabled, ' +
 		'input#content_helper_title_suggestions_enabled, ' +
-		'input#content_helper_excerpt_suggestions_enabled'
+		'input#content_helper_excerpt_suggestions_enabled, ' +
+		'input#content_helper_traffic_boost_enabled'
 	);
 
 	// Selector for all fieldsets in the Content Helper section.

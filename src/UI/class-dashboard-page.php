@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Parsely\UI;
 
 use Parsely\Parsely;
+use Parsely\Permissions;
 use Parsely\Utils\Utils;
 
 use const Parsely\PARSELY_FILE;
@@ -21,6 +22,24 @@ use const Parsely\PARSELY_FILE;
  * @since 3.18.0
  */
 final class Dashboard_Page {
+	/**
+	 * Instance of Parsely class.
+	 *
+	 * @var Parsely
+	 */
+	private $parsely;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param Parsely $parsely Instance of Parsely class.
+	 */
+	public function __construct( Parsely $parsely ) {
+		$this->parsely = $parsely;
+	}
+
 	/**
 	 * Registers the dashboard page.
 	 *
@@ -59,6 +78,19 @@ final class Dashboard_Page {
 	 */
 	public function add_dashboard_page_placeholder(): void {
 		echo '<div id="parsely-dashboard-page"></div>';
+
+		// TODO: The codeblock below is for demonstration purposes only and
+		// will be removed in the future.
+		if (
+			Permissions::current_user_can_use_pch_feature(
+				'traffic_boost',
+				$this->parsely->get_options()['content_helper']
+			)
+		) {
+			echo 'Traffic Boost is enabled.';
+		} else {
+			echo 'Traffic Boost is disabled.';
+		}
 	}
 
 	/**

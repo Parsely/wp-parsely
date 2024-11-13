@@ -162,6 +162,7 @@ class Permissions {
 			'SmartLinking'       => 'smart_linking',
 			'TitleSuggestions'   => 'title_suggestions',
 			'ExcerptSuggestions' => 'excerpt_suggestions',
+			'TrafficBoost'       => 'traffic_boost',
 		);
 
 		foreach ( $features as $key => $value ) {
@@ -202,6 +203,10 @@ class Permissions {
 				'allowed_user_roles' => $allowed_user_roles,
 			),
 			'excerpt_suggestions' => array(
+				'enabled'            => $enabled,
+				'allowed_user_roles' => $allowed_user_roles,
+			),
+			'traffic_boost'       => array(
 				'enabled'            => $enabled,
 				'allowed_user_roles' => $allowed_user_roles,
 			),

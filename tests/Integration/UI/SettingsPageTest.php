@@ -750,6 +750,7 @@ final class SettingsPageTest extends TestCase {
 		$options['content_helper']['smart_linking']['allowed_user_roles']       = array( 'administrator' => true );
 		$options['content_helper']['title_suggestions']['allowed_user_roles']   = array( 'administrator' => true );
 		$options['content_helper']['excerpt_suggestions']['allowed_user_roles'] = array( 'administrator' => true );
+		$options['content_helper']['traffic_boost']['allowed_user_roles']       = array( 'administrator' => true );
 
 		return $options;
 	}

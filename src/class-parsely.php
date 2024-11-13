@@ -53,6 +53,7 @@ use WP_Post;
  *   smart_linking: Parsely_Options_Content_Helper_Feature,
  *   title_suggestions: Parsely_Options_Content_Helper_Feature,
  *   excerpt_suggestions: Parsely_Options_Content_Helper_Feature,
+ *   traffic_boost: Parsely_Options_Content_Helper_Feature,
  * }
  *
  * @phpstan-type Parsely_Options_Content_Helper_Feature array{
@@ -125,6 +126,10 @@ class Parsely {
 				'allowed_user_roles' => array( 'administrator' ),
 			),
 			'excerpt_suggestions' => array(
+				'enabled'            => true,
+				'allowed_user_roles' => array( 'administrator' ),
+			),
+			'traffic_boost'       => array(
 				'enabled'            => true,
 				'allowed_user_roles' => array( 'administrator' ),
 			),
