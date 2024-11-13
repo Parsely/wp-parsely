@@ -106,7 +106,7 @@ final class Dashboard_Page {
 	 * @since 3.18.0
 	 */
 	public function add_dashboard_page_placeholder(): void {
-		echo '<div id="parsely-dashboard-page"></div>';
+		echo '<div class="wp-parsely-dashboard-container" id="parsely-dashboard-page"></div>';
 
 		// TODO: The codeblock below is for demonstration purposes only and
 		// will be removed in the future.
@@ -165,13 +165,13 @@ final class Dashboard_Page {
 			$built_assets_url . 'dashboard-page.js',
 			$asset_info['dependencies'],
 			$asset_info['version'],
-			true
+			false
 		);
 
 		wp_enqueue_style(
 			'parsely-dashboard-page',
 			$built_assets_url . 'dashboard-page.css',
-			$asset_info['dependencies'],
+			array(),
 			$asset_info['version']
 		);
 	}
