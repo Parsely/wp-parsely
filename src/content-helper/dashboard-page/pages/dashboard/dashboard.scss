@@ -5,7 +5,7 @@
 .parsely-dashboard-page-header {
 	margin: 0 auto;
 	width: 100%;
-	padding: var(--grid-unit-40, 32px) var(--grid-unit-40, 32px) var(--grid-unit-60, 48px) var(--grid-unit-40, 32px);
+	padding: var(--grid-unit-40) var(--grid-unit-40) var(--grid-unit-60) var(--grid-unit-40);
 }
 
 .dashboard-header-background {
@@ -21,48 +21,48 @@
 
 	.dashboard-header-summary {
 		display: flex;
-		width: 300px;
+		width: to_rem(300px);
 		flex-direction: column;
 		align-items: flex-start;
 		gap: var(--grid-unit-30);
-		color: var(--sidebar-white, #e7e7e7);
+		color: var(--sidebar-white);
 
 		.summary-info {
 			display: flex;
 			flex-direction: column;
 			align-items: flex-start;
-			gap: var(--grid-unit-10, 8px);
+			gap: var(--grid-unit-10);
 			align-self: stretch;
 
 			.summary-title {
 				align-self: stretch;
-				font-size: to_rem(32px);
+				font-size: var(--font-size--bigger);
 				font-style: normal;
 				font-weight: 600;
-				line-height: to_rem(40px);
+				line-height: to_rem(45px);
 			}
 
 			.summary-text {
 				align-self: stretch;
-				font-size: 12px;
+				font-size: var(--font-size--small);
 				font-style: normal;
 				font-weight: 400;
-				line-height: 16px; /* 133.333% */
+				line-height: var(--font-size--large);
 			}
 		}
 
 		.summary-button {
 			button {
-				margin-top: 1rem;
-				padding: 0.5rem 1rem;
+				margin-top: var(--grid-unit-20);
+				padding: var(--grid-unit-10) var(--grid-unit-20);
 				background: transparent;
-				border: 1px solid #e7e7e7;
-				color: #e7e7e7;
+				border: 1px solid var(--sidebar-white);
+				color: var(--sidebar-white);
 				cursor: pointer;
 
 				&:hover {
-					background: #e7e7e7;
-					color: #1a2a1a;
+					background: var(--sidebar-white);
+					color: var(--sidebar-black);
 				}
 			}
 		}
@@ -73,85 +73,83 @@
 		justify-content: flex-end;
 		align-items: flex-start;
 		align-content: flex-start;
-		gap: var(--grid-unit-30, 24px);
+		gap: var(--grid-unit-30);
 		align-self: stretch;
 		flex-wrap: wrap;
-		width: 500px;
+		width: to_rem(500px);
 
 		.header-stat-card {
 			display: flex;
-			width: 150px;
-			min-width: 150px;
+			width: to_rem(150px);
 			align-items: flex-start;
-			gap: var(--grid-unit-05, 4px);
-			color: var(--sidebar-white, #e7e7e7);
-
-			height: 48px;
+			gap: var(--grid-unit-05);
+			color: var(--sidebar-white);
+			height: var(--grid-unit-60);
 			flex-direction: column;
 			justify-content: center;
 
 			.card-title {
 				display: flex;
 				align-items: center;
-				gap: var(--grid-unit-05, 4px);
+				gap: var(--grid-unit-05);
 
-				font-size: 12px;
+				font-size: var(--font-size--small);
 				font-style: normal;
 				font-weight: 400;
-				line-height: 16px; /* 133.333% */
+				line-height: var(--font-size--large);
 
 				svg {
-					fill: var(--sidebar-white, #e7e7e7);
+					fill: var(--sidebar-white);
 				}
 			}
 
 			.card-value {
 				display: flex;
 				align-items: center;
-				gap: var(--grid-unit-05, 4px);
-				font-size: 24px;
+				gap: var(--grid-unit-05);
+				font-size: to_rem(24px);
 				font-style: normal;
 				font-weight: 600;
-				line-height: 32px; /* 133.333% */
+				line-height: to_rem(32px);
 				letter-spacing: -0.48px;
 
 				.card-change {
-					font-size: 13px;
+					font-size: var(--font-size--medium);
 					font-style: normal;
 					font-weight: 500;
-					line-height: 16px; /* 123.077% */
+					line-height: var(--font-size--large);
 				}
 			}
 		}
 
 		.stats-top {
 			display: flex;
-			padding-bottom: var(--grid-unit-30, 24px);
+			padding-bottom: var(--grid-unit-30);
 			align-items: flex-start;
-			gap: var(--grid-unit-30, 24px);
-			border-bottom: var(--Input-Default, 1px) solid var(--Gutenberg-White, #fff);
+			gap: var(--grid-unit-30);
+			border-bottom: 1px solid var(--sidebar-white);
 
 			.card-title {
-				color: #b9f16b;
+				color: var(--dashboard-accent);
 
 				svg {
-					fill: #b9f16b;
+					fill: var(--dashboard-accent);
 				}
 			}
 
 			.card-value {
-				color: #b9f16b;
+				color: var(--dashboard-accent);
 			}
 
 			.stat-intro {
 				justify-content: flex-start;
 
 				.card-title {
-					color: var(--sidebar-white, #e7e7e7);
-					font-size: 14px;
+					color: var(--sidebar-white);
+					font-size: var(--font-size--medium);
 					font-style: normal;
 					font-weight: 500;
-					line-height: 20px; /* 142.857% */
+					line-height: var(--font-size--extra-large);
 				}
 			}
 		}

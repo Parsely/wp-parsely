@@ -11,6 +11,8 @@ $base-unit-20: 1rem; // 16px.
 $base-unit-25: 1.25rem; // 20px.
 $base-unit-30: 1.5rem; // 24px.
 $base-unit-40: 2rem; // 32px.
+$body-unit-50: 2.5rem; // 40px.
+$base-unit-60: 3rem; // 48px.
 
 /**
  * This is a subset of the CSS variables defined in the Parse.ly dashboard. It
@@ -66,6 +68,7 @@ $base-unit-40: 2rem; // 32px.
 	--border: var(--gray-400);
 	--data: var(--green-500);
 	--control: var(--blue-500);
+	--dashboard-accent: #b9f16b;
 
 	/** Grid section **/
 	--grid-unit-5: #{$base-unit-5}; // 4px.
@@ -75,13 +78,16 @@ $base-unit-40: 2rem; // 32px.
 	--grid-unit-25: #{$base-unit-25}; // 20px.
 	--grid-unit-30: #{$base-unit-30}; // 24px.
 	--grid-unit-40: #{$base-unit-40}; // 32px.
+	--grid-unit-50: #{$body-unit-50}; // 40px.
+	--grid-unit-60: #{$base-unit-60}; // 48px.
 
 	/** Additional variables. **/
 	--font-size--smaller: 0.688rem; // 11px.
 	--font-size--small: #{$base-unit-15}; // 12px.
 	--font-size--medium: 0.875rem; // 14px.
 	--font-size--large: #{$base-unit-20}; // 16px.
-	--font-size--extra-large: 1.2rem;
+	--font-size--extra-large: 1.2rem; // 19px.
+	--font-size--bigger: 2rem; // 32px.
 	--black: #000;
 	--sidebar-black: #1e1e1e;
 	--sidebar-white: #f0f0f0;
