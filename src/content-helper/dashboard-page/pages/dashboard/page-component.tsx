@@ -1,4 +1,4 @@
-import { PageContainer as PageContainer, PageBody } from '../../components';
+import { PageContainer, PageBody } from '../../components';
 import { DashboardHeader } from './components/header-component';
 
 /**
