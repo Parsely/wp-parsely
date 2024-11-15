@@ -108,7 +108,7 @@ final class Dashboard_Page {
 	 * @since 3.18.0
 	 */
 	public function add_dashboard_page_placeholder(): void {
-		echo '<div id="parsely-dashboard-page"></div>';
+		echo '<div class="parsely-dashboard-page" id="parsely-dashboard-page"></div>';
 	}
 
 	/**
@@ -154,7 +154,7 @@ final class Dashboard_Page {
 			$built_assets_url . 'dashboard-page.js',
 			$asset_info['dependencies'],
 			$asset_info['version'],
-			true
+			false
 		);
 
 		// Inline scripts must be injected after enqueueing the main script.

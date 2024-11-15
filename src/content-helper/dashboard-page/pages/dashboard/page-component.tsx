@@ -4,6 +4,8 @@
 import { SettingsProvider, TrafficBoostSettings } from '../../../common/settings';
 import { getContentHelperPermissions } from '../../../common/utils/permissions';
 import { VerifyCredentials } from '../../../common/verify-credentials';
+import { PageContainer, PageBody } from '../../components';
+import { DashboardHeader } from './components/header-component';
 
 /**
  * Gets the settings from the passed JSON.
@@ -53,19 +55,21 @@ const getSettingsFromJson = ( settingsJson: string ): TrafficBoostSettings => {
  *
  * @since 3.18.0
  */
-export const DashboardPage = () => {
+export const DashboardPage = (): React.JSX.Element => {
 	return (
 		<SettingsProvider
 			endpoint="traffic-boost"
 			defaultSettings={ getSettingsFromJson( window.wpParselyContentHelperSettings ) }
 		>
 			<VerifyCredentials>
-				<>
-					<h1>Parse.ly</h1>
-					<p>Welcome to the Parse.ly Dashboard page!</p>
-					<p>Content Helper Permissions: { JSON.stringify( getContentHelperPermissions() ) }</p>
-					<p>Traffic Boost Settings: { JSON.stringify( getSettingsFromJson( window.wpParselyContentHelperSettings ) ) }</p>
-				</>
+				<PageContainer name="dashboard">
+					<DashboardHeader />
+					<PageBody>
+						<p>Welcome to the Parse.ly Dashboard page!</p>
+						<p>Content Helper Permissions: { JSON.stringify( getContentHelperPermissions() ) }</p>
+						<p>Traffic Boost Settings: { JSON.stringify( getSettingsFromJson( window.wpParselyContentHelperSettings ) ) }</p>
+					</PageBody>
+				</PageContainer>
 			</VerifyCredentials>
 		</SettingsProvider>
 	);

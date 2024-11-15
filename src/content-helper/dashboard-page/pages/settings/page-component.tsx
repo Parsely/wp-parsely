@@ -1,13 +1,19 @@
+import { PageBody, PageContainer, PageHeader } from '../../components';
+
 /**
  * Settings page component.
  *
  * @since 3.18.0
  */
-export const SettingsPage = () => {
+export const SettingsPage = (): React.JSX.Element => {
 	return (
-		<>
-			<h1>Parse.ly Settings</h1>
-			<p>This is a page for settings.</p>
-		</>
+		<PageContainer name="settings">
+			<PageHeader>
+				<h1>Parse.ly Settings</h1>
+			</PageHeader>
+			<PageBody>
+				<p>This is a page for settings.</p>
+			</PageBody>
+		</PageContainer>
 	);
 };

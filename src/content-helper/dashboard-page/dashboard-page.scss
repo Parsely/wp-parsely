@@ -1,2 +1,11 @@
 @import "../common/css/variables";
 @import "../common/css/functions";
+
+.parsely-dashboard-page {
+	margin-left: to_rem(-20px);
+}
+
+.parsely-dashboard-page-body,
+.parsely-dashboard-page-header {
+	max-width: var(--dashboard-width);
+}
