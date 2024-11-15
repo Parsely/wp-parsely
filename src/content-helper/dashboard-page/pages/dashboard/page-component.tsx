@@ -50,9 +50,6 @@ const getSettingsFromJson = ( settingsJson: string ): TrafficBoostSettings => {
 	return mergedSettings;
 };
 
-import { PageContainer, PageBody } from '../../components';
-import { DashboardHeader } from './components/header-component';
-
 /**
  * The main dashboard page component.
  *
