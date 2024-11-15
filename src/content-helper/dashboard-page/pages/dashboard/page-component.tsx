@@ -14,8 +14,6 @@ import { DashboardHeader } from './header-component';
  */
 import { SettingsProvider, TrafficBoostSettings } from '../../../common/settings';
 import { VerifyCredentials } from '../../../common/verify-credentials';
-import { PageContainer, PageBody } from '../../components';
-import { DashboardHeader } from './components/header-component';
 
 /**
  * Gets the settings from the passed JSON.
@@ -72,22 +70,22 @@ export const DashboardPage = (): React.JSX.Element => {
 			defaultSettings={ getSettingsFromJson( window.wpParselyContentHelperSettings ) }
 		>
 			<VerifyCredentials>
-		<PageContainer name="dashboard">
-			<DashboardHeader />
-			<PageBody>
-				<DashboardHeading>{ __( 'Recent Posts', 'wp-parsely' ) } </DashboardHeading>
-				<p>
-					{ __(
-						'Here’s what you’ve published lately. Let’s see if we can improve its performance!',
-						'wp-parsely'
-					) }
-				</p>
-				<PostsTable query={ {
-					status: 'publish',
-					per_page: 5,
-				} } />
-			</PageBody>
-		</PageContainer>
+				<PageContainer name="dashboard">
+					<DashboardHeader />
+					<PageBody>
+						<DashboardHeading>{ __( 'Recent Posts', 'wp-parsely' ) } </DashboardHeading>
+						<p>
+							{ __(
+								'Here’s what you’ve published lately. Let’s see if we can improve its performance!',
+								'wp-parsely'
+							) }
+						</p>
+						<PostsTable query={ {
+							status: 'publish',
+							per_page: 5,
+						} } />
+					</PageBody>
+				</PageContainer>
 			</VerifyCredentials>
 		</SettingsProvider>
 	);
