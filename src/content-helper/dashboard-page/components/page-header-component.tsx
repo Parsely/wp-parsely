@@ -6,7 +6,6 @@
 type PageHeaderProps = {
 	className?: string;
 	children: React.ReactNode;
-	maxWidth?: number;
 }
 
 /**

@@ -108,7 +108,7 @@ final class Dashboard_Page {
 	 * @since 3.18.0
 	 */
 	public function add_dashboard_page_placeholder(): void {
-		echo '<div id="parsely-dashboard-page"></div>';
+		echo '<div class="parsely-dashboard-page" id="parsely-dashboard-page"></div>';
 	}
 
 	/**

@@ -6,7 +6,6 @@
 type PageBodyProps = {
 	className?: string;
 	children: React.ReactNode;
-	maxWidth?: number;
 }
 
 /**
