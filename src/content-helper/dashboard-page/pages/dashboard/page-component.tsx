@@ -1,5 +1,14 @@
-import { PageContainer, PageBody } from '../../components';
-import { DashboardHeader } from './components/header-component';
+/**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
+import { PageContainer, PageBody, PostsTable } from '../../components';
+import { DashboardHeading } from '../../components/typography-components';
+import { DashboardHeader } from './header-component';
 
 /**
  * The main dashboard page component.
@@ -11,7 +20,17 @@ export const DashboardPage = () => {
 		<PageContainer name="dashboard">
 			<DashboardHeader />
 			<PageBody>
-				<p>This is the dashboard page</p>
+				<DashboardHeading>{ __( 'Recent Posts', 'wp-parsely' ) } </DashboardHeading>
+				<p>
+					{ __(
+						'Here’s what you’ve published lately. Let’s see if we can improve its performance!',
+						'wp-parsely'
+					) }
+				</p>
+				<PostsTable query={ {
+					status: 'publish',
+					per_page: 5,
+				} } />
 			</PageBody>
 		</PageContainer>
 	);

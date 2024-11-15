@@ -6,6 +6,15 @@
  *
  * @since 3.18.0
  */
+
+/**
+ * Page Structure Components
+ */
 export { PageContainer } from './page-container-component';
 export { PageBody } from './page-body-component';
 export { PageHeader } from './page-header-component';
+
+/**
+ * Posts Components
+ */
+export { PostsTable } from './posts-table/component';

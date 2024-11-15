@@ -59,10 +59,12 @@
 				border: 1px solid var(--sidebar-white);
 				color: var(--sidebar-white);
 				cursor: pointer;
+				box-shadow: none;
 
 				&:hover {
 					background: var(--sidebar-white);
 					color: var(--sidebar-black);
+					box-shadow: none;
 				}
 			}
 		}

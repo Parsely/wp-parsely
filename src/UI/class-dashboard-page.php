@@ -168,6 +168,8 @@ final class Dashboard_Page {
 			false
 		);
 
+		wp_enqueue_style( 'wp-components' );
+
 		wp_enqueue_style(
 			'parsely-dashboard-page',
 			$built_assets_url . 'dashboard-page.css',
