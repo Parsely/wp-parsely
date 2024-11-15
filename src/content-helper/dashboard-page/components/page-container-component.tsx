@@ -1,5 +1,7 @@
 /**
- * Props for the PageContainerProps component
+ * Props for the PageContainerProps component.
+ *
+ * @since 3.18.0
  */
 type PageContainerProps = {
 	className?: string;
@@ -15,7 +17,7 @@ type PageContainerProps = {
  *
  * @since 3.18.0
  *
- * @param {PageContainerProps} props The component props.
+ * @param {PageContainerProps} props The component's props.
  */
 export const PageContainer = ( {
 	className,

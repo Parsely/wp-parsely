@@ -5,9 +5,9 @@ import { PageBody, PageContainer, PageHeader } from '../../components';
  *
  * @since 3.18.0
  */
-export const SettingsPage = () => {
+export const SettingsPage = (): React.JSX.Element => {
 	return (
-		<PageContainer name={ 'settings' }>
+		<PageContainer name="settings">
 			<PageHeader>
 				<h1>Parse.ly Settings</h1>
 			</PageHeader>

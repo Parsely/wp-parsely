@@ -13,6 +13,7 @@ namespace Parsely\UI;
 use Parsely\Parsely;
 use Parsely\Permissions;
 use Parsely\Utils\Utils;
+use WP_REST_Request;
 
 use const Parsely\PARSELY_FILE;
 
@@ -25,6 +26,7 @@ final class Dashboard_Page {
 	/**
 	 * Instance of Parsely class.
 	 *
+	 * @since 3.18.0
 	 * @var Parsely
 	 */
 	private $parsely;
@@ -106,20 +108,7 @@ final class Dashboard_Page {
 	 * @since 3.18.0
 	 */
 	public function add_dashboard_page_placeholder(): void {
-		echo '<div class="wp-parsely-dashboard-container" id="parsely-dashboard-page"></div>';
-
-		// TODO: The codeblock below is for demonstration purposes only and
-		// will be removed in the future.
-		if (
-			Permissions::current_user_can_use_pch_feature(
-				'traffic_boost',
-				$this->parsely->get_options()['content_helper']
-			)
-		) {
-			echo 'Traffic Boost is enabled.';
-		} else {
-			echo 'Traffic Boost is disabled.';
-		}
+		echo '<div class="parsely-dashboard-container" id="parsely-dashboard-page"></div>';
 	}
 
 	/**
@@ -168,6 +157,10 @@ final class Dashboard_Page {
 			false
 		);
 
+		// Inline scripts must be injected after enqueueing the main script.
+		$this->inject_content_helper_permissions();
+		$this->inject_traffic_boost_settings();
+
 		wp_enqueue_style( 'wp-components' );
 
 		wp_enqueue_style(
@@ -175,6 +168,53 @@ final class Dashboard_Page {
 			$built_assets_url . 'dashboard-page.css',
 			array(),
 			$asset_info['version']
+		);
+	}
+
+	/**
+	 * Injects Content Helper permissions into the dashboard page.
+	 *
+	 * @since 3.18.0
+	 */
+	protected function inject_content_helper_permissions(): void {
+		$permissions_json = Permissions::get_pch_permissions_json(
+			$this->parsely->get_options()['content_helper']
+		);
+
+		wp_add_inline_script(
+			'parsely-dashboard-page',
+			"window.wpParselyContentHelperPermissions = '$permissions_json';",
+			'before'
+		);
+	}
+
+	/**
+	 * Injects Traffic Boost settings into the dashboard page.
+	 *
+	 * @since 3.18.0
+	 */
+	protected function inject_traffic_boost_settings(): void {
+		$settings = '';
+
+		if ( ! defined( 'INTEGRATION_TESTS_RUNNING' ) ) {
+			$settings = rest_do_request(
+				new WP_REST_Request(
+					'GET',
+					'/wp-parsely/v2/settings/traffic-boost'
+				)
+			)->get_data();
+		}
+
+		if ( ! is_array( $settings ) ) {
+			$settings = array();
+		}
+
+		$settings = wp_json_encode( $settings );
+
+		wp_add_inline_script(
+			'parsely-dashboard-page',
+			"window.wpParselyContentHelperSettings = '$settings';",
+			'before'
 		);
 	}
 }

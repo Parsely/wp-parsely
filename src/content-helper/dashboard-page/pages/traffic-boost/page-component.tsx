@@ -5,9 +5,9 @@ import { PageBody, PageContainer, PageHeader } from '../../components';
  *
  * @since 3.18.0
  */
-export const TrafficBoostPage = () => {
+export const TrafficBoostPage = (): React.JSX.Element => {
 	return (
-		<PageContainer name={ 'traffic-boost' }>
+		<PageContainer name="traffic-boost">
 			<PageHeader>
 				<h1>Traffic Boost</h1>
 			</PageHeader>

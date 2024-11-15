@@ -1,20 +1,23 @@
 /**
+ * External dependencies
+ */
+import {
+	Route,
+	HashRouter as Router,
+	Routes,
+	useLocation,
+} from 'react-router-dom';
+
+/**
  * WordPress dependencies
  */
 import domReady from '@wordpress/dom-ready';
 import { createRoot, useEffect } from '@wordpress/element';
 
 /**
- * External dependencies
- */
-import { HashRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-
-/**
  * Internal dependencies
  */
 import { DashboardPage, SettingsPage, TrafficBoostPage } from './pages';
-
-export const PARSELY_DASHBOARD_MAX_PAGE_WIDTH = 1024;
 
 domReady( () => {
 	const root = createRoot(
@@ -49,9 +52,13 @@ const ParselyDashboard = () => {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		const firstLink = document.querySelector( '#toplevel_page_parsely-dashboard-page .wp-submenu li a.wp-first-item' );
+		const firstLink = document.querySelector(
+			'#toplevel_page_parsely-dashboard-page .wp-submenu li a.wp-first-item'
+		);
 		if ( firstLink ) {
-			firstLink.setAttribute( 'href', window.location.pathname + window.location.search + '#/' );
+			firstLink.setAttribute(
+				'href', window.location.pathname + window.location.search + '#/'
+			);
 		}
 	}, [] );
 
@@ -61,7 +68,9 @@ const ParselyDashboard = () => {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		const submenuItems = document.querySelectorAll( '#toplevel_page_parsely-dashboard-page .wp-submenu li' );
+		const submenuItems = document.querySelectorAll(
+			'#toplevel_page_parsely-dashboard-page .wp-submenu li'
+		);
 
 		submenuItems.forEach( ( item ) => {
 			const link = item.querySelector( 'a' );

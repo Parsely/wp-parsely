@@ -10,6 +10,7 @@ import type {
 	TitleSuggestionsSettings,
 } from './sidebar-settings';
 import type { TopPostsSettings } from './top-posts-settings';
+import type { TrafficBoostSettings } from './traffic-boost-settings';
 
 /**
  * Export the settings types.
@@ -22,7 +23,8 @@ export type {
 	SmartLinkingSettings, // Part of SidebarSettings type.
 	TitleSuggestionsSettings, // Part of SidebarSettings type.
 	TopPostsSettings,
+	TrafficBoostSettings,
 };
 
 // Generic type for settings.
-export type Settings = SidebarSettings | TopPostsSettings;
+export type Settings = SidebarSettings | TopPostsSettings | TrafficBoostSettings;
