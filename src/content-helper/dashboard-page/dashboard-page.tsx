@@ -14,8 +14,6 @@ import { HashRouter as Router, Route, Routes, useLocation } from 'react-router-d
  */
 import { DashboardPage, SettingsPage, TrafficBoostPage } from './pages';
 
-export const PARSELY_DASHBOARD_MAX_PAGE_WIDTH = 1024;
-
 domReady( () => {
 	const root = createRoot(
 		document.getElementById( 'parsely-dashboard-page' ) as Element
