@@ -4,7 +4,7 @@
 import { PARSELY_DASHBOARD_MAX_PAGE_WIDTH } from '../dashboard-page';
 
 /**
- * Props for the PageHeader component
+ * Props for the PageHeader component.
  *
  * @since 3.18.0
  */
@@ -21,7 +21,7 @@ type PageHeaderProps = {
  *
  * @since 3.18.0
  *
- * @param {PageHeaderProps} props The component props.
+ * @param {PageHeaderProps} props The component's props.
  */
 export const PageHeader = ( {
 	className,

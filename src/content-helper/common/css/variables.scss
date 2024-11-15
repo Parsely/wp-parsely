@@ -68,7 +68,6 @@ $base-unit-60: 3rem; // 48px.
 	--border: var(--gray-400);
 	--data: var(--green-500);
 	--control: var(--blue-500);
-	--dashboard-accent: #b9f16b;
 
 	/** Grid section **/
 	--grid-unit-5: #{$base-unit-5}; // 4px.
@@ -88,7 +87,10 @@ $base-unit-60: 3rem; // 48px.
 	--font-size--large: #{$base-unit-20}; // 16px.
 	--font-size--extra-large: 1.2rem; // 19px.
 	--font-size--bigger: 2rem; // 32px.
+
 	--black: #000;
 	--sidebar-black: #1e1e1e;
 	--sidebar-white: #f0f0f0;
+	--dashboard-accent: #b9f16b;
+
 }

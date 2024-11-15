@@ -6,7 +6,7 @@ import { DashboardHeader } from './components/header-component';
  *
  * @since 3.18.0
  */
-export const DashboardPage = () => {
+export const DashboardPage = (): React.JSX.Element => {
 	return (
 		<PageContainer name="dashboard">
 			<DashboardHeader />

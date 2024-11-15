@@ -17,7 +17,7 @@ import '../dashboard.scss';
  *
  * @since 3.18.0
  */
-const HeaderSummary = () => {
+const HeaderSummary = (): React.JSX.Element => {
 	return (
 		<div className="dashboard-header-summary">
 			<div className="summary-info">
@@ -51,9 +51,11 @@ type HeaderCardProps = {
  *
  * @since 3.18.0
  *
- * @param {HeaderCardProps} props The component props.
+ * @param {HeaderCardProps} props The component's props.
  */
-const StatCard = ( { title, value, change, down = false, icon, className }: HeaderCardProps ) => {
+const StatCard = (
+	{ title, value, change, down = false, icon, className }: Readonly<HeaderCardProps>
+): React.JSX.Element => {
 	const changeIcon = down ? '↓' : '↑';
 
 	return (
@@ -81,7 +83,7 @@ const StatCard = ( { title, value, change, down = false, icon, className }: Head
  *
  * @since 3.18.0
  */
-export const DashboardHeader = () => {
+export const DashboardHeader = (): React.JSX.Element => {
 	return (
 		<div className="dashboard-header-background">
 			<PageHeader className="dashboard-header">
