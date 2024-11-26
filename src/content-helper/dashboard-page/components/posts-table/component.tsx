@@ -105,7 +105,14 @@ const TablePagination = ( {
 				<NumberControl
 					value={ currentPage }
 					onChange={ ( value ) => {
-						setCurrentPage( parseInt( value ?? '1', 10 ) );
+						let selectedPage = parseInt( value ?? '1', 10 );
+						if ( selectedPage > totalPages ) {
+							selectedPage = totalPages;
+						} else if ( selectedPage < 1 ) {
+							selectedPage = 1;
+						}
+
+						setCurrentPage( selectedPage );
 					} }
 					min={ 1 }
 					max={ totalPages }
@@ -129,15 +136,15 @@ const TablePagination = ( {
  * @since 3.18.0
  */
 const ActionDropdown = () => (
-	<DropdownMenu icon={ moreVertical } label="Actions">
+	<DropdownMenu icon={ moreVertical } label={ __( 'Actions', 'wp-parsely' ) }>
 		{ ( { onClose } ) => (
 			<>
 				<MenuGroup>
 					<MenuItem onClick={ onClose }>
-						View
+						{ __( 'View', 'wp-parsely' ) }
 					</MenuItem>
 					<MenuItem onClick={ onClose }>
-						Edit
+						{ __( 'Edit', 'wp-parsely' ) }
 					</MenuItem>
 				</MenuGroup>
 			</>

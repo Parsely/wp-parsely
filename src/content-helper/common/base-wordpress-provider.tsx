@@ -218,8 +218,8 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 
 			// Get the post thumbnail.
 			if ( post._embedded && post._embedded[ 'wp:featuredmedia' ] ) {
-				const featuredMedia = post._embedded[ 'wp:featuredmedia' ][ 0 ];
-				thumbnail = featuredMedia.media_details.sizes.thumbnail.source_url;
+				const featuredMedia = post._embedded[ 'wp:featuredmedia' ]?.[ 0 ];
+				thumbnail = featuredMedia?.media_details.sizes.thumbnail.source_url;
 			}
 
 			return {
