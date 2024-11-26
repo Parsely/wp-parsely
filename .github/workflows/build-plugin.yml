@@ -66,6 +66,8 @@ jobs:
       - name: Remove `/vendor` from .gitignore
         run: |
           sed -i '/vendor/d' .gitignore
+          # If the file was modified, add it to the git staging area
+          git status -s | grep .gitignore && git add .gitignore
 
       - name: Get list of changed files
         run: git status -s
