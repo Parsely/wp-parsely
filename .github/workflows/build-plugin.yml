@@ -60,6 +60,10 @@ jobs:
           npm run build
           composer install --no-dev --optimize-autoloader --classmap-authoritative
 
+      - name: Remove `/vendor` from .gitignore
+        run: |
+          sed -i '/vendor/d' .gitignore
+
       - name: Get list of changed files
         run: git status -s
 
