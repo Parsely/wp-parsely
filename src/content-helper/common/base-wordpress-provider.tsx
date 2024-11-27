@@ -171,14 +171,14 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	 * This method is a wrapper around apiFetch() that automatically adds the
 	 * AbortController signal.
 	 *
-	 * @since 3.15.0
+	 * @since 3.18.0
 	 *
-	 * @template T The type of the data to fetch
+	 * @template T The type of the data to fetch.
 	 *
-	 * @param {APIFetchOptions} options The options to pass to apiFetch
-	 * @param {string?}         id      The (optional) ID of the request
+	 * @param {APIFetchOptions} options The options to pass to apiFetch.
+	 * @param {string?}         id      The (optional) ID of the request.
 	 *
-	 * @return {Promise<T>} The fetched data
+	 * @return {Promise<T>} The fetched data.
 	 */
 	protected async fetch<T>( options: APIFetchOptions, id?: string ): Promise<T> {
 		return ( await this.apiFetch<T>( options, id ) ).data;
