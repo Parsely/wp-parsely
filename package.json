@@ -58,7 +58,7 @@
 		"@wordpress/block-editor": "^14.7.0",
 		"@wordpress/blocks": "^14.1.0",
 		"@wordpress/components": "^28.12.0",
-		"@wordpress/compose": "^7.12.0",
+		"@wordpress/compose": "^7.13.0",
 		"@wordpress/core-data": "^7.12.0",
 		"@wordpress/data": "^10.12.0",
 		"@wordpress/e2e-test-utils-playwright": "^1.12.0",
