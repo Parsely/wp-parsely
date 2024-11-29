@@ -30,7 +30,7 @@ import { DashboardProvider } from '../../provider';
 /**
  * PostInfo component.
  *
- * Represents the post information, the first column, in the PostsTable.
+ * Represents the post information, the first column in the PostsTable.
  *
  * @since 3.18.0
  *
@@ -41,7 +41,7 @@ const PostInfo = ( { post }: { post: HydratedPost } ): React.JSX.Element => {
 	const prettyDate = format( 'M j, o', post.date ?? '' );
 
 	return (
-		<div className="post-table--post-info">
+		<div className="post-table-post-info">
 			<div className="thumbnail">
 				{ post.thumbnail ? (
 					<img src={ post.thumbnail } alt={ post.title.rendered } />
@@ -99,7 +99,7 @@ const TablePagination = ( {
 	onNext: () => void;
 } ): React.JSX.Element => {
 	return (
-		<div className="post-table--pagination-controls">
+		<div className="post-table-pagination-controls">
 			<div className="page-selector">
 				<span>{ __( 'Page', 'wp-parsely' ) }</span>
 				<NumberControl

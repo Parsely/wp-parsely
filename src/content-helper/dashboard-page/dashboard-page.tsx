@@ -25,12 +25,7 @@ domReady( () => {
 	);
 
 	root.render(
-		<Router
-			future={ {
-				v7_relativeSplatPath: true,
-				v7_startTransition: true,
-			} }
-		>
+		<Router>
 			<ParselyDashboard />
 		</Router>
 	);

@@ -6,14 +6,11 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { PageContainer, PageBody, PostsTable } from '../../components';
-import { DashboardHeading } from '../../components/typography-components';
-import { DashboardHeader } from './header-component';
-/**
- * Internal dependencies
- */
 import { SettingsProvider, TrafficBoostSettings } from '../../../common/settings';
 import { VerifyCredentials } from '../../../common/verify-credentials';
+import { PageBody, PageContainer, PostsTable } from '../../components';
+import { DashboardHeading } from '../../components/typography-components';
+import { DashboardHeader } from './header-component';
 
 /**
  * Gets the settings from the passed JSON.
