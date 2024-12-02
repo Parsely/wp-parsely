@@ -1,11 +1,16 @@
 /**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
  * Internal dependencies
  */
 import { SettingsProvider, TrafficBoostSettings } from '../../../common/settings';
-import { getContentHelperPermissions } from '../../../common/utils/permissions';
 import { VerifyCredentials } from '../../../common/verify-credentials';
-import { PageContainer, PageBody } from '../../components';
-import { DashboardHeader } from './components/header-component';
+import { PageBody, PageContainer, PostsTable } from '../../components';
+import { DashboardHeading } from '../../components/typography-components';
+import { DashboardHeader } from './header-component';
 
 /**
  * Gets the settings from the passed JSON.
@@ -65,9 +70,17 @@ export const DashboardPage = (): React.JSX.Element => {
 				<PageContainer name="dashboard">
 					<DashboardHeader />
 					<PageBody>
-						<p>Welcome to the Parse.ly Dashboard page!</p>
-						<p>Content Helper Permissions: { JSON.stringify( getContentHelperPermissions() ) }</p>
-						<p>Traffic Boost Settings: { JSON.stringify( getSettingsFromJson( window.wpParselyContentHelperSettings ) ) }</p>
+						<DashboardHeading>{ __( 'Recent Posts', 'wp-parsely' ) } </DashboardHeading>
+						<p>
+							{ __(
+								'Here’s what you’ve published lately. Let’s see if we can improve its performance!',
+								'wp-parsely'
+							) }
+						</p>
+						<PostsTable query={ {
+							status: 'publish',
+							per_page: 5,
+						} } />
 					</PageBody>
 				</PageContainer>
 			</VerifyCredentials>

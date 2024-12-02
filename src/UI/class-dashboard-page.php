@@ -108,7 +108,7 @@ final class Dashboard_Page {
 	 * @since 3.18.0
 	 */
 	public function add_dashboard_page_placeholder(): void {
-		echo '<div class="parsely-dashboard-page" id="parsely-dashboard-page"></div>';
+		echo '<div class="parsely-dashboard-container" id="parsely-dashboard-page"></div>';
 	}
 
 	/**
@@ -160,6 +160,8 @@ final class Dashboard_Page {
 		// Inline scripts must be injected after enqueueing the main script.
 		$this->inject_content_helper_permissions();
 		$this->inject_traffic_boost_settings();
+
+		wp_enqueue_style( 'wp-components' );
 
 		wp_enqueue_style(
 			'parsely-dashboard-page',

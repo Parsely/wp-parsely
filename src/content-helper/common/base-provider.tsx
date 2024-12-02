@@ -45,7 +45,7 @@ export abstract class BaseProvider {
 	 *
 	 * @since 3.15.0
 	 */
-	private abortControllers: Map<string, AbortController> = new Map();
+	protected abortControllers: Map<string, AbortController> = new Map();
 
 	/**
 	 * Protected empty constructor to prevent instantiation.
@@ -108,7 +108,7 @@ export abstract class BaseProvider {
 	 *
 	 * @return {GetAbortControllerResult} The AbortController and its ID.
 	 */
-	private getOrCreateController( id?: string ): GetAbortControllerResult {
+	protected getOrCreateController( id?: string ): GetAbortControllerResult {
 		if ( id && this.abortControllers.has( id ) ) {
 			return {
 				abortController: this.abortControllers.get( id )!,
@@ -138,10 +138,10 @@ export abstract class BaseProvider {
 	 *
 	 * @since 3.15.0
 	 *
-	 * @param {APIFetchOptions} options The options to pass to apiFetch
-	 * @param {string?}         id      The (optional) ID of the request
+	 * @param {APIFetchOptions} options The options to pass to apiFetch.
+	 * @param {string?}         id      The (optional) ID of the request.
 	 *
-	 * @return {Promise<ContentHelperAPIResponse<any>>} The fetched data
+	 * @return {Promise<ContentHelperAPIResponse<any>>} The fetched data.
 	 */
 	protected async fetch<T>( options: APIFetchOptions, id?: string ): Promise<T> {
 		const { abortController, abortId } = this.getOrCreateController( id );

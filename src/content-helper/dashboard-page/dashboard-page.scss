@@ -1,7 +1,16 @@
 @import "../common/css/variables";
 @import "../common/css/functions";
 
-.parsely-dashboard-page {
+/**
+ * Import styles for the components in the dashboard page.
+ */
+@import "./components/posts-table/style";
+
+body {
+	background: #fff;
+}
+
+.parsely-dashboard-container {
 	margin-left: to_rem(-20px);
 }
 
