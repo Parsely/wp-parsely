@@ -1,0 +1,14 @@
+@import "../../../common/css/functions";
+@import "../../../common/css/variables";
+
+.parsely-menu-page-traffic-boost {
+	.parsely-dashboard-page-header {
+		padding: var(--grid-unit-30);
+	}
+
+	.traffic-boost-search-container {
+		margin-bottom: 0;
+		border-radius: 2px;
+		padding: var(--grid-unit-15) 0;
+	}
+}

@@ -8,7 +8,6 @@ import { Icon, link } from '@wordpress/icons';
  * Internal dependencies
  */
 import { PageHeader } from '../../components';
-import './dashboard.scss';
 
 /**
  * Header summary component.

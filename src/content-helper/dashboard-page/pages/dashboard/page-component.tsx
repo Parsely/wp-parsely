@@ -11,6 +11,7 @@ import { VerifyCredentials } from '../../../common/verify-credentials';
 import { PageBody, PageContainer, PostsTable } from '../../components';
 import { DashboardHeading } from '../../components/typography-components';
 import { DashboardHeader } from './header-component';
+import './dashboard.scss';
 
 /**
  * Gets the settings from the passed JSON.
