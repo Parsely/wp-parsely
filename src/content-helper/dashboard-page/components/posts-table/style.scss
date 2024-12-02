@@ -65,7 +65,7 @@
 		}
 	}
 
-	.post-table-post-info {
+	.posts-table-post-info {
 		display: flex;
 		min-height: to_rem(40px);
 		align-items: flex-start;
@@ -145,7 +145,7 @@
 		}
 	}
 
-	.post-table-pagination-controls {
+	.posts-table-pagination-controls {
 		display: flex;
 		padding: var(--grid-unit-15);
 		justify-content: flex-end;
