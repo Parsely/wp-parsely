@@ -11,7 +11,7 @@ import BoostLinksTab from './tabs/boost-links-tab';
 import SettingsTab from './tabs/settings-tab';
 import SuggestionsTab from './tabs/suggestions-tab';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 import { InboundSmartLink } from '../../../../../editor-sidebar/smart-linking/provider';
 import { DashboardProvider } from '../../../../provider';
 
@@ -77,13 +77,27 @@ export const TabsContent = ( {
 		setTotalBoostLinks( inboundLinks.length );
 	}, [ inboundLinks ] );
 
-	const handleSuggestionsTotalItemsChange = ( totalItems: number ) => {
+	/**
+	 * Handles the total items change for the suggestions tab.
+	 *
+	 * Avoids unnecessary re-renders by using useCallback.
+	 *
+	 * @since 3.18.0
+	 */
+	const handleSuggestionsTotalItemsChange = useCallback( ( totalItems: number ) => {
 		setTotalSuggestions( totalItems );
-	};
+	}, [] );
 
-	const handleBoostLinksTotalItemsChange = ( totalItems: number ) => {
+	/**
+	 * Handles the total items change for the boost links tab.
+	 *
+	 * Avoids unnecessary re-renders by using useCallback.
+	 *
+	 * @since 3.18.0
+	 */
+	const handleBoostLinksTotalItemsChange = useCallback( ( totalItems: number ) => {
 		setTotalBoostLinks( totalItems );
-	};
+	}, [] );
 
 	if ( ! postId ) {
 		return <div>{ __( 'No post ID found', 'wp-parsely' ) }</div>;
