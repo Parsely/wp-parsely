@@ -37,7 +37,6 @@ export interface LinksListFetchResult {
 interface LinksListProps {
 	links: TrafficBoostLink[];
 	isLoading: boolean;
-	error: string | null;
 	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
 	minItemsPerPage?: number;
 	onFetchPage: ( page: number, perPage: number ) => Promise<LinksListFetchResult>;

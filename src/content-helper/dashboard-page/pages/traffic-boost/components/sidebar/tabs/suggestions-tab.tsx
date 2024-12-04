@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { useCallback, useState } from '@wordpress/element';
+import { useCallback } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -31,27 +31,21 @@ const SuggestionsTab = ( {
 	onSuggestionClick,
 	onTotalItemsChange,
 }: SuggestionsTabProps ): React.JSX.Element => {
-	const [ error, setError ] = useState<string | null>( null );
-
 	const fetchSuggestions = useCallback( async ( page: number, perPage: number ) => {
-		try {
-			const provider = DashboardProvider.getInstance();
-			const fetchedSuggestions = await provider.getPosts( { page, per_page: perPage } );
-			const mappedSuggestions = fetchedSuggestions.data.map( ( post ) => ( {
-				targetPost: post,
-			} ) );
-			onTotalItemsChange?.( fetchedSuggestions.total_items );
+		const provider = DashboardProvider.getInstance();
+		const fetchedSuggestions = await provider.getPosts( { page, per_page: perPage } );
 
-			return {
-				data: mappedSuggestions,
-				totalPages: fetchedSuggestions.total_pages,
-				totalItems: fetchedSuggestions.total_items,
-			};
-		} catch ( err ) {
-			const message = err instanceof Error ? err.message : 'Failed to fetch suggestions';
-			setError( message );
-			throw err;
-		}
+		// Map the fetched suggestions to the TrafficBoostLink format.
+		const mappedSuggestions = fetchedSuggestions.data.map( ( post ) => ( {
+			targetPost: post,
+		} ) );
+		onTotalItemsChange?.( fetchedSuggestions.total_items );
+
+		return {
+			data: mappedSuggestions,
+			totalPages: fetchedSuggestions.total_pages,
+			totalItems: fetchedSuggestions.total_items,
+		};
 	}, [ onTotalItemsChange ] );
 
 	const handleSuggestionClick = ( suggestion: TrafficBoostLink ) => {
@@ -62,7 +56,6 @@ const SuggestionsTab = ( {
 		<LinksList
 			links={ [] }
 			isLoading={ false }
-			error={ error }
 			onSuggestionClick={ handleSuggestionClick }
 			onFetchPage={ fetchSuggestions }
 			minItemsPerPage={ 3 }

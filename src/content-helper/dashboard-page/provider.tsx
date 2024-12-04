@@ -4,6 +4,13 @@
 import { BaseWordPressProvider } from '../common/base-wordpress-provider';
 import { InboundSmartLink } from '../editor-sidebar/smart-linking/provider';
 
+export interface GetSmartLinksResponse {
+	data: {
+		inbound: InboundSmartLink[];
+		outbound: never[];
+	};
+}
+
 /**
  * DashboardProvider class for the plugin's dashboard.
  *
@@ -34,10 +41,12 @@ export class DashboardProvider extends BaseWordPressProvider {
 	}
 
 	public async getInboundSmartLinks( postId: number ): Promise<InboundSmartLink[]> {
-		const inboundSmartLinks = await this.fetch<InboundSmartLink[]>( {
-			path: `/wp-parsely/v2/content-helper/smart-linking/${ postId }/get`,
+		const requestPath = `/wp-parsely/v2/content-helper/smart-linking/${ postId }/get`;
+
+		const inboundSmartLinks = await this.fetch<GetSmartLinksResponse>( {
+			path: requestPath,
 		} );
 
-		return inboundSmartLinks;
+		return inboundSmartLinks.data.inbound;
 	}
 }

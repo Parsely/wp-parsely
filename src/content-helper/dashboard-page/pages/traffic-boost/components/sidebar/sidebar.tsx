@@ -81,12 +81,14 @@ export const TrafficBoostSidebar = ( {
 	 *
 	 * This needs to be a callback to prevent triggering duplicate calls to the API.
 	 *
-	 * @param {number} totalItems The total number of items.
 	 * @since 3.18.0
+	 *
+	 * @param {number} totalSuggestions The total number of suggestions.
+	 * @param {number} totalBoostLinks  The total number of boost links.
 	 */
-	const handleTotalItemsChange = useCallback( ( totalItems: number ) => {
-		setNumSuggestions( totalItems );
-		setNumBoostLinks( totalItems ); // TODO: Replace this with a query that gets the boost links.
+	const handleTotalItemsChange = useCallback( ( totalSuggestions: number, totalBoostLinks: number ) => {
+		setNumSuggestions( totalSuggestions );
+		setNumBoostLinks( totalBoostLinks );
 	}, [] );
 
 	return (

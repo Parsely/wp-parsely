@@ -1,64 +1,96 @@
 /**
  * External dependencies
  */
-import { useEffect, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { useCallback, useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
-import { HydratedPost } from '../../../../../../common/base-wordpress-provider';
 import { DashboardProvider } from '../../../../../provider';
-import { Spinner } from '@wordpress/components';
+import { LinksList } from '../links-list/links-list';
+import { InboundSmartLink } from '../../../../../../editor-sidebar/smart-linking/provider';
+import { TrafficBoostLink } from '../../../provider';
+
+interface BoostLinksTabProps {
+	postId: number;
+	inboundLinks: InboundSmartLink[];
+	onTotalItemsChange?: ( totalItems: number ) => void;
+	onBoostLinkClick?: ( boostLink: TrafficBoostLink ) => void;
+}
 
 /**
  * Component that renders the boost links tab.
  *
  * @since 3.18.0
+ *
+ * @param {BoostLinksTabProps} props The props for the BoostLinksTab component.
  */
-const BoostLinksTab = (): React.JSX.Element => {
-	const [ posts, setPosts ] = useState<HydratedPost[]>( [] );
-	const [ isLoading, setIsLoading ] = useState<boolean>( true );
+const BoostLinksTab = ( {
+	postId,
+	onTotalItemsChange,
+	inboundLinks: initialInboundLinks,
+}: BoostLinksTabProps ): React.JSX.Element => {
+	const [ inboundLinks, setInboundLinks ] = useState<InboundSmartLink[]>( initialInboundLinks );
+	const [ boostLinks, setBoostLinks ] = useState<TrafficBoostLink[]>( [] );
 
+	/**
+	 * Fetches the inbound smart links for the post.
+	 *
+	 * @since 3.18.0
+	 */
 	useEffect( () => {
-		const fetchPosts = async () => {
-			try {
-				const fetchedPosts = await DashboardProvider.getInstance().getPosts( {
-					per_page: 5,
-					order: 'desc',
-				} );
-
-				setPosts( fetchedPosts.data );
-			} catch ( error ) {
-				console.error( error ); // eslint-disable-line no-console
-			} finally {
-				setIsLoading( false );
+		const fetchInboundLinks = async () => {
+			const fetchedLinks = await DashboardProvider.getInstance().getInboundSmartLinks( postId );
+			if ( fetchedLinks.length > 0 ) {
+				setInboundLinks( fetchedLinks );
 			}
 		};
 
-		setIsLoading( true );
-		fetchPosts();
-	}, [] );
+		fetchInboundLinks();
+	}, [ postId ] );
 
-	if ( isLoading ) {
-		return <Spinner />;
-	}
+	const fetchInboundLinks = useCallback( async ( page: number, perPage: number ) => {
+		if ( ! inboundLinks || inboundLinks.length === 0 ) {
+			return {
+				data: [],
+				totalPages: 1,
+				totalItems: 0,
+			};
+		}
+		// Get the IDs of the inbound posts.
+		const inboundPostIds = inboundLinks.map( ( link ) => link.post_data?.id );
+
+		// Fetch the inbound posts.
+		const fetchedLinks = await DashboardProvider.getInstance().getPosts(
+			{
+				include: inboundPostIds,
+				page,
+				per_page: perPage,
+			}
+		);
+
+		// Map the fetched posts to the TrafficBoostLink format.
+		const mappedLinks = fetchedLinks.data.map( ( post ) => ( {
+			targetPost: post,
+		} ) );
+
+		setBoostLinks( mappedLinks );
+		onTotalItemsChange?.( fetchedLinks.total_items );
+
+		return {
+			data: mappedLinks,
+			totalPages: fetchedLinks.total_pages,
+			totalItems: fetchedLinks.total_items,
+		};
+	}, [ inboundLinks, onTotalItemsChange ] );
 
 	return (
-		<div className="traffic-boost-links">
-			<h2>{ __( 'Boost Links', 'wp-parsely' ) }</h2>
-			{ posts.length > 0 ? (
-				<ul>
-					{ posts.map( ( post ) => (
-						<li key={ post.id }>
-							{ post.title.rendered || __( '(no title)', 'wp-parsely' ) }
-						</li>
-					) ) }
-				</ul>
-			) : (
-				<p>{ __( 'No posts found.', 'wp-parsely' ) }</p>
-			) }
-		</div>
+		<LinksList
+			links={ boostLinks }
+			isLoading={ false }
+			onSuggestionClick={ () => {} }
+			onFetchPage={ fetchInboundLinks }
+		/>
 	);
 };
 
