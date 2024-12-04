@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
  * Internal dependencies
  */
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
-import { TrafficBoostSuggestion } from '../../provider';
+import { TrafficBoostLink } from '../../provider';
 import { SidebarFooter } from './footer';
 import { SidebarHeader } from './header';
 import { SidebarIcons } from './icons';
@@ -27,7 +27,7 @@ import { TabsContent } from './tabs-content';
 interface TrafficBoostSidebarProps {
     isLoading: boolean;
     post: HydratedPost | null;
-    onSuggestionClick?: ( suggestion: TrafficBoostSuggestion ) => void;
+    onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
 }
 
 /**

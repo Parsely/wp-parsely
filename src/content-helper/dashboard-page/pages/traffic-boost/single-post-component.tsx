@@ -15,7 +15,7 @@ import { HydratedPost } from '../../../common/base-wordpress-provider';
 import { PageContainer } from '../../components';
 import { DashboardProvider } from '../../provider';
 import { TrafficBoostSidebar } from './components/sidebar/sidebar';
-import { TrafficBoostSuggestion } from './provider';
+import { TrafficBoostLink } from './provider';
 import './traffic-boost.scss';
 
 /**
@@ -29,7 +29,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	const [ post, setPost ] = useState<HydratedPost | null>( null );
 	const [ isLoading, setIsLoading ] = useState<boolean>( true );
 	const [ backgroundColor, setBackgroundColor ] = useState<string | undefined>();
-	const [ activeSuggestion, setActiveSuggestion ] = useState<TrafficBoostSuggestion | null>( null );
+	const [ activeSuggestion, setActiveSuggestion ] = useState<TrafficBoostLink | null>( null );
 
 	const [ activePost, setActivePost ] = useState<HydratedPost | null>( null );
 
@@ -90,11 +90,11 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {TrafficBoostSuggestion} suggestion - The suggestion that was clicked.
+	 * @param {TrafficBoostLink} suggestion - The suggestion that was clicked.
 	 */
-	const handleSuggestionClick = ( suggestion: TrafficBoostSuggestion ) => {
+	const handleSuggestionClick = ( suggestion: TrafficBoostLink ) => {
 		setActiveSuggestion( suggestion );
-		setActivePost( suggestion.source_post );
+		setActivePost( suggestion.targetPost );
 	};
 
 	return (

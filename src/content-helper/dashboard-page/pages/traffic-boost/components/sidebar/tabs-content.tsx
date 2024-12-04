@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { TrafficBoostSuggestion } from '../../provider';
+import { TrafficBoostLink } from '../../provider';
 import BoostLinksTab from './tabs/boost-links-tab';
 import SettingsTab from './tabs/settings-tab';
 import SuggestionsTab from './tabs/suggestions-tab';
@@ -20,7 +20,7 @@ interface TabsContentProps {
     activeTab: { name: string };
 	totalSuggestions: number;
 	totalBoostLinks: number;
-	onSuggestionClick?: ( suggestion: TrafficBoostSuggestion ) => void;
+	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
 	onTotalItemsChange?: ( totalItems: number ) => void;
 }
 

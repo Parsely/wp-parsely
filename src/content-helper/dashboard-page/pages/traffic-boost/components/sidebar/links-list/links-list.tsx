@@ -14,46 +14,70 @@ import { chevronLeft, chevronRight } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { HydratedPost } from '../../../../../common/base-wordpress-provider';
-import { DashboardProvider } from '../../../../provider';
-import { TrafficBoostSuggestion } from '../../provider';
-import { SingleSuggestion } from './single-suggestion';
+import { TrafficBoostLink } from '../../../provider';
+import { SingleLink } from './single-link';
+import { ContentHelperError } from '../../../../../../common/content-helper-error';
+import './links-list.scss';
 
 /**
- * Defines the props structure for SuggestionsList.
+ * Defines the result structure for LinksList fetch.
  *
  * @since 3.18.0
  */
-interface SuggestionsListProps {
+export interface LinksListFetchResult {
+	data: TrafficBoostLink[];
+	totalPages: number;
+	totalItems: number;
+}
+/**
+ * Defines the props structure for LinksList.
+ *
+ * @since 3.18.0
+ */
+interface LinksListProps {
+	links: TrafficBoostLink[];
+	isLoading: boolean;
+	error: string | null;
+	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
 	minItemsPerPage?: number;
-	activeSuggestionId?: number;
-	onTotalItemsChange?: ( total: number ) => void;
-	onSuggestionClick?: ( suggestion: TrafficBoostSuggestion ) => void;
+	onFetchPage: ( page: number, perPage: number ) => Promise<LinksListFetchResult>;
+	onFetchError?: ( error: ContentHelperError ) => void;
 }
 
 /**
- * Displays a list of suggestions for traffic boosting.
+ * Displays a list of traffic boost links.
  *
  * @since 3.18.0
  *
- * @param {SuggestionsListProps} props - Component props.
+ * @param {LinksListProps} props - Component props.
  */
-export const SuggestionsList = ( {
-	activeSuggestionId,
-	minItemsPerPage = 3,
-	onTotalItemsChange,
+export const LinksList = ( {
+	links: initialLinks,
 	onSuggestionClick,
-}: SuggestionsListProps ): React.JSX.Element => {
-	const [ posts, setPosts ] = useState<HydratedPost[]>( [] );
+	minItemsPerPage = 3,
+	onFetchPage,
+	onFetchError,
+}: LinksListProps ): React.JSX.Element => {
+	const [ isLoading, setIsLoading ] = useState( false );
+	const [ error, setError ] = useState<ContentHelperError | null>( null );
+
+	const [ links, setLinks ] = useState<TrafficBoostLink[]>( initialLinks );
+
 	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
 	const [ totalPages, setTotalPages ] = useState<number>( 1 );
-	const [ isLoading, setIsLoading ] = useState<boolean>( true );
-	const [ itemsPerPage, setItemsPerPage ] = useState<number | null>( null );
+	const [ totalItems, setTotalItems ] = useState<number>( 0 );
+	const [ itemsPerPage, setItemsPerPage ] = useState<number>( 0 );
+
+	const [ activeLinkPostId, setActiveLinkPostId ] = useState<number | null>( null );
+
 	const containerRef = useRef<HTMLDivElement>( null );
 	const lastContainerHeight = useRef<number>( 0 );
 
 	/**
-	 * Calculates the number of items per page based on the container height.
+	 * Calculates the number of items that can fit in the container.
+	 *
+	 * This calculation is based on the container's height and accounts for
+	 * the height of individual items and pagination controls.
 	 *
 	 * @since 3.18.0
 	 */
@@ -83,19 +107,18 @@ export const SuggestionsList = ( {
 		if ( newItemsPerPage < minItemsPerPage ) {
 			newItemsPerPage = minItemsPerPage;
 		}
-
 		setItemsPerPage( newItemsPerPage );
 	}, [ minItemsPerPage, totalPages ] );
 
 	/**
-	 * Debounced version of calculateItemsPerPage to prevent excessive recalculations.
+	 * Debounced version of calculateItemsPerPage to avoid excessive calculations.
 	 *
 	 * @since 3.18.0
 	 */
 	const debouncedCalculateItemsPerPage = debounce( calculateItemsPerPage, 200 );
 
 	/**
-	 * Handles the resize event to recalculate items per page.
+	 * Sets up the resize observer to recalculate items per page when container size changes.
 	 *
 	 * @since 3.18.0
 	 */
@@ -115,42 +138,52 @@ export const SuggestionsList = ( {
 	}, [ debouncedCalculateItemsPerPage ] );
 
 	/**
-	 * Fetches posts when the current page or items per page changes,
-	 * either triggered by the user or automatically by the resize observer.
+	 * Fetches suggestions data when page or items per page changes.
 	 *
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		if ( itemsPerPage === null ) {
-			return;
-		}
-
-		const fetchPosts = async () => {
-			setIsLoading( true );
-			// TODO: Replace this with a query that gets the suggestions.
+		const fetchData = async () => {
 			try {
-				const fetchedPosts = await DashboardProvider.getInstance().getPosts( {
-					per_page: itemsPerPage,
-					page: currentPage,
-					order: 'asc',
-				} );
+				setIsLoading( true );
 
-				setPosts( fetchedPosts.data );
-				setTotalPages( fetchedPosts.total_pages );
-				onTotalItemsChange?.( fetchedPosts.total_items );
-			} catch ( error ) {
-				// eslint-disable-next-line no-console
-				console.error( error );
+				const pageToFetch = currentPage;
+				const result = await onFetchPage( pageToFetch, itemsPerPage );
+
+				setLinks( result.data );
+				setTotalPages( result.totalPages );
+				setTotalItems( result.totalItems );
+			} catch ( err ) {
+				setError( err as ContentHelperError );
+				onFetchError?.( err as ContentHelperError );
 			} finally {
 				setIsLoading( false );
 			}
 		};
 
-		fetchPosts();
-	}, [ currentPage, itemsPerPage, onTotalItemsChange ] );
+		if ( itemsPerPage > 0 ) {
+			fetchData();
+		}
+	}, [ currentPage, itemsPerPage, onFetchError, onFetchPage ] );
 
 	/**
-	 * Handles the previous page navigation.
+	 * Adjusts the current page if it exceeds the total number of pages.
+	 *
+	 * This is to handle the case where the total number of items is less than the
+	 * number of items per page, and will trigger a fetch.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		const calculatedTotalPages = Math.ceil( totalItems / itemsPerPage );
+
+		if ( calculatedTotalPages < currentPage && calculatedTotalPages > 0 ) {
+			setCurrentPage( calculatedTotalPages );
+		}
+	}, [ totalItems, itemsPerPage, currentPage ] );
+
+	/**
+	 * Handles navigation to the previous page of suggestions.
 	 *
 	 * @since 3.18.0
 	 */
@@ -159,7 +192,7 @@ export const SuggestionsList = ( {
 	};
 
 	/**
-	 * Handles the next page navigation.
+	 * Handles navigation to the next page of suggestions.
 	 *
 	 * @since 3.18.0
 	 */
@@ -167,33 +200,38 @@ export const SuggestionsList = ( {
 		setCurrentPage( ( prev ) => Math.min( prev + 1, totalPages ) );
 	};
 
+	const onSuggestionClickHandler = ( suggestion: TrafficBoostLink ) => {
+		setActiveLinkPostId( suggestion.targetPost.id );
+		onSuggestionClick?.( suggestion );
+	};
+
 	/**
 	 * Renders the suggestions list and handles loading and empty state.
 	 *
 	 * @since 3.18.0
 	 */
-	const renderSuggestionsList = () => {
-		if ( ( isLoading && posts.length === 0 ) || itemsPerPage === null ) {
+	const renderLinksList = () => {
+		if ( ( isLoading && links.length === 0 ) || itemsPerPage === null ) {
 			return <Spinner />;
 		}
 
-		if ( posts.length === 0 ) {
+		if ( error ) {
+			return <p>{ error.message }</p>;
+		}
+
+		if ( links.length === 0 ) {
 			return <p>{ __( 'No posts found.', 'wp-parsely' ) }</p>;
 		}
 
 		return (
-			<div className="traffic-boost-suggestions-list">
-				{ posts.map( ( post ) => {
-					const suggestion = {
-						source_post: post,
-						destination_post: post, // Using same post as placeholder
-					};
+			<div className="traffic-boost-links-list">
+				{ links.map( ( link: TrafficBoostLink ) => {
 					return (
-						<SingleSuggestion
-							key={ post.id }
-							suggestion={ suggestion }
-							isActive={ post.id === activeSuggestionId }
-							onClick={ () => onSuggestionClick?.( suggestion ) }
+						<SingleLink
+							key={ link.targetPost.id }
+							suggestion={ link }
+							isActive={ link.targetPost.id === activeLinkPostId }
+							onClick={ onSuggestionClickHandler }
 						/>
 					);
 				} ) }
@@ -202,10 +240,10 @@ export const SuggestionsList = ( {
 	};
 
 	return (
-		<div className="traffic-boost-suggestions" ref={ containerRef }>
-			{ renderSuggestionsList() }
+		<div className="traffic-boost-links" ref={ containerRef }>
+			{ renderLinksList() }
 			{ totalPages > 1 && (
-				<div className="suggestions-pagination">
+				<div className="links-pagination">
 					<div className="page-selector">
 						<span>{ __( 'Page', 'wp-parsely' ) }</span>
 						<NumberControl
