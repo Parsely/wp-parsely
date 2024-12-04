@@ -12,3 +12,17 @@
 		padding: var(--grid-unit-15) 0;
 	}
 }
+
+.parsely-menu-page-traffic-boost-single-post {
+	display: flex;
+	padding: var(--grid-unit-20) var(--grid-unit-20) var(--grid-unit-20) 0;
+	align-items: flex-start;
+	gap: var(--grid-unit-20);
+	flex: 1 0 0;
+	align-self: stretch;
+
+	.traffic-boost-preview {
+		flex: 1 0 0;
+		align-self: stretch;
+	}
+}

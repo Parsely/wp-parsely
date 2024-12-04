@@ -15,9 +15,7 @@ import { __ } from '@wordpress/i18n';
 import {
 	chevronLeft,
 	chevronRight,
-	Icon,
 	moreVertical,
-	page,
 } from '@wordpress/icons';
 
 /**
@@ -25,6 +23,7 @@ import {
  */
 import { Link } from 'react-router-dom';
 import { HydratedPost, QueryParams } from '../../../common/base-wordpress-provider';
+import { Thumbnail } from '../../../common/components/thumbnail';
 import { DashboardProvider } from '../../provider';
 
 /**
@@ -42,15 +41,11 @@ const PostInfo = ( { post }: { post: HydratedPost } ): React.JSX.Element => {
 
 	return (
 		<div className="posts-table-post-info">
-			<div className="thumbnail">
-				{ post.thumbnail ? (
-					<img src={ post.thumbnail } alt={ post.title.rendered } />
-				) : (
-					<div className="icon-container">
-						<Icon icon={ page } size={ 24 } />
-					</div>
-				) }
-			</div>
+			<Thumbnail
+				post={ post }
+				size={ 45 }
+				className="posts-table-thumbnail"
+			/>
 			<div className="post-details">
 				<div className="post-title">
 					{ post.title.rendered !== ''
@@ -247,7 +242,7 @@ export const PostsTable = ( { query = {} }: PostsTableType ): React.JSX.Element 
 							</td>
 							<td className="boost-perf">35%</td>
 							<td className="actions">
-								<Link to="/traffic-boost">{ __( 'Boost Traffic', 'wp-parsely' ) }</Link>
+								<Link to={ `/traffic-boost/${ post.id }` }>{ __( 'Boost Traffic', 'wp-parsely' ) }</Link>
 								<ActionDropdown />
 							</td>
 						</tr>
