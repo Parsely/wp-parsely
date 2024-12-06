@@ -34,19 +34,19 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		isLoading,
 		error,
 		currentPost: post,
-		selectedPost: activePost,
+		selectedLink,
 	} = useSelect( ( select ) => ( {
 		isLoading: select( TrafficBoostStore ).isLoading(),
 		error: select( TrafficBoostStore ).getError(),
 		currentPost: select( TrafficBoostStore ).getCurrentPost(),
-		selectedPost: select( TrafficBoostStore ).getSelectedPost(),
+		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
 	} ), [] );
 
 	const {
 		setError,
 		setLoading,
 		setCurrentPost,
-		setSelectedPost,
+		setSelectedLink,
 		setBoostLinks,
 		setSuggestions,
 	} = useDispatch( TrafficBoostStore );
@@ -110,10 +110,10 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {TrafficBoostLink} suggestion - The suggestion that was clicked.
+	 * @param {TrafficBoostLink} link The link that was clicked.
 	 */
-	const handleSuggestionClick = ( suggestion: TrafficBoostLink ) => {
-		setSelectedPost( suggestion.targetPost );
+	const handleLinkClick = ( link: TrafficBoostLink ) => {
+		setSelectedLink( link );
 	};
 
 	/**
@@ -190,12 +190,13 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			<TrafficBoostSidebar
 				isLoading={ isLoading }
 				post={ post }
-				onSuggestionClick={ handleSuggestionClick }
+				onLinkClick={ handleLinkClick }
+				activeLink={ selectedLink }
 			/>
 			<div className="traffic-boost-preview">
-				{ activePost && (
+				{ selectedLink && (
 					<div>
-						{ activePost.title.rendered }
+						{ selectedLink.targetPost.title.rendered }
 					</div>
 				) }
 			</div>

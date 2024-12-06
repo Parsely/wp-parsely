@@ -1,3 +1,6 @@
+import { PanelBody, PanelRow } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+
 /**
  * Component that renders the settings tab.
  *
@@ -5,10 +8,26 @@
  */
 const SettingsTab = (): React.JSX.Element => {
 	return (
-		<div>
-			<h2>Settings</h2>
-			<p>Hello World</p>
-		</div>
+		<>
+			<PanelBody title={ __( 'Parse.ly AI', 'wp-parsely' ) }>
+				<PanelRow>
+					<div>
+						<div>
+							<p>{ __( 'Adjust parameters used to generate suggestions.', 'wp-parsely' ) }</p>
+						</div>
+					</div>
+				</PanelRow>
+			</PanelBody>
+			<PanelBody title={ __( 'Content', 'wp-parsely' ) }>
+				<PanelRow>
+					<div>
+						<div>
+							{ __( 'Scope suggestions based on content attributes or Parse.ly smart tags.', 'wp-parsely' ) }
+						</div>
+					</div>
+				</PanelRow>
+			</PanelBody>
+		</>
 	);
 };
 

@@ -29,7 +29,8 @@ import { TabsContent } from './tabs-content';
 interface TrafficBoostSidebarProps {
     isLoading: boolean;
     post: HydratedPost | null;
-    onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
+	activeLink: TrafficBoostLink | null;
+    onLinkClick?: ( link: TrafficBoostLink ) => void;
 }
 
 /**
@@ -43,7 +44,8 @@ interface TrafficBoostSidebarProps {
 export const TrafficBoostSidebar = ( {
 	isLoading,
 	post,
-	onSuggestionClick,
+	activeLink,
+	onLinkClick,
 }: TrafficBoostSidebarProps ): React.JSX.Element => {
 	const navigate = useNavigate();
 
@@ -124,7 +126,9 @@ export const TrafficBoostSidebar = ( {
 						>
 							{ ( tab ) => <TabsContent
 								activeTab={ tab }
-								onSuggestionClick={ onSuggestionClick }
+								activeLink={ activeLink }
+								onSuggestionClick={ onLinkClick }
+								onBoostLinkClick={ onLinkClick }
 							/> }
 						</TabPanel>
 					</>

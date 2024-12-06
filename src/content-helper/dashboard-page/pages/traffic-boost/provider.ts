@@ -11,6 +11,7 @@ import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider
 export interface TrafficBoostLink {
     targetPost: HydratedPost;
     smart_link?: InboundSmartLink;
+    isSuggestion: boolean;
 }
 
 /**
@@ -81,6 +82,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 
 		return fetchedPosts.data.map( ( post ) => ( {
 			targetPost: post,
+			isSuggestion: true,
 		} ) );
 	}
 
@@ -131,6 +133,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		return fetchedPosts.data.map( ( post ) => ( {
 			targetPost: post,
 			smart_link: inboundSmartLinks.find( ( link ) => link.source?.post_id === post.id ),
+			isSuggestion: false,
 		} ) );
 	}
 }

@@ -27,7 +27,6 @@ export enum TrafficBoostSidebarTabs {
  */
 type SuggestionsTabState = {
 	suggestions: TrafficBoostLink[];
-	selectedSuggestion: TrafficBoostLink | null;
 	currentPage: number;
 	itemsPerPage: number;
 };
@@ -39,7 +38,6 @@ type SuggestionsTabState = {
  */
 type BoostLinksTabState = {
 	links: TrafficBoostLink[];
-	selectedBoostLink: TrafficBoostLink | null;
 	currentPage: number;
 	itemsPerPage: number;
 };
@@ -52,9 +50,9 @@ type BoostLinksTabState = {
 type TrafficBoostState = {
 	loading: string[];
 	error: ContentHelperError | null;
-	selectedPost: HydratedPost | null;
 	currentPost: HydratedPost | null;
 	selectedTab: TrafficBoostSidebarTabs;
+	selectedLink: TrafficBoostLink | null;
 	suggestionsTab: SuggestionsTabState;
 	boostLinksTab: BoostLinksTabState;
 };
@@ -80,16 +78,6 @@ interface SetLoadingAction {
 interface SetErrorAction {
 	type: 'SET_ERROR';
 	error: ContentHelperError | null;
-}
-
-/**
- * Interface for the SetSelectedHydratedPostAction.
- *
- * @since 3.18.0
- */
-interface SetSelectedHydratedPostAction {
-	type: 'SET_SELECTED_HYDRATED_POST';
-	post: HydratedPost | null;
 }
 
 /**
@@ -123,16 +111,6 @@ interface SetSuggestionsAction {
 }
 
 /**
- * Interface for the SetSelectedSuggestionAction.
- *
- * @since 3.18.0
- */
-interface SetSelectedSuggestionAction {
-	type: 'SET_SELECTED_SUGGESTION';
-	suggestion: TrafficBoostLink | null;
-}
-
-/**
  * Interface for the SetSuggestionsPageAction.
  *
  * @since 3.18.0
@@ -150,16 +128,6 @@ interface SetSuggestionsPageAction {
 interface SetBoostLinksAction {
 	type: 'SET_BOOST_LINKS';
 	links: TrafficBoostLink[];
-}
-
-/**
- * Interface for the SetSelectedBoostLinkAction.
- *
- * @since 3.18.0
- */
-interface SetSelectedBoostLinkAction {
-	type: 'SET_SELECTED_BOOST_LINK';
-	link: TrafficBoostLink | null;
 }
 
 /**
@@ -193,6 +161,16 @@ interface SetBoostLinksItemsPerPageAction {
 }
 
 /**
+ * Interface for the SetSelectedLinkAction.
+ *
+ * @since 3.18.0
+ */
+interface SetSelectedLinkAction {
+	type: 'SET_SELECTED_LINK';
+	link: TrafficBoostLink | null;
+}
+
+/**
  * Union type for all possible action types.
  *
  * @since 3.18.0
@@ -200,17 +178,15 @@ interface SetBoostLinksItemsPerPageAction {
 type ActionTypes =
 	| SetLoadingAction
 	| SetErrorAction
-	| SetSelectedHydratedPostAction
 	| SetCurrentHydratedPostAction
 	| SetSelectedTabAction
 	| SetSuggestionsAction
-	| SetSelectedSuggestionAction
 	| SetSuggestionsPageAction
 	| SetBoostLinksAction
-	| SetSelectedBoostLinkAction
 	| SetBoostLinksPageAction
 	| SetSuggestionsItemsPerPageAction
-	| SetBoostLinksItemsPerPageAction;
+	| SetBoostLinksItemsPerPageAction
+	| SetSelectedLinkAction;
 
 /**
  * Default state for the Traffic Boost store.
@@ -220,18 +196,16 @@ type ActionTypes =
 const defaultState: TrafficBoostState = {
 	loading: [],
 	error: null,
-	selectedPost: null,
 	currentPost: null,
 	selectedTab: TrafficBoostSidebarTabs.SUGGESTIONS,
+	selectedLink: null,
 	suggestionsTab: {
 		suggestions: [],
-		selectedSuggestion: null,
 		currentPage: 1,
 		itemsPerPage: 0,
 	},
 	boostLinksTab: {
 		links: [],
-		selectedBoostLink: null,
 		currentPage: 1,
 		itemsPerPage: 0,
 	},
@@ -262,11 +236,6 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 					...state,
 					error: action.error,
 				};
-			case 'SET_SELECTED_HYDRATED_POST':
-				return {
-					...state,
-					selectedPost: action.post,
-				};
 			case 'SET_CURRENT_HYDRATED_POST':
 				return {
 					...state,
@@ -285,14 +254,6 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						suggestions: action.suggestions,
 					},
 				};
-			case 'SET_SELECTED_SUGGESTION':
-				return {
-					...state,
-					suggestionsTab: {
-						...state.suggestionsTab,
-						selectedSuggestion: action.suggestion,
-					},
-				};
 			case 'SET_SUGGESTIONS_PAGE':
 				return {
 					...state,
@@ -307,14 +268,6 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 					boostLinksTab: {
 						...state.boostLinksTab,
 						links: action.links,
-					},
-				};
-			case 'SET_SELECTED_BOOST_LINK':
-				return {
-					...state,
-					boostLinksTab: {
-						...state.boostLinksTab,
-						selectedBoostLink: action.link,
 					},
 				};
 			case 'SET_BOOST_LINKS_PAGE':
@@ -341,6 +294,11 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						itemsPerPage: action.itemsPerPage,
 					},
 				};
+			case 'SET_SELECTED_LINK':
+				return {
+					...state,
+					selectedLink: action.link,
+				};
 			default:
 				return state;
 		}
@@ -357,12 +315,6 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 			return {
 				type: 'SET_ERROR',
 				error,
-			};
-		},
-		setSelectedPost( post: HydratedPost | null ): SetSelectedHydratedPostAction {
-			return {
-				type: 'SET_SELECTED_HYDRATED_POST',
-				post,
 			};
 		},
 		setCurrentPost( post: HydratedPost | null ): SetCurrentHydratedPostAction {
@@ -383,12 +335,6 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				suggestions,
 			};
 		},
-		setSelectedSuggestion( suggestion: TrafficBoostLink | null ): SetSelectedSuggestionAction {
-			return {
-				type: 'SET_SELECTED_SUGGESTION',
-				suggestion,
-			};
-		},
 		setSuggestionsPage( page: number ): SetSuggestionsPageAction {
 			return {
 				type: 'SET_SUGGESTIONS_PAGE',
@@ -399,12 +345,6 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 			return {
 				type: 'SET_BOOST_LINKS',
 				links,
-			};
-		},
-		setSelectedBoostLink( link: TrafficBoostLink | null ): SetSelectedBoostLinkAction {
-			return {
-				type: 'SET_SELECTED_BOOST_LINK',
-				link,
 			};
 		},
 		setBoostLinksPage( page: number ): SetBoostLinksPageAction {
@@ -425,6 +365,12 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				itemsPerPage,
 			};
 		},
+		setSelectedLink( link: TrafficBoostLink | null ): SetSelectedLinkAction {
+			return {
+				type: 'SET_SELECTED_LINK',
+				link,
+			};
+		},
 	},
 	selectors: {
 		isLoading( state: TrafficBoostState ): boolean {
@@ -432,9 +378,6 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 		},
 		getError( state: TrafficBoostState ): ContentHelperError | null {
 			return state.error;
-		},
-		getSelectedPost( state: TrafficBoostState ): HydratedPost | null {
-			return state.selectedPost;
 		},
 		getCurrentPost( state: TrafficBoostState ): HydratedPost | null {
 			return state.currentPost;
@@ -445,9 +388,6 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 		getSuggestions( state: TrafficBoostState ): TrafficBoostLink[] {
 			return state.suggestionsTab.suggestions;
 		},
-		getSelectedSuggestion( state: TrafficBoostState ): TrafficBoostLink | null {
-			return state.suggestionsTab.selectedSuggestion;
-		},
 		getSuggestionsPage( state: TrafficBoostState ): number {
 			return state.suggestionsTab.currentPage;
 		},
@@ -457,9 +397,6 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 		getBoostLinks( state: TrafficBoostState ): TrafficBoostLink[] {
 			return state.boostLinksTab.links;
 		},
-		getSelectedBoostLink( state: TrafficBoostState ): TrafficBoostLink | null {
-			return state.boostLinksTab.selectedBoostLink;
-		},
 		getBoostLinksPage( state: TrafficBoostState ): number {
 			return state.boostLinksTab.currentPage;
 		},
@@ -468,6 +405,9 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 		},
 		isSuggestionsLoading( state: TrafficBoostState ): boolean {
 			return state.loading.includes( 'suggestions' );
+		},
+		getSelectedLink( state: TrafficBoostState ): TrafficBoostLink | null {
+			return state.selectedLink;
 		},
 	},
 } );

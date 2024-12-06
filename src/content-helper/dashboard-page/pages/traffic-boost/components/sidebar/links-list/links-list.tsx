@@ -25,6 +25,7 @@ import './links-list.scss';
  */
 interface LinksListProps {
 	links: TrafficBoostLink[];
+	activeLink: TrafficBoostLink | null;
 	minItemsPerPage?: number;
 	currentPage?: number;
 	itemsPerPage?: number;
@@ -43,6 +44,7 @@ interface LinksListProps {
 export const LinksList = ( {
 	links,
 	onClick,
+	activeLink,
 	minItemsPerPage = 3,
 	currentPage = 1,
 	itemsPerPage = 3,
@@ -56,7 +58,7 @@ export const LinksList = ( {
 	const [ totalPages, setTotalPages ] = useState<number>(
 		Math.ceil( links.length / itemsPerPage )
 	);
-	const [ activeLinkPostId, setActiveLinkPostId ] = useState<number | null>( null );
+	const [ activeLinkPostId, setActiveLinkPostId ] = useState<number | null>( activeLink?.targetPost.id ?? null );
 
 	const containerRef = useRef<HTMLDivElement>( null );
 	const lastContainerHeight = useRef<number>( 0 );

@@ -17,6 +17,7 @@ import { LinksList } from '../links-list/links-list';
  */
 interface BoostLinksTabProps {
 	onBoostLinkClick?: ( boostLink: TrafficBoostLink ) => void;
+	activeLink: TrafficBoostLink | null;
 }
 
 /**
@@ -28,6 +29,7 @@ interface BoostLinksTabProps {
  */
 const BoostLinksTab = ( {
 	onBoostLinkClick,
+	activeLink,
 }: BoostLinksTabProps ): React.JSX.Element => {
 	const {
 		boostLinks,
@@ -48,6 +50,7 @@ const BoostLinksTab = ( {
 		<LinksList
 			links={ boostLinks }
 			onClick={ onBoostLinkClick }
+			activeLink={ ! activeLink?.isSuggestion ? activeLink : null }
 			currentPage={ currentPage }
 			itemsPerPage={ itemsPerPage }
 			onPageChange={ setBoostLinksPage }

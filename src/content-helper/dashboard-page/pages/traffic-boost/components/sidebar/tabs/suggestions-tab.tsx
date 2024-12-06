@@ -17,6 +17,7 @@ import { LinksList } from '../links-list/links-list';
  */
 interface SuggestionsTabProps {
 	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
+	activeLink: TrafficBoostLink | null;
 }
 
 /**
@@ -28,8 +29,10 @@ interface SuggestionsTabProps {
  */
 const SuggestionsTab = ( {
 	onSuggestionClick,
+	activeLink,
 }: SuggestionsTabProps ): React.JSX.Element => {
 	const { suggestions, currentPage, itemsPerPage } = useSelect( ( select ) => ( {
+		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
 		suggestions: select( TrafficBoostStore ).getSuggestions(),
 		currentPage: select( TrafficBoostStore ).getSuggestionsPage(),
 		itemsPerPage: select( TrafficBoostStore ).getSuggestionsItemsPerPage(),
@@ -41,6 +44,7 @@ const SuggestionsTab = ( {
 		<LinksList
 			links={ suggestions }
 			onClick={ onSuggestionClick }
+			activeLink={ activeLink?.isSuggestion ? activeLink : null }
 			currentPage={ currentPage }
 			itemsPerPage={ itemsPerPage }
 			onPageChange={ setSuggestionsPage }

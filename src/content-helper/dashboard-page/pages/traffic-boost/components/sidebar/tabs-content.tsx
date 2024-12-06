@@ -18,19 +18,9 @@ import SuggestionsTab from './tabs/suggestions-tab';
  * @since 3.18.0
  */
 interface TabsContentProps {
-	/**
-	 * The currently active tab.
-	 */
 	activeTab: { name: string };
-
-	/**
-	 * Callback fired when a suggestion is clicked.
-	 */
+	activeLink: TrafficBoostLink | null;
 	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
-
-	/**
-	 * Callback fired when a boost link is clicked.
-	 */
 	onBoostLinkClick?: ( boostLink: TrafficBoostLink ) => void;
 }
 
@@ -50,6 +40,7 @@ interface TabsContentProps {
  */
 export const TabsContent = ( {
 	activeTab,
+	activeLink,
 	onSuggestionClick,
 	onBoostLinkClick,
 }: TabsContentProps ): JSX.Element => {
@@ -63,10 +54,12 @@ export const TabsContent = ( {
 		case 'suggestions':
 			return <SuggestionsTab
 				onSuggestionClick={ onSuggestionClick }
+				activeLink={ activeLink }
 			/>;
 		case 'boost-links':
 			return <BoostLinksTab
 				onBoostLinkClick={ onBoostLinkClick }
+				activeLink={ activeLink }
 			/>;
 		case 'settings':
 			return <SettingsTab />;
