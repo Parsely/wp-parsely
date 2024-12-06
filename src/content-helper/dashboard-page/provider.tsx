@@ -2,14 +2,6 @@
  * Internal dependencies
  */
 import { BaseWordPressProvider } from '../common/base-wordpress-provider';
-import { InboundSmartLink } from '../editor-sidebar/smart-linking/provider';
-
-export interface GetSmartLinksResponse {
-	data: {
-		inbound: InboundSmartLink[];
-		outbound: never[];
-	};
-}
 
 /**
  * DashboardProvider class for the plugin's dashboard.
@@ -24,7 +16,7 @@ export class DashboardProvider extends BaseWordPressProvider {
 	 *
 	 * @since 3.18.0
 	 */
-	private static instance: DashboardProvider;
+	protected static instance: DashboardProvider;
 
 	/**
 	 * Returns the singleton instance of the DashboardProvider.
@@ -38,15 +30,5 @@ export class DashboardProvider extends BaseWordPressProvider {
 			DashboardProvider.instance = new DashboardProvider();
 		}
 		return DashboardProvider.instance;
-	}
-
-	public async getInboundSmartLinks( postId: number ): Promise<InboundSmartLink[]> {
-		const requestPath = `/wp-parsely/v2/content-helper/smart-linking/${ postId }/get`;
-
-		const inboundSmartLinks = await this.fetch<GetSmartLinksResponse>( {
-			path: requestPath,
-		} );
-
-		return inboundSmartLinks.data.inbound;
 	}
 }

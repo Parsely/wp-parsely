@@ -263,6 +263,31 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	}
 
 	/**
+	 * Fetches a list of pages from the REST API and hydrates them with embedded data.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {QueryParams?} queryParams Optional query parameters.
+	 * @param {string?}      id          The (optional) ID of the request.
+	 *
+	 * @return {Promise<FetchResponse<HydratedPost[]>>} The fetched and hydrated pages.
+	 */
+	public async getPages( queryParams: QueryParams = {}, id?: string ): Promise<FetchResponse<HydratedPost[]>> {
+		const pages = await this.apiFetch<Post[]>( {
+			path: addQueryArgs( '/wp/v2/pages', { ...queryParams, _embed: true } ),
+			method: 'GET',
+		}, id );
+
+		// Hydrate the fetched pages.
+		const hydratedPages = await this.hydratePosts( pages.data );
+
+		return {
+			...pages,
+			data: hydratedPages,
+		};
+	}
+
+	/**
 	 * Fetches a single post by ID from the REST API and hydrates it with embedded data.
 	 *
 	 * @since 3.18.0

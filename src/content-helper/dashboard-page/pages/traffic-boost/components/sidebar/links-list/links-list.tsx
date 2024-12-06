@@ -16,19 +16,8 @@ import { chevronLeft, chevronRight } from '@wordpress/icons';
  */
 import { TrafficBoostLink } from '../../../provider';
 import { SingleLink } from './single-link';
-import { ContentHelperError } from '../../../../../../common/content-helper-error';
 import './links-list.scss';
 
-/**
- * Defines the result structure for LinksList fetch.
- *
- * @since 3.18.0
- */
-export interface LinksListFetchResult {
-	data: TrafficBoostLink[];
-	totalPages: number;
-	totalItems: number;
-}
 /**
  * Defines the props structure for LinksList.
  *
@@ -36,11 +25,12 @@ export interface LinksListFetchResult {
  */
 interface LinksListProps {
 	links: TrafficBoostLink[];
-	isLoading: boolean;
-	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
 	minItemsPerPage?: number;
-	onFetchPage: ( page: number, perPage: number ) => Promise<LinksListFetchResult>;
-	onFetchError?: ( error: ContentHelperError ) => void;
+	currentPage?: number;
+	itemsPerPage?: number;
+	onClick?: ( link: TrafficBoostLink ) => void;
+	onPageChange?: ( page: number ) => void;
+	onItemsPerPageChange?: ( itemsPerPage: number ) => void;
 }
 
 /**
@@ -51,22 +41,21 @@ interface LinksListProps {
  * @param {LinksListProps} props - Component props.
  */
 export const LinksList = ( {
-	links: initialLinks,
-	onSuggestionClick,
+	links,
+	onClick,
 	minItemsPerPage = 3,
-	onFetchPage,
-	onFetchError,
+	currentPage = 1,
+	itemsPerPage = 3,
+	onPageChange,
+	onItemsPerPageChange,
 }: LinksListProps ): React.JSX.Element => {
 	const [ isLoading, setIsLoading ] = useState( false );
-	const [ error, setError ] = useState<ContentHelperError | null>( null );
-
-	const [ links, setLinks ] = useState<TrafficBoostLink[]>( initialLinks );
-
-	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
-	const [ totalPages, setTotalPages ] = useState<number>( 1 );
-	const [ totalItems, setTotalItems ] = useState<number>( 0 );
-	const [ itemsPerPage, setItemsPerPage ] = useState<number>( 0 );
-
+	const [ visibleLinks, setVisibleLinks ] = useState<TrafficBoostLink[]>(
+		links.slice( 0, itemsPerPage )
+	);
+	const [ totalPages, setTotalPages ] = useState<number>(
+		Math.ceil( links.length / itemsPerPage )
+	);
 	const [ activeLinkPostId, setActiveLinkPostId ] = useState<number | null>( null );
 
 	const containerRef = useRef<HTMLDivElement>( null );
@@ -75,39 +64,30 @@ export const LinksList = ( {
 	/**
 	 * Calculates the number of items that can fit in the container.
 	 *
-	 * This calculation is based on the container's height and accounts for
-	 * the height of individual items and pagination controls.
-	 *
 	 * @since 3.18.0
 	 */
 	const calculateItemsPerPage = useCallback( () => {
-		if ( ! containerRef.current || 0 === totalPages ) {
+		if ( ! containerRef.current ) {
+			onItemsPerPageChange?.( minItemsPerPage );
 			return;
 		}
 
-		// Height of the container.
 		const containerHeight = containerRef.current.clientHeight;
 
-		// If the container height hasn't changed, don't recalculate.
 		if ( containerHeight === lastContainerHeight.current ) {
 			return;
 		}
 		lastContainerHeight.current = containerHeight;
 
-		// Size of a single suggestion item including border.
-		const itemHeight = 85; // 84px + 2px border
-		// Size of pagination including border.
-		const paginationHeight = totalPages > 0 ? 60 : 0;
-
+		const itemHeight = 85;
+		const paginationHeight = 60;
 		const availableHeight = containerHeight - paginationHeight;
 		const calculatedItems = Math.floor( availableHeight / itemHeight );
-		let newItemsPerPage = Math.max( 1, calculatedItems );
+		const newItemsPerPage = Math.max( minItemsPerPage, calculatedItems );
 
-		if ( newItemsPerPage < minItemsPerPage ) {
-			newItemsPerPage = minItemsPerPage;
-		}
-		setItemsPerPage( newItemsPerPage );
-	}, [ minItemsPerPage, totalPages ] );
+		onItemsPerPageChange?.( newItemsPerPage );
+		setIsLoading( false );
+	}, [ minItemsPerPage, onItemsPerPageChange ] );
 
 	/**
 	 * Debounced version of calculateItemsPerPage to avoid excessive calculations.
@@ -137,49 +117,23 @@ export const LinksList = ( {
 	}, [ debouncedCalculateItemsPerPage ] );
 
 	/**
-	 * Fetches suggestions data when page or items per page changes.
+	 * Updates visible links when page, itemsPerPage, or links change
 	 *
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		const fetchData = async () => {
-			try {
-				setIsLoading( true );
+		const startIndex = ( currentPage - 1 ) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		const calculatedTotalPages = Math.ceil( links.length / itemsPerPage );
 
-				const pageToFetch = currentPage;
-				const result = await onFetchPage( pageToFetch, itemsPerPage );
+		setVisibleLinks( links.slice( startIndex, endIndex ) );
+		setTotalPages( calculatedTotalPages );
 
-				setLinks( result.data );
-				setTotalPages( result.totalPages );
-				setTotalItems( result.totalItems );
-			} catch ( err ) {
-				setError( err as ContentHelperError );
-				onFetchError?.( err as ContentHelperError );
-			} finally {
-				setIsLoading( false );
-			}
-		};
-
-		if ( itemsPerPage > 0 ) {
-			fetchData();
-		}
-	}, [ currentPage, itemsPerPage, onFetchError, onFetchPage ] );
-
-	/**
-	 * Adjusts the current page if it exceeds the total number of pages.
-	 *
-	 * This is to handle the case where the total number of items is less than the
-	 * number of items per page, and will trigger a fetch.
-	 *
-	 * @since 3.18.0
-	 */
-	useEffect( () => {
-		const calculatedTotalPages = Math.ceil( totalItems / itemsPerPage );
-
+		// Adjust current page if it exceeds total pages
 		if ( calculatedTotalPages < currentPage && calculatedTotalPages > 0 ) {
-			setCurrentPage( calculatedTotalPages );
+			onPageChange?.( calculatedTotalPages );
 		}
-	}, [ totalItems, itemsPerPage, currentPage ] );
+	}, [ currentPage, itemsPerPage, links, onPageChange ] );
 
 	/**
 	 * Handles navigation to the previous page of suggestions.
@@ -187,7 +141,7 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	const handlePrevious = () => {
-		setCurrentPage( ( prev ) => Math.max( prev - 1, 1 ) );
+		onPageChange?.( Math.max( currentPage - 1, 1 ) );
 	};
 
 	/**
@@ -196,12 +150,12 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	const handleNext = () => {
-		setCurrentPage( ( prev ) => Math.min( prev + 1, totalPages ) );
+		onPageChange?.( Math.min( currentPage + 1, totalPages ) );
 	};
 
 	const onSuggestionClickHandler = ( suggestion: TrafficBoostLink ) => {
 		setActiveLinkPostId( suggestion.targetPost.id );
-		onSuggestionClick?.( suggestion );
+		onClick?.( suggestion );
 	};
 
 	/**
@@ -209,25 +163,27 @@ export const LinksList = ( {
 	 *
 	 * @since 3.18.0
 	 */
-	const renderLinksList = () => {
-		if ( ( isLoading && links.length === 0 ) || itemsPerPage === null ) {
+	const renderLinksList = (): React.JSX.Element | null => {
+		if ( isLoading && visibleLinks.length === 0 ) {
 			return <Spinner />;
 		}
 
-		if ( error ) {
-			return <p>{ error.message }</p>;
+		// If we have links data but nothing is visible yet, don't show the "no posts" message
+		const isInitialState = links.length > 0 && visibleLinks.length === 0;
+		if ( isInitialState ) {
+			return null;
 		}
 
-		if ( links.length === 0 ) {
+		if ( visibleLinks.length === 0 ) {
 			return <p>{ __( 'No posts found.', 'wp-parsely' ) }</p>;
 		}
 
 		return (
 			<div className="traffic-boost-links-list">
-				{ links.map( ( link: TrafficBoostLink ) => {
+				{ visibleLinks.map( ( link: TrafficBoostLink ) => {
 					return (
 						<SingleLink
-							key={ link.targetPost.id }
+							key={ link.targetPost.id + ( link.smart_link?.uid ?? '' ) }
 							suggestion={ link }
 							isActive={ link.targetPost.id === activeLinkPostId }
 							onClick={ onSuggestionClickHandler }
@@ -236,6 +192,20 @@ export const LinksList = ( {
 				} ) }
 			</div>
 		);
+	};
+
+	const handlePageChange = ( value?: string ) => {
+		if ( ! value ) {
+			return;
+		}
+
+		let selectedPage = parseInt( value, 10 );
+		if ( selectedPage > totalPages ) {
+			selectedPage = totalPages;
+		} else if ( selectedPage < 1 ) {
+			selectedPage = 1;
+		}
+		onPageChange?.( selectedPage );
 	};
 
 	return (
@@ -247,15 +217,7 @@ export const LinksList = ( {
 						<span>{ __( 'Page', 'wp-parsely' ) }</span>
 						<NumberControl
 							value={ currentPage }
-							onChange={ ( value ) => {
-								let selectedPage = parseInt( value ?? '1', 10 );
-								if ( selectedPage > totalPages ) {
-									selectedPage = totalPages;
-								} else if ( selectedPage < 1 ) {
-									selectedPage = 1;
-								}
-								setCurrentPage( selectedPage );
-							} }
+							onChange={ handlePageChange }
 							min={ 1 }
 							max={ totalPages }
 							dragDirection="e"

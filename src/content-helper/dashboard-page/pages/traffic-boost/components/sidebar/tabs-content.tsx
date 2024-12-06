@@ -1,19 +1,16 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
+import { useParams } from 'react-router-dom';
 import { TrafficBoostLink } from '../../provider';
 import BoostLinksTab from './tabs/boost-links-tab';
 import SettingsTab from './tabs/settings-tab';
 import SuggestionsTab from './tabs/suggestions-tab';
-import { useParams } from 'react-router-dom';
-import { useCallback, useEffect, useState } from '@wordpress/element';
-import { InboundSmartLink } from '../../../../../editor-sidebar/smart-linking/provider';
-import { DashboardProvider } from '../../../../provider';
 
 /**
  * Defines the props structure for TabsContent.
@@ -21,83 +18,42 @@ import { DashboardProvider } from '../../../../provider';
  * @since 3.18.0
  */
 interface TabsContentProps {
-    activeTab: { name: string };
-	totalSuggestions: number;
-	totalBoostLinks: number;
+	/**
+	 * The currently active tab.
+	 */
+	activeTab: { name: string };
+
+	/**
+	 * Callback fired when a suggestion is clicked.
+	 */
 	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
-	onTotalItemsChange?: ( totalSuggestions: number, totalBoostLinks: number ) => void;
+
+	/**
+	 * Callback fired when a boost link is clicked.
+	 */
+	onBoostLinkClick?: ( boostLink: TrafficBoostLink ) => void;
 }
 
 /**
- * Component that renders the content for each tab, depending on the active tab.
+ * Component that renders the content for each tab in the Traffic Boost sidebar.
  *
- * @param {TabsContentProps} props Component props.
+ * Displays different content based on the active tab:
+ * - Suggestions tab shows recommended content to boost
+ * - Boost Links tab shows currently boosted content
+ * - Settings tab shows Traffic Boost configuration options
+ *
  * @since 3.18.0
+ *
+ * @param {TabsContentProps} props The component's props.
+ *
+ * @return {JSX.Element} The rendered tab content.
  */
 export const TabsContent = ( {
 	activeTab,
 	onSuggestionClick,
-	onTotalItemsChange,
-}: TabsContentProps ): React.JSX.Element => {
+	onBoostLinkClick,
+}: TabsContentProps ): JSX.Element => {
 	const { postId } = useParams();
-	const [ currentPostId, setCurrentPostId ] = useState<number>( 0 );
-	const [ totalSuggestions, setTotalSuggestions ] = useState<number>( 0 );
-	const [ totalBoostLinks, setTotalBoostLinks ] = useState<number>( 0 );
-	const [ inboundLinks, setInboundLinks ] = useState<InboundSmartLink[]>( [] );
-
-	/**
-	 * Calls the onTotalItemsChange callback with the current total suggestions
-	 * and boost links.
-	 *
-	 * @since 3.18.0
-	 */
-	useEffect( () => {
-		onTotalItemsChange?.( totalSuggestions, totalBoostLinks );
-	}, [ totalSuggestions, totalBoostLinks, onTotalItemsChange ] );
-
-	useEffect( () => {
-		// Update the current post ID if the post ID changes.
-		if ( postId ) {
-			setCurrentPostId( parseInt( postId ) );
-		}
-
-		if ( 0 === currentPostId ) {
-			return;
-		}
-
-		const fetchInboundLinks = async () => {
-			const fetchedLinks = await DashboardProvider.getInstance().getInboundSmartLinks( currentPostId );
-			setInboundLinks( fetchedLinks );
-		};
-
-		fetchInboundLinks();
-	}, [ currentPostId, postId ] );
-
-	useEffect( () => {
-		setTotalBoostLinks( inboundLinks.length );
-	}, [ inboundLinks ] );
-
-	/**
-	 * Handles the total items change for the suggestions tab.
-	 *
-	 * Avoids unnecessary re-renders by using useCallback.
-	 *
-	 * @since 3.18.0
-	 */
-	const handleSuggestionsTotalItemsChange = useCallback( ( totalItems: number ) => {
-		setTotalSuggestions( totalItems );
-	}, [] );
-
-	/**
-	 * Handles the total items change for the boost links tab.
-	 *
-	 * Avoids unnecessary re-renders by using useCallback.
-	 *
-	 * @since 3.18.0
-	 */
-	const handleBoostLinksTotalItemsChange = useCallback( ( totalItems: number ) => {
-		setTotalBoostLinks( totalItems );
-	}, [] );
 
 	if ( ! postId ) {
 		return <div>{ __( 'No post ID found', 'wp-parsely' ) }</div>;
@@ -107,13 +63,10 @@ export const TabsContent = ( {
 		case 'suggestions':
 			return <SuggestionsTab
 				onSuggestionClick={ onSuggestionClick }
-				onTotalItemsChange={ handleSuggestionsTotalItemsChange }
 			/>;
 		case 'boost-links':
 			return <BoostLinksTab
-				inboundLinks={ inboundLinks }
-				postId={ currentPostId }
-				onTotalItemsChange={ handleBoostLinksTotalItemsChange }
+				onBoostLinkClick={ onBoostLinkClick }
 			/>;
 		case 'settings':
 			return <SettingsTab />;

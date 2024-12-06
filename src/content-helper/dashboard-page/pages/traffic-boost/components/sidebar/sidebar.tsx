@@ -2,7 +2,8 @@
  * WordPress dependencies
  */
 import { Icon, Spinner, TabPanel } from '@wordpress/components';
-import { useCallback, useEffect, useState } from '@wordpress/element';
+import { useDispatch, useSelect } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { settings } from '@wordpress/icons';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
  */
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { TrafficBoostLink } from '../../provider';
+import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../../store';
 import { SidebarFooter } from './footer';
 import { SidebarHeader } from './header';
 import { SidebarIcons } from './icons';
@@ -45,11 +47,20 @@ export const TrafficBoostSidebar = ( {
 }: TrafficBoostSidebarProps ): React.JSX.Element => {
 	const navigate = useNavigate();
 
-	const [ numSuggestions, setNumSuggestions ] = useState( 0 );
-	const [ numBoostLinks, setNumBoostLinks ] = useState( 0 );
+	// Get state from store
+	const {
+		suggestions,
+		boostLinks,
+	} = useSelect( ( select ) => ( {
+		suggestions: select( TrafficBoostStore ).getSuggestions(),
+		boostLinks: select( TrafficBoostStore ).getBoostLinks(),
+	} ), [] );
+
+	// Get dispatch actions
+	const { setSelectedTab } = useDispatch( TrafficBoostStore );
 
 	/**
-	 * Handles tab counters in the UI.
+	 * Handles tab counters updates in the UI.
 	 *
 	 * @since 3.18.0
 	 */
@@ -72,24 +83,9 @@ export const TrafficBoostSidebar = ( {
 			counter.textContent = count.toString();
 		};
 
-		updateTabCount( '.components-tab-panel__tabs-item.suggestions-tab', numSuggestions );
-		updateTabCount( '.components-tab-panel__tabs-item.boost-links-tab', numBoostLinks );
-	}, [ numBoostLinks, numSuggestions ] );
-
-	/**
-	 * Handles the total items change for suggestions.
-	 *
-	 * This needs to be a callback to prevent triggering duplicate calls to the API.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param {number} totalSuggestions The total number of suggestions.
-	 * @param {number} totalBoostLinks  The total number of boost links.
-	 */
-	const handleTotalItemsChange = useCallback( ( totalSuggestions: number, totalBoostLinks: number ) => {
-		setNumSuggestions( totalSuggestions );
-		setNumBoostLinks( totalBoostLinks );
-	}, [] );
+		updateTabCount( '.components-tab-panel__tabs-item.suggestions-tab', suggestions.length );
+		updateTabCount( '.components-tab-panel__tabs-item.boost-links-tab', boostLinks.length );
+	}, [ boostLinks, boostLinks.length, suggestions.length ] );
 
 	return (
 		<div className="traffic-boost-sidebar">
@@ -108,12 +104,12 @@ export const TrafficBoostSidebar = ( {
 							className="traffic-boost-sidebar-tabs"
 							tabs={ [
 								{
-									name: 'suggestions',
+									name: TrafficBoostSidebarTabs.SUGGESTIONS,
 									title: __( 'Suggestions', 'wp-parsely' ),
 									className: 'traffic-boost-tab suggestions-tab',
 								},
 								{
-									name: 'boost-links',
+									name: TrafficBoostSidebarTabs.BOOST_LINKS,
 									title: __( 'Boost Links', 'wp-parsely' ),
 									className: 'traffic-boost-tab boost-links-tab',
 								},
@@ -124,13 +120,11 @@ export const TrafficBoostSidebar = ( {
 									icon: <Icon icon={ settings } size={ 24 } />,
 								},
 							] }
+							onSelect={ ( tab: string ) => setSelectedTab( tab as TrafficBoostSidebarTabs ) }
 						>
 							{ ( tab ) => <TabsContent
 								activeTab={ tab }
-								totalSuggestions={ numSuggestions }
-								totalBoostLinks={ numBoostLinks }
 								onSuggestionClick={ onSuggestionClick }
-								onTotalItemsChange={ handleTotalItemsChange }
 							/> }
 						</TabPanel>
 					</>

@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { useDispatch, useSelect } from '@wordpress/data';
 import { useNavigate, useParams } from 'react-router-dom';
 
 /**
@@ -11,12 +12,12 @@ import { useEffect, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { HydratedPost } from '../../../common/base-wordpress-provider';
 import { PageContainer } from '../../components';
-import { DashboardProvider } from '../../provider';
 import { TrafficBoostSidebar } from './components/sidebar/sidebar';
-import { TrafficBoostLink } from './provider';
+import { TrafficBoostLink, TrafficBoostProvider } from './provider';
+import { TrafficBoostStore } from './store';
 import './traffic-boost.scss';
+import { ContentHelperError } from '../../../common/content-helper-error';
 
 /**
  * Traffic Boost Post page component.
@@ -26,12 +27,29 @@ import './traffic-boost.scss';
 export const TrafficBoostPostPage = (): React.JSX.Element => {
 	const { postId } = useParams();
 	const navigate = useNavigate();
-	const [ post, setPost ] = useState<HydratedPost | null>( null );
-	const [ isLoading, setIsLoading ] = useState<boolean>( true );
 	const [ backgroundColor, setBackgroundColor ] = useState<string | undefined>();
-	const [ activeSuggestion, setActiveSuggestion ] = useState<TrafficBoostLink | null>( null );
+	const [ hasFetchedPost, setHasFetchedPost ] = useState<boolean>( false );
 
-	const [ activePost, setActivePost ] = useState<HydratedPost | null>( null );
+	const {
+		isLoading,
+		error,
+		currentPost: post,
+		selectedPost: activePost,
+	} = useSelect( ( select ) => ( {
+		isLoading: select( TrafficBoostStore ).isLoading(),
+		error: select( TrafficBoostStore ).getError(),
+		currentPost: select( TrafficBoostStore ).getCurrentPost(),
+		selectedPost: select( TrafficBoostStore ).getSelectedPost(),
+	} ), [] );
+
+	const {
+		setError,
+		setLoading,
+		setCurrentPost,
+		setSelectedPost,
+		setBoostLinks,
+		setSuggestions,
+	} = useDispatch( TrafficBoostStore );
 
 	/**
 	 * Sets the background color of the page container to the background color of the admin menu.
@@ -47,43 +65,45 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	}, [] );
 
 	/**
-	 * Fetches the post data from the dashboard provider.
+	 * Fetches the current post data from the dashboard provider.
 	 *
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
 		const fetchPost = async () => {
 			try {
-				const fetchedPost = await DashboardProvider.getInstance().getPosts( {
-					include: [ Number( postId ) ],
+				const fetchedPost = await TrafficBoostProvider.getInstance().getPosts( {
+					include: [ parseInt( postId ?? '0' ) ],
 				} );
 
 				if ( fetchedPost.data.length > 0 ) {
-					setPost( fetchedPost.data[ 0 ] );
+					setCurrentPost( fetchedPost.data[ 0 ] );
 				} else {
-					setPost( null );
+					setCurrentPost( null );
 				}
-			} catch ( error ) {
+			} catch ( err ) {
+				setError( err as ContentHelperError );
 				console.error( error ); // eslint-disable-line no-console
 			} finally {
-				setIsLoading( false );
+				setLoading( false );
+				setHasFetchedPost( true );
 			}
 		};
 
-		setIsLoading( true );
+		setLoading( true );
 		fetchPost();
-	}, [ postId ] );
+	}, [ postId, setLoading, setCurrentPost, setError, error ] );
 
 	/**
-	 * Redirects to the traffic boost page if no post is found.
+	 * Redirects to the traffic boost page if no post is found after fetching.
 	 *
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		if ( ! isLoading && ! post ) {
+		if ( hasFetchedPost && ! isLoading && ! post ) {
 			navigate( '/traffic-boost' );
 		}
-	}, [ isLoading, post, navigate ] );
+	}, [ hasFetchedPost, isLoading, post, navigate ] );
 
 	/**
 	 * Handles the click event on a suggestion.
@@ -93,9 +113,67 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	 * @param {TrafficBoostLink} suggestion - The suggestion that was clicked.
 	 */
 	const handleSuggestionClick = ( suggestion: TrafficBoostLink ) => {
-		setActiveSuggestion( suggestion );
-		setActivePost( suggestion.targetPost );
+		setSelectedPost( suggestion.targetPost );
 	};
+
+	/**
+	 * Fetches the Boost Links for the post.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( ! post ) {
+			return;
+		}
+
+		const fetchBoostLinks = async () => {
+			try {
+				setLoading( true, 'boost_links' );
+				let boostLinks = await TrafficBoostProvider.getInstance().getBoostLinks( post.id );
+
+				// Filter out the current post from the inbound links.
+				boostLinks = boostLinks.filter( ( link ) => link.targetPost?.id !== post.id );
+
+				// Filter out the inbound links that are not posts.
+				boostLinks = boostLinks.filter( ( link ) => link.smart_link?.source?.post_type === 'post' );
+
+				setBoostLinks( boostLinks );
+			} catch ( err ) {
+				setError( err as ContentHelperError );
+				console.error( error ); // eslint-disable-line no-console
+			} finally {
+				setLoading( false, 'boost_links' );
+			}
+		};
+
+		fetchBoostLinks();
+	}, [ error, post, setBoostLinks, setError, setLoading ] );
+
+	/**
+	 * Fetches suggestions for Boost Links to the current post.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( ! post ) {
+			return;
+		}
+
+		const fetchSuggestions = async () => {
+			try {
+				setLoading( true, 'suggestions' );
+				const fetchedSuggestions = await TrafficBoostProvider.getInstance().generateBoostLinks( post.id );
+				setSuggestions( fetchedSuggestions );
+			} catch ( err ) {
+				setError( err as ContentHelperError );
+				console.error( error ); // eslint-disable-line no-console
+			} finally {
+				setLoading( false, 'suggestions' );
+			}
+		};
+
+		fetchSuggestions();
+	}, [ error, post, setError, setLoading, setSuggestions ] );
 
 	return (
 		<PageContainer name="traffic-boost-single-post" backgroundColor={ backgroundColor }>
@@ -115,9 +193,9 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 				onSuggestionClick={ handleSuggestionClick }
 			/>
 			<div className="traffic-boost-preview">
-				{ activeSuggestion && (
+				{ activePost && (
 					<div>
-						{ activePost?.title.rendered }
+						{ activePost.title.rendered }
 					</div>
 				) }
 			</div>

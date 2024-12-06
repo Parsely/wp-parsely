@@ -1,14 +1,14 @@
 /**
  * External dependencies
  */
-import { useCallback } from '@wordpress/element';
+import { useDispatch, useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
-import { LinksList } from '../links-list/links-list';
 import { TrafficBoostLink } from '../../../provider';
-import { DashboardProvider } from '../../../../../provider';
+import { TrafficBoostStore } from '../../../store';
+import { LinksList } from '../links-list/links-list';
 
 /**
  * Defines the props structure for SuggestionsTab.
@@ -17,7 +17,6 @@ import { DashboardProvider } from '../../../../../provider';
  */
 interface SuggestionsTabProps {
 	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
-	onTotalItemsChange?: ( totalItems: number ) => void;
 }
 
 /**
@@ -29,36 +28,23 @@ interface SuggestionsTabProps {
  */
 const SuggestionsTab = ( {
 	onSuggestionClick,
-	onTotalItemsChange,
 }: SuggestionsTabProps ): React.JSX.Element => {
-	const fetchSuggestions = useCallback( async ( page: number, perPage: number ) => {
-		const provider = DashboardProvider.getInstance();
-		const fetchedSuggestions = await provider.getPosts( { page, per_page: perPage } );
+	const { suggestions, currentPage, itemsPerPage } = useSelect( ( select ) => ( {
+		suggestions: select( TrafficBoostStore ).getSuggestions(),
+		currentPage: select( TrafficBoostStore ).getSuggestionsPage(),
+		itemsPerPage: select( TrafficBoostStore ).getSuggestionsItemsPerPage(),
+	} ), [] );
 
-		// Map the fetched suggestions to the TrafficBoostLink format.
-		const mappedSuggestions = fetchedSuggestions.data.map( ( post ) => ( {
-			targetPost: post,
-		} ) );
-		onTotalItemsChange?.( fetchedSuggestions.total_items );
-
-		return {
-			data: mappedSuggestions,
-			totalPages: fetchedSuggestions.total_pages,
-			totalItems: fetchedSuggestions.total_items,
-		};
-	}, [ onTotalItemsChange ] );
-
-	const handleSuggestionClick = ( suggestion: TrafficBoostLink ) => {
-		onSuggestionClick?.( suggestion );
-	};
+	const { setSuggestionsPage, setSuggestionsItemsPerPage } = useDispatch( TrafficBoostStore );
 
 	return (
 		<LinksList
-			links={ [] }
-			isLoading={ false }
-			onSuggestionClick={ handleSuggestionClick }
-			onFetchPage={ fetchSuggestions }
-			minItemsPerPage={ 3 }
+			links={ suggestions }
+			onClick={ onSuggestionClick }
+			currentPage={ currentPage }
+			itemsPerPage={ itemsPerPage }
+			onPageChange={ setSuggestionsPage }
+			onItemsPerPageChange={ setSuggestionsItemsPerPage }
 		/>
 	);
 };
