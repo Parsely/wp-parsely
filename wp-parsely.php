@@ -68,6 +68,10 @@ function parsely_initialize_plugin(): void {
 	$GLOBALS['parsely'] = new Parsely();
 	$GLOBALS['parsely']->run();
 
+	// Plugin dashboard page.
+	$GLOBALS['parsely_dashboard_page'] = new Dashboard_Page( $GLOBALS['parsely'] );
+	$GLOBALS['parsely_dashboard_page']->run();
+
 	if ( class_exists( 'WPGraphQL' ) ) {
 		$graphql = new GraphQL_Metadata( $GLOBALS['parsely'] );
 		$graphql->run();
@@ -107,10 +111,6 @@ function parsely_wp_admin_early_register(): void {
 	// Plugin settings page.
 	$GLOBALS['parsely_settings_page'] = new Settings_Page( $GLOBALS['parsely'] );
 	$GLOBALS['parsely_settings_page']->run();
-
-	// Plugin dashboard page.
-	$GLOBALS['parsely_dashboard_page'] = new Dashboard_Page( $GLOBALS['parsely'] );
-	$GLOBALS['parsely_dashboard_page']->run();
 
 	$network_admin_sites_list = new Network_Admin_Sites_List( $GLOBALS['parsely'] );
 	$network_admin_sites_list->run();

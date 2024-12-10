@@ -19,11 +19,17 @@ import { createRoot, useEffect } from '@wordpress/element';
  */
 import { DashboardPage, SettingsPage, TrafficBoostPage } from './pages';
 import { TrafficBoostPostPage } from './pages/traffic-boost/single-post-component';
+import { registerCoreBlocks } from '@wordpress/block-library';
+import { store as blockEditorStore } from '@wordpress/blocks';
+import { dispatch } from '@wordpress/data';
 
 domReady( () => {
 	const root = createRoot(
 		document.getElementById( 'parsely-dashboard-page' ) as Element
 	);
+
+	// Register core blocks to ensure they are available in the standalone block editor.
+	registerCoreBlocks();
 
 	root.render(
 		<Router>

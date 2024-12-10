@@ -51,6 +51,72 @@ final class Dashboard_Page {
 		add_action( 'admin_menu', array( $this, 'add_dashboard_page_to_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_dashboard_page_scripts' ) );
 		add_filter( 'parent_file', array( $this, 'fix_submenu_highlighting' ) );
+		add_action( 'wp_ajax_parsely_post_preview', array( $this, 'handle_preview_template' ) );
+		add_action( 'the_content', array( $this, 'add_parsely_preview_wrapper' ) );
+	}
+
+	/**
+	 * Handles the preview template.
+	 */
+	public function handle_preview_template(): void {
+		// Verify user capabilities
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_die( 'You do not have permission to access this preview.' );
+		}
+
+		// Verify nonce
+		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'parsely_preview' ) ) {
+			wp_die( 'Invalid preview request.' );
+		}
+
+		$post_id = isset( $_GET['post_id'] ) ? intval( $_GET['post_id'] ) : 0;
+		$post = get_post( $post_id );
+
+		if ( ! $post ) {
+			wp_die( 'Post not found' );
+		}
+
+		// Additional check: verify user can edit this specific post
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_die( 'You do not have permission to preview this post.' );
+		}
+
+		// Disable admin bar
+		show_admin_bar( false );
+
+		// Set up the minimal editor environment
+		wp_enqueue_style( 'wp-block-library' );
+		wp_enqueue_style( 'wp-block-library-theme' );
+		wp_enqueue_style( 'wp-edit-post' );
+
+		// Get the parsed blocks
+		$blocks = parse_blocks( $post->post_content );
+		$block_content = '';
+
+		foreach ( $blocks as $block ) {
+			$block_content .= render_block( $block );
+		}
+
+		// Get the post title
+		$post_title = $post->post_title;
+
+		// Output the preview template
+		include dirname( __FILE__ ) . '/../content-helper/dashboard-page/pages/traffic-boost/components/preview/preview-post.php';
+		exit;
+	}
+
+	public function add_parsely_preview_wrapper( string $content ): string {
+		if ( ! isset( $_GET['parsely_preview'] ) || $_GET['parsely_preview'] !== 'true' ) {
+			return $content;
+		}
+
+		// Validate nonce
+		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'parsely_preview' ) ) {
+			return $content;
+		}
+
+		return '<div class="wp-parsely-preview-wrapper">' . $content . '</div>';
 	}
 
 	/**
@@ -169,6 +235,20 @@ final class Dashboard_Page {
 			array(),
 			$asset_info['version']
 		);
+
+		wp_add_inline_script(
+			'parsely-dashboard-page',
+			'window._parsely_traffic_boost_preview_nonce = ' . wp_json_encode( wp_create_nonce( 'parsely_preview' ) ) . ';',
+			'before'
+		);
+
+		if ( $this->parsely->site_id_is_set() ) {
+			wp_add_inline_script(
+				'parsely-dashboard-page', 
+				'window.wpParselySiteId = ' . wp_json_encode( $this->parsely->get_site_id() ) . ';',
+				'before'
+			);
+		}
 	}
 
 	/**

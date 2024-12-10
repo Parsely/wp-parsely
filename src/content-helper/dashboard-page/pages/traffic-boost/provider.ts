@@ -10,7 +10,7 @@ import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider
  */
 export interface TrafficBoostLink {
     targetPost: HydratedPost;
-    smart_link?: InboundSmartLink;
+    smart_link: InboundSmartLink;
     isSuggestion: boolean;
 }
 
@@ -80,10 +80,52 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			orderby: 'date',
 		} );
 
-		return fetchedPosts.data.map( ( post ) => ( {
-			targetPost: post,
-			isSuggestion: true,
-		} ) );
+		const splitIntoBlocks = ( text: string, size: number ) => {
+			const words = text.split( ' ' );
+
+			return words.reduce( ( blocks, word ) => {
+				const last = blocks[ blocks.length - 1 ];
+
+				if ( ( last + ' ' + word ).trim().length <= size ) {
+					blocks[ blocks.length - 1 ] = ( last + ' ' + word ).trim();
+				} else {
+					blocks.push( word );
+				}
+
+				return blocks;
+			}, [ '' ] );
+		};
+
+		return fetchedPosts.data.map( ( post ) => {
+			const tempDiv = document.createElement( 'div' );
+			tempDiv.innerHTML = post.content.rendered;
+			const plainContent = tempDiv.textContent ?? tempDiv.innerText ?? '';
+			const blocks = splitIntoBlocks( plainContent, 50 );
+			const randomBlock = blocks[ Math.floor( Math.random() * blocks.length ) ];
+			const response: TrafficBoostLink = {
+				// Mockup smart link.
+				smart_link: {
+					uid: post.id.toString(),
+					href: post.guid.raw,
+					text: randomBlock,
+					title: post.title.raw,
+					offset: 0,
+					applied: false,
+					destination: {
+						post_id: postId,
+						post_type: 'Post',
+					},
+					source: {
+						post_id: post.id,
+						post_type: post.type,
+					},
+				},
+				targetPost: post,
+				isSuggestion: true,
+			};
+
+			return response;
+		} );
 	}
 
 	/**
@@ -130,10 +172,12 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			console.warn( 'Parse.ly: More than 100 inbound smart links. This is not supported yet.' );
 		}
 
-		return fetchedPosts.data.map( ( post ) => ( {
-			targetPost: post,
-			smart_link: inboundSmartLinks.find( ( link ) => link.source?.post_id === post.id ),
-			isSuggestion: false,
-		} ) );
+		return fetchedPosts.data
+			.map( ( post ) => ( {
+				targetPost: post,
+				smart_link: inboundSmartLinks.find( ( link ) => link.source?.post_id === post.id ),
+				isSuggestion: false,
+			} ) )
+			.filter( ( link ): link is TrafficBoostLink => link.smart_link !== undefined );
 	}
 }

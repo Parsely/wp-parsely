@@ -249,7 +249,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 		id?: string,
 	): Promise<FetchResponse<HydratedPost[]>> {
 		const posts = await this.apiFetch<Post[]>( {
-			path: addQueryArgs( '/wp/v2/posts', { ...queryParams, _embed: true } ),
+			path: addQueryArgs( '/wp/v2/posts', { ...queryParams, _embed: true, context: 'edit' } ),
 			method: 'GET',
 		}, id );
 
@@ -274,7 +274,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	 */
 	public async getPages( queryParams: QueryParams = {}, id?: string ): Promise<FetchResponse<HydratedPost[]>> {
 		const pages = await this.apiFetch<Post[]>( {
-			path: addQueryArgs( '/wp/v2/pages', { ...queryParams, _embed: true } ),
+			path: addQueryArgs( '/wp/v2/pages', { ...queryParams, _embed: true, context: 'edit' } ),
 			method: 'GET',
 		}, id );
 
@@ -299,7 +299,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	 */
 	public async getPost( postId: number, id?: string ): Promise<FetchResponse<HydratedPost>> {
 		const post = await this.apiFetch<Post>( {
-			path: `/wp/v2/posts/${ postId }?_embed`,
+			path: `/wp/v2/posts/${ postId }?_embed&context=edit`,
 			method: 'GET',
 		}, id );
 

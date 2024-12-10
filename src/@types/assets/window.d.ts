@@ -52,6 +52,8 @@ declare global {
 				};
 			};
 		};
+
+		_parsely_traffic_boost_preview_nonce?: string;
 	}
 
 }
