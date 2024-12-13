@@ -276,7 +276,6 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 		return new WP_REST_Response( array( 'data' => $response ), 200 );
 	}
 
-
 	/**
 	 * API Endpoint: POST /smart-linking/{post_id}/add.
 	 *
@@ -474,7 +473,6 @@ class Endpoint_Smart_Linking extends Base_Endpoint {
 
 		return new WP_REST_Response( array( 'data' => $response ), 200 );
 	}
-
 
 	/**
 	 * API Endpoint: POST /smart-linking/url-to-post-type.
