@@ -26,6 +26,7 @@ $base-unit-60: 3rem; // 48px.
 .wp-parsely-excerpt-generator,
 .editor-post-excerpt,
 .wp-parsely-popover,
+.wp-parsely-traffic-boost-preview-settings-popover,
 .wp-parsely-suggested-title-modal,
 .wp-parsely-smart-linking-review-modal,
 .wp-parsely-smart-linking-close-dialog,
@@ -90,6 +91,7 @@ $base-unit-60: 3rem; // 48px.
 	--font-size--bigger: 2rem; // 32px.
 
 	--black: #000;
+	--white: #fff;
 	--sidebar-black: #1e1e1e;
 	--sidebar-white: #f0f0f0;
 	--dashboard-accent: #b9f16b;

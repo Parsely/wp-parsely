@@ -11,15 +11,14 @@ import { useNavigate } from 'react-router-dom';
 /**
  * Internal dependencies
  */
-import { HydratedPost } from '../../../../../common/base-wordpress-provider';
-import { TrafficBoostLink } from '../../provider';
-import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../../store';
-import { SidebarFooter } from './footer';
-import { SidebarHeader } from './header';
-import { SidebarIcons } from './icons';
-import { PostDetailsSidebar } from './post-details';
+import { TrafficBoostLink } from '../provider';
+import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
+import { SidebarFooter } from './components/footer';
+import { SidebarHeader } from './components/header';
+import { SidebarIcons } from './components/icons';
+import { PostDetailsSidebar } from './components/post-details';
 import './sidebar.scss';
-import { TabsContent } from './tabs-content';
+import { TabsContent } from './components/tabs-content';
 
 /**
  * Defines the props structure for TrafficBoostSidebar.
@@ -28,7 +27,6 @@ import { TabsContent } from './tabs-content';
  */
 interface TrafficBoostSidebarProps {
     isLoading: boolean;
-    post: HydratedPost | null;
 	activeLink: TrafficBoostLink | null;
     onLinkClick?: ( link: TrafficBoostLink ) => void;
 }
@@ -43,7 +41,6 @@ interface TrafficBoostSidebarProps {
  */
 export const TrafficBoostSidebar = ( {
 	isLoading,
-	post,
 	activeLink,
 	onLinkClick,
 }: TrafficBoostSidebarProps ): React.JSX.Element => {
@@ -53,7 +50,9 @@ export const TrafficBoostSidebar = ( {
 	const {
 		suggestions,
 		boostLinks,
+		post,
 	} = useSelect( ( select ) => ( {
+		post: select( TrafficBoostStore ).getCurrentPost(),
 		suggestions: select( TrafficBoostStore ).getSuggestions(),
 		boostLinks: select( TrafficBoostStore ).getBoostLinks(),
 	} ), [] );

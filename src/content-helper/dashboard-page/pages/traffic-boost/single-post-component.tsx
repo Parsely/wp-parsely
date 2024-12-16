@@ -7,18 +7,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 /**
  * WordPress dependencies
  */
-import { useEffect, useRef, useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
 import { PageContainer } from '../../components';
-import { TrafficBoostSidebar } from './components/sidebar/sidebar';
+import { TrafficBoostSidebar } from './sidebar/sidebar';
 import { TrafficBoostLink, TrafficBoostProvider } from './provider';
 import { TrafficBoostStore } from './store';
 import './traffic-boost.scss';
 import { ContentHelperError } from '../../../common/content-helper-error';
-import { TrafficBoostPreview } from './components/preview/preview';
+import { TrafficBoostPreview } from './preview/preview';
 
 /**
  * Traffic Boost Post page component.
@@ -30,7 +30,6 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	const navigate = useNavigate();
 	const [ backgroundColor, setBackgroundColor ] = useState<string | undefined>();
 	const [ hasFetchedPost, setHasFetchedPost ] = useState<boolean>( false );
-	const previewIframeRef = useRef<HTMLIFrameElement>( null );
 	const {
 		isLoading,
 		error,
@@ -190,13 +189,11 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			</style>
 			<TrafficBoostSidebar
 				isLoading={ isLoading }
-				post={ post }
 				onLinkClick={ handleLinkClick }
 				activeLink={ selectedLink }
 			/>
 			<TrafficBoostPreview
 				activeLink={ selectedLink }
-				iframeRef={ previewIframeRef }
 			/>
 		</PageContainer>
 	);
