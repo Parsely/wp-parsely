@@ -79,7 +79,7 @@ declare(strict_types=1);
 		<h1 class="editor-post-title__input"><?php echo esc_html( $post_title ?? '' ); ?></h1>
 	</div>
 	<div class="wp-parsely-preview-wrapper">
-		<?php echo wp_kses_post( $block_content ?? '' );?>
+		<?php echo wp_kses_post( $block_content ?? '' ); ?>
 	</div>
 	<?php wp_footer(); ?>
 </body>

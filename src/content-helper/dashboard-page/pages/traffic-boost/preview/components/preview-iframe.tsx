@@ -375,15 +375,39 @@ export const PreviewIframe = ( {
 			return;
 		}
 
-		const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight' );
-		if ( ! highlightedElement ) {
-			return;
-		}
+		const scrollToHighlightedElement = async () => {
+			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight' );
+			if ( highlightedElement ) {
+				// Wait for the next frame to ensure layout is stable.
+				await new Promise( ( resolve ) => requestAnimationFrame( resolve ) );
 
-		highlightedElement.scrollIntoView( {
-			behavior: 'smooth',
-			block: 'center',
+				highlightedElement.scrollIntoView( {
+					behavior: 'smooth',
+					block: 'center',
+				} );
+			}
+		};
+
+		// It might be possible that the highlighted element is not visible immediately after the iframe loads,
+		// because the iframe content is not fully loaded yet, such as a custom block still being loaded.
+		// So we use a MutationObserver to watch for DOM changes and scroll to the highlighted element once
+		// it's visible.
+		const observer = new MutationObserver( () => {
+			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight' );
+			if ( highlightedElement ) {
+				scrollToHighlightedElement();
+			}
 		} );
+		observer.observe( iframeDocument.querySelector( '.wp-parsely-preview-wrapper' ) as Element, {
+			childList: true,
+			subtree: true,
+		} );
+
+		// Try to scroll to the highlighted element immediately.
+		scrollToHighlightedElement();
+
+		// Disconnect the observer after 5 seconds to prevent infinite observation.
+		setTimeout( () => observer.disconnect(), 5000 );
 	}, [] );
 
 	/**
@@ -398,6 +422,9 @@ export const PreviewIframe = ( {
 			return;
 		}
 
+		// Set loading state immediately when content starts loading
+		onLoadingChange( true );
+
 		// Updates the content area ref to the iframe's content area.
 		const contentArea = iframe.contentWindow?.document.querySelector( '.wp-parsely-preview-wrapper' );
 		if ( contentArea ) {
@@ -409,11 +436,9 @@ export const PreviewIframe = ( {
 		disableNavigation( iframe );
 
 		// Flag the iframe as loaded after a small delay to ensure smooth transition.
-		await new Promise( ( resolve ) => setTimeout( resolve, 200 ) );
+		await new Promise( ( resolve ) => setTimeout( resolve, 500 ) );
 		onLoadingChange( false );
 
-		// Wait for a few milliseconds to ensure the iframe is fully loaded before jumping to the smart link.
-		await new Promise( ( resolve ) => setTimeout( resolve, 600 ) );
 		jumpToSmartLink( iframe );
 	}, [ disableNavigation, hideAdminBar, highlightSmartLink, jumpToSmartLink, onLoadingChange ] );
 
@@ -421,12 +446,10 @@ export const PreviewIframe = ( {
 	 * Handles iframe initialization and cleanup.
 	 *
 	 * @since 3.18.0
-	 *
-	 * @param {HTMLIFrameElement} iframe The iframe element to initialize and cleanup.
 	 */
 	useEffect( () => {
 		const iframe = iframeRef.current;
-		if ( ! iframe || ! previewUrl ) {
+		if ( ! iframe ) {
 			return;
 		}
 
@@ -439,7 +462,7 @@ export const PreviewIframe = ( {
 		return () => {
 			iframe.removeEventListener( 'load', handleLoadCallback );
 		};
-	}, [ handleIframeLoad, iframeRef, previewUrl ] );
+	}, [ handleIframeLoad, iframeRef, previewUrl, onLoadingChange ] );
 
 	/**
 	 * Re-highlights smart link when selection changes
@@ -461,10 +484,10 @@ export const PreviewIframe = ( {
 
 	return (
 		<div className="wp-parsely-preview-editor">
-			<div className={ `wp-parsely-preview-loading ${ isLoading ? 'is-loading' : '' }` }>
-				<Spinner />
-			</div>
 			<div className="preview-iframe-wrapper">
+				<div className={ `wp-parsely-preview-loading ${ isLoading ? 'is-loading' : '' }` }>
+					<Spinner />
+				</div>
 				<TextSelectionTooltip
 					iframeRef={ iframeRef }
 					onTextSelected={ ( text, offset ) => {
