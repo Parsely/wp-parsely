@@ -42,7 +42,7 @@ const SuggestionsTab = ( {
 		<LinksList
 			links={ suggestions }
 			onClick={ onSuggestionClick }
-			activeLink={ selectedLink }
+			activeLink={ selectedLink?.isSuggestion ? selectedLink : null }
 			currentPage={ currentPage }
 			itemsPerPage={ itemsPerPage }
 			onPageChange={ setSuggestionsPage }

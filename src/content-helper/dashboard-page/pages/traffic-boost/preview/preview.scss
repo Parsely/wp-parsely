@@ -32,7 +32,7 @@
 			background: var(--sidebar-white);
 			overflow-y: auto;
 			overflow-x: hidden;
-			transition: all 0.2s ease;
+			transition: all 0.5s ease;
 			z-index: 0;
 			position: absolute;
 			top: 0;
@@ -54,7 +54,8 @@
 			pointer-events: none;
 			visibility: hidden;
 			opacity: 0;
-			transition: opacity 0.2s ease, visibility 0.2s ease;
+			background-color: var(--sidebar-white);
+			transition: opacity 0.1s ease-in-out, visibility 0.1s ease-in-out;
 
 			&.is-loading {
 				visibility: visible;

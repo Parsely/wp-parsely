@@ -441,18 +441,12 @@ export const PreviewIframe = ( {
 
 	/**
 	 * Handles the iframe load event.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param {HTMLIFrameElement} iframe The iframe element to handle the load event for.
 	 */
 	const handleIframeLoad = useCallback( async ( iframe: HTMLIFrameElement ) => {
 		if ( ! iframe || ! iframe.contentDocument ) {
 			return;
 		}
 
-		// Set loading state immediately when content starts loading
-		onLoadingChange( true );
 		injectHighlightStyles( iframe );
 
 		// Updates the content area ref to the iframe's content area.
@@ -465,7 +459,6 @@ export const PreviewIframe = ( {
 		highlightSmartLink( iframe );
 		disableNavigation( iframe );
 
-		// Flag the iframe as loaded after a small delay to ensure smooth transition.
 		setTimeout( () => {
 			onLoadingChange( false );
 			jumpToSmartLink( iframe );
@@ -474,8 +467,6 @@ export const PreviewIframe = ( {
 
 	/**
 	 * Handles iframe initialization and cleanup.
-	 *
-	 * @since 3.18.0
 	 */
 	useEffect( () => {
 		const iframe = iframeRef.current;
@@ -486,6 +477,11 @@ export const PreviewIframe = ( {
 		const handleLoadCallback = () => {
 			handleIframeLoad( iframe );
 		};
+
+		// Only set loading state if the URL has changed
+		if ( iframe.src !== previewUrl ) {
+			onLoadingChange( true );
+		}
 
 		iframe.addEventListener( 'load', handleLoadCallback );
 

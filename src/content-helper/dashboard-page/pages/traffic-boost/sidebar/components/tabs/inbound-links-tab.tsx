@@ -50,7 +50,7 @@ const InboundLinksTab = ( {
 		<LinksList
 			links={ inboundLinks }
 			onClick={ onInboundLinkClick }
-			activeLink={ selectedLink }
+			activeLink={ ! selectedLink?.isSuggestion ? selectedLink : null }
 			currentPage={ currentPage }
 			itemsPerPage={ itemsPerPage }
 			onPageChange={ setInboundLinksPage }

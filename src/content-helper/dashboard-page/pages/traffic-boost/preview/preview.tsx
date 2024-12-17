@@ -88,9 +88,8 @@ export const TrafficBoostPreview = ( {
 	 */
 	useEffect( () => {
 		setActivePost( activeLink.targetPost );
-		// Clear the selected text when the active link changes
-		setSelectedText( null );
 		setIsInboundLink( ! activeLink.isSuggestion );
+		setSelectedText( null );
 	}, [ activeLink ] );
 
 	/**
@@ -213,6 +212,10 @@ export const TrafficBoostPreview = ( {
 		//console.log( 'discard' );
 	};
 
+	const handleRemove = () => {
+		//console.log( 'remove' );
+	};
+
 	if ( ! activePost || ! post ) {
 		return <></>;
 	}
@@ -253,6 +256,7 @@ export const TrafficBoostPreview = ( {
 				onPrevious={ handlePrevious }
 				onAccept={ handleAccept }
 				onDiscard={ handleDiscard }
+				onRemove={ handleRemove }
 				onSelectIndex={ ( index ) => {
 					// If the link is inbound, do nothing.
 					if ( isInboundLink ) {

@@ -23,6 +23,7 @@ interface PreviewFooterProps {
 	onDiscard: () => void;
 	onNext: () => void;
 	onPrevious: () => void;
+	onRemove: () => void;
 	onSelectIndex: ( index: number ) => void;
 	totalItems: number;
 	itemIndex: number;
@@ -43,6 +44,7 @@ export const PreviewFooter = ( {
 	onDiscard,
 	onNext,
 	onPrevious,
+	onRemove,
 	onSelectIndex,
 	totalItems,
 	itemIndex,
@@ -67,14 +69,26 @@ export const PreviewFooter = ( {
 				) }
 			</div>
 			<div className="traffic-boost-preview-footer-actions">
-				<Button
-					variant="primary"
-					onClick={ onAccept }
-				>{ __( 'Accept', 'wp-parsely' ) }</Button>
-				<Button
-					variant="tertiary"
-					onClick={ onDiscard }
-				>{ __( 'Discard', 'wp-parsely' ) }</Button>
+				{ ! isInboundLink && (
+					<>
+						<Button
+							variant="primary"
+							onClick={ onAccept }
+						>{ __( 'Accept', 'wp-parsely' ) }</Button>
+						<Button
+							variant="tertiary"
+							onClick={ onDiscard }
+						>{ __( 'Discard', 'wp-parsely' ) }</Button>
+					</>
+				) }
+
+				{ isInboundLink && (
+					<Button
+						variant="primary"
+						onClick={ onRemove }
+					>{ __( 'Remove', 'wp-parsely' ) }</Button>
+				) }
+
 				{ ! isInboundLink && (
 					<div className="traffic-boost-preview-footer-navigation">
 						{ __( 'Suggestion', 'wp-parsely' ) }
