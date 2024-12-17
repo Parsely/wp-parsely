@@ -18,6 +18,7 @@ import { TrafficBoostLink } from './provider';
 export enum TrafficBoostSidebarTabs {
 	SUGGESTIONS = 'suggestions',
 	INBOUND_LINKS = 'inbound-links',
+	SETTINGS = 'settings',
 }
 
 /**

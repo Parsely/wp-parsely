@@ -17,7 +17,6 @@ import { LinksList } from '../links-list/links-list';
  */
 interface InboundLinksTabProps {
 	onInboundLinkClick?: ( inboundLink: TrafficBoostLink ) => void;
-	activeLink: TrafficBoostLink | null;
 }
 
 /**
@@ -29,13 +28,14 @@ interface InboundLinksTabProps {
  */
 const InboundLinksTab = ( {
 	onInboundLinkClick,
-	activeLink,
 }: InboundLinksTabProps ): React.JSX.Element => {
 	const {
+		selectedLink,
 		inboundLinks,
 		currentPage,
 		itemsPerPage,
 	} = useSelect( ( select ) => ( {
+		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
 		inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
 		currentPage: select( TrafficBoostStore ).getInboundLinksPage(),
 		itemsPerPage: select( TrafficBoostStore ).getInboundLinksItemsPerPage(),
@@ -50,7 +50,7 @@ const InboundLinksTab = ( {
 		<LinksList
 			links={ inboundLinks }
 			onClick={ onInboundLinkClick }
-			activeLink={ ! activeLink?.isSuggestion ? activeLink : null }
+			activeLink={ selectedLink }
 			currentPage={ currentPage }
 			itemsPerPage={ itemsPerPage }
 			onPageChange={ setInboundLinksPage }

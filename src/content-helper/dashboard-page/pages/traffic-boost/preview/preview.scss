@@ -10,21 +10,19 @@
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
-	position: relative;
 
-	.wp-parsely-preview-editor {
+	.wp-parsely-preview {
 		flex: 1;
 		display: flex;
-		min-height: 0;
-		position: relative;
 		height: 100%;
 		background: var(--sidebar-white);
 		overflow: hidden;
 
 		.preview-iframe-wrapper {
-			position: relative;
 			width: 100%;
 			height: 100%;
+			position: relative;
+			overflow: hidden;
 		}
 
 		.wp-parsely-preview-iframe {
@@ -32,11 +30,13 @@
 			height: 100%;
 			border: none;
 			background: var(--sidebar-white);
-			position: relative;
 			overflow-y: auto;
 			overflow-x: hidden;
 			transition: all 0.2s ease;
 			z-index: 0;
+			position: absolute;
+			top: 0;
+			left: 0;
 
 			&.is-loading {
 				filter: blur(4px);
@@ -66,35 +66,6 @@
 				width: to_rem(40px);
 				height: to_rem(40px);
 			}
-		}
-
-		.editor-styles-wrapper {
-			padding: 0;
-			background: transparent;
-		}
-
-		.block-editor-block-list__layout {
-			padding: 0;
-		}
-
-		// Ensure proper block spacing
-		.wp-block {
-			margin-top: 1.5rem;
-			margin-bottom: 1.5rem;
-
-			&:first-child {
-				margin-top: 0;
-			}
-
-			&:last-child {
-				margin-bottom: 0;
-			}
-		}
-
-		// Hide block selection outlines in preview mode
-		.is-selected,
-		.has-child-selected {
-			outline: none;
 		}
 	}
 }
@@ -154,110 +125,41 @@
 }
 
 .traffic-boost-preview-footer {
-	position: absolute;
-	bottom: 0;
-	left: 50%;
-	transform: translateX(-50%);
-	max-width: to_rem(720px);
-	min-width: to_rem(575px);
-	padding: var(--grid-unit-20);
-	z-index: 5;
+	display: flex;
+	padding: var(--grid-unit-10) var(--grid-unit-20);
+	justify-content: space-between;
+	align-items: center;
+	border-top: 1px solid var(--gray-400);
+	background: var(--white);
 
-	.components-card {
-		width: 100%;
-		box-shadow: 0 0 0 1px #ccc, 0 to_rem(4px) to_rem(8px) rgba(0, 0, 0, 0.1);
-		background: var(--white);
+	.traffic-boost-preview-footer-previous,
+	.traffic-boost-preview-footer-next {
+		min-width: to_rem(36px);
 	}
 
-	.traffic-boost-preview-footer-header {
+	.traffic-boost-preview-footer-actions {
 		display: flex;
+		gap: var(--grid-unit-10);
 		align-items: center;
-		justify-content: space-between;
-		gap: to_rem(10px);
-		padding: var(--grid-unit-20);
 
-		.traffic-boost-preview-footer-details {
+		.components-button {
+			height: to_rem(36px);
+			padding: var(--grid-unit-10) var(--grid-unit-20);
+
+			&.is-primary {
+				background: var(--wp-admin-theme-color);
+			}
+		}
+
+		.traffic-boost-preview-footer-navigation {
 			display: flex;
 			align-items: center;
-			gap: var(--grid-unit-10);
-			flex: 1 0 0;
+			gap: var(--grid-unit-5);
 
-			.details-wrapper {
-				display: flex;
-				flex-direction: column;
-				min-height: to_rem(32px);
-				gap: var(--grid-unit-5);
-				flex: 1 0 0;
-				max-width: calc(100% - to_rem(80px));
-				min-width: 0;
-
-				.details-title {
-					overflow: hidden;
-					text-overflow: ellipsis;
-					white-space: nowrap;
-					color: var(--wp-admin-theme-color);
-					font-size: var(--font-size--large);
-					font-weight: 500;
-					line-height: var(--font-size--extra-large);
-					width: 100%;
-				}
-
-				.details-url {
-					overflow: hidden;
-					text-overflow: ellipsis;
-					white-space: nowrap;
-					color: var(--gray-600);
-					font-size: var(--font-size--small);
-					font-weight: 400;
-					line-height: var(--font-size--medium);
-					width: 100%;
-				}
-			}
-
-		}
-
-		.traffic-boost-preview-footer-actions {
-			display: flex;
-			gap: var(--grid-unit-10);
-
-			.components-button {
-				height: to_rem(36px);
-				padding: var(--grid-unit-10) var(--grid-unit-20);
-
-				&.is-primary {
-					background: var(--wp-admin-theme-color);
-				}
-			}
-		}
-	}
-
-	.traffic-boost-preview-footer-body {
-		padding: 0;
-
-		.traffic-boost-preview-footer-panel {
-			border-top: 0;
-			border-bottom: 0;
-
-			.components-base-control {
-				width: 100%;
-			}
-
-			.panel-advanced-controls {
-				display: flex;
-				flex-direction: column;
-				align-items: flex-start;
-				gap: var(--grid-unit-20);
-				align-self: stretch;
-				margin-top: var(--grid-unit-20);
-
-				.panel-advanced-controls-header {
-					font-size: var(--font-size--small);
-					font-weight: 500;
-					line-height: var(--font-size--extra-large);
-				}
-			}
-
-
+			font-size: var(--font-size--small);
+			font-weight: 500;
+			line-height: var(--font-size--medium);
+			text-transform: uppercase;
 		}
 	}
 }

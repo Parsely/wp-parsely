@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { useSelect } from '@wordpress/data';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { addQueryArgs } from '@wordpress/url';
 
@@ -14,6 +14,7 @@ import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
 import { PreviewIframe } from './components/preview-iframe';
 import './preview.scss';
+import { HydratedPost } from '../../../../common/base-wordpress-provider';
 
 /**
  * Structure of a text selection.
@@ -31,7 +32,7 @@ export interface TextSelection {
  * @since 3.18.0
  */
 interface TrafficBoostPreviewProps {
-	activeLink: TrafficBoostLink | null;
+	activeLink: TrafficBoostLink;
 }
 
 /**
@@ -42,19 +43,70 @@ interface TrafficBoostPreviewProps {
  * @param {TrafficBoostPreviewProps} props - The props for the TrafficBoostPreview component.
  */
 export const TrafficBoostPreview = ( {
-	activeLink,
+	activeLink: providedActiveLink,
 }: TrafficBoostPreviewProps ): React.JSX.Element => {
 	const [ isFrontendPreview, setIsFrontendPreview ] = useState<boolean>( false );
-	const [ previewUrl, setPreviewUrl ] = useState<string>( '' );
 	const [ isLoading, setIsLoading ] = useState<boolean>( true );
-	const activePost = activeLink?.targetPost;
-	const [ selectedText, setSelectedText ] = useState<TextSelection | null>( null );
+	const [ isInboundLink, setIsInboundLink ] = useState<boolean>( false );
 
-	const { post } = useSelect( ( select ) => {
+	const [ activeLink, setActiveLink ] = useState<TrafficBoostLink>( providedActiveLink );
+	const [ activePost, setActivePost ] = useState<HydratedPost>( providedActiveLink.targetPost );
+
+	const [ selectedText, setSelectedText ] = useState<TextSelection | null>( null );
+	const [ previewUrl, setPreviewUrl ] = useState<string>( '' );
+	const [ totalItems, setTotalItems ] = useState<number>( 0 );
+	const [ itemIndex, setItemIndex ] = useState<number>( 0 );
+
+	const {
+		post,
+		suggestions,
+		inboundLinks,
+	} = useSelect( ( select ) => {
 		return {
 			post: select( TrafficBoostStore ).getCurrentPost(),
+			suggestions: select( TrafficBoostStore ).getSuggestions(),
+			inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
 		};
 	}, [] );
+
+	const { setSelectedLink } = useDispatch( TrafficBoostStore );
+
+	/**
+	 * Sets the active link to the provided active link.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		setActiveLink( providedActiveLink );
+	}, [ providedActiveLink ] );
+
+	/**
+	 * Sets the active post to the target post of the active link,
+	 * and unsets the text selection when the active link changes.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		setActivePost( activeLink.targetPost );
+		// Clear the selected text when the active link changes
+		setSelectedText( null );
+		setIsInboundLink( ! activeLink.isSuggestion );
+	}, [ activeLink ] );
+
+	/**
+	 * Sets the total items and item index based on the active link.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( activeLink.isSuggestion ) {
+			setTotalItems( suggestions?.length ?? 0 );
+			setItemIndex( suggestions?.indexOf( activeLink ) + 1 );
+		} else {
+			setTotalItems( inboundLinks?.length ?? 0 );
+			setItemIndex( inboundLinks?.indexOf( activeLink ) + 1 );
+		}
+	}, [ activeLink, inboundLinks, suggestions ] );
 
 	/**
 	 * Sets the preview URL based on the active post and frontend preview setting.
@@ -83,15 +135,6 @@ export const TrafficBoostPreview = ( {
 			setPreviewUrl( newUrl );
 		}
 	}, [ activePost, isFrontendPreview, previewUrl ] );
-
-	/**
-	 * Unsets the text selection when the active link changes.
-	 *
-	 * @since 3.18.0
-	 */
-	useEffect( () => {
-		setSelectedText( null );
-	}, [ activeLink ] );
 
 	/**
 	 * Opens the post in a new tab.
@@ -133,6 +176,43 @@ export const TrafficBoostPreview = ( {
 		window.open( parselyDashboardUrl, '_blank' );
 	};
 
+	const handleNext = () => {
+		let nextItem: TrafficBoostLink | undefined;
+
+		if ( isInboundLink ) {
+			nextItem = inboundLinks?.[ itemIndex ];
+		} else {
+			nextItem = suggestions?.[ itemIndex ];
+		}
+		if ( nextItem ) {
+			setItemIndex( itemIndex + 1 );
+			setSelectedLink( nextItem );
+		}
+	};
+
+	const handlePrevious = () => {
+		let previousItem: TrafficBoostLink | undefined;
+
+		if ( isInboundLink ) {
+			previousItem = inboundLinks?.[ itemIndex - 2 ];
+		} else {
+			previousItem = suggestions?.[ itemIndex - 2 ];
+		}
+
+		if ( previousItem ) {
+			setItemIndex( itemIndex - 1 );
+			setSelectedLink( previousItem );
+		}
+	};
+
+	const handleAccept = () => {
+		//console.log( 'accept' );
+	};
+
+	const handleDiscard = () => {
+		//console.log( 'discard' );
+	};
+
 	if ( ! activePost || ! post ) {
 		return <></>;
 	}
@@ -167,21 +247,23 @@ export const TrafficBoostPreview = ( {
 			<PreviewFooter
 				post={ post }
 				activeLink={ activeLink }
-				selectedText={ selectedText }
-				onApprove={ () => {
-					// TODO: Implement approve logic
-				} }
-				onDiscard={ () => {
-					// TODO: Implement discard logic
-				} }
-				onTextChange={ () => {
-					// TODO: Implement text update logic
-				} }
-				onNewTabChange={ () => {
-					// TODO: Implement new tab setting update
-				} }
-				onNofollowChange={ () => {
-					// TODO: Implement nofollow setting update
+				totalItems={ totalItems }
+				itemIndex={ itemIndex }
+				onNext={ handleNext }
+				onPrevious={ handlePrevious }
+				onAccept={ handleAccept }
+				onDiscard={ handleDiscard }
+				onSelectIndex={ ( index ) => {
+					// If the link is inbound, do nothing.
+					if ( isInboundLink ) {
+						return;
+					}
+
+					const suggestion = suggestions?.[ index - 1 ];
+					if ( suggestion ) {
+						setItemIndex( index );
+						setSelectedLink( suggestion );
+					}
 				} }
 			/>
 		</div>

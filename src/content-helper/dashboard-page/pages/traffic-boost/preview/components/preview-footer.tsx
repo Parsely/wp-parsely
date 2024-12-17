@@ -1,18 +1,15 @@
 /**
  * WordPress imports
  */
-import { Button, Card, CardBody, CardHeader } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { page } from '@wordpress/icons';
+import { arrowLeft, arrowRight } from '@wordpress/icons';
 
 /**
  * Internal imports
  */
-import { LinkOptionsPanel } from './link-options-panel';
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
-import { Thumbnail } from '../../../../../common/components/thumbnail';
 import { TrafficBoostLink } from '../../provider';
-import { TextSelection } from '../preview';
 
 /**
  * Props structure for PreviewFooter.
@@ -22,12 +19,13 @@ import { TextSelection } from '../preview';
 interface PreviewFooterProps {
 	post: HydratedPost;
 	activeLink: TrafficBoostLink | null;
-	onApprove: () => void;
+	onAccept: () => void;
 	onDiscard: () => void;
-	onTextChange: ( value: string ) => void;
-	onNewTabChange: ( value: boolean ) => void;
-	onNofollowChange: ( value: boolean ) => void;
-	selectedText: TextSelection | null;
+	onNext: () => void;
+	onPrevious: () => void;
+	onSelectIndex: ( index: number ) => void;
+	totalItems: number;
+	itemIndex: number;
 }
 
 /**
@@ -41,54 +39,75 @@ interface PreviewFooterProps {
 export const PreviewFooter = ( {
 	post,
 	activeLink,
-	onApprove,
+	onAccept,
 	onDiscard,
-	onTextChange,
-	onNewTabChange,
-	onNofollowChange,
-	selectedText,
+	onNext,
+	onPrevious,
+	onSelectIndex,
+	totalItems,
+	itemIndex,
 }: PreviewFooterProps ): React.JSX.Element => {
+	const isInboundLink = ! activeLink?.isSuggestion;
+	const hasNext = itemIndex < totalItems;
+	const hasPrevious = itemIndex > 1;
+
 	if ( ! post ) {
 		return <></>;
 	}
 
 	return (
 		<div className="traffic-boost-preview-footer">
-			<Card>
-				<CardHeader className="traffic-boost-preview-footer-header">
-					<div className="traffic-boost-preview-footer-details">
-						<Thumbnail
-							post={ post }
-							size={ 64 }
-							icon={ page }
-						/>
-						<div className="details-wrapper">
-							<div className="details-title">{ post?.title.rendered }</div>
-							<div className="details-url">{ post?.guid?.rendered }</div>
-						</div>
-					</div>
-					<div className="traffic-boost-preview-footer-actions">
-						<Button
-							variant="primary"
-							onClick={ onApprove }
-						>{ __( 'Insert', 'wp-parsely' ) }</Button>
-						<Button
-							variant="secondary"
-							onClick={ onDiscard }
-						>{ __( 'Discard', 'wp-parsely' ) }</Button>
-					</div>
-				</CardHeader>
-				<CardBody className="traffic-boost-preview-footer-body">
-					<LinkOptionsPanel
-						post={ post }
-						activeLink={ activeLink }
-						onTextChange={ onTextChange }
-						onNewTabChange={ onNewTabChange }
-						onNofollowChange={ onNofollowChange }
-						linkText={ selectedText?.text ?? '' }
+			<div className="traffic-boost-preview-footer-previous">
+				{ hasPrevious && (
+					<Button
+						variant="tertiary"
+						onClick={ onPrevious }
+						icon={ arrowLeft }
 					/>
-				</CardBody>
-			</Card>
+				) }
+			</div>
+			<div className="traffic-boost-preview-footer-actions">
+				<Button
+					variant="primary"
+					onClick={ onAccept }
+				>{ __( 'Accept', 'wp-parsely' ) }</Button>
+				<Button
+					variant="tertiary"
+					onClick={ onDiscard }
+				>{ __( 'Discard', 'wp-parsely' ) }</Button>
+				{ ! isInboundLink && (
+					<div className="traffic-boost-preview-footer-navigation">
+						{ __( 'Suggestion', 'wp-parsely' ) }
+						<select
+							className="traffic-boost-preview-footer-navigation-number"
+							value={ itemIndex }
+							onChange={ ( e ) => {
+								const newIndex = parseInt( e.target.value, 10 );
+								onSelectIndex( newIndex );
+							} }
+						>
+							{ Array.from( { length: totalItems }, ( _, i ) => (
+								<option key={ i + 1 } value={ i + 1 }>{ i + 1 }</option>
+							) ) }
+						</select>
+						{ __( 'of', 'wp-parsely' ) }
+						<span className="traffic-boost-preview-footer-navigation-number">
+							{ totalItems }
+						</span>
+					</div>
+				) }
+			</div>
+
+			<div className="traffic-boost-preview-footer-next">
+				{ hasNext && (
+					<Button
+						variant="tertiary"
+						onClick={ onNext }
+						icon={ arrowRight }
+					/>
+				) }
+			</div>
+
 		</div>
 	);
 };

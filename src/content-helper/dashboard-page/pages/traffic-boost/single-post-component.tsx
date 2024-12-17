@@ -190,11 +190,12 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			<TrafficBoostSidebar
 				isLoading={ isLoading }
 				onLinkClick={ handleLinkClick }
-				activeLink={ selectedLink }
 			/>
-			<TrafficBoostPreview
-				activeLink={ selectedLink }
-			/>
+			{ selectedLink && (
+				<TrafficBoostPreview
+					activeLink={ selectedLink }
+				/>
+			) }
 		</PageContainer>
 	);
 };

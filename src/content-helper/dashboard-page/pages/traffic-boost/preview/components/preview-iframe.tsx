@@ -513,7 +513,7 @@ export const PreviewIframe = ( {
 	}, [ highlightSmartLink, iframeRef, removeSmartLinkHighlights, selectedText ] );
 
 	return (
-		<div className="wp-parsely-preview-editor">
+		<div className="wp-parsely-preview">
 			<div className="preview-iframe-wrapper">
 				<div className={ `wp-parsely-preview-loading ${ isLoading ? 'is-loading' : '' }` }>
 					<Spinner />

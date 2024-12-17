@@ -39,7 +39,7 @@ declare(strict_types=1);
 		}
 
 		.wp-parsely-preview-wrapper {
-			padding-bottom: 200px;
+			padding-bottom: 46px;
 		}
 	</style>
 	<script>

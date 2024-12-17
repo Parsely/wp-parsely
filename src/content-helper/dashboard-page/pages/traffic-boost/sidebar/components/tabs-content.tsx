@@ -2,15 +2,16 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-
+import { useDispatch, useSelect } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { useParams } from 'react-router-dom';
 import { TrafficBoostLink } from '../../provider';
 import InboundLinksTab from './tabs/inbound-links-tab';
 import SettingsTab from './tabs/settings-tab';
 import SuggestionsTab from './tabs/suggestions-tab';
+import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../../store';
 
 /**
  * Defines the props structure for TabsContent.
@@ -19,7 +20,6 @@ import SuggestionsTab from './tabs/suggestions-tab';
  */
 interface TabsContentProps {
 	activeTab: { name: string };
-	activeLink: TrafficBoostLink | null;
 	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
 	onInboundLinkClick?: ( inboundLink: TrafficBoostLink ) => void;
 }
@@ -40,28 +40,48 @@ interface TabsContentProps {
  */
 export const TabsContent = ( {
 	activeTab,
-	activeLink,
 	onSuggestionClick,
 	onInboundLinkClick,
 }: TabsContentProps ): JSX.Element => {
-	const { postId } = useParams();
+	const { selectedLink, selectedTab } = useSelect( ( select ) => ( {
+		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
+		selectedTab: select( TrafficBoostStore ).getSelectedTab(),
+	} ), [] );
 
-	if ( ! postId ) {
-		return <div>{ __( 'No post ID found', 'wp-parsely' ) }</div>;
-	}
+	const { setSelectedTab } = useDispatch( TrafficBoostStore );
 
-	switch ( activeTab.name ) {
-		case 'suggestions':
+	/**
+	 * Set the selected tab when the active tab changes.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		setSelectedTab( activeTab.name as TrafficBoostSidebarTabs );
+	}, [ activeTab, setSelectedTab ] );
+
+	/**
+	 * Changes the selected tab depending on the selected link type.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( selectedLink && selectedLink.isSuggestion ) {
+			setSelectedTab( TrafficBoostSidebarTabs.SUGGESTIONS );
+		} else if ( selectedLink && ! selectedLink.isSuggestion ) {
+			setSelectedTab( TrafficBoostSidebarTabs.INBOUND_LINKS );
+		}
+	}, [ selectedLink, setSelectedTab ] );
+
+	switch ( selectedTab ) {
+		case TrafficBoostSidebarTabs.SUGGESTIONS:
 			return <SuggestionsTab
 				onSuggestionClick={ onSuggestionClick }
-				activeLink={ activeLink }
 			/>;
-		case 'inbound-links':
+		case TrafficBoostSidebarTabs.INBOUND_LINKS:
 			return <InboundLinksTab
 				onInboundLinkClick={ onInboundLinkClick }
-				activeLink={ activeLink }
 			/>;
-		case 'settings':
+		case TrafficBoostSidebarTabs.SETTINGS:
 			return <SettingsTab />;
 		default:
 			return <div>{ __( 'Select a tab', 'wp-parsely' ) }</div>;

@@ -99,6 +99,15 @@ export const LinksList = ( {
 	const debouncedCalculateItemsPerPage = debounce( calculateItemsPerPage, 200 );
 
 	/**
+	 * Sets the active link post ID when the active link changes.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		setActiveLinkPostId( activeLink?.targetPost.id ?? null );
+	}, [ activeLink ] );
+
+	/**
 	 * Sets up the resize observer to recalculate items per page when container size changes.
 	 *
 	 * @since 3.18.0
@@ -136,6 +145,26 @@ export const LinksList = ( {
 			onPageChange?.( calculatedTotalPages );
 		}
 	}, [ currentPage, itemsPerPage, links, onPageChange ] );
+
+	/**
+	 * Sets the active link page when the active link changes.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( activeLink && links ) {
+			// Find the index of the active link in the full list
+			const activeIndex = links.findIndex( ( link ) =>
+				link.targetPost.id === activeLink.targetPost.id
+			);
+
+			if ( activeIndex !== -1 ) {
+				// Calculate the correct page number based on the link's position
+				const pageNumber = Math.floor( activeIndex / itemsPerPage ) + 1;
+				onPageChange?.( pageNumber );
+			}
+		}
+	}, [ activeLink, links, itemsPerPage, onPageChange ] );
 
 	/**
 	 * Handles navigation to the previous page of suggestions.

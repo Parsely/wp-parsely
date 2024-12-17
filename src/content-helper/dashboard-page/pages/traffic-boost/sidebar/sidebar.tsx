@@ -27,7 +27,6 @@ import { TabsContent } from './components/tabs-content';
  */
 interface TrafficBoostSidebarProps {
     isLoading: boolean;
-	activeLink: TrafficBoostLink | null;
     onLinkClick?: ( link: TrafficBoostLink ) => void;
 }
 
@@ -41,18 +40,19 @@ interface TrafficBoostSidebarProps {
  */
 export const TrafficBoostSidebar = ( {
 	isLoading,
-	activeLink,
 	onLinkClick,
 }: TrafficBoostSidebarProps ): React.JSX.Element => {
 	const navigate = useNavigate();
 
 	// Get state from store
 	const {
+		post,
+		selectedTab,
 		suggestions,
 		inboundLinks,
-		post,
 	} = useSelect( ( select ) => ( {
 		post: select( TrafficBoostStore ).getCurrentPost(),
+		selectedTab: select( TrafficBoostStore ).getSelectedTab(),
 		suggestions: select( TrafficBoostStore ).getSuggestions(),
 		inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
 	} ), [] );
@@ -87,6 +87,18 @@ export const TrafficBoostSidebar = ( {
 		updateTabCount( '.components-tab-panel__tabs-item.suggestions-tab', suggestions.length );
 		updateTabCount( '.components-tab-panel__tabs-item.inbound-links-tab', inboundLinks.length );
 	}, [ inboundLinks, inboundLinks.length, suggestions.length ] );
+
+	/**
+	 * Whenever the selected tab changes, selects it by simulating a click.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		const tab = document.querySelector( `.traffic-boost-sidebar-tabs .${ selectedTab }-tab` ) as HTMLElement;
+		if ( tab ) {
+			tab.click();
+		}
+	}, [ selectedTab ] );
 
 	return (
 		<div className="traffic-boost-sidebar">
@@ -125,7 +137,6 @@ export const TrafficBoostSidebar = ( {
 						>
 							{ ( tab ) => <TabsContent
 								activeTab={ tab }
-								activeLink={ activeLink }
 								onSuggestionClick={ onLinkClick }
 								onInboundLinkClick={ onLinkClick }
 							/> }
