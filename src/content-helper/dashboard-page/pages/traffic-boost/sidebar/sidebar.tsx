@@ -49,12 +49,12 @@ export const TrafficBoostSidebar = ( {
 	// Get state from store
 	const {
 		suggestions,
-		boostLinks,
+		inboundLinks,
 		post,
 	} = useSelect( ( select ) => ( {
 		post: select( TrafficBoostStore ).getCurrentPost(),
 		suggestions: select( TrafficBoostStore ).getSuggestions(),
-		boostLinks: select( TrafficBoostStore ).getBoostLinks(),
+		inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
 	} ), [] );
 
 	// Get dispatch actions
@@ -85,8 +85,8 @@ export const TrafficBoostSidebar = ( {
 		};
 
 		updateTabCount( '.components-tab-panel__tabs-item.suggestions-tab', suggestions.length );
-		updateTabCount( '.components-tab-panel__tabs-item.boost-links-tab', boostLinks.length );
-	}, [ boostLinks, boostLinks.length, suggestions.length ] );
+		updateTabCount( '.components-tab-panel__tabs-item.inbound-links-tab', inboundLinks.length );
+	}, [ inboundLinks, inboundLinks.length, suggestions.length ] );
 
 	return (
 		<div className="traffic-boost-sidebar">
@@ -110,9 +110,9 @@ export const TrafficBoostSidebar = ( {
 									className: 'traffic-boost-tab suggestions-tab',
 								},
 								{
-									name: TrafficBoostSidebarTabs.BOOST_LINKS,
-									title: __( 'Boost Links', 'wp-parsely' ),
-									className: 'traffic-boost-tab boost-links-tab',
+									name: TrafficBoostSidebarTabs.INBOUND_LINKS,
+									title: __( 'Inbound Links', 'wp-parsely' ),
+									className: 'traffic-boost-tab inbound-links-tab',
 								},
 								{
 									name: 'settings',
@@ -127,7 +127,7 @@ export const TrafficBoostSidebar = ( {
 								activeTab={ tab }
 								activeLink={ activeLink }
 								onSuggestionClick={ onLinkClick }
-								onBoostLinkClick={ onLinkClick }
+								onInboundLinkClick={ onLinkClick }
 							/> }
 						</TabPanel>
 					</>

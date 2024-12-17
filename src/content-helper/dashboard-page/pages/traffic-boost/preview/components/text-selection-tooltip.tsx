@@ -1,7 +1,6 @@
 /**
  * WordPress imports
  */
-import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useCallback, useEffect, createRoot } from '@wordpress/element';
 import { debounce } from '@wordpress/compose';
@@ -21,15 +20,16 @@ interface TextSelectionTooltipProps {
  *
  * @since 3.18.0
  *
- * @param {Document} iframeDocument - The iframe's document object.
+ * @param {Document} iframeDocument The iframe's document object.
  */
 const injectStyles = ( iframeDocument: Document ) => {
-	// Get computed styles from parent window
+	// Get computed styles from parent window.
 	const adminColor = window.getComputedStyle( document.documentElement )
 		.getPropertyValue( '--wp-admin-theme-color' ).trim();
 	const adminColorDarker = window.getComputedStyle( document.documentElement )
 		.getPropertyValue( '--wp-admin-theme-color-darker-10' ).trim();
 
+	// Create and inject styles into the iframe.
 	const style = iframeDocument.createElement( 'style' );
 	style.textContent = `
 		/* Highlight styles */
@@ -48,36 +48,58 @@ const injectStyles = ( iframeDocument: Document ) => {
 			transform: translateX(-50%);
 			margin-bottom: 8px;
 			z-index: 1001;
+			opacity: 0;
+			animation: slideUp 0.2s ease-out forwards;
+		}
+
+		.parsely-traffic-boost-popover-container.closing {
+			animation: slideDown 0.2s ease-out forwards;
 		}
 
 		.parsely-traffic-boost-iframe-popover {
-			background: white;
-			border-radius: 2px;
-			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-			padding: 8px;
+			padding: 0;
 			pointer-events: auto;
 			white-space: nowrap;
 		}
 
         .parsely-traffic-boost-iframe-popover-button {
-			height: 36px;
-			padding: 8px 16px;
+			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+			height: auto;
+			padding: 6px 12px;
 			background: var(--wp-admin-theme-color, ${ adminColor });
 			color: white;
 			border: none;
-			border-radius: 2px;
+			border-radius: 12px;
 			cursor: pointer;
 			font-size: 13px;
-			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 		}
 
 		.parsely-traffic-boost-iframe-popover-button:hover {
-			background: var(--wp-admin-theme-color-darker-10, ${ adminColorDarker });
+			background: var(--wp-admin-theme-color-darker-10, ${ adminColorDarker }) !important;
+			color: white;
 		}
 
-		.parsely-traffic-boost-iframe-popover-button:focus {
-			box-shadow: 0 0 0 1.5px #fff, 0 0 0 3px var(--wp-admin-theme-color, ${ adminColor });
-			outline: none;
+		/* Animation styles */
+		@keyframes slideUp {
+			from {
+				opacity: 0;
+				transform: translate(-50%, 10px);
+			}
+			to {
+				opacity: 1;
+				transform: translate(-50%, 0);
+			}
+		}
+
+		@keyframes slideDown {
+			from {
+				opacity: 1;
+				transform: translate(-50%, 0);
+			}
+			to {
+				opacity: 0;
+				transform: translate(-50%, 10px);
+			}
 		}
 	`;
 	iframeDocument.head.appendChild( style );
@@ -99,8 +121,8 @@ export const TextSelectionTooltip = ( {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {Selection} docSelection - The document's current selection
-	 * @param {Range}     range        - The current selection range
+	 * @param {Selection} docSelection The document's current selection.
+	 * @param {Range}     range        The current selection range.
 	 */
 	const expandToWordBoundary = ( docSelection: Selection, range: Range ) => {
 		const startNode = range.startContainer as Text;
@@ -108,23 +130,23 @@ export const TextSelectionTooltip = ( {
 		const startText = startNode.textContent ?? '';
 		const endText = endNode.textContent ?? '';
 
-		// Get initial selection boundaries before expanding
+		// Get initial selection boundaries before expanding.
 		const initialStart = range.startOffset;
 		const initialEnd = range.endOffset;
 
-		// Find word boundary at start
+		// Find word boundary at start.
 		let startOffset = range.startOffset;
 		while ( startOffset > 0 && /[^\s.,!?;:'")\]}]/g.test( startText[ startOffset - 1 ] ) ) {
 			startOffset--;
 		}
 
-		// Find word boundary at end
+		// Find word boundary at end.
 		let endOffset = range.endOffset;
 		while ( endOffset < endText.length && /[^\s.,!?;:'"(\[{]/g.test( endText[ endOffset ] ) ) {
 			endOffset++;
 		}
 
-		// Only update if boundaries have changed
+		// Only update if boundaries have changed.
 		if ( startOffset !== initialStart || endOffset !== initialEnd ) {
 			range.setStart( startNode, startOffset );
 			range.setEnd( endNode, endOffset );
@@ -138,9 +160,9 @@ export const TextSelectionTooltip = ( {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {Document}  iframeDocument - The iframe's document object
-	 * @param {Selection} docSelection   - The document's current selection
-	 * @param {Element}   previewWrapper - The preview wrapper element
+	 * @param {Document}  iframeDocument The iframe's document object.
+	 * @param {Selection} docSelection   The document's current selection.
+	 * @param {Element}   previewWrapper The preview wrapper element.
 	 */
 	const calculateOffset = (
 		iframeDocument: Document,
@@ -152,7 +174,7 @@ export const TextSelectionTooltip = ( {
 			return 0;
 		}
 
-		// Get all text content up to the selection
+		// Get all text content up to the selection.
 		const currentRange = docSelection.getRangeAt( 0 );
 		const tempRange = iframeDocument.createRange();
 		tempRange.setStart( previewWrapper, 0 );
@@ -160,7 +182,7 @@ export const TextSelectionTooltip = ( {
 
 		const textBeforeSelection = tempRange.toString();
 
-		// Count occurrences before the selection
+		// Count occurrences before the selection.
 		const regex = new RegExp( selectedText.replace( /[.*+?^${}()|[\]\\]/g, '\\$&' ), 'g' );
 		const matches = textBeforeSelection.match( regex );
 
@@ -178,12 +200,23 @@ export const TextSelectionTooltip = ( {
 			return;
 		}
 
-		// Clean up existing highlight
-		const existingHighlight = iframeDocument.querySelector( '.parsely-traffic-boost-highlight' );
-		existingHighlight?.remove();
-
-		// Get the selection
+		// Get the selection.
 		const docSelection = iframeDocument.getSelection();
+
+		// Clean up existing highlight with animation.
+		const existingHighlight = iframeDocument.querySelector( '.parsely-traffic-boost-highlight' );
+		if ( existingHighlight ) {
+			const existingPopover = existingHighlight.querySelector( '.parsely-traffic-boost-popover-container' );
+			if ( existingPopover && ( ! docSelection || docSelection.isCollapsed ) ) {
+				existingPopover.classList.add( 'closing' );
+				setTimeout( () => {
+					existingHighlight.remove();
+				}, 200 );
+				return;
+			}
+			existingHighlight.remove();
+		}
+
 		if ( ! docSelection || docSelection.isCollapsed ) {
 			return;
 		}
@@ -191,12 +224,12 @@ export const TextSelectionTooltip = ( {
 		const range = docSelection.getRangeAt( 0 );
 		const previewWrapper = iframeDocument.querySelector( '.wp-parsely-preview-wrapper' );
 
-		// Check if selection is within preview wrapper
+		// Check if selection is within preview wrapper.
 		if ( ! previewWrapper?.contains( range.commonAncestorContainer ) ) {
 			return;
 		}
 
-		// Check if selection spans multiple paragraphs
+		// Check if selection spans multiple paragraphs.
 		const startParagraph = range.startContainer.parentElement?.closest( 'p' );
 		const endParagraph = range.endContainer.parentElement?.closest( 'p' );
 
@@ -206,7 +239,7 @@ export const TextSelectionTooltip = ( {
 
 		expandToWordBoundary( docSelection, range );
 
-		// Create highlight overlay
+		// Create highlight overlay.
 		const highlight = iframeDocument.createElement( 'div' );
 		highlight.className = 'parsely-traffic-boost-highlight';
 
@@ -219,23 +252,31 @@ export const TextSelectionTooltip = ( {
 		const root = createRoot( popoverContainer );
 		root.render(
 			<div className="parsely-traffic-boost-iframe-popover">
-				<Button
+				<button
 					className="parsely-traffic-boost-iframe-popover-button"
 					onClick={ () => {
 						const offset = calculateOffset( iframeDocument, docSelection, previewWrapper );
-						onTextSelected( docSelection.toString().trim(), offset );
+						popoverContainer.classList.add( 'closing' );
 
-						// Remove the current text selection.
+						onTextSelected( docSelection.toString().trim(), offset );
 						docSelection.removeAllRanges();
 
-						cleanup();
+						// Wait for animation to complete before cleanup.
+						setTimeout( () => {
+							cleanup();
+						}, 200 );
 					} }
 				>
 					{ __( 'Use as Link Text', 'wp-parsely' ) }
-				</Button>
+				</button>
 			</div>
 		);
 
+		/**
+		 * Updates the position of the highlight.
+		 *
+		 * @since 3.18.0
+		 */
 		const updatePosition = () => {
 			const rect = range.getBoundingClientRect();
 			const scrollY = iframeDocument.defaultView?.scrollY ?? 0;
@@ -249,7 +290,7 @@ export const TextSelectionTooltip = ( {
 		updatePosition();
 		previewWrapper.appendChild( highlight );
 
-		// Add scroll event listener
+		// Add scroll event listener.
 		const scrollHandler = () => {
 			requestAnimationFrame( updatePosition );
 		};
@@ -265,16 +306,21 @@ export const TextSelectionTooltip = ( {
 		};
 	}, [ iframeRef, onTextSelected ] );
 
+	/**
+	 * Injects styles and adds event listeners when the component mounts.
+	 *
+	 * @since 3.18.0
+	 */
 	useEffect( () => {
 		const iframeDocument = iframeRef.current?.contentDocument;
 		if ( ! iframeDocument ) {
 			return;
 		}
 
-		// Inject styles when component mounts
+		// Inject styles when component mounts.
 		injectStyles( iframeDocument );
 
-		// Add selection event listener
+		// Add selection event listener.
 		const handleSelectionChange = debounce( () => {
 			handleSelection();
 		}, 300, {

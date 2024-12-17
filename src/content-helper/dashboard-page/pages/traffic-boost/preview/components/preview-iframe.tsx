@@ -30,6 +30,35 @@ interface PreviewIframeProps {
 }
 
 /**
+ * Injects highlight styles into the iframe.
+ *
+ * @since 3.18.0
+ *
+ * @param {HTMLIFrameElement} iframe The iframe element to inject styles into.
+ */
+const injectHighlightStyles = ( iframe: HTMLIFrameElement ) => {
+	const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
+	if ( ! iframeDocument ) {
+		return;
+	}
+
+	const style = iframeDocument.createElement( 'style' );
+	style.textContent = `
+		.smart-link-highlight {
+			padding: 2px 4px;
+			border-radius: 2px;
+			background-color: rgba(91, 167, 69, 0.5);
+		}
+
+		.smart-link-highlight.previous-suggestion {
+			background-color: rgba(91, 167, 69, 0.2);
+			text-decoration: line-through;
+		}
+	`;
+	iframeDocument.head.appendChild( style );
+};
+
+/**
  * Preview iframe component for the Traffic Boost feature.
  * Displays preview iframe for a selected post.
  *
@@ -48,6 +77,7 @@ export const PreviewIframe = ( {
 }: PreviewIframeProps ): React.JSX.Element => {
 	const contentAreaRef = useRef<Element | null>( null ) as React.MutableRefObject<Element | null>;
 	const iframeRef = useRef<HTMLIFrameElement>( null );
+	const isInboundLink = ! activeLink?.isSuggestion;
 
 	/**
 	 * Hides the admin bar from the iframe if the preview is in frontend mode.
@@ -156,6 +186,27 @@ export const PreviewIframe = ( {
 		return ranges;
 	}, [] );
 
+	const highlightRange = useCallback( ( range: Range, isPrevious: boolean = false ) => {
+		try {
+			const iframeDocument = iframeRef.current?.contentDocument ?? iframeRef.current?.contentWindow?.document;
+			if ( ! iframeDocument ) {
+				return;
+			}
+
+			const fragment = range.cloneContents();
+			const highlightSpan = iframeDocument.createElement( 'span' );
+			highlightSpan.className = isPrevious
+				? 'smart-link-highlight previous-suggestion'
+				: 'smart-link-highlight';
+
+			range.deleteContents();
+			highlightSpan.appendChild( fragment );
+			range.insertNode( highlightSpan );
+		} catch ( e ) {
+			// Silently fail if highlighting fails.
+		}
+	}, [] );
+
 	/**
 	 * Highlights the smart link text in the iframe content.
 	 *
@@ -170,37 +221,34 @@ export const PreviewIframe = ( {
 				return;
 			}
 
-			const isSuggestion = activeLink.isSuggestion;
+			// If it's not a suggestion (it's an inbound link), we only need to highlight that smart link.
+			if ( isInboundLink ) {
+				const smartLinkId = activeLink.smart_link.uid;
 
-			const highlightRange = ( range: Range, isOriginal: boolean = false ) => {
-				try {
-					const fragment = range.cloneContents();
-					const highlightSpan = iframeDocument.createElement( 'span' );
-					highlightSpan.className = isOriginal
-						? 'smart-link-highlight original-suggestion'
-						: 'smart-link-highlight';
+				// Find the a element with the smart link id.
+				const aElement = iframeDocument.querySelector( `a[data-smartlink="${ smartLinkId }"]` );
 
-					range.deleteContents();
-					highlightSpan.appendChild( fragment );
-					range.insertNode( highlightSpan );
-				} catch ( e ) {
-					// Silently fail if highlighting fails.
+				if ( aElement ) {
+					const selectionRange = iframeDocument.createRange();
+					selectionRange.selectNode( aElement );
+					highlightRange( selectionRange );
 				}
-			};
 
-			// First, find all ranges.
+				return;
+			}
+
 			let selectionRange = null;
 			let originalRange = null;
 
-			// Get the selection range if there's a new selection.
-			if ( isSuggestion && selectedText?.text ) {
+			// If there's a selected text, get the range for that text.
+			if ( selectedText?.text ) {
 				const selectionRanges = findText( selectedText.text, contentAreaRef.current, iframeDocument );
 				if ( selectionRanges[ selectedText.offset ] ) {
 					selectionRange = selectionRanges[ selectedText.offset ];
 				}
 			}
 
-			// Get the original text range.
+			// Get the original suggestion text range.
 			if ( activeLink.smart_link.text ) {
 				const originalRanges = findText( activeLink.smart_link.text, contentAreaRef.current, iframeDocument );
 				if ( originalRanges[ activeLink.smart_link.offset ?? 0 ] ) {
@@ -208,20 +256,23 @@ export const PreviewIframe = ( {
 				}
 			}
 
-			// Handle highlighting based on different scenarios.
-			if ( ! selectedText ) {
-				if ( originalRange ) {
-					highlightRange( originalRange, false );
-				}
-			} else if ( selectionRange && originalRange ) {
+			// If there's no selected text, highlight the original suggestion text.
+			if ( ! selectedText && originalRange ) {
+				highlightRange( originalRange, false );
+				return;
+			}
+
+			// If there is a selected text and an original suggestion text, highlight both.
+			if ( selectionRange && originalRange ) {
 				// Check if the selection range overlaps with the original range.
 				const doRangesOverlap = ! (
 					selectionRange.compareBoundaryPoints( Range.END_TO_START, originalRange ) > 0 ||
 					selectionRange.compareBoundaryPoints( Range.START_TO_END, originalRange ) < 0
 				);
 
+				// If the ranges overlap, highlight the original suggestion text before
+				// and/or after the selected text.
 				if ( doRangesOverlap ) {
-					// Handle overlapping ranges
 					if ( originalRange.compareBoundaryPoints( Range.START_TO_START, selectionRange ) < 0 ) {
 						const beforeRange = originalRange.cloneRange();
 						beforeRange.setEnd( selectionRange.startContainer, selectionRange.startOffset );
@@ -240,36 +291,11 @@ export const PreviewIframe = ( {
 					highlightRange( originalRange, true );
 					highlightRange( selectionRange );
 				}
-			} else {
-				// Handle individual ranges
-				if ( selectionRange ) {
-					highlightRange( selectionRange );
-				}
-				if ( originalRange ) {
-					const isOriginalSuggestion = isSuggestion && selectedText?.text !== '';
-					highlightRange( originalRange, isOriginalSuggestion );
-				}
 			}
-
-			// Inject highlight styles into the iframe.
-			const style = iframeDocument.createElement( 'style' );
-			style.textContent = `
-				.smart-link-highlight {
-					padding: 2px 4px;
-					border-radius: 2px;
-					background-color: rgba(91, 167, 69, 0.5);
-				}
-
-				.smart-link-highlight.original-suggestion {
-					background-color: rgba(91, 167, 69, 0.2);
-					text-decoration: line-through;
-				}
-			`;
-			iframeDocument.head.appendChild( style );
 		} catch ( error ) {
 			// Silently fail if there's an error highlighting smart link text.
 		}
-	}, [ activeLink, selectedText, findText ] );
+	}, [ activeLink, selectedText, findText, isInboundLink, highlightRange ] );
 
 	/**
 	 * Removes the smart link highlights from the iframe content.
@@ -378,8 +404,8 @@ export const PreviewIframe = ( {
 		const scrollToHighlightedElement = async () => {
 			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight' );
 			if ( highlightedElement ) {
-				// Wait for the next frame to ensure layout is stable.
-				await new Promise( ( resolve ) => requestAnimationFrame( resolve ) );
+				// Wait 100ms to ensure the highlighted element is visible.
+				await new Promise( ( resolve ) => setTimeout( resolve, 100 ) );
 
 				highlightedElement.scrollIntoView( {
 					behavior: 'smooth',
@@ -392,12 +418,15 @@ export const PreviewIframe = ( {
 		// because the iframe content is not fully loaded yet, such as a custom block still being loaded.
 		// So we use a MutationObserver to watch for DOM changes and scroll to the highlighted element once
 		// it's visible.
-		const observer = new MutationObserver( () => {
+		const watchForHighlightedElement = ( mutations: MutationRecord[], obs: MutationObserver ) => {
 			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight' );
 			if ( highlightedElement ) {
 				scrollToHighlightedElement();
+				obs.disconnect();
 			}
-		} );
+		};
+
+		const observer = new MutationObserver( watchForHighlightedElement );
 		observer.observe( iframeDocument.querySelector( '.wp-parsely-preview-wrapper' ) as Element, {
 			childList: true,
 			subtree: true,
@@ -424,6 +453,7 @@ export const PreviewIframe = ( {
 
 		// Set loading state immediately when content starts loading
 		onLoadingChange( true );
+		injectHighlightStyles( iframe );
 
 		// Updates the content area ref to the iframe's content area.
 		const contentArea = iframe.contentWindow?.document.querySelector( '.wp-parsely-preview-wrapper' );
@@ -436,10 +466,10 @@ export const PreviewIframe = ( {
 		disableNavigation( iframe );
 
 		// Flag the iframe as loaded after a small delay to ensure smooth transition.
-		await new Promise( ( resolve ) => setTimeout( resolve, 500 ) );
-		onLoadingChange( false );
-
-		jumpToSmartLink( iframe );
+		setTimeout( () => {
+			onLoadingChange( false );
+			jumpToSmartLink( iframe );
+		}, 500 );
 	}, [ disableNavigation, hideAdminBar, highlightSmartLink, jumpToSmartLink, onLoadingChange ] );
 
 	/**

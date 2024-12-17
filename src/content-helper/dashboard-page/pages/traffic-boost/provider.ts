@@ -157,7 +157,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 *
 	 * @return {Promise<TrafficBoostLink[]>} The list of boost links.
 	 */
-	public async getBoostLinks( postId: number ): Promise<TrafficBoostLink[]> {
+	public async getInboundLinks( postId: number ): Promise<TrafficBoostLink[]> {
 		// Request inbound smart links for the post.
 		const inboundSmartLinks = await this.getInboundSmartLinks( postId );
 

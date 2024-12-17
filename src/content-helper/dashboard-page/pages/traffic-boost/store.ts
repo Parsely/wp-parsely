@@ -17,7 +17,7 @@ import { TrafficBoostLink } from './provider';
  */
 export enum TrafficBoostSidebarTabs {
 	SUGGESTIONS = 'suggestions',
-	BOOST_LINKS = 'boost-links',
+	INBOUND_LINKS = 'inbound-links',
 }
 
 /**
@@ -36,7 +36,7 @@ type SuggestionsTabState = {
  *
  * @since 3.18.0
  */
-type BoostLinksTabState = {
+type InboundLinksTabState = {
 	links: TrafficBoostLink[];
 	currentPage: number;
 	itemsPerPage: number;
@@ -54,7 +54,7 @@ type TrafficBoostState = {
 	selectedTab: TrafficBoostSidebarTabs;
 	selectedLink: TrafficBoostLink | null;
 	suggestionsTab: SuggestionsTabState;
-	boostLinksTab: BoostLinksTabState;
+	inboundLinksTab: InboundLinksTabState;
 };
 
 /********** Actions **********/
@@ -121,22 +121,22 @@ interface SetSuggestionsPageAction {
 }
 
 /**
- * Interface for the SetBoostLinksAction.
+ * Interface for the SetInboundLinksAction.
  *
  * @since 3.18.0
  */
-interface SetBoostLinksAction {
-	type: 'SET_BOOST_LINKS';
+interface SetInboundLinksAction {
+	type: 'SET_INBOUND_LINKS';
 	links: TrafficBoostLink[];
 }
 
 /**
- * Interface for the SetBoostLinksPageAction.
+ * Interface for the SetInboundLinksPageAction.
  *
  * @since 3.18.0
  */
-interface SetBoostLinksPageAction {
-	type: 'SET_BOOST_LINKS_PAGE';
+interface SetInboundLinksPageAction {
+	type: 'SET_INBOUND_LINKS_PAGE';
 	page: number;
 }
 
@@ -151,12 +151,12 @@ interface SetSuggestionsItemsPerPageAction {
 }
 
 /**
- * Interface for the SetBoostLinksItemsPerPageAction.
+ * Interface for the SetInboundLinksItemsPerPageAction.
  *
  * @since 3.18.0
  */
-interface SetBoostLinksItemsPerPageAction {
-	type: 'SET_BOOST_LINKS_ITEMS_PER_PAGE';
+interface SetInboundLinksItemsPerPageAction {
+	type: 'SET_INBOUND_LINKS_ITEMS_PER_PAGE';
 	itemsPerPage: number;
 }
 
@@ -182,10 +182,10 @@ type ActionTypes =
 	| SetSelectedTabAction
 	| SetSuggestionsAction
 	| SetSuggestionsPageAction
-	| SetBoostLinksAction
-	| SetBoostLinksPageAction
+	| SetInboundLinksAction
+	| SetInboundLinksPageAction
 	| SetSuggestionsItemsPerPageAction
-	| SetBoostLinksItemsPerPageAction
+	| SetInboundLinksItemsPerPageAction
 	| SetSelectedLinkAction;
 
 /**
@@ -204,7 +204,7 @@ const defaultState: TrafficBoostState = {
 		currentPage: 1,
 		itemsPerPage: 0,
 	},
-	boostLinksTab: {
+	inboundLinksTab: {
 		links: [],
 		currentPage: 1,
 		itemsPerPage: 0,
@@ -262,19 +262,19 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						currentPage: action.page,
 					},
 				};
-			case 'SET_BOOST_LINKS':
+			case 'SET_INBOUND_LINKS':
 				return {
 					...state,
-					boostLinksTab: {
-						...state.boostLinksTab,
+					inboundLinksTab: {
+						...state.inboundLinksTab,
 						links: action.links,
 					},
 				};
-			case 'SET_BOOST_LINKS_PAGE':
+			case 'SET_INBOUND_LINKS_PAGE':
 				return {
 					...state,
-					boostLinksTab: {
-						...state.boostLinksTab,
+					inboundLinksTab: {
+						...state.inboundLinksTab,
 						currentPage: action.page,
 					},
 				};
@@ -286,11 +286,11 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						itemsPerPage: action.itemsPerPage,
 					},
 				};
-			case 'SET_BOOST_LINKS_ITEMS_PER_PAGE':
+			case 'SET_INBOUND_LINKS_ITEMS_PER_PAGE':
 				return {
 					...state,
-					boostLinksTab: {
-						...state.boostLinksTab,
+					inboundLinksTab: {
+						...state.inboundLinksTab,
 						itemsPerPage: action.itemsPerPage,
 					},
 				};
@@ -341,15 +341,15 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				page,
 			};
 		},
-		setBoostLinks( links: TrafficBoostLink[] ): SetBoostLinksAction {
+		setInboundLinks( links: TrafficBoostLink[] ): SetInboundLinksAction {
 			return {
-				type: 'SET_BOOST_LINKS',
+				type: 'SET_INBOUND_LINKS',
 				links,
 			};
 		},
-		setBoostLinksPage( page: number ): SetBoostLinksPageAction {
+		setInboundLinksPage( page: number ): SetInboundLinksPageAction {
 			return {
-				type: 'SET_BOOST_LINKS_PAGE',
+				type: 'SET_INBOUND_LINKS_PAGE',
 				page,
 			};
 		},
@@ -359,9 +359,9 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				itemsPerPage,
 			};
 		},
-		setBoostLinksItemsPerPage( itemsPerPage: number ): SetBoostLinksItemsPerPageAction {
+		setInboundLinksItemsPerPage( itemsPerPage: number ): SetInboundLinksItemsPerPageAction {
 			return {
-				type: 'SET_BOOST_LINKS_ITEMS_PER_PAGE',
+				type: 'SET_INBOUND_LINKS_ITEMS_PER_PAGE',
 				itemsPerPage,
 			};
 		},
@@ -394,14 +394,14 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 		getSuggestionsItemsPerPage( state: TrafficBoostState ): number {
 			return state.suggestionsTab.itemsPerPage;
 		},
-		getBoostLinks( state: TrafficBoostState ): TrafficBoostLink[] {
-			return state.boostLinksTab.links;
+		getInboundLinks( state: TrafficBoostState ): TrafficBoostLink[] {
+			return state.inboundLinksTab.links;
 		},
-		getBoostLinksPage( state: TrafficBoostState ): number {
-			return state.boostLinksTab.currentPage;
+		getInboundLinksPage( state: TrafficBoostState ): number {
+			return state.inboundLinksTab.currentPage;
 		},
-		getBoostLinksItemsPerPage( state: TrafficBoostState ): number {
-			return state.boostLinksTab.itemsPerPage;
+		getInboundLinksItemsPerPage( state: TrafficBoostState ): number {
+			return state.inboundLinksTab.itemsPerPage;
 		},
 		isSuggestionsLoading( state: TrafficBoostState ): boolean {
 			return state.loading.includes( 'suggestions' );

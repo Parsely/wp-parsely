@@ -47,7 +47,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 		setLoading,
 		setCurrentPost,
 		setSelectedLink,
-		setBoostLinks,
+		setInboundLinks,
 		setSuggestions,
 	} = useDispatch( TrafficBoostStore );
 
@@ -126,28 +126,28 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			return;
 		}
 
-		const fetchBoostLinks = async () => {
+		const fetchInboundLinks = async () => {
 			try {
-				setLoading( true, 'boost_links' );
-				let boostLinks = await TrafficBoostProvider.getInstance().getBoostLinks( post.id );
+				setLoading( true, 'inbound_links' );
+				let inboundLinks = await TrafficBoostProvider.getInstance().getInboundLinks( post.id );
 
 				// Filter out the current post from the inbound links.
-				boostLinks = boostLinks.filter( ( link ) => link.targetPost?.id !== post.id );
+				inboundLinks = inboundLinks.filter( ( link ) => link.targetPost?.id !== post.id );
 
 				// Filter out the inbound links that are not posts.
-				boostLinks = boostLinks.filter( ( link ) => link.smart_link?.source?.post_type === 'post' );
+				inboundLinks = inboundLinks.filter( ( link ) => link.smart_link?.source?.post_type === 'post' );
 
-				setBoostLinks( boostLinks );
+				setInboundLinks( inboundLinks );
 			} catch ( err ) {
 				setError( err as ContentHelperError );
 				console.error( error ); // eslint-disable-line no-console
 			} finally {
-				setLoading( false, 'boost_links' );
+				setLoading( false, 'inbound_links' );
 			}
 		};
 
-		fetchBoostLinks();
-	}, [ error, post, setBoostLinks, setError, setLoading ] );
+		fetchInboundLinks();
+	}, [ error, post, setInboundLinks, setError, setLoading ] );
 
 	/**
 	 * Fetches suggestions for Boost Links to the current post.

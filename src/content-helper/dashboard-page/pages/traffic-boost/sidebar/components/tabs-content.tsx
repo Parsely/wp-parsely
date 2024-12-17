@@ -8,7 +8,7 @@ import { __ } from '@wordpress/i18n';
  */
 import { useParams } from 'react-router-dom';
 import { TrafficBoostLink } from '../../provider';
-import BoostLinksTab from './tabs/boost-links-tab';
+import InboundLinksTab from './tabs/inbound-links-tab';
 import SettingsTab from './tabs/settings-tab';
 import SuggestionsTab from './tabs/suggestions-tab';
 
@@ -21,7 +21,7 @@ interface TabsContentProps {
 	activeTab: { name: string };
 	activeLink: TrafficBoostLink | null;
 	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
-	onBoostLinkClick?: ( boostLink: TrafficBoostLink ) => void;
+	onInboundLinkClick?: ( inboundLink: TrafficBoostLink ) => void;
 }
 
 /**
@@ -42,7 +42,7 @@ export const TabsContent = ( {
 	activeTab,
 	activeLink,
 	onSuggestionClick,
-	onBoostLinkClick,
+	onInboundLinkClick,
 }: TabsContentProps ): JSX.Element => {
 	const { postId } = useParams();
 
@@ -56,9 +56,9 @@ export const TabsContent = ( {
 				onSuggestionClick={ onSuggestionClick }
 				activeLink={ activeLink }
 			/>;
-		case 'boost-links':
-			return <BoostLinksTab
-				onBoostLinkClick={ onBoostLinkClick }
+		case 'inbound-links':
+			return <InboundLinksTab
+				onInboundLinkClick={ onInboundLinkClick }
 				activeLink={ activeLink }
 			/>;
 		case 'settings':
