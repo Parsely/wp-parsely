@@ -1,22 +1,17 @@
 /**
  * WordPress dependencies
  */
-import {
-	Button,
-	__experimentalNumberControl as NumberControl,
-	Spinner,
-} from '@wordpress/components';
-import { debounce } from '@wordpress/compose';
+import { Button, Spinner } from '@wordpress/components';
 import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { chevronLeft, chevronRight } from '@wordpress/icons';
+import { next, previous } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
 import { TrafficBoostLink } from '../../../provider';
-import { SingleLink } from './single-link';
 import './links-list.scss';
+import { SingleLink } from './single-link';
 
 /**
  * Defines the props structure for LinksList.
@@ -24,6 +19,7 @@ import './links-list.scss';
  * @since 3.18.0
  */
 interface LinksListProps {
+	children?: React.ReactNode;
 	links: TrafficBoostLink[];
 	activeLink: TrafficBoostLink | null;
 	minItemsPerPage?: number;
@@ -42,6 +38,7 @@ interface LinksListProps {
  * @param {LinksListProps} props - Component props.
  */
 export const LinksList = ( {
+	children,
 	links,
 	onClick,
 	activeLink,
@@ -52,12 +49,8 @@ export const LinksList = ( {
 	onItemsPerPageChange,
 }: LinksListProps ): React.JSX.Element => {
 	const [ isLoading, setIsLoading ] = useState( false );
-	const [ visibleLinks, setVisibleLinks ] = useState<TrafficBoostLink[]>(
-		links.slice( 0, itemsPerPage )
-	);
-	const [ totalPages, setTotalPages ] = useState<number>(
-		Math.ceil( links.length / itemsPerPage )
-	);
+	const [ visibleLinks, setVisibleLinks ] = useState<TrafficBoostLink[]>( [] );
+	const [ totalPages, setTotalPages ] = useState<number>( 1 );
 	const [ activeLinkPostId, setActiveLinkPostId ] = useState<number | null>( activeLink?.targetPost.id ?? null );
 
 	const containerRef = useRef<HTMLDivElement>( null );
@@ -92,13 +85,6 @@ export const LinksList = ( {
 	}, [ minItemsPerPage, onItemsPerPageChange ] );
 
 	/**
-	 * Debounced version of calculateItemsPerPage to avoid excessive calculations.
-	 *
-	 * @since 3.18.0
-	 */
-	const debouncedCalculateItemsPerPage = debounce( calculateItemsPerPage, 200 );
-
-	/**
 	 * Sets the active link post ID when the active link changes.
 	 *
 	 * @since 3.18.0
@@ -113,9 +99,9 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		debouncedCalculateItemsPerPage();
+		calculateItemsPerPage();
 
-		const resizeObserver = new ResizeObserver( debouncedCalculateItemsPerPage );
+		const resizeObserver = new ResizeObserver( calculateItemsPerPage );
 
 		if ( containerRef.current ) {
 			resizeObserver.observe( containerRef.current );
@@ -123,9 +109,8 @@ export const LinksList = ( {
 
 		return () => {
 			resizeObserver.disconnect();
-			debouncedCalculateItemsPerPage.cancel();
 		};
-	}, [ debouncedCalculateItemsPerPage ] );
+	}, [ calculateItemsPerPage ] );
 
 	/**
 	 * Updates visible links when page, itemsPerPage, or links change
@@ -133,12 +118,12 @@ export const LinksList = ( {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
+		const calculatedTotalPages = Math.max( 1, Math.ceil( links.length / itemsPerPage ) );
+		setTotalPages( calculatedTotalPages );
+
 		const startIndex = ( currentPage - 1 ) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
-		const calculatedTotalPages = Math.ceil( links.length / itemsPerPage );
-
 		setVisibleLinks( links.slice( startIndex, endIndex ) );
-		setTotalPages( calculatedTotalPages );
 
 		// Adjust current page if it exceeds total pages
 		if ( calculatedTotalPages < currentPage && calculatedTotalPages > 0 ) {
@@ -242,35 +227,44 @@ export const LinksList = ( {
 	return (
 		<div className="traffic-boost-links" ref={ containerRef }>
 			{ renderLinksList() }
-			{ totalPages > 1 && (
-				<div className="links-pagination">
-					<div className="page-selector">
-						<span>{ __( 'Page', 'wp-parsely' ) }</span>
-						<NumberControl
-							value={ currentPage }
-							onChange={ handlePageChange }
-							min={ 1 }
-							max={ totalPages }
-							dragDirection="e"
-						/>
-						<span>
-							{ __( 'of', 'wp-parsely' ) } { totalPages }
-						</span>
-					</div>
-					<div className="page-navigation">
-						<Button
-							icon={ chevronLeft }
-							onClick={ handlePrevious }
-							disabled={ currentPage === 1 }
-						/>
-						<Button
-							icon={ chevronRight }
-							onClick={ handleNext }
-							disabled={ currentPage >= totalPages }
-						/>
-					</div>
+
+			<div className="links-pagination">
+				<div className="links-pagination-children">
+					{ children }
 				</div>
-			) }
+				{ links.length > itemsPerPage && totalPages > 0 && (
+					<>
+						<div className="page-selector">
+							<span>{ __( 'Page', 'wp-parsely' ) }</span>
+							<select
+								value={ currentPage }
+								onChange={ ( e ) => handlePageChange( e.target.value ) }
+							>
+								{ Array.from( { length: Math.max( 1, totalPages ) }, ( _, i ) => i + 1 ).map( ( page ) => (
+									<option key={ page } value={ page }>
+										{ page }
+									</option>
+								) ) }
+							</select>
+							<span>
+								{ __( 'of', 'wp-parsely' ) } { totalPages }
+							</span>
+						</div>
+						<div className="page-navigation">
+							<Button
+								icon={ previous }
+								onClick={ handlePrevious }
+								disabled={ currentPage <= 1 }
+							/>
+							<Button
+								icon={ next }
+								onClick={ handleNext }
+								disabled={ currentPage >= totalPages }
+							/>
+						</div>
+					</>
+				) }
+			</div>
 		</div>
 	);
 };

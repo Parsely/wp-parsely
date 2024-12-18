@@ -41,9 +41,8 @@
 	.links-pagination {
 		margin-top: auto;
 		display: flex;
-		justify-content: flex-end;
+		justify-content: space-between;
 		align-items: center;
-		gap: var(--grid-unit-30);
 		flex: 0 0 auto;
 		color: var(--sidebar-black);
 		font-size: var(--font-size--smaller);
@@ -53,28 +52,28 @@
 		text-transform: uppercase;
 		padding: var(--grid-unit-15, 12px) var(--grid-unit-30, 24px);
 
+		.links-pagination-children {
+			margin-right: auto;
+
+			.traffic-boost-add-suggestion {
+				box-shadow: none;
+			}
+		}
+
 		.page-selector {
 			display: flex;
 			align-items: center;
 			gap: var(--grid-unit-5);
 
-			.components-number-control {
-				width: 30px;
+			select {
+				border: none;
+				background-color: var(--sidebar-white);
+				font-size: var(--font-size--smaller);
+				font-weight: 500;
+				cursor: pointer;
 
-				input {
-					height: 30px;
-					background: var(--sidebar-white);
-					border: 0;
-					appearance: none;
-					-webkit-appearance: none;
-					-moz-appearance: none;
-
-					&::-webkit-inner-spin-button,
-					&::-webkit-outer-spin-button {
-						appearance: none;
-						-webkit-appearance: none;
-						-moz-appearance: none;
-					}
+				&:focus {
+					outline: none;
 				}
 			}
 		}

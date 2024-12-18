@@ -1,7 +1,6 @@
 /**
  * WordPress dependencies
  */
-import { format } from '@wordpress/date';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -27,30 +26,27 @@ interface PostDetailsSidebarProps {
  * @param {PostDetailsSidebarProps} props Component props.
  */
 export const PostDetailsSidebar = ( { post }: PostDetailsSidebarProps ): React.JSX.Element => {
-	const prettyDate = format( 'M j, o', post.date ?? '' );
-
 	return (
 		<div className="traffic-boost-post-details">
-			<Thumbnail
-				post={ post }
-				size={ 100 }
-				className="traffic-boost-thumbnail"
-			/>
-			<div className="post-details">
+			<div className="traffic-boost-post-details-label">
+				{ __( 'Current Post:', 'wp-parsely' ) }
+			</div>
+			<div className="traffic-boost-post-details-content">
+				<Thumbnail
+					post={ post }
+					size={ 52 }
+					className="traffic-boost-thumbnail"
+				/>
 				<div className="post-title">
 					{ post.title.rendered !== ''
 						? post.title.rendered
 						: __( '(no title)', 'wp-parsely' ) }
 				</div>
-				<div className="post-meta">
-					<span className="post-date">{ prettyDate }</span>
-					<span className="post-author">{ post.author?.name }</span>
-				</div>
-				<div className="post-categories">
-					{ post.categories.map( ( category ) => (
-						<span key={ category.id }>{ category.name }</span>
-					) ) }
-				</div>
+			</div>
+			<div className="traffic-boost-post-details-divider"></div>
+			<div className="traffic-boost-post-details-description">
+				{ __( 'Use Parse.ly data to increase your post\'s traffic. ' +
+					'Plant links to this post in high-performing related content.', 'wp-parsely' ) }
 			</div>
 		</div>
 	);

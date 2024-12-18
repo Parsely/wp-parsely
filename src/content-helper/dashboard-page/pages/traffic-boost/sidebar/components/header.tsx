@@ -2,6 +2,7 @@
  * WordPress dependencies
  */
 import { Button } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 import { chevronLeft } from '@wordpress/icons';
 
 /**
@@ -22,7 +23,8 @@ interface SidebarHeaderProps {
  */
 export const SidebarHeader = ( { onBackClick }: SidebarHeaderProps ): React.JSX.Element => (
 	<div className="traffic-boost-sidebar-header">
-		<Button icon={ chevronLeft } onClick={ onBackClick } />
-		<h2>Boost Links</h2>
+		<Button icon={ chevronLeft } onClick={ onBackClick }>
+			{ __( 'Back', 'wp-parsely' ) }
+		</Button>
 	</div>
 );

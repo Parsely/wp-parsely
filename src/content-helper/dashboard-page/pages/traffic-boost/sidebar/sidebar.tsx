@@ -1,11 +1,10 @@
 /**
  * WordPress dependencies
  */
-import { Icon, Spinner, TabPanel } from '@wordpress/components';
+import { Spinner, TabPanel } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { settings } from '@wordpress/icons';
 import { useNavigate } from 'react-router-dom';
 
 /**
@@ -15,7 +14,6 @@ import { TrafficBoostLink } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { SidebarFooter } from './components/footer';
 import { SidebarHeader } from './components/header';
-import { SidebarIcons } from './components/icons';
 import { PostDetailsSidebar } from './components/post-details';
 import './sidebar.scss';
 import { TabsContent } from './components/tabs-content';
@@ -111,26 +109,19 @@ export const TrafficBoostSidebar = ( {
 					<>
 						<div className="traffic-boost-sidebar-inner">
 							<PostDetailsSidebar post={ post } />
-							<SidebarIcons />
 						</div>
 						<TabPanel
 							className="traffic-boost-sidebar-tabs"
 							tabs={ [
 								{
 									name: TrafficBoostSidebarTabs.SUGGESTIONS,
-									title: __( 'Suggestions', 'wp-parsely' ),
+									title: __( 'Link Suggestions', 'wp-parsely' ),
 									className: 'traffic-boost-tab suggestions-tab',
 								},
 								{
 									name: TrafficBoostSidebarTabs.INBOUND_LINKS,
 									title: __( 'Inbound Links', 'wp-parsely' ),
 									className: 'traffic-boost-tab inbound-links-tab',
-								},
-								{
-									name: 'settings',
-									title: '',
-									className: 'traffic-boost-tab settings-tab icon-only-tab',
-									icon: <Icon icon={ settings } size={ 24 } />,
 								},
 							] }
 							onSelect={ ( tab: string ) => setSelectedTab( tab as TrafficBoostSidebarTabs ) }

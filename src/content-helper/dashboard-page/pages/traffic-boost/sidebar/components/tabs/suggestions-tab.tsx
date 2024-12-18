@@ -9,6 +9,9 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { TrafficBoostLink } from '../../../provider';
 import { TrafficBoostStore } from '../../../store';
 import { LinksList } from '../links-list/links-list';
+import { Button, PanelBody, PanelRow } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+import { plus } from '@wordpress/icons';
 
 /**
  * Defines the props structure for SuggestionsTab.
@@ -18,6 +21,37 @@ import { LinksList } from '../links-list/links-list';
 interface SuggestionsTabProps {
 	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
 }
+
+const SuggestionsSettings = (): React.JSX.Element => {
+	return (
+		<div className="traffic-boost-suggestions-settings">
+			<PanelBody
+				title={ __( 'Filters', 'wp-parsely' ) }
+				initialOpen={ false }
+			>
+				<PanelRow>
+					<div>
+						<div>
+							<p>{ __( 'Adjust parameters used to generate suggestions.', 'wp-parsely' ) }</p>
+						</div>
+					</div>
+				</PanelRow>
+			</PanelBody>
+			<PanelBody
+				title={ __( 'Advanced Settings', 'wp-parsely' ) }
+				initialOpen={ false }
+			>
+				<PanelRow>
+					<div>
+						<div>
+							{ __( 'Scope suggestions based on content attributes or Parse.ly smart tags.', 'wp-parsely' ) }
+						</div>
+					</div>
+				</PanelRow>
+			</PanelBody>
+		</div>
+	);
+};
 
 /**
  * Component that renders the suggestions tab.
@@ -39,15 +73,26 @@ const SuggestionsTab = ( {
 	const { setSuggestionsPage, setSuggestionsItemsPerPage } = useDispatch( TrafficBoostStore );
 
 	return (
-		<LinksList
-			links={ suggestions }
-			onClick={ onSuggestionClick }
-			activeLink={ selectedLink?.isSuggestion ? selectedLink : null }
-			currentPage={ currentPage }
-			itemsPerPage={ itemsPerPage }
-			onPageChange={ setSuggestionsPage }
-			onItemsPerPageChange={ setSuggestionsItemsPerPage }
-		/>
+		<>
+			<SuggestionsSettings />
+			<LinksList
+				links={ suggestions }
+				onClick={ onSuggestionClick }
+				activeLink={ selectedLink?.isSuggestion ? selectedLink : null }
+				currentPage={ currentPage }
+				itemsPerPage={ itemsPerPage }
+				onPageChange={ setSuggestionsPage }
+				onItemsPerPageChange={ setSuggestionsItemsPerPage }
+			>
+				<Button
+					icon={ plus }
+					variant="secondary"
+					className="traffic-boost-add-suggestion"
+				>
+					{ __( 'Add', 'wp-parsely' ) }
+				</Button>
+			</LinksList>
+		</>
 	);
 };
 

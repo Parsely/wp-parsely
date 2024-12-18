@@ -21,18 +21,13 @@
 		display: flex;
 		min-height: to_rem(40px);
 		align-items: center;
-		gap: var(--grid-unit-20);
 		align-self: stretch;
 		margin-bottom: var(--grid-unit-20);
 
-		h2 {
-			margin: 0;
-			overflow: hidden;
-			color: var(--gray-900);
-			text-overflow: ellipsis;
-			font-size: var(--font-size--extra-large);
-			font-weight: 500;
-			line-height: var(--grid-unit-30);
+		.components-button {
+			font-size: var(--font-size--medium);
+			font-weight: 400;
+			line-height: to_rem(20px);
 		}
 	}
 
@@ -44,111 +39,61 @@
 		flex: 1;
 		min-height: 0;
 		width: 100%;
-		gap: var(--grid-unit-15);
-
-		.traffic-boost-sidebar-icons {
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			align-self: stretch;
-
-			.traffic-boost-sidebar-stats {
-				display: flex;
-				align-items: center;
-				align-content: center;
-				gap: var(--grid-unit-05, 4px) var(--grid-unit-20);
-				flex: 1 0 0;
-				flex-wrap: wrap;
-
-				> div {
-					display: flex;
-					align-items: center;
-					gap: var(--grid-unit-05);
-				}
-
-				span {
-					color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
-					font-size: 12px;
-					font-style: normal;
-					font-weight: 400;
-					line-height: 16px;
-				}
-
-				svg {
-					fill: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
-				}
-			}
-
-			.traffic-boost-sidebar-icons-actions {
-				display: flex;
-				align-items: center;
-				gap: var(--grid-unit-10);
-				color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
-
-				button {
-					margin: 0 !important;
-					min-width: 30px;
-					height: 30px;
-					padding: 0;
-				}
-
-				svg {
-					fill: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
-				}
-			}
-		}
+		gap: var(--grid-unit-20);
 
 		.traffic-boost-post-details {
 			display: flex;
-			min-height: to_rem(40px);
-			gap: var(--grid-unit-20);
+			flex-direction: column;
+			justify-content: flex-end;
 			align-items: flex-start;
+			gap: var(--grid-unit-10); 
+			align-self: stretch;
 
-			.post-details {
-				display: flex;
-				min-height: var(--grid-unit-40);
-				flex-direction: column;
-				align-items: flex-start;
-				gap: var(--grid-unit-05, 4px);
-				flex: 1;
+			.traffic-boost-post-details-label {
 				overflow: hidden;
+				color: var(--gray-900);
+				font-size: var(--font-size--small);
+				font-style: normal;
+				font-weight: 500;
+				line-height: var(--grid-unit-20);
+				text-transform: uppercase;
+			}
+
+			.traffic-boost-post-details-content {
+				display: flex;
+				align-items: center;
+				gap: var(--grid-unit-10);
+				align-self: stretch;
 
 				.post-title {
-					display: flex;
-					align-items: center;
-					gap: var(--grid-unit-5);
-					align-self: stretch;
-					font-size: var(--grid-unit-25);
+					color: var(--gray-900);
+					font-size: var(--font-size--medium);
 					font-style: normal;
-					font-weight: 600;
-					line-height: var(--grid-unit-30);
-					letter-spacing: -0.4px;
+					font-weight: 500;
+					line-height: to_rem(20px);
 				}
+			}
 
-				.post-meta {
-					display: flex;
-					align-items: center;
-					align-content: center;
-					gap: var(--grid-unit-5) var(--grid-unit-10);
-					align-self: stretch;
-					flex-wrap: wrap;
-					color: var(--gray-500);
-				}
+			.traffic-boost-post-details-divider {
+				width: 100%;
+				height: 1px;
+				background: var(--gray-400);
+				margin: var(--grid-unit-10) 0;
+			}
 
-				.post-categories {
-					display: flex;
-					gap: var(--grid-unit-5);
+			.traffic-boost-post-details-description {
+				font-size: var(--font-size--medium);
+				font-style: normal;
+				font-weight: 400;
+				line-height: to_rem(16px);
+			}
+		}
 
-					span {
-						background: var(--gray-400);
-						border-radius: to_rem(6px);
-						padding: 2px var(--grid-unit-10);
-						font-size: var(--font-size--smaller);
-						font-weight: 500;
-						line-height: var(--font-size--large);
-						color: var(--sidebar-black);
-					}
-				}
+		.traffic-boost-suggestions-settings {
+
+			.components-panel__body {
+				border-top: 0;
+				border-bottom: 0;
 			}
 		}
 	}
@@ -198,6 +143,7 @@
 				padding: var(--grid-unit-15) var(--grid-unit-40);
 				margin: 0;
 				height: to_rem(48px);
+				justify-content: center;
 
 				&.is-active {
 					box-shadow: inset 0 0 0 var(--wp-admin-border-width-focus) transparent, inset 0 -1.5px 0 0 var(--wp-admin-theme-color);

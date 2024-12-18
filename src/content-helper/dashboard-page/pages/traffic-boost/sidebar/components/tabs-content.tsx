@@ -9,7 +9,6 @@ import { useEffect } from '@wordpress/element';
  */
 import { TrafficBoostLink } from '../../provider';
 import InboundLinksTab from './tabs/inbound-links-tab';
-import SettingsTab from './tabs/settings-tab';
 import SuggestionsTab from './tabs/suggestions-tab';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../../store';
 
@@ -81,8 +80,6 @@ export const TabsContent = ( {
 			return <InboundLinksTab
 				onInboundLinkClick={ onInboundLinkClick }
 			/>;
-		case TrafficBoostSidebarTabs.SETTINGS:
-			return <SettingsTab />;
 		default:
 			return <div>{ __( 'Select a tab', 'wp-parsely' ) }</div>;
 	}
