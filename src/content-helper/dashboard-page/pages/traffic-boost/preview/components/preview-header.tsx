@@ -1,18 +1,40 @@
 /**
  * WordPress imports
  */
-import { Button, Icon, Popover, ToggleControl } from '@wordpress/components';
+import { Button, DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { desktop, edit, cog, link } from '@wordpress/icons';
-import { useRef, useState } from '@wordpress/element';
+import { desktop, edit, external, moreVertical } from '@wordpress/icons';
 
 /**
  * Internal imports
  */
-import { LeafIcon } from '../../../../../common/icons/leaf-icon';
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
+import { LeafIcon } from '../../../../../common/icons/leaf-icon';
 import { TrafficBoostLink } from '../../provider';
 import { TextSelection } from '../preview';
+import { LinkCounter } from './link-counter';
+
+const VerticalMoreMenu = (): React.JSX.Element => {
+	return (
+		<DropdownMenu icon={ moreVertical } iconSize={ 24 } label={ __( 'Actions', 'wp-parsely' ) }>
+			{ ( { onClose } ) => (
+				<>
+					<MenuGroup>
+						<MenuItem icon={ edit } onClick={ onClose }>
+							{ __( 'Edit Post', 'wp-parsely' ) }
+						</MenuItem>
+						<MenuItem icon={ external } onClick={ onClose }>
+							{ __( 'View post in a new tab', 'wp-parsely' ) }
+						</MenuItem>
+						<MenuItem icon={ <LeafIcon /> } onClick={ onClose }>
+							{ __( 'View in Parse.ly', 'wp-parsely' ) }
+						</MenuItem>
+					</MenuGroup>
+				</>
+			) }
+		</DropdownMenu>
+	);
+};
 
 /**
  * Props structure for PreviewHeader.
@@ -42,28 +64,28 @@ interface PreviewHeaderProps {
 export const PreviewHeader = ( {
 	activeLink,
 	selectedText,
-	onOpenPostInNewTab,
-	onOpenPostEditor,
-	onOpenParselyDashboard,
 	isFrontendPreview,
 	setIsFrontendPreview,
 	onRestoreOriginal,
 }: PreviewHeaderProps ): React.JSX.Element => {
-	const [ isSettingsOpen, setIsSettingsOpen ] = useState<boolean>( false );
-	const settingsButtonRef = useRef<HTMLButtonElement>( null );
-
-	const toggleSettings = () => {
-		setIsSettingsOpen( ( state ) => ! state );
+	const onToggleFrontendPreview = () => {
+		setIsFrontendPreview( ! isFrontendPreview );
 	};
+
+	if ( ! activeLink ) {
+		return <></>;
+	}
 
 	return (
 		<div className="traffic-boost-preview-header">
-			<div className="traffic-boost-preview-stats">
-				<div>
-					<span>{ __( 'Post Stats:', 'wp-parsely' ) }</span>
-					<span>12 Links</span>
-					<Icon icon={ link } />
+			<div className="traffic-boost-preview-info">
+				<div className="traffic-boost-preview-info-title">
+					{ activeLink?.targetPost?.title.rendered }
 				</div>
+				<LinkCounter
+					postLinks={ activeLink.postLinks }
+					selectedLinkType={ null }
+				/>
 			</div>
 			<div className="traffic-boost-preview-actions">
 				{ activeLink?.isSuggestion && selectedText && (
@@ -77,53 +99,12 @@ export const PreviewHeader = ( {
 				) }
 				<Button
 					icon={ desktop }
-					onClick={ onOpenPostInNewTab }
-					label={ __( 'View post on site', 'wp-parsely' ) }
+					isPressed={ isFrontendPreview }
+					iconSize={ 24 }
+					onClick={ onToggleFrontendPreview }
+					label={ __( 'Toggle Frontend Preview', 'wp-parsely' ) }
 				/>
-				<Button
-					icon={ edit }
-					onClick={ onOpenPostEditor }
-					label={ __( 'Edit post', 'wp-parsely' ) }
-				/>
-				<Button
-					iconSize={ 20 }
-					icon={ <LeafIcon /> }
-					onClick={ onOpenParselyDashboard }
-					label={ __( 'View in Parse.ly', 'wp-parsely' ) }
-				/>
-				<Button
-					ref={ settingsButtonRef }
-					icon={ cog }
-					onClick={ toggleSettings }
-					label={ __( 'Preview Settings', 'wp-parsely' ) }
-					className="traffic-boost-preview-settings-button"
-				/>
-				{ isSettingsOpen && (
-					<Popover
-						className="wp-parsely-traffic-boost-preview-settings-popover"
-						anchor={ settingsButtonRef.current }
-						position="bottom left"
-						onFocusOutside={ ( event: React.SyntheticEvent<Element, Event> ) => {
-							// Don't close if clicking the settings button.
-							const target = ( event.nativeEvent as FocusEvent ).relatedTarget as Element | null;
-							if ( target === settingsButtonRef.current ) {
-								return;
-							}
-							setIsSettingsOpen( false );
-						} }
-						noArrow={ false }
-					>
-						<div className="wp-parsely-traffic-boost-preview-settings-popover-content">
-							<ToggleControl
-								__nextHasNoMarginBottom
-								label="Frontend Preview"
-								checked={ isFrontendPreview }
-								onChange={ setIsFrontendPreview }
-								help="Preview post as it appears on your site's frontend"
-							/>
-						</div>
-					</Popover>
-				) }
+				<VerticalMoreMenu />
 			</div>
 		</div>
 	);

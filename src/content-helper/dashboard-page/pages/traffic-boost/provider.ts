@@ -2,6 +2,22 @@ import { BaseWordPressProvider, HydratedPost } from '../../../common/base-wordpr
 import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider';
 
 /**
+ * Represents the type of link.
+ *
+ * @since 3.18.0
+ */
+export type LinkType = 'external' | 'internal' | 'smart';
+
+/**
+ * Represents the links for a post.
+ *
+ * @since 3.18.0
+ */
+export interface PostLinks extends Record<LinkType, HTMLAnchorElement[]> {
+	total: number;
+}
+
+/**
  * Represents a Traffic Boost link.
  *
  * Stores the target post and the smart link associated with it.
@@ -10,6 +26,7 @@ import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider
  */
 export interface TrafficBoostLink {
     targetPost: HydratedPost;
+	postLinks: PostLinks;
     smart_link: InboundSmartLink;
     isSuggestion: boolean;
 }
@@ -59,6 +76,42 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			TrafficBoostProvider.instance = new TrafficBoostProvider();
 		}
 		return TrafficBoostProvider.instance as TrafficBoostProvider;
+	}
+
+	/**
+	 * Populates the post links for a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {HydratedPost} post The post to populate the links for.
+	 *
+	 * @return {PostLinks} The post links.
+	 */
+	private populatePostLinks( post: HydratedPost ): PostLinks {
+		const postContent = post.content.raw;
+		const siteUrl = new URL( post.guid.raw ).hostname;
+
+		// Create a new DOMParser instance.
+		const parser = new DOMParser();
+		const doc = parser.parseFromString( postContent, 'text/html' );
+		const links = doc.querySelectorAll( 'a' );
+
+		// Classify the links into external, internal, and smart.
+		// Smart links contain the data-smartlink attribute.
+		const smartLinks = Array.from( links ).filter( ( link ) => link.hasAttribute( 'data-smartlink' ) );
+
+		// Internal links contain the site URL in the href attribute.
+		const internalLinks = Array.from( links ).filter( ( link ) => link.href.includes( siteUrl ) );
+
+		// External links are links that do not contain the site URL in the href attribute.
+		const externalLinks = Array.from( links ).filter( ( link ) => ! link.href.includes( siteUrl ) );
+
+		return {
+			external: externalLinks,
+			internal: internalLinks,
+			smart: smartLinks,
+			total: links.length,
+		};
 	}
 
 	/**
@@ -120,6 +173,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 						post_type: post.type,
 					},
 				},
+				postLinks: this.populatePostLinks( post ),
 				targetPost: post,
 				isSuggestion: true,
 			};
@@ -175,6 +229,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		return fetchedPosts.data
 			.map( ( post ) => ( {
 				targetPost: post,
+				postLinks: this.populatePostLinks( post ),
 				smart_link: inboundSmartLinks.find( ( link ) => link.source?.post_id === post.id ),
 				isSuggestion: false,
 			} ) )

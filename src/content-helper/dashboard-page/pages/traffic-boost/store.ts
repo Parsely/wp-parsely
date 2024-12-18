@@ -8,7 +8,7 @@ import { createReduxStore, register } from '@wordpress/data';
  */
 import { HydratedPost } from '../../../common/base-wordpress-provider';
 import { ContentHelperError } from '../../../common/content-helper-error';
-import { TrafficBoostLink } from './provider';
+import { TrafficBoostLink, LinkType } from './provider';
 
 /**
  * Available tab names in the Traffic Boost sidebar.
@@ -44,6 +44,16 @@ type InboundLinksTabState = {
 };
 
 /**
+ * The shape of the preview state.
+ *
+ * @since 3.18.0
+ */
+type PreviewState = {
+	selectedLinkType: LinkType | null;
+	frontendPreview: boolean;
+};
+
+/**
  * The shape of the Traffic Boost store state.
  *
  * @since 3.18.0
@@ -54,6 +64,7 @@ type TrafficBoostState = {
 	currentPost: HydratedPost | null;
 	selectedTab: TrafficBoostSidebarTabs;
 	selectedLink: TrafficBoostLink | null;
+	preview: PreviewState;
 	suggestionsTab: SuggestionsTabState;
 	inboundLinksTab: InboundLinksTabState;
 };
@@ -172,6 +183,26 @@ interface SetSelectedLinkAction {
 }
 
 /**
+ * Interface for the SetPreviewLinkTypeAction.
+ *
+ * @since 3.18.0
+ */
+interface SetPreviewLinkTypeAction {
+	type: 'SET_PREVIEW_LINK_TYPE';
+	linkType: LinkType | null;
+}
+
+/**
+ * Interface for the SetFrontendPreviewAction.
+ *
+ * @since 3.18.0
+ */
+interface SetFrontendPreviewAction {
+	type: 'SET_FRONTEND_PREVIEW';
+	enabled: boolean;
+}
+
+/**
  * Union type for all possible action types.
  *
  * @since 3.18.0
@@ -187,7 +218,9 @@ type ActionTypes =
 	| SetInboundLinksPageAction
 	| SetSuggestionsItemsPerPageAction
 	| SetInboundLinksItemsPerPageAction
-	| SetSelectedLinkAction;
+	| SetSelectedLinkAction
+	| SetPreviewLinkTypeAction
+	| SetFrontendPreviewAction;
 
 /**
  * Default state for the Traffic Boost store.
@@ -200,6 +233,10 @@ const defaultState: TrafficBoostState = {
 	currentPost: null,
 	selectedTab: TrafficBoostSidebarTabs.SUGGESTIONS,
 	selectedLink: null,
+	preview: {
+		selectedLinkType: null,
+		frontendPreview: false,
+	},
 	suggestionsTab: {
 		suggestions: [],
 		currentPage: 1,
@@ -300,6 +337,22 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 					...state,
 					selectedLink: action.link,
 				};
+			case 'SET_PREVIEW_LINK_TYPE':
+				return {
+					...state,
+					preview: {
+						...state.preview,
+						selectedLinkType: action.linkType,
+					},
+				};
+			case 'SET_FRONTEND_PREVIEW':
+				return {
+					...state,
+					preview: {
+						...state.preview,
+						frontendPreview: action.enabled,
+					},
+				};
 			default:
 				return state;
 		}
@@ -372,6 +425,18 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				link,
 			};
 		},
+		setPreviewLinkType( linkType: LinkType | null ): SetPreviewLinkTypeAction {
+			return {
+				type: 'SET_PREVIEW_LINK_TYPE',
+				linkType,
+			};
+		},
+		setFrontendPreview( enabled: boolean ): SetFrontendPreviewAction {
+			return {
+				type: 'SET_FRONTEND_PREVIEW',
+				enabled,
+			};
+		},
 	},
 	selectors: {
 		isLoading( state: TrafficBoostState ): boolean {
@@ -409,6 +474,12 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 		},
 		getSelectedLink( state: TrafficBoostState ): TrafficBoostLink | null {
 			return state.selectedLink;
+		},
+		getPreviewLinkType( state: TrafficBoostState ): LinkType | null {
+			return state.preview.selectedLinkType;
+		},
+		isFrontendPreview( state: TrafficBoostState ): boolean {
+			return state.preview.frontendPreview;
 		},
 	},
 } );
