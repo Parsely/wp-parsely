@@ -4,6 +4,137 @@
 import { __ } from '@wordpress/i18n';
 import { useCallback, useEffect, createRoot } from '@wordpress/element';
 import { debounce } from '@wordpress/compose';
+import { Button } from '@wordpress/components';
+import { link } from '@wordpress/icons';
+
+/**
+ * Props structure for TextSelectionPopover.
+ *
+ * @since 3.18.0
+ */
+interface TextSelectionPopoverProps {
+	onSelect: () => void;
+	iframeDocument: Document;
+}
+
+/**
+ * Custom hook to inject styles into the iframe.
+ *
+ * @since 3.18.0
+ *
+ * @param {Document} iframeDocument The iframe's document object.
+ */
+const useIframeStyles = ( iframeDocument: Document ) => {
+	useEffect( () => {
+		// Get computed styles from parent window.
+		const adminColor = window.getComputedStyle( document.documentElement )
+			.getPropertyValue( '--wp-admin-theme-color' ).trim();
+
+		// Inject WordPress components styles.
+		const wpComponentsLink = iframeDocument.createElement( 'link' );
+		wpComponentsLink.rel = 'stylesheet';
+		wpComponentsLink.href = '/wp-includes/css/dist/components/style.css';
+		iframeDocument.head.appendChild( wpComponentsLink );
+
+		// Create and inject custom styles into the iframe.
+		const style = iframeDocument.createElement( 'style' );
+		style.textContent = `
+			/* Highlight styles */
+			.parsely-traffic-boost-highlight {
+				position: absolute;
+				pointer-events: none;
+				z-index: 1000;
+				transition: all 0.15s ease-out;
+			}
+
+			/* Popover container styles */
+			.parsely-traffic-boost-popover-container {
+				position: absolute;
+				left: 50%;
+				bottom: 100%;
+				transform: translateX(-50%);
+				margin-bottom: 12px;
+				z-index: 1001;
+				opacity: 0;
+				animation: slideUp 0.2s ease-out forwards;
+			}
+
+			.parsely-traffic-boost-popover-container.closing {
+				animation: slideDown 0.2s ease-out forwards;
+			}
+
+			.parsely-traffic-boost-iframe-popover {
+				padding: 0;
+				pointer-events: auto;
+				white-space: nowrap;
+			}
+
+			.parsely-traffic-boost-iframe-popover-button {
+				box-shadow: 0px 2px 3px 0px rgba(0, 0, 0, 0.05),
+					0px 4px 5px 0px rgba(0, 0, 0, 0.04),
+					0px 4px 5px 0px rgba(0, 0, 0, 0.03),
+					0px 16px 16px 0px rgba(0, 0, 0, 0.02);
+				padding: 6px 12px;
+				background: var(--wp-admin-theme-color, ${ adminColor });
+				border-radius: 2px;
+			}
+
+			/* Animation styles */
+			@keyframes slideUp {
+				from {
+					opacity: 0;
+					transform: translate(-50%, 10px);
+				}
+				to {
+					opacity: 1;
+					transform: translate(-50%, 0);
+				}
+			}
+
+			@keyframes slideDown {
+				from {
+					opacity: 1;
+					transform: translate(-50%, 0);
+				}
+				to {
+					opacity: 0;
+					transform: translate(-50%, 10px);
+				}
+			}
+		`;
+		iframeDocument.head.appendChild( style );
+
+		// Cleanup function to remove styles when component unmounts
+		return () => {
+			wpComponentsLink.remove();
+			style.remove();
+		};
+	}, [ iframeDocument ] );
+};
+
+/**
+ * Component that renders the popover content for text selection.
+ *
+ * @since 3.18.0
+ *
+ * @param {TextSelectionPopoverProps} props Component props.
+ */
+const TextSelectionPopover = ( { onSelect, iframeDocument }: TextSelectionPopoverProps ): JSX.Element => {
+	useIframeStyles( iframeDocument );
+
+	return (
+		<div className="parsely-traffic-boost-iframe-popover">
+			<Button
+				variant="primary"
+				icon={ link }
+				className="parsely-traffic-boost-iframe-popover-button"
+				onClick={ onSelect }
+			>
+				{ __( 'Use as Link Text', 'wp-parsely' ) }
+			</Button>
+		</div>
+	);
+};
 
 /**
  * Props structure for TextSelectionTooltip.
@@ -14,96 +145,6 @@ interface TextSelectionTooltipProps {
 	iframeRef: React.RefObject<HTMLIFrameElement>;
 	onTextSelected: ( text: string, offset: number ) => void;
 }
-
-/**
- * Injects WordPress component styles into the iframe.
- *
- * @since 3.18.0
- *
- * @param {Document} iframeDocument The iframe's document object.
- */
-const injectStyles = ( iframeDocument: Document ) => {
-	// Get computed styles from parent window.
-	const adminColor = window.getComputedStyle( document.documentElement )
-		.getPropertyValue( '--wp-admin-theme-color' ).trim();
-	const adminColorDarker = window.getComputedStyle( document.documentElement )
-		.getPropertyValue( '--wp-admin-theme-color-darker-10' ).trim();
-
-	// Create and inject styles into the iframe.
-	const style = iframeDocument.createElement( 'style' );
-	style.textContent = `
-		/* Highlight styles */
-		.parsely-traffic-boost-highlight {
-			position: absolute;
-			pointer-events: none;
-			z-index: 1000;
-			transition: all 0.15s ease-out;
-		}
-
-		/* Popover container styles */
-		.parsely-traffic-boost-popover-container {
-			position: absolute;
-			left: 50%;
-			bottom: 100%;
-			transform: translateX(-50%);
-			margin-bottom: 8px;
-			z-index: 1001;
-			opacity: 0;
-			animation: slideUp 0.2s ease-out forwards;
-		}
-
-		.parsely-traffic-boost-popover-container.closing {
-			animation: slideDown 0.2s ease-out forwards;
-		}
-
-		.parsely-traffic-boost-iframe-popover {
-			padding: 0;
-			pointer-events: auto;
-			white-space: nowrap;
-		}
-
-        .parsely-traffic-boost-iframe-popover-button {
-			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-			height: auto;
-			padding: 6px 12px;
-			background: var(--wp-admin-theme-color, ${ adminColor });
-			color: white;
-			border: none;
-			border-radius: 12px;
-			cursor: pointer;
-			font-size: 13px;
-		}
-
-		.parsely-traffic-boost-iframe-popover-button:hover {
-			background: var(--wp-admin-theme-color-darker-10, ${ adminColorDarker }) !important;
-			color: white;
-		}
-
-		/* Animation styles */
-		@keyframes slideUp {
-			from {
-				opacity: 0;
-				transform: translate(-50%, 10px);
-			}
-			to {
-				opacity: 1;
-				transform: translate(-50%, 0);
-			}
-		}
-
-		@keyframes slideDown {
-			from {
-				opacity: 1;
-				transform: translate(-50%, 0);
-			}
-			to {
-				opacity: 0;
-				transform: translate(-50%, 10px);
-			}
-		}
-	`;
-	iframeDocument.head.appendChild( style );
-};
 
 /**
  * A tooltip component that appears over selected text, offering to use that text as link text.
@@ -251,25 +292,21 @@ export const TextSelectionTooltip = ( {
 		// Create popover content.
 		const root = createRoot( popoverContainer );
 		root.render(
-			<div className="parsely-traffic-boost-iframe-popover">
-				<button
-					className="parsely-traffic-boost-iframe-popover-button"
-					onClick={ () => {
-						const offset = calculateOffset( iframeDocument, docSelection, previewWrapper );
-						popoverContainer.classList.add( 'closing' );
+			<TextSelectionPopover
+				iframeDocument={ iframeDocument }
+				onSelect={ () => {
+					const offset = calculateOffset( iframeDocument, docSelection, previewWrapper );
+					popoverContainer.classList.add( 'closing' );
 
-						onTextSelected( docSelection.toString().trim(), offset );
-						docSelection.removeAllRanges();
+					onTextSelected( docSelection.toString().trim(), offset );
+					docSelection.removeAllRanges();
 
-						// Wait for animation to complete before cleanup.
-						setTimeout( () => {
-							cleanup();
-						}, 200 );
-					} }
-				>
-					{ __( 'Use as Link Text', 'wp-parsely' ) }
-				</button>
-			</div>
+					// Wait for animation to complete before cleanup.
+					setTimeout( () => {
+						cleanup();
+					}, 200 );
+				} }
+			/>
 		);
 
 		/**
@@ -316,9 +353,6 @@ export const TextSelectionTooltip = ( {
 		if ( ! iframeDocument ) {
 			return;
 		}
-
-		// Inject styles when component mounts.
-		injectStyles( iframeDocument );
 
 		// Add selection event listener.
 		const handleSelectionChange = debounce( () => {
