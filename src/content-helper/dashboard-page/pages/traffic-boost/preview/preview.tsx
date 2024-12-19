@@ -216,6 +216,10 @@ export const TrafficBoostPreview = ( {
 		//console.log( 'remove' );
 	};
 
+	const handleUpdateLink = () => {
+		//console.log( 'update link' );
+	};
+
 	if ( ! activePost || ! post ) {
 		return <></>;
 	}
@@ -252,6 +256,7 @@ export const TrafficBoostPreview = ( {
 				onPrevious={ handlePrevious }
 				onAccept={ handleAccept }
 				onDiscard={ handleDiscard }
+				onUpdateLink={ handleUpdateLink }
 				onRemove={ handleRemove }
 				onRestoreOriginal={ () => {
 					setSelectedText( null );

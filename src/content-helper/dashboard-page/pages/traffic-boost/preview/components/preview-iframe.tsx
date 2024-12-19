@@ -287,17 +287,15 @@ export const PreviewIframe = ( {
 				<div className={ `wp-parsely-preview-loading ${ isLoading ? 'is-loading' : '' }` }>
 					<Spinner />
 				</div>
-				{ ! isInboundLink && (
-					<TextSelectionTooltip
-						iframeRef={ iframeRef }
-						onTextSelected={ ( text, offset ) => {
-							if ( iframeRef.current ) {
-								removeSmartLinkHighlights( iframeRef.current );
-							}
-							onTextSelected( text, offset );
-						} }
-					/>
-				) }
+				<TextSelectionTooltip
+					iframeRef={ iframeRef }
+					onTextSelected={ ( text, offset ) => {
+						if ( iframeRef.current ) {
+							removeSmartLinkHighlights( iframeRef.current );
+						}
+						onTextSelected( text, offset );
+					} }
+				/>
 				<iframe
 					ref={ iframeRef }
 					src={ previewUrl }

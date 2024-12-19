@@ -22,6 +22,7 @@ interface PreviewFooterProps {
 	post: HydratedPost;
 	activeLink: TrafficBoostLink | null;
 	onAccept: () => void;
+	onUpdateLink: () => void;
 	onDiscard: () => void;
 	onNext: () => void;
 	onPrevious: () => void;
@@ -45,6 +46,7 @@ export const PreviewFooter = ( {
 	post,
 	activeLink,
 	onAccept,
+	onUpdateLink,
 	onDiscard,
 	onNext,
 	onPrevious,
@@ -79,7 +81,7 @@ export const PreviewFooter = ( {
 					<>
 						<Button
 							variant="primary"
-							onClick={ onAccept }
+							onClick={ onUpdateLink }
 						>{ __( 'Accept', 'wp-parsely' ) }</Button>
 						<Button
 							variant="tertiary"
@@ -100,10 +102,29 @@ export const PreviewFooter = ( {
 				) }
 
 				{ isInboundLink && (
-					<Button
-						variant="primary"
-						onClick={ onRemove }
-					>{ __( 'Remove', 'wp-parsely' ) }</Button>
+					<>
+						{ selectedText ? (
+							<>
+								<Button
+									variant="primary"
+									onClick={ onAccept }
+								>{ __( 'Update Link', 'wp-parsely' ) }</Button>
+								<VerticalDivider size={ 36 } />
+								<Button
+									variant="tertiary"
+									onClick={ onRestoreOriginal }
+								>
+									{ __( 'Clear changes', 'wp-parsely' ) }
+								</Button>
+							</>
+						) : (
+							<Button
+								variant="tertiary"
+								onClick={ onRemove }
+								isDestructive
+							>{ __( 'Remove', 'wp-parsely' ) }</Button>
+						) }
+					</>
 				) }
 
 				{ ! isInboundLink && (
