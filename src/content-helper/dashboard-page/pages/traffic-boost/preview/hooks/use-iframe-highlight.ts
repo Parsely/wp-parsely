@@ -1,4 +1,9 @@
 /**
+ * WordPress imports
+ */
+import { useCallback } from '@wordpress/element';
+
+/**
  * Internal imports
  */
 import { escapeRegExp } from '../../../../../common/utils/functions';
@@ -36,7 +41,7 @@ export const useIframeHighlight = ( {
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element to inject styles into.
 	 */
-	const injectHighlightStyles = ( iframe: HTMLIFrameElement ) => {
+	const injectHighlightStyles = useCallback( ( iframe: HTMLIFrameElement ) => {
 		const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
 		if ( ! iframeDocument ) {
 			return;
@@ -132,7 +137,7 @@ export const useIframeHighlight = ( {
 			}
 		`;
 		iframeDocument.head.appendChild( style );
-	};
+	}, [] );
 
 	/**
 	 * Finds all ranges containing the text.
@@ -145,7 +150,7 @@ export const useIframeHighlight = ( {
 	 *
 	 * @return {Range[]} An array of ranges containing the text.
 	 */
-	const findText = ( searchText: string, rootNode: Node, doc: Document ): Range[] => {
+	const findText = useCallback( ( searchText: string, rootNode: Node, doc: Document ): Range[] => {
 		const ranges: Range[] = [];
 		const textNodes: Text[] = [];
 		const treeWalker = doc.createTreeWalker(
@@ -216,7 +221,7 @@ export const useIframeHighlight = ( {
 		}
 
 		return ranges;
-	};
+	}, [] );
 
 	/**
 	 * Highlights a range with a specified class.
@@ -227,7 +232,7 @@ export const useIframeHighlight = ( {
 	 * @param {string}  className  The class name to apply to the highlight span.
 	 * @param {boolean} isPrevious Whether this is a previous suggestion (optional).
 	 */
-	const highlightRange = ( range: Range, className: string, isPrevious: boolean = false ) => {
+	const highlightRange = useCallback( ( range: Range, className: string, isPrevious: boolean = false ) => {
 		try {
 			const iframeDocument = iframeRef.current?.contentDocument ?? iframeRef.current?.contentWindow?.document;
 			if ( ! iframeDocument ) {
@@ -246,7 +251,7 @@ export const useIframeHighlight = ( {
 		} catch ( e ) {
 			// Silently fail if highlighting fails.
 		}
-	};
+	}, [ iframeRef ] );
 
 	/**
 	 * Removes highlight spans from the iframe content.
@@ -257,53 +262,57 @@ export const useIframeHighlight = ( {
 	 * @param {string}            querySelector The query selector to find highlight elements.
 	 * @param {boolean}           animate       Whether to animate the removal of highlights.
 	 */
-	const removeHighlights = ( iframe: HTMLIFrameElement, querySelector: string, animate = false ) => {
+	const removeHighlights = useCallback( ( iframe: HTMLIFrameElement, querySelector: string, animate = false ) => {
 		try {
 			const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
 			if ( ! iframeDocument ) {
 				return;
 			}
 
-			// Find all highlight spans.
-			const highlights = iframeDocument.querySelectorAll( querySelector );
+			// Function to recursively unwrap nested highlights
+			const unwrapHighlight = ( highlight: Element ) => {
+				// First, recursively process any nested highlights
+				const nestedHighlights = highlight.querySelectorAll( querySelector );
+				nestedHighlights.forEach( ( nested ) => unwrapHighlight( nested ) );
 
-			// Process highlights in reverse order to avoid issues with nested highlights.
-			Array.from( highlights ).reverse().forEach( ( highlight ) => {
 				const parent = highlight.parentNode;
 				if ( ! parent ) {
 					return;
 				}
 
 				if ( animate ) {
-					// Add removing class to trigger fade-out animation
 					highlight.classList.add( 'removing' );
 
-					// Wait for animation to complete before removing the element
 					setTimeout( () => {
 						// Move all child nodes before the highlight span
 						while ( highlight.firstChild ) {
 							parent.insertBefore( highlight.firstChild, highlight );
 						}
-
-						// Remove the empty highlight span
 						parent.removeChild( highlight );
-
-						// Normalize any adjacent text nodes
 						parent.normalize();
-					}, 200 ); // 200ms is the animation duration.
+					}, 200 );
 				} else {
-					// Remove immediately without animation
+					// Move all child nodes before the highlight span
 					while ( highlight.firstChild ) {
 						parent.insertBefore( highlight.firstChild, highlight );
 					}
 					parent.removeChild( highlight );
 					parent.normalize();
 				}
+			};
+
+			// Get all top-level highlights
+			const highlights = iframeDocument.querySelectorAll( querySelector );
+			highlights.forEach( ( highlight ) => {
+				// Only process top-level highlights (those that aren't nested inside another highlight)
+				if ( ! highlight.parentElement?.closest( querySelector ) ) {
+					unwrapHighlight( highlight );
+				}
 			} );
 		} catch ( error ) {
 			// Silently fail if there's an error removing highlights
 		}
-	};
+	}, [] );
 
 	/**
 	 * Removes the smart link highlights from the iframe content.
@@ -312,9 +321,9 @@ export const useIframeHighlight = ( {
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element to remove highlights from.
 	 */
-	const removeSmartLinkHighlights = ( iframe: HTMLIFrameElement ) => {
+	const removeSmartLinkHighlights = useCallback( ( iframe: HTMLIFrameElement ) => {
 		removeHighlights( iframe, '.smart-link-highlight' );
-	};
+	}, [ removeHighlights ] );
 
 	/**
 	 * Highlights the smart link text in the iframe content.
@@ -323,7 +332,7 @@ export const useIframeHighlight = ( {
 	 *
 	 * @param {HTMLIFrameElement} iframe The iframe element to highlight the smart link in.
 	 */
-	const highlightSmartLink = ( iframe: HTMLIFrameElement ) => {
+	const highlightSmartLink = useCallback( ( iframe: HTMLIFrameElement ) => {
 		try {
 			const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
 			if ( ! iframeDocument || ! activeLink?.smart_link.text || ! contentAreaRef.current ) {
@@ -404,7 +413,7 @@ export const useIframeHighlight = ( {
 		} catch ( error ) {
 			// Silently fail if there's an error highlighting smart link text.
 		}
-	};
+	}, [ activeLink, contentAreaRef, findText, highlightRange, isInboundLink, selectedText ] );
 
 	/**
 	 * Highlights the links of the selected link type in the iframe.
@@ -414,7 +423,7 @@ export const useIframeHighlight = ( {
 	 * @param {HTMLIFrameElement} iframe           The iframe element to highlight the links in.
 	 * @param {string}            selectedLinkType The selected link type to highlight.
 	 */
-	const highlightLinkType = ( iframe: HTMLIFrameElement, selectedLinkType: LinkType | null ) => {
+	const highlightLinkType = useCallback( ( iframe: HTMLIFrameElement, selectedLinkType: LinkType | null ) => {
 		const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
 		if ( ! iframeDocument ) {
 			return;
@@ -453,7 +462,7 @@ export const useIframeHighlight = ( {
 				highlightRange( selectionRange, 'link-type-highlight' );
 			}
 		} );
-	};
+	}, [ activeLink, highlightRange, removeHighlights ] );
 
 	return {
 		injectHighlightStyles,

@@ -244,19 +244,24 @@ export const TextSelectionTooltip = ( {
 		// Get the selection.
 		const docSelection = iframeDocument.getSelection();
 
-		// Clean up existing highlight with animation.
-		const existingHighlight = iframeDocument.querySelector( '.parsely-traffic-boost-highlight' );
-		if ( existingHighlight ) {
-			const existingPopover = existingHighlight.querySelector( '.parsely-traffic-boost-popover-container' );
-			if ( existingPopover && ( ! docSelection || docSelection.isCollapsed ) ) {
-				existingPopover.classList.add( 'closing' );
-				setTimeout( () => {
-					existingHighlight.remove();
-				}, 200 );
-				return;
-			}
-			existingHighlight.remove();
-		}
+		// Clean up ALL existing highlights
+		const cleanupHighlights = () => {
+			const existingHighlights = iframeDocument.querySelectorAll( '.parsely-traffic-boost-highlight' );
+			existingHighlights.forEach( ( highlight ) => {
+				const existingPopover = highlight.querySelector( '.parsely-traffic-boost-popover-container' );
+				if ( existingPopover ) {
+					existingPopover.classList.add( 'closing' );
+					setTimeout( () => {
+						highlight.remove();
+					}, 200 );
+				} else {
+					highlight.remove();
+				}
+			} );
+		};
+
+		// Always clean up existing highlights first
+		cleanupHighlights();
 
 		if ( ! docSelection || docSelection.isCollapsed ) {
 			return;
