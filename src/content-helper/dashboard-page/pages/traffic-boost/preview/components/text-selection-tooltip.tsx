@@ -59,6 +59,10 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 				animation: slideUp 0.2s ease-out forwards;
 			}
 
+			.parsely-traffic-boost-popover-container .components-button.is-primary:focus:not(:disabled) {
+				box-shadow:none;
+			}
+
 			.parsely-traffic-boost-popover-container.closing {
 				animation: slideDown 0.2s ease-out forwards;
 			}
@@ -244,24 +248,24 @@ export const TextSelectionTooltip = ( {
 		// Get the selection.
 		const docSelection = iframeDocument.getSelection();
 
-		// Clean up ALL existing highlights
-		const cleanupHighlights = () => {
-			const existingHighlights = iframeDocument.querySelectorAll( '.parsely-traffic-boost-highlight' );
-			existingHighlights.forEach( ( highlight ) => {
-				const existingPopover = highlight.querySelector( '.parsely-traffic-boost-popover-container' );
+		// Clean up existing highlight with animation if selection is collapsed
+		const existingHighlight = iframeDocument.querySelector( '.parsely-traffic-boost-highlight' );
+		if ( existingHighlight ) {
+			if ( ! docSelection || docSelection.isCollapsed ) {
+				const existingPopover = existingHighlight.querySelector( '.parsely-traffic-boost-popover-container' );
 				if ( existingPopover ) {
 					existingPopover.classList.add( 'closing' );
 					setTimeout( () => {
-						highlight.remove();
+						existingHighlight.remove();
 					}, 200 );
 				} else {
-					highlight.remove();
+					existingHighlight.remove();
 				}
-			} );
-		};
-
-		// Always clean up existing highlights first
-		cleanupHighlights();
+				return;
+			}
+			// If we have a new selection, remove old highlight immediately without animation
+			existingHighlight.remove();
+		}
 
 		if ( ! docSelection || docSelection.isCollapsed ) {
 			return;
