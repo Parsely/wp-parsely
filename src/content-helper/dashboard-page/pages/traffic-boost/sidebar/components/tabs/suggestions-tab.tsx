@@ -11,7 +11,7 @@ import { TrafficBoostStore } from '../../../store';
 import { LinksList } from '../links-list/links-list';
 import { Button, PanelBody, PanelRow } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { plus } from '@wordpress/icons';
+import { plus, update } from '@wordpress/icons';
 
 /**
  * Defines the props structure for SuggestionsTab.
@@ -84,6 +84,13 @@ const SuggestionsTab = ( {
 				onPageChange={ setSuggestionsPage }
 				onItemsPerPageChange={ setSuggestionsItemsPerPage }
 			>
+				<Button
+					icon={ update }
+					variant="secondary"
+					className="traffic-boost-add-suggestion"
+				>
+					{ __( 'Generate', 'wp-parsely' ) }
+				</Button>
 				<Button
 					icon={ plus }
 					variant="secondary"

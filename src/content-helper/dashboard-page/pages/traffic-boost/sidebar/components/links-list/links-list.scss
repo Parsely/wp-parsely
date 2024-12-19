@@ -50,7 +50,7 @@
 		font-weight: 500;
 		line-height: var(--grid-unit-20);
 		text-transform: uppercase;
-		padding: var(--grid-unit-15, 12px) var(--grid-unit-30, 24px);
+		padding: var(--grid-unit-15, 12px) var(--grid-unit-30, 24px) 2px;
 
 		.links-pagination-children {
 			margin-right: auto;
@@ -67,7 +67,7 @@
 
 			select {
 				border: none;
-				background-color: var(--sidebar-white);
+				background-color: transparent;
 				font-size: var(--font-size--smaller);
 				font-weight: 500;
 				cursor: pointer;
@@ -81,6 +81,7 @@
 		.page-navigation {
 			display: flex;
 			gap: 0.25rem;
+			margin-left: var(--grid-unit-30);
 		}
 	}
 }

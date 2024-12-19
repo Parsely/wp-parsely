@@ -96,15 +96,18 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		const doc = parser.parseFromString( postContent, 'text/html' );
 		const links = doc.querySelectorAll( 'a' );
 
+		// Filter out links that have no text.
+		const linksWithText = Array.from( links ).filter( ( link ) => link.textContent?.trim() !== '' );
+
 		// Classify the links into external, internal, and smart.
 		// Smart links contain the data-smartlink attribute.
-		const smartLinks = Array.from( links ).filter( ( link ) => link.hasAttribute( 'data-smartlink' ) );
+		const smartLinks = linksWithText.filter( ( link ) => link.hasAttribute( 'data-smartlink' ) );
 
 		// Internal links contain the site URL in the href attribute.
-		const internalLinks = Array.from( links ).filter( ( link ) => link.href.includes( siteUrl ) );
+		const internalLinks = linksWithText.filter( ( link ) => link.href.includes( siteUrl ) );
 
 		// External links are links that do not contain the site URL in the href attribute.
-		const externalLinks = Array.from( links ).filter( ( link ) => ! link.href.includes( siteUrl ) );
+		const externalLinks = linksWithText.filter( ( link ) => ! link.href.includes( siteUrl ) );
 
 		return {
 			external: externalLinks,

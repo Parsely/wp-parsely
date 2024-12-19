@@ -44,18 +44,30 @@ export const useIframeHighlight = ( {
 
 		const style = iframeDocument.createElement( 'style' );
 		style.textContent = `
+			/** Smart link highlight styles */
 			.smart-link-highlight {
-				outline: 2px solid rgba(91, 167, 69, 0.5);
+				outline: 2px solid #3858E9;
 				border-radius: 2px;
-				background-color: rgba(91, 167, 69, 0.5);
+				background-color: #3858E9;
+				color: #ffffff;
+			}
+
+			.smart-link-highlight * {
+				color: #ffffff;
 			}
 
 			.smart-link-highlight.previous-suggestion {
-				outline: 2px solid rgba(91, 167, 69, 0.2);
-				background-color: rgba(91, 167, 69, 0.2);
+				outline: 2px solid rgba(56, 88, 233, 0.2);
+				background-color: rgba(56, 88, 233, 0.2);
 				text-decoration: line-through;
+				color: inherit;
 			}
 
+			.smart-link-highlight.previous-suggestion * {
+				color: inherit;
+			}
+
+			/** Link type highlight styles */
 			.link-type-highlight {
 				border-radius: 2px;
 				background-color: transparent;
@@ -75,7 +87,6 @@ export const useIframeHighlight = ( {
 				color: inherit !important;
 			}
 
-			/* Hide underline when highlight is visible */
 			.link-type-highlight:not(.removing) a {
 				text-decoration-color: transparent;
 			}

@@ -224,11 +224,7 @@ export const TrafficBoostPreview = ( {
 		<div className="traffic-boost-preview">
 			<PreviewHeader
 				post={ post }
-				selectedText={ selectedText }
 				activeLink={ activeLink }
-				onRestoreOriginal={ () => {
-					setSelectedText( null );
-				} }
 				onOpenPostInNewTab={ openPostInNewTab }
 				onOpenPostEditor={ openPostEditor }
 				onOpenParselyDashboard={ openParselyDashboard }
@@ -257,6 +253,10 @@ export const TrafficBoostPreview = ( {
 				onAccept={ handleAccept }
 				onDiscard={ handleDiscard }
 				onRemove={ handleRemove }
+				onRestoreOriginal={ () => {
+					setSelectedText( null );
+				} }
+				selectedText={ selectedText }
 				onSelectIndex={ ( index ) => {
 					// If the link is inbound, do nothing.
 					if ( isInboundLink ) {

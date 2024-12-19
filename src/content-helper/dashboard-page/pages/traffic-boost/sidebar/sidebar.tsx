@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom';
  */
 import { TrafficBoostLink } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
-import { SidebarFooter } from './components/footer';
 import { SidebarHeader } from './components/header';
 import { PostDetailsSidebar } from './components/post-details';
 import './sidebar.scss';
@@ -135,7 +134,6 @@ export const TrafficBoostSidebar = ( {
 					</>
 				) }
 			</div>
-			<SidebarFooter />
 		</div>
 	);
 };

@@ -10,6 +10,8 @@ import { arrowLeft, arrowRight } from '@wordpress/icons';
  */
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { TrafficBoostLink } from '../../provider';
+import { TextSelection } from '../preview';
+import { VerticalDivider } from '../../../../../common/components/vertical-divider';
 
 /**
  * Props structure for PreviewFooter.
@@ -27,6 +29,8 @@ interface PreviewFooterProps {
 	onSelectIndex: ( index: number ) => void;
 	totalItems: number;
 	itemIndex: number;
+	onRestoreOriginal: () => void;
+	selectedText: TextSelection | null;
 }
 
 /**
@@ -48,6 +52,8 @@ export const PreviewFooter = ( {
 	onSelectIndex,
 	totalItems,
 	itemIndex,
+	onRestoreOriginal,
+	selectedText,
 }: PreviewFooterProps ): React.JSX.Element => {
 	const isInboundLink = ! activeLink?.isSuggestion;
 	const hasNext = itemIndex < totalItems;
@@ -79,6 +85,17 @@ export const PreviewFooter = ( {
 							variant="tertiary"
 							onClick={ onDiscard }
 						>{ __( 'Discard', 'wp-parsely' ) }</Button>
+						{ selectedText && (
+							<>
+								<VerticalDivider size={ 36 } />
+								<Button
+									variant="tertiary"
+									onClick={ onRestoreOriginal }
+								>
+									{ __( 'Clear changes', 'wp-parsely' ) }
+								</Button>
+							</>
+						) }
 					</>
 				) }
 

@@ -11,7 +11,6 @@ import { desktop, edit, external, moreVertical } from '@wordpress/icons';
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { LeafIcon } from '../../../../../common/icons/leaf-icon';
 import { TrafficBoostLink } from '../../provider';
-import { TextSelection } from '../preview';
 import { LinkCounter } from './link-counter';
 
 const VerticalMoreMenu = (): React.JSX.Element => {
@@ -44,13 +43,11 @@ const VerticalMoreMenu = (): React.JSX.Element => {
 interface PreviewHeaderProps {
 	post: HydratedPost;
 	activeLink: TrafficBoostLink | null;
-	selectedText: TextSelection | null;
 	onOpenPostInNewTab: () => void;
 	onOpenPostEditor: () => void;
 	onOpenParselyDashboard: () => void;
 	isFrontendPreview: boolean;
 	setIsFrontendPreview: ( value: boolean ) => void;
-	onRestoreOriginal: () => void;
 }
 
 /**
@@ -63,10 +60,8 @@ interface PreviewHeaderProps {
  */
 export const PreviewHeader = ( {
 	activeLink,
-	selectedText,
 	isFrontendPreview,
 	setIsFrontendPreview,
-	onRestoreOriginal,
 }: PreviewHeaderProps ): React.JSX.Element => {
 	const onToggleFrontendPreview = () => {
 		setIsFrontendPreview( ! isFrontendPreview );
@@ -88,15 +83,6 @@ export const PreviewHeader = ( {
 				/>
 			</div>
 			<div className="traffic-boost-preview-actions">
-				{ activeLink?.isSuggestion && selectedText && (
-					<Button
-						variant="secondary"
-						onClick={ onRestoreOriginal }
-						label={ __( 'Restore original suggestion', 'wp-parsely' ) }
-					>
-						{ __( 'Restore original', 'wp-parsely' ) }
-					</Button>
-				) }
 				<Button
 					icon={ desktop }
 					isPressed={ isFrontendPreview }

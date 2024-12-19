@@ -159,7 +159,7 @@ export const PreviewIframe = ( {
 		const scrollToHighlightedElement = async () => {
 			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight' );
 			if ( highlightedElement ) {
-				// Wait 100ms to ensure the highlighted element is visible.
+				// Wait 200ms to ensure the highlighted element is visible.
 				await new Promise( ( resolve ) => setTimeout( resolve, 100 ) );
 
 				highlightedElement.scrollIntoView( {
@@ -173,11 +173,10 @@ export const PreviewIframe = ( {
 		// because the iframe content is not fully loaded yet, such as a custom block still being loaded.
 		// So we use a MutationObserver to watch for DOM changes and scroll to the highlighted element once
 		// it's visible.
-		const watchForHighlightedElement = ( mutations: MutationRecord[], obs: MutationObserver ) => {
+		const watchForHighlightedElement = () => {
 			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight' );
 			if ( highlightedElement ) {
 				scrollToHighlightedElement();
-				obs.disconnect();
 			}
 		};
 
@@ -190,8 +189,8 @@ export const PreviewIframe = ( {
 		// Try to scroll to the highlighted element immediately.
 		scrollToHighlightedElement();
 
-		// Disconnect the observer after 5 seconds to prevent infinite observation.
-		setTimeout( () => observer.disconnect(), 5000 );
+		// Disconnect the observer after a short delay to prevent infinite observation.
+		setTimeout( () => observer.disconnect(), 1000 );
 	}, [] );
 
 	/**
