@@ -81,6 +81,11 @@ export const useIframeHighlight = ( {
 				outline-width: 0;
 			}
 
+			.link-type-highlight * {
+				color: white !important;
+				mix-blend-mode: difference;
+			}
+
 			.link-type-highlight.removing {
 				animation: highlight-fade-out 0.2s ease-in-out forwards;
 			}
@@ -88,8 +93,7 @@ export const useIframeHighlight = ( {
 			.link-type-highlight a {
 				text-decoration: underline;
 				text-decoration-color: currentColor;
-				transition: text-decoration-color 0.2s ease-in-out;
-				color: inherit !important;
+				transition: all 0.2s ease-in-out;
 			}
 
 			.link-type-highlight:not(.removing) a {
@@ -109,18 +113,16 @@ export const useIframeHighlight = ( {
 				}
 				100% {
 					outline-width: 2px;
-					outline-color: rgba(0, 0, 0, 0.85);
-					background-color: rgba(0, 0, 0, 0.85);
-					color: white;
+					outline-color: currentColor;
+					background-color: currentColor;
 				}
 			}
 
 			@keyframes highlight-fade-out {
 				0% {
 					outline-width: 2px;
-					outline-color: rgba(0, 0, 0, 0.85);
-					background-color: rgba(0, 0, 0, 0.85);
-					color: white;
+					outline-color: currentColor;
+					background-color: currentColor;
 				}
 				99% {
 					outline-width: 2px;
