@@ -13,9 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import { TrafficBoostLink } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { SidebarHeader } from './components/header';
-import { PostDetailsSidebar } from './components/post-details';
-import './sidebar.scss';
 import { TabsContent } from './components/tabs-content';
+import './sidebar.scss';
 
 /**
  * Defines the props structure for TrafficBoostSidebar.
@@ -97,42 +96,37 @@ export const TrafficBoostSidebar = ( {
 		}
 	}, [ selectedTab ] );
 
+	if ( ! post || isLoading ) {
+		return <Spinner />;
+	}
+
 	return (
 		<div className="traffic-boost-sidebar">
-			<SidebarHeader onBackClick={ () => navigate( '/traffic-boost' ) } />
+			<SidebarHeader onBackClick={ () => navigate( '/traffic-boost' ) } post={ post } />
 
 			<div className="traffic-boost-sidebar-content">
-				{ isLoading ? (
-					<Spinner />
-				) : post && (
-					<>
-						<div className="traffic-boost-sidebar-inner">
-							<PostDetailsSidebar post={ post } />
-						</div>
-						<TabPanel
-							className="traffic-boost-sidebar-tabs"
-							tabs={ [
-								{
-									name: TrafficBoostSidebarTabs.SUGGESTIONS,
-									title: __( 'Link Suggestions', 'wp-parsely' ),
-									className: 'traffic-boost-tab suggestions-tab',
-								},
-								{
-									name: TrafficBoostSidebarTabs.INBOUND_LINKS,
-									title: __( 'Inbound Links', 'wp-parsely' ),
-									className: 'traffic-boost-tab inbound-links-tab',
-								},
-							] }
-							onSelect={ ( tab: string ) => setSelectedTab( tab as TrafficBoostSidebarTabs ) }
-						>
-							{ ( tab ) => <TabsContent
-								activeTab={ tab }
-								onSuggestionClick={ onLinkClick }
-								onInboundLinkClick={ onLinkClick }
-							/> }
-						</TabPanel>
-					</>
-				) }
+				<TabPanel
+					className="traffic-boost-sidebar-tabs"
+					tabs={ [
+						{
+							name: TrafficBoostSidebarTabs.SUGGESTIONS,
+							title: __( 'Link Suggestions', 'wp-parsely' ),
+							className: 'traffic-boost-tab suggestions-tab',
+						},
+						{
+							name: TrafficBoostSidebarTabs.INBOUND_LINKS,
+							title: __( 'Inbound Links', 'wp-parsely' ),
+							className: 'traffic-boost-tab inbound-links-tab',
+						},
+					] }
+					onSelect={ ( tab: string ) => setSelectedTab( tab as TrafficBoostSidebarTabs ) }
+				>
+					{ ( tab ) => <TabsContent
+						activeTab={ tab }
+						onSuggestionClick={ onLinkClick }
+						onInboundLinkClick={ onLinkClick }
+					/> }
+				</TabPanel>
 			</div>
 		</div>
 	);

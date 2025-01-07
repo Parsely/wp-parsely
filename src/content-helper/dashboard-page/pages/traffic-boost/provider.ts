@@ -51,11 +51,6 @@ export interface GetSmartLinksResponse {
  *
  * @since 3.18.0
  */
-/**
- * Returns data from the WordPress REST API endpoints related to Traffic Boost functionality.
- *
- * @since 3.18.0
- */
 export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * The singleton instance of the TrafficBoostProvider.
@@ -113,7 +108,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			external: externalLinks,
 			internal: internalLinks,
 			smart: smartLinks,
-			total: links.length,
+			total: linksWithText.length,
 		};
 	}
 

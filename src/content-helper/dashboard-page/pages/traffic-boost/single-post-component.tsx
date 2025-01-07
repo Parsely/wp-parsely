@@ -95,6 +95,18 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	}, [ postId, setLoading, setCurrentPost, setError, error ] );
 
 	/**
+	 * Clears the post and selected link when the component unmounts.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		return () => {
+			setCurrentPost( null );
+			setSelectedLink( null );
+		};
+	}, [ setCurrentPost, setSelectedLink ] );
+
+	/**
 	 * Redirects to the traffic boost page if no post is found after fetching.
 	 *
 	 * @since 3.18.0

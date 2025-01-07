@@ -49,7 +49,7 @@ export const useIframeHighlight = ( {
 
 		const style = iframeDocument.createElement( 'style' );
 		style.textContent = `
-			/** Smart link highlight styles */
+			/** Smart link highlight styles. */
 			.smart-link-highlight {
 				outline: 2px solid #3858E9;
 				border-radius: 2px;
@@ -72,7 +72,7 @@ export const useIframeHighlight = ( {
 				color: inherit;
 			}
 
-			/** Link type highlight styles */
+			/** Link type highlight styles. */
 			.link-type-highlight {
 				border-radius: 2px;
 				background-color: transparent;
@@ -194,7 +194,7 @@ export const useIframeHighlight = ( {
 			const matchStart = match.index;
 			const matchEnd = matchStart + searchText.length;
 
-			// Find nodes that contain the match
+			// Find nodes that contain the match.
 			const startNode = nodePositions.find(
 				( pos ) => matchStart >= pos.start && matchStart < pos.end
 			);
@@ -271,9 +271,41 @@ export const useIframeHighlight = ( {
 				return;
 			}
 
-			// Function to recursively unwrap nested highlights
+			const removeAndClean = ( highlight: Element, parent: ParentNode ) => {
+				// Move all child nodes before the highlight span.
+				while ( highlight.firstChild ) {
+					parent.insertBefore( highlight.firstChild, highlight );
+				}
+				parent.removeChild( highlight );
+				parent.normalize();
+
+				// Remove any anchors without text in the parent node.
+				const anchors = parent.querySelectorAll( 'a' );
+				anchors.forEach( ( anchor ) => {
+					if ( ! anchor.textContent ) {
+						parent.removeChild( anchor );
+						return;
+					}
+
+					// Check if the adjacent anchor has the same href or smartlink attribute.
+					const nextAnchor = anchor.nextElementSibling as HTMLAnchorElement;
+					if ( nextAnchor && (
+						anchor.href === nextAnchor.href ||
+						( anchor.getAttribute( 'data-smartlink' ) === nextAnchor.getAttribute( 'data-smartlink' ) &&
+						anchor.getAttribute( 'data-smartlink' ) !== null )
+					) ) {
+						// Merge the anchors.
+						while ( nextAnchor.firstChild ) {
+							anchor.appendChild( nextAnchor.firstChild );
+						}
+						parent.removeChild( nextAnchor );
+					}
+				} );
+			};
+
+			// Function to recursively unwrap nested highlights.
 			const unwrapHighlight = ( highlight: Element ) => {
-				// First, recursively process any nested highlights
+				// First, recursively process any nested highlights.
 				const nestedHighlights = highlight.querySelectorAll( querySelector );
 				nestedHighlights.forEach( ( nested ) => unwrapHighlight( nested ) );
 
@@ -286,33 +318,23 @@ export const useIframeHighlight = ( {
 					highlight.classList.add( 'removing' );
 
 					setTimeout( () => {
-						// Move all child nodes before the highlight span
-						while ( highlight.firstChild ) {
-							parent.insertBefore( highlight.firstChild, highlight );
-						}
-						parent.removeChild( highlight );
-						parent.normalize();
+						removeAndClean( highlight, parent );
 					}, 200 );
 				} else {
-					// Move all child nodes before the highlight span
-					while ( highlight.firstChild ) {
-						parent.insertBefore( highlight.firstChild, highlight );
-					}
-					parent.removeChild( highlight );
-					parent.normalize();
+					removeAndClean( highlight, parent );
 				}
 			};
 
-			// Get all top-level highlights
+			// Get all top-level highlights.
 			const highlights = iframeDocument.querySelectorAll( querySelector );
 			highlights.forEach( ( highlight ) => {
-				// Only process top-level highlights (those that aren't nested inside another highlight)
+				// Only process top-level highlights (those that aren't nested inside another highlight).
 				if ( ! highlight.parentElement?.closest( querySelector ) ) {
 					unwrapHighlight( highlight );
 				}
 			} );
 		} catch ( error ) {
-			// Silently fail if there's an error removing highlights
+			// Silently fail if there's an error removing highlights.
 		}
 	}, [] );
 
@@ -328,6 +350,117 @@ export const useIframeHighlight = ( {
 	}, [ removeHighlights ] );
 
 	/**
+	 * Handles overlapping ranges by highlighting them appropriately.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {Range}  selectionRange The range of the selected text.
+	 * @param {Range}  originalRange  The range of the original text.
+	 * @param {string} className      The class name to apply to the highlight span.
+	 */
+	const handleOverlappingRanges = useCallback( ( selectionRange: Range, originalRange: Range, className: string ) => {
+		// Check if the selection range overlaps with the original range.
+		const doRangesOverlap = ! (
+			selectionRange.compareBoundaryPoints( Range.END_TO_START, originalRange ) > 0 ||
+			selectionRange.compareBoundaryPoints( Range.START_TO_END, originalRange ) < 0
+		);
+
+		// If the ranges overlap, highlight the original suggestion text before
+		// and/or after the selected text.
+		if ( doRangesOverlap ) {
+			// If the original range starts before the selection range.
+			if ( originalRange.compareBoundaryPoints( Range.START_TO_START, selectionRange ) < 0 ) {
+				const beforeRange = originalRange.cloneRange();
+				beforeRange.setEnd( selectionRange.startContainer, selectionRange.startOffset );
+				highlightRange( beforeRange, className, true );
+
+				// Adjust the selection range to start after the before range.
+				selectionRange.setStart( beforeRange.endContainer, beforeRange.endOffset );
+			}
+
+			// If the original range ends after the selection range.
+			if ( originalRange.compareBoundaryPoints( Range.END_TO_END, selectionRange ) > 0 ) {
+				const afterRange = originalRange.cloneRange();
+				afterRange.setStart( selectionRange.endContainer, selectionRange.endOffset );
+				highlightRange( afterRange, className, true );
+			}
+
+			// Highlight the selection range.
+			highlightRange( selectionRange, className );
+		} else {
+			// Handle non-overlapping ranges.
+			highlightRange( originalRange, className, true );
+			highlightRange( selectionRange, className );
+		}
+	}, [ highlightRange ] );
+
+	/**
+	 * Highlights an inbound link in the iframe content.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {Document} iframeDocument The iframe document.
+	 * @param {string}   smartLinkId    The smart link ID to highlight.
+	 */
+	const highlightInboundLink = useCallback( ( iframeDocument: Document, smartLinkId: string ) => {
+		// Find the a element with the smart link id.
+		const aElement = iframeDocument.querySelector( `a[data-smartlink="${ smartLinkId }"]` );
+
+		if ( aElement ) {
+			const originalRange = iframeDocument.createRange();
+			originalRange.selectNode( aElement );
+
+			// If there's selected text, handle potential overlap.
+			if ( selectedText?.text && contentAreaRef.current ) {
+				const selectionRanges = findText( selectedText.text, contentAreaRef.current, iframeDocument );
+				if ( selectionRanges[ selectedText.offset ] ) {
+					const selectionRange = selectionRanges[ selectedText.offset ];
+					handleOverlappingRanges( selectionRange, originalRange, 'smart-link-highlight' );
+					return;
+				}
+			}
+
+			// If no selected text or selection range not found, just highlight the link.
+			highlightRange( originalRange, 'smart-link-highlight', !! selectedText );
+		}
+	}, [ contentAreaRef, findText, handleOverlappingRanges, highlightRange, selectedText ] );
+
+	/**
+	 * Highlights a link suggestion in the iframe content.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {Document} iframeDocument The iframe document.
+	 * @param {string}   suggestionText The suggestion text to highlight.
+	 * @param {number}   offset         The offset of the suggestion text.
+	 */
+	const highlightLinkSuggestion = useCallback( ( iframeDocument: Document, suggestionText: string, offset: number = 0 ) => {
+		if ( ! contentAreaRef.current ) {
+			return;
+		}
+
+		// Get the original suggestion text range.
+		const originalRanges = findText( suggestionText, contentAreaRef.current, iframeDocument );
+		const originalRange = originalRanges[ offset ];
+		if ( ! originalRange ) {
+			return;
+		}
+
+		// If there's no selected text, highlight the original suggestion text.
+		if ( ! selectedText?.text ) {
+			highlightRange( originalRange, 'smart-link-highlight' );
+			return;
+		}
+
+		// If there's selected text, get its range and handle potential overlap.
+		const selectionRanges = findText( selectedText.text, contentAreaRef.current, iframeDocument );
+		const selectionRange = selectionRanges[ selectedText.offset ];
+		if ( selectionRange ) {
+			handleOverlappingRanges( selectionRange, originalRange, 'smart-link-highlight' );
+		}
+	}, [ contentAreaRef, findText, handleOverlappingRanges, highlightRange, selectedText ] );
+
+	/**
 	 * Highlights the smart link text in the iframe content.
 	 *
 	 * @since 3.18.0
@@ -337,85 +470,20 @@ export const useIframeHighlight = ( {
 	const highlightSmartLink = useCallback( ( iframe: HTMLIFrameElement ) => {
 		try {
 			const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
-			if ( ! iframeDocument || ! activeLink?.smart_link.text || ! contentAreaRef.current ) {
+			if ( ! iframeDocument || ! activeLink?.smart_link.text ) {
 				return;
 			}
 
-			// If it's not a suggestion (it's an inbound link), we only need to highlight that smart link.
+			// Handle inbound links and suggestions differently.
 			if ( isInboundLink ) {
-				const smartLinkId = activeLink.smart_link.uid;
-
-				// Find the a element with the smart link id.
-				const aElement = iframeDocument.querySelector( `a[data-smartlink="${ smartLinkId }"]` );
-
-				if ( aElement ) {
-					const selectionRange = iframeDocument.createRange();
-					selectionRange.selectNode( aElement );
-					highlightRange( selectionRange, 'smart-link-highlight' );
-				}
-
-				return;
-			}
-
-			let selectionRange = null;
-			let originalRange = null;
-
-			// If there's a selected text, get the range for that text.
-			if ( selectedText?.text ) {
-				const selectionRanges = findText( selectedText.text, contentAreaRef.current, iframeDocument );
-				if ( selectionRanges[ selectedText.offset ] ) {
-					selectionRange = selectionRanges[ selectedText.offset ];
-				}
-			}
-
-			// Get the original suggestion text range.
-			if ( activeLink.smart_link.text ) {
-				const originalRanges = findText( activeLink.smart_link.text, contentAreaRef.current, iframeDocument );
-				if ( originalRanges[ activeLink.smart_link.offset ?? 0 ] ) {
-					originalRange = originalRanges[ activeLink.smart_link.offset ?? 0 ];
-				}
-			}
-
-			// If there's no selected text, highlight the original suggestion text.
-			if ( ! selectedText && originalRange ) {
-				highlightRange( originalRange, 'smart-link-highlight', false );
-				return;
-			}
-
-			// If there is a selected text and an original suggestion text, highlight both.
-			if ( selectionRange && originalRange ) {
-				// Check if the selection range overlaps with the original range.
-				const doRangesOverlap = ! (
-					selectionRange.compareBoundaryPoints( Range.END_TO_START, originalRange ) > 0 ||
-					selectionRange.compareBoundaryPoints( Range.START_TO_END, originalRange ) < 0
-				);
-
-				// If the ranges overlap, highlight the original suggestion text before
-				// and/or after the selected text.
-				if ( doRangesOverlap ) {
-					if ( originalRange.compareBoundaryPoints( Range.START_TO_START, selectionRange ) < 0 ) {
-						const beforeRange = originalRange.cloneRange();
-						beforeRange.setEnd( selectionRange.startContainer, selectionRange.startOffset );
-						highlightRange( beforeRange, 'smart-link-highlight', true );
-					}
-
-					if ( originalRange.compareBoundaryPoints( Range.END_TO_END, selectionRange ) > 0 ) {
-						const afterRange = originalRange.cloneRange();
-						afterRange.setStart( selectionRange.endContainer, selectionRange.endOffset );
-						highlightRange( afterRange, 'smart-link-highlight', true );
-					}
-
-					highlightRange( selectionRange, 'smart-link-highlight' );
-				} else {
-					// Handle non-overlapping ranges.
-					highlightRange( originalRange, 'smart-link-highlight', true );
-					highlightRange( selectionRange, 'smart-link-highlight' );
-				}
+				highlightInboundLink( iframeDocument, activeLink.smart_link.uid );
+			} else {
+				highlightLinkSuggestion( iframeDocument, activeLink.smart_link.text, activeLink.smart_link.offset ?? 0 );
 			}
 		} catch ( error ) {
 			// Silently fail if there's an error highlighting smart link text.
 		}
-	}, [ activeLink, contentAreaRef, findText, highlightRange, isInboundLink, selectedText ] );
+	}, [ activeLink, highlightInboundLink, highlightLinkSuggestion, isInboundLink ] );
 
 	/**
 	 * Highlights the links of the selected link type in the iframe.
@@ -444,10 +512,10 @@ export const useIframeHighlight = ( {
 			return;
 		}
 
-		// Find and highlight matching links in the iframe
+		// Find and highlight matching links in the iframe.
 		const allIframeLinks = iframeDocument.querySelectorAll( 'a' );
 		allIframeLinks.forEach( ( iframeLink ) => {
-			// Match links based on href and text content
+			// Match links based on href and text content.
 			const matchingLink = links.find( ( link ) => {
 				if ( link.hasAttribute( 'data-smartlink' ) ) {
 					return link.getAttribute( 'data-smartlink' ) === iframeLink.getAttribute( 'data-smartlink' );

@@ -128,6 +128,12 @@ export const PreviewIframe = ( {
 			writable: false,
 		} );
 
+		// Disable right click.
+		iframeDocument.addEventListener( 'contextmenu', ( event ) => {
+			event.preventDefault();
+			event.stopPropagation();
+		}, true );
+
 		try {
 			// Attempt to make history methods no-op.
 			iframeWindow.history.pushState = () => undefined;
@@ -265,12 +271,9 @@ export const PreviewIframe = ( {
 			return;
 		}
 
-		if ( ! selectedText ) {
-			removeSmartLinkHighlights( iframe );
-		}
-
+		removeSmartLinkHighlights( iframe );
 		highlightSmartLink( iframe );
-	}, [ highlightSmartLink, iframeRef, removeSmartLinkHighlights, selectedText ] );
+	}, [ highlightSmartLink, removeSmartLinkHighlights, selectedText ] );
 
 	useEffect( () => {
 		const iframe = iframeRef.current;
@@ -290,9 +293,6 @@ export const PreviewIframe = ( {
 				<TextSelectionTooltip
 					iframeRef={ iframeRef }
 					onTextSelected={ ( text, offset ) => {
-						if ( iframeRef.current ) {
-							removeSmartLinkHighlights( iframeRef.current );
-						}
 						onTextSelected( text, offset );
 					} }
 				/>
