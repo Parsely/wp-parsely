@@ -48,7 +48,7 @@
 		"@types/jest": "^29.5.14",
 		"@types/lodash.debounce": "^4.0.9",
 		"@types/wordpress__block-editor": "^11.5.16",
-		"@types/wordpress__blocks": "^12.5.16",
+		"@types/wordpress__blocks": "^12.5.17",
 		"@types/wordpress__edit-post": "^8.4.2",
 		"@types/wordpress__wordcount": "^2.4.5",
 		"@typescript-eslint/eslint-plugin": "^6.21.0",
