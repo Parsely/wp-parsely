@@ -245,6 +245,9 @@ export const TrafficBoostPreview = ( {
 				onTextSelected={ ( text, offset ) => {
 					setSelectedText( { text, offset } );
 				} }
+				onRestoreOriginal={ () => {
+					setSelectedText( null );
+				} }
 				isFrontendPreview={ isFrontendPreview }
 				onLoadingChange={ setIsLoading }
 			/>

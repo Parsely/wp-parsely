@@ -29,6 +29,7 @@ interface PreviewIframeProps {
 	onTextSelected: ( text: string, offset: number ) => void;
 	isFrontendPreview: boolean;
 	onLoadingChange: ( isLoading: boolean ) => void;
+	onRestoreOriginal: () => void;
 }
 
 /**
@@ -47,6 +48,7 @@ export const PreviewIframe = ( {
 	activeLink,
 	selectedText,
 	onLoadingChange,
+	onRestoreOriginal,
 }: PreviewIframeProps ): React.JSX.Element => {
 	const contentAreaRef = useRef<Element | null>( null ) as React.MutableRefObject<Element | null>;
 	const iframeRef = useRef<HTMLIFrameElement>( null );
@@ -67,6 +69,7 @@ export const PreviewIframe = ( {
 		activeLink,
 		selectedText,
 		isInboundLink,
+		onRestoreOriginal,
 	} );
 
 	/**

@@ -16,6 +16,7 @@ interface UseIframeHighlightProps {
 	activeLink?: TrafficBoostLink | null;
 	selectedText?: TextSelection | null;
 	isInboundLink: boolean;
+	onRestoreOriginal: () => void;
 }
 
 /**
@@ -33,6 +34,7 @@ export const useIframeHighlight = ( {
 	activeLink,
 	selectedText,
 	isInboundLink,
+	onRestoreOriginal,
 }: UseIframeHighlightProps ) => {
 	/**
 	 * Injects highlight styles into the iframe.
@@ -233,27 +235,50 @@ export const useIframeHighlight = ( {
 	 * @param {Range}   range      The range to highlight.
 	 * @param {string}  className  The class name to apply to the highlight span.
 	 * @param {boolean} isPrevious Whether this is a previous suggestion (optional).
+	 *
+	 * @return {Element|undefined} The highlight span element.
 	 */
-	const highlightRange = useCallback( ( range: Range, className: string, isPrevious: boolean = false ) => {
-		try {
-			const iframeDocument = iframeRef.current?.contentDocument ?? iframeRef.current?.contentWindow?.document;
-			if ( ! iframeDocument ) {
-				return;
+	const highlightRange = useCallback(
+		( range: Range, className: string, isPrevious: boolean = false ): Element | undefined => {
+			try {
+				const iframeDocument = iframeRef.current?.contentDocument ?? iframeRef.current?.contentWindow?.document;
+				if ( ! iframeDocument ) {
+					return;
+				}
+
+				const fragment = range.cloneContents();
+				const highlightSpan = iframeDocument.createElement( 'span' );
+				highlightSpan.className = isPrevious
+					? `${ className } previous-suggestion`
+					: className;
+
+				// Find if the range is within a link and if it encompasses the entire link text
+				const container = range.commonAncestorContainer;
+				const linkNode = container.nodeType === Node.ELEMENT_NODE
+					? ( container as Element ).closest( 'a' )
+					: ( container as Node ).parentElement?.closest( 'a' );
+
+				const isFullLinkSelected = linkNode && range.toString().trim() === linkNode.textContent?.trim();
+
+				if ( isFullLinkSelected && linkNode ) {
+					// Create a new span and insert it before the link
+					linkNode.parentNode?.insertBefore( highlightSpan, linkNode );
+
+					// Move the link into the span
+					highlightSpan.appendChild( linkNode );
+				} else {
+					// Normal case - no links or partial link selection
+					range.deleteContents();
+					highlightSpan.appendChild( fragment );
+					range.insertNode( highlightSpan );
+				}
+
+				return highlightSpan;
+			} catch ( e ) {
+				// eslint-disable-next-line no-console
+				console.error( 'WP Parsely: Error highlighting range', e );
 			}
-
-			const fragment = range.cloneContents();
-			const highlightSpan = iframeDocument.createElement( 'span' );
-			highlightSpan.className = isPrevious
-				? `${ className } previous-suggestion`
-				: className;
-
-			range.deleteContents();
-			highlightSpan.appendChild( fragment );
-			range.insertNode( highlightSpan );
-		} catch ( e ) {
-			// Silently fail if highlighting fails.
-		}
-	}, [ iframeRef ] );
+		}, [ iframeRef ] );
 
 	/**
 	 * Removes highlight spans from the iframe content.
@@ -350,7 +375,7 @@ export const useIframeHighlight = ( {
 	}, [ removeHighlights ] );
 
 	/**
-	 * Handles overlapping ranges by highlighting them appropriately.
+	 * Highlights the selection range and the original range.
 	 *
 	 * @since 3.18.0
 	 *
@@ -358,12 +383,14 @@ export const useIframeHighlight = ( {
 	 * @param {Range}  originalRange  The range of the original text.
 	 * @param {string} className      The class name to apply to the highlight span.
 	 */
-	const handleOverlappingRanges = useCallback( ( selectionRange: Range, originalRange: Range, className: string ) => {
+	const highlightSelection = useCallback( ( selectionRange: Range, originalRange: Range, className: string ) => {
 		// Check if the selection range overlaps with the original range.
 		const doRangesOverlap = ! (
 			selectionRange.compareBoundaryPoints( Range.END_TO_START, originalRange ) > 0 ||
 			selectionRange.compareBoundaryPoints( Range.START_TO_END, originalRange ) < 0
 		);
+
+		let selectionHighlight: Element | undefined;
 
 		// If the ranges overlap, highlight the original suggestion text before
 		// and/or after the selected text.
@@ -372,7 +399,7 @@ export const useIframeHighlight = ( {
 			if ( originalRange.compareBoundaryPoints( Range.START_TO_START, selectionRange ) < 0 ) {
 				const beforeRange = originalRange.cloneRange();
 				beforeRange.setEnd( selectionRange.startContainer, selectionRange.startOffset );
-				highlightRange( beforeRange, className, true );
+				selectionHighlight = highlightRange( beforeRange, className, true );
 
 				// Adjust the selection range to start after the before range.
 				selectionRange.setStart( beforeRange.endContainer, beforeRange.endOffset );
@@ -382,16 +409,18 @@ export const useIframeHighlight = ( {
 			if ( originalRange.compareBoundaryPoints( Range.END_TO_END, selectionRange ) > 0 ) {
 				const afterRange = originalRange.cloneRange();
 				afterRange.setStart( selectionRange.endContainer, selectionRange.endOffset );
-				highlightRange( afterRange, className, true );
+				selectionHighlight = highlightRange( afterRange, className, true );
 			}
 
 			// Highlight the selection range.
-			highlightRange( selectionRange, className );
+			selectionHighlight = highlightRange( selectionRange, className );
 		} else {
 			// Handle non-overlapping ranges.
 			highlightRange( originalRange, className, true );
-			highlightRange( selectionRange, className );
+			selectionHighlight = highlightRange( selectionRange, className );
 		}
+
+		return selectionHighlight;
 	}, [ highlightRange ] );
 
 	/**
@@ -415,7 +444,7 @@ export const useIframeHighlight = ( {
 				const selectionRanges = findText( selectedText.text, contentAreaRef.current, iframeDocument );
 				if ( selectionRanges[ selectedText.offset ] ) {
 					const selectionRange = selectionRanges[ selectedText.offset ];
-					handleOverlappingRanges( selectionRange, originalRange, 'smart-link-highlight' );
+					highlightSelection( selectionRange, originalRange, 'smart-link-highlight' );
 					return;
 				}
 			}
@@ -423,7 +452,7 @@ export const useIframeHighlight = ( {
 			// If no selected text or selection range not found, just highlight the link.
 			highlightRange( originalRange, 'smart-link-highlight', !! selectedText );
 		}
-	}, [ contentAreaRef, findText, handleOverlappingRanges, highlightRange, selectedText ] );
+	}, [ contentAreaRef, findText, highlightSelection, highlightRange, selectedText ] );
 
 	/**
 	 * Highlights a link suggestion in the iframe content.
@@ -456,9 +485,18 @@ export const useIframeHighlight = ( {
 		const selectionRanges = findText( selectedText.text, contentAreaRef.current, iframeDocument );
 		const selectionRange = selectionRanges[ selectedText.offset ];
 		if ( selectionRange ) {
-			handleOverlappingRanges( selectionRange, originalRange, 'smart-link-highlight' );
+			const selectionHighlight = highlightSelection( selectionRange, originalRange, 'smart-link-highlight' );
+			if ( selectionHighlight ) {
+				// Add cursor pointer to the selection highlight.
+				( selectionHighlight as HTMLElement ).style.cursor = 'pointer';
+
+				// When clicking the selection highlight, remove the highlights.
+				selectionHighlight.addEventListener( 'click', () => {
+					onRestoreOriginal();
+				} );
+			}
 		}
-	}, [ contentAreaRef, findText, handleOverlappingRanges, highlightRange, selectedText ] );
+	}, [ contentAreaRef, findText, highlightSelection, highlightRange, selectedText, onRestoreOriginal ] );
 
 	/**
 	 * Highlights the smart link text in the iframe content.

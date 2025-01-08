@@ -133,8 +133,17 @@ interface TextSelectionPopoverProps {
 const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorClick }: TextSelectionPopoverProps ): JSX.Element => {
 	useIframeStyles( iframeDocument );
 	const [ error, setError ] = useState<string | null>( null );
+	const [ isReplacingLink, setIsReplacingLink ] = useState<boolean>( false );
 
-	// Function to check if element or its children contain an anchor
+	/**
+	 * Checks if the given node or its children contain an anchor.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {Node} node The node to check.
+	 *
+	 * @return {boolean} True if the node or its children contain an anchor, false otherwise.
+	 */
 	const containsAnchor = useCallback( ( node: Node ): boolean => {
 		if ( node.nodeType === Node.ELEMENT_NODE ) {
 			const element = node as Element;
@@ -146,14 +155,45 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 		return false;
 	}, [] );
 
+	const isAllLinkTextSelected = useCallback( () => {
+		const range = selection.getRangeAt( 0 );
+		const container = range.commonAncestorContainer;
+
+		// Find the closest link element
+		const linkNode = container.nodeType === Node.ELEMENT_NODE
+			? ( container as Element ).closest( 'a' )
+			: ( container as Node ).parentElement?.closest( 'a' );
+
+		// If there's no link or no selection, return false
+		if ( ! linkNode || selection.isCollapsed ) {
+			return false;
+		}
+
+		// Compare the selected text with the link's text content
+		return selection.toString().trim() === linkNode.textContent?.trim();
+	}, [ selection ] );
+
+	/**
+	 * Checks if the selection is within a link and sets an error message if it is.
+	 *
+	 * @since 3.18.0
+	 */
 	useEffect( () => {
 		const range = selection.getRangeAt( 0 );
 		const container = range.commonAncestorContainer;
 
+		if ( isAllLinkTextSelected() ) {
+			setIsReplacingLink( true );
+			return;
+		}
+
 		if ( containsAnchor( container ) ) {
 			setError( __( 'Select text without existing links.', 'wp-parsely' ) );
+			return;
 		}
-	}, [ containsAnchor, selection ] );
+
+		setError( null );
+	}, [ containsAnchor, isAllLinkTextSelected, selection ] );
 
 	if ( error ) {
 		return <div className="parsely-traffic-boost-iframe-popover">
@@ -176,7 +216,9 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 				className="parsely-traffic-boost-iframe-popover-button"
 				onClick={ onSelect }
 			>
-				{ __( 'Use as Link Text', 'wp-parsely' ) }
+				{ isReplacingLink
+					? __( 'Replace Link', 'wp-parsely' )
+					: __( 'Use as Link Text', 'wp-parsely' ) }
 			</Button>
 		</div>
 	);
@@ -240,6 +282,42 @@ export const TextSelectionTooltip = ( {
 			docSelection.removeAllRanges();
 			docSelection.addRange( range );
 		}
+	};
+
+	/**
+	 * Expands the current selection to encompass the entire link node if selection is within a link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {Selection} docSelection The document's current selection.
+	 * @param {Range}     range        The current selection range.
+	 *
+	 * @return {boolean} True if selection was expanded to a link, false otherwise.
+	 */
+	const expandToLinkNode = ( docSelection: Selection, range: Range ): boolean => {
+		// Find if selection is within an anchor tag
+		const container = range.commonAncestorContainer;
+		const linkNode = container.nodeType === Node.ELEMENT_NODE
+			? ( container as Element ).closest( 'a' )
+			: ( container as Node ).parentElement?.closest( 'a' );
+
+		// If the selection is already the full link, return true.
+		if ( docSelection.toString() === linkNode?.textContent ) {
+			return true;
+		}
+
+		if ( linkNode ) {
+			// Create a new range that encompasses the entire link
+			const newRange = range.cloneRange();
+			newRange.selectNodeContents( linkNode );
+
+			// Update the selection
+			docSelection.removeAllRanges();
+			docSelection.addRange( newRange );
+			return true;
+		}
+
+		return false;
 	};
 
 	/**
@@ -329,7 +407,11 @@ export const TextSelectionTooltip = ( {
 			return;
 		}
 
-		expandToWordBoundary( docSelection, range );
+		// If selection is inside a link, expand to encompass the entire link
+		if ( ! expandToLinkNode( docSelection, range ) ) {
+			// Only expand to word boundary if we didn't expand to a link
+			expandToWordBoundary( docSelection, range );
+		}
 
 		// Create highlight overlay.
 		const highlight = iframeDocument.createElement( 'div' );
