@@ -110,12 +110,32 @@ export const PreviewIframe = ( {
 			return;
 		}
 
-		// Prevent clicks on all links.
+		// Prevent clicks on all links and handle link selection.
 		iframeDocument.addEventListener( 'click', ( event ) => {
 			const target = event.target as HTMLElement;
-			if ( target.tagName === 'A' || target.closest( 'a' ) ) {
+
+			// If the link is outside the content area, don't handle it.
+			if ( ! contentAreaRef.current?.contains( target ) ) {
 				event.preventDefault();
 				event.stopPropagation();
+				return;
+			}
+
+			const link = target.tagName === 'A' ? target : target.closest( 'a' );
+			if ( link ) {
+				event.preventDefault();
+				event.stopPropagation();
+
+				// If the parent is not a paragraph, skip.
+				if ( target.parentElement?.tagName !== 'P' ) {
+					return;
+				}
+
+				// Remove focus from the link.
+				link.blur();
+
+				// Select the link text so it can be highlighted.
+				link.ownerDocument.defaultView?.getSelection()?.selectAllChildren( link );
 			}
 		}, true );
 

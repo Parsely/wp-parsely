@@ -34,7 +34,6 @@ declare(strict_types=1);
 		}
 		/* Disable link interactions while preserving styling */
 		a {
-			pointer-events: none;
 			cursor: pointer !important;
 		}
 
@@ -49,14 +48,6 @@ declare(strict_types=1);
 			document.addEventListener( 'contextmenu', function( e ) {
 				e.preventDefault();
 			} );
-
-			// Prevent link clicks.
-			document.addEventListener( 'click', function( e ) {
-				if ( e.target.closest( 'a' ) ) {
-					e.preventDefault();
-					e.stopPropagation();
-				}
-			}, true );
 
 			// Prevent keyboard shortcuts.
 			document.addEventListener('keydown', function(e) {

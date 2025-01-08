@@ -59,6 +59,11 @@ export const useIframeHighlight = ( {
 				color: #ffffff;
 			}
 
+			.smart-link-highlight *:hover {
+				color: #ffffff;
+				text-decoration: revert;
+			}
+
 			.smart-link-highlight * {
 				color: #ffffff;
 			}
