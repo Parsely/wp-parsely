@@ -2,18 +2,18 @@
  * WordPress imports
  */
 import { Spinner } from '@wordpress/components';
-import { useCallback, useEffect, useRef } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
+import { useCallback, useEffect, useRef } from '@wordpress/element';
 
 /**
  * Internal imports
  */
-import { TrafficBoostLink } from '../../provider';
-import { TextSelectionTooltip } from './text-selection-tooltip';
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
-import { TextSelection } from '../preview';
+import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
+import { TextSelection } from '../preview';
+import { TextSelectionTooltip } from './text-selection-tooltip';
 
 /**
  * Props structure for PreviewIframe.

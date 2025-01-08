@@ -11,6 +11,8 @@ import { TrafficBoostStore } from '../../../store';
 import { LinksList } from '../links-list/links-list';
 import { Button, PanelBody, PanelRow } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { store as noticesStore } from '@wordpress/notices';
+
 import { plus, update } from '@wordpress/icons';
 
 /**
@@ -71,6 +73,7 @@ const SuggestionsTab = ( {
 	} ), [] );
 
 	const { setSuggestionsPage, setSuggestionsItemsPerPage } = useDispatch( TrafficBoostStore );
+	const { createNotice } = useDispatch( noticesStore );
 
 	return (
 		<>
@@ -95,6 +98,12 @@ const SuggestionsTab = ( {
 					icon={ plus }
 					variant="secondary"
 					className="traffic-boost-add-suggestion"
+					onClick={ () => {
+						createNotice( 'success', 'Hello', {
+							type: 'snackbar',
+							explicitDismiss: true,
+						} );
+					} }
 				>
 					{ __( 'Add', 'wp-parsely' ) }
 				</Button>

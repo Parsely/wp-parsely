@@ -15,6 +15,7 @@ import { PreviewHeader } from './components/preview-header';
 import { PreviewIframe } from './components/preview-iframe';
 import './preview.scss';
 import { HydratedPost } from '../../../../common/base-wordpress-provider';
+import { SnackbarNotices } from '../../../../common/components/snackbar-notices';
 
 /**
  * Structure of a text selection.
@@ -247,6 +248,7 @@ export const TrafficBoostPreview = ( {
 				isFrontendPreview={ isFrontendPreview }
 				onLoadingChange={ setIsLoading }
 			/>
+			<SnackbarNotices className="traffic-boost-preview-snackbar-notices" />
 			<PreviewFooter
 				post={ post }
 				activeLink={ activeLink }

@@ -2,20 +2,10 @@
  * WordPress imports
  */
 import { __ } from '@wordpress/i18n';
-import { useCallback, useEffect, createRoot } from '@wordpress/element';
+import { useCallback, useEffect, createRoot, useState } from '@wordpress/element';
 import { debounce } from '@wordpress/compose';
 import { Button } from '@wordpress/components';
-import { link } from '@wordpress/icons';
-
-/**
- * Props structure for TextSelectionPopover.
- *
- * @since 3.18.0
- */
-interface TextSelectionPopoverProps {
-	onSelect: () => void;
-	iframeDocument: Document;
-}
+import { link, warning } from '@wordpress/icons';
 
 /**
  * Custom hook to inject styles into the iframe.
@@ -83,6 +73,11 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 				border-radius: 2px;
 			}
 
+			.parsely-traffic-boost-iframe-popover-error {
+				background: #000 !important;
+				color: #fff !important;
+			}
+
 			/* Animation styles */
 			@keyframes slideUp {
 				from {
@@ -117,14 +112,61 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 };
 
 /**
+ * Props structure for TextSelectionPopover.
+ *
+ * @since 3.18.0
+ */
+interface TextSelectionPopoverProps {
+	onSelect: () => void;
+	selection: Selection;
+	iframeDocument: Document;
+	onErrorClick: () => void;
+}
+
+/**
  * Component that renders the popover content for text selection.
  *
  * @since 3.18.0
  *
  * @param {TextSelectionPopoverProps} props Component props.
  */
-const TextSelectionPopover = ( { onSelect, iframeDocument }: TextSelectionPopoverProps ): JSX.Element => {
+const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorClick }: TextSelectionPopoverProps ): JSX.Element => {
 	useIframeStyles( iframeDocument );
+	const [ error, setError ] = useState<string | null>( null );
+
+	// Function to check if element or its children contain an anchor
+	const containsAnchor = useCallback( ( node: Node ): boolean => {
+		if ( node.nodeType === Node.ELEMENT_NODE ) {
+			const element = node as Element;
+			if ( element.tagName === 'A' ) {
+				return true;
+			}
+			return Array.from( element.children ).some( containsAnchor );
+		}
+		return false;
+	}, [] );
+
+	useEffect( () => {
+		const range = selection.getRangeAt( 0 );
+		const container = range.commonAncestorContainer;
+
+		if ( containsAnchor( container ) ) {
+			setError( __( 'Select text without existing links.', 'wp-parsely' ) );
+		}
+	}, [ containsAnchor, selection ] );
+
+	if ( error ) {
+		return <div className="parsely-traffic-boost-iframe-popover">
+			<Button
+				variant="primary"
+				className="parsely-traffic-boost-iframe-popover-error"
+				icon={ warning }
+				onClick={ onErrorClick }
+			>
+				{ error }
+			</Button>
+		</div>;
+	}
 
 	return (
 		<div className="parsely-traffic-boost-iframe-popover">
@@ -213,7 +255,7 @@ export const TextSelectionTooltip = ( {
 		iframeDocument: Document,
 		docSelection: Selection,
 		previewWrapper: Element
-	) => {
+	): number => {
 		const selectedText = docSelection.toString().trim();
 		if ( ! selectedText ) {
 			return 0;
@@ -303,10 +345,20 @@ export const TextSelectionTooltip = ( {
 		root.render(
 			<TextSelectionPopover
 				iframeDocument={ iframeDocument }
+				selection={ docSelection }
+				onErrorClick={ () => {
+					popoverContainer.classList.add( 'closing' );
+					docSelection.removeAllRanges();
+
+					// Wait for animation to complete before cleanup.
+					setTimeout( () => {
+						cleanup();
+					}, 200 );
+				} }
 				onSelect={ () => {
-					const offset = calculateOffset( iframeDocument, docSelection, previewWrapper );
 					popoverContainer.classList.add( 'closing' );
 
+					const offset = calculateOffset( iframeDocument, docSelection, previewWrapper );
 					onTextSelected( docSelection.toString().trim(), offset );
 					docSelection.removeAllRanges();
 

@@ -1,0 +1,9 @@
+.wp-parsely-snackbar-notices {
+	position: fixed;
+	bottom: to_rem(64px);
+	padding: to_rem(16px);
+	z-index: 999999;
+	display: flex;
+	flex-direction: column-reverse;
+	gap: to_rem(6px);
+}
