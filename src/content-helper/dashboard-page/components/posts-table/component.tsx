@@ -10,7 +10,7 @@ import {
 	Spinner,
 } from '@wordpress/components';
 import { format } from '@wordpress/date';
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	chevronLeft,
@@ -154,6 +154,13 @@ const ActionDropdown = () => (
  */
 type PostsTableType = {
 	query?: QueryParams;
+	hideHeader?: boolean;
+	hidePagination?: boolean;
+	hideLoading?: boolean;
+	compact?: boolean;
+	noResultsMessage?: React.ReactNode;
+	className?: string;
+	onPostClick?: ( post: HydratedPost ) => void;
 };
 
 /**
@@ -165,12 +172,24 @@ type PostsTableType = {
  *
  * @param {PostsTableType} props The component props.
  */
-export const PostsTable = ( { query = {} }: PostsTableType ): React.JSX.Element => {
+export const PostsTable = ( {
+	query = {},
+	hideHeader = false,
+	hidePagination = false,
+	hideLoading = false,
+	compact = false,
+	noResultsMessage = __( 'No posts found.', 'wp-parsely' ),
+	className,
+	onPostClick,
+}: PostsTableType ): React.JSX.Element => {
 	const [ posts, setPosts ] = useState<HydratedPost[]>( [] );
+
 	const [ currentPage, setCurrentPage ] = useState<number>( 1 );
 	const [ totalPages, setTotalPages ] = useState<number>( 1 );
 	const [ itemsPerPage ] = useState<number>( query.per_page ?? 10 );
+
 	const [ isLoading, setIsLoading ] = useState<boolean>( true );
+	const didFirstSearch = useRef( false );
 
 	/**
 	 * Fetches posts from the API, using the query and pagination.
@@ -188,6 +207,7 @@ export const PostsTable = ( { query = {} }: PostsTableType ): React.JSX.Element 
 
 				setPosts( fetchedPosts.data );
 				setTotalPages( fetchedPosts.total_pages );
+				didFirstSearch.current = true;
 			} catch ( error ) {
 				console.error( error ); // eslint-disable-line no-console
 			} finally {
@@ -216,46 +236,90 @@ export const PostsTable = ( { query = {} }: PostsTableType ): React.JSX.Element 
 		setCurrentPage( ( prev ) => prev + 1 );
 	};
 
+	const tableClasses: string[] = [ 'parsely-table-container' ];
+	if ( className ) {
+		tableClasses.push( className );
+	}
+
+	// Hide the table if loading and hideLoading is true.
+	if ( isLoading && hideLoading && ! didFirstSearch.current ) {
+		return <></>;
+	}
+
 	// Show a loading spinner if the posts are still loading.
-	if ( isLoading && posts.length === 0 ) {
+	if ( isLoading && ! hideLoading && posts.length === 0 ) {
+		tableClasses.push( 'is-loading' );
 		return (
-			<div className="parsely-table-container is-loading">
+			<div className={ tableClasses.join( ' ' ) }>
 				<Spinner />
 			</div>
 		);
 	}
 
+	// Show a "no results" message if there are no posts.
+	if ( posts.length === 0 ) {
+		return (
+			<div className="parsely-table-container no-results">
+				{ noResultsMessage }
+			</div>
+		);
+	}
+
+	if ( hideHeader ) {
+		tableClasses.push( 'hide-header' );
+	}
+	if ( hidePagination ) {
+		tableClasses.push( 'hide-pagination' );
+	}
+	if ( compact ) {
+		tableClasses.push( 'compact' );
+	}
+
 	return (
-		<div className="parsely-table-container">
-			<table>
-				<thead>
-					<tr>
-						<th className="post-info-header">{ __( 'POST', 'wp-parsely' ) }</th>
-						<th className="boost-perf-header">{ __( 'BOOST PERFORMANCE', 'wp-parsely' ) }</th>
-					</tr>
-				</thead>
+		<div className={ tableClasses.join( ' ' ) }>
+			<table className={ tableClasses.join( ' ' ) }>
+				{ ! hideHeader && (
+					<thead>
+						<tr>
+							<th className="post-info-header">{ __( 'POST', 'wp-parsely' ) }</th>
+							{ ! compact && (
+								<th className="boost-perf-header">{ __( 'BOOST PERFORMANCE', 'wp-parsely' ) }</th>
+							) }
+						</tr>
+					</thead>
+				) }
 				<tbody>
 					{ posts.map( ( post, index ) => (
-						<tr key={ post.id } className={ index % 2 === 0 ? 'row-even' : 'row-odd' }>
+						<tr
+							key={ post.id }
+							className={ index % 2 === 0 ? 'row-even' : 'row-odd' }
+							onClick={ () => onPostClick?.( post ) }
+						>
 							<td className="post-info">
 								<PostInfo post={ post } />
 							</td>
-							<td className="boost-perf">35%</td>
-							<td className="actions">
-								<Link to={ `/traffic-boost/${ post.id }` }>{ __( 'Boost Traffic', 'wp-parsely' ) }</Link>
-								<ActionDropdown />
-							</td>
+							{ ! compact && (
+								<>
+									<td className="boost-perf">35%</td>
+									<td className="actions">
+										<Link to={ `/traffic-boost/${ post.id }` }>{ __( 'Boost Traffic', 'wp-parsely' ) }</Link>
+										<ActionDropdown />
+									</td>
+								</>
+							) }
 						</tr>
 					) ) }
 				</tbody>
 			</table>
-			<TablePagination
-				currentPage={ currentPage }
-				setCurrentPage={ setCurrentPage }
-				totalPages={ totalPages }
-				onPrevious={ handlePrevious }
-				onNext={ handleNext }
-			/>
+			{ ! hidePagination && (
+				<TablePagination
+					currentPage={ currentPage }
+					setCurrentPage={ setCurrentPage }
+					totalPages={ totalPages }
+					onPrevious={ handlePrevious }
+					onNext={ handleNext }
+				/>
+			) }
 		</div>
 	);
 };

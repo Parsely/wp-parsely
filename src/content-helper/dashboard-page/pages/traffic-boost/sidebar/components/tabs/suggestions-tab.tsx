@@ -1,29 +1,24 @@
 /**
- * External dependencies
+ * WordPress dependencies
  */
+import { Button, PanelBody, PanelRow } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
+import { update } from '@wordpress/icons';
 
 /**
  * Internal dependencies
  */
 import { TrafficBoostLink } from '../../../provider';
 import { TrafficBoostStore } from '../../../store';
+import { AddNewLinkButton } from '../add-new-link-button';
 import { LinksList } from '../links-list/links-list';
-import { Button, PanelBody, PanelRow } from '@wordpress/components';
-import { __ } from '@wordpress/i18n';
-import { store as noticesStore } from '@wordpress/notices';
-
-import { plus, update } from '@wordpress/icons';
 
 /**
- * Defines the props structure for SuggestionsTab.
+ * Component that renders the suggestions settings.
  *
  * @since 3.18.0
  */
-interface SuggestionsTabProps {
-	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
-}
-
 const SuggestionsSettings = (): React.JSX.Element => {
 	return (
 		<div className="traffic-boost-suggestions-settings">
@@ -56,6 +51,15 @@ const SuggestionsSettings = (): React.JSX.Element => {
 };
 
 /**
+ * Defines the props structure for SuggestionsTab.
+ *
+ * @since 3.18.0
+ */
+interface SuggestionsTabProps {
+	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
+}
+
+/**
  * Component that renders the suggestions tab.
  *
  * @since 3.18.0
@@ -73,7 +77,6 @@ const SuggestionsTab = ( {
 	} ), [] );
 
 	const { setSuggestionsPage, setSuggestionsItemsPerPage } = useDispatch( TrafficBoostStore );
-	const { createNotice } = useDispatch( noticesStore );
 
 	return (
 		<>
@@ -94,19 +97,13 @@ const SuggestionsTab = ( {
 				>
 					{ __( 'Generate', 'wp-parsely' ) }
 				</Button>
-				<Button
-					icon={ plus }
-					variant="secondary"
-					className="traffic-boost-add-suggestion"
-					onClick={ () => {
-						createNotice( 'success', 'Hello', {
-							type: 'snackbar',
-							explicitDismiss: true,
-						} );
+				<AddNewLinkButton
+					suggestions={ suggestions }
+					onPostClick={ ( post ) => {
+						// TODO: Add the post to the suggestions list.
+						console.log( post ); // eslint-disable-line no-console
 					} }
-				>
-					{ __( 'Add', 'wp-parsely' ) }
-				</Button>
+				/>
 			</LinksList>
 		</>
 	);
