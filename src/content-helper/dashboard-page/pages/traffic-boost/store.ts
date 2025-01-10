@@ -203,6 +203,60 @@ interface SetFrontendPreviewAction {
 }
 
 /**
+ * Interface for the AddSuggestionAction.
+ *
+ * @since 3.18.0
+ */
+interface AddSuggestionAction {
+	type: 'ADD_SUGGESTION';
+	suggestion: TrafficBoostLink;
+	select: boolean;
+}
+
+/**
+ * Interface for the RemoveSuggestionAction.
+ *
+ * @since 3.18.0
+ */
+interface RemoveSuggestionAction {
+	type: 'REMOVE_SUGGESTION';
+	suggestion: TrafficBoostLink;
+	updateSelectedLink: boolean;
+}
+
+/**
+ * Interface for the AddInboundLinkAction.
+ *
+ * @since 3.18.0
+ */
+interface AddInboundLinkAction {
+	type: 'ADD_INBOUND_LINK';
+	link: TrafficBoostLink;
+	select: boolean;
+}
+
+/**
+ * Interface for the RemoveInboundLinkAction.
+ *
+ * @since 3.18.0
+ */
+interface RemoveInboundLinkAction {
+	type: 'REMOVE_INBOUND_LINK';
+	link: TrafficBoostLink;
+	updateSelectedLink: boolean;
+}
+
+/**
+ * Interface for the UpdateSuggestionAction.
+ *
+ * @since 3.18.0
+ */
+interface UpdateSuggestionAction {
+	type: 'UPDATE_SUGGESTION';
+	suggestion: TrafficBoostLink;
+}
+
+/**
  * Union type for all possible action types.
  *
  * @since 3.18.0
@@ -220,7 +274,12 @@ type ActionTypes =
 	| SetInboundLinksItemsPerPageAction
 	| SetSelectedLinkAction
 	| SetPreviewLinkTypeAction
-	| SetFrontendPreviewAction;
+	| SetFrontendPreviewAction
+	| AddSuggestionAction
+	| RemoveSuggestionAction
+	| AddInboundLinkAction
+	| RemoveInboundLinkAction
+	| UpdateSuggestionAction;
 
 /**
  * Default state for the Traffic Boost store.
@@ -353,6 +412,72 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						frontendPreview: action.enabled,
 					},
 				};
+			case 'ADD_SUGGESTION':
+				return {
+					...state,
+					suggestionsTab: {
+						...state.suggestionsTab,
+						suggestions: [ action.suggestion, ...state.suggestionsTab.suggestions ],
+					},
+					selectedLink: action.select ? action.suggestion : state.selectedLink,
+				};
+			case 'REMOVE_SUGGESTION':
+				const remainingSuggestions = state.suggestionsTab.suggestions.filter(
+					( suggestion ) => suggestion.uid !== action.suggestion.uid
+				);
+
+				return {
+					...state,
+					suggestionsTab: {
+						...state.suggestionsTab,
+						suggestions: remainingSuggestions,
+					},
+					selectedLink: action.updateSelectedLink && state.selectedLink?.uid === action.suggestion.uid
+						? remainingSuggestions[ 0 ] ?? null
+						: state.selectedLink,
+				};
+			case 'ADD_INBOUND_LINK':
+				return {
+					...state,
+					inboundLinksTab: {
+						...state.inboundLinksTab,
+						links: [ action.link, ...state.inboundLinksTab.links ],
+					},
+					selectedLink: action.select ? action.link : state.selectedLink,
+				};
+			case 'REMOVE_INBOUND_LINK':
+				const remainingLinks = state.inboundLinksTab.links.filter(
+					( link ) => link.uid !== action.link.uid
+				);
+
+				return {
+					...state,
+					inboundLinksTab: {
+						...state.inboundLinksTab,
+						links: remainingLinks,
+					},
+					selectedLink: action.updateSelectedLink && state.selectedLink?.uid === action.link.uid
+						? remainingLinks[ 0 ] ?? null
+						: state.selectedLink,
+				};
+			case 'UPDATE_SUGGESTION':
+				const isMatchingSuggestion = ( suggestion: TrafficBoostLink ) =>
+					suggestion.uid === action.suggestion.uid;
+
+				const updatedSuggestions = state.suggestionsTab.suggestions.map( ( suggestion ) =>
+					isMatchingSuggestion( suggestion ) ? action.suggestion : suggestion
+				);
+
+				return {
+					...state,
+					suggestionsTab: {
+						...state.suggestionsTab,
+						suggestions: updatedSuggestions,
+					},
+					selectedLink: state.selectedLink?.uid === action.suggestion.uid
+						? action.suggestion
+						: state.selectedLink,
+				};
 			default:
 				return state;
 		}
@@ -435,6 +560,40 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 			return {
 				type: 'SET_FRONTEND_PREVIEW',
 				enabled,
+			};
+		},
+		addSuggestion( suggestion: TrafficBoostLink, select: boolean = true ): AddSuggestionAction {
+			return {
+				type: 'ADD_SUGGESTION',
+				suggestion,
+				select,
+			};
+		},
+		removeSuggestion( suggestion: TrafficBoostLink, updateSelectedLink: boolean = true ): RemoveSuggestionAction {
+			return {
+				type: 'REMOVE_SUGGESTION',
+				suggestion,
+				updateSelectedLink,
+			};
+		},
+		addInboundLink( link: TrafficBoostLink, select: boolean = true ): AddInboundLinkAction {
+			return {
+				type: 'ADD_INBOUND_LINK',
+				link,
+				select,
+			};
+		},
+		removeInboundLink( link: TrafficBoostLink, updateSelectedLink: boolean = true ): RemoveInboundLinkAction {
+			return {
+				type: 'REMOVE_INBOUND_LINK',
+				link,
+				updateSelectedLink,
+			};
+		},
+		updateSuggestion( suggestion: TrafficBoostLink ): UpdateSuggestionAction {
+			return {
+				type: 'UPDATE_SUGGESTION',
+				suggestion,
 			};
 		},
 	},

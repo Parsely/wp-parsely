@@ -46,6 +46,8 @@ interface OptionsState {
  * Link options panel component for the Traffic Boost feature.
  * Displays link options for a selected post.
  *
+ * Note: not in use currently.
+ *
  * @since 3.18.0
  *
  * @param {LinkOptionsPanelProps} props Component props.
@@ -59,7 +61,7 @@ export const LinkOptionsPanel = ( {
 	linkText,
 }: LinkOptionsPanelProps ): React.JSX.Element => {
 	const [ options, setOptions ] = useState<OptionsState>( {
-		linkText: linkText ?? activeLink?.smart_link.text ?? '',
+		linkText: linkText ?? activeLink?.smartLink?.text ?? '',
 		openInNewTab: false,
 		nofollow: false,
 		isOpen: false,
@@ -85,7 +87,7 @@ export const LinkOptionsPanel = ( {
 	useEffect( () => {
 		setOptions( ( prevOptions ) => ( {
 			...prevOptions,
-			linkText: activeLink?.smart_link.text ?? '',
+			linkText: activeLink?.smartLink?.text ?? '',
 			isOpen: false,
 		} ) );
 	}, [ activeLink ] );

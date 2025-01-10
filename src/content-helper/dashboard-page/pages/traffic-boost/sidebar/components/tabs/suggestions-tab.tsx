@@ -9,10 +9,11 @@ import { update } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { TrafficBoostLink } from '../../../provider';
+import { TrafficBoostLink, TrafficBoostProvider } from '../../../provider';
 import { TrafficBoostStore } from '../../../store';
 import { AddNewLinkButton } from '../add-new-link-button';
 import { LinksList } from '../links-list/links-list';
+import { HydratedPost } from '../../../../../../common/base-wordpress-provider';
 
 /**
  * Component that renders the suggestions settings.
@@ -69,6 +70,8 @@ interface SuggestionsTabProps {
 const SuggestionsTab = ( {
 	onSuggestionClick,
 }: SuggestionsTabProps ): React.JSX.Element => {
+	const trafficBoostProvider = TrafficBoostProvider.getInstance();
+
 	const { selectedLink, suggestions, currentPage, itemsPerPage } = useSelect( ( select ) => ( {
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
 		suggestions: select( TrafficBoostStore ).getSuggestions(),
@@ -76,7 +79,21 @@ const SuggestionsTab = ( {
 		itemsPerPage: select( TrafficBoostStore ).getSuggestionsItemsPerPage(),
 	} ), [] );
 
-	const { setSuggestionsPage, setSuggestionsItemsPerPage } = useDispatch( TrafficBoostStore );
+	const {
+		setSuggestionsPage,
+		setSuggestionsItemsPerPage,
+		addSuggestion,
+		updateSuggestion,
+	} = useDispatch( TrafficBoostStore );
+
+	const addTrafficBoostLink = async ( post: HydratedPost ) => {
+		const trafficBoostLink = trafficBoostProvider.createSuggestion( post );
+		addSuggestion( trafficBoostLink );
+
+		// Generate the placement for the suggestion.
+		const updatedLink = await trafficBoostProvider.generateSuggestionForPost( trafficBoostLink );
+		updateSuggestion( updatedLink );
+	};
 
 	return (
 		<>
@@ -99,10 +116,7 @@ const SuggestionsTab = ( {
 				</Button>
 				<AddNewLinkButton
 					suggestions={ suggestions }
-					onPostClick={ ( post ) => {
-						// TODO: Add the post to the suggestions list.
-						console.log( post ); // eslint-disable-line no-console
-					} }
+					onPostClick={ addTrafficBoostLink }
 				/>
 			</LinksList>
 		</>

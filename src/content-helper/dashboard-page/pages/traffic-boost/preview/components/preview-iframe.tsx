@@ -3,7 +3,7 @@
  */
 import { Spinner } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useCallback, useEffect, useRef } from '@wordpress/element';
+import { useCallback, useEffect, useRef, useState, useMemo } from '@wordpress/element';
 
 /**
  * Internal imports
@@ -14,6 +14,7 @@ import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
 import { TextSelection } from '../preview';
 import { TextSelectionTooltip } from './text-selection-tooltip';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Props structure for PreviewIframe.
@@ -50,6 +51,10 @@ export const PreviewIframe = ( {
 	onLoadingChange,
 	onRestoreOriginal,
 }: PreviewIframeProps ): React.JSX.Element => {
+	const [ isGeneratingPlacement, setIsGeneratingPlacement ] = useState<boolean>( false );
+	const [ didGeneratePlacement, setDidGeneratePlacement ] = useState<boolean>( false );
+	const [ messageIndex, setMessageIndex ] = useState<number>( -1 );
+
 	const contentAreaRef = useRef<Element | null>( null ) as React.MutableRefObject<Element | null>;
 	const iframeRef = useRef<HTMLIFrameElement>( null );
 	const isInboundLink = ! activeLink?.isSuggestion;
@@ -57,6 +62,19 @@ export const PreviewIframe = ( {
 	const { selectedLinkType } = useSelect( ( select ) => ( {
 		selectedLinkType: select( TrafficBoostStore ).getPreviewLinkType(),
 	} ), [] );
+
+	const messages = useMemo( () => [
+		__( "We're finding the perfect spot to plant your links…", 'wp-parsely' ),
+		__( 'Analyzing your content to place links naturally…', 'wp-parsely' ),
+		__( 'Optimizing link placement for maximum impact…', 'wp-parsely' ),
+		__( 'Carefully selecting ideal spots to plant links…', 'wp-parsely' ),
+		__( 'Evaluating content flow for seamless link integration…', 'wp-parsely' ),
+		__( 'Almost there! Finalizing link suggestions…', 'wp-parsely' ),
+	], [] );
+
+	useEffect( () => {
+		setMessageIndex( Math.floor( Math.random() * messages.length ) );
+	}, [ activeLink, messages ] );
 
 	const {
 		injectHighlightStyles,
@@ -243,10 +261,11 @@ export const PreviewIframe = ( {
 		highlightLinkType( iframe, selectedLinkType );
 		disableNavigation( iframe );
 
+		const delayValue = didGeneratePlacement ? 2000 : 500;
 		setTimeout( () => {
 			onLoadingChange( false );
 			jumpToSmartLink( iframe );
-		}, 500 );
+		}, delayValue );
 	}, [
 		disableNavigation,
 		hideAdminBar,
@@ -256,12 +275,18 @@ export const PreviewIframe = ( {
 		jumpToSmartLink,
 		onLoadingChange,
 		selectedLinkType,
+		didGeneratePlacement,
 	] );
 
 	/**
 	 * Handles iframe initialization and cleanup.
 	 */
 	useEffect( () => {
+		// If we're generating placement, don't try to set up the iframe yet
+		if ( isGeneratingPlacement ) {
+			return;
+		}
+
 		const iframe = iframeRef.current;
 		if ( ! iframe ) {
 			return;
@@ -281,10 +306,72 @@ export const PreviewIframe = ( {
 		return () => {
 			iframe.removeEventListener( 'load', handleLoadCallback );
 		};
-	}, [ handleIframeLoad, iframeRef, previewUrl, onLoadingChange ] );
+	}, [ isGeneratingPlacement, previewUrl, handleIframeLoad, onLoadingChange, iframeRef ] );
 
 	/**
-	 * Re-highlights smart link when selection changes
+	 * Flags the iframe as having generated placement when the generation is complete.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( ! isGeneratingPlacement ) {
+			return;
+		}
+
+		setDidGeneratePlacement( true );
+	}, [ isGeneratingPlacement ] );
+
+	/**
+	 * Sets the isGeneratingPlacement state to true if the active link is a suggestion and is generating placement.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		const isLinkGeneratingPlacement = activeLink?.isSuggestion && activeLink.isGeneratingPlacement;
+		setIsGeneratingPlacement( isLinkGeneratingPlacement ?? false );
+	}, [ activeLink?.isGeneratingPlacement, activeLink?.isSuggestion, isLoading ] );
+
+	/**
+	 * Sets the isGeneratingPlacement state to true if the active link is generating placement.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( activeLink?.isGeneratingPlacement ) {
+			setIsGeneratingPlacement( true );
+			return;
+		}
+
+		setIsGeneratingPlacement( false );
+		setDidGeneratePlacement( false );
+	}, [ activeLink ] );
+
+	/**
+	 * Force a reload of the iframe when isGeneratingPlacement changes from true to false.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( isGeneratingPlacement ) {
+			return;
+		}
+
+		// Set loading state to true as we're about to reload
+		onLoadingChange( true );
+
+		// Use a small timeout to ensure the iframe is in the DOM
+		const timeoutId = setTimeout( () => {
+			const iframe = iframeRef.current;
+			if ( iframe ) {
+				iframe.src = previewUrl;
+			}
+		}, 0 );
+
+		return () => clearTimeout( timeoutId );
+	}, [ isGeneratingPlacement, previewUrl, onLoadingChange ] );
+
+	/**
+	 * Re-highlights smart link when selection changes.
 	 *
 	 * @since 3.18.0
 	 */
@@ -298,6 +385,11 @@ export const PreviewIframe = ( {
 		highlightSmartLink( iframe );
 	}, [ highlightSmartLink, removeSmartLinkHighlights, selectedText ] );
 
+	/**
+	 * Highlights the link type in the iframe.
+	 *
+	 * @since 3.18.0
+	 */
 	useEffect( () => {
 		const iframe = iframeRef.current;
 		if ( ! iframe ) {
@@ -307,11 +399,39 @@ export const PreviewIframe = ( {
 		highlightLinkType( iframe, selectedLinkType );
 	}, [ highlightLinkType, iframeRef, selectedLinkType ] );
 
+	/**
+	 * Picks a random message with interval based on message length when isGeneratingPlacement is true.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( ! isGeneratingPlacement ) {
+			return;
+		}
+
+		const intervalId = setInterval( () => {
+			const randomIndex = Math.floor( Math.random() * messages.length );
+			setMessageIndex( randomIndex );
+		}, messages[ messageIndex ].length * 100 );
+
+		return () => clearInterval( intervalId );
+	}, [ isGeneratingPlacement, messageIndex, messages ] );
+
 	return (
 		<div className="wp-parsely-preview">
 			<div className="preview-iframe-wrapper">
 				<div className={ `wp-parsely-preview-loading ${ isLoading ? 'is-loading' : '' }` }>
 					<Spinner />
+					{ isGeneratingPlacement && (
+						<>
+							{ messages[ messageIndex ] }
+						</>
+					) }
+					{ ! isGeneratingPlacement && didGeneratePlacement && (
+						<>
+							{ __( 'Done, loading your post…', 'wp-parsely' ) }
+						</>
+					) }
 				</div>
 				<TextSelectionTooltip
 					iframeRef={ iframeRef }
@@ -320,6 +440,7 @@ export const PreviewIframe = ( {
 					} }
 				/>
 				<iframe
+					key={ `${ previewUrl }-${ isGeneratingPlacement }` }
 					ref={ iframeRef }
 					src={ previewUrl }
 					title="Post Preview"

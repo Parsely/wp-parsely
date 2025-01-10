@@ -70,7 +70,11 @@ export const TrafficBoostPreview = ( {
 		};
 	}, [] );
 
-	const { setSelectedLink } = useDispatch( TrafficBoostStore );
+	const {
+		setSelectedLink,
+		removeSuggestion,
+		removeInboundLink,
+	} = useDispatch( TrafficBoostStore );
 
 	/**
 	 * Sets the active link to the provided active link.
@@ -209,12 +213,26 @@ export const TrafficBoostPreview = ( {
 		//console.log( 'accept' );
 	};
 
-	const handleDiscard = () => {
-		//console.log( 'discard' );
+	/**
+	 * Discards a suggestion.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link The link to discard.
+	 */
+	const handleDiscard = ( link: TrafficBoostLink ) => {
+		removeSuggestion( link );
 	};
 
-	const handleRemove = () => {
-		//console.log( 'remove' );
+	/**
+	 * Discards an inbound link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link The link to discard.
+	 */
+	const handleRemove = ( link: TrafficBoostLink ) => {
+		removeInboundLink( link );
 	};
 
 	const handleUpdateLink = () => {

@@ -147,7 +147,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 				inboundLinks = inboundLinks.filter( ( link ) => link.targetPost?.id !== post.id );
 
 				// Filter out the inbound links that are not posts.
-				inboundLinks = inboundLinks.filter( ( link ) => link.smart_link?.source?.post_type === 'post' );
+				inboundLinks = inboundLinks.filter( ( link ) => link.smartLink?.source?.post_type === 'post' );
 
 				setInboundLinks( inboundLinks );
 			} catch ( err ) {

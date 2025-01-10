@@ -59,7 +59,8 @@ export const useIframeHighlight = ( {
 				color: #ffffff;
 			}
 
-			.smart-link-highlight *:hover {
+			.smart-link-highlight *:hover,
+			.smart-link-highlight *:focus {
 				color: #ffffff;
 				text-decoration: revert;
 			}
@@ -513,15 +514,15 @@ export const useIframeHighlight = ( {
 	const highlightSmartLink = useCallback( ( iframe: HTMLIFrameElement ) => {
 		try {
 			const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
-			if ( ! iframeDocument || ! activeLink?.smart_link.text ) {
+			if ( ! iframeDocument || ! activeLink?.smartLink?.text ) {
 				return;
 			}
 
 			// Handle inbound links and suggestions differently.
 			if ( isInboundLink ) {
-				highlightInboundLink( iframeDocument, activeLink.smart_link.uid );
+				highlightInboundLink( iframeDocument, activeLink.smartLink.uid );
 			} else {
-				highlightLinkSuggestion( iframeDocument, activeLink.smart_link.text, activeLink.smart_link.offset ?? 0 );
+				highlightLinkSuggestion( iframeDocument, activeLink.smartLink.text, activeLink.smartLink.offset ?? 0 );
 			}
 		} catch ( error ) {
 			// Silently fail if there's an error highlighting smart link text.

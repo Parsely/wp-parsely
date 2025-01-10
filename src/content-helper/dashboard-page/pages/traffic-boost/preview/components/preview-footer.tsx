@@ -21,12 +21,12 @@ import { VerticalDivider } from '../../../../../common/components/vertical-divid
 interface PreviewFooterProps {
 	post: HydratedPost;
 	activeLink: TrafficBoostLink | null;
-	onAccept: () => void;
-	onUpdateLink: () => void;
-	onDiscard: () => void;
+	onAccept: ( link: TrafficBoostLink ) => void;
+	onRemove: ( link: TrafficBoostLink ) => void;
+	onUpdateLink: ( link: TrafficBoostLink ) => void;
+	onDiscard: ( link: TrafficBoostLink ) => void;
 	onNext: () => void;
 	onPrevious: () => void;
-	onRemove: () => void;
 	onSelectIndex: ( index: number ) => void;
 	totalItems: number;
 	itemIndex: number;
@@ -76,79 +76,82 @@ export const PreviewFooter = ( {
 					/>
 				) }
 			</div>
-			<div className="traffic-boost-preview-footer-actions">
-				{ ! isInboundLink && (
-					<>
-						<Button
-							variant="primary"
-							onClick={ onUpdateLink }
-						>{ __( 'Accept', 'wp-parsely' ) }</Button>
-						<Button
-							variant="tertiary"
-							onClick={ onDiscard }
-						>{ __( 'Discard', 'wp-parsely' ) }</Button>
-						{ selectedText && (
-							<>
-								<VerticalDivider size={ 36 } />
-								<Button
-									variant="tertiary"
-									onClick={ onRestoreOriginal }
-								>
-									{ __( 'Clear changes', 'wp-parsely' ) }
-								</Button>
-							</>
-						) }
-					</>
-				) }
 
-				{ isInboundLink && (
-					<>
-						{ selectedText ? (
-							<>
-								<Button
-									variant="primary"
-									onClick={ onAccept }
-								>{ __( 'Update Link', 'wp-parsely' ) }</Button>
-								<VerticalDivider size={ 36 } />
-								<Button
-									variant="tertiary"
-									onClick={ onRestoreOriginal }
-								>
-									{ __( 'Clear changes', 'wp-parsely' ) }
-								</Button>
-							</>
-						) : (
+			{ ! activeLink?.isGeneratingPlacement && (
+				<div className="traffic-boost-preview-footer-actions">
+					{ ! isInboundLink && (
+						<>
+							<Button
+								variant="primary"
+								onClick={ () => onUpdateLink( activeLink ) }
+							>{ __( 'Accept', 'wp-parsely' ) }</Button>
 							<Button
 								variant="tertiary"
-								onClick={ onRemove }
-								isDestructive
-							>{ __( 'Remove', 'wp-parsely' ) }</Button>
-						) }
-					</>
-				) }
+								onClick={ () => onDiscard( activeLink ) }
+							>{ __( 'Discard', 'wp-parsely' ) }</Button>
+							{ selectedText && (
+								<>
+									<VerticalDivider size={ 36 } />
+									<Button
+										variant="tertiary"
+										onClick={ onRestoreOriginal }
+									>
+										{ __( 'Clear changes', 'wp-parsely' ) }
+									</Button>
+								</>
+							) }
+						</>
+					) }
 
-				{ ! isInboundLink && (
-					<div className="traffic-boost-preview-footer-navigation">
-						{ __( 'Suggestion', 'wp-parsely' ) }
-						<select
-							className="traffic-boost-preview-footer-navigation-number"
-							value={ itemIndex }
-							onChange={ ( e ) => {
-								const newIndex = parseInt( e.target.value, 10 );
-								onSelectIndex( newIndex );
-							} }
-						>
-							{ Array.from( { length: totalItems }, ( _, i ) => (
-								<option key={ i + 1 } value={ i + 1 }>{ i + 1 }</option>
-							) ) }
-						</select>
-						{ __( 'of', 'wp-parsely' ) }
-						<span className="traffic-boost-preview-footer-navigation-number">
-							{ totalItems }
-						</span>
-					</div>
-				) }
-			</div>
+					{ isInboundLink && (
+						<>
+							{ selectedText ? (
+								<>
+									<Button
+										variant="primary"
+										onClick={ () => activeLink && onAccept( activeLink ) }
+									>{ __( 'Update Link', 'wp-parsely' ) }</Button>
+									<VerticalDivider size={ 36 } />
+									<Button
+										variant="tertiary"
+										onClick={ onRestoreOriginal }
+									>
+										{ __( 'Clear changes', 'wp-parsely' ) }
+									</Button>
+								</>
+							) : (
+								<Button
+									variant="tertiary"
+									onClick={ () => activeLink && onRemove( activeLink ) }
+									isDestructive
+								>{ __( 'Remove', 'wp-parsely' ) }</Button>
+							) }
+						</>
+					) }
+
+					{ ! isInboundLink && (
+						<div className="traffic-boost-preview-footer-navigation">
+							{ __( 'Suggestion', 'wp-parsely' ) }
+							<select
+								className="traffic-boost-preview-footer-navigation-number"
+								value={ itemIndex }
+								onChange={ ( e ) => {
+									const newIndex = parseInt( e.target.value, 10 );
+									onSelectIndex( newIndex );
+								} }
+							>
+								{ Array.from( { length: totalItems }, ( _, i ) => (
+									<option key={ i + 1 } value={ i + 1 }>{ i + 1 }</option>
+								) ) }
+							</select>
+							{ __( 'of', 'wp-parsely' ) }
+							<span className="traffic-boost-preview-footer-navigation-number">
+								{ totalItems }
+							</span>
+						</div>
+					) }
+				</div>
+			) }
 
 			<div className="traffic-boost-preview-footer-next">
 				{ hasNext && (

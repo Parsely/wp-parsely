@@ -199,7 +199,7 @@ export const LinksList = ( {
 				{ visibleLinks.map( ( link: TrafficBoostLink ) => {
 					return (
 						<SingleLink
-							key={ link.targetPost.id + ( link.smart_link?.uid ?? '' ) }
+							key={ link.targetPost.id + ( link.smartLink?.uid ?? '' ) }
 							suggestion={ link }
 							isActive={ link.targetPost.id === activeLinkPostId }
 							onClick={ onSuggestionClickHandler }

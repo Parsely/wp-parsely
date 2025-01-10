@@ -25,10 +25,12 @@ export interface PostLinks extends Record<LinkType, HTMLAnchorElement[]> {
  * @since 3.18.0
  */
 export interface TrafficBoostLink {
-    targetPost: HydratedPost;
+	uid: string;
+	targetPost: HydratedPost;
 	postLinks: PostLinks;
-    smart_link: InboundSmartLink;
-    isSuggestion: boolean;
+	smartLink?: InboundSmartLink;
+	isSuggestion: boolean;
+	isGeneratingPlacement: boolean;
 }
 
 /**
@@ -37,10 +39,10 @@ export interface TrafficBoostLink {
  * @since 3.18.0
  */
 export interface GetSmartLinksResponse {
-    data: {
-        inbound: InboundSmartLink[];
-        outbound: never[];
-    };
+	data: {
+		inbound: InboundSmartLink[];
+		outbound: never[];
+	};
 }
 
 /**
@@ -113,6 +115,63 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	}
 
 	/**
+	 * Creates a mocked smart link for a given post.
+	 *
+	 * This method will be removed once we have implemented fetching from the
+	 * Parse.ly API.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {HydratedPost} sourcePost    The source post to create the smart link from.
+	 * @param {number}       destinationId The ID of the destination post.
+	 *
+	 * @return {InboundSmartLink} The mocked smart link.
+	 */
+	private createMockedSmartLink(
+		sourcePost: HydratedPost,
+		destinationId: number,
+	): InboundSmartLink {
+		const splitIntoBlocks = ( text: string, size: number ) => {
+			const words = text.split( ' ' );
+
+			return words.reduce( ( blocks, word ) => {
+				const last = blocks[ blocks.length - 1 ];
+
+				if ( ( last + ' ' + word ).trim().length <= size ) {
+					blocks[ blocks.length - 1 ] = ( last + ' ' + word ).trim();
+				} else {
+					blocks.push( word );
+				}
+
+				return blocks;
+			}, [ '' ] );
+		};
+
+		const tempDiv = document.createElement( 'div' );
+		tempDiv.innerHTML = sourcePost.content.rendered;
+		const plainContent = tempDiv.textContent ?? tempDiv.innerText ?? '';
+		const blocks = splitIntoBlocks( plainContent, 50 );
+		const text = blocks[ Math.floor( Math.random() * blocks.length ) ];
+
+		return {
+			uid: sourcePost.id.toString(),
+			href: sourcePost.guid.raw,
+			text,
+			title: sourcePost.title.raw,
+			offset: 0,
+			applied: false,
+			destination: {
+				post_id: destinationId,
+				post_type: 'Post',
+			},
+			source: {
+				post_id: sourcePost.id,
+				post_type: sourcePost.type,
+			},
+		};
+	}
+
+	/**
 	 * Generates boost link suggestions for a given post.
 	 *
 	 * @since 3.18.0
@@ -131,52 +190,56 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			orderby: 'date',
 		} );
 
-		const splitIntoBlocks = ( text: string, size: number ) => {
-			const words = text.split( ' ' );
-
-			return words.reduce( ( blocks, word ) => {
-				const last = blocks[ blocks.length - 1 ];
-
-				if ( ( last + ' ' + word ).trim().length <= size ) {
-					blocks[ blocks.length - 1 ] = ( last + ' ' + word ).trim();
-				} else {
-					blocks.push( word );
-				}
-
-				return blocks;
-			}, [ '' ] );
-		};
-
 		return fetchedPosts.data.map( ( post ) => {
-			const tempDiv = document.createElement( 'div' );
-			tempDiv.innerHTML = post.content.rendered;
-			const plainContent = tempDiv.textContent ?? tempDiv.innerText ?? '';
-			const blocks = splitIntoBlocks( plainContent, 50 );
-			const randomBlock = blocks[ Math.floor( Math.random() * blocks.length ) ];
-			const response: TrafficBoostLink = {
-				// Mockup smart link.
-				smart_link: {
-					uid: post.id.toString(),
-					href: post.guid.raw,
-					text: randomBlock,
-					title: post.title.raw,
-					offset: 0,
-					applied: false,
-					destination: {
-						post_id: postId,
-						post_type: 'Post',
-					},
-					source: {
-						post_id: post.id,
-						post_type: post.type,
-					},
-				},
+			return {
+				uid: `suggestion-${ post.id }-${ Date.now() }`,
+				smartLink: this.createMockedSmartLink( post, postId ),
 				postLinks: this.populatePostLinks( post ),
 				targetPost: post,
 				isSuggestion: true,
+				isGeneratingPlacement: false,
 			};
+		} );
+	}
 
-			return response;
+	/**
+	 * Creates a suggestion for a given post, without generating the placement.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {HydratedPost} post The post to create a suggestion for.
+	 *
+	 * @return {Promise<TrafficBoostLink>} The suggestion.
+	 */
+	public createSuggestion( post: HydratedPost ): TrafficBoostLink {
+		return {
+			uid: `suggestion-${ post.id }-${ Date.now() }`,
+			targetPost: post,
+			postLinks: this.populatePostLinks( post ),
+			isSuggestion: true,
+			isGeneratingPlacement: true,
+		};
+	}
+
+	/**
+	 * Generates a suggestion for a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} suggestion The suggestion to generate.
+	 *
+	 * @return {Promise<TrafficBoostLink>} The generated suggestion.
+	 */
+	public async generateSuggestionForPost( suggestion: TrafficBoostLink ): Promise<TrafficBoostLink> {
+		// TODO: Trigger the generation of the placement to Parse.ly AI.
+		// As a workaround, after 5 seconds, we'll mark the link as not generating placement.
+		return new Promise( ( resolve ) => {
+			setTimeout( () => {
+				suggestion.smartLink = this.createMockedSmartLink( suggestion.targetPost, suggestion.targetPost.id );
+				suggestion.isGeneratingPlacement = false;
+
+				resolve( suggestion );
+			}, 5000 );
 		} );
 	}
 
@@ -226,11 +289,13 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 
 		return fetchedPosts.data
 			.map( ( post ) => ( {
+				uid: `inbound-${ post.id }-${ Date.now() }`,
 				targetPost: post,
 				postLinks: this.populatePostLinks( post ),
-				smart_link: inboundSmartLinks.find( ( link ) => link.source?.post_id === post.id ),
+				smartLink: inboundSmartLinks.find( ( link ) => link.source?.post_id === post.id ),
 				isSuggestion: false,
+				isGeneratingPlacement: false,
 			} ) )
-			.filter( ( link ): link is TrafficBoostLink => link.smart_link !== undefined );
+			.filter( ( link ) => link.smartLink !== undefined );
 	}
 }
