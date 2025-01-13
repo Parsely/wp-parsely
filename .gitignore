@@ -9,5 +9,4 @@
 /build/coverage-html/
 /build/logs/
 /composer.lock
-/vendor
 node_modules
