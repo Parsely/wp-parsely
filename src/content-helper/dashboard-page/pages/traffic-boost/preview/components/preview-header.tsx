@@ -12,6 +12,8 @@ import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { LeafIcon } from '../../../../../common/icons/leaf-icon';
 import { TrafficBoostLink } from '../../provider';
 import { LinkCounter } from './link-counter';
+import { isExternalURL } from '../utils';
+import { useEffect } from '@wordpress/element';
 
 /**
  * Props structure for VerticalMoreMenu.
@@ -123,6 +125,20 @@ export const PreviewHeader = ( {
 		setIsFrontendPreview( ! isFrontendPreview );
 	};
 
+	/**
+	 * Toggles the frontend preview state when the active link is external,
+	 * so that the iframe is not displayed.
+	 *
+	 * This prevents issues with cross-origin requests.
+	 *
+	 * @since 3.18.0
+	 */
+	useEffect( () => {
+		if ( activeLink && isExternalURL( activeLink ) ) {
+			setIsFrontendPreview( false );
+		}
+	}, [ activeLink, setIsFrontendPreview ] );
+
 	if ( ! activeLink ) {
 		return <></>;
 	}
@@ -139,13 +155,15 @@ export const PreviewHeader = ( {
 				/>
 			</div>
 			<div className="traffic-boost-preview-actions">
-				<Button
-					icon={ desktop }
-					isPressed={ isFrontendPreview }
-					iconSize={ 24 }
-					onClick={ onToggleFrontendPreview }
-					label={ __( 'Toggle Frontend Preview', 'wp-parsely' ) }
-				/>
+				{ ! isExternalURL( activeLink ) && (
+					<Button
+						icon={ desktop }
+						isPressed={ isFrontendPreview }
+						iconSize={ 24 }
+						onClick={ onToggleFrontendPreview }
+						label={ __( 'Toggle Frontend Preview', 'wp-parsely' ) }
+					/>
+				) }
 				<VerticalMoreMenu
 					post={ activeLink.targetPost }
 					onEditClick={ onOpenPostEditor }
