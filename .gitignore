@@ -1,0 +1,13 @@
+.DS_Store
+.idea
+.phpunit.result.cache
+.wp-env.override.json
+.vscode/settings.json
+.vscode/launch.json
+/artifacts/
+/build/*.map
+/build/coverage-html/
+/build/logs/
+/composer.lock
+/vendor
+node_modules

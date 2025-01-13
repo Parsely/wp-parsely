@@ -1,0 +1,183 @@
+/**
+ * WordPress dependencies
+ */
+import { Button, PanelBody, PanelRow } from '@wordpress/components';
+import { useDispatch, useSelect } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
+import { update } from '@wordpress/icons';
+
+/**
+ * Internal dependencies
+ */
+import { TrafficBoostLink, TrafficBoostProvider } from '../../../provider';
+import { TrafficBoostStore } from '../../../store';
+import { AddNewLinkButton } from '../add-new-link-button';
+import { LinksList } from '../links-list/links-list';
+import { HydratedPost } from '../../../../../../common/base-wordpress-provider';
+
+/**
+ * Component that renders the suggestions settings.
+ *
+ * @since 3.18.0
+ */
+const SuggestionsSettings = (): React.JSX.Element => {
+	return (
+		<div className="traffic-boost-suggestions-settings">
+			<PanelBody
+				title={ __( 'Filters', 'wp-parsely' ) }
+				initialOpen={ false }
+			>
+				<PanelRow>
+					<div>
+						<div>
+							<p>{ __( 'Adjust parameters used to generate suggestions.', 'wp-parsely' ) }</p>
+						</div>
+					</div>
+				</PanelRow>
+			</PanelBody>
+			<PanelBody
+				title={ __( 'Advanced Settings', 'wp-parsely' ) }
+				initialOpen={ false }
+			>
+				<PanelRow>
+					<div>
+						<div>
+							{ __( 'Scope suggestions based on content attributes or Parse.ly smart tags.', 'wp-parsely' ) }
+						</div>
+					</div>
+				</PanelRow>
+			</PanelBody>
+		</div>
+	);
+};
+
+/**
+ * Defines the props structure for SuggestionsTab.
+ *
+ * @since 3.18.0
+ */
+interface SuggestionsTabProps {
+	onSuggestionClick?: ( suggestion: TrafficBoostLink ) => void;
+}
+
+/**
+ * Component that renders the suggestions tab.
+ *
+ * @since 3.18.0
+ *
+ * @param {SuggestionsTabProps} props Component props.
+ */
+const SuggestionsTab = ( {
+	onSuggestionClick,
+}: SuggestionsTabProps ): React.JSX.Element => {
+	const trafficBoostProvider = TrafficBoostProvider.getInstance();
+
+	const {
+		currentPost,
+		selectedLink,
+		suggestions,
+		currentPage,
+		itemsPerPage,
+		isGeneratingSuggestions,
+	} = useSelect( ( select ) => ( {
+		currentPost: select( TrafficBoostStore ).getCurrentPost(),
+		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
+		suggestions: select( TrafficBoostStore ).getSuggestions(),
+		currentPage: select( TrafficBoostStore ).getSuggestionsPage(),
+		itemsPerPage: select( TrafficBoostStore ).getSuggestionsItemsPerPage(),
+		isGeneratingSuggestions: select( TrafficBoostStore ).isGeneratingSuggestions(),
+	} ), [] );
+
+	const {
+		setSuggestionsPage,
+		setSuggestionsItemsPerPage,
+		addSuggestion,
+		setSuggestions,
+		updateSuggestion,
+		setIsGeneratingSuggestions,
+	} = useDispatch( TrafficBoostStore );
+
+	/**
+	 * Adds a traffic boost link to the current post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {HydratedPost} post The post to add to the current post.
+	 */
+	const addTrafficBoostLink = async ( post: HydratedPost ) => {
+		const trafficBoostLink = trafficBoostProvider.createSuggestion( post );
+		addSuggestion( trafficBoostLink );
+
+		// Generate the placement for the suggestion.
+		const updatedLink = await trafficBoostProvider.generateSuggestionForPost( trafficBoostLink );
+		updateSuggestion( updatedLink );
+	};
+
+	/**
+	 * Handles the generation of suggestions.
+	 *
+	 * @since 3.18.0
+	 */
+	const handleGenerateSuggestions = async () => {
+		if ( ! currentPost ) {
+			return;
+		}
+
+		setIsGeneratingSuggestions( true );
+		const generatedSuggestions = await trafficBoostProvider.generateSuggestions( currentPost.id );
+		setSuggestions( generatedSuggestions );
+		setIsGeneratingSuggestions( false );
+	};
+
+	/**
+	 * Renders the generate button.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {Object} props         The component props.
+	 * @param {string} props.variant The variant of the button.
+	 * @return {JSX.Element} The generate button.
+	 */
+	const GenerateButton = ( { variant }: { variant: 'primary' | 'secondary' | 'tertiary' } ): React.JSX.Element => (
+		<Button
+			icon={ update }
+			variant={ variant }
+			isBusy={ isGeneratingSuggestions }
+			disabled={ isGeneratingSuggestions }
+			className="traffic-boost-add-suggestion"
+			onClick={ handleGenerateSuggestions }
+		>
+			{ isGeneratingSuggestions ? __( 'Generating…', 'wp-parsely' ) : __( 'Generate', 'wp-parsely' ) }
+		</Button>
+	);
+
+	return (
+		<>
+			<SuggestionsSettings />
+			<LinksList
+				links={ suggestions }
+				onClick={ onSuggestionClick }
+				activeLink={ selectedLink?.isSuggestion ? selectedLink : null }
+				currentPage={ currentPage }
+				itemsPerPage={ itemsPerPage }
+				onPageChange={ setSuggestionsPage }
+				onItemsPerPageChange={ setSuggestionsItemsPerPage }
+				renderEmptyState={ () => (
+					<div className="traffic-boost-suggestions-empty-state">
+						<p>{ __( 'This post has no suggestions. Do you want to generate some?', 'wp-parsely' ) }</p>
+						<GenerateButton variant="primary" />
+					</div>
+				) }
+			>
+				<GenerateButton variant="secondary" />
+				<AddNewLinkButton
+					disabled={ isGeneratingSuggestions }
+					suggestions={ suggestions }
+					onPostClick={ addTrafficBoostLink }
+				/>
+			</LinksList>
+		</>
+	);
+};
+
+export default SuggestionsTab;

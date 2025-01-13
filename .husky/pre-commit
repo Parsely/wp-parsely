@@ -1,0 +1,3 @@
+npm run lint
+composer cs
+vendor/bin/phpstan analyse --memory-limit=1G

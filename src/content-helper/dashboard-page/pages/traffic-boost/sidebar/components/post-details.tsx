@@ -1,0 +1,53 @@
+/**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
+import { HydratedPost } from '../../../../../common/base-wordpress-provider';
+import { Thumbnail } from '../../../../../common/components/thumbnail';
+
+/**
+ * Defines the props structure for PostDetailsSidebar.
+ *
+ * @since 3.18.0
+ */
+interface PostDetailsSidebarProps {
+    post: HydratedPost;
+}
+
+/**
+ * Component that displays post details including thumbnail and meta information.
+ *
+ * @since 3.18.0
+ *
+ * @param {PostDetailsSidebarProps} props Component props.
+ */
+export const PostDetailsSidebar = ( { post }: PostDetailsSidebarProps ): React.JSX.Element => {
+	return (
+		<div className="traffic-boost-post-details">
+			<div className="traffic-boost-post-details-label">
+				{ __( 'Current Post:', 'wp-parsely' ) }
+			</div>
+			<div className="traffic-boost-post-details-content">
+				<Thumbnail
+					post={ post }
+					size={ 52 }
+					className="traffic-boost-thumbnail"
+				/>
+				<div className="post-title">
+					{ post.title.rendered !== ''
+						? post.title.rendered
+						: __( '(no title)', 'wp-parsely' ) }
+				</div>
+			</div>
+			<div className="traffic-boost-post-details-divider"></div>
+			<div className="traffic-boost-post-details-description">
+				{ __( 'Use Parse.ly data to increase your post\'s traffic. ' +
+					'Plant links to this post in high-performing related content.', 'wp-parsely' ) }
+			</div>
+		</div>
+	);
+};
