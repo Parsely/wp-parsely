@@ -77,8 +77,8 @@
 		"eslint-plugin-jest": "^28.10.0",
 		"husky": "^9.1.7",
 		"prettier": "^3.4.2",
-		"ts-loader": "^9.5.1",
-		"typescript": "^5.7.2"
+		"ts-loader": "^9.5.2",
+		"typescript": "^5.7.3"
 	},
 	"devDependenciesComments": {
 		"@wordpress/babel-preset-default": "Don't upgrade to v8 or greater until the plugin requires WordPress 6.6. See https://github.com/WordPress/gutenberg/pull/62265/files",
