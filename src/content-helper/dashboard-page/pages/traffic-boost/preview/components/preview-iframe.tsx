@@ -15,6 +15,8 @@ import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
 import { TextSelection } from '../preview';
 import { TextSelectionTooltip } from './text-selection-tooltip';
+import { isExternalURL } from '../utils';
+import { ErrorIcon } from '../../../../../common/icons/error-icon';
 
 /**
  * Props structure for PreviewIframe.
@@ -437,15 +439,24 @@ export const PreviewIframe = ( {
 		<div className="wp-parsely-preview">
 			<div className="preview-iframe-wrapper">
 				<div className={ `wp-parsely-preview-loading ${ isLoading ? 'is-loading' : '' }` }>
-					<Spinner />
-					{ isGeneratingPlacement && (
+					{ isFrontendPreview && activeLink && isExternalURL( activeLink ) ? (
 						<>
-							{ messages[ messageIndex ] }
+							<ErrorIcon />
+							{ __( 'This link is not available in the preview.', 'wp-parsely' ) }
 						</>
-					) }
-					{ ! isGeneratingPlacement && didGeneratePlacement && (
+					) : (
 						<>
-							{ __( 'Done, loading your post…', 'wp-parsely' ) }
+							<Spinner />
+							{ isGeneratingPlacement && (
+								<>
+									{ messages[ messageIndex ] }
+								</>
+							) }
+							{ ! isGeneratingPlacement && didGeneratePlacement && (
+								<>
+									{ __( 'Done, loading your post…', 'wp-parsely' ) }
+								</>
+							) }
 						</>
 					) }
 				</div>
@@ -455,14 +466,16 @@ export const PreviewIframe = ( {
 						onTextSelected( text, offset );
 					} }
 				/>
-				<iframe
-					key={ `${ previewUrl }-${ isGeneratingPlacement }` }
-					ref={ iframeRef }
-					src={ previewUrl }
-					title="Post Preview"
-					className={ `wp-parsely-preview-iframe ${ isLoading ? 'is-loading' : '' }` }
-					sandbox="allow-same-origin allow-scripts"
-				/>
+				{ activeLink && ( ! isFrontendPreview || ! isExternalURL( activeLink ) ) && (
+					<iframe
+						key={ `${ previewUrl }-${ isGeneratingPlacement }` }
+						ref={ iframeRef }
+						src={ previewUrl }
+						title="Post Preview"
+						className={ `wp-parsely-preview-iframe ${ isLoading ? 'is-loading' : '' }` }
+						sandbox="allow-same-origin allow-scripts"
+					/>
+				) }
 			</div>
 		</div>
 	);
