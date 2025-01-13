@@ -92,12 +92,17 @@ final class Dashboard_Page {
 		wp_enqueue_style( 'wp-block-library-theme' );
 		wp_enqueue_style( 'wp-edit-post' );
 
-		// Get the parsed blocks.
-		$blocks        = parse_blocks( $post->post_content );
-		$block_content = '';
+		if ( has_blocks( $post ) ) {
+			// Get the parsed blocks.
+			$blocks        = parse_blocks( $post->post_content );
+			$block_content = '';
 
-		foreach ( $blocks as $block ) {
-			$block_content .= render_block( $block );
+			foreach ( $blocks as $block ) {
+				$block_content .= render_block( $block );
+			}
+		} else {
+			// If the post has no blocks, fallback to the_content filter.
+			$block_content = apply_filters( 'the_content', $post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 		}
 
 		// Get the post title.

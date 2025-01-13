@@ -22,6 +22,7 @@ import { TrafficBoostLink } from '../../provider';
 interface AddNewLinkButtonProps {
 	onPostClick: ( post: HydratedPost ) => void;
 	suggestions: TrafficBoostLink[];
+	disabled: boolean;
 }
 
 /**
@@ -32,6 +33,7 @@ interface AddNewLinkButtonProps {
  * @param {AddNewLinkButtonProps} props - The props for the component.
  */
 export const AddNewLinkButton = ( {
+	disabled,
 	onPostClick,
 	suggestions,
 }: AddNewLinkButtonProps ): React.JSX.Element => {
@@ -64,6 +66,7 @@ export const AddNewLinkButton = ( {
 					className="traffic-boost-add-suggestion"
 					onClick={ onToggle }
 					isPressed={ isOpen }
+					disabled={ disabled }
 				>
 					{ __( 'Add', 'wp-parsely' ) }
 				</Button>

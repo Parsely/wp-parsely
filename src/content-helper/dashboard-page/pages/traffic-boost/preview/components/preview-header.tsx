@@ -13,19 +13,51 @@ import { LeafIcon } from '../../../../../common/icons/leaf-icon';
 import { TrafficBoostLink } from '../../provider';
 import { LinkCounter } from './link-counter';
 
-const VerticalMoreMenu = (): React.JSX.Element => {
+/**
+ * Props structure for VerticalMoreMenu.
+ *
+ * @since 3.18.0
+ */
+interface VerticalMoreMenuProps {
+	post: HydratedPost;
+	onEditClick: ( post: HydratedPost ) => void;
+	onViewInNewTabClick: ( post: HydratedPost ) => void;
+	onViewInParseLyClick: ( post: HydratedPost ) => void;
+}
+
+const VerticalMoreMenu = ( {
+	post,
+	onEditClick,
+	onViewInNewTabClick,
+	onViewInParseLyClick,
+}: VerticalMoreMenuProps ): React.JSX.Element => {
+	const onClickHandler = ( type: string, onClose: () => void ) => {
+		switch ( type ) {
+			case 'edit':
+				onEditClick( post );
+				break;
+			case 'view-in-new-tab':
+				onViewInNewTabClick( post );
+				break;
+			case 'view-in-parse-ly':
+				onViewInParseLyClick( post );
+				break;
+		}
+		onClose();
+	};
+
 	return (
 		<DropdownMenu icon={ moreVertical } iconSize={ 24 } label={ __( 'Actions', 'wp-parsely' ) }>
 			{ ( { onClose } ) => (
 				<>
 					<MenuGroup>
-						<MenuItem icon={ edit } onClick={ onClose }>
+						<MenuItem icon={ edit } onClick={ () => onClickHandler( 'edit', onClose ) }>
 							{ __( 'Edit Post', 'wp-parsely' ) }
 						</MenuItem>
-						<MenuItem icon={ external } onClick={ onClose }>
+						<MenuItem icon={ external } onClick={ () => onClickHandler( 'view-in-new-tab', onClose ) }>
 							{ __( 'View post in a new tab', 'wp-parsely' ) }
 						</MenuItem>
-						<MenuItem icon={ <LeafIcon /> } onClick={ onClose }>
+						<MenuItem icon={ <LeafIcon /> } onClick={ () => onClickHandler( 'view-in-parse-ly', onClose ) }>
 							{ __( 'View in Parse.ly', 'wp-parsely' ) }
 						</MenuItem>
 					</MenuGroup>
@@ -62,6 +94,9 @@ export const PreviewHeader = ( {
 	activeLink,
 	isFrontendPreview,
 	setIsFrontendPreview,
+	onOpenPostEditor,
+	onOpenPostInNewTab,
+	onOpenParselyDashboard,
 }: PreviewHeaderProps ): React.JSX.Element => {
 	const onToggleFrontendPreview = () => {
 		setIsFrontendPreview( ! isFrontendPreview );
@@ -90,7 +125,12 @@ export const PreviewHeader = ( {
 					onClick={ onToggleFrontendPreview }
 					label={ __( 'Toggle Frontend Preview', 'wp-parsely' ) }
 				/>
-				<VerticalMoreMenu />
+				<VerticalMoreMenu
+					post={ activeLink.targetPost }
+					onEditClick={ onOpenPostEditor }
+					onViewInNewTabClick={ onOpenPostInNewTab }
+					onViewInParseLyClick={ onOpenParselyDashboard }
+				/>
 			</div>
 		</div>
 	);

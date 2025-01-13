@@ -174,23 +174,32 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	/**
 	 * Generates boost link suggestions for a given post.
 	 *
+	 * Note: This method will be removed once we have implemented fetching from the
+	 * Parse.ly API.
+	 *
 	 * @since 3.18.0
 	 *
-	 * @param {number} postId The ID of the post to generate boost links for.
-	 *
+	 * @param {number} postId              The ID of the post to generate boost links for.
+	 * @param {number} numberOfSuggestions The number of suggestions to generate.
 	 * @return {Promise<TrafficBoostLink[]>} The list of boost link suggestions.
 	 */
-	public async generateBoostLinks( postId: number ): Promise<TrafficBoostLink[]> {
+	public async generateBoostLinks( postId: number, numberOfSuggestions: number = 10 ): Promise<TrafficBoostLink[]> {
 		// As a mockup, this method right now will fetch the WordPress API and return a random number of posts.
 		const fetchedPosts = await this.getPosts( {
 			page: 1,
-			per_page: 10,
+			per_page: 30,
 			exclude: [ postId ],
 			order: 'asc',
 			orderby: 'date',
 		} );
 
-		return fetchedPosts.data.map( ( post ) => {
+		// Filter posts without a title
+		const postsWithTitle = fetchedPosts.data.filter( ( post ) => post.title.raw !== '' );
+
+		// Filter to get numberOfSuggestions random posts.
+		const randomPosts = postsWithTitle.sort( () => Math.random() - 0.5 ).slice( 0, numberOfSuggestions );
+
+		const suggestions = randomPosts.map( ( post ) => {
 			return {
 				uid: `suggestion-${ post.id }-${ Date.now() }`,
 				smartLink: this.createMockedSmartLink( post, postId ),
@@ -199,6 +208,28 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 				isSuggestion: true,
 				isGeneratingPlacement: false,
 			};
+		} );
+
+		return suggestions;
+	}
+
+	/**
+	 * Generates suggestions for a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {number} postId The ID of the post to generate suggestions for.
+	 *
+	 * @return {Promise<TrafficBoostLink[]>} The list of suggestions.
+	 */
+	public async generateSuggestions( postId: number ): Promise<TrafficBoostLink[]> {
+		// TODO: Generate suggestions for a given post.
+		// As a mockup, we'll just return a list of suggestions with a delay between 500 and 2000ms.
+		return new Promise( ( resolve ) => {
+			setTimeout( () => {
+				const randomNumberOfSuggestions = Math.floor( Math.random() * 10 ) + 1;
+				resolve( this.generateBoostLinks( postId, randomNumberOfSuggestions ) );
+			}, Math.floor( Math.random() * 1500 ) + 500 ); // Random time between 500 and 2000ms.
 		} );
 	}
 
@@ -232,7 +263,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 */
 	public async generateSuggestionForPost( suggestion: TrafficBoostLink ): Promise<TrafficBoostLink> {
 		// TODO: Trigger the generation of the placement to Parse.ly AI.
-		// As a workaround, after 5 seconds, we'll mark the link as not generating placement.
+		// As a mockup, after 5 seconds, we'll mark the link as not generating placement.
 		return new Promise( ( resolve ) => {
 			setTimeout( () => {
 				suggestion.smartLink = this.createMockedSmartLink( suggestion.targetPost, suggestion.targetPost.id );
@@ -240,6 +271,47 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 
 				resolve( suggestion );
 			}, 5000 );
+		} );
+	}
+
+	/**
+	 * Accepts a suggestion for a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} suggestion The suggestion to accept.
+	 *
+	 * @return {Promise<TrafficBoostLink>} The accepted suggestion.
+	 */
+	public async acceptSuggestion( suggestion: TrafficBoostLink ): Promise<TrafficBoostLink> {
+		// TODO: Accept the suggestion and generate the placement.
+		// As a mockup, wait between 500 and 2000ms before resolving.
+		return new Promise( ( resolve ) => {
+			setTimeout( () => {
+				suggestion.isSuggestion = false;
+
+				resolve( suggestion );
+			}, Math.floor( Math.random() * 1500 ) + 500 ); // Random time between 500 and 2000ms.
+		} );
+	}
+
+	/**
+	 * Removes an inbound link from a given post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link The inbound link to remove.
+	 *
+	 * @return {Promise<void>} The promise that resolves when the inbound link is removed.
+	 */
+	public async removeInboundLink( link: TrafficBoostLink ): Promise<void> {
+		// TODO: Remove the inbound link from the post.
+		// As a mockup, we'll just wait between 500 and 2000ms before resolving.
+		return new Promise( ( resolve ) => {
+			setTimeout( () => {
+				link.smartLink = undefined;
+				resolve();
+			}, Math.floor( Math.random() * 1500 ) + 500 ); // Random time between 500 and 2000ms.
 		} );
 	}
 
@@ -257,7 +329,6 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 
 		const inboundSmartLinks = await this.fetch<GetSmartLinksResponse>( {
 			path: requestPath,
-
 		} );
 
 		return inboundSmartLinks.data.inbound;

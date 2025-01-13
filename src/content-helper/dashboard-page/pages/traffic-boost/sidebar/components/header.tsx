@@ -4,6 +4,10 @@
 import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { chevronLeft } from '@wordpress/icons';
+
+/**
+ * Internal dependencies
+ */
 import { PostDetailsSidebar } from './post-details';
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 

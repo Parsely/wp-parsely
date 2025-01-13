@@ -129,6 +129,29 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	};
 
 	/**
+	 * Handles the accept event on a suggestion.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link The link that was accepted.
+	 */
+	const handleAccept = async ( link: TrafficBoostLink ) => {
+		const acceptedLink = await TrafficBoostProvider.getInstance().acceptSuggestion( link );
+		return acceptedLink;
+	};
+
+	/**
+	 * Handles the remove event on an inbound link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link The link that was removed.
+	 */
+	const handleRemoveInboundLink = async ( link: TrafficBoostLink ) => {
+		await TrafficBoostProvider.getInstance().removeInboundLink( link );
+	};
+
+	/**
 	 * Fetches the Boost Links for the post.
 	 *
 	 * @since 3.18.0
@@ -206,6 +229,8 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 			{ selectedLink && (
 				<TrafficBoostPreview
 					activeLink={ selectedLink }
+					onAccept={ handleAccept }
+					onRemoveInboundLink={ handleRemoveInboundLink }
 				/>
 			) }
 		</PageContainer>

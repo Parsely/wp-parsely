@@ -430,37 +430,6 @@ export const useIframeHighlight = ( {
 	}, [ highlightRange ] );
 
 	/**
-	 * Highlights an inbound link in the iframe content.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param {Document} iframeDocument The iframe document.
-	 * @param {string}   smartLinkId    The smart link ID to highlight.
-	 */
-	const highlightInboundLink = useCallback( ( iframeDocument: Document, smartLinkId: string ) => {
-		// Find the a element with the smart link id.
-		const aElement = iframeDocument.querySelector( `a[data-smartlink="${ smartLinkId }"]` );
-
-		if ( aElement ) {
-			const originalRange = iframeDocument.createRange();
-			originalRange.selectNode( aElement );
-
-			// If there's selected text, handle potential overlap.
-			if ( selectedText?.text && contentAreaRef.current ) {
-				const selectionRanges = findText( selectedText.text, contentAreaRef.current, iframeDocument );
-				if ( selectionRanges[ selectedText.offset ] ) {
-					const selectionRange = selectionRanges[ selectedText.offset ];
-					highlightSelection( selectionRange, originalRange, 'smart-link-highlight' );
-					return;
-				}
-			}
-
-			// If no selected text or selection range not found, just highlight the link.
-			highlightRange( originalRange, 'smart-link-highlight', !! selectedText );
-		}
-	}, [ contentAreaRef, findText, highlightSelection, highlightRange, selectedText ] );
-
-	/**
 	 * Highlights a link suggestion in the iframe content.
 	 *
 	 * @since 3.18.0
@@ -503,6 +472,40 @@ export const useIframeHighlight = ( {
 			}
 		}
 	}, [ contentAreaRef, findText, highlightSelection, highlightRange, selectedText, onRestoreOriginal ] );
+
+	/**
+	 * Highlights an inbound link in the iframe content.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {Document} iframeDocument The iframe document.
+	 * @param {string}   smartLinkId    The smart link ID to highlight.
+	 */
+	const highlightInboundLink = useCallback( ( iframeDocument: Document, smartLinkId: string ) => {
+		// Find the a element with the smart link id.
+		const aElement = iframeDocument.querySelector( `a[data-smartlink="${ smartLinkId }"]` );
+
+		if ( aElement ) {
+			const originalRange = iframeDocument.createRange();
+			originalRange.selectNode( aElement );
+
+			// If there's selected text, handle potential overlap.
+			if ( selectedText?.text && contentAreaRef.current ) {
+				const selectionRanges = findText( selectedText.text, contentAreaRef.current, iframeDocument );
+				if ( selectionRanges[ selectedText.offset ] ) {
+					const selectionRange = selectionRanges[ selectedText.offset ];
+					highlightSelection( selectionRange, originalRange, 'smart-link-highlight' );
+					return;
+				}
+			}
+
+			// If no selected text or selection range not found, just highlight the link.
+			highlightRange( originalRange, 'smart-link-highlight', !! selectedText );
+		} else if ( activeLink?.smartLink?.text ) {
+			// If we can't find the link with the smart link id, highlight the link with the smart link text.
+			highlightLinkSuggestion( iframeDocument, activeLink.smartLink.text, activeLink.smartLink.offset ?? 0 );
+		}
+	}, [ activeLink, selectedText, contentAreaRef, highlightRange, findText, highlightSelection, highlightLinkSuggestion ] );
 
 	/**
 	 * Highlights the smart link text in the iframe content.

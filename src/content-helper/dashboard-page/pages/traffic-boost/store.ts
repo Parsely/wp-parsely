@@ -67,6 +67,9 @@ type TrafficBoostState = {
 	preview: PreviewState;
 	suggestionsTab: SuggestionsTabState;
 	inboundLinksTab: InboundLinksTabState;
+	acceptingLinks: string[];
+	removingLinks: string[];
+	isGeneratingSuggestions: boolean;
 };
 
 /********** Actions **********/
@@ -257,6 +260,38 @@ interface UpdateSuggestionAction {
 }
 
 /**
+ * Interface for the SetIsAcceptingAction.
+ *
+ * @since 3.18.0
+ */
+interface SetIsAcceptingAction {
+	type: 'SET_IS_ACCEPTING';
+	link: TrafficBoostLink;
+	value: boolean;
+}
+
+/**
+ * Interface for the SetIsRemovingAction.
+ *
+ * @since 3.18.0
+ */
+interface SetIsRemovingAction {
+	type: 'SET_IS_REMOVING';
+	link: TrafficBoostLink;
+	value: boolean;
+}
+
+/**
+ * Interface for the SetIsGeneratingSuggestionsAction.
+ *
+ * @since 3.18.0
+ */
+interface SetIsGeneratingSuggestionsAction {
+	type: 'SET_IS_GENERATING_SUGGESTIONS';
+	value: boolean;
+}
+
+/**
  * Union type for all possible action types.
  *
  * @since 3.18.0
@@ -279,7 +314,10 @@ type ActionTypes =
 	| RemoveSuggestionAction
 	| AddInboundLinkAction
 	| RemoveInboundLinkAction
-	| UpdateSuggestionAction;
+	| UpdateSuggestionAction
+	| SetIsAcceptingAction
+	| SetIsRemovingAction
+	| SetIsGeneratingSuggestionsAction;
 
 /**
  * Default state for the Traffic Boost store.
@@ -306,6 +344,9 @@ const defaultState: TrafficBoostState = {
 		currentPage: 1,
 		itemsPerPage: 0,
 	},
+	acceptingLinks: [],
+	removingLinks: [],
+	isGeneratingSuggestions: false,
 };
 
 /**
@@ -478,6 +519,25 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						? action.suggestion
 						: state.selectedLink,
 				};
+			case 'SET_IS_ACCEPTING':
+				return {
+					...state,
+					acceptingLinks: action.value
+						? [ ...state.acceptingLinks, action.link.uid ]
+						: state.acceptingLinks.filter( ( uid ) => uid !== action.link.uid ),
+				};
+			case 'SET_IS_REMOVING':
+				return {
+					...state,
+					removingLinks: action.value
+						? [ ...state.removingLinks, action.link.uid ]
+						: state.removingLinks.filter( ( uid ) => uid !== action.link.uid ),
+				};
+			case 'SET_IS_GENERATING_SUGGESTIONS':
+				return {
+					...state,
+					isGeneratingSuggestions: action.value,
+				};
 			default:
 				return state;
 		}
@@ -596,6 +656,26 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				suggestion,
 			};
 		},
+		setIsAccepting( link: TrafficBoostLink, value: boolean ): SetIsAcceptingAction {
+			return {
+				type: 'SET_IS_ACCEPTING',
+				link,
+				value,
+			};
+		},
+		setIsRemoving( link: TrafficBoostLink, value: boolean ): SetIsRemovingAction {
+			return {
+				type: 'SET_IS_REMOVING',
+				link,
+				value,
+			};
+		},
+		setIsGeneratingSuggestions( value: boolean ): SetIsGeneratingSuggestionsAction {
+			return {
+				type: 'SET_IS_GENERATING_SUGGESTIONS',
+				value,
+			};
+		},
 	},
 	selectors: {
 		isLoading( state: TrafficBoostState ): boolean {
@@ -639,6 +719,15 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 		},
 		isFrontendPreview( state: TrafficBoostState ): boolean {
 			return state.preview.frontendPreview;
+		},
+		isAccepting( state: TrafficBoostState, link: TrafficBoostLink ): boolean {
+			return state.acceptingLinks.includes( link.uid );
+		},
+		isRemoving( state: TrafficBoostState, link: TrafficBoostLink ): boolean {
+			return state.removingLinks.includes( link.uid );
+		},
+		isGeneratingSuggestions( state: TrafficBoostState ): boolean {
+			return state.isGeneratingSuggestions;
 		},
 	},
 } );

@@ -9,13 +9,16 @@ import { addQueryArgs } from '@wordpress/url';
  * Internal dependencies
  */
 import { TrafficBoostLink } from '../provider';
-import { TrafficBoostStore } from '../store';
+import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
 import { PreviewIframe } from './components/preview-iframe';
 import './preview.scss';
 import { HydratedPost } from '../../../../common/base-wordpress-provider';
 import { SnackbarNotices } from '../../../../common/components/snackbar-notices';
+import { __ } from '@wordpress/i18n';
+import { link as linkIcon, linkOff } from '@wordpress/icons';
+import { Icon } from '@wordpress/components';
 
 /**
  * Structure of a text selection.
@@ -34,6 +37,8 @@ export interface TextSelection {
  */
 interface TrafficBoostPreviewProps {
 	activeLink: TrafficBoostLink;
+	onAccept: ( link: TrafficBoostLink ) => Promise<TrafficBoostLink>;
+	onRemoveInboundLink: ( link: TrafficBoostLink ) => Promise<void>;
 }
 
 /**
@@ -45,10 +50,12 @@ interface TrafficBoostPreviewProps {
  */
 export const TrafficBoostPreview = ( {
 	activeLink: providedActiveLink,
+	onAccept,
+	onRemoveInboundLink,
 }: TrafficBoostPreviewProps ): React.JSX.Element => {
 	const [ isFrontendPreview, setIsFrontendPreview ] = useState<boolean>( false );
-	const [ isLoading, setIsLoading ] = useState<boolean>( true );
 	const [ isInboundLink, setIsInboundLink ] = useState<boolean>( false );
+	const [ isLoading, setIsLoading ] = useState<boolean>( true );
 
 	const [ activeLink, setActiveLink ] = useState<TrafficBoostLink>( providedActiveLink );
 	const [ activePost, setActivePost ] = useState<HydratedPost>( providedActiveLink.targetPost );
@@ -57,6 +64,10 @@ export const TrafficBoostPreview = ( {
 	const [ previewUrl, setPreviewUrl ] = useState<string>( '' );
 	const [ totalItems, setTotalItems ] = useState<number>( 0 );
 	const [ itemIndex, setItemIndex ] = useState<number>( 0 );
+
+	const {
+		createSuccessNotice,
+	} = useDispatch( 'core/notices' );
 
 	const {
 		post,
@@ -68,12 +79,16 @@ export const TrafficBoostPreview = ( {
 			suggestions: select( TrafficBoostStore ).getSuggestions(),
 			inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
 		};
-	}, [] );
+	}, [ ] );
 
 	const {
 		setSelectedLink,
 		removeSuggestion,
 		removeInboundLink,
+		addInboundLink,
+		setSelectedTab,
+		setIsAccepting,
+		setIsRemoving,
 	} = useDispatch( TrafficBoostStore );
 
 	/**
@@ -209,8 +224,40 @@ export const TrafficBoostPreview = ( {
 		}
 	};
 
-	const handleAccept = () => {
-		//console.log( 'accept' );
+	const handleAccept = async ( link: TrafficBoostLink ) => {
+		setIsAccepting( link, true );
+
+		// Accept the suggestion.
+		const acceptedLink = await onAccept( link );
+
+		// Remove suggestion from the list.
+		removeSuggestion( link );
+
+		// Add the link to the inbound links list.
+		addInboundLink( acceptedLink );
+
+		setIsAccepting( link, false );
+
+		// Show a snackbar success message.
+		createSuccessNotice(
+			__( 'Link planted on', 'wp-parsely' ) + ' ' + activePost.title.rendered,
+			{
+				type: 'snackbar',
+				icon: <Icon icon={ linkIcon } />,
+			}
+		);
+
+		// If the accepted link is the last one, move to the inbound tab and select the accepted link.
+		if ( itemIndex === totalItems && totalItems === 1 ) {
+			setSelectedTab( TrafficBoostSidebarTabs.INBOUND_LINKS );
+			setSelectedLink( acceptedLink );
+		} else if ( itemIndex === totalItems ) {
+			// If the accepted link is the last one, select the previous link.
+			handlePrevious();
+		} else {
+			// If the accepted link is not the last one, select the next link.
+			handleNext();
+		}
 	};
 
 	/**
@@ -222,17 +269,51 @@ export const TrafficBoostPreview = ( {
 	 */
 	const handleDiscard = ( link: TrafficBoostLink ) => {
 		removeSuggestion( link );
+
+		// If the discarded link is the last one, reset the selected link.
+		if ( itemIndex === totalItems && totalItems === 1 ) {
+			setSelectedLink( null );
+		} else if ( itemIndex === totalItems ) {
+			// If the discarded link is the last one, select the previous link.
+			handlePrevious();
+		} else {
+			// If the discarded link is not the last one, select the next link.
+			handleNext();
+		}
 	};
 
 	/**
-	 * Discards an inbound link.
+	 * Removes an inbound link.
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {TrafficBoostLink} link The link to discard.
+	 * @param {TrafficBoostLink} link The link to remove.
 	 */
-	const handleRemove = ( link: TrafficBoostLink ) => {
+	const handleRemove = async ( link: TrafficBoostLink ) => {
+		setIsRemoving( link, true );
+		await onRemoveInboundLink( link );
 		removeInboundLink( link );
+		setIsRemoving( link, false );
+
+		// Show a snackbar success message.
+		createSuccessNotice(
+			__( 'Link removed from', 'wp-parsely' ) + ' ' + activePost.title.rendered,
+			{
+				type: 'snackbar',
+				icon: <Icon icon={ linkOff } />,
+			}
+		);
+
+		// If the removed link is the last one, reset the selected link.
+		if ( itemIndex === totalItems && totalItems === 1 ) {
+			setSelectedLink( null );
+		} else if ( itemIndex === totalItems ) {
+			// If the removed link is the last one, select the previous link.
+			handlePrevious();
+		} else {
+			// If the removed link is not the last one, select the next link.
+			handleNext();
+		}
 	};
 
 	const handleUpdateLink = () => {

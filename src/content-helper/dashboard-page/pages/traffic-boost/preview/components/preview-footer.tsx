@@ -12,6 +12,8 @@ import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { TrafficBoostLink } from '../../provider';
 import { TextSelection } from '../preview';
 import { VerticalDivider } from '../../../../../common/components/vertical-divider';
+import { TrafficBoostStore } from '../../store';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Props structure for PreviewFooter.
@@ -61,6 +63,14 @@ export const PreviewFooter = ( {
 	const hasNext = itemIndex < totalItems;
 	const hasPrevious = itemIndex > 1;
 
+	const {
+		isAccepting,
+		isRemoving,
+	} = useSelect( ( select ) => ( {
+		isAccepting: activeLink ? select( TrafficBoostStore ).isAccepting( activeLink ) : false,
+		isRemoving: activeLink ? select( TrafficBoostStore ).isRemoving( activeLink ) : false,
+	} ), [ activeLink ] );
+
 	if ( ! post ) {
 		return <></>;
 	}
@@ -83,8 +93,10 @@ export const PreviewFooter = ( {
 						<>
 							<Button
 								variant="primary"
-								onClick={ () => onUpdateLink( activeLink ) }
-							>{ __( 'Accept', 'wp-parsely' ) }</Button>
+								onClick={ () => onAccept( activeLink ) }
+								isBusy={ isAccepting }
+								disabled={ isAccepting }
+							>{ isAccepting ? __( 'Accepting…', 'wp-parsely' ) : __( 'Accept', 'wp-parsely' ) }</Button>
 							<Button
 								variant="tertiary"
 								onClick={ () => onDiscard( activeLink ) }
@@ -109,7 +121,7 @@ export const PreviewFooter = ( {
 								<>
 									<Button
 										variant="primary"
-										onClick={ () => activeLink && onAccept( activeLink ) }
+										onClick={ () => activeLink && onUpdateLink( activeLink ) }
 									>{ __( 'Update Link', 'wp-parsely' ) }</Button>
 									<VerticalDivider size={ 36 } />
 									<Button
@@ -123,8 +135,10 @@ export const PreviewFooter = ( {
 								<Button
 									variant="tertiary"
 									onClick={ () => activeLink && onRemove( activeLink ) }
+									isBusy={ isRemoving }
+									disabled={ isRemoving }
 									isDestructive
-								>{ __( 'Remove', 'wp-parsely' ) }</Button>
+								>{ isRemoving ? __( 'Removing…', 'wp-parsely' ) : __( 'Remove', 'wp-parsely' ) }</Button>
 							) }
 						</>
 					) }

@@ -72,18 +72,29 @@ const SuggestionsTab = ( {
 }: SuggestionsTabProps ): React.JSX.Element => {
 	const trafficBoostProvider = TrafficBoostProvider.getInstance();
 
-	const { selectedLink, suggestions, currentPage, itemsPerPage } = useSelect( ( select ) => ( {
+	const {
+		currentPost,
+		selectedLink,
+		suggestions,
+		currentPage,
+		itemsPerPage,
+		isGeneratingSuggestions,
+	} = useSelect( ( select ) => ( {
+		currentPost: select( TrafficBoostStore ).getCurrentPost(),
 		selectedLink: select( TrafficBoostStore ).getSelectedLink(),
 		suggestions: select( TrafficBoostStore ).getSuggestions(),
 		currentPage: select( TrafficBoostStore ).getSuggestionsPage(),
 		itemsPerPage: select( TrafficBoostStore ).getSuggestionsItemsPerPage(),
+		isGeneratingSuggestions: select( TrafficBoostStore ).isGeneratingSuggestions(),
 	} ), [] );
 
 	const {
 		setSuggestionsPage,
 		setSuggestionsItemsPerPage,
 		addSuggestion,
+		setSuggestions,
 		updateSuggestion,
+		setIsGeneratingSuggestions,
 	} = useDispatch( TrafficBoostStore );
 
 	const addTrafficBoostLink = async ( post: HydratedPost ) => {
@@ -94,6 +105,30 @@ const SuggestionsTab = ( {
 		const updatedLink = await trafficBoostProvider.generateSuggestionForPost( trafficBoostLink );
 		updateSuggestion( updatedLink );
 	};
+
+	const handleGenerateSuggestions = async () => {
+		if ( ! currentPost ) {
+			return;
+		}
+
+		setIsGeneratingSuggestions( true );
+		const generatedSuggestions = await trafficBoostProvider.generateSuggestions( currentPost.id );
+		setSuggestions( generatedSuggestions );
+		setIsGeneratingSuggestions( false );
+	};
+
+	const GenerateButton = ( { variant }: { variant: 'primary' | 'secondary' | 'tertiary' } ): React.JSX.Element => (
+		<Button
+			icon={ update }
+			variant={ variant }
+			isBusy={ isGeneratingSuggestions }
+			disabled={ isGeneratingSuggestions }
+			className="traffic-boost-add-suggestion"
+			onClick={ handleGenerateSuggestions }
+		>
+			{ isGeneratingSuggestions ? __( 'Generating…', 'wp-parsely' ) : __( 'Generate', 'wp-parsely' ) }
+		</Button>
+	);
 
 	return (
 		<>
@@ -106,15 +141,16 @@ const SuggestionsTab = ( {
 				itemsPerPage={ itemsPerPage }
 				onPageChange={ setSuggestionsPage }
 				onItemsPerPageChange={ setSuggestionsItemsPerPage }
+				renderEmptyState={ () => (
+					<div className="traffic-boost-suggestions-empty-state">
+						<p>{ __( 'This post has no suggestions. Do you want to generate some?', 'wp-parsely' ) }</p>
+						<GenerateButton variant="primary" />
+					</div>
+				) }
 			>
-				<Button
-					icon={ update }
-					variant="secondary"
-					className="traffic-boost-add-suggestion"
-				>
-					{ __( 'Generate', 'wp-parsely' ) }
-				</Button>
+				<GenerateButton variant="secondary" />
 				<AddNewLinkButton
+					disabled={ isGeneratingSuggestions }
 					suggestions={ suggestions }
 					onPostClick={ addTrafficBoostLink }
 				/>

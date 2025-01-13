@@ -67,7 +67,16 @@ export const TrafficBoostSidebar = ( {
 			count: number
 		) => {
 			const tab = document.querySelector( tabSelector );
-			if ( ! tab || count <= 0 ) {
+			if ( ! tab ) {
+				return;
+			}
+
+			if ( count <= 0 ) {
+				// Remove the tab count if there are no items.
+				const counter = tab.querySelector( '.tab-count' );
+				if ( counter ) {
+					counter.remove();
+				}
 				return;
 			}
 

@@ -28,6 +28,7 @@ interface LinksListProps {
 	onClick?: ( link: TrafficBoostLink ) => void;
 	onPageChange?: ( page: number ) => void;
 	onItemsPerPageChange?: ( itemsPerPage: number ) => void;
+	renderEmptyState?: () => React.JSX.Element;
 }
 
 /**
@@ -47,6 +48,7 @@ export const LinksList = ( {
 	itemsPerPage = 3,
 	onPageChange,
 	onItemsPerPageChange,
+	renderEmptyState,
 }: LinksListProps ): React.JSX.Element => {
 	const [ isLoading, setIsLoading ] = useState( false );
 	const [ visibleLinks, setVisibleLinks ] = useState<TrafficBoostLink[]>( [] );
@@ -191,6 +193,9 @@ export const LinksList = ( {
 		}
 
 		if ( visibleLinks.length === 0 ) {
+			if ( renderEmptyState ) {
+				return renderEmptyState();
+			}
 			return <p>{ __( 'No posts found.', 'wp-parsely' ) }</p>;
 		}
 
