@@ -1,24 +1,24 @@
 /**
  * External dependencies
  */
-import { useDispatch, useSelect } from '@wordpress/data';
 import { useNavigate, useParams } from 'react-router-dom';
 
 /**
  * WordPress dependencies
  */
+import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
+import { ContentHelperError } from '../../../common/content-helper-error';
 import { PageContainer } from '../../components';
-import { TrafficBoostSidebar } from './sidebar/sidebar';
+import { TrafficBoostPreview } from './preview/preview';
 import { TrafficBoostLink, TrafficBoostProvider } from './provider';
+import { TrafficBoostSidebar } from './sidebar/sidebar';
 import { TrafficBoostStore } from './store';
 import './traffic-boost.scss';
-import { ContentHelperError } from '../../../common/content-helper-error';
-import { TrafficBoostPreview } from './preview/preview';
 
 /**
  * Traffic Boost Post page component.

@@ -171,6 +171,13 @@ export const LinksList = ( {
 		onPageChange?.( Math.min( currentPage + 1, totalPages ) );
 	};
 
+	/**
+	 * Handles the click event for the single link.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} suggestion The suggestion to click.
+	 */
 	const onSuggestionClickHandler = ( suggestion: TrafficBoostLink ) => {
 		setActiveLinkPostId( suggestion.targetPost.id );
 		onClick?.( suggestion );
@@ -180,18 +187,21 @@ export const LinksList = ( {
 	 * Renders the suggestions list and handles loading and empty state.
 	 *
 	 * @since 3.18.0
+	 *
+	 * @return {JSX.Element | null} The suggestions list.
 	 */
 	const renderLinksList = (): React.JSX.Element | null => {
 		if ( isLoading && visibleLinks.length === 0 ) {
 			return <Spinner />;
 		}
 
-		// If we have links data but nothing is visible yet, don't show the "no posts" message
+		// If we have links data but nothing is visible yet, don't show the "no posts" message.
 		const isInitialState = links.length > 0 && visibleLinks.length === 0;
 		if ( isInitialState ) {
 			return null;
 		}
 
+		// If there are no visible links, show the empty state.
 		if ( visibleLinks.length === 0 ) {
 			if ( renderEmptyState ) {
 				return renderEmptyState();
@@ -215,6 +225,13 @@ export const LinksList = ( {
 		);
 	};
 
+	/**
+	 * Handles the page change event.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {string} value The value of the page change.
+	 */
 	const handlePageChange = ( value?: string ) => {
 		if ( ! value ) {
 			return;

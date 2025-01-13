@@ -97,6 +97,13 @@ const SuggestionsTab = ( {
 		setIsGeneratingSuggestions,
 	} = useDispatch( TrafficBoostStore );
 
+	/**
+	 * Adds a traffic boost link to the current post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {HydratedPost} post The post to add to the current post.
+	 */
 	const addTrafficBoostLink = async ( post: HydratedPost ) => {
 		const trafficBoostLink = trafficBoostProvider.createSuggestion( post );
 		addSuggestion( trafficBoostLink );
@@ -106,6 +113,11 @@ const SuggestionsTab = ( {
 		updateSuggestion( updatedLink );
 	};
 
+	/**
+	 * Handles the generation of suggestions.
+	 *
+	 * @since 3.18.0
+	 */
 	const handleGenerateSuggestions = async () => {
 		if ( ! currentPost ) {
 			return;
@@ -117,6 +129,15 @@ const SuggestionsTab = ( {
 		setIsGeneratingSuggestions( false );
 	};
 
+	/**
+	 * Renders the generate button.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {Object} props         The component props.
+	 * @param {string} props.variant The variant of the button.
+	 * @return {JSX.Element} The generate button.
+	 */
 	const GenerateButton = ( { variant }: { variant: 'primary' | 'secondary' | 'tertiary' } ): React.JSX.Element => (
 		<Button
 			icon={ update }

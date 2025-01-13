@@ -1,24 +1,24 @@
 /**
  * WordPress dependencies
  */
+import { Icon } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import { link as linkIcon, linkOff } from '@wordpress/icons';
 import { addQueryArgs } from '@wordpress/url';
 
 /**
  * Internal dependencies
  */
+import { HydratedPost } from '../../../../common/base-wordpress-provider';
+import { SnackbarNotices } from '../../../../common/components/snackbar-notices';
 import { TrafficBoostLink } from '../provider';
 import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../store';
 import { PreviewFooter } from './components/preview-footer';
 import { PreviewHeader } from './components/preview-header';
 import { PreviewIframe } from './components/preview-iframe';
 import './preview.scss';
-import { HydratedPost } from '../../../../common/base-wordpress-provider';
-import { SnackbarNotices } from '../../../../common/components/snackbar-notices';
-import { __ } from '@wordpress/i18n';
-import { link as linkIcon, linkOff } from '@wordpress/icons';
-import { Icon } from '@wordpress/components';
 
 /**
  * Structure of a text selection.
@@ -148,7 +148,7 @@ export const TrafficBoostPreview = ( {
 				_wpnonce: window._parsely_traffic_boost_preview_nonce ?? '',
 			} );
 
-		// Only set loading state if URL actually changes
+		// Only set loading state if URL actually changes.
 		if ( newUrl !== previewUrl ) {
 			setIsLoading( true );
 			setPreviewUrl( newUrl );
@@ -195,6 +195,11 @@ export const TrafficBoostPreview = ( {
 		window.open( parselyDashboardUrl, '_blank' );
 	};
 
+	/**
+	 * Handles the next item event.
+	 *
+	 * @since 3.18.0
+	 */
 	const handleNext = () => {
 		let nextItem: TrafficBoostLink | undefined;
 
@@ -209,6 +214,11 @@ export const TrafficBoostPreview = ( {
 		}
 	};
 
+	/**
+	 * Handles the previous item event.
+	 *
+	 * @since 3.18.0
+	 */
 	const handlePrevious = () => {
 		let previousItem: TrafficBoostLink | undefined;
 
@@ -224,6 +234,13 @@ export const TrafficBoostPreview = ( {
 		}
 	};
 
+	/**
+	 * Handles the accept event.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {TrafficBoostLink} link The link to accept.
+	 */
 	const handleAccept = async ( link: TrafficBoostLink ) => {
 		setIsAccepting( link, true );
 
@@ -316,8 +333,13 @@ export const TrafficBoostPreview = ( {
 		}
 	};
 
+	/**
+	 * Handles the update link event.
+	 *
+	 * @since 3.18.0
+	 */
 	const handleUpdateLink = () => {
-		//console.log( 'update link' );
+		//TODO: Implement this.
 	};
 
 	if ( ! activePost || ! post ) {

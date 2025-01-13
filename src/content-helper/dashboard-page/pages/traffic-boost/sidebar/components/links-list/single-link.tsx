@@ -29,6 +29,11 @@ export const SingleLink = ( {
 }: SingleLinkProps ): React.JSX.Element => {
 	const suggestedPost = suggestion.targetPost;
 
+	/**
+	 * Handles the click event for the single link.
+	 *
+	 * @since 3.18.0
+	 */
 	const onClickHandler = () => {
 		onClick?.( suggestion );
 	};

@@ -2,6 +2,7 @@
  * WordPress imports
  */
 import { Button } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { arrowLeft, arrowRight } from '@wordpress/icons';
 
@@ -9,11 +10,10 @@ import { arrowLeft, arrowRight } from '@wordpress/icons';
  * Internal imports
  */
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
-import { TrafficBoostLink } from '../../provider';
-import { TextSelection } from '../preview';
 import { VerticalDivider } from '../../../../../common/components/vertical-divider';
+import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
-import { useSelect } from '@wordpress/data';
+import { TextSelection } from '../preview';
 
 /**
  * Props structure for PreviewFooter.

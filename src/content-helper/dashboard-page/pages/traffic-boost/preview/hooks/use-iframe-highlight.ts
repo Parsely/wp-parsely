@@ -10,6 +10,11 @@ import { escapeRegExp } from '../../../../../common/utils/functions';
 import { LinkType, TrafficBoostLink } from '../../provider';
 import { TextSelection } from '../preview';
 
+/**
+ * Props for the useIframeHighlight hook.
+ *
+ * @since 3.18.0
+ */
 interface UseIframeHighlightProps {
 	iframeRef: React.RefObject<HTMLIFrameElement>;
 	contentAreaRef: React.MutableRefObject<Element | null>;
@@ -258,7 +263,7 @@ export const useIframeHighlight = ( {
 					? `${ className } previous-suggestion`
 					: className;
 
-				// Find if the range is within a link and if it encompasses the entire link text
+				// Find if the range is within a link and if it encompasses the entire link text.
 				const container = range.commonAncestorContainer;
 				const linkNode = container.nodeType === Node.ELEMENT_NODE
 					? ( container as Element ).closest( 'a' )
@@ -267,13 +272,13 @@ export const useIframeHighlight = ( {
 				const isFullLinkSelected = linkNode && range.toString().trim() === linkNode.textContent?.trim();
 
 				if ( isFullLinkSelected && linkNode ) {
-					// Create a new span and insert it before the link
+					// Create a new span and insert it before the link.
 					linkNode.parentNode?.insertBefore( highlightSpan, linkNode );
 
-					// Move the link into the span
+					// Move the link into the span.
 					highlightSpan.appendChild( linkNode );
 				} else {
-					// Normal case - no links or partial link selection
+					// Normal case - no links or partial link selection.
 					range.deleteContents();
 					highlightSpan.appendChild( fragment );
 					range.insertNode( highlightSpan );
@@ -528,7 +533,8 @@ export const useIframeHighlight = ( {
 				highlightLinkSuggestion( iframeDocument, activeLink.smartLink.text, activeLink.smartLink.offset ?? 0 );
 			}
 		} catch ( error ) {
-			// Silently fail if there's an error highlighting smart link text.
+			// eslint-disable-next-line no-console
+			console.error( 'WP Parsely: Error highlighting smart link text', error );
 		}
 	}, [ activeLink, highlightInboundLink, highlightLinkSuggestion, isInboundLink ] );
 

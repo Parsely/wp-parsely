@@ -3,7 +3,8 @@
  */
 import { Spinner } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
-import { useCallback, useEffect, useRef, useState, useMemo } from '@wordpress/element';
+import { useCallback, useEffect, useMemo, useRef, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal imports
@@ -14,7 +15,6 @@ import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
 import { TextSelection } from '../preview';
 import { TextSelectionTooltip } from './text-selection-tooltip';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Props structure for PreviewIframe.
@@ -72,10 +72,20 @@ export const PreviewIframe = ( {
 		__( 'Almost there! Finalizing link suggestions…', 'wp-parsely' ),
 	], [] );
 
+	/**
+	 * Sets the message index to a random index based on the messages array length.
+	 *
+	 * @since 3.18.0
+	 */
 	useEffect( () => {
 		setMessageIndex( Math.floor( Math.random() * messages.length ) );
 	}, [ activeLink, messages ] );
 
+	/**
+	 * Highlights the smart link in the iframe.
+	 *
+	 * @since 3.18.0
+	 */
 	const {
 		injectHighlightStyles,
 		highlightSmartLink,
@@ -242,6 +252,10 @@ export const PreviewIframe = ( {
 
 	/**
 	 * Handles the iframe load event.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {HTMLIFrameElement} iframe The iframe element to handle the load event for.
 	 */
 	const handleIframeLoad = useCallback( async ( iframe: HTMLIFrameElement ) => {
 		if ( ! iframe || ! iframe.contentDocument ) {
@@ -280,9 +294,11 @@ export const PreviewIframe = ( {
 
 	/**
 	 * Handles iframe initialization and cleanup.
+	 *
+	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		// If we're generating placement, don't try to set up the iframe yet
+		// If we're generating placement, don't try to set up the iframe yet.
 		if ( isGeneratingPlacement ) {
 			return;
 		}
@@ -356,10 +372,10 @@ export const PreviewIframe = ( {
 			return;
 		}
 
-		// Set loading state to true as we're about to reload
+		// Set loading state to true as we're about to reload.
 		onLoadingChange( true );
 
-		// Use a small timeout to ensure the iframe is in the DOM
+		// Use a small timeout to ensure the iframe is in the DOM.
 		const timeoutId = setTimeout( () => {
 			const iframe = iframeRef.current;
 			if ( iframe ) {

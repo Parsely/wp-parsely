@@ -5,6 +5,10 @@ import { Spinner, TabPanel } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+
+/**
+ * External dependencies
+ */
 import { useNavigate } from 'react-router-dom';
 
 /**
@@ -40,7 +44,6 @@ export const TrafficBoostSidebar = ( {
 }: TrafficBoostSidebarProps ): React.JSX.Element => {
 	const navigate = useNavigate();
 
-	// Get state from store
 	const {
 		post,
 		selectedTab,
@@ -53,7 +56,6 @@ export const TrafficBoostSidebar = ( {
 		inboundLinks: select( TrafficBoostStore ).getInboundLinks(),
 	} ), [] );
 
-	// Get dispatch actions
 	const { setSelectedTab } = useDispatch( TrafficBoostStore );
 
 	/**
@@ -71,8 +73,8 @@ export const TrafficBoostSidebar = ( {
 				return;
 			}
 
+			// Remove the tab count if there are no items.
 			if ( count <= 0 ) {
-				// Remove the tab count if there are no items.
 				const counter = tab.querySelector( '.tab-count' );
 				if ( counter ) {
 					counter.remove();

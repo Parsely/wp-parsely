@@ -155,7 +155,14 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 		return false;
 	}, [] );
 
-	const isAllLinkTextSelected = useCallback( () => {
+	/**
+	 * Checks if the selection is the entire link text.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @return {boolean} True if the selection is the entire link text, false otherwise.
+	 */
+	const isAllLinkTextSelected = useCallback( (): boolean => {
 		const range = selection.getRangeAt( 0 );
 		const container = range.commonAncestorContainer;
 
@@ -295,7 +302,7 @@ export const TextSelectionTooltip = ( {
 	 * @return {boolean} True if selection was expanded to a link, false otherwise.
 	 */
 	const expandToLinkNode = ( docSelection: Selection, range: Range ): boolean => {
-		// Find if selection is within an anchor tag
+		// Find if selection is within an anchor tag.
 		const container = range.commonAncestorContainer;
 		const linkNode = container.nodeType === Node.ELEMENT_NODE
 			? ( container as Element ).closest( 'a' )
@@ -307,11 +314,11 @@ export const TextSelectionTooltip = ( {
 		}
 
 		if ( linkNode ) {
-			// Create a new range that encompasses the entire link
+			// Create a new range that encompasses the entire link.
 			const newRange = range.cloneRange();
 			newRange.selectNodeContents( linkNode );
 
-			// Update the selection
+			// Update the selection.
 			docSelection.removeAllRanges();
 			docSelection.addRange( newRange );
 			return true;
@@ -368,7 +375,7 @@ export const TextSelectionTooltip = ( {
 		// Get the selection.
 		const docSelection = iframeDocument.getSelection();
 
-		// Clean up existing highlight with animation if selection is collapsed
+		// Clean up existing highlight with animation if selection is collapsed.
 		const existingHighlight = iframeDocument.querySelector( '.parsely-traffic-boost-highlight' );
 		if ( existingHighlight ) {
 			if ( ! docSelection || docSelection.isCollapsed ) {
@@ -383,7 +390,7 @@ export const TextSelectionTooltip = ( {
 				}
 				return;
 			}
-			// If we have a new selection, remove old highlight immediately without animation
+			// If we have a new selection, remove old highlight immediately without animation.
 			existingHighlight.remove();
 		}
 
@@ -407,9 +414,9 @@ export const TextSelectionTooltip = ( {
 			return;
 		}
 
-		// If selection is inside a link, expand to encompass the entire link
+		// If selection is inside a link, expand to encompass the entire link.
 		if ( ! expandToLinkNode( docSelection, range ) ) {
-			// Only expand to word boundary if we didn't expand to a link
+			// Only expand to word boundary if we didn't expand to a link.
 			expandToWordBoundary( docSelection, range );
 		}
 
@@ -478,6 +485,11 @@ export const TextSelectionTooltip = ( {
 		iframeDocument.addEventListener( 'scroll', scrollHandler, { passive: true } );
 		window.addEventListener( 'scroll', scrollHandler, { passive: true } );
 
+		/**
+		 * Cleans up the highlight and event listeners.
+		 *
+		 * @since 3.18.0
+		 */
 		const cleanup = () => {
 			iframeDocument.removeEventListener( 'scroll', scrollHandler );
 			window.removeEventListener( 'scroll', scrollHandler );

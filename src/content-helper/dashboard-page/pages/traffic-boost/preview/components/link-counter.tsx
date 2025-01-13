@@ -2,12 +2,13 @@
  * WordPress dependencies
  */
 import { Button } from '@wordpress/components';
+import { useDispatch } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { useDispatch } from '@wordpress/data';
 import { LinkType, PostLinks } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 
@@ -52,6 +53,11 @@ export const LinkCounter = ( {
 
 	const { setPreviewLinkType } = useDispatch( TrafficBoostStore );
 
+	/**
+	 * Sets the selected link type and preview link type when the initial selected link type changes.
+	 *
+	 * @since 3.18.0
+	 */
 	useEffect( () => {
 		setSelectedLinkType( initialSelectedLinkType );
 		setPreviewLinkType( initialSelectedLinkType );
@@ -109,11 +115,15 @@ export const LinkCounter = ( {
 			<div className="traffic-boost-preview-info-links-summary">
 				{ postLinks.total > 0 ? (
 					<>
-						Contains { postLinks.total } outbound links:
+						{ sprintf(
+							/* translators: %d: number of outbound links */
+							__( 'Contains %d outbound links:', 'wp-parsely' ),
+							postLinks.total
+						) }
 					</>
 				) : (
 					<>
-						This post has no outbound links.
+						{ __( 'This post has no outbound links.', 'wp-parsely' ) }
 					</>
 				) }
 			</div>
@@ -124,7 +134,11 @@ export const LinkCounter = ( {
 						isPressed={ isSelected( 'external' ) }
 						onClick={ () => handleLinkTypeClick( 'external' ) }
 					>
-						{ links.external } external
+						{ sprintf(
+							/* translators: %d: number of outbound links */
+							__( '%d external', 'wp-parsely' ),
+							links.external
+						) }
 					</Button>
 				) }
 				{ links.internal > 0 && (
@@ -133,7 +147,11 @@ export const LinkCounter = ( {
 						isPressed={ isSelected( 'internal' ) }
 						onClick={ () => handleLinkTypeClick( 'internal' ) }
 					>
-						{ links.internal } internal
+						{ sprintf(
+							/* translators: %d: number of internal links */
+							__( '%d internal', 'wp-parsely' ),
+							links.internal
+						) }
 					</Button>
 				) }
 				{ links.smart > 0 && (
@@ -142,7 +160,11 @@ export const LinkCounter = ( {
 						isPressed={ isSelected( 'smart' ) }
 						onClick={ () => handleLinkTypeClick( 'smart' ) }
 					>
-						{ links.smart } smart links
+						{ sprintf(
+							/* translators: %d: number of smart links */
+							__( '%d smart links', 'wp-parsely' ),
+							links.smart
+						) }
 					</Button>
 				) }
 			</div>

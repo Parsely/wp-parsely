@@ -25,12 +25,28 @@ interface VerticalMoreMenuProps {
 	onViewInParseLyClick: ( post: HydratedPost ) => void;
 }
 
+/**
+ * VerticalMoreMenu component.
+ *
+ * This component is used to display a dropdown menu with actions for a post.
+ *
+ * @since 3.18.0
+ *
+ * @param {VerticalMoreMenuProps} props - The props for the VerticalMoreMenu component.
+ */
 const VerticalMoreMenu = ( {
 	post,
 	onEditClick,
 	onViewInNewTabClick,
 	onViewInParseLyClick,
 }: VerticalMoreMenuProps ): React.JSX.Element => {
+	/**
+	 * Handles the click event for the dropdown menu items.
+	 *
+	 * @param {string}   type    - The type of action to perform.
+	 * @param {Function} onClose - The function to call when the action is performed.
+	 * @since 3.18.0
+	 */
 	const onClickHandler = ( type: string, onClose: () => void ) => {
 		switch ( type ) {
 			case 'edit':
@@ -98,6 +114,11 @@ export const PreviewHeader = ( {
 	onOpenPostInNewTab,
 	onOpenParselyDashboard,
 }: PreviewHeaderProps ): React.JSX.Element => {
+	/**
+	 * Toggles the frontend preview state.
+	 *
+	 * @since 3.18.0
+	 */
 	const onToggleFrontendPreview = () => {
 		setIsFrontendPreview( ! isFrontendPreview );
 	};

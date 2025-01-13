@@ -4,6 +4,7 @@
 import { __ } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
+
 /**
  * Internal dependencies
  */
@@ -28,8 +29,7 @@ interface TabsContentProps {
  *
  * Displays different content based on the active tab:
  * - Suggestions tab shows recommended content to boost
- * - Boost Links tab shows currently boosted content
- * - Settings tab shows Traffic Boost configuration options
+ * - Inbound Links tab shows currently boosted content
  *
  * @since 3.18.0
  *

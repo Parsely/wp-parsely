@@ -1,6 +1,8 @@
 <?php
 /**
- * Template for the preview frame
+ * Template for the preview frame.
+ *
+ * @since 3.18.0
  *
  * @package Parsely
  * @global string $post_title The title of the post being previewed
@@ -51,7 +53,7 @@ declare(strict_types=1);
 
 			// Prevent keyboard shortcuts.
 			document.addEventListener('keydown', function(e) {
-				// Prevent view source (Ctrl+U)
+				// Prevent view source (Ctrl+U).
 				if (e.ctrlKey && e.key === 'u') {
 					e.preventDefault();
 					return false;
