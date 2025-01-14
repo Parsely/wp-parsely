@@ -189,7 +189,11 @@ export const useIframeHighlight = ( {
 			textNodes.push( node );
 
 			// Find the closest block-level parent.
-			const blockParent = node.parentElement?.closest( 'p' );
+			const blockParent = node.parentElement?.closest(
+				'article, aside, blockquote, details, dialog, dd, div, dl, dt, ' +
+				'fieldset, figcaption, figure, footer, form, h1, h2, h3, h4, h5, h6, ' +
+				'header, hgroup, hr, li, main, nav, ol, p, pre, section, table, ul'
+			);
 
 			nodePositions.push( {
 				node,

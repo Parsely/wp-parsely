@@ -69,6 +69,7 @@ type TrafficBoostState = {
 	inboundLinksTab: InboundLinksTabState;
 	acceptingLinks: string[];
 	removingLinks: string[];
+	generatingLinks: string[];
 	isGeneratingSuggestions: boolean;
 };
 
@@ -292,6 +293,17 @@ interface SetIsGeneratingSuggestionsAction {
 }
 
 /**
+ * Interface for the SetIsGeneratingAction.
+ *
+ * @since 3.18.0
+ */
+interface SetIsGeneratingAction {
+	type: 'SET_IS_GENERATING';
+	link: TrafficBoostLink;
+	value: boolean;
+}
+
+/**
  * Union type for all possible action types.
  *
  * @since 3.18.0
@@ -317,7 +329,8 @@ type ActionTypes =
 	| UpdateSuggestionAction
 	| SetIsAcceptingAction
 	| SetIsRemovingAction
-	| SetIsGeneratingSuggestionsAction;
+	| SetIsGeneratingSuggestionsAction
+	| SetIsGeneratingAction;
 
 /**
  * Default state for the Traffic Boost store.
@@ -346,6 +359,7 @@ const defaultState: TrafficBoostState = {
 	},
 	acceptingLinks: [],
 	removingLinks: [],
+	generatingLinks: [],
 	isGeneratingSuggestions: false,
 };
 
@@ -538,6 +552,13 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 					...state,
 					isGeneratingSuggestions: action.value,
 				};
+			case 'SET_IS_GENERATING':
+				return {
+					...state,
+					generatingLinks: action.value
+						? [ ...state.generatingLinks, action.link.uid ]
+						: state.generatingLinks.filter( ( uid ) => uid !== action.link.uid ),
+				};
 			default:
 				return state;
 		}
@@ -676,6 +697,13 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 				value,
 			};
 		},
+		setIsGenerating( link: TrafficBoostLink, value: boolean ): SetIsGeneratingAction {
+			return {
+				type: 'SET_IS_GENERATING',
+				link,
+				value,
+			};
+		},
 	},
 	selectors: {
 		isLoading( state: TrafficBoostState ): boolean {
@@ -728,6 +756,9 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 		},
 		isGeneratingSuggestions( state: TrafficBoostState ): boolean {
 			return state.isGeneratingSuggestions;
+		},
+		isGenerating( state: TrafficBoostState, link: TrafficBoostLink ): boolean {
+			return state.generatingLinks.includes( link.uid );
 		},
 	},
 } );
