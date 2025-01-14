@@ -227,7 +227,6 @@ export const PostExcerptSuggestions = ( {
 			<LeafIcon size={ 16 } />
 			<div className="wp-parsely-excerpt-generator-header-label">
 				{ __( 'Generate With Parse.ly', 'wp-parsely' ) }
-				<span className="beta-label">{ __( 'Beta', 'wp-parsely' ) }</span>
 			</div>
 		</div>;
 
