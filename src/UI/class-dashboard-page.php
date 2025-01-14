@@ -63,25 +63,25 @@ final class Dashboard_Page {
 	public function handle_preview_template(): void {
 		// Verify user capabilities.
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_die( 'You do not have permission to access this preview.' );
+			wp_die( esc_html__( 'You do not have permission to access this preview.', 'wp-parsely' ) );
 		}
 
 		// Verify nonce.
 		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
 		if ( 0 === wp_verify_nonce( $nonce, 'parsely_preview' ) ) {
-			wp_die( 'Invalid preview request.' );
+			wp_die( esc_html__( 'Invalid preview request.', 'wp-parsely' ) );
 		}
 
 		$post_id = isset( $_GET['post_id'] ) ? intval( $_GET['post_id'] ) : 0;
 		$post    = get_post( $post_id );
 
 		if ( null === $post ) {
-			wp_die( 'Post not found.' );
+			wp_die( esc_html__( 'Post not found.', 'wp-parsely' ) );
 		}
 
 		// Additional check: verify user can edit this specific post.
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			wp_die( 'You do not have permission to preview this post.' );
+			wp_die( esc_html__( 'You do not have permission to preview this post.', 'wp-parsely' ) );
 		}
 
 		// Disable admin bar.
