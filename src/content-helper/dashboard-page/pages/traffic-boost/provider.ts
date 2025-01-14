@@ -347,6 +347,10 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		// Request inbound smart links for the post.
 		const inboundSmartLinks = await this.getInboundSmartLinks( postId );
 
+		if ( inboundSmartLinks.length === 0 ) {
+			return [];
+		}
+
 		// Now we need to fetch the posts for the inbound smart links.
 		const fetchedPosts = await this.getPosts( {
 			include: inboundSmartLinks.map( ( link ) => link.source?.post_id ),
