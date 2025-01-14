@@ -95,6 +95,7 @@ const SuggestionsTab = ( {
 		setSuggestions,
 		updateSuggestion,
 		setIsGeneratingSuggestions,
+		setIsGenerating,
 	} = useDispatch( TrafficBoostStore );
 
 	/**
@@ -106,11 +107,15 @@ const SuggestionsTab = ( {
 	 */
 	const addTrafficBoostLink = async ( post: HydratedPost ) => {
 		const trafficBoostLink = trafficBoostProvider.createSuggestion( post );
-		addSuggestion( trafficBoostLink );
+		await addSuggestion( trafficBoostLink );
+		await setIsGenerating( trafficBoostLink, true );
 
 		// Generate the placement for the suggestion.
 		const updatedLink = await trafficBoostProvider.generateSuggestionForPost( trafficBoostLink );
-		updateSuggestion( updatedLink );
+		await updateSuggestion( updatedLink );
+		setTimeout( () => {
+			setIsGenerating( trafficBoostLink, false );
+		}, 1000 );
 	};
 
 	/**

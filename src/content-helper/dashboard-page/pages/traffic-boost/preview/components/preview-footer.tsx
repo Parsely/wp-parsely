@@ -66,9 +66,11 @@ export const PreviewFooter = ( {
 	const {
 		isAccepting,
 		isRemoving,
+		isGenerating,
 	} = useSelect( ( select ) => ( {
 		isAccepting: activeLink ? select( TrafficBoostStore ).isAccepting( activeLink ) : false,
 		isRemoving: activeLink ? select( TrafficBoostStore ).isRemoving( activeLink ) : false,
+		isGenerating: activeLink ? select( TrafficBoostStore ).isGenerating( activeLink ) : false,
 	} ), [ activeLink ] );
 
 	if ( ! post ) {
@@ -87,7 +89,7 @@ export const PreviewFooter = ( {
 				) }
 			</div>
 
-			{ ! activeLink?.isGeneratingPlacement && (
+			{ ! isGenerating && (
 				<div className="traffic-boost-preview-footer-actions">
 					{ ! isInboundLink && (
 						<>

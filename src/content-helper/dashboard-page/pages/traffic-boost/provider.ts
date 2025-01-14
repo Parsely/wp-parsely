@@ -30,7 +30,6 @@ export interface TrafficBoostLink {
 	postLinks: PostLinks;
 	smartLink?: InboundSmartLink;
 	isSuggestion: boolean;
-	isGeneratingPlacement: boolean;
 }
 
 /**
@@ -152,11 +151,12 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		const plainContent = tempDiv.textContent ?? tempDiv.innerText ?? '';
 		const blocks = splitIntoBlocks( plainContent, 50 );
 		const text = blocks[ Math.floor( Math.random() * blocks.length ) ];
+		const trimmedText = text.trim();
 
 		return {
 			uid: sourcePost.id.toString(),
 			href: sourcePost.guid.raw,
-			text,
+			text: trimmedText,
 			title: sourcePost.title.raw,
 			offset: 0,
 			applied: false,
@@ -206,7 +206,6 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 				postLinks: this.populatePostLinks( post ),
 				targetPost: post,
 				isSuggestion: true,
-				isGeneratingPlacement: false,
 			};
 		} );
 
@@ -248,7 +247,6 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 			targetPost: post,
 			postLinks: this.populatePostLinks( post ),
 			isSuggestion: true,
-			isGeneratingPlacement: true,
 		};
 	}
 
@@ -267,7 +265,6 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		return new Promise( ( resolve ) => {
 			setTimeout( () => {
 				suggestion.smartLink = this.createMockedSmartLink( suggestion.targetPost, suggestion.targetPost.id );
-				suggestion.isGeneratingPlacement = false;
 
 				resolve( suggestion );
 			}, 5000 );
@@ -369,7 +366,6 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 				postLinks: this.populatePostLinks( post ),
 				smartLink: inboundSmartLinks.find( ( link ) => link.source?.post_id === post.id ),
 				isSuggestion: false,
-				isGeneratingPlacement: false,
 			} ) )
 			.filter( ( link ) => link.smartLink !== undefined );
 	}

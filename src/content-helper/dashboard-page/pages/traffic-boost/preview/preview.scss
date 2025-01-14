@@ -124,14 +124,17 @@
 		align-items: flex-start;
 		gap: var(--grid-unit-5);
 		flex: 1 0 0;
+		min-width: 0;
 
 		.traffic-boost-preview-info-title {
 			overflow: hidden;
 			color: var(--gray-900);
 			text-overflow: ellipsis;
+			white-space: nowrap;
 			font-size: var(--font-size--large);
 			font-weight: 500;
 			line-height: var(--font-size--extra-large);
+			width: 100%;
 		}
 
 		.traffic-boost-preview-info-links {
