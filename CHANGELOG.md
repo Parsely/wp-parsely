@@ -281,7 +281,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initialize Parse.ly option before registering the setting ([#2001](https://github.com/Parsely/wp-parsely/pull/2001))
 
-
 ## [3.11.0](https://github.com/Parsely/wp-parsely/compare/3.10.0...3.11.0) - 2023-11-13
 
 ### Added
