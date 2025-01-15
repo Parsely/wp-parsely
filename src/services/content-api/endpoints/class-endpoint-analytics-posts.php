@@ -153,7 +153,6 @@ class Endpoint_Analytics_Posts extends Content_API_Base_Endpoint {
 		return $this->request( 'GET', $query_args );
 	}
 
-
 	/**
 	 * Appends multiple parameters to the URL.
 	 *
