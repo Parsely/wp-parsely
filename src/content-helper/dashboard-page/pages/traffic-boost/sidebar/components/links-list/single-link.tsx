@@ -20,7 +20,7 @@ type SingleLinkProps = {
  *
  * @since 3.18.0
  *
- * @param {SingleLinkProps} props Component props.
+ * @param {SingleLinkProps} props The component's props.
  */
 export const SingleLink = ( {
 	suggestion,

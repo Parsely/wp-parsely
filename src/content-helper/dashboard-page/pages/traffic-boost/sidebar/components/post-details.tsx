@@ -23,7 +23,7 @@ interface PostDetailsSidebarProps {
  *
  * @since 3.18.0
  *
- * @param {PostDetailsSidebarProps} props Component props.
+ * @param {PostDetailsSidebarProps} props The component's props.
  */
 export const PostDetailsSidebar = ( { post }: PostDetailsSidebarProps ): React.JSX.Element => {
 	return (

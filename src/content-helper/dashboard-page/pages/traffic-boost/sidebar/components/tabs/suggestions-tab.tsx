@@ -9,11 +9,11 @@ import { update } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
+import { HydratedPost } from '../../../../../../common/base-wordpress-provider';
 import { TrafficBoostLink, TrafficBoostProvider } from '../../../provider';
 import { TrafficBoostStore } from '../../../store';
 import { AddNewLinkButton } from '../add-new-link-button';
 import { LinksList } from '../links-list/links-list';
-import { HydratedPost } from '../../../../../../common/base-wordpress-provider';
 
 /**
  * Component that renders the suggestions settings.
@@ -65,7 +65,7 @@ interface SuggestionsTabProps {
  *
  * @since 3.18.0
  *
- * @param {SuggestionsTabProps} props Component props.
+ * @param {SuggestionsTabProps} props The component's props.
  */
 const SuggestionsTab = ( {
 	onSuggestionClick,

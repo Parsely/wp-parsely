@@ -1,17 +1,17 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { TrafficBoostLink } from '../../provider';
+import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../../store';
 import InboundLinksTab from './tabs/inbound-links-tab';
 import SuggestionsTab from './tabs/suggestions-tab';
-import { TrafficBoostSidebarTabs, TrafficBoostStore } from '../../store';
 
 /**
  * Defines the props structure for TabsContent.
@@ -50,7 +50,7 @@ export const TabsContent = ( {
 	const { setSelectedTab } = useDispatch( TrafficBoostStore );
 
 	/**
-	 * Set the selected tab when the active tab changes.
+	 * Sets the selected tab when the active tab changes.
 	 *
 	 * @since 3.18.0
 	 */

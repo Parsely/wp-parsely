@@ -2,6 +2,7 @@
  * WordPress imports
  */
 import { Button, DropdownMenu, MenuGroup, MenuItem } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { desktop, edit, external, moreVertical } from '@wordpress/icons';
 
@@ -11,9 +12,8 @@ import { desktop, edit, external, moreVertical } from '@wordpress/icons';
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { LeafIcon } from '../../../../../common/icons/leaf-icon';
 import { TrafficBoostLink } from '../../provider';
-import { LinkCounter } from './link-counter';
 import { isExternalURL } from '../utils';
-import { useEffect } from '@wordpress/element';
+import { LinkCounter } from './link-counter';
 
 /**
  * Props structure for VerticalMoreMenu.
@@ -34,7 +34,7 @@ interface VerticalMoreMenuProps {
  *
  * @since 3.18.0
  *
- * @param {VerticalMoreMenuProps} props - The props for the VerticalMoreMenu component.
+ * @param {VerticalMoreMenuProps} props The component's props.
  */
 const VerticalMoreMenu = ( {
 	post,
@@ -45,9 +45,10 @@ const VerticalMoreMenu = ( {
 	/**
 	 * Handles the click event for the dropdown menu items.
 	 *
-	 * @param {string}   type    - The type of action to perform.
-	 * @param {Function} onClose - The function to call when the action is performed.
 	 * @since 3.18.0
+	 *
+	 * @param {string}   type    The type of action to perform.
+	 * @param {Function} onClose The function to call when the action is performed.
 	 */
 	const onClickHandler = ( type: string, onClose: () => void ) => {
 		switch ( type ) {
@@ -106,7 +107,7 @@ interface PreviewHeaderProps {
  *
  * @since 3.18.0
  *
- * @param {PreviewHeaderProps} props Component props.
+ * @param {PreviewHeaderProps} props The component's props.
  */
 export const PreviewHeader = ( {
 	activeLink,

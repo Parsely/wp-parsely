@@ -30,7 +30,7 @@ interface AddNewLinkButtonProps {
  *
  * @since 3.18.0
  *
- * @param {AddNewLinkButtonProps} props - The props for the component.
+ * @param {AddNewLinkButtonProps} props The component's props.
  */
 export const AddNewLinkButton = ( {
 	disabled,

@@ -46,7 +46,7 @@ interface TrafficBoostPreviewProps {
  *
  * @since 3.18.0
  *
- * @param {TrafficBoostPreviewProps} props - The props for the TrafficBoostPreview component.
+ * @param {TrafficBoostPreviewProps} props The component's props.
  */
 export const TrafficBoostPreview = ( {
 	activeLink: providedActiveLink,

@@ -72,7 +72,7 @@ const ParselyDashboard = () => {
 			const link = item.querySelector( 'a' );
 			const hashPath = link?.getAttribute( 'href' )?.split( '#' )[ 1 ];
 
-			// Get the base paths for comparison (first segment of the path)
+			// Get the base paths for comparison (first segment of the path).
 			const currentBasePath = location.pathname.split( '/' )[ 1 ];
 			const menuBasePath = hashPath?.split( '/' )[ 1 ];
 

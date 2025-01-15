@@ -1,10 +1,10 @@
 /**
  * WordPress imports
  */
-import { __ } from '@wordpress/i18n';
-import { useCallback, useEffect, createRoot, useState } from '@wordpress/element';
-import { debounce } from '@wordpress/compose';
 import { Button } from '@wordpress/components';
+import { debounce } from '@wordpress/compose';
+import { createRoot, useCallback, useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import { link, warning } from '@wordpress/icons';
 
 /**
@@ -128,7 +128,7 @@ interface TextSelectionPopoverProps {
  *
  * @since 3.18.0
  *
- * @param {TextSelectionPopoverProps} props Component props.
+ * @param {TextSelectionPopoverProps} props The component's props.
  */
 const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorClick }: TextSelectionPopoverProps ): JSX.Element => {
 	useIframeStyles( iframeDocument );
@@ -246,7 +246,7 @@ interface TextSelectionTooltipProps {
  *
  * @since 3.18.0
  *
- * @param {TextSelectionTooltipProps} props Component props.
+ * @param {TextSelectionTooltipProps} props The component's props.
  */
 export const TextSelectionTooltip = ( {
 	iframeRef,

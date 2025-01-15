@@ -36,7 +36,7 @@ interface TrafficBoostSidebarProps {
  *
  * @since 3.18.0
  *
- * @param {TrafficBoostSidebarProps} props Component props.
+ * @param {TrafficBoostSidebarProps} props The component's props.
  */
 export const TrafficBoostSidebar = ( {
 	isLoading,

@@ -4,9 +4,10 @@
  *
  * @since 3.18.0
  *
- * @package Parsely
  * @global string $post_title The title of the post being previewed
  * @global string $block_content The rendered content of the post being previewed
+ *
+ * @package Parsely
  */
 
 declare(strict_types=1);
@@ -38,7 +39,6 @@ declare(strict_types=1);
 		a {
 			cursor: pointer !important;
 		}
-
 		.wp-parsely-preview-wrapper {
 			padding-bottom: 46px;
 		}
@@ -76,4 +76,4 @@ declare(strict_types=1);
 	</div>
 	<?php wp_footer(); ?>
 </body>
-</html> 
+</html>

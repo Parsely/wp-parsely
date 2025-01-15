@@ -42,7 +42,7 @@ interface PreviewFooterProps {
  *
  * @since 3.18.0
  *
- * @param {PreviewFooterProps} props Component props.
+ * @param {PreviewFooterProps} props The component's props.
  */
 export const PreviewFooter = ( {
 	post,

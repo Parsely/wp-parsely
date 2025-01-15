@@ -19,7 +19,8 @@ interface VerticalDividerProps {
  * @since 3.16.0 Moved from `RelatedPostItem` and `TitleSuggestion`.
  * @since 3.18.0 Added size prop.
  *
- * @param {VerticalDividerProps} props Component props.
+ * @param {VerticalDividerProps} props The component's props.
+ *
  * @return {import('react').JSX.Element} The vertical divider component.
  */
 export const VerticalDivider = ( { size = 40 }: VerticalDividerProps ): JSX.Element => {

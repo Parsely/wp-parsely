@@ -9,15 +9,15 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal imports
  */
+import { usePrevious } from '@wordpress/compose';
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
+import { ErrorIcon } from '../../../../../common/icons/error-icon';
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
 import { TextSelection } from '../preview';
-import { TextSelectionTooltip } from './text-selection-tooltip';
 import { isExternalURL } from '../utils';
-import { ErrorIcon } from '../../../../../common/icons/error-icon';
-import { usePrevious } from '@wordpress/compose';
+import { TextSelectionTooltip } from './text-selection-tooltip';
 
 /**
  * Props structure for PreviewIframe.
@@ -42,7 +42,7 @@ interface PreviewIframeProps {
  *
  * @since 3.18.0
  *
- * @param {PreviewIframeProps} props Component props.
+ * @param {PreviewIframeProps} props The component's props.
  */
 export const PreviewIframe = ( {
 	previewUrl,

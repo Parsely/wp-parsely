@@ -8,8 +8,8 @@ import { chevronLeft } from '@wordpress/icons';
 /**
  * Internal dependencies
  */
-import { PostDetailsSidebar } from './post-details';
 import { HydratedPost } from '../../../../../common/base-wordpress-provider';
+import { PostDetailsSidebar } from './post-details';
 
 /**
  * Defines the props structure for SidebarHeader.
@@ -26,7 +26,7 @@ interface SidebarHeaderProps {
  *
  * @since 3.18.0
  *
- * @param {SidebarHeaderProps} props Component props.
+ * @param {SidebarHeaderProps} props The component's props.
  */
 export const SidebarHeader = ( { onBackClick, post }: SidebarHeaderProps ): React.JSX.Element => (
 	<div className="traffic-boost-sidebar-header">

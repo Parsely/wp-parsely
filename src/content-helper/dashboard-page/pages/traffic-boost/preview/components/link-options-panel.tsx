@@ -50,7 +50,7 @@ interface OptionsState {
  *
  * @since 3.18.0
  *
- * @param {LinkOptionsPanelProps} props Component props.
+ * @param {LinkOptionsPanelProps} props The component's props.
  */
 export const LinkOptionsPanel = ( {
 	post,

@@ -27,7 +27,7 @@ interface ThumbnailProps {
  *
  * @since 3.18.0
  *
- * @param {ThumbnailProps} props Component props.
+ * @param {ThumbnailProps} props The component's props.
  */
 export const Thumbnail = ( {
 	post,
