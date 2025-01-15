@@ -1,3 +1,6 @@
+/**
+ * Internal dependencies
+ */
 import { BaseWordPressProvider, HydratedPost } from '../../../common/base-wordpress-provider';
 import { InboundSmartLink } from '../../../editor-sidebar/smart-linking/provider';
 

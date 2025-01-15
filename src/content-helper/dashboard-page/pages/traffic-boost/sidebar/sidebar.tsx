@@ -1,15 +1,15 @@
 /**
+ * External dependencies
+ */
+import { useNavigate } from 'react-router-dom';
+
+/**
  * WordPress dependencies
  */
 import { Spinner, TabPanel } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-
-/**
- * External dependencies
- */
-import { useNavigate } from 'react-router-dom';
 
 /**
  * Internal dependencies

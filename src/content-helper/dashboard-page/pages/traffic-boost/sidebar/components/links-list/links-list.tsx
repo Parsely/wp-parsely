@@ -36,7 +36,7 @@ interface LinksListProps {
  *
  * @since 3.18.0
  *
- * @param {LinksListProps} props - Component props.
+ * @param {LinksListProps} props The component's props.
  */
 export const LinksList = ( {
 	children,
@@ -115,7 +115,7 @@ export const LinksList = ( {
 	}, [ calculateItemsPerPage ] );
 
 	/**
-	 * Updates visible links when page, itemsPerPage, or links change
+	 * Updates visible links when page, itemsPerPage, or links change.
 	 *
 	 * @since 3.18.0
 	 */
@@ -127,7 +127,7 @@ export const LinksList = ( {
 		const endIndex = startIndex + itemsPerPage;
 		setVisibleLinks( links.slice( startIndex, endIndex ) );
 
-		// Adjust current page if it exceeds total pages
+		// Adjust current page if it exceeds total pages.
 		if ( calculatedTotalPages < currentPage && calculatedTotalPages > 0 ) {
 			onPageChange?.( calculatedTotalPages );
 		}
@@ -140,13 +140,13 @@ export const LinksList = ( {
 	 */
 	useEffect( () => {
 		if ( activeLink && links ) {
-			// Find the index of the active link in the full list
+			// Find the index of the active link in the full list.
 			const activeIndex = links.findIndex( ( link ) =>
 				link.targetPost.id === activeLink.targetPost.id
 			);
 
 			if ( activeIndex !== -1 ) {
-				// Calculate the correct page number based on the link's position
+				// Calculate the correct page number based on the link's position.
 				const pageNumber = Math.floor( activeIndex / itemsPerPage ) + 1;
 				onPageChange?.( pageNumber );
 			}
