@@ -60,7 +60,6 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 // Load Telemetry classes.
 require_once __DIR__ . '/src/Telemetry/telemetry-init.php';
 
-
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\parsely_initialize_plugin' );
 /**
  * Registers the basic classes to initialize the plugin.
