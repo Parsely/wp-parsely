@@ -67,7 +67,7 @@ interface GenerateButtonProps {
  *
  * @since 3.18.0
  *
- * @param {GenerateButtonProps} props The component props.
+ * @param {GenerateButtonProps} props The component's props.
  */
 const GenerateButton = ( {
 	variant,
@@ -134,7 +134,7 @@ const SuggestionsTab = ( {
 	} = useDispatch( TrafficBoostStore );
 
 	/**
-	 * Adds a traffic boost link suggestion to the current post.
+	 * Adds a Traffic Boost link suggestion to the current post.
 	 *
 	 * @since 3.18.0
 	 *

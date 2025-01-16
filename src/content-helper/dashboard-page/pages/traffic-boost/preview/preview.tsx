@@ -42,7 +42,7 @@ interface TrafficBoostPreviewProps {
 }
 
 /**
- * Component that renders the traffic boost preview.
+ * Component that renders the Traffic Boost preview.
  *
  * @since 3.18.0
  *

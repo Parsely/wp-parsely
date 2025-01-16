@@ -32,7 +32,7 @@ interface LinksListProps {
 }
 
 /**
- * Displays a list of traffic boost links.
+ * Displays a list of Traffic Boost links.
  *
  * @since 3.18.0
  *

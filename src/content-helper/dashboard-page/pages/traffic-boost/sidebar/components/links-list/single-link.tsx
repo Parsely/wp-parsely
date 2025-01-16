@@ -21,7 +21,7 @@ type SingleLinkProps = {
 };
 
 /**
- * Displays a single traffic boost link.
+ * Displays a single Traffic Boost link.
  *
  * @since 3.18.0
  *
