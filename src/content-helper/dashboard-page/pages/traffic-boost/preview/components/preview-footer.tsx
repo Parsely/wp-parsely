@@ -9,7 +9,6 @@ import { arrowLeft, arrowRight } from '@wordpress/icons';
 /**
  * Internal imports
  */
-import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { VerticalDivider } from '../../../../../common/components/vertical-divider';
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
@@ -21,7 +20,6 @@ import { TextSelection } from '../preview';
  * @since 3.18.0
  */
 interface PreviewFooterProps {
-	post: HydratedPost;
 	activeLink: TrafficBoostLink | null;
 	onAccept: ( link: TrafficBoostLink ) => void;
 	onRemove: ( link: TrafficBoostLink ) => void;
@@ -45,7 +43,6 @@ interface PreviewFooterProps {
  * @param {PreviewFooterProps} props The component's props.
  */
 export const PreviewFooter = ( {
-	post,
 	activeLink,
 	onAccept,
 	onUpdateLink,
@@ -73,7 +70,7 @@ export const PreviewFooter = ( {
 		isGenerating: activeLink ? select( TrafficBoostStore ).isGenerating( activeLink ) : false,
 	} ), [ activeLink ] );
 
-	if ( ! post ) {
+	if ( ! activeLink ) {
 		return <></>;
 	}
 
@@ -123,7 +120,7 @@ export const PreviewFooter = ( {
 								<>
 									<Button
 										variant="primary"
-										onClick={ () => activeLink && onUpdateLink( activeLink ) }
+										onClick={ () => onUpdateLink( activeLink ) }
 									>{ __( 'Update Link', 'wp-parsely' ) }</Button>
 									<VerticalDivider size={ 36 } />
 									<Button
@@ -136,7 +133,7 @@ export const PreviewFooter = ( {
 							) : (
 								<Button
 									variant="tertiary"
-									onClick={ () => activeLink && onRemove( activeLink ) }
+									onClick={ () => onRemove( activeLink ) }
 									isBusy={ isRemoving }
 									disabled={ isRemoving }
 									isDestructive

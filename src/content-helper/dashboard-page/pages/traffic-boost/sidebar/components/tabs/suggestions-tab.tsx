@@ -52,6 +52,41 @@ const SuggestionsSettings = (): React.JSX.Element => {
 };
 
 /**
+ * Defines the props structure for GenerateButton.
+ *
+ * @since 3.18.0
+ */
+interface GenerateButtonProps {
+	variant: 'primary' | 'secondary' | 'tertiary';
+	isGeneratingSuggestions: boolean;
+	handleGenerateSuggestions: () => void;
+}
+
+/**
+ * Component that renders the generate button.
+ *
+ * @since 3.18.0
+ *
+ * @param {GenerateButtonProps} props The component props.
+ */
+const GenerateButton = ( {
+	variant,
+	isGeneratingSuggestions,
+	handleGenerateSuggestions,
+}: GenerateButtonProps ): React.JSX.Element => (
+	<Button
+		icon={ update }
+		variant={ variant }
+		isBusy={ isGeneratingSuggestions }
+		disabled={ isGeneratingSuggestions }
+		className="traffic-boost-add-suggestion"
+		onClick={ handleGenerateSuggestions }
+	>
+		{ isGeneratingSuggestions ? __( 'Generating…', 'wp-parsely' ) : __( 'Generate', 'wp-parsely' ) }
+	</Button>
+);
+
+/**
  * Defines the props structure for SuggestionsTab.
  *
  * @since 3.18.0
@@ -134,27 +169,6 @@ const SuggestionsTab = ( {
 		setIsGeneratingSuggestions( false );
 	};
 
-	/**
-	 * Renders the generate button.
-	 *
-	 * @since 3.18.0
-	 *
-	 * @param {Object} props         The component props.
-	 * @param {string} props.variant The variant of the button.
-	 */
-	const GenerateButton = ( { variant }: { variant: 'primary' | 'secondary' | 'tertiary' } ): React.JSX.Element => (
-		<Button
-			icon={ update }
-			variant={ variant }
-			isBusy={ isGeneratingSuggestions }
-			disabled={ isGeneratingSuggestions }
-			className="traffic-boost-add-suggestion"
-			onClick={ handleGenerateSuggestions }
-		>
-			{ isGeneratingSuggestions ? __( 'Generating…', 'wp-parsely' ) : __( 'Generate', 'wp-parsely' ) }
-		</Button>
-	);
-
 	return (
 		<>
 			<SuggestionsSettings />
@@ -169,11 +183,19 @@ const SuggestionsTab = ( {
 				renderEmptyState={ () => (
 					<div className="traffic-boost-suggestions-empty-state">
 						<p>{ __( 'This post has no suggestions. Do you want to generate some?', 'wp-parsely' ) }</p>
-						<GenerateButton variant="primary" />
+						<GenerateButton
+							variant="primary"
+							isGeneratingSuggestions={ isGeneratingSuggestions }
+							handleGenerateSuggestions={ handleGenerateSuggestions }
+						/>
 					</div>
 				) }
 			>
-				<GenerateButton variant="secondary" />
+				<GenerateButton
+					variant="secondary"
+					isGeneratingSuggestions={ isGeneratingSuggestions }
+					handleGenerateSuggestions={ handleGenerateSuggestions }
+				/>
 				<AddNewLinkButton
 					disabled={ isGeneratingSuggestions }
 					suggestions={ suggestions }

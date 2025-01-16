@@ -74,7 +74,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 		if ( ! TrafficBoostProvider.instance ) {
 			TrafficBoostProvider.instance = new TrafficBoostProvider();
 		}
-		return TrafficBoostProvider.instance as TrafficBoostProvider;
+		return TrafficBoostProvider.instance;
 	}
 
 	/**

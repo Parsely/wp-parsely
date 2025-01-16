@@ -68,19 +68,17 @@ const VerticalMoreMenu = ( {
 	return (
 		<DropdownMenu icon={ moreVertical } iconSize={ 24 } label={ __( 'Actions', 'wp-parsely' ) }>
 			{ ( { onClose } ) => (
-				<>
-					<MenuGroup>
-						<MenuItem icon={ edit } onClick={ () => onClickHandler( 'edit', onClose ) }>
-							{ __( 'Edit Post', 'wp-parsely' ) }
-						</MenuItem>
-						<MenuItem icon={ external } onClick={ () => onClickHandler( 'view-in-new-tab', onClose ) }>
-							{ __( 'View post in a new tab', 'wp-parsely' ) }
-						</MenuItem>
-						<MenuItem icon={ <LeafIcon /> } onClick={ () => onClickHandler( 'view-in-parse-ly', onClose ) }>
-							{ __( 'View in Parse.ly', 'wp-parsely' ) }
-						</MenuItem>
-					</MenuGroup>
-				</>
+				<MenuGroup>
+					<MenuItem icon={ edit } onClick={ () => onClickHandler( 'edit', onClose ) }>
+						{ __( 'Edit Post', 'wp-parsely' ) }
+					</MenuItem>
+					<MenuItem icon={ external } onClick={ () => onClickHandler( 'view-in-new-tab', onClose ) }>
+						{ __( 'View post in a new tab', 'wp-parsely' ) }
+					</MenuItem>
+					<MenuItem icon={ <LeafIcon /> } onClick={ () => onClickHandler( 'view-in-parse-ly', onClose ) }>
+						{ __( 'View in Parse.ly', 'wp-parsely' ) }
+					</MenuItem>
+				</MenuGroup>
 			) }
 		</DropdownMenu>
 	);
@@ -92,7 +90,6 @@ const VerticalMoreMenu = ( {
  * @since 3.18.0
  */
 interface PreviewHeaderProps {
-	post: HydratedPost;
 	activeLink: TrafficBoostLink | null;
 	onOpenPostInNewTab: () => void;
 	onOpenPostEditor: () => void;

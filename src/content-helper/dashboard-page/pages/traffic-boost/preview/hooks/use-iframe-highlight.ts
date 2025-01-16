@@ -167,7 +167,6 @@ export const useIframeHighlight = ( {
 	 */
 	const findText = useCallback( ( searchText: string, rootNode: Node, doc: Document ): Range[] => {
 		const ranges: Range[] = [];
-		const textNodes: Text[] = [];
 		const treeWalker = doc.createTreeWalker(
 			rootNode,
 			NodeFilter.SHOW_TEXT,
@@ -186,7 +185,6 @@ export const useIframeHighlight = ( {
 		// Build full text and track node positions.
 		while ( node ) {
 			const nodeText = node.textContent ?? '';
-			textNodes.push( node );
 
 			// Find the closest block-level parent.
 			const blockParent = node.parentElement?.closest(
@@ -269,10 +267,10 @@ export const useIframeHighlight = ( {
 					: className;
 
 				// Find if the range is within a link and if it encompasses the entire link text.
-				const container = range.commonAncestorContainer;
+				const container = range.commonAncestorContainer as Element;
 				const linkNode = container.nodeType === Node.ELEMENT_NODE
-					? ( container as Element ).closest( 'a' )
-					: ( container as Node ).parentElement?.closest( 'a' );
+					? container.closest( 'a' )
+					: container.parentElement?.closest( 'a' );
 
 				const isFullLinkSelected = linkNode && range.toString().trim() === linkNode.textContent?.trim();
 
@@ -430,7 +428,7 @@ export const useIframeHighlight = ( {
 			if ( originalRange.compareBoundaryPoints( Range.START_TO_START, selectionRange ) < 0 ) {
 				const beforeRange = originalRange.cloneRange();
 				beforeRange.setEnd( selectionRange.startContainer, selectionRange.startOffset );
-				selectionHighlight = highlightRange( beforeRange, className, true );
+				highlightRange( beforeRange, className, true );
 
 				// Adjust the selection range to start after the before range.
 				selectionRange.setStart( beforeRange.endContainer, beforeRange.endOffset );
@@ -440,7 +438,7 @@ export const useIframeHighlight = ( {
 			if ( originalRange.compareBoundaryPoints( Range.END_TO_END, selectionRange ) > 0 ) {
 				const afterRange = originalRange.cloneRange();
 				afterRange.setStart( selectionRange.endContainer, selectionRange.endOffset );
-				selectionHighlight = highlightRange( afterRange, className, true );
+				highlightRange( afterRange, className, true );
 			}
 
 			// Highlight the selection range.

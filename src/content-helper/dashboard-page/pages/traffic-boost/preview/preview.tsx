@@ -349,7 +349,6 @@ export const TrafficBoostPreview = ( {
 	return (
 		<div className="traffic-boost-preview">
 			<PreviewHeader
-				post={ post }
 				activeLink={ activeLink }
 				onOpenPostInNewTab={ openPostInNewTab }
 				onOpenPostEditor={ openPostEditor }
@@ -358,7 +357,6 @@ export const TrafficBoostPreview = ( {
 				setIsFrontendPreview={ setIsFrontendPreview }
 			/>
 			<PreviewIframe
-				post={ post }
 				activeLink={ activeLink }
 				previewUrl={ previewUrl }
 				isLoading={ isLoading }
@@ -374,7 +372,6 @@ export const TrafficBoostPreview = ( {
 			/>
 			<SnackbarNotices className="traffic-boost-preview-snackbar-notices" />
 			<PreviewFooter
-				post={ post }
 				activeLink={ activeLink }
 				totalItems={ totalItems }
 				itemIndex={ itemIndex }

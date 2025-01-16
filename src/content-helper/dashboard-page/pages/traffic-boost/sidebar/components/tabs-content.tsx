@@ -62,7 +62,7 @@ export const TabsContent = ( {
 	 * @since 3.18.0
 	 */
 	useEffect( () => {
-		if ( selectedLink && selectedLink.isSuggestion ) {
+		if ( selectedLink?.isSuggestion ) {
 			setSelectedTab( TrafficBoostSidebarTabs.SUGGESTIONS );
 		} else if ( selectedLink && ! selectedLink.isSuggestion ) {
 			setSelectedTab( TrafficBoostSidebarTabs.INBOUND_LINKS );

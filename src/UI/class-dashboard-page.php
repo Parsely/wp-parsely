@@ -109,7 +109,7 @@ final class Dashboard_Page {
 		$post_title = $post->post_title;
 
 		// Output the preview template.
-		include __DIR__ . '/../content-helper/dashboard-page/pages/traffic-boost/preview/preview-post.php';
+		include_once __DIR__ . '/../content-helper/dashboard-page/pages/traffic-boost/preview/preview-post.php';
 		exit;
 	}
 

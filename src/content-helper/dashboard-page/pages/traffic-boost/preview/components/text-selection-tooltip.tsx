@@ -164,12 +164,12 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 	 */
 	const isAllLinkTextSelected = useCallback( (): boolean => {
 		const range = selection.getRangeAt( 0 );
-		const container = range.commonAncestorContainer;
+		const container = range.commonAncestorContainer as Element;
 
 		// Find the closest link element.
 		const linkNode = container.nodeType === Node.ELEMENT_NODE
-			? ( container as Element ).closest( 'a' )
-			: ( container as Node ).parentElement?.closest( 'a' );
+			? container.closest( 'a' )
+			: container.parentElement?.closest( 'a' );
 
 		// If there's no link or no selection, return false.
 		if ( ! linkNode || selection.isCollapsed ) {
@@ -279,7 +279,7 @@ export const TextSelectionTooltip = ( {
 
 		// Find word boundary at end.
 		let endOffset = range.endOffset;
-		while ( endOffset < endText.length && /[^\s.,!?;:'"(\[{]/g.test( endText[ endOffset ] ) ) {
+		while ( endOffset < endText.length && /[^\s.,!?;:'"([{]/g.test( endText[ endOffset ] ) ) {
 			endOffset++;
 		}
 
@@ -305,10 +305,10 @@ export const TextSelectionTooltip = ( {
 	 */
 	const expandToLinkNode = ( docSelection: Selection, range: Range ): boolean => {
 		// Find if selection is within an anchor tag.
-		const container = range.commonAncestorContainer;
+		const container = range.commonAncestorContainer as Element;
 		const linkNode = container.nodeType === Node.ELEMENT_NODE
-			? ( container as Element ).closest( 'a' )
-			: ( container as Node ).parentElement?.closest( 'a' );
+			? container.closest( 'a' )
+			: container.parentElement?.closest( 'a' );
 
 		// If the selection is already the full link, return true.
 		if ( docSelection.toString() === linkNode?.textContent ) {

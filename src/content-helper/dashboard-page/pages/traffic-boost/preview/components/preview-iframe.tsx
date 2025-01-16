@@ -10,7 +10,6 @@ import { __ } from '@wordpress/i18n';
  * Internal imports
  */
 import { usePrevious } from '@wordpress/compose';
-import { HydratedPost } from '../../../../../common/base-wordpress-provider';
 import { ErrorIcon } from '../../../../../common/icons/error-icon';
 import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
@@ -25,7 +24,6 @@ import { TextSelectionTooltip } from './text-selection-tooltip';
  * @since 3.18.0
  */
 interface PreviewIframeProps {
-	post: HydratedPost;
 	activeLink?: TrafficBoostLink | null;
 	selectedText?: TextSelection | null;
 	previewUrl: string;
@@ -135,10 +133,8 @@ export const PreviewIframe = ( {
 	 * @param {HTMLIFrameElement} iframe The iframe element to disable navigation in.
 	 */
 	const disableNavigation = useCallback( ( iframe: HTMLIFrameElement ) => {
-		const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
-		const iframeWindow = iframe.contentWindow;
-
-		if ( ! iframeDocument || ! iframeWindow ) {
+		const iframeDocument = iframe?.contentDocument ?? iframe.contentWindow?.document;
+		if ( ! iframeDocument ) {
 			return;
 		}
 
@@ -178,10 +174,12 @@ export const PreviewIframe = ( {
 		}, true );
 
 		// Override window.open.
-		Object.defineProperty( iframeWindow, 'open', {
-			value: () => null,
-			writable: false,
-		} );
+		if ( iframe.contentWindow ) {
+			Object.defineProperty( iframe.contentWindow, 'open', {
+				value: () => null,
+				writable: false,
+			} );
+		}
 
 		// Disable right click.
 		iframeDocument.addEventListener( 'contextmenu', ( event ) => {
@@ -191,14 +189,16 @@ export const PreviewIframe = ( {
 
 		try {
 			// Attempt to disable history navigation.
-			iframeWindow.history.pushState = () => undefined;
-			iframeWindow.history.replaceState = () => undefined;
+			if ( iframe.contentWindow?.history ) {
+				iframe.contentWindow.history.pushState = () => undefined;
+				iframe.contentWindow.history.replaceState = () => undefined;
+			}
 		} catch ( error ) {
 			// Silently fail if we can't override history methods.
 		}
 
 		// Prevent navigation via history.
-		iframeWindow.addEventListener( 'popstate', ( event ) => {
+		iframe.contentWindow?.addEventListener( 'popstate', ( event ) => {
 			event.preventDefault();
 			event.stopPropagation();
 		}, true );
@@ -262,7 +262,7 @@ export const PreviewIframe = ( {
 	 * @param {HTMLIFrameElement} iframe The iframe element to handle the load event for.
 	 */
 	const handleIframeLoad = useCallback( ( iframe: HTMLIFrameElement ) => {
-		if ( ! iframe || ! iframe.contentDocument ) {
+		if ( ! iframe?.contentDocument ) {
 			return;
 		}
 
@@ -335,7 +335,7 @@ export const PreviewIframe = ( {
 	 */
 	useEffect( () => {
 		const iframe = iframeRef.current;
-		if ( ! iframe || contentAreaRef.current === null || isLoading || ! iframe.contentDocument ) {
+		if ( ! iframe?.contentDocument || contentAreaRef.current === null || isLoading ) {
 			return;
 		}
 
@@ -350,7 +350,7 @@ export const PreviewIframe = ( {
 	 */
 	useEffect( () => {
 		const iframe = iframeRef.current;
-		if ( ! iframe || contentAreaRef.current === null || isLoading || ! iframe.contentDocument ) {
+		if ( ! iframe?.contentDocument || contentAreaRef.current === null || isLoading ) {
 			return;
 		}
 
