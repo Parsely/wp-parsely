@@ -16,7 +16,7 @@ export class DashboardProvider extends BaseWordPressProvider {
 	 *
 	 * @since 3.18.0
 	 */
-	private static instance: DashboardProvider;
+	protected static instance: DashboardProvider;
 
 	/**
 	 * Returns the singleton instance of the DashboardProvider.
@@ -31,6 +31,4 @@ export class DashboardProvider extends BaseWordPressProvider {
 		}
 		return DashboardProvider.instance;
 	}
-
-	// Future dashboard-specific methods will be added here.
 }

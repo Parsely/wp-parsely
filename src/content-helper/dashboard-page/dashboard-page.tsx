@@ -18,6 +18,7 @@ import { createRoot, useEffect } from '@wordpress/element';
  * Internal dependencies
  */
 import { DashboardPage, SettingsPage, TrafficBoostPage } from './pages';
+import { TrafficBoostPostPage } from './pages/traffic-boost/single-post-component';
 
 domReady( () => {
 	const root = createRoot(
@@ -71,7 +72,11 @@ const ParselyDashboard = () => {
 			const link = item.querySelector( 'a' );
 			const hashPath = link?.getAttribute( 'href' )?.split( '#' )[ 1 ];
 
-			if ( hashPath === location.pathname ) {
+			// Get the base paths for comparison (first segment of the path).
+			const currentBasePath = location.pathname.split( '/' )[ 1 ];
+			const menuBasePath = hashPath?.split( '/' )[ 1 ];
+
+			if ( currentBasePath === menuBasePath || hashPath === location.pathname ) {
 				item.classList.add( 'current' );
 				link?.blur();
 			} else {
@@ -84,6 +89,7 @@ const ParselyDashboard = () => {
 		<Routes>
 			<Route path="/" element={ <DashboardPage /> } />
 			<Route path="/traffic-boost" element={ <TrafficBoostPage /> } />
+			<Route path="/traffic-boost/:postId" element={ <TrafficBoostPostPage /> } />
 			<Route path="/settings" element={ <SettingsPage /> } />
 		</Routes>
 	);

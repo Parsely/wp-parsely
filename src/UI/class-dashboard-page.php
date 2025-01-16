@@ -51,6 +51,88 @@ final class Dashboard_Page {
 		add_action( 'admin_menu', array( $this, 'add_dashboard_page_to_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_dashboard_page_scripts' ) );
 		add_filter( 'parent_file', array( $this, 'fix_submenu_highlighting' ) );
+		add_action( 'wp_ajax_parsely_post_preview', array( $this, 'handle_preview_template' ) );
+		add_filter( 'the_content', array( $this, 'add_parsely_preview_wrapper' ) );
+	}
+
+	/**
+	 * Handles the preview template.
+	 *
+	 * @since 3.18.0
+	 */
+	public function handle_preview_template(): void {
+		// Verify user capabilities.
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_die( esc_html__( 'You do not have permission to access this preview.', 'wp-parsely' ) );
+		}
+
+		// Verify nonce.
+		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+		if ( 0 === wp_verify_nonce( $nonce, 'parsely_preview' ) ) {
+			wp_die( esc_html__( 'Invalid preview request.', 'wp-parsely' ) );
+		}
+
+		$post_id = isset( $_GET['post_id'] ) ? intval( $_GET['post_id'] ) : 0;
+		$post    = get_post( $post_id );
+
+		if ( null === $post ) {
+			wp_die( esc_html__( 'Post not found.', 'wp-parsely' ) );
+		}
+
+		// Additional check: verify user can edit this specific post.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_die( esc_html__( 'You do not have permission to preview this post.', 'wp-parsely' ) );
+		}
+
+		// Disable admin bar.
+		show_admin_bar( false ); // phpcs:ignore WordPressVIPMinimum.UserExperience.AdminBarRemoval.RemovalDetected
+
+		// Set up the minimal editor environment.
+		wp_enqueue_style( 'wp-block-library' );
+		wp_enqueue_style( 'wp-block-library-theme' );
+		wp_enqueue_style( 'wp-edit-post' );
+
+		if ( has_blocks( $post ) ) {
+			// Get the parsed blocks.
+			$blocks        = parse_blocks( $post->post_content );
+			$block_content = '';
+
+			foreach ( $blocks as $block ) {
+				$block_content .= render_block( $block );
+			}
+		} else {
+			// If the post has no blocks, fallback to the_content filter.
+			$block_content = apply_filters( 'the_content', $post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+		}
+
+		// Get the post title.
+		$post_title = $post->post_title;
+
+		// Output the preview template.
+		include_once __DIR__ . '/../content-helper/dashboard-page/pages/traffic-boost/preview/preview-post.php';
+		exit;
+	}
+
+	/**
+	 * Adds a wrapper div for Parse.ly preview functionality.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param string $content The post content.
+	 * @return string The modified content with wrapper div if needed.
+	 */
+	public function add_parsely_preview_wrapper( string $content ): string {
+		if ( ! isset( $_GET['parsely_preview'] ) || 'true' !== $_GET['parsely_preview'] ) {
+			return $content;
+		}
+
+		// Validate nonce.
+		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+		if ( 0 === wp_verify_nonce( $nonce, 'parsely_preview' ) ) {
+			return $content;
+		}
+
+		return '<div class="wp-parsely-preview-wrapper">' . $content . '</div>';
 	}
 
 	/**
@@ -169,6 +251,20 @@ final class Dashboard_Page {
 			array(),
 			$asset_info['version']
 		);
+
+		wp_add_inline_script(
+			'parsely-dashboard-page',
+			'window._parsely_traffic_boost_preview_nonce = ' . wp_json_encode( wp_create_nonce( 'parsely_preview' ) ) . ';',
+			'before'
+		);
+
+		if ( $this->parsely->site_id_is_set() ) {
+			wp_add_inline_script(
+				'parsely-dashboard-page', 
+				'window.wpParselySiteId = ' . wp_json_encode( $this->parsely->get_site_id() ) . ';',
+				'before'
+			);
+		}
 	}
 
 	/**

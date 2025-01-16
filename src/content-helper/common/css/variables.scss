@@ -26,6 +26,8 @@ $base-unit-60: 3rem; // 48px.
 .wp-parsely-excerpt-generator,
 .editor-post-excerpt,
 .wp-parsely-popover,
+.wp-parsely-traffic-boost-preview-settings-popover,
+.wp-parsely-traffic-boost-add-new-link-popover,
 .wp-parsely-suggested-title-modal,
 .wp-parsely-smart-linking-review-modal,
 .wp-parsely-smart-linking-close-dialog,
@@ -88,10 +90,13 @@ $base-unit-60: 3rem; // 48px.
 	--font-size--extra-large: 1.2rem; // 19px.
 	--font-size--bigger: 2rem; // 32px.
 
+	--dashboard-width: 64rem; // 1024px.
+
 	--black: #000;
+	--dashboard-accent: #b9f16b;
+	--gray-350: #e1e3e5;
 	--sidebar-black: #1e1e1e;
 	--sidebar-white: #f0f0f0;
-	--dashboard-accent: #b9f16b;
-
-	--dashboard-width: 64rem; // 1024px.
+	--traffic-boost-header-background: rgba(56, 88, 233, 0.08);
+	--white: #fff;
 }

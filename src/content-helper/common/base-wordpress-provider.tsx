@@ -219,7 +219,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 			// Get the post thumbnail.
 			if ( post._embedded && post._embedded[ 'wp:featuredmedia' ] ) {
 				const featuredMedia = post._embedded[ 'wp:featuredmedia' ]?.[ 0 ];
-				thumbnail = featuredMedia?.media_details.sizes.thumbnail.source_url;
+				thumbnail = featuredMedia?.media_details?.sizes?.thumbnail?.source_url;
 			}
 
 			return {
@@ -249,7 +249,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 		id?: string,
 	): Promise<FetchResponse<HydratedPost[]>> {
 		const posts = await this.apiFetch<Post[]>( {
-			path: addQueryArgs( '/wp/v2/posts', { ...queryParams, _embed: true } ),
+			path: addQueryArgs( '/wp/v2/posts', { ...queryParams, _embed: true, context: 'edit' } ),
 			method: 'GET',
 		}, id );
 
@@ -259,6 +259,31 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 		return {
 			...posts,
 			data: hydratedPosts,
+		};
+	}
+
+	/**
+	 * Fetches a list of pages from the REST API and hydrates them with embedded data.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param {QueryParams?} queryParams Optional query parameters.
+	 * @param {string?}      id          The (optional) ID of the request.
+	 *
+	 * @return {Promise<FetchResponse<HydratedPost[]>>} The fetched and hydrated pages.
+	 */
+	public async getPages( queryParams: QueryParams = {}, id?: string ): Promise<FetchResponse<HydratedPost[]>> {
+		const pages = await this.apiFetch<Post[]>( {
+			path: addQueryArgs( '/wp/v2/pages', { ...queryParams, _embed: true, context: 'edit' } ),
+			method: 'GET',
+		}, id );
+
+		// Hydrate the fetched pages.
+		const hydratedPages = await this.hydratePosts( pages.data );
+
+		return {
+			...pages,
+			data: hydratedPages,
 		};
 	}
 
@@ -274,7 +299,7 @@ export abstract class BaseWordPressProvider extends BaseProvider {
 	 */
 	public async getPost( postId: number, id?: string ): Promise<FetchResponse<HydratedPost>> {
 		const post = await this.apiFetch<Post>( {
-			path: `/wp/v2/posts/${ postId }?_embed`,
+			path: `/wp/v2/posts/${ postId }?_embed&context=edit`,
 			method: 'GET',
 		}, id );
 
