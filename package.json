@@ -71,7 +71,7 @@
 		"@wordpress/icons": "^10.15.1",
 		"@wordpress/plugins": "^7.15.1",
 		"@wordpress/scripts": "^27.9.0",
-		"@wordpress/url": "^4.15.0",
+		"@wordpress/url": "^4.16.0",
 		"@wordpress/wordcount": "^4.15.0",
 		"concurrently": "^9.1.2",
 		"eslint-plugin-jest": "^28.11.0",
