@@ -107,7 +107,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 	}, [ setCurrentPost, setSelectedLink ] );
 
 	/**
-	 * Redirects to the traffic boost page if no post is found after fetching.
+	 * Redirects to the Traffic Boost page if no post is found after fetching.
 	 *
 	 * @since 3.18.0
 	 */

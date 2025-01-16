@@ -103,7 +103,7 @@ const useIframeStyles = ( iframeDocument: Document ) => {
 		`;
 		iframeDocument.head.appendChild( style );
 
-		// Cleanup function to remove styles when component unmounts
+		// Cleanup function to remove styles when component unmounts.
 		return () => {
 			wpComponentsLink.remove();
 			style.remove();
@@ -166,17 +166,17 @@ const TextSelectionPopover = ( { onSelect, iframeDocument, selection, onErrorCli
 		const range = selection.getRangeAt( 0 );
 		const container = range.commonAncestorContainer;
 
-		// Find the closest link element
+		// Find the closest link element.
 		const linkNode = container.nodeType === Node.ELEMENT_NODE
 			? ( container as Element ).closest( 'a' )
 			: ( container as Node ).parentElement?.closest( 'a' );
 
-		// If there's no link or no selection, return false
+		// If there's no link or no selection, return false.
 		if ( ! linkNode || selection.isCollapsed ) {
 			return false;
 		}
 
-		// Compare the selected text with the link's text content
+		// Compare the selected text with the link's text content.
 		return selection.toString().trim() === linkNode.textContent?.trim();
 	}, [ selection ] );
 
@@ -242,7 +242,8 @@ interface TextSelectionTooltipProps {
 }
 
 /**
- * A tooltip component that appears over selected text, offering to use that text as link text.
+ * A tooltip component that appears over selected text, offering to use that
+ * text as link text.
  *
  * @since 3.18.0
  *
@@ -292,7 +293,8 @@ export const TextSelectionTooltip = ( {
 	};
 
 	/**
-	 * Expands the current selection to encompass the entire link node if selection is within a link.
+	 * Expands the current selection to encompass the entire link node if
+	 * selection is within a link.
 	 *
 	 * @since 3.18.0
 	 *
@@ -390,6 +392,7 @@ export const TextSelectionTooltip = ( {
 				}
 				return;
 			}
+
 			// If we have a new selection, remove old highlight immediately without animation.
 			existingHighlight.remove();
 		}

@@ -230,10 +230,10 @@ export const PreviewIframe = ( {
 			}
 		};
 
-		// It might be possible that the highlighted element is not visible immediately after the iframe loads,
-		// because the iframe content is not fully loaded yet, such as a custom block still being loaded.
-		// So we use a MutationObserver to watch for DOM changes and scroll to the highlighted element once
-		// it's visible.
+		// The highlighted element might not be visible immediately after the iframe loads, due to
+		// the iframe content not being fully loaded yet (e.g. a custom block still being loaded).
+		// So we use a MutationObserver to watch for DOM changes and scroll to the highlighted
+		// element once it's visible.
 		const watchForHighlightedElement = () => {
 			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight' );
 			if ( highlightedElement ) {
@@ -307,7 +307,7 @@ export const PreviewIframe = ( {
 			handleIframeLoad( iframe );
 		};
 
-		// Only set loading state if the URL has changed
+		// Only set loading state if the URL has changed.
 		if ( iframe.src !== previewUrl ) {
 			onLoadingChange( true );
 		}
@@ -320,7 +320,7 @@ export const PreviewIframe = ( {
 	}, [ isGenerating, previewUrl, handleIframeLoad, onLoadingChange, iframeRef ] );
 
 	/**
-	 * Reset content area ref when active link changes
+	 * Resets content area ref when active link changes.
 	 *
 	 * @since 3.18.0
 	 */
@@ -358,7 +358,8 @@ export const PreviewIframe = ( {
 	}, [ highlightLinkType, iframeRef, isLoading, selectedLinkType ] );
 
 	/**
-	 * Picks a random message with interval based on message length when isGenerating is true.
+	 * Picks a random message with interval based on message length when
+	 * isGenerating is true.
 	 *
 	 * @since 3.18.0
 	 */

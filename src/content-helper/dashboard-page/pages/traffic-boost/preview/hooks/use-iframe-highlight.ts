@@ -29,7 +29,7 @@ interface UseIframeHighlightProps {
  *
  * @since 3.18.0
  *
- * @param {UseIframeHighlightProps} props The component props.
+ * @param {UseIframeHighlightProps} props The component's props.
  *
  * @return {Object} An object containing the highlight functions.
  */
@@ -368,7 +368,8 @@ export const useIframeHighlight = ( {
 			// Get all top-level highlights.
 			const highlights = iframeDocument.querySelectorAll( querySelector );
 			highlights.forEach( ( highlight ) => {
-				// Only process top-level highlights (those that aren't nested inside another highlight).
+				// Only process top-level highlights (those that aren't nested
+				// inside another highlight).
 				if ( ! highlight.parentElement?.closest( querySelector ) ) {
 					unwrapHighlight( highlight );
 				}
