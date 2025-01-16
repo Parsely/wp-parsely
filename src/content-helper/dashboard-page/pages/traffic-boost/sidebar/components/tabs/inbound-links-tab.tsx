@@ -20,7 +20,7 @@ interface InboundLinksTabProps {
 }
 
 /**
- * Component that renders the boost links tab.
+ * Component that renders the inbound links tab.
  *
  * @since 3.18.0
  *

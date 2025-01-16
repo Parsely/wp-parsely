@@ -187,8 +187,6 @@ export const LinksList = ( {
 	 * Renders the suggestions list and handles loading and empty state.
 	 *
 	 * @since 3.18.0
-	 *
-	 * @return {JSX.Element | null} The suggestions list.
 	 */
 	const renderLinksList = (): React.JSX.Element | null => {
 		if ( isLoading && visibleLinks.length === 0 ) {

@@ -311,6 +311,14 @@ export const useIframeHighlight = ( {
 				return;
 			}
 
+			/**
+			 * Removes a highlight and cleans up the parent node.
+			 *
+			 * @since 3.18.0
+			 *
+			 * @param {Element}    highlight The highlight element to remove.
+			 * @param {ParentNode} parent    The parent node of the highlight.
+			 */
 			const removeAndClean = ( highlight: Element, parent: ParentNode ) => {
 				// Move all child nodes before the highlight span.
 				while ( highlight.firstChild ) {
@@ -343,7 +351,13 @@ export const useIframeHighlight = ( {
 				} );
 			};
 
-			// Function to recursively unwrap nested highlights.
+			/**
+			 * Recursively unwraps nested highlights.
+			 *
+			 * @since 3.18.0
+			 *
+			 * @param {Element} highlight The highlight element to unwrap.
+			 */
 			const unwrapHighlight = ( highlight: Element ) => {
 				// First, recursively process any nested highlights.
 				const nestedHighlights = highlight.querySelectorAll( querySelector );

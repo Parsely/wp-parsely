@@ -34,8 +34,6 @@ interface TabsContentProps {
  * @since 3.18.0
  *
  * @param {TabsContentProps} props The component's props.
- *
- * @return {JSX.Element} The rendered tab content.
  */
 export const TabsContent = ( {
 	activeTab,

@@ -99,11 +99,11 @@ const SuggestionsTab = ( {
 	} = useDispatch( TrafficBoostStore );
 
 	/**
-	 * Adds a traffic boost link to the current post.
+	 * Adds a traffic boost link suggestion to the current post.
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {HydratedPost} post The post to add to the current post.
+	 * @param {HydratedPost} post The post that will be added to the suggestion list.
 	 */
 	const addTrafficBoostLink = async ( post: HydratedPost ) => {
 		const trafficBoostLink = trafficBoostProvider.createSuggestion( post );
@@ -141,7 +141,6 @@ const SuggestionsTab = ( {
 	 *
 	 * @param {Object} props         The component props.
 	 * @param {string} props.variant The variant of the button.
-	 * @return {JSX.Element} The generate button.
 	 */
 	const GenerateButton = ( { variant }: { variant: 'primary' | 'secondary' | 'tertiary' } ): React.JSX.Element => (
 		<Button

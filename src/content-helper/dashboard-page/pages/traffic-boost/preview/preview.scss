@@ -72,8 +72,8 @@
 
 			.components-spinner {
 				margin: 0;
-				width: to_rem(40px);
-				height: to_rem(40px);
+				width: var(--grid-unit-40);
+				height: var(--grid-unit-40);
 			}
 		}
 
@@ -103,7 +103,7 @@
 		gap: var(--grid-unit-10);
 
 		button {
-			padding: to_rem(6px);
+			padding: var(--grid-unit-5);
 			height: to_rem(30px);
 			min-width: to_rem(30px);
 			border-radius: to_rem(4px);
@@ -145,7 +145,7 @@
 			font-size: var(--font-size--medium);
 			font-weight: 400;
 			line-height: var(--font-size--extra-large);
-			min-height: 24px;
+			min-height: var(--grid-unit-30);
 
 			.traffic-boost-preview-info-links-counter {
 				display: flex;
@@ -228,30 +228,4 @@
 			}
 		}
 	}
-}
-
-// Add styles for the selection wrapper in the iframe.
-.parsely-traffic-boost-selected {
-	background-color: rgba(255, 241, 184, 0.3);
-	display: inline;
-	position: relative;
-}
-
-.wp-parsely-preview-wrapper ::selection {
-	background-color: rgba(255, 0, 0, 0.2) !important;
-	color: inherit;
-}
-
-.parsely-traffic-boost-highlight {
-	position: absolute;
-	z-index: 9;
-	pointer-events: none;
-}
-
-.parsely-traffic-boost-iframe-popover {
-	background: var(--sidebar-white);
-	border-radius: to_rem(4px);
-	box-shadow: 0 to_rem(4px) to_rem(8px) rgba(0, 0, 0, 0.2);
-	padding: var(--grid-unit-10);
-	pointer-events: auto;
 }

@@ -9,17 +9,17 @@
 	box-shadow:
 		0 1px 1px 0 rgba(0, 0, 0, 0.03),
 		0 1px 2px 0 rgba(0, 0, 0, 0.02),
-		0 3px 3px 0 rgba(0, 0, 0, 0.02),
-		0 4px 4px 0 rgba(0, 0, 0, 0.01);
+		0 to_rem(3px) to_rem(3px) 0 rgba(0, 0, 0, 0.02),
+		0 to_rem(4px) to_rem(4px) 0 rgba(0, 0, 0, 0.01);
 	background: var(--white);
-	border-radius: 8px;
+	border-radius: var(--grid-unit-10);
 	border-bottom: 1px solid var(--gray-200);
 	height: calc(100vh - to_rem(65px));
 
 	.traffic-boost-sidebar-header {
 		padding: var(--grid-unit-20) var(--grid-unit-30);
 		display: flex;
-		min-height: to_rem(40px);
+		min-height: var(--grid-unit-50);
 		flex-direction: column;
 		align-items: center;
 		align-self: stretch;
@@ -35,7 +35,7 @@
 			.components-button {
 				font-size: var(--font-size--medium);
 				font-weight: 400;
-				line-height: to_rem(20px);
+				line-height: var(--grid-unit-25);
 				padding-left: 0;
 				padding-right: 0;
 			}
@@ -70,7 +70,7 @@
 					font-size: var(--font-size--medium);
 					font-style: normal;
 					font-weight: 500;
-					line-height: to_rem(20px);
+					line-height: var(--grid-unit-25);
 				}
 			}
 
@@ -85,7 +85,7 @@
 				font-size: var(--font-size--medium);
 				font-style: normal;
 				font-weight: 400;
-				line-height: to_rem(16px);
+				line-height: var(--grid-unit-20);
 			}
 		}
 	}
@@ -156,7 +156,7 @@
 				flex: 1;
 				padding: var(--grid-unit-15) var(--grid-unit-40);
 				margin: 0;
-				height: to_rem(48px);
+				height: var(--grid-unit-60);
 				justify-content: center;
 
 				&.is-active {
@@ -168,27 +168,27 @@
 					padding: var(--grid-unit-5) var(--grid-unit-10);
 					justify-content: center;
 					align-items: center;
-					gap: 10px;
+					gap: var(--grid-unit-10);
 					border-radius: 2px;
 					background: var(--gray-400);
 					margin-left: var(--grid-unit-20);
 				}
 
 				&.icon-only-tab {
-					flex: 0 0 40px;
-					width: 56px !important;
-					min-width: 56px !important;
+					flex: 0 0 var(--grid-unit-50);
+					width: var(--grid-unit-60) !important;
+					min-width: var(--grid-unit-60) !important;
 					padding: var(--grid-unit-10) !important;
 					justify-content: center !important;
 
 					.icon {
 						color: var(--gray-600);
-						width: 24px !important;
-						height: 24px !important;
+						width: var(--grid-unit-30) !important;
+						height: var(--grid-unit-30) !important;
 
 						svg {
-							width: 24px !important;
-							height: 24px !important;
+							width: var(--grid-unit-30) !important;
+							height: var(--grid-unit-30) !important;
 						}
 					}
 

@@ -73,7 +73,7 @@
 	}
 
 	&.no-results {
-		padding: 1rem;
+		padding: var(--grid-unit-15);
 		text-align: center;
 		color: #757575;
 		font-style: italic;

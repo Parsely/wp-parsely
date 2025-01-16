@@ -42,7 +42,7 @@ interface TrafficBoostPreviewProps {
 }
 
 /**
- * TrafficBoostPreview component.
+ * Component that renders the traffic boost preview.
  *
  * @since 3.18.0
  *
@@ -165,7 +165,7 @@ export const TrafficBoostPreview = ( {
 			return;
 		}
 
-		window.open( activePost.guid.raw, '_blank' );
+		window.open( activePost.guid.raw, '_blank', 'noopener' );
 	};
 
 	/**
@@ -178,7 +178,7 @@ export const TrafficBoostPreview = ( {
 			return;
 		}
 
-		window.open( `${ window.location.origin }/wp-admin/post.php?post=${ activePost.id }&action=edit`, '_blank' );
+		window.open( `${ window.location.origin }/wp-admin/post.php?post=${ activePost.id }&action=edit`, '_blank', 'noopener' );
 	};
 
 	/**
@@ -192,7 +192,7 @@ export const TrafficBoostPreview = ( {
 		}
 
 		const parselyDashboardUrl = `https://dash.parsely.com/${ window.wpParselySiteId }/find?url=${ encodeURIComponent( activePost.guid.raw ) }`;
-		window.open( parselyDashboardUrl, '_blank' );
+		window.open( parselyDashboardUrl, '_blank', 'noopener' );
 	};
 
 	/**
@@ -264,15 +264,15 @@ export const TrafficBoostPreview = ( {
 			}
 		);
 
-		// If the accepted link is the last one, move to the inbound tab and select the accepted link.
+		// When accepting the only remaining suggestion, switch to inbound links tab.
 		if ( itemIndex === totalItems && totalItems === 1 ) {
 			setSelectedTab( TrafficBoostSidebarTabs.INBOUND_LINKS );
 			setSelectedLink( acceptedLink );
 		} else if ( itemIndex === totalItems ) {
-			// If the accepted link is the last one, select the previous link.
+			// Navigate to previous suggestion when accepting the last one.
 			handlePrevious();
 		} else {
-			// If the accepted link is not the last one, select the next link.
+			// Move to next suggestion after accepting current one.
 			handleNext();
 		}
 	};
@@ -287,14 +287,14 @@ export const TrafficBoostPreview = ( {
 	const handleDiscard = ( link: TrafficBoostLink ) => {
 		removeSuggestion( link );
 
-		// If the discarded link is the last one, reset the selected link.
+		// When discarding the only remaining suggestion, switch to inbound links tab.
 		if ( itemIndex === totalItems && totalItems === 1 ) {
 			setSelectedLink( null );
 		} else if ( itemIndex === totalItems ) {
-			// If the discarded link is the last one, select the previous link.
+			// Navigate to previous suggestion when discarding the last one.
 			handlePrevious();
 		} else {
-			// If the discarded link is not the last one, select the next link.
+			// Move to next suggestion after discarding current one.
 			handleNext();
 		}
 	};
@@ -321,14 +321,14 @@ export const TrafficBoostPreview = ( {
 			}
 		);
 
-		// If the removed link is the last one, reset the selected link.
+		// When removing the only remaining inbound link, switch to inbound links tab.
 		if ( itemIndex === totalItems && totalItems === 1 ) {
 			setSelectedLink( null );
 		} else if ( itemIndex === totalItems ) {
-			// If the removed link is the last one, select the previous link.
+			// Navigate to previous inbound link when removing the last one.
 			handlePrevious();
 		} else {
-			// If the removed link is not the last one, select the next link.
+			// Move to next inbound link after removing current one.
 			handleNext();
 		}
 	};

@@ -190,7 +190,7 @@ export const PreviewIframe = ( {
 		}, true );
 
 		try {
-			// Attempt to make history methods no-op.
+			// Attempt to disable history navigation.
 			iframeWindow.history.pushState = () => undefined;
 			iframeWindow.history.replaceState = () => undefined;
 		} catch ( error ) {
@@ -209,7 +209,7 @@ export const PreviewIframe = ( {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {HTMLIFrameElement} iframe The iframe element to jump to the smart link in.
+	 * @param {HTMLIFrameElement} iframe The iframe element containing the smart link to scroll to.
 	 */
 	const jumpToSmartLink = useCallback( ( iframe: HTMLIFrameElement ) => {
 		const iframeDocument = iframe.contentDocument ?? iframe.contentWindow?.document;
@@ -220,7 +220,7 @@ export const PreviewIframe = ( {
 		const scrollToHighlightedElement = async () => {
 			const highlightedElement = iframeDocument.querySelector( '.smart-link-highlight' );
 			if ( highlightedElement ) {
-				// Wait 200ms to ensure the highlighted element is visible.
+				// Wait 100ms to ensure the highlighted element is visible.
 				await new Promise( ( resolve ) => setTimeout( resolve, 100 ) );
 
 				highlightedElement.scrollIntoView( {
@@ -405,7 +405,7 @@ export const PreviewIframe = ( {
 						<iframe
 							ref={ iframeRef }
 							src={ previewUrl }
-							title="Post Preview"
+							title={ __( 'Post Preview', 'wp-parsely' ) }
 							className={ `wp-parsely-preview-iframe ${ isLoading ? 'is-loading' : '' }` }
 							sandbox="allow-same-origin allow-scripts"
 						/>
