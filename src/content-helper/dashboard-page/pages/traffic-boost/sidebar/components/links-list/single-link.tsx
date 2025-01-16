@@ -1,4 +1,9 @@
 /**
+ * WordPress Dependencies
+ */
+import { __, sprintf } from '@wordpress/i18n';
+
+/**
  * Internal Dependencies
  */
 import { Thumbnail } from '../../../../../../common/components/thumbnail';
@@ -41,14 +46,24 @@ export const SingleLink = ( {
 	return (
 		<div
 			className={ `traffic-boost-single-link ${ isActive ? 'active' : '' }` }
-			onClick={ onClickHandler }
+			onClick={ ( e ) => {
+				e.preventDefault();
+				onClickHandler();
+			} }
 			onKeyDown={ ( e ) => {
+				e.preventDefault();
 				if ( e.key === 'Enter' || e.key === ' ' ) {
 					onClickHandler();
 				}
 			} }
 			role="button"
 			tabIndex={ 0 }
+			aria-label={ sprintf(
+				/* translators: %s: Post title */
+				__( 'Traffic boost link for %s', 'wp-parsely' ),
+				suggestedPost.title.rendered
+			) }
+			aria-pressed={ isActive }
 		>
 			<div className="single-link-thumbnail">
 				<Thumbnail

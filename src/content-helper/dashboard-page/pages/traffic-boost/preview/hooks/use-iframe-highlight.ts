@@ -174,7 +174,7 @@ export const useIframeHighlight = ( {
 			null
 		);
 
-		let node;
+		let node = treeWalker.nextNode() as Text;
 		let fullText = '';
 		const nodePositions: {
 			node: Text;
@@ -184,7 +184,7 @@ export const useIframeHighlight = ( {
 		}[] = [];
 
 		// Build full text and track node positions.
-		while ( ( node = treeWalker.nextNode() as Text ) ) {
+		while ( node ) {
 			const nodeText = node.textContent ?? '';
 			textNodes.push( node );
 
@@ -202,6 +202,7 @@ export const useIframeHighlight = ( {
 				blockParent: blockParent ?? null,
 			} );
 			fullText += nodeText;
+			node = treeWalker.nextNode() as Text;
 		}
 
 		// Find all matches in the full text.

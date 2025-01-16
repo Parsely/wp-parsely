@@ -83,7 +83,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 				}
 			} catch ( err ) {
 				setError( err as ContentHelperError );
-				console.error( error ); // eslint-disable-line no-console
+				console.error( err ); // eslint-disable-line no-console
 			} finally {
 				setLoading( false );
 				setHasFetchedPost( true );
@@ -175,7 +175,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 				setInboundLinks( inboundLinks );
 			} catch ( err ) {
 				setError( err as ContentHelperError );
-				console.error( error ); // eslint-disable-line no-console
+				console.error( err ); // eslint-disable-line no-console
 			} finally {
 				setLoading( false, 'inbound_links' );
 			}
@@ -201,7 +201,7 @@ export const TrafficBoostPostPage = (): React.JSX.Element => {
 				setSuggestions( fetchedSuggestions );
 			} catch ( err ) {
 				setError( err as ContentHelperError );
-				console.error( error ); // eslint-disable-line no-console
+				console.error( err ); // eslint-disable-line no-console
 			} finally {
 				setLoading( false, 'suggestions' );
 			}

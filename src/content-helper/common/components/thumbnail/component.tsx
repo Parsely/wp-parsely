@@ -47,6 +47,8 @@ export const Thumbnail = ( {
 					alt={ altText }
 					width={ size }
 					height={ size }
+					loading="lazy"
+					aria-hidden={ altText === '' }
 				/>
 			) : (
 				<div className="parsely-thumbnail-icon-container">

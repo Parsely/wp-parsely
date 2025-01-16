@@ -476,7 +476,7 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 					},
 					selectedLink: action.select ? action.suggestion : state.selectedLink,
 				};
-			case 'REMOVE_SUGGESTION':
+			case 'REMOVE_SUGGESTION': {
 				const remainingSuggestions = state.suggestionsTab.suggestions.filter(
 					( suggestion ) => suggestion.uid !== action.suggestion.uid
 				);
@@ -491,7 +491,8 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						? remainingSuggestions[ 0 ] ?? null
 						: state.selectedLink,
 				};
-			case 'ADD_INBOUND_LINK':
+			}
+			case 'ADD_INBOUND_LINK': {
 				return {
 					...state,
 					inboundLinksTab: {
@@ -500,7 +501,8 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 					},
 					selectedLink: action.select ? action.link : state.selectedLink,
 				};
-			case 'REMOVE_INBOUND_LINK':
+			}
+			case 'REMOVE_INBOUND_LINK': {
 				const remainingLinks = state.inboundLinksTab.links.filter(
 					( link ) => link.uid !== action.link.uid
 				);
@@ -515,7 +517,8 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						? remainingLinks[ 0 ] ?? null
 						: state.selectedLink,
 				};
-			case 'UPDATE_SUGGESTION':
+			}
+			case 'UPDATE_SUGGESTION': {
 				const isMatchingSuggestion = ( suggestion: TrafficBoostLink ) =>
 					suggestion.uid === action.suggestion.uid;
 
@@ -533,6 +536,7 @@ export const TrafficBoostStore = createReduxStore( 'wp-parsely/traffic-boost', {
 						? action.suggestion
 						: state.selectedLink,
 				};
+			}
 			case 'SET_IS_ACCEPTING':
 				return {
 					...state,
