@@ -14,7 +14,7 @@ import { TrafficBoostLink } from '../provider';
  */
 export const isExternalURL = ( link: TrafficBoostLink ): boolean => {
 	try {
-		const urlToCheck = new URL( link.targetPost.guid.raw );
+		const urlToCheck = new URL( link.targetPost.link );
 		const currentURL = new URL( window.location.href );
 
 		return urlToCheck.hostname !== currentURL.hostname;

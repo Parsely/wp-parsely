@@ -117,7 +117,7 @@ export const LinkOptionsPanel = ( {
 				<TextControl
 					label={ __( 'Link', 'wp-parsely' ) }
 					__nextHasNoMarginBottom
-					value={ post?.guid?.raw }
+					value={ post?.link }
 					disabled={ true }
 					onChange={ () => {} } // Disabled, so no need for implementation
 				/>

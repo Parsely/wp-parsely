@@ -67,6 +67,7 @@ export interface Post extends CorePost {
  * @since 3.18.0
  */
 export type HydratedPost = Omit<Post, 'author' | 'categories' | 'tags'> & {
+	link: string;
 	author: User | null;
 	categories: Taxonomy[];
 	tags: Taxonomy[];
