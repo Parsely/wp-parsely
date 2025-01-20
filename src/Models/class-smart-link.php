@@ -429,6 +429,17 @@ class Smart_Link extends Base_Model {
 	}
 
 	/**
+	 * Sets the source post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param \WP_Post $post The source post.
+	 */
+	public function set_source_post( \WP_Post $post ) {
+		$this->set_source_post_id( $post->ID );
+	}
+
+	/**
 	 * Sets the source post ID.
 	 *
 	 * @since 3.16.0

@@ -13,6 +13,7 @@ namespace Parsely\Models;
 use DOMDocument;
 use ReflectionClass;
 use WP_Post;
+use Masterminds\HTML5;
 
 /**
  * Model for Inbound Smart Link.
@@ -161,8 +162,8 @@ class Inbound_Smart_Link extends Smart_Link {
 
 		libxml_use_internal_errors( true );
 
-		$dom = new DOMDocument();
-		$dom->loadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' ), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+		$html_parser = new HTML5();
+		$dom         = $html_parser->loadHTML( mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' ) );
 
 		$errors = libxml_get_errors();
 		if ( count( $errors ) > 0 ) {
@@ -181,18 +182,33 @@ class Inbound_Smart_Link extends Smart_Link {
 		$is_first_paragraph = true;
 		$is_last_paragraph  = false;
 
+		$offset_count = 0;
+
 		foreach ( $paragraphs as $p ) {
-			// Check each anchor tag within the paragraph.
-			$anchors = $p->getElementsByTagName( 'a' );
-			foreach ( $anchors as $anchor ) {
-				// Check if the data-smartlink attribute contains the UID.
-				if ( $anchor->hasAttribute( 'data-smartlink' ) && stripos( $anchor->getAttribute( 'data-smartlink' ), $this->uid ) !== false ) {
-					// Save the outer HTML of the paragraph.
+			// If the smart link is applied, we need to find the paragraph that contains the smart link.
+			if ( $this->applied ) {
+				// Check each anchor tag within the paragraph.
+				$anchors = $p->getElementsByTagName( 'a' );
+				foreach ( $anchors as $anchor ) {
+					// Check if the data-smartlink attribute contains the UID.
+					if ( $anchor->hasAttribute( 'data-smartlink' ) && stripos( $anchor->getAttribute( 'data-smartlink' ), $this->uid ) !== false ) {
+						// Save the outer HTML of the paragraph.
+						$is_first_paragraph = $p === $paragraphs->item( 0 );
+						$is_last_paragraph  = $p === $paragraphs->item( $paragraphs->length - 1 );
+						$paragraph          = $html_parser->saveHTML( $p );
+						break 2;
+					}
+				}
+			} elseif ( strpos( $p->textContent, $this->text ) !== false ) { // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+				// If the smart link is not applied, we need to find the paragraph that contains the
+				// smart link text, and with the correct offset.
+				if ( $offset_count === $this->offset ) {
 					$is_first_paragraph = $p === $paragraphs->item( 0 );
 					$is_last_paragraph  = $p === $paragraphs->item( $paragraphs->length - 1 );
-					$paragraph          = $dom->saveHTML( $p );
-					break 2;
+					$paragraph          = $html_parser->saveHTML( $p );
+					break;
 				}
+				++$offset_count;
 			}
 		}
 
@@ -207,6 +223,19 @@ class Inbound_Smart_Link extends Smart_Link {
 		);
 
 		return $this->paragraph_data;
+	}
+
+	/**
+	 * Sets the destination post.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param \WP_Post $post The destination post.
+	 */
+	public function set_destination_post( \WP_Post $post ) {
+		$this->destination_post_id   = $post->ID;
+		$this->href                  = get_permalink( $post );
+		$this->destination_post_type = get_post_type_object( $post->post_type )->labels->singular_name;
 	}
 
 	/**

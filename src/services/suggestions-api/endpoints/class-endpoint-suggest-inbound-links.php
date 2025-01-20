@@ -95,11 +95,30 @@ class Endpoint_Suggest_Inbound_Links extends Suggestions_API_Base_Endpoint {
 			);
 
 			// Set the destination to be the current post.
-			$link_obj->
+			$link_obj->set_destination_post( $post );
 
-			// Set the source to be the suggested source.
-			$link_obj->set_source( $link['source_url'] );
+			// Find post by URL.
+			if ( function_exists( 'wpcom_vip_url_to_postid' ) ) {
+				$source_post_id = wpcom_vip_url_to_postid( $link['source_url'] );
+			} else {
+				// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.url_to_postid_url_to_postid
+				$source_post_id = url_to_postid( $link['source_url'] );
+			}
 
+			// If we couldn't find a post by URL, try to find a post with the same slug.
+			if ( ! $source_post_id ) {
+				// Get the slug from the URL.
+				$post_slug      = basename( $link['source_url'] );
+				$source_post_id = get_page_by_path( $post_slug, OBJECT, array( 'post', 'page' ) );
+			}
+
+			$source_post = get_post( $source_post_id );
+
+			if ( ! $source_post ) {
+				continue;
+			}
+
+			$link_obj->set_source_post( $source_post );
 			$links[] = $link_obj;
 		}
 

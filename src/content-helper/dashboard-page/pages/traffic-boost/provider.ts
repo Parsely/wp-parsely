@@ -36,6 +36,15 @@ export interface TrafficBoostLink {
 }
 
 /**
+ * Represents the response from the Generate Suggestions endpoint.
+ *
+ * @since 3.18.0
+ */
+interface TrafficBoostGenerateSuggestionsResponse {
+	data: InboundSmartLink[];
+}
+
+/**
  * Represents the response from the Get Smart Links endpoint.
  *
  * @since 3.18.0
@@ -220,17 +229,50 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 *
 	 * @since 3.18.0
 	 *
-	 * @param {number} postId The ID of the post to generate suggestions for.
+	 * @param {HydratedPost} post              The post to generate suggestions for.
+	 * @param {Object}       options           The options for the suggestions.
+	 * @param {number}       options.max_items The maximum number of items to generate.
 	 *
 	 * @return {Promise<TrafficBoostLink[]>} The list of suggestions.
 	 */
-	public async generateSuggestions( postId: number ): Promise<TrafficBoostLink[]> {
-		const response = await this.fetch<TrafficBoostLink[]>( {
+	public async generateSuggestions( post: HydratedPost, options?: { max_items?: number } ): Promise<TrafficBoostLink[]> {
+		const response = await this.fetch<TrafficBoostGenerateSuggestionsResponse>( {
 			method: 'POST',
-			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/generate`,
+			path: `/wp-parsely/v2/content-helper/traffic-boost/${ post.id }/generate`,
+			data: {
+				max_items: options?.max_items ?? 10,
+			},
 		} );
 
-		return response ?? [];
+		// Get the post IDs from the inbound smart links.
+		const postIds = response.data.map( ( inboundSmartLink ) => inboundSmartLink.source?.post_id );
+
+		// Fetch the posts for the inbound smart links.
+		const fetchedPosts = await this.getPosts( {
+			include: postIds,
+			posts_per_page: 100,
+		} );
+
+		// Create the traffic boost links.
+		const trafficBoostLinks = response.data.map( ( inboundSmartLink ) => {
+			const sourcePost = fetchedPosts.data.find( ( p ) => p.id === inboundSmartLink.source?.post_id );
+
+			if ( ! sourcePost ) {
+				return false;
+			}
+
+			const trafficBoostLink: TrafficBoostLink = {
+				uid: inboundSmartLink.uid,
+				smartLink: inboundSmartLink,
+				postLinks: this.populatePostLinks( sourcePost ),
+				targetPost: sourcePost,
+				isSuggestion: true,
+			};
+
+			return trafficBoostLink;
+		} ).filter( ( link ) => link !== false );
+
+		return trafficBoostLinks;
 	}
 
 	/**

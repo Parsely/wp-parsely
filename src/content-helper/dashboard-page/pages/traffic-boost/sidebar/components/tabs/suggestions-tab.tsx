@@ -164,7 +164,8 @@ const SuggestionsTab = ( {
 		}
 
 		setIsGeneratingSuggestions( true );
-		const generatedSuggestions = await trafficBoostProvider.generateSuggestions( currentPost.id );
+		const generatedSuggestions = await trafficBoostProvider.generateSuggestions( currentPost );
+
 		setSuggestions( generatedSuggestions );
 		setIsGeneratingSuggestions( false );
 	};
