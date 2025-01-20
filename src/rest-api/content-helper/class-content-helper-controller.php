@@ -37,11 +37,11 @@ class Content_Helper_Controller extends REST_API_Controller {
 	 * @since 3.17.0
 	 */
 	public function init(): void {
-
 		$endpoints = array(
 			new Endpoint_Smart_Linking( $this ),
 			new Endpoint_Excerpt_Generator( $this ),
 			new Endpoint_Title_Suggestions( $this ),
+			new Endpoint_Traffic_Boost( $this ),
 		);
 
 		$this->register_endpoints( $endpoints );

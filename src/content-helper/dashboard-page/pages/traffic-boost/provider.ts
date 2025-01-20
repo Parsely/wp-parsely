@@ -225,14 +225,12 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 * @return {Promise<TrafficBoostLink[]>} The list of suggestions.
 	 */
 	public async generateSuggestions( postId: number ): Promise<TrafficBoostLink[]> {
-		// TODO: Generate suggestions for a given post.
-		// As a mockup, we'll just return a list of suggestions with a delay between 500 and 2000ms.
-		return new Promise( ( resolve ) => {
-			setTimeout( () => {
-				const randomNumberOfSuggestions = Math.floor( Math.random() * 10 ) + 1;
-				resolve( this.generateBoostLinks( postId, randomNumberOfSuggestions ) );
-			}, Math.floor( Math.random() * 1500 ) + 500 ); // Random time between 500 and 2000ms.
+		const response = await this.fetch<TrafficBoostLink[]>( {
+			method: 'POST',
+			path: `/wp-parsely/v2/content-helper/traffic-boost/${ postId }/generate`,
 		} );
+
+		return response ?? [];
 	}
 
 	/**

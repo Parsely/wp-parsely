@@ -24,6 +24,7 @@ use WP_Error;
  * @phpstan-import-type Endpoint_Suggest_Brief_Options from Endpoints\Endpoint_Suggest_Brief
  * @phpstan-import-type Endpoint_Suggest_Headline_Options from Endpoints\Endpoint_Suggest_Headline
  * @phpstan-import-type Endpoint_Suggest_Linked_Reference_Options from Endpoints\Endpoint_Suggest_Linked_Reference
+ * @phpstan-import-type Endpoint_Suggest_Inbound_Links_Options from Endpoints\Endpoint_Suggest_Inbound_Links
  */
 class Suggestions_API_Service extends Base_API_Service {
 	/**
@@ -47,6 +48,7 @@ class Suggestions_API_Service extends Base_API_Service {
 			new Endpoints\Endpoint_Suggest_Brief( $this ),
 			new Endpoints\Endpoint_Suggest_Headline( $this ),
 			new Endpoints\Endpoint_Suggest_Linked_Reference( $this ),
+			new Endpoints\Endpoint_Suggest_Inbound_Links( $this ),
 		);
 
 		foreach ( $endpoints as $endpoint ) {
@@ -111,5 +113,22 @@ class Suggestions_API_Service extends Base_API_Service {
 		$endpoint = $this->get_endpoint( '/suggest-linked-reference' );
 
 		return $endpoint->get_links( $content, $options, $url_exclusion_list );
+	}
+
+	/**
+	 * Gets suggested inbound links for the given URL.
+	 *
+	 * @since 3.17.0
+	 *
+	 * @param \WP_Post                               $post    The post to get inbound link suggestions for.
+	 * @param Endpoint_Suggest_Inbound_Links_Options $options The options to pass to the API request.
+	 * @return array<\Parsely\Models\Inbound_Smart_Link>|WP_Error The response from the remote API, or a WP_Error
+	 *                                                            object if the response is an error.
+	 */
+	public function get_inbound_links( \WP_Post $post, $options = array() ) {
+		/** @var Endpoints\Endpoint_Suggest_Inbound_Links $endpoint */
+		$endpoint = $this->get_endpoint( '/suggest-inbound-links' );
+
+		return $endpoint->get_inbound_links( $post, $options );
 	}
 }
