@@ -132,7 +132,8 @@ final class Dashboard_Page {
 			return $content;
 		}
 
-		return '<div class="wp-parsely-preview-wrapper">' . $content . '</div>';
+		// Add a marker class to the content container and add the wrapper as a sibling.
+		return $content . '<div class="wp-parsely-preview-marker"></div>';
 	}
 
 	/**

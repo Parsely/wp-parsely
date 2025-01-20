@@ -40,9 +40,6 @@ declare(strict_types=1);
 		a {
 			cursor: pointer !important;
 		}
-		.wp-parsely-preview-wrapper {
-			padding-bottom: 46px;
-		}
 	</style>
 	<script>
 		// Prevent right click, context menu, and other iframe-specific interactions.
@@ -72,8 +69,9 @@ declare(strict_types=1);
 	<div class="wp-block editor-post-title editor-post-title__block">
 		<h1 class="editor-post-title__input"><?php echo esc_html( $post_title ?? '' ); ?></h1>
 	</div>
-	<div class="wp-parsely-preview-wrapper">
+	<div class="wp-parsely-preview-content">
 		<?php echo wp_kses_post( $block_content ?? '' ); ?>
+		<div class="wp-parsely-preview-marker"></div>
 	</div>
 	<?php wp_footer(); ?>
 </body>
