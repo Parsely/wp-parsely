@@ -11,6 +11,7 @@ namespace Parsely\Tests\Integration\Endpoints;
 
 use Parsely\Parsely;
 use Parsely\Tests\Integration\TestCase;
+use WP_Post;
 
 /**
  * Integration Tests for calls to Parse.ly's Update Metadata Endpoint.
@@ -228,6 +229,8 @@ final class CallUpdateMetadataEndpointTest extends TestCase {
 		);
 
 		self::assertTrue( self::$parsely->call_update_metadata_endpoint( $post_id ) );
+
+		unregister_post_type( 'test_cpt' );
 	}
 
 	/**
@@ -301,19 +304,34 @@ final class CallUpdateMetadataEndpointTest extends TestCase {
 
 		self::assertFalse( self::$parsely->call_update_metadata_endpoint( $post_id ) );
 
-		// Add the "active" status to the list of trackable statuses.
 		add_filter(
 			'wp_parsely_trackable_statuses',
-			// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
-			function ( $statuses, $post ) {
-				$statuses[] = 'active';
-
-				return $statuses;
-			},
+			array( $this, 'add_active_status_to_trackable_post_statuses' ),
 			10,
 			2
 		);
 
 		self::assertTrue( self::$parsely->call_update_metadata_endpoint( $post_id ) );
+
+		remove_filter(
+			'wp_parsely_trackable_statuses',
+			array( $this, 'add_active_status_to_trackable_post_statuses' ),
+			10
+		);
+	}
+
+	/**
+	 * Adds an "active" post status to the array of trackable post statuses.
+	 *
+	 * @since 3.18.0
+	 *
+	 * @param array<string>    $statuses The array of trackable post statuses.
+	 * @param WP_Post|int|null $post The post being checked.
+	 * @return array<string> The updated array of trackable post statuses.
+	 */
+	public function add_active_status_to_trackable_post_statuses( array $statuses, $post ): array {
+		$statuses[] = 'active';
+
+		return $statuses;
 	}
 }
