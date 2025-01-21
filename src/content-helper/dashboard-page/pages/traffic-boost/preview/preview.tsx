@@ -143,7 +143,7 @@ export const TrafficBoostPreview = ( {
 				post_id: activePost.id,
 				_wpnonce: window._parsely_traffic_boost_preview_nonce ?? '',
 			} )
-			: addQueryArgs( activePost.guid.raw, {
+			: addQueryArgs( activePost.link, {
 				parsely_preview: 'true',
 				_wpnonce: window._parsely_traffic_boost_preview_nonce ?? '',
 			} );
@@ -161,11 +161,11 @@ export const TrafficBoostPreview = ( {
 	 * @since 3.18.0
 	 */
 	const openPostInNewTab = () => {
-		if ( ! activePost?.guid?.raw ) {
+		if ( ! activePost?.link ) {
 			return;
 		}
 
-		window.open( activePost.guid.raw, '_blank', 'noopener' );
+		window.open( activePost.link, '_blank', 'noopener' );
 	};
 
 	/**
@@ -187,11 +187,11 @@ export const TrafficBoostPreview = ( {
 	 * @since 3.18.0
 	 */
 	const openParselyDashboard = () => {
-		if ( ! activePost?.guid?.raw ) {
+		if ( ! activePost?.link ) {
 			return;
 		}
 
-		const parselyDashboardUrl = `https://dash.parsely.com/${ window.wpParselySiteId }/find?url=${ encodeURIComponent( activePost.guid.raw ) }`;
+		const parselyDashboardUrl = `https://dash.parsely.com/${ window.wpParselySiteId }/find?url=${ encodeURIComponent( activePost.link ) }`;
 		window.open( parselyDashboardUrl, '_blank', 'noopener' );
 	};
 

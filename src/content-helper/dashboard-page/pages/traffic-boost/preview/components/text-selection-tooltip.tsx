@@ -6,6 +6,7 @@ import { debounce } from '@wordpress/compose';
 import { createRoot, useCallback, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { link, warning } from '@wordpress/icons';
+import { getContentArea } from '../utils';
 
 /**
  * Custom hook to inject styles into the iframe.
@@ -401,11 +402,16 @@ export const TextSelectionTooltip = ( {
 			return;
 		}
 
-		const range = docSelection.getRangeAt( 0 );
-		const previewWrapper = iframeDocument.querySelector( '.wp-parsely-preview-wrapper' );
+		// Get the content area.
+		const contentArea = getContentArea( iframeDocument );
+		if ( ! contentArea ) {
+			return;
+		}
 
-		// Check if selection is within preview wrapper.
-		if ( ! previewWrapper?.contains( range.commonAncestorContainer ) ) {
+		const range = docSelection.getRangeAt( 0 );
+
+		// Check if selection is within content area.
+		if ( ! contentArea.contains( range.commonAncestorContainer ) ) {
 			return;
 		}
 
@@ -450,7 +456,7 @@ export const TextSelectionTooltip = ( {
 				onSelect={ () => {
 					popoverContainer.classList.add( 'closing' );
 
-					const offset = calculateOffset( iframeDocument, docSelection, previewWrapper );
+					const offset = calculateOffset( iframeDocument, docSelection, contentArea );
 					onTextSelected( docSelection.toString().trim(), offset );
 					docSelection.removeAllRanges();
 
@@ -478,7 +484,7 @@ export const TextSelectionTooltip = ( {
 		};
 
 		updatePosition();
-		previewWrapper.appendChild( highlight );
+		contentArea.appendChild( highlight );
 
 		// Add scroll event listener.
 		const scrollHandler = () => {
