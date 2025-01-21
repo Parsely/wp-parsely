@@ -15,7 +15,7 @@ import { TrafficBoostLink } from '../../provider';
 import { TrafficBoostStore } from '../../store';
 import { useIframeHighlight } from '../hooks/use-iframe-highlight';
 import { TextSelection } from '../preview';
-import { isExternalURL } from '../utils';
+import { getContentArea, isExternalURL } from '../utils';
 import { TextSelectionTooltip } from './text-selection-tooltip';
 
 /**
@@ -242,16 +242,20 @@ export const PreviewIframe = ( {
 		};
 
 		const observer = new MutationObserver( watchForHighlightedElement );
-		observer.observe( iframeDocument.querySelector( '.wp-parsely-preview-wrapper' ) as Element, {
-			childList: true,
-			subtree: true,
-		} );
+		const contentArea = getContentArea( iframeDocument );
 
-		// Try to scroll to the highlighted element immediately.
-		scrollToHighlightedElement();
+		if ( contentArea ) {
+			observer.observe( contentArea, {
+				childList: true,
+				subtree: true,
+			} );
 
-		// Disconnect the observer after a short delay to prevent infinite observation.
-		setTimeout( () => observer.disconnect(), 1000 );
+			// Try to scroll to the highlighted element immediately.
+			scrollToHighlightedElement();
+
+			// Disconnect the observer after a short delay to prevent infinite observation.
+			setTimeout( () => observer.disconnect(), 1000 );
+		}
 	}, [] );
 
 	/**
@@ -269,7 +273,7 @@ export const PreviewIframe = ( {
 		injectHighlightStyles( iframe );
 
 		// Updates the content area ref to the iframe's content area.
-		const contentArea = iframe.contentWindow?.document.querySelector( '.wp-parsely-preview-wrapper' );
+		const contentArea = getContentArea( iframe.contentDocument );
 		if ( contentArea ) {
 			contentAreaRef.current = contentArea;
 		}

@@ -97,7 +97,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 	 */
 	private populatePostLinks( post: HydratedPost ): PostLinks {
 		const postContent = post.content.raw;
-		const siteUrl = new URL( post.guid.raw ).hostname;
+		const siteUrl = new URL( post.link ).hostname;
 
 		// Create a new DOMParser instance.
 		const parser = new DOMParser();
@@ -167,7 +167,7 @@ export class TrafficBoostProvider extends BaseWordPressProvider {
 
 		return {
 			uid: sourcePost.id.toString(),
-			href: sourcePost.guid.raw,
+			href: sourcePost.link,
 			text: trimmedText,
 			title: sourcePost.title.raw,
 			offset: 0,
