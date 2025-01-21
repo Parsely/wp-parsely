@@ -44,7 +44,7 @@ const PARSELY_PREVIEW_MARKER_CLASS = 'wp-parsely-preview-marker';
  * @return {Element | null} The content area element or null if not found.
  */
 export const getContentArea = ( document: Document ): Element | null => {
-	// Get the content area by checking for the PARSELY_PREVIEW_MARKER_CLASS first.
+	// Get the content area by checking for the PARSELY_PREVIEW_MARKER_CLASS.
 	const contentArea = document.querySelector( `.${ PARSELY_PREVIEW_MARKER_CLASS }` );
 	if ( ! contentArea ) {
 		return null;
